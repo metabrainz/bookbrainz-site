@@ -1,8 +1,27 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+@font-face{
+    font-family: 'Didact Gothic';
+    src: url('/fonts/DidactGothic.ttf')
 }
 
-a {
-  color: #00B7FF;
+body { padding-top: 50px; font-family: 'Didact Gothic'; !important; font-size: 12pt; }
+
+h3.index-book-title { margin-top: 0.2em; }
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 1.5em;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 1.5em;
+  background-color: #f5f5f5;
 }

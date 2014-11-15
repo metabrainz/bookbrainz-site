@@ -1,5 +1,71 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .container
+    .row
+      .col-md-12
+        .text-center
+          h1 BookBrainz
+          p.lead the open literature encyclopedia
+    .row
+      .col-md-8
+        h2 book of the week
+        hr
+        .row
+          .col-md-2
+            a(href='#'): img.img-responsive(
+              src='http://upload.wikimedia.org/wikipedia/en/thumb/9/96/Captainunderpantscover.jpg/200px-Captainunderpantscover.jpg'
+              style='vertical-align:middle'
+            )
+          .col-md-10
+            h3.index-book-title
+              a(href='#') The Adventures of Captain Underpants 
+              small: a(href='#') Dav Pilkey
+            p: b Publisher blurb or review from CritiqueBrainz here
+            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies est sed luctus dignissim. Ut eros augue, blandit nec rutrum eu, dictum in lorem. Donec eget egestas metus. Etiam convallis ligula vitae enim ultricies, quis lobortis nisl condimentum. Mauris tempus lacinia tellus ultricies rutrum. Fusce venenatis leo ut sapien ornare pellentesque.
+            a(href='#'): p.pull-right read full review...
+
+      .col-md-4
+        h2 news
+        hr
+        a(href='#'): p BookBrainz Update - 2014-11-16
+        a(href='#'): p An article on socks
+        a(href='#'): p Should I add this controversial book to BookBrainz?
+        a(href='#'): p BookBrainz Update - 2014-11-09
+        
+
+    .row
+      .col-md-12
+        h2 recently added
+        table.table.table-hover.table-condensed
+          tr
+            td
+               div: a The Odyssey
+               i Book, 1992
+            td: a Homer
+          tr
+            td
+              div: a The Iliad
+              i Book
+            td: a Homer
+          tr
+            td
+              div: a The Epic of Gilgamesh
+              i Book
+            td &lt;Unknown&gt;
+          tr
+            td
+              div: a The Sunday Times
+              i Newspaper, 2014-11-16
+            td: a Times Newspapers Ltd
+          tr
+            td
+              div: a The Aeneid
+              i Book
+            td: a Virgil
+          tr
+            td
+              div: a Tao Te Ching
+              i Book
+            td: a Lao Tzu
+          
