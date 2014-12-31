@@ -1,0 +1,50 @@
+extends ../layout
+
+block body
+  include ../navbar
+  
+  .container
+    .row
+      h1 Create Publication
+      p.lead Add a new Publication to BookBrainz.
+      | KO Test
+      p(data-bind='text: publicationType')
+    .row
+      .col-md-10.col-md-offset-1
+        form.form-horizontal
+          .form-group
+            label.col-md-3.control-label Name
+            .col-md-9
+              input.form-control(type='text', onchange='test()')
+          .form-group
+            label.col-md-3.control-label Sort Name
+            .col-md-9
+              input.form-control(type='text')
+          .form-group
+            label.col-md-3.control-label Disambiguation
+            .col-md-9
+              input.form-control(type='text')
+          .form-group
+            label.col-md-3.control-label Type
+            .col-md-9
+              select.form-control(data-bind='value: publicationType')
+                each type in publicationTypes.objects
+                  option(value=type.id)=type.label
+          .form-group(data-bind='visible: isISBNVisible()')
+            label.col-md-3.control-label ISBN
+            .col-md-9
+              input.form-control(type="text", required)
+          .form-group(data-bind='visible: isISSNVisible()')
+            label.col-md-3.control-label ISSN
+            .col-md-9
+              input.form-control(type="text", required)
+          hr
+          p Include this change in one of your existing open edits listed below, or create a new edit.
+          .form-group
+            label.col-md-3.control-label Edit
+            .col-md-9
+              select.form-control
+                option + New Edit
+                
+              
+  include ../footer
