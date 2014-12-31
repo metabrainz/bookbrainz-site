@@ -37,14 +37,21 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
           span.fa.fa-search
 
       ul.nav.navbar-nav.navbar-right
-        li
-          a(href='#') LordSputnik
+        if session.user
+          li
+            a(href='#')= session.user.name
         
+          li
+            a(href='')
+              span.fa.fa-envelope(style='margin-right:0.2em;')
+              span.badge 1
+
         li
-          a(href='')
-            span.fa.fa-envelope(style='margin-right:0.2em;')
-            span.badge 1
-            
+          if session.user
+            a(href='/logout') Logout
+          else
+            a(href='/login') Login
+          
         li.dropdown
           a.dropdown-toggle(href='#', data-toggle='dropdown', role='button'
                             aria-expanded='false')

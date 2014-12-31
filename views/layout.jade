@@ -10,22 +10,6 @@ html
     script(src='/javascripts/bootstrap.js')
     
   body
-    include ./navbar.jade
+    block body
 
-    block content
-      
-    footer.footer
-      .container-fluid
-        .row
-          .col-md-4
-            small This site uses: 
-              a(href='http://getbootstrap.com/', target='_blank') Bootstrap,
-              a(href='http://fortawesome.github.io/Font-Awesome/', target='_blank')  Font Awesome,
-              a(href='http://jquery.com/', target='_blank')  jQuery 
-              |  and 
-              a(href='http://knockoutjs.com/', target='_blank')  knockoutJS
-          .col-md-4.text-center
-            small Copyright 2014 BookBrainz Developers
-          .col-md-4.text-right
-            a(href='#'): small Privacy & Terms
-            
+    script(src='/javascripts/bundle.js')

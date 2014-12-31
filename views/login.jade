@@ -1,6 +1,9 @@
 extends layout
 
-block content
+block body
+  
+  include navbar
+  
   .container
     .row
       .col-md-6.col-md-offset-3
@@ -8,11 +11,15 @@ block content
           .form-group
             label.col-md-2(for='loginUsername') Username
             .col-md-10
-              input#loginUsername.form-control(type="text", placeholder="Username")
+              input#loginUsername.form-control(type="text", placeholder="Username", name='username')
           .form-group
             label.col-md-2(for='loginPassword') Password
             .col-md-10
-              input#loginPassword.form-control(type="password", placeholder="Password", disabled)
+              input#loginPassword.form-control(type="password", placeholder="Password", name='password', disabled)
+          if error
+            .alert.alert-warning= error
           button.btn.btn-primary.btn-lg.btn-block(type="submit") Login
           hr
           button.btn.btn-success.btn-lg.btn-block(type="submit") Register
+
+  include footer
