@@ -1,0 +1,49 @@
+extends ../layout
+
+block body
+  include ../navbar
+  
+  .container
+    .row
+      .col-md-12
+        h1
+          small.pull-right
+            a(href='#')
+              code='r'+entity.master_revision_id
+          if aliases.aliases
+            =aliases.aliases
+          if !disambiguation.disambiguation
+            small  (Bob)
+
+        hr
+    .row
+      .col-md-8
+        h2 Subworks
+        table.table.table-striped
+          tr
+            td Chapter 1
+          tr
+            td Chapter 2
+          tr
+            td Chapter 3
+          tr
+            td Chapter 4
+        hr
+        dl.dl-horizontal
+          dt Author
+          dd: a(href='#') Natsuo Kirino
+          dt Translator
+          dd: a(href='#') Stephen Snyder
+      .col-md-4
+        .text-center
+          button.btn.btn-link.pull-right.fa.fa-search-plus
+          img.img-responsive.center-block.book(src='http://upload.wikimedia.org/wikipedia/en/9/99/Outnovel.jpg',alt='Test')
+        hr
+        dl
+          dt Type
+          dd=data.publication_data.publication_type.label
+        
+          dt Last Modified
+          dd=(new Date(entity.last_updated)).toLocaleDateString()
+          
+  include ../footer
