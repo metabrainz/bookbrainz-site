@@ -92,3 +92,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+# Additional, project-specific directories
+/build
+/public/javascripts
