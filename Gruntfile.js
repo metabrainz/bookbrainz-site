@@ -17,13 +17,13 @@ module.exports = function(grunt) {
           // configure the browserify instance here
           b.plugin('factor-bundle', {outputs: [
             'public/javascripts/bundle/edit.js',
-            'public/javascripts/bundle/main.js'
+            'public/javascripts/bundle/publication.js'
           ]});
 
           // return it
           return b;
         },
-        src: './clientjs/*.js',
+        src: './views/**/*.js',
         dest: 'public/javascripts/bundle.js'
       }
     },
@@ -33,12 +33,12 @@ module.exports = function(grunt) {
           // configure the browserify instance here
           b.plugin('factor-bundle', {outputs: [
             'build/bundle/edit.js',
-            'build/bundle/main.js'
+            'build/bundle/publication.js',
             ]});
         },
       },
       all: {
-        src: './clientjs/*.js',
+        src: './views/**/*.js',
         dest: 'build/bundle.js'
       }
     },
