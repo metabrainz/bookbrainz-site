@@ -8,12 +8,17 @@ block body
       .col-md-12
         h1
           small.pull-right
+            button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(data-bind='click: toggleEditMode')
+            button.btn.btn-primary.btn-xs.fa.fa-code-fork.fa-rotate-270.entity-action
+            button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
             a(href='#')
               code='r'+entity.master_revision_id
           if aliases.aliases
-            =aliases.aliases
+            span(data-bind='css: { editable: editMode }, click: editAliases')=aliases.aliases[0].name
           if !disambiguation.disambiguation
             small  (Bob)
+          else
+            small(data-bind='css: { editable: editMode }, visible: editMode') (Bob)
 
         hr
     .row
@@ -39,11 +44,29 @@ block body
           button.btn.btn-link.pull-right.fa.fa-search-plus
           img.img-responsive.center-block.book(src='http://upload.wikimedia.org/wikipedia/en/9/99/Outnovel.jpg',alt='Test')
         hr
+        span(data-bind='text: editMode')
         dl
           dt Type
           dd=data.publication_data.publication_type.label
         
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()
-          
+    
+    
+    
+      #myModal.modal.fade(tabindex='-1', role='dialog')
+        .modal-dialog
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal')
+                span.fa.fa-remove
+              h4#myModalLabel.modal-title Edit Aliases
+            .modal-body
+              | ...
+            .modal-footer
+              button.btn.btn-default(type='button', data-dismiss='modal') Close
+              button.btn.btn-primary(type='button') Save changes
+                          
   include ../footer
+  
+  script(src='/javascripts/bundle/publication.js')
