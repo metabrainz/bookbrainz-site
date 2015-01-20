@@ -3,50 +3,34 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    watchify: {
-      options: {
-        // defaults options used in b.bundle(opts)
-        detectGlobals: true,
-        insertGlobals: false,
-        ignoreMissing: false,
-        debug: false,
-        standalone: false,
-
-        keepalive: false,
-        callback: function(b) {
-          // configure the browserify instance here
-          b.plugin('factor-bundle', {outputs: [
-            'public/javascripts/bundle/edit.js',
-            'public/javascripts/bundle/publication.js'
-          ]});
-
-          // return it
-          return b;
-        },
-        src: './views/**/*.js',
-        dest: 'public/javascripts/bundle.js'
-      }
-    },
     browserify: {
       options: {
         preBundleCB: function(b) {
           // configure the browserify instance here
           b.plugin('factor-bundle', {outputs: [
-            'build/bundle/edit.js',
-            'build/bundle/publication.js',
+            'public/javascripts/bundle/edit.js',
+            'public/javascripts/bundle/publication.js',
             ]});
         },
       },
       all: {
         src: './views/**/*.js',
-        dest: 'build/bundle.js'
+        dest: 'public/javascripts/bundle.js'
+      },
+      watch: {
+        src: './views/**/*.js',
+        dest: 'public/javascripts/bundle.js',
+        options: {
+          watch: true,
+          keepAlive: true
+        }
       }
     },
     uglify: {
       all: {
         files: [{
           expand: true,
-          cwd: 'build',
+          cwd: 'public/javascripts',
           src: '**/*.js',
           dest: 'public/javascripts'
         }]
@@ -56,7 +40,7 @@ module.exports = function(grunt) {
       all: {
         options: {
           mode: 0777,
-          create: ['build/bundle', 'public/javscripts/bundle']
+          create: ['build/bundle', 'public/javascripts/bundle']
         },
       },
     },
