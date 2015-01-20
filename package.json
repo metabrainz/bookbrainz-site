@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "./bin/debug",
-    "debug_win": "./bin/debug_win"
+    "debug": "DEBUG=bbsite node ./bin/www",
+    "debug_win": "set DEBUG=bbsite & node bin\\www"
   },
   "dependencies": {
     "bluebird": "^2.5.1",
