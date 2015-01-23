@@ -33,4 +33,4 @@ img.book {max-height: 200px;}
 button.entity-action {margin-left:0.1em; margin-right:0.1em;}
 button.jsonly {display:none;}
 
-.editable {cursor:pointer;}
+.editable {cursor:pointer; background-color: #ffffaa;}

@@ -8,17 +8,17 @@ module.exports = function(grunt) {
         preBundleCB: function(b) {
           // configure the browserify instance here
           b.plugin('factor-bundle', {outputs: [
-            'public/javascripts/bundle/edit.js',
-            'public/javascripts/bundle/publication.js',
+            './public/javascripts/bundle/edit.js',
+            './public/javascripts/bundle/publication.js',
             ]});
         },
       },
       all: {
-        src: './views/**/*.js',
+        src: 'views/**/*.js',
         dest: 'public/javascripts/bundle.js'
       },
       watch: {
-        src: './views/**/*.js',
+        src: 'views/**/*.js',
         dest: 'public/javascripts/bundle.js',
         options: {
           watch: true,
@@ -53,5 +53,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mkdir');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('default', ['mkdir', 'browserify']);
+  grunt.registerTask('default', ['mkdir', 'browserify:all']);
 };
