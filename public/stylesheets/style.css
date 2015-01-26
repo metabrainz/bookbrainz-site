@@ -30,7 +30,10 @@ body {
 
 img.book {max-height: 200px;}
 
-button.entity-action {margin-left:0.1em; margin-right:0.1em;}
+.entity-action {margin-left:0.1em; margin-right:0.1em;}
 button.jsonly {display:none;}
 
 .editable {cursor:pointer; background-color: #ffffaa;}
+
+
+#editChart {width: 100% !important;  height:auto;}

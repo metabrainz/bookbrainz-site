@@ -10,6 +10,7 @@ module.exports = function(grunt) {
           b.plugin('factor-bundle', {outputs: [
             './public/javascripts/bundle/edit.js',
             './public/javascripts/bundle/publication.js',
+            './public/javascripts/bundle/editor.js',
             ]});
         },
       },

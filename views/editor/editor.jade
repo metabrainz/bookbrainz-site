@@ -1,0 +1,60 @@
+extends ../layout
+
+block body
+  include ../navbar
+  
+  .container
+    .row
+      .col-md-12
+        h1=user.name
+    .row
+      .col-md-12
+        ul.nav.nav-tabs
+          li.active: a(href='#') Profile
+          li: a(href='#') Edits
+    .row
+      .col-md-7
+        h2 Basic Info
+          small.pull-right
+            button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+        dl.dl-horizontal
+          dt Email
+          dd
+            if session.oauth
+              if session.oauth.user_id == user.id
+                =session.oauth.user_email
+                | &nbsp;
+            i (hidden)
+          dt Type
+          dd=user.user_type.label
+          dt Reputation
+          dd 0
+          dt Joined
+          dd=(new Date(user.created_at)).toUTCString()
+          dt Last Active
+          dd=(new Date(user.active_at)).toUTCString()
+          dt Bio
+          dd=(user.bio ? user.bio : '-')
+        h2 Stats
+        if stats
+          dl.dl-horizontal
+            dt Total Edits
+            dd=stats.total_edits
+            dt Total Revisions
+            dd=stats.total_revisions
+            dt Edits Accepted
+            dd=stats.edits_accepted
+            dt Edits Rejected
+            dd=stats.edits_rejected
+            dt Edits Failed
+            dd=stats.edits_failed
+        else
+          p N/A
+      .col-md-5
+        h2 Activity
+        canvas#editChart(width="400", height="250")
+
+  
+  include ../footer
+
+  script(src='/javascripts/bundle/editor.js')

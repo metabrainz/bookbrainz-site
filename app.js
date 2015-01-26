@@ -38,6 +38,7 @@ app.use('/users', users);
 app.use('/', login);
 app.use('/', edit);
 app.use('/', view);
+app.use('/', require('./routes/editor'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
