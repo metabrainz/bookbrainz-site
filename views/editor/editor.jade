@@ -10,13 +10,15 @@ block body
     .row
       .col-md-12
         ul.nav.nav-tabs
-          li.active: a(href='#') Profile
-          li: a(href='#') Edits
+          li.active: a(href='./'+user.id) Profile
+          li: a(href=user.id+'/edits') Edits
     .row
       .col-md-7
         h2 Basic Info
-          small.pull-right
-            button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+          if session.oauth
+            if session.oauth.user_id == user.id
+              small.pull-right
+                button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
         dl.dl-horizontal
           dt Email
           dd

@@ -1,0 +1,31 @@
+extends ../layout
+
+block body
+  include ../navbar
+  
+  .container
+    .row
+      .col-md-12
+        h1=user.name
+    .row
+      .col-md-12
+        ul.nav.nav-tabs
+          li: a(href='../'+user.id) Profile
+          li.active: a(href='./edits') Edits
+    .row
+      .col-md-12
+        h2 Edits
+        each edit in edits.objects
+          .panel.panel-default
+            .panel-heading
+              unless edit.status
+                span.pull-right Open
+              h3.panel-title='Edit #'+edit.id+' - Blah blah blah'
+              
+            .panel-body 
+              each revision in edit.revisions.objects
+                p Revision&nbsp;
+                  =revision.id
+
+
+  include ../footer
