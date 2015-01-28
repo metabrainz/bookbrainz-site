@@ -17,7 +17,7 @@ block body
             .col-md-10
               input#loginPassword.form-control(type="password", placeholder="Password", name='password', disabled)
           if error
-            .alert.alert-warning= error
+            .alert.alert-danger= error
           button.btn.btn-primary.btn-lg.btn-block(type="submit") Login
           hr
           button.btn.btn-success.btn-lg.btn-block(type="submit") Register
