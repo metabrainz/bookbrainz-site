@@ -39,6 +39,7 @@ app.use('/', login);
 app.use('/', edit);
 app.use('/', view);
 app.use('/', require('./routes/editor'));
+app.use('/', require('./routes/register'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
