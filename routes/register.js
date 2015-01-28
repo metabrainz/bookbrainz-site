@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+var request = require('superagent');
+require('superagent-bluebird-promise');
 
 router.get('/register', function(req, res) {
   res.render('register', {session: req.session, error: req.query.error});
