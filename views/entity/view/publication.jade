@@ -1,0 +1,75 @@
+extends ../layout
+
+block body
+  include ../navbar
+
+  .container
+    .row
+      .col-md-12
+        h1
+          small.pull-right
+            button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+            button.btn.btn-primary.btn-xs.fa.fa-code-fork.fa-rotate-270.entity-action
+            button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
+            a(href='/publication/'+entity.gid+'/history')
+              code='r'+entity.master_revision_id
+          if aliases.aliases
+            =aliases.aliases[0].name
+            |&nbsp;
+          if disambiguation.disambiguation
+            small='('+disambiguation.disambiguation.comment+')'
+        hr
+    .row
+      .col-md-8
+        h2 Editions
+        table.table.table-striped
+          tr
+            th Name
+            th Year
+          tr
+            td: a(href='/edition/x') Edition 1
+            td 2002
+          tr
+            td: a(href='/edition/y') Edition 2
+            td 2004
+          tr
+            td: a(href='/edition/w') Edition 3
+            td 2005
+          tr
+            td: a(href='/edition/z') Edition 4
+            td 2005
+        hr
+
+        h2 Relationships
+        ul.list-unstyled
+          li
+            a(href='#') Natsuo Kirino
+            | &nbsp;authored&nbsp;
+            =aliases.aliases[0].name
+
+          li
+            a(href='#') Stephen Snyder
+            | &nbsp;translated&nbsp;
+            =aliases.aliases[0].name
+
+        h2 External Links
+        ul.list-unstyled
+          li
+            img(width='20', src='http://bits.wikimedia.org/favicon/wikidata.ico')
+            | &nbsp;
+            a(href='http://www.wikidata.org/wiki/Q3829007') Q3829007
+
+      .col-md-4
+        .text-center
+          a.btn.btn-link.pull-right.fa.fa-search-plus(href='/publication/'+entity.gid+'/images')
+          img.img-responsive.center-block.book(src='http://upload.wikimedia.org/wikipedia/en/9/99/Outnovel.jpg',alt='Test')
+        hr
+        span(data-bind='text: editMode')
+        dl
+          dt Type
+          dd=data.publication_data.publication_type.label
+
+          dt Last Modified
+          dd=(new Date(entity.last_updated)).toLocaleDateString()
+
+  include ../footer
