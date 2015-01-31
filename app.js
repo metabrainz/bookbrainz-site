@@ -10,7 +10,6 @@ var RedisStore = require('connect-redis')(session);
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
-var edit = require('./routes/edit');
 
 var app = express();
 
@@ -36,7 +35,7 @@ app.use(session({
 app.use('/', routes);
 app.use('/users', users);
 app.use('/', login);
-app.use('/', edit);
+app.use('/', require('./routes/entity/create'));
 app.use('/', require('./routes/entity/view'));
 app.use('/', require('./routes/editor'));
 app.use('/', require('./routes/register'));

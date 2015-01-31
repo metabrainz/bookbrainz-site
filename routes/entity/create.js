@@ -8,7 +8,7 @@ router.get('/publication/create', function(req, res) {
   // Get the list of publication types
   var ws = req.app.get('webservice');
   request.get(ws + '/publicationType').promise().then(function(types) {
-    res.render('create/publication', {
+    res.render('entity/create/publication', {
       session: req.session,
       publicationTypes: types.body
     });

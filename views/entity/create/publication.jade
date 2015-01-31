@@ -1,7 +1,7 @@
-extends ../layout
+extends /layout
 
 block body
-  include ../navbar
+  include /navbar
   
   .container
     .row
@@ -47,4 +47,6 @@ block body
             button.btn.btn-success.btn-lg Create Revision!
                 
               
-  include ../footer
+  include /footer
+
+  script(src='/javascripts/bundle/edit.js')
