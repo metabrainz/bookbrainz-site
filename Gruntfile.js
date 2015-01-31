@@ -15,12 +15,22 @@ module.exports = function(grunt) {
         },
       },
       all: {
-        src: 'views/**/*.js',
-        dest: 'public/javascripts/bundle.js'
+        files: {
+          'public/javascripts/bundle.js': [
+            'views/entity/create/edit.js',
+            'views/edit/publication.js',
+            'views/editor/editor.js',
+          ],
+        },
       },
       watch: {
-        src: 'views/**/*.js',
-        dest: 'public/javascripts/bundle.js',
+        files: {
+          'public/javascripts/bundle.js': [
+            'views/entity/create/edit.js',
+            'views/edit/publication.js',
+            'views/editor/editor.js',
+          ],
+        },
         options: {
           watch: true,
           keepAlive: true
