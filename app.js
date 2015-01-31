@@ -11,13 +11,13 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
 var edit = require('./routes/edit');
-var view = require('./routes/view');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.locals.basedir = app.get('views');
 
 // webservice
 app.set('webservice', 'http://localhost:5000');
@@ -37,7 +37,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/', login);
 app.use('/', edit);
-app.use('/', view);
+app.use('/', require('./routes/entity/view'));
 app.use('/', require('./routes/editor'));
 app.use('/', require('./routes/register'));
 

@@ -31,7 +31,7 @@ router.get('/publication/:id', function(req, res) {
     function(entity, disambiguation, annotation, aliases, data) {
       console.log(entity.body);
       console.log(data.body);
-      res.render('view/publication', {
+      res.render('entity/view/publication', {
         session: req.session,
         entity:entity.body,
         annotation:annotation.body,

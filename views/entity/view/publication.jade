@@ -1,7 +1,9 @@
-extends ../layout
+extends /layout
 
 block body
-  include ../navbar
+  include /navbar
+
+  include /loader
 
   .container
     .row
@@ -72,4 +74,4 @@ block body
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()
 
-  include ../footer
+  include /footer
