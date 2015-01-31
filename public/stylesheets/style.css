@@ -37,3 +37,6 @@ button.jsonly {display:none;}
 
 
 #editChart {width: 100% !important;  height:auto;}
+
+.loading-background {position:fixed; display: inline-block; left: 0px; top: 0px; width:100%; height:100%; z-index: 10; background-color: rgba(0,0,0,0.6);}
+.loading-spinner {position: absolute; left:50%; top:50%; margin-left:-0.5em; margin-top:-0.5em;}
