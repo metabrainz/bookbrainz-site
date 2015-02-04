@@ -26,12 +26,12 @@ body {
   background-color: #f5f5f5;
 }
 
-form.whole-page-form {margin-top: 5em;}
+.whole-page-form {margin-top: 3em;}
 
 img.book {max-height: 200px;}
 
 .entity-action {margin-left:0.1em; margin-right:0.1em;}
-button.jsonly {display:none;}
+.jsonly {display:none;}
 
 .editable {cursor:pointer; background-color: #ffffaa;}
 
