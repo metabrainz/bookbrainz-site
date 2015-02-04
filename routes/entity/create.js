@@ -21,16 +21,17 @@ router.post('/publication/create/handler', function(req, res) {
 
   console.log(req.body);
 
-  if (!req.body.edit) {
+  if (!req.body.editId) {
     console.log('Make new edit!');
   }
   // If 'new edit' in form, create a new edit.
-  //var editPromise = request.post(ws + '/edits')
-  //.set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
+  var editPromise = request.post(ws + '/edits')
+  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
+
   var changes = {
     'entity_gid': [],
     'publication_data': {
-      'publication_type_id': parseInt(req.body.type)
+      'publication_type_id': req.body.publicationTypeId
     }
   };
 
@@ -38,20 +39,28 @@ router.post('/publication/create/handler', function(req, res) {
     changes.disambiguation = req.body.disambiguation;
   }
 
-  if (req.body.name && req.body.sort_name) {
-    changes.aliases = [{
-      'name': req.body.name,
-      'sort_name': req.body.sort_name,
-      'language_id': 1
-    }];
+  if (req.body.annotation) {
+    changes.annotation = req.body.annotation;
   }
 
-  request.post(ws + '/revisions')
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
-  .send(changes).promise()
-  .then(function(revision) {
-    res.redirect(303, '/publication/' + revision.body.entity.gid);
-  })
+  changes.aliases = req.body.aliases.map(function(alias) {
+    return {
+      'name': alias.name,
+      'sort_name': alias.sortName,
+      'language_id': 1
+    };
+  });
+
+  editPromise.then(function(edit) {
+    changes.edit_id = edit.body.id;
+
+    request.post(ws + '/revisions')
+    .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
+    .send(changes).promise()
+    .then(function(revision) {
+      res.send(revision.body);
+    });
+  });
 });
 
 module.exports = router;
