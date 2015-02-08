@@ -15,17 +15,15 @@ block body
     .row
       .col-md-7
         h2 Basic Info
-          if session.oauth
-            if session.oauth.user_id == user.id
-              small.pull-right
-                button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+          if secrets
+            small.pull-right
+              button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
         dl.dl-horizontal
           dt Email
           dd
-            if session.oauth
-              if session.oauth.user_id == user.id
-                =session.oauth.user_email
-                | &nbsp;
+            if secrets
+              =secrets.email
+              | &nbsp;
             i (hidden)
           dt Type
           dd=user.user_type.label

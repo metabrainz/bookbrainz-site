@@ -9,24 +9,39 @@ router.get('/editor/:id', function(req, res) {
   var ws = req.app.get('webservice');
 
   var userPromise = request.get(ws + '/user/' + req.params.id).promise();
+  var userSecretsPromise = request.get(ws + '/user/' + req.params.id + '/secrets')
+  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
   var userStatsPromise = request.get(ws + '/user/' +
                                      req.params.id + '/stats').promise();
 
-  function renderEditorTemplate(user, stats) {
+  function renderEditorTemplate(user, stats, secrets) {
     res.render('editor/editor', {
       session: req.session,
       user: user,
-      stats: stats
+      stats: stats,
+      secrets: secrets
     });
   }
 
   userStatsPromise.then(function(stats) {
-    userPromise.then(function(user) {
-      renderEditorTemplate(user.body, stats.body);
+    userSecretsPromise.then(function(secrets) {
+      userPromise.then(function(user) {
+        renderEditorTemplate(user.body, stats.body, secrets.body);
+      });
+    }).catch(function(error) {
+      userPromise.then(function(user) {
+        renderEditorTemplate(user.body, stats.body, null);
+      });
     });
   }).catch(function(error) {
-    userPromise.then(function(user) {
-      renderEditorTemplate(user.body, null);
+    userSecretsPromise.then(function(secrets) {
+      userPromise.then(function(user) {
+        renderEditorTemplate(user.body, null, secrets.body);
+      });
+    }).catch(function(error) {
+      userPromise.then(function(user) {
+        renderEditorTemplate(user.body, null, null);
+      });
     });
   });
 });
