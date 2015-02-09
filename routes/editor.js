@@ -14,34 +14,28 @@ router.get('/editor/:id', function(req, res) {
   var userStatsPromise = request.get(ws + '/user/' +
                                      req.params.id + '/stats').promise();
 
-  function renderEditorTemplate(user, stats, secrets) {
-    res.render('editor/editor', {
-      session: req.session,
-      user: user,
-      stats: stats,
-      secrets: secrets
-    });
-  }
+  var renderData = {
+    session: req.session
+  };
 
   userStatsPromise.then(function(stats) {
-    userSecretsPromise.then(function(secrets) {
-      userPromise.then(function(user) {
-        renderEditorTemplate(user.body, stats.body, secrets.body);
-      });
-    }).catch(function(error) {
-      userPromise.then(function(user) {
-        renderEditorTemplate(user.body, stats.body, null);
-      });
-    });
-  }).catch(function(error) {
-    userSecretsPromise.then(function(secrets) {
-      userPromise.then(function(user) {
-        renderEditorTemplate(user.body, null, secrets.body);
-      });
-    }).catch(function(error) {
-      userPromise.then(function(user) {
-        renderEditorTemplate(user.body, null, null);
-      });
+    renderData.stats = stats.body;
+  }).catch(function(err) {});
+
+  userSecretsPromise.then(function(secrets) {
+    renderData.secrets = secrets.body;
+  }).catch(function(err) {});
+
+  userPromise.then(function(user) {
+    renderData.user = user.body;
+
+    /* This will cause the page to be rendered when both optional promises have
+    either been fulfilled or rejected, but only when the user promise has been
+    fulfilled. */
+    Promise.join(userStatsPromise, userSecretsPromise)
+    .catch(function() {})
+    .finally(function() {
+      res.render('editor/editor', renderData);
     });
   });
 });
