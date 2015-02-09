@@ -1,9 +1,4 @@
-@font-face{
-    font-family: 'Didact Gothic';
-    src: url('/fonts/DidactGothic.ttf')
-}
-
-body { padding-top: 50px; font-family: 'Didact Gothic'; !important; font-size: 12pt; }
+body { padding-top: 50px; font-family: 'Didact Gothic', sans-serif; !important; font-size: 12pt; }
 
 h3.index-book-title { margin-top: 0.2em; }
 
