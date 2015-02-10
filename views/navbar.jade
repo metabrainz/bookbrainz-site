@@ -38,6 +38,13 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
 
       ul.nav.navbar-nav.navbar-right
         if session.user
+          li.dropdown
+            a.dropdown-toggle#dNewEntities(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+              span.fa.fa-plus
+              span.caret
+              
+            ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
+              li: a(href='/publication/create') Add Publication
           li
             a(href='/editor/'+session.user.id)= session.user.name
         
@@ -53,12 +60,12 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
             a(href='/login') Login
           
         li.dropdown
-          a.dropdown-toggle(href='#', data-toggle='dropdown', role='button'
+          a.dropdown-toggle#dLanguage(href='#', data-toggle='dropdown', role='button'
                             aria-expanded='false')
             span.fa.fa-globe
             span.caret
             
-          ul.dropdown-menu(role='menu')
+          ul.dropdown-menu(role='menu' aria-labelledby='dLanguage')
             li: a(href='#') English
             li: a(href='#') German
             li: a(href='#') Spanish
