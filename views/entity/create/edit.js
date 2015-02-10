@@ -37,7 +37,10 @@ function CreatePublicationViewModel() {
       disambiguation: self.disambiguation,
       annotation: self.annotation,
       editId: parseInt(self.editId)
-    }).promise().catch(function(err) {
+    }).promise().then(function(revision) {
+      console.log(revision.body.entity.gid);
+      window.location.href = '/publication/' + revision.body.entity.gid;
+    }).catch(function(err) {
       self.error(err);
     });
   };
