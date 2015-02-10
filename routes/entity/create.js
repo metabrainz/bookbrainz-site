@@ -26,6 +26,7 @@ router.post('/publication/create/handler', function(req, res) {
   }
   // If 'new edit' in form, create a new edit.
   var editPromise = request.post(ws + '/edits')
+  .send({})
   .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
 
   var changes = {
