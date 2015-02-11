@@ -29,11 +29,11 @@ Building the client-side JS
 
 The client-side JS is designed to use the require() function provided by
 browserify. In order to get usable JS files, the source JS has to be processed
-by browserify and then minified. There are two built-in grunt tasks to
+by browserify and then minified. There are two built-in gulp tasks to
 accomplish this.
 
-    grunt
-    grunt uglify
+    gulp
+    gulp compress
 
 Running the site
 ----------------
@@ -46,3 +46,12 @@ use the following command:
 Or, if you're using Windows:
 
     npm run-script debug_win
+
+Watch Mode
+----------
+
+If you're doing rapid prototyping of some new feature, it can be helpful to run the site in watch mode,
+where every change to any source file results in a reloading of the server. This is supported on Linux with the following two commands (and probably on Windows too with minor changes), after nodemon is installed. In separate terminal windows:
+
+    gulp watch
+    DEBUG=bbsite nodemon ./bin/www
