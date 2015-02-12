@@ -58,7 +58,11 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
             a(href='/logout') Logout
           else
             a(href='/login') Login
-          
+
+        unless session.user
+          li
+            a(href='/register') Register
+
         li.dropdown
           a.dropdown-toggle#dLanguage(href='#', data-toggle='dropdown', role='button'
                             aria-expanded='false')
