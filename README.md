@@ -51,7 +51,14 @@ Watch Mode
 ----------
 
 If you're doing rapid prototyping of some new feature, it can be helpful to run the site in watch mode,
-where every change to any source file results in a reloading of the server. This is supported on Linux with the following two commands (and probably on Windows too with minor changes), after nodemon is installed. In separate terminal windows:
+where every change to any source file results in a reloading of the server.
+
+After nodemon is installed, run these two commands in separate terminal windows:
 
     gulp watch
     DEBUG=bbsite nodemon ./bin/www
+
+Or on Windows:
+
+    gulp watch
+    set DEBUG=bbsite & nodemon bin\\www
