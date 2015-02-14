@@ -64,4 +64,15 @@ router.post('/publication/create/handler', function(req, res) {
   });
 });
 
+router.get('/creator/create', function(req, res) {
+  // Get the list of publication types
+  //var ws = req.app.get('webservice');
+  //request.get(ws + '/publicationType').promise().then(function(types) {
+    res.render('entity/create/creator', {
+      session: req.session,
+      //publicationTypes: types.body
+    });
+  //});
+});
+
 module.exports = router;
