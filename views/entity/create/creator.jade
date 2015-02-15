@@ -34,27 +34,26 @@ block body
             .form-group
               label.col-md-3.control-label Begin Date
               .col-md-9
-                input.form-control(type="text")
+                input.form-control(type="text", placeholder="YYYY-MM-DD", data-bind="value: beginDate")
             .form-group
-              label.col-md-3.control-label End Date
-              .col-md-9
-                input.form-control(type="text")
-            .form-group
-              label.col-md-3.control-label Ended?
-              .col-md-9
-                input.form-control(type="checkbox")
+              label.col-md-3.control-label(data-bind="visible: ended") End Date
+              .col-md-9(data-bind="visible: ended")
+                input.form-control(type="text", placeholder="YYYY-MM-DD", data-bind="value: endDate")
+              .col-md-12.checkbox.text-right
+                label
+                  input(type="checkbox", data-bind="checked: ended")
+                  | Ended?       
             .form-group
               label.col-md-3.control-label Gender
               .col-md-9
-                select.form-control()
-                  option Male
-                  option Female
-                  option Other
+                select.form-control(data-bind="value: genderId, valueAllowUnset: true")
+                  each gender in genders
+                    option(value=gender.id)=gender.name
             .form-group
               label.col-md-3.control-label Type
               .col-md-9
-                select.form-control(required, data-bind="value: publicationTypeId")
-                  each type in publicationTypes.objects
+                select.form-control(data-bind="value: creatorTypeId, valueAllowUnset: true")
+                  each type in creatorTypes.objects
                     option(value=type.id)=type.label
             .form-group
               label.col-md-3.control-label Disambiguation
@@ -71,4 +70,4 @@ block body
       span(data-bind='text: error')
   include /footer
 
-  script(src='/javascripts/edit.js')
+  script(src='/javascripts/creator.js')

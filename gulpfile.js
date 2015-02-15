@@ -6,13 +6,15 @@ var uglify = require('gulp-uglify');
 function bundle() {
   var srcFiles = [
     './views/editor/editor.js',
-    './views/entity/create/edit.js',
+    './views/entity/create/publication.js',
+    './views/entity/create/creator.js',
     './views/layout.js',
   ];
 
   var dstFiles = [
     'public/javascripts/editor.js',
-    'public/javascripts/edit.js',
+    'public/javascripts/publication.js',
+    'public/javascripts/creator.js',
     'public/javascripts/layout.js',
   ];
 

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var request = require('superagent');
+var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
 /* create publication endpoint */
@@ -66,13 +67,22 @@ router.post('/publication/create/handler', function(req, res) {
 
 router.get('/creator/create', function(req, res) {
   // Get the list of publication types
-  //var ws = req.app.get('webservice');
-  //request.get(ws + '/publicationType').promise().then(function(types) {
+  var ws = req.app.get('webservice');
+
+  var gendersPromise = request.get(ws + '/gender').promise();
+  var creatorTypesPromise = request.get(ws + '/creatorType').promise();
+
+  creatorTypesPromise.then(function(creatorTypes) { console.log(creatorTypes.body);});
+
+  Promise.join(gendersPromise, creatorTypesPromise,
+  function(genders, creatorTypes) {
+    var gender_list = genders.body.objects.sort(function(a, b) { return a.id > b.id; });
     res.render('entity/create/creator', {
       session: req.session,
-      //publicationTypes: types.body
+      genders: gender_list,
+      creatorTypes: creatorTypes.body
     });
-  //});
+  });
 });
 
 module.exports = router;
