@@ -45,6 +45,7 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
               
             ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
               li: a(href='/publication/create') Add Publication
+              li: a(href='/creator/create') Add Creator
           li
             a(href='/editor/'+session.user.id)= session.user.name
         
