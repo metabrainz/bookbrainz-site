@@ -53,11 +53,15 @@ block body
           dt Type
           dd=(data.creator_data.creator_type ? data.creator_data.creator_type.label : '?')
           
+          dt Gender
+          dd=(data.creator_data.gender ? data.creator_data.gender.name : '?')
+
           dt Begin Date
           dd=(data.creator_data.begin_date ? data.creator_data.begin_date : '?')
 
-          dt End Date
-          dd=(data.creator_data.end_date ? data.creator_data.end_date : '?')
+          if data.creator_data.ended
+            dt End Date
+            dd=(data.creator_data.end_date ? data.creator_data.end_date : '?')
 
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()
