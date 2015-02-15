@@ -1,0 +1,65 @@
+extends /layout
+
+block body
+  include /navbar
+
+  .container
+    .row
+      .col-md-12
+        h1
+          small.pull-right
+            button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+            button.btn.btn-primary.btn-xs.fa.fa-code-fork.fa-rotate-270.entity-action
+            button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
+            a(href='/creator/'+entity.gid+'/history')
+              code='r'+entity.master_revision_id
+          if aliases.aliases
+            =aliases.aliases[0].name
+            |&nbsp;
+          if disambiguation.disambiguation
+            small='('+disambiguation.disambiguation.comment+')'
+        hr
+    .row
+      .col-md-8
+        h2 Publications
+        table.table.table-striped
+          tr
+            th Name
+            th Original Year
+          tr
+            td: a(href='/publication/x') Publication 1
+            td 2002
+          tr
+            td: a(href='/publication/y') Publication 2
+            td 2004
+          tr
+            td: a(href='/publication/w') Publication 3
+            td 2005
+          tr
+            td: a(href='/publication/z') Publication 4
+            td 2005
+        hr
+
+        h2 Relationships
+        ul.list-unstyled
+
+        h2 External Links
+        ul.list-unstyled
+
+      .col-md-4
+        .text-center No Image
+        hr
+        dl
+          dt Type
+          dd=(data.creator_data.creator_type ? data.creator_data.creator_type.label : '?')
+          
+          dt Begin Date
+          dd=(data.creator_data.begin_date ? data.creator_data.begin_date : '?')
+
+          dt End Date
+          dd=(data.creator_data.end_date ? data.creator_data.end_date : '?')
+
+          dt Last Modified
+          dd=(new Date(entity.last_updated)).toLocaleDateString()
+
+  include /footer
