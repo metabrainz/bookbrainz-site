@@ -85,4 +85,70 @@ router.get('/creator/create', function(req, res) {
   });
 });
 
+
+router.post('/creator/create/handler', function(req, res) {
+  var ws = req.app.get('webservice');
+
+  console.log(req.body);
+
+  if (!req.body.editId) {
+    console.log('Make new edit!');
+  }
+
+  // If 'new edit' in form, create a new edit.
+  var editPromise = request.post(ws + '/edits')
+  .send({})
+  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
+
+  var changes = {
+    'entity_gid': [],
+    'creator_data': {
+      'ended': req.body.ended
+    }
+  };
+
+  if (req.body.creatorTypeId) {
+    changes.creator_data.creator_type_id = req.body.creatorTypeId;
+  }
+
+  if (req.body.genderId) {
+    changes.creator_data.gender_id = req.body.genderId;
+  }
+
+  if (req.body.beginDate) {
+    changes.creator_data.begin_date = req.body.beginDate;
+  }
+
+  if (req.body.endDate) {
+    changes.creator_data.end_date = req.body.endDate;
+  }
+
+  if (req.body.disambiguation) {
+    changes.disambiguation = req.body.disambiguation;
+  }
+
+  if (req.body.annotation) {
+    changes.annotation = req.body.annotation;
+  }
+
+  changes.aliases = req.body.aliases.map(function(alias) {
+    return {
+      'name': alias.name,
+      'sort_name': alias.sortName,
+      'language_id': 1
+    };
+  });
+
+  editPromise.then(function(edit) {
+    changes.edit_id = edit.body.id;
+
+    request.post(ws + '/revisions')
+    .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
+    .send(changes).promise()
+    .then(function(revision) {
+      res.send(revision.body);
+    });
+  });
+});
+
 module.exports = router;
