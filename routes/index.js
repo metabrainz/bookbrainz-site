@@ -17,13 +17,18 @@ router.get('/', function(req, res) {
     });
 
     Promise.all(extraData).then(function(entitiesWithData) {
-      console.log(entitiesWithData)
       res.render('index', {
         title: 'BookBrainz',
         session: req.session,
         recent: entitiesWithData
       });
     });
+  });
+});
+
+router.get('/about', function(req, res) {
+  res.render('about', {
+    session: req.session,
   });
 });
 
