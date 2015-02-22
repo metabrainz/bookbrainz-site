@@ -70,8 +70,6 @@ router.get('/creator/:id', function(req, res) {
   Promise.join(
     entityPromise, disambiguationPromise, annotationPromise, aliasesPromise,
     dataPromise, function(entity, disambiguation, annotation, aliases, data) {
-      console.log(entity.body);
-      console.log(data.body);
       res.render('entity/view/creator', {
         session: req.session,
         entity:entity.body,

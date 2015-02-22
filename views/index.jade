@@ -2,7 +2,7 @@ extends layout
 
 block body
   include navbar
-  
+
   .container
     .row
       .col-md-12
@@ -34,41 +34,24 @@ block body
         a(href='#'): p An article on socks
         a(href='#'): p Should I add this controversial book to BookBrainz?
         a(href='#'): p BookBrainz Update - 2014-11-09
-        
+
 
     .row
       .col-md-12
-        h2 recently added
+        h2 recently updated
         table.table.table-hover.table-condensed
-          tr
-            td
-               div: a The Odyssey
-               i Book, 1992
-            td: a Homer
-          tr
-            td
-              div: a The Iliad
-              i Book
-            td: a Homer
-          tr
-            td
-              div: a The Epic of Gilgamesh
-              i Book
-            td &lt;Unknown&gt;
-          tr
-            td
-              div: a The Sunday Times
-              i Newspaper, 2014-11-16
-            td: a Times Newspapers Ltd
-          tr
-            td
-              div: a The Aeneid
-              i Book
-            td: a Virgil
-          tr
-            td
-              div: a Tao Te Ching
-              i Book
-            td: a Lao Tzu
-    
+          for entity in recent
+            tr
+              td
+                if entity.data.body.publication_data
+                  div
+                    a(href='/publication/'+entity.gid)=entity.aliases.body.aliases[0].name
+                  if entity.data.body.publication_data.publication_type
+                    i=entity.data.body.publication_data.publication_type.label
+                else if entity.data.body.creator_data
+                  div
+                    a(href='/creator/'+entity.gid)=entity.aliases.body.aliases[0].name
+                  if entity.data.body.creator_data.creator_type
+                    i=entity.data.body.creator_data.creator_type.label
+
   include footer
