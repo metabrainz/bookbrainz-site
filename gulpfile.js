@@ -9,6 +9,7 @@ function bundle() {
     './views/entity/create/publication.js',
     './views/entity/create/creator.js',
     './views/layout.js',
+    './views/relationship/relationship_editor.js',
   ];
 
   var dstFiles = [
@@ -16,6 +17,7 @@ function bundle() {
     'public/javascripts/publication.js',
     'public/javascripts/creator.js',
     'public/javascripts/layout.js',
+    'public/javascripts/relationship_editor.js',
   ];
 
   return browserify(srcFiles)
