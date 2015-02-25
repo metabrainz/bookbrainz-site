@@ -12,8 +12,30 @@ function relationshipEditor(req, res) {
 }
 
 router.post('/relationship/create/handler', function(req, res) {
+  var ws = req.app.get('webservice');
+
   req.body.forEach(function(relationship) {
-    console.log(relationship.entities);
+    // Send a relationship revision for each of the relationships, in a single
+    // edit - however, WS doesn't support multi-revision edits yet, so use many
+    var editPromise = request.post(ws + '/edits')
+    .send({})
+    .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise()
+    .then(function(editResponse) {
+      return editResponse.body;
+    });
+
+    var changes = relationship;
+
+    editPromise.then(function(edit) {
+      changes.edit_id = edit.id;
+
+      request.post(ws + '/revisions')
+      .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
+      .send(changes).promise()
+      .then(function(revision) {
+        res.send(revision.body);
+      });
+    });
   });
 });
 
