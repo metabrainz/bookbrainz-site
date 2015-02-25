@@ -35,8 +35,10 @@ app.use(session({
 app.use('/', routes);
 app.use('/users', users);
 app.use('/', login);
-app.use('/', require('./routes/entity/create'));
-app.use('/', require('./routes/entity/view'));
+app.use('/', require('./routes/entity/create/creator'));
+app.use('/', require('./routes/entity/create/publication'));
+app.use('/', require('./routes/entity/view/creator'));
+app.use('/', require('./routes/entity/view/publication'));
 app.use('/', require('./routes/editor'));
 app.use('/', require('./routes/register'));
 app.use('/', require('./routes/relationship/edit'));
