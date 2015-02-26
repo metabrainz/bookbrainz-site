@@ -1,5 +1,10 @@
-var express = require('express');
 var path = require('path');
+
+global.rootRequire = function(name) {
+  return require(path.join(__dirname, name));
+};
+
+var express = require('express');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
