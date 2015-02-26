@@ -49,7 +49,9 @@ router.post('/publication/create/handler', function(req, res) {
     return {
       'name': alias.name,
       'sort_name': alias.sortName,
-      'language_id': 1
+      'language_id': alias.languageId,
+      'primary': alias.primary,
+      'default': alias.dflt
     };
   });
 

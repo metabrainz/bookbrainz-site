@@ -21,11 +21,28 @@ function CreatePublicationViewModel() {
   self.addAlias = function() {
     self.aliases.push({
       name: self.newName,
-      sortName: self.newSortName
+      sortName: self.newSortName,
+      languageId: self.languageId,
+      languageText: $('#languageSelect :selected').text(),
+      dflt: self.dflt(),
+      primary: self.primary
     });
+
+    if (self.dflt()) {
+      self.dflt(false);
+      self.defaultSet(true);
+    }
   };
 
+  self.languageId = '';
+
+  self.defaultSet = ko.observable(false);
+
   self.removeAlias = function() {
+    if (this.dflt) {
+      self.defaultSet(false);
+    }
+
     self.aliases.remove(this);
   };
 
@@ -49,6 +66,9 @@ function CreatePublicationViewModel() {
 
   self.newName = '';
   self.newSortName = '';
+  self.languageId = '';
+  self.dflt = ko.observable(false);
+  self.primary = '';
 
   self.aliases = ko.observableArray();
   self.error = ko.observable();

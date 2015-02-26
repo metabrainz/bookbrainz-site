@@ -8,18 +8,33 @@ router.get('/creator/create', function(req, res) {
   // Get the list of publication types
   var ws = req.app.get('webservice');
 
-  var gendersPromise = request.get(ws + '/gender').promise();
-  var creatorTypesPromise = request.get(ws + '/creatorType').promise();
+  var gendersPromise = request.get(ws + '/gender').promise().then(function(genderResponse) {
+    return genderResponse.body;
+  });
 
-  creatorTypesPromise.then(function(creatorTypes) { console.log(creatorTypes.body);});
+  var creatorTypesPromise = request.get(ws + '/creatorType').promise().then(function(creatorTypesResponse) {
+    return creatorTypesResponse.body;
+  });
 
-  Promise.join(gendersPromise, creatorTypesPromise,
-  function(genders, creatorTypes) {
-    var gender_list = genders.body.objects.sort(function(a, b) { return a.id > b.id; });
+  var languagesPromise = request.get(ws + '/language').promise().then(function(languagesResponse) {
+    return languagesResponse.body;
+  });
+
+  Promise.join(gendersPromise, creatorTypesPromise, languagesPromise,
+  function(genders, creatorTypes, languages) {
+    var genderList = genders.objects.sort(function(a, b) {
+      return a.id > b.id;
+    });
+
+    var alphabeticLanguagesList = languages.objects.sort(function(a, b) {
+      return a.name.localeCompare(b.name);;
+    });
+
     res.render('entity/create/creator', {
       session: req.session,
-      genders: gender_list,
-      creatorTypes: creatorTypes.body
+      genders: genderList,
+      languages: alphabeticLanguagesList,
+      creatorTypes: creatorTypes
     });
   });
 });
@@ -74,7 +89,9 @@ router.post('/creator/create/handler', function(req, res) {
     return {
       'name': alias.name,
       'sort_name': alias.sortName,
-      'language_id': 1
+      'language_id': alias.languageId,
+      'primary': alias.primary,
+      'default': alias.dflt
     };
   });
 
