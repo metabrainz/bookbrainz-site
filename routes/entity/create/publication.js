@@ -9,7 +9,7 @@ router.get('/publication/create', function(req, res) {
   var ws = req.app.get('webservice');
 
   // Get the list of publication types
-  var publicationTypesPromise = request.get(ws + '/creatorType').promise()
+  var publicationTypesPromise = request.get(ws + '/publicationType').promise()
   .then(function(publicationTypesResponse) {
     return publicationTypesResponse.body;
   });
