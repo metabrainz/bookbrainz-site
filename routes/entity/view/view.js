@@ -25,7 +25,6 @@ function renderEntityView(req, res, template) {
             ws, entry.entity.gid, {data: true, aliases: true}
           );
         }
-        entry.entity = relationshipEntities[entry.entity.gid];
       });
     });
 
@@ -37,7 +36,7 @@ function renderEntityView(req, res, template) {
         });
 
         var entities = relationship.entities.map(function(entry) {
-          return entry.entity;
+          return fetchedEntities[entry.entity.gid];
         });
 
         relationship.rendered = renderRelationship(
