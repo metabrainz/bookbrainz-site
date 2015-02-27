@@ -13,16 +13,16 @@ block body
             button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
             a(href='/creator/'+entity.gid+'/history')
               code='r'+entity.master_revision_id
-          if aliases.aliases
-            =aliases.aliases[0].name
+          if entity.aliases.aliases
+            =entity.aliases.aliases[0].name
             |&nbsp;
-          if disambiguation.disambiguation
-            small='('+disambiguation.disambiguation.comment+')'
+          if entity.disambiguation.disambiguation
+            small='('+entity.disambiguation.disambiguation.comment+')'
         hr
     .row
       .col-md-8
-        h2 Publications
-        table.table.table-striped
+        h2(style="display:none") Publications
+        table.table.table-striped(style="display:none")
           tr
             th Name
             th Original Year
@@ -38,30 +38,32 @@ block body
           tr
             td: a(href='/publication/z') Publication 4
             td 2005
-        hr
+        hr(style="display:none")
 
-        h2 Relationships
+        h2
+          small.pull-right
+            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(href='/creator/'+entity.gid+'/relationships')
+          | Relationships
         ul.list-unstyled
-
-        h2 External Links
-        ul.list-unstyled
+          for relationship in entity.relationships.objects
+            li!=relationship.rendered
 
       .col-md-4
         .text-center No Image
         hr
         dl
           dt Type
-          dd=(data.creator_data.creator_type ? data.creator_data.creator_type.label : '?')
+          dd=(entity.data.creator_data.creator_type ? entity.data.creator_data.creator_type.label : '?')
           
           dt Gender
-          dd=(data.creator_data.gender ? data.creator_data.gender.name : '?')
+          dd=(entity.data.creator_data.gender ? entity.data.creator_data.gender.name : '?')
 
           dt Begin Date
-          dd=(data.creator_data.begin_date ? data.creator_data.begin_date : '?')
+          dd=(entity.data.creator_data.begin_date ? entity.data.creator_data.begin_date : '?')
 
-          if data.creator_data.ended
+          if entity.data.creator_data.ended
             dt End Date
-            dd=(data.creator_data.end_date ? data.creator_data.end_date : '?')
+            dd=(entity.data.creator_data.end_date ? entity.data.creator_data.end_date : '?')
 
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()

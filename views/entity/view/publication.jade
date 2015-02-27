@@ -13,16 +13,16 @@ block body
             button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
             a(href='/publication/'+entity.gid+'/history')
               code='r'+entity.master_revision_id
-          if aliases.aliases
-            =aliases.aliases[0].name
+          if entity.aliases.aliases
+            =entity.aliases.aliases[0].name
             |&nbsp;
-          if disambiguation.disambiguation
-            small='('+disambiguation.disambiguation.comment+')'
+          if entity.disambiguation.disambiguation
+            small='('+entity.disambiguation.disambiguation.comment+')'
         hr
     .row
       .col-md-8
-        h2 Editions
-        table.table.table-striped
+        h2(style="display:none") Editions
+        table.table.table-striped(style="display:none")
           tr
             th Name
             th Year
@@ -38,38 +38,23 @@ block body
           tr
             td: a(href='/edition/z') Edition 4
             td 2005
-        hr
+        hr(style="display:none")
 
-        h2 Relationships
-          small
-            a.btn.btn-link.btn-xs.fa.fa-pencil.entity-action(href='/publication/'+entity.gid+'/relationships')
+        h2
+          small.pull-right
+            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(href='/publication/'+entity.gid+'/relationships')
+          | Relationships
         ul.list-unstyled
-          li
-            a(href='#') Natsuo Kirino
-            | &nbsp;authored&nbsp;
-            =aliases.aliases[0].name
-
-          li
-            a(href='#') Stephen Snyder
-            | &nbsp;translated&nbsp;
-            =aliases.aliases[0].name
-
-        h2 External Links
-        ul.list-unstyled
-          li
-            img(width='20', src='http://bits.wikimedia.org/favicon/wikidata.ico')
-            | &nbsp;
-            a(href='http://www.wikidata.org/wiki/Q3829007') Q3829007
+          for relationship in entity.relationships.objects
+            li!=relationship.rendered
 
       .col-md-4
-        .text-center
-          a.btn.btn-link.pull-right.fa.fa-search-plus(href='/publication/'+entity.gid+'/images')
-          img.img-responsive.center-block.book(src='http://upload.wikimedia.org/wikipedia/en/9/99/Outnovel.jpg',alt='Test')
+        .text-center No Image
         hr
         span(data-bind='text: editMode')
         dl
           dt Type
-          dd=data.publication_data.publication_type.label
+          dd=entity.data.publication_data.publication_type.label
 
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()
