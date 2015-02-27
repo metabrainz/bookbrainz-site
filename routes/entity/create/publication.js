@@ -6,16 +6,32 @@ require('superagent-bluebird-promise');
 
 /* create publication endpoint */
 router.get('/publication/create', function(req, res) {
-  // Get the list of publication types
   var ws = req.app.get('webservice');
-  request.get(ws + '/publicationType').promise().then(function(types) {
-    res.render('entity/create/publication', {
+
+  // Get the list of publication types
+  var publicationTypesPromise = request.get(ws + '/creatorType').promise()
+  .then(function(publicationTypesResponse) {
+    return publicationTypesResponse.body;
+  });
+
+  var languagesPromise = request.get(ws + '/language').promise()
+  .then(function(languagesResponse) {
+    return languagesResponse.body;
+  });
+
+  Promise.join(publicationTypesPromise, languagesPromise,
+  function(publicationTypes, languages) {
+    var alphabeticLanguagesList = languages.objects.sort(function(a, b) {
+      return a.name.localeCompare(b.name);
+    });
+
+    res.render('entity/create/creator', {
       session: req.session,
-      publicationTypes: types.body
+      languages: alphabeticLanguagesList,
+      publicationTypes: publicationTypes
     });
   });
 });
-
 
 router.post('/publication/create/handler', function(req, res) {
   var ws = req.app.get('webservice');
