@@ -25,7 +25,7 @@ router.get('/publication/create', function(req, res) {
       return a.name.localeCompare(b.name);
     });
 
-    res.render('entity/create/creator', {
+    res.render('entity/create/publication', {
       session: req.session,
       languages: alphabeticLanguagesList,
       publicationTypes: publicationTypes
