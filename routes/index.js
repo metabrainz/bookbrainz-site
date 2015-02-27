@@ -33,4 +33,25 @@ router.get('/about', function(req, res) {
   });
 });
 
+router.get('/contribute', function(req, res) {
+  res.render('contribute', {
+    session: req.session,
+    title: 'BookBrainz :: Contribute',
+  });
+});
+
+router.get('/develop', function(req, res) {
+  res.render('develop', {
+    session: req.session,
+    title: 'BookBrainz :: Develop',
+  });
+});
+
+router.get('/getStarted', function(req, res) {
+  res.render('getStarted', {
+    session: req.session,
+    title: 'BookBrainz :: Get Started',
+  });
+});
+
 module.exports = router;
