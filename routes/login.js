@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var request = require('superagent');
+var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
 /* GET users listing. */
@@ -26,12 +27,24 @@ router.post('/login/handler', function(req, res) {
     'password': 'abc',
     'grant_type': 'password'
   }).promise().then(function(oauth) {
-    return request.get(ws + '/user/' + oauth.body.user_id)
-      .promise().then(function(user) {
-        req.session.oauth = oauth.body;
-        req.session.user = user.body;
-        res.redirect(303, '/');
-      });
+    // Get inbox, for message count
+    var inboxPromise = request.get(ws + '/message/inbox')
+    .set('Authorization', 'Bearer ' + oauth.body.access_token).promise()
+    .then(function(inboxResponse){
+      return inboxResponse.body;
+    });
+
+    var userPromise = request.get(ws + '/user/' + oauth.body.user_id).promise()
+    .then(function(userResponse) {
+      return userResponse.body;
+    });
+
+    Promise.join(userPromise, inboxPromise, function(user, inbox) {
+      req.session.oauth = oauth.body;
+      req.session.user = user;
+      req.session.inboxCount = inbox.objects.length;
+      res.redirect(303, '/');
+    });
   }).catch(function(err) {
     console.log(err);
     var error = err.res.body.error_description;

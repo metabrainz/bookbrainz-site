@@ -49,9 +49,12 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
             a(href='/editor/'+session.user.id)= session.user.name
         
           li
-            a(href='')
-              span.fa.fa-envelope(style='margin-right:0.2em;')
-              span.badge 1
+            a(href='/inbox')
+              if session.inboxCount === 0
+                span.fa.fa-envelope-o(style='margin-right:0.2em;')
+              else
+                span.fa.fa-envelope(style='margin-right:0.2em;')
+                span.badge=session.inboxCount
 
         li
           if session.user

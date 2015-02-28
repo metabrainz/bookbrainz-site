@@ -1,0 +1,21 @@
+extends ../layout
+
+block body
+  include ../navbar
+  
+  .container
+    h1='Message #' + message.message_id
+
+    .row
+      .col-md-8.col-md-offset-2
+        .panel.panel-default
+          .panel-body
+            dl.dl-horizontal
+              dt Sender:
+              dd=message.sender.name
+              dt Subject:
+              dd=message.subject
+              dt Content:
+              dd=message.content
+
+  include ../footer

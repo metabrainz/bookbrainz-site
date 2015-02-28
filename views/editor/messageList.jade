@@ -1,0 +1,35 @@
+extends ../layout
+
+block body
+  include ../navbar
+  
+  .container
+    h1 My Messages
+    
+    a.pull-right(href="/messageForm")
+      span.fa.fa-plus
+      | &nbsp;New Message
+    
+    ul.nav.nav-pills
+      li(class=(view === 'inbox' ? 'active' : undefined))
+        a(href="/inbox")
+          | Inbox&nbsp;
+          span.badge=session.inboxCount
+      li(class=(view === 'archive' ? 'active' : undefined))
+        a(href="/archive") Archive
+      li(class=(view === 'sent' ? 'active' : undefined))
+        a(href="/sent") Sent
+    
+    table.table.table-hover
+      thead
+        tr
+          th Sender
+          th Subject
+      tbody
+        for message in messages.objects
+          tr
+            td=message.sender.name
+            td
+              a(href='/message/'+message.message_id)=message.subject
+    
+  include ../footer

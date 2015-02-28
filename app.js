@@ -47,6 +47,7 @@ app.use('/', require('./routes/entity/view/publication'));
 app.use('/', require('./routes/editor'));
 app.use('/', require('./routes/register'));
 app.use('/', require('./routes/relationship/edit'));
+app.use('/', require('./routes/message'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
