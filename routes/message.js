@@ -52,7 +52,7 @@ router.get('/message/:id', function(req, res) {
 
 
 router.post('/message/handler', function(req, res) {
-  // This function should post a new user to the /user endpoint of the ws.
+  // This function should post a new message to the /message/send endpoint of the ws.
   var ws = req.app.get('webservice');
 
   // Parse recipient ids
