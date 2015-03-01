@@ -4,7 +4,13 @@ var request = require('superagent');
 require('superagent-bluebird-promise');
 
 router.get('/messageForm', function(req, res) {
-  res.render('editor/messageForm', {session: req.session, error: req.query.error});
+  res.render('editor/messageForm', {
+    session: req.session,
+    error: req.query.error,
+    recipients: req.query.recipients,
+    subject: req.query.subject,
+    content: req.query.content
+  });
 });
 
 function renderMessageList(view, req, res) {

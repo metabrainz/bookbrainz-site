@@ -15,15 +15,15 @@ block body
           .form-group
             label.col-md-2.control-label Recipients
             .col-md-8
-              input.form-control(type="text", name="recipients" placeholder="Recipient ID[, Recipient ID...]")
+              input.form-control(type="text", name="recipients" placeholder="Recipient ID[, Recipient ID...]", value=recipients)
           .form-group
             label.col-md-2.control-label Subject
             .col-md-8
-              input.form-control(type="text", name="subject", placeholder="Subject")
+              input.form-control(type="text", name="subject", placeholder="Subject", value=subject)
           .form-group
             label.col-md-2.control-label Message
             .col-md-8
-              textarea.form-control(name="content", rows="6")
+              textarea.form-control(name="content", rows="6") content
           .form-group
             .col-md-4.col-md-offset-4
               button.btn.btn-success.btn-block(type="submit") Submit
