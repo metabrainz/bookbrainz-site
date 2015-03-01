@@ -24,6 +24,10 @@ Dependencies can be installed using the node package manager:
 
     npm install
 
+In order to use the `gulp` command, you have to install it globally:
+
+    npm install -g gulp
+
 Building the client-side JS
 ---------------------------
 
