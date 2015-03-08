@@ -1,10 +1,9 @@
 extends layout
 
 block body
-  
   include navbar
   
-  .container
+  .container#content
     .row
       .col-md-6.col-md-offset-3
         form.whole-page-form.form-horizontal(action='/login/handler', method='post')
