@@ -28,12 +28,14 @@ block body
           .col-md-2(data-bind="ifnot: $parent.lastEntity($index())")
             button.btn.btn-primary.btn-block(data-bind="click: $parent.swap.bind($data, $index())")
               span.fa.fa-exchange.fa-rotate-90
+              span.sr-only Swap entities
         // /ko
         .text-center(data-bind="if: relationshipComplete")
           p(data-bind="html: renderedRelationship")
         .form-group
           .col-md-2.col-md-offset-10
-            button.btn.btn-success.btn-block.fa.fa-plus(title="Add Alias", data-bind="click: processRelationship, enable: relationshipComplete")
+            button.btn.btn-success.btn-block.fa.fa-plus(title="Add Relationship", data-bind="click: processRelationship, enable: relationshipComplete")
+              span.sr-only Add relationship
     hr
     h2 Current Relationships
     .row
@@ -41,7 +43,8 @@ block body
         .row(data-bind="foreach: addedRelationships")
           .col-md-10(data-bind="html: rendered")
           .col-md-2
-            button.btn.btn-danger.btn-block.fa.fa-minus(title="Remove Alias", data-bind="click: $parent.removeRelationship")
+            button.btn.btn-danger.btn-block.fa.fa-minus(title="Remove Relationship", data-bind="click: $parent.removeRelationship")
+              span.sr-only Remove relationship
     hr
     .row
       .col-md-6.col-md-offset-3

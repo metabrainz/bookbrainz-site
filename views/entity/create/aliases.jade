@@ -32,6 +32,7 @@ h2 Add Alias
     .form-group
       .col-md-2.col-md-offset-10
         button.btn.btn-success.btn-block.fa.fa-plus(title="Add Alias", data-bind="click: addAlias")
+          span.sr-only Add alias
 hr
 h2 Added Aliases
 .row
@@ -45,3 +46,4 @@ h2 Added Aliases
         em(data-bind="if: primary") &nbsp;p
       .col-md-2
         button.btn.btn-danger.btn-block.fa.fa-minus(title="Remove Alias", data-bind="click: $parent.removeAlias")
+          span.sr-only Remove alias

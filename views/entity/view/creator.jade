@@ -9,9 +9,13 @@ block body
         h1
           small.pull-right
             button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+              span.sr-only Edit creator
             button.btn.btn-primary.btn-xs.fa.fa-share-alt.fa-flip-horizontal.entity-action
+              span.sr-only Share creator
             button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
+              span.sr-only Remove creator
             a(href='/creator/'+entity.gid+'/history')
+              span.sr-only History 
               code='r'+entity.master_revision_id
           if entity.aliases.aliases
             =entity.aliases.aliases[0].name
@@ -42,7 +46,8 @@ block body
 
         h2
           small.pull-right
-            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(href='/creator/'+entity.gid+'/relationships')
+            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit Relationships', href='/creator/'+entity.gid+'/relationships')
+              span.sr-only Edit relationships
           | Relationships
         ul.list-unstyled
           for relationship in entity.relationships.objects
