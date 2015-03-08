@@ -10,40 +10,14 @@ block body
           h1 BookBrainz
           p.lead the open literature encyclopedia
           a.btn.btn-success.btn-lg(href="/getStarted") Get Started!
+
     .row
-      .col-md-8
-        h2 Book of the Week
-        hr
+      .col-md-12.text-center
+        h2 Latest Updates
         .row
-          .col-md-2
-            a(href='#'): img.img-responsive(
-              src='http://upload.wikimedia.org/wikipedia/en/9/99/Outnovel.jpg'
-              style='vertical-align:middle'
-            )
-          .col-md-10
-            h3.index-book-title
-              a(href='/publication/3a3847a9-9525-4556-a0f2-975807a2fc75') Out
-              small: a(href='/creator/')  Natsuo Kirino
-            p: b Publisher blurb or review from CritiqueBrainz here
-            p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies est sed luctus dignissim. Ut eros augue, blandit nec rutrum eu, dictum in lorem. Donec eget egestas metus. Etiam convallis ligula vitae enim ultricies, quis lobortis nisl condimentum. Mauris tempus lacinia tellus ultricies rutrum. Fusce venenatis leo ut sapien ornare pellentesque.
-            a(href='#'): p.pull-right read full review...
-
-      .col-md-4
-        h2 News
-        hr
-        a(href='#'): p BookBrainz Update - 2014-11-16
-        a(href='#'): p An article on socks
-        a(href='#'): p Should I add this controversial book to BookBrainz?
-        a(href='#'): p BookBrainz Update - 2014-11-09
-
-
-    .row
-      .col-md-12
-        h2 Recently Updated
-        table.table.table-hover.table-condensed
           for entity in recent
-            tr
-              td
+            .col-xs-12.col-sm-6.col-md-4
+              .recently-updated.panel.panel-default.panel-body
                 if entity.data.body.publication_data
                   div
                     a(href='/publication/'+entity.gid)=entity.aliases.body.aliases[0].name

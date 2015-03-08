@@ -7,7 +7,7 @@ require('superagent-bluebird-promise');
 /* GET home page. */
 router.get('/', function(req, res) {
   var ws = req.app.get('webservice');
-  var entityPromise = request.get(ws + '/entity?limit=5').promise();
+  var entityPromise = request.get(ws + '/entity?limit=9').promise();
 
   entityPromise.then(function(entities) {
     var extraData = entities.body.objects.map(function(entity) {
