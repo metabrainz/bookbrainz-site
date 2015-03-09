@@ -57,8 +57,8 @@ function CreateCreatorViewModel() {
       annotation: self.annotation,
       editId: parseInt(self.editId)
     }).promise().then(function(revision) {
-      console.log(revision.body.entity.gid);
-      window.location.href = '/creator/' + revision.body.entity.gid;
+      console.log(revision.body.entity.entity_gid);
+      window.location.href = '/creator/' + revision.body.entity.entity_gid;
     }).catch(function(err) {
       self.error(err);
     });
