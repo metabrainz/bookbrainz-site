@@ -12,6 +12,8 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 
+var auth = require('./lib/auth');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
@@ -36,6 +38,8 @@ app.use(session({
   store: new RedisStore({'host': 'localhost', 'port': 6379, 'ttl': 3600}),
   secret: 'Something here!'
 }));
+
+auth.init(app);
 
 app.use('/', routes);
 app.use('/users', users);
