@@ -26,9 +26,9 @@ block body
               =secrets.email
               | &nbsp;
             i (hidden)
-            if (session.user && !secrets)
-              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + user.user_id)
-                span.sr-only Compose message to #{user.name}
+            if (user && !secrets)
+              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + editor.user_id)
+                span.sr-only Compose message to #{editor.name}
           dt Type
           dd=editor.user_type.label
           dt Reputation
