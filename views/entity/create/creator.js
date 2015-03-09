@@ -25,7 +25,7 @@ function CreateCreatorViewModel() {
       languageId: self.languageId,
       languageText: $('#languageSelect :selected').text(),
       dflt: self.dflt(),
-      primary: self.primary
+      primary: self.primary()
     });
 
     if (self.dflt()) {
@@ -70,7 +70,7 @@ function CreateCreatorViewModel() {
   self.newSortName = '';
   self.languageId = '';
   self.dflt = ko.observable(false);
-  self.primary = '';
+  self.primary = ko.observable(false);
 
   self.aliases = ko.observableArray();
   self.error = ko.observable();
