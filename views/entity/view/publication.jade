@@ -14,8 +14,8 @@ block body
               span.sr-only Share publicaion
             button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
               span.sr-only Remove publication
-            a(href='/publication/'+entity.gid+'/history')
-              span.sr-only History 
+            a(href='/publication/'+entity.entity_gid+'/history')
+              span.sr-only History
               code='r'+entity.master_revision_id
           if entity.aliases.aliases
             =entity.aliases.aliases[0].name
@@ -46,7 +46,7 @@ block body
 
         h2
           small.pull-right
-            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit relationships', href='/publication/'+entity.gid+'/relationships')
+            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit relationships', href='/publication/'+entity.entity_gid+'/relationships')
               span.sr-only Edit relationships
           | Relationships
         ul.list-unstyled

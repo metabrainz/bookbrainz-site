@@ -2,7 +2,7 @@ extends ../layout
 
 block body
   include ../navbar
-  
+
   .container#content
     .row
       .col-md-12
@@ -10,7 +10,7 @@ block body
     .row
       .col-md-12
         ul.nav.nav-tabs
-          li: a(href='../'+user.id) Profile
+          li: a(href='../'+user.user_id) Profile
           li.active: a(href='./edits') Edits
     .row
       .col-md-12
@@ -20,12 +20,12 @@ block body
             .panel-heading
               unless edit.status
                 span.pull-right Open
-              h3.panel-title='Edit #'+edit.id+' - Blah blah blah'
-              
-            .panel-body 
+              h3.panel-title='Edit #'+edit.edit_id+' - Blah blah blah'
+
+            .panel-body
               each revision in edit.revisions.objects
                 p Revision&nbsp;
-                  =revision.id
+                  =revision.revision_id
 
 
   include ../footer

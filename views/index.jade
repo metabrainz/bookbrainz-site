@@ -20,12 +20,12 @@ block body
               .recently-updated.panel.panel-default.panel-body
                 if entity.data.body.publication_data
                   div
-                    a(href='/publication/'+entity.gid)=entity.aliases.body.aliases[0].name
+                    a(href='/publication/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
                   if entity.data.body.publication_data.publication_type
                     i=entity.data.body.publication_data.publication_type.label
                 else if entity.data.body.creator_data
                   div
-                    a(href='/creator/'+entity.gid)=entity.aliases.body.aliases[0].name
+                    a(href='/creator/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
                   if entity.data.body.creator_data.creator_type
                     i=entity.data.body.creator_data.creator_type.label
 

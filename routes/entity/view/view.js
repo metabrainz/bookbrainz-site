@@ -16,13 +16,13 @@ function renderEntityView(req, res, template) {
 
   completeEntityPromise.then(function(entity) {
     relationshipEntities = {};
-    relationshipEntities[entity.gid] = entity;
+    relationshipEntities[entity.entity_gid] = entity;
 
     entity.relationships.objects.forEach(function(relationship) {
       relationship.entities.forEach(function(entry) {
-        if (!relationshipEntities[entry.entity.gid]) {
-          relationshipEntities[entry.entity.gid] = utils.getEntity(
-            ws, entry.entity.gid, {data: true, aliases: true}
+        if (!relationshipEntities[entry.entity.entity_gid]) {
+          relationshipEntities[entry.entity.entity_gid] = utils.getEntity(
+            ws, entry.entity.entity_gid, {data: true, aliases: true}
           );
         }
       });
@@ -36,7 +36,7 @@ function renderEntityView(req, res, template) {
         });
 
         var entities = relationship.entities.map(function(entry) {
-          return fetchedEntities[entry.entity.gid];
+          return fetchedEntities[entry.entity.entity_gid];
         });
 
         relationship.rendered = renderRelationship(

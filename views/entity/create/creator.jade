@@ -42,7 +42,7 @@ block body
               .col-md-12.checkbox.text-right
                 label
                   input(type="checkbox", data-bind="checked: ended")
-                  | Ended?       
+                  | Ended?
             .form-group
               label.col-md-3.control-label Gender
               .col-md-9
@@ -54,7 +54,7 @@ block body
               .col-md-9
                 select.form-control(data-bind="value: creatorTypeId, valueAllowUnset: true")
                   each type in creatorTypes.objects
-                    option(value=type.id)=type.label
+                    option(value=type.creator_type_id)=type.label
             .form-group
               label.col-md-3.control-label Disambiguation
               .col-md-9

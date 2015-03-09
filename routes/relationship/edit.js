@@ -27,7 +27,7 @@ router.post('/relationship/create/handler', function(req, res) {
     var changes = relationship;
 
     editPromise.then(function(edit) {
-      changes.edit_id = edit.id;
+      changes.edit_id = edit.edit_id;
 
       request.post(ws + '/revisions')
       .set('Authorization', 'Bearer ' + req.session.oauth.access_token)

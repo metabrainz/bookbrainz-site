@@ -62,7 +62,7 @@ function RelationshipEditor(relationships, relationshipTypes) {
   self.existingRelationships = ko.observableArray();
   self.existingRelationships().forEach(function(relationship) {
     relationship.entities.forEach(function(entity, entityIndex) {
-      getEntityWithAliasesAndData(ws, entity.gid)
+      getEntityWithAliasesAndData(ws, entity.entity_gid)
       .then(function(fetchedEntity) {
         relationship.entities[entityIndex] = fetchedEntity;
         console.log(relationship);
@@ -94,17 +94,17 @@ function RelationshipEditor(relationships, relationshipTypes) {
     send(self.addedRelationships().map(function(relationship) {
       return {
         relationship_id: [],
-        relationship_type_id: relationship.type.id,
+        relationship_type_id: relationship.type.relationship_type_id,
         entities: relationship.entities.map(function(entity, index) {
           return {
-            gid: entity.gid,
+            gid: entity.entity_gid,
             position: index
           };
         })
       };
     })).promise().then(function(revision) {
-      console.log(revision.body.entity.gid);
-      window.location.href = '/creator/' + revision.body.entity.gid;
+      console.log(revision.body.entity.entity_gid);
+      window.location.href = '/creator/' + revision.body.entity.entity_gid;
     }).catch(function(err) {
       self.error(err);
     });

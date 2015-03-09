@@ -8,18 +8,18 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
         data-target='#bs-example-navbar-collapse-1'
       )
         span.sr-only Toggle navigation
-        
-        span.icon-bar      
+
         span.icon-bar
         span.icon-bar
-        
+        span.icon-bar
+
       a.navbar-brand(href="/")
         img(alt='Brand', src='/images/favicon.svg', style='height:1.2em; vertical-align:bottom; display:inline;')
         | ook
         b B
         | rainz
 
-    // Collect the nav links, forms, and other content for toggling    
+    // Collect the nav links, forms, and other content for toggling
     #bs-example-navbar-collapse-1.collapse.navbar-collapse
       ul.nav.navbar-nav
         li
@@ -44,13 +44,13 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
               span.fa.fa-plus
               span.caret
               span.sr-only Add Entities
-              
+
             ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
               li: a(href='/publication/create') Add Publication
               li: a(href='/creator/create') Add Creator
           li
-            a(href='/editor/'+session.user.id)= session.user.name
-        
+            a(href='/editor/'+session.user.user_id)= session.user.name
+
           li
             a(href='/inbox')
               if session.inboxCount === 0
@@ -77,7 +77,7 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
             span.fa.fa-globe
             span.caret
             span.sr-only Change Language
-            
+
           ul.dropdown-menu(role='menu' aria-labelledby='dLanguage')
             li: a(href='#') English
             li: a(href='#') German

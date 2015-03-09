@@ -27,7 +27,7 @@ router.get('/creator/create', function(req, res) {
     });
 
     var alphabeticLanguagesList = languages.objects.sort(function(a, b) {
-      return a.name.localeCompare(b.name);;
+      return a.name.localeCompare(b.name);
     });
 
     res.render('entity/create/creator', {
@@ -96,7 +96,7 @@ router.post('/creator/create/handler', function(req, res) {
   });
 
   editPromise.then(function(edit) {
-    changes.edit_id = edit.body.id;
+    changes.edit_id = edit.body.edit_id;
 
     request.post(ws + '/revisions')
     .set('Authorization', 'Bearer ' + req.session.oauth.access_token)

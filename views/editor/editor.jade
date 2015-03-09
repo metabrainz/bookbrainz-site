@@ -2,7 +2,7 @@ extends ../layout
 
 block body
   include ../navbar
-  
+
   .container#content
     .row
       .col-md-12
@@ -10,8 +10,8 @@ block body
     .row
       .col-md-12
         ul.nav.nav-tabs
-          li.active: a(href='./'+user.id) Profile
-          li: a(href=user.id+'/edits') Edits
+          li.active: a(href='./'+user.user_id) Profile
+          li: a(href=user.user_id+'/edits') Edits
     .row
       .col-md-7
         h2 Basic Info
@@ -27,7 +27,7 @@ block body
               | &nbsp;
             i (hidden)
             if (session.user && !secrets)
-              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + user.id)
+              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + user.user_id)
                 span.sr-only Compose message to #{user.name}
           dt Type
           dd=user.user_type.label
@@ -58,7 +58,7 @@ block body
         h2 Activity
         canvas#editChart(width="400", height="250")
 
-  
+
   include ../footer
 
   script(src='/javascripts/editor.js')
