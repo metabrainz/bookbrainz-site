@@ -10,7 +10,7 @@ router.get('/editor/:id', function(req, res) {
 
   var userPromise = request.get(ws + '/user/' + req.params.id).promise();
   var userSecretsPromise = request.get(ws + '/user/secrets')
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
+  .set('Authorization', 'Bearer ' + req.session.bearerToken).promise();
   var userStatsPromise = request.get(ws + '/user/' +
                                      req.params.id + '/stats').promise();
 

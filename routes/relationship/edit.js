@@ -19,7 +19,7 @@ router.post('/relationship/create/handler', function(req, res) {
     // edit - however, WS doesn't support multi-revision edits yet, so use many
     var editPromise = request.post(ws + '/edits')
     .send({})
-    .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise()
+    .set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
     .then(function(editResponse) {
       return editResponse.body;
     });
@@ -30,7 +30,7 @@ router.post('/relationship/create/handler', function(req, res) {
       changes.edit_id = edit.edit_id;
 
       request.post(ws + '/revisions')
-      .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
+      .set('Authorization', 'Bearer ' + req.session.bearerToken)
       .send(changes).promise()
       .then(function(revision) {
         res.send(revision.body);

@@ -16,7 +16,7 @@ router.get('/messageForm', function(req, res) {
 function renderMessageList(view, req, res) {
   var ws = req.app.get('webservice');
   request.get(ws + '/message/' + view)
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise()
+  .set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
   .then(function(listResponse) {
     return listResponse.body;
   })
@@ -44,7 +44,7 @@ router.get('/sent', function(req, res) {
 router.get('/message/:id', function(req, res) {
   var ws = req.app.get('webservice');
   request.get(ws + '/message/' + req.params.id)
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise()
+  .set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
   .then(function(messageResponse) {
     return messageResponse.body;
   })
@@ -67,7 +67,7 @@ router.post('/message/handler', function(req, res) {
   });
 
   request.post(ws + '/message/sent')
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
+  .set('Authorization', 'Bearer ' + req.session.bearerToken)
   .send({
     'recipient_ids': recipientIds,
     'subject': req.body.subject,

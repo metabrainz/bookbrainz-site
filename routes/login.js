@@ -40,7 +40,7 @@ router.post('/login/handler', function(req, res) {
     });
 
     Promise.join(userPromise, inboxPromise, function(user, inbox) {
-      req.session.oauth = oauth.body;
+      req.session.bearerToken = oauth.body.access_token;
       req.session.user = user;
       req.session.inboxCount = inbox.objects.length;
       res.redirect(303, '/');

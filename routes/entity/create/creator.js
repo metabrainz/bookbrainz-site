@@ -52,7 +52,7 @@ router.post('/creator/create/handler', function(req, res) {
   // If 'new edit' in form, create a new edit.
   var editPromise = request.post(ws + '/edits')
   .send({})
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
+  .set('Authorization', 'Bearer ' + req.session.bearerToken).promise();
 
   var changes = {
     'entity_gid': [],
@@ -99,7 +99,7 @@ router.post('/creator/create/handler', function(req, res) {
     changes.edit_id = edit.body.edit_id;
 
     request.post(ws + '/revisions')
-    .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
+    .set('Authorization', 'Bearer ' + req.session.bearerToken)
     .send(changes).promise()
     .then(function(revision) {
       res.send(revision.body);
