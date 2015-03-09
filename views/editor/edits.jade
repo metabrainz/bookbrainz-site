@@ -6,11 +6,11 @@ block body
   .container#content
     .row
       .col-md-12
-        h1=user.name
+        h1=editor.name
     .row
       .col-md-12
         ul.nav.nav-tabs
-          li: a(href='../'+user.user_id) Profile
+          li: a(href='../'+editor.user_id) Profile
           li.active: a(href='./edits') Edits
     .row
       .col-md-12

@@ -4,7 +4,7 @@ var request = require('superagent');
 require('superagent-bluebird-promise');
 
 router.get('/register', function(req, res) {
-  res.render('register', {session: req.session, error: req.query.error});
+  res.render('register', {user: req.user, session: req.session, error: req.query.error});
 });
 
 router.post('/register/handler', function(req, res) {

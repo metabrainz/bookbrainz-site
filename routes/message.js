@@ -5,6 +5,7 @@ require('superagent-bluebird-promise');
 
 router.get('/messageForm', function(req, res) {
   res.render('editor/messageForm', {
+    user: req.user,
     session: req.session,
     error: req.query.error,
     recipients: req.query.recipients,
@@ -22,6 +23,7 @@ function renderMessageList(view, req, res) {
   })
   .then(function(list) {
     res.render('editor/messageList', {
+      user: req.user,
       session: req.session,
       view: view,
       messages: list
@@ -50,6 +52,7 @@ router.get('/message/:id', function(req, res) {
   })
   .then(function(message) {
     res.render('editor/message', {
+      user: req.user,
       session: req.session,
       message: message
     });

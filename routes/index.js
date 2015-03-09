@@ -19,6 +19,7 @@ router.get('/', function(req, res) {
     Promise.all(extraData).then(function(entitiesWithData) {
       res.render('index', {
         title: 'BookBrainz',
+        user: req.user,
         session: req.session,
         recent: entitiesWithData
       });
@@ -28,6 +29,7 @@ router.get('/', function(req, res) {
 
 router.get('/about', function(req, res) {
   res.render('about', {
+    user: req.user,
     session: req.session,
     title: 'BookBrainz :: About',
   });
@@ -35,6 +37,7 @@ router.get('/about', function(req, res) {
 
 router.get('/contribute', function(req, res) {
   res.render('contribute', {
+    user: req.user,
     session: req.session,
     title: 'BookBrainz :: Contribute',
   });
@@ -42,6 +45,7 @@ router.get('/contribute', function(req, res) {
 
 router.get('/develop', function(req, res) {
   res.render('develop', {
+    user: req.user,
     session: req.session,
     title: 'BookBrainz :: Develop',
   });
@@ -49,6 +53,7 @@ router.get('/develop', function(req, res) {
 
 router.get('/getStarted', function(req, res) {
   res.render('getStarted', {
+    user: req.user,
     session: req.session,
     title: 'BookBrainz :: Get Started',
   });

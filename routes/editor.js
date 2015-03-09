@@ -15,6 +15,7 @@ router.get('/editor/:id', function(req, res) {
                                      req.params.id + '/stats').promise();
 
   var renderData = {
+    user: req.user,
     session: req.session
   };
 
@@ -27,7 +28,7 @@ router.get('/editor/:id', function(req, res) {
   }).catch(function(err) {});
 
   userPromise.then(function(user) {
-    renderData.user = user.body;
+    renderData.editor = user.body;
 
     /* This will cause the page to be rendered when both optional promises have
     either been fulfilled or rejected, but only when the user promise has been
@@ -65,8 +66,9 @@ router.get('/editor/:id/edits', function(req, res) {
     console.log(editObjects);
 
     res.render('editor/edits', {
+      user: req.user,
       session: req.session,
-      user: user.body,
+      editor: user.body,
       edits: edits.body
     });
   });

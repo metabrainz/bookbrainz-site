@@ -26,6 +26,7 @@ router.get('/publication/create', function(req, res) {
     });
 
     res.render('entity/create/publication', {
+      user: req.user,
       session: req.session,
       languages: alphabeticLanguagesList,
       publicationTypes: publicationTypes

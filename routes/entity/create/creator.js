@@ -31,6 +31,7 @@ router.get('/creator/create', function(req, res) {
     });
 
     res.render('entity/create/creator', {
+      user: req.user,
       session: req.session,
       genders: genderList,
       languages: alphabeticLanguagesList,
