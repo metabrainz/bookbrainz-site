@@ -9,7 +9,7 @@ router.get('/editor/:id', function(req, res) {
   var ws = req.app.get('webservice');
 
   var userPromise = request.get(ws + '/user/' + req.params.id).promise();
-  var userSecretsPromise = request.get(ws + '/user/' + req.params.id + '/secrets')
+  var userSecretsPromise = request.get(ws + '/user/secrets')
   .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise();
   var userStatsPromise = request.get(ws + '/user/' +
                                      req.params.id + '/stats').promise();
