@@ -25,7 +25,7 @@ function CreatePublicationViewModel() {
       languageId: self.languageId,
       languageText: $('#languageSelect :selected').text(),
       dflt: self.dflt(),
-      primary: self.primary
+      primary: self.primary()
     });
 
     if (self.dflt()) {
@@ -55,8 +55,8 @@ function CreatePublicationViewModel() {
       annotation: self.annotation,
       editId: parseInt(self.editId)
     }).promise().then(function(revision) {
-      console.log(revision.body.entity.gid);
-      window.location.href = '/publication/' + revision.body.entity.gid;
+      console.log(revision.body.entity.entity_gid);
+      window.location.href = '/publication/' + revision.body.entity.entity_gid;
     }).catch(function(err) {
       self.error(err);
     });
@@ -68,7 +68,7 @@ function CreatePublicationViewModel() {
   self.newSortName = '';
   self.languageId = '';
   self.dflt = ko.observable(false);
-  self.primary = '';
+  self.primary = ko.observable(false);
 
   self.aliases = ko.observableArray();
   self.error = ko.observable();
