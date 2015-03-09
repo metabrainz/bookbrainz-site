@@ -5,6 +5,7 @@ require('superagent-bluebird-promise');
 
 router.get('/messageForm', function(req, res) {
   res.render('editor/messageForm', {
+    user: req.user,
     session: req.session,
     error: req.query.error,
     recipients: req.query.recipients,
@@ -16,12 +17,13 @@ router.get('/messageForm', function(req, res) {
 function renderMessageList(view, req, res) {
   var ws = req.app.get('webservice');
   request.get(ws + '/message/' + view)
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise()
+  .set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
   .then(function(listResponse) {
     return listResponse.body;
   })
   .then(function(list) {
     res.render('editor/messageList', {
+      user: req.user,
       session: req.session,
       view: view,
       messages: list
@@ -44,12 +46,13 @@ router.get('/sent', function(req, res) {
 router.get('/message/:id', function(req, res) {
   var ws = req.app.get('webservice');
   request.get(ws + '/message/' + req.params.id)
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token).promise()
+  .set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
   .then(function(messageResponse) {
     return messageResponse.body;
   })
   .then(function(message) {
     res.render('editor/message', {
+      user: req.user,
       session: req.session,
       message: message
     });
@@ -67,7 +70,7 @@ router.post('/message/handler', function(req, res) {
   });
 
   request.post(ws + '/message/sent')
-  .set('Authorization', 'Bearer ' + req.session.oauth.access_token)
+  .set('Authorization', 'Bearer ' + req.session.bearerToken)
   .send({
     'recipient_ids': recipientIds,
     'subject': req.body.subject,

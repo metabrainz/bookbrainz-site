@@ -6,12 +6,12 @@ block body
   .container#content
     .row
       .col-md-12
-        h1=user.name
+        h1=editor.name
     .row
       .col-md-12
         ul.nav.nav-tabs
-          li.active: a(href='./'+user.user_id) Profile
-          li: a(href=user.user_id+'/edits') Edits
+          li.active: a(href='./'+editor.user_id) Profile
+          li: a(href=editor.user_id+'/edits') Edits
     .row
       .col-md-7
         h2 Basic Info
@@ -26,19 +26,19 @@ block body
               =secrets.email
               | &nbsp;
             i (hidden)
-            if (session.user && !secrets)
-              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + user.user_id)
-                span.sr-only Compose message to #{user.name}
+            if (user && !secrets)
+              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + editor.user_id)
+                span.sr-only Compose message to #{editor.name}
           dt Type
-          dd=user.user_type.label
+          dd=editor.user_type.label
           dt Reputation
           dd 0
           dt Joined
-          dd=(new Date(user.created_at)).toUTCString()
+          dd=(new Date(editor.created_at)).toUTCString()
           dt Last Active
-          dd=(new Date(user.active_at)).toUTCString()
+          dd=(new Date(editor.active_at)).toUTCString()
           dt Bio
-          dd=(user.bio ? user.bio : '-')
+          dd=(editor.bio ? editor.bio : '-')
         h2 Stats
         if stats
           dl.dl-horizontal
