@@ -1,11 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var auth = require('../../../lib/auth');
 var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
 /* create publication endpoint */
-router.get('/publication/create', function(req, res) {
+router.get('/publication/create', auth.isAuthenticated, function(req, res) {
   var ws = req.app.get('webservice');
 
   // Get the list of publication types
@@ -34,7 +35,7 @@ router.get('/publication/create', function(req, res) {
   });
 });
 
-router.post('/publication/create/handler', function(req, res) {
+router.post('/publication/create/handler', auth.isAuthenticated, function(req, res) {
   var ws = req.app.get('webservice');
 
   console.log(req.body);

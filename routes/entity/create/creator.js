@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var auth = require('../../../lib/auth');
 var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
-router.get('/creator/create', function(req, res) {
+router.get('/creator/create', auth.isAuthenticated, function(req, res) {
   // Get the list of publication types
   var ws = req.app.get('webservice');
 
@@ -41,7 +42,7 @@ router.get('/creator/create', function(req, res) {
 });
 
 
-router.post('/creator/create/handler', function(req, res) {
+router.post('/creator/create/handler', auth.isAuthenticated, function(req, res) {
   var ws = req.app.get('webservice');
 
   console.log(req.body);

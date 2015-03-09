@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var auth = require('../../lib/auth');
 var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');
@@ -12,7 +13,7 @@ function relationshipEditor(req, res) {
   });
 }
 
-router.post('/relationship/create/handler', function(req, res) {
+router.post('/relationship/create/handler', auth.isAuthenticated, function(req, res) {
   var ws = req.app.get('webservice');
 
   req.body.forEach(function(relationship) {

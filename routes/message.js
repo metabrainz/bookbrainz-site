@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+var auth = require('../lib/auth');
 var request = require('superagent');
 require('superagent-bluebird-promise');
 
-router.get('/messageForm', function(req, res) {
+router.get('/messageForm', auth.isAuthenticated, function(req, res) {
   res.render('editor/messageForm', {
     user: req.user,
     session: req.session,
@@ -31,19 +32,19 @@ function renderMessageList(view, req, res) {
   });
 }
 
-router.get('/inbox', function(req, res) {
+router.get('/inbox', auth.isAuthenticated, function(req, res) {
   renderMessageList('inbox', req, res);
 });
 
-router.get('/archive', function(req, res) {
+router.get('/archive', auth.isAuthenticated, function(req, res) {
   renderMessageList('archive', req, res);
 });
 
-router.get('/sent', function(req, res) {
+router.get('/sent', auth.isAuthenticated, function(req, res) {
   renderMessageList('sent', req, res);
 });
 
-router.get('/message/:id', function(req, res) {
+router.get('/message/:id', auth.isAuthenticated, function(req, res) {
   var ws = req.app.get('webservice');
   request.get(ws + '/message/' + req.params.id)
   .set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
@@ -59,8 +60,7 @@ router.get('/message/:id', function(req, res) {
   })
 });
 
-
-router.post('/message/handler', function(req, res) {
+router.post('/message/handler', auth.isAuthenticated, function(req, res) {
   // This function should post a new message to the /message/send endpoint of the ws.
   var ws = req.app.get('webservice');
 
