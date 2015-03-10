@@ -2,6 +2,8 @@ var gulp = require('gulp');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglify');
+var prettify = require('gulp-js-prettify');
+var path = require('path');
 
 function bundle() {
   var srcFiles = [
@@ -33,9 +35,25 @@ function compress() {
   .pipe(gulp.dest('public/javascripts'));
 }
 
+function tidy() {
+  var srcFiles = [
+    './routes/**/*.js',
+    './views/**/*.js',
+  ];
+
+  gulp.src(srcFiles)
+  .pipe(prettify({
+    indent_with_tabs: true,
+  }))
+  .pipe(gulp.dest(function(f) {
+    return f.base;
+  }));
+}
+
 gulp.task('default', bundle);
 gulp.task('bundle', bundle);
 gulp.task('compress', ['bundle'], compress);
+gulp.task('tidy', tidy);
 gulp.task('watch', function() {
   var watcher = gulp.watch('./views/**/*.js', ['bundle']);
   watcher.on('change', function(event) {
