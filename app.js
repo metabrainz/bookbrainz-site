@@ -27,7 +27,7 @@ app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
 // webservice
-app.set('webservice', 'http://localhost:5000/ws');
+app.set('webservice', 'http://bookbrainz.org/ws');
 
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));

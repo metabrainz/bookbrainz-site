@@ -17,6 +17,7 @@
     "debug": "~2.0.0",
     "express": "~4.9.0",
     "express-session": "^1.10.1",
+    "express-static-cache": "0.0.6",
     "handlebars": "^3.0.0",
     "jade": "~1.6.0",
     "jquery": "^2.1.3",
