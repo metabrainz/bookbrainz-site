@@ -1,0 +1,36 @@
+{
+    "requireCurlyBraces": ["while", "do", "try", "catch"],
+    "requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch"],
+    "requireSpacesInFunctionExpression": {
+        "beforeOpeningCurlyBrace": true
+    },
+    "disallowPaddingNewlinesInBlocks": true,
+    "disallowSpacesInsideObjectBrackets": "all",
+    "disallowSpacesInsideArrayBrackets": "all",
+    "requireSpaceBeforeBlockStatements": true,
+    "requireSpacesInForStatement": true,
+    "disallowKeywords": [ "with" ],
+    "requireLineFeedAtFileEnd": true,
+    "validateLineBreaks": "LF",
+    "validateIndentation": "\t",
+
+    "disallowSpaceAfterObjectKeys": true,
+    "disallowEmptyBlocks": true,
+    "disallowMixedSpacesAndTabs": "smart",
+    "disallowQuotedKeysInObjects": true,
+    "disallowMultipleVarDecl": "exceptUndefined",
+    "disallowNewlineBeforeBlockStatements": true,
+
+    "requireSpaceAfterPrefixUnaryOperators": ["++", "--"],
+    "requireSpaceBetweenArguments": true,
+    "requireSpaceBeforePostfixUnaryOperators": ["++", "--"],
+    "requireSpaceBeforeBinaryOperators": [ "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=" ],
+    "requireSpaceAfterBinaryOperators": [ "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=" ],
+    "disallowSpaceBeforeBinaryOperators": [","],
+    "requireSpacesInConditionalExpression": {
+        "afterTest": true,
+        "beforeConsequent": true,
+        "afterConsequent": true,
+        "beforeAlternate": true
+    }
+}
