@@ -3,7 +3,11 @@ var router = express.Router();
 var auth = require('../lib/auth');
 
 router.get('/login', function(req, res) {
-	res.render('login', { user: req.user, session: req.session, error: req.query.error });
+	res.render('login', {
+		user: req.user,
+		session: req.session,
+		error: req.query.error
+	});
 });
 
 router.get('/logout', function(req, res) {

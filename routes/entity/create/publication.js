@@ -7,82 +7,82 @@ require('superagent-bluebird-promise');
 
 /* create publication endpoint */
 router.get('/publication/create', auth.isAuthenticated, function(req, res) {
-  var ws = req.app.get('webservice');
+	var ws = req.app.get('webservice');
 
-  // Get the list of publication types
-  var publicationTypesPromise = request.get(ws + '/publicationType').promise()
-  .then(function(publicationTypesResponse) {
-    return publicationTypesResponse.body;
-  });
+	// Get the list of publication types
+	var publicationTypesPromise = request.get(ws + '/publicationType').promise()
+		.then(function(publicationTypesResponse) {
+			return publicationTypesResponse.body;
+		});
 
-  var languagesPromise = request.get(ws + '/language').promise()
-  .then(function(languagesResponse) {
-    return languagesResponse.body;
-  });
+	var languagesPromise = request.get(ws + '/language').promise()
+		.then(function(languagesResponse) {
+			return languagesResponse.body;
+		});
 
-  Promise.join(publicationTypesPromise, languagesPromise,
-  function(publicationTypes, languages) {
-    var alphabeticLanguagesList = languages.objects.sort(function(a, b) {
-      return a.name.localeCompare(b.name);
-    });
+	Promise.join(publicationTypesPromise, languagesPromise,
+		function(publicationTypes, languages) {
+			var alphabeticLanguagesList = languages.objects.sort(function(a, b) {
+				return a.name.localeCompare(b.name);
+			});
 
-    res.render('entity/create/publication', {
-      user: req.user,
-      session: req.session,
-      languages: alphabeticLanguagesList,
-      publicationTypes: publicationTypes
-    });
-  });
+			res.render('entity/create/publication', {
+				user: req.user,
+				session: req.session,
+				languages: alphabeticLanguagesList,
+				publicationTypes: publicationTypes
+			});
+		});
 });
 
 router.post('/publication/create/handler', auth.isAuthenticated, function(req, res) {
-  var ws = req.app.get('webservice');
+	var ws = req.app.get('webservice');
 
-  console.log(req.body);
+	console.log(req.body);
 
-  if (!req.body.editId) {
-    console.log('Make new edit!');
-  }
-  // If 'new edit' in form, create a new edit.
-  var editPromise = request.post(ws + '/edits')
-  .send({})
-  .set('Authorization', 'Bearer ' + req.session.bearerToken).promise();
+	if (!req.body.editId) {
+		console.log('Make new edit!');
+	}
+	// If 'new edit' in form, create a new edit.
+	var editPromise = request.post(ws + '/edits')
+		.send({})
+		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise();
 
-  var changes = {
-    'entity_gid': [],
-    'publication_data': {
-      'publication_type_id': req.body.publicationTypeId
-    }
-  };
+	var changes = {
+		'entity_gid': [],
+		'publication_data': {
+			'publication_type_id': req.body.publicationTypeId
+		}
+	};
 
-  if (req.body.disambiguation) {
-    changes.disambiguation = req.body.disambiguation;
-  }
+	if (req.body.disambiguation) {
+		changes.disambiguation = req.body.disambiguation;
+	}
 
-  if (req.body.annotation) {
-    changes.annotation = req.body.annotation;
-  }
+	if (req.body.annotation) {
+		changes.annotation = req.body.annotation;
+	}
 
-  changes.aliases = req.body.aliases.map(function(alias) {
-    return {
-      'name': alias.name,
-      'sort_name': alias.sortName,
-      'language_id': alias.languageId,
-      'primary': alias.primary,
-      'default': alias.dflt
-    };
-  });
+	changes.aliases = req.body.aliases.map(function(alias) {
+		return {
+			'name': alias.name,
+			'sort_name': alias.sortName,
+			'language_id': alias.languageId,
+			'primary': alias.primary,
+			'default': alias.dflt
+		};
+	});
 
-  editPromise.then(function(edit) {
-    changes.edit_id = edit.body.id;
+	editPromise.then(function(edit) {
+		changes.edit_id = edit.body.id;
 
-    request.post(ws + '/revisions')
-    .set('Authorization', 'Bearer ' + req.session.bearerToken)
-    .send(changes).promise()
-    .then(function(revision) {
-      res.send(revision.body);
-    });
-  });
+		request.post(ws + '/revisions')
+			.set('Authorization', 'Bearer ' + req.session.bearerToken)
+			.send(changes).promise()
+			.then(function(revision) {
+				res.send(revision.body);
+			});
+	});
 });
 
 module.exports = router;

@@ -1,7 +1,7 @@
 var path = require('path');
 
 global.rootRequire = function(name) {
-  return require(path.join(__dirname, name));
+	return require(path.join(__dirname, name));
 };
 
 var express = require('express');
@@ -32,13 +32,21 @@ app.set('webservice', 'http://bookbrainz.org/ws');
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+	extended: false
+}));
 app.use(cookieParser());
-app.use(staticCache(path.join(__dirname, 'public/javascripts'), {buffer: true}));
+app.use(staticCache(path.join(__dirname, 'public/javascripts'), {
+	buffer: true
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  store: new RedisStore({'host': 'localhost', 'port': 6379, 'ttl': 3600}),
-  secret: 'Something here!'
+	store: new RedisStore({
+		'host': 'localhost',
+		'port': 6379,
+		'ttl': 3600
+	}),
+	secret: 'Something here!'
 }));
 
 auth.init(app);
@@ -57,9 +65,9 @@ app.use('/', require('./routes/message'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 // error handlers
@@ -67,27 +75,27 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    console.log(err.message);
-    console.log(err.stack);
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
+	app.use(function(err, req, res, next) {
+		console.log(err.message);
+		console.log(err.stack);
+		res.status(err.status || 500);
+		res.render('error', {
+			message: err.message,
+			error: err
+		});
+	});
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  console.log(err.message);
-  console.log(err.stack);
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+	console.log(err.message);
+	console.log(err.stack);
+	res.status(err.status || 500);
+	res.render('error', {
+		message: err.message,
+		error: {}
+	});
 });
 
 module.exports = app;
