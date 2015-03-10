@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 app.use(cookieParser());
-app.use(staticCache(path.join(__dirname, 'public/javascripts'), {
+app.use(staticCache(path.join(__dirname, 'public/js'), {
 	buffer: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));

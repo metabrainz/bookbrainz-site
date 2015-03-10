@@ -96,4 +96,4 @@ $RECYCLE.BIN/
 
 # Additional, project-specific directories
 /build
-/public/javascripts
+/public/js

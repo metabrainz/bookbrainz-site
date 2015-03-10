@@ -14,7 +14,7 @@ Additionally, after building the client JavaScript (see below), the following
 directories will exist:
 
 * build - the browserify-built JavaScript files.
-* public/javascripts - minified JavaScript files which are referred to by the
+* public/js - minified JavaScript files which are referred to by the
   site pages.
 
 Installing dependencies

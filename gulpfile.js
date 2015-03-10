@@ -15,11 +15,11 @@ function bundle() {
 	];
 
 	var dstFiles = [
-		'public/javascripts/editor.js',
-		'public/javascripts/publication.js',
-		'public/javascripts/creator.js',
-		'public/javascripts/layout.js',
-		'public/javascripts/relationship_editor.js',
+		'public/js/editor.js',
+		'public/js/publication.js',
+		'public/js/creator.js',
+		'public/js/layout.js',
+		'public/js/relationship_editor.js',
 	];
 
 	return browserify(srcFiles)
@@ -28,13 +28,13 @@ function bundle() {
 		})
 		.bundle()
 		.pipe(source('bundle.js'))
-		.pipe(gulp.dest('public/javascripts'));
+		.pipe(gulp.dest('public/js'));
 }
 
 function compress() {
-	return gulp.src('public/javascripts/*.js')
+	return gulp.src('public/js/*.js')
 		.pipe(uglify())
-		.pipe(gulp.dest('public/javascripts'));
+		.pipe(gulp.dest('public/js'));
 }
 
 function tidy() {
