@@ -11,6 +11,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
+var staticCache = require('express-static-cache');
 
 var auth = require('./lib/auth');
 
@@ -26,13 +27,14 @@ app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
 // webservice
-app.set('webservice', 'http://bookbrainz.org/ws');
+app.set('webservice', 'http://localhost:5000/ws');
 
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(staticCache(path.join(__dirname, 'public/javascripts'), {buffer: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   store: new RedisStore({'host': 'localhost', 'port': 6379, 'ttl': 3600}),

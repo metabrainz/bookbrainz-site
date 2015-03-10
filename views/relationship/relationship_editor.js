@@ -6,7 +6,9 @@ var Promise = require('bluebird');
 var utils = require('../../lib/utils');
 require('superagent-bluebird-promise');
 
-var ws = 'http://localhost:5000/ws';
+var ws = 'http://bookbrainz.org/ws';
+var entityGid = $('#entityContainer').attr('data-entity-gid');
+
 
 function RelationshipEditor(relationships, relationshipTypes) {
   var self = this;
@@ -17,14 +19,14 @@ function RelationshipEditor(relationships, relationshipTypes) {
   self.currentRelationshipType = ko.observable(self.relationshipTypes[0]);
 
   self.entityGids = ko.observableArray([
-    {gid: ko.observable('0f630b21-e423-4d42-8f26-abdd03cae31e'), disabled: ko.observable(true)},
+    {gid: ko.observable(entityGid), disabled: ko.observable(true)},
     {gid: ko.observable(), disabled: ko.observable(false)}
   ]);
 
   self.entities = ko.observableArray();
   ko.computed(function() {
     var temp = self.entityGids().map(function(gid) {
-      return utils.getEntityWithAliasesAndData(ws, gid.gid());
+      return utils.getEntity(ws, gid.gid(), {aliases: true, data: true});
     });
 
     return Promise.all(temp).then(function(entities) {
@@ -62,7 +64,7 @@ function RelationshipEditor(relationships, relationshipTypes) {
   self.existingRelationships = ko.observableArray();
   self.existingRelationships().forEach(function(relationship) {
     relationship.entities.forEach(function(entity, entityIndex) {
-      getEntityWithAliasesAndData(ws, entity.entity_gid)
+      getEntity(ws, entity.gid, {aliases: true, data: true})
       .then(function(fetchedEntity) {
         relationship.entities[entityIndex] = fetchedEntity;
         console.log(relationship);
@@ -110,8 +112,6 @@ function RelationshipEditor(relationships, relationshipTypes) {
     });
   };
 }
-
-var entityGid = $('#entityContainer').attr('data-entity-gid');
 
 var relationshipsPromise = request.get(ws + '/entity/' + entityGid + '/relationships').promise()
 .then(function(relationshipsResponse) {
