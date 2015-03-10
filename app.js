@@ -13,7 +13,7 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var staticCache = require('express-static-cache');
 
-var auth = require('./lib/auth');
+var auth = require('./helpers/auth');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

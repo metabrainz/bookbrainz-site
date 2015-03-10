@@ -1,8 +1,8 @@
 var Promise = require('bluebird');
 var request = require('superagent');
 require('superagent-bluebird-promise');
-var utils = rootRequire('lib/utils');
-var renderRelationship = rootRequire('lib/render');
+var utils = rootRequire('helpers/utils');
+var renderRelationship = rootRequire('helpers/render');
 
 function renderEntityView(req, res, template) {
 	var ws = req.app.get('webservice');

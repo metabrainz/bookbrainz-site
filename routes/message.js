@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var auth = require('../lib/auth');
+var auth = rootRequire('helpers/auth');
 var request = require('superagent');
 require('superagent-bluebird-promise');
 
