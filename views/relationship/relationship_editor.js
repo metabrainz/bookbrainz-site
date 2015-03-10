@@ -38,7 +38,7 @@ function RelationshipEditor(relationships, relationshipTypes) {
 		return Promise.all(temp).then(function(entities) {
 			self.entities(entities);
 		}).
-		catch (function(err) {});
+		catch(function(err) {});
 	}).extend({
 		rateLimit: {
 			timeout: 500,
@@ -77,9 +77,9 @@ function RelationshipEditor(relationships, relationshipTypes) {
 	self.existingRelationships().forEach(function(relationship) {
 		relationship.entities.forEach(function(entity, entityIndex) {
 			getEntity(ws, entity.gid, {
-				aliases: true,
-				data: true
-			})
+					aliases: true,
+					data: true
+				})
 				.then(function(fetchedEntity) {
 					relationship.entities[entityIndex] = fetchedEntity;
 					console.log(relationship);
@@ -123,7 +123,7 @@ function RelationshipEditor(relationships, relationshipTypes) {
 			console.log(revision.body.entity.entity_gid);
 			window.location.href = '/creator/' + revision.body.entity.entity_gid;
 		}).
-		catch (function(err) {
+		catch(function(err) {
 			self.error(err);
 		});
 	};
@@ -143,6 +143,6 @@ Promise.join(relationshipsPromise, relationshipTypesPromise,
 	function(relationships, relationshipTypes) {
 		ko.applyBindings(new RelationshipEditor(relationships, relationshipTypes));
 	}).
-catch (function(err) {
+catch(function(err) {
 	console.log(err.stack);
 });

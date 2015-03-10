@@ -18,10 +18,10 @@ router.post('/register/handler', function(req, res) {
 	// FIXME: This hardcodes the user type, assuming editor will be #1 - not
 	// very good
 	request.post(ws + '/user').send({
-		'name': req.body.username,
-		'email': req.body.email,
-		'user_type_id': 1
-	}).promise()
+			'name': req.body.username,
+			'email': req.body.email,
+			'user_type_id': 1
+		}).promise()
 		.then(function() {
 			res.redirect(303, '/');
 		});

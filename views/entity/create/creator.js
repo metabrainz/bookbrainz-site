@@ -60,7 +60,7 @@ function CreateCreatorViewModel() {
 			console.log(revision.body.entity.entity_gid);
 			window.location.href = '/creator/' + revision.body.entity.entity_gid;
 		}).
-		catch (function(err) {
+		catch(function(err) {
 			self.error(err);
 		});
 	};

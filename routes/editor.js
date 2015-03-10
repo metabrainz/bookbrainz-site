@@ -22,12 +22,12 @@ router.get('/editor/:id', function(req, res) {
 	userStatsPromise.then(function(stats) {
 		renderData.stats = stats.body;
 	}).
-	catch (function(err) {});
+	catch(function(err) {});
 
 	userSecretsPromise.then(function(secrets) {
 		renderData.secrets = secrets.body;
 	}).
-	catch (function(err) {});
+	catch(function(err) {});
 
 	userPromise.then(function(user) {
 		renderData.editor = user.body;
@@ -37,7 +37,7 @@ router.get('/editor/:id', function(req, res) {
     fulfilled. */
 		Promise.join(userStatsPromise, userSecretsPromise)
 			.
-		catch (function() {})
+		catch(function() {})
 			.
 		finally(function() {
 			res.render('editor/editor', renderData);

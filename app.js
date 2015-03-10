@@ -42,9 +42,9 @@ app.use(staticCache(path.join(__dirname, 'public/javascripts'), {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
 	store: new RedisStore({
-		'host': 'localhost',
-		'port': 6379,
-		'ttl': 3600
+		host: 'localhost',
+		port: 6379,
+		ttl: 3600
 	}),
 	secret: 'Something here!'
 }));

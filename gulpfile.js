@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglify');
-var prettify = require('gulp-js-prettify');
+var prettify = require('gulp-jsbeautifier');
 var path = require('path');
 
 function bundle() {
@@ -43,12 +43,14 @@ function tidy() {
 		'./views/**/*.js',
 		'./app.js',
 		'./gulpfile.js',
-		'bin/www',
 	];
 
 	gulp.src(srcFiles)
 		.pipe(prettify({
-			indent_with_tabs: true,
+			js: {
+				indent_with_tabs: true
+			},
+			mode: 'VERIFY_AND_WRITE'
 		}))
 		.pipe(gulp.dest(function(f) {
 			return f.base;

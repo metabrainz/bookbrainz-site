@@ -66,3 +66,12 @@ Or on Windows:
 
     gulp watch
     set DEBUG=bbsite & nodemon bin\\www
+
+Precommit Hooks
+---------------
+
+If you ever intend to push any code to the BookBrainz Site repository, or open a pull request, ensure you have run the following command:
+
+    gulp tidy
+
+This formats the code to the project's standard Node.js format. One way to make sure you don't forget it to add this to your '.git/hooks/pre-commit' hook. You'll need to make sure this file has execute permissions set.
