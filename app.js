@@ -14,6 +14,7 @@ var RedisStore = require('connect-redis')(session);
 var staticCache = require('express-static-cache');
 
 var auth = require('./helpers/auth');
+var config = require('./helpers/config');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -27,7 +28,7 @@ app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
 // webservice
-app.set('webservice', 'http://bookbrainz.org/ws');
+app.set('webservice', config.site.webservice);
 
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
@@ -46,11 +47,13 @@ app.use(staticCache(path.join(__dirname, 'public/js'), {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
 	store: new RedisStore({
-		host: 'localhost',
-		port: 6379,
-		ttl: 3600
+		host: config.session.redis.host,
+		port: config.session.redis.port,
+		ttl: config.session.redis.ttl
 	}),
-	secret: 'Something here!'
+	secret: config.session.secret,
+	resave: false,
+	saveUninitialized: false
 }));
 
 auth.init(app);
