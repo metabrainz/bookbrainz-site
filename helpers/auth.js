@@ -1,4 +1,5 @@
 var passport = require('passport'),
+    config = rootRequire('helpers/config'),
     BBWSStrategy = require('./passport-bookbrainz-ws');
 
 var auth = {};
@@ -8,7 +9,7 @@ auth.init = function(app) {
 
 	passport.use(new BBWSStrategy({
 		wsURL: ws,
-		clientID: 'f8accd51-33d2-4d9b-a2c1-c01a76a4f096'
+		clientID: config.site.clientID
 	}, function(req, accessToken, refreshToken, profile, done) {
 		req.session.bearerToken = accessToken;
 
