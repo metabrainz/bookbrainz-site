@@ -30,7 +30,11 @@ app.locals.basedir = app.get('views');
 app.set('webservice', 'http://bookbrainz.org/ws');
 
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(logger('dev'));
+
+if (app.get('env') !== 'testing') {
+	app.use(logger('dev'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
