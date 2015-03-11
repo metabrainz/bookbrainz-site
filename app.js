@@ -47,7 +47,9 @@ app.use(session({
 		port: config.session.redis.port,
 		ttl: config.session.redis.ttl
 	}),
-	secret: config.session.secret
+	secret: config.session.secret,
+	resave: false,
+	saveUninitialized: false
 }));
 
 auth.init(app);
