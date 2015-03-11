@@ -1,0 +1,13 @@
+{
+	"site": {
+		"webservice": "http://bookbrainz.org/ws"
+	},
+	"session": {
+		"secret": "Something here!",
+		"redis": {
+			"host": "localhost",
+			"port": 6379,
+			"ttl": 3600
+		}
+	}
+}
