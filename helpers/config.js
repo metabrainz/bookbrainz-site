@@ -1,8 +1,5 @@
-/*
- * This can be refined later to allow pulling in different configurations
- * based on environment or user specification, but for now, we can keep it
- * simple.
-*/
-var config = rootRequire('config/cfg');
+/* Pull in environment-specific configuration. */
+var env = process.env.NODE_ENV || "development";
+var config = rootRequire('config/' + env);
 
 module.exports = config;
