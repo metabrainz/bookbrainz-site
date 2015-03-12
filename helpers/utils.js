@@ -2,6 +2,14 @@ var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
+function getEntityLink(entity) {
+  if (entity.data.publication_data) {
+    return '/publication/' + entity.entity_gid;
+  } else if (entity.data.creator_data) {
+    return '/creator/' + entity.entity_gid;
+  }
+}
+
 // Returns a Promise which fulfills with an entity with aliases and data.
 function getEntity(ws, entityGid, fetchOptions) {
   var entityPromise = request.get(ws + '/entity/' + entityGid).promise()
@@ -50,5 +58,6 @@ function getEntity(ws, entityGid, fetchOptions) {
 }
 
 module.exports = {
+  getEntityLink: getEntityLink,
   getEntity: getEntity,
 };

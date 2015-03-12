@@ -1,19 +1,13 @@
 var Handlebars = require('handlebars');
+var utils = require('./utils');
 
-function getEntityLink(entity) {
-  if (entity.data.publication_data) {
-    return '/publication/' + entity.entity_gid;
-  } else if (entity.data.creator_data) {
-    return '/creator/' + entity.entity_gid;
-  }
-}
 
 function renderRelationship(entities, relationship, language) {
   var template = Handlebars.compile(relationship.forward_template);
 
   var data = {
     'entities': entities.map(function(entity) {
-      return '<a href="' + getEntityLink(entity) + '">' +
+      return '<a href="' + utils.getEntityLink(entity) + '">' +
         entity.aliases.aliases[0].name + '</a>';
     })
   };
