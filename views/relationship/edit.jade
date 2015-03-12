@@ -51,6 +51,9 @@ block body
       .col-md-6.col-md-offset-3
         button.btn.btn-success.btn-lg.btn-block(data-bind="click: submit") Submit!
 
+    .alert.alert-danger.alert-dismissible(data-bind='visible: error, with: error')
+      span(data-bind='text: msg')
+
   script(src='/js/relationship_editor.js')
 
   include /footer

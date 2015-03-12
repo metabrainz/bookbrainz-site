@@ -120,13 +120,18 @@ function RelationshipEditor(relationships, relationshipTypes) {
 				})
 			};
 		})).promise().then(function(revision) {
-			console.log(revision.body.entity.entity_gid);
-			window.location.href = '/creator/' + revision.body.entity.entity_gid;
+			utils.getEntity(ws, entityGid, {
+					data: true
+				}).then(function fulfillRedirectEntity(entity) {
+					window.location.href = utils.getEntityLink(entity);
+				});
 		}).
 		catch(function(err) {
 			self.error(err);
 		});
 	};
+
+	self.error = ko.observable();
 }
 
 var relationshipsPromise = request.get(ws + '/entity/' + entityGid + '/relationships').promise()
