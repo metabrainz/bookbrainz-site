@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "debug": "DEBUG=bbsite node ./bin/www",
     "debug_win": "set DEBUG=bbsite & node bin\\www",
-    "test": "node_modules/.bin/mocha"
+    "test": "gulp && node_modules/.bin/mocha"
   },
   "dependencies": {
     "bluebird": "^2.5.1",
