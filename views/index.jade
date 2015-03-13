@@ -15,18 +15,21 @@ block body
       .col-md-12.text-center
         h2 Latest Updates
         .row
-          for entity in recent
-            .col-xs-12.col-sm-6.col-md-4
-              .recently-updated.panel.panel-default.panel-body
-                if entity.data.body.publication_data
-                  div
-                    a(href='/publication/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
-                  if entity.data.body.publication_data.publication_type
-                    i=entity.data.body.publication_data.publication_type.label
-                else if entity.data.body.creator_data
-                  div
-                    a(href='/creator/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
-                  if entity.data.body.creator_data.creator_type
-                    i=entity.data.body.creator_data.creator_type.label
+          if recent
+            for entity in recent
+              .col-xs-12.col-sm-6.col-md-4
+                .recently-updated.panel.panel-default.panel-body
+                  if entity.data.body.publication_data
+                    div
+                      a(href='/publication/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
+                    if entity.data.body.publication_data.publication_type
+                      i=entity.data.body.publication_data.publication_type.label
+                  else if entity.data.body.creator_data
+                    div
+                      a(href='/creator/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
+                    if entity.data.body.creator_data.creator_type
+                      i=entity.data.body.creator_data.creator_type.label
+          else
+            em Unable to retrieve latest updates
 
   include footer

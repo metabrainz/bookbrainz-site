@@ -9,22 +9,29 @@ router.get('/', function(req, res) {
 	var ws = req.app.get('webservice');
 	var entityPromise = request.get(ws + '/entity?limit=9').promise();
 
-	entityPromise.then(function(entities) {
-		var extraData = entities.body.objects.map(function(entity) {
-			entity.data = request.get(entity.data_uri).promise();
-			entity.aliases = request.get(entity.aliases_uri).promise();
-			return Promise.props(entity);
+	var render = function(entitiesWithData) {
+		res.render('index', {
+			title: 'BookBrainz',
+			user: req.user,
+			session: req.session,
+			recent: entitiesWithData
 		});
+	};
 
-		Promise.all(extraData).then(function(entitiesWithData) {
-			res.render('index', {
-				title: 'BookBrainz',
-				user: req.user,
-				session: req.session,
-				recent: entitiesWithData
+	entityPromise
+		.then(function(entities) {
+			var extraData = entities.body.objects.map(function(entity) {
+				entity.data = request.get(entity.data_uri).promise();
+				entity.aliases = request.get(entity.aliases_uri).promise();
+				return Promise.props(entity);
 			});
+
+			return Promise.all(extraData);
+		})
+		.then(render)
+		.catch(function() {
+			render(null);
 		});
-	});
 });
 
 router.get('/about', function(req, res) {
