@@ -11,7 +11,7 @@ block body
       .col-md-12
         ul.nav.nav-tabs
           li.active: a(href='./'+editor.user_id) Profile
-          li: a(href=editor.user_id+'/edits') Edits
+          li: a(href=editor.user_id+'/revisions') Revisions
     .row
       .col-md-7
         h2 Basic Info
@@ -42,21 +42,17 @@ block body
         h2 Stats
         if stats
           dl.dl-horizontal
-            dt Total Edits
-            dd=stats.total_edits
             dt Total Revisions
             dd=stats.total_revisions
-            dt Edits Accepted
-            dd=stats.edits_accepted
-            dt Edits Rejected
-            dd=stats.edits_rejected
-            dt Edits Failed
-            dd=stats.edits_failed
+            dt Revisions Applied
+            dd=stats.revisions_applied
+            dt Revisions Reverted
+            dd=stats.revisions_reverted
         else
           p N/A
       .col-md-5
         h2 Activity
-        canvas#editChart(width="400", height="250")
+        canvas#revisionChart(width="400", height="250")
 
 
   include ../footer

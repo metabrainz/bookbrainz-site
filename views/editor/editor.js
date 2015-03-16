@@ -26,7 +26,7 @@ var data = {
 };
 
 function respondCanvas() {
-	var chart = $('#editChart');
+	var chart = $('#revisionChart');
 	chart.attr('width', chart.width());
 	chart.attr('height', chart.height());
 	//Call a function to redraw other content (texts, images etc)

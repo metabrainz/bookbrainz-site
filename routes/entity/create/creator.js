@@ -43,17 +43,6 @@ router.get('/creator/create', auth.isAuthenticated, function(req, res) {
 router.post('/creator/create/handler', auth.isAuthenticated, function(req, res) {
 	var ws = req.app.get('webservice');
 
-	console.log(req.body);
-
-	if (!req.body.editId) {
-		console.log('Make new edit!');
-	}
-
-	// If 'new edit' in form, create a new edit.
-	var editPromise = request.post(ws + '/edits')
-		.send({})
-		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise();
-
 	var changes = {
 		'entity_gid': [],
 		'creator_data': {
@@ -95,16 +84,12 @@ router.post('/creator/create/handler', auth.isAuthenticated, function(req, res) 
 		};
 	});
 
-	editPromise.then(function(edit) {
-		changes.edit_id = edit.body.edit_id;
-
-		request.post(ws + '/revisions')
-			.set('Authorization', 'Bearer ' + req.session.bearerToken)
-			.send(changes).promise()
-			.then(function(revision) {
-				res.send(revision.body);
-			});
-	});
+	request.post(ws + '/revisions')
+		.set('Authorization', 'Bearer ' + req.session.bearerToken)
+		.send(changes).promise()
+		.then(function(revision) {
+			res.send(revision.body);
+		});
 });
 
 module.exports = router;

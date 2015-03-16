@@ -15,27 +15,15 @@ router.post('/relationship/create/handler', auth.isAuthenticated, function(req, 
 	var ws = req.app.get('webservice');
 
 	req.body.forEach(function(relationship) {
-		// Send a relationship revision for each of the relationships, in a single
-		// edit - however, WS doesn't support multi-revision edits yet, so use many
-		var editPromise = request.post(ws + '/edits')
-			.send({})
-			.set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
-			.then(function(editResponse) {
-				return editResponse.body;
-			});
-
+		// Send a relationship revision for each of the relationships
 		var changes = relationship;
 
-		editPromise.then(function(edit) {
-			changes.edit_id = edit.edit_id;
-
-			request.post(ws + '/revisions')
-				.set('Authorization', 'Bearer ' + req.session.bearerToken)
-				.send(changes).promise()
-				.then(function(revision) {
-					res.send(revision.body);
-				});
-		});
+		request.post(ws + '/revisions')
+			.set('Authorization', 'Bearer ' + req.session.bearerToken)
+			.send(changes).promise()
+			.then(function(revision) {
+				res.send(revision.body);
+			});
 	});
 });
 
