@@ -27,8 +27,6 @@ router.get('/publication/create', auth.isAuthenticated, function(req, res) {
 			});
 
 			res.render('entity/create/publication', {
-				user: req.user,
-				session: req.session,
 				languages: alphabeticLanguagesList,
 				publicationTypes: publicationTypes
 			});

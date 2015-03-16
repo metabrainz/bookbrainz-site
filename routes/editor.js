@@ -14,10 +14,7 @@ router.get('/editor/:id', function(req, res) {
 	var userStatsPromise = request.get(ws + '/user/' +
 		req.params.id + '/stats').promise();
 
-	var renderData = {
-		user: req.user,
-		session: req.session
-	};
+	var renderData = {};
 
 	userStatsPromise.then(function(stats) {
 		renderData.stats = stats.body;
@@ -70,8 +67,6 @@ router.get('/editor/:id/edits', function(req, res) {
 		console.log(editObjects);
 
 		res.render('editor/edits', {
-			user: req.user,
-			session: req.session,
 			editor: user.body,
 			edits: edits.body
 		});

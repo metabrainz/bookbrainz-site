@@ -49,8 +49,6 @@ function renderEntityView(req, res, template) {
 			});
 
 			res.render(template, {
-				user: req.user,
-				session: req.session,
 				entity: entity,
 			});
 		});

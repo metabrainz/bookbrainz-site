@@ -52,13 +52,13 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
             a(href='/editor/'+user.id)= user.name
           li
             a(href='/inbox')
-              if session.inboxCount === 0
+              if inboxCount === 0
                 span.fa.fa-envelope-o
                 span.sr-only Inbox
               else
                 span.fa.fa-envelope
-                span.badge=session.inboxCount
-                span.sr-only #{session.inboxCount} Messages in inbox
+                span.badge=inboxCount
+                span.sr-only #{inboxCount} Messages in inbox
 
         li
           if user

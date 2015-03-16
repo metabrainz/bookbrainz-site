@@ -4,8 +4,6 @@ var auth = rootRequire('helpers/auth');
 
 router.get('/login', function(req, res) {
 	res.render('login', {
-		user: req.user,
-		session: req.session,
 		error: req.query.error
 	});
 });

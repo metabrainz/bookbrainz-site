@@ -7,8 +7,6 @@ require('superagent-bluebird-promise');
 
 function relationshipEditor(req, res) {
 	res.render('relationship/edit', {
-		user: req.user,
-		session: req.session,
 		entityGid: req.params.id
 	});
 }

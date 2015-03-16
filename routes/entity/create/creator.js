@@ -32,8 +32,6 @@ router.get('/creator/create', auth.isAuthenticated, function(req, res) {
 			});
 
 			res.render('entity/create/creator', {
-				user: req.user,
-				session: req.session,
 				genders: genderList,
 				languages: alphabeticLanguagesList,
 				creatorTypes: creatorTypes

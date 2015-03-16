@@ -14,7 +14,7 @@ block body
       li(class=(view === 'inbox' ? 'active' : undefined))
         a(href="/inbox")
           | Inbox&nbsp;
-          span.badge=session.inboxCount
+          span.badge=inboxCount
       li(class=(view === 'archive' ? 'active' : undefined))
         a(href="/archive") Archive
       li(class=(view === 'sent' ? 'active' : undefined))

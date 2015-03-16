@@ -58,6 +58,14 @@ app.use(session({
 
 auth.init(app);
 
+/* Add middleware to set variables used for every rendered route. */
+app.use(function(req, res, next) {
+	res.locals.user = req.user;
+	res.locals.inboxCount = (req.session && req.session.inboxCount) ? req.session.inboxCount : 0;
+
+	next();
+});
+
 app.use('/', routes);
 app.use('/users', users);
 app.use('/', login);
