@@ -26,4 +26,22 @@ bbws.get = function(path, options) {
 		});
 };
 
+bbws.post = function(path, data, options) {
+	options = options || {};
+
+	if (path.charAt(0) === '/')
+		path = config.site.webservice + path;
+
+	if (!options.accessToken)
+		return Promise.reject(new Error('User is not authenticated'));
+
+	return superagent.post(path)
+		.set('Authorization', 'Bearer ' + options.accessToken)
+		.send(data)
+		.promise()
+		.then(function(response) {
+			return response.body;
+		});
+};
+
 module.exports = bbws;
