@@ -12,7 +12,6 @@ router.get('/creator/:id', function(req, res, next) {
 
 	Creator.findOne(req.params.id, {
 		populate: [
-			'aliases',
 			'annotation',
 			'disambiguation'
 		]
