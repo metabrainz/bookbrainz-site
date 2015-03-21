@@ -14,14 +14,14 @@ block body
               span.sr-only Share publicaion
             button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
               span.sr-only Remove publication
-            a(href='/publication/'+entity.entity_gid+'/history')
+            a(href='/publication/'+entity.bbid+'/history')
               span.sr-only History
               code='r'+entity.master_revision_id
-          if entity.aliases.aliases
-            =entity.aliases.aliases[0].name
+          if entity.aliases
+            =entity.aliases[0].name
             |&nbsp;
-          if entity.disambiguation.disambiguation
-            small='('+entity.disambiguation.disambiguation.comment+')'
+          if entity.disambiguation
+            small='('+entity.disambiguation.comment+')'
         hr
     .row
       .col-md-8
@@ -46,12 +46,13 @@ block body
 
         h2
           small.pull-right
-            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit relationships', href='/publication/'+entity.entity_gid+'/relationships')
+            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit relationships', href='/publication/'+entity.bbid+'/relationships')
               span.sr-only Edit relationships
           | Relationships
         ul.list-unstyled
-          for relationship in entity.relationships.objects
-            li!=relationship.rendered
+          if entity.relationships
+            for relationship in entity.relationships
+              li!=relationship.rendered
 
       .col-md-4
         .text-center No Image
@@ -59,7 +60,7 @@ block body
         span(data-bind='text: editMode')
         dl
           dt Type
-          dd=entity.data.publication_data.publication_type.label
+          dd=entity.publication_type.label
 
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()
