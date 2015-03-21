@@ -4,6 +4,7 @@ var auth = rootRequire('helpers/auth');
 var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');
+var Creator = rootRequire('data/entities/creator');
 
 router.get('/creator/create', auth.isAuthenticated, function(req, res) {
 	// Get the list of publication types
@@ -41,37 +42,29 @@ router.get('/creator/create', auth.isAuthenticated, function(req, res) {
 
 
 router.post('/creator/create/handler', auth.isAuthenticated, function(req, res) {
-	var ws = req.app.get('webservice');
-
 	var changes = {
-		'entity_gid': [],
-		'creator_data': {
-			'ended': req.body.ended
-		}
+		'bbid': null,
+		'ended': req.body.ended
 	};
 
 	if (req.body.creatorTypeId) {
-		changes.creator_data.creator_type_id = req.body.creatorTypeId;
+		changes.creator_type = {
+			creator_type_id: req.body.creatorTypeId
+		};
 	}
 
 	if (req.body.genderId) {
-		changes.creator_data.gender_id = req.body.genderId;
+		changes.gender = {
+			gender_id: req.body.genderId
+		};
 	}
 
 	if (req.body.beginDate) {
-		changes.creator_data.begin_date = req.body.beginDate;
+		changes.begin_date = req.body.beginDate;
 	}
 
 	if (req.body.endDate) {
-		changes.creator_data.end_date = req.body.endDate;
-	}
-
-	if (req.body.disambiguation) {
-		changes.disambiguation = req.body.disambiguation;
-	}
-
-	if (req.body.annotation) {
-		changes.annotation = req.body.annotation;
+		changes.end_date = req.body.endDate;
 	}
 
 	changes.aliases = req.body.aliases.map(function(alias) {
@@ -84,11 +77,11 @@ router.post('/creator/create/handler', auth.isAuthenticated, function(req, res) 
 		};
 	});
 
-	request.post(ws + '/revisions')
-		.set('Authorization', 'Bearer ' + req.session.bearerToken)
-		.send(changes).promise()
+	Creator.create(changes, {
+		session: req.session
+	})
 		.then(function(revision) {
-			res.send(revision.body);
+			res.send(revision);
 		});
 });
 
