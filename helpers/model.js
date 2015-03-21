@@ -163,4 +163,24 @@ Model.prototype.findOne = function(id, options) {
 			});
 };
 
+Model.prototype.create = function(data, options) {
+	var self = this;
+	options = options || {};
+
+	if (this.endpoint === undefined)
+		return Promise.reject(new Error('Model has no endpoint'));
+
+	var path = '/' + this.endpoint + '/';
+	var wsOptions = this._getAuthOptions(options.session);
+	var object = {};
+
+	Object.keys(this.fields).forEach(function(key) {
+		var field = self.fields[key];
+
+		object[key] = data[key];
+	});
+
+	return bbws.post(path, object, wsOptions);
+};
+
 module.exports = Model;
