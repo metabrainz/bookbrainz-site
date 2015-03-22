@@ -69,7 +69,7 @@ Model.prototype._fetchSingleResult = function(result, populate, session) {
 			var uri = result[resultsField];
 
 			/* Choose function to call based on whether we expect a list. */
-			var findFunc = field.many ? ['find'] : ['findOne'];
+			var findFunc = field.many ? 'find' : 'findOne';
 
 			object[key] = field.model[findFunc]({
 				path: uri,
