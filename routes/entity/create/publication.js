@@ -1,28 +1,20 @@
-var express = require('express');
-var router = express.Router();
-var auth = rootRequire('helpers/auth');
-var request = require('superagent');
-var Promise = require('bluebird');
-require('superagent-bluebird-promise');
+var express = require('express'),
+    router = express.Router(),
+    auth = rootRequire('helpers/auth'),
+    Promise = require('bluebird'),
+    Publication = rootRequire('data/entities/publication'),
+    PublicationType = rootRequire('data/properties/publication-type'),
+    Language = rootRequire('data/properties/language');
 
 /* create publication endpoint */
 router.get('/publication/create', auth.isAuthenticated, function(req, res) {
-	var ws = req.app.get('webservice');
-
 	// Get the list of publication types
-	var publicationTypesPromise = request.get(ws + '/publicationType').promise()
-		.then(function(publicationTypesResponse) {
-			return publicationTypesResponse.body;
-		});
-
-	var languagesPromise = request.get(ws + '/language').promise()
-		.then(function(languagesResponse) {
-			return languagesResponse.body;
-		});
+	var publicationTypesPromise = PublicationType.find();
+	var languagesPromise = Language.find();
 
 	Promise.join(publicationTypesPromise, languagesPromise,
 		function(publicationTypes, languages) {
-			var alphabeticLanguagesList = languages.objects.sort(function(a, b) {
+			var alphabeticLanguagesList = languages.sort(function(a, b) {
 				return a.name.localeCompare(b.name);
 			});
 
@@ -34,32 +26,12 @@ router.get('/publication/create', auth.isAuthenticated, function(req, res) {
 });
 
 router.post('/publication/create/handler', auth.isAuthenticated, function(req, res) {
-	var ws = req.app.get('webservice');
-
-	console.log(req.body);
-
-	if (!req.body.editId) {
-		console.log('Make new edit!');
-	}
-	// If 'new edit' in form, create a new edit.
-	var editPromise = request.post(ws + '/edits')
-		.send({})
-		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise();
-
 	var changes = {
-		'entity_gid': [],
-		'publication_data': {
-			'publication_type_id': req.body.publicationTypeId
+		'bbid': null,
+		'publication_type': {
+			publication_type_id: req.body.publicationTypeId
 		}
 	};
-
-	if (req.body.disambiguation) {
-		changes.disambiguation = req.body.disambiguation;
-	}
-
-	if (req.body.annotation) {
-		changes.annotation = req.body.annotation;
-	}
 
 	changes.aliases = req.body.aliases.map(function(alias) {
 		return {
@@ -71,16 +43,12 @@ router.post('/publication/create/handler', auth.isAuthenticated, function(req, r
 		};
 	});
 
-	editPromise.then(function(edit) {
-		changes.edit_id = edit.body.id;
-
-		request.post(ws + '/revisions')
-			.set('Authorization', 'Bearer ' + req.session.bearerToken)
-			.send(changes).promise()
-			.then(function(revision) {
-				res.send(revision.body);
-			});
-	});
+	Publication.create(changes, {
+		session: req.session
+	})
+		.then(function(revision) {
+			res.send(revision);
+		});
 });
 
 module.exports = router;

@@ -35,8 +35,8 @@ block body
               label.col-md-3.control-label Type
               .col-md-9
                 select.form-control(required, data-bind="value: publicationTypeId")
-                  each type in publicationTypes.objects
-                    option(value=type.publication_type_id)=type.label
+                  each type in publicationTypes
+                    option(value=type.id)=type.label
             .form-group
               label.col-md-3.control-label Disambiguation
               .col-md-9
