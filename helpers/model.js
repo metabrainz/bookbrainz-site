@@ -44,9 +44,12 @@ Model.prototype.extend = function(fields) {
 	this.fields = _.extend(this.fields, fields);
 };
 
-Model.prototype._fetchSingleResult = function(result, populate, session) {
+Model.prototype._fetchSingleResult = function(result, options) {
 	var self = this;
 	var object = {};
+
+	if (options.populate && !Array.isArray(options.populate))
+		options.populate = [ options.populate ];
 
 	if (_.isEmpty(result))
 		return null;
@@ -61,7 +64,7 @@ Model.prototype._fetchSingleResult = function(result, populate, session) {
 			object[key] = result[resultsField];
 		}
 		else {
-			if (!_.contains(populate, key)) {
+			if (!_.contains(options.populate, key)) {
 				object[key] = null;
 				return;
 			}
@@ -76,7 +79,7 @@ Model.prototype._fetchSingleResult = function(result, populate, session) {
 
 			object[key] = field.model[findFunc]({
 				path: uri,
-				session: session
+				session: options.session
 			});
 		}
 	});
@@ -105,17 +108,13 @@ Model.prototype.find = function(options) {
 
 	return bbws.get(path, wsOptions)
 		.then(function(result) {
-				if (options.populate && !Array.isArray(options.populate)) {
-					options.populate = [ options.populate ];
-				}
-
 				if (!Array.isArray(result.objects))
 					throw new Error('Array expected, but received object');
 
 				var promises = [];
 
 				result.objects.forEach(function(object) {
-					promises.push(self._fetchSingleResult(object, options.populate, options.session));
+					promises.push(self._fetchSingleResult(object, options));
 				});
 
 				return Promise.all(promises);
@@ -155,14 +154,10 @@ Model.prototype.findOne = function(id, options) {
 
 	return bbws.get(path, wsOptions)
 		.then(function(result) {
-				if (options.populate && !Array.isArray(options.populate)) {
-					options.populate = [ options.populate ];
-				}
-
 				if (result.objects && Array.isArray(result.objects))
 					throw new Error('Object expected, but received array');
 
-				return self._fetchSingleResult(result, options.populate, options.session);
+				return self._fetchSingleResult(result, options);
 			});
 };
 
