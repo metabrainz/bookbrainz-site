@@ -33,6 +33,12 @@ router.post('/publication/create/handler', auth.isAuthenticated, function(req, r
 		}
 	};
 
+	if (req.body.disambiguation)
+		changes.disambiguation = req.body.disambiguation;
+
+	if (req.body.annotation)
+		changes.annotation = req.body.annotation;
+
 	changes.aliases = req.body.aliases.map(function(alias) {
 		return {
 			'name': alias.name,
