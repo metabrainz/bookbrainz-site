@@ -1,34 +1,24 @@
-var express = require('express');
-var router = express.Router();
-var auth = rootRequire('helpers/auth');
-var request = require('superagent');
-var Promise = require('bluebird');
-require('superagent-bluebird-promise');
-var Creator = rootRequire('data/entities/creator');
+var express = require('express'),
+    router = express.Router(),
+    auth = rootRequire('helpers/auth'),
+    Promise = require('bluebird'),
+    Creator = rootRequire('data/entities/creator'),
+    Gender = rootRequire('data/properties/gender'),
+    CreatorType = rootRequire('data/properties/creator-type'),
+    Language = rootRequire('data/properties/language');
 
 router.get('/creator/create', auth.isAuthenticated, function(req, res) {
-	// Get the list of publication types
-	var ws = req.app.get('webservice');
-
-	var gendersPromise = request.get(ws + '/gender').promise().then(function(genderResponse) {
-		return genderResponse.body;
-	});
-
-	var creatorTypesPromise = request.get(ws + '/creatorType').promise().then(function(creatorTypesResponse) {
-		return creatorTypesResponse.body;
-	});
-
-	var languagesPromise = request.get(ws + '/language').promise().then(function(languagesResponse) {
-		return languagesResponse.body;
-	});
+	var gendersPromise = Gender.find();
+	var creatorTypesPromise = CreatorType.find();
+	var languagesPromise = Language.find();
 
 	Promise.join(gendersPromise, creatorTypesPromise, languagesPromise,
 		function(genders, creatorTypes, languages) {
-			var genderList = genders.objects.sort(function(a, b) {
+			var genderList = genders.sort(function(a, b) {
 				return a.id > b.id;
 			});
 
-			var alphabeticLanguagesList = languages.objects.sort(function(a, b) {
+			var alphabeticLanguagesList = languages.sort(function(a, b) {
 				return a.name.localeCompare(b.name);
 			});
 
