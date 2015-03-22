@@ -17,7 +17,7 @@ h2 Add Alias
       .col-md-9
         select#languageSelect.form-control(required, data-bind="value: languageId")
           each language in languages
-            option(value=language.language_id)=language.name
+            option(value=language.id)=language.name
     .form-group
       .col-md-9.col-md-offset-3
         .row

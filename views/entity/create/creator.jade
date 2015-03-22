@@ -54,7 +54,7 @@ block body
               .col-md-9
                 select.form-control(data-bind="value: creatorTypeId, valueAllowUnset: true")
                   each type in creatorTypes
-                    option(value=type.creator_type_id)=type.label
+                    option(value=type.id)=type.label
             .form-group
               label.col-md-3.control-label Disambiguation
               .col-md-9
