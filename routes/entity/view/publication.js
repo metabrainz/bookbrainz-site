@@ -11,7 +11,10 @@ router.get('/publication/:id', function(req, res, next) {
 	};
 
 	Publication.findOne(req.params.id, {
-		populate: [ 'aliases' ]
+		populate: [
+			'annotation',
+			'disambiguation'
+		]
 	})
 		.then(render)
 		.catch(function(err) {
