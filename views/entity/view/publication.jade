@@ -60,7 +60,7 @@ block body
         span(data-bind='text: editMode')
         dl
           dt Type
-          dd=entity.publication_type.label
+          dd=(entity.publication_type ? entity.publication_type.label : '?')
 
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()
