@@ -22,7 +22,7 @@ function CreatePublicationViewModel() {
 		self.aliases.push({
 			name: self.newName,
 			sortName: self.newSortName,
-			languageId: self.languageId,
+			languageId: parseInt(self.languageId),
 			languageText: $('#languageSelect :selected').text(),
 			dflt: self.dflt(),
 			primary: self.primary()
