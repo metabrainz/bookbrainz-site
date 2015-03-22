@@ -48,6 +48,9 @@ Model.prototype._fetchSingleResult = function(result, populate, session) {
 	var self = this;
 	var object = {};
 
+	if (_.isEmpty(result))
+		return null;
+
 	Object.keys(this.fields).forEach(function(key) {
 		var field = self.fields[key];
 
