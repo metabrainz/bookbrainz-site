@@ -1,5 +1,6 @@
 var util = require('util'),
-    PasswordGrantStrategy = require('passport-oauth2-password-grant');
+    PasswordGrantStrategy = require('passport-oauth2-password-grant'),
+    User = rootRequire('data/user');
 
 function BBWSStrategy(options, verify) {
 	options = options || {};
@@ -19,23 +20,19 @@ function BBWSStrategy(options, verify) {
 util.inherits(BBWSStrategy, PasswordGrantStrategy);
 
 BBWSStrategy.prototype.userProfile = function(accessToken, done) {
-	this._oauth2.get(this._wsURL + '/user/secrets', accessToken, function(err, body, res) {
-		if (err)
-			return done(new Error('Failed to fetch user profile'));
-
-		try {
-			var json = JSON.parse(body);
-
+	User.getCurrent(accessToken)
+		.then(function(user) {
 			var profile = {
-				id: json.user_id,
-				name: json.name
+				id: user.user_id,
+				name: user.name
 			};
 
 			done(null, profile);
-		} catch(e) {
-			done(e);
-		}
-	});
+		})
+		.catch(function(err) {
+			console.log(err.stack);
+			return done(new Error('Failed to fetch user profile'));
+		});
 };
 
 module.exports = BBWSStrategy;
