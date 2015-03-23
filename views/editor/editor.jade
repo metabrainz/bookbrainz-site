@@ -10,24 +10,24 @@ block body
     .row
       .col-md-12
         ul.nav.nav-tabs
-          li.active: a(href='./'+editor.user_id) Profile
-          li: a(href=editor.user_id+'/revisions') Revisions
+          li.active: a(href='./'+editor.id) Profile
+          li: a(href=editor.id+'/revisions') Revisions
     .row
       .col-md-7
         h2 Basic Info
-          if secrets
+          if editor.user_id == user.id
             small.pull-right
               button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
                 span.sr-only Edit basic editor info
         dl.dl-horizontal
           dt Email
           dd
-            if secrets
-              =secrets.email
+            if editor.email
+              =editor.email
               | &nbsp;
             i (hidden)
-            if (user && !secrets)
-              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + editor.user_id)
+            if (editor.user_id != user.id)
+              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + editor.id)
                 span.sr-only Compose message to #{editor.name}
           dt Type
           dd=editor.user_type.label
