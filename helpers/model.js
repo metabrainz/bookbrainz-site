@@ -11,17 +11,6 @@ function Model(options) {
 	this.fields = this.fields || {};
 };
 
-Model.prototype._getAuthOptions = function(session) {
-	var accessToken = (session && session.bearerToken) ? session.bearerToken : null;
-
-	var options = {
-		authRequired: this.authRequired,
-		accessToken: accessToken
-	};
-
-	return options;
-};
-
 Model.prototype.extend = function(fields) {
 	if (!fields || typeof fields !== 'object')
 		throw new TypeError('Model fields not an object');
@@ -103,9 +92,7 @@ Model.prototype.find = function(options) {
 		path = options.path;
 	}
 
-	var wsOptions = this._getAuthOptions(options.session);
-
-	return bbws.get(path, wsOptions)
+	return bbws.get(path)
 		.then(function(result) {
 				if (!Array.isArray(result.objects))
 					throw new Error('Array expected, but received object');
@@ -148,9 +135,7 @@ Model.prototype.findOne = function(id, options) {
 		path = options.path;
 	}
 
-	var wsOptions = this._getAuthOptions(options.session);
-
-	return bbws.get(path, wsOptions)
+	return bbws.get(path)
 		.then(function(result) {
 				if (result.objects && Array.isArray(result.objects))
 					throw new Error('Object expected, but received array');
