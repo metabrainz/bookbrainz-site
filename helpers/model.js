@@ -100,7 +100,6 @@ Model.prototype.find = function(options) {
 		path = '/' + this.endpoint;
 	}
 	else {
-		/* An absolute path has been specified. */
 		path = options.path;
 	}
 
@@ -124,7 +123,7 @@ Model.prototype.find = function(options) {
 Model.prototype.findOne = function(id, options) {
 	var self = this;
 
-	/* Allow not specifying an ID if the path is absolute. */
+	/* Switch out options with ID if ID is not specified. */
 	if (typeof id === 'object') {
 		options = id;
 		id = null;
@@ -146,7 +145,6 @@ Model.prototype.findOne = function(id, options) {
 		path += '/' + id;
 	}
 	else {
-		/* An absolute path has been specified. */
 		path = options.path;
 	}
 
