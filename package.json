@@ -28,7 +28,8 @@
     "passport-oauth2-password-grant": "~0.0.1",
     "serve-favicon": "~2.2.0",
     "superagent": "^0.21.0",
-    "superagent-bluebird-promise": "^0.5.1"
+    "superagent-bluebird-promise": "^0.5.1",
+    "underscore": "^1.8.0"
   },
   "devDependencies": {
     "browserify": "^8.1.3",
