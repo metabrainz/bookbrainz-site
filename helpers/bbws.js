@@ -6,6 +6,28 @@ require('superagent-bluebird-promise');
 
 bbws = {};
 
+var _processError = function(response) {
+	var newErr;
+
+	switch (response.status) {
+		case 401:
+			newErr = new Error('Not Authorized');
+			break;
+		case 404:
+			newErr = new Error('Not Found');
+			break;
+		case 411:
+			newErr = new Error('Length Required');
+			break;
+		default:
+			newErr = new Error('Unknown Error');
+	}
+
+	newErr.status = response.status;
+
+	throw newErr;
+};
+
 bbws.get = function(path, options) {
 	options = options || {};
 
@@ -19,7 +41,8 @@ bbws.get = function(path, options) {
 		.promise()
 		.then(function(response) {
 			return response.body;
-		});
+		})
+		.catch(_processError);
 };
 
 bbws.post = function(path, data, options) {
@@ -33,12 +56,16 @@ bbws.post = function(path, data, options) {
 	if (options.accessToken)
 		request = request.set('Authorization', 'Bearer ' + options.accessToken);
 
+	if (!data)
+		data = {};
+
 	return request
 		.send(data)
 		.promise()
 		.then(function(response) {
 			return response.body;
-		});
+		})
+		.catch(_processError);
 };
 
 module.exports = bbws;
