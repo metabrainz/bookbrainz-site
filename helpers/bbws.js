@@ -28,11 +28,12 @@ bbws.post = function(path, data, options) {
 	if (path.charAt(0) === '/')
 		path = config.site.webservice + path;
 
-	if (!options.accessToken)
-		return Promise.reject(new Error('User is not authenticated'));
+	var request = superagent.post(path);
 
-	return superagent.post(path)
-		.set('Authorization', 'Bearer ' + options.accessToken)
+	if (options.accessToken)
+		request = request.set('Authorization', 'Bearer ' + options.accessToken);
+
+	return request
 		.send(data)
 		.promise()
 		.then(function(response) {
