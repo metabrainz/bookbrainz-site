@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var request = require('superagent');
-require('superagent-bluebird-promise');
+var express = require('express'),
+    router = express.Router(),
+    User = rootRequire('data/user'),
+    UserType = rootRequire('data/properties/user-type');
 
 router.get('/register', function(req, res) {
 	res.render('register', {
@@ -9,19 +9,37 @@ router.get('/register', function(req, res) {
 	});
 });
 
-router.post('/register/handler', function(req, res) {
+router.post('/register/handler', function(req, res, next) {
 	// This function should post a new user to the /user endpoint of the ws.
-	var ws = req.app.get('webservice');
+	UserType.find()
+		.then(function(results) {
+			var editorType;
 
-	// FIXME: This hardcodes the user type, assuming editor will be #1 - not
-	// very good
-	request.post(ws + '/user').send({
-			'name': req.body.username,
-			'email': req.body.email,
-			'user_type_id': 1
-		}).promise()
+			var hasEditorType = !results.every(function(userType) {
+				if (userType.label == 'Editor') {
+					editorType = userType;
+					return false;
+				}
+
+				return true;
+			});
+
+			if (!hasEditorType)
+				throw new Error('Editor user type not found');
+
+			return User.create({
+				name: req.body.username,
+				email: req.body.email,
+				user_type: {
+					user_type_id: editorType.id
+				}
+			});
+		})
 		.then(function() {
 			res.redirect(303, '/');
+		})
+		.catch(function(err) {
+			next(err);
 		});
 });
 
