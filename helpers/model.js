@@ -152,8 +152,11 @@ Model.prototype.create = function(data, options) {
 		return Promise.reject(new Error('Model has no endpoint'));
 
 	var path = '/' + this.endpoint + '/';
-	var wsOptions = this._getAuthOptions(options.session);
+	var wsOptions = {};
 	var object = {};
+
+	if (options.session && options.session.bearerToken)
+		wsOptions.accessToken = options.session.bearerToken;
 
 	Object.keys(this.fields).forEach(function(key) {
 		var field = self.fields[key];
