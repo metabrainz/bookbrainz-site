@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var auth = rootRequire('helpers/auth');
+
+var bbws = rootRequire('helpers/bbws');
+
 var request = require('superagent');
 require('superagent-bluebird-promise');
 
@@ -14,13 +17,8 @@ router.get('/messageForm', auth.isAuthenticated, function(req, res) {
 });
 
 function renderMessageList(view, req, res) {
-	var ws = req.app.get('webservice');
-	request.get(ws + '/message/' + view)
-		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
-		.then(function(listResponse) {
-			return listResponse.body;
-		})
-		.then(function(list) {
+	bbws.get('/message/' + view, {accessToken: req.session.bearerToken})
+		.then(function fetchMessageList(list) {
 			res.render('editor/messageList', {
 				view: view,
 				messages: list

@@ -4,6 +4,7 @@ global.rootRequire = function(name) {
 	return require(path.join(__dirname, name));
 };
 
+// require dependencies
 var express = require('express');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -19,7 +20,9 @@ var config = require('./helpers/config');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var User = rootRequire('data/user');
 
+// initialize application
 var app = express();
 
 // view engine setup
@@ -61,9 +64,23 @@ auth.init(app);
 /* Add middleware to set variables used for every rendered route. */
 app.use(function(req, res, next) {
 	res.locals.user = req.user;
-	res.locals.inboxCount = (req.session && req.session.inboxCount) ? req.session.inboxCount : 0;
 
-	next();
+	// Get the latest count of messages in the user's inbox.
+	if(req.session && req.session.bearerToken) {
+		bbws.get('/message/inbox', {accessToken: req.session.bearerToken})
+			.then(function inboxAvailable(list) {
+				res.locals.inboxCount = list.objects.length;
+			})
+			.catch(function inboxUnavailable(err) {
+				res.locals.inboxCount = 0;
+			})
+			.finally(function(){
+				next();
+			});
+	} else {
+		res.locals.inboxCount = 0;
+		next();
+	}
 });
 
 app.use('/', routes);

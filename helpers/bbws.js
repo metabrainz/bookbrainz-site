@@ -9,18 +9,20 @@ bbws = {};
 var _processError = function(response) {
 	var newErr;
 
+  var requestPath = response.error.method + ': ' + response.error.path;
+
 	switch (response.status) {
 		case 401:
-			newErr = new Error('Not Authorized');
+			newErr = new Error('Not Authorized (' + requestPath + ')');
 			break;
 		case 404:
-			newErr = new Error('Not Found');
+			newErr = new Error('Not Found (' + requestPath + ')');
 			break;
 		case 411:
-			newErr = new Error('Length Required');
+			newErr = new Error('Length Required (' + requestPath + ')');
 			break;
 		default:
-			newErr = new Error('Unknown Error');
+			newErr = new Error('Unknown Error (' + requestPath + ')');
 	}
 
 	newErr.status = response.status;
@@ -36,6 +38,9 @@ bbws.get = function(path, options) {
 
 	var request = superagent.get(path)
 		.accept('application/json');
+
+  if (options.accessToken)
+    request = request.set('Authorization', 'Bearer ' + options.accessToken);
 
 	return request
 		.promise()
