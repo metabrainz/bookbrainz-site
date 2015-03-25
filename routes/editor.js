@@ -2,7 +2,7 @@ var express = require('express'),
     router = express.Router(),
     User = rootRequire('data/user');
 
-router.get('/editor/:id', function(req, res) {
+router.get('/:id', function(req, res) {
 	var userPromise;
 
 	if (req.params.id == req.user.id)

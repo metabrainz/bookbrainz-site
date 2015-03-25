@@ -7,7 +7,7 @@ var bbws = rootRequire('helpers/bbws');
 var request = require('superagent');
 require('superagent-bluebird-promise');
 
-router.get('/messageForm', auth.isAuthenticated, function(req, res) {
+router.get('/form', auth.isAuthenticated, function(req, res) {
 	res.render('editor/messageForm', {
 		error: req.query.error,
 		recipients: req.query.recipients,
@@ -38,7 +38,7 @@ router.get('/sent', auth.isAuthenticated, function(req, res) {
 	renderMessageList('sent', req, res);
 });
 
-router.get('/message/:id', auth.isAuthenticated, function(req, res) {
+router.get('/:id', auth.isAuthenticated, function(req, res) {
 	var ws = req.app.get('webservice');
 	request.get(ws + '/message/' + req.params.id)
 		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise()

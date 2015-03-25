@@ -3,13 +3,13 @@ var express = require('express'),
     User = rootRequire('data/user'),
     UserType = rootRequire('data/properties/user-type');
 
-router.get('/register', function(req, res) {
+router.get('/', function(req, res) {
 	res.render('register', {
 		error: req.query.error
 	});
 });
 
-router.post('/register/handler', function(req, res, next) {
+router.post('/handler', function(req, res, next) {
 	// This function should post a new user to the /user endpoint of the ws.
 	UserType.find()
 		.then(function(results) {

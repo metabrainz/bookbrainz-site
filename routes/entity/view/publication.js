@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Publication = rootRequire('data/entities/publication');
 
-router.get('/publication/:id', function(req, res, next) {
+router.get('/:id', function(req, res, next) {
 	var render = function(publication) {
 		res.render('entity/view/publication', {
 			title: 'BookBrainz',

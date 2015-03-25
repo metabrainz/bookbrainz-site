@@ -7,7 +7,8 @@ var express = require('express'),
     CreatorType = rootRequire('data/properties/creator-type'),
     Language = rootRequire('data/properties/language');
 
-router.get('/creator/create', auth.isAuthenticated, function(req, res) {
+router.get('/', auth.isAuthenticated, function(req, res) {
+  console.log("A");
 	var gendersPromise = Gender.find();
 	var creatorTypesPromise = CreatorType.find();
 	var languagesPromise = Language.find();
@@ -31,7 +32,7 @@ router.get('/creator/create', auth.isAuthenticated, function(req, res) {
 });
 
 
-router.post('/creator/create/handler', auth.isAuthenticated, function(req, res) {
+router.post('/handler', auth.isAuthenticated, function(req, res) {
 	var changes = {
 		'bbid': null,
 		'ended': req.body.ended

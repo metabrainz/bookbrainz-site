@@ -5,13 +5,13 @@ var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
-function relationshipEditor(req, res) {
+router.get('/', function relationshipEditor(req, res) {
 	res.render('relationship/edit', {
 		entityGid: req.params.id
 	});
-}
+});
 
-router.post('/relationship/create/handler', auth.isAuthenticated, function(req, res) {
+router.post('/handler', auth.isAuthenticated, function(req, res) {
 	var ws = req.app.get('webservice');
 
 	req.body.forEach(function(relationship) {
@@ -26,8 +26,5 @@ router.post('/relationship/create/handler', auth.isAuthenticated, function(req, 
 			});
 	});
 });
-
-router.get('/publication/:id/relationships', relationshipEditor);
-router.get('/creator/:id/relationships', relationshipEditor);
 
 module.exports = router;

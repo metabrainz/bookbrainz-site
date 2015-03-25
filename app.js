@@ -17,9 +17,6 @@ var staticCache = require('express-static-cache');
 var auth = require('./helpers/auth');
 var config = require('./helpers/config');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var login = require('./routes/login');
 var User = rootRequire('data/user');
 
 // initialize application
@@ -83,17 +80,8 @@ app.use(function(req, res, next) {
 	}
 });
 
-app.use('/', routes);
-app.use('/users', users);
-app.use('/', login);
-app.use('/', require('./routes/entity/create/creator'));
-app.use('/', require('./routes/entity/create/publication'));
-app.use('/', require('./routes/entity/view/creator'));
-app.use('/', require('./routes/entity/view/publication'));
-app.use('/', require('./routes/editor'));
-app.use('/', require('./routes/register'));
-app.use('/', require('./routes/relationship/edit'));
-app.use('/', require('./routes/message'));
+// set up routes
+require('./routes')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -7,7 +7,7 @@ var express = require('express'),
     Language = rootRequire('data/properties/language');
 
 /* create publication endpoint */
-router.get('/publication/create', auth.isAuthenticated, function(req, res) {
+router.get('/', auth.isAuthenticated, function(req, res) {
 	// Get the list of publication types
 	var publicationTypesPromise = PublicationType.find();
 	var languagesPromise = Language.find();
@@ -25,7 +25,7 @@ router.get('/publication/create', auth.isAuthenticated, function(req, res) {
 		});
 });
 
-router.post('/publication/create/handler', auth.isAuthenticated, function(req, res) {
+router.post('/handler', auth.isAuthenticated, function(req, res) {
 	var changes = {
 		'bbid': null,
 		'publication_type': {
