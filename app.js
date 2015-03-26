@@ -63,15 +63,17 @@ app.use(function(req, res, next) {
 	res.locals.user = req.user;
 
 	// Get the latest count of messages in the user's inbox.
-	if(req.session && req.session.bearerToken) {
-		bbws.get('/message/inbox', {accessToken: req.session.bearerToken})
+	if (req.session && req.session.bearerToken) {
+		bbws.get('/message/inbox', {
+				accessToken: req.session.bearerToken
+			})
 			.then(function inboxAvailable(list) {
 				res.locals.inboxCount = list.objects.length;
 			})
 			.catch(function inboxUnavailable(err) {
 				res.locals.inboxCount = 0;
 			})
-			.finally(function(){
+			.finally(function() {
 				next();
 			});
 	} else {

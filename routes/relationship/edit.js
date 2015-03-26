@@ -1,9 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var auth = rootRequire('helpers/auth');
-var request = require('superagent');
-var Promise = require('bluebird');
-require('superagent-bluebird-promise');
+var bbws = rootRequire('helpers/bbws');
 
 router.get('/', function relationshipEditor(req, res) {
 	res.render('relationship/edit', {
@@ -18,11 +16,11 @@ router.post('/handler', auth.isAuthenticated, function(req, res) {
 		// Send a relationship revision for each of the relationships
 		var changes = relationship;
 
-		request.post(ws + '/revisions')
-			.set('Authorization', 'Bearer ' + req.session.bearerToken)
-			.send(changes).promise()
-			.then(function(revision) {
-				res.send(revision.body);
+		bbws.post('/relationship', changes, {
+				accessToken: req.session.bearerToken
+			})
+			.then(function returnNewRevision(revision) {
+				res.send(revision);
 			});
 	});
 });
