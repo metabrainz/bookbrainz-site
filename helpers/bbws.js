@@ -39,8 +39,11 @@ bbws.get = function(path, options) {
 	var request = superagent.get(path)
 		.accept('application/json');
 
-  if (options.accessToken)
-    request = request.set('Authorization', 'Bearer ' + options.accessToken);
+	if (options.accessToken)
+		request = request.set('Authorization', 'Bearer ' + options.accessToken);
+
+	if (options.params)
+		request = request.query(options.params);
 
 	return request
 		.promise()

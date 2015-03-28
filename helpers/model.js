@@ -86,13 +86,15 @@ Model.prototype.find = function(options) {
 		if (this.endpoint === undefined)
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
 
-		path = '/' + this.endpoint;
+		path = '/' + this.endpoint + '/';
 	}
 	else {
 		path = options.path;
 	}
 
-	return bbws.get(path)
+	return bbws.get(path, {
+		params: options.params
+	})
 		.then(function(result) {
 				if (!Array.isArray(result.objects))
 					throw new Error('Array expected, but received object');
@@ -124,18 +126,20 @@ Model.prototype.findOne = function(id, options) {
 		if (this.endpoint === undefined)
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
 
-		path = '/' + this.endpoint;
+		path = '/' + this.endpoint + '/';
 
 		if (!id)
 			return Promise.reject(new Error('No object ID or absolute path specified'));
 
-		path += '/' + id;
+		path += id + '/';
 	}
 	else {
 		path = options.path;
 	}
 
-	return bbws.get(path)
+	return bbws.get(path, {
+		params: options.params
+	})
 		.then(function(result) {
 				if (result.objects && Array.isArray(result.objects))
 					throw new Error('Object expected, but received array');
