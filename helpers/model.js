@@ -17,7 +17,10 @@ function Model(options) {
 			throw new TypeError('Specified base object is not a model');
 
 		if (!this.name)
-			throw new Error('Inherited models must specify name');
+			throw new Error('Derived models must specify name');
+
+		if (base.children[this.name])
+			throw new Error('Derived model with this name already exists');
 
 		this.fields = options.base.fields;
 		base.children[this.name] = this;
@@ -54,6 +57,9 @@ Model.prototype._fetchSingleResult = function(result, options) {
 	var object = {};
 
 	if (this.abstract) {
+		if (!this.children[result._type])
+			throw new Error('Model has no child with name ' + result._type);
+
 		model = this.children[result._type];
 		object._type = result._type;
 	}
