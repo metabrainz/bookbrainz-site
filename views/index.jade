@@ -19,14 +19,18 @@ block body
             for entity in recent
               .col-xs-12.col-sm-6.col-md-4
                 .recently-updated.panel.panel-default.panel-body
+                  - var name = '(unnamed)';
+                  if entity.default_alias
+                    - name = entity.default_alias.name;
+
                   if entity._type == 'Publication'
                     div
-                      a(href='/publication/'+entity.bbid)=entity.default_alias.name
+                      a(href='/publication/'+entity.bbid)=name
                     if entity.publication_type
                       i=entity.publication_type.label
                   else if entity._type == 'Creator'
                     div
-                      a(href='/creator/'+entity.bbid)=entity.default_alias.name
+                      a(href='/creator/'+entity.bbid)=name
                     if entity.creator_type
                       i=entity.creator_type.label
           else
