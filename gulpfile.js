@@ -9,6 +9,7 @@ function bundle() {
 	var srcFiles = [
 		'./views/entity/create/publication.js',
 		'./views/entity/create/creator.js',
+		'./views/entity/create/edition.js',
 		'./views/layout.js',
 		'./views/relationship/relationship_editor.js',
 		'./views/editor/profile_editor.js',
@@ -17,6 +18,7 @@ function bundle() {
 	var dstFiles = [
 		'public/js/publication.js',
 		'public/js/creator.js',
+		'public/js/edition.js',
 		'public/js/layout.js',
 		'public/js/relationship_editor.js',
 		'public/js/profile_editor.js',

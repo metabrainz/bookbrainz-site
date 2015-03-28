@@ -3,7 +3,7 @@ var request = require('superagent');
 var $ = require('jquery');
 require('superagent-bluebird-promise');
 
-function CreateCreatorViewModel() {
+function CreateEditionViewModel() {
 	var self = this;
 
 	self.pageAliases = function() {
@@ -19,7 +19,7 @@ function CreateCreatorViewModel() {
 	};
 
 	self.submitRevision = function() {
-		request.post('/creator/create/handler')
+		request.post('/edition/create/handler')
 			.send({
 				aliases: [{
 					name: self.newName,
@@ -29,8 +29,8 @@ function CreateCreatorViewModel() {
 					dflt: true,
 					primary: self.primary
 				}],
-				creatorTypeId: parseInt(self.creatorTypeId),
-				genderId: parseInt(self.genderId),
+				editionStatusId: parseInt(self.editionStatusId),
+				languageId: parseInt(self.languageId),
 				beginDate: self.beginDate,
 				endDate: self.endDate,
 				ended: self.ended,
@@ -47,7 +47,7 @@ function CreateCreatorViewModel() {
 				}
 
 				console.log(revision.body.entity.entity_gid);
-				window.location.href = '/creator/' + revision.body.entity.entity_gid;
+				window.location.href = '/edition/' + revision.body.entity.entity_gid;
 			})
 			.catch(function(err) {
 				self.error(err);
@@ -61,10 +61,11 @@ function CreateCreatorViewModel() {
 	self.aliasLanguageId = '';
 	self.primary = false;
 
+	self.languageId = null;
+
 	self.error = ko.observable();
 
-	self.genderId = null;
-	self.creatorTypeId = null;
+	self.editionStatusId = null;
 	self.disambiguation = '';
 	self.annotation = '';
 
@@ -75,4 +76,4 @@ function CreateCreatorViewModel() {
 	self.ended = ko.observable(false);
 }
 
-ko.applyBindings(new CreateCreatorViewModel());
+ko.applyBindings(new CreateEditionViewModel());

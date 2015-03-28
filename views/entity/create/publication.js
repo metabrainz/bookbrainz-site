@@ -24,8 +24,8 @@ function CreatePublicationViewModel() {
 				aliases: [{
 					name: self.newName,
 					sortName: self.newSortName,
-					languageId: parseInt(self.languageId),
-					languageText: $('#languageSelect :selected').text(),
+					languageId: parseInt(self.aliasLanguageId),
+					languageText: $('#aliasLanguageSelect :selected').text(),
 					dflt: true,
 					primary: self.primary
 				}],
@@ -54,7 +54,7 @@ function CreatePublicationViewModel() {
 
 	self.newName = '';
 	self.newSortName = '';
-	self.languageId = '';
+	self.aliasLanguageId = '';
 	self.primary = false;
 
 	self.error = ko.observable();

@@ -14,6 +14,11 @@ function initCreatorRoutes(app) {
   app.use('/creator/:id/relationships', require('./routes/relationship/edit'));
 }
 
+function initCreatorRoutes(app) {
+  app.use('/edition', require('./routes/entity/edition'));
+  app.use('/edition/:id/relationships', require('./routes/relationship/edit'));
+}
+
 module.exports = function initRoutes(app) {
   initRootRoutes(app);
 

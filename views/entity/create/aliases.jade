@@ -15,7 +15,7 @@ h2 Add Alias
     .form-group
       label.col-md-3.control-label Language
       .col-md-9
-        select#languageSelect.form-control(required, data-bind="value: languageId")
+        select#aliasLanguageSelect.form-control(required, data-bind="value: aliasLanguageId")
           each language in languages
             option(value=language.id)=language.name
     .form-group
