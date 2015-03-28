@@ -1,5 +1,6 @@
 var Model = rootRequire('helpers/model'),
-    UserType = rootRequire('data/properties/user-type');
+		UserType = rootRequire('data/properties/user-type');
+		Gender = rootRequire('data/properties/gender');
 
 var User = new Model({
 	endpoint: 'user'
@@ -14,7 +15,11 @@ User.extend({
 	reputation: { type: 'number' },
 	bio: { type: 'string' },
 	created_at: { type: 'date' },
-	active_at: { type: 'date' }
+	active_at: { type: 'date' },
+	total_revisions: { type: 'number' },
+	revisions_applied: { type: 'number' },
+	revisions_reverted: { type: 'number' },
+	gender: { type: 'object', model: Gender },
 });
 
 User.getCurrent = function(accessToken) {

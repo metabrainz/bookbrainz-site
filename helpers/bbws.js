@@ -76,4 +76,27 @@ bbws.post = function(path, data, options) {
 		.catch(_processError);
 };
 
+bbws.put = function(path, data, options) {
+	options = options || {};
+
+	if (path.charAt(0) === '/')
+		path = config.site.webservice + path;
+
+	var request = superagent.put(path);
+
+	if (options.accessToken)
+		request = request.set('Authorization', 'Bearer ' + options.accessToken);
+
+	if (!data)
+		data = {};
+
+	return request
+		.send(data)
+		.promise()
+		.then(function(response) {
+			return response.body;
+		})
+		.catch(_processError);
+};
+
 module.exports = bbws;
