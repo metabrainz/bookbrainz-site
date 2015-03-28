@@ -5,14 +5,12 @@ function initRootRoutes(app) {
 }
 
 function initPublicationRoutes(app) {
-  app.use('/publication/create', require('./routes/entity/create/publication'));
-  app.use('/publication', require('./routes/entity/view/publication'));
+  app.use('/publication', require('./routes/entity/publication'));
   app.use('/publication/:id/relationships', require('./routes/relationship/edit'));
 }
 
 function initCreatorRoutes(app) {
-  app.use('/creator/create', require('./routes/entity/create/creator'));
-  app.use('/creator', require('./routes/entity/view/creator'));
+  app.use('/creator', require('./routes/entity/creator'));
   app.use('/creator/:id/relationships', require('./routes/relationship/edit'));
 }
 
