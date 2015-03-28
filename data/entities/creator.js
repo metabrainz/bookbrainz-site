@@ -1,11 +1,10 @@
 var Model = rootRequire('helpers/model'),
-    entityFields = rootRequire('data/entity-fields');
+    Entity = rootRequire('data/entity');
 
 var Creator = new Model({
+	base: Entity,
 	endpoint: 'creator'
 });
-
-Creator.extend(entityFields);
 
 Creator.extend({
 	creator_type: { type: 'enum', values: [ 'Person', 'Group' ] },

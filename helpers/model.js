@@ -8,6 +8,15 @@ function Model(options) {
 	this.endpoint = options.endpoint || undefined;
 	this.authRequired = options.authRequired || false;
 
+	if (options.base) {
+		base = options.base;
+
+		if (base instanceof Model)
+			this.fields = options.base.fields;
+		else
+			throw new TypeError('Specified base object is not a model');
+	}
+
 	this.fields = this.fields || {};
 };
 

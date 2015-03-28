@@ -1,11 +1,10 @@
 var Model = rootRequire('helpers/model'),
-    entityFields = rootRequire('data/entity-fields');
+    Entity = rootRequire('data/entity');
 
 var Publication = new Model({
+	base: Entity,
 	endpoint: 'publication'
 });
-
-Publication.extend(entityFields);
 
 Publication.extend({
 	publication_type: { type: 'enum', values: [ 'Book' ] }
