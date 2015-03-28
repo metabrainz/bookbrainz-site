@@ -6,19 +6,19 @@ block body
   .container#content
     h1 My Messages
     
-    a.pull-right(href="/messageForm")
+    a.pull-right(href="/message/send")
       span.fa.fa-plus
       | &nbsp;New Message
     
     ul.nav.nav-pills
       li(class=(view === 'inbox' ? 'active' : undefined))
-        a(href="/inbox")
+        a(href="/message/inbox")
           | Inbox&nbsp;
           span.badge=inboxCount
       li(class=(view === 'archive' ? 'active' : undefined))
-        a(href="/archive") Archive
+        a(href="/message/archive") Archive
       li(class=(view === 'sent' ? 'active' : undefined))
-        a(href="/sent") Sent
+        a(href="/message/sent") Sent
     
     table.table.table-hover
       thead

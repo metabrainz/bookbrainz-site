@@ -7,7 +7,7 @@ var bbws = rootRequire('helpers/bbws');
 var request = require('superagent');
 require('superagent-bluebird-promise');
 
-router.get('/form', auth.isAuthenticated, function(req, res) {
+router.get('/send', auth.isAuthenticated, function(req, res) {
 	res.render('editor/messageForm', {
 		error: req.query.error,
 		recipients: req.query.recipients,
@@ -52,7 +52,7 @@ router.get('/:id', auth.isAuthenticated, function(req, res) {
 		})
 });
 
-router.post('/message/handler', auth.isAuthenticated, function(req, res) {
+router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 	// This function should post a new message to the /message/send endpoint of the ws.
 	var ws = req.app.get('webservice');
 
