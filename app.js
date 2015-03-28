@@ -42,17 +42,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
-app.use(cookieParser());
+
 app.use(staticCache(path.join(__dirname, 'public/js'), {
 	buffer: true
 }));
+
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(session({
 	store: new RedisStore({
 		host: config.session.redis.host,
 		port: config.session.redis.port,
 		ttl: config.session.redis.ttl
 	}),
+	cookie: {
+		secure: config.session.secure
+	},
 	secret: config.session.secret,
 	resave: false,
 	saveUninitialized: false
