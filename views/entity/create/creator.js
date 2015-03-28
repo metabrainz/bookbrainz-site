@@ -45,24 +45,26 @@ function CreateCreatorViewModel() {
 	};
 
 	self.submitRevision = function() {
-		request.post('/creator/create/handler').
-		send({
-			aliases: self.aliases(),
-			creatorTypeId: parseInt(self.creatorTypeId),
-			genderId: parseInt(self.genderId),
-			beginDate: self.beginDate,
-			endDate: self.endDate,
-			ended: self.ended,
-			disambiguation: self.disambiguation,
-			annotation: self.annotation,
-			editId: parseInt(self.editId)
-		}).promise().then(function(revision) {
-			console.log(revision.body.entity.entity_gid);
-			window.location.href = '/creator/' + revision.body.entity.entity_gid;
-		}).
-		catch(function(err) {
-			self.error(err);
-		});
+		request.post('/creator/create/handler')
+			.send({
+				aliases: self.aliases(),
+				creatorTypeId: parseInt(self.creatorTypeId),
+				genderId: parseInt(self.genderId),
+				beginDate: self.beginDate,
+				endDate: self.endDate,
+				ended: self.ended,
+				disambiguation: self.disambiguation,
+				annotation: self.annotation,
+				editId: parseInt(self.editId)
+			})
+			.promise()
+			.then(function(revision) {
+				console.log(revision.body.entity.entity_gid);
+				window.location.href = '/creator/' + revision.body.entity.entity_gid;
+			})
+			.catch(function(err) {
+				self.error(err);
+			});
 	};
 
 	self.page = ko.observable(1);

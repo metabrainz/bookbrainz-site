@@ -47,20 +47,22 @@ function CreatePublicationViewModel() {
 	};
 
 	self.submitRevision = function() {
-		request.post('/publication/create/handler').
-		send({
-			aliases: self.aliases(),
-			publicationTypeId: parseInt(self.publicationTypeId),
-			disambiguation: self.disambiguation,
-			annotation: self.annotation,
-			editId: parseInt(self.editId)
-		}).promise().then(function(revision) {
-			console.log(revision.body.entity.entity_gid);
-			window.location.href = '/publication/' + revision.body.entity.entity_gid;
-		}).
-		catch(function(err) {
-			self.error(err);
-		});
+		request.post('/publication/create/handler')
+			.send({
+				aliases: self.aliases(),
+				publicationTypeId: parseInt(self.publicationTypeId),
+				disambiguation: self.disambiguation,
+				annotation: self.annotation,
+				editId: parseInt(self.editId)
+			})
+			.promise()
+			.then(function(revision) {
+				console.log(revision.body.entity.entity_gid);
+				window.location.href = '/publication/' + revision.body.entity.entity_gid;
+			}).
+			catch(function(err) {
+				self.error(err);
+			});
 	};
 
 	self.page = ko.observable(1);
