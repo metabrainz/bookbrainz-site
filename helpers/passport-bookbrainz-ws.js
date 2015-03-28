@@ -23,7 +23,7 @@ BBWSStrategy.prototype.userProfile = function(accessToken, done) {
 	User.getCurrent(accessToken)
 		.then(function(user) {
 			var profile = {
-				id: user.user_id,
+				id: user.id,
 				name: user.name
 			};
 

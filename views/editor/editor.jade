@@ -15,7 +15,7 @@ block body
     .row
       .col-md-7
         h2 Basic Info
-          if editor.user_id == user.id
+          if editor.id == user.id
             small.pull-right
               button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
                 span.sr-only Edit basic editor info
@@ -26,7 +26,7 @@ block body
               =editor.email
               | &nbsp;
             i (hidden)
-            if (editor.user_id != user.id)
+            if (editor.id != user.id)
               a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + editor.id)
                 span.sr-only Compose message to #{editor.name}
           dt Type

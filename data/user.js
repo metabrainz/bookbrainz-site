@@ -19,7 +19,8 @@ User.extend({
 });
 
 User.getCurrent = function(accessToken) {
-	return bbws.post('/account', null, {
+	return this.findOne({
+		path: '/account/',
 		accessToken: accessToken
 	});
 }
