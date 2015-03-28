@@ -31,7 +31,7 @@ In order to use the `gulp` command, you have to install it globally:
 Building the client-side JS
 ---------------------------
 
-The client-side JS is designed to use the require() function provided by
+The client-side JS is designed to use the `require()` function provided by
 browserify. In order to get usable JS files, the source JS has to be processed
 by browserify and then minified. There are two built-in gulp tasks to
 accomplish this.
@@ -72,12 +72,17 @@ Code Formatting
 
 If you ever intend to push any code to the BookBrainz Site repository, or open
 a pull request, ensure you have set up the project's pre-commit git hook. You
-can do this by creating a symbolic link from .githooks/pre-commit to
-.git/hooks/pre-commit:
+can do this by first installing the node module jscs globally:
+
+    npm install -g jscs
+
+Then creating a symbolic link from .githooks/pre-commit to `.git/hooks/pre-commit`:
 
     ln -s ../../.githooks/pre-commit .git/hooks/pre-commit
     
-  On Windows you right click on `.githooks/pre-commit`, create a new shortcut, move it to `.git\hooks\` and rename it to `pre-commit`.
+  On Windows run the following command from an administrative cmd, creating a shortcut will *not* work:
+  
+    mklink .git\hooks\pre-commit ..\..\.githooks\pre-commit
 
 This will check that your code is formatted correctly for contribution to the
 project.
