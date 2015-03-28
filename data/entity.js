@@ -3,7 +3,9 @@ var Model = rootRequire('helpers/model'),
     Annotation = rootRequire('data/properties/annotation'),
     Disambiguation = rootRequire('data/properties/disambiguation');
 
-var Entity = new Model();
+var Entity = new Model({
+	abstract: true
+});
 
 Entity.extend({
 	bbid: { type: 'uuid', map: 'entity_gid' },

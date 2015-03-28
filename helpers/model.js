@@ -7,17 +7,24 @@ function Model(options) {
 
 	this.endpoint = options.endpoint || undefined;
 	this.authRequired = options.authRequired || false;
+	this.abstract = options.abstract || false;
+	this.name = options.name || undefined;
 
 	if (options.base) {
 		base = options.base;
 
-		if (base instanceof Model)
-			this.fields = options.base.fields;
-		else
+		if (!(base instanceof Model))
 			throw new TypeError('Specified base object is not a model');
+
+		if (!this.name)
+			throw new Error('Inherited models must specify name');
+
+		this.fields = options.base.fields;
+		base.children[this.name] = this;
 	}
 
 	this.fields = this.fields || {};
+	this.children = {};
 };
 
 Model.prototype.extend = function(fields) {
@@ -43,8 +50,13 @@ Model.prototype.extend = function(fields) {
 };
 
 Model.prototype._fetchSingleResult = function(result, options) {
-	var self = this;
+	var model = this;
 	var object = {};
+
+	if (this.abstract) {
+		model = this.children[result._type];
+		object._type = result._type;
+	}
 
 	if (options.populate && !Array.isArray(options.populate))
 		options.populate = [ options.populate ];
@@ -52,8 +64,8 @@ Model.prototype._fetchSingleResult = function(result, options) {
 	if (_.isEmpty(result))
 		return null;
 
-	Object.keys(this.fields).forEach(function(key) {
-		var field = self.fields[key];
+	Object.keys(model.fields).forEach(function(key) {
+		var field = model.fields[key];
 
 		var resultsField = field.map || key;
 
@@ -160,6 +172,9 @@ Model.prototype.findOne = function(id, options) {
 Model.prototype.create = function(data, options) {
 	var self = this;
 	options = options || {};
+
+	if (this.abstract)
+		return Promise.reject(new Error('Cannot create new instance of abstract class'));
 
 	if (this.endpoint === undefined)
 		return Promise.reject(new Error('Model has no endpoint'));

@@ -19,12 +19,12 @@ block body
             for entity in recent
               .col-xs-12.col-sm-6.col-md-4
                 .recently-updated.panel.panel-default.panel-body
-                  if entity.type == 'Publication'
+                  if entity._type == 'Publication'
                     div
                       a(href='/publication/'+entity.bbid)=entity.default_alias.name
                     if entity.publication_type
                       i=entity.publication_type.label
-                  else if entity.type == 'Creator'
+                  else if entity._type == 'Creator'
                     div
                       a(href='/creator/'+entity.bbid)=entity.default_alias.name
                     if entity.creator_type

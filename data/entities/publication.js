@@ -3,6 +3,7 @@ var Model = rootRequire('helpers/model'),
 
 var Publication = new Model({
 	base: Entity,
+	name: 'Publication',
 	endpoint: 'publication'
 });
 

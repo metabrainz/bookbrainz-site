@@ -3,6 +3,7 @@ var Model = rootRequire('helpers/model'),
 
 var Creator = new Model({
 	base: Entity,
+	name: 'Creator',
 	endpoint: 'creator'
 });
 
