@@ -63,6 +63,12 @@ router.post('/handler', auth.isAuthenticated, function(req, res) {
 	if (req.body.annotation)
 		changes.annotation = req.body.annotation;
 
+	if (req.body.note) {
+		changes.revision = {
+			note: req.body.note
+		};
+	}
+
 	changes.aliases = req.body.aliases.map(function(alias) {
 		return {
 			'name': alias.name,
