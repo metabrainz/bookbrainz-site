@@ -4,12 +4,29 @@ var express = require('express'),
     UserType = rootRequire('data/properties/user-type');
 
 router.get('/', function(req, res) {
+	var error = req.session.error;
+	delete req.session.error;
+
 	res.render('register', {
-		error: req.query.error
+		error: error
 	});
 });
 
 router.post('/handler', function(req, res, next) {
+	if (!req.body.password) {
+		req.session.error = 'No password set';
+		res.redirect(303, '/register');
+
+		return;
+	}
+
+	if (req.body.password != req.body.password2) {
+		req.session.error = 'Passwords did not match';
+		res.redirect(303, '/register');
+
+		return;
+	}
+
 	// This function should post a new user to the /user endpoint of the ws.
 	UserType.find()
 		.then(function(results) {
@@ -30,6 +47,7 @@ router.post('/handler', function(req, res, next) {
 			return User.create({
 				name: req.body.username,
 				email: req.body.email,
+				password: req.body.password,
 				user_type: {
 					user_type_id: editorType.id
 				}

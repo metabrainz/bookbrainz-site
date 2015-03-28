@@ -9,6 +9,7 @@ var User = new Model({
 User.extend({
 	id: { type: 'number', map: 'user_id' },
 	name: { type: 'string' },
+	password: { type: 'string' },
 	user_type: { type: 'object', model: UserType },
 	email: { type: 'string' },
 	reputation: { type: 'number' },

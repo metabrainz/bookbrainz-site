@@ -32,7 +32,7 @@ auth.authenticate = function() {
 	return function(req, res, next) {
 		var options = {
 			username: req.body.username,
-			password: 'abc'
+			password: req.body.password
 		};
 
 		passport.authenticate('bbws', options)(req, res, next);
