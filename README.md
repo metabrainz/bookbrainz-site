@@ -76,6 +76,8 @@ can do this by creating a symbolic link from .githooks/pre-commit to
 .git/hooks/pre-commit:
 
     ln -s ../../.githooks/pre-commit .git/hooks/pre-commit
+    
+  On Windows you right click on `.githooks/pre-commit`, create a new shortcut, move it to `.git\hooks\` and rename it to `pre-commit`.
 
 This will check that your code is formatted correctly for contribution to the
 project.
