@@ -1,5 +1,4 @@
-var bbws = rootRequire('helpers/bbws'),
-    Model = rootRequire('helpers/model'),
+var Model = rootRequire('helpers/model'),
     UserType = rootRequire('data/properties/user-type');
 
 var User = new Model({
