@@ -34,7 +34,7 @@ block body
             .form-group
               label.col-md-3.control-label Type
               .col-md-9
-                select.form-control(required, data-bind="value: publicationTypeId")
+                select.form-control(required, data-bind="value: publicationTypeId, valueAllowUnset: true")
                   each type in publicationTypes
                     option(value=type.id)=type.label
             .form-group
