@@ -1,11 +1,13 @@
-var util = require('util'),
-    PasswordGrantStrategy = require('passport-oauth2-password-grant'),
-    User = rootRequire('data/user');
+var util = require('util');
+var PasswordGrantStrategy = require('passport-oauth2-password-grant');
+var User = rootRequire('data/user');
 
 function BBWSStrategy(options, verify) {
 	options = options || {};
 
-	if (!options.wsURL) { throw new TypeError('BBWSStrategy requires a wsURL option'); }
+	if (!options.wsURL) {
+		throw new TypeError('BBWSStrategy requires a wsURL option');
+	}
 
 	this._wsURL = options.wsURL;
 	delete options.wsURL;

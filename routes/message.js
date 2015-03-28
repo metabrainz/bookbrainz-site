@@ -17,7 +17,9 @@ router.get('/send', auth.isAuthenticated, function(req, res) {
 });
 
 function renderMessageList(view, req, res) {
-	bbws.get('/message/' + view, {accessToken: req.session.bearerToken})
+	bbws.get('/message/' + view, {
+			accessToken: req.session.bearerToken
+		})
 		.then(function fetchMessageList(list) {
 			res.render('editor/messageList', {
 				view: view,
@@ -64,9 +66,9 @@ router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 	request.post(ws + '/message/sent')
 		.set('Authorization', 'Bearer ' + req.session.bearerToken)
 		.send({
-			'recipient_ids': recipientIds,
-			'subject': req.body.subject,
-			'content': req.body.content,
+			recipient_ids: recipientIds,
+			subject: req.body.subject,
+			content: req.body.content,
 		}).promise()
 		.then(function() {
 			res.redirect(303, '/');

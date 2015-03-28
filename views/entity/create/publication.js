@@ -45,9 +45,9 @@ function CreatePublicationViewModel() {
 				console.log(revision.body.entity.entity_gid);
 				window.location.href = '/publication/' + revision.body.entity.entity_gid;
 			}).
-			catch(function(err) {
-				self.error(err);
-			});
+		catch(function(err) {
+			self.error(err);
+		});
 	};
 
 	self.page = ko.observable(1);

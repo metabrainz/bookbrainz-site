@@ -41,6 +41,9 @@ function tidy() {
 	var srcFiles = [
 		'./routes/**/*.js',
 		'./views/**/*.js',
+		'./data/**/*.js',
+		'./helpers/**/*.js',
+		'./test/**/*js',
 		'./app.js',
 		'./gulpfile.js',
 	];

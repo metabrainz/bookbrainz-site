@@ -1,6 +1,6 @@
-var bbws = require('./bbws'),
-    Promise = require('bluebird'),
-    _ = require('underscore');
+var bbws = require('./bbws');
+var Promise = require('bluebird');
+var _ = require('underscore');
 
 function Model(options) {
 	options = options || {};
@@ -28,7 +28,7 @@ function Model(options) {
 
 	this.fields = this.fields || {};
 	this.children = {};
-};
+}
 
 Model.prototype.extend = function(fields) {
 	if (!fields || typeof fields !== 'object')
@@ -65,7 +65,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 	}
 
 	if (options.populate && !Array.isArray(options.populate))
-		options.populate = [ options.populate ];
+		options.populate = [options.populate];
 
 	if (_.isEmpty(result))
 		return null;
@@ -78,8 +78,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 		/* XXX: Validate return data by field type. */
 		if (field.type !== 'ref') {
 			object[key] = result[resultsField];
-		}
-		else {
+		} else {
 			if (!_.contains(options.populate, key)) {
 				object[key] = null;
 				return;
@@ -114,27 +113,26 @@ Model.prototype.find = function(options) {
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
 
 		path = '/' + this.endpoint + '/';
-	}
-	else {
+	} else {
 		path = options.path;
 	}
 
 	return bbws.get(path, {
-		accessToken: options.accessToken,
-		params: options.params
-	})
+			accessToken: options.accessToken,
+			params: options.params
+		})
 		.then(function(result) {
-				if (!Array.isArray(result.objects))
-					throw new Error('Array expected, but received object');
+			if (!Array.isArray(result.objects))
+				throw new Error('Array expected, but received object');
 
-				var promises = [];
+			var promises = [];
 
-				result.objects.forEach(function(object) {
-					promises.push(self._fetchSingleResult(object, options));
-				});
-
-				return Promise.all(promises);
+			result.objects.forEach(function(object) {
+				promises.push(self._fetchSingleResult(object, options));
 			});
+
+			return Promise.all(promises);
+		});
 };
 
 Model.prototype.findOne = function(id, options) {
@@ -160,21 +158,20 @@ Model.prototype.findOne = function(id, options) {
 			return Promise.reject(new Error('No object ID or absolute path specified'));
 
 		path += id + '/';
-	}
-	else {
+	} else {
 		path = options.path;
 	}
 
 	return bbws.get(path, {
-		accessToken: options.accessToken,
-		params: options.params
-	})
+			accessToken: options.accessToken,
+			params: options.params
+		})
 		.then(function(result) {
-				if (result.objects && Array.isArray(result.objects))
-					throw new Error('Object expected, but received array');
+			if (result.objects && Array.isArray(result.objects))
+				throw new Error('Object expected, but received array');
 
-				return self._fetchSingleResult(result, options);
-			});
+			return self._fetchSingleResult(result, options);
+		});
 };
 
 Model.prototype.create = function(data, options) {

@@ -1,11 +1,11 @@
-var express = require('express'),
-    router = express.Router(),
-    auth = rootRequire('helpers/auth'),
-    Promise = require('bluebird'),
-    Creator = rootRequire('data/entities/creator'),
-    Gender = rootRequire('data/properties/gender'),
-    CreatorType = rootRequire('data/properties/creator-type'),
-    Language = rootRequire('data/properties/language');
+var express = require('express');
+var router = express.Router();
+var auth = rootRequire('helpers/auth');
+var Promise = require('bluebird');
+var Creator = rootRequire('data/entities/creator');
+var Gender = rootRequire('data/properties/gender');
+var CreatorType = rootRequire('data/properties/creator-type');
+var Language = rootRequire('data/properties/language');
 
 // Creation
 
@@ -37,8 +37,8 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	var changes = {
-		'bbid': null,
-		'ended': req.body.ended
+		bbid: null,
+		ended: req.body.ended
 	};
 
 	if (req.body.creatorTypeId) {
@@ -86,8 +86,8 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	Creator.create(changes, {
-		session: req.session
-	})
+			session: req.session
+		})
 		.then(function(revision) {
 			res.send(revision);
 		});
@@ -104,11 +104,11 @@ router.get('/:id', function(req, res, next) {
 	};
 
 	Creator.findOne(req.params.id, {
-		populate: [
-			'annotation',
-			'disambiguation'
-		]
-	})
+			populate: [
+				'annotation',
+				'disambiguation'
+			]
+		})
 		.then(render)
 		.catch(function(err) {
 			console.log(err.stack);

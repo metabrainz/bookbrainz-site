@@ -5,8 +5,13 @@ var UserType = new Model({
 });
 
 UserType.extend({
-	id: { type: 'number', map: 'user_type_id' },
-	label: { type: 'string' }
+	id: {
+		type: 'number',
+		map: 'user_type_id'
+	},
+	label: {
+		type: 'string'
+	}
 });
 
 module.exports = UserType;

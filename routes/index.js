@@ -1,7 +1,7 @@
-var express = require('express'),
-    router = express.Router(),
-    _ = require('underscore'),
-    Revision = rootRequire('data/properties/revision');
+var express = require('express');
+var router = express.Router();
+var _ = require('underscore');
+var Revision = rootRequire('data/properties/revision');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -13,12 +13,12 @@ router.get('/', function(req, res) {
 	};
 
 	Revision.find({
-		params: {
-			limit: 9,
-			type: 'entity'
-		},
-		populate: [ 'entity' ]
-	})
+			params: {
+				limit: 9,
+				type: 'entity'
+			},
+			populate: ['entity']
+		})
 		.then(render)
 		.catch(function(err) {
 			console.log(err.stack);

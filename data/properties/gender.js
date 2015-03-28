@@ -5,8 +5,13 @@ var Gender = new Model({
 });
 
 Gender.extend({
-	id: { type: 'number', map: 'gender_id' },
-	name: { type: 'string' }
+	id: {
+		type: 'number',
+		map: 'gender_id'
+	},
+	name: {
+		type: 'string'
+	}
 });
 
 module.exports = Gender;

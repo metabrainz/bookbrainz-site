@@ -1,5 +1,5 @@
-var Model = rootRequire('helpers/model'),
-    Entity = rootRequire('data/entity');
+var Model = rootRequire('helpers/model');
+var Entity = rootRequire('data/entity');
 
 var Publication = new Model({
 	base: Entity,
@@ -8,7 +8,10 @@ var Publication = new Model({
 });
 
 Publication.extend({
-	publication_type: { type: 'enum', values: [ 'Book' ] }
+	publication_type: {
+		type: 'enum',
+		values: ['Book']
+	}
 });
 
 module.exports = Publication;

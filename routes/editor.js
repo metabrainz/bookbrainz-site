@@ -1,8 +1,8 @@
-var express = require('express'),
-		router = express.Router(),
-		User = rootRequire('data/user'),
-		bbws = rootRequire('helpers/bbws'),
-		auth = rootRequire('helpers/auth');
+var express = require('express');
+var router = express.Router();
+var User = rootRequire('data/user');
+var bbws = rootRequire('helpers/bbws');
+var auth = rootRequire('helpers/auth');
 
 router.get('/edit', auth.isAuthenticated, function(req, res) {
 	res.render('editor/edit', {
@@ -12,16 +12,18 @@ router.get('/edit', auth.isAuthenticated, function(req, res) {
 
 router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 	bbws.put('/user/' + req.body.id + '/', {
-		'name': req.body.name,
-		'bio': req.body.bio,
-	}, {accessToken: req.session.bearerToken})
-	.then(function(user) {
-		res.send(user);
-	})
-	.catch(function(err) {
-		req.session.error = 'Error! Please try a different username';
-		res.redirect(303, '/editor/edit');
-	});
+			name: req.body.name,
+			bio: req.body.bio,
+		}, {
+			accessToken: req.session.bearerToken
+		})
+		.then(function(user) {
+			res.send(user);
+		})
+		.catch(function(err) {
+			req.session.error = 'Error! Please try a different username';
+			res.redirect(303, '/editor/edit');
+		});
 });
 
 router.get('/:id', function(req, res) {

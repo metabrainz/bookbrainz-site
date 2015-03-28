@@ -15,8 +15,8 @@ router.post('/handler', auth.isAuthenticated, function(req, res) {
 		var changes = relationship;
 
 		Relationship.create(changes, {
-			session: req.session
-		})
+				session: req.session
+			})
 			.then(function(revision) {
 				res.send(revision);
 			});

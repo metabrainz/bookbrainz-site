@@ -1,7 +1,7 @@
 #!/bin/sh
 
 git stash -q --keep-index
-jscs ./routes/**/*.js ./views/**/*.js app.js gulpfile.js bin/www
+jscs ./routes/**/*.js ./routes/*.js ./views/**/*.js ./views/*.js ./data/**/*.js ./data/*.js ./helpers/*.js ./test/*.js app.js gulpfile.js bin/www
 RESULT=$?
 git stash pop -q
 exit $RESULT

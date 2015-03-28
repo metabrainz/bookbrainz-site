@@ -1,6 +1,6 @@
-var Model = rootRequire('helpers/model'),
-    Entity = rootRequire('data/entity'),
-	Language = rootRequire('data/properties/language');
+var Model = rootRequire('helpers/model');
+var Entity = rootRequire('data/entity');
+var Language = rootRequire('data/properties/language');
 
 var Work = new Model({
 	base: Entity,
@@ -9,8 +9,14 @@ var Work = new Model({
 });
 
 Work.extend({
-	work_type: { type: 'enum' },
-	languages: { type: 'object', model: Language, many: true }
+	work_type: {
+		type: 'enum'
+	},
+	languages: {
+		type: 'object',
+		model: Language,
+		many: true
+	}
 });
 
 module.exports = Work;

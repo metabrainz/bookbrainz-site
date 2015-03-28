@@ -1,10 +1,10 @@
-var express = require('express'),
-    router = express.Router(),
-    auth = rootRequire('helpers/auth'),
-    Promise = require('bluebird'),
-    Publication = rootRequire('data/entities/publication'),
-    PublicationType = rootRequire('data/properties/publication-type'),
-    Language = rootRequire('data/properties/language');
+var express = require('express');
+var router = express.Router();
+var auth = rootRequire('helpers/auth');
+var Promise = require('bluebird');
+var Publication = rootRequire('data/entities/publication');
+var PublicationType = rootRequire('data/properties/publication-type');
+var Language = rootRequire('data/properties/language');
 
 // Creation
 
@@ -31,8 +31,8 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	var changes = {
-		'bbid': null,
-		'publication_type': {
+		bbid: null,
+		publication_type: {
 			publication_type_id: req.body.publicationTypeId
 		}
 	};
@@ -56,8 +56,8 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	Publication.create(changes, {
-		session: req.session
-	})
+			session: req.session
+		})
 		.then(function(revision) {
 			res.send(revision);
 		});
@@ -74,11 +74,11 @@ router.get('/:id', function(req, res, next) {
 	};
 
 	Publication.findOne(req.params.id, {
-		populate: [
-			'annotation',
-			'disambiguation'
-		]
-	})
+			populate: [
+				'annotation',
+				'disambiguation'
+			]
+		})
 		.then(render)
 		.catch(function(err) {
 			console.log(err.stack);

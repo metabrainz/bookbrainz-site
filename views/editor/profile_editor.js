@@ -15,14 +15,14 @@ function ProfileEditor(user) {
 
 	self.submit = function() {
 		request.post('/editor/edit/handler')
-		.send({
-			id: user.user_id,
-			bio: self.bio,
-			name: self.name
-		}).promise()
-		.then(function(user) {
-			window.location.href = '/editor/' + user.body.user_id;
-		}).
+			.send({
+				id: user.user_id,
+				bio: self.bio,
+				name: self.name
+			}).promise()
+			.then(function(user) {
+				window.location.href = '/editor/' + user.body.user_id;
+			}).
 		catch(function(err) {
 			console.log(err);
 			self.error(err);
@@ -39,8 +39,8 @@ var userPromise = request.get(ws + '/user/' + userId).promise()
 	});
 
 userPromise.then(function(user) {
-		ko.applyBindings(new ProfileEditor(user));
-	}).
+	ko.applyBindings(new ProfileEditor(user));
+}).
 catch(function(err) {
 	console.log(err.stack);
 });

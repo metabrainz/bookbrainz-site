@@ -1,7 +1,7 @@
-var express = require('express'),
-    router = express.Router(),
-    User = rootRequire('data/user'),
-    UserType = rootRequire('data/properties/user-type');
+var express = require('express');
+var router = express.Router();
+var User = rootRequire('data/user');
+var UserType = rootRequire('data/properties/user-type');
 
 router.get('/', function(req, res) {
 	var error = req.session.error;

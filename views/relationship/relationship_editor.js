@@ -121,10 +121,10 @@ function RelationshipEditor(relationships, relationshipTypes) {
 			};
 		})).promise().then(function(revision) {
 			utils.getEntity(ws, entityGid, {
-					data: true
-				}).then(function fulfillRedirectEntity(entity) {
-					window.location.href = utils.getEntityLink(entity);
-				});
+				data: true
+			}).then(function fulfillRedirectEntity(entity) {
+				window.location.href = utils.getEntityLink(entity);
+			});
 		}).
 		catch(function(err) {
 			self.error(err);

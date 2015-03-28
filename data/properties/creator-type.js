@@ -5,8 +5,13 @@ var CreatorType = new Model({
 });
 
 CreatorType.extend({
-	id: { type: 'number', map: 'creator_type_id' },
-	label: { type: 'string' }
+	id: {
+		type: 'number',
+		map: 'creator_type_id'
+	},
+	label: {
+		type: 'string'
+	}
 });
 
 module.exports = CreatorType;

@@ -5,8 +5,13 @@ var PublicationType = new Model({
 });
 
 PublicationType.extend({
-	id: { type: 'number', map: 'publication_type_id' },
-	label: { type: 'string' }
+	id: {
+		type: 'number',
+		map: 'publication_type_id'
+	},
+	label: {
+		type: 'string'
+	}
 });
 
 module.exports = PublicationType;

@@ -1,5 +1,5 @@
-var Model = rootRequire('helpers/model'),
-    Entity = rootRequire('data/entity');
+var Model = rootRequire('helpers/model');
+var Entity = rootRequire('data/entity');
 
 var Publisher = new Model({
 	base: Entity,
@@ -8,10 +8,18 @@ var Publisher = new Model({
 });
 
 Publisher.extend({
-	publisher_type: { type: 'enum' },
-	begin_date: { type: 'date' },
-	end_date: { type: 'date' },
-	ended: { type: 'boolean' }
+	publisher_type: {
+		type: 'enum'
+	},
+	begin_date: {
+		type: 'date'
+	},
+	end_date: {
+		type: 'date'
+	},
+	ended: {
+		type: 'boolean'
+	}
 });
 
 module.exports = Publisher;
