@@ -1,33 +1,27 @@
-var express = require('express');
-var router = express.Router();
-var request = require('superagent');
-var Promise = require('bluebird');
-require('superagent-bluebird-promise');
+var express = require('express'),
+    router = express.Router(),
+    _ = require('underscore'),
+    Revision = rootRequire('data/properties/revision');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	var ws = req.app.get('webservice');
-	var entityPromise = request.get(ws + '/entity?limit=9').promise();
-
-	var render = function(entitiesWithData) {
+	var render = function(revisions) {
 		res.render('index', {
 			title: 'BookBrainz',
-			recent: entitiesWithData
+			recent: revisions ? _.pluck(revisions, 'entity') : null
 		});
 	};
 
-	entityPromise
-		.then(function(entities) {
-			var extraData = entities.body.objects.map(function(entity) {
-				entity.data = request.get(entity.data_uri).promise();
-				entity.aliases = request.get(entity.aliases_uri).promise();
-				return Promise.props(entity);
-			});
-
-			return Promise.all(extraData);
-		})
+	Revision.find({
+		params: {
+			limit: 9,
+			type: 'entity'
+		},
+		populate: [ 'entity' ]
+	})
 		.then(render)
-		.catch(function() {
+		.catch(function(err) {
+			console.log(err.stack);
 			render(null);
 		});
 });

@@ -19,16 +19,16 @@ block body
             for entity in recent
               .col-xs-12.col-sm-6.col-md-4
                 .recently-updated.panel.panel-default.panel-body
-                  if entity.data.body.publication_data
+                  if entity.type == 'Publication'
                     div
-                      a(href='/publication/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
-                    if entity.data.body.publication_data.publication_type
-                      i=entity.data.body.publication_data.publication_type.label
-                  else if entity.data.body.creator_data
+                      a(href='/publication/'+entity.bbid)=entity.default_alias.name
+                    if entity.publication_type
+                      i=entity.publication_type.label
+                  else if entity.type == 'Creator'
                     div
-                      a(href='/creator/'+entity.entity_gid)=entity.aliases.body.aliases[0].name
-                    if entity.data.body.creator_data.creator_type
-                      i=entity.data.body.creator_data.creator_type.label
+                      a(href='/creator/'+entity.bbid)=entity.default_alias.name
+                    if entity.creator_type
+                      i=entity.creator_type.label
           else
             em Unable to retrieve latest updates
 
