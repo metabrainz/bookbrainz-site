@@ -8,7 +8,6 @@ var express = require('express'),
     Language = rootRequire('data/properties/language');
 
 router.get('/', auth.isAuthenticated, function(req, res) {
-  console.log("A");
 	var gendersPromise = Gender.find();
 	var creatorTypesPromise = CreatorType.find();
 	var languagesPromise = Language.find();
