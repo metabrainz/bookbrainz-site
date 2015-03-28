@@ -7,29 +7,6 @@ var express = require('express'),
     CreatorType = rootRequire('data/properties/creator-type'),
     Language = rootRequire('data/properties/language');
 
-// Viewing
-
-router.get('/:id', function(req, res, next) {
-	var render = function(creator) {
-		res.render('entity/view/creator', {
-			title: 'BookBrainz',
-			entity: creator
-		});
-	};
-
-	Creator.findOne(req.params.id, {
-		populate: [
-			'annotation',
-			'disambiguation'
-		]
-	})
-		.then(render)
-		.catch(function(err) {
-			console.log(err.stack);
-			next(err);
-		});
-});
-
 // Creation
 
 router.get('/create', auth.isAuthenticated, function(req, res) {
@@ -113,6 +90,29 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	})
 		.then(function(revision) {
 			res.send(revision);
+		});
+});
+
+// Viewing
+
+router.get('/:id', function(req, res, next) {
+	var render = function(creator) {
+		res.render('entity/view/creator', {
+			title: 'BookBrainz',
+			entity: creator
+		});
+	};
+
+	Creator.findOne(req.params.id, {
+		populate: [
+			'annotation',
+			'disambiguation'
+		]
+	})
+		.then(render)
+		.catch(function(err) {
+			console.log(err.stack);
+			next(err);
 		});
 });
 

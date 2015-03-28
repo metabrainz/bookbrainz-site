@@ -6,29 +6,6 @@ var express = require('express'),
     PublicationType = rootRequire('data/properties/publication-type'),
     Language = rootRequire('data/properties/language');
 
-// Viewing
-
-router.get('/:id', function(req, res, next) {
-	var render = function(publication) {
-		res.render('entity/view/publication', {
-			title: 'BookBrainz',
-			entity: publication
-		});
-	};
-
-	Publication.findOne(req.params.id, {
-		populate: [
-			'annotation',
-			'disambiguation'
-		]
-	})
-		.then(render)
-		.catch(function(err) {
-			console.log(err.stack);
-			next(err);
-		});
-});
-
 // Creation
 
 router.get('/create', auth.isAuthenticated, function(req, res) {
@@ -83,6 +60,29 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	})
 		.then(function(revision) {
 			res.send(revision);
+		});
+});
+
+// Viewing
+
+router.get('/:id', function(req, res, next) {
+	var render = function(publication) {
+		res.render('entity/view/publication', {
+			title: 'BookBrainz',
+			entity: publication
+		});
+	};
+
+	Publication.findOne(req.params.id, {
+		populate: [
+			'annotation',
+			'disambiguation'
+		]
+	})
+		.then(render)
+		.catch(function(err) {
+			console.log(err.stack);
+			next(err);
 		});
 });
 
