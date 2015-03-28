@@ -1,6 +1,28 @@
 var express = require('express'),
-    router = express.Router(),
-    User = rootRequire('data/user');
+		router = express.Router(),
+		User = rootRequire('data/user'),
+		bbws = rootRequire('helpers/bbws'),
+		auth = rootRequire('helpers/auth');
+
+router.get('/edit', auth.isAuthenticated, function(req, res) {
+	res.render('editor/edit', {
+		userId: req.user.id
+	});
+});
+
+router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
+	bbws.put('/user/' + req.body.id + '/', {
+		'name': req.body.name,
+		'bio': req.body.bio,
+	}, {accessToken: req.session.bearerToken})
+	.then(function(user) {
+		res.send(user);
+	})
+	.catch(function(err) {
+		req.session.error = 'Error! Please try a different username';
+		res.redirect(303, '/editor/edit');
+	});
+});
 
 router.get('/:id', function(req, res) {
 	var userPromise;
@@ -16,5 +38,6 @@ router.get('/:id', function(req, res) {
 		});
 	});
 });
+
 
 module.exports = router;
