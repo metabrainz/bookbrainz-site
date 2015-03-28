@@ -72,15 +72,17 @@ router.post('/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	changes.aliases = req.body.aliases.map(function(alias) {
-		return {
-			'name': alias.name,
-			'sort_name': alias.sortName,
-			'language_id': alias.languageId,
-			'primary': alias.primary,
-			'default': alias.dflt
-		};
-	});
+	if (req.body.aliases.length) {
+		var default_alias = req.body.aliases[0];
+
+		changes.aliases = [{
+			name: default_alias.name,
+			sort_name: default_alias.sortName,
+			language_id: default_alias.languageId,
+			primary: default_alias.primary,
+			default: true
+		}];
+	}
 
 	Creator.create(changes, {
 		session: req.session
