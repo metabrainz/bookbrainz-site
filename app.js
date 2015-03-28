@@ -30,6 +30,8 @@ app.locals.basedir = app.get('views');
 // webservice
 app.set('webservice', config.site.webservice);
 
+app.set('trust proxy', config.site.proxyTrust);
+
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 if (app.get('env') !== 'testing') {
