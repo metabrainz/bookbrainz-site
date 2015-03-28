@@ -6,7 +6,8 @@ var Language = new Model({
 
 Language.extend({
 	id: { type: 'number', map: 'language_id' },
-	name: { type: 'string' }
+	name: { type: 'string' },
+	frequency: { type: 'number' }
 });
 
 module.exports = Language;

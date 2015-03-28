@@ -19,6 +19,9 @@ router.get('/', auth.isAuthenticated, function(req, res) {
 			});
 
 			var alphabeticLanguagesList = languages.sort(function(a, b) {
+				if (a.frequency != b.frequency)
+					return a.frequency < b.frequency;
+
 				return a.name.localeCompare(b.name);
 			});
 
