@@ -7,7 +7,6 @@ var path = require('path');
 
 function bundle() {
 	var srcFiles = [
-		'./views/editor/editor.js',
 		'./views/entity/create/publication.js',
 		'./views/entity/create/creator.js',
 		'./views/layout.js',
@@ -16,7 +15,6 @@ function bundle() {
 	];
 
 	var dstFiles = [
-		'public/js/editor.js',
 		'public/js/publication.js',
 		'public/js/creator.js',
 		'public/js/layout.js',
