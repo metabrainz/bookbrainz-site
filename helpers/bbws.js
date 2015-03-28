@@ -9,7 +9,7 @@ bbws = {};
 var _processError = function(response) {
 	var newErr;
 
-  var requestPath = response.error.method + ': ' + response.error.path;
+	var requestPath = response.error.method + ': ' + response.error.path;
 
 	switch (response.status) {
 		case 401:
