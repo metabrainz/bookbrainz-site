@@ -43,7 +43,11 @@ auth.isAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated())
 		return next();
 
-	req.session.redirectTo = req.originalUrl;
+	if (req.route.path == '/handler')
+		req.session.redirectTo = req.baseUrl;
+	else
+		req.session.redirectTo = req.originalUrl;
+
 	res.redirect(303, '/login');
 };
 

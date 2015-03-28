@@ -57,6 +57,12 @@ function CreatePublicationViewModel() {
 			})
 			.promise()
 			.then(function(revision) {
+				// XXX: Eww, eww, eww
+				if (!revision.body || !revision.body.entity) {
+					window.location.replace('/login');
+					return;
+				}
+
 				console.log(revision.body.entity.entity_gid);
 				window.location.href = '/publication/' + revision.body.entity.entity_gid;
 			}).
