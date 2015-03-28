@@ -5,10 +5,8 @@ var passport = require('passport'),
 var auth = {};
 
 auth.init = function(app) {
-	var ws = app.get('webservice');
-
 	passport.use(new BBWSStrategy({
-		wsURL: ws,
+		wsURL: config.site.webservice,
 		clientID: config.site.clientID
 	}, function(req, accessToken, refreshToken, profile, done) {
 		req.session.bearerToken = accessToken;
