@@ -1,6 +1,7 @@
 var Model = rootRequire('helpers/model');
 var Entity = rootRequire('data/entity');
 var Language = rootRequire('data/properties/language');
+var EditionStatus = rootRequire('data/properties/edition-status');
 
 var Edition = new Model({
 	base: Entity,
@@ -10,8 +11,8 @@ var Edition = new Model({
 
 Edition.extend({
 	edition_status: {
-		type: 'enum',
-		values: ['Official', 'Draft']
+		type: 'object',
+		model: EditionStatus
 	},
 	language: {
 		type: 'object',
