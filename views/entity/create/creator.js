@@ -18,36 +18,17 @@ function CreateCreatorViewModel() {
 		self.page(3);
 	};
 
-	self.addAlias = function() {
-		self.aliases.push({
-			name: self.newName,
-			sortName: self.newSortName,
-			languageId: parseInt(self.languageId),
-			languageText: $('#languageSelect :selected').text(),
-			dflt: self.dflt(),
-			primary: self.primary()
-		});
-
-		if (self.dflt()) {
-			self.dflt(false);
-			self.defaultSet(true);
-		}
-	};
-
-	self.defaultSet = ko.observable(false);
-
-	self.removeAlias = function() {
-		if (this.dflt) {
-			self.defaultSet(false);
-		}
-
-		self.aliases.remove(this);
-	};
-
 	self.submitRevision = function() {
 		request.post('/creator/create/handler')
 			.send({
-				aliases: self.aliases(),
+				aliases: [{
+					name: self.newName,
+					sortName: self.newSortName,
+					languageId: parseInt(self.languageId),
+					languageText: $('#languageSelect :selected').text(),
+					dflt: true,
+					primary: self.primary
+				}],
 				creatorTypeId: parseInt(self.creatorTypeId),
 				genderId: parseInt(self.genderId),
 				beginDate: self.beginDate,
@@ -55,7 +36,7 @@ function CreateCreatorViewModel() {
 				ended: self.ended,
 				disambiguation: self.disambiguation,
 				annotation: self.annotation,
-				editId: parseInt(self.editId)
+				note: self.revisionNote
 			})
 			.promise()
 			.then(function(revision) {
@@ -78,10 +59,8 @@ function CreateCreatorViewModel() {
 	self.newName = '';
 	self.newSortName = '';
 	self.languageId = '';
-	self.dflt = ko.observable(false);
-	self.primary = ko.observable(false);
+	self.primary = false;
 
-	self.aliases = ko.observableArray();
 	self.error = ko.observable();
 
 	self.genderId = null;
@@ -92,7 +71,7 @@ function CreateCreatorViewModel() {
 	self.beginDate = '';
 	self.endDate = '';
 
-	self.editId = '';
+	self.revisionNote = '';
 	self.ended = ko.observable(false);
 }
 

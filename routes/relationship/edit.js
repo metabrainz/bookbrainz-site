@@ -1,7 +1,7 @@
-var express = require('express'),
-    router = express.Router(),
-    auth = rootRequire('helpers/auth'),
-    Relationship = rootRequire('data/relationship');
+var express = require('express');
+var router = express.Router();
+var auth = rootRequire('helpers/auth');
+var Relationship = rootRequire('data/relationship');
 
 router.get('/', function relationshipEditor(req, res) {
 	res.render('relationship/edit', {

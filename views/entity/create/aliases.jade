@@ -1,6 +1,6 @@
 .row
   .col-md-12
-    p.lead Add and remove aliases to the new entity.
+    p.lead Add an alias to the new entity.
 h2 Add Alias
 .row
   .col-md-6.col-md-offset-3.form-horizontal
@@ -20,30 +20,6 @@ h2 Add Alias
             option(value=language.id)=language.name
     .form-group
       .col-md-9.col-md-offset-3
-        .row
-          .col-md-6
-            label.checkbox-inline
-              input(type="checkbox", data-bind="disable: defaultSet, checked: dflt") 
-              | Default
-          .col-md-6
-            label.checkbox-inline
-              input(type="checkbox", data-bind="checked: primary")
-              | Primary
-    .form-group
-      .col-md-2.col-md-offset-10
-        button.btn.btn-success.btn-block.fa.fa-plus(title="Add Alias", data-bind="click: addAlias")
-          span.sr-only Add alias
-hr
-h2 Added Aliases
-.row
-  .col-md-6.col-md-offset-3
-    .row(data-bind="foreach: aliases")
-      .col-md-3(data-bind="text: name")
-      .col-md-3(data-bind="text: sortName")
-      .col-md-3(data-bind="text: languageText")
-      .col-md-1
-        em(data-bind="if: dflt") &nbsp;d
-        em(data-bind="if: primary") &nbsp;p
-      .col-md-2
-        button.btn.btn-danger.btn-block.fa.fa-minus(title="Remove Alias", data-bind="click: $parent.removeAlias")
-          span.sr-only Remove alias
+        label.checkbox-inline
+          input(type="checkbox", data-bind="checked: primary")
+          | Primary

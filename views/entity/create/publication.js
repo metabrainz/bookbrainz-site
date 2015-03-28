@@ -18,42 +18,21 @@ function CreatePublicationViewModel() {
 		self.page(3);
 	};
 
-	self.addAlias = function() {
-		self.aliases.push({
-			name: self.newName,
-			sortName: self.newSortName,
-			languageId: parseInt(self.languageId),
-			languageText: $('#languageSelect :selected').text(),
-			dflt: self.dflt(),
-			primary: self.primary()
-		});
-
-		if (self.dflt()) {
-			self.dflt(false);
-			self.defaultSet(true);
-		}
-	};
-
-	self.languageId = '';
-
-	self.defaultSet = ko.observable(false);
-
-	self.removeAlias = function() {
-		if (this.dflt) {
-			self.defaultSet(false);
-		}
-
-		self.aliases.remove(this);
-	};
-
 	self.submitRevision = function() {
 		request.post('/publication/create/handler')
 			.send({
-				aliases: self.aliases(),
+				aliases: [{
+					name: self.newName,
+					sortName: self.newSortName,
+					languageId: parseInt(self.languageId),
+					languageText: $('#languageSelect :selected').text(),
+					dflt: true,
+					primary: self.primary
+				}],
 				publicationTypeId: parseInt(self.publicationTypeId),
 				disambiguation: self.disambiguation,
 				annotation: self.annotation,
-				editId: parseInt(self.editId)
+				note: self.revisionNote
 			})
 			.promise()
 			.then(function(revision) {
@@ -76,17 +55,15 @@ function CreatePublicationViewModel() {
 	self.newName = '';
 	self.newSortName = '';
 	self.languageId = '';
-	self.dflt = ko.observable(false);
-	self.primary = ko.observable(false);
+	self.primary = false;
 
-	self.aliases = ko.observableArray();
 	self.error = ko.observable();
 
 	self.publicationTypeId = '';
 	self.disambiguation = '';
 	self.annotation = '';
 
-	self.editId = '';
+	self.revisionNote = '';
 }
 
 ko.applyBindings(new CreatePublicationViewModel());
