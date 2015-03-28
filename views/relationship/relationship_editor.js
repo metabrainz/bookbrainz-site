@@ -110,7 +110,7 @@ function RelationshipEditor(relationships, relationshipTypes) {
 		request.post('/relationship/create/handler').
 		send(self.addedRelationships().map(function(relationship) {
 			return {
-				relationship_id: [],
+				id: [],
 				relationship_type_id: relationship.type.relationship_type_id,
 				entities: relationship.entities.map(function(entity, index) {
 					return {

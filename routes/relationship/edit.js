@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var auth = rootRequire('helpers/auth');
-var bbws = rootRequire('helpers/bbws');
+var express = require('express'),
+    router = express.Router(),
+    auth = rootRequire('helpers/auth'),
+    Relationship = rootRequire('data/relationship');
 
 router.get('/', function relationshipEditor(req, res) {
 	res.render('relationship/edit', {
@@ -10,16 +10,14 @@ router.get('/', function relationshipEditor(req, res) {
 });
 
 router.post('/handler', auth.isAuthenticated, function(req, res) {
-	var ws = req.app.get('webservice');
-
 	req.body.forEach(function(relationship) {
 		// Send a relationship revision for each of the relationships
 		var changes = relationship;
 
-		bbws.post('/relationship', changes, {
-				accessToken: req.session.bearerToken
-			})
-			.then(function returnNewRevision(revision) {
+		Relationship.create(changes, {
+			session: req.session
+		})
+			.then(function(revision) {
 				res.send(revision);
 			});
 	});
