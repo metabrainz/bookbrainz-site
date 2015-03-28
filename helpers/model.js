@@ -120,6 +120,7 @@ Model.prototype.find = function(options) {
 	}
 
 	return bbws.get(path, {
+		accessToken: options.accessToken,
 		params: options.params
 	})
 		.then(function(result) {
@@ -165,6 +166,7 @@ Model.prototype.findOne = function(id, options) {
 	}
 
 	return bbws.get(path, {
+		accessToken: options.accessToken,
 		params: options.params
 	})
 		.then(function(result) {
