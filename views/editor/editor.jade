@@ -11,13 +11,12 @@ block body
       .col-md-12
         ul.nav.nav-tabs
           li.active: a(href='./'+editor.id) Profile
-          li: a(href=editor.id+'/revisions') Revisions
     .row
-      .col-md-7
+      .col-md-12
         h2 Basic Info
           if editor.id == user.id
             small.pull-right
-              button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+              a(href="/editor/edit").btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
                 span.sr-only Edit basic editor info
         dl.dl-horizontal
           dt Email
@@ -40,21 +39,12 @@ block body
           dt Bio
           dd=(editor.bio ? editor.bio : '-')
         h2 Stats
-        if stats
-          dl.dl-horizontal
-            dt Total Revisions
-            dd=stats.total_revisions
-            dt Revisions Applied
-            dd=stats.revisions_applied
-            dt Revisions Reverted
-            dd=stats.revisions_reverted
-        else
-          p N/A
-      .col-md-5
-        h2 Activity
-        canvas#revisionChart(width="400", height="250")
-
+        dl.dl-horizontal
+          dt Total Revisions
+          dd=editor.total_revisions
+          dt Revisions Applied
+          dd=editor.revisions_applied
+          dt Revisions Reverted
+          dd=editor.revisions_reverted
 
   include ../footer
-
-  script(src='/js/editor.js')
