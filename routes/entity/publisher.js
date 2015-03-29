@@ -38,9 +38,9 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 	console.log(req.body);
 
-	if (req.body.publisherTypesId) {
+	if (req.body.publisherTypeId) {
 		changes.publisher_type = {
-			publisher_type_id: req.body.publisherTypesId
+			publisher_type_id: req.body.publisherTypeId
 		};
 	}
 

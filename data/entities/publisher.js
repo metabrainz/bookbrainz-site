@@ -11,7 +11,7 @@ var Publisher = new Model({
 Publisher.extend({
 	publisher_type: {
 		type: 'object',
-		map: PublisherType
+		model: PublisherType
 	},
 	begin_date: {
 		type: 'date'
