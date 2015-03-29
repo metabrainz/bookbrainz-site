@@ -3,13 +3,13 @@ var router = express.Router();
 var auth = rootRequire('helpers/auth');
 var Relationship = rootRequire('data/relationship');
 
-router.get('/', function relationshipEditor(req, res) {
+router.get('/:id/relationships', function relationshipEditor(req, res) {
 	res.render('relationship/edit', {
 		entityGid: req.params.id
 	});
 });
 
-router.post('/handler', auth.isAuthenticated, function(req, res) {
+router.post('/:id/relationships/handler', auth.isAuthenticated, function(req, res) {
 	req.body.forEach(function(relationship) {
 		// Send a relationship revision for each of the relationships
 		var changes = relationship;

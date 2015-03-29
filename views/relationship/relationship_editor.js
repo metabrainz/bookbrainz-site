@@ -14,7 +14,6 @@ function RelationshipEditor(relationships, relationshipTypes) {
 	var self = this;
 
 	self.relationshipTypes = relationshipTypes.objects;
-	console.log(relationshipTypes);
 
 	self.currentRelationshipType = ko.observable(self.relationshipTypes[0]);
 
@@ -31,7 +30,6 @@ function RelationshipEditor(relationships, relationshipTypes) {
 		var temp = self.entityGids().map(function(gid) {
 			return utils.getEntity(ws, gid.gid(), {
 				aliases: true,
-				data: true
 			});
 		});
 
@@ -77,12 +75,10 @@ function RelationshipEditor(relationships, relationshipTypes) {
 	self.existingRelationships().forEach(function(relationship) {
 		relationship.entities.forEach(function(entity, entityIndex) {
 			getEntity(ws, entity.gid, {
-					aliases: true,
-					data: true
+					aliases: true
 				})
 				.then(function(fetchedEntity) {
 					relationship.entities[entityIndex] = fetchedEntity;
-					console.log(relationship);
 					relationship.rendered = renderRelationship(relationship.entities, relationship.type, 1);
 				});
 		});
@@ -98,7 +94,6 @@ function RelationshipEditor(relationships, relationshipTypes) {
 	};
 
 	self.removeRelationship = function(test) {
-		console.log(test);
 		self.addedRelationships.remove(test);
 	};
 
@@ -107,22 +102,23 @@ function RelationshipEditor(relationships, relationshipTypes) {
 	});
 
 	self.submit = function() {
-		request.post('/relationship/create/handler').
+		request.post('./relationships/handler').
 		send(self.addedRelationships().map(function(relationship) {
 			return {
 				id: [],
-				relationship_type_id: relationship.type.relationship_type_id,
+				relationship_type: {
+					relationship_type_id: relationship.type.relationship_type_id
+				},
 				entities: relationship.entities.map(function(entity, index) {
 					return {
-						gid: entity.entity_gid,
+						entity_gid: entity.entity_gid,
 						position: index
 					};
 				})
 			};
 		})).promise().then(function(revision) {
-			utils.getEntity(ws, entityGid, {
-				data: true
-			}).then(function fulfillRedirectEntity(entity) {
+			utils.getEntity(ws, entityGid, {})
+			.then(function fulfillRedirectEntity(entity) {
 				window.location.href = utils.getEntityLink(entity);
 			});
 		}).
@@ -134,12 +130,12 @@ function RelationshipEditor(relationships, relationshipTypes) {
 	self.error = ko.observable();
 }
 
-var relationshipsPromise = request.get(ws + '/entity/' + entityGid + '/relationships').promise()
+var relationshipsPromise = request.get(ws + '/entity/' + entityGid + '/relationships/').promise()
 	.then(function(relationshipsResponse) {
 		return relationshipsResponse.body;
 	});
 
-var relationshipTypesPromise = request.get(ws + '/relationshipType').promise()
+var relationshipTypesPromise = request.get(ws + '/relationshipType/').promise()
 	.then(function(relationshipTypesResponse) {
 		return relationshipTypesResponse.body;
 	});
