@@ -1,4 +1,5 @@
 var Model = rootRequire('helpers/model');
+var Entity = rootRequire('data/entity');
 
 var Relationship = new Model({
 	endpoint: 'relationship'
@@ -11,6 +12,11 @@ Relationship.extend({
 	},
 	relationship_type: {
 		type: 'enum'
+	},
+	entities: {
+		type: 'object',
+		model: Entity,
+		many: true
 	},
 	begin_date: {
 		type: 'date'
