@@ -2,9 +2,11 @@ var Model = rootRequire('helpers/model');
 var Alias = rootRequire('data/properties/alias');
 var Annotation = rootRequire('data/properties/annotation');
 var Disambiguation = rootRequire('data/properties/disambiguation');
+var Relationship = rootRequire('data/relationship');
 
 var Entity = new Model({
-	abstract: true
+	abstract: true,
+	endpoint: 'entity'
 });
 
 Entity.extend({
@@ -34,6 +36,12 @@ Entity.extend({
 		type: 'ref',
 		model: Annotation,
 		map: 'annotation_uri'
+	},
+	relationships: {
+		type: 'ref',
+		model: Relationship,
+		map: 'relationships_uri',
+		many: true
 	},
 	last_updated: {
 		type: 'date'
