@@ -30,7 +30,9 @@ function CreateWorkViewModel() {
 					primary: self.primary
 				}],
 				workTypeId: parseInt(self.workTypeId),
-				languages: self.languageIds.map(function(l) {return parseInt(l);}),
+				languages: self.languageIds.map(function(l) {
+					return parseInt(l);
+				}),
 				disambiguation: self.disambiguation,
 				annotation: self.annotation,
 				note: self.revisionNote

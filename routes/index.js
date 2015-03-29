@@ -62,23 +62,23 @@ router.get('/search', function(req, res) {
 	var resultsPromise = bbws.get('/search?q=' + query);
 
 	var entitiesPromise = resultsPromise
-	.then(function(results) {
-		var entities = results.objects.map(function(entity_stub) {
-			if (entity_stub._type == 'Publication') {
-				return Publication.findOne(entity_stub.entity_gid);
-			} else if (entity_stub._type == 'Creator') {
-				return Creator.findOne(entity_stub.entity_gid);
-			} else if (entity_stub._type == 'Edition') {
-				return Edition.findOne(entity_stub.entity_gid);
-			} else if (entity_stub._type == 'Work') {
-				return Work.findOne(entity_stub.entity_gid);
-			} else if (entity_stub._type == 'Publisher') {
-				return Publisher.findOne(entity_stub.entity_gid);
-			}
-		});
+		.then(function(results) {
+			var entities = results.objects.map(function(entity_stub) {
+				if (entity_stub._type == 'Publication') {
+					return Publication.findOne(entity_stub.entity_gid);
+				} else if (entity_stub._type == 'Creator') {
+					return Creator.findOne(entity_stub.entity_gid);
+				} else if (entity_stub._type == 'Edition') {
+					return Edition.findOne(entity_stub.entity_gid);
+				} else if (entity_stub._type == 'Work') {
+					return Work.findOne(entity_stub.entity_gid);
+				} else if (entity_stub._type == 'Publisher') {
+					return Publisher.findOne(entity_stub.entity_gid);
+				}
+			});
 
-		return Promise.all(entities);
-	});
+			return Promise.all(entities);
+		});
 
 	Promise.join(resultsPromise, entitiesPromise, function(results, entities) {
 		entities.forEach(function(entity, i) {
