@@ -8,7 +8,7 @@ function renderRelationship(entities, relationship, language) {
 	var data = {
 		entities: entities.map(function(entity) {
 			return '<a href="' + utils.getEntityLink(entity) + '">' +
-				entity.aliases.aliases[0].name + '</a>';
+				entity.default_alias.name + '</a>';
 		})
 	};
 
