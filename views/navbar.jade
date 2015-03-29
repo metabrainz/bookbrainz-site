@@ -29,9 +29,9 @@ nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
         li
           a(href='/develop') Develop
 
-      form.navbar-form.navbar-right(role='search')
+      form.navbar-form.navbar-right(role='search', action="/search")
         div.form-group
-          input.form-control(type='text', placeholder='Search')
+          input.form-control(type='text', placeholder='Search', name="q")
 
         button.btn.btn-default(type='submit')
           span.fa.fa-search
