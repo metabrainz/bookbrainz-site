@@ -18,21 +18,40 @@ block body
           if recent
             for entity in recent
               .col-xs-12.col-sm-6.col-md-4
-                .recently-updated.panel.panel-default.panel-body
                   - var name = '(unnamed)';
                   if entity.default_alias
                     - name = entity.default_alias.name;
 
                   if entity._type == 'Publication'
-                    div
-                      a(href='/publication/'+entity.bbid)=name
-                    if entity.publication_type
-                      i=entity.publication_type.label
+                    a(href='/publication/'+entity.bbid)
+                      .recently-updated.panel.panel-default.panel-body
+                        div=name
+                        if entity.publication_type
+                          i=entity.publication_type.label
                   else if entity._type == 'Creator'
-                    div
-                      a(href='/creator/'+entity.bbid)=name
-                    if entity.creator_type
-                      i=entity.creator_type.label
+                    a(href='/creator/'+entity.bbid)
+                      .recently-updated.panel.panel-default.panel-body
+                        div=name
+                        if entity.creator_type
+                          i=entity.creator_type.label
+                  else if entity._type == 'Edition'
+                    a(href='/edition/'+entity.bbid)
+                      .recently-updated.panel.panel-default.panel-body
+                        div=name
+                        if entity.edition_status
+                          i=entity.edition_status.label
+                  else if entity._type == 'Work'
+                    a(href='/work/'+entity.bbid)
+                      .recently-updated.panel.panel-default.panel-body
+                        div=name
+                        if entity.work_type
+                          i=entity.work_type.label
+                  else if entity._type == 'Publisher'
+                    a(href='/publisher/'+entity.bbid)
+                      .recently-updated.panel.panel-default.panel-body
+                        div=name
+                        if entity.publisher_type
+                          i=entity.publisher_type.label
           else
             em Unable to retrieve latest updates
 
