@@ -6,6 +6,8 @@ var Creator = rootRequire('data/entities/creator');
 var Gender = rootRequire('data/properties/gender');
 var CreatorType = rootRequire('data/properties/creator-type');
 var Language = rootRequire('data/properties/language');
+var Entity = rootRequire('data/entity');
+var renderRelationship = rootRequire('helpers/render');
 
 // Creation
 
@@ -97,16 +99,42 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 router.get('/:id', function(req, res, next) {
 	var render = function(creator) {
-		res.render('entity/view/creator', {
-			title: 'BookBrainz',
-			entity: creator
+		var rendered = creator.relationships.map(function(relationship) {
+			relationship.entities.sort(function sortRelationshipEntity(a, b) {
+				return a.position - b.position;
+			});
+
+			relationship.entities = relationship.entities.map(function(entity) {
+				return Entity.findOne(entity.entity.entity_gid);
+			});
+
+			relationship.template = relationship.relationship_type.template;
+			relationship.rendered = Promise.all(relationship.entities)
+				.then(function(entities) {
+					entities.forEach(function(entity) {
+						entity.entity_gid = entity.bbid;
+					});
+					return renderRelationship(entities, relationship, null);
+				});
+
+			return Promise.props(relationship);
 		});
+
+		Promise.all(rendered)
+			.then(function(rendered) {
+				creator.relationships = rendered;
+				res.render('entity/view/creator', {
+					title: 'BookBrainz',
+					entity: creator
+				});
+			});
 	};
 
 	Creator.findOne(req.params.id, {
 			populate: [
 				'annotation',
-				'disambiguation'
+				'disambiguation',
+				'relationships',
 			]
 		})
 		.then(render)

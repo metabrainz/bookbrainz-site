@@ -5,6 +5,8 @@ var Promise = require('bluebird');
 var Publication = rootRequire('data/entities/publication');
 var PublicationType = rootRequire('data/properties/publication-type');
 var Language = rootRequire('data/properties/language');
+var Entity = rootRequire('data/entity');
+var renderRelationship = rootRequire('helpers/render');
 
 // Creation
 
@@ -67,16 +69,42 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 router.get('/:id', function(req, res, next) {
 	var render = function(publication) {
-		res.render('entity/view/publication', {
-			title: 'BookBrainz',
-			entity: publication
+		var rendered = publication.relationships.map(function(relationship) {
+			relationship.entities.sort(function sortRelationshipEntity(a, b) {
+				return a.position - b.position;
+			});
+
+			relationship.entities = relationship.entities.map(function(entity) {
+				return Entity.findOne(entity.entity.entity_gid);
+			});
+
+			relationship.template = relationship.relationship_type.template;
+			relationship.rendered = Promise.all(relationship.entities)
+				.then(function(entities) {
+					entities.forEach(function(entity) {
+						entity.entity_gid = entity.bbid;
+					});
+					return renderRelationship(entities, relationship, null);
+				});
+
+			return Promise.props(relationship);
 		});
+
+		Promise.all(rendered)
+			.then(function(rendered) {
+				publication.relationships = rendered;
+				res.render('entity/view/publication', {
+					title: 'BookBrainz',
+					entity: publication
+				});
+			});
 	};
 
 	Publication.findOne(req.params.id, {
 			populate: [
 				'annotation',
-				'disambiguation'
+				'disambiguation',
+				'relationships',
 			]
 		})
 		.then(render)
