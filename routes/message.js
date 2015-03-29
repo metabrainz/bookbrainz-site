@@ -17,7 +17,7 @@ router.get('/send', auth.isAuthenticated, function(req, res) {
 });
 
 function renderMessageList(view, req, res) {
-	bbws.get('/message/' + view, {
+	bbws.get('/message/' + view + '/', {
 			accessToken: req.session.bearerToken
 		})
 		.then(function fetchMessageList(list) {
@@ -63,7 +63,7 @@ router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 		return parseInt(substr);
 	});
 
-	request.post(ws + '/message/sent')
+	request.post(ws + '/message/sent/')
 		.set('Authorization', 'Bearer ' + req.session.bearerToken)
 		.send({
 			recipient_ids: recipientIds,
@@ -71,7 +71,7 @@ router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 			content: req.body.content,
 		}).promise()
 		.then(function() {
-			res.redirect(303, '/');
+			res.redirect(303, '/message/sent');
 		});
 });
 
