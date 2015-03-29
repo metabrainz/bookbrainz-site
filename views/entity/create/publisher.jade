@@ -5,8 +5,8 @@ block body
 
   .container#content
     .row
-      h1 Create Edition
-        small &nbsp;Add a new Edition to BookBrainz
+      h1 Create Publisher
+        small &nbsp;Add a new Publisher to BookBrainz
     .row
       ul.nav.nav-tabs
         li(data-bind="css: {active: page() === 1}"): a(href="#", data-bind="click: pageAliases")
@@ -44,17 +44,11 @@ block body
                   input(type="checkbox", data-bind="checked: ended")
                   | Ended?
             .form-group
-              label.col-md-3.control-label Language
+              label.col-md-3.control-label Type
               .col-md-9
-                select.form-control(required, data-bind="value: languageId")
-                  each language in languages
-                    option(value=language.id)=language.name
-            .form-group
-              label.col-md-3.control-label Status
-              .col-md-9
-                select.form-control(data-bind="value: editionStatusId, valueAllowUnset: true")
-                  each status in editionStatuses
-                    option(value=status.id)=status.label
+                select.form-control(data-bind="value: publisherTypeId, valueAllowUnset: true")
+                  each type in publisherTypes
+                    option(value=type.id)=type.label
             .form-group
               label.col-md-3.control-label Disambiguation
               .col-md-9
@@ -70,4 +64,4 @@ block body
       span(data-bind='text: error')
   include /footer
 
-  script(src='/js/edition.js')
+  script(src='/js/publisher.js')

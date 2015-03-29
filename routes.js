@@ -14,9 +14,19 @@ function initCreatorRoutes(app) {
   app.use('/creator/:id/relationships', require('./routes/relationship/edit'));
 }
 
-function initCreatorRoutes(app) {
+function initEditionRoutes(app) {
   app.use('/edition', require('./routes/entity/edition'));
   app.use('/edition/:id/relationships', require('./routes/relationship/edit'));
+}
+
+function initWorkRoutes(app) {
+  app.use('/work', require('./routes/entity/work'));
+  app.use('/work/:id/relationships', require('./routes/relationship/edit'));
+}
+
+function initPublisherRoutes(app) {
+  app.use('/publisher', require('./routes/entity/publisher'));
+  app.use('/publisher/:id/relationships', require('./routes/relationship/edit'));
 }
 
 module.exports = function initRoutes(app) {
@@ -24,6 +34,9 @@ module.exports = function initRoutes(app) {
 
   initPublicationRoutes(app);
   initCreatorRoutes(app);
+  initEditionRoutes(app);
+  initWorkRoutes(app);
+  initPublisherRoutes(app);
 
   app.use('/editor', require('./routes/editor'));
   app.use('/message', require('./routes/message'));
