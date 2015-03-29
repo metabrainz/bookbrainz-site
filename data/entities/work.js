@@ -1,6 +1,7 @@
 var Model = rootRequire('helpers/model');
 var Entity = rootRequire('data/entity');
 var Language = rootRequire('data/properties/language');
+var WorkType = rootRequire('data/properties/work-type');
 
 var Work = new Model({
 	base: Entity,
@@ -10,7 +11,8 @@ var Work = new Model({
 
 Work.extend({
 	work_type: {
-		type: 'enum'
+		type: 'object',
+		model: WorkType
 	},
 	languages: {
 		type: 'object',
