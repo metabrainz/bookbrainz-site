@@ -8,7 +8,7 @@ block body
       .col-md-12
         h1
           small.pull-right
-            a(href='/publication/'+entity.bbid+'/history')
+            a(href='/work/'+entity.bbid+'/history')
               span.sr-only History
               code='r'+entity.revision.revision_id
           if entity.default_alias
@@ -21,7 +21,7 @@ block body
       .col-md-8
         h2
           small.pull-right
-            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit relationships', href='/publication/'+entity.bbid+'/relationships')
+            a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit Relationships', href='/work/'+entity.bbid+'/relationships')
               span.sr-only Edit relationships
           | Relationships
         ul.list-unstyled
@@ -32,10 +32,23 @@ block body
       .col-md-4
         .text-center No Image
         hr
-        span(data-bind='text: editMode')
         dl
           dt Type
-          dd=(entity.publication_type ? entity.publication_type.label : '?')
+          dd=(entity.work_type ? entity.work_type.label : '?')
+
+          dt Languages
+          dd
+            if entity.languages
+              =entity.languages.map(function(l){return l.name;}).join(', ')
+            else
+              | ?
+
+          dt Begin Date
+          dd=(entity.begin_date ? entity.begin_date : '?')
+
+          if entity.ended
+            dt End Date
+            dd=(entity.end_date ? entity.end_date : '?')
 
           dt Last Modified
           dd=(new Date(entity.last_updated)).toLocaleDateString()

@@ -8,12 +8,6 @@ block body
       .col-md-12
         h1
           small.pull-right
-            button.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
-              span.sr-only Edit creator
-            button.btn.btn-primary.btn-xs.fa.fa-share-alt.fa-flip-horizontal.entity-action
-              span.sr-only Share creator
-            button.btn.btn-danger.btn-xs.fa.fa-remove.entity-action
-              span.sr-only Remove creator
             a(href='/creator/'+entity.bbid+'/history')
               span.sr-only History
               code='r'+entity.revision.revision_id
@@ -25,25 +19,6 @@ block body
         hr
     .row
       .col-md-8
-        h2.hidden Publications
-        table.table.table-striped.hidden
-          tr
-            th Name
-            th Original Year
-          tr
-            td: a(href='/publication/x') Publication 1
-            td 2002
-          tr
-            td: a(href='/publication/y') Publication 2
-            td 2004
-          tr
-            td: a(href='/publication/w') Publication 3
-            td 2005
-          tr
-            td: a(href='/publication/z') Publication 4
-            td 2005
-        hr.hidden
-
         h2
           small.pull-right
             a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit Relationships', href='/creator/'+entity.bbid+'/relationships')
