@@ -57,6 +57,18 @@ router.get('/getStarted', function(req, res) {
 	});
 });
 
+router.get('/privacy', function(req, res) {
+	res.render('privacy', {
+		title: 'BookBrainz :: Privacy',
+	});
+});
+
+router.get('/licensing', function(req, res) {
+	res.render('licensing', {
+		title: 'BookBrainz :: Licensing',
+	});
+});
+
 router.get('/search', function(req, res) {
 	query = req.query.q;
 	var resultsPromise = bbws.get('/search?q=' + query);
