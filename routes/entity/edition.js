@@ -18,7 +18,7 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 		function(editionStatuses, languages) {
 			var alphabeticLanguagesList = languages.sort(function(a, b) {
 				if (a.frequency != b.frequency)
-					return a.frequency < b.frequency;
+					return b.frequency - a.frequency;
 
 				return a.name.localeCompare(b.name);
 			});
