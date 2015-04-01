@@ -15,7 +15,7 @@ block body
               dd
                 a(href='/editor/' + message.sender.user_id) #{message.sender.name}
                 small.pull-right
-                  a.btn.btn-warning.btn-xs.fa.fa-mail-reply.entity-action(href='/messageForm?recipients=' + message.sender.user_id + '&subject=Re: ' + message.subject)
+                  a.btn.btn-warning.btn-xs.fa.fa-mail-reply.entity-action(href='/message/send?recipients=' + message.sender.user_id + '&subject=Re: ' + message.subject)
                     span.sr-only Reply to message
               dt Subject:
               dd=message.subject
