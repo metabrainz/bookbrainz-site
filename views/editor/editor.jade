@@ -14,10 +14,11 @@ block body
     .row
       .col-md-12
         h2 Basic Info
-          if editor.id == user.id
-            small.pull-right
-              a(href="/editor/edit").btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
-                span.sr-only Edit basic editor info
+          if user
+            if editor.id == user.id
+              small.pull-right
+                a(href="/editor/edit").btn.btn-warning.btn-xs.fa.fa-pencil.entity-action
+                  span.sr-only Edit basic editor info
         dl.dl-horizontal
           dt Email
           dd
@@ -25,9 +26,10 @@ block body
               =editor.email
               | &nbsp;
             i (hidden)
-            if (editor.id != user.id)
-              a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + editor.id)
-                span.sr-only Compose message to #{editor.name}
+            if user
+              if (editor.id != user.id)
+                a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/messageForm?recipients=' + editor.id)
+                  span.sr-only Compose message to #{editor.name}
           dt Type
           dd=editor.user_type.label
           dt Reputation
