@@ -3,7 +3,7 @@ var router = express.Router();
 var auth = rootRequire('helpers/auth');
 var Relationship = rootRequire('data/relationship');
 
-router.get('/:id/relationships', function relationshipEditor(req, res) {
+router.get('/:id/relationships', auth.isAuthenticated, function relationshipEditor(req, res) {
 	res.render('relationship/edit', {
 		entityGid: req.params.id
 	});
