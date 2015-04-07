@@ -28,7 +28,8 @@ block body
       tbody
         for message in messages.objects
           tr
-            td=message.sender.name
+            td
+              a(href='/editor/'+message.sender.id)=message.sender.name
             td
               a(href='/message/'+message.message_id)=message.subject
     
