@@ -1,10 +1,7 @@
-### grunt ###
-# Grunt usually compiles files inside this directory
-/dist/
-
-# Grunt usually preprocesses files such as coffeescript, compass... inside the .tmp directory
-/.tmp/
-
+# Project-specific directories
+/build
+/public/js
+/config
 
 ### Node ###
 # Logs
@@ -92,9 +89,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-
-# Additional, project-specific directories
-/build
-/public/js
-/config
