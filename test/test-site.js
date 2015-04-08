@@ -1,7 +1,7 @@
 process.env.NODE_ENV = 'testing';
 
 var request = require('supertest');
-var app = require('../src/server/app');
+var app = require('../app');
 
 describe('GET /', function() {
 	it('should return 200', function(done) {
