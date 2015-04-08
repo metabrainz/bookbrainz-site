@@ -1,6 +1,5 @@
 # Project-specific directories
-/build
-/public/js
+/static
 /config
 
 ### Node ###

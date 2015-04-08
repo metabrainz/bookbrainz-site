@@ -4,29 +4,20 @@ var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglify');
 var prettify = require('gulp-jsbeautifier');
 var path = require('path');
+var glob = require('glob');
+var mkdirp = require('mkdirp');
 
 function bundle() {
-	var srcFiles = [
-		'./views/entity/create/publication.js',
-		'./views/entity/create/creator.js',
-		'./views/entity/create/edition.js',
-		'./views/entity/create/work.js',
-		'./views/entity/create/publisher.js',
-		'./views/layout.js',
-		'./views/relationship/relationship_editor.js',
-		'./views/editor/profile_editor.js',
-	];
+	var srcFiles =
+		glob.sync('./templates/**/*.js').concat(glob.sync('./templates/*.js'));
 
-	var dstFiles = [
-		'public/js/publication.js',
-		'public/js/creator.js',
-		'public/js/edition.js',
-		'public/js/work.js',
-		'public/js/publisher.js',
-		'public/js/layout.js',
-		'public/js/relationship_editor.js',
-		'public/js/profile_editor.js',
-	];
+	var dstFiles = srcFiles.map(function(f) {
+		return path.join('./static', 'js', path.relative('./templates', f));
+	});
+
+	dstFiles.forEach(function(f) {
+		mkdirp.sync(path.dirname(f));
+	});
 
 	return browserify(srcFiles)
 		.plugin('factor-bundle', {
@@ -34,22 +25,19 @@ function bundle() {
 		})
 		.bundle()
 		.pipe(source('bundle.js'))
-		.pipe(gulp.dest('public/js'));
+		.pipe(gulp.dest('./static/js'));
 }
 
 function compress() {
-	return gulp.src('public/js/*.js')
+	return gulp.src('static/js/**/*.js')
 		.pipe(uglify())
-		.pipe(gulp.dest('public/js'));
+		.pipe(gulp.dest('static/js'));
 }
 
 function tidy() {
 	var srcFiles = [
-		'./routes/**/*.js',
-		'./views/**/*.js',
-		'./data/**/*.js',
-		'./helpers/**/*.js',
-		'./test/**/*js',
+		'./src/**/*.js',
+		'./test/**/*.js',
 		'./app.js',
 		'./gulpfile.js',
 	];
@@ -71,7 +59,7 @@ gulp.task('bundle', bundle);
 gulp.task('compress', ['bundle'], compress);
 gulp.task('tidy', tidy);
 gulp.task('watch', function() {
-	var watcher = gulp.watch('./views/**/*.js', ['bundle']);
+	var watcher = gulp.watch('./src/**/*.js', ['bundle']);
 	watcher.on('change', function(event) {
 		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
 	});

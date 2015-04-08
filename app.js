@@ -1,9 +1,5 @@
 var path = require('path');
 
-global.rootRequire = function(name) {
-	return require(path.join(__dirname, name));
-};
-
 // require dependencies
 var express = require('express');
 var favicon = require('serve-favicon');
@@ -17,16 +13,16 @@ var staticCache = require('express-static-cache');
 var Promise = require('bluebird');
 Promise.longStackTraces();
 
-var auth = require('./helpers/auth');
-var config = require('./helpers/config');
+var auth = require('./src/server/helpers/auth');
+var config = require('./src/server/helpers/config');
 
-var User = rootRequire('data/user');
+var User = require('./src/server/data/user');
 
 // initialize application
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
@@ -35,7 +31,7 @@ app.set('webservice', config.site.webservice);
 
 app.set('trust proxy', config.site.proxyTrust);
 
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
+app.use(favicon(path.join(__dirname, 'static/images/favicon.ico')));
 
 if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
@@ -46,11 +42,11 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 
-app.use(staticCache(path.join(__dirname, 'public/js'), {
+app.use(staticCache(path.join(__dirname, 'static/js'), {
 	buffer: true
 }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'static')));
 
 app.use(session({
 	store: new RedisStore({
@@ -93,7 +89,7 @@ app.use(function(req, res, next) {
 });
 
 // set up routes
-require('./routes')(app);
+require('./src/server/routes')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
