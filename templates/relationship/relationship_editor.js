@@ -1,9 +1,9 @@
 var ko = require('knockout');
 var request = require('superagent');
 var $ = require('jquery');
-var renderRelationship = require('../../helpers/render');
+var renderRelationship = require('../../src/server/helpers/render');
 var Promise = require('bluebird');
-var utils = require('../../helpers/utils');
+var utils = require('../../src/server/helpers/utils');
 require('superagent-bluebird-promise');
 
 var ws = 'http://bookbrainz.org/ws';

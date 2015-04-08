@@ -26,7 +26,7 @@ var User = rootRequire('data/user');
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../../templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
@@ -35,7 +35,7 @@ app.set('webservice', config.site.webservice);
 
 app.set('trust proxy', config.site.proxyTrust);
 
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
+app.use(favicon(path.join(__dirname, '../../static/images/favicon.ico')));
 
 if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
@@ -46,11 +46,11 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 
-app.use(staticCache(path.join(__dirname, 'public/js'), {
+app.use(staticCache(path.join(__dirname, '../../static/js'), {
 	buffer: true
 }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../../static')));
 
 app.use(session({
 	store: new RedisStore({
