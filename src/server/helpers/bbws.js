@@ -1,6 +1,6 @@
 var superagent = require('superagent');
 var Promise = require('bluebird');
-var config = rootRequire('helpers/config');
+var config = require('../helpers/config');
 
 require('superagent-bluebird-promise');
 

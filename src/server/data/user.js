@@ -1,6 +1,6 @@
-var Model = rootRequire('helpers/model');
-var UserType = rootRequire('data/properties/user-type');
-var Gender = rootRequire('data/properties/gender');
+var Model = require('../helpers/model');
+var UserType = require('../data/properties/user-type');
+var Gender = require('../data/properties/gender');
 
 var User = new Model({
 	endpoint: 'user'

@@ -1,8 +1,8 @@
-var Model = rootRequire('helpers/model');
-var Alias = rootRequire('data/properties/alias');
-var Annotation = rootRequire('data/properties/annotation');
-var Disambiguation = rootRequire('data/properties/disambiguation');
-var Relationship = rootRequire('data/relationship');
+var Model = require('../helpers/model');
+var Alias = require('../data/properties/alias');
+var Annotation = require('../data/properties/annotation');
+var Disambiguation = require('../data/properties/disambiguation');
+var Relationship = require('../data/relationship');
 
 var Entity = new Model({
 	abstract: true,

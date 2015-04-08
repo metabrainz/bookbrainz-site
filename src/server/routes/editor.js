@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var User = rootRequire('data/user');
-var bbws = rootRequire('helpers/bbws');
-var auth = rootRequire('helpers/auth');
+var User = require('../data/user');
+var bbws = require('../helpers/bbws');
+var auth = require('../helpers/auth');
 
 router.get('/edit', auth.isAuthenticated, function(req, res) {
 	res.render('editor/edit', {

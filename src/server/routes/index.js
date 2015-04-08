@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
-var Revision = rootRequire('data/properties/revision');
-var bbws = rootRequire('helpers/bbws');
+var Revision = require('../data/properties/revision');
+var bbws = require('../helpers/bbws');
 var Promise = require('bluebird');
-var Publication = rootRequire('data/entities/publication');
-var Creator = rootRequire('data/entities/creator');
-var Edition = rootRequire('data/entities/edition');
-var Work = rootRequire('data/entities/work');
-var Publisher = rootRequire('data/entities/publisher');
+var Publication = require('../data/entities/publication');
+var Creator = require('../data/entities/creator');
+var Edition = require('../data/entities/edition');
+var Work = require('../data/entities/work');
+var Publisher = require('../data/entities/publisher');
 
 /* GET home page. */
 router.get('/', function(req, res) {

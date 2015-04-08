@@ -1,4 +1,4 @@
-var Model = rootRequire('helpers/model');
+var Model = require('../../helpers/model');
 
 var Gender = new Model({
 	endpoint: 'gender'

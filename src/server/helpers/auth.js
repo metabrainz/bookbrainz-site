@@ -1,5 +1,5 @@
 var passport = require('passport');
-var config = rootRequire('helpers/config');
+var config = require('../helpers/config');
 var BBWSStrategy = require('./passport-bookbrainz-ws');
 
 var auth = {};

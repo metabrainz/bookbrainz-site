@@ -1,13 +1,14 @@
 var express = require('express');
-var router = express.Router();
-var auth = rootRequire('helpers/auth');
+var auth = require('../../helpers/auth');
 var Promise = require('bluebird');
-var Creator = rootRequire('data/entities/creator');
-var Gender = rootRequire('data/properties/gender');
-var CreatorType = rootRequire('data/properties/creator-type');
-var Language = rootRequire('data/properties/language');
-var Entity = rootRequire('data/entity');
-var renderRelationship = rootRequire('helpers/render');
+var Creator = require('../../data/entities/creator');
+var Gender = require('../../data/properties/gender');
+var CreatorType = require('../../data/properties/creator-type');
+var Language = require('../../data/properties/language');
+var Entity = require('../../data/entity');
+var renderRelationship = require('../../helpers/render');
+
+var router = express.Router();
 
 // Creation
 

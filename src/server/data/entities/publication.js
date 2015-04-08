@@ -1,6 +1,6 @@
-var Model = rootRequire('helpers/model');
-var Entity = rootRequire('data/entity');
-var PublicationType = rootRequire('data/properties/publication-type');
+var Model = require('../../helpers/model');
+var Entity = require('../../data/entity');
+var PublicationType = require('../../data/properties/publication-type');
 
 var Publication = new Model({
 	base: Entity,

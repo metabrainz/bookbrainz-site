@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var auth = rootRequire('helpers/auth');
+var auth = require('../../helpers/auth');
 var Promise = require('bluebird');
-var Publication = rootRequire('data/entities/publication');
-var PublicationType = rootRequire('data/properties/publication-type');
-var Language = rootRequire('data/properties/language');
-var Entity = rootRequire('data/entity');
-var renderRelationship = rootRequire('helpers/render');
+var Publication = require('../../data/entities/publication');
+var PublicationType = require('../../data/properties/publication-type');
+var Language = require('../../data/properties/language');
+var Entity = require('../../data/entity');
+var renderRelationship = require('../../helpers/render');
 
 // Creation
 

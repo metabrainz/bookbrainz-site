@@ -1,7 +1,7 @@
-var Model = rootRequire('helpers/model');
-var Entity = rootRequire('data/entity');
-var Language = rootRequire('data/properties/language');
-var EditionStatus = rootRequire('data/properties/edition-status');
+var Model = require('../../helpers/model');
+var Entity = require('../../data/entity');
+var Language = require('../../data/properties/language');
+var EditionStatus = require('../../data/properties/edition-status');
 
 var Edition = new Model({
 	base: Entity,

@@ -1,6 +1,6 @@
 var util = require('util');
 var PasswordGrantStrategy = require('passport-oauth2-password-grant');
-var User = rootRequire('data/user');
+var User = require('../data/user');
 
 function BBWSStrategy(options, verify) {
 	options = options || {};

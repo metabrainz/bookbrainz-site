@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var auth = rootRequire('helpers/auth');
+var auth = require('../helpers/auth');
 
-var bbws = rootRequire('helpers/bbws');
+var bbws = require('../helpers/bbws');
 
 var request = require('superagent');
 require('superagent-bluebird-promise');

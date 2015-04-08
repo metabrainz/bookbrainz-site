@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var auth = rootRequire('helpers/auth');
+var auth = require('../../helpers/auth');
 var Promise = require('bluebird');
-var Work = rootRequire('data/entities/work');
-var WorkType = rootRequire('data/properties/work-type');
-var Language = rootRequire('data/properties/language');
-var Entity = rootRequire('data/entity');
-var renderRelationship = rootRequire('helpers/render');
+var Work = require('../../data/entities/work');
+var WorkType = require('../../data/properties/work-type');
+var Language = require('../../data/properties/language');
+var Entity = require('../../data/entity');
+var renderRelationship = require('../../helpers/render');
 
 // Creation
 

@@ -1,5 +1,5 @@
-var Model = rootRequire('helpers/model');
-var Entity = rootRequire('data/entity');
+var Model = require('../../helpers/model');
+var Entity = require('../../data/entity');
 
 var Revision = new Model({
 	endpoint: 'revision'
