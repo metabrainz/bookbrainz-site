@@ -10,6 +10,60 @@ var renderRelationship = require('../../helpers/render');
 
 var router = express.Router();
 
+router.param('bbid', function(req, res, next, bbid) {
+	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
+		next();
+	else
+		next('route');
+});
+
+router.get('/:bbid', function(req, res, next) {
+	var render = function(creator) {
+		var rendered = creator.relationships.map(function(relationship) {
+			relationship.entities.sort(function sortRelationshipEntity(a, b) {
+				return a.position - b.position;
+			});
+
+			relationship.entities = relationship.entities.map(function(entity) {
+				return Entity.findOne(entity.entity.entity_gid);
+			});
+
+			relationship.template = relationship.relationship_type.template;
+			relationship.rendered = Promise.all(relationship.entities)
+				.then(function(entities) {
+					entities.forEach(function(entity) {
+						entity.entity_gid = entity.bbid;
+					});
+					return renderRelationship(entities, relationship, null);
+				});
+
+			return Promise.props(relationship);
+		});
+
+		Promise.all(rendered)
+			.then(function(rendered) {
+				creator.relationships = rendered;
+				res.render('entity/view/creator', {
+					title: 'BookBrainz',
+					entity: creator
+				});
+			});
+	};
+
+	Creator.findOne(req.params.bbid, {
+			populate: [
+				'annotation',
+				'disambiguation',
+				'relationships',
+			]
+		})
+		.then(render)
+		.catch(function(err) {
+			console.log(err.stack);
+			next(err);
+		});
+});
+
 // Creation
 
 router.get('/create', auth.isAuthenticated, function(req, res) {
@@ -93,55 +147,6 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		})
 		.then(function(revision) {
 			res.send(revision);
-		});
-});
-
-// Viewing
-
-router.get('/:id', function(req, res, next) {
-	var render = function(creator) {
-		var rendered = creator.relationships.map(function(relationship) {
-			relationship.entities.sort(function sortRelationshipEntity(a, b) {
-				return a.position - b.position;
-			});
-
-			relationship.entities = relationship.entities.map(function(entity) {
-				return Entity.findOne(entity.entity.entity_gid);
-			});
-
-			relationship.template = relationship.relationship_type.template;
-			relationship.rendered = Promise.all(relationship.entities)
-				.then(function(entities) {
-					entities.forEach(function(entity) {
-						entity.entity_gid = entity.bbid;
-					});
-					return renderRelationship(entities, relationship, null);
-				});
-
-			return Promise.props(relationship);
-		});
-
-		Promise.all(rendered)
-			.then(function(rendered) {
-				creator.relationships = rendered;
-				res.render('entity/view/creator', {
-					title: 'BookBrainz',
-					entity: creator
-				});
-			});
-	};
-
-	Creator.findOne(req.params.id, {
-			populate: [
-				'annotation',
-				'disambiguation',
-				'relationships',
-			]
-		})
-		.then(render)
-		.catch(function(err) {
-			console.log(err.stack);
-			next(err);
 		});
 });
 
