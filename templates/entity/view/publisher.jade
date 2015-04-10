@@ -8,9 +8,7 @@ block body
       .col-md-12
         h1
           small.pull-right
-            a(href='/publisher/'+entity.bbid+'/history')
-              span.sr-only History
-              code='r'+entity.revision.revision_id
+            code='r'+entity.revision.revision_id
           if entity.default_alias
             =entity.default_alias.name
             |&nbsp;
