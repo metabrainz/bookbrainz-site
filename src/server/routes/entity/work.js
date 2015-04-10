@@ -8,6 +8,8 @@ var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
 
+var NotFoundError = require('../../helpers/error').NotFoundError;
+
 router.param('bbid', function(req, res, next, bbid) {
 	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
 		next();
@@ -57,7 +59,11 @@ router.get('/:bbid', function(req, res, next) {
 		})
 		.then(render)
 		.catch(function(err) {
-			console.log(err.stack);
+			if (err.status == 404) {
+				var newErr = new NotFoundError('Work not found');
+				return next(newErr);
+			}
+
 			next(err);
 		});
 });

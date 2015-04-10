@@ -8,6 +8,8 @@ var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
 
+var NotFoundError = require('../../helpers/error').NotFoundError;
+
 var router = express.Router();
 
 router.param('bbid', function(req, res, next, bbid) {
@@ -59,7 +61,11 @@ router.get('/:bbid', function(req, res, next) {
 		})
 		.then(render)
 		.catch(function(err) {
-			console.log(err.stack);
+			if (err.status == 404) {
+				var newErr = new NotFoundError('Creator not found');
+				return next(newErr);
+			}
+
 			next(err);
 		});
 });
