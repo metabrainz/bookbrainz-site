@@ -3,7 +3,7 @@ var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
-var ws = 'http://waveplot.net:5000/ws';
+var ws = 'https://bookbrainz.org/ws';
 var userId = $('#userContainer').attr('data-user-id');
 
 

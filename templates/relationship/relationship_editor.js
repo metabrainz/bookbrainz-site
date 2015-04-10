@@ -6,7 +6,7 @@ var Promise = require('bluebird');
 var utils = require('../../src/server/helpers/utils');
 require('superagent-bluebird-promise');
 
-var ws = 'http://bookbrainz.org/ws';
+var ws = 'https://bookbrainz.org/ws';
 var entityGid = $('#entityContainer').attr('data-entity-gid');
 
 
