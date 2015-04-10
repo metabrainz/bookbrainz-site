@@ -1,6 +1,10 @@
 extends layout
 
 block body
+  include /navbar
+
   h1= message
   h2= error.status
-  pre #{error.stack}
+
+  if error.stack
+    pre #{error.stack}

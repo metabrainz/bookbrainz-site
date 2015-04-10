@@ -9,23 +9,16 @@ bbws = {};
 var _processError = function(response) {
 	var newErr;
 
-	var requestPath = response.error.method + ': ' + response.error.path;
+	var requestPath = response.error.method + ' ' + response.error.path;
 
-	switch (response.status) {
-		case 401:
-			newErr = new Error('Not Authorized (' + requestPath + ')');
-			break;
-		case 404:
-			newErr = new Error('Not Found (' + requestPath + ')');
-			break;
-		case 411:
-			newErr = new Error('Length Required (' + requestPath + ')');
-			break;
-		default:
-			newErr = new Error('Unknown Error (' + requestPath + ')');
+	if (response.status == 404) {
+		newErr = new Error('WS path not found: ' + requestPath);
+		newErr.status = 404;
 	}
-
-	newErr.status = response.status;
+	else {
+		newErr = new Error('There was an error accessing the web service');
+		console.log('WS error: ' + response.status + ' ' + requestPath);
+	}
 
 	throw newErr;
 };
