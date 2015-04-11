@@ -4,8 +4,6 @@ var User = rootRequire('data/user');
 var bbws = rootRequire('helpers/bbws');
 var auth = rootRequire('helpers/auth');
 
-var NotFoundError = require('../helpers/error').NotFoundError;
-
 router.get('/edit', auth.isAuthenticated, function(req, res) {
 	res.render('editor/edit', {
 		userId: req.user.id
@@ -44,7 +42,7 @@ router.get('/:id', function(req, res, next) {
 		})
 		.catch(function(err) {
 			console.log(err.stack);
-			next(new NotFoundError('Editor not found'));
+			next(new Error('Editor not found'));
 		});
 });
 
