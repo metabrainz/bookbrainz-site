@@ -33,7 +33,27 @@ auth.authenticate = function() {
 			password: req.body.password
 		};
 
-		passport.authenticate('bbws', options)(req, res, next);
+		var callback = function(err) {
+			if (err) {
+				console.log(err.stack);
+
+				var newErr;
+
+				switch (err.name) {
+					case 'InternalOAuthError':
+					case 'TokenError':
+						newErr = new Error('An internal error occurred during authentication');
+						break;
+					case 'AuthorizationError':
+						newErr = new Error('Invalid username or password');
+						break;
+				}
+
+				return next(newErr);
+			}
+		};
+
+		passport.authenticate('bbws', options)(req, res, callback);
 	}
 };
 

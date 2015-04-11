@@ -33,7 +33,7 @@ BBWSStrategy.prototype.userProfile = function(accessToken, done) {
 		})
 		.catch(function(err) {
 			console.log(err.stack);
-			return done(new Error('Failed to fetch user profile'));
+			return done(new Error('Internal error fetching user profile'));
 		});
 };
 
