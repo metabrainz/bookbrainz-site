@@ -1,50 +1,50 @@
 extends ../layout
 
 block body
-  .container#content
-    .row
-      .col-md-12
-        h1=editor.name
-    .row
-      .col-md-12
-        ul.nav.nav-tabs
-          li.active: a(href='./'+editor.id) Profile
-    .row
-      .col-md-12
-        h2 Basic Info
-          if user
-            if editor.id == user.id
-              small.pull-right
-                a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title="Edit basic editor info", href="/editor/edit")
-                  span.sr-only Edit basic editor info
-        dl.dl-horizontal
-          dt Email
-          dd
-            if editor.email
-              =editor.email
-              | &nbsp;
-            i (hidden)
-            if user
-              if (editor.id != user.id)
-                a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/message/send?recipients=' + editor.id)
-                  span.sr-only Compose message to #{editor.name}
-          dt Type
-          dd=editor.user_type.label
-          dt Reputation
-          dd 0
-          dt Joined
-          dd=(new Date(editor.created_at)).toUTCString()
-          dt Last Active
-          dd=(new Date(editor.active_at)).toUTCString()
-          dt Bio
-          dd=(editor.bio ? editor.bio : '-')
-        h2 Stats
-        dl.dl-horizontal
-          dt Total Revisions
-          dd=editor.total_revisions
-          dt Revisions Applied
-          dd=editor.revisions_applied
-          dt Revisions Reverted
-          dd=editor.revisions_reverted
+	.container#content
+		.row
+			.col-md-12
+				h1=editor.name
+		.row
+			.col-md-12
+				ul.nav.nav-tabs
+					li.active: a(href='./'+editor.id) Profile
+		.row
+			.col-md-12
+				h2 Basic Info
+					if user
+						if editor.id == user.id
+							small.pull-right
+								a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title="Edit basic editor info", href="/editor/edit")
+									span.sr-only Edit basic editor info
+				dl.dl-horizontal
+					dt Email
+					dd
+						if editor.email
+							=editor.email
+							| &nbsp;
+						i (hidden)
+						if user
+							if (editor.id != user.id)
+								a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/message/send?recipients=' + editor.id)
+									span.sr-only Compose message to #{editor.name}
+					dt Type
+					dd=editor.user_type.label
+					dt Reputation
+					dd 0
+					dt Joined
+					dd=(new Date(editor.created_at)).toUTCString()
+					dt Last Active
+					dd=(new Date(editor.active_at)).toUTCString()
+					dt Bio
+					dd=(editor.bio ? editor.bio : '-')
+				h2 Stats
+				dl.dl-horizontal
+					dt Total Revisions
+					dd=editor.total_revisions
+					dt Revisions Applied
+					dd=editor.revisions_applied
+					dt Revisions Reverted
+					dd=editor.revisions_reverted
 
-  include ../footer
+	include ../footer
