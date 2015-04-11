@@ -51,6 +51,8 @@ auth.authenticate = function() {
 
 				return next(newErr);
 			}
+
+			next();
 		};
 
 		passport.authenticate('bbws', options)(req, res, callback);
