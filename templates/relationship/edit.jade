@@ -1,57 +1,55 @@
 extends /layout
 
 block body
-	.container#content
-		#entityContainer(data-entity-gid=entityGid)
-		h1 Edit Relationships
-		.row
-			.col-md-12
-				p.lead Edit the relationships for an entity.
-		h2 Add Relationship
-		.row
-			.col-md-6.col-md-offset-3.form-horizontal
-				.form-group
-					label.col-md-3.control-label Type
-					.col-md-9
-						select.form-control(data-bind="options: relationshipTypes, optionsText: 'label', value: currentRelationshipType")
-						// ko with: currentRelationshipType
-						p(data-bind="text: description")
-						// /ko
+	#entityContainer(data-entity-gid=entityGid)
+	h1 Edit Relationships
+	.row
+		.col-md-12
+			p.lead Edit the relationships for an entity.
+	h2 Add Relationship
+	.row
+		.col-md-6.col-md-offset-3.form-horizontal
+			.form-group
+				label.col-md-3.control-label Type
+				.col-md-9
+					select.form-control(data-bind="options: relationshipTypes, optionsText: 'label', value: currentRelationshipType")
+					// ko with: currentRelationshipType
+					p(data-bind="text: description")
+					// /ko
 
-				// ko foreach: entityGids
-				.form-group
-					label.col-md-3.control-label Entity&nbsp;
-						span(data-bind="text: $index() + 1")
-					.col-md-7
-						input.form-control(type='text', data-bind="textInput: $data.gid, attr: {readonly: $data.disabled}")
-					.col-md-2(data-bind="ifnot: $parent.lastEntity($index())")
-						button.btn.btn-primary.btn-block(data-bind="click: $parent.swap.bind($data, $index())")
-							span.fa.fa-exchange.fa-rotate-90
-							span.sr-only Swap entities
-				// /ko
-				.text-center(data-bind="if: relationshipComplete")
-					p(data-bind="html: renderedRelationship")
-				.form-group
-					.col-md-2.col-md-offset-10
-						button.btn.btn-success.btn-block.fa.fa-plus(title="Add Relationship", data-bind="click: processRelationship, enable: relationshipComplete")
-							span.sr-only Add relationship
-		hr
-		h2 Current Relationships
-		.row
-			.col-md-6.col-md-offset-3
-				.row(data-bind="foreach: addedRelationships")
-					.col-md-10(data-bind="html: rendered")
-					.col-md-2
-						button.btn.btn-danger.btn-block.fa.fa-minus(title="Remove Relationship", data-bind="click: $parent.removeRelationship")
-							span.sr-only Remove relationship
-		hr
-		.row
-			.col-md-6.col-md-offset-3
-				button.btn.btn-success.btn-lg.btn-block(data-bind="click: submit") Submit!
+			// ko foreach: entityGids
+			.form-group
+				label.col-md-3.control-label Entity&nbsp;
+					span(data-bind="text: $index() + 1")
+				.col-md-7
+					input.form-control(type='text', data-bind="textInput: $data.gid, attr: {readonly: $data.disabled}")
+				.col-md-2(data-bind="ifnot: $parent.lastEntity($index())")
+					button.btn.btn-primary.btn-block(data-bind="click: $parent.swap.bind($data, $index())")
+						span.fa.fa-exchange.fa-rotate-90
+						span.sr-only Swap entities
+			// /ko
+			.text-center(data-bind="if: relationshipComplete")
+				p(data-bind="html: renderedRelationship")
+			.form-group
+				.col-md-2.col-md-offset-10
+					button.btn.btn-success.btn-block.fa.fa-plus(title="Add Relationship", data-bind="click: processRelationship, enable: relationshipComplete")
+						span.sr-only Add relationship
+	hr
+	h2 Current Relationships
+	.row
+		.col-md-6.col-md-offset-3
+			.row(data-bind="foreach: addedRelationships")
+				.col-md-10(data-bind="html: rendered")
+				.col-md-2
+					button.btn.btn-danger.btn-block.fa.fa-minus(title="Remove Relationship", data-bind="click: $parent.removeRelationship")
+						span.sr-only Remove relationship
+	hr
+	.row
+		.col-md-6.col-md-offset-3
+			button.btn.btn-success.btn-lg.btn-block(data-bind="click: submit") Submit!
 
-		.alert.alert-danger.alert-dismissible(data-bind='visible: error, with: error')
-			span(data-bind='text: msg')
+	.alert.alert-danger.alert-dismissible(data-bind='visible: error, with: error')
+		span(data-bind='text: msg')
 
+block js
 	script(src='/js/relationship/relationship_editor.js')
-
-	include /footer

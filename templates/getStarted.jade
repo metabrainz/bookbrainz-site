@@ -1,63 +1,60 @@
 extends layout
 
 block body
-	.container#content
+	.row
+		.col-md-12
+			h1 Getting Started
+			p.lead.
+				Even though BookBrainz is still in its infancy, there are quite a few
+				things you can do with it. Here are a couple of tips for getting
+				started:
+
+	.jumbotron
 		.row
-			.col-md-12
-				h1 Getting Started
-				p.lead.
-					Even though BookBrainz is still in its infancy, there are quite a few
-					things you can do with it. Here are a couple of tips for getting
-					started:
+			.col-md-2.text-center
+				span.fa.fa-user.fa-5x.get-started-icon
+			.col-md-10
+				h2
+					| Join Us!
+				p
+					| First off,&nbsp;
+					a(href="/about", target='blank') read about us
+					| &nbsp;and&nbsp;
+					a(href="/contribute", target='blank') how you can help
+					| . Then, if you think you'll stick around,&nbsp;
+					a(href="/register", target='blank') sign up
+					| &nbsp;for a free BookBrainz account!
 
-		.jumbotron
-			.row
-				.col-md-2.text-center
-					span.fa.fa-user.fa-5x.get-started-icon
-				.col-md-10
-					h2
-						| Join Us!
-					p
-						| First off,&nbsp;
-						a(href="/about", target='blank') read about us
-						| &nbsp;and&nbsp;
-						a(href="/contribute", target='blank') how you can help
-						| . Then, if you think you'll stick around,&nbsp;
-						a(href="/register", target='blank') sign up
-						| &nbsp;for a free BookBrainz account!
+	.jumbotron
+		.row
+			.col-md-10
+				h2 Browse
+				p
+					| Have a look through some of our data - a good place to start is
+					| the recently updated list on our&nbsp;
+					a(href="/", target='blank') homepage
+					| .
+			.col-md-2.text-center
+				span.fa.fa-list.fa-5x.get-started-icon
 
-		.jumbotron
-			.row
-				.col-md-10
-					h2 Browse
-					p
-						| Have a look through some of our data - a good place to start is
-						| the recently updated list on our&nbsp;
-						a(href="/", target='blank') homepage
-						| .
-				.col-md-2.text-center
-					span.fa.fa-list.fa-5x.get-started-icon
+	.jumbotron
+		.row
+			.col-md-2.text-center
+				span.fa.fa-search.fa-5x.get-started-icon
+			.col-md-10
+				h2 Explore
+				p.
+					Check out the relationships of a couple of publications or creators
+					to find more information.
 
-		.jumbotron
-			.row
-				.col-md-2.text-center
-					span.fa.fa-search.fa-5x.get-started-icon
-				.col-md-10
-					h2 Explore
-					p.
-						Check out the relationships of a couple of publications or creators
-						to find more information.
-
-		.jumbotron
-			.row
-				.col-md-10
-					h2 Edit
-					p
-						| If you see something wrong or missing, use your new user account to
-						| make&nbsp;
-						a(href="/contribute", target='blank') edits
-						| &nbsp;to the data!
-				.col-md-2.text-center
-					span.fa.fa-pencil.fa-5x.get-started-icon
-
-	include footer
+	.jumbotron
+		.row
+			.col-md-10
+				h2 Edit
+				p
+					| If you see something wrong or missing, use your new user account to
+					| make&nbsp;
+					a(href="/contribute", target='blank') edits
+					| &nbsp;to the data!
+			.col-md-2.text-center
+				span.fa.fa-pencil.fa-5x.get-started-icon

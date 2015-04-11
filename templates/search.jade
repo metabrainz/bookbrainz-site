@@ -1,28 +1,25 @@
 extends layout
 
 block body
-	.container#content
-		.row
-			.col-md-6.col-md-offset-3
-				form.whole-page-form.form-horizontal
-					.form-group
-						.input-group
-							input.form-control(type="text" name="q" value=query)
-							.input-group-btn
-								button.btn.btn-default.btn-success(type="submit")
-									span.fa.fa-search
-									| &nbsp;Search
+	.row
+		.col-md-6.col-md-offset-3
+			form.whole-page-form.form-horizontal
+				.form-group
+					.input-group
+						input.form-control(type="text" name="q" value=query)
+						.input-group-btn
+							button.btn.btn-default.btn-success(type="submit")
+								span.fa.fa-search
+								| &nbsp;Search
 
-		table.table.table-striped
-			thead
+	table.table.table-striped
+		thead
+			tr
+				th Alias
+				th Type
+		tbody
+			each result in results
 				tr
-					th Alias
-					th Type
-			tbody
-				each result in results
-					tr
-						td
-							a(href="/" + result.type.toLowerCase() + "/" + result.bbid)=result.default_alias.name
-						td=result.type
-
-	include footer
+					td
+						a(href="/" + result.type.toLowerCase() + "/" + result.bbid)=result.default_alias.name
+					td=result.type

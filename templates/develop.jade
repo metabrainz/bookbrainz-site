@@ -1,39 +1,36 @@
 extends layout
 
 block body
-	.container#content
-		.row
-			.col-md-12
-				h1 Developing with BookBrainz
-				p.lead.
-					We aim to make it as easy as possible to use the data stored in
-					BookBrainz. If you're a developer wanting to make programs that
-					depend on BookBrainz, we have a web service available, and are planning
-					to release database dumps regularly at a later stage in the project.
+	.row
+		.col-md-12
+			h1 Developing with BookBrainz
+			p.lead.
+				We aim to make it as easy as possible to use the data stored in
+				BookBrainz. If you're a developer wanting to make programs that
+				depend on BookBrainz, we have a web service available, and are planning
+				to release database dumps regularly at a later stage in the project.
 
-				h2 Web Service
-				p
-					| The web service is the primary way of getting BookBrainz data. The
-					| key advantage of using the web service over the dumps is that you
-					| don't need to install any database engine - you can access the data
-					| through the internet. The web service is documented in&nbsp;
-					a(href='http://bbdocs-dev.readthedocs.org/en/latest/', target='blank')
-						| our Developer Documentation.
+			h2 Web Service
+			p
+				| The web service is the primary way of getting BookBrainz data. The
+				| key advantage of using the web service over the dumps is that you
+				| don't need to install any database engine - you can access the data
+				| through the internet. The web service is documented in&nbsp;
+				a(href='http://bbdocs-dev.readthedocs.org/en/latest/', target='blank')
+					| our Developer Documentation.
 
-				h2 Database Dumps
-				p.
-					The database dumps will be useful if you need to process a lot of
-					data quickly - in cases where the web service is not able to
-					respond quickly enough. Unfortunately, we're not currently ready to
-					provide database dumps, since BookBrainz is at a very early stage.
-					However, when they are published, you'll be able to download them
-					from this page, so be sure to check back occaisonally if this is
-					something you're interested in.
+			h2 Database Dumps
+			p.
+				The database dumps will be useful if you need to process a lot of
+				data quickly - in cases where the web service is not able to
+				respond quickly enough. Unfortunately, we're not currently ready to
+				provide database dumps, since BookBrainz is at a very early stage.
+				However, when they are published, you'll be able to download them
+				from this page, so be sure to check back occaisonally if this is
+				something you're interested in.
 
-				h2 Source Code
-				p
-					| BookBrainz runs on open source software. If you wish to access the
-					| source, even contribute to the project, please see
-					| #[a(href='https://github.com/bookbrainz/')  our github page].
-
-	include footer
+			h2 Source Code
+			p
+				| BookBrainz runs on open source software. If you wish to access the
+				| source, even contribute to the project, please see
+				| #[a(href='https://github.com/bookbrainz/')  our github page].

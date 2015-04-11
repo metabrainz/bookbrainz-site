@@ -1,71 +1,68 @@
 extends layout
 
 block body
-	.container#content
-		.row
-			.col-md-12
-				.text-center
-					h1 BookBrainz
-					p.lead the&nbsp;
-						a(href="/licensing") open
-						| &nbsp;literature encyclopedia
-					a.btn.btn-success.btn-lg(href="/getStarted") Get Started!
+	.row
+		.col-md-12
+			.text-center
+				h1 BookBrainz
+				p.lead the&nbsp;
+					a(href="/licensing") open
+					| &nbsp;literature encyclopedia
+				a.btn.btn-success.btn-lg(href="/getStarted") Get Started!
 
-		.row
-			.col-md-12.text-center
-				h2 Latest Updates
-				.row
-					if recent
-						for entity in recent
-							.col-xs-12.col-sm-6.col-md-4
-									- var name = '(unnamed)';
-									if entity.default_alias
-										- name = entity.default_alias.name;
+	.row
+		.col-md-12.text-center
+			h2 Latest Updates
+			.row
+				if recent
+					for entity in recent
+						.col-xs-12.col-sm-6.col-md-4
+								- var name = '(unnamed)';
+								if entity.default_alias
+									- name = entity.default_alias.name;
 
-									if entity._type == 'Publication'
-										a(href='/publication/'+entity.bbid)
-											.recently-updated.panel.panel-default.panel-body
-												div=name
-												if entity.publication_type
-													i=entity.publication_type.label
-									else if entity._type == 'Creator'
-										a(href='/creator/'+entity.bbid)
-											.recently-updated.panel.panel-default.panel-body
-												div=name
-												if entity.creator_type
-													i=entity.creator_type.label
-									else if entity._type == 'Edition'
-										a(href='/edition/'+entity.bbid)
-											.recently-updated.panel.panel-default.panel-body
-												div=name
-												if entity.edition_status
-													i=entity.edition_status.label
-									else if entity._type == 'Work'
-										a(href='/work/'+entity.bbid)
-											.recently-updated.panel.panel-default.panel-body
-												div=name
-												if entity.work_type
-													i=entity.work_type.label
-									else if entity._type == 'Publisher'
-										a(href='/publisher/'+entity.bbid)
-											.recently-updated.panel.panel-default.panel-body
-												div=name
-												if entity.publisher_type
-													i=entity.publisher_type.label
-					else
-						em Unable to retrieve latest updates
-		.row.pre-gap-2
-			.col-md-6.col-md-offset-3.text-center
-				.panel.panel-warning
-					.panel-heading
-						h3.panel-title Beta Warning!
-					.panel-body
-						| This website is currently under development, and has been
-						| released for adventurous users to test and add data. Please use
-						| the site and give us feedback about bugs, glitches and potential
-						| improvements at&nbsp;
-						a(href="http://tickets.musicbrainz.org/browse/BB", target="_blank")
-							| MusicBrainz JIRA
-						| !
-
-	include footer
+								if entity._type == 'Publication'
+									a(href='/publication/'+entity.bbid)
+										.recently-updated.panel.panel-default.panel-body
+											div=name
+											if entity.publication_type
+												i=entity.publication_type.label
+								else if entity._type == 'Creator'
+									a(href='/creator/'+entity.bbid)
+										.recently-updated.panel.panel-default.panel-body
+											div=name
+											if entity.creator_type
+												i=entity.creator_type.label
+								else if entity._type == 'Edition'
+									a(href='/edition/'+entity.bbid)
+										.recently-updated.panel.panel-default.panel-body
+											div=name
+											if entity.edition_status
+												i=entity.edition_status.label
+								else if entity._type == 'Work'
+									a(href='/work/'+entity.bbid)
+										.recently-updated.panel.panel-default.panel-body
+											div=name
+											if entity.work_type
+												i=entity.work_type.label
+								else if entity._type == 'Publisher'
+									a(href='/publisher/'+entity.bbid)
+										.recently-updated.panel.panel-default.panel-body
+											div=name
+											if entity.publisher_type
+												i=entity.publisher_type.label
+				else
+					em Unable to retrieve latest updates
+	.row.pre-gap-2
+		.col-md-6.col-md-offset-3.text-center
+			.panel.panel-warning
+				.panel-heading
+					h3.panel-title Beta Warning!
+				.panel-body
+					| This website is currently under development, and has been
+					| released for adventurous users to test and add data. Please use
+					| the site and give us feedback about bugs, glitches and potential
+					| improvements at&nbsp;
+					a(href="http://tickets.musicbrainz.org/browse/BB", target="_blank")
+						| MusicBrainz JIRA
+					| !

@@ -1,45 +1,42 @@
 extends /layout
 
 block body
-	.container#content
-		.row
-			.col-md-12
-				h1
-					small.pull-right
-						code='r'+entity.revision.revision_id
-					if entity.default_alias
-						=entity.default_alias.name
-						|&nbsp;
-					if entity.disambiguation
-						small='('+entity.disambiguation.comment+')'
-				hr
-		.row
-			.col-md-8
-				h2
-					small.pull-right
-						a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit Relationships', href='/publisher/'+entity.bbid+'/relationships')
-							span.sr-only Edit relationships
-					| Relationships
-				ul.list-unstyled
-					if entity.relationships
-						for relationship in entity.relationships
-							li!=relationship.rendered
+	.row
+		.col-md-12
+			h1
+				small.pull-right
+					code='r'+entity.revision.revision_id
+				if entity.default_alias
+					=entity.default_alias.name
+					|&nbsp;
+				if entity.disambiguation
+					small='('+entity.disambiguation.comment+')'
+			hr
+	.row
+		.col-md-8
+			h2
+				small.pull-right
+					a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit Relationships', href='/publisher/'+entity.bbid+'/relationships')
+						span.sr-only Edit relationships
+				| Relationships
+			ul.list-unstyled
+				if entity.relationships
+					for relationship in entity.relationships
+						li!=relationship.rendered
 
-			.col-md-4
-				.text-center No Image
-				hr
-				dl
-					dt Type
-					dd=(entity.publisher_type ? entity.publisher_type.label : '?')
+		.col-md-4
+			.text-center No Image
+			hr
+			dl
+				dt Type
+				dd=(entity.publisher_type ? entity.publisher_type.label : '?')
 
-					dt Begin Date
-					dd=(entity.begin_date ? entity.begin_date : '?')
+				dt Begin Date
+				dd=(entity.begin_date ? entity.begin_date : '?')
 
-					if entity.ended
-						dt End Date
-						dd=(entity.end_date ? entity.end_date : '?')
+				if entity.ended
+					dt End Date
+					dd=(entity.end_date ? entity.end_date : '?')
 
-					dt Last Modified
-					dd=(new Date(entity.last_updated)).toLocaleDateString()
-
-	include /footer
+				dt Last Modified
+				dd=(new Date(entity.last_updated)).toLocaleDateString()
