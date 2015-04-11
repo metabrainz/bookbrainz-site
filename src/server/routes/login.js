@@ -16,6 +16,7 @@ router.get('/logout', function(req, res) {
 
 router.post('/login/handler', auth.authenticate(), function(req, res) {
 	var redirect = req.session.redirectTo ? req.session.redirectTo : '/';
+	delete req.session.redirectTo;
 
 	res.redirect(303, redirect);
 }, function(err, req, res, next) {
