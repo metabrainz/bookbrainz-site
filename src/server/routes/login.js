@@ -18,6 +18,9 @@ router.post('/login/handler', auth.authenticate(), function(req, res) {
 	var redirect = req.session.redirectTo ? req.session.redirectTo : '/';
 
 	res.redirect(303, redirect);
+}, function(err, req, res, next) {
+	/* If an error occurs during login, send the user back. */
+	res.redirect(301, '/login?error=' + err.message);
 });
 
 module.exports = router;
