@@ -29,7 +29,7 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 router.get('/:id', function(req, res) {
 	var userPromise;
 
-	if (req.params.id == req.user.id)
+	if (req.user && req.params.id == req.user.id)
 		userPromise = User.getCurrent(req.session.bearerToken);
 	else
 		userPromise = User.findOne(req.params.id);
