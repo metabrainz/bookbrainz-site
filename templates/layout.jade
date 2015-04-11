@@ -47,20 +47,21 @@ html
 							span.sr-only Search
 
 					ul.nav.navbar-nav.navbar-right
-						if user
-							li.dropdown
-								a.dropdown-toggle#dNewEntities(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
-									span.fa.fa-plus
-									span.caret
-									span.sr-only Add Entities
+						li.dropdown
+							a.dropdown-toggle#dNewEntities(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								span.fa.fa-plus
+								span.caret
+								span.sr-only Add Entities
 
-								ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
-									li: a(href='/publication/create') Add Publication
-									li: a(href='/edition/create') Add Edition
-									li: a(href='/work/create') Add Work
-									li.divider
-									li: a(href='/creator/create') Add Creator
-									li: a(href='/publisher/create') Add Publisher
+							ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
+								li: a(href='/publication/create') Add Publication
+								li: a(href='/edition/create') Add Edition
+								li: a(href='/work/create') Add Work
+								li.divider
+								li: a(href='/creator/create') Add Creator
+								li: a(href='/publisher/create') Add Publisher
+
+						if user
 							li
 								a(href='/editor/'+user.id)= user.name
 							li
