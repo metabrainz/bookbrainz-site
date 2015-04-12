@@ -4,11 +4,13 @@ var auth = require('../../helpers/auth');
 var Promise = require('bluebird');
 var Edition = require('../../data/entities/edition');
 var EditionStatus = require('../../data/properties/edition-status');
-var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
+
+/* Middleware loader functions. */
+var loadLanguages = require('../../helpers/middleware').loadLanguages;
 
 router.param('bbid', function(req, res, next, bbid) {
 	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
@@ -75,23 +77,10 @@ router.get('/:bbid', function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, function(req, res) {
-	var editionStatusPromise = EditionStatus.find();
-	var languagesPromise = Language.find();
-
-	Promise.join(editionStatusPromise, languagesPromise,
-		function(editionStatuses, languages) {
-			var alphabeticLanguagesList = languages.sort(function(a, b) {
-				if (a.frequency != b.frequency)
-					return b.frequency - a.frequency;
-
-				return a.name.localeCompare(b.name);
-			});
-
-			console.log(editionStatuses);
-
+router.get('/create', auth.isAuthenticated, loadLanguages, function(req, res) {
+	EditionStatus.find()
+		.then(function(editionStatuses) {
 			res.render('entity/create/edition', {
-				languages: alphabeticLanguagesList,
 				editionStatuses: editionStatuses,
 				title: 'Add Edition'
 			});

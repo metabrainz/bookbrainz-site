@@ -4,11 +4,13 @@ var auth = require('../../helpers/auth');
 var Promise = require('bluebird');
 var Publication = require('../../data/entities/publication');
 var PublicationType = require('../../data/properties/publication-type');
-var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
+
+/* Middleware loader functions. */
+var loadLanguages = require('../../helpers/middleware').loadLanguages;
 
 router.param('bbid', function(req, res, next, bbid) {
 	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
@@ -75,22 +77,11 @@ router.get('/:bbid', function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, function(req, res) {
+router.get('/create', auth.isAuthenticated, loadLanguages, function(req, res) {
 	// Get the list of publication types
-	var publicationTypesPromise = PublicationType.find();
-	var languagesPromise = Language.find();
-
-	Promise.join(publicationTypesPromise, languagesPromise,
-		function(publicationTypes, languages) {
-			var alphabeticLanguagesList = languages.sort(function(a, b) {
-				if (a.frequency != b.frequency)
-					return b.frequency - a.frequency;
-
-				return a.name.localeCompare(b.name);
-			});
-
+	PublicationType.find()
+		.then(function(publicationTypes) {
 			res.render('entity/create/publication', {
-				languages: alphabeticLanguagesList,
 				publicationTypes: publicationTypes,
 				title: 'Add Publication'
 			});

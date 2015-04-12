@@ -2,13 +2,15 @@ var express = require('express');
 var auth = require('../../helpers/auth');
 var Promise = require('bluebird');
 var Creator = require('../../data/entities/creator');
-var Gender = require('../../data/properties/gender');
-var CreatorType = require('../../data/properties/creator-type');
-var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
+
+/* Middleware loader functions. */
+var loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
+var loadGenders = require('../../helpers/middleware').loadGenders;
+var loadLanguages = require('../../helpers/middleware').loadLanguages;
 
 var router = express.Router();
 
@@ -77,31 +79,10 @@ router.get('/:bbid', function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, function(req, res) {
-	var gendersPromise = Gender.find();
-	var creatorTypesPromise = CreatorType.find();
-	var languagesPromise = Language.find();
-
-	Promise.join(gendersPromise, creatorTypesPromise, languagesPromise,
-		function(genders, creatorTypes, languages) {
-			var genderList = genders.sort(function(a, b) {
-				return a.id > b.id;
-			});
-
-			var alphabeticLanguagesList = languages.sort(function(a, b) {
-				if (a.frequency != b.frequency)
-					return b.frequency - a.frequency;
-
-				return a.name.localeCompare(b.name);
-			});
-
-			res.render('entity/create/creator', {
-				genders: genderList,
-				languages: alphabeticLanguagesList,
-				creatorTypes: creatorTypes,
-				title: 'Add Creator'
-			});
-		});
+router.get('/create', auth.isAuthenticated, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
+	res.render('entity/create/creator', {
+		title: 'Add Creator'
+	});
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {

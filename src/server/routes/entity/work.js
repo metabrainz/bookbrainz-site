@@ -4,11 +4,13 @@ var auth = require('../../helpers/auth');
 var Promise = require('bluebird');
 var Work = require('../../data/entities/work');
 var WorkType = require('../../data/properties/work-type');
-var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
+
+/* Middleware loader functions. */
+var loadLanguages = require('../../helpers/middleware').loadLanguages;
 
 router.param('bbid', function(req, res, next, bbid) {
 	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
@@ -75,21 +77,10 @@ router.get('/:bbid', function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, function(req, res) {
-	var workTypePromise = WorkType.find();
-	var languagesPromise = Language.find();
-
-	Promise.join(workTypePromise, languagesPromise,
-		function(workTypes, languages) {
-			var alphabeticLanguagesList = languages.sort(function(a, b) {
-				if (a.frequency != b.frequency)
-					return b.frequency - a.frequency;
-
-				return a.name.localeCompare(b.name);
-			});
-
+router.get('/create', auth.isAuthenticated, loadLanguages, function(req, res) {
+	WorkType.find()
+		.then(function(workTypes) {
 			res.render('entity/create/work', {
-				languages: alphabeticLanguagesList,
 				workTypes: workTypes,
 				title: 'Add Work'
 			});
