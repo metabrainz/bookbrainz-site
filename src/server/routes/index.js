@@ -14,7 +14,6 @@ var Publisher = require('../data/entities/publisher');
 router.get('/', function(req, res) {
 	var render = function(revisions) {
 		res.render('index', {
-			title: 'BookBrainz',
 			recent: revisions ? _.pluck(revisions, 'entity') : null
 		});
 	};
@@ -35,37 +34,37 @@ router.get('/', function(req, res) {
 
 router.get('/about', function(req, res) {
 	res.render('about', {
-		title: 'BookBrainz :: About',
+		title: 'About',
 	});
 });
 
 router.get('/contribute', function(req, res) {
 	res.render('contribute', {
-		title: 'BookBrainz :: Contribute',
+		title: 'Contribute',
 	});
 });
 
 router.get('/develop', function(req, res) {
 	res.render('develop', {
-		title: 'BookBrainz :: Develop',
+		title: 'Develop',
 	});
 });
 
 router.get('/getStarted', function(req, res) {
 	res.render('getStarted', {
-		title: 'BookBrainz :: Get Started',
+		title: 'Get Started',
 	});
 });
 
 router.get('/privacy', function(req, res) {
 	res.render('privacy', {
-		title: 'BookBrainz :: Privacy',
+		title: 'Privacy',
 	});
 });
 
 router.get('/licensing', function(req, res) {
 	res.render('licensing', {
-		title: 'BookBrainz :: Licensing',
+		title: 'Licensing',
 	});
 });
 
@@ -99,7 +98,7 @@ router.get('/search', function(req, res) {
 
 		console.log(results);
 		res.render('search', {
-			title: 'BookBrainz :: Search "' + query + '"',
+			title: 'Search Results',
 			query: query,
 			results: entities
 		});

@@ -4,7 +4,8 @@ var auth = require('../helpers/auth');
 
 router.get('/login', function(req, res) {
 	res.render('login', {
-		error: req.query.error
+		error: req.query.error,
+		title: 'Log In'
 	});
 });
 

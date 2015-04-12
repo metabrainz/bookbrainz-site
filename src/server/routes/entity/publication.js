@@ -42,9 +42,14 @@ router.get('/:bbid', function(req, res, next) {
 
 		Promise.all(rendered)
 			.then(function(rendered) {
+				var title = 'Publication';
+
+				if (publication.default_alias && publication.default_alias.name)
+					title = 'Publication “' + publication.default_alias.name + '”';
+
 				publication.relationships = rendered;
 				res.render('entity/view/publication', {
-					title: 'BookBrainz',
+					title: title,
 					entity: publication
 				});
 			});
@@ -86,7 +91,8 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 
 			res.render('entity/create/publication', {
 				languages: alphabeticLanguagesList,
-				publicationTypes: publicationTypes
+				publicationTypes: publicationTypes,
+				title: 'Add Publication'
 			});
 		});
 });

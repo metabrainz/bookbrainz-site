@@ -42,9 +42,14 @@ router.get('/:bbid', function(req, res, next) {
 
 		Promise.all(rendered)
 			.then(function(rendered) {
+				var title = 'Work';
+
+				if (work.default_alias && work.default_alias.name)
+					title = 'Work “' + work.default_alias.name + '”';
+
 				work.relationships = rendered;
 				res.render('entity/view/work', {
-					title: 'BookBrainz',
+					title: title,
 					entity: work
 				});
 			});
@@ -85,7 +90,8 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 
 			res.render('entity/create/work', {
 				languages: alphabeticLanguagesList,
-				workTypes: workTypes
+				workTypes: workTypes,
+				title: 'Add Work'
 			});
 		});
 });

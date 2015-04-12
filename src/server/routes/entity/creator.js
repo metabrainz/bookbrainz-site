@@ -44,9 +44,14 @@ router.get('/:bbid', function(req, res, next) {
 
 		Promise.all(rendered)
 			.then(function(rendered) {
+				var title = 'Creator';
+
+				if (creator.default_alias && creator.default_alias.name)
+					title = 'Creator “' + creator.default_alias.name + '”';
+
 				creator.relationships = rendered;
 				res.render('entity/view/creator', {
-					title: 'BookBrainz',
+					title: title,
 					entity: creator
 				});
 			});
@@ -93,7 +98,8 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 			res.render('entity/create/creator', {
 				genders: genderList,
 				languages: alphabeticLanguagesList,
-				creatorTypes: creatorTypes
+				creatorTypes: creatorTypes,
+				title: 'Add Creator'
 			});
 		});
 });
