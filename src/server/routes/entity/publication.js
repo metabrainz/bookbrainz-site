@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
-var Promise = require('bluebird');
 var Publication = require('../../data/entities/publication');
 var PublicationType = require('../../data/properties/publication-type');
-var Entity = require('../../data/entity');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
 
