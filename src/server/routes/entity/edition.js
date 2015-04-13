@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Edition = require('../../data/entities/edition');
-var EditionStatus = require('../../data/properties/edition-status');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
 
 /* Middleware loader functions. */
+var loadEditionStatuses = require('../../helpers/middleware').loadEditionStatuses;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
@@ -53,14 +53,10 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadLanguages, function(req, res) {
-	EditionStatus.find()
-		.then(function(editionStatuses) {
-			res.render('entity/create/edition', {
-				editionStatuses: editionStatuses,
-				title: 'Add Edition'
-			});
-		});
+router.get('/create', auth.isAuthenticated, loadEditionStatuses, loadLanguages, function(req, res) {
+	res.render('entity/create/edition', {
+		title: 'Add Edition'
+	});
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {

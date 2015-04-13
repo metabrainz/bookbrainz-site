@@ -2,9 +2,13 @@ var Promise = require('bluebird');
 var _ = require('underscore');
 
 var CreatorType = require('../data/properties/creator-type');
+var EditionStatus = require('../data/properties/edition-status');
 var Entity = require('../data/entity');
 var Gender = require('../data/properties/gender');
 var Language = require('../data/properties/language');
+var PublicationType = require('../data/properties/publication-type');
+var PublisherType = require('../data/properties/publisher-type');
+var WorkType = require('../data/properties/work-type');
 
 var renderRelationship = require('../helpers/render');
 
@@ -14,6 +18,16 @@ middleware.loadCreatorTypes = function(req, res, next) {
 	CreatorType.find()
 		.then(function(creatorTypes) {
 			res.locals.creatorTypes = creatorTypes;
+
+			next();
+		})
+		.catch(next);
+};
+
+middleware.loadEditionStatuses = function(req, res, next) {
+	EditionStatus.find()
+		.then(function(editionStatuses) {
+			res.locals.editionStatuses = editionStatuses;
 
 			next();
 		})
@@ -41,6 +55,36 @@ middleware.loadLanguages = function(req, res, next) {
 
 				return a.name.localeCompare(b.name);
 			});
+
+			next();
+		})
+		.catch(next);
+};
+
+middleware.loadPublicationTypes = function(req, res, next) {
+	PublicationType.find()
+		.then(function(publicationTypes) {
+			res.locals.publicationTypes = publicationTypes;
+
+			next();
+		})
+		.catch(next);
+};
+
+middleware.loadPublisherTypes = function(req, res, next) {
+	PublisherType.find()
+		.then(function(publisherTypes) {
+			res.locals.publisherTypes = publisherTypes;
+
+			next();
+		})
+		.catch(next);
+};
+
+middleware.loadWorkTypes = function(req, res, next) {
+	WorkType.find()
+		.then(function(workTypes) {
+			res.locals.workTypes = workTypes;
 
 			next();
 		})

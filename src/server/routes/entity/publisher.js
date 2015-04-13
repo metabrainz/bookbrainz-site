@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Publisher = require('../../data/entities/publisher');
-var PublisherType = require('../../data/properties/publisher-type');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
 
 /* Middleware loader functions. */
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
+var loadPublisherTypes = require('../../helpers/middleware').loadPublisherTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
 /* If the route specifies a BBID, load the Publisher for it. */
@@ -53,14 +53,10 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadLanguages, function(req, res) {
-	PublisherType.find()
-		.then(function(publisherTypes) {
-			res.render('entity/create/publisher', {
-				publisherTypes: publisherTypes,
-				title: 'Add Publisher'
-			});
-		});
+router.get('/create', auth.isAuthenticated, loadLanguages, loadPublisherTypes, function(req, res) {
+	res.render('entity/create/publisher', {
+		title: 'Add Publisher'
+	});
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {

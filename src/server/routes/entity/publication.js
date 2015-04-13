@@ -2,14 +2,13 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Publication = require('../../data/entities/publication');
-var PublicationType = require('../../data/properties/publication-type');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
 
 /* Middleware loader functions. */
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
+var loadPublicationTypes = require('../../helpers/middleware').loadPublicationTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-
 
 /* If the route specifies a BBID, load the Publication for it. */
 router.param('bbid', function(req, res, next, bbid) {
@@ -54,15 +53,10 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadLanguages, function(req, res) {
-	// Get the list of publication types
-	PublicationType.find()
-		.then(function(publicationTypes) {
-			res.render('entity/create/publication', {
-				publicationTypes: publicationTypes,
-				title: 'Add Publication'
-			});
-		});
+router.get('/create', auth.isAuthenticated, loadLanguages, loadPublicationTypes, function(req, res) {
+	res.render('entity/create/publication', {
+		title: 'Add Publication'
+	});
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {

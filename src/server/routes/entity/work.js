@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Work = require('../../data/entities/work');
-var WorkType = require('../../data/properties/work-type');
 
 var NotFoundError = require('../../helpers/error').NotFoundError;
 
 /* Middleware loader functions. */
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
+var loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
 /* If the route specifies a BBID, load the Work for it. */
@@ -53,14 +53,10 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadLanguages, function(req, res) {
-	WorkType.find()
-		.then(function(workTypes) {
-			res.render('entity/create/work', {
-				workTypes: workTypes,
-				title: 'Add Work'
-			});
-		});
+router.get('/create', auth.isAuthenticated, loadLanguages, loadWorkTypes, function(req, res) {
+	res.render('entity/create/work', {
+		title: 'Add Work'
+	});
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
