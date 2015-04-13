@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var RelationshipType = new Model({
+var RelationshipType = new Model('RelationshipType', {
 	endpoint: 'relationshipType'
 });
 

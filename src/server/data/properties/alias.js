@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var Alias = new Model();
+var Alias = new Model('Alias');
 
 Alias.extend({
 	id: {

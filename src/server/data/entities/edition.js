@@ -3,9 +3,8 @@ var Entity = require('../../data/entity');
 var Language = require('../../data/properties/language');
 var EditionStatus = require('../../data/properties/edition-status');
 
-var Edition = new Model({
+var Edition = new Model('Edition', {
 	base: Entity,
-	name: 'Edition',
 	endpoint: 'edition'
 });
 

@@ -1,7 +1,7 @@
 var Model = require('../../helpers/model');
 var Entity = require('../../data/entity');
 
-var Revision = new Model({
+var Revision = new Model('Revision', {
 	endpoint: 'revision'
 });
 

@@ -2,9 +2,8 @@ var Model = require('../../helpers/model');
 var Entity = require('../../data/entity');
 var PublisherType = require('../../data/properties/publisher-type');
 
-var Publisher = new Model({
+var Publisher = new Model('Publisher', {
 	base: Entity,
-	name: 'Publisher',
 	endpoint: 'publisher'
 });
 

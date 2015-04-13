@@ -1,7 +1,7 @@
 var Model = require('../helpers/model');
 var Entity = require('../data/entity');
 
-var Relationship = new Model({
+var Relationship = new Model('Relationship', {
 	endpoint: 'relationship'
 });
 

@@ -4,7 +4,7 @@ var Annotation = require('../data/properties/annotation');
 var Disambiguation = require('../data/properties/disambiguation');
 var Relationship = require('../data/relationship');
 
-var Entity = new Model({
+var Entity = new Model('Entity', {
 	abstract: true,
 	endpoint: 'entity'
 });

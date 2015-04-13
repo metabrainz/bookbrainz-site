@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var WorkType = new Model({
+var WorkType = new Model('WorkType', {
 	endpoint: 'workType'
 });
 

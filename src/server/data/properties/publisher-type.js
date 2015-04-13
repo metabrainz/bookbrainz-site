@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var PublisherType = new Model({
+var PublisherType = new Model('PublisherType', {
 	endpoint: 'publisherType'
 });
 

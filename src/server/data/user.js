@@ -2,7 +2,7 @@ var Model = require('../helpers/model');
 var UserType = require('../data/properties/user-type');
 var Gender = require('../data/properties/gender');
 
-var User = new Model({
+var User = new Model('User', {
 	endpoint: 'user'
 });
 

@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var Disambiguation = new Model();
+var Disambiguation = new Model('Disambiguation');
 
 Disambiguation.extend({
 	id: {

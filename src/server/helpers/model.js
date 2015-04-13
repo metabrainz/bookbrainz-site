@@ -2,13 +2,20 @@ var bbws = require('./bbws');
 var Promise = require('bluebird');
 var _ = require('underscore');
 
-function Model(options) {
+var registered = [];
+
+function Model(name, options) {
+	if (!name || typeof name !== 'string')
+		throw new Error('Model must specify a name');
+	else if (registered[name])
+		throw new Error('Model with this name already exists');
+
 	options = options || {};
 
 	this.endpoint = options.endpoint || undefined;
 	this.authRequired = options.authRequired || false;
 	this.abstract = options.abstract || false;
-	this.name = options.name || undefined;
+	this.name = name;
 
 	if (options.base) {
 		base = options.base;
@@ -16,18 +23,14 @@ function Model(options) {
 		if (!(base instanceof Model))
 			throw new TypeError('Specified base object is not a model');
 
-		if (!this.name)
-			throw new Error('Derived models must specify name');
-
-		if (base.children[this.name])
-			throw new Error('Derived model with this name already exists');
-
 		this.fields = options.base.fields;
 		base.children[this.name] = this;
 	}
 
 	this.fields = this.fields || {};
 	this.children = {};
+
+	registered[name] = this;
 }
 
 Model.prototype.extend = function(fields) {

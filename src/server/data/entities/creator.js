@@ -1,9 +1,8 @@
 var Model = require('../../helpers/model');
 var Entity = require('../../data/entity');
 
-var Creator = new Model({
+var Creator = new Model('Creator', {
 	base: Entity,
-	name: 'Creator',
 	endpoint: 'creator'
 });
 

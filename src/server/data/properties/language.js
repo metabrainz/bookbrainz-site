@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var Language = new Model({
+var Language = new Model('Language', {
 	endpoint: 'language'
 });
 

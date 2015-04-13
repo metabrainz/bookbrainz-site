@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var Gender = new Model({
+var Gender = new Model('Gender', {
 	endpoint: 'gender'
 });
 

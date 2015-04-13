@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var Annotation = new Model();
+var Annotation = new Model('Annotation');
 
 Annotation.extend({
 	id: {

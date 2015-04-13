@@ -3,7 +3,7 @@ var Entity = require('../../data/entity');
 var Language = require('../../data/properties/language');
 var WorkType = require('../../data/properties/work-type');
 
-var Work = new Model({
+var Work = new Model('Work', {
 	base: Entity,
 	name: 'Work',
 	endpoint: 'work'

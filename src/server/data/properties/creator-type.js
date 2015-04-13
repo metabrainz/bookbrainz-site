@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var CreatorType = new Model({
+var CreatorType = new Model('CreatorType', {
 	endpoint: 'creatorType'
 });
 
