@@ -1,6 +1,6 @@
 var util = require('util');
 
-var NotFoundError = function(message, fileName, lineNumber) {
+var NotFoundError = function(message) {
 	NotFoundError.super_.call(this);
 
 	this.message = message || 'Object not found';
@@ -9,7 +9,7 @@ var NotFoundError = function(message, fileName, lineNumber) {
 
 util.inherits(NotFoundError, Error);
 
-errors = {
+var errors = {
 	NotFoundError: NotFoundError
 };
 
