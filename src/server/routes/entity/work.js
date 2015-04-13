@@ -13,65 +13,69 @@ var NotFoundError = require('../../helpers/error').NotFoundError;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 
 router.param('bbid', function(req, res, next, bbid) {
-	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
-		next();
-	else
+	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
+		Work.findOne(req.params.bbid, {
+				populate: [
+					'annotation',
+					'disambiguation',
+					'relationships',
+				]
+			})
+			.then(function(work) {
+				res.locals.entity = work;
+
+				next();
+			})
+			.catch(function(err) {
+				if (err.status == 404) {
+					var newErr = new NotFoundError('Work not found');
+					return next(newErr);
+				}
+
+				next(err);
+			});
+	}
+	else {
 		next('route');
+	}
 });
 
 router.get('/:bbid', function(req, res, next) {
-	var render = function(work) {
-		var rendered = work.relationships.map(function(relationship) {
-			relationship.entities.sort(function sortRelationshipEntity(a, b) {
-				return a.position - b.position;
-			});
+	var work = res.locals.entity;
 
-			relationship.entities = relationship.entities.map(function(entity) {
-				return Entity.findOne(entity.entity.entity_gid);
-			});
-
-			relationship.template = relationship.relationship_type.template;
-			relationship.rendered = Promise.all(relationship.entities)
-				.then(function(entities) {
-					entities.forEach(function(entity) {
-						entity.entity_gid = entity.bbid;
-					});
-					return renderRelationship(entities, relationship, null);
-				});
-
-			return Promise.props(relationship);
+	var rendered = work.relationships.map(function(relationship) {
+		relationship.entities.sort(function sortRelationshipEntity(a, b) {
+			return a.position - b.position;
 		});
 
-		Promise.all(rendered)
-			.then(function(rendered) {
-				var title = 'Work';
+		relationship.entities = relationship.entities.map(function(entity) {
+			return Entity.findOne(entity.entity.entity_gid);
+		});
 
-				if (work.default_alias && work.default_alias.name)
-					title = 'Work “' + work.default_alias.name + '”';
-
-				work.relationships = rendered;
-				res.render('entity/view/work', {
-					title: title,
-					entity: work
+		relationship.template = relationship.relationship_type.template;
+		relationship.rendered = Promise.all(relationship.entities)
+			.then(function(entities) {
+				entities.forEach(function(entity) {
+					entity.entity_gid = entity.bbid;
 				});
+				return renderRelationship(entities, relationship, null);
 			});
-	};
 
-	Work.findOne(req.params.bbid, {
-			populate: [
-				'annotation',
-				'disambiguation',
-				'relationships',
-			]
-		})
-		.then(render)
-		.catch(function(err) {
-			if (err.status == 404) {
-				var newErr = new NotFoundError('Work not found');
-				return next(newErr);
-			}
+		return Promise.props(relationship);
+	});
 
-			next(err);
+	Promise.all(rendered)
+		.then(function(rendered) {
+			var title = 'Work';
+
+			if (work.default_alias && work.default_alias.name)
+				title = 'Work “' + work.default_alias.name + '”';
+
+			work.relationships = rendered;
+			res.render('entity/view/work', {
+				title: title,
+				entity: work
+			});
 		});
 });
 

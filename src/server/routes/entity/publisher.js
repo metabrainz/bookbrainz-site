@@ -13,65 +13,69 @@ var NotFoundError = require('../../helpers/error').NotFoundError;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 
 router.param('bbid', function(req, res, next, bbid) {
-	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
-		next();
-	else
+	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
+		Publisher.findOne(req.params.bbid, {
+				populate: [
+					'annotation',
+					'disambiguation',
+					'relationships',
+				]
+			})
+			.then(function(publisher) {
+				res.locals.entity = publisher;
+
+				next();
+			})
+			.catch(function(err) {
+				if (err.status == 404) {
+					var newErr = new NotFoundError('Publisher not found');
+					return next(newErr);
+				}
+
+				next(err);
+			});
+	}
+	else {
 		next('route');
+	}
 });
 
 router.get('/:bbid', function(req, res, next) {
-	var render = function(publisher) {
-		var rendered = publisher.relationships.map(function(relationship) {
-			relationship.entities.sort(function sortRelationshipEntity(a, b) {
-				return a.position - b.position;
-			});
+	var publisher = res.locals.entity;
 
-			relationship.entities = relationship.entities.map(function(entity) {
-				return Entity.findOne(entity.entity.entity_gid);
-			});
-
-			relationship.template = relationship.relationship_type.template;
-			relationship.rendered = Promise.all(relationship.entities)
-				.then(function(entities) {
-					entities.forEach(function(entity) {
-						entity.entity_gid = entity.bbid;
-					});
-					return renderRelationship(entities, relationship, null);
-				});
-
-			return Promise.props(relationship);
+	var rendered = publisher.relationships.map(function(relationship) {
+		relationship.entities.sort(function sortRelationshipEntity(a, b) {
+			return a.position - b.position;
 		});
 
-		Promise.all(rendered)
-			.then(function(rendered) {
-				var title = 'Publisher';
+		relationship.entities = relationship.entities.map(function(entity) {
+			return Entity.findOne(entity.entity.entity_gid);
+		});
 
-				if (publisher.default_alias && publisher.default_alias.name)
-					title = 'Publisher “' + publisher.default_alias.name + '”';
-
-				publisher.relationships = rendered;
-				res.render('entity/view/publisher', {
-					title: title,
-					entity: publisher
+		relationship.template = relationship.relationship_type.template;
+		relationship.rendered = Promise.all(relationship.entities)
+			.then(function(entities) {
+				entities.forEach(function(entity) {
+					entity.entity_gid = entity.bbid;
 				});
+				return renderRelationship(entities, relationship, null);
 			});
-	};
 
-	Publisher.findOne(req.params.bbid, {
-			populate: [
-				'annotation',
-				'disambiguation',
-				'relationships',
-			]
-		})
-		.then(render)
-		.catch(function(err) {
-			if (err.status == 404) {
-				var newErr = new NotFoundError('Publisher not found');
-				return next(newErr);
-			}
+		return Promise.props(relationship);
+	});
 
-			next(err);
+	Promise.all(rendered)
+		.then(function(rendered) {
+			var title = 'Publisher';
+
+			if (publisher.default_alias && publisher.default_alias.name)
+				title = 'Publisher “' + publisher.default_alias.name + '”';
+
+			publisher.relationships = rendered;
+			res.render('entity/view/publisher', {
+				title: title,
+				entity: publisher
+			});
 		});
 });
 

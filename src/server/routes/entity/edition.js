@@ -13,65 +13,68 @@ var NotFoundError = require('../../helpers/error').NotFoundError;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 
 router.param('bbid', function(req, res, next, bbid) {
-	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid))
-		next();
-	else
+	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
+		Edition.findOne(req.params.bbid, {
+				populate: [
+					'annotation',
+					'disambiguation',
+					'relationships',
+				]
+			})
+			.then(function(edition) {
+				res.locals.entity = edition;
+
+				next();
+			})
+			.catch(function(err) {
+				if (err.status == 404) {
+					var newErr = new NotFoundError('Edition not found');
+					return next(newErr);
+				}
+
+				next(err);
+			});
+	}
+	else {
 		next('route');
+	}
 });
 
 router.get('/:bbid', function(req, res, next) {
-	var render = function(edition) {
-		var rendered = edition.relationships.map(function(relationship) {
-			relationship.entities.sort(function sortRelationshipEntity(a, b) {
-				return a.position - b.position;
-			});
+	var edition = res.locals.entity;
 
-			relationship.entities = relationship.entities.map(function(entity) {
-				return Entity.findOne(entity.entity.entity_gid);
-			});
-
-			relationship.template = relationship.relationship_type.template;
-			relationship.rendered = Promise.all(relationship.entities)
-				.then(function(entities) {
-					entities.forEach(function(entity) {
-						entity.entity_gid = entity.bbid;
-					});
-					return renderRelationship(entities, relationship, null);
-				});
-
-			return Promise.props(relationship);
+	var rendered = edition.relationships.map(function(relationship) {
+		relationship.entities.sort(function sortRelationshipEntity(a, b) {
+			return a.position - b.position;
 		});
 
-		Promise.all(rendered)
-			.then(function(rendered) {
-				var title = 'Edition';
+		relationship.entities = relationship.entities.map(function(entity) {
+			return Entity.findOne(entity.entity.entity_gid);
+		});
 
-				if (edition.default_alias && edition.default_alias.name)
-					title = 'Edition “' + edition.default_alias.name + '”';
-
-				edition.relationships = rendered;
-				res.render('entity/view/edition', {
-					title: title,
-					entity: edition
+		relationship.template = relationship.relationship_type.template;
+		relationship.rendered = Promise.all(relationship.entities)
+			.then(function(entities) {
+				entities.forEach(function(entity) {
+					entity.entity_gid = entity.bbid;
 				});
+				return renderRelationship(entities, relationship, null);
 			});
-	};
 
-	Edition.findOne(req.params.bbid, {
-			populate: [
-				'annotation',
-				'disambiguation',
-				'relationships',
-			]
-		})
-		.then(render)
-		.catch(function(err) {
-			if (err.status == 404) {
-				var newErr = new NotFoundError('Edition not found');
-				return next(newErr);
-			}
+		return Promise.props(relationship);
+	});
 
-			next(err);
+	Promise.all(rendered)
+		.then(function(rendered) {
+			var title = 'Edition';
+
+			if (edition.default_alias && edition.default_alias.name)
+				title = 'Edition “' + edition.default_alias.name + '”';
+
+			edition.relationships = rendered;
+			res.render('entity/view/edition', {
+				title: title
+			});
 		});
 });
 
