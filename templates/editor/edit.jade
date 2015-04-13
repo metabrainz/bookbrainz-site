@@ -4,24 +4,12 @@ block body
   include /navbar
 
   .container#content
-    #userContainer(data-user-id=userId)
     h1 Edit Profile
     .row
       .col-md-12
         p.lead Edit your public profile.
     .row
-      .col-md-6.col-md-offset-3.form-horizontal
-        .form-group
-          label.col-md-3.control-label Name
-          .col-md-9
-            input.form-control(type="text", data-bind="value: name")
-        .form-group
-          label.col-md-3.control-label Bio
-          .col-md-9
-            textarea.form-control(rows="3", data-bind="value: bio")
-        .form-group
-          .col-md-4.col-md-offset-4
-            button.btn.btn-primary.btn-lg.btn-block(data-bind="click: submit") Update!
+      .col-md-6.col-md-offset-3#profileForm
   include /footer
 
-  script(src='/js/editor/profile_editor.js')
+  script(src='/js/editor/edit.js')

@@ -6,20 +6,36 @@ var prettify = require('gulp-jsbeautifier');
 var path = require('path');
 var glob = require('glob');
 var mkdirp = require('mkdirp');
+var reactify = require('reactify');
 
 function bundle() {
 	var srcFiles =
-		glob.sync('./templates/**/*.js').concat(glob.sync('./templates/*.js'));
+		glob.sync('./templates/**/*.js')
+		.concat(glob.sync('./templates/*.js'));
+
+	var srcFiles2 =
+		glob.sync('./src/client/controllers/**/*.js')
+		.concat(glob.sync('./src/client/controllers/*.js'));
+
+	console.log(srcFiles2);
 
 	var dstFiles = srcFiles.map(function(f) {
 		return path.join('./static', 'js', path.relative('./templates', f));
 	});
+
+	var dstFiles2 = srcFiles2.map(function(f) {
+		return path.join('./static', 'js', path.relative('./src/client/controllers', f));
+	});
+
+	srcFiles = srcFiles.concat(srcFiles2);
+	dstFiles = dstFiles.concat(dstFiles2);
 
 	dstFiles.forEach(function(f) {
 		mkdirp.sync(path.dirname(f));
 	});
 
 	return browserify(srcFiles)
+		.transform(reactify)
 		.plugin('factor-bundle', {
 			outputs: dstFiles
 		})
@@ -59,7 +75,7 @@ gulp.task('bundle', bundle);
 gulp.task('compress', ['bundle'], compress);
 gulp.task('tidy', tidy);
 gulp.task('watch', function() {
-	var watcher = gulp.watch('./src/**/*.js', ['bundle']);
+	var watcher = gulp.watch(['./src/**/*.js', './src/**/*.jsx', './templates/**/*.js'], ['bundle']);
 	watcher.on('change', function(event) {
 		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
 	});

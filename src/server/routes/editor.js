@@ -5,15 +5,32 @@ var bbws = require('../helpers/bbws');
 var auth = require('../helpers/auth');
 
 router.get('/edit', auth.isAuthenticated, function(req, res) {
-	res.render('editor/edit', {
-		userId: req.user.id
-	});
+	// Store user ID in session editor edit form stack.
+	if(!req.session.editor_edit) {
+		req.session.editor_edit = [];
+	}
+	req.session.editor_edit.push(req.user.id);
+
+	res.render('editor/edit');
+});
+
+router.get('/edit/data', auth.isAuthenticated, function(req, res) {
+	if(!req.session.editor_edit) {
+		// Do some error stuff here!
+	} else {
+		var userId = req.session.editor_edit.pop();
+		bbws.get('/account', {accessToken: req.session.bearerToken})
+		.then(function sendData(user) {
+			res.send(user);
+		});
+	}
 });
 
 router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 	bbws.put('/user/' + req.body.id + '/', {
 			name: req.body.name,
 			bio: req.body.bio,
+			email: req.body.email
 		}, {
 			accessToken: req.session.bearerToken
 		})
