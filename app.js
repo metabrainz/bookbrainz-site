@@ -4,7 +4,6 @@ var path = require('path');
 var express = require('express');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
@@ -15,8 +14,7 @@ Promise.longStackTraces();
 
 var auth = require('./src/server/helpers/auth');
 var config = require('./src/server/helpers/config');
-
-var User = require('./src/server/data/user');
+var bbws = require('./src/server/helpers/bbws');
 
 // initialize application
 var app = express();
@@ -73,10 +71,12 @@ app.use(function(req, res, next) {
 		bbws.get('/message/inbox', {
 				accessToken: req.session.bearerToken
 			})
-			.then(function inboxAvailable(list) {
+			.then(function(list) {
 				res.locals.inboxCount = list.objects.length;
 			})
-			.catch(function inboxUnavailable(err) {
+			.catch(function(err) {
+				console.log(err.stack);
+
 				res.locals.inboxCount = 0;
 			})
 			.finally(function() {
