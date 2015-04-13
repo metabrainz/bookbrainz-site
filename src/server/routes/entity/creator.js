@@ -11,6 +11,7 @@ var NotFoundError = require('../../helpers/error').NotFoundError;
 var loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
 var loadGenders = require('../../helpers/middleware').loadGenders;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
+var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
 var router = express.Router();
 
@@ -42,43 +43,16 @@ router.param('bbid', function(req, res, next, bbid) {
 	}
 });
 
-router.get('/:bbid', function(req, res, next) {
+router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	var creator = res.locals.entity;
+	var title = 'Creator';
 
-	var rendered = creator.relationships.map(function(relationship) {
-		relationship.entities.sort(function sortRelationshipEntity(a, b) {
-			return a.position - b.position;
-		});
+	if (creator.default_alias && creator.default_alias.name)
+		title = 'Creator “' + creator.default_alias.name + '”';
 
-		relationship.entities = relationship.entities.map(function(entity) {
-			return Entity.findOne(entity.entity.entity_gid);
-		});
-
-		relationship.template = relationship.relationship_type.template;
-		relationship.rendered = Promise.all(relationship.entities)
-			.then(function(entities) {
-				entities.forEach(function(entity) {
-					entity.entity_gid = entity.bbid;
-				});
-				return renderRelationship(entities, relationship, null);
-			});
-
-		return Promise.props(relationship);
+	res.render('entity/view/creator', {
+		title: title
 	});
-
-	Promise.all(rendered)
-		.then(function(rendered) {
-			var title = 'Creator';
-
-			if (creator.default_alias && creator.default_alias.name)
-				title = 'Creator “' + creator.default_alias.name + '”';
-
-			creator.relationships = rendered;
-			res.render('entity/view/creator', {
-				title: title,
-				entity: creator
-			});
-		});
 });
 
 // Creation

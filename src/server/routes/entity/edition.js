@@ -11,6 +11,7 @@ var NotFoundError = require('../../helpers/error').NotFoundError;
 
 /* Middleware loader functions. */
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
+var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
 router.param('bbid', function(req, res, next, bbid) {
 	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
@@ -40,42 +41,16 @@ router.param('bbid', function(req, res, next, bbid) {
 	}
 });
 
-router.get('/:bbid', function(req, res, next) {
+router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	var edition = res.locals.entity;
+	var title = 'Edition';
 
-	var rendered = edition.relationships.map(function(relationship) {
-		relationship.entities.sort(function sortRelationshipEntity(a, b) {
-			return a.position - b.position;
-		});
+	if (edition.default_alias && edition.default_alias.name)
+		title = 'Edition “' + edition.default_alias.name + '”';
 
-		relationship.entities = relationship.entities.map(function(entity) {
-			return Entity.findOne(entity.entity.entity_gid);
-		});
-
-		relationship.template = relationship.relationship_type.template;
-		relationship.rendered = Promise.all(relationship.entities)
-			.then(function(entities) {
-				entities.forEach(function(entity) {
-					entity.entity_gid = entity.bbid;
-				});
-				return renderRelationship(entities, relationship, null);
-			});
-
-		return Promise.props(relationship);
+	res.render('entity/view/edition', {
+		title: title
 	});
-
-	Promise.all(rendered)
-		.then(function(rendered) {
-			var title = 'Edition';
-
-			if (edition.default_alias && edition.default_alias.name)
-				title = 'Edition “' + edition.default_alias.name + '”';
-
-			edition.relationships = rendered;
-			res.render('entity/view/edition', {
-				title: title
-			});
-		});
 });
 
 // Creation

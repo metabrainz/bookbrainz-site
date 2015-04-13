@@ -1,6 +1,12 @@
+var Promise = require('bluebird');
+var _ = require('underscore');
+
 var CreatorType = require('../data/properties/creator-type');
+var Entity = require('../data/entity');
 var Gender = require('../data/properties/gender');
 var Language = require('../data/properties/language');
+
+var renderRelationship = require('../helpers/render');
 
 var middleware = {};
 
@@ -35,6 +41,35 @@ middleware.loadLanguages = function(req, res, next) {
 
 				return a.name.localeCompare(b.name);
 			});
+
+			next();
+		})
+		.catch(next);
+};
+
+middleware.loadEntityRelationships = function(req, res, next) {
+	if (!res.locals.entity)
+		next(new Error('Entity failed to load'));
+
+	var entity = res.locals.entity;
+	Promise.map(entity.relationships, function(relationship) {
+		relationship.template = relationship.relationship_type.template;
+
+		var entities = relationship.entities.sort(function sortRelationshipEntity(a, b) {
+			return a.position - b.position;
+		});
+
+		return Promise.map(entities, function(entity) {
+			return Entity.findOne(entity.entity.entity_gid);
+		})
+			.then(function(entities) {
+				relationship.rendered = renderRelationship(entities, relationship, null);
+
+				return relationship;
+			});
+	})
+		.then(function(relationships) {
+			res.locals.entity.relationships = relationships;
 
 			next();
 		})
