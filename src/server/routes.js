@@ -1,3 +1,5 @@
+var relationshipHelper = require('./routes/relationship/edit');
+
 function initRootRoutes(app) {
 	app.use('/', require('./routes/index'));
 	app.use('/', require('./routes/login'));
@@ -5,28 +7,38 @@ function initRootRoutes(app) {
 }
 
 function initPublicationRoutes(app) {
-	app.use('/publication', require('./routes/entity/publication'));
-	app.use('/publication', require('./routes/relationship/edit'));
+	var router = require('./routes/entity/publication');
+
+	app.use('/publication', router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initCreatorRoutes(app) {
-	app.use('/creator', require('./routes/entity/creator'));
-	app.use('/creator', require('./routes/relationship/edit'));
+	var router = require('./routes/entity/creator');
+
+	app.use('/creator', router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initEditionRoutes(app) {
-	app.use('/edition', require('./routes/entity/edition'));
-	app.use('/edition', require('./routes/relationship/edit'));
+	var router = require('./routes/entity/edition');
+
+	app.use('/edition', router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initWorkRoutes(app) {
-	app.use('/work', require('./routes/entity/work'));
-	app.use('/work', require('./routes/relationship/edit'));
+	var router = require('./routes/entity/work');
+
+	app.use('/work', router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initPublisherRoutes(app) {
-	app.use('/publisher', require('./routes/entity/publisher'));
-	app.use('/publisher', require('./routes/relationship/edit'));
+	var router = require('./routes/entity/publisher');
+
+	app.use('/publisher', router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 module.exports = function initRoutes(app) {
