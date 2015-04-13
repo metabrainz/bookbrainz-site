@@ -15,6 +15,7 @@ var loadEntityRelationships = require('../../helpers/middleware').loadEntityRela
 
 var router = express.Router();
 
+/* If the route specifies a BBID, load the Creator for it. */
 router.param('bbid', function(req, res, next, bbid) {
 	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
 		Creator.findOne(req.params.bbid, {
