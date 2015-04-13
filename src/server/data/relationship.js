@@ -15,7 +15,7 @@ Relationship.extend({
 	},
 	entities: {
 		type: 'object',
-		model: Entity,
+		model: 'Entity',
 		many: true
 	},
 	begin_date: {

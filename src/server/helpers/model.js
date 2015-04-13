@@ -50,6 +50,8 @@ Model.prototype.extend = function(fields) {
 			throw new Error('No type specified for field ' + fieldKey);
 
 		/* XXX: Do type-specific sanity checks on field attributes. */
+		if (field.type === 'ref' && typeof field.model !== 'string')
+			throw new Error('Model is object still');
 	});
 
 	this.fields = _.extend(this.fields, fields);
@@ -87,7 +89,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 				return;
 			}
 
-			if (!field.model)
+			if (!field.model || !registered[field.model])
 				throw new Error('Reference field model is not defined');
 
 			var uri = result[resultsField];
@@ -95,7 +97,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 			/* Choose function to call based on whether we expect a list. */
 			var findFunc = field.many ? 'find' : 'findOne';
 
-			object[key] = field.model[findFunc]({
+			object[key] = registered[field.model][findFunc]({
 				path: uri,
 				session: options.session
 			});

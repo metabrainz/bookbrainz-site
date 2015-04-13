@@ -11,11 +11,11 @@ var Edition = new Model('Edition', {
 Edition.extend({
 	edition_status: {
 		type: 'object',
-		model: EditionStatus
+		model: 'EditionStatus'
 	},
 	language: {
 		type: 'object',
-		model: Language
+		model: 'Language'
 	},
 	begin_date: {
 		type: 'date'

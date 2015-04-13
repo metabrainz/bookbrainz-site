@@ -19,7 +19,7 @@ User.extend({
 	},
 	user_type: {
 		type: 'object',
-		model: UserType
+		model: 'UserType'
 	},
 	email: {
 		type: 'string'
@@ -47,7 +47,7 @@ User.extend({
 	},
 	gender: {
 		type: 'object',
-		model: Gender
+		model: 'Gender'
 	},
 });
 

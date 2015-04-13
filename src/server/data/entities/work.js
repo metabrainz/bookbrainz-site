@@ -12,11 +12,11 @@ var Work = new Model('Work', {
 Work.extend({
 	work_type: {
 		type: 'object',
-		model: WorkType
+		model: 'WorkType'
 	},
 	languages: {
 		type: 'object',
-		model: Language,
+		model: 'Language',
 		many: true
 	}
 });

@@ -12,7 +12,7 @@ Revision.extend({
 	},
 	entity: {
 		type: 'ref',
-		model: Entity,
+		model: 'Entity',
 		map: 'entity_uri'
 	}
 });

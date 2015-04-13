@@ -16,30 +16,30 @@ Entity.extend({
 	},
 	default_alias: {
 		type: 'object',
-		model: Alias
+		model: 'Alias'
 	},
 	revision: {
 		type: 'object'
 	},
 	aliases: {
 		type: 'ref',
-		model: Alias,
+		model: 'Alias',
 		many: true,
 		map: 'aliases_uri'
 	},
 	disambiguation: {
 		type: 'ref',
-		model: Disambiguation,
+		model: 'Disambiguation',
 		map: 'disambiguation_uri'
 	},
 	annotation: {
 		type: 'ref',
-		model: Annotation,
+		model: 'Annotation',
 		map: 'annotation_uri'
 	},
 	relationships: {
 		type: 'ref',
-		model: Relationship,
+		model: 'Relationship',
 		map: 'relationships_uri',
 		many: true
 	},

@@ -10,7 +10,7 @@ var Publication = new Model('Publication', {
 Publication.extend({
 	publication_type: {
 		type: 'object',
-		model: PublicationType
+		model: 'PublicationType'
 	}
 });
 
