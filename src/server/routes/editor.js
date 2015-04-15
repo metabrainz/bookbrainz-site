@@ -24,11 +24,17 @@ router.get('/edit', auth.isAuthenticated, function(req, res) {
 			});
 		})
 		.catch(function(err) {
-			next(new Error('An internal error occurred while loading user'));
+			next(new Error('An internal error occurred while loading profile'));
 		});
 });
 
 router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
+	/* Should handle errors in some fashion other than redirecting. */
+	if (req.body.id != req.user.id) {
+		req.session.error = 'You do not have permission to edit that user';
+		res.redirect(303, '/editor/edit');
+	}
+
 	bbws.put('/user/' + req.body.id + '/', {
 			bio: req.body.bio,
 			email: req.body.email
@@ -39,7 +45,7 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 			res.send(user);
 		})
 		.catch(function(err) {
-			req.session.error = 'Error! Please try a different username';
+			req.session.error = 'An internal error occurred while modifying profile';
 			res.redirect(303, '/editor/edit');
 		});
 });
