@@ -3,41 +3,15 @@ var router = express.Router();
 var auth = require('../../helpers/auth');
 var Work = require('../../data/entities/work');
 
-var NotFoundError = require('../../helpers/error').NotFoundError;
-
 /* Middleware loader functions. */
+var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
 /* If the route specifies a BBID, load the Work for it. */
-router.param('bbid', function(req, res, next, bbid) {
-	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
-		Work.findOne(req.params.bbid, {
-				populate: [
-					'annotation',
-					'disambiguation',
-					'relationships',
-				]
-			})
-			.then(function(work) {
-				res.locals.entity = work;
-
-				next();
-			})
-			.catch(function(err) {
-				if (err.status == 404) {
-					var newErr = new NotFoundError('Work not found');
-					return next(newErr);
-				}
-
-				next(err);
-			});
-	}
-	else {
-		next('route');
-	}
-});
+router.param('bbid', makeEntityLoader(Work, 'Work not found'));
 
 router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	var work = res.locals.entity;

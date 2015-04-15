@@ -11,6 +11,8 @@ var WorkType = require('../data/properties/work-type');
 
 var renderRelationship = require('../helpers/render');
 
+var NotFoundError = require('../helpers/error').NotFoundError;
+
 var makeLoader = function (model, propName, sortFunc) {
 	return function(req, res, next) {
 		model.find()
@@ -71,6 +73,36 @@ middleware.loadEntityRelationships = function(req, res, next) {
 			next();
 		})
 		.catch(next);
+};
+
+middleware.makeEntityLoader = function(model, errMessage) {
+	return function(req, res, next, bbid) {
+		if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
+			model.findOne(req.params.bbid, {
+					populate: [
+						'annotation',
+						'disambiguation',
+						'relationships',
+					]
+				})
+				.then(function(entity) {
+					res.locals.entity = entity;
+
+					next();
+				})
+				.catch(function(err) {
+					if (err.status == 404) {
+						var newErr = new NotFoundError(errMessage);
+						return next(newErr);
+					}
+
+					next(err);
+				});
+		}
+		else {
+			next('route');
+		}
+	};
 };
 
 module.exports = middleware;

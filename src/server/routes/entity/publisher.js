@@ -3,41 +3,15 @@ var router = express.Router();
 var auth = require('../../helpers/auth');
 var Publisher = require('../../data/entities/publisher');
 
-var NotFoundError = require('../../helpers/error').NotFoundError;
-
 /* Middleware loader functions. */
+var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadPublisherTypes = require('../../helpers/middleware').loadPublisherTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
 /* If the route specifies a BBID, load the Publisher for it. */
-router.param('bbid', function(req, res, next, bbid) {
-	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
-		Publisher.findOne(req.params.bbid, {
-				populate: [
-					'annotation',
-					'disambiguation',
-					'relationships',
-				]
-			})
-			.then(function(publisher) {
-				res.locals.entity = publisher;
-
-				next();
-			})
-			.catch(function(err) {
-				if (err.status == 404) {
-					var newErr = new NotFoundError('Publisher not found');
-					return next(newErr);
-				}
-
-				next(err);
-			});
-	}
-	else {
-		next('route');
-	}
-});
+router.param('bbid', makeEntityLoader(Publisher, 'Publisher not found'));
 
 router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	var publisher = res.locals.entity;

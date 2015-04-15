@@ -3,41 +3,15 @@ var router = express.Router();
 var auth = require('../../helpers/auth');
 var Edition = require('../../data/entities/edition');
 
-var NotFoundError = require('../../helpers/error').NotFoundError;
-
 /* Middleware loader functions. */
+var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+
 var loadEditionStatuses = require('../../helpers/middleware').loadEditionStatuses;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 
 /* If the route specifies a BBID, load the Edition for it. */
-router.param('bbid', function(req, res, next, bbid) {
-	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
-		Edition.findOne(req.params.bbid, {
-				populate: [
-					'annotation',
-					'disambiguation',
-					'relationships',
-				]
-			})
-			.then(function(edition) {
-				res.locals.entity = edition;
-
-				next();
-			})
-			.catch(function(err) {
-				if (err.status == 404) {
-					var newErr = new NotFoundError('Edition not found');
-					return next(newErr);
-				}
-
-				next(err);
-			});
-	}
-	else {
-		next('route');
-	}
-});
+router.param('bbid', makeEntityLoader(Edition, 'Edition not found'));
 
 router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	var edition = res.locals.entity;

@@ -2,9 +2,9 @@ var express = require('express');
 var auth = require('../../helpers/auth');
 var Creator = require('../../data/entities/creator');
 
-var NotFoundError = require('../../helpers/error').NotFoundError;
-
 /* Middleware loader functions. */
+var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+
 var loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
 var loadGenders = require('../../helpers/middleware').loadGenders;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
@@ -13,33 +13,7 @@ var loadEntityRelationships = require('../../helpers/middleware').loadEntityRela
 var router = express.Router();
 
 /* If the route specifies a BBID, load the Creator for it. */
-router.param('bbid', function(req, res, next, bbid) {
-	if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
-		Creator.findOne(req.params.bbid, {
-				populate: [
-					'annotation',
-					'disambiguation',
-					'relationships',
-				]
-			})
-			.then(function(creator) {
-				res.locals.entity = creator;
-
-				next();
-			})
-			.catch(function(err) {
-				if (err.status == 404) {
-					var newErr = new NotFoundError('Creator not found');
-					return next(newErr);
-				}
-
-				next(err);
-			});
-	}
-	else {
-		next('route');
-	}
-});
+router.param('bbid', makeEntityLoader(Creator, 'Creator not found'));
 
 router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	var creator = res.locals.entity;
