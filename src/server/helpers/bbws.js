@@ -23,13 +23,11 @@ var _processError = function(response) {
 	throw newErr;
 };
 
-bbws.get = function(path, options) {
-	options = options || {};
-
+var _execRequest = function(requestType, path, options) {
 	if (path.charAt(0) === '/')
 		path = config.site.webservice + path;
 
-	var request = superagent.get(path)
+	var request = superagent[requestType](path)
 		.accept('application/json');
 
 	if (options.accessToken)
@@ -38,58 +36,35 @@ bbws.get = function(path, options) {
 	if (options.params)
 		request = request.query(options.params);
 
+	if (options.data)
+		request = request.send(options.data);
+
 	return request
 		.promise()
 		.then(function(response) {
 			return response.body;
 		})
 		.catch(_processError);
+};
+
+bbws.get = function(path, options) {
+	options = options || {};
+
+	return _execRequest('get', path, options);
 };
 
 bbws.post = function(path, data, options) {
 	options = options || {};
+	options.data = data || {};
 
-	if (path.charAt(0) === '/')
-		path = config.site.webservice + path;
-
-	var request = superagent.post(path);
-
-	if (options.accessToken)
-		request = request.set('Authorization', 'Bearer ' + options.accessToken);
-
-	if (!data)
-		data = {};
-
-	return request
-		.send(data)
-		.promise()
-		.then(function(response) {
-			return response.body;
-		})
-		.catch(_processError);
+	return _execRequest('post', path, options);
 };
 
 bbws.put = function(path, data, options) {
 	options = options || {};
+	options.data = data || {};
 
-	if (path.charAt(0) === '/')
-		path = config.site.webservice + path;
-
-	var request = superagent.put(path);
-
-	if (options.accessToken)
-		request = request.set('Authorization', 'Bearer ' + options.accessToken);
-
-	if (!data)
-		data = {};
-
-	return request
-		.send(data)
-		.promise()
-		.then(function(response) {
-			return response.body;
-		})
-		.catch(_processError);
+	return _execRequest('put', path, options);
 };
 
 module.exports = bbws;
