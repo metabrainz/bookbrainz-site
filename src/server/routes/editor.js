@@ -1,34 +1,35 @@
 var express = require('express');
 var router = express.Router();
+var React = require('react');
 var User = require('../data/user');
 var bbws = require('../helpers/bbws');
 var auth = require('../helpers/auth');
 
+var ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
+
 router.get('/edit', auth.isAuthenticated, function(req, res) {
-	// Store user ID in session editor edit form stack.
-	if(!req.session.editor_edit) {
-		req.session.editor_edit = [];
-	}
-	req.session.editor_edit.push(req.user.id);
+	User.getCurrent(req.session.bearerToken)
+		.then(function(user) {
+			var props = {
+				id: user.id,
+				email: user.email,
+				bio: user.bio
+			};
 
-	res.render('editor/edit');
-});
+			var markup = React.renderToString(ProfileForm(props));
 
-router.get('/edit/data', auth.isAuthenticated, function(req, res) {
-	if(!req.session.editor_edit) {
-		// Do some error stuff here!
-	} else {
-		var userId = req.session.editor_edit.pop();
-		bbws.get('/account', {accessToken: req.session.bearerToken})
-		.then(function sendData(user) {
-			res.send(user);
+			res.render('editor/edit', {
+				props: props,
+				markup: markup
+			});
+		})
+		.catch(function(err) {
+			next(new Error('An internal error occurred while loading user'));
 		});
-	}
 });
 
 router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 	bbws.put('/user/' + req.body.id + '/', {
-			name: req.body.name,
 			bio: req.body.bio,
 			email: req.body.email
 		}, {

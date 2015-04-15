@@ -9,7 +9,9 @@ block body
       .col-md-12
         p.lead Edit your public profile.
     .row
-      .col-md-6.col-md-offset-3#profileForm
+      .col-md-6.col-md-offset-3#profileForm!= markup
   include /footer
+
+  script(type='application/json')#props!= JSON.stringify(props)
 
   script(src='/js/editor/edit.js')
