@@ -12,84 +12,38 @@ var WorkType = require('../data/properties/work-type');
 
 var renderRelationship = require('../helpers/render');
 
+var makeLoader = function (model, propName, sortFunc) {
+	return function(req, res, next) {
+		model.find()
+			.then(function(results) {
+				if (sortFunc)
+					results = results.sort(sortFunc);
+
+				res.locals[propName] = results;
+				next();
+			})
+			.catch(next);
+	}
+};
+
 var middleware = {};
 
-middleware.loadCreatorTypes = function(req, res, next) {
-	CreatorType.find()
-		.then(function(creatorTypes) {
-			res.locals.creatorTypes = creatorTypes;
+middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
+middleware.loadPublicationTypes = makeLoader(PublicationType, 'publicationTypes');
+middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
+middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
+middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
 
-			next();
-		})
-		.catch(next);
-};
+middleware.loadGenders = makeLoader(Gender, 'genders', function(a, b) {
+	return a.id > b.id;
+});
 
-middleware.loadEditionStatuses = function(req, res, next) {
-	EditionStatus.find()
-		.then(function(editionStatuses) {
-			res.locals.editionStatuses = editionStatuses;
+middleware.loadLanguages = makeLoader(Language, 'languages', function(a, b) {
+	if (a.frequency != b.frequency)
+		return b.frequency - a.frequency;
 
-			next();
-		})
-		.catch(next);
-};
-
-middleware.loadGenders = function(req, res, next) {
-	Gender.find()
-		.then(function(genders) {
-			res.locals.genders = genders.sort(function(a, b) {
-				return a.id > b.id;
-			});
-
-			next();
-		})
-		.catch(next);
-};
-
-middleware.loadLanguages = function(req, res, next) {
-	Language.find()
-		.then(function(languages) {
-			res.locals.languages = languages.sort(function(a, b) {
-				if (a.frequency != b.frequency)
-					return b.frequency - a.frequency;
-
-				return a.name.localeCompare(b.name);
-			});
-
-			next();
-		})
-		.catch(next);
-};
-
-middleware.loadPublicationTypes = function(req, res, next) {
-	PublicationType.find()
-		.then(function(publicationTypes) {
-			res.locals.publicationTypes = publicationTypes;
-
-			next();
-		})
-		.catch(next);
-};
-
-middleware.loadPublisherTypes = function(req, res, next) {
-	PublisherType.find()
-		.then(function(publisherTypes) {
-			res.locals.publisherTypes = publisherTypes;
-
-			next();
-		})
-		.catch(next);
-};
-
-middleware.loadWorkTypes = function(req, res, next) {
-	WorkType.find()
-		.then(function(workTypes) {
-			res.locals.workTypes = workTypes;
-
-			next();
-		})
-		.catch(next);
-};
+	return a.name.localeCompare(b.name);
+});
 
 middleware.loadEntityRelationships = function(req, res, next) {
 	if (!res.locals.entity)
