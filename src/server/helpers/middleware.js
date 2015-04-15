@@ -1,5 +1,4 @@
 var Promise = require('bluebird');
-var _ = require('underscore');
 
 var CreatorType = require('../data/properties/creator-type');
 var EditionStatus = require('../data/properties/edition-status');
@@ -23,7 +22,7 @@ var makeLoader = function (model, propName, sortFunc) {
 				next();
 			})
 			.catch(next);
-	}
+	};
 };
 
 var middleware = {};
@@ -39,7 +38,7 @@ middleware.loadGenders = makeLoader(Gender, 'genders', function(a, b) {
 });
 
 middleware.loadLanguages = makeLoader(Language, 'languages', function(a, b) {
-	if (a.frequency != b.frequency)
+	if (a.frequency !== b.frequency)
 		return b.frequency - a.frequency;
 
 	return a.name.localeCompare(b.name);
