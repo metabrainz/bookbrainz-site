@@ -1,17 +1,17 @@
 extends /layout
 
 block body
-  include /navbar
+	include /navbar
 
-  .container#content
-    h1 Edit Profile
-    .row
-      .col-md-12
-        p.lead Edit your public profile.
-    .row
-      .col-md-6.col-md-offset-3#profileForm!= markup
-  include /footer
+	.container#content
+		h1 Edit Profile
+		.row
+			.col-md-12
+				p.lead Edit your public profile.
+		.row
+			.col-md-6.col-md-offset-3#profileForm!= markup
+	include /footer
 
-  script(type='application/json')#props!= JSON.stringify(props)
+	script(type='application/json')#props!= JSON.stringify(props)
 
-  script(src='/js/editor/edit.js')
+	script(src='/js/editor/edit.js')
