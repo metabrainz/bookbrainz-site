@@ -28,6 +28,19 @@ In order to use the `gulp` command, you have to install it globally:
 
     npm install -g gulp
 
+You also need to install [redis](http://redis.io/) either locally or have a machine running it available.
+
+Configuration
+-------------
+
+In order for the site to work, it requires an updated BookBrainz [webservice](https://github.com/bookbrainz/bookbrainz-ws) (the backend) and a redis server for storing user sessions.
+
+Redis is quite easy to set up but setting up your own webservice does require a bit more work. If you however do not want to go through the hassle of doing this, the MetaBrainz foundation provides a public development webservice.
+
+Create a copy of development.json.example and rename it to development.json.
+You can then either leave it as is to use the public development webservice or change the variables to point to your own.
+Be aware that you will have to change the clientID if you do the latter.
+
 Building the client-side JS
 ---------------------------
 
@@ -76,7 +89,7 @@ can do this by first installing the node module jscs globally:
 
     npm install -g jscs
 
-Then creating a symbolic link from .githooks/pre-commit to `.git/hooks/pre-commit`:
+And finally creating a symbolic link from .githooks/pre-commit to .git/hooks/pre-commit:
 
     ln -s ../../.githooks/pre-commit .git/hooks/pre-commit
     
