@@ -50,8 +50,6 @@ Model.prototype.extend = function(fields) {
 			throw new Error('No type specified for field ' + fieldKey);
 
 		/* XXX: Do type-specific sanity checks on field attributes. */
-		if (field.type === 'ref' && typeof field.model !== 'string')
-			throw new Error('Model is object still');
 	});
 
 	this.fields = _.extend(this.fields, fields);
