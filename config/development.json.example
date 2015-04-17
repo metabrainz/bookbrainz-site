@@ -6,7 +6,7 @@
 	},
 	"session": {
 		"secret": "Something here!",
-		"secure": true,
+		"secure": false,
 		"redis": {
 			"host": "localhost",
 			"port": 6379,
