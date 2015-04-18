@@ -12,7 +12,8 @@ module.exports = React.createClass({
 		return {
 			id: this.props.id,
 			email: this.props.email,
-			bio: this.props.bio
+			bio: this.props.bio,
+			waiting: false,
 		};
 	},
 	handleSubmit: function(e) {

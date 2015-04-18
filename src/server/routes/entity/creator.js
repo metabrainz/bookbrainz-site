@@ -7,8 +7,10 @@ var CreatorType = require('../../data/properties/creator-type');
 var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
+var React = require('react');
 
 var router = express.Router();
+var EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
 
 // Creation
 
@@ -30,10 +32,17 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 				return a.name.localeCompare(b.name);
 			});
 
-			res.render('entity/create/creator', {
-				genders: genderList,
+			var props = {
 				languages: alphabeticLanguagesList,
+				genders: genders,
 				creatorTypes: creatorTypes
+			};
+
+			var markup = React.renderToString(EditForm(props));
+
+			res.render('entity/create/creator', {
+				props: props,
+				markup: markup
 			});
 		});
 });

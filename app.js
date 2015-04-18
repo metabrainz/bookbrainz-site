@@ -26,7 +26,7 @@ app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
-require("node-jsx").install({ extension: ".jsx" });
+require("node-jsx").install({extension: ".jsx"});
 
 // webservice
 app.set('webservice', config.site.webservice);
