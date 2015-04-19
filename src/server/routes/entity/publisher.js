@@ -7,7 +7,8 @@ var PublisherType = require('../../data/properties/publisher-type');
 var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
-
+var React = require('react');
+var EditForm = React.createFactory(require('../../../client/components/forms/publisher.jsx'));
 // Creation
 
 router.get('/create', auth.isAuthenticated, function(req, res) {
@@ -23,11 +24,16 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 				return a.name.localeCompare(b.name);
 			});
 
-			console.log(publisherTypes);
-
-			res.render('entity/create/publisher', {
+			var props = {
 				languages: alphabeticLanguagesList,
 				publisherTypes: publisherTypes
+			};
+
+			var markup = React.renderToString(EditForm(props));
+
+			res.render('entity/create/publisher', {
+				props: props,
+				markup: markup
 			});
 		});
 });

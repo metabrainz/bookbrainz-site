@@ -7,7 +7,8 @@ var WorkType = require('../../data/properties/work-type');
 var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
-
+var React = require('react');
+var EditForm = React.createFactory(require('../../../client/components/forms/work.jsx'));
 // Creation
 
 router.get('/create', auth.isAuthenticated, function(req, res) {
@@ -23,9 +24,16 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 				return a.name.localeCompare(b.name);
 			});
 
-			res.render('entity/create/work', {
+			var props = {
 				languages: alphabeticLanguagesList,
 				workTypes: workTypes
+			};
+
+			var markup = React.renderToString(EditForm(props));
+
+			res.render('entity/create/work', {
+				props: props,
+				markup: markup
 			});
 		});
 });
