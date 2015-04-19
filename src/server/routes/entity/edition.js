@@ -7,6 +7,8 @@ var EditionStatus = require('../../data/properties/edition-status');
 var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
+var React = require('react');
+var EditForm = React.createFactory(require('../../../client/components/forms/edition.jsx'));
 
 // Creation
 
@@ -23,11 +25,16 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 				return a.name.localeCompare(b.name);
 			});
 
-			console.log(editionStatuses);
-
-			res.render('entity/create/edition', {
+			var props = {
 				languages: alphabeticLanguagesList,
 				editionStatuses: editionStatuses
+			};
+
+			var markup = React.renderToString(EditForm(props));
+
+			res.render('entity/create/edition', {
+				props: props,
+				markup: markup
 			});
 		});
 });
