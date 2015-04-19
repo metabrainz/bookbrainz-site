@@ -47,22 +47,24 @@ module.exports = React.createClass({
         return {
           name: alias.name,
           sortName: alias.sortName,
-          languageId: alias.language,
+          languageId: parseInt(alias.language),
           dflt: false,
           primary: true,
         };
       }),
       beginDate: creatorData.beginDate,
       endDate: creatorData.endDate,
-      ended: creatorData.ended,
-      genderId: creatorData.gender,
-      creatorTypeId: creatorData.creatorType,
+      ended: (creatorData.ended === "on" ? true : false),
+      genderId: parseInt(creatorData.gender),
+      creatorTypeId: parseInt(creatorData.creatorType),
       disambiguation: creatorData.disambiguation,
       annotation: creatorData.annotation,
       note: revisionNote,
-    };loc
+    };
 
-    data.aliases[0].dflt = true;
+    if(data.aliases.length !== 0) {
+      data.aliases[0].dflt = true;
+    }
 
     this.setState({waiting: true});
 

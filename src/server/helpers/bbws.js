@@ -22,7 +22,7 @@ var _processError = function(response) {
 			newErr = new Error('Length Required (' + requestPath + ')');
 			break;
 		default:
-			newErr = new Error('Unknown Error (' + requestPath + ')');
+			newErr = new Error('Unknown Error (' + requestPath + '). Request body: ' + JSON.stringify(response.res.request._data));
 	}
 
 	newErr.status = response.status;
