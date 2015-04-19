@@ -7,7 +7,8 @@ var PublicationType = require('../../data/properties/publication-type');
 var Language = require('../../data/properties/language');
 var Entity = require('../../data/entity');
 var renderRelationship = require('../../helpers/render');
-
+var React = require('react');
+var EditForm = React.createFactory(require('../../../client/components/forms/publication.jsx'));
 // Creation
 
 router.get('/create', auth.isAuthenticated, function(req, res) {
@@ -24,9 +25,16 @@ router.get('/create', auth.isAuthenticated, function(req, res) {
 				return a.name.localeCompare(b.name);
 			});
 
-			res.render('entity/create/publication', {
+			var props = {
 				languages: alphabeticLanguagesList,
 				publicationTypes: publicationTypes
+			};
+
+			var markup = React.renderToString(EditForm(props));
+
+			res.render('entity/create/publication', {
+				props: props,
+				markup: markup
 			});
 		});
 });
