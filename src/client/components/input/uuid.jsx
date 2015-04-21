@@ -7,11 +7,16 @@ var uuid_re =
 var UUIDInput = React.createClass({
   getInitialState: function() {
     return {
-      value: '',
-      valid: false,
+      value: this.props.defaultValue,
+      valid: true,
     };
   },
-
+  getValue: function() {
+    return this.state.value;
+  },
+  valid: function() {
+    return this.state.valid;
+  },
   validationState: function() {
     if (this.state.valid) {
       return 'success';
@@ -19,7 +24,7 @@ var UUIDInput = React.createClass({
       return 'error';
     }
   },
-  handleChange: function() {
+  handleChange: function(e) {
     // This could also be done using ReactLink:
     // http://facebook.github.io/react/docs/two-way-binding-helpers.html
 
@@ -35,7 +40,7 @@ var UUIDInput = React.createClass({
     this.setState({
         value: result,
         valid: valid,
-    });
+    }, this.props.onChange ? this.props.onChange.bind(this, e) : null);
   },
   render: function() {
     return (
@@ -50,7 +55,9 @@ var UUIDInput = React.createClass({
         groupClassName={this.props.groupClassName}
         wrapperClassName={this.props.wrapperClassName}
         labelClassName={this.props.labelClassName}
-        onChange={this.handleChange} />
+        onChange={this.handleChange}
+        disabled={this.props.disabled}
+        standalone={this.props.standalone}/>
     );
   }
 });
