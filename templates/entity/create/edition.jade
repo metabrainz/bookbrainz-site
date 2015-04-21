@@ -2,14 +2,14 @@ extends /layout
 
 block body
 	.container#content
-    .row
-      h1 Create Edition
-        small &nbsp;Add a new Edition to BookBrainz
-    .row
-      noscript
-        .alert.alert-danger(role="alert") This page will not function correctly without JavaScript! Please enable JavaScript to use this page.    
-    #editionForm
+		.row
+			h1 Create Edition
+				small &nbsp;Add a new Edition to BookBrainz
+		.row
+			noscript
+				.alert.alert-danger(role="alert") This page will not function correctly without JavaScript! Please enable JavaScript to use this page.
+		#editionForm
 
 block js
-  script(type='application/json')#props!= JSON.stringify(props)
-  script(src='/js/entity/edition.js')
+	script(type='application/json')#props!= JSON.stringify(props)
+	script(src='/js/entity/edition.js')
