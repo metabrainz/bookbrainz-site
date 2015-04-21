@@ -6,6 +6,10 @@ var Publisher = require('../../data/entities/publisher');
 /* Middleware loader functions. */
 var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
+var React = require('react');
+var EditForm = React.createFactory(require('../../../client/components/forms/publisher.jsx'));
+// Creation
+
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadPublisherTypes = require('../../helpers/middleware').loadPublisherTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
@@ -28,8 +32,17 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadLanguages, loadPublisherTypes, function(req, res) {
+	var props = {
+		languages: res.locals.languages,
+		publisherTypes: res.locals.publisherTypes
+	};
+
+	var markup = React.renderToString(EditForm(props));
+
 	res.render('entity/create/publisher', {
-		title: 'Add Publisher'
+		title: 'Add Publisher',
+		props: props,
+		markup: markup
 	});
 });
 

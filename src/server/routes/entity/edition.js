@@ -3,6 +3,9 @@ var router = express.Router();
 var auth = require('../../helpers/auth');
 var Edition = require('../../data/entities/edition');
 
+var React = require('react');
+var EditForm = React.createFactory(require('../../../client/components/forms/edition.jsx'));
+
 /* Middleware loader functions. */
 var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
@@ -28,8 +31,17 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadEditionStatuses, loadLanguages, function(req, res) {
+	var props = {
+		languages: res.locals.languages,
+		editionStatuses: res.locals.editionStatuses
+	};
+
+	var markup = React.renderToString(EditForm(props));
+
 	res.render('entity/create/edition', {
-		title: 'Add Edition'
+		title: 'Add Edition',
+		props: props,
+		markup: markup
 	});
 });
 

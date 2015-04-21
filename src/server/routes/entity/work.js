@@ -6,6 +6,10 @@ var Work = require('../../data/entities/work');
 /* Middleware loader functions. */
 var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
+var React = require('react');
+var EditForm = React.createFactory(require('../../../client/components/forms/work.jsx'));
+// Creation
+
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
@@ -28,8 +32,17 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadLanguages, loadWorkTypes, function(req, res) {
+	var props = {
+		languages: res.locals.languages,
+		workTypes: res.locals.workTypes
+	};
+
+	var markup = React.renderToString(EditForm(props));
+
 	res.render('entity/create/work', {
-		title: 'Add Work'
+		title: 'Add Work',
+		props: props,
+		markup: markup
 	});
 });
 

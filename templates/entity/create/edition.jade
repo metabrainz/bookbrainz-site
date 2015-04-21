@@ -1,70 +1,15 @@
 extends /layout
 
 block body
-	.row
-		h1 Create Edition
-			small &nbsp;Add a new Edition to BookBrainz
-	.row
-		ul.nav.nav-tabs
-			li(data-bind="css: {active: page() === 1}"): a(href="#", data-bind="click: pageAliases")
-				strong 1.&nbsp
-				| Aliases
-			li(data-bind="css: {active: page() === 2}"): a(href="#", data-bind="click: pageData")
-				strong 2.&nbsp
-				| Data
-			li(data-bind="css: {active: page() === 3}"): a(href="#", data-bind="click: pageSubmit")
-				strong 3.&nbsp
-				| Submit
-		noscript
-			.alert.alert-danger(role="alert") This page will not function correctly without JavaScript! Please enable JavaScript to use this page.
-	div(data-bind="visible: page() === 1")
-		include ./aliases
-
-	div(data-bind="visible: page() === 2")
-		.row
-			.col-md-12
-				p.lead Fill out any data you know about the entity.
-		h2 Add Data
-		.row
-			.col-md-6.col-md-offset-3
-				.form-horizontal
-					.form-group
-						label.col-md-3.control-label Begin Date
-						.col-md-9
-							input.form-control(type="text", placeholder="YYYY-MM-DD", data-bind="value: beginDate")
-					.form-group
-						label.col-md-3.control-label(data-bind="visible: ended") End Date
-						.col-md-9(data-bind="visible: ended")
-							input.form-control(type="text", placeholder="YYYY-MM-DD", data-bind="value: endDate")
-						.col-md-12.checkbox.text-right
-							label
-								input(type="checkbox", data-bind="checked: ended")
-								| Ended?
-					.form-group
-						label.col-md-3.control-label Language
-						.col-md-9
-							select.form-control(required, data-bind="value: languageId")
-								each language in languages
-									option(value=language.id)=language.name
-					.form-group
-						label.col-md-3.control-label Status
-						.col-md-9
-							select.form-control(data-bind="value: editionStatusId, valueAllowUnset: true")
-								each status in editionStatuses
-									option(value=status.id)=status.label
-					.form-group
-						label.col-md-3.control-label Disambiguation
-						.col-md-9
-							input.form-control(type='text', data-bind="value: disambiguation")
-					.form-group
-						label.col-md-3.control-label Annotation
-						.col-md-9
-							textarea.form-control(rows="3", data-bind="value: annotation")
-	div(data-bind="visible: page() === 3")
-		include ./submit
-
-	.alert.alert-danger.alert-dismissible(data-bind='visible: error, with: error')
-		span(data-bind='text: error')
+	.container#content
+    .row
+      h1 Create Edition
+        small &nbsp;Add a new Edition to BookBrainz
+    .row
+      noscript
+        .alert.alert-danger(role="alert") This page will not function correctly without JavaScript! Please enable JavaScript to use this page.    
+    #editionForm
 
 block js
-	script(src='/js/entity/create/edition.js')
+  script(type='application/json')#props!= JSON.stringify(props)
+  script(src='/js/entity/edition.js')

@@ -9,8 +9,10 @@ var loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
 var loadGenders = require('../../helpers/middleware').loadGenders;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+var React = require('react');
 
 var router = express.Router();
+var EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
 
 /* If the route specifies a BBID, load the Creator for it. */
 router.param('bbid', makeEntityLoader(Creator, 'Creator not found'));
@@ -28,10 +30,19 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 });
 
 // Creation
-
 router.get('/create', auth.isAuthenticated, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
+	var props = {
+		languages: res.locals.languages,
+		genders: res.locals.genders,
+		creatorTypes: res.locals.creatorTypes
+	};
+
+	var markup = React.renderToString(EditForm(props));
+
 	res.render('entity/create/creator', {
-		title: 'Add Creator'
+		title: 'Add Creator',
+		props: props,
+		markup: markup
 	});
 });
 
