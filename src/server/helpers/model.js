@@ -203,4 +203,30 @@ Model.prototype.create = function(data, options) {
 	return bbws.post(path, object, wsOptions);
 };
 
+Model.prototype.update = function(id, data, options) {
+	var self = this;
+	options = options || {};
+
+	if (this.abstract)
+		return Promise.reject(new Error('Cannot update instance of abstract class'));
+
+	if (this.endpoint === undefined)
+		return Promise.reject(new Error('Model has no endpoint'));
+
+	var path = '/' + this.endpoint + '/' + id + '/';
+	var wsOptions = {};
+	var object = {};
+
+	if (options.session && options.session.bearerToken)
+		wsOptions.accessToken = options.session.bearerToken;
+
+	Object.keys(this.fields).forEach(function(key) {
+		var field = self.fields[key];
+
+		object[key] = data[key];
+	});
+
+	return bbws.put(path, object, wsOptions);
+};
+
 module.exports = Model;
