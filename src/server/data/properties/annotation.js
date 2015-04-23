@@ -7,7 +7,7 @@ Annotation.extend({
 		type: 'number',
 		map: 'annotation_id'
 	},
-	comment: {
+	content: {
 		type: 'string'
 	}
 });
