@@ -11,9 +11,17 @@ var PartialDate = React.createClass({
   },
   getInitialState: function() {
     return {
-      value: '',
-      valid: true,
+      value: this.props.defaultValue,
+      valid: this.validate(this.props.defaultValue),
     };
+  },
+  validate: function(value) {
+    if(!value) {
+      return true;
+    } else {
+      return Boolean(ymd_re.test(value) || ym_re.test(value) ||
+                     y_re.test(value));
+    }
   },
   handleChange: function() {
     var input = this.refs.input.getValue().trim();
@@ -21,17 +29,10 @@ var PartialDate = React.createClass({
       return;
     }
 
-    if(!input) {
-      this.setState({
-          value: input,
-          valid: true,
-      });
-    } else {
-      this.setState({
-          value: input,
-          valid: (ymd_re.test(input) || ym_re.test(input) || y_re.test(input)),
-      });
-    }
+    this.setState({
+        value: input,
+        valid: this.validate(input),
+    });
   },
   valid: function() {
     return this.state.valid;
