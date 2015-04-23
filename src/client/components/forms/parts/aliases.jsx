@@ -72,8 +72,11 @@ var AliasList = React.createClass({
       name: '',
       sortName: '',
       language: null,
-      key: existing.length,
-      valid: true
+    });
+
+    existing.forEach(function(alias, i) {
+      alias.key = i;
+      alias.valid = true;
     });
 
     return {
@@ -83,16 +86,25 @@ var AliasList = React.createClass({
   },
   getValue: function() {
     return this.state.aliases.slice(0, -1).map(function(alias) {
-      return {
+      var data = {
         name: alias.name,
         sortName: alias.sortName,
-        language: alias.language,
+        languageId: parseInt(alias.language),
+        dflt: false,
+        primary: true,
       };
+
+      if(alias.id) {
+        data.id = alias.id;
+      }
+
+      return data;
     });
   },
   handleChange: function(index) {
     var updatedAliases = this.state.aliases.slice();
     var updatedAlias = this.refs[index].getValue();
+
     updatedAliases[index] = {
       name: updatedAlias.name,
       sortName: updatedAlias.sortName,
@@ -100,6 +112,10 @@ var AliasList = React.createClass({
       key: updatedAliases[index].key,
       valid: this.refs[index].getValid(),
     };
+
+    if(this.state.aliases[index].id) {
+      updatedAliases[index].id = this.state.aliases[index].id;
+    }
 
     var rowsSpawned = this.state.rowsSpawned;
     if (index == this.state.aliases.length - 1) {

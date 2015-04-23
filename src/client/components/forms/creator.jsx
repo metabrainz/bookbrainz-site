@@ -43,15 +43,7 @@ module.exports = React.createClass({
     var creatorData = this.refs.data.getValue();
     var revisionNote = this.refs.revision.refs.note.getValue();
     var data = {
-      aliases: this.refs.aliases.getValue().map(function(alias) {
-        return {
-          name: alias.name,
-          sortName: alias.sortName,
-          languageId: parseInt(alias.language),
-          dflt: false,
-          primary: true,
-        };
-      }),
+      aliases: aliasData,
       beginDate: creatorData.beginDate,
       endDate: creatorData.endDate,
       ended: (creatorData.ended === "on" ? true : false),
@@ -69,7 +61,7 @@ module.exports = React.createClass({
     this.setState({waiting: true});
 
     var self = this;
-    request.post('/creator/create/handler')
+    request.post(this.props.submissionUrl)
       .send(data).promise()
       .then(function(revision) {
         if (!revision.body || !revision.body.entity) {
@@ -87,6 +79,7 @@ module.exports = React.createClass({
     if(this.props.creator) {
       aliases = this.props.creator.aliases.map(function(alias) {
         return {
+          id: alias.id,
           name: alias.name,
           sortName: alias.sort_name,
           language: null
@@ -119,7 +112,7 @@ module.exports = React.createClass({
 
         <form onChange={this.handleChange}>
           <Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
-          <CreatorData genders={this.props.genders} ref='data' creatorTypes={this.props.creatorTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
+          <CreatorData creator={this.props.creator} genders={this.props.genders} ref='data' creatorTypes={this.props.creatorTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
           <RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab == 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
         </form>
       </div>

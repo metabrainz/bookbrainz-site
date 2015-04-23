@@ -19,7 +19,7 @@ var CreatorData = React.createClass({
   },
   getInitialState: function() {
     return {
-      ended: false
+      ended: this.props.creator ? this.props.creator.ended : false
     };
   },
   valid: function() {
@@ -31,6 +31,15 @@ var CreatorData = React.createClass({
     this.setState({ended: this.refs.ended.getChecked()});
   },
   render: function() {
+    if(this.props.creator) {
+      var initialBeginDate = this.props.creator.begin_date;
+      var initialEndDate = this.props.creator.end_date;
+      var initialGender = this.props.creator.gender.gender_id;
+      var initialCreatorType = this.props.creator.creator_type.creator_type_id;
+      var initialDisambiguation = this.props.creator.disambiguation.comment;
+      var initialAnnotation = this.props.creator.annotation.content;
+    }
+
     return (
       <div className={(this.props.visible === false) ? "hidden": "" }>
         <h2>Add Data</h2>
@@ -40,12 +49,14 @@ var CreatorData = React.createClass({
           <PartialDate
             label='Begin Date'
             ref='begin'
+            defaultValue={initialBeginDate}
             placeholder='YYYY-MM-DD'
             labelClassName='col-md-4'
             wrapperClassName='col-md-4' />
           <PartialDate
             label='End Date'
             ref='end'
+            defaultValue={initialEndDate}
             groupClassName={this.state.ended ? '' : 'hidden'}
             placeholder='YYYY-MM-DD'
             labelClassName='col-md-4'
@@ -54,12 +65,14 @@ var CreatorData = React.createClass({
             type='checkbox'
             ref='ended'
             label='Ended'
+            defaultValue={this.state.ended}
             onChange={this.handleEnded}
             wrapperClassName='col-md-offset-4 col-md-4' />
           <Select
             label='Gender'
             labelAttribute='name'
             idAttribute='id'
+            defaultValue={initialGender}
             ref='gender'
             noDefault
             options={this.props.genders}
@@ -69,6 +82,7 @@ var CreatorData = React.createClass({
             label='Type'
             labelAttribute='label'
             idAttribute='id'
+            defaultValue={initialCreatorType}
             ref='creatorType'
             noDefault
             options={this.props.creatorTypes}
@@ -79,12 +93,14 @@ var CreatorData = React.createClass({
             type='text'
             label='Disambiguation'
             ref='disambiguation'
+            defaultValue={initialDisambiguation}
             labelClassName='col-md-3'
             wrapperClassName='col-md-6' />
           <Input
             type='textarea'
             label='Annotation'
             ref='annotation'
+            defaultValue={initialAnnotation}
             labelClassName='col-md-3'
             wrapperClassName='col-md-6'
             rows='6' />
