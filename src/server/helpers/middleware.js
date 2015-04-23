@@ -83,6 +83,7 @@ middleware.makeEntityLoader = function(model, errMessage) {
 						'annotation',
 						'disambiguation',
 						'relationships',
+						'aliases',
 					]
 				})
 				.then(function(entity) {
