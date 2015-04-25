@@ -1,0 +1,12 @@
+{
+	"curly": false,
+	"quotmark": "single",
+	"undef": true,
+	"unused": "vars",
+
+	// Environments
+	"browser": false,
+	"browserify": true,
+	"devel": false,
+	"node": true
+}
