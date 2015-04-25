@@ -24,7 +24,7 @@ var Select = React.createClass({
 			select2Options.placeholder = this.props.placeholder;
 		}
 
-		$(this.refs.input.getInputDOMNode()).select2();
+		$(this.refs.input.getInputDOMNode()).select2(select2Options);
 	},
 	render: function() {
 		var self = this;
