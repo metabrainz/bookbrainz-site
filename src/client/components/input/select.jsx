@@ -47,7 +47,10 @@ var Select = React.createClass({
 		if (this.props.noDefault) {
 			options.unshift(<option key='0'></option>);
 
-			this.allowClear = true;
+			/* Setting allow clear is unnecessary if this is a multiselect. */
+			if (!this.props.multiple) {
+				this.allowClear = true;
+			}
 		}
 
 		return (
