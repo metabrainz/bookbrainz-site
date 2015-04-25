@@ -24,6 +24,11 @@ var Select = React.createClass({
 			select2Options.placeholder = this.props.placeholder;
 		}
 
+		/* Don't set allowClear if there's no placeholder. It gets ugly. */
+		if (this.allowClear && select2Options.placeholder) {
+			select2Options.allowClear = true;
+		}
+
 		$(this.refs.input.getInputDOMNode()).select2(select2Options);
 	},
 	render: function() {
@@ -41,6 +46,8 @@ var Select = React.createClass({
 
 		if (this.props.noDefault) {
 			options.unshift(<option key='0'></option>);
+
+			this.allowClear = true;
 		}
 
 		return (
