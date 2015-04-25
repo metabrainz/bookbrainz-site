@@ -1,6 +1,11 @@
 var React = require('react');
 var Input = require('react-bootstrap').Input;
 
+if (typeof window !== 'undefined') {
+	window.$ = require('jquery');
+	require('select2');
+}
+
 var Select = React.createClass({
 	getValue: function() {
 		return this.refs.input.getValue()
@@ -9,6 +14,17 @@ var Select = React.createClass({
 		if (this.props.onChange) {
 			this.props.onChange();
 		}
+	},
+	componentDidMount: function() {
+		var select2Options = this.props.select2Options || {};
+
+		/* Allow consistent behavior with other bootstrap components, but don't
+		 * clobber select2 options otherwise. */
+		if (this.props.placeholder) {
+			select2Options.placeholder = this.props.placeholder;
+		}
+
+		$(this.refs.input.getInputDOMNode()).select2();
 	},
 	render: function() {
 		var self = this;
