@@ -60,6 +60,7 @@ var PublisherData = React.createClass({
             labelAttribute='label'
             idAttribute='id'
             ref='publisherType'
+            placeholder='Select publisher type…'
             noDefault
             options={this.props.publisherTypes}
             labelClassName='col-md-4'

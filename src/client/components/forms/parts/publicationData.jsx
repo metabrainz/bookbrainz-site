@@ -27,6 +27,7 @@ var PublicationData = React.createClass({
             labelAttribute='label'
             idAttribute='id'
             ref='publicationType'
+            placeholder='Select publication type…'
             noDefault
             options={this.props.publicationTypes}
             labelClassName='col-md-4'

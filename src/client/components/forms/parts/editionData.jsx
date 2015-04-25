@@ -61,6 +61,7 @@ var EditionData = React.createClass({
             labelAttribute='name'
             idAttribute='id'
             ref='language'
+            placeholder='Select edition language…'
             noDefault
             options={this.props.languages}
             labelClassName='col-md-4'
@@ -70,6 +71,7 @@ var EditionData = React.createClass({
             labelAttribute='label'
             idAttribute='id'
             ref='editionStatus'
+            placeholder='Select edition status…'
             noDefault
             options={this.props.editionStatuses}
             labelClassName='col-md-4'

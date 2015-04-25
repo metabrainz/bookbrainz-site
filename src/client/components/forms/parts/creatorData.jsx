@@ -74,6 +74,7 @@ var CreatorData = React.createClass({
             idAttribute='id'
             defaultValue={initialGender}
             ref='gender'
+            placeholder='Select gender…'
             noDefault
             options={this.props.genders}
             labelClassName='col-md-4'
@@ -84,6 +85,7 @@ var CreatorData = React.createClass({
             idAttribute='id'
             defaultValue={initialCreatorType}
             ref='creatorType'
+            placeholder='Select creator type…'
             noDefault
             options={this.props.creatorTypes}
             labelClassName='col-md-4'

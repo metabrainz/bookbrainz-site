@@ -207,6 +207,7 @@ module.exports = React.createClass({
           labelAttribute='label'
           idAttribute='id'
           ref='relationship'
+          placeholder='Select relationship type…'
           noDefault
           wrapperClassName="col-md-4"
           labelClassName="col-md-4"

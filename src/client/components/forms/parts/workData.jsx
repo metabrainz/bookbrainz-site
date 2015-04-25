@@ -28,6 +28,7 @@ var WorkData = React.createClass({
             labelAttribute='name'
             idAttribute='id'
             ref='languages'
+            placeholder='Select work languages…'
             noDefault
             options={this.props.languages}
             multiple
@@ -38,6 +39,7 @@ var WorkData = React.createClass({
             labelAttribute='label'
             idAttribute='id'
             ref='workType'
+            placeholder='Select work type…'
             noDefault
             options={this.props.workTypes}
             labelClassName='col-md-4'

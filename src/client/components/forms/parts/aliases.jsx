@@ -52,6 +52,7 @@ var AliasRow = React.createClass({
             defaultValue={this.props.language}
             bsStyle={this.validationState()}
             labelClassName='margin-left-1 margin-right-1'
+            placeholder='Select alias language…'
             noDefault
             options={this.props.languages} />
         </div>
