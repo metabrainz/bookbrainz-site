@@ -55,5 +55,5 @@ function getEntity(ws, entityGid, fetchOptions) {
 
 module.exports = {
 	getEntityLink: getEntityLink,
-	getEntity: getEntity,
+	getEntity: getEntity
 };

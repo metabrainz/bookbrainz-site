@@ -8,7 +8,7 @@ if (typeof window !== 'undefined') {
 
 var Select = React.createClass({
 	getValue: function() {
-		return this.refs.input.getValue()
+		return this.refs.input.getValue();
 	},
 	handleChange: function() {
 		if (this.props.onChange) {

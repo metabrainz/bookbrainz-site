@@ -12,7 +12,7 @@ var PartialDate = React.createClass({
 	getInitialState: function() {
 		return {
 			value: this.props.defaultValue,
-			valid: this.validate(this.props.defaultValue),
+			valid: this.validate(this.props.defaultValue)
 		};
 	},
 	validate: function(value) {
@@ -33,7 +33,7 @@ var PartialDate = React.createClass({
 
 		this.setState({
 			value: input,
-			valid: this.validate(input),
+			valid: this.validate(input)
 		});
 	},
 	valid: function() {

@@ -34,37 +34,37 @@ router.get('/', function(req, res) {
 
 router.get('/about', function(req, res) {
 	res.render('about', {
-		title: 'About',
+		title: 'About'
 	});
 });
 
 router.get('/contribute', function(req, res) {
 	res.render('contribute', {
-		title: 'Contribute',
+		title: 'Contribute'
 	});
 });
 
 router.get('/develop', function(req, res) {
 	res.render('develop', {
-		title: 'Develop',
+		title: 'Develop'
 	});
 });
 
 router.get('/getStarted', function(req, res) {
 	res.render('getStarted', {
-		title: 'Get Started',
+		title: 'Get Started'
 	});
 });
 
 router.get('/privacy', function(req, res) {
 	res.render('privacy', {
-		title: 'Privacy',
+		title: 'Privacy'
 	});
 });
 
 router.get('/licensing', function(req, res) {
 	res.render('licensing', {
-		title: 'Licensing',
+		title: 'Licensing'
 	});
 });
 
@@ -75,16 +75,28 @@ router.get('/search', function(req, res) {
 	var entitiesPromise = resultsPromise
 		.then(function(results) {
 			var entities = results.objects.map(function(entity_stub) {
-				if (entity_stub._type == 'Publication') {
-					return Publication.findOne(entity_stub.entity_gid);
-				} else if (entity_stub._type == 'Creator') {
-					return Creator.findOne(entity_stub.entity_gid);
-				} else if (entity_stub._type == 'Edition') {
-					return Edition.findOne(entity_stub.entity_gid);
-				} else if (entity_stub._type == 'Work') {
-					return Work.findOne(entity_stub.entity_gid);
-				} else if (entity_stub._type == 'Publisher') {
-					return Publisher.findOne(entity_stub.entity_gid);
+				var model;
+
+				switch (entity_stub._type) {
+					case 'Publication':
+						model = Publication;
+						break;
+					case 'Creator':
+						model = Creator;
+						break;
+					case 'Edition':
+						model = Edition;
+						break;
+					case 'Work':
+						model = Work;
+						break;
+					case 'Publisher':
+						model = Publisher;
+						break;
+				}
+
+				if (model) {
+					return model.findOne(entity_stub.entity_gid);
 				}
 			});
 

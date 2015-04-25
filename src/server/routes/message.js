@@ -68,7 +68,7 @@ router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 		.send({
 			recipient_ids: recipientIds,
 			subject: req.body.subject,
-			content: req.body.content,
+			content: req.body.content
 		}).promise()
 		.then(function() {
 			res.redirect(303, '/message/sent');

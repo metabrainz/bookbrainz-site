@@ -8,7 +8,7 @@ var UUIDInput = React.createClass({
 	getInitialState: function() {
 		return {
 			value: this.props.defaultValue,
-			valid: true,
+			valid: true
 		};
 	},
 	getValue: function() {
@@ -20,7 +20,8 @@ var UUIDInput = React.createClass({
 	validationState: function() {
 		if (this.state.valid) {
 			return 'success';
-		} else {
+		}
+		else {
 			return 'error';
 		}
 	},
@@ -33,14 +34,18 @@ var UUIDInput = React.createClass({
 		var valid = Boolean(result);
 		if (valid) {
 			result = result[0];
-		} else {
+		}
+		else {
 			result = this.refs.input.getValue();
 		}
 
-		this.setState({
+		this.setState(
+			{
 				value: result,
-				valid: valid,
-		}, this.props.onChange ? this.props.onChange.bind(this, e) : null);
+				valid: valid
+			},
+			this.props.onChange ? this.props.onChange.bind(this, e) : null
+		);
 	},
 	render: function() {
 		return (
@@ -57,7 +62,7 @@ var UUIDInput = React.createClass({
 				labelClassName={this.props.labelClassName}
 				onChange={this.handleChange}
 				disabled={this.props.disabled}
-				standalone={this.props.standalone}/>
+				standalone={this.props.standalone} />
 		);
 	}
 });

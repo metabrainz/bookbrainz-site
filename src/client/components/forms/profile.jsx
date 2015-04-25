@@ -13,7 +13,7 @@ module.exports = React.createClass({
 			id: this.props.id,
 			email: this.props.email,
 			bio: this.props.bio,
-			waiting: false,
+			waiting: false
 		};
 	},
 	handleSubmit: function(e) {
@@ -56,7 +56,7 @@ module.exports = React.createClass({
 				labelClassName='col-md-3' />
 			<div className='form-group'>
 				<div className='col-md-4 col-md-offset-4'>
-					<Button bsStyle='primary' bsSize='large' block type="submit">Update!</Button>
+					<Button bsStyle='primary' bsSize='large' block type='submit'>Update!</Button>
 				</div>
 			</div>
 		</form>;

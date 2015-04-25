@@ -81,7 +81,8 @@ Model.prototype._fetchSingleResult = function(result, options) {
 		/* XXX: Validate return data by field type. */
 		if (field.type !== 'ref') {
 			object[key] = result[resultsField];
-		} else {
+		}
+		else {
 			if (!_.contains(options.populate, key)) {
 				object[key] = null;
 				return;
@@ -116,7 +117,8 @@ Model.prototype.find = function(options) {
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
 
 		path = '/' + this.endpoint + '/';
-	} else {
+	}
+	else {
 		path = options.path;
 	}
 
@@ -161,7 +163,8 @@ Model.prototype.findOne = function(id, options) {
 			return Promise.reject(new Error('No object ID or absolute path specified'));
 
 		path += id + '/';
-	} else {
+	}
+	else {
 		path = options.path;
 	}
 

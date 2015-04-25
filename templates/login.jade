@@ -7,13 +7,13 @@ block body
 				.form-group
 					label.col-md-2(for='loginUsername') Username
 					.col-md-10
-						input#loginUsername.form-control(type="text", placeholder="Username", name='username')
+						input#loginUsername.form-control(type='text', placeholder='Username', name='username')
 				.form-group
 					label.col-md-2(for='loginPassword') Password
 					.col-md-10
-						input#loginPassword.form-control(type="password", placeholder="Password", name='password')
+						input#loginPassword.form-control(type='password', placeholder='Password', name='password')
 				if error
 					.alert.alert-danger= error
-				button.btn.btn-primary.btn-lg.btn-block(type="submit") Login
+				button.btn.btn-primary.btn-lg.btn-block(type='submit') Login
 				hr
-				a.btn.btn-success.btn-lg.btn-block(href="/register") Register
+				a.btn.btn-success.btn-lg.btn-block(href='/register') Register

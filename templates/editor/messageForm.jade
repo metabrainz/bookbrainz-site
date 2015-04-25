@@ -8,19 +8,19 @@ block body
 		private information.
 	.row
 		.col-md-8.col-md-offset-2
-			form.whole-page-form.form-horizontal(action="/message/send/handler", method="post")
+			form.whole-page-form.form-horizontal(action='/message/send/handler', method='post')
 				.form-group
 					label.col-md-2.control-label Recipients
 					.col-md-8
-						input.form-control(type="text", name="recipients" placeholder="Recipient ID[, Recipient ID...]", value=recipients)
+						input.form-control(type='text', name='recipients' placeholder='Recipient ID[, Recipient ID...]', value=recipients)
 				.form-group
 					label.col-md-2.control-label Subject
 					.col-md-8
-						input.form-control(type="text", name="subject", placeholder="Subject", value=subject)
+						input.form-control(type='text', name='subject', placeholder='Subject', value=subject)
 				.form-group
 					label.col-md-2.control-label Message
 					.col-md-8
-						textarea.form-control(name="content", rows="6") #{content}
+						textarea.form-control(name='content', rows='6') #{content}
 				.form-group
 					.col-md-4.col-md-offset-4
-						button.btn.btn-success.btn-block(type="submit") Submit
+						button.btn.btn-success.btn-block(type='submit') Submit

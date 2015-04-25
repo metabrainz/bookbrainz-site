@@ -35,7 +35,7 @@ router.get('/create', auth.isAuthenticated, loadGenders, loadLanguages, loadCrea
 		languages: res.locals.languages,
 		genders: res.locals.genders,
 		creatorTypes: res.locals.creatorTypes,
-		submissionUrl: '/creator/create/handler',
+		submissionUrl: '/creator/create/handler'
 	};
 
 	var markup = React.renderToString(EditForm(props));
@@ -57,7 +57,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadGenders, loadLanguages, load
 		genders: res.locals.genders,
 		creatorTypes: res.locals.creatorTypes,
 		creator: creator,
-		submissionUrl: '/creator/' + creator.bbid + '/edit/handler',
+		submissionUrl: '/creator/' + creator.bbid + '/edit/handler'
 	};
 
 	var markup = React.renderToString(EditForm(props));
@@ -67,13 +67,13 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadGenders, loadLanguages, load
 		heading: 'Edit Creator',
 		subheading: 'Edit an existing Creator in BookBrainz',
 		props: props,
-		markup: markup,
+		markup: markup
 	});
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	var changes = {
-		bbid: null,
+		bbid: null
 	};
 
 	if (req.body.creatorTypeId) {
@@ -95,7 +95,8 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	if (req.body.endDate) {
 		changes.end_date = req.body.endDate;
 		changes.ended = true; // Must have ended if there's an end date.
-	} else if (req.body.ended) {
+	}
+	else if (req.body.ended) {
 		changes.ended = req.body.ended;
 	}
 
@@ -135,7 +136,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var creator = res.locals.entity;
 
 	var changes = {
-		bbid: creator.bbid,
+		bbid: creator.bbid
 	};
 
 	var creatorTypeId = req.body.creatorTypeId;
@@ -186,39 +187,47 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var currentAliases = creator.aliases.map(function(alias) {
 		var nextAlias = req.body.aliases[0];
 
-		if(alias.id != nextAlias.id) {
+		if (alias.id != nextAlias.id) {
 			// Remove the alias
 			return [alias.id, null];
-		} else {
+		}
+		else {
 			// Modify the alias
 			req.body.aliases.shift();
-			return [nextAlias.id, {
-				name: nextAlias.name,
-				sort_name: nextAlias.sort_name,
-				language_id: nextAlias.languageId,
-				primary: alias.primary,
-				default: alias.default
-			}];
+			return [
+				nextAlias.id,
+				{
+					name: nextAlias.name,
+					sort_name: nextAlias.sort_name,
+					language_id: nextAlias.languageId,
+					primary: alias.primary,
+					default: alias.default
+				}
+			];
 		}
 	});
 
 	var newAliases = req.body.aliases.map(function(alias) {
 		// At this point, the only aliases should have null IDs, but check anyway.
-		if(alias.id) {
+		if (alias.id) {
 			return null;
-		} else {
-			return [null, {
-				name: alias.name,
-				sort_name: alias.sort_name,
-				language_id: alias.languageId,
-				primary: false,
-				default: false,
-			}]
+		}
+		else {
+			return [
+				null,
+				{
+					name: alias.name,
+					sort_name: alias.sort_name,
+					language_id: alias.languageId,
+					primary: false,
+					default: false
+				}
+			];
 		}
 	});
 
 	changes.aliases = currentAliases.concat(newAliases);
-	if(changes.aliases.length !== 0 && changes.aliases[0][1]) {
+	if (changes.aliases.length !== 0 && changes.aliases[0][1]) {
 		changes.aliases[0][1].default = true;
 	}
 

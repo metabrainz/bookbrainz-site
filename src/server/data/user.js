@@ -48,7 +48,7 @@ User.extend({
 	gender: {
 		type: 'object',
 		model: 'Gender'
-	},
+	}
 });
 
 User.getCurrent = function(accessToken) {

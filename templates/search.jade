@@ -6,9 +6,9 @@ block body
 			form.whole-page-form.form-horizontal
 				.form-group
 					.input-group
-						input.form-control(type="text" name="q" value=query)
+						input.form-control(type='text' name='q' value=query)
 						.input-group-btn
-							button.btn.btn-default.btn-success(type="submit")
+							button.btn.btn-default.btn-success(type='submit')
 								span.fa.fa-search
 								| &nbsp;Search
 
@@ -21,5 +21,5 @@ block body
 			each result in results
 				tr
 					td
-						a(href="/" + result.type.toLowerCase() + "/" + result.bbid)=result.default_alias.name
+						a(href='/' + result.type.toLowerCase() + '/' + result.bbid)=result.default_alias.name
 					td=result.type

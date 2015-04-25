@@ -47,7 +47,7 @@ router.get('/create', auth.isAuthenticated, loadEditionStatuses, loadLanguages, 
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	var changes = {
-		bbid: null,
+		bbid: null
 	};
 
 	console.log(req.body);
@@ -71,7 +71,8 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	if (req.body.endDate) {
 		changes.end_date = req.body.endDate;
 		changes.ended = true; // Must have ended if there's an end date.
-	} else if (req.body.ended) {
+	}
+	else if (req.body.ended) {
 		changes.ended = req.body.ended;
 	}
 
