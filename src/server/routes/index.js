@@ -69,7 +69,7 @@ router.get('/licensing', function(req, res) {
 });
 
 router.get('/search', function(req, res) {
-	query = req.query.q;
+	var query = req.query.q;
 	var resultsPromise = bbws.get('/search?q=' + query);
 
 	var entitiesPromise = resultsPromise

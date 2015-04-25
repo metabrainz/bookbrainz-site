@@ -1,10 +1,9 @@
 var superagent = require('superagent');
-var Promise = require('bluebird');
 var config = require('../helpers/config');
 
 require('superagent-bluebird-promise');
 
-bbws = {};
+var bbws = {};
 
 var _processError = function(response) {
 	var newErr;

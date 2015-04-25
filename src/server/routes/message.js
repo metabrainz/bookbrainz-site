@@ -51,7 +51,7 @@ router.get('/:id', auth.isAuthenticated, function(req, res) {
 			res.render('editor/message', {
 				message: message
 			});
-		})
+		});
 });
 
 router.post('/send/handler', auth.isAuthenticated, function(req, res) {
@@ -59,7 +59,7 @@ router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 	var ws = req.app.get('webservice');
 
 	// Parse recipient ids
-	recipientIds = req.body.recipients.split(',').map(function(substr) {
+	var recipientIds = req.body.recipients.split(',').map(function(substr) {
 		return parseInt(substr);
 	});
 

@@ -20,7 +20,7 @@ relationshipHelper.addEditRoutes = function(router) {
 
 		Promise.join(entityPromise, relationshipTypesPromise,
 			function(entity, relationshipTypes) {
-				props = {
+				var props = {
 					relationshipTypes: relationshipTypes,
 					targetEntity: entity,
 					wsUrl: config.site.webservice
@@ -48,6 +48,6 @@ relationshipHelper.addEditRoutes = function(router) {
 				});
 		});
 	});
-}
+};
 
 module.exports = relationshipHelper;

@@ -56,6 +56,6 @@ User.getCurrent = function(accessToken) {
 		path: '/account/',
 		accessToken: accessToken
 	});
-}
+};
 
 module.exports = User;

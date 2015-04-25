@@ -8,7 +8,7 @@ var auth = require('../helpers/auth');
 var NotFoundError = require('../helpers/error').NotFoundError;
 var ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
 
-router.get('/edit', auth.isAuthenticated, function(req, res) {
+router.get('/edit', auth.isAuthenticated, function(req, res, next) {
 	User.getCurrent(req.session.bearerToken)
 		.then(function(user) {
 			var props = {

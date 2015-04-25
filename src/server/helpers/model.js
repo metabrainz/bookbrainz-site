@@ -18,7 +18,7 @@ function Model(name, options) {
 	this.name = name;
 
 	if (options.base) {
-		base = options.base;
+		var base = options.base;
 
 		if (!(base instanceof Model))
 			throw new TypeError('Specified base object is not a model');
@@ -181,7 +181,6 @@ Model.prototype.findOne = function(id, options) {
 };
 
 Model.prototype.create = function(data, options) {
-	var self = this;
 	options = options || {};
 
 	if (this.abstract)
@@ -198,8 +197,6 @@ Model.prototype.create = function(data, options) {
 		wsOptions.accessToken = options.session.bearerToken;
 
 	Object.keys(this.fields).forEach(function(key) {
-		var field = self.fields[key];
-
 		object[key] = data[key];
 	});
 
@@ -207,7 +204,6 @@ Model.prototype.create = function(data, options) {
 };
 
 Model.prototype.update = function(id, data, options) {
-	var self = this;
 	options = options || {};
 
 	if (this.abstract)
@@ -224,8 +220,6 @@ Model.prototype.update = function(id, data, options) {
 		wsOptions.accessToken = options.session.bearerToken;
 
 	Object.keys(this.fields).forEach(function(key) {
-		var field = self.fields[key];
-
 		object[key] = data[key];
 	});
 

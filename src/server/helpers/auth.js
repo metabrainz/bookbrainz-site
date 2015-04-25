@@ -56,7 +56,7 @@ auth.authenticate = function() {
 		};
 
 		passport.authenticate('bbws', options)(req, res, callback);
-	}
+	};
 };
 
 auth.isAuthenticated = function(req, res, next) {
