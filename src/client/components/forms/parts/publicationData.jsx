@@ -16,6 +16,12 @@ var PublicationData = React.createClass({
 		return true;
 	},
 	render: function() {
+		if(this.props.publication) {
+			var initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
+			var initialDisambiguation = this.props.publication.disambiguation ? this.props.publication.disambiguation.comment : null;
+			var initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;
+		}
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -26,6 +32,7 @@ var PublicationData = React.createClass({
 						label='Type'
 						labelAttribute='label'
 						idAttribute='id'
+						defaultValue={initialPublicationType}
 						ref='publicationType'
 						placeholder='Select publication type…'
 						noDefault
@@ -37,12 +44,14 @@ var PublicationData = React.createClass({
 						type='text'
 						label='Disambiguation'
 						ref='disambiguation'
+						defaultValue={initialDisambiguation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6' />
 					<Input
 						type='textarea'
 						label='Annotation'
 						ref='annotation'
+						defaultValue={initialAnnotation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6'
 						rows='6' />
