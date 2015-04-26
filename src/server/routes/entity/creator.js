@@ -169,13 +169,13 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var disambiguation = req.body.disambiguation;
 	if ((!creator.disambiguation) ||
 	    (creator.disambiguation.comment !== disambiguation)) {
-		changes.disambiguation = disambiguation;
+		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
 	var annotation = req.body.annotation;
 	if ((!creator.annotation) ||
 			(creator.annotation.content !== annotation)) {
-		changes.annotation = annotation;
+		changes.annotation = annotation ? annotation : null;
 	}
 
 	if (req.body.note) {

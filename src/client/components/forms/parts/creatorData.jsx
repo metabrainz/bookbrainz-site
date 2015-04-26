@@ -34,10 +34,10 @@ var CreatorData = React.createClass({
 		if (this.props.creator) {
 			var initialBeginDate = this.props.creator.begin_date;
 			var initialEndDate = this.props.creator.end_date;
-			var initialGender = this.props.creator.gender.gender_id;
-			var initialCreatorType = this.props.creator.creator_type.creator_type_id;
-			var initialDisambiguation = this.props.creator.disambiguation.comment;
-			var initialAnnotation = this.props.creator.annotation.content;
+			var initialGender = this.props.creator.gender ? this.props.creator.gender.gender_id : null;
+			var initialCreatorType = this.props.creator.creator_type ? this.props.creator.creator_type.creator_type_id : null;
+			var initialDisambiguation = this.props.creator.disambiguation ? this.props.creator.disambiguation.comment : null;
+			var initialAnnotation = this.props.creator.annotation ? this.props.creator.annotation.content : null;
 		}
 
 		return (
