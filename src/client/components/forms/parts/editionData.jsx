@@ -6,6 +6,7 @@ var Button = require('react-bootstrap').Button;
 
 
 var EditionData = React.createClass({
+<<<<<<< Updated upstream
 	getValue: function() {
 		return {
 			beginDate: this.refs.begin.getValue(),
@@ -19,7 +20,7 @@ var EditionData = React.createClass({
 	},
 	getInitialState: function() {
 		return {
-			ended: false
+			ended: this.props.edition ? this.props.edition.ended : false
 		};
 	},
 	valid: function() {
@@ -31,6 +32,15 @@ var EditionData = React.createClass({
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
 	render: function() {
+		if(this.props.edition) {
+			var initialBeginDate = this.props.edition.begin_date;
+			var initialEndDate = this.props.edition.end_date;
+			var initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
+			var initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
+			var initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
+			var initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
+		}
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -40,12 +50,14 @@ var EditionData = React.createClass({
 					<PartialDate
 						label='Begin Date'
 						ref='begin'
+						defaultValue={initialBeginDate}
 						placeholder='YYYY-MM-DD'
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<PartialDate
 						label='End Date'
 						ref='end'
+						defaultValue={initialEndDate}
 						groupClassName={this.state.ended ? '' : 'hidden'}
 						placeholder='YYYY-MM-DD'
 						labelClassName='col-md-4'
@@ -53,6 +65,7 @@ var EditionData = React.createClass({
 					<Input
 						type='checkbox'
 						ref='ended'
+						defaultValue={this.state.ended}
 						label='Ended'
 						onChange={this.handleEnded}
 						wrapperClassName='col-md-offset-4 col-md-4' />
@@ -60,6 +73,7 @@ var EditionData = React.createClass({
 						label='Language'
 						labelAttribute='name'
 						idAttribute='id'
+						defaultValue={initialLanguage}
 						ref='language'
 						placeholder='Select edition language…'
 						noDefault
@@ -70,6 +84,7 @@ var EditionData = React.createClass({
 						label='Status'
 						labelAttribute='label'
 						idAttribute='id'
+						defaultValue={initialEditionStatus}
 						ref='editionStatus'
 						placeholder='Select edition status…'
 						noDefault
@@ -81,12 +96,14 @@ var EditionData = React.createClass({
 						type='text'
 						label='Disambiguation'
 						ref='disambiguation'
+						defaultValue={initialDisambiguation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6' />
 					<Input
 						type='textarea'
 						label='Annotation'
 						ref='annotation'
+						defaultValue={initialAnnotation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6'
 						rows='6' />
