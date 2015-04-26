@@ -18,7 +18,7 @@ var PublisherData = React.createClass({
 	},
 	getInitialState: function() {
 		return {
-			ended: false
+			ended: this.props.edition ? this.props.edition.ended : false
 		};
 	},
 	valid: function() {
@@ -30,6 +30,14 @@ var PublisherData = React.createClass({
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
 	render: function() {
+		if(this.props.publisher) {
+			var initialBeginDate = this.props.publisher.begin_date;
+			var initialEndDate = this.props.publisher.end_date;
+			var initialPublisherType = this.props.publisher.publisher_type ? this.props.publisher.publisher_type.publisher_type_id : null;
+			var initialDisambiguation = this.props.publisher.disambiguation ? this.props.publisher.disambiguation.comment : null;
+			var initialAnnotation = this.props.publisher.annotation ? this.props.publisher.annotation.content : null;
+		}
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -39,12 +47,14 @@ var PublisherData = React.createClass({
 					<PartialDate
 						label='Begin Date'
 						ref='begin'
+						defaultValue={initialBeginDate}
 						placeholder='YYYY-MM-DD'
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<PartialDate
 						label='End Date'
 						ref='end'
+						defaultValue={initialEndDate}
 						groupClassName={this.state.ended ? '' : 'hidden'}
 						placeholder='YYYY-MM-DD'
 						labelClassName='col-md-4'
@@ -52,6 +62,7 @@ var PublisherData = React.createClass({
 					<Input
 						type='checkbox'
 						ref='ended'
+						defaultValue={this.state.ended}
 						label='Ended'
 						onChange={this.handleEnded}
 						wrapperClassName='col-md-offset-4 col-md-4' />
@@ -59,6 +70,7 @@ var PublisherData = React.createClass({
 						label='Type'
 						labelAttribute='label'
 						idAttribute='id'
+						defaultValue={initialPublisherType}
 						ref='publisherType'
 						placeholder='Select publisher type…'
 						noDefault
@@ -70,12 +82,14 @@ var PublisherData = React.createClass({
 						type='text'
 						label='Disambiguation'
 						ref='disambiguation'
+						defaultValue={initialDisambiguation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6' />
 					<Input
 						type='textarea'
 						label='Annotation'
 						ref='annotation'
+						defaultValue={initialAnnotation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6'
 						rows='6' />
