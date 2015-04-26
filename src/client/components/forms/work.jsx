@@ -44,15 +44,7 @@ module.exports = React.createClass({
 		var revisionNote = this.refs.revision.refs.note.getValue();
 
 		var data = {
-			aliases: this.refs.aliases.getValue().map(function(alias) {
-				return {
-					name: alias.name,
-					sortName: alias.sortName,
-					languageId: parseInt(alias.language),
-					dflt: false,
-					primary: true
-				};
-			}),
+			aliases: aliasData,
 			languages: workData.languages.map(function(l) {
 				return parseInt(l);
 			}),
@@ -69,7 +61,7 @@ module.exports = React.createClass({
 		this.setState({waiting: true});
 
 		var self = this;
-		request.post('/work/create/handler')
+		request.post(this.props.submissionUrl)
 			.send(data).promise()
 			.then(function(revision) {
 				if (!revision.body || !revision.body.entity) {
@@ -87,6 +79,7 @@ module.exports = React.createClass({
 		if (this.props.work) {
 			aliases = this.props.work.aliases.map(function(alias) {
 				return {
+					id: alias.id,
 					name: alias.name,
 					sortName: alias.sort_name,
 					language: null
@@ -119,7 +112,7 @@ module.exports = React.createClass({
 
 				<form onChange={this.handleChange}>
 					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
-					<WorkData languages={this.props.languages} ref='data' workTypes={this.props.workTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
+					<WorkData work={this.props.work} languages={this.props.languages} ref='data' workTypes={this.props.workTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
 					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab == 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
 				</form>
 			</div>

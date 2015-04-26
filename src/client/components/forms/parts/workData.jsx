@@ -17,6 +17,15 @@ var WorkData = React.createClass({
 		return true;
 	},
 	render: function() {
+		if(this.props.work) {
+			var initialLanguages = this.props.work.languages.map(function(language) {
+				return language.language_id;
+			});
+			var initialWorkType = this.props.work.work_type ? this.props.work.work_type.work_type_id : null;
+			var initialDisambiguation = this.props.work.disambiguation ? this.props.work.disambiguation.comment : null;
+			var initialAnnotation = this.props.work.annotation ? this.props.work.annotation.content : null;
+		}
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -27,6 +36,7 @@ var WorkData = React.createClass({
 						label='Languages'
 						labelAttribute='name'
 						idAttribute='id'
+						defaultValue={initialLanguages}
 						ref='languages'
 						placeholder='Select work languages…'
 						noDefault
@@ -38,6 +48,7 @@ var WorkData = React.createClass({
 						label='Type'
 						labelAttribute='label'
 						idAttribute='id'
+						defaultValue={initialWorkType}
 						ref='workType'
 						placeholder='Select work type…'
 						noDefault
@@ -49,12 +60,14 @@ var WorkData = React.createClass({
 						type='text'
 						label='Disambiguation'
 						ref='disambiguation'
+						defaultValue={initialDisambiguation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6' />
 					<Input
 						type='textarea'
 						label='Annotation'
 						ref='annotation'
+						defaultValue={initialAnnotation}
 						labelClassName='col-md-3'
 						wrapperClassName='col-md-6'
 						rows='6' />
