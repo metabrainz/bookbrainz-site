@@ -26,9 +26,6 @@ app.locals.basedir = app.get('views');
 
 require('node-jsx').install({extension: '.jsx'});
 
-// webservice
-app.set('webservice', config.site.webservice);
-
 app.set('trust proxy', config.site.proxyTrust);
 
 app.use(favicon(path.join(__dirname, 'static/images/favicon.ico')));

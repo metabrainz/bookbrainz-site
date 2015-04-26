@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var config = require('../helpers/config');
 var auth = require('../helpers/auth');
 
 var bbws = require('../helpers/bbws');
@@ -41,7 +42,7 @@ router.get('/sent', auth.isAuthenticated, function(req, res) {
 });
 
 router.get('/:id', auth.isAuthenticated, function(req, res) {
-	var ws = req.app.get('webservice');
+	var ws = config.site.webservice;
 	request.get(ws + '/message/' + req.params.id)
 		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
 		.then(function(messageResponse) {
@@ -56,7 +57,7 @@ router.get('/:id', auth.isAuthenticated, function(req, res) {
 
 router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 	// This function should post a new message to the /message/send endpoint of the ws.
-	var ws = req.app.get('webservice');
+	var ws = config.site.webservice;
 
 	// Parse recipient ids
 	var recipientIds = req.body.recipients.split(',').map(function(substr) {
