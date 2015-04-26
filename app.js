@@ -1,6 +1,5 @@
 var path = require('path');
 
-// require dependencies
 var express = require('express');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -16,10 +15,10 @@ var auth = require('./src/server/helpers/auth');
 var config = require('./src/server/helpers/config');
 var bbws = require('./src/server/helpers/bbws');
 
-// initialize application
+// Initialize application
 var app = express();
 
-// view engine setup
+// Set up jade as view engine
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
@@ -88,20 +87,19 @@ app.use(function(req, res, next) {
 	}
 });
 
-// set up routes
+// Set up routes
 require('./src/server/routes')(app);
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	var err = new Error('Not Found');
 	err.status = 404;
 	next(err);
 });
 
-// error handlers
+// Error handlers
 
-// development error handler
-// will print stacktrace
+/* Development error handler; displays stacktrace to user */
 if (app.get('env') === 'development') {
 	app.use(function(err, req, res, next) {
 		console.log('Internal Error. Message: ' + err.message + ' Stacktrace...');
@@ -116,8 +114,7 @@ if (app.get('env') === 'development') {
 	});
 }
 
-// production error handler
-// no stacktraces leaked to user
+/* Production error handler; stacktrace is omitted */
 app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
 

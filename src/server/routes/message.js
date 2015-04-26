@@ -76,5 +76,4 @@ router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 		});
 });
 
-
 module.exports = router;

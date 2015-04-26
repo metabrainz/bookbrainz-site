@@ -1,7 +1,6 @@
 var Handlebars = require('handlebars');
 var utils = require('./utils');
 
-
 function renderRelationship(entities, relationship, language) {
 	var template = Handlebars.compile(relationship.template);
 

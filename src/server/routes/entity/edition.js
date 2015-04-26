@@ -136,7 +136,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var edition = res.locals.entity;
 
 	var changes = {
-		bbid: edition.bbid,
+		bbid: edition.bbid
 	};
 
 	var editionStatusId = req.body.editionStatusId;
@@ -148,11 +148,10 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	var languageId = req.body.languageId;
-	if ((!edition.language) ||
-	    (edition.language.language_id !== languageId)) {
-				changes.language = {
-					language_id: languageId
-				};
+	if ((!edition.language) || (edition.language.language_id !== languageId)) {
+		changes.language = {
+			language_id: languageId
+		};
 	}
 
 	var beginDate = req.body.beginDate;
@@ -188,10 +187,11 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var currentAliases = edition.aliases.map(function(alias) {
 		var nextAlias = req.body.aliases[0];
 
-		if(alias.id != nextAlias.id) {
+		if (alias.id != nextAlias.id) {
 			// Remove the alias
 			return [alias.id, null];
-		} else {
+		}
+		else {
 			// Modify the alias
 			req.body.aliases.shift();
 			return [nextAlias.id, {
@@ -206,31 +206,31 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var newAliases = req.body.aliases.map(function(alias) {
 		// At this point, the only aliases should have null IDs, but check anyway.
-		if(alias.id) {
+		if (alias.id) {
 			return null;
-		} else {
+		}
+		else {
 			return [null, {
 				name: alias.name,
 				sort_name: alias.sort_name,
 				language_id: alias.languageId,
 				primary: false,
-				default: false,
-			}]
+				default: false
+			}];
 		}
 	});
 
 	changes.aliases = currentAliases.concat(newAliases);
-	if(changes.aliases.length !== 0 && changes.aliases[0][1]) {
+	if (changes.aliases.length !== 0 && changes.aliases[0][1]) {
 		changes.aliases[0][1].default = true;
 	}
 
 	Edition.update(edition.bbid, changes, {
-			session: req.session
-		})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		session: req.session
+	})
+	.then(function(revision) {
+		res.send(revision);
+	});
 });
-
 
 module.exports = router;

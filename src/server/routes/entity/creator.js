@@ -148,9 +148,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	var genderId = req.body.genderId;
-	if ((!creator.gender) ||
-	    (creator.gender.gender_id !== genderId)) {
-
+	if ((!creator.gender) || (creator.gender.gender_id !== genderId)) {
 		changes.gender = genderId;
 	}
 
@@ -232,11 +230,11 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	Creator.update(creator.bbid, changes, {
-			session: req.session
-		})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		session: req.session
+	})
+	.then(function(revision) {
+		res.send(revision);
+	});
 });
 
 module.exports = router;

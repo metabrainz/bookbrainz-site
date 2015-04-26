@@ -131,7 +131,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var publisher = res.locals.entity;
 
 	var changes = {
-		bbid: publisher.bbid,
+		bbid: publisher.bbid
 	};
 
 	var publisherTypeId = req.body.publisherTypeId;
@@ -175,10 +175,11 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var currentAliases = publisher.aliases.map(function(alias) {
 		var nextAlias = req.body.aliases[0];
 
-		if(alias.id != nextAlias.id) {
+		if (alias.id != nextAlias.id) {
 			// Remove the alias
 			return [alias.id, null];
-		} else {
+		}
+		else {
 			// Modify the alias
 			req.body.aliases.shift();
 			return [nextAlias.id, {
@@ -193,31 +194,31 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var newAliases = req.body.aliases.map(function(alias) {
 		// At this point, the only aliases should have null IDs, but check anyway.
-		if(alias.id) {
+		if (alias.id) {
 			return null;
-		} else {
+		}
+		else {
 			return [null, {
 				name: alias.name,
 				sort_name: alias.sort_name,
 				language_id: alias.languageId,
 				primary: false,
-				default: false,
-			}]
+				default: false
+			}];
 		}
 	});
 
 	changes.aliases = currentAliases.concat(newAliases);
-	if(changes.aliases.length !== 0 && changes.aliases[0][1]) {
+	if (changes.aliases.length !== 0 && changes.aliases[0][1]) {
 		changes.aliases[0][1].default = true;
 	}
 
 	Publisher.update(publisher.bbid, changes, {
-			session: req.session
-		})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		session: req.session
+	})
+	.then(function(revision) {
+		res.send(revision);
+	});
 });
-
 
 module.exports = router;

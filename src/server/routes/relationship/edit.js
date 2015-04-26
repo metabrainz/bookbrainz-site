@@ -14,7 +14,7 @@ relationshipHelper.addEditRoutes = function(router) {
 		var relationshipTypesPromise = RelationshipType.find();
 		var entityPromise = Entity.findOne(req.params.bbid, {
 				populate: [
-					'aliases',
+					'aliases'
 				]
 			});
 

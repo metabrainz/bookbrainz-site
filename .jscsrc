@@ -1,7 +1,7 @@
 {
     "requireCurlyBraces": ["while", "do", "try", "catch"],
     "requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch"],
-    "requireSpacesInFunctionExpression": {
+    "requireSpacesInFunction": {
         "beforeOpeningCurlyBrace": true
     },
     "disallowPaddingNewlinesInBlocks": true,
@@ -13,20 +13,38 @@
     "requireLineFeedAtFileEnd": true,
     "validateLineBreaks": "LF",
     "validateIndentation": "\t",
+    "validateParameterSeparator": ", ",
+    "validateQuoteMarks": "'",
 
+    "disallowMultipleLineBreaks": true,
+    "disallowMultipleLineStrings": true,
+    "disallowMultipleSpaces": true,
     "disallowSpaceAfterObjectKeys": true,
+    "disallowSpaceAfterPrefixUnaryOperators": true,
+    "disallowSpaceBeforeBinaryOperators": [","],
+    "disallowSpaceBeforePostfixUnaryOperators": true,
+    "disallowSpacesInCallExpression": true,
+    "disallowSpacesInFunction": {
+        "beforeOpeningRoundBrace": true
+    },
+    "disallowTrailingComma": true,
+    "disallowTrailingWhitespace": true,
     "disallowEmptyBlocks": true,
     "disallowMixedSpacesAndTabs": "smart",
     "disallowQuotedKeysInObjects": true,
     "disallowMultipleVarDecl": "exceptUndefined",
     "disallowNewlineBeforeBlockStatements": true,
 
-    "requireSpaceAfterPrefixUnaryOperators": ["++", "--"],
+    "requireBlocksOnNewline": true,
+    "requireCapitalizedComments": true,
+    "requireCommaBeforeLineBreak": true,
+    "requireKeywordsOnNewLine": ["else"],
+    "requirePaddingNewLinesAfterBlocks": true,
+    "requireSemicolons": true,
     "requireSpaceBetweenArguments": true,
-    "requireSpaceBeforePostfixUnaryOperators": ["++", "--"],
     "requireSpaceBeforeBinaryOperators": [ "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=" ],
     "requireSpaceAfterBinaryOperators": [ "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=" ],
-    "disallowSpaceBeforeBinaryOperators": [","],
+    "requireSpaceAfterLineComment": true,
     "requireSpacesInConditionalExpression": {
         "afterTest": true,
         "beforeConsequent": true,

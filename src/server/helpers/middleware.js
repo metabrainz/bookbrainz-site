@@ -13,7 +13,7 @@ var renderRelationship = require('../helpers/render');
 
 var NotFoundError = require('../helpers/error').NotFoundError;
 
-var makeLoader = function (model, propName, sortFunc) {
+var makeLoader = function(model, propName, sortFunc) {
 	return function(req, res, next) {
 		model.find()
 			.then(function(results) {
@@ -83,7 +83,7 @@ middleware.makeEntityLoader = function(model, errMessage) {
 						'annotation',
 						'disambiguation',
 						'relationships',
-						'aliases',
+						'aliases'
 					]
 				})
 				.then(function(entity) {
