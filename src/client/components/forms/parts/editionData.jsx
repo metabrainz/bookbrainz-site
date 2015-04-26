@@ -6,7 +6,6 @@ var Button = require('react-bootstrap').Button;
 
 
 var EditionData = React.createClass({
-<<<<<<< Updated upstream
 	getValue: function() {
 		return {
 			beginDate: this.refs.begin.getValue(),
