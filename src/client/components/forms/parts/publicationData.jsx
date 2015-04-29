@@ -16,7 +16,7 @@ var PublicationData = React.createClass({
 		return true;
 	},
 	render: function() {
-		if(this.props.publication) {
+		if (this.props.publication) {
 			var initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
 			var initialDisambiguation = this.props.publication.disambiguation ? this.props.publication.disambiguation.comment : null;
 			var initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;

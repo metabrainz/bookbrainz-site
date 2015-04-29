@@ -30,7 +30,7 @@ var PublisherData = React.createClass({
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
 	render: function() {
-		if(this.props.publisher) {
+		if (this.props.publisher) {
 			var initialBeginDate = this.props.publisher.begin_date;
 			var initialEndDate = this.props.publisher.end_date;
 			var initialPublisherType = this.props.publisher.publisher_type ? this.props.publisher.publisher_type.publisher_type_id : null;

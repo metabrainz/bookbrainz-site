@@ -17,7 +17,7 @@ var WorkData = React.createClass({
 		return true;
 	},
 	render: function() {
-		if(this.props.work) {
+		if (this.props.work) {
 			var initialLanguages = this.props.work.languages.map(function(language) {
 				return language.language_id;
 			});

@@ -31,7 +31,7 @@ var EditionData = React.createClass({
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
 	render: function() {
-		if(this.props.edition) {
+		if (this.props.edition) {
 			var initialBeginDate = this.props.edition.begin_date;
 			var initialEndDate = this.props.edition.end_date;
 			var initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
