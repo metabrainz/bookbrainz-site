@@ -26,6 +26,10 @@ var WorkData = React.createClass({
 			var initialAnnotation = this.props.work.annotation ? this.props.work.annotation.content : null;
 		}
 
+		var select2Options = {
+			width: '100%'
+		};
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -42,6 +46,7 @@ var WorkData = React.createClass({
 						noDefault
 						options={this.props.languages}
 						multiple
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<Select
@@ -53,6 +58,7 @@ var WorkData = React.createClass({
 						placeholder='Select work type…'
 						noDefault
 						options={this.props.workTypes}
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>

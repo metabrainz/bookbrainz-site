@@ -38,6 +38,10 @@ var PublisherData = React.createClass({
 			var initialAnnotation = this.props.publisher.annotation ? this.props.publisher.annotation.content : null;
 		}
 
+		var select2Options = {
+			width: '100%'
+		};
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -75,6 +79,7 @@ var PublisherData = React.createClass({
 						placeholder='Select publisher type…'
 						noDefault
 						options={this.props.publisherTypes}
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>

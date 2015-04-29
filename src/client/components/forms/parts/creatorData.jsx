@@ -40,6 +40,10 @@ var CreatorData = React.createClass({
 			var initialAnnotation = this.props.creator.annotation ? this.props.creator.annotation.content : null;
 		}
 
+		var select2Options = {
+			width: '100%'
+		};
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -77,6 +81,7 @@ var CreatorData = React.createClass({
 						placeholder='Select gender…'
 						noDefault
 						options={this.props.genders}
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<Select
@@ -88,6 +93,7 @@ var CreatorData = React.createClass({
 						placeholder='Select creator type…'
 						noDefault
 						options={this.props.creatorTypes}
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>

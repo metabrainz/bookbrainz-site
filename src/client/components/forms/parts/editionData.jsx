@@ -40,6 +40,10 @@ var EditionData = React.createClass({
 			var initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
 		}
 
+		var select2Options = {
+			width: '100%'
+		};
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -77,6 +81,7 @@ var EditionData = React.createClass({
 						placeholder='Select edition language…'
 						noDefault
 						options={this.props.languages}
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<Select
@@ -88,6 +93,7 @@ var EditionData = React.createClass({
 						placeholder='Select edition status…'
 						noDefault
 						options={this.props.editionStatuses}
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>

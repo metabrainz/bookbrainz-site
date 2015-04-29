@@ -22,6 +22,10 @@ var PublicationData = React.createClass({
 			var initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;
 		}
 
+		var select2Options = {
+			width: '100%'
+		};
+
 		return (
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Data</h2>
@@ -37,6 +41,7 @@ var PublicationData = React.createClass({
 						placeholder='Select publication type…'
 						noDefault
 						options={this.props.publicationTypes}
+						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>
