@@ -216,9 +216,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	Publisher.update(publisher.bbid, changes, {
 		session: req.session
 	})
-	.then(function(revision) {
-		res.send(revision);
-	});
+		.then(function(revision) {
+			res.send(revision);
+		});
 });
 
 module.exports = router;

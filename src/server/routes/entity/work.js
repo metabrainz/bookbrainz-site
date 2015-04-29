@@ -218,9 +218,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	Work.update(work.bbid, changes, {
 		session: req.session
 	})
-	.then(function(revision) {
-		res.send(revision);
-	});
+		.then(function(revision) {
+			res.send(revision);
+		});
 });
 
 module.exports = router;
