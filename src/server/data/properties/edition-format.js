@@ -1,6 +1,6 @@
 var Model = require('../../helpers/model');
 
-var EditionStatus = new Model('EditionFormat', {
+var EditionFormat = new Model('EditionFormat', {
 	endpoint: 'editionFormat'
 });
 
