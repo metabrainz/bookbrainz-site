@@ -1,7 +1,7 @@
 var Model = require('../../helpers/model');
 var Entity = require('../../data/entity');
-var Language = require('../../data/properties/language');
-var WorkType = require('../../data/properties/work-type');
+require('../../data/properties/language');
+require('../../data/properties/work-type');
 
 var Work = new Model('Work', {
 	base: Entity,

@@ -1,8 +1,10 @@
 var Model = require('../../helpers/model');
 var Entity = require('../../data/entity');
-var Language = require('../../data/properties/language');
-var EditionFormat = require('../../data/properties/edition-format');
-var EditionStatus = require('../../data/properties/edition-status');
+require('../../data/properties/language');
+require('../../data/properties/edition-format');
+require('../../data/properties/edition-status');
+require('../../data/entities/publication');
+require('../../data/entities/publisher');
 
 var Edition = new Model('Edition', {
 	base: Entity,
