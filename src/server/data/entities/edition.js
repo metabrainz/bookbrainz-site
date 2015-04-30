@@ -1,6 +1,7 @@
 var Model = require('../../helpers/model');
 var Entity = require('../../data/entity');
 var Language = require('../../data/properties/language');
+var EditionFormat = require('../../data/properties/edition-format');
 var EditionStatus = require('../../data/properties/edition-status');
 
 var Edition = new Model('Edition', {
@@ -15,6 +16,10 @@ Edition.extend({
 	},
 	creator_credit: {
 		type: 'object'
+	},
+	edition_format: {
+		type: 'object',
+		model: 'EditionFormat'
 	},
 	edition_status: {
 		type: 'object',
