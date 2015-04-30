@@ -11,6 +11,11 @@ Publication.extend({
 	publication_type: {
 		type: 'object',
 		model: 'PublicationType'
+	},
+	editions: {
+		type: 'ref',
+		model: 'Edition',
+		many: true
 	}
 });
 
