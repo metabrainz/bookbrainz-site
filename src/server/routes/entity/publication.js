@@ -112,16 +112,18 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	if (req.body.annotation)
 		changes.annotation = req.body.annotation;
 
-	if (req.body.aliases.length) {
-		var default_alias = req.body.aliases[0];
+	var newAliases = req.body.aliases.map(function(alias) {
+		return {
+			name: alias.name,
+			sort_name: alias.sortName,
+			language_id: alias.languageId,
+			primary: alias.primary,
+			default: alias.dflt
+		};
+	});
 
-		changes.aliases = [{
-			name: default_alias.name,
-			sort_name: default_alias.sortName,
-			language_id: default_alias.languageId,
-			primary: default_alias.primary,
-			default: true
-		}];
+	if (newAliases.length) {
+		changes.aliases = newAliases;
 	}
 
 	Publication.create(changes, {
@@ -195,16 +197,13 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 				name: alias.name,
 				sort_name: alias.sort_name,
 				language_id: alias.languageId,
-				primary: false,
-				default: false
-			}];
+				primary: alias.primary,
+				default: alias.default
+			}]
 		}
 	});
 
 	changes.aliases = currentAliases.concat(newAliases);
-	if (changes.aliases.length !== 0 && changes.aliases[0][1]) {
-		changes.aliases[0][1].default = true;
-	}
 
 	Publication.update(publication.bbid, changes, {
 		session: req.session

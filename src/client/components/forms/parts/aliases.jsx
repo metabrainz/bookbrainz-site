@@ -9,7 +9,9 @@ var AliasRow = React.createClass({
 		return {
 			name: this.refs.name.getValue(),
 			sortName: this.refs.sortName.getValue(),
-			language: this.refs.language.getValue()
+			language: this.refs.language.getValue(),
+			primary: this.refs.primary.getChecked(),
+			default: this.refs.default.getChecked()
 		};
 	},
 	validationState: function() {
@@ -29,33 +31,40 @@ var AliasRow = React.createClass({
 	},
 	render: function() {
 		return (
-			<div className='row margin-top-1'>
-				<div className='col-md-11 text-center' onChange={this.props.onChange}>
+			<div className='row' onChange={this.props.onChange}>
+				<div className='col-md-3'>
 					<Input
 						type='text'
 						defaultValue={this.props.name}
-						label='Name'
 						bsStyle={this.validationState()}
-						ref='name'
-						labelClassName='margin-left-1 margin-right-1' /> &nbsp;
+						wrapperClassName='col-md-11'
+						ref='name' /> &nbsp;
+				</div>
+				<div className='col-md-3'>
 					<Input
 						type='text'
 						defaultValue={this.props.sortName}
-						label='Sort Name'
 						bsStyle={this.validationState()}
-						ref='sortName'
-						labelClassName='margin-left-1 margin-right-1' /> &nbsp;
+						wrapperClassName='col-md-11'
+						ref='sortName' /> &nbsp;
+				</div>
+				<div className='col-md-3'>
 					<Select
-						label='Language'
 						labelAttribute='name'
 						idAttribute='id'
 						ref='language'
 						defaultValue={this.props.language}
 						bsStyle={this.validationState()}
-						labelClassName='margin-left-1 margin-right-1'
+						wrapperClassName='col-md-11'
 						placeholder='Select alias language…'
 						noDefault
 						options={this.props.languages} />
+				</div>
+				<div className='col-md-1'>
+					<Input type='checkbox' ref='primary' defaultChecked={this.props.primary} wrapperClassName='col-md-11' label=' '/>
+				</div>
+				<div className='col-md-1'>
+					<Input type='radio' ref='default' defaultChecked={this.props.default} wrapperClassName='col-md-11' label=' ' name='default' />
 				</div>
 				<div className='col-md-1 text-right'>
 					<Button bsStyle='danger' className={this.props.removeHidden ? 'hidden' : ''} onClick={this.props.onRemove}>
@@ -73,7 +82,9 @@ var AliasList = React.createClass({
 		existing.push({
 			name: '',
 			sortName: '',
-			language: null
+			language: null,
+			primary: true,
+			default: false
 		});
 
 		existing.forEach(function(alias, i) {
@@ -92,8 +103,8 @@ var AliasList = React.createClass({
 				name: alias.name,
 				sortName: alias.sortName,
 				languageId: parseInt(alias.language),
-				dflt: false,
-				primary: true
+				dflt: alias.default,
+				primary: alias.primary
 			};
 
 			if (alias.id) {
@@ -111,6 +122,8 @@ var AliasList = React.createClass({
 			name: updatedAlias.name,
 			sortName: updatedAlias.sortName,
 			language: updatedAlias.language,
+			primary: updatedAlias.primary,
+			default: updatedAlias.default,
 			key: updatedAliases[index].key,
 			valid: this.refs[index].getValid()
 		};
@@ -125,6 +138,8 @@ var AliasList = React.createClass({
 				name: '',
 				sortName: '',
 				language: null,
+				primary: true,
+				default: false,
 				key: rowsSpawned,
 				valid: true
 			});
@@ -138,9 +153,15 @@ var AliasList = React.createClass({
 		});
 	},
 	valid: function() {
-		return this.state.aliases.every(function(alias) {
+		var defaultSet = false;
+		var allValid = this.state.aliases.every(function(alias) {
+			if(!defaultSet) {
+				defaultSet = alias.default;
+			}
 			return alias.valid;
 		});
+
+		return (defaultSet && allValid) || (this.state.aliases.length == 1);
 	},
 	handleRemove: function(index) {
 		var updatedAliases = this.state.aliases.slice();
@@ -164,6 +185,8 @@ var AliasList = React.createClass({
 					name={alias.name}
 					sortName={alias.sortName}
 					language={alias.language}
+					primary={alias.primary}
+					default={alias.default}
 					languages={self.props.languages}
 					onChange={self.handleChange.bind(null, index)}
 					onRemove={self.handleRemove.bind(null, index)}
@@ -175,7 +198,14 @@ var AliasList = React.createClass({
 			<div className={(this.props.visible === false) ? 'hidden': '' }>
 				<h2>Add Aliases</h2>
 				<p className='lead'>Add some aliases to the entity.</p>
-				<div className='form-inline'>
+				<div className='form-horizontal'>
+					<div className='row margin-top-1'>
+						<label className='col-md-3'>Name</label>
+						<label className='col-md-3'>Sort Name</label>
+						<label className='col-md-3'>Language</label>
+						<label className='col-md-1'>Primary</label>
+						<label className='col-md-1'>Default</label>
+					</div>
 					{rows}
 				</div>
 				<div className='margin-top-1 row'>
