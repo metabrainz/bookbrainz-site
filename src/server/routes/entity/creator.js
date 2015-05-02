@@ -1,6 +1,7 @@
 var express = require('express');
 var auth = require('../../helpers/auth');
 var Creator = require('../../data/entities/creator');
+var User = require('../../data/user');
 
 /* Middleware loader functions. */
 var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -14,6 +15,9 @@ var React = require('react');
 var router = express.Router();
 var EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
 
+var bbws = require('../../helpers/bbws');
+var Promise = require('bluebird');
+
 /* If the route specifies a BBID, load the Creator for it. */
 router.param('bbid', makeEntityLoader(Creator, 'Creator not found'));
 
@@ -26,6 +30,33 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 
 	res.render('entity/view/creator', {
 		title: title
+	});
+});
+
+router.get('/:bbid/revisions', function(req, res, next) {
+	var creator = res.locals.entity;
+	var title = 'Creator';
+
+	if (creator.default_alias && creator.default_alias.name)
+		title = 'Creator “' + creator.default_alias.name + '”';
+
+	bbws.get('/creator/' + creator.bbid + '/revisions')
+	.then(function(revisions) {
+
+		var users = {};
+		revisions.objects.forEach(function(revision) {
+			if(!users[revision.user.user_id]) {
+				users[revision.user.user_id] = User.findOne(revision.user.user_id);
+			}
+		})
+
+		Promise.props(users).then(function(users) {
+			res.render('entity/revisions', {
+				title: title,
+				revisions: revisions,
+				users: users
+			});
+		})
 	});
 });
 

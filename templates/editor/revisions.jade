@@ -1,0 +1,25 @@
+extends ../layout
+
+block body
+	.row
+		.col-md-12
+			h1=editor.name
+	.row
+		.col-md-12
+			ul.nav.nav-tabs
+				li: a(href='../'+editor.id) Profile
+				li.active: a(href='./'+editor.id+'/revisions') Revisions
+
+	h2 Revision History
+
+	.list-group
+		each revision in revisions.objects
+			a.list-group-item(href='/revision/'+revision.revision_id)
+				h4.list-group-item-heading
+					- var createdDate = new Date(revision.created_at)
+					if (Date.now() - createdDate) < 86400000
+						small.pull-right=editor.name + " - " + createdDate.toLocaleTimeString()
+					else
+						small.pull-right=editor.name + " - " + createdDate.toLocaleDateString()
+					="r"+revision.revision_id
+				p.list-group-item-text=revision.note

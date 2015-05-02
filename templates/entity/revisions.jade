@@ -1,0 +1,25 @@
+extends /layout
+
+block body
+	.row
+		.col-md-12
+			h1
+				if entity.default_alias
+					=entity.default_alias.name
+					|&nbsp;
+				if entity.disambiguation
+					small='('+entity.disambiguation.comment+')'
+			hr
+	h2 Revision History
+
+	.list-group
+		each revision in revisions.objects
+			a.list-group-item(href='/revision/'+revision.revision_id)
+				h4.list-group-item-heading
+					- var createdDate = new Date(revision.created_at)
+					if (Date.now() - createdDate) < 86400000
+						small.pull-right=users[revision.user.user_id].name + ", " + createdDate.toLocaleTimeString()
+					else
+						small.pull-right=users[revision.user.user_id].name + ", " + createdDate.toLocaleDateString()
+					="r"+revision.revision_id
+				p.list-group-item-text=revision.note

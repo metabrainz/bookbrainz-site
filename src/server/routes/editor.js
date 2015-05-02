@@ -4,6 +4,7 @@ var React = require('react');
 var User = require('../data/user');
 var bbws = require('../helpers/bbws');
 var auth = require('../helpers/auth');
+var Promise = require('bluebird');
 
 var NotFoundError = require('../helpers/error').NotFoundError;
 var ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
@@ -70,5 +71,23 @@ router.get('/:id', function(req, res, next) {
 			next(new NotFoundError('Editor not found'));
 		});
 });
+
+router.get('/:id/revisions', function(req, res, next) {
+	var userPromise = User.findOne(req.params.id);
+	var revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
+
+	Promise.join(userPromise, revisionsPromise,
+		function(editor, revisions) {
+			res.render('editor/revisions', {
+				editor: editor,
+				revisions: revisions
+			});
+		})
+		.catch(function(err) {
+			console.log(err.stack);
+			next(new NotFoundError('Editor not found'));
+		});
+});
+
 
 module.exports = router;

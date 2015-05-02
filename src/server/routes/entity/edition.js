@@ -28,6 +28,33 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	});
 });
 
+router.get('/:bbid/revisions', function(req, res, next) {
+	var edition = res.locals.entity;
+	var title = 'Edition';
+
+	if (edition.default_alias && edition.default_alias.name)
+		title = 'Edition “' + edition.default_alias.name + '”';
+
+	bbws.get('/edition/' + edition.bbid + '/revisions')
+	.then(function(revisions) {
+
+		var users = {};
+		revisions.objects.forEach(function(revision) {
+			if(!users[revision.user.user_id]) {
+				users[revision.user.user_id] = User.findOne(revision.user.user_id);
+			}
+		})
+
+		Promise.props(users).then(function(users) {
+			res.render('entity/revisions', {
+				title: title,
+				revisions: revisions,
+				users: users
+			});
+		})
+	});
+});
+
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadEditionStatuses, loadLanguages, function(req, res) {
