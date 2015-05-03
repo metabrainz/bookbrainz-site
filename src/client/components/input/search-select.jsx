@@ -9,9 +9,8 @@ var SearchSelect = React.createClass({
 	},
 	render: function() {
 		var self = this;
-		var select2Options = _.clone(this.props.select2Options) || {};
 
-		_.extend(select2Options, {
+		var select2Options = {
 			ajax: {
 				url: '/search',
 				minimumInputLength: 1,
@@ -57,7 +56,9 @@ var SearchSelect = React.createClass({
 
 				return $.parseHTML(template);
 			}
-		});
+		};
+
+		_.extend(select2Options, this.props.select2Options);
 
 		return (
 			<Select
