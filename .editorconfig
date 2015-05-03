@@ -3,21 +3,12 @@ root = true
 # Unix-style newlines with a newline ending every file
 # Somewhat redundant as git already handles this
 [*]
+charset = utf-8
 end_of_line = lf
+indent_size = 4
+indent_style = tab
 insert_final_newline = true
 
-# Tab indentation
-[*.{css,js,json,jsx,jade}]
-charset = utf-8
-indent_style = tab
-
-# Configs
-[{.jscsrc,.jshintrc}]
-charset = utf-8
-indent_style = tab
-
 # The YAML spec explicitly forbids tabs
-[*.yml}]
-charset = utf-8
+[*.yml]
 indent_style = space
-indent_size = 4
