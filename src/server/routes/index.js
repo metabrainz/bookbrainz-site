@@ -81,17 +81,15 @@ router.get('/search', function(req, res) {
 		params.collection = req.query.collection;
 	}
 
-	var resultsPromise = bbws.get('/search', {
+	bbws.get('/search', {
 		params: params
-	});
-
-	var entitiesPromise = resultsPromise
+	})
 		.then(function(results) {
 			if (!results.hits) {
 				return null;
 			}
 
-			var hits = results.hits.map(function(hit) {
+			return Promise.map(results.hits, function(hit) {
 				var entity_stub = hit._source;
 				var model;
 
@@ -118,27 +116,23 @@ router.get('/search', function(req, res) {
 						populate: [ 'disambiguation' ]
 					});
 				}
+				else {
+					return null;
+				}
 			});
-
-			return Promise.all(hits);
+		})
+		.then(function(entities) {
+			if (mode === 'search') {
+				res.render('search', {
+					title: 'Search Results',
+					query: query,
+					results: entities
+				});
+			}
+			else if (mode === 'auto') {
+				res.json(entities);
+			}
 		});
-
-	Promise.join(resultsPromise, entitiesPromise, function(results, entities) {
-		entities.forEach(function(entity, i) {
-			entity.type = results.hits[i]._source._type;
-		});
-
-		if (mode === 'search') {
-			res.render('search', {
-				title: 'Search Results',
-				query: query,
-				results: entities
-			});
-		}
-		else if (mode === 'auto') {
-			res.json(entities);
-		}
-	});
 });
 
 module.exports = router;
