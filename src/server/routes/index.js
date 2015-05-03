@@ -132,6 +132,22 @@ router.get('/search', function(req, res) {
 			else if (mode === 'auto') {
 				res.json(entities);
 			}
+		})
+		.catch(function(err) {
+			var message = 'An error occurred while obtaining search results';
+
+			if (mode === 'search') {
+				res.render('search', {
+					title: 'Search Results',
+					error: message,
+					results: []
+				});
+			}
+			else if (mode === 'auto') {
+				res.json({
+					error: message
+				});
+			}
 		});
 });
 

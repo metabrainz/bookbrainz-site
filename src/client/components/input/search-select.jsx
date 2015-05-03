@@ -29,6 +29,15 @@ var SearchSelect = React.createClass({
 						results: []
 					};
 
+					if (results.error) {
+						data.results.push({
+							id: null,
+							text: results.error
+						});
+
+						return data;
+					}
+
 					results.forEach(function(result) {
 						data.results.push({
 							id: result.bbid,
