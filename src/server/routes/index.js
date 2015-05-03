@@ -87,7 +87,12 @@ router.get('/search', function(req, res) {
 
 	var entitiesPromise = resultsPromise
 		.then(function(results) {
-			var entities = results.objects.map(function(entity_stub) {
+			if (!results.hits) {
+				return null;
+			}
+
+			var hits = results.hits.map(function(hit) {
+				var entity_stub = hit._source;
 				var model;
 
 				switch (entity_stub._type) {
@@ -115,12 +120,12 @@ router.get('/search', function(req, res) {
 				}
 			});
 
-			return Promise.all(entities);
+			return Promise.all(hits);
 		});
 
 	Promise.join(resultsPromise, entitiesPromise, function(results, entities) {
 		entities.forEach(function(entity, i) {
-			entity.type = results.objects[i]._type;
+			entity.type = results.hits[i]._source._type;
 		});
 
 		if (mode === 'search') {
