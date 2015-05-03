@@ -45,6 +45,9 @@ Entity.extend({
 	},
 	last_updated: {
 		type: 'date'
+	},
+	_type: {
+		type: 'string'
 	}
 });
 
