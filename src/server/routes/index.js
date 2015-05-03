@@ -70,7 +70,20 @@ router.get('/licensing', function(req, res) {
 
 router.get('/search', function(req, res) {
 	var query = req.query.q;
-	var resultsPromise = bbws.get('/search?q=' + query);
+	var mode = req.query.mode || 'search';
+
+	var params = {
+		q: query,
+		mode: mode
+	};
+
+	if (req.query.collection) {
+		params.collection = req.query.collection;
+	}
+
+	var resultsPromise = bbws.get('/search', {
+		params: params
+	});
 
 	var entitiesPromise = resultsPromise
 		.then(function(results) {
@@ -96,7 +109,9 @@ router.get('/search', function(req, res) {
 				}
 
 				if (model) {
-					return model.findOne(entity_stub.entity_gid);
+					return model.findOne(entity_stub.entity_gid, {
+						populate: [ 'disambiguation' ]
+					});
 				}
 			});
 
@@ -108,12 +123,16 @@ router.get('/search', function(req, res) {
 			entity.type = results.objects[i]._type;
 		});
 
-		console.log(results);
-		res.render('search', {
-			title: 'Search Results',
-			query: query,
-			results: entities
-		});
+		if (mode === 'search') {
+			res.render('search', {
+				title: 'Search Results',
+				query: query,
+				results: entities
+			});
+		}
+		else if (mode === 'auto') {
+			res.json(entities);
+		}
 	});
 });
 
