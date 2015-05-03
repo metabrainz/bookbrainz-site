@@ -11,9 +11,9 @@ var SearchSelect = React.createClass({
 		var self = this;
 
 		var select2Options = {
+			minimumInputLength: 1,
 			ajax: {
 				url: '/search',
-				minimumInputLength: 1,
 				data: function(params) {
 					var queryParams = {
 						q: params.term,
