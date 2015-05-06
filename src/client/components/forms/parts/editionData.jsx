@@ -10,9 +10,7 @@ var Identifiers = require('./identifiers.jsx');
 var EditionData = React.createClass({
 	getValue: function() {
 		return {
-			beginDate: this.refs.begin.getValue(),
-			endDate: this.refs.end.getValue(),
-			ended: this.refs.ended.getValue(),
+			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionStatus: this.refs.editionStatus.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
@@ -20,23 +18,12 @@ var EditionData = React.createClass({
 			identifiers: this.refs.identifiers.getValue()
 		};
 	},
-	getInitialState: function() {
-		return {
-			ended: this.props.edition ? this.props.edition.ended : false
-		};
-	},
 	valid: function() {
-		return (
-			this.refs.begin.valid() && (!this.refs.ended.getValue() || this.refs.end.valid())
-		);
-	},
-	handleEnded: function() {
-		this.setState({ended: this.refs.ended.getChecked()});
+		return this.refs.release.valid();
 	},
 	render: function() {
 		if (this.props.edition) {
-			var initialBeginDate = this.props.edition.begin_date;
-			var initialEndDate = this.props.edition.end_date;
+			var initialReleaseDate = this.props.edition.release_date;
 			var initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
 			var initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
 			var initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
@@ -69,27 +56,12 @@ var EditionData = React.createClass({
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<PartialDate
-						label='Begin Date'
-						ref='begin'
-						defaultValue={initialBeginDate}
+						label='Release Date'
+						ref='release'
+						defaultValue={initialReleaseDate}
 						placeholder='YYYY-MM-DD'
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
-					<PartialDate
-						label='End Date'
-						ref='end'
-						defaultValue={initialEndDate}
-						groupClassName={this.state.ended ? '' : 'hidden'}
-						placeholder='YYYY-MM-DD'
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
-					<Input
-						type='checkbox'
-						ref='ended'
-						defaultValue={this.state.ended}
-						label='Ended'
-						onChange={this.handleEnded}
-						wrapperClassName='col-md-offset-4 col-md-4' />
 					<Select
 						label='Language'
 						labelAttribute='name'

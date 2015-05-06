@@ -44,9 +44,7 @@ module.exports = React.createClass({
 		var revisionNote = this.refs.revision.refs.note.getValue();
 		var data = {
 			aliases: aliasData,
-			beginDate: editionData.beginDate,
-			endDate: editionData.endDate,
-			ended: (editionData.ended === 'on' ? true : false),
+			releaseDate: editionData.releaseDate,
 			languageId: parseInt(editionData.language),
 			editionStatusId: parseInt(editionData.editionStatus),
 			disambiguation: editionData.disambiguation,
@@ -115,7 +113,7 @@ module.exports = React.createClass({
 
 
 				<form onChange={this.handleChange}>
-					<Aliases aliases={aliases} defaultAlias={this.props.edition.default_alias} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
+					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
 					<EditionData identifierTypes={this.props.identifierTypes} edition={this.props.edition} languages={this.props.languages} ref='data' editionStatuses={this.props.editionStatuses} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
 					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab == 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
 				</form>

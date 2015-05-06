@@ -116,16 +116,8 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	if (req.body.beginDate) {
-		changes.begin_date = req.body.beginDate;
-	}
-
-	if (req.body.endDate) {
-		changes.end_date = req.body.endDate;
-		changes.ended = true; // Must have ended if there's an end date.
-	}
-	else if (req.body.ended) {
-		changes.ended = req.body.ended;
+	if (req.body.releaseDate) {
+		changes.release_date = req.body.releaseDate;
 	}
 
 	if (req.body.disambiguation)
@@ -197,16 +189,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var beginDate = req.body.beginDate;
-	if (edition.begin_date !== beginDate) {
-		changes.begin_date = beginDate ? beginDate : null;
-	}
-
-	var endDate = req.body.endDate;
-	var ended = req.body.ended;
-	if (edition.end_date !== endDate) {
-		changes.end_date = endDate ? endDate : null;
-		changes.ended = endDate ? true : ended; // Must have ended if there's an end date.
+	var releaseDate = req.body.releaseDate;
+	if (edition.release_date !== releaseDate) {
+		changes.release_date = releaseDate ? releaseDate : null;
 	}
 
 	var disambiguation = req.body.disambiguation;
