@@ -3,6 +3,7 @@ var PartialDate = require('../../input/partialDate.jsx');
 var Select = require('../../input/select.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
+var Identifiers = require('./identifiers.jsx');
 
 
 var EditionData = React.createClass({
@@ -14,7 +15,8 @@ var EditionData = React.createClass({
 			language: this.refs.language.getValue(),
 			editionStatus: this.refs.editionStatus.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue()
+			annotation: this.refs.annotation.getValue(),
+			identifiers: this.refs.identifiers.getValue()
 		};
 	},
 	getInitialState: function() {
@@ -97,6 +99,10 @@ var EditionData = React.createClass({
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>
+					<Identifiers
+						identifiers={this.props.identifiers}
+						types={this.props.identifierTypes}
+						ref='identifiers' />
 					<Input
 						type='text'
 						label='Disambiguation'

@@ -17,6 +17,7 @@ var Select = React.createClass({
 	},
 	componentDidMount: function() {
 		var select2Options = this.props.select2Options || {};
+		var self = this;
 
 		/* Allow consistent behavior with other bootstrap components, but don't
 		 * clobber select2 options otherwise. */
@@ -30,6 +31,27 @@ var Select = React.createClass({
 		}
 
 		$(this.refs.input.getInputDOMNode()).select2(select2Options);
+
+		$(this.refs.input.getInputDOMNode()).on("change", function (e) { self.handleChange() });
+	},
+	componentDidUpdate: function() {
+		var select2Options = this.props.select2Options || {};
+		var self = this;
+
+		/* Allow consistent behavior with other bootstrap components, but don't
+		 * clobber select2 options otherwise. */
+		if (this.props.placeholder) {
+			select2Options.placeholder = this.props.placeholder;
+		}
+
+		/* Don't set allowClear if there's no placeholder. It gets ugly. */
+		if (this.allowClear && select2Options.placeholder) {
+			select2Options.allowClear = true;
+		}
+
+		$(this.refs.input.getInputDOMNode()).select2(select2Options);
+
+		$(this.refs.input.getInputDOMNode()).on("change", function (e) { self.handleChange() });
 	},
 	render: function() {
 		var self = this;

@@ -1,5 +1,6 @@
 var Model = require('../helpers/model');
 require('../data/properties/alias');
+require('../data/properties/identifier');
 require('../data/properties/annotation');
 require('../data/properties/disambiguation');
 require('../data/relationship');
@@ -26,6 +27,12 @@ Entity.extend({
 		model: 'Alias',
 		many: true,
 		map: 'aliases_uri'
+	},
+	identifiers: {
+		type: 'ref',
+		model: 'Identifier',
+		many: true,
+		map: 'identifiers_uri'
 	},
 	disambiguation: {
 		type: 'ref',

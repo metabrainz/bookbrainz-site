@@ -137,6 +137,19 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
+	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+		return {
+			value: identifier.value,
+			identifier_type: {
+				identifier_type_id: identifier.typeId,
+			}
+		};
+	});
+
+	if (newIdentifiers.length) {
+		changes.identifiers = newIdentifiers;
+	}
+
 	var newAliases = req.body.aliases.map(function(alias) {
 		return {
 			name: alias.name,
