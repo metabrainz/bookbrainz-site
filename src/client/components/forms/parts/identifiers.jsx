@@ -18,7 +18,7 @@ var IdentifierRow = React.createClass({
 				return testType.id == self.props.type;
 			})[0];
 
-			var regex = new RegExp(type.validationRegex);
+			var regex = new RegExp(type.validation_regex);
 
 			if (regex.test(this.props.value)) {
 				return 'success';
@@ -41,7 +41,7 @@ var IdentifierRow = React.createClass({
 
 		if(type.length) {
 			type = type[0];
-			var regex = new RegExp(type.validationRegex);
+			var regex = new RegExp(type.validation_regex);
 			return regex.test(value);
 		} else {
 			return false;
@@ -120,7 +120,7 @@ var IdentifierList = React.createClass({
 
 		// Attempt to guess the type
 		this.props.types.forEach(function(type) {
-			var detectionRegex = new RegExp(type.detectionRegex);
+			var detectionRegex = new RegExp(type.detection_regex);
 			var regexResult = detectionRegex.exec(updatedIdentifier.value);
 			if (regexResult) {
 				updatedIdentifier.value = regexResult[1];

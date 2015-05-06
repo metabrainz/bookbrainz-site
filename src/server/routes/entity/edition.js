@@ -12,6 +12,7 @@ var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 var loadEditionStatuses = require('../../helpers/middleware').loadEditionStatuses;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
 
 /* If the route specifies a BBID, load the Edition for it. */
 router.param('bbid', makeEntityLoader(Edition, 'Edition not found'));
@@ -57,10 +58,11 @@ router.get('/:bbid/revisions', function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadEditionStatuses, loadLanguages, function(req, res) {
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadLanguages, function(req, res) {
 	var props = {
 		languages: res.locals.languages,
 		editionStatuses: res.locals.editionStatuses,
+		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/edition/create/handler'
 	};
 

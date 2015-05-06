@@ -8,6 +8,7 @@ var Language = require('../data/properties/language');
 var PublicationType = require('../data/properties/publication-type');
 var PublisherType = require('../data/properties/publisher-type');
 var WorkType = require('../data/properties/work-type');
+var IdentifierType = require('../data/properties/identifier-type');
 
 var renderRelationship = require('../helpers/render');
 
@@ -34,6 +35,7 @@ middleware.loadPublicationTypes = makeLoader(PublicationType, 'publicationTypes'
 middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
 middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
 middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
+middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
 
 middleware.loadGenders = makeLoader(Gender, 'genders', function(a, b) {
 	return a.id > b.id;

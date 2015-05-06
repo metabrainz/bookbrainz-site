@@ -9,6 +9,12 @@ IdentifierType.extend({
 		type: 'number',
 		map: 'identifier_type_id'
 	},
+	detection_regex: {
+		type: 'string'
+	},
+	validation_regex: {
+		type: 'string'
+	},
 	label: {
 		type: 'string'
 	}
