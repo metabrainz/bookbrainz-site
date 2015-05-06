@@ -41,6 +41,13 @@ var EditionData = React.createClass({
 			var initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
 			var initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
 			var initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
+			var initialIdentifiers = this.props.edition.identifiers.map(function(identifier) {
+				return {
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifier_type.identifier_type_id
+				};
+			});
 		}
 
 		var select2Options = {
@@ -109,7 +116,7 @@ var EditionData = React.createClass({
 						wrapperClassName='col-md-4' />
 					<hr/>
 					<Identifiers
-						identifiers={this.props.identifiers}
+						identifiers={initialIdentifiers}
 						types={this.props.identifierTypes}
 						ref='identifiers' />
 					<Input

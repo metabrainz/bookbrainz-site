@@ -77,12 +77,13 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStat
 	});
 });
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadEditionStatuses, loadLanguages, function(req, res) {
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadLanguages, function(req, res) {
 	var edition = res.locals.entity;
 
 	var props = {
 		languages: res.locals.languages,
 		editionStatuses: res.locals.editionStatuses,
+		identifierTypes: res.locals.identifierTypes,
 		edition: edition,
 		submissionUrl: '/edition/' + edition.bbid + '/edit/handler'
 	};
@@ -225,6 +226,42 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			note: req.body.note
 		};
 	}
+
+	var currentIdentifiers = edition.identifiers.map(function(identifier) {
+		var nextIdentifier = req.body.identifiers[0];
+
+		if (identifier.id != nextIdentifier.id) {
+			// Remove the alias
+			return [identifier.id, null];
+		}
+		else {
+			// Modify the alias
+			req.body.identifiers.shift();
+			return [nextIdentifier.id, {
+				value: nextIdentifier.value,
+				identifier_type: {
+					identifier_type_id: nextIdentifier.typeId,
+				}
+			}];
+		}
+	});
+
+	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+		// At this point, the only aliases should have null IDs, but check anyway.
+		if (identifier.id) {
+			return null;
+		}
+		else {
+			return [null, {
+				value: identifier.value,
+				identifier_type: {
+					identifier_type_id: identifier.typeId,
+				}
+			}];
+		}
+	});
+
+	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
 	var currentAliases = edition.aliases.map(function(alias) {
 		var nextAlias = req.body.aliases[0];
