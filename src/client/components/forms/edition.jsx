@@ -78,12 +78,15 @@ module.exports = React.createClass({
 	render: function() {
 		var aliases = null;
 		if (this.props.edition) {
+			var self = this;
 			aliases = this.props.edition.aliases.map(function(alias) {
 				return {
 					id: alias.id,
 					name: alias.name,
 					sortName: alias.sort_name,
-					language: null
+					language: alias.language.language_id,
+					primary: alias.primary,
+					default: (alias.id == self.props.edition.default_alias.alias_id)
 				};
 			});
 		}
@@ -112,7 +115,7 @@ module.exports = React.createClass({
 
 
 				<form onChange={this.handleChange}>
-					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
+					<Aliases aliases={aliases} defaultAlias={this.props.edition.default_alias} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
 					<EditionData identifierTypes={this.props.identifierTypes} edition={this.props.edition} languages={this.props.languages} ref='data' editionStatuses={this.props.editionStatuses} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
 					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab == 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
 				</form>

@@ -1,4 +1,5 @@
 var Model = require('../../helpers/model');
+var Language = require('./language');
 
 var Alias = new Model('Alias');
 
@@ -15,6 +16,10 @@ Alias.extend({
 	},
 	primary: {
 		type: 'boolean'
+	},
+	language: {
+		type: 'object',
+		model: 'Language'
 	}
 });
 
