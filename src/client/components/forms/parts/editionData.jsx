@@ -1,6 +1,7 @@
 var React = require('react');
 var PartialDate = require('../../input/partialDate.jsx');
 var Select = require('../../input/select.jsx');
+var SearchSelect = require('../../input/search-select.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
 var Identifiers = require('./identifiers.jsx');
@@ -52,6 +53,14 @@ var EditionData = React.createClass({
 				<p className='lead'>Fill out any data you know about the entity.</p>
 
 				<div className='form-horizontal'>
+					<SearchSelect
+						label='Publication'
+						labelAttribute='name'
+						collection='publication'
+						placeholder='Select publication…'
+						select2Options={select2Options}
+						labelClassName='col-md-4'
+						wrapperClassName='col-md-4' />
 					<PartialDate
 						label='Begin Date'
 						ref='begin'
