@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Publication = require('../../data/entities/publication');
+var User = require('../../data/user');
 
 /* Middleware loader functions. */
 var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -13,6 +14,9 @@ var EditForm = React.createFactory(require('../../../client/components/forms/pub
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadPublicationTypes = require('../../helpers/middleware').loadPublicationTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+
+var bbws = require('../../helpers/bbws');
+var Promise = require('bluebird');
 
 /* If the route specifies a BBID, load the Publication for it. */
 router.param('bbid', makeEntityLoader(Publication, 'Publication not found'));

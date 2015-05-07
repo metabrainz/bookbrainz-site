@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Work = require('../../data/entities/work');
+var User = require('../../data/user');
 
 /* Middleware loader functions. */
 var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -13,6 +14,9 @@ var EditForm = React.createFactory(require('../../../client/components/forms/wor
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+
+var bbws = require('../../helpers/bbws');
+var Promise = require('bluebird');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param('bbid', makeEntityLoader(Work, 'Work not found'));

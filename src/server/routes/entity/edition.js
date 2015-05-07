@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Edition = require('../../data/entities/edition');
+var User = require('../../data/user');
 
 var React = require('react');
 var EditForm = React.createFactory(require('../../../client/components/forms/edition.jsx'));
@@ -13,6 +14,9 @@ var loadEditionStatuses = require('../../helpers/middleware').loadEditionStatuse
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+
+var bbws = require('../../helpers/bbws');
+var Promise = require('bluebird');
 
 /* If the route specifies a BBID, load the Edition for it. */
 router.param('bbid', makeEntityLoader(Edition, 'Edition not found'));
