@@ -271,13 +271,13 @@ module.exports = React.createClass({
 					</div>
 				</div>
 				<hr/>
-				<h2>Current Relationships</h2>
+				<h2>Added Relationships</h2>
 				{addedRelationships}
 				<hr/>
 				<div className='row'>
 					<div className='col-md-4 col-md-offset-4'>
 						<Input
-							bsStyle='success' block type='submit' value='Submit!' onClick={this.handleSubmit} />
+							bsStyle='success' block type='submit' value='Submit!' disabled={this.state.addedRelationships.length == 0} onClick={this.handleSubmit} />
 					</div>
 				</div>
 			</div>
