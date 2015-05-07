@@ -234,7 +234,7 @@ module.exports = React.createClass({
 							onClick={this.handleAdd}
 							>
 							<span className='fa fa-plus'/>
-							<span className='sr-only'>Add Relationship</span>
+							&nbsp;Add <span className='sr-only'>&nbsp;Relationship</span>
 						</Button>
 					</div>
 				</div>

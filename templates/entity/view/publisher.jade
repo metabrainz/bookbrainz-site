@@ -4,8 +4,12 @@ block body
 	.row
 		.col-md-12
 			h1
-				small.pull-right
-					code='r'+entity.revision.revision_id
+				a.pull-right.btn.btn-primary.entity-action(title='Revision History', href='/publisher/'+entity.bbid+'/revisions')
+					span.fa.fa-history
+					|&nbsp;History
+				a.pull-right.btn.btn-warning.entity-action(title='Edit Entity', href='/publisher/'+entity.bbid+'/edit')
+					span.fa.fa-pencil
+					|&nbsp;Edit
 				if entity.default_alias
 					=entity.default_alias.name
 					|&nbsp;
@@ -16,11 +20,10 @@ block body
 			hr
 	.row
 		.col-md-8
-			h2
-				small.pull-right
-					a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit Relationships', href='/publisher/'+entity.bbid+'/relationships')
-						span.sr-only Edit relationships
-				| Relationships
+			h2 Relationships
+				a.pull-right.btn.btn-warning.entity-action(title='Edit Relationships', href='/publisher/'+entity.bbid+'/relationships')
+					span.fa.fa-pencil
+					|&nbsp;Edit
 			ul.list-unstyled
 				if entity.relationships
 					for relationship in entity.relationships

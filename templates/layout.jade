@@ -51,16 +51,16 @@ html
 						li.dropdown
 							a.dropdown-toggle#dNewEntities(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 								span.fa.fa-plus
+								|&nbsp;Create&nbsp;
 								span.caret
-								span.sr-only Add Entities
 
 							ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
-								li: a(href='/publication/create') Add Publication
-								li: a(href='/edition/create') Add Edition
-								li: a(href='/work/create') Add Work
+								li: a(href='/publication/create') Create Publication
+								li: a(href='/edition/create') Create Edition
+								li: a(href='/work/create') Create Work
 								li.divider
-								li: a(href='/creator/create') Add Creator
-								li: a(href='/publisher/create') Add Publisher
+								li: a(href='/creator/create') Create Creator
+								li: a(href='/publisher/create') Create Publisher
 
 						if user
 							li
@@ -69,12 +69,11 @@ html
 								a(href='/message/inbox')
 									if inboxCount === 0
 										span.fa.fa-envelope-o
-										span.sr-only Inbox
+										|&nbsp;Inbox
 									else
 										span.fa.fa-envelope
+										|&nbsp;Inbox&nbsp;
 										span.badge=inboxCount
-										span.sr-only #{inboxCount} Messages in inbox
-
 						li
 							if user
 								a(href='/logout') Logout
