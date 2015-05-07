@@ -77,12 +77,15 @@ module.exports = React.createClass({
 	render: function() {
 		var aliases = null;
 		if (this.props.publisher) {
+			var self = this;
 			aliases = this.props.publisher.aliases.map(function(alias) {
 				return {
 					id: alias.id,
 					name: alias.name,
 					sortName: alias.sort_name,
-					language: null
+					language: alias.language.language_id,
+					primary: alias.primary,
+					default: (alias.id == self.props.publisher.default_alias.alias_id)
 				};
 			});
 		}
