@@ -51,6 +51,7 @@ module.exports = React.createClass({
 			workTypeId: parseInt(workData.workType),
 			disambiguation: workData.disambiguation,
 			annotation: workData.annotation,
+			identifiers: workData.identifiers,
 			note: revisionNote
 		};
 
@@ -112,7 +113,7 @@ module.exports = React.createClass({
 
 				<form onChange={this.handleChange}>
 					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
-					<WorkData work={this.props.work} languages={this.props.languages} ref='data' workTypes={this.props.workTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
+					<WorkData identifierTypes={this.props.identifierTypes} work={this.props.work} languages={this.props.languages} ref='data' workTypes={this.props.workTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
 					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab == 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
 				</form>
 			</div>

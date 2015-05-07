@@ -10,6 +10,7 @@ var loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
 var loadGenders = require('../../helpers/middleware').loadGenders;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
 var React = require('react');
 
 var router = express.Router();
@@ -61,11 +62,12 @@ router.get('/:bbid/revisions', function(req, res, next) {
 });
 
 // Creation
-router.get('/create', auth.isAuthenticated, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
 	var props = {
 		languages: res.locals.languages,
 		genders: res.locals.genders,
 		creatorTypes: res.locals.creatorTypes,
+		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/creator/create/handler'
 	};
 
@@ -80,7 +82,7 @@ router.get('/create', auth.isAuthenticated, loadGenders, loadLanguages, loadCrea
 	});
 });
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
 	var creator = res.locals.entity;
 
 	var props = {
@@ -88,6 +90,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadGenders, loadLanguages, load
 		genders: res.locals.genders,
 		creatorTypes: res.locals.creatorTypes,
 		creator: creator,
+		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/creator/' + creator.bbid + '/edit/handler'
 	};
 
@@ -141,6 +144,19 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.revision = {
 			note: req.body.note
 		};
+	}
+
+	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+		return {
+			value: identifier.value,
+			identifier_type: {
+				identifier_type_id: identifier.typeId,
+			}
+		};
+	});
+
+	if (newIdentifiers.length) {
+		changes.identifiers = newIdentifiers;
 	}
 
 	var newAliases = req.body.aliases.map(function(alias) {
@@ -214,6 +230,42 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			note: req.body.note
 		};
 	}
+
+	var currentIdentifiers = creator.identifiers.map(function(identifier) {
+		var nextIdentifier = req.body.identifiers[0];
+
+		if (identifier.id != nextIdentifier.id) {
+			// Remove the alias
+			return [identifier.id, null];
+		}
+		else {
+			// Modify the alias
+			req.body.identifiers.shift();
+			return [nextIdentifier.id, {
+				value: nextIdentifier.value,
+				identifier_type: {
+					identifier_type_id: nextIdentifier.typeId,
+				}
+			}];
+		}
+	});
+
+	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+		// At this point, the only aliases should have null IDs, but check anyway.
+		if (identifier.id) {
+			return null;
+		}
+		else {
+			return [null, {
+				value: identifier.value,
+				identifier_type: {
+					identifier_type_id: identifier.typeId,
+				}
+			}];
+		}
+	});
+
+	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
 	var currentAliases = creator.aliases.map(function(alias) {
 		var nextAlias = req.body.aliases[0];

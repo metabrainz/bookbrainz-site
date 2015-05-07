@@ -3,6 +3,7 @@ var PartialDate = require('../../input/partialDate.jsx');
 var Select = require('../../input/select.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
+var Identifiers = require('./identifiers.jsx');
 
 
 var CreatorData = React.createClass({
@@ -14,7 +15,8 @@ var CreatorData = React.createClass({
 			gender: this.refs.gender.getValue(),
 			creatorType: this.refs.creatorType.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue()
+			annotation: this.refs.annotation.getValue(),
+			identifiers: this.refs.identifiers.getValue()
 		};
 	},
 	getInitialState: function() {
@@ -38,6 +40,13 @@ var CreatorData = React.createClass({
 			var initialCreatorType = this.props.creator.creator_type ? this.props.creator.creator_type.creator_type_id : null;
 			var initialDisambiguation = this.props.creator.disambiguation ? this.props.creator.disambiguation.comment : null;
 			var initialAnnotation = this.props.creator.annotation ? this.props.creator.annotation.content : null;
+			var initialIdentifiers = this.props.creator.identifiers.map(function(identifier) {
+				return {
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifier_type.identifier_type_id
+				};
+			});
 		}
 
 		var select2Options = {
@@ -97,6 +106,10 @@ var CreatorData = React.createClass({
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>
+					<Identifiers
+						identifiers={initialIdentifiers}
+						types={this.props.identifierTypes}
+						ref='identifiers' />
 					<Input
 						type='text'
 						label='Disambiguation'

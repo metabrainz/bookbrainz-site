@@ -3,6 +3,7 @@ var PartialDate = require('../../input/partialDate.jsx');
 var Select = require('../../input/select.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
+var Identifiers = require('./identifiers.jsx');
 
 
 var PublisherData = React.createClass({
@@ -13,7 +14,8 @@ var PublisherData = React.createClass({
 			ended: this.refs.ended.getValue(),
 			publisherType: this.refs.publisherType.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue()
+			annotation: this.refs.annotation.getValue(),
+			identifiers: this.refs.identifiers.getValue()
 		};
 	},
 	getInitialState: function() {
@@ -36,6 +38,13 @@ var PublisherData = React.createClass({
 			var initialPublisherType = this.props.publisher.publisher_type ? this.props.publisher.publisher_type.publisher_type_id : null;
 			var initialDisambiguation = this.props.publisher.disambiguation ? this.props.publisher.disambiguation.comment : null;
 			var initialAnnotation = this.props.publisher.annotation ? this.props.publisher.annotation.content : null;
+			var initialIdentifiers = this.props.publisher.identifiers.map(function(identifier) {
+				return {
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifier_type.identifier_type_id
+				};
+			});
 		}
 
 		var select2Options = {
@@ -83,6 +92,10 @@ var PublisherData = React.createClass({
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>
+					<Identifiers
+						identifiers={initialIdentifiers}
+						types={this.props.identifierTypes}
+						ref='identifiers' />
 					<Input
 						type='text'
 						label='Disambiguation'

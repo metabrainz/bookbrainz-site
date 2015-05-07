@@ -14,6 +14,7 @@ var EditForm = React.createFactory(require('../../../client/components/forms/pub
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadPublicationTypes = require('../../helpers/middleware').loadPublicationTypes;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
 
 var bbws = require('../../helpers/bbws');
 var Promise = require('bluebird');
@@ -63,10 +64,11 @@ router.get('/:bbid/revisions', function(req, res, next) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadLanguages, loadPublicationTypes, function(req, res) {
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, loadPublicationTypes, function(req, res) {
 	var props = {
 		languages: res.locals.languages,
 		publicationTypes: res.locals.publicationTypes,
+		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/publication/create/handler'
 	};
 
@@ -81,13 +83,14 @@ router.get('/create', auth.isAuthenticated, loadLanguages, loadPublicationTypes,
 	});
 });
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadPublicationTypes, loadLanguages, function(req, res) {
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublicationTypes, loadLanguages, function(req, res) {
 	var publication = res.locals.entity;
 
 	var props = {
 		languages: res.locals.languages,
 		publicationTypes: res.locals.publicationTypes,
 		publication: publication,
+		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/publication/' + publication.bbid + '/edit/handler'
 	};
 
@@ -115,6 +118,19 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 	if (req.body.annotation)
 		changes.annotation = req.body.annotation;
+
+	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+		return {
+			value: identifier.value,
+			identifier_type: {
+				identifier_type_id: identifier.typeId,
+			}
+		};
+	});
+
+	if (newIdentifiers.length) {
+		changes.identifiers = newIdentifiers;
+	}
 
 	var newAliases = req.body.aliases.map(function(alias) {
 		return {
@@ -170,6 +186,42 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			note: req.body.note
 		};
 	}
+
+	var currentIdentifiers = publication.identifiers.map(function(identifier) {
+		var nextIdentifier = req.body.identifiers[0];
+
+		if (identifier.id != nextIdentifier.id) {
+			// Remove the alias
+			return [identifier.id, null];
+		}
+		else {
+			// Modify the alias
+			req.body.identifiers.shift();
+			return [nextIdentifier.id, {
+				value: nextIdentifier.value,
+				identifier_type: {
+					identifier_type_id: nextIdentifier.typeId,
+				}
+			}];
+		}
+	});
+
+	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+		// At this point, the only aliases should have null IDs, but check anyway.
+		if (identifier.id) {
+			return null;
+		}
+		else {
+			return [null, {
+				value: identifier.value,
+				identifier_type: {
+					identifier_type_id: identifier.typeId,
+				}
+			}];
+		}
+	});
+
+	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
 	var currentAliases = publication.aliases.map(function(alias) {
 		var nextAlias = req.body.aliases[0];

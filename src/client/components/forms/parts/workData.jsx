@@ -2,6 +2,7 @@ var React = require('react');
 var Select = require('../../input/select.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
+var Identifiers = require('./identifiers.jsx');
 
 
 var WorkData = React.createClass({
@@ -10,7 +11,8 @@ var WorkData = React.createClass({
 			languages: this.refs.languages.getValue(),
 			workType: this.refs.workType.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue()
+			annotation: this.refs.annotation.getValue(),
+			identifiers: this.refs.identifiers.getValue()
 		};
 	},
 	valid: function() {
@@ -24,6 +26,13 @@ var WorkData = React.createClass({
 			var initialWorkType = this.props.work.work_type ? this.props.work.work_type.work_type_id : null;
 			var initialDisambiguation = this.props.work.disambiguation ? this.props.work.disambiguation.comment : null;
 			var initialAnnotation = this.props.work.annotation ? this.props.work.annotation.content : null;
+			var initialIdentifiers = this.props.work.identifiers.map(function(identifier) {
+				return {
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifier_type.identifier_type_id
+				};
+			});
 		}
 
 		var select2Options = {
@@ -62,6 +71,10 @@ var WorkData = React.createClass({
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>
+					<Identifiers
+						identifiers={initialIdentifiers}
+						types={this.props.identifierTypes}
+						ref='identifiers' />
 					<Input
 						type='text'
 						label='Disambiguation'

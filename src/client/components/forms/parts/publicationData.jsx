@@ -2,6 +2,7 @@ var React = require('react');
 var Select = require('../../input/select.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
+var Identifiers = require('./identifiers.jsx');
 
 
 var PublicationData = React.createClass({
@@ -9,7 +10,8 @@ var PublicationData = React.createClass({
 		return {
 			publicationType: this.refs.publicationType.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue()
+			annotation: this.refs.annotation.getValue(),
+			identifiers: this.refs.identifiers.getValue()
 		};
 	},
 	valid: function() {
@@ -20,6 +22,13 @@ var PublicationData = React.createClass({
 			var initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
 			var initialDisambiguation = this.props.publication.disambiguation ? this.props.publication.disambiguation.comment : null;
 			var initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;
+			var initialIdentifiers = this.props.publication.identifiers.map(function(identifier) {
+				return {
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifier_type.identifier_type_id
+				};
+			});
 		}
 
 		var select2Options = {
@@ -45,6 +54,10 @@ var PublicationData = React.createClass({
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
 					<hr/>
+					<Identifiers
+						identifiers={initialIdentifiers}
+						types={this.props.identifierTypes}
+						ref='identifiers' />
 					<Input
 						type='text'
 						label='Disambiguation'

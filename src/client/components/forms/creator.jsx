@@ -51,6 +51,7 @@ module.exports = React.createClass({
 			creatorTypeId: parseInt(creatorData.creatorType),
 			disambiguation: creatorData.disambiguation,
 			annotation: creatorData.annotation,
+			identifiers: creatorData.identifiers,
 			note: revisionNote
 		};
 
@@ -112,7 +113,7 @@ module.exports = React.createClass({
 
 				<form onChange={this.handleChange}>
 					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
-					<CreatorData creator={this.props.creator} genders={this.props.genders} ref='data' creatorTypes={this.props.creatorTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
+					<CreatorData identifierTypes={this.props.identifierTypes} creator={this.props.creator} genders={this.props.genders} ref='data' creatorTypes={this.props.creatorTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
 					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab == 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
 				</form>
 			</div>
