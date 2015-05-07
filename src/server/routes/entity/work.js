@@ -41,7 +41,7 @@ router.get('/:bbid/revisions', function(req, res, next) {
 	if (work.default_alias && work.default_alias.name)
 		title = 'Work “' + work.default_alias.name + '”';
 
-	bbws.get('/Work/' + work.bbid + '/revisions')
+	bbws.get('/work/' + work.bbid + '/revisions')
 	.then(function(revisions) {
 
 		var users = {};
