@@ -10,6 +10,7 @@ var Identifiers = require('./identifiers.jsx');
 var EditionData = React.createClass({
 	getValue: function() {
 		return {
+			publication: this.refs.publication.getValue(),
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionStatus: this.refs.editionStatus.getValue(),
@@ -50,6 +51,7 @@ var EditionData = React.createClass({
 					<SearchSelect
 						label='Publication'
 						labelAttribute='name'
+						ref='publication'
 						collection='publication'
 						placeholder='Select publication…'
 						select2Options={select2Options}

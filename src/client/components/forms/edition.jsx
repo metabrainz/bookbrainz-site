@@ -44,6 +44,7 @@ module.exports = React.createClass({
 		var revisionNote = this.refs.revision.refs.note.getValue();
 		var data = {
 			aliases: aliasData,
+			publication: editionData.publication,
 			releaseDate: editionData.releaseDate,
 			languageId: parseInt(editionData.language),
 			editionStatusId: parseInt(editionData.editionStatus),
