@@ -21,14 +21,13 @@ block body
 	.row
 		.col-md-8
 			h2 Relationships
-				a.pull-right.btn.btn-warning.entity-action(title='Edit Relationships', href='/creator/'+entity.bbid+'/relationships')
-					span.fa.fa-pencil
-					|&nbsp;Edit
 			ul.list-unstyled
 				if entity.relationships
 					for relationship in entity.relationships
 						li!=relationship.rendered
-
+			a.btn.btn-warning.entity-action(title='Edit Relationships', href='/creator/'+entity.bbid+'/relationships')
+				span.fa.fa-pencil
+				|&nbsp;Edit
 		.col-md-4
 			.text-center No Image
 			hr
