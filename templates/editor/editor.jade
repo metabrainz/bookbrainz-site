@@ -15,8 +15,9 @@ block body
 				if user
 					if editor.id == user.id
 						small.pull-right
-							a.btn.btn-warning.btn-xs.fa.fa-pencil.entity-action(title='Edit basic editor info', href='/editor/edit')
-								span.sr-only Edit basic editor info
+							a.btn.btn-warning.entity-action(title='Edit basic editor info', href='/editor/edit')
+								span.fa.fa-pencil
+								|&nbsp;Edit Profile
 			dl.dl-horizontal
 				dt Email
 				dd
