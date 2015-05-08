@@ -43,3 +43,7 @@ block body
 
 				dt Last Modified
 				dd=(new Date(entity.last_updated)).toLocaleDateString()
+
+				each identifier in entity.identifiers
+					dt=identifier.identifier_type.label
+					dd=identifier.value
