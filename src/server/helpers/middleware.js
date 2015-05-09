@@ -80,14 +80,21 @@ middleware.loadEntityRelationships = function(req, res, next) {
 middleware.makeEntityLoader = function(model, errMessage) {
 	return function(req, res, next, bbid) {
 		if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
+			var populate = [
+				'annotation',
+				'disambiguation',
+				'relationships',
+				'aliases',
+				'identifiers'
+			];
+
+			// XXX: Don't special case this; instead, let the route specify
+			if (model.name === 'Edition') {
+				populate.push('publication');
+			}
+
 			model.findOne(req.params.bbid, {
-					populate: [
-						'annotation',
-						'disambiguation',
-						'relationships',
-						'aliases',
-						'identifiers'
-					]
+					populate: populate
 				})
 				.then(function(entity) {
 					res.locals.entity = entity;
