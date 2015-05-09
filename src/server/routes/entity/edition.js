@@ -285,7 +285,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 				sort_name: nextAlias.sort_name,
 				language_id: nextAlias.languageId,
 				primary: alias.primary,
-				default: alias.default
+				default: alias.dflt
 			}];
 		}
 	});
@@ -300,16 +300,13 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 				name: alias.name,
 				sort_name: alias.sort_name,
 				language_id: alias.languageId,
-				primary: false,
-				default: false
+				primary: alias.primary,
+				default: alias.dflt
 			}];
 		}
 	});
 
 	changes.aliases = currentAliases.concat(newAliases);
-	if (changes.aliases.length !== 0 && changes.aliases[0][1]) {
-		changes.aliases[0][1].default = true;
-	}
 
 	Edition.update(edition.bbid, changes, {
 		session: req.session

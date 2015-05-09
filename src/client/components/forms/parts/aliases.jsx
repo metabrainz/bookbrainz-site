@@ -92,6 +92,11 @@ var AliasList = React.createClass({
 			alias.valid = true;
 		});
 
+		if(existing.length == 1) {
+			// Set default alias as first row in "create" form.
+			existing[0].default = true;
+		}
+
 		return {
 			aliases: existing,
 			rowsSpawned: existing.length
