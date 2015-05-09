@@ -23,7 +23,7 @@ relationshipHelper.addEditRoutes = function(router) {
 				var props = {
 					relationshipTypes: relationshipTypes,
 					targetEntity: entity,
-					wsUrl: config.site.webservice
+					wsUrl: config.site.clientWebservice
 				};
 
 				var markup = React.renderToString(EditForm(props));

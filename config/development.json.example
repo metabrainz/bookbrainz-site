@@ -1,6 +1,7 @@
 {
 	"site": {
 		"webservice": "http://bookbrainz.mbsandbox.org/ws",
+		"clientWebservice": "http://bookbrainz.mbsandbox.org/ws",
 		"clientID": "f5c882d1-169e-4798-974b-63cd1de0b141",
 		"proxyTrust": true
 	},
