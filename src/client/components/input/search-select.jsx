@@ -69,12 +69,21 @@ var SearchSelect = React.createClass({
 
 		_.extend(select2Options, this.props.select2Options);
 
+		var options = this.props.options || [];
+
+		if (this.props.defaultValue) {
+			options.unshift(this.props.defaultValue);
+			var defaultKey = this.props.defaultValue.id;
+		}
+
 		return (
 			<Select
 				placeholder={this.props.placeholder}
 				value={this.props.value}
-				defaultValue={this.props.defaultValue}
+				defaultValue={defaultKey}
 				label={this.props.label}
+				idAttribute='id'
+				labelAttribute='text'
 				help={this.props.help}
 				bsStyle={this.props.bsStyle}
 				ref='select'
@@ -84,7 +93,7 @@ var SearchSelect = React.createClass({
 				noDefault
 				onChange={this.props.onChange}
 				select2Options={select2Options}
-				options={this.props.options}/>
+				options={options}/>
 		);
 	}
 });
