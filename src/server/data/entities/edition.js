@@ -14,7 +14,8 @@ var Edition = new Model('Edition', {
 Edition.extend({
 	publication: {
 		type: 'ref',
-		model: 'Publication'
+		model: 'Publication',
+		map: 'publication_uri'
 	},
 	creator_credit: {
 		type: 'object'
