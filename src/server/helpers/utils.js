@@ -3,7 +3,7 @@ var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
 function getEntityLink(entity) {
-	var bbid = entity.entity_gid | entity.bbid;
+	var bbid = entity.entity_gid || entity.bbid;
 	return '/' + entity._type.toLowerCase() + '/' + bbid;
 }
 
