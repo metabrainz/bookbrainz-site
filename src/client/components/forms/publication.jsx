@@ -80,7 +80,7 @@ module.exports = React.createClass({
 					id: alias.id,
 					name: alias.name,
 					sortName: alias.sort_name,
-					language: alias.language.language_id,
+					language: alias.language ? alias.language.language_id : null,
 					primary: alias.primary,
 					default: (alias.id == self.props.publication.default_alias.alias_id)
 				};
