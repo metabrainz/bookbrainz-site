@@ -3,7 +3,8 @@ var Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
 function getEntityLink(entity) {
-	return '/' + entity._type.toLowerCase() + '/' + entity.entity_gid;
+	var bbid = entity.entity_gid | entity.bbid;
+	return '/' + entity._type.toLowerCase() + '/' + bbid;
 }
 
 // Returns a Promise which fulfills with an entity with aliases and data.
