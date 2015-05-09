@@ -16,7 +16,8 @@ Publication.extend({
 	editions: {
 		type: 'ref',
 		model: 'Edition',
-		many: true
+		many: true,
+		map: 'editions_uri'
 	}
 });
 

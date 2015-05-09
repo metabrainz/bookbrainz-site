@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Publication = require('../../data/entities/publication');
+var Edition = require('../../data/entities/edition');
 var User = require('../../data/user');
 
 /* Middleware loader functions. */
@@ -26,11 +27,20 @@ router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
 	var publication = res.locals.entity;
 	var title = 'Publication';
 
+	publication.editions = publication.editions.map(function(edition) {
+		return Edition.findOne(edition.bbid, {
+			populate: ['disabmiguation', 'aliases']
+		});
+	});
+
 	if (publication.default_alias && publication.default_alias.name)
 		title = 'Publication “' + publication.default_alias.name + '”';
 
-	res.render('entity/view/publication', {
-		title: title
+	Promise.all(publication.editions).then(function(editions) {
+		publication.editions = editions;
+		res.render('entity/view/publication', {
+			title: title
+		});
 	});
 });
 
