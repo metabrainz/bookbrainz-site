@@ -24,6 +24,13 @@ var EditionData = React.createClass({
 	},
 	render: function() {
 		if (this.props.edition) {
+			if (this.props.edition.publication) {
+				var initialPublication = {
+					id: this.props.edition.publication.bbid,
+					text: this.props.edition.publication.default_alias ? this.props.edition.publication.default_alias.name : null
+				};
+			}
+
 			var initialReleaseDate = this.props.edition.release_date;
 			var initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
 			var initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
@@ -52,6 +59,7 @@ var EditionData = React.createClass({
 						label='Publication'
 						labelAttribute='name'
 						ref='publication'
+						defaultValue={initialPublication}
 						collection='publication'
 						placeholder='Select publication…'
 						select2Options={select2Options}
