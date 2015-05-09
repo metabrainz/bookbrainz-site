@@ -119,14 +119,18 @@ var IdentifierList = React.createClass({
 		var updatedIdentifier = this.refs[index].getValue();
 
 		// Attempt to guess the type
+		var newValue = updatedIdentifier.value;
 		this.props.types.forEach(function(type) {
 			var detectionRegex = new RegExp(type.detection_regex);
 			var regexResult = detectionRegex.exec(updatedIdentifier.value);
 			if (regexResult) {
-				updatedIdentifier.value = regexResult[1];
+				// Don't assign directly to updatedIdentifier, to avoid
+				// multiple transformations.
+				newValue = regexResult[1];
 				updatedIdentifier.type = type.id;
 			}
 		});
+		updatedIdentifier.value = newValue;
 
 		updatedIdentifiers[index] = {
 			value: updatedIdentifier.value,
