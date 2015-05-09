@@ -86,6 +86,7 @@ var SearchSelect = React.createClass({
 				labelAttribute='text'
 				help={this.props.help}
 				bsStyle={this.props.bsStyle}
+				disabled={this.props.disabled}
 				ref='select'
 				groupClassName={this.props.groupClassName}
 				wrapperClassName={this.props.wrapperClassName}
@@ -93,7 +94,8 @@ var SearchSelect = React.createClass({
 				noDefault
 				onChange={this.props.onChange}
 				select2Options={select2Options}
-				options={options}/>
+				options={options}
+				standalone={this.props.standalone} />
 		);
 	}
 });

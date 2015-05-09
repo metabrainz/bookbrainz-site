@@ -13,6 +13,7 @@ require('superagent-bluebird-promise');
 
 var renderRelationship = require('../../../server/helpers/render.js');
 var utils = require('../../../server/helpers/utils.js');
+var SearchSelect = require('../input/search-select.jsx');
 
 
 module.exports = React.createClass({
@@ -85,10 +86,10 @@ module.exports = React.createClass({
 		addedRelationships.push({
 			type: this.state.selectedRelationship,
 			entities: this.state.displayEntities,
-			key: addedRelationshipsSpawned
+			key: this.state.addedRelationshipsSpawned
 		});
 
-		addedRelationshipsSpawned++;
+		this.state.addedRelationshipsSpawned++;
 
 		this.setState({addedRelationships: addedRelationships});
 	},
@@ -123,9 +124,9 @@ module.exports = React.createClass({
 	handleUUIDChange: function(i, e) {
 		var self = this;
 		var bbid = this.refs[i].getValue();
-		if (this.refs[i].valid() && bbid !== this.state.targetEntity.bbid) {
+		if (bbid !== this.state.targetEntity.bbid) {
 			if (self.state.loadedEntities[bbid]) {
-				self.setDisplayEntity(i, loadedEntities[bbid]);
+				self.setDisplayEntity(i, self.state.loadedEntities[bbid]);
 			}
 			else {
 				this.fetchEntity(bbid)
@@ -159,19 +160,31 @@ module.exports = React.createClass({
 			var loadingElement = <LoadingSpinner />;
 		}
 
+		var select2Options = {
+			width: '100%'
+		};
+
 		var renderedEntities = this.state.displayEntities.map(function(entity, i) {
+			if (entity) {
+				entity.id = entity.bbid;
+				entity.text = entity.default_alias ? entity.default_alias.name : '(unnamed)';
+			}
+
 			return (
 				<div className='form-group' key={entity.key}>
-					<UUID
+					<SearchSelect
 						ref={i}
 						label={'Entity ' + (i+1)}
+						labelAttribute='name'
+						collection='entity'
+						defaultValue={entity}
+						placeholder='Select entity…'
+						select2Options={select2Options}
+						onChange={self.handleUUIDChange.bind(null, i)}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4'
-						defaultValue={entity ? entity.bbid : null}
 						disabled={entity == self.state.targetEntity}
-						onChange={self.handleUUIDChange.bind(null, i)}
-						standalone
-						/>
+						standalone />
 					<div className='col-md-1'>
 						<Button
 							bsStyle='primary'
@@ -191,7 +204,7 @@ module.exports = React.createClass({
 		}
 
 		var allEntitiesLoaded = this.state.displayEntities.every(function(entity) {
-			return Boolean(entity.bbid);
+			return Boolean(entity.entity_gid);
 		});
 
 		// This could easily be a React component, and should be changed to

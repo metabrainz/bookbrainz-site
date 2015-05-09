@@ -32,7 +32,8 @@ var Select = React.createClass({
 
 		$(this.refs.input.getInputDOMNode()).select2(select2Options);
 
-		$(this.refs.input.getInputDOMNode()).on("change", function (e) { self.handleChange() });
+		$(this.refs.input.getInputDOMNode()).on("select2:select", function (e) { self.handleChange(); });
+		$(this.refs.input.getInputDOMNode()).on("select2:unselect", function (e) { self.handleChange(); });
 	},
 	componentDidUpdate: function() {
 		var select2Options = this.props.select2Options || {};
@@ -51,7 +52,8 @@ var Select = React.createClass({
 
 		$(this.refs.input.getInputDOMNode()).select2(select2Options);
 
-		$(this.refs.input.getInputDOMNode()).on("change", function (e) { self.handleChange() });
+		$(this.refs.input.getInputDOMNode()).on("select2:select", function (e) { self.handleChange(); });
+		$(this.refs.input.getInputDOMNode()).on("select2:unselect", function (e) { self.handleChange(); });
 	},
 	render: function() {
 		var self = this;
@@ -81,6 +83,7 @@ var Select = React.createClass({
 				placeholder={this.props.placeholder}
 				value={this.props.value}
 				defaultValue={this.props.defaultValue}
+				disabled={this.props.disabled}
 				label={this.props.label}
 				help={this.props.help}
 				bsStyle={this.props.bsStyle}
@@ -89,7 +92,8 @@ var Select = React.createClass({
 				wrapperClassName={this.props.wrapperClassName}
 				labelClassName={this.props.labelClassName}
 				multiple={this.props.multiple}
-				onChange={this.handleChange}>
+				onChange={this.handleChange}
+				standalone={this.props.standalone}>
 				{options}
 			</Input>
 		);
