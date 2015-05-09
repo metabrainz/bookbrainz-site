@@ -118,6 +118,10 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.publication = req.body.publication;
 	}
 
+	if (req.body.publication) {
+		changes.publisher = req.body.publisher;
+	}
+
 	if (req.body.languageId) {
 		changes.language = {
 			language_id: req.body.languageId
@@ -193,6 +197,11 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var publication = req.body.publication;
 	if (edition.publication.bbid !== publication) {
 		changes.publication = publication;
+	}
+
+	var publisher = req.body.publication;
+	if (edition.publisher.bbid !== publisher) {
+		changes.publisher = publisher;
 	}
 
 	var languageId = req.body.languageId;

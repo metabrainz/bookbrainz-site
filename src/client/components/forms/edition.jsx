@@ -45,6 +45,7 @@ module.exports = React.createClass({
 		var data = {
 			aliases: aliasData,
 			publication: editionData.publication,
+			publisher: editionData.publisher,
 			releaseDate: editionData.releaseDate,
 			languageId: parseInt(editionData.language),
 			editionStatusId: parseInt(editionData.editionStatus),

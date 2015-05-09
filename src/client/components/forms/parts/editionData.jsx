@@ -11,6 +11,7 @@ var EditionData = React.createClass({
 	getValue: function() {
 		return {
 			publication: this.refs.publication.getValue(),
+			publisher: this.refs.publisher.getValue() == '' ? null : this.refs.publisher.getValue(),
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionStatus: this.refs.editionStatus.getValue(),
@@ -20,7 +21,7 @@ var EditionData = React.createClass({
 		};
 	},
 	valid: function() {
-		return this.refs.release.valid();
+		return this.refs.release.valid() && this.refs.publication.getValue().length;
 	},
 	render: function() {
 		if (this.props.edition) {
@@ -28,6 +29,13 @@ var EditionData = React.createClass({
 				var initialPublication = {
 					id: this.props.edition.publication.bbid,
 					text: this.props.edition.publication.default_alias ? this.props.edition.publication.default_alias.name : null
+				};
+			}
+
+			if (this.props.edition.publisher) {
+				var initialPublisher = {
+					id: this.props.edition.publisher.bbid,
+					text: this.props.edition.publisher.default_alias ? this.props.edition.publisher.default_alias.name : null
 				};
 			}
 
@@ -65,6 +73,17 @@ var EditionData = React.createClass({
 						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
+					<SearchSelect
+						label='Publisher'
+						labelAttribute='name'
+						ref='publisher'
+						defaultValue={initialPublisher}
+						collection='publisher'
+						placeholder='Select publisher…'
+						select2Options={select2Options}
+						labelClassName='col-md-4'
+						wrapperClassName='col-md-4'
+						nodefault />
 					<PartialDate
 						label='Release Date'
 						ref='release'

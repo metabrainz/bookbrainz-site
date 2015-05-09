@@ -30,7 +30,8 @@ Edition.extend({
 	},
 	publisher: {
 		type: 'ref',
-		model: 'Publisher'
+		model: 'Publisher',
+		map: 'publisher_uri'
 	},
 	language: {
 		type: 'object',
