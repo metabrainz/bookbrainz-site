@@ -91,6 +91,7 @@ middleware.makeEntityLoader = function(model, errMessage) {
 			// XXX: Don't special case this; instead, let the route specify
 			if (model.name === 'Edition') {
 				populate.push('publication');
+				populate.push('publisher');
 			} else if (model.name === 'Publication') {
 				populate.push('editions');
 			}
