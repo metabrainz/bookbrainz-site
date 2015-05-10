@@ -54,10 +54,6 @@ module.exports = React.createClass({
 			note: revisionNote
 		};
 
-		if (data.aliases.length !== 0) {
-			data.aliases[0].dflt = true;
-		}
-
 		this.setState({waiting: true});
 
 		var self = this;

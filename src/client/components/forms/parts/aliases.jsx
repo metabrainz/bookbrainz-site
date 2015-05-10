@@ -9,7 +9,7 @@ var AliasRow = React.createClass({
 		return {
 			name: this.refs.name.getValue(),
 			sortName: this.refs.sortName.getValue(),
-			language: this.refs.language.getValue(),
+			languageId: this.refs.language.getValue(),
 			primary: this.refs.primary.getChecked(),
 			default: this.refs.default.getChecked()
 		};
