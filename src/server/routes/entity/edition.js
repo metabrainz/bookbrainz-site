@@ -200,7 +200,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	var publisher = req.body.publisher;
-	if (edition.publisher.bbid !== publisher) {
+	if (!edition.publisher || edition.publisher.bbid !== publisher) {
 		changes.publisher = publisher;
 	}
 
