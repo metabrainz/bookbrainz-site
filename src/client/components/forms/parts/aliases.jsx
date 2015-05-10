@@ -9,7 +9,7 @@ var AliasRow = React.createClass({
 		return {
 			name: this.refs.name.getValue(),
 			sortName: this.refs.sortName.getValue(),
-			languageId: this.refs.language.getValue(),
+			language: this.refs.language.getValue(),
 			primary: this.refs.primary.getChecked(),
 			default: this.refs.default.getChecked()
 		};
@@ -58,6 +58,7 @@ var AliasRow = React.createClass({
 						wrapperClassName='col-md-11'
 						placeholder='Select alias language…'
 						noDefault
+						onChange={this.props.onChange}
 						options={this.props.languages} />
 				</div>
 				<div className='col-md-1'>
