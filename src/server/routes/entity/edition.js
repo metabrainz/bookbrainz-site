@@ -195,7 +195,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	var publication = req.body.publication;
-	if (edition.publication.bbid !== publication) {
+	if (!edition.publication || edition.publication.bbid !== publication) {
 		changes.publication = publication;
 	}
 
