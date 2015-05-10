@@ -78,7 +78,7 @@ var CreatorData = React.createClass({
 						type='checkbox'
 						ref='ended'
 						label='Ended'
-						defaultValue={this.state.ended}
+						defaultChecked={this.state.ended}
 						onChange={this.handleEnded}
 						wrapperClassName='col-md-offset-4 col-md-4' />
 					<Select

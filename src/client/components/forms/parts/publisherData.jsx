@@ -75,7 +75,7 @@ var PublisherData = React.createClass({
 					<Input
 						type='checkbox'
 						ref='ended'
-						defaultValue={this.state.ended}
+						defaultChecked={this.state.ended}
 						label='Ended'
 						onChange={this.handleEnded}
 						wrapperClassName='col-md-offset-4 col-md-4' />
