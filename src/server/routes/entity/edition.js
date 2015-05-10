@@ -118,7 +118,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.publication = req.body.publication;
 	}
 
-	if (req.body.publication) {
+	if (req.body.publisher) {
 		changes.publisher = req.body.publisher;
 	}
 
@@ -199,7 +199,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		changes.publication = publication;
 	}
 
-	var publisher = req.body.publication;
+	var publisher = req.body.publisher;
 	if (edition.publisher.bbid !== publisher) {
 		changes.publisher = publisher;
 	}
