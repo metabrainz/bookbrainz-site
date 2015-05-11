@@ -159,14 +159,21 @@ var AliasList = React.createClass({
 	},
 	valid: function() {
 		var defaultSet = false;
-		var allValid = this.state.aliases.every(function(alias) {
-			if(!defaultSet) {
+		var numRows = this.state.rowsSpawned;
+
+		for (var i = 0; i < numRows; i++) {
+			var aliasRow = this.refs[i];
+			var alias = aliasRow.getValue();
+
+			if (aliasRow.getValid() === false && numRows > 1 && (alias.name || alias.sortName)) {
+				return false;
+			}
+			else if (!defaultSet) {
 				defaultSet = alias.default;
 			}
-			return alias.valid;
-		});
+		}
 
-		return (defaultSet && allValid) || (this.state.aliases.length == 1);
+		return defaultSet || numRows == 1;
 	},
 	handleRemove: function(index) {
 		var updatedAliases = this.state.aliases.slice();
