@@ -120,42 +120,49 @@ var AliasList = React.createClass({
 		});
 	},
 	handleChange: function(index) {
-		var updatedAliases = this.state.aliases.slice();
 		var updatedAlias = this.refs[index].getValue();
+		var alias = this.state.aliases[index];
 
-		updatedAliases[index] = {
-			name: updatedAlias.name,
-			sortName: updatedAlias.sortName,
-			language: updatedAlias.language,
-			primary: updatedAlias.primary,
-			default: updatedAlias.default,
-			key: updatedAliases[index].key,
-			valid: this.refs[index].getValid()
-		};
+		if (!alias.sortName && updatedAlias.sortName
+				|| alias.sortName && !updatedAlias.sortName
+				|| !alias.name && updatedAlias.name
+				|| alias.name && !updatedAlias.name) {
+			var updatedAliases = this.state.aliases.slice();
 
-		if (this.state.aliases[index].id) {
-			updatedAliases[index].id = this.state.aliases[index].id;
-		}
+			updatedAliases[index] = {
+				name: updatedAlias.name,
+				sortName: updatedAlias.sortName,
+				language: updatedAlias.language,
+				primary: updatedAlias.primary,
+				default: updatedAlias.default,
+				key: updatedAliases[index].key,
+				valid: this.refs[index].getValid()
+			};
 
-		var rowsSpawned = this.state.rowsSpawned;
-		if (index == this.state.aliases.length - 1) {
-			updatedAliases.push({
-				name: '',
-				sortName: '',
-				language: null,
-				primary: true,
-				default: false,
-				key: rowsSpawned,
-				valid: true
+			if (this.state.aliases[index].id) {
+				updatedAliases[index].id = this.state.aliases[index].id;
+			}
+
+			var rowsSpawned = this.state.rowsSpawned;
+			if (index == this.state.aliases.length - 1) {
+				updatedAliases.push({
+					name: '',
+					sortName: '',
+					language: null,
+					primary: true,
+					default: false,
+					key: rowsSpawned,
+					valid: true
+				});
+
+				rowsSpawned++;
+			}
+
+			this.setState({
+				aliases: updatedAliases,
+				rowsSpawned: rowsSpawned
 			});
-
-			rowsSpawned++;
 		}
-
-		this.setState({
-			aliases: updatedAliases,
-			rowsSpawned: rowsSpawned
-		});
 	},
 	valid: function() {
 		var defaultSet = false;
