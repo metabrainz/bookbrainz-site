@@ -60,6 +60,7 @@ var AliasRow = React.createClass({
 						ref='language'
 						defaultValue={this.props.language}
 						bsStyle={this.validationState()}
+						onChange={this.props.onChange}
 						wrapperClassName='col-md-11'
 						placeholder='Select alias language…'
 						noDefault
