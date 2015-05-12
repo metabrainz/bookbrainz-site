@@ -7,10 +7,10 @@ var Select = require('../../input/select.jsx');
 var AliasRow = React.createClass({
 	getValue: function() {
 		return {
-			id: this.refs.id.getValue(),
+			id: parseInt(this.refs.id.getValue()),
 			name: this.refs.name.getValue(),
 			sortName: this.refs.sortName.getValue(),
-			language: this.refs.language.getValue() || null,
+			language: parseInt(this.refs.language.getValue()) || null,
 			primary: this.refs.primary.getChecked(),
 			default: this.refs.default.getChecked()
 		};
