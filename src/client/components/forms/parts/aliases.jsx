@@ -168,9 +168,14 @@ var AliasList = React.createClass({
 		return defaultSet || numRows == 1;
 	},
 	handleRemove: function(index) {
-		var updatedAliases = this.getValue().slice();
+		var self = this;
+		var updatedAliases = this.getValue();
 
 		if (index != this.state.aliases.length - 1) {
+			updatedAliases.forEach(function(alias, idx) {
+				alias.key = self.state.aliases[idx].key;
+			});
+
 			updatedAliases.splice(index, 1);
 
 			this.setState({
