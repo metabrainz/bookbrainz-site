@@ -125,7 +125,10 @@ var AliasList = React.createClass({
 		if ((!alias.sortName && updatedAlias.sortName)
 				|| (alias.sortName && !updatedAlias.sortName)
 				|| (!alias.name && updatedAlias.name)
-				|| (alias.name && !updatedAlias.name)) {
+				|| (alias.name && !updatedAlias.name)
+				|| (updatedAlias.default && index == this.state.aliases.length - 1)
+				|| (!alias.language && updatedAlias.language)
+				|| (!updatedAlias.primary && index == this.state.aliases.length - 1)) {
 			var updatedAliases = this.getValue();
 
 			updatedAliases.forEach(function(alias, idx) {
