@@ -289,8 +289,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 				name: nextAlias.name,
 				sort_name: nextAlias.sortName,
 				language_id: nextAlias.language,
-				primary: alias.primary,
-				default: alias.default
+				primary: nextAlias.primary,
+				default: nextAlias.default
 			}]);
 		}
 	});
