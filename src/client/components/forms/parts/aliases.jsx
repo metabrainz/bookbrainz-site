@@ -119,7 +119,7 @@ var AliasList = React.createClass({
 	handleChange: function(index) {
 		var self = this;
 		var updatedAlias = this.refs[index].getValue();
-		var alias = this.getValue();
+		var alias = this.state.aliases[index];
 
 		if ((!alias.sortName && updatedAlias.sortName)
 				|| (alias.sortName && !updatedAlias.sortName)
