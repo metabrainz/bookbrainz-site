@@ -7,9 +7,10 @@ var Select = require('../../input/select.jsx');
 var AliasRow = React.createClass({
 	getValue: function() {
 		return {
+			id: this.refs.id.getValue(),
 			name: this.refs.name.getValue(),
 			sortName: this.refs.sortName.getValue(),
-			languageId: this.refs.language.getValue(),
+			language: this.refs.language.getValue(),
 			primary: this.refs.primary.getChecked(),
 			default: this.refs.default.getChecked()
 		};
@@ -32,6 +33,10 @@ var AliasRow = React.createClass({
 	render: function() {
 		return (
 			<div className='row' onChange={this.props.onChange}>
+				<Input
+					type='hidden'
+					defaultValue={this.props.aliasId}
+					ref='id' />
 				<div className='col-md-3'>
 					<Input
 						type='text'
@@ -89,7 +94,6 @@ var AliasList = React.createClass({
 
 		existing.forEach(function(alias, i) {
 			alias.key = i;
-			alias.valid = true;
 		});
 
 		if(existing.length == 1) {
@@ -104,7 +108,7 @@ var AliasList = React.createClass({
 	},
 	getValue: function() {
 		var aliases = [];
-		var numRows = this.state.rowsSpawned;
+		var numRows = this.state.aliases.length;
 
 		for (var i = 0; i < numRows; i++) {
 			aliases.push(this.refs[i].getValue());
@@ -113,6 +117,7 @@ var AliasList = React.createClass({
 		return aliases;
 	},
 	handleChange: function(index) {
+		var self = this;
 		var updatedAlias = this.refs[index].getValue();
 		var alias = this.getValue();
 
@@ -120,21 +125,11 @@ var AliasList = React.createClass({
 				|| alias.sortName && !updatedAlias.sortName
 				|| !alias.name && updatedAlias.name
 				|| alias.name && !updatedAlias.name) {
-			var updatedAliases = this.state.aliases.slice();
+			var updatedAliases = this.getValue();
 
-			updatedAliases[index] = {
-				name: updatedAlias.name,
-				sortName: updatedAlias.sortName,
-				language: updatedAlias.language,
-				primary: updatedAlias.primary,
-				default: updatedAlias.default,
-				key: updatedAliases[index].key,
-				valid: this.refs[index].getValid()
-			};
-
-			if (this.state.aliases[index].id) {
-				updatedAliases[index].id = this.state.aliases[index].id;
-			}
+			updatedAliases.forEach(function(alias, idx) {
+				alias.key = self.state.aliases[idx].key;
+			});
 
 			var rowsSpawned = this.state.rowsSpawned;
 			if (index == this.state.aliases.length - 1) {
@@ -144,11 +139,8 @@ var AliasList = React.createClass({
 					language: null,
 					primary: true,
 					default: false,
-					key: rowsSpawned,
-					valid: true
+					key: rowsSpawned++
 				});
-
-				rowsSpawned++;
 			}
 
 			this.setState({
@@ -159,7 +151,7 @@ var AliasList = React.createClass({
 	},
 	valid: function() {
 		var defaultSet = false;
-		var numRows = this.state.rowsSpawned;
+		var numRows = this.state.aliases.length;
 
 		for (var i = 0; i < numRows; i++) {
 			var aliasRow = this.refs[i];
@@ -176,14 +168,13 @@ var AliasList = React.createClass({
 		return defaultSet || numRows == 1;
 	},
 	handleRemove: function(index) {
-		var updatedAliases = this.state.aliases.slice();
+		var updatedAliases = this.getValue().slice();
 
 		if (index != this.state.aliases.length - 1) {
 			updatedAliases.splice(index, 1);
 
 			this.setState({
-				aliases: updatedAliases,
-				rowsSpawned: this.state.rowsSpawned - 1
+				aliases: updatedAliases
 			});
 		}
 	},
@@ -195,6 +186,7 @@ var AliasList = React.createClass({
 				<AliasRow
 					key={alias.key}
 					ref={index}
+					aliasId={alias.id}
 					name={alias.name}
 					sortName={alias.sortName}
 					language={alias.language}
