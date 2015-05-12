@@ -156,9 +156,9 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		return {
 			name: alias.name,
 			sort_name: alias.sortName,
-			language_id: alias.languageId,
+			language_id: alias.language,
 			primary: alias.primary,
-			default: alias.dflt
+			default: alias.default
 		};
 	});
 
@@ -268,9 +268,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			return [nextAlias.id, {
 				name: nextAlias.name,
 				sort_name: nextAlias.sort_name,
-				language_id: nextAlias.languageId,
+				language_id: nextAlias.language,
 				primary: alias.primary,
-				default: alias.dflt
+				default: alias.default
 			}];
 		}
 	});
@@ -284,9 +284,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			return [null, {
 				name: alias.name,
 				sort_name: alias.sort_name,
-				language_id: alias.languageId,
+				language_id: alias.language,
 				primary: alias.primary,
-				default: alias.dflt
+				default: alias.default
 			}];
 		}
 	});
