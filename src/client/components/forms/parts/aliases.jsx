@@ -121,10 +121,10 @@ var AliasList = React.createClass({
 		var updatedAlias = this.refs[index].getValue();
 		var alias = this.getValue();
 
-		if (!alias.sortName && updatedAlias.sortName
-				|| alias.sortName && !updatedAlias.sortName
-				|| !alias.name && updatedAlias.name
-				|| alias.name && !updatedAlias.name) {
+		if ((!alias.sortName && updatedAlias.sortName)
+				|| (alias.sortName && !updatedAlias.sortName)
+				|| (!alias.name && updatedAlias.name)
+				|| (alias.name && !updatedAlias.name)) {
 			var updatedAliases = this.getValue();
 
 			updatedAliases.forEach(function(alias, idx) {
