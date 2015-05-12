@@ -265,7 +265,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var currentAliases = [];
 
-	edition.aliases.forEach(function(alias) {
+	work.aliases.forEach(function(alias) {
 		var nextAlias = req.body.aliases[0];
 
 		if (alias.id != nextAlias.id) {
