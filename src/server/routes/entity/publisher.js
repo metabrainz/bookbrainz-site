@@ -152,14 +152,20 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.identifiers = newIdentifiers;
 	}
 
-	var newAliases = req.body.aliases.map(function(alias) {
-		return {
+	var newAliases = [];
+
+	req.body.aliases.forEach(function(alias) {
+		if (!alias.name && !alias.sortName) {
+			return;
+		}
+
+		newAliases.push({
 			name: alias.name,
 			sort_name: alias.sortName,
 			language_id: alias.language,
 			primary: alias.primary,
 			default: alias.default
-		};
+		});
 	});
 
 	if (newAliases.length) {
@@ -255,40 +261,43 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
-	var currentAliases = publisher.aliases.map(function(alias) {
+	var currentAliases = [];
+
+	edition.aliases.forEach(function(alias) {
 		var nextAlias = req.body.aliases[0];
 
 		if (alias.id != nextAlias.id) {
 			// Remove the alias
-			return [alias.id, null];
+			currentAliases.push([alias.id, null]);
 		}
 		else {
 			// Modify the alias
 			req.body.aliases.shift();
-			return [nextAlias.id, {
+			currentAliases.push([nextAlias.id, {
 				name: nextAlias.name,
-				sort_name: nextAlias.sort_name,
+				sort_name: nextAlias.sortName,
 				language_id: nextAlias.language,
 				primary: alias.primary,
 				default: alias.default
-			}];
+			}]);
 		}
 	});
 
-	var newAliases = req.body.aliases.map(function(alias) {
+	var newAliases = [];
+
+	req.body.aliases.forEach(function(alias) {
 		// At this point, the only aliases should have null IDs, but check anyway.
-		if (alias.id) {
-			return null;
+		if (alias.id || (!alias.name && !alias.sortName)) {
+			return;
 		}
-		else {
-			return [null, {
-				name: alias.name,
-				sort_name: alias.sort_name,
-				language_id: alias.language,
-				primary: alias.primary,
-				default: alias.default
-			}];
-		}
+
+		newAliases.push([null, {
+			name: alias.name,
+			sort_name: alias.sortName,
+			language_id: alias.language,
+			primary: alias.primary,
+			default: alias.default
+		}]);
 	});
 
 	changes.aliases = currentAliases.concat(newAliases);
