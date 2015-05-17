@@ -7,6 +7,8 @@ var path = require('path');
 var glob = require('glob');
 var mkdirp = require('mkdirp');
 var reactify = require('reactify');
+var less = require('gulp-less');
+var minifyCSS = require('gulp-minify-css');
 
 function bundle() {
 	var srcFiles =
@@ -44,6 +46,13 @@ function bundle() {
 		.pipe(gulp.dest('./static/js'));
 }
 
+function less() {
+	return gulp.src('./src/client/stylesheets/*.less')
+    .pipe(less())
+	.pipe(minifyCSS())
+    .pipe(gulp.dest('./static/stylesheets/compiled'));
+}
+
 function compress() {
 	return gulp.src('static/js/**/*.js')
 		.pipe(uglify())
@@ -72,6 +81,7 @@ function tidy() {
 
 gulp.task('default', bundle);
 gulp.task('bundle', bundle);
+gulp.task('less', less);
 gulp.task('compress', ['bundle'], compress);
 gulp.task('tidy', tidy);
 gulp.task('watch', function() {

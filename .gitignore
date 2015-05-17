@@ -1,5 +1,6 @@
 # Project-specific directories
-/static
+/static/js
+/static/stylesheets/compiled
 /config
 
 ### Node ###
