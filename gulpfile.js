@@ -7,7 +7,7 @@ var path = require('path');
 var glob = require('glob');
 var mkdirp = require('mkdirp');
 var reactify = require('reactify');
-var less = require('gulp-less');
+var gulpless = require('gulp-less');
 var minifyCSS = require('gulp-minify-css');
 
 function bundle() {
@@ -47,10 +47,12 @@ function bundle() {
 }
 
 function less() {
-	return gulp.src('./src/client/stylesheets/*.less')
-    .pipe(less())
-	.pipe(minifyCSS())
-    .pipe(gulp.dest('./static/stylesheets/compiled'));
+	return gulp.src(['./src/client/stylesheets/lobes.less', './src/client/stylesheets/style.less'])
+		.pipe(gulpless({
+			paths: [ path.join(__dirname, './node_modules/bootstrap/less') ]
+		}))
+		.pipe(minifyCSS())
+		.pipe(gulp.dest('./static/stylesheets'));
 }
 
 function compress() {
