@@ -9,6 +9,7 @@ var mkdirp = require('mkdirp');
 var reactify = require('reactify');
 var gulpless = require('gulp-less');
 var minifyCSS = require('gulp-minify-css');
+var prefixer = require('gulp-autoprefixer');
 
 function bundle() {
 	var srcFiles =
@@ -51,6 +52,7 @@ function less() {
 		.pipe(gulpless({
 			paths: [ path.join(__dirname, './node_modules/bootstrap/less') ]
 		}))
+		.pipe(prefixer('last 4 versions'))
 		.pipe(minifyCSS())
 		.pipe(gulp.dest('./static/stylesheets'));
 }
