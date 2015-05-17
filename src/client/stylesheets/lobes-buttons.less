@@ -1,0 +1,145 @@
+
+
+//
+// Buttons
+// --------------------------------------------------
+
+.btn {
+  border: 0;
+  border-radius:0;
+  transition: all 0.2s;
+  margin: 0.15em;
+  .button-size(@padding-small-vertical; @padding-small-horizontal * 2 ; @font-size-small; @line-height-small; 0px);
+}
+
+// Button variants
+// -------------------------
+// Easily pump out default styles, as well as :hover, :focus, :active,
+// and disabled options for all buttons
+.button-variant(@color; @background:transparent; @border:@background) {
+  color: @color;
+  background: @background;
+  
+  &:hover,
+  &:focus,
+  &:active,
+  &.active,
+  .open .dropdown-toggle& {
+    // color: white;
+    background: lighten(@background, 7%);
+    // outline: 2px solid @background;
+  }
+  
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      color: lighten(@color,10%);
+      background: desaturate(@background, 15%);
+    }
+  }
+}
+
+.btn-link:before{
+  border-color: transparent;
+  &:hover,&:focus,&:active{
+    border-color:@btn-primary-border
+  }
+}
+
+
+// Button Sizes
+// --------------------------------------------------
+
+.btn-lg {
+  // line-height: ensure even-numbered height of button next to large input
+  .button-size(@padding-large-vertical ; @padding-large-horizontal * 3; @font-size-large; @line-height-large; 0px);
+}
+.btn-sm,
+.btn-xs {
+  // line-height: ensure proper height of button next to small input
+  .button-size(@padding-small-vertical; @padding-small-horizontal * 1.5; @font-size-small; @line-height-small; 0px);
+}
+.btn-xs {
+  padding: 1px 5px;
+}
+
+
+
+// Hexagonal button
+// --------------------------------------------------
+
+.hb-flickr, .hb-flickr:after, .hb-flickr:before {
+  background: #ff1981;
+  border-color: #ff1981;
+  color: #fff;
+}
+.hb, .hb:after, .hb:before {
+  background-color: @btn-primary-bg;
+  border-left: 1px solid @btn-primary-bg;
+  border-right: 1px solid @btn-primary-bg;
+  color: @white;
+  box-sizing: border-box;
+  transition: all .05s;
+}
+.hb i {
+  top:-2px;
+  z-index: 9;
+  -webkit-transition: all .25s ease;
+  -moz-transition: all .25s ease;
+  -ms-transition: all .25s ease;
+  -o-transition: all .25s ease;
+  transition: all .25s ease;
+}
+.hb-sm, .hb-sm:after, .hb-sm:before {
+  height: 37px;
+  width: 64px;
+}
+.hb-sm {
+  line-height: 37px;
+  font-size: 37px;
+  margin: 18.5px 0;
+}
+.hb {
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  z-index: 0;
+  cursor: pointer;
+}
+.hb:before {
+  -webkit-transform: rotate(60deg);
+  -moz-transform: rotate(60deg);
+  -ms-transform: rotate(60deg);
+  -o-transform: rotate(60deg);
+  transform: rotate(60deg);
+}
+.hb:after, .hb:before {
+  position: absolute;
+  content: "";
+  left: -1px;
+  top: 0;
+  z-index: -1;
+}
+.hb:after {
+  -webkit-transform: rotate(-60deg);
+  -moz-transform: rotate(-60deg);
+  -ms-transform: rotate(-60deg);
+  -o-transform: rotate(-60deg);
+  transform: rotate(-60deg);
+}
+.hb-flickr-inv, .hb-flickr-inv:after, .hb-flickr-inv:before, .hb-flickr:hover, .hb-flickr:hover:after, .hb-flickr:hover:before {
+  background: 0 0;
+  border-color: #ff1981;
+  color: #ff1981;
+}
+.hb:hover, .hb:hover:after, .hb:hover:before {
+  background: 0 0;
+  border-left: 1px solid @btn-primary-bg;
+  border-right: 1px solid @btn-primary-bg;
+  color: @btn-primary-bg;
+}

@@ -1,0 +1,84 @@
+/*!
+ * Your Theme Name v0.1.0
+ *
+ * Copyright 2013 Your Name
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This theme was built using the Themestrap Bootstrap Theme Kit.
+ * https://github.com/divshot/themestrap
+ */
+
+@import "bootstrap.less";
+@import "colorPalette.less";
+@import "links.less";
+@import "lobes-buttons.less";
+@import "lobes-navbars.less";
+
+// Add CSS Customizations to your theme here.
+
+@font-subsets: "latin,cyrillic-ext,cyrillic,latin-ext";
+// @import url(http://fonts.googleapis.com/css?family=Dosis:200,300,400,600|Signika+Negative:300,400,600|Exo:300,400,600|Roboto:100,400,300,700|Sintony:400,700);
+// @import ~"url(http://fonts.googleapis.com/css?family=Roboto:100,400,300,700|Sintony:400,700&subset=@{font-subsets})"; // For some reason, this is failing in lessc 2.4.0
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,400,300,700|Sintony:200,400,700&subset=latin,latin-ext,cyrillic,cyrillic-ext);
+
+// @font-family-sans-serif: 'Dosis', sans-serif;
+// @font-family-sans-serif: 'Signika Negative', sans-serif;
+// @font-family-sans-serif: 'Exo', sans-serif;
+// @font-family-sans-serif: 'Roboto', sans-serif;
+@font-family-sans-serif: 'Sintony', sans-serif;
+
+@headings-font-family:    'Roboto', sans-serif;
+@headings-font-weight:    300;
+@headings-line-height:    1.3;
+
+
+.corporate-background{
+	background: url(../assets/background_tile.jpg) fade(@gray-light,60%);
+	background-blend-mode: screen;
+}
+
+
+//
+// Headings
+// --------------------------------------------------
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  color: @headings-font-color;
+  small {
+  	font-size: 0.65em;
+    font-weight: @headings-small-font-weight;
+  }
+}
+
+.panel{
+  color:@text-color;
+  margin-bottom: @grid-gutter-width;
+  -webkit-box-shadow: none;
+	box-shadow: none;
+  border-bottom-color: @panel-inner-border;
+  .panel-heading {
+		font-size: @headings-font-size;
+	  font-family:  @headings-font-family;
+	  font-weight: 	200;
+	  line-height:  @headings-line-height;
+	  padding: 20px;
+    outline: 1px solid @panel-inner-border;
+    border-bottom-width: 2px; 
+	}
+}
+
+
+ul.hexagonBullet li:before,
+.hexagonBullet:not(ul):before{
+  content: "\2B22";
+  margin-right: 0.5em;
+  font-size: 0.5em;
+  opacity: 0.42;
+  vertical-align: middle;
+}
+
+ul.hexagonBullet {
+  list-style: none;
+}
