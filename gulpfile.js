@@ -83,7 +83,7 @@ function tidy() {
 		}));
 }
 
-gulp.task('default', bundle);
+gulp.task('default', ['bundle', 'less']);
 gulp.task('bundle', bundle);
 gulp.task('less', less);
 gulp.task('compress', ['bundle'], compress);
