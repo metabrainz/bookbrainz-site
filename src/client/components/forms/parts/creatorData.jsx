@@ -11,7 +11,7 @@ var CreatorData = React.createClass({
 		return {
 			beginDate: this.refs.begin.getValue(),
 			endDate: this.refs.end.getValue(),
-			ended: this.refs.ended.getValue(),
+			ended: this.refs.ended.getChecked(),
 			gender: this.refs.gender.getValue(),
 			creatorType: this.refs.creatorType.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
