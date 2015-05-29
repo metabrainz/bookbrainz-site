@@ -1,0 +1,97 @@
+@min-height: 350px;
+@animation-speed : 0.45s;
+
+.metaCarousel{
+	&:not(.iHaveJavasript){
+		.carousel-control,
+		.item:not(.active){
+			&, & *{
+				display: none;
+				height: 0;
+			}
+		}
+		.item img{
+			padding: 0;
+			padding-top: 25px;
+			margin: 0 auto;
+			transition: none;
+		}
+	}
+	.carousel{
+		position: relative;
+		perspective: 1000;
+		 .item {
+		  	width: 100%;
+		  	transform:none; //Override Boostrap 3.2
+			> img {
+				padding: 0;
+				padding-top: 25px;
+				margin: 0 auto;
+				transition: transform @animation-speed;
+				transform-style: preserve-3d;
+				position: relative;
+				transform-origin: 100% 75px; /* half of height */
+				backface-visibility: hidden;
+			}
+			.caption{
+				  position: absolute;
+				  left: 15%;
+				  right: 15%;
+				  bottom: 20px;
+				  z-index: 10;
+				  padding-top: 20px;
+				  padding-bottom: 20px;
+				  text-align: center;
+				  transition: opacity @animation-speed;
+			}
+			&.active,
+			&.next.left,
+			&.prev.right    { 
+				left: initial;
+				transform:none; //Override Boostrap 3.2
+				img{
+					transform: rotateX(0deg);
+					z-index: 2;
+				}
+				.caption{opacity: 1;}
+			}
+			&.next,
+			&.active.right  {
+				left: initial;
+				transform:none; //Override Boostrap 3.2
+				img{
+					transform: rotateX(-180deg);
+				}
+				.caption{opacity: 0;}
+			}
+			&.prev,
+			&.active.left   {
+				left: initial;
+				transform:none; //Override Boostrap 3.2
+				img{
+					transform: rotateX(180deg);
+				}
+				.caption{opacity: 0;}
+			}
+		}
+	}
+	.carousel-control{
+		background: none;
+		&,& >* {color: @asphalt;}
+		@media (max-width:@screen-md){
+			width: 20px;
+			// &.right{margin-right: -10px;}
+			&.left{margin-left: -20px;}
+		}
+	}
+	.carousel-inner{
+		  min-height: @min-height;
+	}
+	.item {
+		min-height: @min-height;
+		.carousel-caption{
+			margin-top: 160px;
+		}
+	}
+
+}
