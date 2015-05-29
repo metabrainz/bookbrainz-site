@@ -1,6 +1,6 @@
 @logo-height: 30px; // Unfortunately necessary for accurate logo padding
 
-.navbar-variant(@color; @logo-width:150px; @active-color:@white) {
+.navbar-variant(@color; @logo-width:200px; @active-color:@white) {
   @active-bg: @color;
   @disabled-color: desaturate(@color,42%);
   @disabled-bg: @disabled-color;
@@ -128,6 +128,7 @@
     &.logo{
       padding-top: ((@navbar-height - @logo-height) / 2);
       padding-bottom: ((@navbar-height - @logo-height) / 2);
+      margin-left: -@navbar-padding-horizontal;
     }
     &:hover,
     &:focus {
@@ -164,15 +165,15 @@
 // ----------------------------------------------
 
 .navbar-default{
-  .navbar-variant(@brown);
+  .navbar-variant(@orange);
 }
 body.MetaBrainz .navbar,
 .navbar.MetaBrainz{
-  @logo-width:170px;
-  .navbar-variant(@green,@logo-width);
-  
+  @logo-width:191px;
+  .navbar-variant(@metabrainz,@logo-width);
+
   // Custom size adjustments as MeB has lots of navbar items
-  // The other option is to change the breakpoints in the variables.less and recompile, but -> meh. 
+  // The other option is to change the breakpoints in the variables.less and recompile, but -> meh.
   @media (min-width: @screen-tablet) and (max-width: @screen-desktop){
     .navbar-collapse{
       width: ~"calc(100% - @{logo-width} - @{padding-small-horizontal})";
@@ -192,23 +193,32 @@ body.MetaBrainz .navbar,
 }
 body.MusicBrainz .navbar,
 .navbar.MusicBrainz{
-  @logo-width:170px; 
-  .navbar-variant(@purple,@logo-width);
+  @logo-width:191px;
+  .navbar-variant(@musicbrainz,@logo-width);
+}
+body.Picard .navbar,
+.navbar.Picard{
+  @logo-width:115px;
+  .navbar-variant(@picard,@logo-width);
 }
 body.CritiqueBrainz .navbar,
 .navbar.CritiqueBrainz{
-  @logo-width:170px;
-  .navbar-variant(@turquoise,@logo-width);
+  @logo-width:215px;
+  .navbar-variant(@critiquebrainz,@logo-width);
 }
 body.AcousticBrainz .navbar,
 .navbar.AcousticBrainz{
-  @logo-width:170px;
-  .navbar-variant(@blue,@logo-width);
+  @logo-width:230px;
+  .navbar-variant(@acousticbrainz,@logo-width);
 }
-
-// Adding just a bit of whitespace between the navbar and the content
-@media(min-width:@screen-tablet) {
-  body > .container {
-    padding-top: @padding-large-vertical*4;
-  }
+body.BookBrainz .navbar,
+.navbar.BookBrainz{
+  @logo-width:180px;
+  .navbar-variant(@bookbrainz,@logo-width);
+  background: rgba(255, 255, 255, 0.9);
+}
+body.CoverArtArchive .navbar,
+.navbar.CoverArtArchive{
+  @logo-width:245px;
+  .navbar-variant(@coverartarchive,@logo-width);
 }
