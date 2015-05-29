@@ -14,6 +14,19 @@ a{
         }
     }
 
+    > .panel {
+        color: @link-color;
+    }
+    &:hover > .panel {
+        color: @link-hover-color;
+    }
+    &:visited:not(.btn) > .panel {
+        color: @link-visited-color;
+        &:hover > .panel {
+            color: @link-visited-hover-color;
+        }
+    }
+
     // Exceptions to :visited state
     &.list-group-item:visited{
         color:@list-group-link-color;
