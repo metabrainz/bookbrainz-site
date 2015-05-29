@@ -27,10 +27,12 @@ module.exports = React.createClass({
 			dataValid: this.refs.data.valid()
 		})
 	},
-	backClick: function() {
+	backClick: function(e) {
+		e.preventDefault();
 		this.setTab(this.state.tab - 1);
 	},
-	nextClick: function() {
+	nextClick: function(e) {
+		e.preventDefault();
 		this.setTab(this.state.tab + 1);
 	},
 	handleTab: function(tabKey) {
