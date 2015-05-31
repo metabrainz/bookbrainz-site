@@ -23,7 +23,7 @@ var $ = require('jquery');
 
 if (typeof window !== 'undefined') {
 	window.$ = $;
-	require('select2');
+	require('Select2');
 }
 
 var Select = React.createClass({
