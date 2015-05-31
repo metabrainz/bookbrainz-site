@@ -65,7 +65,7 @@ module.exports = React.createClass({
 			aliases: aliasData,
 			beginDate: creatorData.beginDate,
 			endDate: creatorData.endDate,
-			ended: (creatorData.ended === 'on' ? true : false),
+			ended: creatorData.ended,
 			genderId: parseInt(creatorData.gender),
 			creatorTypeId: parseInt(creatorData.creatorType),
 			disambiguation: creatorData.disambiguation,
