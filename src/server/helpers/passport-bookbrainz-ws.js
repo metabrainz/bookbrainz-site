@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var util = require('util');
 var PasswordGrantStrategy = require('passport-oauth2-password-grant');
 var User = require('../data/user');

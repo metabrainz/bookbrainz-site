@@ -18,6 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var _ = require('underscore');
@@ -102,8 +104,8 @@ router.get('/search', function(req, res) {
 	}
 
 	bbws.get('/search', {
-		params: params
-	})
+			params: params
+		})
 		.then(function(results) {
 			if (!results.hits) {
 				return null;
@@ -133,7 +135,7 @@ router.get('/search', function(req, res) {
 
 				if (model) {
 					return model.findOne(entity_stub.entity_gid, {
-						populate: [ 'disambiguation' ]
+						populate: ['disambiguation']
 					});
 				}
 				else {
@@ -153,7 +155,7 @@ router.get('/search', function(req, res) {
 				res.json(entities);
 			}
 		})
-		.catch(function(err) {
+		.catch(function() {
 			var message = 'An error occurred while obtaining search results';
 
 			if (mode === 'search') {

@@ -27,6 +27,8 @@ var Identifiers = require('./identifiers.jsx');
 
 var CreatorData = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return {
 			beginDate: this.refs.begin.getValue(),
 			endDate: this.refs.end.getValue(),
@@ -39,27 +41,43 @@ var CreatorData = React.createClass({
 		};
 	},
 	getInitialState: function() {
+		'use strict';
+
 		return {
 			ended: this.props.creator ? this.props.creator.ended : false
 		};
 	},
 	valid: function() {
+		'use strict';
+
 		return (
 			this.refs.begin.valid() && (!this.refs.ended.getValue() || this.refs.end.valid())
 		);
 	},
 	handleEnded: function() {
+		'use strict';
+
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
 	render: function() {
+		'use strict';
+
+		var initialBeginDate = null;
+		var initialEndDate = null;
+		var initialGender = null;
+		var initialCreatorType = null;
+		var initialDisambiguation = null;
+		var initialAnnotation = null;
+		var initialIdentifiers = [];
+
 		if (this.props.creator) {
-			var initialBeginDate = this.props.creator.begin_date;
-			var initialEndDate = this.props.creator.end_date;
-			var initialGender = this.props.creator.gender ? this.props.creator.gender.gender_id : null;
-			var initialCreatorType = this.props.creator.creator_type ? this.props.creator.creator_type.creator_type_id : null;
-			var initialDisambiguation = this.props.creator.disambiguation ? this.props.creator.disambiguation.comment : null;
-			var initialAnnotation = this.props.creator.annotation ? this.props.creator.annotation.content : null;
-			var initialIdentifiers = this.props.creator.identifiers.map(function(identifier) {
+			initialBeginDate = this.props.creator.begin_date;
+			initialEndDate = this.props.creator.end_date;
+			initialGender = this.props.creator.gender ? this.props.creator.gender.gender_id : null;
+			initialCreatorType = this.props.creator.creator_type ? this.props.creator.creator_type.creator_type_id : null;
+			initialDisambiguation = this.props.creator.disambiguation ? this.props.creator.disambiguation.comment : null;
+			initialAnnotation = this.props.creator.annotation ? this.props.creator.annotation.content : null;
+			initialIdentifiers = this.props.creator.identifiers.map(function(identifier) {
 				return {
 					id: identifier.id,
 					value: identifier.value,
@@ -73,7 +91,7 @@ var CreatorData = React.createClass({
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden': '' }>
+			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
 				<p className='lead'>Fill out any data you know about the entity.</p>
 

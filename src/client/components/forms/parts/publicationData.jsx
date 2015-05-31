@@ -26,6 +26,8 @@ var Identifiers = require('./identifiers.jsx');
 
 var PublicationData = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return {
 			publicationType: this.refs.publicationType.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
@@ -34,14 +36,23 @@ var PublicationData = React.createClass({
 		};
 	},
 	valid: function() {
+		'use strict';
+
 		return true;
 	},
 	render: function() {
+		'use strict';
+
+		var initialPublicationType = null;
+		var initialDisambiguation = null;
+		var initialAnnotation = null;
+		var initialIdentifiers = [];
+
 		if (this.props.publication) {
-			var initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
-			var initialDisambiguation = this.props.publication.disambiguation ? this.props.publication.disambiguation.comment : null;
-			var initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;
-			var initialIdentifiers = this.props.publication.identifiers.map(function(identifier) {
+			initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
+			initialDisambiguation = this.props.publication.disambiguation ? this.props.publication.disambiguation.comment : null;
+			initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;
+			initialIdentifiers = this.props.publication.identifiers.map(function(identifier) {
 				return {
 					id: identifier.id,
 					value: identifier.value,
@@ -55,7 +66,7 @@ var PublicationData = React.createClass({
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden': '' }>
+			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
 				<p className='lead'>Fill out any data you know about the entity.</p>
 

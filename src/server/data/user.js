@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var Model = require('../helpers/model');
 require('../data/properties/gender');
 require('../data/properties/user-type');

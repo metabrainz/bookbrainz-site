@@ -17,8 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var Model = require('../../helpers/model');
-var Language = require('./language');
+require('./language');
 
 var Alias = new Model('Alias');
 

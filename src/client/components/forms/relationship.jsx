@@ -37,11 +37,13 @@ var SearchSelect = require('../input/search-select.jsx');
 
 module.exports = React.createClass({
 	getInitialState: function() {
+		'use strict';
+
 		var targetEntity = this.props.targetEntity;
 		targetEntity.key = 1;
 		targetEntity.entity_gid = targetEntity.bbid;
 
-		loadedEntities = {};
+		var loadedEntities = {};
 		loadedEntities[targetEntity.bbid] = targetEntity;
 		return {
 			targetEntity: targetEntity,
@@ -50,9 +52,11 @@ module.exports = React.createClass({
 			selectedRelationship: null,
 			addedRelationships: [],
 			addedRelationshipsSpawned: 0
-		}
+		};
 	},
 	fetchEntity: function(uuid) {
+		'use strict';
+
 		// This should be modified to use bbws if the config can be separated from
 		// that.
 		return request.get(this.props.wsUrl + '/entity/' + uuid)
@@ -76,6 +80,8 @@ module.exports = React.createClass({
 		});
 	},
 	handleSubmit: function(e) {
+		'use strict';
+
 		var self = this;
 		e.preventDefault();
 
@@ -100,6 +106,8 @@ module.exports = React.createClass({
 		});
 	},
 	handleAdd: function(e) {
+		'use strict';
+
 		var addedRelationships = this.state.addedRelationships.slice();
 
 		addedRelationships.push({
@@ -113,13 +121,17 @@ module.exports = React.createClass({
 		this.setState({addedRelationships: addedRelationships});
 	},
 	handleSwap: function(i, e) {
+		'use strict';
+
 		var displayEntities = this.state.displayEntities.slice();
-		displayEntities[i] = this.state.displayEntities[i+1];
-		displayEntities[i+1] = this.state.displayEntities[i];
+		displayEntities[i] = this.state.displayEntities[i + 1];
+		displayEntities[i + 1] = this.state.displayEntities[i];
 
 		this.setState({displayEntities: displayEntities});
 	},
 	setDisplayEntity: function(i, entity) {
+		'use strict';
+
 		entity.key = this.state.displayEntities[i].key;
 
 		var displayEntities = this.state.displayEntities.slice();
@@ -128,12 +140,16 @@ module.exports = React.createClass({
 		this.setState({displayEntities: displayEntities});
 	},
 	addLoadedEntity: function(entity) {
+		'use strict';
+
 		var loadedEntities = extend({}, this.state.loadedEntities);
 		loadedEntities[entity.bbid] = entity;
 
 		this.setState({loadedEntities: loadedEntities});
 	},
 	removeRelationship: function(i) {
+		'use strict';
+
 		var addedRelationships = this.state.addedRelationships.slice();
 
 		addedRelationships.splice(i, 1);
@@ -141,6 +157,8 @@ module.exports = React.createClass({
 		this.setState({addedRelationships: addedRelationships});
 	},
 	handleUUIDChange: function(i, e) {
+		'use strict';
+
 		var self = this;
 		var bbid = this.refs[i].getValue();
 		if (bbid !== this.state.targetEntity.bbid) {
@@ -149,7 +167,7 @@ module.exports = React.createClass({
 			}
 			else {
 				this.fetchEntity(bbid)
-				.then(function(entity){
+				.then(function(entity) {
 					self.addLoadedEntity(entity);
 					self.setDisplayEntity(i, entity);
 				});
@@ -160,9 +178,11 @@ module.exports = React.createClass({
 		}
 	},
 	handleRelationshipChange: function(e) {
+		'use strict';
+
 		var relationshipId = this.refs.relationship.getValue();
 		var selectedRelationship = this.props.relationshipTypes.filter(function(relationship) {
-			return relationship.id == relationshipId;
+			return relationship.id === relationshipId;
 		});
 
 		if (selectedRelationship.length !== 0) {
@@ -173,11 +193,10 @@ module.exports = React.createClass({
 		}
 	},
 	render: function() {
-		var self = this;
+		'use strict';
 
-		if (this.state.waiting) {
-			var loadingElement = <LoadingSpinner />;
-		}
+		var self = this;
+		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		var select2Options = {
 			width: '100%'
@@ -193,7 +212,7 @@ module.exports = React.createClass({
 				<div className='form-group' key={entity.key}>
 					<SearchSelect
 						ref={i}
-						label={'Entity ' + (i+1)}
+						label={'Entity ' + (i + 1)}
 						labelAttribute='name'
 						collection='entity'
 						defaultValue={entity}
@@ -202,7 +221,7 @@ module.exports = React.createClass({
 						onChange={self.handleUUIDChange.bind(null, i)}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4'
-						disabled={entity == self.state.targetEntity}
+						disabled={entity === self.state.targetEntity}
 						standalone />
 					<div className='col-md-1'>
 						<Button
@@ -218,8 +237,12 @@ module.exports = React.createClass({
 			);
 		});
 
+		var relationshipDescription = null;
 		if (this.state.selectedRelationship) {
-			var relationshipDescription = <Input type='static' wrapperClassName='col-md-4 col-md-offset-4' value={this.state.selectedRelationship.description} />;
+			relationshipDescription = <Input
+				type='static'
+				wrapperClassName='col-md-4 col-md-offset-4'
+				value={this.state.selectedRelationship.description} />;
 		}
 
 		var allEntitiesLoaded = this.state.displayEntities.every(function(entity) {
@@ -228,11 +251,13 @@ module.exports = React.createClass({
 
 		// This could easily be a React component, and should be changed to
 		// that at some point soon.
+		var renderedRelationship = null;
+		var addValid = false;
 		if (allEntitiesLoaded && this.state.selectedRelationship) {
-			var renderedRelationship = {
+			renderedRelationship = {
 				__html: renderRelationship(this.state.displayEntities, this.state.selectedRelationship, null)
 			};
-			var addValid = true;
+			addValid = true;
 		}
 
 		var relationshipEntry = (
@@ -274,7 +299,7 @@ module.exports = React.createClass({
 		);
 
 		var addedRelationships = this.state.addedRelationships.map(function(relationship, i) {
-			var renderedRelationship = {
+			var rendered = {
 				__html: renderRelationship(relationship.entities, relationship.type, null)
 			};
 			return (
@@ -309,7 +334,7 @@ module.exports = React.createClass({
 				<div className='row'>
 					<div className='col-md-4 col-md-offset-4'>
 						<Input
-							bsStyle='success' block type='submit' value='Submit!' disabled={this.state.addedRelationships.length == 0} onClick={this.handleSubmit} />
+							bsStyle='success' block type='submit' value='Submit!' disabled={this.state.addedRelationships.length === 0} onClick={this.handleSubmit} />
 					</div>
 				</div>
 			</div>

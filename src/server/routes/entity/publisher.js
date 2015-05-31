@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
@@ -41,43 +43,44 @@ var Promise = require('bluebird');
 /* If the route specifies a BBID, load the Publisher for it. */
 router.param('bbid', makeEntityLoader(Publisher, 'Publisher not found'));
 
-router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
+router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	var publisher = res.locals.entity;
 	var title = 'Publisher';
 
-	if (publisher.default_alias && publisher.default_alias.name)
+	if (publisher.default_alias && publisher.default_alias.name) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
+	}
 
 	res.render('entity/view/publisher', {
 		title: title
 	});
 });
 
-router.get('/:bbid/revisions', function(req, res, next) {
+router.get('/:bbid/revisions', function(req, res) {
 	var publisher = res.locals.entity;
 	var title = 'Publisher';
 
-	if (publisher.default_alias && publisher.default_alias.name)
+	if (publisher.default_alias && publisher.default_alias.name) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
+	}
 
 	bbws.get('/Publisher/' + publisher.bbid + '/revisions')
-	.then(function(revisions) {
-
-		var users = {};
-		revisions.objects.forEach(function(revision) {
-			if(!users[revision.user.user_id]) {
-				users[revision.user.user_id] = User.findOne(revision.user.user_id);
-			}
-		})
-
-		Promise.props(users).then(function(users) {
-			res.render('entity/revisions', {
-				title: title,
-				revisions: revisions,
-				users: users
+		.then(function(revisions) {
+			var promisedUsers = {};
+			revisions.objects.forEach(function(revision) {
+				if (!promisedUsers[revision.user.user_id]) {
+					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
+				}
 			});
-		})
-	});
+
+			Promise.props(promisedUsers).then(function(users) {
+				res.render('entity/revisions', {
+					title: title,
+					revisions: revisions,
+					users: users
+				});
+			});
+		});
 });
 
 // Creation
@@ -146,11 +149,13 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.ended = req.body.ended;
 	}
 
-	if (req.body.disambiguation)
+	if (req.body.disambiguation) {
 		changes.disambiguation = req.body.disambiguation;
+	}
 
-	if (req.body.annotation)
+	if (req.body.annotation) {
 		changes.annotation = req.body.annotation;
+	}
 
 	if (req.body.note) {
 		changes.revision = {
@@ -162,7 +167,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		return {
 			value: identifier.value,
 			identifier_type: {
-				identifier_type_id: identifier.typeId,
+				identifier_type_id: identifier.typeId
 			}
 		};
 	});
@@ -208,7 +213,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var publisherTypeId = req.body.publisherTypeId;
 	if ((!publisher.publisher_type) ||
-	    (publisher.publisher_type.publisher_type_id !== publisherTypeId)) {
+		(publisher.publisher_type.publisher_type_id !== publisherTypeId)) {
 		changes.publisher_type = {
 			publisher_type_id: publisherTypeId
 		};
@@ -228,13 +233,13 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var disambiguation = req.body.disambiguation;
 	if ((!publisher.disambiguation) ||
-	    (publisher.disambiguation.comment !== disambiguation)) {
+		(publisher.disambiguation.comment !== disambiguation)) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
 	var annotation = req.body.annotation;
 	if ((!publisher.annotation) ||
-			(publisher.annotation.content !== annotation)) {
+		(publisher.annotation.content !== annotation)) {
 		changes.annotation = annotation ? annotation : null;
 	}
 
@@ -247,7 +252,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var currentIdentifiers = publisher.identifiers.map(function(identifier) {
 		var nextIdentifier = req.body.identifiers[0];
 
-		if (identifier.id != nextIdentifier.id) {
+		if (identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
@@ -257,7 +262,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			return [nextIdentifier.id, {
 				value: nextIdentifier.value,
 				identifier_type: {
-					identifier_type_id: nextIdentifier.typeId,
+					identifier_type_id: nextIdentifier.typeId
 				}
 			}];
 		}
@@ -272,7 +277,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			return [null, {
 				value: identifier.value,
 				identifier_type: {
-					identifier_type_id: identifier.typeId,
+					identifier_type_id: identifier.typeId
 				}
 			}];
 		}
@@ -285,7 +290,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	publisher.aliases.forEach(function(alias) {
 		var nextAlias = req.body.aliases[0];
 
-		if (alias.id != nextAlias.id) {
+		if (alias.id !== nextAlias.id) {
 			// Remove the alias
 			currentAliases.push([alias.id, null]);
 		}
@@ -322,8 +327,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	changes.aliases = currentAliases.concat(newAliases);
 
 	Publisher.update(publisher.bbid, changes, {
-		session: req.session
-	})
+			session: req.session
+		})
 		.then(function(revision) {
 			res.send(revision);
 		});

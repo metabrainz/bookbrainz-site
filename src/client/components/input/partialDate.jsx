@@ -26,15 +26,21 @@ var y_re = /^\d{4}$/;
 
 var PartialDate = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return this.state.value;
 	},
 	getInitialState: function() {
+		'use strict';
+
 		return {
 			value: this.props.defaultValue,
 			valid: this.validate(this.props.defaultValue)
 		};
 	},
 	validate: function(value) {
+		'use strict';
+
 		if (!value) {
 			return true;
 		}
@@ -44,6 +50,8 @@ var PartialDate = React.createClass({
 		}
 	},
 	handleChange: function() {
+		'use strict';
+
 		var input = this.refs.input.getValue().trim();
 
 		if (input.length > 10) {
@@ -56,9 +64,13 @@ var PartialDate = React.createClass({
 		});
 	},
 	valid: function() {
+		'use strict';
+
 		return this.state.valid;
 	},
 	validationState: function() {
+		'use strict';
+
 		var validationClass = null;
 
 		if (this.state.value) {
@@ -68,6 +80,8 @@ var PartialDate = React.createClass({
 		return validationClass;
 	},
 	render: function() {
+		'use strict';
+
 		return (
 			<Input
 				type='text'

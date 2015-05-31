@@ -26,6 +26,8 @@ var Identifiers = require('./identifiers.jsx');
 
 var WorkData = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return {
 			languages: this.refs.languages.getValue(),
 			workType: this.refs.workType.getValue(),
@@ -35,17 +37,26 @@ var WorkData = React.createClass({
 		};
 	},
 	valid: function() {
+		'use strict';
+
 		return true;
 	},
 	render: function() {
+		'use strict';
+
+		var initialLanguages = [];
+		var initialWorkType = null;
+		var initialDisambiguation = null;
+		var initialAnnotation = null;
+		var initialIdentifiers = [];
 		if (this.props.work) {
-			var initialLanguages = this.props.work.languages.map(function(language) {
+			initialLanguages = this.props.work.languages.map(function(language) {
 				return language.language_id;
 			});
-			var initialWorkType = this.props.work.work_type ? this.props.work.work_type.work_type_id : null;
-			var initialDisambiguation = this.props.work.disambiguation ? this.props.work.disambiguation.comment : null;
-			var initialAnnotation = this.props.work.annotation ? this.props.work.annotation.content : null;
-			var initialIdentifiers = this.props.work.identifiers.map(function(identifier) {
+			initialWorkType = this.props.work.work_type ? this.props.work.work_type.work_type_id : null;
+			initialDisambiguation = this.props.work.disambiguation ? this.props.work.disambiguation.comment : null;
+			initialAnnotation = this.props.work.annotation ? this.props.work.annotation.content : null;
+			initialIdentifiers = this.props.work.identifiers.map(function(identifier) {
 				return {
 					id: identifier.id,
 					value: identifier.value,
@@ -59,7 +70,7 @@ var WorkData = React.createClass({
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden': '' }>
+			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
 				<p className='lead'>Fill out any data you know about the entity.</p>
 

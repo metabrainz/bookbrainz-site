@@ -25,18 +25,26 @@ var uuid_re =
 
 var UUIDInput = React.createClass({
 	getInitialState: function() {
+		'use strict';
+
 		return {
 			value: this.props.defaultValue,
 			valid: true
 		};
 	},
 	getValue: function() {
+		'use strict';
+
 		return this.state.value;
 	},
 	valid: function() {
+		'use strict';
+
 		return this.state.valid;
 	},
 	validationState: function() {
+		'use strict';
+
 		if (this.state.valid) {
 			return 'success';
 		}
@@ -45,6 +53,7 @@ var UUIDInput = React.createClass({
 		}
 	},
 	handleChange: function(e) {
+		'use strict';
 		// This could also be done using ReactLink:
 		// http://facebook.github.io/react/docs/two-way-binding-helpers.html
 
@@ -67,6 +76,8 @@ var UUIDInput = React.createClass({
 		);
 	},
 	render: function() {
+		'use strict';
+
 		return (
 			<Input
 				type='text'

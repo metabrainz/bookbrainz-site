@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var React = require('react');
@@ -44,14 +46,14 @@ router.get('/edit', auth.isAuthenticated, function(req, res, next) {
 				markup: markup
 			});
 		})
-		.catch(function(err) {
+		.catch(function() {
 			next(new Error('An internal error occurred while loading profile'));
 		});
 });
 
 router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 	/* Should handle errors in some fashion other than redirecting. */
-	if (req.body.id != req.user.id) {
+	if (req.body.id !== req.user.id) {
 		req.session.error = 'You do not have permission to edit that user';
 		res.redirect(303, '/editor/edit');
 	}
@@ -65,7 +67,7 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 		.then(function(user) {
 			res.send(user);
 		})
-		.catch(function(err) {
+		.catch(function() {
 			req.session.error = 'An internal error occurred while modifying profile';
 			res.redirect(303, '/editor/edit');
 		});
@@ -74,10 +76,12 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 router.get('/:id', function(req, res, next) {
 	var userPromise;
 
-	if (req.user && req.params.id == req.user.id)
+	if (req.user && (req.params.id === req.user.id)) {
 		userPromise = User.getCurrent(req.session.bearerToken);
-	else
+	}
+	else {
 		userPromise = User.findOne(req.params.id);
+	}
 
 	userPromise
 		.then(function(editor) {
@@ -96,17 +100,16 @@ router.get('/:id/revisions', function(req, res, next) {
 	var revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
 
 	Promise.join(userPromise, revisionsPromise,
-		function(editor, revisions) {
-			res.render('editor/revisions', {
-				editor: editor,
-				revisions: revisions
-			});
-		})
+			function(editor, revisions) {
+				res.render('editor/revisions', {
+					editor: editor,
+					revisions: revisions
+				});
+			})
 		.catch(function(err) {
 			console.log(err.stack);
 			next(new NotFoundError('Editor not found'));
 		});
 });
-
 
 module.exports = router;

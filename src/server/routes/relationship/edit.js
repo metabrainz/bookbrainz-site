@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var auth = require('../../helpers/auth');
 var Relationship = require('../../data/relationship');
 var RelationshipType = require('../../data/properties/relationship-type');
@@ -32,10 +34,10 @@ relationshipHelper.addEditRoutes = function(router) {
 	router.get('/:bbid/relationships', auth.isAuthenticated, function relationshipEditor(req, res) {
 		var relationshipTypesPromise = RelationshipType.find();
 		var entityPromise = Entity.findOne(req.params.bbid, {
-				populate: [
-					'aliases'
-				]
-			});
+			populate: [
+				'aliases'
+			]
+		});
 
 		Promise.join(entityPromise, relationshipTypesPromise,
 			function(entity, relationshipTypes) {

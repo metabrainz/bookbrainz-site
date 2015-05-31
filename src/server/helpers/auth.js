@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var passport = require('passport');
 var config = require('../helpers/config');
 var BBWSStrategy = require('./passport-bookbrainz-ws');
@@ -79,13 +81,16 @@ auth.authenticate = function() {
 };
 
 auth.isAuthenticated = function(req, res, next) {
-	if (req.isAuthenticated())
+	if (req.isAuthenticated()) {
 		return next();
+	}
 
-	if (req.route.path == '/handler')
+	if (req.route.path === '/handler') {
 		req.session.redirectTo = req.baseUrl;
-	else
+	}
+	else {
 		req.session.redirectTo = req.originalUrl;
+	}
 
 	res.redirect(303, '/login');
 };

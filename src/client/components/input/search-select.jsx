@@ -24,9 +24,13 @@ var $ = require('jquery');
 
 var SearchSelect = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return this.refs.select.getValue();
 	},
 	render: function() {
+		'use strict';
+
 		var self = this;
 
 		var select2Options = {
@@ -61,9 +65,9 @@ var SearchSelect = React.createClass({
 						data.results.push({
 							id: result.bbid,
 							text: result.default_alias ?
-								  result.default_alias.name : '(unnamed)',
+								result.default_alias.name : '(unnamed)',
 							disambiguation: result.disambiguation ?
-								            result.disambiguation.comment : null
+								result.disambiguation.comment : null
 						});
 					});
 
@@ -90,9 +94,10 @@ var SearchSelect = React.createClass({
 
 		var options = this.props.options || [];
 
+		var defaultKey = null;
 		if (this.props.defaultValue) {
 			options.unshift(this.props.defaultValue);
-			var defaultKey = this.props.defaultValue.id;
+			defaultKey = this.props.defaultValue.id;
 		}
 
 		return (

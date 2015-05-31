@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var superagent = require('superagent');
 var config = require('../helpers/config');
 
@@ -29,7 +31,7 @@ var _processError = function(response) {
 
 	var requestPath = response.error.method + ' ' + response.error.path;
 
-	if (response.status == 404) {
+	if (response.status === 404) {
 		newErr = new Error('WS path not found: ' + requestPath);
 		newErr.status = 404;
 	}
@@ -37,7 +39,8 @@ var _processError = function(response) {
 		newErr = new Error('There was an error accessing the web service');
 		if (response.res) {
 			console.log('WS error: ' + response.status + ' ' + requestPath + ' ' + JSON.stringify(response.res.request._data));
-		} else {
+		}
+		else {
 			console.log('No response.');
 		}
 	}
@@ -46,20 +49,24 @@ var _processError = function(response) {
 };
 
 var _execRequest = function(requestType, path, options) {
-	if (path.charAt(0) === '/')
+	if (path.charAt(0) === '/') {
 		path = config.site.webservice + path;
+	}
 
 	var request = superagent[requestType](path)
 		.accept('application/json');
 
-	if (options.accessToken)
+	if (options.accessToken) {
 		request = request.set('Authorization', 'Bearer ' + options.accessToken);
+	}
 
-	if (options.params)
+	if (options.params) {
 		request = request.query(options.params);
+	}
 
-	if (options.data)
+	if (options.data) {
 		request = request.send(options.data);
+	}
 
 	return request
 		.promise()

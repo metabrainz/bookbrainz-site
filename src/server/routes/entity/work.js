@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
@@ -41,43 +43,45 @@ var Promise = require('bluebird');
 /* If the route specifies a BBID, load the Work for it. */
 router.param('bbid', makeEntityLoader(Work, 'Work not found'));
 
-router.get('/:bbid', loadEntityRelationships, function(req, res, next) {
+router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	var work = res.locals.entity;
 	var title = 'Work';
 
-	if (work.default_alias && work.default_alias.name)
+	if (work.default_alias && work.default_alias.name) {
 		title = 'Work “' + work.default_alias.name + '”';
+	}
 
 	res.render('entity/view/work', {
 		title: title
 	});
 });
 
-router.get('/:bbid/revisions', function(req, res, next) {
+router.get('/:bbid/revisions', function(req, res) {
 	var work = res.locals.entity;
 	var title = 'Work';
 
-	if (work.default_alias && work.default_alias.name)
+	if (work.default_alias && work.default_alias.name) {
 		title = 'Work “' + work.default_alias.name + '”';
+	}
 
 	bbws.get('/work/' + work.bbid + '/revisions')
-	.then(function(revisions) {
-
-		var users = {};
-		revisions.objects.forEach(function(revision) {
-			if(!users[revision.user.user_id]) {
-				users[revision.user.user_id] = User.findOne(revision.user.user_id);
-			}
-		})
-
-		Promise.props(users).then(function(users) {
-			res.render('entity/revisions', {
-				title: title,
-				revisions: revisions,
-				users: users
+		.then(function(revisions) {
+			var promisedUsers = {};
+			revisions.objects.forEach(function(revision) {
+				if (!promisedUsers[revision.user.user_id]) {
+					promisedUsers[revision.user.user_id] =
+						User.findOne(revision.user.user_id);
+				}
 			});
-		})
-	});
+
+			Promise.props(promisedUsers).then(function(users) {
+				res.render('entity/revisions', {
+					title: title,
+					revisions: revisions,
+					users: users
+				});
+			});
+		});
 });
 
 // Creation
@@ -143,11 +147,13 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		});
 	}
 
-	if (req.body.disambiguation)
+	if (req.body.disambiguation) {
 		changes.disambiguation = req.body.disambiguation;
+	}
 
-	if (req.body.annotation)
+	if (req.body.annotation) {
 		changes.annotation = req.body.annotation;
+	}
 
 	if (req.body.note) {
 		changes.revision = {
@@ -159,7 +165,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		return {
 			value: identifier.value,
 			identifier_type: {
-				identifier_type_id: identifier.typeId,
+				identifier_type_id: identifier.typeId
 			}
 		};
 	});
@@ -205,7 +211,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var workTypeId = req.body.workTypeId;
 	if ((!work.work_type) ||
-	    (work.work_type.work_type_id !== workTypeId)) {
+		(work.work_type.work_type_id !== workTypeId)) {
 		changes.work_type = {
 			work_type_id: workTypeId
 		};
@@ -213,13 +219,13 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var disambiguation = req.body.disambiguation;
 	if ((!work.disambiguation) ||
-	    (work.disambiguation.comment !== disambiguation)) {
+		(work.disambiguation.comment !== disambiguation)) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
 	var annotation = req.body.annotation;
 	if ((!work.annotation) ||
-			(work.annotation.content !== annotation)) {
+		(work.annotation.content !== annotation)) {
 		changes.annotation = annotation ? annotation : null;
 	}
 
@@ -230,7 +236,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	var currentLanguages = work.languages.map(function(language) {
-		if (language.language_id != req.body.languages[0]) {
+		if (language.language_id !== req.body.languages[0]) {
 			// Remove the alias
 			return [language.language_id, null];
 		}
@@ -249,7 +255,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	var currentIdentifiers = work.identifiers.map(function(identifier) {
 		var nextIdentifier = req.body.identifiers[0];
 
-		if (identifier.id != nextIdentifier.id) {
+		if (identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
@@ -259,7 +265,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			return [nextIdentifier.id, {
 				value: nextIdentifier.value,
 				identifier_type: {
-					identifier_type_id: nextIdentifier.typeId,
+					identifier_type_id: nextIdentifier.typeId
 				}
 			}];
 		}
@@ -274,7 +280,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 			return [null, {
 				value: identifier.value,
 				identifier_type: {
-					identifier_type_id: identifier.typeId,
+					identifier_type_id: identifier.typeId
 				}
 			}];
 		}
@@ -287,7 +293,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	work.aliases.forEach(function(alias) {
 		var nextAlias = req.body.aliases[0];
 
-		if (alias.id != nextAlias.id) {
+		if (alias.id !== nextAlias.id) {
 			// Remove the alias
 			currentAliases.push([alias.id, null]);
 		}
@@ -324,8 +330,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	changes.aliases = currentAliases.concat(newAliases);
 
 	Work.update(work.bbid, changes, {
-		session: req.session
-	})
+			session: req.session
+		})
 		.then(function(revision) {
 			res.send(revision);
 		});

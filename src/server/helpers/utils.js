@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var request = require('superagent');
 var Promise = require('bluebird');
 require('superagent-bluebird-promise');

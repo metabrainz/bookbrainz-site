@@ -19,22 +19,29 @@
 
 var React = require('react');
 var Input = require('react-bootstrap').Input;
+var $ = require('jquery');
 
 if (typeof window !== 'undefined') {
-	window.$ = require('jquery');
+	window.$ = $;
 	require('select2');
 }
 
 var Select = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return this.refs.input.getValue();
 	},
 	handleChange: function() {
+		'use strict';
+
 		if (this.props.onChange) {
 			this.props.onChange();
 		}
 	},
 	componentDidMount: function() {
+		'use strict';
+
 		var select2Options = this.props.select2Options || {};
 		var self = this;
 
@@ -51,10 +58,12 @@ var Select = React.createClass({
 
 		$(this.refs.input.getInputDOMNode()).select2(select2Options);
 
-		$(this.refs.input.getInputDOMNode()).on("select2:select", function (e) { self.handleChange(); });
-		$(this.refs.input.getInputDOMNode()).on("select2:unselect", function (e) { self.handleChange(); });
+		$(this.refs.input.getInputDOMNode()).on('select2:select', function(e) { self.handleChange(); });
+		$(this.refs.input.getInputDOMNode()).on('select2:unselect', function(e) { self.handleChange(); });
 	},
 	componentDidUpdate: function() {
+		'use strict';
+
 		var select2Options = this.props.select2Options || {};
 		var self = this;
 
@@ -71,10 +80,12 @@ var Select = React.createClass({
 
 		$(this.refs.input.getInputDOMNode()).select2(select2Options);
 
-		$(this.refs.input.getInputDOMNode()).on("select2:select", function (e) { self.handleChange(); });
-		$(this.refs.input.getInputDOMNode()).on("select2:unselect", function (e) { self.handleChange(); });
+		$(this.refs.input.getInputDOMNode()).on('select2:select', function(e) { self.handleChange(); });
+		$(this.refs.input.getInputDOMNode()).on('select2:unselect', function(e) { self.handleChange(); });
 	},
 	render: function() {
+		'use strict';
+
 		var self = this;
 		var options = [];
 		if (this.props.options) {

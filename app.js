@@ -18,6 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var path = require('path');
 
 var express = require('express');
@@ -43,7 +45,9 @@ app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
-require('node-jsx').install({extension: '.jsx'});
+require('node-jsx').install({
+	extension: '.jsx'
+});
 
 app.set('trust proxy', config.site.proxyTrust);
 

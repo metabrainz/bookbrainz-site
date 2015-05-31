@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var Promise = require('bluebird');
 
 var CreatorType = require('../data/properties/creator-type');
@@ -37,8 +39,9 @@ var makeLoader = function(model, propName, sortFunc) {
 	return function(req, res, next) {
 		model.find()
 			.then(function(results) {
-				if (sortFunc)
+				if (sortFunc) {
 					results = results.sort(sortFunc);
+				}
 
 				res.locals[propName] = results;
 				next();
@@ -61,33 +64,35 @@ middleware.loadGenders = makeLoader(Gender, 'genders', function(a, b) {
 });
 
 middleware.loadLanguages = makeLoader(Language, 'languages', function(a, b) {
-	if (a.frequency !== b.frequency)
+	if (a.frequency !== b.frequency) {
 		return b.frequency - a.frequency;
+	}
 
 	return a.name.localeCompare(b.name);
 });
 
 middleware.loadEntityRelationships = function(req, res, next) {
-	if (!res.locals.entity)
+	if (!res.locals.entity) {
 		next(new Error('Entity failed to load'));
+	}
 
 	var entity = res.locals.entity;
 	Promise.map(entity.relationships, function(relationship) {
-		relationship.template = relationship.relationship_type.template;
+			relationship.template = relationship.relationship_type.template;
 
-		var entities = relationship.entities.sort(function sortRelationshipEntity(a, b) {
-			return a.position - b.position;
-		});
-
-		return Promise.map(entities, function(entity) {
-			return Entity.findOne(entity.entity.entity_gid);
-		})
-			.then(function(entities) {
-				relationship.rendered = renderRelationship(entities, relationship, null);
-
-				return relationship;
+			var relEntities = relationship.entities.sort(function sortRelationshipEntity(a, b) {
+				return a.position - b.position;
 			});
-	})
+
+			return Promise.map(relEntities, function(relEntity) {
+					return Entity.findOne(relEntity.entity.entity_gid);
+				})
+				.then(function(loadedEntities) {
+					relationship.rendered = renderRelationship(loadedEntities, relationship, null);
+
+					return relationship;
+				});
+		})
 		.then(function(relationships) {
 			res.locals.entity.relationships = relationships;
 
@@ -111,7 +116,8 @@ middleware.makeEntityLoader = function(model, errMessage) {
 			if (model.name === 'Edition') {
 				populate.push('publication');
 				populate.push('publisher');
-			} else if (model.name === 'Publication') {
+			}
+			else if (model.name === 'Publication') {
 				populate.push('editions');
 			}
 
@@ -124,7 +130,7 @@ middleware.makeEntityLoader = function(model, errMessage) {
 					next();
 				})
 				.catch(function(err) {
-					if (err.status == 404) {
+					if (err.status === 404) {
 						var newErr = new NotFoundError(errMessage);
 						return next(newErr);
 					}

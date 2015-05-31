@@ -28,9 +28,11 @@ var Identifiers = require('./identifiers.jsx');
 
 var EditionData = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return {
 			publication: this.refs.publication.getValue(),
-			publisher: this.refs.publisher.getValue() == '' ? null : this.refs.publisher.getValue(),
+			publisher: this.refs.publisher.getValue() === '' ? null : this.refs.publisher.getValue(),
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionStatus: this.refs.editionStatus.getValue(),
@@ -40,30 +42,42 @@ var EditionData = React.createClass({
 		};
 	},
 	valid: function() {
+		'use strict';
+
 		return this.refs.release.valid() && this.refs.publication.getValue().length;
 	},
 	render: function() {
+		'use strict';
+
+		var initialPublication = null;
+		var initialPublisher = null;
+		var initialReleaseDate = null;
+		var initialLanguage = null;
+		var initialEditionStatus = null;
+		var initialDisambiguation = null;
+		var initialAnnotation = null;
+		var initialIdentifiers = [];
 		if (this.props.edition) {
 			if (this.props.edition.publication) {
-				var initialPublication = {
+				initialPublication = {
 					id: this.props.edition.publication.bbid,
 					text: this.props.edition.publication.default_alias ? this.props.edition.publication.default_alias.name : null
 				};
 			}
 
 			if (this.props.edition.publisher) {
-				var initialPublisher = {
+				initialPublisher = {
 					id: this.props.edition.publisher.bbid,
 					text: this.props.edition.publisher.default_alias ? this.props.edition.publisher.default_alias.name : null
 				};
 			}
 
-			var initialReleaseDate = this.props.edition.release_date;
-			var initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
-			var initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
-			var initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
-			var initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
-			var initialIdentifiers = this.props.edition.identifiers.map(function(identifier) {
+			initialReleaseDate = this.props.edition.release_date;
+			initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
+			initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
+			initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
+			initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
+			initialIdentifiers = this.props.edition.identifiers.map(function(identifier) {
 				return {
 					id: identifier.id,
 					value: identifier.value,
@@ -77,7 +91,7 @@ var EditionData = React.createClass({
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden': '' }>
+			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
 				<p className='lead'>Fill out any data you know about the entity.</p>
 

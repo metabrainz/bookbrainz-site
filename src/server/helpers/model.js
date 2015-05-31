@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var bbws = require('./bbws');
 var Promise = require('bluebird');
 var _ = require('underscore');
@@ -24,10 +26,12 @@ var _ = require('underscore');
 var registered = [];
 
 function Model(name, options) {
-	if (!name || typeof name !== 'string')
+	if (!name || typeof name !== 'string') {
 		throw new Error('Model must specify a name');
-	else if (registered[name])
+	}
+	else if (registered[name]) {
 		throw new Error('Model with this name already exists');
+	}
 
 	options = options || {};
 
@@ -39,8 +43,9 @@ function Model(name, options) {
 	if (options.base) {
 		var base = options.base;
 
-		if (!(base instanceof Model))
+		if (!(base instanceof Model)) {
 			throw new TypeError('Specified base object is not a model');
+		}
 
 		this.fields = options.base.fields;
 		base.children[this.name] = this;
@@ -53,20 +58,24 @@ function Model(name, options) {
 }
 
 Model.prototype.extend = function(fields) {
-	if (!fields || typeof fields !== 'object')
+	if (!fields || typeof fields !== 'object') {
 		throw new TypeError('Model fields not an object');
+	}
 
-	if (_.isEmpty(fields) && _.isEmpty(this.fields))
+	if (_.isEmpty(fields) && _.isEmpty(this.fields)) {
 		throw new Error('Model defined without any fields');
+	}
 
 	Object.keys(fields).forEach(function(fieldKey) {
 		var field = fields[fieldKey];
 
-		if (typeof field !== 'object')
+		if (typeof field !== 'object') {
 			throw new TypeError('Field ' + fieldKey + ' not an object');
+		}
 
-		if (!field.type)
+		if (!field.type) {
 			throw new Error('No type specified for field ' + fieldKey);
+		}
 
 		/* XXX: Do type-specific sanity checks on field attributes. */
 	});
@@ -79,18 +88,21 @@ Model.prototype._fetchSingleResult = function(result, options) {
 	var object = {};
 
 	if (this.abstract) {
-		if (!this.children[result._type])
+		if (!this.children[result._type]) {
 			throw new Error('Model has no child with name ' + result._type);
+		}
 
 		model = this.children[result._type];
 		object._type = result._type;
 	}
 
-	if (options.populate && !Array.isArray(options.populate))
+	if (options.populate && !Array.isArray(options.populate)) {
 		options.populate = [options.populate];
+	}
 
-	if (_.isEmpty(result))
+	if (_.isEmpty(result)) {
 		return null;
+	}
 
 	Object.keys(model.fields).forEach(function(key) {
 		var field = model.fields[key];
@@ -107,8 +119,9 @@ Model.prototype._fetchSingleResult = function(result, options) {
 				return;
 			}
 
-			if (!field.model || !registered[field.model])
+			if (!field.model || !registered[field.model]) {
 				throw new Error('Reference field model is not defined');
+			}
 
 			var uri = result[resultsField];
 
@@ -136,8 +149,9 @@ Model.prototype.find = function(options) {
 	var path;
 
 	if (!options.path) {
-		if (this.endpoint === undefined)
+		if (this.endpoint === undefined) {
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
+		}
 
 		path = '/' + this.endpoint + '/';
 	}
@@ -150,8 +164,9 @@ Model.prototype.find = function(options) {
 			params: options.params
 		})
 		.then(function(result) {
-			if (!Array.isArray(result.objects))
+			if (!Array.isArray(result.objects)) {
 				throw new Error('Array expected, but received object');
+			}
 
 			var promises = [];
 
@@ -177,13 +192,15 @@ Model.prototype.findOne = function(id, options) {
 	var path;
 
 	if (!options.path) {
-		if (this.endpoint === undefined)
+		if (this.endpoint === undefined) {
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
+		}
 
 		path = '/' + this.endpoint + '/';
 
-		if (!id)
+		if (!id) {
 			return Promise.reject(new Error('No object ID or absolute path specified'));
+		}
 
 		path += id + '/';
 	}
@@ -196,8 +213,9 @@ Model.prototype.findOne = function(id, options) {
 			params: options.params
 		})
 		.then(function(result) {
-			if (result.objects && Array.isArray(result.objects))
+			if (result.objects && Array.isArray(result.objects)) {
 				throw new Error('Object expected, but received array');
+			}
 
 			return self._fetchSingleResult(result, options);
 		});
@@ -206,18 +224,21 @@ Model.prototype.findOne = function(id, options) {
 Model.prototype.create = function(data, options) {
 	options = options || {};
 
-	if (this.abstract)
+	if (this.abstract) {
 		return Promise.reject(new Error('Cannot create new instance of abstract class'));
+	}
 
-	if (this.endpoint === undefined)
+	if (this.endpoint === undefined) {
 		return Promise.reject(new Error('Model has no endpoint'));
+	}
 
 	var path = '/' + this.endpoint + '/';
 	var wsOptions = {};
 	var object = {};
 
-	if (options.session && options.session.bearerToken)
+	if (options.session && options.session.bearerToken) {
 		wsOptions.accessToken = options.session.bearerToken;
+	}
 
 	Object.keys(this.fields).forEach(function(key) {
 		object[key] = data[key];
@@ -229,18 +250,21 @@ Model.prototype.create = function(data, options) {
 Model.prototype.update = function(id, data, options) {
 	options = options || {};
 
-	if (this.abstract)
+	if (this.abstract) {
 		return Promise.reject(new Error('Cannot update instance of abstract class'));
+	}
 
-	if (this.endpoint === undefined)
+	if (this.endpoint === undefined) {
 		return Promise.reject(new Error('Model has no endpoint'));
+	}
 
 	var path = '/' + this.endpoint + '/' + id + '/';
 	var wsOptions = {};
 	var object = {};
 
-	if (options.session && options.session.bearerToken)
+	if (options.session && options.session.bearerToken) {
 		wsOptions.accessToken = options.session.bearerToken;
+	}
 
 	Object.keys(this.fields).forEach(function(key) {
 		object[key] = data[key];

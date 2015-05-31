@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var gulp = require('gulp');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
@@ -73,6 +75,7 @@ function tidy() {
 	var srcFiles = [
 		'./src/**/*.js',
 		'./test/**/*.js',
+		'./templates/**/*.js',
 		'./app.js',
 		'./gulpfile.js'
 	];
@@ -80,7 +83,8 @@ function tidy() {
 	gulp.src(srcFiles)
 		.pipe(prettify({
 			js: {
-				indent_with_tabs: true
+				indent_with_tabs: true,
+				brace_style: 'end-expand'
 			},
 			mode: 'VERIFY_AND_WRITE'
 		}))

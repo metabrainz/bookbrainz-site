@@ -27,6 +27,8 @@ var Identifiers = require('./identifiers.jsx');
 
 var PublisherData = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return {
 			beginDate: this.refs.begin.getValue(),
 			endDate: this.refs.end.getValue(),
@@ -38,26 +40,41 @@ var PublisherData = React.createClass({
 		};
 	},
 	getInitialState: function() {
+		'use strict';
+
 		return {
 			ended: this.props.edition ? this.props.edition.ended : false
 		};
 	},
 	valid: function() {
+		'use strict';
+
 		return (
 			this.refs.begin.valid() && (!this.refs.ended.getValue() || this.refs.end.valid())
 		);
 	},
 	handleEnded: function() {
+		'use strict';
+
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
 	render: function() {
+		'use strict';
+
+		var initialBeginDate = null;
+		var initialEndDate = null;
+		var initialPublisherType = null;
+		var initialDisambiguation = null;
+		var initialAnnotation = null;
+		var initialIdentifiers = [];
+
 		if (this.props.publisher) {
-			var initialBeginDate = this.props.publisher.begin_date;
-			var initialEndDate = this.props.publisher.end_date;
-			var initialPublisherType = this.props.publisher.publisher_type ? this.props.publisher.publisher_type.publisher_type_id : null;
-			var initialDisambiguation = this.props.publisher.disambiguation ? this.props.publisher.disambiguation.comment : null;
-			var initialAnnotation = this.props.publisher.annotation ? this.props.publisher.annotation.content : null;
-			var initialIdentifiers = this.props.publisher.identifiers.map(function(identifier) {
+			initialBeginDate = this.props.publisher.begin_date;
+			initialEndDate = this.props.publisher.end_date;
+			initialPublisherType = this.props.publisher.publisher_type ? this.props.publisher.publisher_type.publisher_type_id : null;
+			initialDisambiguation = this.props.publisher.disambiguation ? this.props.publisher.disambiguation.comment : null;
+			initialAnnotation = this.props.publisher.annotation ? this.props.publisher.annotation.content : null;
+			initialIdentifiers = this.props.publisher.identifiers.map(function(identifier) {
 				return {
 					id: identifier.id,
 					value: identifier.value,
@@ -71,7 +88,7 @@ var PublisherData = React.createClass({
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden': '' }>
+			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
 				<p className='lead'>Fill out any data you know about the entity.</p>
 

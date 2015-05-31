@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var User = require('../data/user');
@@ -40,7 +42,7 @@ router.post('/handler', function(req, res, next) {
 		return;
 	}
 
-	if (req.body.password != req.body.password2) {
+	if (req.body.password !== req.body.password2) {
 		req.session.error = 'Passwords did not match';
 		res.redirect(303, '/register');
 
@@ -53,7 +55,7 @@ router.post('/handler', function(req, res, next) {
 			var editorType;
 
 			var hasEditorType = !results.every(function(userType) {
-				if (userType.label == 'Editor') {
+				if (userType.label === 'Editor') {
 					editorType = userType;
 					return false;
 				}
@@ -61,8 +63,9 @@ router.post('/handler', function(req, res, next) {
 				return true;
 			});
 
-			if (!hasEditorType)
+			if (!hasEditorType) {
 				throw new Error('Editor user type not found');
+			}
 
 			return User.create({
 				name: req.body.username,

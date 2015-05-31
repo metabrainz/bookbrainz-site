@@ -28,6 +28,8 @@ require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
 	getInitialState: function() {
+		'use strict';
+
 		return {
 			id: this.props.id,
 			email: this.props.email,
@@ -36,9 +38,11 @@ module.exports = React.createClass({
 		};
 	},
 	handleSubmit: function(e) {
+		'use strict';
+
 		e.preventDefault();
 
-		data = {
+		var data = {
 			id: this.state.id,
 			email: this.refs.email.getValue().trim(),
 			bio: this.refs.bio.getValue().trim()
@@ -53,9 +57,9 @@ module.exports = React.createClass({
 			});
 	},
 	render: function() {
-		if (this.state.waiting) {
-			var loadingElement = <LoadingSpinner />;
-		}
+		'use strict';
+
+		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		return <form className='form-horizontal' onSubmit={this.handleSubmit}>
 			{loadingElement}

@@ -24,48 +24,60 @@ var Select = require('../../input/select.jsx');
 
 var IdentifierRow = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return {
 			type: parseInt(this.refs.type.getValue()),
-			value: this.refs.value.getValue(),
+			value: this.refs.value.getValue()
 		};
 	},
 	validationState: function() {
+		'use strict';
+
 		var self = this;
 		if (this.props.type) {
 			var type = this.props.types.filter(function(testType) {
-				return testType.id == self.props.type;
+				return testType.id === self.props.type;
 			})[0];
 
 			var regex = new RegExp(type.validation_regex);
 
 			if (regex.test(this.props.value)) {
 				return 'success';
-			} else {
+			}
+			else {
 				return 'error';
 			}
-		} else if (this.props.value) {
+		}
+		else if (this.props.value) {
 			return false;
-		} else {
+		}
+		else {
 			return null;
 		}
 	},
 	getValid: function() {
+		'use strict';
+
 		var value = this.refs.value.getValue();
 		var typeId = parseInt(this.refs.type.getValue());
 
-		var type = this.props.types.filter(function(type) {
-			return type.id == typeId;
+		var selectedType = this.props.types.filter(function(type) {
+			return type.id === typeId;
 		});
 
-		if(type.length) {
-			type = type[0];
-			var regex = new RegExp(type.validation_regex);
+		if (selectedType.length) {
+			selectedType = selectedType[0];
+			var regex = new RegExp(selectedType.validation_regex);
 			return regex.test(value);
-		} else {
+		}
+		else {
 			return false;
 		}
 	},
 	render: function() {
+		'use strict';
+
 		return (
 			<div className='row'>
 				<div className='col-md-4'>
@@ -102,6 +114,8 @@ var IdentifierRow = React.createClass({
 
 var IdentifierList = React.createClass({
 	getInitialState: function() {
+		'use strict';
+
 		var existing = this.props.identifiers || [];
 		existing.push({
 			value: '',
@@ -119,6 +133,8 @@ var IdentifierList = React.createClass({
 		};
 	},
 	getValue: function() {
+		'use strict';
+
 		return this.state.identifiers.slice(0, -1).map(function(identifier) {
 			var data = {
 				value: identifier.value,
@@ -133,14 +149,16 @@ var IdentifierList = React.createClass({
 		});
 	},
 	handleChange: function(index) {
+		'use strict';
+
 		var updatedIdentifiers = this.state.identifiers.slice();
 		var updatedIdentifier = this.refs[index].getValue();
 
 		// Attempt to guess the type, if the value was previously blank
-		if(updatedIdentifiers[index].value === '') {
+		if (updatedIdentifiers[index].value === '') {
 			var newValue = updatedIdentifier.value;
 			this.props.types.forEach(function(type) {
-				if(type.detection_regex) {
+				if (type.detection_regex) {
 					var detectionRegex = new RegExp(type.detection_regex);
 					var regexResult = detectionRegex.exec(updatedIdentifier.value);
 					if (regexResult) {
@@ -166,7 +184,7 @@ var IdentifierList = React.createClass({
 		}
 
 		var rowsSpawned = this.state.rowsSpawned;
-		if (index == this.state.identifiers.length - 1) {
+		if (index === this.state.identifiers.length - 1) {
 			updatedIdentifiers.push({
 				value: '',
 				type: null,
@@ -183,14 +201,18 @@ var IdentifierList = React.createClass({
 		});
 	},
 	valid: function() {
+		'use strict';
+
 		return this.state.identifiers.every(function(identifier) {
 			return identifier.valid;
 		});
 	},
 	handleRemove: function(index) {
+		'use strict';
+
 		var updatedIdentifiers = this.state.identifiers.slice();
 
-		if (index != this.state.identifiers.length - 1) {
+		if (index !== this.state.identifiers.length - 1) {
 			updatedIdentifiers.splice(index, 1);
 
 			this.setState({
@@ -199,6 +221,8 @@ var IdentifierList = React.createClass({
 		}
 	},
 	render: function() {
+		'use strict';
+
 		var self = this;
 
 		var rows = this.state.identifiers.map(function(identifier, index) {
@@ -211,7 +235,7 @@ var IdentifierList = React.createClass({
 					types={self.props.types}
 					onChange={self.handleChange.bind(null, index)}
 					onRemove={self.handleRemove.bind(null, index)}
-					removeHidden={index == self.state.identifiers.length - 1} />
+					removeHidden={index === self.state.identifiers.length - 1} />
 			);
 		});
 

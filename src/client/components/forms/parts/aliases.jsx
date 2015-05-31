@@ -25,6 +25,8 @@ var Select = require('../../input/select.jsx');
 
 var AliasRow = React.createClass({
 	getValue: function() {
+		'use strict';
+
 		return {
 			id: parseInt(this.refs.id.getValue()),
 			name: this.refs.name.getValue(),
@@ -35,6 +37,8 @@ var AliasRow = React.createClass({
 		};
 	},
 	validationState: function() {
+		'use strict';
+
 		if (this.props.name || this.props.sortName) {
 			if (this.props.name && this.props.sortName) {
 				return 'success';
@@ -47,9 +51,13 @@ var AliasRow = React.createClass({
 		return null;
 	},
 	getValid: function() {
+		'use strict';
+
 		return Boolean(this.refs.name.getValue() && this.refs.sortName.getValue());
 	},
 	render: function() {
+		'use strict';
+
 		return (
 			<div className='row' onChange={this.props.onChange}>
 				<Input
@@ -103,6 +111,8 @@ var AliasRow = React.createClass({
 
 var AliasList = React.createClass({
 	getInitialState: function() {
+		'use strict';
+
 		var existing = this.props.aliases || [];
 		existing.push({
 			name: '',
@@ -116,7 +126,7 @@ var AliasList = React.createClass({
 			alias.key = i;
 		});
 
-		if(existing.length == 1) {
+		if (existing.length === 1) {
 			// Set default alias as first row in "create" form.
 			existing[0].default = true;
 		}
@@ -127,6 +137,8 @@ var AliasList = React.createClass({
 		};
 	},
 	getValue: function() {
+		'use strict';
+
 		var aliases = [];
 		var numRows = this.state.aliases.length;
 
@@ -137,17 +149,19 @@ var AliasList = React.createClass({
 		return aliases;
 	},
 	handleChange: function(index) {
+		'use strict';
+
 		var self = this;
 		var updatedAlias = this.refs[index].getValue();
-		var alias = this.state.aliases[index];
+		var targetAlias = this.state.aliases[index];
 
-		if ((!alias.sortName && updatedAlias.sortName)
-				|| (alias.sortName && !updatedAlias.sortName)
-				|| (!alias.name && updatedAlias.name)
-				|| (alias.name && !updatedAlias.name)
-				|| (updatedAlias.default && index == this.state.aliases.length - 1)
-				|| (!alias.language && updatedAlias.language)
-				|| (!updatedAlias.primary && index == this.state.aliases.length - 1)) {
+		if ((!targetAlias.sortName && updatedAlias.sortName) ||
+				(targetAlias.sortName && !updatedAlias.sortName) ||
+				(!targetAlias.name && updatedAlias.name) ||
+				(targetAlias.name && !updatedAlias.name) ||
+				(updatedAlias.default && index === this.state.aliases.length - 1) ||
+				(!targetAlias.language && updatedAlias.language) ||
+				(!updatedAlias.primary && index === this.state.aliases.length - 1)) {
 			var updatedAliases = this.getValue();
 
 			updatedAliases.forEach(function(alias, idx) {
@@ -155,7 +169,7 @@ var AliasList = React.createClass({
 			});
 
 			var rowsSpawned = this.state.rowsSpawned;
-			if (index == this.state.aliases.length - 1) {
+			if (index === this.state.aliases.length - 1) {
 				updatedAliases.push({
 					name: '',
 					sortName: '',
@@ -173,6 +187,8 @@ var AliasList = React.createClass({
 		}
 	},
 	valid: function() {
+		'use strict';
+
 		var defaultSet = false;
 		var numRows = this.state.aliases.length;
 
@@ -188,13 +204,15 @@ var AliasList = React.createClass({
 			}
 		}
 
-		return defaultSet || numRows == 1;
+		return defaultSet || numRows === 1;
 	},
 	handleRemove: function(index) {
+		'use strict';
+
 		var self = this;
 		var updatedAliases = this.getValue();
 
-		if (index != this.state.aliases.length - 1) {
+		if (index !== this.state.aliases.length - 1) {
 			updatedAliases.forEach(function(alias, idx) {
 				alias.key = self.state.aliases[idx].key;
 			});
@@ -207,6 +225,8 @@ var AliasList = React.createClass({
 		}
 	},
 	render: function() {
+		'use strict';
+
 		var self = this;
 
 		var rows = this.state.aliases.map(function(alias, index) {
@@ -223,12 +243,12 @@ var AliasList = React.createClass({
 					languages={self.props.languages}
 					onChange={self.handleChange.bind(null, index)}
 					onRemove={self.handleRemove.bind(null, index)}
-					removeHidden={index == self.state.aliases.length - 1} />
+					removeHidden={index === self.state.aliases.length - 1} />
 			);
 		});
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden': '' }>
+			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Aliases</h2>
 				<p className='lead'>Add some aliases to the entity.</p>
 				<div className='form-horizontal'>
@@ -250,7 +270,6 @@ var AliasList = React.createClass({
 				</div>
 			</div>
 		);
-
 	}
 });
 

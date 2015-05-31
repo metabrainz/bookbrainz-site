@@ -32,30 +32,44 @@ var NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
 	getInitialState: function() {
+		'use strict';
+
 		return {
 			tab: 1,
 			aliasesValid: true,
 			dataValid: true,
 			waiting: false
-		}
+		};
 	},
 	setTab: function(tab) {
+		'use strict';
+
 		this.setState({
 			tab: tab,
 			aliasesValid: this.refs.aliases.valid(),
 			dataValid: this.refs.data.valid()
-		})
+		});
 	},
-	backClick: function() {
+	backClick: function(e) {
+		'use strict';
+
+		e.preventDefault();
 		this.setTab(this.state.tab - 1);
 	},
-	nextClick: function() {
+	nextClick: function(e) {
+		'use strict';
+
+		e.preventDefault();
 		this.setTab(this.state.tab + 1);
 	},
 	handleTab: function(tabKey) {
+		'use strict';
+
 		this.setTab(tabKey);
 	},
 	handleSubmit: function(e) {
+		'use strict';
+
 		e.preventDefault();
 
 		var aliasData = this.refs.aliases.getValue();
@@ -91,6 +105,8 @@ module.exports = React.createClass({
 			});
 	},
 	render: function() {
+		'use strict';
+
 		var aliases = null;
 		if (this.props.work) {
 			var self = this;
@@ -101,16 +117,14 @@ module.exports = React.createClass({
 					sortName: alias.sort_name,
 					language: alias.language ? alias.language.language_id : null,
 					primary: alias.primary,
-					default: (alias.id == self.props.work.default_alias.alias_id)
+					default: (alias.id === self.props.work.default_alias.alias_id)
 				};
 			});
 		}
 
 		var submitEnabled = (this.state.aliasesValid && this.state.dataValid);
 
-		if (this.state.waiting) {
-			var loadingElement = <LoadingSpinner />;
-		}
+		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		return (
 			<div>
@@ -130,9 +144,9 @@ module.exports = React.createClass({
 
 
 				<form onChange={this.handleChange}>
-					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab == 1}/>
-					<WorkData identifierTypes={this.props.identifierTypes} work={this.props.work} languages={this.props.languages} ref='data' workTypes={this.props.workTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab == 2}/>
-					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab == 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
+					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab === 1}/>
+					<WorkData identifierTypes={this.props.identifierTypes} work={this.props.work} languages={this.props.languages} ref='data' workTypes={this.props.workTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab === 2}/>
+					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab === 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
 				</form>
 			</div>
 		);
