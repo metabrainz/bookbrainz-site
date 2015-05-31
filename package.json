@@ -6,7 +6,7 @@
     "start": "node ./scripts/www",
     "debug": "DEBUG=bbsite node ./scripts/www",
     "debug_win": "set DEBUG=bbsite & node scripts\\www",
-    "test": "gulp && node_modules/.bin/mocha"
+    "test": "./scripts/check-style.sh && gulp && node_modules/.bin/mocha"
   },
   "dependencies": {
     "bluebird": "^2.5.1",

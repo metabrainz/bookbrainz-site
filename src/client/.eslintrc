@@ -1,0 +1,11 @@
+{
+    "ecmaFeatures": {
+        "jsx": true
+    },
+    "rules": {
+        "strict": [2, "function"]
+    },
+    "env": {
+        "browser": true
+    }
+}
