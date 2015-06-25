@@ -1,0 +1,3 @@
+[submodule "src/client/stylesheets/lobes"]
+	path = src/client/stylesheets/lobes
+	url = git@github.com:MonkeyDo/lobes.git

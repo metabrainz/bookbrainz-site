@@ -1,4 +1,14 @@
-@import "lobes.less";
+@import "lobes/theme.less";
+
+/* Variables that we override from Lobes */
+@brand-secondary:       @bookbrainz;
+@grid-float-breakpoint: @screen-lg-desktop;
+
+/* Additional styling on top of Lobes */
+body.BookBrainz .navbar,
+.navbar.BookBrainz{
+  background: rgba(255, 255, 255, 0.9);
+}
 
 body { padding-top: 34px; }
 
@@ -14,6 +24,9 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 1.5em;
 }
+
+
+
 .footer {
   position: absolute;
   bottom: 0;
@@ -43,10 +56,6 @@ img.book {max-height: 200px;}
   height: 30px;
 }
 
-.navbar-default {
-
-}
-
 .fa-envelope {
   margin-right: 0.2em;
 }
@@ -61,7 +70,7 @@ img.book {max-height: 200px;}
 .margin-left-2 {margin-left: 2em;}
 
 #logo {
-	.center-block();
-    margin-top: 40px;
-    margin-bottom: 40px;
+  .center-block();
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
