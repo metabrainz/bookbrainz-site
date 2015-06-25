@@ -35,8 +35,9 @@ img.book {max-height: 200px;}
 .loading-spinner {position: absolute; left:50%; top:50%; margin-left:-0.5em; margin-top:-0.5em;}
 .get-started-icon {margin-top:20px;}
 
-.recently-updated {padding-right: -5px; padding-left: -5px; margin-right: 5px; margin-left: 5px; word-wrap: break-word; height: 5em;}
+.recently-updated {padding-right: -5px; padding-left: -5px; margin-right: 5px; margin-left: 5px; word-wrap: break-word; height: 10em;}
 
+.picture-fallback-icon-small {font-size: 400%; margin: 0.2em 0; color: #d0d0d0;}
 .picture-fallback-icon {font-size: 800%; margin: 0.2em 0; color: #d0d0d0;}
 
 .navbar-brand > img {
