@@ -48,7 +48,7 @@ function bundle() {
 }
 
 function less() {
-	return gulp.src(['./src/client/stylesheets/lobes.less', './src/client/stylesheets/style.less', './src/client/stylesheets/font-awesome.less'])
+	return gulp.src(['./src/client/stylesheets/style.less', './src/client/stylesheets/font-awesome.less'])
 		.pipe(gulpless({
 			paths: [ path.join(__dirname, './node_modules/bootstrap/less') ]
 		}))
