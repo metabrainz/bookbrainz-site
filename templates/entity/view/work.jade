@@ -10,6 +10,8 @@ block body
 				a.pull-right.btn.btn-warning.entity-action(title='Edit Entity', href='/work/'+entity.bbid+'/edit')
 					span.fa.fa-pencil
 					|&nbsp;Edit
+				span.fa.fa-file-text-o
+				| &nbsp;
 				if entity.default_alias
 					=entity.default_alias.name
 					|&nbsp;
@@ -20,6 +22,10 @@ block body
 			hr
 	.row
 		.col-md-8
+			if entity.annotation
+				blockquote
+					p=entity.annotation.content
+					footer='updated ' + (new Date(entity.annotation.created_at)).toLocaleDateString()
 			h2 Relationships
 			ul.list-unstyled
 				if entity.relationships
@@ -29,7 +35,8 @@ block body
 				span.fa.fa-pencil
 				|&nbsp;Edit
 		.col-md-4
-			.text-center No Image
+			.text-center
+				span.fa.fa-file-text-o.picture-fallback-icon
 			hr
 			dl
 				dt Type
