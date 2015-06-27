@@ -30,6 +30,9 @@ Annotation.extend({
 	},
 	content: {
 		type: 'string'
+	},
+	created_at: {
+		type: 'date'
 	}
 });
 

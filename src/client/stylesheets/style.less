@@ -68,6 +68,17 @@ body {
 	.generate-margins(@n, (@i + 1));
 }
 .generate-margins(2);
+.picture-fallback-icon(@size) {
+	font-size: @size;
+	margin: 0.2em 0;
+	color: #d0d0d0;
+}
+.picture-fallback-icon-small {
+	.picture-fallback-icon(400%);
+}
+.picture-fallback-icon-large {
+	.picture-fallback-icon(800%);
+}
 
 /* Sticky footer styling */
 html {
@@ -85,7 +96,7 @@ html {
 /* ========== */
 .recently-updated {
 	word-wrap: break-word;
-	height: 5em;
+	height: 10em;
 }
 #index-large-logo {
 	.center-block();
