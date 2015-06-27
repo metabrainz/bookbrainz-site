@@ -1,76 +1,114 @@
+/*
+ * Copyright (C) 2014-2015  Ben Ockmore
+ *                    2015  Leo Verto
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 @import "lobes/less/theme.less";
 
-/* Variables that we override from Lobes */
-@brand-secondary:       @bookbrainz;
+/* Modifications to Lobes */
+/* ====================== */
+@brand-secondary: @bookbrainz;
 @grid-float-breakpoint: @screen-lg-desktop;
-
-/* Additional styling on top of Lobes */
-body.BookBrainz .navbar,
-.navbar.BookBrainz{
-  background: rgba(255, 255, 255, 0.9);
+.navbar.BookBrainz {
+	background: rgba(255, 255, 255, 0.9);
 }
 
-body { padding-top: 34px; }
-
-h3.index-book-title { margin-top: 0.2em; }
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
+/* Site-wide styling */
+/* ================= */
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 1.5em;
+	padding-top: 34px;
 }
+.whole-page-form {
+	margin-top: 3em;
+}
+.loading-background {
+	position: fixed;
+	display: inline-block;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	background-color: rgba(0,0,0,0.6);
+}
+.loading-spinner {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -0.5em;
+	margin-top: -0.5em;
+}
+.generate-margins(@n, @i: 1) when (@i =< @n) {
+	.margin-top-@{i} {
+		margin-top: unit(@i, em);
+	}
+	.margin-bottom-@{i} {
+		margin-bottom: unit(@i, em);
+	}
+	.margin-left-@{i} {
+		margin-left: unit(@i, em);
+	}
+	.margin-right-@{i} {
+		margin-right: unit(@i, em);
+	}
+	.generate-margins(@n, (@i + 1));
+}
+.generate-margins(2);
 
-
-
+/* Sticky footer styling */
+html {
+	position: relative;
+	min-height: 100%;
+}
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background-color: #f5f5f5;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background-color: #f5f5f5;
 }
 
-.whole-page-form {margin-top: 3em;}
-
-img.book {max-height: 200px;}
-
-.entity-action {margin-left:0.1em; margin-right:0.1em;}
-.jsonly {display:none;}
-
-.editable {cursor:pointer; background-color: #ffffaa;}
-
-
-#editChart {width: 100% !important;  height:auto;}
-
-.loading-background {position:fixed; display: inline-block; left: 0px; top: 0px; width:100%; height:100%; z-index: 10; background-color: rgba(0,0,0,0.6);}
-.loading-spinner {position: absolute; left:50%; top:50%; margin-left:-0.5em; margin-top:-0.5em;}
-.get-started-icon {margin-top:20px;}
-
-.recently-updated {word-wrap: break-word; height: 5em;}
-
-.navbar-brand > img {
-  height: 30px;
+/* index.jade */
+/* ========== */
+.recently-updated {
+	word-wrap: break-word;
+	height: 5em;
+}
+#index-large-logo {
+	.center-block();
+	margin-top: 40px;
+	margin-bottom: 40px;
 }
 
-.fa-envelope {
-  margin-right: 0.2em;
+/* getStarted.jade */
+/* =============== */
+.get-started-icon {
+	margin-top: 20px;
 }
 
-.pre-gap-2 {margin-top: 2em;}
+/* entity/view/*.jade */
+/* ================== */
+.entity-action {
+	margin-left: 0.1em;
+	margin-right: 0.1em;
+}
 
-.margin-top-1 {margin-top: 1em;}
-.margin-bottom-1 {margin-bottom: 1em;}
-.margin-right-1 {margin-right: 1em;}
-.margin-left-1 {margin-left: 1em;}
-.margin-right-2 {margin-right: 2em;}
-.margin-left-2 {margin-left: 2em;}
-
-#logo {
-  .center-block();
-  margin-top: 40px;
-  margin-bottom: 40px;
+/* editor/editor.jade (currently unused) */
+/* ===================================== */
+#editChart {
+	width: 100% !important;
+	height: auto;
 }

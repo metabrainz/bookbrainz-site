@@ -3,7 +3,7 @@ extends layout
 block body
 	.row
 		.col-md-12
-			img#logo.img-responsive(alt='BookBrainz', src='/images/BookBrainz_text.svg', height='150')
+			img#index-large-logo.img-responsive(alt='BookBrainz', src='/images/BookBrainz_text.svg', height='150')
 			.text-center
 				p.lead the 
 					a(href='/licensing') open
@@ -53,7 +53,7 @@ block body
 												i=entity.publisher_type.label
 				else
 					em Unable to retrieve latest updates
-	.row.pre-gap-1
+	.row.margin-top-1
 		.col-md-6.col-md-offset-3.text-center
 			.panel.panel-warning
 				.panel-heading
