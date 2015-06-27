@@ -51,7 +51,7 @@ require('node-jsx').install({
 
 app.set('trust proxy', config.site.proxyTrust);
 
-app.use(favicon(path.join(__dirname, 'static/images/favicon.ico')));
+app.use(favicon(path.join(__dirname, 'static/images/icons/favicon.ico')));
 
 if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));

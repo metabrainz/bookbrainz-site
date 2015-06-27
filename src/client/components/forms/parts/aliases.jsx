@@ -261,13 +261,15 @@ var AliasList = React.createClass({
 					</div>
 					{rows}
 				</div>
-				<div className='margin-top-1 row'>
-					<div className='col-md-1 col-md-offset-11'>
-						<Button bsStyle='success' block onClick={this.props.nextClick}>
-							Next <span className='fa fa-angle-double-right' />
-						</Button>
-					</div>
-				</div>
+
+				<nav className='margin-top-1'>
+					<ul className="pager">
+						<li className="next">
+							<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+							</a>
+						</li>
+					</ul>
+				</nav>
 			</div>
 		);
 	}

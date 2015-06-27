@@ -2,15 +2,14 @@ doctype html
 html
 	head
 		title= title ? title + ' – BookBrainz' : 'BookBrainz – The Open Book Database'
-		link(rel='stylesheet', href='/stylesheets/bootstrap.css')
 		link(rel='stylesheet', href='/stylesheets/font-awesome.css')
 		link(rel='stylesheet', href='/stylesheets/style.css')
 		link(rel='stylesheet', href='/stylesheets/lib/select2.css')
-
+		include favicon
 	body
 		a.sr-only.sr-only-focusable(href='#content') Skip to main content
-		nav.navbar.navbar-default.navbar-inverse.navbar-fixed-top(role='navigation')
-			.container-fluid
+		nav.navbar.navbar-default.navbar-fixed-top.BookBrainz(role='navigation')
+			.container
 				//- Brand and toggle get grouped for better mobile display
 				.navbar-header
 					button.navbar-toggle.collapsed(
@@ -23,11 +22,8 @@ html
 						span.icon-bar
 						span.icon-bar
 
-					a.navbar-brand(href='/')
-						img(alt='Brand', src='/images/favicon.svg')
-						| ook
-						b B
-						| rainz
+					a.navbar-brand.logo(href='/')
+						img(alt='Brand', src='/images/BookBrainz_logo_mini.svg')
 
 				//- Collect the nav links, forms, and other content for toggling
 				#bs-example-navbar-collapse-1.collapse.navbar-collapse
@@ -43,7 +39,7 @@ html
 						div.form-group
 							input.form-control(type='text', placeholder='Search', name='q')
 
-						button.btn.btn-default(type='submit')
+						button.btn.btn-primary(type='submit')
 							span.fa.fa-search
 							span.sr-only Search
 

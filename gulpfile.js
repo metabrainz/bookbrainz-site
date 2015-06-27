@@ -28,6 +28,9 @@ var path = require('path');
 var glob = require('glob');
 var mkdirp = require('mkdirp');
 var reactify = require('reactify');
+var gulpless = require('gulp-less');
+var minifyCSS = require('gulp-minify-css');
+var prefixer = require('gulp-autoprefixer');
 
 function bundle() {
 	var srcFiles =
@@ -65,6 +68,16 @@ function bundle() {
 		.pipe(gulp.dest('./static/js'));
 }
 
+function less() {
+	return gulp.src(['./src/client/stylesheets/style.less', './src/client/stylesheets/font-awesome.less'])
+		.pipe(gulpless({
+			paths: [path.join(__dirname, './node_modules/bootstrap/less')]
+		}))
+		.pipe(prefixer('last 4 versions'))
+		.pipe(minifyCSS())
+		.pipe(gulp.dest('./static/stylesheets'));
+}
+
 function compress() {
 	return gulp.src('static/js/**/*.js')
 		.pipe(uglify())
@@ -93,8 +106,9 @@ function tidy() {
 		}));
 }
 
-gulp.task('default', bundle);
+gulp.task('default', ['bundle', 'less']);
 gulp.task('bundle', bundle);
+gulp.task('less', less);
 gulp.task('compress', ['bundle'], compress);
 gulp.task('tidy', tidy);
 gulp.task('watch', function() {

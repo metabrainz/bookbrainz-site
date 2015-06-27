@@ -1,0 +1,114 @@
+/*
+ * Copyright (C) 2014-2015  Ben Ockmore
+ *                    2015  Leo Verto
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+@import "lobes/less/theme.less";
+
+/* Modifications to Lobes */
+/* ====================== */
+@brand-secondary: @bookbrainz;
+@grid-float-breakpoint: @screen-lg-desktop;
+.navbar.BookBrainz {
+	background: rgba(255, 255, 255, 0.9);
+}
+
+/* Site-wide styling */
+/* ================= */
+body {
+	padding-top: 34px;
+}
+.whole-page-form {
+	margin-top: 3em;
+}
+.loading-background {
+	position: fixed;
+	display: inline-block;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	background-color: rgba(0,0,0,0.6);
+}
+.loading-spinner {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -0.5em;
+	margin-top: -0.5em;
+}
+.generate-margins(@n, @i: 1) when (@i =< @n) {
+	.margin-top-@{i} {
+		margin-top: unit(@i, em);
+	}
+	.margin-bottom-@{i} {
+		margin-bottom: unit(@i, em);
+	}
+	.margin-left-@{i} {
+		margin-left: unit(@i, em);
+	}
+	.margin-right-@{i} {
+		margin-right: unit(@i, em);
+	}
+	.generate-margins(@n, (@i + 1));
+}
+.generate-margins(2);
+
+/* Sticky footer styling */
+html {
+	position: relative;
+	min-height: 100%;
+}
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	background-color: #f5f5f5;
+}
+
+/* index.jade */
+/* ========== */
+.recently-updated {
+	word-wrap: break-word;
+	height: 5em;
+}
+#index-large-logo {
+	.center-block();
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
+/* getStarted.jade */
+/* =============== */
+.get-started-icon {
+	margin-top: 20px;
+}
+
+/* entity/view/*.jade */
+/* ================== */
+.entity-action {
+	margin-left: 0.1em;
+	margin-right: 0.1em;
+}
+
+/* editor/editor.jade (currently unused) */
+/* ===================================== */
+#editChart {
+	width: 100% !important;
+	height: auto;
+}
