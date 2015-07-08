@@ -1,65 +1,26 @@
-extends /layout
+extends ./entity
 
-block body
-	.row
-		.col-md-12
-			h1
-				a.pull-right.btn.btn-primary.entity-action(title='Revision History', href='/publication/'+entity.bbid+'/revisions')
-					span.fa.fa-history
-					|&nbsp;History
-				a.pull-right.btn.btn-warning.entity-action(title='Edit Entity', href='/publication/'+entity.bbid+'/edit')
-					span.fa.fa-pencil
-					|&nbsp;Edit
-				span.fa.fa-th-list
-				| &nbsp;
-				if entity.default_alias
-					=entity.default_alias.name
-					|&nbsp;
-				else
-					|(unnamed)
-				if entity.disambiguation
-					small='('+entity.disambiguation.comment+')'
-			hr
-	.row
-		.col-md-4.col-md-push-8
-			.text-center
-				span.fa.fa-th-list.picture-fallback-icon-large
-			hr
-			span(data-bind='text: editMode')
-			dl
-				dt Type
-				dd=(entity.publication_type ? entity.publication_type.label : '?')
+block icon
+	span.fa.fa-th-list
 
-				dt Last Modified
-				dd=(new Date(entity.last_updated)).toLocaleDateString()
+block picture
+	span.fa.fa-th-list.picture-fallback-icon-large
 
-				each identifier in entity.identifiers
-					dt=identifier.identifier_type.label
-					dd=identifier.value
-		.col-md-8.col-md-pull-4
-			if entity.annotation
-				blockquote
-					p=entity.annotation.content
-					footer='updated ' + (new Date(entity.annotation.created_at)).toLocaleDateString()
-			h2 Editions
-			table.table.table-striped
-				thead
-					tr
-						th Name
-						th Release Date
-				tbody
-					each edition in entity.editions
-						tr
-							td
-								a(href='/edition/'+edition.bbid)
-									=(edition.default_alias ? edition.default_alias.name : '(unnamed)')
-							td=(edition.release_date ? edition.release_date : '?')
+block attributes
+	dt Type
+	dd=(entity.publication_type ? entity.publication_type.label : '?')
 
-			h2 Relationships
-			ul.list-unstyled
-				if entity.relationships
-					for relationship in entity.relationships
-						li!=relationship.rendered
-			a.btn.btn-warning.entity-action(title='Edit Relationships', href='/publication/'+entity.bbid+'/relationships')
-				span.fa.fa-pencil
-				|&nbsp;Edit
+block content
+	h2 Editions
+	table.table.table-striped
+		thead
+			tr
+				th Name
+				th Release Date
+		tbody
+			each edition in entity.editions
+				tr
+					td
+						a(href='/edition/'+edition.bbid)
+							=(edition.default_alias ? edition.default_alias.name : '(unnamed)')
+					td=(edition.release_date ? edition.release_date : '?')

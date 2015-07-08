@@ -1,57 +1,18 @@
-extends /layout
+extends ./entity
 
-block body
-	.row
-		.col-md-12
-			h1
-				a.pull-right.btn.btn-primary.entity-action(title='Revision History', href='/publisher/'+entity.bbid+'/revisions')
-					span.fa.fa-history
-					|&nbsp;History
-				a.pull-right.btn.btn-warning.entity-action(title='Edit Entity', href='/publisher/'+entity.bbid+'/edit')
-					span.fa.fa-pencil
-					|&nbsp;Edit
-				span.fa.fa-university
-				| &nbsp;
-				if entity.default_alias
-					=entity.default_alias.name
-					|&nbsp;
-				else
-					|(unnamed)
-				if entity.disambiguation
-					small='('+entity.disambiguation.comment+')'
-			hr
-	.row
-		.col-md-4.col-md-push-8
-			.text-center
-				span.fa.fa-university.picture-fallback-icon-large
-			hr
-			dl
-				dt Type
-				dd=(entity.publisher_type ? entity.publisher_type.label : '?')
+block icon
+	span.fa.fa-university
 
-				dt Begin Date
-				dd=(entity.begin_date ? entity.begin_date : '?')
+block picture
+	span.fa.fa-university.picture-fallback-icon-large
 
-				if entity.ended
-					dt End Date
-					dd=(entity.end_date ? entity.end_date : '?')
+block attributes
+	dt Type
+	dd=(entity.publisher_type ? entity.publisher_type.label : '?')
 
-				dt Last Modified
-				dd=(new Date(entity.last_updated)).toLocaleDateString()
+	dt Begin Date
+	dd=(entity.begin_date ? entity.begin_date : '?')
 
-				each identifier in entity.identifiers
-					dt=identifier.identifier_type.label
-					dd=identifier.value
-		.col-md-8.col-md-pull-4
-			if entity.annotation
-				blockquote
-					p=entity.annotation.content
-					footer='updated ' + (new Date(entity.annotation.created_at)).toLocaleDateString()
-			h2 Relationships
-			ul.list-unstyled
-				if entity.relationships
-					for relationship in entity.relationships
-						li!=relationship.rendered
-			a.btn.btn-warning.entity-action(title='Edit Relationships', href='/publisher/'+entity.bbid+'/relationships')
-				span.fa.fa-pencil
-				|&nbsp;Edit
+	if entity.ended
+		dt End Date
+		dd=(entity.end_date ? entity.end_date : '?')

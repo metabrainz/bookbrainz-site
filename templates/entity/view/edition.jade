@@ -1,56 +1,17 @@
-extends /layout
+extends ./entity
 
-block body
-	.row
-		.col-md-12
-			h1
-				a.pull-right.btn.btn-primary.entity-action(title='Revision History', href='/edition/'+entity.bbid+'/revisions')
-					span.fa.fa-history
-					|&nbsp;History
-				a.pull-right.btn.btn-warning.entity-action(title='Edit Entity', href='/edition/'+entity.bbid+'/edit')
-					span.fa.fa-pencil
-					|&nbsp;Edit
-				span.fa.fa-book
-				| &nbsp;
-				if entity.default_alias
-					=entity.default_alias.name
-					|&nbsp;
-				else
-					|(unnamed)
-				if entity.disambiguation
-					small='('+entity.disambiguation.comment+')'
-			hr
-	.row
-		.col-md-4.col-md-push-8
-			.text-center
-				span.fa.fa-book.picture-fallback-icon-large
-			hr
-			dl
-				dt Status
-				dd=(entity.edition_status ? entity.edition_status.label : '?')
+block icon
+	span.fa.fa-book
 
-				dt Language
-				dd=(entity.language ? entity.language.name : '?')
+block picture
+	span.fa.fa-book.picture-fallback-icon-large
 
-				dt Release Date
-				dd=(entity.release_date ? entity.release_date : '?')
+block attributes
+	dt Status
+	dd=(entity.edition_status ? entity.edition_status.label : '?')
 
-				dt Last Modified
-				dd=(new Date(entity.last_updated)).toLocaleDateString()
+	dt Language
+	dd=(entity.language ? entity.language.name : '?')
 
-				each identifier in entity.identifiers
-					dt=identifier.identifier_type.label
-					dd=identifier.value
-		.col-md-8.col-md-pull-4
-			if entity.annotation
-				blockquote
-					p=entity.annotation.content
-					footer='updated ' + (new Date(entity.annotation.created_at)).toLocaleDateString()
-			h2 Relationships
-			ul.list-unstyled
-				if entity.relationships
-					for relationship in entity.relationships
-						li!=relationship.rendered
-			a.btn.btn-warning.entity-action(title='Edit Relationships', href='/edition/'+entity.bbid+'/relationships')
-				span.fa.fa-pencil
-				|&nbsp;Edit
+	dt Release Date
+	dd=(entity.release_date ? entity.release_date : '?')
