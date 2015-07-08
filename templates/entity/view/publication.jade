@@ -21,7 +21,22 @@ block body
 					small='('+entity.disambiguation.comment+')'
 			hr
 	.row
-		.col-md-8
+		.col-md-4.col-md-push-8
+			.text-center
+				span.fa.fa-th-list.picture-fallback-icon-large
+			hr
+			span(data-bind='text: editMode')
+			dl
+				dt Type
+				dd=(entity.publication_type ? entity.publication_type.label : '?')
+
+				dt Last Modified
+				dd=(new Date(entity.last_updated)).toLocaleDateString()
+
+				each identifier in entity.identifiers
+					dt=identifier.identifier_type.label
+					dd=identifier.value
+		.col-md-8.col-md-pull-4
 			if entity.annotation
 				blockquote
 					p=entity.annotation.content
@@ -48,18 +63,3 @@ block body
 			a.btn.btn-warning.entity-action(title='Edit Relationships', href='/publication/'+entity.bbid+'/relationships')
 				span.fa.fa-pencil
 				|&nbsp;Edit
-		.col-md-4
-			.text-center
-				span.fa.fa-th-list.picture-fallback-icon-large
-			hr
-			span(data-bind='text: editMode')
-			dl
-				dt Type
-				dd=(entity.publication_type ? entity.publication_type.label : '?')
-
-				dt Last Modified
-				dd=(new Date(entity.last_updated)).toLocaleDateString()
-
-				each identifier in entity.identifiers
-					dt=identifier.identifier_type.label
-					dd=identifier.value

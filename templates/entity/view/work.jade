@@ -21,20 +21,7 @@ block body
 					small='('+entity.disambiguation.comment+')'
 			hr
 	.row
-		.col-md-8
-			if entity.annotation
-				blockquote
-					p=entity.annotation.content
-					footer='updated ' + (new Date(entity.annotation.created_at)).toLocaleDateString()
-			h2 Relationships
-			ul.list-unstyled
-				if entity.relationships
-					for relationship in entity.relationships
-						li!=relationship.rendered
-			a.btn.btn-warning.entity-action(title='Edit Relationships', href='/work/'+entity.bbid+'/relationships')
-				span.fa.fa-pencil
-				|&nbsp;Edit
-		.col-md-4
+		.col-md-4.col-md-push-8
 			.text-center
 				span.fa.fa-file-text-o.picture-fallback-icon-large
 			hr
@@ -55,3 +42,16 @@ block body
 				each identifier in entity.identifiers
 					dt=identifier.identifier_type.label
 					dd=identifier.value
+		.col-md-8.col-md-pull-4
+			if entity.annotation
+				blockquote
+					p=entity.annotation.content
+					footer='updated ' + (new Date(entity.annotation.created_at)).toLocaleDateString()
+			h2 Relationships
+			ul.list-unstyled
+				if entity.relationships
+					for relationship in entity.relationships
+						li!=relationship.rendered
+			a.btn.btn-warning.entity-action(title='Edit Relationships', href='/work/'+entity.bbid+'/relationships')
+				span.fa.fa-pencil
+				|&nbsp;Edit
