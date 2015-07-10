@@ -56,6 +56,33 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	});
 });
 
+router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
+	var work = res.locals.entity;
+	var title = 'Work';
+
+	if (work.default_alias && work.default_alias.name) {
+		title = 'Work “' + work.default_alias.name + '”';
+	}
+
+	res.render('entity/delete', {
+		title: title
+	});
+});
+
+router.post('/:bbid/delete/confirm', function(req, res) {
+	var work = res.locals.entity;
+
+	Work.del(work.bbid, {
+			revision: {note: req.body.note}
+		},
+		{
+			session: req.session
+		})
+		.then(function() {
+			res.redirect(303, '/work/' + work.bbid);
+		});
+});
+
 router.get('/:bbid/revisions', function(req, res) {
 	var work = res.locals.entity;
 	var title = 'Work';

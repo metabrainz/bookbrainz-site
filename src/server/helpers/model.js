@@ -273,4 +273,30 @@ Model.prototype.update = function(id, data, options) {
 	return bbws.put(path, object, wsOptions);
 };
 
+Model.prototype.del = function(id, data, options) {
+	options = options || {};
+
+	if (this.abstract) {
+		return Promise.reject(new Error('Cannot delete instance of abstract class'));
+	}
+
+	if (this.endpoint === undefined) {
+		return Promise.reject(new Error('Model has no endpoint'));
+	}
+
+	var path = '/' + this.endpoint + '/' + id + '/';
+	var wsOptions = {};
+	var object = {};
+
+	if (options.session && options.session.bearerToken) {
+		wsOptions.accessToken = options.session.bearerToken;
+	}
+
+	Object.keys(this.fields).forEach(function(key) {
+		object[key] = data[key];
+	});
+
+	return bbws.del(path, object, wsOptions);
+};
+
 module.exports = Model;

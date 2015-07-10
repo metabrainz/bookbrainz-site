@@ -56,6 +56,33 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	});
 });
 
+router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
+	var creator = res.locals.entity;
+	var title = 'Creator';
+
+	if (creator.default_alias && creator.default_alias.name) {
+		title = 'Creator “' + creator.default_alias.name + '”';
+	}
+
+	res.render('entity/delete', {
+		title: title
+	});
+});
+
+router.post('/:bbid/delete/confirm', function(req, res) {
+	var creator = res.locals.entity;
+
+	Creator.del(creator.bbid, {
+			revision: {note: req.body.note}
+		},
+		{
+			session: req.session
+		})
+		.then(function() {
+			res.redirect(303, '/creator/' + creator.bbid);
+		});
+});
+
 router.get('/:bbid/revisions', function(req, res) {
 	var creator = res.locals.entity;
 	var title = 'Creator';

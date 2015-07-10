@@ -1,0 +1,29 @@
+extends /layout
+
+block body
+	h1 Delete Entity
+	
+	.row.margin-top-2
+		.col-md-6.col-md-offset-3
+			.panel.panel-danger
+				.panel-heading
+					.panel-title Confirm Deletion
+				.panel-body
+					| If you're sure that
+					= ' ' + entity._type
+					if entity.default_alias
+						=' ' + entity.default_alias.name + ' '
+					else
+						=' (unnamed) '
+					| should be deleted, please enter a revision note below and confirm deletion.
+					
+					form#note
+						textarea.form-control.margin-top-1(rows=5, name='note')
+				.panel-footer.clearfix
+					a.btn.btn-danger.pull-right(href='/'+entity._type.toLowerCase()+'/'+entity.bbid) No, go back!
+					button.btn.btn-success.pull-right(
+						form='note'
+						formmethod='post'
+						formaction='/'+entity._type.toLowerCase()+'/'+entity.bbid+'/delete/confirm'
+					) Yes, delete!
+					
