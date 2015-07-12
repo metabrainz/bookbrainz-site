@@ -1,4 +1,5 @@
 # BookBrainz Site
+[![Build Status](https://travis-ci.org/bookbrainz/bookbrainz-site.svg?branch=master)](https://travis-ci.org/bookbrainz/bookbrainz-site)
 
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:
