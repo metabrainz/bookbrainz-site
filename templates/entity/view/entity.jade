@@ -1,5 +1,17 @@
 extends /layout
 
+mixin type(entity_type)
+	dt Type
+	dd=(entity_type ? entity_type.label : '?')
+	
+mixin begin_end
+	dt Begin Date
+	dd=(entity.begin_date ? entity.begin_date : '?')
+
+	if entity.ended
+		dt End Date
+		dd=(entity.end_date ? entity.end_date : '?')
+
 block body
 	.row
 		.col-md-12

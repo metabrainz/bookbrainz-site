@@ -7,8 +7,7 @@ block picture
 	span.fa.fa-th-list.picture-fallback-icon-large
 
 block attributes
-	dt Type
-	dd=(entity.publication_type ? entity.publication_type.label : '?')
+	+type(entity.publication_type)
 
 block content
 	h2 Editions

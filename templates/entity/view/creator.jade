@@ -7,15 +7,9 @@ block picture
 	span.fa.fa-user.picture-fallback-icon-large
 
 block attributes
-	dt Type
-	dd=(entity.creator_type ? entity.creator_type.label : '?')
+	+type(entity.creator_type)
 
 	dt Gender
 	dd=(entity.gender ? entity.gender.name : '?')
 
-	dt Begin Date
-	dd=(entity.begin_date ? entity.begin_date : '?')
-
-	if entity.ended
-		dt End Date
-		dd=(entity.end_date ? entity.end_date : '?')
+	+begin_end
