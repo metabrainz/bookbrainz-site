@@ -1,5 +1,4 @@
-BookBrainz Site
-===============
+# BookBrainz Site
 
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:
@@ -17,8 +16,15 @@ directories will exist:
 * public/js - minified JavaScript files which are referred to by the
   site pages.
 
-Installing dependencies
------------------------
+## Setup
+### Cloning
+
+Since this project makes use of [git submodules](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules), you need to use `git clone --recursive` to clone it. Alternatively you can follow the directions in the documentation linked here to manually initialize submodules.
+
+Currently used submodules:
+*  [MonkeyDo/lobes](https://github.com/MonkeyDo/lobes) in `src/client/stylesheets/lobes`
+
+## Installing dependencies
 
 Dependencies can be installed using the node package manager:
 
@@ -32,8 +38,7 @@ If you prefer not installing packages globally, you can skip this step and use `
 
 You also need to install [redis](http://redis.io/) either locally or have a machine running it available.
 
-Configuration
--------------
+## Configuration
 
 In order for the site to work, it requires an updated BookBrainz [webservice](https://github.com/bookbrainz/bookbrainz-ws) (the backend) and a redis server for storing user sessions.
 
@@ -43,8 +48,8 @@ Create a copy of development.json.example and rename it to development.json.
 You can then either leave it as is to use the public development webservice or change the variables to point to your own.
 Be aware that you will have to change the clientID if you do the latter.
 
-Building the client-side JS
----------------------------
+## Building and running
+### Building the client-side JS
 
 The client-side JS is designed to use the `require()` function provided by
 browserify. In order to get usable JS files, the source JS has to be processed
@@ -54,8 +59,7 @@ accomplish this.
     gulp
     gulp compress
 
-Running the site
-----------------
+### Running the site
 
 To run the site after installing dependencies and compiling the client-side JS,
 use the following command:
@@ -66,8 +70,7 @@ Or, if you're using Windows:
 
     npm run-script debug_win
 
-Watch Mode
-----------
+### Watch Mode
 
 If you're doing rapid prototyping of some new feature, it can be helpful to run the site in watch mode,
 where every change to any source file results in a reloading of the server.
@@ -82,8 +85,8 @@ Or on Windows:
     gulp watch
     set DEBUG=bbsite & nodemon bin\\www
 
-Code Formatting
----------------
+## Contributing
+### Code Formatting
 
 If you ever intend to push any code to the BookBrainz Site repository, or open
 a pull request, ensure you have set up the project's pre-commit git hook. You
