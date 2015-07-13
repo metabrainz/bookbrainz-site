@@ -1,16 +1,28 @@
+/*
+ * Copyright (C) 2015  Ben Ockmore
+ *               2015  Sean Burke
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+var Input = require('react-bootstrap').Input;
 var React = require('react');
 var select2 = require('Select2');
-var Input = require('react-bootstrap').Input;
 
 var Select = React.createClass({
-	getValue: function() {
-		'use strict';
-
-		return this.refs.target.getValue();
-	},
-	componentDidMount: function() {
-		'use strict';
-
+	initSelect2: function() {
 		var select = $(this.refs.target.getInputDOMNode());
 
 		var options = this.props.options || {};
@@ -23,8 +35,30 @@ var Select = React.createClass({
 			}
 		}
 
-		select.select2(options);
-		select.on('change', this.props.onChange);
+		mountElement.select2(options);
+		mountElement.on('change', this.props.onChange);
+	}
+	getValue: function() {
+		'use strict';
+
+		return this.refs.target.getValue();
+	},
+	componentWillUnmount: function() {
+		'use strict';
+
+		var select = $(this.refs.target.getInputDOMNode());
+
+		// Unregister onChange event, so that it isn't triggered while the DOM is
+		// refreshed.
+		select.off('change');
+	},
+	componentDidMount: function() {
+		'use strict';
+		this.initSelect2();
+	},
+	componentDidUpdate: function() {
+		'use strict';
+		this.initSelect2();
 	},
 	render: function() {
 		'use strict';
@@ -44,8 +78,6 @@ var Select = React.createClass({
 		if(this.props.placeholder) {
 			options.unshift(<option key={0}/>);
 		}
-
-		console.log(options);
 
 		return (
 			<Input {...this.props} ref='target' type='select'>
