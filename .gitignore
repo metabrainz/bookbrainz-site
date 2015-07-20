@@ -89,3 +89,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+### IntelliJ ###
+# IntelliJ project files
+.idea
+out
+gen
