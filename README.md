@@ -101,7 +101,7 @@ And finally creating a symbolic link from .githooks/pre-commit to .git/hooks/pre
 
     ln -s ../../.githooks/pre-commit .git/hooks/pre-commit
     
-  On Windows run the following command from an administrative cmd, creating a shortcut will *not* work:
+  On Windows run the following command from an administrative cmd as creating a shortcut will *not* work:
   
     mklink .git\hooks\pre-commit ..\..\.githooks\pre-commit
 
