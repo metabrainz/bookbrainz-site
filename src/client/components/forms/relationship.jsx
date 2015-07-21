@@ -32,7 +32,7 @@ require('superagent-bluebird-promise');
 
 var renderRelationship = require('../../../server/helpers/render.js');
 var utils = require('../../../server/helpers/utils.js');
-var SearchSelect = require('../input/search-select.jsx');
+var SearchSelect = require('../input/entity-search.jsx');
 
 
 module.exports = React.createClass({
