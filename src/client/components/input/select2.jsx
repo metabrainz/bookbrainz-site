@@ -19,13 +19,16 @@
 
 var Input = require('react-bootstrap').Input;
 var React = require('react');
-var select2 = require('Select2');
+
+if (typeof window !== 'undefined') {
+	require('Select2');
+}
 
 var Select = React.createClass({
 	initSelect2: function() {
-		var select = $(this.refs.target.getInputDOMNode());
+		var mountElement = $(this.refs.target.getInputDOMNode());
 
-		var options = this.props.options || {};
+		var options = this.props.select2Options || {};
 		options.theme = 'bootstrap';
 
 		if(this.props.placeholder) {
@@ -37,7 +40,7 @@ var Select = React.createClass({
 
 		mountElement.select2(options);
 		mountElement.on('change', this.props.onChange);
-	}
+	},
 	getValue: function() {
 		'use strict';
 

@@ -21,7 +21,7 @@ var React = require('react');
 
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
-var Select = require('../input/select.jsx');
+var Select = require('../input/select2.jsx');
 var LoadingSpinner = require('../loading_spinner.jsx');
 var UUID = require('../input/uuid.jsx');
 var extend = require('util')._extend;
