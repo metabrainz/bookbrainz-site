@@ -60,6 +60,21 @@ Edition.extend({
 	},
 	release_date: {
 		type: 'date'
+	},
+	width: {
+		type: 'number'
+	},
+	height: {
+		type: 'number'
+	},
+	depth: {
+		type: 'number'
+	},
+	weight: {
+		type: 'number'
+	},
+	pages: {
+		type: 'number'
 	}
 });
 
