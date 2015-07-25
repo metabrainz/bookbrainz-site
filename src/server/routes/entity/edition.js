@@ -162,6 +162,26 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.annotation = req.body.annotation;
 	}
 
+	if (req.body.pages) {
+		changes.pages = req.body.pages;
+	}
+
+	if (req.body.weight) {
+		changes.weight = req.body.weight;
+	}
+
+	if (req.body.width) {
+		changes.width = req.body.width;
+	}
+
+	if (req.body.height) {
+		changes.height = req.body.height;
+	}
+
+	if (req.body.depth) {
+		changes.depth = req.body.depth;
+	}
+
 	if (req.body.note) {
 		changes.revision = {
 			note: req.body.note
@@ -256,6 +276,31 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	if ((!edition.annotation) ||
 		(edition.annotation.content !== annotation)) {
 		changes.annotation = annotation ? annotation : null;
+	}
+
+	var pages = req.body.pages;
+	if (edition.pages !== pages) {
+		changes.pages = pages ? pages : null;
+	}
+
+	var weight = req.body.weight;
+	if (edition.weight !== weight) {
+		changes.weight = weight ? weight : null;
+	}
+
+	var width = req.body.width;
+	if (edition.width !== width) {
+		changes.width = width ? width : null;
+	}
+
+	var height = req.body.height;
+	if (edition.height !== height) {
+		changes.height = height ? height : null;
+	}
+
+	var depth = req.body.depth;
+	if (edition.depth !== depth) {
+		changes.depth = depth ? depth : null;
 	}
 
 	if (req.body.note) {

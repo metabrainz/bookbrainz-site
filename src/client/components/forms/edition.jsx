@@ -83,6 +83,11 @@ module.exports = React.createClass({
 			disambiguation: editionData.disambiguation,
 			annotation: editionData.annotation,
 			identifiers: editionData.identifiers,
+			pages: parseInt(editionData.pages),
+			weight: parseInt(editionData.weight),
+			width: parseInt(editionData.width),
+			height: parseInt(editionData.height),
+			depth: parseInt(editionData.depth),
 			note: revisionNote
 		};
 

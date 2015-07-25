@@ -38,7 +38,12 @@ var EditionData = React.createClass({
 			editionStatus: this.refs.editionStatus.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
 			annotation: this.refs.annotation.getValue(),
-			identifiers: this.refs.identifiers.getValue()
+			identifiers: this.refs.identifiers.getValue(),
+			pages: this.refs.pages.getValue(),
+			width: this.refs.width.getValue(),
+			height: this.refs.height.getValue(),
+			depth: this.refs.depth.getValue(),
+			weight: this.refs.weight.getValue()
 		};
 	},
 	valid: function() {
@@ -57,6 +62,11 @@ var EditionData = React.createClass({
 		var initialDisambiguation = null;
 		var initialAnnotation = null;
 		var initialIdentifiers = [];
+		var initialPages = null;
+		var initialWidth = null;
+		var initialHeight = null;
+		var initialDepth = null;
+		var initialWeight = null;
 		if (this.props.edition) {
 			if (this.props.edition.publication) {
 				initialPublication = {
@@ -77,6 +87,11 @@ var EditionData = React.createClass({
 			initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
 			initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
 			initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
+			initialPages = (this.props.edition.pages || this.props.edition.pages === 0) ? this.props.edition.pages : null;
+			initialWidth = (this.props.edition.width || this.props.edition.width === 0) ? this.props.edition.width : null;
+			initialHeight = (this.props.edition.height || this.props.edition.height === 0) ? this.props.edition.height : null;
+			initialDepth = (this.props.edition.depth || this.props.edition.depth === 0) ? this.props.edition.depth : null;
+			initialWeight = (this.props.edition.weight || this.props.edition.weight === 0) ? this.props.edition.weight : null;
 			initialIdentifiers = this.props.edition.identifiers.map(function(identifier) {
 				return {
 					id: identifier.id,
@@ -148,6 +163,60 @@ var EditionData = React.createClass({
 						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />
+					<hr/>
+					<div className='row'>
+						<div className='col-md-11 col-md-offset-1'>
+							<div className='col-md-3'>
+								<Input
+									type='text'
+									label='Page Count'
+									ref='pages'
+									defaultValue={initialPages}
+									labelClassName='col-md-7'
+									wrapperClassName='col-md-5' />
+							</div>
+							<div className='col-md-3'>
+								<Input
+									type='text'
+									label='Weight (g)'
+									ref='weight'
+									defaultValue={initialWeight}
+									labelClassName='col-md-7'
+									wrapperClassName='col-md-5' />
+							</div>
+						</div>
+					</div>
+					<div className='row'>
+						<div className='col-md-11 col-md-offset-1'>
+							<div className='col-md-3'>
+								<Input
+									type='text'
+									label='Width (mm)'
+									ref='width'
+									defaultValue={initialWidth}
+									labelClassName='col-md-7'
+									wrapperClassName='col-md-5' />
+							</div>
+							<div className='col-md-3'>
+								<Input
+									type='text'
+									label='Height (mm)'
+									ref='height'
+									defaultValue={initialHeight}
+									labelClassName='col-md-7'
+									wrapperClassName='col-md-5' />
+							</div>
+							<div className='col-md-3'>
+								<Input
+									type='text'
+									label='Depth (mm)'
+									ref='depth'
+									defaultValue={initialDepth}
+									labelClassName='col-md-7'
+									wrapperClassName='col-md-5' />
+							</div>
+						</div>
+					</div>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
