@@ -20,6 +20,7 @@
 var React = require('react');
 var Select = require('./select2.jsx');
 var _ = require('underscore');
+var $ = require('jquery');
 
 var EntitySearch = React.createClass({
 	getValue: function() {
