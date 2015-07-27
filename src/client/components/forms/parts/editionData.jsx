@@ -35,6 +35,7 @@ var EditionData = React.createClass({
 			publisher: this.refs.publisher.getValue() === '' ? null : this.refs.publisher.getValue(),
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
+			editionFormat: this.refs.editionFormat.getValue(),
 			editionStatus: this.refs.editionStatus.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
 			annotation: this.refs.annotation.getValue(),
@@ -58,6 +59,7 @@ var EditionData = React.createClass({
 		var initialPublisher = null;
 		var initialReleaseDate = null;
 		var initialLanguage = null;
+		var initialEditionFormat = null;
 		var initialEditionStatus = null;
 		var initialDisambiguation = null;
 		var initialAnnotation = null;
@@ -84,6 +86,7 @@ var EditionData = React.createClass({
 
 			initialReleaseDate = this.props.edition.release_date;
 			initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
+			initialEditionFormat = this.props.edition.edition_format ? this.props.edition.edition_format.edition_format_id : null;
 			initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
 			initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
 			initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
@@ -148,6 +151,18 @@ var EditionData = React.createClass({
 						placeholder='Select edition language…'
 						noDefault
 						options={this.props.languages}
+						select2Options={select2Options}
+						labelClassName='col-md-4'
+						wrapperClassName='col-md-4' />
+					<Select
+						label='Format'
+						labelAttribute='label'
+						idAttribute='id'
+						defaultValue={initialEditionFormat}
+						ref='editionFormat'
+						placeholder='Select edition format…'
+						noDefault
+						options={this.props.editionFormats}
 						select2Options={select2Options}
 						labelClassName='col-md-4'
 						wrapperClassName='col-md-4' />

@@ -32,6 +32,7 @@ var EditForm = React.createFactory(require('../../../client/components/forms/edi
 var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 var loadEditionStatuses = require('../../helpers/middleware').loadEditionStatuses;
+var loadEditionFormats = require('../../helpers/middleware').loadEditionFormats;
 var loadLanguages = require('../../helpers/middleware').loadLanguages;
 var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
 var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
@@ -84,10 +85,11 @@ router.get('/:bbid/revisions', function(req, res) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadLanguages, function(req, res) {
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadEditionFormats, loadLanguages, function(req, res) {
 	var props = {
 		languages: res.locals.languages,
 		editionStatuses: res.locals.editionStatuses,
+		editionFormats: res.locals.editionFormats,
 		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/edition/create/handler'
 	};
@@ -103,12 +105,13 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStat
 	});
 });
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadLanguages, function(req, res) {
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadEditionFormats, loadLanguages, function(req, res) {
 	var edition = res.locals.entity;
 
 	var props = {
 		languages: res.locals.languages,
 		editionStatuses: res.locals.editionStatuses,
+		editionFormats: res.locals.editionFormats,
 		identifierTypes: res.locals.identifierTypes,
 		edition: edition,
 		submissionUrl: '/edition/' + edition.bbid + '/edit/handler'
@@ -129,6 +132,12 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	var changes = {
 		bbid: null
 	};
+
+	if (req.body.editionFormatId) {
+		changes.edition_format = {
+			edition_format_id: req.body.editionFormatId
+		};
+	}
 
 	if (req.body.editionStatusId) {
 		changes.edition_status = {
@@ -241,6 +250,14 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		(edition.edition_status.edition_status_id !== editionStatusId)) {
 		changes.edition_status = {
 			edition_status_id: editionStatusId
+		};
+	}
+
+	var editionFormatId = req.body.editionFormatId;
+	if ((!edition.edition_format) ||
+		(edition.edition_format.edition_format_id !== editionFormatId)) {
+		changes.edition_format = {
+			edition_format_id: editionFormatId
 		};
 	}
 

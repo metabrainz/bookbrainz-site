@@ -23,6 +23,7 @@ var Promise = require('bluebird');
 
 var CreatorType = require('../data/properties/creator-type');
 var EditionStatus = require('../data/properties/edition-status');
+var EditionFormat = require('../data/properties/edition-format');
 var Entity = require('../data/entity');
 var Gender = require('../data/properties/gender');
 var Language = require('../data/properties/language');
@@ -54,6 +55,7 @@ var middleware = {};
 
 middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
 middleware.loadPublicationTypes = makeLoader(PublicationType, 'publicationTypes');
+middleware.loadEditionFormats = makeLoader(EditionFormat, 'editionFormats');
 middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
 middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
 middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
