@@ -15,3 +15,12 @@ block attributes
 
 	dt Release Date
 	dd=(entity.release_date ? entity.release_date : '?')
+	
+	dt Page Count
+	dd=(entity.pages ? entity.pages : '?')
+	
+	dt Weight
+	dd=(entity.weight ? entity.weight : '?') + ' g'
+	
+	dt Dimensions (W×H×D)
+	dd=(entity.width ? entity.width : '?') + '×' + (entity.height ? entity.height : '?') + '×' + (entity.depth ? entity.depth : '?') + ' mm'
