@@ -73,12 +73,6 @@ router.get('/develop', function(req, res) {
 	});
 });
 
-router.get('/getStarted', function(req, res) {
-	res.render('getStarted', {
-		title: 'Get Started'
-	});
-});
-
 router.get('/privacy', function(req, res) {
 	res.render('privacy', {
 		title: 'Privacy'
