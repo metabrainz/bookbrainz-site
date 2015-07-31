@@ -21,6 +21,7 @@
 
 var Model = require('../../helpers/model');
 require('../../data/entity');
+require('../../data/user');
 
 var Revision = new Model('Revision', {
 	endpoint: 'revision'
@@ -31,10 +32,17 @@ Revision.extend({
 		type: 'number',
 		map: 'revision_id'
 	},
+	user: {
+		type: 'object',
+		model: 'User'
+	},
 	entity: {
 		type: 'ref',
 		model: 'Entity',
 		map: 'entity_uri'
+	},
+	created_at: {
+		type: 'date'
 	}
 });
 

@@ -36,7 +36,8 @@ var Publisher = require('../data/entities/publisher');
 router.get('/', function(req, res) {
 	var render = function(revisions) {
 		res.render('index', {
-			recent: revisions ? _.pluck(revisions, 'entity') : null
+			recent: revisions,
+			homepage: true
 		});
 	};
 
@@ -148,7 +149,8 @@ router.get('/search', function(req, res) {
 				res.render('search', {
 					title: 'Search Results',
 					query: query,
-					results: entities
+					results: entities,
+					hideSearch: true
 				});
 			}
 			else if (mode === 'auto') {
@@ -162,7 +164,8 @@ router.get('/search', function(req, res) {
 				res.render('search', {
 					title: 'Search Results',
 					error: message,
-					results: []
+					results: [],
+					hideSearch: true
 				});
 			}
 			else if (mode === 'auto') {
