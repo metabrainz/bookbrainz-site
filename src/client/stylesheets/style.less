@@ -25,17 +25,24 @@
 @grid-float-breakpoint: @screen-lg-desktop;
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 0.9);
+	margin-bottom: 0px;
+}
+
+.navbar-collapse {
+	border: none !important;
 }
 
 /* Overwrite button primary colour to retain default bootstrap meaning */
 @btn-primary-bg:                 darken(#428bca, 6.5%);
 @btn-primary-border:             darken(#428bca, 6.5%);
 
+body {
+	margin-top: 64px;
+	margin-bottom: 64px;
+}
+
 /* Site-wide styling */
 /* ================= */
-body {
-	padding-top: 34px;
-}
 .whole-page-form {
 	margin-top: 3em;
 }
@@ -69,9 +76,21 @@ body {
 	.margin-right-@{i} {
 		margin-right: unit(@i, em);
 	}
+	.margin-sides-@{i} {
+		margin-left: unit(@i, em);
+		margin-right: unit(@i, em);
+	}
 	.generate-margins(@n, (@i + 1));
 }
-.generate-margins(2);
+.generate-margins(6);
+.no-sides-border {
+	border-left: 0px;
+	border-right: 0px;
+}
+
+.text-light {
+	color: rgb(180, 180, 180);
+}
 .picture-fallback-icon(@size) {
 	font-size: @size;
 	margin: 0.2em 0;

@@ -9,7 +9,7 @@ html
 	body
 		a.sr-only.sr-only-focusable(href='#content') Skip to main content
 		nav.navbar.navbar-default.navbar-fixed-top.BookBrainz(role='navigation')
-			.container
+			.container-fluid
 				//- Brand and toggle get grouped for better mobile display
 				.navbar-header
 					button.navbar-toggle.collapsed(
@@ -23,65 +23,75 @@ html
 						span.icon-bar
 
 					a.navbar-brand.logo(href='/')
-						img(alt='Brand', src='/images/BookBrainz_logo_mini.svg')
+						if homepage
+							img(alt='Brand', src='/images/BookBrainz_logo_icon.svg')
+						else
+							img(alt='Brand', src='/images/BookBrainz_logo_mini.svg')
 
 				//- Collect the nav links, forms, and other content for toggling
 				#bs-example-navbar-collapse-1.collapse.navbar-collapse
-					ul.nav.navbar-nav
-						li
-							a(href='/about') About
-						li
-							a(href='/contribute') Contribute
-						li
-							a(href='/develop') Develop
-
-					form.navbar-form.navbar-right(role='search', action='/search')
-						div.form-group
-							input.form-control(type='text', placeholder='Search', name='q')
-
-						button.btn.btn-primary(type='submit')
-							span.fa.fa-search
-							span.sr-only Search
-
 					ul.nav.navbar-nav.navbar-right
-						li.dropdown
-							a.dropdown-toggle#dNewEntities(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
-								span.fa.fa-plus
-								|&nbsp;Create&nbsp;
-								span.caret
-
-							ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
-								li: a(href='/publication/create') Create Publication
-								li: a(href='/edition/create') Create Edition
-								li: a(href='/work/create') Create Work
-								li.divider
-								li: a(href='/creator/create') Create Creator
-								li: a(href='/publisher/create') Create Publisher
-
 						if user
-							li
-								a(href='/editor/'+user.id)= user.name
-							li
-								a(href='/message/inbox')
-									if inboxCount === 0
-										span.fa.fa-envelope-o
-										|&nbsp;Inbox
-									else
-										span.fa.fa-envelope
-										|&nbsp;Inbox&nbsp;
-										span.badge=inboxCount
-						li
-							if user
-								a(href='/logout') Logout
-							else
-								a(href='/login') Login
+							li.dropdown
+								a.dropdown-toggle#dNewEntities(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.fa.fa-plus
+									|&nbsp;Create&nbsp;
+									span.caret
 
-						unless user
-							li
-								a(href='/register') Register
+								ul.dropdown-menu(role='menu' aria-labelledby='dNewEntities')
+									li: a(href='/publication/create') Create Publication
+									li: a(href='/edition/create') Create Edition
+									li: a(href='/work/create') Create Work
+									li.divider
+									li: a(href='/creator/create') Create Creator
+									li: a(href='/publisher/create') Create Publisher
 
-		.container#content
+							li.dropdown
+								a.dropdown-toggle#dUserDropdown(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+									span.fa.fa-user
+									span &nbsp; #{user.name}
+									span.caret
+								
+								ul.dropdown-menu(role='menu', aria-labelledby='dUserDropdown')
+									li: a(href='/editor/'+user.id)
+										span.fa.fa-info.fa-fw
+										|&nbsp;Profile
+									li: a(href='/message/inbox')
+										if inboxCount === 0
+											span.fa.fa-envelope-o.fa-fw
+											|&nbsp;Inbox
+										else
+											span.fa.fa-envelope.fa-fw
+											|&nbsp;Inbox&nbsp;
+											span.badge=inboxCount
+										a(href='/logout')
+											span.fa.fa-sign-out.fa-fw
+											|&nbsp;Sign Out
+						else
+							li
+								a(href='/login')
+									span.fa.fa-sign-in
+									|&nbsp;Sign In
+
+					unless (homepage || hideSearch)
+						form.navbar-form.navbar-right(role='search', action='/search')
+							div.form-group
+								.input-group
+									input.form-control(type="text", placeholder="Search for...", name='q')
+									span.input-group-btn
+										button.btn.btn-success(type='submit')
+											span.fa.fa-search
+
+		// Clean this up later! Please!
+		if siteAlert
+			.alert.alert-warning.text-center.no-sides-border
+				p.lead=siteAlert
+
+		if homepage
 			block body
+		else
+			.container#content
+				block body
 
 		include footer
 

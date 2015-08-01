@@ -1,73 +1,91 @@
 extends layout
 
 block body
-	.row
-		.col-md-12
-			img#index-large-logo.img-responsive(alt='BookBrainz', src='/images/BookBrainz_text.svg', height='150')
-			.text-center
-				p.lead='the '
-					a(href='/licensing') open
-					|  book database
-				a.btn.btn-success.btn-lg(href='/getStarted') Get Started!
+	.alert.alert-warning.text-center
+		p='Under development — adventurous users, please test and add data! Give us feedback about bugs, glitches and potential improvements at '
+			a(href="//tickets.musicbrainz.org/browse/BB") MusicBrainz JIRA!
+	
+	div(style="width:100%; height:550px; background:url(/images/Bookshelf.jpg)")
+		div(style="background:rgba(0, 0, 0, .75); text-align:center; width:100%; height:100%; padding-top:4em")
+			.container
+				img.img-responsive.center-block(src='/images/BookBrainz_text.svg', width=500)
 
-	.row
-		.col-md-12.text-center
-			h2 Latest Updates
+				.row
+					.col-md-8.col-md-offset-2
+						form(role='search', action='/search')
+							.input-group.input-group-lg.margin-top-5
+								input.form-control(type="text", autofocus, placeholder="Search for...", name='q')
+								span.input-group-btn
+									button.btn.btn-success(type='submit')
+										span.fa.fa-search
+
+						.row.margin-top-4
+							.col-md-10.col-md-offset-1
+								.row
+									.col-md-4
+										a.btn.btn-block.btn-lg.btn-default(href='/about') About
+									.col-md-4
+										a.btn.btn-block.btn-lg.btn-default(href='/contribute') Contribute
+									.col-md-4
+										a.btn.btn-block.btn-lg.btn-default(href='/develop') Develop
+						
+						.margin-top-3
+							h4.text-light Contact Us
+							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+							a(href="//webchat.freenode.net/?channels=#bookbrainz")
+								span.fa.fa-comment.fa-2x.text-light(style="vertical-align: middle;")
+							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+							a(href="//twitter.com/intent/tweet?screen_name=BookBrainz")
+								span.fa.fa-twitter.fa-2x.text-light(style="vertical-align: middle;")
+							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+							a(href="mailto:bookbrainz-users@groups.io")
+								span.fa.fa-envelope.fa-2x.text-light(style="vertical-align: middle;")
+							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+
+	.container
+		.row
+			.col-md-8.col-md-offset-2
+				h1.text-center The Open Book Database
+				p.lead.text-justify.
+					BookBrainz is a project to create an online database of information
+					about every single book, magazine, journal and other publication ever
+					written. We make all the data that we collect available to the whole
+					world to consume and use as they see fit. Anyone can contribute to
+					BookBrainz, whether through editing our information, helping out with
+					development, or just spreading the word about our project.
+
+		hr
+		.row
+			.col-md-2.text-center.margin-top-4
+				span.fa.fa-user.fa-5x
+			.col-md-10
+				h2 Join Us!
+				
+				p.lead
+					| First off,&nbsp;
+					a(href='/about', target='blank') read about us
+					| &nbsp;and&nbsp;
+					a(href='/contribute', target='blank') how you can help
+					| . Then, if you think you want to stick around, hit the button
+					| below to sign up for a free BookBrainz account!
+		.text-center.margin-top-1.margin-bottom-3
+			a.btn.btn-success.btn-lg(href='/register') Register!
+		if recent
+			hr
 			.row
-				if recent
-					for entity in recent
-						.col-xs-12.col-sm-6.col-md-4
-								- var name = '(unnamed)';
-								if entity.default_alias
-									- name = entity.default_alias.name;
-
-								if entity._type == 'Publication'
-									a(href='/publication/'+entity.bbid)
-										.recently-updated.panel.panel-default.panel-body
-											span.fa.fa-th-list.picture-fallback-icon-small
-											div=name
-											if entity.publication_type
-												i=entity.publication_type.label
-								else if entity._type == 'Creator'
-									a(href='/creator/'+entity.bbid)
-										.recently-updated.panel.panel-default.panel-body
-											span.fa.fa-user.picture-fallback-icon-small
-											div=name
-											if entity.creator_type
-												i=entity.creator_type.label
-								else if entity._type == 'Edition'
-									a(href='/edition/'+entity.bbid)
-										.recently-updated.panel.panel-default.panel-body
-											span.fa.fa-book.picture-fallback-icon-small
-											div=name
-											if entity.edition_status
-												i=entity.edition_status.label
-								else if entity._type == 'Work'
-									a(href='/work/'+entity.bbid)
-										.recently-updated.panel.panel-default.panel-body
-											span.fa.fa-file-text-o.picture-fallback-icon-small
-											div=name
-											if entity.work_type
-												i=entity.work_type.label
-								else if entity._type == 'Publisher'
-									a(href='/publisher/'+entity.bbid)
-										.recently-updated.panel.panel-default.panel-body
-											span.fa.fa-university.picture-fallback-icon-small
-											div=name
-											if entity.publisher_type
-												i=entity.publisher_type.label
-				else
-					em Unable to retrieve latest updates
-	.row.margin-top-1
-		.col-md-6.col-md-offset-3.text-center
-			.panel.panel-warning
-				.panel-heading
-					h3.panel-title Beta Warning!
-				.panel-body
-					| This website is currently under development, and has been
-					| released for adventurous users to test and add data. Please use
-					| the site and give us feedback about bugs, glitches and potential
-					| improvements at&nbsp;
-					a(href='http://tickets.musicbrainz.org/browse/BB', target='_blank')
-						| MusicBrainz JIRA
-					| !
+				.col-md-12
+					- var picture_classes = {Edition: 'fa-book', Publication: 'fa-th-list', Creator: 'fa-user', Publisher: 'fa-university', Work: 'fa-file-text-o'}
+					h2.text-center Recent Activity
+					
+					.list-group
+						for revision in recent
+							- var name = '(unnamed)';
+							if revision.entity.default_alias
+								- name = revision.entity.default_alias.name;
+							a.list-group-item(href='/revision/'+revision.id)
+								.row
+									.col-md-2='r'+revision.id
+									.col-md-6
+										span.fa(class=picture_classes[revision.entity._type])
+										span.margin-left-1=name
+									.col-md-4=(new Date(Date.parse(revision.created_at)).toLocaleDateString())
