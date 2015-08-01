@@ -88,29 +88,3 @@ Or on Windows:
 
     gulp watch
     set DEBUG=bbsite & nodemon bin\\www
-
-## Contributing
-### Commit Messages
-
-We try to keep our commit messages readable and concise, this is especially important as they can't be rewritten—unlike code.
-
-Thus please follow [this guide](http://chris.beams.io/posts/git-commit/) when writing commit messages.
-
-### Code Formatting
-
-If you ever intend to push any code to the BookBrainz Site repository, or open
-a pull request, ensure you have set up the project's pre-commit git hook. You
-can do this by first installing the node module jscs globally:
-
-    npm install -g jscs
-
-And finally creating a symbolic link from .githooks/pre-commit to .git/hooks/pre-commit:
-
-    ln -s ../../.githooks/pre-commit .git/hooks/pre-commit
-    
-  On Windows run the following command from an administrative cmd as creating a shortcut will *not* work:
-  
-    mklink .git\hooks\pre-commit ..\..\.githooks\pre-commit
-
-This will check that your code is formatted correctly for contribution to the
-project.
