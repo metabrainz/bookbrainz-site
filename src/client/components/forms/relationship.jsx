@@ -21,7 +21,7 @@ var React = require('react');
 
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
-var Select = require('../input/select.jsx');
+var Select = require('../input/select2.jsx');
 var LoadingSpinner = require('../loading_spinner.jsx');
 var UUID = require('../input/uuid.jsx');
 var extend = require('util')._extend;
@@ -32,7 +32,7 @@ require('superagent-bluebird-promise');
 
 var renderRelationship = require('../../../server/helpers/render.js');
 var utils = require('../../../server/helpers/utils.js');
-var SearchSelect = require('../input/search-select.jsx');
+var SearchSelect = require('../input/entity-search.jsx');
 
 
 module.exports = React.createClass({

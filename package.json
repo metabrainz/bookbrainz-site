@@ -9,7 +9,7 @@
     "test": "./scripts/check-style.sh && gulp && node_modules/.bin/mocha"
   },
   "dependencies": {
-    "Select2": "git://github.com/select2/select2#4.0.0",
+    "Select2": "git://github.com/select2/select2",
     "bluebird": "^2.5.1",
     "body-parser": "~1.8.1",
     "bootstrap": "^3.3.2",
@@ -33,6 +33,7 @@
     "passport-oauth2-password-grant": "~0.0.3",
     "react": "^0.13.0",
     "react-bootstrap": "^0.20.0",
+    "select2-bootstrap-theme": "git://github.com/select2/select2-bootstrap-theme",
     "serve-favicon": "~2.2.0",
     "superagent": "^0.21.0",
     "superagent-bluebird-promise": "^0.5.1",

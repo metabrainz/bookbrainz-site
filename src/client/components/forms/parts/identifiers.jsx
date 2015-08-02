@@ -20,7 +20,7 @@ var React = require('react');
 
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
-var Select = require('../../input/select.jsx');
+var Select = require('../../input/select2.jsx');
 
 var IdentifierRow = React.createClass({
 	getValue: function() {

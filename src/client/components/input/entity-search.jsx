@@ -18,11 +18,11 @@
  */
 
 var React = require('react');
-var Select = require('./select.jsx');
+var Select = require('./select2.jsx');
 var _ = require('underscore');
 var $ = require('jquery');
 
-var SearchSelect = React.createClass({
+var EntitySearch = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -67,7 +67,8 @@ var SearchSelect = React.createClass({
 							text: result.default_alias ?
 								result.default_alias.name : '(unnamed)',
 							disambiguation: result.disambiguation ?
-								result.disambiguation.comment : null
+								result.disambiguation.comment : null,
+							type: result._type
 						});
 					});
 
@@ -76,6 +77,20 @@ var SearchSelect = React.createClass({
 			},
 			templateResult: function(result) {
 				var template = result.text;
+
+				var ENTITY_TYPE_ICONS = {
+					'Creator': 'fa-user',
+					'Edition': 'fa-book',
+					'Publication': 'fa-th-list',
+					'Publisher': 'fa-university',
+					'Work': 'fa-file-text-o'
+				};
+
+				if (result.type) {
+					template = React.renderToStaticMarkup(
+						<span className={'fa ' + ENTITY_TYPE_ICONS[result.type]}/>
+					) + ' ' + template;
+				}
 
 				if (result.disambiguation) {
 					template += React.renderToStaticMarkup(
@@ -95,7 +110,7 @@ var SearchSelect = React.createClass({
 		var options = this.props.options || [];
 
 		var defaultKey = null;
-		if (this.props.defaultValue) {
+		if (this.props.defaultValue && this.props.defaultValue.id) {
 			options.unshift(this.props.defaultValue);
 			defaultKey = this.props.defaultValue.id;
 		}
@@ -124,4 +139,4 @@ var SearchSelect = React.createClass({
 	}
 });
 
-module.exports = SearchSelect;
+module.exports = EntitySearch;

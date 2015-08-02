@@ -19,7 +19,7 @@
 
 var React = require('react');
 var PartialDate = require('../../input/partialDate.jsx');
-var Select = require('../../input/select.jsx');
+var Select = require('../../input/select2.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
 var Identifiers = require('./identifiers.jsx');

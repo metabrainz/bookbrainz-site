@@ -19,8 +19,8 @@
 
 var React = require('react');
 var PartialDate = require('../../input/partialDate.jsx');
-var Select = require('../../input/select.jsx');
-var SearchSelect = require('../../input/search-select.jsx');
+var Select = require('../../input/select2.jsx');
+var SearchSelect = require('../../input/entity-search.jsx');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
 var Identifiers = require('./identifiers.jsx');
