@@ -43,7 +43,7 @@ var PublisherData = React.createClass({
 		'use strict';
 
 		return {
-			ended: this.props.edition ? this.props.edition.ended : false
+			ended: this.props.publisher ? this.props.publisher.ended : false
 		};
 	},
 	valid: function() {
