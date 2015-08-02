@@ -16,6 +16,11 @@ block attributes
 	dt Language
 	dd=(entity.language ? entity.language.name : '?')
 
+	dt Publisher
+	dd
+		a(href="/publisher/"+entity.publisher.bbid)
+			=(entity.publisher ? entity.publisher.default_alias.name : '?')
+
 	dt Release Date
 	dd=(entity.release_date ? entity.release_date : '?')
 	
@@ -27,3 +32,9 @@ block attributes
 	
 	dt Dimensions (W×H×D)
 	dd=(entity.width ? entity.width : '?') + '×' + (entity.height ? entity.height : '?') + '×' + (entity.depth ? entity.depth : '?') + ' mm'
+
+block content
+	p
+		a(href="/publication/"+entity.publication.bbid)
+			span.fa.fa-external-link
+			|&nbsp;See all other editions
