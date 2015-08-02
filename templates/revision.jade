@@ -38,10 +38,13 @@ block body
 	else
 		h3=('Relationship ' + revision.relationship.id)
 
-	table.table.table-bordered.text-center
-		for d in diff
-			each val, key in d
-				+formatRow(key, val[0], val[1])
+	if diff
+		table.table.table-bordered.text-center
+			for d in diff
+				each val, key in d
+					+formatRow(key, val[0], val[1])
+	else
+		.alert.alert-danger Error calculating diff. Please note that diffs for DELETE revisions are currently unsupported.
 	
 	p.text-right
 		='Created by '

@@ -331,29 +331,31 @@ router.get('/:id', function(req, res) {
 	.then(function(revision) {
 		var diff = null;
 		console.log(revision);
-		if (revision.entity) {
-			console.log(revision.entity);
-			if (revision.entity._type === 'Edition') {
-				diff = formatEditionDiff(revision);
-			}
-			else if (revision.entity._type === 'Publication') {
-				diff = formatPublicationDiff(revision);
-			}
-			else if (revision.entity._type === 'Creator') {
-				diff = formatCreatorDiff(revision);
-			}
-			else if (revision.entity._type === 'Publisher') {
-				diff = formatPublisherDiff(revision);
-			}
-			else if (revision.entity._type === 'Work') {
-				diff = formatWorkDiff(revision);
+		if (revision.changes) {
+			if (revision.entity) {
+				console.log(revision.entity);
+				if (revision.entity._type === 'Edition') {
+					diff = formatEditionDiff(revision);
+				}
+				else if (revision.entity._type === 'Publication') {
+					diff = formatPublicationDiff(revision);
+				}
+				else if (revision.entity._type === 'Creator') {
+					diff = formatCreatorDiff(revision);
+				}
+				else if (revision.entity._type === 'Publisher') {
+					diff = formatPublisherDiff(revision);
+				}
+				else if (revision.entity._type === 'Work') {
+					diff = formatWorkDiff(revision);
+				}
+				else {
+					diff = formatEntityDiff(revision);
+				}
 			}
 			else {
-				diff = formatEntityDiff(revision);
+				diff = formatRelationshipDiff(revision);
 			}
-		}
-		else {
-			diff = formatRelationshipDiff(revision);
 		}
 
 		User.findOne(revision.user.user_id).then(function(user) {
