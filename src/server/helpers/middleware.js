@@ -122,6 +122,9 @@ middleware.makeEntityLoader = function(model, errMessage) {
 			else if (model.name === 'Publication') {
 				populate.push('editions');
 			}
+			else if (model.name === 'Publisher') {
+				populate.push('editions');
+			}
 
 			model.findOne(req.params.bbid, {
 					populate: populate

@@ -10,3 +10,18 @@ block attributes
 	+type(entity.publisher_type)
 
 	+begin_end
+
+block content
+	h2 Editions
+	table.table.table-striped
+		thead
+			tr
+				th Name
+				th Release Date
+		tbody
+			each edition in entity.editions
+				tr
+					td
+						a(href='/edition/'+edition.bbid)
+							=(edition.default_alias ? edition.default_alias.name : '(unnamed)')
+					td=(edition.release_date ? edition.release_date : '?')

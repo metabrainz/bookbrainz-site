@@ -41,6 +41,12 @@ Publisher.extend({
 	},
 	ended: {
 		type: 'boolean'
+	},
+	editions: {
+		type: 'ref',
+		model: 'Edition',
+		many: true,
+		map: 'editions_uri'
 	}
 });
 

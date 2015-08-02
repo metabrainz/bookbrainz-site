@@ -23,6 +23,7 @@ var express = require('express');
 var router = express.Router();
 var auth = require('../../helpers/auth');
 var Publisher = require('../../data/entities/publisher');
+var Edition = require('../../data/entities/edition');
 var User = require('../../data/user');
 
 /* Middleware loader functions. */
@@ -47,12 +48,21 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	var publisher = res.locals.entity;
 	var title = 'Publisher';
 
+	publisher.editions = publisher.editions.map(function(edition) {
+		return Edition.findOne(edition.bbid, {
+			populate: ['disabmiguation', 'aliases']
+		});
+	});
+
 	if (publisher.default_alias && publisher.default_alias.name) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
 	}
 
-	res.render('entity/view/publisher', {
-		title: title
+	Promise.all(publisher.editions).then(function(editions) {
+		publisher.editions = editions;
+		res.render('entity/view/publisher', {
+			title: title
+		});
 	});
 });
 
