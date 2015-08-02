@@ -35,6 +35,20 @@ Revision.extend({
 		type: 'ref',
 		model: 'Entity',
 		map: 'entity_uri'
+	},
+	relationship: {
+		type: 'ref',
+		model: 'Relationship',
+		map: 'relationship_uri'
+	},
+	created_at: {
+		type: 'date'
+	},
+	changes: {
+		type: 'object'
+	},
+	note: {
+		type: 'string'
 	}
 });
 
