@@ -64,7 +64,7 @@ router.get('/:bbid/revisions', function(req, res) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
 	}
 
-	bbws.get('/Publisher/' + publisher.bbid + '/revisions')
+	bbws.get('/publisher/' + publisher.bbid + '/revisions')
 		.then(function(revisions) {
 			var promisedUsers = {};
 			revisions.objects.forEach(function(revision) {

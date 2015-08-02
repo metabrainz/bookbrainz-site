@@ -90,7 +90,7 @@ app.use(function(req, res, next) {
 
 	// Get the latest count of messages in the user's inbox.
 	if (req.session && req.session.bearerToken) {
-		bbws.get('/message/inbox', {
+		bbws.get('/message/inbox/', {
 				accessToken: req.session.bearerToken
 			})
 			.then(function(list) {
