@@ -66,6 +66,33 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	});
 });
 
+router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
+	var publication = res.locals.entity;
+	var title = 'Publication';
+
+	if (publication.default_alias && publication.default_alias.name) {
+		title = 'Publication “' + publication.default_alias.name + '”';
+	}
+
+	res.render('entity/delete', {
+		title: title
+	});
+});
+
+router.post('/:bbid/delete/confirm', function(req, res) {
+	var publication = res.locals.entity;
+
+	Publication.del(publication.bbid, {
+			revision: {note: req.body.note}
+		},
+		{
+			session: req.session
+		})
+		.then(function() {
+			res.redirect(303, '/publication/' + publication.bbid);
+		});
+});
+
 router.get('/:bbid/revisions', function(req, res) {
 	var publication = res.locals.entity;
 	var title = 'Publication';

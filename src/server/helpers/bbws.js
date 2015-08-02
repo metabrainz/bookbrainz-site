@@ -96,4 +96,11 @@ bbws.put = function(path, data, options) {
 	return _execRequest('put', path, options);
 };
 
+bbws.del = function(path, data, options) {
+	options = options || {};
+	options.data = data || {};
+
+	return _execRequest('del', path, options);
+};
+
 module.exports = bbws;
