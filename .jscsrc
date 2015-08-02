@@ -39,7 +39,6 @@
     "requireCapitalizedComments": true,
     "requireCommaBeforeLineBreak": true,
     "requireKeywordsOnNewLine": ["else"],
-    "requirePaddingNewLinesAfterBlocks": true,
     "requireSemicolons": true,
     "requireSpaceBetweenArguments": true,
     "requireSpaceBeforeBinaryOperators": [ "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<=" ],
