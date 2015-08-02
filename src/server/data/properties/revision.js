@@ -41,6 +41,10 @@ Revision.extend({
 		model: 'Relationship',
 		map: 'relationship_uri'
 	},
+	user: {
+		type: 'object',
+		model: 'User'
+	},
 	created_at: {
 		type: 'date'
 	},

@@ -62,6 +62,11 @@ function initPublisherRoutes(app) {
 	relationshipHelper.addEditRoutes(router);
 }
 
+function initRevisionRoutes(app) {
+	var router = require('./routes/revision');
+	app.use('/revision', router);
+}
+
 module.exports = function initRoutes(app) {
 	initRootRoutes(app);
 
@@ -70,6 +75,7 @@ module.exports = function initRoutes(app) {
 	initEditionRoutes(app);
 	initWorkRoutes(app);
 	initPublisherRoutes(app);
+	initRevisionRoutes(app);
 
 	app.use('/editor', require('./routes/editor'));
 	app.use('/message', require('./routes/message'));
