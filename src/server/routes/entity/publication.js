@@ -179,6 +179,12 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.annotation = req.body.annotation;
 	}
 
+	if (req.body.note) {
+		changes.revision = {
+			note: req.body.note
+		};
+	}
+
 	var newIdentifiers = req.body.identifiers.map(function(identifier) {
 		return {
 			value: identifier.value,
