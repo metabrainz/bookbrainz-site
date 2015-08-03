@@ -180,7 +180,7 @@ module.exports = React.createClass({
 	handleRelationshipChange: function(e) {
 		'use strict';
 
-		var relationshipId = this.refs.relationship.getValue();
+		var relationshipId = parseInt(this.refs.relationship.getValue());
 		var selectedRelationship = this.props.relationshipTypes.filter(function(relationship) {
 			return relationship.id === relationshipId;
 		});
