@@ -22,18 +22,21 @@ var React = require('react');
 
 if (typeof window !== 'undefined') {
 	require('Select2');
+	var $ = window.$;
 }
 
 var Select = React.createClass({
 	initSelect2: function() {
+		'use strict';
+
 		var mountElement = $(this.refs.target.getInputDOMNode());
 
 		var options = this.props.select2Options || {};
 		options.theme = 'bootstrap';
 
-		if(this.props.placeholder) {
+		if (this.props.placeholder) {
 			options.placeholder = this.props.placeholder;
-			if(!this.props.multiple) {
+			if (!this.props.multiple) {
 				options.allowClear = true;
 			}
 		}
@@ -78,7 +81,7 @@ var Select = React.createClass({
 			});
 		}
 
-		if(this.props.placeholder) {
+		if (this.props.placeholder) {
 			options.unshift(<option key={0}/>);
 		}
 
