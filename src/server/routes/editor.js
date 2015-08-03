@@ -76,11 +76,12 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 router.get('/:id', function(req, res, next) {
 	var userPromise;
 
-	if (req.user && (req.params.id === req.user.id)) {
+	var requestedId = parseInt(req.params.id);
+	if (req.user && (requestedId === req.user.id)) {
 		userPromise = User.getCurrent(req.session.bearerToken);
 	}
 	else {
-		userPromise = User.findOne(req.params.id);
+		userPromise = User.findOne(requestedId);
 	}
 
 	userPromise

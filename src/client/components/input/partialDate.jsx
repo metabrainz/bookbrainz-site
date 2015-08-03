@@ -45,8 +45,10 @@ var PartialDate = React.createClass({
 			return true;
 		}
 		else {
-			return Boolean(ymd_re.test(value) || ym_re.test(value) ||
-                           y_re.test(value));
+			var validSyntax = Boolean(ymd_re.test(value) || ym_re.test(value) ||
+			                          y_re.test(value));
+			var validValue = !isNaN(Date.parse(value));
+			return validSyntax && validValue;
 		}
 	},
 	handleChange: function() {
