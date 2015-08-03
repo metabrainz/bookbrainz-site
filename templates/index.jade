@@ -5,8 +5,8 @@ block body
 		p='Under development — adventurous users, please test and add data! Give us feedback about bugs, glitches and potential improvements at '
 			a(href="//tickets.musicbrainz.org/browse/BB") MusicBrainz JIRA!
 	
-	div(style="width:100%; height:550px; background:url(/images/Bookshelf.jpg)")
-		div(style="background:rgba(0, 0, 0, 0.8); text-align:center; width:100%; height:100%; padding-top:4em")
+	div#background-image
+		div#background-overlay.text-center
 			.container
 				img.img-responsive.center-block(src='/images/BookBrainz_text.svg', width=500)
 
@@ -30,17 +30,17 @@ block body
 										a.btn.btn-block.btn-lg.btn-default(href='/develop') Develop
 						
 						.margin-top-3
-							h4.text-light Contact Us
-							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+							h4.contact-text Contact Us
+							span.fa.fa-circle.margin-sides-1.contact-text
 							a(href="//webchat.freenode.net/?channels=#bookbrainz")
-								span.fa.fa-comment.fa-2x.text-light(style="vertical-align: middle;")
-							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+								span.fa.fa-comment.fa-2x.contact-text
+							span.fa.fa-circle.margin-sides-1.contact-text
 							a(href="//twitter.com/intent/tweet?screen_name=BookBrainz")
-								span.fa.fa-twitter.fa-2x.text-light(style="vertical-align: middle;")
-							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+								span.fa.fa-twitter.fa-2x.contact-text
+							span.fa.fa-circle.margin-sides-1.contact-text
 							a(href="mailto:bookbrainz-users@groups.io")
-								span.fa.fa-envelope.fa-2x.text-light(style="vertical-align: middle;")
-							span.fa.fa-circle.margin-sides-1.text-light(style="vertical-align: middle;")
+								span.fa.fa-envelope.fa-2x.contact-text
+							span.fa.fa-circle.margin-sides-1.contact-text
 
 	.container
 		.row
