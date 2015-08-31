@@ -3,6 +3,9 @@
 [![Dependency Status](https://img.shields.io/david/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site)
 [![devDependency Status](https://img.shields.io/david/dev/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site#info=devDependencies)
 [![Code Climate](https://img.shields.io/codeclimate/github/BookBrainz/bookbrainz-site.svg)](https://codeclimate.com/github/BookBrainz/bookbrainz-site)
+<a href="https://www.browserstack.com/">
+<img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
+</a>
 
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:

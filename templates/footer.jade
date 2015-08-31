@@ -1,24 +1,22 @@
 footer.footer
   .container-fluid
-    .pull-right.text-right
-      a(href='/privacy'): small Privacy & Terms
-
-    .pull-right.text-right.margin-right-2
+    .row
+      .col-sm-4
+        small
+          ='Tested with '
+          a(href='https://www.browserstack.com/', target='_blank')
+            img(height='25px', src='/images/BrowserStack.svg')
+      .col-sm-4.text-center
+        small
+          ='Cover image by '
+          a(href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg") Stewart Butterfield
+          =' ('
+          a(href="https://creativecommons.org/licenses/by/2.0/deed.en") CC-BY-2.0
+          =')'
+      .col-sm-4.text-right
+          a(href='/privacy'): small Privacy & Terms
+    .row.text-center
       small
         ='Alpha Software — '
         a(href="#") Report A Bug
-
-    small
-      ='This site uses: '
-      a(href='http://getbootstrap.com/', target='_blank') Bootstrap,
-      a(href='http://fortawesome.github.io/Font-Awesome/', target='_blank')  Font Awesome,
-      a(href='http://jquery.com/', target='_blank')  jQuery
-      =' and '
-      a(href='http://knockoutjs.com/', target='_blank')  knockoutJS
       
-    small.margin-left-2
-      ='Cover image by '
-      a(href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg") Stewart Butterfield
-      =' used under '
-      a(href="https://creativecommons.org/licenses/by/2.0/deed.en") CC-BY-2.0
-      =' license.'
