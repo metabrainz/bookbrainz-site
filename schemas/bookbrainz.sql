@@ -1,54 +1,332 @@
-CREATE TABLE user_type (
-  user_type_id     SERIAL PRIMARY KEY,
-  label            VARCHAR(255) NOT NULL
+----------
+-- Types
+----------
+
+CREATE TYPE lang_proficiency AS ENUM (
+	'BASIC',
+	'INTERMEDIATE',
+	'ADVANCED',
+	'NATIVE'
 );
 
-CREATE TABLE user (
-  user_id                SERIAL PRIMARY KEY,
-  name                   VARCHAR(64) NOT NULL,
-  email                  VARCHAR(255) NOT NULL,
-  reputation             INTEGER NOT NULL DEFAULT 0,
-  bio                    TEXT,
-  birth_date             DATE,
-  created_at             TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::text, now()),
-  active_at              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::text, now())
-  user_type_id           INTEGER NOT NULL,
-  gender_id              INTEGER NOT NULL,
-  country_id             INTEGER NOT NULL,
-  password               TEXT NOT NULL,
-  revisions_applied      INTEGER NOT NULL DEFAULT 0,
-  revisions_reverted     INTEGER NOT NULL DEFAULT 0,
-  total_revisions        INTEGER NOT NULL DEFAULT 0
+CREATE TYPE entity_types AS ENUM (
+	'Creator',
+	'Publication',
+	'Edition',
+	'Publisher',
+	'Work'
 );
 
-CREATE TYPE lang_proficiency AS ENUM ('BASIC', 'INTERMEDIATE', 'ADVANCED', 'NATIVE');
+CREATE TYPE date_precision AS ENUM (
+	'YEAR',
+	'MONTH',
+	'DAY'
+);
 
-CREATE TABLE user_language (
-  user_id         INTEGER NOT NULL,
-  language_id     INTEGER NOT NULL,
-  proficiency     lang_proficiency NOT NULL,
-  PRIMARY KEY (user_id, language_id)
+-----------
+-- Tables
+-----------
+
+CREATE TABLE alias (
+	alias_id SERIAL PRIMARY KEY,
+	name TEXT NOT NULL,
+	sort_name TEXT NOT NULL,
+	language_id INT,
+	primary BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE annotation (
+	annotation_id SERIAL PRIMARY KEY,
+	content TEXT NOT NULL,
+	created_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
+);
+
+CREATE TABLE creator_credit (
+	creator_credit_id SERIAL PRIMARY KEY,
+	begin_phrase TEXT NOT NULL DEFAULT ''
+);
+
+CREATE TABLE creator_credit_name (
+	creator_credit_id INT,
+	position SMALLINT,
+	creator_gid UUID,
+	name VARCHAR NOT NULL join_phrase TEXT NOT NULL,
+	PRIMARY KEY (creator_credit_id, position)
+);
+
+CREATE TABLE creator_data (
+	entity_data_id INT PRIMARY KEY,
+	begin_date DATE,
+	begin_date_precision date_precision,
+	end_date DATE,
+	end_date_precision date_precision,
+	ended BOOLEAN,
+	country_id INT,
+	gender_id INT,
+	creator_type_id INT
+);
+
+CREATE TABLE creator_type (
+	creator_type_id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE disambiguation (
+	disambiguation_id SERIAL PRIMARY KEY,
+	comment TEXT NOT NULL DEFAULT ""
+);
+
+CREATE TABLE edition_data (
+	entity_data_id INT PRIMARY KEY,
+	publication_gid UUID,
+	creator_credit_id INT,
+	release_date DATE,
+	release_date_precision date_precision,
+	pages INT,
+	width INT,
+	height INT,
+	depth INT,
+	weight INT,
+	country_id INT,
+	language_id INT,
+	edition_format_id INT,
+	edition_status_id INT,
+	publisher_gid UUID
+);
+
+CREATE TABLE edition_format (
+	edition_format_id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE edition_status (
+	edition_status_id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE entity (
+	entity_gid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'),
+	master_revision_id INT,
+	_type entity_types NOT NULL
+);
+
+CREATE TABLE entity_data (
+	entity_data_id SERIAL PRIMARY KEY,
+	annotation_id INT,
+	disambiguation_id INT,
+	default_alias_id INT
+);
+
+CREATE TABLE entity_data__alias (
+	entity_data_id INT,
+	alias_id INT,
+	PRIMARY KEY (
+		entity_data_id,
+		alias_id
+	)
+);
+
+CREATE TABLE entity_data__identifier (
+	entity_data_id INT,
+	identifier_id INT,
+	PRIMARY KEY (
+		entity_data_id,
+		identifier_id
+	)
+);
+
+CREATE TABLE entity_redirect (
+	source_gid UUID PRIMARY KEY,
+	target_gid UUID NOT NULL
+);
+
+CREATE TABLE entity_revision (
+	revision_id INT NOT NULL,
+	entity_gid UUID NOT NULL,
+	entity_data_id INT NOT NULL
+);
+
+CREATE TABLE identifier (
+	identifier_id SERIAL PRIMARY KEY,
+	identifier_type_id INT NOT NULL,
+	value TEXT NOT NULL
+);
+
+CREATE TABLE identifier_type (
+	identifier_type_id SERIAL PRIMARY KEY,
+	label VARCHAR(255) NOT NULL UNIQUE,
+	entity_type entity_types,
+	detection_regex TEXT,
+	validation_regex TEXT NOT NULL,
+	parent_id INT,
+	child_order INT NOT NULL DEFAULT 0,
+	description TEXT NOT NULL
 );
 
 CREATE TABLE message (
-  message_id     SERIAL PRIMARY KEY,
-  sender_id      INTEGER,
-  subject        VARCHAR(255) NOT NULL,
-  content        TEXT NOT NULL
+	message_id SERIAL PRIMARY KEY,
+	sender_id INT,
+	subject VARCHAR(255) NOT NULL,
+	content TEXT NOT NULL
 );
 
 CREATE TABLE message_receipt (
-  message_id       INTEGER,
-  recipient_id     INTEGER,
-  archived         BOOLEAN NOT NULL DEFAULT FALSE,
-  PRIMARY KEY (message_id, recipient_id)
+	message_id INT,
+	recipient_id INT,
+	archived BOOLEAN NOT NULL DEFAULT FALSE,
+	PRIMARY KEY (
+		message_id,
+		recipient_id
+	)
 );
 
 CREATE TABLE oauth_client (
-  client_id UUID  DEFAULT public.uuid_generate_v4() PRIMARY KEY,
-  client_secret UUID NOT NULL DEFAULT public.uuid_generate_v4() UNIQUE,
-  is_confidential BOOLEAN NOT NULL DEFAULT FALSE,
-  _redirect_uris TEXT NOT NULL DEFAULT '',
-  _default_scopes TEXT NOT NULL DEFAULT '',
-  owner_id INTEGER NOT NULL
+	client_id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+	client_secret UUID NOT NULL UNIQUE DEFAULT public.uuid_generate_v4(),
+	is_confidential BOOLEAN NOT NULL DEFAULT FALSE,
+	_redirect_uris TEXT NOT NULL DEFAULT '',
+	_default_scopes TEXT NOT NULL DEFAULT '',
+	owner_id INT NOT NULL
+);
+
+CREATE TABLE publication_data (
+	entity_data_id INT PRIMARY KEY,
+	publication_type_id INT
+);
+
+CREATE TABLE publication_type (
+	publication_type_id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE publisher_data (
+	entity_data_id INT PRIMARY KEY,
+	begin_date DATE,
+	begin_date_precision date_precision,
+	end_date DATE,
+	end_date_precision date_precision,
+	ended BOOLEAN DEFAULT FALSE,
+	country_id INT,
+	publisher_type_id INT
+);
+
+CREATE TABLE publisher_type (
+	publisher_type_id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE rel (
+	relationship_id SERIAL PRIMARY KEY,
+	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'),
+	master_revision_id INT
+);
+
+CREATE TABLE rel_data (
+	relationship_data_id SERIAL PRIMARY KEY,
+	relationship_type_id INT NOT NULL
+);
+
+CREATE TABLE rel_entity (
+	relationship_data_id INT,
+	position SMALLINT,
+	entity_gid UUID NOT NULL,
+	PRIMARY KEY (
+		relationship_data_id,
+		position
+	)
+);
+
+CREATE TABLE rel_text (
+	relationship_data_id INT,
+	position SMALLINT,
+	text TEXT NOT NULL,
+	PRIMARY KEY (
+		relationship_data_id,
+		position
+	)
+);
+
+CREATE TABLE rel_type (
+	relationship_type_id SERIAL PRIMARY KEY,
+	label VARCHAR(255) NOT NULL UNIQUE,
+	parent_id INT,
+	child_order INT NOT NULL DEFAULT 0,
+	description TEXT NOT NULL,
+	template TEXT NOT NULL,
+	deprecated BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+CREATE TABLE relationship_revision (
+	revision_id INT NOT NULL,
+	relationship_id INT NOT NULL,
+	relationship_data_id INT NOT NULL
+);
+
+CREATE TABLE revision (
+	revision_id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	parent_id INT,
+	_type SMALLINT NOT NULL
+);
+
+CREATE TABLE revision_note (
+	revision_note_id SERIAL PRIMARY KEY,
+	user_id INT NOT NULL,
+	revision_id INT NOT NULL,
+	content TEXT NOT NULL,
+	posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+
+CREATE TABLE user (
+	user_id SERIAL PRIMARY KEY,
+	name VARCHAR(64) NOT NULL,
+	email VARCHAR(255) NOT NULL,
+	reputation INT NOT NULL DEFAULT 0,
+	bio TEXT,
+	birth_date DATE,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	user_type_id INT NOT NULL,
+	gender_id INT NOT NULL,
+	country_id INT NOT NULL,
+	password TEXT NOT NULL,
+	revisions_applied INT NOT NULL DEFAULT 0,
+	revisions_reverted INT NOT NULL DEFAULT 0,
+	total_revisions INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE user_language (
+	user_id INT NOT NULL,
+	language_id INT NOT NULL,
+	proficiency lang_proficiency NOT NULL,
+	PRIMARY KEY (
+		user_id,
+		language_id
+	)
+);
+
+CREATE TABLE user_type (
+	user_type_id SERIAL PRIMARY KEY,
+	label VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE work_data (
+	entity_data_id INT PRIMARY KEY,
+	work_type_id INT
+);
+
+CREATE TABLE work_data__language (
+	work_data_id INT,
+	language_id INT,
+	PRIMARY KEY (
+		work_data_id,
+		language_id
+	)
+);
+
+CREATE TABLE work_type (
+	work_type_id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
 );
