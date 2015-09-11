@@ -27,34 +27,35 @@ CREATE TYPE date_precision AS ENUM (
 -- Tables
 -----------
 
-CREATE TABLE alias (
+CREATE TABLE bookbrainz.alias (
 	alias_id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
 	sort_name TEXT NOT NULL,
 	language_id INT,
-	primary BOOLEAN NOT NULL DEFAULT FALSE
+	"primary" BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE annotation (
+CREATE TABLE bookbrainz.annotation (
 	annotation_id SERIAL PRIMARY KEY,
 	content TEXT NOT NULL,
 	created_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
 );
 
-CREATE TABLE creator_credit (
+CREATE TABLE bookbrainz.creator_credit (
 	creator_credit_id SERIAL PRIMARY KEY,
 	begin_phrase TEXT NOT NULL DEFAULT ''
 );
 
-CREATE TABLE creator_credit_name (
+CREATE TABLE bookbrainz.creator_credit_name (
 	creator_credit_id INT,
 	position SMALLINT,
 	creator_gid UUID,
-	name VARCHAR NOT NULL join_phrase TEXT NOT NULL,
+	name VARCHAR NOT NULL,
+	join_phrase TEXT NOT NULL,
 	PRIMARY KEY (creator_credit_id, position)
 );
 
-CREATE TABLE creator_data (
+CREATE TABLE bookbrainz.creator_data (
 	entity_data_id INT PRIMARY KEY,
 	begin_date DATE,
 	begin_date_precision date_precision,
@@ -66,17 +67,17 @@ CREATE TABLE creator_data (
 	creator_type_id INT
 );
 
-CREATE TABLE creator_type (
+CREATE TABLE bookbrainz.creator_type (
 	creator_type_id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE disambiguation (
+CREATE TABLE bookbrainz.disambiguation (
 	disambiguation_id SERIAL PRIMARY KEY,
-	comment TEXT NOT NULL DEFAULT ""
+	comment TEXT NOT NULL DEFAULT ''
 );
 
-CREATE TABLE edition_data (
+CREATE TABLE bookbrainz.edition_data (
 	entity_data_id INT PRIMARY KEY,
 	publication_gid UUID,
 	creator_credit_id INT,
@@ -94,31 +95,32 @@ CREATE TABLE edition_data (
 	publisher_gid UUID
 );
 
-CREATE TABLE edition_format (
+CREATE TABLE bookbrainz.edition_format (
 	edition_format_id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE edition_status (
+CREATE TABLE bookbrainz.edition_status (
 	edition_status_id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE entity (
+CREATE TABLE bookbrainz.entity (
 	entity_gid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
 	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'),
 	master_revision_id INT,
 	_type entity_types NOT NULL
 );
 
-CREATE TABLE entity_data (
+CREATE TABLE bookbrainz.entity_data (
 	entity_data_id SERIAL PRIMARY KEY,
 	annotation_id INT,
 	disambiguation_id INT,
-	default_alias_id INT
+	default_alias_id INT,
+	_type INT NOT NULL
 );
 
-CREATE TABLE entity_data__alias (
+CREATE TABLE bookbrainz.entity_data__alias (
 	entity_data_id INT,
 	alias_id INT,
 	PRIMARY KEY (
@@ -127,7 +129,7 @@ CREATE TABLE entity_data__alias (
 	)
 );
 
-CREATE TABLE entity_data__identifier (
+CREATE TABLE bookbrainz.entity_data__identifier (
 	entity_data_id INT,
 	identifier_id INT,
 	PRIMARY KEY (
@@ -136,24 +138,24 @@ CREATE TABLE entity_data__identifier (
 	)
 );
 
-CREATE TABLE entity_redirect (
+CREATE TABLE bookbrainz.entity_redirect (
 	source_gid UUID PRIMARY KEY,
 	target_gid UUID NOT NULL
 );
 
-CREATE TABLE entity_revision (
+CREATE TABLE bookbrainz.entity_revision (
 	revision_id INT NOT NULL,
 	entity_gid UUID NOT NULL,
 	entity_data_id INT NOT NULL
 );
 
-CREATE TABLE identifier (
+CREATE TABLE bookbrainz.identifier (
 	identifier_id SERIAL PRIMARY KEY,
 	identifier_type_id INT NOT NULL,
 	value TEXT NOT NULL
 );
 
-CREATE TABLE identifier_type (
+CREATE TABLE bookbrainz.identifier_type (
 	identifier_type_id SERIAL PRIMARY KEY,
 	label VARCHAR(255) NOT NULL UNIQUE,
 	entity_type entity_types,
@@ -164,14 +166,18 @@ CREATE TABLE identifier_type (
 	description TEXT NOT NULL
 );
 
-CREATE TABLE message (
+CREATE TABLE bookbrainz.inactive_users (
+	user_id INT PRIMARY KEY
+);
+
+CREATE TABLE bookbrainz.message (
 	message_id SERIAL PRIMARY KEY,
 	sender_id INT,
 	subject VARCHAR(255) NOT NULL,
 	content TEXT NOT NULL
 );
 
-CREATE TABLE message_receipt (
+CREATE TABLE bookbrainz.message_receipt (
 	message_id INT,
 	recipient_id INT,
 	archived BOOLEAN NOT NULL DEFAULT FALSE,
@@ -181,7 +187,7 @@ CREATE TABLE message_receipt (
 	)
 );
 
-CREATE TABLE oauth_client (
+CREATE TABLE bookbrainz.oauth_client (
 	client_id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
 	client_secret UUID NOT NULL UNIQUE DEFAULT public.uuid_generate_v4(),
 	is_confidential BOOLEAN NOT NULL DEFAULT FALSE,
@@ -190,17 +196,17 @@ CREATE TABLE oauth_client (
 	owner_id INT NOT NULL
 );
 
-CREATE TABLE publication_data (
+CREATE TABLE bookbrainz.publication_data (
 	entity_data_id INT PRIMARY KEY,
 	publication_type_id INT
 );
 
-CREATE TABLE publication_type (
+CREATE TABLE bookbrainz.publication_type (
 	publication_type_id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE publisher_data (
+CREATE TABLE bookbrainz.publisher_data (
 	entity_data_id INT PRIMARY KEY,
 	begin_date DATE,
 	begin_date_precision date_precision,
@@ -211,23 +217,23 @@ CREATE TABLE publisher_data (
 	publisher_type_id INT
 );
 
-CREATE TABLE publisher_type (
+CREATE TABLE bookbrainz.publisher_type (
 	publisher_type_id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE rel (
+CREATE TABLE bookbrainz.rel (
 	relationship_id SERIAL PRIMARY KEY,
 	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'),
 	master_revision_id INT
 );
 
-CREATE TABLE rel_data (
+CREATE TABLE bookbrainz.rel_data (
 	relationship_data_id SERIAL PRIMARY KEY,
 	relationship_type_id INT NOT NULL
 );
 
-CREATE TABLE rel_entity (
+CREATE TABLE bookbrainz.rel_entity (
 	relationship_data_id INT,
 	position SMALLINT,
 	entity_gid UUID NOT NULL,
@@ -237,7 +243,13 @@ CREATE TABLE rel_entity (
 	)
 );
 
-CREATE TABLE rel_text (
+CREATE TABLE bookbrainz.rel_revision (
+	revision_id INT NOT NULL,
+	relationship_id INT NOT NULL,
+	relationship_data_id INT NOT NULL
+);
+
+CREATE TABLE bookbrainz.rel_text (
 	relationship_data_id INT,
 	position SMALLINT,
 	text TEXT NOT NULL,
@@ -247,7 +259,7 @@ CREATE TABLE rel_text (
 	)
 );
 
-CREATE TABLE rel_type (
+CREATE TABLE bookbrainz.rel_type (
 	relationship_type_id SERIAL PRIMARY KEY,
 	label VARCHAR(255) NOT NULL UNIQUE,
 	parent_id INT,
@@ -257,13 +269,7 @@ CREATE TABLE rel_type (
 	deprecated BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE relationship_revision (
-	revision_id INT NOT NULL,
-	relationship_id INT NOT NULL,
-	relationship_data_id INT NOT NULL
-);
-
-CREATE TABLE revision (
+CREATE TABLE bookbrainz.revision (
 	revision_id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
@@ -271,7 +277,7 @@ CREATE TABLE revision (
 	_type SMALLINT NOT NULL
 );
 
-CREATE TABLE revision_note (
+CREATE TABLE bookbrainz.revision_note (
 	revision_note_id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL,
 	revision_id INT NOT NULL,
@@ -279,7 +285,12 @@ CREATE TABLE revision_note (
 	posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
 
-CREATE TABLE user (
+CREATE TABLE bookbrainz.suspended_users (
+	user_id INT PRIMARY KEY,
+	reason TEXT NOT NULL
+);
+
+CREATE TABLE bookbrainz.user (
 	user_id SERIAL PRIMARY KEY,
 	name VARCHAR(64) NOT NULL,
 	email VARCHAR(255) NOT NULL,
@@ -287,7 +298,7 @@ CREATE TABLE user (
 	bio TEXT,
 	birth_date DATE,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	user_type_id INT NOT NULL,
 	gender_id INT NOT NULL,
 	country_id INT NOT NULL,
@@ -297,7 +308,7 @@ CREATE TABLE user (
 	total_revisions INT NOT NULL DEFAULT 0
 );
 
-CREATE TABLE user_language (
+CREATE TABLE bookbrainz.user_language (
 	user_id INT NOT NULL,
 	language_id INT NOT NULL,
 	proficiency lang_proficiency NOT NULL,
@@ -307,17 +318,17 @@ CREATE TABLE user_language (
 	)
 );
 
-CREATE TABLE user_type (
+CREATE TABLE bookbrainz.user_type (
 	user_type_id SERIAL PRIMARY KEY,
 	label VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE work_data (
+CREATE TABLE bookbrainz.work_data (
 	entity_data_id INT PRIMARY KEY,
 	work_type_id INT
 );
 
-CREATE TABLE work_data__language (
+CREATE TABLE bookbrainz.work_data__language (
 	work_data_id INT,
 	language_id INT,
 	PRIMARY KEY (
@@ -326,7 +337,7 @@ CREATE TABLE work_data__language (
 	)
 );
 
-CREATE TABLE work_type (
+CREATE TABLE bookbrainz.work_type (
 	work_type_id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
 );

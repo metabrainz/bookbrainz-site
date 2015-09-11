@@ -1,4 +1,4 @@
-CREATE TABLE gender (
+CREATE TABLE musicbrainz.gender (
     id                  SERIAL PRIMARY KEY,
     name                VARCHAR(255) NOT NULL,
     parent              INTEGER, -- references gender.id
@@ -6,7 +6,7 @@ CREATE TABLE gender (
     description         TEXT
 );
 
-CREATE TABLE language (
+CREATE TABLE musicbrainz.language (
     id                  SERIAL PRIMARY KEY,
     iso_code_2t         CHAR(3), -- ISO 639-2 (T)
     iso_code_2b         CHAR(3), -- ISO 639-2 (B)
