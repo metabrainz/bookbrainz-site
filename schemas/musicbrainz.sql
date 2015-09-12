@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE musicbrainz.gender (
     id                  SERIAL PRIMARY KEY,
     name                VARCHAR(255) NOT NULL,
@@ -15,3 +17,5 @@ CREATE TABLE musicbrainz.language (
     frequency           INTEGER NOT NULL DEFAULT 0,
     iso_code_3          CHAR(3)  -- ISO 639-3
 );
+
+COMMIT;
