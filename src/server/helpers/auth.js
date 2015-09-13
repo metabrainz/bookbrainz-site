@@ -22,18 +22,38 @@
 var passport = require('passport');
 var config = require('../helpers/config');
 var BBWSStrategy = require('./passport-bookbrainz-ws');
+var LocalStrategy = require('passport-local').Strategy;
+var bcrypt = require('bcrypt');
 
 var auth = {};
 
 auth.init = function(app) {
-	passport.use(new BBWSStrategy({
-		wsURL: config.site.webservice,
-		clientID: config.site.clientID
-	}, function(req, accessToken, refreshToken, profile, done) {
-		req.session.bearerToken = accessToken;
+	var orm = app.get('orm');
 
-		done(null, profile);
-	}));
+	passport.use(
+		new LocalStrategy(
+			function(username, password, done) {
+				new orm.Editor({name: username}).fetch({require: true})
+				.then(function processEditor(model) {
+					bcrypt.compare(password, model.get('password'), function(err, res) {
+						if (err) {
+							done(err);
+						}
+						else if (res) {
+							done(null, model.toJSON());
+						}
+						else {
+							done(null, false, {message: 'Incorrect password.'});
+						}
+					});
+				})
+				.catch(orm.Editor.NotFoundError, function(err) {
+					done(null, false, {message: 'Incorrect username.'});
+				})
+				.catch(done);
+			}
+		)
+	);
 
 	passport.serializeUser(function(user, done) {
 		done(null, user);
@@ -45,39 +65,6 @@ auth.init = function(app) {
 
 	app.use(passport.initialize());
 	app.use(passport.session());
-};
-
-auth.authenticate = function() {
-	return function(req, res, next) {
-		var options = {
-			username: req.body.username,
-			password: req.body.password
-		};
-
-		var callback = function(err) {
-			if (err) {
-				console.log(err.stack);
-
-				var newErr;
-
-				switch (err.name) {
-					case 'InternalOAuthError':
-					case 'TokenError':
-						newErr = new Error('An internal error occurred during authentication');
-						break;
-					case 'AuthorizationError':
-						newErr = new Error('Invalid username or password');
-						break;
-				}
-
-				return next(newErr);
-			}
-
-			next();
-		};
-
-		passport.authenticate('bbws', options)(req, res, callback);
-	};
 };
 
 auth.isAuthenticated = function(req, res, next) {
