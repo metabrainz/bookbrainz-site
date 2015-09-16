@@ -187,13 +187,10 @@ CREATE TABLE bookbrainz.message (
 );
 
 CREATE TABLE bookbrainz.message_receipt (
+	id SERIAL PRIMARY KEY,
 	message_id INT,
 	recipient_id INT,
-	archived BOOLEAN NOT NULL DEFAULT FALSE,
-	PRIMARY KEY (
-		message_id,
-		recipient_id
-	)
+	archived BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE bookbrainz.oauth_client (
