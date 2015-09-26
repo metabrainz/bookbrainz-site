@@ -153,9 +153,9 @@ CREATE TABLE bookbrainz.entity_redirect (
 );
 
 CREATE TABLE bookbrainz.entity_revision (
-	revision_id INT NOT NULL,
+	id INT NOT NULL,
 	entity_bbid UUID NOT NULL,
-	entity_data_id INT NOT NULL
+	entity_data_id INT
 );
 
 CREATE TABLE bookbrainz.identifier (
