@@ -30,7 +30,14 @@ var Publication = require('../data/entities/publication');
 var Creator = require('../data/entities/creator');
 var Edition = require('../data/entities/edition');
 var Work = require('../data/entities/work');
+var React = require('react');
 var Publisher = require('../data/entities/publisher');
+
+var AboutPage = React.createFactory(require('../../client/components/pages/about.jsx'));
+var ContributePage = React.createFactory(require('../../client/components/pages/contribute.jsx'));
+var DevelopPage = React.createFactory(require('../../client/components/pages/develop.jsx'));
+var PrivacyPage = React.createFactory(require('../../client/components/pages/privacy.jsx'));
+var LicensingPage = React.createFactory(require('../../client/components/pages/licensing.jsx'));
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -56,32 +63,37 @@ router.get('/', function(req, res) {
 });
 
 router.get('/about', function(req, res) {
-	res.render('about', {
-		title: 'About'
+	res.render('page', {
+		title: 'About',
+		markup: React.renderToString(AboutPage())
 	});
 });
 
 router.get('/contribute', function(req, res) {
-	res.render('contribute', {
-		title: 'Contribute'
+	res.render('page', {
+		title: 'Contribute',
+		markup: React.renderToString(ContributePage())
 	});
 });
 
 router.get('/develop', function(req, res) {
-	res.render('develop', {
-		title: 'Develop'
+	res.render('page', {
+		title: 'Develop',
+		markup: React.renderToString(DevelopPage())
 	});
 });
 
 router.get('/privacy', function(req, res) {
-	res.render('privacy', {
-		title: 'Privacy'
+	res.render('page', {
+		title: 'Privacy',
+		markup: React.renderToString(PrivacyPage())
 	});
 });
 
 router.get('/licensing', function(req, res) {
-	res.render('licensing', {
-		title: 'Licensing'
+	res.render('page', {
+		title: 'Licensing',
+		markup: React.renderToString(LicensingPage())
 	});
 });
 
