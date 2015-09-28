@@ -52,8 +52,9 @@ module.exports = React.createClass({
 
 		request.post('/editor/edit/handler')
 			.send(data).promise()
-			.then(function(user) {
-				window.location.href = '/editor/' + user.body.user_id;
+			.then(function(response) {
+				console.log(response.body);
+				window.location.href = '/editor/' + response.body.id;
 			});
 	},
 	render: function() {

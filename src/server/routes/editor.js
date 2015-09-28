@@ -26,74 +26,69 @@ var User = require('../data/user');
 var bbws = require('../helpers/bbws');
 var auth = require('../helpers/auth');
 var Promise = require('bluebird');
+var _ = require('underscore');
 
 var NotFoundError = require('../helpers/error').NotFoundError;
 var ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
 
 router.get('/edit', auth.isAuthenticated, function(req, res, next) {
-	User.getCurrent(req.session.bearerToken)
-		.then(function(user) {
-			var props = {
-				id: user.id,
-				email: user.email,
-				bio: user.bio
-			};
+	var orm = req.app.get('orm');
 
-			var markup = React.renderToString(ProfileForm(props));
+	new orm.Editor({id: parseInt(req.user.id, 10)})
+	.fetch()
+	.then(function(user) {
+		var markup = React.renderToString(ProfileForm(user.toJSON()));
 
-			res.render('editor/edit', {
-				props: props,
-				markup: markup
-			});
-		})
-		.catch(function() {
-			next(new Error('An internal error occurred while loading profile'));
+		res.render('editor/edit', {
+			props: user.toJSON(),
+			markup: markup
 		});
+	})
+	.catch(function() {
+		next(new Error('An internal error occurred while loading profile'));
+	});
 });
 
 router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
+	var orm = req.app.get('orm');
+
 	/* Should handle errors in some fashion other than redirecting. */
 	if (req.body.id !== req.user.id) {
 		req.session.error = 'You do not have permission to edit that user';
 		res.redirect(303, '/editor/edit');
 	}
 
-	bbws.put('/user/' + req.body.id + '/', {
-			bio: req.body.bio,
-			email: req.body.email
-		}, {
-			accessToken: req.session.bearerToken
-		})
-		.then(function(user) {
-			res.send(user);
-		})
-		.catch(function() {
-			req.session.error = 'An internal error occurred while modifying profile';
-			res.redirect(303, '/editor/edit');
-		});
+	new orm.Editor({
+		id: parseInt(req.body.id, 10), bio: req.body.bio, email:req.body.email
+	})
+	.save()
+	.then(function(user) {
+		res.send(user.toJSON());
+	})
+	.catch(function() {
+		req.session.error = 'An internal error occurred while modifying profile';
+		res.redirect(303, '/editor/edit');
+	});
 });
 
 router.get('/:id', function(req, res, next) {
-	var userPromise;
+	var orm = req.app.get('orm');
 
-	var requestedId = parseInt(req.params.id);
-	if (req.user && (requestedId === req.user.id)) {
-		userPromise = User.getCurrent(req.session.bearerToken);
-	}
-	else {
-		userPromise = User.findOne(requestedId);
-	}
-
-	userPromise
-		.then(function(editor) {
-			res.render('editor/editor', {
-				editor: editor
-			});
-		})
-		.catch(function(err) {
-			console.log(err.stack);
-			next(new NotFoundError('Editor not found'));
+	var userId = parseInt(req.params.id, 10);
+	new orm.Editor({id: userId})
+	.fetch({withRelated: ['editorType', 'gender']})
+	.then(function render(fetchedEditor) {
+		var editorJSON = fetchedEditor.toJSON();
+		if (userId !== req.user.id) {
+			editorJSON = _.omit(editorJSON, ['password', 'email']);
+		}
+		res.render('editor/editor', {
+			editor: editorJSON
 		});
+	})
+	.catch(function ifError() {
+		next(new NotFoundError('Editor not found'));
+	});
 });
 
 router.get('/:id/revisions', function(req, res, next) {
