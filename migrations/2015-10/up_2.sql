@@ -15,6 +15,8 @@ ALTER SEQUENCE bookbrainz.rel_type_id_seq RENAME TO relationship_type_id_seq;
 
 ALTER TABLE bookbrainz.rel_entity RENAME TO relationship_entity;
 
+ALTER TABLE bookbrainz.rel_revision RENAME TO relationship_revision;
+
 DROP TABLE bookbrainz.rel_text;
 
 ALTER TABLE bookbrainz.inactive_users RENAME TO inactive_editor;
