@@ -38,6 +38,8 @@ var loadEntityRelationships = require('../../helpers/middleware').loadEntityRela
 var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
 
 var bbws = require('../../helpers/bbws');
+var Publication = require('../../data/entities/publication');
+var Publisher = require('../../data/entities/publisher');
 var Promise = require('bluebird');
 
 /* If the route specifies a BBID, load the Edition for it. */
@@ -113,7 +115,8 @@ router.post('/:bbid/delete/confirm', function(req, res) {
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadEditionFormats, loadLanguages, function(req, res) {
-	var props = {
+
+	var propsPromise = {
 		languages: res.locals.languages,
 		editionStatuses: res.locals.editionStatuses,
 		editionFormats: res.locals.editionFormats,
@@ -121,15 +124,27 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStat
 		submissionUrl: '/edition/create/handler'
 	};
 
-	var markup = React.renderToString(EditForm(props));
+	if (req.query.publication) {
+		propsPromise.publication = Publication.findOne(req.query.publication);
+	}
 
-	res.render('entity/create/edition', {
-		title: 'Add Edition',
-		heading: 'Create Edition',
-		subheading: 'Add a new Edition to BookBrainz',
-		props: props,
-		markup: markup
-	});
+	if (req.query.publisher) {
+		propsPromise.publisher = Publisher.findOne(req.query.publisher);
+	}
+
+	function render(props) {
+		var markup = React.renderToString(EditForm(props));
+
+		res.render('entity/create/edition', {
+			title: 'Add Edition',
+			heading: 'Create Edition',
+			subheading: 'Add a new Edition to BookBrainz',
+			props: props,
+			markup: markup
+		});
+	}
+
+	Promise.props(propsPromise).then((resolvedProps) => render(resolvedProps));
 });
 
 router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadEditionFormats, loadLanguages, function(req, res) {

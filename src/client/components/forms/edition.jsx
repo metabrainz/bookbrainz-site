@@ -149,7 +149,7 @@ module.exports = React.createClass({
 
 				<form onChange={this.handleChange}>
 					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab === 1}/>
-					<EditionData identifierTypes={this.props.identifierTypes} edition={this.props.edition} languages={this.props.languages} ref='data' editionStatuses={this.props.editionStatuses} editionFormats={this.props.editionFormats} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab === 2}/>
+					<EditionData publisher={this.props.publisher} publication={this.props.publication} identifierTypes={this.props.identifierTypes} edition={this.props.edition} languages={this.props.languages} ref='data' editionStatuses={this.props.editionStatuses} editionFormats={this.props.editionFormats} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab === 2}/>
 					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab === 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
 				</form>
 			</div>

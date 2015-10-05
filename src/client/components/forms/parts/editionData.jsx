@@ -69,19 +69,16 @@ var EditionData = React.createClass({
 		var initialHeight = null;
 		var initialDepth = null;
 		var initialWeight = null;
+
+		var publication = null;
+		var publisher = null;
 		if (this.props.edition) {
 			if (this.props.edition.publication) {
-				initialPublication = {
-					id: this.props.edition.publication.bbid,
-					text: this.props.edition.publication.default_alias ? this.props.edition.publication.default_alias.name : null
-				};
+				publication = this.props.edition.publication;
 			}
 
 			if (this.props.edition.publisher) {
-				initialPublisher = {
-					id: this.props.edition.publisher.bbid,
-					text: this.props.edition.publisher.default_alias ? this.props.edition.publisher.default_alias.name : null
-				};
+				publisher = this.props.edition.publisher;
 			}
 
 			initialReleaseDate = this.props.edition.release_date;
@@ -102,6 +99,28 @@ var EditionData = React.createClass({
 					type: identifier.identifier_type.identifier_type_id
 				};
 			});
+		}
+
+		if (this.props.publication) {
+			publication = this.props.publication;
+		}
+
+		if (publication) {
+			initialPublication = {
+				id: this.props.publication.bbid,
+				text: this.props.publication.default_alias ? this.props.publication.default_alias.name : null
+			};
+		}
+
+		if (this.props.publisher) {
+			publisher = this.props.publisher;
+		}
+
+		if (publisher) {
+			initialPublisher = {
+				id: this.props.publisher.bbid,
+				text: this.props.publisher.default_alias ? this.props.publisher.default_alias.name : null
+			};
 		}
 
 		var select2Options = {
