@@ -60,9 +60,11 @@ block body
 					dt Last Modified
 					dd=(new Date(entity.last_updated)).toLocaleDateString()
 
-					each identifier in entity.identifiers
-						dt=identifier.identifier_type.label
-						dd=identifier.value
+					each identifier_type in identifier_types
+						dt=identifier_type.label
+						each identifier in entity.identifiers
+							if identifier.identifier_type.identifier_type_id === identifier_type.identifier_type_id
+								dd=identifier.value
 			.col-md-8.col-md-pull-4
 				if entity.annotation
 					blockquote

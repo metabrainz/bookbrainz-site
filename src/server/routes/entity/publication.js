@@ -40,6 +40,7 @@ var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierType
 
 var bbws = require('../../helpers/bbws');
 var Promise = require('bluebird');
+var _ = require('underscore');
 
 /* If the route specifies a BBID, load the Publication for it. */
 router.param('bbid', makeEntityLoader(Publication, 'Publication not found'));
@@ -60,8 +61,16 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 
 	Promise.all(publication.editions).then(function(editions) {
 		publication.editions = editions;
+
+		// Get unique identifier types for display
+		var identifier_types = _.uniq(
+			_.pluck(publication.identifiers, 'identifier_type'),
+			(identifier) => identifier.identifier_type_id
+		);
+
 		res.render('entity/view/publication', {
-			title: title
+			title: title,
+			identifier_types: identifier_types
 		});
 	});
 });

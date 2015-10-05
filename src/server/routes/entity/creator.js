@@ -39,6 +39,7 @@ var EditForm = React.createFactory(require('../../../client/components/forms/cre
 
 var bbws = require('../../helpers/bbws');
 var Promise = require('bluebird');
+var _ = require('underscore');
 
 /* If the route specifies a BBID, load the Creator for it. */
 router.param('bbid', makeEntityLoader(Creator, 'Creator not found'));
@@ -51,8 +52,15 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 		title = 'Creator “' + creator.default_alias.name + '”';
 	}
 
+	// Get unique identifier types for display
+	var identifier_types = _.uniq(
+		_.pluck(creator.identifiers, 'identifier_type'),
+		(identifier) => identifier.identifier_type_id
+	);
+
 	res.render('entity/view/creator', {
-		title: title
+		title: title,
+		identifier_types: identifier_types
 	});
 });
 

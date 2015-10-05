@@ -39,6 +39,7 @@ var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierType
 
 var bbws = require('../../helpers/bbws');
 var Promise = require('bluebird');
+var _ = require('underscore');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param('bbid', makeEntityLoader(Work, 'Work not found'));
@@ -51,8 +52,15 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 		title = 'Work “' + work.default_alias.name + '”';
 	}
 
+	// Get unique identifier types for display
+	var identifier_types = _.uniq(
+		_.pluck(work.identifiers, 'identifier_type'),
+		(identifier) => identifier.identifier_type_id
+	);
+
 	res.render('entity/view/work', {
-		title: title
+		title: title,
+		identifier_types: identifier_types
 	});
 });
 

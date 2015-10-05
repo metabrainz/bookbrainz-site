@@ -41,6 +41,7 @@ var bbws = require('../../helpers/bbws');
 var Publication = require('../../data/entities/publication');
 var Publisher = require('../../data/entities/publisher');
 var Promise = require('bluebird');
+var _ = require('underscore');
 
 /* If the route specifies a BBID, load the Edition for it. */
 router.param('bbid', makeEntityLoader(Edition, 'Edition not found'));
@@ -53,8 +54,15 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 		title = 'Edition “' + edition.default_alias.name + '”';
 	}
 
+	// Get unique identifier types for display
+	var identifier_types = _.uniq(
+		_.pluck(edition.identifiers, 'identifier_type'),
+		(identifier) => identifier.identifier_type_id
+	);
+
 	res.render('entity/view/edition', {
-		title: title
+		title: title,
+		identifier_types: identifier_types
 	});
 });
 
