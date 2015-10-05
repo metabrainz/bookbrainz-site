@@ -255,7 +255,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	var genderId = req.body.genderId;
 	if ((!creator.gender) || (creator.gender.gender_id !== genderId)) {
-		changes.gender = genderId;
+		changes.gender = {
+			gender_id: genderId
+		};
 	}
 
 	var beginDate = req.body.beginDate;
