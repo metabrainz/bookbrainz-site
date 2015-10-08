@@ -18,8 +18,11 @@ block attributes
 
 	dt Publisher
 	dd
-		a(href="/publisher/"+entity.publisher.bbid)
-			=(entity.publisher ? entity.publisher.default_alias.name : '?')
+		if entity.publisher
+			a(href="/publisher/"+entity.publisher.bbid)
+				=entity.publisher.default_alias.name
+		else
+			|?
 
 	dt Release Date
 	dd=(entity.release_date ? entity.release_date : '?')
@@ -35,6 +38,9 @@ block attributes
 
 block content
 	p
-		a(href="/publication/"+entity.publication.bbid)
-			span.fa.fa-external-link
-			|&nbsp;See all other editions
+		if entity.publication
+			a(href="/publication/"+entity.publication.bbid)
+				span.fa.fa-external-link
+				|&nbsp;See all other editions
+		else
+			span.bg-danger Publication unset - please add one if you see this!
