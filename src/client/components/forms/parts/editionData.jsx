@@ -107,8 +107,8 @@ var EditionData = React.createClass({
 
 		if (publication) {
 			initialPublication = {
-				id: this.props.publication.bbid,
-				text: this.props.publication.default_alias ? this.props.publication.default_alias.name : null
+				id: publication.bbid,
+				text: publication.default_alias ? publication.default_alias.name : null
 			};
 		}
 
@@ -118,8 +118,8 @@ var EditionData = React.createClass({
 
 		if (publisher) {
 			initialPublisher = {
-				id: this.props.publisher.bbid,
-				text: this.props.publisher.default_alias ? this.props.publisher.default_alias.name : null
+				id: publisher.bbid,
+				text: publisher.default_alias ? publisher.default_alias.name : null
 			};
 		}
 
