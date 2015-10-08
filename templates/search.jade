@@ -28,5 +28,6 @@ block body
 				each result in results
 					tr
 						td
-							a(href='/' + result._type.toLowerCase() + '/' + result.bbid)=result.default_alias.name
+							a(href='/' + result._type.toLowerCase() + '/' + result.bbid)
+								= result.default_alias ? result.default_alias.name : '(unnamed)'
 						td=result._type
