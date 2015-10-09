@@ -72,6 +72,10 @@ module.exports = React.createClass({
 
 		e.preventDefault();
 
+		if (!(this.state.aliasesValid && this.state.dataValid)) {
+			return;
+		}
+
 		var aliasData = this.refs.aliases.getValue();
 		var workData = this.refs.data.getValue();
 		var revisionNote = this.refs.revision.refs.note.getValue();

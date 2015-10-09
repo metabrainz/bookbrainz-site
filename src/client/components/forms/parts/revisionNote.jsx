@@ -46,8 +46,8 @@ var RevisionNote = React.createClass({
 							<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
 							</a>
 						</li>
-						<li className="next">
-							<a href='#' onClick={this.props.onSubmit} disabled={this.props.submitDisabled}>Submit
+						<li className={this.props.submitDisabled ? "next disabled" : "next"}>
+							<a href='#' onClick={this.props.onSubmit}>Submit
 							</a>
 						</li>
 					</ul>
