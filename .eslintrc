@@ -196,6 +196,9 @@ rules:
         - i
         - _
         - $
+        - a
+        - b
+        - q
   id-match: 0
   indent:
     - 2
@@ -203,9 +206,6 @@ rules:
     -
       SwitchCase: 1
       VariableDeclarator: 1
-  jsx-quotes:
-    - 2
-    - prefer-double
   key-spacing:
     - 2
     -
