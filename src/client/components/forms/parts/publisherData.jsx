@@ -17,15 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var PartialDate = require('../../input/partialDate.jsx');
-var Select = require('../../input/select2.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const PartialDate = require('../../input/partialDate.jsx');
+const Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Identifiers = require('./identifiers.jsx');
 
 
-var PublisherData = React.createClass({
+const PublisherData = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -61,12 +61,12 @@ var PublisherData = React.createClass({
 	render: function() {
 		'use strict';
 
-		var initialBeginDate = null;
-		var initialEndDate = null;
-		var initialPublisherType = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
+		let initialBeginDate = null;
+		let initialEndDate = null;
+		let initialPublisherType = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
 
 		if (this.props.publisher) {
 			initialBeginDate = this.props.publisher.begin_date;
@@ -83,7 +83,7 @@ var PublisherData = React.createClass({
 			});
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 

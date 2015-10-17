@@ -18,10 +18,12 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+/* eslint camelcase: 1 */
+
+const Model = require('../../helpers/model');
 require('./identifier-type');
 
-var Identifier = new Model('Identifier');
+const Identifier = new Model('Identifier');
 
 Identifier.extend({
 	id: {

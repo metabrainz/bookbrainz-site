@@ -19,11 +19,13 @@
 
 'use strict';
 
-var Model = require('../helpers/model');
+/* eslint camelcase: 1 */
+
+const Model = require('../helpers/model');
 require('../data/properties/gender');
 require('../data/properties/user-type');
 
-var User = new Model('User', {
+const User = new Model('User', {
 	endpoint: 'user'
 });
 

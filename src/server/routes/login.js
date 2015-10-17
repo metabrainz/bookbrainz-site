@@ -19,9 +19,9 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var auth = require('../helpers/auth');
+const express = require('express');
+const router = express.Router();
+const auth = require('../helpers/auth');
 
 router.get('/login', function(req, res) {
 	res.render('login', {
@@ -37,7 +37,7 @@ router.get('/logout', function(req, res) {
 });
 
 router.post('/login/handler', auth.authenticate(), function(req, res) {
-	var redirect = req.session.redirectTo ? req.session.redirectTo : '/';
+	const redirect = req.session.redirectTo ? req.session.redirectTo : '/';
 	delete req.session.redirectTo;
 
 	res.redirect(303, redirect);

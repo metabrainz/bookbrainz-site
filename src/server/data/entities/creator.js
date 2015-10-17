@@ -19,10 +19,12 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
-var Entity = require('../../data/entity');
+/* eslint camelcase: 1 */
 
-var Creator = new Model('Creator', {
+const Model = require('../../helpers/model');
+const Entity = require('../../data/entity');
+
+const Creator = new Model('Creator', {
 	base: Entity,
 	endpoint: 'creator'
 });

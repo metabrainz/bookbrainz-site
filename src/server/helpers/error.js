@@ -18,18 +18,18 @@
 
 'use strict';
 
-var util = require('util');
+const util = require('util');
 
-var NotFoundError = function(message) {
+function NotFoundError(message) {
 	NotFoundError.super_.call(this);
 
 	this.message = message || 'Object not found';
 	this.status = 404;
-};
+}
 
 util.inherits(NotFoundError, Error);
 
-var errors = {
+const errors = {
 	NotFoundError: NotFoundError
 };
 

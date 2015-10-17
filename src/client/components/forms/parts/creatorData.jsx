@@ -17,15 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var PartialDate = require('../../input/partialDate.jsx');
-var Select = require('../../input/select2.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const PartialDate = require('../../input/partialDate.jsx');
+const Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Identifiers = require('./identifiers.jsx');
 
 
-var CreatorData = React.createClass({
+const CreatorData = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -62,13 +62,13 @@ var CreatorData = React.createClass({
 	render: function() {
 		'use strict';
 
-		var initialBeginDate = null;
-		var initialEndDate = null;
-		var initialGender = null;
-		var initialCreatorType = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
+		let initialBeginDate = null;
+		let initialEndDate = null;
+		let initialGender = null;
+		let initialCreatorType = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
 
 		if (this.props.creator) {
 			initialBeginDate = this.props.creator.begin_date;
@@ -86,7 +86,7 @@ var CreatorData = React.createClass({
 			});
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 

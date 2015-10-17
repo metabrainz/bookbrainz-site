@@ -19,35 +19,35 @@
 
 'use strict';
 
-var gulp = require('gulp');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var uglify = require('gulp-uglify');
-var prettify = require('gulp-jsbeautifier');
-var path = require('path');
-var glob = require('glob');
-var mkdirp = require('mkdirp');
-var reactify = require('reactify');
-var gulpless = require('gulp-less');
-var minifyCSS = require('gulp-minify-css');
-var prefixer = require('gulp-autoprefixer');
+/* eslint camelcase: 1 */
+
+const gulp = require('gulp');
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+const uglify = require('gulp-uglify');
+const prettify = require('gulp-jsbeautifier');
+const path = require('path');
+const glob = require('glob');
+const mkdirp = require('mkdirp');
+const reactify = require('reactify');
+const gulpless = require('gulp-less');
+const minifyCSS = require('gulp-minify-css');
+const prefixer = require('gulp-autoprefixer');
 
 function bundle() {
-	var srcFiles =
+	let srcFiles =
 		glob.sync('./templates/**/*.js')
 		.concat(glob.sync('./templates/*.js'));
 
-	var srcFiles2 =
+	const srcFiles2 =
 		glob.sync('./src/client/controllers/**/*.js')
 		.concat(glob.sync('./src/client/controllers/*.js'));
 
-	console.log(srcFiles2);
-
-	var dstFiles = srcFiles.map(function(f) {
+	let dstFiles = srcFiles.map(function(f) {
 		return path.join('./static', 'js', path.relative('./templates', f));
 	});
 
-	var dstFiles2 = srcFiles2.map(function(f) {
+	const dstFiles2 = srcFiles2.map(function(f) {
 		return path.join('./static', 'js', path.relative('./src/client/controllers', f));
 	});
 
@@ -85,7 +85,7 @@ function compress() {
 }
 
 function tidy() {
-	var srcFiles = [
+	const srcFiles = [
 		'./src/**/*.js',
 		'./test/**/*.js',
 		'./templates/**/*.js',
@@ -112,7 +112,9 @@ gulp.task('less', less);
 gulp.task('compress', ['bundle'], compress);
 gulp.task('tidy', tidy);
 gulp.task('watch', function() {
-	var watcher = gulp.watch(['./src/**/*.js', './src/**/*.jsx', './templates/**/*.js'], ['bundle']);
+	const watcher = gulp.watch(
+		['./src/**/*.js', './src/**/*.jsx', './templates/**/*.js'], ['bundle']
+	);
 	watcher.on('change', function(event) {
 		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
 	});

@@ -18,15 +18,15 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var Revision = require('../data/properties/revision');
-var User = require('../data/user');
-var _ = require('underscore');
+const express = require('express');
+const router = express.Router();
+const Revision = require('../data/properties/revision');
+const User = require('../data/user');
+const _ = require('underscore');
 
 function formatRelationshipDiff(revision) {
 	return revision.changes.map(function formatPair(pair) {
-		var result = {};
+		const result = {};
 
 		if (pair.entities) {
 			result.Entities = [
@@ -60,7 +60,7 @@ function formatRelationshipDiff(revision) {
 }
 
 function formatEntityDiff(pair) {
-	var result = {};
+	const result = {};
 
 	if (pair.annotation) {
 		result.Annotation = [
@@ -107,13 +107,12 @@ function formatEntityDiff(pair) {
 		];
 	}
 
-	console.log(result);
 	return result;
 }
 
 function formatPublicationDiff(revision) {
 	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+		const result = formatEntityDiff(pair);
 
 		if (pair.publication_type) {
 			result['Publication Type'] = [
@@ -130,7 +129,7 @@ function formatPublicationDiff(revision) {
 
 function formatCreatorDiff(revision) {
 	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
 			result['Begin Date'] = [
@@ -175,7 +174,7 @@ function formatCreatorDiff(revision) {
 
 function formatEditionDiff(revision) {
 	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+		const result = formatEntityDiff(pair);
 
 		if (pair.release_date) {
 			result['Release Date'] = [
@@ -268,7 +267,7 @@ function formatEditionDiff(revision) {
 
 function formatPublisherDiff(revision) {
 	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
 			result['Begin Date'] = [
@@ -306,7 +305,7 @@ function formatPublisherDiff(revision) {
 
 function formatWorkDiff(revision) {
 	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+		const result = formatEntityDiff(pair);
 
 		if (pair.work_type) {
 			result['Work Type'] = [
@@ -317,8 +316,8 @@ function formatWorkDiff(revision) {
 
 		if (pair.languages) {
 			result.Languages = [
-					_.pluck(pair.languages[0], 'name'),
-					_.pluck(pair.languages[1], 'name')
+				_.pluck(pair.languages[0], 'name'),
+				_.pluck(pair.languages[1], 'name')
 			];
 		}
 
@@ -329,7 +328,7 @@ function formatWorkDiff(revision) {
 router.get('/:id', function(req, res) {
 	Revision.findOne(req.params.id, {populate: ['entity', 'relationship']})
 	.then(function(revision) {
-		var diff = null;
+		let diff = null;
 		console.log(revision);
 		if (revision.changes) {
 			if (revision.entity) {

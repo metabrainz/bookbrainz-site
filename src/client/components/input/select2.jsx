@@ -17,21 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var Input = require('react-bootstrap').Input;
-var React = require('react');
+const Input = require('react-bootstrap').Input;
+const React = require('react');
 
 if (typeof window !== 'undefined') {
 	require('Select2');
-	var $ = window.$;
+	const $ = window.$;
 }
 
-var Select = React.createClass({
+const Select = React.createClass({
 	initSelect2: function() {
 		'use strict';
 
-		var mountElement = $(this.refs.target.getInputDOMNode());
+		const mountElement = $(this.refs.target.getInputDOMNode());
 
-		var options = this.props.select2Options || {};
+		const options = this.props.select2Options || {};
 		options.theme = 'bootstrap';
 
 		if (this.props.placeholder) {
@@ -52,7 +52,7 @@ var Select = React.createClass({
 	componentWillUnmount: function() {
 		'use strict';
 
-		var select = $(this.refs.target.getInputDOMNode());
+		const select = $(this.refs.target.getInputDOMNode());
 
 		// Unregister onChange event, so that it isn't triggered while the DOM is
 		// refreshed.
@@ -69,8 +69,8 @@ var Select = React.createClass({
 	render: function() {
 		'use strict';
 
-		var self = this;
-		var options = [];
+		const self = this;
+		let options = [];
 		if (this.props.options) {
 			options = this.props.options.map(function(op) {
 				return (

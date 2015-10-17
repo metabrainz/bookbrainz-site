@@ -19,9 +19,11 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+/* eslint camelcase: 1 */
 
-var RelationshipType = new Model('RelationshipType', {
+const Model = require('../../helpers/model');
+
+const RelationshipType = new Model('RelationshipType', {
 	endpoint: 'relationshipType'
 });
 

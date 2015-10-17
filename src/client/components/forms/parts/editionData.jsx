@@ -17,16 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var PartialDate = require('../../input/partialDate.jsx');
-var Select = require('../../input/select2.jsx');
-var SearchSelect = require('../../input/entity-search.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const PartialDate = require('../../input/partialDate.jsx');
+const Select = require('../../input/select2.jsx');
+const SearchSelect = require('../../input/entity-search.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Identifiers = require('./identifiers.jsx');
 
 
-var EditionData = React.createClass({
+const EditionData = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -55,23 +55,23 @@ var EditionData = React.createClass({
 	render: function() {
 		'use strict';
 
-		var initialPublication = null;
-		var initialPublisher = null;
-		var initialReleaseDate = null;
-		var initialLanguage = null;
-		var initialEditionFormat = null;
-		var initialEditionStatus = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
-		var initialPages = null;
-		var initialWidth = null;
-		var initialHeight = null;
-		var initialDepth = null;
-		var initialWeight = null;
+		let initialPublication = null;
+		let initialPublisher = null;
+		let initialReleaseDate = null;
+		let initialLanguage = null;
+		let initialEditionFormat = null;
+		let initialEditionStatus = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
+		let initialPages = null;
+		let initialWidth = null;
+		let initialHeight = null;
+		let initialDepth = null;
+		let initialWeight = null;
 
-		var publication = null;
-		var publisher = null;
+		let publication = null;
+		let publisher = null;
 		if (this.props.edition) {
 			if (this.props.edition.publication) {
 				publication = this.props.edition.publication;
@@ -123,7 +123,7 @@ var EditionData = React.createClass({
 			};
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 

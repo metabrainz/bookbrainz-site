@@ -17,14 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Input = require('react-bootstrap').Input;
+const React = require('react');
+const Input = require('react-bootstrap').Input;
 
-var ymd_re = /^\d{4}-\d{2}-\d{2}$/;
-var ym_re = /^\d{4}-\d{2}$/;
-var y_re = /^\d{4}$/;
+const ymd_re = /^\d{4}-\d{2}-\d{2}$/;
+const ym_re = /^\d{4}-\d{2}$/;
+const y_re = /^\d{4}$/;
 
-var PartialDate = React.createClass({
+const PartialDate = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -45,16 +45,16 @@ var PartialDate = React.createClass({
 			return true;
 		}
 		else {
-			var validSyntax =
+			const validSyntax =
 				Boolean(ymd_re.test(value) || ym_re.test(value) || y_re.test(value));
-			var validValue = !isNaN(Date.parse(value));
+			const validValue = !isNaN(Date.parse(value));
 			return validSyntax && validValue;
 		}
 	},
 	handleChange: function() {
 		'use strict';
 
-		var input = this.refs.input.getValue().trim();
+		const input = this.refs.input.getValue().trim();
 
 		if (input.length > 10) {
 			return;
@@ -73,7 +73,7 @@ var PartialDate = React.createClass({
 	validationState: function() {
 		'use strict';
 
-		var validationClass = null;
+		let validationClass = null;
 
 		if (this.state.value) {
 			validationClass = this.state.valid ? 'success' : 'error';

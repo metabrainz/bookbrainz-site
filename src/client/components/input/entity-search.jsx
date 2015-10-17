@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Select = require('./select2.jsx');
-var _ = require('underscore');
-var $ = require('jquery');
+const React = require('react');
+const Select = require('./select2.jsx');
+const _ = require('underscore');
+const $ = require('jquery');
 
-var EntitySearch = React.createClass({
+const EntitySearch = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -31,14 +31,14 @@ var EntitySearch = React.createClass({
 	render: function() {
 		'use strict';
 
-		var self = this;
+		const self = this;
 
-		var select2Options = {
+		const select2Options = {
 			minimumInputLength: 1,
 			ajax: {
 				url: '/search',
 				data: function(params) {
-					var queryParams = {
+					const queryParams = {
 						q: params.term,
 						page: params.page,
 						mode: 'auto',
@@ -48,7 +48,7 @@ var EntitySearch = React.createClass({
 					return queryParams;
 				},
 				processResults: function(results) {
-					var data = {
+					const data = {
 						results: []
 					};
 
@@ -76,9 +76,9 @@ var EntitySearch = React.createClass({
 				}
 			},
 			templateResult: function(result) {
-				var template = result.text;
+				let template = result.text;
 
-				var ENTITY_TYPE_ICONS = {
+				const ENTITY_TYPE_ICONS = {
 					'Creator': 'fa-user',
 					'Edition': 'fa-book',
 					'Publication': 'fa-th-list',
@@ -86,6 +86,7 @@ var EntitySearch = React.createClass({
 					'Work': 'fa-file-text-o'
 				};
 
+				/* eslint prefer-template: 0 */
 				if (result.type) {
 					template = React.renderToStaticMarkup(
 						<span className={'fa ' + ENTITY_TYPE_ICONS[result.type]}/>
@@ -107,9 +108,9 @@ var EntitySearch = React.createClass({
 
 		_.extend(select2Options, this.props.select2Options);
 
-		var options = this.props.options || [];
+		const options = this.props.options || [];
 
-		var defaultKey = null;
+		let defaultKey = null;
 		if (this.props.defaultValue && this.props.defaultValue.id) {
 			options.unshift(this.props.defaultValue);
 			defaultKey = this.props.defaultValue.id;

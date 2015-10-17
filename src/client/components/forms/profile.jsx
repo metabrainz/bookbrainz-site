@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var LoadingSpinner = require('../loading_spinner.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const LoadingSpinner = require('../loading_spinner.jsx');
 
-var request = require('superagent');
+const request = require('superagent');
 require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
@@ -42,7 +42,7 @@ module.exports = React.createClass({
 
 		e.preventDefault();
 
-		var data = {
+		const data = {
 			id: this.state.id,
 			email: this.refs.email.getValue().trim(),
 			bio: this.refs.bio.getValue().trim()
@@ -59,7 +59,7 @@ module.exports = React.createClass({
 	render: function() {
 		'use strict';
 
-		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		return <form className='form-horizontal' onSubmit={this.handleSubmit}>
 			{loadingElement}

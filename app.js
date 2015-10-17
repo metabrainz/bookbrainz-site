@@ -20,25 +20,25 @@
 
 'use strict';
 
-var path = require('path');
+const path = require('path');
 
-var express = require('express');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
-var staticCache = require('express-static-cache');
+const express = require('express');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const staticCache = require('express-static-cache');
 
-var Promise = require('bluebird');
+const Promise = require('bluebird');
 Promise.longStackTraces();
 
-var auth = require('./src/server/helpers/auth');
-var config = require('./src/server/helpers/config');
-var bbws = require('./src/server/helpers/bbws');
+const auth = require('./src/server/helpers/auth');
+const config = require('./src/server/helpers/config');
+const bbws = require('./src/server/helpers/bbws');
 
 // Initialize application
-var app = express();
+const app = express();
 
 // Set up jade as view engine
 app.set('views', path.join(__dirname, 'templates'));
@@ -91,8 +91,8 @@ app.use(function(req, res, next) {
 	// Get the latest count of messages in the user's inbox.
 	if (req.session && req.session.bearerToken) {
 		bbws.get('/message/inbox/', {
-				accessToken: req.session.bearerToken
-			})
+			accessToken: req.session.bearerToken
+		})
 			.then(function(list) {
 				res.locals.inboxCount = list.objects.length;
 			})
@@ -116,7 +116,7 @@ require('./src/server/routes')(app);
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {
-	var err = new Error('Not Found');
+	const err = new Error('Not Found');
 	err.status = 404;
 	next(err);
 });

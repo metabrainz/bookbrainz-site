@@ -19,11 +19,11 @@
 
 'use strict';
 
-var passport = require('passport');
-var config = require('../helpers/config');
-var BBWSStrategy = require('./passport-bookbrainz-ws');
+const passport = require('passport');
+const config = require('../helpers/config');
+const BBWSStrategy = require('./passport-bookbrainz-ws');
 
-var auth = {};
+const auth = {};
 
 auth.init = function(app) {
 	passport.use(new BBWSStrategy({
@@ -49,16 +49,16 @@ auth.init = function(app) {
 
 auth.authenticate = function() {
 	return function(req, res, next) {
-		var options = {
+		const options = {
 			username: req.body.username,
 			password: req.body.password
 		};
 
-		var callback = function(err) {
+		function callback(err) {
 			if (err) {
 				console.log(err.stack);
 
-				var newErr;
+				let newErr;
 
 				switch (err.name) {
 					case 'InternalOAuthError':
@@ -74,7 +74,7 @@ auth.authenticate = function() {
 			}
 
 			next();
-		};
+		}
 
 		passport.authenticate('bbws', options)(req, res, callback);
 	};

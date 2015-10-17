@@ -20,34 +20,36 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var _ = require('underscore');
-var Revision = require('../data/properties/revision');
-var bbws = require('../helpers/bbws');
-var Promise = require('bluebird');
-var Publication = require('../data/entities/publication');
-var Creator = require('../data/entities/creator');
-var Edition = require('../data/entities/edition');
-var Work = require('../data/entities/work');
-var Publisher = require('../data/entities/publisher');
+/* eslint camelcase: 1 */
+
+const express = require('express');
+const router = express.Router();
+const _ = require('underscore');
+const Revision = require('../data/properties/revision');
+const bbws = require('../helpers/bbws');
+const Promise = require('bluebird');
+const Publication = require('../data/entities/publication');
+const Creator = require('../data/entities/creator');
+const Edition = require('../data/entities/edition');
+const Work = require('../data/entities/work');
+const Publisher = require('../data/entities/publisher');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	var render = function(revisions) {
+	function render(revisions) {
 		res.render('index', {
 			recent: revisions,
 			homepage: true
 		});
-	};
+	}
 
 	Revision.find({
-			params: {
-				limit: 9,
-				type: 'entity'
-			},
-			populate: ['entity']
-		})
+		params: {
+			limit: 9,
+			type: 'entity'
+		},
+		populate: ['entity']
+	})
 		.then(render)
 		.catch(function(err) {
 			console.log(err.stack);
@@ -86,10 +88,10 @@ router.get('/licensing', function(req, res) {
 });
 
 router.get('/search', function(req, res) {
-	var query = req.query.q;
-	var mode = req.query.mode || 'search';
+	const query = req.query.q;
+	const mode = req.query.mode || 'search';
 
-	var params = {
+	const params = {
 		q: query,
 		mode: mode
 	};
@@ -99,16 +101,16 @@ router.get('/search', function(req, res) {
 	}
 
 	bbws.get('/search', {
-			params: params
-		})
+		params: params
+	})
 		.then(function(results) {
 			if (!results.hits) {
 				return null;
 			}
 
 			return Promise.map(results.hits, function(hit) {
-				var entity_stub = hit._source;
-				var model;
+				const entity_stub = hit._source;
+				let model = null;
 
 				switch (entity_stub._type) {
 					case 'Publication':
@@ -152,7 +154,7 @@ router.get('/search', function(req, res) {
 			}
 		})
 		.catch(function() {
-			var message = 'An error occurred while obtaining search results';
+			const message = 'An error occurred while obtaining search results';
 
 			if (mode === 'search') {
 				res.render('search', {

@@ -19,10 +19,12 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+/* eslint camelcase: 1 */
+
+const Model = require('../../helpers/model');
 require('./language');
 
-var Alias = new Model('Alias');
+const Alias = new Model('Alias');
 
 Alias.extend({
 	id: {

@@ -19,17 +19,17 @@
 
 'use strict';
 
-var superagent = require('superagent');
-var config = require('../helpers/config');
+const superagent = require('superagent');
+const config = require('../helpers/config');
 
 require('superagent-bluebird-promise');
 
-var bbws = {};
+const bbws = {};
 
-var _processError = function(response) {
-	var newErr;
+function _processError(response) {
+	let newErr;
 
-	var requestPath = response.error.method + ' ' + response.error.path;
+	const requestPath = response.error.method + ' ' + response.error.path;
 
 	if (response.status === 404) {
 		newErr = new Error('WS path not found: ' + requestPath);
@@ -46,18 +46,19 @@ var _processError = function(response) {
 	}
 
 	throw newErr;
-};
+}
 
-var _execRequest = function(requestType, path, options) {
-	if (path.charAt(0) === '/') {
-		path = config.site.webservice + path;
-	}
+function _execRequest(requestType, path, options) {
+	const absPath =
+		(path.charAt(0) === '/' ? config.site.webservice : '') + path;
 
-	var request = superagent[requestType](path)
+	let request = superagent[requestType](absPath)
 		.accept('application/json');
 
 	if (options.accessToken) {
-		request = request.set('Authorization', 'Bearer ' + options.accessToken);
+		request = request.set(
+			'Authorization', `Bearer ${options.accessToken}`
+		);
 	}
 
 	if (options.params) {
@@ -74,7 +75,7 @@ var _execRequest = function(requestType, path, options) {
 			return response.body;
 		})
 		.catch(_processError);
-};
+}
 
 bbws.get = function(path, options) {
 	options = options || {};
@@ -83,24 +84,24 @@ bbws.get = function(path, options) {
 };
 
 bbws.post = function(path, data, options) {
-	options = options || {};
-	options.data = data || {};
+	const processedOptions = options || {};
+	processedOptions.data = data || {};
 
-	return _execRequest('post', path, options);
+	return _execRequest('post', path, processedOptions);
 };
 
 bbws.put = function(path, data, options) {
-	options = options || {};
-	options.data = data || {};
+	const processedOptions = options || {};
+	processedOptions.data = data || {};
 
-	return _execRequest('put', path, options);
+	return _execRequest('put', path, processedOptions);
 };
 
 bbws.del = function(path, data, options) {
-	options = options || {};
+	const processedOptions = options || {};
 	options.data = data || {};
 
-	return _execRequest('del', path, options);
+	return _execRequest('del', path, processedOptions);
 };
 
 module.exports = bbws;

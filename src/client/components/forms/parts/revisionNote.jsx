@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
+const React = require('react');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
 
-var RevisionNote = React.createClass({
+const RevisionNote = React.createClass({
 	render: function() {
 		'use strict';
 

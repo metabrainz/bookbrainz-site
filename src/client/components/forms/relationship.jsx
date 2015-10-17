@@ -17,33 +17,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+/* eslint camelcase: 1 */
 
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Select = require('../input/select2.jsx');
-var LoadingSpinner = require('../loading_spinner.jsx');
-var UUID = require('../input/uuid.jsx');
-var extend = require('util')._extend;
-var Promise = require('bluebird');
+const React = require('react');
 
-var request = require('superagent');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Select = require('../input/select2.jsx');
+const LoadingSpinner = require('../loading_spinner.jsx');
+const UUID = require('../input/uuid.jsx');
+const extend = require('util')._extend;
+const Promise = require('bluebird');
+
+const request = require('superagent');
 require('superagent-bluebird-promise');
 
-var renderRelationship = require('../../../server/helpers/render.js');
-var utils = require('../../../server/helpers/utils.js');
-var SearchSelect = require('../input/entity-search.jsx');
+const renderRelationship = require('../../../server/helpers/render.js');
+const utils = require('../../../server/helpers/utils.js');
+const SearchSelect = require('../input/entity-search.jsx');
 
 
 module.exports = React.createClass({
 	getInitialState: function() {
 		'use strict';
 
-		var targetEntity = this.props.targetEntity;
+		const targetEntity = this.props.targetEntity;
 		targetEntity.key = 1;
 		targetEntity.entity_gid = targetEntity.bbid;
 
-		var loadedEntities = {};
+		const loadedEntities = {};
 		loadedEntities[targetEntity.bbid] = targetEntity;
 		return {
 			targetEntity: targetEntity,
@@ -82,7 +84,7 @@ module.exports = React.createClass({
 	handleSubmit: function(e) {
 		'use strict';
 
-		var self = this;
+		const self = this;
 		e.preventDefault();
 
 		request.post('./relationships/handler')
@@ -108,7 +110,7 @@ module.exports = React.createClass({
 	handleAdd: function(e) {
 		'use strict';
 
-		var addedRelationships = this.state.addedRelationships.slice();
+		const addedRelationships = this.state.addedRelationships.slice();
 
 		addedRelationships.push({
 			type: this.state.selectedRelationship,
@@ -123,7 +125,7 @@ module.exports = React.createClass({
 	handleSwap: function(i, e) {
 		'use strict';
 
-		var displayEntities = this.state.displayEntities.slice();
+		const displayEntities = this.state.displayEntities.slice();
 		displayEntities[i] = this.state.displayEntities[i + 1];
 		displayEntities[i + 1] = this.state.displayEntities[i];
 
@@ -134,7 +136,7 @@ module.exports = React.createClass({
 
 		entity.key = this.state.displayEntities[i].key;
 
-		var displayEntities = this.state.displayEntities.slice();
+		const displayEntities = this.state.displayEntities.slice();
 		displayEntities[i] = entity;
 
 		this.setState({displayEntities: displayEntities});
@@ -142,7 +144,7 @@ module.exports = React.createClass({
 	addLoadedEntity: function(entity) {
 		'use strict';
 
-		var loadedEntities = extend({}, this.state.loadedEntities);
+		const loadedEntities = extend({}, this.state.loadedEntities);
 		loadedEntities[entity.bbid] = entity;
 
 		this.setState({loadedEntities: loadedEntities});
@@ -150,7 +152,7 @@ module.exports = React.createClass({
 	removeRelationship: function(i) {
 		'use strict';
 
-		var addedRelationships = this.state.addedRelationships.slice();
+		const addedRelationships = this.state.addedRelationships.slice();
 
 		addedRelationships.splice(i, 1);
 
@@ -159,8 +161,8 @@ module.exports = React.createClass({
 	handleUUIDChange: function(i, e) {
 		'use strict';
 
-		var self = this;
-		var bbid = this.refs[i].getValue();
+		const self = this;
+		const bbid = this.refs[i].getValue();
 		if (bbid !== this.state.targetEntity.bbid) {
 			if (self.state.loadedEntities[bbid]) {
 				self.setDisplayEntity(i, self.state.loadedEntities[bbid]);
@@ -180,8 +182,8 @@ module.exports = React.createClass({
 	handleRelationshipChange: function(e) {
 		'use strict';
 
-		var relationshipId = parseInt(this.refs.relationship.getValue());
-		var selectedRelationship = this.props.relationshipTypes.filter(function(relationship) {
+		const relationshipId = parseInt(this.refs.relationship.getValue());
+		const selectedRelationship = this.props.relationshipTypes.filter(function(relationship) {
 			return relationship.id === relationshipId;
 		});
 
@@ -195,14 +197,14 @@ module.exports = React.createClass({
 	render: function() {
 		'use strict';
 
-		var self = this;
-		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const self = this;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 
-		var renderedEntities = this.state.displayEntities.map(function(entity, i) {
+		const renderedEntities = this.state.displayEntities.map(function(entity, i) {
 			if (entity) {
 				entity.id = entity.bbid;
 				entity.text = entity.default_alias ? entity.default_alias.name : '(unnamed)';
@@ -237,7 +239,7 @@ module.exports = React.createClass({
 			);
 		});
 
-		var relationshipDescription = null;
+		let relationshipDescription = null;
 		if (this.state.selectedRelationship) {
 			relationshipDescription = <Input
 				type='static'
@@ -245,14 +247,14 @@ module.exports = React.createClass({
 				value={this.state.selectedRelationship.description} />;
 		}
 
-		var allEntitiesLoaded = this.state.displayEntities.every(function(entity) {
+		const allEntitiesLoaded = this.state.displayEntities.every(function(entity) {
 			return Boolean(entity.entity_gid);
 		});
 
 		// This could easily be a React component, and should be changed to
 		// that at some point soon.
-		var renderedRelationship = null;
-		var addValid = false;
+		let renderedRelationship = null;
+		let addValid = false;
 		if (allEntitiesLoaded && this.state.selectedRelationship) {
 			renderedRelationship = {
 				__html: renderRelationship(this.state.displayEntities, this.state.selectedRelationship, null)
@@ -260,7 +262,7 @@ module.exports = React.createClass({
 			addValid = true;
 		}
 
-		var relationshipEntry = (
+		const relationshipEntry = (
 			<div>
 				<Select
 					label='Type'
@@ -298,8 +300,8 @@ module.exports = React.createClass({
 			</div>
 		);
 
-		var addedRelationships = this.state.addedRelationships.map(function(relationship, i) {
-			var rendered = {
+		const addedRelationships = this.state.addedRelationships.map(function(relationship, i) {
+			const rendered = {
 				__html: renderRelationship(relationship.entities, relationship.type, null)
 			};
 			return (

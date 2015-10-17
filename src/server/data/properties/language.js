@@ -19,9 +19,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var Language = new Model('Language', {
+const Language = new Model('Language', {
 	endpoint: 'language'
 });
 

@@ -19,24 +19,24 @@
 
 'use strict';
 
-var Promise = require('bluebird');
+const Promise = require('bluebird');
 
-var CreatorType = require('../data/properties/creator-type');
-var EditionStatus = require('../data/properties/edition-status');
-var EditionFormat = require('../data/properties/edition-format');
-var Entity = require('../data/entity');
-var Gender = require('../data/properties/gender');
-var Language = require('../data/properties/language');
-var PublicationType = require('../data/properties/publication-type');
-var PublisherType = require('../data/properties/publisher-type');
-var WorkType = require('../data/properties/work-type');
-var IdentifierType = require('../data/properties/identifier-type');
+const CreatorType = require('../data/properties/creator-type');
+const EditionStatus = require('../data/properties/edition-status');
+const EditionFormat = require('../data/properties/edition-format');
+const Entity = require('../data/entity');
+const Gender = require('../data/properties/gender');
+const Language = require('../data/properties/language');
+const PublicationType = require('../data/properties/publication-type');
+const PublisherType = require('../data/properties/publisher-type');
+const WorkType = require('../data/properties/work-type');
+const IdentifierType = require('../data/properties/identifier-type');
 
-var renderRelationship = require('../helpers/render');
+const renderRelationship = require('../helpers/render');
 
-var NotFoundError = require('../helpers/error').NotFoundError;
+const NotFoundError = require('../helpers/error').NotFoundError;
 
-var makeLoader = function(model, propName, sortFunc) {
+function makeLoader(model, propName, sortFunc) {
 	return function(req, res, next) {
 		model.find()
 			.then(function(results) {
@@ -49,9 +49,9 @@ var makeLoader = function(model, propName, sortFunc) {
 			})
 			.catch(next);
 	};
-};
+}
 
-var middleware = {};
+const middleware = {};
 
 middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
 middleware.loadPublicationTypes = makeLoader(PublicationType, 'publicationTypes');
@@ -78,23 +78,23 @@ middleware.loadEntityRelationships = function(req, res, next) {
 		next(new Error('Entity failed to load'));
 	}
 
-	var entity = res.locals.entity;
+	const entity = res.locals.entity;
 	Promise.map(entity.relationships, function(relationship) {
-			relationship.template = relationship.relationship_type.template;
+		relationship.template = relationship.relationship_type.template;
 
-			var relEntities = relationship.entities.sort(function sortRelationshipEntity(a, b) {
-				return a.position - b.position;
-			});
+		const relEntities = relationship.entities.sort(function sortRelationshipEntity(a, b) {
+			return a.position - b.position;
+		});
 
-			return Promise.map(relEntities, function(relEntity) {
-					return Entity.findOne(relEntity.entity.entity_gid);
-				})
-				.then(function(loadedEntities) {
-					relationship.rendered = renderRelationship(loadedEntities, relationship, null);
-
-					return relationship;
-				});
+		return Promise.map(relEntities, function(relEntity) {
+			return Entity.findOne(relEntity.entity.entity_gid);
 		})
+			.then(function(loadedEntities) {
+				relationship.rendered = renderRelationship(loadedEntities, relationship, null);
+
+				return relationship;
+			});
+	})
 		.then(function(relationships) {
 			res.locals.entity.relationships = relationships;
 
@@ -106,7 +106,7 @@ middleware.loadEntityRelationships = function(req, res, next) {
 middleware.makeEntityLoader = function(model, errMessage) {
 	return function(req, res, next, bbid) {
 		if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
-			var populate = [
+			const populate = [
 				'annotation',
 				'disambiguation',
 				'relationships',
@@ -127,8 +127,8 @@ middleware.makeEntityLoader = function(model, errMessage) {
 			}
 
 			model.findOne(req.params.bbid, {
-					populate: populate
-				})
+				populate: populate
+			})
 				.then(function(entity) {
 					res.locals.entity = entity;
 
@@ -136,7 +136,7 @@ middleware.makeEntityLoader = function(model, errMessage) {
 				})
 				.catch(function(err) {
 					if (err.status === 404) {
-						var newErr = new NotFoundError(errMessage);
+						const newErr = new NotFoundError(errMessage);
 						return next(newErr);
 					}
 

@@ -19,9 +19,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var WorkType = new Model('WorkType', {
+const WorkType = new Model('WorkType', {
 	endpoint: 'workType'
 });
 

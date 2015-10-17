@@ -19,41 +19,43 @@
 
 'use strict';
 
-var express = require('express');
-var auth = require('../../helpers/auth');
-var Creator = require('../../data/entities/creator');
-var User = require('../../data/user');
+/* eslint camelcase: 1 */
+
+const express = require('express');
+const auth = require('../../helpers/auth');
+const Creator = require('../../data/entities/creator');
+const User = require('../../data/user');
 
 /* Middleware loader functions. */
-var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-var loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
-var loadGenders = require('../../helpers/middleware').loadGenders;
-var loadLanguages = require('../../helpers/middleware').loadLanguages;
-var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
-var React = require('react');
+const loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
+const loadGenders = require('../../helpers/middleware').loadGenders;
+const loadLanguages = require('../../helpers/middleware').loadLanguages;
+const loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+const loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+const React = require('react');
 
-var router = express.Router();
-var EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
+const router = express.Router();
+const EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
 
-var bbws = require('../../helpers/bbws');
-var Promise = require('bluebird');
-var _ = require('underscore');
+const bbws = require('../../helpers/bbws');
+const Promise = require('bluebird');
+const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Creator for it. */
 router.param('bbid', makeEntityLoader(Creator, 'Creator not found'));
 
 router.get('/:bbid', loadEntityRelationships, function(req, res) {
-	var creator = res.locals.entity;
-	var title = 'Creator';
+	const creator = res.locals.entity;
+	let title = 'Creator';
 
 	if (creator.default_alias && creator.default_alias.name) {
 		title = 'Creator “' + creator.default_alias.name + '”';
 	}
 
 	// Get unique identifier types for display
-	var identifier_types = _.uniq(
+	const identifier_types = _.uniq(
 		_.pluck(creator.identifiers, 'identifier_type'),
 		(identifier) => identifier.identifier_type_id
 	);
@@ -65,8 +67,8 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
-	var creator = res.locals.entity;
-	var title = 'Creator';
+	const creator = res.locals.entity;
+	let title = 'Creator';
 
 	if (creator.default_alias && creator.default_alias.name) {
 		title = 'Creator “' + creator.default_alias.name + '”';
@@ -78,22 +80,21 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 });
 
 router.post('/:bbid/delete/confirm', function(req, res) {
-	var creator = res.locals.entity;
+	const creator = res.locals.entity;
 
-	Creator.del(creator.bbid, {
-			revision: {note: req.body.note}
-		},
-		{
-			session: req.session
-		})
+	Creator.del(
+		creator.bbid,
+		{revision: {note: req.body.note}},
+		{session: req.session}
+	)
 		.then(function() {
 			res.redirect(303, '/creator/' + creator.bbid);
 		});
 });
 
 router.get('/:bbid/revisions', function(req, res) {
-	var creator = res.locals.entity;
-	var title = 'Creator';
+	const creator = res.locals.entity;
+	let title = 'Creator';
 
 	if (creator.default_alias && creator.default_alias.name) {
 		title = 'Creator “' + creator.default_alias.name + '”';
@@ -101,7 +102,7 @@ router.get('/:bbid/revisions', function(req, res) {
 
 	bbws.get('/creator/' + creator.bbid + '/revisions')
 		.then(function(revisions) {
-			var promisedUsers = {};
+			const promisedUsers = {};
 			revisions.objects.forEach(function(revision) {
 				if (!promisedUsers[revision.user.user_id]) {
 					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
@@ -120,7 +121,7 @@ router.get('/:bbid/revisions', function(req, res) {
 
 // Creation
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
-	var props = {
+	const props = {
 		languages: res.locals.languages,
 		genders: res.locals.genders,
 		creatorTypes: res.locals.creatorTypes,
@@ -128,7 +129,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders, lo
 		submissionUrl: '/creator/create/handler'
 	};
 
-	var markup = React.renderToString(EditForm(props));
+	const markup = React.renderToString(EditForm(props));
 
 	res.render('entity/create/creator', {
 		title: 'Add Creator',
@@ -140,9 +141,9 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders, lo
 });
 
 router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
-	var creator = res.locals.entity;
+	const creator = res.locals.entity;
 
-	var props = {
+	const props = {
 		languages: res.locals.languages,
 		genders: res.locals.genders,
 		creatorTypes: res.locals.creatorTypes,
@@ -151,7 +152,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadGenders
 		submissionUrl: '/creator/' + creator.bbid + '/edit/handler'
 	};
 
-	var markup = React.renderToString(EditForm(props));
+	const markup = React.renderToString(EditForm(props));
 
 	res.render('entity/create/creator', {
 		title: 'Edit Creator',
@@ -163,7 +164,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadGenders
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
-	var changes = {
+	const changes = {
 		bbid: null
 	};
 
@@ -205,7 +206,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map(function(identifier) {
 		return {
 			value: identifier.value,
 			identifier_type: {
@@ -218,7 +219,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.identifiers = newIdentifiers;
 	}
 
-	var newAliases = [];
+	const newAliases = [];
 
 	req.body.aliases.forEach(function(alias) {
 		if (!alias.name && !alias.sortName) {
@@ -239,21 +240,21 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	Creator.create(changes, {
-			session: req.session
-		})
+		session: req.session
+	})
 		.then(function(revision) {
 			res.send(revision);
 		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
-	var creator = res.locals.entity;
+	const creator = res.locals.entity;
 
-	var changes = {
+	const changes = {
 		bbid: creator.bbid
 	};
 
-	var creatorTypeId = req.body.creatorTypeId;
+	const creatorTypeId = req.body.creatorTypeId;
 	if ((!creator.creator_type) ||
 		(creator.creator_type.creator_type_id !== creatorTypeId)) {
 		changes.creator_type = {
@@ -261,32 +262,32 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var genderId = req.body.genderId;
+	const genderId = req.body.genderId;
 	if ((!creator.gender) || (creator.gender.gender_id !== genderId)) {
 		changes.gender = {
 			gender_id: genderId
 		};
 	}
 
-	var beginDate = req.body.beginDate;
+	const beginDate = req.body.beginDate;
 	if (creator.begin_date !== beginDate) {
 		changes.begin_date = beginDate ? beginDate : null;
 	}
 
-	var endDate = req.body.endDate;
-	var ended = req.body.ended;
+	const endDate = req.body.endDate;
+	const ended = req.body.ended;
 	if (creator.end_date !== endDate) {
 		changes.end_date = endDate ? endDate : null;
 		changes.ended = endDate ? true : ended; // Must have ended if there's an end date.
 	}
 
-	var disambiguation = req.body.disambiguation;
+	const disambiguation = req.body.disambiguation;
 	if ((!creator.disambiguation) ||
 		(creator.disambiguation.comment !== disambiguation)) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
-	var annotation = req.body.annotation;
+	const annotation = req.body.annotation;
 	if ((!creator.annotation) ||
 		(creator.annotation.content !== annotation)) {
 		changes.annotation = annotation ? annotation : null;
@@ -298,8 +299,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var currentIdentifiers = creator.identifiers.map(function(identifier) {
-		var nextIdentifier = req.body.identifiers[0];
+	const currentIdentifiers = creator.identifiers.map(function(identifier) {
+		const nextIdentifier = req.body.identifiers[0];
 
 		if (identifier.id !== nextIdentifier.id) {
 			// Remove the alias
@@ -317,7 +318,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map(function(identifier) {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (identifier.id) {
 			return null;
@@ -334,10 +335,10 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
-	var currentAliases = [];
+	const currentAliases = [];
 
 	creator.aliases.forEach(function(alias) {
-		var nextAlias = req.body.aliases[0];
+		const nextAlias = req.body.aliases[0];
 
 		if (alias.id !== nextAlias.id) {
 			// Remove the alias
@@ -356,7 +357,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newAliases = [];
+	const newAliases = [];
 
 	req.body.aliases.forEach(function(alias) {
 		// At this point, the only aliases should have null IDs, but check anyway.
@@ -376,8 +377,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	changes.aliases = currentAliases.concat(newAliases);
 
 	Creator.update(creator.bbid, changes, {
-			session: req.session
-		})
+		session: req.session
+	})
 		.then(function(revision) {
 			res.send(revision);
 		});

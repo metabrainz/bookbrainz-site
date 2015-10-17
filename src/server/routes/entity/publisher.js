@@ -19,35 +19,37 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var auth = require('../../helpers/auth');
-var Publisher = require('../../data/entities/publisher');
-var Edition = require('../../data/entities/edition');
-var User = require('../../data/user');
+/* eslint camelcase: 1 */
+
+const express = require('express');
+const router = express.Router();
+const auth = require('../../helpers/auth');
+const Publisher = require('../../data/entities/publisher');
+const Edition = require('../../data/entities/edition');
+const User = require('../../data/user');
 
 /* Middleware loader functions. */
-var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-var React = require('react');
-var EditForm = React.createFactory(require('../../../client/components/forms/publisher.jsx'));
+const React = require('react');
+const EditForm = React.createFactory(require('../../../client/components/forms/publisher.jsx'));
 // Creation
 
-var loadLanguages = require('../../helpers/middleware').loadLanguages;
-var loadPublisherTypes = require('../../helpers/middleware').loadPublisherTypes;
-var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+const loadLanguages = require('../../helpers/middleware').loadLanguages;
+const loadPublisherTypes = require('../../helpers/middleware').loadPublisherTypes;
+const loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+const loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
 
-var bbws = require('../../helpers/bbws');
-var Promise = require('bluebird');
-var _ = require('underscore');
+const bbws = require('../../helpers/bbws');
+const Promise = require('bluebird');
+const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Publisher for it. */
 router.param('bbid', makeEntityLoader(Publisher, 'Publisher not found'));
 
 router.get('/:bbid', loadEntityRelationships, function(req, res) {
-	var publisher = res.locals.entity;
-	var title = 'Publisher';
+	const publisher = res.locals.entity;
+	let title = 'Publisher';
 
 	publisher.editions = publisher.editions.map(function(edition) {
 		return Edition.findOne(edition.bbid, {
@@ -63,7 +65,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 		publisher.editions = editions;
 
 		// Get unique identifier types for display
-		var identifier_types = _.uniq(
+		const identifier_types = _.uniq(
 			_.pluck(publisher.identifiers, 'identifier_type'),
 			(identifier) => identifier.identifier_type_id
 		);
@@ -76,8 +78,8 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
-	var publisher = res.locals.entity;
-	var title = 'Publisher';
+	const publisher = res.locals.entity;
+	let title = 'Publisher';
 
 	if (publisher.default_alias && publisher.default_alias.name) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
@@ -89,22 +91,21 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 });
 
 router.post('/:bbid/delete/confirm', function(req, res) {
-	var publisher = res.locals.entity;
+	const publisher = res.locals.entity;
 
-	Publisher.del(publisher.bbid, {
-			revision: {note: req.body.note}
-		},
-		{
-			session: req.session
-		})
+	Publisher.del(
+		publisher.bbid,
+		{revision: {note: req.body.note}},
+		{session: req.session}
+	)
 		.then(function() {
 			res.redirect(303, '/publisher/' + publisher.bbid);
 		});
 });
 
 router.get('/:bbid/revisions', function(req, res) {
-	var publisher = res.locals.entity;
-	var title = 'Publisher';
+	const publisher = res.locals.entity;
+	let title = 'Publisher';
 
 	if (publisher.default_alias && publisher.default_alias.name) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
@@ -112,7 +113,7 @@ router.get('/:bbid/revisions', function(req, res) {
 
 	bbws.get('/publisher/' + publisher.bbid + '/revisions')
 		.then(function(revisions) {
-			var promisedUsers = {};
+			const promisedUsers = {};
 			revisions.objects.forEach(function(revision) {
 				if (!promisedUsers[revision.user.user_id]) {
 					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
@@ -132,14 +133,14 @@ router.get('/:bbid/revisions', function(req, res) {
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, loadPublisherTypes, function(req, res) {
-	var props = {
+	const props = {
 		languages: res.locals.languages,
 		publisherTypes: res.locals.publisherTypes,
 		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/publisher/create/handler'
 	};
 
-	var markup = React.renderToString(EditForm(props));
+	const markup = React.renderToString(EditForm(props));
 
 	res.render('entity/create/publisher', {
 		title: 'Add Publisher',
@@ -151,9 +152,9 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, 
 });
 
 router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublisherTypes, loadLanguages, function(req, res) {
-	var publisher = res.locals.entity;
+	const publisher = res.locals.entity;
 
-	var props = {
+	const props = {
 		languages: res.locals.languages,
 		publisherTypes: res.locals.publisherTypes,
 		publisher: publisher,
@@ -161,7 +162,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublish
 		submissionUrl: '/publisher/' + publisher.bbid + '/edit/handler'
 	};
 
-	var markup = React.renderToString(EditForm(props));
+	const markup = React.renderToString(EditForm(props));
 
 	res.render('entity/create/publisher', {
 		title: 'Edit Publisher',
@@ -173,7 +174,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublish
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
-	var changes = {
+	const changes = {
 		bbid: null
 	};
 
@@ -209,7 +210,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map(function(identifier) {
 		return {
 			value: identifier.value,
 			identifier_type: {
@@ -222,7 +223,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.identifiers = newIdentifiers;
 	}
 
-	var newAliases = [];
+	const newAliases = [];
 
 	req.body.aliases.forEach(function(alias) {
 		if (!alias.name && !alias.sortName) {
@@ -243,21 +244,21 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	Publisher.create(changes, {
-			session: req.session
-		})
+		session: req.session
+	})
 		.then(function(revision) {
 			res.send(revision);
 		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
-	var publisher = res.locals.entity;
+	const publisher = res.locals.entity;
 
-	var changes = {
+	const changes = {
 		bbid: publisher.bbid
 	};
 
-	var publisherTypeId = req.body.publisherTypeId;
+	const publisherTypeId = req.body.publisherTypeId;
 	if ((!publisher.publisher_type) ||
 		(publisher.publisher_type.publisher_type_id !== publisherTypeId)) {
 		changes.publisher_type = {
@@ -265,25 +266,25 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var beginDate = req.body.beginDate;
+	const beginDate = req.body.beginDate;
 	if (publisher.begin_date !== beginDate) {
 		changes.begin_date = beginDate ? beginDate : null;
 	}
 
-	var endDate = req.body.endDate;
-	var ended = req.body.ended;
+	const endDate = req.body.endDate;
+	const ended = req.body.ended;
 	if (publisher.end_date !== endDate) {
 		changes.end_date = endDate ? endDate : null;
 		changes.ended = endDate ? true : ended; // Must have ended if there's an end date.
 	}
 
-	var disambiguation = req.body.disambiguation;
+	const disambiguation = req.body.disambiguation;
 	if ((!publisher.disambiguation) ||
 		(publisher.disambiguation.comment !== disambiguation)) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
-	var annotation = req.body.annotation;
+	const annotation = req.body.annotation;
 	if ((!publisher.annotation) ||
 		(publisher.annotation.content !== annotation)) {
 		changes.annotation = annotation ? annotation : null;
@@ -295,8 +296,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var currentIdentifiers = publisher.identifiers.map(function(identifier) {
-		var nextIdentifier = req.body.identifiers[0];
+	const currentIdentifiers = publisher.identifiers.map(function(identifier) {
+		const nextIdentifier = req.body.identifiers[0];
 
 		if (identifier.id !== nextIdentifier.id) {
 			// Remove the alias
@@ -314,7 +315,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map(function(identifier) {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (identifier.id) {
 			return null;
@@ -331,10 +332,10 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
-	var currentAliases = [];
+	const currentAliases = [];
 
 	publisher.aliases.forEach(function(alias) {
-		var nextAlias = req.body.aliases[0];
+		const nextAlias = req.body.aliases[0];
 
 		if (alias.id !== nextAlias.id) {
 			// Remove the alias
@@ -353,7 +354,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newAliases = [];
+	const newAliases = [];
 
 	req.body.aliases.forEach(function(alias) {
 		// At this point, the only aliases should have null IDs, but check anyway.
@@ -373,8 +374,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	changes.aliases = currentAliases.concat(newAliases);
 
 	Publisher.update(publisher.bbid, changes, {
-			session: req.session
-		})
+		session: req.session
+	})
 		.then(function(revision) {
 			res.send(revision);
 		});

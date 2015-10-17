@@ -19,11 +19,11 @@
 
 'use strict';
 
-var bbws = require('./bbws');
-var Promise = require('bluebird');
-var _ = require('underscore');
+const bbws = require('./bbws');
+const Promise = require('bluebird');
+const _ = require('underscore');
 
-var registered = [];
+const registered = [];
 
 function Model(name, options) {
 	if (!name || typeof name !== 'string') {
@@ -41,7 +41,7 @@ function Model(name, options) {
 	this.name = name;
 
 	if (options.base) {
-		var base = options.base;
+		const base = options.base;
 
 		if (!(base instanceof Model)) {
 			throw new TypeError('Specified base object is not a model');
@@ -67,7 +67,7 @@ Model.prototype.extend = function(fields) {
 	}
 
 	Object.keys(fields).forEach(function(fieldKey) {
-		var field = fields[fieldKey];
+		const field = fields[fieldKey];
 
 		if (typeof field !== 'object') {
 			throw new TypeError('Field ' + fieldKey + ' not an object');
@@ -84,8 +84,8 @@ Model.prototype.extend = function(fields) {
 };
 
 Model.prototype._fetchSingleResult = function(result, options) {
-	var model = this;
-	var object = {};
+	let model = this;
+	const object = {};
 
 	if (this.abstract) {
 		if (!this.children[result._type]) {
@@ -105,9 +105,9 @@ Model.prototype._fetchSingleResult = function(result, options) {
 	}
 
 	Object.keys(model.fields).forEach(function(key) {
-		var field = model.fields[key];
+		const field = model.fields[key];
 
-		var resultsField = field.map || key;
+		const resultsField = field.map || key;
 
 		/* XXX: Validate return data by field type. */
 		if (field.type !== 'ref') {
@@ -123,14 +123,14 @@ Model.prototype._fetchSingleResult = function(result, options) {
 				throw new Error('Reference field model is not defined');
 			}
 
-			var uri = result[resultsField];
+			const uri = result[resultsField];
 
 			if (!uri) {
 				return;
 			}
 
 			/* Choose function to call based on whether we expect a list. */
-			var findFunc = field.many ? 'find' : 'findOne';
+			const findFunc = field.many ? 'find' : 'findOne';
 
 			object[key] = registered[field.model][findFunc]({
 				path: uri,
@@ -143,10 +143,10 @@ Model.prototype._fetchSingleResult = function(result, options) {
 };
 
 Model.prototype.find = function(options) {
-	var self = this;
+	const self = this;
 	options = options || {};
 
-	var path;
+	let path;
 
 	if (!options.path) {
 		if (this.endpoint === undefined) {
@@ -160,15 +160,15 @@ Model.prototype.find = function(options) {
 	}
 
 	return bbws.get(path, {
-			accessToken: options.accessToken,
-			params: options.params
-		})
+		accessToken: options.accessToken,
+		params: options.params
+	})
 		.then(function(result) {
 			if (!Array.isArray(result.objects)) {
 				throw new Error('Array expected, but received object');
 			}
 
-			var promises = [];
+			const promises = [];
 
 			result.objects.forEach(function(object) {
 				promises.push(self._fetchSingleResult(object, options));
@@ -179,7 +179,7 @@ Model.prototype.find = function(options) {
 };
 
 Model.prototype.findOne = function(id, options) {
-	var self = this;
+	const self = this;
 
 	/* Switch out options with ID if ID is not specified. */
 	if (typeof id === 'object') {
@@ -189,7 +189,7 @@ Model.prototype.findOne = function(id, options) {
 
 	options = options || {};
 
-	var path;
+	let path;
 
 	if (!options.path) {
 		if (this.endpoint === undefined) {
@@ -209,9 +209,9 @@ Model.prototype.findOne = function(id, options) {
 	}
 
 	return bbws.get(path, {
-			accessToken: options.accessToken,
-			params: options.params
-		})
+		accessToken: options.accessToken,
+		params: options.params
+	})
 		.then(function(result) {
 			if (result.objects && Array.isArray(result.objects)) {
 				throw new Error('Object expected, but received array');
@@ -232,9 +232,9 @@ Model.prototype.create = function(data, options) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
-	var path = '/' + this.endpoint + '/';
-	var wsOptions = {};
-	var object = {};
+	const path = '/' + this.endpoint + '/';
+	const wsOptions = {};
+	const object = {};
 
 	if (options.session && options.session.bearerToken) {
 		wsOptions.accessToken = options.session.bearerToken;
@@ -258,9 +258,9 @@ Model.prototype.update = function(id, data, options) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
-	var path = '/' + this.endpoint + '/' + id + '/';
-	var wsOptions = {};
-	var object = {};
+	const path = '/' + this.endpoint + '/' + id + '/';
+	const wsOptions = {};
+	const object = {};
 
 	if (options.session && options.session.bearerToken) {
 		wsOptions.accessToken = options.session.bearerToken;
@@ -284,9 +284,9 @@ Model.prototype.del = function(id, data, options) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
-	var path = '/' + this.endpoint + '/' + id + '/';
-	var wsOptions = {};
-	var object = {};
+	const path = '/' + this.endpoint + '/' + id + '/';
+	const wsOptions = {};
+	const object = {};
 
 	if (options.session && options.session.bearerToken) {
 		wsOptions.accessToken = options.session.bearerToken;

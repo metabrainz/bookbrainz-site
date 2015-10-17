@@ -18,9 +18,11 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+/* eslint camelcase: 1 */
 
-var IdentifierType = new Model('IdentifierType', {
+const Model = require('../../helpers/model');
+
+const IdentifierType = new Model('IdentifierType', {
 	endpoint: 'identifierType'
 });
 

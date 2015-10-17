@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var ProfileForm = React.createFactory(require('../../components/forms/profile.jsx'));
-var props = JSON.parse(document.getElementById('props').innerHTML);
+const React = require('react');
+const ProfileForm = React.createFactory(require('../../components/forms/profile.jsx'));
+const props = JSON.parse(document.getElementById('props').innerHTML);
 
 React.render(ProfileForm(props), document.getElementById('profileForm'));

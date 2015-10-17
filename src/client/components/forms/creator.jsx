@@ -17,18 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var Aliases = require('./parts/aliases.jsx');
-var RevisionNote = require('./parts/revisionNote.jsx');
-var CreatorData = require('./parts/creatorData.jsx');
-var LoadingSpinner = require('../loading_spinner.jsx');
+const Aliases = require('./parts/aliases.jsx');
+const RevisionNote = require('./parts/revisionNote.jsx');
+const CreatorData = require('./parts/creatorData.jsx');
+const LoadingSpinner = require('../loading_spinner.jsx');
 
-var request = require('superagent');
+const request = require('superagent');
 require('superagent-bluebird-promise');
 
-var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
+const Nav = require('react-bootstrap').Nav;
+const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
 	getInitialState: function() {
@@ -70,10 +70,10 @@ module.exports = React.createClass({
 
 		e.preventDefault();
 
-		var aliasData = this.refs.aliases.getValue();
-		var creatorData = this.refs.data.getValue();
-		var revisionNote = this.refs.revision.refs.note.getValue();
-		var data = {
+		const aliasData = this.refs.aliases.getValue();
+		const creatorData = this.refs.data.getValue();
+		const revisionNote = this.refs.revision.refs.note.getValue();
+		const data = {
 			aliases: aliasData,
 			beginDate: creatorData.beginDate,
 			endDate: creatorData.endDate,
@@ -88,7 +88,7 @@ module.exports = React.createClass({
 
 		this.setState({waiting: true});
 
-		var self = this;
+		const self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
 			.then(function(revision) {
@@ -105,9 +105,9 @@ module.exports = React.createClass({
 	render: function() {
 		'use strict';
 
-		var aliases = null;
+		let aliases = null;
 		if (this.props.creator) {
-			var self = this;
+			const self = this;
 			aliases = this.props.creator.aliases.map(function(alias) {
 				return {
 					id: alias.id,
@@ -120,9 +120,9 @@ module.exports = React.createClass({
 			});
 		}
 
-		var submitEnabled = (this.state.aliasesValid && this.state.dataValid);
+		const submitEnabled = (this.state.aliasesValid && this.state.dataValid);
 
-		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		return (
 			<div>

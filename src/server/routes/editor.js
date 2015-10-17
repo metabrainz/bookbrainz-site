@@ -19,27 +19,27 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var React = require('react');
-var User = require('../data/user');
-var bbws = require('../helpers/bbws');
-var auth = require('../helpers/auth');
-var Promise = require('bluebird');
+const express = require('express');
+const router = express.Router();
+const React = require('react');
+const User = require('../data/user');
+const bbws = require('../helpers/bbws');
+const auth = require('../helpers/auth');
+const Promise = require('bluebird');
 
-var NotFoundError = require('../helpers/error').NotFoundError;
-var ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
+const NotFoundError = require('../helpers/error').NotFoundError;
+const ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
 
 router.get('/edit', auth.isAuthenticated, function(req, res, next) {
 	User.getCurrent(req.session.bearerToken)
 		.then(function(user) {
-			var props = {
+			const props = {
 				id: user.id,
 				email: user.email,
 				bio: user.bio
 			};
 
-			var markup = React.renderToString(ProfileForm(props));
+			const markup = React.renderToString(ProfileForm(props));
 
 			res.render('editor/edit', {
 				props: props,
@@ -58,12 +58,11 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 		res.redirect(303, '/editor/edit');
 	}
 
-	bbws.put('/user/' + req.body.id + '/', {
-			bio: req.body.bio,
-			email: req.body.email
-		}, {
-			accessToken: req.session.bearerToken
-		})
+	bbws.put(
+		'/user/' + req.body.id + '/',
+		{bio: req.body.bio, email: req.body.email},
+		{accessToken: req.session.bearerToken}
+	)
 		.then(function(user) {
 			res.send(user);
 		})
@@ -74,9 +73,9 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 });
 
 router.get('/:id', function(req, res, next) {
-	var userPromise;
+	let userPromise = null;
 
-	var requestedId = parseInt(req.params.id);
+	const requestedId = parseInt(req.params.id);
 	if (req.user && (requestedId === req.user.id)) {
 		userPromise = User.getCurrent(req.session.bearerToken);
 	}
@@ -97,8 +96,8 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.get('/:id/revisions', function(req, res, next) {
-	var userPromise = User.findOne(req.params.id);
-	var revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
+	const userPromise = User.findOne(req.params.id);
+	const revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
 
 	Promise.join(userPromise, revisionsPromise,
 			function(editor, revisions) {

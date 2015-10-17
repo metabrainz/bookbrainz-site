@@ -19,9 +19,9 @@
 
 'use strict';
 
-var util = require('util');
-var PasswordGrantStrategy = require('passport-oauth2-password-grant');
-var User = require('../data/user');
+const util = require('util');
+const PasswordGrantStrategy = require('passport-oauth2-password-grant');
+const User = require('../data/user');
 
 function BBWSStrategy(options, verify) {
 	options = options || {};
@@ -45,7 +45,7 @@ util.inherits(BBWSStrategy, PasswordGrantStrategy);
 BBWSStrategy.prototype.userProfile = function(accessToken, done) {
 	User.getCurrent(accessToken)
 		.then(function(user) {
-			var profile = {
+			const profile = {
 				id: user.id,
 				name: user.name
 			};

@@ -17,14 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Select = require('../../input/select2.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Identifiers = require('./identifiers.jsx');
 
 
-var PublicationData = React.createClass({
+const PublicationData = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -43,10 +43,10 @@ var PublicationData = React.createClass({
 	render: function() {
 		'use strict';
 
-		var initialPublicationType = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
+		let initialPublicationType = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
 
 		if (this.props.publication) {
 			initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
@@ -61,7 +61,7 @@ var PublicationData = React.createClass({
 			});
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 

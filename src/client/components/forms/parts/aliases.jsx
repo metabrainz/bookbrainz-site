@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Select = require('../../input/select2.jsx');
 
-var AliasRow = React.createClass({
+const AliasRow = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -109,11 +109,11 @@ var AliasRow = React.createClass({
 	}
 });
 
-var AliasList = React.createClass({
+const AliasList = React.createClass({
 	getInitialState: function() {
 		'use strict';
 
-		var existing = this.props.aliases || [];
+		const existing = this.props.aliases || [];
 		existing.push({
 			name: '',
 			sortName: '',
@@ -139,10 +139,9 @@ var AliasList = React.createClass({
 	getValue: function() {
 		'use strict';
 
-		var aliases = [];
-		var numRows = this.state.aliases.length;
+		const aliases = [];
 
-		for (var i = 0; i < numRows; i++) {
+		for (let i = 0; i < this.state.aliases.length; i++) {
 			aliases.push(this.refs[i].getValue());
 		}
 
@@ -151,9 +150,9 @@ var AliasList = React.createClass({
 	handleChange: function(index) {
 		'use strict';
 
-		var self = this;
-		var updatedAlias = this.refs[index].getValue();
-		var targetAlias = this.state.aliases[index];
+		const self = this;
+		const updatedAlias = this.refs[index].getValue();
+		const targetAlias = this.state.aliases[index];
 
 		if ((!targetAlias.sortName && updatedAlias.sortName) ||
 				(targetAlias.sortName && !updatedAlias.sortName) ||
@@ -162,13 +161,13 @@ var AliasList = React.createClass({
 				(updatedAlias.default && index === this.state.aliases.length - 1) ||
 				(!targetAlias.language && updatedAlias.language) ||
 				(!updatedAlias.primary && index === this.state.aliases.length - 1)) {
-			var updatedAliases = this.getValue();
+			const updatedAliases = this.getValue();
 
 			updatedAliases.forEach(function(alias, idx) {
 				alias.key = self.state.aliases[idx].key;
 			});
 
-			var rowsSpawned = this.state.rowsSpawned;
+			let rowsSpawned = this.state.rowsSpawned;
 			if (index === this.state.aliases.length - 1) {
 				updatedAliases.push({
 					name: '',
@@ -189,12 +188,12 @@ var AliasList = React.createClass({
 	valid: function() {
 		'use strict';
 
-		var defaultSet = false;
-		var numRows = this.state.aliases.length;
+		let defaultSet = false;
+		const numRows = this.state.aliases.length;
 
-		for (var i = 0; i < numRows; i++) {
-			var aliasRow = this.refs[i];
-			var alias = aliasRow.getValue();
+		for (let i = 0; i < numRows; i++) {
+			const aliasRow = this.refs[i];
+			const alias = aliasRow.getValue();
 
 			if (aliasRow.getValid() === false && numRows > 1 && (alias.name || alias.sortName)) {
 				return false;
@@ -209,8 +208,8 @@ var AliasList = React.createClass({
 	handleRemove: function(index) {
 		'use strict';
 
-		var self = this;
-		var updatedAliases = this.getValue();
+		const self = this;
+		const updatedAliases = this.getValue();
 
 		if (index !== this.state.aliases.length - 1) {
 			updatedAliases.forEach(function(alias, idx) {
@@ -227,9 +226,9 @@ var AliasList = React.createClass({
 	render: function() {
 		'use strict';
 
-		var self = this;
+		const self = this;
 
-		var rows = this.state.aliases.map(function(alias, index) {
+		const rows = this.state.aliases.map(function(alias, index) {
 			return (
 				<AliasRow
 					key={alias.key}

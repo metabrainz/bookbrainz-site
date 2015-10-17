@@ -19,9 +19,11 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+/* eslint camelcase: 1 */
 
-var Annotation = new Model('Annotation');
+const Model = require('../../helpers/model');
+
+const Annotation = new Model('Annotation');
 
 Annotation.extend({
 	id: {

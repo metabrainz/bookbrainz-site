@@ -19,18 +19,18 @@
 
 'use strict';
 
-var request = require('superagent');
-var Promise = require('bluebird');
+const request = require('superagent');
+const Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
 function getEntityLink(entity) {
-	var bbid = entity.entity_gid || entity.bbid;
+	const bbid = entity.entity_gid || entity.bbid;
 	return '/' + entity._type.toLowerCase() + '/' + bbid;
 }
 
 // Returns a Promise which fulfills with an entity with aliases and data.
 function getEntity(ws, entityGid, fetchOptions) {
-	var entityPromise = request.get(ws + '/entity/' + entityGid).promise()
+	const entityPromise = request.get(ws + '/entity/' + entityGid).promise()
 		.then(function(entityResponse) {
 			return entityResponse.body;
 		});

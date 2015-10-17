@@ -17,14 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Select = require('../../input/select2.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Identifiers = require('./identifiers.jsx');
 
 
-var WorkData = React.createClass({
+const WorkData = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -44,11 +44,11 @@ var WorkData = React.createClass({
 	render: function() {
 		'use strict';
 
-		var initialLanguages = [];
-		var initialWorkType = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
+		let initialLanguages = [];
+		let initialWorkType = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
 		if (this.props.work) {
 			initialLanguages = this.props.work.languages.map(function(language) {
 				return language.language_id;
@@ -65,7 +65,7 @@ var WorkData = React.createClass({
 			});
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 

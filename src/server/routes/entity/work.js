@@ -19,41 +19,43 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var auth = require('../../helpers/auth');
-var Work = require('../../data/entities/work');
-var User = require('../../data/user');
+/* eslint camelcase: 1 */
+
+const express = require('express');
+const router = express.Router();
+const auth = require('../../helpers/auth');
+const Work = require('../../data/entities/work');
+const User = require('../../data/user');
 
 /* Middleware loader functions. */
-var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-var React = require('react');
-var EditForm = React.createFactory(require('../../../client/components/forms/work.jsx'));
+const React = require('react');
+const EditForm = React.createFactory(require('../../../client/components/forms/work.jsx'));
 // Creation
 
-var loadLanguages = require('../../helpers/middleware').loadLanguages;
-var loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
-var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+const loadLanguages = require('../../helpers/middleware').loadLanguages;
+const loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
+const loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+const loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
 
-var bbws = require('../../helpers/bbws');
-var Promise = require('bluebird');
-var _ = require('underscore');
+const bbws = require('../../helpers/bbws');
+const Promise = require('bluebird');
+const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param('bbid', makeEntityLoader(Work, 'Work not found'));
 
 router.get('/:bbid', loadEntityRelationships, function(req, res) {
-	var work = res.locals.entity;
-	var title = 'Work';
+	const work = res.locals.entity;
+	let title = 'Work';
 
 	if (work.default_alias && work.default_alias.name) {
 		title = 'Work “' + work.default_alias.name + '”';
 	}
 
 	// Get unique identifier types for display
-	var identifier_types = _.uniq(
+	const identifier_types = _.uniq(
 		_.pluck(work.identifiers, 'identifier_type'),
 		(identifier) => identifier.identifier_type_id
 	);
@@ -65,8 +67,8 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
-	var work = res.locals.entity;
-	var title = 'Work';
+	const work = res.locals.entity;
+	let title = 'Work';
 
 	if (work.default_alias && work.default_alias.name) {
 		title = 'Work “' + work.default_alias.name + '”';
@@ -78,22 +80,21 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 });
 
 router.post('/:bbid/delete/confirm', function(req, res) {
-	var work = res.locals.entity;
+	const work = res.locals.entity;
 
-	Work.del(work.bbid, {
-			revision: {note: req.body.note}
-		},
-		{
-			session: req.session
-		})
+	Work.del(
+		work.bbid,
+		{revision: {note: req.body.note}},
+		{session: req.session}
+	)
 		.then(function() {
 			res.redirect(303, '/work/' + work.bbid);
 		});
 });
 
 router.get('/:bbid/revisions', function(req, res) {
-	var work = res.locals.entity;
-	var title = 'Work';
+	const work = res.locals.entity;
+	let title = 'Work';
 
 	if (work.default_alias && work.default_alias.name) {
 		title = 'Work “' + work.default_alias.name + '”';
@@ -101,7 +102,7 @@ router.get('/:bbid/revisions', function(req, res) {
 
 	bbws.get('/work/' + work.bbid + '/revisions')
 		.then(function(revisions) {
-			var promisedUsers = {};
+			const promisedUsers = {};
 			revisions.objects.forEach(function(revision) {
 				if (!promisedUsers[revision.user.user_id]) {
 					promisedUsers[revision.user.user_id] =
@@ -122,14 +123,14 @@ router.get('/:bbid/revisions', function(req, res) {
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, loadWorkTypes, function(req, res) {
-	var props = {
+	const props = {
 		languages: res.locals.languages,
 		workTypes: res.locals.workTypes,
 		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/work/create/handler'
 	};
 
-	var markup = React.renderToString(EditForm(props));
+	const markup = React.renderToString(EditForm(props));
 
 	res.render('entity/create/work', {
 		title: 'Add Work',
@@ -141,9 +142,9 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, 
 });
 
 router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadWorkTypes, loadLanguages, function(req, res) {
-	var work = res.locals.entity;
+	const work = res.locals.entity;
 
-	var props = {
+	const props = {
 		languages: res.locals.languages,
 		workTypes: res.locals.workTypes,
 		work: work,
@@ -151,7 +152,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadWorkTyp
 		submissionUrl: '/work/' + work.bbid + '/edit/handler'
 	};
 
-	var markup = React.renderToString(EditForm(props));
+	const markup = React.renderToString(EditForm(props));
 
 	res.render('entity/create/work', {
 		title: 'Edit Work',
@@ -163,7 +164,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadWorkTyp
 });
 
 router.post('/create/handler', auth.isAuthenticated, function(req, res) {
-	var changes = {
+	const changes = {
 		bbid: null,
 		ended: req.body.ended
 	};
@@ -196,7 +197,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map(function(identifier) {
 		return {
 			value: identifier.value,
 			identifier_type: {
@@ -209,7 +210,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.identifiers = newIdentifiers;
 	}
 
-	var newAliases = [];
+	const newAliases = [];
 
 	req.body.aliases.forEach(function(alias) {
 		if (!alias.name && !alias.sortName) {
@@ -230,21 +231,21 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	Work.create(changes, {
-			session: req.session
-		})
+		session: req.session
+	})
 		.then(function(revision) {
 			res.send(revision);
 		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
-	var work = res.locals.entity;
+	const work = res.locals.entity;
 
-	var changes = {
+	const changes = {
 		bbid: work.bbid
 	};
 
-	var workTypeId = req.body.workTypeId;
+	const workTypeId = req.body.workTypeId;
 	if ((!work.work_type) ||
 		(work.work_type.work_type_id !== workTypeId)) {
 		changes.work_type = {
@@ -252,13 +253,13 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var disambiguation = req.body.disambiguation;
+	const disambiguation = req.body.disambiguation;
 	if ((!work.disambiguation) ||
 		(work.disambiguation.comment !== disambiguation)) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
-	var annotation = req.body.annotation;
+	const annotation = req.body.annotation;
 	if ((!work.annotation) ||
 		(work.annotation.content !== annotation)) {
 		changes.annotation = annotation ? annotation : null;
@@ -270,7 +271,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var currentLanguages = work.languages.map(function(language) {
+	const currentLanguages = work.languages.map(function(language) {
 		if (language.language_id !== req.body.languages[0]) {
 			// Remove the alias
 			return [language.language_id, null];
@@ -281,14 +282,14 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newLanguages = req.body.languages.map(function(language) {
+	const newLanguages = req.body.languages.map(function(language) {
 		return [null, language];
 	});
 
 	changes.languages = currentLanguages.concat(newLanguages);
 
-	var currentIdentifiers = work.identifiers.map(function(identifier) {
-		var nextIdentifier = req.body.identifiers[0];
+	const currentIdentifiers = work.identifiers.map(function(identifier) {
+		const nextIdentifier = req.body.identifiers[0];
 
 		if (identifier.id !== nextIdentifier.id) {
 			// Remove the alias
@@ -306,7 +307,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map(function(identifier) {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (identifier.id) {
 			return null;
@@ -323,10 +324,10 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
-	var currentAliases = [];
+	const currentAliases = [];
 
 	work.aliases.forEach(function(alias) {
-		var nextAlias = req.body.aliases[0];
+		const nextAlias = req.body.aliases[0];
 
 		if (alias.id !== nextAlias.id) {
 			// Remove the alias
@@ -345,7 +346,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newAliases = [];
+	const newAliases = [];
 
 	req.body.aliases.forEach(function(alias) {
 		// At this point, the only aliases should have null IDs, but check anyway.
@@ -365,8 +366,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	changes.aliases = currentAliases.concat(newAliases);
 
 	Work.update(work.bbid, changes, {
-			session: req.session
-		})
+		session: req.session
+	})
 		.then(function(revision) {
 			res.send(revision);
 		});

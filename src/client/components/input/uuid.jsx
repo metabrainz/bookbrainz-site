@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Input = require('react-bootstrap').Input;
+const React = require('react');
+const Input = require('react-bootstrap').Input;
 
-var uuid_re =
+const uuid_re =
 	/[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}/;
 
-var UUIDInput = React.createClass({
+const UUIDInput = React.createClass({
 	getInitialState: function() {
 		'use strict';
 
@@ -57,9 +57,9 @@ var UUIDInput = React.createClass({
 		// This could also be done using ReactLink:
 		// http://facebook.github.io/react/docs/two-way-binding-helpers.html
 
-		var result = uuid_re.exec(this.refs.input.getValue());
+		let result = uuid_re.exec(this.refs.input.getValue());
 
-		var valid = Boolean(result);
+		const valid = Boolean(result);
 		if (valid) {
 			result = result[0];
 		}

@@ -19,12 +19,14 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
-var Entity = require('../../data/entity');
+/* eslint camelcase: 1 */
+
+const Model = require('../../helpers/model');
+const Entity = require('../../data/entity');
 require('../../data/entities/edition');
 require('../../data/properties/publication-type');
 
-var Publication = new Model('Publication', {
+const Publication = new Model('Publication', {
 	base: Entity,
 	endpoint: 'publication'
 });

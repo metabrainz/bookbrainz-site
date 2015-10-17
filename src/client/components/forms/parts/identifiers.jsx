@@ -16,13 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Select = require('../../input/select2.jsx');
 
-var IdentifierRow = React.createClass({
+const IdentifierRow = React.createClass({
 	getValue: function() {
 		'use strict';
 
@@ -34,13 +34,13 @@ var IdentifierRow = React.createClass({
 	validationState: function() {
 		'use strict';
 
-		var self = this;
+		const self = this;
 		if (this.props.type) {
-			var type = this.props.types.filter(function(testType) {
+			const type = this.props.types.filter(function(testType) {
 				return testType.id === self.props.type;
 			})[0];
 
-			var regex = new RegExp(type.validation_regex);
+			const regex = new RegExp(type.validation_regex);
 
 			if (regex.test(this.props.value)) {
 				return 'success';
@@ -59,16 +59,16 @@ var IdentifierRow = React.createClass({
 	getValid: function() {
 		'use strict';
 
-		var value = this.refs.value.getValue();
-		var typeId = parseInt(this.refs.type.getValue());
+		const value = this.refs.value.getValue();
+		const typeId = parseInt(this.refs.type.getValue());
 
-		var selectedType = this.props.types.filter(function(type) {
+		let selectedType = this.props.types.filter(function(type) {
 			return type.id === typeId;
 		});
 
 		if (selectedType.length) {
 			selectedType = selectedType[0];
-			var regex = new RegExp(selectedType.validation_regex);
+			const regex = new RegExp(selectedType.validation_regex);
 			return regex.test(value);
 		}
 		else {
@@ -112,11 +112,11 @@ var IdentifierRow = React.createClass({
 	}
 });
 
-var IdentifierList = React.createClass({
+const IdentifierList = React.createClass({
 	getInitialState: function() {
 		'use strict';
 
-		var existing = this.props.identifiers || [];
+		const existing = this.props.identifiers || [];
 		existing.push({
 			value: '',
 			type: null
@@ -136,7 +136,7 @@ var IdentifierList = React.createClass({
 		'use strict';
 
 		return this.state.identifiers.slice(0, -1).map(function(identifier) {
-			var data = {
+			const data = {
 				value: identifier.value,
 				typeId: identifier.type
 			};
@@ -151,16 +151,17 @@ var IdentifierList = React.createClass({
 	handleChange: function(index) {
 		'use strict';
 
-		var updatedIdentifiers = this.state.identifiers.slice();
-		var updatedIdentifier = this.refs[index].getValue();
+		const updatedIdentifiers = this.state.identifiers.slice();
+		const updatedIdentifier = this.refs[index].getValue();
 
 		// Attempt to guess the type, if the value was previously blank
 		if (updatedIdentifiers[index].value === '') {
-			var newValue = updatedIdentifier.value;
+			let newValue = updatedIdentifier.value;
 			this.props.types.forEach(function(type) {
 				if (type.detection_regex) {
-					var detectionRegex = new RegExp(type.detection_regex);
-					var regexResult = detectionRegex.exec(updatedIdentifier.value);
+					const detectionRegex = new RegExp(type.detection_regex);
+					const regexResult =
+						detectionRegex.exec(updatedIdentifier.value);
 					if (regexResult) {
 						// Don't assign directly to updatedIdentifier, to avoid
 						// multiple transformations.
@@ -183,7 +184,7 @@ var IdentifierList = React.createClass({
 			updatedIdentifiers[index].id = this.state.identifiers[index].id;
 		}
 
-		var rowsSpawned = this.state.rowsSpawned;
+		let rowsSpawned = this.state.rowsSpawned;
 		if (index === this.state.identifiers.length - 1) {
 			updatedIdentifiers.push({
 				value: '',
@@ -210,7 +211,7 @@ var IdentifierList = React.createClass({
 	handleRemove: function(index) {
 		'use strict';
 
-		var updatedIdentifiers = this.state.identifiers.slice();
+		const updatedIdentifiers = this.state.identifiers.slice();
 
 		if (index !== this.state.identifiers.length - 1) {
 			updatedIdentifiers.splice(index, 1);
@@ -223,9 +224,9 @@ var IdentifierList = React.createClass({
 	render: function() {
 		'use strict';
 
-		var self = this;
+		const self = this;
 
-		var rows = this.state.identifiers.map(function(identifier, index) {
+		const rows = this.state.identifiers.map(function(identifier, index) {
 			return (
 				<IdentifierRow
 					key={identifier.key}

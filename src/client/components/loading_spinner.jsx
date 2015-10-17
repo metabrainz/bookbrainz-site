@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var LoadingSpinner = React.createClass({
+const LoadingSpinner = React.createClass({
 	render: function() {
 		'use strict';
 

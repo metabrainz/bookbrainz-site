@@ -20,14 +20,16 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var config = require('../helpers/config');
-var auth = require('../helpers/auth');
+/* eslint camelcase: 1 */
 
-var bbws = require('../helpers/bbws');
+const express = require('express');
+const router = express.Router();
+const config = require('../helpers/config');
+const auth = require('../helpers/auth');
 
-var request = require('superagent');
+const bbws = require('../helpers/bbws');
+
+const request = require('superagent');
 require('superagent-bluebird-promise');
 
 router.get('/send', auth.isAuthenticated, function(req, res) {
@@ -41,8 +43,8 @@ router.get('/send', auth.isAuthenticated, function(req, res) {
 
 function renderMessageList(view, req, res) {
 	bbws.get('/message/' + view + '/', {
-			accessToken: req.session.bearerToken
-		})
+		accessToken: req.session.bearerToken
+	})
 		.then(function fetchMessageList(list) {
 			res.render('editor/messageList', {
 				view: view,
@@ -64,7 +66,7 @@ router.get('/sent', auth.isAuthenticated, function(req, res) {
 });
 
 router.get('/:id', auth.isAuthenticated, function(req, res) {
-	var ws = config.site.webservice;
+	const ws = config.site.webservice;
 	request.get(ws + '/message/' + req.params.id)
 		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
 		.then(function(messageResponse) {
@@ -79,10 +81,10 @@ router.get('/:id', auth.isAuthenticated, function(req, res) {
 
 router.post('/send/handler', auth.isAuthenticated, function(req, res) {
 	// This function should post a new message to the /message/send endpoint of the ws.
-	var ws = config.site.webservice;
+	const ws = config.site.webservice;
 
 	// Parse recipient ids
-	var recipientIds = req.body.recipients.split(',').map(function(substr) {
+	const recipientIds = req.body.recipients.split(',').map(function(substr) {
 		return parseInt(substr);
 	});
 

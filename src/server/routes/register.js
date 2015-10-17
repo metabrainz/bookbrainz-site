@@ -19,13 +19,15 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var User = require('../data/user');
-var UserType = require('../data/properties/user-type');
+/* eslint camelcase: 1 */
+
+const express = require('express');
+const router = express.Router();
+const User = require('../data/user');
+const UserType = require('../data/properties/user-type');
 
 router.get('/', function(req, res) {
-	var error = req.session.error;
+	const error = req.session.error;
 	delete req.session.error;
 
 	res.render('register', {
@@ -52,9 +54,9 @@ router.post('/handler', function(req, res, next) {
 	// This function should post a new user to the /user endpoint of the ws.
 	UserType.find()
 		.then(function(results) {
-			var editorType;
+			let editorType = null;
 
-			var hasEditorType = !results.every(function(userType) {
+			const hasEditorType = !results.every(function(userType) {
 				if (userType.label === 'Editor') {
 					editorType = userType;
 					return false;

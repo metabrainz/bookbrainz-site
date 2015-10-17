@@ -19,9 +19,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var EditionStatus = new Model('EditionStatus', {
+const EditionStatus = new Model('EditionStatus', {
 	endpoint: 'editionStatus'
 });
 
