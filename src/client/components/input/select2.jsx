@@ -20,12 +20,36 @@
 const Input = require('react-bootstrap').Input;
 const React = require('react');
 
+let $ = null;
 if (typeof window !== 'undefined') {
 	require('Select2');
-	const $ = window.$;
+	$ = window.$;
 }
 
 const Select = React.createClass({
+	displayName: 'select2Input',
+	componentDidMount: function() {
+		'use strict';
+		this.initSelect2();
+	},
+	componentDidUpdate: function() {
+		'use strict';
+		this.initSelect2();
+	},
+	componentWillUnmount: function() {
+		'use strict';
+
+		const select = $(this.refs.target.getInputDOMNode());
+
+		// Unregister onChange event, so that it isn't triggered while the DOM is
+		// refreshed.
+		select.off('change');
+	},
+	getValue: function() {
+		'use strict';
+
+		return this.refs.target.getValue();
+	},
 	initSelect2: function() {
 		'use strict';
 
@@ -44,28 +68,6 @@ const Select = React.createClass({
 		mountElement.select2(options);
 		mountElement.on('change', this.props.onChange);
 	},
-	getValue: function() {
-		'use strict';
-
-		return this.refs.target.getValue();
-	},
-	componentWillUnmount: function() {
-		'use strict';
-
-		const select = $(this.refs.target.getInputDOMNode());
-
-		// Unregister onChange event, so that it isn't triggered while the DOM is
-		// refreshed.
-		select.off('change');
-	},
-	componentDidMount: function() {
-		'use strict';
-		this.initSelect2();
-	},
-	componentDidUpdate: function() {
-		'use strict';
-		this.initSelect2();
-	},
 	render: function() {
 		'use strict';
 
@@ -74,7 +76,10 @@ const Select = React.createClass({
 		if (this.props.options) {
 			options = this.props.options.map(function(op) {
 				return (
-					<option key={op[self.props.idAttribute]} value={op[self.props.idAttribute]}>
+					<option
+						key={op[self.props.idAttribute]}
+						value={op[self.props.idAttribute]}
+					>
 						{op[self.props.labelAttribute]}
 					</option>
 				);
@@ -86,7 +91,11 @@ const Select = React.createClass({
 		}
 
 		return (
-			<Input {...this.props} ref='target' type='select'>
+			<Input
+				{...this.props}
+				ref="target"
+				type="select"
+			>
 				{options}
 			</Input>
 		);

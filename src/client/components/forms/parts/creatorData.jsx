@@ -26,6 +26,14 @@ const Identifiers = require('./identifiers.jsx');
 
 
 const CreatorData = React.createClass({
+	displayName: 'creatorDataComponent',
+	getInitialState: function() {
+		'use strict';
+
+		return {
+			ended: this.props.creator ? this.props.creator.ended : false
+		};
+	},
 	getValue: function() {
 		'use strict';
 
@@ -38,13 +46,6 @@ const CreatorData = React.createClass({
 			disambiguation: this.refs.disambiguation.getValue(),
 			annotation: this.refs.annotation.getValue(),
 			identifiers: this.refs.identifiers.getValue()
-		};
-	},
-	getInitialState: function() {
-		'use strict';
-
-		return {
-			ended: this.props.creator ? this.props.creator.ended : false
 		};
 	},
 	valid: function() {
@@ -93,83 +94,107 @@ const CreatorData = React.createClass({
 		return (
 			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
-				<p className='lead'>Fill out any data you know about the entity.</p>
+				<p className="lead">Fill out any data you know about the entity.</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<PartialDate
-						label='Begin Date'
-						ref='begin'
 						defaultValue={initialBeginDate}
-						placeholder='YYYY-MM-DD'
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						label="Begin Date"
+						labelClassName="col-md-4"
+						placeholder="YYYY-MM-DD"
+						ref="begin"
+						wrapperClassName="col-md-4"
+					/>
 					<PartialDate
-						label='End Date'
-						ref='end'
 						defaultValue={initialEndDate}
 						groupClassName={this.state.ended ? '' : 'hidden'}
-						placeholder='YYYY-MM-DD'
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						label="End Date"
+						labelClassName="col-md-4"
+						placeholder="YYYY-MM-DD"
+						ref="end"
+						wrapperClassName="col-md-4"
+					/>
 					<Input
-						type='checkbox'
-						ref='ended'
-						label='Ended'
 						defaultChecked={this.state.ended}
+						label="Ended"
 						onChange={this.handleEnded}
-						wrapperClassName='col-md-offset-4 col-md-4' />
+						ref="ended"
+						type="checkbox"
+						wrapperClassName="col-md-offset-4 col-md-4"
+					/>
 					<Select
-						label='Gender'
-						labelAttribute='name'
-						idAttribute='id'
 						defaultValue={initialGender}
-						ref='gender'
-						placeholder='Select gender…'
+						idAttribute="id"
+						label="Gender"
+						labelAttribute="name"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.genders}
+						placeholder="Select gender…"
+						ref="gender"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Type'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialCreatorType}
-						ref='creatorType'
-						placeholder='Select creator type…'
+						idAttribute="id"
+						label="Type"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.creatorTypes}
+						placeholder="Select creator type…"
+						ref="creatorType"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
+						ref="identifiers"
 						types={this.props.identifierTypes}
-						ref='identifiers' />
+					/>
 					<Input
-						type='text'
-						label='Disambiguation'
-						ref='disambiguation'
 						defaultValue={initialDisambiguation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6' />
+						label="Disambiguation"
+						labelClassName="col-md-3"
+						ref="disambiguation"
+						type="text"
+						wrapperClassName="col-md-6"
+					/>
 					<Input
-						type='textarea'
-						label='Annotation'
-						ref='annotation'
 						defaultValue={initialAnnotation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
-					<nav className='margin-top-1'>
+						label="Annotation"
+						labelClassName="col-md-3"
+						ref="annotation"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
+					<nav className="margin-top-1">
 						<ul className="pager">
 							<li className="previous">
-								<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+								<a
+									href="#"
+									onClick={this.props.backClick}
+								>
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-left"
+									/>
+									Back
 								</a>
 							</li>
 							<li className="next">
-								<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+								<a
+									href="#"
+									onClick={this.props.nextClick}
+								>
+									Next
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-right"
+									/>
 								</a>
 							</li>
 						</ul>

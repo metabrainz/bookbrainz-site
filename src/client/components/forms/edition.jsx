@@ -31,6 +31,7 @@ const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
+	displayName: 'editionForm',
 	getInitialState: function() {
 		'use strict';
 
@@ -134,12 +135,18 @@ module.exports = React.createClass({
 			<div>
 				{loadingElement}
 
-				<Nav bsStyle='tabs' activeKey={this.state.tab} onSelect={this.handleTab}>
+				<Nav
+					activeKey={this.state.tab}
+					bsStyle="tabs"
+					onSelect={this.handleTab}
+				>
 					<NavItem eventKey={1}>
-						<strong>1.</strong> Aliases <span className={'text-danger fa fa-warning' + (this.state.aliasesValid ? ' hidden' : '')} />
+						<strong>1.</strong> Aliases
+						<span className={`text-danger fa fa-warning${this.state.aliasesValid ? ' hidden' : ''}`} />
 					</NavItem>
 					<NavItem eventKey={2}>
-						<strong>2.</strong> Data <span className={'text-danger fa fa-warning' + (this.state.dataValid ? ' hidden' : '')} />
+						<strong>2.</strong> Data
+						<span className={`text-danger fa fa-warning${this.state.dataValid ? ' hidden' : ''}`} />
 					</NavItem>
 					<NavItem eventKey={3}>
 						<strong>3.</strong> Revision Note
@@ -148,9 +155,33 @@ module.exports = React.createClass({
 
 
 				<form onChange={this.handleChange}>
-					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab === 1}/>
-					<EditionData publisher={this.props.publisher} publication={this.props.publication} identifierTypes={this.props.identifierTypes} edition={this.props.edition} languages={this.props.languages} ref='data' editionStatuses={this.props.editionStatuses} editionFormats={this.props.editionFormats} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab === 2}/>
-					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab === 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
+					<Aliases
+						aliases={aliases}
+						languages={this.props.languages}
+						nextClick={this.nextClick}
+						ref="aliases"
+						visible={this.state.tab === 1}
+					/>
+					<EditionData
+						backClick={this.backClick}
+						edition={this.props.edition}
+						editionFormats={this.props.editionFormats}
+						editionStatuses={this.props.editionStatuses}
+						identifierTypes={this.props.identifierTypes}
+						languages={this.props.languages}
+						nextClick={this.nextClick}
+						publication={this.props.publication}
+						publisher={this.props.publisher}
+						ref="data"
+						visible={this.state.tab === 2}
+					/>
+					<RevisionNote
+						backClick={this.backClick}
+						onSubmit={this.handleSubmit}
+						ref="revision"
+						submitDisabled={!submitEnabled}
+						visible={this.state.tab === 3}
+					/>
 				</form>
 			</div>
 		);

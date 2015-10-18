@@ -20,12 +20,13 @@
 const React = require('react');
 
 const LoadingSpinner = React.createClass({
+	displayName: 'loadingSpinner',
 	render: function() {
 		'use strict';
 
 		return (
-			<div className='loading-background'>
-				<span className='fa fa-circle-o-notch fa-spin fa-2x loading-spinner'></span>
+			<div className="loading-background">
+				<span className="fa fa-circle-o-notch fa-spin fa-2x loading-spinner"></span>
 			</div>
 		);
 	}

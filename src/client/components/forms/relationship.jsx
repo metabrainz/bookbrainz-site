@@ -38,6 +38,7 @@ const SearchSelect = require('../input/entity-search.jsx');
 
 
 module.exports = React.createClass({
+	displayName: 'relationshipForm',
 	getInitialState: function() {
 		'use strict';
 
@@ -211,28 +212,33 @@ module.exports = React.createClass({
 			}
 
 			return (
-				<div className='form-group' key={entity.key}>
+				<div
+					className="form-group"
+					key={entity.key}
+				>
 					<SearchSelect
-						ref={i}
-						label={'Entity ' + (i + 1)}
-						labelAttribute='name'
-						collection='entity'
+						collection="entity"
 						defaultValue={entity}
-						placeholder='Select entity…'
-						select2Options={select2Options}
-						onChange={self.handleUUIDChange.bind(null, i)}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4'
 						disabled={entity === self.state.targetEntity}
-						standalone />
-					<div className='col-md-1'>
+						label={`Entity ${i + 1}`}
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						onChange={self.handleUUIDChange.bind(null, i)}
+						placeholder="Select entity…"
+						ref={i}
+						select2Options={select2Options}
+						standalone
+						wrapperClassName="col-md-4"
+					/>
+					<div className="col-md-1">
 						<Button
-							bsStyle='primary'
-							className={(i === (self.state.displayEntities.length - 1)) ? 'hidden' : null}
 							block
-							onClick={self.handleSwap.bind(null, i)}>
-							<span className='fa fa-exchange fa-rotate-90'/>
-							<span className='sr-only'>Swap Entities</span>
+							bsStyle="primary"
+							className={(i === (self.state.displayEntities.length - 1)) ? 'hidden' : null}
+							onClick={self.handleSwap.bind(null, i)}
+						>
+							<span className="fa fa-exchange fa-rotate-90"/>
+							<span className="sr-only">Swap Entities</span>
 						</Button>
 					</div>
 				</div>
@@ -241,10 +247,13 @@ module.exports = React.createClass({
 
 		let relationshipDescription = null;
 		if (this.state.selectedRelationship) {
-			relationshipDescription = <Input
-				type='static'
-				wrapperClassName='col-md-4 col-md-offset-4'
-				value={this.state.selectedRelationship.description} />;
+			relationshipDescription = (
+				<Input
+					type="static"
+					value={this.state.selectedRelationship.description}
+					wrapperClassName="col-md-4 col-md-offset-4"
+				/>
+			);
 		}
 
 		const allEntitiesLoaded = this.state.displayEntities.every(function(entity) {
@@ -265,35 +274,36 @@ module.exports = React.createClass({
 		const relationshipEntry = (
 			<div>
 				<Select
-					label='Type'
-					labelAttribute='label'
-					idAttribute='id'
-					ref='relationship'
-					placeholder='Select relationship type…'
+					idAttribute="id"
+					label="Type"
+					labelAttribute="label"
+					labelClassName="col-md-4"
 					noDefault
-					wrapperClassName='col-md-4'
-					labelClassName='col-md-4'
+					onChange={this.handleRelationshipChange}
 					options={this.props.relationshipTypes}
-					onChange={this.handleRelationshipChange}/>
+					placeholder="Select relationship type…"
+					ref="relationship"
+					wrapperClassName="col-md-4"
+				/>
 
 				{relationshipDescription}
 
 				{renderedEntities}
 
-				<div className='text-center'>
+				<div className="text-center">
 					<p dangerouslySetInnerHTML={renderedRelationship} />
 				</div>
-				<div className='row'>
-					<div className='col-md-4 col-md-offset-4'>
+				<div className="row">
+					<div className="col-md-4 col-md-offset-4">
 						<Button
-							disabled={!addValid}
-							title='Add Relationship'
-							bsStyle='success'
 							block
+							bsStyle="success"
+							disabled={!addValid}
 							onClick={this.handleAdd}
-							>
-							<span className='fa fa-plus'/>
-							&nbsp;Add <span className='sr-only'>&nbsp;Relationship</span>
+							title="Add Relationship"
+						>
+							<span className="fa fa-plus"/>
+							&nbsp;Add <span className="sr-only">&nbsp;Relationship</span>
 						</Button>
 					</div>
 				</div>
@@ -305,15 +315,22 @@ module.exports = React.createClass({
 				__html: renderRelationship(relationship.entities, relationship.type, null)
 			};
 			return (
-				<div className='row' key={relationship.key}>
-					<div className='col-md-10' dangerouslySetInnerHTML={renderedRelationship} />
-					<div className='col-md-2'>
+				<div
+					className="row"
+					key={relationship.key}
+				>
+					<div
+						className="col-md-10"
+						dangerouslySetInnerHTML={renderedRelationship}
+					/>
+					<div className="col-md-2">
 						<Button
-							bsStyle='danger'
 							block
-							onClick={self.removeRelationship.bind(null, i)}>
-							<span className='fa fa-minus'/>
-							<span className='sr-only'>Remove Relationship</span>
+							bsStyle="danger"
+							onClick={self.removeRelationship.bind(null, i)}
+						>
+							<span className="fa fa-minus"/>
+							<span className="sr-only">Remove Relationship</span>
 						</Button>
 					</div>
 				</div>
@@ -324,8 +341,8 @@ module.exports = React.createClass({
 			<div>
 				{loadingElement}
 				<h2>Add Relationship</h2>
-				<div className='row'>
-					<div className='form-horizontal'>
+				<div className="row">
+					<div className="form-horizontal">
 						{relationshipEntry}
 					</div>
 				</div>
@@ -333,10 +350,16 @@ module.exports = React.createClass({
 				<h2>Added Relationships</h2>
 				{addedRelationships}
 				<hr/>
-				<div className='row'>
-					<div className='col-md-4 col-md-offset-4'>
+				<div className="row">
+					<div className="col-md-4 col-md-offset-4">
 						<Input
-							bsStyle='success' block type='submit' value='Submit!' disabled={this.state.addedRelationships.length === 0} onClick={this.handleSubmit} />
+							block
+							bsStyle="success"
+							disabled={this.state.addedRelationships.length === 0}
+							onClick={this.handleSubmit}
+							type="submit"
+							value="Submit!"
+						/>
 					</div>
 				</div>
 			</div>

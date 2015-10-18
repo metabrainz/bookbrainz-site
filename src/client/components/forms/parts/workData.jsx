@@ -25,6 +25,7 @@ const Identifiers = require('./identifiers.jsx');
 
 
 const WorkData = React.createClass({
+	displayName: 'workDataComponent',
 	getValue: function() {
 		'use strict';
 
@@ -72,63 +73,84 @@ const WorkData = React.createClass({
 		return (
 			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
-				<p className='lead'>Fill out any data you know about the entity.</p>
+				<p className="lead">Fill out any data you know about the entity.</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<Select
-						label='Languages'
-						labelAttribute='name'
-						idAttribute='id'
 						defaultValue={initialLanguages}
-						ref='languages'
-						placeholder='Select work languages…'
+						idAttribute="id"
+						label="Languages"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						multiple
 						noDefault
 						options={this.props.languages}
-						multiple
+						placeholder="Select work languages…"
+						ref="languages"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Type'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialWorkType}
-						ref='workType'
-						placeholder='Select work type…'
+						idAttribute="id"
+						label="Type"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.workTypes}
+						placeholder="Select work type…"
+						ref="workType"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
+						ref="identifiers"
 						types={this.props.identifierTypes}
-						ref='identifiers' />
+					/>
 					<Input
-						type='text'
-						label='Disambiguation'
-						ref='disambiguation'
 						defaultValue={initialDisambiguation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6' />
+						label="Disambiguation"
+						labelClassName="col-md-3"
+						ref="disambiguation"
+						type="text"
+						wrapperClassName="col-md-6"
+					/>
 					<Input
-						type='textarea'
-						label='Annotation'
-						ref='annotation'
 						defaultValue={initialAnnotation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
+						label="Annotation"
+						labelClassName="col-md-3"
+						ref="annotation"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
 
-					<nav className='margin-top-1'>
+					<nav className="margin-top-1">
 						<ul className="pager">
 							<li className="previous">
-								<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+								<a
+									href="#"
+									onClick={this.props.backClick}
+								>
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-left"
+									/>
+									Back
 								</a>
 							</li>
 							<li className="next">
-								<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+								<a
+									href="#"
+									onClick={this.props.nextClick}
+								>
+									Next
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-right"
+									/>
 								</a>
 							</li>
 						</ul>

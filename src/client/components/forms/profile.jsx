@@ -27,6 +27,7 @@ const request = require('superagent');
 require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
+	displayName: 'profileForm',
 	getInitialState: function() {
 		'use strict';
 
@@ -61,27 +62,41 @@ module.exports = React.createClass({
 
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
-		return <form className='form-horizontal' onSubmit={this.handleSubmit}>
-			{loadingElement}
-			<Input
-				type='text'
-				label='Email'
-				ref='email'
-				defaultValue={this.state.email}
-				wrapperClassName='col-md-9'
-				labelClassName='col-md-3' />
-			<Input
-				type='textarea'
-				label='Bio'
-				ref='bio'
-				defaultValue={this.state.bio}
-				wrapperClassName='col-md-9'
-				labelClassName='col-md-3' />
-			<div className='form-group'>
-				<div className='col-md-4 col-md-offset-4'>
-					<Button bsStyle='primary' bsSize='large' block type='submit'>Update!</Button>
+		return (
+			<form
+				className="form-horizontal"
+				onSubmit={this.handleSubmit}
+			>
+				{loadingElement}
+				<Input
+					defaultValue={this.state.email}
+					label="Email"
+					labelClassName="col-md-3"
+					ref="email"
+					type="text"
+					wrapperClassName="col-md-9"
+				/>
+				<Input
+					defaultValue={this.state.bio}
+					label="Bio"
+					labelClassName="col-md-3"
+					ref="bio"
+					type="textarea"
+					wrapperClassName="col-md-9"
+				/>
+				<div className="form-group">
+					<div className="col-md-4 col-md-offset-4">
+						<Button
+							block
+							bsSize="large"
+							bsStyle="primary"
+							type="submit"
+						>
+							Update!
+						</Button>
+					</div>
 				</div>
-			</div>
-		</form>;
+			</form>
+		);
 	}
 });

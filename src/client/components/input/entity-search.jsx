@@ -23,6 +23,7 @@ const _ = require('underscore');
 const $ = require('jquery');
 
 const EntitySearch = React.createClass({
+	displayName: 'entitySearchInput',
 	getValue: function() {
 		'use strict';
 
@@ -79,11 +80,11 @@ const EntitySearch = React.createClass({
 				let template = result.text;
 
 				const ENTITY_TYPE_ICONS = {
-					'Creator': 'fa-user',
-					'Edition': 'fa-book',
-					'Publication': 'fa-th-list',
-					'Publisher': 'fa-university',
-					'Work': 'fa-file-text-o'
+					Creator: 'fa-user',
+					Edition: 'fa-book',
+					Publication: 'fa-th-list',
+					Publisher: 'fa-university',
+					Work: 'fa-file-text-o'
 				};
 
 				/* eslint prefer-template: 0 */
@@ -95,8 +96,7 @@ const EntitySearch = React.createClass({
 
 				if (result.disambiguation) {
 					template += React.renderToStaticMarkup(
-						<span
-							className='disambig'>
+						<span className="disambig">
 							({result.disambiguation})
 						</span>
 					);
@@ -118,24 +118,25 @@ const EntitySearch = React.createClass({
 
 		return (
 			<Select
-				placeholder={this.props.placeholder}
-				value={this.props.value}
-				defaultValue={defaultKey}
-				label={this.props.label}
-				idAttribute='id'
-				labelAttribute='text'
-				help={this.props.help}
 				bsStyle={this.props.bsStyle}
+				defaultValue={defaultKey}
 				disabled={this.props.disabled}
-				ref='select'
 				groupClassName={this.props.groupClassName}
-				wrapperClassName={this.props.wrapperClassName}
+				help={this.props.help}
+				idAttribute="id"
+				label={this.props.label}
+				labelAttribute="text"
 				labelClassName={this.props.labelClassName}
 				noDefault
 				onChange={this.props.onChange}
-				select2Options={select2Options}
 				options={options}
-				standalone={this.props.standalone} />
+				placeholder={this.props.placeholder}
+				ref="select"
+				select2Options={select2Options}
+				standalone={this.props.standalone}
+				value={this.props.value}
+				wrapperClassName={this.props.wrapperClassName}
+			/>
 		);
 	}
 });

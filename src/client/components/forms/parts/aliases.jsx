@@ -24,6 +24,7 @@ const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2.jsx');
 
 const AliasRow = React.createClass({
+	displayName: 'aliasRowComponent',
 	getValue: function() {
 		'use strict';
 
@@ -59,49 +60,73 @@ const AliasRow = React.createClass({
 		'use strict';
 
 		return (
-			<div className='row' onChange={this.props.onChange}>
+			<div
+				className="row"
+				onChange={this.props.onChange}
+			>
 				<Input
-					type='hidden'
 					defaultValue={this.props.aliasId}
-					ref='id' />
-				<div className='col-md-3'>
+					ref="id"
+					type="hidden"
+				/>
+				<div className="col-md-3">
 					<Input
-						type='text'
+						bsStyle={this.validationState()}
 						defaultValue={this.props.name}
-						bsStyle={this.validationState()}
-						wrapperClassName='col-md-11'
-						ref='name' /> &nbsp;
+						ref="name"
+						type="text"
+						wrapperClassName="col-md-11"
+					/> &nbsp;
 				</div>
-				<div className='col-md-3'>
+				<div className="col-md-3">
 					<Input
-						type='text'
+						bsStyle={this.validationState()}
 						defaultValue={this.props.sortName}
-						bsStyle={this.validationState()}
-						wrapperClassName='col-md-11'
-						ref='sortName' /> &nbsp;
+						ref="sortName"
+						type="text"
+						wrapperClassName="col-md-11"
+					/> &nbsp;
 				</div>
-				<div className='col-md-3'>
+				<div className="col-md-3">
 					<Select
-						labelAttribute='name'
-						idAttribute='id'
-						ref='language'
-						defaultValue={this.props.language}
 						bsStyle={this.validationState()}
-						onChange={this.props.onChange}
-						wrapperClassName='col-md-11'
-						placeholder='Select alias language…'
+						defaultValue={this.props.language}
+						idAttribute="id"
+						labelAttribute="name"
 						noDefault
-						options={this.props.languages} />
+						onChange={this.props.onChange}
+						options={this.props.languages}
+						placeholder="Select alias language…"
+						ref="language"
+						wrapperClassName="col-md-11"
+					/>
 				</div>
-				<div className='col-md-1'>
-					<Input type='checkbox' ref='primary' defaultChecked={this.props.primary} wrapperClassName='col-md-11' label=' '/>
+				<div className="col-md-1">
+					<Input
+						defaultChecked={this.props.primary}
+						label=" "
+						ref="primary"
+						type="checkbox"
+						wrapperClassName="col-md-11"
+					/>
 				</div>
-				<div className='col-md-1'>
-					<Input type='radio' ref='default' defaultChecked={this.props.default} wrapperClassName='col-md-11' label=' ' name='default' />
+				<div className="col-md-1">
+					<Input
+						defaultChecked={this.props.default}
+						label=" "
+						name="default"
+						ref="default"
+						type="radio"
+						wrapperClassName="col-md-11"
+					/>
 				</div>
-				<div className='col-md-1 text-right'>
-					<Button bsStyle='danger' className={this.props.removeHidden ? 'hidden' : ''} onClick={this.props.onRemove}>
-						<span className='fa fa-times' />
+				<div className="col-md-1 text-right">
+					<Button
+						bsStyle="danger"
+						className={this.props.removeHidden ? 'hidden' : ''}
+						onClick={this.props.onRemove}
+					>
+						<span className="fa fa-times" />
 					</Button>
 				</div>
 			</div>
@@ -110,6 +135,7 @@ const AliasRow = React.createClass({
 });
 
 const AliasList = React.createClass({
+	displayName: 'aliasListComponent',
 	getInitialState: function() {
 		'use strict';
 
@@ -227,44 +253,52 @@ const AliasList = React.createClass({
 		'use strict';
 
 		const self = this;
-
 		const rows = this.state.aliases.map(function(alias, index) {
 			return (
 				<AliasRow
-					key={alias.key}
-					ref={index}
 					aliasId={alias.id}
-					name={alias.name}
-					sortName={alias.sortName}
-					language={alias.language}
-					primary={alias.primary}
 					default={alias.default}
+					key={alias.key}
+					language={alias.language}
 					languages={self.props.languages}
+					name={alias.name}
 					onChange={self.handleChange.bind(null, index)}
 					onRemove={self.handleRemove.bind(null, index)}
-					removeHidden={index === self.state.aliases.length - 1} />
+					primary={alias.primary}
+					ref={index}
+					removeHidden={index === self.state.aliases.length - 1}
+					sortName={alias.sortName}
+				/>
 			);
 		});
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={this.props.visible === false ? 'hidden' : ''}>
 				<h2>Add Aliases</h2>
-				<p className='lead'>Add some aliases to the entity.</p>
-				<div className='form-horizontal'>
-					<div className='row margin-top-1'>
-						<label className='col-md-3'>Name</label>
-						<label className='col-md-3'>Sort Name</label>
-						<label className='col-md-3'>Language</label>
-						<label className='col-md-1'>Primary</label>
-						<label className='col-md-1'>Default</label>
+				<p className="lead">Add some aliases to the entity.</p>
+				<div className="form-horizontal">
+					<div className="row margin-top-1">
+						<label className="col-md-3">Name</label>
+						<label className="col-md-3">Sort Name</label>
+						<label className="col-md-3">Language</label>
+						<label className="col-md-1">Primary</label>
+						<label className="col-md-1">Default</label>
 					</div>
 					{rows}
 				</div>
 
-				<nav className='margin-top-1'>
+				<nav className="margin-top-1">
 					<ul className="pager">
 						<li className="next">
-							<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+							<a
+								href="#"
+								onClick={this.props.nextClick}
+							>
+								Next
+								<span
+									aria-hidden="true"
+									className="fa fa-angle-double-right"
+								/>
 							</a>
 						</li>
 					</ul>

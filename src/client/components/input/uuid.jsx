@@ -24,6 +24,7 @@ const uuid_re =
 	/[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}/;
 
 const UUIDInput = React.createClass({
+	displayName: 'uuidInput',
 	getInitialState: function() {
 		'use strict';
 
@@ -80,19 +81,20 @@ const UUIDInput = React.createClass({
 
 		return (
 			<Input
-				type='text'
-				value={this.state.value}
-				placeholder={this.props.placeholder}
-				label={this.props.label}
-				help={this.props.help}
 				bsStyle={this.validationState()}
-				ref='input'
+				disabled={this.props.disabled}
 				groupClassName={this.props.groupClassName}
-				wrapperClassName={this.props.wrapperClassName}
+				help={this.props.help}
+				label={this.props.label}
 				labelClassName={this.props.labelClassName}
 				onChange={this.handleChange}
-				disabled={this.props.disabled}
-				standalone={this.props.standalone} />
+				placeholder={this.props.placeholder}
+				ref="input"
+				standalone={this.props.standalone}
+				type="text"
+				value={this.state.value}
+				wrapperClassName={this.props.wrapperClassName}
+			/>
 		);
 	}
 });

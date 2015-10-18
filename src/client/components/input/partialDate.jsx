@@ -25,11 +25,7 @@ const ym_re = /^\d{4}-\d{2}$/;
 const y_re = /^\d{4}$/;
 
 const PartialDate = React.createClass({
-	getValue: function() {
-		'use strict';
-
-		return this.state.value;
-	},
+	displayName: 'partialDateInput',
 	getInitialState: function() {
 		'use strict';
 
@@ -37,6 +33,11 @@ const PartialDate = React.createClass({
 			value: this.props.defaultValue,
 			valid: this.validate(this.props.defaultValue)
 		};
+	},
+	getValue: function() {
+		'use strict';
+
+		return this.state.value;
 	},
 	validate: function(value) {
 		'use strict';
@@ -86,17 +87,18 @@ const PartialDate = React.createClass({
 
 		return (
 			<Input
-				type='text'
-				value={this.state.value}
-				placeholder={this.props.placeholder}
-				label={this.props.label}
-				help={this.props.help}
 				bsStyle={this.validationState()}
-				ref='input'
 				groupClassName={this.props.groupClassName}
-				wrapperClassName={this.props.wrapperClassName}
+				help={this.props.help}
+				label={this.props.label}
 				labelClassName={this.props.labelClassName}
-				onChange={this.handleChange} />
+				onChange={this.handleChange}
+				placeholder={this.props.placeholder}
+				ref="input"
+				type="text"
+				value={this.state.value}
+				wrapperClassName={this.props.wrapperClassName}
+			/>
 		);
 	}
 });

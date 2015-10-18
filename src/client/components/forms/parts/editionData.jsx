@@ -27,6 +27,7 @@ const Identifiers = require('./identifiers.jsx');
 
 
 const EditionData = React.createClass({
+	displayName: 'editionDataComponent',
 	getValue: function() {
 		'use strict';
 
@@ -130,155 +131,185 @@ const EditionData = React.createClass({
 		return (
 			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
-				<p className='lead'>Fill out any data you know about the entity.</p>
+				<p className="lead">Fill out any data you know about the entity.</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<SearchSelect
-						label='Publication'
-						labelAttribute='name'
-						ref='publication'
+						collection="publication"
 						defaultValue={initialPublication}
-						collection='publication'
-						placeholder='Select publication…'
+						label="Publication"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						placeholder="Select publication…"
+						ref="publication"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<SearchSelect
-						label='Publisher'
-						labelAttribute='name'
-						ref='publisher'
+						collection="publisher"
 						defaultValue={initialPublisher}
-						collection='publisher'
-						placeholder='Select publisher…'
+						label="Publisher"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						nodefault
+						placeholder="Select publisher…"
+						ref="publisher"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4'
-						nodefault />
+						wrapperClassName="col-md-4"
+					/>
 					<PartialDate
-						label='Release Date'
-						ref='release'
 						defaultValue={initialReleaseDate}
-						placeholder='YYYY-MM-DD'
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						label="Release Date"
+						labelClassName="col-md-4"
+						placeholder="YYYY-MM-DD"
+						ref="release"
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Language'
-						labelAttribute='name'
-						idAttribute='id'
 						defaultValue={initialLanguage}
-						ref='language'
-						placeholder='Select edition language…'
+						idAttribute="id"
+						label="Language"
+						labelAttribute="name"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.languages}
+						placeholder="Select edition language…"
+						ref="language"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Format'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialEditionFormat}
-						ref='editionFormat'
-						placeholder='Select edition format…'
+						idAttribute="id"
+						label="Format"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.editionFormats}
+						placeholder="Select edition format…"
+						ref="editionFormat"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Status'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialEditionStatus}
-						ref='editionStatus'
-						placeholder='Select edition status…'
+						idAttribute="id"
+						label="Status"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.editionStatuses}
+						placeholder="Select edition status…"
+						ref="editionStatus"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
-					<div className='row'>
-						<div className='col-md-11 col-md-offset-1'>
-							<div className='col-md-3'>
+					<div className="row">
+						<div className="col-md-11 col-md-offset-1">
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Page Count'
-									ref='pages'
 									defaultValue={initialPages}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Page Count"
+									labelClassName="col-md-7"
+									ref="pages"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
-							<div className='col-md-3'>
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Weight (g)'
-									ref='weight'
 									defaultValue={initialWeight}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Weight (g)"
+									labelClassName="col-md-7"
+									ref="weight"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
 						</div>
 					</div>
-					<div className='row'>
-						<div className='col-md-11 col-md-offset-1'>
-							<div className='col-md-3'>
+					<div className="row">
+						<div className="col-md-11 col-md-offset-1">
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Width (mm)'
-									ref='width'
 									defaultValue={initialWidth}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Width (mm)"
+									labelClassName="col-md-7"
+									ref="width"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
-							<div className='col-md-3'>
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Height (mm)'
-									ref='height'
 									defaultValue={initialHeight}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Height (mm)"
+									labelClassName="col-md-7"
+									ref="height"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
-							<div className='col-md-3'>
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Depth (mm)'
-									ref='depth'
 									defaultValue={initialDepth}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Depth (mm)"
+									labelClassName="col-md-7"
+									ref="depth"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
 						</div>
 					</div>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
+						ref="identifiers"
 						types={this.props.identifierTypes}
-						ref='identifiers' />
+					/>
 					<Input
-						type='text'
-						label='Disambiguation'
-						ref='disambiguation'
 						defaultValue={initialDisambiguation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6' />
+						label="Disambiguation"
+						labelClassName="col-md-3"
+						ref="disambiguation"
+						type="text"
+						wrapperClassName="col-md-6"
+					/>
 					<Input
-						type='textarea'
-						label='Annotation'
-						ref='annotation'
 						defaultValue={initialAnnotation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
-					<nav className='margin-top-1'>
+						label="Annotation"
+						labelClassName="col-md-3"
+						ref="annotation"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
+					<nav className="margin-top-1">
 						<ul className="pager">
 							<li className="previous">
-								<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+								<a
+									href="#"
+									onClick={this.props.backClick}
+								>
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-left"
+									/>
+									Back
 								</a>
 							</li>
 							<li className="next">
-								<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+								<a
+									href="#"
+									onClick={this.props.nextClick}
+								>
+									Next
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-right"
+									/>
 								</a>
 							</li>
 						</ul>

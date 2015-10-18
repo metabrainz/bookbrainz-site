@@ -22,32 +22,47 @@ const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 
 const RevisionNote = React.createClass({
+	displayName: 'revisionNoteComponent',
 	render: function() {
 		'use strict';
 
 		return (
 			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Submit Revision</h2>
-				<p className='lead'>Finally, add this revision to an edit.</p>
+				<p className="lead">Finally, add this revision to an edit.</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<Input
-						type='textarea'
-						label='Revision Note'
-						ref='note'
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
+						label="Revision Note"
+						labelClassName="col-md-3"
+						ref="note"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
 				</div>
 
-				<nav className='margin-top-1'>
+				<nav className="margin-top-1">
 					<ul className="pager">
 						<li className="previous">
-							<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+							<a
+								href="#"
+								onClick={this.props.backClick}
+							>
+								<span
+									aria-hidden="true"
+									className="fa fa-angle-double-left"
+								/>
+								Back
 							</a>
 						</li>
 						<li className="next">
-							<a href='#' onClick={this.props.onSubmit} disabled={this.props.submitDisabled}>Submit
+							<a
+								disabled={this.props.submitDisabled}
+								href="#"
+								onClick={this.props.onSubmit}
+							>
+								Submit
 							</a>
 						</li>
 					</ul>

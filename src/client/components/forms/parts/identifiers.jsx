@@ -23,6 +23,7 @@ const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2.jsx');
 
 const IdentifierRow = React.createClass({
+	displayName: 'identifierRowComponent',
 	getValue: function() {
 		'use strict';
 
@@ -79,32 +80,38 @@ const IdentifierRow = React.createClass({
 		'use strict';
 
 		return (
-			<div className='row'>
-				<div className='col-md-4'>
+			<div className="row">
+				<div className="col-md-4">
 					<Select
-						labelAttribute='label'
-						idAttribute='id'
-						ref='type'
-						value={this.props.type}
 						bsStyle={this.validationState()}
-						wrapperClassName='col-md-12'
-						placeholder='Select identifier type…'
+						idAttribute="id"
+						labelAttribute="label"
 						noDefault
+						onChange={this.props.onChange}
 						options={this.props.types}
-						onChange={this.props.onChange}/>
+						placeholder="Select identifier type…"
+						ref="type"
+						value={this.props.type}
+						wrapperClassName="col-md-12"
+					/>
 				</div>
-				<div className='col-md-4'>
+				<div className="col-md-4">
 					<Input
-						type='text'
-						value={this.props.value}
 						bsStyle={this.validationState()}
-						wrapperClassName='col-md-12'
-						ref='value'
-						onChange={this.props.onChange}/>
+						onChange={this.props.onChange}
+						ref="value"
+						type="text"
+						value={this.props.value}
+						wrapperClassName="col-md-12"
+					/>
 				</div>
-				<div className='col-md-2'>
-					<Button bsStyle='danger' className={this.props.removeHidden ? 'hidden' : ''} onClick={this.props.onRemove}>
-						<span className='fa fa-times' />
+				<div className="col-md-2">
+					<Button
+						bsStyle="danger"
+						className={this.props.removeHidden ? 'hidden' : ''}
+						onClick={this.props.onRemove}
+					>
+						<span className="fa fa-times" />
 					</Button>
 				</div>
 			</div>
@@ -113,6 +120,7 @@ const IdentifierRow = React.createClass({
 });
 
 const IdentifierList = React.createClass({
+	displayName: 'identifierListComponent',
 	getInitialState: function() {
 		'use strict';
 
@@ -230,25 +238,26 @@ const IdentifierList = React.createClass({
 			return (
 				<IdentifierRow
 					key={identifier.key}
-					ref={index}
-					value={identifier.value}
-					type={identifier.type}
-					types={self.props.types}
 					onChange={self.handleChange.bind(null, index)}
 					onRemove={self.handleRemove.bind(null, index)}
-					removeHidden={index === self.state.identifiers.length - 1} />
+					ref={index}
+					removeHidden={index === self.state.identifiers.length - 1}
+					type={identifier.type}
+					types={self.props.types}
+					value={identifier.value}
+				/>
 			);
 		});
 
 		return (
 			<div>
-				<div className='row margin-top-1'>
-					<label className='col-md-3 text-right'>Identifiers</label>
-					<label className='col-md-3 text-center'>Type</label>
-					<label className='col-md-3 text-center'>Value</label>
+				<div className="row margin-top-1">
+					<label className="col-md-3 text-right">Identifiers</label>
+					<label className="col-md-3 text-center">Type</label>
+					<label className="col-md-3 text-center">Value</label>
 				</div>
-				<div className='row'>
-					<div className='col-md-9 col-md-offset-3'>
+				<div className="row">
+					<div className="col-md-9 col-md-offset-3">
 						{rows}
 					</div>
 				</div>
