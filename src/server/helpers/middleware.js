@@ -126,9 +126,7 @@ middleware.makeEntityLoader = function(model, errMessage) {
 				populate.push('editions');
 			}
 
-			model.findOne(req.params.bbid, {
-				populate: populate
-			})
+			model.findOne(req.params.bbid, {populate})
 				.then(function(entity) {
 					res.locals.entity = entity;
 

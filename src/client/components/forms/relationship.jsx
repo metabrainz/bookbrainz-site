@@ -39,7 +39,7 @@ const SearchSelect = require('../input/entity-search.jsx');
 
 module.exports = React.createClass({
 	displayName: 'relationshipForm',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		const targetEntity = this.props.targetEntity;
@@ -49,15 +49,15 @@ module.exports = React.createClass({
 		const loadedEntities = {};
 		loadedEntities[targetEntity.bbid] = targetEntity;
 		return {
-			targetEntity: targetEntity,
-			loadedEntities: loadedEntities,
+			targetEntity,
+			loadedEntities,
 			displayEntities: [targetEntity, {key: 2}],
 			selectedRelationship: null,
 			addedRelationships: [],
 			addedRelationshipsSpawned: 0
 		};
 	},
-	fetchEntity: function(uuid) {
+	fetchEntity(uuid) {
 		'use strict';
 
 		// This should be modified to use bbws if the config can be separated from
@@ -71,22 +71,22 @@ module.exports = React.createClass({
 		.then(function(entity) {
 			entity.bbid = entity.entity_gid;
 			return request.get(entity.aliases_uri)
-			.accept('application/json')
-			.promise()
-			.then(function(response) {
-				return response.body;
-			})
-			.then(function(aliases) {
-				entity.aliases = aliases.objects;
-				return entity;
-			});
+				.accept('application/json')
+				.promise()
+				.then(function(response) {
+					return response.body;
+				})
+				.then(function(aliases) {
+					entity.aliases = aliases.objects;
+					return entity;
+				});
 		});
 	},
-	handleSubmit: function(e) {
+	handleSubmit(evt) {
 		'use strict';
 
 		const self = this;
-		e.preventDefault();
+		evt.preventDefault();
 
 		request.post('./relationships/handler')
 		.send(this.state.addedRelationships.map(function(relationship) {
@@ -108,7 +108,7 @@ module.exports = React.createClass({
 			window.location.href = utils.getEntityLink(self.state.targetEntity);
 		});
 	},
-	handleAdd: function(e) {
+	handleAdd() {
 		'use strict';
 
 		const addedRelationships = this.state.addedRelationships.slice();
@@ -121,18 +121,18 @@ module.exports = React.createClass({
 
 		this.state.addedRelationshipsSpawned++;
 
-		this.setState({addedRelationships: addedRelationships});
+		this.setState({addedRelationships});
 	},
-	handleSwap: function(i, e) {
+	handleSwap(i) {
 		'use strict';
 
 		const displayEntities = this.state.displayEntities.slice();
 		displayEntities[i] = this.state.displayEntities[i + 1];
 		displayEntities[i + 1] = this.state.displayEntities[i];
 
-		this.setState({displayEntities: displayEntities});
+		this.setState({displayEntities});
 	},
-	setDisplayEntity: function(i, entity) {
+	setDisplayEntity(i, entity) {
 		'use strict';
 
 		entity.key = this.state.displayEntities[i].key;
@@ -140,26 +140,26 @@ module.exports = React.createClass({
 		const displayEntities = this.state.displayEntities.slice();
 		displayEntities[i] = entity;
 
-		this.setState({displayEntities: displayEntities});
+		this.setState({displayEntities});
 	},
-	addLoadedEntity: function(entity) {
+	addLoadedEntity(entity) {
 		'use strict';
 
 		const loadedEntities = extend({}, this.state.loadedEntities);
 		loadedEntities[entity.bbid] = entity;
 
-		this.setState({loadedEntities: loadedEntities});
+		this.setState({loadedEntities});
 	},
-	removeRelationship: function(i) {
+	removeRelationship(i) {
 		'use strict';
 
 		const addedRelationships = this.state.addedRelationships.slice();
 
 		addedRelationships.splice(i, 1);
 
-		this.setState({addedRelationships: addedRelationships});
+		this.setState({addedRelationships});
 	},
-	handleUUIDChange: function(i, e) {
+	handleUUIDChange(i) {
 		'use strict';
 
 		const self = this;
@@ -180,7 +180,7 @@ module.exports = React.createClass({
 			self.setDisplayEntity(i, {});
 		}
 	},
-	handleRelationshipChange: function(e) {
+	handleRelationshipChange() {
 		'use strict';
 
 		const relationshipId = parseInt(this.refs.relationship.getValue());
@@ -195,7 +195,7 @@ module.exports = React.createClass({
 			this.setState({selectedRelationship: null});
 		}
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		const self = this;

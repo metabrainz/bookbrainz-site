@@ -20,12 +20,12 @@
 const React = require('react');
 const Input = require('react-bootstrap').Input;
 
-const uuid_re =
+const uuidRegex =
 	/[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}/;
 
 const UUIDInput = React.createClass({
 	displayName: 'uuidInput',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -33,17 +33,17 @@ const UUIDInput = React.createClass({
 			valid: true
 		};
 	},
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return this.state.value;
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return this.state.valid;
 	},
-	validationState: function() {
+	validationState() {
 		'use strict';
 
 		if (this.state.valid) {
@@ -53,12 +53,12 @@ const UUIDInput = React.createClass({
 			return 'error';
 		}
 	},
-	handleChange: function(e) {
+	handleChange(evt) {
 		'use strict';
 		// This could also be done using ReactLink:
 		// http://facebook.github.io/react/docs/two-way-binding-helpers.html
 
-		let result = uuid_re.exec(this.refs.input.getValue());
+		let result = uuidRegex.exec(this.refs.input.getValue());
 
 		const valid = Boolean(result);
 		if (valid) {
@@ -71,12 +71,12 @@ const UUIDInput = React.createClass({
 		this.setState(
 			{
 				value: result,
-				valid: valid
+				valid
 			},
-			this.props.onChange ? this.props.onChange.bind(this, e) : null
+			this.props.onChange ? this.props.onChange.bind(this, evt) : null
 		);
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		return (

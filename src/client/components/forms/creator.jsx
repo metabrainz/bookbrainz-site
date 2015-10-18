@@ -32,7 +32,7 @@ const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
 	displayName: 'creatorForm',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -42,34 +42,34 @@ module.exports = React.createClass({
 			waiting: false
 		};
 	},
-	setTab: function(tab) {
+	setTab(tab) {
 		'use strict';
 
 		this.setState({
-			tab: tab,
+			tab,
 			aliasesValid: this.refs.aliases.valid(),
 			dataValid: this.refs.data.valid()
 		});
 	},
-	backClick: function() {
+	backClick() {
 		'use strict';
 
 		this.setTab(this.state.tab - 1);
 	},
-	nextClick: function() {
+	nextClick() {
 		'use strict';
 
 		this.setTab(this.state.tab + 1);
 	},
-	handleTab: function(tabKey) {
+	handleTab(tabKey) {
 		'use strict';
 
 		this.setTab(tabKey);
 	},
-	handleSubmit: function(e) {
+	handleSubmit(evt) {
 		'use strict';
 
-		e.preventDefault();
+		evt.preventDefault();
 
 		const aliasData = this.refs.aliases.getValue();
 		const creatorData = this.refs.data.getValue();
@@ -103,7 +103,7 @@ module.exports = React.createClass({
 				self.setState({error: err});
 			});
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		let aliases = null;

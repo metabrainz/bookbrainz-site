@@ -70,10 +70,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 			(identifier) => identifier.identifier_type_id
 		);
 
-		res.render('entity/view/publisher', {
-			title: title,
-			identifier_types: identifier_types
-		});
+		res.render('entity/view/publisher', {title, identifier_types});
 	});
 });
 
@@ -85,9 +82,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
 	}
 
-	res.render('entity/delete', {
-		title: title
-	});
+	res.render('entity/delete', {title});
 });
 
 router.post('/:bbid/delete/confirm', function(req, res) {
@@ -121,11 +116,7 @@ router.get('/:bbid/revisions', function(req, res) {
 			});
 
 			Promise.props(promisedUsers).then(function(users) {
-				res.render('entity/revisions', {
-					title: title,
-					revisions: revisions,
-					users: users
-				});
+				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
 });
@@ -146,8 +137,8 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, 
 		title: 'Add Publisher',
 		heading: 'Create Publisher',
 		subheading: 'Add a new Publisher to BookBrainz',
-		props: props,
-		markup: markup
+		props,
+		markup
 	});
 });
 
@@ -157,7 +148,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublish
 	const props = {
 		languages: res.locals.languages,
 		publisherTypes: res.locals.publisherTypes,
-		publisher: publisher,
+		publisher,
 		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/publisher/' + publisher.bbid + '/edit/handler'
 	};
@@ -168,8 +159,8 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublish
 		title: 'Edit Publisher',
 		heading: 'Edit Publisher',
 		subheading: 'Edit an existing Publisher in BookBrainz',
-		props: props,
-		markup: markup
+		props,
+		markup
 	});
 });
 

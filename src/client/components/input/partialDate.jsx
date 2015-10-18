@@ -20,13 +20,13 @@
 const React = require('react');
 const Input = require('react-bootstrap').Input;
 
-const ymd_re = /^\d{4}-\d{2}-\d{2}$/;
-const ym_re = /^\d{4}-\d{2}$/;
-const y_re = /^\d{4}$/;
+const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
+const ymRegex = /^\d{4}-\d{2}$/;
+const yRegex = /^\d{4}$/;
 
 const PartialDate = React.createClass({
 	displayName: 'partialDateInput',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -34,25 +34,12 @@ const PartialDate = React.createClass({
 			valid: this.validate(this.props.defaultValue)
 		};
 	},
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return this.state.value;
 	},
-	validate: function(value) {
-		'use strict';
-
-		if (!value) {
-			return true;
-		}
-		else {
-			const validSyntax =
-				Boolean(ymd_re.test(value) || ym_re.test(value) || y_re.test(value));
-			const validValue = !isNaN(Date.parse(value));
-			return validSyntax && validValue;
-		}
-	},
-	handleChange: function() {
+	handleChange() {
 		'use strict';
 
 		const input = this.refs.input.getValue().trim();
@@ -66,12 +53,24 @@ const PartialDate = React.createClass({
 			valid: this.validate(input)
 		});
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return this.state.valid;
 	},
-	validationState: function() {
+	validate(value) {
+		'use strict';
+
+		if (!value) {
+			return true;
+		}
+
+		const validSyntax =
+			Boolean(ymdRegex.test(value) || ymRegex.test(value) || yRegex.test(value));
+		const validValue = !isNaN(Date.parse(value));
+		return validSyntax && validValue;
+	},
+	validationState() {
 		'use strict';
 
 		let validationClass = null;
@@ -82,7 +81,7 @@ const PartialDate = React.createClass({
 
 		return validationClass;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		return (

@@ -60,10 +60,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 		(identifier) => identifier.identifier_type_id
 	);
 
-	res.render('entity/view/creator', {
-		title: title,
-		identifier_types: identifier_types
-	});
+	res.render('entity/view/creator', {title, identifier_types});
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
@@ -74,9 +71,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 		title = 'Creator “' + creator.default_alias.name + '”';
 	}
 
-	res.render('entity/delete', {
-		title: title
-	});
+	res.render('entity/delete', {title});
 });
 
 router.post('/:bbid/delete/confirm', function(req, res) {
@@ -110,11 +105,7 @@ router.get('/:bbid/revisions', function(req, res) {
 			});
 
 			Promise.props(promisedUsers).then(function(users) {
-				res.render('entity/revisions', {
-					title: title,
-					revisions: revisions,
-					users: users
-				});
+				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
 });
@@ -135,8 +126,8 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders, lo
 		title: 'Add Creator',
 		heading: 'Create Creator',
 		subheading: 'Add a new Creator to BookBrainz',
-		props: props,
-		markup: markup
+		props,
+		markup
 	});
 });
 
@@ -147,7 +138,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadGenders
 		languages: res.locals.languages,
 		genders: res.locals.genders,
 		creatorTypes: res.locals.creatorTypes,
-		creator: creator,
+		creator,
 		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/creator/' + creator.bbid + '/edit/handler'
 	};
@@ -158,8 +149,8 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadGenders
 		title: 'Edit Creator',
 		heading: 'Edit Creator',
 		subheading: 'Edit an existing Creator in BookBrainz',
-		props: props,
-		markup: markup
+		props,
+		markup
 	});
 });
 

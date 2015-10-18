@@ -93,7 +93,7 @@ router.get('/search', function(req, res) {
 
 	const params = {
 		q: query,
-		mode: mode
+		mode
 	};
 
 	if (req.query.collection) {
@@ -101,7 +101,7 @@ router.get('/search', function(req, res) {
 	}
 
 	bbws.get('/search', {
-		params: params
+		params
 	})
 		.then(function(results) {
 			if (!results.hits) {
@@ -144,7 +144,7 @@ router.get('/search', function(req, res) {
 			if (mode === 'search') {
 				res.render('search', {
 					title: 'Search Results',
-					query: query,
+					query,
 					results: entities,
 					hideSearch: true
 				});

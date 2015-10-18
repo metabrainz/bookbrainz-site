@@ -26,7 +26,7 @@ const Identifiers = require('./identifiers.jsx');
 
 const PublicationData = React.createClass({
 	displayName: 'publicationDataComponent',
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return {
@@ -36,12 +36,12 @@ const PublicationData = React.createClass({
 			identifiers: this.refs.identifiers.getValue()
 		};
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return true;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		let initialPublicationType = null;

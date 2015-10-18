@@ -26,7 +26,7 @@ const Identifiers = require('./identifiers.jsx');
 
 const WorkData = React.createClass({
 	displayName: 'workDataComponent',
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return {
@@ -37,12 +37,12 @@ const WorkData = React.createClass({
 			identifiers: this.refs.identifiers.getValue()
 		};
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return true;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		let initialLanguages = [];

@@ -361,8 +361,8 @@ router.get('/:id', function(req, res) {
 			revision.user = user;
 			res.render('revision', {
 				title: 'Revision',
-				revision: revision,
-				diff: diff
+				revision,
+				diff
 			});
 		});
 	});

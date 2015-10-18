@@ -28,7 +28,7 @@ require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
 	displayName: 'profileForm',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -38,10 +38,10 @@ module.exports = React.createClass({
 			waiting: false
 		};
 	},
-	handleSubmit: function(e) {
+	handleSubmit(evt) {
 		'use strict';
 
-		e.preventDefault();
+		evt.preventDefault();
 
 		const data = {
 			id: this.state.id,
@@ -57,7 +57,7 @@ module.exports = React.createClass({
 				window.location.href = '/editor/' + user.body.user_id;
 			});
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;

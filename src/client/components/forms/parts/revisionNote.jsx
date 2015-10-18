@@ -23,7 +23,7 @@ const Button = require('react-bootstrap').Button;
 
 const RevisionNote = React.createClass({
 	displayName: 'revisionNoteComponent',
-	render: function() {
+	render() {
 		'use strict';
 
 		return (

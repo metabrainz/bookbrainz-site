@@ -75,7 +75,4 @@ function getEntity(ws, entityGid, fetchOptions) {
 	});
 }
 
-module.exports = {
-	getEntityLink: getEntityLink,
-	getEntity: getEntity
-};
+module.exports = {getEntityLink, getEntity};

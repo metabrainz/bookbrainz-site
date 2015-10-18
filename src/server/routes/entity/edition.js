@@ -62,10 +62,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 		(identifier) => identifier.identifier_type_id
 	);
 
-	res.render('entity/view/edition', {
-		title: title,
-		identifier_types: identifier_types
-	});
+	res.render('entity/view/edition', {title, identifier_types});
 });
 
 router.get('/:bbid/revisions', function(req, res) {
@@ -86,11 +83,7 @@ router.get('/:bbid/revisions', function(req, res) {
 			});
 
 			Promise.props(promisedUsers).then(function(users) {
-				res.render('entity/revisions', {
-					title: title,
-					revisions: revisions,
-					users: users
-				});
+				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
 });
@@ -103,9 +96,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 		title = 'Edition “' + edition.default_alias.name + '”';
 	}
 
-	res.render('entity/delete', {
-		title: title
-	});
+	res.render('entity/delete', {title});
 });
 
 router.post('/:bbid/delete/confirm', function(req, res) {
@@ -117,14 +108,13 @@ router.post('/:bbid/delete/confirm', function(req, res) {
 		{session: req.session}
 	)
 		.then(function() {
-			res.redirect(303, '/edition/' + edition.bbid);
+			res.redirect(303, `/edition/${edition.bbid}`);
 		});
 });
 
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadEditionFormats, loadLanguages, function(req, res) {
-
 	const propsPromise = {
 		languages: res.locals.languages,
 		editionStatuses: res.locals.editionStatuses,
@@ -148,8 +138,8 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStat
 			title: 'Add Edition',
 			heading: 'Create Edition',
 			subheading: 'Add a new Edition to BookBrainz',
-			props: props,
-			markup: markup
+			props,
+			markup
 		});
 	}
 
@@ -164,7 +154,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadEdition
 		editionStatuses: res.locals.editionStatuses,
 		editionFormats: res.locals.editionFormats,
 		identifierTypes: res.locals.identifierTypes,
-		edition: edition,
+		edition,
 		submissionUrl: '/edition/' + edition.bbid + '/edit/handler'
 	};
 
@@ -174,8 +164,8 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadEdition
 		title: 'Edit Edition',
 		heading: 'Edit Edition',
 		subheading: 'Edit an existing Edition in BookBrainz',
-		props: props,
-		markup: markup
+		props,
+		markup
 	});
 });
 

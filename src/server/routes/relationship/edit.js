@@ -42,17 +42,14 @@ relationshipHelper.addEditRoutes = function(router) {
 		Promise.join(entityPromise, relationshipTypesPromise,
 			function(entity, relationshipTypes) {
 				const props = {
-					relationshipTypes: relationshipTypes,
+					relationshipTypes,
 					targetEntity: entity,
 					wsUrl: config.site.clientWebservice
 				};
 
 				const markup = React.renderToString(EditForm(props));
 
-				res.render('relationship/edit', {
-					props: props,
-					markup: markup
-				});
+				res.render('relationship/edit', {props, markup});
 			});
 	});
 

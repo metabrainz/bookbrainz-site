@@ -28,15 +28,15 @@ if (typeof window !== 'undefined') {
 
 const Select = React.createClass({
 	displayName: 'select2Input',
-	componentDidMount: function() {
+	componentDidMount() {
 		'use strict';
 		this.initSelect2();
 	},
-	componentDidUpdate: function() {
+	componentDidUpdate() {
 		'use strict';
 		this.initSelect2();
 	},
-	componentWillUnmount: function() {
+	componentWillUnmount() {
 		'use strict';
 
 		const select = $(this.refs.target.getInputDOMNode());
@@ -45,12 +45,12 @@ const Select = React.createClass({
 		// refreshed.
 		select.off('change');
 	},
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return this.refs.target.getValue();
 	},
-	initSelect2: function() {
+	initSelect2() {
 		'use strict';
 
 		const mountElement = $(this.refs.target.getInputDOMNode());
@@ -68,7 +68,7 @@ const Select = React.createClass({
 		mountElement.select2(options);
 		mountElement.on('change', this.props.onChange);
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		const self = this;

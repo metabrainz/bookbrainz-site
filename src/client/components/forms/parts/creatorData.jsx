@@ -27,14 +27,14 @@ const Identifiers = require('./identifiers.jsx');
 
 const CreatorData = React.createClass({
 	displayName: 'creatorDataComponent',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		return {
 			ended: this.props.creator ? this.props.creator.ended : false
 		};
 	},
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return {
@@ -48,19 +48,19 @@ const CreatorData = React.createClass({
 			identifiers: this.refs.identifiers.getValue()
 		};
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return (
 			this.refs.begin.valid() && (!this.refs.ended.getValue() || this.refs.end.valid())
 		);
 	},
-	handleEnded: function() {
+	handleEnded() {
 		'use strict';
 
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		let initialBeginDate = null;

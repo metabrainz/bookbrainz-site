@@ -31,7 +31,7 @@ router.get('/', function(req, res) {
 	delete req.session.error;
 
 	res.render('register', {
-		error: error,
+		error,
 		title: 'Register'
 	});
 });

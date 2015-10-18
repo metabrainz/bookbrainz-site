@@ -41,10 +41,7 @@ router.get('/edit', auth.isAuthenticated, function(req, res, next) {
 
 			const markup = React.renderToString(ProfileForm(props));
 
-			res.render('editor/edit', {
-				props: props,
-				markup: markup
-			});
+			res.render('editor/edit', {props, markup});
 		})
 		.catch(function() {
 			next(new Error('An internal error occurred while loading profile'));
@@ -85,9 +82,7 @@ router.get('/:id', function(req, res, next) {
 
 	userPromise
 		.then(function(editor) {
-			res.render('editor/editor', {
-				editor: editor
-			});
+			res.render('editor/editor', {editor});
 		})
 		.catch(function(err) {
 			console.log(err.stack);
@@ -101,10 +96,7 @@ router.get('/:id/revisions', function(req, res, next) {
 
 	Promise.join(userPromise, revisionsPromise,
 			function(editor, revisions) {
-				res.render('editor/revisions', {
-					editor: editor,
-					revisions: revisions
-				});
+				res.render('editor/revisions', {editor, revisions});
 			})
 		.catch(function(err) {
 			console.log(err.stack);

@@ -25,7 +25,7 @@ const Select = require('../../input/select2.jsx');
 
 const AliasRow = React.createClass({
 	displayName: 'aliasRowComponent',
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return {
@@ -37,7 +37,7 @@ const AliasRow = React.createClass({
 			default: this.refs.default.getChecked()
 		};
 	},
-	validationState: function() {
+	validationState() {
 		'use strict';
 
 		if (this.props.name || this.props.sortName) {
@@ -51,12 +51,12 @@ const AliasRow = React.createClass({
 
 		return null;
 	},
-	getValid: function() {
+	getValid() {
 		'use strict';
 
 		return Boolean(this.refs.name.getValue() && this.refs.sortName.getValue());
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		return (
@@ -136,7 +136,7 @@ const AliasRow = React.createClass({
 
 const AliasList = React.createClass({
 	displayName: 'aliasListComponent',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		const existing = this.props.aliases || [];
@@ -162,7 +162,7 @@ const AliasList = React.createClass({
 			rowsSpawned: existing.length
 		};
 	},
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		const aliases = [];
@@ -173,7 +173,7 @@ const AliasList = React.createClass({
 
 		return aliases;
 	},
-	handleChange: function(index) {
+	handleChange(index) {
 		'use strict';
 
 		const self = this;
@@ -207,11 +207,11 @@ const AliasList = React.createClass({
 
 			this.setState({
 				aliases: updatedAliases,
-				rowsSpawned: rowsSpawned
+				rowsSpawned
 			});
 		}
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		let defaultSet = false;
@@ -231,7 +231,7 @@ const AliasList = React.createClass({
 
 		return defaultSet || numRows === 1;
 	},
-	handleRemove: function(index) {
+	handleRemove(index) {
 		'use strict';
 
 		const self = this;
@@ -249,7 +249,7 @@ const AliasList = React.createClass({
 			});
 		}
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		const self = this;

@@ -47,7 +47,7 @@ function renderMessageList(view, req, res) {
 	})
 		.then(function fetchMessageList(list) {
 			res.render('editor/messageList', {
-				view: view,
+				view,
 				messages: list
 			});
 		});
@@ -73,9 +73,7 @@ router.get('/:id', auth.isAuthenticated, function(req, res) {
 			return messageResponse.body;
 		})
 		.then(function(message) {
-			res.render('editor/message', {
-				message: message
-			});
+			res.render('editor/message', {message});
 		});
 });
 

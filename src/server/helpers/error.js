@@ -30,7 +30,7 @@ function NotFoundError(message) {
 util.inherits(NotFoundError, Error);
 
 const errors = {
-	NotFoundError: NotFoundError
+	NotFoundError
 };
 
 module.exports = errors;

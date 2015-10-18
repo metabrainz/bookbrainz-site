@@ -24,12 +24,12 @@ const $ = require('jquery');
 
 const EntitySearch = React.createClass({
 	displayName: 'entitySearchInput',
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return this.refs.select.getValue();
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		const self = this;
@@ -38,7 +38,7 @@ const EntitySearch = React.createClass({
 			minimumInputLength: 1,
 			ajax: {
 				url: '/search',
-				data: function(params) {
+				data(params) {
 					const queryParams = {
 						q: params.term,
 						page: params.page,
@@ -48,7 +48,7 @@ const EntitySearch = React.createClass({
 
 					return queryParams;
 				},
-				processResults: function(results) {
+				processResults(results) {
 					const data = {
 						results: []
 					};
@@ -76,7 +76,7 @@ const EntitySearch = React.createClass({
 					return data;
 				}
 			},
-			templateResult: function(result) {
+			templateResult(result) {
 				let template = result.text;
 
 				const ENTITY_TYPE_ICONS = {

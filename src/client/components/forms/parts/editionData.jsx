@@ -28,7 +28,7 @@ const Identifiers = require('./identifiers.jsx');
 
 const EditionData = React.createClass({
 	displayName: 'editionDataComponent',
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return {
@@ -48,12 +48,12 @@ const EditionData = React.createClass({
 			weight: this.refs.weight.getValue()
 		};
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return this.refs.release.valid() && this.refs.publication.getValue().length;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		let initialPublication = null;

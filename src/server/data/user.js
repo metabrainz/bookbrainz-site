@@ -77,7 +77,7 @@ User.extend({
 User.getCurrent = function(accessToken) {
 	return this.findOne({
 		path: '/account/',
-		accessToken: accessToken
+		accessToken
 	});
 };
 

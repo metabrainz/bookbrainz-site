@@ -21,7 +21,7 @@ const React = require('react');
 
 const LoadingSpinner = React.createClass({
 	displayName: 'loadingSpinner',
-	render: function() {
+	render() {
 		'use strict';
 
 		return (

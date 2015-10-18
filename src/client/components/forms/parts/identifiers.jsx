@@ -24,7 +24,7 @@ const Select = require('../../input/select2.jsx');
 
 const IdentifierRow = React.createClass({
 	displayName: 'identifierRowComponent',
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return {
@@ -32,7 +32,7 @@ const IdentifierRow = React.createClass({
 			value: this.refs.value.getValue()
 		};
 	},
-	validationState: function() {
+	validationState() {
 		'use strict';
 
 		const self = this;
@@ -57,7 +57,7 @@ const IdentifierRow = React.createClass({
 			return null;
 		}
 	},
-	getValid: function() {
+	getValid() {
 		'use strict';
 
 		const value = this.refs.value.getValue();
@@ -76,7 +76,7 @@ const IdentifierRow = React.createClass({
 			return false;
 		}
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		return (
@@ -121,7 +121,7 @@ const IdentifierRow = React.createClass({
 
 const IdentifierList = React.createClass({
 	displayName: 'identifierListComponent',
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		const existing = this.props.identifiers || [];
@@ -140,7 +140,7 @@ const IdentifierList = React.createClass({
 			rowsSpawned: existing.length
 		};
 	},
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return this.state.identifiers.slice(0, -1).map(function(identifier) {
@@ -156,7 +156,7 @@ const IdentifierList = React.createClass({
 			return data;
 		});
 	},
-	handleChange: function(index) {
+	handleChange(index) {
 		'use strict';
 
 		const updatedIdentifiers = this.state.identifiers.slice();
@@ -206,17 +206,17 @@ const IdentifierList = React.createClass({
 
 		this.setState({
 			identifiers: updatedIdentifiers,
-			rowsSpawned: rowsSpawned
+			rowsSpawned
 		});
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return this.state.identifiers.every(function(identifier) {
 			return identifier.valid;
 		});
 	},
-	handleRemove: function(index) {
+	handleRemove(index) {
 		'use strict';
 
 		const updatedIdentifiers = this.state.identifiers.slice();
@@ -229,7 +229,7 @@ const IdentifierList = React.createClass({
 			});
 		}
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		const self = this;

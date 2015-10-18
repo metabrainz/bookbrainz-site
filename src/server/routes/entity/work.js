@@ -60,10 +60,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 		(identifier) => identifier.identifier_type_id
 	);
 
-	res.render('entity/view/work', {
-		title: title,
-		identifier_types: identifier_types
-	});
+	res.render('entity/view/work', {title, identifier_types});
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
@@ -74,9 +71,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 		title = 'Work “' + work.default_alias.name + '”';
 	}
 
-	res.render('entity/delete', {
-		title: title
-	});
+	res.render('entity/delete', {title});
 });
 
 router.post('/:bbid/delete/confirm', function(req, res) {
@@ -111,11 +106,7 @@ router.get('/:bbid/revisions', function(req, res) {
 			});
 
 			Promise.props(promisedUsers).then(function(users) {
-				res.render('entity/revisions', {
-					title: title,
-					revisions: revisions,
-					users: users
-				});
+				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
 });
@@ -136,8 +127,8 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, 
 		title: 'Add Work',
 		heading: 'Create Work',
 		subheading: 'Add a new Work to BookBrainz',
-		props: props,
-		markup: markup
+		props,
+		markup
 	});
 });
 
@@ -147,7 +138,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadWorkTyp
 	const props = {
 		languages: res.locals.languages,
 		workTypes: res.locals.workTypes,
-		work: work,
+		work,
 		identifierTypes: res.locals.identifierTypes,
 		submissionUrl: '/work/' + work.bbid + '/edit/handler'
 	};
@@ -158,8 +149,8 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadWorkTyp
 		title: 'Edit Work',
 		heading: 'Edit Work',
 		subheading: 'Edit an existing Work in BookBrainz',
-		props: props,
-		markup: markup
+		props,
+		markup
 	});
 });
 
@@ -177,9 +168,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 	if (req.body.languages) {
 		changes.languages = req.body.languages.map(function(language_id) {
-			return {
-				language_id: language_id
-			};
+			return {language_id};
 		});
 	}
 
