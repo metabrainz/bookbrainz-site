@@ -163,8 +163,9 @@ rules:
     - stroustrup
     -
       allowSingleLine: true
+  # Turn off errors for camelCase while we use WS
   camelcase:
-    - 2
+    - 0
     -
       properties: always
   comma-spacing:

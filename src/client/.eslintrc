@@ -7,10 +7,10 @@ plugins:
   - react
 rules:
   no-extra-parens:
-    - 1
+    - 0
     - all
   react/display-name: 2
-  react/forbid-prop-types: 2
+  react/forbid-prop-types: 0
   react/jsx-boolean-value:
     - 2
     - never
