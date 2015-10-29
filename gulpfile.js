@@ -19,8 +19,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const gulp = require('gulp');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
