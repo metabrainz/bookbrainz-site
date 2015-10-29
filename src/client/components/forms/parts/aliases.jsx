@@ -59,9 +59,8 @@ const AliasRow = React.createClass({
 			if (this.props.name && this.props.sortName) {
 				return 'success';
 			}
-			else {
-				return 'error';
-			}
+
+			return 'error';
 		}
 
 		return null;

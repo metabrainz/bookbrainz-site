@@ -90,7 +90,7 @@ app.use((req, res, next) => {
 
 	// Get the latest count of messages in the user's inbox.
 	if (req.session && req.session.bearerToken) {
-		bbws.get('/message/inbox/', {
+		return bbws.get('/message/inbox/', {
 			accessToken: req.session.bearerToken
 		})
 			.then((list) => {
@@ -103,10 +103,9 @@ app.use((req, res, next) => {
 			})
 			.finally(next);
 	}
-	else {
-		res.locals.inboxCount = 0;
-		next();
-	}
+
+	res.locals.inboxCount = 0;
+	next();
 });
 
 // Set up routes

@@ -61,9 +61,8 @@ const UUIDInput = React.createClass({
 		if (this.state.valid) {
 			return 'success';
 		}
-		else {
-			return 'error';
-		}
+
+		return 'error';
 	},
 	handleChange(evt) {
 		'use strict';

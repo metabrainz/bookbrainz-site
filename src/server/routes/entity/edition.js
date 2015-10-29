@@ -380,16 +380,15 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 			// Remove the alias
 			return [identifier.id, null];
 		}
-		else {
-			// Modify the alias
-			req.body.identifiers.shift();
-			return [nextIdentifier.id, {
-				value: nextIdentifier.value,
-				identifier_type: {
-					identifier_type_id: nextIdentifier.typeId
-				}
-			}];
-		}
+
+		// Modify the alias
+		req.body.identifiers.shift();
+		return [nextIdentifier.id, {
+			value: nextIdentifier.value,
+			identifier_type: {
+				identifier_type_id: nextIdentifier.typeId
+			}
+		}];
 	});
 
 	const newIdentifiers = req.body.identifiers.map((identifier) => {
@@ -397,14 +396,13 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 		if (identifier.id) {
 			return null;
 		}
-		else {
-			return [null, {
-				value: identifier.value,
-				identifier_type: {
-					identifier_type_id: identifier.typeId
-				}
-			}];
-		}
+
+		return [null, {
+			value: identifier.value,
+			identifier_type: {
+				identifier_type_id: identifier.typeId
+			}
+		}];
 	});
 
 	changes.identifiers = currentIdentifiers.concat(newIdentifiers);

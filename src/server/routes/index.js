@@ -125,16 +125,13 @@ router.get('/search', (req, res) => {
 					case 'Publisher':
 						model = Publisher;
 						break;
+					default:
+						return null;
 				}
 
-				if (model) {
-					return model.findOne(entity_stub.entity_gid, {
-						populate: ['disambiguation']
-					});
-				}
-				else {
-					return null;
-				}
+				return model.findOne(entity_stub.entity_gid, {
+					populate: ['disambiguation']
+				});
 			});
 		})
 		.then((entities) => {

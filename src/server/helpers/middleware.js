@@ -40,11 +40,9 @@ function makeLoader(model, propName, sortFunc) {
 	return function(req, res, next) {
 		model.find()
 			.then((results) => {
-				if (sortFunc) {
-					results = results.sort(sortFunc);
-				}
+				res.locals[propName] =
+					sortFunc ? results.sort(sortFunc) : results;
 
-				res.locals[propName] = results;
 				next();
 			})
 			.catch(next);
@@ -73,7 +71,7 @@ middleware.loadLanguages = makeLoader(Language, 'languages', (a, b) => {
 
 middleware.loadEntityRelationships = function(req, res, next) {
 	if (!res.locals.entity) {
-		next(new Error('Entity failed to load'));
+		return next(new Error('Entity failed to load'));
 	}
 
 	const entity = res.locals.entity;
@@ -141,9 +139,8 @@ middleware.makeEntityLoader = function(model, errMessage) {
 					next(err);
 				});
 		}
-		else {
-			next('route');
-		}
+
+		return next('route');
 	};
 };
 

@@ -55,16 +55,14 @@ const IdentifierRow = React.createClass({
 			if (regex.test(this.props.value)) {
 				return 'success';
 			}
-			else {
-				return 'error';
-			}
+			return 'error';
 		}
-		else if (this.props.value) {
+
+		if (this.props.value) {
 			return false;
 		}
-		else {
-			return null;
-		}
+
+		return null;
 	},
 	getValid() {
 		'use strict';
@@ -81,9 +79,8 @@ const IdentifierRow = React.createClass({
 			const regex = new RegExp(selectedType.validation_regex);
 			return regex.test(value);
 		}
-		else {
-			return false;
-		}
+
+		return false;
 	},
 	render() {
 		'use strict';
