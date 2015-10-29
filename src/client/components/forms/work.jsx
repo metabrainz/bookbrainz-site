@@ -79,9 +79,9 @@ module.exports = React.createClass({
 
 		const data = {
 			aliases: aliasData,
-			languages: workData.languages.map(function(l) {
-				return parseInt(l);
-			}),
+			languages: workData.languages.map(
+				(languageId) => parseInt(languageId, 10)
+			),
 			workTypeId: parseInt(workData.workType),
 			disambiguation: workData.disambiguation,
 			annotation: workData.annotation,
@@ -94,33 +94,34 @@ module.exports = React.createClass({
 		const self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then(function(revision) {
+			.then((revision) => {
 				if (!revision.body || !revision.body.entity) {
 					window.location.replace('/login');
 					return;
 				}
 				window.location.href = '/work/' + revision.body.entity.entity_gid;
 			})
-			.catch(function(err) {
-				self.setState({error: err});
+			.catch((error) => {
+				self.setState({error});
 			});
 	},
 	render() {
 		'use strict';
 
 		let aliases = null;
-		if (this.props.work) {
-			const self = this;
-			aliases = this.props.work.aliases.map(function(alias) {
-				return {
+		const prefillData = this.props.work;
+		if (prefillData) {
+			aliases = prefillData.aliases.map((alias) => (
+				{
 					id: alias.id,
 					name: alias.name,
 					sortName: alias.sort_name,
-					language: alias.language ? alias.language.language_id : null,
+					language: alias.language ?
+						alias.language.language_id : null,
 					primary: alias.primary,
-					default: (alias.id === self.props.work.default_alias.alias_id)
-				};
-			});
+					default: alias.id === prefillData.default_alias.alias_id
+				}
+			));
 		}
 
 		const submitEnabled = (this.state.aliasesValid && this.state.dataValid);

@@ -66,7 +66,7 @@ Model.prototype.extend = function(fields) {
 		throw new Error('Model defined without any fields');
 	}
 
-	Object.keys(fields).forEach(function(fieldKey) {
+	Object.keys(fields).forEach((fieldKey) => {
 		const field = fields[fieldKey];
 
 		if (typeof field !== 'object') {
@@ -83,6 +83,7 @@ Model.prototype.extend = function(fields) {
 	this.fields = _.extend(this.fields, fields);
 };
 
+/* eslint consistent-this: 0 */
 Model.prototype._fetchSingleResult = function(result, options) {
 	let model = this;
 	const object = {};
@@ -104,7 +105,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 		return null;
 	}
 
-	Object.keys(model.fields).forEach(function(key) {
+	Object.keys(model.fields).forEach((key) => {
 		const field = model.fields[key];
 
 		const resultsField = field.map || key;
@@ -163,14 +164,14 @@ Model.prototype.find = function(options) {
 		accessToken: options.accessToken,
 		params: options.params
 	})
-		.then(function(result) {
+		.then((result) => {
 			if (!Array.isArray(result.objects)) {
 				throw new Error('Array expected, but received object');
 			}
 
 			const promises = [];
 
-			result.objects.forEach(function(object) {
+			result.objects.forEach((object) => {
 				promises.push(self._fetchSingleResult(object, options));
 			});
 
@@ -212,7 +213,7 @@ Model.prototype.findOne = function(id, options) {
 		accessToken: options.accessToken,
 		params: options.params
 	})
-		.then(function(result) {
+		.then((result) => {
 			if (result.objects && Array.isArray(result.objects)) {
 				throw new Error('Object expected, but received array');
 			}
@@ -240,7 +241,7 @@ Model.prototype.create = function(data, options) {
 		wsOptions.accessToken = options.session.bearerToken;
 	}
 
-	Object.keys(this.fields).forEach(function(key) {
+	Object.keys(this.fields).forEach((key) => {
 		object[key] = data[key];
 	});
 
@@ -266,7 +267,7 @@ Model.prototype.update = function(id, data, options) {
 		wsOptions.accessToken = options.session.bearerToken;
 	}
 
-	Object.keys(this.fields).forEach(function(key) {
+	Object.keys(this.fields).forEach((key) => {
 		object[key] = data[key];
 	});
 
@@ -292,7 +293,7 @@ Model.prototype.del = function(id, data, options) {
 		wsOptions.accessToken = options.session.bearerToken;
 	}
 
-	Object.keys(this.fields).forEach(function(key) {
+	Object.keys(this.fields).forEach((key) => {
 		object[key] = data[key];
 	});
 

@@ -71,20 +71,23 @@ const CreatorData = React.createClass({
 		let initialAnnotation = null;
 		let initialIdentifiers = [];
 
-		if (this.props.creator) {
-			initialBeginDate = this.props.creator.begin_date;
-			initialEndDate = this.props.creator.end_date;
-			initialGender = this.props.creator.gender ? this.props.creator.gender.gender_id : null;
-			initialCreatorType = this.props.creator.creator_type ? this.props.creator.creator_type.creator_type_id : null;
-			initialDisambiguation = this.props.creator.disambiguation ? this.props.creator.disambiguation.comment : null;
-			initialAnnotation = this.props.creator.annotation ? this.props.creator.annotation.content : null;
-			initialIdentifiers = this.props.creator.identifiers.map(function(identifier) {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+		const prefillData = this.props.creator;
+		if (prefillData) {
+			initialBeginDate = prefillData.begin_date;
+			initialEndDate = prefillData.end_date;
+			initialGender = prefillData.gender ?
+				prefillData.gender.gender_id : null;
+			initialCreatorType = prefillData.creator_type ?
+				prefillData.creator_type.creator_type_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
 		const select2Options = {

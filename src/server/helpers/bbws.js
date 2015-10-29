@@ -71,9 +71,7 @@ function _execRequest(requestType, path, options) {
 
 	return request
 		.promise()
-		.then(function(response) {
-			return response.body;
-		})
+		.then((response) => response.body)
 		.catch(_processError);
 }
 

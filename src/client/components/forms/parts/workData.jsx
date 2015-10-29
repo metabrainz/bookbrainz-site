@@ -50,20 +50,23 @@ const WorkData = React.createClass({
 		let initialDisambiguation = null;
 		let initialAnnotation = null;
 		let initialIdentifiers = [];
-		if (this.props.work) {
-			initialLanguages = this.props.work.languages.map(function(language) {
+
+		const prefillData = this.props.work;
+		if (prefillData) {
+			initialLanguages = prefillData.languages.map((language) => {
 				return language.language_id;
 			});
-			initialWorkType = this.props.work.work_type ? this.props.work.work_type.work_type_id : null;
-			initialDisambiguation = this.props.work.disambiguation ? this.props.work.disambiguation.comment : null;
-			initialAnnotation = this.props.work.annotation ? this.props.work.annotation.content : null;
-			initialIdentifiers = this.props.work.identifiers.map(function(identifier) {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+			initialWorkType = prefillData.work_type ?
+				prefillData.work_type.work_type_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
 		const select2Options = {

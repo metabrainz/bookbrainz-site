@@ -29,17 +29,17 @@ auth.init = function(app) {
 	passport.use(new BBWSStrategy({
 		wsURL: config.site.webservice,
 		clientID: config.site.clientID
-	}, function(req, accessToken, refreshToken, profile, done) {
+	}, (req, accessToken, refreshToken, profile, done) => {
 		req.session.bearerToken = accessToken;
 
 		done(null, profile);
 	}));
 
-	passport.serializeUser(function(user, done) {
+	passport.serializeUser((user, done) => {
 		done(null, user);
 	});
 
-	passport.deserializeUser(function(user, done) {
+	passport.deserializeUser((user, done) => {
 		done(null, user);
 	});
 
@@ -54,7 +54,7 @@ auth.authenticate = function() {
 			password: req.body.password
 		};
 
-		function callback(err) {
+		passport.authenticate('bbws', options)(req, res, (err) => {
 			if (err) {
 				console.log(err.stack);
 
@@ -74,9 +74,7 @@ auth.authenticate = function() {
 			}
 
 			next();
-		}
-
-		passport.authenticate('bbws', options)(req, res, callback);
+		});
 	};
 };
 

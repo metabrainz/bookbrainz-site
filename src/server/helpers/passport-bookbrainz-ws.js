@@ -44,7 +44,7 @@ util.inherits(BBWSStrategy, PasswordGrantStrategy);
 
 BBWSStrategy.prototype.userProfile = function(accessToken, done) {
 	User.getCurrent(accessToken)
-		.then(function(user) {
+		.then((user) => {
 			const profile = {
 				id: user.id,
 				name: user.name
@@ -52,7 +52,7 @@ BBWSStrategy.prototype.userProfile = function(accessToken, done) {
 
 			done(null, profile);
 		})
-		.catch(function(err) {
+		.catch((err) => {
 			console.log(err.stack);
 			return done(new Error('Internal error fetching user profile'));
 		});

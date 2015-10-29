@@ -19,8 +19,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const express = require('express');
 const router = express.Router();
 const auth = require('../../helpers/auth');
@@ -47,21 +45,21 @@ const _ = require('underscore');
 /* If the route specifies a BBID, load the Publisher for it. */
 router.param('bbid', makeEntityLoader(Publisher, 'Publisher not found'));
 
-router.get('/:bbid', loadEntityRelationships, function(req, res) {
+router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const publisher = res.locals.entity;
 	let title = 'Publisher';
 
-	publisher.editions = publisher.editions.map(function(edition) {
-		return Edition.findOne(edition.bbid, {
+	publisher.editions = publisher.editions.map((edition) =>
+		Edition.findOne(edition.bbid, {
 			populate: ['disabmiguation', 'aliases']
-		});
-	});
+		})
+	);
 
 	if (publisher.default_alias && publisher.default_alias.name) {
 		title = 'Publisher “' + publisher.default_alias.name + '”';
 	}
 
-	Promise.all(publisher.editions).then(function(editions) {
+	Promise.all(publisher.editions).then((editions) => {
 		publisher.editions = editions;
 
 		// Get unique identifier types for display
@@ -74,7 +72,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	});
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	const publisher = res.locals.entity;
 	let title = 'Publisher';
 
@@ -85,7 +83,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 	res.render('entity/delete', {title});
 });
 
-router.post('/:bbid/delete/confirm', function(req, res) {
+router.post('/:bbid/delete/confirm', (req, res) => {
 	const publisher = res.locals.entity;
 
 	Publisher.del(
@@ -93,12 +91,12 @@ router.post('/:bbid/delete/confirm', function(req, res) {
 		{revision: {note: req.body.note}},
 		{session: req.session}
 	)
-		.then(function() {
-			res.redirect(303, '/publisher/' + publisher.bbid);
+		.then(() => {
+			res.redirect(303, `/publisher/${publisher.bbid}`);
 		});
 });
 
-router.get('/:bbid/revisions', function(req, res) {
+router.get('/:bbid/revisions', (req, res) => {
 	const publisher = res.locals.entity;
 	let title = 'Publisher';
 
@@ -107,15 +105,16 @@ router.get('/:bbid/revisions', function(req, res) {
 	}
 
 	bbws.get('/publisher/' + publisher.bbid + '/revisions')
-		.then(function(revisions) {
+		.then((revisions) => {
 			const promisedUsers = {};
-			revisions.objects.forEach(function(revision) {
+			revisions.objects.forEach((revision) => {
 				if (!promisedUsers[revision.user.user_id]) {
-					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
+					promisedUsers[revision.user.user_id] =
+						User.findOne(revision.user.user_id);
 				}
 			});
 
-			Promise.props(promisedUsers).then(function(users) {
+			Promise.props(promisedUsers).then((users) => {
 				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
@@ -123,48 +122,52 @@ router.get('/:bbid/revisions', function(req, res) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, loadPublisherTypes, function(req, res) {
-	const props = {
-		languages: res.locals.languages,
-		publisherTypes: res.locals.publisherTypes,
-		identifierTypes: res.locals.identifierTypes,
-		submissionUrl: '/publisher/create/handler'
-	};
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages,
+	loadPublisherTypes, (req, res) => {
+		const props = {
+			languages: res.locals.languages,
+			publisherTypes: res.locals.publisherTypes,
+			identifierTypes: res.locals.identifierTypes,
+			submissionUrl: '/publisher/create/handler'
+		};
 
-	const markup = React.renderToString(EditForm(props));
+		const markup = React.renderToString(EditForm(props));
 
-	res.render('entity/create/publisher', {
-		title: 'Add Publisher',
-		heading: 'Create Publisher',
-		subheading: 'Add a new Publisher to BookBrainz',
-		props,
-		markup
-	});
-});
+		res.render('entity/create/publisher', {
+			title: 'Add Publisher',
+			heading: 'Create Publisher',
+			subheading: 'Add a new Publisher to BookBrainz',
+			props,
+			markup
+		});
+	}
+);
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublisherTypes, loadLanguages, function(req, res) {
-	const publisher = res.locals.entity;
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
+	loadPublisherTypes, loadLanguages, (req, res) => {
+		const publisher = res.locals.entity;
 
-	const props = {
-		languages: res.locals.languages,
-		publisherTypes: res.locals.publisherTypes,
-		publisher,
-		identifierTypes: res.locals.identifierTypes,
-		submissionUrl: '/publisher/' + publisher.bbid + '/edit/handler'
-	};
+		const props = {
+			languages: res.locals.languages,
+			publisherTypes: res.locals.publisherTypes,
+			publisher,
+			identifierTypes: res.locals.identifierTypes,
+			submissionUrl: `/publisher/${publisher.bbid}/edit/handler`
+		};
 
-	const markup = React.renderToString(EditForm(props));
+		const markup = React.renderToString(EditForm(props));
 
-	res.render('entity/create/publisher', {
-		title: 'Edit Publisher',
-		heading: 'Edit Publisher',
-		subheading: 'Edit an existing Publisher in BookBrainz',
-		props,
-		markup
-	});
-});
+		res.render('entity/create/publisher', {
+			title: 'Edit Publisher',
+			heading: 'Edit Publisher',
+			subheading: 'Edit an existing Publisher in BookBrainz',
+			props,
+			markup
+		});
+	}
+);
 
-router.post('/create/handler', auth.isAuthenticated, function(req, res) {
+router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 	const changes = {
 		bbid: null
 	};
@@ -201,7 +204,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	const newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map((identifier) => {
 		return {
 			value: identifier.value,
 			identifier_type: {
@@ -216,7 +219,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
+	req.body.aliases.forEach((alias) => {
 		if (!alias.name && !alias.sortName) {
 			return;
 		}
@@ -237,12 +240,10 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	Publisher.create(changes, {
 		session: req.session
 	})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		.then(res.send);
 });
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const publisher = res.locals.entity;
 
 	const changes = {
@@ -287,7 +288,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	const currentIdentifiers = publisher.identifiers.map(function(identifier) {
+	const currentIdentifiers = publisher.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
 		if (identifier.id !== nextIdentifier.id) {
@@ -306,7 +307,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	const newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map((identifier) => {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (identifier.id) {
 			return null;
@@ -325,7 +326,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	const currentAliases = [];
 
-	publisher.aliases.forEach(function(alias) {
+	publisher.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
 		if (alias.id !== nextAlias.id) {
@@ -347,7 +348,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
+	req.body.aliases.forEach((alias) => {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (alias.id || (!alias.name && !alias.sortName)) {
 			return;
@@ -367,9 +368,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	Publisher.update(publisher.bbid, changes, {
 		session: req.session
 	})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		.then(res.send);
 });
 
 module.exports = router;

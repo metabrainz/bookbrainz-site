@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint global-require: 0, no-var: 0 */
+
 const Input = require('react-bootstrap').Input;
 const React = require('react');
 
@@ -74,16 +76,14 @@ const Select = React.createClass({
 		const self = this;
 		let options = [];
 		if (this.props.options) {
-			options = this.props.options.map(function(op) {
-				return (
-					<option
-						key={op[self.props.idAttribute]}
-						value={op[self.props.idAttribute]}
-					>
-						{op[self.props.labelAttribute]}
-					</option>
-				);
-			});
+			options = this.props.options.map((op) =>
+				<option
+					key={op[self.props.idAttribute]}
+					value={op[self.props.idAttribute]}
+				>
+					{op[self.props.labelAttribute]}
+				</option>
+			);
 		}
 
 		if (this.props.placeholder) {

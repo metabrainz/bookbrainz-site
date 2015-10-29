@@ -30,9 +30,9 @@ const Promise = require('bluebird');
 const NotFoundError = require('../helpers/error').NotFoundError;
 const ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
 
-router.get('/edit', auth.isAuthenticated, function(req, res, next) {
+router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	User.getCurrent(req.session.bearerToken)
-		.then(function(user) {
+		.then((user) => {
 			const props = {
 				id: user.id,
 				email: user.email,
@@ -43,13 +43,13 @@ router.get('/edit', auth.isAuthenticated, function(req, res, next) {
 
 			res.render('editor/edit', {props, markup});
 		})
-		.catch(function() {
+		.catch(() => {
 			next(new Error('An internal error occurred while loading profile'));
 		});
 });
 
-router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
-	/* Should handle errors in some fashion other than redirecting. */
+router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
+	// Should handle errors in some fashion other than redirecting.
 	if (req.body.id !== req.user.id) {
 		req.session.error = 'You do not have permission to edit that user';
 		res.redirect(303, '/editor/edit');
@@ -60,16 +60,15 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 		{bio: req.body.bio, email: req.body.email},
 		{accessToken: req.session.bearerToken}
 	)
-		.then(function(user) {
-			res.send(user);
-		})
-		.catch(function() {
-			req.session.error = 'An internal error occurred while modifying profile';
+		.then(res.send)
+		.catch(() => {
+			req.session.error =
+				'An internal error occurred while modifying profile';
 			res.redirect(303, '/editor/edit');
 		});
 });
 
-router.get('/:id', function(req, res, next) {
+router.get('/:id', (req, res, next) => {
 	let userPromise = null;
 
 	const requestedId = parseInt(req.params.id);
@@ -81,24 +80,23 @@ router.get('/:id', function(req, res, next) {
 	}
 
 	userPromise
-		.then(function(editor) {
+		.then((editor) => {
 			res.render('editor/editor', {editor});
 		})
-		.catch(function(err) {
+		.catch((err) => {
 			console.log(err.stack);
 			next(new NotFoundError('Editor not found'));
 		});
 });
 
-router.get('/:id/revisions', function(req, res, next) {
+router.get('/:id/revisions', (req, res, next) => {
 	const userPromise = User.findOne(req.params.id);
 	const revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
 
-	Promise.join(userPromise, revisionsPromise,
-			function(editor, revisions) {
-				res.render('editor/revisions', {editor, revisions});
-			})
-		.catch(function(err) {
+	Promise.join(userPromise, revisionsPromise, (editor, revisions) => {
+		res.render('editor/revisions', {editor, revisions});
+	})
+		.catch((err) => {
 			console.log(err.stack);
 			next(new NotFoundError('Editor not found'));
 		});

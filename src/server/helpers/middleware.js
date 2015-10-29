@@ -39,7 +39,7 @@ const NotFoundError = require('../helpers/error').NotFoundError;
 function makeLoader(model, propName, sortFunc) {
 	return function(req, res, next) {
 		model.find()
-			.then(function(results) {
+			.then((results) => {
 				if (sortFunc) {
 					results = results.sort(sortFunc);
 				}
@@ -61,11 +61,9 @@ middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
 middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
 middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
 
-middleware.loadGenders = makeLoader(Gender, 'genders', function(a, b) {
-	return a.id > b.id;
-});
+middleware.loadGenders = makeLoader(Gender, 'genders', (a, b) => a.id > b.id);
 
-middleware.loadLanguages = makeLoader(Language, 'languages', function(a, b) {
+middleware.loadLanguages = makeLoader(Language, 'languages', (a, b) => {
 	if (a.frequency !== b.frequency) {
 		return b.frequency - a.frequency;
 	}
@@ -79,23 +77,25 @@ middleware.loadEntityRelationships = function(req, res, next) {
 	}
 
 	const entity = res.locals.entity;
-	Promise.map(entity.relationships, function(relationship) {
+	Promise.map(entity.relationships, (relationship) => {
 		relationship.template = relationship.relationship_type.template;
 
-		const relEntities = relationship.entities.sort(function sortRelationshipEntity(a, b) {
-			return a.position - b.position;
-		});
+		const relEntities = relationship.entities.sort(
+			(a, b) => a.position - b.position
+		);
 
-		return Promise.map(relEntities, function(relEntity) {
-			return Entity.findOne(relEntity.entity.entity_gid);
-		})
-			.then(function(loadedEntities) {
-				relationship.rendered = renderRelationship(loadedEntities, relationship, null);
+		return Promise.map(
+			relEntities,
+			(relEntity) => Entity.findOne(relEntity.entity.entity_gid)
+		)
+			.then((loadedEntities) => {
+				relationship.rendered =
+					renderRelationship(loadedEntities, relationship, null);
 
 				return relationship;
 			});
 	})
-		.then(function(relationships) {
+		.then((relationships) => {
 			res.locals.entity.relationships = relationships;
 
 			next();
@@ -127,12 +127,12 @@ middleware.makeEntityLoader = function(model, errMessage) {
 			}
 
 			model.findOne(req.params.bbid, {populate})
-				.then(function(entity) {
+				.then((entity) => {
 					res.locals.entity = entity;
 
 					next();
 				})
-				.catch(function(err) {
+				.catch((err) => {
 					if (err.status === 404) {
 						const newErr = new NotFoundError(errMessage);
 						return next(newErr);

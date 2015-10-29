@@ -30,8 +30,8 @@ const config = require('../../helpers/config');
 
 const relationshipHelper = {};
 
-relationshipHelper.addEditRoutes = function(router) {
-	router.get('/:bbid/relationships', auth.isAuthenticated, function relationshipEditor(req, res) {
+relationshipHelper.addEditRoutes = function addEditRoutes(router) {
+	router.get('/:bbid/relationships', auth.isAuthenticated, (req, res) => {
 		const relationshipTypesPromise = RelationshipType.find();
 		const entityPromise = Entity.findOne(req.params.bbid, {
 			populate: [
@@ -40,7 +40,7 @@ relationshipHelper.addEditRoutes = function(router) {
 		});
 
 		Promise.join(entityPromise, relationshipTypesPromise,
-			function(entity, relationshipTypes) {
+			(entity, relationshipTypes) => {
 				const props = {
 					relationshipTypes,
 					targetEntity: entity,
@@ -50,22 +50,22 @@ relationshipHelper.addEditRoutes = function(router) {
 				const markup = React.renderToString(EditForm(props));
 
 				res.render('relationship/edit', {props, markup});
+			}
+		);
+	});
+
+	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
+		(req, res) => {
+			req.body.forEach((relationship) => {
+				// Send a relationship revision for each of the relationships
+				const changes = relationship;
+
+				Relationship.create(changes, {
+					session: req.session
+				}).then(res.send);
 			});
-	});
-
-	router.post('/:bbid/relationships/handler', auth.isAuthenticated, function(req, res) {
-		req.body.forEach(function(relationship) {
-			// Send a relationship revision for each of the relationships
-			const changes = relationship;
-
-			Relationship.create(changes, {
-				session: req.session
-			})
-				.then(function(revision) {
-					res.send(revision);
-				});
-		});
-	});
+		}
+	);
 };
 
 module.exports = relationshipHelper;

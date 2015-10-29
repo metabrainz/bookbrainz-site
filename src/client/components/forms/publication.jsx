@@ -85,36 +85,33 @@ module.exports = React.createClass({
 
 		this.setState({waiting: true});
 
-		const self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then(function(revision) {
+			.then((revision) => {
 				if (!revision.body || !revision.body.entity) {
 					window.location.replace('/login');
 					return;
 				}
 				window.location.href = '/publication/' + revision.body.entity.entity_gid;
 			})
-			.catch(function(err) {
-				self.setState({error: err});
+			.catch((error) => {
+				this.setState({error});
 			});
 	},
 	render() {
 		'use strict';
 
 		let aliases = null;
-		if (this.props.publication) {
-			const self = this;
-			aliases = this.props.publication.aliases.map(function(alias) {
-				return {
-					id: alias.id,
-					name: alias.name,
-					sortName: alias.sort_name,
-					language: alias.language ? alias.language.language_id : null,
-					primary: alias.primary,
-					default: (alias.id === self.props.publication.default_alias.alias_id)
-				};
-			});
+		const prefillData = this.props.publication;
+		if (prefillData) {
+			aliases = prefillData.aliases.map((alias) => ({
+				id: alias.id,
+				name: alias.name,
+				sortName: alias.sort_name,
+				language: alias.language ? alias.language.language_id : null,
+				primary: alias.primary,
+				default: alias.id === prefillData.default_alias.alias_id
+			}));
 		}
 
 		const submitEnabled = (this.state.aliasesValid && this.state.dataValid);

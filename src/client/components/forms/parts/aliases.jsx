@@ -148,7 +148,7 @@ const AliasList = React.createClass({
 			default: false
 		});
 
-		existing.forEach(function(alias, i) {
+		existing.forEach((alias, i) => {
 			alias.key = i;
 		});
 
@@ -189,8 +189,8 @@ const AliasList = React.createClass({
 				(!updatedAlias.primary && index === this.state.aliases.length - 1)) {
 			const updatedAliases = this.getValue();
 
-			updatedAliases.forEach(function(alias, idx) {
-				alias.key = self.state.aliases[idx].key;
+			updatedAliases.forEach((alias, idx) => {
+				alias.key = this.state.aliases[idx].key;
 			});
 
 			let rowsSpawned = this.state.rowsSpawned;
@@ -234,12 +234,11 @@ const AliasList = React.createClass({
 	handleRemove(index) {
 		'use strict';
 
-		const self = this;
 		const updatedAliases = this.getValue();
 
 		if (index !== this.state.aliases.length - 1) {
-			updatedAliases.forEach(function(alias, idx) {
-				alias.key = self.state.aliases[idx].key;
+			updatedAliases.forEach((alias, idx) => {
+				alias.key = this.state.aliases[idx].key;
 			});
 
 			updatedAliases.splice(index, 1);
@@ -253,7 +252,7 @@ const AliasList = React.createClass({
 		'use strict';
 
 		const self = this;
-		const rows = this.state.aliases.map(function(alias, index) {
+		const rows = this.state.aliases.map((alias, index) => {
 			return (
 				<AliasRow
 					aliasId={alias.id}

@@ -69,19 +69,21 @@ const PublisherData = React.createClass({
 		let initialAnnotation = null;
 		let initialIdentifiers = [];
 
-		if (this.props.publisher) {
-			initialBeginDate = this.props.publisher.begin_date;
-			initialEndDate = this.props.publisher.end_date;
-			initialPublisherType = this.props.publisher.publisher_type ? this.props.publisher.publisher_type.publisher_type_id : null;
-			initialDisambiguation = this.props.publisher.disambiguation ? this.props.publisher.disambiguation.comment : null;
-			initialAnnotation = this.props.publisher.annotation ? this.props.publisher.annotation.content : null;
-			initialIdentifiers = this.props.publisher.identifiers.map(function(identifier) {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+		const prefillData = this.props.publisher;
+		if (prefillData) {
+			initialBeginDate = prefillData.begin_date;
+			initialEndDate = prefillData.end_date;
+			initialPublisherType = prefillData.publisher_type ?
+				prefillData.publisher_type.publisher_type_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
 		const select2Options = {

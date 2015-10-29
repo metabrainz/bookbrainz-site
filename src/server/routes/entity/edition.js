@@ -19,8 +19,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const express = require('express');
 const router = express.Router();
 const auth = require('../../helpers/auth');
@@ -48,7 +46,7 @@ const _ = require('underscore');
 /* If the route specifies a BBID, load the Edition for it. */
 router.param('bbid', makeEntityLoader(Edition, 'Edition not found'));
 
-router.get('/:bbid', loadEntityRelationships, function(req, res) {
+router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const edition = res.locals.entity;
 	let title = 'Edition';
 
@@ -65,7 +63,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	res.render('entity/view/edition', {title, identifier_types});
 });
 
-router.get('/:bbid/revisions', function(req, res) {
+router.get('/:bbid/revisions', (req, res) => {
 	const edition = res.locals.entity;
 	let title = 'Edition';
 
@@ -74,21 +72,21 @@ router.get('/:bbid/revisions', function(req, res) {
 	}
 
 	bbws.get('/edition/' + edition.bbid + '/revisions')
-		.then(function(revisions) {
+		.then((revisions) => {
 			const promisedUsers = {};
-			revisions.objects.forEach(function(revision) {
+			revisions.objects.forEach((revision) => {
 				if (!promisedUsers[revision.user.user_id]) {
 					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
 				}
 			});
 
-			Promise.props(promisedUsers).then(function(users) {
+			Promise.props(promisedUsers).then((users) => {
 				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	const edition = res.locals.entity;
 	let title = 'Edition';
 
@@ -99,7 +97,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 	res.render('entity/delete', {title});
 });
 
-router.post('/:bbid/delete/confirm', function(req, res) {
+router.post('/:bbid/delete/confirm', (req, res) => {
 	const edition = res.locals.entity;
 
 	Edition.del(
@@ -107,69 +105,74 @@ router.post('/:bbid/delete/confirm', function(req, res) {
 		{revision: {note: req.body.note}},
 		{session: req.session}
 	)
-		.then(function() {
+		.then(() => {
 			res.redirect(303, `/edition/${edition.bbid}`);
 		});
 });
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadEditionFormats, loadLanguages, function(req, res) {
-	const propsPromise = {
-		languages: res.locals.languages,
-		editionStatuses: res.locals.editionStatuses,
-		editionFormats: res.locals.editionFormats,
-		identifierTypes: res.locals.identifierTypes,
-		submissionUrl: '/edition/create/handler'
-	};
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
+	loadEditionStatuses, loadEditionFormats, loadLanguages, (req, res) => {
+		const propsPromise = {
+			languages: res.locals.languages,
+			editionStatuses: res.locals.editionStatuses,
+			editionFormats: res.locals.editionFormats,
+			identifierTypes: res.locals.identifierTypes,
+			submissionUrl: '/edition/create/handler'
+		};
 
-	if (req.query.publication) {
-		propsPromise.publication = Publication.findOne(req.query.publication);
+		if (req.query.publication) {
+			propsPromise.publication =
+				Publication.findOne(req.query.publication);
+		}
+
+		if (req.query.publisher) {
+			propsPromise.publisher = Publisher.findOne(req.query.publisher);
+		}
+
+		function render(props) {
+			const markup = React.renderToString(EditForm(props));
+
+			res.render('entity/create/edition', {
+				title: 'Add Edition',
+				heading: 'Create Edition',
+				subheading: 'Add a new Edition to BookBrainz',
+				props,
+				markup
+			});
+		}
+
+		Promise.props(propsPromise).then(render);
 	}
+);
 
-	if (req.query.publisher) {
-		propsPromise.publisher = Publisher.findOne(req.query.publisher);
-	}
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
+	loadEditionStatuses, loadEditionFormats, loadLanguages, (req, res) => {
+		const edition = res.locals.entity;
 
-	function render(props) {
+		const props = {
+			languages: res.locals.languages,
+			editionStatuses: res.locals.editionStatuses,
+			editionFormats: res.locals.editionFormats,
+			identifierTypes: res.locals.identifierTypes,
+			edition,
+			submissionUrl: `/edition/${edition.bbid}/edit/handler`
+		};
+
 		const markup = React.renderToString(EditForm(props));
 
 		res.render('entity/create/edition', {
-			title: 'Add Edition',
-			heading: 'Create Edition',
-			subheading: 'Add a new Edition to BookBrainz',
+			title: 'Edit Edition',
+			heading: 'Edit Edition',
+			subheading: 'Edit an existing Edition in BookBrainz',
 			props,
 			markup
 		});
 	}
+);
 
-	Promise.props(propsPromise).then((resolvedProps) => render(resolvedProps));
-});
-
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadEditionStatuses, loadEditionFormats, loadLanguages, function(req, res) {
-	const edition = res.locals.entity;
-
-	const props = {
-		languages: res.locals.languages,
-		editionStatuses: res.locals.editionStatuses,
-		editionFormats: res.locals.editionFormats,
-		identifierTypes: res.locals.identifierTypes,
-		edition,
-		submissionUrl: '/edition/' + edition.bbid + '/edit/handler'
-	};
-
-	const markup = React.renderToString(EditForm(props));
-
-	res.render('entity/create/edition', {
-		title: 'Edit Edition',
-		heading: 'Edit Edition',
-		subheading: 'Edit an existing Edition in BookBrainz',
-		props,
-		markup
-	});
-});
-
-router.post('/create/handler', auth.isAuthenticated, function(req, res) {
+router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 	const changes = {
 		bbid: null
 	};
@@ -238,14 +241,12 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	const newIdentifiers = req.body.identifiers.map(function(identifier) {
-		return {
-			value: identifier.value,
-			identifier_type: {
-				identifier_type_id: identifier.typeId
-			}
-		};
-	});
+	const newIdentifiers = req.body.identifiers.map((identifier) => ({
+		value: identifier.value,
+		identifier_type: {
+			identifier_type_id: identifier.typeId
+		}
+	}));
 
 	if (newIdentifiers.length) {
 		changes.identifiers = newIdentifiers;
@@ -253,7 +254,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
+	req.body.aliases.forEach((alias) => {
 		if (!alias.name && !alias.sortName) {
 			return;
 		}
@@ -274,12 +275,10 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	Edition.create(changes, {
 		session: req.session
 	})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		.then(res.send);
 });
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const edition = res.locals.entity;
 
 	const changes = {
@@ -367,7 +366,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	const currentIdentifiers = edition.identifiers.map(function(identifier) {
+	const currentIdentifiers = edition.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
 		if (identifier.id !== nextIdentifier.id) {
@@ -386,7 +385,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	const newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map((identifier) => {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (identifier.id) {
 			return null;
@@ -405,7 +404,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	const currentAliases = [];
 
-	edition.aliases.forEach(function(alias) {
+	edition.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
 		if (alias.id !== nextAlias.id) {
@@ -427,7 +426,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
+	req.body.aliases.forEach((alias) => {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (alias.id || (!alias.name && !alias.sortName)) {
 			return;
@@ -447,9 +446,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	Edition.update(edition.bbid, changes, {
 		session: req.session
 	})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		.then(res.send);
 });
 
 module.exports = router;

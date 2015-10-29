@@ -73,33 +73,42 @@ const EditionData = React.createClass({
 
 		let publication = null;
 		let publisher = null;
-		if (this.props.edition) {
-			if (this.props.edition.publication) {
-				publication = this.props.edition.publication;
+		const prefillData = this.props.edition;
+		if (prefillData) {
+			if (prefillData.publication) {
+				publication = prefillData.publication;
 			}
 
-			if (this.props.edition.publisher) {
-				publisher = this.props.edition.publisher;
+			if (prefillData.publisher) {
+				publisher = prefillData.publisher;
 			}
 
-			initialReleaseDate = this.props.edition.release_date;
-			initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
-			initialEditionFormat = this.props.edition.edition_format ? this.props.edition.edition_format.edition_format_id : null;
-			initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
-			initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
-			initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
-			initialPages = (this.props.edition.pages || this.props.edition.pages === 0) ? this.props.edition.pages : null;
-			initialWidth = (this.props.edition.width || this.props.edition.width === 0) ? this.props.edition.width : null;
-			initialHeight = (this.props.edition.height || this.props.edition.height === 0) ? this.props.edition.height : null;
-			initialDepth = (this.props.edition.depth || this.props.edition.depth === 0) ? this.props.edition.depth : null;
-			initialWeight = (this.props.edition.weight || this.props.edition.weight === 0) ? this.props.edition.weight : null;
-			initialIdentifiers = this.props.edition.identifiers.map(function(identifier) {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+			initialReleaseDate = prefillData.release_date;
+			initialLanguage = prefillData.language ?
+				prefillData.language.language_id : null;
+			initialEditionFormat = prefillData.edition_format ?
+				prefillData.edition_format.edition_format_id : null;
+			initialEditionStatus = prefillData.edition_status ?
+				prefillData.edition_status.edition_status_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialPages = prefillData.pages || prefillData.pages === 0 ?
+				prefillData.pages : null;
+			initialWidth = prefillData.width || prefillData.width === 0 ?
+				prefillData.width : null;
+			initialHeight = prefillData.height || prefillData.height === 0 ?
+				prefillData.height : null;
+			initialDepth = prefillData.depth || prefillData.depth === 0 ?
+				prefillData.depth : null;
+			initialWeight = prefillData.weight || prefillData.weight === 0 ?
+				prefillData.weight : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
 		if (this.props.publication) {

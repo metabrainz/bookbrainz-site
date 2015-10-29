@@ -20,8 +20,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const express = require('express');
 const router = express.Router();
 const _ = require('underscore');
@@ -35,7 +33,7 @@ const Work = require('../data/entities/work');
 const Publisher = require('../data/entities/publisher');
 
 /* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
 	function render(revisions) {
 		res.render('index', {
 			recent: revisions,
@@ -51,43 +49,43 @@ router.get('/', function(req, res) {
 		populate: ['entity']
 	})
 		.then(render)
-		.catch(function(err) {
+		.catch((err) => {
 			console.log(err.stack);
 			render(null);
 		});
 });
 
-router.get('/about', function(req, res) {
+router.get('/about', (req, res) => {
 	res.render('about', {
 		title: 'About'
 	});
 });
 
-router.get('/contribute', function(req, res) {
+router.get('/contribute', (req, res) => {
 	res.render('contribute', {
 		title: 'Contribute'
 	});
 });
 
-router.get('/develop', function(req, res) {
+router.get('/develop', (req, res) => {
 	res.render('develop', {
 		title: 'Develop'
 	});
 });
 
-router.get('/privacy', function(req, res) {
+router.get('/privacy', (req, res) => {
 	res.render('privacy', {
 		title: 'Privacy'
 	});
 });
 
-router.get('/licensing', function(req, res) {
+router.get('/licensing', (req, res) => {
 	res.render('licensing', {
 		title: 'Licensing'
 	});
 });
 
-router.get('/search', function(req, res) {
+router.get('/search', (req, res) => {
 	const query = req.query.q;
 	const mode = req.query.mode || 'search';
 
@@ -103,12 +101,12 @@ router.get('/search', function(req, res) {
 	bbws.get('/search', {
 		params
 	})
-		.then(function(results) {
+		.then((results) => {
 			if (!results.hits) {
 				return null;
 			}
 
-			return Promise.map(results.hits, function(hit) {
+			return Promise.map(results.hits, (hit) => {
 				const entity_stub = hit._source;
 				let model = null;
 
@@ -140,7 +138,7 @@ router.get('/search', function(req, res) {
 				}
 			});
 		})
-		.then(function(entities) {
+		.then((entities) => {
 			if (mode === 'search') {
 				res.render('search', {
 					title: 'Search Results',
@@ -153,7 +151,7 @@ router.get('/search', function(req, res) {
 				res.json(entities);
 			}
 		})
-		.catch(function() {
+		.catch(() => {
 			const message = 'An error occurred while obtaining search results';
 
 			if (mode === 'search') {

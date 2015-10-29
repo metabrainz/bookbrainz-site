@@ -19,8 +19,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const Model = require('../helpers/model');
 require('../data/properties/alias');
 require('../data/properties/identifier');

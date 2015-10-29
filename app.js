@@ -85,7 +85,7 @@ app.use(session({
 auth.init(app);
 
 /* Add middleware to set variables used for every rendered route. */
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 	res.locals.user = req.user;
 
 	// Get the latest count of messages in the user's inbox.
@@ -93,17 +93,15 @@ app.use(function(req, res, next) {
 		bbws.get('/message/inbox/', {
 			accessToken: req.session.bearerToken
 		})
-			.then(function(list) {
+			.then((list) => {
 				res.locals.inboxCount = list.objects.length;
 			})
-			.catch(function(err) {
+			.catch((err) => {
 				console.log(err.stack);
 
 				res.locals.inboxCount = 0;
 			})
-			.finally(function() {
-				next();
-			});
+			.finally(next);
 	}
 	else {
 		res.locals.inboxCount = 0;
@@ -115,7 +113,7 @@ app.use(function(req, res, next) {
 require('./src/server/routes')(app);
 
 // Catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
 	const err = new Error('Not Found');
 	err.status = 404;
 	next(err);
@@ -125,7 +123,7 @@ app.use(function(req, res, next) {
 
 /* Development error handler; displays stacktrace to user */
 if (app.get('env') === 'development') {
-	app.use(function(err, req, res, next) {
+	app.use((err, req, res) => {
 		console.log('Internal Error. Message: ' + err.message + ' Stacktrace...');
 		console.log(err.stack);
 
@@ -139,7 +137,7 @@ if (app.get('env') === 'development') {
 }
 
 /* Production error handler; stacktrace is omitted */
-app.use(function(err, req, res, next) {
+app.use((err, req, res) => {
 	res.status(err.status || 500);
 
 	res.render('error', {

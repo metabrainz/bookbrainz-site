@@ -62,7 +62,7 @@ const EntitySearch = React.createClass({
 						return data;
 					}
 
-					results.forEach(function(result) {
+					results.forEach((result) => {
 						data.results.push({
 							id: result.bbid,
 							text: result.default_alias ?

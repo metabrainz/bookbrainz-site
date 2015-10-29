@@ -19,8 +19,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const express = require('express');
 const auth = require('../../helpers/auth');
 const Creator = require('../../data/entities/creator');
@@ -46,7 +44,7 @@ const _ = require('underscore');
 /* If the route specifies a BBID, load the Creator for it. */
 router.param('bbid', makeEntityLoader(Creator, 'Creator not found'));
 
-router.get('/:bbid', loadEntityRelationships, function(req, res) {
+router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const creator = res.locals.entity;
 	let title = 'Creator';
 
@@ -63,7 +61,7 @@ router.get('/:bbid', loadEntityRelationships, function(req, res) {
 	res.render('entity/view/creator', {title, identifier_types});
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	const creator = res.locals.entity;
 	let title = 'Creator';
 
@@ -74,7 +72,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
 	res.render('entity/delete', {title});
 });
 
-router.post('/:bbid/delete/confirm', function(req, res) {
+router.post('/:bbid/delete/confirm', (req, res) => {
 	const creator = res.locals.entity;
 
 	Creator.del(
@@ -82,12 +80,12 @@ router.post('/:bbid/delete/confirm', function(req, res) {
 		{revision: {note: req.body.note}},
 		{session: req.session}
 	)
-		.then(function() {
+		.then(() => {
 			res.redirect(303, '/creator/' + creator.bbid);
 		});
 });
 
-router.get('/:bbid/revisions', function(req, res) {
+router.get('/:bbid/revisions', (req, res) => {
 	const creator = res.locals.entity;
 	let title = 'Creator';
 
@@ -96,65 +94,69 @@ router.get('/:bbid/revisions', function(req, res) {
 	}
 
 	bbws.get('/creator/' + creator.bbid + '/revisions')
-		.then(function(revisions) {
+		.then((revisions) => {
 			const promisedUsers = {};
-			revisions.objects.forEach(function(revision) {
+			revisions.objects.forEach((revision) => {
 				if (!promisedUsers[revision.user.user_id]) {
 					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
 				}
 			});
 
-			Promise.props(promisedUsers).then(function(users) {
+			Promise.props(promisedUsers).then((users) => {
 				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
 });
 
 // Creation
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
-	const props = {
-		languages: res.locals.languages,
-		genders: res.locals.genders,
-		creatorTypes: res.locals.creatorTypes,
-		identifierTypes: res.locals.identifierTypes,
-		submissionUrl: '/creator/create/handler'
-	};
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
+	loadLanguages, loadCreatorTypes, (req, res) => {
+		const props = {
+			languages: res.locals.languages,
+			genders: res.locals.genders,
+			creatorTypes: res.locals.creatorTypes,
+			identifierTypes: res.locals.identifierTypes,
+			submissionUrl: '/creator/create/handler'
+		};
 
-	const markup = React.renderToString(EditForm(props));
+		const markup = React.renderToString(EditForm(props));
 
-	res.render('entity/create/creator', {
-		title: 'Add Creator',
-		heading: 'Create Creator',
-		subheading: 'Add a new Creator to BookBrainz',
-		props,
-		markup
-	});
-});
+		res.render('entity/create/creator', {
+			title: 'Add Creator',
+			heading: 'Create Creator',
+			subheading: 'Add a new Creator to BookBrainz',
+			props,
+			markup
+		});
+	}
+);
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadGenders, loadLanguages, loadCreatorTypes, function(req, res) {
-	const creator = res.locals.entity;
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
+	loadGenders, loadLanguages, loadCreatorTypes, (req, res) => {
+		const creator = res.locals.entity;
 
-	const props = {
-		languages: res.locals.languages,
-		genders: res.locals.genders,
-		creatorTypes: res.locals.creatorTypes,
-		creator,
-		identifierTypes: res.locals.identifierTypes,
-		submissionUrl: '/creator/' + creator.bbid + '/edit/handler'
-	};
+		const props = {
+			languages: res.locals.languages,
+			genders: res.locals.genders,
+			creatorTypes: res.locals.creatorTypes,
+			creator,
+			identifierTypes: res.locals.identifierTypes,
+			submissionUrl: `/creator/${creator.bbid}/edit/handler`
+		};
 
-	const markup = React.renderToString(EditForm(props));
+		const markup = React.renderToString(EditForm(props));
 
-	res.render('entity/create/creator', {
-		title: 'Edit Creator',
-		heading: 'Edit Creator',
-		subheading: 'Edit an existing Creator in BookBrainz',
-		props,
-		markup
-	});
-});
+		res.render('entity/create/creator', {
+			title: 'Edit Creator',
+			heading: 'Edit Creator',
+			subheading: 'Edit an existing Creator in BookBrainz',
+			props,
+			markup
+		});
+	}
+);
 
-router.post('/create/handler', auth.isAuthenticated, function(req, res) {
+router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 	const changes = {
 		bbid: null
 	};
@@ -197,7 +199,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	const newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map((identifier) => {
 		return {
 			value: identifier.value,
 			identifier_type: {
@@ -212,7 +214,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 
 	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
+	req.body.aliases.forEach((alias) => {
 		if (!alias.name && !alias.sortName) {
 			return;
 		}
@@ -233,12 +235,10 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	Creator.create(changes, {
 		session: req.session
 	})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		.then(res.send);
 });
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const creator = res.locals.entity;
 
 	const changes = {
@@ -290,7 +290,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	const currentIdentifiers = creator.identifiers.map(function(identifier) {
+	const currentIdentifiers = creator.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
 		if (identifier.id !== nextIdentifier.id) {
@@ -309,7 +309,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	const newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map((identifier) => {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (identifier.id) {
 			return null;
@@ -328,7 +328,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	const currentAliases = [];
 
-	creator.aliases.forEach(function(alias) {
+	creator.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
 		if (alias.id !== nextAlias.id) {
@@ -350,7 +350,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 
 	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
+	req.body.aliases.forEach((alias) => {
 		// At this point, the only aliases should have null IDs, but check anyway.
 		if (alias.id || (!alias.name && !alias.sortName)) {
 			return;
@@ -370,9 +370,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	Creator.update(creator.bbid, changes, {
 		session: req.session
 	})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		.then(res.send);
 });
 
 module.exports = router;

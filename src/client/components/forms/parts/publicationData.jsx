@@ -49,11 +49,15 @@ const PublicationData = React.createClass({
 		let initialAnnotation = null;
 		let initialIdentifiers = [];
 
-		if (this.props.publication) {
-			initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
-			initialDisambiguation = this.props.publication.disambiguation ? this.props.publication.disambiguation.comment : null;
-			initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;
-			initialIdentifiers = this.props.publication.identifiers.map(function(identifier) {
+		const prefillData = this.props.publication;
+		if (prefillData) {
+			initialPublicationType = prefillData.publication_type ?
+				prefillData.publication_type.publication_type_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => {
 				return {
 					id: identifier.id,
 					value: identifier.value,

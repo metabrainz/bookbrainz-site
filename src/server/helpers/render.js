@@ -26,7 +26,7 @@ function renderRelationship(entities, relationship, language) {
 	const template = Handlebars.compile(relationship.template);
 
 	const data = {
-		entities: entities.map(function(entity) {
+		entities: entities.map((entity) => {
 			const name = entity.default_alias ? entity.default_alias.name : '(unnamed)';
 			return '<a href="' + utils.getEntityLink(entity) + '">' +
 				name + '</a>';

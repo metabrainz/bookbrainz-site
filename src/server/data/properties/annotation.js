@@ -19,8 +19,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const Model = require('../../helpers/model');
 
 const Annotation = new Model('Annotation');

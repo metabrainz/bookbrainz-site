@@ -43,19 +43,24 @@ function bundle() {
 		glob.sync('./src/client/controllers/**/*.js')
 		.concat(glob.sync('./src/client/controllers/*.js'));
 
-	let dstFiles = srcFiles.map(function(f) {
-		return path.join('./static', 'js', path.relative('./templates', f));
-	});
+	let dstFiles = srcFiles.map((filename) =>
+		path.join(
+			'./static', 'js', path.relative('./templates', filename)
+		)
+	);
 
-	const dstFiles2 = srcFiles2.map(function(f) {
-		return path.join('./static', 'js', path.relative('./src/client/controllers', f));
-	});
+	const dstFiles2 = srcFiles2.map((filename) =>
+		path.join(
+			'./static', 'js',
+			path.relative('./src/client/controllers', filename)
+		)
+	);
 
 	srcFiles = srcFiles.concat(srcFiles2);
 	dstFiles = dstFiles.concat(dstFiles2);
 
-	dstFiles.forEach(function(f) {
-		mkdirp.sync(path.dirname(f));
+	dstFiles.forEach((filename) => {
+		mkdirp.sync(path.dirname(filename));
 	});
 
 	return browserify(srcFiles)
@@ -69,7 +74,10 @@ function bundle() {
 }
 
 function less() {
-	return gulp.src(['./src/client/stylesheets/style.less', './src/client/stylesheets/font-awesome.less'])
+	return gulp.src([
+		'./src/client/stylesheets/style.less',
+		'./src/client/stylesheets/font-awesome.less'
+	])
 		.pipe(gulpless({
 			paths: [path.join(__dirname, './node_modules/bootstrap/less')]
 		}))
@@ -101,9 +109,7 @@ function tidy() {
 			},
 			mode: 'VERIFY_AND_WRITE'
 		}))
-		.pipe(gulp.dest(function(f) {
-			return f.base;
-		}));
+		.pipe(gulp.dest((filename) => filename.base));
 }
 
 gulp.task('default', ['bundle', 'less']);
@@ -111,11 +117,11 @@ gulp.task('bundle', bundle);
 gulp.task('less', less);
 gulp.task('compress', ['bundle'], compress);
 gulp.task('tidy', tidy);
-gulp.task('watch', function() {
+gulp.task('watch', () => {
 	const watcher = gulp.watch(
 		['./src/**/*.js', './src/**/*.jsx', './templates/**/*.js'], ['bundle']
 	);
-	watcher.on('change', function(event) {
-		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-	});
+	watcher.on('change', (event) =>
+		console.log(`File ${event.path} was ${event.type} running tasks...`)
+	);
 });

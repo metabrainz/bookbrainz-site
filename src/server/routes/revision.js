@@ -25,17 +25,13 @@ const User = require('../data/user');
 const _ = require('underscore');
 
 function formatRelationshipDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
+	return revision.changes.map((pair) => {
 		const result = {};
 
 		if (pair.entities) {
 			result.Entities = [
-				pair.entities[0].map(function getEntityName(entity) {
-					return entity.entity.entity_gid;
-				}),
-				pair.entities[1].map(function getEntityName(entity) {
-					return entity.entity.entity_gid;
-				})
+				pair.entities[0].map((entity) => entity.entity.entity_gid),
+				pair.entities[1].map((entity) => entity.entity.entity_gid)
 			];
 		}
 
@@ -96,14 +92,12 @@ function formatEntityDiff(pair) {
 
 	if (pair.identifiers) {
 		result.Identifiers = [
-			pair.identifiers[0].map(function formatIdentifier(identifier) {
-				return identifier.identifier_type.label +
-					': ' + identifier.value;
-			}),
-			pair.identifiers[1].map(function formatIdentifier(identifier) {
-				return identifier.identifier_type.label +
-					': ' + identifier.value;
-			})
+			pair.identifiers[0].map((identifier) =>
+				identifier.identifier_type.label + ': ' + identifier.value
+			),
+			pair.identifiers[1].map((identifier) =>
+				identifier.identifier_type.label + ': ' + identifier.value
+			)
 		];
 	}
 
@@ -111,7 +105,7 @@ function formatEntityDiff(pair) {
 }
 
 function formatPublicationDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
+	return revision.changes.map((pair) => {
 		const result = formatEntityDiff(pair);
 
 		if (pair.publication_type) {
@@ -128,7 +122,7 @@ function formatPublicationDiff(revision) {
 }
 
 function formatCreatorDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
+	return revision.changes.map((pair) => {
 		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
@@ -173,7 +167,7 @@ function formatCreatorDiff(revision) {
 }
 
 function formatEditionDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
+	return revision.changes.map((pair) => {
 		const result = formatEntityDiff(pair);
 
 		if (pair.release_date) {
@@ -266,7 +260,7 @@ function formatEditionDiff(revision) {
 }
 
 function formatPublisherDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
+	return revision.changes.map((pair) => {
 		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
@@ -304,7 +298,7 @@ function formatPublisherDiff(revision) {
 }
 
 function formatWorkDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
+	return revision.changes.map((pair) => {
 		const result = formatEntityDiff(pair);
 
 		if (pair.work_type) {
@@ -325,9 +319,9 @@ function formatWorkDiff(revision) {
 	});
 }
 
-router.get('/:id', function(req, res) {
+router.get('/:id', (req, res) => {
 	Revision.findOne(req.params.id, {populate: ['entity', 'relationship']})
-	.then(function(revision) {
+	.then((revision) => {
 		let diff = null;
 		console.log(revision);
 		if (revision.changes) {
@@ -357,7 +351,7 @@ router.get('/:id', function(req, res) {
 			}
 		}
 
-		User.findOne(revision.user.user_id).then(function(user) {
+		User.findOne(revision.user.user_id).then((user) => {
 			revision.user = user;
 			res.render('revision', {
 				title: 'Revision',

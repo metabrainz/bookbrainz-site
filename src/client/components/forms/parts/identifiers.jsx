@@ -35,11 +35,10 @@ const IdentifierRow = React.createClass({
 	validationState() {
 		'use strict';
 
-		const self = this;
 		if (this.props.type) {
-			const type = this.props.types.filter(function(testType) {
-				return testType.id === self.props.type;
-			})[0];
+			const type = this.props.types.filter(
+				(testType) => testType.id === this.props.type
+			)[0];
 
 			const regex = new RegExp(type.validation_regex);
 
@@ -63,9 +62,9 @@ const IdentifierRow = React.createClass({
 		const value = this.refs.value.getValue();
 		const typeId = parseInt(this.refs.type.getValue());
 
-		let selectedType = this.props.types.filter(function(type) {
-			return type.id === typeId;
-		});
+		let selectedType = this.props.types.filter(
+			(type) => type.id === typeId
+		);
 
 		if (selectedType.length) {
 			selectedType = selectedType[0];
@@ -130,7 +129,7 @@ const IdentifierList = React.createClass({
 			type: null
 		});
 
-		existing.forEach(function(identifier, i) {
+		existing.forEach((identifier, i) => {
 			identifier.key = i;
 			identifier.valid = true;
 		});
@@ -143,7 +142,7 @@ const IdentifierList = React.createClass({
 	getValue() {
 		'use strict';
 
-		return this.state.identifiers.slice(0, -1).map(function(identifier) {
+		return this.state.identifiers.slice(0, -1).map((identifier) => {
 			const data = {
 				value: identifier.value,
 				typeId: identifier.type
@@ -165,7 +164,7 @@ const IdentifierList = React.createClass({
 		// Attempt to guess the type, if the value was previously blank
 		if (updatedIdentifiers[index].value === '') {
 			let newValue = updatedIdentifier.value;
-			this.props.types.forEach(function(type) {
+			this.props.types.forEach((type) => {
 				if (type.detection_regex) {
 					const detectionRegex = new RegExp(type.detection_regex);
 					const regexResult =
@@ -212,9 +211,7 @@ const IdentifierList = React.createClass({
 	valid() {
 		'use strict';
 
-		return this.state.identifiers.every(function(identifier) {
-			return identifier.valid;
-		});
+		return this.state.identifiers.every((identifier) => identifier.valid);
 	},
 	handleRemove(index) {
 		'use strict';
@@ -234,20 +231,18 @@ const IdentifierList = React.createClass({
 
 		const self = this;
 
-		const rows = this.state.identifiers.map(function(identifier, index) {
-			return (
-				<IdentifierRow
-					key={identifier.key}
-					onChange={self.handleChange.bind(null, index)}
-					onRemove={self.handleRemove.bind(null, index)}
-					ref={index}
-					removeHidden={index === self.state.identifiers.length - 1}
-					type={identifier.type}
-					types={self.props.types}
-					value={identifier.value}
-				/>
-			);
-		});
+		const rows = this.state.identifiers.map((identifier, index) =>
+			<IdentifierRow
+				key={identifier.key}
+				onChange={self.handleChange.bind(null, index)}
+				onRemove={self.handleRemove.bind(null, index)}
+				ref={index}
+				removeHidden={index === self.state.identifiers.length - 1}
+				type={identifier.type}
+				types={self.props.types}
+				value={identifier.value}
+			/>
+		);
 
 		return (
 			<div>

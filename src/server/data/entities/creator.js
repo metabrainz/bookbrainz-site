@@ -19,8 +19,6 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const Model = require('../../helpers/model');
 const Entity = require('../../data/entity');
 

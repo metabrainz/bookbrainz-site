@@ -17,8 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/* eslint camelcase: 1 */
-
 const React = require('react');
 
 const Input = require('react-bootstrap').Input;
@@ -65,18 +63,14 @@ module.exports = React.createClass({
 		return request.get(this.props.wsUrl + '/entity/' + uuid)
 		.accept('application/json')
 		.promise()
-		.then(function(response) {
-			return response.body;
-		})
-		.then(function(entity) {
+		.then((response) => response.body)
+		.then((entity) => {
 			entity.bbid = entity.entity_gid;
 			return request.get(entity.aliases_uri)
 				.accept('application/json')
 				.promise()
-				.then(function(response) {
-					return response.body;
-				})
-				.then(function(aliases) {
+				.then((response) => response.body)
+				.then((aliases) => {
 					entity.aliases = aliases.objects;
 					return entity;
 				});
@@ -89,24 +83,21 @@ module.exports = React.createClass({
 		evt.preventDefault();
 
 		request.post('./relationships/handler')
-		.send(this.state.addedRelationships.map(function(relationship) {
-			return {
+			.send(this.state.addedRelationships.map((relationship) => ({
 				id: [],
 				relationship_type: {
 					relationship_type_id: relationship.type.id
 				},
-				entities: relationship.entities.map(function(entity, index) {
-					return {
-						entity_gid: entity.bbid,
-						position: index
-					};
-				})
-			};
-		}))
-		.promise()
-		.then(function(revision) {
-			window.location.href = utils.getEntityLink(self.state.targetEntity);
-		});
+				entities: relationship.entities.map((entity, position) => ({
+					entity_gid: entity.bbid,
+					position
+				}))
+			})))
+			.promise()
+			.then(() => {
+				window.location.href =
+					utils.getEntityLink(self.state.targetEntity);
+			});
 	},
 	handleAdd() {
 		'use strict';
@@ -162,31 +153,30 @@ module.exports = React.createClass({
 	handleUUIDChange(i) {
 		'use strict';
 
-		const self = this;
 		const bbid = this.refs[i].getValue();
 		if (bbid !== this.state.targetEntity.bbid) {
-			if (self.state.loadedEntities[bbid]) {
-				self.setDisplayEntity(i, self.state.loadedEntities[bbid]);
+			if (this.state.loadedEntities[bbid]) {
+				this.setDisplayEntity(i, this.state.loadedEntities[bbid]);
 			}
 			else {
 				this.fetchEntity(bbid)
-				.then(function(entity) {
-					self.addLoadedEntity(entity);
-					self.setDisplayEntity(i, entity);
+				.then((entity) => {
+					this.addLoadedEntity(entity);
+					this.setDisplayEntity(i, entity);
 				});
 			}
 		}
 		else {
-			self.setDisplayEntity(i, {});
+			this.setDisplayEntity(i, {});
 		}
 	},
 	handleRelationshipChange() {
 		'use strict';
 
 		const relationshipId = parseInt(this.refs.relationship.getValue());
-		const selectedRelationship = this.props.relationshipTypes.filter(function(relationship) {
-			return relationship.id === relationshipId;
-		});
+		const selectedRelationship = this.props.relationshipTypes.filter(
+			(relationship) => relationship.id === relationshipId
+		);
 
 		if (selectedRelationship.length !== 0) {
 			this.setState({selectedRelationship: selectedRelationship[0]});
@@ -205,10 +195,11 @@ module.exports = React.createClass({
 			width: '100%'
 		};
 
-		const renderedEntities = this.state.displayEntities.map(function(entity, i) {
+		const renderedEntities = this.state.displayEntities.map((entity, i) => {
 			if (entity) {
 				entity.id = entity.bbid;
-				entity.text = entity.default_alias ? entity.default_alias.name : '(unnamed)';
+				entity.text = entity.default_alias ?
+					entity.default_alias.name : '(unnamed)';
 			}
 
 			return (
@@ -256,9 +247,9 @@ module.exports = React.createClass({
 			);
 		}
 
-		const allEntitiesLoaded = this.state.displayEntities.every(function(entity) {
-			return Boolean(entity.entity_gid);
-		});
+		const allEntitiesLoaded = this.state.displayEntities.every(
+			(entity) => Boolean(entity.entity_gid)
+		);
 
 		// This could easily be a React component, and should be changed to
 		// that at some point soon.
@@ -310,7 +301,7 @@ module.exports = React.createClass({
 			</div>
 		);
 
-		const addedRelationships = this.state.addedRelationships.map(function(relationship, i) {
+		const addedRelationships = this.state.addedRelationships.map((relationship, i) => {
 			const rendered = {
 				__html: renderRelationship(relationship.entities, relationship.type, null)
 			};

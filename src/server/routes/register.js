@@ -19,14 +19,12 @@
 
 'use strict';
 
-/* eslint camelcase: 1 */
-
 const express = require('express');
 const router = express.Router();
 const User = require('../data/user');
 const UserType = require('../data/properties/user-type');
 
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
 	const error = req.session.error;
 	delete req.session.error;
 
@@ -36,7 +34,7 @@ router.get('/', function(req, res) {
 	});
 });
 
-router.post('/handler', function(req, res, next) {
+router.post('/handler', (req, res, next) => {
 	if (!req.body.password) {
 		req.session.error = 'No password set';
 		res.redirect(303, '/register');
@@ -53,10 +51,10 @@ router.post('/handler', function(req, res, next) {
 
 	// This function should post a new user to the /user endpoint of the ws.
 	UserType.find()
-		.then(function(results) {
+		.then((results) => {
 			let editorType = null;
 
-			const hasEditorType = !results.every(function(userType) {
+			const hasEditorType = !results.every((userType) => {
 				if (userType.label === 'Editor') {
 					editorType = userType;
 					return false;
@@ -78,12 +76,10 @@ router.post('/handler', function(req, res, next) {
 				}
 			});
 		})
-		.then(function() {
+		.then(() => {
 			res.redirect(303, '/');
 		})
-		.catch(function(err) {
-			next(err);
-		});
+		.catch(next);
 });
 
 module.exports = router;

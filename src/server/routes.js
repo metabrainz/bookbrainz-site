@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint global-require: 0 */
+
 'use strict';
 
 const relationshipHelper = require('./routes/relationship/edit');
