@@ -194,20 +194,50 @@ const AliasList = React.createClass({
 
 		return aliases;
 	},
-	handleChange(index) {
+	stateUpdateNeeded(changedRowIndex) {
 		'use strict';
 
-		const self = this;
-		const updatedAlias = this.refs[index].getValue();
-		const targetAlias = this.state.aliases[index];
+		const updatedAlias = this.refs[changedRowIndex].getValue();
+		const existingAlias = this.state.aliases[changedRowIndex];
 
-		if ((!targetAlias.sortName && updatedAlias.sortName) ||
-				(targetAlias.sortName && !updatedAlias.sortName) ||
-				(!targetAlias.name && updatedAlias.name) ||
-				(targetAlias.name && !updatedAlias.name) ||
-				(updatedAlias.default && index === this.state.aliases.length - 1) ||
-				(!targetAlias.language && updatedAlias.language) ||
-				(!updatedAlias.primary && index === this.state.aliases.length - 1)) {
+		const aliasSortNameJustSetOrUnset = (
+			!existingAlias.sortName && updatedAlias.sortName ||
+			existingAlias.sortName && !updatedAlias.sortName
+		);
+
+		const aliasNameJustSetOrUnset = (
+			!existingAlias.name && updatedAlias.name ||
+			existingAlias.name && !updatedAlias.name
+		);
+
+		const aliasLanguageJustSetOrUnset = (
+			!existingAlias.language && updatedAlias.language ||
+			existingAlias.language && !updatedAlias.language
+		);
+
+		const lastAliasModified =
+			changedRowIndex === this.state.aliases.length - 1;
+
+		const defaultJustCheckedOrUnchecked = (
+			!existingAlias.default && updatedAlias.default ||
+			updatedAlias.default && !existingAlias.default
+		);
+
+		const primaryJustCheckedOrUnchecked = (
+			!existingAlias.primary && updatedAlias.primary ||
+			updatedAlias.primary && !existingAlias.primary
+		);
+
+		return Boolean(
+			aliasSortNameJustSetOrUnset || aliasNameJustSetOrUnset ||
+			aliasLanguageJustSetOrUnset || lastAliasModified &&
+			(defaultJustCheckedOrUnchecked || primaryJustCheckedOrUnchecked)
+		);
+	},
+	handleChange(changedRowIndex) {
+		'use strict';
+
+		if (this.stateUpdateNeeded(changedRowIndex)) {
 			const updatedAliases = this.getValue();
 
 			updatedAliases.forEach((alias, idx) => {
@@ -215,7 +245,7 @@ const AliasList = React.createClass({
 			});
 
 			let rowsSpawned = this.state.rowsSpawned;
-			if (index === this.state.aliases.length - 1) {
+			if (changedRowIndex === this.state.aliases.length - 1) {
 				updatedAliases.push({
 					name: '',
 					sortName: '',
