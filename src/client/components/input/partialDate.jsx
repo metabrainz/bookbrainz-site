@@ -74,8 +74,9 @@ const PartialDate = React.createClass({
 			return true;
 		}
 
-		const validSyntax =
-			Boolean(ymdRegex.test(value) || ymRegex.test(value) || yRegex.test(value));
+		const validSyntax = Boolean(
+			ymdRegex.test(value) || ymRegex.test(value) || yRegex.test(value)
+		);
 		const validValue = !isNaN(Date.parse(value));
 		return validSyntax && validValue;
 	},

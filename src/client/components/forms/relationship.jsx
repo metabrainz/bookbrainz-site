@@ -232,7 +232,10 @@ module.exports = React.createClass({
 						<Button
 							block
 							bsStyle="primary"
-							className={(i === (self.state.displayEntities.length - 1)) ? 'hidden' : null}
+							className={
+								i === self.state.displayEntities.length - 1 ?
+								'hidden' : null
+							}
 							onClick={self.handleSwap.bind(null, i)}
 						>
 							<span className="fa fa-exchange fa-rotate-90"/>
@@ -353,7 +356,8 @@ module.exports = React.createClass({
 						<Input
 							block
 							bsStyle="success"
-							disabled={this.state.addedRelationships.length === 0}
+							disabled=
+								{this.state.addedRelationships.length === 0}
 							onClick={this.handleSubmit}
 							type="submit"
 							value="Submit!"

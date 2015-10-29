@@ -113,7 +113,8 @@ router.get('/:bbid/revisions', (req, res) => {
 			const promisedUsers = {};
 			revisions.objects.forEach((revision) => {
 				if (!promisedUsers[revision.user.user_id]) {
-					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
+					promisedUsers[revision.user.user_id] =
+						User.findOne(revision.user.user_id);
 				}
 			});
 
@@ -326,8 +327,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const newAliases = [];
 
 	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
-		if (alias.id || (!alias.name && !alias.sortName)) {
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
+		if (alias.id || !alias.name && !alias.sortName) {
 			return;
 		}
 

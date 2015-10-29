@@ -151,7 +151,9 @@ Model.prototype.find = function(options) {
 
 	if (!options.path) {
 		if (this.endpoint === undefined) {
-			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
+			return Promise.reject(
+				new Error('Model has no endpoint and path is unspecified')
+			);
 		}
 
 		path = `/${this.endpoint}/`;
@@ -194,13 +196,17 @@ Model.prototype.findOne = function(id, options) {
 
 	if (!options.path) {
 		if (this.endpoint === undefined) {
-			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
+			return Promise.reject(
+				new Error('Model has no endpoint and path is unspecified')
+			);
 		}
 
 		path = `/${this.endpoint}/`;
 
 		if (!id) {
-			return Promise.reject(new Error('No object ID or absolute path specified'));
+			return Promise.reject(
+				new Error('No object ID or absolute path specified')
+			);
 		}
 
 		path += `${id}/`;
@@ -226,7 +232,9 @@ Model.prototype.create = function(data, options) {
 	options = options || {};
 
 	if (this.abstract) {
-		return Promise.reject(new Error('Cannot create new instance of abstract class'));
+		return Promise.reject(
+			new Error('Cannot create new instance of abstract class')
+		);
 	}
 
 	if (this.endpoint === undefined) {
@@ -252,7 +260,9 @@ Model.prototype.update = function(id, data, options) {
 	options = options || {};
 
 	if (this.abstract) {
-		return Promise.reject(new Error('Cannot update instance of abstract class'));
+		return Promise.reject(
+			new Error('Cannot update instance of abstract class')
+		);
 	}
 
 	if (this.endpoint === undefined) {
@@ -278,7 +288,9 @@ Model.prototype.del = function(id, data, options) {
 	options = options || {};
 
 	if (this.abstract) {
-		return Promise.reject(new Error('Cannot delete instance of abstract class'));
+		return Promise.reject(
+			new Error('Cannot delete instance of abstract class')
+		);
 	}
 
 	if (this.endpoint === undefined) {

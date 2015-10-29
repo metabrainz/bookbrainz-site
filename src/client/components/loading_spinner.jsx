@@ -26,7 +26,9 @@ const LoadingSpinner = React.createClass({
 
 		return (
 			<div className="loading-background">
-				<span className="fa fa-circle-o-notch fa-spin fa-2x loading-spinner"></span>
+				<span className=
+					"fa fa-circle-o-notch fa-spin fa-2x loading-spinner"
+				></span>
 			</div>
 		);
 	}

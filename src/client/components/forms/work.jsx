@@ -132,7 +132,7 @@ module.exports = React.createClass({
 			));
 		}
 
-		const submitEnabled = (this.state.aliasesValid && this.state.dataValid);
+		const submitEnabled = this.state.aliasesValid && this.state.dataValid;
 
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 

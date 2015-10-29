@@ -236,22 +236,22 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	};
 
 	const workTypeId = req.body.workTypeId;
-	if ((!work.work_type) ||
-		(work.work_type.work_type_id !== workTypeId)) {
+	if (!work.work_type ||
+		work.work_type.work_type_id !== workTypeId) {
 		changes.work_type = {
 			work_type_id: workTypeId
 		};
 	}
 
 	const disambiguation = req.body.disambiguation;
-	if ((!work.disambiguation) ||
-		(work.disambiguation.comment !== disambiguation)) {
+	if (!work.disambiguation ||
+			work.disambiguation.comment !== disambiguation) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
 	const annotation = req.body.annotation;
-	if ((!work.annotation) ||
-		(work.annotation.content !== annotation)) {
+	if (!work.annotation ||
+			work.annotation.content !== annotation) {
 		changes.annotation = annotation ? annotation : null;
 	}
 
@@ -296,7 +296,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	});
 
 	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
 		if (identifier.id) {
 			return null;
 		}
@@ -336,8 +337,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const newAliases = [];
 
 	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
-		if (alias.id || (!alias.name && !alias.sortName)) {
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
+		if (alias.id || !alias.name && !alias.sortName) {
 			return;
 		}
 

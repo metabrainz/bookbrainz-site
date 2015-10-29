@@ -69,9 +69,8 @@ const PublisherData = React.createClass({
 	valid() {
 		'use strict';
 
-		return (
-			this.refs.begin.valid() && (!this.refs.ended.getValue() || this.refs.end.valid())
-		);
+		return this.refs.begin.valid() &&
+			(!this.refs.ended.getValue() || this.refs.end.valid());
 	},
 	handleEnded() {
 		'use strict';
@@ -110,7 +109,7 @@ const PublisherData = React.createClass({
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={this.props.visible === false ? 'hidden' : ''}>
 				<h2>Add Data</h2>
 				<p className="lead">Fill out any data you know about the entity.</p>
 

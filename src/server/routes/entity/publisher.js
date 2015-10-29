@@ -188,7 +188,8 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 
 	if (req.body.endDate) {
 		changes.end_date = req.body.endDate;
-		changes.ended = true; // Must have ended if there's an end date.
+		// Must have ended if there's an end date.
+		changes.ended = true;
 	}
 	else if (req.body.ended) {
 		changes.ended = req.body.ended;
@@ -255,8 +256,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	};
 
 	const publisherTypeId = req.body.publisherTypeId;
-	if ((!publisher.publisher_type) ||
-		(publisher.publisher_type.publisher_type_id !== publisherTypeId)) {
+	if (!publisher.publisher_type ||
+			publisher.publisher_type.publisher_type_id !== publisherTypeId) {
 		changes.publisher_type = {
 			publisher_type_id: publisherTypeId
 		};
@@ -271,18 +272,19 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const ended = req.body.ended;
 	if (publisher.end_date !== endDate) {
 		changes.end_date = endDate ? endDate : null;
-		changes.ended = endDate ? true : ended; // Must have ended if there's an end date.
+		 // Must have ended if there's an end date.
+		changes.ended = endDate ? true : ended;
 	}
 
 	const disambiguation = req.body.disambiguation;
-	if ((!publisher.disambiguation) ||
-		(publisher.disambiguation.comment !== disambiguation)) {
+	if (!publisher.disambiguation ||
+			publisher.disambiguation.comment !== disambiguation) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
 	const annotation = req.body.annotation;
-	if ((!publisher.annotation) ||
-		(publisher.annotation.content !== annotation)) {
+	if (!publisher.annotation ||
+			publisher.annotation.content !== annotation) {
 		changes.annotation = annotation ? annotation : null;
 	}
 
@@ -311,7 +313,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	});
 
 	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
 		if (identifier.id) {
 			return null;
 		}
@@ -351,8 +354,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const newAliases = [];
 
 	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
-		if (alias.id || (!alias.name && !alias.sortName)) {
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
+		if (alias.id || !alias.name && !alias.sortName) {
 			return;
 		}
 

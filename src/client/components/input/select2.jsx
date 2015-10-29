@@ -50,8 +50,8 @@ const Select = React.createClass({
 
 		const select = $(this.refs.target.getInputDOMNode());
 
-		// Unregister onChange event, so that it isn't triggered while the DOM is
-		// refreshed.
+		// Unregister onChange event, so that it isn't triggered while the DOM
+		// is refreshed.
 		select.off('change');
 	},
 	getValue() {

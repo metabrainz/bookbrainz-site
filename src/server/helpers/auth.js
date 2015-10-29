@@ -63,7 +63,9 @@ auth.authenticate = function() {
 				switch (err.name) {
 					case 'InternalOAuthError':
 					case 'TokenError':
-						newErr = new Error('An internal error occurred during authentication');
+						newErr = new Error(
+							'An internal error occurred during authentication'
+						);
 						break;
 					case 'AuthorizationError':
 						newErr = new Error('Invalid username or password');

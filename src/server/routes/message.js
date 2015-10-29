@@ -71,7 +71,8 @@ router.get('/:id', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/send/handler', auth.isAuthenticated, (req, res) => {
-	// This function should post a new message to the /message/send endpoint of the ws.
+	// This function should post a new message to the /message/send endpoint
+	// of the ws.
 	const ws = config.site.webservice;
 
 	// Parse recipient ids

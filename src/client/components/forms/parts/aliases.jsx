@@ -68,7 +68,9 @@ const AliasRow = React.createClass({
 	getValid() {
 		'use strict';
 
-		return Boolean(this.refs.name.getValue() && this.refs.sortName.getValue());
+		return Boolean(
+			this.refs.name.getValue() && this.refs.sortName.getValue()
+		);
 	},
 	render() {
 		'use strict';
@@ -237,10 +239,9 @@ const AliasList = React.createClass({
 		const numRows = this.state.aliases.length;
 
 		for (let i = 0; i < numRows; i++) {
-			const aliasRow = this.refs[i];
-			const alias = aliasRow.getValue();
-
-			if (aliasRow.getValid() === false && numRows > 1 && (alias.name || alias.sortName)) {
+			const alias = this.refs[i].getValue();
+			const rowInvalid = this.refs[i].getValid() === false;
+			if (rowInvalid && numRows > 1 && (alias.name || alias.sortName)) {
 				return false;
 			}
 			else if (!defaultSet) {

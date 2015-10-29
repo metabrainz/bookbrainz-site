@@ -83,7 +83,8 @@ router.get('/:bbid/revisions', (req, res) => {
 			const promisedUsers = {};
 			revisions.objects.forEach((revision) => {
 				if (!promisedUsers[revision.user.user_id]) {
-					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
+					promisedUsers[revision.user.user_id] =
+						User.findOne(revision.user.user_id);
 				}
 			});
 
@@ -293,16 +294,16 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	};
 
 	const editionStatusId = req.body.editionStatusId;
-	if ((!edition.edition_status) ||
-		(edition.edition_status.edition_status_id !== editionStatusId)) {
+	if (!edition.edition_status ||
+			edition.edition_status.edition_status_id !== editionStatusId) {
 		changes.edition_status = {
 			edition_status_id: editionStatusId
 		};
 	}
 
 	const editionFormatId = req.body.editionFormatId;
-	if ((!edition.edition_format) ||
-		(edition.edition_format.edition_format_id !== editionFormatId)) {
+	if (!edition.edition_format ||
+			edition.edition_format.edition_format_id !== editionFormatId) {
 		changes.edition_format = {
 			edition_format_id: editionFormatId
 		};
@@ -319,7 +320,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	}
 
 	const languageId = req.body.languageId;
-	if ((!edition.language) || (edition.language.language_id !== languageId)) {
+	if (!edition.language || edition.language.language_id !== languageId) {
 		changes.language = {
 			language_id: languageId
 		};
@@ -331,14 +332,14 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	}
 
 	const disambiguation = req.body.disambiguation;
-	if ((!edition.disambiguation) ||
-		(edition.disambiguation.comment !== disambiguation)) {
+	if (!edition.disambiguation ||
+			edition.disambiguation.comment !== disambiguation) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
 	const annotation = req.body.annotation;
-	if ((!edition.annotation) ||
-		(edition.annotation.content !== annotation)) {
+	if (!edition.annotation ||
+			edition.annotation.content !== annotation) {
 		changes.annotation = annotation ? annotation : null;
 	}
 
@@ -392,7 +393,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	});
 
 	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
 		if (identifier.id) {
 			return null;
 		}
@@ -432,8 +434,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const newAliases = [];
 
 	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
-		if (alias.id || (!alias.name && !alias.sortName)) {
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
+		if (alias.id || !alias.name && !alias.sortName) {
 			return;
 		}
 

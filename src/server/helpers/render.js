@@ -27,7 +27,8 @@ function renderRelationship(entities, relationship, language) {
 
 	const data = {
 		entities: entities.map((entity) => {
-			const name = entity.default_alias ? entity.default_alias.name : '(unnamed)';
+			const name = entity.default_alias ?
+				entity.default_alias.name : '(unnamed)';
 			return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
 		})
 	};

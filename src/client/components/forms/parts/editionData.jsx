@@ -99,7 +99,8 @@ const EditionData = React.createClass({
 
 		return {
 			publication: this.refs.publication.getValue(),
-			publisher: this.refs.publisher.getValue() === '' ? null : this.refs.publisher.getValue(),
+			publisher: this.refs.publisher.getValue() === '' ?
+				null : this.refs.publisher.getValue(),
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionFormat: this.refs.editionFormat.getValue(),
@@ -117,7 +118,8 @@ const EditionData = React.createClass({
 	valid() {
 		'use strict';
 
-		return this.refs.release.valid() && this.refs.publication.getValue().length;
+		return this.refs.release.valid() &&
+			this.refs.publication.getValue().length;
 	},
 	render() {
 		'use strict';
@@ -184,7 +186,8 @@ const EditionData = React.createClass({
 		if (publication) {
 			initialPublication = {
 				id: this.props.publication.bbid,
-				text: this.props.publication.default_alias ? this.props.publication.default_alias.name : null
+				text: this.props.publication.default_alias ?
+					this.props.publication.default_alias.name : null
 			};
 		}
 
@@ -195,7 +198,8 @@ const EditionData = React.createClass({
 		if (publisher) {
 			initialPublisher = {
 				id: this.props.publisher.bbid,
-				text: this.props.publisher.default_alias ? this.props.publisher.default_alias.name : null
+				text: this.props.publisher.default_alias ?
+					this.props.publisher.default_alias.name : null
 			};
 		}
 
@@ -204,7 +208,7 @@ const EditionData = React.createClass({
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={this.props.visible === false ? 'hidden' : ''}>
 				<h2>Add Data</h2>
 				<p className="lead">Fill out any data you know about the entity.</p>
 

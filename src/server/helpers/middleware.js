@@ -52,7 +52,8 @@ function makeLoader(model, propName, sortFunc) {
 const middleware = {};
 
 middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
-middleware.loadPublicationTypes = makeLoader(PublicationType, 'publicationTypes');
+middleware.loadPublicationTypes =
+	makeLoader(PublicationType, 'publicationTypes');
 middleware.loadEditionFormats = makeLoader(EditionFormat, 'editionFormats');
 middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
 middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
@@ -102,8 +103,10 @@ middleware.loadEntityRelationships = function(req, res, next) {
 };
 
 middleware.makeEntityLoader = function(model, errMessage) {
+	const bbidRegex =
+		/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 	return function(req, res, next, bbid) {
-		if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
+		if (bbidRegex.test(bbid)) {
 			const populate = [
 				'annotation',
 				'disambiguation',

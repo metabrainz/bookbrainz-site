@@ -33,7 +33,7 @@ const RevisionNote = React.createClass({
 		'use strict';
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={this.props.visible === false ? 'hidden' : ''}>
 				<h2>Submit Revision</h2>
 				<p className="lead">Finally, add this revision to an edit.</p>
 
