@@ -37,7 +37,7 @@ const renderRelationship = require('../helpers/render');
 const NotFoundError = require('../helpers/error').NotFoundError;
 
 function makeLoader(model, propName, sortFunc) {
-	return function(req, res, next) {
+	return function loaderFunc(req, res, next) {
 		model.find()
 			.then((results) => {
 				res.locals[propName] =
@@ -70,7 +70,8 @@ middleware.loadLanguages = makeLoader(Language, 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
-middleware.loadEntityRelationships = function(req, res, next) {
+middleware.loadEntityRelationships =
+function loadEntityRelationships(req, res, next) {
 	if (!res.locals.entity) {
 		return next(new Error('Entity failed to load'));
 	}
@@ -102,10 +103,10 @@ middleware.loadEntityRelationships = function(req, res, next) {
 		.catch(next);
 };
 
-middleware.makeEntityLoader = function(model, errMessage) {
+middleware.makeEntityLoader = function makeEntityLoader(model, errMessage) {
 	const bbidRegex =
 		/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
-	return function(req, res, next, bbid) {
+	return function loaderFunc(req, res, next, bbid) {
 		if (bbidRegex.test(bbid)) {
 			const populate = [
 				'annotation',
@@ -138,8 +139,7 @@ middleware.makeEntityLoader = function(model, errMessage) {
 				})
 				.catch((err) => {
 					if (err.status === 404) {
-						const newErr = new NotFoundError(errMessage);
-						return next(newErr);
+						return next(new NotFoundError(errMessage));
 					}
 
 					next(err);

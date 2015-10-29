@@ -50,9 +50,7 @@ const IdentifierRow = React.createClass({
 				(testType) => testType.id === this.props.type
 			)[0];
 
-			const regex = new RegExp(type.validation_regex);
-
-			if (regex.test(this.props.value)) {
+			if (new RegExp(type.validation_regex).test(this.props.value)) {
 				return 'success';
 			}
 			return 'error';
@@ -76,8 +74,7 @@ const IdentifierRow = React.createClass({
 
 		if (selectedType.length) {
 			selectedType = selectedType[0];
-			const regex = new RegExp(selectedType.validation_regex);
-			return regex.test(value);
+			return new RegExp(selectedType.validation_regex).test(value);
 		}
 
 		return false;

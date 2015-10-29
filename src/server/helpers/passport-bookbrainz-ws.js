@@ -23,8 +23,8 @@ const util = require('util');
 const PasswordGrantStrategy = require('passport-oauth2-password-grant');
 const User = require('../data/user');
 
-function BBWSStrategy(options, verify) {
-	options = options || {};
+function BBWSStrategy(baseOptions, verify) {
+	const options = baseOptions || {};
 
 	if (!options.wsURL) {
 		throw new TypeError('BBWSStrategy requires a wsURL option');
@@ -42,7 +42,8 @@ function BBWSStrategy(options, verify) {
 
 util.inherits(BBWSStrategy, PasswordGrantStrategy);
 
-BBWSStrategy.prototype.userProfile = function(accessToken, done) {
+BBWSStrategy.prototype.userProfile =
+function getuserProfile(accessToken, done) {
 	User.getCurrent(accessToken)
 		.then((user) => {
 			const profile = {

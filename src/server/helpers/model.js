@@ -25,7 +25,7 @@ const _ = require('underscore');
 
 const registered = [];
 
-function Model(name, options) {
+function Model(name, baseOptions) {
 	if (!name || typeof name !== 'string') {
 		throw new Error('Model must specify a name');
 	}
@@ -33,7 +33,7 @@ function Model(name, options) {
 		throw new Error('Model with this name already exists');
 	}
 
-	options = options || {};
+	const options = baseOptions || {};
 
 	this.endpoint = options.endpoint || undefined;
 	this.authRequired = options.authRequired || false;
@@ -41,14 +41,12 @@ function Model(name, options) {
 	this.name = name;
 
 	if (options.base) {
-		const base = options.base;
-
-		if (!(base instanceof Model)) {
+		if (!(options.base instanceof Model)) {
 			throw new TypeError('Specified base object is not a model');
 		}
 
 		this.fields = options.base.fields;
-		base.children[this.name] = this;
+		options.base.children[this.name] = this;
 	}
 
 	this.fields = this.fields || {};
@@ -57,7 +55,7 @@ function Model(name, options) {
 	registered[name] = this;
 }
 
-Model.prototype.extend = function(fields) {
+Model.prototype.extend = function extend(fields) {
 	if (!fields || typeof fields !== 'object') {
 		throw new TypeError('Model fields not an object');
 	}
@@ -84,7 +82,8 @@ Model.prototype.extend = function(fields) {
 };
 
 /* eslint consistent-this: 0 */
-Model.prototype._fetchSingleResult = function(result, options) {
+Model.prototype._fetchSingleResult =
+function fetchSingleResult(result, options) {
 	let model = this;
 	const object = {};
 
@@ -124,9 +123,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 				throw new Error('Reference field model is not defined');
 			}
 
-			const uri = result[resultsField];
-
-			if (!uri) {
+			if (!result[resultsField]) {
 				return;
 			}
 
@@ -134,7 +131,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 			const findFunc = field.many ? 'find' : 'findOne';
 
 			object[key] = registered[field.model][findFunc]({
-				path: uri,
+				path: result[resultsField],
 				session: options.session
 			});
 		}
@@ -143,9 +140,9 @@ Model.prototype._fetchSingleResult = function(result, options) {
 	return Promise.props(object);
 };
 
-Model.prototype.find = function(options) {
+Model.prototype.find = function find(baseOptions) {
 	const self = this;
-	options = options || {};
+	const options = baseOptions || {};
 
 	let path;
 
@@ -181,16 +178,19 @@ Model.prototype.find = function(options) {
 		});
 };
 
-Model.prototype.findOne = function(id, options) {
+Model.prototype.findOne = function findOne(baseId, baseOptions) {
 	const self = this;
+	let options;
+	let id;
 
 	/* Switch out options with ID if ID is not specified. */
-	if (typeof id === 'object') {
-		options = id;
+	if (typeof baseId === 'object') {
+		options = baseId;
 		id = null;
 	}
-
-	options = options || {};
+	else {
+		options = baseOptions || {};
+	}
 
 	let path;
 
@@ -228,8 +228,8 @@ Model.prototype.findOne = function(id, options) {
 		});
 };
 
-Model.prototype.create = function(data, options) {
-	options = options || {};
+Model.prototype.create = function create(data, baseOptions) {
+	const options = baseOptions || {};
 
 	if (this.abstract) {
 		return Promise.reject(
@@ -256,8 +256,8 @@ Model.prototype.create = function(data, options) {
 	return bbws.post(path, object, wsOptions);
 };
 
-Model.prototype.update = function(id, data, options) {
-	options = options || {};
+Model.prototype.update = function update(id, data, baseOptions) {
+	const options = baseOptions || {};
 
 	if (this.abstract) {
 		return Promise.reject(
@@ -284,8 +284,8 @@ Model.prototype.update = function(id, data, options) {
 	return bbws.put(path, object, wsOptions);
 };
 
-Model.prototype.del = function(id, data, options) {
-	options = options || {};
+Model.prototype.del = function del(id, data, baseOptions) {
+	const options = baseOptions || {};
 
 	if (this.abstract) {
 		return Promise.reject(

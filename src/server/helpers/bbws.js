@@ -78,31 +78,29 @@ function _execRequest(requestType, path, options) {
 		.catch(_processError);
 }
 
-bbws.get = function(path, options) {
-	options = options || {};
-
-	return _execRequest('get', path, options);
+bbws.get = function get(path, options) {
+	return _execRequest('get', path, options || {});
 };
 
-bbws.post = function(path, data, options) {
-	const processedOptions = options || {};
-	processedOptions.data = data || {};
-
-	return _execRequest('post', path, processedOptions);
-};
-
-bbws.put = function(path, data, options) {
-	const processedOptions = options || {};
-	processedOptions.data = data || {};
-
-	return _execRequest('put', path, processedOptions);
-};
-
-bbws.del = function(path, data, options) {
-	const processedOptions = options || {};
+bbws.post = function post(path, data, baseOptions) {
+	const options = baseOptions || {};
 	options.data = data || {};
 
-	return _execRequest('del', path, processedOptions);
+	return _execRequest('post', path, options);
+};
+
+bbws.put = function put(path, data, baseOptions) {
+	const options = baseOptions || {};
+	options.data = data || {};
+
+	return _execRequest('put', path, options);
+};
+
+bbws.del = function del(path, data, baseOptions) {
+	const options = baseOptions || {};
+	options.data = data || {};
+
+	return _execRequest('del', path, options);
 };
 
 module.exports = bbws;

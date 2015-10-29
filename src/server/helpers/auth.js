@@ -25,7 +25,7 @@ const BBWSStrategy = require('./passport-bookbrainz-ws');
 
 const auth = {};
 
-auth.init = function(app) {
+auth.init = function init(app) {
 	passport.use(new BBWSStrategy({
 		wsURL: config.site.webservice,
 		clientID: config.site.clientID
@@ -47,8 +47,8 @@ auth.init = function(app) {
 	app.use(passport.session());
 };
 
-auth.authenticate = function() {
-	return function(req, res, next) {
+auth.authenticate = function authenticate() {
+	return function authenticateFunc(req, res, next) {
 		const options = {
 			username: req.body.username,
 			password: req.body.password
@@ -57,9 +57,7 @@ auth.authenticate = function() {
 		passport.authenticate('bbws', options)(req, res, (err) => {
 			if (err) {
 				console.log(err.stack);
-
 				let newErr;
-
 				switch (err.name) {
 					case 'InternalOAuthError':
 					case 'TokenError':
@@ -84,7 +82,7 @@ auth.authenticate = function() {
 	};
 };
 
-auth.isAuthenticated = function(req, res, next) {
+auth.isAuthenticated = function isAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}

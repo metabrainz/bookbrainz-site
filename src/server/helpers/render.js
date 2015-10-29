@@ -22,7 +22,7 @@
 const Handlebars = require('handlebars');
 const utils = require('./utils');
 
-function renderRelationship(entities, relationship, language) {
+function renderRelationship(entities, relationship) {
 	const template = Handlebars.compile(relationship.template);
 
 	const data = {
