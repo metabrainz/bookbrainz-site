@@ -22,7 +22,7 @@
 const Input = require('react-bootstrap').Input;
 const React = require('react');
 
-let $ = null;
+var $ = null;
 if (typeof window !== 'undefined') {
 	require('Select2');
 	$ = window.$;
