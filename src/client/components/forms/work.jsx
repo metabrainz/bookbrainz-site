@@ -89,7 +89,7 @@ module.exports = React.createClass({
 			languages: workData.languages.map(
 				(languageId) => parseInt(languageId, 10)
 			),
-			workTypeId: parseInt(workData.workType),
+			workTypeId: parseInt(workData.workType, 10),
 			disambiguation: workData.disambiguation,
 			annotation: workData.annotation,
 			identifiers: workData.identifiers,

@@ -73,7 +73,7 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 router.get('/:id', (req, res, next) => {
 	let userPromise = null;
 
-	const requestedId = parseInt(req.params.id);
+	const requestedId = parseInt(req.params.id, 10);
 	if (req.user && (requestedId === req.user.id)) {
 		userPromise = User.getCurrent(req.session.bearerToken);
 	}

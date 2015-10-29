@@ -38,7 +38,7 @@ const IdentifierRow = React.createClass({
 		'use strict';
 
 		return {
-			type: parseInt(this.refs.type.getValue()),
+			type: parseInt(this.refs.type.getValue(), 10),
 			value: this.refs.value.getValue()
 		};
 	},
@@ -70,7 +70,7 @@ const IdentifierRow = React.createClass({
 		'use strict';
 
 		const value = this.refs.value.getValue();
-		const typeId = parseInt(this.refs.type.getValue());
+		const typeId = parseInt(this.refs.type.getValue(), 10);
 
 		let selectedType = this.props.types.filter(
 			(type) => type.id === typeId

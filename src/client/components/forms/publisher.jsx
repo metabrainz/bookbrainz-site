@@ -86,7 +86,7 @@ module.exports = React.createClass({
 			beginDate: publisherData.beginDate,
 			endDate: publisherData.endDate,
 			ended: publisherData.ended,
-			publisherTypeId: parseInt(publisherData.publisherType),
+			publisherTypeId: parseInt(publisherData.publisherType, 10),
 			disambiguation: publisherData.disambiguation,
 			annotation: publisherData.annotation,
 			identifiers: publisherData.identifiers,

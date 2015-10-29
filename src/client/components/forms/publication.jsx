@@ -83,7 +83,7 @@ module.exports = React.createClass({
 		const revisionNote = this.refs.revision.refs.note.getValue();
 		const data = {
 			aliases: aliasData,
-			publicationTypeId: parseInt(publicationData.publicationType),
+			publicationTypeId: parseInt(publicationData.publicationType, 10),
 			disambiguation: publicationData.disambiguation,
 			annotation: publicationData.annotation,
 			identifiers: publicationData.identifiers,

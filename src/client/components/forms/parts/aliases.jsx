@@ -44,10 +44,10 @@ const AliasRow = React.createClass({
 		'use strict';
 
 		return {
-			id: parseInt(this.refs.id.getValue()),
+			id: parseInt(this.refs.id.getValue(), 10),
 			name: this.refs.name.getValue(),
 			sortName: this.refs.sortName.getValue(),
-			language: parseInt(this.refs.language.getValue()) || null,
+			language: parseInt(this.refs.language.getValue(), 10) || null,
 			primary: this.refs.primary.getChecked(),
 			default: this.refs.default.getChecked()
 		};
