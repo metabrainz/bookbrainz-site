@@ -70,6 +70,10 @@ auth.authenticate = function() {
 					case 'AuthorizationError':
 						newErr = new Error('Invalid username or password');
 						break;
+					default:
+						newErr = new Error(
+							'An unknown error occurred during authentication'
+						);
 				}
 
 				return next(newErr);

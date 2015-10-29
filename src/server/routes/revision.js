@@ -261,24 +261,27 @@ router.get('/:id', (req, res) => {
 
 		if (revision.changes) {
 			if (revision.entity) {
-				console.log(revision.entity);
-				if (revision.entity._type === 'Edition') {
-					diff = formatEditionDiff(revision);
-				}
-				else if (revision.entity._type === 'Publication') {
-					diff = formatPublicationDiff(revision);
-				}
-				else if (revision.entity._type === 'Creator') {
-					diff = formatCreatorDiff(revision);
-				}
-				else if (revision.entity._type === 'Publisher') {
-					diff = formatPublisherDiff(revision);
-				}
-				else if (revision.entity._type === 'Work') {
-					diff = formatWorkDiff(revision);
-				}
-				else {
-					diff = formatEntityDiff(revision);
+				// TODO: replace this with polymorphism
+				switch (revision.entity._type) {
+					case 'Edition':
+						diff = formatEditionDiff(revision);
+						break;
+					case 'Publication':
+						diff = formatPublicationDiff(revision);
+						break;
+					case 'Creator':
+						diff = formatCreatorDiff(revision);
+						break;
+					case 'Publisher':
+						diff = formatPublisherDiff(revision);
+						break;
+					case 'Work':
+						diff = formatWorkDiff(revision);
+						break;
+					default:
+						throw new Error(
+							'Attempted to diff unknown entity type!'
+						);
 				}
 			}
 			else {
