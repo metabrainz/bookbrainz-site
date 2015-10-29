@@ -263,11 +263,14 @@ module.exports = React.createClass({
 
 		// This could easily be a React component, and should be changed to
 		// that at some point soon.
-		let renderedRelationship = null;
+		let currentRelationshipRendered = null;
 		let addValid = false;
 		if (allEntitiesLoaded && this.state.selectedRelationship) {
-			renderedRelationship = {
-				__html: renderRelationship(this.state.displayEntities, this.state.selectedRelationship, null)
+			currentRelationshipRendered = {
+				__html: renderRelationship(
+					this.state.displayEntities,
+					this.state.selectedRelationship, null
+				)
 			};
 			addValid = true;
 		}
@@ -292,7 +295,7 @@ module.exports = React.createClass({
 				{renderedEntities}
 
 				<div className="text-center">
-					<p dangerouslySetInnerHTML={renderedRelationship} />
+					<p dangerouslySetInnerHTML={currentRelationshipRendered} />
 				</div>
 				<div className="row">
 					<div className="col-md-4 col-md-offset-4">
