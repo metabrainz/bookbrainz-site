@@ -266,10 +266,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 			// Remove the alias
 			return [language.language_id, null];
 		}
-		else {
-			req.body.languages.shift();
-			return [language.language_id, language.language_id];
-		}
+
+		req.body.languages.shift();
+		return [language.language_id, language.language_id];
 	});
 
 	const newLanguages =

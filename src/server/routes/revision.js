@@ -258,7 +258,7 @@ router.get('/:id', (req, res) => {
 	Revision.findOne(req.params.id, {populate: ['entity', 'relationship']})
 	.then((revision) => {
 		let diff = null;
-		console.log(revision);
+
 		if (revision.changes) {
 			if (revision.entity) {
 				console.log(revision.entity);

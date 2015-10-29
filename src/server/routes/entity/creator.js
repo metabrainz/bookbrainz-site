@@ -102,7 +102,8 @@ router.get('/:bbid/revisions', (req, res) => {
 			const promisedUsers = {};
 			revisions.objects.forEach((revision) => {
 				if (!promisedUsers[revision.user.user_id]) {
-					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
+					promisedUsers[revision.user.user_id] =
+						User.findOne(revision.user.user_id);
 				}
 			});
 
@@ -183,7 +184,8 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 
 	if (req.body.endDate) {
 		changes.end_date = req.body.endDate;
-		changes.ended = true; // Must have ended if there's an end date.
+		 // Must have ended if there's an end date.
+		changes.ended = true;
 	}
 	else if (req.body.ended) {
 		changes.ended = req.body.ended;
@@ -250,15 +252,15 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	};
 
 	const creatorTypeId = req.body.creatorTypeId;
-	if ((!creator.creator_type) ||
-		(creator.creator_type.creator_type_id !== creatorTypeId)) {
+	if (!creator.creator_type ||
+			creator.creator_type.creator_type_id !== creatorTypeId) {
 		changes.creator_type = {
 			creator_type_id: creatorTypeId
 		};
 	}
 
 	const genderId = req.body.genderId;
-	if ((!creator.gender) || (creator.gender.gender_id !== genderId)) {
+	if (!creator.gender || creator.gender.gender_id !== genderId) {
 		changes.gender = {
 			gender_id: genderId
 		};
@@ -273,18 +275,19 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const ended = req.body.ended;
 	if (creator.end_date !== endDate) {
 		changes.end_date = endDate ? endDate : null;
-		changes.ended = endDate ? true : ended; // Must have ended if there's an end date.
+		// Must have ended if there's an end date.
+		changes.ended = endDate ? true : ended;
 	}
 
 	const disambiguation = req.body.disambiguation;
-	if ((!creator.disambiguation) ||
-		(creator.disambiguation.comment !== disambiguation)) {
+	if (!creator.disambiguation ||
+			creator.disambiguation.comment !== disambiguation) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
 	const annotation = req.body.annotation;
-	if ((!creator.annotation) ||
-		(creator.annotation.content !== annotation)) {
+	if (!creator.annotation ||
+			creator.annotation.content !== annotation) {
 		changes.annotation = annotation ? annotation : null;
 	}
 
@@ -313,7 +316,8 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	});
 
 	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
 		if (identifier.id) {
 			return null;
 		}
@@ -353,8 +357,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const newAliases = [];
 
 	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check anyway.
-		if (alias.id || (!alias.name && !alias.sortName)) {
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
+		if (alias.id || !alias.name && !alias.sortName) {
 			return;
 		}
 

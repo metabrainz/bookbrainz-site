@@ -304,39 +304,47 @@ module.exports = React.createClass({
 							title="Add Relationship"
 						>
 							<span className="fa fa-plus"/>
-							&nbsp;Add <span className="sr-only">&nbsp;Relationship</span>
+							&nbsp;Add
+							<span className="sr-only">
+								&nbsp;Relationship
+							</span>
 						</Button>
 					</div>
 				</div>
 			</div>
 		);
 
-		const addedRelationships = this.state.addedRelationships.map((relationship, i) => {
-			const rendered = {
-				__html: renderRelationship(relationship.entities, relationship.type, null)
-			};
-			return (
-				<div
-					className="row"
-					key={relationship.key}
-				>
+		const addedRelationships =
+			this.state.addedRelationships.map((relationship, i) => {
+				const renderedRelationship = {
+					__html: renderRelationship(
+						relationship.entities, relationship.type, null
+					)
+				};
+				return (
 					<div
-						className="col-md-10"
-						dangerouslySetInnerHTML={renderedRelationship}
-					/>
-					<div className="col-md-2">
-						<Button
-							block
-							bsStyle="danger"
-							onClick={self.removeRelationship.bind(null, i)}
-						>
-							<span className="fa fa-minus"/>
-							<span className="sr-only">Remove Relationship</span>
-						</Button>
+						className="row"
+						key={relationship.key}
+					>
+						<div
+							className="col-md-10"
+							dangerouslySetInnerHTML={renderedRelationship}
+						/>
+						<div className="col-md-2">
+							<Button
+								block
+								bsStyle="danger"
+								onClick={self.removeRelationship.bind(null, i)}
+							>
+								<span className="fa fa-minus"/>
+								<span className="sr-only">
+									Remove Relationship
+								</span>
+							</Button>
+						</div>
 					</div>
-				</div>
-			);
-		});
+				);
+			});
 
 		return (
 			<div>
