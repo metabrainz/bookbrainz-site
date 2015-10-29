@@ -35,7 +35,7 @@ function Model(name, baseOptions) {
 
 	const options = baseOptions || {};
 
-	this.endpoint = options.endpoint || undefined;
+	this.endpoint = options.endpoint;
 	this.authRequired = options.authRequired || false;
 	this.abstract = options.abstract || false;
 	this.name = name;
@@ -147,7 +147,7 @@ Model.prototype.find = function find(baseOptions) {
 	let path;
 
 	if (!options.path) {
-		if (this.endpoint === undefined) {
+		if (!this.endpoint) {
 			return Promise.reject(
 				new Error('Model has no endpoint and path is unspecified')
 			);
@@ -195,7 +195,7 @@ Model.prototype.findOne = function findOne(baseId, baseOptions) {
 	let path;
 
 	if (!options.path) {
-		if (this.endpoint === undefined) {
+		if (!this.endpoint) {
 			return Promise.reject(
 				new Error('Model has no endpoint and path is unspecified')
 			);
@@ -237,7 +237,7 @@ Model.prototype.create = function create(data, baseOptions) {
 		);
 	}
 
-	if (this.endpoint === undefined) {
+	if (!this.endpoint) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
@@ -265,7 +265,7 @@ Model.prototype.update = function update(id, data, baseOptions) {
 		);
 	}
 
-	if (this.endpoint === undefined) {
+	if (!this.endpoint) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
@@ -293,7 +293,7 @@ Model.prototype.del = function del(id, data, baseOptions) {
 		);
 	}
 
-	if (this.endpoint === undefined) {
+	if (!this.endpoint) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
