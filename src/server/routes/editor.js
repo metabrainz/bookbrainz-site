@@ -28,7 +28,9 @@ const auth = require('../helpers/auth');
 const Promise = require('bluebird');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
-const ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
+const ProfileForm = React.createFactory(
+	require('../../client/components/forms/profile.jsx')
+);
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	User.getCurrent(req.session.bearerToken)

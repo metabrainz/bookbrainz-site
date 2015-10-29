@@ -18,7 +18,9 @@
  */
 
 const React = require('react');
-const ProfileForm = React.createFactory(require('../../components/forms/profile.jsx'));
+const ProfileForm = React.createFactory(
+	require('../../components/forms/profile.jsx')
+);
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
 React.render(ProfileForm(props), document.getElementById('profileForm'));

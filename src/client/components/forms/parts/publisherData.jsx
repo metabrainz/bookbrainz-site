@@ -21,7 +21,6 @@ const React = require('react');
 const PartialDate = require('../../input/partialDate.jsx');
 const Select = require('../../input/select2.jsx');
 const Input = require('react-bootstrap').Input;
-const Button = require('react-bootstrap').Button;
 const Identifiers = require('./identifiers.jsx');
 const validators = require('../../validators');
 

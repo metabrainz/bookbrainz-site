@@ -26,16 +26,23 @@ const Edition = require('../../data/entities/edition');
 const User = require('../../data/user');
 
 const React = require('react');
-const EditForm = React.createFactory(require('../../../client/components/forms/edition.jsx'));
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/edition.jsx')
+);
 
 /* Middleware loader functions. */
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-const loadEditionStatuses = require('../../helpers/middleware').loadEditionStatuses;
-const loadEditionFormats = require('../../helpers/middleware').loadEditionFormats;
-const loadLanguages = require('../../helpers/middleware').loadLanguages;
-const loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-const loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+const loadEditionStatuses =
+	require('../../helpers/middleware').loadEditionStatuses;
+const loadEditionFormats =
+	require('../../helpers/middleware').loadEditionFormats;
+const loadLanguages =
+	require('../../helpers/middleware').loadLanguages;
+const loadEntityRelationships =
+	require('../../helpers/middleware').loadEntityRelationships;
+const loadIdentifierTypes =
+	require('../../helpers/middleware').loadIdentifierTypes;
 
 const bbws = require('../../helpers/bbws');
 const Publication = require('../../data/entities/publication');

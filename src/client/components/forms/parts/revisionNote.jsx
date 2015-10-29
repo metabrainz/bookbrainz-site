@@ -19,7 +19,6 @@
 
 const React = require('react');
 const Input = require('react-bootstrap').Input;
-const Button = require('react-bootstrap').Button;
 
 const RevisionNote = React.createClass({
 	displayName: 'revisionNoteComponent',

@@ -24,7 +24,9 @@ const Relationship = require('../../data/relationship');
 const RelationshipType = require('../../data/properties/relationship-type');
 const Entity = require('../../data/entity');
 const React = require('react');
-const EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/creator.jsx')
+);
 const Promise = require('bluebird');
 const config = require('../../helpers/config');
 

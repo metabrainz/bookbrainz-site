@@ -29,13 +29,15 @@ const User = require('../../data/user');
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 const React = require('react');
-const EditForm = React.createFactory(require('../../../client/components/forms/work.jsx'));
-// Creation
+const EditForm =
+	React.createFactory(require('../../../client/components/forms/work.jsx'));
 
 const loadLanguages = require('../../helpers/middleware').loadLanguages;
 const loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
-const loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-const loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+const loadEntityRelationships =
+	require('../../helpers/middleware').loadEntityRelationships;
+const loadIdentifierTypes =
+	require('../../helpers/middleware').loadIdentifierTypes;
 
 const bbws = require('../../helpers/bbws');
 const Promise = require('bluebird');

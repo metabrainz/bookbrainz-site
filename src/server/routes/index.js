@@ -22,7 +22,6 @@
 
 const express = require('express');
 const router = express.Router();
-const _ = require('underscore');
 const Revision = require('../data/properties/revision');
 const bbws = require('../helpers/bbws');
 const Promise = require('bluebird');

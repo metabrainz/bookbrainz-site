@@ -30,12 +30,16 @@ const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 const loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
 const loadGenders = require('../../helpers/middleware').loadGenders;
 const loadLanguages = require('../../helpers/middleware').loadLanguages;
-const loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-const loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+const loadEntityRelationships =
+	require('../../helpers/middleware').loadEntityRelationships;
+const loadIdentifierTypes =
+	require('../../helpers/middleware').loadIdentifierTypes;
 const React = require('react');
 
 const router = express.Router();
-const EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/creator.jsx')
+);
 
 const bbws = require('../../helpers/bbws');
 const Promise = require('bluebird');

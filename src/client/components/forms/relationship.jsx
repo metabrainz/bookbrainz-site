@@ -23,9 +23,7 @@ const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Select = require('../input/select2.jsx');
 const LoadingSpinner = require('../loading_spinner.jsx');
-const UUID = require('../input/uuid.jsx');
 const extend = require('util')._extend;
-const Promise = require('bluebird');
 
 const request = require('superagent');
 require('superagent-bluebird-promise');
