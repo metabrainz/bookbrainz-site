@@ -106,7 +106,8 @@ module.exports = React.createClass({
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href = '/work/' + revision.body.entity.entity_gid;
+				window.location.href =
+					`/work/${revision.body.entity.entity_gid}`;
 			})
 			.catch((error) => {
 				self.setState({error});

@@ -70,11 +70,11 @@ Model.prototype.extend = function(fields) {
 		const field = fields[fieldKey];
 
 		if (typeof field !== 'object') {
-			throw new TypeError('Field ' + fieldKey + ' not an object');
+			throw new TypeError(`Field ${fieldKey} not an object`);
 		}
 
 		if (!field.type) {
-			throw new Error('No type specified for field ' + fieldKey);
+			throw new Error(`No type specified for field ${fieldKey}`);
 		}
 
 		/* XXX: Do type-specific sanity checks on field attributes. */
@@ -90,7 +90,7 @@ Model.prototype._fetchSingleResult = function(result, options) {
 
 	if (this.abstract) {
 		if (!this.children[result._type]) {
-			throw new Error('Model has no child with name ' + result._type);
+			throw new Error(`Model has no child with name ${result._type}`);
 		}
 
 		model = this.children[result._type];
@@ -154,7 +154,7 @@ Model.prototype.find = function(options) {
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
 		}
 
-		path = '/' + this.endpoint + '/';
+		path = `/${this.endpoint}/`;
 	}
 	else {
 		path = options.path;
@@ -197,13 +197,13 @@ Model.prototype.findOne = function(id, options) {
 			return Promise.reject(new Error('Model has no endpoint and path is unspecified'));
 		}
 
-		path = '/' + this.endpoint + '/';
+		path = `/${this.endpoint}/`;
 
 		if (!id) {
 			return Promise.reject(new Error('No object ID or absolute path specified'));
 		}
 
-		path += id + '/';
+		path += `${id}/`;
 	}
 	else {
 		path = options.path;
@@ -233,7 +233,7 @@ Model.prototype.create = function(data, options) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
-	const path = '/' + this.endpoint + '/';
+	const path = `/${this.endpoint}/`;
 	const wsOptions = {};
 	const object = {};
 
@@ -259,7 +259,7 @@ Model.prototype.update = function(id, data, options) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
-	const path = '/' + this.endpoint + '/' + id + '/';
+	const path = `/${this.endpoint}/${id}/`;
 	const wsOptions = {};
 	const object = {};
 
@@ -285,7 +285,7 @@ Model.prototype.del = function(id, data, options) {
 		return Promise.reject(new Error('Model has no endpoint'));
 	}
 
-	const path = '/' + this.endpoint + '/' + id + '/';
+	const path = `/${this.endpoint}/${id}/`;
 	const wsOptions = {};
 	const object = {};
 

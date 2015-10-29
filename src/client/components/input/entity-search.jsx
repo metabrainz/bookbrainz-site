@@ -108,8 +108,10 @@ const EntitySearch = React.createClass({
 				/* eslint prefer-template: 0 */
 				if (result.type) {
 					template = React.renderToStaticMarkup(
-						<span className={'fa ' + ENTITY_TYPE_ICONS[result.type]}/>
-					) + ' ' + template;
+						<span className=
+							{`fa ${ENTITY_TYPE_ICONS[result.type]}`}
+						/>
+					) + ` ${template}`;
 				}
 
 				if (result.disambiguation) {

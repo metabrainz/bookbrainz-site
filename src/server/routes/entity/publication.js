@@ -60,7 +60,7 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	);
 
 	if (publication.default_alias && publication.default_alias.name) {
-		title = 'Publication “' + publication.default_alias.name + '”';
+		title = `Publication “${publication.default_alias.name}”`;
 	}
 
 	Promise.all(publication.editions).then((editions) => {
@@ -81,7 +81,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	let title = 'Publication';
 
 	if (publication.default_alias && publication.default_alias.name) {
-		title = 'Publication “' + publication.default_alias.name + '”';
+		title = `Publication “${publication.default_alias.name}”`;
 	}
 
 	res.render('entity/delete', {title});
@@ -105,10 +105,10 @@ router.get('/:bbid/revisions', (req, res) => {
 	let title = 'Publication';
 
 	if (publication.default_alias && publication.default_alias.name) {
-		title = 'Publication “' + publication.default_alias.name + '”';
+		title = `Publication “${publication.default_alias.name}”`;
 	}
 
-	bbws.get('/publication/' + publication.bbid + '/revisions')
+	bbws.get(`/publication/${publication.bbid}/revisions`)
 		.then((revisions) => {
 			const promisedUsers = {};
 			revisions.objects.forEach((revision) => {

@@ -93,10 +93,10 @@ function formatEntityDiff(pair) {
 	if (pair.identifiers) {
 		result.Identifiers = [
 			pair.identifiers[0].map((identifier) =>
-				identifier.identifier_type.label + ': ' + identifier.value
+				`${identifier.identifier_type.label}: ${identifier.value}`
 			),
 			pair.identifiers[1].map((identifier) =>
-				identifier.identifier_type.label + ': ' + identifier.value
+				`${identifier.identifier_type.label}: ${identifier.value}`
 			)
 		];
 	}

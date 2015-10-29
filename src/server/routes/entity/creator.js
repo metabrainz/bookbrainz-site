@@ -53,7 +53,7 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	let title = 'Creator';
 
 	if (creator.default_alias && creator.default_alias.name) {
-		title = 'Creator “' + creator.default_alias.name + '”';
+		title = `Creator “${creator.default_alias.name}”`;
 	}
 
 	// Get unique identifier types for display
@@ -70,7 +70,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	let title = 'Creator';
 
 	if (creator.default_alias && creator.default_alias.name) {
-		title = 'Creator “' + creator.default_alias.name + '”';
+		title = `Creator “${creator.default_alias.name}”`;
 	}
 
 	res.render('entity/delete', {title});
@@ -85,7 +85,7 @@ router.post('/:bbid/delete/confirm', (req, res) => {
 		{session: req.session}
 	)
 		.then(() => {
-			res.redirect(303, '/creator/' + creator.bbid);
+			res.redirect(303, `/creator/${creator.bbid}`);
 		});
 });
 
@@ -94,10 +94,10 @@ router.get('/:bbid/revisions', (req, res) => {
 	let title = 'Creator';
 
 	if (creator.default_alias && creator.default_alias.name) {
-		title = 'Creator “' + creator.default_alias.name + '”';
+		title = `Creator “${creator.default_alias.name}”`;
 	}
 
-	bbws.get('/creator/' + creator.bbid + '/revisions')
+	bbws.get(`/creator/${creator.bbid}/revisions`)
 		.then((revisions) => {
 			const promisedUsers = {};
 			revisions.objects.forEach((revision) => {

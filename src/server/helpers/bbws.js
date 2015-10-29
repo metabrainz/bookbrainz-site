@@ -29,10 +29,10 @@ const bbws = {};
 function _processError(response) {
 	let newErr;
 
-	const requestPath = response.error.method + ' ' + response.error.path;
+	const requestPath = `${response.error.method} ${response.error.path}`;
 
 	if (response.status === 404) {
-		newErr = new Error('WS path not found: ' + requestPath);
+		newErr = new Error(`WS path not found: ${requestPath}`);
 		newErr.status = 404;
 	}
 	else {

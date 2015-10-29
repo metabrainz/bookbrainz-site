@@ -40,7 +40,7 @@ router.get('/send', auth.isAuthenticated, (req, res) => {
 });
 
 function renderMessageList(view, req, res) {
-	bbws.get('/message/' + view + '/', {
+	bbws.get(`/message/${view}/`, {
 		accessToken: req.session.bearerToken
 	})
 		.then((messages) => {
@@ -62,8 +62,8 @@ router.get('/sent', auth.isAuthenticated, (req, res) => {
 
 router.get('/:id', auth.isAuthenticated, (req, res) => {
 	const ws = config.site.webservice;
-	request.get(ws + '/message/' + req.params.id)
-		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
+	request.get(`${ws}/message/${req.params.id}`)
+		.set('Authorization', `Bearer ${req.session.bearerToken}`).promise()
 		.then((messageResponse) => messageResponse.body)
 		.then((message) => {
 			res.render('editor/message', {message});
@@ -79,8 +79,8 @@ router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 		return parseInt(recipientId, 10);
 	});
 
-	request.post(ws + '/message/sent/')
-		.set('Authorization', 'Bearer ' + req.session.bearerToken)
+	request.post(`${ws}/message/sent/`)
+		.set('Authorization', `Bearer ${req.session.bearerToken}`)
 		.send({
 			recipient_ids: recipientIds,
 			subject: req.body.subject,

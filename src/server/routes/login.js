@@ -42,8 +42,8 @@ router.post('/login/handler', auth.authenticate(), (req, res) => {
 
 	res.redirect(303, redirect);
 }, (err, req, res) => {
-	/* If an error occurs during login, send the user back. */
-	res.redirect(301, '/login?error=' + err.message);
+	// If an error occurs during login, send the user back.
+	res.redirect(301, `/login?error=${err.message}`);
 });
 
 module.exports = router;

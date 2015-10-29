@@ -33,7 +33,7 @@ function BBWSStrategy(options, verify) {
 	this._wsURL = options.wsURL;
 	delete options.wsURL;
 
-	options.tokenURL = this._wsURL + '/oauth/token';
+	options.tokenURL = `${this._wsURL}/oauth/token`;
 	options.passReqToCallback = true;
 
 	PasswordGrantStrategy.call(this, options, verify);

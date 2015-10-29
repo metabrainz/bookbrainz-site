@@ -124,7 +124,7 @@ app.use((req, res, next) => {
 /* Development error handler; displays stacktrace to user */
 if (app.get('env') === 'development') {
 	app.use((err, req, res) => {
-		console.log('Internal Error. Message: ' + err.message + ' Stacktrace...');
+		console.log(`Internal Error. Message: ${err.message} Stacktrace...`);
 		console.log(err.stack);
 
 		res.status(err.status || 500);

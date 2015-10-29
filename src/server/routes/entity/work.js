@@ -51,7 +51,7 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	let title = 'Work';
 
 	if (work.default_alias && work.default_alias.name) {
-		title = 'Work “' + work.default_alias.name + '”';
+		title = `Work “${work.default_alias.name}”`;
 	}
 
 	// Get unique identifier types for display
@@ -68,7 +68,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	let title = 'Work';
 
 	if (work.default_alias && work.default_alias.name) {
-		title = 'Work “' + work.default_alias.name + '”';
+		title = `Work “${work.default_alias.name}”`;
 	}
 
 	res.render('entity/delete', {title});
@@ -92,10 +92,10 @@ router.get('/:bbid/revisions', (req, res) => {
 	let title = 'Work';
 
 	if (work.default_alias && work.default_alias.name) {
-		title = 'Work “' + work.default_alias.name + '”';
+		title = `Work “${work.default_alias.name}”`;
 	}
 
-	bbws.get('/work/' + work.bbid + '/revisions')
+	bbws.get(`/work/${work.bbid}/revisions`)
 		.then((revisions) => {
 			const promisedUsers = {};
 			revisions.objects.forEach((revision) => {

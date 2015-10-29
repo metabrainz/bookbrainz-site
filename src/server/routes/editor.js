@@ -58,7 +58,7 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 	}
 
 	bbws.put(
-		'/user/' + req.body.id + '/',
+		`/user/${req.body.id}/`,
 		{bio: req.body.bio, email: req.body.email},
 		{accessToken: req.session.bearerToken}
 	)
@@ -93,7 +93,7 @@ router.get('/:id', (req, res, next) => {
 
 router.get('/:id/revisions', (req, res, next) => {
 	const userPromise = User.findOne(req.params.id);
-	const revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
+	const revisionsPromise = bbws.get(`/user/${req.params.id}/revisions`);
 
 	Promise.join(userPromise, revisionsPromise, (editor, revisions) => {
 		res.render('editor/revisions', {editor, revisions});

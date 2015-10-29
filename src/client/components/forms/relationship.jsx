@@ -65,9 +65,9 @@ module.exports = React.createClass({
 	fetchEntity(uuid) {
 		'use strict';
 
-		// This should be modified to use bbws if the config can be separated from
-		// that.
-		return request.get(this.props.wsUrl + '/entity/' + uuid)
+		// This should be modified to use bbws if the config can be separated
+		// from that.
+		return request.get(`${this.props.wsUrl}/entity/${uuid}`)
 		.accept('application/json')
 		.promise()
 		.then((response) => response.body)
