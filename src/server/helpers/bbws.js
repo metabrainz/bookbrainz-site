@@ -38,7 +38,10 @@ function _processError(response) {
 	else {
 		newErr = new Error('There was an error accessing the web service');
 		if (response.res) {
-			console.log('WS error: ' + response.status + ' ' + requestPath + ' ' + JSON.stringify(response.res.request._data));
+			console.log(
+				`WS error: ${response.status} ${requestPath} ` +
+				`${JSON.stringify(response.res.request._data)}`
+			);
 		}
 		else {
 			console.log('No response.');

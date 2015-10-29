@@ -142,11 +142,21 @@ module.exports = React.createClass({
 				>
 					<NavItem eventKey={1}>
 						<strong>1.</strong> Aliases
-						<span className={`text-danger fa fa-warning${this.state.aliasesValid ? ' hidden' : ''}`} />
+						<span className=
+							{
+								'text-danger fa fa-warning' +
+								`${this.state.aliasesValid ? ' hidden' : ''}`
+							}
+						/>
 					</NavItem>
 					<NavItem eventKey={2}>
 						<strong>2.</strong> Data
-						<span className={`text-danger fa fa-warning${this.state.dataValid ? ' hidden' : ''}`} />
+						<span className=
+							{
+								'text-danger fa fa-warning' +
+								`${this.state.dataValid ? ' hidden' : ''}`
+							}
+						/>
 					</NavItem>
 					<NavItem eventKey={3}>
 						<strong>3.</strong> Revision Note
