@@ -24,6 +24,20 @@ const Revision = require('../data/properties/revision');
 const User = require('../data/user');
 const _ = require('underscore');
 
+function formatPairAttributeSingle(pair, attribute) {
+	if (attribute) {
+		return [
+			pair[0] ? [pair[0][attribute]] : null,
+			pair[1] ? [pair[1][attribute]] : null
+		];
+	}
+
+	return [
+		pair[0] ? [pair[0]] : null,
+		pair[1] ? [pair[1]] : null
+	];
+}
+
 function formatRelationshipDiff(revision) {
 	return revision.changes.map((pair) => {
 		const result = {};
@@ -43,12 +57,8 @@ function formatRelationshipDiff(revision) {
 		}
 
 		if (pair.relationship_type) {
-			result['Relationship Type'] = [
-				pair.relationship_type[0] ?
-					[pair.relationship_type[0].label] : null,
-				pair.relationship_type[1] ?
-					[pair.relationship_type[1].label] : null
-			];
+			result['Relationship Type'] =
+				formatPairAttributeSingle(pair.relationship_type, 'label');
 		}
 
 		return result;
@@ -59,28 +69,18 @@ function formatEntityDiff(pair) {
 	const result = {};
 
 	if (pair.annotation) {
-		result.Annotation = [
-			pair.annotation[0] !== null ? [pair.annotation[0].content] : null,
-			pair.annotation[1] !== null ? [pair.annotation[1].content] : null
-		];
+		result.Annotation =
+			formatPairAttributeSingle(pair.annotation, 'content');
 	}
 
 	if (pair.disambiguation) {
-		result.Disambiguation = [
-			pair.disambiguation[0] !== null ?
-				[pair.disambiguation[0].comment] : null,
-			pair.disambiguation[1] !== null ?
-				[pair.disambiguation[1].comment] : null
-		];
+		result.Disambiguation =
+			formatPairAttributeSingle(pair.disambiguation, 'comment');
 	}
 
 	if (pair.default_alias) {
-		result['Default Alias'] = [
-			pair.default_alias[0] !== null ?
-				[pair.default_alias[0].name] : null,
-			pair.default_alias[1] !== null ?
-				[pair.default_alias[1].name] : null
-		];
+		result['Default Alias'] =
+			formatPairAttributeSingle(pair.default_alias, 'name');
 	}
 
 	if (pair.aliases) {
@@ -109,12 +109,8 @@ function formatPublicationDiff(revision) {
 		const result = formatEntityDiff(pair);
 
 		if (pair.publication_type) {
-			result['Publication Type'] = [
-				pair.publication_type[0] !== null ?
-					[pair.publication_type[0].label] : null,
-				pair.publication_type[1] !== null ?
-					[pair.publication_type[1].label] : null
-			];
+			result['Publication Type'] =
+				formatPairAttributeSingle(pair.publication_type, 'label');
 		}
 
 		return result;
@@ -126,40 +122,24 @@ function formatCreatorDiff(revision) {
 		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
-			result['Begin Date'] = [
-				pair.begin_date[0] !== null ? [pair.begin_date[0]] : null,
-				pair.begin_date[1] !== null ? [pair.begin_date[1]] : null
-			];
+			result['Begin Date'] = formatPairAttributeSingle(pair.begin_date);
 		}
 
 		if (pair.end_date) {
-			result['End Date'] = [
-				pair.end_date[0] !== null ? [pair.end_date[0]] : null,
-				pair.end_date[1] !== null ? [pair.end_date[1]] : null
-			];
+			result['End Date'] = formatPairAttributeSingle(pair.end_date);
 		}
 
 		if (pair.ended) {
-			result.Ended = [
-				pair.ended[0] !== null ? [pair.ended[0]] : null,
-				pair.ended[1] !== null ? [pair.ended[1]] : null
-			];
+			result.Ended = formatPairAttributeSingle(pair.ended);
 		}
 
 		if (pair.gender) {
-			result.Gender = [
-				pair.gender[0] !== null ? [pair.gender[0].name] : null,
-				pair.gender[1] !== null ? [pair.gender[1].name] : null
-			];
+			result.Gender = formatPairAttributeSingle(pair.gender, 'name');
 		}
 
 		if (pair.creator_type) {
-			result['Creator Type'] = [
-				pair.creator_type[0] !== null ?
-					[pair.creator_type[0].label] : null,
-				pair.creator_type[1] !== null ?
-					[pair.creator_type[1].label] : null
-			];
+			result['Creator Type'] =
+				formatPairAttributeSingle(pair.creator_type, 'label');
 		}
 
 		return result;
@@ -171,88 +151,58 @@ function formatEditionDiff(revision) {
 		const result = formatEntityDiff(pair);
 
 		if (pair.release_date) {
-			result['Release Date'] = [
-				pair.release_date[0] !== null ? [pair.release_date[0]] : null,
-				pair.release_date[1] !== null ? [pair.release_date[1]] : null
-			];
+			result['Release Date'] =
+				formatPairAttributeSingle(pair.release_date);
 		}
 
 		if (pair.pages) {
-			result['Page Count'] = [
-				pair.pages[0] !== null ? [pair.pages[0]] : null,
-				pair.pages[1] !== null ? [pair.pages[1]] : null
-			];
+			result['Page Count'] =
+				formatPairAttributeSingle(pair.pages);
 		}
 
 		if (pair.width) {
-			result.Width = [
-				pair.width[0] !== null ? [pair.width[0]] : null,
-				pair.width[1] !== null ? [pair.width[1]] : null
-			];
+			result.Width =
+				formatPairAttributeSingle(pair.width);
 		}
 
 		if (pair.height) {
-			result.Height = [
-				pair.height[0] !== null ? [pair.height[0]] : null,
-				pair.height[1] !== null ? [pair.height[1]] : null
-			];
+			result.Height =
+				formatPairAttributeSingle(pair.height);
 		}
 
 		if (pair.depth) {
-			result.Depth = [
-				pair.depth[0] !== null ? [pair.depth[0]] : null,
-				pair.depth[1] !== null ? [pair.depth[1]] : null
-			];
+			result.Depth =
+				formatPairAttributeSingle(pair.depth);
 		}
 
 		if (pair.weight) {
-			result.Weight = [
-				pair.weight[0] !== null ? [pair.weight[0]] : null,
-				pair.weight[1] !== null ? [pair.weight[1]] : null
-			];
+			result.Weight =
+				formatPairAttributeSingle(pair.weight);
 		}
 
 		if (pair.edition_format) {
-			result['Edition Format'] = [
-				pair.edition_format[0] !== null ?
-					[pair.edition_format[0].label] : null,
-				pair.edition_format[1] !== null ?
-					[pair.edition_format[1].label] : null
-			];
+			result['Edition Format'] =
+				formatPairAttributeSingle(pair.edition_format, 'label');
 		}
 
 		if (pair.edition_status) {
-			result['Edition Status'] = [
-				pair.edition_status[0] !== null ?
-					[pair.edition_status[0].label] : null,
-				pair.edition_status[1] !== null ?
-					[pair.edition_status[1].label] : null
-			];
+			result['Edition Status'] =
+				formatPairAttributeSingle(pair.edition_status, 'label');
 		}
 
 		if (pair.language) {
-			result.Language = [
-				pair.language[0] !== null ? [pair.language[0].name] : null,
-				pair.language[1] !== null ? [pair.language[1].name] : null
-			];
+			result.Language =
+				formatPairAttributeSingle(pair.language, 'name');
 		}
 
 		if (pair.publication) {
-			result.Publication = [
-				pair.publication[0] !== null ?
-					[pair.publication[0].entity_gid] : null,
-				pair.publication[1] !== null ?
-					[pair.publication[1].entity_gid] : null
-			];
+			result.Publication =
+				formatPairAttributeSingle(pair.publication, 'entity_gid');
 		}
 
 		if (pair.publisher) {
-			result.Publisher = [
-				pair.publisher[0] !== null ?
-					[pair.publisher[0].entity_gid] : null,
-				pair.publisher[1] !== null ?
-					[pair.publisher[1].entity_gid] : null
-			];
+			result.Publisher =
+				formatPairAttributeSingle(pair.publisher, 'entity_gid');
 		}
 
 		return result;
@@ -264,33 +214,20 @@ function formatPublisherDiff(revision) {
 		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
-			result['Begin Date'] = [
-				pair.begin_date[0] !== null ? [pair.begin_date[0]] : null,
-				pair.begin_date[1] !== null ? [pair.begin_date[1]] : null
-			];
+			result['Begin Date'] = formatPairAttributeSingle(pair.begin_date);
 		}
 
 		if (pair.end_date) {
-			result['End Date'] = [
-				pair.end_date[0] !== null ? [pair.end_date[0]] : null,
-				pair.end_date[1] !== null ? [pair.end_date[1]] : null
-			];
+			result['End Date'] = formatPairAttributeSingle(pair.end_date);
 		}
 
 		if (pair.ended) {
-			result.Ended = [
-				pair.ended[0] !== null ? [pair.ended[0]] : null,
-				pair.ended[1] !== null ? [pair.ended[1]] : null
-			];
+			result.Ended = formatPairAttributeSingle(pair.ended);
 		}
 
 		if (pair.publisher_type) {
-			result['Publisher Type'] = [
-				pair.publisher_type[0] !== null ?
-					[pair.publisher_type[0].label] : null,
-				pair.publisher_type[1] !== null ?
-					[pair.publisher_type[1].label] : null
-			];
+			result['Publisher Type'] =
+				formatPairAttributeSingle(pair.publisher_type, 'label');
 		}
 
 		return result;
@@ -302,10 +239,8 @@ function formatWorkDiff(revision) {
 		const result = formatEntityDiff(pair);
 
 		if (pair.work_type) {
-			result['Work Type'] = [
-				pair.work_type[0] !== null ? [pair.work_type[0].label] : null,
-				pair.work_type[1] !== null ? [pair.work_type[1].label] : null
-			];
+			result['Work Type'] =
+				formatPairAttributeSingle(pair.work_type, 'label');
 		}
 
 		if (pair.languages) {
