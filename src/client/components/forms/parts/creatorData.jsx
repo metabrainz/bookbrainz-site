@@ -24,9 +24,40 @@ const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Identifiers = require('./identifiers.jsx');
 
+const validators = require('../../validators');
+
+const creatorTypeValidation = React.PropTypes.shape({
+	creator_type_id: React.PropTypes.number,
+	label: React.PropTypes.string
+});
 
 const CreatorData = React.createClass({
 	displayName: 'creatorDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		creator: React.PropTypes.shape({
+			begin_date: React.PropTypes.string,
+			end_date: React.PropTypes.string,
+			ended: React.PropTypes.bool,
+			gender: React.PropTypes.bool,
+			creator_type: creatorTypeValidation,
+			disambiguation: React.PropTypes.string,
+			annotation: React.PropTypes.string,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			}))
+		}),
+		creatorTypes: React.PropTypes.arrayOf(creatorTypeValidation),
+		genders: React.PropTypes.arrayOf(React.PropTypes.shape({
+			gender_id: React.PropTypes.number,
+			name: React.PropTypes.string
+		})),
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		nextClick: React.PropTypes.func,
+		visible: React.PropTypes.bool
+	},
 	getInitialState() {
 		'use strict';
 

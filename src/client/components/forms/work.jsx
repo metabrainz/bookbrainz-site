@@ -32,6 +32,13 @@ const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
 	displayName: 'workForm',
+	propTypes: {
+		identifierTypes: React.PropTypes.array,
+		languages: React.PropTypes.array,
+		submissionUrl: React.PropTypes.string,
+		work: React.PropTypes.object,
+		workTypes: React.PropTypes.array
+	},
 	getInitialState() {
 		'use strict';
 

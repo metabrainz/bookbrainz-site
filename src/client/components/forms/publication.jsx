@@ -32,6 +32,13 @@ const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
 	displayName: 'publicationForm',
+	propTypes: {
+		identifierTypes: React.PropTypes.array,
+		languages: React.PropTypes.array,
+		publication: React.PropTypes.object,
+		publicationTypes: React.PropTypes.array,
+		submissionUrl: React.PropTypes.string
+	},
 	getInitialState() {
 		'use strict';
 

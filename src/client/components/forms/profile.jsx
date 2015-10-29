@@ -28,6 +28,11 @@ require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
 	displayName: 'profileForm',
+	propTypes: {
+		bio: React.PropTypes.string,
+		email: React.PropTypes.string,
+		id: React.PropTypes.number
+	},
 	getInitialState() {
 		'use strict';
 

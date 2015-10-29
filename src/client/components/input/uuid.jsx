@@ -25,6 +25,18 @@ const uuidRegex =
 
 const UUIDInput = React.createClass({
 	displayName: 'uuidInput',
+	propTypes: {
+		defaultValue: React.PropTypes.string,
+		disabled: React.PropTypes.bool,
+		groupClassName: React.PropTypes.string,
+		help: React.PropTypes.string,
+		label: React.PropTypes.string,
+		labelClassName: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		placeholder: React.PropTypes.string,
+		standalone: React.PropTypes.bool,
+		wrapperClassName: React.PropTypes.string
+	},
 	getInitialState() {
 		'use strict';
 

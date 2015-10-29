@@ -22,10 +22,32 @@ const Select = require('../../input/select2.jsx');
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Identifiers = require('./identifiers.jsx');
+const validators = require('../../validators');
 
 
 const WorkData = React.createClass({
 	displayName: 'workDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
+			language_id: React.PropTypes.number,
+			name: React.PropTypes.string
+		})),
+		nextClick: React.PropTypes.func,
+		visible: React.PropTypes.bool,
+		work: React.PropTypes.shape({
+			annotation: React.PropTypes.string,
+			disambiguation: React.PropTypes.string,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			})),
+			work_type: validators.workType
+		}),
+		workTypes: React.PropTypes.arrayOf(validators.workType)
+	},
 	getValue() {
 		'use strict';
 

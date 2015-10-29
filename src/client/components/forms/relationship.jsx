@@ -33,10 +33,19 @@ require('superagent-bluebird-promise');
 const renderRelationship = require('../../../server/helpers/render.js');
 const utils = require('../../../server/helpers/utils.js');
 const SearchSelect = require('../input/entity-search.jsx');
-
+const validators = require('../validators');
 
 module.exports = React.createClass({
 	displayName: 'relationshipForm',
+	propTypes: {
+		relationshipTypes:
+			React.PropTypes.arrayOf(validators.relationshipType),
+		targetEntity: React.PropTypes.shape({
+			bbid: React.PropTypes.string,
+			_type: React.PropTypes.string
+		}),
+		wsUrl: React.PropTypes.string
+	},
 	getInitialState() {
 		'use strict';
 

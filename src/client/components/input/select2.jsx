@@ -30,6 +30,13 @@ if (typeof window !== 'undefined') {
 
 const Select = React.createClass({
 	displayName: 'select2Input',
+	propTypes: {
+		multiple: React.PropTypes.bool,
+		onChange: React.PropTypes.func,
+		options: React.PropTypes.object,
+		placeholder: React.PropTypes.string,
+		select2Options: React.PropTypes.object
+	},
 	componentDidMount() {
 		'use strict';
 		this.initSelect2();

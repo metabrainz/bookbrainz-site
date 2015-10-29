@@ -26,6 +26,15 @@ const yRegex = /^\d{4}$/;
 
 const PartialDate = React.createClass({
 	displayName: 'partialDateInput',
+	propTypes: {
+		defaultValue: React.PropTypes.string,
+		groupClassName: React.PropTypes.string,
+		help: React.PropTypes.string,
+		label: React.PropTypes.string,
+		labelClassName: React.PropTypes.string,
+		placeholder: React.PropTypes.string,
+		wrapperClassName: React.PropTypes.string
+	},
 	getInitialState() {
 		'use strict';
 

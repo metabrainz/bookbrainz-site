@@ -25,6 +25,21 @@ const Select = require('../../input/select2.jsx');
 
 const AliasRow = React.createClass({
 	displayName: 'aliasRowComponent',
+	propTypes: {
+		aliasId: React.PropTypes.number,
+		default: React.PropTypes.bool,
+		language: React.PropTypes.number,
+		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
+			id: React.PropTypes.number.isRequired,
+			name: React.PropTypes.string.isRequired
+		})).isRequired,
+		name: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		onRemove: React.PropTypes.func,
+		primary: React.PropTypes.bool,
+		removeHidden: React.PropTypes.bool,
+		sortName: React.PropTypes.string
+	},
 	getValue() {
 		'use strict';
 
@@ -136,6 +151,11 @@ const AliasRow = React.createClass({
 
 const AliasList = React.createClass({
 	displayName: 'aliasListComponent',
+	propTypes: {
+		aliases: React.PropTypes.array,
+		nextClick: React.PropTypes.func,
+		visible: React.PropTypes.bool
+	},
 	getInitialState() {
 		'use strict';
 

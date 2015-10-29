@@ -23,6 +23,13 @@ const Button = require('react-bootstrap').Button;
 
 const RevisionNote = React.createClass({
 	displayName: 'revisionNoteComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		nextClick: React.PropTypes.func,
+		onSubmit: React.PropTypes.func,
+		submitDisabled: React.PropTypes.bool,
+		visible: React.PropTypes.bool
+	},
 	render() {
 		'use strict';
 

@@ -23,10 +23,30 @@ const Select = require('../../input/select2.jsx');
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Identifiers = require('./identifiers.jsx');
-
+const validators = require('../../validators');
 
 const PublisherData = React.createClass({
 	displayName: 'publisherDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		nextClick: React.PropTypes.func,
+		publisher: React.PropTypes.shape({
+			annotation: React.PropTypes.string,
+			begin_date: React.PropTypes.string,
+			disambiguation: React.PropTypes.string,
+			end_date: React.PropTypes.string,
+			ended: React.PropTypes.bool,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			})),
+			publisher_type: validators.publisherType
+		}),
+		publisherTypes: React.PropTypes.arrayOf(validators.publisherType),
+		visible: React.PropTypes.bool
+	},
 	getInitialState() {
 		'use strict';
 

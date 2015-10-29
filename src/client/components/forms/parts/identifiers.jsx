@@ -22,8 +22,18 @@ const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2.jsx');
 
+const validators = require('../../validators');
+
 const IdentifierRow = React.createClass({
 	displayName: 'identifierRowComponent',
+	propTypes: {
+		onChange: React.PropTypes.func,
+		onRemove: React.PropTypes.func,
+		removeHidden: React.PropTypes.bool,
+		type: React.PropTypes.number,
+		types: React.PropTypes.arrayOf(validators.identifierType),
+		value: React.PropTypes.string
+	},
 	getValue() {
 		'use strict';
 
@@ -120,6 +130,13 @@ const IdentifierRow = React.createClass({
 
 const IdentifierList = React.createClass({
 	displayName: 'identifierListComponent',
+	propTypes: {
+		identifiers: React.PropTypes.shape({
+			value: React.PropTypes.string,
+			type: validators.identifierType
+		}),
+		types: React.PropTypes.arrayOf(validators.identifierType)
+	},
 	getInitialState() {
 		'use strict';
 

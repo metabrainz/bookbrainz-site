@@ -24,6 +24,24 @@ const $ = require('jquery');
 
 const EntitySearch = React.createClass({
 	displayName: 'entitySearchInput',
+	propTypes: {
+		bsStyle: React.PropTypes.string,
+		defaultValue: React.PropTypes.shape({
+			id: React.PropTypes.number
+		}),
+		disabled: React.PropTypes.bool,
+		groupClassName: React.PropTypes.string,
+		help: React.PropTypes.string,
+		label: React.PropTypes.string,
+		labelClassName: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		options: React.PropTypes.object,
+		placeholder: React.PropTypes.string,
+		select2Options: React.PropTypes.object,
+		standalone: React.PropTypes.bool,
+		value: React.PropTypes.number,
+		wrapperClassName: React.PropTypes.string
+	},
 	getValue() {
 		'use strict';
 

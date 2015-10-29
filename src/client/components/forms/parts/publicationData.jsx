@@ -23,9 +23,27 @@ const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Identifiers = require('./identifiers.jsx');
 
+const validators = require('../../validators');
 
 const PublicationData = React.createClass({
 	displayName: 'publicationDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		nextClick: React.PropTypes.func,
+		publication: React.PropTypes.shape({
+			annotation: React.PropTypes.string,
+			disambiguation: React.PropTypes.string,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			})),
+			publication_type: validators.publicationType
+		}),
+		publicationTypes: React.PropTypes.arrayOf(validators.publicationType),
+		visible: React.PropTypes.bool
+	},
 	getValue() {
 		'use strict';
 

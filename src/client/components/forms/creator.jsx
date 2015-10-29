@@ -32,6 +32,14 @@ const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
 	displayName: 'creatorForm',
+	propTypes: {
+		creator: React.PropTypes.object,
+		creatorTypes: React.PropTypes.array,
+		genders: React.PropTypes.array,
+		identifierTypes: React.PropTypes.array,
+		languages: React.PropTypes.array,
+		submissionUrl: React.PropTypes.string
+	},
 	getInitialState() {
 		'use strict';
 

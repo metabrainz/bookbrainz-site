@@ -25,9 +25,76 @@ const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Identifiers = require('./identifiers.jsx');
 
+const validators = require('../../validators');
+
+const editionStatusValidation = React.PropTypes.shape({
+	edition_status_id: React.PropTypes.number,
+	label: React.PropTypes.string
+});
+
+const editionFormatValidation = React.PropTypes.shape({
+	edition_format_id: React.PropTypes.number,
+	label: React.PropTypes.string
+});
 
 const EditionData = React.createClass({
 	displayName: 'editionDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		edition: React.PropTypes.shape({
+			annotation: React.PropTypes.string,
+			depth: React.PropTypes.number,
+			disambiguation: React.PropTypes.string,
+			edition_format: editionFormatValidation,
+			edition_status: editionStatusValidation,
+			height: React.PropTypes.number,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			})),
+			language: React.PropTypes.shape({
+				language_id: React.PropTypes.number
+			}),
+			pages: React.PropTypes.number,
+			publication: React.PropTypes.shape({
+				bbid: React.PropTypes.string,
+				default_alias: React.PropTypes.shape({
+					name: React.PropTypes.string
+				})
+			}),
+			publisher: React.PropTypes.shape({
+				bbid: React.PropTypes.string,
+				default_alias: React.PropTypes.shape({
+					name: React.PropTypes.string
+				})
+			}),
+			release_date: React.PropTypes.string,
+			weight: React.PropTypes.number,
+			width: React.PropTypes.number
+		}),
+		editionFormats: React.PropTypes.arrayOf(editionFormatValidation),
+		editionStatuses: React.PropTypes.arrayOf(editionStatusValidation),
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
+			language_id: React.PropTypes.number,
+			name: React.PropTypes.string
+		})),
+		nextClick: React.PropTypes.func,
+		publication: React.PropTypes.shape({
+			bbid: React.PropTypes.string,
+			default_alias: React.PropTypes.shape({
+				name: React.PropTypes.string
+			})
+		}),
+		publisher: React.PropTypes.shape({
+			bbid: React.PropTypes.string,
+			default_alias: React.PropTypes.shape({
+				name: React.PropTypes.string
+			})
+		}),
+		visible: React.PropTypes.bool
+	},
 	getValue() {
 		'use strict';
 
