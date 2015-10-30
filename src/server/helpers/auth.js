@@ -20,6 +20,7 @@
 'use strict';
 
 var passport = require('passport');
+var Editor = require('bookbrainz-data').Editor;
 var config = require('../helpers/config');
 var BBWSStrategy = require('./passport-bookbrainz-ws');
 var LocalStrategy = require('passport-local').Strategy;
@@ -28,12 +29,10 @@ var bcrypt = require('bcrypt');
 var auth = {};
 
 auth.init = function(app) {
-	var orm = app.get('orm');
-
 	passport.use(
 		new LocalStrategy(
 			function(username, password, done) {
-				new orm.Editor({name: username}).fetch({require: true})
+				new Editor({name: username}).fetch({require: true})
 				.then(function processEditor(model) {
 					bcrypt.compare(password, model.get('password'), function(err, res) {
 						if (err) {
@@ -47,7 +46,7 @@ auth.init = function(app) {
 						}
 					});
 				})
-				.catch(orm.Editor.NotFoundError, function(err) {
+				.catch(Editor.NotFoundError, function(err) {
 					done(null, false, {message: 'Incorrect username.'});
 				})
 				.catch(done);

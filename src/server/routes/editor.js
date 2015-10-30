@@ -22,6 +22,7 @@
 var express = require('express');
 var router = express.Router();
 var React = require('react');
+var Editor = require('bookbrainz-data').Editor;
 var User = require('../data/user');
 var bbws = require('../helpers/bbws');
 var auth = require('../helpers/auth');
@@ -32,9 +33,7 @@ var NotFoundError = require('../helpers/error').NotFoundError;
 var ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
 
 router.get('/edit', auth.isAuthenticated, function(req, res, next) {
-	var orm = req.app.get('orm');
-
-	new orm.Editor({id: parseInt(req.user.id, 10)})
+	new Editor({id: parseInt(req.user.id, 10)})
 	.fetch()
 	.then(function(user) {
 		var markup = React.renderToString(ProfileForm(user.toJSON()));
@@ -50,15 +49,13 @@ router.get('/edit', auth.isAuthenticated, function(req, res, next) {
 });
 
 router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
-	var orm = req.app.get('orm');
-
 	/* Should handle errors in some fashion other than redirecting. */
 	if (req.body.id !== req.user.id) {
 		req.session.error = 'You do not have permission to edit that user';
 		res.redirect(303, '/editor/edit');
 	}
 
-	new orm.Editor({
+	new Editor({
 		id: parseInt(req.body.id, 10), bio: req.body.bio, email:req.body.email
 	})
 	.save()
@@ -72,10 +69,8 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 });
 
 router.get('/:id', function(req, res, next) {
-	var orm = req.app.get('orm');
-
 	var userId = parseInt(req.params.id, 10);
-	new orm.Editor({id: userId})
+	new Editor({id: userId})
 	.fetch({withRelated: ['editorType', 'gender']})
 	.then(function render(fetchedEditor) {
 		var editorJSON = fetchedEditor.toJSON();

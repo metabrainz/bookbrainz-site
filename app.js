@@ -33,29 +33,14 @@ var staticCache = require('express-static-cache');
 var Promise = require('bluebird');
 Promise.longStackTraces();
 
-var auth = require('./src/server/helpers/auth');
 var config = require('./src/server/helpers/config');
-var bbws = require('./src/server/helpers/bbws');
-
-var knex = require('knex')({
-  client: 'postgresql',
-  connection: {
-    host     : '127.0.0.1',
-    user     : 'bookbrainz',
-    password : 'bookbrainz',
-    database : 'bookbrainz'
-  },
-  debug: true
-});
-
-var bookshelf = require('bookshelf')(knex);
-bookshelf.plugin('registry');
-bookshelf.plugin('visibility');
-
-var orm = require('bookbrainz-orm')(bookshelf);
-
 
 var app = express();
+
+require('bookbrainz-data').init(config.database);
+
+var auth = require('./src/server/helpers/auth');
+var bbws = require('./src/server/helpers/bbws');
 
 // Set up jade as view engine
 app.set('views', path.join(__dirname, 'templates'));
@@ -67,7 +52,6 @@ require('node-jsx').install({
 });
 
 app.set('trust proxy', config.site.proxyTrust);
-app.set('orm', orm);
 
 app.use(favicon(path.join(__dirname, 'static/images/icons/favicon.ico')));
 

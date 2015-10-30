@@ -22,12 +22,12 @@
 
 var express = require('express');
 var router = express.Router();
+var Message = require('bookbrainz-data').Message;
+var MessageReceipt = require('bookbrainz-data').MessageReceipt;
 var config = require('../helpers/config');
 var auth = require('../helpers/auth');
 var Promise = require('bluebird');
 var _ = require('underscore');
-
-var bbws = require('../helpers/bbws');
 
 var request = require('superagent');
 require('superagent-bluebird-promise');
@@ -51,9 +51,7 @@ function renderMessageList(view, collectionJSON, res) {
 }
 
 router.get('/inbox', auth.isAuthenticated, function(req, res) {
-	var orm = req.app.get('orm');
-
-	new orm.MessageReceipt().where({recipient_id: req.user.id, archived: false})
+	new MessageReceipt().where({recipient_id: req.user.id, archived: false})
 	.fetchAll({withRelated: ['message', 'message.sender']})
 	.then(function renderInbox(collection) {
 		renderMessageList('inbox', _.pluck(collection.toJSON(), 'message'), res);
@@ -61,9 +59,7 @@ router.get('/inbox', auth.isAuthenticated, function(req, res) {
 });
 
 router.get('/archive', auth.isAuthenticated, function(req, res) {
-	var orm = req.app.get('orm');
-
-	new orm.MessageReceipt().where({recipient_id: req.user.id, archived: true})
+	new MessageReceipt().where({recipient_id: req.user.id, archived: true})
 	.fetchAll({withRelated: ['message', 'message.sender']})
 	.then(function renderInbox(collection) {
 		renderMessageList('archive', _.pluck(collection.toJSON(), 'message'), res);
@@ -71,9 +67,7 @@ router.get('/archive', auth.isAuthenticated, function(req, res) {
 });
 
 router.get('/sent', auth.isAuthenticated, function(req, res) {
-	var orm = req.app.get('orm');
-
-	new orm.Message().where({sender_id: req.user.id})
+	new Message().where({sender_id: req.user.id})
 	.fetchAll({withRelated: ['sender']})
 	.then(function renderInbox(collection) {
 		renderMessageList('sent', collection.toJSON(), res);
@@ -81,8 +75,6 @@ router.get('/sent', auth.isAuthenticated, function(req, res) {
 });
 
 router.get('/:id', auth.isAuthenticated, function(req, res) {
-	var orm = req.app.get('orm');
-
 	var ws = config.site.webservice;
 	request.get(ws + '/message/' + req.params.id)
 		.set('Authorization', 'Bearer ' + req.session.bearerToken).promise()
@@ -97,19 +89,17 @@ router.get('/:id', auth.isAuthenticated, function(req, res) {
 });
 
 router.post('/send/handler', auth.isAuthenticated, function(req, res) {
-	var orm = req.app.get('orm');
-
 	// Parse recipient ids
 	var recipientIds = req.body.recipients.split(',').map(parseInt);
 
 	// Create new message
-	var messageStored = new orm.Message({
+	var messageStored = new Message({
 		senderId: req.user.id, subject: req.body.subject, content: req.body.content
 	}).save()
 	.then(function addRecipients(message) {
 		return Promise.all(
 			recipientIds.map(function addRecipient(recipientId) {
-				return new orm.MessageReceipt({
+				return new MessageReceipt({
 					recipientId: recipientId, messageId: message.get('id')
 				}).save();
 			})
