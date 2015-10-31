@@ -21,44 +21,46 @@
 
 var passport = require('passport');
 var Editor = require('bookbrainz-data').Editor;
-var config = require('../helpers/config');
-var BBWSStrategy = require('./passport-bookbrainz-ws');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
 
 var auth = {};
 
-auth.init = function(app) {
+auth.init = function init(app) {
 	passport.use(
 		new LocalStrategy(
-			function(username, password, done) {
-				new Editor({name: username}).fetch({require: true})
-				.then(function processEditor(model) {
-					bcrypt.compare(password, model.get('password'), function(err, res) {
-						if (err) {
-							done(err);
-						}
-						else if (res) {
-							done(null, model.toJSON());
-						}
-						else {
-							done(null, false, {message: 'Incorrect password.'});
-						}
-					});
-				})
-				.catch(Editor.NotFoundError, function(err) {
-					done(null, false, {message: 'Incorrect username.'});
-				})
-				.catch(done);
+			function strategy(username, password, done) {
+				new Editor({ name: username }).fetch({ require: true })
+					.then(function processEditor(model) {
+						bcrypt.compare(password, model.get('password'),
+							function handleResult(err, res) {
+								if (err) {
+									done(err);
+								}
+								else if (res) {
+									done(null, model.toJSON());
+								}
+								else {
+									done(null, false, {
+										message: 'Incorrect password.'
+									});
+								}
+							}
+						);
+					})
+					.catch(Editor.NotFoundError, function handleNotFound() {
+						done(null, false, { message: 'Incorrect username.' });
+					})
+					.catch(done);
 			}
 		)
 	);
 
-	passport.serializeUser(function(user, done) {
+	passport.serializeUser(function serialize(user, done) {
 		done(null, user);
 	});
 
-	passport.deserializeUser(function(user, done) {
+	passport.deserializeUser(function deserialize(user, done) {
 		done(null, user);
 	});
 
@@ -66,7 +68,7 @@ auth.init = function(app) {
 	app.use(passport.session());
 };
 
-auth.isAuthenticated = function(req, res, next) {
+auth.isAuthenticated = function isAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}
