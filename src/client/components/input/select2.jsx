@@ -62,6 +62,11 @@ var Select = React.createClass({
 		'use strict';
 		this.initSelect2();
 	},
+	componentWillUpdate: function() {
+		'use strict';
+		var select = $(this.refs.target.getInputDOMNode());
+		select.off('change');
+	},
 	componentDidUpdate: function() {
 		'use strict';
 		this.initSelect2();
