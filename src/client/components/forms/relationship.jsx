@@ -31,7 +31,12 @@ function getRelationshipTypeById(relationships, id) {
 
 var RelationshipRow = React.createClass({
 	getInitialState: function() {
-		return {a: "Bob", b: "Jimmy", relationshipType: null, deleted: false};
+		return {
+			a: this.props.a,
+			b: this.props.b,
+			relationshipType: this.props.relationshipType,
+			deleted: Boolean(this.props.deleted)
+		};
 	},
 	swap: function() {
 		this.setState({a: this.state.b, b: this.state.a});
@@ -41,6 +46,17 @@ var RelationshipRow = React.createClass({
 	},
 	reset: function() {
 		this.setState({deleted: false});
+	},
+	added: function() {
+		const initiallyEmpty = !this.props.a && !this.props.b && !this.props.relationshipType;
+		const nowSet = this.state.a || this.state.b || this.state.relationshipType;
+		return Boolean(initiallyEmpty && nowSet);
+	},
+	edited: function() {
+		const aChanged = this.props.a !== this.state.a;
+		const bChanged = this.props.b !== this.state.b;
+		const typeChanged = this.props.relationshipType !== this.state.relationshipType;
+		return aChanged || bChanged || typeChanged;
 	},
 	onChange: function() {
 		this.setState({
@@ -59,7 +75,17 @@ var RelationshipRow = React.createClass({
 		return "";
 	},
 	rowClass() {
-		return this.state.deleted ? " list-group-item-danger" : " list-group-item-success";
+		if (this.added()) {
+			return " list-group-item-success";
+		}
+		if (this.edited()) {
+			return " list-group-item-warning";
+		}
+		if (this.state.deleted) {
+			return " list-group-item-danger";
+		}
+
+		return "";
 	},
 	render: function() {
 		const deleteButton = (
