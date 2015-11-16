@@ -27,10 +27,10 @@ var prettify = require('gulp-jsbeautifier');
 var path = require('path');
 var glob = require('glob');
 var mkdirp = require('mkdirp');
-var reactify = require('reactify');
 var gulpless = require('gulp-less');
 var minifyCSS = require('gulp-minify-css');
 var prefixer = require('gulp-autoprefixer');
+var babelify = require("babelify");
 
 function bundle() {
 	var srcFiles =
@@ -59,7 +59,7 @@ function bundle() {
 	});
 
 	return browserify(srcFiles)
-		.transform(reactify)
+		.transform(babelify, {presets: ["es2015", "react"]})
 		.plugin('factor-bundle', {
 			outputs: dstFiles
 		})
