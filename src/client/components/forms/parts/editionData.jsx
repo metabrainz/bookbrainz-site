@@ -30,9 +30,12 @@ var EditionData = React.createClass({
 	getValue: function() {
 		'use strict';
 
+		const publication = this.refs.publication.getValue();
+		const publisher = this.refs.publisher.getValue();
+
 		return {
-			publication: this.refs.publication.getValue(),
-			publisher: this.refs.publisher.getValue() === '' ? null : this.refs.publisher.getValue(),
+			publication: publication ? publication.bbid : null,
+			publisher: publisher ? publisher.bbid : null,
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionFormat: this.refs.editionFormat.getValue(),

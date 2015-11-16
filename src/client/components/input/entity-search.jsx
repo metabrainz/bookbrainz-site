@@ -23,15 +23,29 @@ var _ = require('underscore');
 var $ = require('jquery');
 
 var EntitySearch = React.createClass({
+	loadedEntities: {},
 	getValue: function() {
 		'use strict';
 
-		return this.refs.select.getValue();
+		const bbid = this.refs.select.getValue();
+		if (bbid) {
+			return this.loadedEntities[bbid];
+		}
+
+		return null;
 	},
 	render: function() {
 		'use strict';
 
 		var self = this;
+
+		if(this.props.defaultValue) {
+			this.loadedEntities[this.props.defaultValue.id] = this.props.defaultValue;
+		}
+
+		if (this.props.value) {
+			this.loadedEntities[this.props.value.id] = this.props.value;
+		}
 
 		var select2Options = {
 			minimumInputLength: 1,
@@ -48,31 +62,29 @@ var EntitySearch = React.createClass({
 					return queryParams;
 				},
 				processResults: function(results) {
-					var data = {
-						results: []
-					};
-
 					if (results.error) {
-						data.results.push({
-							id: null,
-							text: results.error
-						});
-
-						return data;
+						return {
+							results: [{
+								id: null,
+								text: results.error
+							}]
+						};
 					}
 
-					results.forEach(function(result) {
-						data.results.push({
+					results.forEach((result) => {
+						self.loadedEntities[result.bbid] = result;
+					});
+
+					return {
+						results: results.map((result) => ({
 							id: result.bbid,
 							text: result.default_alias ?
 								result.default_alias.name : '(unnamed)',
 							disambiguation: result.disambiguation ?
 								result.disambiguation.comment : null,
 							type: result._type
-						});
-					});
-
-					return data;
+						}))
+					};
 				}
 			},
 			templateResult: function(result) {
@@ -115,10 +127,16 @@ var EntitySearch = React.createClass({
 			defaultKey = this.props.defaultValue.id;
 		}
 
+		var key = null;
+		if (this.props.value && this.props.value.id) {
+			options.unshift(this.props.value);
+			key = this.props.value.id;
+		}
+
 		return (
 			<Select
 				placeholder={this.props.placeholder}
-				value={this.props.value}
+				value={key}
 				defaultValue={defaultKey}
 				label={this.props.label}
 				idAttribute='id'
