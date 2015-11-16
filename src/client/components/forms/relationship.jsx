@@ -56,6 +56,9 @@ var RelationshipRow = React.createClass({
 	reset: function() {
 		this.setState({deleted: false});
 	},
+	selected() {
+		return this.refs.sel.getChecked();
+	},
 	added: function() {
 		const initiallyEmpty = !this.props.relationship.initialTarget && !this.props.relationship.initialType;
 		const nowSet = this.props.relationship.target || this.props.relationship.type;
@@ -179,7 +182,7 @@ var RelationshipRow = React.createClass({
 			<div className={"list-group-item margin-top-1" + this.rowClass()}>
 				<div className="row">
 					<div className="col-md-1 text-center margin-top-1">
-						<Input className="margin-left-0" type="checkbox" label=" " disabled={this.state.deleted}/>
+						<Input className="margin-left-0" ref="sel" type="checkbox" label=" " disabled={this.state.deleted} onClick={this.props.onSelect}/>
 					</div>
 					<div className="col-md-11">
 						<div className="row">
@@ -252,7 +255,8 @@ var RelationshipEditor = React.createClass({
 		return {
 			loadedEntities: this.props.loadedEntities,
 			relationships: existing,
-			rowsSpawned: existing.length
+			rowsSpawned: existing.length,
+			numSelected: 0
 		};
 	},
 	getValue: function() {
@@ -294,6 +298,17 @@ var RelationshipEditor = React.createClass({
 			relationships: updatedRelationships,
 			rowsSpawned
 		});
+	},
+	bulkDelete() {
+		const relationshipsToDelete = _.reject(
+			this.state.relationships.map((rel, idx) =>
+				this.refs[idx].selected() ? idx : null
+			), (idx) => idx === null
+		);
+
+		relationshipsToDelete.sort((a, b) => b - a).forEach((idx) => {
+			this.refs[idx].delete();
+		})
 	},
 	stateUpdateNeeded(changedRowIndex) {
 		'use strict';
@@ -338,13 +353,20 @@ var RelationshipEditor = React.createClass({
 		return rowsSpawned;
 	},
 	deleteRowIfNew: function(rowToDelete) {
+		"use strict";
 		if (this.refs[rowToDelete].added()) {
 			const updatedRelationships = this.getInternalValue();
 
 			updatedRelationships.splice(rowToDelete, 1);
 
+			let newNumSelected = this.state.numSelected;
+			if(this.refs[rowToDelete].selected()) {
+				newNumSelected--;
+			}
+
 			this.setState({
-				relationships: updatedRelationships
+				relationships: updatedRelationships,
+				numSelected: newNumSelected
 			});
 		}
 	},
@@ -361,6 +383,20 @@ var RelationshipEditor = React.createClass({
 			rowsSpawned
 		});
 	},
+	handleSelect: function(selectedRowIndex) {
+		"use strict";
+		let newNumSelected = this.state.numSelected;
+		if(this.refs[selectedRowIndex].selected()) {
+			newNumSelected++;
+		}
+		else {
+			newNumSelected--;
+		}
+
+		this.setState({
+			numSelected: newNumSelected
+		});
+	},
 	render: function() {
 		'use strict';
 
@@ -372,13 +408,21 @@ var RelationshipEditor = React.createClass({
 				onChange={this.handleChange.bind(null, index)}
 				onSwap={this.swap.bind(null, index)}
 				onDelete={this.deleteRowIfNew.bind(null, index)}
+				onSelect={this.handleSelect.bind(null, index)}
 				{...this.props}
 			/>
 		));
 
 		return (
 			<div>
-				<PageHeader>Relationship Editor</PageHeader>
+				<PageHeader>
+					<span className="pull-right">
+						<Button bsStyle="danger" disabled={this.state.numSelected == 0} onClick={this.bulkDelete}>
+							{`Delete Selected ${this.state.numSelected ? `(${this.state.numSelected})` : ''}`}
+						</Button>
+					</span>
+					Relationship Editor
+				</PageHeader>
 				<div className="list-group">
 					{rows}
 				</div>
