@@ -27,23 +27,45 @@ var React = require('react');
 var EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
 var Promise = require('bluebird');
 var config = require('../../helpers/config');
+var _ = require('underscore');
 
 var relationshipHelper = {};
 
+var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+
+var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+
 relationshipHelper.addEditRoutes = function(router) {
-	router.get('/:bbid/relationships', auth.isAuthenticated, function relationshipEditor(req, res) {
+	/* If the route specifies a BBID, load the Creator for it. */
+	router.param('bbid', makeEntityLoader(Entity, 'Entity not found'));
+
+	router.get('/:bbid/relationships', loadEntityRelationships, function relationshipEditor(req, res) {
 		var relationshipTypesPromise = RelationshipType.find();
-		var entityPromise = Entity.findOne(req.params.bbid, {
-			populate: [
-				'aliases'
-			]
+
+		var entityPromises = {};
+
+		res.locals.entity.relationships.forEach((relationship) => {
+			entityPromises[relationship.entities[0].entity.entity_gid] =
+				Entity.findOne(relationship.entities[0].entity.entity_gid);
+			entityPromises[relationship.entities[1].entity.entity_gid] =
+				Entity.findOne(relationship.entities[1].entity.entity_gid);
 		});
 
-		Promise.join(entityPromise, relationshipTypesPromise,
-			function(entity, relationshipTypes) {
+		const entitiesPromise = Promise.props(entityPromises);
+
+		Promise.join(entitiesPromise, relationshipTypesPromise,
+			function(entities, relationshipTypes) {
+				res.locals.entity.relationships.forEach((relationship) => {
+					relationship.source = entities[relationship.entities[0].entity.entity_gid];
+					relationship.target = entities[relationship.entities[1].entity.entity_gid];
+					relationship.type = relationship.relationship_type.relationship_type_id;
+				});
+
 				var props = {
 					relationshipTypes: relationshipTypes,
-					targetEntity: entity,
+					relationships: res.locals.entity.relationships,
+					entity: res.locals.entity,
+					loadedEntities: _.union(entities, [res.locals.entity]),
 					wsUrl: config.site.clientWebservice
 				};
 
