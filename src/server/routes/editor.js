@@ -70,13 +70,16 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 
 router.get('/:id', function(req, res, next) {
 	var userId = parseInt(req.params.id, 10);
+
 	new Editor({id: userId})
 	.fetch({withRelated: ['editorType', 'gender']})
 	.then(function render(fetchedEditor) {
 		var editorJSON = fetchedEditor.toJSON();
-		if (userId !== req.user.id) {
+
+		if (!req.user || userId !== req.user.id) {
 			editorJSON = _.omit(editorJSON, ['password', 'email']);
 		}
+
 		res.render('editor/editor', {
 			editor: editorJSON
 		});
