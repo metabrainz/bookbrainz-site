@@ -71,31 +71,31 @@ router.post('/edit/handler', auth.isAuthenticated, function(req, res) {
 router.get('/:id', function(req, res, next) {
 	var userId = parseInt(req.params.id, 10);
 
-	new Editor({id: userId})
-	.fetch({
-		require: true,
-		withRelated: ['editorType', 'gender']
-	})
-	.then(function render(fetchedEditor) {
-		var editorJSON = fetchedEditor.toJSON();
+	new Editor({ id: userId })
+		.fetch({
+			require: true,
+			withRelated: ['editorType', 'gender']
+		})
+		.then(function render(fetchedEditor) {
+			var editorJSON = fetchedEditor.toJSON();
 
-		if (!req.user || userId !== req.user.id) {
-			editorJSON = _.omit(editorJSON, ['password', 'email']);
-		}
+			if (!req.user || userId !== req.user.id) {
+				editorJSON = _.omit(editorJSON, ['password', 'email']);
+			}
 
-		res.render('editor/editor', {
-			editor: editorJSON
+			res.render('editor/editor', {
+				editor: editorJSON
+			});
+		})
+		.catch(Editor.NotFoundError, function ifError(err) {
+			next(new NotFoundError('Editor not found'));
+		})
+		.catch(function ifError(err) {
+			var internalError = new Error('An internal error occurred while fetching editor');
+			internalError.stack = err.stack;
+
+			next(internalError);
 		});
-	})
-	.catch(Editor.NotFoundError, function ifError(err) {
-		next(new NotFoundError('Editor not found'));
-	})
-	.catch(function ifError(err) {
-		var internalError = new Error('An internal error occurred while fetching editor');
-		internalError.stack = err.stack;
-
-		next(internalError);
-	});
 });
 
 router.get('/:id/revisions', function(req, res, next) {
