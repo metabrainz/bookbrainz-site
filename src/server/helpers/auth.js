@@ -22,7 +22,6 @@
 var passport = require('passport');
 var Editor = require('bookbrainz-data').Editor;
 var LocalStrategy = require('passport-local').Strategy;
-var bcrypt = require('bcrypt');
 
 var auth = {};
 
@@ -32,12 +31,9 @@ auth.init = function init(app) {
 			function strategy(username, password, done) {
 				new Editor({ name: username }).fetch({ require: true })
 					.then(function processEditor(model) {
-						bcrypt.compare(password, model.get('password'),
-							function handleResult(err, res) {
-								if (err) {
-									done(err);
-								}
-								else if (res) {
+						return model.checkPassword(password)
+							.then(function handleResult(res) {
+								if (res) {
 									done(null, model.toJSON());
 								}
 								else {
@@ -45,8 +41,7 @@ auth.init = function init(app) {
 										message: 'Incorrect password.'
 									});
 								}
-							}
-						);
+							});
 					})
 					.catch(Editor.NotFoundError, function handleNotFound() {
 						done(null, false, { message: 'Incorrect username.' });
