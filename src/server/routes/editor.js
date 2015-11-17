@@ -72,7 +72,10 @@ router.get('/:id', function(req, res, next) {
 	var userId = parseInt(req.params.id, 10);
 
 	new Editor({id: userId})
-	.fetch({withRelated: ['editorType', 'gender']})
+	.fetch({
+		require: true,
+		withRelated: ['editorType', 'gender']
+	})
 	.then(function render(fetchedEditor) {
 		var editorJSON = fetchedEditor.toJSON();
 
@@ -84,8 +87,14 @@ router.get('/:id', function(req, res, next) {
 			editor: editorJSON
 		});
 	})
-	.catch(function ifError() {
+	.catch(Editor.NotFoundError, function ifError(err) {
 		next(new NotFoundError('Editor not found'));
+	})
+	.catch(function ifError(err) {
+		var internalError = new Error('An internal error occurred while fetching editor');
+		internalError.stack = err.stack;
+
+		next(internalError);
 	});
 });
 
