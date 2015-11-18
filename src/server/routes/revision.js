@@ -21,7 +21,6 @@
 var express = require('express');
 var router = express.Router();
 var Revision = require('../data/properties/revision');
-var User = require('../data/user');
 var _ = require('underscore');
 
 function formatRelationshipDiff(revision) {
@@ -358,14 +357,16 @@ router.get('/:id', function(req, res) {
 			}
 		}
 
-		User.findOne(revision.user.user_id).then(function(user) {
-			revision.user = user;
-			res.render('revision', {
-				title: 'Revision',
-				revision: revision,
-				diff: diff
+		new Editor({ id: revision.user.user_id })
+			.fetch({ require: true })
+			.then(function(editor) {
+				revision.user = editor.toJSON();
+				res.render('revision', {
+					title: 'Revision',
+					revision: revision,
+					diff: diff
+				});
 			});
-		});
 	});
 });
 

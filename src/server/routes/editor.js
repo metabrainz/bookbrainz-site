@@ -23,7 +23,6 @@ var express = require('express');
 var router = express.Router();
 var React = require('react');
 var Editor = require('bookbrainz-data').Editor;
-var User = require('../data/user');
 var bbws = require('../helpers/bbws');
 var auth = require('../helpers/auth');
 var Promise = require('bluebird');
@@ -99,19 +98,23 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.get('/:id/revisions', function(req, res, next) {
-	var userPromise = User.findOne(req.params.id);
+	var userId = parseInt(req.params.id, 10);
+	var userPromise = new Editor({ id: userId }).fetch({ require: true });
 	var revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
 
-	Promise.join(userPromise, revisionsPromise,
-			function(editor, revisions) {
-				res.render('editor/revisions', {
-					editor: editor,
-					revisions: revisions
-				});
-			})
-		.catch(function(err) {
+	Promise.join(userPromise, revisionsPromise, function(editor, revisions) {
+			res.render('editor/revisions', {
+				editor: editor.toJSON(),
+				revisions: revisions
+			});
+		})
+		.catch(Editor.NotFoundError, function(err) {
 			console.log(err.stack);
 			next(new NotFoundError('Editor not found'));
+		})
+		.catch(function(err) {
+			console.log(err.stack);
+			next(new Error('An internal error occurred while fetching revisions'));
 		});
 });
 
