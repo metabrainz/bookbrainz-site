@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "Select2": "git://github.com/select2/select2",
-    "bcrypt": "^0.8.5",
     "bluebird": "^2.5.1",
     "body-parser": "~1.8.1",
     "bookbrainz-data": "git+https://github.com/bookbrainz/bookbrainz-data-js.git",
