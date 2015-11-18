@@ -20,10 +20,14 @@
 var React = require('react');
 var Input = require('react-bootstrap').Input;
 var Button = require('react-bootstrap').Button;
+var Alert = require('react-bootstrap').Alert;
 var PageHeader = require('react-bootstrap').PageHeader;
 var Select = require('../input/select2.jsx');
 var SearchSelect = require('../input/entity-search.jsx');
 var _ = require('underscore');
+var request = require('superagent');
+require('superagent-bluebird-promise');
+var utils = require('../../../server/helpers/utils.js');
 
 var renderRelationship = require('../../../server/helpers/render.js');
 
@@ -106,6 +110,9 @@ var RelationshipRow = React.createClass({
 		return "";
 	},
 	rowClass() {
+		if(this.disabled()) {
+			return " disabled";
+		}
 		if (this.state.deleted) {
 			return " list-group-item-danger";
 		}
@@ -124,6 +131,11 @@ var RelationshipRow = React.createClass({
 		} else {
 			return false;
 		}
+	},
+	disabled: function() {
+		// Temporarily disable editing until the webservice/orm supports this
+		const rel = this.props.relationship;
+		return Boolean(rel.initialSource && rel.initialTarget);
 	},
 	render: function() {
 		const deleteButton = this.rowClass() || this.valid() ? (
@@ -171,7 +183,7 @@ var RelationshipRow = React.createClass({
 				select2Options={{width: '100%'}}
 				labelClassName='col-md-4'
 				wrapperClassName='col-md-4'
-				disabled={this.state.deleted || (targetEntity && targetEntity.bbid) === this.props.entity.bbid}
+				disabled={this.disabled() || this.state.deleted || (targetEntity && targetEntity.bbid) === this.props.entity.bbid}
 				bsStyle={validationState}
 				standalone
 				onChange={this.props.onChange}
@@ -182,7 +194,7 @@ var RelationshipRow = React.createClass({
 			<div className={"list-group-item margin-top-1" + this.rowClass()}>
 				<div className="row">
 					<div className="col-md-1 text-center margin-top-1">
-						<Input className="margin-left-0" ref="sel" type="checkbox" label=" " disabled={this.state.deleted} onClick={this.props.onSelect}/>
+						<Input className="margin-left-0" ref="sel" type="checkbox" label=" " disabled={this.disabled() || this.state.deleted} onClick={this.props.onSelect}/>
 					</div>
 					<div className="col-md-11">
 						<div className="row">
@@ -194,7 +206,7 @@ var RelationshipRow = React.createClass({
 								select2Options={{width: '100%'}}
 								labelClassName='col-md-4'
 								wrapperClassName='col-md-4'
-								disabled={this.state.deleted || (sourceEntity && sourceEntity.bbid) === this.props.entity.bbid}
+								disabled={this.disabled() || this.state.deleted || (sourceEntity && sourceEntity.bbid) === this.props.entity.bbid}
 								standalone
 								bsStyle={validationState}
 								onChange={this.props.onChange}
@@ -208,7 +220,7 @@ var RelationshipRow = React.createClass({
 									defaultValue={this.props.relationship.type}
 									labelAttribute='label'
 									ref='type'
-									disabled={this.state.deleted}
+									disabled={this.disabled() || this.state.deleted}
 									select2Options={{width: '100%'}}
 									bsStyle={validationState}
 									onChange={this.props.onChange}
@@ -221,8 +233,8 @@ var RelationshipRow = React.createClass({
 								<p dangerouslySetInnerHTML={this.renderedRelationship()} />
 							</div>
 							<div className="col-md-3 text-right">
-								{this.state.deleted ? null : swapButton}
-								{this.state.deleted ? resetButton : deleteButton}
+								{this.state.deleted || this.disabled() ? null : swapButton}
+								{this.disabled() ? null : (this.state.deleted ? resetButton : deleteButton)}
 							</div>
 
 						</div>
@@ -250,6 +262,7 @@ var RelationshipEditor = React.createClass({
 			rel.initialSource = rel.source;
 			rel.initialTarget = rel.target;
 			rel.initialType = rel.type;
+			rel.valid = rel.changed = false;
 		});
 
 		return {
@@ -271,7 +284,33 @@ var RelationshipEditor = React.createClass({
 		return relationships;
 	},
 	handleSubmit: function() {
+		const updatedRelationships = this.getValue();
 
+		const changedRelationships = _.filter(
+			this.state.relationships, (rel) => rel.changed && rel.valid
+		);
+
+		request.post('./relationships/handler')
+		.send(changedRelationships.map((rel) => ({
+			id: [],
+			relationship_type: {
+				relationship_type_id: rel.type
+			},
+			entities: [
+				{
+					entity_gid: rel.source.bbid,
+					position: 0
+				},
+				{
+					entity_gid: rel.target.bbid,
+					position: 1
+				}
+			]
+		})))
+		.promise()
+		.then(() => {
+			window.location.href = utils.getEntityLink(this.props.entity);
+		});
 	},
 	getInternalValue() {
 		const updatedRelationships = this.getValue();
@@ -281,6 +320,14 @@ var RelationshipEditor = React.createClass({
 			rel.initialSource = this.state.relationships[idx].initialSource;
 			rel.initialTarget = this.state.relationships[idx].initialTarget;
 			rel.initialType = this.state.relationships[idx].initialType;
+
+			const sourceChanged = (rel.source && rel.source.bbid) !==
+				(rel.initialSource && rel.initialSource.bbid);
+			const targetChanged = (rel.target && rel.target.bbid) !==
+				(rel.initialTarget && rel.initialTarget.bbid);
+			const typeChanged = (rel.type !== rel.initialType);
+			rel.changed = sourceChanged || targetChanged || typeChanged;
+			rel.valid = Boolean(rel.source && rel.target && rel.type);
 		});
 
 		return updatedRelationships;
@@ -397,6 +444,14 @@ var RelationshipEditor = React.createClass({
 			numSelected: newNumSelected
 		});
 	},
+	hasDataToSubmit() {
+		const changedRelationships = _.filter(
+			this.state.relationships, (rel) => {
+				return rel.changed && rel.valid;
+			}
+		);
+		return changedRelationships.length > 0;
+	},
 	render: function() {
 		'use strict';
 
@@ -423,8 +478,13 @@ var RelationshipEditor = React.createClass({
 					</span>
 					Relationship Editor
 				</PageHeader>
+				<Alert bsStyle="info" className="text-center"><b>Please note!</b><br/> The new relationship editor doesn't yet support editing or deleting of existing relationships. This is coming soon, but for now, existing relationships show up as un-editable.</Alert>
 				<div className="list-group">
 					{rows}
+				</div>
+
+				<div className="pull-right">
+					<Button bsStyle="success" onClick={this.handleSubmit} disabled={!this.hasDataToSubmit()}>Submit</Button>
 				</div>
 			</div>
 		);

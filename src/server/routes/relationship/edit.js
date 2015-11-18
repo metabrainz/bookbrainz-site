@@ -79,16 +79,20 @@ relationshipHelper.addEditRoutes = function(router) {
 	});
 
 	router.post('/:bbid/relationships/handler', auth.isAuthenticated, function(req, res) {
-		req.body.forEach(function(relationship) {
-			// Send a relationship revision for each of the relationships
-			var changes = relationship;
-
-			Relationship.create(changes, {
+		// Send a relationship revision for each of the relationships
+		const relationshipsPromise = Promise.all(
+			req.body.map((relationship) =>
+				Relationship.create(relationship, {
 					session: req.session
 				})
-				.then(function(revision) {
-					res.send(revision);
-				});
+			)
+		);
+
+		relationshipsPromise.then(() => {
+			res.send({result: "success"});
+		})
+		.catch(() => {
+			res.send({result: "error"});
 		});
 	});
 };
