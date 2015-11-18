@@ -288,7 +288,7 @@ CREATE TABLE bookbrainz.suspended_editor (
 
 CREATE TABLE bookbrainz.editor (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(64) NOT NULL,
+	name VARCHAR(64) NOT NULL UNIQUE,
 	email VARCHAR(255) NOT NULL,
 	reputation INT NOT NULL DEFAULT 0,
 	bio TEXT,
