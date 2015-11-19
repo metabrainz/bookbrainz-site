@@ -55,7 +55,7 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 
 	publication.editions = publication.editions.map((edition) =>
 		Edition.findOne(edition.bbid, {
-			populate: ['disabmiguation', 'aliases']
+			populate: ['disambiguation', 'aliases']
 		})
 	);
 
