@@ -22,11 +22,11 @@
 var express = require('express');
 var router = express.Router();
 var React = require('react');
-var Editor = require('bookbrainz-data').Editor;
-var bbws = require('../helpers/bbws');
 var auth = require('../helpers/auth');
 var Promise = require('bluebird');
 var _ = require('underscore');
+
+var Editor = require('bookbrainz-data').Editor;
 
 var NotFoundError = require('../helpers/error').NotFoundError;
 var ProfileForm = React.createFactory(require('../../client/components/forms/profile.jsx'));
@@ -99,13 +99,15 @@ router.get('/:id', function(req, res, next) {
 
 router.get('/:id/revisions', function(req, res, next) {
 	var userId = parseInt(req.params.id, 10);
-	var userPromise = new Editor({ id: userId }).fetch({ require: true });
-	var revisionsPromise = bbws.get('/user/' + req.params.id + '/revisions');
 
-	Promise.join(userPromise, revisionsPromise, function(editor, revisions) {
+	new Editor({ id: userId })
+		.fetch({
+			require: true,
+			withRelated: ['revisions']
+		})
+		.then((editor) => {
 			res.render('editor/revisions', {
-				editor: editor.toJSON(),
-				revisions: revisions
+				editor: editor.toJSON()
 			});
 		})
 		.catch(Editor.NotFoundError, function(err) {
