@@ -17,15 +17,37 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Select = require('../../input/select2.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Identifiers = require('./identifiers.jsx');
+const validators = require('../../validators');
 
 
-var WorkData = React.createClass({
-	getValue: function() {
+const WorkData = React.createClass({
+	displayName: 'workDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
+			language_id: React.PropTypes.number,
+			name: React.PropTypes.string
+		})),
+		nextClick: React.PropTypes.func,
+		visible: React.PropTypes.bool,
+		work: React.PropTypes.shape({
+			annotation: React.PropTypes.string,
+			disambiguation: React.PropTypes.string,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			})),
+			work_type: validators.workType
+		}),
+		workTypes: React.PropTypes.arrayOf(validators.workType)
+	},
+	getValue() {
 		'use strict';
 
 		return {
@@ -36,99 +58,125 @@ var WorkData = React.createClass({
 			identifiers: this.refs.identifiers.getValue()
 		};
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return true;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var initialLanguages = [];
-		var initialWorkType = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
-		if (this.props.work) {
-			initialLanguages = this.props.work.languages.map(function(language) {
+		let initialLanguages = [];
+		let initialWorkType = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
+
+		const prefillData = this.props.work;
+		if (prefillData) {
+			initialLanguages = prefillData.languages.map((language) => {
 				return language.language_id;
 			});
-			initialWorkType = this.props.work.work_type ? this.props.work.work_type.work_type_id : null;
-			initialDisambiguation = this.props.work.disambiguation ? this.props.work.disambiguation.comment : null;
-			initialAnnotation = this.props.work.annotation ? this.props.work.annotation.content : null;
-			initialIdentifiers = this.props.work.identifiers.map(function(identifier) {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+			initialWorkType = prefillData.work_type ?
+				prefillData.work_type.work_type_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 
 		return (
 			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
-				<p className='lead'>Fill out any data you know about the entity.</p>
+				<p className="lead">
+					Fill out any data you know about the entity.
+				</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<Select
-						label='Languages'
-						labelAttribute='name'
-						idAttribute='id'
 						defaultValue={initialLanguages}
-						ref='languages'
-						placeholder='Select work languages…'
+						idAttribute="id"
+						label="Languages"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						multiple
 						noDefault
 						options={this.props.languages}
-						multiple
+						placeholder="Select work languages…"
+						ref="languages"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Type'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialWorkType}
-						ref='workType'
-						placeholder='Select work type…'
+						idAttribute="id"
+						label="Type"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.workTypes}
+						placeholder="Select work type…"
+						ref="workType"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
+						ref="identifiers"
 						types={this.props.identifierTypes}
-						ref='identifiers' />
+					/>
 					<Input
-						type='text'
-						label='Disambiguation'
-						ref='disambiguation'
 						defaultValue={initialDisambiguation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6' />
+						label="Disambiguation"
+						labelClassName="col-md-3"
+						ref="disambiguation"
+						type="text"
+						wrapperClassName="col-md-6"
+					/>
 					<Input
-						type='textarea'
-						label='Annotation'
-						ref='annotation'
 						defaultValue={initialAnnotation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
+						label="Annotation"
+						labelClassName="col-md-3"
+						ref="annotation"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
 
-					<nav className='margin-top-1'>
+					<nav className="margin-top-1">
 						<ul className="pager">
 							<li className="previous">
-								<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+								<a
+									href="#"
+									onClick={this.props.backClick}
+								>
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-left"
+									/>
+									Back
 								</a>
 							</li>
 							<li className="next">
-								<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+								<a
+									href="#"
+									onClick={this.props.nextClick}
+								>
+									Next
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-right"
+									/>
 								</a>
 							</li>
 						</ul>

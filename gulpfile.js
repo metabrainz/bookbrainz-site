@@ -19,43 +19,46 @@
 
 'use strict';
 
-var gulp = require('gulp');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var uglify = require('gulp-uglify');
-var prettify = require('gulp-jsbeautifier');
-var path = require('path');
-var glob = require('glob');
-var mkdirp = require('mkdirp');
-var gulpless = require('gulp-less');
-var minifyCSS = require('gulp-minify-css');
-var prefixer = require('gulp-autoprefixer');
-var babelify = require("babelify");
+const gulp = require('gulp');
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+const uglify = require('gulp-uglify');
+const prettify = require('gulp-jsbeautifier');
+const path = require('path');
+const glob = require('glob');
+const mkdirp = require('mkdirp');
+const gulpless = require('gulp-less');
+const minifyCSS = require('gulp-minify-css');
+const prefixer = require('gulp-autoprefixer');
+const babelify = require("babelify");
 
 function bundle() {
-	var srcFiles =
+	let srcFiles =
 		glob.sync('./templates/**/*.js')
 		.concat(glob.sync('./templates/*.js'));
 
-	var srcFiles2 =
+	const srcFiles2 =
 		glob.sync('./src/client/controllers/**/*.js')
 		.concat(glob.sync('./src/client/controllers/*.js'));
 
-	console.log(srcFiles2);
+	let dstFiles = srcFiles.map((filename) =>
+		path.join(
+			'./static', 'js', path.relative('./templates', filename)
+		)
+	);
 
-	var dstFiles = srcFiles.map(function(f) {
-		return path.join('./static', 'js', path.relative('./templates', f));
-	});
-
-	var dstFiles2 = srcFiles2.map(function(f) {
-		return path.join('./static', 'js', path.relative('./src/client/controllers', f));
-	});
+	const dstFiles2 = srcFiles2.map((filename) =>
+		path.join(
+			'./static', 'js',
+			path.relative('./src/client/controllers', filename)
+		)
+	);
 
 	srcFiles = srcFiles.concat(srcFiles2);
 	dstFiles = dstFiles.concat(dstFiles2);
 
-	dstFiles.forEach(function(f) {
-		mkdirp.sync(path.dirname(f));
+	dstFiles.forEach((filename) => {
+		mkdirp.sync(path.dirname(filename));
 	});
 
 	return browserify(srcFiles)
@@ -69,7 +72,10 @@ function bundle() {
 }
 
 function less() {
-	return gulp.src(['./src/client/stylesheets/style.less', './src/client/stylesheets/font-awesome.less'])
+	return gulp.src([
+		'./src/client/stylesheets/style.less',
+		'./src/client/stylesheets/font-awesome.less'
+	])
 		.pipe(gulpless({
 			paths: [path.join(__dirname, './node_modules/bootstrap/less')]
 		}))
@@ -85,7 +91,7 @@ function compress() {
 }
 
 function tidy() {
-	var srcFiles = [
+	const srcFiles = [
 		'./src/**/*.js',
 		'./test/**/*.js',
 		'./templates/**/*.js',
@@ -101,9 +107,7 @@ function tidy() {
 			},
 			mode: 'VERIFY_AND_WRITE'
 		}))
-		.pipe(gulp.dest(function(f) {
-			return f.base;
-		}));
+		.pipe(gulp.dest((filename) => filename.base));
 }
 
 gulp.task('default', ['bundle', 'less']);
@@ -111,9 +115,11 @@ gulp.task('bundle', bundle);
 gulp.task('less', less);
 gulp.task('compress', ['bundle'], compress);
 gulp.task('tidy', tidy);
-gulp.task('watch', function() {
-	var watcher = gulp.watch(['./src/**/*.js', './src/**/*.jsx', './templates/**/*.js'], ['bundle']);
-	watcher.on('change', function(event) {
-		console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
-	});
+gulp.task('watch', () => {
+	const watcher = gulp.watch(
+		['./src/**/*.js', './src/**/*.jsx', './templates/**/*.js'], ['bundle']
+	);
+	watcher.on('change', (event) =>
+		console.log(`File ${event.path} was ${event.type} running tasks...`)
+	);
 });

@@ -17,17 +17,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var LoadingSpinner = require('../loading_spinner.jsx');
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const LoadingSpinner = require('../loading_spinner.jsx');
 
-var request = require('superagent');
+const request = require('superagent');
 require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
-	getInitialState: function() {
+	displayName: 'profileForm',
+	propTypes: {
+		bio: React.PropTypes.string,
+		email: React.PropTypes.string,
+		id: React.PropTypes.number
+	},
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -37,12 +43,12 @@ module.exports = React.createClass({
 			waiting: false
 		};
 	},
-	handleSubmit: function(e) {
+	handleSubmit(evt) {
 		'use strict';
 
-		e.preventDefault();
+		evt.preventDefault();
 
-		var data = {
+		const data = {
 			id: this.state.id,
 			email: this.refs.email.getValue().trim(),
 			bio: this.refs.bio.getValue().trim()
@@ -52,36 +58,50 @@ module.exports = React.createClass({
 
 		request.post('/editor/edit/handler')
 			.send(data).promise()
-			.then(function(user) {
-				window.location.href = '/editor/' + user.body.user_id;
+			.then((user) => {
+				window.location.href = `/editor/${user.body.user_id}`;
 			});
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
-		return <form className='form-horizontal' onSubmit={this.handleSubmit}>
-			{loadingElement}
-			<Input
-				type='text'
-				label='Email'
-				ref='email'
-				defaultValue={this.state.email}
-				wrapperClassName='col-md-9'
-				labelClassName='col-md-3' />
-			<Input
-				type='textarea'
-				label='Bio'
-				ref='bio'
-				defaultValue={this.state.bio}
-				wrapperClassName='col-md-9'
-				labelClassName='col-md-3' />
-			<div className='form-group'>
-				<div className='col-md-4 col-md-offset-4'>
-					<Button bsStyle='primary' bsSize='large' block type='submit'>Update!</Button>
+		return (
+			<form
+				className="form-horizontal"
+				onSubmit={this.handleSubmit}
+			>
+				{loadingElement}
+				<Input
+					defaultValue={this.state.email}
+					label="Email"
+					labelClassName="col-md-3"
+					ref="email"
+					type="text"
+					wrapperClassName="col-md-9"
+				/>
+				<Input
+					defaultValue={this.state.bio}
+					label="Bio"
+					labelClassName="col-md-3"
+					ref="bio"
+					type="textarea"
+					wrapperClassName="col-md-9"
+				/>
+				<div className="form-group">
+					<div className="col-md-4 col-md-offset-4">
+						<Button
+							block
+							bsSize="large"
+							bsStyle="primary"
+							type="submit"
+						>
+							Update!
+						</Button>
+					</div>
 				</div>
-			</div>
-		</form>;
+			</form>
+		);
 	}
 });

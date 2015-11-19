@@ -20,78 +20,77 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var _ = require('underscore');
-var Revision = require('../data/properties/revision');
-var bbws = require('../helpers/bbws');
-var Promise = require('bluebird');
-var Publication = require('../data/entities/publication');
-var Creator = require('../data/entities/creator');
-var Edition = require('../data/entities/edition');
-var Work = require('../data/entities/work');
-var Publisher = require('../data/entities/publisher');
+const express = require('express');
+const router = express.Router();
+const Revision = require('../data/properties/revision');
+const bbws = require('../helpers/bbws');
+const Promise = require('bluebird');
+const Publication = require('../data/entities/publication');
+const Creator = require('../data/entities/creator');
+const Edition = require('../data/entities/edition');
+const Work = require('../data/entities/work');
+const Publisher = require('../data/entities/publisher');
 
 /* GET home page. */
-router.get('/', function(req, res) {
-	var render = function(revisions) {
+router.get('/', (req, res) => {
+	function render(revisions) {
 		res.render('index', {
 			recent: revisions,
 			homepage: true
 		});
-	};
+	}
 
 	Revision.find({
-			params: {
-				limit: 9,
-				type: 'entity'
-			},
-			populate: ['entity']
-		})
+		params: {
+			limit: 9,
+			type: 'entity'
+		},
+		populate: ['entity']
+	})
 		.then(render)
-		.catch(function(err) {
+		.catch((err) => {
 			console.log(err.stack);
 			render(null);
 		});
 });
 
-router.get('/about', function(req, res) {
+router.get('/about', (req, res) => {
 	res.render('about', {
 		title: 'About'
 	});
 });
 
-router.get('/contribute', function(req, res) {
+router.get('/contribute', (req, res) => {
 	res.render('contribute', {
 		title: 'Contribute'
 	});
 });
 
-router.get('/develop', function(req, res) {
+router.get('/develop', (req, res) => {
 	res.render('develop', {
 		title: 'Develop'
 	});
 });
 
-router.get('/privacy', function(req, res) {
+router.get('/privacy', (req, res) => {
 	res.render('privacy', {
 		title: 'Privacy'
 	});
 });
 
-router.get('/licensing', function(req, res) {
+router.get('/licensing', (req, res) => {
 	res.render('licensing', {
 		title: 'Licensing'
 	});
 });
 
-router.get('/search', function(req, res) {
-	var query = req.query.q;
-	var mode = req.query.mode || 'search';
+router.get('/search', (req, res) => {
+	const query = req.query.q;
+	const mode = req.query.mode || 'search';
 
-	var params = {
+	const params = {
 		q: query,
-		mode: mode
+		mode
 	};
 
 	if (req.query.collection) {
@@ -99,16 +98,16 @@ router.get('/search', function(req, res) {
 	}
 
 	bbws.get('/search', {
-			params: params
-		})
-		.then(function(results) {
+		params
+	})
+		.then((results) => {
 			if (!results.hits) {
 				return null;
 			}
 
-			return Promise.map(results.hits, function(hit) {
-				var entity_stub = hit._source;
-				var model;
+			return Promise.map(results.hits, (hit) => {
+				const entity_stub = hit._source;
+				let model = null;
 
 				switch (entity_stub._type) {
 					case 'Publication':
@@ -126,23 +125,20 @@ router.get('/search', function(req, res) {
 					case 'Publisher':
 						model = Publisher;
 						break;
+					default:
+						return null;
 				}
 
-				if (model) {
-					return model.findOne(entity_stub.entity_gid, {
-						populate: ['disambiguation']
-					});
-				}
-				else {
-					return null;
-				}
+				return model.findOne(entity_stub.entity_gid, {
+					populate: ['disambiguation']
+				});
 			});
 		})
-		.then(function(entities) {
+		.then((entities) => {
 			if (mode === 'search') {
 				res.render('search', {
 					title: 'Search Results',
-					query: query,
+					query,
 					results: entities,
 					hideSearch: true
 				});
@@ -151,8 +147,8 @@ router.get('/search', function(req, res) {
 				res.json(entities);
 			}
 		})
-		.catch(function() {
-			var message = 'An error occurred while obtaining search results';
+		.catch(() => {
+			const message = 'An error occurred while obtaining search results';
 
 			if (mode === 'search') {
 				res.render('search', {

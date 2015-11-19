@@ -17,21 +17,59 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var Input = require('react-bootstrap').Input;
-var React = require('react');
+/* eslint global-require: 0, no-var: 0 */
 
+const Input = require('react-bootstrap').Input;
+const React = require('react');
+
+var $ = null;
 if (typeof window !== 'undefined') {
 	require('Select2');
-	var $ = window.$;
+	$ = window.$;
 }
 
-var Select = React.createClass({
-	initSelect2: function() {
+const Select = React.createClass({
+	displayName: 'select2Input',
+	propTypes: {
+		multiple: React.PropTypes.bool,
+		onChange: React.PropTypes.func,
+		options: React.PropTypes.object,
+		placeholder: React.PropTypes.string,
+		select2Options: React.PropTypes.object
+	},
+	componentDidMount() {
+		'use strict';
+		this.initSelect2();
+	},
+	componentWillUpdate() {
+		'use strict';
+		var select = $(this.refs.target.getInputDOMNode());
+		select.off('change');
+	},
+	componentDidUpdate() {
+		'use strict';
+		this.initSelect2();
+	},
+	componentWillUnmount() {
 		'use strict';
 
-		var mountElement = $(this.refs.target.getInputDOMNode());
+		const select = $(this.refs.target.getInputDOMNode());
 
-		var options = this.props.select2Options || {};
+		// Unregister onChange event, so that it isn't triggered while the DOM
+		// is refreshed.
+		select.off('change');
+	},
+	getValue() {
+		'use strict';
+
+		return this.refs.target.getValue();
+	},
+	initSelect2() {
+		'use strict';
+
+		const mountElement = $(this.refs.target.getInputDOMNode());
+
+		const options = this.props.select2Options || {};
 		options.theme = 'bootstrap';
 
 		if (this.props.placeholder) {
@@ -44,46 +82,20 @@ var Select = React.createClass({
 		mountElement.select2(options);
 		mountElement.on('change', this.props.onChange);
 	},
-	getValue: function() {
+	render() {
 		'use strict';
 
-		return this.refs.target.getValue();
-	},
-	componentWillUnmount: function() {
-		'use strict';
-
-		var select = $(this.refs.target.getInputDOMNode());
-
-		// Unregister onChange event, so that it isn't triggered while the DOM is
-		// refreshed.
-		select.off('change');
-	},
-	componentDidMount: function() {
-		'use strict';
-		this.initSelect2();
-	},
-	componentWillUpdate: function() {
-		'use strict';
-		var select = $(this.refs.target.getInputDOMNode());
-		select.off('change');
-	},
-	componentDidUpdate: function() {
-		'use strict';
-		this.initSelect2();
-	},
-	render: function() {
-		'use strict';
-
-		var self = this;
-		var options = [];
+		const self = this;
+		let options = [];
 		if (this.props.options) {
-			options = this.props.options.map(function(op) {
-				return (
-					<option key={op[self.props.idAttribute]} value={op[self.props.idAttribute]}>
-						{op[self.props.labelAttribute]}
-					</option>
-				);
-			});
+			options = this.props.options.map((op) =>
+				<option
+					key={op[self.props.idAttribute]}
+					value={op[self.props.idAttribute]}
+				>
+					{op[self.props.labelAttribute]}
+				</option>
+			);
 		}
 
 		if (this.props.placeholder) {
@@ -91,7 +103,11 @@ var Select = React.createClass({
 		}
 
 		return (
-			<Input {...this.props} ref='target' type='select'>
+			<Input
+				{...this.props}
+				ref="target"
+				type="select"
+			>
 				{options}
 			</Input>
 		);

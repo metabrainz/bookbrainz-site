@@ -17,20 +17,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Input = require('react-bootstrap').Input;
+const React = require('react');
+const Input = require('react-bootstrap').Input;
 
-var ymd_re = /^\d{4}-\d{2}-\d{2}$/;
-var ym_re = /^\d{4}-\d{2}$/;
-var y_re = /^\d{4}$/;
+const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
+const ymRegex = /^\d{4}-\d{2}$/;
+const yRegex = /^\d{4}$/;
 
-var PartialDate = React.createClass({
-	getValue: function() {
-		'use strict';
-
-		return this.state.value;
+const PartialDate = React.createClass({
+	displayName: 'partialDateInput',
+	propTypes: {
+		defaultValue: React.PropTypes.string,
+		groupClassName: React.PropTypes.string,
+		help: React.PropTypes.string,
+		label: React.PropTypes.string,
+		labelClassName: React.PropTypes.string,
+		placeholder: React.PropTypes.string,
+		wrapperClassName: React.PropTypes.string
 	},
-	getInitialState: function() {
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -38,23 +43,15 @@ var PartialDate = React.createClass({
 			valid: this.validate(this.props.defaultValue)
 		};
 	},
-	validate: function(value) {
+	getValue() {
 		'use strict';
 
-		if (!value) {
-			return true;
-		}
-		else {
-			var validSyntax =
-				Boolean(ymd_re.test(value) || ym_re.test(value) || y_re.test(value));
-			var validValue = !isNaN(Date.parse(value));
-			return validSyntax && validValue;
-		}
+		return this.state.value;
 	},
-	handleChange: function() {
+	handleChange() {
 		'use strict';
 
-		var input = this.refs.input.getValue().trim();
+		const input = this.refs.input.getValue().trim();
 
 		if (input.length > 10) {
 			return;
@@ -65,15 +62,28 @@ var PartialDate = React.createClass({
 			valid: this.validate(input)
 		});
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return this.state.valid;
 	},
-	validationState: function() {
+	validate(value) {
 		'use strict';
 
-		var validationClass = null;
+		if (!value) {
+			return true;
+		}
+
+		const validSyntax = Boolean(
+			ymdRegex.test(value) || ymRegex.test(value) || yRegex.test(value)
+		);
+		const validValue = !isNaN(Date.parse(value));
+		return validSyntax && validValue;
+	},
+	validationState() {
+		'use strict';
+
+		let validationClass = null;
 
 		if (this.state.value) {
 			validationClass = this.state.valid ? 'success' : 'error';
@@ -81,22 +91,23 @@ var PartialDate = React.createClass({
 
 		return validationClass;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		return (
 			<Input
-				type='text'
-				value={this.state.value}
-				placeholder={this.props.placeholder}
-				label={this.props.label}
-				help={this.props.help}
 				bsStyle={this.validationState()}
-				ref='input'
 				groupClassName={this.props.groupClassName}
-				wrapperClassName={this.props.wrapperClassName}
+				help={this.props.help}
+				label={this.props.label}
 				labelClassName={this.props.labelClassName}
-				onChange={this.handleChange} />
+				onChange={this.handleChange}
+				placeholder={this.props.placeholder}
+				ref="input"
+				type="text"
+				value={this.state.value}
+				wrapperClassName={this.props.wrapperClassName}
+			/>
 		);
 	}
 });

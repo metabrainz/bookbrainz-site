@@ -17,37 +17,62 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
+const React = require('react');
+const Input = require('react-bootstrap').Input;
 
-var RevisionNote = React.createClass({
-	render: function() {
+const RevisionNote = React.createClass({
+	displayName: 'revisionNoteComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		nextClick: React.PropTypes.func,
+		onSubmit: React.PropTypes.func,
+		submitDisabled: React.PropTypes.bool,
+		visible: React.PropTypes.bool
+	},
+	render() {
 		'use strict';
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={this.props.visible === false ? 'hidden' : ''}>
 				<h2>Submit Revision</h2>
-				<p className='lead'>Finally, add this revision to an edit.</p>
+				<p className="lead">Finally, add this revision to an edit.</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<Input
-						type='textarea'
-						label='Revision Note'
-						ref='note'
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
+						label="Revision Note"
+						labelClassName="col-md-3"
+						ref="note"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
 				</div>
 
-				<nav className='margin-top-1'>
+				<nav className="margin-top-1">
 					<ul className="pager">
 						<li className="previous">
-							<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+							<a
+								href="#"
+								onClick={this.props.backClick}
+							>
+								<span
+									aria-hidden="true"
+									className="fa fa-angle-double-left"
+								/>
+								Back
 							</a>
 						</li>
-						<li className={this.props.submitDisabled ? "next disabled" : "next"}>
-							<a href='#' onClick={this.props.onSubmit}>Submit
+						<li
+							className={
+								this.props.submitDisabled ?
+								'next disabled' : 'next'
+							}
+						>
+							<a
+								href="#"
+								onClick={this.props.onSubmit}
+							>
+								Submit
 							</a>
 						</li>
 					</ul>

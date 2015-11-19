@@ -17,21 +17,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var Aliases = require('./parts/aliases.jsx');
-var RevisionNote = require('./parts/revisionNote.jsx');
-var EditionData = require('./parts/editionData.jsx');
-var LoadingSpinner = require('../loading_spinner.jsx');
+const Aliases = require('./parts/aliases.jsx');
+const RevisionNote = require('./parts/revisionNote.jsx');
+const EditionData = require('./parts/editionData.jsx');
+const LoadingSpinner = require('../loading_spinner.jsx');
 
-var request = require('superagent');
+const request = require('superagent');
 require('superagent-bluebird-promise');
 
-var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
+const Nav = require('react-bootstrap').Nav;
+const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
-	getInitialState: function() {
+	displayName: 'editionForm',
+	propTypes: {
+		edition: React.PropTypes.object,
+		editionFormats: React.PropTypes.array,
+		editionStatuses: React.PropTypes.array,
+		identifierTypes: React.PropTypes.array,
+		languages: React.PropTypes.array,
+		publication: React.PropTypes.object,
+		publisher: React.PropTypes.object,
+		submissionUrl: React.PropTypes.string
+	},
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -41,109 +52,124 @@ module.exports = React.createClass({
 			waiting: false
 		};
 	},
-	setTab: function(tab) {
+	setTab(tab) {
 		'use strict';
 
 		this.setState({
-			tab: tab,
+			tab,
 			aliasesValid: this.refs.aliases.valid(),
 			dataValid: this.refs.data.valid()
 		});
 	},
-	backClick: function() {
+	backClick() {
 		'use strict';
 
 		this.setTab(this.state.tab - 1);
 	},
-	nextClick: function() {
+	nextClick() {
 		'use strict';
 
 		this.setTab(this.state.tab + 1);
 	},
-	handleTab: function(tabKey) {
+	handleTab(tabKey) {
 		'use strict';
 
 		this.setTab(tabKey);
 	},
-	handleSubmit: function(e) {
+	handleSubmit(evt) {
 		'use strict';
 
-		e.preventDefault();
+		evt.preventDefault();
 
 		if (!(this.state.aliasesValid && this.state.dataValid)) {
 			return;
 		}
 
-		var aliasData = this.refs.aliases.getValue();
-		var editionData = this.refs.data.getValue();
-		var revisionNote = this.refs.revision.refs.note.getValue();
-		var data = {
+		const aliasData = this.refs.aliases.getValue();
+		const editionData = this.refs.data.getValue();
+		const revisionNote = this.refs.revision.refs.note.getValue();
+		const data = {
 			aliases: aliasData,
 			publication: editionData.publication,
 			publisher: editionData.publisher,
 			releaseDate: editionData.releaseDate,
-			languageId: parseInt(editionData.language),
-			editionFormatId: parseInt(editionData.editionFormat),
-			editionStatusId: parseInt(editionData.editionStatus),
+			languageId: parseInt(editionData.language, 10),
+			editionFormatId: parseInt(editionData.editionFormat, 10),
+			editionStatusId: parseInt(editionData.editionStatus, 10),
 			disambiguation: editionData.disambiguation,
 			annotation: editionData.annotation,
 			identifiers: editionData.identifiers,
-			pages: parseInt(editionData.pages),
-			weight: parseInt(editionData.weight),
-			width: parseInt(editionData.width),
-			height: parseInt(editionData.height),
-			depth: parseInt(editionData.depth),
+			pages: parseInt(editionData.pages, 10),
+			weight: parseInt(editionData.weight, 10),
+			width: parseInt(editionData.width, 10),
+			height: parseInt(editionData.height, 10),
+			depth: parseInt(editionData.depth, 10),
 			note: revisionNote
 		};
 
 		this.setState({waiting: true});
 
-		var self = this;
+		const self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then(function(revision) {
+			.then((revision) => {
 				if (!revision.body || !revision.body.entity) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href = '/edition/' + revision.body.entity.entity_gid;
+				window.location.href =
+					`/edition/${revision.body.entity.entity_gid}`;
 			})
-			.catch(function(err) {
-				self.setState({error: err});
+			.catch((error) => {
+				self.setState({error});
 			});
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var aliases = null;
-		if (this.props.edition) {
-			var self = this;
-			aliases = this.props.edition.aliases.map(function(alias) {
-				return {
-					id: alias.id,
-					name: alias.name,
-					sortName: alias.sort_name,
-					language: alias.language ? alias.language.language_id : null,
-					primary: alias.primary,
-					default: (alias.id === self.props.edition.default_alias.alias_id)
-				};
-			});
+		let aliases = null;
+		const prefillData = this.props.edition;
+		if (prefillData) {
+			aliases = prefillData.aliases.map((alias) => ({
+				id: alias.id,
+				name: alias.name,
+				sortName: alias.sort_name,
+				language: alias.language ? alias.language.language_id : null,
+				primary: alias.primary,
+				default: alias.id === prefillData.default_alias.alias_id
+			}));
 		}
 
-		var submitEnabled = (this.state.aliasesValid && this.state.dataValid);
+		const submitEnabled = this.state.aliasesValid && this.state.dataValid;
 
-		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		return (
 			<div>
 				{loadingElement}
 
-				<Nav bsStyle='tabs' activeKey={this.state.tab} onSelect={this.handleTab}>
+				<Nav
+					activeKey={this.state.tab}
+					bsStyle="tabs"
+					onSelect={this.handleTab}
+				>
 					<NavItem eventKey={1}>
-						<strong>1.</strong> Aliases <span className={'text-danger fa fa-warning' + (this.state.aliasesValid ? ' hidden' : '')} />
+						<strong>1.</strong> Aliases
+						<span className=
+							{
+								'text-danger fa fa-warning' +
+								`${this.state.aliasesValid ? ' hidden' : ''}`
+							}
+						/>
 					</NavItem>
 					<NavItem eventKey={2}>
-						<strong>2.</strong> Data <span className={'text-danger fa fa-warning' + (this.state.dataValid ? ' hidden' : '')} />
+						<strong>2.</strong> Data
+						<span className=
+							{
+								'text-danger fa fa-warning' +
+								`${this.state.dataValid ? ' hidden' : ''}`
+							}
+						/>
 					</NavItem>
 					<NavItem eventKey={3}>
 						<strong>3.</strong> Revision Note
@@ -152,9 +178,33 @@ module.exports = React.createClass({
 
 
 				<form onChange={this.handleChange}>
-					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab === 1}/>
-					<EditionData publisher={this.props.publisher} publication={this.props.publication} identifierTypes={this.props.identifierTypes} edition={this.props.edition} languages={this.props.languages} ref='data' editionStatuses={this.props.editionStatuses} editionFormats={this.props.editionFormats} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab === 2}/>
-					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab === 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
+					<Aliases
+						aliases={aliases}
+						languages={this.props.languages}
+						nextClick={this.nextClick}
+						ref="aliases"
+						visible={this.state.tab === 1}
+					/>
+					<EditionData
+						backClick={this.backClick}
+						edition={this.props.edition}
+						editionFormats={this.props.editionFormats}
+						editionStatuses={this.props.editionStatuses}
+						identifierTypes={this.props.identifierTypes}
+						languages={this.props.languages}
+						nextClick={this.nextClick}
+						publication={this.props.publication}
+						publisher={this.props.publisher}
+						ref="data"
+						visible={this.state.tab === 2}
+					/>
+					<RevisionNote
+						backClick={this.backClick}
+						onSubmit={this.handleSubmit}
+						ref="revision"
+						submitDisabled={!submitEnabled}
+						visible={this.state.tab === 3}
+					/>
 				</form>
 			</div>
 		);

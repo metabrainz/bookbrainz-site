@@ -18,9 +18,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var IdentifierType = new Model('IdentifierType', {
+const IdentifierType = new Model('IdentifierType', {
 	endpoint: 'identifierType'
 });
 

@@ -19,161 +19,160 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var auth = require('../../helpers/auth');
-var Publication = require('../../data/entities/publication');
-var Edition = require('../../data/entities/edition');
-var User = require('../../data/user');
+const express = require('express');
+const router = express.Router();
+const auth = require('../../helpers/auth');
+const Publication = require('../../data/entities/publication');
+const Edition = require('../../data/entities/edition');
+const User = require('../../data/user');
 
 /* Middleware loader functions. */
-var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-var React = require('react');
-var EditForm = React.createFactory(require('../../../client/components/forms/publication.jsx'));
-// Creation
+const React = require('react');
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/publication.jsx')
+);
 
-var loadLanguages = require('../../helpers/middleware').loadLanguages;
-var loadPublicationTypes = require('../../helpers/middleware').loadPublicationTypes;
-var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
-var loadIdentifierTypes = require('../../helpers/middleware').loadIdentifierTypes;
+const loadLanguages = require('../../helpers/middleware').loadLanguages;
+const loadPublicationTypes =
+	require('../../helpers/middleware').loadPublicationTypes;
+const loadEntityRelationships =
+	require('../../helpers/middleware').loadEntityRelationships;
+const loadIdentifierTypes =
+	require('../../helpers/middleware').loadIdentifierTypes;
 
-var bbws = require('../../helpers/bbws');
-var Promise = require('bluebird');
-var _ = require('underscore');
+const bbws = require('../../helpers/bbws');
+const Promise = require('bluebird');
+const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Publication for it. */
 router.param('bbid', makeEntityLoader(Publication, 'Publication not found'));
 
-router.get('/:bbid', loadEntityRelationships, function(req, res) {
-	var publication = res.locals.entity;
-	var title = 'Publication';
+router.get('/:bbid', loadEntityRelationships, (req, res) => {
+	const publication = res.locals.entity;
+	let title = 'Publication';
 
-	publication.editions = publication.editions.map(function(edition) {
-		return Edition.findOne(edition.bbid, {
+	publication.editions = publication.editions.map((edition) =>
+		Edition.findOne(edition.bbid, {
 			populate: ['disabmiguation', 'aliases']
-		});
-	});
+		})
+	);
 
 	if (publication.default_alias && publication.default_alias.name) {
-		title = 'Publication “' + publication.default_alias.name + '”';
+		title = `Publication “${publication.default_alias.name}”`;
 	}
 
-	Promise.all(publication.editions).then(function(editions) {
+	Promise.all(publication.editions).then((editions) => {
 		publication.editions = editions;
 
 		// Get unique identifier types for display
-		var identifier_types = _.uniq(
+		const identifier_types = _.uniq(
 			_.pluck(publication.identifiers, 'identifier_type'),
 			(identifier) => identifier.identifier_type_id
 		);
 
-		res.render('entity/view/publication', {
-			title: title,
-			identifier_types: identifier_types
-		});
+		res.render('entity/view/publication', {title, identifier_types});
 	});
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, function(req, res) {
-	var publication = res.locals.entity;
-	var title = 'Publication';
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+	const publication = res.locals.entity;
+	let title = 'Publication';
 
 	if (publication.default_alias && publication.default_alias.name) {
-		title = 'Publication “' + publication.default_alias.name + '”';
+		title = `Publication “${publication.default_alias.name}”`;
 	}
 
-	res.render('entity/delete', {
-		title: title
-	});
+	res.render('entity/delete', {title});
 });
 
-router.post('/:bbid/delete/confirm', function(req, res) {
-	var publication = res.locals.entity;
+router.post('/:bbid/delete/confirm', (req, res) => {
+	const publication = res.locals.entity;
 
-	Publication.del(publication.bbid, {
-			revision: {note: req.body.note}
-		},
-		{
-			session: req.session
-		})
-		.then(function() {
-			res.redirect(303, '/publication/' + publication.bbid);
+	Publication.del(
+		publication.bbid,
+		{revision: {note: req.body.note}},
+		{session: req.session}
+	)
+		.then(() => {
+			res.redirect(303, `/publication/${publication.bbid}`);
 		});
 });
 
-router.get('/:bbid/revisions', function(req, res) {
-	var publication = res.locals.entity;
-	var title = 'Publication';
+router.get('/:bbid/revisions', (req, res) => {
+	const publication = res.locals.entity;
+	let title = 'Publication';
 
 	if (publication.default_alias && publication.default_alias.name) {
-		title = 'Publication “' + publication.default_alias.name + '”';
+		title = `Publication “${publication.default_alias.name}”`;
 	}
 
-	bbws.get('/publication/' + publication.bbid + '/revisions')
-		.then(function(revisions) {
-			var promisedUsers = {};
-			revisions.objects.forEach(function(revision) {
+	bbws.get(`/publication/${publication.bbid}/revisions`)
+		.then((revisions) => {
+			const promisedUsers = {};
+			revisions.objects.forEach((revision) => {
 				if (!promisedUsers[revision.user.user_id]) {
-					promisedUsers[revision.user.user_id] = User.findOne(revision.user.user_id);
+					promisedUsers[revision.user.user_id] =
+						User.findOne(revision.user.user_id);
 				}
 			});
 
-			Promise.props(promisedUsers).then(function(users) {
-				res.render('entity/revisions', {
-					title: title,
-					revisions: revisions,
-					users: users
-				});
+			Promise.props(promisedUsers).then((users) => {
+				res.render('entity/revisions', {title, revisions, users});
 			});
 		});
 });
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages, loadPublicationTypes, function(req, res) {
-	var props = {
-		languages: res.locals.languages,
-		publicationTypes: res.locals.publicationTypes,
-		identifierTypes: res.locals.identifierTypes,
-		submissionUrl: '/publication/create/handler'
-	};
+router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
+	loadLanguages, loadPublicationTypes, (req, res) => {
+		const props = {
+			languages: res.locals.languages,
+			publicationTypes: res.locals.publicationTypes,
+			identifierTypes: res.locals.identifierTypes,
+			submissionUrl: '/publication/create/handler'
+		};
 
-	var markup = React.renderToString(EditForm(props));
+		const markup = React.renderToString(EditForm(props));
 
-	res.render('entity/create/publication', {
-		title: 'Add Publication',
-		heading: 'Create Publication',
-		subheading: 'Add a new Publication to BookBrainz',
-		props: props,
-		markup: markup
-	});
-});
+		res.render('entity/create/publication', {
+			title: 'Add Publication',
+			heading: 'Create Publication',
+			subheading: 'Add a new Publication to BookBrainz',
+			props,
+			markup
+		});
+	}
+);
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes, loadPublicationTypes, loadLanguages, function(req, res) {
-	var publication = res.locals.entity;
+router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
+	loadPublicationTypes, loadLanguages, (req, res) => {
+		const publication = res.locals.entity;
 
-	var props = {
-		languages: res.locals.languages,
-		publicationTypes: res.locals.publicationTypes,
-		publication: publication,
-		identifierTypes: res.locals.identifierTypes,
-		submissionUrl: '/publication/' + publication.bbid + '/edit/handler'
-	};
+		const props = {
+			languages: res.locals.languages,
+			publicationTypes: res.locals.publicationTypes,
+			publication,
+			identifierTypes: res.locals.identifierTypes,
+			submissionUrl: `/publication/${publication.bbid}/edit/handler`
+		};
 
-	var markup = React.renderToString(EditForm(props));
+		const markup = React.renderToString(EditForm(props));
 
-	res.render('entity/create/publication', {
-		title: 'Edit Publication',
-		heading: 'Edit Publication',
-		subheading: 'Edit an existing Publication in BookBrainz',
-		props: props,
-		markup: markup
-	});
-});
+		res.render('entity/create/publication', {
+			title: 'Edit Publication',
+			heading: 'Edit Publication',
+			subheading: 'Edit an existing Publication in BookBrainz',
+			props,
+			markup
+		});
+	}
+);
 
-router.post('/create/handler', auth.isAuthenticated, function(req, res) {
-	var changes = {
+router.post('/create/handler', auth.isAuthenticated, (req, res) => {
+	const changes = {
 		bbid: null,
 		publication_type: {
 			publication_type_id: req.body.publicationTypeId
@@ -194,7 +193,7 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
+	const newIdentifiers = req.body.identifiers.map((identifier) => {
 		return {
 			value: identifier.value,
 			identifier_type: {
@@ -207,9 +206,9 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 		changes.identifiers = newIdentifiers;
 	}
 
-	var newAliases = [];
+	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
+	req.body.aliases.forEach((alias) => {
 		if (!alias.name && !alias.sortName) {
 			return;
 		}
@@ -228,37 +227,37 @@ router.post('/create/handler', auth.isAuthenticated, function(req, res) {
 	}
 
 	Publication.create(changes, {
-			session: req.session
-		})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		session: req.session
+	})
+		.then(res.send);
 });
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
-	var publication = res.locals.entity;
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
+	const publication = res.locals.entity;
 
-	var changes = {
+	const changes = {
 		bbid: publication.bbid
 	};
 
-	var publicationTypeId = req.body.publicationTypeId;
-	if ((!publication.publication_type) ||
-		(publication.publication_type.publication_type_id !== publicationTypeId)) {
+	const publicationTypeId = req.body.publicationTypeId;
+	if (!publication.publication_type ||
+			publication.publication_type.publication_type_id !==
+				publicationTypeId
+	) {
 		changes.publication_type = {
 			publication_type_id: publicationTypeId
 		};
 	}
 
-	var disambiguation = req.body.disambiguation;
-	if ((!publication.disambiguation) ||
-		(publication.disambiguation.comment !== disambiguation)) {
+	const disambiguation = req.body.disambiguation;
+	if (!publication.disambiguation ||
+			publication.disambiguation.comment !== disambiguation) {
 		changes.disambiguation = disambiguation ? disambiguation : null;
 	}
 
-	var annotation = req.body.annotation;
-	if ((!publication.annotation) ||
-		(publication.annotation.content !== annotation)) {
+	const annotation = req.body.annotation;
+	if (!publication.annotation ||
+			publication.annotation.content !== annotation) {
 		changes.annotation = annotation ? annotation : null;
 	}
 
@@ -268,46 +267,45 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		};
 	}
 
-	var currentIdentifiers = publication.identifiers.map(function(identifier) {
-		var nextIdentifier = req.body.identifiers[0];
+	const currentIdentifiers = publication.identifiers.map((identifier) => {
+		const nextIdentifier = req.body.identifiers[0];
 
 		if (identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
-		else {
-			// Modify the alias
-			req.body.identifiers.shift();
-			return [nextIdentifier.id, {
-				value: nextIdentifier.value,
-				identifier_type: {
-					identifier_type_id: nextIdentifier.typeId
-				}
-			}];
-		}
+
+		// Modify the alias
+		req.body.identifiers.shift();
+		return [nextIdentifier.id, {
+			value: nextIdentifier.value,
+			identifier_type: {
+				identifier_type_id: nextIdentifier.typeId
+			}
+		}];
 	});
 
-	var newIdentifiers = req.body.identifiers.map(function(identifier) {
-		// At this point, the only aliases should have null IDs, but check anyway.
+	const newIdentifiers = req.body.identifiers.map((identifier) => {
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
 		if (identifier.id) {
 			return null;
 		}
-		else {
-			return [null, {
-				value: identifier.value,
-				identifier_type: {
-					identifier_type_id: identifier.typeId
-				}
-			}];
-		}
+
+		return [null, {
+			value: identifier.value,
+			identifier_type: {
+				identifier_type_id: identifier.typeId
+			}
+		}];
 	});
 
 	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
 
-	var currentAliases = [];
+	const currentAliases = [];
 
-	publication.aliases.forEach(function(alias) {
-		var nextAlias = req.body.aliases[0];
+	publication.aliases.forEach((alias) => {
+		const nextAlias = req.body.aliases[0];
 
 		if (alias.id !== nextAlias.id) {
 			// Remove the alias
@@ -326,11 +324,12 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 		}
 	});
 
-	var newAliases = [];
+	const newAliases = [];
 
-	req.body.aliases.forEach(function(alias) {
-		// At this point, the only aliases should have null IDs, but check anyway.
-		if (alias.id || (!alias.name && !alias.sortName)) {
+	req.body.aliases.forEach((alias) => {
+		// At this point, the only aliases should have null IDs, but check
+		// anyway.
+		if (alias.id || !alias.name && !alias.sortName) {
 			return;
 		}
 
@@ -346,11 +345,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, function(req, res) {
 	changes.aliases = currentAliases.concat(newAliases);
 
 	Publication.update(publication.bbid, changes, {
-			session: req.session
-		})
-		.then(function(revision) {
-			res.send(revision);
-		});
+		session: req.session
+	})
+		.then(res.send);
 });
 
 module.exports = router;

@@ -17,16 +17,54 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var PartialDate = require('../../input/partialDate.jsx');
-var Select = require('../../input/select2.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const PartialDate = require('../../input/partialDate.jsx');
+const Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Identifiers = require('./identifiers.jsx');
 
+const validators = require('../../validators');
 
-var CreatorData = React.createClass({
-	getValue: function() {
+const creatorTypeValidation = React.PropTypes.shape({
+	creator_type_id: React.PropTypes.number,
+	label: React.PropTypes.string
+});
+
+const CreatorData = React.createClass({
+	displayName: 'creatorDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		creator: React.PropTypes.shape({
+			begin_date: React.PropTypes.string,
+			end_date: React.PropTypes.string,
+			ended: React.PropTypes.bool,
+			gender: React.PropTypes.bool,
+			creator_type: creatorTypeValidation,
+			disambiguation: React.PropTypes.string,
+			annotation: React.PropTypes.string,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			}))
+		}),
+		creatorTypes: React.PropTypes.arrayOf(creatorTypeValidation),
+		genders: React.PropTypes.arrayOf(React.PropTypes.shape({
+			gender_id: React.PropTypes.number,
+			name: React.PropTypes.string
+		})),
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		nextClick: React.PropTypes.func,
+		visible: React.PropTypes.bool
+	},
+	getInitialState() {
+		'use strict';
+
+		return {
+			ended: this.props.creator ? this.props.creator.ended : false
+		};
+	},
+	getValue() {
 		'use strict';
 
 		return {
@@ -40,136 +78,157 @@ var CreatorData = React.createClass({
 			identifiers: this.refs.identifiers.getValue()
 		};
 	},
-	getInitialState: function() {
+	valid() {
 		'use strict';
 
-		return {
-			ended: this.props.creator ? this.props.creator.ended : false
-		};
+		return this.refs.begin.valid() &&
+			(!this.refs.ended.getValue() || this.refs.end.valid());
 	},
-	valid: function() {
-		'use strict';
-
-		return (
-			this.refs.begin.valid() && (!this.refs.ended.getValue() || this.refs.end.valid())
-		);
-	},
-	handleEnded: function() {
+	handleEnded() {
 		'use strict';
 
 		this.setState({ended: this.refs.ended.getChecked()});
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var initialBeginDate = null;
-		var initialEndDate = null;
-		var initialGender = null;
-		var initialCreatorType = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
+		let initialBeginDate = null;
+		let initialEndDate = null;
+		let initialGender = null;
+		let initialCreatorType = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
 
-		if (this.props.creator) {
-			initialBeginDate = this.props.creator.begin_date;
-			initialEndDate = this.props.creator.end_date;
-			initialGender = this.props.creator.gender ? this.props.creator.gender.gender_id : null;
-			initialCreatorType = this.props.creator.creator_type ? this.props.creator.creator_type.creator_type_id : null;
-			initialDisambiguation = this.props.creator.disambiguation ? this.props.creator.disambiguation.comment : null;
-			initialAnnotation = this.props.creator.annotation ? this.props.creator.annotation.content : null;
-			initialIdentifiers = this.props.creator.identifiers.map(function(identifier) {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+		const prefillData = this.props.creator;
+		if (prefillData) {
+			initialBeginDate = prefillData.begin_date;
+			initialEndDate = prefillData.end_date;
+			initialGender = prefillData.gender ?
+				prefillData.gender.gender_id : null;
+			initialCreatorType = prefillData.creator_type ?
+				prefillData.creator_type.creator_type_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={this.props.visible === false ? 'hidden' : ''}>
 				<h2>Add Data</h2>
-				<p className='lead'>Fill out any data you know about the entity.</p>
+				<p className="lead">
+					Fill out any data you know about the entity.
+				</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<PartialDate
-						label='Begin Date'
-						ref='begin'
 						defaultValue={initialBeginDate}
-						placeholder='YYYY-MM-DD'
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						label="Begin Date"
+						labelClassName="col-md-4"
+						placeholder="YYYY-MM-DD"
+						ref="begin"
+						wrapperClassName="col-md-4"
+					/>
 					<PartialDate
-						label='End Date'
-						ref='end'
 						defaultValue={initialEndDate}
 						groupClassName={this.state.ended ? '' : 'hidden'}
-						placeholder='YYYY-MM-DD'
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						label="End Date"
+						labelClassName="col-md-4"
+						placeholder="YYYY-MM-DD"
+						ref="end"
+						wrapperClassName="col-md-4"
+					/>
 					<Input
-						type='checkbox'
-						ref='ended'
-						label='Ended'
 						defaultChecked={this.state.ended}
+						label="Ended"
 						onChange={this.handleEnded}
-						wrapperClassName='col-md-offset-4 col-md-4' />
+						ref="ended"
+						type="checkbox"
+						wrapperClassName="col-md-offset-4 col-md-4"
+					/>
 					<Select
-						label='Gender'
-						labelAttribute='name'
-						idAttribute='id'
 						defaultValue={initialGender}
-						ref='gender'
-						placeholder='Select gender…'
+						idAttribute="id"
+						label="Gender"
+						labelAttribute="name"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.genders}
+						placeholder="Select gender…"
+						ref="gender"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Type'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialCreatorType}
-						ref='creatorType'
-						placeholder='Select creator type…'
+						idAttribute="id"
+						label="Type"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.creatorTypes}
+						placeholder="Select creator type…"
+						ref="creatorType"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
+						ref="identifiers"
 						types={this.props.identifierTypes}
-						ref='identifiers' />
+					/>
 					<Input
-						type='text'
-						label='Disambiguation'
-						ref='disambiguation'
 						defaultValue={initialDisambiguation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6' />
+						label="Disambiguation"
+						labelClassName="col-md-3"
+						ref="disambiguation"
+						type="text"
+						wrapperClassName="col-md-6"
+					/>
 					<Input
-						type='textarea'
-						label='Annotation'
-						ref='annotation'
 						defaultValue={initialAnnotation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
-					<nav className='margin-top-1'>
+						label="Annotation"
+						labelClassName="col-md-3"
+						ref="annotation"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
+					<nav className="margin-top-1">
 						<ul className="pager">
 							<li className="previous">
-								<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+								<a
+									href="#"
+									onClick={this.props.backClick}
+								>
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-left"
+									/>
+									Back
 								</a>
 							</li>
 							<li className="next">
-								<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+								<a
+									href="#"
+									onClick={this.props.nextClick}
+								>
+									Next
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-right"
+									/>
 								</a>
 							</li>
 						</ul>

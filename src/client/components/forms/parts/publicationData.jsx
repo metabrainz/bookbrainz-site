@@ -17,15 +17,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Select = require('../../input/select2.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const Select = require('../../input/select2.jsx');
+const Input = require('react-bootstrap').Input;
+const Identifiers = require('./identifiers.jsx');
 
+const validators = require('../../validators');
 
-var PublicationData = React.createClass({
-	getValue: function() {
+const PublicationData = React.createClass({
+	displayName: 'publicationDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		nextClick: React.PropTypes.func,
+		publication: React.PropTypes.shape({
+			annotation: React.PropTypes.string,
+			disambiguation: React.PropTypes.string,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			})),
+			publication_type: validators.publicationType
+		}),
+		publicationTypes: React.PropTypes.arrayOf(validators.publicationType),
+		visible: React.PropTypes.bool
+	},
+	getValue() {
 		'use strict';
 
 		return {
@@ -35,24 +53,28 @@ var PublicationData = React.createClass({
 			identifiers: this.refs.identifiers.getValue()
 		};
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return true;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var initialPublicationType = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
+		let initialPublicationType = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
 
-		if (this.props.publication) {
-			initialPublicationType = this.props.publication.publication_type ? this.props.publication.publication_type.publication_type_id : null;
-			initialDisambiguation = this.props.publication.disambiguation ? this.props.publication.disambiguation.comment : null;
-			initialAnnotation = this.props.publication.annotation ? this.props.publication.annotation.content : null;
-			initialIdentifiers = this.props.publication.identifiers.map(function(identifier) {
+		const prefillData = this.props.publication;
+		if (prefillData) {
+			initialPublicationType = prefillData.publication_type ?
+				prefillData.publication_type.publication_type_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => {
 				return {
 					id: identifier.id,
 					value: identifier.value,
@@ -61,56 +83,78 @@ var PublicationData = React.createClass({
 			});
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 
 		return (
 			<div className={(this.props.visible === false) ? 'hidden' : ''}>
 				<h2>Add Data</h2>
-				<p className='lead'>Fill out any data you know about the entity.</p>
+				<p className="lead">
+					Fill out any data you know about the entity.
+				</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<Select
-						label='Type'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialPublicationType}
-						ref='publicationType'
-						placeholder='Select publication type…'
+						idAttribute="id"
+						label="Type"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.publicationTypes}
+						placeholder="Select publication type…"
+						ref="publicationType"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
+						ref="identifiers"
 						types={this.props.identifierTypes}
-						ref='identifiers' />
+					/>
 					<Input
-						type='text'
-						label='Disambiguation'
-						ref='disambiguation'
 						defaultValue={initialDisambiguation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6' />
+						label="Disambiguation"
+						labelClassName="col-md-3"
+						ref="disambiguation"
+						type="text"
+						wrapperClassName="col-md-6"
+					/>
 					<Input
-						type='textarea'
-						label='Annotation'
-						ref='annotation'
 						defaultValue={initialAnnotation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
-					<nav className='margin-top-1'>
+						label="Annotation"
+						labelClassName="col-md-3"
+						ref="annotation"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
+					<nav className="margin-top-1">
 						<ul className="pager">
 							<li className="previous">
-								<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+								<a
+									href="#"
+									onClick={this.props.backClick}
+								>
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-left"
+									/>
+									Back
 								</a>
 							</li>
 							<li className="next">
-								<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+								<a
+									href="#"
+									onClick={this.props.nextClick}
+								>
+									Next
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-right"
+									/>
 								</a>
 							</li>
 						</ul>

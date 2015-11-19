@@ -19,27 +19,27 @@
 
 'use strict';
 
-var passport = require('passport');
-var config = require('../helpers/config');
-var BBWSStrategy = require('./passport-bookbrainz-ws');
+const passport = require('passport');
+const config = require('../helpers/config');
+const BBWSStrategy = require('./passport-bookbrainz-ws');
 
-var auth = {};
+const auth = {};
 
-auth.init = function(app) {
+auth.init = function init(app) {
 	passport.use(new BBWSStrategy({
 		wsURL: config.site.webservice,
 		clientID: config.site.clientID
-	}, function(req, accessToken, refreshToken, profile, done) {
+	}, (req, accessToken, refreshToken, profile, done) => {
 		req.session.bearerToken = accessToken;
 
 		done(null, profile);
 	}));
 
-	passport.serializeUser(function(user, done) {
+	passport.serializeUser((user, done) => {
 		done(null, user);
 	});
 
-	passport.deserializeUser(function(user, done) {
+	passport.deserializeUser((user, done) => {
 		done(null, user);
 	});
 
@@ -47,40 +47,42 @@ auth.init = function(app) {
 	app.use(passport.session());
 };
 
-auth.authenticate = function() {
-	return function(req, res, next) {
-		var options = {
+auth.authenticate = function authenticate() {
+	return function authenticateFunc(req, res, next) {
+		const options = {
 			username: req.body.username,
 			password: req.body.password
 		};
 
-		var callback = function(err) {
+		passport.authenticate('bbws', options)(req, res, (err) => {
 			if (err) {
 				console.log(err.stack);
-
-				var newErr;
-
+				let newErr;
 				switch (err.name) {
 					case 'InternalOAuthError':
 					case 'TokenError':
-						newErr = new Error('An internal error occurred during authentication');
+						newErr = new Error(
+							'An internal error occurred during authentication'
+						);
 						break;
 					case 'AuthorizationError':
 						newErr = new Error('Invalid username or password');
 						break;
+					default:
+						newErr = new Error(
+							'An unknown error occurred during authentication'
+						);
 				}
 
 				return next(newErr);
 			}
 
 			next();
-		};
-
-		passport.authenticate('bbws', options)(req, res, callback);
+		});
 	};
 };
 
-auth.isAuthenticated = function(req, res, next) {
+auth.isAuthenticated = function isAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}

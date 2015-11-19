@@ -19,14 +19,14 @@
 
 'use strict';
 
-var Model = require('../helpers/model');
+const Model = require('../helpers/model');
 require('../data/properties/alias');
 require('../data/properties/identifier');
 require('../data/properties/annotation');
 require('../data/properties/disambiguation');
 require('../data/relationship');
 
-var Entity = new Model('Entity', {
+const Entity = new Model('Entity', {
 	abstract: true,
 	endpoint: 'entity'
 });
