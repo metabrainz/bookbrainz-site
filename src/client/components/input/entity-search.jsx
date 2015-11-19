@@ -23,7 +23,6 @@ const _ = require('underscore');
 const $ = require('jquery');
 
 const EntitySearch = React.createClass({
-	loadedEntities: {},
 	displayName: 'entitySearchInput',
 	propTypes: {
 		bsStyle: React.PropTypes.string,
@@ -43,6 +42,7 @@ const EntitySearch = React.createClass({
 		value: React.PropTypes.number,
 		wrapperClassName: React.PropTypes.string
 	},
+	loadedEntities: {},
 	getValue() {
 		'use strict';
 
@@ -58,8 +58,9 @@ const EntitySearch = React.createClass({
 
 		const self = this;
 
-		if(this.props.defaultValue) {
-			this.loadedEntities[this.props.defaultValue.id] = this.props.defaultValue;
+		if (this.props.defaultValue) {
+			this.loadedEntities[this.props.defaultValue.id] =
+				this.props.defaultValue;
 		}
 
 		if (this.props.value) {
@@ -148,7 +149,7 @@ const EntitySearch = React.createClass({
 			defaultKey = this.props.defaultValue.id;
 		}
 
-		var key = null;
+		let key = null;
 		if (this.props.value && this.props.value.id) {
 			options.unshift(this.props.value);
 			key = this.props.value.id;

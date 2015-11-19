@@ -30,7 +30,7 @@ const mkdirp = require('mkdirp');
 const gulpless = require('gulp-less');
 const minifyCSS = require('gulp-minify-css');
 const prefixer = require('gulp-autoprefixer');
-const babelify = require("babelify");
+const babelify = require('babelify');
 
 function bundle() {
 	let srcFiles =
@@ -62,7 +62,7 @@ function bundle() {
 	});
 
 	return browserify(srcFiles)
-		.transform(babelify, {presets: ["es2015", "react"]})
+		.transform(babelify, {presets: ['es2015', 'react']})
 		.plugin('factor-bundle', {
 			outputs: dstFiles
 		})

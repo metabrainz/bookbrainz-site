@@ -33,18 +33,19 @@ const _ = require('underscore');
 
 const relationshipHelper = {};
 
-var loadEntityRelationships = require('../../helpers/middleware').loadEntityRelationships;
+const loadEntityRelationships =
+	require('../../helpers/middleware').loadEntityRelationships;
 
-var makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-relationshipHelper.addEditRoutes = function(router) {
+relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 	/* If the route specifies a BBID, load the Creator for it. */
 	router.param('bbid', makeEntityLoader(Entity, 'Entity not found'));
 
-	router.get('/:bbid/relationships', loadEntityRelationships, function relationshipEditor(req, res) {
-		var relationshipTypesPromise = RelationshipType.find();
+	router.get('/:bbid/relationships', loadEntityRelationships, (req, res) => {
+		const relationshipTypesPromise = RelationshipType.find();
 
-		var entityPromises = {};
+		const entityPromises = {};
 
 		res.locals.entity.relationships.forEach((relationship) => {
 			entityPromises[relationship.entities[0].entity.entity_gid] =
@@ -56,15 +57,18 @@ relationshipHelper.addEditRoutes = function(router) {
 		const entitiesPromise = Promise.props(entityPromises);
 
 		Promise.join(entitiesPromise, relationshipTypesPromise,
-			function(entities, relationshipTypes) {
+			(entities, relationshipTypes) => {
 				res.locals.entity.relationships.forEach((relationship) => {
-					relationship.source = entities[relationship.entities[0].entity.entity_gid];
-					relationship.target = entities[relationship.entities[1].entity.entity_gid];
-					relationship.type = relationship.relationship_type.relationship_type_id;
+					relationship.source =
+						entities[relationship.entities[0].entity.entity_gid];
+					relationship.target =
+						entities[relationship.entities[1].entity.entity_gid];
+					relationship.type =
+						relationship.relationship_type.relationship_type_id;
 				});
 
-				var props = {
-					relationshipTypes: relationshipTypes,
+				const props = {
+					relationshipTypes,
 					relationships: res.locals.entity.relationships,
 					entity: res.locals.entity,
 					loadedEntities: _.union(entities, [res.locals.entity]),
@@ -78,23 +82,25 @@ relationshipHelper.addEditRoutes = function(router) {
 		);
 	});
 
-	router.post('/:bbid/relationships/handler', auth.isAuthenticated, function(req, res) {
-		// Send a relationship revision for each of the relationships
-		const relationshipsPromise = Promise.all(
-			req.body.map((relationship) =>
-				Relationship.create(relationship, {
-					session: req.session
-				})
-			)
-		);
+	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
+		(req, res) => {
+			// Send a relationship revision for each of the relationships
+			const relationshipsPromise = Promise.all(
+				req.body.map((relationship) =>
+					Relationship.create(relationship, {
+						session: req.session
+					})
+				)
+			);
 
-		relationshipsPromise.then(() => {
-			res.send({result: "success"});
-		})
-		.catch(() => {
-			res.send({result: "error"});
-		});
-	});
+			relationshipsPromise.then(() => {
+				res.send({result: 'success'});
+			})
+			.catch(() => {
+				res.send({result: 'error'});
+			});
+		}
+	);
 };
 
 module.exports = relationshipHelper;
