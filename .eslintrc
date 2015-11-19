@@ -215,7 +215,7 @@ rules:
   lines-around-comment:
     - 2
     -
-      beforeBlockComment: true
+      beforeBlockComment: false
   linebreak-style:
     - 2
     - unix
