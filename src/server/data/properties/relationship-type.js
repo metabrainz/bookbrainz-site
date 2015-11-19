@@ -19,9 +19,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var RelationshipType = new Model('RelationshipType', {
+const RelationshipType = new Model('RelationshipType', {
 	endpoint: 'relationshipType'
 });
 

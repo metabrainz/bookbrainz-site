@@ -19,12 +19,12 @@
 
 'use strict';
 
-var util = require('util');
-var PasswordGrantStrategy = require('passport-oauth2-password-grant');
-var User = require('../data/user');
+const util = require('util');
+const PasswordGrantStrategy = require('passport-oauth2-password-grant');
+const User = require('../data/user');
 
-function BBWSStrategy(options, verify) {
-	options = options || {};
+function BBWSStrategy(baseOptions, verify) {
+	const options = baseOptions || {};
 
 	if (!options.wsURL) {
 		throw new TypeError('BBWSStrategy requires a wsURL option');
@@ -33,7 +33,7 @@ function BBWSStrategy(options, verify) {
 	this._wsURL = options.wsURL;
 	delete options.wsURL;
 
-	options.tokenURL = this._wsURL + '/oauth/token';
+	options.tokenURL = `${this._wsURL}/oauth/token`;
 	options.passReqToCallback = true;
 
 	PasswordGrantStrategy.call(this, options, verify);
@@ -42,17 +42,18 @@ function BBWSStrategy(options, verify) {
 
 util.inherits(BBWSStrategy, PasswordGrantStrategy);
 
-BBWSStrategy.prototype.userProfile = function(accessToken, done) {
+BBWSStrategy.prototype.userProfile =
+function getuserProfile(accessToken, done) {
 	User.getCurrent(accessToken)
-		.then(function(user) {
-			var profile = {
+		.then((user) => {
+			const profile = {
 				id: user.id,
 				name: user.name
 			};
 
 			done(null, profile);
 		})
-		.catch(function(err) {
+		.catch((err) => {
 			console.log(err.stack);
 			return done(new Error('Internal error fetching user profile'));
 		});

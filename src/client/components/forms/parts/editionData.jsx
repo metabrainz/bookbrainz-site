@@ -17,22 +17,90 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var PartialDate = require('../../input/partialDate.jsx');
-var Select = require('../../input/select2.jsx');
-var SearchSelect = require('../../input/entity-search.jsx');
-var Input = require('react-bootstrap').Input;
-var Button = require('react-bootstrap').Button;
-var Identifiers = require('./identifiers.jsx');
+const React = require('react');
+const PartialDate = require('../../input/partialDate.jsx');
+const Select = require('../../input/select2.jsx');
+const SearchSelect = require('../../input/entity-search.jsx');
+const Input = require('react-bootstrap').Input;
+const Identifiers = require('./identifiers.jsx');
 
+const validators = require('../../validators');
 
-var EditionData = React.createClass({
-	getValue: function() {
+const editionStatusValidation = React.PropTypes.shape({
+	edition_status_id: React.PropTypes.number,
+	label: React.PropTypes.string
+});
+
+const editionFormatValidation = React.PropTypes.shape({
+	edition_format_id: React.PropTypes.number,
+	label: React.PropTypes.string
+});
+
+const EditionData = React.createClass({
+	displayName: 'editionDataComponent',
+	propTypes: {
+		backClick: React.PropTypes.func,
+		edition: React.PropTypes.shape({
+			annotation: React.PropTypes.string,
+			depth: React.PropTypes.number,
+			disambiguation: React.PropTypes.string,
+			edition_format: editionFormatValidation,
+			edition_status: editionStatusValidation,
+			height: React.PropTypes.number,
+			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number,
+				value: React.PropTypes.string,
+				identifier_type: validators.identifierType
+			})),
+			language: React.PropTypes.shape({
+				language_id: React.PropTypes.number
+			}),
+			pages: React.PropTypes.number,
+			publication: React.PropTypes.shape({
+				bbid: React.PropTypes.string,
+				default_alias: React.PropTypes.shape({
+					name: React.PropTypes.string
+				})
+			}),
+			publisher: React.PropTypes.shape({
+				bbid: React.PropTypes.string,
+				default_alias: React.PropTypes.shape({
+					name: React.PropTypes.string
+				})
+			}),
+			release_date: React.PropTypes.string,
+			weight: React.PropTypes.number,
+			width: React.PropTypes.number
+		}),
+		editionFormats: React.PropTypes.arrayOf(editionFormatValidation),
+		editionStatuses: React.PropTypes.arrayOf(editionStatusValidation),
+		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
+			language_id: React.PropTypes.number,
+			name: React.PropTypes.string
+		})),
+		nextClick: React.PropTypes.func,
+		publication: React.PropTypes.shape({
+			bbid: React.PropTypes.string,
+			default_alias: React.PropTypes.shape({
+				name: React.PropTypes.string
+			})
+		}),
+		publisher: React.PropTypes.shape({
+			bbid: React.PropTypes.string,
+			default_alias: React.PropTypes.shape({
+				name: React.PropTypes.string
+			})
+		}),
+		visible: React.PropTypes.bool
+	},
+	getValue() {
 		'use strict';
 
 		return {
 			publication: this.refs.publication.getValue(),
-			publisher: this.refs.publisher.getValue() === '' ? null : this.refs.publisher.getValue(),
+			publisher: this.refs.publisher.getValue() === '' ?
+				null : this.refs.publisher.getValue(),
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionFormat: this.refs.editionFormat.getValue(),
@@ -47,58 +115,68 @@ var EditionData = React.createClass({
 			weight: this.refs.weight.getValue()
 		};
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
-		return this.refs.release.valid() && this.refs.publication.getValue().length;
+		return this.refs.release.valid() &&
+			this.refs.publication.getValue().length;
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var initialPublication = null;
-		var initialPublisher = null;
-		var initialReleaseDate = null;
-		var initialLanguage = null;
-		var initialEditionFormat = null;
-		var initialEditionStatus = null;
-		var initialDisambiguation = null;
-		var initialAnnotation = null;
-		var initialIdentifiers = [];
-		var initialPages = null;
-		var initialWidth = null;
-		var initialHeight = null;
-		var initialDepth = null;
-		var initialWeight = null;
+		let initialPublication = null;
+		let initialPublisher = null;
+		let initialReleaseDate = null;
+		let initialLanguage = null;
+		let initialEditionFormat = null;
+		let initialEditionStatus = null;
+		let initialDisambiguation = null;
+		let initialAnnotation = null;
+		let initialIdentifiers = [];
+		let initialPages = null;
+		let initialWidth = null;
+		let initialHeight = null;
+		let initialDepth = null;
+		let initialWeight = null;
 
-		var publication = null;
-		var publisher = null;
-		if (this.props.edition) {
-			if (this.props.edition.publication) {
-				publication = this.props.edition.publication;
+		let publication = null;
+		let publisher = null;
+		const prefillData = this.props.edition;
+		if (prefillData) {
+			if (prefillData.publication) {
+				publication = prefillData.publication;
 			}
 
-			if (this.props.edition.publisher) {
-				publisher = this.props.edition.publisher;
+			if (prefillData.publisher) {
+				publisher = prefillData.publisher;
 			}
 
-			initialReleaseDate = this.props.edition.release_date;
-			initialLanguage = this.props.edition.language ? this.props.edition.language.language_id : null;
-			initialEditionFormat = this.props.edition.edition_format ? this.props.edition.edition_format.edition_format_id : null;
-			initialEditionStatus = this.props.edition.edition_status ? this.props.edition.edition_status.edition_status_id : null;
-			initialDisambiguation = this.props.edition.disambiguation ? this.props.edition.disambiguation.comment : null;
-			initialAnnotation = this.props.edition.annotation ? this.props.edition.annotation.content : null;
-			initialPages = (this.props.edition.pages || this.props.edition.pages === 0) ? this.props.edition.pages : null;
-			initialWidth = (this.props.edition.width || this.props.edition.width === 0) ? this.props.edition.width : null;
-			initialHeight = (this.props.edition.height || this.props.edition.height === 0) ? this.props.edition.height : null;
-			initialDepth = (this.props.edition.depth || this.props.edition.depth === 0) ? this.props.edition.depth : null;
-			initialWeight = (this.props.edition.weight || this.props.edition.weight === 0) ? this.props.edition.weight : null;
-			initialIdentifiers = this.props.edition.identifiers.map(function(identifier) {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+			initialReleaseDate = prefillData.release_date;
+			initialLanguage = prefillData.language ?
+				prefillData.language.language_id : null;
+			initialEditionFormat = prefillData.edition_format ?
+				prefillData.edition_format.edition_format_id : null;
+			initialEditionStatus = prefillData.edition_status ?
+				prefillData.edition_status.edition_status_id : null;
+			initialDisambiguation = prefillData.disambiguation ?
+				prefillData.disambiguation.comment : null;
+			initialAnnotation = prefillData.annotation ?
+				prefillData.annotation.content : null;
+			initialPages = prefillData.pages || prefillData.pages === 0 ?
+				prefillData.pages : null;
+			initialWidth = prefillData.width || prefillData.width === 0 ?
+				prefillData.width : null;
+			initialHeight = prefillData.height || prefillData.height === 0 ?
+				prefillData.height : null;
+			initialDepth = prefillData.depth || prefillData.depth === 0 ?
+				prefillData.depth : null;
+			initialWeight = prefillData.weight || prefillData.weight === 0 ?
+				prefillData.weight : null;
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
 		if (this.props.publication) {
@@ -108,7 +186,8 @@ var EditionData = React.createClass({
 		if (publication) {
 			initialPublication = {
 				id: publication.bbid,
-				text: publication.default_alias ? publication.default_alias.name : null
+				text: publication.default_alias ?
+					publication.default_alias.name : null
 			};
 		}
 
@@ -119,166 +198,199 @@ var EditionData = React.createClass({
 		if (publisher) {
 			initialPublisher = {
 				id: publisher.bbid,
-				text: publisher.default_alias ? publisher.default_alias.name : null
+				text: publisher.default_alias ?
+					publisher.default_alias.name : null
 			};
 		}
 
-		var select2Options = {
+		const select2Options = {
 			width: '100%'
 		};
 
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={this.props.visible === false ? 'hidden' : ''}>
 				<h2>Add Data</h2>
-				<p className='lead'>Fill out any data you know about the entity.</p>
+				<p className="lead">
+					Fill out any data you know about the entity.
+				</p>
 
-				<div className='form-horizontal'>
+				<div className="form-horizontal">
 					<SearchSelect
-						label='Publication'
-						labelAttribute='name'
-						ref='publication'
+						collection="publication"
 						defaultValue={initialPublication}
-						collection='publication'
-						placeholder='Select publication…'
+						label="Publication"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						placeholder="Select publication…"
+						ref="publication"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<SearchSelect
-						label='Publisher'
-						labelAttribute='name'
-						ref='publisher'
+						collection="publisher"
 						defaultValue={initialPublisher}
-						collection='publisher'
-						placeholder='Select publisher…'
+						label="Publisher"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						nodefault
+						placeholder="Select publisher…"
+						ref="publisher"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4'
-						nodefault />
+						wrapperClassName="col-md-4"
+					/>
 					<PartialDate
-						label='Release Date'
-						ref='release'
 						defaultValue={initialReleaseDate}
-						placeholder='YYYY-MM-DD'
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						label="Release Date"
+						labelClassName="col-md-4"
+						placeholder="YYYY-MM-DD"
+						ref="release"
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Language'
-						labelAttribute='name'
-						idAttribute='id'
 						defaultValue={initialLanguage}
-						ref='language'
-						placeholder='Select edition language…'
+						idAttribute="id"
+						label="Language"
+						labelAttribute="name"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.languages}
+						placeholder="Select edition language…"
+						ref="language"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Format'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialEditionFormat}
-						ref='editionFormat'
-						placeholder='Select edition format…'
+						idAttribute="id"
+						label="Format"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.editionFormats}
+						placeholder="Select edition format…"
+						ref="editionFormat"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<Select
-						label='Status'
-						labelAttribute='label'
-						idAttribute='id'
 						defaultValue={initialEditionStatus}
-						ref='editionStatus'
-						placeholder='Select edition status…'
+						idAttribute="id"
+						label="Status"
+						labelAttribute="label"
+						labelClassName="col-md-4"
 						noDefault
 						options={this.props.editionStatuses}
+						placeholder="Select edition status…"
+						ref="editionStatus"
 						select2Options={select2Options}
-						labelClassName='col-md-4'
-						wrapperClassName='col-md-4' />
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
-					<div className='row'>
-						<div className='col-md-11 col-md-offset-1'>
-							<div className='col-md-3'>
+					<div className="row">
+						<div className="col-md-11 col-md-offset-1">
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Page Count'
-									ref='pages'
 									defaultValue={initialPages}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Page Count"
+									labelClassName="col-md-7"
+									ref="pages"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
-							<div className='col-md-3'>
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Weight (g)'
-									ref='weight'
 									defaultValue={initialWeight}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Weight (g)"
+									labelClassName="col-md-7"
+									ref="weight"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
 						</div>
 					</div>
-					<div className='row'>
-						<div className='col-md-11 col-md-offset-1'>
-							<div className='col-md-3'>
+					<div className="row">
+						<div className="col-md-11 col-md-offset-1">
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Width (mm)'
-									ref='width'
 									defaultValue={initialWidth}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Width (mm)"
+									labelClassName="col-md-7"
+									ref="width"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
-							<div className='col-md-3'>
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Height (mm)'
-									ref='height'
 									defaultValue={initialHeight}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Height (mm)"
+									labelClassName="col-md-7"
+									ref="height"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
-							<div className='col-md-3'>
+							<div className="col-md-3">
 								<Input
-									type='text'
-									label='Depth (mm)'
-									ref='depth'
 									defaultValue={initialDepth}
-									labelClassName='col-md-7'
-									wrapperClassName='col-md-5' />
+									label="Depth (mm)"
+									labelClassName="col-md-7"
+									ref="depth"
+									type="text"
+									wrapperClassName="col-md-5"
+								/>
 							</div>
 						</div>
 					</div>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
+						ref="identifiers"
 						types={this.props.identifierTypes}
-						ref='identifiers' />
+					/>
 					<Input
-						type='text'
-						label='Disambiguation'
-						ref='disambiguation'
 						defaultValue={initialDisambiguation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6' />
+						label="Disambiguation"
+						labelClassName="col-md-3"
+						ref="disambiguation"
+						type="text"
+						wrapperClassName="col-md-6"
+					/>
 					<Input
-						type='textarea'
-						label='Annotation'
-						ref='annotation'
 						defaultValue={initialAnnotation}
-						labelClassName='col-md-3'
-						wrapperClassName='col-md-6'
-						rows='6' />
-					<nav className='margin-top-1'>
+						label="Annotation"
+						labelClassName="col-md-3"
+						ref="annotation"
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
+					<nav className="margin-top-1">
 						<ul className="pager">
 							<li className="previous">
-								<a href='#' onClick={this.props.backClick}><span aria-hidden="true" className='fa fa-angle-double-left'/> Back
+								<a
+									href="#"
+									onClick={this.props.backClick}
+								>
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-left"
+									/>
+									Back
 								</a>
 							</li>
 							<li className="next">
-								<a href='#' onClick={this.props.nextClick}>Next <span aria-hidden="true" className='fa fa-angle-double-right'/>
+								<a
+									href="#"
+									onClick={this.props.nextClick}
+								>
+									Next
+									<span
+										aria-hidden="true"
+										className="fa fa-angle-double-right"
+									/>
 								</a>
 							</li>
 						</ul>

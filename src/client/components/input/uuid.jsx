@@ -17,14 +17,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Input = require('react-bootstrap').Input;
+const React = require('react');
+const Input = require('react-bootstrap').Input;
 
-var uuid_re =
+const uuidRegex =
 	/[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}/;
 
-var UUIDInput = React.createClass({
-	getInitialState: function() {
+const UUIDInput = React.createClass({
+	displayName: 'uuidInput',
+	propTypes: {
+		defaultValue: React.PropTypes.string,
+		disabled: React.PropTypes.bool,
+		groupClassName: React.PropTypes.string,
+		help: React.PropTypes.string,
+		label: React.PropTypes.string,
+		labelClassName: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		placeholder: React.PropTypes.string,
+		standalone: React.PropTypes.bool,
+		wrapperClassName: React.PropTypes.string
+	},
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -32,34 +45,33 @@ var UUIDInput = React.createClass({
 			valid: true
 		};
 	},
-	getValue: function() {
+	getValue() {
 		'use strict';
 
 		return this.state.value;
 	},
-	valid: function() {
+	valid() {
 		'use strict';
 
 		return this.state.valid;
 	},
-	validationState: function() {
+	validationState() {
 		'use strict';
 
 		if (this.state.valid) {
 			return 'success';
 		}
-		else {
-			return 'error';
-		}
+
+		return 'error';
 	},
-	handleChange: function(e) {
+	handleChange(evt) {
 		'use strict';
 		// This could also be done using ReactLink:
 		// http://facebook.github.io/react/docs/two-way-binding-helpers.html
 
-		var result = uuid_re.exec(this.refs.input.getValue());
+		let result = uuidRegex.exec(this.refs.input.getValue());
 
-		var valid = Boolean(result);
+		const valid = Boolean(result);
 		if (valid) {
 			result = result[0];
 		}
@@ -70,29 +82,30 @@ var UUIDInput = React.createClass({
 		this.setState(
 			{
 				value: result,
-				valid: valid
+				valid
 			},
-			this.props.onChange ? this.props.onChange.bind(this, e) : null
+			this.props.onChange ? this.props.onChange.bind(this, evt) : null
 		);
 	},
-	render: function() {
+	render() {
 		'use strict';
 
 		return (
 			<Input
-				type='text'
-				value={this.state.value}
-				placeholder={this.props.placeholder}
-				label={this.props.label}
-				help={this.props.help}
 				bsStyle={this.validationState()}
-				ref='input'
+				disabled={this.props.disabled}
 				groupClassName={this.props.groupClassName}
-				wrapperClassName={this.props.wrapperClassName}
+				help={this.props.help}
+				label={this.props.label}
 				labelClassName={this.props.labelClassName}
 				onChange={this.handleChange}
-				disabled={this.props.disabled}
-				standalone={this.props.standalone} />
+				placeholder={this.props.placeholder}
+				ref="input"
+				standalone={this.props.standalone}
+				type="text"
+				value={this.state.value}
+				wrapperClassName={this.props.wrapperClassName}
+			/>
 		);
 	}
 });

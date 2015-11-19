@@ -17,21 +17,29 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var Aliases = require('./parts/aliases.jsx');
-var RevisionNote = require('./parts/revisionNote.jsx');
-var PublisherData = require('./parts/publisherData.jsx');
-var LoadingSpinner = require('../loading_spinner.jsx');
+const Aliases = require('./parts/aliases.jsx');
+const RevisionNote = require('./parts/revisionNote.jsx');
+const PublisherData = require('./parts/publisherData.jsx');
+const LoadingSpinner = require('../loading_spinner.jsx');
 
-var request = require('superagent');
+const request = require('superagent');
 require('superagent-bluebird-promise');
 
-var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
+const Nav = require('react-bootstrap').Nav;
+const NavItem = require('react-bootstrap').NavItem;
 
 module.exports = React.createClass({
-	getInitialState: function() {
+	displayName: 'publisherForm',
+	propTypes: {
+		identifierTypes: React.PropTypes.array,
+		languages: React.PropTypes.array,
+		publisher: React.PropTypes.object,
+		publisherTypes: React.PropTypes.array,
+		submissionUrl: React.PropTypes.string
+	},
+	getInitialState() {
 		'use strict';
 
 		return {
@@ -41,48 +49,48 @@ module.exports = React.createClass({
 			waiting: false
 		};
 	},
-	setTab: function(tab) {
+	setTab(tab) {
 		'use strict';
 
 		this.setState({
-			tab: tab,
+			tab,
 			aliasesValid: this.refs.aliases.valid(),
 			dataValid: this.refs.data.valid()
 		});
 	},
-	backClick: function() {
+	backClick() {
 		'use strict';
 
 		this.setTab(this.state.tab - 1);
 	},
-	nextClick: function() {
+	nextClick() {
 		'use strict';
 
 		this.setTab(this.state.tab + 1);
 	},
-	handleTab: function(tabKey) {
+	handleTab(tabKey) {
 		'use strict';
 
 		this.setTab(tabKey);
 	},
-	handleSubmit: function(e) {
+	handleSubmit(evt) {
 		'use strict';
 
-		e.preventDefault();
+		evt.preventDefault();
 
 		if (!(this.state.aliasesValid && this.state.dataValid)) {
 			return;
 		}
 
-		var aliasData = this.refs.aliases.getValue();
-		var publisherData = this.refs.data.getValue();
-		var revisionNote = this.refs.revision.refs.note.getValue();
-		var data = {
+		const aliasData = this.refs.aliases.getValue();
+		const publisherData = this.refs.data.getValue();
+		const revisionNote = this.refs.revision.refs.note.getValue();
+		const data = {
 			aliases: aliasData,
 			beginDate: publisherData.beginDate,
 			endDate: publisherData.endDate,
 			ended: publisherData.ended,
-			publisherTypeId: parseInt(publisherData.publisherType),
+			publisherTypeId: parseInt(publisherData.publisherType, 10),
 			disambiguation: publisherData.disambiguation,
 			annotation: publisherData.annotation,
 			identifiers: publisherData.identifiers,
@@ -91,52 +99,66 @@ module.exports = React.createClass({
 
 		this.setState({waiting: true});
 
-		var self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then(function(revision) {
+			.then((revision) => {
 				if (!revision.body || !revision.body.entity) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href = '/publisher/' + revision.body.entity.entity_gid;
+				window.location.href =
+				`/publisher/${revision.body.entity.entity_gid}`;
 			})
-			.catch(function(err) {
-				self.setState({error: err});
+			.catch((error) => {
+				this.setState({error});
 			});
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var aliases = null;
-		if (this.props.publisher) {
-			var self = this;
-			aliases = this.props.publisher.aliases.map(function(alias) {
-				return {
-					id: alias.id,
-					name: alias.name,
-					sortName: alias.sort_name,
-					language: alias.language ? alias.language.language_id : null,
-					primary: alias.primary,
-				default: (alias.id === self.props.publisher.default_alias.alias_id)
-				};
-			});
+		let aliases = null;
+		const prefillData = this.props.publisher;
+		if (prefillData) {
+			aliases = prefillData.aliases.map((alias) => ({
+				id: alias.id,
+				name: alias.name,
+				sortName: alias.sort_name,
+				language: alias.language ? alias.language.language_id : null,
+				primary: alias.primary,
+				default: alias.id === prefillData.default_alias.alias_id
+			}));
 		}
 
-		var submitEnabled = (this.state.aliasesValid && this.state.dataValid);
+		const submitEnabled = this.state.aliasesValid && this.state.dataValid;
 
-		var loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		return (
 			<div>
 				{loadingElement}
 
-				<Nav bsStyle='tabs' activeKey={this.state.tab} onSelect={this.handleTab}>
+				<Nav
+					activeKey={this.state.tab}
+					bsStyle="tabs"
+					onSelect={this.handleTab}
+				>
 					<NavItem eventKey={1}>
-						<strong>1.</strong> Aliases <span className={'text-danger fa fa-warning' + (this.state.aliasesValid ? ' hidden' : '')} />
+						<strong>1.</strong> Aliases
+						<span className=
+							{
+								'text-danger fa fa-warning' +
+								`${this.state.aliasesValid ? ' hidden' : ''}`
+							}
+						/>
 					</NavItem>
 					<NavItem eventKey={2}>
-						<strong>2.</strong> Data <span className={'text-danger fa fa-warning' + (this.state.dataValid ? ' hidden' : '')} />
+						<strong>2.</strong> Data
+						<span className=
+							{
+								'text-danger fa fa-warning' +
+								`${this.state.dataValid ? ' hidden' : ''}`
+							}
+						/>
 					</NavItem>
 					<NavItem eventKey={3}>
 						<strong>3.</strong> Revision Note
@@ -145,9 +167,29 @@ module.exports = React.createClass({
 
 
 				<form onChange={this.handleChange}>
-					<Aliases aliases={aliases} languages={this.props.languages} ref='aliases' nextClick={this.nextClick} visible={this.state.tab === 1}/>
-					<PublisherData identifierTypes={this.props.identifierTypes} publisher={this.props.publisher} ref='data' publisherTypes={this.props.publisherTypes} backClick={this.backClick} nextClick={this.nextClick} visible={this.state.tab === 2}/>
-					<RevisionNote backClick={this.backClick} ref='revision' visible={this.state.tab === 3} submitDisabled={!submitEnabled} onSubmit={this.handleSubmit}/>
+					<Aliases
+						aliases={aliases}
+						languages={this.props.languages}
+						nextClick={this.nextClick}
+						ref="aliases"
+						visible={this.state.tab === 1}
+					/>
+					<PublisherData
+						backClick={this.backClick}
+						identifierTypes={this.props.identifierTypes}
+						nextClick={this.nextClick}
+						publisher={this.props.publisher}
+						publisherTypes={this.props.publisherTypes}
+						ref="data"
+						visible={this.state.tab === 2}
+					/>
+					<RevisionNote
+						backClick={this.backClick}
+						onSubmit={this.handleSubmit}
+						ref="revision"
+						submitDisabled={!submitEnabled}
+						visible={this.state.tab === 3}
+					/>
 				</form>
 			</div>
 		);

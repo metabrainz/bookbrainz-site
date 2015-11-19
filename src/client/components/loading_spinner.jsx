@@ -17,15 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
+const React = require('react');
 
-var LoadingSpinner = React.createClass({
-	render: function() {
+const LoadingSpinner = React.createClass({
+	displayName: 'loadingSpinner',
+	render() {
 		'use strict';
 
 		return (
-			<div className='loading-background'>
-				<span className='fa fa-circle-o-notch fa-spin fa-2x loading-spinner'></span>
+			<div className="loading-background">
+				<span className=
+					"fa fa-circle-o-notch fa-spin fa-2x loading-spinner"
+				></span>
 			</div>
 		);
 	}

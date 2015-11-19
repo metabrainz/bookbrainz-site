@@ -17,28 +17,47 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var Select = require('./select2.jsx');
-var _ = require('underscore');
-var $ = require('jquery');
+const React = require('react');
+const Select = require('./select2.jsx');
+const _ = require('underscore');
+const $ = require('jquery');
 
-var EntitySearch = React.createClass({
-	getValue: function() {
+const EntitySearch = React.createClass({
+	displayName: 'entitySearchInput',
+	propTypes: {
+		bsStyle: React.PropTypes.string,
+		defaultValue: React.PropTypes.shape({
+			id: React.PropTypes.number
+		}),
+		disabled: React.PropTypes.bool,
+		groupClassName: React.PropTypes.string,
+		help: React.PropTypes.string,
+		label: React.PropTypes.string,
+		labelClassName: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		options: React.PropTypes.object,
+		placeholder: React.PropTypes.string,
+		select2Options: React.PropTypes.object,
+		standalone: React.PropTypes.bool,
+		value: React.PropTypes.number,
+		wrapperClassName: React.PropTypes.string
+	},
+	getValue() {
 		'use strict';
 
 		return this.refs.select.getValue();
 	},
-	render: function() {
+	render() {
 		'use strict';
 
-		var self = this;
+		const self = this;
 
-		var select2Options = {
+		const select2Options = {
 			minimumInputLength: 1,
 			ajax: {
 				url: '/search',
-				data: function(params) {
-					var queryParams = {
+				data(params) {
+					const queryParams = {
 						q: params.term,
 						page: params.page,
 						mode: 'auto',
@@ -47,8 +66,8 @@ var EntitySearch = React.createClass({
 
 					return queryParams;
 				},
-				processResults: function(results) {
-					var data = {
+				processResults(results) {
+					const data = {
 						results: []
 					};
 
@@ -61,7 +80,7 @@ var EntitySearch = React.createClass({
 						return data;
 					}
 
-					results.forEach(function(result) {
+					results.forEach((result) => {
 						data.results.push({
 							id: result.bbid,
 							text: result.default_alias ?
@@ -75,27 +94,29 @@ var EntitySearch = React.createClass({
 					return data;
 				}
 			},
-			templateResult: function(result) {
-				var template = result.text;
+			templateResult(result) {
+				let template = result.text;
 
-				var ENTITY_TYPE_ICONS = {
-					'Creator': 'fa-user',
-					'Edition': 'fa-book',
-					'Publication': 'fa-th-list',
-					'Publisher': 'fa-university',
-					'Work': 'fa-file-text-o'
+				const ENTITY_TYPE_ICONS = {
+					Creator: 'fa-user',
+					Edition: 'fa-book',
+					Publication: 'fa-th-list',
+					Publisher: 'fa-university',
+					Work: 'fa-file-text-o'
 				};
 
+				/* eslint prefer-template: 0 */
 				if (result.type) {
 					template = React.renderToStaticMarkup(
-						<span className={'fa ' + ENTITY_TYPE_ICONS[result.type]}/>
-					) + ' ' + template;
+						<span className=
+							{`fa ${ENTITY_TYPE_ICONS[result.type]}`}
+						/>
+					) + ` ${template}`;
 				}
 
 				if (result.disambiguation) {
 					template += React.renderToStaticMarkup(
-						<span
-							className='disambig'>
+						<span className="disambig">
 							({result.disambiguation})
 						</span>
 					);
@@ -107,9 +128,9 @@ var EntitySearch = React.createClass({
 
 		_.extend(select2Options, this.props.select2Options);
 
-		var options = this.props.options || [];
+		const options = this.props.options || [];
 
-		var defaultKey = null;
+		let defaultKey = null;
 		if (this.props.defaultValue && this.props.defaultValue.id) {
 			options.unshift(this.props.defaultValue);
 			defaultKey = this.props.defaultValue.id;
@@ -117,24 +138,25 @@ var EntitySearch = React.createClass({
 
 		return (
 			<Select
-				placeholder={this.props.placeholder}
-				value={this.props.value}
-				defaultValue={defaultKey}
-				label={this.props.label}
-				idAttribute='id'
-				labelAttribute='text'
-				help={this.props.help}
 				bsStyle={this.props.bsStyle}
+				defaultValue={defaultKey}
 				disabled={this.props.disabled}
-				ref='select'
 				groupClassName={this.props.groupClassName}
-				wrapperClassName={this.props.wrapperClassName}
+				help={this.props.help}
+				idAttribute="id"
+				label={this.props.label}
+				labelAttribute="text"
 				labelClassName={this.props.labelClassName}
 				noDefault
 				onChange={this.props.onChange}
-				select2Options={select2Options}
 				options={options}
-				standalone={this.props.standalone} />
+				placeholder={this.props.placeholder}
+				ref="select"
+				select2Options={select2Options}
+				standalone={this.props.standalone}
+				value={this.props.value}
+				wrapperClassName={this.props.wrapperClassName}
+			/>
 		);
 	}
 });

@@ -19,53 +19,50 @@
 
 'use strict';
 
-var Promise = require('bluebird');
+const Promise = require('bluebird');
 
-var CreatorType = require('../data/properties/creator-type');
-var EditionStatus = require('../data/properties/edition-status');
-var EditionFormat = require('../data/properties/edition-format');
-var Entity = require('../data/entity');
-var Gender = require('../data/properties/gender');
-var Language = require('../data/properties/language');
-var PublicationType = require('../data/properties/publication-type');
-var PublisherType = require('../data/properties/publisher-type');
-var WorkType = require('../data/properties/work-type');
-var IdentifierType = require('../data/properties/identifier-type');
+const CreatorType = require('../data/properties/creator-type');
+const EditionStatus = require('../data/properties/edition-status');
+const EditionFormat = require('../data/properties/edition-format');
+const Entity = require('../data/entity');
+const Gender = require('../data/properties/gender');
+const Language = require('../data/properties/language');
+const PublicationType = require('../data/properties/publication-type');
+const PublisherType = require('../data/properties/publisher-type');
+const WorkType = require('../data/properties/work-type');
+const IdentifierType = require('../data/properties/identifier-type');
 
-var renderRelationship = require('../helpers/render');
+const renderRelationship = require('../helpers/render');
 
-var NotFoundError = require('../helpers/error').NotFoundError;
+const NotFoundError = require('../helpers/error').NotFoundError;
 
-var makeLoader = function(model, propName, sortFunc) {
-	return function(req, res, next) {
+function makeLoader(model, propName, sortFunc) {
+	return function loaderFunc(req, res, next) {
 		model.find()
-			.then(function(results) {
-				if (sortFunc) {
-					results = results.sort(sortFunc);
-				}
+			.then((results) => {
+				res.locals[propName] =
+					sortFunc ? results.sort(sortFunc) : results;
 
-				res.locals[propName] = results;
 				next();
 			})
 			.catch(next);
 	};
-};
+}
 
-var middleware = {};
+const middleware = {};
 
 middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
-middleware.loadPublicationTypes = makeLoader(PublicationType, 'publicationTypes');
+middleware.loadPublicationTypes =
+	makeLoader(PublicationType, 'publicationTypes');
 middleware.loadEditionFormats = makeLoader(EditionFormat, 'editionFormats');
 middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
 middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
 middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
 middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
 
-middleware.loadGenders = makeLoader(Gender, 'genders', function(a, b) {
-	return a.id > b.id;
-});
+middleware.loadGenders = makeLoader(Gender, 'genders', (a, b) => a.id > b.id);
 
-middleware.loadLanguages = makeLoader(Language, 'languages', function(a, b) {
+middleware.loadLanguages = makeLoader(Language, 'languages', (a, b) => {
 	if (a.frequency !== b.frequency) {
 		return b.frequency - a.frequency;
 	}
@@ -73,29 +70,32 @@ middleware.loadLanguages = makeLoader(Language, 'languages', function(a, b) {
 	return a.name.localeCompare(b.name);
 });
 
-middleware.loadEntityRelationships = function(req, res, next) {
+middleware.loadEntityRelationships =
+function loadEntityRelationships(req, res, next) {
 	if (!res.locals.entity) {
-		next(new Error('Entity failed to load'));
+		return next(new Error('Entity failed to load'));
 	}
 
-	var entity = res.locals.entity;
-	Promise.map(entity.relationships, function(relationship) {
-			relationship.template = relationship.relationship_type.template;
+	const entity = res.locals.entity;
+	Promise.map(entity.relationships, (relationship) => {
+		relationship.template = relationship.relationship_type.template;
 
-			var relEntities = relationship.entities.sort(function sortRelationshipEntity(a, b) {
-				return a.position - b.position;
+		const relEntities = relationship.entities.sort(
+			(a, b) => a.position - b.position
+		);
+
+		return Promise.map(
+			relEntities,
+			(relEntity) => Entity.findOne(relEntity.entity.entity_gid)
+		)
+			.then((loadedEntities) => {
+				relationship.rendered =
+					renderRelationship(loadedEntities, relationship, null);
+
+				return relationship;
 			});
-
-			return Promise.map(relEntities, function(relEntity) {
-					return Entity.findOne(relEntity.entity.entity_gid);
-				})
-				.then(function(loadedEntities) {
-					relationship.rendered = renderRelationship(loadedEntities, relationship, null);
-
-					return relationship;
-				});
-		})
-		.then(function(relationships) {
+	})
+		.then((relationships) => {
 			res.locals.entity.relationships = relationships;
 
 			next();
@@ -103,10 +103,12 @@ middleware.loadEntityRelationships = function(req, res, next) {
 		.catch(next);
 };
 
-middleware.makeEntityLoader = function(model, errMessage) {
-	return function(req, res, next, bbid) {
-		if (/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(bbid)) {
-			var populate = [
+middleware.makeEntityLoader = function makeEntityLoader(model, errMessage) {
+	const bbidRegex =
+		/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
+	return function loaderFunc(req, res, next, bbid) {
+		if (bbidRegex.test(bbid)) {
+			const populate = [
 				'annotation',
 				'disambiguation',
 				'relationships',
@@ -115,37 +117,36 @@ middleware.makeEntityLoader = function(model, errMessage) {
 			];
 
 			// XXX: Don't special case this; instead, let the route specify
-			if (model.name === 'Edition') {
-				populate.push('publication');
-				populate.push('publisher');
-			}
-			else if (model.name === 'Publication') {
-				populate.push('editions');
-			}
-			else if (model.name === 'Publisher') {
-				populate.push('editions');
+			switch (model.name) {
+				case 'Edition':
+					populate.push('publication');
+					populate.push('publisher');
+					break;
+				case 'Publication':
+					populate.push('editions');
+					break;
+				case 'Publisher':
+					populate.push('editions');
+					break;
+				// no default
 			}
 
-			model.findOne(req.params.bbid, {
-					populate: populate
-				})
-				.then(function(entity) {
+			model.findOne(req.params.bbid, {populate})
+				.then((entity) => {
 					res.locals.entity = entity;
 
 					next();
 				})
-				.catch(function(err) {
+				.catch((err) => {
 					if (err.status === 404) {
-						var newErr = new NotFoundError(errMessage);
-						return next(newErr);
+						return next(new NotFoundError(errMessage));
 					}
 
 					next(err);
 				});
 		}
-		else {
-			next('route');
-		}
+
+		return next('route');
 	};
 };
 

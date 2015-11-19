@@ -19,63 +19,50 @@
 
 'use strict';
 
-var request = require('superagent');
-var Promise = require('bluebird');
+const request = require('superagent');
+const Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
 function getEntityLink(entity) {
-	var bbid = entity.entity_gid || entity.bbid;
-	return '/' + entity._type.toLowerCase() + '/' + bbid;
+	const bbid = entity.entity_gid || entity.bbid;
+	return `/${entity._type.toLowerCase()}/${bbid}`;
 }
 
 // Returns a Promise which fulfills with an entity with aliases and data.
 function getEntity(ws, entityGid, fetchOptions) {
-	var entityPromise = request.get(ws + '/entity/' + entityGid).promise()
-		.then(function(entityResponse) {
-			return entityResponse.body;
-		});
+	const entityPromise = request.get(`${ws}/entity/${entityGid}`).promise()
+		.then((entityResponse) => entityResponse.body);
 
-	return entityPromise.then(function(entity) {
+	return entityPromise.then((entity) => {
 		if (fetchOptions.data) {
 			entity.data = request.get(entity.data_uri).promise()
-				.then(function(dataResponse) {
-					return dataResponse.body;
-				});
+				.then((dataResponse) => dataResponse.body);
 		}
 
 		if (fetchOptions.aliases) {
 			entity.aliases = request.get(entity.aliases_uri).promise()
-				.then(function(aliasesResponse) {
-					return aliasesResponse.body;
-				});
+				.then((aliasesResponse) => aliasesResponse.body);
 		}
 
 		if (fetchOptions.annotation) {
 			entity.annotation = request.get(entity.annotation_uri).promise()
-				.then(function(annotationResponse) {
-					return annotationResponse.body;
-				});
+				.then((annotationResponse) => annotationResponse.body);
 		}
 
 		if (fetchOptions.disambiguation) {
-			entity.disambiguation = request.get(entity.disambiguation_uri).promise()
-				.then(function(disambiguationResponse) {
-					return disambiguationResponse.body;
-				});
+			entity.disambiguation = request.get(entity.disambiguation_uri)
+				.promise()
+				.then((disambiguationResponse) => disambiguationResponse.body);
 		}
 
 		if (fetchOptions.relationships) {
-			entity.relationships = request.get(entity.relationships_uri).promise()
-				.then(function(relationshipsResponse) {
-					return relationshipsResponse.body;
-				});
+			entity.relationships = request.get(entity.relationships_uri)
+				.promise()
+				.then((relationshipsResponse) => relationshipsResponse.body);
 		}
 
 		return Promise.props(entity);
 	});
 }
 
-module.exports = {
-	getEntityLink: getEntityLink,
-	getEntity: getEntity
-};
+module.exports = {getEntityLink, getEntity};

@@ -19,9 +19,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var Annotation = new Model('Annotation');
+const Annotation = new Model('Annotation');
 
 Annotation.extend({
 	id: {

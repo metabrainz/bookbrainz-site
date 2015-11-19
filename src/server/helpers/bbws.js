@@ -19,26 +19,29 @@
 
 'use strict';
 
-var superagent = require('superagent');
-var config = require('../helpers/config');
+const superagent = require('superagent');
+const config = require('../helpers/config');
 
 require('superagent-bluebird-promise');
 
-var bbws = {};
+const bbws = {};
 
-var _processError = function(response) {
-	var newErr;
+function _processError(response) {
+	let newErr;
 
-	var requestPath = response.error.method + ' ' + response.error.path;
+	const requestPath = `${response.error.method} ${response.error.path}`;
 
 	if (response.status === 404) {
-		newErr = new Error('WS path not found: ' + requestPath);
+		newErr = new Error(`WS path not found: ${requestPath}`);
 		newErr.status = 404;
 	}
 	else {
 		newErr = new Error('There was an error accessing the web service');
 		if (response.res) {
-			console.log('WS error: ' + response.status + ' ' + requestPath + ' ' + JSON.stringify(response.res.request._data));
+			console.log(
+				`WS error: ${response.status} ${requestPath} ` +
+				`${JSON.stringify(response.res.request._data)}`
+			);
 		}
 		else {
 			console.log('No response.');
@@ -46,18 +49,19 @@ var _processError = function(response) {
 	}
 
 	throw newErr;
-};
+}
 
-var _execRequest = function(requestType, path, options) {
-	if (path.charAt(0) === '/') {
-		path = config.site.webservice + path;
-	}
+function _execRequest(requestType, path, options) {
+	const absPath =
+		(path.charAt(0) === '/' ? config.site.webservice : '') + path;
 
-	var request = superagent[requestType](path)
+	let request = superagent[requestType](absPath)
 		.accept('application/json');
 
 	if (options.accessToken) {
-		request = request.set('Authorization', 'Bearer ' + options.accessToken);
+		request = request.set(
+			'Authorization', `Bearer ${options.accessToken}`
+		);
 	}
 
 	if (options.params) {
@@ -70,34 +74,30 @@ var _execRequest = function(requestType, path, options) {
 
 	return request
 		.promise()
-		.then(function(response) {
-			return response.body;
-		})
+		.then((response) => response.body)
 		.catch(_processError);
+}
+
+bbws.get = function get(path, options) {
+	return _execRequest('get', path, options || {});
 };
 
-bbws.get = function(path, options) {
-	options = options || {};
-
-	return _execRequest('get', path, options);
-};
-
-bbws.post = function(path, data, options) {
-	options = options || {};
+bbws.post = function post(path, data, baseOptions) {
+	const options = baseOptions || {};
 	options.data = data || {};
 
 	return _execRequest('post', path, options);
 };
 
-bbws.put = function(path, data, options) {
-	options = options || {};
+bbws.put = function put(path, data, baseOptions) {
+	const options = baseOptions || {};
 	options.data = data || {};
 
 	return _execRequest('put', path, options);
 };
 
-bbws.del = function(path, data, options) {
-	options = options || {};
+bbws.del = function del(path, data, baseOptions) {
+	const options = baseOptions || {};
 	options.data = data || {};
 
 	return _execRequest('del', path, options);

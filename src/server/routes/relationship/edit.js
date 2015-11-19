@@ -19,56 +19,55 @@
 
 'use strict';
 
-var auth = require('../../helpers/auth');
-var Relationship = require('../../data/relationship');
-var RelationshipType = require('../../data/properties/relationship-type');
-var Entity = require('../../data/entity');
-var React = require('react');
-var EditForm = React.createFactory(require('../../../client/components/forms/creator.jsx'));
-var Promise = require('bluebird');
-var config = require('../../helpers/config');
+const auth = require('../../helpers/auth');
+const Relationship = require('../../data/relationship');
+const RelationshipType = require('../../data/properties/relationship-type');
+const Entity = require('../../data/entity');
+const React = require('react');
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/creator.jsx')
+);
+const Promise = require('bluebird');
+const config = require('../../helpers/config');
 
-var relationshipHelper = {};
+const relationshipHelper = {};
 
-relationshipHelper.addEditRoutes = function(router) {
-	router.get('/:bbid/relationships', auth.isAuthenticated, function relationshipEditor(req, res) {
-		var relationshipTypesPromise = RelationshipType.find();
-		var entityPromise = Entity.findOne(req.params.bbid, {
+relationshipHelper.addEditRoutes = function addEditRoutes(router) {
+	router.get('/:bbid/relationships', auth.isAuthenticated, (req, res) => {
+		const relationshipTypesPromise = RelationshipType.find();
+		const entityPromise = Entity.findOne(req.params.bbid, {
 			populate: [
 				'aliases'
 			]
 		});
 
 		Promise.join(entityPromise, relationshipTypesPromise,
-			function(entity, relationshipTypes) {
-				var props = {
-					relationshipTypes: relationshipTypes,
+			(entity, relationshipTypes) => {
+				const props = {
+					relationshipTypes,
 					targetEntity: entity,
 					wsUrl: config.site.clientWebservice
 				};
 
-				var markup = React.renderToString(EditForm(props));
+				const markup = React.renderToString(EditForm(props));
 
-				res.render('relationship/edit', {
-					props: props,
-					markup: markup
-				});
-			});
+				res.render('relationship/edit', {props, markup});
+			}
+		);
 	});
 
-	router.post('/:bbid/relationships/handler', auth.isAuthenticated, function(req, res) {
-		req.body.forEach(function(relationship) {
-			// Send a relationship revision for each of the relationships
-			var changes = relationship;
+	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
+		(req, res) => {
+			req.body.forEach((relationship) => {
+				// Send a relationship revision for each of the relationships
+				const changes = relationship;
 
-			Relationship.create(changes, {
+				Relationship.create(changes, {
 					session: req.session
-				})
-				.then(function(revision) {
-					res.send(revision);
-				});
-		});
-	});
+				}).then(res.send);
+			});
+		}
+	);
 };
 
 module.exports = relationshipHelper;

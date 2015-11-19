@@ -19,9 +19,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var Disambiguation = new Model('Disambiguation');
+const Disambiguation = new Model('Disambiguation');
 
 Disambiguation.extend({
 	id: {

@@ -1,8 +1,7 @@
-{
-    "rules": {
-        "strict": [2, "function"]
-    },
-    "env": {
-        "browser": true
-    }
-}
+---
+rules:
+  strict:
+    - 2
+    - function
+env:
+  browser: true

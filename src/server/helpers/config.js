@@ -19,7 +19,7 @@
 'use strict';
 
 /* Pull in environment-specific configuration. */
-var env = process.env.NODE_ENV || 'development';
-var config = require('../../../config/' + env);
+const env = process.env.NODE_ENV || 'development';
+const config = require(`../../../config/${env}`);
 
 module.exports = config;

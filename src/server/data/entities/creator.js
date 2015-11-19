@@ -19,10 +19,10 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
-var Entity = require('../../data/entity');
+const Model = require('../../helpers/model');
+const Entity = require('../../data/entity');
 
-var Creator = new Model('Creator', {
+const Creator = new Model('Creator', {
 	base: Entity,
 	endpoint: 'creator'
 });

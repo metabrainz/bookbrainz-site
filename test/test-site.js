@@ -20,11 +20,11 @@
 
 process.env.NODE_ENV = 'testing';
 
-var request = require('supertest');
-var app = require('../app');
+const request = require('supertest');
+const app = require('../app');
 
-describe('GET /', function() {
-	it('should return 200', function(done) {
+describe('GET /', () => {
+	it('should return 200', (done) => {
 		request(app)
 			.get('/')
 			.expect('Content-Type', 'text/html; charset=utf-8')
@@ -32,8 +32,8 @@ describe('GET /', function() {
 	});
 });
 
-describe('GET /about', function() {
-	it('should return 200', function(done) {
+describe('GET /about', () => {
+	it('should return 200', (done) => {
 		request(app)
 			.get('/about')
 			.expect('Content-Type', 'text/html; charset=utf-8')
@@ -41,8 +41,8 @@ describe('GET /about', function() {
 	});
 });
 
-describe('GET /contribute', function() {
-	it('should return 200', function(done) {
+describe('GET /contribute', () => {
+	it('should return 200', (done) => {
 		request(app)
 			.get('/contribute')
 			.expect('Content-Type', 'text/html; charset=utf-8')
@@ -50,8 +50,8 @@ describe('GET /contribute', function() {
 	});
 });
 
-describe('GET /develop', function() {
-	it('should return 200', function(done) {
+describe('GET /develop', () => {
+	it('should return 200', (done) => {
 		request(app)
 			.get('/develop')
 			.expect('Content-Type', 'text/html; charset=utf-8')

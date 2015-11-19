@@ -19,9 +19,9 @@
 
 'use strict';
 
-var Model = require('../../helpers/model');
+const Model = require('../../helpers/model');
 
-var EditionFormat = new Model('EditionFormat', {
+const EditionFormat = new Model('EditionFormat', {
 	endpoint: 'editionFormat'
 });
 

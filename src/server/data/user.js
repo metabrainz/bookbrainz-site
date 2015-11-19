@@ -19,11 +19,11 @@
 
 'use strict';
 
-var Model = require('../helpers/model');
+const Model = require('../helpers/model');
 require('../data/properties/gender');
 require('../data/properties/user-type');
 
-var User = new Model('User', {
+const User = new Model('User', {
 	endpoint: 'user'
 });
 
@@ -72,10 +72,10 @@ User.extend({
 	}
 });
 
-User.getCurrent = function(accessToken) {
+User.getCurrent = function getCurrent(accessToken) {
 	return this.findOne({
 		path: '/account/',
-		accessToken: accessToken
+		accessToken
 	});
 };
 

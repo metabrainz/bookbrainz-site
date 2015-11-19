@@ -18,24 +18,34 @@
 
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var Revision = require('../data/properties/revision');
-var User = require('../data/user');
-var _ = require('underscore');
+const express = require('express');
+const router = express.Router();
+const Revision = require('../data/properties/revision');
+const User = require('../data/user');
+const _ = require('underscore');
+
+function formatPairAttributeSingle(pair, attribute) {
+	if (attribute) {
+		return [
+			pair[0] ? [pair[0][attribute]] : null,
+			pair[1] ? [pair[1][attribute]] : null
+		];
+	}
+
+	return [
+		pair[0] ? [pair[0]] : null,
+		pair[1] ? [pair[1]] : null
+	];
+}
 
 function formatRelationshipDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
-		var result = {};
+	return revision.changes.map((pair) => {
+		const result = {};
 
 		if (pair.entities) {
 			result.Entities = [
-				pair.entities[0].map(function getEntityName(entity) {
-					return entity.entity.entity_gid;
-				}),
-				pair.entities[1].map(function getEntityName(entity) {
-					return entity.entity.entity_gid;
-				})
+				pair.entities[0].map((entity) => entity.entity.entity_gid),
+				pair.entities[1].map((entity) => entity.entity.entity_gid)
 			];
 		}
 
@@ -47,12 +57,8 @@ function formatRelationshipDiff(revision) {
 		}
 
 		if (pair.relationship_type) {
-			result['Relationship Type'] = [
-				pair.relationship_type[0] ?
-					[pair.relationship_type[0].label] : null,
-				pair.relationship_type[1] ?
-					[pair.relationship_type[1].label] : null
-			];
+			result['Relationship Type'] =
+				formatPairAttributeSingle(pair.relationship_type, 'label');
 		}
 
 		return result;
@@ -60,31 +66,21 @@ function formatRelationshipDiff(revision) {
 }
 
 function formatEntityDiff(pair) {
-	var result = {};
+	const result = {};
 
 	if (pair.annotation) {
-		result.Annotation = [
-			pair.annotation[0] !== null ? [pair.annotation[0].content] : null,
-			pair.annotation[1] !== null ? [pair.annotation[1].content] : null
-		];
+		result.Annotation =
+			formatPairAttributeSingle(pair.annotation, 'content');
 	}
 
 	if (pair.disambiguation) {
-		result.Disambiguation = [
-			pair.disambiguation[0] !== null ?
-				[pair.disambiguation[0].comment] : null,
-			pair.disambiguation[1] !== null ?
-				[pair.disambiguation[1].comment] : null
-		];
+		result.Disambiguation =
+			formatPairAttributeSingle(pair.disambiguation, 'comment');
 	}
 
 	if (pair.default_alias) {
-		result['Default Alias'] = [
-			pair.default_alias[0] !== null ?
-				[pair.default_alias[0].name] : null,
-			pair.default_alias[1] !== null ?
-				[pair.default_alias[1].name] : null
-		];
+		result['Default Alias'] =
+			formatPairAttributeSingle(pair.default_alias, 'name');
 	}
 
 	if (pair.aliases) {
@@ -96,32 +92,25 @@ function formatEntityDiff(pair) {
 
 	if (pair.identifiers) {
 		result.Identifiers = [
-			pair.identifiers[0].map(function formatIdentifier(identifier) {
-				return identifier.identifier_type.label +
-					': ' + identifier.value;
-			}),
-			pair.identifiers[1].map(function formatIdentifier(identifier) {
-				return identifier.identifier_type.label +
-					': ' + identifier.value;
-			})
+			pair.identifiers[0].map((identifier) =>
+				`${identifier.identifier_type.label}: ${identifier.value}`
+			),
+			pair.identifiers[1].map((identifier) =>
+				`${identifier.identifier_type.label}: ${identifier.value}`
+			)
 		];
 	}
 
-	console.log(result);
 	return result;
 }
 
 function formatPublicationDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+	return revision.changes.map((pair) => {
+		const result = formatEntityDiff(pair);
 
 		if (pair.publication_type) {
-			result['Publication Type'] = [
-				pair.publication_type[0] !== null ?
-					[pair.publication_type[0].label] : null,
-				pair.publication_type[1] !== null ?
-					[pair.publication_type[1].label] : null
-			];
+			result['Publication Type'] =
+				formatPairAttributeSingle(pair.publication_type, 'label');
 		}
 
 		return result;
@@ -129,44 +118,28 @@ function formatPublicationDiff(revision) {
 }
 
 function formatCreatorDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+	return revision.changes.map((pair) => {
+		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
-			result['Begin Date'] = [
-				pair.begin_date[0] !== null ? [pair.begin_date[0]] : null,
-				pair.begin_date[1] !== null ? [pair.begin_date[1]] : null
-			];
+			result['Begin Date'] = formatPairAttributeSingle(pair.begin_date);
 		}
 
 		if (pair.end_date) {
-			result['End Date'] = [
-				pair.end_date[0] !== null ? [pair.end_date[0]] : null,
-				pair.end_date[1] !== null ? [pair.end_date[1]] : null
-			];
+			result['End Date'] = formatPairAttributeSingle(pair.end_date);
 		}
 
 		if (pair.ended) {
-			result.Ended = [
-				pair.ended[0] !== null ? [pair.ended[0]] : null,
-				pair.ended[1] !== null ? [pair.ended[1]] : null
-			];
+			result.Ended = formatPairAttributeSingle(pair.ended);
 		}
 
 		if (pair.gender) {
-			result.Gender = [
-				pair.gender[0] !== null ? [pair.gender[0].name] : null,
-				pair.gender[1] !== null ? [pair.gender[1].name] : null
-			];
+			result.Gender = formatPairAttributeSingle(pair.gender, 'name');
 		}
 
 		if (pair.creator_type) {
-			result['Creator Type'] = [
-				pair.creator_type[0] !== null ?
-					[pair.creator_type[0].label] : null,
-				pair.creator_type[1] !== null ?
-					[pair.creator_type[1].label] : null
-			];
+			result['Creator Type'] =
+				formatPairAttributeSingle(pair.creator_type, 'label');
 		}
 
 		return result;
@@ -174,92 +147,62 @@ function formatCreatorDiff(revision) {
 }
 
 function formatEditionDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+	return revision.changes.map((pair) => {
+		const result = formatEntityDiff(pair);
 
 		if (pair.release_date) {
-			result['Release Date'] = [
-				pair.release_date[0] !== null ? [pair.release_date[0]] : null,
-				pair.release_date[1] !== null ? [pair.release_date[1]] : null
-			];
+			result['Release Date'] =
+				formatPairAttributeSingle(pair.release_date);
 		}
 
 		if (pair.pages) {
-			result['Page Count'] = [
-				pair.pages[0] !== null ? [pair.pages[0]] : null,
-				pair.pages[1] !== null ? [pair.pages[1]] : null
-			];
+			result['Page Count'] =
+				formatPairAttributeSingle(pair.pages);
 		}
 
 		if (pair.width) {
-			result.Width = [
-				pair.width[0] !== null ? [pair.width[0]] : null,
-				pair.width[1] !== null ? [pair.width[1]] : null
-			];
+			result.Width =
+				formatPairAttributeSingle(pair.width);
 		}
 
 		if (pair.height) {
-			result.Height = [
-				pair.height[0] !== null ? [pair.height[0]] : null,
-				pair.height[1] !== null ? [pair.height[1]] : null
-			];
+			result.Height =
+				formatPairAttributeSingle(pair.height);
 		}
 
 		if (pair.depth) {
-			result.Depth = [
-				pair.depth[0] !== null ? [pair.depth[0]] : null,
-				pair.depth[1] !== null ? [pair.depth[1]] : null
-			];
+			result.Depth =
+				formatPairAttributeSingle(pair.depth);
 		}
 
 		if (pair.weight) {
-			result.Weight = [
-				pair.weight[0] !== null ? [pair.weight[0]] : null,
-				pair.weight[1] !== null ? [pair.weight[1]] : null
-			];
+			result.Weight =
+				formatPairAttributeSingle(pair.weight);
 		}
 
 		if (pair.edition_format) {
-			result['Edition Format'] = [
-				pair.edition_format[0] !== null ?
-					[pair.edition_format[0].label] : null,
-				pair.edition_format[1] !== null ?
-					[pair.edition_format[1].label] : null
-			];
+			result['Edition Format'] =
+				formatPairAttributeSingle(pair.edition_format, 'label');
 		}
 
 		if (pair.edition_status) {
-			result['Edition Status'] = [
-				pair.edition_status[0] !== null ?
-					[pair.edition_status[0].label] : null,
-				pair.edition_status[1] !== null ?
-					[pair.edition_status[1].label] : null
-			];
+			result['Edition Status'] =
+				formatPairAttributeSingle(pair.edition_status, 'label');
 		}
 
 		if (pair.language) {
-			result.Language = [
-				pair.language[0] !== null ? [pair.language[0].name] : null,
-				pair.language[1] !== null ? [pair.language[1].name] : null
-			];
+			result.Language =
+				formatPairAttributeSingle(pair.language, 'name');
 		}
 
 		if (pair.publication) {
-			result.Publication = [
-				pair.publication[0] !== null ?
-					[pair.publication[0].entity_gid] : null,
-				pair.publication[1] !== null ?
-					[pair.publication[1].entity_gid] : null
-			];
+			result.Publication =
+				formatPairAttributeSingle(pair.publication, 'entity_gid');
 		}
 
 		if (pair.publisher) {
-			result.Publisher = [
-				pair.publisher[0] !== null ?
-					[pair.publisher[0].entity_gid] : null,
-				pair.publisher[1] !== null ?
-					[pair.publisher[1].entity_gid] : null
-			];
+			result.Publisher =
+				formatPairAttributeSingle(pair.publisher, 'entity_gid');
 		}
 
 		return result;
@@ -267,37 +210,24 @@ function formatEditionDiff(revision) {
 }
 
 function formatPublisherDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+	return revision.changes.map((pair) => {
+		const result = formatEntityDiff(pair);
 
 		if (pair.begin_date) {
-			result['Begin Date'] = [
-				pair.begin_date[0] !== null ? [pair.begin_date[0]] : null,
-				pair.begin_date[1] !== null ? [pair.begin_date[1]] : null
-			];
+			result['Begin Date'] = formatPairAttributeSingle(pair.begin_date);
 		}
 
 		if (pair.end_date) {
-			result['End Date'] = [
-				pair.end_date[0] !== null ? [pair.end_date[0]] : null,
-				pair.end_date[1] !== null ? [pair.end_date[1]] : null
-			];
+			result['End Date'] = formatPairAttributeSingle(pair.end_date);
 		}
 
 		if (pair.ended) {
-			result.Ended = [
-				pair.ended[0] !== null ? [pair.ended[0]] : null,
-				pair.ended[1] !== null ? [pair.ended[1]] : null
-			];
+			result.Ended = formatPairAttributeSingle(pair.ended);
 		}
 
 		if (pair.publisher_type) {
-			result['Publisher Type'] = [
-				pair.publisher_type[0] !== null ?
-					[pair.publisher_type[0].label] : null,
-				pair.publisher_type[1] !== null ?
-					[pair.publisher_type[1].label] : null
-			];
+			result['Publisher Type'] =
+				formatPairAttributeSingle(pair.publisher_type, 'label');
 		}
 
 		return result;
@@ -305,20 +235,18 @@ function formatPublisherDiff(revision) {
 }
 
 function formatWorkDiff(revision) {
-	return revision.changes.map(function formatPair(pair) {
-		var result = formatEntityDiff(pair);
+	return revision.changes.map((pair) => {
+		const result = formatEntityDiff(pair);
 
 		if (pair.work_type) {
-			result['Work Type'] = [
-				pair.work_type[0] !== null ? [pair.work_type[0].label] : null,
-				pair.work_type[1] !== null ? [pair.work_type[1].label] : null
-			];
+			result['Work Type'] =
+				formatPairAttributeSingle(pair.work_type, 'label');
 		}
 
 		if (pair.languages) {
 			result.Languages = [
-					_.pluck(pair.languages[0], 'name'),
-					_.pluck(pair.languages[1], 'name')
+				_.pluck(pair.languages[0], 'name'),
+				_.pluck(pair.languages[1], 'name')
 			];
 		}
 
@@ -326,31 +254,34 @@ function formatWorkDiff(revision) {
 	});
 }
 
-router.get('/:id', function(req, res) {
+router.get('/:id', (req, res) => {
 	Revision.findOne(req.params.id, {populate: ['entity', 'relationship']})
-	.then(function(revision) {
-		var diff = null;
-		console.log(revision);
+	.then((revision) => {
+		let diff = null;
+
 		if (revision.changes) {
 			if (revision.entity) {
-				console.log(revision.entity);
-				if (revision.entity._type === 'Edition') {
-					diff = formatEditionDiff(revision);
-				}
-				else if (revision.entity._type === 'Publication') {
-					diff = formatPublicationDiff(revision);
-				}
-				else if (revision.entity._type === 'Creator') {
-					diff = formatCreatorDiff(revision);
-				}
-				else if (revision.entity._type === 'Publisher') {
-					diff = formatPublisherDiff(revision);
-				}
-				else if (revision.entity._type === 'Work') {
-					diff = formatWorkDiff(revision);
-				}
-				else {
-					diff = formatEntityDiff(revision);
+				// TODO: replace this with polymorphism
+				switch (revision.entity._type) {
+					case 'Edition':
+						diff = formatEditionDiff(revision);
+						break;
+					case 'Publication':
+						diff = formatPublicationDiff(revision);
+						break;
+					case 'Creator':
+						diff = formatCreatorDiff(revision);
+						break;
+					case 'Publisher':
+						diff = formatPublisherDiff(revision);
+						break;
+					case 'Work':
+						diff = formatWorkDiff(revision);
+						break;
+					default:
+						throw new Error(
+							'Attempted to diff unknown entity type!'
+						);
 				}
 			}
 			else {
@@ -358,12 +289,12 @@ router.get('/:id', function(req, res) {
 			}
 		}
 
-		User.findOne(revision.user.user_id).then(function(user) {
+		User.findOne(revision.user.user_id).then((user) => {
 			revision.user = user;
 			res.render('revision', {
 				title: 'Revision',
-				revision: revision,
-				diff: diff
+				revision,
+				diff
 			});
 		});
 	});
