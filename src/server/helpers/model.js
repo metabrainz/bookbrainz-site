@@ -182,7 +182,7 @@ Model.prototype.find = function find(baseOptions) {
 Model.prototype.findOne = function findOne(baseId, baseOptions) {
 	const self = this;
 	let options;
-	let id;
+	let id = baseId;
 
 	/* Switch out options with ID if ID is not specified. */
 	if (typeof baseId === 'object') {
