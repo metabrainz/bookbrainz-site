@@ -50,8 +50,8 @@ router.post('/handler', (req, res, next) => {
 		return;
 	}
 
-	EditorType.forge({ label: 'Editor' })
-		.fetch({ require: true })
+	EditorType.forge({label: 'Editor'})
+		.fetch({require: true})
 		.then((editorType) => {
 			return Editor.forge({
 				name: req.body.username,

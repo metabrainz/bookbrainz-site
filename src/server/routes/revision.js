@@ -22,6 +22,7 @@ const express = require('express');
 const router = express.Router();
 const _ = require('underscore');
 
+const Editor = require('bookbrainz-data').Editor;
 const Revision = require('../data/properties/revision');
 
 function formatPairAttributeSingle(pair, attribute) {
@@ -289,14 +290,14 @@ router.get('/:id', (req, res) => {
 			}
 		}
 
-		new Editor({ id: revision.user.user_id })
-			.fetch({ require: true })
+		new Editor({id: revision.user.user_id})
+			.fetch({require: true})
 			.then((editor) => {
 				revision.user = editor.toJSON();
 				res.render('revision', {
 					title: 'Revision',
-					revision: revision,
-					diff: diff
+					revision,
+					diff
 				});
 			});
 	});

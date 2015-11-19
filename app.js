@@ -94,7 +94,7 @@ app.use((req, res, next) => {
 
 	// Get the latest count of messages in the user's inbox.
 	if (req.user) {
-		return new Editor({id: req.user.id })
+		return new Editor({id: req.user.id})
 			.fetch({
 				require: true,
 				withRelated: {

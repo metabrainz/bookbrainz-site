@@ -23,7 +23,6 @@ const express = require('express');
 const router = express.Router();
 const React = require('react');
 const auth = require('../helpers/auth');
-const Promise = require('bluebird');
 const _ = require('underscore');
 
 const Editor = require('bookbrainz-data').Editor;
@@ -33,15 +32,15 @@ const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
 );
 
-router.get('/edit', auth.isAuthenticated, function(req, res, next) {
+router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	new Editor({id: parseInt(req.user.id, 10)})
 	.fetch()
 	.then((editor) => {
-		var markup = React.renderToString(ProfileForm(editor.toJSON()));
+		const markup = React.renderToString(ProfileForm(editor.toJSON()));
 
 		res.render('editor/edit', {
 			props: editor.toJSON(),
-			markup: markup
+			markup
 		});
 	})
 	.catch(() => {
@@ -57,28 +56,31 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 	}
 
 	new Editor({
-		id: parseInt(req.body.id, 10), bio: req.body.bio, email:req.body.email
+		id: parseInt(req.body.id, 10),
+		bio: req.body.bio,
+		email: req.body.email
 	})
-	.save()
-	.then((editor) => {
-		res.send(editor.toJSON());
-	})
-	.catch(() => {
-		req.session.error = 'An internal error occurred while modifying profile';
-		res.redirect(303, '/editor/edit');
-	});
+		.save()
+		.then((editor) => {
+			res.send(editor.toJSON());
+		})
+		.catch(() => {
+			req.session.error =
+				'An internal error occurred while modifying profile';
+			res.redirect(303, '/editor/edit');
+		});
 });
 
-router.get('/:id', function(req, res, next) {
-	var userId = parseInt(req.params.id, 10);
+router.get('/:id', (req, res, next) => {
+	const userId = parseInt(req.params.id, 10);
 
-	new Editor({ id: userId })
+	new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['editorType', 'gender']
 		})
 		.then((editor) => {
-			var editorJSON = editor.toJSON();
+			let editorJSON = editor.toJSON();
 
 			if (!req.user || userId !== req.user.id) {
 				editorJSON = _.omit(editorJSON, ['password', 'email']);
@@ -88,11 +90,12 @@ router.get('/:id', function(req, res, next) {
 				editor: editorJSON
 			});
 		})
-		.catch(Editor.NotFoundError, (err) => {
+		.catch(Editor.NotFoundError, () => {
 			next(new NotFoundError('Editor not found'));
 		})
 		.catch((err) => {
-			var internalError = new Error('An internal error occurred while fetching editor');
+			const internalError =
+				new Error('An internal error occurred while fetching editor');
 			internalError.stack = err.stack;
 
 			next(internalError);
@@ -100,9 +103,7 @@ router.get('/:id', function(req, res, next) {
 });
 
 router.get('/:id/revisions', (req, res, next) => {
-	var userId = parseInt(req.params.id, 10);
-
-	new Editor({ id: userId })
+	new Editor({id: parseInt(req.params.id, 10)})
 		.fetch({
 			require: true,
 			withRelated: {
@@ -114,13 +115,17 @@ router.get('/:id/revisions', (req, res, next) => {
 				editor: editor.toJSON()
 			});
 		})
-		.catch(Editor.NotFoundError, (err) => {
-			console.log(err.stack);
+		.catch(Editor.NotFoundError, () => {
 			next(new NotFoundError('Editor not found'));
 		})
 		.catch((err) => {
-			console.log(err.stack);
-			next(new Error('An internal error occurred while fetching revisions'));
+			const internalError =
+				new Error(
+					'An internal error occurred while fetching revisions'
+				);
+			internalError.stack = err.stack;
+
+			next(internalError);
 		});
 });
 

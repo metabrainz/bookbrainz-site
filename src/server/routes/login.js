@@ -21,7 +21,6 @@
 
 const express = require('express');
 const router = express.Router();
-const auth = require('../helpers/auth');
 const passport = require('passport');
 
 router.get('/login', (req, res) => {
@@ -39,7 +38,7 @@ router.get('/logout', (req, res) => {
 
 router.post(
 	'/login/handler',
-	passport.authenticate('local', { failureRedirect: '/login' }),
+	passport.authenticate('local', {failureRedirect: '/login'}),
 	(req, res) => {
 		const redirect = req.session.redirectTo ? req.session.redirectTo : '/';
 		delete req.session.redirectTo;

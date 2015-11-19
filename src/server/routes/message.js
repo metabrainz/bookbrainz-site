@@ -44,7 +44,7 @@ router.get('/send', auth.isAuthenticated, (req, res) => {
 
 function renderMessageList(view, collectionJSON, res) {
 	res.render('editor/messageList', {
-		view: view,
+		view,
 		messages: {
 			objects: collectionJSON
 		}
@@ -55,7 +55,8 @@ router.get('/inbox', auth.isAuthenticated, (req, res) => {
 	new MessageReceipt().where({recipient_id: req.user.id, archived: false})
 	.fetchAll({withRelated: ['message', 'message.sender']})
 	.then((collection) => {
-		renderMessageList('inbox', _.pluck(collection.toJSON(), 'message'), res);
+		renderMessageList('inbox', _.pluck(collection.toJSON(), 'message'),
+			res);
 	});
 });
 
@@ -63,7 +64,8 @@ router.get('/archive', auth.isAuthenticated, (req, res) => {
 	new MessageReceipt().where({recipient_id: req.user.id, archived: true})
 	.fetchAll({withRelated: ['message', 'message.sender']})
 	.then((collection) => {
-		renderMessageList('archive', _.pluck(collection.toJSON(), 'message'), res);
+		renderMessageList('archive', _.pluck(collection.toJSON(), 'message'),
+			res);
 	});
 });
 
@@ -97,7 +99,8 @@ router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 		return Promise.all(
 			recipientIds.map((recipientId) => {
 				return new MessageReceipt({
-					recipientId: recipientId, messageId: message.get('id')
+					recipientId,
+					messageId: message.get('id')
 				}).save();
 			})
 		);
