@@ -34,11 +34,12 @@ const Promise = require('bluebird');
 Promise.longStackTraces();
 
 const config = require('./src/server/helpers/config');
-const bbws = require('./src/server/helpers/bbws');
 
 /* -data needs to be initialized before pulling in auth. */
 require('bookbrainz-data').init(config.database);
 const auth = require('./src/server/helpers/auth');
+
+const Editor = require('bookbrainz-data').Editor;
 
 // Initialize application
 const app = express();
@@ -92,12 +93,16 @@ app.use((req, res, next) => {
 	res.locals.user = req.user;
 
 	// Get the latest count of messages in the user's inbox.
-	if (req.session && req.session.bearerToken) {
-		return bbws.get('/message/inbox/', {
-			accessToken: req.session.bearerToken
-		})
-			.then((list) => {
-				res.locals.inboxCount = list.objects.length;
+	if (req.user) {
+		return new Editor({id: req.user.id })
+			.fetch({
+				require: true,
+				withRelated: {
+					messages(query) { query.where('archived', false); }
+				}
+			})
+			.then((editor) => {
+				res.locals.inboxCount = editor.related('messages').length;
 			})
 			.catch((err) => {
 				console.log(err.stack);
