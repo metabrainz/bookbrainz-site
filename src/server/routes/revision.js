@@ -20,9 +20,9 @@
 
 const express = require('express');
 const router = express.Router();
-const Revision = require('../data/properties/revision');
-const User = require('../data/user');
 const _ = require('underscore');
+
+const Revision = require('../data/properties/revision');
 
 function formatPairAttributeSingle(pair, attribute) {
 	if (attribute) {
@@ -289,14 +289,16 @@ router.get('/:id', (req, res) => {
 			}
 		}
 
-		User.findOne(revision.user.user_id).then((user) => {
-			revision.user = user;
-			res.render('revision', {
-				title: 'Revision',
-				revision,
-				diff
+		new Editor({ id: revision.user.user_id })
+			.fetch({ require: true })
+			.then((editor) => {
+				revision.user = editor.toJSON();
+				res.render('revision', {
+					title: 'Revision',
+					revision: revision,
+					diff: diff
+				});
 			});
-		});
 	});
 });
 

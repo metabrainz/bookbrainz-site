@@ -22,32 +22,31 @@
 const express = require('express');
 const router = express.Router();
 const React = require('react');
-const User = require('../data/user');
-const bbws = require('../helpers/bbws');
 const auth = require('../helpers/auth');
 const Promise = require('bluebird');
+const _ = require('underscore');
+
+const Editor = require('bookbrainz-data').Editor;
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
 );
 
-router.get('/edit', auth.isAuthenticated, (req, res, next) => {
-	User.getCurrent(req.session.bearerToken)
-		.then((user) => {
-			const props = {
-				id: user.id,
-				email: user.email,
-				bio: user.bio
-			};
+router.get('/edit', auth.isAuthenticated, function(req, res, next) {
+	new Editor({id: parseInt(req.user.id, 10)})
+	.fetch()
+	.then((editor) => {
+		var markup = React.renderToString(ProfileForm(editor.toJSON()));
 
-			const markup = React.renderToString(ProfileForm(props));
-
-			res.render('editor/edit', {props, markup});
-		})
-		.catch(() => {
-			next(new Error('An internal error occurred while loading profile'));
+		res.render('editor/edit', {
+			props: editor.toJSON(),
+			markup: markup
 		});
+	})
+	.catch(() => {
+		next(new Error('An internal error occurred while loading profile'));
+	});
 });
 
 router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
@@ -57,50 +56,71 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 		res.redirect(303, '/editor/edit');
 	}
 
-	bbws.put(
-		`/user/${req.body.id}/`,
-		{bio: req.body.bio, email: req.body.email},
-		{accessToken: req.session.bearerToken}
-	)
-		.then(res.send)
-		.catch(() => {
-			req.session.error =
-				'An internal error occurred while modifying profile';
-			res.redirect(303, '/editor/edit');
-		});
+	new Editor({
+		id: parseInt(req.body.id, 10), bio: req.body.bio, email:req.body.email
+	})
+	.save()
+	.then((editor) => {
+		res.send(editor.toJSON());
+	})
+	.catch(() => {
+		req.session.error = 'An internal error occurred while modifying profile';
+		res.redirect(303, '/editor/edit');
+	});
 });
 
-router.get('/:id', (req, res, next) => {
-	let userPromise = null;
+router.get('/:id', function(req, res, next) {
+	var userId = parseInt(req.params.id, 10);
 
-	const requestedId = parseInt(req.params.id, 10);
-	if (req.user && requestedId === req.user.id) {
-		userPromise = User.getCurrent(req.session.bearerToken);
-	}
-	else {
-		userPromise = User.findOne(requestedId);
-	}
-
-	userPromise
+	new Editor({ id: userId })
+		.fetch({
+			require: true,
+			withRelated: ['editorType', 'gender']
+		})
 		.then((editor) => {
-			res.render('editor/editor', {editor});
+			var editorJSON = editor.toJSON();
+
+			if (!req.user || userId !== req.user.id) {
+				editorJSON = _.omit(editorJSON, ['password', 'email']);
+			}
+
+			res.render('editor/editor', {
+				editor: editorJSON
+			});
+		})
+		.catch(Editor.NotFoundError, (err) => {
+			next(new NotFoundError('Editor not found'));
 		})
 		.catch((err) => {
-			console.log(err.stack);
-			next(new NotFoundError('Editor not found'));
+			var internalError = new Error('An internal error occurred while fetching editor');
+			internalError.stack = err.stack;
+
+			next(internalError);
 		});
 });
 
 router.get('/:id/revisions', (req, res, next) => {
-	const userPromise = User.findOne(req.params.id);
-	const revisionsPromise = bbws.get(`/user/${req.params.id}/revisions`);
+	var userId = parseInt(req.params.id, 10);
 
-	Promise.join(userPromise, revisionsPromise, (editor, revisions) => {
-		res.render('editor/revisions', {editor, revisions});
-	})
-		.catch((err) => {
+	new Editor({ id: userId })
+		.fetch({
+			require: true,
+			withRelated: {
+				revisions(query) { query.orderBy('id'); }
+			}
+		})
+		.then((editor) => {
+			res.render('editor/revisions', {
+				editor: editor.toJSON()
+			});
+		})
+		.catch(Editor.NotFoundError, (err) => {
 			console.log(err.stack);
 			next(new NotFoundError('Editor not found'));
+		})
+		.catch((err) => {
+			console.log(err.stack);
+			next(new Error('An internal error occurred while fetching revisions'));
 		});
 });
 

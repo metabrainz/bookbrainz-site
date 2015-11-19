@@ -24,8 +24,11 @@ const express = require('express');
 const router = express.Router();
 const config = require('../helpers/config');
 const auth = require('../helpers/auth');
+const Promise = require('bluebird');
+const _ = require('underscore');
 
-const bbws = require('../helpers/bbws');
+const Message = require('bookbrainz-data').Message;
+const MessageReceipt = require('bookbrainz-data').MessageReceipt;
 
 const request = require('superagent');
 require('superagent-bluebird-promise');
@@ -39,25 +42,37 @@ router.get('/send', auth.isAuthenticated, (req, res) => {
 	});
 });
 
-function renderMessageList(view, req, res) {
-	bbws.get(`/message/${view}/`, {
-		accessToken: req.session.bearerToken
-	})
-		.then((messages) => {
-			res.render('editor/messageList', {view, messages});
-		});
+function renderMessageList(view, collectionJSON, res) {
+	res.render('editor/messageList', {
+		view: view,
+		messages: {
+			objects: collectionJSON
+		}
+	});
 }
 
 router.get('/inbox', auth.isAuthenticated, (req, res) => {
-	renderMessageList('inbox', req, res);
+	new MessageReceipt().where({recipient_id: req.user.id, archived: false})
+	.fetchAll({withRelated: ['message', 'message.sender']})
+	.then((collection) => {
+		renderMessageList('inbox', _.pluck(collection.toJSON(), 'message'), res);
+	});
 });
 
 router.get('/archive', auth.isAuthenticated, (req, res) => {
-	renderMessageList('archive', req, res);
+	new MessageReceipt().where({recipient_id: req.user.id, archived: true})
+	.fetchAll({withRelated: ['message', 'message.sender']})
+	.then((collection) => {
+		renderMessageList('archive', _.pluck(collection.toJSON(), 'message'), res);
+	});
 });
 
 router.get('/sent', auth.isAuthenticated, (req, res) => {
-	renderMessageList('sent', req, res);
+	new Message().where({sender_id: req.user.id})
+	.fetchAll({withRelated: ['sender']})
+	.then((collection) => {
+		renderMessageList('sent', collection.toJSON(), res);
+	});
 });
 
 router.get('/:id', auth.isAuthenticated, (req, res) => {
@@ -71,25 +86,26 @@ router.get('/:id', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/send/handler', auth.isAuthenticated, (req, res) => {
-	// This function should post a new message to the /message/send endpoint
-	// of the ws.
-	const ws = config.site.webservice;
-
 	// Parse recipient ids
-	const recipientIds = req.body.recipients.split(',').map((recipientId) => {
-		return parseInt(recipientId, 10);
+	var recipientIds = req.body.recipients.split(',').map(parseInt);
+
+	// Create new message
+	var messageStored = new Message({
+		senderId: req.user.id, subject: req.body.subject, content: req.body.content
+	}).save()
+	.then((message) => {
+		return Promise.all(
+			recipientIds.map((recipientId) => {
+				return new MessageReceipt({
+					recipientId: recipientId, messageId: message.get('id')
+				}).save();
+			})
+		);
 	});
 
-	request.post(`${ws}/message/sent/`)
-		.set('Authorization', `Bearer ${req.session.bearerToken}`)
-		.send({
-			recipient_ids: recipientIds,
-			subject: req.body.subject,
-			content: req.body.content
-		}).promise()
-		.then(() => {
-			res.redirect(303, '/message/sent');
-		});
+	messageStored.then(() => {
+		res.redirect(303, '/message/sent');
+	});
 });
 
 module.exports = router;

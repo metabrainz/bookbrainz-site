@@ -22,14 +22,22 @@
 
 const express = require('express');
 const router = express.Router();
-const Revision = require('../data/properties/revision');
 const bbws = require('../helpers/bbws');
 const Promise = require('bluebird');
+const React = require('react');
+
+const Revision = require('../data/properties/revision');
 const Publication = require('../data/entities/publication');
 const Creator = require('../data/entities/creator');
 const Edition = require('../data/entities/edition');
 const Work = require('../data/entities/work');
 const Publisher = require('../data/entities/publisher');
+
+const AboutPage = React.createFactory(require('../../client/components/pages/about.jsx'));
+const ContributePage = React.createFactory(require('../../client/components/pages/contribute.jsx'));
+const DevelopPage = React.createFactory(require('../../client/components/pages/develop.jsx'));
+const PrivacyPage = React.createFactory(require('../../client/components/pages/privacy.jsx'));
+const LicensingPage = React.createFactory(require('../../client/components/pages/licensing.jsx'));
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -54,33 +62,38 @@ router.get('/', (req, res) => {
 		});
 });
 
-router.get('/about', (req, res) => {
-	res.render('about', {
-		title: 'About'
+router.get('/about', function(req, res) {
+	res.render('page', {
+		title: 'About',
+		markup: React.renderToString(AboutPage())
 	});
 });
 
-router.get('/contribute', (req, res) => {
-	res.render('contribute', {
-		title: 'Contribute'
+router.get('/contribute', function(req, res) {
+	res.render('page', {
+		title: 'Contribute',
+		markup: React.renderToString(ContributePage())
 	});
 });
 
-router.get('/develop', (req, res) => {
-	res.render('develop', {
-		title: 'Develop'
+router.get('/develop', function(req, res) {
+	res.render('page', {
+		title: 'Develop',
+		markup: React.renderToString(DevelopPage())
 	});
 });
 
-router.get('/privacy', (req, res) => {
-	res.render('privacy', {
-		title: 'Privacy'
+router.get('/privacy', function(req, res) {
+	res.render('page', {
+		title: 'Privacy',
+		markup: React.renderToString(PrivacyPage())
 	});
 });
 
-router.get('/licensing', (req, res) => {
-	res.render('licensing', {
-		title: 'Licensing'
+router.get('/licensing', function(req, res) {
+	res.render('page', {
+		title: 'Licensing',
+		markup: React.renderToString(LicensingPage())
 	});
 });
 

@@ -40,6 +40,8 @@ const bbws = require('./src/server/helpers/bbws');
 // Initialize application
 const app = express();
 
+require('bookbrainz-data').init(config.database);
+
 // Set up jade as view engine
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'jade');

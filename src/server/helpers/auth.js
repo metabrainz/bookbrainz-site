@@ -20,20 +20,34 @@
 'use strict';
 
 const passport = require('passport');
-const config = require('../helpers/config');
-const BBWSStrategy = require('./passport-bookbrainz-ws');
+const Editor = require('bookbrainz-data').Editor;
+const LocalStrategy = require('passport-local').Strategy;
 
 const auth = {};
 
 auth.init = function init(app) {
-	passport.use(new BBWSStrategy({
-		wsURL: config.site.webservice,
-		clientID: config.site.clientID
-	}, (req, accessToken, refreshToken, profile, done) => {
-		req.session.bearerToken = accessToken;
-
-		done(null, profile);
-	}));
+	passport.use(
+		new LocalStrategy((username, password, done) => {
+			new Editor({ name: username }).fetch({ require: true })
+				.then((model) => {
+					return model.checkPassword(password)
+						.then((res) => {
+							if (res) {
+								done(null, model.toJSON());
+							}
+							else {
+								done(null, false, {
+									message: 'Incorrect password.'
+								});
+							}
+						});
+				})
+				.catch(Editor.NotFoundError, () => {
+					done(null, false, { message: 'Incorrect username.' });
+				})
+				.catch(done);
+		})
+	);
 
 	passport.serializeUser((user, done) => {
 		done(null, user);
@@ -45,41 +59,6 @@ auth.init = function init(app) {
 
 	app.use(passport.initialize());
 	app.use(passport.session());
-};
-
-auth.authenticate = function authenticate() {
-	return function authenticateFunc(req, res, next) {
-		const options = {
-			username: req.body.username,
-			password: req.body.password
-		};
-
-		passport.authenticate('bbws', options)(req, res, (err) => {
-			if (err) {
-				console.log(err.stack);
-				let newErr;
-				switch (err.name) {
-					case 'InternalOAuthError':
-					case 'TokenError':
-						newErr = new Error(
-							'An internal error occurred during authentication'
-						);
-						break;
-					case 'AuthorizationError':
-						newErr = new Error('Invalid username or password');
-						break;
-					default:
-						newErr = new Error(
-							'An unknown error occurred during authentication'
-						);
-				}
-
-				return next(newErr);
-			}
-
-			next();
-		});
-	};
 };
 
 auth.isAuthenticated = function isAuthenticated(req, res, next) {
