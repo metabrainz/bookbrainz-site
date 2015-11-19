@@ -12,3 +12,5 @@ ALTER TABLE bookbrainz.message_receipt ADD FOREIGN KEY (message_id) REFERENCES b
 ALTER TABLE bookbrainz.message_receipt ADD FOREIGN KEY (recipient_id) REFERENCES bookbrainz.editor (id);
 
 ALTER TABLE bookbrainz.oauth_client ADD FOREIGN KEY (owner_id) REFERENCES bookbrainz.editor (id);
+
+ALTER TABLE bookbrainz.revision ADD FOREIGN KEY (author_id) REFERENCES bookbrainz.editor (id);
