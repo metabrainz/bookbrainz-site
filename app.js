@@ -33,14 +33,15 @@ const staticCache = require('express-static-cache');
 const Promise = require('bluebird');
 Promise.longStackTraces();
 
-const auth = require('./src/server/helpers/auth');
 const config = require('./src/server/helpers/config');
 const bbws = require('./src/server/helpers/bbws');
 
+/* -data needs to be initialized before pulling in auth. */
+require('bookbrainz-data').init(config.database);
+const auth = require('./src/server/helpers/auth');
+
 // Initialize application
 const app = express();
-
-require('bookbrainz-data').init(config.database);
 
 // Set up jade as view engine
 app.set('views', path.join(__dirname, 'templates'));
