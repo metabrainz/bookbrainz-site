@@ -103,7 +103,9 @@ router.get('/:id/revisions', function(req, res, next) {
 	new Editor({ id: userId })
 		.fetch({
 			require: true,
-			withRelated: ['revisions']
+			withRelated: {
+				revisions(query) { query.orderBy('id'); }
+			}
 		})
 		.then((editor) => {
 			res.render('editor/revisions', {
