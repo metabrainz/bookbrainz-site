@@ -131,7 +131,7 @@ middleware.makeEntityLoader = function makeEntityLoader(model, errMessage) {
 				// no default
 			}
 
-			model.findOne(req.params.bbid, {populate})
+			return model.findOne(bbid, {populate})
 				.then((entity) => {
 					res.locals.entity = entity;
 
