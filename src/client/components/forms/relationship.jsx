@@ -18,364 +18,604 @@
  */
 
 const React = require('react');
-
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
+const Alert = require('react-bootstrap').Alert;
+const PageHeader = require('react-bootstrap').PageHeader;
 const Select = require('../input/select2.jsx');
-const LoadingSpinner = require('../loading_spinner.jsx');
-const extend = require('util')._extend;
-
+const SearchSelect = require('../input/entity-search.jsx');
+const _ = require('underscore');
 const request = require('superagent');
 require('superagent-bluebird-promise');
+const utils = require('../../../server/helpers/utils.js');
 
 const renderRelationship = require('../../../server/helpers/render.js');
-const utils = require('../../../server/helpers/utils.js');
-const SearchSelect = require('../input/entity-search.jsx');
+
 const validators = require('../validators');
 
-module.exports = React.createClass({
-	displayName: 'relationshipForm',
+function getRelationshipTypeById(relationships, id) {
+	'use strict';
+
+	return _.find(
+		relationships, (relationship) => relationship.id === id
+	);
+}
+
+const RelationshipRow = React.createClass({
+	displayName: 'RelationshipRow',
 	propTypes: {
-		relationshipTypes:
-			React.PropTypes.arrayOf(validators.relationshipType),
-		targetEntity: React.PropTypes.shape({
-			bbid: React.PropTypes.string,
-			_type: React.PropTypes.string
+		entity: React.PropTypes.shape({
+			bbid: React.PropTypes.string
 		}),
-		wsUrl: React.PropTypes.string
+		onChange: React.PropTypes.func,
+		onDelete: React.PropTypes.func,
+		onSelect: React.PropTypes.func,
+		onSwap: React.PropTypes.func,
+		relationship: React.PropTypes.shape({
+			source: React.PropTypes.object,
+			target: React.PropTypes.object,
+			type: React.PropTypes.number,
+			initialSource: React.PropTypes.object,
+			initialTarget: React.PropTypes.object,
+			initialType: React.PropTypes.number
+		}),
+		relationshipTypes:
+			React.PropTypes.arrayOf(validators.relationshipTypes)
 	},
 	getInitialState() {
 		'use strict';
 
-		const targetEntity = this.props.targetEntity;
-		targetEntity.key = 1;
-		targetEntity.entity_gid = targetEntity.bbid;
-
-		const loadedEntities = {};
-		loadedEntities[targetEntity.bbid] = targetEntity;
 		return {
-			targetEntity,
-			loadedEntities,
-			displayEntities: [targetEntity, {key: 2}],
-			selectedRelationship: null,
-			addedRelationships: [],
-			addedRelationshipsSpawned: 0
+			deleted: false,
+			entitiesSwapped: false,
+			swapped: false
 		};
 	},
-	fetchEntity(uuid) {
+	getValue() {
 		'use strict';
 
-		// This should be modified to use bbws if the config can be separated
-		// from that.
-		return request.get(`${this.props.wsUrl}/entity/${uuid}`)
-		.accept('application/json')
-		.promise()
-		.then((response) => response.body)
-		.then((entity) => {
-			entity.bbid = entity.entity_gid;
-			return request.get(entity.aliases_uri)
-				.accept('application/json')
-				.promise()
-				.then((response) => response.body)
-				.then((aliases) => {
-					entity.aliases = aliases.objects;
-					return entity;
-				});
-		});
+		return {
+			source: this.refs.source.getValue(),
+			target: this.refs.target.getValue(),
+			type: this.refs.type.getValue() ?
+				parseInt(this.refs.type.getValue(), 10) : null
+		};
 	},
-	handleSubmit(evt) {
+	swap() {
 		'use strict';
 
-		const self = this;
-		evt.preventDefault();
-
-		request.post('./relationships/handler')
-			.send(this.state.addedRelationships.map((relationship) => ({
-				id: [],
-				relationship_type: {
-					relationship_type_id: relationship.type.id
-				},
-				entities: relationship.entities.map((entity, position) => ({
-					entity_gid: entity.bbid,
-					position
-				}))
-			})))
-			.promise()
-			.then(() => {
-				window.location.href =
-					utils.getEntityLink(self.state.targetEntity);
-			});
+		this.setState({a: this.state.b, b: this.state.a});
 	},
-	handleAdd() {
+	destroy() {
 		'use strict';
 
-		const addedRelationships = this.state.addedRelationships.slice();
-
-		addedRelationships.push({
-			type: this.state.selectedRelationship,
-			entities: this.state.displayEntities,
-			key: this.state.addedRelationshipsSpawned
-		});
-
-		this.state.addedRelationshipsSpawned++;
-
-		this.setState({addedRelationships});
+		this.setState({deleted: true});
+		this.props.onDelete();
 	},
-	handleSwap(i) {
+	reset() {
 		'use strict';
 
-		const displayEntities = this.state.displayEntities.slice();
-		displayEntities[i] = this.state.displayEntities[i + 1];
-		displayEntities[i + 1] = this.state.displayEntities[i];
-
-		this.setState({displayEntities});
+		this.setState({deleted: false});
 	},
-	setDisplayEntity(i, entity) {
+	selected() {
 		'use strict';
 
-		entity.key = this.state.displayEntities[i].key;
-
-		const displayEntities = this.state.displayEntities.slice();
-		displayEntities[i] = entity;
-
-		this.setState({displayEntities});
+		return this.refs.sel.getChecked();
 	},
-	addLoadedEntity(entity) {
+	added() {
 		'use strict';
 
-		const loadedEntities = extend({}, this.state.loadedEntities);
-		loadedEntities[entity.bbid] = entity;
-
-		this.setState({loadedEntities});
+		const initiallyEmpty = !this.props.relationship.initialTarget &&
+			!this.props.relationship.initialType;
+		const nowSet = this.props.relationship.target ||
+			this.props.relationship.type;
+		return Boolean(initiallyEmpty && nowSet);
 	},
-	removeRelationship(i) {
+	edited() {
 		'use strict';
 
-		const addedRelationships = this.state.addedRelationships.slice();
-
-		addedRelationships.splice(i, 1);
-
-		this.setState({addedRelationships});
+		const rel = this.props.relationship;
+		const aChanged = (rel.source && rel.source.bbid) !==
+			(rel.initialSource && rel.initialSource.bbid);
+		const bChanged = (rel.target && rel.target.bbid) !==
+			(rel.initialTarget && rel.initialTarget.bbid);
+		const typeChanged = rel.type !== rel.initialType;
+		return Boolean(aChanged || bChanged || typeChanged);
 	},
-	handleUUIDChange(i) {
+	renderedRelationship() {
 		'use strict';
 
-		const bbid = this.refs[i].getValue();
-		if (bbid !== this.state.targetEntity.bbid) {
-			if (this.state.loadedEntities[bbid]) {
-				this.setDisplayEntity(i, this.state.loadedEntities[bbid]);
-			}
-			else {
-				this.fetchEntity(bbid)
-				.then((entity) => {
-					this.addLoadedEntity(entity);
-					this.setDisplayEntity(i, entity);
-				});
-			}
+		const rel = this.props.relationship;
+
+		const relationshipType =
+			getRelationshipTypeById(this.props.relationshipTypes, rel.type);
+
+		if (!relationshipType) {
+			return null;
 		}
-		else {
-			this.setDisplayEntity(i, {});
-		}
+
+		return {
+			__html: renderRelationship(
+				[rel.source, rel.target], relationshipType, null
+			)
+		};
 	},
-	handleRelationshipChange() {
+	rowClass() {
 		'use strict';
 
-		const relationshipId = parseInt(this.refs.relationship.getValue(), 10);
-		const selectedRelationship = this.props.relationshipTypes.filter(
-			(relationship) => relationship.id === relationshipId
-		);
+		if (this.disabled()) {
+			return ' disabled';
+		}
+		if (this.state.deleted) {
+			return ' list-group-item-danger';
+		}
+		if (this.added()) {
+			return ' list-group-item-success';
+		}
+		if (this.edited()) {
+			return ' list-group-item-warning';
+		}
+		return '';
+	},
+	valid() {
+		'use strict';
 
-		if (selectedRelationship.length !== 0) {
-			this.setState({selectedRelationship: selectedRelationship[0]});
+		const rel = this.props.relationship;
+		if (rel.source && rel.target && rel.type) {
+			return true;
 		}
-		else {
-			this.setState({selectedRelationship: null});
-		}
+
+		return false;
+	},
+	disabled() {
+		'use strict';
+
+		// Temporarily disable editing until the webservice/orm supports this
+		const rel = this.props.relationship;
+		return Boolean(rel.initialSource && rel.initialTarget);
 	},
 	render() {
 		'use strict';
 
-		const self = this;
-		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const deleteButton = this.rowClass() || this.valid() ? (
+			<Button
+				bsStyle="danger"
+				onClick={this.destroy}
+			>
+				<span className="fa fa-times"/>&nbsp;Delete
+				<span className="sr-only"> Relationship</span>
+			</Button>
+		) : null;
 
-		const select2Options = {
-			width: '100%'
-		};
-
-		const renderedEntities = this.state.displayEntities.map((entity, i) => {
-			if (entity) {
-				entity.id = entity.bbid;
-				entity.text = entity.default_alias ?
-					entity.default_alias.name : '(unnamed)';
-			}
-
-			return (
-				<div
-					className="form-group"
-					key={entity.key}
-				>
-					<SearchSelect
-						collection="entity"
-						defaultValue={entity}
-						disabled={entity === self.state.targetEntity}
-						label={`Entity ${i + 1}`}
-						labelAttribute="name"
-						labelClassName="col-md-4"
-						onChange={self.handleUUIDChange.bind(null, i)}
-						placeholder="Select entity…"
-						ref={i}
-						select2Options={select2Options}
-						standalone
-						wrapperClassName="col-md-4"
-					/>
-					<div className="col-md-1">
-						<Button
-							block
-							bsStyle="primary"
-							className={
-								i === self.state.displayEntities.length - 1 ?
-								'hidden' : null
-							}
-							onClick={self.handleSwap.bind(null, i)}
-						>
-							<span className="fa fa-exchange fa-rotate-90"/>
-							<span className="sr-only">Swap Entities</span>
-						</Button>
-					</div>
-				</div>
-			);
-		});
-
-		let relationshipDescription = null;
-		if (this.state.selectedRelationship) {
-			relationshipDescription = (
-				<Input
-					type="static"
-					value={this.state.selectedRelationship.description}
-					wrapperClassName="col-md-4 col-md-offset-4"
-				/>
-			);
-		}
-
-		const allEntitiesLoaded = this.state.displayEntities.every(
-			(entity) => Boolean(entity.entity_gid)
+		const resetButton = (
+			<Button
+				bsStyle="primary"
+				onClick={this.reset}
+			>
+				<span className="fa fa-undo"/>&nbsp;Reset
+				<span className="sr-only"> Relationship</span>
+			</Button>
 		);
 
-		// This could easily be a React component, and should be changed to
-		// that at some point soon.
-		let currentRelationshipRendered = null;
-		let addValid = false;
-		if (allEntitiesLoaded && this.state.selectedRelationship) {
-			currentRelationshipRendered = {
-				__html: renderRelationship(
-					this.state.displayEntities,
-					this.state.selectedRelationship, null
-				)
-			};
-			addValid = true;
+		const swapButton = (
+			<Button
+				bsStyle="primary"
+				onClick={this.props.onSwap}
+			>
+				<span className="fa fa-exchange"/>&nbsp;Swap
+				<span className="sr-only"> Entities</span>
+			</Button>
+		);
+
+		const sourceEntity = this.props.relationship.source;
+		if (sourceEntity) {
+			sourceEntity.text = sourceEntity.default_alias ?
+				sourceEntity.default_alias.name : '(unnamed)';
+			sourceEntity.id = sourceEntity.bbid;
 		}
 
-		const relationshipEntry = (
-			<div>
-				<Select
-					idAttribute="id"
-					label="Type"
-					labelAttribute="label"
-					labelClassName="col-md-4"
-					noDefault
-					onChange={this.handleRelationshipChange}
-					options={this.props.relationshipTypes}
-					placeholder="Select relationship type…"
-					ref="relationship"
-					wrapperClassName="col-md-4"
-				/>
+		const targetEntity = this.props.relationship.target;
+		if (targetEntity) {
+			targetEntity.text = targetEntity.default_alias ?
+				targetEntity.default_alias.name : '(unnamed)';
+			targetEntity.id = targetEntity.bbid;
+		}
 
-				{relationshipDescription}
+		let validationState = null;
+		if (this.rowClass()) {
+			validationState = this.valid() ? 'success' : 'error';
+		}
 
-				{renderedEntities}
+		const targetInput = (
+			<SearchSelect
+				bsStyle={validationState}
+				collection="entity"
+				disabled={
+					this.disabled() || this.state.deleted ||
+					(targetEntity && targetEntity.bbid) ===
+						this.props.entity.bbid
+				}
+				labelClassName="col-md-4"
+				onChange={this.props.onChange}
+				placeholder="Select entity…"
+				ref="target"
+				select2Options={{width: '100%'}}
+				standalone
+				value={targetEntity}
+				wrapperClassName="col-md-4"
+			/>
+		);
 
-				<div className="text-center">
-					<p dangerouslySetInnerHTML={currentRelationshipRendered} />
-				</div>
+		const deleteOrResetButton =
+			this.state.deleted ? resetButton : deleteButton;
+
+		return (
+			<div
+				className={`list-group-item margin-top-1 + ${this.rowClass()}`}
+			>
 				<div className="row">
-					<div className="col-md-4 col-md-offset-4">
-						<Button
-							block
-							bsStyle="success"
-							disabled={!addValid}
-							onClick={this.handleAdd}
-							title="Add Relationship"
-						>
-							<span className="fa fa-plus"/>
-							&nbsp;Add
-							<span className="sr-only">
-								&nbsp;Relationship
-							</span>
-						</Button>
-					</div>
-				</div>
-			</div>
-		);
-
-		const addedRelationships =
-			this.state.addedRelationships.map((relationship, i) => {
-				const renderedRelationship = {
-					__html: renderRelationship(
-						relationship.entities, relationship.type, null
-					)
-				};
-				return (
-					<div
-						className="row"
-						key={relationship.key}
-					>
-						<div
-							className="col-md-10"
-							dangerouslySetInnerHTML={renderedRelationship}
+					<div className="col-md-1 text-center margin-top-1">
+						<Input
+							className="margin-left-0"
+							disabled={this.disabled() || this.state.deleted}
+							label=" "
+							onClick={this.props.onSelect}
+							ref="sel"
+							type="checkbox"
 						/>
-						<div className="col-md-2">
-							<Button
-								block
-								bsStyle="danger"
-								onClick={self.removeRelationship.bind(null, i)}
-							>
-								<span className="fa fa-minus"/>
-								<span className="sr-only">
-									Remove Relationship
-								</span>
-							</Button>
+					</div>
+					<div className="col-md-11">
+						<div className="row">
+							<SearchSelect
+								bsStyle={validationState}
+								collection="entity"
+								disabled={
+									this.disabled() || this.state.deleted ||
+									(sourceEntity && sourceEntity.bbid) ===
+										this.props.entity.bbid
+								}
+								labelClassName="col-md-4"
+								onChange={this.props.onChange}
+								placeholder="Select entity…"
+								ref="source"
+								select2Options={{width: '100%'}}
+								standalone
+								value={sourceEntity}
+								wrapperClassName="col-md-4"
+							/>
+							<div className="col-md-4">
+								<Select
+									bsStyle={validationState}
+									defaultValue={this.props.relationship.type}
+									disabled={
+										this.disabled() || this.state.deleted
+									}
+									idAttribute="id"
+									labelAttribute="label"
+									noDefault
+									onChange={this.props.onChange}
+									options={this.props.relationshipTypes}
+									placeholder="Select relationship type…"
+									ref="type"
+									select2Options={{width: '100%'}}
+								/>
+							</div>
+							{targetInput}
+						</div>
+						<div className="row">
+							<div className="col-md-9">
+								<p dangerouslySetInnerHTML=
+									{this.renderedRelationship()}
+								/>
+							</div>
+							<div className="col-md-3 text-right">
+								{
+									this.state.deleted || this.disabled() ?
+										null : swapButton
+								}
+								{this.disabled() ? null : deleteOrResetButton}
+							</div>
+
 						</div>
 					</div>
-				);
+				</div>
+
+			</div>
+		);
+	}
+});
+
+const RelationshipEditor = React.createClass({
+	displayName: 'RelationshipEditor',
+	propTypes: {
+		entity: React.PropTypes.shape({
+			bbid: React.PropTypes.string
+		}),
+		loadedEntities: React.PropTypes.arrayOf(React.PropTypes.shape({
+			bbid: React.PropTypes.string
+		})),
+		relationships: React.PropTypes.arrayOf(React.PropTypes.shape({
+			source: React.PropTypes.object,
+			target: React.PropTypes.object,
+			type: React.PropTypes.number
+		}))
+	},
+	getInitialState() {
+		'use strict';
+
+		const existing = this.props.relationships || [];
+		existing.push({
+			source: this.props.entity,
+			target: null,
+			type: null
+		});
+
+		existing.forEach((rel, i) => {
+			rel.key = i;
+			rel.initialSource = rel.source;
+			rel.initialTarget = rel.target;
+			rel.initialType = rel.type;
+			rel.valid = rel.changed = false;
+		});
+
+		return {
+			loadedEntities: this.props.loadedEntities,
+			relationships: existing,
+			rowsSpawned: existing.length,
+			numSelected: 0
+		};
+	},
+	getValue() {
+		'use strict';
+
+		const relationships = [];
+
+		for (let i = 0; i < this.state.relationships.length; i++) {
+			relationships.push(this.refs[i].getValue());
+		}
+
+		return relationships;
+	},
+	handleSubmit() {
+		'use strict';
+
+		const changedRelationships = _.filter(
+			this.state.relationships, (rel) => rel.changed && rel.valid
+		);
+
+		request.post('./relationships/handler')
+		.send(changedRelationships.map((rel) => ({
+			id: [],
+			relationship_type: {
+				relationship_type_id: rel.type
+			},
+			entities: [
+				{
+					entity_gid: rel.source.bbid,
+					position: 0
+				},
+				{
+					entity_gid: rel.target.bbid,
+					position: 1
+				}
+			]
+		})))
+		.promise()
+		.then(() => {
+			window.location.href = utils.getEntityLink(this.props.entity);
+		});
+	},
+	getInternalValue() {
+		'use strict';
+
+		const updatedRelationships = this.getValue();
+
+		updatedRelationships.forEach((rel, idx) => {
+			rel.key = this.state.relationships[idx].key;
+			rel.initialSource = this.state.relationships[idx].initialSource;
+			rel.initialTarget = this.state.relationships[idx].initialTarget;
+			rel.initialType = this.state.relationships[idx].initialType;
+
+			const sourceChanged = (rel.source && rel.source.bbid) !==
+				(rel.initialSource && rel.initialSource.bbid);
+			const targetChanged = (rel.target && rel.target.bbid) !==
+				(rel.initialTarget && rel.initialTarget.bbid);
+			const typeChanged = (rel.type !== rel.initialType);
+			rel.changed = sourceChanged || targetChanged || typeChanged;
+			rel.valid = Boolean(rel.source && rel.target && rel.type);
+		});
+
+		return updatedRelationships;
+	},
+	swap(changedRowIndex) {
+		'use strict';
+
+		const updatedRelationships = this.getInternalValue();
+
+		updatedRelationships[changedRowIndex].source =
+			this.state.relationships[changedRowIndex].target;
+		updatedRelationships[changedRowIndex].target =
+			this.state.relationships[changedRowIndex].source;
+
+		const rowsSpawned =
+			this.addRowIfNeeded(updatedRelationships, changedRowIndex);
+
+		this.setState({
+			relationships: updatedRelationships,
+			rowsSpawned
+		});
+	},
+	bulkDelete() {
+		'use strict';
+
+		const relationshipsToDelete = _.reject(
+			this.state.relationships.map((rel, idx) =>
+				this.refs[idx].selected() ? idx : null
+			), (idx) => idx === null
+		);
+
+		relationshipsToDelete.sort((a, b) => b - a).forEach((idx) => {
+			this.refs[idx].destroy();
+		});
+	},
+	stateUpdateNeeded(changedRowIndex) {
+		'use strict';
+
+		const updatedRelationship = this.refs[changedRowIndex].getValue();
+		const existingRelationship = this.state.relationships[changedRowIndex];
+
+		const sourceJustSetOrUnset = (
+			!existingRelationship.source && updatedRelationship.source ||
+			existingRelationship.source && !updatedRelationship.source
+		);
+
+		const targetJustSetOrUnset = (
+			!existingRelationship.target && existingRelationship.target ||
+			existingRelationship.target && !existingRelationship.target
+		);
+
+		const typeJustSetOrUnset = (
+			!existingRelationship.type && updatedRelationship.type ||
+			existingRelationship.type && !updatedRelationship.type
+		);
+
+		return Boolean(
+			sourceJustSetOrUnset || targetJustSetOrUnset || typeJustSetOrUnset
+		);
+	},
+	addRowIfNeeded(updatedRelationships, changedRowIndex) {
+		'use strict';
+		let rowsSpawned = this.state.rowsSpawned;
+		if (changedRowIndex === this.state.relationships.length - 1) {
+			updatedRelationships.push({
+				initialSource: this.props.entity,
+				initialTarget: null,
+				initialType: null,
+				source: this.props.entity,
+				target: null,
+				type: null,
+				key: rowsSpawned++
 			});
+		}
+
+		return rowsSpawned;
+	},
+	deleteRowIfNew(rowToDelete) {
+		'use strict';
+
+		if (this.refs[rowToDelete].added()) {
+			const updatedRelationships = this.getInternalValue();
+
+			updatedRelationships.splice(rowToDelete, 1);
+
+			let newNumSelected = this.state.numSelected;
+			if (this.refs[rowToDelete].selected()) {
+				newNumSelected--;
+			}
+
+			this.setState({
+				relationships: updatedRelationships,
+				numSelected: newNumSelected
+			});
+		}
+	},
+	handleChange(changedRowIndex) {
+		'use strict';
+
+		const updatedRelationships = this.getInternalValue();
+
+		const rowsSpawned =
+			this.addRowIfNeeded(updatedRelationships, changedRowIndex);
+
+		this.setState({
+			relationships: updatedRelationships,
+			rowsSpawned
+		});
+	},
+	handleSelect(selectedRowIndex) {
+		'use strict';
+
+		let newNumSelected = this.state.numSelected;
+		if (this.refs[selectedRowIndex].selected()) {
+			newNumSelected++;
+		}
+		else {
+			newNumSelected--;
+		}
+
+		this.setState({
+			numSelected: newNumSelected
+		});
+	},
+	hasDataToSubmit() {
+		'use strict';
+
+		const changedRelationships = _.filter(
+			this.state.relationships, (rel) => {
+				return rel.changed && rel.valid;
+			}
+		);
+		return changedRelationships.length > 0;
+	},
+	render() {
+		'use strict';
+
+		const rows = this.state.relationships.map((rel, index) => (
+			<RelationshipRow
+				key={rel.key}
+				onChange={this.handleChange.bind(null, index)}
+				onDelete={this.deleteRowIfNew.bind(null, index)}
+				onSelect={this.handleSelect.bind(null, index)}
+				onSwap={this.swap.bind(null, index)}
+				ref={index}
+				relationship={rel}
+				{...this.props}
+			/>
+		));
+
+		const numSelectedString =
+			this.state.numSelected ? `(${this.state.numSelected})` : '';
 
 		return (
 			<div>
-				{loadingElement}
-				<h2>Add Relationship</h2>
-				<div className="row">
-					<div className="form-horizontal">
-						{relationshipEntry}
-					</div>
+				<PageHeader>
+					<span className="pull-right">
+						<Button
+							bsStyle="danger"
+							disabled={this.state.numSelected === 0}
+							onClick={this.bulkDelete}
+						>
+							{`Delete Selected ${numSelectedString}`}
+						</Button>
+					</span>
+					Relationship Editor
+				</PageHeader>
+				<Alert
+					bsStyle="info"
+					className="text-center"
+				>
+					<b>Please note!</b><br/>
+					The new relationship editor doesn&rsquo;t yet support
+					editing or deleting of existing relationships. This is
+					coming soon, but for now, existing relationships show up as
+					un-editable.
+				</Alert>
+				<div className="list-group">
+					{rows}
 				</div>
-				<hr/>
-				<h2>Added Relationships</h2>
-				{addedRelationships}
-				<hr/>
-				<div className="row">
-					<div className="col-md-4 col-md-offset-4">
-						<Input
-							block
-							bsStyle="success"
-							disabled=
-								{this.state.addedRelationships.length === 0}
-							onClick={this.handleSubmit}
-							type="submit"
-							value="Submit!"
-						/>
-					</div>
+
+				<div className="pull-right">
+					<Button
+						bsStyle="success"
+						disabled={!this.hasDataToSubmit()}
+						onClick={this.handleSubmit}
+					>
+						Submit
+					</Button>
 				</div>
 			</div>
 		);
 	}
 });
+
+module.exports = RelationshipEditor;
