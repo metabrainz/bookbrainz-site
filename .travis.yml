@@ -3,7 +3,6 @@ node_js:
     - "stable"
     - "4.1"
     - "4.0"
-    - "0.12"
 
 notifications:
     email: false
