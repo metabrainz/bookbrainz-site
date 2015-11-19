@@ -40,16 +40,17 @@ function Model(name, baseOptions) {
 	this.abstract = options.abstract || false;
 	this.name = name;
 
+	this.fields = {};
+
 	if (options.base) {
 		if (!(options.base instanceof Model)) {
 			throw new TypeError('Specified base object is not a model');
 		}
 
-		this.fields = options.base.fields;
+		Object.assign(this.fields, options.base.fields);
 		options.base.children[this.name] = this;
 	}
 
-	this.fields = this.fields || {};
 	this.children = {};
 
 	registered[name] = this;
