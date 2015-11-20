@@ -22,16 +22,12 @@
 
 const express = require('express');
 const router = express.Router();
-const config = require('../helpers/config');
 const auth = require('../helpers/auth');
 const Promise = require('bluebird');
 const _ = require('underscore');
 
 const Message = require('bookbrainz-data').Message;
 const MessageReceipt = require('bookbrainz-data').MessageReceipt;
-
-const request = require('superagent');
-require('superagent-bluebird-promise');
 
 router.get('/send', auth.isAuthenticated, (req, res) => {
 	res.render('editor/messageForm', {
@@ -77,13 +73,35 @@ router.get('/sent', auth.isAuthenticated, (req, res) => {
 		});
 });
 
-router.get('/:id', auth.isAuthenticated, (req, res) => {
-	const ws = config.site.webservice;
-	request.get(`${ws}/message/${req.params.id}`)
-		.set('Authorization', `Bearer ${req.session.bearerToken}`).promise()
-		.then((messageResponse) => messageResponse.body)
+router.get('/:id', auth.isAuthenticated, (req, res, next) => {
+	new Message({id: parseInt(req.params.id, 10)})
+		.fetch({
+			require: true,
+			withRelated: [
+				'sender',
+				{
+					receipts(query) {
+						query.where('recipient_id', req.user.id);
+					}
+				}
+			]
+		})
 		.then((message) => {
-			res.render('editor/message', {message});
+			if (message.related('receipts').length <= 0) {
+				return next(new Error(
+					'You do not have permission to view this message'
+				));
+			}
+
+			res.render('editor/message', {message: message.toJSON()});
+		})
+		.catch(Message.NotFoundError, () => {
+			next(new NotFoundError('Message not found'));
+		})
+		.catch((err) => {
+			next(
+				new Error('An internal error occurred while fetching message')
+			);
 		});
 });
 
