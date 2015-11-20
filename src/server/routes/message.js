@@ -53,28 +53,28 @@ function renderMessageList(view, collectionJSON, res) {
 
 router.get('/inbox', auth.isAuthenticated, (req, res) => {
 	new MessageReceipt().where({recipient_id: req.user.id, archived: false})
-	.fetchAll({withRelated: ['message', 'message.sender']})
-	.then((collection) => {
-		renderMessageList('inbox', _.pluck(collection.toJSON(), 'message'),
-			res);
-	});
+		.fetchAll({withRelated: ['message', 'message.sender']})
+		.then((collection) => {
+			renderMessageList('inbox', _.pluck(collection.toJSON(), 'message'),
+				res);
+		});
 });
 
 router.get('/archive', auth.isAuthenticated, (req, res) => {
 	new MessageReceipt().where({recipient_id: req.user.id, archived: true})
-	.fetchAll({withRelated: ['message', 'message.sender']})
-	.then((collection) => {
-		renderMessageList('archive', _.pluck(collection.toJSON(), 'message'),
-			res);
-	});
+		.fetchAll({withRelated: ['message', 'message.sender']})
+		.then((collection) => {
+			renderMessageList('archive',
+				_.pluck(collection.toJSON(), 'message'), res);
+		});
 });
 
 router.get('/sent', auth.isAuthenticated, (req, res) => {
 	new Message().where({sender_id: req.user.id})
-	.fetchAll({withRelated: ['sender']})
-	.then((collection) => {
-		renderMessageList('sent', collection.toJSON(), res);
-	});
+		.fetchAll({withRelated: ['sender']})
+		.then((collection) => {
+			renderMessageList('sent', collection.toJSON(), res);
+		});
 });
 
 router.get('/:id', auth.isAuthenticated, (req, res) => {
@@ -95,16 +95,16 @@ router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 	var messageStored = new Message({
 		senderId: req.user.id, subject: req.body.subject, content: req.body.content
 	}).save()
-	.then((message) => {
-		return Promise.all(
-			recipientIds.map((recipientId) => {
-				return new MessageReceipt({
-					recipientId,
-					messageId: message.get('id')
-				}).save();
-			})
-		);
-	});
+		.then((message) => {
+			return Promise.all(
+				recipientIds.map((recipientId) => {
+					return new MessageReceipt({
+						recipientId,
+						messageId: message.get('id')
+					}).save();
+				})
+			);
+		});
 
 	messageStored.then(() => {
 		res.redirect(303, '/message/sent');
