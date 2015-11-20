@@ -29,6 +29,8 @@ const _ = require('underscore');
 const Message = require('bookbrainz-data').Message;
 const MessageReceipt = require('bookbrainz-data').MessageReceipt;
 
+const NotFoundError = require('../helpers/error').NotFoundError;
+
 router.get('/send', auth.isAuthenticated, (req, res) => {
 	res.render('editor/messageForm', {
 		error: req.query.error,
@@ -99,9 +101,11 @@ router.get('/:id', auth.isAuthenticated, (req, res, next) => {
 			next(new NotFoundError('Message not found'));
 		})
 		.catch((err) => {
-			next(
-				new Error('An internal error occurred while fetching message')
-			);
+			const internalError =
+				new Error('An internal error occurred while fetching message');
+			internalError.stack = err.stack;
+
+			next(internalError);
 		});
 });
 
