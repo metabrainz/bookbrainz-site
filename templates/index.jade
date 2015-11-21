@@ -78,12 +78,12 @@ block body
 					.list-group
 						for revision in recent
 							- var name = '(unnamed)';
-							if revision.entity.default_alias
-								- name = revision.entity.default_alias.name;
+							if revision.entityData.defaultAlias
+								- name = revision.entityData.defaultAlias.name;
 							a.list-group-item(href='/revision/'+revision.id)
 								.row
 									.col-md-2='r'+revision.id
 									.col-md-6
 										span.fa(class=picture_classes[revision.entity._type])
 										span.margin-left-1=name
-									.col-md-4=(new Date(Date.parse(revision.created_at)).toLocaleDateString())
+									.col-md-4=(new Date(Date.parse(revision.revision.createdAt)).toLocaleDateString())

@@ -26,7 +26,7 @@ const bbws = require('../helpers/bbws');
 const Promise = require('bluebird');
 const React = require('react');
 
-const Revision = require('../data/properties/revision');
+const EntityRevision = require('bookbrainz-data').EntityRevision;
 const Publication = require('../data/entities/publication');
 const Creator = require('../data/entities/creator');
 const Edition = require('../data/entities/edition');
@@ -43,18 +43,20 @@ const LicensingPage = React.createFactory(require('../../client/components/pages
 router.get('/', (req, res) => {
 	function render(revisions) {
 		res.render('index', {
-			recent: revisions,
+			recent: revisions.toJSON(),
 			homepage: true
 		});
 	}
 
-	Revision.find({
-		params: {
-			limit: 9,
-			type: 'entity'
-		},
-		populate: ['entity']
-	})
+	EntityRevision
+		.query((qb) => {
+			qb
+				.orderBy('id', 'desc')
+				.limit(9);
+		})
+		.fetchAll({
+			withRelated: ['revision', 'entity', 'entityData.defaultAlias']
+		})
 		.then(render)
 		.catch((err) => {
 			console.log(err.stack);
