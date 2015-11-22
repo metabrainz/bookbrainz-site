@@ -22,6 +22,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../helpers/auth');
+const status = require('http-status');
 const Work = require('../../data/entities/work');
 const User = require('../../data/user');
 
@@ -83,7 +84,7 @@ router.post('/:bbid/delete/confirm', (req, res) => {
 		{session: req.session}
 	)
 		.then(() => {
-			res.redirect(303, `/work/${work.bbid}`);
+			res.redirect(status.SEE_OTHER, `/work/${work.bbid}`);
 		});
 });
 

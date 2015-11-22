@@ -37,6 +37,8 @@ const auth = require('./src/server/helpers/auth');
 const config = require('./src/server/helpers/config');
 const bbws = require('./src/server/helpers/bbws');
 
+const status = require('http-status');
+
 // Initialize application
 const app = express();
 
@@ -114,7 +116,7 @@ require('./src/server/routes')(app);
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
 	const err = new Error('Not Found');
-	err.status = 404;
+	err.status = status.NOT_FOUND;
 	next(err);
 });
 
@@ -126,7 +128,7 @@ if (app.get('env') === 'development') {
 		console.log(`Internal Error. Message: ${err.message} Stacktrace...`);
 		console.log(err.stack);
 
-		res.status(err.status || 500);
+		res.status(err.status || status.INTERNAL_SERVER_ERROR);
 
 		res.render('error', {
 			message: err.message,
@@ -137,7 +139,7 @@ if (app.get('env') === 'development') {
 
 /* Production error handler; stacktrace is omitted */
 app.use((err, req, res) => {
-	res.status(err.status || 500);
+	res.status(err.status || status.INTERNAL_SERVER_ERROR);
 
 	res.render('error', {
 		message: err.message,

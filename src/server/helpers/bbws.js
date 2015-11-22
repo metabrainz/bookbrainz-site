@@ -21,6 +21,7 @@
 
 const superagent = require('superagent');
 const config = require('../helpers/config');
+const status = require('http-status');
 
 require('superagent-bluebird-promise');
 
@@ -31,9 +32,9 @@ function _processError(response) {
 
 	const requestPath = `${response.error.method} ${response.error.path}`;
 
-	if (response.status === 404) {
+	if (response.status === status.NOT_FOUND) {
 		newErr = new Error(`WS path not found: ${requestPath}`);
-		newErr.status = 404;
+		newErr.status = status.NOT_FOUND;
 	}
 	else {
 		newErr = new Error('There was an error accessing the web service');

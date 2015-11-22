@@ -10,9 +10,14 @@ ecmaFeatures:
 env:
   node: true
 rules:
+  arrow-body-style:
+    - 2
+    - as-needed
   comma-dangle:
     - 2
     - never
+  no-arrow-condition: 1
+  no-case-declarations: 2
   no-cond-assign:
     - 2
     - except-parens
@@ -24,6 +29,7 @@ rules:
   no-duplicate-case: 2
   no-empty-character-class: 2
   no-empty: 2
+  no-empty-pattern: 2
   no-ex-assign: 2
   no-extra-boolean-cast: 2
   no-extra-parens:
@@ -36,6 +42,16 @@ rules:
     - both
   no-invalid-regexp: 2
   no-irregular-whitespace: 2
+  no-magic-numbers:
+    - 2
+    -
+      enforceConst: true
+      ignore:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 10
   no-negated-in-lhs: 2
   no-obj-calls: 2
   no-regex-spaces: 2

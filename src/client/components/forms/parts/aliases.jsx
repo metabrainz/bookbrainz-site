@@ -302,24 +302,22 @@ const AliasList = React.createClass({
 		'use strict';
 
 		const self = this;
-		const rows = this.state.aliases.map((alias, index) => {
-			return (
-				<AliasRow
-					aliasId={alias.id}
-					default={alias.default}
-					key={alias.key}
-					language={alias.language}
-					languages={self.props.languages}
-					name={alias.name}
-					onChange={self.handleChange.bind(null, index)}
-					onRemove={self.handleRemove.bind(null, index)}
-					primary={alias.primary}
-					ref={index}
-					removeHidden={index === self.state.aliases.length - 1}
-					sortName={alias.sortName}
-				/>
-			);
-		});
+		const rows = this.state.aliases.map((alias, index) => (
+			<AliasRow
+				aliasId={alias.id}
+				default={alias.default}
+				key={alias.key}
+				language={alias.language}
+				languages={self.props.languages}
+				name={alias.name}
+				onChange={self.handleChange.bind(null, index)}
+				onRemove={self.handleRemove.bind(null, index)}
+				primary={alias.primary}
+				ref={index}
+				removeHidden={index === self.state.aliases.length - 1}
+				sortName={alias.sortName}
+			/>
+		));
 
 		return (
 			<div className={this.props.visible === false ? 'hidden' : ''}>

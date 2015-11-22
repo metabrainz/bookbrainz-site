@@ -21,6 +21,7 @@
 
 const express = require('express');
 const router = express.Router();
+const status = require('http-status');
 const auth = require('../../helpers/auth');
 const Publication = require('../../data/entities/publication');
 const Edition = require('../../data/entities/edition');
@@ -96,7 +97,7 @@ router.post('/:bbid/delete/confirm', (req, res) => {
 		{session: req.session}
 	)
 		.then(() => {
-			res.redirect(303, `/publication/${publication.bbid}`);
+			res.redirect(status.SEE_OTHER, `/publication/${publication.bbid}`);
 		});
 });
 
@@ -193,14 +194,12 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 		};
 	}
 
-	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		return {
-			value: identifier.value,
-			identifier_type: {
-				identifier_type_id: identifier.typeId
-			}
-		};
-	});
+	const newIdentifiers = req.body.identifiers.map((identifier) => ({
+		value: identifier.value,
+		identifier_type: {
+			identifier_type_id: identifier.typeId
+		}
+	}));
 
 	if (newIdentifiers.length) {
 		changes.identifiers = newIdentifiers;

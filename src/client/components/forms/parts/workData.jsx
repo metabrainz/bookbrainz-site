@@ -74,9 +74,9 @@ const WorkData = React.createClass({
 
 		const prefillData = this.props.work;
 		if (prefillData) {
-			initialLanguages = prefillData.languages.map((language) => {
-				return language.language_id;
-			});
+			initialLanguages = prefillData.languages.map(
+				(language) => language.language_id
+			);
 			initialWorkType = prefillData.work_type ?
 				prefillData.work_type.work_type_id : null;
 			initialDisambiguation = prefillData.disambiguation ?

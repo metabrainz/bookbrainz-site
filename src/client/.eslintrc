@@ -23,16 +23,19 @@ rules:
   react/jsx-indent-props:
     - 2
     - tab
+  react/jsx-key: 2
   react/jsx-max-props-per-line:
     - 1
     -
       maximum: 1
+  react/jsx-no-bind: 1
   react/jsx-no-duplicate-props:
     - 2
     -
       ignoreCase: true
   react/jsx-no-literals: 0
   react/jsx-no-undef: 2
+  react/jsx-pascal-case: 2
   jsx-quotes:
     - 2
     - prefer-double
@@ -50,7 +53,10 @@ rules:
   react/no-did-mount-set-state: 1
   react/no-did-update-set-state: 1
   react/no-direct-mutation-state: 2
-  react/no-multi-comp: 1
+  react/no-multi-comp:
+    - 1
+    -
+      ignoreStateless: true
   react/no-set-state: 0
   react/no-unknown-property: 2
   react/prop-types: 1 # Revisit this

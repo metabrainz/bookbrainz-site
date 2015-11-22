@@ -153,18 +153,21 @@ const IdentifierList = React.createClass({
 	getValue() {
 		'use strict';
 
-		return this.state.identifiers.slice(0, -1).map((identifier) => {
-			const data = {
-				value: identifier.value,
-				typeId: identifier.type
-			};
+		const LAST_IDENTIFIER = -1;
+		return this.state.identifiers.slice(0, LAST_IDENTIFIER)
+			.map((identifier) => {
+				const data = {
+					value: identifier.value,
+					typeId: identifier.type
+				};
 
-			if (identifier.id) {
-				data.id = identifier.id;
+				if (identifier.id) {
+					data.id = identifier.id;
+				}
+
+				return data;
 			}
-
-			return data;
-		});
+		);
 	},
 	handleChange(index) {
 		'use strict';

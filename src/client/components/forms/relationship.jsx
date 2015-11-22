@@ -551,9 +551,8 @@ const RelationshipEditor = React.createClass({
 		'use strict';
 
 		const changedRelationships = _.filter(
-			this.state.relationships, (rel) => {
-				return rel.changed && rel.valid;
-			}
+			this.state.relationships, (rel) =>
+				rel.changed && rel.valid
 		);
 		return changedRelationships.length > 0;
 	},

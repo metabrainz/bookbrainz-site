@@ -24,6 +24,7 @@ const express = require('express');
 const router = express.Router();
 const config = require('../helpers/config');
 const auth = require('../helpers/auth');
+const status = require('http-status');
 
 const bbws = require('../helpers/bbws');
 
@@ -76,9 +77,9 @@ router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 	const ws = config.site.webservice;
 
 	// Parse recipient ids
-	const recipientIds = req.body.recipients.split(',').map((recipientId) => {
-		return parseInt(recipientId, 10);
-	});
+	const recipientIds = req.body.recipients.split(',').map(
+		(recipientId) => parseInt(recipientId, 10)
+	);
 
 	request.post(`${ws}/message/sent/`)
 		.set('Authorization', `Bearer ${req.session.bearerToken}`)
@@ -88,7 +89,7 @@ router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 			content: req.body.content
 		}).promise()
 		.then(() => {
-			res.redirect(303, '/message/sent');
+			res.redirect(status.SEE_OTHER, '/message/sent');
 		});
 });
 

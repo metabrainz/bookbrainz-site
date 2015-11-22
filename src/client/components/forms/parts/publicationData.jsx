@@ -74,13 +74,11 @@ const PublicationData = React.createClass({
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => {
-				return {
-					id: identifier.id,
-					value: identifier.value,
-					type: identifier.identifier_type.identifier_type_id
-				};
-			});
+			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
+				id: identifier.id,
+				value: identifier.value,
+				type: identifier.identifier_type.identifier_type_id
+			}));
 		}
 
 		const select2Options = {

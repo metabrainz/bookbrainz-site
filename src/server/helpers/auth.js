@@ -22,6 +22,7 @@
 const passport = require('passport');
 const config = require('../helpers/config');
 const BBWSStrategy = require('./passport-bookbrainz-ws');
+const status = require('http-status');
 
 const auth = {};
 
@@ -94,7 +95,7 @@ auth.isAuthenticated = function isAuthenticated(req, res, next) {
 		req.session.redirectTo = req.originalUrl;
 	}
 
-	res.redirect(303, '/login');
+	res.redirect(status.SEE_OTHER, '/login');
 };
 
 module.exports = auth;
