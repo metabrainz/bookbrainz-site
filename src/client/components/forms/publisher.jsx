@@ -68,11 +68,6 @@ module.exports = React.createClass({
 
 		this.setTab(this.state.tab + 1);
 	},
-	handleTab(tabKey) {
-		'use strict';
-
-		this.setTab(tabKey);
-	},
 	handleSubmit(evt) {
 		'use strict';
 
@@ -140,7 +135,7 @@ module.exports = React.createClass({
 				<Nav
 					activeKey={this.state.tab}
 					bsStyle="tabs"
-					onSelect={this.handleTab}
+					onSelect={this.setTab}
 				>
 					<NavItem eventKey={1}>
 						<strong>1.</strong> Aliases
