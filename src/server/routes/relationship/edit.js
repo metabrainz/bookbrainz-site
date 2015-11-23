@@ -29,23 +29,49 @@ const EditForm = React.createFactory(
 );
 const Promise = require('bluebird');
 const config = require('../../helpers/config');
+const _ = require('underscore');
 
 const relationshipHelper = {};
 
+const loadEntityRelationships =
+	require('../../helpers/middleware').loadEntityRelationships;
+
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
+
 relationshipHelper.addEditRoutes = function addEditRoutes(router) {
-	router.get('/:bbid/relationships', auth.isAuthenticated, (req, res) => {
+	/* If the route specifies a BBID, load the Entity for it. */
+	router.param('bbid', makeEntityLoader(Entity, 'Entity not found'));
+
+	router.get('/:bbid/relationships', loadEntityRelationships, (req, res) => {
 		const relationshipTypesPromise = RelationshipType.find();
-		const entityPromise = Entity.findOne(req.params.bbid, {
-			populate: [
-				'aliases'
-			]
+
+		const entityPromises = {};
+
+		res.locals.entity.relationships.forEach((relationship) => {
+			entityPromises[relationship.entities[0].entity.entity_gid] =
+				Entity.findOne(relationship.entities[0].entity.entity_gid);
+			entityPromises[relationship.entities[1].entity.entity_gid] =
+				Entity.findOne(relationship.entities[1].entity.entity_gid);
 		});
 
-		Promise.join(entityPromise, relationshipTypesPromise,
-			(entity, relationshipTypes) => {
+		const entitiesPromise = Promise.props(entityPromises);
+
+		Promise.join(entitiesPromise, relationshipTypesPromise,
+			(entities, relationshipTypes) => {
+				res.locals.entity.relationships.forEach((relationship) => {
+					relationship.source =
+						entities[relationship.entities[0].entity.entity_gid];
+					relationship.target =
+						entities[relationship.entities[1].entity.entity_gid];
+					relationship.type =
+						relationship.relationship_type.relationship_type_id;
+				});
+
 				const props = {
 					relationshipTypes,
-					targetEntity: entity,
+					relationships: res.locals.entity.relationships,
+					entity: res.locals.entity,
+					loadedEntities: _.union(entities, [res.locals.entity]),
 					wsUrl: config.site.clientWebservice
 				};
 
@@ -58,13 +84,20 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 
 	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
 		(req, res) => {
-			req.body.forEach((relationship) => {
-				// Send a relationship revision for each of the relationships
-				const changes = relationship;
+			// Send a relationship revision for each of the relationships
+			const relationshipsPromise = Promise.all(
+				req.body.map((relationship) =>
+					Relationship.create(relationship, {
+						session: req.session
+					})
+				)
+			);
 
-				Relationship.create(changes, {
-					session: req.session
-				}).then(res.send);
+			relationshipsPromise.then(() => {
+				res.send({result: 'success'});
+			})
+			.catch(() => {
+				res.send({result: 'error'});
 			});
 		}
 	);

@@ -62,22 +62,39 @@ body {
 	margin-left: -0.5em;
 	margin-top: -0.5em;
 }
-.generate-margins(@n, @i: 1) when (@i =< @n) {
+.generate-margins(@n, @i: 0) when (@i =< @n) {
 	.margin-top-@{i} {
-		margin-top: unit(@i, em);
+		margin-top: unit(@i, em) !important;
 	}
 	.margin-bottom-@{i} {
-		margin-bottom: unit(@i, em);
+		margin-bottom: unit(@i, em) !important;
 	}
 	.margin-left-@{i} {
-		margin-left: unit(@i, em);
+		margin-left: unit(@i, em) !important;
 	}
 	.margin-right-@{i} {
-		margin-right: unit(@i, em);
+		margin-right: unit(@i, em) !important;
 	}
 	.margin-sides-@{i} {
-		margin-left: unit(@i, em);
-		margin-right: unit(@i, em);
+		margin-left: unit(@i, em) !important;
+		margin-right: unit(@i, em) !important;
+	}
+
+	.padding-top-@{i} {
+		padding-top: unit(@i, em) !important;
+	}
+	.padding-bottom-@{i} {
+		padding-bottom: unit(@i, em) !important;
+	}
+	.padding-left-@{i} {
+		padding-left: unit(@i, em) !important;
+	}
+	.padding-right-@{i} {
+		padding-right: unit(@i, em) !important;
+	}
+	.padding-sides-@{i} {
+		padding-left: unit(@i, em) !important;
+		padding-right: unit(@i, em) !important;
 	}
 	.generate-margins(@n, (@i + 1));
 }

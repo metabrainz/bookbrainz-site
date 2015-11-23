@@ -21,6 +21,7 @@
 process.env.NODE_ENV = 'testing';
 
 const request = require('supertest');
+const status = require('http-status');
 const app = require('../app');
 
 describe('GET /', () => {
@@ -28,7 +29,7 @@ describe('GET /', () => {
 		request(app)
 			.get('/')
 			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(200, done);
+			.expect(status.OK, done);
 	});
 });
 
@@ -37,7 +38,7 @@ describe('GET /about', () => {
 		request(app)
 			.get('/about')
 			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(200, done);
+			.expect(status.OK, done);
 	});
 });
 
@@ -46,7 +47,7 @@ describe('GET /contribute', () => {
 		request(app)
 			.get('/contribute')
 			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(200, done);
+			.expect(status.OK, done);
 	});
 });
 
@@ -55,6 +56,6 @@ describe('GET /develop', () => {
 		request(app)
 			.get('/develop')
 			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(200, done);
+			.expect(status.OK, done);
 	});
 });

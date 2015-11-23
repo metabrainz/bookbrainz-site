@@ -20,6 +20,7 @@
 'use strict';
 
 const Promise = require('bluebird');
+const status = require('http-status');
 
 const CreatorType = require('../data/properties/creator-type');
 const EditionStatus = require('../data/properties/edition-status');
@@ -131,14 +132,14 @@ middleware.makeEntityLoader = function makeEntityLoader(model, errMessage) {
 				// no default
 			}
 
-			model.findOne(req.params.bbid, {populate})
+			return model.findOne(bbid, {populate})
 				.then((entity) => {
 					res.locals.entity = entity;
 
 					next();
 				})
 				.catch((err) => {
-					if (err.status === 404) {
+					if (err.status === status.SEE_OTHER) {
 						return next(new NotFoundError(errMessage));
 					}
 

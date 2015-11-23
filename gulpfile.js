@@ -23,14 +23,13 @@ const gulp = require('gulp');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
-const prettify = require('gulp-jsbeautifier');
 const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const reactify = require('reactify');
 const gulpless = require('gulp-less');
 const minifyCSS = require('gulp-minify-css');
 const prefixer = require('gulp-autoprefixer');
+const babelify = require('babelify');
 
 function bundle() {
 	let srcFiles =
@@ -62,7 +61,7 @@ function bundle() {
 	});
 
 	return browserify(srcFiles)
-		.transform(reactify)
+		.transform(babelify, {presets: ['es2015', 'react']})
 		.plugin('factor-bundle', {
 			outputs: dstFiles
 		})
@@ -90,31 +89,10 @@ function compress() {
 		.pipe(gulp.dest('static/js'));
 }
 
-function tidy() {
-	const srcFiles = [
-		'./src/**/*.js',
-		'./test/**/*.js',
-		'./templates/**/*.js',
-		'./app.js',
-		'./gulpfile.js'
-	];
-
-	gulp.src(srcFiles)
-		.pipe(prettify({
-			js: {
-				indent_with_tabs: true,
-				brace_style: 'end-expand'
-			},
-			mode: 'VERIFY_AND_WRITE'
-		}))
-		.pipe(gulp.dest((filename) => filename.base));
-}
-
 gulp.task('default', ['bundle', 'less']);
 gulp.task('bundle', bundle);
 gulp.task('less', less);
 gulp.task('compress', ['bundle'], compress);
-gulp.task('tidy', tidy);
 gulp.task('watch', () => {
 	const watcher = gulp.watch(
 		['./src/**/*.js', './src/**/*.jsx', './templates/**/*.js'], ['bundle']

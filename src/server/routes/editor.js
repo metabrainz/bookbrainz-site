@@ -26,6 +26,7 @@ const auth = require('../helpers/auth');
 const _ = require('underscore');
 
 const Editor = require('bookbrainz-data').Editor;
+const status = require('http-status');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const ProfileForm = React.createFactory(
@@ -52,7 +53,7 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 	// Should handle errors in some fashion other than redirecting.
 	if (req.body.id !== req.user.id) {
 		req.session.error = 'You do not have permission to edit that user';
-		res.redirect(303, '/editor/edit');
+		res.redirect(status.SEE_OTHER, '/editor/edit');
 	}
 
 	new Editor({
@@ -67,7 +68,7 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 		.catch(() => {
 			req.session.error =
 				'An internal error occurred while modifying profile';
-			res.redirect(303, '/editor/edit');
+			res.redirect(status.SEE_OTHER, '/editor/edit');
 		});
 });
 

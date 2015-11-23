@@ -40,16 +40,17 @@ function Model(name, baseOptions) {
 	this.abstract = options.abstract || false;
 	this.name = name;
 
+	this.fields = {};
+
 	if (options.base) {
 		if (!(options.base instanceof Model)) {
 			throw new TypeError('Specified base object is not a model');
 		}
 
-		this.fields = options.base.fields;
+		Object.assign(this.fields, options.base.fields);
 		options.base.children[this.name] = this;
 	}
 
-	this.fields = this.fields || {};
 	this.children = {};
 
 	registered[name] = this;
@@ -181,7 +182,7 @@ Model.prototype.find = function find(baseOptions) {
 Model.prototype.findOne = function findOne(baseId, baseOptions) {
 	const self = this;
 	let options;
-	let id;
+	let id = baseId;
 
 	/* Switch out options with ID if ID is not specified. */
 	if (typeof baseId === 'object') {

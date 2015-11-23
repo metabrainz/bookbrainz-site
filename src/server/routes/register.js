@@ -24,6 +24,7 @@ const router = express.Router();
 
 const Editor = require('bookbrainz-data').Editor;
 const EditorType = require('bookbrainz-data').EditorType;
+const status = require('http-status');
 
 router.get('/', (req, res) => {
 	const error = req.session.error;
@@ -38,14 +39,14 @@ router.get('/', (req, res) => {
 router.post('/handler', (req, res, next) => {
 	if (!req.body.password) {
 		req.session.error = 'No password set';
-		res.redirect(303, '/register');
+		res.redirect(status.SEE_OTHER, '/register');
 
 		return;
 	}
 
 	if (req.body.password !== req.body.password2) {
 		req.session.error = 'Passwords did not match';
-		res.redirect(303, '/register');
+		res.redirect(status.SEE_OTHER, '/register');
 
 		return;
 	}
@@ -62,7 +63,7 @@ router.post('/handler', (req, res, next) => {
 				.save();
 		})
 		.then(() => {
-			res.redirect(303, '/');
+			res.redirect(status.SEE_OTHER, '/');
 		})
 		.catch(next);
 });

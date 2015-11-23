@@ -25,6 +25,7 @@ const router = express.Router();
 const auth = require('../helpers/auth');
 const Promise = require('bluebird');
 const _ = require('underscore');
+const status = require('http-status');
 
 const Message = require('bookbrainz-data').Message;
 const MessageReceipt = require('bookbrainz-data').MessageReceipt;
@@ -111,7 +112,9 @@ router.get('/:id', auth.isAuthenticated, (req, res, next) => {
 
 router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 	// Parse recipient ids
-	var recipientIds = req.body.recipients.split(',').map(parseInt);
+	const recipientIds = req.body.recipients.split(',').map(
+		(recipientId) => parseInt(recipientId, 10)
+	);
 
 	// Create new message
 	var messageStored = new Message({
@@ -129,7 +132,7 @@ router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 		});
 
 	messageStored.then(() => {
-		res.redirect(303, '/message/sent');
+		res.redirect(status.SEE_OTHER, '/message/sent');
 	});
 });
 

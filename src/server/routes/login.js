@@ -22,6 +22,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const status = require('http-status');
 
 router.get('/login', (req, res) => {
 	res.render('login', {
@@ -33,7 +34,7 @@ router.get('/login', (req, res) => {
 router.get('/logout', (req, res) => {
 	delete req.session.bearerToken;
 	req.logout();
-	res.redirect(303, '/');
+	res.redirect(status.SEE_OTHER, '/');
 });
 
 router.post(
@@ -43,11 +44,11 @@ router.post(
 		const redirect = req.session.redirectTo ? req.session.redirectTo : '/';
 		delete req.session.redirectTo;
 
-		res.redirect(303, redirect);
+		res.redirect(status.SEE_OTHER, redirect);
 	},
 	(err, req, res) => {
 		// If an error occurs during login, send the user back.
-		res.redirect(301, `/login?error=${err.message}`);
+		res.redirect(status.MOVED_PERMANENTLY, `/login?error=${err.message}`);
 	}
 );
 

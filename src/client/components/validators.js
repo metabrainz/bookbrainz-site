@@ -13,7 +13,7 @@ module.exports = {
 		id: React.PropTypes.number,
 		label: React.PropTypes.string
 	}),
-	relationshipTypes: React.PropTypes.shape({
+	relationshipType: React.PropTypes.shape({
 		id: React.PropTypes.number,
 		label: React.PropTypes.string
 	}),

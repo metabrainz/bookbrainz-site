@@ -42,15 +42,30 @@ const EntitySearch = React.createClass({
 		value: React.PropTypes.number,
 		wrapperClassName: React.PropTypes.string
 	},
+	loadedEntities: {},
 	getValue() {
 		'use strict';
 
-		return this.refs.select.getValue();
+		const bbid = this.refs.select.getValue();
+		if (bbid) {
+			return this.loadedEntities[bbid];
+		}
+
+		return null;
 	},
 	render() {
 		'use strict';
 
 		const self = this;
+
+		if (this.props.defaultValue) {
+			this.loadedEntities[this.props.defaultValue.id] =
+				this.props.defaultValue;
+		}
+
+		if (this.props.value) {
+			this.loadedEntities[this.props.value.id] = this.props.value;
+		}
 
 		const select2Options = {
 			minimumInputLength: 1,
@@ -67,31 +82,29 @@ const EntitySearch = React.createClass({
 					return queryParams;
 				},
 				processResults(results) {
-					const data = {
-						results: []
-					};
-
 					if (results.error) {
-						data.results.push({
-							id: null,
-							text: results.error
-						});
-
-						return data;
+						return {
+							results: [{
+								id: null,
+								text: results.error
+							}]
+						};
 					}
 
 					results.forEach((result) => {
-						data.results.push({
+						self.loadedEntities[result.bbid] = result;
+					});
+
+					return {
+						results: results.map((result) => ({
 							id: result.bbid,
 							text: result.default_alias ?
 								result.default_alias.name : '(unnamed)',
 							disambiguation: result.disambiguation ?
 								result.disambiguation.comment : null,
 							type: result._type
-						});
-					});
-
-					return data;
+						}))
+					};
 				}
 			},
 			templateResult(result) {
@@ -136,6 +149,12 @@ const EntitySearch = React.createClass({
 			defaultKey = this.props.defaultValue.id;
 		}
 
+		let key = null;
+		if (this.props.value && this.props.value.id) {
+			options.unshift(this.props.value);
+			key = this.props.value.id;
+		}
+
 		return (
 			<Select
 				bsStyle={this.props.bsStyle}
@@ -154,7 +173,7 @@ const EntitySearch = React.createClass({
 				ref="select"
 				select2Options={select2Options}
 				standalone={this.props.standalone}
-				value={this.props.value}
+				value={key}
 				wrapperClassName={this.props.wrapperClassName}
 			/>
 		);
