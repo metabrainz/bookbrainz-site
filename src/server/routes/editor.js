@@ -108,7 +108,9 @@ router.get('/:id/revisions', (req, res, next) => {
 		.fetch({
 			require: true,
 			withRelated: {
-				revisions(query) { query.orderBy('id'); }
+				revisions(query) {
+					query.orderBy('id');
+				}
 			}
 		})
 		.then((editor) => {

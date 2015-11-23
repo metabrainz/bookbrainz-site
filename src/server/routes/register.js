@@ -53,15 +53,15 @@ router.post('/handler', (req, res, next) => {
 
 	EditorType.forge({label: 'Editor'})
 		.fetch({require: true})
-		.then((editorType) => {
-			return Editor.forge({
+		.then((editorType) =>
+			Editor.forge({
 				name: req.body.username,
 				email: req.body.email,
 				password: req.body.password,
 				editor_type_id: editorType.id
 			})
-				.save();
-		})
+				.save()
+		)
 		.then(() => {
 			res.redirect(status.SEE_OTHER, '/');
 		})

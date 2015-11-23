@@ -117,19 +117,19 @@ router.post('/send/handler', auth.isAuthenticated, (req, res) => {
 	);
 
 	// Create new message
-	var messageStored = new Message({
-		senderId: req.user.id, subject: req.body.subject, content: req.body.content
+	const messageStored = new Message({
+		senderId: req.user.id,
+		subject: req.body.subject,
+		content: req.body.content
 	}).save()
-		.then((message) => {
-			return Promise.all(
-				recipientIds.map((recipientId) => {
-					return new MessageReceipt({
-						recipientId,
-						messageId: message.get('id')
-					}).save();
-				})
-			);
-		});
+		.then((message) => Promise.all(
+			recipientIds.map((recipientId) =>
+				new MessageReceipt({
+					recipientId,
+					messageId: message.get('id')
+				}).save()
+			)
+		));
 
 	messageStored.then(() => {
 		res.redirect(status.SEE_OTHER, '/message/sent');

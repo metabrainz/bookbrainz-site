@@ -100,7 +100,9 @@ app.use((req, res, next) => {
 			.fetch({
 				require: true,
 				withRelated: {
-					messages(query) { query.where('archived', false); }
+					messages(query) {
+						query.where('archived', false);
+					}
 				}
 			})
 			.then((editor) => {

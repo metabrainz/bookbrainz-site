@@ -33,11 +33,21 @@ const Edition = require('../data/entities/edition');
 const Work = require('../data/entities/work');
 const Publisher = require('../data/entities/publisher');
 
-const AboutPage = React.createFactory(require('../../client/components/pages/about.jsx'));
-const ContributePage = React.createFactory(require('../../client/components/pages/contribute.jsx'));
-const DevelopPage = React.createFactory(require('../../client/components/pages/develop.jsx'));
-const PrivacyPage = React.createFactory(require('../../client/components/pages/privacy.jsx'));
-const LicensingPage = React.createFactory(require('../../client/components/pages/licensing.jsx'));
+const AboutPage = React.createFactory(
+	require('../../client/components/pages/about.jsx')
+);
+const ContributePage = React.createFactory(
+	require('../../client/components/pages/contribute.jsx')
+);
+const DevelopPage = React.createFactory(
+	require('../../client/components/pages/develop.jsx')
+);
+const PrivacyPage = React.createFactory(
+	require('../../client/components/pages/privacy.jsx')
+);
+const LicensingPage = React.createFactory(
+	require('../../client/components/pages/licensing.jsx')
+);
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -48,11 +58,12 @@ router.get('/', (req, res) => {
 		});
 	}
 
+	const numRevisionsOnHomepage = 9;
 	EntityRevision
 		.query((qb) => {
 			qb
 				.orderBy('id', 'desc')
-				.limit(9);
+				.limit(numRevisionsOnHomepage);
 		})
 		.fetchAll({
 			withRelated: ['revision', 'entity', 'entityData.defaultAlias']
@@ -64,35 +75,35 @@ router.get('/', (req, res) => {
 		});
 });
 
-router.get('/about', function(req, res) {
+router.get('/about', (req, res) => {
 	res.render('page', {
 		title: 'About',
 		markup: React.renderToString(AboutPage())
 	});
 });
 
-router.get('/contribute', function(req, res) {
+router.get('/contribute', (req, res) => {
 	res.render('page', {
 		title: 'Contribute',
 		markup: React.renderToString(ContributePage())
 	});
 });
 
-router.get('/develop', function(req, res) {
+router.get('/develop', (req, res) => {
 	res.render('page', {
 		title: 'Develop',
 		markup: React.renderToString(DevelopPage())
 	});
 });
 
-router.get('/privacy', function(req, res) {
+router.get('/privacy', (req, res) => {
 	res.render('page', {
 		title: 'Privacy',
 		markup: React.renderToString(PrivacyPage())
 	});
 });
 
-router.get('/licensing', function(req, res) {
+router.get('/licensing', (req, res) => {
 	res.render('page', {
 		title: 'Licensing',
 		markup: React.renderToString(LicensingPage())

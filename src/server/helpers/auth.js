@@ -30,19 +30,18 @@ auth.init = function init(app) {
 	passport.use(
 		new LocalStrategy((username, password, done) => {
 			new Editor({name: username}).fetch({require: true})
-				.then((model) => {
-					return model.checkPassword(password)
+				.then((model) =>
+					model.checkPassword(password)
 						.then((res) => {
 							if (res) {
 								return done(null, model.toJSON());
 							}
 
-
 							return done(null, false, {
 								message: 'Incorrect password.'
 							});
-						});
-				})
+						})
+				)
 				.catch(Editor.NotFoundError, () => {
 					done(null, false, {message: 'Incorrect username.'});
 				})

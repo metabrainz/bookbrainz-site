@@ -16,28 +16,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var React = require('react');
-var PageHeader = require('react-bootstrap').PageHeader;
+const React = require('react');
+const PageHeader = require('react-bootstrap').PageHeader;
 
 module.exports = React.createClass({
-  render: function() {
-    return (
-      <div>
-        <PageHeader>Privacy</PageHeader>
-        <p>
-          For a privacy policy, please see&nbsp;
-          <a href="http://musicbrainz.org/doc/About/Privacy_Policy">
-            http://musicbrainz.org/doc/About/Privacy_Policy
-          </a>
-        </p>
+	displayName: 'PrivacyPage',
+	render() {
+		'use strict';
 
-        <p>
-          While this currently does not apply to BookBrainz, it gives an idea
-          of what can be expected when it gets updated to cover all MetaBrainz
-          projects. If you&rsquo;re happy using MusicBrainz, we aim to make
-          you just as comfortable using BookBrainz.
-        </p>
-      </div>
-    );
-  }
+		return (
+			<div>
+				<PageHeader>Privacy</PageHeader>
+				<p>
+					For a privacy policy, please see&nbsp;
+					<a href="http://musicbrainz.org/doc/About/Privacy_Policy">
+						http://musicbrainz.org/doc/About/Privacy_Policy
+					</a>
+				</p>
+
+				<p>
+					While this currently does not apply to BookBrainz, it
+					gives an idea of what can be expected when it gets updated
+					to cover all MetaBrainz projects. If you&rsquo;re happy
+					using MusicBrainz, we aim to make you just as comfortable
+					using BookBrainz.
+				</p>
+			</div>
+		);
+	}
 });
