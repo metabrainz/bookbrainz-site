@@ -104,46 +104,33 @@ function loadEntityRelationships(req, res, next) {
 		.catch(next);
 };
 
-middleware.makeEntityLoader = function makeEntityLoader(model, errMessage) {
+middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 	const bbidRegex =
 		/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
-	return function loaderFunc(req, res, next, bbid) {
+	const relations = [
+		'annotation',
+		'disambiguation',
+		'defaultAlias'
+	].concat(additionalRels);
+
+	return (req, res, next, bbid) => {
 		if (bbidRegex.test(bbid)) {
-			const populate = [
-				'annotation',
-				'disambiguation',
-				'relationships',
-				'aliases',
-				'identifiers'
-			];
-
-			// XXX: Don't special case this; instead, let the route specify
-			switch (model.name) {
-				case 'Edition':
-					populate.push('publication');
-					populate.push('publisher');
-					break;
-				case 'Publication':
-					populate.push('editions');
-					break;
-				case 'Publisher':
-					populate.push('editions');
-					break;
-				// no default
-			}
-
-			return model.findOne(bbid, {populate})
+			return model.forge({bbid})
+				.fetch({require: true, withRelated: relations})
 				.then((entity) => {
-					res.locals.entity = entity;
+					res.locals.entity = entity.toJSON();
 
 					next();
 				})
+				.catch(model.NotFoundError, () => {
+					next(new NotFoundError(errMessage));
+				})
 				.catch((err) => {
-					if (err.status === status.SEE_OTHER) {
-						return next(new NotFoundError(errMessage));
-					}
+					const internalError =
+						new Error('An internal error occurred fetching entity');
+					internalError.stack = err.stack;
 
-					next(err);
+					next(internalError);
 				});
 		}
 

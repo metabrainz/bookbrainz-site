@@ -22,7 +22,8 @@
 const express = require('express');
 const status = require('http-status');
 const auth = require('../../helpers/auth');
-const Creator = require('../../data/entities/creator');
+
+const Creator = require('bookbrainz-data').Creator;
 const User = require('../../data/user');
 
 /* Middleware loader functions. */
@@ -47,14 +48,21 @@ const Promise = require('bluebird');
 const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Creator for it. */
-router.param('bbid', makeEntityLoader(Creator, 'Creator not found'));
+router.param(
+	'bbid',
+	makeEntityLoader(
+		Creator,
+		['gender', 'creatorType'],
+		'Creator not found'
+	)
+);
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const creator = res.locals.entity;
 	let title = 'Creator';
 
-	if (creator.default_alias && creator.default_alias.name) {
-		title = `Creator “${creator.default_alias.name}”`;
+	if (creator.defaultAlias && creator.defaultAlias.name) {
+		title = `Creator “${creator.defaultAlias.name}”`;
 	}
 
 	// Get unique identifier types for display
