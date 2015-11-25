@@ -3,7 +3,7 @@
 CREATE OR REPLACE FUNCTION process_entity() RETURNS TRIGGER
 	AS $process_entity$
 	DECLARE
-		type entity_types;
+		type entity_type;
 		entity_data_id integer := NULL;
 	BEGIN
 		IF (TG_TABLE_NAME = 'creator') THEN

@@ -11,7 +11,7 @@ CREATE TYPE lang_proficiency AS ENUM (
 	'NATIVE'
 );
 
-CREATE TYPE entity_types AS ENUM (
+CREATE TYPE entity_type AS ENUM (
 	'Creator',
 	'Publication',
 	'Edition',
@@ -118,7 +118,7 @@ CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
 	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'),
 	master_revision_id INT,
-	_type entity_types NOT NULL
+	_type entity_type NOT NULL
 );
 
 CREATE TABLE bookbrainz.entity_data (
@@ -126,7 +126,7 @@ CREATE TABLE bookbrainz.entity_data (
 	annotation_id INT,
 	disambiguation_id INT,
 	default_alias_id INT,
-	_type INT NOT NULL
+	_type entity_type NOT NULL
 );
 
 CREATE TABLE bookbrainz.entity_data__alias (
@@ -167,7 +167,7 @@ CREATE TABLE bookbrainz.identifier (
 CREATE TABLE bookbrainz.identifier_type (
 	id SERIAL PRIMARY KEY,
 	label VARCHAR(255) NOT NULL UNIQUE,
-	entity_type entity_types,
+	entity_type entity_type,
 	detection_regex TEXT,
 	validation_regex TEXT NOT NULL,
 	parent_id INT,
