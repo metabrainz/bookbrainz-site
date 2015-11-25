@@ -339,3 +339,78 @@ CREATE TABLE bookbrainz.work_type (
 );
 
 COMMIT;
+
+----------
+-- Views
+----------
+
+CREATE VIEW creator AS
+	SELECT
+		e.bbid, e.last_updated, e.master_revision_id,
+		er.id AS revision_id,
+		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
+		cd.begin_date, cd.begin_date_precision, cd.end_date, cd.end_date_precision,
+		cd.ended, cd.country_id, cd.gender_id, cd.creator_type_id,
+		e.master_revision_id = er.id AS is_master
+	FROM entity e
+	LEFT JOIN entity_revision er ON e.bbid = er.entity_bbid
+	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
+	LEFT JOIN creator_data cd ON ed.id = cd.entity_data_id
+	WHERE e._type = 'Creator';
+
+CREATE VIEW edition AS
+	SELECT
+		e.bbid, e.last_updated, e.master_revision_id,
+		er.id AS revision_id,
+		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
+		edd.publication_bbid, edd.creator_credit_id,
+		edd.release_date, edd.release_date_precision,
+		edd.pages, edd.width, edd.height, edd.depth, edd.weight,
+		edd.country_id, edd.language_id, edd.edition_format_id,
+		edd.edition_status_id, edd.publisher_bbid,
+		e.master_revision_id = er.id AS is_master
+	FROM entity e
+	LEFT JOIN entity_revision er ON e.bbid = er.entity_bbid
+	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
+	LEFT JOIN edition_data edd ON ed.id = edd.entity_data_id
+	WHERE e._type = 'Edition';
+
+CREATE VIEW publication AS
+	SELECT
+		e.bbid, e.last_updated, e.master_revision_id,
+		er.id AS revision_id,
+		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
+		pd.publication_type_id,
+		e.master_revision_id = er.id AS is_master
+	FROM entity e
+	LEFT JOIN entity_revision er ON e.bbid = er.entity_bbid
+	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
+	LEFT JOIN publication_data pd ON ed.id = pd.entity_data_id
+	WHERE e._type = 'Publication';
+
+CREATE VIEW publisher AS
+	SELECT
+		e.bbid, e.last_updated, e.master_revision_id,
+		er.id AS revision_id,
+		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
+		pd.begin_date, pd.begin_date_precision, pd.end_date, pd.end_date_precision,
+		pd.ended, pd.country_id, pd.publisher_type_id,
+		e.master_revision_id = er.id AS is_master
+	FROM entity e
+	LEFT JOIN entity_revision er ON e.bbid = er.entity_bbid
+	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
+	LEFT JOIN publisher_data pd ON ed.id = pd.entity_data_id
+	WHERE e._type = 'Publisher';
+
+CREATE VIEW work AS
+	SELECT
+		e.bbid, e.last_updated, e.master_revision_id,
+		er.id AS revision_id,
+		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
+		wd.work_type_id,
+		e.master_revision_id = er.id AS is_master
+	FROM entity e
+	LEFT JOIN entity_revision er ON e.bbid = er.entity_bbid
+	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
+	LEFT JOIN work_data wd ON ed.id = wd.entity_data_id
+	WHERE e._type = 'Work';
