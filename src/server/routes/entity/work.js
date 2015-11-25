@@ -23,7 +23,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../helpers/auth');
 const status = require('http-status');
-const Work = require('../../data/entities/work');
+
+const Work = require('bookbrainz-data').Work;
 const User = require('../../data/user');
 
 /* Middleware loader functions. */
@@ -45,14 +46,21 @@ const Promise = require('bluebird');
 const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Work for it. */
-router.param('bbid', makeEntityLoader(Work, 'Work not found'));
+router.param(
+	'bbid',
+	makeEntityLoader(
+		Work,
+		['workType'],
+		'Work not found'
+	)
+);
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const work = res.locals.entity;
 	let title = 'Work';
 
-	if (work.default_alias && work.default_alias.name) {
-		title = `Work “${work.default_alias.name}”`;
+	if (work.defaultAlias && work.defaultAlias.name) {
+		title = `Work “${work.defaultAlias.name}”`;
 	}
 
 	// Get unique identifier types for display

@@ -23,7 +23,8 @@ const express = require('express');
 const router = express.Router();
 const status = require('http-status');
 const auth = require('../../helpers/auth');
-const Publication = require('../../data/entities/publication');
+
+const Publication = require('bookbrainz-data').Publication;
 const Edition = require('../../data/entities/edition');
 const User = require('../../data/user');
 
@@ -48,7 +49,14 @@ const Promise = require('bluebird');
 const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Publication for it. */
-router.param('bbid', makeEntityLoader(Publication, 'Publication not found'));
+router.param(
+	'bbid',
+	makeEntityLoader(
+		Publication,
+		['publicationType'],
+		'Publication not found'
+	)
+);
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const publication = res.locals.entity;
@@ -60,8 +68,8 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 		})
 	);
 
-	if (publication.default_alias && publication.default_alias.name) {
-		title = `Publication “${publication.default_alias.name}”`;
+	if (publication.defaultAlias && publication.defaultAlias.name) {
+		title = `Publication “${publication.defaultAlias.name}”`;
 	}
 
 	Promise.all(publication.editions).then((editions) => {

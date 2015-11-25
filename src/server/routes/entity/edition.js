@@ -23,7 +23,8 @@ const express = require('express');
 const router = express.Router();
 const status = require('http-status');
 const auth = require('../../helpers/auth');
-const Edition = require('../../data/entities/edition');
+
+const Edition = require('bookbrainz-data').Edition;
 const User = require('../../data/user');
 
 const React = require('react');
@@ -52,14 +53,27 @@ const Promise = require('bluebird');
 const _ = require('underscore');
 
 /* If the route specifies a BBID, load the Edition for it. */
-router.param('bbid', makeEntityLoader(Edition, 'Edition not found'));
+router.param(
+	'bbid',
+	makeEntityLoader(
+		Edition,
+		[
+			'publication',
+			'language',
+			'editionFormat',
+			'editionStatus',
+			'publisher'
+		],
+		'Edition not found'
+	)
+);
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const edition = res.locals.entity;
 	let title = 'Edition';
 
-	if (edition.default_alias && edition.default_alias.name) {
-		title = `Edition “${edition.default_alias.name}”`;
+	if (edition.defaultAlias && edition.defaultAlias.name) {
+		title = `Edition “${edition.defaultAlias.name}”`;
 	}
 
 	// Get unique identifier types for display
