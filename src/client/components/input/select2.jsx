@@ -24,7 +24,7 @@ const React = require('react');
 
 var $ = null;
 if (typeof window !== 'undefined') {
-	require('Select2');
+	require('select2');
 	$ = window.$;
 }
 
