@@ -284,7 +284,9 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 	Edition.create(changes, {
 		session: req.session
 	})
-		.then((revision) => { res.send(revision); });
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
@@ -455,7 +457,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	Edition.update(edition.bbid, changes, {
 		session: req.session
 	})
-		.then((revision) => { res.send(revision); });
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 module.exports = router;
