@@ -19,6 +19,7 @@
     "express": "^4.13.3",
     "express-session": "^1.10.1",
     "express-static-cache": "0.0.6",
+    "git-rev": "^0.2.1",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-less": "^3.0.3",
     "gulp-minify-css": "^1.1.1",
