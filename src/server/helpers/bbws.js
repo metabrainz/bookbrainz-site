@@ -27,10 +27,10 @@ require('superagent-bluebird-promise');
 
 const bbws = {};
 
-function _processError(response) {
+function _processError(err) {
 	let newErr;
 
-	const requestPath = `${response.error.method} ${response.error.path}`;
+	const requestPath = `${err.res.error.method} ${err.res.error.path}`;
 
 	if (response.status === status.NOT_FOUND) {
 		newErr = new Error(`WS path not found: ${requestPath}`);
