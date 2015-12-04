@@ -1,62 +1,137 @@
 BEGIN;
 
-----------
--- Types
-----------
-
-CREATE TYPE lang_proficiency AS ENUM (
-	'BASIC',
-	'INTERMEDIATE',
-	'ADVANCED',
-	'NATIVE'
-);
-
-CREATE TYPE entity_type AS ENUM (
-	'Creator',
+CREATE TYPE entity_type  AS ENUM (
+	'publication',
 	'Publication',
 	'Edition',
 	'Publisher',
 	'Work'
 );
 
-CREATE TYPE date_precision AS ENUM (
-	'YEAR',
-	'MONTH',
-	'DAY'
-);
-
 COMMIT;
 
 BEGIN;
 
------------
--- Tables
------------
-
-CREATE TABLE bookbrainz.alias (
-	id SERIAL PRIMARY KEY,
-	name TEXT NOT NULL,
-	sort_name TEXT NOT NULL,
-	language_id INT,
-	"primary" BOOLEAN NOT NULL DEFAULT FALSE
+CREATE TABLE bookbrainz.entity (
+	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+	redirect_bbid UUID NULL,
+	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
 );
 
-CREATE TABLE bookbrainz.annotation (
+CREATE TABLE bookbrainz.creator_header (
+	bbid UUID PRIMARY KEY,
+	master_revision_id INT NULL
+);
+ALTER TABLE bookbrainz.creator_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
+CREATE TABLE bookbrainz.publication_header (
+	bbid UUID PRIMARY KEY,
+	master_revision_id INT NULL
+);
+ALTER TABLE bookbrainz.publication_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
+CREATE TABLE bookbrainz.edition_header (
+	bbid UUID PRIMARY KEY,
+	master_revision_id INT NULL
+);
+ALTER TABLE bookbrainz.edition_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
+CREATE TABLE bookbrainz.publisher_header (
+	bbid UUID PRIMARY KEY,
+	master_revision_id INT NULL
+);
+ALTER TABLE bookbrainz.publisher_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
+CREATE TABLE bookbrainz.work_header (
+	bbid UUID PRIMARY KEY,
+	master_revision_id INT NULL
+);
+ALTER TABLE bookbrainz.work_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
+CREATE TABLE bookbrainz.revision (
 	id SERIAL PRIMARY KEY,
+	author_id INT NOT NULL,
+	parent_id INT,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+
+CREATE TABLE bookbrainz.creator_revision (
+	id SERIAL PRIMARY KEY,
+	bbid UUID NOT NULL,
+	data_id INT
+);
+ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.creator_header (bbid);
+
+CREATE TABLE bookbrainz.publication_revision (
+	id SERIAL PRIMARY KEY,
+	bbid UUID NOT NULL,
+	data_id INT
+);
+ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.publication_header (bbid);
+
+CREATE TABLE bookbrainz.edition_revision (
+	id SERIAL PRIMARY KEY,
+	bbid UUID NOT NULL,
+	data_id INT
+);
+ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.edition_header (bbid);
+
+CREATE TABLE bookbrainz.publisher_revision (
+	id SERIAL PRIMARY KEY,
+	bbid UUID NOT NULL,
+	data_id INT
+);
+ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.publisher_header (bbid);
+
+CREATE TABLE bookbrainz.work_revision (
+	id SERIAL PRIMARY KEY,
+	bbid UUID NOT NULL,
+	data_id INT
+);
+ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.work_header (bbid);
+
+CREATE TABLE bookbrainz.note (
+	id SERIAL PRIMARY KEY,
+	author_id INT NOT NULL,
+	revision_id INT NOT NULL,
 	content TEXT NOT NULL,
-	created_at TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
+	posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+ALTER TABLE bookbrainz.note ADD FOREIGN KEY (revision_id) REFERENCES bookbrainz.revision (id);
+
+CREATE TABLE bookbrainz.creator_data (
+	id INT PRIMARY KEY,
+	begin_year SMALLINT,
+	begin_month SMALLINT,
+	begin_day SMALLINT,
+	end_year SMALLINT,
+	end_month SMALLINT,
+	end_day SMALLINT,
+	ended BOOLEAN,
+	country_id INT,
+	gender_id INT,
+	type_id INT
+);
+ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
+
+CREATE TABLE bookbrainz.release_event (
+	id INT PRIMARY KEY,
+	"year" SMALLINT,
+	"month" SMALLINT,
+	"day" SMALLINT,
+	country_id INT
 );
 
-CREATE TABLE bookbrainz.creator_credit (
-	id SERIAL PRIMARY KEY,
-	begin_phrase TEXT NOT NULL DEFAULT ''
+CREATE TABLE bookbrainz.release_event__edition_data (
+	release_event_id INT,
+	edition_data_id INT
 );
 
 CREATE TABLE bookbrainz.creator_credit_name (
 	creator_credit_id INT,
-	position SMALLINT,
+	"position" SMALLINT,
 	creator_bbid UUID,
-	name VARCHAR NOT NULL,
+	"name" VARCHAR NOT NULL,
 	join_phrase TEXT NOT NULL,
 	PRIMARY KEY (
 		creator_credit_id,
@@ -64,44 +139,27 @@ CREATE TABLE bookbrainz.creator_credit_name (
 	)
 );
 
-CREATE TABLE bookbrainz.creator_data (
-	entity_data_id INT PRIMARY KEY,
-	begin_date DATE,
-	begin_date_precision date_precision,
-	end_date DATE,
-	end_date_precision date_precision,
-	ended BOOLEAN,
-	country_id INT,
-	gender_id INT,
-	creator_type_id INT
-);
-
-CREATE TABLE bookbrainz.creator_type (
+CREATE TABLE bookbrainz.creator_credit (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
+	begin_phrase TEXT NOT NULL DEFAULT ''
 );
 
-CREATE TABLE bookbrainz.disambiguation (
-	id SERIAL PRIMARY KEY,
-	comment TEXT NOT NULL DEFAULT ''
-);
-
-CREATE TABLE bookbrainz.edition_data (
-	entity_data_id INT PRIMARY KEY,
-	publication_bbid UUID,
-	creator_credit_id INT,
-	release_date DATE,
-	release_date_precision date_precision,
-	pages INT,
-	width INT,
-	height INT,
-	depth INT,
-	weight INT,
-	country_id INT,
+CREATE TABLE bookbrainz.edition_data__language (
+	data_id INT,
 	language_id INT,
-	edition_format_id INT,
-	edition_status_id INT,
-	publisher_bbid UUID
+	PRIMARY KEY(
+		data_id,
+		language_id
+	)
+);
+
+CREATE TABLE bookbrainz.edition_data__publisher (
+	data_id INT,
+	publisher_bbid UUID,
+	PRIMARY KEY(
+		data_id,
+		publisher_bbid
+	)
 );
 
 CREATE TABLE bookbrainz.edition_format (
@@ -114,298 +172,25 @@ CREATE TABLE bookbrainz.edition_status (
 	label TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE bookbrainz.entity (
-	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'),
-	master_revision_id INT,
-	_type entity_type NOT NULL
-);
-
-CREATE TABLE bookbrainz.entity_data (
-	id SERIAL PRIMARY KEY,
-	annotation_id INT,
-	disambiguation_id INT,
-	default_alias_id INT,
-	_type entity_type NOT NULL
-);
-
-CREATE TABLE bookbrainz.entity_data__alias (
-	entity_data_id INT,
-	alias_id INT,
-	PRIMARY KEY (
-		entity_data_id,
-		alias_id
-	)
-);
-
-CREATE TABLE bookbrainz.entity_data__identifier (
-	entity_data_id INT,
-	identifier_id INT,
-	PRIMARY KEY (
-		entity_data_id,
-		identifier_id
-	)
-);
-
-CREATE TABLE bookbrainz.entity_redirect (
-	source_bbid UUID PRIMARY KEY,
-	target_bbid UUID NOT NULL
-);
-
-CREATE TABLE bookbrainz.entity_revision (
-	id INT NOT NULL,
-	entity_bbid UUID NOT NULL,
-	entity_data_id INT
-);
-
-CREATE TABLE bookbrainz.identifier (
-	id SERIAL PRIMARY KEY,
-	identifier_type_id INT NOT NULL,
-	value TEXT NOT NULL
-);
-
-CREATE TABLE bookbrainz.identifier_type (
-	id SERIAL PRIMARY KEY,
-	label VARCHAR(255) NOT NULL UNIQUE,
-	entity_type entity_type,
-	detection_regex TEXT,
-	validation_regex TEXT NOT NULL,
-	parent_id INT,
-	child_order INT NOT NULL DEFAULT 0,
-	description TEXT NOT NULL
-);
-
-CREATE TABLE bookbrainz.inactive_editor (
-	editor_id INT PRIMARY KEY
-);
-
-CREATE TABLE bookbrainz.message (
-	id SERIAL PRIMARY KEY,
-	sender_id INT,
-	subject VARCHAR(255) NOT NULL,
-	content TEXT NOT NULL
-);
-
-CREATE TABLE bookbrainz.message_receipt (
-	id SERIAL PRIMARY KEY,
-	message_id INT,
-	recipient_id INT,
-	archived BOOLEAN NOT NULL DEFAULT FALSE
-);
-
-CREATE TABLE bookbrainz.oauth_client (
-	id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-	secret UUID NOT NULL UNIQUE DEFAULT public.uuid_generate_v4(),
-	is_confidential BOOLEAN NOT NULL DEFAULT FALSE,
-	_redirect_uris TEXT NOT NULL DEFAULT '',
-	_default_scopes TEXT NOT NULL DEFAULT '',
-	owner_id INT NOT NULL
-);
-
-CREATE TABLE bookbrainz.publication_data (
-	entity_data_id INT PRIMARY KEY,
-	publication_type_id INT
-);
-
-CREATE TABLE bookbrainz.publication_type (
-	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
-);
-
-CREATE TABLE bookbrainz.publisher_data (
-	entity_data_id INT PRIMARY KEY,
-	begin_date DATE,
-	begin_date_precision date_precision,
-	end_date DATE,
-	end_date_precision date_precision,
-	ended BOOLEAN DEFAULT FALSE,
+CREATE TABLE bookbrainz.edition_data (
+	id INT PRIMARY KEY,
+	publication_bbid UUID,
 	country_id INT,
-	publisher_type_id INT
-);
-
-CREATE TABLE bookbrainz.publisher_type (
-	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
-);
-
-CREATE TABLE bookbrainz.relationship (
-	id SERIAL PRIMARY KEY,
-	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC'),
-	master_revision_id INT
-);
-
-CREATE TABLE bookbrainz.relationship_data (
-	id SERIAL PRIMARY KEY,
-	relationship_type_id INT NOT NULL
-);
-
-CREATE TABLE bookbrainz.relationship_entity (
-	relationship_data_id INT,
-	position SMALLINT,
-	entity_bbid UUID NOT NULL,
-	PRIMARY KEY (
-		relationship_data_id,
-		position
-	)
-);
-
-CREATE TABLE bookbrainz.relationship_revision (
-	revision_id INT NOT NULL,
-	relationship_id INT NOT NULL,
-	relationship_data_id INT NOT NULL
-);
-
-CREATE TABLE bookbrainz.relationship_type (
-	id SERIAL PRIMARY KEY,
-	label VARCHAR(255) NOT NULL UNIQUE,
-	parent_id INT,
-	child_order INT NOT NULL DEFAULT 0,
-	description TEXT NOT NULL,
-	template TEXT NOT NULL,
-	deprecated BOOLEAN NOT NULL DEFAULT FALSE
-);
-
-CREATE TABLE bookbrainz.revision (
-	id SERIAL PRIMARY KEY,
-	author_id INT NOT NULL,
-	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-	parent_id INT,
-	_type SMALLINT NOT NULL
-);
-
-CREATE TABLE bookbrainz.note (
-	id SERIAL PRIMARY KEY,
-	author_id INT NOT NULL,
-	revision_id INT NOT NULL,
-	content TEXT NOT NULL,
-	posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
-);
-
-CREATE TABLE bookbrainz.suspended_editor (
-	editor_id INT PRIMARY KEY,
-	reason TEXT NOT NULL
-);
-
-CREATE TABLE bookbrainz.editor (
-	id SERIAL PRIMARY KEY,
-	name VARCHAR(64) NOT NULL UNIQUE,
-	email VARCHAR(255) NOT NULL,
-	reputation INT NOT NULL DEFAULT 0,
-	bio TEXT,
-	birth_date DATE,
-	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-	editor_type_id INT NOT NULL,
 	gender_id INT,
-	country_id INT,
-	password TEXT NOT NULL,
-	revisions_applied INT NOT NULL DEFAULT 0,
-	revisions_reverted INT NOT NULL DEFAULT 0,
-	total_revisions INT NOT NULL DEFAULT 0
+	type_id INT,
+	creator_credit_id INT,
+	width SMALLINT,
+	height SMALLINT,
+	depth SMALLINT,
+	weight SMALLINT,
+	pages SMALLINT,
+	edition_format INT,
+	edition_status INT
 );
-
-CREATE TABLE bookbrainz.editor_language (
-	editor_id INT NOT NULL,
-	language_id INT NOT NULL,
-	proficiency lang_proficiency NOT NULL,
-	PRIMARY KEY (
-		editor_id,
-		language_id
-	)
-);
-
-CREATE TABLE bookbrainz.editor_type (
-	id SERIAL PRIMARY KEY,
-	label VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE bookbrainz.work_data (
-	entity_data_id INT PRIMARY KEY,
-	work_type_id INT
-);
-
-CREATE TABLE bookbrainz.work_data__language (
-	work_data_id INT,
-	language_id INT,
-	PRIMARY KEY (
-		work_data_id,
-		language_id
-	)
-);
-
-CREATE TABLE bookbrainz.work_type (
-	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
-);
+ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
+ALTER TABLE bookbrainz.edition_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
+ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (publication_bbid) REFERENCES bookbrainz.publication_header (bbid);
 
 COMMIT;
-
-----------
--- Views
-----------
-
-CREATE VIEW creator AS
-	SELECT
-		e.bbid, e.last_updated,
-		er.id AS revision_id,
-		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
-		cd.begin_date, cd.begin_date_precision, cd.end_date, cd.end_date_precision,
-		cd.ended, cd.country_id, cd.gender_id, cd.creator_type_id
-	FROM entity e
-	LEFT JOIN entity_revision er ON e.master_revision_id = er.id
-	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
-	LEFT JOIN creator_data cd ON ed.id = cd.entity_data_id
-	WHERE e._type = 'Creator';
-
-CREATE VIEW edition AS
-	SELECT
-		e.bbid, e.last_updated,
-		er.id AS revision_id,
-		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
-		edd.publication_bbid, edd.creator_credit_id,
-		edd.release_date, edd.release_date_precision,
-		edd.pages, edd.width, edd.height, edd.depth, edd.weight,
-		edd.country_id, edd.language_id, edd.edition_format_id,
-		edd.edition_status_id, edd.publisher_bbid
-	FROM entity e
-	LEFT JOIN entity_revision er ON e.master_revision_id = er.id
-	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
-	LEFT JOIN edition_data edd ON ed.id = edd.entity_data_id
-	WHERE e._type = 'Edition';
-
-CREATE VIEW publication AS
-	SELECT
-		e.bbid, e.last_updated,
-		er.id AS revision_id,
-		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
-		pd.publication_type_id
-	FROM entity e
-	LEFT JOIN entity_revision er ON e.master_revision_id = er.id
-	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
-	LEFT JOIN publication_data pd ON ed.id = pd.entity_data_id
-	WHERE e._type = 'Publication';
-
-CREATE VIEW publisher AS
-	SELECT
-		e.bbid, e.last_updated,
-		er.id AS revision_id,
-		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
-		pd.begin_date, pd.begin_date_precision, pd.end_date, pd.end_date_precision,
-		pd.ended, pd.country_id, pd.publisher_type_id
-	FROM entity e
-	LEFT JOIN entity_revision er ON e.master_revision_id = er.id
-	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
-	LEFT JOIN publisher_data pd ON ed.id = pd.entity_data_id
-	WHERE e._type = 'Publisher';
-
-CREATE VIEW work AS
-	SELECT
-		e.bbid, e.last_updated,
-		er.id AS revision_id,
-		ed.annotation_id, ed.disambiguation_id, ed.default_alias_id,
-		wd.work_type_id
-	FROM entity e
-	LEFT JOIN entity_revision er ON e.master_revision_id = er.id
-	LEFT JOIN entity_data ed ON er.entity_data_id = ed.id
-	LEFT JOIN work_data wd ON ed.id = wd.entity_data_id
-	WHERE e._type = 'Work';
