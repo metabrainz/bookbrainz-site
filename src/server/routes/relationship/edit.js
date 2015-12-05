@@ -40,7 +40,6 @@ const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 	/* If the route specifies a BBID, load the Entity for it. */
-	router.param('bbid', makeEntityLoader(Entity, 'Entity not found'));
 
 	router.get('/:bbid/relationships', loadEntityRelationships, (req, res) => {
 		const relationshipTypesPromise = RelationshipType.find();
