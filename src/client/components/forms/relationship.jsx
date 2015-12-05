@@ -130,7 +130,7 @@ const RelationshipRow = React.createClass({
 		const relationshipType =
 			getRelationshipTypeById(this.props.relationshipTypes, rel.type);
 
-		if (!relationshipType) {
+		if (!this.valid()) {
 			return null;
 		}
 
