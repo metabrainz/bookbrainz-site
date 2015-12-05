@@ -209,6 +209,7 @@ CREATE TABLE bookbrainz.publication_data (
 	type_id INT
 );
 ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publication_type (id);
+ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publication_data (id);
 
 CREATE TABLE bookbrainz.publisher_type (
 	id SERIAL PRIMARY KEY,
@@ -228,6 +229,7 @@ CREATE TABLE bookbrainz.publisher_data (
 	type_id INT
 );
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publisher_type (id);
+ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
 
 CREATE TABLE bookbrainz.work_type (
 	id SERIAL PRIMARY KEY,
@@ -239,6 +241,7 @@ CREATE TABLE bookbrainz.work_data (
 	type_id INT
 );
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
+ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
 CREATE TABLE bookbrainz.work_data__language (
 	data_id INT,
