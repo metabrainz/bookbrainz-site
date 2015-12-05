@@ -33,7 +33,7 @@ const Select = React.createClass({
 	propTypes: {
 		multiple: React.PropTypes.bool,
 		onChange: React.PropTypes.func,
-		options: React.PropTypes.object,
+		options: React.PropTypes.array,
 		placeholder: React.PropTypes.string,
 		select2Options: React.PropTypes.object
 	},
