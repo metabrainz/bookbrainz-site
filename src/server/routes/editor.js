@@ -39,7 +39,6 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		.then((user) => {
 			const props = {
 				id: user.id,
-				email: user.email,
 				bio: user.bio
 			};
 
@@ -61,10 +60,12 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 
 	bbws.put(
 		`/user/${req.body.id}/`,
-		{bio: req.body.bio, email: req.body.email},
+		{bio: req.body.bio},
 		{accessToken: req.session.bearerToken}
 	)
-		.then(res.send)
+		.then((response) => {
+			res.send(response);
+		})
 		.catch(() => {
 			req.session.error =
 				'An internal error occurred while modifying profile';

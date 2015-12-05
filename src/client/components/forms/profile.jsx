@@ -30,7 +30,6 @@ module.exports = React.createClass({
 	displayName: 'profileForm',
 	propTypes: {
 		bio: React.PropTypes.string,
-		email: React.PropTypes.string,
 		id: React.PropTypes.number
 	},
 	getInitialState() {
@@ -38,7 +37,6 @@ module.exports = React.createClass({
 
 		return {
 			id: this.props.id,
-			email: this.props.email,
 			bio: this.props.bio,
 			waiting: false
 		};
@@ -50,7 +48,6 @@ module.exports = React.createClass({
 
 		const data = {
 			id: this.state.id,
-			email: this.refs.email.getValue().trim(),
 			bio: this.refs.bio.getValue().trim()
 		};
 
@@ -73,14 +70,6 @@ module.exports = React.createClass({
 				onSubmit={this.handleSubmit}
 			>
 				{loadingElement}
-				<Input
-					defaultValue={this.state.email}
-					label="Email"
-					labelClassName="col-md-3"
-					ref="email"
-					type="text"
-					wrapperClassName="col-md-9"
-				/>
 				<Input
 					defaultValue={this.state.bio}
 					label="Bio"
