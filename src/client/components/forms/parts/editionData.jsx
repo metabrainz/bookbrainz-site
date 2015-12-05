@@ -120,8 +120,9 @@ const EditionData = React.createClass({
 	valid() {
 		'use strict';
 
-		return this.refs.release.valid() &&
-			this.refs.publication.getValue().length;
+		return Boolean(
+			this.refs.release.valid() && this.refs.publication.getValue()
+		);
 	},
 	render() {
 		'use strict';
