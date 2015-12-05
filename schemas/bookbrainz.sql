@@ -124,7 +124,11 @@ CREATE TABLE bookbrainz.release_event (
 
 CREATE TABLE bookbrainz.release_event__edition_data (
 	release_event_id INT,
-	edition_data_id INT
+	edition_data_id INT,
+	PRIMARY KEY(
+		release_event_id,
+		edition_data_id
+	)
 );
 
 CREATE TABLE bookbrainz.creator_credit_name (
@@ -184,13 +188,66 @@ CREATE TABLE bookbrainz.edition_data (
 	depth SMALLINT,
 	weight SMALLINT,
 	pages SMALLINT,
-	edition_format INT,
-	edition_status INT
+	format_id INT,
+	status_id INT
 );
 ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 ALTER TABLE bookbrainz.edition_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
+ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (release_event_id) REFERENCES bookbrainz.release_event (id);
+ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (edition_data_id) REFERENCES bookbrainz.edition_data (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (publication_bbid) REFERENCES bookbrainz.publication_header (bbid);
+
+CREATE TABLE bookbrainz.publication_type (
+	id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE bookbrainz.publication_data (
+	id INT PRIMARY KEY,
+	type_id INT
+);
+ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publication_type (id);
+
+CREATE TABLE bookbrainz.publisher_type (
+	id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE bookbrainz.publisher_data (
+	id INT PRIMARY KEY,
+	begin_year SMALLINT,
+	begin_month SMALLINT,
+	begin_day SMALLINT,
+	end_year SMALLINT,
+	end_month SMALLINT,
+	end_day SMALLINT,
+	ended BOOLEAN DEFAULT FALSE,
+	country_id INT,
+	type_id INT
+);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publisher_type (id);
+
+CREATE TABLE bookbrainz.work_type (
+	id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE bookbrainz.work_data (
+	id SERIAL PRIMARY KEY,
+	type_id INT
+);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
+
+CREATE TABLE bookbrainz.work_data__language (
+	data_id INT,
+	language_id INT,
+	PRIMARY KEY (
+		data_id,
+		language_id
+	)
+);
+ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
 COMMIT;
