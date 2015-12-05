@@ -27,6 +27,7 @@ const Edition = require('../../data/entities/edition');
 const User = require('../../data/user');
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/edition.jsx')
 );
@@ -141,7 +142,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 		}
 
 		function render(props) {
-			const markup = React.renderToString(EditForm(props));
+			const markup = ReactDOMServer.renderToString(EditForm(props));
 
 			res.render('entity/create/edition', {
 				title: 'Add Edition',
@@ -169,7 +170,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/edition/${edition.bbid}/edit/handler`
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/edition', {
 			title: 'Edit Edition',

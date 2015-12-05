@@ -22,6 +22,7 @@
 const express = require('express');
 const router = express.Router();
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const User = require('../data/user');
 const bbws = require('../helpers/bbws');
 const auth = require('../helpers/auth');
@@ -42,7 +43,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 				bio: user.bio
 			};
 
-			const markup = React.renderToString(ProfileForm(props));
+			const markup = ReactDOMServer.renderToString(ProfileForm(props));
 
 			res.render('editor/edit', {props, markup});
 		})

@@ -18,6 +18,7 @@
  */
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const Select = require('./select2.jsx');
 const _ = require('underscore');
 const $ = require('jquery');
@@ -120,7 +121,7 @@ const EntitySearch = React.createClass({
 
 				/* eslint prefer-template: 0 */
 				if (result.type) {
-					template = React.renderToStaticMarkup(
+					template = ReactDOMServer.renderToStaticMarkup(
 						<span className=
 							{`fa ${ENTITY_TYPE_ICONS[result.type]}`}
 						/>
@@ -128,7 +129,7 @@ const EntitySearch = React.createClass({
 				}
 
 				if (result.disambiguation) {
-					template += React.renderToStaticMarkup(
+					template += ReactDOMServer.renderToStaticMarkup(
 						<span className="disambig">
 							({result.disambiguation})
 						</span>

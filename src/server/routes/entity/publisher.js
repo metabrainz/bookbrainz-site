@@ -31,6 +31,7 @@ const User = require('../../data/user');
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/publisher.jsx')
 );
@@ -136,7 +137,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages,
 			submissionUrl: '/publisher/create/handler'
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/publisher', {
 			title: 'Add Publisher',
@@ -160,7 +161,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/publisher/${publisher.bbid}/edit/handler`
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/publisher', {
 			title: 'Edit Publisher',

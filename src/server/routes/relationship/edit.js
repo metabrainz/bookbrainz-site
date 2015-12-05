@@ -24,6 +24,7 @@ const Relationship = require('../../data/relationship');
 const RelationshipType = require('../../data/properties/relationship-type');
 const Entity = require('../../data/entity');
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/creator.jsx')
 );
@@ -74,7 +75,7 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 					wsUrl: config.site.clientWebservice
 				};
 
-				const markup = React.renderToString(EditForm(props));
+				const markup = ReactDOMServer.renderToString(EditForm(props));
 
 				res.render('relationship/edit', {props, markup});
 			}

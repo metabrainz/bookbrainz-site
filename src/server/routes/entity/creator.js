@@ -36,6 +36,7 @@ const loadEntityRelationships =
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
 const router = express.Router();
 const EditForm = React.createFactory(
@@ -125,7 +126,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
 			submissionUrl: '/creator/create/handler'
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/creator', {
 			title: 'Add Creator',
@@ -150,7 +151,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/creator/${creator.bbid}/edit/handler`
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/creator', {
 			title: 'Edit Creator',
