@@ -31,9 +31,13 @@ const PublisherData = React.createClass({
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		nextClick: React.PropTypes.func,
 		publisher: React.PropTypes.shape({
-			annotation: React.PropTypes.string,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
 			begin_date: React.PropTypes.string,
-			disambiguation: React.PropTypes.string,
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
 			end_date: React.PropTypes.string,
 			ended: React.PropTypes.bool,
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({

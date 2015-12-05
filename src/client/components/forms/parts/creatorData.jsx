@@ -40,8 +40,12 @@ const CreatorData = React.createClass({
 			ended: React.PropTypes.bool,
 			gender: React.PropTypes.bool,
 			creator_type: creatorTypeValidation,
-			disambiguation: React.PropTypes.string,
-			annotation: React.PropTypes.string,
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,

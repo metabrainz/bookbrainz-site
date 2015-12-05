@@ -31,8 +31,12 @@ const PublicationData = React.createClass({
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		nextClick: React.PropTypes.func,
 		publication: React.PropTypes.shape({
-			annotation: React.PropTypes.string,
-			disambiguation: React.PropTypes.string,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,

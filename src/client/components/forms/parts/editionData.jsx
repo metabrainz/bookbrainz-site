@@ -41,9 +41,13 @@ const EditionData = React.createClass({
 	propTypes: {
 		backClick: React.PropTypes.func,
 		edition: React.PropTypes.shape({
-			annotation: React.PropTypes.string,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
 			depth: React.PropTypes.number,
-			disambiguation: React.PropTypes.string,
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
 			edition_format: editionFormatValidation,
 			edition_status: editionStatusValidation,
 			height: React.PropTypes.number,

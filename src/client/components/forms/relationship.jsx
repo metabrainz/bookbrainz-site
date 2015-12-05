@@ -60,7 +60,7 @@ const RelationshipRow = React.createClass({
 			initialType: React.PropTypes.number
 		}),
 		relationshipTypes:
-			React.PropTypes.arrayOf(validators.relationshipTypes)
+			React.PropTypes.arrayOf(validators.relationshipType)
 	},
 	getInitialState() {
 		'use strict';

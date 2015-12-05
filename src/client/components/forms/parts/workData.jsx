@@ -36,8 +36,12 @@ const WorkData = React.createClass({
 		nextClick: React.PropTypes.func,
 		visible: React.PropTypes.bool,
 		work: React.PropTypes.shape({
-			annotation: React.PropTypes.string,
-			disambiguation: React.PropTypes.string,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,

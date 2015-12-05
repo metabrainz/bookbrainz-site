@@ -28,7 +28,7 @@ const EntitySearch = React.createClass({
 	propTypes: {
 		bsStyle: React.PropTypes.string,
 		defaultValue: React.PropTypes.shape({
-			id: React.PropTypes.number
+			id: React.PropTypes.string
 		}),
 		disabled: React.PropTypes.bool,
 		groupClassName: React.PropTypes.string,
@@ -40,7 +40,9 @@ const EntitySearch = React.createClass({
 		placeholder: React.PropTypes.string,
 		select2Options: React.PropTypes.object,
 		standalone: React.PropTypes.bool,
-		value: React.PropTypes.number,
+		value: React.PropTypes.shape({
+			id: React.PropTypes.string
+		}),
 		wrapperClassName: React.PropTypes.string
 	},
 	loadedEntities: {},
