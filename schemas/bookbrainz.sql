@@ -8,10 +8,6 @@ CREATE TYPE entity_type AS ENUM (
 	'Work'
 );
 
-COMMIT;
-
-BEGIN;
-
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
 	redirect_bbid UUID NULL,
