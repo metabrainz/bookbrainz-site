@@ -304,4 +304,50 @@ ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
+CREATE TABLE bookbrainz.alias (
+	id SERIAL PRIMARY KEY,
+	name TEXT NOT NULL,
+	sort_name TEXT NOT NULL,
+	language_id INT,
+	is_primary BOOLEAN NOT NULL DEFAULT FALSE
+);
+ALTER TABLE bookbrainz.alias ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
+
+CREATE TABLE bookbrainz.identifier_type (
+	id SERIAL PRIMARY KEY,
+	label VARCHAR(255) NOT NULL,
+	description TEXT NOT NULL,
+	detection_regex TEXT,
+	validation_regex TEXT NOT NULL,
+	entity_type entity_type NOT NULL,
+	parent_id INT,
+	child_order INT NOT NULL DEFAULT 0
+);
+ALTER TABLE bookbrainz.identifier_type ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.identifier_type (id);
+
+CREATE TABLE bookbrainz.identifier (
+	id SERIAL PRIMARY KEY,
+	type_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.identifier ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.identifier_type (id);
+
+CREATE TABLE bookbrainz.relationship_type (
+	id SERIAL PRIMARY KEY,
+	label VARCHAR(255) NOT NULL,
+	description TEXT NOT NULL,
+	link_phrase TEXT NOT NULL,
+	source_entity_type entity_type NOT NULL,
+	target_entity_type entity_type NOT NULL,
+	parent_id INT,
+	child_order INT NOT NULL DEFAULT 0,
+	deprecated BOOLEAN NOT NULL DEFAULT FALSE
+);
+ALTER TABLE bookbrainz.relationship_type ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.relationship_type (id);
+
+CREATE TABLE bookbrainz.relationship (
+	id SERIAL PRIMARY KEY,
+	type_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.relationship_type (id);
+
 COMMIT;
