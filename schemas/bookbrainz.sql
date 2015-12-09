@@ -13,6 +13,7 @@ CREATE TABLE bookbrainz.entity (
 	redirect_bbid UUID NULL,
 	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
 );
+ALTER TABLE bookbrainz.entity ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.creator_header (
 	bbid UUID PRIMARY KEY,
@@ -56,35 +57,45 @@ CREATE TABLE bookbrainz.creator_revision (
 	bbid UUID NOT NULL,
 	data_id INT
 );
+ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.creator_header (bbid);
+ALTER TABLE bookbrainz.creator_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.creator_revision (id);
 
 CREATE TABLE bookbrainz.publication_revision (
 	id SERIAL PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
+ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.publication_header (bbid);
+ALTER TABLE bookbrainz.publication_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.publication_revision (id);
 
 CREATE TABLE bookbrainz.edition_revision (
 	id SERIAL PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
+ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.edition_header (bbid);
+ALTER TABLE bookbrainz.edition_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.edition_revision (id);
 
 CREATE TABLE bookbrainz.publisher_revision (
 	id SERIAL PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
+ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.publisher_header (bbid);
+ALTER TABLE bookbrainz.publisher_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.publisher_revision (id);
 
 CREATE TABLE bookbrainz.work_revision (
 	id SERIAL PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
+ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.work_header (bbid);
+ALTER TABLE bookbrainz.work_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.work_revision (id);
 
 CREATE TABLE bookbrainz.note (
 	id SERIAL PRIMARY KEY,
@@ -126,6 +137,12 @@ CREATE TABLE bookbrainz.release_event__edition_data (
 		edition_data_id
 	)
 );
+ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (release_event_id) REFERENCES bookbrainz.release_event (id);
+
+CREATE TABLE bookbrainz.creator_credit (
+	id SERIAL PRIMARY KEY,
+	begin_phrase TEXT NOT NULL DEFAULT ''
+);
 
 CREATE TABLE bookbrainz.creator_credit_name (
 	creator_credit_id INT,
@@ -138,11 +155,8 @@ CREATE TABLE bookbrainz.creator_credit_name (
 		position
 	)
 );
-
-CREATE TABLE bookbrainz.creator_credit (
-	id SERIAL PRIMARY KEY,
-	begin_phrase TEXT NOT NULL DEFAULT ''
-);
+ALTER TABLE creator_credit_name ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
+ALTER TABLE creator_credit_name ADD FOREIGN KEY (creator_bbid) REFERENCES bookbrainz.creator_header (bbid);
 
 CREATE TABLE bookbrainz.edition_data__language (
 	data_id INT,
@@ -161,6 +175,7 @@ CREATE TABLE bookbrainz.edition_data__publisher (
 		publisher_bbid
 	)
 );
+ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (publisher_bbid) REFERENCES publisher_header (bbid);
 
 CREATE TABLE bookbrainz.edition_format (
 	id SERIAL PRIMARY KEY,
@@ -187,13 +202,14 @@ CREATE TABLE bookbrainz.edition_data (
 	format_id INT,
 	status_id INT
 );
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (format_id) REFERENCES bookbrainz.edition_format (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (publication_bbid) REFERENCES bookbrainz.publication_header (bbid);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (status_id) REFERENCES bookbrainz.edition_status (id);
 ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 ALTER TABLE bookbrainz.edition_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
-ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (release_event_id) REFERENCES bookbrainz.release_event (id);
 ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (edition_data_id) REFERENCES bookbrainz.edition_data (id);
-ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
-ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (publication_bbid) REFERENCES bookbrainz.publication_header (bbid);
 
 CREATE TABLE bookbrainz.publication_type (
 	id SERIAL PRIMARY KEY,
@@ -227,6 +243,15 @@ CREATE TABLE bookbrainz.publisher_data (
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publisher_type (id);
 ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
 
+CREATE TABLE bookbrainz.work_data__language (
+	data_id INT,
+	language_id INT,
+	PRIMARY KEY (
+		data_id,
+		language_id
+	)
+);
+
 CREATE TABLE bookbrainz.work_type (
 	id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
@@ -238,15 +263,6 @@ CREATE TABLE bookbrainz.work_data (
 );
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
-
-CREATE TABLE bookbrainz.work_data__language (
-	data_id INT,
-	language_id INT,
-	PRIMARY KEY (
-		data_id,
-		language_id
-	)
-);
 ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
 COMMIT;
