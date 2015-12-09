@@ -8,6 +8,30 @@ CREATE TYPE entity_type AS ENUM (
 	'Work'
 );
 
+CREATE TABLE bookbrainz.editor_type (
+	id SERIAL PRIMARY KEY,
+	label VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE bookbrainz.editor (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(64) NOT NULL UNIQUE,
+	email VARCHAR(255) NOT NULL,
+	reputation INT NOT NULL DEFAULT 0,
+	bio TEXT,
+	birth_date DATE,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	type_id INT NOT NULL,
+	gender_id INT,
+	country_id INT,
+	password TEXT NOT NULL,
+	revisions_applied INT NOT NULL DEFAULT 0,
+	revisions_reverted INT NOT NULL DEFAULT 0,
+	total_revisions INT NOT NULL DEFAULT 0
+);
+ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
+
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
 	redirect_bbid UUID NULL,
@@ -59,6 +83,7 @@ CREATE TABLE bookbrainz.revision (
 	author_id INT NOT NULL,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
+ALTER TABLE bookbrainz.revision ADD FOREIGN KEY (author_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (child_id) REFERENCES bookbrainz.revision (id);
 
@@ -114,6 +139,7 @@ CREATE TABLE bookbrainz.note (
 	content TEXT NOT NULL,
 	posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
+ALTER TABLE bookbrainz.note ADD FOREIGN KEY (author_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.note ADD FOREIGN KEY (revision_id) REFERENCES bookbrainz.revision (id);
 
 CREATE TABLE bookbrainz.creator_data (
