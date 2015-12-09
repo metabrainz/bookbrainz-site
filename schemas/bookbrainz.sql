@@ -25,7 +25,7 @@ CREATE TABLE bookbrainz.editor (
 	type_id INT NOT NULL,
 	gender_id INT,
 	country_id INT,
-	password TEXT NOT NULL,
+	password CHAR(60) NOT NULL,
 	revisions_applied INT NOT NULL DEFAULT 0,
 	revisions_reverted INT NOT NULL DEFAULT 0,
 	total_revisions INT NOT NULL DEFAULT 0
