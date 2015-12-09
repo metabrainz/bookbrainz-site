@@ -45,12 +45,22 @@ CREATE TABLE bookbrainz.work_header (
 );
 ALTER TABLE bookbrainz.work_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
+CREATE TABLE bookbrainz.revision_parent (
+	parent_id INT NOT NULL,
+	child_id INT NOT NULL,
+	PRIMARY KEY(
+		parent_id,
+		child_id
+	)
+);
+
 CREATE TABLE bookbrainz.revision (
 	id SERIAL PRIMARY KEY,
 	author_id INT NOT NULL,
-	parent_id INT,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
+ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.revision (id);
+ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (child_id) REFERENCES bookbrainz.revision (id);
 
 CREATE TABLE bookbrainz.creator_revision (
 	id SERIAL PRIMARY KEY,
