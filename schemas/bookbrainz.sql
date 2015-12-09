@@ -18,7 +18,7 @@ CREATE TABLE bookbrainz.editor (
 	name VARCHAR(64) NOT NULL UNIQUE,
 	email VARCHAR(255) NOT NULL,
 	reputation INT NOT NULL DEFAULT 0,
-	bio TEXT,
+	bio TEXT NOT NULL DEFAULT '',
 	birth_date DATE,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
@@ -151,7 +151,7 @@ CREATE TABLE bookbrainz.creator_data (
 	end_year SMALLINT,
 	end_month SMALLINT,
 	end_day SMALLINT,
-	ended BOOLEAN,
+	ended BOOLEAN NOT NULL DEFAULT FALSE,
 	country_id INT,
 	gender_id INT,
 	type_id INT
@@ -184,8 +184,8 @@ CREATE TABLE bookbrainz.creator_credit (
 
 CREATE TABLE bookbrainz.creator_credit_name (
 	creator_credit_id INT,
-	"position" SMALLINT,
-	creator_bbid UUID,
+	"position" SMALLINT NOT NULL,
+	creator_bbid UUID NOT NULL,
 	"name" VARCHAR NOT NULL,
 	join_phrase TEXT NOT NULL,
 	PRIMARY KEY (
@@ -193,8 +193,8 @@ CREATE TABLE bookbrainz.creator_credit_name (
 		position
 	)
 );
-ALTER TABLE creator_credit_name ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
-ALTER TABLE creator_credit_name ADD FOREIGN KEY (creator_bbid) REFERENCES bookbrainz.creator_header (bbid);
+ALTER TABLE bookbrainz.creator_credit_name ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
+ALTER TABLE bookbrainz.creator_credit_name ADD FOREIGN KEY (creator_bbid) REFERENCES bookbrainz.creator_header (bbid);
 
 CREATE TABLE bookbrainz.edition_data__language (
 	data_id INT,
@@ -214,7 +214,7 @@ CREATE TABLE bookbrainz.edition_data__publisher (
 		publisher_bbid
 	)
 );
-ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (publisher_bbid) REFERENCES publisher_header (bbid);
+ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (publisher_bbid) REFERENCES bookbrainz.publisher_header (bbid);
 
 CREATE TABLE bookbrainz.edition_format (
 	id SERIAL PRIMARY KEY,
@@ -230,7 +230,6 @@ CREATE TABLE bookbrainz.edition_data (
 	id INT PRIMARY KEY,
 	publication_bbid UUID,
 	country_id INT,
-	type_id INT,
 	creator_credit_id INT,
 	width SMALLINT,
 	height SMALLINT,
@@ -274,7 +273,7 @@ CREATE TABLE bookbrainz.publisher_data (
 	end_year SMALLINT,
 	end_month SMALLINT,
 	end_day SMALLINT,
-	ended BOOLEAN DEFAULT FALSE,
+	ended BOOLEAN NOT NULL DEFAULT FALSE,
 	country_id INT,
 	type_id INT
 );
