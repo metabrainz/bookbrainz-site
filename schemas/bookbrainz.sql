@@ -230,7 +230,6 @@ CREATE TABLE bookbrainz.edition_data (
 	id INT PRIMARY KEY,
 	publication_bbid UUID,
 	country_id INT,
-	gender_id INT,
 	type_id INT,
 	creator_credit_id INT,
 	width SMALLINT,
