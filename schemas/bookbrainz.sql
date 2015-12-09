@@ -1,7 +1,7 @@
 BEGIN;
 
-CREATE TYPE entity_type  AS ENUM (
-	'publication',
+CREATE TYPE entity_type AS ENUM (
+	'Creator',
 	'Publication',
 	'Edition',
 	'Publisher',
