@@ -30,6 +30,7 @@ CREATE TABLE bookbrainz.editor (
 	revisions_reverted INT NOT NULL DEFAULT 0,
 	total_revisions INT NOT NULL DEFAULT 0
 );
+ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
 
 CREATE TABLE bookbrainz.entity (
@@ -155,6 +156,7 @@ CREATE TABLE bookbrainz.creator_data (
 	gender_id INT,
 	type_id INT
 );
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
 
 CREATE TABLE bookbrainz.release_event (
@@ -202,6 +204,7 @@ CREATE TABLE bookbrainz.edition_data__language (
 		language_id
 	)
 );
+ALTER TABLE bookbrainz.edition_data__language ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
 
 CREATE TABLE bookbrainz.edition_data__publisher (
 	data_id INT,
@@ -287,6 +290,7 @@ CREATE TABLE bookbrainz.work_data__language (
 		language_id
 	)
 );
+ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
 
 CREATE TABLE bookbrainz.work_type (
 	id SERIAL PRIMARY KEY,
