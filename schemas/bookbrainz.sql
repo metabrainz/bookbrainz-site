@@ -150,6 +150,9 @@ CREATE TABLE bookbrainz.creator_type (
 
 CREATE TABLE bookbrainz.creator_data (
 	id INT PRIMARY KEY,
+	alias_set_id INT,
+	identifier_set_id INT,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	begin_year SMALLINT,
@@ -236,6 +239,9 @@ CREATE TABLE bookbrainz.edition_status (
 
 CREATE TABLE bookbrainz.edition_data (
 	id INT PRIMARY KEY,
+	alias_set_id INT,
+	identifier_set_id INT,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	publication_bbid UUID,
@@ -265,6 +271,9 @@ CREATE TABLE bookbrainz.publication_type (
 
 CREATE TABLE bookbrainz.publication_data (
 	id INT PRIMARY KEY,
+	alias_set_id INT,
+	identifier_set_id INT,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	type_id INT
@@ -279,6 +288,9 @@ CREATE TABLE bookbrainz.publisher_type (
 
 CREATE TABLE bookbrainz.publisher_data (
 	id INT PRIMARY KEY,
+	alias_set_id INT,
+	identifier_set_id INT,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	begin_year SMALLINT,
@@ -311,6 +323,9 @@ CREATE TABLE bookbrainz.work_type (
 
 CREATE TABLE bookbrainz.work_data (
 	id SERIAL PRIMARY KEY,
+	alias_set_id INT,
+	identifier_set_id INT,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	type_id INT
@@ -339,7 +354,6 @@ ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (disambiguation_id) REFERENC
 ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
-
 
 CREATE TABLE bookbrainz.alias (
 	id SERIAL PRIMARY KEY,
@@ -388,5 +402,55 @@ CREATE TABLE bookbrainz.relationship (
 	type_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.relationship_type (id);
+
+CREATE TABLE bookbrainz.alias_set (
+	id SERIAL PRIMARY KEY
+);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
+ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
+
+CREATE TABLE bookbrainz.alias_set__alias (
+	set_id INT NOT NULL,
+	alias_id INT NOT NULL,
+	"default" BOOLEAN NOT NULL DEFAULT FALSE
+);
+ALTER TABLE bookbrainz.alias_set__alias ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.alias_set (id);
+ALTER TABLE bookbrainz.alias_set__alias ADD FOREIGN KEY (alias_id) REFERENCES bookbrainz.alias (id);
+
+CREATE TABLE bookbrainz.identifier_set (
+	id SERIAL PRIMARY KEY
+);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
+ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
+
+CREATE TABLE bookbrainz.identifier_set__identifier (
+	set_id INT NOT NULL,
+	identifier_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.identifier_set__identifier ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.identifier_set (id);
+ALTER TABLE bookbrainz.identifier_set__identifier ADD FOREIGN KEY (identifier_id) REFERENCES bookbrainz.identifier (id);
+
+CREATE TABLE bookbrainz.relationship_set (
+	id SERIAL PRIMARY KEY
+);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
+ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
+
+CREATE TABLE bookbrainz.relationship_set__relationship (
+	set_id INT NOT NULL,
+	relationship_id INT NOT NULL,
+	source BOOLEAN NOT NULL
+);
+ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.relationship_set (id);
+ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (relationship_id) REFERENCES bookbrainz.relationship (id);
 
 COMMIT;
