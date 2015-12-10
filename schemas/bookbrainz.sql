@@ -360,7 +360,7 @@ CREATE TABLE bookbrainz.alias (
 	name TEXT NOT NULL,
 	sort_name TEXT NOT NULL,
 	language_id INT,
-	primary BOOLEAN NOT NULL DEFAULT FALSE
+	"primary" BOOLEAN NOT NULL DEFAULT FALSE
 );
 ALTER TABLE bookbrainz.alias ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
 
