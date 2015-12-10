@@ -143,6 +143,11 @@ CREATE TABLE bookbrainz.note (
 ALTER TABLE bookbrainz.note ADD FOREIGN KEY (author_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.note ADD FOREIGN KEY (revision_id) REFERENCES bookbrainz.revision (id);
 
+CREATE TABLE bookbrainz.creator_type (
+	id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE
+);
+
 CREATE TABLE bookbrainz.creator_data (
 	id INT PRIMARY KEY,
 	annotation_id INT,
@@ -159,6 +164,7 @@ CREATE TABLE bookbrainz.creator_data (
 	type_id INT
 );
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.creator_type (id);
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
 
 CREATE TABLE bookbrainz.release_event (
