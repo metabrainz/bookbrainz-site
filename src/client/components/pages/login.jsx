@@ -1,4 +1,7 @@
 const React = require('react');
+const Input = require('react-bootstrap').Input;
+
+const Button = require('react-bootstrap').Button;
 
 module.exports = React.createClass({
 	displayName: 'LoginPage',
@@ -7,25 +10,25 @@ module.exports = React.createClass({
 
 		return (
 			<div className="row">
-        <div className="col-md-6 col-md-offset-3">
-          <form action="/login/handler" method="post" className="whole-page-form form-horizontal">
-            <div className="form-group">
-              <label htmlFor="loginUsername" className="col-md-2">Username</label>
-              <div className="col-md-10">
-                <input id="loginUsername" type="text" placeholder="Username" name="username" className="form-control" />
-              </div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="loginPassword" className="col-md-2">Password</label>
-              <div className="col-md-10">
-                <input id="loginPassword" type="password" placeholder="Password" name="password" className="form-control" />
-              </div>
-            </div>
-            <button type="submit" className="btn btn-primary btn-lg btn-block">Login</button>
-            <hr /><a href="/register" className="btn btn-success btn-lg btn-block">Register</a>
-          </form>
-        </div>
-      </div>
-    );
+				<div className="col-md-6 col-md-offset-3">
+          			<form action="/login/handler" method="post" className="whole-page-form form-horizontal">
+            			<div className="form-group">        
+			                <Input id="loginUsername" label="Username" labelClassName="col-md-2" wrapperClassName="col-md-10" type="text" placeholder="Username" name="username" className="form-control" />
+            			</div>
+            			<div className="form-group">
+                			<Input id="loginPassword" label="Password" labelClassName="col-md-2" wrapperClassName="col-md-10" type="password" placeholder="Password" name="password" className="form-control" />
+              
+            			</div>
+            			<Button type="submit" bsStyle="primary" bsSize="large" block>
+            				Login
+            			</Button>
+            			<hr />
+            			<Button href="/register" bsStyle="success" bsSize="large" block>
+            				Register
+            			</Button>
+          			</form>
+        		</div>
+      		</div>
+    	);
 	}
 });
