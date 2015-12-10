@@ -145,6 +145,8 @@ ALTER TABLE bookbrainz.note ADD FOREIGN KEY (revision_id) REFERENCES bookbrainz.
 
 CREATE TABLE bookbrainz.creator_data (
 	id INT PRIMARY KEY,
+	annotation_id INT,
+	disambiguation_id INT,
 	begin_year SMALLINT,
 	begin_month SMALLINT,
 	begin_day SMALLINT,
@@ -228,6 +230,8 @@ CREATE TABLE bookbrainz.edition_status (
 
 CREATE TABLE bookbrainz.edition_data (
 	id INT PRIMARY KEY,
+	annotation_id INT,
+	disambiguation_id INT,
 	publication_bbid UUID,
 	country_id INT,
 	creator_credit_id INT,
@@ -255,6 +259,8 @@ CREATE TABLE bookbrainz.publication_type (
 
 CREATE TABLE bookbrainz.publication_data (
 	id INT PRIMARY KEY,
+	annotation_id INT,
+	disambiguation_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publication_type (id);
@@ -267,6 +273,8 @@ CREATE TABLE bookbrainz.publisher_type (
 
 CREATE TABLE bookbrainz.publisher_data (
 	id INT PRIMARY KEY,
+	annotation_id INT,
+	disambiguation_id INT,
 	begin_year SMALLINT,
 	begin_month SMALLINT,
 	begin_day SMALLINT,
@@ -297,11 +305,35 @@ CREATE TABLE bookbrainz.work_type (
 
 CREATE TABLE bookbrainz.work_data (
 	id SERIAL PRIMARY KEY,
+	annotation_id INT,
+	disambiguation_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
+
+CREATE TABLE bookbrainz.annotation (
+	id SERIAL PRIMARY KEY,
+	content TEXT NOT NULL,
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
+ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
+
+CREATE TABLE bookbrainz.disambiguation (
+	id SERIAL PRIMARY KEY,
+	"comment" TEXT NOT NULL
+);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
+ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
+
 
 CREATE TABLE bookbrainz.alias (
 	id SERIAL PRIMARY KEY,
