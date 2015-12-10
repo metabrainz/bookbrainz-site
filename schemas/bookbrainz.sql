@@ -318,9 +318,11 @@ CREATE TABLE bookbrainz.identifier_type (
 	description TEXT NOT NULL,
 	detection_regex TEXT,
 	validation_regex TEXT NOT NULL,
+	link_phrase TEXT NOT NULL,
 	entity_type entity_type NOT NULL,
 	parent_id INT,
-	child_order INT NOT NULL DEFAULT 0
+	child_order INT NOT NULL DEFAULT 0,
+	deprecated BOOLEAN NOT NULL DEFAULT FALSE
 );
 ALTER TABLE bookbrainz.identifier_type ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.identifier_type (id);
 
