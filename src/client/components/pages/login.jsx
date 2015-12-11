@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
- const React = require('react');
+const React = require('react');
 const Input = require('react-bootstrap').Input;
 
 const Button = require('react-bootstrap').Button;
