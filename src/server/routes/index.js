@@ -30,6 +30,24 @@ const Creator = require('../data/entities/creator');
 const Edition = require('../data/entities/edition');
 const Work = require('../data/entities/work');
 const Publisher = require('../data/entities/publisher');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const AboutPage = React.createFactory(
+	require('../../client/components/pages/about.jsx')
+);
+const ContributePage = React.createFactory(
+	require('../../client/components/pages/contribute.jsx')
+);
+const DevelopPage = React.createFactory(
+	require('../../client/components/pages/develop.jsx')
+);
+const PrivacyPage = React.createFactory(
+	require('../../client/components/pages/privacy.jsx')
+);
+const LicensingPage = React.createFactory(
+	require('../../client/components/pages/licensing.jsx')
+);
 
 /* GET home page. */
 router.get('/', (req, res) => {
@@ -55,32 +73,37 @@ router.get('/', (req, res) => {
 });
 
 router.get('/about', (req, res) => {
-	res.render('about', {
-		title: 'About'
+	res.render('page', {
+		title: 'About',
+		markup: ReactDOMServer.renderToString(AboutPage())
 	});
 });
 
 router.get('/contribute', (req, res) => {
-	res.render('contribute', {
-		title: 'Contribute'
+	res.render('page', {
+		title: 'Contribute',
+		markup: ReactDOMServer.renderToString(ContributePage())
 	});
 });
 
 router.get('/develop', (req, res) => {
-	res.render('develop', {
-		title: 'Develop'
+	res.render('page', {
+		title: 'Develop',
+		markup: ReactDOMServer.renderToString(DevelopPage())
 	});
 });
 
 router.get('/privacy', (req, res) => {
-	res.render('privacy', {
-		title: 'Privacy'
+	res.render('page', {
+		title: 'Privacy',
+		markup: ReactDOMServer.renderToString(PrivacyPage())
 	});
 });
 
 router.get('/licensing', (req, res) => {
-	res.render('licensing', {
-		title: 'Licensing'
+	res.render('page', {
+		title: 'Licensing',
+		markup: ReactDOMServer.renderToString(LicensingPage())
 	});
 });
 
