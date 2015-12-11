@@ -28,24 +28,19 @@ module.exports = React.createClass({
 		return (
 			<div className="row">
 				<div className="col-md-6 col-md-offset-3">
-          			<form action="/login/handler" method="post" className="whole-page-form form-horizontal">
-            			<div className="form-group">        
-			                <Input id="loginUsername" label="Username" labelClassName="col-md-2" wrapperClassName="col-md-10" type="text" placeholder="Username" name="username" className="form-control" />
-            			</div>
-            			<div className="form-group">
-                			<Input id="loginPassword" label="Password" labelClassName="col-md-2" wrapperClassName="col-md-10" type="password" placeholder="Password" name="password" className="form-control" />
-              
-            			</div>
-            			<Button type="submit" bsStyle="primary" bsSize="large" block>
-            				Login
-            			</Button>
-            			<hr />
-            			<Button href="/register" bsStyle="success" bsSize="large" block>
-            				Register
-            			</Button>
-          			</form>
-        		</div>
-      		</div>
-    	);
+					<form action="/login/handler" className="whole-page-form form-horizontal" method="post">
+						<div className="form-group">
+							<Input className="form-control" id="loginUsername" label="Username" labelClassName="col-md-2" name="username" placeholder="Username" type="text" wrapperClassName="col-md-10" />
+						</div>
+						<div className="form-group">
+							<Input className="form-control" id="loginPassword" label="Password" labelClassName="col-md-2" name="password" placeholder="Password" type="password" wrapperClassName="col-md-10" />
+						</div>
+						<Button bsSize="large" bsStyle="primary" type="submit" block>Login</Button>
+						<hr />
+						<Button bsSize="large" bsStyle="success" href="/register" block>Register</Button>
+					</form>
+				</div>
+			</div>
+		);
 	}
 });

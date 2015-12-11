@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
 	delete req.session.error;
 	res.render('page', {
 		error,
-		title: 'Register'
+		title: 'Register',
 		markup: ReactDOMServer.renderToString(RegisterPage())
 	});
 });

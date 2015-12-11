@@ -26,30 +26,24 @@ module.exports = React.createClass({
 
 		return (
 			<div className="row">
-        		<div className="col-md-6 col-md-offset-3">
-          			<form action="/register/handler" method="post" className="whole-page-form form-horizontal">
-            			<div className="form-group">
-              
-                		<Input id="registerUsername" label="Username" labelClassName="col-md-2" wrapperClassName="col-md-10" type="text" placeholder="Username" name="username" className="form-control" />
-              
-            			</div>
-            		<div className="form-group">
-                		<Input id="registerEmail" label="Email" labelClassName="col-md-2" wrapperClassName="col-md-10" type="email" placeholder="email@example.com" name="email" className="form-control" />
-          
-            		</div>
-            		<div className="form-group">
-                		<Input id="registerPassword" label="Password" labelClassName="col-md-2" wrapperClassName="col-md-10" type="password" placeholder="Password" name="password" className="form-control" />
-
-            		</div>
-            		<div className="form-group">
-
-                		<Input id="registerPassword2" label="Repeat Password" labelClassName="col-md-2" wrapperClassName="col-md-10" type="password" placeholder="Password" name="password2" className="form-control" />
-              
-            		</div>	
-            	<Button type="submit" bsStyle="success" bsSize="large" block>Register</Button>
-          		</form>
-        	</div>
-      	</div>
-    	);
+				<div className="col-md-6 col-md-offset-3">
+					<form action="/register/handler" className="whole-page-form form-horizontal" method="post">
+					<div className="form-group">
+						<Input className="form-control" id="registerUsername" label="Username" labelClassName="col-md-2" name="username" placeholder="Username" type="text" wrapperClassName="col-md-10" />
+					</div>
+					<div className="form-group">
+						<Input className="form-control" id="registerEmail" label="Email" labelClassName="col-md-2" name="email" placeholder="email@example.com" type="email" wrapperClassName="col-md-10" />
+					</div>
+					<div className="form-group">
+						<Input className="form-control" id="registerPassword" label="Password" labelClassName="col-md-2" name="password" placeholder="Password" type="password" wrapperClassName="col-md-10" />
+					</div>
+					<div className="form-group">
+						<Input className="form-control" id="registerPassword2" label="Repeat Password" labelClassName="col-md-2" name="password2" placeholder="Password" type="password" wrapperClassName="col-md-10" />
+					</div>
+				<Button bsSize="large" bsStyle="success" type="submit" block>Register</Button>
+				</form>
+			</div>
+		</div>
+		);
 	}
 });
