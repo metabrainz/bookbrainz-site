@@ -41,7 +41,6 @@ router.get('/', (req, res) => {
 	});
 });
 
-
 router.post('/handler', (req, res, next) => {
 	if (!req.body.password) {
 		req.session.error = 'No password set';
