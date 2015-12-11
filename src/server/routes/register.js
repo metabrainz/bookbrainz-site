@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
  *               2015  Sean Burke
+ *               2015  Annie Zhou
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,14 +25,20 @@ const router = express.Router();
 const status = require('http-status');
 const User = require('../data/user');
 const UserType = require('../data/properties/user-type');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const RegisterPage = React.createFactory(
+	require('../../client/components/pages/register.jsx')
+);
 
 router.get('/', (req, res) => {
 	const error = req.session.error;
 	delete req.session.error;
-
-	res.render('register', {
+	res.render('page', {
 		error,
-		title: 'Register'
+		title: 'Register',
+		markup: ReactDOMServer.renderToString(RegisterPage())
 	});
 });
 
