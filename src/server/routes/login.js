@@ -33,7 +33,7 @@ const LoginPage = React.createFactory(
 
 router.get('/login', (req, res) => {
 	res.render('page', {
-		title: 'Login',
+		title: 'Log in',
 		error: req.query.error,
 		markup: ReactDOMServer.renderToString(LoginPage())
 	});
