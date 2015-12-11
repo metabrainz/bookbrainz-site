@@ -35,9 +35,9 @@ module.exports = React.createClass({
 						<div className="form-group">
 							<Input className="form-control" id="loginPassword" label="Password" labelClassName="col-md-2" name="password" placeholder="Password" type="password" wrapperClassName="col-md-10" />
 						</div>
-						<Button bsSize="large" bsStyle="primary" type="submit" block>Login</Button>
+						<Button block bsSize="large" bsStyle="primary" type="submit">Login</Button>
 						<hr />
-						<Button bsSize="large" bsStyle="success" href="/register" block>Register</Button>
+						<Button block bsSize="large" bsStyle="success" href="/register">Register</Button>
 					</form>
 				</div>
 			</div>

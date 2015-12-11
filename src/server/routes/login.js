@@ -29,7 +29,7 @@ const ReactDOMServer = require('react-dom/server');
 const LoginPage = React.createFactory(
 	require('../../client/components/pages/login.jsx')
 );
-	
+
 router.get('/login', (req, res) => {
 	res.render('page', {
 		title: 'Login',

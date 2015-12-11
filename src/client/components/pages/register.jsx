@@ -40,7 +40,7 @@ module.exports = React.createClass({
 					<div className="form-group">
 						<Input className="form-control" id="registerPassword2" label="Repeat Password" labelClassName="col-md-2" name="password2" placeholder="Password" type="password" wrapperClassName="col-md-10" />
 					</div>
-				<Button bsSize="large" bsStyle="success" type="submit" block>Register</Button>
+				<Button block bsSize="large" bsStyle="success" type="submit">Register</Button>
 				</form>
 			</div>
 		</div>
