@@ -23,11 +23,18 @@ const express = require('express');
 const router = express.Router();
 const status = require('http-status');
 const auth = require('../helpers/auth');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
+const LoginPage = React.createFactory(
+	require('../../client/components/pages/login.jsx')
+);
+	
 router.get('/login', (req, res) => {
-	res.render('login', {
+	res.render('page', {
+		title: 'Login',
 		error: req.query.error,
-		title: 'Log In'
+		markup: ReactDOMServer.renderToString(LoginPage())
 	});
 });
 

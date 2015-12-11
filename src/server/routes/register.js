@@ -24,16 +24,24 @@ const router = express.Router();
 const status = require('http-status');
 const User = require('../data/user');
 const UserType = require('../data/properties/user-type');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const RegisterPage = React.createFactory(
+	require('../../client/components/pages/register.jsx')
+);
 
 router.get('/', (req, res) => {
 	const error = req.session.error;
 	delete req.session.error;
 
-	res.render('register', {
+	res.render('page', {
 		error,
 		title: 'Register'
+		markup: ReactDOMServer.renderToString(RegisterPage())
 	});
 });
+
 
 router.post('/handler', (req, res, next) => {
 	if (!req.body.password) {
