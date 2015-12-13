@@ -36,10 +36,20 @@ ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.a
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-	redirect_bbid UUID NULL,
 	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
 );
 ALTER TABLE bookbrainz.entity ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
+CREATE TABLE bookbrainz.entity_redirect (
+	source_bbid UUID,
+	target_bbid UUID,
+	PRIMARY KEY (
+		source_bbid,
+		target_bbid
+	)
+);
+ALTER TABLE bookbrainz.entity_redirect ADD FOREIGN KEY (source_bbid) REFERENCES bookbrainz.entity (bbid);
+ALTER TABLE bookbrainz.entity_redirect ADD FOREIGN KEY (target_bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.creator_header (
 	bbid UUID PRIMARY KEY,
