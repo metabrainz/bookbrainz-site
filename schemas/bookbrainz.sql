@@ -160,7 +160,7 @@ CREATE TABLE bookbrainz.creator_type (
 );
 
 CREATE TABLE bookbrainz.creator_data (
-	id INT PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	alias_set_id INT,
 	identifier_set_id INT,
 	relationship_set_id INT,
@@ -187,7 +187,7 @@ ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (end_area_id) REFERENCES mus
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
 
 CREATE TABLE bookbrainz.release_event (
-	id INT PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	"year" SMALLINT,
 	"month" SMALLINT,
 	"day" SMALLINT,
@@ -255,7 +255,7 @@ CREATE TABLE bookbrainz.edition_status (
 );
 
 CREATE TABLE bookbrainz.edition_data (
-	id INT PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	alias_set_id INT,
 	identifier_set_id INT,
 	relationship_set_id INT,
@@ -287,7 +287,7 @@ CREATE TABLE bookbrainz.publication_type (
 );
 
 CREATE TABLE bookbrainz.publication_data (
-	id INT PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	alias_set_id INT,
 	identifier_set_id INT,
 	relationship_set_id INT,
@@ -304,7 +304,7 @@ CREATE TABLE bookbrainz.publisher_type (
 );
 
 CREATE TABLE bookbrainz.publisher_data (
-	id INT PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	alias_set_id INT,
 	identifier_set_id INT,
 	relationship_set_id INT,
