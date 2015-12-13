@@ -24,7 +24,7 @@ CREATE TABLE bookbrainz.editor (
 	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	type_id INT NOT NULL,
 	gender_id INT,
-	country_id INT,
+	area_id INT,
 	password CHAR(60) NOT NULL,
 	revisions_applied INT NOT NULL DEFAULT 0,
 	revisions_reverted INT NOT NULL DEFAULT 0,
@@ -32,6 +32,7 @@ CREATE TABLE bookbrainz.editor (
 );
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
+ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
@@ -158,16 +159,21 @@ CREATE TABLE bookbrainz.creator_data (
 	begin_year SMALLINT,
 	begin_month SMALLINT,
 	begin_day SMALLINT,
+	begin_area_id INT,
 	end_year SMALLINT,
 	end_month SMALLINT,
 	end_day SMALLINT,
+	end_area_id INT,
 	ended BOOLEAN NOT NULL DEFAULT FALSE,
-	country_id INT,
+	area_id INT,
 	gender_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.creator_type (id);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (begin_area_id) REFERENCES musicbrainz.area (id);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (end_area_id) REFERENCES musicbrainz.area (id);
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
 
 CREATE TABLE bookbrainz.release_event (
@@ -175,8 +181,9 @@ CREATE TABLE bookbrainz.release_event (
 	"year" SMALLINT,
 	"month" SMALLINT,
 	"day" SMALLINT,
-	country_id INT
+	area_id INT
 );
+ALTER TABLE bookbrainz.release_event ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.country_area (area);
 
 CREATE TABLE bookbrainz.release_event__edition_data (
 	release_event_id INT,
@@ -300,10 +307,11 @@ CREATE TABLE bookbrainz.publisher_data (
 	end_month SMALLINT,
 	end_day SMALLINT,
 	ended BOOLEAN NOT NULL DEFAULT FALSE,
-	country_id INT,
+	area_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publisher_type (id);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
 ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
 
 CREATE TABLE bookbrainz.work_data__language (
