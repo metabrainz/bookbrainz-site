@@ -177,7 +177,24 @@ CREATE TABLE bookbrainz.creator_data (
 	ended BOOLEAN NOT NULL DEFAULT FALSE,
 	area_id INT,
 	gender_id INT,
-	type_id INT
+	type_id INT,
+	CHECK (
+		(
+			-- If any end date fields are not null, then ended must be true
+			(
+				end_year IS NOT NULL OR
+				end_month IS NOT NULL OR
+				end_day IS NOT NULL
+			) AND ended = TRUE
+		) OR (
+			-- Otherwise, all end date fields must be null
+			(
+				end_year IS NULL AND
+				end_month IS NULL AND
+				end_day IS NULL
+			)
+		)
+	)
 );
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.creator_type (id);
@@ -318,7 +335,24 @@ CREATE TABLE bookbrainz.publisher_data (
 	end_day SMALLINT,
 	ended BOOLEAN NOT NULL DEFAULT FALSE,
 	area_id INT,
-	type_id INT
+	type_id INT,
+	CHECK (
+		(
+			-- If any end date fields are not null, then ended must be true
+			(
+				end_year IS NOT NULL OR
+				end_month IS NOT NULL OR
+				end_day IS NOT NULL
+			) AND ended = TRUE
+		) OR (
+			-- Otherwise, all end date fields must be null
+			(
+				end_year IS NULL AND
+				end_month IS NULL AND
+				end_day IS NULL
+			)
+		)
+	)
 );
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publisher_type (id);
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
