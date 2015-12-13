@@ -19,7 +19,7 @@ CREATE TABLE musicbrainz.language (
 );
 
 CREATE TABLE musicbrainz.area_type ( -- replicate
-    id                  SERIAL, -- PK
+    id                  SERIAL PRIMARY KEY, -- PK
     name                VARCHAR(255) NOT NULL,
     parent              INTEGER, -- references area_type.id
     child_order         INTEGER NOT NULL DEFAULT 0,
@@ -28,7 +28,7 @@ CREATE TABLE musicbrainz.area_type ( -- replicate
 
 
 CREATE TABLE musicbrainz.area ( -- replicate (verbose)
-    id                  SERIAL, -- PK
+    id                  SERIAL PRIMARY KEY, -- PK
     gid                 uuid NOT NULL,
     name                VARCHAR NOT NULL,
     type                INTEGER, -- references area_type.id
@@ -59,7 +59,7 @@ CREATE TABLE musicbrainz.area ( -- replicate (verbose)
 );
 
 CREATE TABLE musicbrainz.country_area ( -- replicate (verbose)
-    area                INTEGER -- PK, references area.id
+    area                INTEGER PRIMARY KEY -- PK, references area.id
 );
 
 COMMIT;
