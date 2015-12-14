@@ -408,8 +408,9 @@ ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (data_id) REFERENCES 
 CREATE TABLE bookbrainz.annotation (
 	id SERIAL PRIMARY KEY,
 	content TEXT NOT NULL,
-	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	last_revision_id INT NOT NULL
 );
+ALTER TABLE bookbrainz.annotation ADD FOREIGN KEY (last_revision_id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
 ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
