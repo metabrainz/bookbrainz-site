@@ -485,9 +485,13 @@ ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (alias_set_id) REFERENCES 
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
 
 CREATE TABLE bookbrainz.alias_set__alias (
-	set_id INT NOT NULL,
-	alias_id INT NOT NULL,
-	"default" BOOLEAN NOT NULL DEFAULT FALSE
+	set_id INT,
+	alias_id INT,
+	"default" BOOLEAN NOT NULL DEFAULT FALSE,
+	PRIMARY KEY (
+		set_id,
+		alias_id
+	)
 );
 ALTER TABLE bookbrainz.alias_set__alias ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.alias_set (id);
 ALTER TABLE bookbrainz.alias_set__alias ADD FOREIGN KEY (alias_id) REFERENCES bookbrainz.alias (id);
@@ -502,8 +506,12 @@ ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (identifier_set_id) REFERE
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
 
 CREATE TABLE bookbrainz.identifier_set__identifier (
-	set_id INT NOT NULL,
-	identifier_id INT NOT NULL
+	set_id INT,
+	identifier_id INT,
+	PRIMARY KEY (
+		set_id,
+		identifier_id
+	)
 );
 ALTER TABLE bookbrainz.identifier_set__identifier ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.identifier_set (id);
 ALTER TABLE bookbrainz.identifier_set__identifier ADD FOREIGN KEY (identifier_id) REFERENCES bookbrainz.identifier (id);
@@ -518,9 +526,13 @@ ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (relationship_set_id) REFE
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
 
 CREATE TABLE bookbrainz.relationship_set__relationship (
-	set_id INT NOT NULL,
-	relationship_id INT NOT NULL,
-	source BOOLEAN NOT NULL
+	set_id INT,
+	relationship_id INT,
+	source BOOLEAN NOT NULL,
+	PRIMARY KEY (
+		set_id,
+		relationship_id
+	)
 );
 ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.relationship_set (id);
 ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (relationship_id) REFERENCES bookbrainz.relationship (id);
