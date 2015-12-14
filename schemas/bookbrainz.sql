@@ -241,6 +241,8 @@ ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (release_even
 
 CREATE TABLE bookbrainz.creator_credit (
 	id SERIAL PRIMARY KEY,
+	creator_count SMALLINT NOT NULL,
+	ref_count INT NOT NULL DEFAULT 0,
 	begin_phrase TEXT NOT NULL DEFAULT ''
 );
 
