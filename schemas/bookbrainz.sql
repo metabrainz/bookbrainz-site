@@ -1,6 +1,13 @@
 BEGIN;
 
-CREATE TYPE entity_type AS ENUM (
+CREATE TYPE bookbrainz.lang_proficiency AS ENUM (
+	'BASIC',
+	'INTERMEDIATE',
+	'ADVANCED',
+	'NATIVE'
+);
+
+CREATE TYPE bookbrainz.entity_type AS ENUM (
 	'Creator',
 	'Publication',
 	'Edition',
@@ -33,6 +40,16 @@ CREATE TABLE bookbrainz.editor (
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
+
+CREATE TABLE bookbrainz.editor_language (
+	editor_id INT NOT NULL,
+	language_id INT NOT NULL,
+	proficiency bookbrainz.lang_proficiency NOT NULL,
+	PRIMARY KEY (
+		editor_id,
+		language_id
+	)
+);
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
@@ -423,7 +440,7 @@ CREATE TABLE bookbrainz.identifier_type (
 	detection_regex TEXT,
 	validation_regex TEXT NOT NULL,
 	display_template TEXT NOT NULL,
-	entity_type entity_type NOT NULL,
+	entity_type bookbrainz.entity_type NOT NULL,
 	parent_id INT,
 	child_order INT NOT NULL DEFAULT 0,
 	deprecated BOOLEAN NOT NULL DEFAULT FALSE
@@ -441,8 +458,8 @@ CREATE TABLE bookbrainz.relationship_type (
 	label VARCHAR(255) NOT NULL,
 	description TEXT NOT NULL,
 	display_template TEXT NOT NULL,
-	source_entity_type entity_type NOT NULL,
-	target_entity_type entity_type NOT NULL,
+	source_entity_type bookbrainz.entity_type NOT NULL,
+	target_entity_type bookbrainz.entity_type NOT NULL,
 	parent_id INT,
 	child_order INT NOT NULL DEFAULT 0,
 	deprecated BOOLEAN NOT NULL DEFAULT FALSE
