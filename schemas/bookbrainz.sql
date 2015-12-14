@@ -53,7 +53,7 @@ CREATE TABLE bookbrainz.editor_language (
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-	last_updated TIMESTAMP NOT NULL DEFAULT (now() AT TIME ZONE 'UTC')
+	last_updated TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
 ALTER TABLE bookbrainz.entity ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
@@ -248,7 +248,7 @@ CREATE TABLE bookbrainz.creator_credit_name (
 	creator_credit_id INT,
 	"position" SMALLINT NOT NULL,
 	creator_bbid UUID NOT NULL,
-	"name" VARCHAR NOT NULL,
+	name VARCHAR NOT NULL,
 	join_phrase TEXT NOT NULL,
 	PRIMARY KEY (
 		creator_credit_id,
@@ -416,7 +416,7 @@ ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (annotation_id) REFERENCES book
 
 CREATE TABLE bookbrainz.disambiguation (
 	id SERIAL PRIMARY KEY,
-	"comment" TEXT NOT NULL
+	comment TEXT NOT NULL
 );
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (disambiguation_id) REFERENCES bookbrainz.disambiguation (id);
