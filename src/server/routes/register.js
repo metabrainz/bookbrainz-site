@@ -33,8 +33,13 @@ const RegisterPage = React.createFactory(
 );
 
 router.get('/', (req, res) => {
-	const error = req.session.error;
-	delete req.session.error;
+	let error;
+
+	if (req.session) {
+		error = req.session.error;
+		delete req.session.error;
+	}
+
 	res.render('page', {
 		error,
 		title: 'Register',
