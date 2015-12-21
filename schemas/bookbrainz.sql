@@ -179,9 +179,9 @@ CREATE TABLE bookbrainz.creator_type (
 
 CREATE TABLE bookbrainz.creator_data (
 	id SERIAL PRIMARY KEY,
-	alias_set_id INT,
-	identifier_set_id INT,
-	relationship_set_id INT,
+	alias_set_id INT NOT NULL,
+	identifier_set_id INT NOT NULL,
+	relationship_set_id INT NOT NULL,
 	annotation_id INT,
 	disambiguation_id INT,
 	begin_year SMALLINT,
@@ -293,9 +293,9 @@ CREATE TABLE bookbrainz.edition_status (
 
 CREATE TABLE bookbrainz.edition_data (
 	id SERIAL PRIMARY KEY,
-	alias_set_id INT,
-	identifier_set_id INT,
-	relationship_set_id INT,
+	alias_set_id INT NOT NULL,
+	identifier_set_id INT NOT NULL,
+	relationship_set_id INT NOT NULL,
 	annotation_id INT,
 	disambiguation_id INT,
 	publication_bbid UUID,
@@ -325,9 +325,9 @@ CREATE TABLE bookbrainz.publication_type (
 
 CREATE TABLE bookbrainz.publication_data (
 	id SERIAL PRIMARY KEY,
-	alias_set_id INT,
-	identifier_set_id INT,
-	relationship_set_id INT,
+	alias_set_id INT NOT NULL,
+	identifier_set_id INT NOT NULL,
+	relationship_set_id INT NOT NULL,
 	annotation_id INT,
 	disambiguation_id INT,
 	type_id INT
@@ -342,9 +342,9 @@ CREATE TABLE bookbrainz.publisher_type (
 
 CREATE TABLE bookbrainz.publisher_data (
 	id SERIAL PRIMARY KEY,
-	alias_set_id INT,
-	identifier_set_id INT,
-	relationship_set_id INT,
+	alias_set_id INT NOT NULL,
+	identifier_set_id INT NOT NULL,
+	relationship_set_id INT NOT NULL,
 	annotation_id INT,
 	disambiguation_id INT,
 	begin_year SMALLINT,
@@ -395,9 +395,9 @@ CREATE TABLE bookbrainz.work_type (
 
 CREATE TABLE bookbrainz.work_data (
 	id SERIAL PRIMARY KEY,
-	alias_set_id INT,
-	identifier_set_id INT,
-	relationship_set_id INT,
+	alias_set_id INT NOT NULL,
+	identifier_set_id INT NOT NULL,
+	relationship_set_id INT NOT NULL,
 	annotation_id INT,
 	disambiguation_id INT,
 	type_id INT
