@@ -53,7 +53,8 @@ CREATE TABLE bookbrainz.editor_language (
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-	last_updated TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	last_updated TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	type bookbrainz.entity_type NOT NULL
 );
 ALTER TABLE bookbrainz.entity ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
@@ -117,7 +118,7 @@ ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (parent_id) REFERENCES bo
 ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (child_id) REFERENCES bookbrainz.revision (id);
 
 CREATE TABLE bookbrainz.creator_revision (
-	id SERIAL PRIMARY KEY,
+	id INT PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
@@ -126,7 +127,7 @@ ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (bbid) REFERENCES bookbr
 ALTER TABLE bookbrainz.creator_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.creator_revision (id);
 
 CREATE TABLE bookbrainz.publication_revision (
-	id SERIAL PRIMARY KEY,
+	id INT PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
@@ -135,7 +136,7 @@ ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (bbid) REFERENCES bo
 ALTER TABLE bookbrainz.publication_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.publication_revision (id);
 
 CREATE TABLE bookbrainz.edition_revision (
-	id SERIAL PRIMARY KEY,
+	id INT PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
@@ -144,7 +145,7 @@ ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (bbid) REFERENCES bookbr
 ALTER TABLE bookbrainz.edition_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.edition_revision (id);
 
 CREATE TABLE bookbrainz.publisher_revision (
-	id SERIAL PRIMARY KEY,
+	id INT PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
@@ -153,7 +154,7 @@ ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (bbid) REFERENCES book
 ALTER TABLE bookbrainz.publisher_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.publisher_revision (id);
 
 CREATE TABLE bookbrainz.work_revision (
-	id SERIAL PRIMARY KEY,
+	id INT PRIMARY KEY,
 	bbid UUID NOT NULL,
 	data_id INT
 );
