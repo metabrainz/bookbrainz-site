@@ -1,95 +1,48 @@
 -- Provides functionality for create, update and delete operations on composite
 -- entity views
-CREATE OR REPLACE FUNCTION process_entity() RETURNS TRIGGER
-	AS $process_entity$
+CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
+	AS $process_creator$
 	DECLARE
-		type entity_type;
-		entity_data_id integer := NULL;
+		creator_data_id INT;
 	BEGIN
-		IF (TG_TABLE_NAME = 'creator') THEN
-			type := 'Creator';
-		ELSIF (TG_TABLE_NAME = 'edition') THEN
-			type := 'Edition';
-		ELSIF (TG_TABLE_NAME = 'publication') THEN
-			type := 'Publication';
-		ELSIF (TG_TABLE_NAME = 'publisher') THEN
-			type := 'Publisher';
-		ELSIF (TG_TABLE_NAME = 'work') THEN
-			type := 'Work';
+		IF (TG_OP = 'INSERT') THEN
+			IF (NEW.bbid IS NULL) THEN
+				INSERT INTO bookbrainz.entity(type) VALUES('Creator') RETURNING bookbrainz.entity.bbid INTO NEW.bbid;
+			ELSE
+				INSERT INTO bookbrainz.entity(bbid, type) VALUES(NEW.bbid, 'Creator');
+			END IF;
+			INSERT INTO bookbrainz.creator_header(bbid) VALUES(NEW.bbid);
+		END IF;
+
+		IF (NEW.ended IS NULL) THEN
+			NEW.ended = false;
 		END IF;
 
 		-- If we're not deleting, create new entity data rows as necessary
 		IF (TG_OP <> 'DELETE') THEN
-			INSERT INTO entity_data(annotation_id, disambiguation_id, default_alias_id, _type)
-				VALUES(NEW.annotation_id, NEW.disambiguation_id, NEW.default_alias_id, type)
-				RETURNING entity_data.id INTO entity_data_id;
-
-			-- Create a _data row for the appropriate entity type
-			IF (type = 'Creator') THEN
-				INSERT INTO creator_data(
-					entity_data_id,
-					begin_date, begin_date_precision,
-					end_date, end_date_precision, ended,
-					country_id, gender_id, creator_type_id
-				)
-					VALUES(
-						entity_data_id,
-						NEW.begin_date, NEW.begin_date_precision,
-						NEW.end_date, NEW.end_date_precision, NEW.ended,
-						NEW.country_id, NEW.gender_id, NEW.creator_type_id
-					);
-			ELSIF (type = 'Edition') THEN
-				INSERT INTO edition_data(
-					entity_data_id,
-					publication_bbid, creator_credit_id,
-					release_date, release_date_precision,
-					pages, width, height, depth, weight,
-					country_id, language_id,
-					edition_format_id, edition_status_id, publisher_bbid
-				)
-					VALUES(
-						entity_data_id,
-						NEW.publication_bbid, NEW.creator_credit_id,
-						NEW.release_date, NEW.release_date_precision,
-						NEW.pages, NEW.width, NEW.height, NEW.depth, NEW.weight,
-						NEW.country_id, NEW.language_id,
-						NEW.edition_format_id, NEW.edition_status_id, NEW.publisher_bbid
-					);
-			ELSIF (type = 'Publication') THEN
-				INSERT INTO publication_data(entity_data_id, publication_type_id)
-					VALUES(entity_data_id, NEW.publication_type_id);
-			ELSIF (type = 'Publisher') THEN
-				INSERT INTO publisher_data(
-					entity_data_id,
-					begin_date, begin_date_precision,
-					end_date, end_date_precision, ended,
-					country_id, publisher_type_id
-				)
-					VALUES(
-						entity_data_id,
-						NEW.begin_date, NEW.begin_date_precision,
-						NEW.end_date, NEW.end_date_precision, NEW.ended,
-						NEW.country_id, NEW.publisher_type_id
-					);
-			ELSIF (type = 'Work') THEN
-				INSERT INTO work_data(entity_data_id, work_type_id)
-					VALUES(entity_data_id, NEW.work_type_id);
-			END IF;
+			INSERT INTO bookbrainz.creator_data(
+				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
+				disambiguation_id, begin_year, begin_month, begin_day, begin_area_id,
+				end_year, end_month, end_day, end_area_id, ended, area_id, gender_id,
+				type_id
+			) VALUES (
+				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
+				NEW.annotation_id, NEW.disambiguation_id, NEW.begin_year,
+				NEW.begin_month, NEW.begin_day, NEW.begin_area_id, NEW.end_year,
+				NEW.end_month, NEW.end_day, NEW.end_area_id, NEW.ended, NEW.area_id, NEW.gender_id,
+				NEW.type_id
+			) RETURNING bookbrainz.creator_data.id INTO creator_data_id;
 		END IF;
 
-		-- Create a new entity if needed, or update the existing entity
-		IF (TG_OP = 'INSERT') THEN
-			INSERT INTO entity(last_updated, master_revision_id, _type)
-				VALUES(NOW(), NEW.revision_id, type)
-				RETURNING entity.bbid INTO NEW.bbid;
-		ELSIF (TG_OP = 'UPDATE' OR TG_OP = 'DELETE') THEN
-			UPDATE entity
-				SET last_updated = NOW(), master_revision_id = NEW.revision_id
-				WHERE entity.bbid = NEW.bbid;
-		END IF;
+		INSERT INTO bookbrainz.creator_revision VALUES(NEW.revision_id, NEW.bbid, creator_data_id);
 
-		INSERT INTO entity_revision(id, entity_bbid, entity_data_id)
-			VALUES(NEW.revision_id, NEW.bbid, entity_data_id);
+		UPDATE bookbrainz.creator_header
+			SET master_revision_id = NEW.revision_id
+			WHERE bbid = NEW.bbid;
+
+		UPDATE bookbrainz.entity
+			SET last_updated = timezone('UTC'::TEXT, now())
+			WHERE bbid = NEW.bbid;
 
 		IF (TG_OP = 'DELETE') THEN
 			RETURN OLD;
@@ -97,24 +50,12 @@ CREATE OR REPLACE FUNCTION process_entity() RETURNS TRIGGER
 			RETURN NEW;
 		END IF;
 	END;
-$process_entity$ LANGUAGE plpgsql;
+$process_creator$ LANGUAGE plpgsql;
 
-CREATE TRIGGER process_entity
-	INSTEAD OF INSERT OR UPDATE OR DELETE ON creator
-	FOR EACH ROW EXECUTE PROCEDURE process_entity();
+BEGIN;
 
-CREATE TRIGGER process_entity
-	INSTEAD OF INSERT OR UPDATE OR DELETE ON edition
-	FOR EACH ROW EXECUTE PROCEDURE process_entity();
+CREATE TRIGGER process_creator
+	INSTEAD OF INSERT OR UPDATE OR DELETE ON bookbrainz.creator
+	FOR EACH ROW EXECUTE PROCEDURE bookbrainz.process_creator();
 
-CREATE TRIGGER process_entity
-	INSTEAD OF INSERT OR UPDATE OR DELETE ON publication
-	FOR EACH ROW EXECUTE PROCEDURE process_entity();
-
-CREATE TRIGGER process_entity
-	INSTEAD OF INSERT OR UPDATE OR DELETE ON publisher
-	FOR EACH ROW EXECUTE PROCEDURE process_entity();
-
-CREATE TRIGGER process_entity
-	INSTEAD OF INSERT OR UPDATE OR DELETE ON work
-	FOR EACH ROW EXECUTE PROCEDURE process_entity();
+COMMIT;

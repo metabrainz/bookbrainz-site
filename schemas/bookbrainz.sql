@@ -539,4 +539,19 @@ CREATE TABLE bookbrainz.relationship_set__relationship (
 ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.relationship_set (id);
 ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (relationship_id) REFERENCES bookbrainz.relationship (id);
 
+-- Views --
+
+CREATE VIEW bookbrainz.creator AS
+	SELECT
+		e.bbid, e.last_updated, cr.id AS revision_id, cd.annotation_id, cd.disambiguation_id,
+		als.default_alias_id, cd.begin_year, cd.begin_month, cd.begin_day, cd.begin_area_id,
+		cd.end_year, cd.end_month, cd.end_day, cd.end_area_id, cd.ended, cd.area_id,
+		cd.gender_id, cd.type_id, cd.alias_set_id, cd.identifier_set_id, cd.relationship_set_id
+	FROM bookbrainz.entity e
+	LEFT JOIN bookbrainz.creator_header c ON e.bbid = c.bbid
+	LEFT JOIN bookbrainz.creator_revision cr ON c.master_revision_id = cr.id
+	LEFT JOIN bookbrainz.creator_data cd ON cr.id = cd.id
+	LEFT JOIN bookbrainz.alias_set als ON cd.alias_set_id = als.id
+	WHERE e.type = 'Creator';
+
 COMMIT;
