@@ -477,18 +477,19 @@ CREATE TABLE bookbrainz.relationship (
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.relationship_type (id);
 
 CREATE TABLE bookbrainz.alias_set (
-	id SERIAL PRIMARY KEY
+	id SERIAL PRIMARY KEY,
+	default_alias_id INT
 );
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
 ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (alias_set_id) REFERENCES bookbrainz.alias_set (id);
+ALTER TABLE bookbrainz.alias_set ADD FOREIGN KEY (default_alias_id) REFERENCES bookbrainz.alias (id);
 
 CREATE TABLE bookbrainz.alias_set__alias (
 	set_id INT,
 	alias_id INT,
-	"default" BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		set_id,
 		alias_id
