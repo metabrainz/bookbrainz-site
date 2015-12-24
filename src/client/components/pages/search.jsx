@@ -24,6 +24,7 @@ const Table = require('react-bootstrap').Table;
 const request = require('superagent');
 require('superagent-bluebird-promise');
 const _ = require('lodash');
+'use strict';
 
 const SearchButton = (<Button block bsStyle="success" type="submit"><span className="fa fa-search"></span>&nbsp;Search</Button>);
 const delayUpdate = 300;
@@ -41,6 +42,7 @@ const SearchField = React.createClass({
 	},
 
 	handleChange: _.debounce(function(event) {
+		'use strict';
 		this.props.onSearch(this.refs.q.getValue());
 	}, delayUpdate),
 
@@ -102,11 +104,12 @@ module.exports = React.createClass({
 	displayName: 'SearchPage',
 	getInitialState() {
 		return {
+			'use strict';
 			results: this.props.initialResults
 		};
 	},
 	handleSearch(q) {
-		request.get('./search?mode=auto&q=' + q)
+		request.get(`./search?mode=auto&q=${q}`)
 		.promise()
 		.then((res) => (JSON.parse(res.text)))
 		.then((data) => {
