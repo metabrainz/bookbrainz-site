@@ -1,0 +1,121 @@
+/*
+ * Copyright (C) 2015  Ohm Patel
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+const React = require('react');
+const PageHeader = require('react-bootstrap').PageHeader;
+const Input = require('react-bootstrap').Input;
+const Button = require('react-bootstrap').Button;
+const Table = require('react-bootstrap').Table;
+const request = require('superagent');
+require('superagent-bluebird-promise');
+const _ = require('lodash');
+
+const SearchButton = (<Button block bsStyle="success" type="submit"><span className="fa fa-search"></span>&nbsp;Search</Button>);
+const SearchField = React.createClass({
+	propTypes: {
+		onSearch: React.PropTypes.func.isRequired,
+	},
+
+	handleSubmit(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		this.props.onSearch(this.refs.q.getValue());
+	},
+
+	handleChange: _.debounce(function (e) {
+		this.props.onSearch(this.refs.q.getValue());
+	}, 300),
+
+	render() {
+		return (
+				<div className="row">
+					<div className="col-md-6 col-md-offset-3">
+						<form onSubmit={this.handleSubmit} action="/search" className="whole-page-form form-horizontal">
+							<Input ref="q" onChange={this.handleChange} name="q" type="text" buttonAfter={SearchButton} />
+						</form>
+					</div>
+				</div>
+		);
+	}
+});
+
+const SearchResults = React.createClass({
+	render() {
+		if (!this.props.results || this.props.results.length == 0) {
+			return (
+				<div className="col-md-6 col-md-offset-3">
+					{this.props.error || 'No results found'}
+				</div>
+			);
+		}
+		const results = this.props.results.map((result) => {
+			return(
+			<tr>
+				<td>
+					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
+						{result.default_alias ? result.default_alias.name : '(unnamed)'}
+					</a>
+				</td>
+				<td>
+					{result._type}
+				</td>
+			</tr>
+		)});
+
+		return (
+			<Table responsive className="table table-striped">
+				<thead>
+					<tr>
+						<th>Alias</th>
+						<th>Type</th>
+					</tr>
+				</thead>
+				<tbody>
+					{results}
+				</tbody>
+			</Table>
+		);
+	}
+});
+
+module.exports = React.createClass({
+	displayName: 'SearchPage',
+
+	getInitialState() {
+		return {
+			results: this.props.initialResults,
+		};
+	},
+	handleSearch(q) {
+		'use strict';
+		request.get('./search?mode=auto&q='+q)
+		.promise()
+		.then(res => JSON.parse(res.text))
+		.then(data => {
+			this.setState( {results: data} );
+		});
+	},
+	render() {
+		return (
+			<div id="searchPage">
+				<SearchField onSearch={this.handleSearch} />
+				<SearchResults results={this.state.results} />
+			</div>
+		);
+	}
+});
