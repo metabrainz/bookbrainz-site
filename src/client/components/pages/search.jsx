@@ -38,7 +38,7 @@ const SearchField = React.createClass({
 		this.props.onSearch(this.refs.q.getValue());
 	},
 
-	handleChange: _.debounce(function(event){
+	handleChange: _.debounce(function(event) {
 		this.props.onSearch(this.refs.q.getValue());
 	}, 300),
 
@@ -47,7 +47,7 @@ const SearchField = React.createClass({
 				<div className="row">
 					<div className="col-md-6 col-md-offset-3">
 						<form action="/search" className="form-horizontal whole-page-form" onSubmit={this.handleSubmit}>
-							<Input buttonAfter={SearchButton} name="q" type="text" onChange={this.handleChange} ref="q"	/>
+							<Input buttonAfter={SearchButton} name="q" onChange={this.handleChange} ref="q"	type="text"/>
 						</form>
 					</div>
 				</div>
@@ -65,8 +65,8 @@ const SearchResults = React.createClass({
 				</div>
 			);
 		}
-		const results = this.props.results.map((result) => {
-			return(
+		const results = this.props.results.map((result) =>
+		return (
 			<tr>
 				<td>
 					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
@@ -76,8 +76,8 @@ const SearchResults = React.createClass({
 				<td>
 					{result._type}
 				</td>
-			</tr>
-		)});
+			</tr>);
+		);
 
 		return (
 			<Table className="table table-striped" responsive>
@@ -99,15 +99,15 @@ module.exports = React.createClass({
 	displayName: 'SearchPage',
 	getInitialState() {
 		return {
-			results: this.props.initialResults,
+			results: this.props.initialResults
 		};
 	},
 	handleSearch(q) {
 		'use strict';
-		request.get('./search?mode=auto&q='+q)
+		request.get('./search?mode=auto&q=' + q)
 		.promise()
-		.then(res => (JSON.parse(res.text)))
-		.then(data => {
+		.then((res) => (JSON.parse(res.text)))
+		.then((data) => {
 			this.setState({results: data});
 		});
 	},
