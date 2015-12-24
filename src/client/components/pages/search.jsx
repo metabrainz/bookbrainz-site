@@ -103,8 +103,8 @@ const SearchResults = React.createClass({
 module.exports = React.createClass({
 	displayName: 'SearchPage',
 	getInitialState() {
+		'use strict';
 		return {
-			'use strict';
 			results: this.props.initialResults
 		};
 	},
