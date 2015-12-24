@@ -163,7 +163,7 @@ router.get('/search', (req, res) => {
 			if (mode === 'search') {
 				const props = {
 					query,
-					initialResults: entities	
+					initialResults: entities
 				};
 
 				res.render('search', {

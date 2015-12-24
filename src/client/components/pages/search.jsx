@@ -107,9 +107,9 @@ module.exports = React.createClass({
 		request.get('./search?mode=auto&q='+q)
 		.promise()
 		.then(res => (JSON.parse(res.text)))
-		.then(data => ({
+		.then(data => {
 			this.setState({results: data});
-		}));
+		});
 	},
 	render() {
 		return (
