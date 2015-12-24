@@ -65,7 +65,7 @@ const SearchResults = React.createClass({
 				</div>
 			);
 		}
-		const results = this.props.results.map((result) =>
+		const results = this.props.results.map((result) => {
 		return (
 			<tr>
 				<td>
@@ -77,7 +77,7 @@ const SearchResults = React.createClass({
 					{result._type}
 				</td>
 			</tr>)
-		);
+		});
 
 		return (
 			<Table className="table table-striped" responsive>
