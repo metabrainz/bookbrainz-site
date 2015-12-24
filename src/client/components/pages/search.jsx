@@ -34,6 +34,7 @@ const SearchField = React.createClass({
 	},
 
 	handleSubmit(event) {
+		'use strict';
 		event.preventDefault();
 		event.stopPropagation();
 		this.props.onSearch(this.refs.q.getValue());
@@ -68,7 +69,7 @@ const SearchResults = React.createClass({
 				</div>
 			);
 		}
-		const results = this.props.results.map((result) =>(
+		const results = this.props.results.map((result) => (
 			<tr key={result.id}>
 				<td>
 					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
