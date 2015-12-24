@@ -163,11 +163,11 @@ router.get('/search', (req, res) => {
 			if (mode === 'search') {
 				const props = {
 					query,
-					initialResults: entities,
+					initialResults: entities	
 				};
 
 				res.render('search', {
-					props: props,
+					props,
 					markup: ReactDOMServer.renderToString(SearchPage(props)),
 					hideSearch: true
 				});
@@ -182,11 +182,11 @@ router.get('/search', (req, res) => {
 			if (mode === 'search') {
 				const props = {
 					error: message,
-					initialResults: [],
+					initialResults: []
 				};
 				res.render('search', {
 					title: 'Search Results',
-					props: props,
+					props,
 					markup: ReactDOMServer.renderToString(SearchPage(props)),
 					hideSearch: true
 

@@ -27,17 +27,18 @@ const _ = require('lodash');
 
 const SearchButton = (<Button block bsStyle="success" type="submit"><span className="fa fa-search"></span>&nbsp;Search</Button>);
 const SearchField = React.createClass({
+	displayName: 'SearchField',
 	propTypes: {
-		onSearch: React.PropTypes.func.isRequired,
+		onSearch: React.PropTypes.func.isRequired
 	},
 
-	handleSubmit(e) {
-		e.preventDefault();
-		e.stopPropagation();
+	handleSubmit(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		this.props.onSearch(this.refs.q.getValue());
 	},
 
-	handleChange: _.debounce(function (e) {
+	handleChange: _.debounce(function(event){
 		this.props.onSearch(this.refs.q.getValue());
 	}, 300),
 
@@ -45,8 +46,8 @@ const SearchField = React.createClass({
 		return (
 				<div className="row">
 					<div className="col-md-6 col-md-offset-3">
-						<form onSubmit={this.handleSubmit} action="/search" className="whole-page-form form-horizontal">
-							<Input ref="q" onChange={this.handleChange} name="q" type="text" buttonAfter={SearchButton} />
+						<form action="/search" className="form-horizontal whole-page-form" onSubmit={this.handleSubmit}>
+							<Input buttonAfter={SearchButton} name="q" type="text" onChange={this.handleChange} ref="q"	/>
 						</form>
 					</div>
 				</div>
@@ -55,8 +56,9 @@ const SearchField = React.createClass({
 });
 
 const SearchResults = React.createClass({
+	displayName: 'SearchResults',
 	render() {
-		if (!this.props.results || this.props.results.length == 0) {
+		if (!this.props.results || this.props.results.length === 0) {
 			return (
 				<div className="col-md-6 col-md-offset-3">
 					{this.props.error || 'No results found'}
@@ -78,7 +80,7 @@ const SearchResults = React.createClass({
 		)});
 
 		return (
-			<Table responsive className="table table-striped">
+			<Table className="table table-striped" responsive>
 				<thead>
 					<tr>
 						<th>Alias</th>
@@ -95,7 +97,6 @@ const SearchResults = React.createClass({
 
 module.exports = React.createClass({
 	displayName: 'SearchPage',
-
 	getInitialState() {
 		return {
 			results: this.props.initialResults,
@@ -105,10 +106,10 @@ module.exports = React.createClass({
 		'use strict';
 		request.get('./search?mode=auto&q='+q)
 		.promise()
-		.then(res => JSON.parse(res.text))
-		.then(data => {
-			this.setState( {results: data} );
-		});
+		.then(res => (JSON.parse(res.text)))
+		.then(data => ({
+			this.setState({results: data});
+		}));
 	},
 	render() {
 		return (
