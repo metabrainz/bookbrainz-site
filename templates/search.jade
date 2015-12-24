@@ -2,32 +2,9 @@ extends layout
 
 block body
 	.row
-		.col-md-6.col-md-offset-3
-			form.whole-page-form.form-horizontal
-				.form-group
-					.input-group
-						input.form-control(type='text' name='q' value=query)
-						.input-group-btn
-							button.btn.btn-default.btn-success(type='submit')
-								span.fa.fa-search
-								| &nbsp;Search
+		.col-md-12
+			div!= markup
 
-	if results.length <= 0
-		.col-md-6.col-md-offset-3
-			if error
-				.alert.alert-danger= error
-
-			| No results found
-	else
-		table.table.table-striped
-			thead
-				tr
-					th Alias
-					th Type
-			tbody
-				each result in results
-					tr
-						td
-							a(href='/' + result._type.toLowerCase() + '/' + result.bbid)
-								= result.default_alias ? result.default_alias.name : '(unnamed)'
-						td=result._type
+block js
+	script(type='application/json')#props!= JSON.stringify(props)
+	script(src='/js/search.js')

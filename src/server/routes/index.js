@@ -48,7 +48,9 @@ const PrivacyPage = React.createFactory(
 const LicensingPage = React.createFactory(
 	require('../../client/components/pages/licensing.jsx')
 );
-
+const SearchPage = React.createFactory(
+	require('../../client/components/pages/search.jsx')
+);
 /* GET home page. */
 router.get('/', (req, res) => {
 	function render(revisions) {
@@ -159,10 +161,14 @@ router.get('/search', (req, res) => {
 		})
 		.then((entities) => {
 			if (mode === 'search') {
-				res.render('search', {
-					title: 'Search Results',
+				const props = {
 					query,
-					results: entities,
+					initialResults: entities
+				};
+
+				res.render('search', {
+					props,
+					markup: ReactDOMServer.renderToString(SearchPage(props)),
 					hideSearch: true
 				});
 			}
@@ -174,11 +180,16 @@ router.get('/search', (req, res) => {
 			const message = 'An error occurred while obtaining search results';
 
 			if (mode === 'search') {
+				const props = {
+					error: message,
+					initialResults: []
+				};
 				res.render('search', {
 					title: 'Search Results',
-					error: message,
-					results: [],
+					props,
+					markup: ReactDOMServer.renderToString(SearchPage(props)),
 					hideSearch: true
+
 				});
 			}
 			else if (mode === 'auto') {
