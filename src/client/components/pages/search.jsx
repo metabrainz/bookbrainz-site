@@ -40,10 +40,12 @@ const SearchField = React.createClass({
 		this.props.onSearch(this.refs.q.getValue());
 	},
 
-	handleChange: _.debounce(function(event) {
+	change(event){
 		'use strict';
 		this.props.onSearch(this.refs.q.getValue());
-	}, delayUpdate),
+	},
+
+	handleChange: _.debounce(this.change(event), delayUpdate),
 
 	render() {
 		'use strict';
