@@ -24,7 +24,6 @@ const Table = require('react-bootstrap').Table;
 const request = require('superagent');
 require('superagent-bluebird-promise');
 const _ = require('lodash');
-'use strict';
 
 const SearchButton = (<Button block bsStyle="success" type="submit"><span className="fa fa-search"></span>&nbsp;Search</Button>);
 const delayUpdate = 300;
@@ -109,6 +108,7 @@ module.exports = React.createClass({
 		};
 	},
 	handleSearch(q) {
+		'use strict';
 		request.get(`./search?mode=auto&q=${q}`)
 		.promise()
 		.then((res) => (JSON.parse(res.text)))
