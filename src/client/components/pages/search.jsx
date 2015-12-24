@@ -68,8 +68,8 @@ const SearchResults = React.createClass({
 				</div>
 			);
 		}
-		const results = this.props.results.map((result) =>  (
-			<tr>
+		const results = this.props.results.map((result) =>(
+			<tr key={result.id}>
 				<td>
 					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
 						{result.default_alias ? result.default_alias.name : '(unnamed)'}
