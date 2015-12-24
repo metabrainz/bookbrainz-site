@@ -66,7 +66,7 @@ const SearchResults = React.createClass({
 			);
 		}
 		const results = this.props.results.map((result) =>
-		{return (
+		return (
 			<tr>
 				<td>
 					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
@@ -76,7 +76,7 @@ const SearchResults = React.createClass({
 				<td>
 					{result._type}
 				</td>
-			</tr>);}
+			</tr>)
 		);
 
 		return (
