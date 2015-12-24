@@ -26,6 +26,7 @@ require('superagent-bluebird-promise');
 const _ = require('lodash');
 
 const SearchButton = (<Button block bsStyle="success" type="submit"><span className="fa fa-search"></span>&nbsp;Search</Button>);
+const delayUpdate = 300;
 const SearchField = React.createClass({
 	displayName: 'SearchField',
 	propTypes: {
@@ -40,7 +41,7 @@ const SearchField = React.createClass({
 
 	handleChange: _.debounce(function(event) {
 		this.props.onSearch(this.refs.q.getValue());
-	}, 300),
+	}, delayUpdate),
 
 	render() {
 		return (
@@ -66,7 +67,7 @@ const SearchResults = React.createClass({
 			);
 		}
 		const results = this.props.results.map((result) => {
-		return (
+			return (
 			<tr>
 				<td>
 					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
@@ -76,7 +77,7 @@ const SearchResults = React.createClass({
 				<td>
 					{result._type}
 				</td>
-			</tr>)
+			</tr>);
 		});
 
 		return (
@@ -103,7 +104,6 @@ module.exports = React.createClass({
 		};
 	},
 	handleSearch(q) {
-		'use strict';
 		request.get('./search?mode=auto&q=' + q)
 		.promise()
 		.then((res) => (JSON.parse(res.text)))
