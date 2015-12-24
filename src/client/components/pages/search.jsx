@@ -44,6 +44,7 @@ const SearchField = React.createClass({
 	}, delayUpdate),
 
 	render() {
+		'use strict';
 		return (
 				<div className="row">
 					<div className="col-md-6 col-md-offset-3">
@@ -59,6 +60,7 @@ const SearchField = React.createClass({
 const SearchResults = React.createClass({
 	displayName: 'SearchResults',
 	render() {
+		'use strict';
 		if (!this.props.results || this.props.results.length === 0) {
 			return (
 				<div className="col-md-6 col-md-offset-3">
@@ -66,8 +68,7 @@ const SearchResults = React.createClass({
 				</div>
 			);
 		}
-		const results = this.props.results.map((result) => {
-			return (
+		const results = this.props.results.map((result) =>  (
 			<tr>
 				<td>
 					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
@@ -77,8 +78,8 @@ const SearchResults = React.createClass({
 				<td>
 					{result._type}
 				</td>
-			</tr>);
-		});
+			</tr>)
+		);
 
 		return (
 			<Table className="table table-striped" responsive>
@@ -112,6 +113,7 @@ module.exports = React.createClass({
 		});
 	},
 	render() {
+		'use strict';
 		return (
 			<div id="searchPage">
 				<SearchField onSearch={this.handleSearch} />
