@@ -32,7 +32,6 @@ const SearchField = React.createClass({
 	propTypes: {
 		onSearch: React.PropTypes.func.isRequired
 	},
-
 	handleSubmit(event) {
 		'use strict';
 		event.preventDefault();
@@ -40,12 +39,13 @@ const SearchField = React.createClass({
 		this.props.onSearch(this.refs.q.getValue());
 	},
 
-	change(event) {
+	change() {
 		'use strict';
-		this.props.onSearch(this.refs.q.getValue());
+		const inputValue = this.refs.q.getValue();
+		if (!inputValue.match(/^ *$/)) {
+			this.props.onSearch(inputValue);
+		}
 	},
-
-	handleChange: _.debounce(this.change(event), delayUpdate),
 
 	render() {
 		'use strict';
@@ -53,7 +53,7 @@ const SearchField = React.createClass({
 				<div className="row">
 					<div className="col-md-6 col-md-offset-3">
 						<form action="/search" className="form-horizontal whole-page-form" onSubmit={this.handleSubmit}>
-							<Input buttonAfter={SearchButton} name="q" onChange={this.handleChange} ref="q"	type="text"/>
+							<Input buttonAfter={SearchButton} name="q" onChange={_.debounce(this.change, delayUpdate)} ref="q"	type="text"/>
 						</form>
 					</div>
 				</div>
