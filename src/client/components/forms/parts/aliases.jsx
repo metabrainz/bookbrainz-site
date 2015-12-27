@@ -72,6 +72,25 @@ const AliasRow = React.createClass({
 			this.refs.name.getValue() && this.refs.sortName.getValue()
 		);
 	},
+	guess() {
+		'use strict';
+		const name = this.refs.name.refs.input;
+		const sortName = this.refs.sortName.refs.input;
+		const articles = ['a', 'an', 'the'];
+		const str = name.value.split(' ');
+		const notFound = -1;
+		let guessed = '';
+		if (name.value.match(/^ *$/)) {
+			guessed = '';
+		}
+		else if (articles.indexOf(str[0].toLowerCase()) > notFound) {
+			guessed = (`${str.splice(1).join(' ')}, ${str[0]}`);
+		}
+		else {
+			guessed = (`${str[str.length - 1]}, ${str.splice(0, str.length - 1).join(' ')}`);
+		}
+		sortName.value = guessed;
+	},
 	render() {
 		'use strict';
 
@@ -97,6 +116,7 @@ const AliasRow = React.createClass({
 				<div className="col-md-3">
 					<Input
 						bsStyle={this.validationState()}
+						buttonAfter={<Button bsStyle="link" onClick={this.guess}><span className="fa fa-bolt"/></Button>}
 						defaultValue={this.props.sortName}
 						ref="sortName"
 						type="text"
