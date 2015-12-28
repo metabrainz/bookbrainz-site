@@ -72,7 +72,7 @@ const AliasRow = React.createClass({
 			this.refs.name.getValue() && this.refs.sortName.getValue()
 		);
 	},
-	guess() {
+	guessNames() {
 		'use strict';
 		const name = this.refs.name.refs.input;
 		const sortName = this.refs.sortName.refs.input;
@@ -116,7 +116,7 @@ const AliasRow = React.createClass({
 				<div className="col-md-3">
 					<Input
 						bsStyle={this.validationState()}
-						buttonAfter={<Button bsStyle="link" onClick={this.guess}><span className="fa fa-bolt"/></Button>}
+						buttonAfter={<Button bsStyle="link" onClick={this.guessNames} title="attempt to guess sort name"><span className="fa fa-bolt"/></Button>}
 						defaultValue={this.props.sortName}
 						ref="sortName"
 						type="text"
