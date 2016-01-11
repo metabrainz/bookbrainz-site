@@ -527,31 +527,78 @@ ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (relationship_set_id) RE
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
 
-CREATE TABLE bookbrainz.relationship_set__relationship (
+CREATE TABLE bookbrainz.relationship (
+	id SERIAL PRIMARY KEY,
 	set_id INT,
-	relationship_id INT,
-	source BOOLEAN NOT NULL,
-	PRIMARY KEY (
-		set_id,
-		relationship_id
-	)
+	type_id INT,
+	source BOOLEAN NOT NULL
 );
-ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.relationship_set (id);
-ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (relationship_id) REFERENCES bookbrainz.relationship (id);
+ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.relationship_set (id);
+ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.relationship_type (id);
 
 -- Views --
 
 CREATE VIEW bookbrainz.creator AS
 	SELECT
-		e.bbid, e.last_updated, cr.id AS revision_id, cd.annotation_id, cd.disambiguation_id,
+		e.bbid, cr.id AS revision_id, (cr.id = c.master_revision_id) AS master, cd.annotation_id, cd.disambiguation_id,
 		als.default_alias_id, cd.begin_year, cd.begin_month, cd.begin_day, cd.begin_area_id,
 		cd.end_year, cd.end_month, cd.end_day, cd.end_area_id, cd.ended, cd.area_id,
-		cd.gender_id, cd.type_id, cd.alias_set_id, cd.identifier_set_id, cd.relationship_set_id
-	FROM bookbrainz.entity e
-	LEFT JOIN bookbrainz.creator_header c ON e.bbid = c.bbid
-	LEFT JOIN bookbrainz.creator_revision cr ON c.master_revision_id = cr.id
-	LEFT JOIN bookbrainz.creator_data cd ON cr.id = cd.id
+		cd.gender_id, cd.type_id, cd.alias_set_id, cd.identifier_set_id, cd.relationship_set_id, e.type
+	FROM bookbrainz.creator_revision cr
+	LEFT JOIN bookbrainz.entity e ON e.bbid = cr.bbid
+	LEFT JOIN bookbrainz.creator_header c ON c.bbid = e.bbid
+	LEFT JOIN bookbrainz.creator_data cd ON cr.data_id = cd.id
 	LEFT JOIN bookbrainz.alias_set als ON cd.alias_set_id = als.id
 	WHERE e.type = 'Creator';
+
+CREATE VIEW bookbrainz.edition AS
+	SELECT
+		e.bbid, edr.id AS revision_id, (edr.id = ed.master_revision_id) AS master, edd.annotation_id, edd.disambiguation_id,
+		als.default_alias_id, edd.publication_bbid, edd.creator_credit_id, edd.width, edd.height,
+		edd.depth, edd.weight, edd.pages, edd.format_id, edd.status_id,
+		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id, e.type
+	FROM bookbrainz.edition_revision edr
+	LEFT JOIN bookbrainz.entity e ON e.bbid = edr.bbid
+	LEFT JOIN bookbrainz.edition_header ed ON ed.bbid = e.bbid
+	LEFT JOIN bookbrainz.edition_data edd ON edr.data_id = edd.id
+	LEFT JOIN bookbrainz.alias_set als ON edd.alias_set_id = als.id
+	WHERE e.type = 'Edition';
+
+CREATE VIEW bookbrainz.work AS
+	SELECT
+		e.bbid, wr.id AS revision_id, (wr.id = w.master_revision_id) AS master, wd.annotation_id, wd.disambiguation_id,
+		als.default_alias_id, wd.type_id, wd.alias_set_id, wd.identifier_set_id,
+		wd.relationship_set_id, e.type
+	FROM bookbrainz.work_revision wr
+	LEFT JOIN bookbrainz.entity e ON e.bbid = wr.bbid
+	LEFT JOIN bookbrainz.work_header w ON w.bbid = e.bbid
+	LEFT JOIN bookbrainz.work_data wd ON wr.data_id = wd.id
+	LEFT JOIN bookbrainz.alias_set als ON wd.alias_set_id = als.id
+	WHERE e.type = 'Work';
+
+CREATE VIEW bookbrainz.publisher AS
+	SELECT
+		e.bbid, psr.id AS revision_id, (psr.id = ps.master_revision_id) AS master, psd.annotation_id, psd.disambiguation_id,
+		als.default_alias_id, psd.begin_year, psd.begin_month, psd.begin_day,
+		psd.end_year, psd.end_month, psd.end_day, psd.ended, psd.area_id,
+		psd.type_id, psd.alias_set_id, psd.identifier_set_id, psd.relationship_set_id, e.type
+	FROM bookbrainz.publisher_revision psr
+	LEFT JOIN bookbrainz.entity e ON e.bbid = psr.bbid
+	LEFT JOIN bookbrainz.publisher_header ps ON ps.bbid = e.bbid
+	LEFT JOIN bookbrainz.publisher_data psd ON psr.data_id = psd.id
+	LEFT JOIN bookbrainz.alias_set als ON psd.alias_set_id = als.id
+	WHERE e.type = 'Publisher';
+
+CREATE VIEW bookbrainz.publication AS
+	SELECT
+		e.bbid, pcr.id AS revision_id, (pcr.id = pc.master_revision_id) AS master, pcd.annotation_id, pcd.disambiguation_id,
+		als.default_alias_id, pcd.type_id, pcd.alias_set_id, pcd.identifier_set_id,
+		pcd.relationship_set_id, e.type
+	FROM bookbrainz.publication_revision pcr
+	LEFT JOIN bookbrainz.entity e ON e.bbid = pcr.bbid
+	LEFT JOIN bookbrainz.publication_header pc ON pc.bbid = e.bbid
+	LEFT JOIN bookbrainz.publication_data pcd ON pcr.data_id = pcd.id
+	LEFT JOIN bookbrainz.alias_set als ON pcd.alias_set_id = als.id
+	WHERE e.type = 'Publication';
 
 COMMIT;
