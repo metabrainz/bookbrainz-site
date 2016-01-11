@@ -41,7 +41,7 @@ ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
 
-CREATE TABLE bookbrainz.editor_language (
+CREATE TABLE bookbrainz.editor__language (
 	editor_id INT NOT NULL,
 	language_id INT NOT NULL,
 	proficiency bookbrainz.lang_proficiency NOT NULL,
@@ -53,7 +53,6 @@ CREATE TABLE bookbrainz.editor_language (
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
-	last_updated TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	type bookbrainz.entity_type NOT NULL
 );
 ALTER TABLE bookbrainz.entity ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
@@ -111,7 +110,8 @@ CREATE TABLE bookbrainz.revision_parent (
 CREATE TABLE bookbrainz.revision (
 	id SERIAL PRIMARY KEY,
 	author_id INT NOT NULL,
-	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	type bookbrainz.entity_type
 );
 ALTER TABLE bookbrainz.revision ADD FOREIGN KEY (author_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.revision (id);
@@ -181,7 +181,7 @@ CREATE TABLE bookbrainz.creator_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
 	identifier_set_id INT NOT NULL,
-	relationship_set_id INT NOT NULL,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	begin_year SMALLINT,
@@ -295,11 +295,10 @@ CREATE TABLE bookbrainz.edition_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
 	identifier_set_id INT NOT NULL,
-	relationship_set_id INT NOT NULL,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	publication_bbid UUID,
-	country_id INT,
 	creator_credit_id INT,
 	width SMALLINT,
 	height SMALLINT,
@@ -327,7 +326,7 @@ CREATE TABLE bookbrainz.publication_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
 	identifier_set_id INT NOT NULL,
-	relationship_set_id INT NOT NULL,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	type_id INT
@@ -344,7 +343,7 @@ CREATE TABLE bookbrainz.publisher_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
 	identifier_set_id INT NOT NULL,
-	relationship_set_id INT NOT NULL,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	begin_year SMALLINT,
@@ -397,7 +396,7 @@ CREATE TABLE bookbrainz.work_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
 	identifier_set_id INT NOT NULL,
-	relationship_set_id INT NOT NULL,
+	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
 	type_id INT
@@ -453,7 +452,8 @@ ALTER TABLE bookbrainz.identifier_type ADD FOREIGN KEY (parent_id) REFERENCES bo
 
 CREATE TABLE bookbrainz.identifier (
 	id SERIAL PRIMARY KEY,
-	type_id INT NOT NULL
+	type_id INT NOT NULL,
+	value TEXT NOT NULL
 );
 ALTER TABLE bookbrainz.identifier ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.identifier_type (id);
 
