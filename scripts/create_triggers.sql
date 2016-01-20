@@ -40,10 +40,6 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
 			SET master_revision_id = NEW.revision_id
 			WHERE bbid = NEW.bbid;
 
-		UPDATE bookbrainz.entity
-			SET last_updated = timezone('UTC'::TEXT, now())
-			WHERE bbid = NEW.bbid;
-
 		IF (TG_OP = 'DELETE') THEN
 			RETURN OLD;
 		ELSE

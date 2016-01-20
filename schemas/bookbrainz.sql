@@ -118,49 +118,64 @@ ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (parent_id) REFERENCES bo
 ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (child_id) REFERENCES bookbrainz.revision (id);
 
 CREATE TABLE bookbrainz.creator_revision (
-	id INT PRIMARY KEY,
+	id INT,
 	bbid UUID NOT NULL,
-	data_id INT
+	data_id INT,
+	PRIMARY KEY (
+		id, bbid
+	)
 );
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.creator_header (bbid);
-ALTER TABLE bookbrainz.creator_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.creator_revision (id);
+ALTER TABLE bookbrainz.creator_header ADD FOREIGN KEY (master_revision_id, bbid) REFERENCES bookbrainz.creator_revision (id, bbid);
 
 CREATE TABLE bookbrainz.publication_revision (
-	id INT PRIMARY KEY,
+	id INT,
 	bbid UUID NOT NULL,
-	data_id INT
+	data_id INT,
+	PRIMARY KEY (
+		id, bbid
+	)
 );
 ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.publication_header (bbid);
-ALTER TABLE bookbrainz.publication_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.publication_revision (id);
+ALTER TABLE bookbrainz.publication_header ADD FOREIGN KEY (master_revision_id, bbid) REFERENCES bookbrainz.publication_revision (id, bbid);
 
 CREATE TABLE bookbrainz.edition_revision (
-	id INT PRIMARY KEY,
+	id INT,
 	bbid UUID NOT NULL,
-	data_id INT
+	data_id INT,
+	PRIMARY KEY (
+		id, bbid
+	)
 );
 ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.edition_header (bbid);
-ALTER TABLE bookbrainz.edition_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.edition_revision (id);
+ALTER TABLE bookbrainz.edition_header ADD FOREIGN KEY (master_revision_id, bbid) REFERENCES bookbrainz.edition_revision (id, bbid);
 
 CREATE TABLE bookbrainz.publisher_revision (
-	id INT PRIMARY KEY,
+	id INT,
 	bbid UUID NOT NULL,
-	data_id INT
+	data_id INT,
+	PRIMARY KEY (
+		id, bbid
+	)
 );
 ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.publisher_header (bbid);
-ALTER TABLE bookbrainz.publisher_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.publisher_revision (id);
+ALTER TABLE bookbrainz.publisher_header ADD FOREIGN KEY (master_revision_id, bbid) REFERENCES bookbrainz.publisher_revision (id, bbid);
 
 CREATE TABLE bookbrainz.work_revision (
-	id INT PRIMARY KEY,
+	id INT,
 	bbid UUID NOT NULL,
-	data_id INT
+	data_id INT,
+	PRIMARY KEY (
+		id, bbid
+	)
 );
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.work_header (bbid);
-ALTER TABLE bookbrainz.work_header ADD FOREIGN KEY (master_revision_id) REFERENCES bookbrainz.work_revision (id);
+ALTER TABLE bookbrainz.work_header ADD FOREIGN KEY (master_revision_id, bbid) REFERENCES bookbrainz.work_revision (id, bbid);
 
 CREATE TABLE bookbrainz.note (
 	id SERIAL PRIMARY KEY,
@@ -470,12 +485,6 @@ CREATE TABLE bookbrainz.relationship_type (
 );
 ALTER TABLE bookbrainz.relationship_type ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.relationship_type (id);
 
-CREATE TABLE bookbrainz.relationship (
-	id SERIAL PRIMARY KEY,
-	type_id INT NOT NULL
-);
-ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.relationship_type (id);
-
 CREATE TABLE bookbrainz.alias_set (
 	id SERIAL PRIMARY KEY,
 	default_alias_id INT
@@ -527,14 +536,26 @@ ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (relationship_set_id) RE
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (relationship_set_id) REFERENCES bookbrainz.relationship_set (id);
 
+CREATE TABLE bookbrainz.relationship_set__relationship (
+	set_id INTEGER,
+	relationship_id INTEGER,
+	PRIMARY KEY (
+		set_id,
+		relationship_id
+	)
+);
+ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.relationship_set (id);
+
 CREATE TABLE bookbrainz.relationship (
 	id SERIAL PRIMARY KEY,
-	set_id INT,
 	type_id INT,
-	source BOOLEAN NOT NULL
+	source_bbid UUID,
+	target_bbid UUID
 );
-ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.relationship_set (id);
+ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (relationship_id) REFERENCES bookbrainz.relationship (id);
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.relationship_type (id);
+ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (source_bbid) REFERENCES bookbrainz.entity (bbid);
+ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (target_bbid) REFERENCES bookbrainz.entity (bbid);
 
 -- Views --
 
