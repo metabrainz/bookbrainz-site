@@ -22,9 +22,9 @@ module.exports = React.createClass({
 	get_list_of_values(newValue) {
 		'use strict';
 		const newValues = newValue.map((val, idx) => (
-			<div>{val.toString()}</div>
+			<div key={idx}>{val.toString()}</div>
 		));
-		return newValues
+		return newValues;
 	},
 	get_table_row(fieldName, newValue, oldValue) {
 		'use strict';
