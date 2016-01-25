@@ -19,6 +19,10 @@ const React = require('react');
 
 module.exports = React.createClass({
 	displayName: 'RevisionPage',
+	propTypes: {
+		diff: React.PropTypes.any.isRequired,
+		revision: React.PropTypes.any.isRequired
+	},
 	get_list_of_values(newValue) {
 		'use strict';
 		const newValues = newValue.map((val, idx) => (
@@ -28,9 +32,12 @@ module.exports = React.createClass({
 	},
 	get_table_row(fieldName, newValue, oldValue) {
 		'use strict';
-		if ((oldValue && (oldValue.length > 0)) && !(newValue && (newValue.length > 0))) {
+		if ((oldValue && (oldValue.length > 0)) &&
+				!(newValue && (newValue.length > 0))) {
 			return (
-				<tr className="danger" key={fieldName}>
+				<tr className="danger"
+					key={fieldName}
+				>
 					<th scope="row">{fieldName}</th>
 					<td>
 						{this.get_list_of_values(oldValue)}
@@ -39,9 +46,12 @@ module.exports = React.createClass({
 				</tr>
 			);
 		}
-		else if (!(oldValue && (oldValue.length > 0)) && (newValue && (newValue.length > 0))) {
+		else if (!(oldValue && (oldValue.length > 0)) &&
+				(newValue && (newValue.length > 0))) {
 			return (
-				<tr className="success" key={fieldName}>
+				<tr className="success"
+					key={fieldName}
+				>
 					<th scope="row">{fieldName}</th>
 					<td> — </td>
 					<td>
@@ -52,7 +62,11 @@ module.exports = React.createClass({
 		}
 		return (
 			<tr className="warning">
-				<th key={fieldName} scope="row"> {fieldName} </th>
+				<th key={fieldName}
+					scope="row"
+				>
+					{fieldName}
+				</th>
 				<td>
 					{this.get_list_of_values(oldValue)}
 					<br> </br>
@@ -65,7 +79,7 @@ module.exports = React.createClass({
 	},
 	get_table_rows(diff) {
 		'use strict';
-		var result = [];
+		const result = [];
 		diff.forEach((difference) => {
 			for (const key in difference) {
 				if (difference.hasOwnProperty(key)) {
@@ -84,10 +98,11 @@ module.exports = React.createClass({
 		const revision = this.props.revision;
 		const diff = this.props.diff;
 
-		var link_to_entity = '';
+		let link_to_entity = '';
 		if (revision.entity) {
 			link_to_entity = (
-				`/${revision.entity._type.toLowerCase()}/${revision.entity.bbid}`
+				`/${revision.entity._type.toLowerCase()}/` +
+					`${revision.entity.bbid}`
 			);
 		}
 		const data_description = revision.entity ? (
@@ -104,7 +119,8 @@ module.exports = React.createClass({
 			</table>
 		) : (
 			<div className="alert alert-danger">
-				 Error calculating diff. Please note that diffs for DELETE revisions are currently unsupported.
+				Error calculating diff. Please note that diffs for
+				DELETE revisions are currently unsupported.
 			</div>
 			);
 
