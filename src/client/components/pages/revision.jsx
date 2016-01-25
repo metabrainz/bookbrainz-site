@@ -33,7 +33,7 @@ module.exports = React.createClass({
 				<tr className="danger" key={fieldName}>
 					<th scope="row">{fieldName}</th>
 					<td>
-						{this.get_list_of_values(newValue)}
+						{this.get_list_of_values(oldValue)}
 					</td>
 					<td> — </td>
 				</tr>
