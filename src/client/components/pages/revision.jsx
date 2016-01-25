@@ -96,7 +96,7 @@ module.exports = React.createClass({
 			</a>
 		) : (`Relationship ${revision.relationship.id}`);
 
-		const table = diff ? (
+		const diff_table = diff ? (
 			<table className="table table-bordered text-center">
 				<tbody>
 					{this.get_table_rows(diff)}
@@ -136,7 +136,7 @@ module.exports = React.createClass({
 			<div>
 				<h1>Revision #{revision.id}</h1>
 				<h3>{data_description}</h3>
-				{table}
+				{diff_table}
 				<p className="text-right">
 					Created by&nbsp;
 					<a href={editor_link}>
