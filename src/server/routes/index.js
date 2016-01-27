@@ -51,6 +51,7 @@ const LicensingPage = React.createFactory(
 const SearchPage = React.createFactory(
 	require('../../client/components/pages/search.jsx')
 );
+
 /* GET home page. */
 router.get('/', (req, res) => {
 	function render(revisions) {

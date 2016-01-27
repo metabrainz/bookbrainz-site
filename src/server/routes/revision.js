@@ -23,6 +23,12 @@ const router = express.Router();
 const Revision = require('../data/properties/revision');
 const User = require('../data/user');
 const _ = require('underscore');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const RevisionPage = React.createFactory(
+	require('../../client/components/pages/revision.jsx')
+);
 
 function formatPairAttributeSingle(pair, attribute) {
 	if (attribute) {
@@ -291,10 +297,10 @@ router.get('/:id', (req, res) => {
 
 		User.findOne(revision.user.user_id).then((user) => {
 			revision.user = user;
-			res.render('revision', {
-				title: 'Revision',
-				revision,
-				diff
+			const props = {diff, revision};
+			res.render('page', {
+				title: 'RevisionPage',
+				markup: ReactDOMServer.renderToString(RevisionPage(props))
 			});
 		});
 	});
