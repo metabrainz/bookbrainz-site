@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const React = require('react');
+const compact = require('lodash.compact');
 
 module.exports = React.createClass({
 	displayName: 'RevisionPage',
@@ -32,8 +33,13 @@ module.exports = React.createClass({
 	},
 	get_table_row(fieldName, newValue, oldValue) {
 		'use strict';
-		if ((oldValue && (oldValue.length > 0)) &&
-				!(newValue && (newValue.length > 0))) {
+		const oldFieldSet = oldValue && (oldValue.length > 0);
+		const newFieldSet = newValue && (newValue.length > 0);
+
+		const fieldUnset = oldFieldSet && !newFieldSet;
+		const fieldSet = !oldFieldSet && newFieldSet;
+		const fieldModified = oldFieldSet && newFieldSet;
+		if (fieldUnset) {
 			return (
 				<tr className="danger"
 					key={fieldName}
@@ -46,8 +52,7 @@ module.exports = React.createClass({
 				</tr>
 			);
 		}
-		else if (!(oldValue && (oldValue.length > 0)) &&
-				(newValue && (newValue.length > 0))) {
+		else if (fieldSet) {
 			return (
 				<tr className="success"
 					key={fieldName}
@@ -60,22 +65,26 @@ module.exports = React.createClass({
 				</tr>
 			);
 		}
-		return (
-			<tr className="warning">
-				<th key={fieldName}
-					scope="row"
-				>
-					{fieldName}
-				</th>
-				<td>
-					{this.get_list_of_values(oldValue)}
-					<br> </br>
-				</td>
-				<td>
-					{this.get_list_of_values(newValue)}
+		else if (fieldModified) {
+			return (
+				<tr className="warning">
+					<th key={fieldName}
+						scope="row"
+					>
+						{fieldName}
+					</th>
+					<td>
+						{this.get_list_of_values(oldValue)}
+						<br> </br>
 					</td>
-			</tr>
-		);
+					<td>
+						{this.get_list_of_values(newValue)}
+						</td>
+				</tr>
+			);
+		}
+
+		return null;
 	},
 	get_table_rows(diff) {
 		'use strict';
@@ -91,7 +100,7 @@ module.exports = React.createClass({
 				}
 			}
 		});
-		return result;
+		return compact(result);
 	},
 	render() {
 		'use strict';
