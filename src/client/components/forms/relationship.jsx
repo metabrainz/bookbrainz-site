@@ -28,6 +28,7 @@ const _ = require('underscore');
 const request = require('superagent');
 require('superagent-bluebird-promise');
 const utils = require('../../../server/helpers/utils.js');
+const _filter = require('lodash.filter');
 
 const renderRelationship = require('../../../server/helpers/render.js');
 
@@ -39,6 +40,10 @@ function getRelationshipTypeById(relationships, id) {
 	return _.find(
 		relationships, (relationship) => relationship.id === id
 	);
+}
+
+function isRelationshipNew(initialType, initialTarget) {
+	return !(initialType || initialTarget);
 }
 
 const RelationshipRow = React.createClass({
@@ -174,6 +179,12 @@ const RelationshipRow = React.createClass({
 		const rel = this.props.relationship;
 		return Boolean(rel.initialSource && rel.initialTarget);
 	},
+	currentRelationshipType() {
+		'use strict';
+		return getRelationshipTypeById(
+			this.props.relationshipTypes, this.props.relationship.type
+		);
+	},
 	render() {
 		'use strict';
 
@@ -249,6 +260,19 @@ const RelationshipRow = React.createClass({
 		const deleteOrResetButton =
 			this.state.deleted ? resetButton : deleteButton;
 
+		let deprecationWarning = null;
+		const currentType = this.currentRelationshipType();
+		if (currentType && currentType.deprecated) {
+			deprecationWarning = (
+				<span className="text-danger">
+					<span className="fa fa-warning"/>&nbsp;
+					Relationship type deprecated &mdash; please avoid!
+				</span>
+			);
+		}
+
+		console.log(deprecationWarning);
+
 		return (
 			<div
 				className={`list-group-item margin-top-1 + ${this.rowClass()}`}
@@ -303,10 +327,13 @@ const RelationshipRow = React.createClass({
 							{targetInput}
 						</div>
 						<div className="row">
-							<div className="col-md-9">
+							<div className="col-md-4">
 								<p dangerouslySetInnerHTML=
 									{this.renderedRelationship()}
 								/>
+							</div>
+							<div className="col-md-5">
+								{deprecationWarning}
 							</div>
 							<div className="col-md-3 text-right">
 								{
@@ -559,8 +586,14 @@ const RelationshipEditor = React.createClass({
 	render() {
 		'use strict';
 
+
+		const typesWithoutDeprecated = _filter(
+			this.props.relationshipTypes, (type) => !type.deprecated
+		);
+
 		const rows = this.state.relationships.map((rel, index) => (
 			<RelationshipRow
+				{...this.props}
 				key={rel.key}
 				onChange={this.handleChange.bind(null, index)}
 				onDelete={this.deleteRowIfNew.bind(null, index)}
@@ -568,7 +601,11 @@ const RelationshipEditor = React.createClass({
 				onSwap={this.swap.bind(null, index)}
 				ref={index}
 				relationship={rel}
-				{...this.props}
+				relationshipTypes={
+					isRelationshipNew(
+						rel.initialType, rel.initialTarget
+					) ? typesWithoutDeprecated : this.props.relationshipTypes
+				}
 			/>
 		));
 
