@@ -25,12 +25,17 @@ const User = require('../data/user');
 const _ = require('underscore');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
+const ld = require('lodash');
 
 const RevisionPage = React.createFactory(
 	require('../../client/components/pages/revision.jsx')
 );
 
 function formatPairAttributeSingle(pair, attribute) {
+	function isBoolOrTruthy(val) {
+		return ld.isBoolean(val) || val;
+	}
+
 	if (attribute) {
 		return [
 			pair[0] ? [pair[0][attribute]] : null,
@@ -39,8 +44,8 @@ function formatPairAttributeSingle(pair, attribute) {
 	}
 
 	return [
-		pair[0] ? [pair[0]] : null,
-		pair[1] ? [pair[1]] : null
+		isBoolOrTruthy(pair[0]) ? [pair[0]] : null,
+		isBoolOrTruthy(pair[1]) ? [pair[1]] : null
 	];
 }
 
