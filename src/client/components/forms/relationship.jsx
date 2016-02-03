@@ -132,16 +132,13 @@ const RelationshipRow = React.createClass({
 
 		const rel = this.props.relationship;
 
-		const relationshipType =
-			getRelationshipTypeById(this.props.relationshipTypes, rel.type);
-
 		if (!this.valid()) {
 			return null;
 		}
 
 		return {
 			__html: renderRelationship(
-				[rel.source, rel.target], relationshipType, null
+				[rel.source, rel.target], this.currentRelationshipType(), null
 			)
 		};
 	},
@@ -406,7 +403,7 @@ const RelationshipEditor = React.createClass({
 	handleSubmit() {
 		'use strict';
 
-		const changedRelationships = _.filter(
+		const changedRelationships = _filter(
 			this.state.relationships, (rel) => rel.changed && rel.valid
 		);
 
@@ -577,7 +574,7 @@ const RelationshipEditor = React.createClass({
 	hasDataToSubmit() {
 		'use strict';
 
-		const changedRelationships = _.filter(
+		const changedRelationships = _filter(
 			this.state.relationships, (rel) =>
 				rel.changed && rel.valid
 		);
