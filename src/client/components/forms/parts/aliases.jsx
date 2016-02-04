@@ -55,7 +55,8 @@ const AliasRow = React.createClass({
 	validationState() {
 		'use strict';
 
-		if (this.props.name || this.props.sortName) {
+		if (this.props.name || this.props.sortName || this.props.default ||
+				this.props.language || !this.props.primary) {
 			if (this.props.name && this.props.sortName) {
 				return 'success';
 			}
@@ -286,12 +287,12 @@ const AliasList = React.createClass({
 		'use strict';
 
 		let defaultSet = false;
-		const numRows = this.state.aliases.length;
+		const numRows = this.state.aliases.length - 1;
 
 		for (let i = 0; i < numRows; i++) {
 			const alias = this.refs[i].getValue();
 			const rowInvalid = this.refs[i].getValid() === false;
-			if (rowInvalid && numRows > 1 && (alias.name || alias.sortName)) {
+			if (rowInvalid) {
 				return false;
 			}
 			else if (!defaultSet) {
@@ -299,7 +300,7 @@ const AliasList = React.createClass({
 			}
 		}
 
-		return defaultSet || numRows === 1;
+		return defaultSet || numRows === 0;
 	},
 	handleRemove(index) {
 		'use strict';
