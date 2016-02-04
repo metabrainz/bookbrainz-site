@@ -16,7 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const React = require('react');
-const compact = require('lodash.compact');
+const _compact = require('lodash.compact');
+const EntityLink = require('../entityLink.jsx');
 
 module.exports = React.createClass({
 	displayName: 'RevisionPage',
@@ -26,6 +27,7 @@ module.exports = React.createClass({
 	},
 	get_list_of_values(newValue) {
 		'use strict';
+
 		const newValues = newValue.map((val, idx) => (
 			<div key={idx}>{val.toString()}</div>
 		));
@@ -100,24 +102,19 @@ module.exports = React.createClass({
 				}
 			}
 		});
-		return compact(result);
+		return _compact(result);
 	},
 	render() {
 		'use strict';
 		const revision = this.props.revision;
 		const diff = this.props.diff;
 
-		let link_to_entity = '';
-		if (revision.entity) {
-			link_to_entity = (
-				`/${revision.entity._type.toLowerCase()}/` +
-					`${revision.entity.bbid}`
-			);
-		}
 		const data_description = revision.entity ? (
-			<a href={link_to_entity}>
-				{revision.entity._type} {revision.entity.bbid}
-			</a>
+			<EntityLink
+				bbid={revision.entity.bbid}
+				text={`${revision.entity._type} ${revision.entity.bbid}`}
+				type={revision.entity._type}
+			/>
 		) : (`Relationship ${revision.relationship.id}`);
 
 		const diff_table = diff ? (
