@@ -18,6 +18,7 @@
  */
 
 const React = require('react');
+const Icon = require('react-fontawesome');
 
 const LoadingSpinner = React.createClass({
 	displayName: 'loadingSpinner',
@@ -26,9 +27,12 @@ const LoadingSpinner = React.createClass({
 
 		return (
 			<div className="loading-background">
-				<span className=
-					"fa fa-circle-o-notch fa-spin fa-2x loading-spinner"
-				></span>
+				<Icon
+					className="loading-spinner"
+					name="circle-o-notch"
+					size="2x"
+					spin
+				/>
 			</div>
 		);
 	}

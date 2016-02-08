@@ -18,6 +18,7 @@
  */
 
 const React = require('react');
+const Icon = require('react-fontawesome');
 
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
@@ -95,6 +96,16 @@ const AliasRow = React.createClass({
 	render() {
 		'use strict';
 
+		const guessSortNameButton = (
+			<Button
+				bsStyle="link"
+				onClick={this.guessNames}
+				title="Guess Sort Name"
+			>
+				<Icon name="magic"/>
+			</Button>
+		);
+
 		return (
 			<div
 				className="row"
@@ -117,7 +128,7 @@ const AliasRow = React.createClass({
 				<div className="col-md-3">
 					<Input
 						bsStyle={this.validationState()}
-						buttonAfter={<Button bsStyle="link" onClick={this.guessNames} title="attempt to guess sort name"><span className="fa fa-bolt"/></Button>}
+						buttonAfter={guessSortNameButton}
 						defaultValue={this.props.sortName}
 						ref="sortName"
 						type="text"
@@ -163,7 +174,7 @@ const AliasRow = React.createClass({
 						className={this.props.removeHidden ? 'hidden' : ''}
 						onClick={this.props.onRemove}
 					>
-						<span className="fa fa-times" />
+						<Icon name="times"/>
 					</Button>
 				</div>
 			</div>
@@ -363,9 +374,9 @@ const AliasList = React.createClass({
 								onClick={this.props.nextClick}
 							>
 								Next
-								<span
+								<Icon
 									aria-hidden="true"
-									className="fa fa-angle-double-right"
+									name="angle-double-right"
 								/>
 							</a>
 						</li>

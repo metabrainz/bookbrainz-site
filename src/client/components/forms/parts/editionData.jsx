@@ -23,6 +23,7 @@ const Select = require('../../input/select2.jsx');
 const SearchSelect = require('../../input/entity-search.jsx');
 const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifiers.jsx');
+const Icon = require('react-fontawesome');
 
 const validators = require('../../validators');
 
@@ -381,9 +382,9 @@ const EditionData = React.createClass({
 									href="#"
 									onClick={this.props.backClick}
 								>
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-left"
+										name="angle-double-left"
 									/>
 									Back
 								</a>
@@ -394,9 +395,9 @@ const EditionData = React.createClass({
 									onClick={this.props.nextClick}
 								>
 									Next
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-right"
+										name="angle-double-right"
 									/>
 								</a>
 							</li>

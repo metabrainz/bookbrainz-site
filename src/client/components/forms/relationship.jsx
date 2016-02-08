@@ -24,6 +24,7 @@ const Alert = require('react-bootstrap').Alert;
 const PageHeader = require('react-bootstrap').PageHeader;
 const Select = require('../input/select2.jsx');
 const SearchSelect = require('../input/entity-search.jsx');
+const Icon = require('react-fontawesome');
 const _ = require('underscore');
 const request = require('superagent');
 require('superagent-bluebird-promise');
@@ -190,7 +191,7 @@ const RelationshipRow = React.createClass({
 				bsStyle="danger"
 				onClick={this.destroy}
 			>
-				<span className="fa fa-times"/>&nbsp;Delete
+				<Icon name="times"/>&nbsp;Delete
 				<span className="sr-only"> Relationship</span>
 			</Button>
 		) : null;
@@ -200,7 +201,7 @@ const RelationshipRow = React.createClass({
 				bsStyle="primary"
 				onClick={this.reset}
 			>
-				<span className="fa fa-undo"/>&nbsp;Reset
+				<Icon name="undo"/>&nbsp;Reset
 				<span className="sr-only"> Relationship</span>
 			</Button>
 		);
@@ -210,7 +211,7 @@ const RelationshipRow = React.createClass({
 				bsStyle="primary"
 				onClick={this.props.onSwap}
 			>
-				<span className="fa fa-exchange"/>&nbsp;Swap
+				<Icon name="exchange"/>&nbsp;Swap
 				<span className="sr-only"> Entities</span>
 			</Button>
 		);
@@ -262,7 +263,7 @@ const RelationshipRow = React.createClass({
 		if (currentType && currentType.deprecated) {
 			deprecationWarning = (
 				<span className="text-danger">
-					<span className="fa fa-warning"/>&nbsp;
+					<Icon name="warning"/>&nbsp;
 					Relationship type deprecated &mdash; please avoid!
 				</span>
 			);

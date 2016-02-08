@@ -21,11 +21,17 @@ const PageHeader = require('react-bootstrap').PageHeader;
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Table = require('react-bootstrap').Table;
+const Icon = require('react-fontawesome');
 const request = require('superagent');
 require('superagent-bluebird-promise');
 const _ = require('lodash');
 
-const SearchButton = (<Button block bsStyle="success" type="submit"><span className="fa fa-search"></span>&nbsp;Search</Button>);
+const SearchButton = (
+	<Button block bsStyle="success" type="submit">
+		<Icon name="search"/>&nbsp;Search
+	</Button>
+);
+
 const delayUpdate = 300;
 const SearchField = React.createClass({
 	displayName: 'SearchField',

@@ -20,6 +20,7 @@
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const Select = require('./select2.jsx');
+const Icon = require('react-fontawesome');
 const _ = require('underscore');
 const $ = require('jquery');
 
@@ -114,19 +115,17 @@ const EntitySearch = React.createClass({
 				let template = result.text;
 
 				const ENTITY_TYPE_ICONS = {
-					Creator: 'fa-user',
-					Edition: 'fa-book',
-					Publication: 'fa-th-list',
-					Publisher: 'fa-university',
-					Work: 'fa-file-text-o'
+					Creator: 'user',
+					Edition: 'book',
+					Publication: 'th-list',
+					Publisher: 'university',
+					Work: 'file-text-o'
 				};
 
 				/* eslint prefer-template: 0 */
 				if (result.type) {
 					template = ReactDOMServer.renderToStaticMarkup(
-						<span className=
-							{`fa ${ENTITY_TYPE_ICONS[result.type]}`}
-						/>
+						<Icon name={ENTITY_TYPE_ICONS[result.type]} />
 					) + ` ${template}`;
 				}
 
