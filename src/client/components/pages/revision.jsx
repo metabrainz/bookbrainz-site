@@ -77,7 +77,6 @@ module.exports = React.createClass({
 					</th>
 					<td>
 						{this.get_list_of_values(oldValue)}
-						<br> </br>
 					</td>
 					<td>
 						{this.get_list_of_values(newValue)}
