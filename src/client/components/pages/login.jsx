@@ -28,16 +28,52 @@ module.exports = React.createClass({
 		return (
 			<div className="row">
 				<div className="col-md-6 col-md-offset-3">
-					<form action="/login/handler" className="whole-page-form form-horizontal" method="post">
+					<form
+						action="/login/handler"
+						className="whole-page-form form-horizontal"
+						method="post"
+					>
 						<div className="form-group">
-							<Input className="form-control" id="loginUsername" label="Username" labelClassName="col-md-2" name="username" placeholder="Username" type="text" wrapperClassName="col-md-10" />
+							<Input
+								className="form-control"
+								id="loginUsername"
+								label="Username"
+								labelClassName="col-md-2"
+								name="username"
+								placeholder="Username"
+								type="text"
+								wrapperClassName="col-md-10"
+							/>
 						</div>
 						<div className="form-group">
-							<Input className="form-control" id="loginPassword" label="Password" labelClassName="col-md-2" name="password" placeholder="Password" type="password" wrapperClassName="col-md-10" />
+							<Input
+								className="form-control"
+								id="loginPassword"
+								label="Password"
+								labelClassName="col-md-2"
+								name="password"
+								placeholder="Password"
+								type="password"
+								wrapperClassName="col-md-10"
+							/>
 						</div>
-						<Button block bsSize="large" bsStyle="primary" type="submit">Login</Button>
+						<Button
+							block
+							bsSize="large"
+							bsStyle="primary"
+							type="submit"
+						>
+							Login
+						</Button>
 						<hr />
-						<Button block bsSize="large" bsStyle="success" href="/register">Register</Button>
+						<Button
+							block
+							bsSize="large"
+							bsStyle="success"
+							href="/register"
+						>
+							Register
+						</Button>
 					</form>
 				</div>
 			</div>

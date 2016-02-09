@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
  *               2015  Sean Burke
+ *               2015  Ohm Patel
+ *               2015  Ian Sanders
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +25,57 @@ const Icon = require('react-fontawesome');
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2.jsx');
+
+function stripDot(name) {
+	'use strict';
+	return name.replace(/\./g, '');
+}
+
+function makeSortName(name) {
+	'use strict';
+	const articles = ['a', 'an', 'the', 'los', 'las', 'el', 'la'];
+	const suffixes = [
+		'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi',
+		'xii', 'xiii', 'xiv', 'xv', 'jr', 'junior', 'sr', 'senior', 'phd', 'md',
+		'dmd', 'dds', 'esq'
+	];
+
+	const nameIsAllWhitespace = name.match(/^ *$/);
+	if (nameIsAllWhitespace) {
+		return '';
+	}
+
+	const words = name.replace(/\,/g, '').split(' ');
+
+	// First, check if sort name is for collective, by detecting article
+	const firstWord = stripDot(words[0]);
+	const firstWordIsArticle = articles.includes(firstWord.toLowerCase());
+	if (firstWordIsArticle) {
+		// The Collection of Stories --> Collection of Stories, The
+		return `${words.slice(1).join(' ')}, ${firstWord}`;
+	}
+
+	// From here on, it is assumed that the sort name is for a person
+	// Split suffixes
+	const isWordSuffix =
+		words.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
+	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;
+
+	// Test this to check that splice will not have a 0 deleteCount
+	const suffixWords = (
+		lastSuffix < words.length ? words.splice(lastSuffix) : []
+	);
+
+	// Rearrange names to (last name, other names)
+	const INDEX_BEFORE_END = -1;
+
+	let lastName = words.splice(INDEX_BEFORE_END);
+	if (suffixWords.length > 0) {
+		lastName += ` ${suffixWords.join(' ')}`;
+	}
+
+	return `${lastName}, ${words.join(' ')}`;
+}
 
 const AliasRow = React.createClass({
 	displayName: 'aliasRowComponent',
@@ -78,20 +131,8 @@ const AliasRow = React.createClass({
 		'use strict';
 		const name = this.refs.name.refs.input;
 		const sortName = this.refs.sortName.refs.input;
-		const articles = ['a', 'an', 'the'];
-		const str = name.value.split(' ');
-		const notFound = -1;
-		let guessed = '';
-		if (name.value.match(/^ *$/)) {
-			guessed = '';
-		}
-		else if (articles.indexOf(str[0].toLowerCase()) > notFound) {
-			guessed = (`${str.splice(1).join(' ')}, ${str[0]}`);
-		}
-		else {
-			guessed = (`${str[str.length - 1]}, ${str.splice(0, str.length - 1).join(' ')}`);
-		}
-		sortName.value = guessed;
+
+		sortName.value = makeSortName(name.value);
 	},
 	render() {
 		'use strict';

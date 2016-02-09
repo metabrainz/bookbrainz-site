@@ -44,6 +44,7 @@ function getRelationshipTypeById(relationships, id) {
 }
 
 function isRelationshipNew(initialType, initialTarget) {
+	'use strict';
 	return !(initialType || initialTarget);
 }
 
@@ -359,6 +360,7 @@ const RelationshipEditor = React.createClass({
 		loadedEntities: React.PropTypes.arrayOf(React.PropTypes.shape({
 			bbid: React.PropTypes.string
 		})),
+		relationshipTypes: React.PropTypes.arrayOf(validators.relationshipType),
 		relationships: React.PropTypes.arrayOf(React.PropTypes.shape({
 			source: React.PropTypes.object,
 			target: React.PropTypes.object,

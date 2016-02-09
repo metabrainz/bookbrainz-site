@@ -61,7 +61,10 @@ function bundle() {
 	});
 
 	return browserify(srcFiles)
-		.transform(babelify, {presets: ['es2015', 'react']})
+		.transform(babelify, {
+			plugins: ['array-includes'],
+			presets: ['es2015', 'react']
+		})
 		.plugin('factor-bundle', {
 			outputs: dstFiles
 		})

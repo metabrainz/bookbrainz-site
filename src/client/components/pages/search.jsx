@@ -17,7 +17,6 @@
  */
 
 const React = require('react');
-const PageHeader = require('react-bootstrap').PageHeader;
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Table = require('react-bootstrap').Table;
@@ -27,7 +26,11 @@ require('superagent-bluebird-promise');
 const _ = require('lodash');
 
 const SearchButton = (
-	<Button block bsStyle="success" type="submit">
+	<Button
+		block
+		bsStyle="success"
+		type="submit"
+	>
 		<Icon name="search"/>&nbsp;Search
 	</Button>
 );
@@ -58,8 +61,18 @@ const SearchField = React.createClass({
 		return (
 				<div className="row">
 					<div className="col-md-6 col-md-offset-3">
-						<form action="/search" className="form-horizontal whole-page-form" onSubmit={this.handleSubmit}>
-							<Input buttonAfter={SearchButton} name="q" onChange={_.debounce(this.change, delayUpdate)} ref="q"	type="text"/>
+						<form
+							action="/search"
+							className="form-horizontal whole-page-form"
+							onSubmit={this.handleSubmit}
+						>
+							<Input
+								buttonAfter={SearchButton}
+								name="q"
+								onChange={_.debounce(this.change, delayUpdate)}
+								ref="q"
+								type="text"
+							/>
 						</form>
 					</div>
 				</div>
@@ -69,6 +82,10 @@ const SearchField = React.createClass({
 
 const SearchResults = React.createClass({
 	displayName: 'SearchResults',
+	propTypes: {
+		error: React.PropTypes.string,
+		results: React.PropTypes.array
+	},
 	render() {
 		'use strict';
 		if (!this.props.results || this.props.results.length === 0) {
@@ -82,7 +99,9 @@ const SearchResults = React.createClass({
 			<tr key={result.id}>
 				<td>
 					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
-						{result.default_alias ? result.default_alias.name : '(unnamed)'}
+						{result.default_alias ?
+							result.default_alias.name : '(unnamed)'
+						}
 					</a>
 				</td>
 				<td>
@@ -92,7 +111,10 @@ const SearchResults = React.createClass({
 		);
 
 		return (
-			<Table className="table table-striped" responsive>
+			<Table
+				className="table table-striped"
+				responsive
+			>
 				<thead>
 					<tr>
 						<th>Alias</th>
@@ -109,6 +131,9 @@ const SearchResults = React.createClass({
 
 module.exports = React.createClass({
 	displayName: 'SearchPage',
+	propTypes: {
+		initialResults: React.PropTypes.array
+	},
 	getInitialState() {
 		'use strict';
 		return {

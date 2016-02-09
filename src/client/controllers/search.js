@@ -24,4 +24,6 @@ const SearchPage = React.createFactory(
 
 const propsDOM = document.getElementById('props');
 const props = propsDOM ? JSON.parse(propsDOM.innerHTML) : {};
-ReactDOM.render(SearchPage(props), document.getElementById('searchPage').parentNode);
+ReactDOM.render(
+	SearchPage(props), document.getElementById('searchPage').parentNode
+);

@@ -9,6 +9,7 @@
     "test": "./scripts/check-style.sh && gulp && node_modules/.bin/mocha"
   },
   "dependencies": {
+    "babel-plugin-array-includes": "^2.0.3",
     "bluebird": "^2.8.2",
     "body-parser": "^1.14.1",
     "bootstrap": "^3.3.2",

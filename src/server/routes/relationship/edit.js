@@ -37,8 +37,6 @@ const relationshipHelper = {};
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
 relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 	/* If the route specifies a BBID, load the Entity for it. */
 
