@@ -40,12 +40,19 @@ function makeSortName(name) {
 		'dmd', 'dds', 'esq'
 	];
 
-	const nameIsAllWhitespace = name.match(/^ *$/);
-	if (nameIsAllWhitespace) {
+	// Remove leading and trailing spaces, and return a blank sort name if
+	// the string is empty
+	const trimmedName = name.trim();
+	if (trimmedName.length === 0) {
 		return '';
 	}
 
-	const words = name.replace(/\,/g, '').split(' ');
+	const words = trimmedName.replace(/\,/g, '').split(' ');
+
+	// If there's only one word, simply copy the name as the sort name
+	if (words.length === 1) {
+		return trimmedName;
+	}
 
 	// First, check if sort name is for collective, by detecting article
 	const firstWord = stripDot(words[0]);
