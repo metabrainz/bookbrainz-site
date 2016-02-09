@@ -299,7 +299,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const currentIdentifiers = publisher.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
-		if (identifier.id !== nextIdentifier.id) {
+		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
@@ -336,7 +336,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	publisher.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
-		if (alias.id !== nextAlias.id) {
+		if (!nextAlias || alias.id !== nextAlias.id) {
 			// Remove the alias
 			currentAliases.push([alias.id, null]);
 		}
