@@ -278,6 +278,15 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 		changes.ended = endDate ? true : ended;
 	}
 
+	if (publisher.ended !== ended) {
+		changes.ended = ended;
+		// If ended has been unset and end date was previously set, also unset
+		// the end date.
+		if (!ended && endDate) {
+			changes.end_date = null;
+		}
+	}
+
 	const disambiguation = req.body.disambiguation;
 	if (!publisher.disambiguation ||
 			publisher.disambiguation.comment !== disambiguation) {
