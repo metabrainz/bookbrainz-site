@@ -47,9 +47,14 @@ module.exports = React.createClass({
 					information by editing an entity. Note that in the current
 					version of BookBrainz, only new entities can be edited.
 					Please follow the&nbsp;
+					<a href="https://bb-user-guide.readthedocs.org/en/latest/style/introduction/">
+						BookBrainz style guidelines
+					</a> when adding data.
+					Unfortunately the aforementioned are still work in progress
+					and should they not cover some cases, please refer to the
 					<a href="http://musicbrainz.org/doc/Style">
-						MusicBrainz style guidelines
-					</a> (adapting as necessary) when adding your information.
+						MusicBrainz ones
+					</a>, adapting as necessary.
 				</p>
 
 				<h2>Programming</h2>
