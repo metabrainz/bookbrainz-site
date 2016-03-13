@@ -29,6 +29,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const staticCache = require('express-static-cache');
+const ElasticSearch = require('elasticsearch');
 
 const Promise = require('bluebird');
 Promise.longStackTraces();
@@ -38,8 +39,6 @@ const config = require('./src/server/helpers/config');
 /* -data needs to be initialized before pulling in auth. */
 require('bookbrainz-data').init(config.database);
 const auth = require('./src/server/helpers/auth');
-
-const Editor = require('bookbrainz-data').Editor;
 
 const status = require('http-status');
 
@@ -54,6 +53,14 @@ app.locals.basedir = app.get('views');
 require('node-jsx').install({
 	extension: '.jsx'
 });
+
+// Set up elasticsearch
+const esClient = new ElasticSearch.Client({
+	host: 'localhost:9200',
+	log: 'trace'
+});
+
+app.set('esClient', esClient);
 
 app.set('trust proxy', config.site.proxyTrust);
 
@@ -93,29 +100,6 @@ auth.init(app);
 /* Add middleware to set variables used for every rendered route. */
 app.use((req, res, next) => {
 	res.locals.user = req.user;
-
-	// Get the latest count of messages in the user's inbox.
-	if (req.user) {
-		return new Editor({id: req.user.id})
-			.fetch({
-				require: true,
-				withRelated: {
-					messages(query) {
-						query.where('archived', false);
-					}
-				}
-			})
-			.then((editor) => {
-				res.locals.inboxCount = editor.related('messages').length;
-			})
-			.catch((err) => {
-				console.log(err.stack);
-
-				res.locals.inboxCount = 0;
-			})
-			.finally(next);
-	}
-
 	res.locals.inboxCount = 0;
 	next();
 });
