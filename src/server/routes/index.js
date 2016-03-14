@@ -26,12 +26,14 @@ const bbws = require('../helpers/bbws');
 const Promise = require('bluebird');
 const React = require('react');
 
-const EntityRevision = require('bookbrainz-data').EntityRevision;
+const Revision = require('bookbrainz-data').Revision;
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
 const Work = require('bookbrainz-data').Work;
 const Publisher = require('bookbrainz-data').Publisher;
+
+const _ = require('lodash');
 
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about.jsx')
@@ -51,28 +53,42 @@ const LicensingPage = React.createFactory(
 
 /* GET home page. */
 router.get('/', (req, res) => {
-	function render(revisions) {
+	const numRevisionsOnHomepage = 9;
+
+	function render(entities) {
 		res.render('index', {
-			recent: revisions.toJSON(),
+			recent: _.take(entities, numRevisionsOnHomepage),
 			homepage: true
 		});
 	}
 
-	const numRevisionsOnHomepage = 9;
-	EntityRevision
-		.query((qb) => {
-			qb
-				.orderBy('id', 'desc')
-				.limit(numRevisionsOnHomepage);
-		})
-		.fetchAll({
-			withRelated: ['revision', 'entity', 'entityData.defaultAlias']
-		})
-		.then(render)
-		.catch((err) => {
-			console.log(err.stack);
-			render(null);
-		});
+	const entityTypes = {Creator, Edition, Work, Publisher, Publication};
+
+	const latestEntitiesPromise =
+		Promise.all(_.map(entityTypes, (Model, name) =>
+			Model.query((qb) => {
+				qb
+					.leftJoin(
+						'bookbrainz.revision',
+						`bookbrainz.${_.snakeCase(name)}.revision_id`,
+						'bookbrainz.revision.id'
+					)
+					.orderBy('bookbrainz.revision.created_at', 'desc')
+					.limit(numRevisionsOnHomepage);
+			})
+			.fetchAll({
+				withRelated: ['defaultAlias', 'revision.revision']
+			})
+			.then((collection) => collection.toJSON())
+		));
+
+	latestEntitiesPromise.then((latestEntitiesByType) => {
+		const latestEntities = _.orderBy(
+			_.flatten(latestEntitiesByType), 'revision.revision.createdAt',
+			['desc']
+		);
+		render(latestEntities);
+	});
 });
 
 router.get('/about', (req, res) => {

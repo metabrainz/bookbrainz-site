@@ -76,14 +76,14 @@ block body
 					h2.text-center Recent Activity
 					
 					.list-group
-						for revision in recent
+						for entity in recent
 							- var name = '(unnamed)';
-							if revision.entityData.defaultAlias
-								- name = revision.entityData.defaultAlias.name;
-							a.list-group-item(href='/revision/'+revision.id)
+							if entity.defaultAlias
+								- name = entity.defaultAlias.name;
+							a.list-group-item(href='/revision/'+entity.revisionId)
 								.row
-									.col-md-2='r'+revision.id
+									.col-md-2='r'+entity.revisionId
 									.col-md-6
-										span.fa(class=picture_classes[revision.entity._type])
+										span.fa(class=picture_classes[entity.type])
 										span.margin-left-1=name
-									.col-md-4=(new Date(Date.parse(revision.revision.createdAt)).toLocaleDateString())
+									.col-md-4=(new Date(Date.parse(entity.revision.revision.createdAt)).toLocaleDateString())
