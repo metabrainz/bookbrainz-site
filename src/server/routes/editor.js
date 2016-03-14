@@ -78,7 +78,7 @@ router.get('/:id', (req, res, next) => {
 	new Editor({id: userId})
 		.fetch({
 			require: true,
-			withRelated: ['editorType', 'gender']
+			withRelated: ['type', 'gender']
 		})
 		.then((editor) => {
 			let editorJSON = editor.toJSON();
