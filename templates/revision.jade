@@ -1,64 +1,63 @@
 extends /layout
 
-mixin formatRow(fieldName, newValue, oldValue)
-	if (oldValue && (oldValue.length > 0)) && !(newValue && (newValue.length > 0))
-		tr.danger
-			th(scope='row')=fieldName
-			td
-				for v in oldValue
-					=v
-					br
-			td —
-	else if !(oldValue && (oldValue.length > 0)) && (newValue && (newValue.length > 0)) 
-		tr.success
-			th(scope='row')=fieldName
-			td —
-			td
-				for v in newValue
-					=v
-					br
-	else
+mixin formatRow(change)
+	if change.kind === 'E'
 		tr.warning
-			th(scope='row')=fieldName
+			th(scope='row')=change.key
 			td
-				for v in oldValue
-					=v
-					br
+				each v in change.lhs
+					div=v
 			td
-				for v in newValue
-					=v
-					br
-
+				each v in change.rhs
+					div=v
+	else if change.kind === 'N'
+			tr.success
+				th(scope='row')=change.key
+				td=' — '
+				td
+					each v in change.rhs
+						div=v
+	else if change.kind === 'D'
+			tr.danger
+				th(scope='row')=change.key
+				td
+					each v in change.lhs
+						div=v
+				td=' — '
 block body
-	h1=('Revision #' + revision.id)
-	if revision.entity
-		h3
-			a(href='/' + revision.entity._type.toLowerCase() + '/' + revision.entity.bbid)
-				=(revision.entity._type + ' ' + revision.entity.bbid)
-	else
-		h3=('Relationship ' + revision.relationship.id)
+	div.row
+		div.col-md-12
+			div
+				div
+					h1
+						span='Revision #'
+						span=revision.id
 
-	if diff
-		table.table.table-bordered.text-center
-			for d in diff
-				each val, key in d
-					+formatRow(key, val[0], val[1])
-	else
-		.alert.alert-danger Error calculating diff. Please note that diffs for DELETE revisions are currently unsupported.
-	
-	p.text-right
-		='Created by '
-		a(href='/editor/'+revision.user.id)=revision.user.name
-		=(', ' + new Date(revision.created_at).toLocaleDateString())
-	
-	h3 Revision Notes
-	if revision.note
-		.panel.panel-default
-			.panel-body
-				p=revision.note
-				p.text-right
-					='— '
-					a(href='/editor/'+revision.user.id)=revision.user.name
-					=(', ' + new Date(revision.created_at).toLocaleTimeString() + ', ' + new Date(revision.created_at).toLocaleDateString())
-	else
-		p No revision notes present
+					if diffs
+						for diff in diffs
+							h3
+								a(href='/' + diff.entity.type.toLowerCase() + '/' + diff.entity.bbid)
+										=(diff.entity.type + ' ' + diff.entity.bbid)
+							table.table.table-bordered.text-center
+								tbody
+									each change in diff.changes
+										+formatRow(change)
+					else
+						.alert.alert-danger Error calculating diffs. Please note that diffs for DELETE revisions are currently unsupported.
+					
+					p.text-right
+						='Created by '
+						a(href='/editor/'+revision.author.id)=revision.author.name
+						=(', ' + new Date(revision.createdAt).toLocaleDateString())
+					
+					h3 Revision Notes
+					each note in revision.notes
+						.panel.panel-default
+							.panel-body
+								p=note.content
+								p.text-right
+									='— '
+									a(href='/editor/'+note.author.id)=note.author.name
+									=(', ' + new Date(note.postedAt).toLocaleTimeString() + ', ' + new Date(note.postedAt).toLocaleDateString())
+					else
+						p No revision notes present
