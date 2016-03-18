@@ -80,7 +80,9 @@ Or, if you're using Windows:
 ### Watch Mode
 
 If you're doing rapid prototyping of some new feature, it can be helpful to run the site in watch mode,
-where every change to any source file results in a reloading of the server.
+where every change to any source file results in a reloading of the server. This uses nodemon which is installed globally with:
+
+    npm install -g nodemon
 
 After nodemon is installed, run these two commands in separate terminal windows:
 
