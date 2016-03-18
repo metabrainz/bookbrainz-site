@@ -43,6 +43,11 @@ In order to use the `gulp` command, you have to install it globally:
 
 If you prefer not installing packages globally, you can skip this step and use `node_modules/.bin/gulp` instead of `gulp` in the later steps.
 
+You can then install gulp locally:
+
+    npm install gulp
+
+
 You also need to install [redis](http://redis.io/) either locally or have a machine running it available.
 
 ## Configuration
