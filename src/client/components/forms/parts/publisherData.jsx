@@ -32,14 +32,14 @@ const PublisherData = React.createClass({
 		nextClick: React.PropTypes.func,
 		publisher: React.PropTypes.shape({
 			annotation: React.PropTypes.string,
-			begin_date: React.PropTypes.string,
+			beginDate: React.PropTypes.string,
 			disambiguation: React.PropTypes.string,
-			end_date: React.PropTypes.string,
+			endDate: React.PropTypes.string,
 			ended: React.PropTypes.bool,
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				identifierType: validators.identifierType
 			})),
 			publisher_type: validators.publisherType
 		}),
@@ -89,19 +89,20 @@ const PublisherData = React.createClass({
 
 		const prefillData = this.props.publisher;
 		if (prefillData) {
-			initialBeginDate = prefillData.begin_date;
-			initialEndDate = prefillData.end_date;
-			initialPublisherType = prefillData.publisher_type ?
-				prefillData.publisher_type.publisher_type_id : null;
+			initialBeginDate = prefillData.beginDate;
+			initialEndDate = prefillData.endDate;
+			initialPublisherType = prefillData.publisherType ?
+				prefillData.publisherType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers =
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifierType.id
+				}));
 		}
 
 		const select2Options = {
