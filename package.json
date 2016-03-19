@@ -6,7 +6,7 @@
     "start": "node ./scripts/www",
     "debug": "DEBUG=bbsite node ./scripts/www",
     "debug_win": "set DEBUG=bbsite & node scripts\\www",
-    "test": "./scripts/check-style.sh && gulp && node_modules/.bin/mocha"
+    "test": "./scripts/check-style.sh && gulp"
   },
   "dependencies": {
     "select2": "git://github.com/select2/select2",
