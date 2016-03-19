@@ -73,7 +73,7 @@ block body
 				block content
 				h2 Relationships
 				ul.list-unstyled
-					if entity.relationshipSet.relationships
+					if entity.relationshipSet && entity.relationshipSet.relationships
 						for relationship in entity.relationshipSet.relationships
 							li!=relationship.rendered
 				a.btn.btn-warning.entity-action(title='Edit Relationships', href='/'+entity.type.toLowerCase()+'/'+entity.bbid+'/relationships')
