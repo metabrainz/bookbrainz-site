@@ -78,7 +78,7 @@ function loadEntityRelationships(req, res, next) {
 	}
 
 	const entity = res.locals.entity;
-	Promise.map(entity.relationships, (relationship) => {
+	/*Promise.map(entity.relationships, (relationship) => {
 		relationship.template = relationship.relationship_type.template;
 
 		const relEntities = relationship.entities.sort(
@@ -101,7 +101,9 @@ function loadEntityRelationships(req, res, next) {
 
 			next();
 		})
-		.catch(next);
+		.catch(next);*/
+	res.locals.entity.relationships = [];
+	next();
 };
 
 middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
@@ -115,14 +117,14 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 
 	return (req, res, next, bbid) => {
 		if (bbidRegex.test(bbid)) {
-			return model.forge({bbid})
+			return new Model({bbid})
 				.fetch({require: true, withRelated: relations})
 				.then((entity) => {
 					res.locals.entity = entity.toJSON();
 
 					next();
 				})
-				.catch(model.NotFoundError, () => {
+				.catch(Model.NotFoundError, () => {
 					next(new NotFoundError(errMessage));
 				})
 				.catch((err) => {

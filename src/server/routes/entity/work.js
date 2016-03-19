@@ -43,14 +43,18 @@ const loadIdentifierTypes =
 
 const bbws = require('../../helpers/bbws');
 const Promise = require('bluebird');
-const _ = require('underscore');
+const _ = require('lodash');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param(
 	'bbid',
 	makeEntityLoader(
 		Work,
-		['workType'],
+		[
+			'workType', 'revision.revision', 'identifierSet.identifiers.type',
+			'relationshipSet.relationships.type', 'revision.data.languages',
+			'annotation.lastRevision', 'disambiguation'
+		],
 		'Work not found'
 	)
 );
@@ -64,12 +68,11 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	}
 
 	// Get unique identifier types for display
-	const identifier_types = _.uniq(
-		_.pluck(work.identifiers, 'identifier_type'),
-		(identifier) => identifier.identifier_type_id
+	const identifierTypes = _.uniq(
+		_.map(work.identifierSet.identifiers, 'type'),
+		(type) => type.id
 	);
-
-	res.render('entity/view/work', {title, identifier_types});
+	res.render('entity/view/work', {title, identifierTypes: identifierTypes});
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
