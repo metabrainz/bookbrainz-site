@@ -22,11 +22,9 @@
 
 const express = require('express');
 const router = express.Router();
-const bbws = require('../helpers/bbws');
 const Promise = require('bluebird');
 const React = require('react');
 
-const Revision = require('bookbrainz-data').Revision;
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
