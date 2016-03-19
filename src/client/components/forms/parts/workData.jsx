@@ -23,14 +23,13 @@ const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifiers.jsx');
 const validators = require('../../validators');
 
-
 const WorkData = React.createClass({
 	displayName: 'workDataComponent',
 	propTypes: {
 		backClick: React.PropTypes.func,
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
-			language_id: React.PropTypes.number,
+			id: React.PropTypes.number,
 			name: React.PropTypes.string
 		})),
 		nextClick: React.PropTypes.func,
@@ -43,7 +42,7 @@ const WorkData = React.createClass({
 				value: React.PropTypes.string,
 				identifier_type: validators.identifierType
 			})),
-			work_type: validators.workType
+			workType: validators.workType
 		}),
 		workTypes: React.PropTypes.arrayOf(validators.workType)
 	},
