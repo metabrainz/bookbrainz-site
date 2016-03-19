@@ -117,14 +117,14 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 
 	return (req, res, next, bbid) => {
 		if (bbidRegex.test(bbid)) {
-			return new Model({bbid})
+			return new model({bbid})
 				.fetch({require: true, withRelated: relations})
 				.then((entity) => {
 					res.locals.entity = entity.toJSON();
 
 					next();
 				})
-				.catch(Model.NotFoundError, () => {
+				.catch(model.NotFoundError, () => {
 					next(new NotFoundError(errMessage));
 				})
 				.catch((err) => {
