@@ -91,8 +91,8 @@ function loadEntityRelationships(req, res, next) {
 			]
 		})
 		.then((relationshipSet) => {
-			entity.relationships =
-				relationshipSet.related('relationships').toJSON();
+			entity.relationships = relationshipSet ?
+				relationshipSet.related('relationships').toJSON() : [];
 
 			function getEntityWithAlias(relEntity) {
 				return dataModels[relEntity.type].forge({bbid: relEntity.bbid})
