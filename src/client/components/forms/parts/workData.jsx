@@ -74,20 +74,21 @@ const WorkData = React.createClass({
 
 		const prefillData = this.props.work;
 		if (prefillData) {
-			initialLanguages = prefillData.languages.map(
-				(language) => language.language_id
+			initialLanguages = prefillData.revision.data.languages.map(
+				(language) => language.id
 			);
-			initialWorkType = prefillData.work_type ?
-				prefillData.work_type.work_type_id : null;
+			initialWorkType = prefillData.workType ?
+				prefillData.workType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers =
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifierType.id
+				}));
 		}
 
 		const select2Options = {

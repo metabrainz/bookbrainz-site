@@ -53,7 +53,8 @@ router.param(
 		[
 			'workType', 'revision.revision', 'identifierSet.identifiers.type',
 			'relationshipSet.relationships.type', 'revision.data.languages',
-			'annotation.lastRevision', 'disambiguation'
+			'annotation.lastRevision', 'disambiguation',
+			'aliasSet.aliases.language'
 		],
 		'Work not found'
 	)

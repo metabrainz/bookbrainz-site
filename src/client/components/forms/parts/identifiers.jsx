@@ -125,10 +125,10 @@ const IdentifierRow = React.createClass({
 const IdentifierList = React.createClass({
 	displayName: 'identifierListComponent',
 	propTypes: {
-		identifiers: React.PropTypes.shape({
+		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			value: React.PropTypes.string,
 			type: validators.identifierType
-		}),
+		})),
 		types: React.PropTypes.arrayOf(validators.identifierType)
 	},
 	getInitialState() {
