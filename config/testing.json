@@ -10,5 +10,15 @@
 			"port": 6379,
 			"ttl": 3600
 		}
-	}
+	},
+        "database": {
+                "client": "pg",
+                "debug": false,
+                "connection": {
+                        "host": "127.0.0.1",
+                        "database": "bookbrainz_test",
+                        "user": "bookbrainz",
+                        "password": "bookbrainz"
+                }
+        }
 }
