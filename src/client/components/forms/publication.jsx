@@ -111,13 +111,13 @@ module.exports = React.createClass({
 		let aliases = null;
 		const prefillData = this.props.publication;
 		if (prefillData) {
-			aliases = prefillData.aliases.map((alias) => ({
+			aliases = prefillData.aliasSet.aliases.map((alias) => ({
 				id: alias.id,
 				name: alias.name,
-				sortName: alias.sort_name,
-				language: alias.language ? alias.language.language_id : null,
+				sortName: alias.sortName,
+				language: alias.language ? alias.language.id : null,
 				primary: alias.primary,
-				default: alias.id === prefillData.default_alias.alias_id
+				default: alias.id === prefillData.defaultAlias.id
 			}));
 		}
 

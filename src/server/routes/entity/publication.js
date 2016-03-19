@@ -25,7 +25,6 @@ const status = require('http-status');
 const auth = require('../../helpers/auth');
 
 const Publication = require('bookbrainz-data').Publication;
-const Edition = require('../../data/entities/edition');
 const User = require('../../data/user');
 
 /* Middleware loader functions. */
@@ -53,7 +52,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Publication,
-		['publicationType'],
+		['publicationType', 'editions.defaultAlias', 'editions.disambiguation'],
 		'Publication not found'
 	)
 );
@@ -62,27 +61,16 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	const publication = res.locals.entity;
 	let title = 'Publication';
 
-	publication.editions = publication.editions.map((edition) =>
-		Edition.findOne(edition.bbid, {
-			populate: ['disambiguation', 'aliases']
-		})
-	);
-
 	if (publication.defaultAlias && publication.defaultAlias.name) {
 		title = `Publication “${publication.defaultAlias.name}”`;
 	}
 
-	Promise.all(publication.editions).then((editions) => {
-		publication.editions = editions;
-
-		// Get unique identifier types for display
-		const identifier_types = _.uniq(
-			_.pluck(publication.identifiers, 'identifier_type'),
-			(identifier) => identifier.identifier_type_id
-		);
-
-		res.render('entity/view/publication', {title, identifier_types});
-	});
+	// Get unique identifier types for display
+	const identifierTypes = _.uniq(
+		_.map(publication.identifierSet.identifiers, 'type'),
+		(type) => type.id
+	);
+	res.render('entity/view/publication', {title, identifierTypes});
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {

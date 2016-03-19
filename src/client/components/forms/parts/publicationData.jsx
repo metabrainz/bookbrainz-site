@@ -36,7 +36,7 @@ const PublicationData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				identifierType: validators.identifierType
 			})),
 			publication_type: validators.publicationType
 		}),
@@ -68,17 +68,18 @@ const PublicationData = React.createClass({
 
 		const prefillData = this.props.publication;
 		if (prefillData) {
-			initialPublicationType = prefillData.publication_type ?
-				prefillData.publication_type.publication_type_id : null;
+			initialPublicationType = prefillData.publicationType ?
+				prefillData.publicationType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers =
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifierType.id
+				}));
 		}
 
 		const select2Options = {
