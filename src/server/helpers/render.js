@@ -22,15 +22,22 @@
 const Handlebars = require('handlebars');
 const utils = require('./utils');
 
-function renderRelationship(entities, relationship) {
-	const template = Handlebars.compile(relationship.template);
+function renderRelationship(relationship) {
+	const template = Handlebars.compile(
+		relationship.type.displayTemplate,
+		{ noEscape: true }
+	);
 
 	const data = {
-		entities: entities.map((entity) => {
-			const name = entity.default_alias ?
-				entity.default_alias.name : '(unnamed)';
-			return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
-		})
+		entities: [
+				relationship.source,
+				relationship.target
+			].map((entity) => {
+				// Linkify source and target based on default alias
+				const name = entity.defaultAlias ?
+					entity.defaultAlias.name : '(unnamed)';
+				return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
+			})
 	};
 
 	return template(data);
