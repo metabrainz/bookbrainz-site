@@ -52,7 +52,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Creator,
-		['gender', 'creatorType'],
+		[ 'creatorType', 'gender' ],
 		'Creator not found'
 	)
 );
@@ -66,12 +66,11 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	}
 
 	// Get unique identifier types for display
-	const identifier_types = _.uniq(
-		_.pluck(creator.identifiers, 'identifier_type'),
-		(identifier) => identifier.identifier_type_id
+	const identifierTypes = _.uniq(
+		_.map(creator.identifierSet.identifiers, 'type'),
+		(type) => type.id
 	);
-
-	res.render('entity/view/creator', {title, identifier_types});
+	res.render('entity/view/creator', {title, identifierTypes});
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
