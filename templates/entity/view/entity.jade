@@ -1,16 +1,16 @@
 extends /layout
 
-mixin type(entity_type)
+mixin type(entityType)
 	dt Type
-	dd=(entity_type ? entity_type.label : '?')
+	dd=(entityType ? entityType.label : '?')
 	
 mixin begin_end
 	dt Begin Date
-	dd=(entity.begin_date ? entity.begin_date : '?')
+	dd=(entity.beginDate ? entity.beginDate : '?')
 
 	if entity.ended
 		dt End Date
-		dd=(entity.end_date ? entity.end_date : '?')
+		dd=(entity.endDate ? entity.endDate : '?')
 
 block body
 	.row
@@ -44,7 +44,7 @@ block body
 					else
 						|(unnamed)
 				else
-					=entity._type + ' ' + entity.bbid
+					=entity.type + ' ' + entity.bbid
 				if entity.disambiguation
 					small='('+entity.disambiguation.comment+')'
 			hr
@@ -69,7 +69,7 @@ block body
 				if entity.annotation
 					blockquote
 						p=entity.annotation.content
-						footer='updated ' + (new Date(entity.annotation.created_at)).toLocaleDateString()
+						footer='updated ' + (new Date(entity.annotation.createdAt)).toLocaleDateString()
 				block content
 				h2 Relationships
 				ul.list-unstyled
@@ -84,7 +84,7 @@ block body
 			.col-md-6.col-md-offset-3
 				.panel.panel-danger
 					.panel-heading
-						h3.panel-title Deleted #{entity._type}
+						h3.panel-title Deleted #{entity.type}
 					.panel-body.
 						This entity has been deleted by an editor. This is most
 						likely because it was added accidentally or
