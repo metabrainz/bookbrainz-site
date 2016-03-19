@@ -24,15 +24,15 @@ const status = require('http-status');
 
 const dataModels = require('bookbrainz-data');
 
-const CreatorType = require('../data/properties/creator-type');
-const EditionStatus = require('../data/properties/edition-status');
-const EditionFormat = require('../data/properties/edition-format');
-const Gender = require('../data/properties/gender');
-const Language = require('../data/properties/language');
-const PublicationType = require('../data/properties/publication-type');
-const PublisherType = require('../data/properties/publisher-type');
-const WorkType = require('../data/properties/work-type');
-const IdentifierType = require('../data/properties/identifier-type');
+const CreatorType = require('bookbrainz-data').CreatorType;
+const EditionStatus = require('bookbrainz-data').EditionStatus;
+const EditionFormat = require('bookbrainz-data').EditionFormat;
+const Gender = require('bookbrainz-data').Gender;
+const Language = require('bookbrainz-data').Language;
+const PublicationType = require('bookbrainz-data').PublicationType;
+const PublisherType = require('bookbrainz-data').PublisherType;
+const WorkType = require('bookbrainz-data').WorkType;
+const IdentifierType = require('bookbrainz-data').IdentifierType;
 
 const RelationshipSet = require('bookbrainz-data').RelationshipSet;
 
@@ -42,10 +42,12 @@ const NotFoundError = require('../helpers/error').NotFoundError;
 
 function makeLoader(model, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
-		model.find()
+		model.fetchAll()
 			.then((results) => {
+				var resultsSerial = results.toJSON();
+
 				res.locals[propName] =
-					sortFunc ? results.sort(sortFunc) : results;
+					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
 
 				next();
 			})
@@ -56,13 +58,13 @@ function makeLoader(model, propName, sortFunc) {
 const middleware = {};
 
 middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
-middleware.loadPublicationTypes =
-	makeLoader(PublicationType, 'publicationTypes');
 middleware.loadEditionFormats = makeLoader(EditionFormat, 'editionFormats');
 middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
+middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
+middleware.loadPublicationTypes =
+	makeLoader(PublicationType, 'publicationTypes');
 middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
 middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
-middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
 
 middleware.loadGenders = makeLoader(Gender, 'genders', (a, b) => a.id > b.id);
 
