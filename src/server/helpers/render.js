@@ -25,11 +25,12 @@ const utils = require('./utils');
 function renderRelationship(relationship) {
 	const template = Handlebars.compile(
 		relationship.type.displayTemplate,
-		{ noEscape: true }
+		{noEscape: true}
 	);
 
 	const data = {
-		entities: [
+		entities:
+			[
 				relationship.source,
 				relationship.target
 			].map((entity) => {

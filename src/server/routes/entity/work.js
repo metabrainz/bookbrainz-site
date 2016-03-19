@@ -73,7 +73,7 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 		_.map(work.identifierSet.identifiers, 'type'),
 		(type) => type.id
 	);
-	res.render('entity/view/work', {title, identifierTypes: identifierTypes});
+	res.render('entity/view/work', {title, identifierTypes});
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {

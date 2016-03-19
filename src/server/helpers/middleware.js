@@ -20,7 +20,6 @@
 'use strict';
 
 const Promise = require('bluebird');
-const status = require('http-status');
 
 const dataModels = require('bookbrainz-data');
 
@@ -28,13 +27,12 @@ const CreatorType = require('bookbrainz-data').CreatorType;
 const EditionStatus = require('bookbrainz-data').EditionStatus;
 const EditionFormat = require('bookbrainz-data').EditionFormat;
 const Gender = require('bookbrainz-data').Gender;
+const IdentifierType = require('bookbrainz-data').IdentifierType;
 const Language = require('bookbrainz-data').Language;
 const PublicationType = require('bookbrainz-data').PublicationType;
 const PublisherType = require('bookbrainz-data').PublisherType;
-const WorkType = require('bookbrainz-data').WorkType;
-const IdentifierType = require('bookbrainz-data').IdentifierType;
-
 const RelationshipSet = require('bookbrainz-data').RelationshipSet;
+const WorkType = require('bookbrainz-data').WorkType;
 
 const renderRelationship = require('../helpers/render');
 
@@ -44,7 +42,7 @@ function makeLoader(model, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
 		model.fetchAll()
 			.then((results) => {
-				var resultsSerial = results.toJSON();
+				const resultsSerial = results.toJSON();
 
 				res.locals[propName] =
 					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
@@ -84,7 +82,7 @@ function loadEntityRelationships(req, res, next) {
 
 	const entity = res.locals.entity;
 
-	RelationshipSet.forge({ id: entity.relationshipSetId })
+	RelationshipSet.forge({id: entity.relationshipSetId})
 		.fetch({
 			withRelated: [
 				'relationships.source',
@@ -96,18 +94,18 @@ function loadEntityRelationships(req, res, next) {
 			entity.relationships =
 				relationshipSet.related('relationships').toJSON();
 
-			function getEntityWithAlias(entity) {
-				return dataModels[entity.type].forge({ bbid: entity.bbid })
-					.fetch({ withRelated: 'defaultAlias' });
-			};
+			function getEntityWithAlias(relEntity) {
+				return dataModels[relEntity.type].forge({bbid: relEntity.bbid})
+					.fetch({withRelated: 'defaultAlias'});
+			}
 
 			/**
 			 * Source and target are generic Entity objects, so until we have
 			 * a good way of polymorphically fetching the right specific entity,
 			 * we need to fetch default alias in a somewhat sketchier way.
 			 */
-			return Promise.map(entity.relationships, (relationship) => {
-				return Promise.join(
+			return Promise.map(entity.relationships, (relationship) =>
+				Promise.join(
 					getEntityWithAlias(relationship.source),
 					getEntityWithAlias(relationship.target),
 					(source, target) => {
@@ -116,8 +114,8 @@ function loadEntityRelationships(req, res, next) {
 
 						return relationship;
 					}
-				);
-			});
+				)
+			);
 		})
 		.then((relationships) => {
 			// Set rendered relationships on relationship objects
@@ -141,7 +139,7 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 
 	return (req, res, next, bbid) => {
 		if (bbidRegex.test(bbid)) {
-			return new model({bbid})
+			return model.forge({bbid})
 				.fetch({require: true, withRelated: relations})
 				.then((entity) => {
 					res.locals.entity = entity.toJSON();
