@@ -132,9 +132,13 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 	const bbidRegex =
 		/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
 	const relations = [
-		'annotation',
+		'aliasSet.aliases.language',
+		'annotation.lastRevision',
+		'defaultAlias',
 		'disambiguation',
-		'defaultAlias'
+		'identifierSet.identifiers.type',
+		'relationshipSet.relationships.type',
+		'revision.revision'
 	].concat(additionalRels);
 
 	return (req, res, next, bbid) => {
