@@ -144,10 +144,6 @@ const EditionData = React.createClass({
 				publication = prefillData.publication;
 			}
 
-			if (prefillData.publishers) {
-				publishers = prefillData.publishers;
-			}
-
 			initialReleaseDate = prefillData.releaseDate;
 			initialLanguages = prefillData.revision.data.languages.map(
 				(language) => language.id

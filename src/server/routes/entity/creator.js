@@ -52,7 +52,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Creator,
-		[ 'creatorType', 'gender' ],
+		['creatorType', 'gender'],
 		'Creator not found'
 	)
 );
