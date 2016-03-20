@@ -245,7 +245,7 @@ CREATE TABLE bookbrainz.release_event (
 );
 ALTER TABLE bookbrainz.release_event ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.country_area (area);
 
-CREATE TABLE bookbrainz.release_event__edition_data (
+CREATE TABLE bookbrainz.edition_data__release_event (
 	release_event_id INT,
 	edition_data_id INT,
 	PRIMARY KEY(
@@ -253,7 +253,7 @@ CREATE TABLE bookbrainz.release_event__edition_data (
 		edition_data_id
 	)
 );
-ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (release_event_id) REFERENCES bookbrainz.release_event (id);
+ALTER TABLE bookbrainz.edition_data__release_event ADD FOREIGN KEY (release_event_id) REFERENCES bookbrainz.release_event (id);
 
 CREATE TABLE bookbrainz.creator_credit (
 	id SERIAL PRIMARY KEY,
@@ -330,7 +330,7 @@ ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (status_id) REFERENCES bookb
 ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 ALTER TABLE bookbrainz.edition_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
-ALTER TABLE bookbrainz.release_event__edition_data ADD FOREIGN KEY (edition_data_id) REFERENCES bookbrainz.edition_data (id);
+ALTER TABLE bookbrainz.edition_data__release_event ADD FOREIGN KEY (edition_data_id) REFERENCES bookbrainz.edition_data (id);
 
 CREATE TABLE bookbrainz.publication_type (
 	id SERIAL PRIMARY KEY,
