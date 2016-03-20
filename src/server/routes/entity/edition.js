@@ -65,6 +65,7 @@ router.param(
 			'revision.data.languages',
 			'editionFormat',
 			'editionStatus',
+			'releaseEvents',
 			'revision.data.publishers.defaultAlias'
 		],
 		'Edition not found'
