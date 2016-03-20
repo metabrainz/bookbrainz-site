@@ -8,24 +8,29 @@ block picture
 
 block attributes
 	dt Status
-	dd=(entity.edition_status ? entity.edition_status.label : '?')
+	dd=(entity.editionStatus ? entity.editionStatus.label : '?')
 
 	dt Format
-	dd=(entity.edition_format ? entity.edition_format.label : '?')
+	dd=(entity.editionFormat ? entity.editionFormat.label : '?')
 
-	dt Language
-	dd=(entity.language ? entity.language.name : '?')
-
-	dt Publisher
+	dt Languages
 	dd
-		if entity.publisher
-			a(href="/publisher/"+entity.publisher.bbid)
-				=entity.publisher.default_alias.name
+		if entity.revision.data.languages
+			=entity.revision.data.languages.map(function(l){return l.name;}).join(', ')
+		else
+			| ?
+
+	dt Publishers
+	dd
+		if entity.revision.data.publishers.length > 0
+			each publisher in entity.revision.data.publishers
+				a(href="/publisher/"+publisher.bbid)
+					=publisher.defaultAlias.name
 		else
 			|?
 
 	dt Release Date
-	dd=(entity.release_date ? entity.release_date : '?')
+	dd=(entity.releaseDate ? entity.releaseDate : '?')
 	
 	dt Page Count
 	dd=(entity.pages ? entity.pages : '?')

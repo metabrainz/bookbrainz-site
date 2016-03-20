@@ -58,11 +58,11 @@ router.param(
 	makeEntityLoader(
 		Edition,
 		[
-			'publication',
-			'language',
+			'publication.defaultAlias',
+			'revision.data.languages',
 			'editionFormat',
 			'editionStatus',
-			'publisher'
+			'revision.data.publishers.defaultAlias'
 		],
 		'Edition not found'
 	)
@@ -77,12 +77,11 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	}
 
 	// Get unique identifier types for display
-	const identifier_types = _.uniq(
-		_.pluck(edition.identifiers, 'identifier_type'),
-		(identifier) => identifier.identifier_type_id
+	const identifierTypes = _.uniq(
+		_.map(edition.identifierSet.identifiers, 'type'),
+		(type) => type.id
 	);
-
-	res.render('entity/view/edition', {title, identifier_types});
+	res.render('entity/view/edition', {title, identifierTypes});
 });
 
 router.get('/:bbid/revisions', (req, res) => {

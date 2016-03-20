@@ -27,12 +27,12 @@ const Identifiers = require('./identifiers.jsx');
 const validators = require('../../validators');
 
 const editionStatusValidation = React.PropTypes.shape({
-	edition_status_id: React.PropTypes.number,
+	id: React.PropTypes.number,
 	label: React.PropTypes.string
 });
 
 const editionFormatValidation = React.PropTypes.shape({
-	edition_format_id: React.PropTypes.number,
+	id: React.PropTypes.number,
 	label: React.PropTypes.string
 });
 
@@ -44,31 +44,31 @@ const EditionData = React.createClass({
 			annotation: React.PropTypes.string,
 			depth: React.PropTypes.number,
 			disambiguation: React.PropTypes.string,
-			edition_format: editionFormatValidation,
-			edition_status: editionStatusValidation,
+			editionFormat: editionFormatValidation,
+			editionStatus: editionStatusValidation,
 			height: React.PropTypes.number,
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				identifierType: validators.identifierType
 			})),
-			language: React.PropTypes.shape({
-				language_id: React.PropTypes.number
-			}),
+			languages: React.PropTypes.arrayOf(React.PropTypes.shape({
+				id: React.PropTypes.number
+			})),
 			pages: React.PropTypes.number,
 			publication: React.PropTypes.shape({
 				bbid: React.PropTypes.string,
-				default_alias: React.PropTypes.shape({
+				defaultAlias: React.PropTypes.shape({
 					name: React.PropTypes.string
 				})
 			}),
-			publisher: React.PropTypes.shape({
+			publishers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				bbid: React.PropTypes.string,
-				default_alias: React.PropTypes.shape({
+				defaultAlias: React.PropTypes.shape({
 					name: React.PropTypes.string
 				})
-			}),
-			release_date: React.PropTypes.string,
+			})),
+			releaseDate: React.PropTypes.string,
 			weight: React.PropTypes.number,
 			width: React.PropTypes.number
 		}),
@@ -76,33 +76,31 @@ const EditionData = React.createClass({
 		editionStatuses: React.PropTypes.arrayOf(editionStatusValidation),
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
-			language_id: React.PropTypes.number,
+			id: React.PropTypes.number,
 			name: React.PropTypes.string
 		})),
 		nextClick: React.PropTypes.func,
 		publication: React.PropTypes.shape({
 			bbid: React.PropTypes.string,
-			default_alias: React.PropTypes.shape({
+			defaultAlias: React.PropTypes.shape({
 				name: React.PropTypes.string
 			})
 		}),
-		publisher: React.PropTypes.shape({
+		publishers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			bbid: React.PropTypes.string,
-			default_alias: React.PropTypes.shape({
+			defaultAlias: React.PropTypes.shape({
 				name: React.PropTypes.string
 			})
-		}),
+		})),
 		visible: React.PropTypes.bool
 	},
 	getValue() {
 		'use strict';
 
 		const publication = this.refs.publication.getValue();
-		const publisher = this.refs.publisher.getValue();
 
 		return {
 			publication: publication ? publication.bbid : null,
-			publisher: publisher ? publisher.bbid : null,
 			releaseDate: this.refs.release.getValue(),
 			language: this.refs.language.getValue(),
 			editionFormat: this.refs.editionFormat.getValue(),
@@ -120,16 +118,14 @@ const EditionData = React.createClass({
 	valid() {
 		'use strict';
 
-		return this.refs.release.valid() &&
-			this.refs.publication.getValue().length;
+		return this.refs.publication.getValue();
 	},
 	render() {
 		'use strict';
 
 		let initialPublication = null;
-		let initialPublisher = null;
 		let initialReleaseDate = null;
-		let initialLanguage = null;
+		let initialLanguages = [];
 		let initialEditionFormat = null;
 		let initialEditionStatus = null;
 		let initialDisambiguation = null;
@@ -142,24 +138,24 @@ const EditionData = React.createClass({
 		let initialWeight = null;
 
 		let publication = null;
-		let publisher = null;
 		const prefillData = this.props.edition;
 		if (prefillData) {
 			if (prefillData.publication) {
 				publication = prefillData.publication;
 			}
 
-			if (prefillData.publisher) {
-				publisher = prefillData.publisher;
+			if (prefillData.publishers) {
+				publishers = prefillData.publishers;
 			}
 
-			initialReleaseDate = prefillData.release_date;
-			initialLanguage = prefillData.language ?
-				prefillData.language.language_id : null;
-			initialEditionFormat = prefillData.edition_format ?
-				prefillData.edition_format.edition_format_id : null;
-			initialEditionStatus = prefillData.edition_status ?
-				prefillData.edition_status.edition_status_id : null;
+			initialReleaseDate = prefillData.releaseDate;
+			initialLanguages = prefillData.revision.data.languages.map(
+				(language) => language.id
+			);
+			initialEditionFormat = prefillData.editionFormat ?
+				prefillData.editionFormat.id : null;
+			initialEditionStatus = prefillData.editionStatus ?
+				prefillData.editionStatus.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
@@ -174,11 +170,12 @@ const EditionData = React.createClass({
 				prefillData.depth : null;
 			initialWeight = prefillData.weight || prefillData.weight === 0 ?
 				prefillData.weight : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers =
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					type: identifier.identifierType.id
+				}));
 		}
 
 		if (this.props.publication) {
@@ -188,20 +185,8 @@ const EditionData = React.createClass({
 		if (publication) {
 			initialPublication = {
 				id: publication.bbid,
-				text: publication.default_alias ?
-					publication.default_alias.name : null
-			};
-		}
-
-		if (this.props.publisher) {
-			publisher = this.props.publisher;
-		}
-
-		if (publisher) {
-			initialPublisher = {
-				id: publisher.bbid,
-				text: publisher.default_alias ?
-					publisher.default_alias.name : null
+				text: publication.defaultAlias ?
+					publication.defaultAlias.name : null
 			};
 		}
 
@@ -228,18 +213,6 @@ const EditionData = React.createClass({
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
-					<SearchSelect
-						collection="publisher"
-						defaultValue={initialPublisher}
-						label="Publisher"
-						labelAttribute="name"
-						labelClassName="col-md-4"
-						nodefault
-						placeholder="Select publisher…"
-						ref="publisher"
-						select2Options={select2Options}
-						wrapperClassName="col-md-4"
-					/>
 					<PartialDate
 						defaultValue={initialReleaseDate}
 						label="Release Date"
@@ -249,15 +222,16 @@ const EditionData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
-						defaultValue={initialLanguage}
+						defaultValue={initialLanguages}
 						idAttribute="id"
-						label="Language"
+						label="Languages"
 						labelAttribute="name"
 						labelClassName="col-md-4"
+						multiple
 						noDefault
 						options={this.props.languages}
-						placeholder="Select edition language…"
-						ref="language"
+						placeholder="Select edition languages…"
+						ref="languages"
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
