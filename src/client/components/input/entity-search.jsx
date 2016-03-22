@@ -70,12 +70,11 @@ const EntitySearch = React.createClass({
 		const select2Options = {
 			minimumInputLength: 1,
 			ajax: {
-				url: '/search',
+				url: '/autocomplete',
 				data(params) {
 					const queryParams = {
 						q: params.term,
 						page: params.page,
-						mode: 'auto',
 						collection: self.props.collection
 					};
 
@@ -98,11 +97,11 @@ const EntitySearch = React.createClass({
 					return {
 						results: results.map((result) => ({
 							id: result.bbid,
-							text: result.default_alias ?
-								result.default_alias.name : '(unnamed)',
+							text: result.defaultAlias ?
+								result.defaultAlias.name : '(unnamed)',
 							disambiguation: result.disambiguation ?
 								result.disambiguation.comment : null,
-							type: result._type
+							type: result.type
 						}))
 					};
 				}
