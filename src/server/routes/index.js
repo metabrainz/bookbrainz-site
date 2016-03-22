@@ -24,6 +24,7 @@ const express = require('express');
 const router = express.Router();
 const Promise = require('bluebird');
 const React = require('react');
+const auth = require('../helpers/auth');
 
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
@@ -32,6 +33,7 @@ const Work = require('bookbrainz-data').Work;
 const Publisher = require('bookbrainz-data').Publisher;
 
 const _ = require('lodash');
+const status = require('http-status');
 
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about.jsx')
@@ -133,7 +135,7 @@ function fetchEntityModelsForESResults(results) {
 		const entityStub = hit._source;
 		let Model = null;
 
-		switch (entityStub._type) {
+		switch (entityStub.type) {
 			case 'Publication':
 				Model = Publication;
 				break;
@@ -153,7 +155,7 @@ function fetchEntityModelsForESResults(results) {
 				return null;
 		}
 
-		return new Model({bbid: entityStub.entity_gid})
+		return new Model({bbid: entityStub.bbid})
 			.fetch({withRelated: ['defaultAlias']})
 			.then((entity) => entity.toJSON());
 	});
@@ -168,7 +170,7 @@ router.get('/search', (req, res) => {
 		body: {
 			query: {
 				match: {
-					'default_alias.name.search': {
+					'defaultAlias.name.search': {
 						query,
 						minimum_should_match: '80%'
 					}
@@ -202,6 +204,201 @@ router.get('/search', (req, res) => {
 				hideSearch: true
 			});
 		});
+});
+
+const uuidRegex =
+	/[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}/;
+
+router.get('/autocomplete', (req, res) => {
+	const query = req.query.q;
+	const esClient = req.app.get('esClient');
+
+	const validBBID = Boolean(uuidRegex.exec(query));
+	let searchObject = null;
+	if (validBBID) {
+		searchObject = {
+			ids: {
+				values: [query]
+			}
+		};
+	}
+	else {
+		searchObject = {
+			match: {
+				'defaultAlias.name.autocomplete': {
+					query,
+					minimum_should_match: '80%'
+				}
+			}
+		};
+	}
+
+	const queryData = {
+		index: 'bookbrainz',
+		body: {
+			query: searchObject
+		}
+	};
+
+	if (req.query.collection) {
+		queryData.type = req.query.collection;
+	}
+	console.log(JSON.stringify(queryData, null, 4));
+
+	esClient.search(queryData)
+		.then((searchResponse) => searchResponse.hits)
+		.then((results) => fetchEntityModelsForESResults(results))
+		.then((entities) => {
+			res.json(entities);
+		})
+		.catch((err) => {
+			console.log(err);
+			const message = 'An error occurred while obtaining search results';
+
+			res.json({
+				error: message
+			});
+		});
+});
+
+const indexSettings = {
+	settings: {
+		analysis: {
+			filter: {
+				trigrams_filter: {
+					type: 'ngram',
+					min_gram: 1,
+					max_gram: 3
+				},
+				edge_filter: {
+					type: 'edge_ngram',
+					min_gram: 1,
+					max_gram: 20
+				}
+			},
+			analyzer: {
+				trigrams: {
+					type: 'custom',
+					tokenizer: 'standard',
+					filter: [
+						'asciifolding',
+						'lowercase',
+						'trigrams_filter'
+					]
+				},
+				edge: {
+					type: 'custom',
+					tokenizer: 'standard',
+					filter: [
+						'asciifolding',
+						'lowercase',
+						'edge_filter'
+					]
+				}
+			}
+		}
+	},
+	mappings: {
+		_default_: {
+			properties: {
+				defaultAlias: {
+					type: 'object',
+					properties: {
+						name: {
+							type: 'string',
+							fields: {
+								search: {
+									type: 'string',
+									analyzer: 'trigrams'
+								},
+								autocomplete: {
+									type: 'string',
+									analyzer: 'edge'
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+router.get('/reindex', auth.isAuthenticated, (req, res) => {
+	// TODO: This is hacky, and we should replace it once we switch to SOLR.
+	const trustedUsers = ['Leftmost', 'LordSputnik'];
+
+	const userName = req.session.passport && req.session.passport.user && req.session.passport.user.name;
+	if (trustedUsers.indexOf(userName) === -1) {
+		return res.sendStatus(status.UNAUTHORIZED);
+	}
+
+	const esClient = req.app.get('esClient');
+
+	// First, drop index and recreate
+	const indexPromise = esClient.indices.delete({index: 'bookbrainz'})
+		.then(() => esClient.indices.create(
+				{index: 'bookbrainz', body: indexSettings}
+		));
+
+	// Then, fill with data
+
+	function indexEntity(model) {
+		const body = model.toJSON();
+		console.log(body);
+		return esClient.index({
+			index: 'bookbrainz',
+			id: body.bbid,
+			type: body.type,
+			body
+		});
+	}
+
+	const baseRelations = ['annotation', 'disambiguation', 'defaultAlias'];
+
+	// Update the indexed entries for each entity type in turn
+	const editionsPromise = indexPromise
+		.then(() => new Edition().fetchAll({
+			withRelated: baseRelations.concat([
+				/*'releaseEvents',*/ 'publication', /*'publishers', 'languages',*/
+				'editionFormat', 'editionStatus'
+			])
+		}))
+		.then((collection) => Promise.all(collection.map(indexEntity)));
+
+	const creatorsPromise = indexPromise
+		.then(() => new Creator().fetchAll({
+			withRelated: baseRelations.concat(['gender', 'creatorType'])
+		}))
+		.then((collection) => Promise.all(collection.map(indexEntity)));
+
+	const worksPromise = indexPromise
+		.then(() => new Work().fetchAll({
+			withRelated: baseRelations.concat(['workType'])
+		}))
+		.then((collection) => Promise.all(collection.map(indexEntity)));
+
+	const publishersPromise = indexPromise
+		.then(() => new Publisher().fetchAll({
+			withRelated: baseRelations.concat(['publisherType'])
+		}))
+		.then((collection) => Promise.all(collection.map(indexEntity)));
+
+	const publicationsPromise = indexPromise
+		.then(() => new Publication().fetchAll({
+			withRelated: baseRelations.concat(['publicationType'])
+		}))
+		.then((collection) => Promise.all(collection.map(indexEntity)));
+
+	const refreshPromise = Promise.join(
+		editionsPromise, creatorsPromise, worksPromise, publishersPromise,
+		publicationsPromise,
+		() => esClient.indices.refresh({index: 'bookbrainz'})
+	);
+
+	refreshPromise
+		.then(() => res.send({success: true}))
+		.catch(() => res.send({success: false}));
 });
 
 module.exports = router;
