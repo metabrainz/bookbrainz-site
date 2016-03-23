@@ -360,8 +360,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	const editionsPromise = indexPromise
 		.then(() => new Edition().fetchAll({
 			withRelated: baseRelations.concat([
-				/*'releaseEvents',*/ 'publication', /*'publishers', 'languages',*/
-				'editionFormat', 'editionStatus'
+				'publication', 'editionFormat', 'editionStatus'
 			])
 		}))
 		.then((collection) => Promise.all(collection.map(indexEntity)));

@@ -38,20 +38,20 @@ router.get('/logout', (req, res) => {
 });
 
 router.post('/login/handler', (req, res, next) => {
-	passport.authenticate('local', (err, user, info) => {
-		if (err) {
-			console.log(err);
+	passport.authenticate('local', (authErr, user, info) => {
+		if (authErr) {
+			console.log(authErr);
 			// If an error occurs during login, send the user back.
-			return res.redirect(status.MOVED_PERMANENTLY, `/login?error=${err.message}`);
+			return res.redirect(status.MOVED_PERMANENTLY, `/login?error=${authErr.message}`);
 		}
 
 		if (!user) {
 			return res.redirect(status.MOVED_PERMANENTLY, '/login?error=Login details incorrect');
 		}
 
-		req.logIn(user, (err) => {
-			if (err) {
-				return next(err);
+		req.logIn(user, (loginErr) => {
+			if (loginErr) {
+				return next(loginErr);
 			}
 
 			const redirect = req.session.redirectTo ? req.session.redirectTo : '/';

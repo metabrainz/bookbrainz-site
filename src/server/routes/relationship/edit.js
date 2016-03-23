@@ -20,12 +20,12 @@
 'use strict';
 
 const auth = require('../../helpers/auth');
-const Relationship = require('../../data/relationship');
-const RelationshipType = require('../../data/properties/relationship-type');
-const Entity = require('../../data/entity');
+const Relationship = require('bookbrainz-data').Relationship;
+const RelationshipType = require('bookbrainz-data').RelationshipType;
+const Entity = require('bookbrainz-data').Entity;
 const React = require('react');
 const EditForm = React.createFactory(
-	require('../../../client/components/forms/creator.jsx')
+	require('../../../client/components/forms/relationship.jsx')
 );
 const Promise = require('bluebird');
 const config = require('../../helpers/config');
@@ -38,48 +38,35 @@ const loadEntityRelationships =
 
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-relationshipHelper.addEditRoutes = function addEditRoutes(router) {
+relationshipHelper.addEditRoutes = function addEditRoutes(EntityModel, router) {
 	/* If the route specifies a BBID, load the Entity for it. */
-	router.param('bbid', makeEntityLoader(Entity, 'Entity not found'));
+	router.param('bbid', makeEntityLoader(EntityModel, [], 'Entity not found'));
 
 	router.get('/:bbid/relationships', loadEntityRelationships, (req, res) => {
-		const relationshipTypesPromise = RelationshipType.find();
+		const relationshipTypesPromise = new RelationshipType().fetchAll();
 
-		const entityPromises = {};
-
+		const loadedEntities = {};
 		res.locals.entity.relationships.forEach((relationship) => {
-			entityPromises[relationship.entities[0].entity.entity_gid] =
-				Entity.findOne(relationship.entities[0].entity.entity_gid);
-			entityPromises[relationship.entities[1].entity.entity_gid] =
-				Entity.findOne(relationship.entities[1].entity.entity_gid);
+			loadedEntities[relationship.sourceBbid] = relationship.source;
+			loadedEntities[relationship.targetBbid] = relationship.target;
 		});
 
-		const entitiesPromise = Promise.props(entityPromises);
 
-		Promise.join(entitiesPromise, relationshipTypesPromise,
-			(entities, relationshipTypes) => {
-				res.locals.entity.relationships.forEach((relationship) => {
-					relationship.source =
-						entities[relationship.entities[0].entity.entity_gid];
-					relationship.target =
-						entities[relationship.entities[1].entity.entity_gid];
-					relationship.type =
-						relationship.relationship_type.relationship_type_id;
-				});
+		relationshipTypesPromise
+		.then((collection) => collection.toJSON())
+		.then((relationshipTypes) => {
+			// _.omit is used here to avoid "Circular reference" errors
+			const props = {
+				entity: _.omit(res.locals.entity, 'relationships'),
+				relationships: res.locals.entity.relationships,
+				relationshipTypes,
+				loadedEntities
+			};
 
-				const props = {
-					relationshipTypes,
-					relationships: res.locals.entity.relationships,
-					entity: res.locals.entity,
-					loadedEntities: _.union(entities, [res.locals.entity]),
-					wsUrl: config.site.clientWebservice
-				};
+			const markup = React.renderToString(EditForm(props));
 
-				const markup = React.renderToString(EditForm(props));
-
-				res.render('relationship/edit', {props, markup});
-			}
-		);
+			res.render('relationship/edit', {props, markup});
+		});
 	});
 
 	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
