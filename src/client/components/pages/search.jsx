@@ -98,14 +98,14 @@ const SearchResults = React.createClass({
 		const results = this.props.results.map((result) => (
 			<tr key={result.id}>
 				<td>
-					<a href={`/${result._type.toLowerCase()}/${result.bbid}`}>
-						{result.default_alias ?
-							result.default_alias.name : '(unnamed)'
+					<a href={`/${result.type.toLowerCase()}/${result.bbid}`}>
+						{result.defaultAlias ?
+							result.defaultAlias.name : '(unnamed)'
 						}
 					</a>
 				</td>
 				<td>
-					{result._type}
+					{result.type}
 				</td>
 			</tr>)
 		);
@@ -142,7 +142,7 @@ module.exports = React.createClass({
 	},
 	handleSearch(q) {
 		'use strict';
-		request.get(`./search?mode=auto&q=${q}`)
+		request.get(`./autocomplete?q=${q}`)
 		.promise()
 		.then((res) => (JSON.parse(res.text)))
 		.then((data) => {
