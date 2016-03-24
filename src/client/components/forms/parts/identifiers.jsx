@@ -21,6 +21,7 @@ const React = require('react');
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2.jsx');
+const Icon = require('react-fontawesome');
 
 const validators = require('../../validators');
 
@@ -114,7 +115,7 @@ const IdentifierRow = React.createClass({
 						className={this.props.removeHidden ? 'hidden' : ''}
 						onClick={this.props.onRemove}
 					>
-						<span className="fa fa-times" />
+						<Icon name="times"/>
 					</Button>
 				</div>
 			</div>

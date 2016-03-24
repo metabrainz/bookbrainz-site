@@ -31,6 +31,13 @@ const PublicationRevision = require('bookbrainz-data').PublicationRevision;
 
 const Promise = require('bluebird');
 
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const RevisionPage = React.createFactory(
+	require('../../client/components/pages/revision.jsx')
+);
+
 function formatRow(kind, key, lhs, rhs) {
 	if (_.isNil(lhs) && _.isNil(rhs)) {
 		return [];
@@ -235,8 +242,10 @@ function formatNewAnnotation(entity, change) {
 function formatNewDisambiguation(entity, change) {
 	const lhs = change.lhs;
 	const rhs = change.rhs;
-	return formatRow(change.kind, 'Disambiguation', [lhs && lhs.comment],
-	                 [rhs && rhs.comment]);
+	return formatRow(
+		change.kind, 'Disambiguation', [lhs && lhs.comment],
+		[rhs && rhs.comment]
+	);
 }
 
 function formatChangedAnnotation(entity, change) {
@@ -802,10 +811,10 @@ router.get('/:id', (req, res) => {
 				formatPublicationDiffs(publicationDiffs)
 			);
 
-			res.render('revision', {
+			const props = {revision: revision.toJSON(), diffs};
+			res.render('page', {
 				title: 'RevisionPage',
-				revision: revision.toJSON(),
-				diffs
+				markup: ReactDOMServer.renderToString(RevisionPage(props))
 			});
 		}
 	);

@@ -27,21 +27,26 @@ require('superagent-bluebird-promise');
 
 const bbws = {};
 
-function _processError(response) {
+function _processError(err) {
 	let newErr;
+	let requestPath = '';
 
-	const requestPath = `${response.error.method} ${response.error.path}`;
+	const response = err.res;
 
-	if (response.status === status.NOT_FOUND) {
+	if (response) {
+		requestPath = `${response.error.method} ${response.error.path}`;
+	}
+
+	if (response && response.status === status.NOT_FOUND) {
 		newErr = new Error(`WS path not found: ${requestPath}`);
 		newErr.status = status.NOT_FOUND;
 	}
 	else {
 		newErr = new Error('There was an error accessing the web service');
-		if (response.res) {
+		if (response) {
 			console.log(
 				`WS error: ${response.status} ${requestPath} ` +
-				`${JSON.stringify(response.res.request._data)}`
+				`${JSON.stringify(response.request._data)}`
 			);
 		}
 		else {

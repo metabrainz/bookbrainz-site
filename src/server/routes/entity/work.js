@@ -31,6 +31,7 @@ const User = require('../../data/user');
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm =
 	React.createFactory(require('../../../client/components/forms/work.jsx'));
 
@@ -131,7 +132,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: '/work/create/handler'
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/work', {
 			title: 'Add Work',
@@ -156,7 +157,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/work/${work.bbid}/edit/handler`
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/work', {
 			title: 'Edit Work',
@@ -233,7 +234,10 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 
 	Work.create(changes, {
 		session: req.session
-	}).then(res.send);
+	})
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
@@ -287,7 +291,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const currentIdentifiers = work.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
-		if (identifier.id !== nextIdentifier.id) {
+		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
@@ -324,7 +328,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	work.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
-		if (alias.id !== nextAlias.id) {
+		if (!nextAlias || alias.id !== nextAlias.id) {
 			// Remove the alias
 			currentAliases.push([alias.id, null]);
 		}
@@ -364,7 +368,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	Work.update(work.bbid, changes, {
 		session: req.session
 	})
-		.then(res.send);
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 module.exports = router;

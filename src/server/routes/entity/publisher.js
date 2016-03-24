@@ -31,6 +31,7 @@ const User = require('../../data/user');
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/publisher.jsx')
 );
@@ -132,7 +133,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages,
 			submissionUrl: '/publisher/create/handler'
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/publisher', {
 			title: 'Add Publisher',
@@ -156,7 +157,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/publisher/${publisher.bbid}/edit/handler`
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/publisher', {
 			title: 'Edit Publisher',
@@ -240,7 +241,9 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 	Publisher.create(changes, {
 		session: req.session
 	})
-		.then(res.send);
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
@@ -271,6 +274,15 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 		changes.ended = endDate ? true : ended;
 	}
 
+	if (publisher.ended !== ended) {
+		changes.ended = ended;
+		// If ended has been unset and end date was previously set, also unset
+		// the end date.
+		if (!ended && endDate) {
+			changes.end_date = null;
+		}
+	}
+
 	const disambiguation = req.body.disambiguation;
 	if (!publisher.disambiguation ||
 			publisher.disambiguation.comment !== disambiguation) {
@@ -292,7 +304,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const currentIdentifiers = publisher.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
-		if (identifier.id !== nextIdentifier.id) {
+		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
@@ -329,7 +341,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	publisher.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
-		if (alias.id !== nextAlias.id) {
+		if (!nextAlias || alias.id !== nextAlias.id) {
 			// Remove the alias
 			currentAliases.push([alias.id, null]);
 		}
@@ -369,7 +381,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	Publisher.update(publisher.bbid, changes, {
 		session: req.session
 	})
-		.then(res.send);
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 module.exports = router;

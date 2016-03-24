@@ -28,6 +28,7 @@ const Edition = require('bookbrainz-data').Edition;
 const User = require('../../data/user');
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/edition.jsx')
 );
@@ -154,7 +155,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 		}
 
 		function render(props) {
-			const markup = React.renderToString(EditForm(props));
+			const markup = ReactDOMServer.renderToString(EditForm(props));
 
 			res.render('entity/create/edition', {
 				title: 'Add Edition',
@@ -182,7 +183,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/edition/${edition.bbid}/edit/handler`
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/edition', {
 			title: 'Edit Edition',
@@ -297,7 +298,9 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 	Edition.create(changes, {
 		session: req.session
 	})
-		.then(res.send);
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
@@ -391,7 +394,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const currentIdentifiers = edition.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
-		if (identifier.id !== nextIdentifier.id) {
+		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
@@ -428,7 +431,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	edition.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
-		if (alias.id !== nextAlias.id) {
+		if (!nextAlias || alias.id !== nextAlias.id) {
 			// Remove the alias
 			currentAliases.push([alias.id, null]);
 		}
@@ -468,7 +471,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	Edition.update(edition.bbid, changes, {
 		session: req.session
 	})
-		.then(res.send);
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 module.exports = router;

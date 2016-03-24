@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015  Ohm Patel
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,24 +17,13 @@
  */
 
 const React = require('react');
-const Icon = require('react-fontawesome');
+const ReactDOM = require('react-dom');
+const SearchPage = React.createFactory(
+	require('../components/pages/search.jsx')
+);
 
-const LoadingSpinner = React.createClass({
-	displayName: 'loadingSpinner',
-	render() {
-		'use strict';
-
-		return (
-			<div className="loading-background">
-				<Icon
-					className="loading-spinner"
-					name="circle-o-notch"
-					size="2x"
-					spin
-				/>
-			</div>
-		);
-	}
-});
-
-module.exports = LoadingSpinner;
+const propsDOM = document.getElementById('props');
+const props = propsDOM ? JSON.parse(propsDOM.innerHTML) : {};
+ReactDOM.render(
+	SearchPage(props), document.getElementById('searchPage').parentNode
+);

@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
  *               2015  Sean Burke
+ *               2015  Ohm Patel
+ *               2015  Ian Sanders
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +20,69 @@
  */
 
 const React = require('react');
+const Icon = require('react-fontawesome');
 
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2.jsx');
+
+function stripDot(name) {
+	'use strict';
+	return name.replace(/\./g, '');
+}
+
+function makeSortName(name) {
+	'use strict';
+	const articles = ['a', 'an', 'the', 'los', 'las', 'el', 'la'];
+	const suffixes = [
+		'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi',
+		'xii', 'xiii', 'xiv', 'xv', 'jr', 'junior', 'sr', 'senior', 'phd', 'md',
+		'dmd', 'dds', 'esq'
+	];
+
+	// Remove leading and trailing spaces, and return a blank sort name if
+	// the string is empty
+	const trimmedName = name.trim();
+	if (trimmedName.length === 0) {
+		return '';
+	}
+
+	const words = trimmedName.replace(/\,/g, '').split(' ');
+
+	// If there's only one word, simply copy the name as the sort name
+	if (words.length === 1) {
+		return trimmedName;
+	}
+
+	// First, check if sort name is for collective, by detecting article
+	const firstWord = stripDot(words[0]);
+	const firstWordIsArticle = articles.includes(firstWord.toLowerCase());
+	if (firstWordIsArticle) {
+		// The Collection of Stories --> Collection of Stories, The
+		return `${words.slice(1).join(' ')}, ${firstWord}`;
+	}
+
+	// From here on, it is assumed that the sort name is for a person
+	// Split suffixes
+	const isWordSuffix =
+		words.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
+	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;
+
+	// Test this to check that splice will not have a 0 deleteCount
+	const suffixWords = (
+		lastSuffix < words.length ? words.splice(lastSuffix) : []
+	);
+
+	// Rearrange names to (last name, other names)
+	const INDEX_BEFORE_END = -1;
+
+	let lastName = words.splice(INDEX_BEFORE_END);
+	if (suffixWords.length > 0) {
+		lastName += ` ${suffixWords.join(' ')}`;
+	}
+
+	return `${lastName}, ${words.join(' ')}`;
+}
 
 const AliasRow = React.createClass({
 	displayName: 'aliasRowComponent',
@@ -55,7 +116,8 @@ const AliasRow = React.createClass({
 	validationState() {
 		'use strict';
 
-		if (this.props.name || this.props.sortName) {
+		if (this.props.name || this.props.sortName || this.props.default ||
+				this.props.language || !this.props.primary) {
 			if (this.props.name && this.props.sortName) {
 				return 'success';
 			}
@@ -72,8 +134,25 @@ const AliasRow = React.createClass({
 			this.refs.name.getValue() && this.refs.sortName.getValue()
 		);
 	},
+	guessNames() {
+		'use strict';
+		const name = this.refs.name.refs.input;
+		const sortName = this.refs.sortName.refs.input;
+
+		sortName.value = makeSortName(name.value);
+	},
 	render() {
 		'use strict';
+
+		const guessSortNameButton = (
+			<Button
+				bsStyle="link"
+				onClick={this.guessNames}
+				title="Guess Sort Name"
+			>
+				<Icon name="magic"/>
+			</Button>
+		);
 
 		return (
 			<div
@@ -97,6 +176,7 @@ const AliasRow = React.createClass({
 				<div className="col-md-3">
 					<Input
 						bsStyle={this.validationState()}
+						buttonAfter={guessSortNameButton}
 						defaultValue={this.props.sortName}
 						ref="sortName"
 						type="text"
@@ -142,7 +222,7 @@ const AliasRow = React.createClass({
 						className={this.props.removeHidden ? 'hidden' : ''}
 						onClick={this.props.onRemove}
 					>
-						<span className="fa fa-times" />
+						<Icon name="times"/>
 					</Button>
 				</div>
 			</div>
@@ -266,12 +346,12 @@ const AliasList = React.createClass({
 		'use strict';
 
 		let defaultSet = false;
-		const numRows = this.state.aliases.length;
+		const numRows = this.state.aliases.length - 1;
 
 		for (let i = 0; i < numRows; i++) {
 			const alias = this.refs[i].getValue();
 			const rowInvalid = this.refs[i].getValid() === false;
-			if (rowInvalid && numRows > 1 && (alias.name || alias.sortName)) {
+			if (rowInvalid) {
 				return false;
 			}
 			else if (!defaultSet) {
@@ -279,7 +359,7 @@ const AliasList = React.createClass({
 			}
 		}
 
-		return defaultSet || numRows === 1;
+		return defaultSet || numRows === 0;
 	},
 	handleRemove(index) {
 		'use strict';
@@ -342,9 +422,9 @@ const AliasList = React.createClass({
 								onClick={this.props.nextClick}
 							>
 								Next
-								<span
+								<Icon
 									aria-hidden="true"
-									className="fa fa-angle-double-right"
+									name="angle-double-right"
 								/>
 							</a>
 						</li>

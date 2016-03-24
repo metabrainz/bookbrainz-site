@@ -31,6 +31,7 @@ const User = require('../../data/user');
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/publication.jsx')
 );
@@ -132,7 +133,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: '/publication/create/handler'
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/publication', {
 			title: 'Add Publication',
@@ -156,7 +157,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/publication/${publication.bbid}/edit/handler`
 		};
 
-		const markup = React.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/publication', {
 			title: 'Edit Publication',
@@ -224,7 +225,9 @@ router.post('/create/handler', auth.isAuthenticated, (req, res) => {
 	Publication.create(changes, {
 		session: req.session
 	})
-		.then(res.send);
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
@@ -265,7 +268,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const currentIdentifiers = publication.identifiers.map((identifier) => {
 		const nextIdentifier = req.body.identifiers[0];
 
-		if (identifier.id !== nextIdentifier.id) {
+		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
 			// Remove the alias
 			return [identifier.id, null];
 		}
@@ -302,7 +305,7 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	publication.aliases.forEach((alias) => {
 		const nextAlias = req.body.aliases[0];
 
-		if (alias.id !== nextAlias.id) {
+		if (!nextAlias || alias.id !== nextAlias.id) {
 			// Remove the alias
 			currentAliases.push([alias.id, null]);
 		}
@@ -342,7 +345,9 @@ router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	Publication.update(publication.bbid, changes, {
 		session: req.session
 	})
-		.then(res.send);
+		.then((revision) => {
+			res.send(revision);
+		});
 });
 
 module.exports = router;

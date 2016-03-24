@@ -22,13 +22,12 @@
 const auth = require('../../helpers/auth');
 const Relationship = require('bookbrainz-data').Relationship;
 const RelationshipType = require('bookbrainz-data').RelationshipType;
-const Entity = require('bookbrainz-data').Entity;
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/relationship.jsx')
 );
 const Promise = require('bluebird');
-const config = require('../../helpers/config');
 const _ = require('underscore');
 
 const relationshipHelper = {};
@@ -36,12 +35,7 @@ const relationshipHelper = {};
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
-relationshipHelper.addEditRoutes = function addEditRoutes(EntityModel, router) {
-	/* If the route specifies a BBID, load the Entity for it. */
-	router.param('bbid', makeEntityLoader(EntityModel, [], 'Entity not found'));
-
+relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 	router.get('/:bbid/relationships', loadEntityRelationships, (req, res) => {
 		const relationshipTypesPromise = new RelationshipType().fetchAll();
 
@@ -50,7 +44,6 @@ relationshipHelper.addEditRoutes = function addEditRoutes(EntityModel, router) {
 			loadedEntities[relationship.sourceBbid] = relationship.source;
 			loadedEntities[relationship.targetBbid] = relationship.target;
 		});
-
 
 		relationshipTypesPromise
 		.then((collection) => collection.toJSON())
@@ -63,7 +56,7 @@ relationshipHelper.addEditRoutes = function addEditRoutes(EntityModel, router) {
 				loadedEntities
 			};
 
-			const markup = React.renderToString(EditForm(props));
+			const markup = ReactDOMServer.renderToString(EditForm(props));
 
 			res.render('relationship/edit', {props, markup});
 		});

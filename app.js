@@ -41,6 +41,7 @@ require('bookbrainz-data').init(config.database);
 const auth = require('./src/server/helpers/auth');
 
 const status = require('http-status');
+const git = require('git-rev');
 
 // Initialize application
 const app = express();
@@ -97,9 +98,17 @@ app.use(session({
 
 auth.init(app);
 
+let siteRevision = null;
+git.short((revision) => {
+	siteRevision = revision;
+});
+
 /* Add middleware to set variables used for every rendered route. */
 app.use((req, res, next) => {
 	res.locals.user = req.user;
+	res.locals.respoitoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
+	res.locals.siteRevision = siteRevision;
+
 	res.locals.inboxCount = 0;
 	next();
 });

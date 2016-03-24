@@ -23,6 +23,7 @@ const Select = require('../../input/select2.jsx');
 const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifiers.jsx');
 const validators = require('../../validators');
+const Icon = require('react-fontawesome');
 
 const PublisherData = React.createClass({
 	displayName: 'publisherDataComponent',
@@ -31,10 +32,14 @@ const PublisherData = React.createClass({
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		nextClick: React.PropTypes.func,
 		publisher: React.PropTypes.shape({
-			annotation: React.PropTypes.string,
-			beginDate: React.PropTypes.string,
-			disambiguation: React.PropTypes.string,
-			endDate: React.PropTypes.string,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
+			begin_date: React.PropTypes.string,
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
+			end_date: React.PropTypes.string,
 			ended: React.PropTypes.bool,
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
@@ -185,9 +190,9 @@ const PublisherData = React.createClass({
 									href="#"
 									onClick={this.props.backClick}
 								>
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-left"
+										name="angle-double-left"
 									/>
 									Back
 								</a>
@@ -198,9 +203,9 @@ const PublisherData = React.createClass({
 									onClick={this.props.nextClick}
 								>
 									Next
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-right"
+										name="angle-double-right"
 									/>
 								</a>
 							</li>

@@ -18,7 +18,9 @@
  */
 
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const Select = require('./select2.jsx');
+const Icon = require('react-fontawesome');
 const _ = require('underscore');
 const $ = require('jquery');
 
@@ -27,7 +29,7 @@ const EntitySearch = React.createClass({
 	propTypes: {
 		bsStyle: React.PropTypes.string,
 		defaultValue: React.PropTypes.shape({
-			id: React.PropTypes.number
+			id: React.PropTypes.string
 		}),
 		disabled: React.PropTypes.bool,
 		groupClassName: React.PropTypes.string,
@@ -39,7 +41,9 @@ const EntitySearch = React.createClass({
 		placeholder: React.PropTypes.string,
 		select2Options: React.PropTypes.object,
 		standalone: React.PropTypes.bool,
-		value: React.PropTypes.number,
+		value: React.PropTypes.shape({
+			id: React.PropTypes.string
+		}),
 		wrapperClassName: React.PropTypes.string
 	},
 	loadedEntities: {},
@@ -110,24 +114,22 @@ const EntitySearch = React.createClass({
 				let template = result.text;
 
 				const ENTITY_TYPE_ICONS = {
-					Creator: 'fa-user',
-					Edition: 'fa-book',
-					Publication: 'fa-th-list',
-					Publisher: 'fa-university',
-					Work: 'fa-file-text-o'
+					Creator: 'user',
+					Edition: 'book',
+					Publication: 'th-list',
+					Publisher: 'university',
+					Work: 'file-text-o'
 				};
 
 				/* eslint prefer-template: 0 */
 				if (result.type) {
-					template = React.renderToStaticMarkup(
-						<span className=
-							{`fa ${ENTITY_TYPE_ICONS[result.type]}`}
-						/>
+					template = ReactDOMServer.renderToStaticMarkup(
+						<Icon name={ENTITY_TYPE_ICONS[result.type]} />
 					) + ` ${template}`;
 				}
 
 				if (result.disambiguation) {
-					template += React.renderToStaticMarkup(
+					template += ReactDOMServer.renderToStaticMarkup(
 						<span className="disambig">
 							({result.disambiguation})
 						</span>

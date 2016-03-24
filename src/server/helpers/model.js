@@ -221,7 +221,7 @@ Model.prototype.findOne = function findOne(baseId, baseOptions) {
 		params: options.params
 	})
 		.then((result) => {
-			if (result.objects && Array.isArray(result.objects)) {
+			if (result && result.objects && Array.isArray(result.objects)) {
 				throw new Error('Object expected, but received array');
 			}
 

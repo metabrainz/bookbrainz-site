@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2016  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,24 +17,23 @@
  */
 
 const React = require('react');
-const Icon = require('react-fontawesome');
 
-const LoadingSpinner = React.createClass({
-	displayName: 'loadingSpinner',
+const EntityLink = React.createClass({
+	displayName: 'entitySpinner',
+	propTypes: {
+		bbid: React.PropTypes.string,
+		text: React.PropTypes.string,
+		type: React.PropTypes.string
+	},
 	render() {
 		'use strict';
 
 		return (
-			<div className="loading-background">
-				<Icon
-					className="loading-spinner"
-					name="circle-o-notch"
-					size="2x"
-					spin
-				/>
-			</div>
+			<a href={`/${this.props.type.toLowerCase()}/${this.props.bbid}`}>
+				{this.props.text}
+			</a>
 		);
 	}
 });
 
-module.exports = LoadingSpinner;
+module.exports = EntityLink;

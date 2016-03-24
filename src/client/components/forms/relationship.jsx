@@ -24,21 +24,28 @@ const Alert = require('react-bootstrap').Alert;
 const PageHeader = require('react-bootstrap').PageHeader;
 const Select = require('../input/select2.jsx');
 const SearchSelect = require('../input/entity-search.jsx');
+const Icon = require('react-fontawesome');
 const _ = require('underscore');
 const request = require('superagent');
 require('superagent-bluebird-promise');
 const utils = require('../../../server/helpers/utils.js');
+const _filter = require('lodash.filter');
 
 const renderRelationship = require('../../../server/helpers/render.js');
 
 const validators = require('../validators');
 
-function getRelationshipTypeById(types, id) {
+function getRelationshipTypeById(relationships, id) {
 	'use strict';
 
 	return _.find(
-		types, (type) => type.id === id
+		relationships, (relationship) => relationship.id === id
 	);
+}
+
+function isRelationshipNew(initialType, initialTarget) {
+	'use strict';
+	return !(initialType || initialTarget);
 }
 
 const RelationshipRow = React.createClass({
@@ -54,12 +61,13 @@ const RelationshipRow = React.createClass({
 		relationship: React.PropTypes.shape({
 			source: React.PropTypes.object,
 			target: React.PropTypes.object,
-			typeId: React.PropTypes.number,
+			type: React.PropTypes.number,
 			initialSource: React.PropTypes.object,
 			initialTarget: React.PropTypes.object,
-			initialTypeId: React.PropTypes.number
+			initialType: React.PropTypes.number
 		}),
-		relationshipType: React.PropTypes.arrayOf(validators.RelationshipType)
+		relationshipTypes:
+			React.PropTypes.arrayOf(validators.relationshipType)
 	},
 	getInitialState() {
 		'use strict';
@@ -76,7 +84,7 @@ const RelationshipRow = React.createClass({
 		return {
 			source: this.refs.source.getValue(),
 			target: this.refs.target.getValue(),
-			typeId: this.refs.type.getValue() ?
+			type: this.refs.type.getValue() ?
 				parseInt(this.refs.type.getValue(), 10) : null
 		};
 	},
@@ -105,9 +113,9 @@ const RelationshipRow = React.createClass({
 		'use strict';
 
 		const initiallyEmpty = !this.props.relationship.initialTarget &&
-			!this.props.relationship.initialTypeId;
+			!this.props.relationship.initialType;
 		const nowSet = this.props.relationship.target ||
-			this.props.relationship.typeId;
+			this.props.relationship.type;
 		return Boolean(initiallyEmpty && nowSet);
 	},
 	edited() {
@@ -118,7 +126,7 @@ const RelationshipRow = React.createClass({
 			(rel.initialSource && rel.initialSource.bbid);
 		const bChanged = (rel.target && rel.target.bbid) !==
 			(rel.initialTarget && rel.initialTarget.bbid);
-		const typeChanged = rel.typeId !== rel.initialTypeId;
+		const typeChanged = rel.type !== rel.initialType;
 		return Boolean(aChanged || bChanged || typeChanged);
 	},
 	renderedRelationship() {
@@ -130,16 +138,11 @@ const RelationshipRow = React.createClass({
 			return null;
 		}
 
-		const relationshipType =
-			getRelationshipTypeById(this.props.relationshipTypes, rel.typeId);
-
-		if (!relationshipType) {
-			return null;
-		}
-
-		rel.type = relationshipType;
-
-		return {__html: renderRelationship(rel)};
+		return {
+			__html: renderRelationship(
+				[rel.source, rel.target], this.currentRelationshipType(), null
+			)
+		};
 	},
 	rowClass() {
 		'use strict';
@@ -162,7 +165,7 @@ const RelationshipRow = React.createClass({
 		'use strict';
 
 		const rel = this.props.relationship;
-		if (rel.source && rel.target && rel.typeId) {
+		if (rel.source && rel.target && rel.type) {
 			return true;
 		}
 
@@ -175,6 +178,12 @@ const RelationshipRow = React.createClass({
 		const rel = this.props.relationship;
 		return Boolean(rel.initialSource && rel.initialTarget);
 	},
+	currentRelationshipType() {
+		'use strict';
+		return getRelationshipTypeById(
+			this.props.relationshipTypes, this.props.relationship.type
+		);
+	},
 	render() {
 		'use strict';
 
@@ -183,7 +192,7 @@ const RelationshipRow = React.createClass({
 				bsStyle="danger"
 				onClick={this.destroy}
 			>
-				<span className="fa fa-times"/>&nbsp;Delete
+				<Icon name="times"/>&nbsp;Delete
 				<span className="sr-only"> Relationship</span>
 			</Button>
 		) : null;
@@ -193,7 +202,7 @@ const RelationshipRow = React.createClass({
 				bsStyle="primary"
 				onClick={this.reset}
 			>
-				<span className="fa fa-undo"/>&nbsp;Reset
+				<Icon name="undo"/>&nbsp;Reset
 				<span className="sr-only"> Relationship</span>
 			</Button>
 		);
@@ -203,22 +212,22 @@ const RelationshipRow = React.createClass({
 				bsStyle="primary"
 				onClick={this.props.onSwap}
 			>
-				<span className="fa fa-exchange"/>&nbsp;Swap
+				<Icon name="exchange"/>&nbsp;Swap
 				<span className="sr-only"> Entities</span>
 			</Button>
 		);
 
 		const sourceEntity = this.props.relationship.source;
 		if (sourceEntity) {
-			sourceEntity.text = sourceEntity.defaultAlias ?
-				sourceEntity.defaultAlias.name : '(unnamed)';
+			sourceEntity.text = sourceEntity.default_alias ?
+				sourceEntity.default_alias.name : '(unnamed)';
 			sourceEntity.id = sourceEntity.bbid;
 		}
 
 		const targetEntity = this.props.relationship.target;
 		if (targetEntity) {
-			targetEntity.text = targetEntity.defaultAlias ?
-				targetEntity.defaultAlias.name : '(unnamed)';
+			targetEntity.text = targetEntity.default_alias ?
+				targetEntity.default_alias.name : '(unnamed)';
 			targetEntity.id = targetEntity.bbid;
 		}
 
@@ -230,6 +239,7 @@ const RelationshipRow = React.createClass({
 		const targetInput = (
 			<SearchSelect
 				bsStyle={validationState}
+				collection="entity"
 				disabled={
 					this.disabled() || this.state.deleted ||
 					(targetEntity && targetEntity.bbid) ===
@@ -248,6 +258,19 @@ const RelationshipRow = React.createClass({
 
 		const deleteOrResetButton =
 			this.state.deleted ? resetButton : deleteButton;
+
+		let deprecationWarning = null;
+		const currentType = this.currentRelationshipType();
+		if (currentType && currentType.deprecated) {
+			deprecationWarning = (
+				<span className="text-danger">
+					<Icon name="warning"/>&nbsp;
+					Relationship type deprecated &mdash; please avoid!
+				</span>
+			);
+		}
+
+		console.log(deprecationWarning);
 
 		return (
 			<div
@@ -268,6 +291,7 @@ const RelationshipRow = React.createClass({
 						<div className="row">
 							<SearchSelect
 								bsStyle={validationState}
+								collection="entity"
 								disabled={
 									this.disabled() || this.state.deleted ||
 									(sourceEntity && sourceEntity.bbid) ===
@@ -285,9 +309,7 @@ const RelationshipRow = React.createClass({
 							<div className="col-md-4">
 								<Select
 									bsStyle={validationState}
-									defaultValue={
-										this.props.relationship.typeId
-									}
+									defaultValue={this.props.relationship.type}
 									disabled={
 										this.disabled() || this.state.deleted
 									}
@@ -304,10 +326,13 @@ const RelationshipRow = React.createClass({
 							{targetInput}
 						</div>
 						<div className="row">
-							<div className="col-md-9">
+							<div className="col-md-4">
 								<p dangerouslySetInnerHTML=
 									{this.renderedRelationship()}
 								/>
+							</div>
+							<div className="col-md-5">
+								{deprecationWarning}
 							</div>
 							<div className="col-md-3 text-right">
 								{
@@ -335,32 +360,28 @@ const RelationshipEditor = React.createClass({
 		loadedEntities: React.PropTypes.arrayOf(React.PropTypes.shape({
 			bbid: React.PropTypes.string
 		})),
+		relationshipTypes: React.PropTypes.arrayOf(validators.relationshipType),
 		relationships: React.PropTypes.arrayOf(React.PropTypes.shape({
 			source: React.PropTypes.object,
 			target: React.PropTypes.object,
-			typeId: React.PropTypes.number
+			type: React.PropTypes.number
 		}))
 	},
 	getInitialState() {
 		'use strict';
 
-		const existing = (this.props.relationships || []).map((rel) => ({
-			source: rel.source,
-			target: rel.target,
-			typeId: rel.typeId
-		}));
-
+		const existing = this.props.relationships || [];
 		existing.push({
 			source: this.props.entity,
 			target: null,
-			typeId: null
+			type: null
 		});
 
 		existing.forEach((rel, i) => {
 			rel.key = i;
 			rel.initialSource = rel.source;
 			rel.initialTarget = rel.target;
-			rel.initialTypeId = rel.typeId;
+			rel.initialType = rel.type;
 			rel.valid = rel.changed = false;
 		});
 
@@ -385,7 +406,7 @@ const RelationshipEditor = React.createClass({
 	handleSubmit() {
 		'use strict';
 
-		const changedRelationships = _.filter(
+		const changedRelationships = _filter(
 			this.state.relationships, (rel) => rel.changed && rel.valid
 		);
 
@@ -420,15 +441,15 @@ const RelationshipEditor = React.createClass({
 			rel.key = this.state.relationships[idx].key;
 			rel.initialSource = this.state.relationships[idx].initialSource;
 			rel.initialTarget = this.state.relationships[idx].initialTarget;
-			rel.initialTypeId = this.state.relationships[idx].initialTypeId;
+			rel.initialType = this.state.relationships[idx].initialType;
 
 			const sourceChanged = (rel.source && rel.source.bbid) !==
 				(rel.initialSource && rel.initialSource.bbid);
 			const targetChanged = (rel.target && rel.target.bbid) !==
 				(rel.initialTarget && rel.initialTarget.bbid);
-			const typeChanged = (rel.typeId !== rel.initialTypeId);
+			const typeChanged = (rel.type !== rel.initialType);
 			rel.changed = sourceChanged || targetChanged || typeChanged;
-			rel.valid = Boolean(rel.source && rel.target && rel.typeId);
+			rel.valid = Boolean(rel.source && rel.target && rel.type);
 		});
 
 		return updatedRelationships;
@@ -481,8 +502,8 @@ const RelationshipEditor = React.createClass({
 		);
 
 		const typeJustSetOrUnset = (
-			!existingRelationship.typeId && updatedRelationship.typeId ||
-			existingRelationship.typeId && !updatedRelationship.typeId
+			!existingRelationship.type && updatedRelationship.type ||
+			existingRelationship.type && !updatedRelationship.type
 		);
 
 		return Boolean(
@@ -496,10 +517,10 @@ const RelationshipEditor = React.createClass({
 			updatedRelationships.push({
 				initialSource: this.props.entity,
 				initialTarget: null,
-				initialTypeId: null,
+				initialType: null,
 				source: this.props.entity,
 				target: null,
-				typeId: null,
+				type: null,
 				key: rowsSpawned++
 			});
 		}
@@ -556,7 +577,7 @@ const RelationshipEditor = React.createClass({
 	hasDataToSubmit() {
 		'use strict';
 
-		const changedRelationships = _.filter(
+		const changedRelationships = _filter(
 			this.state.relationships, (rel) =>
 				rel.changed && rel.valid
 		);
@@ -565,8 +586,14 @@ const RelationshipEditor = React.createClass({
 	render() {
 		'use strict';
 
+
+		const typesWithoutDeprecated = _filter(
+			this.props.relationshipTypes, (type) => !type.deprecated
+		);
+
 		const rows = this.state.relationships.map((rel, index) => (
 			<RelationshipRow
+				{...this.props}
 				key={rel.key}
 				onChange={this.handleChange.bind(null, index)}
 				onDelete={this.deleteRowIfNew.bind(null, index)}
@@ -574,7 +601,11 @@ const RelationshipEditor = React.createClass({
 				onSwap={this.swap.bind(null, index)}
 				ref={index}
 				relationship={rel}
-				{...this.props}
+				relationshipTypes={
+					isRelationshipNew(
+						rel.initialType, rel.initialTarget
+					) ? typesWithoutDeprecated : this.props.relationshipTypes
+				}
 			/>
 		));
 

@@ -23,6 +23,7 @@ const Select = require('../../input/select2.jsx');
 const SearchSelect = require('../../input/entity-search.jsx');
 const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifiers.jsx');
+const Icon = require('react-fontawesome');
 
 const validators = require('../../validators');
 
@@ -41,9 +42,13 @@ const EditionData = React.createClass({
 	propTypes: {
 		backClick: React.PropTypes.func,
 		edition: React.PropTypes.shape({
-			annotation: React.PropTypes.string,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
 			depth: React.PropTypes.number,
-			disambiguation: React.PropTypes.string,
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
 			editionFormat: editionFormatValidation,
 			editionStatus: editionStatusValidation,
 			height: React.PropTypes.number,
@@ -118,7 +123,9 @@ const EditionData = React.createClass({
 	valid() {
 		'use strict';
 
-		return this.refs.publication.getValue();
+		return Boolean(
+			this.refs.release.valid() && this.refs.publication.getValue()
+		);
 	},
 	render() {
 		'use strict';
@@ -346,9 +353,9 @@ const EditionData = React.createClass({
 									href="#"
 									onClick={this.props.backClick}
 								>
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-left"
+										name="angle-double-left"
 									/>
 									Back
 								</a>
@@ -359,9 +366,9 @@ const EditionData = React.createClass({
 									onClick={this.props.nextClick}
 								>
 									Next
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-right"
+										name="angle-double-right"
 									/>
 								</a>
 							</li>

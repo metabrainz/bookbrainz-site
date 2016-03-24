@@ -19,6 +19,7 @@
 
 const React = require('react');
 const Input = require('react-bootstrap').Input;
+const Icon = require('react-fontawesome');
 
 const RevisionNote = React.createClass({
 	displayName: 'revisionNoteComponent',
@@ -55,9 +56,9 @@ const RevisionNote = React.createClass({
 								href="#"
 								onClick={this.props.backClick}
 							>
-								<span
+								<Icon
 									aria-hidden="true"
-									className="fa fa-angle-double-left"
+									name="angle-double-left"
 								/>
 								Back
 							</a>

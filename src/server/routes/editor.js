@@ -22,6 +22,7 @@
 const express = require('express');
 const router = express.Router();
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const auth = require('../helpers/auth');
 const _ = require('underscore');
 
@@ -37,7 +38,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	new Editor({id: parseInt(req.user.id, 10)})
 	.fetch()
 	.then((editor) => {
-		const markup = React.renderToString(ProfileForm(editor.toJSON()));
+		const markup = ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
 
 		res.render('editor/edit', {
 			props: editor.toJSON(),

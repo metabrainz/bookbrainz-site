@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
  *               2015  Sean Burke
+ *               2015  Annie Zhou
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +24,18 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const status = require('http-status');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const LoginPage = React.createFactory(
+	require('../../client/components/pages/login.jsx')
+);
 
 router.get('/login', (req, res) => {
-	res.render('login', {
+	res.render('page', {
+		title: 'Log in',
 		error: req.query.error,
-		title: 'Log In'
+		markup: ReactDOMServer.renderToString(LoginPage())
 	});
 });
 
@@ -38,15 +46,20 @@ router.get('/logout', (req, res) => {
 });
 
 router.post('/login/handler', (req, res, next) => {
-	passport.authenticate('local', (authErr, user, info) => {
+	passport.authenticate('local', (authErr, user) => {
 		if (authErr) {
 			console.log(authErr);
 			// If an error occurs during login, send the user back.
-			return res.redirect(status.MOVED_PERMANENTLY, `/login?error=${authErr.message}`);
+			return res.redirect(
+				status.MOVED_PERMANENTLY, `/login?error=${authErr.message}`
+			);
 		}
 
 		if (!user) {
-			return res.redirect(status.MOVED_PERMANENTLY, '/login?error=Login details incorrect');
+			return res.redirect(
+				status.MOVED_PERMANENTLY,
+				'/login?error=Login details incorrect'
+			);
 		}
 
 		req.logIn(user, (loginErr) => {
@@ -54,7 +67,8 @@ router.post('/login/handler', (req, res, next) => {
 				return next(loginErr);
 			}
 
-			const redirect = req.session.redirectTo ? req.session.redirectTo : '/';
+			const redirect =
+				req.session.redirectTo ? req.session.redirectTo : '/';
 			delete req.session.redirectTo;
 
 			return res.redirect(status.SEE_OTHER, redirect);

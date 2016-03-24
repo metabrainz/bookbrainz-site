@@ -18,6 +18,7 @@
  */
 
 const React = require('react');
+const Icon = require('react-fontawesome');
 
 const Aliases = require('./parts/aliases.jsx');
 const RevisionNote = require('./parts/revisionNote.jsx');
@@ -130,6 +131,15 @@ module.exports = React.createClass({
 
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
+		const invalidIcon = (
+			<span>&nbsp;
+				<Icon
+					className="text-danger"
+					name="warning"
+				/>
+			</span>
+		);
+
 		return (
 			<div>
 				{loadingElement}
@@ -141,21 +151,11 @@ module.exports = React.createClass({
 				>
 					<NavItem eventKey={1}>
 						<strong>1.</strong> Aliases
-						<span className=
-							{
-								'text-danger fa fa-warning' +
-								`${this.state.aliasesValid ? ' hidden' : ''}`
-							}
-						/>
+						{this.state.aliasesValid || invalidIcon}
 					</NavItem>
 					<NavItem eventKey={2}>
 						<strong>2.</strong> Data
-						<span className=
-							{
-								'text-danger fa fa-warning' +
-								`${this.state.dataValid ? ' hidden' : ''}`
-							}
-						/>
+						{this.state.dataValid || invalidIcon}
 					</NavItem>
 					<NavItem eventKey={3}>
 						<strong>3.</strong> Revision Note

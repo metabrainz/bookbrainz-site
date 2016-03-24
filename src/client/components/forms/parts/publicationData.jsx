@@ -21,6 +21,7 @@ const React = require('react');
 const Select = require('../../input/select2.jsx');
 const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifiers.jsx');
+const Icon = require('react-fontawesome');
 
 const validators = require('../../validators');
 
@@ -31,8 +32,12 @@ const PublicationData = React.createClass({
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		nextClick: React.PropTypes.func,
 		publication: React.PropTypes.shape({
-			annotation: React.PropTypes.string,
-			disambiguation: React.PropTypes.string,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
+			disambiguation: React.PropTypes.shape({
+				comment: React.PropTypes.string
+			}),
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
@@ -137,9 +142,9 @@ const PublicationData = React.createClass({
 									href="#"
 									onClick={this.props.backClick}
 								>
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-left"
+										name="angle-double-left"
 									/>
 									Back
 								</a>
@@ -150,9 +155,9 @@ const PublicationData = React.createClass({
 									onClick={this.props.nextClick}
 								>
 									Next
-									<span
+									<Icon
 										aria-hidden="true"
-										className="fa fa-angle-double-right"
+										name="angle-double-right"
 									/>
 								</a>
 							</li>

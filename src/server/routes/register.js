@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
  *               2015  Sean Burke
+ *               2015  Annie Zhou
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,14 +26,25 @@ const router = express.Router();
 const Editor = require('bookbrainz-data').Editor;
 const EditorType = require('bookbrainz-data').EditorType;
 const status = require('http-status');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+
+const RegisterPage = React.createFactory(
+	require('../../client/components/pages/register.jsx')
+);
 
 router.get('/', (req, res) => {
-	const error = req.session.error;
-	delete req.session.error;
+	let error;
 
-	res.render('register', {
+	if (req.session) {
+		error = req.session.error;
+		delete req.session.error;
+	}
+
+	res.render('page', {
 		error,
-		title: 'Register'
+		title: 'Register',
+		markup: ReactDOMServer.renderToString(RegisterPage())
 	});
 });
 

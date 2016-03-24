@@ -25,4 +25,6 @@ block content
 					td
 						a(href='/edition/'+edition.bbid)
 							=(edition.defaultAlias ? edition.defaultAlias.name : '(unnamed)')
+						span.text-muted
+							=(edition.disambiguation ? (' (' + edition.disambiguation.comment + ')') : '')
 					td=(edition.releaseDate ? edition.releaseDate : '?')

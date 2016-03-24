@@ -24,6 +24,7 @@ const express = require('express');
 const router = express.Router();
 const Promise = require('bluebird');
 const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const auth = require('../helpers/auth');
 
 const Publication = require('bookbrainz-data').Publication;
@@ -49,6 +50,9 @@ const PrivacyPage = React.createFactory(
 );
 const LicensingPage = React.createFactory(
 	require('../../client/components/pages/licensing.jsx')
+);
+const SearchPage = React.createFactory(
+	require('../../client/components/pages/search.jsx')
 );
 
 /* GET home page. */
@@ -94,35 +98,35 @@ router.get('/', (req, res) => {
 router.get('/about', (req, res) => {
 	res.render('page', {
 		title: 'About',
-		markup: React.renderToString(AboutPage())
+		markup: ReactDOMServer.renderToString(AboutPage())
 	});
 });
 
 router.get('/contribute', (req, res) => {
 	res.render('page', {
 		title: 'Contribute',
-		markup: React.renderToString(ContributePage())
+		markup: ReactDOMServer.renderToString(ContributePage())
 	});
 });
 
 router.get('/develop', (req, res) => {
 	res.render('page', {
 		title: 'Develop',
-		markup: React.renderToString(DevelopPage())
+		markup: ReactDOMServer.renderToString(DevelopPage())
 	});
 });
 
 router.get('/privacy', (req, res) => {
 	res.render('page', {
 		title: 'Privacy',
-		markup: React.renderToString(PrivacyPage())
+		markup: ReactDOMServer.renderToString(PrivacyPage())
 	});
 });
 
 router.get('/licensing', (req, res) => {
 	res.render('page', {
 		title: 'Licensing',
-		markup: React.renderToString(LicensingPage())
+		markup: ReactDOMServer.renderToString(LicensingPage())
 	});
 });
 
@@ -187,20 +191,29 @@ router.get('/search', (req, res) => {
 		.then((searchResponse) => searchResponse.hits)
 		.then((results) => fetchEntityModelsForESResults(results))
 		.then((entities) => {
-			res.render('search', {
-				title: 'Search Results',
+			const props = {
 				query,
-				results: entities,
+				initialResults: entities
+			};
+
+			res.render('search', {
+				props,
+				markup: ReactDOMServer.renderToString(SearchPage(props)),
 				hideSearch: true
 			});
 		})
 		.catch(() => {
 			const message = 'An error occurred while obtaining search results';
 
+			const props = {
+				error: message,
+				initialResults: []
+			};
+
 			res.render('search', {
 				title: 'Search Results',
-				error: message,
-				results: [],
+				props,
+				markup: ReactDOMServer.renderToString(SearchPage(props)),
 				hideSearch: true
 			});
 		});
