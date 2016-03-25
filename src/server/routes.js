@@ -55,7 +55,7 @@ function initWorkRoutes(app) {
 	const router = require('./routes/entity/work');
 
 	app.use('/work', router);
-	relationshipHelper.addEditRoutes(Work, router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initPublisherRoutes(app) {
