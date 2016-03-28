@@ -59,8 +59,7 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 
 	new Editor({
 		id: parseInt(req.body.id, 10),
-		bio: req.body.bio,
-		email: req.body.email
+		bio: req.body.bio
 	})
 		.save()
 		.then((editor) => {
