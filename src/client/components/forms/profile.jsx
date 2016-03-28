@@ -36,7 +36,6 @@ module.exports = React.createClass({
 		'use strict';
 
 		return {
-			id: this.props.id,
 			bio: this.props.bio,
 			waiting: false
 		};
@@ -47,7 +46,7 @@ module.exports = React.createClass({
 		evt.preventDefault();
 
 		const data = {
-			id: this.state.id,
+			id: this.props.id,
 			bio: this.refs.bio.getValue().trim()
 		};
 
