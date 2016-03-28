@@ -58,17 +58,9 @@ html
 									li: a(href='/editor/'+user.id)
 										span.fa.fa-info.fa-fw
 										|&nbsp;Profile
-									li: a(href='/message/inbox')
-										if inboxCount === 0
-											span.fa.fa-envelope-o.fa-fw
-											|&nbsp;Inbox
-										else
-											span.fa.fa-envelope.fa-fw
-											|&nbsp;Inbox&nbsp;
-											span.badge=inboxCount
-										a(href='/logout')
-											span.fa.fa-sign-out.fa-fw
-											|&nbsp;Sign Out
+									li: a(href='/logout')
+										span.fa.fa-sign-out.fa-fw
+										|&nbsp;Sign Out
 						else
 							li
 								a(href='/login')
