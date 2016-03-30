@@ -25,7 +25,7 @@ const auth = require('../../helpers/auth');
 const status = require('http-status');
 
 const Work = require('bookbrainz-data').Work;
-const User = require('../../data/user');
+const WorkRevision = require('bookbrainz-data').WorkRevision;
 
 /* Middleware loader functions. */
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -45,6 +45,8 @@ const loadIdentifierTypes =
 const bbws = require('../../helpers/bbws');
 const Promise = require('bluebird');
 const _ = require('lodash');
+
+const entityRoutes = require('./entity');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param(
@@ -97,27 +99,7 @@ router.post('/:bbid/delete/confirm', (req, res) => {
 });
 
 router.get('/:bbid/revisions', (req, res) => {
-	const work = res.locals.entity;
-	let title = 'Work';
-
-	if (work.default_alias && work.default_alias.name) {
-		title = `Work “${work.default_alias.name}”`;
-	}
-
-	bbws.get(`/work/${work.bbid}/revisions`)
-		.then((revisions) => {
-			const promisedUsers = {};
-			revisions.objects.forEach((revision) => {
-				if (!promisedUsers[revision.user.user_id]) {
-					promisedUsers[revision.user.user_id] =
-						User.findOne(revision.user.user_id);
-				}
-			});
-
-			Promise.props(promisedUsers).then((users) => {
-				res.render('entity/revisions', {title, revisions, users});
-			});
-		});
+	return entityRoutes.displayRevisions(req, res, WorkRevision);
 });
 
 // Creation
