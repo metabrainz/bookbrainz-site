@@ -80,14 +80,7 @@ router.get('/:bbid/revisions', (req, res) => {
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
-	const edition = res.locals.entity;
-	let title = 'Edition';
-
-	if (edition.default_alias && edition.default_alias.name) {
-		title = `Edition “${edition.default_alias.name}”`;
-	}
-
-	res.render('entity/delete', {title});
+	entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post('/:bbid/delete/confirm', (req, res) => {

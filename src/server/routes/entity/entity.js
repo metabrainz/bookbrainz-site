@@ -39,6 +39,17 @@ module.exports.displayEntity = (req, res) => {
 	);
 }
 
+module.exports.displayDeleteEntity = (req, res) => {
+	const entity = res.locals.entity;
+	let title = entity.type;
+
+	if (entity.defaultAlias && entity.defaultAlias.name) {
+		title += ` “${entity.defaultAlias.name}”`;
+	}
+
+	res.render('entity/delete', {title});
+}
+
 module.exports.displayRevisions = (req, res, RevisionModel) => {
 	const entity = res.locals.entity;
 	let title = entity.type;

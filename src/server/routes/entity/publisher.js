@@ -65,14 +65,7 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
-	const publisher = res.locals.entity;
-	let title = 'Publisher';
-
-	if (publisher.default_alias && publisher.default_alias.name) {
-		title = `Publisher “${publisher.default_alias.name}”`;
-	}
-
-	res.render('entity/delete', {title});
+	entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post('/:bbid/delete/confirm', (req, res) => {
