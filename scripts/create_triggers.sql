@@ -32,9 +32,11 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
 				NEW.end_month, NEW.end_day, NEW.end_area_id, NEW.ended, NEW.area_id, NEW.gender_id,
 				NEW.type_id
 			) RETURNING bookbrainz.creator_data.id INTO creator_data_id;
-		END IF;
 
-		INSERT INTO bookbrainz.creator_revision VALUES(NEW.revision_id, NEW.bbid, creator_data_id);
+			INSERT INTO bookbrainz.creator_revision VALUES(NEW.revision_id, NEW.bbid, creator_data_id);
+		ELSE
+			INSERT INTO bookbrainz.creator_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+		END IF;
 
 		UPDATE bookbrainz.creator_header
 			SET master_revision_id = NEW.revision_id
@@ -74,9 +76,11 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_edition() RETURNS TRIGGER
 				NEW.creator_credit_id, NEW.width, NEW.height, NEW.depth,
 				NEW.weight, NEW.pages, NEW.format_id, NEW.status_id
 			) RETURNING bookbrainz.edition_data.id INTO edition_data_id;
-		END IF;
 
-		INSERT INTO bookbrainz.edition_revision VALUES(NEW.revision_id, NEW.bbid, edition_data_id);
+			INSERT INTO bookbrainz.edition_revision VALUES(NEW.revision_id, NEW.bbid, edition_data_id);
+		ELSE
+			INSERT INTO bookbrainz.edition_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+		END IF;
 
 		UPDATE bookbrainz.edition_header
 			SET master_revision_id = NEW.revision_id
@@ -113,9 +117,11 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_work() RETURNS TRIGGER
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
 				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id
 			) RETURNING bookbrainz.work_data.id INTO work_data_id;
-		END IF;
 
-		INSERT INTO bookbrainz.work_revision VALUES(NEW.revision_id, NEW.bbid, work_data_id);
+			INSERT INTO bookbrainz.work_revision VALUES(NEW.revision_id, NEW.bbid, work_data_id);
+		ELSE
+			INSERT INTO bookbrainz.work_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+		END IF;
 
 		UPDATE bookbrainz.work_header
 			SET master_revision_id = NEW.revision_id
@@ -159,9 +165,11 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_publisher() RETURNS TRIGGER
 				NEW.begin_month, NEW.begin_day, NEW.end_year, NEW.end_month, NEW.end_day,
 				NEW.ended, NEW.area_id
 			) RETURNING bookbrainz.publisher_data.id INTO publisher_data_id;
-		END IF;
 
-		INSERT INTO bookbrainz.publisher_revision VALUES(NEW.revision_id, NEW.bbid, publisher_data_id);
+			INSERT INTO bookbrainz.publisher_revision VALUES(NEW.revision_id, NEW.bbid, publisher_data_id);
+		ELSE
+			INSERT INTO bookbrainz.publisher_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+		END IF;
 
 		UPDATE bookbrainz.publisher_header
 			SET master_revision_id = NEW.revision_id
@@ -199,9 +207,11 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_publication() RETURNS TRIGGER
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
 				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id
 			) RETURNING bookbrainz.publication_data.id INTO publication_data_id;
-		END IF;
 
-		INSERT INTO bookbrainz.publication_revision VALUES(NEW.revision_id, NEW.bbid, publication_data_id);
+			INSERT INTO bookbrainz.publication_revision VALUES(NEW.revision_id, NEW.bbid, publication_data_id);
+		ELSE
+			INSERT INTO bookbrainz.publication_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+		END IF;
 
 		UPDATE bookbrainz.publication_header
 			SET master_revision_id = NEW.revision_id
