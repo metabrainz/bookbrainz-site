@@ -61,19 +61,7 @@ router.param(
 );
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
-	const creator = res.locals.entity;
-	let title = 'Creator';
-
-	if (creator.defaultAlias && creator.defaultAlias.name) {
-		title = `Creator “${creator.defaultAlias.name}”`;
-	}
-
-	// Get unique identifier types for display
-	const identifierTypes = _.uniq(
-		_.map(creator.identifierSet.identifiers, 'type'),
-		(type) => type.id
-	);
-	res.render('entity/view/creator', {title, identifierTypes});
+	entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {

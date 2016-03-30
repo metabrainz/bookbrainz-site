@@ -61,19 +61,7 @@ router.param(
 );
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
-	const publisher = res.locals.entity;
-	let title = 'Publisher';
-
-	if (publisher.defaultAlias && publisher.defaultAlias.name) {
-		title = `Publisher “${publisher.defaultAlias.name}”`;
-	}
-
-	// Get unique identifier types for display
-	const identifierTypes = _.uniq(
-		_.map(publisher.identifierSet.identifiers, 'type'),
-		(type) => type.id
-	);
-	res.render('entity/view/publisher', {title, identifierTypes});
+	return entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {

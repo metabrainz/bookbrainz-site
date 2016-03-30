@@ -59,19 +59,7 @@ router.param(
 );
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
-	const work = res.locals.entity;
-	let title = 'Work';
-
-	if (work.defaultAlias && work.defaultAlias.name) {
-		title = `Work “${work.defaultAlias.name}”`;
-	}
-
-	// Get unique identifier types for display
-	const identifierTypes = _.uniq(
-		_.map(work.identifierSet.identifiers, 'type'),
-		(type) => type.id
-	);
-	res.render('entity/view/work', {title, identifierTypes});
+	return entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {

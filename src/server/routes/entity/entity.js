@@ -18,6 +18,27 @@
 
 'use strict';
 
+const _ = require('lodash');
+
+module.exports.displayEntity = (req, res) => {
+	const entity = res.locals.entity;
+	let title = entity.type;
+
+	if (entity.defaultAlias && entity.defaultAlias.name) {
+		title += ` “${entity.defaultAlias.name}”`;
+	}
+
+	// Get unique identifier types for display
+	const identifierTypes = _.uniq(
+		_.map(entity.identifierSet.identifiers, 'type'),
+		(type) => type.id
+	);
+	res.render(
+		`entity/view/${entity.type.toLowerCase()}`,
+		{title, identifierTypes}
+	);
+}
+
 module.exports.displayRevisions = (req, res, RevisionModel) => {
 	const entity = res.locals.entity;
 	let title = entity.type;

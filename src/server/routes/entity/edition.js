@@ -72,19 +72,7 @@ router.param(
 );
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
-	const edition = res.locals.entity;
-	let title = 'Edition';
-
-	if (edition.defaultAlias && edition.defaultAlias.name) {
-		title = `Edition “${edition.defaultAlias.name}”`;
-	}
-
-	// Get unique identifier types for display
-	const identifierTypes = _.uniq(
-		_.map(edition.identifierSet.identifiers, 'type'),
-		(type) => type.id
-	);
-	res.render('entity/view/edition', {title, identifierTypes});
+	return entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/revisions', (req, res) => {
