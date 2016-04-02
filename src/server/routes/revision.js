@@ -424,7 +424,7 @@ function formatCreatorDiffs(diffs) {
 
 	const formattedDiffs = formatEntityDiffs(diffs, formatCreatorChange);
 
-	formattedDiffs.forEach((diff) => diff.entity.type = 'Creator');
+	formattedDiffs.forEach((diff) => { diff.entity.type = 'Creator'; });
 	return formattedDiffs;
 }
 
@@ -557,7 +557,7 @@ function formatReleaseEventModified(entity, change) {
 	const lhs = change.lhs && [change.lhs.date];
 	const rhs = change.rhs && [change.rhs.date];
 	return [formatRow(
-		'E', `Release Date`, lhs, rhs
+		'E', 'Release Date', lhs, rhs
 	)];
 }
 
@@ -625,7 +625,7 @@ function formatEditionDiffs(diffs) {
 	}
 
 	const formattedDiffs = formatEntityDiffs(diffs, formatEditionChange);
-	formattedDiffs.forEach((diff) => diff.entity.type = 'Edition');
+	formattedDiffs.forEach((diff) => { diff.entity.type = 'Edition'; });
 	return formattedDiffs;
 }
 
@@ -655,7 +655,7 @@ function formatPublisherDiffs(diffs) {
 	}
 
 	const formattedDiffs = formatEntityDiffs(diffs, formatPublisherChange);
-	formattedDiffs.forEach((diff) => diff.entity.type = 'Publisher');
+	formattedDiffs.forEach((diff) => { diff.entity.type = 'Publisher'; });
 	return formattedDiffs;
 }
 
@@ -730,7 +730,7 @@ function formatWorkDiffs(diffs) {
 	}
 
 	const formattedDiffs = formatEntityDiffs(diffs, formatWorkChange);
-	formattedDiffs.forEach((diff) => diff.entity.type = 'Work');
+	formattedDiffs.forEach((diff) => { diff.entity.type = 'Work'; });
 	return formattedDiffs;
 }
 
@@ -748,7 +748,7 @@ function formatPublicationDiffs(diffs) {
 	}
 
 	const formattedDiffs = formatEntityDiffs(diffs, formatPublicationChange);
-	formattedDiffs.forEach((diff) => diff.entity.type = 'Publication');
+	formattedDiffs.forEach((diff) => { diff.entity.type = 'Publication'; });
 	return formattedDiffs;
 }
 

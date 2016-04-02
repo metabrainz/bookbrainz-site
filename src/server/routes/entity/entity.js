@@ -37,7 +37,7 @@ module.exports.displayEntity = (req, res) => {
 		`entity/view/${entity.type.toLowerCase()}`,
 		{title, identifierTypes}
 	);
-}
+};
 
 module.exports.displayDeleteEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -48,7 +48,7 @@ module.exports.displayDeleteEntity = (req, res) => {
 	}
 
 	res.render('entity/delete', {title});
-}
+};
 
 module.exports.displayRevisions = (req, res, RevisionModel) => {
 	const entity = res.locals.entity;
@@ -66,4 +66,4 @@ module.exports.displayRevisions = (req, res, RevisionModel) => {
 			const revisions = collection.toJSON();
 			return res.render('entity/revisions', {title, revisions});
 		});
-}
+};

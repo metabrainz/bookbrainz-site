@@ -29,16 +29,15 @@ function renderRelationship(relationship) {
 	);
 
 	const data = {
-		entities:
-			[
-				relationship.source,
-				relationship.target
-			].map((entity) => {
-				// Linkify source and target based on default alias
-				const name = entity.defaultAlias ?
-					entity.defaultAlias.name : '(unnamed)';
-				return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
-			})
+		entities: [
+			relationship.source,
+			relationship.target
+		].map((entity) => {
+			// Linkify source and target based on default alias
+			const name = entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)';
+			return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
+		})
 	};
 
 	return template(data);

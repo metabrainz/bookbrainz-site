@@ -51,7 +51,6 @@ const loadIdentifierTypes =
 
 const bbws = require('../../helpers/bbws');
 const Promise = require('bluebird');
-const _ = require('underscore');
 
 const entityRoutes = require('./entity');
 

@@ -44,10 +44,6 @@ const loadEntityRelationships =
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
-const bbws = require('../../helpers/bbws');
-const Promise = require('bluebird');
-const _ = require('underscore');
-
 const entityRoutes = require('./entity');
 
 /* If the route specifies a BBID, load the Publisher for it. */
