@@ -21,10 +21,10 @@
 
 const express = require('express');
 const router = express.Router();
-const status = require('http-status');
 const auth = require('../../helpers/auth');
 
 const Publication = require('bookbrainz-data').Publication;
+const PublicationHeader = require('bookbrainz-data').PublicationHeader;
 const PublicationRevision = require('bookbrainz-data').PublicationRevision;
 
 /* Middleware loader functions. */
@@ -64,18 +64,9 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/confirm', (req, res) => {
-	const publication = res.locals.entity;
-
-	Publication.del(
-		publication.bbid,
-		{revision: {note: req.body.note}},
-		{session: req.session}
-	)
-		.then(() => {
-			res.redirect(status.SEE_OTHER, `/publication/${publication.bbid}`);
-		});
-});
+router.post('/:bbid/delete/confirm', (req, res) =>
+	entityRoutes.handleDelete(req, res, PublicationHeader, PublicationRevision)
+);
 
 router.get('/:bbid/revisions', (req, res) =>
 	entityRoutes.displayRevisions(req, res, PublicationRevision)

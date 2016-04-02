@@ -21,10 +21,10 @@
 
 const express = require('express');
 const router = express.Router();
-const status = require('http-status');
 const auth = require('../../helpers/auth');
 
 const Edition = require('bookbrainz-data').Edition;
+const EditionHeader = require('bookbrainz-data').EditionHeader;
 const EditionRevision = require('bookbrainz-data').EditionRevision;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
@@ -49,7 +49,6 @@ const loadEntityRelationships =
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
-const bbws = require('../../helpers/bbws');
 const Promise = require('bluebird');
 
 const entityRoutes = require('./entity');
@@ -83,18 +82,9 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/confirm', (req, res) => {
-	const edition = res.locals.entity;
-
-	Edition.del(
-		edition.bbid,
-		{revision: {note: req.body.note}},
-		{session: req.session}
-	)
-		.then(() => {
-			res.redirect(status.SEE_OTHER, `/edition/${edition.bbid}`);
-		});
-});
+router.post('/:bbid/delete/confirm', (req, res) =>
+	entityRoutes.handleDelete(req, res, EditionHeader, EditionRevision)
+);
 
 // Creation
 

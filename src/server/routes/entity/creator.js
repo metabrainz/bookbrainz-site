@@ -20,11 +20,11 @@
 'use strict';
 
 const express = require('express');
-const status = require('http-status');
 const auth = require('../../helpers/auth');
 
 const Creator = require('bookbrainz-data').Creator;
 const CreatorRevision = require('bookbrainz-data').CreatorRevision;
+const CreatorHeader = require('bookbrainz-data').CreatorHeader;
 
 /* Middleware loader functions. */
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -43,10 +43,6 @@ const router = express.Router();
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/creator.jsx')
 );
-
-const bbws = require('../../helpers/bbws');
-const Promise = require('bluebird');
-const _ = require('underscore');
 
 const entityRoutes = require('./entity');
 
@@ -68,18 +64,10 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/confirm', (req, res) => {
-	const creator = res.locals.entity;
 
-	Creator.del(
-		creator.bbid,
-		{revision: {note: req.body.note}},
-		{session: req.session}
-	)
-		.then(() => {
-			res.redirect(status.SEE_OTHER, `/creator/${creator.bbid}`);
-		});
-});
+router.post('/:bbid/delete/confirm', auth.isAuthenticated, (req, res) =>
+	entityRoutes.handleDelete(req, res, CreatorHeader, CreatorRevision)
+);
 
 router.get('/:bbid/revisions', (req, res) =>
 	entityRoutes.displayRevisions(req, res, CreatorRevision)

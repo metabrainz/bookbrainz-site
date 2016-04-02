@@ -18,7 +18,14 @@
 
 'use strict';
 
+const bookshelf = require('bookbrainz-data').bookshelf;
 const _ = require('lodash');
+const Editor = require('bookbrainz-data').Editor;
+const Revision = require('bookbrainz-data').Revision;
+const Note = require('bookbrainz-data').Note;
+const status = require('http-status');
+const Promise = require('bluebird');
+
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -65,5 +72,60 @@ module.exports.displayRevisions = (req, res, RevisionModel) => {
 		.then((collection) => {
 			const revisions = collection.toJSON();
 			return res.render('entity/revisions', {title, revisions});
+		});
+};
+
+module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
+	const entity = res.locals.entity;
+	const editorJSON = req.session.passport.user;
+
+	return bookshelf.transaction((transacting) => {
+		const editorUpdatePromise = new Editor({id: editorJSON.id})
+			.fetch({transacting})
+			.then((editor) => {
+				editor.set(
+					'totalRevisions', editor.get('totalRevisions') + 1
+				);
+				editor.set(
+					'revisionsApplied', editor.get('revisionsApplied') + 1
+				);
+				return editor.save(null, {transacting});
+			});
+
+		const newRevisionPromise = new Revision({
+			authorId: editorJSON.id
+		}).save(null, {transacting});
+
+		const notePromise = req.body.note ? newRevisionPromise
+			.then((revision) => new Note({
+				authorId: editorJSON.id,
+				revisionId: revision.get('id'),
+				content: req.body.note
+			}).save(null, {transacting})) : null;
+
+		// No trigger for deletions, so manually create the <Entity>Revision
+		// and update the entity header
+		const newEntityRevisionPromise = newRevisionPromise
+			.then((revision) => new RevisionModel({
+				id: revision.get('id'),
+				bbid: entity.bbid,
+				dataId: null
+			}).save(null, {method: 'insert', transacting}));
+
+		const entityHeaderPromise = newEntityRevisionPromise
+			.then((entityRevision) => new HeaderModel({
+				bbid: entity.bbid,
+				masterRevisionId: entityRevision.get('id')
+			}).save(null, {transacting}));
+
+		return Promise.join(
+			editorUpdatePromise, newRevisionPromise, notePromise,
+			newEntityRevisionPromise, entityHeaderPromise
+		);
+	})
+		.then(() => {
+			res.redirect(
+				status.SEE_OTHER, `/${entity.type.toLowerCase()}/${entity.bbid}`
+			);
 		});
 };
