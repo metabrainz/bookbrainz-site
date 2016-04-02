@@ -106,7 +106,7 @@ const PublisherData = React.createClass({
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,
-					type: identifier.identifierType.id
+					type: identifier.type.id
 				}));
 		}
 
