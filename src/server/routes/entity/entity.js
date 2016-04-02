@@ -36,10 +36,12 @@ module.exports.displayEntity = (req, res) => {
 	}
 
 	// Get unique identifier types for display
-	const identifierTypes = _.uniq(
-		_.map(entity.identifierSet.identifiers, 'type'),
-		(type) => type.id
-	);
+	const identifierTypes = entity.identifierSet &&
+		_.uniq(
+			_.map(entity.identifierSet.identifiers, 'type'),
+			(type) => type.id
+		);
+
 	res.render(
 		`entity/view/${entity.type.toLowerCase()}`,
 		{title, identifierTypes}
