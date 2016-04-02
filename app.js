@@ -109,7 +109,6 @@ app.use((req, res, next) => {
 	res.locals.repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
 	res.locals.siteRevision = siteRevision;
 
-	res.locals.inboxCount = 0;
 	next();
 });
 

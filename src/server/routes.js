@@ -81,5 +81,4 @@ module.exports = function initRoutes(app) {
 	initRevisionRoutes(app);
 
 	app.use('/editor', require('./routes/editor'));
-	app.use('/message', require('./routes/message'));
 };
