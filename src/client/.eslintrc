@@ -1,6 +1,7 @@
 ---
-ecmaFeatures:
-  jsx: true
+parserOptions:
+  ecmaFeatures:
+    jsx: true
 env:
   browser: true
 plugins:
