@@ -99,7 +99,7 @@ module.exports = React.createClass({
 		const diffs = this.props.diffs;
 
 		const diffDivs = diffs.map((diff) => (
-			<div>
+			<div key="{diff.entity.bbid}">
 				<h3>
 					<EntityLink
 						bbid={diff.entity.bbid}
