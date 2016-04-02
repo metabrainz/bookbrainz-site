@@ -70,7 +70,7 @@ router.post('/handler', (req, res, next) => {
 				name: req.body.username,
 				email: req.body.email,
 				password: req.body.password,
-				editor_type_id: editorType.id
+				typeId: editorType.id
 			})
 				.save()
 		)
