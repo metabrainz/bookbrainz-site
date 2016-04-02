@@ -26,6 +26,8 @@ const auth = require('../../helpers/auth');
 
 const Edition = require('bookbrainz-data').Edition;
 const EditionRevision = require('bookbrainz-data').EditionRevision;
+const Publication = require('bookbrainz-data').Publication;
+const Publisher = require('bookbrainz-data').Publisher;
 
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
@@ -48,8 +50,6 @@ const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
 const bbws = require('../../helpers/bbws');
-const Publication = require('../../data/entities/publication');
-const Publisher = require('../../data/entities/publisher');
 const Promise = require('bluebird');
 const _ = require('underscore');
 
@@ -111,11 +111,14 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 
 		if (req.query.publication) {
 			propsPromise.publication =
-				Publication.findOne(req.query.publication);
+				Publication.forge({bbid: req.query.publication})
+					.fetch({withRelated: 'defaultAlias'});
 		}
 
 		if (req.query.publisher) {
-			propsPromise.publisher = Publisher.findOne(req.query.publisher);
+			propsPromise.publisher =
+				Publisher.forge({bbid: req.query.publisher})
+					.fetch({withRelated: 'defaultAlias'});
 		}
 
 		function render(props) {
