@@ -106,7 +106,7 @@ git.short((revision) => {
 /* Add middleware to set variables used for every rendered route. */
 app.use((req, res, next) => {
 	res.locals.user = req.user;
-	res.locals.respoitoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
+	res.locals.repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
 	res.locals.siteRevision = siteRevision;
 
 	res.locals.inboxCount = 0;
