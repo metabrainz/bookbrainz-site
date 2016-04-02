@@ -82,7 +82,7 @@ function loadEntityRelationships(req, res, next) {
 
 	const entity = res.locals.entity;
 
-	RelationshipSet.forge({id: entity.relationshipSetId})
+	return RelationshipSet.forge({id: entity.relationshipSetId})
 		.fetch({
 			withRelated: [
 				'relationships.source',

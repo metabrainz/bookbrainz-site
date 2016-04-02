@@ -62,7 +62,7 @@ router.post('/login/handler', (req, res, next) => {
 			);
 		}
 
-		req.logIn(user, (loginErr) => {
+		return req.logIn(user, (loginErr) => {
 			if (loginErr) {
 				return next(loginErr);
 			}

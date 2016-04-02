@@ -159,6 +159,8 @@ function formatAlias(entity, change) {
 	if (defaultAliasChanged) {
 		return formatDefaultAliasModified(entity, change);
 	}
+
+	return null;
 }
 
 function formatNewIdentifierSet(entity, change) {
@@ -229,6 +231,8 @@ function formatIdentifier(entity, change) {
 			return formatIdentifierModified(entity, change);
 		}
 	}
+
+	return null;
 }
 
 function formatNewAnnotation(entity, change) {
@@ -294,6 +298,8 @@ function formatRelationship(entity, change) {
 			return formatRelationshipAdd(entity, change);
 		}
 	}
+
+	return null;
 }
 
 function formatEntityChange(entity, change) {
@@ -445,6 +451,8 @@ function formatEditionLanguages(entity, change) {
 			)
 		)];
 	}
+
+	return null;
 }
 
 function formatEditionLanguageAddOrDelete(entity, change) {
@@ -482,6 +490,8 @@ function formatEditionLanguageChange(entity, change) {
 			return formatEditionLanguageModified(entity, change);
 		}
 	}
+
+	return null;
 }
 
 function formatEditionPublishers(entity, change) {
@@ -493,6 +503,8 @@ function formatEditionPublishers(entity, change) {
 			)
 		)];
 	}
+
+	return null;
 }
 
 function formatEditionPublisherAddOrDelete(entity, change) {
@@ -530,6 +542,8 @@ function formatEditionPublisher(entity, change) {
 			return formatEditionPublisherModified(entity, change);
 		}
 	}
+
+	return null;
 }
 
 function formatNewReleaseEvents(entity, change) {
@@ -580,6 +594,8 @@ function formatReleaseEventsChange(entity, change) {
 			return formatReleaseEventModified(entity, change);
 		}
 	}
+
+	return null;
 }
 
 function formatEditionChange(entity, change) {
@@ -617,6 +633,8 @@ function formatEditionChange(entity, change) {
 	if (_.isEqual(change.path, ['editionStatus'])) {
 		return formatTypeChange(entity, 'Edition Status', change);
 	}
+
+	return null;
 }
 
 function formatEditionDiffs(diffs) {
@@ -707,6 +725,8 @@ function formatWorkLanguageChange(entity, change) {
 			return formatWorkLanguageModified(entity, change);
 		}
 	}
+
+	return null;
 }
 
 function formatWorkChange(entity, change) {
