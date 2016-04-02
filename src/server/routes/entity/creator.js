@@ -81,9 +81,9 @@ router.post('/:bbid/delete/confirm', (req, res) => {
 		});
 });
 
-router.get('/:bbid/revisions', (req, res) => {
-	return entityRoutes.displayRevisions(req, res, CreatorRevision);
-});
+router.get('/:bbid/revisions', (req, res) =>
+	entityRoutes.displayRevisions(req, res, CreatorRevision)
+);
 
 // Creation
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,

@@ -54,13 +54,13 @@ router.param(
 	)
 );
 
-router.get('/:bbid', loadEntityRelationships, (req, res) => {
-	return entityRoutes.displayEntity(req, res);
-});
+router.get('/:bbid', loadEntityRelationships, (req, res) =>
+	entityRoutes.displayEntity(req, res)
+);
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
-	entityRoutes.displayDeleteEntity(req, res);
-});
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) =>
+	entityRoutes.displayDeleteEntity(req, res)
+);
 
 router.post('/:bbid/delete/confirm', (req, res) => {
 	const work = res.locals.entity;
@@ -75,9 +75,9 @@ router.post('/:bbid/delete/confirm', (req, res) => {
 		});
 });
 
-router.get('/:bbid/revisions', (req, res) => {
-	return entityRoutes.displayRevisions(req, res, WorkRevision);
-});
+router.get('/:bbid/revisions', (req, res) =>
+	entityRoutes.displayRevisions(req, res, WorkRevision)
+);
 
 // Creation
 

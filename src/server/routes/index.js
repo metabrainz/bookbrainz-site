@@ -408,7 +408,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		() => esClient.indices.refresh({index: 'bookbrainz'})
 	);
 
-	refreshPromise
+	return refreshPromise
 		.then(() => res.send({success: true}))
 		.catch(() => res.send({success: false}));
 });

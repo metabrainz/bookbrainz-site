@@ -218,12 +218,12 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 				})
 			);
 
-			return relationshipsPromise.then(() => {
-				return res.send({result: 'success'});
-			})
-			.catch(() => {
-				return res.send({result: 'error'});
-			});
+			return relationshipsPromise.then(() =>
+				res.send({result: 'success'})
+			)
+			.catch(() =>
+				res.send({result: 'error'})
+			);
 		}
 	);
 };

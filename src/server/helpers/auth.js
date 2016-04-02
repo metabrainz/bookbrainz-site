@@ -73,7 +73,7 @@ auth.isAuthenticated = function isAuthenticated(req, res, next) {
 		req.session.redirectTo = req.originalUrl;
 	}
 
-	res.redirect(status.SEE_OTHER, '/login');
+	return res.redirect(status.SEE_OTHER, '/login');
 };
 
 module.exports = auth;
