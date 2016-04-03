@@ -54,10 +54,6 @@ const RelationshipRow = React.createClass({
 		entity: React.PropTypes.shape({
 			bbid: React.PropTypes.string
 		}),
-		onChange: React.PropTypes.func,
-		onDelete: React.PropTypes.func,
-		onSelect: React.PropTypes.func,
-		onSwap: React.PropTypes.func,
 		relationship: React.PropTypes.shape({
 			source: React.PropTypes.object,
 			target: React.PropTypes.object,
@@ -67,7 +63,11 @@ const RelationshipRow = React.createClass({
 			initialTypeId: React.PropTypes.number
 		}),
 		relationshipTypes:
-			React.PropTypes.arrayOf(validators.relationshipType)
+			React.PropTypes.arrayOf(validators.relationshipType),
+		onChange: React.PropTypes.func,
+		onDelete: React.PropTypes.func,
+		onSelect: React.PropTypes.func,
+		onSwap: React.PropTypes.func
 	},
 	getInitialState() {
 		'use strict';
@@ -236,6 +236,7 @@ const RelationshipRow = React.createClass({
 
 		const targetInput = (
 			<SearchSelect
+				standalone
 				bsStyle={validationState}
 				disabled={
 					this.disabled() || this.state.deleted ||
@@ -243,13 +244,12 @@ const RelationshipRow = React.createClass({
 						this.props.entity.bbid
 				}
 				labelClassName="col-md-4"
-				onChange={this.props.onChange}
 				placeholder="Select entity…"
 				ref="target"
 				select2Options={{width: '100%'}}
-				standalone
 				value={targetEntity}
 				wrapperClassName="col-md-4"
+				onChange={this.props.onChange}
 			/>
 		);
 
@@ -277,14 +277,15 @@ const RelationshipRow = React.createClass({
 							className="margin-left-0"
 							disabled={this.disabled() || this.state.deleted}
 							label=" "
-							onClick={this.props.onSelect}
 							ref="sel"
 							type="checkbox"
+							onClick={this.props.onSelect}
 						/>
 					</div>
 					<div className="col-md-11">
 						<div className="row">
 							<SearchSelect
+								standalone
 								bsStyle={validationState}
 								disabled={
 									this.disabled() || this.state.deleted ||
@@ -292,16 +293,16 @@ const RelationshipRow = React.createClass({
 										this.props.entity.bbid
 								}
 								labelClassName="col-md-4"
-								onChange={this.props.onChange}
 								placeholder="Select entity…"
 								ref="source"
 								select2Options={{width: '100%'}}
-								standalone
 								value={sourceEntity}
 								wrapperClassName="col-md-4"
+								onChange={this.props.onChange}
 							/>
 							<div className="col-md-4">
 								<Select
+									noDefault
 									bsStyle={validationState}
 									defaultValue={this.props.relationship.typeId}
 									disabled={
@@ -309,12 +310,11 @@ const RelationshipRow = React.createClass({
 									}
 									idAttribute="id"
 									labelAttribute="label"
-									noDefault
-									onChange={this.props.onChange}
 									options={this.props.relationshipTypes}
 									placeholder="Select relationship type…"
 									ref="type"
 									select2Options={{width: '100%'}}
+									onChange={this.props.onChange}
 								/>
 							</div>
 							{targetInput}
@@ -577,10 +577,6 @@ const RelationshipEditor = React.createClass({
 			<RelationshipRow
 				{...this.props}
 				key={rel.key}
-				onChange={this.handleChange.bind(null, index)}
-				onDelete={this.deleteRowIfNew.bind(null, index)}
-				onSelect={this.handleSelect.bind(null, index)}
-				onSwap={this.swap.bind(null, index)}
 				ref={index}
 				relationship={rel}
 				relationshipTypes={
@@ -588,6 +584,10 @@ const RelationshipEditor = React.createClass({
 						rel.initialTypeId, rel.initialTarget
 					) ? typesWithoutDeprecated : this.props.relationshipTypes
 				}
+				onChange={this.handleChange.bind(null, index)}
+				onDelete={this.deleteRowIfNew.bind(null, index)}
+				onSelect={this.handleSelect.bind(null, index)}
+				onSwap={this.swap.bind(null, index)}
 			/>
 		));
 

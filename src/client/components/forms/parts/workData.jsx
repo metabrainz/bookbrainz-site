@@ -108,13 +108,13 @@ const WorkData = React.createClass({
 
 				<div className="form-horizontal">
 					<Select
+						multiple
+						noDefault
 						defaultValue={initialLanguages}
 						idAttribute="id"
 						label="Languages"
 						labelAttribute="name"
 						labelClassName="col-md-4"
-						multiple
-						noDefault
 						options={this.props.languages}
 						placeholder="Select work languages…"
 						ref="languages"
@@ -122,12 +122,12 @@ const WorkData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
+						noDefault
 						defaultValue={initialWorkType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.workTypes}
 						placeholder="Select work type…"
 						ref="workType"

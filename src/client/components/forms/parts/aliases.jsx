@@ -95,11 +95,11 @@ const AliasRow = React.createClass({
 			name: React.PropTypes.string.isRequired
 		})).isRequired,
 		name: React.PropTypes.string,
-		onChange: React.PropTypes.func,
-		onRemove: React.PropTypes.func,
 		primary: React.PropTypes.bool,
 		removeHidden: React.PropTypes.bool,
-		sortName: React.PropTypes.string
+		sortName: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		onRemove: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
@@ -147,8 +147,8 @@ const AliasRow = React.createClass({
 		const guessSortNameButton = (
 			<Button
 				bsStyle="link"
-				onClick={this.guessNames}
 				title="Guess Sort Name"
+				onClick={this.guessNames}
 			>
 				<Icon name="magic"/>
 			</Button>
@@ -185,16 +185,16 @@ const AliasRow = React.createClass({
 				</div>
 				<div className="col-md-3">
 					<Select
+						noDefault
 						bsStyle={this.validationState()}
 						defaultValue={this.props.language}
 						idAttribute="id"
 						labelAttribute="name"
-						noDefault
-						onChange={this.props.onChange}
 						options={this.props.languages}
 						placeholder="Select alias language…"
 						ref="language"
 						wrapperClassName="col-md-11"
+						onChange={this.props.onChange}
 					/>
 				</div>
 				<div className="col-md-1">
@@ -390,12 +390,12 @@ const AliasList = React.createClass({
 				language={alias.language}
 				languages={self.props.languages}
 				name={alias.name}
-				onChange={self.handleChange.bind(null, index)}
-				onRemove={self.handleRemove.bind(null, index)}
 				primary={alias.primary}
 				ref={index}
 				removeHidden={index === self.state.aliases.length - 1}
 				sortName={alias.sortName}
+				onChange={self.handleChange.bind(null, index)}
+				onRemove={self.handleRemove.bind(null, index)}
 			/>
 		));
 

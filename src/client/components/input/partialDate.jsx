@@ -101,12 +101,12 @@ const PartialDate = React.createClass({
 				help={this.props.help}
 				label={this.props.label}
 				labelClassName={this.props.labelClassName}
-				onChange={this.handleChange}
 				placeholder={this.props.placeholder}
 				ref="input"
 				type="text"
 				value={this.state.value}
 				wrapperClassName={this.props.wrapperClassName}
+				onChange={this.handleChange}
 			/>
 		);
 	}

@@ -225,13 +225,13 @@ const EditionData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
+						multiple
+						noDefault
 						defaultValue={initialLanguages}
 						idAttribute="id"
 						label="Languages"
 						labelAttribute="name"
 						labelClassName="col-md-4"
-						multiple
-						noDefault
 						options={this.props.languages}
 						placeholder="Select edition languages…"
 						ref="languages"
@@ -239,12 +239,12 @@ const EditionData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
+						noDefault
 						defaultValue={initialEditionFormat}
 						idAttribute="id"
 						label="Format"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.editionFormats}
 						placeholder="Select edition format…"
 						ref="editionFormat"
@@ -252,12 +252,12 @@ const EditionData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
+						noDefault
 						defaultValue={initialEditionStatus}
 						idAttribute="id"
 						label="Status"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.editionStatuses}
 						placeholder="Select edition status…"
 						ref="editionStatus"

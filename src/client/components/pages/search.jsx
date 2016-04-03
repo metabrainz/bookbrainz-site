@@ -69,9 +69,9 @@ const SearchField = React.createClass({
 							<Input
 								buttonAfter={SearchButton}
 								name="q"
-								onChange={_.debounce(this.change, delayUpdate)}
 								ref="q"
 								type="text"
+								onChange={_.debounce(this.change, delayUpdate)}
 							/>
 						</form>
 					</div>
@@ -112,8 +112,8 @@ const SearchResults = React.createClass({
 
 		return (
 			<Table
-				className="table table-striped"
 				responsive
+				className="table table-striped"
 			>
 				<thead>
 					<tr>
@@ -153,8 +153,8 @@ module.exports = React.createClass({
 		'use strict';
 		return (
 			<div id="searchPage">
-				<SearchField onSearch={this.handleSearch} />
-				<SearchResults results={this.state.results} />
+				<SearchField onSearch={this.handleSearch}/>
+				<SearchResults results={this.state.results}/>
 			</div>
 		);
 	}

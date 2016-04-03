@@ -180,10 +180,10 @@ module.exports = React.createClass({
 					/>
 					<RevisionNote
 						backClick={this.backClick}
-						onSubmit={this.handleSubmit}
 						ref="revision"
 						submitDisabled={!submitEnabled}
 						visible={this.state.tab === 3}
+						onSubmit={this.handleSubmit}
 					/>
 				</form>
 			</div>

@@ -157,18 +157,18 @@ const CreatorData = React.createClass({
 					<Input
 						defaultChecked={this.state.ended}
 						label="Ended"
-						onChange={this.handleEnded}
 						ref="ended"
 						type="checkbox"
 						wrapperClassName="col-md-offset-4 col-md-4"
+						onChange={this.handleEnded}
 					/>
 					<Select
+						noDefault
 						defaultValue={initialGender}
 						idAttribute="id"
 						label="Gender"
 						labelAttribute="name"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.genders}
 						placeholder="Select gender…"
 						ref="gender"
@@ -176,12 +176,12 @@ const CreatorData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
+						noDefault
 						defaultValue={initialCreatorType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.creatorTypes}
 						placeholder="Select creator type…"
 						ref="creatorType"

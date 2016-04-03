@@ -142,18 +142,18 @@ const PublisherData = React.createClass({
 					<Input
 						defaultChecked={this.state.ended}
 						label="Ended"
-						onChange={this.handleEnded}
 						ref="ended"
 						type="checkbox"
 						wrapperClassName="col-md-offset-4 col-md-4"
+						onChange={this.handleEnded}
 					/>
 					<Select
+						noDefault
 						defaultValue={initialPublisherType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.publisherTypes}
 						placeholder="Select publisher type…"
 						ref="publisherType"

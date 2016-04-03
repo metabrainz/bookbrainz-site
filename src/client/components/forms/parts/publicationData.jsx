@@ -100,12 +100,12 @@ const PublicationData = React.createClass({
 
 				<div className="form-horizontal">
 					<Select
+						noDefault
 						defaultValue={initialPublicationType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.publicationTypes}
 						placeholder="Select publication type…"
 						ref="publicationType"

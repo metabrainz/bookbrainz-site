@@ -28,12 +28,12 @@ const validators = require('../../validators');
 const IdentifierRow = React.createClass({
 	displayName: 'identifierRowComponent',
 	propTypes: {
-		onChange: React.PropTypes.func,
-		onRemove: React.PropTypes.func,
 		removeHidden: React.PropTypes.bool,
 		type: React.PropTypes.number,
 		types: React.PropTypes.arrayOf(validators.identifierType),
-		value: React.PropTypes.string
+		value: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		onRemove: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
@@ -87,26 +87,26 @@ const IdentifierRow = React.createClass({
 			<div className="row">
 				<div className="col-md-4">
 					<Select
+						noDefault
 						bsStyle={this.validationState()}
 						idAttribute="id"
 						labelAttribute="label"
-						noDefault
-						onChange={this.props.onChange}
 						options={this.props.types}
 						placeholder="Select identifier type…"
 						ref="type"
 						value={this.props.type}
 						wrapperClassName="col-md-12"
+						onChange={this.props.onChange}
 					/>
 				</div>
 				<div className="col-md-4">
 					<Input
 						bsStyle={this.validationState()}
-						onChange={this.props.onChange}
 						ref="value"
 						type="text"
 						value={this.props.value}
 						wrapperClassName="col-md-12"
+						onChange={this.props.onChange}
 					/>
 				</div>
 				<div className="col-md-2">
@@ -249,13 +249,13 @@ const IdentifierList = React.createClass({
 		const rows = this.state.identifiers.map((identifier, index) =>
 			<IdentifierRow
 				key={identifier.key}
-				onChange={self.handleChange.bind(null, index)}
-				onRemove={self.handleRemove.bind(null, index)}
 				ref={index}
 				removeHidden={index === self.state.identifiers.length - 1}
 				type={identifier.type}
 				types={self.props.types}
 				value={identifier.value}
+				onChange={self.handleChange.bind(null, index)}
+				onRemove={self.handleRemove.bind(null, index)}
 			/>
 		);
 

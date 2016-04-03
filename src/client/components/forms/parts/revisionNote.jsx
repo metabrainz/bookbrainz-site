@@ -26,9 +26,9 @@ const RevisionNote = React.createClass({
 	propTypes: {
 		backClick: React.PropTypes.func,
 		nextClick: React.PropTypes.func,
-		onSubmit: React.PropTypes.func,
 		submitDisabled: React.PropTypes.bool,
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onSubmit: React.PropTypes.func
 	},
 	render() {
 		'use strict';
