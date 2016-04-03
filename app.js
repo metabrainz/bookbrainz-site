@@ -32,7 +32,10 @@ const staticCache = require('express-static-cache');
 const ElasticSearch = require('elasticsearch');
 
 const Promise = require('bluebird');
-Promise.longStackTraces();
+Promise.config({
+	warnings: true,
+	longStackTraces: true
+});
 
 const config = require('./src/server/helpers/config');
 

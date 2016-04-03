@@ -9,9 +9,8 @@
     "test": "./scripts/check-style.sh && gulp"
   },
   "dependencies": {
-    "select2": "git://github.com/select2/select2",
     "babel-plugin-array-includes": "^2.0.3",
-    "bluebird": "^2.8.2",
+    "bluebird": "^3.3.4",
     "body-parser": "^1.14.1",
     "bookbrainz-data": "git+https://github.com/bookbrainz/bookbrainz-data-js.git",
     "bookshelf": "^0.8.2",
@@ -46,11 +45,11 @@
     "react-bootstrap": "^0.28.1",
     "react-dom": "^0.14.3",
     "react-fontawesome": "^0.3.3",
-    "select2": "4.0.0",
+    "select2": "^4.0.2",
     "select2-bootstrap-theme": "git://github.com/select2/select2-bootstrap-theme",
     "serve-favicon": "~2.3.0",
     "superagent": "^1.4.0",
-    "superagent-bluebird-promise": "^2.1.1",
+    "superagent-bluebird-promise": "^3.0.0",
     "underscore": "^1.8.0"
   },
   "devDependencies": {
