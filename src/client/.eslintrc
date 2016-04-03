@@ -47,11 +47,13 @@ rules:
     -
       ignoreCase: false
       callbacksLast: true
-      shorthandFirst: true
+      requiredFirst: true
   react/jsx-sort-props:
     - 2
     -
       ignoreCase: false
+      callbacksLast: true
+      shorthandFirst: true
   react/jsx-uses-react: 2
   react/jsx-uses-vars: 2
   react/no-danger: 1
@@ -78,8 +80,8 @@ rules:
   react/no-is-mounted: 2
   react/no-string-refs: 1
   react/jsx-equals-spacing:
-      - 2,
-      - always
+      - 2
+      - never
   react/jsx-space-before-closing:
       - 2
       - never
