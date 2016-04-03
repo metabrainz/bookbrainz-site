@@ -12,7 +12,8 @@ rules:
     - all
   react/display-name:
       - 2
-      - ignoreTranspilerName: true
+      -
+          ignoreTranspilerName: true
   react/forbid-prop-types: 0
   react/jsx-boolean-value:
     - 2
@@ -42,12 +43,12 @@ rules:
   jsx-quotes:
     - 2
     - prefer-double
-  react/jsx-sort-prop-types:
+  react/sort-prop-types:
     - 2
     -
       ignoreCase: false
       callbacksLast: true
-      requiredFirst: true
+      requiredFirst: false
   react/jsx-sort-props:
     - 2
     -
@@ -80,12 +81,12 @@ rules:
   react/no-is-mounted: 2
   react/no-string-refs: 1
   react/jsx-equals-spacing:
-      - 2
+      - 1
       - never
   react/jsx-space-before-closing:
       - 2
       - never
-  react/prefer-stateless-function: 2
+  react/prefer-stateless-function: 1
   react/jsx-handler-names: 1
   strict:
     - 2
