@@ -60,6 +60,9 @@ require('node-jsx').install({
 
 // Set up elasticsearch
 const esClient = new ElasticSearch.Client({
+	defer() {
+		return Promise.defer();
+	},
 	host: 'localhost:9200',
 	log: 'trace'
 });

@@ -27,7 +27,7 @@ const path = require('path');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 const gulpless = require('gulp-less');
-const minifyCSS = require('gulp-minify-css');
+const cleanCSS = require('gulp-clean-css');
 const prefixer = require('gulp-autoprefixer');
 const babelify = require('babelify');
 
@@ -82,7 +82,7 @@ function less() {
 			paths: [path.join(__dirname, './node_modules/bootstrap/less')]
 		}))
 		.pipe(prefixer('last 4 versions'))
-		.pipe(minifyCSS())
+		.pipe(cleanCSS())
 		.pipe(gulp.dest('./static/stylesheets'));
 }
 
