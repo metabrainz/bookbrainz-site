@@ -25,7 +25,7 @@ const PageHeader = require('react-bootstrap').PageHeader;
 const Select = require('../input/select2.jsx');
 const SearchSelect = require('../input/entity-search.jsx');
 const Icon = require('react-fontawesome');
-const _ = require('underscore');
+const _ = require('lodash');
 const request = require('superagent');
 require('superagent-bluebird-promise');
 const utils = require('../../../server/helpers/utils.js');

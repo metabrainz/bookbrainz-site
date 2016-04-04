@@ -24,7 +24,7 @@ const router = express.Router();
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const auth = require('../helpers/auth');
-const _ = require('underscore');
+const _ = require('lodash');
 
 const Editor = require('bookbrainz-data').Editor;
 const status = require('http-status');

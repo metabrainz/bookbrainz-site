@@ -21,7 +21,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const Select = require('./select2.jsx');
 const Icon = require('react-fontawesome');
-const _ = require('underscore');
+const _ = require('lodash');
 const $ = require('jquery');
 
 const EntitySearch = React.createClass({

@@ -21,7 +21,7 @@
 
 const bbws = require('./bbws');
 const Promise = require('bluebird');
-const _ = require('underscore');
+const _ = require('lodash');
 
 const registered = [];
 
@@ -115,7 +115,7 @@ function fetchSingleResult(result, options) {
 			object[key] = result[resultsField];
 		}
 		else {
-			if (!_.contains(options.populate, key)) {
+			if (!_.includes(options.populate, key)) {
 				object[key] = null;
 				return;
 			}
