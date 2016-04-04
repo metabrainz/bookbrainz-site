@@ -26,6 +26,7 @@ const auth = require('../../helpers/auth');
 const Work = require('bookbrainz-data').Work;
 const WorkHeader = require('bookbrainz-data').WorkHeader;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
+const bookshelf = require('bookbrainz-data').bookshelf;
 
 /* Middleware loader functions. */
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -43,6 +44,8 @@ const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
 const entityRoutes = require('./entity');
+const _ = require('lodash');
+const Promise = require('bluebird');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param(
@@ -84,7 +87,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
-		res.render('entity/create/work', {
+		return res.render('entity/create/work', {
 			title: 'Add Work',
 			heading: 'Create Work',
 			subheading: 'Add a new Work to BookBrainz',
@@ -109,7 +112,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
-		res.render('entity/create/work', {
+		return res.render('entity/create/work', {
 			title: 'Edit Work',
 			heading: 'Edit Work',
 			subheading: 'Edit an existing Work in BookBrainz',
@@ -119,76 +122,31 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) => {
-	const changes = {
-		bbid: null,
-		ended: req.body.ended
-	};
+function handleWorkCreation(req, transacting, entityModel) {
+	const revisionPromise = entityModel.related('revision')
+		.fetch({withRelated: ['data.languages'], transacting});
 
-	if (req.body.workTypeId) {
-		changes.work_type = {
-			work_type_id: req.body.workTypeId
-		};
-	}
+	// Doing this with knex because bookshelf failed to set data_id.
+	// Tried attach(), with ids and then with models, and also add()
+	const workLanguagesPromise = revisionPromise.then((revision) =>
+		bookshelf.knex('bookbrainz.work_data__language')
+			.transacting(transacting)
+			.insert(
+				req.body.languages.map((id) => ({
+					data_id: revision.related('data').get('id'),
+					language_id: id
+				}))
+			)
+	);
 
-	if (req.body.languages) {
-		changes.languages =
-			req.body.languages.map((language_id) => ({language_id}));
-	}
+	return workLanguagesPromise;
+}
 
-	if (req.body.disambiguation) {
-		changes.disambiguation = req.body.disambiguation;
-	}
-
-	if (req.body.annotation) {
-		changes.annotation = req.body.annotation;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const newIdentifiers =
-		req.body.identifiers.map((identifier) => ({
-			value: identifier.value,
-			identifier_type: {
-				identifier_type_id: identifier.typeId
-			}
-		}));
-
-	if (newIdentifiers.length) {
-		changes.identifiers = newIdentifiers;
-	}
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		if (!alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push({
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		});
-	});
-
-	if (newAliases.length) {
-		changes.aliases = newAliases;
-	}
-
-	Work.create(changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
+router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.createEntity(
+			req, res, Work, {typeId: req.body.typeId}, handleWorkCreation
+	)
+);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
 	const work = res.locals.entity;

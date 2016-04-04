@@ -85,7 +85,7 @@ module.exports = React.createClass({
 		const revisionNote = this.refs.revision.refs.note.getValue();
 
 		const data = {
-			aliases: aliasData,
+			aliases: aliasData.slice(0, -1),
 			languages: workData.languages.map(
 				(languageId) => parseInt(languageId, 10)
 			),
@@ -101,13 +101,13 @@ module.exports = React.createClass({
 		const self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then((revision) => {
-				if (!revision.body || !revision.body.entity) {
+			.then((res) => {
+				if (!res.body) {
 					window.location.replace('/login');
 					return;
 				}
 				window.location.href =
-					`/work/${revision.body.entity.entity_gid}`;
+					`/work/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				self.setState({error});
