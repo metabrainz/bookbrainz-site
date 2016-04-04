@@ -89,7 +89,7 @@ const AliasRow = React.createClass({
 	propTypes: {
 		aliasId: React.PropTypes.number,
 		default: React.PropTypes.bool,
-		language: React.PropTypes.number,
+		languageId: React.PropTypes.number,
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number.isRequired,
 			name: React.PropTypes.string.isRequired
@@ -108,7 +108,7 @@ const AliasRow = React.createClass({
 			id: parseInt(this.refs.id.getValue(), 10),
 			name: this.refs.name.getValue(),
 			sortName: this.refs.sortName.getValue(),
-			language: parseInt(this.refs.language.getValue(), 10) || null,
+			languageId: parseInt(this.refs.languageId.getValue(), 10) || null,
 			primary: this.refs.primary.getChecked(),
 			default: this.refs.default.getChecked()
 		};
@@ -117,7 +117,7 @@ const AliasRow = React.createClass({
 		'use strict';
 
 		if (this.props.name || this.props.sortName || this.props.default ||
-				this.props.language || !this.props.primary) {
+				this.props.languageId || !this.props.primary) {
 			if (this.props.name && this.props.sortName) {
 				return 'success';
 			}
@@ -187,12 +187,12 @@ const AliasRow = React.createClass({
 					<Select
 						noDefault
 						bsStyle={this.validationState()}
-						defaultValue={this.props.language}
+						defaultValue={this.props.languageId}
 						idAttribute="id"
 						labelAttribute="name"
 						options={this.props.languages}
 						placeholder="Select alias language…"
-						ref="language"
+						ref="languageId"
 						wrapperClassName="col-md-11"
 						onChange={this.props.onChange}
 					/>
@@ -244,7 +244,7 @@ const AliasList = React.createClass({
 		existing.push({
 			name: '',
 			sortName: '',
-			language: null,
+			languageId: null,
 			primary: true,
 			default: false
 		});
@@ -291,8 +291,8 @@ const AliasList = React.createClass({
 		);
 
 		const aliasLanguageJustSetOrUnset = (
-			!existingAlias.language && updatedAlias.language ||
-			existingAlias.language && !updatedAlias.language
+			!existingAlias.languageId && updatedAlias.languageId ||
+			existingAlias.languageId && !updatedAlias.languageId
 		);
 
 		const lastAliasModified =
@@ -329,7 +329,7 @@ const AliasList = React.createClass({
 				updatedAliases.push({
 					name: '',
 					sortName: '',
-					language: null,
+					languageId: null,
 					primary: true,
 					default: false,
 					key: rowsSpawned++
@@ -387,7 +387,7 @@ const AliasList = React.createClass({
 				aliasId={alias.id}
 				default={alias.default}
 				key={alias.key}
-				language={alias.language}
+				languageId={alias.languageId}
 				languages={self.props.languages}
 				name={alias.name}
 				primary={alias.primary}

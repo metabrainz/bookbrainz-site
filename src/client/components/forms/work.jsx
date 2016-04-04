@@ -89,7 +89,7 @@ module.exports = React.createClass({
 			languages: workData.languages.map(
 				(languageId) => parseInt(languageId, 10)
 			),
-			workTypeId: parseInt(workData.workType, 10),
+			typeId: parseInt(workData.workType, 10),
 			disambiguation: workData.disambiguation,
 			annotation: workData.annotation,
 			identifiers: workData.identifiers,
@@ -124,8 +124,7 @@ module.exports = React.createClass({
 					id: alias.id,
 					name: alias.name,
 					sortName: alias.sortName,
-					language: alias.language ?
-						alias.language.id : null,
+					languageId: alias.languageId,
 					primary: alias.primary,
 					default: alias.id === prefillData.defaultAlias.id
 				}
