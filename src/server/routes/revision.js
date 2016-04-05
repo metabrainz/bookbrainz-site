@@ -343,26 +343,35 @@ function formatEntityChange(entity, change) {
 	return null;
 }
 
-function formatEntityDiffs(diffs, entitySpecificFormatter) {
+function formatEntityDiffs(diffs, entityType, entityFormatter) {
+	if (!diffs) {
+		return [];
+	}
+
 	return diffs.map((diff) => {
 		const formattedDiff = {
 			entity: diff.entity.toJSON()
 		};
 
+		formattedDiff.entity.type = entityType;
+
 		if (!diff.changes) {
 			formattedDiff.changes = [];
+
 			return formattedDiff;
 		}
 
 		const rawChangeSets = diff.changes.map((change) =>
 			formatEntityChange(diff.entity, change) ||
-			entitySpecificFormatter &&
-			entitySpecificFormatter(diff.entity, change)
+			entityFormatter &&
+			entityFormatter(diff.entity, change)
 		);
+
 		formattedDiff.changes = _.sortBy(
 			_.flatten(_.compact(rawChangeSets)),
 			'key'
 		);
+
 		return formattedDiff;
 	});
 }
@@ -421,17 +430,6 @@ function formatCreatorChange(entity, change) {
 	}
 
 	return null;
-}
-
-function formatCreatorDiffs(diffs) {
-	if (!diffs) {
-		return [];
-	}
-
-	const formattedDiffs = formatEntityDiffs(diffs, formatCreatorChange);
-
-	formattedDiffs.forEach((diff) => { diff.entity.type = 'Creator'; });
-	return formattedDiffs;
 }
 
 function formatScalarChange(entity, label, change) {
@@ -637,16 +635,6 @@ function formatEditionChange(entity, change) {
 	return null;
 }
 
-function formatEditionDiffs(diffs) {
-	if (!diffs) {
-		return [];
-	}
-
-	const formattedDiffs = formatEntityDiffs(diffs, formatEditionChange);
-	formattedDiffs.forEach((diff) => { diff.entity.type = 'Edition'; });
-	return formattedDiffs;
-}
-
 function formatPublisherChange(entity, change) {
 	if (_.isEqual(change.path, ['beginDate'])) {
 		return formatDateChange(entity, 'Begin Date', change);
@@ -665,16 +653,6 @@ function formatPublisherChange(entity, change) {
 	}
 
 	return null;
-}
-
-function formatPublisherDiffs(diffs) {
-	if (!diffs) {
-		return [];
-	}
-
-	const formattedDiffs = formatEntityDiffs(diffs, formatPublisherChange);
-	formattedDiffs.forEach((diff) => { diff.entity.type = 'Publisher'; });
-	return formattedDiffs;
 }
 
 function formatNewWorkLanguages(entity, change) {
@@ -744,32 +722,12 @@ function formatWorkChange(entity, change) {
 	return null;
 }
 
-function formatWorkDiffs(diffs) {
-	if (!diffs) {
-		return [];
-	}
-
-	const formattedDiffs = formatEntityDiffs(diffs, formatWorkChange);
-	formattedDiffs.forEach((diff) => { diff.entity.type = 'Work'; });
-	return formattedDiffs;
-}
-
 function formatPublicationChange(entity, change) {
 	if (_.isEqual(change.path, ['type'])) {
 		return formatTypeChange(entity, 'Publication Type', change);
 	}
 
 	return [];
-}
-
-function formatPublicationDiffs(diffs) {
-	if (!diffs) {
-		return [];
-	}
-
-	const formattedDiffs = formatEntityDiffs(diffs, formatPublicationChange);
-	formattedDiffs.forEach((diff) => { diff.entity.type = 'Publication'; });
-	return formattedDiffs;
 }
 
 function diffRevisionsWithParents(revisions) {
@@ -792,30 +750,18 @@ router.get('/:id', (req, res) => {
 	const revisionPromise = new Revision({id: req.params.id})
 		.fetch({withRelated: ['author', 'notes', 'notes.author']});
 
-	const creatorDiffsPromise =
-		new CreatorRevision()
-			.where('id', req.params.id).fetchAll({withRelated: ['entity']})
+	function _createRevision(model) {
+		return model.forge()
+			.where('id', req.params.id)
+			.fetchAll({withRelated: ['entity']})
 			.then(diffRevisionsWithParents);
+	}
 
-	const editionDiffsPromise =
-		new EditionRevision()
-			.where('id', req.params.id).fetchAll({withRelated: ['entity']})
-			.then(diffRevisionsWithParents);
-
-	const workDiffsPromise =
-		new WorkRevision()
-			.where('id', req.params.id).fetchAll({withRelated: ['entity']})
-			.then(diffRevisionsWithParents);
-
-	const publicationDiffsPromise =
-		new PublicationRevision()
-			.where('id', req.params.id).fetchAll({withRelated: ['entity']})
-			.then(diffRevisionsWithParents);
-
-	const publisherDiffsPromise =
-		new PublisherRevision()
-			.where('id', req.params.id).fetchAll({withRelated: ['entity']})
-			.then(diffRevisionsWithParents);
+	const creatorDiffsPromise = _createRevision(CreatorRevision);
+	const editionDiffsPromise = _createRevision(EditionRevision);
+	const publicationDiffsPromise = _createRevision(PublicationRevision);
+	const publisherDiffsPromise = _createRevision(PublisherRevision);
+	const workDiffsPromise = _createRevision(WorkRevision);
 
 	Promise.join(revisionPromise, creatorDiffsPromise, editionDiffsPromise,
 		workDiffsPromise, publisherDiffsPromise, publicationDiffsPromise,
@@ -824,11 +770,19 @@ router.get('/:id', (req, res) => {
 			publicationDiffs
 		) => {
 			const diffs = _.concat(
-				formatCreatorDiffs(creatorDiffs),
-				formatEditionDiffs(editionDiffs),
-				formatWorkDiffs(workDiffs),
-				formatPublisherDiffs(publisherDiffs),
-				formatPublicationDiffs(publicationDiffs)
+				formatEntityDiffs(creatorDiffs, 'Creator', formatCreatorChange),
+				formatEntityDiffs(editionDiffs, 'Edition', formatEditionChange),
+				formatEntityDiffs(
+					publicationDiffs,
+					'Publication',
+					formatPublicationChange
+				),
+				formatEntityDiffs(
+					publisherDiffs,
+					'Publisher',
+					formatPublisherChange
+				),
+				formatEntityDiffs(workDiffs, 'Work', formatWorkChange)
 			);
 
 			const props = {revision: revision.toJSON(), diffs};
