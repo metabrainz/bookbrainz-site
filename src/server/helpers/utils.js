@@ -50,41 +50,4 @@ function getModelByEntityType(type) {
 	return entityModels[type];
 }
 
-// Returns a Promise which fulfills with an entity with aliases and data.
-function getEntity(ws, entityGid, fetchOptions) {
-	const entityPromise = request.get(`${ws}/entity/${entityGid}`).promise()
-		.then((entityResponse) => entityResponse.body);
-
-	return entityPromise.then((entity) => {
-		if (fetchOptions.data) {
-			entity.data = request.get(entity.data_uri).promise()
-				.then((dataResponse) => dataResponse.body);
-		}
-
-		if (fetchOptions.aliases) {
-			entity.aliases = request.get(entity.aliases_uri).promise()
-				.then((aliasesResponse) => aliasesResponse.body);
-		}
-
-		if (fetchOptions.annotation) {
-			entity.annotation = request.get(entity.annotation_uri).promise()
-				.then((annotationResponse) => annotationResponse.body);
-		}
-
-		if (fetchOptions.disambiguation) {
-			entity.disambiguation = request.get(entity.disambiguation_uri)
-				.promise()
-				.then((disambiguationResponse) => disambiguationResponse.body);
-		}
-
-		if (fetchOptions.relationships) {
-			entity.relationships = request.get(entity.relationships_uri)
-				.promise()
-				.then((relationshipsResponse) => relationshipsResponse.body);
-		}
-
-		return Promise.props(entity);
-	});
-}
-
-module.exports = {getEntityLink, getModelByEntityType, getEntity};
+module.exports = {getEntityLink, getModelByEntityType};
