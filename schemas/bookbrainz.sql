@@ -195,7 +195,7 @@ CREATE TABLE bookbrainz.creator_type (
 CREATE TABLE bookbrainz.creator_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
-	identifier_set_id INT NOT NULL,
+	identifier_set_id INT,
 	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
@@ -309,7 +309,7 @@ CREATE TABLE bookbrainz.edition_status (
 CREATE TABLE bookbrainz.edition_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
-	identifier_set_id INT NOT NULL,
+	identifier_set_id INT,
 	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
@@ -340,7 +340,7 @@ CREATE TABLE bookbrainz.publication_type (
 CREATE TABLE bookbrainz.publication_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
-	identifier_set_id INT NOT NULL,
+	identifier_set_id INT,
 	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
@@ -357,7 +357,7 @@ CREATE TABLE bookbrainz.publisher_type (
 CREATE TABLE bookbrainz.publisher_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
-	identifier_set_id INT NOT NULL,
+	identifier_set_id INT,
 	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
@@ -410,7 +410,7 @@ CREATE TABLE bookbrainz.work_type (
 CREATE TABLE bookbrainz.work_data (
 	id SERIAL PRIMARY KEY,
 	alias_set_id INT NOT NULL,
-	identifier_set_id INT NOT NULL,
+	identifier_set_id INT,
 	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
@@ -561,7 +561,7 @@ ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (target_bbid) REFERENCES boo
 
 CREATE VIEW bookbrainz.creator AS
 	SELECT
-		e.bbid, cr.id AS revision_id, (cr.id = c.master_revision_id) AS master, cd.annotation_id, cd.disambiguation_id,
+		e.bbid, cd.id AS data_id, cr.id AS revision_id, (cr.id = c.master_revision_id) AS master, cd.annotation_id, cd.disambiguation_id,
 		als.default_alias_id, cd.begin_year, cd.begin_month, cd.begin_day, cd.begin_area_id,
 		cd.end_year, cd.end_month, cd.end_day, cd.end_area_id, cd.ended, cd.area_id,
 		cd.gender_id, cd.type_id, cd.alias_set_id, cd.identifier_set_id, cd.relationship_set_id, e.type
@@ -574,7 +574,7 @@ CREATE VIEW bookbrainz.creator AS
 
 CREATE VIEW bookbrainz.edition AS
 	SELECT
-		e.bbid, edr.id AS revision_id, (edr.id = ed.master_revision_id) AS master, edd.annotation_id, edd.disambiguation_id,
+		e.bbid, edd.id AS data_id, edr.id AS revision_id, (edr.id = ed.master_revision_id) AS master, edd.annotation_id, edd.disambiguation_id,
 		als.default_alias_id, edd.publication_bbid, edd.creator_credit_id, edd.width, edd.height,
 		edd.depth, edd.weight, edd.pages, edd.format_id, edd.status_id,
 		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id, e.type
@@ -587,7 +587,7 @@ CREATE VIEW bookbrainz.edition AS
 
 CREATE VIEW bookbrainz.work AS
 	SELECT
-		e.bbid, wr.id AS revision_id, (wr.id = w.master_revision_id) AS master, wd.annotation_id, wd.disambiguation_id,
+		e.bbid, wd.id AS data_id, wr.id AS revision_id, (wr.id = w.master_revision_id) AS master, wd.annotation_id, wd.disambiguation_id,
 		als.default_alias_id, wd.type_id, wd.alias_set_id, wd.identifier_set_id,
 		wd.relationship_set_id, e.type
 	FROM bookbrainz.work_revision wr
@@ -599,7 +599,7 @@ CREATE VIEW bookbrainz.work AS
 
 CREATE VIEW bookbrainz.publisher AS
 	SELECT
-		e.bbid, psr.id AS revision_id, (psr.id = ps.master_revision_id) AS master, psd.annotation_id, psd.disambiguation_id,
+		e.bbid, psd.id AS data_id, psr.id AS revision_id, (psr.id = ps.master_revision_id) AS master, psd.annotation_id, psd.disambiguation_id,
 		als.default_alias_id, psd.begin_year, psd.begin_month, psd.begin_day,
 		psd.end_year, psd.end_month, psd.end_day, psd.ended, psd.area_id,
 		psd.type_id, psd.alias_set_id, psd.identifier_set_id, psd.relationship_set_id, e.type
@@ -612,7 +612,7 @@ CREATE VIEW bookbrainz.publisher AS
 
 CREATE VIEW bookbrainz.publication AS
 	SELECT
-		e.bbid, pcr.id AS revision_id, (pcr.id = pc.master_revision_id) AS master, pcd.annotation_id, pcd.disambiguation_id,
+		e.bbid, pcd.id AS data_id, pcr.id AS revision_id, (pcr.id = pc.master_revision_id) AS master, pcd.annotation_id, pcd.disambiguation_id,
 		als.default_alias_id, pcd.type_id, pcd.alias_set_id, pcd.identifier_set_id,
 		pcd.relationship_set_id, e.type
 	FROM bookbrainz.publication_revision pcr
