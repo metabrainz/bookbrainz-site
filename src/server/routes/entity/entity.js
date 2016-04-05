@@ -393,3 +393,96 @@ module.exports.createEntity = (
 		res.send(entity)
 	);
 };
+
+
+module.exports.editEntity = (
+	req, res, EntityModel, derivedProps, onEntityEdit
+) => {
+	const editorJSON = req.session.passport.user;
+	const entityEditPromise = bookshelf.transaction((transacting) => {
+		const editorUpdatePromise = new Editor({id: editorJSON.id})
+			.fetch({transacting})
+			.then((editor) => {
+				editor.set(
+					'totalRevisions', editor.get('totalRevisions') + 1
+				);
+				editor.set(
+					'revisionsApplied', editor.get('revisionsApplied') + 1
+				);
+				return editor.save(null, {transacting});
+			});
+
+		const newRevisionPromise = new Revision({
+			authorId: editorJSON.id
+		}).save(null, {transacting});
+
+		const notePromise = req.body.note ? newRevisionPromise
+			.then((revision) => new Note({
+				authorId: editorJSON.id,
+				revisionId: revision.get('id'),
+				content: req.body.note
+			}).save(null, {transacting})) : null;
+
+		const currentEntity = res.locals.entity;
+
+		const aliasSetPromise = new AliasSet({id: currentEntity.aliasSet.id})
+			.fetch({withRelated: ['aliases'], transacting})
+			.then((oldAliasSet) =>
+				processFormAliases(
+					transacting, oldAliasSet, oldAliasSet.get('defaultAliasId'),
+					req.body.aliases || []
+				)
+			);
+
+		const identSetPromise = new IdentifierSet(
+			{id: currentEntity.identifierSet.id}
+		)
+			.fetch({withRelated: ['identifiers'], transacting})
+			.then((oldIdentifierSet) =>
+				processFormIdentifiers(
+					transacting, oldIdentifierSet, req.body.identifiers || []
+				)
+			);
+
+		const annotationPromise = newRevisionPromise.then((revision) =>
+			processFormAnnotation(
+				transacting, currentEntity.annotation, req.body.annotation,
+				revision.get('id')
+			)
+		);
+
+		const disambiguationPromise = processFormDisambiguation(
+			transacting, currentEntity.disambiguation, req.body.disambiguation
+		);
+
+		return Promise.join(
+			newRevisionPromise, aliasSetPromise, identSetPromise,
+			annotationPromise, disambiguationPromise, editorUpdatePromise,
+			notePromise,
+			(newRevision, aliasSet, identSet, annotation, disambiguation) => {
+				console.log(identSet);
+				const propsToSet = _.extend({
+					aliasSetId: aliasSet && aliasSet.get('id'),
+					identifierSetId: identSet && identSet.get('id'),
+					relationshipSetId: null,
+					annotationId: annotation && annotation.get('id'),
+					disambiguationId:
+						disambiguation && disambiguation.get('id'),
+					revisionId: newRevision.get('id')
+				}, derivedProps);
+
+				return new EntityModel(propsToSet)
+					.save(null, {method: 'insert', transacting});
+			})
+			.then(
+				(entityModel) =>
+					onEntityEdit(req, transacting, entityModel)
+						.then(() => entityModel.refresh({transacting}))
+						.then((entity) => entity.toJSON())
+			);
+	});
+
+	return entityEditPromise.then((entity) =>
+		res.send(entity)
+	);
+};

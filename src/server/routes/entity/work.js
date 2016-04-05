@@ -122,7 +122,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handleWorkCreation(req, transacting, entityModel) {
+function handleWorkChange(req, transacting, entityModel) {
 	const revisionPromise = entityModel.related('revision')
 		.fetch({withRelated: ['data.languages'], transacting});
 
@@ -144,141 +144,14 @@ function handleWorkCreation(req, transacting, entityModel) {
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-			req, res, Work, {typeId: req.body.typeId}, handleWorkCreation
+			req, res, Work, {typeId: req.body.typeId}, handleWorkChange
 	)
 );
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
-	const work = res.locals.entity;
-
-	const changes = {
-		bbid: work.bbid
-	};
-
-	const workTypeId = req.body.workTypeId;
-	if (!work.work_type ||
-		work.work_type.work_type_id !== workTypeId) {
-		changes.work_type = {
-			work_type_id: workTypeId
-		};
-	}
-
-	const disambiguation = req.body.disambiguation;
-	if (!work.disambiguation ||
-			work.disambiguation.comment !== disambiguation) {
-		changes.disambiguation = disambiguation ? disambiguation : null;
-	}
-
-	const annotation = req.body.annotation;
-	if (!work.annotation ||
-			work.annotation.content !== annotation) {
-		changes.annotation = annotation ? annotation : null;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const currentLanguages = work.languages.map((language) => {
-		if (language.language_id !== req.body.languages[0]) {
-			// Remove the alias
-			return [language.language_id, null];
-		}
-
-		req.body.languages.shift();
-		return [language.language_id, language.language_id];
-	});
-
-	const newLanguages =
-		req.body.languages.map((language) => [null, language]);
-
-	changes.languages = currentLanguages.concat(newLanguages);
-
-	const currentIdentifiers = work.identifiers.map((identifier) => {
-		const nextIdentifier = req.body.identifiers[0];
-
-		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
-			// Remove the alias
-			return [identifier.id, null];
-		}
-
-		// Modify the alias
-		req.body.identifiers.shift();
-		return [nextIdentifier.id, {
-			value: nextIdentifier.value,
-			identifier_type: {
-				identifier_type_id: nextIdentifier.typeId
-			}
-		}];
-	});
-
-	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (identifier.id) {
-			return null;
-		}
-
-		return [null, {
-			value: identifier.value,
-			identifier_type: {
-				identifier_type_id: identifier.typeId
-			}
-		}];
-	});
-
-	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
-
-	const currentAliases = [];
-
-	work.aliases.forEach((alias) => {
-		const nextAlias = req.body.aliases[0];
-
-		if (!nextAlias || alias.id !== nextAlias.id) {
-			// Remove the alias
-			currentAliases.push([alias.id, null]);
-		}
-		else {
-			// Modify the alias
-			req.body.aliases.shift();
-			currentAliases.push([nextAlias.id, {
-				name: nextAlias.name,
-				sort_name: nextAlias.sortName,
-				language_id: nextAlias.language,
-				primary: nextAlias.primary,
-				default: nextAlias.default
-			}]);
-		}
-	});
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (alias.id || !alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push([null, {
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		}]);
-	});
-
-	changes.aliases = currentAliases.concat(newAliases);
-
-	Work.update(work.bbid, changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.editEntity(
+		req, res, Work, {typeId: req.body.typeId}, handleWorkChange
+	)
+);
 
 module.exports = router;
