@@ -90,39 +90,20 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.get('/about', (req, res) => {
-	res.render('page', {
-		title: 'About',
-		markup: ReactDOMServer.renderToString(AboutPage())
+// Helper function to create pages that don't require custom logic
+function _createStaticRoute(route, title, pageComponent) {
+	router.get(route, (req, res) => {
+		res.render('page', {
+			title,
+			markup: ReactDOMServer.renderToString(pageComponent())
+		});
 	});
-});
+}
 
-router.get('/contribute', (req, res) => {
-	res.render('page', {
-		title: 'Contribute',
-		markup: ReactDOMServer.renderToString(ContributePage())
-	});
-});
-
-router.get('/develop', (req, res) => {
-	res.render('page', {
-		title: 'Develop',
-		markup: ReactDOMServer.renderToString(DevelopPage())
-	});
-});
-
-router.get('/privacy', (req, res) => {
-	res.render('page', {
-		title: 'Privacy',
-		markup: ReactDOMServer.renderToString(PrivacyPage())
-	});
-});
-
-router.get('/licensing', (req, res) => {
-	res.render('page', {
-		title: 'Licensing',
-		markup: ReactDOMServer.renderToString(LicensingPage())
-	});
-});
+_createStaticRoute('/about', 'About', AboutPage);
+_createStaticRoute('/contribute', 'Contribute', ContributePage);
+_createStaticRoute('/develop', 'Develop', DevelopPage);
+_createStaticRoute('/licensing', 'Licensing', LicensingPage);
+_createStaticRoute('/privacy', 'Privacy', PrivacyPage);
 
 module.exports = router;
