@@ -281,7 +281,7 @@ rules:
     - 2
     - single
     - avoid-escape
-  require-jsdoc: 1
+  require-jsdoc: 0
   semi-spacing:
     - 2
     -
