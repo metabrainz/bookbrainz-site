@@ -19,10 +19,6 @@
 
 'use strict';
 
-const request = require('superagent');
-const Promise = require('bluebird');
-require('superagent-bluebird-promise');
-
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
 const Editor = require('bookbrainz-data').Editor;
