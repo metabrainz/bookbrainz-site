@@ -25,6 +25,7 @@ require('superagent-bluebird-promise');
 
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
+const Editor = require('bookbrainz-data').Editor;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
 const Work = require('bookbrainz-data').Work;
@@ -54,4 +55,18 @@ function getEntityModelByType(type) {
 	return entityModels[type];
 }
 
-module.exports = {getEntityLink, getEntityModels, getEntityModelByType};
+function incrementEditorEditCountById(id, transacting) {
+	return new Editor({id})
+		.fetch({transacting})
+		.then((editor) => {
+			editor.incrementEditCount();
+			return editor.save(null, {transacting});
+		});
+}
+
+module.exports = {
+	getEntityLink,
+	getEntityModels,
+	getEntityModelByType,
+	incrementEditorEditCountById
+};

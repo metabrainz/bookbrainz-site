@@ -20,7 +20,9 @@
 
 const bookshelf = require('bookbrainz-data').bookshelf;
 const _ = require('lodash');
-const Editor = require('bookbrainz-data').Editor;
+
+const utils = require('../../helpers/utils');
+
 const Revision = require('bookbrainz-data').Revision;
 const Note = require('bookbrainz-data').Note;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
@@ -30,7 +32,6 @@ const Promise = require('bluebird');
 
 const AliasSet = require('bookbrainz-data').AliasSet;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
-
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -87,17 +88,8 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 	const editorJSON = req.session.passport.user;
 
 	return bookshelf.transaction((transacting) => {
-		const editorUpdatePromise = new Editor({id: editorJSON.id})
-			.fetch({transacting})
-			.then((editor) => {
-				editor.set(
-					'totalRevisions', editor.get('totalRevisions') + 1
-				);
-				editor.set(
-					'revisionsApplied', editor.get('revisionsApplied') + 1
-				);
-				return editor.save(null, {transacting});
-			});
+		const editorUpdatePromise =
+			utils.incrementEditorEditCountById(editorJSON.id, transacting);
 
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
@@ -321,17 +313,8 @@ module.exports.createEntity = (
 ) => {
 	const editorJSON = req.session.passport.user;
 	const entityCreationPromise = bookshelf.transaction((transacting) => {
-		const editorUpdatePromise = new Editor({id: editorJSON.id})
-			.fetch({transacting})
-			.then((editor) => {
-				editor.set(
-					'totalRevisions', editor.get('totalRevisions') + 1
-				);
-				editor.set(
-					'revisionsApplied', editor.get('revisionsApplied') + 1
-				);
-				return editor.save(null, {transacting});
-			});
+		const editorUpdatePromise =
+			utils.incrementEditorEditCountById(editorJSON.id, transacting);
 
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
@@ -400,17 +383,8 @@ module.exports.editEntity = (
 ) => {
 	const editorJSON = req.session.passport.user;
 	const entityEditPromise = bookshelf.transaction((transacting) => {
-		const editorUpdatePromise = new Editor({id: editorJSON.id})
-			.fetch({transacting})
-			.then((editor) => {
-				editor.set(
-					'totalRevisions', editor.get('totalRevisions') + 1
-				);
-				editor.set(
-					'revisionsApplied', editor.get('revisionsApplied') + 1
-				);
-				return editor.save(null, {transacting});
-			});
+		const editorUpdatePromise =
+			utils.incrementEditorEditCountById(editorJSON.id, transacting);
 
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
