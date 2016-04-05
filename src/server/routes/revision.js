@@ -54,6 +54,15 @@ function formatRow(kind, key, lhs, rhs) {
 	return {kind, key, lhs, rhs};
 }
 
+function formatChange(change, label, transformer) {
+	return formatRow(
+		change.kind,
+		label,
+		transformer(change.lhs),
+		transformer(change.rhs)
+	);
+}
+
 function formatNewAliasSet(change) {
 	const rhs = change.rhs;
 	const changes = [];
@@ -221,7 +230,7 @@ function formatIdentifier(change) {
 	const identifierSetAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['identifierSet']);
 	if (identifierSetAdded) {
-		return formatNewIdentifierSet(entity, change);
+		return formatNewIdentifierSet(change);
 	}
 
 	const identifierSetChanged =
@@ -260,7 +269,7 @@ function formatChangedDisambiguation(change) {
 	return formatChange(change, 'Disambiguation', (side) => side && [side]);
 }
 
-function formatRelationshipAdd(change) {
+function formatRelationshipAdd(entity, change) {
 	const changes = [];
 	const rhs = change.item.rhs;
 
@@ -288,17 +297,17 @@ function formatRelationshipAdd(change) {
 	return changes;
 }
 
-function formatRelationship(change) {
+function formatRelationship(entity, change) {
 	if (change.kind === 'A') {
 		if (change.item.kind === 'N') {
-			return formatRelationshipAdd(change);
+			return formatRelationshipAdd(entity, change);
 		}
 	}
 
 	return null;
 }
 
-function formatEntityChange(change) {
+function formatEntityChange(entity, change) {
 	const aliasChanged =
 		_.isEqual(change.path, ['aliasSet']) ||
 		_.isEqual(change.path.slice(0, 2), ['aliasSet', 'aliases']) ||
@@ -317,7 +326,7 @@ function formatEntityChange(change) {
 	const relationshipChanged =
 		_.isEqual(change.path, ['relationshipSet', 'relationships']);
 	if (relationshipChanged) {
-		return formatRelationship(change);
+		return formatRelationship(entity, change);
 	}
 
 	if (_.isEqual(change.path, ['annotation'])) {
@@ -358,7 +367,7 @@ function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		}
 
 		const rawChangeSets = diff.changes.map((change) =>
-			formatEntityChange(change) ||
+			formatEntityChange(diff.entity, change) ||
 			entityFormatter &&
 			entityFormatter(change)
 		);
@@ -370,15 +379,6 @@ function formatEntityDiffs(diffs, entityType, entityFormatter) {
 
 		return formattedDiff;
 	});
-}
-
-function formatChange(change, label, transformer) {
-	return formatRow(
-		change.kind,
-		label,
-		transformer(change.lhs),
-		transformer(change.rhs)
-	);
 }
 
 function formatDateChange(change, label) {
