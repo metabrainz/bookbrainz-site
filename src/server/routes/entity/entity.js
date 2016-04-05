@@ -180,8 +180,10 @@ function updatedOrNewSetItems(oldSet, newSet, compareFields) {
 module.exports.updatedOrNewSetItems = updatedOrNewSetItems;
 
 function processFormAliases(
-	transacting, oldAliases, oldDefaultAliasId, newAliases
+	transacting, oldAliasSet, oldDefaultAliasId, newAliases
 ) {
+	const oldAliases =
+		oldAliasSet ? oldAliasSet.related('aliases').toJSON() : [];
 	const aliasCompareFields =
 		['name', 'sortName', 'languageId', 'primary', 'default'];
 	const aliasesHaveChanged = setHasChanged(
@@ -192,7 +194,7 @@ function processFormAliases(
 	// the same, skip alias processing
 	const newDefaultAlias = _.find(newAliases, 'default');
 	if (!aliasesHaveChanged && newDefaultAlias.id === oldDefaultAliasId) {
-		return null;
+		return oldAliasSet;
 	}
 
 	// Make a new alias set
@@ -236,7 +238,9 @@ function processFormAliases(
 }
 module.exports.processFormAliases = processFormAliases;
 
-function processFormIdentifiers(transacting, oldIdents, newIdents) {
+function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
+	const oldIdents =
+		oldIdentSet ? oldIdentSet.related('identifiers').toJSON() : [];
 	const identCompareFields =
 		['value', 'typeId'];
 	const identsHaveChanged = setHasChanged(
@@ -245,7 +249,7 @@ function processFormIdentifiers(transacting, oldIdents, newIdents) {
 
 	// If there is no change to the set of identifiers
 	if (!identsHaveChanged) {
-		return null;
+		return oldIdentSet;
 	}
 
 	// Make a new identifier set
@@ -282,6 +286,36 @@ function processFormIdentifiers(transacting, oldIdents, newIdents) {
 }
 module.exports.processFormIdentifiers = processFormIdentifiers;
 
+function processFormAnnotation(
+	transacting, oldAnnotation, newContent, revisionId
+) {
+	const oldContent = oldAnnotation && oldAnnotation.get('content');
+
+	if (newContent === oldContent) {
+		return oldAnnotation;
+	}
+
+	return newContent ? new Annotation({
+		content: newContent,
+		lastRevisionId: revisionId
+	}).save(null, {transacting}) : null;
+}
+
+function processFormDisambiguation(
+	transacting, oldDisambiguation, newComment
+) {
+	const oldComment = oldDisambiguation && oldDisambiguation.get('comment');
+
+	if (newComment === oldComment) {
+		return oldDisambiguation;
+	}
+
+	return newComment ? new Disambiguation({
+		comment: newComment
+	}).save(null, {transacting}) : null;
+}
+
+
 module.exports.createEntity = (
 	req, res, EntityModel, derivedProps, onEntityCreation
 ) => {
@@ -311,23 +345,22 @@ module.exports.createEntity = (
 			}).save(null, {transacting})) : null;
 
 		const aliasSetPromise = processFormAliases(
-			transacting, [], null, req.body.aliases || []
+			transacting, null, null, req.body.aliases || []
 		);
 
 		const identSetPromise = processFormIdentifiers(
-			transacting, [], req.body.identifiers || []
+			transacting, null, req.body.identifiers || []
 		);
 
-		const annotationPromise = req.body.annotation ? newRevisionPromise
-			.then((revision) => new Annotation({
-				content: req.body.annotation,
-				lastRevisionId: revision.get('id')
-			}).save(null, {transacting})) : null;
+		const annotationPromise = newRevisionPromise.then((revision) =>
+			processFormAnnotation(
+				transacting, null, req.body.annotation, revision.get('id')
+			)
+		);
 
-		const disambiguationPromise = req.body.disambiguation ?
-			new Disambiguation({
-				comment: req.body.disambiguation
-			}).save(null, {transacting}) : null;
+		const disambiguationPromise = processFormDisambiguation(
+			transacting, null, req.body.disambiguation
+		);
 
 		return Promise.join(
 			newRevisionPromise, aliasSetPromise, identSetPromise,
