@@ -41,9 +41,9 @@ const PublicationData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifierType: validators.identifierType
+				typeId: React.PropTypes.number
 			})),
-			publication_type: validators.publicationType
+			publicationType: validators.publicationType
 		}),
 		publicationTypes: React.PropTypes.arrayOf(validators.publicationType),
 		visible: React.PropTypes.bool
@@ -83,7 +83,7 @@ const PublicationData = React.createClass({
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,
-					type: identifier.type.id
+					typeId: identifier.type.id
 				}));
 		}
 

@@ -55,7 +55,7 @@ const EditionData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifierType: validators.identifierType
+				typeId: React.PropTypes.number
 			})),
 			languages: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number
@@ -177,7 +177,7 @@ const EditionData = React.createClass({
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,
-					type: identifier.type.id
+					typeId: identifier.type.id
 				}));
 		}
 

@@ -47,6 +47,7 @@ const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
 const entityRoutes = require('./entity');
+const _ = require('lodash');
 
 /* If the route specifies a BBID, load the Publication for it. */
 router.param(
@@ -132,185 +133,16 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) => {
-	const changes = {
-		bbid: null,
-		publication_type: {
-			publication_type_id: req.body.publicationTypeId
-		}
-	};
+router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.createEntity(
+		req, res, Publication, _.pick(req.body, 'typeId')
+	)
+);
 
-	if (req.body.disambiguation) {
-		changes.disambiguation = req.body.disambiguation;
-	}
-
-	if (req.body.annotation) {
-		changes.annotation = req.body.annotation;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const newIdentifiers = req.body.identifiers.map((identifier) => ({
-		value: identifier.value,
-		identifier_type: {
-			identifier_type_id: identifier.typeId
-		}
-	}));
-
-	if (newIdentifiers.length) {
-		changes.identifiers = newIdentifiers;
-	}
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		if (!alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push({
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		});
-	});
-
-	if (newAliases.length) {
-		changes.aliases = newAliases;
-	}
-
-	Publication.create(changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
-
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
-	const publication = res.locals.entity;
-
-	const changes = {
-		bbid: publication.bbid
-	};
-
-	const publicationTypeId = req.body.publicationTypeId;
-	if (!publication.publication_type ||
-			publication.publication_type.publication_type_id !==
-				publicationTypeId
-	) {
-		changes.publication_type = {
-			publication_type_id: publicationTypeId
-		};
-	}
-
-	const disambiguation = req.body.disambiguation;
-	if (!publication.disambiguation ||
-			publication.disambiguation.comment !== disambiguation) {
-		changes.disambiguation = disambiguation ? disambiguation : null;
-	}
-
-	const annotation = req.body.annotation;
-	if (!publication.annotation ||
-			publication.annotation.content !== annotation) {
-		changes.annotation = annotation ? annotation : null;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const currentIdentifiers = publication.identifiers.map((identifier) => {
-		const nextIdentifier = req.body.identifiers[0];
-
-		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
-			// Remove the alias
-			return [identifier.id, null];
-		}
-
-		// Modify the alias
-		req.body.identifiers.shift();
-		return [nextIdentifier.id, {
-			value: nextIdentifier.value,
-			identifier_type: {
-				identifier_type_id: nextIdentifier.typeId
-			}
-		}];
-	});
-
-	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (identifier.id) {
-			return null;
-		}
-
-		return [null, {
-			value: identifier.value,
-			identifier_type: {
-				identifier_type_id: identifier.typeId
-			}
-		}];
-	});
-
-	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
-
-	const currentAliases = [];
-
-	publication.aliases.forEach((alias) => {
-		const nextAlias = req.body.aliases[0];
-
-		if (!nextAlias || alias.id !== nextAlias.id) {
-			// Remove the alias
-			currentAliases.push([alias.id, null]);
-		}
-		else {
-			// Modify the alias
-			req.body.aliases.shift();
-			currentAliases.push([nextAlias.id, {
-				name: nextAlias.name,
-				sort_name: nextAlias.sortName,
-				language_id: nextAlias.language,
-				primary: nextAlias.primary,
-				default: nextAlias.default
-			}]);
-		}
-	});
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (alias.id || !alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push([null, {
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		}]);
-	});
-
-	changes.aliases = currentAliases.concat(newAliases);
-
-	Publication.update(publication.bbid, changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.editEntity(
+		req, res, Publication, _.pick(req.body, 'typeId')
+	)
+);
 
 module.exports = router;

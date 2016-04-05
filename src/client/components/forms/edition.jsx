@@ -85,13 +85,13 @@ module.exports = React.createClass({
 		const editionData = this.refs.data.getValue();
 		const revisionNote = this.refs.revision.refs.note.getValue();
 		const data = {
-			aliases: aliasData,
+			aliases: aliasData.slice(0, -1),
 			publication: editionData.publication,
 			publisher: editionData.publisher,
 			releaseDate: editionData.releaseDate,
 			languageId: parseInt(editionData.language, 10),
-			editionFormatId: parseInt(editionData.editionFormat, 10),
-			editionStatusId: parseInt(editionData.editionStatus, 10),
+			formatId: parseInt(editionData.editionFormat, 10),
+			statusId: parseInt(editionData.editionStatus, 10),
 			disambiguation: editionData.disambiguation,
 			annotation: editionData.annotation,
 			identifiers: editionData.identifiers,
@@ -108,13 +108,12 @@ module.exports = React.createClass({
 		const self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then((revision) => {
-				if (!revision.body || !revision.body.entity) {
+			.then((res) => {
+				if (!res.body) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href =
-					`/edition/${revision.body.entity.entity_gid}`;
+				window.location.href = `/edition/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				self.setState({error});
@@ -130,7 +129,7 @@ module.exports = React.createClass({
 				id: alias.id,
 				name: alias.name,
 				sortName: alias.sortName,
-				language: alias.language ? alias.language.id : null,
+				languageId: alias.languageId,
 				primary: alias.primary,
 				default: alias.id === prefillData.defaultAlias.id
 			}));

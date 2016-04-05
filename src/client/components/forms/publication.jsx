@@ -82,8 +82,8 @@ module.exports = React.createClass({
 		const publicationData = this.refs.data.getValue();
 		const revisionNote = this.refs.revision.refs.note.getValue();
 		const data = {
-			aliases: aliasData,
-			publicationTypeId: parseInt(publicationData.publicationType, 10),
+			aliases: aliasData.slice(0, -1),
+			typeId: parseInt(publicationData.publicationType, 10),
 			disambiguation: publicationData.disambiguation,
 			annotation: publicationData.annotation,
 			identifiers: publicationData.identifiers,
@@ -94,13 +94,12 @@ module.exports = React.createClass({
 
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then((revision) => {
-				if (!revision.body || !revision.body.entity) {
+			.then((res) => {
+				if (!res.body) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href =
-					`/publication/${revision.body.entity.entity_gid}`;
+				window.location.href = `/publication/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				this.setState({error});
@@ -116,7 +115,7 @@ module.exports = React.createClass({
 				id: alias.id,
 				name: alias.name,
 				sortName: alias.sortName,
-				language: alias.language ? alias.language.id : null,
+				languageId: alias.languageId,
 				primary: alias.primary,
 				default: alias.id === prefillData.defaultAlias.id
 			}));

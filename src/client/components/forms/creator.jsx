@@ -83,12 +83,12 @@ module.exports = React.createClass({
 		const creatorData = this.refs.data.getValue();
 		const revisionNote = this.refs.revision.refs.note.getValue();
 		const data = {
-			aliases: aliasData,
+			aliases: aliasData.slice(0, -1),
 			beginDate: creatorData.beginDate,
 			endDate: creatorData.endDate,
 			ended: creatorData.ended,
 			genderId: parseInt(creatorData.gender, 10),
-			creatorTypeId: parseInt(creatorData.creatorType, 10),
+			typeId: parseInt(creatorData.creatorType, 10),
 			disambiguation: creatorData.disambiguation,
 			annotation: creatorData.annotation,
 			identifiers: creatorData.identifiers,
@@ -99,13 +99,12 @@ module.exports = React.createClass({
 
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then((revision) => {
-				if (!revision.body || !revision.body.entity) {
+			.then((res) => {
+				if (!res.body) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href =
-					`/creator/${revision.body.entity.entity_gid}`;
+				window.location.href = `/creator/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				this.setState({error});
@@ -121,7 +120,7 @@ module.exports = React.createClass({
 				id: alias.id,
 				name: alias.name,
 				sortName: alias.sortName,
-				language: alias.language ? alias.language.id : null,
+				languageId: alias.languageId,
 				primary: alias.primary,
 				default: alias.id === prefillData.defaultAlias.id
 			}));

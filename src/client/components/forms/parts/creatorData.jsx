@@ -50,7 +50,7 @@ const CreatorData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifierType: validators.identifierType
+				typeId: React.PropTypes.number
 			}))
 		}),
 		creatorTypes: React.PropTypes.arrayOf(creatorTypeValidation),
@@ -121,7 +121,7 @@ const CreatorData = React.createClass({
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,
-					type: identifier.type.id
+					typeId: identifier.type.id
 				}));
 		}
 

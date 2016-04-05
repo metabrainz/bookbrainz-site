@@ -447,7 +447,6 @@ module.exports.editEntity = (
 			annotationPromise, disambiguationPromise, editorUpdatePromise,
 			notePromise, parentAddedPromise,
 			(newRevision, aliasSet, identSet, annotation, disambiguation) => {
-				console.log(identSet);
 				const propsToSet = _.extend({
 					bbid: currentEntity.bbid,
 					aliasSetId: aliasSet && aliasSet.get('id'),
@@ -466,11 +465,15 @@ module.exports.editEntity = (
 				(entityModel) => entityModel.refresh({transacting})
 			)
 			.then(
-				(entityModel) =>
-					onEntityEdit(req, transacting, entityModel)
+				(entityModel) => {
+					if (!onEntityEdit) {
+						return entityModel;
+					}
+
+					return onEntityEdit(req, transacting, entityModel)
 						.then(() => entityModel.refresh({transacting}))
-						.then((entity) => entity.toJSON())
-			);
+						.then((entity) => entity.toJSON());
+				});
 	});
 
 	return entityEditPromise.then((entity) =>

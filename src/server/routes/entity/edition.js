@@ -30,6 +30,7 @@ const EditionHeader = require('bookbrainz-data').EditionHeader;
 const EditionRevision = require('bookbrainz-data').EditionRevision;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
+const ReleaseEvent = require('bookbrainz-data').ReleaseEvent;
 
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
@@ -54,6 +55,7 @@ const loadIdentifierTypes =
 const Promise = require('bluebird');
 
 const entityRoutes = require('./entity');
+const _ = require('lodash');
 
 /* If the route specifies a BBID, load the Edition for it. */
 router.param(
@@ -164,285 +166,51 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) => {
-	const changes = {
-		bbid: null
-	};
-
-	if (req.body.editionFormatId) {
-		changes.edition_format = {
-			edition_format_id: req.body.editionFormatId
-		};
-	}
-
-	if (req.body.editionStatusId) {
-		changes.edition_status = {
-			edition_status_id: req.body.editionStatusId
-		};
-	}
-
-	if (req.body.publication) {
-		changes.publication = req.body.publication;
-	}
-
-	if (req.body.publisher) {
-		changes.publisher = req.body.publisher;
-	}
-
-	if (req.body.languageId) {
-		changes.language = {
-			language_id: req.body.languageId
-		};
-	}
-
-	if (req.body.releaseDate) {
-		changes.release_date = req.body.releaseDate;
-	}
-
-	if (req.body.disambiguation) {
-		changes.disambiguation = req.body.disambiguation;
-	}
-
-	if (req.body.annotation) {
-		changes.annotation = req.body.annotation;
-	}
-
-	if (req.body.pages) {
-		changes.pages = req.body.pages;
-	}
-
-	if (req.body.weight) {
-		changes.weight = req.body.weight;
-	}
-
-	if (req.body.width) {
-		changes.width = req.body.width;
-	}
-
-	if (req.body.height) {
-		changes.height = req.body.height;
-	}
-
-	if (req.body.depth) {
-		changes.depth = req.body.depth;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const newIdentifiers = req.body.identifiers.map((identifier) => ({
-		value: identifier.value,
-		identifier_type: {
-			identifier_type_id: identifier.typeId
-		}
-	}));
-
-	if (newIdentifiers.length) {
-		changes.identifiers = newIdentifiers;
-	}
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		if (!alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push({
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		});
-	});
-
-	if (newAliases.length) {
-		changes.aliases = newAliases;
-	}
-
-	Edition.create(changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
-
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
-	const edition = res.locals.entity;
-
-	const changes = {
-		bbid: edition.bbid
-	};
-
-	const editionStatusId = req.body.editionStatusId;
-	if (!edition.edition_status ||
-			edition.edition_status.edition_status_id !== editionStatusId) {
-		changes.edition_status = {
-			edition_status_id: editionStatusId
-		};
-	}
-
-	const editionFormatId = req.body.editionFormatId;
-	if (!edition.edition_format ||
-			edition.edition_format.edition_format_id !== editionFormatId) {
-		changes.edition_format = {
-			edition_format_id: editionFormatId
-		};
-	}
-
-	const publication = req.body.publication;
-	if (!edition.publication || edition.publication.bbid !== publication) {
-		changes.publication = publication;
-	}
-
-	const publisher = req.body.publisher;
-	if (!edition.publisher || edition.publisher.bbid !== publisher) {
-		changes.publisher = publisher;
-	}
-
-	const languageId = req.body.languageId;
-	if (!edition.language || edition.language.language_id !== languageId) {
-		changes.language = {
-			language_id: languageId
-		};
-	}
-
+function handleEditionChange(req, transacting, entityModel) {
+	const languageIds = req.body.languages;
+	const publisher = req.body.publisherBbid;
 	const releaseDate = req.body.releaseDate;
-	if (edition.release_date !== releaseDate) {
-		changes.release_date = releaseDate ? releaseDate : null;
-	}
 
-	const disambiguation = req.body.disambiguation;
-	if (!edition.disambiguation ||
-			edition.disambiguation.comment !== disambiguation) {
-		changes.disambiguation = disambiguation ? disambiguation : null;
-	}
-
-	const annotation = req.body.annotation;
-	if (!edition.annotation ||
-			edition.annotation.content !== annotation) {
-		changes.annotation = annotation ? annotation : null;
-	}
-
-	const pages = req.body.pages;
-	if (edition.pages !== pages) {
-		changes.pages = pages ? pages : null;
-	}
-
-	const weight = req.body.weight;
-	if (edition.weight !== weight) {
-		changes.weight = weight ? weight : null;
-	}
-
-	const width = req.body.width;
-	if (edition.width !== width) {
-		changes.width = width ? width : null;
-	}
-
-	const height = req.body.height;
-	if (edition.height !== height) {
-		changes.height = height ? height : null;
-	}
-
-	const depth = req.body.depth;
-	if (edition.depth !== depth) {
-		changes.depth = depth ? depth : null;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const currentIdentifiers = edition.identifiers.map((identifier) => {
-		const nextIdentifier = req.body.identifiers[0];
-
-		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
-			// Remove the alias
-			return [identifier.id, null];
-		}
-
-		// Modify the alias
-		req.body.identifiers.shift();
-		return [nextIdentifier.id, {
-			value: nextIdentifier.value,
-			identifier_type: {
-				identifier_type_id: nextIdentifier.typeId
+	const dataPromise = entityModel.related('data').fetch({
+		withRelated: ['languages', 'releaseEvents', 'publishers'], transacting
+	});
+	return dataPromise.then((data) => {
+		const languagesPromise = data.languages()
+			.attach(_.map(languageIds, {id: 'id'}), {transacting});
+		const publisherPromise = data.publishers()
+			.set({bbid: publisher}, {transacting});
+		const currentReleaseEvent = data.releaseEvents().at(0);
+		if (currentReleaseEvent) {
+			if (releaseDate !== currentReleaseEvent.get('date')) {
+				data.releaseEvents.set(
+					new ReleaseEvent().set('date', releaseDate)
+				);
 			}
-		}];
-	});
-
-	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (identifier.id) {
-			return null;
 		}
 
-		return [null, {
-			value: identifier.value,
-			identifier_type: {
-				identifier_type_id: identifier.typeId
-			}
-		}];
+		return Promise.join(languagesPromise, publisherPromise,
+			() => data.save(null, {transacting})
+		);
 	});
+}
 
-	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
+const additionalEditionProps = [
+	'publicationBbid', 'width', 'height', 'depth', 'weight', 'pages',
+	'formatId', 'statusId'
+];
 
-	const currentAliases = [];
+router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.createEntity(
+		req, res, Edition, _.pick(req.body, additionalEditionProps),
+		handleEditionChange
+	)
+);
 
-	edition.aliases.forEach((alias) => {
-		const nextAlias = req.body.aliases[0];
-
-		if (!nextAlias || alias.id !== nextAlias.id) {
-			// Remove the alias
-			currentAliases.push([alias.id, null]);
-		}
-		else {
-			// Modify the alias
-			req.body.aliases.shift();
-			currentAliases.push([nextAlias.id, {
-				name: nextAlias.name,
-				sort_name: nextAlias.sortName,
-				language_id: nextAlias.language,
-				primary: nextAlias.primary,
-				default: nextAlias.default
-			}]);
-		}
-	});
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (alias.id || !alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push([null, {
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		}]);
-	});
-
-	changes.aliases = currentAliases.concat(newAliases);
-
-	Edition.update(edition.bbid, changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.editEntity(
+		req, res, Edition, _.pick(req.body, additionalEditionProps),
+		handleEditionChange
+	)
+);
 
 module.exports = router;
