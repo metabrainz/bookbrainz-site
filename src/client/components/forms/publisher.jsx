@@ -82,11 +82,11 @@ module.exports = React.createClass({
 		const publisherData = this.refs.data.getValue();
 		const revisionNote = this.refs.revision.refs.note.getValue();
 		const data = {
-			aliases: aliasData,
+			aliases: aliasData.slice(0, -1),
 			beginDate: publisherData.beginDate,
 			endDate: publisherData.endDate,
 			ended: publisherData.ended,
-			publisherTypeId: parseInt(publisherData.publisherType, 10),
+			typeId: parseInt(publisherData.publisherType, 10),
 			disambiguation: publisherData.disambiguation,
 			annotation: publisherData.annotation,
 			identifiers: publisherData.identifiers,
@@ -97,13 +97,12 @@ module.exports = React.createClass({
 
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then((revision) => {
-				if (!revision.body || !revision.body.entity) {
+			.then((res) => {
+				if (!res.body) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href =
-				`/publisher/${revision.body.entity.entity_gid}`;
+				window.location.href = `/publisher/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				this.setState({error});
@@ -119,7 +118,7 @@ module.exports = React.createClass({
 				id: alias.id,
 				name: alias.name,
 				sortName: alias.sortName,
-				language: alias.language ? alias.language.id : null,
+				languageId: alias.languageId,
 				primary: alias.primary,
 				default: alias.id === prefillData.defaultAlias.id
 			}));

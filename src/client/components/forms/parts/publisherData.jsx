@@ -44,9 +44,9 @@ const PublisherData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifierType: validators.identifierType
+				typeId: React.PropTypes.number
 			})),
-			publisher_type: validators.publisherType
+			publisherType: validators.publisherType
 		}),
 		publisherTypes: React.PropTypes.arrayOf(validators.publisherType),
 		visible: React.PropTypes.bool
@@ -106,7 +106,7 @@ const PublisherData = React.createClass({
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,
-					type: identifier.type.id
+					typeId: identifier.type.id
 				}));
 		}
 
