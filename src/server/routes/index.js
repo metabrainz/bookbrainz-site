@@ -25,8 +25,6 @@ const router = express.Router();
 const Promise = require('bluebird');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const auth = require('../helpers/auth');
-const search = require('../helpers/search');
 
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
@@ -35,7 +33,6 @@ const Work = require('bookbrainz-data').Work;
 const Publisher = require('bookbrainz-data').Publisher;
 
 const _ = require('lodash');
-const status = require('http-status');
 
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about.jsx')
@@ -51,9 +48,6 @@ const PrivacyPage = React.createFactory(
 );
 const LicensingPage = React.createFactory(
 	require('../../client/components/pages/licensing.jsx')
-);
-const SearchPage = React.createFactory(
-	require('../../client/components/pages/search.jsx')
 );
 
 /* GET home page. */
@@ -129,66 +123,6 @@ router.get('/licensing', (req, res) => {
 		title: 'Licensing',
 		markup: ReactDOMServer.renderToString(LicensingPage())
 	});
-});
-
-router.get('/search', (req, res) => {
-	const query = req.query.q;
-	const collection = req.query.collection || null;
-
-	search.searchByName(query, collection)
-		.then((entities) => ({
-			query,
-			initialResults: entities
-		}))
-		.catch((err) => {
-			console.log(err);
-			const message = 'An error occurred while obtaining search results';
-
-			return {
-				error: message,
-				initialResults: []
-			};
-		})
-		.then((props) => {
-			res.render('search', {
-				title: 'Search Results',
-				props,
-				markup: ReactDOMServer.renderToString(SearchPage(props)),
-				hideSearch: true
-			});
-		});
-});
-
-router.get('/search/autocomplete', (req, res) => {
-	const query = req.query.q;
-	const collection = req.query.collection || null;
-
-	search.autocomplete(query, collection)
-		.then((entities) => {
-			res.json(entities);
-		})
-		.catch((err) => {
-			console.log(err);
-			const message = 'An error occurred while obtaining search results';
-
-			res.json({
-				error: message
-			});
-		});
-});
-
-router.get('/search/reindex', auth.isAuthenticated, (req, res) => {
-	// TODO: This is hacky, and we should replace it once we switch to SOLR.
-	const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
-
-	const userName = req.session.passport && req.session.passport.user && req.session.passport.user.name;
-	if (trustedUsers.indexOf(userName) === -1) {
-		return res.sendStatus(status.UNAUTHORIZED);
-	}
-
-	return search.generateIndex()
-		.then(() => res.send({success: true}))
-		.catch(() => res.send({success: false}));
 });
 
 module.exports = router;

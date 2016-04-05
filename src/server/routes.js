@@ -27,6 +27,7 @@ const Work = require('bookbrainz-data').Work;
 function initRootRoutes(app) {
 	app.use('/', require('./routes/index'));
 	app.use('/', require('./routes/login'));
+	app.use('/search', require('./routes/search'));
 	app.use('/register', require('./routes/register'));
 }
 
