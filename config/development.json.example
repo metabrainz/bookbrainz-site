@@ -22,5 +22,8 @@
 			"user": "bookbrainz",
 			"password": "bookbrainz"
 		}
+	},
+	"search": {
+	    "host": "localhost:9200"
 	}
 }

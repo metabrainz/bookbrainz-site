@@ -26,6 +26,7 @@ const Promise = require('bluebird');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const auth = require('../helpers/auth');
+const search = require('../helpers/search');
 
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
@@ -130,86 +131,25 @@ router.get('/licensing', (req, res) => {
 	});
 });
 
-function fetchEntityModelsForESResults(results) {
-	if (!results.hits) {
-		return null;
-	}
-
-	return Promise.map(results.hits, (hit) => {
-		const entityStub = hit._source;
-		let Model = null;
-
-		switch (entityStub.type) {
-			case 'Publication':
-				Model = Publication;
-				break;
-			case 'Creator':
-				Model = Creator;
-				break;
-			case 'Edition':
-				Model = Edition;
-				break;
-			case 'Work':
-				Model = Work;
-				break;
-			case 'Publisher':
-				Model = Publisher;
-				break;
-			default:
-				return null;
-		}
-
-		return new Model({bbid: entityStub.bbid})
-			.fetch({withRelated: ['defaultAlias']})
-			.then((entity) => entity.toJSON());
-	});
-}
-
 router.get('/search', (req, res) => {
 	const query = req.query.q;
-	const esClient = req.app.get('esClient');
+	const collection = req.query.collection || null;
 
-	const queryData = {
-		index: 'bookbrainz',
-		body: {
-			query: {
-				match: {
-					'defaultAlias.name.search': {
-						query,
-						minimum_should_match: '80%'
-					}
-				}
-			}
-		}
-	};
-
-	if (req.query.collection) {
-		queryData.type = req.query.collection;
-	}
-
-	esClient.search(queryData)
-		.then((searchResponse) => searchResponse.hits)
-		.then((results) => fetchEntityModelsForESResults(results))
-		.then((entities) => {
-			const props = {
-				query,
-				initialResults: entities
-			};
-
-			res.render('search', {
-				props,
-				markup: ReactDOMServer.renderToString(SearchPage(props)),
-				hideSearch: true
-			});
-		})
-		.catch(() => {
+	search.searchByName(query, collection)
+		.then((entities) => ({
+			query,
+			initialResults: entities
+		}))
+		.catch((err) => {
+			console.log(err);
 			const message = 'An error occurred while obtaining search results';
 
-			const props = {
+			return {
 				error: message,
 				initialResults: []
 			};
-
+		})
+		.then((props) => {
 			res.render('search', {
 				title: 'Search Results',
 				props,
@@ -219,48 +159,11 @@ router.get('/search', (req, res) => {
 		});
 });
 
-const uuidRegex =
-	/[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}/;
-
 router.get('/autocomplete', (req, res) => {
 	const query = req.query.q;
-	const esClient = req.app.get('esClient');
+	const collection = req.query.collection || null;
 
-	const validBBID = Boolean(uuidRegex.exec(query));
-	let searchObject = null;
-	if (validBBID) {
-		searchObject = {
-			ids: {
-				values: [query]
-			}
-		};
-	}
-	else {
-		searchObject = {
-			match: {
-				'defaultAlias.name.autocomplete': {
-					query,
-					minimum_should_match: '80%'
-				}
-			}
-		};
-	}
-
-	const queryData = {
-		index: 'bookbrainz',
-		body: {
-			query: searchObject
-		}
-	};
-
-	if (req.query.collection) {
-		queryData.type = req.query.collection;
-	}
-	console.log(JSON.stringify(queryData, null, 4));
-
-	esClient.search(queryData)
-		.then((searchResponse) => searchResponse.hits)
-		.then((results) => fetchEntityModelsForESResults(results))
+	search.autocomplete(query, collection)
 		.then((entities) => {
 			res.json(entities);
 		})
@@ -274,69 +177,6 @@ router.get('/autocomplete', (req, res) => {
 		});
 });
 
-const indexSettings = {
-	settings: {
-		analysis: {
-			filter: {
-				trigrams_filter: {
-					type: 'ngram',
-					min_gram: 1,
-					max_gram: 3
-				},
-				edge_filter: {
-					type: 'edge_ngram',
-					min_gram: 1,
-					max_gram: 20
-				}
-			},
-			analyzer: {
-				trigrams: {
-					type: 'custom',
-					tokenizer: 'standard',
-					filter: [
-						'asciifolding',
-						'lowercase',
-						'trigrams_filter'
-					]
-				},
-				edge: {
-					type: 'custom',
-					tokenizer: 'standard',
-					filter: [
-						'asciifolding',
-						'lowercase',
-						'edge_filter'
-					]
-				}
-			}
-		}
-	},
-	mappings: {
-		_default_: {
-			properties: {
-				defaultAlias: {
-					type: 'object',
-					properties: {
-						name: {
-							type: 'string',
-							fields: {
-								search: {
-									type: 'string',
-									analyzer: 'trigrams'
-								},
-								autocomplete: {
-									type: 'string',
-									analyzer: 'edge'
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-};
-
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	// TODO: This is hacky, and we should replace it once we switch to SOLR.
 	const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
@@ -346,69 +186,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		return res.sendStatus(status.UNAUTHORIZED);
 	}
 
-	const esClient = req.app.get('esClient');
-
-	// First, drop index and recreate
-	const indexPromise = esClient.indices.delete({index: 'bookbrainz'})
-		.then(() => esClient.indices.create(
-				{index: 'bookbrainz', body: indexSettings}
-		));
-
-	// Then, fill with data
-
-	function indexEntity(model) {
-		const body = model.toJSON();
-		console.log(body);
-		return esClient.index({
-			index: 'bookbrainz',
-			id: body.bbid,
-			type: body.type,
-			body
-		});
-	}
-
-	const baseRelations = ['annotation', 'disambiguation', 'defaultAlias'];
-
-	// Update the indexed entries for each entity type in turn
-	const editionsPromise = indexPromise
-		.then(() => new Edition().fetchAll({
-			withRelated: baseRelations.concat([
-				'publication', 'editionFormat', 'editionStatus'
-			])
-		}))
-		.then((collection) => Promise.all(collection.map(indexEntity)));
-
-	const creatorsPromise = indexPromise
-		.then(() => new Creator().fetchAll({
-			withRelated: baseRelations.concat(['gender', 'creatorType'])
-		}))
-		.then((collection) => Promise.all(collection.map(indexEntity)));
-
-	const worksPromise = indexPromise
-		.then(() => new Work().fetchAll({
-			withRelated: baseRelations.concat(['workType'])
-		}))
-		.then((collection) => Promise.all(collection.map(indexEntity)));
-
-	const publishersPromise = indexPromise
-		.then(() => new Publisher().fetchAll({
-			withRelated: baseRelations.concat(['publisherType'])
-		}))
-		.then((collection) => Promise.all(collection.map(indexEntity)));
-
-	const publicationsPromise = indexPromise
-		.then(() => new Publication().fetchAll({
-			withRelated: baseRelations.concat(['publicationType'])
-		}))
-		.then((collection) => Promise.all(collection.map(indexEntity)));
-
-	const refreshPromise = Promise.join(
-		editionsPromise, creatorsPromise, worksPromise, publishersPromise,
-		publicationsPromise,
-		() => esClient.indices.refresh({index: 'bookbrainz'})
-	);
-
-	return refreshPromise
+	return search.generateIndex()
 		.then(() => res.send({success: true}))
 		.catch(() => res.send({success: false}));
 });

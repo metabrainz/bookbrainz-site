@@ -29,7 +29,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const staticCache = require('express-static-cache');
-const ElasticSearch = require('elasticsearch');
 
 const Promise = require('bluebird');
 Promise.config({
@@ -58,16 +57,7 @@ require('node-jsx').install({
 	extension: '.jsx'
 });
 
-// Set up elasticsearch
-const esClient = new ElasticSearch.Client({
-	defer() {
-		return Promise.defer();
-	},
-	host: 'localhost:9200',
-	log: 'trace'
-});
-
-app.set('esClient', esClient);
+require('./src/server/helpers/search').init(config.search);
 
 app.set('trust proxy', config.site.proxyTrust);
 
