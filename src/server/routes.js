@@ -22,7 +22,6 @@
 'use strict';
 
 const relationshipHelper = require('./routes/relationship/edit');
-const Work = require('bookbrainz-data').Work;
 
 function initRootRoutes(app) {
 	app.use('/', require('./routes/index'));

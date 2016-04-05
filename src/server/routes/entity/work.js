@@ -46,8 +46,6 @@ const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
 const entityRoutes = require('./entity');
-const _ = require('lodash');
-const Promise = require('bluebird');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param(
