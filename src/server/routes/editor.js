@@ -38,7 +38,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	new Editor({id: parseInt(req.user.id, 10)})
 	.fetch()
 	.then((editor) => {
-		const markup = ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
+		const markup =
+			ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
 
 		res.render('editor/edit', {
 			props: editor.toJSON(),

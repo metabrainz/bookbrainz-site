@@ -69,7 +69,8 @@ function copyRelationshipsAndAdd(
 }
 
 function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
-	const newRelationshipSetPromise = new RelationshipSet().save(null, {transacting});
+	const newRelationshipSetPromise =
+		new RelationshipSet().save(null, {transacting});
 	const entityPromise =
 		getEntityByType(entityJSON, 'relationshipSet', transacting);
 

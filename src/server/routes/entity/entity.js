@@ -140,7 +140,11 @@ module.exports.setHasChanged = setHasChanged;
 function unchangedSetItems(oldSet, newSet, compareFields) {
 	console.log(JSON.stringify(oldSet));
 	console.log(JSON.stringify(newSet));
-	return _.intersectionBy(newSet, oldSet, (item) => _.pick(item, compareFields));
+	return _.intersectionBy(
+		newSet,
+		oldSet,
+		(item) => _.pick(item, compareFields)
+	);
 }
 module.exports.unchangedSetItems = unchangedSetItems;
 
@@ -192,7 +196,10 @@ function processFormAliases(
 		.then((collection) =>
 			Promise.all(
 				_.map(newOrUpdatedAliases, (alias) =>
-					collection.create(_.omit(alias, 'id', 'default'), {transacting})
+					collection.create(
+						_.omit(alias, 'id', 'default'),
+						{transacting}
+					)
 				)
 			).then(() => collection)
 		);

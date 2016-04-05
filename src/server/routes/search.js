@@ -82,7 +82,9 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	// TODO: This is hacky, and we should replace it once we switch to SOLR.
 	const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
 
-	const userName = req.session.passport && req.session.passport.user && req.session.passport.user.name;
+	const userName = req.session.passport &&
+		req.session.passport.user &&
+		req.session.passport.user.name;
 	if (trustedUsers.indexOf(userName) === -1) {
 		return res.sendStatus(status.UNAUTHORIZED);
 	}
