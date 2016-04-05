@@ -159,7 +159,7 @@ router.get('/search', (req, res) => {
 		});
 });
 
-router.get('/autocomplete', (req, res) => {
+router.get('/search/autocomplete', (req, res) => {
 	const query = req.query.q;
 	const collection = req.query.collection || null;
 
@@ -177,7 +177,7 @@ router.get('/autocomplete', (req, res) => {
 		});
 });
 
-router.get('/reindex', auth.isAuthenticated, (req, res) => {
+router.get('/search/reindex', auth.isAuthenticated, (req, res) => {
 	// TODO: This is hacky, and we should replace it once we switch to SOLR.
 	const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
 

@@ -142,7 +142,7 @@ module.exports = React.createClass({
 	},
 	handleSearch(q) {
 		'use strict';
-		request.get(`./autocomplete?q=${q}`)
+		request.get(`./search/autocomplete?q=${q}`)
 		.promise()
 		.then((res) => (JSON.parse(res.text)))
 		.then((data) => {

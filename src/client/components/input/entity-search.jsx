@@ -74,7 +74,7 @@ const EntitySearch = React.createClass({
 		const select2Options = {
 			minimumInputLength: 1,
 			ajax: {
-				url: '/autocomplete',
+				url: '/search/autocomplete',
 				data(params) {
 					const queryParams = {
 						q: params.term,
