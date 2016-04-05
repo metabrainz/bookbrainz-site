@@ -31,11 +31,9 @@ const EditForm = React.createFactory(
 const bookshelf = require('bookbrainz-data').bookshelf;
 const Promise = require('bluebird');
 const _ = require('lodash');
-const Creator = require('bookbrainz-data').Creator;
-const Edition = require('bookbrainz-data').Edition;
-const Publisher = require('bookbrainz-data').Publisher;
-const Publication = require('bookbrainz-data').Publication;
-const Work = require('bookbrainz-data').Work;
+
+const utils = require('../../helpers/utils');
+
 const Revision = require('bookbrainz-data').Revision;
 const Editor = require('bookbrainz-data').Editor;
 
@@ -45,25 +43,10 @@ const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 
 function getEntityByType(entity, withRelated, transacting) {
-	switch (entity.type) {
-		case 'Creator':
-			return new Creator({bbid: entity.bbid})
-				.fetch({withRelated, transacting});
-		case 'Edition':
-			return new Edition({bbid: entity.bbid})
-				.fetch({withRelated, transacting});
-		case 'Publisher':
-			return new Publisher({bbid: entity.bbid})
-				.fetch({withRelated, transacting});
-		case 'Publication':
-			return new Publication({bbid: entity.bbid})
-				.fetch({withRelated, transacting});
-		case 'Work':
-			return new Work({bbid: entity.bbid})
-				.fetch({withRelated, transacting});
-		default:
-			throw Error('Unrecognized entity type!');
-	}
+	const model = utils.getModelByEntityType(entity.type);
+
+	return model.forge({bbid: entity.bbid})
+		.fetch({withRelated, transacting});
 }
 
 function copyRelationshipsAndAdd(

@@ -21,7 +21,7 @@
 
 const Promise = require('bluebird');
 
-const dataModels = require('bookbrainz-data');
+const utils = require('../helpers/utils');
 
 const CreatorType = require('bookbrainz-data').CreatorType;
 const EditionStatus = require('bookbrainz-data').EditionStatus;
@@ -95,7 +95,9 @@ function loadEntityRelationships(req, res, next) {
 				relationshipSet.related('relationships').toJSON() : [];
 
 			function getEntityWithAlias(relEntity) {
-				return dataModels[relEntity.type].forge({bbid: relEntity.bbid})
+				const model = utils.getModelByEntityType(relEntity.type);
+
+				return model.forge({bbid: relEntity.bbid})
 					.fetch({withRelated: 'defaultAlias'});
 			}
 

@@ -23,9 +23,31 @@ const request = require('superagent');
 const Promise = require('bluebird');
 require('superagent-bluebird-promise');
 
+const Creator = require('bookbrainz-data').Creator;
+const Edition = require('bookbrainz-data').Edition;
+const Publication = require('bookbrainz-data').Publication;
+const Publisher = require('bookbrainz-data').Publisher;
+const Work = require('bookbrainz-data').Work;
+
 function getEntityLink(entity) {
 	const bbid = entity.bbid;
 	return `/${entity.type.toLowerCase()}/${bbid}`;
+}
+
+function getModelByEntityType(type) {
+	const entityModels = {
+		Creator,
+		Edition,
+		Publication,
+		Publisher,
+		Work
+	};
+
+	if (!entityModels[type]) {
+		throw new Error('Unrecognized entity type');
+	}
+
+	return entityModels[type];
 }
 
 // Returns a Promise which fulfills with an entity with aliases and data.
@@ -65,4 +87,4 @@ function getEntity(ws, entityGid, fetchOptions) {
 	});
 }
 
-module.exports = {getEntityLink, getEntity};
+module.exports = {getEntityLink, getModelByEntityType, getEntity};

@@ -22,6 +22,8 @@ const ElasticSearch = require('elasticsearch');
 const Promise = require('bluebird');
 const _ = require('lodash');
 
+const utils = require('../helpers/utils');
+
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
@@ -51,29 +53,9 @@ function _fetchEntityModelsForESResults(results) {
 
 	return Promise.map(results.hits, (hit) => {
 		const entityStub = hit._source;
-		let Model = null;
+		const model = utils.getModelByEntityType(entityStub.type);
 
-		switch (entityStub.type) {
-			case 'Publication':
-				Model = Publication;
-				break;
-			case 'Creator':
-				Model = Creator;
-				break;
-			case 'Edition':
-				Model = Edition;
-				break;
-			case 'Work':
-				Model = Work;
-				break;
-			case 'Publisher':
-				Model = Publisher;
-				break;
-			default:
-				return null;
-		}
-
-		return new Model({bbid: entityStub.bbid})
+		return model.forge({bbid: entityStub.bbid})
 			.fetch({withRelated: ['defaultAlias']})
 			.then((entity) => entity.toJSON());
 	});
