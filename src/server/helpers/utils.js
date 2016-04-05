@@ -34,14 +34,18 @@ function getEntityLink(entity) {
 	return `/${entity.type.toLowerCase()}/${bbid}`;
 }
 
-function getEntityModelByType(type) {
-	const entityModels = {
+function getEntityModels() {
+	return {
 		Creator,
 		Edition,
 		Publication,
 		Publisher,
 		Work
 	};
+}
+
+function getEntityModelByType(type) {
+	const entityModels = getEntityModels();
 
 	if (!entityModels[type]) {
 		throw new Error('Unrecognized entity type');
@@ -50,4 +54,4 @@ function getEntityModelByType(type) {
 	return entityModels[type];
 }
 
-module.exports = {getEntityLink, getEntityModelByType};
+module.exports = {getEntityLink, getEntityModels, getEntityModelByType};

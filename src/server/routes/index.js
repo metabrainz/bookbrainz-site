@@ -26,11 +26,7 @@ const Promise = require('bluebird');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
-const Publication = require('bookbrainz-data').Publication;
-const Creator = require('bookbrainz-data').Creator;
-const Edition = require('bookbrainz-data').Edition;
-const Work = require('bookbrainz-data').Work;
-const Publisher = require('bookbrainz-data').Publisher;
+const utils = require('../helpers/utils');
 
 const _ = require('lodash');
 
@@ -61,11 +57,11 @@ router.get('/', (req, res) => {
 		});
 	}
 
-	const entityTypes = {Creator, Edition, Work, Publisher, Publication};
+	const entityModels = utils.getEntityModels();
 
 	const latestEntitiesPromise =
-		Promise.all(_.map(entityTypes, (Model, name) =>
-			Model.query((qb) => {
+		Promise.all(_.map(entityModels, (model, name) =>
+			model.query((qb) => {
 				qb
 					.leftJoin(
 						'bookbrainz.revision',
