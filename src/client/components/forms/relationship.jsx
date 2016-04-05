@@ -28,12 +28,38 @@ const Icon = require('react-fontawesome');
 const _ = require('lodash');
 const request = require('superagent');
 require('superagent-bluebird-promise');
-const utils = require('../../../server/helpers/utils.js');
 const _filter = require('lodash.filter');
-
-const renderRelationship = require('../../../server/helpers/render.js');
+const Handlebars = require('handlebars');
 
 const validators = require('../validators');
+
+function getEntityLink(entity) {
+	'use strict';
+	const bbid = entity.bbid;
+	return `/${entity.type.toLowerCase()}/${bbid}`;
+}
+
+function renderRelationship(relationship) {
+	'use strict';
+	const template = Handlebars.compile(
+		relationship.type.displayTemplate,
+		{noEscape: true}
+	);
+
+	const data = {
+		entities: [
+			relationship.source,
+			relationship.target
+		].map((entity) => {
+			// Linkify source and target based on default alias
+			const name = entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)';
+			return `<a href="${getEntityLink(entity)}">${name}</a>`;
+		})
+	};
+
+	return template(data);
+}
 
 function getRelationshipTypeById(types, id) {
 	'use strict';
@@ -411,7 +437,7 @@ const RelationshipEditor = React.createClass({
 			.send(changedRelationships)
 			.promise()
 			.then(() => {
-				window.location.href = utils.getEntityLink(this.props.entity);
+				window.location.href = getEntityLink(this.props.entity);
 			});
 	},
 	getInternalValue() {
