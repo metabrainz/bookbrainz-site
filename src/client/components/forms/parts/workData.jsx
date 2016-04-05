@@ -45,7 +45,7 @@ const WorkData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				typeId: React.PropTypes.number
 			})),
 			workType: validators.workType
 		}),
@@ -91,7 +91,7 @@ const WorkData = React.createClass({
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,
-					type: identifier.type.id
+					typeId: identifier.type.id
 				}));
 		}
 
