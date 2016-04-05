@@ -163,7 +163,7 @@ function processFormAliases(
 	const oldAliases =
 		oldAliasSet ? oldAliasSet.related('aliases').toJSON() : [];
 	const aliasCompareFields =
-		['name', 'sortName', 'languageId', 'primary', 'default'];
+		['name', 'sortName', 'languageId', 'primary'];
 	const aliasesHaveChanged = setHasChanged(
 		oldAliases, newAliases, aliasCompareFields
 	);
@@ -354,6 +354,9 @@ module.exports.createEntity = (
 					.save(null, {method: 'insert', transacting});
 			})
 			.then(
+				(entityModel) => entityModel.refresh({transacting})
+			)
+			.then(
 				(entityModel) =>
 					onEntityCreation(req, transacting, entityModel)
 						.then(() => entityModel.refresh({transacting}))
@@ -379,14 +382,24 @@ module.exports.editEntity = (
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
+		// Get the parents of the new revision
+		const revisionParentsPromise = newRevisionPromise.then((revision) =>
+			revision.related('parents').fetch({transacting})
+		);
+
+		const currentEntity = res.locals.entity;
+
+		// Add the previous revision as a parent of this revision.
+		const parentAddedPromise = revisionParentsPromise.then((parents) =>
+			parents.attach(currentEntity.revisionId, {transacting})
+		);
+
 		const notePromise = req.body.note ? newRevisionPromise
 			.then((revision) => new Note({
 				authorId: editorJSON.id,
 				revisionId: revision.get('id'),
 				content: req.body.note
 			}).save(null, {transacting})) : null;
-
-		const currentEntity = res.locals.entity;
 
 		const aliasSetPromise = new AliasSet({id: currentEntity.aliasSet.id})
 			.fetch({withRelated: ['aliases'], transacting})
@@ -407,24 +420,36 @@ module.exports.editEntity = (
 				)
 			);
 
-		const annotationPromise = newRevisionPromise.then((revision) =>
-			processFormAnnotation(
-				transacting, currentEntity.annotation, req.body.annotation,
-				revision.get('id')
-			)
+		const oldAnnotationPromise = new Annotation(
+			{id: currentEntity.annotation.id}
+		).fetch({transacting});
+
+		const annotationPromise = Promise.join(
+			oldAnnotationPromise, newRevisionPromise,
+			(oldAnnotation, newRevision) =>
+				processFormAnnotation(
+					transacting, oldAnnotation, req.body.annotation,
+					newRevision.get('id')
+				)
 		);
 
-		const disambiguationPromise = processFormDisambiguation(
-			transacting, currentEntity.disambiguation, req.body.disambiguation
-		);
+		const disambiguationPromise = new Disambiguation(
+			{id: currentEntity.disambiguation.id}
+		).fetch({transacting})
+			.then((oldDisambiguation) =>
+				processFormDisambiguation(
+					transacting, oldDisambiguation, req.body.disambiguation
+				)
+			);
 
 		return Promise.join(
 			newRevisionPromise, aliasSetPromise, identSetPromise,
 			annotationPromise, disambiguationPromise, editorUpdatePromise,
-			notePromise,
+			notePromise, parentAddedPromise,
 			(newRevision, aliasSet, identSet, annotation, disambiguation) => {
 				console.log(identSet);
 				const propsToSet = _.extend({
+					bbid: currentEntity.bbid,
 					aliasSetId: aliasSet && aliasSet.get('id'),
 					identifierSetId: identSet && identSet.get('id'),
 					relationshipSetId: null,
@@ -435,8 +460,11 @@ module.exports.editEntity = (
 				}, derivedProps);
 
 				return new EntityModel(propsToSet)
-					.save(null, {method: 'insert', transacting});
+					.save(null, {method: 'update', transacting});
 			})
+			.then(
+				(entityModel) => entityModel.refresh({transacting})
+			)
 			.then(
 				(entityModel) =>
 					onEntityEdit(req, transacting, entityModel)

@@ -106,8 +106,7 @@ module.exports = React.createClass({
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href =
-					`/work/${res.body.bbid}`;
+				window.location.href = `/work/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				self.setState({error});

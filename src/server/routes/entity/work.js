@@ -46,6 +46,7 @@ const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
 const entityRoutes = require('./entity');
+const _ = require('lodash');
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param(
@@ -155,13 +156,13 @@ function handleWorkChange(req, transacting, entityModel) {
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-			req, res, Work, {typeId: req.body.typeId}, handleWorkChange
+		req, res, Work, _.pick(req.body, 'typeId'), handleWorkChange
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, Work, {typeId: req.body.typeId}, handleWorkChange
+		req, res, Work, _.pick(req.body, 'typeId'), handleWorkChange
 	)
 );
 
