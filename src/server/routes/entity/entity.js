@@ -35,11 +35,6 @@ const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
-	let title = entity.type;
-
-	if (entity.defaultAlias && entity.defaultAlias.name) {
-		title += ` “${entity.defaultAlias.name}”`;
-	}
 
 	// Get unique identifier types for display
 	const identifierTypes = entity.identifierSet &&
@@ -50,36 +45,23 @@ module.exports.displayEntity = (req, res) => {
 
 	res.render(
 		`entity/view/${entity.type.toLowerCase()}`,
-		{title, identifierTypes}
+		{identifierTypes}
 	);
 };
 
 module.exports.displayDeleteEntity = (req, res) => {
-	const entity = res.locals.entity;
-	let title = entity.type;
-
-	if (entity.defaultAlias && entity.defaultAlias.name) {
-		title += ` “${entity.defaultAlias.name}”`;
-	}
-
-	res.render('entity/delete', {title});
+	res.render('entity/delete');
 };
 
 module.exports.displayRevisions = (req, res, RevisionModel) => {
-	const entity = res.locals.entity;
-	let title = entity.type;
-
-	if (entity.defaultAlias && entity.defaultAlias.name) {
-		title += ` “${entity.defaultAlias.name}”`;
-	}
-
 	const bbid = req.params.bbid;
+
 	return new RevisionModel()
 		.where({bbid})
 		.fetchAll({withRelated: ['revision', 'revision.author']})
 		.then((collection) => {
 			const revisions = collection.toJSON();
-			return res.render('entity/revisions', {title, revisions});
+			return res.render('entity/revisions', {revisions});
 		});
 };
 

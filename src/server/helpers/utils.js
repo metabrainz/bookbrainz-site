@@ -51,6 +51,38 @@ function getEntityModelByType(type) {
 	return entityModels[type];
 }
 
+// Cribbed from MDN documentation on template literals
+function template(strings) {
+	const keys = Array.prototype.slice.call(arguments, 1);
+
+	return (values) => {
+		const result = [strings[0]];
+
+		keys.forEach((key, i) => {
+			result.push(values[key], strings[i + 1]);
+		});
+
+		return result.join('');
+	};
+}
+
+function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
+	/**
+	 * User-visible strings should _never_ be created by concatenation; when we
+	 * start to implement localization, it will create problems for users of
+	 * many languages. This helper is here to make it a little easier to do the
+	 * right thing.
+	 */
+	let title = titleForUnnamed;
+
+	// Accept template with a "name" replacement field
+	if (entity && entity.defaultAlias && entity.defaultAlias.name) {
+		title = templateForNamed({name: entity.defaultAlias.name});
+	}
+
+	return title;
+}
+
 function incrementEditorEditCountById(id, transacting) {
 	return new Editor({id})
 		.fetch({transacting})
@@ -64,5 +96,7 @@ module.exports = {
 	getEntityLink,
 	getEntityModels,
 	getEntityModelByType,
+	template,
+	createEntityPageTitle,
 	incrementEditorEditCountById
 };

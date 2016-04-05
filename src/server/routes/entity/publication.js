@@ -23,6 +23,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../../helpers/auth');
 
+const utils = require('../../helpers/utils');
+
 const Publication = require('bookbrainz-data').Publication;
 const PublicationHeader = require('bookbrainz-data').PublicationHeader;
 const PublicationRevision = require('bookbrainz-data').PublicationRevision;
@@ -56,21 +58,32 @@ router.param(
 	)
 );
 
-router.get('/:bbid', loadEntityRelationships, (req, res) =>
-	entityRoutes.displayEntity(req, res)
-);
+function _setPublicationTitle(res) {
+	res.locals.title = utils.createEntityPageTitle(
+		res.locals.entity,
+		'Publication',
+		utils.template`Publication “${'name'}”`
+	);
+}
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) =>
-	entityRoutes.displayDeleteEntity(req, res)
-);
+router.get('/:bbid', loadEntityRelationships, (req, res) => {
+	_setPublicationTitle(res);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+	_setPublicationTitle(res);
+	entityRoutes.displayDeleteEntity(req, res);
+});
 
 router.post('/:bbid/delete/confirm', (req, res) =>
 	entityRoutes.handleDelete(req, res, PublicationHeader, PublicationRevision)
 );
 
-router.get('/:bbid/revisions', (req, res) =>
-	entityRoutes.displayRevisions(req, res, PublicationRevision)
-);
+router.get('/:bbid/revisions', (req, res) => {
+	_setPublicationTitle(res);
+	entityRoutes.displayRevisions(req, res, PublicationRevision);
+});
 
 // Creation
 
