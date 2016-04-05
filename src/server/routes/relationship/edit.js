@@ -43,7 +43,7 @@ const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 
 function getEntityByType(entity, withRelated, transacting) {
-	const model = utils.getModelByEntityType(entity.type);
+	const model = utils.getEntityModelByType(entity.type);
 
 	return model.forge({bbid: entity.bbid})
 		.fetch({withRelated, transacting});

@@ -53,7 +53,7 @@ function _fetchEntityModelsForESResults(results) {
 
 	return Promise.map(results.hits, (hit) => {
 		const entityStub = hit._source;
-		const model = utils.getModelByEntityType(entityStub.type);
+		const model = utils.getEntityModelByType(entityStub.type);
 
 		return model.forge({bbid: entityStub.bbid})
 			.fetch({withRelated: ['defaultAlias']})

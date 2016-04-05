@@ -95,7 +95,7 @@ function loadEntityRelationships(req, res, next) {
 				relationshipSet.related('relationships').toJSON() : [];
 
 			function getEntityWithAlias(relEntity) {
-				const model = utils.getModelByEntityType(relEntity.type);
+				const model = utils.getEntityModelByType(relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
 					.fetch({withRelated: 'defaultAlias'});

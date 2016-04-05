@@ -34,7 +34,7 @@ function getEntityLink(entity) {
 	return `/${entity.type.toLowerCase()}/${bbid}`;
 }
 
-function getModelByEntityType(type) {
+function getEntityModelByType(type) {
 	const entityModels = {
 		Creator,
 		Edition,
@@ -50,4 +50,4 @@ function getModelByEntityType(type) {
 	return entityModels[type];
 }
 
-module.exports = {getEntityLink, getModelByEntityType};
+module.exports = {getEntityLink, getEntityModelByType};
