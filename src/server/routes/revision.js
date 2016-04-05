@@ -54,7 +54,7 @@ function formatRow(kind, key, lhs, rhs) {
 	return {kind, key, lhs, rhs};
 }
 
-function formatNewAliasSet(entity, change) {
+function formatNewAliasSet(change) {
 	const rhs = change.rhs;
 	const changes = [];
 	if (rhs.defaultAlias && rhs.defaultAliasId) {
@@ -74,7 +74,7 @@ function formatNewAliasSet(entity, change) {
 	return changes;
 }
 
-function formatAliasAddOrDelete(entity, change) {
+function formatAliasAddOrDelete(change) {
 	const lhs = change.item.lhs &&
 		[`${change.item.lhs.name} (${change.item.lhs.sortName})`];
 	const rhs = change.item.rhs &&
@@ -83,60 +83,65 @@ function formatAliasAddOrDelete(entity, change) {
 	return [formatRow(change.item.kind, 'Aliases', lhs, rhs)];
 }
 
-function formatAliasModified(entity, change) {
+function formatAliasModified(change) {
 	if (change.path.length > 3 && change.path[3] === 'name') {
-		const lhs = change.lhs && [change.lhs];
-		const rhs = change.rhs && [change.rhs];
-		return [formatRow(
-			'E', `Alias ${change.path[2]} -> Name`, lhs, rhs
-		)];
+		return [
+			formatChange(
+				change,
+				`Alias ${change.path[2]} -> Name`,
+				(side) => side && [side]
+			)
+		];
 	}
 
 	if (change.path.length > 3 && change.path[3] === 'sortName') {
-		const lhs = change.lhs && [change.lhs];
-		const rhs = change.rhs && [change.rhs];
-		return [formatRow(
-			'E', `Alias ${change.path[2]} -> Sort Name`, lhs, rhs
-		)];
+		return [
+			formatChange(
+				change,
+				`Alias ${change.path[2]} -> Sort Name`,
+				(side) => side && [side]
+			)
+		];
 	}
 
 	if (change.path.length > 3 && change.path[3] === 'language') {
-		const lhs = change.lhs && change.lhs.name && [change.lhs.name];
-		const rhs = change.rhs && change.rhs.name && [change.rhs.name];
-		return [formatRow(
-			'E', `Alias ${change.path[2]} -> Language`, lhs, rhs
-		)];
+		return [
+			formatChange(
+				change,
+				`Alias ${change.path[2]} -> Language`,
+				(side) => side && side.name && [side.name]
+			)
+		];
 	}
 
 	if (change.path.length > 3 && change.path[3] === 'primary') {
-		const lhs =
-			!_.isNull(change.lhs) && [change.lhs.primary ? 'Yes' : 'No'];
-		const rhs =
-			!_.isNull(change.rhs) && [change.rhs.primary ? 'Yes' : 'No'];
-		return [formatRow(
-			'E', `Alias ${change.path[2]} -> Primary`, lhs, rhs
-		)];
+		return [
+			formatChange(
+				change,
+				`Alias ${change.path[2]} -> Primary`,
+				(side) => !_.isNull(side) && [side.primary ? 'Yes' : 'No']
+			)
+		];
 	}
 
 	return [];
 }
 
-function formatDefaultAliasModified(entity, change) {
+function formatDefaultAliasModified(change) {
 	if (change.path.length > 2 && change.path[2] === 'name') {
-		const lhs = change.lhs && [change.lhs];
-		const rhs = change.rhs && [change.rhs];
-
-		return [formatRow('E', 'Default Alias', lhs, rhs)];
+		return [
+			formatChange(change, 'Default Alias', (side) => side && [side])
+		];
 	}
 
 	return [];
 }
 
-function formatAlias(entity, change) {
+function formatAlias(change) {
 	const aliasSetAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['aliasSet']);
 	if (aliasSetAdded) {
-		return formatNewAliasSet(entity, change);
+		return formatNewAliasSet(change);
 	}
 
 	const aliasSetChanged =
@@ -145,25 +150,25 @@ function formatAlias(entity, change) {
 	if (aliasSetChanged) {
 		if (change.kind === 'A') {
 			// Alias added to or deleted from set
-			return formatAliasAddOrDelete(entity, change);
+			return formatAliasAddOrDelete(change);
 		}
 
 		if (change.kind === 'E') {
 			// Entry in alias set changed
-			return formatAliasModified(entity, change);
+			return formatAliasModified(change);
 		}
 	}
 
 	const defaultAliasChanged =
 		_.isEqual(change.path.slice(0, 2), ['aliasSet', 'defaultAlias']);
 	if (defaultAliasChanged) {
-		return formatDefaultAliasModified(entity, change);
+		return formatDefaultAliasModified(change);
 	}
 
 	return null;
 }
 
-function formatNewIdentifierSet(entity, change) {
+function formatNewIdentifierSet(change) {
 	const rhs = change.rhs;
 	if (rhs.identifiers && rhs.identifiers.length > 0) {
 		return [formatRow(
@@ -176,7 +181,7 @@ function formatNewIdentifierSet(entity, change) {
 	return [];
 }
 
-function formatIdentifierAddOrDelete(entity, change) {
+function formatIdentifierAddOrDelete(change) {
 	const lhs = change.item.lhs &&
 		[`${change.item.lhs.type.label}: ${change.item.lhs.value}`];
 	const rhs = change.item.rhs &&
@@ -187,22 +192,24 @@ function formatIdentifierAddOrDelete(entity, change) {
 	];
 }
 
-function formatIdentifierModified(entity, change) {
+function formatIdentifierModified(change) {
 	if (change.path.length > 3 && change.path[3] === 'value') {
-		const lhs = change.lhs && [change.lhs];
-		const rhs = change.rhs && [change.rhs];
 		return [
-			formatRow('E', `Identifier ${change.path[2]} -> Value`, lhs, rhs)
+			formatChange(
+				change,
+				`Identifier ${change.path[2]} -> Value`,
+				(side) => side && [side]
+			)
 		];
 	}
 
 	if (change.path.length > 4 && change.path[3] === 'type' &&
 			change.path[4] === 'label') {
-		const lhs = change.lhs && [change.lhs];
-		const rhs = change.rhs && [change.rhs];
 		return [
-			formatRow(
-				'E', `Identifier ${change.path[2]} -> Type`, lhs, rhs
+			formatChange(
+				change,
+				`Identifier ${change.path[2]} -> Type`,
+				(side) => side && [side]
 			)
 		];
 	}
@@ -210,7 +217,7 @@ function formatIdentifierModified(entity, change) {
 	return [];
 }
 
-function formatIdentifier(entity, change) {
+function formatIdentifier(change) {
 	const identifierSetAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['identifierSet']);
 	if (identifierSetAdded) {
@@ -223,48 +230,37 @@ function formatIdentifier(entity, change) {
 	if (identifierSetChanged) {
 		if (change.kind === 'A') {
 			// Identifier added to or deleted from set
-			return formatIdentifierAddOrDelete(entity, change);
+			return formatIdentifierAddOrDelete(change);
 		}
 
 		if (change.kind === 'E') {
 			// Entry in identifier set changed
-			return formatIdentifierModified(entity, change);
+			return formatIdentifierModified(change);
 		}
 	}
 
 	return null;
 }
 
-function formatNewAnnotation(entity, change) {
-	const lhs = change.lhs;
-	const rhs = change.rhs;
-	return formatRow(
-		change.kind, 'Annotation', [lhs && lhs.content], [rhs && rhs.content]
+function formatNewAnnotation(change) {
+	return formatChange(change, 'Annotation', (side) => [side && side.content]);
+}
+
+function formatNewDisambiguation(change) {
+	return formatChange(
+		change, 'Disambiguation', (side) => [side && side.comment]
 	);
 }
 
-function formatNewDisambiguation(entity, change) {
-	const lhs = change.lhs;
-	const rhs = change.rhs;
-	return formatRow(
-		change.kind, 'Disambiguation', [lhs && lhs.comment],
-		[rhs && rhs.comment]
-	);
+function formatChangedAnnotation(change) {
+	return formatChange(change, 'Annotation', (side) => side && [side]);
 }
 
-function formatChangedAnnotation(entity, change) {
-	const lhs = change.lhs && [change.lhs];
-	const rhs = change.rhs && [change.rhs];
-	return formatRow(change.kind, 'Annotation', lhs, rhs);
+function formatChangedDisambiguation(change) {
+	return formatChange(change, 'Disambiguation', (side) => side && [side]);
 }
 
-function formatChangedDisambiguation(entity, change) {
-	const lhs = change.lhs && [change.lhs];
-	const rhs = change.rhs && [change.rhs];
-	return formatRow(change.kind, 'Disambiguation', lhs, rhs);
-}
-
-function formatRelationshipAdd(entity, change) {
+function formatRelationshipAdd(change) {
 	const changes = [];
 	const rhs = change.item.rhs;
 
@@ -292,52 +288,52 @@ function formatRelationshipAdd(entity, change) {
 	return changes;
 }
 
-function formatRelationship(entity, change) {
+function formatRelationship(change) {
 	if (change.kind === 'A') {
 		if (change.item.kind === 'N') {
-			return formatRelationshipAdd(entity, change);
+			return formatRelationshipAdd(change);
 		}
 	}
 
 	return null;
 }
 
-function formatEntityChange(entity, change) {
+function formatEntityChange(change) {
 	const aliasChanged =
 		_.isEqual(change.path, ['aliasSet']) ||
 		_.isEqual(change.path.slice(0, 2), ['aliasSet', 'aliases']) ||
 		_.isEqual(change.path.slice(0, 2), ['aliasSet', 'defaultAlias']);
 	if (aliasChanged) {
-		return formatAlias(entity, change);
+		return formatAlias(change);
 	}
 
 	const identifierChanged =
 		_.isEqual(change.path, ['identifierSet']) ||
 		_.isEqual(change.path.slice(0, 2), ['identifierSet', 'identifiers']);
 	if (identifierChanged) {
-		return formatIdentifier(entity, change);
+		return formatIdentifier(change);
 	}
 
 	const relationshipChanged =
 		_.isEqual(change.path, ['relationshipSet', 'relationships']);
 	if (relationshipChanged) {
-		return formatRelationship(entity, change);
+		return formatRelationship(change);
 	}
 
 	if (_.isEqual(change.path, ['annotation'])) {
-		return formatNewAnnotation(entity, change);
+		return formatNewAnnotation(change);
 	}
 
 	if (_.isEqual(change.path, ['annotation', 'content'])) {
-		return formatChangedAnnotation(entity, change);
+		return formatChangedAnnotation(change);
 	}
 
 	if (_.isEqual(change.path, ['disambiguation'])) {
-		return formatNewDisambiguation(entity, change);
+		return formatNewDisambiguation(change);
 	}
 
 	if (_.isEqual(change.path, ['disambiguation', 'comment'])) {
-		return formatChangedDisambiguation(entity, change);
+		return formatChangedDisambiguation(change);
 	}
 
 	return null;
@@ -362,9 +358,9 @@ function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		}
 
 		const rawChangeSets = diff.changes.map((change) =>
-			formatEntityChange(diff.entity, change) ||
+			formatEntityChange(change) ||
 			entityFormatter &&
-			entityFormatter(diff.entity, change)
+			entityFormatter(change)
 		);
 
 		formattedDiff.changes = _.sortBy(
@@ -376,72 +372,74 @@ function formatEntityDiffs(diffs, entityType, entityFormatter) {
 	});
 }
 
-function formatDateChange(entity, label, change) {
-	const lhs = change.lhs && [change.lhs];
-	const rhs = change.rhs && [change.rhs];
-	return formatRow(change.kind, label, lhs, rhs);
+function formatChange(change, label, transformer) {
+	return formatRow(
+		change.kind,
+		label,
+		transformer(change.lhs),
+		transformer(change.rhs)
+	);
 }
 
-function formatGenderChange(entity, change) {
-	const lhs = change.lhs && [change.lhs.name];
-	const rhs = change.rhs && [change.rhs.name];
-	return formatRow(change.kind, 'Gender', lhs, rhs);
+function formatDateChange(change, label) {
+	return formatChange(change, label, (side) => side && [side]);
 }
 
-function formatEndedChange(entity, change) {
-	const lhs = change.lhs;
-	const rhs = change.rhs;
+function formatGenderChange(change) {
+	return formatChange(
+		change,
+		'Gender',
+		(side) => side && [side.name]
+	);
+}
+
+function formatEndedChange(change) {
 	return [
-		formatRow(change.kind, 'Ended', [
-			_.isNull(lhs) || lhs ? 'Yes' : 'No'
-		], [
-			_.isNull(rhs) || rhs ? 'Yes' : 'No'
-		])
+		formatChange(
+			change,
+			'Ended',
+			(side) => [_.isNull(side) || side ? 'Yes' : 'No']
+		)
 	];
 }
 
-function formatTypeChange(entity, label, change) {
-	const lhs = change.lhs;
-	const rhs = change.rhs;
+function formatTypeChange(change, label) {
 	return [
-		formatRow(change.kind, label, [lhs && lhs.label], [rhs && rhs.label])
+		formatChange(change, label, (side) => side && [side.label])
 	];
 }
 
-function formatCreatorChange(entity, change) {
+function formatCreatorChange(change) {
 	if (_.isEqual(change.path, ['beginDate'])) {
-		return formatDateChange(entity, 'Begin Date', change);
+		return formatDateChange(change, 'Begin Date');
 	}
 
 	if (_.isEqual(change.path, ['endDate'])) {
-		return formatDateChange(entity, 'End Date', change);
+		return formatDateChange(change, 'End Date');
 	}
 
 	if (_.isEqual(change.path, ['gender'])) {
-		return formatGenderChange(entity, change);
+		return formatGenderChange(change);
 	}
 
 	if (_.isEqual(change.path, ['ended'])) {
-		return formatEndedChange(entity, change);
+		return formatEndedChange(change);
 	}
 
 	if (_.isEqual(change.path, ['type'])) {
-		return formatTypeChange(entity, 'Creator Type', change);
+		return formatTypeChange(change, 'Creator Type');
 	}
 
 	return null;
 }
 
-function formatScalarChange(entity, label, change) {
-	const lhs = change.lhs && [change.lhs];
-	const rhs = change.rhs && [change.rhs];
-	return [
-		formatRow(change.kind, label, lhs, rhs)
-	];
+function formatScalarChange(change, label) {
+	return [formatChange(change, label, (side) => side)];
 }
 
-function formatEditionLanguages(entity, change) {
+function formatEditionLanguages(change) {
 	const rhs = change.rhs;
+
 	if (rhs && rhs.length) {
 		return [formatRow(
 			'N', 'Language', null, rhs.map(
@@ -453,47 +451,52 @@ function formatEditionLanguages(entity, change) {
 	return null;
 }
 
-function formatEditionLanguageAddOrDelete(entity, change) {
-	const lhs = change.item.lhs && [change.item.lhs.name];
-	const rhs = change.item.rhs && [change.item.rhs.name];
-
+function formatEditionLanguageAddOrDelete(change) {
 	return [
-		formatRow(change.item.kind, 'Language ${change.index}', lhs, rhs)
+		formatChange(
+			change.item,
+			'Language ${change.index}',
+			(side) => side && [side]
+		)
 	];
 }
 
-function formatEditionLanguageModified(entity, change) {
-	const lhs = change.lhs && [change.lhs.name];
-	const rhs = change.rhs && [change.rhs.name];
-
-	return [formatRow('E', `Language ${change.path[2]}`, lhs, rhs)];
+function formatEditionLanguageModified(change) {
+	return [
+		formatChange(
+			change,
+			`Language ${change.path[2]}`,
+			(side) => side && [side.name]
+		)
+	];
 }
 
-function formatEditionLanguageChange(entity, change) {
+function formatEditionLanguageChange(change) {
 	const editionLanguagesAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['languages']);
 	if (editionLanguagesAdded) {
-		return formatEditionLanguages(entity, change);
+		return formatEditionLanguages(change);
 	}
 
 	const editionLanguageChanged = change.path[0] === 'languages';
 	if (editionLanguageChanged) {
 		if (change.kind === 'A') {
 			// Edition language added to or deleted from set
-			return formatEditionLanguageAddOrDelete(entity, change);
+			return formatEditionLanguageAddOrDelete(change);
 		}
 
 		if (change.kind === 'E') {
 			// Entry in edition languages changed
-			return formatEditionLanguageModified(entity, change);
+			return formatEditionLanguageModified(change);
 		}
 	}
 
 	return null;
 }
 
-function formatEditionPublishers(entity, change) {
+function formatEditionPublishers(change) {
 	const rhs = change.rhs;
+
 	if (rhs && rhs.length) {
 		return [formatRow(
 			'N', 'Publishers', null, rhs.map(
@@ -505,47 +508,52 @@ function formatEditionPublishers(entity, change) {
 	return null;
 }
 
-function formatEditionPublisherAddOrDelete(entity, change) {
-	const lhs = change.item.lhs && [change.item.lhs.bbid];
-	const rhs = change.item.rhs && [change.item.rhs.bbid];
-
+function formatEditionPublisherAddOrDelete(change) {
 	return [
-		formatRow(change.item.kind, 'Publisher ${change.index}', lhs, rhs)
+		formatChange(
+			change.item,
+			'Publisher ${change.index}',
+			(side) => side && [side.bbid]
+		)
 	];
 }
 
-function formatEditionPublisherModified(entity, change) {
-	const lhs = change.lhs && [change.lhs.bbid];
-	const rhs = change.rhs && [change.rhs.bbid];
-
-	return [formatRow('E', `Publisher ${change.path[2]}`, lhs, rhs)];
+function formatEditionPublisherModified(change) {
+	return [
+		formatChange(
+			change,
+			`Publisher ${change.path[2]}`,
+			(side) => side && [side.bbid]
+		)
+	];
 }
 
-function formatEditionPublisher(entity, change) {
+function formatEditionPublisher(change) {
 	const publishersAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['publishers']);
 	if (publishersAdded) {
-		return formatEditionPublishers(entity, change);
+		return formatEditionPublishers(change);
 	}
 
 	const publisherChanged = change.path[0] === 'publishers';
 	if (publisherChanged) {
 		if (change.kind === 'A') {
 			// Publisher added to or deleted from set
-			return formatEditionPublisherAddOrDelete(entity, change);
+			return formatEditionPublisherAddOrDelete(change);
 		}
 
 		if (change.kind === 'E') {
 			// Entry in publishers changed
-			return formatEditionPublisherModified(entity, change);
+			return formatEditionPublisherModified(change);
 		}
 	}
 
 	return null;
 }
 
-function formatNewReleaseEvents(entity, change) {
+function formatNewReleaseEvents(change) {
 	const rhs = change.rhs;
+
 	if (rhs && rhs.length) {
 		return formatRow(
 			'N', 'Release Date', null,
@@ -556,106 +564,101 @@ function formatNewReleaseEvents(entity, change) {
 	return [];
 }
 
-function formatReleaseEventAddOrDelete(entity, change) {
-	const lhs = change.item.lhs && [change.item.lhs.date];
-	const rhs = change.item.rhs && [change.item.rhs.date];
-
+function formatReleaseEventAddOrDelete(change) {
 	return [
-		formatRow(change.item.kind, 'Release Date', lhs, rhs)
+		formatChange(change.item, 'Release Date', (side) => side && [side.date])
 	];
 }
 
-function formatReleaseEventModified(entity, change) {
-	const lhs = change.lhs && [change.lhs.date];
-	const rhs = change.rhs && [change.rhs.date];
-	return [formatRow(
-		'E', 'Release Date', lhs, rhs
-	)];
+function formatReleaseEventModified(change) {
+	return [
+		formatChange(change, 'Release Date', (side) => side && [side.date])
+	];
 }
 
-function formatReleaseEventsChange(entity, change) {
+function formatReleaseEventsChange(change) {
 	const releaseEventsAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['releaseEvents']);
 	if (releaseEventsAdded) {
-		return formatNewReleaseEvents(entity, change);
+		return formatNewReleaseEvents(change);
 	}
 
 	const releaseEventsChanged = change.path[0] === 'releaseEvents';
 	if (releaseEventsChanged) {
 		if (change.kind === 'A') {
 			// Release event added to or deleted from set
-			return formatReleaseEventAddOrDelete(entity, change);
+			return formatReleaseEventAddOrDelete(change);
 		}
 
 		if (change.kind === 'E') {
 			// Entry in release events changed
-			return formatReleaseEventModified(entity, change);
+			return formatReleaseEventModified(change);
 		}
 	}
 
 	return null;
 }
 
-function formatEditionChange(entity, change) {
+function formatEditionChange(change) {
 	if (_.isEqual(change.path, ['publicationBbid'])) {
-		return formatScalarChange(entity, 'Publication', change);
+		return formatScalarChange(change, 'Publication');
 	}
 
 	if (_.isEqual(change.path, ['publishers'])) {
-		return formatEditionPublisher(entity, change);
+		return formatEditionPublisher(change);
 	}
 
 	if (_.isEqual(change.path, ['releaseEvents'])) {
-		return formatReleaseEventsChange(entity, change);
+		return formatReleaseEventsChange(change);
 	}
 
 	if (_.isEqual(change.path, ['languages'])) {
-		return formatEditionLanguageChange(entity, change);
+		return formatEditionLanguageChange(change);
 	}
 
 	if (_.isEqual(change.path, ['width']) ||
 			_.isEqual(change.path, ['height']) ||
 			_.isEqual(change.path, ['depth']) ||
 			_.isEqual(change.path, ['weight'])) {
-		return formatScalarChange(entity, _.startCase(change.path[0]), change);
+		return formatScalarChange(change, _.startCase(change.path[0]));
 	}
 
 	if (_.isEqual(change.path, ['pages'])) {
-		return formatScalarChange(entity, 'Page Count', change);
+		return formatScalarChange(change, 'Page Count');
 	}
 
 	if (_.isEqual(change.path, ['editionFormat'])) {
-		return formatTypeChange(entity, 'Edition Format', change);
+		return formatTypeChange(change, 'Edition Format');
 	}
 
 	if (_.isEqual(change.path, ['editionStatus'])) {
-		return formatTypeChange(entity, 'Edition Status', change);
+		return formatTypeChange(change, 'Edition Status');
 	}
 
 	return null;
 }
 
-function formatPublisherChange(entity, change) {
+function formatPublisherChange(change) {
 	if (_.isEqual(change.path, ['beginDate'])) {
-		return formatDateChange(entity, 'Begin Date', change);
+		return formatDateChange(change, 'Begin Date');
 	}
 
 	if (_.isEqual(change.path, ['endDate'])) {
-		return formatDateChange(entity, 'End Date', change);
+		return formatDateChange(change, 'End Date');
 	}
 
 	if (_.isEqual(change.path, ['ended'])) {
-		return formatEndedChange(entity, change);
+		return formatEndedChange(change);
 	}
 
 	if (_.isEqual(change.path, ['type'])) {
-		return formatTypeChange(entity, 'Publisher Type', change);
+		return formatTypeChange(change, 'Publisher Type');
 	}
 
 	return null;
 }
 
-function formatNewWorkLanguages(entity, change) {
+function formatNewWorkLanguages(change) {
 	const rhs = change.rhs;
 	if (rhs && rhs.length) {
 		return [formatRow(
@@ -667,64 +670,65 @@ function formatNewWorkLanguages(entity, change) {
 	return [];
 }
 
-function formatWorkLanguageAddOrDelete(entity, change) {
-	const lhs = change.item.lhs && [change.item.lhs.name];
-	const rhs = change.item.rhs && [change.item.rhs.name];
-
+function formatWorkLanguageAddOrDelete(change) {
 	return [
-		formatRow(change.item.kind, `Language ${change.index}`, lhs, rhs)
+		formatChange(
+			change.item,
+			`Language ${change.index}`,
+			(side) => side && [side.name]
+		)
 	];
 }
 
-function formatWorkLanguageModified(entity, change) {
-	const lhs = change.lhs && [change.lhs.name];
-	const rhs = change.rhs && [change.rhs.name];
-	return [formatRow(
-		'E', `Language ${change.path[2]}`, lhs, rhs
-	)];
+function formatWorkLanguageModified(change) {
+	return [
+		formatChange(
+			change, `Language ${change.path[2]}`, (side) => side && [side.name]
+		)
+	];
 }
 
-function formatWorkLanguageChange(entity, change) {
+function formatWorkLanguageChange(change) {
 	const workLanguageSetAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['languages']);
 	if (workLanguageSetAdded) {
-		return formatNewWorkLanguages(entity, change);
+		return formatNewWorkLanguages(change);
 	}
 
 	const workLanguageSetChanged = change.path[0] === 'languages';
 	if (workLanguageSetChanged) {
 		if (change.kind === 'A') {
 			// Work language added to or deleted from set
-			return formatWorkLanguageAddOrDelete(entity, change);
+			return formatWorkLanguageAddOrDelete(change);
 		}
 
 		if (change.kind === 'E') {
 			// Entry in work languages changed
-			return formatWorkLanguageModified(entity, change);
+			return formatWorkLanguageModified(change);
 		}
 	}
 
 	return null;
 }
 
-function formatWorkChange(entity, change) {
+function formatWorkChange(change) {
 	const workLanguageChanged =
 		_.isEqual(change.path, ['languages']);
 
 	if (workLanguageChanged) {
-		return formatWorkLanguageChange(entity, change);
+		return formatWorkLanguageChange(change);
 	}
 
 	if (_.isEqual(change.path, ['type'])) {
-		return formatTypeChange(entity, 'Work Type', change);
+		return formatTypeChange(change, 'Work Type');
 	}
 
 	return null;
 }
 
-function formatPublicationChange(entity, change) {
+function formatPublicationChange(change) {
 	if (_.isEqual(change.path, ['type'])) {
-		return formatTypeChange(entity, 'Publication Type', change);
+		return formatTypeChange(change, 'Publication Type');
 	}
 
 	return [];
