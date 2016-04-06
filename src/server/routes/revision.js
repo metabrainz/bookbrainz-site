@@ -434,7 +434,7 @@ function formatCreatorChange(change) {
 }
 
 function formatScalarChange(change, label) {
-	return [formatChange(change, label, (side) => side)];
+	return [formatChange(change, label, (side) => side && [side])];
 }
 
 function formatEditionLanguages(change) {
