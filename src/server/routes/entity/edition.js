@@ -30,7 +30,6 @@ const EditionHeader = require('bookbrainz-data').EditionHeader;
 const EditionRevision = require('bookbrainz-data').EditionRevision;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
-const ReleaseEvent = require('bookbrainz-data').ReleaseEvent;
 
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
@@ -172,7 +171,12 @@ function handleEditionChange(req, transacting, entityModel) {
 	const releaseDate = req.body.releaseDate;
 
 	const dataPromise = entityModel.related('revision').fetch({
-		withRelated: ['data.languages', 'data.releaseEvents', 'data.publishers'], transacting
+		withRelated: [
+			'data.languages',
+			'data.releaseEvents',
+			'data.publishers'
+		],
+		transacting
 	});
 	return dataPromise.then((revision) => {
 		const data = revision.related('data');
