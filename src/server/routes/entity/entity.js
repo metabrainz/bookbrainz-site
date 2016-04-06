@@ -479,7 +479,8 @@ module.exports.editEntity = (
 					return onEntityEdit(req, transacting, entityModel)
 						.then(() => entityModel.refresh({transacting}))
 						.then((entity) => entity.toJSON());
-				});
+				}
+			);
 	});
 
 	return entityEditPromise.then((entity) =>
