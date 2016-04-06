@@ -455,8 +455,8 @@ function formatEditionLanguageAddOrDelete(change) {
 	return [
 		formatChange(
 			change.item,
-			'Language ${change.index}',
-			(side) => side && [side]
+			`Language ${change.index}`,
+			(side) => side && [side.name]
 		)
 	];
 }
@@ -512,7 +512,7 @@ function formatEditionPublisherAddOrDelete(change) {
 	return [
 		formatChange(
 			change.item,
-			'Publisher ${change.index}',
+			`Publisher ${change.index}`,
 			(side) => side && [side.bbid]
 		)
 	];
