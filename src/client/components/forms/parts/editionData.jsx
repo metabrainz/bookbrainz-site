@@ -239,12 +239,12 @@ const EditionData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<SearchSelect
+						nodefault
 						collection="Publisher"
 						defaultValue={initialPublisher}
 						label="Publisher"
 						labelAttribute="name"
 						labelClassName="col-md-4"
-						nodefault
 						placeholder="Select publisher…"
 						ref="publisher"
 						select2Options={select2Options}
