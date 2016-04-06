@@ -67,12 +67,12 @@ const EditionData = React.createClass({
 					name: React.PropTypes.string
 				})
 			}),
-			publishers: React.PropTypes.arrayOf(React.PropTypes.shape({
+			publisher: React.PropTypes.shape({
 				bbid: React.PropTypes.string,
 				defaultAlias: React.PropTypes.shape({
 					name: React.PropTypes.string
 				})
-			})),
+			}),
 			releaseDate: React.PropTypes.string,
 			weight: React.PropTypes.number,
 			width: React.PropTypes.number
@@ -91,23 +91,27 @@ const EditionData = React.createClass({
 				name: React.PropTypes.string
 			})
 		}),
-		publishers: React.PropTypes.arrayOf(React.PropTypes.shape({
+		publisher: React.PropTypes.shape({
 			bbid: React.PropTypes.string,
 			defaultAlias: React.PropTypes.shape({
 				name: React.PropTypes.string
 			})
-		})),
+		}),
 		visible: React.PropTypes.bool
 	},
 	getValue() {
 		'use strict';
 
 		const publication = this.refs.publication.getValue();
+		const publisher = this.refs.publisher.getValue();
 
 		return {
 			publication: publication ? publication.bbid : null,
+			publisher: publisher ? publisher.bbid : null,
 			releaseDate: this.refs.release.getValue(),
-			language: this.refs.language.getValue(),
+			languages: this.refs.languages.getValue().map(
+				(languageId) => parseInt(languageId, 10)
+			),
 			editionFormat: this.refs.editionFormat.getValue(),
 			editionStatus: this.refs.editionStatus.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
@@ -131,6 +135,7 @@ const EditionData = React.createClass({
 		'use strict';
 
 		let initialPublication = null;
+		let initialPublisher = null;
 		let initialReleaseDate = null;
 		let initialLanguages = [];
 		let initialEditionFormat = null;
@@ -145,10 +150,15 @@ const EditionData = React.createClass({
 		let initialWeight = null;
 
 		let publication = null;
+		let publisher = null;
 		const prefillData = this.props.edition;
 		if (prefillData) {
 			if (prefillData.publication) {
 				publication = prefillData.publication;
+			}
+
+			if (prefillData.publisher) {
+				publisher = prefillData.publisher[0];
 			}
 
 			initialReleaseDate = prefillData.releaseDate;
@@ -173,7 +183,7 @@ const EditionData = React.createClass({
 				prefillData.depth : null;
 			initialWeight = prefillData.weight || prefillData.weight === 0 ?
 				prefillData.weight : null;
-			initialIdentifiers =
+			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,
@@ -193,6 +203,18 @@ const EditionData = React.createClass({
 			};
 		}
 
+		if (this.props.publisher) {
+			publisher = this.props.publisher;
+		}
+
+		if (publisher) {
+			initialPublisher = {
+				id: publisher.bbid,
+				text: publisher.defaultAlias ?
+					publisher.defaultAlias.name : null
+			};
+		}
+
 		const select2Options = {
 			width: '100%'
 		};
@@ -206,13 +228,25 @@ const EditionData = React.createClass({
 
 				<div className="form-horizontal">
 					<SearchSelect
-						collection="publication"
+						collection="Publication"
 						defaultValue={initialPublication}
 						label="Publication"
 						labelAttribute="name"
 						labelClassName="col-md-4"
 						placeholder="Select publication…"
 						ref="publication"
+						select2Options={select2Options}
+						wrapperClassName="col-md-4"
+					/>
+					<SearchSelect
+						collection="Publisher"
+						defaultValue={initialPublisher}
+						label="Publisher"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						nodefault
+						placeholder="Select publisher…"
+						ref="publisher"
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>

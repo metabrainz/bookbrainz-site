@@ -401,28 +401,34 @@ module.exports.editEntity = (
 				content: req.body.note
 			}).save(null, {transacting})) : null;
 
-		const aliasSetPromise = new AliasSet({id: currentEntity.aliasSet.id})
-			.fetch({withRelated: ['aliases'], transacting})
+		const oldAliasSetPromise = currentEntity.aliasSet &&
+			new AliasSet({id: currentEntity.aliasSet.id})
+				.fetch({withRelated: ['aliases'], transacting});
+
+		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
 			.then((oldAliasSet) =>
 				processFormAliases(
-					transacting, oldAliasSet, oldAliasSet.get('defaultAliasId'),
+					transacting, oldAliasSet,
+					oldAliasSet.get('defaultAliasId'),
 					req.body.aliases || []
 				)
 			);
 
-		const identSetPromise = new IdentifierSet(
-			{id: currentEntity.identifierSet.id}
-		)
-			.fetch({withRelated: ['identifiers'], transacting})
+		const oldIdentSetPromise = currentEntity.identifierSet &&
+			new IdentifierSet({id: currentEntity.identifierSet.id})
+				.fetch({withRelated: ['identifiers'], transacting});
+
+		const identSetPromise = Promise.resolve(oldIdentSetPromise)
 			.then((oldIdentifierSet) =>
 				processFormIdentifiers(
-					transacting, oldIdentifierSet, req.body.identifiers || []
+					transacting, oldIdentifierSet,
+					req.body.identifiers || []
 				)
 			);
 
-		const oldAnnotationPromise = new Annotation(
-			{id: currentEntity.annotation.id}
-		).fetch({transacting});
+		const oldAnnotationPromise = currentEntity.annotation &&
+			new Annotation({id: currentEntity.annotation.id})
+				.fetch({transacting});
 
 		const annotationPromise = Promise.join(
 			oldAnnotationPromise, newRevisionPromise,
@@ -433,9 +439,11 @@ module.exports.editEntity = (
 				)
 		);
 
-		const disambiguationPromise = new Disambiguation(
-			{id: currentEntity.disambiguation.id}
-		).fetch({transacting})
+		const oldDisambiguationPromise = currentEntity.disambiguation &&
+			new Disambiguation({id: currentEntity.disambiguation.id})
+				.fetch({transacting});
+
+		const disambiguationPromise = Promise.resolve(oldDisambiguationPromise)
 			.then((oldDisambiguation) =>
 				processFormDisambiguation(
 					transacting, oldDisambiguation, req.body.disambiguation

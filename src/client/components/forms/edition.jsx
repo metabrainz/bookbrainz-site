@@ -86,10 +86,10 @@ module.exports = React.createClass({
 		const revisionNote = this.refs.revision.refs.note.getValue();
 		const data = {
 			aliases: aliasData.slice(0, -1),
-			publication: editionData.publication,
-			publisher: editionData.publisher,
+			publicationBbid: editionData.publication,
+			publisherBbid: editionData.publisher,
 			releaseDate: editionData.releaseDate,
-			languageId: parseInt(editionData.language, 10),
+			languageIds: editionData.languages,
 			formatId: parseInt(editionData.editionFormat, 10),
 			statusId: parseInt(editionData.editionStatus, 10),
 			disambiguation: editionData.disambiguation,

@@ -87,7 +87,7 @@ const WorkData = React.createClass({
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers =
+			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
 					value: identifier.value,

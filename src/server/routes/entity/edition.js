@@ -67,7 +67,7 @@ router.param(
 			'revision.data.languages',
 			'editionFormat',
 			'editionStatus',
-			'releaseEvents',
+			'revision.data.releaseEvents',
 			'revision.data.publishers.defaultAlias'
 		],
 		'Edition not found'
@@ -175,21 +175,24 @@ function handleEditionChange(req, transacting, entityModel) {
 		withRelated: ['languages', 'releaseEvents', 'publishers'], transacting
 	});
 	return dataPromise.then((data) => {
-		const languagesPromise = data.languages()
-			.attach(_.map(languageIds, {id: 'id'}), {transacting});
-		const publisherPromise = data.publishers()
-			.set({bbid: publisher}, {transacting});
+		const languagesPromise = languageIds ? data.languages()
+			.attach(
+				_.map(languageIds, (id) => ({language_id: id})), {transacting}
+			) : null;
+		const publisherPromise = publisher ? data.publishers()
+			.attach({publisher_bbid: publisher}, {transacting}) : null;
 		const currentReleaseEvent = data.releaseEvents().at(0);
+		let releaseEventPromise = null;
 		if (currentReleaseEvent) {
 			if (releaseDate !== currentReleaseEvent.get('date')) {
-				data.releaseEvents.set(
-					new ReleaseEvent().set('date', releaseDate)
+				releaseEventPromise = data.releaseEvents.create(
+					{date: releaseDate}, {transacting}
 				);
 			}
 		}
 
-		return Promise.join(languagesPromise, publisherPromise,
-			() => data.save(null, {transacting})
+		return Promise.join(
+			languagesPromise, publisherPromise, releaseEventPromise
 		);
 	});
 }
