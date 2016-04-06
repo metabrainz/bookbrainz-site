@@ -232,7 +232,7 @@ const EditionData = React.createClass({
 
 				<div className="form-horizontal">
 					<SearchSelect
-						collection="Publication"
+						collection="publication"
 						defaultValue={initialPublication}
 						label="Publication"
 						labelAttribute="name"
@@ -244,7 +244,7 @@ const EditionData = React.createClass({
 					/>
 					<SearchSelect
 						nodefault
-						collection="Publisher"
+						collection="publisher"
 						defaultValue={initialPublisher}
 						label="Publisher"
 						labelAttribute="name"
