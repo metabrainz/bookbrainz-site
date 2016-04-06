@@ -67,12 +67,12 @@ const EditionData = React.createClass({
 					name: React.PropTypes.string
 				})
 			}),
-			publisher: React.PropTypes.shape({
+			publishers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				bbid: React.PropTypes.string,
 				defaultAlias: React.PropTypes.shape({
 					name: React.PropTypes.string
 				})
-			}),
+			})),
 			releaseDate: React.PropTypes.string,
 			weight: React.PropTypes.number,
 			width: React.PropTypes.number
@@ -157,11 +157,15 @@ const EditionData = React.createClass({
 				publication = prefillData.publication;
 			}
 
-			if (prefillData.publisher) {
-				publisher = prefillData.publisher[0];
+			if (prefillData.revision.data.publishers) {
+				publisher = prefillData.revision.data.publishers[0];
 			}
 
-			initialReleaseDate = prefillData.releaseDate;
+			if (prefillData.revision.data.releaseEvents) {
+				initialReleaseDate =
+					prefillData.revision.data.releaseEvents[0].date;
+			}
+
 			initialLanguages = prefillData.revision.data.languages.map(
 				(language) => language.id
 			);
