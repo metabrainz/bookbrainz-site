@@ -171,10 +171,11 @@ function handleEditionChange(req, transacting, entityModel) {
 	const publisher = req.body.publisherBbid;
 	const releaseDate = req.body.releaseDate;
 
-	const dataPromise = entityModel.related('data').fetch({
-		withRelated: ['languages', 'releaseEvents', 'publishers'], transacting
+	const dataPromise = entityModel.related('revision').fetch({
+		withRelated: ['data.languages', 'data.releaseEvents', 'data.publishers'], transacting
 	});
-	return dataPromise.then((data) => {
+	return dataPromise.then((revision) => {
+		const data = revision.related('data');
 		const languagesPromise = languageIds ? data.languages()
 			.attach(
 				_.map(languageIds, (id) => ({language_id: id})), {transacting}
