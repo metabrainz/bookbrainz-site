@@ -343,7 +343,6 @@ module.exports.createEntity = (
 				const propsToSet = _.extend({
 					aliasSetId: aliasSet && aliasSet.get('id'),
 					identifierSetId: identSet && identSet.get('id'),
-					relationshipSetId: null,
 					annotationId: annotation && annotation.get('id'),
 					disambiguationId:
 						disambiguation && disambiguation.get('id'),
@@ -459,7 +458,6 @@ module.exports.editEntity = (
 					bbid: currentEntity.bbid,
 					aliasSetId: aliasSet && aliasSet.get('id'),
 					identifierSetId: identSet && identSet.get('id'),
-					relationshipSetId: null,
 					annotationId: annotation && annotation.get('id'),
 					disambiguationId:
 						disambiguation && disambiguation.get('id'),
