@@ -68,13 +68,16 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_edition() RETURNS TRIGGER
 		IF (TG_OP <> 'DELETE') THEN
 			INSERT INTO bookbrainz.edition_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
-				disambiguation_id, publication_bbid, creator_credit_id, width, height,
-				depth, weight, pages, format_id, status_id
+				disambiguation_id, publication_bbid, creator_credit_id,
+				publisher_set_id, release_event_set_id, language_set_id, width,
+				height, depth, weight, pages, format_id, status_id
 			) VALUES (
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
 				NEW.annotation_id, NEW.disambiguation_id, NEW.publication_bbid,
-				NEW.creator_credit_id, NEW.width, NEW.height, NEW.depth,
-				NEW.weight, NEW.pages, NEW.format_id, NEW.status_id
+				NEW.creator_credit_id, NEW.publisher_set_id,
+				NEW.release_event_set_id, NEW.language_set_id, NEW.width,
+				NEW.height, NEW.depth, NEW.weight, NEW.pages, NEW.format_id,
+				NEW.status_id
 			) RETURNING bookbrainz.edition_data.id INTO edition_data_id;
 
 			INSERT INTO bookbrainz.edition_revision VALUES(NEW.revision_id, NEW.bbid, edition_data_id);
@@ -112,10 +115,11 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_work() RETURNS TRIGGER
 		IF (TG_OP <> 'DELETE') THEN
 			INSERT INTO bookbrainz.work_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
-				disambiguation_id, type_id
+				disambiguation_id, language_set_id, type_id
 			) VALUES (
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
-				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id
+				NEW.annotation_id, NEW.disambiguation_id, NEW.language_set_id,
+				NEW.type_id
 			) RETURNING bookbrainz.work_data.id INTO work_data_id;
 
 			INSERT INTO bookbrainz.work_revision VALUES(NEW.revision_id, NEW.bbid, work_data_id);
