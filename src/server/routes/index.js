@@ -22,13 +22,10 @@
 
 const express = require('express');
 const router = express.Router();
-const Promise = require('bluebird');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
 const utils = require('../helpers/utils');
-
-const _ = require('lodash');
 
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about.jsx')

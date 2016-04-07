@@ -323,7 +323,7 @@ module.exports.createEntity = (
 			transacting, null, req.body.identifiers || []
 		);
 
-		const annotationPromise = newRevisionPromise.then((revision) =>
+		const annotationPromise = newRevisionPromise.then(() =>
 			processFormAnnotation(
 				null, req.body.annotation
 			)
@@ -449,7 +449,7 @@ module.exports.editEntity = (req, res, entityType, derivedProps) => {
 				const changedProps =
 					_.reduce(propsToSet, (result, value, key) => {
 						if (!_.isEqual(value, currentEntity[key])) {
-							result[key] = value
+							result[key] = value;
 						}
 
 						return result;
@@ -462,22 +462,22 @@ module.exports.editEntity = (req, res, entityType, derivedProps) => {
 
 				const model = utils.getEntityModelByType(entityType);
 
-				var entityPromise = model.forge({bbid: currentEntity.bbid})
-					.fetch()
-					.then((entity) => {
-						_.forOwn(changedProps, (value, key) =>
-							entity.set(key, value)
-						);
+				const entityPromise = model.forge({bbid: currentEntity.bbid})
+					.fetch();
 
-						return entity;
-					});
-
-				return Promise.join(entityPromise, annotation);
+				return Promise.join(entityPromise, annotation, changedProps);
 			}
 		)
-			.spread((entity, annotation) => {
+			.spread((entity, annotation, changedProps) => {
+				_.forOwn(changedProps, (value, key) =>
+					entity.set(key, value)
+				);
+
 				const editorUpdatePromise =
-					utils.incrementEditorEditCountById(editorJSON.id, transacting);
+					utils.incrementEditorEditCountById(
+						editorJSON.id,
+						transacting
+					);
 
 				const newRevisionPromise = new Revision({
 					authorId: editorJSON.id,
@@ -485,14 +485,16 @@ module.exports.editEntity = (req, res, entityType, derivedProps) => {
 				}).save(null, {transacting});
 
 				// Get the parents of the new revision
-				const revisionParentsPromise = newRevisionPromise.then((revision) =>
-					revision.related('parents').fetch({transacting})
-				);
+				const revisionParentsPromise =
+					newRevisionPromise.then((revision) =>
+						revision.related('parents').fetch({transacting})
+					);
 
 				// Add the previous revision as a parent of this revision.
-				const parentAddedPromise = revisionParentsPromise.then((parents) =>
-					parents.attach(currentEntity.revisionId, {transacting})
-				);
+				const parentAddedPromise =
+					revisionParentsPromise.then((parents) =>
+						parents.attach(currentEntity.revisionId, {transacting})
+					);
 
 				const notePromise = req.body.note ? newRevisionPromise
 					.then((revision) => new Note({
