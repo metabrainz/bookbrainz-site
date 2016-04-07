@@ -370,7 +370,7 @@ module.exports.createEntity = (
 
 
 module.exports.editEntity = (
-	req, res, EntityModel, derivedProps, onEntityEdit
+	req, res, entityType, derivedProps, onEntityEdit
 ) => {
 	const editorJSON = req.session.passport.user;
 	const entityEditPromise = bookshelf.transaction((transacting) => {
@@ -378,7 +378,8 @@ module.exports.editEntity = (
 			utils.incrementEditorEditCountById(editorJSON.id, transacting);
 
 		const newRevisionPromise = new Revision({
-			authorId: editorJSON.id
+			authorId: editorJSON.id,
+			type: entityType
 		}).save(null, {transacting});
 
 		// Get the parents of the new revision
@@ -464,7 +465,9 @@ module.exports.editEntity = (
 					revisionId: newRevision.get('id')
 				}, derivedProps);
 
-				return new EntityModel(propsToSet)
+				const model = utils.getEntityModelByType(entityType);
+
+				return model.forge(propsToSet)
 					.save(null, {method: 'update', transacting});
 			})
 			.then(

@@ -134,7 +134,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handlePublisherChange(req, transacting, entityModel) {
+function handleCreatorChange(req, transacting, entityModel) {
 	const dataPromise = entityModel.related('data').fetch({transacting});
 	return dataPromise.then((data) => {
 		data.set('beginDate', req.body.beginDate);
@@ -146,15 +146,15 @@ function handlePublisherChange(req, transacting, entityModel) {
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, Creator, _.pick(req.body, 'typeId', 'genderId', 'areaId'),
-		handlePublisherChange
+		req, res, 'Creator', _.pick(req.body, 'typeId', 'genderId', 'areaId'),
+		handleCreatorChange
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, Creator, _.pick(req.body, 'typeId', 'genderId', 'areaId'),
-		handlePublisherChange
+		req, res, 'Creator', _.pick(req.body, 'typeId', 'genderId', 'areaId'),
+		handleCreatorChange
 	)
 );
 

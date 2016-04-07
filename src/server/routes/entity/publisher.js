@@ -145,14 +145,14 @@ function handlePublisherChange(req, transacting, entityModel) {
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, Publisher, _.pick(req.body, 'typeId', 'areaId'),
+		req, res, 'Publisher', _.pick(req.body, 'typeId', 'areaId'),
 		handlePublisherChange
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, Publisher, _.pick(req.body, 'typeId', 'areaId'),
+		req, res, 'Publisher', _.pick(req.body, 'typeId', 'areaId'),
 		handlePublisherChange
 	)
 );
