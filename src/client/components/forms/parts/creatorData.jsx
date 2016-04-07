@@ -39,7 +39,9 @@ const CreatorData = React.createClass({
 			beginDate: React.PropTypes.string,
 			endDate: React.PropTypes.string,
 			ended: React.PropTypes.bool,
-			gender: React.PropTypes.bool,
+			gender: React.PropTypes.shape({
+				name: React.PropTypes.string
+			}),
 			creatorType: creatorTypeValidation,
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
