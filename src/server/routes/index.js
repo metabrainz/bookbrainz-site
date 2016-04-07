@@ -56,18 +56,15 @@ router.get('/', (req, res) => {
 		.query('orderBy', 'created_at', 'desc')
 		.query('limit', numRevisionsOnHomepage)
 		.fetchAll()
-		.then((collection) => {
-			const revisions = collection.toJSON();
+		.then((collection) => collection.toJSON())
+		.map((revision) => {
+			const model = utils.getEntityModelByType(revision.type);
 
-			return Promise.map(revisions, (revision) => {
-				const model = utils.getEntityModelByType(revision.type);
-
-				return model.forge({revisionId: revision.id})
-					.fetch({
-						withRelated: ['defaultAlias', 'revision.revision']
-					})
-					.then((entity) => entity.toJSON());
-			});
+			return model.forge({revisionId: revision.id})
+				.fetch({
+					withRelated: ['defaultAlias', 'revision.revision']
+				})
+				.then((entity) => entity.toJSON());
 		})
 		.then((latestEntities) => {
 			res.render('index', {
