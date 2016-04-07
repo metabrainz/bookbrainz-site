@@ -134,27 +134,19 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handleCreatorChange(req, transacting, entityModel) {
-	const dataPromise = entityModel.related('data').fetch({transacting});
-	return dataPromise.then((data) => {
-		data.set('beginDate', req.body.beginDate);
-		data.set('endDate', req.body.endDate);
-		data.set('ended', req.body.ended);
-		return data.save(null, {transacting});
-	});
-}
+const additionalCreatorProps = [
+	'typeId', 'genderId', 'areaId', 'beginDate', 'endDate', 'ended'
+];
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Creator', _.pick(req.body, 'typeId', 'genderId', 'areaId'),
-		handleCreatorChange
+		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Creator', _.pick(req.body, 'typeId', 'genderId', 'areaId'),
-		handleCreatorChange
+		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
 	)
 );
 

@@ -133,27 +133,19 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handlePublisherChange(req, transacting, entityModel) {
-	const dataPromise = entityModel.related('data').fetch({transacting});
-	return dataPromise.then((data) => {
-		data.set('beginDate', req.body.beginDate);
-		data.set('endDate', req.body.endDate);
-		data.set('ended', req.body.ended);
-		return data.save(null, {transacting});
-	});
-}
+const additionalPublisherProps = [
+	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
+];
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Publisher', _.pick(req.body, 'typeId', 'areaId'),
-		handlePublisherChange
+		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Publisher', _.pick(req.body, 'typeId', 'areaId'),
-		handlePublisherChange
+		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
 	)
 );
 
