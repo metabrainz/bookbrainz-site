@@ -22,10 +22,13 @@
 
 const express = require('express');
 const router = express.Router();
+const Promise = require('bluebird');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
 const utils = require('../helpers/utils');
+
+const _ = require('lodash');
 
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about.jsx')
@@ -43,32 +46,44 @@ const LicensingPage = React.createFactory(
 	require('../../client/components/pages/licensing.jsx')
 );
 
-const Revision = require('bookbrainz-data').Revision;
-
 /* GET home page. */
 router.get('/', (req, res) => {
 	const numRevisionsOnHomepage = 9;
 
-	new Revision()
-		.query('orderBy', 'created_at', 'desc')
-		.query('limit', numRevisionsOnHomepage)
-		.fetchAll()
-		.then((collection) => collection.toJSON())
-		.map((revision) => {
-			const model = utils.getEntityModelByType(revision.type);
-
-			return model.forge({revisionId: revision.id})
-				.fetch({
-					withRelated: ['defaultAlias', 'revision.revision']
-				})
-				.then((entity) => entity.toJSON());
-		})
-		.then((latestEntities) => {
-			res.render('index', {
-				recent: latestEntities,
-				homepage: true
-			});
+	function render(entities) {
+		res.render('index', {
+			recent: _.take(entities, numRevisionsOnHomepage),
+			homepage: true
 		});
+	}
+
+	const entityModels = utils.getEntityModels();
+
+	const latestEntitiesPromise =
+		Promise.all(_.map(entityModels, (model, name) =>
+			model.query((qb) => {
+				qb
+					.leftJoin(
+						'bookbrainz.revision',
+						`bookbrainz.${_.snakeCase(name)}.revision_id`,
+						'bookbrainz.revision.id'
+					)
+					.orderBy('bookbrainz.revision.created_at', 'desc')
+					.limit(numRevisionsOnHomepage);
+			})
+			.fetchAll({
+				withRelated: ['defaultAlias', 'revision.revision']
+			})
+			.then((collection) => collection.toJSON())
+		));
+
+	latestEntitiesPromise.then((latestEntitiesByType) => {
+		const latestEntities = _.orderBy(
+			_.flatten(latestEntitiesByType), 'revision.revision.createdAt',
+			['desc']
+		);
+		render(latestEntities);
+	});
 });
 
 // Helper function to create pages that don't require custom logic
