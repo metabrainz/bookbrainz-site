@@ -41,9 +41,9 @@ const PublicationData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				typeId: React.PropTypes.number
 			})),
-			publication_type: validators.publicationType
+			publicationType: validators.publicationType
 		}),
 		publicationTypes: React.PropTypes.arrayOf(validators.publicationType),
 		visible: React.PropTypes.bool
@@ -73,17 +73,18 @@ const PublicationData = React.createClass({
 
 		const prefillData = this.props.publication;
 		if (prefillData) {
-			initialPublicationType = prefillData.publication_type ?
-				prefillData.publication_type.publication_type_id : null;
+			initialPublicationType = prefillData.publicationType ?
+				prefillData.publicationType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers = prefillData.identifierSet &&
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					typeId: identifier.type.id
+				}));
 		}
 
 		const select2Options = {
@@ -99,12 +100,12 @@ const PublicationData = React.createClass({
 
 				<div className="form-horizontal">
 					<Select
+						noDefault
 						defaultValue={initialPublicationType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.publicationTypes}
 						placeholder="Select publication type…"
 						ref="publicationType"

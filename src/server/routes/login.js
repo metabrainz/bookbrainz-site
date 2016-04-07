@@ -22,8 +22,8 @@
 
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 const status = require('http-status');
-const auth = require('../helpers/auth');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
@@ -45,14 +45,35 @@ router.get('/logout', (req, res) => {
 	res.redirect(status.SEE_OTHER, '/');
 });
 
-router.post('/login/handler', auth.authenticate(), (req, res) => {
-	const redirect = req.session.redirectTo ? req.session.redirectTo : '/';
-	delete req.session.redirectTo;
+router.post('/login/handler', (req, res, next) => {
+	passport.authenticate('local', (authErr, user) => {
+		if (authErr) {
+			console.log(authErr);
+			// If an error occurs during login, send the user back.
+			return res.redirect(
+				status.MOVED_PERMANENTLY, `/login?error=${authErr.message}`
+			);
+		}
 
-	res.redirect(status.SEE_OTHER, redirect);
-}, (err, req, res) => {
-	// If an error occurs during login, send the user back.
-	res.redirect(status.MOVED_PERMANENTLY, `/login?error=${err.message}`);
+		if (!user) {
+			return res.redirect(
+				status.MOVED_PERMANENTLY,
+				'/login?error=Login details incorrect'
+			);
+		}
+
+		return req.logIn(user, (loginErr) => {
+			if (loginErr) {
+				return next(loginErr);
+			}
+
+			const redirect =
+				req.session.redirectTo ? req.session.redirectTo : '/';
+			delete req.session.redirectTo;
+
+			return res.redirect(status.SEE_OTHER, redirect);
+		});
+	})(req, res, next);
 });
 
 module.exports = router;

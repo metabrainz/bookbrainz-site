@@ -65,7 +65,7 @@ module.exports = React.createClass({
 						>
 							Login
 						</Button>
-						<hr />
+						<hr/>
 						<Button
 							block
 							bsSize="large"

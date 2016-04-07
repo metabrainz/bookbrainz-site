@@ -27,7 +27,7 @@ const Icon = require('react-fontawesome');
 const validators = require('../../validators');
 
 const creatorTypeValidation = React.PropTypes.shape({
-	creator_type_id: React.PropTypes.number,
+	id: React.PropTypes.number,
 	label: React.PropTypes.string
 });
 
@@ -36,11 +36,13 @@ const CreatorData = React.createClass({
 	propTypes: {
 		backClick: React.PropTypes.func,
 		creator: React.PropTypes.shape({
-			begin_date: React.PropTypes.string,
-			end_date: React.PropTypes.string,
+			beginDate: React.PropTypes.string,
+			endDate: React.PropTypes.string,
 			ended: React.PropTypes.bool,
-			gender: React.PropTypes.bool,
-			creator_type: creatorTypeValidation,
+			gender: React.PropTypes.shape({
+				name: React.PropTypes.string
+			}),
+			creatorType: creatorTypeValidation,
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
 			}),
@@ -50,7 +52,7 @@ const CreatorData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				typeId: React.PropTypes.number
 			}))
 		}),
 		creatorTypes: React.PropTypes.arrayOf(creatorTypeValidation),
@@ -107,21 +109,22 @@ const CreatorData = React.createClass({
 
 		const prefillData = this.props.creator;
 		if (prefillData) {
-			initialBeginDate = prefillData.begin_date;
-			initialEndDate = prefillData.end_date;
+			initialBeginDate = prefillData.beginDate;
+			initialEndDate = prefillData.endDate;
 			initialGender = prefillData.gender ?
-				prefillData.gender.gender_id : null;
-			initialCreatorType = prefillData.creator_type ?
-				prefillData.creator_type.creator_type_id : null;
+				prefillData.gender.id : null;
+			initialCreatorType = prefillData.creatorType ?
+				prefillData.creatorType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers = prefillData.identifierSet &&
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					typeId: identifier.type.id
+				}));
 		}
 
 		const select2Options = {
@@ -156,18 +159,18 @@ const CreatorData = React.createClass({
 					<Input
 						defaultChecked={this.state.ended}
 						label="Ended"
-						onChange={this.handleEnded}
 						ref="ended"
 						type="checkbox"
 						wrapperClassName="col-md-offset-4 col-md-4"
+						onChange={this.handleEnded}
 					/>
 					<Select
+						noDefault
 						defaultValue={initialGender}
 						idAttribute="id"
 						label="Gender"
 						labelAttribute="name"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.genders}
 						placeholder="Select gender…"
 						ref="gender"
@@ -175,12 +178,12 @@ const CreatorData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
+						noDefault
 						defaultValue={initialCreatorType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.creatorTypes}
 						placeholder="Select creator type…"
 						ref="creatorType"

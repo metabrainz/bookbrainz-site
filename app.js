@@ -31,11 +31,16 @@ const RedisStore = require('connect-redis')(session);
 const staticCache = require('express-static-cache');
 
 const Promise = require('bluebird');
-Promise.longStackTraces();
+Promise.config({
+	warnings: true,
+	longStackTraces: true
+});
 
-const auth = require('./src/server/helpers/auth');
 const config = require('./src/server/helpers/config');
-const bbws = require('./src/server/helpers/bbws');
+
+/* -data needs to be initialized before pulling in auth. */
+require('bookbrainz-data').init(config.database);
+const auth = require('./src/server/helpers/auth');
 
 const status = require('http-status');
 const git = require('git-rev');
@@ -51,6 +56,8 @@ app.locals.basedir = app.get('views');
 require('node-jsx').install({
 	extension: '.jsx'
 });
+
+require('./src/server/helpers/search').init(config.search);
 
 app.set('trust proxy', config.site.proxyTrust);
 
@@ -95,26 +102,9 @@ git.short((revision) => {
 /* Add middleware to set variables used for every rendered route. */
 app.use((req, res, next) => {
 	res.locals.user = req.user;
-	res.locals.respoitoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
+	res.locals.repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
 	res.locals.siteRevision = siteRevision;
 
-	// Get the latest count of messages in the user's inbox.
-	if (req.session && req.session.bearerToken) {
-		return bbws.get('/message/inbox/', {
-			accessToken: req.session.bearerToken
-		})
-			.then((list) => {
-				res.locals.inboxCount = list.objects.length;
-			})
-			.catch((err) => {
-				console.log(err.stack);
-
-				res.locals.inboxCount = 0;
-			})
-			.finally(next);
-	}
-
-	res.locals.inboxCount = 0;
 	next();
 });
 

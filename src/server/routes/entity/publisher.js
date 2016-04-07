@@ -21,11 +21,13 @@
 
 const express = require('express');
 const router = express.Router();
-const status = require('http-status');
 const auth = require('../../helpers/auth');
-const Publisher = require('../../data/entities/publisher');
-const Edition = require('../../data/entities/edition');
-const User = require('../../data/user');
+
+const utils = require('../../helpers/utils');
+
+const Publisher = require('bookbrainz-data').Publisher;
+const PublisherHeader = require('bookbrainz-data').PublisherHeader;
+const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 
 /* Middleware loader functions. */
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -44,86 +46,44 @@ const loadEntityRelationships =
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
 
-const bbws = require('../../helpers/bbws');
-const Promise = require('bluebird');
-const _ = require('underscore');
+const entityRoutes = require('./entity');
+const _ = require('lodash');
 
 /* If the route specifies a BBID, load the Publisher for it. */
-router.param('bbid', makeEntityLoader(Publisher, 'Publisher not found'));
+router.param(
+	'bbid',
+	makeEntityLoader(
+		Publisher,
+		['publisherType', 'editions.defaultAlias', 'editions.disambiguation'],
+		'Publisher not found'
+	)
+);
+
+function _setPublisherTitle(res) {
+	res.locals.title = utils.createEntityPageTitle(
+		res.locals.entity,
+		'Publisher',
+		utils.template`Publisher “${'name'}”`
+	);
+}
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
-	const publisher = res.locals.entity;
-	let title = 'Publisher';
-
-	publisher.editions = publisher.editions.map((edition) =>
-		Edition.findOne(edition.bbid, {
-			populate: ['disambiguation', 'aliases']
-		})
-	);
-
-	if (publisher.default_alias && publisher.default_alias.name) {
-		title = `Publisher “${publisher.default_alias.name}”`;
-	}
-
-	Promise.all(publisher.editions).then((editions) => {
-		publisher.editions = editions;
-
-		// Get unique identifier types for display
-		const identifier_types = _.uniq(
-			_.pluck(publisher.identifiers, 'identifier_type'),
-			(identifier) => identifier.identifier_type_id
-		);
-
-		res.render('entity/view/publisher', {title, identifier_types});
-	});
+	_setPublisherTitle(res);
+	entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
-	const publisher = res.locals.entity;
-	let title = 'Publisher';
-
-	if (publisher.default_alias && publisher.default_alias.name) {
-		title = `Publisher “${publisher.default_alias.name}”`;
-	}
-
-	res.render('entity/delete', {title});
+	_setPublisherTitle(res);
+	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/confirm', (req, res) => {
-	const publisher = res.locals.entity;
-
-	Publisher.del(
-		publisher.bbid,
-		{revision: {note: req.body.note}},
-		{session: req.session}
-	)
-		.then(() => {
-			res.redirect(status.SEE_OTHER, `/publisher/${publisher.bbid}`);
-		});
-});
+router.post('/:bbid/delete/confirm', (req, res) =>
+	entityRoutes.handleDelete(req, res, PublisherHeader, PublisherRevision)
+);
 
 router.get('/:bbid/revisions', (req, res) => {
-	const publisher = res.locals.entity;
-	let title = 'Publisher';
-
-	if (publisher.default_alias && publisher.default_alias.name) {
-		title = `Publisher “${publisher.default_alias.name}”`;
-	}
-
-	bbws.get(`/publisher/${publisher.bbid}/revisions`)
-		.then((revisions) => {
-			const promisedUsers = {};
-			revisions.objects.forEach((revision) => {
-				if (!promisedUsers[revision.user.user_id]) {
-					promisedUsers[revision.user.user_id] =
-						User.findOne(revision.user.user_id);
-				}
-			});
-
-			Promise.props(promisedUsers).then((users) => {
-				res.render('entity/revisions', {title, revisions, users});
-			});
-		});
+	_setPublisherTitle(res);
+	entityRoutes.displayRevisions(req, res, PublisherRevision);
 });
 
 // Creation
@@ -173,221 +133,20 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) => {
-	const changes = {
-		bbid: null
-	};
+const additionalPublisherProps = [
+	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
+];
 
-	if (req.body.publisherTypeId) {
-		changes.publisher_type = {
-			publisher_type_id: req.body.publisherTypeId
-		};
-	}
+router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.createEntity(
+		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
+	)
+);
 
-	if (req.body.beginDate) {
-		changes.begin_date = req.body.beginDate;
-	}
-
-	if (req.body.endDate) {
-		changes.end_date = req.body.endDate;
-		// Must have ended if there's an end date.
-		changes.ended = true;
-	}
-	else if (req.body.ended) {
-		changes.ended = req.body.ended;
-	}
-
-	if (req.body.disambiguation) {
-		changes.disambiguation = req.body.disambiguation;
-	}
-
-	if (req.body.annotation) {
-		changes.annotation = req.body.annotation;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const newIdentifiers = req.body.identifiers.map((identifier) => ({
-		value: identifier.value,
-		identifier_type: {
-			identifier_type_id: identifier.typeId
-		}
-	}));
-
-	if (newIdentifiers.length) {
-		changes.identifiers = newIdentifiers;
-	}
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		if (!alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push({
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		});
-	});
-
-	if (newAliases.length) {
-		changes.aliases = newAliases;
-	}
-
-	Publisher.create(changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
-
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) => {
-	const publisher = res.locals.entity;
-
-	const changes = {
-		bbid: publisher.bbid
-	};
-
-	const publisherTypeId = req.body.publisherTypeId;
-	if (!publisher.publisher_type ||
-			publisher.publisher_type.publisher_type_id !== publisherTypeId) {
-		changes.publisher_type = {
-			publisher_type_id: publisherTypeId
-		};
-	}
-
-	const beginDate = req.body.beginDate;
-	if (publisher.begin_date !== beginDate) {
-		changes.begin_date = beginDate ? beginDate : null;
-	}
-
-	const endDate = req.body.endDate;
-	const ended = req.body.ended;
-	if (publisher.end_date !== endDate) {
-		changes.end_date = endDate ? endDate : null;
-		 // Must have ended if there's an end date.
-		changes.ended = endDate ? true : ended;
-	}
-
-	if (publisher.ended !== ended) {
-		changes.ended = ended;
-		// If ended has been unset and end date was previously set, also unset
-		// the end date.
-		if (!ended && endDate) {
-			changes.end_date = null;
-		}
-	}
-
-	const disambiguation = req.body.disambiguation;
-	if (!publisher.disambiguation ||
-			publisher.disambiguation.comment !== disambiguation) {
-		changes.disambiguation = disambiguation ? disambiguation : null;
-	}
-
-	const annotation = req.body.annotation;
-	if (!publisher.annotation ||
-			publisher.annotation.content !== annotation) {
-		changes.annotation = annotation ? annotation : null;
-	}
-
-	if (req.body.note) {
-		changes.revision = {
-			note: req.body.note
-		};
-	}
-
-	const currentIdentifiers = publisher.identifiers.map((identifier) => {
-		const nextIdentifier = req.body.identifiers[0];
-
-		if (!nextIdentifier || identifier.id !== nextIdentifier.id) {
-			// Remove the alias
-			return [identifier.id, null];
-		}
-
-		// Modify the alias
-		req.body.identifiers.shift();
-		return [nextIdentifier.id, {
-			value: nextIdentifier.value,
-			identifier_type: {
-				identifier_type_id: nextIdentifier.typeId
-			}
-		}];
-	});
-
-	const newIdentifiers = req.body.identifiers.map((identifier) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (identifier.id) {
-			return null;
-		}
-
-		return [null, {
-			value: identifier.value,
-			identifier_type: {
-				identifier_type_id: identifier.typeId
-			}
-		}];
-	});
-
-	changes.identifiers = currentIdentifiers.concat(newIdentifiers);
-
-	const currentAliases = [];
-
-	publisher.aliases.forEach((alias) => {
-		const nextAlias = req.body.aliases[0];
-
-		if (!nextAlias || alias.id !== nextAlias.id) {
-			// Remove the alias
-			currentAliases.push([alias.id, null]);
-		}
-		else {
-			// Modify the alias
-			req.body.aliases.shift();
-			currentAliases.push([nextAlias.id, {
-				name: nextAlias.name,
-				sort_name: nextAlias.sortName,
-				language_id: nextAlias.language,
-				primary: nextAlias.primary,
-				default: nextAlias.default
-			}]);
-		}
-	});
-
-	const newAliases = [];
-
-	req.body.aliases.forEach((alias) => {
-		// At this point, the only aliases should have null IDs, but check
-		// anyway.
-		if (alias.id || !alias.name && !alias.sortName) {
-			return;
-		}
-
-		newAliases.push([null, {
-			name: alias.name,
-			sort_name: alias.sortName,
-			language_id: alias.language,
-			primary: alias.primary,
-			default: alias.default
-		}]);
-	});
-
-	changes.aliases = currentAliases.concat(newAliases);
-
-	Publisher.update(publisher.bbid, changes, {
-		session: req.session
-	})
-		.then((revision) => {
-			res.send(revision);
-		});
-});
+router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+	entityRoutes.editEntity(
+		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
+	)
+);
 
 module.exports = router;

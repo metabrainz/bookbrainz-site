@@ -28,10 +28,10 @@ const LoadingSpinner = React.createClass({
 		return (
 			<div className="loading-background">
 				<Icon
+					spin
 					className="loading-spinner"
 					name="circle-o-notch"
 					size="2x"
-					spin
 				/>
 			</div>
 		);

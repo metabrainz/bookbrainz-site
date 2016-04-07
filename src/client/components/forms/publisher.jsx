@@ -82,11 +82,11 @@ module.exports = React.createClass({
 		const publisherData = this.refs.data.getValue();
 		const revisionNote = this.refs.revision.refs.note.getValue();
 		const data = {
-			aliases: aliasData,
+			aliases: aliasData.slice(0, -1),
 			beginDate: publisherData.beginDate,
 			endDate: publisherData.endDate,
 			ended: publisherData.ended,
-			publisherTypeId: parseInt(publisherData.publisherType, 10),
+			typeId: parseInt(publisherData.publisherType, 10),
 			disambiguation: publisherData.disambiguation,
 			annotation: publisherData.annotation,
 			identifiers: publisherData.identifiers,
@@ -97,13 +97,12 @@ module.exports = React.createClass({
 
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then((revision) => {
-				if (!revision.body || !revision.body.entity) {
+			.then((res) => {
+				if (!res.body) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href =
-				`/publisher/${revision.body.entity.entity_gid}`;
+				window.location.href = `/publisher/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				this.setState({error});
@@ -115,13 +114,13 @@ module.exports = React.createClass({
 		let aliases = null;
 		const prefillData = this.props.publisher;
 		if (prefillData) {
-			aliases = prefillData.aliases.map((alias) => ({
+			aliases = prefillData.aliasSet.aliases.map((alias) => ({
 				id: alias.id,
 				name: alias.name,
-				sortName: alias.sort_name,
-				language: alias.language ? alias.language.language_id : null,
+				sortName: alias.sortName,
+				languageId: alias.languageId,
 				primary: alias.primary,
-				default: alias.id === prefillData.default_alias.alias_id
+				default: alias.id === prefillData.defaultAlias.id
 			}));
 		}
 
@@ -180,10 +179,10 @@ module.exports = React.createClass({
 					/>
 					<RevisionNote
 						backClick={this.backClick}
-						onSubmit={this.handleSubmit}
 						ref="revision"
 						submitDisabled={!submitEnabled}
 						visible={this.state.tab === 3}
+						onSubmit={this.handleSubmit}
 					/>
 				</form>
 			</div>

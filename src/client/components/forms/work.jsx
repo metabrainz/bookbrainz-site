@@ -85,11 +85,11 @@ module.exports = React.createClass({
 		const revisionNote = this.refs.revision.refs.note.getValue();
 
 		const data = {
-			aliases: aliasData,
+			aliases: aliasData.slice(0, -1),
 			languages: workData.languages.map(
 				(languageId) => parseInt(languageId, 10)
 			),
-			workTypeId: parseInt(workData.workType, 10),
+			typeId: parseInt(workData.workType, 10),
 			disambiguation: workData.disambiguation,
 			annotation: workData.annotation,
 			identifiers: workData.identifiers,
@@ -101,13 +101,12 @@ module.exports = React.createClass({
 		const self = this;
 		request.post(this.props.submissionUrl)
 			.send(data).promise()
-			.then((revision) => {
-				if (!revision.body || !revision.body.entity) {
+			.then((res) => {
+				if (!res.body) {
 					window.location.replace('/login');
 					return;
 				}
-				window.location.href =
-					`/work/${revision.body.entity.entity_gid}`;
+				window.location.href = `/work/${res.body.bbid}`;
 			})
 			.catch((error) => {
 				self.setState({error});
@@ -119,15 +118,14 @@ module.exports = React.createClass({
 		let aliases = null;
 		const prefillData = this.props.work;
 		if (prefillData) {
-			aliases = prefillData.aliases.map((alias) => (
+			aliases = prefillData.aliasSet.aliases.map((alias) => (
 				{
 					id: alias.id,
 					name: alias.name,
-					sortName: alias.sort_name,
-					language: alias.language ?
-						alias.language.language_id : null,
+					sortName: alias.sortName,
+					languageId: alias.languageId,
 					primary: alias.primary,
-					default: alias.id === prefillData.default_alias.alias_id
+					default: alias.id === prefillData.defaultAlias.id
 				}
 			));
 		}
@@ -188,10 +186,10 @@ module.exports = React.createClass({
 					/>
 					<RevisionNote
 						backClick={this.backClick}
-						onSubmit={this.handleSubmit}
 						ref="revision"
 						submitDisabled={!submitEnabled}
 						visible={this.state.tab === 3}
+						onSubmit={this.handleSubmit}
 					/>
 				</form>
 			</div>

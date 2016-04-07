@@ -1,12 +1,6 @@
 ---
-ecmaFeatures:
-  arrowFunctions: true
-  blockBindings: true
-  forOf: true
-  generators: true
-  templateStrings: true
-  objectLiteralShorthandProperties: true
-  objectLiteralShorthandMethods: true
+parserOptions:
+  ecmaVersion: 6
 env:
   node: true
 rules:
@@ -16,7 +10,6 @@ rules:
   comma-dangle:
     - 2
     - never
-  no-arrow-condition: 1
   no-case-declarations: 2
   no-cond-assign:
     - 2
@@ -43,7 +36,7 @@ rules:
   no-invalid-regexp: 2
   no-irregular-whitespace: 2
   no-magic-numbers:
-    - 2
+    - 1
     -
       enforceConst: true
       ignore:
@@ -88,7 +81,6 @@ rules:
   no-caller: 2
   no-div-regex: 2
   no-else-return: 2
-  no-empty-label: 2
   no-eq-null: 2
   no-eval: 2
   no-extend-native: 2
@@ -179,7 +171,7 @@ rules:
     - stroustrup
     -
       allowSingleLine: true
-  # Turn off errors for camelCase while we use WS
+  # Transitional
   camelcase:
     - 0
     -
@@ -223,6 +215,9 @@ rules:
     -
       SwitchCase: 1
       VariableDeclarator: 1
+  jsx-quotes:
+    - 2
+    - prefer-double
   key-spacing:
     - 2
     -
@@ -286,7 +281,7 @@ rules:
     - 2
     - single
     - avoid-escape
-  require-jsdoc: 1
+  require-jsdoc: 0
   semi-spacing:
     - 2
     -
@@ -296,12 +291,11 @@ rules:
     - 2
     - always
   sort-vars: 2
-  space-after-keywords:
+  keyword-spacing:
     - 2
-    - always
-  space-before-keywords:
-    - 2
-    - always
+    -
+        before: true
+        after: true
   space-before-blocks:
     - 2
     - always
@@ -313,7 +307,6 @@ rules:
     - never
   space-infix-ops:
     - 2
-  space-return-throw-case: 2
   space-unary-ops:
     - 2
     -
@@ -364,3 +357,16 @@ rules:
 
   # Project Specific Settings (Node-only)
   no-console: 0
+
+  array-callback-return: 2
+  prefer-rest-params: 0
+  no-confusing-arrow: 2
+  no-unmodified-loop-condition: 2
+  no-useless-constructor: 2
+  no-whitespace-before-property: 2
+  no-new-symbol: 2
+  sort-imports: 2
+  no-self-assign: 2
+  template-curly-spacing:
+    - 2
+    - never

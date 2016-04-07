@@ -10,9 +10,9 @@ block body
 					.panel-title Confirm Deletion
 				.panel-body
 					| If you're sure that
-					= ' ' + entity._type
-					if entity.default_alias
-						=' ' + entity.default_alias.name + ' '
+					= ' ' + entity.type
+					if entity.defaultAlias
+						=' ' + entity.defaultAlias.name + ' '
 					else
 						=' (unnamed) '
 					| should be deleted, please enter a revision note below and confirm deletion.
@@ -20,10 +20,10 @@ block body
 					form#note
 						textarea.form-control.margin-top-1(rows=5, name='note')
 				.panel-footer.clearfix
-					a.btn.btn-danger.pull-right(href='/'+entity._type.toLowerCase()+'/'+entity.bbid) No, go back!
+					a.btn.btn-danger.pull-right(href='/'+entity.type.toLowerCase()+'/'+entity.bbid) No, go back!
 					button.btn.btn-success.pull-right(
 						form='note'
 						formmethod='post'
-						formaction='/'+entity._type.toLowerCase()+'/'+entity.bbid+'/delete/confirm'
+						formaction='/'+entity.type.toLowerCase()+'/'+entity.bbid+'/delete/confirm'
 					) Yes, delete!
 					

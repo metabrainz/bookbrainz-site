@@ -30,7 +30,7 @@ const WorkData = React.createClass({
 		backClick: React.PropTypes.func,
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
-			language_id: React.PropTypes.number,
+			id: React.PropTypes.number,
 			name: React.PropTypes.string
 		})),
 		nextClick: React.PropTypes.func,
@@ -45,9 +45,9 @@ const WorkData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				typeId: React.PropTypes.number
 			})),
-			work_type: validators.workType
+			workType: validators.workType
 		}),
 		workTypes: React.PropTypes.arrayOf(validators.workType)
 	},
@@ -78,20 +78,21 @@ const WorkData = React.createClass({
 
 		const prefillData = this.props.work;
 		if (prefillData) {
-			initialLanguages = prefillData.languages.map(
-				(language) => language.language_id
+			initialLanguages = prefillData.revision.data.languages.map(
+				(language) => language.id
 			);
-			initialWorkType = prefillData.work_type ?
-				prefillData.work_type.work_type_id : null;
+			initialWorkType = prefillData.workType ?
+				prefillData.workType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers = prefillData.identifierSet &&
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					typeId: identifier.type.id
+				}));
 		}
 
 		const select2Options = {
@@ -107,13 +108,13 @@ const WorkData = React.createClass({
 
 				<div className="form-horizontal">
 					<Select
+						multiple
+						noDefault
 						defaultValue={initialLanguages}
 						idAttribute="id"
 						label="Languages"
 						labelAttribute="name"
 						labelClassName="col-md-4"
-						multiple
-						noDefault
 						options={this.props.languages}
 						placeholder="Select work languages…"
 						ref="languages"
@@ -121,12 +122,12 @@ const WorkData = React.createClass({
 						wrapperClassName="col-md-4"
 					/>
 					<Select
+						noDefault
 						defaultValue={initialWorkType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.workTypes}
 						placeholder="Select work type…"
 						ref="workType"

@@ -32,10 +32,10 @@ const Select = React.createClass({
 	displayName: 'select2Input',
 	propTypes: {
 		multiple: React.PropTypes.bool,
-		onChange: React.PropTypes.func,
 		options: React.PropTypes.array,
 		placeholder: React.PropTypes.string,
-		select2Options: React.PropTypes.object
+		select2Options: React.PropTypes.object,
+		onChange: React.PropTypes.func
 	},
 	componentDidMount() {
 		'use strict';

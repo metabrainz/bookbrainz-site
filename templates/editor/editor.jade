@@ -25,25 +25,21 @@ block body
 						=editor.email
 						| &nbsp;
 					i (hidden)
-					if user
-						if (editor.id != user.id)
-							a.btn.btn-warning.btn-xs.fa.fa-envelope-o.entity-action(title='Compose message', href='/message/send?recipients=' + editor.id)
-								span.sr-only Compose message to #{editor.name}
 				dt Type
-				dd=editor.user_type.label
+				dd=editor.type.label
 				dt Reputation
 				dd 0
 				dt Joined
-				dd=(new Date(editor.created_at)).toUTCString()
+				dd=(new Date(editor.createdAt)).toUTCString()
 				dt Last Active
-				dd=(new Date(editor.active_at)).toUTCString()
+				dd=(new Date(editor.activeAt)).toUTCString()
 				dt Bio
 				dd=(editor.bio ? editor.bio : '-')
 			h2 Stats
 			dl.dl-horizontal
 				dt Total Revisions
-				dd=editor.total_revisions
+				dd=editor.totalRevisions
 				dt Revisions Applied
-				dd=editor.revisions_applied
+				dd=editor.revisionsApplied
 				dt Revisions Reverted
-				dd=editor.revisions_reverted
+				dd=editor.revisionsReverted

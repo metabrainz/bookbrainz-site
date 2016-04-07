@@ -36,7 +36,6 @@ module.exports = React.createClass({
 		'use strict';
 
 		return {
-			id: this.props.id,
 			bio: this.props.bio,
 			waiting: false
 		};
@@ -47,7 +46,7 @@ module.exports = React.createClass({
 		evt.preventDefault();
 
 		const data = {
-			id: this.state.id,
+			id: this.props.id,
 			bio: this.refs.bio.getValue().trim()
 		};
 
@@ -55,8 +54,9 @@ module.exports = React.createClass({
 
 		request.post('/editor/edit/handler')
 			.send(data).promise()
-			.then((user) => {
-				window.location.href = `/editor/${user.body.user_id}`;
+			.then((res) => {
+				const editor = res.body;
+				window.location.href = `/editor/${editor.id}`;
 			});
 	},
 	render() {

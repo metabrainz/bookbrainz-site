@@ -22,16 +22,10 @@
 
 const express = require('express');
 const router = express.Router();
-const Revision = require('../data/properties/revision');
-const bbws = require('../helpers/bbws');
-const Promise = require('bluebird');
-const Publication = require('../data/entities/publication');
-const Creator = require('../data/entities/creator');
-const Edition = require('../data/entities/edition');
-const Work = require('../data/entities/work');
-const Publisher = require('../data/entities/publisher');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
+
+const utils = require('../helpers/utils');
 
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about.jsx')
@@ -48,157 +42,49 @@ const PrivacyPage = React.createFactory(
 const LicensingPage = React.createFactory(
 	require('../../client/components/pages/licensing.jsx')
 );
-const SearchPage = React.createFactory(
-	require('../../client/components/pages/search.jsx')
-);
+
+const Revision = require('bookbrainz-data').Revision;
 
 /* GET home page. */
 router.get('/', (req, res) => {
-	function render(revisions) {
-		res.render('index', {
-			recent: revisions,
-			homepage: true
-		});
-	}
+	const numRevisionsOnHomepage = 9;
 
-	Revision.find({
-		params: {
-			limit: 9,
-			type: 'entity'
-		},
-		populate: ['entity']
-	})
-		.then(render)
-		.catch((err) => {
-			console.log(err.stack);
-			render(null);
-		});
-});
+	new Revision()
+		.query('orderBy', 'created_at', 'desc')
+		.query('limit', numRevisionsOnHomepage)
+		.fetchAll()
+		.then((collection) => collection.toJSON())
+		.map((revision) => {
+			const model = utils.getEntityModelByType(revision.type);
 
-router.get('/about', (req, res) => {
-	res.render('page', {
-		title: 'About',
-		markup: ReactDOMServer.renderToString(AboutPage())
-	});
-});
-
-router.get('/contribute', (req, res) => {
-	res.render('page', {
-		title: 'Contribute',
-		markup: ReactDOMServer.renderToString(ContributePage())
-	});
-});
-
-router.get('/develop', (req, res) => {
-	res.render('page', {
-		title: 'Develop',
-		markup: ReactDOMServer.renderToString(DevelopPage())
-	});
-});
-
-router.get('/privacy', (req, res) => {
-	res.render('page', {
-		title: 'Privacy',
-		markup: ReactDOMServer.renderToString(PrivacyPage())
-	});
-});
-
-router.get('/licensing', (req, res) => {
-	res.render('page', {
-		title: 'Licensing',
-		markup: ReactDOMServer.renderToString(LicensingPage())
-	});
-});
-
-router.get('/search', (req, res) => {
-	const query = req.query.q;
-	const mode = req.query.mode || 'search';
-
-	const params = {
-		q: query,
-		mode
-	};
-
-	if (req.query.collection) {
-		params.collection = req.query.collection;
-	}
-
-	bbws.get('/search', {
-		params
-	})
-		.then((results) => {
-			if (!results.hits) {
-				return null;
-			}
-
-			return Promise.map(results.hits, (hit) => {
-				const entity_stub = hit._source;
-				let model = null;
-
-				switch (entity_stub._type) {
-					case 'Publication':
-						model = Publication;
-						break;
-					case 'Creator':
-						model = Creator;
-						break;
-					case 'Edition':
-						model = Edition;
-						break;
-					case 'Work':
-						model = Work;
-						break;
-					case 'Publisher':
-						model = Publisher;
-						break;
-					default:
-						return null;
-				}
-
-				return model.findOne(entity_stub.entity_gid, {
-					populate: ['disambiguation']
-				});
+			return model.forge({revisionId: revision.id})
+				.fetch({
+					withRelated: ['defaultAlias', 'revision.revision']
+				})
+				.then((entity) => entity.toJSON());
+		})
+		.then((latestEntities) => {
+			res.render('index', {
+				recent: latestEntities,
+				homepage: true
 			});
-		})
-		.then((entities) => {
-			if (mode === 'search') {
-				const props = {
-					query,
-					initialResults: entities
-				};
-
-				res.render('search', {
-					props,
-					markup: ReactDOMServer.renderToString(SearchPage(props)),
-					hideSearch: true
-				});
-			}
-			else if (mode === 'auto') {
-				res.json(entities);
-			}
-		})
-		.catch(() => {
-			const message = 'An error occurred while obtaining search results';
-
-			if (mode === 'search') {
-				const props = {
-					error: message,
-					initialResults: []
-				};
-				res.render('search', {
-					title: 'Search Results',
-					props,
-					markup: ReactDOMServer.renderToString(SearchPage(props)),
-					hideSearch: true
-
-				});
-			}
-			else if (mode === 'auto') {
-				res.json({
-					error: message
-				});
-			}
 		});
 });
+
+// Helper function to create pages that don't require custom logic
+function _createStaticRoute(route, title, pageComponent) {
+	router.get(route, (req, res) => {
+		res.render('page', {
+			title,
+			markup: ReactDOMServer.renderToString(pageComponent())
+		});
+	});
+}
+
+_createStaticRoute('/about', 'About', AboutPage);
+_createStaticRoute('/contribute', 'Contribute', ContributePage);
+_createStaticRoute('/develop', 'Develop', DevelopPage);
+_createStaticRoute('/licensing', 'Licensing', LicensingPage);
+_createStaticRoute('/privacy', 'Privacy', PrivacyPage);
 
 module.exports = router;

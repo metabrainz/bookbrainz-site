@@ -19,50 +19,84 @@
 
 'use strict';
 
-const request = require('superagent');
-const Promise = require('bluebird');
-require('superagent-bluebird-promise');
+const Creator = require('bookbrainz-data').Creator;
+const Edition = require('bookbrainz-data').Edition;
+const Editor = require('bookbrainz-data').Editor;
+const Publication = require('bookbrainz-data').Publication;
+const Publisher = require('bookbrainz-data').Publisher;
+const Work = require('bookbrainz-data').Work;
 
 function getEntityLink(entity) {
-	const bbid = entity.entity_gid || entity.bbid;
-	return `/${entity._type.toLowerCase()}/${bbid}`;
+	const bbid = entity.bbid;
+	return `/${entity.type.toLowerCase()}/${bbid}`;
 }
 
-// Returns a Promise which fulfills with an entity with aliases and data.
-function getEntity(ws, entityGid, fetchOptions) {
-	const entityPromise = request.get(`${ws}/entity/${entityGid}`).promise()
-		.then((entityResponse) => entityResponse.body);
-
-	return entityPromise.then((entity) => {
-		if (fetchOptions.data) {
-			entity.data = request.get(entity.data_uri).promise()
-				.then((dataResponse) => dataResponse.body);
-		}
-
-		if (fetchOptions.aliases) {
-			entity.aliases = request.get(entity.aliases_uri).promise()
-				.then((aliasesResponse) => aliasesResponse.body);
-		}
-
-		if (fetchOptions.annotation) {
-			entity.annotation = request.get(entity.annotation_uri).promise()
-				.then((annotationResponse) => annotationResponse.body);
-		}
-
-		if (fetchOptions.disambiguation) {
-			entity.disambiguation = request.get(entity.disambiguation_uri)
-				.promise()
-				.then((disambiguationResponse) => disambiguationResponse.body);
-		}
-
-		if (fetchOptions.relationships) {
-			entity.relationships = request.get(entity.relationships_uri)
-				.promise()
-				.then((relationshipsResponse) => relationshipsResponse.body);
-		}
-
-		return Promise.props(entity);
-	});
+function getEntityModels() {
+	return {
+		Creator,
+		Edition,
+		Publication,
+		Publisher,
+		Work
+	};
 }
 
-module.exports = {getEntityLink, getEntity};
+function getEntityModelByType(type) {
+	const entityModels = getEntityModels();
+
+	if (!entityModels[type]) {
+		throw new Error('Unrecognized entity type');
+	}
+
+	return entityModels[type];
+}
+
+// Cribbed from MDN documentation on template literals
+function template(strings) {
+	const keys = Array.prototype.slice.call(arguments, 1);
+
+	return (values) => {
+		const result = [strings[0]];
+
+		keys.forEach((key, i) => {
+			result.push(values[key], strings[i + 1]);
+		});
+
+		return result.join('');
+	};
+}
+
+function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
+	/**
+	 * User-visible strings should _never_ be created by concatenation; when we
+	 * start to implement localization, it will create problems for users of
+	 * many languages. This helper is here to make it a little easier to do the
+	 * right thing.
+	 */
+	let title = titleForUnnamed;
+
+	// Accept template with a "name" replacement field
+	if (entity && entity.defaultAlias && entity.defaultAlias.name) {
+		title = templateForNamed({name: entity.defaultAlias.name});
+	}
+
+	return title;
+}
+
+function incrementEditorEditCountById(id, transacting) {
+	return new Editor({id})
+		.fetch({transacting})
+		.then((editor) => {
+			editor.incrementEditCount();
+			return editor.save(null, {transacting});
+		});
+}
+
+module.exports = {
+	getEntityLink,
+	getEntityModels,
+	getEntityModelByType,
+	template,
+	createEntityPageTitle,
+	incrementEditorEditCountById
+};

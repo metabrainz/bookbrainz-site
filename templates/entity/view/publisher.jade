@@ -7,7 +7,7 @@ block picture
 	span.fa.fa-university.picture-fallback-icon-large
 
 block attributes
-	+type(entity.publisher_type)
+	+type(entity.publisherType)
 
 	+begin_end
 
@@ -26,7 +26,7 @@ block content
 				tr
 					td
 						a(href='/edition/'+edition.bbid)
-							=(edition.default_alias ? edition.default_alias.name : '(unnamed)')
+							=(edition.defaultAlias ? edition.defaultAlias.name : '(unnamed)')
 						span.text-muted
 							=(edition.disambiguation ? (' (' + edition.disambiguation.comment + ')') : '')
-					td=(edition.release_date ? edition.release_date : '?')
+					td=(edition.releaseDate ? edition.releaseDate : '?')

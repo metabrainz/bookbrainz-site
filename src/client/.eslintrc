@@ -1,6 +1,7 @@
 ---
-ecmaFeatures:
-  jsx: true
+parserOptions:
+  ecmaFeatures:
+    jsx: true
 env:
   browser: true
 plugins:
@@ -9,7 +10,10 @@ rules:
   no-extra-parens:
     - 0
     - all
-  react/display-name: 2
+  react/display-name:
+      - 2
+      -
+          ignoreTranspilerName: true
   react/forbid-prop-types: 0
   react/jsx-boolean-value:
     - 2
@@ -39,24 +43,30 @@ rules:
   jsx-quotes:
     - 2
     - prefer-double
-  react/jsx-sort-prop-types:
+  react/sort-prop-types:
     - 2
     -
       ignoreCase: false
+      callbacksLast: true
+      requiredFirst: false
   react/jsx-sort-props:
     - 2
     -
       ignoreCase: false
+      callbacksLast: true
+      shorthandFirst: true
   react/jsx-uses-react: 2
   react/jsx-uses-vars: 2
   react/no-danger: 1
   react/no-did-mount-set-state: 1
-  react/no-did-update-set-state: 1
+  react/no-did-update-set-state:
+      - 2
+      - allow-in-func
   react/no-direct-mutation-state: 2
   react/no-multi-comp:
     - 1
     -
-      ignoreStateless: true
+      ignoreStateless: false
   react/no-set-state: 0
   react/no-unknown-property: 2
   react/prop-types: 1 # Revisit this
@@ -65,6 +75,19 @@ rules:
   react/self-closing-comp: 2
   react/sort-comp: 2
   react/wrap-multilines: 2
+  react/prefer-es6-class:
+      - 1
+      - always
+  react/no-is-mounted: 2
+  react/no-string-refs: 1
+  react/jsx-equals-spacing:
+      - 1
+      - never
+  react/jsx-space-before-closing:
+      - 2
+      - never
+  react/prefer-stateless-function: 1
+  react/jsx-handler-names: 1
   strict:
     - 2
     - function

@@ -28,30 +28,30 @@ const validators = require('../../validators');
 const IdentifierRow = React.createClass({
 	displayName: 'identifierRowComponent',
 	propTypes: {
-		onChange: React.PropTypes.func,
-		onRemove: React.PropTypes.func,
 		removeHidden: React.PropTypes.bool,
-		type: React.PropTypes.number,
+		typeId: React.PropTypes.number,
 		types: React.PropTypes.arrayOf(validators.identifierType),
-		value: React.PropTypes.string
+		value: React.PropTypes.string,
+		onChange: React.PropTypes.func,
+		onRemove: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
 
 		return {
-			type: parseInt(this.refs.type.getValue(), 10),
+			typeId: parseInt(this.refs.typeId.getValue(), 10),
 			value: this.refs.value.getValue()
 		};
 	},
 	validationState() {
 		'use strict';
 
-		if (this.props.type) {
+		if (this.props.typeId) {
 			const type = this.props.types.filter(
-				(testType) => testType.id === this.props.type
+				(testType) => testType.id === this.props.typeId
 			)[0];
 
-			if (new RegExp(type.validation_regex).test(this.props.value)) {
+			if (new RegExp(type.validationRegex).test(this.props.value)) {
 				return 'success';
 			}
 			return 'error';
@@ -67,7 +67,7 @@ const IdentifierRow = React.createClass({
 		'use strict';
 
 		const value = this.refs.value.getValue();
-		const typeId = parseInt(this.refs.type.getValue(), 10);
+		const typeId = parseInt(this.refs.typeId.getValue(), 10);
 
 		let selectedType = this.props.types.filter(
 			(type) => type.id === typeId
@@ -75,7 +75,7 @@ const IdentifierRow = React.createClass({
 
 		if (selectedType.length) {
 			selectedType = selectedType[0];
-			return new RegExp(selectedType.validation_regex).test(value);
+			return new RegExp(selectedType.validationRegex).test(value);
 		}
 
 		return false;
@@ -87,26 +87,26 @@ const IdentifierRow = React.createClass({
 			<div className="row">
 				<div className="col-md-4">
 					<Select
+						noDefault
 						bsStyle={this.validationState()}
 						idAttribute="id"
 						labelAttribute="label"
-						noDefault
-						onChange={this.props.onChange}
 						options={this.props.types}
 						placeholder="Select identifier type…"
-						ref="type"
-						value={this.props.type}
+						ref="typeId"
+						value={this.props.typeId}
 						wrapperClassName="col-md-12"
+						onChange={this.props.onChange}
 					/>
 				</div>
 				<div className="col-md-4">
 					<Input
 						bsStyle={this.validationState()}
-						onChange={this.props.onChange}
 						ref="value"
 						type="text"
 						value={this.props.value}
 						wrapperClassName="col-md-12"
+						onChange={this.props.onChange}
 					/>
 				</div>
 				<div className="col-md-2">
@@ -128,7 +128,7 @@ const IdentifierList = React.createClass({
 	propTypes: {
 		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			value: React.PropTypes.string,
-			type: validators.identifierType
+			typeId: React.PropTypes.number
 		})),
 		types: React.PropTypes.arrayOf(validators.identifierType)
 	},
@@ -138,7 +138,7 @@ const IdentifierList = React.createClass({
 		const existing = this.props.identifiers || [];
 		existing.push({
 			value: '',
-			type: null
+			typeId: null
 		});
 
 		existing.forEach((identifier, i) => {
@@ -159,7 +159,7 @@ const IdentifierList = React.createClass({
 			.map((identifier) => {
 				const data = {
 					value: identifier.value,
-					typeId: identifier.type
+					typeId: identifier.typeId
 				};
 
 				if (identifier.id) {
@@ -180,15 +180,15 @@ const IdentifierList = React.createClass({
 		if (updatedIdentifiers[index].value === '') {
 			let newValue = updatedIdentifier.value;
 			this.props.types.forEach((type) => {
-				if (type.detection_regex) {
-					const detectionRegex = new RegExp(type.detection_regex);
+				if (type.detectionRegex) {
+					const detectionRegex = new RegExp(type.detectionRegex);
 					const regexResult =
 						detectionRegex.exec(updatedIdentifier.value);
 					if (regexResult) {
 						// Don't assign directly to updatedIdentifier, to avoid
 						// multiple transformations.
 						newValue = regexResult[1];
-						updatedIdentifier.type = type.id;
+						updatedIdentifier.typeId = type.id;
 					}
 				}
 			});
@@ -197,7 +197,7 @@ const IdentifierList = React.createClass({
 
 		updatedIdentifiers[index] = {
 			value: updatedIdentifier.value,
-			type: updatedIdentifier.type,
+			typeId: updatedIdentifier.typeId,
 			key: updatedIdentifiers[index].key,
 			valid: this.refs[index].getValid()
 		};
@@ -210,7 +210,7 @@ const IdentifierList = React.createClass({
 		if (index === this.state.identifiers.length - 1) {
 			updatedIdentifiers.push({
 				value: '',
-				type: null,
+				typeId: null,
 				key: rowsSpawned,
 				valid: true
 			});
@@ -249,13 +249,13 @@ const IdentifierList = React.createClass({
 		const rows = this.state.identifiers.map((identifier, index) =>
 			<IdentifierRow
 				key={identifier.key}
-				onChange={self.handleChange.bind(null, index)}
-				onRemove={self.handleRemove.bind(null, index)}
 				ref={index}
 				removeHidden={index === self.state.identifiers.length - 1}
-				type={identifier.type}
+				typeId={identifier.typeId}
 				types={self.props.types}
 				value={identifier.value}
+				onChange={self.handleChange.bind(null, index)}
+				onRemove={self.handleRemove.bind(null, index)}
 			/>
 		);
 

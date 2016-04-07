@@ -20,18 +20,19 @@
 'use strict';
 
 const Promise = require('bluebird');
-const status = require('http-status');
 
-const CreatorType = require('../data/properties/creator-type');
-const EditionStatus = require('../data/properties/edition-status');
-const EditionFormat = require('../data/properties/edition-format');
-const Entity = require('../data/entity');
-const Gender = require('../data/properties/gender');
-const Language = require('../data/properties/language');
-const PublicationType = require('../data/properties/publication-type');
-const PublisherType = require('../data/properties/publisher-type');
-const WorkType = require('../data/properties/work-type');
-const IdentifierType = require('../data/properties/identifier-type');
+const utils = require('../helpers/utils');
+
+const CreatorType = require('bookbrainz-data').CreatorType;
+const EditionStatus = require('bookbrainz-data').EditionStatus;
+const EditionFormat = require('bookbrainz-data').EditionFormat;
+const Gender = require('bookbrainz-data').Gender;
+const IdentifierType = require('bookbrainz-data').IdentifierType;
+const Language = require('bookbrainz-data').Language;
+const PublicationType = require('bookbrainz-data').PublicationType;
+const PublisherType = require('bookbrainz-data').PublisherType;
+const RelationshipSet = require('bookbrainz-data').RelationshipSet;
+const WorkType = require('bookbrainz-data').WorkType;
 
 const renderRelationship = require('../helpers/render');
 
@@ -39,10 +40,12 @@ const NotFoundError = require('../helpers/error').NotFoundError;
 
 function makeLoader(model, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
-		model.find()
+		model.fetchAll()
 			.then((results) => {
+				const resultsSerial = results.toJSON();
+
 				res.locals[propName] =
-					sortFunc ? results.sort(sortFunc) : results;
+					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
 
 				next();
 			})
@@ -53,13 +56,13 @@ function makeLoader(model, propName, sortFunc) {
 const middleware = {};
 
 middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
-middleware.loadPublicationTypes =
-	makeLoader(PublicationType, 'publicationTypes');
 middleware.loadEditionFormats = makeLoader(EditionFormat, 'editionFormats');
 middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
+middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
+middleware.loadPublicationTypes =
+	makeLoader(PublicationType, 'publicationTypes');
 middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
 middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
-middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
 
 middleware.loadGenders = makeLoader(Gender, 'genders', (a, b) => a.id > b.id);
 
@@ -78,72 +81,86 @@ function loadEntityRelationships(req, res, next) {
 	}
 
 	const entity = res.locals.entity;
-	Promise.map(entity.relationships, (relationship) => {
-		relationship.template = relationship.relationship_type.template;
 
-		const relEntities = relationship.entities.sort(
-			(a, b) => a.position - b.position
-		);
+	return RelationshipSet.forge({id: entity.relationshipSetId})
+		.fetch({
+			withRelated: [
+				'relationships.source',
+				'relationships.target',
+				'relationships.type'
+			]
+		})
+		.then((relationshipSet) => {
+			entity.relationships = relationshipSet ?
+				relationshipSet.related('relationships').toJSON() : [];
 
-		return Promise.map(
-			relEntities,
-			(relEntity) => Entity.findOne(relEntity.entity.entity_gid)
-		)
-			.then((loadedEntities) => {
-				relationship.rendered =
-					renderRelationship(loadedEntities, relationship, null);
+			function getEntityWithAlias(relEntity) {
+				const model = utils.getEntityModelByType(relEntity.type);
 
-				return relationship;
-			});
-	})
+				return model.forge({bbid: relEntity.bbid})
+					.fetch({withRelated: 'defaultAlias'});
+			}
+
+			/**
+			 * Source and target are generic Entity objects, so until we have
+			 * a good way of polymorphically fetching the right specific entity,
+			 * we need to fetch default alias in a somewhat sketchier way.
+			 */
+			return Promise.map(entity.relationships, (relationship) =>
+				Promise.join(
+					getEntityWithAlias(relationship.source),
+					getEntityWithAlias(relationship.target),
+					(source, target) => {
+						relationship.source = source.toJSON();
+						relationship.target = target.toJSON();
+
+						return relationship;
+					}
+				)
+			);
+		})
 		.then((relationships) => {
-			res.locals.entity.relationships = relationships;
+			// Set rendered relationships on relationship objects
+			relationships.forEach((relationship) => {
+				relationship.rendered = renderRelationship(relationship);
+			});
 
 			next();
 		})
 		.catch(next);
 };
 
-middleware.makeEntityLoader = function makeEntityLoader(model, errMessage) {
+middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 	const bbidRegex =
 		/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
-	return function loaderFunc(req, res, next, bbid) {
+	const relations = [
+		'aliasSet.aliases.language',
+		'annotation.lastRevision',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type',
+		'relationshipSet.relationships.type',
+		'revision.revision'
+	].concat(additionalRels);
+
+	return (req, res, next, bbid) => {
 		if (bbidRegex.test(bbid)) {
-			const populate = [
-				'annotation',
-				'disambiguation',
-				'relationships',
-				'aliases',
-				'identifiers'
-			];
-
-			// XXX: Don't special case this; instead, let the route specify
-			switch (model.name) {
-				case 'Edition':
-					populate.push('publication');
-					populate.push('publisher');
-					break;
-				case 'Publication':
-					populate.push('editions');
-					break;
-				case 'Publisher':
-					populate.push('editions');
-					break;
-				// no default
-			}
-
-			return model.findOne(bbid, {populate})
+			return model.forge({bbid})
+				.fetch({require: true, withRelated: relations})
 				.then((entity) => {
-					res.locals.entity = entity;
+					res.locals.entity = entity.toJSON();
 
 					next();
 				})
+				.catch(model.NotFoundError, () => {
+					next(new NotFoundError(errMessage));
+				})
 				.catch((err) => {
-					if (err.status === status.SEE_OTHER) {
-						return next(new NotFoundError(errMessage));
-					}
+					const internalError =
+						new Error('An internal error occurred fetching entity');
+					internalError.stack = err.stack;
 
-					next(err);
+					next(internalError);
 				});
 		}
 

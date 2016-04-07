@@ -21,7 +21,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const Select = require('./select2.jsx');
 const Icon = require('react-fontawesome');
-const _ = require('underscore');
+const _ = require('lodash');
 const $ = require('jquery');
 
 const EntitySearch = React.createClass({
@@ -36,7 +36,6 @@ const EntitySearch = React.createClass({
 		help: React.PropTypes.string,
 		label: React.PropTypes.string,
 		labelClassName: React.PropTypes.string,
-		onChange: React.PropTypes.func,
 		options: React.PropTypes.object,
 		placeholder: React.PropTypes.string,
 		select2Options: React.PropTypes.object,
@@ -44,7 +43,8 @@ const EntitySearch = React.createClass({
 		value: React.PropTypes.shape({
 			id: React.PropTypes.string
 		}),
-		wrapperClassName: React.PropTypes.string
+		wrapperClassName: React.PropTypes.string,
+		onChange: React.PropTypes.func
 	},
 	loadedEntities: {},
 	getValue() {
@@ -74,12 +74,11 @@ const EntitySearch = React.createClass({
 		const select2Options = {
 			minimumInputLength: 1,
 			ajax: {
-				url: '/search',
+				url: '/search/autocomplete',
 				data(params) {
 					const queryParams = {
 						q: params.term,
 						page: params.page,
-						mode: 'auto',
 						collection: self.props.collection
 					};
 
@@ -102,11 +101,11 @@ const EntitySearch = React.createClass({
 					return {
 						results: results.map((result) => ({
 							id: result.bbid,
-							text: result.default_alias ?
-								result.default_alias.name : '(unnamed)',
+							text: result.defaultAlias ?
+								result.defaultAlias.name : '(unnamed)',
 							disambiguation: result.disambiguation ?
 								result.disambiguation.comment : null,
-							type: result._type
+							type: result.type
 						}))
 					};
 				}
@@ -125,7 +124,7 @@ const EntitySearch = React.createClass({
 				/* eslint prefer-template: 0 */
 				if (result.type) {
 					template = ReactDOMServer.renderToStaticMarkup(
-						<Icon name={ENTITY_TYPE_ICONS[result.type]} />
+						<Icon name={ENTITY_TYPE_ICONS[result.type]}/>
 					) + ` ${template}`;
 				}
 
@@ -159,6 +158,7 @@ const EntitySearch = React.createClass({
 
 		return (
 			<Select
+				noDefault
 				bsStyle={this.props.bsStyle}
 				defaultValue={defaultKey}
 				disabled={this.props.disabled}
@@ -168,8 +168,6 @@ const EntitySearch = React.createClass({
 				label={this.props.label}
 				labelAttribute="text"
 				labelClassName={this.props.labelClassName}
-				noDefault
-				onChange={this.props.onChange}
 				options={options}
 				placeholder={this.props.placeholder}
 				ref="select"
@@ -177,6 +175,7 @@ const EntitySearch = React.createClass({
 				standalone={this.props.standalone}
 				value={key}
 				wrapperClassName={this.props.wrapperClassName}
+				onChange={this.props.onChange}
 			/>
 		);
 	}

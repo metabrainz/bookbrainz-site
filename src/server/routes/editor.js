@@ -23,10 +23,10 @@ const express = require('express');
 const router = express.Router();
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const User = require('../data/user');
-const bbws = require('../helpers/bbws');
 const auth = require('../helpers/auth');
-const Promise = require('bluebird');
+const _ = require('lodash');
+
+const Editor = require('bookbrainz-data').Editor;
 const status = require('http-status');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
@@ -35,20 +35,20 @@ const ProfileForm = React.createFactory(
 );
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
-	User.getCurrent(req.session.bearerToken)
-		.then((user) => {
-			const props = {
-				id: user.id,
-				bio: user.bio
-			};
+	new Editor({id: parseInt(req.user.id, 10)})
+	.fetch()
+	.then((editor) => {
+		const markup =
+			ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
 
-			const markup = ReactDOMServer.renderToString(ProfileForm(props));
-
-			res.render('editor/edit', {props, markup});
-		})
-		.catch(() => {
-			next(new Error('An internal error occurred while loading profile'));
+		res.render('editor/edit', {
+			props: editor.toJSON(),
+			markup
 		});
+	})
+	.catch(() => {
+		next(new Error('An internal error occurred while loading profile'));
+	});
 });
 
 router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
@@ -58,13 +58,13 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 		res.redirect(status.SEE_OTHER, '/editor/edit');
 	}
 
-	bbws.put(
-		`/user/${req.body.id}/`,
-		{bio: req.body.bio},
-		{accessToken: req.session.bearerToken}
-	)
-		.then((response) => {
-			res.send(response);
+	new Editor({
+		id: parseInt(req.body.id, 10),
+		bio: req.body.bio
+	})
+		.save()
+		.then((editor) => {
+			res.send(editor.toJSON());
 		})
 		.catch(() => {
 			req.session.error =
@@ -74,36 +74,62 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 });
 
 router.get('/:id', (req, res, next) => {
-	let userPromise = null;
+	const userId = parseInt(req.params.id, 10);
 
-	const requestedId = parseInt(req.params.id, 10);
-	if (req.user && requestedId === req.user.id) {
-		userPromise = User.getCurrent(req.session.bearerToken);
-	}
-	else {
-		userPromise = User.findOne(requestedId);
-	}
-
-	userPromise
+	new Editor({id: userId})
+		.fetch({
+			require: true,
+			withRelated: ['type', 'gender']
+		})
 		.then((editor) => {
-			res.render('editor/editor', {editor});
+			let editorJSON = editor.toJSON();
+
+			if (!req.user || userId !== req.user.id) {
+				editorJSON = _.omit(editorJSON, ['password', 'email']);
+			}
+
+			res.render('editor/editor', {
+				editor: editorJSON
+			});
+		})
+		.catch(Editor.NotFoundError, () => {
+			next(new NotFoundError('Editor not found'));
 		})
 		.catch((err) => {
-			console.log(err.stack);
-			next(new NotFoundError('Editor not found'));
+			const internalError =
+				new Error('An internal error occurred while fetching editor');
+			internalError.stack = err.stack;
+
+			next(internalError);
 		});
 });
 
 router.get('/:id/revisions', (req, res, next) => {
-	const userPromise = User.findOne(req.params.id);
-	const revisionsPromise = bbws.get(`/user/${req.params.id}/revisions`);
-
-	Promise.join(userPromise, revisionsPromise, (editor, revisions) => {
-		res.render('editor/revisions', {editor, revisions});
-	})
-		.catch((err) => {
-			console.log(err.stack);
+	new Editor({id: parseInt(req.params.id, 10)})
+		.fetch({
+			require: true,
+			withRelated: {
+				revisions(query) {
+					query.orderBy('id');
+				}
+			}
+		})
+		.then((editor) => {
+			res.render('editor/revisions', {
+				editor: editor.toJSON()
+			});
+		})
+		.catch(Editor.NotFoundError, () => {
 			next(new NotFoundError('Editor not found'));
+		})
+		.catch((err) => {
+			const internalError =
+				new Error(
+					'An internal error occurred while fetching revisions'
+				);
+			internalError.stack = err.stack;
+
+			next(internalError);
 		});
 });
 

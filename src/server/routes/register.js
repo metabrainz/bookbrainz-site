@@ -22,9 +22,10 @@
 
 const express = require('express');
 const router = express.Router();
+
+const Editor = require('bookbrainz-data').Editor;
+const EditorType = require('bookbrainz-data').EditorType;
 const status = require('http-status');
-const User = require('../data/user');
-const UserType = require('../data/properties/user-type');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
@@ -62,33 +63,17 @@ router.post('/handler', (req, res, next) => {
 		return;
 	}
 
-	// This function should post a new user to the /user endpoint of the ws.
-	UserType.find()
-		.then((results) => {
-			let editorType = null;
-
-			const hasEditorType = !results.every((userType) => {
-				if (userType.label === 'Editor') {
-					editorType = userType;
-					return false;
-				}
-
-				return true;
-			});
-
-			if (!hasEditorType) {
-				throw new Error('Editor user type not found');
-			}
-
-			return User.create({
+	EditorType.forge({label: 'Editor'})
+		.fetch({require: true})
+		.then((editorType) =>
+			Editor.forge({
 				name: req.body.username,
 				email: req.body.email,
 				password: req.body.password,
-				user_type: {
-					user_type_id: editorType.id
-				}
-			});
-		})
+				typeId: editorType.id
+			})
+				.save()
+		)
 		.then(() => {
 			res.redirect(status.SEE_OTHER, '/');
 		})

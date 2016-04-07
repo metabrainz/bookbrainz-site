@@ -44,9 +44,9 @@ const PublisherData = React.createClass({
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
-				identifier_type: validators.identifierType
+				typeId: React.PropTypes.number
 			})),
-			publisher_type: validators.publisherType
+			publisherType: validators.publisherType
 		}),
 		publisherTypes: React.PropTypes.arrayOf(validators.publisherType),
 		visible: React.PropTypes.bool
@@ -94,19 +94,20 @@ const PublisherData = React.createClass({
 
 		const prefillData = this.props.publisher;
 		if (prefillData) {
-			initialBeginDate = prefillData.begin_date;
-			initialEndDate = prefillData.end_date;
-			initialPublisherType = prefillData.publisher_type ?
-				prefillData.publisher_type.publisher_type_id : null;
+			initialBeginDate = prefillData.beginDate;
+			initialEndDate = prefillData.endDate;
+			initialPublisherType = prefillData.publisherType ?
+				prefillData.publisherType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
 				prefillData.annotation.content : null;
-			initialIdentifiers = prefillData.identifiers.map((identifier) => ({
-				id: identifier.id,
-				value: identifier.value,
-				type: identifier.identifier_type.identifier_type_id
-			}));
+			initialIdentifiers = prefillData.identifierSet &&
+				prefillData.identifierSet.identifiers.map((identifier) => ({
+					id: identifier.id,
+					value: identifier.value,
+					typeId: identifier.type.id
+				}));
 		}
 
 		const select2Options = {
@@ -141,18 +142,18 @@ const PublisherData = React.createClass({
 					<Input
 						defaultChecked={this.state.ended}
 						label="Ended"
-						onChange={this.handleEnded}
 						ref="ended"
 						type="checkbox"
 						wrapperClassName="col-md-offset-4 col-md-4"
+						onChange={this.handleEnded}
 					/>
 					<Select
+						noDefault
 						defaultValue={initialPublisherType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						noDefault
 						options={this.props.publisherTypes}
 						placeholder="Select publisher type…"
 						ref="publisherType"

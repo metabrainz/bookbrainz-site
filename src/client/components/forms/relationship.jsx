@@ -25,21 +25,47 @@ const PageHeader = require('react-bootstrap').PageHeader;
 const Select = require('../input/select2.jsx');
 const SearchSelect = require('../input/entity-search.jsx');
 const Icon = require('react-fontawesome');
-const _ = require('underscore');
+const _ = require('lodash');
 const request = require('superagent');
 require('superagent-bluebird-promise');
-const utils = require('../../../server/helpers/utils.js');
 const _filter = require('lodash.filter');
-
-const renderRelationship = require('../../../server/helpers/render.js');
+const Handlebars = require('handlebars');
 
 const validators = require('../validators');
 
-function getRelationshipTypeById(relationships, id) {
+function getEntityLink(entity) {
+	'use strict';
+	const bbid = entity.bbid;
+	return `/${entity.type.toLowerCase()}/${bbid}`;
+}
+
+function renderRelationship(relationship) {
+	'use strict';
+	const template = Handlebars.compile(
+		relationship.type.displayTemplate,
+		{noEscape: true}
+	);
+
+	const data = {
+		entities: [
+			relationship.source,
+			relationship.target
+		].map((entity) => {
+			// Linkify source and target based on default alias
+			const name = entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)';
+			return `<a href="${getEntityLink(entity)}">${name}</a>`;
+		})
+	};
+
+	return template(data);
+}
+
+function getRelationshipTypeById(types, id) {
 	'use strict';
 
 	return _.find(
-		relationships, (relationship) => relationship.id === id
+		types, (type) => type.id === id
 	);
 }
 
@@ -54,20 +80,20 @@ const RelationshipRow = React.createClass({
 		entity: React.PropTypes.shape({
 			bbid: React.PropTypes.string
 		}),
-		onChange: React.PropTypes.func,
-		onDelete: React.PropTypes.func,
-		onSelect: React.PropTypes.func,
-		onSwap: React.PropTypes.func,
 		relationship: React.PropTypes.shape({
 			source: React.PropTypes.object,
 			target: React.PropTypes.object,
-			type: React.PropTypes.number,
+			typeId: React.PropTypes.number,
 			initialSource: React.PropTypes.object,
 			initialTarget: React.PropTypes.object,
-			initialType: React.PropTypes.number
+			initialTypeId: React.PropTypes.number
 		}),
 		relationshipTypes:
-			React.PropTypes.arrayOf(validators.relationshipType)
+			React.PropTypes.arrayOf(validators.relationshipType),
+		onChange: React.PropTypes.func,
+		onDelete: React.PropTypes.func,
+		onSelect: React.PropTypes.func,
+		onSwap: React.PropTypes.func
 	},
 	getInitialState() {
 		'use strict';
@@ -84,7 +110,7 @@ const RelationshipRow = React.createClass({
 		return {
 			source: this.refs.source.getValue(),
 			target: this.refs.target.getValue(),
-			type: this.refs.type.getValue() ?
+			typeId: this.refs.type.getValue() ?
 				parseInt(this.refs.type.getValue(), 10) : null
 		};
 	},
@@ -113,9 +139,9 @@ const RelationshipRow = React.createClass({
 		'use strict';
 
 		const initiallyEmpty = !this.props.relationship.initialTarget &&
-			!this.props.relationship.initialType;
+			!this.props.relationship.initialTypeId;
 		const nowSet = this.props.relationship.target ||
-			this.props.relationship.type;
+			this.props.relationship.typeId;
 		return Boolean(initiallyEmpty && nowSet);
 	},
 	edited() {
@@ -126,7 +152,7 @@ const RelationshipRow = React.createClass({
 			(rel.initialSource && rel.initialSource.bbid);
 		const bChanged = (rel.target && rel.target.bbid) !==
 			(rel.initialTarget && rel.initialTarget.bbid);
-		const typeChanged = rel.type !== rel.initialType;
+		const typeChanged = rel.typeId !== rel.initialTypeId;
 		return Boolean(aChanged || bChanged || typeChanged);
 	},
 	renderedRelationship() {
@@ -138,11 +164,9 @@ const RelationshipRow = React.createClass({
 			return null;
 		}
 
-		return {
-			__html: renderRelationship(
-				[rel.source, rel.target], this.currentRelationshipType(), null
-			)
-		};
+		rel.type = this.currentRelationshipType();
+
+		return {__html: renderRelationship(rel)};
 	},
 	rowClass() {
 		'use strict';
@@ -165,7 +189,7 @@ const RelationshipRow = React.createClass({
 		'use strict';
 
 		const rel = this.props.relationship;
-		if (rel.source && rel.target && rel.type) {
+		if (rel.source && rel.target && rel.typeId) {
 			return true;
 		}
 
@@ -181,7 +205,7 @@ const RelationshipRow = React.createClass({
 	currentRelationshipType() {
 		'use strict';
 		return getRelationshipTypeById(
-			this.props.relationshipTypes, this.props.relationship.type
+			this.props.relationshipTypes, this.props.relationship.typeId
 		);
 	},
 	render() {
@@ -219,15 +243,15 @@ const RelationshipRow = React.createClass({
 
 		const sourceEntity = this.props.relationship.source;
 		if (sourceEntity) {
-			sourceEntity.text = sourceEntity.default_alias ?
-				sourceEntity.default_alias.name : '(unnamed)';
+			sourceEntity.text = sourceEntity.defaultAlias ?
+				sourceEntity.defaultAlias.name : '(unnamed)';
 			sourceEntity.id = sourceEntity.bbid;
 		}
 
 		const targetEntity = this.props.relationship.target;
 		if (targetEntity) {
-			targetEntity.text = targetEntity.default_alias ?
-				targetEntity.default_alias.name : '(unnamed)';
+			targetEntity.text = targetEntity.defaultAlias ?
+				targetEntity.defaultAlias.name : '(unnamed)';
 			targetEntity.id = targetEntity.bbid;
 		}
 
@@ -238,21 +262,20 @@ const RelationshipRow = React.createClass({
 
 		const targetInput = (
 			<SearchSelect
+				standalone
 				bsStyle={validationState}
-				collection="entity"
 				disabled={
 					this.disabled() || this.state.deleted ||
 					(targetEntity && targetEntity.bbid) ===
 						this.props.entity.bbid
 				}
 				labelClassName="col-md-4"
-				onChange={this.props.onChange}
 				placeholder="Select entity…"
 				ref="target"
 				select2Options={{width: '100%'}}
-				standalone
 				value={targetEntity}
 				wrapperClassName="col-md-4"
+				onChange={this.props.onChange}
 			/>
 		);
 
@@ -270,8 +293,6 @@ const RelationshipRow = React.createClass({
 			);
 		}
 
-		console.log(deprecationWarning);
-
 		return (
 			<div
 				className={`list-group-item margin-top-1 + ${this.rowClass()}`}
@@ -282,45 +303,44 @@ const RelationshipRow = React.createClass({
 							className="margin-left-0"
 							disabled={this.disabled() || this.state.deleted}
 							label=" "
-							onClick={this.props.onSelect}
 							ref="sel"
 							type="checkbox"
+							onClick={this.props.onSelect}
 						/>
 					</div>
 					<div className="col-md-11">
 						<div className="row">
 							<SearchSelect
+								standalone
 								bsStyle={validationState}
-								collection="entity"
 								disabled={
 									this.disabled() || this.state.deleted ||
 									(sourceEntity && sourceEntity.bbid) ===
 										this.props.entity.bbid
 								}
 								labelClassName="col-md-4"
-								onChange={this.props.onChange}
 								placeholder="Select entity…"
 								ref="source"
 								select2Options={{width: '100%'}}
-								standalone
 								value={sourceEntity}
 								wrapperClassName="col-md-4"
+								onChange={this.props.onChange}
 							/>
 							<div className="col-md-4">
 								<Select
+									noDefault
 									bsStyle={validationState}
-									defaultValue={this.props.relationship.type}
+									defaultValue={this.props.relationship.typeId}
 									disabled={
 										this.disabled() || this.state.deleted
 									}
 									idAttribute="id"
 									labelAttribute="label"
-									noDefault
-									onChange={this.props.onChange}
 									options={this.props.relationshipTypes}
 									placeholder="Select relationship type…"
 									ref="type"
 									select2Options={{width: '100%'}}
+									onChange={this.props.onChange}
 								/>
 							</div>
 							{targetInput}
@@ -357,31 +377,34 @@ const RelationshipEditor = React.createClass({
 		entity: React.PropTypes.shape({
 			bbid: React.PropTypes.string
 		}),
-		loadedEntities: React.PropTypes.arrayOf(React.PropTypes.shape({
-			bbid: React.PropTypes.string
-		})),
+		loadedEntities: React.PropTypes.object,
 		relationshipTypes: React.PropTypes.arrayOf(validators.relationshipType),
 		relationships: React.PropTypes.arrayOf(React.PropTypes.shape({
 			source: React.PropTypes.object,
 			target: React.PropTypes.object,
-			type: React.PropTypes.number
+			typeId: React.PropTypes.number
 		}))
 	},
 	getInitialState() {
 		'use strict';
 
-		const existing = this.props.relationships || [];
+		const existing = (this.props.relationships || []).map((rel) => ({
+			source: rel.source,
+			target: rel.target,
+			typeId: rel.typeId
+		}));
+
 		existing.push({
 			source: this.props.entity,
 			target: null,
-			type: null
+			typeId: null
 		});
 
 		existing.forEach((rel, i) => {
 			rel.key = i;
 			rel.initialSource = rel.source;
 			rel.initialTarget = rel.target;
-			rel.initialType = rel.type;
+			rel.initialTypeId = rel.typeId;
 			rel.valid = rel.changed = false;
 		});
 
@@ -411,26 +434,11 @@ const RelationshipEditor = React.createClass({
 		);
 
 		request.post('./relationships/handler')
-		.send(changedRelationships.map((rel) => ({
-			id: [],
-			relationship_type: {
-				relationship_type_id: rel.type
-			},
-			entities: [
-				{
-					entity_gid: rel.source.bbid,
-					position: 0
-				},
-				{
-					entity_gid: rel.target.bbid,
-					position: 1
-				}
-			]
-		})))
-		.promise()
-		.then(() => {
-			window.location.href = utils.getEntityLink(this.props.entity);
-		});
+			.send(changedRelationships)
+			.promise()
+			.then(() => {
+				window.location.href = getEntityLink(this.props.entity);
+			});
 	},
 	getInternalValue() {
 		'use strict';
@@ -441,15 +449,15 @@ const RelationshipEditor = React.createClass({
 			rel.key = this.state.relationships[idx].key;
 			rel.initialSource = this.state.relationships[idx].initialSource;
 			rel.initialTarget = this.state.relationships[idx].initialTarget;
-			rel.initialType = this.state.relationships[idx].initialType;
+			rel.initialTypeId = this.state.relationships[idx].initialTypeId;
 
 			const sourceChanged = (rel.source && rel.source.bbid) !==
 				(rel.initialSource && rel.initialSource.bbid);
 			const targetChanged = (rel.target && rel.target.bbid) !==
 				(rel.initialTarget && rel.initialTarget.bbid);
-			const typeChanged = (rel.type !== rel.initialType);
+			const typeChanged = (rel.typeId !== rel.initialTypeId);
 			rel.changed = sourceChanged || targetChanged || typeChanged;
-			rel.valid = Boolean(rel.source && rel.target && rel.type);
+			rel.valid = Boolean(rel.source && rel.target && rel.typeId);
 		});
 
 		return updatedRelationships;
@@ -476,9 +484,9 @@ const RelationshipEditor = React.createClass({
 		'use strict';
 
 		const relationshipsToDelete = _.reject(
-			this.state.relationships.map((rel, idx) =>
-				this.refs[idx].selected() ? idx : null
-			), (idx) => idx === null
+			this.state.relationships.map(function selectedIndices(rel, idx) {
+				return this.refs[idx].selected() ? idx : null;
+			}.bind(this)), (idx) => idx === null
 		);
 
 		relationshipsToDelete.sort((a, b) => b - a).forEach((idx) => {
@@ -502,8 +510,8 @@ const RelationshipEditor = React.createClass({
 		);
 
 		const typeJustSetOrUnset = (
-			!existingRelationship.type && updatedRelationship.type ||
-			existingRelationship.type && !updatedRelationship.type
+			!existingRelationship.typeId && updatedRelationship.typeId ||
+			existingRelationship.typeId && !updatedRelationship.typeId
 		);
 
 		return Boolean(
@@ -517,10 +525,10 @@ const RelationshipEditor = React.createClass({
 			updatedRelationships.push({
 				initialSource: this.props.entity,
 				initialTarget: null,
-				initialType: null,
+				initialTypeId: null,
 				source: this.props.entity,
 				target: null,
-				type: null,
+				typeId: null,
 				key: rowsSpawned++
 			});
 		}
@@ -595,17 +603,17 @@ const RelationshipEditor = React.createClass({
 			<RelationshipRow
 				{...this.props}
 				key={rel.key}
-				onChange={this.handleChange.bind(null, index)}
-				onDelete={this.deleteRowIfNew.bind(null, index)}
-				onSelect={this.handleSelect.bind(null, index)}
-				onSwap={this.swap.bind(null, index)}
 				ref={index}
 				relationship={rel}
 				relationshipTypes={
 					isRelationshipNew(
-						rel.initialType, rel.initialTarget
+						rel.initialTypeId, rel.initialTarget
 					) ? typesWithoutDeprecated : this.props.relationshipTypes
 				}
+				onChange={this.handleChange.bind(null, index)}
+				onDelete={this.deleteRowIfNew.bind(null, index)}
+				onSelect={this.handleSelect.bind(null, index)}
+				onSwap={this.swap.bind(null, index)}
 			/>
 		));
 

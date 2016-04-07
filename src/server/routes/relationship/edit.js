@@ -20,83 +20,194 @@
 'use strict';
 
 const auth = require('../../helpers/auth');
-const Relationship = require('../../data/relationship');
-const RelationshipType = require('../../data/properties/relationship-type');
-const Entity = require('../../data/entity');
+const Relationship = require('bookbrainz-data').Relationship;
+const RelationshipSet = require('bookbrainz-data').RelationshipSet;
+const RelationshipType = require('bookbrainz-data').RelationshipType;
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
-	require('../../../client/components/forms/creator.jsx')
+	require('../../../client/components/forms/relationship.jsx')
 );
+const bookshelf = require('bookbrainz-data').bookshelf;
 const Promise = require('bluebird');
-const config = require('../../helpers/config');
-const _ = require('underscore');
+const _ = require('lodash');
+
+const utils = require('../../helpers/utils');
+
+const Revision = require('bookbrainz-data').Revision;
+const Editor = require('bookbrainz-data').Editor;
 
 const relationshipHelper = {};
 
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 
+function getEntityByType(entity, withRelated, transacting) {
+	const model = utils.getEntityModelByType(entity.type);
+
+	return model.forge({bbid: entity.bbid})
+		.fetch({withRelated, transacting});
+}
+
+function copyRelationshipsAndAdd(
+	transacting, oldRelationshipSet, newRelationshipSet, newRelationship
+) {
+	const oldRelationshipsPromise =
+		oldRelationshipSet.related('relationships').fetch({transacting});
+	const newRelationshipsPromise =
+		newRelationshipSet.related('relationships').fetch({transacting});
+
+	return Promise.join(oldRelationshipsPromise, newRelationshipsPromise,
+		(oldRelationships, newRelationships) => {
+			const relationshipsToBeAdded = _.concat(
+				oldRelationships.map('id'), newRelationship.get('id')
+			);
+			return newRelationships
+				.attach(relationshipsToBeAdded, {transacting});
+		}
+	);
+}
+
+function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
+	const newRelationshipSetPromise =
+		new RelationshipSet().save(null, {transacting});
+	const entityPromise =
+		getEntityByType(entityJSON, 'relationshipSet', transacting);
+
+	// Add all the old relationships to the new set, plus the new relationship
+	const relationshipsBuiltPromise =
+		Promise.join(newRelationshipSetPromise, entityPromise,
+			(newRelSet, entity) =>
+				copyRelationshipsAndAdd(
+					transacting, entity.related('relationshipSet'), newRelSet,
+					rel
+				)
+			);
+
+	// Get the parents of the new revision
+	const revisionParentsPromise =
+		revision.related('parents').fetch({transacting});
+
+	// Add the previous revision as a parent of this revision.
+	const parentAddedPromise = Promise.join(
+		revisionParentsPromise, entityPromise,
+		(parents, entity) => parents.attach(
+			entity.get('revisionId'), {transacting}
+		)
+	);
+
+	// Finally, update the revision ID and relationship set ID of the entity
+	const entityUpdatedPromise =
+		Promise.join(entityPromise, newRelationshipSetPromise,
+			(entity, newRelationshipSet) => {
+				entity.set('revisionId', revision.get('id'));
+				entity.set('relationshipSetId', newRelationshipSet.get('id'));
+				return entity.save(null, {transacting});
+			});
+
+	return Promise.join(
+		relationshipsBuiltPromise, parentAddedPromise, entityUpdatedPromise
+	);
+}
+
+function createRelationship(relationship, editorJSON) {
+	return bookshelf.transaction((transacting) => {
+		const editorUpdatePromise = new Editor({id: editorJSON.id})
+			.fetch({transacting})
+			.then((editor) => {
+				editor.set(
+					'totalRevisions', editor.get('totalRevisions') + 1
+				);
+				editor.set(
+					'revisionsApplied', editor.get('revisionsApplied') + 1
+				);
+				return editor.save(null, {transacting});
+			});
+
+		// Make new relationship
+		const newRelationshipPromise = new Relationship({
+			typeId: relationship.typeId,
+			sourceBbid: relationship.source.bbid,
+			targetBbid: relationship.target.bbid
+		}).save(null, {transacting});
+
+		const newRevisionPromise = new Revision({
+			authorId: editorJSON.id
+		}).save(null, {transacting});
+
+		// Update the relationship for the source and target entities
+		return Promise.join(newRelationshipPromise, newRevisionPromise,
+			(newRelationship, newRevision) => {
+				const sourcePromise = addRelationshipToEntity(
+					transacting, relationship.source, newRelationship,
+					newRevision
+				);
+
+				const targetPromise = addRelationshipToEntity(
+					transacting, relationship.target, newRelationship,
+					newRevision
+				);
+
+				return Promise.join(
+					editorUpdatePromise, sourcePromise, targetPromise
+				);
+			});
+	});
+}
+
 relationshipHelper.addEditRoutes = function addEditRoutes(router) {
-	/* If the route specifies a BBID, load the Entity for it. */
-
 	router.get('/:bbid/relationships', loadEntityRelationships, (req, res) => {
-		const relationshipTypesPromise = RelationshipType.find();
+		const relationshipTypesPromise = new RelationshipType().fetchAll();
 
-		const entityPromises = {};
-
+		const loadedEntities = {};
 		res.locals.entity.relationships.forEach((relationship) => {
-			entityPromises[relationship.entities[0].entity.entity_gid] =
-				Entity.findOne(relationship.entities[0].entity.entity_gid);
-			entityPromises[relationship.entities[1].entity.entity_gid] =
-				Entity.findOne(relationship.entities[1].entity.entity_gid);
+			loadedEntities[relationship.sourceBbid] = relationship.source;
+			loadedEntities[relationship.targetBbid] = relationship.target;
 		});
 
-		const entitiesPromise = Promise.props(entityPromises);
+		relationshipTypesPromise
+		.then((collection) => collection.toJSON())
+		.then((relationshipTypes) => {
+			// _.omit is used here to avoid "Circular reference" errors
+			const props = {
+				entity: _.omit(res.locals.entity, 'relationships'),
+				relationships: res.locals.entity.relationships,
+				relationshipTypes,
+				loadedEntities
+			};
 
-		Promise.join(entitiesPromise, relationshipTypesPromise,
-			(entities, relationshipTypes) => {
-				res.locals.entity.relationships.forEach((relationship) => {
-					relationship.source =
-						entities[relationship.entities[0].entity.entity_gid];
-					relationship.target =
-						entities[relationship.entities[1].entity.entity_gid];
-					relationship.type =
-						relationship.relationship_type.relationship_type_id;
-				});
+			const markup = ReactDOMServer.renderToString(EditForm(props));
 
-				const props = {
-					relationshipTypes,
-					relationships: res.locals.entity.relationships,
-					entity: res.locals.entity,
-					loadedEntities: _.union(entities, [res.locals.entity]),
-					wsUrl: config.site.clientWebservice
-				};
-
-				const markup = ReactDOMServer.renderToString(EditForm(props));
-
-				res.render('relationship/edit', {props, markup});
-			}
-		);
+			res.render('relationship/edit', {props, markup});
+		});
 	});
 
 	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
 		(req, res) => {
+			function relationshipValid(relationship) {
+				return _.has(relationship, 'typeId') &&
+					_.has(relationship, 'source.bbid') &&
+					_.has(relationship, 'target.bbid');
+			}
+
 			// Send a relationship revision for each of the relationships
 			const relationshipsPromise = Promise.all(
-				req.body.map((relationship) =>
-					Relationship.create(relationship, {
-						session: req.session
-					})
-				)
+				req.body.map((rel) => {
+					if (!relationshipValid(rel)) {
+						console.log('Relationship invalid');
+						return null;
+					}
+
+					return createRelationship(rel, req.session.passport.user);
+				})
 			);
 
-			relationshipsPromise.then(() => {
-				res.send({result: 'success'});
-			})
-			.catch(() => {
-				res.send({result: 'error'});
-			});
+			return relationshipsPromise.then(() =>
+				res.send({result: 'success'})
+			)
+			.catch(() =>
+				res.send({result: 'error'})
+			);
 		}
 	);
 };

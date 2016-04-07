@@ -32,10 +32,10 @@ const UUIDInput = React.createClass({
 		help: React.PropTypes.string,
 		label: React.PropTypes.string,
 		labelClassName: React.PropTypes.string,
-		onChange: React.PropTypes.func,
 		placeholder: React.PropTypes.string,
 		standalone: React.PropTypes.bool,
-		wrapperClassName: React.PropTypes.string
+		wrapperClassName: React.PropTypes.string,
+		onChange: React.PropTypes.func
 	},
 	getInitialState() {
 		'use strict';
@@ -98,13 +98,13 @@ const UUIDInput = React.createClass({
 				help={this.props.help}
 				label={this.props.label}
 				labelClassName={this.props.labelClassName}
-				onChange={this.handleChange}
 				placeholder={this.props.placeholder}
 				ref="input"
 				standalone={this.props.standalone}
 				type="text"
 				value={this.state.value}
 				wrapperClassName={this.props.wrapperClassName}
+				onChange={this.handleChange}
 			/>
 		);
 	}

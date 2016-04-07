@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2015  Stanisław Szcześniak
+ * Copyright (C) 2015-2016  Stanisław Szcześniak
+ *                          Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,122 +20,108 @@ const React = require('react');
 const _compact = require('lodash.compact');
 const EntityLink = require('../entityLink.jsx');
 
+function formatValueList(list) {
+	'use strict';
+
+	if (!list) {
+		return null;
+	}
+
+	return list.map((val, idx) => (
+		<div key={idx}>{val.toString()}</div>
+	));
+}
+
 module.exports = React.createClass({
 	displayName: 'RevisionPage',
 	propTypes: {
-		diff: React.PropTypes.any.isRequired,
+		diffs: React.PropTypes.any.isRequired,
 		revision: React.PropTypes.any.isRequired
 	},
-	get_list_of_values(newValue) {
+	formatChange(change) {
 		'use strict';
-
-		const newValues = newValue.map((val, idx) => (
-			<div key={idx}>{val.toString()}</div>
-		));
-		return newValues;
-	},
-	get_table_row(fieldName, newValue, oldValue) {
-		'use strict';
-		const oldFieldSet = oldValue && (oldValue.length > 0);
-		const newFieldSet = newValue && (newValue.length > 0);
-
-		const fieldUnset = oldFieldSet && !newFieldSet;
-		const fieldSet = !oldFieldSet && newFieldSet;
-		const fieldModified = oldFieldSet && newFieldSet;
-		if (fieldUnset) {
-			return (
-				<tr className="danger"
-					key={fieldName}
-				>
-					<th scope="row">{fieldName}</th>
-					<td>
-						{this.get_list_of_values(oldValue)}
-					</td>
-					<td> — </td>
-				</tr>
-			);
-		}
-		else if (fieldSet) {
+		if (change.kind === 'N') {
 			return (
 				<tr className="success"
-					key={fieldName}
+					key={change.key}
 				>
-					<th scope="row">{fieldName}</th>
+					<th scope="row">{change.key}</th>
 					<td> — </td>
 					<td>
-						{this.get_list_of_values(newValue)}
+						{formatValueList(change.rhs)}
 					</td>
 				</tr>
 			);
 		}
-		else if (fieldModified) {
+
+		if (change.kind === 'E') {
 			return (
-				<tr className="warning">
-					<th key={fieldName}
-						scope="row"
-					>
-						{fieldName}
-					</th>
+				<tr
+					className="warning"
+					key={change.key}
+				>
+					<th scope="row">{change.key}</th>
 					<td>
-						{this.get_list_of_values(oldValue)}
+						{formatValueList(change.lhs)}
 					</td>
 					<td>
-						{this.get_list_of_values(newValue)}
-						</td>
+						{formatValueList(change.rhs)}
+					</td>
+				</tr>
+			);
+		}
+
+		if (change.kind === 'D') {
+			return (
+				<tr
+					className="danger"
+					key={change.key}
+				>
+					<th scope="row">{change.key}</th>
+					<td>
+						{formatValueList(change.lhs)}
+					</td>
+					<td> — </td>
 				</tr>
 			);
 		}
 
 		return null;
 	},
-	get_table_rows(diff) {
+	formatDiff(diff) {
 		'use strict';
-		const result = [];
-		diff.forEach((difference) => {
-			for (const key in difference) {
-				if (difference.hasOwnProperty(key)) {
-					const oldValue = difference[key][1];
-					const newValue = difference[key][0];
-					result.push(
-						this.get_table_row(key, newValue, oldValue)
-					);
-				}
-			}
-		});
+		const result = diff.changes.map((change) => this.formatChange(change));
 		return _compact(result);
 	},
 	render() {
 		'use strict';
 		const revision = this.props.revision;
-		const diff = this.props.diff;
+		const diffs = this.props.diffs;
 
-		const data_description = revision.entity ? (
-			<EntityLink
-				bbid={revision.entity.bbid}
-				text={`${revision.entity._type} ${revision.entity.bbid}`}
-				type={revision.entity._type}
-			/>
-		) : (`Relationship ${revision.relationship.id}`);
-
-		const diff_table = diff ? (
-			<table className="table table-bordered text-center">
-				<tbody>
-					{this.get_table_rows(diff)}
-				</tbody>
-			</table>
-		) : (
-			<div className="alert alert-danger">
-				Error calculating diff. Please note that diffs for
-				DELETE revisions are currently unsupported.
+		const diffDivs = diffs.map((diff) => (
+			<div key="{diff.entity.bbid}">
+				<h3>
+					<EntityLink
+						bbid={diff.entity.bbid}
+						text={`${diff.entity.type} ${diff.entity.bbid}`}
+						type={diff.entity.type}
+					/>
+				</h3>
+				<table className="table table-bordered text-center">
+					<tbody>
+						{this.formatDiff(diff)}
+					</tbody>
+				</table>
 			</div>
-			);
+		));
 
-		const editor_link = `/editor/${revision.user.id}`;
+
+		const editor_link = `/editor/${revision.author.id}`;
 
 		const time_created =
-			new Date(revision.created_at).toTimeString();
+			new Date(revision.createdAt).toTimeString();
 		const date_created =
-			new Date(revision.created_at).toDateString();
+			new Date(revision.createdAt).toDateString();
 
 		const date_and_time_created = `${time_created}, ${date_created}`;
 
@@ -156,12 +143,11 @@ module.exports = React.createClass({
 		return (
 			<div>
 				<h1>Revision #{revision.id}</h1>
-				<h3>{data_description}</h3>
-				{diff_table}
+				{diffDivs}
 				<p className="text-right">
 					Created by&nbsp;
 					<a href={editor_link}>
-						{revision.user.name}
+						{revision.author.name}
 					</a>
 					, {date_created}
 				</p>
