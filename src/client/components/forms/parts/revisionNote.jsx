@@ -42,7 +42,7 @@ const RevisionNote = React.createClass({
 					<Input
 						label="Revision Note"
 						labelClassName="col-md-3"
-						ref="note"
+						ref={(ref) => this.note = ref}
 						rows="6"
 						type="textarea"
 						wrapperClassName="col-md-6"

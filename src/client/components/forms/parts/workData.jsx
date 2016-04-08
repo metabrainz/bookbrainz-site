@@ -55,11 +55,11 @@ const WorkData = React.createClass({
 		'use strict';
 
 		return {
-			languages: this.refs.languages.getValue(),
-			workType: this.refs.workType.getValue(),
-			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue(),
-			identifiers: this.refs.identifiers.getValue()
+			languages: this.languages.getValue(),
+			workType: this.workType.getValue(),
+			disambiguation: this.disambiguation.getValue(),
+			annotation: this.annotation.getValue(),
+			identifiers: this.identifiers.getValue()
 		};
 	},
 	valid() {
@@ -117,7 +117,7 @@ const WorkData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.languages}
 						placeholder="Select work languages…"
-						ref="languages"
+						ref={(ref) => this.languages = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -130,21 +130,21 @@ const WorkData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.workTypes}
 						placeholder="Select work type…"
-						ref="workType"
+						ref={(ref) => this.workType = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
-						ref="identifiers"
+						ref={(ref) => this.identifiers = ref}
 						types={this.props.identifierTypes}
 					/>
 					<Input
 						defaultValue={initialDisambiguation}
 						label="Disambiguation"
 						labelClassName="col-md-3"
-						ref="disambiguation"
+						ref={(ref) => this.disambiguation = ref}
 						type="text"
 						wrapperClassName="col-md-6"
 					/>
@@ -152,7 +152,7 @@ const WorkData = React.createClass({
 						defaultValue={initialAnnotation}
 						label="Annotation"
 						labelClassName="col-md-3"
-						ref="annotation"
+						ref={(ref) => this.annotation = ref}
 						rows="6"
 						type="textarea"
 						wrapperClassName="col-md-6"

@@ -102,33 +102,33 @@ const EditionData = React.createClass({
 	getValue() {
 		'use strict';
 
-		const publication = this.refs.publication.getValue();
-		const publisher = this.refs.publisher.getValue();
+		const publication = this.publication.getValue();
+		const publisher = this.publisher.getValue();
 
 		return {
 			publication: publication ? publication.bbid : null,
 			publisher: publisher ? publisher.bbid : null,
-			releaseDate: this.refs.release.getValue(),
-			languages: this.refs.languages.getValue().map(
+			releaseDate: this.release.getValue(),
+			languages: this.languages.getValue().map(
 				(languageId) => parseInt(languageId, 10)
 			),
-			editionFormat: this.refs.editionFormat.getValue(),
-			editionStatus: this.refs.editionStatus.getValue(),
-			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue(),
-			identifiers: this.refs.identifiers.getValue(),
-			pages: this.refs.pages.getValue(),
-			width: this.refs.width.getValue(),
-			height: this.refs.height.getValue(),
-			depth: this.refs.depth.getValue(),
-			weight: this.refs.weight.getValue()
+			editionFormat: this.editionFormat.getValue(),
+			editionStatus: this.editionStatus.getValue(),
+			disambiguation: this.disambiguation.getValue(),
+			annotation: this.annotation.getValue(),
+			identifiers: this.identifiers.getValue(),
+			pages: this.pages.getValue(),
+			width: this.width.getValue(),
+			height: this.height.getValue(),
+			depth: this.depth.getValue(),
+			weight: this.weight.getValue()
 		};
 	},
 	valid() {
 		'use strict';
 
 		return Boolean(
-			this.refs.release.valid() && this.refs.publication.getValue()
+			this.release.valid() && this.publication.getValue()
 		);
 	},
 	render() {
@@ -238,7 +238,7 @@ const EditionData = React.createClass({
 						labelAttribute="name"
 						labelClassName="col-md-4"
 						placeholder="Select publication…"
-						ref="publication"
+						ref={(ref) => this.publication = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -250,7 +250,7 @@ const EditionData = React.createClass({
 						labelAttribute="name"
 						labelClassName="col-md-4"
 						placeholder="Select publisher…"
-						ref="publisher"
+						ref={(ref) => this.publisher = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -259,7 +259,7 @@ const EditionData = React.createClass({
 						label="Release Date"
 						labelClassName="col-md-4"
 						placeholder="YYYY-MM-DD"
-						ref="release"
+						ref={(ref) => this.release = ref}
 						wrapperClassName="col-md-4"
 					/>
 					<Select
@@ -272,7 +272,7 @@ const EditionData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.languages}
 						placeholder="Select edition languages…"
-						ref="languages"
+						ref={(ref) => this.languages = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -285,7 +285,7 @@ const EditionData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.editionFormats}
 						placeholder="Select edition format…"
-						ref="editionFormat"
+						ref={(ref) => this.editionFormat = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -298,7 +298,7 @@ const EditionData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.editionStatuses}
 						placeholder="Select edition status…"
-						ref="editionStatus"
+						ref={(ref) => this.editionStatus = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -310,7 +310,7 @@ const EditionData = React.createClass({
 									defaultValue={initialPages}
 									label="Page Count"
 									labelClassName="col-md-7"
-									ref="pages"
+									ref={(ref) => this.pages = ref}
 									type="text"
 									wrapperClassName="col-md-5"
 								/>
@@ -320,7 +320,7 @@ const EditionData = React.createClass({
 									defaultValue={initialWeight}
 									label="Weight (g)"
 									labelClassName="col-md-7"
-									ref="weight"
+									ref={(ref) => this.weight = ref}
 									type="text"
 									wrapperClassName="col-md-5"
 								/>
@@ -334,7 +334,7 @@ const EditionData = React.createClass({
 									defaultValue={initialWidth}
 									label="Width (mm)"
 									labelClassName="col-md-7"
-									ref="width"
+									ref={(ref) => this.width = ref}
 									type="text"
 									wrapperClassName="col-md-5"
 								/>
@@ -344,7 +344,7 @@ const EditionData = React.createClass({
 									defaultValue={initialHeight}
 									label="Height (mm)"
 									labelClassName="col-md-7"
-									ref="height"
+									ref={(ref) => this.height = ref}
 									type="text"
 									wrapperClassName="col-md-5"
 								/>
@@ -354,7 +354,7 @@ const EditionData = React.createClass({
 									defaultValue={initialDepth}
 									label="Depth (mm)"
 									labelClassName="col-md-7"
-									ref="depth"
+									ref={(ref) => this.depth = ref}
 									type="text"
 									wrapperClassName="col-md-5"
 								/>
@@ -364,14 +364,14 @@ const EditionData = React.createClass({
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
-						ref="identifiers"
+						ref={(ref) => this.identifiers = ref}
 						types={this.props.identifierTypes}
 					/>
 					<Input
 						defaultValue={initialDisambiguation}
 						label="Disambiguation"
 						labelClassName="col-md-3"
-						ref="disambiguation"
+						ref={(ref) => this.disambiguation = ref}
 						type="text"
 						wrapperClassName="col-md-6"
 					/>
@@ -379,7 +379,7 @@ const EditionData = React.createClass({
 						defaultValue={initialAnnotation}
 						label="Annotation"
 						labelClassName="col-md-3"
-						ref="annotation"
+						ref={(ref) => this.annotation = ref}
 						rows="6"
 						type="textarea"
 						wrapperClassName="col-md-6"

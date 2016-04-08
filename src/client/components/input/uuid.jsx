@@ -69,14 +69,14 @@ const UUIDInput = React.createClass({
 		// This could also be done using ReactLink:
 		// http://facebook.github.io/react/docs/two-way-binding-helpers.html
 
-		let result = uuidRegex.exec(this.refs.input.getValue());
+		let result = uuidRegex.exec(this.input.getValue());
 
 		const valid = Boolean(result);
 		if (valid) {
 			result = result[0];
 		}
 		else {
-			result = this.refs.input.getValue();
+			result = this.input.getValue();
 		}
 
 		this.setState(
@@ -99,7 +99,7 @@ const UUIDInput = React.createClass({
 				label={this.props.label}
 				labelClassName={this.props.labelClassName}
 				placeholder={this.props.placeholder}
-				ref="input"
+				ref={(ref) => this.input = ref}
 				standalone={this.props.standalone}
 				type="text"
 				value={this.state.value}

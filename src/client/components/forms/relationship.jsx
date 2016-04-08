@@ -108,10 +108,10 @@ const RelationshipRow = React.createClass({
 		'use strict';
 
 		return {
-			source: this.refs.source.getValue(),
-			target: this.refs.target.getValue(),
-			typeId: this.refs.type.getValue() ?
-				parseInt(this.refs.type.getValue(), 10) : null
+			source: this.source.getValue(),
+			target: this.target.getValue(),
+			typeId: this.type.getValue() ?
+				parseInt(this.type.getValue(), 10) : null
 		};
 	},
 	swap() {
@@ -133,7 +133,7 @@ const RelationshipRow = React.createClass({
 	selected() {
 		'use strict';
 
-		return this.refs.sel.getChecked();
+		return this.select.getChecked();
 	},
 	added() {
 		'use strict';
@@ -271,7 +271,7 @@ const RelationshipRow = React.createClass({
 				}
 				labelClassName="col-md-4"
 				placeholder="Select entity…"
-				ref="target"
+				ref={(ref) => this.target = ref}
 				select2Options={{width: '100%'}}
 				value={targetEntity}
 				wrapperClassName="col-md-4"
@@ -303,7 +303,7 @@ const RelationshipRow = React.createClass({
 							className="margin-left-0"
 							disabled={this.disabled() || this.state.deleted}
 							label=" "
-							ref="sel"
+							ref={(ref) => this.select = ref}
 							type="checkbox"
 							onClick={this.props.onSelect}
 						/>
@@ -320,7 +320,7 @@ const RelationshipRow = React.createClass({
 								}
 								labelClassName="col-md-4"
 								placeholder="Select entity…"
-								ref="source"
+								ref={(ref) => this.source = ref}
 								select2Options={{width: '100%'}}
 								value={sourceEntity}
 								wrapperClassName="col-md-4"
@@ -338,7 +338,7 @@ const RelationshipRow = React.createClass({
 									labelAttribute="label"
 									options={this.props.relationshipTypes}
 									placeholder="Select relationship type…"
-									ref="type"
+									ref={(ref) => this.type = ref}
 									select2Options={{width: '100%'}}
 									onChange={this.props.onChange}
 								/>

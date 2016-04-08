@@ -51,7 +51,7 @@ const PartialDate = React.createClass({
 	handleChange() {
 		'use strict';
 
-		const input = this.refs.input.getValue().trim();
+		const input = this.input.getValue().trim();
 
 		if (input.length > 10) {
 			return;
@@ -102,7 +102,7 @@ const PartialDate = React.createClass({
 				label={this.props.label}
 				labelClassName={this.props.labelClassName}
 				placeholder={this.props.placeholder}
-				ref="input"
+				ref={(ref) => this.input = ref}
 				type="text"
 				value={this.state.value}
 				wrapperClassName={this.props.wrapperClassName}

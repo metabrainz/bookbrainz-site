@@ -43,7 +43,7 @@ const Select = React.createClass({
 	},
 	componentWillUpdate() {
 		'use strict';
-		var select = $(this.refs.target.getInputDOMNode());
+		var select = $(this.target.getInputDOMNode());
 		select.off('change');
 	},
 	componentDidUpdate() {
@@ -53,7 +53,7 @@ const Select = React.createClass({
 	componentWillUnmount() {
 		'use strict';
 
-		const select = $(this.refs.target.getInputDOMNode());
+		const select = $(this.target.getInputDOMNode());
 
 		// Unregister onChange event, so that it isn't triggered while the DOM
 		// is refreshed.
@@ -62,12 +62,12 @@ const Select = React.createClass({
 	getValue() {
 		'use strict';
 
-		return this.refs.target.getValue();
+		return this.target.getValue();
 	},
 	initSelect2() {
 		'use strict';
 
-		const mountElement = $(this.refs.target.getInputDOMNode());
+		const mountElement = $(this.target.getInputDOMNode());
 
 		const options = this.props.select2Options || {};
 		options.theme = 'bootstrap';
@@ -105,7 +105,7 @@ const Select = React.createClass({
 		return (
 			<Input
 				{...this.props}
-				ref="target"
+				ref={(ref) => this.target = ref}
 				type="select"
 			>
 				{options}

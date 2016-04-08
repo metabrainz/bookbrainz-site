@@ -55,8 +55,8 @@ module.exports = React.createClass({
 
 		this.setState({
 			tab,
-			aliasesValid: this.refs.aliases.valid(),
-			dataValid: this.refs.data.valid()
+			aliasesValid: this.aliases.valid(),
+			dataValid: this.data.valid()
 		});
 	},
 	backClick() {
@@ -78,9 +78,9 @@ module.exports = React.createClass({
 			return;
 		}
 
-		const aliasData = this.refs.aliases.getValue();
-		const publisherData = this.refs.data.getValue();
-		const revisionNote = this.refs.revision.refs.note.getValue();
+		const aliasData = this.aliases.getValue();
+		const publisherData = this.data.getValue();
+		const revisionNote = this.revision.note.getValue();
 		const data = {
 			aliases: aliasData.slice(0, -1),
 			beginDate: publisherData.beginDate,
@@ -165,7 +165,7 @@ module.exports = React.createClass({
 						aliases={aliases}
 						languages={this.props.languages}
 						nextClick={this.nextClick}
-						ref="aliases"
+						ref={(ref) => this.aliases = ref}
 						visible={this.state.tab === 1}
 					/>
 					<PublisherData
@@ -174,12 +174,12 @@ module.exports = React.createClass({
 						nextClick={this.nextClick}
 						publisher={this.props.publisher}
 						publisherTypes={this.props.publisherTypes}
-						ref="data"
+						ref={(ref) => this.data = ref}
 						visible={this.state.tab === 2}
 					/>
 					<RevisionNote
 						backClick={this.backClick}
-						ref="revision"
+						ref={(ref) => this.revision = ref}
 						submitDisabled={!submitEnabled}
 						visible={this.state.tab === 3}
 						onSubmit={this.handleSubmit}

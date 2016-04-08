@@ -105,12 +105,12 @@ const AliasRow = React.createClass({
 		'use strict';
 
 		return {
-			id: parseInt(this.refs.id.getValue(), 10),
-			name: this.refs.name.getValue(),
-			sortName: this.refs.sortName.getValue(),
-			languageId: parseInt(this.refs.languageId.getValue(), 10) || null,
-			primary: this.refs.primary.getChecked(),
-			default: this.refs.default.getChecked()
+			id: parseInt(this.id.getValue(), 10),
+			name: this.name.getValue(),
+			sortName: this.sortName.getValue(),
+			languageId: parseInt(this.languageId.getValue(), 10) || null,
+			primary: this.primary.getChecked(),
+			default: this.default.getChecked()
 		};
 	},
 	validationState() {
@@ -131,13 +131,13 @@ const AliasRow = React.createClass({
 		'use strict';
 
 		return Boolean(
-			this.refs.name.getValue() && this.refs.sortName.getValue()
+			this.name.getValue() && this.sortName.getValue()
 		);
 	},
 	guessNames() {
 		'use strict';
-		const name = this.refs.name.refs.input;
-		const sortName = this.refs.sortName.refs.input;
+		const name = this.name.refs.input;
+		const sortName = this.sortName.refs.input;
 
 		sortName.value = makeSortName(name.value);
 	},
@@ -161,14 +161,14 @@ const AliasRow = React.createClass({
 			>
 				<Input
 					defaultValue={this.props.aliasId}
-					ref="id"
+					ref={(ref) => this.id = ref}
 					type="hidden"
 				/>
 				<div className="col-md-3">
 					<Input
 						bsStyle={this.validationState()}
 						defaultValue={this.props.name}
-						ref="name"
+						ref={(ref) => this.name = ref}
 						type="text"
 						wrapperClassName="col-md-11"
 					/> &nbsp;
@@ -178,7 +178,7 @@ const AliasRow = React.createClass({
 						bsStyle={this.validationState()}
 						buttonAfter={guessSortNameButton}
 						defaultValue={this.props.sortName}
-						ref="sortName"
+						ref={(ref) => this.sortName = ref}
 						type="text"
 						wrapperClassName="col-md-11"
 					/> &nbsp;
@@ -192,7 +192,7 @@ const AliasRow = React.createClass({
 						labelAttribute="name"
 						options={this.props.languages}
 						placeholder="Select alias language…"
-						ref="languageId"
+						ref={(ref) => this.languageId = ref}
 						wrapperClassName="col-md-11"
 						onChange={this.props.onChange}
 					/>
@@ -201,7 +201,7 @@ const AliasRow = React.createClass({
 					<Input
 						defaultChecked={this.props.primary}
 						label=" "
-						ref="primary"
+						ref={(ref) => this.primary = ref}
 						type="checkbox"
 						wrapperClassName="col-md-11"
 					/>
@@ -211,7 +211,7 @@ const AliasRow = React.createClass({
 						defaultChecked={this.props.default}
 						label=" "
 						name="default"
-						ref="default"
+						ref={(ref) => this.default = ref}
 						type="radio"
 						wrapperClassName="col-md-11"
 					/>

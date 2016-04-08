@@ -45,12 +45,12 @@ const SearchField = React.createClass({
 		'use strict';
 		event.preventDefault();
 		event.stopPropagation();
-		this.props.onSearch(this.refs.q.getValue());
+		this.props.onSearch(this.query.getValue());
 	},
 
 	change() {
 		'use strict';
-		const inputValue = this.refs.q.getValue();
+		const inputValue = this.query.getValue();
 		if (!inputValue.match(/^ *$/)) {
 			this.props.onSearch(inputValue);
 		}
@@ -69,7 +69,7 @@ const SearchField = React.createClass({
 							<Input
 								buttonAfter={SearchButton}
 								name="q"
-								ref="q"
+								ref={(ref) => this.query = ref}
 								type="text"
 								onChange={_.debounce(this.change, delayUpdate)}
 							/>
