@@ -25,6 +25,9 @@ module.exports = React.createClass({
 		'use strict';
 
 		const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
+		const styleLink =
+			'https://bb-user-guide.readthedocs.org/en/latest/' +
+			'style/introduction/';
 
 		return (
 			<div>
@@ -47,7 +50,7 @@ module.exports = React.createClass({
 					information by editing an entity. Note that in the current
 					version of BookBrainz, only new entities can be edited.
 					Please follow the&nbsp;
-					<a href="https://bb-user-guide.readthedocs.org/en/latest/style/introduction/">
+					<a href={styleLink}>
 						BookBrainz style guidelines
 					</a> when adding data.
 					Unfortunately the aforementioned are still work in progress

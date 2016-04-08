@@ -330,7 +330,9 @@ const RelationshipRow = React.createClass({
 								<Select
 									noDefault
 									bsStyle={validationState}
-									defaultValue={this.props.relationship.typeId}
+									defaultValue={
+										this.props.relationship.typeId
+									}
 									disabled={
 										this.disabled() || this.state.deleted
 									}
@@ -347,8 +349,9 @@ const RelationshipRow = React.createClass({
 						</div>
 						<div className="row">
 							<div className="col-md-4">
-								<p dangerouslySetInnerHTML=
-									{this.renderedRelationship()}
+								<p dangerouslySetInnerHTML={
+										this.renderedRelationship()
+									}
 								/>
 							</div>
 							<div className="col-md-5">
