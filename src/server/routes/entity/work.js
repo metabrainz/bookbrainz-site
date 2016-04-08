@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Work,
-		['workType', 'revision.data.languages'],
+		['workType', 'languages'],
 		'Work not found'
 	)
 );

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,11 +63,11 @@ router.param(
 		Edition,
 		[
 			'publication.defaultAlias',
-			'revision.data.languages',
+			'languageSet.languages',
 			'editionFormat',
 			'editionStatus',
-			'revision.data.releaseEvents',
-			'revision.data.publishers.defaultAlias'
+			'releaseEventSet.releaseEvents',
+			'publisherSet.publishers.defaultAlias'
 		],
 		'Edition not found'
 	)
