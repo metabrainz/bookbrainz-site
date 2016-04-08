@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Ben Ockmore
+ *               2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,12 +112,12 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 		});
 };
 
-function setHasChanged(oldSet, newSet, compareFields) {
-	const oldSetIds = _.map(oldSet, 'id');
-	const newSetIds = _.map(newSet, 'id');
+function setHasChanged(oldSet, newSet, idField, compareFields) {
+	const oldSetIds = _.map(oldSet, idField);
+	const newSetIds = _.map(newSet, idField);
 
 	const oldSetHash = {};
-	oldSet.forEach((item) => { oldSetHash[item.id] = item; });
+	oldSet.forEach((item) => { oldSetHash[item[idField]] = item; });
 
 	// First, determine whether any items have been deleted, by excluding
 	// all new IDs from the old IDs and checking whether any IDs remain
@@ -130,12 +131,12 @@ function setHasChanged(oldSet, newSet, compareFields) {
 
 	// If not, return true if any items have changed (are not equal)
 	return _.some(newSet, (newItem) => {
-		const oldRepresentation = _.pick(oldSetHash[newItem.id], compareFields);
+		const oldRepresentation =
+			_.pick(oldSetHash[newItem[idField]], compareFields);
 		const newRepresentation = _.pick(newItem, compareFields);
 		return !_.isEqual(oldRepresentation, newRepresentation);
 	});
 }
-module.exports.setHasChanged = setHasChanged;
 
 function unchangedSetItems(oldSet, newSet, compareFields) {
 	console.log(JSON.stringify(oldSet));
@@ -165,7 +166,7 @@ function processFormAliases(
 	const aliasCompareFields =
 		['name', 'sortName', 'languageId', 'primary'];
 	const aliasesHaveChanged = setHasChanged(
-		oldAliases, newAliases, aliasCompareFields
+		oldAliases, newAliases, 'id', aliasCompareFields
 	);
 
 	// If there is no change to the set of aliases, and the default alias is
@@ -225,7 +226,7 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 	const identCompareFields =
 		['value', 'typeId'];
 	const identsHaveChanged = setHasChanged(
-		oldIdents, newIdents, identCompareFields
+		oldIdents, newIdents, 'id', identCompareFields
 	);
 
 	// If there is no change to the set of identifiers
