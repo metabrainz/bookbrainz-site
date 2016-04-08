@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,8 +107,8 @@ const EditionData = React.createClass({
 
 		return {
 			publication: publication ? publication.bbid : null,
-			publisher: publisher ? publisher.bbid : null,
-			releaseDate: this.refs.release.getValue(),
+			publishers: publisher ? [publisher.bbid] : null,
+			releaseEvents: [{date: this.refs.release.getValue()}],
 			languages: this.refs.languages.getValue().map(
 				(languageId) => parseInt(languageId, 10)
 			),
@@ -157,16 +157,16 @@ const EditionData = React.createClass({
 				publication = prefillData.publication;
 			}
 
-			if (prefillData.revision.data.publishers) {
-				publisher = prefillData.revision.data.publishers[0];
+			if (prefillData.publisherSet.publishers) {
+				publisher = prefillData.publisherSet.publishers[0];
 			}
 
-			if (prefillData.revision.data.releaseEvents) {
+			if (prefillData.releaseEventSet.releaseEvents) {
 				initialReleaseDate =
-					prefillData.revision.data.releaseEvents[0].date;
+					prefillData.releaseEventSet.releaseEvents[0].date;
 			}
 
-			initialLanguages = prefillData.revision.data.languages.map(
+			initialLanguages = prefillData.languageSet.languages.map(
 				(language) => language.id
 			);
 			initialEditionFormat = prefillData.editionFormat ?
@@ -205,10 +205,6 @@ const EditionData = React.createClass({
 				text: publication.defaultAlias ?
 					publication.defaultAlias.name : null
 			};
-		}
-
-		if (this.props.publisher) {
-			publisher = this.props.publisher;
 		}
 
 		if (publisher) {
