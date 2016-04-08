@@ -484,9 +484,9 @@ const RelationshipEditor = React.createClass({
 		'use strict';
 
 		const relationshipsToDelete = _.reject(
-			this.state.relationships.map(function selectedIndices(rel, idx) {
-				return this.refs[idx].selected() ? idx : null;
-			}.bind(this)), (idx) => idx === null
+			this.state.relationships.map((rel, idx) => (
+				this.refs[idx].selected() ? idx : null
+			)), (idx) => idx === null
 		);
 
 		relationshipsToDelete.sort((a, b) => b - a).forEach((idx) => {
