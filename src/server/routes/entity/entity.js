@@ -130,6 +130,12 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 		return true;
 	}
 
+	// If no list of fields for comparison is provided and no items have been
+	// deleted or added, consider the set unchanged
+	if (_.isEmpty(compareFields)) {
+		return false;
+	}
+
 	// If not, return true if any items have changed (are not equal)
 	return _.some(newSet, (newItem) => {
 		const oldRepresentation =
@@ -158,6 +164,43 @@ function updatedOrNewSetItems(oldSet, newSet, compareFields) {
 	);
 }
 module.exports.updatedOrNewSetItems = updatedOrNewSetItems;
+
+function processFormSet(transacting, oldSet, newItems, setMetadata) {
+	const oldItems =
+		oldSet ? oldSet.related(setMetadata.propName).toJSON() : [];
+
+	// If there's no change, return the old set
+	if (!setHasChanged(oldItems, newItems, setMetadata.idField)) {
+		return oldSet;
+	}
+
+	// If we have nothing to add, the set should be null
+	if (_.isEmpty(newItems)) {
+		return null;
+	}
+
+	const newSetPromise = setMetadata.model.forge()
+		.save(null, {transacting});
+
+	const addPropertiesPromise = newSetPromise
+		.then((newSet) =>
+			newSet.related(setMetadata.propName)
+				.fetch({transacting})
+		)
+		.then((collection) =>
+			collection
+				.attach(
+					_.map(newItems, setMetadata.idField),
+					{transacting}
+				)
+		);
+
+	return Promise.join(
+		newSetPromise,
+		addPropertiesPromise,
+		(newSet) => newSet
+	);
+}
 
 function processFormAliases(
 	transacting, oldAliasSet, oldDefaultAliasId, newAliases
@@ -297,6 +340,52 @@ function processFormDisambiguation(
 	}).save(null, {transacting}) : null;
 }
 
+function processEntitySets(derivedSets, currentEntity, body, transacting) {
+	if (!derivedSets) {
+		return null;
+	}
+
+	return Promise.map(derivedSets, (derivedSet) => {
+		const newItems = body[derivedSet.propName];
+
+		let oldSetPromise = null;
+
+		if (currentEntity && currentEntity[derivedSet.name]) {
+			oldSetPromise = derivedSet.model.forge({
+				id: currentEntity[derivedSet.name].id
+			})
+				.fetch({
+					withRelated: [derivedSet.propName],
+					transacting
+				});
+		}
+
+		return Promise.resolve(oldSetPromise)
+			.then(
+				(oldSet) =>
+					processFormSet(
+						transacting,
+						oldSet,
+						newItems,
+						derivedSet
+					)
+			)
+			.then((newSet) => {
+				const newProp = {};
+				newProp[derivedSet.entityIdField] =
+					newSet ? newSet.get('id') : null;
+
+				return newProp;
+			});
+	})
+		.then((newProps) =>
+			_.reduce(newProps, (result, value, key) => {
+				result[key] = value;
+
+				return result;
+			}, {})
+		);
+}
 
 module.exports.createEntity = (
 	req, res, EntityModel, derivedProps, onEntityCreation
@@ -381,7 +470,13 @@ module.exports.createEntity = (
 	);
 };
 
-module.exports.editEntity = (req, res, entityType, derivedProps) => {
+module.exports.editEntity = (
+	req,
+	res,
+	entityType,
+	derivedProps,
+	derivedSets
+) => {
 	const editorJSON = req.session.passport.user;
 
 	const entityEditPromise = bookshelf.transaction((transacting) => {
@@ -434,18 +529,31 @@ module.exports.editEntity = (req, res, entityType, derivedProps) => {
 				)
 			);
 
+		const derivedPropsPromise = Promise.resolve(
+			processEntitySets(
+				derivedSets,
+				currentEntity,
+				req.body,
+				transacting
+			)
+		)
+			.then((derivedSetProps) =>
+				_.merge({}, derivedProps, derivedSetProps)
+			);
+
 		return Promise.join(
 			aliasSetPromise,
 			identSetPromise,
 			annotationPromise,
 			disambiguationPromise,
-			(aliasSet, identSet, annotation, disambiguation) => {
+			derivedPropsPromise,
+			(aliasSet, identSet, annotation, disambiguation, allProps) => {
 				const propsToSet = _.extend({
 					aliasSetId: aliasSet && aliasSet.get('id'),
 					identifierSetId: identSet && identSet.get('id'),
 					annotationId: annotation && annotation.get('id'),
 					disambiguationId: disambiguation && disambiguation.get('id')
-				}, derivedProps);
+				}, allProps);
 
 				// Construct a set of differences between the new values and old
 				const changedProps =
