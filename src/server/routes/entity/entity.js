@@ -119,11 +119,12 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 	const oldSetHash = {};
 	oldSet.forEach((item) => { oldSetHash[item[idField]] = item; });
 
-	// First, determine whether any items have been deleted, by excluding
-	// all new IDs from the old IDs and checking whether any IDs remain
+	// First, determine whether any items have been deleted or added, by
+	// excluding all new IDs from the old IDs and checking whether any IDs
+	// remain, and vice versa
 	const itemsHaveBeenDeletedOrAdded =
 		_.difference(oldSetIds, newSetIds).length > 0 ||
-		_.difference(oldSetIds, newSetIds).length > 0;
+		_.difference(newSetIds, oldSetIds).length > 0;
 
 	if (itemsHaveBeenDeletedOrAdded) {
 		return true;
