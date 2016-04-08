@@ -26,11 +26,6 @@ const Icon = require('react-fontawesome');
 
 const validators = require('../../validators');
 
-const creatorTypeValidation = React.PropTypes.shape({
-	id: React.PropTypes.number,
-	label: React.PropTypes.string
-});
-
 const CreatorData = React.createClass({
 	displayName: 'creatorDataComponent',
 	propTypes: {
@@ -41,7 +36,7 @@ const CreatorData = React.createClass({
 			gender: React.PropTypes.shape({
 				name: React.PropTypes.string
 			}),
-			creatorType: creatorTypeValidation,
+			creatorType: validators.labeledProperty,
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
 			}),
@@ -54,12 +49,12 @@ const CreatorData = React.createClass({
 				typeId: React.PropTypes.number
 			}))
 		}),
-		creatorTypes: React.PropTypes.arrayOf(creatorTypeValidation),
+		creatorTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		genders: React.PropTypes.arrayOf(React.PropTypes.shape({
 			gender_id: React.PropTypes.number,
 			name: React.PropTypes.string
 		})),
-		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		visible: React.PropTypes.bool,
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func

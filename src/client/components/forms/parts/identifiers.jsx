@@ -47,7 +47,7 @@ const IdentifierRow = React.createClass({
 	propTypes: {
 		removeHidden: React.PropTypes.bool,
 		typeId: React.PropTypes.number,
-		types: React.PropTypes.arrayOf(validators.identifierType),
+		types: React.PropTypes.arrayOf(validators.labeledProperty),
 		value: React.PropTypes.string,
 		onChange: React.PropTypes.func,
 		onRemove: React.PropTypes.func
@@ -137,7 +137,7 @@ const IdentifierList = React.createClass({
 			value: React.PropTypes.string,
 			typeId: React.PropTypes.number
 		})),
-		types: React.PropTypes.arrayOf(validators.identifierType)
+		types: React.PropTypes.arrayOf(validators.labeledProperty)
 	},
 	getInitialState() {
 		'use strict';

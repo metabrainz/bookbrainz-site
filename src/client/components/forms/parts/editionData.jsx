@@ -27,16 +27,6 @@ const Icon = require('react-fontawesome');
 
 const validators = require('../../validators');
 
-const editionStatusValidation = React.PropTypes.shape({
-	id: React.PropTypes.number,
-	label: React.PropTypes.string
-});
-
-const editionFormatValidation = React.PropTypes.shape({
-	id: React.PropTypes.number,
-	label: React.PropTypes.string
-});
-
 const EditionData = React.createClass({
 	displayName: 'editionDataComponent',
 	propTypes: {
@@ -48,8 +38,8 @@ const EditionData = React.createClass({
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
 			}),
-			editionFormat: editionFormatValidation,
-			editionStatus: editionStatusValidation,
+			editionFormat: validators.labeledProperty,
+			editionStatus: validators.labeledProperty,
 			height: React.PropTypes.number,
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
@@ -76,9 +66,9 @@ const EditionData = React.createClass({
 			weight: React.PropTypes.number,
 			width: React.PropTypes.number
 		}),
-		editionFormats: React.PropTypes.arrayOf(editionFormatValidation),
-		editionStatuses: React.PropTypes.arrayOf(editionStatusValidation),
-		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		editionFormats: React.PropTypes.arrayOf(validators.labeledProperty),
+		editionStatuses: React.PropTypes.arrayOf(validators.labeledProperty),
+		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
 			name: React.PropTypes.string

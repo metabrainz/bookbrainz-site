@@ -27,7 +27,7 @@ const Icon = require('react-fontawesome');
 const WorkData = React.createClass({
 	displayName: 'workDataComponent',
 	propTypes: {
-		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
 			name: React.PropTypes.string
@@ -45,9 +45,9 @@ const WorkData = React.createClass({
 				value: React.PropTypes.string,
 				typeId: React.PropTypes.number
 			})),
-			workType: validators.workType
+			workType: validators.labeledProperty
 		}),
-		workTypes: React.PropTypes.arrayOf(validators.workType),
+		workTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func
 	},

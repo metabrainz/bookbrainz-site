@@ -28,7 +28,7 @@ const validators = require('../../validators');
 const PublicationData = React.createClass({
 	displayName: 'publicationDataComponent',
 	propTypes: {
-		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		publication: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
 				content: React.PropTypes.string
@@ -41,9 +41,9 @@ const PublicationData = React.createClass({
 				value: React.PropTypes.string,
 				typeId: React.PropTypes.number
 			})),
-			publicationType: validators.publicationType
+			publicationType: validators.labeledProperty
 		}),
-		publicationTypes: React.PropTypes.arrayOf(validators.publicationType),
+		publicationTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		visible: React.PropTypes.bool,
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func

@@ -28,7 +28,7 @@ const Icon = require('react-fontawesome');
 const PublisherData = React.createClass({
 	displayName: 'publisherDataComponent',
 	propTypes: {
-		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
+		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		publisher: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
 				content: React.PropTypes.string
@@ -44,9 +44,9 @@ const PublisherData = React.createClass({
 				value: React.PropTypes.string,
 				typeId: React.PropTypes.number
 			})),
-			publisherType: validators.publisherType
+			publisherType: validators.labeledProperty
 		}),
-		publisherTypes: React.PropTypes.arrayOf(validators.publisherType),
+		publisherTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		visible: React.PropTypes.bool,
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func

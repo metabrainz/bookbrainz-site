@@ -95,7 +95,7 @@ const RelationshipRow = React.createClass({
 			initialTypeId: React.PropTypes.number
 		}),
 		relationshipTypes:
-			React.PropTypes.arrayOf(validators.relationshipType),
+			React.PropTypes.arrayOf(validators.labeledProperty),
 		onChange: React.PropTypes.func,
 		onDelete: React.PropTypes.func,
 		onSelect: React.PropTypes.func,
@@ -386,7 +386,7 @@ const RelationshipEditor = React.createClass({
 			bbid: React.PropTypes.string
 		}),
 		loadedEntities: React.PropTypes.object,
-		relationshipTypes: React.PropTypes.arrayOf(validators.relationshipType),
+		relationshipTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		relationships: React.PropTypes.arrayOf(React.PropTypes.shape({
 			source: React.PropTypes.object,
 			target: React.PropTypes.object,
