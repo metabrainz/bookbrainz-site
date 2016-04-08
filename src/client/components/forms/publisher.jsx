@@ -50,7 +50,7 @@ module.exports = React.createClass({
 			waiting: false
 		};
 	},
-	setTab(tab) {
+	handleTabSelect(tab) {
 		'use strict';
 
 		this.setState({
@@ -59,15 +59,15 @@ module.exports = React.createClass({
 			dataValid: this.data.valid()
 		});
 	},
-	backClick() {
+	handleBackClick() {
 		'use strict';
 
-		this.setTab(this.state.tab - 1);
+		this.handleTabSelect(this.state.tab - 1);
 	},
-	nextClick() {
+	handleNextClick() {
 		'use strict';
 
-		this.setTab(this.state.tab + 1);
+		this.handleTabSelect(this.state.tab + 1);
 	},
 	handleSubmit(evt) {
 		'use strict';
@@ -144,7 +144,7 @@ module.exports = React.createClass({
 				<Nav
 					activeKey={this.state.tab}
 					bsStyle="tabs"
-					onSelect={this.setTab}
+					onSelect={this.handleTabSelect}
 				>
 					<NavItem eventKey={1}>
 						<strong>1.</strong> Aliases
@@ -164,24 +164,24 @@ module.exports = React.createClass({
 					<Aliases
 						aliases={aliases}
 						languages={this.props.languages}
-						nextClick={this.nextClick}
 						ref={(ref) => this.aliases = ref}
 						visible={this.state.tab === 1}
+						onNextClick={this.handleNextClick}
 					/>
 					<PublisherData
-						backClick={this.backClick}
 						identifierTypes={this.props.identifierTypes}
-						nextClick={this.nextClick}
 						publisher={this.props.publisher}
 						publisherTypes={this.props.publisherTypes}
 						ref={(ref) => this.data = ref}
 						visible={this.state.tab === 2}
+						onBackClick={this.handleBackClick}
+						onNextClick={this.handleNextClick}
 					/>
 					<RevisionNote
-						backClick={this.backClick}
 						ref={(ref) => this.revision = ref}
 						submitDisabled={!submitEnabled}
 						visible={this.state.tab === 3}
+						onBackClick={this.handleBackClick}
 						onSubmit={this.handleSubmit}
 					/>
 				</form>

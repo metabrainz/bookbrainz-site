@@ -40,7 +40,6 @@ const editionFormatValidation = React.PropTypes.shape({
 const EditionData = React.createClass({
 	displayName: 'editionDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		edition: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
 				content: React.PropTypes.string
@@ -84,7 +83,6 @@ const EditionData = React.createClass({
 			id: React.PropTypes.number,
 			name: React.PropTypes.string
 		})),
-		nextClick: React.PropTypes.func,
 		publication: React.PropTypes.shape({
 			bbid: React.PropTypes.string,
 			defaultAlias: React.PropTypes.shape({
@@ -97,7 +95,9 @@ const EditionData = React.createClass({
 				name: React.PropTypes.string
 			})
 		}),
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
@@ -389,7 +389,7 @@ const EditionData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -401,7 +401,7 @@ const EditionData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon

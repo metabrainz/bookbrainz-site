@@ -119,13 +119,13 @@ const RelationshipRow = React.createClass({
 
 		this.setState({a: this.state.b, b: this.state.a});
 	},
-	destroy() {
+	handleDeleteClick() {
 		'use strict';
 
 		this.setState({deleted: true});
 		this.props.onDelete();
 	},
-	reset() {
+	handleResetClick() {
 		'use strict';
 
 		this.setState({deleted: false});
@@ -214,7 +214,7 @@ const RelationshipRow = React.createClass({
 		const deleteButton = this.rowClass() || this.valid() ? (
 			<Button
 				bsStyle="danger"
-				onClick={this.destroy}
+				onClick={this.handleDeleteClick}
 			>
 				<Icon name="times"/>&nbsp;Delete
 				<span className="sr-only"> Relationship</span>
@@ -224,7 +224,7 @@ const RelationshipRow = React.createClass({
 		const resetButton = (
 			<Button
 				bsStyle="primary"
-				onClick={this.reset}
+				onClick={this.handleResetClick}
 			>
 				<Icon name="undo"/>&nbsp;Reset
 				<span className="sr-only"> Relationship</span>
@@ -483,7 +483,7 @@ const RelationshipEditor = React.createClass({
 			rowsSpawned
 		});
 	},
-	bulkDelete() {
+	handleBulkDelete() {
 		'use strict';
 
 		const relationshipsToDelete = _.reject(
@@ -493,7 +493,7 @@ const RelationshipEditor = React.createClass({
 		);
 
 		relationshipsToDelete.sort((a, b) => b - a).forEach((idx) => {
-			this.refs[idx].destroy();
+			this.refs[idx].handleDeleteClick();
 		});
 	},
 	stateUpdateNeeded(changedRowIndex) {
@@ -630,7 +630,7 @@ const RelationshipEditor = React.createClass({
 						<Button
 							bsStyle="danger"
 							disabled={this.state.numSelected === 0}
-							onClick={this.bulkDelete}
+							onClick={this.handleBulkDelete}
 						>
 							{`Delete Selected ${numSelectedString}`}
 						</Button>

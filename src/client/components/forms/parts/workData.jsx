@@ -27,13 +27,11 @@ const Icon = require('react-fontawesome');
 const WorkData = React.createClass({
 	displayName: 'workDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
 			name: React.PropTypes.string
 		})),
-		nextClick: React.PropTypes.func,
 		visible: React.PropTypes.bool,
 		work: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
@@ -49,7 +47,9 @@ const WorkData = React.createClass({
 			})),
 			workType: validators.workType
 		}),
-		workTypes: React.PropTypes.arrayOf(validators.workType)
+		workTypes: React.PropTypes.arrayOf(validators.workType),
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
@@ -163,7 +163,7 @@ const WorkData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -175,7 +175,7 @@ const WorkData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon

@@ -28,9 +28,7 @@ const validators = require('../../validators');
 const PublicationData = React.createClass({
 	displayName: 'publicationDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
-		nextClick: React.PropTypes.func,
 		publication: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
 				content: React.PropTypes.string
@@ -46,7 +44,9 @@ const PublicationData = React.createClass({
 			publicationType: validators.publicationType
 		}),
 		publicationTypes: React.PropTypes.arrayOf(validators.publicationType),
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
@@ -140,7 +140,7 @@ const PublicationData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -152,7 +152,7 @@ const PublicationData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon

@@ -134,7 +134,7 @@ const AliasRow = React.createClass({
 			this.name.getValue() && this.sortName.getValue()
 		);
 	},
-	guessNames() {
+	handleGuessButtonClick() {
 		'use strict';
 		const name = this.name.refs.input;
 		const sortName = this.sortName.refs.input;
@@ -148,7 +148,7 @@ const AliasRow = React.createClass({
 			<Button
 				bsStyle="link"
 				title="Guess Sort Name"
-				onClick={this.guessNames}
+				onClick={this.handleGuessButtonClick}
 			>
 				<Icon name="magic"/>
 			</Button>
@@ -234,8 +234,8 @@ const AliasList = React.createClass({
 	displayName: 'aliasListComponent',
 	propTypes: {
 		aliases: React.PropTypes.array,
-		nextClick: React.PropTypes.func,
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onNextClick: React.PropTypes.func
 	},
 	getInitialState() {
 		'use strict';
@@ -419,7 +419,7 @@ const AliasList = React.createClass({
 						<li className="next">
 							<a
 								href="#"
-								onClick={this.props.nextClick}
+								onClick={this.props.onNextClick}
 							>
 								Next
 								<Icon

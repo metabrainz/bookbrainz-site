@@ -28,9 +28,7 @@ const Icon = require('react-fontawesome');
 const PublisherData = React.createClass({
 	displayName: 'publisherDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
-		nextClick: React.PropTypes.func,
 		publisher: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
 				content: React.PropTypes.string
@@ -49,7 +47,9 @@ const PublisherData = React.createClass({
 			publisherType: validators.publisherType
 		}),
 		publisherTypes: React.PropTypes.arrayOf(validators.publisherType),
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getInitialState() {
 		'use strict';
@@ -188,7 +188,7 @@ const PublisherData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -200,7 +200,7 @@ const PublisherData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon

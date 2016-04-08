@@ -34,7 +34,6 @@ const creatorTypeValidation = React.PropTypes.shape({
 const CreatorData = React.createClass({
 	displayName: 'creatorDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		creator: React.PropTypes.shape({
 			beginDate: React.PropTypes.string,
 			endDate: React.PropTypes.string,
@@ -61,8 +60,9 @@ const CreatorData = React.createClass({
 			name: React.PropTypes.string
 		})),
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
-		nextClick: React.PropTypes.func,
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getInitialState() {
 		'use strict';
@@ -218,7 +218,7 @@ const CreatorData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -230,7 +230,7 @@ const CreatorData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon
