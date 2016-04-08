@@ -28,7 +28,8 @@ const utils = require('../../helpers/utils');
 const Work = require('bookbrainz-data').Work;
 const WorkHeader = require('bookbrainz-data').WorkHeader;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
-const bookshelf = require('bookbrainz-data').bookshelf;
+
+const LanguageSet = require('bookbrainz-data').LanguageSet;
 
 /* Middleware loader functions. */
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -134,15 +135,25 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
+const additionalWorkSets = [
+	{
+		name: 'languageSet',
+		idField: 'id',
+		entityIdField: 'languageSetId',
+		propName: 'languages',
+		model: LanguageSet
+	}
+];
+
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId')
+		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId')
+		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
 	)
 );
 

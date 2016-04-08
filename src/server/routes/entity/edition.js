@@ -31,6 +31,10 @@ const EditionRevision = require('bookbrainz-data').EditionRevision;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
 
+const LanguageSet = require('bookbrainz-data').LanguageSet;
+const PublisherSet = require('bookbrainz-data').PublisherSet;
+const ReleaseEventSet = require('bookbrainz-data').ReleaseEventSet;
+
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const EditForm = React.createFactory(
@@ -170,15 +174,47 @@ const additionalEditionProps = [
 	'formatId', 'statusId'
 ];
 
+const additionalEditionSets = [
+	{
+		name: 'languageSet',
+		idField: 'id',
+		entityIdField: 'languageSetId',
+		propName: 'languages',
+		model: LanguageSet
+	},
+	{
+		name: 'publisherSet',
+		idField: 'bbid',
+		entityIdField: 'publisherSetId',
+		propName: 'publishers',
+		model: PublisherSet
+	},
+	{
+		name: 'releaseEventSet',
+		idField: 'id',
+		entityIdField: 'releaseEventSetId',
+		propName: 'releaseEvents',
+		model: ReleaseEventSet
+	}
+];
+
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Edition', _.pick(req.body, additionalEditionProps)
+		req,
+		res,
+		'Edition',
+		_.pick(req.body, additionalEditionProps),
+		additionalEditionSets
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Edition', _.pick(req.body, additionalEditionProps)
+		req,
+		res,
+		'Edition',
+		_.pick(req.body, additionalEditionProps),
+		additionalEditionSets
 	)
 );
 
