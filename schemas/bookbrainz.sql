@@ -587,7 +587,8 @@ CREATE VIEW bookbrainz.edition AS
 		e.bbid, edd.id AS data_id, edr.id AS revision_id, (edr.id = ed.master_revision_id) AS master, edd.annotation_id, edd.disambiguation_id,
 		als.default_alias_id, edd.publication_bbid, edd.creator_credit_id, edd.width, edd.height,
 		edd.depth, edd.weight, edd.pages, edd.format_id, edd.status_id,
-		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id, e.type
+		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id, e.type,
+		edd.language_set_id, edd.release_event_set_id, edd.publisher_set_id
 	FROM bookbrainz.edition_revision edr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = edr.bbid
 	LEFT JOIN bookbrainz.edition_header ed ON ed.bbid = e.bbid
@@ -599,7 +600,7 @@ CREATE VIEW bookbrainz.work AS
 	SELECT
 		e.bbid, wd.id AS data_id, wr.id AS revision_id, (wr.id = w.master_revision_id) AS master, wd.annotation_id, wd.disambiguation_id,
 		als.default_alias_id, wd.type_id, wd.alias_set_id, wd.identifier_set_id,
-		wd.relationship_set_id, e.type
+		wd.relationship_set_id, e.type, wd.language_set_id
 	FROM bookbrainz.work_revision wr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = wr.bbid
 	LEFT JOIN bookbrainz.work_header w ON w.bbid = e.bbid
