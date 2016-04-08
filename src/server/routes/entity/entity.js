@@ -388,7 +388,11 @@ function processEntitySets(derivedSets, currentEntity, body, transacting) {
 }
 
 module.exports.createEntity = (
-	req, res, EntityModel, derivedProps, onEntityCreation
+	req,
+	res,
+	entityType,
+	derivedProps,
+	derivedSets
 ) => {
 	const editorJSON = req.session.passport.user;
 	const entityCreationPromise = bookshelf.transaction((transacting) => {
@@ -424,12 +428,30 @@ module.exports.createEntity = (
 			transacting, null, req.body.disambiguation
 		);
 
+		const derivedPropsPromise = Promise.resolve(
+			processEntitySets(
+				derivedSets,
+				null,
+				req.body,
+				transacting
+			)
+		)
+			.then((derivedSetProps) =>
+				_.merge({}, derivedProps, derivedSetProps)
+			);
+
 		return Promise.join(
 			newRevisionPromise, aliasSetPromise, identSetPromise,
-			annotationPromise, disambiguationPromise, editorUpdatePromise,
-			notePromise,
-			(newRevision, aliasSet, identSet, annotation, disambiguation) => {
-				console.log(identSet);
+			annotationPromise, disambiguationPromise, derivedPropsPromise,
+			editorUpdatePromise, notePromise,
+			(
+				newRevision,
+				aliasSet,
+				identSet,
+				annotation,
+				disambiguation,
+				allProps
+			) => {
 				const propsToSet = _.extend({
 					aliasSetId: aliasSet && aliasSet.get('id'),
 					identifierSetId: identSet && identSet.get('id'),
@@ -437,7 +459,7 @@ module.exports.createEntity = (
 					disambiguationId:
 						disambiguation && disambiguation.get('id'),
 					revisionId: newRevision.get('id')
-				}, derivedProps);
+				}, allProps);
 
 				let annotationSavePromise = null;
 
@@ -448,8 +470,10 @@ module.exports.createEntity = (
 							.save(null, {transacting});
 				}
 
+				const model = utils.getEntityModelByType(entityType);
+
 				return Promise.join(
-					new EntityModel(propsToSet)
+					model.forge(propsToSet)
 						.save(null, {method: 'insert', transacting}),
 					annotationSavePromise
 				);
@@ -457,12 +481,7 @@ module.exports.createEntity = (
 			.spread(
 				(entityModel) => entityModel.refresh({transacting})
 			)
-			.then(
-				(entityModel) =>
-					onEntityCreation(req, transacting, entityModel)
-						.then(() => entityModel.refresh({transacting}))
-						.then((entity) => entity.toJSON())
-			);
+			.then((entity) => entity.toJSON());
 	});
 
 	return entityCreationPromise.then((entity) =>
