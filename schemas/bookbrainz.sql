@@ -294,7 +294,7 @@ CREATE TABLE bookbrainz.publisher_set__publisher (
 	)
 );
 ALTER TABLE bookbrainz.publisher_set__publisher ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.publisher_set (id);
-ALTER TABLE bookbrainz.publisher_set__publisher ADD FOREIGN KEY (publisher_bbid) REFERENCES bookbrainz.publisher (bbid);
+ALTER TABLE bookbrainz.publisher_set__publisher ADD FOREIGN KEY (publisher_bbid) REFERENCES bookbrainz.publisher_header (bbid);
 
 CREATE TABLE bookbrainz.edition_format (
 	id SERIAL PRIMARY KEY,
