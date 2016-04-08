@@ -165,43 +165,6 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handleEditionChange(req, transacting, entityModel) {
-	const languageIds = req.body.languages;
-	const publisher = req.body.publisherBbid;
-	const releaseDate = req.body.releaseDate;
-
-	const dataPromise = entityModel.related('revision').fetch({
-		withRelated: [
-			'data.languages',
-			'data.releaseEvents',
-			'data.publishers'
-		],
-		transacting
-	});
-	return dataPromise.then((revision) => {
-		const data = revision.related('data');
-		const languagesPromise = languageIds ? data.languages()
-			.attach(
-				_.map(languageIds, (id) => ({language_id: id})), {transacting}
-			) : null;
-		const publisherPromise = publisher ? data.publishers()
-			.attach({publisher_bbid: publisher}, {transacting}) : null;
-		const currentReleaseEvent = data.releaseEvents().at(0);
-		let releaseEventPromise = null;
-		if (currentReleaseEvent) {
-			if (releaseDate !== currentReleaseEvent.get('date')) {
-				releaseEventPromise = data.releaseEvents.create(
-					{date: releaseDate}, {transacting}
-				);
-			}
-		}
-
-		return Promise.join(
-			languagesPromise, publisherPromise, releaseEventPromise
-		);
-	});
-}
-
 const additionalEditionProps = [
 	'publicationBbid', 'width', 'height', 'depth', 'weight', 'pages',
 	'formatId', 'statusId'
@@ -209,15 +172,13 @@ const additionalEditionProps = [
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Edition', _.pick(req.body, additionalEditionProps),
-		handleEditionChange
+		req, res, 'Edition', _.pick(req.body, additionalEditionProps)
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Edition', _.pick(req.body, additionalEditionProps),
-		handleEditionChange
+		req, res, 'Edition', _.pick(req.body, additionalEditionProps)
 	)
 );
 

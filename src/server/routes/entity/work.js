@@ -134,35 +134,15 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handleWorkChange(req, transacting, entityModel) {
-	const revisionPromise = entityModel.related('revision')
-		.fetch({withRelated: ['data.languages'], transacting});
-
-	// Doing this with knex because bookshelf failed to set data_id.
-	// Tried attach(), with ids and then with models, and also add()
-	const workLanguagesPromise = revisionPromise.then((revision) =>
-		bookshelf.knex('bookbrainz.work_data__language')
-			.transacting(transacting)
-			.insert(
-				req.body.languages.map((id) => ({
-					data_id: revision.related('data').get('id'),
-					language_id: id
-				}))
-			)
-	);
-
-	return workLanguagesPromise;
-}
-
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId'), handleWorkChange
+		req, res, 'Work', _.pick(req.body, 'typeId')
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId'), handleWorkChange
+		req, res, 'Work', _.pick(req.body, 'typeId')
 	)
 );
 
