@@ -473,7 +473,8 @@ module.exports.editEntity = (
 					.save(null, {method: 'update', transacting});
 			})
 			.then(
-				(entityModel) => entityModel.refresh({transacting})
+				() => new EntityModel({bbid: currentEntity.bbid})
+					.fetch({transacting})
 			)
 			.then(
 				(entityModel) => {
@@ -482,7 +483,8 @@ module.exports.editEntity = (
 					}
 
 					return onEntityEdit(req, transacting, entityModel)
-						.then(() => entityModel.refresh({transacting}))
+						.then(() => new EntityModel({bbid: currentEntity.bbid})
+							.fetch({transacting}))
 						.then((entity) => entity.toJSON());
 				}
 			);
