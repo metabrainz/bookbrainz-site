@@ -359,7 +359,7 @@ const AliasList = React.createClass({
 			}
 		}
 
-		return defaultSet || numRows === 0;
+		return defaultSet;
 	},
 	handleRemove(index) {
 		'use strict';
