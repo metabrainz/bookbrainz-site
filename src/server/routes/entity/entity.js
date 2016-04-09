@@ -324,7 +324,7 @@ module.exports.createEntity = (
 			transacting, null, req.body.identifiers || []
 		);
 
-		const annotationPromise = newRevisionPromise.then(() =>
+		const annotationPromise = newRevisionPromise.then((revision) =>
 			processFormAnnotation(
 				transacting, null, req.body.annotation, revision.get('id')
 			)
