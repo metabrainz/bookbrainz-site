@@ -166,7 +166,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 );
 
 function handleEditionChange(req, transacting, entityModel) {
-	const languageIds = req.body.languages;
+	const languageIds = req.body.languageIds;
 	const publisher = req.body.publisherBbid;
 	const releaseDate = req.body.releaseDate;
 
@@ -186,15 +186,9 @@ function handleEditionChange(req, transacting, entityModel) {
 			) : null;
 		const publisherPromise = publisher ? data.publishers()
 			.attach({publisher_bbid: publisher}, {transacting}) : null;
-		const currentReleaseEvent = data.releaseEvents().at(0);
-		let releaseEventPromise = null;
-		if (currentReleaseEvent) {
-			if (releaseDate !== currentReleaseEvent.get('date')) {
-				releaseEventPromise = data.releaseEvents.create(
-					{date: releaseDate}, {transacting}
-				);
-			}
-		}
+		const releaseEventPromise = data.releaseEvents().create(
+				{date: releaseDate}, {transacting}
+			);
 
 		return Promise.join(
 			languagesPromise, publisherPromise, releaseEventPromise
