@@ -30,7 +30,7 @@ block attributes
 			|?
 
 	dt Release Date
-	dd=(entity.releaseDate ? entity.releaseDate : '?')
+	dd=(entity.revision.data.releaseEvents.length ? entity.revision.data.releaseEvents[0].date : '?')
 	
 	dt Page Count
 	dd=(entity.pages ? entity.pages : '?')
