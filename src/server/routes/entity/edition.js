@@ -194,7 +194,11 @@ const additionalEditionSets = [
 		idField: 'id',
 		entityIdField: 'releaseEventSetId',
 		propName: 'releaseEvents',
-		model: ReleaseEventSet
+		model: ReleaseEventSet,
+		mutableFields: [
+			'date',
+			'areaId'
+		]
 	}
 ];
 

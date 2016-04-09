@@ -105,10 +105,27 @@ const EditionData = React.createClass({
 		const publication = this.refs.publication.getValue();
 		const publisher = this.refs.publisher.getValue();
 
+		const releaseEvents = [];
+
+		// If the release date field isn't empty, create a release event
+		// object to represent it
+		if (this.refs.release.getValue()) {
+			const edition = this.props.edition;
+
+			const releaseEventId = edition && edition.releaseEventSet &&
+					edition.releaseEventSet.releaseEvents ?
+				edition.releaseEventSet.releaseEvents[0].id : null;
+
+			releaseEvents.push({
+				id: releaseEventId,
+				date: this.refs.release.getValue()
+			});
+		}
+
 		return {
 			publication: publication ? publication.bbid : null,
 			publishers: publisher ? [publisher.bbid] : null,
-			releaseEvents: [{date: this.refs.release.getValue()}],
+			releaseEvents: releaseEvents,
 			languages: this.refs.languages.getValue().map(
 				(languageId) => parseInt(languageId, 10)
 			),

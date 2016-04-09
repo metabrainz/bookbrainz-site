@@ -165,39 +165,81 @@ function updatedOrNewSetItems(oldSet, newSet, compareFields) {
 }
 module.exports.updatedOrNewSetItems = updatedOrNewSetItems;
 
-function processFormSet(transacting, oldSet, newItems, setMetadata) {
+function processFormSet(transacting, oldSet, formItems, setMetadata) {
 	const oldItems =
 		oldSet ? oldSet.related(setMetadata.propName).toJSON() : [];
 
 	// If there's no change, return the old set
-	if (!setHasChanged(oldItems, newItems, setMetadata.idField)) {
+	if (!setHasChanged(
+			oldItems,
+			formItems,
+			setMetadata.idField,
+			setMetadata.mutableFields
+		)) {
 		return oldSet;
 	}
 
-	// If we have nothing to add, the set should be null
-	if (_.isEmpty(newItems)) {
+	// If we have no items for the set, the set should be null
+	if (_.isEmpty(formItems)) {
 		return null;
 	}
 
 	const newSetPromise = setMetadata.model.forge()
 		.save(null, {transacting});
 
-	const addPropertiesPromise = newSetPromise
+	const fetchCollectionPromise = newSetPromise
 		.then((newSet) =>
 			newSet.related(setMetadata.propName)
 				.fetch({transacting})
-		)
-		.then((collection) =>
-			collection
-				.attach(
-					_.map(newItems, setMetadata.idField),
-					{transacting}
-				)
 		);
 
+	let createPropertiesPromise = null;
+	let idsToAttach;
+
+	if (!setMetadata.mutableFields) {
+		// If the set's elements aren't mutable, it should just be a list of IDs
+		idsToAttach = formItems;
+	}
+	else {
+		// If there are items in the set which haven't changed, get their IDs
+		const unchangedItems = unchangedSetItems(
+			oldItems,
+			formItems,
+			setMetadata.mutableFields
+		);
+		idsToAttach = _.map(unchangedItems, setMetadata.idField);
+
+		// If there are new items in the set or items in the set have otherwise
+		// changed, add rows to the database and connect them to the set
+		const updatedOrNewItems = updatedOrNewSetItems(
+			oldItems,
+			formItems,
+			setMetadata.mutableFields
+		);
+
+		createPropertiesPromise = fetchCollectionPromise
+			.then((collection) =>
+				Promise.map(updatedOrNewItems, (item) =>
+					collection.create(
+						_.omit(item, setMetadata.idField),
+						{transacting}
+					)
+				)
+			);
+	}
+
+	// Link any IDs for unchanged items (including immutable) to the set
+	const attachPropertiesPromise = fetchCollectionPromise
+		.then((collection) =>
+			collection.attach(idsToAttach, {transacting})
+		);
+
+	// Ensure that any linking that needs to happen to the set is completed
+	// and return the new set's object
 	return Promise.join(
 		newSetPromise,
-		addPropertiesPromise,
+		Promise.resolve(createPropertiesPromise),
+		attachPropertiesPromise,
 		(newSet) => newSet
 	);
 }
