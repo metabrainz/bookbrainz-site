@@ -356,10 +356,15 @@ module.exports.createEntity = (
 				(entityModel) => entityModel.refresh({transacting})
 			)
 			.then(
-				(entityModel) =>
-					onEntityCreation(req, transacting, entityModel)
+				(entityModel) => {
+					if (!onEntityCreation) {
+						return entityModel;
+					}
+
+					return onEntityCreation(req, transacting, entityModel)
 						.then(() => entityModel.refresh({transacting}))
-						.then((entity) => entity.toJSON())
+						.then((entity) => entity.toJSON());
+				}
 			);
 	});
 
