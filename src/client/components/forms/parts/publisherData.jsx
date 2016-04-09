@@ -63,7 +63,8 @@ const PublisherData = React.createClass({
 
 		return {
 			beginDate: this.refs.begin.getValue(),
-			endDate: this.refs.end.getValue(),
+			endDate:
+				this.refs.ended.getChecked() ? this.refs.end.getValue() : '',
 			ended: this.refs.ended.getChecked(),
 			publisherType: this.refs.publisherType.getValue(),
 			disambiguation: this.refs.disambiguation.getValue(),
