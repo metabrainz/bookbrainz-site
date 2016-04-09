@@ -140,13 +140,13 @@ const additionalCreatorProps = [
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
+		req, res, Creator, _.pick(req.body, additionalCreatorProps)
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
+		req, res, Creator, _.pick(req.body, additionalCreatorProps)
 	)
 );
 

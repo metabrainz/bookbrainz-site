@@ -156,13 +156,13 @@ function handleWorkChange(req, transacting, entityModel) {
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId'), handleWorkChange
+		req, res, Work, _.pick(req.body, 'typeId'), handleWorkChange
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId'), handleWorkChange
+		req, res, Work, _.pick(req.body, 'typeId'), handleWorkChange
 	)
 );
 

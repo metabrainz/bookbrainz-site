@@ -209,14 +209,14 @@ const additionalEditionProps = [
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, 'Edition', _.pick(req.body, additionalEditionProps),
+		req, res, Edition, _.pick(req.body, additionalEditionProps),
 		handleEditionChange
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, 'Edition', _.pick(req.body, additionalEditionProps),
+		req, res, Edition, _.pick(req.body, additionalEditionProps),
 		handleEditionChange
 	)
 );
