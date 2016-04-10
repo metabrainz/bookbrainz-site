@@ -421,11 +421,9 @@ function processEntitySets(derivedSets, currentEntity, body, transacting) {
 			});
 	})
 		.then((newProps) =>
-			_.reduce(newProps, (result, value, key) => {
-				result[key] = value;
-
-				return result;
-			}, {})
+			_.reduce(newProps, (result, value) => (
+				_.assign(result, value)
+			), {})
 		);
 }
 
