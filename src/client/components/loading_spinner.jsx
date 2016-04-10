@@ -20,22 +20,20 @@
 const React = require('react');
 const Icon = require('react-fontawesome');
 
-const LoadingSpinner = React.createClass({
-	displayName: 'loadingSpinner',
-	render() {
-		'use strict';
+function LoadingSpinner() {
+	'use strict';
 
-		return (
-			<div className="loading-background">
-				<Icon
-					spin
-					className="loading-spinner"
-					name="circle-o-notch"
-					size="2x"
-				/>
-			</div>
-		);
-	}
-});
+	return (
+		<div className="loading-background">
+			<Icon
+				spin
+				className="loading-spinner"
+				name="circle-o-notch"
+				size="2x"
+			/>
+		</div>
+	);
+}
 
+LoadingSpinner.displayName = 'LoadingSpinner';
 module.exports = LoadingSpinner;
