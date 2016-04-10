@@ -70,7 +70,7 @@ block body
 				if entity.annotation
 					blockquote
 						p=entity.annotation.content
-						footer='updated ' + (new Date(entity.annotation.createdAt)).toLocaleDateString()
+						footer='updated ' + (new Date(entity.annotation.lastRevision.createdAt)).toLocaleDateString()
 				block content
 				h2 Relationships
 				ul.list-unstyled

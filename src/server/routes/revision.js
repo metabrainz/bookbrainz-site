@@ -456,7 +456,7 @@ function formatEditionLanguageAddOrDelete(change) {
 		formatChange(
 			change.item,
 			`Language ${change.index}`,
-			(side) => side && [side.name]
+			(side) => side && [side]
 		)
 	];
 }
@@ -465,8 +465,8 @@ function formatEditionLanguageModified(change) {
 	return [
 		formatChange(
 			change,
-			`Language ${change.path[2]}`,
-			(side) => side && [side.name]
+			`Language ${change.path[1]}`,
+			(side) => side && [side]
 		)
 	];
 }
@@ -479,7 +479,7 @@ function formatEditionLanguageChange(change) {
 	}
 
 	const editionLanguageChanged = change.path[0] === 'languages';
-	if (editionLanguageChanged) {
+	if (editionLanguageChanged && change.path[2] === 'name') {
 		if (change.kind === 'A') {
 			// Edition language added to or deleted from set
 			return formatEditionLanguageAddOrDelete(change);
@@ -612,7 +612,7 @@ function formatEditionChange(change) {
 		return formatReleaseEventsChange(change);
 	}
 
-	if (_.isEqual(change.path, ['languages'])) {
+	if (change.path[0] === 'languages') {
 		return formatEditionLanguageChange(change);
 	}
 
@@ -675,7 +675,7 @@ function formatWorkLanguageAddOrDelete(change) {
 		formatChange(
 			change.item,
 			`Language ${change.index}`,
-			(side) => side && [side.name]
+			(side) => side && [side]
 		)
 	];
 }
@@ -683,7 +683,7 @@ function formatWorkLanguageAddOrDelete(change) {
 function formatWorkLanguageModified(change) {
 	return [
 		formatChange(
-			change, `Language ${change.path[2]}`, (side) => side && [side.name]
+			change, `Language ${change.path[1]}`, (side) => side && [side]
 		)
 	];
 }
@@ -696,7 +696,7 @@ function formatWorkLanguageChange(change) {
 	}
 
 	const workLanguageSetChanged = change.path[0] === 'languages';
-	if (workLanguageSetChanged) {
+	if (workLanguageSetChanged && change.path[2] === 'name') {
 		if (change.kind === 'A') {
 			// Work language added to or deleted from set
 			return formatWorkLanguageAddOrDelete(change);
@@ -713,7 +713,7 @@ function formatWorkLanguageChange(change) {
 
 function formatWorkChange(change) {
 	const workLanguageChanged =
-		_.isEqual(change.path, ['languages']);
+		change.path[0] === 'languages';
 
 	if (workLanguageChanged) {
 		return formatWorkLanguageChange(change);
