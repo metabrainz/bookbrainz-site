@@ -63,12 +63,25 @@ const EntitySearch = React.createClass({
 		const self = this;
 
 		if (this.props.defaultValue) {
-			this.loadedEntities[this.props.defaultValue.id] =
+			this.loadedEntities[this.props.defaultValue.bbid] =
 				this.props.defaultValue;
 		}
 
 		if (this.props.value) {
-			this.loadedEntities[this.props.value.id] = this.props.value;
+			this.loadedEntities[this.props.value.bbid] = this.props.value;
+		}
+
+		function entityToOption(entity) {
+			'use strict';
+
+			return {
+				id: entity.bbid,
+				text: entity.defaultAlias ?
+					entity.defaultAlias.name : '(unnamed)',
+				disambiguation: entity.disambiguation ?
+					entity.disambiguation.comment : null,
+				type: entity.type
+			};
 		}
 
 		const select2Options = {
@@ -99,14 +112,7 @@ const EntitySearch = React.createClass({
 					});
 
 					return {
-						results: results.map((result) => ({
-							id: result.bbid,
-							text: result.defaultAlias ?
-								result.defaultAlias.name : '(unnamed)',
-							disambiguation: result.disambiguation ?
-								result.disambiguation.comment : null,
-							type: result.type
-						}))
+						results: results.map(entityToOption)
 					};
 				}
 			},
@@ -145,15 +151,15 @@ const EntitySearch = React.createClass({
 		const options = this.props.options || [];
 
 		let defaultKey = null;
-		if (this.props.defaultValue && this.props.defaultValue.id) {
-			options.unshift(this.props.defaultValue);
-			defaultKey = this.props.defaultValue.id;
+		if (this.props.defaultValue && this.props.defaultValue.bbid) {
+			options.unshift(entityToOption(this.props.defaultValue));
+			defaultKey = this.props.defaultValue.bbid;
 		}
 
 		let key = null;
-		if (this.props.value && this.props.value.id) {
-			options.unshift(this.props.value);
-			key = this.props.value.id;
+		if (this.props.value && this.props.value.bbid) {
+			options.unshift(entityToOption(this.props.value));
+			key = this.props.value.bbid;
 		}
 
 		return (

@@ -166,16 +166,14 @@ const EditionData = React.createClass({
 		let initialDepth = null;
 		let initialWeight = null;
 
-		let publication = null;
-		let publisher = null;
 		const prefillData = this.props.edition;
 		if (prefillData) {
 			if (prefillData.publication) {
-				publication = prefillData.publication;
+				initialPublication = prefillData.publication;
 			}
 
 			if (prefillData.publisherSet.publishers) {
-				publisher = prefillData.publisherSet.publishers[0];
+				initialPublisher = prefillData.publisherSet.publishers[0];
 			}
 
 			if (prefillData.releaseEventSet.releaseEvents) {
@@ -213,23 +211,11 @@ const EditionData = React.createClass({
 		}
 
 		if (this.props.publication) {
-			publication = this.props.publication;
+			initialPublication = this.props.publication;
 		}
 
-		if (publication) {
-			initialPublication = {
-				id: publication.bbid,
-				text: publication.defaultAlias ?
-					publication.defaultAlias.name : null
-			};
-		}
-
-		if (publisher) {
-			initialPublisher = {
-				id: publisher.bbid,
-				text: publisher.defaultAlias ?
-					publisher.defaultAlias.name : null
-			};
+		if (this.props.publisher) {
+			initialPublisher = this.props.publisher;
 		}
 
 		const select2Options = {
