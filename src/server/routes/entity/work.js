@@ -54,7 +54,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Work,
-		['workType', 'languages'],
+		['workType', 'languageSet.languages'],
 		'Work not found'
 	)
 );
