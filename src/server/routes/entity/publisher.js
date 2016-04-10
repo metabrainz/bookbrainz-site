@@ -139,13 +139,13 @@ const additionalPublisherProps = [
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, Publisher, _.pick(req.body, additionalPublisherProps)
+		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, Publisher, _.pick(req.body, additionalPublisherProps)
+		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
 	)
 );
 

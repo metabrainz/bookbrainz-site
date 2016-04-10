@@ -651,8 +651,7 @@ module.exports.editEntity = (
 					);
 
 				const newRevisionPromise = new Revision({
-					authorId: editorJSON.id,
-					type: entityType
+					authorId: editorJSON.id
 				}).save(null, {transacting});
 
 				// Get the parents of the new revision
