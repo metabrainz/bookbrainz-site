@@ -125,7 +125,7 @@ const EditionData = React.createClass({
 		return {
 			publication: publication ? publication.bbid : null,
 			publishers: publisher ? [publisher.bbid] : null,
-			releaseEvents: releaseEvents,
+			releaseEvents,
 			languages: this.refs.languages.getValue().map(
 				(languageId) => parseInt(languageId, 10)
 			),
