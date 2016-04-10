@@ -148,17 +148,19 @@ const EntitySearch = React.createClass({
 
 		const options = this.props.options || [];
 
-		let defaultKey = null;
-		if (this.props.defaultValue && this.props.defaultValue.bbid) {
-			options.unshift(entityToOption(this.props.defaultValue));
-			defaultKey = this.props.defaultValue.bbid;
+		function keyFromValue(value) {
+			let key = null;
+
+			if (value && value.bbid) {
+				options.unshift(entityToOption(value));
+				key = value.bbid;
+			}
+
+			return key;
 		}
 
-		let key = null;
-		if (this.props.value && this.props.value.bbid) {
-			options.unshift(entityToOption(this.props.value));
-			key = this.props.value.bbid;
-		}
+		const defaultKey = keyFromValue(this.props.defaultValue);
+		const key = keyFromValue(this.props.value);
 
 		return (
 			<Select
