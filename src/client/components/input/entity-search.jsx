@@ -29,7 +29,7 @@ const EntitySearch = React.createClass({
 	propTypes: {
 		bsStyle: React.PropTypes.string,
 		defaultValue: React.PropTypes.shape({
-			id: React.PropTypes.string
+			bbid: React.PropTypes.string
 		}),
 		disabled: React.PropTypes.bool,
 		groupClassName: React.PropTypes.string,
@@ -41,7 +41,7 @@ const EntitySearch = React.createClass({
 		select2Options: React.PropTypes.object,
 		standalone: React.PropTypes.bool,
 		value: React.PropTypes.shape({
-			id: React.PropTypes.string
+			bbid: React.PropTypes.string
 		}),
 		wrapperClassName: React.PropTypes.string,
 		onChange: React.PropTypes.func
@@ -72,8 +72,6 @@ const EntitySearch = React.createClass({
 		}
 
 		function entityToOption(entity) {
-			'use strict';
-
 			return {
 				id: entity.bbid,
 				text: entity.defaultAlias ?
