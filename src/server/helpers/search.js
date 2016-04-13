@@ -39,7 +39,14 @@ let _client = null;
 search.init = (options) => {
 	const config = _.extend({
 		defer() {
-			return Promise.defer();
+			const defer = {};
+
+			defer.promise = new Promise((resolve, reject) => {
+				defer.resolve = resolve;
+				defer.reject = reject;
+			});
+
+			return defer;
 		}
 	}, options);
 
