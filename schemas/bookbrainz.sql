@@ -245,15 +245,20 @@ CREATE TABLE bookbrainz.release_event (
 );
 ALTER TABLE bookbrainz.release_event ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.country_area (area);
 
-CREATE TABLE bookbrainz.edition_data__release_event (
+CREATE TABLE bookbrainz.release_event_set (
+	id SERIAL PRIMARY KEY
+);
+
+CREATE TABLE bookbrainz.release_event_set__release_event (
+	set_id INT,
 	release_event_id INT,
-	edition_data_id INT,
-	PRIMARY KEY(
-		release_event_id,
-		edition_data_id
+	PRIMARY KEY (
+		set_id,
+		release_event_id
 	)
 );
-ALTER TABLE bookbrainz.edition_data__release_event ADD FOREIGN KEY (release_event_id) REFERENCES bookbrainz.release_event (id);
+ALTER TABLE bookbrainz.release_event_set__release_event ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.release_event_set (id);
+ALTER TABLE bookbrainz.release_event_set__release_event ADD FOREIGN KEY (release_event_id) REFERENCES bookbrainz.release_event (id);
 
 CREATE TABLE bookbrainz.creator_credit (
 	id SERIAL PRIMARY KEY,
@@ -276,25 +281,20 @@ CREATE TABLE bookbrainz.creator_credit_name (
 ALTER TABLE bookbrainz.creator_credit_name ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
 ALTER TABLE bookbrainz.creator_credit_name ADD FOREIGN KEY (creator_bbid) REFERENCES bookbrainz.creator_header (bbid);
 
-CREATE TABLE bookbrainz.edition_data__language (
-	data_id INT,
-	language_id INT,
-	PRIMARY KEY(
-		data_id,
-		language_id
-	)
+CREATE TABLE bookbrainz.publisher_set (
+	id SERIAL PRIMARY KEY
 );
-ALTER TABLE bookbrainz.edition_data__language ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
 
-CREATE TABLE bookbrainz.edition_data__publisher (
-	data_id INT,
+CREATE TABLE bookbrainz.publisher_set__publisher (
+	set_id INT,
 	publisher_bbid UUID,
-	PRIMARY KEY(
-		data_id,
+	PRIMARY KEY (
+		set_id,
 		publisher_bbid
 	)
 );
-ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (publisher_bbid) REFERENCES bookbrainz.publisher_header (bbid);
+ALTER TABLE bookbrainz.publisher_set__publisher ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.publisher_set (id);
+ALTER TABLE bookbrainz.publisher_set__publisher ADD FOREIGN KEY (publisher_bbid) REFERENCES bookbrainz.publisher_header (bbid);
 
 CREATE TABLE bookbrainz.edition_format (
 	id SERIAL PRIMARY KEY,
@@ -315,6 +315,9 @@ CREATE TABLE bookbrainz.edition_data (
 	disambiguation_id INT,
 	publication_bbid UUID,
 	creator_credit_id INT,
+	publisher_set_id INT,
+	language_set_id INT,
+	release_event_set_id INT,
 	width SMALLINT,
 	height SMALLINT,
 	depth SMALLINT,
@@ -327,10 +330,9 @@ ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (creator_credit_id) REFERENC
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (format_id) REFERENCES bookbrainz.edition_format (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (publication_bbid) REFERENCES bookbrainz.publication_header (bbid);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (status_id) REFERENCES bookbrainz.edition_status (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (publisher_set_id) REFERENCES bookbrainz.publisher_set (id);
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (release_event_set_id) REFERENCES bookbrainz.release_event_set (id);
 ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
-ALTER TABLE bookbrainz.edition_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
-ALTER TABLE bookbrainz.edition_data__publisher ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
-ALTER TABLE bookbrainz.edition_data__release_event ADD FOREIGN KEY (edition_data_id) REFERENCES bookbrainz.edition_data (id);
 
 CREATE TABLE bookbrainz.publication_type (
 	id SERIAL PRIMARY KEY,
@@ -392,16 +394,6 @@ ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (type_id) REFERENCES bookb
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
 ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
 
-CREATE TABLE bookbrainz.work_data__language (
-	data_id INT,
-	language_id INT,
-	PRIMARY KEY (
-		data_id,
-		language_id
-	)
-);
-ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
-
 CREATE TABLE bookbrainz.work_type (
 	id SERIAL PRIMARY KEY,
 	label TEXT NOT NULL UNIQUE
@@ -414,11 +406,11 @@ CREATE TABLE bookbrainz.work_data (
 	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
+	language_set_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
-ALTER TABLE bookbrainz.work_data__language ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
 CREATE TABLE bookbrainz.annotation (
 	id SERIAL PRIMARY KEY,
@@ -557,6 +549,24 @@ ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbra
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (source_bbid) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (target_bbid) REFERENCES bookbrainz.entity (bbid);
 
+CREATE TABLE bookbrainz.language_set (
+	id SERIAL PRIMARY KEY
+);
+
+CREATE TABLE bookbrainz.language_set__language (
+	set_id INT,
+	language_id INT,
+	PRIMARY KEY (
+		set_id,
+		language_id
+	)
+);
+ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.language_set (id);
+ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
+
+ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
+
 -- Views --
 
 CREATE VIEW bookbrainz.creator AS
@@ -577,7 +587,8 @@ CREATE VIEW bookbrainz.edition AS
 		e.bbid, edd.id AS data_id, edr.id AS revision_id, (edr.id = ed.master_revision_id) AS master, edd.annotation_id, edd.disambiguation_id,
 		als.default_alias_id, edd.publication_bbid, edd.creator_credit_id, edd.width, edd.height,
 		edd.depth, edd.weight, edd.pages, edd.format_id, edd.status_id,
-		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id, e.type
+		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id, e.type,
+		edd.language_set_id, edd.release_event_set_id, edd.publisher_set_id
 	FROM bookbrainz.edition_revision edr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = edr.bbid
 	LEFT JOIN bookbrainz.edition_header ed ON ed.bbid = e.bbid
@@ -589,7 +600,7 @@ CREATE VIEW bookbrainz.work AS
 	SELECT
 		e.bbid, wd.id AS data_id, wr.id AS revision_id, (wr.id = w.master_revision_id) AS master, wd.annotation_id, wd.disambiguation_id,
 		als.default_alias_id, wd.type_id, wd.alias_set_id, wd.identifier_set_id,
-		wd.relationship_set_id, e.type
+		wd.relationship_set_id, e.type, wd.language_set_id
 	FROM bookbrainz.work_revision wr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = wr.bbid
 	LEFT JOIN bookbrainz.work_header w ON w.bbid = e.bbid
