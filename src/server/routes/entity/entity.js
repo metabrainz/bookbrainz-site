@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Ben Ockmore
+ *               2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@
 const bookshelf = require('bookbrainz-data').bookshelf;
 const _ = require('lodash');
 
+const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 
 const Revision = require('bookbrainz-data').Revision;
@@ -111,31 +113,38 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 		});
 };
 
-function setHasChanged(oldSet, newSet, compareFields) {
-	const oldSetIds = _.map(oldSet, 'id');
-	const newSetIds = _.map(newSet, 'id');
+function setHasChanged(oldSet, newSet, idField, compareFields) {
+	const oldSetIds = _.map(oldSet, idField);
+	const newSetIds = _.map(newSet, idField);
 
 	const oldSetHash = {};
-	oldSet.forEach((item) => { oldSetHash[item.id] = item; });
+	oldSet.forEach((item) => { oldSetHash[item[idField]] = item; });
 
-	// First, determine whether any items have been deleted, by excluding
-	// all new IDs from the old IDs and checking whether any IDs remain
+	// First, determine whether any items have been deleted or added, by
+	// excluding all new IDs from the old IDs and checking whether any IDs
+	// remain, and vice versa
 	const itemsHaveBeenDeletedOrAdded =
 		_.difference(oldSetIds, newSetIds).length > 0 ||
-		_.difference(oldSetIds, newSetIds).length > 0;
+		_.difference(newSetIds, oldSetIds).length > 0;
 
 	if (itemsHaveBeenDeletedOrAdded) {
 		return true;
 	}
 
+	// If no list of fields for comparison is provided and no items have been
+	// deleted or added, consider the set unchanged
+	if (_.isEmpty(compareFields)) {
+		return false;
+	}
+
 	// If not, return true if any items have changed (are not equal)
 	return _.some(newSet, (newItem) => {
-		const oldRepresentation = _.pick(oldSetHash[newItem.id], compareFields);
+		const oldRepresentation =
+			_.pick(oldSetHash[newItem[idField]], compareFields);
 		const newRepresentation = _.pick(newItem, compareFields);
 		return !_.isEqual(oldRepresentation, newRepresentation);
 	});
 }
-module.exports.setHasChanged = setHasChanged;
 
 function unchangedSetItems(oldSet, newSet, compareFields) {
 	console.log(JSON.stringify(oldSet));
@@ -157,6 +166,85 @@ function updatedOrNewSetItems(oldSet, newSet, compareFields) {
 }
 module.exports.updatedOrNewSetItems = updatedOrNewSetItems;
 
+function processFormSet(transacting, oldSet, formItems, setMetadata) {
+	const oldItems =
+		oldSet ? oldSet.related(setMetadata.propName).toJSON() : [];
+
+	// If there's no change, return the old set
+	if (!setHasChanged(
+			oldItems,
+			formItems,
+			setMetadata.idField,
+			setMetadata.mutableFields
+		)) {
+		return oldSet;
+	}
+
+	// If we have no items for the set, the set should be null
+	if (_.isEmpty(formItems)) {
+		return null;
+	}
+
+	const newSetPromise = setMetadata.model.forge()
+		.save(null, {transacting});
+
+	const fetchCollectionPromise = newSetPromise
+		.then((newSet) =>
+			newSet.related(setMetadata.propName)
+				.fetch({transacting})
+		);
+
+	let createPropertiesPromise = null;
+	let idsToAttach;
+
+	if (!setMetadata.mutableFields) {
+		// If the set's elements aren't mutable, it should just be a list of IDs
+		idsToAttach = formItems;
+	}
+	else {
+		// If there are items in the set which haven't changed, get their IDs
+		const unchangedItems = unchangedSetItems(
+			oldItems,
+			formItems,
+			setMetadata.mutableFields
+		);
+		idsToAttach = _.map(unchangedItems, setMetadata.idField);
+
+		// If there are new items in the set or items in the set have otherwise
+		// changed, add rows to the database and connect them to the set
+		const updatedOrNewItems = updatedOrNewSetItems(
+			oldItems,
+			formItems,
+			setMetadata.mutableFields
+		);
+
+		createPropertiesPromise = fetchCollectionPromise
+			.then((collection) =>
+				Promise.map(updatedOrNewItems, (item) =>
+					collection.create(
+						_.omit(item, setMetadata.idField),
+						{transacting}
+					)
+				)
+			);
+	}
+
+	// Link any IDs for unchanged items (including immutable) to the set
+	const attachPropertiesPromise = fetchCollectionPromise
+		.then((collection) =>
+			collection.attach(idsToAttach, {transacting})
+		);
+
+	// Ensure that any linking that needs to happen to the set is completed
+	// and return the new set's object
+	return Promise.join(
+		newSetPromise,
+		Promise.resolve(createPropertiesPromise),
+		attachPropertiesPromise,
+		(newSet) => newSet
+	);
+}
+
 function processFormAliases(
 	transacting, oldAliasSet, oldDefaultAliasId, newAliases
 ) {
@@ -165,7 +253,7 @@ function processFormAliases(
 	const aliasCompareFields =
 		['name', 'sortName', 'languageId', 'primary'];
 	const aliasesHaveChanged = setHasChanged(
-		oldAliases, newAliases, aliasCompareFields
+		oldAliases, newAliases, 'id', aliasCompareFields
 	);
 
 	// If there is no change to the set of aliases, and the default alias is
@@ -225,7 +313,7 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 	const identCompareFields =
 		['value', 'typeId'];
 	const identsHaveChanged = setHasChanged(
-		oldIdents, newIdents, identCompareFields
+		oldIdents, newIdents, 'id', identCompareFields
 	);
 
 	// If there is no change to the set of identifiers
@@ -268,7 +356,7 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 module.exports.processFormIdentifiers = processFormIdentifiers;
 
 function processFormAnnotation(
-	transacting, oldAnnotation, newContent, revisionId
+	transacting, oldAnnotation, newContent, revision
 ) {
 	const oldContent = oldAnnotation && oldAnnotation.get('content');
 
@@ -278,7 +366,7 @@ function processFormAnnotation(
 
 	return newContent ? new Annotation({
 		content: newContent,
-		lastRevisionId: revisionId
+		lastRevisionId: revision.get('id')
 	}).save(null, {transacting}) : null;
 }
 
@@ -296,9 +384,55 @@ function processFormDisambiguation(
 	}).save(null, {transacting}) : null;
 }
 
+function processEntitySets(derivedSets, currentEntity, body, transacting) {
+	if (!derivedSets) {
+		return null;
+	}
+
+	return Promise.map(derivedSets, (derivedSet) => {
+		const newItems = body[derivedSet.propName];
+
+		let oldSetPromise = null;
+
+		if (currentEntity && currentEntity[derivedSet.name]) {
+			oldSetPromise = derivedSet.model.forge({
+				id: currentEntity[derivedSet.name].id
+			})
+				.fetch({
+					withRelated: [derivedSet.propName],
+					transacting
+				});
+		}
+
+		return Promise.resolve(oldSetPromise)
+			.then(
+				(oldSet) =>
+					processFormSet(
+						transacting,
+						oldSet,
+						newItems,
+						derivedSet
+					)
+			)
+			.then((newSet) => {
+				const newProp = {};
+				newProp[derivedSet.entityIdField] =
+					newSet ? newSet.get('id') : null;
+
+				return newProp;
+			});
+	})
+		.then((newProps) =>
+			_.reduce(newProps, (result, value) => _.assign(result, value), {})
+		);
+}
 
 module.exports.createEntity = (
-	req, res, EntityModel, derivedProps, onEntityCreation
+	req,
+	res,
+	entityType,
+	derivedProps,
+	derivedSets
 ) => {
 	const editorJSON = req.session.passport.user;
 	const entityCreationPromise = bookshelf.transaction((transacting) => {
@@ -326,7 +460,7 @@ module.exports.createEntity = (
 
 		const annotationPromise = newRevisionPromise.then((revision) =>
 			processFormAnnotation(
-				transacting, null, req.body.annotation, revision.get('id')
+				transacting, null, req.body.annotation, revision
 			)
 		);
 
@@ -334,12 +468,30 @@ module.exports.createEntity = (
 			transacting, null, req.body.disambiguation
 		);
 
+		const derivedPropsPromise = Promise.resolve(
+			processEntitySets(
+				derivedSets,
+				null,
+				req.body,
+				transacting
+			)
+		)
+			.then((derivedSetProps) =>
+				_.merge({}, derivedProps, derivedSetProps)
+			);
+
 		return Promise.join(
 			newRevisionPromise, aliasSetPromise, identSetPromise,
-			annotationPromise, disambiguationPromise, editorUpdatePromise,
-			notePromise,
-			(newRevision, aliasSet, identSet, annotation, disambiguation) => {
-				console.log(identSet);
+			annotationPromise, disambiguationPromise, derivedPropsPromise,
+			editorUpdatePromise, notePromise,
+			(
+				newRevision,
+				aliasSet,
+				identSet,
+				annotation,
+				disambiguation,
+				allProps
+			) => {
 				const propsToSet = _.extend({
 					aliasSetId: aliasSet && aliasSet.get('id'),
 					identifierSetId: identSet && identSet.get('id'),
@@ -347,63 +499,47 @@ module.exports.createEntity = (
 					disambiguationId:
 						disambiguation && disambiguation.get('id'),
 					revisionId: newRevision.get('id')
-				}, derivedProps);
+				}, allProps);
 
-				return new EntityModel(propsToSet)
+				const model = utils.getEntityModelByType(entityType);
+
+				return model.forge(propsToSet)
 					.save(null, {method: 'insert', transacting});
 			})
 			.then(
-				(entityModel) => entityModel.refresh({transacting})
+				(entityModel) =>
+					entityModel.refresh({
+						withRelated: ['defaultAlias'],
+						transacting
+					})
 			)
-			.then(
-				(entityModel) => {
-					if (!onEntityCreation) {
-						return entityModel;
-					}
-
-					return onEntityCreation(req, transacting, entityModel)
-						.then(() => entityModel.refresh({transacting}))
-						.then((entity) => entity.toJSON());
-				}
-			);
+			.then((entity) => entity.toJSON());
 	});
 
-	return entityCreationPromise.then((entity) =>
-		res.send(entity)
-	);
+	return entityCreationPromise
+		.then((entity) => {
+			res.send(entity);
+
+			return search.indexEntity(entity);
+		});
 };
 
-
 module.exports.editEntity = (
-	req, res, EntityModel, derivedProps, onEntityEdit
+	req,
+	res,
+	entityType,
+	derivedProps,
+	derivedSets
 ) => {
 	const editorJSON = req.session.passport.user;
+	const model = utils.getEntityModelByType(entityType);
+
 	const entityEditPromise = bookshelf.transaction((transacting) => {
-		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(editorJSON.id, transacting);
+		const currentEntity = res.locals.entity;
 
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
-
-		// Get the parents of the new revision
-		const revisionParentsPromise = newRevisionPromise.then((revision) =>
-			revision.related('parents').fetch({transacting})
-		);
-
-		const currentEntity = res.locals.entity;
-
-		// Add the previous revision as a parent of this revision.
-		const parentAddedPromise = revisionParentsPromise.then((parents) =>
-			parents.attach(currentEntity.revisionId, {transacting})
-		);
-
-		const notePromise = req.body.note ? newRevisionPromise
-			.then((revision) => new Note({
-				authorId: editorJSON.id,
-				revisionId: revision.get('id'),
-				content: req.body.note
-			}).save(null, {transacting})) : null;
 
 		const oldAliasSetPromise = currentEntity.aliasSet &&
 			new AliasSet({id: currentEntity.aliasSet.id})
@@ -435,13 +571,12 @@ module.exports.editEntity = (
 				.fetch({transacting});
 
 		const annotationPromise = Promise.join(
-			oldAnnotationPromise, newRevisionPromise,
-			(oldAnnotation, newRevision) =>
+			newRevisionPromise, Promise.resolve(oldAnnotationPromise),
+			(revision, oldAnnotation) =>
 				processFormAnnotation(
-					transacting, oldAnnotation, req.body.annotation,
-					newRevision.get('id')
+					transacting, oldAnnotation, req.body.annotation, revision
 				)
-		);
+			);
 
 		const oldDisambiguationPromise = currentEntity.disambiguation &&
 			new Disambiguation({id: currentEntity.disambiguation.id})
@@ -454,43 +589,106 @@ module.exports.editEntity = (
 				)
 			);
 
+		const derivedPropsPromise = Promise.resolve(
+			processEntitySets(
+				derivedSets,
+				currentEntity,
+				req.body,
+				transacting
+			)
+		)
+			.then((derivedSetProps) =>
+				_.merge({}, derivedProps, derivedSetProps)
+			);
+
 		return Promise.join(
-			newRevisionPromise, aliasSetPromise, identSetPromise,
-			annotationPromise, disambiguationPromise, editorUpdatePromise,
-			notePromise, parentAddedPromise,
-			(newRevision, aliasSet, identSet, annotation, disambiguation) => {
+			newRevisionPromise,
+			aliasSetPromise,
+			identSetPromise,
+			annotationPromise,
+			disambiguationPromise,
+			derivedPropsPromise,
+			(
+				newRevision, aliasSet, identSet,
+				annotation, disambiguation, allProps
+			) => {
 				const propsToSet = _.extend({
-					bbid: currentEntity.bbid,
 					aliasSetId: aliasSet && aliasSet.get('id'),
 					identifierSetId: identSet && identSet.get('id'),
 					annotationId: annotation && annotation.get('id'),
-					disambiguationId:
-						disambiguation && disambiguation.get('id'),
-					revisionId: newRevision.get('id')
-				}, derivedProps);
+					disambiguationId: disambiguation && disambiguation.get('id')
+				}, allProps);
 
-				return new EntityModel(propsToSet)
-					.save(null, {method: 'update', transacting});
-			})
-			.then(
-				() => new EntityModel({bbid: currentEntity.bbid})
-					.fetch({transacting})
-			)
-			.then(
-				(entityModel) => {
-					if (!onEntityEdit) {
-						return entityModel;
-					}
+				// Construct a set of differences between the new values and old
+				const changedProps =
+					_.reduce(propsToSet, (result, value, key) => {
+						if (!_.isEqual(value, currentEntity[key])) {
+							result[key] = value;
+						}
 
-					return onEntityEdit(req, transacting, entityModel)
-						.then(() => new EntityModel({bbid: currentEntity.bbid})
-							.fetch({transacting}))
-						.then((entity) => entity.toJSON());
+						return result;
+					}, {});
+
+				// If there are no differences, bail
+				if (_.isEmpty(changedProps)) {
+					throw new Error('Entity did not change');
 				}
-			);
+
+				const entityPromise = model.forge({bbid: currentEntity.bbid})
+					.fetch();
+
+				return Promise.join(
+					newRevisionPromise, entityPromise, annotation, changedProps
+				);
+			}
+		)
+			.spread((newRevision, entity, annotation, changedProps) => {
+				_.forOwn(changedProps, (value, key) =>
+					entity.set(key, value)
+				);
+
+				entity.set('revisionId', newRevision.get('id'));
+
+				const editorUpdatePromise =
+					utils.incrementEditorEditCountById(
+						editorJSON.id,
+						transacting
+					);
+
+				// Get the parents of the new revision
+				const revisionParentsPromise =
+					newRevision.related('parents').fetch({transacting});
+
+				// Add the previous revision as a parent of this revision.
+				const parentAddedPromise =
+					revisionParentsPromise.then((parents) =>
+						parents.attach(currentEntity.revisionId, {transacting})
+					);
+
+				const notePromise = req.body.note ? new Note({
+					authorId: editorJSON.id,
+					revisionId: newRevision.get('id'),
+					content: req.body.note
+				}).save(null, {transacting}) : null;
+
+				return Promise.join(
+					entity.save(null, {method: 'update', transacting}),
+					editorUpdatePromise,
+					parentAddedPromise,
+					notePromise
+				);
+			})
+			.spread(
+				() => model.forge({bbid: currentEntity.bbid})
+					.fetch({withRelated: ['defaultAlias'], transacting})
+			)
+			.then((entity) => entity.toJSON());
 	});
 
-	return entityEditPromise.then((entity) =>
-		res.send(entity)
-	);
+	return entityEditPromise
+		.then((entity) => {
+			res.send(entity);
+
+			return search.indexEntity(entity);
+		});
 };

@@ -11,7 +11,7 @@ block attributes
 
 	dt Languages
 	dd
-		if entity.revision.data && entity.revision.data.languages
-			=entity.revision.data.languages.map(function(l){return l.name;}).join(', ')
+		if entity.languageSet && entity.languageSet.languages
+			=entity.languageSet.languages.map(function(l){return l.name;}).join(', ')
 		else
 			| ?

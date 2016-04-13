@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,10 +105,27 @@ const EditionData = React.createClass({
 		const publication = this.refs.publication.getValue();
 		const publisher = this.refs.publisher.getValue();
 
+		const releaseEvents = [];
+
+		// If the release date field isn't empty, create a release event
+		// object to represent it
+		if (this.refs.release.getValue()) {
+			const edition = this.props.edition;
+
+			const releaseEventId = edition && edition.releaseEventSet &&
+					edition.releaseEventSet.releaseEvents ?
+				edition.releaseEventSet.releaseEvents[0].id : null;
+
+			releaseEvents.push({
+				id: releaseEventId,
+				date: this.refs.release.getValue()
+			});
+		}
+
 		return {
 			publication: publication ? publication.bbid : null,
-			publisher: publisher ? publisher.bbid : null,
-			releaseDate: this.refs.release.getValue(),
+			publishers: publisher ? [publisher.bbid] : null,
+			releaseEvents,
 			languages: this.refs.languages.getValue().map(
 				(languageId) => parseInt(languageId, 10)
 			),
@@ -149,24 +166,22 @@ const EditionData = React.createClass({
 		let initialDepth = null;
 		let initialWeight = null;
 
-		let publication = null;
-		let publisher = null;
 		const prefillData = this.props.edition;
 		if (prefillData) {
 			if (prefillData.publication) {
-				publication = prefillData.publication;
+				initialPublication = prefillData.publication;
 			}
 
-			if (prefillData.revision.data.publishers) {
-				publisher = prefillData.revision.data.publishers[0];
+			if (prefillData.publisherSet.publishers) {
+				initialPublisher = prefillData.publisherSet.publishers[0];
 			}
 
-			if (prefillData.revision.data.releaseEvents) {
+			if (prefillData.releaseEventSet.releaseEvents) {
 				initialReleaseDate =
-					prefillData.revision.data.releaseEvents[0].date;
+					prefillData.releaseEventSet.releaseEvents[0].date;
 			}
 
-			initialLanguages = prefillData.revision.data.languages.map(
+			initialLanguages = prefillData.languageSet.languages.map(
 				(language) => language.id
 			);
 			initialEditionFormat = prefillData.editionFormat ?
@@ -196,27 +211,11 @@ const EditionData = React.createClass({
 		}
 
 		if (this.props.publication) {
-			publication = this.props.publication;
-		}
-
-		if (publication) {
-			initialPublication = {
-				id: publication.bbid,
-				text: publication.defaultAlias ?
-					publication.defaultAlias.name : null
-			};
+			initialPublication = this.props.publication;
 		}
 
 		if (this.props.publisher) {
-			publisher = this.props.publisher;
-		}
-
-		if (publisher) {
-			initialPublisher = {
-				id: publisher.bbid,
-				text: publisher.defaultAlias ?
-					publisher.defaultAlias.name : null
-			};
+			initialPublisher = this.props.publisher;
 		}
 
 		const select2Options = {

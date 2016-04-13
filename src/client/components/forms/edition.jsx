@@ -87,9 +87,9 @@ module.exports = React.createClass({
 		const data = {
 			aliases: aliasData.slice(0, -1),
 			publicationBbid: editionData.publication,
-			publisherBbid: editionData.publisher,
-			releaseDate: editionData.releaseDate,
-			languageIds: editionData.languages,
+			publishers: editionData.publishers,
+			releaseEvents: editionData.releaseEvents,
+			languages: editionData.languages,
 			formatId: parseInt(editionData.editionFormat, 10),
 			statusId: parseInt(editionData.editionStatus, 10),
 			disambiguation: editionData.disambiguation,

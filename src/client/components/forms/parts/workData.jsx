@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,9 +78,10 @@ const WorkData = React.createClass({
 
 		const prefillData = this.props.work;
 		if (prefillData) {
-			initialLanguages = prefillData.revision.data.languages.map(
-				(language) => language.id
-			);
+			initialLanguages = prefillData.languageSet &&
+				prefillData.languageSet.languages.map(
+					(language) => language.id
+				);
 			initialWorkType = prefillData.workType ?
 				prefillData.workType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?

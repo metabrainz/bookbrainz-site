@@ -28,5 +28,8 @@ block content
 						a(href='/edition/'+edition.bbid)
 							=(edition.defaultAlias ? edition.defaultAlias.name : '(unnamed)')
 						span.text-muted
-							=(edition.disambiguation ? (' (' + edition.disambiguation.comment + ')') : '')
-					td=(edition.releaseDate ? edition.releaseDate : '?')
+							=(edition.disambiguation && edition.disambiguation.comment ? (' (' + edition.disambiguation.comment + ')') : '')
+					if edition.releaseEventSet && edition.releaseEventSet.releaseEvents && edition.releaseEventSet.releaseEvents[0]
+						td=edition.releaseEventSet.releaseEvents[0].date
+					else
+						td

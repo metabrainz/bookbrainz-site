@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,8 @@ const utils = require('../../helpers/utils');
 const Work = require('bookbrainz-data').Work;
 const WorkHeader = require('bookbrainz-data').WorkHeader;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
-const bookshelf = require('bookbrainz-data').bookshelf;
+
+const LanguageSet = require('bookbrainz-data').LanguageSet;
 
 /* Middleware loader functions. */
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
@@ -53,7 +54,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Work,
-		['workType', 'revision.data.languages'],
+		['workType', 'languageSet.languages'],
 		'Work not found'
 	)
 );
@@ -134,35 +135,25 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handleWorkChange(req, transacting, entityModel) {
-	const revisionPromise = entityModel.related('revision')
-		.fetch({withRelated: ['data.languages'], transacting});
-
-	// Doing this with knex because bookshelf failed to set data_id.
-	// Tried attach(), with ids and then with models, and also add()
-	const workLanguagesPromise = revisionPromise.then((revision) =>
-		bookshelf.knex('bookbrainz.work_data__language')
-			.transacting(transacting)
-			.insert(
-				req.body.languages.map((id) => ({
-					data_id: revision.related('data').get('id'),
-					language_id: id
-				}))
-			)
-	);
-
-	return workLanguagesPromise;
-}
+const additionalWorkSets = [
+	{
+		name: 'languageSet',
+		idField: 'id',
+		entityIdField: 'languageSetId',
+		propName: 'languages',
+		model: LanguageSet
+	}
+];
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, Work, _.pick(req.body, 'typeId'), handleWorkChange
+		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, Work, _.pick(req.body, 'typeId'), handleWorkChange
+		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
 	)
 );
 

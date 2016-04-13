@@ -29,7 +29,7 @@ const EntitySearch = React.createClass({
 	propTypes: {
 		bsStyle: React.PropTypes.string,
 		defaultValue: React.PropTypes.shape({
-			id: React.PropTypes.string
+			bbid: React.PropTypes.string
 		}),
 		disabled: React.PropTypes.bool,
 		groupClassName: React.PropTypes.string,
@@ -41,7 +41,7 @@ const EntitySearch = React.createClass({
 		select2Options: React.PropTypes.object,
 		standalone: React.PropTypes.bool,
 		value: React.PropTypes.shape({
-			id: React.PropTypes.string
+			bbid: React.PropTypes.string
 		}),
 		wrapperClassName: React.PropTypes.string,
 		onChange: React.PropTypes.func
@@ -63,12 +63,23 @@ const EntitySearch = React.createClass({
 		const self = this;
 
 		if (this.props.defaultValue) {
-			this.loadedEntities[this.props.defaultValue.id] =
+			this.loadedEntities[this.props.defaultValue.bbid] =
 				this.props.defaultValue;
 		}
 
 		if (this.props.value) {
-			this.loadedEntities[this.props.value.id] = this.props.value;
+			this.loadedEntities[this.props.value.bbid] = this.props.value;
+		}
+
+		function entityToOption(entity) {
+			return {
+				id: entity.bbid,
+				text: entity.defaultAlias ?
+					entity.defaultAlias.name : '(unnamed)',
+				disambiguation: entity.disambiguation ?
+					entity.disambiguation.comment : null,
+				type: entity.type
+			};
 		}
 
 		const select2Options = {
@@ -99,14 +110,7 @@ const EntitySearch = React.createClass({
 					});
 
 					return {
-						results: results.map((result) => ({
-							id: result.bbid,
-							text: result.defaultAlias ?
-								result.defaultAlias.name : '(unnamed)',
-							disambiguation: result.disambiguation ?
-								result.disambiguation.comment : null,
-							type: result.type
-						}))
+						results: results.map(entityToOption)
 					};
 				}
 			},
@@ -144,17 +148,19 @@ const EntitySearch = React.createClass({
 
 		const options = this.props.options || [];
 
-		let defaultKey = null;
-		if (this.props.defaultValue && this.props.defaultValue.id) {
-			options.unshift(this.props.defaultValue);
-			defaultKey = this.props.defaultValue.id;
+		function keyFromValue(value) {
+			let key = null;
+
+			if (value && value.bbid) {
+				options.unshift(entityToOption(value));
+				key = value.bbid;
+			}
+
+			return key;
 		}
 
-		let key = null;
-		if (this.props.value && this.props.value.id) {
-			options.unshift(this.props.value);
-			key = this.props.value.id;
-		}
+		const defaultKey = keyFromValue(this.props.defaultValue);
+		const key = keyFromValue(this.props.value);
 
 		return (
 			<Select

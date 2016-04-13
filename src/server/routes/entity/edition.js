@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,10 @@ const EditionHeader = require('bookbrainz-data').EditionHeader;
 const EditionRevision = require('bookbrainz-data').EditionRevision;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
+
+const LanguageSet = require('bookbrainz-data').LanguageSet;
+const PublisherSet = require('bookbrainz-data').PublisherSet;
+const ReleaseEventSet = require('bookbrainz-data').ReleaseEventSet;
 
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
@@ -63,11 +67,11 @@ router.param(
 		Edition,
 		[
 			'publication.defaultAlias',
-			'revision.data.languages',
+			'languageSet.languages',
 			'editionFormat',
 			'editionStatus',
-			'revision.data.releaseEvents',
-			'revision.data.publishers.defaultAlias'
+			'releaseEventSet.releaseEvents',
+			'publisherSet.publishers.defaultAlias'
 		],
 		'Edition not found'
 	)
@@ -165,53 +169,56 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-function handleEditionChange(req, transacting, entityModel) {
-	const languageIds = req.body.languageIds;
-	const publisher = req.body.publisherBbid;
-	const releaseDate = req.body.releaseDate;
-
-	const dataPromise = entityModel.related('revision').fetch({
-		withRelated: [
-			'data.languages',
-			'data.releaseEvents',
-			'data.publishers'
-		],
-		transacting
-	});
-	return dataPromise.then((revision) => {
-		const data = revision.related('data');
-		const languagesPromise = languageIds ? data.languages()
-			.attach(
-				_.map(languageIds, (id) => ({language_id: id})), {transacting}
-			) : null;
-		const publisherPromise = publisher ? data.publishers()
-			.attach({publisher_bbid: publisher}, {transacting}) : null;
-		const releaseEventPromise = data.releaseEvents().create(
-				{date: releaseDate}, {transacting}
-			);
-
-		return Promise.join(
-			languagesPromise, publisherPromise, releaseEventPromise
-		);
-	});
-}
-
 const additionalEditionProps = [
 	'publicationBbid', 'width', 'height', 'depth', 'weight', 'pages',
 	'formatId', 'statusId'
 ];
 
+const additionalEditionSets = [
+	{
+		name: 'languageSet',
+		idField: 'id',
+		entityIdField: 'languageSetId',
+		propName: 'languages',
+		model: LanguageSet
+	},
+	{
+		name: 'publisherSet',
+		idField: 'bbid',
+		entityIdField: 'publisherSetId',
+		propName: 'publishers',
+		model: PublisherSet
+	},
+	{
+		name: 'releaseEventSet',
+		idField: 'id',
+		entityIdField: 'releaseEventSetId',
+		propName: 'releaseEvents',
+		model: ReleaseEventSet,
+		mutableFields: [
+			'date',
+			'areaId'
+		]
+	}
+];
+
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, Edition, _.pick(req.body, additionalEditionProps),
-		handleEditionChange
+		req,
+		res,
+		'Edition',
+		_.pick(req.body, additionalEditionProps),
+		additionalEditionSets
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, Edition, _.pick(req.body, additionalEditionProps),
-		handleEditionChange
+		req,
+		res,
+		'Edition',
+		_.pick(req.body, additionalEditionProps),
+		additionalEditionSets
 	)
 );
 

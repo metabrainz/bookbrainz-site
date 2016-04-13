@@ -15,29 +15,29 @@ block attributes
 
 	dt Languages
 	dd
-		if entity.revision.data.languages
-			=entity.revision.data.languages.map(function(l){return l.name;}).join(', ')
+		if entity.languageSet && entity.languageSet.languages
+			=entity.languageSet.languages.map(function(l){return l.name;}).join(', ')
 		else
 			| ?
 
 	dt Publishers
 	dd
-		if entity.revision.data.publishers.length > 0
-			each publisher in entity.revision.data.publishers
+		if entity.publisherSet && entity.publisherSet.publishers.length > 0
+			each publisher in entity.publisherSet.publishers
 				a(href="/publisher/"+publisher.bbid)
 					=publisher.defaultAlias.name
 		else
 			|?
 
 	dt Release Date
-	dd=(entity.revision.data.releaseEvents.length ? entity.revision.data.releaseEvents[0].date : '?')
-	
+	dd=(entity.releaseEventSet && entity.releaseEventSet.releaseEvents && entity.releaseEventSet.releaseEvents.length ? entity.releaseEventSet.releaseEvents[0].date : '?')
+
 	dt Page Count
 	dd=(entity.pages ? entity.pages : '?')
-	
+
 	dt Weight
 	dd=(entity.weight ? entity.weight : '?') + ' g'
-	
+
 	dt Dimensions (W×H×D)
 	dd=(entity.width ? entity.width : '?') + '×' + (entity.height ? entity.height : '?') + '×' + (entity.depth ? entity.depth : '?') + ' mm'
 

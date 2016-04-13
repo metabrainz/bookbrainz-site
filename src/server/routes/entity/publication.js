@@ -54,7 +54,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Publication,
-		['publicationType', 'editions.defaultAlias', 'editions.disambiguation'],
+		['publicationType', 'editions.defaultAlias', 'editions.disambiguation', 'editions.releaseEventSet.releaseEvents'],
 		'Publication not found'
 	)
 );
@@ -135,13 +135,13 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 
 router.post('/create/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.createEntity(
-		req, res, Publication, _.pick(req.body, 'typeId')
+		req, res, 'Publication', _.pick(req.body, 'typeId')
 	)
 );
 
 router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.editEntity(
-		req, res, Publication, _.pick(req.body, 'typeId')
+		req, res, 'Publication', _.pick(req.body, 'typeId')
 	)
 );
 
