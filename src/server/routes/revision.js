@@ -437,162 +437,183 @@ function formatScalarChange(change, label) {
 	return [formatChange(change, label, (side) => side && [side])];
 }
 
-function formatEditionLanguages(change) {
+function formatNewReleaseEventSet(change) {
 	const rhs = change.rhs;
-
-	if (rhs && rhs.length) {
+	if (rhs.releaseEvents && rhs.releaseEvents.length > 0) {
 		return [formatRow(
-			'N', 'Language', null, rhs.map(
-				(language) => language.name
+			'N', 'Release Date', null, rhs.releaseEvents.map(
+				(releaseEvent) => releaseEvent.date
 			)
 		)];
-	}
-
-	return null;
-}
-
-function formatEditionLanguageAddOrDelete(change) {
-	return [
-		formatChange(
-			change.item,
-			`Language ${change.index}`,
-			(side) => side && [side]
-		)
-	];
-}
-
-function formatEditionLanguageModified(change) {
-	return [
-		formatChange(
-			change,
-			`Language ${change.path[1]}`,
-			(side) => side && [side]
-		)
-	];
-}
-
-function formatEditionLanguageChange(change) {
-	const editionLanguagesAdded =
-		change.kind === 'N' && _.isEqual(change.path, ['languages']);
-	if (editionLanguagesAdded) {
-		return formatEditionLanguages(change);
-	}
-
-	const editionLanguageChanged = change.path[0] === 'languages';
-	if (editionLanguageChanged && change.path[2] === 'name') {
-		if (change.kind === 'A') {
-			// Edition language added to or deleted from set
-			return formatEditionLanguageAddOrDelete(change);
-		}
-
-		if (change.kind === 'E') {
-			// Entry in edition languages changed
-			return formatEditionLanguageModified(change);
-		}
-	}
-
-	return null;
-}
-
-function formatEditionPublishers(change) {
-	const rhs = change.rhs;
-
-	if (rhs && rhs.length) {
-		return [formatRow(
-			'N', 'Publishers', null, rhs.map(
-				(publisher) => publisher.bbid
-			)
-		)];
-	}
-
-	return null;
-}
-
-function formatEditionPublisherAddOrDelete(change) {
-	return [
-		formatChange(
-			change.item,
-			`Publisher ${change.index}`,
-			(side) => side && [side.bbid]
-		)
-	];
-}
-
-function formatEditionPublisherModified(change) {
-	return [
-		formatChange(
-			change,
-			`Publisher ${change.path[2]}`,
-			(side) => side && [side.bbid]
-		)
-	];
-}
-
-function formatEditionPublisher(change) {
-	const publishersAdded =
-		change.kind === 'N' && _.isEqual(change.path, ['publishers']);
-	if (publishersAdded) {
-		return formatEditionPublishers(change);
-	}
-
-	const publisherChanged = change.path[0] === 'publishers';
-	if (publisherChanged) {
-		if (change.kind === 'A') {
-			// Publisher added to or deleted from set
-			return formatEditionPublisherAddOrDelete(change);
-		}
-
-		if (change.kind === 'E') {
-			// Entry in publishers changed
-			return formatEditionPublisherModified(change);
-		}
-	}
-
-	return null;
-}
-
-function formatNewReleaseEvents(change) {
-	const rhs = change.rhs;
-
-	if (rhs && rhs.length) {
-		return formatRow(
-			'N', 'Release Date', null,
-			rhs.map((releaseEvent) => releaseEvent.date)
-		);
 	}
 
 	return [];
 }
 
 function formatReleaseEventAddOrDelete(change) {
+	const lhs = change.item.lhs && [change.item.lhs.date];
+	const rhs = change.item.rhs && [change.item.rhs.date];
+
 	return [
-		formatChange(change.item, 'Release Date', (side) => side && [side.date])
+		formatRow(change.item.kind, 'Release Date', lhs, rhs)
 	];
 }
 
 function formatReleaseEventModified(change) {
-	return [
-		formatChange(change, 'Release Date', (side) => side && [side.date])
-	];
-}
-
-function formatReleaseEventsChange(change) {
-	const releaseEventsAdded =
-		change.kind === 'N' && _.isEqual(change.path, ['releaseEvents']);
-	if (releaseEventsAdded) {
-		return formatNewReleaseEvents(change);
+	if (change.path.length > 3 && change.path[3] === 'date') {
+		return [
+			formatChange(
+				change,
+				'Release Date',
+				(side) => side && [side]
+			)
+		];
 	}
 
-	const releaseEventsChanged = change.path[0] === 'releaseEvents';
-	if (releaseEventsChanged) {
+	return [];
+}
+
+function formatReleaseEvent(change) {
+	const releaseEventSetAdded =
+		change.kind === 'N' && _.isEqual(change.path, ['releaseEventSet']);
+	if (releaseEventSetAdded) {
+		return formatNewReleaseEventSet(change);
+	}
+
+	const releaseEventSetChanged =
+		change.path.length > 1 && change.path[0] === 'releaseEventSet' &&
+		change.path[1] === 'releaseEvents';
+	if (releaseEventSetChanged) {
 		if (change.kind === 'A') {
 			// Release event added to or deleted from set
 			return formatReleaseEventAddOrDelete(change);
 		}
 
 		if (change.kind === 'E') {
-			// Entry in release events changed
+			// Entry in release event set changed
 			return formatReleaseEventModified(change);
+		}
+	}
+
+	return null;
+}
+
+function formatNewLanguageSet(change) {
+	const rhs = change.rhs;
+	if (rhs.languages && rhs.languages.length > 0) {
+		return [formatRow(
+			'N', 'Languages', null, rhs.languages.map(
+				(language) => language.name
+			)
+		)];
+	}
+
+	return [];
+}
+
+function formatLanguageAddOrDelete(change) {
+	const lhs = change.item.lhs && [change.item.lhs.name];
+	const rhs = change.item.rhs && [change.item.rhs.name];
+
+	return [
+		formatRow(change.item.kind, `Language ${change.index}`, lhs, rhs)
+	];
+}
+
+function formatLanguageModified(change) {
+	if (change.path.length > 3 && change.path[3] === 'name') {
+		return [
+			formatChange(
+				change,
+				`Language ${change.path[2]}`,
+				(side) => side && [side]
+			)
+		];
+	}
+
+	return [];
+}
+
+function formatLanguage(change) {
+	const languageSetAdded =
+		change.kind === 'N' && _.isEqual(change.path, ['languageSet']);
+	if (languageSetAdded) {
+		return formatNewLanguageSet(change);
+	}
+
+	const releaseEventSetChanged =
+		change.path.length > 1 && change.path[0] === 'languageSet' &&
+		change.path[1] === 'languages';
+	if (releaseEventSetChanged) {
+		if (change.kind === 'A') {
+			// Language added to or deleted from set
+			return formatLanguageAddOrDelete(change);
+		}
+
+		if (change.kind === 'E') {
+			// Entry in language set changed
+			return formatLanguageModified(change);
+		}
+	}
+
+	return null;
+}
+
+function formatNewPublisherSet(change) {
+	const rhs = change.rhs;
+	if (rhs.publishers && rhs.publishers.length > 0) {
+		return [formatRow(
+			'N', 'Publisher', null, rhs.publishers.map(
+				(publisher) => publisher.bbid
+			)
+		)];
+	}
+
+	return [];
+}
+
+function formatPublisherAddOrDelete(change) {
+	const lhs = change.item.lhs && [change.item.lhs.bbid];
+	const rhs = change.item.rhs && [change.item.rhs.bbid];
+
+	return [
+		formatRow(change.item.kind, 'Publisher', lhs, rhs)
+	];
+}
+
+function formatPublisherModified(change) {
+	if (change.path.length > 3 && change.path[3] === 'bbid') {
+		return [
+			formatChange(
+				change,
+				'Publisher',
+				(side) => side && [side]
+			)
+		];
+	}
+
+	return [];
+}
+
+function formatPublisher(change) {
+	const publisherSetAdded =
+		change.kind === 'N' && _.isEqual(change.path, ['publisherSet']);
+	if (publisherSetAdded) {
+		return formatNewPublisherSet(change);
+	}
+
+	const publisherSetChanged =
+		change.path.length > 1 && change.path[0] === 'publisherSet' &&
+		change.path[1] === 'publishers';
+	if (publisherSetChanged) {
+		if (change.kind === 'A') {
+			// Publisher added to or deleted from set
+			return formatPublisherAddOrDelete(change);
+		}
+
+		if (change.kind === 'E') {
+			// Entry in publisher set changed
+			return formatPublisherModified(change);
 		}
 	}
 
@@ -604,16 +625,34 @@ function formatEditionChange(change) {
 		return formatScalarChange(change, 'Publication');
 	}
 
-	if (_.isEqual(change.path, ['publishers'])) {
-		return formatEditionPublisher(change);
+	const publisherChanged =
+		_.isEqual(change.path, ['publisherSet']) ||
+		_.isEqual(
+			change.path.slice(0, 2), ['publisherSet', 'publishers']
+		);
+
+	if (publisherChanged) {
+		return formatPublisher(change);
 	}
 
-	if (_.isEqual(change.path, ['releaseEvents'])) {
-		return formatReleaseEventsChange(change);
+	const releaseEventChanged =
+		_.isEqual(change.path, ['releaseEventSet']) ||
+		_.isEqual(
+			change.path.slice(0, 2), ['releaseEventSet', 'releaseEvents']
+		);
+
+	if (releaseEventChanged) {
+		return formatReleaseEvent(change);
 	}
 
-	if (change.path[0] === 'languages') {
-		return formatEditionLanguageChange(change);
+	const languageChanged =
+		_.isEqual(change.path, ['languageSet']) ||
+		_.isEqual(
+			change.path.slice(0, 2), ['languageSet', 'languages']
+		);
+
+	if (languageChanged) {
+		return formatLanguage(change);
 	}
 
 	if (_.isEqual(change.path, ['width']) ||
@@ -658,65 +697,15 @@ function formatPublisherChange(change) {
 	return null;
 }
 
-function formatNewWorkLanguages(change) {
-	const rhs = change.rhs;
-	if (rhs && rhs.length) {
-		return [formatRow(
-			'N', 'Languages', null,
-			rhs.map((language) => language.name)
-		)];
-	}
-
-	return [];
-}
-
-function formatWorkLanguageAddOrDelete(change) {
-	return [
-		formatChange(
-			change.item,
-			`Language ${change.index}`,
-			(side) => side && [side]
-		)
-	];
-}
-
-function formatWorkLanguageModified(change) {
-	return [
-		formatChange(
-			change, `Language ${change.path[1]}`, (side) => side && [side]
-		)
-	];
-}
-
-function formatWorkLanguageChange(change) {
-	const workLanguageSetAdded =
-		change.kind === 'N' && _.isEqual(change.path, ['languages']);
-	if (workLanguageSetAdded) {
-		return formatNewWorkLanguages(change);
-	}
-
-	const workLanguageSetChanged = change.path[0] === 'languages';
-	if (workLanguageSetChanged && change.path[2] === 'name') {
-		if (change.kind === 'A') {
-			// Work language added to or deleted from set
-			return formatWorkLanguageAddOrDelete(change);
-		}
-
-		if (change.kind === 'E') {
-			// Entry in work languages changed
-			return formatWorkLanguageModified(change);
-		}
-	}
-
-	return null;
-}
-
 function formatWorkChange(change) {
-	const workLanguageChanged =
-		change.path[0] === 'languages';
+	const languageChanged =
+		_.isEqual(change.path, ['languageSet']) ||
+		_.isEqual(
+			change.path.slice(0, 2), ['languageSet', 'languages']
+		);
 
-	if (workLanguageChanged) {
-		return formatWorkLanguageChange(change);
+	if (languageChanged) {
+		return formatLanguage(change);
 	}
 
 	if (_.isEqual(change.path, ['type'])) {
