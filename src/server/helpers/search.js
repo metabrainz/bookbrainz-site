@@ -231,13 +231,8 @@ search.generateIndex = () => {
 					.fetchAll({
 						withRelated: baseRelations.concat(behavior.relations)
 					})
-					.then(
-						(collection) => Promise.all(
-							collection.map(
-								(entity) => search.indexEntity(entity.toJSON())
-							)
-						)
-					)
+					.then((collection) => collection.toJSON())
+					.map(search.indexEntity)
 			);
 		})
 		.then(search.refreshIndex);
