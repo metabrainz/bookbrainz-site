@@ -22,6 +22,7 @@
 const bookshelf = require('bookbrainz-data').bookshelf;
 const _ = require('lodash');
 
+const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 
 const Revision = require('bookbrainz-data').Revision;
@@ -505,13 +506,22 @@ module.exports.createEntity = (
 				return model.forge(propsToSet)
 					.save(null, {method: 'insert', transacting});
 			})
-			.then((entityModel) => entityModel.refresh({transacting}))
+			.then(
+				(entityModel) =>
+					entityModel.refresh({
+						withRelated: ['defaultAlias'],
+						transacting
+					})
+			)
 			.then((entity) => entity.toJSON());
 	});
 
-	return entityCreationPromise.then((entity) =>
-		res.send(entity)
-	);
+	return entityCreationPromise
+		.then((entity) => {
+			res.send(entity);
+
+			return search.indexEntity(entity);
+		});
 };
 
 module.exports.editEntity = (
@@ -670,12 +680,15 @@ module.exports.editEntity = (
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
-					.fetch({transacting})
+					.fetch({withRelated: ['defaultAlias'], transacting})
 			)
 			.then((entity) => entity.toJSON());
 	});
 
-	return entityEditPromise.then((entity) =>
-		res.send(entity)
-	);
+	return entityEditPromise
+		.then((entity) => {
+			res.send(entity);
+
+			return search.indexEntity(entity);
+		});
 };
