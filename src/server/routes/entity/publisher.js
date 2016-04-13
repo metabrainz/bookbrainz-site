@@ -54,7 +54,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Publisher,
-		['publisherType', 'editions.defaultAlias', 'editions.disambiguation'],
+		['publisherType'],
 		'Publisher not found'
 	)
 );
@@ -68,8 +68,19 @@ function _setPublisherTitle(res) {
 }
 
 router.get('/:bbid', loadEntityRelationships, (req, res) => {
-	_setPublisherTitle(res);
-	entityRoutes.displayEntity(req, res);
+	// Fetch editions
+	const editionRelationsToFetch = [
+		'defaultAlias', 'disambiguation', 'releaseEventSet.releaseEvents'
+	];
+	const editionsPromise =
+		Publisher.forge({bbid: res.locals.entity.bbid})
+			.editions({withRelated: editionRelationsToFetch});
+
+	return editionsPromise.then((editions) => {
+		res.locals.entity.editions = editions.toJSON();
+		_setPublisherTitle(res);
+		entityRoutes.displayEntity(req, res);
+	});
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
