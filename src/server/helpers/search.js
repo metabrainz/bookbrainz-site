@@ -107,6 +107,17 @@ search.autocomplete = (query, collection) => {
 	return _searchForEntities(dslQuery);
 };
 
+search.indexEntity = (entity) =>
+	_client.index({
+		index: _index,
+		id: entity.bbid,
+		type: entity.type.toLowerCase(),
+		body: entity
+	});
+
+search.refreshIndex = () =>
+	_client.indices.refresh({index: _index});
+
 search.generateIndex = () => {
 	const indexMappings = {
 		settings: {
@@ -207,18 +218,6 @@ search.generateIndex = () => {
 				{model: Work, relations: ['workType']}
 			];
 
-			// Then, fill with data
-			function indexEntity(model) {
-				const body = model.toJSON();
-
-				return _client.index({
-					index: _index,
-					id: body.bbid,
-					type: body.type.toLowerCase(),
-					body
-				});
-			}
-
 			// Update the indexed entries for each entity type
 			return Promise.map(entityBehaviors, (behavior) =>
 				behavior.model.forge()
@@ -226,11 +225,15 @@ search.generateIndex = () => {
 						withRelated: baseRelations.concat(behavior.relations)
 					})
 					.then(
-						(collection) => Promise.all(collection.map(indexEntity))
+						(collection) => Promise.all(
+							collection.map(
+								(entity) => search.indexEntity(entity.toJSON())
+							)
+						)
 					)
 			);
 		})
-		.then(() => _client.indices.refresh({index: _index}));
+		.then(search.refreshIndex);
 };
 
 search.searchByName = (name, collection) => {
