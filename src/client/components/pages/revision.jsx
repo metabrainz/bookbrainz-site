@@ -115,30 +115,37 @@ module.exports = React.createClass({
 			</div>
 		));
 
+		let revisionNotes = revision.notes.map((note) => {
+			const timeCreated =
+				new Date(note.postedAt).toTimeString();
+			const dateCreated =
+				new Date(note.postedAt).toDateString();
 
-		const editor_link = `/editor/${revision.author.id}`;
-
-		const time_created =
-			new Date(revision.createdAt).toTimeString();
-		const date_created =
-			new Date(revision.createdAt).toDateString();
-
-		const date_and_time_created = `${time_created}, ${date_created}`;
-
-		const revision_notes = revision.note ? (
-			<div className="panel panel-default">
-				<div className="panel-body">
-					<p>{revision.note}</p>
-					<p className="text-right">
-						—&nbsp;
-						<a href={editor_link}>
-							{revision.user.name}
-						</a>
-						, {date_and_time_created}
-					</p>
+			return (
+				<div
+					className="panel panel-default"
+					key={note.id}
+				>
+					<div className="panel-body">
+						<p>{note.content}</p>
+						<p className="text-right">
+							—&nbsp;
+							<a href={`/editor/${note.author.id}`}>
+								{note.author.name}
+							</a>
+							, {`${timeCreated}, ${dateCreated}`}
+						</p>
+					</div>
 				</div>
-			</div>
-		) : (<p> No revision notes present </p>);
+			);
+		});
+
+		if (revisionNotes.length === 0) {
+			revisionNotes = (<p> No revision notes present </p>);
+		}
+
+		const dateRevisionCreated =
+			new Date(revision.createdAt).toDateString();
 
 		return (
 			<div>
@@ -146,14 +153,14 @@ module.exports = React.createClass({
 				{diffDivs}
 				<p className="text-right">
 					Created by&nbsp;
-					<a href={editor_link}>
+					<a href={`/editor/${revision.author.id}`}>
 						{revision.author.name}
 					</a>
-					, {date_created}
+					, {dateRevisionCreated}
 				</p>
 
 				<h3>Revision Notes</h3>
-				{revision_notes}
+				{revisionNotes}
 
 			</div>
 		);
