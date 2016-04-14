@@ -101,6 +101,13 @@ const AliasRow = React.createClass({
 		onChange: React.PropTypes.func,
 		onRemove: React.PropTypes.func
 	},
+	getInitialState() {
+		'use strict';
+
+		return {
+			sortName: this.props.sortName || null
+		};
+	},
 	getValue() {
 		'use strict';
 
@@ -116,9 +123,9 @@ const AliasRow = React.createClass({
 	validationState() {
 		'use strict';
 
-		if (this.props.name || this.props.sortName || this.props.default ||
+		if (this.props.name || this.state.sortName || this.props.default ||
 				this.props.languageId || !this.props.primary) {
-			if (this.props.name && this.props.sortName) {
+			if (this.props.name && this.state.sortName) {
 				return 'success';
 			}
 
@@ -134,12 +141,16 @@ const AliasRow = React.createClass({
 			this.refs.name.getValue() && this.refs.sortName.getValue()
 		);
 	},
-	guessNames() {
+	guessSortName() {
 		'use strict';
-		const name = this.refs.name.refs.input;
-		const sortName = this.refs.sortName.refs.input;
+		const name = this.refs.name.getValue();
 
-		sortName.value = makeSortName(name.value);
+		this.setState({sortName: makeSortName(name)});
+	},
+	handleSortNameChange(event) {
+		'use strict';
+
+		this.setState({sortName: event.target.value});
 	},
 	render() {
 		'use strict';
@@ -148,7 +159,7 @@ const AliasRow = React.createClass({
 			<Button
 				bsStyle="link"
 				title="Guess Sort Name"
-				onClick={this.guessNames}
+				onClick={this.guessSortName}
 			>
 				<Icon name="magic"/>
 			</Button>
@@ -177,10 +188,11 @@ const AliasRow = React.createClass({
 					<Input
 						bsStyle={this.validationState()}
 						buttonAfter={guessSortNameButton}
-						defaultValue={this.props.sortName}
 						ref="sortName"
 						type="text"
+						value={this.state.sortName}
 						wrapperClassName="col-md-11"
+						onChange={this.handleSortNameChange}
 					/> &nbsp;
 				</div>
 				<div className="col-md-3">
