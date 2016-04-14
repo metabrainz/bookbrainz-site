@@ -118,11 +118,11 @@ const EntitySearch = React.createClass({
 				let template = result.text;
 
 				const ENTITY_TYPE_ICONS = {
-					creator: 'user',
-					edition: 'book',
-					publication: 'th-list',
-					publisher: 'university',
-					work: 'file-text-o'
+					Creator: 'user',
+					Edition: 'book',
+					Publication: 'th-list',
+					Publisher: 'university',
+					Work: 'file-text-o'
 				};
 
 				/* eslint prefer-template: 0 */
