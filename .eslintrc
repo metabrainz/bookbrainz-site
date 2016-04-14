@@ -360,7 +360,10 @@ rules:
 
   array-callback-return: 2
   prefer-rest-params: 0
-  no-confusing-arrow: 2
+  no-confusing-arrow:
+    - 2
+    -
+      allowParens: true
   no-unmodified-loop-condition: 2
   no-useless-constructor: 2
   no-whitespace-before-property: 2

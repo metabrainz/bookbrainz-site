@@ -19,78 +19,78 @@ const React = require('react');
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 
-module.exports = React.createClass({
-	displayName: 'RegistrationPage',
-	render() {
-		'use strict';
+function RegistrationPage() {
+	'use strict';
 
-		return (
-			<div className="row">
-				<div className="col-md-6 col-md-offset-3">
-					<form
-						action="/register/handler"
-						className="whole-page-form form-horizontal"
-						method="post"
+	return (
+		<div className="row">
+			<div className="col-md-6 col-md-offset-3">
+				<form
+					action="/register/handler"
+					className="whole-page-form form-horizontal"
+					method="post"
+				>
+					<div className="form-group">
+						<Input
+							className="form-control"
+							id="registerUsername"
+							label="Username"
+							labelClassName="col-md-2"
+							name="username"
+							placeholder="Username"
+							type="text"
+							wrapperClassName="col-md-10"
+						/>
+					</div>
+					<div className="form-group">
+						<Input
+							className="form-control"
+							id="registerEmail"
+							label="Email"
+							labelClassName="col-md-2"
+							name="email"
+							placeholder="email@example.com"
+							type="email"
+							wrapperClassName="col-md-10"
+						/>
+					</div>
+					<div className="form-group">
+						<Input
+							className="form-control"
+							id="registerPassword"
+							label="Password"
+							labelClassName="col-md-2"
+							name="password"
+							placeholder="Password"
+							type="password"
+							wrapperClassName="col-md-10"
+						/>
+					</div>
+					<div className="form-group">
+						<Input
+							className="form-control"
+							id="registerPassword2"
+							label="Repeat Password"
+							labelClassName="col-md-2"
+							name="password2"
+							placeholder="Password"
+							type="password"
+							wrapperClassName="col-md-10"
+						/>
+					</div>
+					<Button
+						block
+						bsSize="large"
+						bsStyle="success"
+						type="submit"
 					>
-						<div className="form-group">
-							<Input
-								className="form-control"
-								id="registerUsername"
-								label="Username"
-								labelClassName="col-md-2"
-								name="username"
-								placeholder="Username"
-								type="text"
-								wrapperClassName="col-md-10"
-							/>
-						</div>
-						<div className="form-group">
-							<Input
-								className="form-control"
-								id="registerEmail"
-								label="Email"
-								labelClassName="col-md-2"
-								name="email"
-								placeholder="email@example.com"
-								type="email"
-								wrapperClassName="col-md-10"
-							/>
-						</div>
-						<div className="form-group">
-							<Input
-								className="form-control"
-								id="registerPassword"
-								label="Password"
-								labelClassName="col-md-2"
-								name="password"
-								placeholder="Password"
-								type="password"
-								wrapperClassName="col-md-10"
-							/>
-						</div>
-						<div className="form-group">
-							<Input
-								className="form-control"
-								id="registerPassword2"
-								label="Repeat Password"
-								labelClassName="col-md-2"
-								name="password2"
-								placeholder="Password"
-								type="password"
-								wrapperClassName="col-md-10"
-							/>
-						</div>
-						<Button
-							block
-							bsSize="large"
-							bsStyle="success"
-							type="submit"
-						>
-							Register
-						</Button>
-					</form>
-				</div>
+						Register
+					</Button>
+				</form>
 			</div>
-		);
-	}
-});
+		</div>
+	);
+}
+
+RegistrationPage.displayName = 'RegistrationPage';
+module.exports = RegistrationPage;

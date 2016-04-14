@@ -39,8 +39,8 @@ const IdentifierRow = React.createClass({
 		'use strict';
 
 		return {
-			typeId: parseInt(this.refs.typeId.getValue(), 10),
-			value: this.refs.value.getValue()
+			typeId: parseInt(this.typeId.getValue(), 10),
+			value: this.value.getValue()
 		};
 	},
 	validationState() {
@@ -66,8 +66,8 @@ const IdentifierRow = React.createClass({
 	getValid() {
 		'use strict';
 
-		const value = this.refs.value.getValue();
-		const typeId = parseInt(this.refs.typeId.getValue(), 10);
+		const value = this.value.getValue();
+		const typeId = parseInt(this.typeId.getValue(), 10);
 
 		let selectedType = this.props.types.filter(
 			(type) => type.id === typeId
@@ -93,7 +93,7 @@ const IdentifierRow = React.createClass({
 						labelAttribute="label"
 						options={this.props.types}
 						placeholder="Select identifier type…"
-						ref="typeId"
+						ref={(ref) => this.typeId = ref}
 						value={this.props.typeId}
 						wrapperClassName="col-md-12"
 						onChange={this.props.onChange}
@@ -102,7 +102,7 @@ const IdentifierRow = React.createClass({
 				<div className="col-md-4">
 					<Input
 						bsStyle={this.validationState()}
-						ref="value"
+						ref={(ref) => this.value = ref}
 						type="text"
 						value={this.props.value}
 						wrapperClassName="col-md-12"

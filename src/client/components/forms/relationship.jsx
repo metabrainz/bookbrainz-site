@@ -108,10 +108,10 @@ const RelationshipRow = React.createClass({
 		'use strict';
 
 		return {
-			source: this.refs.source.getValue(),
-			target: this.refs.target.getValue(),
-			typeId: this.refs.type.getValue() ?
-				parseInt(this.refs.type.getValue(), 10) : null
+			source: this.source.getValue(),
+			target: this.target.getValue(),
+			typeId: this.type.getValue() ?
+				parseInt(this.type.getValue(), 10) : null
 		};
 	},
 	swap() {
@@ -119,13 +119,13 @@ const RelationshipRow = React.createClass({
 
 		this.setState({a: this.state.b, b: this.state.a});
 	},
-	destroy() {
+	handleDeleteClick() {
 		'use strict';
 
 		this.setState({deleted: true});
 		this.props.onDelete();
 	},
-	reset() {
+	handleResetClick() {
 		'use strict';
 
 		this.setState({deleted: false});
@@ -133,7 +133,7 @@ const RelationshipRow = React.createClass({
 	selected() {
 		'use strict';
 
-		return this.refs.sel.getChecked();
+		return this.select.getChecked();
 	},
 	added() {
 		'use strict';
@@ -214,7 +214,7 @@ const RelationshipRow = React.createClass({
 		const deleteButton = this.rowClass() || this.valid() ? (
 			<Button
 				bsStyle="danger"
-				onClick={this.destroy}
+				onClick={this.handleDeleteClick}
 			>
 				<Icon name="times"/>&nbsp;Delete
 				<span className="sr-only"> Relationship</span>
@@ -224,7 +224,7 @@ const RelationshipRow = React.createClass({
 		const resetButton = (
 			<Button
 				bsStyle="primary"
-				onClick={this.reset}
+				onClick={this.handleResetClick}
 			>
 				<Icon name="undo"/>&nbsp;Reset
 				<span className="sr-only"> Relationship</span>
@@ -271,7 +271,7 @@ const RelationshipRow = React.createClass({
 				}
 				labelClassName="col-md-4"
 				placeholder="Select entity…"
-				ref="target"
+				ref={(ref) => this.target = ref}
 				select2Options={{width: '100%'}}
 				value={targetEntity}
 				wrapperClassName="col-md-4"
@@ -303,7 +303,7 @@ const RelationshipRow = React.createClass({
 							className="margin-left-0"
 							disabled={this.disabled() || this.state.deleted}
 							label=" "
-							ref="sel"
+							ref={(ref) => this.select = ref}
 							type="checkbox"
 							onClick={this.props.onSelect}
 						/>
@@ -320,7 +320,7 @@ const RelationshipRow = React.createClass({
 								}
 								labelClassName="col-md-4"
 								placeholder="Select entity…"
-								ref="source"
+								ref={(ref) => this.source = ref}
 								select2Options={{width: '100%'}}
 								value={sourceEntity}
 								wrapperClassName="col-md-4"
@@ -330,7 +330,9 @@ const RelationshipRow = React.createClass({
 								<Select
 									noDefault
 									bsStyle={validationState}
-									defaultValue={this.props.relationship.typeId}
+									defaultValue={
+										this.props.relationship.typeId
+									}
 									disabled={
 										this.disabled() || this.state.deleted
 									}
@@ -338,7 +340,7 @@ const RelationshipRow = React.createClass({
 									labelAttribute="label"
 									options={this.props.relationshipTypes}
 									placeholder="Select relationship type…"
-									ref="type"
+									ref={(ref) => this.type = ref}
 									select2Options={{width: '100%'}}
 									onChange={this.props.onChange}
 								/>
@@ -347,8 +349,9 @@ const RelationshipRow = React.createClass({
 						</div>
 						<div className="row">
 							<div className="col-md-4">
-								<p dangerouslySetInnerHTML=
-									{this.renderedRelationship()}
+								<p dangerouslySetInnerHTML={
+										this.renderedRelationship()
+									}
 								/>
 							</div>
 							<div className="col-md-5">
@@ -480,17 +483,17 @@ const RelationshipEditor = React.createClass({
 			rowsSpawned
 		});
 	},
-	bulkDelete() {
+	handleBulkDelete() {
 		'use strict';
 
 		const relationshipsToDelete = _.reject(
-			this.state.relationships.map(function selectedIndices(rel, idx) {
-				return this.refs[idx].selected() ? idx : null;
-			}.bind(this)), (idx) => idx === null
+			this.state.relationships.map((rel, idx) => (
+				this.refs[idx].selected() ? idx : null
+			)), (idx) => idx === null
 		);
 
 		relationshipsToDelete.sort((a, b) => b - a).forEach((idx) => {
-			this.refs[idx].destroy();
+			this.refs[idx].handleDeleteClick();
 		});
 	},
 	stateUpdateNeeded(changedRowIndex) {
@@ -627,7 +630,7 @@ const RelationshipEditor = React.createClass({
 						<Button
 							bsStyle="danger"
 							disabled={this.state.numSelected === 0}
-							onClick={this.bulkDelete}
+							onClick={this.handleBulkDelete}
 						>
 							{`Delete Selected ${numSelectedString}`}
 						</Button>

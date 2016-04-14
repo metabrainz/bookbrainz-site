@@ -51,24 +51,24 @@ module.exports = React.createClass({
 			waiting: false
 		};
 	},
-	setTab(tab) {
+	handleTabSelect(tab) {
 		'use strict';
 
 		this.setState({
 			tab,
-			aliasesValid: this.refs.aliases.valid(),
-			dataValid: this.refs.data.valid()
+			aliasesValid: this.aliases.valid(),
+			dataValid: this.data.valid()
 		});
 	},
-	backClick() {
+	handleBackClick() {
 		'use strict';
 
-		this.setTab(this.state.tab - 1);
+		this.handleTabSelect(this.state.tab - 1);
 	},
-	nextClick() {
+	handleNextClick() {
 		'use strict';
 
-		this.setTab(this.state.tab + 1);
+		this.handleTabSelect(this.state.tab + 1);
 	},
 	handleSubmit(evt) {
 		'use strict';
@@ -79,9 +79,9 @@ module.exports = React.createClass({
 			return;
 		}
 
-		const aliasData = this.refs.aliases.getValue();
-		const creatorData = this.refs.data.getValue();
-		const revisionNote = this.refs.revision.refs.note.getValue();
+		const aliasData = this.aliases.getValue();
+		const creatorData = this.data.getValue();
+		const revisionNote = this.revision.note.getValue();
 		const data = {
 			aliases: aliasData.slice(0, -1),
 			beginDate: creatorData.beginDate,
@@ -146,7 +146,7 @@ module.exports = React.createClass({
 				<Nav
 					activeKey={this.state.tab}
 					bsStyle="tabs"
-					onSelect={this.setTab}
+					onSelect={this.handleTabSelect}
 				>
 					<NavItem eventKey={1}>
 						<strong>1.</strong> Aliases
@@ -166,25 +166,25 @@ module.exports = React.createClass({
 					<Aliases
 						aliases={aliases}
 						languages={this.props.languages}
-						nextClick={this.nextClick}
-						ref="aliases"
+						ref={(ref) => this.aliases = ref}
 						visible={this.state.tab === 1}
+						onNextClick={this.handleNextClick}
 					/>
 					<CreatorData
-						backClick={this.backClick}
 						creator={this.props.creator}
 						creatorTypes={this.props.creatorTypes}
 						genders={this.props.genders}
 						identifierTypes={this.props.identifierTypes}
-						nextClick={this.nextClick}
-						ref="data"
+						ref={(ref) => this.data = ref}
 						visible={this.state.tab === 2}
+						onBackClick={this.handleBackClick}
+						onNextClick={this.handleNextClick}
 					/>
 					<RevisionNote
-						backClick={this.backClick}
-						ref="revision"
+						ref={(ref) => this.revision = ref}
 						submitDisabled={!submitEnabled}
 						visible={this.state.tab === 3}
+						onBackClick={this.handleBackClick}
 						onSubmit={this.handleSubmit}
 					/>
 				</form>

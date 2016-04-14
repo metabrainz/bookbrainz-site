@@ -27,13 +27,11 @@ const Icon = require('react-fontawesome');
 const WorkData = React.createClass({
 	displayName: 'workDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
 		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
 			name: React.PropTypes.string
 		})),
-		nextClick: React.PropTypes.func,
 		visible: React.PropTypes.bool,
 		work: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
@@ -49,17 +47,19 @@ const WorkData = React.createClass({
 			})),
 			workType: validators.workType
 		}),
-		workTypes: React.PropTypes.arrayOf(validators.workType)
+		workTypes: React.PropTypes.arrayOf(validators.workType),
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
 
 		return {
-			languages: this.refs.languages.getValue(),
-			workType: this.refs.workType.getValue(),
-			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue(),
-			identifiers: this.refs.identifiers.getValue()
+			languages: this.languages.getValue(),
+			workType: this.workType.getValue(),
+			disambiguation: this.disambiguation.getValue(),
+			annotation: this.annotation.getValue(),
+			identifiers: this.identifiers.getValue()
 		};
 	},
 	valid() {
@@ -118,7 +118,7 @@ const WorkData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.languages}
 						placeholder="Select work languages…"
-						ref="languages"
+						ref={(ref) => this.languages = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -131,21 +131,21 @@ const WorkData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.workTypes}
 						placeholder="Select work type…"
-						ref="workType"
+						ref={(ref) => this.workType = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
-						ref="identifiers"
+						ref={(ref) => this.identifiers = ref}
 						types={this.props.identifierTypes}
 					/>
 					<Input
 						defaultValue={initialDisambiguation}
 						label="Disambiguation"
 						labelClassName="col-md-3"
-						ref="disambiguation"
+						ref={(ref) => this.disambiguation = ref}
 						type="text"
 						wrapperClassName="col-md-6"
 					/>
@@ -153,7 +153,7 @@ const WorkData = React.createClass({
 						defaultValue={initialAnnotation}
 						label="Annotation"
 						labelClassName="col-md-3"
-						ref="annotation"
+						ref={(ref) => this.annotation = ref}
 						rows="6"
 						type="textarea"
 						wrapperClassName="col-md-6"
@@ -164,7 +164,7 @@ const WorkData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -176,7 +176,7 @@ const WorkData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon

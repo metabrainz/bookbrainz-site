@@ -45,12 +45,12 @@ const SearchField = React.createClass({
 		'use strict';
 		event.preventDefault();
 		event.stopPropagation();
-		this.props.onSearch(this.refs.q.getValue());
+		this.props.onSearch(this.query.getValue());
 	},
 
 	change() {
 		'use strict';
-		const inputValue = this.refs.q.getValue();
+		const inputValue = this.query.getValue();
 		if (!inputValue.match(/^ *$/)) {
 			this.props.onSearch(inputValue);
 		}
@@ -69,7 +69,7 @@ const SearchField = React.createClass({
 							<Input
 								buttonAfter={SearchButton}
 								name="q"
-								ref="q"
+								ref={(ref) => this.query = ref}
 								type="text"
 								onChange={_.debounce(this.change, delayUpdate)}
 							/>
@@ -80,54 +80,55 @@ const SearchField = React.createClass({
 	}
 });
 
-const SearchResults = React.createClass({
-	displayName: 'SearchResults',
-	propTypes: {
-		error: React.PropTypes.string,
-		results: React.PropTypes.array
-	},
-	render() {
-		'use strict';
-		if (!this.props.results || this.props.results.length === 0) {
-			return (
-				<div className="col-md-6 col-md-offset-3">
-					{this.props.error || 'No results found'}
-				</div>
-			);
-		}
-		const results = this.props.results.map((result) => (
-			<tr key={result.id}>
-				<td>
-					<a href={`/${result.type.toLowerCase()}/${result.bbid}`}>
-						{result.defaultAlias ?
-							result.defaultAlias.name : '(unnamed)'
-						}
-					</a>
-				</td>
-				<td>
-					{result.type}
-				</td>
-			</tr>)
-		);
+function SearchResults(props) {
+	'use strict';
 
+	const noResults = !props.results || props.results.length === 0;
+	if (noResults) {
 		return (
-			<Table
-				responsive
-				className="table table-striped"
-			>
-				<thead>
-					<tr>
-						<th>Alias</th>
-						<th>Type</th>
-					</tr>
-				</thead>
-				<tbody>
-					{results}
-				</tbody>
-			</Table>
+			<div className="col-md-6 col-md-offset-3">
+				{props.error || 'No results found'}
+			</div>
 		);
 	}
-});
+
+	const results = props.results.map((result) => (
+		<tr key={result.id}>
+			<td>
+				<a href={`/${result.type.toLowerCase()}/${result.bbid}`}>
+					{result.defaultAlias ?
+						result.defaultAlias.name : '(unnamed)'
+					}
+				</a>
+			</td>
+			<td>
+				{result.type}
+			</td>
+		</tr>)
+	);
+
+	return (
+		<Table
+			responsive
+			className="table table-striped"
+		>
+			<thead>
+				<tr>
+					<th>Alias</th>
+					<th>Type</th>
+				</tr>
+			</thead>
+			<tbody>
+				{results}
+			</tbody>
+		</Table>
+	);
+}
+SearchResults.displayName = 'SearchResults';
+SearchResults.propTypes = {
+	error: React.PropTypes.string,
+	results: React.PropTypes.array
+};
 
 module.exports = React.createClass({
 	displayName: 'SearchPage',

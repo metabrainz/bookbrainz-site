@@ -34,7 +34,6 @@ const creatorTypeValidation = React.PropTypes.shape({
 const CreatorData = React.createClass({
 	displayName: 'creatorDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		creator: React.PropTypes.shape({
 			beginDate: React.PropTypes.string,
 			endDate: React.PropTypes.string,
@@ -61,8 +60,9 @@ const CreatorData = React.createClass({
 			name: React.PropTypes.string
 		})),
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
-		nextClick: React.PropTypes.func,
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getInitialState() {
 		'use strict';
@@ -75,27 +75,26 @@ const CreatorData = React.createClass({
 		'use strict';
 
 		return {
-			beginDate: this.refs.begin.getValue(),
-			endDate:
-				this.refs.ended.getChecked() ? this.refs.end.getValue() : '',
-			ended: this.refs.ended.getChecked(),
-			gender: this.refs.gender.getValue(),
-			creatorType: this.refs.creatorType.getValue(),
-			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue(),
-			identifiers: this.refs.identifiers.getValue()
+			beginDate: this.begin.getValue(),
+			endDate: this.ended.getChecked() ? this.end.getValue() : '',
+			ended: this.ended.getChecked(),
+			gender: this.gender.getValue(),
+			creatorType: this.creatorType.getValue(),
+			disambiguation: this.disambiguation.getValue(),
+			annotation: this.annotation.getValue(),
+			identifiers: this.identifiers.getValue()
 		};
 	},
 	valid() {
 		'use strict';
 
-		return this.refs.begin.valid() &&
-			(!this.refs.ended.getValue() || this.refs.end.valid());
+		return this.begin.valid() &&
+			(!this.ended.getValue() || this.end.valid());
 	},
 	handleEnded() {
 		'use strict';
 
-		this.setState({ended: this.refs.ended.getChecked()});
+		this.setState({ended: this.ended.getChecked()});
 	},
 	render() {
 		'use strict';
@@ -145,7 +144,7 @@ const CreatorData = React.createClass({
 						label="Begin Date"
 						labelClassName="col-md-4"
 						placeholder="YYYY-MM-DD"
-						ref="begin"
+						ref={(ref) => this.begin = ref}
 						wrapperClassName="col-md-4"
 					/>
 					<PartialDate
@@ -154,13 +153,13 @@ const CreatorData = React.createClass({
 						label="End Date"
 						labelClassName="col-md-4"
 						placeholder="YYYY-MM-DD"
-						ref="end"
+						ref={(ref) => this.end = ref}
 						wrapperClassName="col-md-4"
 					/>
 					<Input
 						defaultChecked={this.state.ended}
 						label="Ended"
-						ref="ended"
+						ref={(ref) => this.ended = ref}
 						type="checkbox"
 						wrapperClassName="col-md-offset-4 col-md-4"
 						onChange={this.handleEnded}
@@ -174,7 +173,7 @@ const CreatorData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.genders}
 						placeholder="Select gender…"
-						ref="gender"
+						ref={(ref) => this.gender = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -187,21 +186,21 @@ const CreatorData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.creatorTypes}
 						placeholder="Select creator type…"
-						ref="creatorType"
+						ref={(ref) => this.creatorType = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
-						ref="identifiers"
+						ref={(ref) => this.identifiers = ref}
 						types={this.props.identifierTypes}
 					/>
 					<Input
 						defaultValue={initialDisambiguation}
 						label="Disambiguation"
 						labelClassName="col-md-3"
-						ref="disambiguation"
+						ref={(ref) => this.disambiguation = ref}
 						type="text"
 						wrapperClassName="col-md-6"
 					/>
@@ -209,7 +208,7 @@ const CreatorData = React.createClass({
 						defaultValue={initialAnnotation}
 						label="Annotation"
 						labelClassName="col-md-3"
-						ref="annotation"
+						ref={(ref) => this.annotation = ref}
 						rows="6"
 						type="textarea"
 						wrapperClassName="col-md-6"
@@ -219,7 +218,7 @@ const CreatorData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -231,7 +230,7 @@ const CreatorData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon

@@ -19,29 +19,29 @@
 const React = require('react');
 const PageHeader = require('react-bootstrap').PageHeader;
 
-module.exports = React.createClass({
-	displayName: 'PrivacyPage',
-	render() {
-		'use strict';
+function PrivacyPage() {
+	'use strict';
 
-		return (
-			<div>
-				<PageHeader>Privacy</PageHeader>
-				<p>
-					For a privacy policy, please see&nbsp;
-					<a href="http://musicbrainz.org/doc/About/Privacy_Policy">
-						http://musicbrainz.org/doc/About/Privacy_Policy
-					</a>
-				</p>
+	return (
+		<div>
+			<PageHeader>Privacy</PageHeader>
+			<p>
+				For a privacy policy, please see&nbsp;
+				<a href="http://musicbrainz.org/doc/About/Privacy_Policy">
+					http://musicbrainz.org/doc/About/Privacy_Policy
+				</a>
+			</p>
 
-				<p>
-					While this currently does not apply to BookBrainz, it
-					gives an idea of what can be expected when it gets updated
-					to cover all MetaBrainz projects. If you&rsquo;re happy
-					using MusicBrainz, we aim to make you just as comfortable
-					using BookBrainz.
-				</p>
-			</div>
-		);
-	}
-});
+			<p>
+				While this currently does not apply to BookBrainz, it
+				gives an idea of what can be expected when it gets updated
+				to cover all MetaBrainz projects. If you&rsquo;re happy
+				using MusicBrainz, we aim to make you just as comfortable
+				using BookBrainz.
+			</p>
+		</div>
+	);
+}
+
+PrivacyPage.displayName = 'PrivacyPage';
+module.exports = PrivacyPage;

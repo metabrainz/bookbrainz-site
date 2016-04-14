@@ -32,7 +32,10 @@ rules:
     - 1
     -
       maximum: 1
-  react/jsx-no-bind: 1
+  react/jsx-no-bind:
+    - 1
+    -
+      ignoreRefs: true
   react/jsx-no-duplicate-props:
     - 2
     -
@@ -91,3 +94,4 @@ rules:
   strict:
     - 2
     - function
+  no-return-assign: 0

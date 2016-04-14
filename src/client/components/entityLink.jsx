@@ -18,22 +18,21 @@
 
 const React = require('react');
 
-const EntityLink = React.createClass({
-	displayName: 'entitySpinner',
-	propTypes: {
-		bbid: React.PropTypes.string,
-		text: React.PropTypes.string,
-		type: React.PropTypes.string
-	},
-	render() {
-		'use strict';
+function EntityLink(props) {
+	'use strict';
 
-		return (
-			<a href={`/${this.props.type.toLowerCase()}/${this.props.bbid}`}>
-				{this.props.text}
-			</a>
-		);
-	}
-});
+	return (
+		<a href={`/${props.type.toLowerCase()}/${props.bbid}`}>
+			{props.text}
+		</a>
+	);
+}
+
+EntityLink.displayName = 'EntitySpinner';
+EntityLink.propTypes = {
+	bbid: React.PropTypes.string,
+	text: React.PropTypes.string,
+	type: React.PropTypes.string
+};
 
 module.exports = EntityLink;

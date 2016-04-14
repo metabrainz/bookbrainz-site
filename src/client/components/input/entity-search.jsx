@@ -50,7 +50,7 @@ const EntitySearch = React.createClass({
 	getValue() {
 		'use strict';
 
-		const bbid = this.refs.select.getValue();
+		const bbid = this.select.getValue();
 		if (bbid) {
 			return this.loadedEntities[bbid];
 		}
@@ -177,7 +177,7 @@ const EntitySearch = React.createClass({
 				labelClassName={this.props.labelClassName}
 				options={options}
 				placeholder={this.props.placeholder}
-				ref="select"
+				ref={(ref) => this.select = ref}
 				select2Options={select2Options}
 				standalone={this.props.standalone}
 				value={key}

@@ -47,7 +47,7 @@ module.exports = React.createClass({
 
 		const data = {
 			id: this.props.id,
-			bio: this.refs.bio.getValue().trim()
+			bio: this.bio.getValue().trim()
 		};
 
 		this.setState({waiting: true});
@@ -74,7 +74,7 @@ module.exports = React.createClass({
 					defaultValue={this.state.bio}
 					label="Bio"
 					labelClassName="col-md-3"
-					ref="bio"
+					ref={(ref) => this.bio = ref}
 					type="textarea"
 					wrapperClassName="col-md-9"
 				/>

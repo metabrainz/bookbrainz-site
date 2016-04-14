@@ -28,9 +28,7 @@ const validators = require('../../validators');
 const PublicationData = React.createClass({
 	displayName: 'publicationDataComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		identifierTypes: React.PropTypes.arrayOf(validators.identifierType),
-		nextClick: React.PropTypes.func,
 		publication: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
 				content: React.PropTypes.string
@@ -46,16 +44,18 @@ const PublicationData = React.createClass({
 			publicationType: validators.publicationType
 		}),
 		publicationTypes: React.PropTypes.arrayOf(validators.publicationType),
-		visible: React.PropTypes.bool
+		visible: React.PropTypes.bool,
+		onBackClick: React.PropTypes.func,
+		onNextClick: React.PropTypes.func
 	},
 	getValue() {
 		'use strict';
 
 		return {
-			publicationType: this.refs.publicationType.getValue(),
-			disambiguation: this.refs.disambiguation.getValue(),
-			annotation: this.refs.annotation.getValue(),
-			identifiers: this.refs.identifiers.getValue()
+			publicationType: this.publicationType.getValue(),
+			disambiguation: this.disambiguation.getValue(),
+			annotation: this.annotation.getValue(),
+			identifiers: this.identifiers.getValue()
 		};
 	},
 	valid() {
@@ -108,21 +108,21 @@ const PublicationData = React.createClass({
 						labelClassName="col-md-4"
 						options={this.props.publicationTypes}
 						placeholder="Select publication type…"
-						ref="publicationType"
+						ref={(ref) => this.publicationType = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
-						ref="identifiers"
+						ref={(ref) => this.identifiers = ref}
 						types={this.props.identifierTypes}
 					/>
 					<Input
 						defaultValue={initialDisambiguation}
 						label="Disambiguation"
 						labelClassName="col-md-3"
-						ref="disambiguation"
+						ref={(ref) => this.disambiguation = ref}
 						type="text"
 						wrapperClassName="col-md-6"
 					/>
@@ -130,7 +130,7 @@ const PublicationData = React.createClass({
 						defaultValue={initialAnnotation}
 						label="Annotation"
 						labelClassName="col-md-3"
-						ref="annotation"
+						ref={(ref) => this.annotation = ref}
 						rows="6"
 						type="textarea"
 						wrapperClassName="col-md-6"
@@ -140,7 +140,7 @@ const PublicationData = React.createClass({
 							<li className="previous">
 								<a
 									href="#"
-									onClick={this.props.backClick}
+									onClick={this.props.onBackClick}
 								>
 									<Icon
 										aria-hidden="true"
@@ -152,7 +152,7 @@ const PublicationData = React.createClass({
 							<li className="next">
 								<a
 									href="#"
-									onClick={this.props.nextClick}
+									onClick={this.props.onNextClick}
 								>
 									Next
 									<Icon

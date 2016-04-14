@@ -24,10 +24,10 @@ const Icon = require('react-fontawesome');
 const RevisionNote = React.createClass({
 	displayName: 'revisionNoteComponent',
 	propTypes: {
-		backClick: React.PropTypes.func,
 		nextClick: React.PropTypes.func,
 		submitDisabled: React.PropTypes.bool,
 		visible: React.PropTypes.bool,
+		onBackClick: React.PropTypes.func,
 		onSubmit: React.PropTypes.func
 	},
 	render() {
@@ -42,7 +42,7 @@ const RevisionNote = React.createClass({
 					<Input
 						label="Revision Note"
 						labelClassName="col-md-3"
-						ref="note"
+						ref={(ref) => this.note = ref}
 						rows="6"
 						type="textarea"
 						wrapperClassName="col-md-6"
@@ -54,7 +54,7 @@ const RevisionNote = React.createClass({
 						<li className="previous">
 							<a
 								href="#"
-								onClick={this.props.backClick}
+								onClick={this.props.onBackClick}
 							>
 								<Icon
 									aria-hidden="true"
