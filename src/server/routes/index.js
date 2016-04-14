@@ -68,6 +68,7 @@ router.get('/', (req, res) => {
 						`bookbrainz.${_.snakeCase(name)}.revision_id`,
 						'bookbrainz.revision.id'
 					)
+					.where('master', true)
 					.orderBy('bookbrainz.revision.created_at', 'desc')
 					.limit(numRevisionsOnHomepage);
 			})
