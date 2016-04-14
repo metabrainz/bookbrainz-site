@@ -98,7 +98,8 @@ function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
 
 	// Finally, update the revision ID and relationship set ID of the entity
 	const entityUpdatedPromise =
-		Promise.join(entityPromise, newRelationshipSetPromise,
+		Promise.join(
+			entityPromise, newRelationshipSetPromise, parentAddedPromise,
 			(entity, newRelationshipSet) => {
 				entity.set('revisionId', revision.get('id'));
 				entity.set('relationshipSetId', newRelationshipSet.get('id'));
