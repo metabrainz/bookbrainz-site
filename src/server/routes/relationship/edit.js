@@ -188,7 +188,8 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 			function relationshipValid(relationship) {
 				return _.has(relationship, 'typeId') &&
 					_.has(relationship, 'source.bbid') &&
-					_.has(relationship, 'target.bbid');
+					_.has(relationship, 'target.bbid') &&
+					relationship.source.bbid !== relationship.target.bbid;
 			}
 
 			// Send a relationship revision for each of the relationships
