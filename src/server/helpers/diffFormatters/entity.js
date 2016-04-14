@@ -91,12 +91,15 @@ function formatAliasModified(change) {
 		];
 	}
 
-	if (change.path.length > 3 && change.path[3] === 'language') {
+	const aliasLanguageChanged =
+		change.path.length > 4 && change.path[3] === 'language' &&
+		change.path[4] === 'name';
+	if (aliasLanguageChanged) {
 		return [
 			formatChange(
 				change,
 				`Alias ${change.path[2]} -> Language`,
-				(side) => side && side.name && [side.name]
+				(side) => side && [side]
 			)
 		];
 	}
