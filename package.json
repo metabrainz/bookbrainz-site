@@ -28,6 +28,8 @@
     "lodash": "^4.7.0",
     "lodash.compact": "^3.0.1",
     "lodash.filter": "^4.3.0",
+    "lodash.isequal": "^4.1.4",
+    "lodash.omit": "^4.2.1",
     "morgan": "~1.7.0",
     "node-jsx": "^0.13.3",
     "passport": "^0.3.2",

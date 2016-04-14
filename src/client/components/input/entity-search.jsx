@@ -164,6 +164,7 @@ const EntitySearch = React.createClass({
 
 		return (
 			<Select
+				dynamicOptions
 				noDefault
 				bsStyle={this.props.bsStyle}
 				defaultValue={defaultKey}

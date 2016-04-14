@@ -21,6 +21,8 @@
 
 const Input = require('react-bootstrap').Input;
 const React = require('react');
+const _omit = require('lodash.omit');
+const _isEqual = require('lodash.isequal');
 
 var $ = null;
 if (typeof window !== 'undefined') {
@@ -29,17 +31,43 @@ if (typeof window !== 'undefined') {
 }
 
 const Select = React.createClass({
-	displayName: 'select2Input',
+	displayName: 'Select2Input',
 	propTypes: {
+		dynamicOptions: React.PropTypes.bool,
 		multiple: React.PropTypes.bool,
 		options: React.PropTypes.array,
 		placeholder: React.PropTypes.string,
 		select2Options: React.PropTypes.object,
 		onChange: React.PropTypes.func
 	},
+	getDefaultProps() {
+		'use strict';
+		return {
+			dynamicOptions: false
+		};
+	},
 	componentDidMount() {
 		'use strict';
 		this.initSelect2();
+	},
+	shouldComponentUpdate(nextProps) {
+		'use strict';
+		const nextPropsWithoutOptions = _omit(nextProps, 'options');
+		const currentPropsWithoutOptions = _omit(this.props, 'options');
+		if (!_isEqual(nextPropsWithoutOptions, currentPropsWithoutOptions)) {
+			return true;
+		}
+
+		const optionsChanged = (
+			this.props.dynamicOptions &&
+			!_isEqual(nextProps.options, this.props.options)
+		);
+
+		if (optionsChanged) {
+			return true;
+		}
+
+		return false;
 	},
 	componentWillUpdate() {
 		'use strict';
