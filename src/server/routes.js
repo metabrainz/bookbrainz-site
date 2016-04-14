@@ -34,21 +34,21 @@ function initPublicationRoutes(app) {
 	const router = require('./routes/entity/publication');
 
 	app.use('/publication', router);
-	// relationshipHelper.addEditRoutes(router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initCreatorRoutes(app) {
 	const router = require('./routes/entity/creator');
 
 	app.use('/creator', router);
-	// relationshipHelper.addEditRoutes(router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initEditionRoutes(app) {
 	const router = require('./routes/entity/edition');
 
 	app.use('/edition', router);
-	// relationshipHelper.addEditRoutes(router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initWorkRoutes(app) {
@@ -62,7 +62,7 @@ function initPublisherRoutes(app) {
 	const router = require('./routes/entity/publisher');
 
 	app.use('/publisher', router);
-	// relationshipHelper.addEditRoutes(router);
+	relationshipHelper.addEditRoutes(router);
 }
 
 function initRevisionRoutes(app) {
