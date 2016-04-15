@@ -54,7 +54,12 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Publication,
-		['publicationType', 'editions.defaultAlias', 'editions.disambiguation', 'editions.releaseEventSet.releaseEvents'],
+		[
+			'publicationType',
+			'editions.defaultAlias',
+			'editions.disambiguation',
+			'editions.releaseEventSet.releaseEvents'
+		],
 		'Publication not found'
 	)
 );
