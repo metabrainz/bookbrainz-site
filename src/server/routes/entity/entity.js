@@ -67,6 +67,19 @@ module.exports.displayRevisions = (req, res, RevisionModel) => {
 		});
 };
 
+function _createNote(content, editor, revision, transacting) {
+	if (content) {
+		return new Note({
+			authorId: editor.id,
+			revisionId: revision.get('id'),
+			content
+		})
+			.save(null, {transacting});
+	}
+
+	return null;
+}
+
 module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 	const entity = res.locals.entity;
 	const editorJSON = req.session.passport.user;
@@ -79,12 +92,10 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
-		const notePromise = req.body.note ? newRevisionPromise
-			.then((revision) => new Note({
-				authorId: editorJSON.id,
-				revisionId: revision.get('id'),
-				content: req.body.note
-			}).save(null, {transacting})) : null;
+		const notePromise = newRevisionPromise
+			.then((revision) =>_createNote(
+				req.body.note, editorJSON, revision, transacting
+			));
 
 		// No trigger for deletions, so manually create the <Entity>Revision
 		// and update the entity header
@@ -443,12 +454,10 @@ module.exports.createEntity = (
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
-		const notePromise = req.body.note ? newRevisionPromise
-			.then((revision) => new Note({
-				authorId: editorJSON.id,
-				revisionId: revision.get('id'),
-				content: req.body.note
-			}).save(null, {transacting})) : null;
+		const notePromise = newRevisionPromise
+			.then((revision) =>_createNote(
+				req.body.note, editorJSON, revision, transacting
+			));
 
 		const aliasSetPromise = processFormAliases(
 			transacting, null, null, req.body.aliases || []
@@ -665,11 +674,9 @@ module.exports.editEntity = (
 						parents.attach(currentEntity.revisionId, {transacting})
 					);
 
-				const notePromise = req.body.note ? new Note({
-					authorId: editorJSON.id,
-					revisionId: newRevision.get('id'),
-					content: req.body.note
-				}).save(null, {transacting}) : null;
+				const notePromise = _createNote(
+					req.body.note, editorJSON, newRevision, transacting
+				);
 
 				return Promise.join(
 					entity.save(null, {method: 'update', transacting}),
