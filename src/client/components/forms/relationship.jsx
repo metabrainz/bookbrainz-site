@@ -74,6 +74,12 @@ function isRelationshipNew(initialType, initialTarget) {
 	return !(initialType || initialTarget);
 }
 
+function _entityHasChanged(initial, current) {
+	'use strict';
+
+	return (initial && initial.bbid) !== (current && current.bbid);
+}
+
 const RelationshipRow = React.createClass({
 	displayName: 'RelationshipRow',
 	propTypes: {
@@ -148,10 +154,8 @@ const RelationshipRow = React.createClass({
 		'use strict';
 
 		const rel = this.props.relationship;
-		const aChanged = (rel.source && rel.source.bbid) !==
-			(rel.initialSource && rel.initialSource.bbid);
-		const bChanged = (rel.target && rel.target.bbid) !==
-			(rel.initialTarget && rel.initialTarget.bbid);
+		const aChanged = _entityHasChanged(rel.initialSource, rel.source);
+		const bChanged = _entityHasChanged(rel.initialTarget, rel.target);;
 		const typeChanged = rel.typeId !== rel.initialTypeId;
 		return Boolean(aChanged || bChanged || typeChanged);
 	},
@@ -241,19 +245,20 @@ const RelationshipRow = React.createClass({
 			</Button>
 		);
 
-		const sourceEntity = this.props.relationship.source;
-		if (sourceEntity) {
-			sourceEntity.text = sourceEntity.defaultAlias ?
-				sourceEntity.defaultAlias.name : '(unnamed)';
-			sourceEntity.id = sourceEntity.bbid;
+		function _entityToOption(entity) {
+			if (!entity) {
+				return null;
+			}
+
+			entity.text = entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)';
+			entity.id = entity.bbid;
+
+			return entity;
 		}
 
-		const targetEntity = this.props.relationship.target;
-		if (targetEntity) {
-			targetEntity.text = targetEntity.defaultAlias ?
-				targetEntity.defaultAlias.name : '(unnamed)';
-			targetEntity.id = targetEntity.bbid;
-		}
+		const sourceEntity = _entityToOption(this.props.relationship.source);
+		const targetEntity = _entityToOption(this.props.relationship.target);
 
 		let validationState = null;
 		if (this.rowClass()) {
@@ -454,11 +459,12 @@ const RelationshipEditor = React.createClass({
 			rel.initialTarget = this.state.relationships[idx].initialTarget;
 			rel.initialTypeId = this.state.relationships[idx].initialTypeId;
 
-			const sourceChanged = (rel.source && rel.source.bbid) !==
-				(rel.initialSource && rel.initialSource.bbid);
-			const targetChanged = (rel.target && rel.target.bbid) !==
-				(rel.initialTarget && rel.initialTarget.bbid);
+			const sourceChanged =
+				_entityHasChanged(rel.initialSource, rel.source);
+			const targetChanged =
+				_entityHasChanged(rel.initialTarget, rel.target);
 			const typeChanged = (rel.typeId !== rel.initialTypeId);
+
 			rel.changed = sourceChanged || targetChanged || typeChanged;
 			rel.valid = Boolean(rel.source && rel.target && rel.typeId);
 		});
@@ -502,19 +508,23 @@ const RelationshipEditor = React.createClass({
 		const updatedRelationship = this.refs[changedRowIndex].getValue();
 		const existingRelationship = this.state.relationships[changedRowIndex];
 
-		const sourceJustSetOrUnset = (
-			!existingRelationship.source && updatedRelationship.source ||
-			existingRelationship.source && !updatedRelationship.source
+		function _valueJustSetOrUnset(existing, updated) {
+			return !existing && updated || existing && !updated;
+		}
+
+		const sourceJustSetOrUnset = _valueJustSetOrUnset(
+			existingRelationship.source,
+			updatedRelationship.source
 		);
 
-		const targetJustSetOrUnset = (
-			!existingRelationship.target && existingRelationship.target ||
-			existingRelationship.target && !existingRelationship.target
+		const targetJustSetOrUnset = _valueJustSetOrUnset(
+			existingRelationship.target,
+			updatedRelationship.target
 		);
 
-		const typeJustSetOrUnset = (
-			!existingRelationship.typeId && updatedRelationship.typeId ||
-			existingRelationship.typeId && !updatedRelationship.typeId
+		const typeJustSetOrUnset = _valueJustSetOrUnset(
+			existingRelationship.typeId,
+			updatedRelationship.typeId
 		);
 
 		return Boolean(
