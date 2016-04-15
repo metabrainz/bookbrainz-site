@@ -109,7 +109,7 @@ const EditionData = React.createClass({
 
 		// If the release date field isn't empty, create a release event
 		// object to represent it
-		if (this.refs.release.getValue()) {
+		if (this.release.getValue()) {
 			const edition = this.props.edition;
 
 			const releaseEventId = edition && edition.releaseEventSet &&
@@ -118,7 +118,7 @@ const EditionData = React.createClass({
 
 			releaseEvents.push({
 				id: releaseEventId,
-				date: this.refs.release.getValue()
+				date: this.release.getValue()
 			});
 		}
 
