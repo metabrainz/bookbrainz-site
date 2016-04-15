@@ -143,7 +143,7 @@ const AliasRow = React.createClass({
 	},
 	handleGuessSortNameClick() {
 		'use strict';
-		const name = this.refs.name.getValue();
+		const name = this.name.getValue();
 
 		this.setState({sortName: makeSortName(name)});
 	},
