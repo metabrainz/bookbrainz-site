@@ -172,18 +172,22 @@ const EditionData = React.createClass({
 				initialPublication = prefillData.publication;
 			}
 
-			if (prefillData.publisherSet.publishers) {
+			if (prefillData.publisherSet &&
+				prefillData.publisherSet.publishers) {
 				initialPublisher = prefillData.publisherSet.publishers[0];
 			}
 
-			if (prefillData.releaseEventSet.releaseEvents) {
+			if (prefillData.releaseEventSet &&
+				prefillData.releaseEventSet.releaseEvents) {
 				initialReleaseDate =
 					prefillData.releaseEventSet.releaseEvents[0].date;
 			}
 
-			initialLanguages = prefillData.languageSet.languages.map(
-				(language) => language.id
-			);
+			initialLanguages = prefillData.languageSet &&
+				prefillData.languageSet.languages.map(
+					(language) => language.id
+				);
+
 			initialEditionFormat = prefillData.editionFormat ?
 				prefillData.editionFormat.id : null;
 			initialEditionStatus = prefillData.editionStatus ?
