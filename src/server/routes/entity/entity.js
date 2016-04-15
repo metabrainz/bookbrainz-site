@@ -158,8 +158,6 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 }
 
 function unchangedSetItems(oldSet, newSet, compareFields) {
-	console.log(JSON.stringify(oldSet));
-	console.log(JSON.stringify(newSet));
 	return _.intersectionBy(
 		newSet,
 		oldSet,
@@ -169,8 +167,6 @@ function unchangedSetItems(oldSet, newSet, compareFields) {
 module.exports.unchangedSetItems = unchangedSetItems;
 
 function updatedOrNewSetItems(oldSet, newSet, compareFields) {
-	console.log(JSON.stringify(oldSet));
-	console.log(JSON.stringify(newSet));
 	return _.differenceBy(
 		newSet, oldSet, (item) => _.pick(item, compareFields)
 	);
@@ -341,7 +337,6 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 	// Copy across any old aliases that are exactly the same in the new set
 	const unchangedIdents =
 		unchangedSetItems(oldIdents, newIdents, identCompareFields);
-	console.log(`Unchanged: ${JSON.stringify(unchangedIdents)}`);
 	const oldIdentsAttachedPromise = newIdentsPromise.then((collection) =>
 		collection.attach(_.map(unchangedIdents, 'id'), {transacting})
 	);
@@ -350,7 +345,6 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 	// the set
 	const newOrUpdatedIdents =
 		updatedOrNewSetItems(oldIdents, newIdents, identCompareFields);
-	console.log(`New: ${JSON.stringify(newOrUpdatedIdents)}`);
 	const allIdentsAttachedPromise = oldIdentsAttachedPromise
 		.then((collection) =>
 			Promise.all(

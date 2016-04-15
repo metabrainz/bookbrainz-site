@@ -196,7 +196,6 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 			const relationshipsPromise = Promise.all(
 				req.body.map((rel) => {
 					if (!relationshipValid(rel)) {
-						console.log('Relationship invalid');
 						return null;
 					}
 
