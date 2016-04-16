@@ -188,9 +188,15 @@ const EditionData = React.createClass({
 			initialPublisher = this.props.publisher;
 		}
 
-		const select2Options = {
+		const defaultSelect2Options = {
+			allowClear: true,
 			width: '100%'
 		};
+
+		const publicationSelect2Options =
+			Object.assign({}, defaultSelect2Options);
+
+		publicationSelect2Options.allowClear = false;
 
 		return (
 			<div className={this.props.visible === false ? 'hidden' : ''}>
@@ -208,7 +214,7 @@ const EditionData = React.createClass({
 						labelClassName="col-md-4"
 						placeholder="Select publication…"
 						ref={(ref) => this.publication = ref}
-						select2Options={select2Options}
+						select2Options={publicationSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<SearchSelect
@@ -220,7 +226,7 @@ const EditionData = React.createClass({
 						labelClassName="col-md-4"
 						placeholder="Select publisher…"
 						ref={(ref) => this.publisher = ref}
-						select2Options={select2Options}
+						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<PartialDate
@@ -242,7 +248,7 @@ const EditionData = React.createClass({
 						options={this.props.languages}
 						placeholder="Select edition languages…"
 						ref={(ref) => this.languages = ref}
-						select2Options={select2Options}
+						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<Select
@@ -255,7 +261,7 @@ const EditionData = React.createClass({
 						options={this.props.editionFormats}
 						placeholder="Select edition format…"
 						ref={(ref) => this.editionFormat = ref}
-						select2Options={select2Options}
+						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<Select
@@ -268,7 +274,7 @@ const EditionData = React.createClass({
 						options={this.props.editionStatuses}
 						placeholder="Select edition status…"
 						ref={(ref) => this.editionStatus = ref}
-						select2Options={select2Options}
+						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>

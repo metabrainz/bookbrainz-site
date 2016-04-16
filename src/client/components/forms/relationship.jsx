@@ -265,6 +265,11 @@ const RelationshipRow = React.createClass({
 			validationState = this.valid() ? 'success' : 'error';
 		}
 
+		const select2Options = {
+			allowClear: false,
+			width: '100%'
+		};
+
 		const targetInput = (
 			<SearchSelect
 				standalone
@@ -277,7 +282,7 @@ const RelationshipRow = React.createClass({
 				labelClassName="col-md-4"
 				placeholder="Select entity…"
 				ref={(ref) => this.target = ref}
-				select2Options={{width: '100%'}}
+				select2Options={select2Options}
 				value={targetEntity}
 				wrapperClassName="col-md-4"
 				onChange={this.props.onChange}
@@ -326,7 +331,7 @@ const RelationshipRow = React.createClass({
 								labelClassName="col-md-4"
 								placeholder="Select entity…"
 								ref={(ref) => this.source = ref}
-								select2Options={{width: '100%'}}
+								select2Options={select2Options}
 								value={sourceEntity}
 								wrapperClassName="col-md-4"
 								onChange={this.props.onChange}
@@ -346,7 +351,7 @@ const RelationshipRow = React.createClass({
 									options={this.props.relationshipTypes}
 									placeholder="Select relationship type…"
 									ref={(ref) => this.type = ref}
-									select2Options={{width: '100%'}}
+									select2Options={select2Options}
 									onChange={this.props.onChange}
 								/>
 							</div>

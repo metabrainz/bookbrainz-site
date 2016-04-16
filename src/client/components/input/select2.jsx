@@ -97,14 +97,20 @@ const Select = React.createClass({
 
 		const mountElement = $(this.target.getInputDOMNode());
 
-		const options = this.props.select2Options || {};
+		// Copy the options object so we don't munge options for subsequent
+		// selects
+		const options = Object.assign({}, this.props.select2Options);
 		options.theme = 'bootstrap';
 
 		if (this.props.placeholder) {
 			options.placeholder = this.props.placeholder;
-			if (!this.props.multiple) {
-				options.allowClear = true;
-			}
+		}
+
+		// This retains previous behavior of not allowing multiple selections
+		// to be cleared while making it easier to set defaults; it could go
+		// away in future without hurting anyone's feelings
+		if (this.props.multiple) {
+			options.allowClear = false;
 		}
 
 		mountElement.select2(options);

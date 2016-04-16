@@ -94,6 +94,7 @@ const WorkData = React.createClass({
 		}
 
 		const select2Options = {
+			allowClear: true,
 			width: '100%'
 		};
 

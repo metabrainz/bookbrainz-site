@@ -90,6 +90,10 @@ const IdentifierRow = React.createClass({
 	render() {
 		'use strict';
 
+		const select2Options = {
+			allowClear: false
+		};
+
 		return (
 			<div className="row">
 				<div className="col-md-4">
@@ -101,6 +105,7 @@ const IdentifierRow = React.createClass({
 						options={this.props.types}
 						placeholder="Select identifier type…"
 						ref={(ref) => this.typeId = ref}
+						select2Options={select2Options}
 						value={this.props.typeId}
 						wrapperClassName="col-md-12"
 						onChange={this.props.onChange}

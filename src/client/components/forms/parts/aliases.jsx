@@ -165,6 +165,10 @@ const AliasRow = React.createClass({
 			</Button>
 		);
 
+		const select2Options = {
+			allowClear: true
+		};
+
 		return (
 			<div
 				className="row"
@@ -205,6 +209,7 @@ const AliasRow = React.createClass({
 						options={this.props.languages}
 						placeholder="Select alias language…"
 						ref={(ref) => this.languageId = ref}
+						select2Options={select2Options}
 						wrapperClassName="col-md-11"
 						onChange={this.props.onChange}
 					/>
