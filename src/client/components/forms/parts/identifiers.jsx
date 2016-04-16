@@ -177,7 +177,7 @@ const IdentifierList = React.createClass({
 		const updatedIdentifier = this.refs[index].getValue();
 
 		// Attempt to guess the type, if the value was previously blank
-		if (updatedIdentifiers[index].value === '') {
+		if (this.state.identifiers[index].value === '') {
 			let newValue = updatedIdentifier.value;
 			this.props.types.forEach((type) => {
 				if (type.detectionRegex) {
