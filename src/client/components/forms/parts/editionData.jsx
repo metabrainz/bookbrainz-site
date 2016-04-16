@@ -145,7 +145,8 @@ const EditionData = React.createClass({
 		'use strict';
 
 		return Boolean(
-			this.release.valid() && this.publication.getValue()
+			this.release.valid() && this.publication.getValue() &&
+				this.identifiers.valid()
 		);
 	},
 	render() {

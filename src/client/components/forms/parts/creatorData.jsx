@@ -89,7 +89,8 @@ const CreatorData = React.createClass({
 		'use strict';
 
 		return this.begin.valid() &&
-			(!this.ended.getValue() || this.end.valid());
+			(!this.ended.getValue() || this.end.valid()) &&
+			this.identifiers.valid();
 	},
 	handleEnded() {
 		'use strict';

@@ -65,7 +65,7 @@ const WorkData = React.createClass({
 	valid() {
 		'use strict';
 
-		return true;
+		return this.identifiers.valid();
 	},
 	render() {
 		'use strict';
