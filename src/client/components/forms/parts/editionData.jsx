@@ -46,22 +46,10 @@ const EditionData = React.createClass({
 				value: React.PropTypes.string,
 				typeId: React.PropTypes.number
 			})),
-			languages: React.PropTypes.arrayOf(React.PropTypes.shape({
-				id: React.PropTypes.number
-			})),
+			languages: React.PropTypes.arrayOf(validators.namedProperty),
 			pages: React.PropTypes.number,
-			publication: React.PropTypes.shape({
-				bbid: React.PropTypes.string,
-				defaultAlias: React.PropTypes.shape({
-					name: React.PropTypes.string
-				})
-			}),
-			publishers: React.PropTypes.arrayOf(React.PropTypes.shape({
-				bbid: React.PropTypes.string,
-				defaultAlias: React.PropTypes.shape({
-					name: React.PropTypes.string
-				})
-			})),
+			publication: validators.entityProperty,
+			publishers: React.PropTypes.arrayOf(validators.entityProperty),
 			releaseDate: React.PropTypes.string,
 			weight: React.PropTypes.number,
 			width: React.PropTypes.number
@@ -69,22 +57,9 @@ const EditionData = React.createClass({
 		editionFormats: React.PropTypes.arrayOf(validators.labeledProperty),
 		editionStatuses: React.PropTypes.arrayOf(validators.labeledProperty),
 		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
-			id: React.PropTypes.number,
-			name: React.PropTypes.string
-		})),
-		publication: React.PropTypes.shape({
-			bbid: React.PropTypes.string,
-			defaultAlias: React.PropTypes.shape({
-				name: React.PropTypes.string
-			})
-		}),
-		publisher: React.PropTypes.shape({
-			bbid: React.PropTypes.string,
-			defaultAlias: React.PropTypes.shape({
-				name: React.PropTypes.string
-			})
-		}),
+		languages: React.PropTypes.arrayOf(validators.namedProperty),
+		publication: validators.entityProperty,
+		publisher: validators.entityProperty,
 		visible: React.PropTypes.bool,
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func

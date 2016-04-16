@@ -33,9 +33,7 @@ const CreatorData = React.createClass({
 			beginDate: React.PropTypes.string,
 			endDate: React.PropTypes.string,
 			ended: React.PropTypes.bool,
-			gender: React.PropTypes.shape({
-				name: React.PropTypes.string
-			}),
+			gender: validators.namedProperty,
 			creatorType: validators.labeledProperty,
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
@@ -50,10 +48,7 @@ const CreatorData = React.createClass({
 			}))
 		}),
 		creatorTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-		genders: React.PropTypes.arrayOf(React.PropTypes.shape({
-			gender_id: React.PropTypes.number,
-			name: React.PropTypes.string
-		})),
+		genders: React.PropTypes.arrayOf(validators.namedProperty),
 		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		visible: React.PropTypes.bool,
 		onBackClick: React.PropTypes.func,

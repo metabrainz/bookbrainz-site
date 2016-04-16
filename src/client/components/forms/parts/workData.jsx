@@ -28,10 +28,7 @@ const WorkData = React.createClass({
 	displayName: 'workDataComponent',
 	propTypes: {
 		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
-			id: React.PropTypes.number,
-			name: React.PropTypes.string
-		})),
+		languages: React.PropTypes.arrayOf(validators.namedProperty),
 		visible: React.PropTypes.bool,
 		work: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
