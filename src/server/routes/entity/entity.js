@@ -93,7 +93,7 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 		}).save(null, {transacting});
 
 		const notePromise = newRevisionPromise
-			.then((revision) =>_createNote(
+			.then((revision) => _createNote(
 				req.body.note, editorJSON, revision, transacting
 			));
 
@@ -449,7 +449,7 @@ module.exports.createEntity = (
 		}).save(null, {transacting});
 
 		const notePromise = newRevisionPromise
-			.then((revision) =>_createNote(
+			.then((revision) => _createNote(
 				req.body.note, editorJSON, revision, transacting
 			));
 

@@ -155,7 +155,7 @@ const RelationshipRow = React.createClass({
 
 		const rel = this.props.relationship;
 		const aChanged = _entityHasChanged(rel.initialSource, rel.source);
-		const bChanged = _entityHasChanged(rel.initialTarget, rel.target);;
+		const bChanged = _entityHasChanged(rel.initialTarget, rel.target);
 		const typeChanged = rel.typeId !== rel.initialTypeId;
 		return Boolean(aChanged || bChanged || typeChanged);
 	},
