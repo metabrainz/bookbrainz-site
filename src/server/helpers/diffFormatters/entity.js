@@ -62,12 +62,13 @@ function formatNewAliasSet(change) {
 }
 
 function formatAliasAddOrDelete(change) {
-	const lhs = change.item.lhs &&
-		[`${change.item.lhs.name} (${change.item.lhs.sortName})`];
-	const rhs = change.item.rhs &&
-		[`${change.item.rhs.name} (${change.item.rhs.sortName})`];
-
-	return [formatRow(change.item.kind, 'Aliases', lhs, rhs)];
+	return [
+		formatChange(
+			change.item,
+			'Aliases',
+			(side) => side && [`${side.name} (${side.sortName})`]
+		)
+	];
 }
 
 function formatAliasModified(change) {
@@ -172,13 +173,12 @@ function formatNewIdentifierSet(change) {
 }
 
 function formatIdentifierAddOrDelete(change) {
-	const lhs = change.item.lhs &&
-		[`${change.item.lhs.type.label}: ${change.item.lhs.value}`];
-	const rhs = change.item.rhs &&
-		[`${change.item.rhs.type.label}: ${change.item.rhs.value}`];
-
 	return [
-		formatRow(change.item.kind, `Identifier ${change.index}`, lhs, rhs)
+		formatChange(
+			change.item,
+			`Identifier ${change.index}`,
+			(side) => side && [`${side.type.label}: ${side.value}`]
+		)
 	];
 }
 
