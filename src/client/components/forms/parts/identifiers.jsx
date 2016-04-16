@@ -22,8 +22,25 @@ const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2.jsx');
 const Icon = require('react-fontawesome');
+const _find = require('lodash.find');
 
 const validators = require('../../validators');
+
+function _identifierIsValid(typeId, value, identifierTypes) {
+	'use strict';
+
+	if (!value) {
+		return false;
+	}
+
+	const selectedType = _find(identifierTypes, (type) => type.id === typeId);
+
+	if (selectedType) {
+		return new RegExp(selectedType.validationRegex).test(value);
+	}
+
+	return false;
+}
 
 const IdentifierRow = React.createClass({
 	displayName: 'identifierRowComponent',
@@ -47,18 +64,17 @@ const IdentifierRow = React.createClass({
 		'use strict';
 
 		if (this.props.typeId) {
-			const type = this.props.types.filter(
-				(testType) => testType.id === this.props.typeId
-			)[0];
+			const isValid = _identifierIsValid(
+				this.props.typeId,
+				this.props.value,
+				this.props.types
+			);
 
-			if (new RegExp(type.validationRegex).test(this.props.value)) {
-				return 'success';
-			}
-			return 'error';
+			return (isValid ? 'success' : 'error');
 		}
 
 		if (this.props.value) {
-			return false;
+			return 'error';
 		}
 
 		return null;
@@ -69,16 +85,7 @@ const IdentifierRow = React.createClass({
 		const value = this.value.getValue();
 		const typeId = parseInt(this.typeId.getValue(), 10);
 
-		let selectedType = this.props.types.filter(
-			(type) => type.id === typeId
-		);
-
-		if (selectedType.length) {
-			selectedType = selectedType[0];
-			return new RegExp(selectedType.validationRegex).test(value);
-		}
-
-		return false;
+		return _identifierIsValid(typeId, value, this.props.types);
 	},
 	render() {
 		'use strict';
@@ -199,7 +206,12 @@ const IdentifierList = React.createClass({
 			value: updatedIdentifier.value,
 			typeId: updatedIdentifier.typeId,
 			key: updatedIdentifiers[index].key,
-			valid: this.refs[index].getValid()
+			valid:
+				_identifierIsValid(
+					updatedIdentifier.typeId,
+					updatedIdentifier.value,
+					this.props.types
+				)
 		};
 
 		if (this.state.identifiers[index].id) {
