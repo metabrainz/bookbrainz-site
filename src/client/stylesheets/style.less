@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2014-2015  Ben Ockmore
- *                    2015  Leo Verto
+ *               2015       Leo Verto
+ *               2016       Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -179,4 +180,12 @@ html {
 #background-overlay [class^="col-"] > .btn {
     padding-left: 0 !important;
   	padding-right: 0 !important;
+}
+
+/* XXX: This is an ugly hack to get around
+   https://github.com/select2/select2/issues/291, which seems to be a perennial
+   issue for select2. */
+.select2-container .select2-selection--multiple
+		.select2-search__field:not([placeholder='']) {
+	width: 100% !important;
 }
