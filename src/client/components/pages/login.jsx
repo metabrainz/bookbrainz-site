@@ -19,9 +19,15 @@ const React = require('react');
 const Input = require('react-bootstrap').Input;
 
 const Button = require('react-bootstrap').Button;
+const Alert = require('react-bootstrap').Alert;
 
-function LoginPage() {
+function LoginPage(props) {
 	'use strict';
+
+	let error = null;
+	if (props.error) {
+		error = (<Alert bsStyle="danger">{props.error}</Alert>);
+	}
 
 	return (
 		<div className="row">
@@ -55,6 +61,7 @@ function LoginPage() {
 							wrapperClassName="col-md-10"
 						/>
 					</div>
+					{error}
 					<Button
 						block
 						bsSize="large"
@@ -79,4 +86,7 @@ function LoginPage() {
 }
 
 LoginPage.displayName = 'LoginPage';
+LoginPage.propTypes = {
+	error: React.PropTypes.string
+};
 module.exports = LoginPage;

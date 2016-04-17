@@ -32,10 +32,10 @@ const LoginPage = React.createFactory(
 );
 
 router.get('/login', (req, res) => {
-	res.render('page', {
+	const props = {error: req.query.error};
+	return res.render('page', {
 		title: 'Log in',
-		error: req.query.error,
-		markup: ReactDOMServer.renderToString(LoginPage())
+		markup: ReactDOMServer.renderToString(LoginPage(props))
 	});
 });
 
