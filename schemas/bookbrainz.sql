@@ -17,13 +17,13 @@ CREATE TYPE bookbrainz.entity_type AS ENUM (
 
 CREATE TABLE bookbrainz.editor_type (
 	id SERIAL PRIMARY KEY,
-	label VARCHAR(255) NOT NULL
+	label VARCHAR(255) NOT NULL CHECK (label <> '')
 );
 
 CREATE TABLE bookbrainz.editor (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(64) NOT NULL UNIQUE,
-	email VARCHAR(255) NOT NULL,
+	name VARCHAR(64) NOT NULL UNIQUE CHECK (name <> ''),
+	email VARCHAR(255) NOT NULL CHECK (email <> ''),
 	reputation INT NOT NULL DEFAULT 0,
 	bio TEXT NOT NULL DEFAULT '',
 	birth_date DATE,
@@ -32,10 +32,10 @@ CREATE TABLE bookbrainz.editor (
 	type_id INT NOT NULL,
 	gender_id INT,
 	area_id INT,
-	password CHAR(60) NOT NULL,
-	revisions_applied INT NOT NULL DEFAULT 0,
-	revisions_reverted INT NOT NULL DEFAULT 0,
-	total_revisions INT NOT NULL DEFAULT 0
+	password CHAR(60) NOT NULL CHECK (password <> ''),
+	revisions_applied INT NOT NULL DEFAULT 0 CHECK (revisions_applied >= 0),
+	revisions_reverted INT NOT NULL DEFAULT 0 CHECK (revisions_reverted >= 0),
+	total_revisions INT NOT NULL DEFAULT 0 CHECK (total_revisions >= 0)
 );
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
@@ -181,7 +181,7 @@ CREATE TABLE bookbrainz.note (
 	id SERIAL PRIMARY KEY,
 	author_id INT NOT NULL,
 	revision_id INT NOT NULL,
-	content TEXT NOT NULL,
+	content TEXT NOT NULL CHECK (content <> ''),
 	posted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
 ALTER TABLE bookbrainz.note ADD FOREIGN KEY (author_id) REFERENCES bookbrainz.editor (id);
@@ -189,7 +189,7 @@ ALTER TABLE bookbrainz.note ADD FOREIGN KEY (revision_id) REFERENCES bookbrainz.
 
 CREATE TABLE bookbrainz.creator_type (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
+	label TEXT NOT NULL UNIQUE CHECK (label <> '')
 );
 
 CREATE TABLE bookbrainz.creator_data (
@@ -269,9 +269,9 @@ CREATE TABLE bookbrainz.creator_credit (
 
 CREATE TABLE bookbrainz.creator_credit_name (
 	creator_credit_id INT,
-	"position" SMALLINT NOT NULL,
+	"position" SMALLINT NOT NULL CHECK ("position" >= 0),
 	creator_bbid UUID NOT NULL,
-	name VARCHAR NOT NULL,
+	name VARCHAR NOT NULL CHECK (name <> ''),
 	join_phrase TEXT NOT NULL,
 	PRIMARY KEY (
 		creator_credit_id,
@@ -298,12 +298,12 @@ ALTER TABLE bookbrainz.publisher_set__publisher ADD FOREIGN KEY (publisher_bbid)
 
 CREATE TABLE bookbrainz.edition_format (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
+	label TEXT NOT NULL UNIQUE CHECK (label <> '')
 );
 
 CREATE TABLE bookbrainz.edition_status (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
+	label TEXT NOT NULL UNIQUE CHECK (label <> '')
 );
 
 CREATE TABLE bookbrainz.edition_data (
@@ -318,11 +318,11 @@ CREATE TABLE bookbrainz.edition_data (
 	publisher_set_id INT,
 	language_set_id INT,
 	release_event_set_id INT,
-	width SMALLINT,
-	height SMALLINT,
-	depth SMALLINT,
-	weight SMALLINT,
-	pages SMALLINT,
+	width SMALLINT CHECK (width >= 0),
+	height SMALLINT CHECK (height >= 0),
+	depth SMALLINT CHECK (depth >= 0),
+	weight SMALLINT CHECK (weight >= 0),
+	pages SMALLINT CHECK (pages >= 0),
 	format_id INT,
 	status_id INT
 );
@@ -336,7 +336,7 @@ ALTER TABLE bookbrainz.edition_revision ADD FOREIGN KEY (data_id) REFERENCES boo
 
 CREATE TABLE bookbrainz.publication_type (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
+	label TEXT NOT NULL UNIQUE CHECK (label <> '')
 );
 
 CREATE TABLE bookbrainz.publication_data (
@@ -353,7 +353,7 @@ ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (data_id) REFERENCES
 
 CREATE TABLE bookbrainz.publisher_type (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
+	label TEXT NOT NULL UNIQUE CHECK (label <> '')
 );
 
 CREATE TABLE bookbrainz.publisher_data (
@@ -396,7 +396,7 @@ ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (data_id) REFERENCES b
 
 CREATE TABLE bookbrainz.work_type (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE
+	label TEXT NOT NULL UNIQUE CHECK (label <> '')
 );
 
 CREATE TABLE bookbrainz.work_data (
@@ -436,8 +436,8 @@ ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (disambiguation_id) REFERENCES 
 
 CREATE TABLE bookbrainz.alias (
 	id SERIAL PRIMARY KEY,
-	name TEXT NOT NULL,
-	sort_name TEXT NOT NULL,
+	name TEXT NOT NULL CHECK (name <> ''),
+	sort_name TEXT NOT NULL CHECK (sort_name <> ''),
 	language_id INT,
 	"primary" BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -445,11 +445,11 @@ ALTER TABLE bookbrainz.alias ADD FOREIGN KEY (language_id) REFERENCES musicbrain
 
 CREATE TABLE bookbrainz.identifier_type (
 	id SERIAL PRIMARY KEY,
-	label VARCHAR(255) NOT NULL,
-	description TEXT NOT NULL,
+	label VARCHAR(255) NOT NULL CHECK (label <> ''),
+	description TEXT NOT NULL CHECK (description <> ''),
 	detection_regex TEXT,
 	validation_regex TEXT NOT NULL,
-	display_template TEXT NOT NULL,
+	display_template TEXT NOT NULL CHECK (display_template <> ''),
 	entity_type bookbrainz.entity_type NOT NULL,
 	parent_id INT,
 	child_order INT NOT NULL DEFAULT 0,
@@ -460,15 +460,15 @@ ALTER TABLE bookbrainz.identifier_type ADD FOREIGN KEY (parent_id) REFERENCES bo
 CREATE TABLE bookbrainz.identifier (
 	id SERIAL PRIMARY KEY,
 	type_id INT NOT NULL,
-	value TEXT NOT NULL
+	value TEXT NOT NULL CHECK (value <> '')
 );
 ALTER TABLE bookbrainz.identifier ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.identifier_type (id);
 
 CREATE TABLE bookbrainz.relationship_type (
 	id SERIAL PRIMARY KEY,
-	label VARCHAR(255) NOT NULL,
-	description TEXT NOT NULL,
-	display_template TEXT NOT NULL,
+	label VARCHAR(255) NOT NULL CHECK (label <> ''),
+	description TEXT NOT NULL CHECK (description <> ''),
+	display_template TEXT NOT NULL CHECK (display_template <> ''),
 	source_entity_type bookbrainz.entity_type NOT NULL,
 	target_entity_type bookbrainz.entity_type NOT NULL,
 	parent_id INT,
@@ -540,9 +540,9 @@ ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (set_id) R
 
 CREATE TABLE bookbrainz.relationship (
 	id SERIAL PRIMARY KEY,
-	type_id INT,
-	source_bbid UUID,
-	target_bbid UUID
+	type_id INT NOT NULL,
+	source_bbid UUID NOT NULL,
+	target_bbid UUID NOT NULL
 );
 ALTER TABLE bookbrainz.relationship_set__relationship ADD FOREIGN KEY (relationship_id) REFERENCES bookbrainz.relationship (id);
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.relationship_type (id);
