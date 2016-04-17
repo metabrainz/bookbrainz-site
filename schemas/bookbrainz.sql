@@ -42,8 +42,8 @@ ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.ed
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
 
 CREATE TABLE bookbrainz.editor__language (
-	editor_id INT NOT NULL,
-	language_id INT NOT NULL,
+	editor_id INT,
+	language_id INT,
 	proficiency bookbrainz.lang_proficiency NOT NULL,
 	PRIMARY KEY (
 		editor_id,
@@ -70,37 +70,37 @@ ALTER TABLE bookbrainz.entity_redirect ADD FOREIGN KEY (target_bbid) REFERENCES 
 
 CREATE TABLE bookbrainz.creator_header (
 	bbid UUID PRIMARY KEY,
-	master_revision_id INT NULL
+	master_revision_id INT
 );
 ALTER TABLE bookbrainz.creator_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.publication_header (
 	bbid UUID PRIMARY KEY,
-	master_revision_id INT NULL
+	master_revision_id INT
 );
 ALTER TABLE bookbrainz.publication_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.edition_header (
 	bbid UUID PRIMARY KEY,
-	master_revision_id INT NULL
+	master_revision_id INT
 );
 ALTER TABLE bookbrainz.edition_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.publisher_header (
 	bbid UUID PRIMARY KEY,
-	master_revision_id INT NULL
+	master_revision_id INT
 );
 ALTER TABLE bookbrainz.publisher_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.work_header (
 	bbid UUID PRIMARY KEY,
-	master_revision_id INT NULL
+	master_revision_id INT
 );
 ALTER TABLE bookbrainz.work_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.revision_parent (
-	parent_id INT NOT NULL,
-	child_id INT NOT NULL,
+	parent_id INT,
+	child_id INT,
 	PRIMARY KEY(
 		parent_id,
 		child_id
@@ -119,7 +119,7 @@ ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (child_id) REFERENCES boo
 
 CREATE TABLE bookbrainz.creator_revision (
 	id INT,
-	bbid UUID NOT NULL,
+	bbid UUID,
 	data_id INT,
 	PRIMARY KEY (
 		id, bbid
@@ -131,7 +131,7 @@ ALTER TABLE bookbrainz.creator_header ADD FOREIGN KEY (master_revision_id, bbid)
 
 CREATE TABLE bookbrainz.publication_revision (
 	id INT,
-	bbid UUID NOT NULL,
+	bbid UUID,
 	data_id INT,
 	PRIMARY KEY (
 		id, bbid
@@ -143,7 +143,7 @@ ALTER TABLE bookbrainz.publication_header ADD FOREIGN KEY (master_revision_id, b
 
 CREATE TABLE bookbrainz.edition_revision (
 	id INT,
-	bbid UUID NOT NULL,
+	bbid UUID,
 	data_id INT,
 	PRIMARY KEY (
 		id, bbid
@@ -155,7 +155,7 @@ ALTER TABLE bookbrainz.edition_header ADD FOREIGN KEY (master_revision_id, bbid)
 
 CREATE TABLE bookbrainz.publisher_revision (
 	id INT,
-	bbid UUID NOT NULL,
+	bbid UUID,
 	data_id INT,
 	PRIMARY KEY (
 		id, bbid
@@ -167,7 +167,7 @@ ALTER TABLE bookbrainz.publisher_header ADD FOREIGN KEY (master_revision_id, bbi
 
 CREATE TABLE bookbrainz.work_revision (
 	id INT,
-	bbid UUID NOT NULL,
+	bbid UUID,
 	data_id INT,
 	PRIMARY KEY (
 		id, bbid
