@@ -37,9 +37,9 @@ CREATE TABLE bookbrainz.editor (
 	revisions_reverted INT NOT NULL DEFAULT 0 CHECK (revisions_reverted >= 0),
 	total_revisions INT NOT NULL DEFAULT 0 CHECK (total_revisions >= 0)
 );
-ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
+ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id) DEFERRABLE;
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
-ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
+ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
 
 CREATE TABLE bookbrainz.editor__language (
 	editor_id INT,
@@ -228,11 +228,11 @@ CREATE TABLE bookbrainz.creator_data (
 		)
 	)
 );
-ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id) DEFERRABLE;
 ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.creator_type (id);
-ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
-ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (begin_area_id) REFERENCES musicbrainz.area (id);
-ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (end_area_id) REFERENCES musicbrainz.area (id);
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (begin_area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
+ALTER TABLE bookbrainz.creator_data ADD FOREIGN KEY (end_area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
 ALTER TABLE bookbrainz.creator_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
 
 CREATE TABLE bookbrainz.release_event (
@@ -242,7 +242,7 @@ CREATE TABLE bookbrainz.release_event (
 	"day" SMALLINT,
 	area_id INT
 );
-ALTER TABLE bookbrainz.release_event ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.country_area (area);
+ALTER TABLE bookbrainz.release_event ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.country_area (area) DEFERRABLE;
 
 CREATE TABLE bookbrainz.release_event_set (
 	id SERIAL PRIMARY KEY
@@ -390,7 +390,7 @@ CREATE TABLE bookbrainz.publisher_data (
 	)
 );
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publisher_type (id);
-ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id);
+ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
 ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
 
 CREATE TABLE bookbrainz.work_type (
@@ -440,7 +440,7 @@ CREATE TABLE bookbrainz.alias (
 	language_id INT,
 	"primary" BOOLEAN NOT NULL DEFAULT FALSE
 );
-ALTER TABLE bookbrainz.alias ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
+ALTER TABLE bookbrainz.alias ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id) DEFERRABLE;
 
 CREATE TABLE bookbrainz.identifier_type (
 	id SERIAL PRIMARY KEY,
@@ -561,7 +561,7 @@ CREATE TABLE bookbrainz.language_set__language (
 	)
 );
 ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.language_set (id);
-ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id);
+ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (language_id) REFERENCES musicbrainz.language (id) DEFERRABLE;
 
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
