@@ -24,6 +24,7 @@ const SearchSelect = require('../../input/entity-search.jsx');
 const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifiers.jsx');
 const Icon = require('react-fontawesome');
+const _assign = require('lodash.assign');
 
 const validators = require('../../validators');
 
@@ -194,7 +195,7 @@ const EditionData = React.createClass({
 		};
 
 		const publicationSelect2Options =
-			Object.assign({}, defaultSelect2Options);
+			_assign({}, defaultSelect2Options);
 
 		publicationSelect2Options.allowClear = false;
 
