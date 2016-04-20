@@ -21,6 +21,7 @@
 
 const Input = require('react-bootstrap').Input;
 const React = require('react');
+const _assign = require('lodash.assign');
 const _omit = require('lodash.omit');
 const _isEqual = require('lodash.isequal');
 
@@ -99,7 +100,7 @@ const Select = React.createClass({
 
 		// Copy the options object so we don't munge options for subsequent
 		// selects
-		const options = Object.assign({}, this.props.select2Options);
+		const options = _assign({}, this.props.select2Options);
 		options.theme = 'bootstrap';
 
 		if (this.props.placeholder) {
