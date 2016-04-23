@@ -29,8 +29,18 @@ class NotFoundError extends Error {
 	}
 }
 
+class PermissionDeniedError extends Error {
+	constructor(message) {
+		super(message || 'You do not have permission to access this page');
+
+		this.name = 'PermissionDeniedError';
+		this.status = status.FORBIDDEN;
+	}
+}
+
 const errors = {
-	NotFoundError
+	NotFoundError,
+	PermissionDeniedError
 };
 
 module.exports = errors;
