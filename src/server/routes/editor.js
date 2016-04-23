@@ -19,6 +19,8 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
 const express = require('express');
 const router = express.Router();
 const React = require('react');
@@ -30,6 +32,8 @@ const Editor = require('bookbrainz-data').Editor;
 const status = require('http-status');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
+const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
+
 const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
 );
@@ -52,24 +56,34 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 });
 
 router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
-	// Should handle errors in some fashion other than redirecting.
-	if (req.body.id !== req.user.id) {
-		req.session.error = 'You do not have permission to edit that user';
-		res.redirect(status.SEE_OTHER, '/editor/edit');
-	}
+	new Promise((resolve) => {
+		if (req.user && req.body.id === req.user.id) {
+			resolve();
+		}
 
-	new Editor({
-		id: parseInt(req.body.id, 10),
-		bio: req.body.bio
+		// Edit is for a user other than the current one
+		throw new PermissionDeniedError(
+			'You do not have permission to edit that user'
+		);
 	})
-		.save()
-		.then((editor) => {
-			res.send(editor.toJSON());
-		})
-		.catch(() => {
-			req.session.error =
-				'An internal error occurred while modifying profile';
-			res.redirect(status.SEE_OTHER, '/editor/edit');
+		.then(() =>
+			// Fetch the current user from the database
+			Editor.forge({id: parseInt(req.user.id, 10)})
+				.fetch()
+		)
+		.then((editor) =>
+			// Modify the user to match the updates from the form
+			editor.set('bio', req.body.bio)
+				.save()
+		)
+		.then((editor) =>
+			res.send(editor.toJSON())
+		)
+		.catch((err) => {
+			// Return the error to the form that called us
+			res.status(err.status || status.INTERNAL_SERVER_ERROR).send({
+				error: err.message
+			});
 		});
 });
 
