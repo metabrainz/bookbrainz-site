@@ -131,8 +131,6 @@ function loadEntityRelationships(req, res, next) {
 };
 
 middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
-	const bbidRegex =
-		/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 	const relations = [
 		'aliasSet.aliases.language',
 		'annotation.lastRevision',
@@ -144,7 +142,7 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 	].concat(additionalRels);
 
 	return (req, res, next, bbid) => {
-		if (bbidRegex.test(bbid)) {
+		if (utils.isValidBBID(bbid)) {
 			return model.forge({bbid})
 				.fetch({require: true, withRelated: relations})
 				.then((entity) => {
