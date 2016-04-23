@@ -118,11 +118,11 @@ app.use((req, res, next) => {
 	next(new NotFoundError());
 });
 
-// Error handlers
+// Error handlers; arity MUST be 4
 
 /* Development error handler; displays stacktrace to user */
 if (app.get('env') === 'development') {
-	app.use((err, req, res) => {
+	app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 		console.log(`Internal Error. Message: ${err.message} Stacktrace...`);
 		console.log(err.stack);
 
@@ -136,7 +136,7 @@ if (app.get('env') === 'development') {
 }
 
 /* Production error handler; stacktrace is omitted */
-app.use((err, req, res) => {
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 	res.status(err.status || status.INTERNAL_SERVER_ERROR);
 
 	res.render('error', {
