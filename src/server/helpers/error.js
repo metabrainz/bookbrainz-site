@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015  Sean Burke
+ * Copyright (C) 2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,16 @@
 
 'use strict';
 
-const util = require('util');
+const status = require('http-status');
 
-function NotFoundError(message) {
-	NotFoundError.super_.call(this);
+class NotFoundError extends Error {
+	constructor(message) {
+		super(message || 'Page not found');
 
-	this.message = message || 'Object not found';
-	this.status = 404;
+		this.name = 'NotFoundError';
+		this.status = status.NOT_FOUND;
+	}
 }
-
-util.inherits(NotFoundError, Error);
 
 const errors = {
 	NotFoundError

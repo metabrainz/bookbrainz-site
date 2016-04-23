@@ -111,11 +111,11 @@ app.use((req, res, next) => {
 // Set up routes
 require('./src/server/routes')(app);
 
+const NotFoundError = require('./src/server/helpers/error').NotFoundError;
+
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	const err = new Error('Not Found');
-	err.status = status.NOT_FOUND;
-	next(err);
+	next(new NotFoundError());
 });
 
 // Error handlers
