@@ -75,14 +75,10 @@ function _searchForEntities(dslQuery) {
 		.then((results) => _fetchEntityModelsForESResults(results));
 }
 
-const uuidRegex =
-	/[a-f0-9]{8}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{4}-?[a-f0-9]{12}/;
-
 search.autocomplete = (query, collection) => {
-	const isValidBBID = Boolean(uuidRegex.exec(query));
-
 	let queryBody = null;
-	if (isValidBBID) {
+
+	if (utils.isValidBBID(query)) {
 		queryBody = {
 			ids: {
 				values: [query]

@@ -51,6 +51,13 @@ function getEntityModelByType(type) {
 	return entityModels[type];
 }
 
+const _bbidRegex =
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+function isValidBBID(bbid) {
+	return _bbidRegex.test(bbid);
+}
+
 // Cribbed from MDN documentation on template literals
 function template(strings) {
 	const keys = Array.prototype.slice.call(arguments, 1);
@@ -96,6 +103,7 @@ module.exports = {
 	getEntityLink,
 	getEntityModels,
 	getEntityModelByType,
+	isValidBBID,
 	template,
 	createEntityPageTitle,
 	incrementEditorEditCountById
