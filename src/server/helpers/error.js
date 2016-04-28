@@ -41,6 +41,16 @@ class SiteError extends Error {
 	}
 }
 
+class NotAuthenticatedError extends SiteError {
+	static get defaultMessage() {
+		return 'You are not currently authenticated';
+	}
+
+	static get status() {
+		return status.UNAUTHORIZED;
+	}
+}
+
 class NotFoundError extends SiteError {
 	static get defaultMessage() {
 		return 'Page not found';
@@ -75,6 +85,7 @@ function sendErrorAsJSON(res, err) {
 }
 
 const errors = {
+	NotAuthenticatedError,
 	NotFoundError,
 	PermissionDeniedError,
 	SiteError,
