@@ -55,7 +55,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	});
 });
 
-router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
+router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	new Promise((resolve) => {
 		if (req.user && req.body.id === req.user.id) {
 			resolve();

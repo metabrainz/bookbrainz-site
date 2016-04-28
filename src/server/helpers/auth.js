@@ -19,10 +19,16 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
 const passport = require('passport');
 const Editor = require('bookbrainz-data').Editor;
 const LocalStrategy = require('passport-local').Strategy;
 const status = require('http-status');
+
+const error = require('../helpers/error');
+
+const NotAuthenticatedError = require('../helpers/error').NotAuthenticatedError;
 
 const auth = {};
 
@@ -66,14 +72,21 @@ auth.isAuthenticated = function isAuthenticated(req, res, next) {
 		return next();
 	}
 
-	if (req.route.path === '/handler') {
-		req.session.redirectTo = req.baseUrl;
-	}
-	else {
-		req.session.redirectTo = req.originalUrl;
-	}
+	req.session.redirectTo = req.originalUrl;
 
 	return res.redirect(status.SEE_OTHER, '/login');
+};
+
+auth.isAuthenticatedForHandler = (req, res, next) => {
+	new Promise((resolve) => {
+		if (req.isAuthenticated()) {
+			resolve();
+		}
+
+		throw new NotAuthenticatedError();
+	})
+		.then(() => next())
+		.catch((err) => error.sendErrorAsJSON(res, err));
 };
 
 module.exports = auth;
