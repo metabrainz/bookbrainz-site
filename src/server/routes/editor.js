@@ -41,19 +41,21 @@ const ProfileForm = React.createFactory(
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	new Editor({id: parseInt(req.user.id, 10)})
-	.fetch()
-	.then((editor) => {
-		const markup =
-			ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
+		.fetch()
+		.then((editor) => {
+			const markup =
+				ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
 
-		res.render('editor/edit', {
-			props: editor.toJSON(),
-			markup
+			res.render('editor/edit', {
+				props: editor.toJSON(),
+				markup
+			});
+		})
+		.catch(() => {
+			next(new SiteError(
+				'An internal error occurred while loading profile'
+			));
 		});
-	})
-	.catch(() => {
-		next(new SiteError('An internal error occurred while loading profile'));
-	});
 });
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
