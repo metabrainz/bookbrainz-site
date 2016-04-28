@@ -33,6 +33,7 @@ const Editor = require('bookbrainz-data').Editor;
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
+const SiteError = require('../helpers/error').SiteError;
 
 const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
@@ -51,7 +52,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		});
 	})
 	.catch(() => {
-		next(new Error('An internal error occurred while loading profile'));
+		next(new SiteError('An internal error occurred while loading profile'));
 	});
 });
 
@@ -106,7 +107,9 @@ router.get('/:id', (req, res, next) => {
 		})
 		.catch((err) => {
 			const internalError =
-				new Error('An internal error occurred while fetching editor');
+				new SiteError(
+					'An internal error occurred while fetching editor'
+				);
 			internalError.stack = err.stack;
 
 			next(internalError);
@@ -133,7 +136,7 @@ router.get('/:id/revisions', (req, res, next) => {
 		})
 		.catch((err) => {
 			const internalError =
-				new Error(
+				new SiteError(
 					'An internal error occurred while fetching revisions'
 				);
 			internalError.stack = err.stack;
