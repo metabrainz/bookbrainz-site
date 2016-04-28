@@ -26,10 +26,10 @@ const router = express.Router();
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const auth = require('../helpers/auth');
+const error = require('../helpers/error');
 const _ = require('lodash');
 
 const Editor = require('bookbrainz-data').Editor;
-const status = require('http-status');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
@@ -79,12 +79,7 @@ router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
 		.then((editor) =>
 			res.send(editor.toJSON())
 		)
-		.catch((err) => {
-			// Return the error to the form that called us
-			res.status(err.status || status.INTERNAL_SERVER_ERROR).send({
-				error: err.message
-			});
-		});
+		.catch((err) => error.sendErrorAsJSON(res, err));
 });
 
 router.get('/:id', (req, res, next) => {

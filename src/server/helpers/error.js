@@ -61,10 +61,24 @@ class PermissionDeniedError extends SiteError {
 	}
 }
 
+function sendErrorAsJSON(res, err) {
+	// If we have an error that we haven't handled in some better way, log it
+	// so we have a record of what happened
+	if (!err.status || err.status === status.INTERNAL_SERVER_ERROR) {
+		console.log(err);
+		console.log(err.stack);
+	}
+
+	res.status(err.status || status.INTERNAL_SERVER_ERROR).send({
+		error: err.message
+	});
+}
+
 const errors = {
 	NotFoundError,
 	PermissionDeniedError,
-	SiteError
+	SiteError,
+	sendErrorAsJSON
 };
 
 module.exports = errors;
