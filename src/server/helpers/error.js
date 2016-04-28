@@ -20,27 +20,51 @@
 
 const status = require('http-status');
 
-class NotFoundError extends Error {
+class SiteError extends Error {
 	constructor(message) {
-		super(message || 'Page not found');
+		super();
 
-		this.name = 'NotFoundError';
-		this.status = status.NOT_FOUND;
+		// We can't access the subclass's default message before calling super,
+		// so we set it manually here
+		this.message = message || this.constructor.defaultMessage;
+
+		this.name = this.constructor.name;
+		this.status = this.constructor.status;
+	}
+
+	static get defaultMessage() {
+		return 'An unhandled error occurred';
+	}
+
+	static get status() {
+		return status.INTERNAL_SERVER_ERROR;
 	}
 }
 
-class PermissionDeniedError extends Error {
-	constructor(message) {
-		super(message || 'You do not have permission to access this page');
+class NotFoundError extends SiteError {
+	static get defaultMessage() {
+		return 'Page not found';
+	}
 
-		this.name = 'PermissionDeniedError';
-		this.status = status.FORBIDDEN;
+	static get status() {
+		return status.NOT_FOUND;
+	}
+}
+
+class PermissionDeniedError extends SiteError {
+	static get defaultMessage() {
+		return 'You do not have permission to access this page';
+	}
+
+	static get status() {
+		return status.FORBIDDEN;
 	}
 }
 
 const errors = {
 	NotFoundError,
-	PermissionDeniedError
+	PermissionDeniedError,
+	SiteError
 };
 
 module.exports = errors;
