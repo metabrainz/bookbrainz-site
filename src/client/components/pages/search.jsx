@@ -87,7 +87,7 @@ function SearchResults(props) {
 	if (noResults) {
 		return (
 			<div className="col-md-6 col-md-offset-3">
-				{props.error || 'No results found'}
+				{'No results found'}
 			</div>
 		);
 	}
