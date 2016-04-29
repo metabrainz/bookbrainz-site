@@ -20,6 +20,8 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
@@ -50,33 +52,37 @@ router.get('/logout', (req, res) => {
 
 router.post('/login/handler', (req, res, next) => {
 	passport.authenticate('local', (authErr, user) => {
-		if (authErr) {
-			return error.sendErrorAsJSON(res, authErr);
-		}
-
-		// If the user is not set by the passport strategy, authentication
-		// failed
-		if (!user) {
-			return error.sendErrorAsJSON(
-				res,
-				new AuthenticationFailedError('Invalid username or password')
-			);
-		}
-
-		return req.logIn(user, (loginErr) => {
-			// If `loginErr` is set, serialization of the user failed
-			if (loginErr) {
-				return error.sendErrorAsJSON(res, loginErr);
+		new Promise((resolve, reject) => {
+			if (authErr) {
+				reject(authErr);
 			}
 
-			const redirectTo =
-				req.session.redirectTo ? req.session.redirectTo : '/';
-			delete req.session.redirectTo;
+			// If the user is not set by the passport strategy, authentication
+			// failed
+			if (!user) {
+				throw new AuthenticationFailedError(
+					'Invalid username or password'
+				);
+			}
 
-			return res.send({
-				redirectTo
+			req.logIn(user, (loginErr) => {
+				// If `loginErr` is set, serialization of the user failed
+				if (loginErr) {
+					reject(loginErr);
+				}
+
+				resolve();
 			});
-		});
+		})
+			.then(() => {
+				const redirectTo =
+					req.session.redirectTo ? req.session.redirectTo : '/';
+
+				delete req.session.redirectTo;
+
+				return res.send({redirectTo});
+			})
+			.catch((err) => error.sendErrorAsJSON(res, err));
 	})(req, res, next);
 });
 
