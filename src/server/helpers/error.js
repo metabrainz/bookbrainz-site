@@ -58,7 +58,7 @@ class FormSubmissionError extends SiteError {
 	static get defaultMessage() {
 		return 'Form contained invalid data';
 	}
-	
+
 	static get status() {
 		return status.BAD_REQUEST;
 	}
@@ -90,17 +90,32 @@ class PermissionDeniedError extends SiteError {
 	}
 }
 
-function sendErrorAsJSON(res, err) {
-	// If we have an error that we haven't handled in some better way, log it
-	// so we have a record of what happened
-	if (!err.status || err.status === status.INTERNAL_SERVER_ERROR) {
-		console.log(err);
-		console.log(err.stack);
+function _logError(err) {
+	console.log(err);
+	console.log(err.stack);
+}
+
+function _getErrorToSend(err) {
+	if (err instanceof SiteError) {
+		return err;
 	}
 
-	res.status(err.status || status.INTERNAL_SERVER_ERROR).send({
-		error: err.message
-	});
+	// If we haven't generated the error ourselves with display in mind, log
+	// instead and return a new generic SiteError
+	_logError(err);
+	return new SiteError();
+}
+
+function renderError(res, err) {
+	const errorToSend = _getErrorToSend(err);
+
+	res.status(errorToSend.status).render('error', {error: errorToSend});
+}
+
+function sendErrorAsJSON(res, err) {
+	const errorToSend = _getErrorToSend(err);
+
+	res.status(errorToSend.status).send({error: errorToSend.message});
 }
 
 const errors = {
@@ -110,6 +125,7 @@ const errors = {
 	NotFoundError,
 	PermissionDeniedError,
 	SiteError,
+	renderError,
 	sendErrorAsJSON
 };
 

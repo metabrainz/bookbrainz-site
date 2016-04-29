@@ -42,7 +42,6 @@ const config = require('./src/server/helpers/config');
 require('bookbrainz-data').init(config.database);
 const auth = require('./src/server/helpers/auth');
 
-const status = require('http-status');
 const git = require('git-rev');
 
 // Initialize application
@@ -118,31 +117,11 @@ app.use((req, res, next) => {
 	next(new NotFoundError());
 });
 
-// Error handlers; arity MUST be 4
+const error = require('./src/server/helpers/error');
 
-/* Development error handler; displays stacktrace to user */
-if (app.get('env') === 'development') {
-	app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-		console.log(`Internal Error. Message: ${err.message} Stacktrace...`);
-		console.log(err.stack);
-
-		res.status(err.status || status.INTERNAL_SERVER_ERROR);
-
-		res.render('error', {
-			message: err.message,
-			error: err
-		});
-	});
-}
-
-/* Production error handler; stacktrace is omitted */
+// Error handler; arity MUST be 4
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-	res.status(err.status || status.INTERNAL_SERVER_ERROR);
-
-	res.render('error', {
-		message: err.message,
-		error: {}
-	});
+	error.renderError(res, err);
 });
 
 module.exports = app;

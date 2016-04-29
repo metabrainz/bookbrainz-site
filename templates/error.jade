@@ -1,8 +1,5 @@
 extends layout
 
 block body
-	h1= message
+	h1= error.message
 	h2= error.status
-
-	if error.stack
-		pre #{error.stack}
