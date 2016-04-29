@@ -36,7 +36,7 @@ const SearchPage = React.createFactory(
 	require('../../client/components/pages/search.jsx')
 );
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
 	const query = req.query.q;
 	const collection = req.query.collection || null;
 
@@ -53,7 +53,7 @@ router.get('/', (req, res) => {
 				hideSearch: true
 			});
 		})
-		.catch((err) => error.sendErrorAsJSON(res, err));
+		.catch(next);
 });
 
 router.get('/autocomplete', (req, res) => {
