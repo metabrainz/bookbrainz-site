@@ -30,7 +30,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
 const RegisterPage = React.createFactory(
-	require('../../client/components/pages/register.jsx')
+	require('../../client/components/forms/registration.jsx')
 );
 
 router.get('/', (req, res) => {
