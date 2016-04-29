@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ const WorkType = require('bookbrainz-data').WorkType;
 const renderRelationship = require('../helpers/render');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
+const SiteError = require('../helpers/error').SiteError;
 
 function makeLoader(model, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
@@ -74,22 +75,26 @@ middleware.loadLanguages = makeLoader(Language, 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
-middleware.loadEntityRelationships =
-function loadEntityRelationships(req, res, next) {
-	if (!res.locals.entity) {
-		return next(new Error('Entity failed to load'));
-	}
-
+middleware.loadEntityRelationships = (req, res, next) => {
 	const entity = res.locals.entity;
 
-	return RelationshipSet.forge({id: entity.relationshipSetId})
-		.fetch({
-			withRelated: [
-				'relationships.source',
-				'relationships.target',
-				'relationships.type'
-			]
-		})
+	new Promise((resolve) => {
+		if (!entity) {
+			throw new SiteError('Failed to load entity');
+		}
+
+		resolve();
+	})
+		.then(() =>
+			RelationshipSet.forge({id: entity.relationshipSetId})
+				.fetch({
+					withRelated: [
+						'relationships.source',
+						'relationships.target',
+						'relationships.type'
+					]
+				})
+		)
 		.then((relationshipSet) => {
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
@@ -151,15 +156,9 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 					next();
 				})
 				.catch(model.NotFoundError, () => {
-					next(new NotFoundError(errMessage));
+					throw new NotFoundError(errMessage);
 				})
-				.catch((err) => {
-					const internalError =
-						new Error('An internal error occurred fetching entity');
-					internalError.stack = err.stack;
-
-					next(internalError);
-				});
+				.catch(next);
 		}
 
 		return next('route');
