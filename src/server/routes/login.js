@@ -27,51 +27,55 @@ const status = require('http-status');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
+const error = require('../helpers/error');
+
+const AuthenticationFailedError =
+	require('../helpers/error').AuthenticationFailedError;
+
 const LoginPage = React.createFactory(
 	require('../../client/components/forms/login.jsx')
 );
 
-router.get('/login', (req, res) => {
-	const props = {error: req.query.error};
-	return res.render('page', {
-		title: 'Log in',
-		markup: ReactDOMServer.renderToString(LoginPage(props))
-	});
-});
+router.get('/login', (req, res) =>
+	res.render('login', {
+		title: 'Log In',
+		markup: ReactDOMServer.renderToString(LoginPage())
+	})
+);
 
 router.get('/logout', (req, res) => {
-	delete req.session.bearerToken;
-	req.logout();
+	req.logOut();
 	res.redirect(status.SEE_OTHER, '/');
 });
 
 router.post('/login/handler', (req, res, next) => {
 	passport.authenticate('local', (authErr, user) => {
 		if (authErr) {
-			console.log(authErr);
-			// If an error occurs during login, send the user back.
-			return res.redirect(
-				status.MOVED_PERMANENTLY, `/login?error=${authErr.message}`
-			);
+			return error.sendErrorAsJSON(res, authErr);
 		}
 
+		// If the user is not set by the passport strategy, authentication
+		// failed
 		if (!user) {
-			return res.redirect(
-				status.MOVED_PERMANENTLY,
-				'/login?error=Login details incorrect'
+			return error.sendErrorAsJSON(
+				res,
+				new AuthenticationFailedError('Invalid username or password')
 			);
 		}
 
 		return req.logIn(user, (loginErr) => {
+			// If `loginErr` is set, serialization of the user failed
 			if (loginErr) {
-				return next(loginErr);
+				return error.sendErrorAsJSON(res, loginErr);
 			}
 
-			const redirect =
+			const redirectTo =
 				req.session.redirectTo ? req.session.redirectTo : '/';
 			delete req.session.redirectTo;
 
-			return res.redirect(status.SEE_OTHER, redirect);
+			return res.send({
+				redirectTo
+			});
 		});
 	})(req, res, next);
 });

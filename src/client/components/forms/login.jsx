@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015  Annie Zhou
+ *               2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,77 +17,130 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const React = require('react');
+
+const Alert = require('react-bootstrap').Alert;
+const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
-const Button = require('react-bootstrap').Button;
-const Alert = require('react-bootstrap').Alert;
+const LoadingSpinner = require('../loading_spinner.jsx');
 
-function LoginPage(props) {
-	'use strict';
+const request = require('superagent-bluebird-promise');
 
-	let error = null;
-	if (props.error) {
-		error = (<Alert bsStyle="danger">{props.error}</Alert>);
-	}
+module.exports = React.createClass({
+	displayName: 'LoginForm',
+	getInitialState() {
+		'use strict';
 
-	return (
-		<div className="row">
-			<div className="col-md-6 col-md-offset-3">
-				<form
-					action="/login/handler"
-					className="whole-page-form form-horizontal"
-					method="post"
-				>
-					<div className="form-group">
-						<Input
-							className="form-control"
-							id="loginUsername"
-							label="Username"
-							labelClassName="col-md-2"
-							name="username"
-							placeholder="Username"
-							type="text"
-							wrapperClassName="col-md-10"
-						/>
-					</div>
-					<div className="form-group">
-						<Input
-							className="form-control"
-							id="loginPassword"
-							label="Password"
-							labelClassName="col-md-2"
-							name="password"
-							placeholder="Password"
-							type="password"
-							wrapperClassName="col-md-10"
-						/>
-					</div>
-					{error}
-					<Button
-						block
-						bsSize="large"
-						bsStyle="primary"
-						type="submit"
+		return {
+			error: null,
+			password: '',
+			waiting: false
+		};
+	},
+	handleSubmit(event) {
+		'use strict';
+
+		event.preventDefault();
+
+		const data = {
+			username: this.username.getValue(),
+			password: this.password.getValue()
+		};
+
+		this.setState({
+			error: null,
+			password: '',
+			waiting: true
+		});
+
+		request.post('/login/handler')
+			.send(data)
+			.then((res) => {
+				let redirectTo = '/';
+				if (res.body && res.body.redirectTo) {
+					redirectTo = res.body.redirectTo;
+				}
+
+				window.location.href = redirectTo;
+			})
+			.catch((res) => {
+				const error = res.body.error;
+				this.setState({
+					error,
+					waiting: false
+				});
+			});
+	},
+	handlePasswordChange(event) {
+		'use strict';
+
+		this.setState({
+			password: event.target.value
+		});
+	},
+	render() {
+		'use strict';
+
+		let errorComponent = null;
+		if (this.state.error) {
+			errorComponent =
+				(<Alert bsStyle="danger">{this.state.error}</Alert>);
+		}
+
+		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
+
+		return (
+			<div className="row">
+				<div className="col-md-6 col-md-offset-3">
+					<form
+						className="whole-page-form form-horizontal"
+						onSubmit={this.handleSubmit}
 					>
-						Login
-					</Button>
-					<hr/>
-					<Button
-						block
-						bsSize="large"
-						bsStyle="success"
-						href="/register"
-					>
-						Register
-					</Button>
-				</form>
+						{loadingComponent}
+						<div className="form-group">
+							<Input
+								className="form-control"
+								label="Username"
+								labelClassName="col-md-2"
+								placeholder="Username"
+								ref={(ref) => this.username = ref}
+								type="text"
+								wrapperClassName="col-md-10"
+							/>
+						</div>
+						<div className="form-group">
+							<Input
+								className="form-control"
+								label="Password"
+								labelClassName="col-md-2"
+								placeholder="Password"
+								ref={(ref) => this.password = ref}
+								type="password"
+								value={this.state.password}
+								wrapperClassName="col-md-10"
+								onChange={this.handlePasswordChange}
+							/>
+						</div>
+						{errorComponent}
+						<Button
+							block
+							bsSize="large"
+							bsStyle="primary"
+							type="submit"
+						>
+							Log In
+						</Button>
+						<hr/>
+						<Button
+							block
+							bsSize="large"
+							href="/register"
+						>
+							Register
+						</Button>
+					</form>
+				</div>
 			</div>
-		</div>
-	);
-}
-
-LoginPage.displayName = 'LoginPage';
-LoginPage.propTypes = {
-	error: React.PropTypes.string
-};
-module.exports = LoginPage;
+		);
+	}
+});
