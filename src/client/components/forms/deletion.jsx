@@ -112,6 +112,7 @@ module.exports = React.createClass({
 						onSubmit={this.handleSubmit}
 					>
 						<Panel
+							bsStyle="danger"
 							footer={footerComponent}
 							header={headerComponent}
 						>
