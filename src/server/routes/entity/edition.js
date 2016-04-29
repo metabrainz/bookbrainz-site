@@ -107,7 +107,8 @@ router.post('/:bbid/delete/confirm', (req, res) =>
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
-	loadEditionStatuses, loadEditionFormats, loadLanguages, (req, res) => {
+	loadEditionStatuses, loadEditionFormats, loadLanguages,
+	(req, res, next) => {
 		const propsPromise = {
 			languages: res.locals.languages,
 			editionStatuses: res.locals.editionStatuses,
@@ -140,7 +141,9 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 			});
 		}
 
-		Promise.props(propsPromise).then(render);
+		Promise.props(propsPromise)
+			.then(render)
+			.catch(next);
 	}
 );
 
