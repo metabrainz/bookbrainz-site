@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015  Annie Zhou
+ *               2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,81 +17,152 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const React = require('react');
-const Input = require('react-bootstrap').Input;
+
+const Alert = require('react-bootstrap').Alert;
 const Button = require('react-bootstrap').Button;
+const Input = require('react-bootstrap').Input;
 
-function RegistrationPage() {
-	'use strict';
+const LoadingSpinner = require('../loading_spinner.jsx');
 
-	return (
-		<div className="row">
-			<div className="col-md-6 col-md-offset-3">
-				<form
-					action="/register/handler"
-					className="whole-page-form form-horizontal"
-					method="post"
-				>
-					<div className="form-group">
-						<Input
-							className="form-control"
-							id="registerUsername"
-							label="Username"
-							labelClassName="col-md-2"
-							name="username"
-							placeholder="Username"
-							type="text"
-							wrapperClassName="col-md-10"
-						/>
-					</div>
-					<div className="form-group">
-						<Input
-							className="form-control"
-							id="registerEmail"
-							label="Email"
-							labelClassName="col-md-2"
-							name="email"
-							placeholder="email@example.com"
-							type="email"
-							wrapperClassName="col-md-10"
-						/>
-					</div>
-					<div className="form-group">
-						<Input
-							className="form-control"
-							id="registerPassword"
-							label="Password"
-							labelClassName="col-md-2"
-							name="password"
-							placeholder="Password"
-							type="password"
-							wrapperClassName="col-md-10"
-						/>
-					</div>
-					<div className="form-group">
-						<Input
-							className="form-control"
-							id="registerPassword2"
-							label="Repeat Password"
-							labelClassName="col-md-2"
-							name="password2"
-							placeholder="Password"
-							type="password"
-							wrapperClassName="col-md-10"
-						/>
-					</div>
-					<Button
-						block
-						bsSize="large"
-						bsStyle="success"
-						type="submit"
+const request = require('superagent-bluebird-promise');
+
+module.exports = React.createClass({
+	displayName: 'RegistrationForm',
+	getInitialState() {
+		'use strict';
+
+		return {
+			error: null,
+			password: '',
+			passwordRepeat: '',
+			waiting: false
+		};
+	},
+	handleSubmit(event) {
+		'use strict';
+
+		event.preventDefault();
+
+		const data = {
+			username: this.username.getValue(),
+			email: this.email.getValue(),
+			password: this.password.getValue(),
+			passwordRepeat: this.passwordRepeat.getValue()
+		};
+
+		this.setState({
+			error: null,
+			password: '',
+			passwordRepeat: '',
+			waiting: true
+		});
+
+		request.post('/register/handler')
+			.send(data)
+			.then(() => {
+				window.location.href = '/';
+			})
+			.catch((res) => {
+				const error = res.body.error;
+				this.setState({
+					error,
+					waiting: false
+				});
+			});
+	},
+	handlePasswordChange(event) {
+		'use strict';
+
+		this.setState({
+			password: event.target.value
+		});
+	},
+	handlePasswordRepeatChange(event) {
+		'use strict';
+
+		this.setState({
+			passwordRepeat: event.target.value
+		});
+	},
+	render() {
+		'use strict';
+
+		let errorComponent = null;
+		if (this.state.error) {
+			errorComponent =
+				(<Alert bsStyle="danger">{this.state.error}</Alert>);
+		}
+
+		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
+
+		return (
+			<div className="row">
+				{loadingComponent}
+				<div className="col-md-6 col-md-offset-3">
+					<form
+						className="whole-page-form form-horizontal"
+						onSubmit={this.handleSubmit}
 					>
-						Register
-					</Button>
-				</form>
+						<div className="form-group">
+							<Input
+								className="form-control"
+								label="Username"
+								labelClassName="col-md-2"
+								placeholder="Username"
+								ref={(ref) => this.username = ref}
+								type="text"
+								wrapperClassName="col-md-10"
+							/>
+						</div>
+						<div className="form-group">
+							<Input
+								className="form-control"
+								label="Email"
+								labelClassName="col-md-2"
+								placeholder="email@example.com"
+								ref={(ref) => this.email = ref}
+								type="email"
+								wrapperClassName="col-md-10"
+							/>
+						</div>
+						<div className="form-group">
+							<Input
+								className="form-control"
+								label="Password"
+								labelClassName="col-md-2"
+								placeholder="Password"
+								ref={(ref) => this.password = ref}
+								type="password"
+								value={this.state.password}
+								wrapperClassName="col-md-10"
+								onChange={this.handlePasswordChange}
+							/>
+						</div>
+						<div className="form-group">
+							<Input
+								className="form-control"
+								label="Repeat Password"
+								labelClassName="col-md-2"
+								placeholder="Password"
+								ref={(ref) => this.passwordRepeat = ref}
+								type="password"
+								value={this.state.passwordRepeat}
+								wrapperClassName="col-md-10"
+								onChange={this.handlePasswordRepeatChange}
+							/>
+						</div>
+						{errorComponent}
+						<Button
+							block
+							bsSize="large"
+							bsStyle="primary"
+							type="submit"
+						>
+							Register
+						</Button>
+					</form>
+				</div>
 			</div>
-		</div>
-	);
-}
-
-RegistrationPage.displayName = 'RegistrationPage';
-module.exports = RegistrationPage;
+		);
+	}
+});

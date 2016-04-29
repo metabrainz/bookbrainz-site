@@ -53,6 +53,17 @@ class AuthenticationFailedError extends _AuthenticationError {
 	}
 }
 
+// For use when something slips past client-side validation
+class FormSubmissionError extends SiteError {
+	static get defaultMessage() {
+		return 'Form contained invalid data';
+	}
+	
+	static get status() {
+		return status.BAD_REQUEST;
+	}
+}
+
 class NotAuthenticatedError extends _AuthenticationError {
 	static get defaultMessage() {
 		return 'You are not currently authenticated';
@@ -94,6 +105,7 @@ function sendErrorAsJSON(res, err) {
 
 const errors = {
 	AuthenticationFailedError,
+	FormSubmissionError,
 	NotAuthenticatedError,
 	NotFoundError,
 	PermissionDeniedError,
