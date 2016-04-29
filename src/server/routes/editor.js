@@ -33,7 +33,6 @@ const Editor = require('bookbrainz-data').Editor;
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
-const SiteError = require('../helpers/error').SiteError;
 
 const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
@@ -51,11 +50,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 				markup
 			});
 		})
-		.catch(() => {
-			next(new SiteError(
-				'An internal error occurred while loading profile'
-			));
-		});
+		.catch(next);
 });
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
@@ -105,17 +100,9 @@ router.get('/:id', (req, res, next) => {
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
-			next(new NotFoundError('Editor not found'));
+			throw new NotFoundError('Editor not found');
 		})
-		.catch((err) => {
-			const internalError =
-				new SiteError(
-					'An internal error occurred while fetching editor'
-				);
-			internalError.stack = err.stack;
-
-			next(internalError);
-		});
+		.catch(next);
 });
 
 router.get('/:id/revisions', (req, res, next) => {
@@ -134,17 +121,9 @@ router.get('/:id/revisions', (req, res, next) => {
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
-			next(new NotFoundError('Editor not found'));
+			throw new NotFoundError('Editor not found');
 		})
-		.catch((err) => {
-			const internalError =
-				new SiteError(
-					'An internal error occurred while fetching revisions'
-				);
-			internalError.stack = err.stack;
-
-			next(internalError);
-		});
+		.catch(next);
 });
 
 module.exports = router;

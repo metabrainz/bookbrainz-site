@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
- *               2015  Leo Verto
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
+ *               2015       Leo Verto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ const LicensingPage = React.createFactory(
 );
 
 /* GET home page. */
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
@@ -78,13 +78,15 @@ router.get('/', (req, res) => {
 			.then((collection) => collection.toJSON())
 		));
 
-	latestEntitiesPromise.then((latestEntitiesByType) => {
-		const latestEntities = _.orderBy(
-			_.flatten(latestEntitiesByType), 'revision.revision.createdAt',
-			['desc']
-		);
-		render(latestEntities);
-	});
+	latestEntitiesPromise
+		.then((latestEntitiesByType) => {
+			const latestEntities = _.orderBy(
+				_.flatten(latestEntitiesByType), 'revision.revision.createdAt',
+				['desc']
+			);
+			render(latestEntities);
+		})
+		.catch(next);
 });
 
 // Helper function to create pages that don't require custom logic

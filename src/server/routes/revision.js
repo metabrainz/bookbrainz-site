@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015-2016  Ben Ockmore
+ *               2016       Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,7 +167,7 @@ function diffRevisionsWithParents(revisions) {
 	));
 }
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
 	// Here, we need to get the Revision, then get all <Entity>Revision
 	// objects with the same ID, formatting each revision individually, then
 	// concatenating the diffs
@@ -226,7 +227,8 @@ router.get('/:id', (req, res) => {
 				markup: ReactDOMServer.renderToString(RevisionPage(props))
 			});
 		}
-	);
+	)
+		.catch(next);
 });
 
 module.exports = router;

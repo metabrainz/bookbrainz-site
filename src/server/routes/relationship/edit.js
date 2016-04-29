@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ const bookshelf = require('bookbrainz-data').bookshelf;
 const Promise = require('bluebird');
 const _ = require('lodash');
 
+const error = require('../../helpers/error');
 const utils = require('../../helpers/utils');
 
 const Revision = require('bookbrainz-data').Revision;
@@ -157,31 +158,35 @@ function createRelationship(relationship, editorJSON) {
 }
 
 relationshipHelper.addEditRoutes = function addEditRoutes(router) {
-	router.get('/:bbid/relationships', loadEntityRelationships, (req, res) => {
-		const relationshipTypesPromise = new RelationshipType().fetchAll();
+	router.get('/:bbid/relationships', loadEntityRelationships,
+		(req, res, next) => {
+			const relationshipTypesPromise = new RelationshipType().fetchAll();
 
-		const loadedEntities = {};
-		res.locals.entity.relationships.forEach((relationship) => {
-			loadedEntities[relationship.sourceBbid] = relationship.source;
-			loadedEntities[relationship.targetBbid] = relationship.target;
-		});
+			const loadedEntities = {};
+			res.locals.entity.relationships.forEach((relationship) => {
+				loadedEntities[relationship.sourceBbid] = relationship.source;
+				loadedEntities[relationship.targetBbid] = relationship.target;
+			});
 
-		relationshipTypesPromise
-		.then((collection) => collection.toJSON())
-		.then((relationshipTypes) => {
-			// _.omit is used here to avoid "Circular reference" errors
-			const props = {
-				entity: _.omit(res.locals.entity, 'relationships'),
-				relationships: res.locals.entity.relationships,
-				relationshipTypes,
-				loadedEntities
-			};
+			relationshipTypesPromise
+				.then((collection) => collection.toJSON())
+				.then((relationshipTypes) => {
+					// _.omit is used here to avoid "Circular reference" errors
+					const props = {
+						entity: _.omit(res.locals.entity, 'relationships'),
+						relationships: res.locals.entity.relationships,
+						relationshipTypes,
+						loadedEntities
+					};
 
-			const markup = ReactDOMServer.renderToString(EditForm(props));
+					const markup =
+						ReactDOMServer.renderToString(EditForm(props));
 
-			res.render('relationship/edit', {props, markup});
-		});
-	});
+					res.render('relationship/edit', {props, markup});
+				})
+				.catch(next);
+		}
+	);
 
 	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
 		(req, res) => {
@@ -203,12 +208,11 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 				})
 			);
 
-			return relationshipsPromise.then(() =>
-				res.send({result: 'success'})
-			)
-			.catch(() =>
-				res.send({result: 'error'})
-			);
+			return relationshipsPromise
+				.then(() =>
+					res.send({result: 'success'})
+				)
+				.catch((err) => error.sendErrorAsJSON(res, err));
 		}
 	);
 };
