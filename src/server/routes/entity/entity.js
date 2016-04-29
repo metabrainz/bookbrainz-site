@@ -29,11 +29,16 @@ const Revision = require('bookbrainz-data').Revision;
 const Note = require('bookbrainz-data').Note;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
 const Annotation = require('bookbrainz-data').Annotation;
-const status = require('http-status');
 const Promise = require('bluebird');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
 const AliasSet = require('bookbrainz-data').AliasSet;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
+
+const DeletionForm = React.createFactory(
+	require('../../../client/components/forms/deletion.jsx')
+);
 
 const error = require('../../helpers/error');
 
@@ -54,7 +59,14 @@ module.exports.displayEntity = (req, res) => {
 };
 
 module.exports.displayDeleteEntity = (req, res) => {
-	res.render('entity/delete');
+	const props = {
+		entity: res.locals.entity
+	};
+
+	res.render('entity/delete', {
+		markup: ReactDOMServer.renderToString(DeletionForm(props)),
+		props
+	});
 };
 
 module.exports.displayRevisions = (req, res, next, RevisionModel) => {
@@ -121,10 +133,9 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 		);
 	})
 		.then(() => {
-			res.redirect(
-				status.SEE_OTHER, `/${entity.type.toLowerCase()}/${entity.bbid}`
-			);
-		});
+			res.send(entity);
+		})
+		.catch((err) => error.sendErrorAsJSON(res, err));
 };
 
 function setHasChanged(oldSet, newSet, idField, compareFields) {

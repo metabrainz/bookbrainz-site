@@ -77,7 +77,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/confirm', auth.isAuthenticated, (req, res) =>
+router.post('/:bbid/delete/handler', auth.isAuthenticated, (req, res) =>
 	entityRoutes.handleDelete(req, res, CreatorHeader, CreatorRevision)
 );
 
