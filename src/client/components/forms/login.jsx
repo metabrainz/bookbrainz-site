@@ -91,12 +91,12 @@ module.exports = React.createClass({
 
 		return (
 			<div className="row">
+				{loadingComponent}
 				<div className="col-md-6 col-md-offset-3">
 					<form
 						className="whole-page-form form-horizontal"
 						onSubmit={this.handleSubmit}
 					>
-						{loadingComponent}
 						<div className="form-group">
 							<Input
 								className="form-control"
