@@ -164,14 +164,12 @@ function unchangedSetItems(oldSet, newSet, compareFields) {
 		(item) => _.pick(item, compareFields)
 	);
 }
-module.exports.unchangedSetItems = unchangedSetItems;
 
 function updatedOrNewSetItems(oldSet, newSet, compareFields) {
 	return _.differenceBy(
 		newSet, oldSet, (item) => _.pick(item, compareFields)
 	);
 }
-module.exports.updatedOrNewSetItems = updatedOrNewSetItems;
 
 function processFormSet(transacting, oldSet, formItems, setMetadata) {
 	const oldItems =
@@ -312,7 +310,6 @@ function processFormAliases(
 		}
 	);
 }
-module.exports.processFormAliases = processFormAliases;
 
 function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 	const oldIdents =
@@ -358,7 +355,6 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 		(newIdentSet) => newIdentSet
 	);
 }
-module.exports.processFormIdentifiers = processFormIdentifiers;
 
 function processFormAnnotation(
 	transacting, oldAnnotation, newContent, revision
