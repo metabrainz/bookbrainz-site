@@ -35,6 +35,8 @@ const Promise = require('bluebird');
 const AliasSet = require('bookbrainz-data').AliasSet;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 
+const error = require('../../helpers/error');
+
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
 
@@ -55,7 +57,7 @@ module.exports.displayDeleteEntity = (req, res) => {
 	res.render('entity/delete');
 };
 
-module.exports.displayRevisions = (req, res, RevisionModel) => {
+module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 	const bbid = req.params.bbid;
 
 	return new RevisionModel()
@@ -64,7 +66,8 @@ module.exports.displayRevisions = (req, res, RevisionModel) => {
 		.then((collection) => {
 			const revisions = collection.toJSON();
 			return res.render('entity/revisions', {revisions});
-		});
+		})
+		.catch(next);
 };
 
 function _createNote(content, editor, revision, transacting) {
@@ -520,7 +523,8 @@ module.exports.createEntity = (
 			res.send(entity);
 
 			return search.indexEntity(entity);
-		});
+		})
+		.catch((err) => error.sendErrorAsJSON(res, err));
 };
 
 module.exports.editEntity = (
@@ -687,5 +691,6 @@ module.exports.editEntity = (
 			res.send(entity);
 
 			return search.indexEntity(entity);
-		});
+		})
+		.catch((err) => error.sendErrorAsJSON(res, err));
 };

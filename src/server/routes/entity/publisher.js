@@ -94,9 +94,9 @@ router.post('/:bbid/delete/confirm', (req, res) =>
 	entityRoutes.handleDelete(req, res, PublisherHeader, PublisherRevision)
 );
 
-router.get('/:bbid/revisions', (req, res) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	_setPublisherTitle(res);
-	entityRoutes.displayRevisions(req, res, PublisherRevision);
+	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });
 
 // Creation

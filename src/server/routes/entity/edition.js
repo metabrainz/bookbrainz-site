@@ -90,9 +90,9 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/revisions', (req, res) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	_setEditionTitle(res);
-	entityRoutes.displayRevisions(req, res, EditionRevision);
+	entityRoutes.displayRevisions(req, res, next, EditionRevision);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {

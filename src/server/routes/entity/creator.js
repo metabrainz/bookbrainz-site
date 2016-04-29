@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,9 +81,9 @@ router.post('/:bbid/delete/confirm', auth.isAuthenticated, (req, res) =>
 	entityRoutes.handleDelete(req, res, CreatorHeader, CreatorRevision)
 );
 
-router.get('/:bbid/revisions', (req, res) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	_setCreatorTitle(res);
-	entityRoutes.displayRevisions(req, res, CreatorRevision);
+	entityRoutes.displayRevisions(req, res, next, CreatorRevision);
 });
 
 // Creation

@@ -81,9 +81,9 @@ router.post('/:bbid/delete/confirm', (req, res) =>
 	entityRoutes.handleDelete(req, res, WorkHeader, WorkRevision)
 );
 
-router.get('/:bbid/revisions', (req, res) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	_setWorkTitle(res);
-	entityRoutes.displayRevisions(req, res, WorkRevision);
+	entityRoutes.displayRevisions(req, res, next, WorkRevision);
 });
 
 // Creation
