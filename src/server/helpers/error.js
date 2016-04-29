@@ -41,13 +41,21 @@ class SiteError extends Error {
 	}
 }
 
-class NotAuthenticatedError extends SiteError {
-	static get defaultMessage() {
-		return 'You are not currently authenticated';
-	}
-
+class _AuthenticationError extends SiteError {
 	static get status() {
 		return status.UNAUTHORIZED;
+	}
+}
+
+class AuthenticationFailedError extends _AuthenticationError {
+	static get defaultMessage() {
+		return 'Invalid authentication credentials';
+	}
+}
+
+class NotAuthenticatedError extends _AuthenticationError {
+	static get defaultMessage() {
+		return 'You are not currently authenticated';
 	}
 }
 
@@ -85,6 +93,7 @@ function sendErrorAsJSON(res, err) {
 }
 
 const errors = {
+	AuthenticationFailedError,
 	NotAuthenticatedError,
 	NotFoundError,
 	PermissionDeniedError,
