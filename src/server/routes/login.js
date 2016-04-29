@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
- *               2015  Annie Zhou
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
+ *               2015       Annie Zhou
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
