@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ function _setPublisherTitle(res) {
 	);
 }
 
-router.get('/:bbid', loadEntityRelationships, (req, res) => {
+router.get('/:bbid', loadEntityRelationships, (req, res, next) => {
 	// Fetch editions
 	const editionRelationsToFetch = [
 		'defaultAlias', 'disambiguation', 'releaseEventSet.releaseEvents'
@@ -76,11 +76,13 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 		Publisher.forge({bbid: res.locals.entity.bbid})
 			.editions({withRelated: editionRelationsToFetch});
 
-	return editionsPromise.then((editions) => {
-		res.locals.entity.editions = editions.toJSON();
-		_setPublisherTitle(res);
-		entityRoutes.displayEntity(req, res);
-	});
+	return editionsPromise
+		.then((editions) => {
+			res.locals.entity.editions = editions.toJSON();
+			_setPublisherTitle(res);
+			entityRoutes.displayEntity(req, res);
+		})
+		.catch(next);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
@@ -88,13 +90,13 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/confirm', (req, res) =>
+router.post('/:bbid/delete/handler', (req, res) =>
 	entityRoutes.handleDelete(req, res, PublisherHeader, PublisherRevision)
 );
 
-router.get('/:bbid/revisions', (req, res) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	_setPublisherTitle(res);
-	entityRoutes.displayRevisions(req, res, PublisherRevision);
+	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });
 
 // Creation

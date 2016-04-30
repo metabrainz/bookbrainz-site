@@ -20,64 +20,62 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
 const express = require('express');
 const router = express.Router();
 
 const Editor = require('bookbrainz-data').Editor;
 const EditorType = require('bookbrainz-data').EditorType;
-const status = require('http-status');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
+const error = require('../helpers/error');
+
+const FormSubmissionError = require('../helpers/error').FormSubmissionError;
+
 const RegisterPage = React.createFactory(
-	require('../../client/components/pages/register.jsx')
+	require('../../client/components/forms/registration.jsx')
 );
 
-router.get('/', (req, res) => {
-	let error;
-
-	if (req.session) {
-		error = req.session.error;
-		delete req.session.error;
-	}
-
-	res.render('page', {
-		error,
+router.get('/', (req, res) =>
+	res.render('register', {
 		title: 'Register',
 		markup: ReactDOMServer.renderToString(RegisterPage())
-	});
-});
+	})
+);
 
-router.post('/handler', (req, res, next) => {
-	if (!req.body.password) {
-		req.session.error = 'No password set';
-		res.redirect(status.SEE_OTHER, '/register');
+router.post('/handler', (req, res) => {
+	new Promise((resolve) => {
+		if (!req.body.password) {
+			throw new FormSubmissionError('No password set');
+		}
 
-		return;
-	}
+		if (req.body.password !== req.body.passwordRepeat) {
+			throw new FormSubmissionError('Passwords do not match');
+		}
 
-	if (req.body.password !== req.body.password2) {
-		req.session.error = 'Passwords did not match';
-		res.redirect(status.SEE_OTHER, '/register');
-
-		return;
-	}
-
-	EditorType.forge({label: 'Editor'})
-		.fetch({require: true})
+		resolve();
+	})
+		.then(() =>
+			// Fetch the default EditorType from the database
+			EditorType.forge({label: 'Editor'})
+				.fetch({require: true})
+		)
 		.then((editorType) =>
-			Editor.forge({
+			// Create a new Editor and add to the database
+			new Editor({
 				name: req.body.username,
 				email: req.body.email,
 				password: req.body.password,
 				typeId: editorType.id
 			})
-				.save()
+			.save()
 		)
-		.then(() => {
-			res.redirect(status.SEE_OTHER, '/');
-		})
-		.catch(next);
+		.then((editor) =>
+			res.send(editor.toJSON())
+		)
+		.catch((err) => error.sendErrorAsJSON(res, err));
 });
 
 module.exports = router;

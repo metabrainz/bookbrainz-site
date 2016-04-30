@@ -90,9 +90,9 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/revisions', (req, res) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	_setEditionTitle(res);
-	entityRoutes.displayRevisions(req, res, EditionRevision);
+	entityRoutes.displayRevisions(req, res, next, EditionRevision);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
@@ -100,14 +100,15 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/confirm', (req, res) =>
+router.post('/:bbid/delete/handler', (req, res) =>
 	entityRoutes.handleDelete(req, res, EditionHeader, EditionRevision)
 );
 
 // Creation
 
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
-	loadEditionStatuses, loadEditionFormats, loadLanguages, (req, res) => {
+	loadEditionStatuses, loadEditionFormats, loadLanguages,
+	(req, res, next) => {
 		const propsPromise = {
 			languages: res.locals.languages,
 			editionStatuses: res.locals.editionStatuses,
@@ -140,7 +141,9 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 			});
 		}
 
-		Promise.props(propsPromise).then(render);
+		Promise.props(propsPromise)
+			.then(render)
+			.catch(next);
 	}
 );
 

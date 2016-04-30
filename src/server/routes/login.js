@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
- *               2015  Annie Zhou
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
+ *               2015       Annie Zhou
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
@@ -27,52 +29,60 @@ const status = require('http-status');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
+const error = require('../helpers/error');
+
+const AuthenticationFailedError =
+	require('../helpers/error').AuthenticationFailedError;
+
 const LoginPage = React.createFactory(
-	require('../../client/components/pages/login.jsx')
+	require('../../client/components/forms/login.jsx')
 );
 
-router.get('/login', (req, res) => {
-	const props = {error: req.query.error};
-	return res.render('page', {
-		title: 'Log in',
-		markup: ReactDOMServer.renderToString(LoginPage(props))
-	});
-});
+router.get('/login', (req, res) =>
+	res.render('login', {
+		title: 'Log In',
+		markup: ReactDOMServer.renderToString(LoginPage())
+	})
+);
 
 router.get('/logout', (req, res) => {
-	delete req.session.bearerToken;
-	req.logout();
+	req.logOut();
 	res.redirect(status.SEE_OTHER, '/');
 });
 
 router.post('/login/handler', (req, res, next) => {
 	passport.authenticate('local', (authErr, user) => {
-		if (authErr) {
-			console.log(authErr);
-			// If an error occurs during login, send the user back.
-			return res.redirect(
-				status.MOVED_PERMANENTLY, `/login?error=${authErr.message}`
-			);
-		}
-
-		if (!user) {
-			return res.redirect(
-				status.MOVED_PERMANENTLY,
-				'/login?error=Login details incorrect'
-			);
-		}
-
-		return req.logIn(user, (loginErr) => {
-			if (loginErr) {
-				return next(loginErr);
+		new Promise((resolve, reject) => {
+			if (authErr) {
+				reject(authErr);
 			}
 
-			const redirect =
-				req.session.redirectTo ? req.session.redirectTo : '/';
-			delete req.session.redirectTo;
+			// If the user is not set by the passport strategy, authentication
+			// failed
+			if (!user) {
+				throw new AuthenticationFailedError(
+					'Invalid username or password'
+				);
+			}
 
-			return res.redirect(status.SEE_OTHER, redirect);
-		});
+			req.logIn(user, (loginErr) => {
+				// If `loginErr` is set, serialization of the user failed
+				if (loginErr) {
+					reject(loginErr);
+				}
+
+				resolve();
+			});
+		})
+			.then(() => {
+				const redirectTo =
+					req.session.redirectTo ? req.session.redirectTo : '/';
+
+				delete req.session.redirectTo;
+
+				return res.send({redirectTo});
+			})
+			.catch((err) => error.sendErrorAsJSON(res, err));
 	})(req, res, next);
 });
 

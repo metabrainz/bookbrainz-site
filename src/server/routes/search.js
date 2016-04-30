@@ -19,6 +19,8 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
 const express = require('express');
 const router = express.Router();
 const React = require('react');
@@ -26,13 +28,15 @@ const ReactDOMServer = require('react-dom/server');
 const auth = require('../helpers/auth');
 const search = require('../helpers/search');
 
-const status = require('http-status');
+const error = require('../helpers/error');
+
+const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
 
 const SearchPage = React.createFactory(
 	require('../../client/components/pages/search.jsx')
 );
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
 	const query = req.query.q;
 	const collection = req.query.collection || null;
 
@@ -41,15 +45,6 @@ router.get('/', (req, res) => {
 			query,
 			initialResults: entities
 		}))
-		.catch((err) => {
-			console.log(err);
-			const message = 'An error occurred while obtaining search results';
-
-			return {
-				error: message,
-				initialResults: []
-			};
-		})
 		.then((props) => {
 			res.render('search', {
 				title: 'Search Results',
@@ -57,7 +52,8 @@ router.get('/', (req, res) => {
 				markup: ReactDOMServer.renderToString(SearchPage(props)),
 				hideSearch: true
 			});
-		});
+		})
+		.catch(next);
 });
 
 router.get('/autocomplete', (req, res) => {
@@ -66,32 +62,25 @@ router.get('/autocomplete', (req, res) => {
 
 	search.autocomplete(query, collection)
 		.then((entities) => {
-			res.json(entities);
+			res.send(entities);
 		})
-		.catch((err) => {
-			console.log(err);
-			const message = 'An error occurred while obtaining search results';
-
-			res.json({
-				error: message
-			});
-		});
+		.catch((err) => error.sendErrorAsJSON(res, err));
 });
 
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
-	// TODO: This is hacky, and we should replace it once we switch to SOLR.
-	const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
+	new Promise((resolve) => {
+		// TODO: This is hacky, and we should replace it once we switch to SOLR.
+		const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
 
-	const userName = req.session.passport &&
-		req.session.passport.user &&
-		req.session.passport.user.name;
-	if (trustedUsers.indexOf(userName) === -1) {
-		return res.sendStatus(status.UNAUTHORIZED);
-	}
+		if (trustedUsers.indexOf(req.user.name) === -1) {
+			throw new PermissionDeniedError();
+		}
 
-	return search.generateIndex()
+		resolve();
+	})
+		.then(() => search.generateIndex())
 		.then(() => res.send({success: true}))
-		.catch(() => res.send({success: false}));
+		.catch((err) => error.sendErrorAsJSON(res, err));
 });
 
 module.exports = router;

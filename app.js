@@ -42,7 +42,6 @@ const config = require('./src/server/helpers/config');
 require('bookbrainz-data').init(config.database);
 const auth = require('./src/server/helpers/auth');
 
-const status = require('http-status');
 const git = require('git-rev');
 
 // Initialize application
@@ -111,38 +110,18 @@ app.use((req, res, next) => {
 // Set up routes
 require('./src/server/routes')(app);
 
+const NotFoundError = require('./src/server/helpers/error').NotFoundError;
+
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	const err = new Error('Not Found');
-	err.status = status.NOT_FOUND;
-	next(err);
+	next(new NotFoundError());
 });
 
-// Error handlers
+const error = require('./src/server/helpers/error');
 
-/* Development error handler; displays stacktrace to user */
-if (app.get('env') === 'development') {
-	app.use((err, req, res) => {
-		console.log(`Internal Error. Message: ${err.message} Stacktrace...`);
-		console.log(err.stack);
-
-		res.status(err.status || status.INTERNAL_SERVER_ERROR);
-
-		res.render('error', {
-			message: err.message,
-			error: err
-		});
-	});
-}
-
-/* Production error handler; stacktrace is omitted */
-app.use((err, req, res) => {
-	res.status(err.status || status.INTERNAL_SERVER_ERROR);
-
-	res.render('error', {
-		message: err.message,
-		error: {}
-	});
+// Error handler; arity MUST be 4 or express doesn't treat it as such
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+	error.renderError(res, err);
 });
 
 module.exports = app;

@@ -29,11 +29,18 @@ const Revision = require('bookbrainz-data').Revision;
 const Note = require('bookbrainz-data').Note;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
 const Annotation = require('bookbrainz-data').Annotation;
-const status = require('http-status');
 const Promise = require('bluebird');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 
 const AliasSet = require('bookbrainz-data').AliasSet;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
+
+const DeletionForm = React.createFactory(
+	require('../../../client/components/forms/deletion.jsx')
+);
+
+const error = require('../../helpers/error');
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -52,10 +59,17 @@ module.exports.displayEntity = (req, res) => {
 };
 
 module.exports.displayDeleteEntity = (req, res) => {
-	res.render('entity/delete');
+	const props = {
+		entity: res.locals.entity
+	};
+
+	res.render('entity/delete', {
+		markup: ReactDOMServer.renderToString(DeletionForm(props)),
+		props
+	});
 };
 
-module.exports.displayRevisions = (req, res, RevisionModel) => {
+module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 	const bbid = req.params.bbid;
 
 	return new RevisionModel()
@@ -64,7 +78,8 @@ module.exports.displayRevisions = (req, res, RevisionModel) => {
 		.then((collection) => {
 			const revisions = collection.toJSON();
 			return res.render('entity/revisions', {revisions});
-		});
+		})
+		.catch(next);
 };
 
 function _createNote(content, editor, revision, transacting) {
@@ -118,10 +133,9 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 		);
 	})
 		.then(() => {
-			res.redirect(
-				status.SEE_OTHER, `/${entity.type.toLowerCase()}/${entity.bbid}`
-			);
-		});
+			res.send(entity);
+		})
+		.catch((err) => error.sendErrorAsJSON(res, err));
 };
 
 function setHasChanged(oldSet, newSet, idField, compareFields) {
@@ -164,14 +178,12 @@ function unchangedSetItems(oldSet, newSet, compareFields) {
 		(item) => _.pick(item, compareFields)
 	);
 }
-module.exports.unchangedSetItems = unchangedSetItems;
 
 function updatedOrNewSetItems(oldSet, newSet, compareFields) {
 	return _.differenceBy(
 		newSet, oldSet, (item) => _.pick(item, compareFields)
 	);
 }
-module.exports.updatedOrNewSetItems = updatedOrNewSetItems;
 
 function processFormSet(transacting, oldSet, formItems, setMetadata) {
 	const oldItems =
@@ -312,7 +324,6 @@ function processFormAliases(
 		}
 	);
 }
-module.exports.processFormAliases = processFormAliases;
 
 function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 	const oldIdents =
@@ -358,7 +369,6 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 		(newIdentSet) => newIdentSet
 	);
 }
-module.exports.processFormIdentifiers = processFormIdentifiers;
 
 function processFormAnnotation(
 	transacting, oldAnnotation, newContent, revision
@@ -524,7 +534,8 @@ module.exports.createEntity = (
 			res.send(entity);
 
 			return search.indexEntity(entity);
-		});
+		})
+		.catch((err) => error.sendErrorAsJSON(res, err));
 };
 
 module.exports.editEntity = (
@@ -691,5 +702,6 @@ module.exports.editEntity = (
 			res.send(entity);
 
 			return search.indexEntity(entity);
-		});
+		})
+		.catch((err) => error.sendErrorAsJSON(res, err));
 };

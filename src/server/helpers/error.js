@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015  Sean Burke
+ * Copyright (C) 2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,115 @@
 
 'use strict';
 
-const util = require('util');
+const status = require('http-status');
 
-function NotFoundError(message) {
-	NotFoundError.super_.call(this);
+class SiteError extends Error {
+	constructor(message) {
+		super();
 
-	this.message = message || 'Object not found';
-	this.status = 404;
+		// We can't access the subclass's default message before calling super,
+		// so we set it manually here
+		this.message = message || this.constructor.defaultMessage;
+
+		this.name = this.constructor.name;
+		this.status = this.constructor.status;
+	}
+
+	static get defaultMessage() {
+		return 'An unhandled error occurred';
+	}
+
+	static get status() {
+		return status.INTERNAL_SERVER_ERROR;
+	}
 }
 
-util.inherits(NotFoundError, Error);
+class _AuthenticationError extends SiteError {
+	static get status() {
+		return status.UNAUTHORIZED;
+	}
+}
+
+class AuthenticationFailedError extends _AuthenticationError {
+	static get defaultMessage() {
+		return 'Invalid authentication credentials';
+	}
+}
+
+// For use when something slips past client-side validation
+class FormSubmissionError extends SiteError {
+	static get defaultMessage() {
+		return 'Form contained invalid data';
+	}
+
+	static get status() {
+		return status.BAD_REQUEST;
+	}
+}
+
+class NotAuthenticatedError extends _AuthenticationError {
+	static get defaultMessage() {
+		return 'You are not currently authenticated';
+	}
+}
+
+class NotFoundError extends SiteError {
+	static get defaultMessage() {
+		return 'Page not found';
+	}
+
+	static get status() {
+		return status.NOT_FOUND;
+	}
+}
+
+class PermissionDeniedError extends SiteError {
+	static get defaultMessage() {
+		return 'You do not have permission to access this page';
+	}
+
+	static get status() {
+		return status.FORBIDDEN;
+	}
+}
+
+function _logError(err) {
+	console.log(err);
+	console.log(err.stack);
+}
+
+function _getErrorToSend(err) {
+	if (err instanceof SiteError) {
+		return err;
+	}
+
+	// If we haven't generated the error ourselves with display in mind, log
+	// instead and return a new generic SiteError
+	_logError(err);
+	return new SiteError();
+}
+
+function renderError(res, err) {
+	const errorToSend = _getErrorToSend(err);
+
+	res.status(errorToSend.status).render('error', {error: errorToSend});
+}
+
+function sendErrorAsJSON(res, err) {
+	const errorToSend = _getErrorToSend(err);
+
+	res.status(errorToSend.status).send({error: errorToSend.message});
+}
 
 const errors = {
-	NotFoundError
+	AuthenticationFailedError,
+	FormSubmissionError,
+	NotAuthenticatedError,
+	NotFoundError,
+	PermissionDeniedError,
+	SiteError,
+	renderError,
+	sendErrorAsJSON
 };
 
 module.exports = errors;

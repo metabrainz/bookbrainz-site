@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,58 +19,65 @@
 
 'use strict';
 
+const Promise = require('bluebird');
+
 const express = require('express');
 const router = express.Router();
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const auth = require('../helpers/auth');
+const error = require('../helpers/error');
 const _ = require('lodash');
 
 const Editor = require('bookbrainz-data').Editor;
-const status = require('http-status');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
+const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
+
 const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
 );
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	new Editor({id: parseInt(req.user.id, 10)})
-	.fetch()
-	.then((editor) => {
-		const markup =
-			ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
+		.fetch()
+		.then((editor) => {
+			const markup =
+				ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
 
-		res.render('editor/edit', {
-			props: editor.toJSON(),
-			markup
-		});
-	})
-	.catch(() => {
-		next(new Error('An internal error occurred while loading profile'));
-	});
+			res.render('editor/edit', {
+				props: editor.toJSON(),
+				markup
+			});
+		})
+		.catch(next);
 });
 
-router.post('/edit/handler', auth.isAuthenticated, (req, res) => {
-	// Should handle errors in some fashion other than redirecting.
-	if (req.body.id !== req.user.id) {
-		req.session.error = 'You do not have permission to edit that user';
-		res.redirect(status.SEE_OTHER, '/editor/edit');
-	}
+router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	new Promise((resolve) => {
+		if (req.user && req.body.id === req.user.id) {
+			resolve();
+		}
 
-	new Editor({
-		id: parseInt(req.body.id, 10),
-		bio: req.body.bio
+		// Edit is for a user other than the current one
+		throw new PermissionDeniedError(
+			'You do not have permission to edit that user'
+		);
 	})
-		.save()
-		.then((editor) => {
-			res.send(editor.toJSON());
-		})
-		.catch(() => {
-			req.session.error =
-				'An internal error occurred while modifying profile';
-			res.redirect(status.SEE_OTHER, '/editor/edit');
-		});
+		.then(() =>
+			// Fetch the current user from the database
+			Editor.forge({id: parseInt(req.user.id, 10)})
+				.fetch()
+		)
+		.then((editor) =>
+			// Modify the user to match the updates from the form
+			editor.set('bio', req.body.bio)
+				.save()
+		)
+		.then((editor) =>
+			res.send(editor.toJSON())
+		)
+		.catch((err) => error.sendErrorAsJSON(res, err));
 });
 
 router.get('/:id', (req, res, next) => {
@@ -93,15 +100,9 @@ router.get('/:id', (req, res, next) => {
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
-			next(new NotFoundError('Editor not found'));
+			throw new NotFoundError('Editor not found');
 		})
-		.catch((err) => {
-			const internalError =
-				new Error('An internal error occurred while fetching editor');
-			internalError.stack = err.stack;
-
-			next(internalError);
-		});
+		.catch(next);
 });
 
 router.get('/:id/revisions', (req, res, next) => {
@@ -120,17 +121,9 @@ router.get('/:id/revisions', (req, res, next) => {
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
-			next(new NotFoundError('Editor not found'));
+			throw new NotFoundError('Editor not found');
 		})
-		.catch((err) => {
-			const internalError =
-				new Error(
-					'An internal error occurred while fetching revisions'
-				);
-			internalError.stack = err.stack;
-
-			next(internalError);
-		});
+		.catch(next);
 });
 
 module.exports = router;
