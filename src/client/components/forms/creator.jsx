@@ -25,9 +25,9 @@ const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
 const Aliases = require('./parts/aliases.jsx');
-const CreatorData = require('./parts/creatorData.jsx');
-const LoadingSpinner = require('../loading_spinner.jsx');
-const RevisionNote = require('./parts/revisionNote.jsx');
+const CreatorData = require('./parts/creator-data.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
+const RevisionNote = require('./parts/revision-note.jsx');
 
 module.exports = React.createClass({
 	displayName: 'creatorForm',

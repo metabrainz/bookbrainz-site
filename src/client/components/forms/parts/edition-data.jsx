@@ -24,7 +24,7 @@ const _assign = require('lodash.assign');
 const Input = require('react-bootstrap').Input;
 
 const Identifiers = require('./identifier-list.jsx');
-const PartialDate = require('../../input/partialDate.jsx');
+const PartialDate = require('../../input/partial-date.jsx');
 const SearchSelect = require('../../input/entity-search.jsx');
 const Select = require('../../input/select2.jsx');
 

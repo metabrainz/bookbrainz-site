@@ -23,7 +23,7 @@ const request = require('superagent-bluebird-promise');
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
-const LoadingSpinner = require('../loading_spinner.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
 
 module.exports = React.createClass({
 	displayName: 'profileForm',

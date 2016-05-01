@@ -25,9 +25,9 @@ const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
 const Aliases = require('./parts/aliases.jsx');
-const LoadingSpinner = require('../loading_spinner.jsx');
-const PublisherData = require('./parts/publisherData.jsx');
-const RevisionNote = require('./parts/revisionNote.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
+const PublisherData = require('./parts/publisher-data.jsx');
+const RevisionNote = require('./parts/revision-note.jsx');
 
 module.exports = React.createClass({
 	displayName: 'publisherForm',

@@ -25,9 +25,9 @@ const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
 const Aliases = require('./parts/aliases.jsx');
-const RevisionNote = require('./parts/revisionNote.jsx');
-const EditionData = require('./parts/editionData.jsx');
-const LoadingSpinner = require('../loading_spinner.jsx');
+const RevisionNote = require('./parts/revision-note.jsx');
+const EditionData = require('./parts/edition-data.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
 
 module.exports = React.createClass({
 	displayName: 'editionForm',

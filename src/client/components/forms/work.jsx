@@ -25,9 +25,9 @@ const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
 const Aliases = require('./parts/aliases.jsx');
-const LoadingSpinner = require('../loading_spinner.jsx');
-const RevisionNote = require('./parts/revisionNote.jsx');
-const WorkData = require('./parts/workData.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
+const RevisionNote = require('./parts/revision-note.jsx');
+const WorkData = require('./parts/work-data.jsx');
 
 module.exports = React.createClass({
 	displayName: 'workForm',

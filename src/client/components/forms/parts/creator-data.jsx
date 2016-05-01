@@ -23,33 +23,35 @@ const React = require('react');
 const Input = require('react-bootstrap').Input;
 
 const Identifiers = require('./identifier-list.jsx');
-const PartialDate = require('../../input/partialDate.jsx');
+const PartialDate = require('../../input/partial-date.jsx');
 const Select = require('../../input/select2.jsx');
 
 const validators = require('../../../helpers/react-validators');
 
-const PublisherData = React.createClass({
-	displayName: 'publisherDataComponent',
+const CreatorData = React.createClass({
+	displayName: 'creatorDataComponent',
 	propTypes: {
-		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-		publisher: React.PropTypes.shape({
-			annotation: React.PropTypes.shape({
-				content: React.PropTypes.string
-			}),
-			begin_date: React.PropTypes.string,
+		creator: React.PropTypes.shape({
+			beginDate: React.PropTypes.string,
+			endDate: React.PropTypes.string,
+			ended: React.PropTypes.bool,
+			gender: validators.namedProperty,
+			creatorType: validators.labeledProperty,
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
 			}),
-			end_date: React.PropTypes.string,
-			ended: React.PropTypes.bool,
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
+			}),
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
 				typeId: React.PropTypes.number
-			})),
-			publisherType: validators.labeledProperty
+			}))
 		}),
-		publisherTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+		creatorTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+		genders: React.PropTypes.arrayOf(validators.namedProperty),
+		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		visible: React.PropTypes.bool,
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func
@@ -58,7 +60,7 @@ const PublisherData = React.createClass({
 		'use strict';
 
 		return {
-			ended: this.props.publisher ? this.props.publisher.ended : false
+			ended: this.props.creator ? this.props.creator.ended : false
 		};
 	},
 	getValue() {
@@ -68,7 +70,8 @@ const PublisherData = React.createClass({
 			beginDate: this.begin.getValue(),
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
-			publisherType: this.publisherType.getValue(),
+			gender: this.gender.getValue(),
+			creatorType: this.creatorType.getValue(),
 			disambiguation: this.disambiguation.getValue(),
 			annotation: this.annotation.getValue(),
 			identifiers: this.identifiers.getValue()
@@ -91,17 +94,20 @@ const PublisherData = React.createClass({
 
 		let initialBeginDate = null;
 		let initialEndDate = null;
-		let initialPublisherType = null;
+		let initialGender = null;
+		let initialCreatorType = null;
 		let initialDisambiguation = null;
 		let initialAnnotation = null;
 		let initialIdentifiers = [];
 
-		const prefillData = this.props.publisher;
+		const prefillData = this.props.creator;
 		if (prefillData) {
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
-			initialPublisherType = prefillData.publisherType ?
-				prefillData.publisherType.id : null;
+			initialGender = prefillData.gender ?
+				prefillData.gender.id : null;
+			initialCreatorType = prefillData.creatorType ?
+				prefillData.creatorType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
 				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
@@ -154,14 +160,27 @@ const PublisherData = React.createClass({
 					/>
 					<Select
 						noDefault
-						defaultValue={initialPublisherType}
+						defaultValue={initialGender}
+						idAttribute="id"
+						label="Gender"
+						labelAttribute="name"
+						labelClassName="col-md-4"
+						options={this.props.genders}
+						placeholder="Select gender…"
+						ref={(ref) => this.gender = ref}
+						select2Options={select2Options}
+						wrapperClassName="col-md-4"
+					/>
+					<Select
+						noDefault
+						defaultValue={initialCreatorType}
 						idAttribute="id"
 						label="Type"
 						labelAttribute="label"
 						labelClassName="col-md-4"
-						options={this.props.publisherTypes}
-						placeholder="Select publisher type…"
-						ref={(ref) => this.publisherType = ref}
+						options={this.props.creatorTypes}
+						placeholder="Select creator type…"
+						ref={(ref) => this.creatorType = ref}
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
@@ -222,4 +241,4 @@ const PublisherData = React.createClass({
 	}
 });
 
-module.exports = PublisherData;
+module.exports = CreatorData;

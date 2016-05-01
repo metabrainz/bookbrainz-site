@@ -24,7 +24,7 @@ const Alert = require('react-bootstrap').Alert;
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
-const LoadingSpinner = require('../loading_spinner.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
 
 (() => {
 	'use strict';
