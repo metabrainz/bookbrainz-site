@@ -26,7 +26,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
 const auth = require('../helpers/auth');
-const error = require('../helpers/error');
+const handler = require('../helpers/handler');
 const search = require('../helpers/search');
 
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
@@ -61,15 +61,13 @@ router.get('/autocomplete', (req, res) => {
 	const query = req.query.q;
 	const collection = req.query.collection || null;
 
-	search.autocomplete(query, collection)
-		.then((entities) => {
-			res.send(entities);
-		})
-		.catch((err) => error.sendErrorAsJSON(res, err));
+	const searchPromise = search.autocomplete(query, collection);
+
+	handler.sendPromiseResult(res, searchPromise);
 });
 
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
-	new Promise((resolve) => {
+	const indexPromise = new Promise((resolve) => {
 		// TODO: This is hacky, and we should replace it once we switch to SOLR.
 		const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
 
@@ -80,8 +78,9 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		resolve();
 	})
 		.then(() => search.generateIndex())
-		.then(() => res.send({success: true}))
-		.catch((err) => error.sendErrorAsJSON(res, err));
+		.then(() => ({success: true}));
+
+	handler.sendPromiseResult(res, indexPromise);
 });
 
 module.exports = router;

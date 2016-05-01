@@ -29,7 +29,7 @@ const express = require('express');
 const Editor = require('bookbrainz-data').Editor;
 const EditorType = require('bookbrainz-data').EditorType;
 
-const error = require('../helpers/error');
+const handler = require('../helpers/handler');
 
 const FormSubmissionError = require('../helpers/error').FormSubmissionError;
 
@@ -47,7 +47,7 @@ router.get('/', (req, res) =>
 );
 
 router.post('/handler', (req, res) => {
-	new Promise((resolve) => {
+	const registerPromise = new Promise((resolve) => {
 		if (!req.body.password) {
 			throw new FormSubmissionError('No password set');
 		}
@@ -73,10 +73,9 @@ router.post('/handler', (req, res) => {
 			})
 			.save()
 		)
-		.then((editor) =>
-			res.send(editor.toJSON())
-		)
-		.catch((err) => error.sendErrorAsJSON(res, err));
+		.then((editor) => editor.toJSON());
+
+	handler.sendPromiseResult(res, registerPromise);
 });
 
 module.exports = router;

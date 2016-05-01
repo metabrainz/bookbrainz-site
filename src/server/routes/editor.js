@@ -29,7 +29,7 @@ const _ = require('lodash');
 const Editor = require('bookbrainz-data').Editor;
 
 const auth = require('../helpers/auth');
-const error = require('../helpers/error');
+const handler = require('../helpers/handler');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
@@ -56,7 +56,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 });
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	new Promise((resolve) => {
+	const editPromise = new Promise((resolve) => {
 		if (req.user && req.body.id === req.user.id) {
 			resolve();
 		}
@@ -76,10 +76,9 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			editor.set('bio', req.body.bio)
 				.save()
 		)
-		.then((editor) =>
-			res.send(editor.toJSON())
-		)
-		.catch((err) => error.sendErrorAsJSON(res, err));
+		.then((editor) => editor.toJSON());
+
+	handler.sendPromiseResult(res, editPromise);
 });
 
 router.get('/:id', (req, res, next) => {

@@ -35,7 +35,7 @@ const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
 
-const error = require('../../helpers/error');
+const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 
@@ -100,7 +100,7 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 	const entity = res.locals.entity;
 	const editorJSON = req.session.passport.user;
 
-	return bookshelf.transaction((transacting) => {
+	const entityDeletePromise = bookshelf.transaction((transacting) => {
 		const editorUpdatePromise =
 			utils.incrementEditorEditCountById(editorJSON.id, transacting);
 
@@ -132,11 +132,9 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 			editorUpdatePromise, newRevisionPromise, notePromise,
 			newEntityRevisionPromise, entityHeaderPromise
 		);
-	})
-		.then(() => {
-			res.send(entity);
-		})
-		.catch((err) => error.sendErrorAsJSON(res, err));
+	});
+
+	return handler.sendPromiseResult(res, entityDeletePromise);
 };
 
 function setHasChanged(oldSet, newSet, idField, compareFields) {
@@ -530,13 +528,7 @@ module.exports.createEntity = (
 			.then((entity) => entity.toJSON());
 	});
 
-	return entityCreationPromise
-		.then((entity) => {
-			res.send(entity);
-
-			return search.indexEntity(entity);
-		})
-		.catch((err) => error.sendErrorAsJSON(res, err));
+	return handler.sendPromiseResult(res, entityCreationPromise, search.indexEntity);
 };
 
 module.exports.editEntity = (
@@ -698,11 +690,5 @@ module.exports.editEntity = (
 			.then((entity) => entity.toJSON());
 	});
 
-	return entityEditPromise
-		.then((entity) => {
-			res.send(entity);
-
-			return search.indexEntity(entity);
-		})
-		.catch((err) => error.sendErrorAsJSON(res, err));
+	return handler.sendPromiseResult(res, entityEditPromise, search.indexEntity);
 };
