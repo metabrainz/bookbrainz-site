@@ -29,7 +29,7 @@ const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 const PageHeader = require('react-bootstrap').PageHeader;
 
-const validators = require('../validators');
+const validators = require('../../helpers/react-validators');
 
 const Select = require('../input/select2.jsx');
 const SearchSelect = require('../input/entity-search.jsx');

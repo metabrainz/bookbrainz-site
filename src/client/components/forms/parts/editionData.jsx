@@ -28,7 +28,7 @@ const PartialDate = require('../../input/partialDate.jsx');
 const SearchSelect = require('../../input/entity-search.jsx');
 const Select = require('../../input/select2.jsx');
 
-const validators = require('../../validators');
+const validators = require('../../../helpers/react-validators');
 
 const EditionData = React.createClass({
 	displayName: 'editionDataComponent',

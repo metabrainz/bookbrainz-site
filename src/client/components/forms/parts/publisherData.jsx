@@ -26,7 +26,7 @@ const Identifiers = require('./identifiers.jsx');
 const PartialDate = require('../../input/partialDate.jsx');
 const Select = require('../../input/select2.jsx');
 
-const validators = require('../../validators');
+const validators = require('../../../helpers/react-validators');
 
 const PublisherData = React.createClass({
 	displayName: 'publisherDataComponent',

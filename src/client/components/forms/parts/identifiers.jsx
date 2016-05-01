@@ -25,7 +25,7 @@ const Button = require('react-bootstrap').Button;
 
 const Select = require('../../input/select2.jsx');
 
-const validators = require('../../validators');
+const validators = require('../../../helpers/react-validators');
 
 function _identifierIsValid(typeId, value, identifierTypes) {
 	'use strict';
