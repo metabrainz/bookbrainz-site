@@ -24,7 +24,7 @@ const request = require('superagent-bluebird-promise');
 const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
-const Aliases = require('./parts/aliases.jsx');
+const Aliases = require('./parts/alias-list.jsx');
 const RevisionNote = require('./parts/revision-note.jsx');
 const EditionData = require('./parts/edition-data.jsx');
 const LoadingSpinner = require('../loading-spinner.jsx');
