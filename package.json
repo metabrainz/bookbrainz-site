@@ -28,6 +28,7 @@
     "lodash": "^4.7.0",
     "lodash.assign": "^4.0.8",
     "lodash.compact": "^3.0.1",
+    "lodash.debounce": "^4.0.6",
     "lodash.filter": "^4.3.0",
     "lodash.find": "^4.3.0",
     "lodash.isequal": "^4.1.4",
