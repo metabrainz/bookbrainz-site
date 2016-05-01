@@ -19,28 +19,29 @@
 
 'use strict';
 
-const bookshelf = require('bookbrainz-data').bookshelf;
-const _ = require('lodash');
-
-const search = require('../../helpers/search');
-const utils = require('../../helpers/utils');
-
-const Revision = require('bookbrainz-data').Revision;
-const Note = require('bookbrainz-data').Note;
-const Disambiguation = require('bookbrainz-data').Disambiguation;
-const Annotation = require('bookbrainz-data').Annotation;
 const Promise = require('bluebird');
+
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
+const _ = require('lodash');
+
+// XXX: Don't pull in bookshelf directly
+const bookshelf = require('bookbrainz-data').bookshelf;
 
 const AliasSet = require('bookbrainz-data').AliasSet;
+const Annotation = require('bookbrainz-data').Annotation;
+const Disambiguation = require('bookbrainz-data').Disambiguation;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
+const Note = require('bookbrainz-data').Note;
+const Revision = require('bookbrainz-data').Revision;
+
+const error = require('../../helpers/error');
+const search = require('../../helpers/search');
+const utils = require('../../helpers/utils');
 
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion.jsx')
 );
-
-const error = require('../../helpers/error');
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;

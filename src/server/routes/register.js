@@ -22,13 +22,12 @@
 
 const Promise = require('bluebird');
 
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const express = require('express');
-const router = express.Router();
 
 const Editor = require('bookbrainz-data').Editor;
 const EditorType = require('bookbrainz-data').EditorType;
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
 
 const error = require('../helpers/error');
 
@@ -37,6 +36,8 @@ const FormSubmissionError = require('../helpers/error').FormSubmissionError;
 const RegisterPage = React.createFactory(
 	require('../../client/components/forms/registration.jsx')
 );
+
+const router = express.Router();
 
 router.get('/', (req, res) =>
 	res.render('register', {

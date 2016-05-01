@@ -17,21 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const Input = require('react-bootstrap').Input;
-const Button = require('react-bootstrap').Button;
-const Alert = require('react-bootstrap').Alert;
-const PageHeader = require('react-bootstrap').PageHeader;
-const Select = require('../input/select2.jsx');
-const SearchSelect = require('../input/entity-search.jsx');
-const Icon = require('react-fontawesome');
-const _ = require('lodash');
-const request = require('superagent');
-require('superagent-bluebird-promise');
-const _filter = require('lodash.filter');
 const Handlebars = require('handlebars');
+const Icon = require('react-fontawesome');
+const React = require('react');
+const request = require('superagent-bluebird-promise');
+const _ = require('lodash');
+const _filter = require('lodash.filter');
+
+const Alert = require('react-bootstrap').Alert;
+const Button = require('react-bootstrap').Button;
+const Input = require('react-bootstrap').Input;
+const PageHeader = require('react-bootstrap').PageHeader;
 
 const validators = require('../validators');
+
+const Select = require('../input/select2.jsx');
+const SearchSelect = require('../input/entity-search.jsx');
 
 function getEntityLink(entity) {
 	'use strict';

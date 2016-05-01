@@ -18,17 +18,18 @@
 
 'use strict';
 
-const ElasticSearch = require('elasticsearch');
 const Promise = require('bluebird');
-const _ = require('lodash');
 
-const utils = require('../helpers/utils');
+const ElasticSearch = require('elasticsearch');
+const _ = require('lodash');
 
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
 const Work = require('bookbrainz-data').Work;
 const Publisher = require('bookbrainz-data').Publisher;
+
+const utils = require('../helpers/utils');
 
 const search = {};
 

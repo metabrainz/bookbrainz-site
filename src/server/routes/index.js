@@ -59,6 +59,8 @@ router.get('/', (req, res, next) => {
 
 	const entityModels = utils.getEntityModels();
 
+	console.log(entityModels);
+
 	const latestEntitiesPromise =
 		Promise.all(_.map(entityModels, (model, name) =>
 			model.query((qb) => {

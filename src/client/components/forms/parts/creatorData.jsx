@@ -17,12 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+const Icon = require('react-fontawesome');
 const React = require('react');
+
+const Input = require('react-bootstrap').Input;
+
+const Identifiers = require('./identifiers.jsx');
 const PartialDate = require('../../input/partialDate.jsx');
 const Select = require('../../input/select2.jsx');
-const Input = require('react-bootstrap').Input;
-const Identifiers = require('./identifiers.jsx');
-const Icon = require('react-fontawesome');
 
 const validators = require('../../validators');
 

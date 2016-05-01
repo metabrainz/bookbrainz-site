@@ -17,12 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+const Icon = require('react-fontawesome');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const Select = require('./select2.jsx');
-const Icon = require('react-fontawesome');
-const _ = require('lodash');
 const $ = require('jquery');
+const _ = require('lodash');
+
+const Select = require('./select2.jsx');
 
 const EntitySearch = React.createClass({
 	displayName: 'entitySearchInput',

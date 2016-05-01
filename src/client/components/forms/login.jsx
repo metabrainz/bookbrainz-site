@@ -17,14 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const React = require('react');
+const request = require('superagent-bluebird-promise');
 
 const Alert = require('react-bootstrap').Alert;
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
 const LoadingSpinner = require('../loading_spinner.jsx');
-
-const request = require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
 	displayName: 'LoginForm',

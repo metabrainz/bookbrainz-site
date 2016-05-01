@@ -17,6 +17,7 @@
  */
 
 const React = require('react');
+
 const PageHeader = require('react-bootstrap').PageHeader;
 
 function LicensingPage() {
@@ -114,4 +115,5 @@ function LicensingPage() {
 }
 
 LicensingPage.displayName = 'LicensingPage';
+
 module.exports = LicensingPage;

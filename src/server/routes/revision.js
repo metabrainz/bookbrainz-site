@@ -19,35 +19,34 @@
 
 'use strict';
 
-const express = require('express');
-const router = express.Router();
-const _ = require('lodash');
-
-const Revision = require('bookbrainz-data').Revision;
-const CreatorRevision = require('bookbrainz-data').CreatorRevision;
-const EditionRevision = require('bookbrainz-data').EditionRevision;
-const WorkRevision = require('bookbrainz-data').WorkRevision;
-const PublisherRevision = require('bookbrainz-data').PublisherRevision;
-const PublicationRevision = require('bookbrainz-data').PublicationRevision;
-
 const Promise = require('bluebird');
 
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
+const express = require('express');
+const _ = require('lodash');
+
+const CreatorRevision = require('bookbrainz-data').CreatorRevision;
+const EditionRevision = require('bookbrainz-data').EditionRevision;
+const PublicationRevision = require('bookbrainz-data').PublicationRevision;
+const PublisherRevision = require('bookbrainz-data').PublisherRevision;
+const Revision = require('bookbrainz-data').Revision;
+const WorkRevision = require('bookbrainz-data').WorkRevision;
+
+const baseFormatter = require('../helpers/diffFormatters/base');
+const entityFormatter = require('../helpers/diffFormatters/entity');
+const languageSetFormatter =
+	require('../helpers/diffFormatters/languageSet');
+const publisherSetFormatter =
+	require('../helpers/diffFormatters/publisherSet');
+const releaseEventSetFormatter =
+	require('../helpers/diffFormatters/releaseEventSet');
 
 const RevisionPage = React.createFactory(
 	require('../../client/components/pages/revision.jsx')
 );
 
-const baseFormatter = require('../helpers/diffFormatters/base');
-const publisherSetFormatter =
-	require('../helpers/diffFormatters/publisherSet');
-const languageSetFormatter =
-	require('../helpers/diffFormatters/languageSet');
-const releaseEventSetFormatter =
-	require('../helpers/diffFormatters/releaseEventSet');
-const entityFormatter = require('../helpers/diffFormatters/entity');
-
+const router = express.Router();
 
 function formatCreatorChange(change) {
 	if (_.isEqual(change.path, ['beginDate'])) {

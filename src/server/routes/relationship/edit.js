@@ -19,29 +19,33 @@
 
 'use strict';
 
-const auth = require('../../helpers/auth');
-const Relationship = require('bookbrainz-data').Relationship;
-const RelationshipSet = require('bookbrainz-data').RelationshipSet;
-const RelationshipType = require('bookbrainz-data').RelationshipType;
+const Promise = require('bluebird');
+
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const EditForm = React.createFactory(
-	require('../../../client/components/forms/relationship.jsx')
-);
-const bookshelf = require('bookbrainz-data').bookshelf;
-const Promise = require('bluebird');
 const _ = require('lodash');
 
+// XXX: Don't directly pull in bookshelf
+const bookshelf = require('bookbrainz-data').bookshelf;
+
+const auth = require('../../helpers/auth');
 const error = require('../../helpers/error');
 const utils = require('../../helpers/utils');
 
-const Revision = require('bookbrainz-data').Revision;
 const Editor = require('bookbrainz-data').Editor;
-
-const relationshipHelper = {};
+const Relationship = require('bookbrainz-data').Relationship;
+const RelationshipSet = require('bookbrainz-data').RelationshipSet;
+const RelationshipType = require('bookbrainz-data').RelationshipType;
+const Revision = require('bookbrainz-data').Revision;
 
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
+
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/relationship.jsx')
+);
+
+const relationshipHelper = {};
 
 function getEntityByType(entity, withRelated, transacting) {
 	const model = utils.getEntityModelByType(entity.type);

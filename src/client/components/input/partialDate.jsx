@@ -18,6 +18,7 @@
  */
 
 const React = require('react');
+
 const Input = require('react-bootstrap').Input;
 
 const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;

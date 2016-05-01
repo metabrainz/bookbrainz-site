@@ -17,19 +17,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
 const Icon = require('react-fontawesome');
-
-const Aliases = require('./parts/aliases.jsx');
-const RevisionNote = require('./parts/revisionNote.jsx');
-const PublisherData = require('./parts/publisherData.jsx');
-const LoadingSpinner = require('../loading_spinner.jsx');
-
-const request = require('superagent');
-require('superagent-bluebird-promise');
+const React = require('react');
+const request = require('superagent-bluebird-promise');
 
 const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
+
+const Aliases = require('./parts/aliases.jsx');
+const LoadingSpinner = require('../loading_spinner.jsx');
+const PublisherData = require('./parts/publisherData.jsx');
+const RevisionNote = require('./parts/revisionNote.jsx');
 
 module.exports = React.createClass({
 	displayName: 'publisherForm',

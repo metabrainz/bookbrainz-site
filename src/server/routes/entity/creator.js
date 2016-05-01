@@ -19,35 +19,35 @@
 
 'use strict';
 
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const express = require('express');
-const auth = require('../../helpers/auth');
-
-const utils = require('../../helpers/utils');
+const _ = require('lodash');
 
 const Creator = require('bookbrainz-data').Creator;
 const CreatorRevision = require('bookbrainz-data').CreatorRevision;
 const CreatorHeader = require('bookbrainz-data').CreatorHeader;
 
 /* Middleware loader functions. */
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
 const loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
-const loadGenders = require('../../helpers/middleware').loadGenders;
-const loadLanguages = require('../../helpers/middleware').loadLanguages;
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
+const loadGenders = require('../../helpers/middleware').loadGenders;
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
+const loadLanguages = require('../../helpers/middleware').loadLanguages;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-const router = express.Router();
+const auth = require('../../helpers/auth');
+const utils = require('../../helpers/utils');
+
+const entityRoutes = require('./entity');
+
 const EditForm = React.createFactory(
 	require('../../../client/components/forms/creator.jsx')
 );
 
-const entityRoutes = require('./entity');
-const _ = require('lodash');
+const router = express.Router();
 
 /* If the route specifies a BBID, load the Creator for it. */
 router.param(

@@ -17,6 +17,7 @@
  */
 
 const React = require('react');
+
 const PageHeader = require('react-bootstrap').PageHeader;
 
 function AboutPage() {
@@ -131,4 +132,5 @@ function AboutPage() {
 }
 
 AboutPage.displayName = 'AboutPage';
+
 module.exports = AboutPage;

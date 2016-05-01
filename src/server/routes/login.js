@@ -22,12 +22,11 @@
 
 const Promise = require('bluebird');
 
-const express = require('express');
-const router = express.Router();
-const passport = require('passport');
-const status = require('http-status');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
+const express = require('express');
+const passport = require('passport');
+const status = require('http-status');
 
 const error = require('../helpers/error');
 
@@ -37,6 +36,8 @@ const AuthenticationFailedError =
 const LoginPage = React.createFactory(
 	require('../../client/components/forms/login.jsx')
 );
+
+const router = express.Router();
 
 router.get('/login', (req, res) =>
 	res.render('login', {

@@ -18,13 +18,12 @@
  */
 
 const React = require('react');
+const request = require('superagent-bluebird-promise');
 
-const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
-const LoadingSpinner = require('../loading_spinner.jsx');
+const Input = require('react-bootstrap').Input;
 
-const request = require('superagent');
-require('superagent-bluebird-promise');
+const LoadingSpinner = require('../loading_spinner.jsx');
 
 module.exports = React.createClass({
 	displayName: 'profileForm',

@@ -21,10 +21,11 @@
 
 const Promise = require('bluebird');
 
-const passport = require('passport');
-const Editor = require('bookbrainz-data').Editor;
 const LocalStrategy = require('passport-local').Strategy;
+const passport = require('passport');
 const status = require('http-status');
+
+const Editor = require('bookbrainz-data').Editor;
 
 const error = require('../helpers/error');
 
@@ -32,7 +33,7 @@ const NotAuthenticatedError = require('../helpers/error').NotAuthenticatedError;
 
 const auth = {};
 
-auth.init = function init(app) {
+auth.init = (app) => {
 	passport.use(
 		new LocalStrategy((username, password, done) => {
 			new Editor({name: username}).fetch({require: true})
@@ -67,7 +68,7 @@ auth.init = function init(app) {
 	app.use(passport.session());
 };
 
-auth.isAuthenticated = function isAuthenticated(req, res, next) {
+auth.isAuthenticated = (req, res, next) => {
 	if (req.isAuthenticated()) {
 		return next();
 	}

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014-2015  Ben Ockmore
- *                    2015  Sean Burke
- *                    2015  Leo Verto
+ *               2015-2016  Sean Burke
+ *               2015       Leo Verto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,27 +22,44 @@
 
 const path = require('path');
 
+const Promise = require('bluebird');
+
+const bodyParser = require('body-parser');
 const express = require('express');
 const favicon = require('serve-favicon');
+const git = require('git-rev');
+const jsx = require('node-jsx');
 const logger = require('morgan');
-const bodyParser = require('body-parser');
+const redis = require('connect-redis');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
 const staticCache = require('express-static-cache');
 
-const Promise = require('bluebird');
+const bookbrainzData = require('bookbrainz-data');
+
+const config = require('./src/server/helpers/config');
+
+// Before we start pulling in local helpers, we need to initialize the database;
+// otherwise, the models we depend on won't exist
+bookbrainzData.init(config.database);
+
+const auth = require('./src/server/helpers/auth');
+const error = require('./src/server/helpers/error');
+const search = require('./src/server/helpers/search');
+
+// We need to install JSX before pulling in the routes, as they end up requiring
+// React components written in JSX, and things will blow up
+jsx.install({
+	extension: '.jsx'
+});
+
+const routes = require('./src/server/routes');
+
+const NotFoundError = require('./src/server/helpers/error').NotFoundError;
+
 Promise.config({
 	warnings: true,
 	longStackTraces: true
 });
-
-const config = require('./src/server/helpers/config');
-
-/* -data needs to be initialized before pulling in auth. */
-require('bookbrainz-data').init(config.database);
-const auth = require('./src/server/helpers/auth');
-
-const git = require('git-rev');
 
 // Initialize application
 const app = express();
@@ -51,12 +68,6 @@ const app = express();
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
-
-require('node-jsx').install({
-	extension: '.jsx'
-});
-
-require('./src/server/helpers/search').init(config.search);
 
 app.set('trust proxy', config.site.proxyTrust);
 
@@ -71,12 +82,13 @@ app.use(bodyParser.urlencoded({
 	extended: false
 }));
 
+// Set up serving of static assets
 app.use(staticCache(path.join(__dirname, 'static/js'), {
 	buffer: true
 }));
-
 app.use(express.static(path.join(__dirname, 'static')));
 
+const RedisStore = redis(session);
 app.use(session({
 	store: new RedisStore({
 		host: config.session.redis.host,
@@ -91,33 +103,32 @@ app.use(session({
 	saveUninitialized: false
 }));
 
-auth.init(app);
 
-let siteRevision = null;
+// Authentication code depends on session, so init session first
+auth.init(app);
+search.init(config.search);
+
+// Set up constants that will remain valid for the life of the app
 git.short((revision) => {
-	siteRevision = revision;
+	app.locals.siteRevision = revision;
 });
 
-/* Add middleware to set variables used for every rendered route. */
+app.locals.repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
+
+// Add user data to every rendered route
 app.use((req, res, next) => {
 	res.locals.user = req.user;
-	res.locals.repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
-	res.locals.siteRevision = siteRevision;
 
 	next();
 });
 
 // Set up routes
-require('./src/server/routes')(app);
-
-const NotFoundError = require('./src/server/helpers/error').NotFoundError;
+routes(app);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
 	next(new NotFoundError());
 });
-
-const error = require('./src/server/helpers/error');
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars

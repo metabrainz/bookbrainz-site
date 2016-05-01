@@ -19,35 +19,34 @@
 
 'use strict';
 
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const express = require('express');
-const router = express.Router();
-const auth = require('../../helpers/auth');
+const _ = require('lodash');
 
-const utils = require('../../helpers/utils');
-
+const LanguageSet = require('bookbrainz-data').LanguageSet;
 const Work = require('bookbrainz-data').Work;
 const WorkHeader = require('bookbrainz-data').WorkHeader;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
 
-const LanguageSet = require('bookbrainz-data').LanguageSet;
+const auth = require('../../helpers/auth');
+const utils = require('../../helpers/utils');
+
+const entityRoutes = require('./entity');
 
 /* Middleware loader functions. */
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const EditForm =
-	React.createFactory(require('../../../client/components/forms/work.jsx'));
-
-const loadLanguages = require('../../helpers/middleware').loadLanguages;
-const loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
+const loadLanguages = require('../../helpers/middleware').loadLanguages;
+const loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-const entityRoutes = require('./entity');
-const _ = require('lodash');
+const EditForm =
+	React.createFactory(require('../../../client/components/forms/work.jsx'));
+
+const router = express.Router();
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param(

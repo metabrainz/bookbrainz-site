@@ -17,6 +17,7 @@
  */
 
 const React = require('react');
+
 const PageHeader = require('react-bootstrap').PageHeader;
 
 function DevelopPage() {
@@ -70,4 +71,5 @@ function DevelopPage() {
 }
 
 DevelopPage.displayName = 'DevelopPage';
+
 module.exports = DevelopPage;

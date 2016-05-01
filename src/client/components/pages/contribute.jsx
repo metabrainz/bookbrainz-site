@@ -17,6 +17,7 @@
  */
 
 const React = require('react');
+
 const PageHeader = require('react-bootstrap').PageHeader;
 
 function ContributePage() {
@@ -84,4 +85,5 @@ function ContributePage() {
 }
 
 ContributePage.displayName = 'ContributePage';
+
 module.exports = ContributePage;

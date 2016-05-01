@@ -19,35 +19,35 @@
 
 'use strict';
 
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
 const express = require('express');
-const router = express.Router();
-const auth = require('../../helpers/auth');
-
-const utils = require('../../helpers/utils');
+const _ = require('lodash');
 
 const Publisher = require('bookbrainz-data').Publisher;
 const PublisherHeader = require('bookbrainz-data').PublisherHeader;
 const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 
+const auth = require('../../helpers/auth');
+const utils = require('../../helpers/utils');
+
+const entityRoutes = require('./entity');
+
 /* Middleware loader functions. */
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const EditForm = React.createFactory(
-	require('../../../client/components/forms/publisher.jsx')
-);
-
-const loadLanguages = require('../../helpers/middleware').loadLanguages;
-const loadPublisherTypes =
-	require('../../helpers/middleware').loadPublisherTypes;
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
+const loadLanguages = require('../../helpers/middleware').loadLanguages;
+const loadPublisherTypes =
+	require('../../helpers/middleware').loadPublisherTypes;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-const entityRoutes = require('./entity');
-const _ = require('lodash');
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/publisher.jsx')
+);
+
+const router = express.Router();
 
 /* If the route specifies a BBID, load the Publisher for it. */
 router.param(

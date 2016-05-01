@@ -20,6 +20,7 @@
 'use strict';
 
 const Handlebars = require('handlebars');
+
 const utils = require('./utils');
 
 function renderRelationship(relationship) {

@@ -21,15 +21,15 @@
 
 const Promise = require('bluebird');
 
-const express = require('express');
-const router = express.Router();
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const auth = require('../helpers/auth');
-const error = require('../helpers/error');
+const express = require('express');
 const _ = require('lodash');
 
 const Editor = require('bookbrainz-data').Editor;
+
+const auth = require('../helpers/auth');
+const error = require('../helpers/error');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
@@ -37,6 +37,8 @@ const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
 const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
 );
+
+const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	new Editor({id: parseInt(req.user.id, 10)})

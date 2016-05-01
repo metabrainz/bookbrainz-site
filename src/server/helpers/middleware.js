@@ -21,11 +21,9 @@
 
 const Promise = require('bluebird');
 
-const utils = require('../helpers/utils');
-
 const CreatorType = require('bookbrainz-data').CreatorType;
-const EditionStatus = require('bookbrainz-data').EditionStatus;
 const EditionFormat = require('bookbrainz-data').EditionFormat;
+const EditionStatus = require('bookbrainz-data').EditionStatus;
 const Gender = require('bookbrainz-data').Gender;
 const IdentifierType = require('bookbrainz-data').IdentifierType;
 const Language = require('bookbrainz-data').Language;
@@ -35,6 +33,7 @@ const RelationshipSet = require('bookbrainz-data').RelationshipSet;
 const WorkType = require('bookbrainz-data').WorkType;
 
 const renderRelationship = require('../helpers/render');
+const utils = require('../helpers/utils');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const SiteError = require('../helpers/error').SiteError;

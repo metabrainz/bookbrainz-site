@@ -19,46 +19,45 @@
 
 'use strict';
 
-const express = require('express');
-const router = express.Router();
-const auth = require('../../helpers/auth');
+const Promise = require('bluebird');
 
-const utils = require('../../helpers/utils');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+const express = require('express');
+const _ = require('lodash');
 
 const Edition = require('bookbrainz-data').Edition;
 const EditionHeader = require('bookbrainz-data').EditionHeader;
 const EditionRevision = require('bookbrainz-data').EditionRevision;
+const LanguageSet = require('bookbrainz-data').LanguageSet;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
-
-const LanguageSet = require('bookbrainz-data').LanguageSet;
 const PublisherSet = require('bookbrainz-data').PublisherSet;
 const ReleaseEventSet = require('bookbrainz-data').ReleaseEventSet;
 
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const EditForm = React.createFactory(
-	require('../../../client/components/forms/edition.jsx')
-);
+const auth = require('../../helpers/auth');
+const utils = require('../../helpers/utils');
+
+const entityRoutes = require('./entity');
 
 /* Middleware loader functions. */
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
-const loadEditionStatuses =
-	require('../../helpers/middleware').loadEditionStatuses;
 const loadEditionFormats =
 	require('../../helpers/middleware').loadEditionFormats;
-const loadLanguages =
-	require('../../helpers/middleware').loadLanguages;
+const loadEditionStatuses =
+	require('../../helpers/middleware').loadEditionStatuses;
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 const loadIdentifierTypes =
 	require('../../helpers/middleware').loadIdentifierTypes;
+const loadLanguages =
+	require('../../helpers/middleware').loadLanguages;
+const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
-const Promise = require('bluebird');
+const EditForm = React.createFactory(
+	require('../../../client/components/forms/edition.jsx')
+);
 
-const entityRoutes = require('./entity');
-const _ = require('lodash');
+const router = express.Router();
 
 /* If the route specifies a BBID, load the Edition for it. */
 router.param(

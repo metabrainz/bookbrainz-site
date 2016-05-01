@@ -22,19 +22,20 @@
 const Promise = require('bluebird');
 
 const express = require('express');
-const router = express.Router();
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const auth = require('../helpers/auth');
-const search = require('../helpers/search');
 
+const auth = require('../helpers/auth');
 const error = require('../helpers/error');
+const search = require('../helpers/search');
 
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
 
 const SearchPage = React.createFactory(
 	require('../../client/components/pages/search.jsx')
 );
+
+const router = express.Router();
 
 router.get('/', (req, res, next) => {
 	const query = req.query.q;

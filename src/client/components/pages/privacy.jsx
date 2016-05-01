@@ -17,6 +17,7 @@
  */
 
 const React = require('react');
+
 const PageHeader = require('react-bootstrap').PageHeader;
 
 function PrivacyPage() {
@@ -44,4 +45,5 @@ function PrivacyPage() {
 }
 
 PrivacyPage.displayName = 'PrivacyPage';
+
 module.exports = PrivacyPage;

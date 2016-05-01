@@ -18,6 +18,7 @@
  */
 const React = require('react');
 const _compact = require('lodash.compact');
+
 const EntityLink = require('../entityLink.jsx');
 
 function formatValueList(list) {

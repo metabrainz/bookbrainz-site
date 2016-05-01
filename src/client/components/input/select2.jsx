@@ -19,11 +19,12 @@
 
 /* eslint global-require: 0, no-var: 0 */
 
-const Input = require('react-bootstrap').Input;
 const React = require('react');
 const _assign = require('lodash.assign');
-const _omit = require('lodash.omit');
 const _isEqual = require('lodash.isequal');
+const _omit = require('lodash.omit');
+
+const Input = require('react-bootstrap').Input;
 
 var $ = null;
 if (typeof window !== 'undefined') {

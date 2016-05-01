@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+const Icon = require('react-fontawesome');
 const React = require('react');
+const _find = require('lodash.find');
 
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
+
 const Select = require('../../input/select2.jsx');
-const Icon = require('react-fontawesome');
-const _find = require('lodash.find');
 
 const validators = require('../../validators');
 
