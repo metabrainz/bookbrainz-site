@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
+ *               2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,125 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
 const React = require('react');
-const _find = require('lodash.find');
 
-const Input = require('react-bootstrap').Input;
-const Button = require('react-bootstrap').Button;
+const IdentifierRow = require('./identifier-row.jsx');
 
-const Select = require('../../input/select2.jsx');
-
+const dataHelper = require('../../../helpers/data');
 const validators = require('../../../helpers/react-validators');
-
-function _identifierIsValid(typeId, value, identifierTypes) {
-	'use strict';
-
-	if (!value) {
-		return false;
-	}
-
-	const selectedType = _find(identifierTypes, (type) => type.id === typeId);
-
-	if (selectedType) {
-		return new RegExp(selectedType.validationRegex).test(value);
-	}
-
-	return false;
-}
-
-const IdentifierRow = React.createClass({
-	displayName: 'identifierRowComponent',
-	propTypes: {
-		removeHidden: React.PropTypes.bool,
-		typeId: React.PropTypes.number,
-		types: React.PropTypes.arrayOf(validators.labeledProperty),
-		value: React.PropTypes.string,
-		onChange: React.PropTypes.func,
-		onRemove: React.PropTypes.func
-	},
-	getValue() {
-		'use strict';
-
-		return {
-			typeId: parseInt(this.typeId.getValue(), 10),
-			value: this.value.getValue()
-		};
-	},
-	validationState() {
-		'use strict';
-
-		if (this.props.typeId) {
-			const isValid = _identifierIsValid(
-				this.props.typeId,
-				this.props.value,
-				this.props.types
-			);
-
-			return (isValid ? 'success' : 'error');
-		}
-
-		if (this.props.value) {
-			return 'error';
-		}
-
-		return null;
-	},
-	getValid() {
-		'use strict';
-
-		const value = this.value.getValue();
-		const typeId = parseInt(this.typeId.getValue(), 10);
-
-		return _identifierIsValid(typeId, value, this.props.types);
-	},
-	render() {
-		'use strict';
-
-		const select2Options = {
-			allowClear: false
-		};
-
-		return (
-			<div className="row">
-				<div className="col-md-4">
-					<Select
-						noDefault
-						bsStyle={this.validationState()}
-						idAttribute="id"
-						labelAttribute="label"
-						options={this.props.types}
-						placeholder="Select identifier type…"
-						ref={(ref) => this.typeId = ref}
-						select2Options={select2Options}
-						value={this.props.typeId}
-						wrapperClassName="col-md-12"
-						onChange={this.props.onChange}
-					/>
-				</div>
-				<div className="col-md-4">
-					<Input
-						bsStyle={this.validationState()}
-						ref={(ref) => this.value = ref}
-						type="text"
-						value={this.props.value}
-						wrapperClassName="col-md-12"
-						onChange={this.props.onChange}
-					/>
-				</div>
-				<div className="col-md-2">
-					<Button
-						bsStyle="danger"
-						className={this.props.removeHidden ? 'hidden' : ''}
-						onClick={this.props.onRemove}
-					>
-						<Icon name="times"/>
-					</Button>
-				</div>
-			</div>
-		);
-	}
-});
 
 const IdentifierList = React.createClass({
 	displayName: 'identifierListComponent',
@@ -213,7 +101,7 @@ const IdentifierList = React.createClass({
 			typeId: updatedIdentifier.typeId,
 			key: updatedIdentifiers[index].key,
 			valid:
-				_identifierIsValid(
+				dataHelper.identifierIsValid(
 					updatedIdentifier.typeId,
 					updatedIdentifier.value,
 					this.props.types
