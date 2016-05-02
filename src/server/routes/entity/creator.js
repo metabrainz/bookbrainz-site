@@ -77,8 +77,9 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/handler', auth.isAuthenticated, (req, res) =>
-	entityRoutes.handleDelete(req, res, CreatorHeader, CreatorRevision)
+router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	(req, res) =>
+		entityRoutes.handleDelete(req, res, CreatorHeader, CreatorRevision)
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
@@ -138,13 +139,13 @@ const additionalCreatorProps = [
 	'typeId', 'genderId', 'areaId', 'beginDate', 'endDate', 'ended'
 ];
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.createEntity(
 		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
 	)
 );
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.editEntity(
 		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
 	)
