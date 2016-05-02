@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,164 +29,174 @@ const CreatorData = require('./parts/creator-data.jsx');
 const LoadingSpinner = require('../loading-spinner.jsx');
 const RevisionNote = require('./parts/revision-note.jsx');
 
-module.exports = React.createClass({
-	displayName: 'creatorForm',
-	propTypes: {
+(() => {
+	'use strict';
+
+	class CreatorForm extends React.Component {
+		constructor(props) {
+			super(props);
+
+			this.state = {
+				tab: 1,
+				aliasesValid: true,
+				dataValid: true,
+				waiting: false
+			};
+
+			// React does not autobind non-React class methods
+			this.handleTabSelect = this.handleTabSelect.bind(this);
+			this.handleBackClick = this.handleBackClick.bind(this);
+			this.handleNextClick = this.handleNextClick.bind(this);
+			this.handleSubmit = this.handleSubmit.bind(this);
+		}
+
+		handleTabSelect(tab) {
+			this.setState({
+				tab,
+				aliasesValid: this.aliases.valid(),
+				dataValid: this.data.valid()
+			});
+		}
+
+		handleBackClick() {
+			this.handleTabSelect(this.state.tab - 1);
+		}
+
+		handleNextClick() {
+			this.handleTabSelect(this.state.tab + 1);
+		}
+
+		handleSubmit(evt) {
+			evt.preventDefault();
+
+			if (!(this.state.aliasesValid && this.state.dataValid)) {
+				return;
+			}
+
+			const aliasData = this.aliases.getValue();
+			const creatorData = this.data.getValue();
+			const revisionNote = this.revision.note.getValue();
+			const data = {
+				aliases: aliasData.slice(0, -1),
+				beginDate: creatorData.beginDate,
+				endDate: creatorData.endDate,
+				ended: creatorData.ended,
+				genderId: parseInt(creatorData.gender, 10),
+				typeId: parseInt(creatorData.creatorType, 10),
+				disambiguation: creatorData.disambiguation,
+				annotation: creatorData.annotation,
+				identifiers: creatorData.identifiers,
+				note: revisionNote
+			};
+
+			this.setState({waiting: true});
+
+			request.post(this.props.submissionUrl)
+				.send(data).promise()
+				.then((res) => {
+					if (!res.body) {
+						window.location.replace('/login');
+						return;
+					}
+					window.location.href = `/creator/${res.body.bbid}`;
+				})
+				.catch((error) => {
+					this.setState({error});
+				});
+		}
+
+		render() {
+			let aliases = null;
+			const prefillData = this.props.creator;
+			if (prefillData) {
+				aliases = prefillData.aliasSet.aliases.map((alias) => ({
+					id: alias.id,
+					name: alias.name,
+					sortName: alias.sortName,
+					languageId: alias.languageId,
+					primary: alias.primary,
+					default: alias.id === prefillData.defaultAlias.id
+				}));
+			}
+
+			const submitEnabled =
+				this.state.aliasesValid && this.state.dataValid;
+
+			const loadingElement =
+				this.state.waiting ? <LoadingSpinner/> : null;
+
+			const invalidIcon = (
+				<span>&nbsp;
+					<Icon
+						className="text-danger"
+						name="warning"
+					/>
+				</span>
+			);
+
+			return (
+				<div>
+					{loadingElement}
+
+					<Nav
+						activeKey={this.state.tab}
+						bsStyle="tabs"
+						onSelect={this.handleTabSelect}
+					>
+						<NavItem eventKey={1}>
+							<strong>1.</strong> Aliases
+							{this.state.aliasesValid || invalidIcon}
+						</NavItem>
+						<NavItem eventKey={2}>
+							<strong>2.</strong> Data
+							{this.state.dataValid || invalidIcon}
+						</NavItem>
+						<NavItem eventKey={3}>
+							<strong>3.</strong> Revision Note
+						</NavItem>
+					</Nav>
+
+
+					<form onChange={this.handleChange}>
+						<Aliases
+							aliases={aliases}
+							languages={this.props.languages}
+							ref={(ref) => this.aliases = ref}
+							visible={this.state.tab === 1}
+							onNextClick={this.handleNextClick}
+						/>
+						<CreatorData
+							creator={this.props.creator}
+							creatorTypes={this.props.creatorTypes}
+							genders={this.props.genders}
+							identifierTypes={this.props.identifierTypes}
+							ref={(ref) => this.data = ref}
+							visible={this.state.tab === 2}
+							onBackClick={this.handleBackClick}
+							onNextClick={this.handleNextClick}
+						/>
+						<RevisionNote
+							ref={(ref) => this.revision = ref}
+							submitDisabled={!submitEnabled}
+							visible={this.state.tab === 3}
+							onBackClick={this.handleBackClick}
+							onSubmit={this.handleSubmit}
+						/>
+					</form>
+				</div>
+			);
+		}
+	}
+
+	CreatorForm.displayName = 'CreatorForm';
+	CreatorForm.propTypes = {
 		creator: React.PropTypes.object,
 		creatorTypes: React.PropTypes.array,
 		genders: React.PropTypes.array,
 		identifierTypes: React.PropTypes.array,
 		languages: React.PropTypes.array,
 		submissionUrl: React.PropTypes.string
-	},
-	getInitialState() {
-		'use strict';
+	};
 
-		return {
-			tab: 1,
-			aliasesValid: true,
-			dataValid: true,
-			waiting: false
-		};
-	},
-	handleTabSelect(tab) {
-		'use strict';
-
-		this.setState({
-			tab,
-			aliasesValid: this.aliases.valid(),
-			dataValid: this.data.valid()
-		});
-	},
-	handleBackClick() {
-		'use strict';
-
-		this.handleTabSelect(this.state.tab - 1);
-	},
-	handleNextClick() {
-		'use strict';
-
-		this.handleTabSelect(this.state.tab + 1);
-	},
-	handleSubmit(evt) {
-		'use strict';
-
-		evt.preventDefault();
-
-		if (!(this.state.aliasesValid && this.state.dataValid)) {
-			return;
-		}
-
-		const aliasData = this.aliases.getValue();
-		const creatorData = this.data.getValue();
-		const revisionNote = this.revision.note.getValue();
-		const data = {
-			aliases: aliasData.slice(0, -1),
-			beginDate: creatorData.beginDate,
-			endDate: creatorData.endDate,
-			ended: creatorData.ended,
-			genderId: parseInt(creatorData.gender, 10),
-			typeId: parseInt(creatorData.creatorType, 10),
-			disambiguation: creatorData.disambiguation,
-			annotation: creatorData.annotation,
-			identifiers: creatorData.identifiers,
-			note: revisionNote
-		};
-
-		this.setState({waiting: true});
-
-		request.post(this.props.submissionUrl)
-			.send(data).promise()
-			.then((res) => {
-				if (!res.body) {
-					window.location.replace('/login');
-					return;
-				}
-				window.location.href = `/creator/${res.body.bbid}`;
-			})
-			.catch((error) => {
-				this.setState({error});
-			});
-	},
-	render() {
-		'use strict';
-
-		let aliases = null;
-		const prefillData = this.props.creator;
-		if (prefillData) {
-			aliases = prefillData.aliasSet.aliases.map((alias) => ({
-				id: alias.id,
-				name: alias.name,
-				sortName: alias.sortName,
-				languageId: alias.languageId,
-				primary: alias.primary,
-				default: alias.id === prefillData.defaultAlias.id
-			}));
-		}
-
-		const submitEnabled = this.state.aliasesValid && this.state.dataValid;
-
-		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
-
-		const invalidIcon = (
-			<span>&nbsp;
-				<Icon
-					className="text-danger"
-					name="warning"
-				/>
-			</span>
-		);
-
-		return (
-			<div>
-				{loadingElement}
-
-				<Nav
-					activeKey={this.state.tab}
-					bsStyle="tabs"
-					onSelect={this.handleTabSelect}
-				>
-					<NavItem eventKey={1}>
-						<strong>1.</strong> Aliases
-						{this.state.aliasesValid || invalidIcon}
-					</NavItem>
-					<NavItem eventKey={2}>
-						<strong>2.</strong> Data
-						{this.state.dataValid || invalidIcon}
-					</NavItem>
-					<NavItem eventKey={3}>
-						<strong>3.</strong> Revision Note
-					</NavItem>
-				</Nav>
-
-
-				<form onChange={this.handleChange}>
-					<Aliases
-						aliases={aliases}
-						languages={this.props.languages}
-						ref={(ref) => this.aliases = ref}
-						visible={this.state.tab === 1}
-						onNextClick={this.handleNextClick}
-					/>
-					<CreatorData
-						creator={this.props.creator}
-						creatorTypes={this.props.creatorTypes}
-						genders={this.props.genders}
-						identifierTypes={this.props.identifierTypes}
-						ref={(ref) => this.data = ref}
-						visible={this.state.tab === 2}
-						onBackClick={this.handleBackClick}
-						onNextClick={this.handleNextClick}
-					/>
-					<RevisionNote
-						ref={(ref) => this.revision = ref}
-						submitDisabled={!submitEnabled}
-						visible={this.state.tab === 3}
-						onBackClick={this.handleBackClick}
-						onSubmit={this.handleSubmit}
-					/>
-				</form>
-			</div>
-		);
-	}
-});
+	module.exports = CreatorForm;
+})();

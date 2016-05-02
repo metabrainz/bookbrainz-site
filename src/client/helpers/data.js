@@ -20,6 +20,20 @@ const _find = require('lodash.find');
 
 const data = {};
 
+data.entityHasChanged = (initial, current) => {
+	'use strict';
+
+	return (initial && initial.bbid) !== (current && current.bbid);
+};
+
+data.getEntityLink = (entity) => {
+	'use strict';
+
+	const bbid = entity.bbid;
+
+	return `/${entity.type.toLowerCase()}/${bbid}`;
+};
+
 data.identifierIsValid = (typeId, value, identifierTypes) => {
 	'use strict';
 
