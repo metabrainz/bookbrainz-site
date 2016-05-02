@@ -528,7 +528,11 @@ module.exports.createEntity = (
 			.then((entity) => entity.toJSON());
 	});
 
-	return handler.sendPromiseResult(res, entityCreationPromise, search.indexEntity);
+	return handler.sendPromiseResult(
+		res,
+		entityCreationPromise,
+		search.indexEntity
+	);
 };
 
 module.exports.editEntity = (
@@ -690,5 +694,9 @@ module.exports.editEntity = (
 			.then((entity) => entity.toJSON());
 	});
 
-	return handler.sendPromiseResult(res, entityEditPromise, search.indexEntity);
+	return handler.sendPromiseResult(
+		res,
+		entityEditPromise,
+		search.indexEntity
+	);
 };
