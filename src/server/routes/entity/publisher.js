@@ -90,8 +90,9 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/handler', (req, res) =>
-	entityRoutes.handleDelete(req, res, PublisherHeader, PublisherRevision)
+router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	(req, res) =>
+		entityRoutes.handleDelete(req, res, PublisherHeader, PublisherRevision)
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
@@ -150,13 +151,13 @@ const additionalPublisherProps = [
 	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
 ];
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.createEntity(
 		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
 	)
 );
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.editEntity(
 		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
 	)

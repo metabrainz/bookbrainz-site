@@ -162,7 +162,8 @@ function createRelationship(relationship, editorJSON) {
 }
 
 relationshipHelper.addEditRoutes = function addEditRoutes(router) {
-	router.get('/:bbid/relationships', loadEntityRelationships,
+	router.get('/:bbid/relationships', auth.isAuthenticated,
+		loadEntityRelationships,
 		(req, res, next) => {
 			const relationshipTypesPromise = new RelationshipType().fetchAll();
 
@@ -192,7 +193,7 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 		}
 	);
 
-	router.post('/:bbid/relationships/handler', auth.isAuthenticated,
+	router.post('/:bbid/relationships/handler', auth.isAuthenticatedForHandler,
 		(req, res) => {
 			function relationshipValid(relationship) {
 				return _.has(relationship, 'typeId') &&
