@@ -566,6 +566,36 @@ ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (language_id) REFE
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
 
+CREATE TABLE bookbrainz.titles_type (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(40) NOT NULL CHECK (title <> ''),
+	description TEXT NOT NULL CHECK (description <> '')
+);
+
+CREATE TABLE bookbrainz.title_unlock (
+	id SERIAL PRIMARY KEY,
+	user_id INT,
+	title_id INT,
+	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (user_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (title_id) REFERENCES bookbrainz.titles_type (id);
+
+CREATE TABLE bookbrainz.achievement_type (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(80) NOT NULL CHECK (name <> ''),
+	description TEXT NOT NULL CHECK (description <> ''),
+	badge_url VARCHAR(2083)
+);
+CREATE TABLE bookbrainz.achievement_unlock (
+	id SERIAL PRIMARY KEY,
+	user_id INT,
+	achievement_id INT,
+	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (user_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (achievement_id) REFERENCES bookbrainz.achievement_type (id);
+
 -- Views --
 
 CREATE VIEW bookbrainz.creator AS
