@@ -566,7 +566,7 @@ ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (language_id) REFE
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
 
-CREATE TABLE bookbrainz.titles_type (
+CREATE TABLE bookbrainz.title_type (
 	id SERIAL PRIMARY KEY,
 	title VARCHAR(40) NOT NULL CHECK (title <> ''),
 	description TEXT NOT NULL CHECK (description <> '')
