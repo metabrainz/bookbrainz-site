@@ -574,11 +574,11 @@ CREATE TABLE bookbrainz.titles_type (
 
 CREATE TABLE bookbrainz.title_unlock (
 	id SERIAL PRIMARY KEY,
-	user_id INT,
-	title_id INT,
+	editor_id INT NOT NULL,
+	title_id INT NOT NULL,
 	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
-ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (user_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (title_id) REFERENCES bookbrainz.titles_type (id);
 
 CREATE TABLE bookbrainz.achievement_type (
@@ -589,11 +589,11 @@ CREATE TABLE bookbrainz.achievement_type (
 );
 CREATE TABLE bookbrainz.achievement_unlock (
 	id SERIAL PRIMARY KEY,
-	user_id INT,
-	achievement_id INT,
+	editor_id INT NOT NULL,
+	achievement_id INT NOT NULL,
 	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
-ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (user_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (achievement_id) REFERENCES bookbrainz.achievement_type (id);
 
 -- Views --
