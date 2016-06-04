@@ -23,39 +23,44 @@ const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 
 const achievement = {};
 
-function entityCreation() {
-	//get number of entities created
-	var entitiesCreated = 0;
-	if (entitiesCreated > 50) {
-		creator = new AchievementType({name: "Creator III"});
-		checkAchievementAwarded(user, creator);
-	}
-	if (entitiesCreated > 0) {
-		creator = new AchievementType({name: "Creator I"});
-		checkAchievementAwarded(user, creator);
-	}
-}
-
-function checkAchievementAwarded(editor, achievement) {
-	new AchievementUnlock({editor_id: editor.id, achievement_id: achievement.id})
+function checkAchievementAwarded(editor, achievementType) {
+	var awarded;
+	new AchievementUnlock({editor_id: editor.id,
+		achievement_id: achievementType.id})
 		.fetch()
 		.then((unlock) => {
-			if (unlock != null) {
-				return true;
+			if (unlock === null) {
+				awarded = false;
 			}
 			else {
-				return false;
+				awarded = true;
 			}
 		});
+	return awarded;
 }
 
+
+function entityCreation() {
+	// get number of entities created
+	var user;
+	var entitiesCreated = 0;
+	if (entitiesCreated > 0) {
+		new AchievementType({name: 'Creator I'})
+			.fetch()
+			.then((creator) => {
+				checkAchievementAwarded(user, creator);
+				// awardAchievement()
+			});
+	}
+}
+
+
 achievement.processPageVisit = () => {
-	
+
 };
 
 achievement.processEdit = () => {
 	entityCreation();
-	
 };
 
 achievement.processComment = () => {
