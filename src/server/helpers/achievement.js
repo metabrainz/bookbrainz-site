@@ -17,14 +17,13 @@
  */
 
 'use strict';
-const Bookshelf = require('./bookshelf');
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 
 const achievement = {};
 
 function checkAchievementAwarded(editor, achievementType) {
-	var awarded;
+	let awarded;
 	new AchievementUnlock({editor_id: editor.id,
 		achievement_id: achievementType.id})
 		.fetch()
@@ -42,8 +41,8 @@ function checkAchievementAwarded(editor, achievementType) {
 
 function entityCreation() {
 	// get number of entities created
-	var user;
-	var entitiesCreated = 0;
+	let user;
+	const entitiesCreated = 0;
 	if (entitiesCreated > 0) {
 		new AchievementType({name: 'Creator I'})
 			.fetch()
