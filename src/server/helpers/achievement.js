@@ -23,19 +23,19 @@ const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const achievement = {};
 
 function checkAchievementAwarded(editor, achievementType) {
-	let awarded;
-	new AchievementUnlock({editor_id: editor.id,
+	return new AchievementUnlock({editor_id: editor.id,
 		achievement_id: achievementType.id})
-		.fetch()
-		.then((unlock) => {
-			if (unlock === null) {
-				awarded = false;
-			}
-			else {
-				awarded = true;
-			}
-		});
-	return awarded;
+	.fetch()
+	.then((unlock) => {
+		let awarded;
+		if (unlock === null) {
+			awarded = false;
+		}
+		else {
+			awarded = true;
+		}
+		return awarded;
+	});
 }
 
 
