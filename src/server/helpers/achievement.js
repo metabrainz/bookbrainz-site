@@ -17,40 +17,37 @@
  */
 
 'use strict';
+
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
-
+const Editor = require('bookbrainz-data').Editor;
 const achievement = {};
 
-function checkAchievementAwarded(editor, achievementType) {
+function awardAchievement(editor, achievementType) {
 	return new AchievementUnlock({editor_id: editor.id,
 		achievement_id: achievementType.id})
 	.fetch()
 	.then((unlock) => {
-		let awarded;
 		if (unlock === null) {
-			awarded = false;
+			AchievementUnlock({editor_id: editor.id,
+				achievement_id: achievementType.id})
+			.save();
 		}
-		else {
-			awarded = true;
-		}
-		return awarded;
 	});
 }
 
-
-function entityCreation() {
-	// get number of entities created
-	let user;
-	const entitiesCreated = 0;
-	if (entitiesCreated > 0) {
-		new AchievementType({name: 'Creator I'})
+function processRevisionist(userId) {
+	return new Editor({id: userId})
+	.fetch()
+	.then((editor) => {
+		if (editor.revisions() > 0) {
+			new AchievementType({name: 'Revisionist I'})
 			.fetch()
-			.then((creator) => {
-				checkAchievementAwarded(user, creator);
-				// awardAchievement()
+			.then((revisionist) => {
+				awardAchievement(editor, revisionist);
 			});
-	}
+		}
+	});
 }
 
 
@@ -58,8 +55,8 @@ achievement.processPageVisit = () => {
 
 };
 
-achievement.processEdit = () => {
-	entityCreation();
+achievement.processEdit = (req) => {
+	processRevisionist(req.user.id);
 };
 
 achievement.processComment = () => {
