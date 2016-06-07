@@ -24,20 +24,20 @@ const Editor = require('bookbrainz-data').Editor;
 const achievement = {};
 
 function awardAchievement(editor, achievementType) {
-	return new AchievementUnlock({editor_id: editor.id,
-		achievement_id: achievementType.id})
+	const achievementAttribs = {editor_id: editor.id,
+		achievement_id: achievementType.id};
+	new AchievementUnlock(achievementAttribs)
 	.fetch()
 	.then((unlock) => {
 		if (unlock === null) {
-			AchievementUnlock({editor_id: editor.id,
-				achievement_id: achievementType.id})
-			.save();
+			AchievementUnlock(achievementAttribs)
+			.save(null, {method: 'insert'});
 		}
 	});
 }
 
 function processRevisionist(userId) {
-	return new Editor({id: userId})
+	Editor({id: userId})
 	.fetch()
 	.then((editor) => {
 		if (editor.revisions() > 0) {
@@ -55,8 +55,8 @@ achievement.processPageVisit = () => {
 
 };
 
-achievement.processEdit = (req) => {
-	processRevisionist(req.user.id);
+achievement.processEdit = (userid) => {
+	processRevisionist(userid);
 };
 
 achievement.processComment = () => {
