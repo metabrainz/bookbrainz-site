@@ -5,7 +5,6 @@ const chaiAsPromised = require('../node_modules/chai-as-promised');
 chai.use(chaiAsPromised);
 const utils = require('../src/server/helpers/utils');
 const Achievement = require('../src/server/helpers/achievement.js');
-const assert = require('../node_modules/chai').assert;
 
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
@@ -13,15 +12,22 @@ const Editor = require('bookbrainz-data').Editor;
 const EditorType = require('bookbrainz-data').EditorType;
 const Bookshelf = require('../node_modules/bookshelf');
 
-const editorAttribs = {
+const reviserAttribs = {
 	id: 1,
-	name: 'bob',
-	email: 'bob@test.org',
-	password: 'test',
+	name: 'alice',
+	email: 'alice@test.org',
 	typeId: 1,
 	revisionsApplied: 1
 };
 
+const editorAttribs = {
+	id: 2,
+	name: 'bob',
+	email: 'bob@test.org',
+	password: 'test',
+	typeId: 1,
+	revisionsApplied: 0
+};
 
 const revisionistAttribs = {
 	id: 1,
@@ -48,6 +54,10 @@ describe('Revisionist achievement', () => {
 				.save();
 			})
 			.then(() => {
+				new Editor(reviserAttribs)
+				.save();
+			})
+			.then(() => {
 				new AchievementType(revisionistAttribs)
 				.save();
 			});
@@ -55,9 +65,19 @@ describe('Revisionist achievement', () => {
 
 	afterEach(truncate);
 
-	it('should have given editor an achievement', () => {
-		Achievement.processEdit(editorAttribs.id);
-		return AchievementUnlock({editorId: 1, achievementId: 1}).fetch()
+	it('should give someone with a revision Revisionist I', () => {
+		Achievement.processEdit(reviserAttribs.id);
+		return AchievementUnlock({editorId: reviserAttribs.id,
+			achievementId: revisionistAttribs.id})
+			.fetch()
 			.should.eventually.not.equal(null);
+	});
+
+	it('should not give someone without a revision Revisionist I', () => {
+		Achievement.processEdit(editorAttribs.id);
+		return AchievementUnlock({editorId: editorAttribs.id,
+			achievementId: revisionistAttribs.id})
+			.fetch()
+			.should.eventually.equal(null);
 	});
 });
