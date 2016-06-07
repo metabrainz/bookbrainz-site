@@ -25,6 +25,7 @@ const Editor = require('bookbrainz-data').Editor;
 const Publication = require('bookbrainz-data').Publication;
 const Publisher = require('bookbrainz-data').Publisher;
 const Work = require('bookbrainz-data').Work;
+const Promise = require('bluebird');
 
 function getEntityLink(entity) {
 	const bbid = entity.bbid;
@@ -99,6 +100,12 @@ function incrementEditorEditCountById(id, transacting) {
 		});
 }
 
+function truncateTables(Bookshelf, tables) {
+	Promise.each(tables,
+		(table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
+	);
+}
+
 module.exports = {
 	getEntityLink,
 	getEntityModels,
@@ -106,5 +113,6 @@ module.exports = {
 	isValidBBID,
 	template,
 	createEntityPageTitle,
-	incrementEditorEditCountById
+	incrementEditorEditCountById,
+	truncateTables
 };

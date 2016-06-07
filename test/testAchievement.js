@@ -30,6 +30,15 @@ const revisionistAttribs = {
 	badgeUrl: 'http://test.com'
 };
 
+function truncate() {
+	return utils.truncateTables(Bookshelf, [
+		'bookbrainz.editor',
+		'bookbrainz.editor_type',
+		'bookbrainz.achievement_type',
+		'bookbrainz.achievement_unlock'
+	]);
+}
+
 describe('Revisionist achievement', () => {
 	beforeEach(() => {
 		new EditorType({id: 1, label: 'Editor'})
@@ -43,6 +52,8 @@ describe('Revisionist achievement', () => {
 				.save();
 			});
 	});
+
+	afterEach(truncate);
 
 	it('should have given editor an achievement', () => {
 		Achievement.processEdit(editorAttribs.id);
