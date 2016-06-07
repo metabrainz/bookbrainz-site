@@ -8,6 +8,9 @@
     "debug_win": "set DEBUG=bbsite & node scripts\\www",
     "test": "./scripts/check-style.sh && gulp"
   },
+  "directories": {
+	"test": "tests"
+  },
   "dependencies": {
     "bluebird": "^3.3.4",
     "body-parser": "^1.14.1",
@@ -52,6 +55,8 @@
     "babel-preset-react": "^6.1.18",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
+	"chai": "^3.3.0",
+	"chai-as-promised": "^5.2.0",
     "eslint": "^2.0.0",
     "eslint-plugin-react": "^4.2.3",
     "factor-bundle": "^2.3.3",
