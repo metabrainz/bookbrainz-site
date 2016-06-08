@@ -54,7 +54,7 @@ function processRevisionist(editor) {
 	}
 	else {
 		achievementPromise =
-			Promise.reject(new error('no revisions for editor'));
+			Promise.reject(new Error('no revisions for editor'));
 	}
 	return achievementPromise;
 }
