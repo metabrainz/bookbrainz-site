@@ -20,8 +20,8 @@
 
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
-const Editor = require('bookbrainz-data').Editor;
 const achievement = {};
+const Promise = require('bluebird');
 
 function awardAchievement(editor, achievementType) {
 	const achievementAttribs = {achievementId: achievementType.attributes.id,
@@ -29,30 +29,34 @@ function awardAchievement(editor, achievementType) {
 	return new AchievementUnlock(achievementAttribs)
 	.fetch()
 	.then((unlock) => {
+		let unlockPromise;
 		if (unlock === null) {
-			new AchievementUnlock(achievementAttribs)
-			.save(null, {method: 'insert'})
-			.then((achievement) => {
-				return achievement;
-			});
+			unlockPromise =
+				new AchievementUnlock(achievementAttribs)
+			.save(null, {method: 'insert'});
 		}
 		else {
-			return unlock;
+			unlockPromise = unlock;
 		}
+		return unlockPromise;
 	});
 }
 
 function processRevisionist(editor) {
+	let achievementPromise;
 	if (editor.attributes.revisionsApplied > 0) {
 		new AchievementType({name: 'Revisionist I'})
 			.fetch()
 			.then((revisionist) => {
-				return awardAchievement(editor, revisionist);
+				achievementPromise =
+					 awardAchievement(editor, revisionist);
 			});
-		}
-	else {
-		return Promise.reject("no revisions for editor");
 	}
+	else {
+		achievementPromise =
+			Promise.reject('no revisions for editor');
+	}
+	return achievementPromise;
 }
 
 
@@ -60,9 +64,8 @@ achievement.processPageVisit = () => {
 
 };
 
-achievement.processEdit = (userid) => {
-	return processRevisionist(userid);
-};
+achievement.processEdit = (userid) =>
+	processRevisionist(userid);
 
 achievement.processComment = () => {
 

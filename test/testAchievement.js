@@ -25,7 +25,7 @@ const genderAttribs = {
 const editorTypeAttribs = {
 	id: 1,
 	label: 'test_type'
-}
+};
 
 const reviserAttribs = {
 	id: 1,
@@ -56,6 +56,8 @@ const revisionistAttribs = {
 	badgeUrl: 'http://test.com'
 };
 
+const unlockAttribs = {editorId: reviserAttribsOptional.id};
+
 function truncate() {
 	return utils.truncateTables(Bookshelf, [
 		'bookbrainz.editor',
@@ -67,18 +69,17 @@ function truncate() {
 }
 
 describe('Revisionist achievement', () => {
-	beforeEach(() => {
-		return new Gender(genderAttribs)
+	beforeEach(() => new Gender(genderAttribs)
 			.save(null, {method: 'insert'})
 			.then(() => {
 				new EditorType(editorTypeAttribs)
-				.save(null, {method: 'insert'})
-			})
-			.then(() => {
-				new AchievementType(revisionistAttribs)
 				.save(null, {method: 'insert'});
-			});
-	});
+			})
+			.then(() =>
+				new AchievementType(revisionistAttribs)
+				.save(null, {method: 'insert'})
+			)
+	);
 
 	afterEach(truncate);
 
@@ -86,12 +87,12 @@ describe('Revisionist achievement', () => {
 		const achievementPromise = new Editor(reviserAttribsOptional)
 			.save(null, {method: 'insert'})
 			.then((editor) => {
-				Achievement.processEdit(editor)
+				Achievement.processEdit(editor);
 			})
-			.then(() => {
-				return new AchievementUnlock({editorId: reviserAttribsOptional.id})
-					.fetch();
-			})
+			.then(() =>
+				new AchievementUnlock(unlockAttribs)
+					.fetch()
+			);
 
 		return expect(achievementPromise).to.eventually.not.equal(null);
 	});
