@@ -579,7 +579,7 @@ CREATE TABLE bookbrainz.title_unlock (
 	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
 );
 ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
-ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (title_id) REFERENCES bookbrainz.titles_type (id);
+ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (title_id) REFERENCES bookbrainz.title_type (id);
 
 CREATE TABLE bookbrainz.achievement_type (
 	id SERIAL PRIMARY KEY,
