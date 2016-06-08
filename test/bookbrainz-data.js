@@ -21,5 +21,5 @@
 const config = require('../config/testing.json');
 const bookbrainzData = require('bookbrainz-data');
 bookbrainzData.init(config.database);
-//opens up database connection for later use in tests
+// opens up database connection for later use in tests
 module.exports = bookbrainzData;
