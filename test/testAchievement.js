@@ -49,6 +49,10 @@ const reviserAttribsOptional = _.assign(_.clone(reviserAttribs), {
 	genderId: 1
 });
 
+const editorAttribsOptional = _.assign(_.clone(editorAttribs), {
+	genderId: 1
+});
+
 const revisionistAttribs = {
 	id: 1,
 	name: 'Revisionist I',
@@ -96,12 +100,18 @@ describe('Revisionist achievement', () => {
 
 		return expect(achievementPromise).to.eventually.not.equal(null);
 	});
-/*
+
 	it('should not give someone without a revision Revisionist I', () => {
-		Achievement.processEdit(editorAttribs.id);
-		return AchievementUnlock({editorId: editorAttribs.id,
-			achievementId: revisionistAttribs.id})
-			.fetch()
-			.should.eventually.equal(null);
-	}); */
+		const achievementPromise = new Editor(editorAttribsOptional)
+			.save(null, {method: 'insert'})
+			.then((editor) => {
+				Achievement.processEdit(editor);
+			})
+			.then(() =>
+				new AchievementUnlock(unlockAttribs)
+					.fetch()
+			);
+
+		return expect(achievementPromise).to.be.rejected;
+	});
 });
