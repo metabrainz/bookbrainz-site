@@ -31,6 +31,7 @@ const bookshelf = require('bookbrainz-data').bookshelf;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
+const Editor = require('bookbrainz-data').Editor;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
@@ -38,6 +39,7 @@ const Revision = require('bookbrainz-data').Revision;
 const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
+const achievement = require('../../helpers/achievement');
 
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion.jsx')
@@ -680,11 +682,16 @@ module.exports.editEntity = (
 					req.body.note, editorJSON, newRevision, transacting
 				);
 
+				const achievementPromise = new Editor(req.user.id)
+					.fetch({require: true})
+					.then((editor) => achievement.processEdit(editor));
+
 				return Promise.join(
 					entity.save(null, {method: 'update', transacting}),
 					editorUpdatePromise,
 					parentAddedPromise,
-					notePromise
+					notePromise,
+					achievementPromise
 				);
 			})
 			.spread(
