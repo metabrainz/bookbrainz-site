@@ -1,21 +1,37 @@
 'use strict';
 
-const chai = require('../node_modules/chai');
-const chaiAsPromised = require('../node_modules/chai-as-promised');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-const utils = require('../src/server/helpers/utils');
-const Achievement = require('../src/server/helpers/achievement.js');
+const expect = chai.expect;
+const utils = require('../node_modules/bookbrainz-data/util.js');
 
-const AchievementType = require('bookbrainz-data').AchievementType;
-const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
-const Editor = require('bookbrainz-data').Editor;
-const EditorType = require('bookbrainz-data').EditorType;
-const Bookshelf = require('../node_modules/bookshelf');
+const _ = require('lodash');
+
+const bookbrainzData = require('./bookbrainz-data.js');
+const Bookshelf = require('./bookbrainz-data.js').bookshelf;
+const AchievementType = require('./bookbrainz-data').AchievementType;
+const AchievementUnlock = require('./bookbrainz-data').AchievementUnlock;
+const Editor = require('./bookbrainz-data').Editor;
+const EditorType = require('./bookbrainz-data').EditorType;
+const Achievement = require('../src/server/helpers/achievement.js');
+const Gender = require('./bookbrainz-data').Gender;
+
+const genderAttribs = {
+	id: 1,
+	name: 'test'
+};
+
+const editorTypeAttribs = {
+	id: 1,
+	label: 'test_type'
+}
 
 const reviserAttribs = {
 	id: 1,
 	name: 'alice',
 	email: 'alice@test.org',
+	password: 'test',
 	typeId: 1,
 	revisionsApplied: 1
 };
@@ -29,6 +45,10 @@ const editorAttribs = {
 	revisionsApplied: 0
 };
 
+const reviserAttribsOptional = _.assign(_.clone(reviserAttribs), {
+	genderId: 1
+});
+
 const revisionistAttribs = {
 	id: 1,
 	name: 'Revisionist I',
@@ -41,43 +61,46 @@ function truncate() {
 		'bookbrainz.editor',
 		'bookbrainz.editor_type',
 		'bookbrainz.achievement_type',
-		'bookbrainz.achievement_unlock'
+		'bookbrainz.achievement_unlock',
+		'musicbrainz.gender'
 	]);
 }
 
 describe('Revisionist achievement', () => {
 	beforeEach(() => {
-		new EditorType({id: 1, label: 'Editor'})
-			.save()
+		return new Gender(genderAttribs)
+			.save(null, {method: 'insert'})
 			.then(() => {
-				new Editor(editorAttribs)
-				.save();
-			})
-			.then(() => {
-				new Editor(reviserAttribs)
-				.save();
+				new EditorType(editorTypeAttribs)
+				.save(null, {method: 'insert'})
 			})
 			.then(() => {
 				new AchievementType(revisionistAttribs)
-				.save();
+				.save(null, {method: 'insert'});
 			});
 	});
 
 	afterEach(truncate);
 
 	it('should give someone with a revision Revisionist I', () => {
-		Achievement.processEdit(reviserAttribs.id);
-		return AchievementUnlock({editorId: reviserAttribs.id,
-			achievementId: revisionistAttribs.id})
-			.fetch()
-			.should.eventually.not.equal(null);
-	});
+		const achievementPromise = new Editor(reviserAttribsOptional)
+			.save(null, {method: 'insert'})
+			.then((editor) => {
+				Achievement.processEdit(editor)
+			})
+			.then(() => {
+				return new AchievementUnlock({editorId: reviserAttribsOptional.id})
+					.fetch();
+			})
 
+		return expect(achievementPromise).to.eventually.not.equal(null);
+	});
+/*
 	it('should not give someone without a revision Revisionist I', () => {
 		Achievement.processEdit(editorAttribs.id);
 		return AchievementUnlock({editorId: editorAttribs.id,
 			achievementId: revisionistAttribs.id})
 			.fetch()
 			.should.eventually.equal(null);
-	});
+	}); */
 });
