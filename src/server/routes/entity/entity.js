@@ -681,18 +681,17 @@ module.exports.editEntity = (
 				const notePromise = _createNote(
 					req.body.note, editorJSON, newRevision, transacting
 				);
-
-				const achievementPromise = new Editor(req.user.id)
-					.fetch({require: true})
-					.then((editor) => achievement.processEdit(editor));
-
+	
 				return Promise.join(
 					entity.save(null, {method: 'update', transacting}),
 					editorUpdatePromise,
 					parentAddedPromise,
-					notePromise,
-					achievementPromise
-				);
+					notePromise
+				)
+				.then((promises) => {
+					return achievement.processEdit(req.user.id)
+						.then(() => promises);
+				});
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
