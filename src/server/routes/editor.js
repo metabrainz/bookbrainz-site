@@ -102,6 +102,7 @@ router.get('/:id', (req, res, next) => {
 		.then((editorJSON) => {
 			new AchievementUnlock()
 				.where({'editor_id': userId})
+				.orderBy('unlocked_at', 'DESC')
 				.fetchAll({
 					withRelated: ['achievement']
 				})
@@ -119,7 +120,6 @@ router.get('/:id', (req, res, next) => {
 						achievementJSON.model[i].unlockedAt =
 							achievements.models[i].attributes.unlockedAt;
 					}
-					console.log(achievementJSON);
 					return achievementJSON;
 				})
 				.then((achievementJSON) => {
