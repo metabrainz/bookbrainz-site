@@ -44,19 +44,25 @@ block body
 				dt Revisions Reverted
 				dd=editor.revisionsReverted
 			h2 Badges
-			.col-md-3
-				.well
-					img(width="50%", src="/images/Revisionist2.png").center-block
-					p.text-center Revisionist II
-					p.text-center Perform five revisions
-					p.text-center Unlocked: 09/06/2016
-			.col-md-3
-				.well
-					img(width="50%", src="/images/Creator Creator2.png").center-block
-					p.text-center Creator Creator II
-					p.text-center Create five creators
-					p.text-center Unlocked: 09/06/2016
-			.col-md-3
-				.well
-					img(width="50%", src="/images/sadface.png").center-block
-					p.text-center No badge to show, why not try viewing some entries
+			.row(height="200px", margin="0", padding="0")
+				each model in achievement.model
+					.col-md-3
+						.well
+							img(width="50%", src=model.badgeUrl).center-block
+							p.text-center= model.name
+							p.text-center= model.description
+				if achievement.length == 0
+					.col-md-9
+						.well(height="100%")
+							img(height="180px", src="/images/sadface.png").center-block
+							p.text-center No badge to show, why not try viewing some entries
+				if achievement.length == 1
+					.col-md-6
+						.well(height="100%")
+							img(height="180px", src="/images/sadface.png").center-block
+							p.text-center No badge to show, why not try viewing some entries					.well(height="100%")
+				if achievement.length == 2
+					.col-md-3
+						.well(height="100%")
+							img(height="180px", src="/images/sadface.png").center-block
+							p.text-center No badge to show, why not try viewing some entries
