@@ -26,6 +26,7 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
+const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
 
 const auth = require('../helpers/auth');
@@ -96,9 +97,33 @@ router.get('/:id', (req, res, next) => {
 				editorJSON = _.omit(editorJSON, ['password', 'email']);
 			}
 
-			res.render('editor/editor', {
-				editor: editorJSON
-			});
+			return editorJSON;
+		})
+		.then((editorJSON) => {
+			console.log(editorJSON.id);
+			new AchievementUnlock({editorId: editorJSON.id})
+				.fetchAll({
+					require: true,
+					withRelated: ['achievement']
+				})
+				.then((achievements) => {
+					const achievementJSON = {
+						length: achievements.length,
+						model: []
+					};
+					for (let i = 0; i < achievements.length; i++) {
+						achievementJSON.model[i] =
+							achievements.models[i]
+								.relations.achievement.toJSON();
+					}
+					return achievementJSON;
+				})
+				.then((achievementJSON) => {
+					res.render('editor/editor', {
+						editor: editorJSON,
+						achievement: achievementJSON
+					});
+				});
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
