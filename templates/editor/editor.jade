@@ -51,6 +51,7 @@ block body
 							img(width="50%", src=model.badgeUrl).center-block
 							p.text-center= model.name
 							p.text-center= model.description
+							p.text-center= "unlocked: " + model.unlockedAt
 				if achievement.length == 0
 					.col-md-9
 						.well(height="100%")

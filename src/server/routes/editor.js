@@ -100,27 +100,29 @@ router.get('/:id', (req, res, next) => {
 			return editorJSON;
 		})
 		.then((editorJSON) => {
-			console.log(userId);
 			new AchievementUnlock()
 				.where({'editor_id': userId})
 				.fetchAll({
 					withRelated: ['achievement']
 				})	
 				.then((achievements) => {
-					console.log(achievements.models[0]);
+					//never returns more than 3 achievements for profile
+					const length = Math.min(achievements.length, 3);
 					const achievementJSON = {
-						length: achievements.length,
+						length: length,
 						model: []
 					};
-					for (let i = 0; i < achievements.length; i++) {
+					for (let i = 0; i < length; i++) {
 						achievementJSON.model[i] =
 							achievements.models[i]
 								.relations.achievement.toJSON();
+						achievementJSON.model[i].unlockedAt = 
+							achievements.models[i].attributes.unlockedAt;
 					}
+					console.log(achievementJSON);
 					return achievementJSON;
 				})
 				.then((achievementJSON) => {
-					console.log(achievementJSON);
 					res.render('editor/editor', {
 						editor: editorJSON,
 						achievement: achievementJSON
