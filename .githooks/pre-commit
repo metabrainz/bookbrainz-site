@@ -1,7 +1,0 @@
-#!/bin/sh
-
-git stash -q --keep-index
-jscs ./src/**/*.js ./test/*.js app.js gulpfile.js scripts/www
-RESULT=$?
-git stash pop -q
-exit $RESULT
