@@ -1,0 +1,28 @@
+extends ../layout
+
+block body
+	.row
+		.col-md-12
+			h1=editor.name
+	.row
+		.col-md-12
+			ul.nav.nav-tabs
+				li: a(href='./'+editor.id) Profile
+				li: a(href='./'+editor.id+'/revisions') Revisions
+				li.active: a(href='./'+editor.id+'/achievements') Achievements
+	br
+	h1 Unlocked Achievements
+	for model in achievement.unlocks
+		.row.well
+			.col-md-2
+				img(height="100px", src=model.badgeUrl)
+			.col-md-8
+				h2=model.name
+			p=model.description
+		else
+			.row.well
+				.col-md-2
+					img(height="100px", src=model.badgeUrl)
+				.col-md-8
+					h2=model.name
+					p=model.description
