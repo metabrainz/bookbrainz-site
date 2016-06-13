@@ -85,7 +85,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 router.get('/:id', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
 
-	new Editor({id: userId})
+	const editorJSON = new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender']
@@ -99,40 +99,41 @@ router.get('/:id', (req, res, next) => {
 
 			return editorJSON;
 		})
-		.then((editorJSON) => {
-			new AchievementUnlock()
-				.where({'editor_id': userId})
-				.orderBy('unlocked_at', 'DESC')
-				.fetchAll({
-					withRelated: ['achievement']
-				})
-				.then((achievements) => {
-					// never returns more than 3 achievements for profile
-					const length = Math.min(achievements.length, 3);
-					const achievementJSON = {
-						length,
-						model: []
-					};
-					for (let i = 0; i < length; i++) {
-						achievementJSON.model[i] =
-							achievements.models[i]
-								.relations.achievement.toJSON();
-						achievementJSON.model[i].unlockedAt =
-							achievements.models[i].attributes.unlockedAt;
-					}
-					return achievementJSON;
-				})
-				.then((achievementJSON) => {
-					res.render('editor/editor', {
-						editor: editorJSON,
-						achievement: achievementJSON
-					});
-				});
-		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
 		})
 		.catch(next);
+
+	const achievementJSON = new AchievementUnlock()
+		.where({'editor_id': userId})
+		.orderBy('unlocked_at', 'DESC')
+		.fetchAll({
+			withRelated: ['achievement']
+		})
+		.then((achievements) => {
+			// never returns more than 3 achievements for profile
+			const length = Math.min(achievements.length, 3);
+			const achievementJSON = {
+				length,
+				model: []
+			};
+			for (let i = 0; i < length; i++) {
+				achievementJSON.model[i] =
+					achievements.models[i]
+						.relations.achievement.toJSON();
+				achievementJSON.model[i].unlockedAt =
+					achievements.models[i].attributes.unlockedAt;
+			}
+			return achievementJSON;
+		});
+
+	Promise.join(achievementJSON, editorJSON, 
+		(achievementJSON, editorJSON) => 
+			res.render('editor/editor', {
+				editor: editorJSON,
+				achievement: achievementJSON
+			})
+	);
 });
 
 router.get('/:id/revisions', (req, res, next) => {
