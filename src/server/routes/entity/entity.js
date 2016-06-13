@@ -520,6 +520,10 @@ module.exports.createEntity = (
 				return model.forge(propsToSet)
 					.save(null, {method: 'insert', transacting});
 			})
+			.then((entityModel) => {
+				return achievement.processEdit(req.user.id)
+					.then(() => entityModel);
+			})
 			.then(
 				(entityModel) =>
 					entityModel.refresh({
