@@ -85,13 +85,13 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 router.get('/:id', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
 
-	const editorJSON = new Editor({id: userId})
+	const editor = new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender']
 		})
-		.then((editor) => {
-			let editorJSON = editor.toJSON();
+		.then((editordata) => {
+			let editorJSON = editordata.toJSON();
 
 			if (!req.user || userId !== req.user.id) {
 				editorJSON = _.omit(editorJSON, ['password', 'email']);
@@ -104,10 +104,8 @@ router.get('/:id', (req, res, next) => {
 		})
 		.catch(next);
 
-	const achievementJSON = new AchievementUnlock()
-		.query(function(qb) {
-			qb.limit(3);
-		})
+	const achievement = new AchievementUnlock()
+		.query((qb) => qb.limit(3))
 		.where({'editor_id': userId})
 		.orderBy('unlocked_at', 'DESC')
 		.fetchAll({
@@ -121,8 +119,8 @@ router.get('/:id', (req, res, next) => {
 			return achievementJSON;
 		});
 
-	Promise.join(achievementJSON, editorJSON, 
-		(achievementJSON, editorJSON) => 
+	Promise.join(achievement, editor,
+		(achievementJSON, editorJSON) =>
 			res.render('editor/editor', {
 				editor: editorJSON,
 				achievement: achievementJSON
