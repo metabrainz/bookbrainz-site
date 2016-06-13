@@ -26,6 +26,7 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
+const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
 
@@ -147,6 +148,64 @@ router.get('/:id/revisions', (req, res, next) => {
 			throw new NotFoundError('Editor not found');
 		})
 		.catch(next);
+});
+
+router.get('/:id/achievements', (req, res, next) => {
+	const userId = parseInt(req.params.id, 10);
+	
+	const editor = new Editor({id: userId})
+		.fetch({
+			require: true,
+			withRelated: ['type', 'gender']
+		})
+		.then((editordata) => {
+			let editorJSON = editordata.toJSON();
+
+			if (!req.user || userId !== req.user.id) {
+				editorJSON = _.omit(editorJSON, ['password', 'email']);
+			}
+
+			return editorJSON;
+		})
+		.catch(Editor.NotFoundError, () => {
+			throw new NotFoundError('Editor not found');
+		})
+		.catch(next);
+
+
+	const achievement = new AchievementUnlock()
+		.where({'editor_id': userId})
+		.fetchAll()
+		.then((unlocks) => {
+			let achievementJSON = {unlocks: []}
+			for (let i = 0; i < unlocks.length; i++) {
+				achievementJSON.unlocks[i]
+					= unlocks.models[i].attributes.achievementId;
+			}
+			console.log(achievementJSON);
+			return achievementJSON;
+		});	
+
+	const allAchievements = new AchievementType()
+		.orderBy('id', 'ASC')
+		.fetchAll()
+		.then((achievements) => {
+			const achievementsJSON = {
+				length: achievement.length,
+				model: achievements.toJSON()
+			};
+			console.log(achievementsJSON);
+			return achievementsJSON;
+		});
+		
+	Promise.join(achievement, editor, allAchievements,
+		(achievementJSON, editorJSON, allJSON) =>
+			res.render('editor/achievements', {
+				editor: editorJSON,
+				achievement: achievementJSON,
+				allAchievements: allJSON
+			})
+	);
 });
 
 module.exports = router;
