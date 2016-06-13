@@ -105,25 +105,19 @@ router.get('/:id', (req, res, next) => {
 		.catch(next);
 
 	const achievementJSON = new AchievementUnlock()
+		.query(function(qb) {
+			qb.limit(3);
+		})
 		.where({'editor_id': userId})
 		.orderBy('unlocked_at', 'DESC')
 		.fetchAll({
 			withRelated: ['achievement']
 		})
 		.then((achievements) => {
-			// never returns more than 3 achievements for profile
-			const length = Math.min(achievements.length, 3);
 			const achievementJSON = {
-				length,
-				model: []
+				length: achievements.length,
+				model: achievements.toJSON()
 			};
-			for (let i = 0; i < length; i++) {
-				achievementJSON.model[i] =
-					achievements.models[i]
-						.relations.achievement.toJSON();
-				achievementJSON.model[i].unlockedAt =
-					achievements.models[i].attributes.unlockedAt;
-			}
 			return achievementJSON;
 		});
 

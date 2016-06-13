@@ -48,17 +48,17 @@ block body
 				each model in achievement.model
 					.col-md-3
 						.well
-							img(width="50%", src=model.badgeUrl).center-block
-							p.text-center= model.name
-							p.text-center= model.description
-							p.text-center= "unlocked: " + model.unlockedAt
+							img(width="50%", src=model.achievement.badgeUrl).center-block
+							p.text-center=model.achievement.name
+							p.text-center=model.achievement.description
+							p.text-center="unlocked: " + model.unlockedAt
 				if achievement.length == 0
 					.col-md-9
 						.well(height="100%")
 							img(height="180px", src="/images/sadface.png").center-block
 							p.text-center No badge to show, why not try viewing some entries
 				if achievement.length == 1
-					.col-md-6
+					.col-md-5
 						.well(height="100%")
 							img(height="180px", src="/images/sadface.png").center-block
 							p.text-center No badge to show, why not try viewing some entries					.well(height="100%")
