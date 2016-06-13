@@ -50,12 +50,24 @@ function processRevisionist(editorId) {
 		.fetch()
 		.then((editor) => {
 			let revisionistPromise;
-			if (editor.attributes.revisionsApplied > 0) {
-				revisionistPromise =
-					new AchievementType({name: 'Revisionist I'})
-				.fetch()
-				.then((revisionist) =>
-					awardAchievement(editorId, revisionist.id));
+			const revisions = editor.attributes.revisionsApplied;
+			if (revisions > 0) {
+				if (revisions > 250) {
+					revisionistPromise =
+						new AchievementType({name: 'Revisionist III'});
+				}
+				else if (revisions > 50) {
+					revisionistPromise = 
+						new AchievementType({name: 'Revisionist II'});
+				}
+				else {
+					revisionistPromise =
+						new AchievementType({name: 'Revisionist I'});
+				}
+					revisionistPromise
+						.fetch()
+						.then((revisionist) =>
+							awardAchievement(editorId, revisionist.id));
 			}
 			else {
 				revisionistPromise = Promise.resolve();
