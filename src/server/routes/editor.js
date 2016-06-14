@@ -40,6 +40,10 @@ const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
 );
 
+const AchievementForm = React.createFactory(
+	require('../../client/components/forms/achievements.jsx')
+);
+
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
@@ -177,34 +181,48 @@ router.get('/:id/achievements', (req, res, next) => {
 		.where({'editor_id': userId})
 		.fetchAll()
 		.then((unlocks) => {
-			let achievementJSON = {unlocks: []}
+			let unlocked = [];
 			for (let i = 0; i < unlocks.length; i++) {
-				achievementJSON.unlocks[i]
+				unlocked[i]
 					= unlocks.models[i].attributes.achievementId;
 			}
-			console.log(achievementJSON);
-			return achievementJSON;
-		});	
-
-	const allAchievements = new AchievementType()
-		.orderBy('id', 'ASC')
-		.fetchAll()
-		.then((achievements) => {
-			const achievementsJSON = {
-				length: achievement.length,
-				model: achievements.toJSON()
-			};
-			console.log(achievementsJSON);
-			return achievementsJSON;
+			return unlocked;
+		})
+		.then((unlocks) => {
+			return new AchievementType()
+				.orderBy('id', 'ASC')
+				.fetchAll()
+				.then((achievements) => {
+					const achievementsJSON = {
+						model: achievements.toJSON()
+					};
+					for (let i = 0; i < achievementsJSON.model.length; i++) {
+						if (unlocks.indexOf(achievementsJSON.model[i].id) >= 0) {
+							achievementsJSON.model[i].unlocked = true;
+						}
+						else {
+							achievementsJSON.model[i].unlocked = false;
+						}
+					}
+					console.log(achievementsJSON);
+					return achievementsJSON;
+				})
 		});
 		
-	Promise.join(achievement, editor, allAchievements,
-		(achievementJSON, editorJSON, allJSON) =>
+	Promise.join(achievement, editor,
+		(achievementJSON, editorJSON, allJSON) => {
+			const markup =
+				ReactDOMServer.renderToString(AchievementForm({
+					editor: editorJSON,
+					achievement: achievementJSON,
+				}));
+
 			res.render('editor/achievements', {
 				editor: editorJSON,
-				achievement: achievementJSON,
-				allAchievements: allJSON
-			})
+				markup
+			});
+
+		}
 	);
 });
 
