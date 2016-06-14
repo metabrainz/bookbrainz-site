@@ -585,7 +585,7 @@ CREATE TABLE bookbrainz.achievement_type (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(80) NOT NULL CHECK (name <> ''),
 	description TEXT NOT NULL CHECK (description <> ''),
-	badge_url VARCHAR(2083)
+	badge_url VARCHAR(2000)
 );
 CREATE TABLE bookbrainz.achievement_unlock (
 	id SERIAL PRIMARY KEY,
@@ -595,7 +595,6 @@ CREATE TABLE bookbrainz.achievement_unlock (
 );
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (achievement_id) REFERENCES bookbrainz.achievement_type (id);
-
 -- Views --
 
 CREATE VIEW bookbrainz.creator AS
