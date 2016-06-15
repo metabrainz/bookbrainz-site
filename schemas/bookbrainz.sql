@@ -592,18 +592,10 @@ CREATE TABLE bookbrainz.achievement_unlock (
 	editor_id INT NOT NULL,
 	achievement_id INT NOT NULL,
 	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	profile_rank SMALLINT
 );
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (achievement_id) REFERENCES bookbrainz.achievement_type (id);
-
-CREATE TABLE bookbrainz.achievement_rank (
-	id SERIAL PRIMARY KEY,
-	editor_id INT NOT NULL,
-	achievement_id INT NOT NULL,
-	achievement_rank SMALLINT
-);
-ALTER TABLE bookbrainz.achievement_rank ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
-ALTER TABLE bookbrainz.achievement_rank ADD FOREIGN KEY (achievement_id) REFERENCES bookbrainz.achievement_type (id);
 
 -- Views --
 
