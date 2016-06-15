@@ -21,9 +21,11 @@
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
-
+const CreatorRevision = require('bookbrainz-data').CreatorRevision;
+const Revision = require('bookbrainz-data').Revision;
 const Promise = require('bluebird');
 const achievement = {};
+const Bookshelf = require('bookbrainz-data').bookshelf;
 
 function awardAchievement(editorId, achievementId) {
 	const achievementAttribs = {
@@ -57,7 +59,7 @@ function processRevisionist(editorId) {
 						new AchievementType({name: 'Revisionist III'});
 				}
 				else if (revisions > 50) {
-					revisionistPromise = 
+					revisionistPromise =
 						new AchievementType({name: 'Revisionist II'});
 				}
 				else {
@@ -76,13 +78,50 @@ function processRevisionist(editorId) {
 		});
 }
 
+function processCreatorCreator(editorId) {
+	// TODO make this work with bookshelf or move elsewhere
+	const rawsql = 'SELECT foo.id, bookbrainz.creator_revision.id FROM (SELECT * FROM bookbrainz.revision WHERE author_id=' + editorId + ') AS foo INNER JOIN bookbrainz.creator_revision on foo.id = bookbrainz.creator_revision.id';
+	Bookshelf.knex.raw(rawsql)
+		.then((out) => {
+			let creatorPromise;
+			const rowCount = out.rowCount;
+			if (rowCount > 0) {
+				if (rowCount > 100) {
+					creatorPromise =
+						new AchievementType({name: 'Creator Creator III'});
+				}
+				else if (rowCount > 10) {
+					creatorPromise =
+						new AchievementType({name: 'Creator Creator II'});
+				}
+				else {
+					creatorPromise =
+						new AchievementType({name: 'Creator Creator I'});
+				}
+				creatorPromise
+					.fetch()
+					.then((creator) => {
+						awardAchievement(editorId, creator.id);
+					});
+			}
+			else {
+				creatorPromise = Promise.resolve();
+			}
+			return creatorPromise;
+		});
+}
+
 
 achievement.processPageVisit = () => {
 
 };
 
-achievement.processEdit = (userid) =>
-	processRevisionist(userid);
+achievement.processEdit = (userid) => {
+	return Promise.join(
+		processRevisionist(userid),
+		processCreatorCreator(userid)
+	);
+}
 
 achievement.processComment = () => {
 
