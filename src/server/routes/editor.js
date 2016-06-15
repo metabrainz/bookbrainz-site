@@ -204,7 +204,6 @@ router.get('/:id/achievements', (req, res, next) => {
 							achievementsJSON.model[i].unlocked = false;
 						}
 					}
-					console.log(achievementsJSON);
 					return achievementsJSON;
 				})
 		});
@@ -226,4 +225,35 @@ router.get('/:id/achievements', (req, res, next) => {
 	);
 });
 
+function rankUpdate(editorId, bodyRank, rank) {
+	let promise;
+	if (bodyRank != 'none') {
+		promise = new AchievementUnlock({
+			id: parseInt(bodyRank, 10),
+			editor_id: parseInt(editorId, 10)
+		})
+			.fetch({require: true})
+			.then((unlock) => {
+				unlock.set('profileRank', rank)
+					.save();
+			});
+	}
+	else {
+		promise = Promise.resolve(false);
+	}
+	return promise;
+}
+
+router.post('/:id/achievements', auth.isAuthenticated, (req, res, next) => {
+	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
+	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
+	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
+	Promise.join(
+		rankOnePromise,
+		rankTwoPromise,
+		rankThreePromise,
+		(one, two, three) =>
+			console.log('done')
+	);
+});
 module.exports = router;
