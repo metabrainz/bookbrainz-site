@@ -35,7 +35,8 @@ CREATE TABLE bookbrainz.editor (
 	password CHAR(60) NOT NULL CHECK (password <> ''),
 	revisions_applied INT NOT NULL DEFAULT 0 CHECK (revisions_applied >= 0),
 	revisions_reverted INT NOT NULL DEFAULT 0 CHECK (revisions_reverted >= 0),
-	total_revisions INT NOT NULL DEFAULT 0 CHECK (total_revisions >= 0)
+	total_revisions INT NOT NULL DEFAULT 0 CHECK (total_revisions >= 0),
+	title_unlock_id INT
 );
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id) DEFERRABLE;
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
@@ -565,6 +566,38 @@ ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (language_id) REFE
 
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
+
+CREATE TABLE bookbrainz.title_type (
+	id SERIAL PRIMARY KEY,
+	title VARCHAR(40) NOT NULL CHECK (title <> ''),
+	description TEXT NOT NULL CHECK (description <> '')
+);
+
+CREATE TABLE bookbrainz.title_unlock (
+	id SERIAL PRIMARY KEY,
+	editor_id INT NOT NULL,
+	title_id INT NOT NULL,
+	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.title_unlock ADD FOREIGN KEY (title_id) REFERENCES bookbrainz.title_type (id);
+ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (title_unlock_id) REFERENCES bookbrainz.title_unlock (id);
+
+CREATE TABLE bookbrainz.achievement_type (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(80) NOT NULL CHECK (name <> ''),
+	description TEXT NOT NULL CHECK (description <> ''),
+	badge_url VARCHAR(2000)
+);
+CREATE TABLE bookbrainz.achievement_unlock (
+	id SERIAL PRIMARY KEY,
+	editor_id INT NOT NULL,
+	achievement_id INT NOT NULL,
+	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	profile_rank SMALLINT
+);
+ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (achievement_id) REFERENCES bookbrainz.achievement_type (id);
 
 -- Views --
 
