@@ -48,17 +48,44 @@ const AchievementForm = React.createFactory(
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
-	new Editor({id: parseInt(req.user.id, 10)})
+	const editorPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch()
 		.then((editor) => {
-			const markup =
-				ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
-
-			res.render('editor/edit', {
-				props: editor.toJSON(),
-				markup
-			});
+			return editor.toJSON();
 		})
+	
+	const titlePromise = new TitleUnlock()
+		.where({'editor_id': parseInt(req.user.id, 10)})
+		.fetchAll({
+			withRelated: ['title']
+		})
+		.then((unlock) => {
+			let titleJSON;
+			if (unlock != null) {
+				titleJSON = unlock.toJSON();
+			}
+			else {
+				titleJSON = {};
+			}
+			return titleJSON;
+		});
+	
+	Promise.join(editorPromise, titlePromise,
+		(editorJSON, titleJSON) => {
+		const markup =
+			ReactDOMServer.renderToString(ProfileForm({
+				editor: editorJSON,
+				titles: titleJSON
+			}));
+
+		res.render('editor/edit', {
+			props: {
+				editor: editorJSON,
+				titles: titleJSON
+			},
+			markup
+		});
+	})
 		.catch(next);
 });
 
@@ -78,11 +105,12 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			Editor.forge({id: parseInt(req.user.id, 10)})
 				.fetch()
 		)
-		.then((editor) =>
+		.then((editor) => {
 			// Modify the user to match the updates from the form
-			editor.set('bio', req.body.bio)
-				.save()
-		)
+			console.log(req.body);
+			return editor.set('bio', req.body.bio)
+			.save()
+		})
 		.then((editor) => editor.toJSON());
 
 	handler.sendPromiseResult(res, editPromise);
