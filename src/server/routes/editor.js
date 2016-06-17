@@ -29,6 +29,7 @@ const _ = require('lodash');
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
+const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 
 const auth = require('../helpers/auth');
 const handler = require('../helpers/handler');
@@ -103,6 +104,24 @@ router.get('/:id', (req, res, next) => {
 			}
 
 			return editorJSON;
+		})
+		.then((editorJSON) => {
+			if (editorJSON.titleUnlockId == null) {
+				return Promise.resolve(editorJSON);
+			}
+			else {
+				return new TitleUnlock({editorId: userId})
+					.fetch({
+						withRelated: ['title']
+					})
+					.then((unlock) => {
+						if (unlock != null) {
+							editorJSON.title =
+								unlock.relations.title.attributes.title;
+						}
+						return editorJSON;
+					});
+			}
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
