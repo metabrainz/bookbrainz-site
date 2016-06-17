@@ -117,7 +117,7 @@ router.get('/:id', (req, res, next) => {
 					.then((unlock) => {
 						if (unlock != null) {
 							editorJSON.title =
-								unlock.relations.title.attributes.title;
+								unlock.relations.title.attributes;
 						}
 						return editorJSON;
 					});
