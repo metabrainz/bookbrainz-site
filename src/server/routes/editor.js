@@ -109,9 +109,8 @@ router.get('/:id', (req, res, next) => {
 		})
 		.catch(next);
 
-	const achievement = new AchievementUnlock()
+	const achievement = new AchievementUnlock({editorId: userId})
 		.query((qb) => qb.limit(3))
-		.where({'editor_id': userId})
 		.orderBy('unlocked_at', 'DESC')
 		.fetchAll({
 			withRelated: ['achievement']
@@ -156,7 +155,6 @@ router.get('/:id/revisions', (req, res, next) => {
 
 router.get('/:id/achievements', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
-	
 	const editor = new Editor({id: userId})
 		.fetch({
 			require: true,
@@ -177,19 +175,18 @@ router.get('/:id/achievements', (req, res, next) => {
 		.catch(next);
 
 
-	const achievement = new AchievementUnlock()
-		.where({'editor_id': userId})
+	const achievement = new AchievementUnlock({editorId: userId})
 		.fetchAll()
 		.then((unlocks) => {
-			let unlocked = [];
+			const unlocked = [];
 			for (let i = 0; i < unlocks.length; i++) {
-				unlocked[i]
-					= unlocks.models[i].attributes.achievementId;
+				unlocked[i] =
+					unlocks.models[i].attributes.achievementId;
 			}
 			return unlocked;
 		})
-		.then((unlocks) => {
-			return new AchievementType()
+		.then((unlocks) =>
+			new AchievementType()
 				.orderBy('id', 'ASC')
 				.fetchAll()
 				.then((achievements) => {
@@ -197,7 +194,8 @@ router.get('/:id/achievements', (req, res, next) => {
 						model: achievements.toJSON()
 					};
 					for (let i = 0; i < achievementsJSON.model.length; i++) {
-						if (unlocks.indexOf(achievementsJSON.model[i].id) >= 0) {
+						if (unlocks.indexOf(
+									achievementsJSON.model[i].id) >= 0) {
 							achievementsJSON.model[i].unlocked = true;
 						}
 						else {
@@ -205,41 +203,43 @@ router.get('/:id/achievements', (req, res, next) => {
 						}
 					}
 					return achievementsJSON;
-				})
-		});
-		
+				}
+			)
+		);
+
 	Promise.join(achievement, editor,
-		(achievementJSON, editorJSON, allJSON) => {
+		(achievementJSON, editorJSON) => {
 			const markup =
 				ReactDOMServer.renderToString(AchievementForm({
 					editor: editorJSON,
-					achievement: achievementJSON,
+					achievement: achievementJSON
 				}));
 
 			res.render('editor/achievements', {
 				editor: editorJSON,
 				markup
 			});
-
 		}
 	);
 });
 
 function rankUpdate(editorId, bodyRank, rank) {
 	let promise;
-	if (bodyRank != 'none') {
+	if (bodyRank !== 'none') {
 		promise = new AchievementUnlock({
 			profileRank: rank
 		})
 			.fetch()
-			.then((unlock) =>
+			.then((unlock) => {
+				if (unlock !== null) {
 					unlock.set('profileRank', null)
-						.save()
-			)
+						.save();
+				}
+			})
 			.then(() =>
 				new AchievementUnlock({
-				achievement_id: parseInt(bodyRank, 10),
-				editor_id: parseInt(editorId, 10)
+					achievement_id: parseInt(bodyRank, 10),
+					editor_id: parseInt(editorId, 10)
 				})
 					.fetch({require: true})
 					.then((unlock) =>
