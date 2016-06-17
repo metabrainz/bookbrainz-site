@@ -21,8 +21,6 @@
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
-const CreatorRevision = require('bookbrainz-data').CreatorRevision;
-const Revision = require('bookbrainz-data').Revision;
 const Promise = require('bluebird');
 const achievement = {};
 const Bookshelf = require('bookbrainz-data').bookshelf;
@@ -47,23 +45,30 @@ function awardAchievement(editorId, achievementId) {
 	});
 }
 
-// list is in order of descending threshold
-// { signal: number to compare, i.e num revisions,
-// { tiers: list of objects with achievements name 
-// [{threshold, "achievement string}, ...]}
-function testTiers(attributes) {
-	const signal = attributes.signal;
+// tiers = [{threshold, name}]
+function testTiers(signal, editorId, tiers) {
+	let promiseList = [];
+	let achievementPromise;
+	let achievementAwarded = false;
 	for (let i = 0; i < tiers.length; i++) {
 		if (signal > tiers[i].threshold) {
-			return new AchievementType({
-				name: tiers[i].name
-			})
-				.fetch()
-				.then((achievement)) =>
-				awardAchievement(editorId, achievement.id);
+			achievementAwarded = true;
+			promiseList.push(
+				new AchievementType({name: tiers[i].name})
+					.fetch()
+					.then((achievementTier) => {
+						return awardAchievement(editorId, achievementTier.id);
+					})
+			);
 		}
 	}
-	return Promise.resolve();
+	if (achievementAwarded) {
+		achievementPromise = Promise.all(promiseList);
+	}
+	else {
+		achievementPromise = Promise.resolve();
+	}
+	return achievementPromise;
 }
 
 function processRevisionist(editorId) {
@@ -72,34 +77,24 @@ function processRevisionist(editorId) {
 		.then((editor) => {
 			let revisionistPromise;
 			const revisions = editor.attributes.revisionsApplied;
-			if (revisions > 0) {
-				if (revisions > 250) {
-					revisionistPromise =
-						new AchievementType({name: 'Revisionist III'});
-				}
-				else if (revisions > 50) {
-					revisionistPromise =
-						new AchievementType({name: 'Revisionist II'});
-				}
-				else {
-					revisionistPromise =
-						new AchievementType({name: 'Revisionist I'});
-				}
-					revisionistPromise
-						.fetch()
-						.then((revisionist) =>
-							awardAchievement(editorId, revisionist.id));
-			}
-			else {
-				revisionistPromise = Promise.resolve();
-			}
-			return revisionistPromise;
-		});
+			const tiers = [
+				{threshold: 250, name: 'Revisionist III'},
+				{threshold: 50, name: 'Revisionist II'},
+				{threshold: 1, name: 'Revisionist I'}
+			];
+			return testTiers(revisions, editorId, tiers);
+		})
 }
 
 function processCreatorCreator(editorId) {
 	// TODO make this work with bookshelf or move elsewhere
-	const rawsql = 'SELECT foo.id, bookbrainz.creator_revision.id FROM (SELECT * FROM bookbrainz.revision WHERE author_id=' + editorId + ') AS foo INNER JOIN bookbrainz.creator_revision on foo.id = bookbrainz.creator_revision.id';
+	const rawsql = 'SELECT foo.id, bookbrainz.creator_revision.id '
+				 + 'FROM '
+				 + '(SELECT * FROM bookbrainz.revision '
+				 + 'WHERE author_id=' + editorId + ') AS foo '
+				 + 'INNER JOIN '
+				 + 'bookbrainz.creator_revision on '
+				 + 'foo.id = bookbrainz.creator_revision.id';
 	Bookshelf.knex.raw(rawsql)
 		.then((out) => {
 			let creatorPromise;
@@ -135,12 +130,12 @@ achievement.processPageVisit = () => {
 
 };
 
-achievement.processEdit = (userid) => {
-	return Promise.join(
+achievement.processEdit = (userid) =>
+	Promise.join(
 		processRevisionist(userid),
 		processCreatorCreator(userid)
 	);
-}
+
 
 achievement.processComment = () => {
 
