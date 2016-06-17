@@ -3,7 +3,12 @@ extends ../layout
 block body
 	.row
 		.col-md-12
-			h1= editor.name
+			if editor.title
+				div
+					a(href=" " title=editor.title.description)
+						h1=editor.title.title + " " + editor.name
+			else
+				h1=editor.name
 	.row
 		.col-md-12
 			ul.nav.nav-tabs
