@@ -57,7 +57,7 @@ function testTiers(signal, editorId, tiers) {
 				new AchievementType({name: tiers[i].name})
 					.fetch({require: true})
 					.then((achievementTier) =>
-						return awardAchievement(editorId, achievementTier.id);
+						awardAchievement(editorId, achievementTier.id))
 			);
 		}
 	}
