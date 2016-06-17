@@ -4,7 +4,9 @@ block body
 	.row
 		.col-md-12
 			if editor.title
-				h1=editor.title + " " + editor.name
+				div
+					a(href=" " title=editor.title.description)
+						h1=editor.title.title + " " + editor.name
 			else
 				h1=editor.name
 	.row
