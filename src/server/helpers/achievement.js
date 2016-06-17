@@ -47,6 +47,25 @@ function awardAchievement(editorId, achievementId) {
 	});
 }
 
+// list is in order of descending threshold
+// { signal: number to compare, i.e num revisions,
+// { tiers: list of objects with achievements name 
+// [{threshold, "achievement string}, ...]}
+function testTiers(attributes) {
+	const signal = attributes.signal;
+	for (let i = 0; i < tiers.length; i++) {
+		if (signal > tiers[i].threshold) {
+			return new AchievementType({
+				name: tiers[i].name
+			})
+				.fetch()
+				.then((achievement)) =>
+				awardAchievement(editorId, achievement.id);
+		}
+	}
+	return Promise.resolve();
+}
+
 function processRevisionist(editorId) {
 	return new Editor({id: editorId})
 		.fetch()
