@@ -53,9 +53,10 @@ function testTiers(signal, editorId, tiers) {
 	for (let i = 0; i < tiers.length; i++) {
 		if (signal > tiers[i].threshold) {
 			achievementAwarded = true;
+			console.log("PASS "+ tiers[i].name);
 			promiseList.push(
 				new AchievementType({name: tiers[i].name})
-					.fetch()
+					.fetch({require: true})
 					.then((achievementTier) => {
 						return awardAchievement(editorId, achievementTier.id);
 					})
@@ -99,29 +100,12 @@ function processCreatorCreator(editorId) {
 		.then((out) => {
 			let creatorPromise;
 			const rowCount = out.rowCount;
-			if (rowCount > 0) {
-				if (rowCount > 100) {
-					creatorPromise =
-						new AchievementType({name: 'Creator Creator III'});
-				}
-				else if (rowCount > 10) {
-					creatorPromise =
-						new AchievementType({name: 'Creator Creator II'});
-				}
-				else {
-					creatorPromise =
-						new AchievementType({name: 'Creator Creator I'});
-				}
-				creatorPromise
-					.fetch()
-					.then((creator) => {
-						awardAchievement(editorId, creator.id);
-					});
-			}
-			else {
-				creatorPromise = Promise.resolve();
-			}
-			return creatorPromise;
+			const tiers = [
+				{threshold: 100, name: 'Creator Creator III'},
+				{threshold: 10, name: 'Creator Creator II'},
+				{threshold: 1, name: 'Creator Creator I'}
+			];
+			return testTiers(rowCount, editorId, tiers);
 		});
 }
 
