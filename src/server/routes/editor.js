@@ -163,8 +163,29 @@ router.get('/:id/revisions', (req, res, next) => {
 			}
 		})
 		.then((editor) => {
+			const editorJSON = editor.toJSON();
+			if (editorJSON.titleUnlockId === null) {
+				return Promise.resolve(editorJSON);
+			}
+			else {
+				return new TitleUnlock({editorId: editorJSON.id})
+					.fetch({
+						withRelated: ['title']
+					})
+					.then((unlock) => {
+						if (unlock != null) {
+							editorJSON.title =
+								unlock.relations.title.attributes;
+						}
+						console.log(editorJSON)
+						return editorJSON;
+					});
+			}
+		})
+		.then((editorJSON) => {
+			console.log
 			res.render('editor/revisions', {
-				editor: editor.toJSON()
+				editor: editorJSON
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
@@ -188,6 +209,24 @@ router.get('/:id/achievements', (req, res, next) => {
 			}
 
 			return editorJSON;
+		})
+		.then((editorJSON) => {
+			if (editorJSON.titleUnlockId == null) {
+				return Promise.resolve(editorJSON);
+			}
+			else {
+				return new TitleUnlock({editorId: userId})
+					.fetch({
+						withRelated: ['title']
+					})
+					.then((unlock) => {
+						if (unlock != null) {
+							editorJSON.title =
+								unlock.relations.title.attributes;
+						}
+						return editorJSON;
+					});
+			}
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
