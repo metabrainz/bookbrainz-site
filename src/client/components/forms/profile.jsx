@@ -29,13 +29,14 @@ module.exports = React.createClass({
 	displayName: 'profileForm',
 	propTypes: {
 		bio: React.PropTypes.string,
-		id: React.PropTypes.number
+		id: React.PropTypes.number,
+		title: React.PropTypes.string
 	},
 	getInitialState() {
 		'use strict';
-
 		return {
-			bio: this.props.bio,
+			bio: this.props.editor.bio,
+			title: toString(this.props.editor.titleUnlockId),
 			waiting: false
 		};
 	},
@@ -45,8 +46,9 @@ module.exports = React.createClass({
 		evt.preventDefault();
 
 		const data = {
-			id: this.props.id,
-			bio: this.bio.getValue().trim()
+			id: this.props.editor.id,
+			bio: this.bio.getValue().trim(),
+			title: this.title
 		};
 
 		this.setState({waiting: true});
@@ -54,14 +56,16 @@ module.exports = React.createClass({
 		request.post('/editor/edit/handler')
 			.send(data).promise()
 			.then((res) => {
-				const editor = res.body;
-				window.location.href = `/editor/${editor.id}`;
+				const editor = res.body.editor;
+				window.location.href = `/editor/${this.props.editor.id}`;
 			});
 	},
 	render() {
 		'use strict';
-
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
+		const titles = this.props.titles.map(function(unlock) {
+			return (<option name={unlock.id}>{unlock.title.title}</option>)
+		});
 
 		return (
 			<form
@@ -77,6 +81,17 @@ module.exports = React.createClass({
 					type="textarea"
 					wrapperClassName="col-md-9"
 				/>
+				<div className="form-group">
+					<div className="col-md-4 col-md-offset-4">
+						<label>Title</label>
+						<div className="selectContainer">
+							<select name="titles" className="form-control" value={this.title}>
+								<option value="none"> </option>
+								{titles}
+							</select>
+						</div>
+					</div>
+				</div>
 				<div className="form-group">
 					<div className="col-md-4 col-md-offset-4">
 						<Button
