@@ -110,8 +110,9 @@ router.get('/:id', (req, res, next) => {
 		.catch(next);
 
 	const achievement = new AchievementUnlock({editorId: userId})
+		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
-		.orderBy('unlocked_at', 'DESC')
+		.orderBy('profile_rank', 'DESC')
 		.fetchAll({
 			withRelated: ['achievement']
 		})
