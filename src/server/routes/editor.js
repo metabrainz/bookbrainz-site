@@ -229,14 +229,24 @@ function rankUpdate(editorId, bodyRank, rank) {
 	let promise;
 	if (bodyRank != 'none') {
 		promise = new AchievementUnlock({
-			id: parseInt(bodyRank, 10),
-			editor_id: parseInt(editorId, 10)
+			profileRank: rank
 		})
-			.fetch({require: true})
-			.then((unlock) => {
-				unlock.set('profileRank', rank)
-					.save();
-			});
+			.fetch()
+			.then((unlock) =>
+					unlock.set('profileRank', null)
+						.save()
+			)
+			.then(() =>
+				new AchievementUnlock({
+				achievement_id: parseInt(bodyRank, 10),
+				editor_id: parseInt(editorId, 10)
+				})
+					.fetch({require: true})
+					.then((unlock) =>
+						unlock.set('profileRank', rank)
+							.save()
+					)
+			);
 	}
 	else {
 		promise = Promise.resolve(false);
@@ -245,6 +255,8 @@ function rankUpdate(editorId, bodyRank, rank) {
 }
 
 router.post('/:id/achievements', auth.isAuthenticated, (req, res, next) => {
+	console.log(req.body);
+	console.log(req.params.id);
 	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
 	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
 	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
