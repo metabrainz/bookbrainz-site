@@ -127,8 +127,7 @@ function processRevisionist(editorId) {
 				{threshold: 250, name: 'Revisionist III',
 					titleName: 'Revisionist'},
 				{threshold: 50, name: 'Revisionist II'},
-				{threshold: 1, name: 'Revisionist I',
-					titleName: 'Revisionist'},
+				{threshold: 1, name: 'Revisionist I'}
 			];
 			return testTiers(revisions, editorId, tiers);
 		});
