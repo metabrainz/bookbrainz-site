@@ -114,6 +114,17 @@ function processCreatorCreator(editorId) {
 		});
 }
 
+function processLimitedEdition(editorId) {
+	getTypeRevisions('editionRevision', editorId)
+		.then((rowCount) => {
+			const tiers = [
+				{threshold: 100, name: 'Limited Edition III'},
+				{threshold: 10, name: 'Limited Edition II'},
+				{threshold: 1, name: 'Limited Edition I'}
+			];
+		});
+}
+
 
 achievement.processPageVisit = () => {
 
