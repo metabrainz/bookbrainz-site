@@ -110,6 +110,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			console.log(req.body);
 			return editor.set('bio', req.body.bio)
 			.save()
+				.then((editor) => {
+					return editor.set('titleUnlockId', req.body.title)
+						.save()
+				});
 		})
 		.then((editor) => editor.toJSON());
 
