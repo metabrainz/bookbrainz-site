@@ -25,6 +25,8 @@ const Promise = require('bluebird');
 const achievement = {};
 const Bookshelf = require('bookbrainz-data').bookshelf;
 
+const _ = require('lodash');
+
 function awardAchievement(editorId, achievementId) {
 	const achievementAttribs = {
 		editorId,
@@ -70,6 +72,21 @@ function testTiers(signal, editorId, tiers) {
 	return achievementPromise;
 }
 
+function getTypeRevisions(type, editor) {
+	// TODO make this work with bookshelf or move elsewhere
+	const snakeType = _.snakeCase(type);
+	const rawsql = 'SELECT foo.id, bookbrainz.' + snakeType + '.id ' +
+				'FROM' +
+				'(SELECT * FROM bookbrainz.revision ' +
+				'WHERE author_id=' + editor + ') AS foo ' +
+				'INNER JOIN ' +
+				'bookbrainz.' + snakeType + ' on ' +
+				'foo.id = bookbrainz.' + snakeType + '.id';
+	return Bookshelf.knex.raw(rawsql)
+		.then((out) => out.rowCount);
+
+}
+
 function processRevisionist(editorId) {
 	return new Editor({id: editorId})
 		.fetch()
@@ -85,18 +102,9 @@ function processRevisionist(editorId) {
 }
 
 function processCreatorCreator(editorId) {
-	// TODO make this work with bookshelf or move elsewhere
-	const rawsql = 'SELECT foo.id, bookbrainz.creator_revision.id ' +
-				'FROM ' +
-				'(SELECT * FROM bookbrainz.revision ' +
-				'WHERE author_id=' + editorId + ') AS foo ' +
-				'INNER JOIN ' +
-				'bookbrainz.creator_revision on ' +
-				'foo.id = bookbrainz.creator_revision.id';
-	Bookshelf.knex.raw(rawsql)
-		.then((out) => {
+	getTypeRevisions('creatorRevision', editorId)
+		.then((rowCount) => {
 			let creatorPromise;
-			const rowCount = out.rowCount;
 			const tiers = [
 				{threshold: 100, name: 'Creator Creator III'},
 				{threshold: 10, name: 'Creator Creator II'},
