@@ -157,7 +157,8 @@ router.get('/:id', (req, res, next) => {
 		})
 		.catch(next);
 
-	const achievement = new AchievementUnlock({editorId: userId})
+	const achievement = new AchievementUnlock()
+		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
 		.orderBy('profile_rank', 'DESC')
@@ -263,7 +264,8 @@ router.get('/:id/achievements', (req, res, next) => {
 		.catch(next);
 
 
-	const achievement = new AchievementUnlock({editorId: userId})
+	const achievement = new AchievementUnlock()
+		.where('editor_id', userId)
 		.fetchAll()
 		.then((unlocks) => {
 			const unlocked = [];
