@@ -228,6 +228,22 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
+function processFunRunner(editorId) {
+	const rawSql =
+		`SELECT DISTINCT created_at::date from bookbrainz.revision WHERE author_id=${editorId} \
+		and created_at > (SELECT CURRENT_DATE - INTERVAL \'6 days\');`;
+
+	return Bookshelf.knex.raw(rawSql)
+		.then((out) => {
+			console.log(out);
+			const tiers = [
+				{threshold: 7, name: 'Fun Runner', titleName: 'Fun Runner'}
+			];
+			return testTiers(out.rowCount, editorId, tiers);
+		});
+}
+
+
 achievement.processPageVisit = () => {
 };
 
@@ -238,18 +254,21 @@ achievement.processEdit = (userid) =>
 		processLimitedEdition(userid),
 		processPublisher(userid),
 		processSprinter(userid),
+		processFunRunner(userid),
 		(revisionist,
 		creatorCreator,
 		limitedEdition,
 		publisher,
-		sprinter) => {
+		sprinter,
+		funRunner) => {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),
 				achievementToUnlockId(creatorCreator),
 				achievementToUnlockId(limitedEdition),
 				achievementToUnlockId(publisher),
-				achievementToUnlockId(sprinter)
+				achievementToUnlockId(sprinter),
+				achievementToUnlockId(funRunner)
 			);
 			alert = [].concat.apply([], alert);
 			alert = alert.join(',');
@@ -259,6 +278,7 @@ achievement.processEdit = (userid) =>
 				limitedEdition,
 				publisher,
 				sprinter,
+				funRunner,
 				alert
 			};
 		}
