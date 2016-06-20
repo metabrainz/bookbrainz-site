@@ -109,11 +109,8 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			// Modify the user to match the updates from the form
 			console.log(req.body);
 			return editor.set('bio', req.body.bio)
-			.save()
-				.then((editor) => {
-					return editor.set('titleUnlockId', req.body.title)
-						.save()
-				});
+				.set('titleUnlockId', req.body.title)
+				.save();
 		})
 		.then((editor) => editor.toJSON());
 
@@ -142,7 +139,7 @@ router.get('/:id', (req, res, next) => {
 				return Promise.resolve(editorJSON);
 			}
 			else {
-				return new TitleUnlock({editorId: userId})
+				return new TitleUnlock({id: editorJSON.titleUnlockId})
 					.fetch({
 						withRelated: ['title']
 					})
