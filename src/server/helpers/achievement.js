@@ -230,7 +230,8 @@ function achievementToUnlockId(achievementUnlock) {
 
 function processFunRunner(editorId) {
 	const rawSql =
-		`SELECT DISTINCT created_at::date from bookbrainz.revision WHERE author_id=${editorId} \
+		`SELECT DISTINCT created_at::date from bookbrainz.revision \
+		WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL \'6 days\');`;
 
 	return Bookshelf.knex.raw(rawSql)
