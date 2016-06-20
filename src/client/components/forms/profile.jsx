@@ -44,13 +44,11 @@ module.exports = React.createClass({
 		'use strict';
 
 		evt.preventDefault();
-
 		const data = {
 			id: this.props.editor.id,
 			bio: this.bio.getValue().trim(),
-			title: this.title
+			title: this.title.value
 		};
-
 		this.setState({waiting: true});
 
 		request.post('/editor/edit/handler')
@@ -64,7 +62,7 @@ module.exports = React.createClass({
 		'use strict';
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 		const titles = this.props.titles.map(function(unlock) {
-			return (<option name={unlock.id}>{unlock.title.title}</option>)
+			return (<option value={unlock.id}>{unlock.title.title}</option>)
 		});
 
 		return (
@@ -84,12 +82,13 @@ module.exports = React.createClass({
 				<div className="form-group">
 					<div className="col-md-4 col-md-offset-4">
 						<label>Title</label>
-						<div className="selectContainer">
-							<select name="titles" className="form-control" value={this.title}>
-								<option value="none"> </option>
-								{titles}
-							</select>
-						</div>
+						<select name="title"
+								className="form-control"
+								ref={(ref) => this.title = ref}
+								value={this.title}>
+							<option value="none"></option>
+							{titles}
+						</select>
 					</div>
 				</div>
 				<div className="form-group">
