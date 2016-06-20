@@ -173,6 +173,20 @@ function processPublisher(editorId) {
 		});
 }
 
+function processSprinter(editorId) {
+	const rawSql =
+		'SELECT * from bookbrainz.revision WHERE author_id=' + editorId +
+		'and created_at > (SELECT CURRENT_DATE - INTERVAL \'1 hour\');';
+
+	return Bookshelf.knex.raw(rawSql)
+		.then((out) => {
+			const tiers = [
+				{threshold: 10, name: 'Sprinter', titleName: 'Sprinter'}
+			];
+			return testTiers(out.rowCount, editorId, tiers);
+		})
+}
+
 
 achievement.processPageVisit = () => {
 
@@ -183,7 +197,8 @@ achievement.processEdit = (userid) =>
 		processRevisionist(userid),
 		processCreatorCreator(userid),
 		processLimitedEdition(userid),
-		processPublisher(userid)
+		processPublisher(userid),
+		processSprinter(userid)
 	);
 
 
