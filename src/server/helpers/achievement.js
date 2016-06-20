@@ -236,7 +236,6 @@ function processFunRunner(editorId) {
 
 	return Bookshelf.knex.raw(rawSql)
 		.then((out) => {
-			console.log(out);
 			const tiers = [
 				{threshold: 7, name: 'Fun Runner', titleName: 'Fun Runner'}
 			];
