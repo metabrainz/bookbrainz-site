@@ -139,12 +139,13 @@ function testTiers(signal, editorId, tiers) {
 // returns the number of typeRevisions an editor has
 function getTypeRevisions(type, editor) {
 	const snakeType = _.snakeCase(type);
-	const rawsql = `SELECT foo.id, bookbrainz.${snakeType}.id \
-				FROM (SELECT * FROM bookbrainz.revision \
-				WHERE author_id=${editor}) AS foo \
+	const rawsql = `SELECT revisions.id, bookbrainz.${snakeType}.id \
+				FROM \
+				(SELECT * FROM bookbrainz.revision \
+				WHERE author_id=${editor}) AS revisions \
 				INNER JOIN \
 				bookbrainz.${snakeType} on \
-				foo.id = bookbrainz.${snakeType}.id`;
+				revisions.id = bookbrainz.${snakeType}.id`;
 	return Bookshelf.knex.raw(rawsql)
 		.then((out) => out.rowCount);
 }
