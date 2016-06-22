@@ -213,7 +213,7 @@ router.get('/:id/revisions', (req, res, next) => {
 				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				editorTitleJSON = new TitleUnlock({editorId: editorJSON.id})
+				editorTitleJSON = new TitleUnlock({id: editorJSON.titleUnlockId})
 					.fetch({
 						withRelated: ['title']
 					})
@@ -264,7 +264,7 @@ router.get('/:id/achievements', (req, res, next) => {
 				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				editorTitleJSON = new TitleUnlock({editorId: userId})
+				editorTitleJSON =  new TitleUnlock({id: editorJSON.titleUnlockId})
 					.fetch({
 						withRelated: ['title']
 					})
