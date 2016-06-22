@@ -48,14 +48,14 @@ const AchievementForm = React.createFactory(
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
-	const editorPromise = new Editor({id: parseInt(req.user.id, 10)})
+	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch()
 		.then((editor) =>
 			editor.toJSON()
 		);
 
-	const titlePromise = new TitleUnlock()
-		.where('editor_id', parseInt(req.user.id, 10))
+	const titleJSONPromise = new TitleUnlock()
+		.where({'editor_id': parseInt(req.user.id, 10)})
 		.fetchAll({
 			withRelated: ['title']
 		})
@@ -70,7 +70,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			return titleJSON;
 		});
 
-	Promise.join(editorPromise, titlePromise,
+	Promise.join(editorJSONPromise, titleJSONPromise,
 		(editorJSON, titleJSON) => {
 			const markup =
 				ReactDOMServer.renderToString(ProfileForm({
@@ -90,7 +90,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 });
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const editPromise = new Promise((resolve) => {
+	const editorJSONPromise = new Promise((resolve) => {
 		if (req.user && req.body.id === req.user.id) {
 			resolve();
 		}
@@ -124,13 +124,13 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			editor.toJSON()
 		);
 
-	return handler.sendPromiseResult(res, editPromise);
+	handler.sendPromiseResult(res, editorJSONPromise);
 });
 
 router.get('/:id', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
 
-	const editor = new Editor({id: userId})
+	const editorJSONPromise = new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender']
@@ -171,7 +171,7 @@ router.get('/:id', (req, res, next) => {
 		})
 		.catch(next);
 
-	const achievement = new AchievementUnlock()
+	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
@@ -187,7 +187,7 @@ router.get('/:id', (req, res, next) => {
 			return achievementJSON;
 		});
 
-	Promise.join(achievement, editor,
+	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) =>
 			res.render('editor/editor', {
 				editor: editorJSON,
@@ -240,7 +240,7 @@ router.get('/:id/revisions', (req, res, next) => {
 
 router.get('/:id/achievements', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
-	const editor = new Editor({id: userId})
+	const editorJSONPromise = new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender']
@@ -284,7 +284,7 @@ router.get('/:id/achievements', (req, res, next) => {
 		.catch(next);
 
 
-	const achievement = new AchievementUnlock()
+	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.fetchAll()
 		.then((unlocks) => {
@@ -317,7 +317,7 @@ router.get('/:id/achievements', (req, res, next) => {
 			)
 		);
 
-	Promise.join(achievement, editor,
+	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
 			const markup =
 				ReactDOMServer.renderToString(AchievementForm({
