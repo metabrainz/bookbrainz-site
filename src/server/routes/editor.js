@@ -288,11 +288,11 @@ router.get('/:id/achievements', (req, res, next) => {
 		.where('editor_id', userId)
 		.fetchAll()
 		.then((unlocks) => {
-			const unlocked = [];
-			for (let i = 0; i < unlocks.length; i++) {
+			const unlocked = unlocks.map('attributes.achievementId');
+			/*for (let i = 0; i < unlocks.length; i++) {
 				unlocked[i] =
 					unlocks.models[i].attributes.achievementId;
-			}
+			}*/
 			return unlocked;
 		})
 		.then((unlocks) =>
@@ -300,18 +300,19 @@ router.get('/:id/achievements', (req, res, next) => {
 				.orderBy('id', 'ASC')
 				.fetchAll()
 				.then((achievements) => {
-					const achievementsJSON = {
-						model: achievements.toJSON()
-					};
-					for (let i = 0; i < achievementsJSON.model.length; i++) {
-						if (unlocks.indexOf(
-									achievementsJSON.model[i].id) >= 0) {
-							achievementsJSON.model[i].unlocked = true;
+					const model = achievements.map((achievement) => {
+						achievement = achievement.toJSON();
+						if (unlocks.indexOf(achievement.id) >= 0) {
+							achievement.unlocked = true;
 						}
 						else {
-							achievementsJSON.model[i].unlocked = false;
+							achievement.unlocked = false;
 						}
-					}
+						return achievement;
+					})
+					const achievementsJSON = {
+						model
+					};
 					return achievementsJSON;
 				}
 			)
