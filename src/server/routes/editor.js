@@ -50,9 +50,7 @@ const router = express.Router();
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch()
-		.then((editor) =>
-			editor.toJSON()
-		);
+		.then((editor) => editor.toJSON());
 
 	const titleJSONPromise = new TitleUnlock()
 		.where({'editor_id': parseInt(req.user.id, 10)})
@@ -85,7 +83,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 				},
 				markup
 			});
-		})
+		}
+	)
 		.catch(next);
 });
 
@@ -112,7 +111,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		)
 		.then((editor) => {
 			let editorTitleUnlock;
-			if (req.body.title === '') {
+			if (req.body.title === 'NULL' || req.body.title === '') {
 				editorTitleUnlock = editor.set('titleUnlockId', null);
 			}
 			else {
