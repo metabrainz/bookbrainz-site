@@ -350,8 +350,8 @@ function rankUpdate(editorId, bodyRank, rank) {
 			let updatePromise;
 			if (bodyRank !== 'none') {
 				updatePromise = new AchievementUnlock({
-					achievement_id: parseInt(bodyRank, 10),
-					editor_id: parseInt(editorId, 10)
+					achievementId: parseInt(bodyRank, 10),
+					editorId: parseInt(editorId, 10)
 				})
 					.fetch({require: true})
 					.then((unlock) =>
