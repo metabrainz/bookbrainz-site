@@ -129,6 +129,17 @@ module.exports = React.createClass({
 						>
 							Log In
 						</Button>
+						<Button
+							block
+							bsSize="large"
+							href="/auth"
+						>
+							<img
+								className="margin-right-1"
+								src="/images/MusicBrainz_logo_icon.svg"
+							/>
+							Login with MusicBrainz
+						</Button>
 						<hr/>
 						<Button
 							block

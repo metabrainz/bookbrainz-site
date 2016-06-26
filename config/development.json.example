@@ -5,6 +5,11 @@
 		"clientID": "f5c882d1-169e-4798-974b-63cd1de0b141",
 		"proxyTrust": true
 	},
+	"musicbrainz": {
+		"clientID": "",
+		"clientSecret": "",
+		"callbackURL": ""
+	},
 	"session": {
 		"secret": "Something here!",
 		"secure": false,
