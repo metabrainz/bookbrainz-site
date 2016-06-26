@@ -19,12 +19,16 @@ block body
 								span.fa.fa-pencil
 								|&nbsp;Edit Profile
 			dl.dl-horizontal
-				dt Email
+				dt MusicBrainz Account
 				dd
-					if editor.email
-						=editor.email
-						| &nbsp;
-					i (hidden)
+					if editor.cachedMetabrainzName
+						a(href='http://musicbrainz.org/user/' + editor.cachedMetabrainzName)
+							=editor.cachedMetabrainzName
+					else if editor.metabrainzUserId
+						=editor.metabrainzUserId
+					else
+						a(href='/auth')
+							|Link My MusicBrainz Account
 				dt Type
 				dd=editor.type.label
 				dt Reputation
