@@ -36,6 +36,7 @@
     "node-jsx": "^0.13.3",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "passport-musicbrainz-oauth2": "git+https://github.com/LordSputnik/passport-musicbrainz-oauth2.git",
     "react": "^0.14.8",
     "react-bootstrap": "^0.28.5",
     "react-dom": "^0.14.8",
