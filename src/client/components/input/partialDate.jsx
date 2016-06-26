@@ -62,11 +62,15 @@ const PartialDate = React.createClass({
 			value: input,
 			valid: this.validate(input)
 		});
+
+		if (this.props.onChange) {
+			this.props.onChange();
+		}
 	},
 	valid() {
 		'use strict';
 
-		return this.state.valid;
+		return this.validate(this.input.getValue().trim());
 	},
 	validate(value) {
 		'use strict';
