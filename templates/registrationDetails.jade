@@ -1,0 +1,10 @@
+extends layout
+
+block body
+    .row
+        .col-md-12
+            #registration-form!= markup
+
+block js
+    script(type='application/json')#props!= JSON.stringify(props)
+    script(src='/js/registrationDetails.js')
