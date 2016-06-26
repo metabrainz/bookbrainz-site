@@ -13,6 +13,7 @@
     "body-parser": "^1.14.1",
     "bookbrainz-data": "git+https://github.com/bookbrainz/bookbrainz-data-js.git",
     "bootstrap": "^3.3.2",
+    "co": "^4.6.0",
     "connect-redis": "^3.0.1",
     "debug": "^2.2.0",
     "elasticsearch": "^10.1.3",
