@@ -39,12 +39,17 @@ const LoginPage = React.createFactory(
 
 const router = express.Router();
 
-router.get('/login', (req, res) =>
-	res.render('login', {
+router.get('/login', (req, res) => {
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
+
+	return res.render('login', {
 		title: 'Log In',
 		markup: ReactDOMServer.renderToString(LoginPage())
-	})
-);
+	});
+});
 
 router.get('/logout', (req, res) => {
 	req.logOut();
