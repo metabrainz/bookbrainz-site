@@ -20,8 +20,6 @@
 
 'use strict';
 
-const Promise = require('bluebird');
-
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const express = require('express');
@@ -33,47 +31,69 @@ const handler = require('../helpers/handler');
 
 const FormSubmissionError = require('../helpers/error').FormSubmissionError;
 
-const RegisterPage = React.createFactory(
-	require('../../client/components/forms/registration.jsx')
+const RegisterAuthPage = React.createFactory(
+	require('../../client/components/pages/registrationAuth.jsx')
 );
+const RegisterDetailPage = React.createFactory(
+	require('../../client/components/forms/registrationDetails.jsx')
+);
+const auth = require('../helpers/auth');
+const loadGenders = require('../helpers/middleware').loadGenders;
 
 const router = express.Router();
+const _ = require('lodash');
 
 router.get('/', (req, res) =>
-	res.render('register', {
+	res.render('page', {
 		title: 'Register',
-		markup: ReactDOMServer.renderToString(RegisterPage())
+		markup: ReactDOMServer.renderToString(RegisterAuthPage())
 	})
 );
 
-router.post('/handler', (req, res) => {
-	const registerPromise = new Promise((resolve) => {
-		if (!req.body.password) {
-			throw new FormSubmissionError('No password set');
-		}
+router.get('/details', auth.isAuthenticated, loadGenders, (req, res) => {
+	const gender = _.find(res.locals.genders, {
+		name: _.capitalize(req.session.passport.user.gender)
+	});
 
-		if (req.body.password !== req.body.passwordRepeat) {
-			throw new FormSubmissionError('Passwords do not match');
-		}
+	const props = {
+		name: req.session.passport.user.name,
+		gender,
+		genders: res.locals.genders
+	};
 
-		resolve();
-	})
-		.then(() =>
-			// Fetch the default EditorType from the database
-			EditorType.forge({label: 'Editor'})
-				.fetch({require: true})
-		)
+	return res.render('registrationDetails', {
+		title: 'Register',
+		props,
+		markup: ReactDOMServer.renderToString(RegisterDetailPage(props))
+	});
+});
+
+router.post('/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	// Fetch the default EditorType from the database
+	const registerPromise = EditorType.forge({label: 'Editor'})
+		.fetch({require: true})
 		.then((editorType) =>
 			// Create a new Editor and add to the database
 			new Editor({
-				name: req.body.username,
-				email: req.body.email,
-				password: req.body.password,
-				typeId: editorType.id
+				name: req.body.displayName,
+				typeId: editorType.id,
+				genderId: req.body.gender,
+				birthDate: req.body.birthday,
+				metabrainzUserId: req.session.passport.user.metabrainzUserId,
+				cachedMetabrainzName: req.session.passport.user.name
 			})
 			.save()
 		)
-		.then((editor) => editor.toJSON());
+		.then((editor) => {
+			// Log out of the registration session
+			req.logout();
+			return editor.toJSON();
+		})
+		.catch(() => {
+			throw new FormSubmissionError(
+				'Something went wrong when registering, please try again!'
+			);
+		});
 
 	handler.sendPromiseResult(res, registerPromise);
 });

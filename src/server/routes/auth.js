@@ -70,6 +70,8 @@ router.get('/cb',
 		if (userAlreadyLinked) {
 			return res.redirect('/');
 		}
+
+		return res.redirect('/register/details');
 	}
 );
 
