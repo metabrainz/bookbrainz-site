@@ -43,15 +43,24 @@ const loadGenders = require('../helpers/middleware').loadGenders;
 const router = express.Router();
 const _ = require('lodash');
 
-router.get('/', (req, res) =>
-	res.render('page', {
+router.get('/', (req, res) => {
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
+
+	return res.render('page', {
 		title: 'Register',
 		markup: ReactDOMServer.renderToString(RegisterAuthPage())
-	})
-);
 	});
+});
 
 router.get('/details', loadGenders, (req, res) => {
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
+
 	if (!req.session.mbProfile) {
 		res.redirect('/auth');
 	}
@@ -74,6 +83,11 @@ router.get('/details', loadGenders, (req, res) => {
 });
 
 router.post('/handler', (req, res) => {
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
+
 	if (!req.session.mbProfile) {
 		res.redirect('/auth');
 	}
