@@ -49,14 +49,19 @@ router.get('/', (req, res) =>
 		markup: ReactDOMServer.renderToString(RegisterAuthPage())
 	})
 );
+	});
 
-router.get('/details', auth.isAuthenticated, loadGenders, (req, res) => {
+router.get('/details', loadGenders, (req, res) => {
+	if (!req.session.mbProfile) {
+		res.redirect('/auth');
+	}
+
 	const gender = _.find(res.locals.genders, {
-		name: _.capitalize(req.session.passport.user.gender)
+		name: _.capitalize(req.session.mbProfile.gender)
 	});
 
 	const props = {
-		name: req.session.passport.user.name,
+		name: req.session.mbProfile.sub,
 		gender,
 		genders: res.locals.genders
 	};
@@ -68,7 +73,11 @@ router.get('/details', auth.isAuthenticated, loadGenders, (req, res) => {
 	});
 });
 
-router.post('/handler', auth.isAuthenticatedForHandler, (req, res) => {
+router.post('/handler', (req, res) => {
+	if (!req.session.mbProfile) {
+		res.redirect('/auth');
+	}
+
 	// Fetch the default EditorType from the database
 	const registerPromise = EditorType.forge({label: 'Editor'})
 		.fetch({require: true})
@@ -79,14 +88,13 @@ router.post('/handler', auth.isAuthenticatedForHandler, (req, res) => {
 				typeId: editorType.id,
 				genderId: req.body.gender,
 				birthDate: req.body.birthday,
-				metabrainzUserId: req.session.passport.user.metabrainzUserId,
-				cachedMetabrainzName: req.session.passport.user.name
+				metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+				cachedMetabrainzName: req.session.mbProfile.sub
 			})
 			.save()
 		)
 		.then((editor) => {
-			// Log out of the registration session
-			req.logout();
+			req.session.mbProfile = null;
 			return editor.toJSON();
 		})
 		.catch(() => {
