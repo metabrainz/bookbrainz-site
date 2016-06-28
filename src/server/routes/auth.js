@@ -18,29 +18,12 @@
 
 'use strict';
 
-const co = require('co');
 const express = require('express');
 const router = express.Router();
 
 const passport = require('passport');
-const Editor = require('bookbrainz-data').Editor;
 
 router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
-
-const linkAccount = co.wrap(function* linkAccount(req, res) {
-	const bbUser = req.editorJSON;
-	const mbUser = req.user;
-	const existingEditor = yield new Editor({id: bbUser.id}).fetch();
-
-	const updatedEditor = yield existingEditor
-		.save({
-			metabrainzUserId: mbUser.metabrainzUserId,
-			cachedMetabrainzName: mbUser.name
-		});
-
-	const userJSON = req.session.passport.user = updatedEditor.toJSON();
-	res.redirect(`/editor/${userJSON.id}`);
-});
 
 router.get('/cb',
 	(req, res, next) => {
