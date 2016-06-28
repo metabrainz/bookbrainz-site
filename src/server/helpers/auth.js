@@ -37,6 +37,26 @@ const auth = {};
 const _ = require('lodash');
 
 const config = require('./config');
+const co = require('co');
+
+const linkMBAccount = co.wrap(function* linkMBAccount(bbUserJSON, mbUserJSON) {
+	const fetchedEditor = yield new Editor({id: bbUserJSON.id})
+		.fetch({require: true});
+
+	return fetchedEditor.save({
+		metabrainzUserId: mbUserJSON.metabrainz_user_id,
+		cachedMetabrainzName: mbUserJSON.sub
+	});
+});
+
+function getAccountByMBUserId(mbUserJSON) {
+	return new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
+		.fetch({require: true});
+}
+
+function updateCachedMBName(bbUserModel, mbUserJSON) {
+	return bbUserModel.save({cachedMetabrainzName: mbUserJSON.sub});
+}
 
 auth.init = (app) => {
 	passport.use(
