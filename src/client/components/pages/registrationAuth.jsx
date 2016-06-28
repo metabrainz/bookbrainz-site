@@ -22,10 +22,7 @@ const request = require('superagent-bluebird-promise');
 
 const Alert = require('react-bootstrap').Alert;
 const Button = require('react-bootstrap').Button;
-const Input = require('react-bootstrap').Input;
 const PageHeader = require('react-bootstrap').PageHeader;
-
-const LoadingSpinner = require('../loading_spinner.jsx');
 
 module.exports = React.createClass({
 	displayName: 'RegistrationForm',
@@ -88,22 +85,14 @@ module.exports = React.createClass({
 	render() {
 		'use strict';
 
-		let errorComponent = null;
-		if (this.state.error) {
-			errorComponent =
-				(<Alert bsStyle="danger">{this.state.error}</Alert>);
-		}
-
-		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
-
 		return (
 			<div>
 				<PageHeader>Register</PageHeader>
 				<p>
-					To sign up as an editor of BookBrainz, you need to first have a
-					MusicBrainz account. Please click the button below to sign in or
-					register with MusicBrainz. You'll then be redirected back to
-					BookBrainz to continue registration!
+					To sign up as an editor of BookBrainz, you need to first
+					have a MusicBrainz account. Please click the button below
+					to sign in or register with MusicBrainz. You'll then be
+					redirected back to BookBrainz to continue registration!
 				</p>
 				<div className="text-center">
 					<Button
