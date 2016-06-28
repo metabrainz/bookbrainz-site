@@ -316,6 +316,20 @@ function processPublisherCreator(editorId) {
 		});
 }
 
+function processWorkerBee(editorId) {
+	return getTypeCreation(new WorkRevision(),
+		'work_revision',
+		editorId)
+		.then((rowCount) => {
+			const tiers = [
+				{threshold: 25, name: 'Worker Bee III',
+					titleName: 'Worker Bee'},
+				{threshold: 10, name: 'Worker Bee II'},
+				{threshold: 1, name: 'Worker Bee I'}
+			];
+		});
+}
+
 function processSprinter(editorId) {
 	const rawSql =
 		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
