@@ -28,9 +28,15 @@ const Select = require('../input/select2.jsx');
 const PartialDate = require('../input/partialDate.jsx');
 
 const LoadingSpinner = require('../loading_spinner.jsx');
+const validators = require('../validators');
 
 module.exports = React.createClass({
 	displayName: 'RegistrationForm',
+	propTypes: {
+		gender: validators.namedProperty,
+		genders: React.PropTypes.arrayOf(validators.namedProperty),
+		name: React.PropTypes.string
+	},
 	getInitialState() {
 		'use strict';
 
