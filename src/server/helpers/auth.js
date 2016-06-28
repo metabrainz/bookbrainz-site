@@ -81,32 +81,31 @@ auth.init = (app) => {
 		})
 	);
 
-	passport.use(
-		new MusicBrainzOAuth2Strategy(
-			_.assign({scope: 'profile'}, config.musicbrainz),
-			(accessToken, refreshToken, profile, cb) => {
-				new Editor({metabrainzUserId: profile.metabrainz_user_id})
-					.fetch()
-					.then((model) => {
-						if (model) {
-							// Update the model with the fetched MB username
-							return model.save({
-								cachedMetabrainzName: profile.sub
-							})
-							.then(
-								(savedModel) => cb(null, savedModel.toJSON())
-							);
-						}
-
-						return cb(null, {
-							name: profile.sub,
-							gender: profile.gender,
-							metabrainzUserId: profile.metabrainz_user_id
-						});
-					});
+	passport.use(new MusicBrainzOAuth2Strategy(
+		_.assign(
+			{
+				scope: 'profile',
+				passReqToCallback: true
+			}, config.musicbrainz
+		),
+		(req, accessToken, refreshToken, profile, done) => {
+			if (req.user) {
+				// Logged in, associate
+				return linkMBAccount(req.user, profile)
+					.then((linkedUser) => done(null, linkedUser.toJSON()));
 			}
-		)
-	);
+
+			// Not logged in, authenticate
+			return getAccountByMBUserId(profile)
+				.then((fetchedUser) =>
+					updateCachedMBName(fetchedUser, profile)
+				)
+				.then((fetchedUser) => done(null, fetchedUser.toJSON()))
+				.catch(() => {
+					done(null, false, profile);
+				});
+		}
+	));
 
 	passport.serializeUser((user, done) => {
 		done(null, user);

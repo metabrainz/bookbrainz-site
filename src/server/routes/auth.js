@@ -24,7 +24,6 @@ const router = express.Router();
 
 const passport = require('passport');
 const Editor = require('bookbrainz-data').Editor;
-const SiteError = require('../helpers/error.js').SiteError;
 
 router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
 
@@ -45,33 +44,25 @@ const linkAccount = co.wrap(function* linkAccount(req, res) {
 
 router.get('/cb',
 	(req, res, next) => {
-		if (req.session && req.session.passport && req.session.passport.user) {
-			req.editorJSON = req.session.passport.user;
-		}
-		next();
-	},
-	passport.authenticate('musicbrainz-oauth2', {failureRedirect: '/login'}),
-	(req, res) => {
-		const userAlreadyLinked = Boolean(
-			req.session.passport.user && req.session.passport.user.id
-		);
-		const userAlreadyAuthenticated = Boolean(req.editorJSON);
-
-		if (userAlreadyAuthenticated) {
-			if (userAlreadyLinked) {
-				throw new SiteError(
-					'Cannot link to an MeB account while already linked'
-				);
+		passport.authenticate('musicbrainz-oauth2', (authErr, user, info) => {
+			if (authErr) {
+				return next(authErr);
 			}
 
-			return linkAccount(req, res);
-		}
+			if (!user) {
+				// Set profile in session, and continue to registration
+				req.session.mbProfile = info;
+				return res.redirect('/register/details');
+			}
 
-		if (userAlreadyLinked) {
-			return res.redirect('/');
-		}
+			return req.logIn(user, (loginErr) => {
+				if (loginErr) {
+					return next(loginErr);
+				}
 
-		return res.redirect('/register/details');
+				return res.redirect('/');
+			});
+		})(req, res, next);
 	}
 );
 
