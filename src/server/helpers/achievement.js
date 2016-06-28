@@ -195,21 +195,55 @@ function testTiers(signal, editorId, tiers) {
 /**
  * Returns number of revisions of a certain type there are for the specified
  * editor
- * @param {string} type - Camelcase name of the type to query
+ * @param {function} revisionType - Constructor for the revisionType
+ * @param {string} revisionString - Snake case string of revisionType
  * @param {int} editor - Editor id being queried
  * @returns {int} - Number of revisions of type (type)
  */
-function getTypeRevisions(type, editor) {
-	const snakeType = _.snakeCase(type);
-	const rawsql = `SELECT revisions.id, bookbrainz.${snakeType}.id \
-				FROM \
-				(SELECT * FROM bookbrainz.revision \
-				WHERE author_id=${editor}) AS revisions \
-				INNER JOIN \
-				bookbrainz.${snakeType} on \
-				revisions.id = bookbrainz.${snakeType}.id`;
-	return Bookshelf.knex.raw(rawsql)
-		.then((out) => out.rowCount);
+function getTypeRevisions(revisionType, revisionString, editor) {
+	return revisionType
+		.query(function(qb) {
+			qb.innerJoin('bookbrainz.revision',
+				'bookbrainz.revision.id',
+				`bookbrainz.${revisionString}.id`);
+			qb.groupBy(`${revisionString}.id`,
+				`${revisionString}.bbid`,
+				'revision.id');
+			qb.where('bookbrainz.revision.author_id', '=', editor);
+		})
+		.fetchAll()
+		.then((out) => {
+			return out.length;
+		})
+}
+
+/**
+ * Returns number of revisions of a certain type created by a specified
+ * editor
+ * @param {function} revisionType - Constructor for the revisionType
+ * @param {string} revisionString - Snake case string of revisionType
+ * @param {int} editor - Editor id being queried
+ * @returns {int} - Number of revisions of type (type)
+ */
+function getTypeCreation(revisionType, revisionString, editor) {
+	return revisionType
+		.query(function(qb) {
+			qb.innerJoin('bookbrainz.revision',
+				'bookbrainz.revision.id',
+				`bookbrainz.${revisionString}.id`);
+			qb.groupBy(`${revisionString}.id`,
+				`${revisionString}.bbid`,
+				'revision.id');
+			qb.where('bookbrainz.revision.author_id', '=', editor)
+			qb.leftOuterJoin('bookbrainz.revision_parent',
+				'bookbrainz.revision_parent.child_id',
+				`bookbrainz.${revisionString}.id`)
+			qb.whereNull('bookbrainz.revision_parent.parent_id');
+		})
+		.fetchAll()
+		.then((out) => {
+			return out.length;
+		});
 }
 
 function processRevisionist(editorId) {
