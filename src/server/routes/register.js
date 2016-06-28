@@ -37,7 +37,6 @@ const RegisterAuthPage = React.createFactory(
 const RegisterDetailPage = React.createFactory(
 	require('../../client/components/forms/registrationDetails.jsx')
 );
-const auth = require('../helpers/auth');
 const loadGenders = require('../helpers/middleware').loadGenders;
 
 const router = express.Router();
@@ -89,7 +88,7 @@ router.post('/handler', (req, res) => {
 	}
 
 	if (!req.session.mbProfile) {
-		res.redirect('/auth');
+		return res.redirect('/auth');
 	}
 
 	// Fetch the default EditorType from the database
@@ -117,7 +116,7 @@ router.post('/handler', (req, res) => {
 			);
 		});
 
-	handler.sendPromiseResult(res, registerPromise);
+	return handler.sendPromiseResult(res, registerPromise);
 });
 
 module.exports = router;
