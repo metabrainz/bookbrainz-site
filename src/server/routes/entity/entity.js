@@ -31,7 +31,6 @@ const bookshelf = require('bookbrainz-data').bookshelf;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
-const Editor = require('bookbrainz-data').Editor;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
