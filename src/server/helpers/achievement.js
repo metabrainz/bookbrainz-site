@@ -22,13 +22,26 @@ const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const achievement = {};
 
+const Promise = require('bluebird');
+
 function awardAchievement(editorid, achievementId) {
-	return new AchievementUnlock({
+	const achievementAttribs = {
 		editorId: editorid,
 		achievementId
-	})
-		.save(null, {method: 'insert'})
-		.then((unlock) => unlock);
+	};
+	return new AchievementUnlock(achievementAttribs)
+		.fetch()
+		.then((unlock) => {
+			let awardPromise;
+			if (unlock === null) {
+				awardPromise = new AchievementUnlock(achievementAttribs)
+					.save(null, {method: 'insert'});
+			}
+			else {
+				awardPromise = Promise.resolve(unlock);
+			}
+			return awardPromise;
+		});
 }
 
 function processRevisionist(editorId) {
@@ -38,7 +51,6 @@ function processRevisionist(editorId) {
 			awardAchievement(editorId, revisionist.id)
 		);
 }
-
 
 achievement.processPageVisit = () => {
 
