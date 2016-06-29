@@ -20,6 +20,7 @@
 
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
+const Editor = require('bookbrainz-data').Editor;
 const achievement = {};
 
 const Promise = require('bluebird');
@@ -45,11 +46,24 @@ function awardAchievement(editorid, achievementId) {
 }
 
 function processRevisionist(editorId) {
-	return new AchievementType({name: 'Revisionist I'})
+	return new Editor({id: editorId})
 		.fetch()
-		.then((revisionist) =>
-			awardAchievement(editorId, revisionist.id)
-		);
+		.then((editor) => {
+			const revisions = editor.attributes.revisionsApplied;
+			let achievementPromise;
+			if (revisions >= 1) {
+				achievementPromise =
+					new AchievementType({name: 'Revisionist I'})
+					.fetch({require: true})
+					.then((revisionist) =>
+						awardAchievement(editor.id, revisionist.id)
+					);
+			}
+			else {
+				achievementPromise = Promise.resolve(false);
+			}
+			return achievementPromise;
+		});
 }
 
 achievement.processPageVisit = () => {
