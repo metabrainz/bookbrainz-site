@@ -28,9 +28,7 @@ function awardAchievement(editorid, achievementId) {
 		achievementId
 	})
 		.save(null, {method: 'insert'})
-		.then((unlock) => {
-			return unlock;
-		});
+		.then((unlock) => unlock);
 }
 
 function processRevisionist(editorId) {
