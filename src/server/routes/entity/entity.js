@@ -680,7 +680,7 @@ module.exports.editEntity = (
 				const notePromise = _createNote(
 					req.body.note, editorJSON, newRevision, transacting
 				);
-	
+
 				return Promise.join(
 					entity.save(null, {method: 'update', transacting}),
 					editorUpdatePromise,
