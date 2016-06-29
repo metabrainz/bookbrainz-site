@@ -688,8 +688,8 @@ module.exports.editEntity = (
 					notePromise
 				)
 				.then((promises) => {
-					return achievement.processEdit(req.user.id)
-						.then(() => promises);
+					achievement.processEdit(req.user.id);
+					return promises;
 				});
 			})
 			.spread(
