@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./scripts/www",
-    "debug": "DEBUG=bbsite node ./scripts/www",
-    "debug_win": "set DEBUG=bbsite & node scripts\\www",
-    "test": "./scripts/check-style.sh && gulp"
+    "debug": "cross-env DEBUG=bbsite nodemon ./scripts/www",
+    "lint": "eslint --ext .js --ext .jsx src test templates scripts app.js gulpfile.js",
+    "test": "npm run lint && gulp"
   },
   "directories": {
 	"test": "tests"
@@ -55,8 +55,9 @@
     "babel-preset-react": "^6.1.18",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
-	"chai": "^3.3.0",
-	"chai-as-promised": "^5.2.0",
+    "chai": "^3.3.0",
+    "chai-as-promised": "^5.2.0",
+    "cross-env": "^1.0.8",
     "eslint": "^2.0.0",
     "eslint-plugin-react": "^4.2.3",
     "factor-bundle": "^2.3.3",
@@ -69,6 +70,7 @@
     "gulp-uglify": "^1.1.0",
     "mkdirp": "^0.5.0",
     "mocha": "^2.0.0",
+    "nodemon": "^1.9.2",
     "supertest": "^1.1.0",
     "vinyl-source-stream": "^1.0.0"
   }
