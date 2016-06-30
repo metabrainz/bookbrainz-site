@@ -439,6 +439,43 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
+function processTimeTraveller(editorId) {
+	return getLatestCreation(editorId)
+		.then((revision) => {
+			let timeTravellerPromise;
+			// possible edge case if no change on an edit
+			if (revision) {
+				timeTravellerPromise = getReleaseDate(revision.id)
+					.then((date) => {
+						let achievementPromise;
+						if (date === false) {
+							achievementPromise = Promise.resolve(false);
+						}
+						else {
+							let diff = Date.now() - date.getTime();
+							diff /= 1000 * 60 * 60 * 24;
+							if (diff < 0) {
+								achievementPromise = new AchievementType({
+									name: 'Time Traveller'
+								})
+									.fetch({require: true})
+									.then((award) =>
+										awardAchievement(editorId, award.id));
+							}
+							else {
+								achievementPromise = Promise.resolve(false);
+							}
+						}
+						return achievementPromise;
+					});
+			}
+			else {
+				timeTravellerPromise = Promise.resolve(false);
+			}
+			return timeTravellerPromise;
+		});
+}
+
 achievement.processPageVisit = () => {
 };
 
@@ -460,6 +497,7 @@ achievement.processEdit = (userid) =>
 		processSprinter(userid),
 		processFunRunner(userid),
 		processMarathoner(userid),
+		processTimeTraveller(userid),
 		(revisionist,
 		creatorCreator,
 		limitedEdition,
@@ -468,7 +506,8 @@ achievement.processEdit = (userid) =>
 		workerBee,
 		sprinter,
 		funRunner,
-		marathoner) => {
+		marathoner,
+		timeTraveller) => {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),
@@ -479,7 +518,8 @@ achievement.processEdit = (userid) =>
 				achievementToUnlockId(workerBee),
 				achievementToUnlockId(sprinter),
 				achievementToUnlockId(funRunner),
-				achievementToUnlockId(marathoner)
+				achievementToUnlockId(marathoner),
+				achievementToUnlockId(timeTraveller)
 			);
 			alert = [].concat.apply([], alert);
 			alert = alert.join(',');
@@ -493,6 +533,7 @@ achievement.processEdit = (userid) =>
 				sprinter,
 				funRunner,
 				marathoner,
+				timeTraveller,
 				alert
 			};
 		}
