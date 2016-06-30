@@ -282,7 +282,9 @@ function getReleaseDate(revisionId) {
 					return date;
 				});
 		})
-		.catch(EditionRevision.NotFoundError, () => Promise.resolve(false));
+		.catch(EditionRevision.NotFoundError, () =>
+			Promise.reject(new Error('No date attribute on revision'))
+		);
 }
 
 function processRevisionist(editorId) {
@@ -467,7 +469,8 @@ function processTimeTraveller(editorId) {
 							}
 						}
 						return achievementPromise;
-					});
+					})
+					.catch(() => Promise.resolve(false));
 			}
 			else {
 				timeTravellerPromise = Promise.resolve(false);
