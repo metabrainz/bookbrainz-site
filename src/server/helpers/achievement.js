@@ -202,7 +202,7 @@ function testTiers(signal, editorId, tiers) {
  */
 function getTypeRevisions(revisionType, revisionString, editor) {
 	return revisionType
-		.query(function(qb) {
+		.query((qb) => {
 			qb.innerJoin('bookbrainz.revision',
 				'bookbrainz.revision.id',
 				`bookbrainz.${revisionString}.id`);
@@ -212,9 +212,7 @@ function getTypeRevisions(revisionType, revisionString, editor) {
 			qb.where('bookbrainz.revision.author_id', '=', editor);
 		})
 		.fetchAll()
-		.then((out) => {
-			return out.length;
-		})
+		.then((out) => out.length);
 }
 
 /**
@@ -227,23 +225,21 @@ function getTypeRevisions(revisionType, revisionString, editor) {
  */
 function getTypeCreation(revisionType, revisionString, editor) {
 	return revisionType
-		.query(function(qb) {
+		.query((qb) => {
 			qb.innerJoin('bookbrainz.revision',
 				'bookbrainz.revision.id',
 				`bookbrainz.${revisionString}.id`);
 			qb.groupBy(`${revisionString}.id`,
 				`${revisionString}.bbid`,
 				'revision.id');
-			qb.where('bookbrainz.revision.author_id', '=', editor)
+			qb.where('bookbrainz.revision.author_id', '=', editor);
 			qb.leftOuterJoin('bookbrainz.revision_parent',
 				'bookbrainz.revision_parent.child_id',
-				`bookbrainz.${revisionString}.id`)
+				`bookbrainz.${revisionString}.id`);
 			qb.whereNull('bookbrainz.revision_parent.parent_id');
 		})
 		.fetchAll()
-		.then((out) => {
-			return out.length;
-		});
+		.then((out) => out.length);
 }
 
 function processRevisionist(editorId) {
