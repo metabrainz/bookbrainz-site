@@ -455,18 +455,15 @@ function processTimeTraveller(editorId) {
 						}
 						else {
 							let diff = Date.now() - date.getTime();
+							// convert diff to number of days
 							diff /= 1000 * 60 * 60 * 24;
-							if (diff < 0) {
-								achievementPromise = new AchievementType({
-									name: 'Time Traveller'
-								})
-									.fetch({require: true})
-									.then((award) =>
-										awardAchievement(editorId, award.id));
-							}
-							else {
-								achievementPromise = Promise.resolve(false);
-							}
+							const tiers = [{
+								threshold: -1,
+								name: 'Time Traveller',
+								titleName: 'Time Traveller'
+							}];
+							achievementPromise =
+								testTiers(diff, editorId, tiers);
 						}
 						return achievementPromise;
 					})
