@@ -593,7 +593,7 @@ CREATE TABLE bookbrainz.achievement_unlock (
 	id SERIAL PRIMARY KEY,
 	editor_id INT NOT NULL,
 	achievement_id INT NOT NULL,
-	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	unlocked_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	profile_rank SMALLINT
 );
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
