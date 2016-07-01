@@ -175,11 +175,21 @@ router.get('/:id', (req, res, next) => {
 		.fetch({withRelated: ['author', 'notes', 'notes.author']})
 		.then((revision) => {
 			return new TitleUnlock({id: revision.relations.author.attributes.titleUnlockId})
-				.fetch({withRelated: ['title']})
+				.fetch({
+					require: true,
+					withRelated: ['title']
+				})
 				.then((title) => {
 					revision.relations.title = title.relations.title;
 					return revision;
 				})
+				.catch(() => {
+					revision.relations.title = {
+						title: "No Title Set",
+						description: "This user hasn't selected a title"
+					}
+					return revision;
+				});
 		});
 
 	function _createRevision(model) {
