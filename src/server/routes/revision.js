@@ -31,6 +31,7 @@ const EditionRevision = require('bookbrainz-data').EditionRevision;
 const PublicationRevision = require('bookbrainz-data').PublicationRevision;
 const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 const Revision = require('bookbrainz-data').Revision;
+const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
 
 const baseFormatter = require('../helpers/diffFormatters/base');
@@ -171,7 +172,15 @@ router.get('/:id', (req, res, next) => {
 	// objects with the same ID, formatting each revision individually, then
 	// concatenating the diffs
 	const revisionPromise = new Revision({id: req.params.id})
-		.fetch({withRelated: ['author', 'notes', 'notes.author']});
+		.fetch({withRelated: ['author', 'notes', 'notes.author']})
+		.then((revision) => {
+			return new TitleUnlock({id: revision.relations.author.attributes.titleUnlockId})
+				.fetch({withRelated: ['title']})
+				.then((title) => {
+					revision.relations.title = title.relations.title;
+					return revision;
+				})
+		});
 
 	function _createRevision(model) {
 		return model.forge()
@@ -219,7 +228,6 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-
 			const props = {revision: revision.toJSON(), diffs};
 			res.render('page', {
 				title: 'RevisionPage',

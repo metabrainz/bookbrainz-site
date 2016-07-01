@@ -149,13 +149,19 @@ const EntityLink = require('../entity-link.jsx');
 			const dateRevisionCreated =
 				new Date(revision.createdAt).toDateString();
 
+			const editorTitle =
+				`${revision.title.title}: ${revision.title.description}`;
+
 			return (
 				<div>
 					<h1>Revision #{revision.id}</h1>
 					{diffDivs}
 					<p className="text-right">
 						Created by&nbsp;
-						<a href={`/editor/${revision.author.id}`}>
+						<a
+							href={`/editor/${revision.author.id}`}
+							title={editorTitle}
+						>
 							{revision.author.name}
 						</a>
 						, {dateRevisionCreated}
