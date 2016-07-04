@@ -38,4 +38,4 @@ INSERT INTO bookbrainz.title_type ("title", "description") VALUES
 	('Hot Off the Press', 'Complete the Hot Off the Press Achievement'),
 	('Time Traveller', 'Complete the Time Traveller achievement');
 
-BEGIN;
+COMMIT;
