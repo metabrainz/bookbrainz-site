@@ -19,6 +19,7 @@
 const React = require('react');
 const request = require('superagent-bluebird-promise');
 const Achievement = require('./parts/achievement.jsx');
+const DragAndDrop = require('../input/dndSelector.jsx').DragAndDrop;
 
 (() => {
 	'use strict';
@@ -59,7 +60,10 @@ const Achievement = require('./parts/achievement.jsx');
 				let achievementHTML;
 				if (achievement.unlocked === unlocked) {
 					achievementHTML = (
-						<Achievement achievement={achievement}/>
+						<Achievement
+							achievement={achievement}
+							unlocked={unlocked}
+						/>
 					);
 				}
 				return achievementHTML;
@@ -84,67 +88,25 @@ const Achievement = require('./parts/achievement.jsx');
 			console.log(this.state.editor.authenticated);
 			if (this.state.editor.authenticated) {
 				rankUpdate = (
-					<form
-						className="form-horizontal"
-						id="rankSelectForm"
-						method="post"
-					>
-						<div className="form-group">
-							<label>Rank 1</label>
-							<div className="selectContainer">
-								<select
-									className="form-control"
-									name="rank1"
-									value={this.rank1}
-								>
-									{nullOption}
-									{rankName}
-								</select>
-							</div>
+					<form id="rankSelectForm" method="post" className="form-horizontal">
+						<div className="row dnd-container form-group">
+							<DragAndDrop name="rank1"/>
+							<DragAndDrop name="rank2"/>
+							<DragAndDrop name="rank3"/>
 						</div>
-
 						<div className="form-group">
-							<label>Rank 2</label>
-							<div className="selectContainer">
-								<select
-									className="form-control"
-									name="rank2"
-								>
-									{nullOption}
-									{rankName}
-								</select>
-							</div>
-						</div>
-
-						<div className="form-group">
-							<label>Rank 3</label>
-							<div className="selectContainer">
-								<select
-									className="form-control"
-									name="rank3"
-								>
-									{nullOption}
-									{rankName}
-								</select>
-							</div>
-						</div>
-
-						<div className="form-group">
-							<button
-								className="btn btn-default"
-								type="submit"
-							>
+							<button type="submit" className="btn btn-default">
 								update
 							</button>
 						</div>
 					</form>
-				);
+				)
 			}
 			return (
 				<div>
+					{rankUpdate}
 					<div className="h1">Unlocked Achievements</div>
 					{achievements}
-					{rankUpdate}
 					<div className="h1">Locked Achievements</div>
 					{locked}
 				</div>
