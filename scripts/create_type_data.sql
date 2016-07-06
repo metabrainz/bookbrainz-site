@@ -23,7 +23,10 @@ INSERT INTO bookbrainz.achievement_type ("name", "description", "badge_url") VAL
 	('Limited Edition III', 'Create 100 editions', '/images/revisionistI.svg'),
 	('Worker Bee I', 'Create one work', '/images/revisionistI.svg'),
 	('Worker Bee II', 'Create 10 works', '/images/revisionistI.svg'),
-	('Worker Bee III', 'Create 100 editions', '/images/revisionistI.svg');
+	('Worker Bee III', 'Create 100 editions', '/images/revisionistI.svg'),
+	('Explorer I', 'View 10 different entities', '/images/revisionistI.svg'),
+	('Explorer II', 'View 100 different entities', '/images/revisionistI.svg'),
+	('Explorer III', 'View 1000 different entities', '/images/revisionistI.svg');
 
 INSERT INTO bookbrainz.title_type ("title", "description") VALUES
 	('Revisionist', 'Complete the Revisionist series of badges'),
@@ -36,6 +39,7 @@ INSERT INTO bookbrainz.title_type ("title", "description") VALUES
 	('Publisher Creator', 'Complete the Publisher Creator series of badges'),
 	('Limited Edition', 'Complete the Limited Edition series of badges'),
 	('Hot Off the Press', 'Complete the Hot Off the Press Achievement'),
-	('Time Traveller', 'Complete the Time Traveller achievement');
+	('Time Traveller', 'Complete the Time Traveller achievement'),
+	('Explorer', 'Complete the Explorer sereies of badges');
 
 COMMIT;
