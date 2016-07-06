@@ -23,6 +23,7 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 const utils = require('../node_modules/bookbrainz-data/util.js');
+const Promise = require('bluebird');
 
 const _ = require('lodash');
 
@@ -118,7 +119,14 @@ describe('Revisionist achievement', () => {
 				Achievement.processEdit(editor.id)
 			);
 
-		return expect(achievementPromise).to.eventually.not.equal(null);
+		return Promise.all([
+			expect(achievementPromise).to.eventually.have
+			.deep.property('attributes.editorId',
+				reviserAttribs.id),
+			expect(achievementPromise).to.eventually.have
+				.deep.property('attributes.achievementId',
+					revisionistAttribs.id)
+		]);
 	});
 
 	it('should not give someone without a revision Revisionist I', () => {
@@ -128,6 +136,6 @@ describe('Revisionist achievement', () => {
 				Achievement.processEdit(editor.id)
 			);
 
-		return expect(achievementPromise).to.be.rejected;
+		return expect(achievementPromise).to.eventually.equal(false);
 	});
 });
