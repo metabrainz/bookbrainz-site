@@ -28,6 +28,7 @@ const EditionRevision = require('bookbrainz-data').EditionRevision;
 const PublicationRevision = require('bookbrainz-data').PublicationRevision;
 const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
+const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
@@ -472,7 +473,21 @@ function processHotOffThePress(editorId, revisionId) {
 		.catch((err) => ({'Hot Off the Press': err}));
 }
 
-achievement.processPageVisit = () => {
+function processExplorer(editorId) {
+	return new EditorEntityVisits({editorId})
+		.fetchAll({require: true})
+		.then((visits) => {
+			const tiers = [
+				{threshold: 10, name: 'Explorer I'},
+				{threshold: 100, name: 'Explorer II'},
+				{threshold: 1000, name: 'Explorer II', titleName: 'Explorer'}
+			];
+			console.log(visits.length);
+			return testTiers(visits.length, editorId, tiers);
+		});
+}
+
+achievement.processPageVisit = (userId) => {
 };
 
 /**
