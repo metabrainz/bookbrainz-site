@@ -78,8 +78,6 @@ const revisionistAttribs = {
 	badgeUrl: 'http://test.com'
 };
 
-const unlockAttribs = {editorId: reviserAttribsOptional.id};
-
 function truncate() {
 	return utils.truncateTables(Bookshelf, [
 		'bookbrainz.editor',
@@ -101,33 +99,33 @@ describe('Revisionist achievement', () => {
 				new AchievementType(revisionistAttribs)
 				.save(null, {method: 'insert'})
 			)
+			.then(() =>
+				new Editor(reviserAttribsOptional)
+				.save(null, {method: 'insert'})
+			)
+			.then(() =>
+				new Editor(editorAttribsOptional)
+				.save(null, {method: 'insert'})
+			)
 	);
 
 	afterEach(truncate);
 
 	it('should give someone with a revision Revisionist I', () => {
-		const achievementPromise = new Editor(reviserAttribsOptional)
-			.save(null, {method: 'insert'})
-			.then((editor) => {
-				Achievement.processEdit(editor);
-			})
-			.then(() =>
-				new AchievementUnlock(unlockAttribs)
-					.fetch()
+		const achievementPromise = new Editor(reviserAttribsOptional.name)
+			.fetch()
+			.then((editor) =>
+				Achievement.processEdit(editor.id)
 			);
 
 		return expect(achievementPromise).to.eventually.not.equal(null);
 	});
 
 	it('should not give someone without a revision Revisionist I', () => {
-		const achievementPromise = new Editor(editorAttribsOptional)
-			.save(null, {method: 'insert'})
-			.then((editor) => {
-				Achievement.processEdit(editor);
-			})
-			.then(() =>
-				new AchievementUnlock(unlockAttribs)
-					.fetch()
+		const achievementPromise = new Editor({name: editorAttribs.name})
+			.fetch()
+			.then((editor) =>
+				Achievement.processEdit(editor.id)
 			);
 
 		return expect(achievementPromise).to.be.rejected;
