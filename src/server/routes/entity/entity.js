@@ -36,7 +36,6 @@ const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
-
 const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
