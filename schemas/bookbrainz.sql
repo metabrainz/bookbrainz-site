@@ -599,6 +599,16 @@ CREATE TABLE bookbrainz.achievement_unlock (
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.achievement_unlock ADD FOREIGN KEY (achievement_id) REFERENCES bookbrainz.achievement_type (id);
 
+CREATE TABLE bookbrainz._editor_entity_visits (
+	id SERIAL PRIMARY KEY,
+	editor_id INT NOT NULL,
+	bbid UUID NOT NULL,
+	UNIQUE (editor_id, bbid)
+);
+
+ALTER TABLE bookbrainz._editor_entity_visits ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz._editor_entity_visits ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
 -- Views --
 
 CREATE VIEW bookbrainz.creator AS
