@@ -187,7 +187,6 @@ function processSprinter(editorId) {
 		})
 }
 
-
 achievement.processPageVisit = () => {
 
 };

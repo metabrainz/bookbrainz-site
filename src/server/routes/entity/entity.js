@@ -31,7 +31,6 @@ const bookshelf = require('bookbrainz-data').bookshelf;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
-const Editor = require('bookbrainz-data').Editor;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
@@ -685,7 +684,7 @@ module.exports.editEntity = (
 				const notePromise = _createNote(
 					req.body.note, editorJSON, newRevision, transacting
 				);
-	
+
 				return Promise.join(
 					entity.save(null, {method: 'update', transacting}),
 					editorUpdatePromise,
@@ -693,8 +692,8 @@ module.exports.editEntity = (
 					notePromise
 				)
 				.then((promises) => {
-					return achievement.processEdit(req.user.id)
-						.then(() => promises);
+					achievement.processEdit(req.user.id);
+					return promises;
 				});
 			})
 			.spread(
