@@ -135,6 +135,29 @@ describe('Revisionist achievement', () => {
 		]);
 	});
 
+	it('should give someone with 50 revisions Revisionist II', () => {
+		const achievementPromise = new Editor({name: editorAttribs.name})
+			.fetch()
+			.then((editor) =>
+				editor.set({revisionsApplied: 50})
+				.save()
+			)
+			.then((editor) =>
+				Achievement.processEdit(editor.id)
+			)
+			.then((edit) =>
+				edit.revisionist
+			);
+
+		return Promise.all([
+			expect(achievementPromise).to.eventually.have.deep
+			.property('Revisionist II.editorId', editorAttribs.id),
+			expect(achievementPromise).to.eventually.have.deep
+			.property('Revisionist II.achievementId',
+				revisionistIIAttribs.id)
+		]);
+	});
+
 	it('should not give someone without a revision Revisionist I', () => {
 		const achievementPromise = new Editor({name: editorAttribs.name})
 			.fetch()
