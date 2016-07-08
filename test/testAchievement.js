@@ -25,22 +25,12 @@ const expect = chai.expect;
 const utils = require('../node_modules/bookbrainz-data/util.js');
 const Promise = require('bluebird');
 
-const _ = require('lodash');
-
-const bookbrainzData = require('./bookbrainz-data.js');
 const Bookshelf = require('./bookbrainz-data.js').bookshelf;
 const AchievementType = require('./bookbrainz-data').AchievementType;
-const AchievementUnlock = require('./bookbrainz-data').AchievementUnlock;
 const TitleType = require('./bookbrainz-data').TitleType;
 const Editor = require('./bookbrainz-data').Editor;
 const EditorType = require('./bookbrainz-data').EditorType;
 const Achievement = require('../src/server/helpers/achievement.js');
-const Gender = require('./bookbrainz-data').Gender;
-
-const genderAttribs = {
-	id: 1,
-	name: 'test'
-};
 
 const editorTypeAttribs = {
 	id: 1,
