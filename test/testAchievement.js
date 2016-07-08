@@ -31,6 +31,7 @@ const bookbrainzData = require('./bookbrainz-data.js');
 const Bookshelf = require('./bookbrainz-data.js').bookshelf;
 const AchievementType = require('./bookbrainz-data').AchievementType;
 const AchievementUnlock = require('./bookbrainz-data').AchievementUnlock;
+const TitleType = require('./bookbrainz-data').TitleType;
 const Editor = require('./bookbrainz-data').Editor;
 const EditorType = require('./bookbrainz-data').EditorType;
 const Achievement = require('../src/server/helpers/achievement.js');
@@ -46,17 +47,8 @@ const editorTypeAttribs = {
 	label: 'test_type'
 };
 
-const reviserAttribs = {
-	id: 1,
-	name: 'alice',
-	email: 'alice@test.org',
-	password: 'test',
-	typeId: 1,
-	revisionsApplied: 1
-};
-
 const editorAttribs = {
-	id: 2,
+	id: 1,
 	name: 'bob',
 	email: 'bob@test.org',
 	password: 'test',
@@ -64,19 +56,31 @@ const editorAttribs = {
 	revisionsApplied: 0
 };
 
-const reviserAttribsOptional = _.assign(_.clone(reviserAttribs), {
-	genderId: 1
-});
-
-const editorAttribsOptional = _.assign(_.clone(editorAttribs), {
-	genderId: 1
-});
-
-const revisionistAttribs = {
+const revisionistIAttribs = {
 	id: 1,
 	name: 'Revisionist I',
 	description: 'create one revision',
 	badgeUrl: 'http://test.com'
+};
+
+const revisionistIIAttribs = {
+	id: 2,
+	name: 'Revisionist II',
+	description: 'create 25 revisions',
+	badgeUrl: 'http://test.com'
+};
+
+const revisionistIIIAttribs = {
+	id: 3,
+	name: 'Revisionist III',
+	description: 'create 250 revisions',
+	badgeUrl: 'http://test.com'
+};
+
+const revisionistAttribs = {
+	id: 1,
+	title: 'Revisionist',
+	description: 'create 250 revisions'
 };
 
 function truncate() {
@@ -85,27 +89,33 @@ function truncate() {
 		'bookbrainz.editor_type',
 		'bookbrainz.achievement_type',
 		'bookbrainz.achievement_unlock',
+		'bookbrainz.title_type',
+		'bookbrainz.title_unlock',
 		'musicbrainz.gender'
 	]);
 }
 
 describe('Revisionist achievement', () => {
-	beforeEach(() => new Gender(genderAttribs)
-			.save(null, {method: 'insert'})
-			.then(() => {
-				new EditorType(editorTypeAttribs)
-				.save(null, {method: 'insert'});
-			})
+	beforeEach(() => new EditorType(editorTypeAttribs)
+				.save(null, {method: 'insert'})
 			.then(() =>
-				new AchievementType(revisionistAttribs)
+				new AchievementType(revisionistIAttribs)
 				.save(null, {method: 'insert'})
 			)
 			.then(() =>
-				new Editor(reviserAttribsOptional)
+				new AchievementType(revisionistIIAttribs)
 				.save(null, {method: 'insert'})
 			)
 			.then(() =>
-				new Editor(editorAttribsOptional)
+				new AchievementType(revisionistIIIAttribs)
+				.save(null, {method: 'insert'})
+			)
+			.then(() =>
+				new TitleType(revisionistAttribs)
+				.save(null, {method: 'insert'})
+			)
+			.then(() =>
+				new Editor(editorAttribs)
 				.save(null, {method: 'insert'})
 			)
 	);
@@ -113,19 +123,25 @@ describe('Revisionist achievement', () => {
 	afterEach(truncate);
 
 	it('should give someone with a revision Revisionist I', () => {
-		const achievementPromise = new Editor(reviserAttribsOptional.name)
+		const achievementPromise = new Editor({name: editorAttribs.name})
 			.fetch()
 			.then((editor) =>
+				editor.set({revisionsApplied: 1})
+				.save()
+			)
+			.then((editor) =>
 				Achievement.processEdit(editor.id)
+			)
+			.then((edit) =>
+				edit.revisionist['Revisionist I']
 			);
 
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have
-			.deep.property('attributes.editorId',
-				reviserAttribs.id),
+			.property('editorId', editorAttribs.id),
 			expect(achievementPromise).to.eventually.have
-				.deep.property('attributes.achievementId',
-					revisionistAttribs.id)
+			.property('achievementId',
+					revisionistIAttribs.id)
 		]);
 	});
 
@@ -134,6 +150,9 @@ describe('Revisionist achievement', () => {
 			.fetch()
 			.then((editor) =>
 				Achievement.processEdit(editor.id)
+			)
+			.then((edit) =>
+				edit.revisionist['Revisionist I']
 			);
 
 		return expect(achievementPromise).to.eventually.equal(false);
