@@ -239,7 +239,19 @@ achievement.processEdit = (userid) =>
 		processCreatorCreator(userid),
 		processLimitedEdition(userid),
 		processPublisher(userid),
-		processSprinter(userid)
+		processSprinter(userid),
+		(revisionist,
+		creatorCreator,
+		limitedEdition,
+		publisher,
+		sprinter) =>
+			({
+				revisionist,
+				creatorCreator,
+				limitedEdition,
+				publisher,
+				sprinter
+			})
 	);
 
 
