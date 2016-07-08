@@ -179,7 +179,6 @@ function processRevisionist(editorId) {
 function processCreatorCreator(editorId) {
 	return getTypeRevisions('creatorRevision', editorId)
 		.then((rowCount) => {
-			let creatorPromise;
 			const tiers = [
 				{threshold: 100, name: 'Creator Creator III',
 					titleName: 'Creator Creator'},
@@ -227,7 +226,7 @@ function processSprinter(editorId) {
 				{threshold: 10, name: 'Sprinter', titleName: 'Sprinter'}
 			];
 			return testTiers(out.rowCount, editorId, tiers);
-		})
+		});
 }
 
 achievement.processPageVisit = () => {
