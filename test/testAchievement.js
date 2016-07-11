@@ -31,47 +31,7 @@ const TitleType = require('./bookbrainz-data').TitleType;
 const Editor = require('./bookbrainz-data').Editor;
 const EditorType = require('./bookbrainz-data').EditorType;
 const Achievement = require('../src/server/helpers/achievement.js');
-
-const editorTypeAttribs = {
-	id: 1,
-	label: 'test_type'
-};
-
-const editorAttribs = {
-	id: 1,
-	name: 'bob',
-	email: 'bob@test.org',
-	password: 'test',
-	typeId: 1,
-	revisionsApplied: 0
-};
-
-const revisionistIAttribs = {
-	id: 1,
-	name: 'Revisionist I',
-	description: 'create one revision',
-	badgeUrl: 'http://test.com'
-};
-
-const revisionistIIAttribs = {
-	id: 2,
-	name: 'Revisionist II',
-	description: 'create 25 revisions',
-	badgeUrl: 'http://test.com'
-};
-
-const revisionistIIIAttribs = {
-	id: 3,
-	name: 'Revisionist III',
-	description: 'create 250 revisions',
-	badgeUrl: 'http://test.com'
-};
-
-const revisionistAttribs = {
-	id: 1,
-	title: 'Revisionist',
-	description: 'create 250 revisions'
-};
+const testData = require('../data/testData.js');
 
 function truncate() {
 	return utils.truncateTables(Bookshelf, [
@@ -86,34 +46,16 @@ function truncate() {
 }
 
 describe('Revisionist achievement', () => {
-	beforeEach(() => new EditorType(editorTypeAttribs)
-				.save(null, {method: 'insert'})
-			.then(() =>
-				new AchievementType(revisionistIAttribs)
-				.save(null, {method: 'insert'})
-			)
-			.then(() =>
-				new AchievementType(revisionistIIAttribs)
-				.save(null, {method: 'insert'})
-			)
-			.then(() =>
-				new AchievementType(revisionistIIIAttribs)
-				.save(null, {method: 'insert'})
-			)
-			.then(() =>
-				new TitleType(revisionistAttribs)
-				.save(null, {method: 'insert'})
-			)
-			.then(() =>
-				new Editor(editorAttribs)
-				.save(null, {method: 'insert'})
-			)
+	beforeEach(() => testData.createEditor()
+		.then(() =>
+			testData.createRevisionist()
+		)
 	);
 
 	afterEach(truncate);
 
 	it('should give someone with a revision Revisionist I', () => {
-		const achievementPromise = new Editor({name: editorAttribs.name})
+		const achievementPromise = new Editor({name: testData.editorAttribs.name})
 			.fetch()
 			.then((editor) =>
 				editor.set({revisionsApplied: 1})
@@ -128,15 +70,15 @@ describe('Revisionist achievement', () => {
 
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have
-			.property('editorId', editorAttribs.id),
+			.property('editorId', testData.editorAttribs.id),
 			expect(achievementPromise).to.eventually.have
 			.property('achievementId',
-					revisionistIAttribs.id)
+					testData.revisionistIAttribs.id)
 		]);
 	});
 
 	it('should give someone with 50 revisions Revisionist II', () => {
-		const achievementPromise = new Editor({name: editorAttribs.name})
+		const achievementPromise = new Editor({name: testData.editorAttribs.name})
 			.fetch()
 			.then((editor) =>
 				editor.set({revisionsApplied: 50})
@@ -151,16 +93,16 @@ describe('Revisionist achievement', () => {
 
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have.deep
-			.property('Revisionist II.editorId', editorAttribs.id),
+			.property('Revisionist II.editorId', testData.editorAttribs.id),
 			expect(achievementPromise).to.eventually.have.deep
 			.property('Revisionist II.achievementId',
-				revisionistIIAttribs.id)
+				testData.revisionistIIAttribs.id)
 		]);
 	});
 
 	it('should give someone with 250 revisions Revisionist III and Revisionist',
 		() => {
-			const achievementPromise = new Editor({name: editorAttribs.name})
+			const achievementPromise = new Editor({name: testData.editorAttribs.name})
 				.fetch()
 				.then((editor) =>
 					editor.set({revisionsApplied: 250})
@@ -175,20 +117,20 @@ describe('Revisionist achievement', () => {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Revisionist III.editorId', editorAttribs.id),
+				.property('Revisionist III.editorId', testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
 				.property('Revisionist III.achievementId',
-					revisionistIIIAttribs.id),
+					testData.revisionistIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Revisionist.editorId', editorAttribs.id),
+				.property('Revisionist.editorId', testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
 				.property('Revisionist.titleId',
-					revisionistAttribs.id)
+					testData.revisionistAttribs.id)
 			]);
 		});
 
 	it('should not give someone without a revision Revisionist I', () => {
-		const achievementPromise = new Editor({name: editorAttribs.name})
+		const achievementPromise = new Editor({name: testData.editorAttribs.name})
 			.fetch()
 			.then((editor) =>
 				Achievement.processEdit(editor.id)
