@@ -46,6 +46,33 @@ testData.revisionistAttribs = {
 	description: 'create 250 revisions'
 };
 
+testData.creatorCreatorIAttribs = {
+	id: 1,
+	name: 'Creator Creator I',
+	description: 'create one creator',
+	badgeUrl: 'http://test.com'
+};
+
+testData.creatorCreatorIAttribs = {
+	id: 2,
+	name: 'Creator Creator I',
+	description: 'create 10 creators',
+	badgeUrl: 'http://test.com'
+};
+
+testData.creatorCreatorIAttribs = {
+	id: 3,
+	name: 'Creator Creator II',
+	description: 'create 100 creators',
+	badgeUrl: 'http://test.com'
+};
+
+testData.creatorCreatorAttribs = {
+	id: 1,
+	title: 'Creator Creator',
+	description: 'Complete Creator Creator track'
+};
+
 testData.createEditor = function() {
 	return new EditorType(this.editorTypeAttribs)
 		.save(null, {method: 'insert'})
