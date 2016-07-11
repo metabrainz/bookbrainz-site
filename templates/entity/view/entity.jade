@@ -13,6 +13,16 @@ mixin begin_end
 		dd=(entity.endDate ? entity.endDate : '?')
 
 block body
+	if alert
+		.row
+			.col-md-12
+				.alert.alert-info
+					div
+						strong Achievement unlocked:
+						each achievement in alert
+							p #{achievement.name}
+					div
+						strong Go to your profile to display
 	.row
 		.col-md-12
 			h1
