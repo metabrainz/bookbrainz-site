@@ -4,6 +4,8 @@ const Editor = require('../test/bookbrainz-data').Editor;
 const EditorType = require('../test/bookbrainz-data').EditorType;
 const AchievementType = require('../test/bookbrainz-data').AchievementType;
 const TitleType = require('../test/bookbrainz-data').TitleType;
+const Revision = require('../test/bookbrainz-data').Revision;
+const CreatorRevision = require('../test/bookbrainz-data').CreatorRevision;
 
 testData.editorTypeAttribs = {
 	id: 1,
@@ -97,6 +99,20 @@ testData.createRevisionist = function() {
 			new TitleType(this.revisionistAttribs)
 			.save(null, {method: 'insert'})
 		)
+}
+
+testData.createCreatorCreator = function() {
+	return new AchievementType(this.creatorCreatorIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.creatorCreatorIIAttribs)
+		)
+		.then(() =>
+			new AchievementType(this.creatorCreatorIIIAttribs)
+		)
+		.then(() =>
+			new TitleType(this.creatorCreatorAttribs)
+		);
 }
 
 module.exports = testData;
