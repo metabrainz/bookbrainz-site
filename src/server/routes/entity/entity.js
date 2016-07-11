@@ -28,6 +28,7 @@ const _ = require('lodash');
 // XXX: Don't pull in bookshelf directly
 const bookshelf = require('bookbrainz-data').bookshelf;
 
+const AchievementType = require('bookbrainz-data').AchievementType;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
@@ -54,10 +55,53 @@ module.exports.displayEntity = (req, res) => {
 			(type) => type.id
 		);
 
-	res.render(
-		`entity/view/${entity.type.toLowerCase()}`,
-		{identifierTypes}
-	);
+	let editorEntityVisitPromise;
+	if (res.locals.user) {
+		editorEntityVisitPromise = new EditorEntityVisits({
+			editor_id: res.locals.user.id,
+			bbid: res.locals.entity.bbid
+		})
+		.save(null, {method: 'insert'})
+		.then(() => {
+			achievement.processPageVisit(res.locals.user.id);
+		})
+		.catch(() => {
+			// ignore duplicate visits
+		});
+	}
+	else {
+		editorEntityVisitPromise = Promise.resolve(false);
+	}
+
+	let alertPromise;
+	if (req.query.alert) {
+		const achievements = req.query.alert.split(',');
+		const promiseList = achievements.map((achievementAlert) =>
+			new AchievementType({id: achievementAlert})
+				.fetch({require: 'true'})
+				.then((achievementType) =>
+					({name: achievementType.attributes.name})
+				)
+				.catch((error) => {
+					console.log(error);
+				})
+		});
+		alertPromise = Promise.all(promiseList);
+	}
+	else {
+		alertPromise = Promise.resolve(false);
+	}
+
+	return Promise.join(
+		editorEntityVisitPromise,
+		alertPromise,
+		(visit, alert) => {
+			res.render(
+				`entity/view/${entity.type.toLowerCase()}`,
+				{identifierTypes,
+				alert}
+			);
+		});
 };
 
 module.exports.displayDeleteEntity = (req, res) => {
