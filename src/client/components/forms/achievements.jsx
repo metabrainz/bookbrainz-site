@@ -1,4 +1,5 @@
 const React = require('react');
+const request = require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
 	displayName: 'AchievementForm',
