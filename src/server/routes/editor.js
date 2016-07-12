@@ -344,18 +344,19 @@ function rankUpdate(editorId, bodyRank, rank) {
 	return promise;
 }
 
-router.post('/:id/achievements', auth.isAuthenticated, (req, res, next) => {
+router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
 	console.log(req.body);
 	console.log(req.params.id);
 	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
 	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
 	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
-	Promise.join(
-		rankOnePromise,
+	
+	const rankPromise = Promise.all(
+		[rankOnePromise,
 		rankTwoPromise,
-		rankThreePromise,
-		(one, two, three) =>
-			console.log('done')
+		rankThreePromise]
 	);
+
+	handler.sendPromiseResult(res, rankPromise);
 });
 module.exports = router;
