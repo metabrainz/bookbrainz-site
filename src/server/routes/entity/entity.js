@@ -29,6 +29,7 @@ const _ = require('lodash');
 const bookshelf = require('bookbrainz-data').bookshelf;
 
 const AchievementType = require('bookbrainz-data').AchievementType;
+const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
@@ -570,13 +571,16 @@ module.exports.createEntity = (
 						transacting
 					})
 			)
-			.then((entity) =>
-				({
-					entityJSON: entity.toJSON(),
-					editorJSON
-				})
-
-			);
+			.then((entity) => entity.toJSON())
+			.then((entityJSON) => {
+				return achievement.processEdit(req.user.id)
+					.then((unlock) => {
+						if (unlock.alert) {
+							entityJSON.alert = unlock.alert;
+						}
+						return entityJSON;
+					});
+			});
 	});
 
 	entityCreationPromise.then((creationJSON) =>
