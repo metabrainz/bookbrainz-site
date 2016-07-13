@@ -263,14 +263,26 @@ achievement.processEdit = (userid) =>
 		creatorCreator,
 		limitedEdition,
 		publisher,
-		sprinter) =>
-			({
+		sprinter) => {
+			let alert = [];
+			alert.push(
+				achievementToUnlockId(revisionist),
+				achievementToUnlockId(creatorCreator),
+				achievementToUnlockId(limitedEdition),
+				achievementToUnlockId(publisher),
+				achievementToUnlockId(sprinter)
+			);
+			alert = [].concat.apply([], alert);
+			alert = alert.join(',');
+			return ({
 				revisionist,
 				creatorCreator,
 				limitedEdition,
 				publisher,
-				sprinter
+				sprinter,
+				alert
 			})
+		}
 	);
 
 
