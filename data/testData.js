@@ -1,3 +1,5 @@
+'use strict';
+
 const testData = {};
 
 const Editor = require('../test/bookbrainz-data').Editor;
@@ -75,6 +77,19 @@ testData.creatorCreatorAttribs = {
 	description: 'Complete Creator Creator track'
 };
 
+testData.sprinterAttribs = {
+	id: 1,
+	name: 'Sprinter',
+	description: 'create 100 creators',
+	badgeUrl: 'http://test.com'
+};
+
+testData.sprinterTitleAttribs = {
+	id: 1,
+	title: 'Sprinter',
+	description: 'Complete Creator Creator track'
+};
+
 testData.createEditor = function() {
 	return new EditorType(this.editorTypeAttribs)
 		.save(null, {method: 'insert'})
@@ -132,6 +147,26 @@ testData.creatorCreatorHelper = function(creatorNumber) {
 			})
 		);
 	}
+}
+
+testData.createSprinter = function() {
+	return new AchievementType(this.sprinterAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.sprinterTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
+}
+
+testData.sprinterHelper = function(numRevisions) {
+	const promiseList = [];
+	for (let i = 0; i < numRevisions; i++) {
+		promiseList.push(
+			new Revision({authorId: testData.editorAttribs.id})
+				.save(null, {method: 'insert'})
+		);
+	}
+	return Promise.all(promiseList);
 }
 
 module.exports = testData;
