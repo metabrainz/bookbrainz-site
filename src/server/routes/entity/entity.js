@@ -78,11 +78,21 @@ module.exports.displayEntity = (req, res) => {
 	if (req.query.alert) {
 		const achievements = req.query.alert.split(',');
 		const promiseList = achievements.map((achievementAlert) =>
-			new AchievementType({id: achievementAlert})
-				.fetch({require: 'true'})
-				.then((achievementType) =>
-					({name: achievementType.attributes.name})
-				)
+			new AchievementUnlock({id: achievementAlert})
+				.fetch({
+					require: 'true',
+					withRelated: 'achievement'
+				})
+				.then((unlock) => {
+					if (req.user.id == unlock.attributes.editorId) {
+						return ({name: unlock.relations.achievement.attributes.name});
+					}
+					else {
+						// gives error on client side, this case shouldn't
+						// come from server, only manual url manipulation)
+						return;
+					}
+				})
 				.catch((error) => {
 					console.log(error);
 				})
