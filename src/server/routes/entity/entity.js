@@ -765,12 +765,17 @@ module.exports.editEntity = (
 					.fetch({withRelated: ['defaultAlias'], transacting})
 			)
 			.then((entity) =>
-				achievement.processEdit(
-					req.user.id,
-					entity.attributes.revisionId
-				)
-					.then(() => entity.toJSON())
-			);
+				entity.toJSON()
+			)
+			.then((entityJSON) => {
+				return achievement.processEdit(req.user.id, entity.revisionId)
+					.then((unlock) => {
+						if (unlock.alert) {
+							entityJSON.alert = unlock.alert;
+						}
+						return entityJSON;
+					});
+			});
 	});
 
 	return handler.sendPromiseResult(
