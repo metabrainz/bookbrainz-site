@@ -68,7 +68,7 @@ function awardTitle(editorId, titleId) {
 					.save(null, {method: 'insert'});
 			}
 			else {
-				awardPromise = Promise.resolve();
+				awardPromise = Promise.resolve('already unlocked');
 			}
 			return awardPromise;
 		});
@@ -78,7 +78,12 @@ function awardTierAchievement(editorId, tier) {
 	return awardAchievement(editorId, tier.name)
 		.then((unlock) => {
 			const out = {};
-			out[tier.name] = unlock.toJSON();
+			if (unlock.id) {
+				out[tier.name] = unlock.toJSON();
+			}
+			else {
+				out[tier.name] = unlock;
+			}
 			return out;
 		});
 }
@@ -93,7 +98,12 @@ function awardTierTitle(editorId, tier) {
 				)
 				.then((unlock) => {
 					const out = {};
-					out[tier.titleName] = unlock.toJSON();
+					if (unlock.id) {
+						out[tier.titleName] = unlock.toJSON();
+					}
+					else {
+						out[tier.titleName] = unlock;
+					}
 					return out;
 				});
 	}
