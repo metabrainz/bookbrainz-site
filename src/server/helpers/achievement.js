@@ -239,8 +239,17 @@ function processSprinter(editorId) {
 		});
 }
 
-achievement.processPageVisit = () => {
+function achievementToUnlockId(achievement) {
+	const unlockIds = [];
+	Object.keys(achievement).forEach((key) => {
+		if (achievement[key].id) {
+			unlockIds.push("" + achievement[key].id);
+		}
+	})
+	return unlockIds;
+}
 
+achievement.processPageVisit = () => {
 };
 
 achievement.processEdit = (userid) =>
