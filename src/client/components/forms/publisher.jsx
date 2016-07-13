@@ -97,7 +97,12 @@ const RevisionNote = require('./parts/revision-note.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					window.location.href = `/publisher/${res.body.bbid}`;
+					if (res.body.alert) {
+						window.location.href = `/publisher/${res.body.bbid}?alert=${res.body.alert}`;
+					}
+					else {
+						window.location.href = `/publisher/${res.body.bbid}`;
+					}
 				})
 				.catch((error) => {
 					this.setState({error});

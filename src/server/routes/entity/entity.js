@@ -86,7 +86,7 @@ module.exports.displayEntity = (req, res) => {
 				.catch((error) => {
 					console.log(error);
 				})
-		});
+		);
 		alertPromise = Promise.all(promiseList);
 	}
 	else {

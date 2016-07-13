@@ -55,7 +55,7 @@ const WorkData = require('./parts/work-data.jsx');
 				tab,
 				aliasesValid: this.aliases.valid(),
 				dataValid: this.data.valid()
-			});
+			})
 		}
 
 		handleBackClick(evt) {
@@ -101,7 +101,12 @@ const WorkData = require('./parts/work-data.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					window.location.href = `/work/${res.body.bbid}`;
+					if (res.body.alert) {
+						window.location.href = `/work/${res.body.bbid}?alert=${res.body.alert}`;
+					}
+					else {
+						window.location.href = `/work/${res.body.bbid}`
+					}
 				})
 				.catch((error) => {
 					self.setState({error});
