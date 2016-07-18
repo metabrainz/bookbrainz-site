@@ -1,5 +1,6 @@
 const React = require('react');
 const request = require('superagent-bluebird-promise');
+const Achievement = require('./parts/achievement.jsx');
 
 module.exports = React.createClass({
 	displayName: 'AchievementForm',
@@ -38,20 +39,7 @@ module.exports = React.createClass({
 			let achievementHTML;
 			if (achievement.unlocked) {
 				achievementHTML = (
-					<div className="row well">
-						<div className="col-md-2">
-							<img
-								height="100px"
-								src={achievement.badgeUrl}
-							/>
-						</div>
-						<div className="col-md-8">
-							<div className="h2">
-								{achievement.name}
-							</div>
-							<p>{achievement.description}</p>
-						</div>
-					</div>
+					<Achievement achievement={achievement}/>
 				);
 			}
 			return achievementHTML;
@@ -60,20 +48,7 @@ module.exports = React.createClass({
 			let achievementHTML = null;
 			if (!achievement.unlocked) {
 				achievementHTML = (
-					<div className="row well">
-						<div className="col-md-2">
-							<img
-								height="100px"
-								src={achievement.badgeUrl}
-							/>
-						</div>
-						<div className="col-md-6">
-							<div className="h2">
-								{achievement.name}
-							</div>
-							<p>{achievement.description}</p>
-						</div>
-					</div>
+					<Achievement achievement={achievement}/>
 				);
 			}
 			return achievementHTML;
