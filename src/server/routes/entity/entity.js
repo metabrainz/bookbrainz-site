@@ -38,6 +38,7 @@ const Revision = require('bookbrainz-data').Revision;
 const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
+const achievement = require('../../helpers/achievement');
 
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion.jsx')
@@ -685,7 +686,11 @@ module.exports.editEntity = (
 					editorUpdatePromise,
 					parentAddedPromise,
 					notePromise
-				);
+				)
+				.then((promises) => {
+					achievement.processEdit(req.user.id);
+					return promises;
+				});
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
