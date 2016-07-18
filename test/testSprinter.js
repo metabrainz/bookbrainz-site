@@ -65,8 +65,10 @@ describe('Sprinter Achievement', () => {
 			);
 		
 		return Promise.all([
-			expect(achievementPromise).to.eventually.have.property('editorId', testData.editorAttribs.id),
-			expect(achievementPromise).to.eventually.have.property('achievementId', testData.sprinterAttribs.id)
+			expect(achievementPromise).to.eventually.have
+				.property('editorId', testData.editorAttribs.id),
+			expect(achievementPromise).to.eventually.have
+				.property('achievementId', testData.sprinterAttribs.id)
 		]);
 	});
 
