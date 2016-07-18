@@ -24,6 +24,7 @@ CREATE TABLE bookbrainz.editor (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(64) NOT NULL UNIQUE CHECK (name <> ''),
 	metabrainz_user_id INTEGER CHECK (metabrainz_user_id >= 0),
+	cached_metabrainz_name VARCHAR(64),
 	reputation INT NOT NULL DEFAULT 0,
 	bio TEXT NOT NULL DEFAULT '',
 	birth_date DATE,
