@@ -135,7 +135,7 @@ module.exports = React.createClass({
 							href="/auth"
 						>
 							<img
-								className="margin-right-1"
+								className="margin-right-0-5"
 								src="/images/MusicBrainz_logo_icon.svg"
 							/>
 							Login with MusicBrainz
