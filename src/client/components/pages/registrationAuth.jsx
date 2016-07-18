@@ -18,95 +18,38 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const React = require('react');
-const request = require('superagent-bluebird-promise');
 
-const Alert = require('react-bootstrap').Alert;
 const Button = require('react-bootstrap').Button;
 const PageHeader = require('react-bootstrap').PageHeader;
 
-module.exports = React.createClass({
-	displayName: 'RegistrationForm',
-	getInitialState() {
-		'use strict';
+function RegistrationAuth() {
+	'use strict';
 
-		return {
-			error: null,
-			password: '',
-			passwordRepeat: '',
-			waiting: false
-		};
-	},
-	handleSubmit(event) {
-		'use strict';
-
-		event.preventDefault();
-
-		const data = {
-			username: this.username.getValue(),
-			email: this.email.getValue(),
-			password: this.password.getValue(),
-			passwordRepeat: this.passwordRepeat.getValue()
-		};
-
-		this.setState({
-			error: null,
-			password: '',
-			passwordRepeat: '',
-			waiting: true
-		});
-
-		request.post('/register/handler')
-			.send(data)
-			.then(() => {
-				window.location.href = '/';
-			})
-			.catch((res) => {
-				const error = res.body.error;
-				this.setState({
-					error,
-					waiting: false
-				});
-			});
-	},
-	handlePasswordChange(event) {
-		'use strict';
-
-		this.setState({
-			password: event.target.value
-		});
-	},
-	handlePasswordRepeatChange(event) {
-		'use strict';
-
-		this.setState({
-			passwordRepeat: event.target.value
-		});
-	},
-	render() {
-		'use strict';
-
-		return (
-			<div>
-				<PageHeader>Register</PageHeader>
-				<p>
-					To sign up as an editor of BookBrainz, you need to first
-					have a MusicBrainz account. Please click the button below
-					to sign in or register with MusicBrainz. You'll then be
-					redirected back to BookBrainz to continue registration!
-				</p>
-				<div className="text-center">
-					<Button
-						href="/auth"
-						type="submit"
-					>
-						<img
-							className="margin-right-0-5"
-							src="/images/MusicBrainz_logo_icon.svg"
-						/>
-						Sign In or Register with MusicBrainz
-					</Button>
-				</div>
+	return (
+		<div>
+			<PageHeader>Register</PageHeader>
+			<p>
+				To sign up as an editor of BookBrainz, you need to first
+				have a MusicBrainz account. Please click the button below
+				to sign in or register with MusicBrainz. You'll then be
+				redirected back to BookBrainz to continue registration!
+			</p>
+			<div className="text-center">
+				<Button
+					href="/auth"
+					type="submit"
+				>
+					<img
+						className="margin-right-0-5"
+						src="/images/MusicBrainz_logo_icon.svg"
+					/>
+					Sign In or Register with MusicBrainz
+				</Button>
 			</div>
-		);
-	}
-});
+		</div>
+	);
+}
+
+RegistrationAuth.displayName = 'RegistrationForm';
+
+module.exports = RegistrationAuth;
