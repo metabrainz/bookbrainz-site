@@ -52,19 +52,19 @@ describe('Creator Creator achievement', () => {
 
 	it('should give someone with a creator revision Creator Creator I', () => {
 		const achievementPromise = testData.creatorCreatorHelper(1)
-			.then(() => {
-				return new Editor({name: testData.editorAttribs.name})
-					.fetch()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
-					)
-					.then((edit) => {
-						console.log(edit);
-						return edit.revisionist['Creator Creator']
-					}
-					);
-			})
+			.then(() =>
+				new Editor({name: testData.editorAttribs.name})
+				.fetch()
+			)
+			.then((editor) =>
+				Achievement.processEdit(editor.id)
+			)
+			.then((edit) => {
+				console.log(edit);
+				return edit.revisionist['Creator Creator'];
+			});
 
-		return expect(achievementPromise).to.eventually.have.property('editorId', testData.editorAttribs.id);
+		return expect(achievementPromise).to.eventually.have
+			.property('editorId', testData.editorAttribs.id);
 	});
-})
+});
