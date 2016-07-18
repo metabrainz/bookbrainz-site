@@ -110,7 +110,15 @@ router.post('/handler', (req, res) => {
 			req.session.mbProfile = null;
 			return editor.toJSON();
 		})
-		.catch(() => {
+		.catch((err) => {
+			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
+				throw new FormSubmissionError(
+					'That username already exists - please try using' +
+					' another, or link your existing BookBrainz account by' +
+					' signing in and visiting your profile.'
+				);
+			}
+
 			throw new FormSubmissionError(
 				'Something went wrong when registering, please try again!'
 			);
