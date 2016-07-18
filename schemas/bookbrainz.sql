@@ -23,7 +23,8 @@ CREATE TABLE bookbrainz.editor_type (
 CREATE TABLE bookbrainz.editor (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(64) NOT NULL UNIQUE CHECK (name <> ''),
-	email VARCHAR(255) NOT NULL CHECK (email <> ''),
+	metabrainz_user_id INTEGER CHECK (metabrainz_user_id >= 0),
+	cached_metabrainz_name VARCHAR(64),
 	reputation INT NOT NULL DEFAULT 0,
 	bio TEXT NOT NULL DEFAULT '',
 	birth_date DATE,
@@ -32,11 +33,14 @@ CREATE TABLE bookbrainz.editor (
 	type_id INT NOT NULL,
 	gender_id INT,
 	area_id INT,
-	password CHAR(60) NOT NULL CHECK (password <> ''),
+	password CHAR(60) CHECK (password <> ''),
 	revisions_applied INT NOT NULL DEFAULT 0 CHECK (revisions_applied >= 0),
 	revisions_reverted INT NOT NULL DEFAULT 0 CHECK (revisions_reverted >= 0),
 	total_revisions INT NOT NULL DEFAULT 0 CHECK (total_revisions >= 0),
-	title_unlock_id INT
+	title_unlock_id INT,
+	CHECK (
+		password IS NOT NULL OR metabrainz_user_id IS NOT NULL
+	)
 );
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id) DEFERRABLE;
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
