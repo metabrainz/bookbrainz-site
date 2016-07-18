@@ -53,7 +53,7 @@ describe('Revisionist achievement', () => {
 
 	it('should give someone with a revision Revisionist I', () => {
 		const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
+			name: testData.editorAttribs.name
 		})
 			.fetch()
 			.then((editor) =>
@@ -78,7 +78,7 @@ describe('Revisionist achievement', () => {
 
 	it('should give someone with 50 revisions Revisionist II', () => {
 		const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
+			name: testData.editorAttribs.name
 		})
 			.fetch()
 			.then((editor) =>
@@ -135,7 +135,7 @@ describe('Revisionist achievement', () => {
 
 	it('should not give someone without a revision Revisionist I', () => {
 		const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
+			name: testData.editorAttribs.name
 		})
 			.fetch()
 			.then((editor) =>
