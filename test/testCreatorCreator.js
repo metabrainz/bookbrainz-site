@@ -23,10 +23,11 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 const utils = require('../node_modules/bookbrainz-data/util.js');
-const Promise = require('bluebird');
 
 const Bookshelf = require('./bookbrainz-data.js').bookshelf;
+const Editor = require('./bookbrainz-data.js').Editor;
 const testData = require('../data/testData.js');
+const Achievement = require('../data/testData.js').Achievement;
 
 function truncate() {
 	return utils.truncateTables(Bookshelf, [
