@@ -29,8 +29,9 @@ module.exports = React.createClass({
 	displayName: 'profileForm',
 	propTypes: {
 		bio: React.PropTypes.string,
+		editor: React.PropTypes.object,
 		id: React.PropTypes.number,
-		title: React.PropTypes.string
+		titles: React.PropTypes.list
 	},
 	getInitialState() {
 		'use strict';
@@ -54,7 +55,6 @@ module.exports = React.createClass({
 		request.post('/editor/edit/handler')
 			.send(data).promise()
 			.then((res) => {
-				const editor = res.body.editor;
 				window.location.href = `/editor/${this.props.editor.id}`;
 			});
 	},
@@ -62,7 +62,14 @@ module.exports = React.createClass({
 		'use strict';
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 		const titles = this.props.titles.map(function(unlock) {
-			return (<option value={unlock.id}>{unlock.title.title}</option>)
+			return (
+				<option
+					key={unlock.id}
+					value={unlock.id}
+				>
+					{unlock.title.title}
+				</option>
+			);
 		});
 
 		return (
@@ -83,9 +90,10 @@ module.exports = React.createClass({
 					<div className="col-md-4 col-md-offset-4">
 						<label>Title</label>
 						<select name="title"
-								className="form-control"
-								ref={(ref) => this.title = ref}
-								value={this.title}>
+							className="form-control"
+							ref={(ref) => this.title = ref}
+							value={this.title}
+						>
 							<option value="none"></option>
 							{titles}
 						</select>

@@ -239,13 +239,13 @@ function processSprinter(editorId) {
 		});
 }
 
-function achievementToUnlockId(achievement) {
+function achievementToUnlockId(achievementUnlock) {
 	const unlockIds = [];
-	Object.keys(achievement).forEach((key) => {
-		if (achievement[key].id) {
-			unlockIds.push("" + achievement[key].id);
+	Object.keys(achievementUnlock).forEach((key) => {
+		if (achievementUnlock[key].id) {
+			unlockIds.push(String(achievementUnlock[key].id));
 		}
-	})
+	});
 	return unlockIds;
 }
 
@@ -274,14 +274,14 @@ achievement.processEdit = (userid) =>
 			);
 			alert = [].concat.apply([], alert);
 			alert = alert.join(',');
-			return ({
+			return {
 				revisionist,
 				creatorCreator,
 				limitedEdition,
 				publisher,
 				sprinter,
 				alert
-			})
+			};
 		}
 	);
 

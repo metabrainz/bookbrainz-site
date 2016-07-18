@@ -3,6 +3,10 @@ const request = require('superagent-bluebird-promise');
 
 module.exports = React.createClass({
 	displayName: 'AchievementForm',
+	propTypes: {
+		achievement: React.PropTypes.object,
+		editor: React.PropTypes.object
+	},
 	handleSubmit(event) {
 		'use strict';
 
@@ -13,7 +17,7 @@ module.exports = React.createClass({
 			rank1: this.rank1,
 			rank2: this.rank2,
 			rank3: this.rank3
-		}
+		};
 
 		request.post('/editor/:id/achievements')
 			.send(data)
@@ -30,12 +34,16 @@ module.exports = React.createClass({
 	},
 	render() {
 		'use strict';
-		const achievements = this.props.achievement.model.map(function(achievement) {
+		const achievements = this.props.achievement.model.map((achievement) => {
+			let achievementHTML;
 			if (achievement.unlocked) {
-				return (
+				achievementHTML = (
 					<div className="row well">
 						<div className="col-md-2">
-							<img height="100px" src={achievement.badgeUrl}></img>
+							<img
+								height="100px"
+								src={achievement.badgeUrl}
+							/>
 						</div>
 						<div className="col-md-8">
 							<div className="h2">
@@ -46,13 +54,18 @@ module.exports = React.createClass({
 					</div>
 				);
 			}
+			return achievementHTML;
 		});
-		const locked = this.props.achievement.model.map(function(achievement) {
+		const locked = this.props.achievement.model.map((achievement) => {
+			let achievementHTML = null;
 			if (!achievement.unlocked) {
-				return (
+				achievementHTML = (
 					<div className="row well">
 						<div className="col-md-2">
-							<img height="100px" src={achievement.badgeUrl}></img>
+							<img
+								height="100px"
+								src={achievement.badgeUrl}
+							/>
 						</div>
 						<div className="col-md-6">
 							<div className="h2">
@@ -63,25 +76,35 @@ module.exports = React.createClass({
 					</div>
 				);
 			}
+			return achievementHTML;
 		});
 
-		const rankName = this.props.achievement.model.map(function(achievement) {
+		const rankName = this.props.achievement.model.map((achievement) => {
+			let optionHTML = null;
 			if (achievement.unlocked) {
-				return (<option value={achievement.id}>{achievement.name}</option>);
+				optionHTML = (<option value={achievement.id}>
+					{achievement.name}
+				</option>);
 			}
+			return optionHTML;
 		});
 
-		const nullOption = (<option value="none"> </option>)
+		const nullOption = (<option value="none"> </option>);
 
 		const rankUpdate = (
-			<form id="rankSelectForm" method="post" className="form-horizontal">
+			<form
+				className="form-horizontal"
+				id="rankSelectForm"
+				method="post"
+			>
 				<div className="form-group">
 					<label>Rank 1</label>
 					<div className="selectContainer">
 						<select
-							name="rank1"
 							className="form-control"
-							value={this.rank1}>
+							name="rank1"
+							value={this.rank1}
+						>
 							{nullOption}
 							{rankName}
 						</select>
@@ -91,7 +114,10 @@ module.exports = React.createClass({
 				<div className="form-group">
 					<label>Rank 2</label>
 					<div className="selectContainer">
-						<select name="rank2" className="form-control">
+						<select
+							className="form-control"
+							name="rank2"
+						>
 							{nullOption}
 							{rankName}
 						</select>
@@ -101,7 +127,10 @@ module.exports = React.createClass({
 				<div className="form-group">
 					<label>Rank 3</label>
 					<div className="selectContainer">
-						<select name="rank3" className="form-control">
+						<select
+							className="form-control"
+							name="rank3"
+						>
 							{nullOption}
 							{rankName}
 						</select>
@@ -109,12 +138,15 @@ module.exports = React.createClass({
 				</div>
 
 				<div className="form-group">
-					<button type="submit" className="btn btn-default">
+					<button
+						className="btn btn-default"
+						type="submit"
+					>
 						update
 					</button>
 				</div>
 			</form>
-		)
+		);
 		return (
 			<div>
 				<div className="h1">Unlocked Achievements</div>

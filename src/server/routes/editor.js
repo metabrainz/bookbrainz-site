@@ -50,10 +50,10 @@ const router = express.Router();
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	const editorPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch()
-		.then((editor) => {
-			return editor.toJSON();
-		})
-	
+		.then((editor) =>
+			editor.toJSON()
+		);
+
 	const titlePromise = new TitleUnlock()
 		.where({'editor_id': parseInt(req.user.id, 10)})
 		.fetchAll({
@@ -61,7 +61,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		})
 		.then((unlock) => {
 			let titleJSON;
-			if (unlock != null) {
+			if (unlock !== null) {
 				titleJSON = unlock.toJSON();
 			}
 			else {
@@ -69,23 +69,23 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			}
 			return titleJSON;
 		});
-	
+
 	Promise.join(editorPromise, titlePromise,
 		(editorJSON, titleJSON) => {
-		const markup =
-			ReactDOMServer.renderToString(ProfileForm({
-				editor: editorJSON,
-				titles: titleJSON
-			}));
+			const markup =
+				ReactDOMServer.renderToString(ProfileForm({
+					editor: editorJSON,
+					titles: titleJSON
+				}));
 
-		res.render('editor/edit', {
-			props: {
-				editor: editorJSON,
-				titles: titleJSON
-			},
-			markup
-		});
-	})
+			res.render('editor/edit', {
+				props: {
+					editor: editorJSON,
+					titles: titleJSON
+				},
+				markup
+			});
+		})
 		.catch(next);
 });
 
@@ -135,22 +135,26 @@ router.get('/:id', (req, res, next) => {
 			return editorJSON;
 		})
 		.then((editorJSON) => {
-			if (editorJSON.titleUnlockId == null) {
-				return Promise.resolve(editorJSON);
+			let editorTitleJSON;
+			if (editorJSON.titleUnlockId === null) {
+				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				return new TitleUnlock({id: editorJSON.titleUnlockId})
+				editorTitleJSON = new TitleUnlock({
+					id: editorJSON.titleUnlockId
+				})
 					.fetch({
 						withRelated: ['title']
 					})
 					.then((unlock) => {
-						if (unlock != null) {
+						if (unlock !== null) {
 							editorJSON.title =
 								unlock.relations.title.attributes;
 						}
 						return editorJSON;
 					});
 			}
+			return editorTitleJSON;
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
@@ -194,26 +198,27 @@ router.get('/:id/revisions', (req, res, next) => {
 		})
 		.then((editor) => {
 			const editorJSON = editor.toJSON();
+			let editorTitleJSON;
 			if (editorJSON.titleUnlockId === null) {
-				return Promise.resolve(editorJSON);
+				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				return new TitleUnlock({editorId: editorJSON.id})
+				editorTitleJSON = new TitleUnlock({editorId: editorJSON.id})
 					.fetch({
 						withRelated: ['title']
 					})
 					.then((unlock) => {
-						if (unlock != null) {
+						if (unlock !== null) {
 							editorJSON.title =
 								unlock.relations.title.attributes;
 						}
-						console.log(editorJSON)
+						console.log(editorJSON);
 						return editorJSON;
 					});
 			}
+			return editorTitleJSON;
 		})
 		.then((editorJSON) => {
-			console.log
 			res.render('editor/revisions', {
 				editor: editorJSON
 			});
@@ -241,22 +246,24 @@ router.get('/:id/achievements', (req, res, next) => {
 			return editorJSON;
 		})
 		.then((editorJSON) => {
-			if (editorJSON.titleUnlockId == null) {
-				return Promise.resolve(editorJSON);
+			let editorTitleJSON;
+			if (editorJSON.titleUnlockId === null) {
+				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				return new TitleUnlock({editorId: userId})
+				editorTitleJSON = new TitleUnlock({editorId: userId})
 					.fetch({
 						withRelated: ['title']
 					})
 					.then((unlock) => {
-						if (unlock != null) {
+						if (unlock !== null) {
 							editorJSON.title =
 								unlock.relations.title.attributes;
 						}
 						return editorJSON;
 					});
 			}
+			return editorTitleJSON;
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
@@ -350,7 +357,7 @@ router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
 	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
 	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
 	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
-	
+
 	const rankPromise = Promise.all(
 		[rankOnePromise,
 		rankTwoPromise,
