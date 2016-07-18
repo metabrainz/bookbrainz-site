@@ -52,7 +52,9 @@ describe('Revisionist achievement', () => {
 	afterEach(truncate);
 
 	it('should give someone with a revision Revisionist I', () => {
-		const achievementPromise = new Editor({name: testData.editorAttribs.name})
+		const achievementPromise = new Editor({
+				name: testData.editorAttribs.name
+		})
 			.fetch()
 			.then((editor) =>
 				editor.set({revisionsApplied: 1})
@@ -75,7 +77,9 @@ describe('Revisionist achievement', () => {
 	});
 
 	it('should give someone with 50 revisions Revisionist II', () => {
-		const achievementPromise = new Editor({name: testData.editorAttribs.name})
+		const achievementPromise = new Editor({
+				name: testData.editorAttribs.name
+		})
 			.fetch()
 			.then((editor) =>
 				editor.set({revisionsApplied: 50})
@@ -99,7 +103,9 @@ describe('Revisionist achievement', () => {
 
 	it('should give someone with 250 revisions Revisionist III and Revisionist',
 		() => {
-			const achievementPromise = new Editor({name: testData.editorAttribs.name})
+			const achievementPromise = new Editor({
+				name: testData.editorAttribs.name
+			})
 				.fetch()
 				.then((editor) =>
 					editor.set({revisionsApplied: 250})
@@ -114,7 +120,8 @@ describe('Revisionist achievement', () => {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Revisionist III.editorId', testData.editorAttribs.id),
+				.property('Revisionist III.editorId',
+					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
 				.property('Revisionist III.achievementId',
 					testData.revisionistIIIAttribs.id),
@@ -127,7 +134,9 @@ describe('Revisionist achievement', () => {
 		});
 
 	it('should not give someone without a revision Revisionist I', () => {
-		const achievementPromise = new Editor({name: testData.editorAttribs.name})
+		const achievementPromise = new Editor({
+				name: testData.editorAttribs.name
+		})
 			.fetch()
 			.then((editor) =>
 				Achievement.processEdit(editor.id)
