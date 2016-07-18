@@ -61,9 +61,9 @@ describe('Sprinter Achievement', () => {
 				Achievement.processEdit(editor.id)
 			)
 			.then((edit) =>
-				edit.sprinter['Sprinter']
+				edit.sprinter.Sprinter
 			);
-		
+
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have
 				.property('editorId', testData.editorAttribs.id),
@@ -82,9 +82,9 @@ describe('Sprinter Achievement', () => {
 				Achievement.processEdit(editor.id)
 			)
 			.then((edit) =>
-				edit.sprinter['Sprinter']
+				edit.sprinter.Sprinter
 			);
-		
+
 		return expect(achievementPromise).to.eventually.equal(false);
 	});
-})
+});
