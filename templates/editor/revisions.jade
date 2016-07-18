@@ -13,7 +13,8 @@ block body
 		.col-md-12
 			ul.nav.nav-tabs
 				li: a(href='../' + editor.id) Profile
-				li.active: a(href='./' + editor.id + '/revisions') Revisions
+				li.active: a(href='/editor/' + editor.id + '/revisions') Revisions
+				li: a(href='/editor/'+editor.id+'/achievements') Achievements
 
 	h2 Revision History
 

@@ -12,9 +12,9 @@ block body
 	.row
 		.col-md-12
 			ul.nav.nav-tabs
-				li: a(href='./'+editor.id) Profile
-				li: a(href='./'+editor.id+'/revisions') Revisions
-				li.active: a(href='./'+editor.id+'/achievements') Achievements
+				li: a(href='/editor/'+editor.id) Profile
+				li: a(href='/editor/'+editor.id+'/revisions') Revisions
+				li.active: a(href='/editor/'+editor.id+'/achievements') Achievements
 	.row
 		.col-md-10-offset-1
 			#achievements-form!= markup
