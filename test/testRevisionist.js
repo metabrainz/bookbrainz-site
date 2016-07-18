@@ -26,10 +26,7 @@ const utils = require('../node_modules/bookbrainz-data/util.js');
 const Promise = require('bluebird');
 
 const Bookshelf = require('./bookbrainz-data.js').bookshelf;
-const AchievementType = require('./bookbrainz-data').AchievementType;
-const TitleType = require('./bookbrainz-data').TitleType;
 const Editor = require('./bookbrainz-data').Editor;
-const EditorType = require('./bookbrainz-data').EditorType;
 const Achievement = require('../src/server/helpers/achievement.js');
 const testData = require('../data/testData.js');
 
