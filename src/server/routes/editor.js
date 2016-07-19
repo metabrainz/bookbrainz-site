@@ -366,15 +366,36 @@ function rankUpdate(editorId, bodyRank, rank) {
 }
 
 router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
+	const userId = parseInt(req.params.id, 10);
+	const editorPromise = new Editor({id: userId})
+		.fetch({
+			require: true,
+			withRelated: ['type', 'gender']
+		})
+		.then((editordata) => {
+			let editorJSON = editordata.toJSON();
+
+			if (!req.user || userId !== req.user.id) {
+				return Promise.reject(new Error('Not authenticated'));
+			}
+			else {
+				return Promise.resolve();
+			}
+		});
+
 	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
 	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
 	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
 
-	const rankPromise = Promise.all(
-		[rankOnePromise,
-		rankTwoPromise,
-		rankThreePromise]
-	);
+
+	const rankPromise =
+		editorPromise.then(() => {
+			Promise.all([
+				rankOnePromise,
+				rankTwoPromise,
+				rankThreePromise
+			]);
+		})
 
 	handler.sendPromiseResult(res, rankPromise);
 });
