@@ -33,6 +33,7 @@
     "lodash.find": "^4.3.0",
     "lodash.isequal": "^4.1.4",
     "lodash.omit": "^4.2.1",
+    "log": "^1.4.0",
     "morgan": "~1.7.0",
     "node-jsx": "^0.13.3",
     "passport": "^0.3.2",
