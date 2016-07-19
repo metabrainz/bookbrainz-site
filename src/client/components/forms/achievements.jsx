@@ -69,62 +69,66 @@ const Achievement = require('./parts/achievement.jsx');
 
 			const nullOption = (<option value="none"> </option>);
 
-			const rankUpdate = (
-				<form
-					className="form-horizontal"
-					id="rankSelectForm"
-					method="post"
-				>
-					<div className="form-group">
-						<label>Rank 1</label>
-						<div className="selectContainer">
-							<select
-								className="form-control"
-								name="rank1"
-								value={this.rank1}
-							>
-								{nullOption}
-								{rankName}
-							</select>
+			let rankUpdate;
+			console.log(this.state.editor.authenticated);
+			if (this.state.editor.authenticated) {
+				rankUpdate = (
+					<form
+						className="form-horizontal"
+						id="rankSelectForm"
+						method="post"
+					>
+						<div className="form-group">
+							<label>Rank 1</label>
+							<div className="selectContainer">
+								<select
+									className="form-control"
+									name="rank1"
+									value={this.rank1}
+								>
+									{nullOption}
+									{rankName}
+								</select>
+							</div>
 						</div>
-					</div>
 
-					<div className="form-group">
-						<label>Rank 2</label>
-						<div className="selectContainer">
-							<select
-								className="form-control"
-								name="rank2"
-							>
-								{nullOption}
-								{rankName}
-							</select>
+						<div className="form-group">
+							<label>Rank 2</label>
+							<div className="selectContainer">
+								<select
+									className="form-control"
+									name="rank2"
+								>
+									{nullOption}
+									{rankName}
+								</select>
+							</div>
 						</div>
-					</div>
 
-					<div className="form-group">
-						<label>Rank 3</label>
-						<div className="selectContainer">
-							<select
-								className="form-control"
-								name="rank3"
-							>
-								{nullOption}
-								{rankName}
-							</select>
+						<div className="form-group">
+							<label>Rank 3</label>
+							<div className="selectContainer">
+								<select
+									className="form-control"
+									name="rank3"
+								>
+									{nullOption}
+									{rankName}
+								</select>
+							</div>
 						</div>
-					</div>
 
-					<div className="form-group">
-						<button
-							className="btn btn-default"
-							type="submit"
-						>
-							update
-						</button>
-					</div>
-				</form>
-			);
+						<div className="form-group">
+							<button
+								className="btn btn-default"
+								type="submit"
+							>
+								update
+							</button>
+						</div>
+					</form>
+				);
+			}
 			return (
 				<div>
 					<div className="h1">Unlocked Achievements</div>
