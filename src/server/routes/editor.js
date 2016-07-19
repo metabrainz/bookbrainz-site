@@ -105,16 +105,26 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			Editor.forge({id: parseInt(req.user.id, 10)})
 				.fetch()
 		)
-		.then((editor) => {
+		.then((editor) =>
 			// Modify the user to match the updates from the form
-			console.log(req.body);
-			return editor.set('bio', req.body.bio)
-				.set('titleUnlockId', req.body.title)
-				.save();
+			editor.set('bio', req.body.bio)
+				.save()
+		)
+		.then((editor) => {
+			let editorTitleUnlock;
+			if (req.body.title === 'none') {
+				editorTitleUnlock = editor.set('titleUnlockId', null)
+					.save();
+			}
+			else {
+				editorTitleUnlock = editor.set('titleUnlockId', req.body.title)
+					.save();
+			}
+			return editorTitleUnlock;
 		})
 		.then((editor) => editor.toJSON());
 
-	handler.sendPromiseResult(res, editPromise);
+	return handler.sendPromiseResult(res, editPromise);
 });
 
 router.get('/:id', (req, res, next) => {
