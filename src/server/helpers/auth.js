@@ -23,6 +23,8 @@ const Promise = require('bluebird');
 
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
+const MusicBrainzOAuth2Strategy =
+	require('passport-musicbrainz-oauth2').Strategy;
 const status = require('http-status');
 
 const Editor = require('bookbrainz-data').Editor;
@@ -32,6 +34,29 @@ const error = require('../helpers/error');
 const NotAuthenticatedError = require('../helpers/error').NotAuthenticatedError;
 
 const auth = {};
+const _ = require('lodash');
+
+const config = require('./config');
+const co = require('co');
+
+const linkMBAccount = co.wrap(function* linkMBAccount(bbUserJSON, mbUserJSON) {
+	const fetchedEditor = yield new Editor({id: bbUserJSON.id})
+		.fetch({require: true});
+
+	return fetchedEditor.save({
+		metabrainzUserId: mbUserJSON.metabrainz_user_id,
+		cachedMetabrainzName: mbUserJSON.sub
+	});
+});
+
+function getAccountByMBUserId(mbUserJSON) {
+	return new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
+		.fetch({require: true});
+}
+
+function updateCachedMBName(bbUserModel, mbUserJSON) {
+	return bbUserModel.save({cachedMetabrainzName: mbUserJSON.sub});
+}
 
 auth.init = (app) => {
 	passport.use(
@@ -55,6 +80,32 @@ auth.init = (app) => {
 				.catch(done);
 		})
 	);
+
+	passport.use(new MusicBrainzOAuth2Strategy(
+		_.assign(
+			{
+				scope: 'profile',
+				passReqToCallback: true
+			}, config.musicbrainz
+		),
+		(req, accessToken, refreshToken, profile, done) => {
+			if (req.user) {
+				// Logged in, associate
+				return linkMBAccount(req.user, profile)
+					.then((linkedUser) => done(null, linkedUser.toJSON()));
+			}
+
+			// Not logged in, authenticate
+			return getAccountByMBUserId(profile)
+				.then((fetchedUser) =>
+					updateCachedMBName(fetchedUser, profile)
+				)
+				.then((fetchedUser) => done(null, fetchedUser.toJSON()))
+				.catch(() => {
+					done(null, false, profile);
+				});
+		}
+	));
 
 	passport.serializeUser((user, done) => {
 		done(null, user);

@@ -26,6 +26,7 @@ const relationshipHelper = require('./routes/relationship/edit');
 function initRootRoutes(app) {
 	app.use('/', require('./routes/index'));
 	app.use('/', require('./routes/login'));
+	app.use('/', require('./routes/auth'));
 	app.use('/search', require('./routes/search'));
 	app.use('/register', require('./routes/register'));
 }

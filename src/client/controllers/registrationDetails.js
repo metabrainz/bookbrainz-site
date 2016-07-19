@@ -19,10 +19,11 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const RegistrationForm = React.createFactory(
-	require('../components/forms/registration.jsx')
+	require('../components/forms/registrationDetails.jsx')
 );
+const props = JSON.parse(document.getElementById('props').innerHTML);
 
 ReactDOM.render(
-	RegistrationForm(),
+	RegistrationForm(props),
 	document.getElementById('registration-form')
 );

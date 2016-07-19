@@ -33,7 +33,7 @@ html
 				//- Collect the nav links, forms, and other content for toggling
 				#bs-example-navbar-collapse-1.collapse.navbar-collapse
 					ul.nav.navbar-nav.navbar-right
-						if user
+						if user && user.id
 							li.dropdown
 								a.dropdown-toggle#dNewEntities(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
 									span.fa.fa-plus
