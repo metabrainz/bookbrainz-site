@@ -54,8 +54,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			editor.toJSON()
 		);
 
-	const titlePromise = new TitleUnlock()
-		.where({'editor_id': parseInt(req.user.id, 10)})
+	const titlePromise = new TitleUnlock({editorId: parseInt(req.user.id, 10)})
 		.fetchAll({
 			withRelated: ['title']
 		})
