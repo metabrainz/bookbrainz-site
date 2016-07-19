@@ -271,8 +271,7 @@ router.get('/:id/achievements', (req, res, next) => {
 		.catch(next);
 
 
-	const achievement = new AchievementUnlock()
-		.where('editor_id', userId)
+	const achievement = new AchievementUnlock({editorId: userId})
 		.fetchAll()
 		.then((unlocks) => {
 			const unlocked = [];
