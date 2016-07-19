@@ -240,6 +240,10 @@ router.get('/:id/achievements', (req, res, next) => {
 
 			if (!req.user || userId !== req.user.id) {
 				editorJSON = _.omit(editorJSON, ['password', 'email']);
+				editorJSON.authenticated = false;
+			}
+			else {
+				editorJSON.authenticated = true;
 			}
 
 			return editorJSON;
