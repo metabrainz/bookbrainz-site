@@ -54,7 +54,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			editor.toJSON()
 		);
 
-	const titlePromise = new TitleUnlock({editorId: parseInt(req.user.id, 10)})
+	const titlePromise = new TitleUnlock()
+		.where('editor_id', parseInt(req.user.id, 10))
 		.fetchAll({
 			withRelated: ['title']
 		})
@@ -274,7 +275,8 @@ router.get('/:id/achievements', (req, res, next) => {
 		.catch(next);
 
 
-	const achievement = new AchievementUnlock({editorId: userId})
+	const achievement = new AchievementUnlock()
+		.where('editor_id', userId)
 		.fetchAll()
 		.then((unlocks) => {
 			const unlocked = [];
