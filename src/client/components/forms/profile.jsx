@@ -89,8 +89,9 @@ module.exports = React.createClass({
 				<div className="form-group">
 					<div className="col-md-4 col-md-offset-4">
 						<label>Title</label>
-						<select name="title"
+						<select
 							className="form-control"
+							name="title"
 							ref={(ref) => this.title = ref}
 							value={this.title}
 						>
