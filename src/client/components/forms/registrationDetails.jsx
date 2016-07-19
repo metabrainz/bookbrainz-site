@@ -51,10 +51,12 @@ module.exports = React.createClass({
 
 		event.preventDefault();
 
+		const gender = this.gender.getValue();
+		const birthday = this.birthday.getValue();
 		const data = {
 			displayName: this.displayName.getValue(),
-			gender: this.gender.getValue(),
-			birthday: this.birthday.getValue()
+			gender: gender ? parseInt(gender, 10) : null,
+			birthday: birthday || null
 		};
 
 		this.setState({
