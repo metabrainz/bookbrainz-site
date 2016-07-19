@@ -1,5 +1,5 @@
 const React = require('react');
-(function() {
+(() => {
 	'use strict';
 	class Achievement extends React.Component {
 		constructor(props) {
