@@ -61,16 +61,16 @@ module.exports = React.createClass({
 	render() {
 		'use strict';
 		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
-		const titles = this.props.titles.map(function(unlock) {
-			return (
+		const titles = this.props.titles.map((unlock) =>
+			(
 				<option
 					key={unlock.id}
 					value={unlock.id}
 				>
 					{unlock.title.title}
 				</option>
-			);
-		});
+			)
+		);
 
 		return (
 			<form
