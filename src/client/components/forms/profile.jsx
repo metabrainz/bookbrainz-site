@@ -95,7 +95,7 @@ module.exports = React.createClass({
 							ref={(ref) => this.title = ref}
 							value={this.title}
 						>
-							<option value="none"></option>
+							<option value="none">none</option>
 							{titles}
 						</select>
 					</div>
