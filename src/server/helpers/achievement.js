@@ -113,6 +113,18 @@ function awardTierTitle(editorId, tier) {
 	return titlePromise;
 }
 
+function handleTierPromises(tier) {
+	const track = {};
+	tier.forEach((awardSet) => {
+		awardSet.forEach((award) => {
+			Object.keys(award).forEach((key) => {
+				track[key] = award[key];
+			});
+		});
+	});
+	return track;
+}
+
 // tiers = [{threshold, name, (titleName)}] (optional)
 function testTiers(signal, editorId, tiers) {
 	const tierPromise = tiers.map((tier) => {
@@ -145,17 +157,9 @@ function testTiers(signal, editorId, tiers) {
 		return tierOut;
 	});
 	return Promise.all(tierPromise)
-		.then((out) => {
-			const track = {};
-			out.forEach((awardSet) => {
-				awardSet.forEach((award) => {
-					Object.keys(award).forEach((key) => {
-						track[key] = award[key];
-					});
-				});
-			});
-			return track;
-		});
+		.then((out) =>
+			handleTierPromises(out)
+		);
 }
 
 function getTypeRevisions(type, editor) {
