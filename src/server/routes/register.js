@@ -42,6 +42,10 @@ const loadGenders = require('../helpers/middleware').loadGenders;
 const router = express.Router();
 const _ = require('lodash');
 
+const config = require('../helpers/config');
+const Log = require('log');
+const log = new Log(config.site.log);
+
 router.get('/', (req, res) => {
 	// Check whether the user is logged in - if so, redirect to profile page
 	if (req.user) {
@@ -111,6 +115,8 @@ router.post('/handler', (req, res) => {
 			return editor.toJSON();
 		})
 		.catch((err) => {
+			log.debug(err);
+
 			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
 				throw new FormSubmissionError(
 					'That username already exists - please try using' +
