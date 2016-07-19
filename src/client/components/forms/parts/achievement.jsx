@@ -2,14 +2,23 @@ const React = require('react');
 
 const Achievement = React.createClass({
 	displayName: 'achievement',
+	propTypes: {
+		achievement: React.PropTypes.shape({
+			badgeUrl: React.PropTypes.string,
+			description: React.PropTypes.string,
+			name: React.PropTypes.string
+		})
+	},
 	getInitialState() {
 		'use strict';
-		
+
 		return {
 			achievement: this.props.achievement
 		};
 	},
 	render() {
+		'use strict';
+
 		return (
 			<div className="row well">
 				<div className="col-md-2">
@@ -25,7 +34,7 @@ const Achievement = React.createClass({
 					<p>{this.props.achievement.description}</p>
 				</div>
 			</div>
-		)
+		);
 	}
 });
 
