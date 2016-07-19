@@ -31,7 +31,7 @@ module.exports = React.createClass({
 		bio: React.PropTypes.string,
 		editor: React.PropTypes.object,
 		id: React.PropTypes.number,
-		titles: React.PropTypes.list
+		titles: React.PropTypes.array
 	},
 	getInitialState() {
 		'use strict';
