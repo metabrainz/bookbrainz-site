@@ -54,7 +54,7 @@ module.exports = React.createClass({
 
 		request.post('/editor/edit/handler')
 			.send(data).promise()
-			.then((res) => {
+			.then(() => {
 				window.location.href = `/editor/${this.props.editor.id}`;
 			});
 	},
