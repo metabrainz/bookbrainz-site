@@ -352,8 +352,6 @@ function rankUpdate(editorId, bodyRank, rank) {
 }
 
 router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
-	console.log(req.body);
-	console.log(req.params.id);
 	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
 	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
 	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
