@@ -28,13 +28,13 @@ const Achievement = require('./parts/achievement.jsx');
 				.then(() => {
 					window.location.href = `/editor/${this.state.editor.id}`;
 				})
-				/*.catch((res) => {
+				.catch((res) => {
 					const error = res.body.error;
 					this.setState({
 						error,
 						waiting: false
 					});
-				})*/;
+				});
 		}
 		render() {
 			const achievements = this.state.achievement.model
