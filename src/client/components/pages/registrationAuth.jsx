@@ -21,6 +21,7 @@ const React = require('react');
 
 const Button = require('react-bootstrap').Button;
 const PageHeader = require('react-bootstrap').PageHeader;
+const Alert = require('react-bootstrap').Alert;
 
 function RegistrationAuth() {
 	'use strict';
@@ -34,6 +35,11 @@ function RegistrationAuth() {
 				to sign in or register with MusicBrainz. You'll then be
 				redirected back to BookBrainz to continue registration!
 			</p>
+			<Alert bsStyle="warning">
+				If you already registered for BookBrainz, please log in to your
+				existing account and click "Link My MusicBrainz Account" instead
+				of registering again!
+			</Alert>
 			<div className="text-center">
 				<Button
 					href="/auth"
