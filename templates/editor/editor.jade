@@ -26,9 +26,11 @@ block body
 							=editor.cachedMetabrainzName
 					else if editor.metabrainzUserId
 						=editor.metabrainzUserId
-					else
+					else if user && editor.id == user.id
 						a(href='/auth')
 							|Link My MusicBrainz Account
+					else
+						|No Linked MusicBrainz Account
 				dt Type
 				dd=editor.type.label
 				dt Reputation
