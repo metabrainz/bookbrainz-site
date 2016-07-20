@@ -39,73 +39,55 @@ function awardAchievement(editorId, achievementName) {
 				achievementId: achievementTier.id
 			};
 			return new AchievementUnlock(achievementAttribs)
-				.fetch()
-				.then((unlock) => {
-					let awardPromise;
-					if (unlock === null) {
-						awardPromise = new AchievementUnlock(achievementAttribs)
-							.save(null, {method: 'insert'});
-					}
-					else {
-						awardPromise = Promise.resolve('already unlocked');
-					}
-					return awardPromise;
-				});
-		});
+				.fetch({require: true})
+				.then(() => {
+					const out = {};
+					out[achievementName] = 'already unlocked';
+					return Promise.resolve(out);
+				})
+				.catch(() =>
+					new AchievementUnlock(achievementAttribs)
+						.save(null, {method: 'insert'})
+						.then((unlock) => {
+							const out = {};
+							out[achievementName] = unlock.toJSON();
+							return out;
+						})
+				);
+		})
+		.catch((error) => Promise.reject(error));
 }
 
-function awardTitle(editorId, titleId) {
-	const titleAttribs = {
-		editorId,
-		titleId
-	};
-	return new TitleUnlock(titleAttribs)
-		.fetch()
-		.then((unlock) => {
-			let awardPromise;
-			if (unlock === null) {
-				awardPromise = new TitleUnlock(titleAttribs)
-					.save(null, {method: 'insert'});
-			}
-			else {
-				awardPromise = Promise.resolve('already unlocked');
-			}
-			return awardPromise;
-		});
-}
-
-function awardTierAchievement(editorId, tier) {
-	return awardAchievement(editorId, tier.name)
-		.then((unlock) => {
-			const out = {};
-			if (unlock.id) {
-				out[tier.name] = unlock.toJSON();
-			}
-			else {
-				out[tier.name] = unlock;
-			}
-			return out;
-		});
-}
-
-function awardTierTitle(editorId, tier) {
+function awardTitle(editorId, tier) {
 	let titlePromise;
 	if (tier.titleName) {
 		titlePromise = new TitleType({title: tier.titleName})
-				.fetch({require: true})
-				.then((title) =>
-					awardTitle(editorId, title.id)
-				)
-				.then((unlock) => {
-					const out = {};
-					if (unlock.id) {
-						out[tier.titleName] = unlock.toJSON();
-					}
-					else {
-						out[tier.titleName] = unlock;
-					}
-					return out;
-				});
+			.fetch({require: true})
+			.then((title) => {
+				const titleAttribs = {
+					editorId,
+					titleId: title.id
+				};
+				return new TitleUnlock(titleAttribs)
+					.fetch({require: true})
+					.then(() =>
+						Promise.resolve('already unlocked')
+					)
+					.catch(() =>
+						new TitleUnlock(titleAttribs)
+							.save(null, {method: 'insert'})
+					);
+			})
+			.then((unlock) => {
+				const out = {};
+				if (unlock.id) {
+					out[tier.titleName] = unlock.toJSON();
+				}
+				else {
+					out[tier.titleName] = unlock;
+				}
+				return out;
+			});
 	}
 	else {
 		titlePromise = Promise.resolve(false);
@@ -113,7 +95,7 @@ function awardTierTitle(editorId, tier) {
 	return titlePromise;
 }
 
-function handleTierPromises(tier) {
+function awardListToAwardObject(tier) {
 	const track = {};
 	tier.forEach((awardSet) => {
 		awardSet.forEach((award) => {
@@ -131,17 +113,14 @@ function testTiers(signal, editorId, tiers) {
 		let tierOut;
 		if (signal >= tier.threshold) {
 			tierOut = Promise.join(
-				awardTierAchievement(editorId, tier),
-				awardTierTitle(editorId, tier),
+				awardAchievement(editorId, tier.name),
+				awardTitle(editorId, tier),
 				(achievementUnlock, title) => {
 					const out = [];
-					if (tier.titleName) {
+					if (title) {
 						out.push(title);
-						out.push(achievementUnlock);
 					}
-					else {
-						out.push(achievementUnlock);
-					}
+					out.push(achievementUnlock);
 					return out;
 				}
 			);
@@ -157,8 +136,8 @@ function testTiers(signal, editorId, tiers) {
 		return tierOut;
 	});
 	return Promise.all(tierPromise)
-		.then((out) =>
-			handleTierPromises(out)
+		.then((awardList) =>
+			awardListToAwardObject(awardList)
 		);
 }
 
