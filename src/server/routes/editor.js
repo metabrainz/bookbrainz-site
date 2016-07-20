@@ -178,7 +178,7 @@ router.get('/:id', (req, res, next) => {
 		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
-		.orderBy('profile_rank', 'DESC')
+		.orderBy('profile_rank', 'ASC')
 		.fetchAll({
 			withRelated: ['achievement']
 		})
