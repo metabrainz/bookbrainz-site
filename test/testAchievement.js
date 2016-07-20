@@ -42,59 +42,55 @@ function truncate() {
 		'musicbrainz.gender'
 	]);
 }
-describe('Achievement module', () => {
-	describe('awardAchievement', () => {
-		afterEach(truncate);
 
-		it('should award achievements', () => {
-			const unlockPromise = testData.createEditor()
-				.then(() =>
-					testData.createRevisionist()
+describe('awardAchievement', () => {
+	afterEach(truncate);
+
+	it('should award achievements', () => {
+		const unlockPromise = testData.createEditor()
+			.then(() =>
+				testData.createRevisionist()
+			)
+			.then(() =>
+				awardAchievement(
+					testData.editorAttribs.id,
+					testData.revisionistIAttribs.name
 				)
-				.then(() =>
-					awardAchievement(
-						testData.editorAttribs.id,
-						testData.revisionistIAttribs.name
-					)
+			);
+
+		return Promise.all([
+			expect(unlockPromise).to.eventually.have.deep.property(
+				'Revisionist I.editorId',
+				testData.editorAttribs.id
+			),
+			expect(unlockPromise).to.eventually.have.deep.property(
+				'Revisionist I.achievementId',
+				testData.revisionistIAttribs.id
+			)
+		]);
+	});
+
+	it('should reject invalid editors', () => {
+		const unlockPromise = testData.createRevisionist()
+			.then(() =>
+				awardAchievement(
+					testData.editorAttribs.id,
+					testData.revisionistIAttribs.name
 				)
-				.then((unlock) => {
-					return unlock;
-				});
+			);
 
-			return Promise.all([
-				expect(unlockPromise).to.eventually.have.deep.property(
-					'Revisionist I.editorId',
-					testData.editorAttribs.id
-				),
-				expect(unlockPromise).to.eventually.have.deep.property(
-					'Revisionist I.achievementId',
-					testData.revisionistIAttribs.id
+		return expect(unlockPromise).to.eventually.be.rejected;
+	});
+
+	it('should reject invalid achievements', () => {
+		const unlockPromise = testData.createEditor()
+			.then(() =>
+				awardAchievement(
+					testData.editorAttribs.id,
+					testData.revisionistIAttribs.name
 				)
-			]);
-		});
+			);
 
-		it('should reject invalid editors', () => {
-			const unlockPromise = testData.createRevisionist()
-				.then(() =>
-					awardAchievement(
-						testData.editorAttribs.id,
-						testData.revisionistIAttribs.name
-					)
-				);
-
-			return expect(unlockPromise).to.eventually.be.rejected;
-		});
-
-		it('should reject invalid achievements', () => {
-			const unlockPromise = testData.createEditor()
-				.then(() =>
-					awardAchievement(
-						testData.editorAttribs.id,
-						testData.revisionistIAttribs.name
-					)
-				);
-
-			return expect(unlockPromise).to.eventually.be.rejected;
-		});
+		return expect(unlockPromise).to.eventually.be.rejected;
 	});
 });
