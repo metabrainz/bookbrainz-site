@@ -361,8 +361,9 @@ function rankUpdate(editorId, bodyRank, rank) {
 					);
 			}
 			else {
-				return Promise.resolve(false);
+				updatePromise = Promise.resolve(false);
 			}
+			return updatePromise;
 		});
 }
 
