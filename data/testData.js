@@ -132,7 +132,7 @@ testData.createCreatorCreator = function() {
 
 testData.creatorCreatorHelper = function(creatorNumber) {
 	const promiseList = [];
-	for (i = 0; i < creatorNumber; i++) {
+	for (let i = 0; i < creatorNumber; i++) {
 		promiseList.push(
 			new Revision({
 				authorId: this.editorAttribs.id

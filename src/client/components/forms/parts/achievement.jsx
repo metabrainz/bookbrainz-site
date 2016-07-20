@@ -11,13 +11,13 @@ const React = require('react');
 		render() {
 			return (
 				<div className="row well">
-					<div className="col-md-2">
+					<div className="col-sm-2">
 						<img
 							height="100px"
 							src={this.state.achievement.badgeUrl}
 						/>
 					</div>
-					<div className="col-md-8">
+					<div className="col-sm-8">
 						<div className="h2">
 							{this.state.achievement.name}
 						</div>

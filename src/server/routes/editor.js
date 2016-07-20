@@ -122,7 +122,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			}
 			return editorTitleUnlock;
 		})
-		.then((editor) => editor.toJSON());
+		.then((editor) => {
+			console.log(editor.toJSON());
+			return editor.toJSON()
+		});
 
 	return handler.sendPromiseResult(res, editPromise);
 });
@@ -373,13 +376,13 @@ router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
 			withRelated: ['type', 'gender']
 		})
 		.then((editordata) => {
-			let editorJSON = editordata.toJSON();
+			let editorJSON;
 
 			if (!req.user || userId !== req.user.id) {
-				return Promise.reject(new Error('Not authenticated'));
+				editorJSON = Promise.reject(new Error('Not authenticated'));
 			}
 			else {
-				return Promise.resolve();
+				editorJSON = Promise.resolve(editordata.toJSON());
 			}
 		});
 
@@ -389,13 +392,13 @@ router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
 
 
 	const rankPromise =
-		editorPromise.then(() => {
+		editorPromise.then(() =>
 			Promise.all([
 				rankOnePromise,
 				rankTwoPromise,
 				rankThreePromise
-			]);
-		})
+			])
+		);
 
 	handler.sendPromiseResult(res, rankPromise);
 });
