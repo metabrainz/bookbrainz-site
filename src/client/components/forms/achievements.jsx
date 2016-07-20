@@ -26,15 +26,15 @@ const Achievement = require('./parts/achievement.jsx');
 			request.post('/editor/:id/achievements')
 				.send(data)
 				.then(() => {
-					window.location.href = '/editor/:id';
+					window.location.href = `/editor/${this.state.editor.id}`;
 				})
-				.catch((res) => {
+				/*.catch((res) => {
 					const error = res.body.error;
 					this.setState({
 						error,
 						waiting: false
 					});
-				});
+				})*/;
 		}
 		render() {
 			const achievements = this.state.achievement.model
