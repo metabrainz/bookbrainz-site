@@ -122,10 +122,9 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			}
 			return editorTitleUnlock;
 		})
-		.then((editor) => {
-			console.log(editor.toJSON());
-			return editor.toJSON()
-		});
+		.then((editor) =>
+			editor.toJSON()
+		);
 
 	return handler.sendPromiseResult(res, editPromise);
 });
