@@ -337,20 +337,19 @@ router.get('/:id/achievements', (req, res, next) => {
 });
 
 function rankUpdate(editorId, bodyRank, rank) {
-	let promise;
-	if (bodyRank !== 'none') {
-		promise = new AchievementUnlock({
-			profileRank: rank
+	return new AchievementUnlock({
+		profileRank: rank
+	})
+		.fetch()
+		.then((unlock) => {
+			if (unlock !== null) {
+				unlock.set('profileRank', null)
+					.save();
+			}
 		})
-			.fetch()
-			.then((unlock) => {
-				if (unlock !== null) {
-					unlock.set('profileRank', null)
-						.save();
-				}
-			})
-			.then(() =>
-				new AchievementUnlock({
+		.then(() => {
+			if (bodyRank != 'none') {
+				return new AchievementUnlock({
 					achievement_id: parseInt(bodyRank, 10),
 					editor_id: parseInt(editorId, 10)
 				})
@@ -358,13 +357,12 @@ function rankUpdate(editorId, bodyRank, rank) {
 					.then((unlock) =>
 						unlock.set('profileRank', rank)
 							.save()
-					)
-			);
-	}
-	else {
-		promise = Promise.resolve(false);
-	}
-	return promise;
+					);
+			}
+			else {
+				return Promise.resolve(false);
+			}
+		});
 }
 
 router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
@@ -383,6 +381,7 @@ router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
 			else {
 				editorJSON = Promise.resolve(editordata.toJSON());
 			}
+			return editorJSON;
 		});
 
 	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
@@ -401,4 +400,5 @@ router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
 
 	handler.sendPromiseResult(res, rankPromise);
 });
+
 module.exports = router;
