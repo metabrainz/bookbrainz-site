@@ -24,12 +24,16 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 const rewire = require('rewire');
 const utils = require('../node_modules/bookbrainz-data/util.js');
-
+const Promise = require('bluebird');
 const Bookshelf = require('./bookbrainz-data.js').bookshelf;
 const Editor = require('./bookbrainz-data.js').Editor;
 const testData = require('../data/testData.js');
-//const Achievement = require('../data/testData.js').Achievement;
-const Achievement = require('../src/server/helpers/achievement.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
+
+Achievement.__set__({
+	getTypeRevisions: (type, editor) =>
+		Promise.resolve(1)
+});
 
 function truncate() {
 	return utils.truncateTables(Bookshelf, [
@@ -53,18 +57,16 @@ describe('Creator Creator achievement', () => {
 	afterEach(truncate);
 
 	it('should give someone with a creator revision Creator Creator I', () => {
-		const achievementPromise = testData.creatorCreatorHelper(1)
-			.then(() =>
-				new Editor({name: testData.editorAttribs.name})
-				.fetch()
-			)
+		const achievementPromise = new Editor({
+			name: testData.editorAttribs.name
+		})
+			.fetch()
 			.then((editor) =>
 				Achievement.processEdit(editor.id)
 			)
-			.then((edit) => {
-				console.log(edit);
-				return edit.revisionist['Creator Creator'];
-			});
+			.then((edit) =>
+				edit.revisionist['Creator Creator']
+			);
 
 		return expect(achievementPromise).to.eventually.have
 			.property('editorId', testData.editorAttribs.id);
