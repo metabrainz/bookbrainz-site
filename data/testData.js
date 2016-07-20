@@ -57,16 +57,16 @@ testData.creatorCreatorIAttribs = {
 	badgeUrl: 'http://test.com'
 };
 
-testData.creatorCreatorIAttribs = {
+testData.creatorCreatorIIAttribs = {
 	id: 2,
-	name: 'Creator Creator I',
+	name: 'Creator Creator II',
 	description: 'create 10 creators',
 	badgeUrl: 'http://test.com'
 };
 
-testData.creatorCreatorIAttribs = {
+testData.creatorCreatorIIIAttribs = {
 	id: 3,
-	name: 'Creator Creator II',
+	name: 'Creator Creator III',
 	description: 'create 100 creators',
 	badgeUrl: 'http://test.com'
 };
@@ -121,12 +121,15 @@ testData.createCreatorCreator = function() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new AchievementType(this.creatorCreatorIIAttribs)
+				.save(null, {method: 'insert'})
 		)
 		.then(() =>
 			new AchievementType(this.creatorCreatorIIIAttribs)
+				.save(null, {method: 'insert'})
 		)
 		.then(() =>
 			new TitleType(this.creatorCreatorAttribs)
+				.save(null, {method: 'insert'})
 		);
 }
 
