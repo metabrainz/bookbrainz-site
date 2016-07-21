@@ -8,6 +8,8 @@ const AchievementType = require('../test/bookbrainz-data').AchievementType;
 const TitleType = require('../test/bookbrainz-data').TitleType;
 const Revision = require('../test/bookbrainz-data').Revision;
 const CreatorRevision = require('../test/bookbrainz-data').CreatorRevision;
+const Bookshelf = require('../test/bookbrainz-data.js').bookshelf;
+const utils = require('../node_modules/bookbrainz-data/util.js');
 
 testData.editorTypeAttribs = {
 	id: 1,
@@ -208,6 +210,19 @@ testData.typeRevisionHelper = function(revisionType, rowcount) {
 		}
 		return rowCountPromise;
 	};
+}
+
+testData.truncate = function truncate() {
+	return utils.truncateTables(Bookshelf, [
+		'bookbrainz.editor',
+		'bookbrainz.editor_type',
+		'bookbrainz.achievement_type',
+		'bookbrainz.achievement_unlock',
+		'bookbrainz.title_type',
+		'bookbrainz.title_unlock',
+		'bookbrainz.revision',
+		'musicbrainz.gender'
+	]);
 }
 
 module.exports = testData;
