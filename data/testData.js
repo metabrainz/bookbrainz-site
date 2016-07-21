@@ -106,6 +106,34 @@ testData.limitedEditionAttribs = {
 	description: 'Complete limited edition track'
 };
 
+
+testData.publisherIAttribs = {
+	id: 1,
+	name: 'Publisher I',
+	description: 'create one publisher',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherIIAttribs = {
+	id: 2,
+	name: 'Publisher II',
+	description: 'create 10 publishers',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherIIIAttribs = {
+	id: 3,
+	name: 'Publisher III',
+	description: 'create 100 publishers',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherAttribs = {
+	id: 1,
+	title: 'Publisher',
+	description: 'Complete publisher track'
+};
+
 testData.sprinterAttribs = {
 	id: 1,
 	name: 'Sprinter',
@@ -175,6 +203,23 @@ testData.createLimitedEdition = function() {
 		)
 		.then(() =>
 			new TitleType(this.limitedEditionAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
+testData.createPublisher = function() {
+	return new AchievementType(this.publisherIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.publisherIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new AchievementType(this.publisherIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new TitleType(this.publisherAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
