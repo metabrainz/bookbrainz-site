@@ -26,14 +26,9 @@ const rewire = require('rewire');
 const utils = require('../node_modules/bookbrainz-data/util.js');
 const Promise = require('bluebird');
 const Bookshelf = require('./bookbrainz-data.js').bookshelf;
-const Editor = require('./bookbrainz-data.js').Editor;
 const testData = require('../data/testData.js');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
-Achievement.__set__({
-	getTypeRevisions: (type, editor) =>
-		Promise.resolve(1)
-});
 
 function truncate() {
 	return utils.truncateTables(Bookshelf, [
@@ -47,28 +42,133 @@ function truncate() {
 	]);
 }
 
-describe('Creator Creator achievement', () => {
-	beforeEach(() => testData.createEditor()
-		.then(() =>
-			testData.createCreatorCreator()
-		)
-	);
+function tests() {
+	describe('Creator Creator achievement', () => {
+		beforeEach(() => testData.createCreatorCreator());
 
-	afterEach(truncate);
+		afterEach(truncate);
 
-	it('should give someone with a creator revision Creator Creator I', () => {
-		const achievementPromise = new Editor({
-			name: testData.editorAttribs.name
-		})
-			.fetch()
-			.then((editor) =>
-				Achievement.processEdit(editor.id)
-			)
-			.then((edit) =>
-				edit.revisionist['Creator Creator']
-			);
+		it('should give someone with a creator revision Creator Creator I',
+			() => {
+				Achievement.__set__({
+					getTypeRevisions: (type, editor) => {
+						let rowCountPromise;
+						if (type === 'creatorRevision') {
+							rowCountPromise = Promise.resolve(1);
+						}
+						else {
+							rowCountPromise = Promise.resolve(0);
+						}
+						return rowCountPromise;
+					}
+				});
 
-		return expect(achievementPromise).to.eventually.have
-			.property('editorId', testData.editorAttribs.id);
+				const achievementPromise = testData.createEditor()
+					.then((editor) =>
+						Achievement.processEdit(editor.id)
+					)
+					.then((edit) =>
+						edit.creatorCreator['Creator Creator I']
+					);
+
+				return Promise.all([
+					expect(achievementPromise).to.eventually.have
+					.property('editorId',
+						testData.editorAttribs.id),
+					expect(achievementPromise).to.eventually.have
+					.property('achievementId',
+						testData.creatorCreatorIAttribs.id)
+				]);
+			}
+		);
+
+		it('should give someone with 10 creator revisions Creator Creator II',
+			() => {
+				Achievement.__set__({
+					getTypeRevisions: (type, editor) => {
+						let rowCountPromise;
+						if (type === 'creatorRevision') {
+							rowCountPromise = Promise.resolve(10);
+						}
+						else {
+							rowCountPromise = Promise.resolve(0);
+						}
+						return rowCountPromise;
+					}
+				});
+				const achievementPromise = testData.createEditor()
+					.then((editor) =>
+						Achievement.processEdit(editor.id)
+					)
+					.then((edit) =>
+						edit.creatorCreator['Creator Creator II']
+					);
+
+				return Promise.all([
+					expect(achievementPromise).to.eventually.have
+					.property('editorId',
+						testData.editorAttribs.id),
+					expect(achievementPromise).to.eventually.have
+					.property('achievementId',
+						testData.creatorCreatorIIAttribs.id)
+				]);
+			});
+
+		it('should give someone with 100 creator revisions Creator Creator III',
+			() => {
+				Achievement.__set__({
+					getTypeRevisions: (type, editor) => {
+						let rowCountPromise;
+						if (type === 'creatorRevision') {
+							rowCountPromise = Promise.resolve(100);
+						}
+						else {
+							rowCountPromise = Promise.resolve(0);
+						}
+						return rowCountPromise;
+					}
+				});
+				const achievementPromise = testData.createEditor()
+					.then((editor) =>
+						Achievement.processEdit(editor.id)
+					)
+					.then((edit) =>
+						edit.creatorCreator
+					);
+
+				return Promise.all([
+					expect(achievementPromise).to.eventually.have.deep
+					.property('Creator Creator III.editorId',
+						testData.editorAttribs.id),
+					expect(achievementPromise).to.eventually.have.deep
+					.property('Creator Creator III.achievementId',
+						testData.creatorCreatorIIIAttribs.id),
+					expect(achievementPromise).to.eventually.have.deep
+					.property('Creator Creator.editorId',
+						testData.editorAttribs.id),
+					expect(achievementPromise).to.eventually.have.deep
+					.property('Creator Creator.titleId',
+						testData.creatorCreatorAttribs.id)
+				]);
+			});
+
+		it('should not give someone with 0 creator revisions Creator Creator I',
+			() => {
+				Achievement.__set__({
+					getTypeRevisions: (type, editor) =>
+						Promise.resolve(0)
+				});
+				const achievementPromise = testData.createEditor()
+					.then((editor) =>
+						Achievement.processEdit(editor.id)
+					)
+					.then((edit) =>
+						edit.creatorCreator['Creator Creator I']
+					);
+
+				return expect(achievementPromise).to.eventually.equal(false);
+			});
 	});
-});
+}
+
+describe('Creator Creator Achievements', tests);
