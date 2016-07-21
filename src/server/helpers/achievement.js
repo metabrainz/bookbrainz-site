@@ -87,6 +87,9 @@ function awardTitle(editorId, tier) {
 							})
 					);
 			})
+			.catch((error) =>
+				Promise.reject(error)
+			);
 	}
 	else {
 		titlePromise = Promise.resolve(false);
