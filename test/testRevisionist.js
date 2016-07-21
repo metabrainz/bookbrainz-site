@@ -30,18 +30,6 @@ const Editor = require('./bookbrainz-data').Editor;
 const Achievement = require('../src/server/helpers/achievement.js');
 const testData = require('../data/testData.js');
 
-function truncate() {
-	return utils.truncateTables(Bookshelf, [
-		'bookbrainz.editor',
-		'bookbrainz.editor_type',
-		'bookbrainz.achievement_type',
-		'bookbrainz.achievement_unlock',
-		'bookbrainz.title_type',
-		'bookbrainz.title_unlock',
-		'musicbrainz.gender'
-	]);
-}
-
 describe('Revisionist achievement', () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
@@ -49,7 +37,7 @@ describe('Revisionist achievement', () => {
 		)
 	);
 
-	afterEach(truncate);
+	afterEach(testData.truncate);
 
 	it('should give someone with a revision Revisionist I', () => {
 		const achievementPromise = new Editor({
