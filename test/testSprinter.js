@@ -22,10 +22,8 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
-const utils = require('../node_modules/bookbrainz-data/util.js');
 const Promise = require('bluebird');
 
-const Bookshelf = require('./bookbrainz-data.js').bookshelf;
 const Editor = require('./bookbrainz-data').Editor;
 const Achievement = require('../src/server/helpers/achievement.js');
 const testData = require('../data/testData.js');
