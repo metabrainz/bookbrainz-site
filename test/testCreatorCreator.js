@@ -29,24 +29,11 @@ const Bookshelf = require('./bookbrainz-data.js').bookshelf;
 const testData = require('../data/testData.js');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
-
-function truncate() {
-	return utils.truncateTables(Bookshelf, [
-		'bookbrainz.editor',
-		'bookbrainz.editor_type',
-		'bookbrainz.achievement_type',
-		'bookbrainz.achievement_unlock',
-		'bookbrainz.title_type',
-		'bookbrainz.title_unlock',
-		'musicbrainz.gender'
-	]);
-}
-
 function tests() {
 	describe('Creator Creator achievement', () => {
 		beforeEach(() => testData.createCreatorCreator());
 
-		afterEach(truncate);
+		afterEach(testData.truncate);
 
 		it('should give someone with a creator revision Creator Creator I',
 			() => {
