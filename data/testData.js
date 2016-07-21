@@ -77,6 +77,33 @@ testData.creatorCreatorAttribs = {
 	description: 'Complete Creator Creator track'
 };
 
+testData.limitedEditionIAttribs = {
+	id: 1,
+	name: 'Limited Edition I',
+	description: 'create one edition',
+	badgeUrl: 'http://test.com'
+};
+
+testData.limitedEditionIIAttribs = {
+	id: 2,
+	name: 'Limited Edition II',
+	description: 'create 10 editions',
+	badgeUrl: 'http://test.com'
+};
+
+testData.limitedEditionIIIAttribs = {
+	id: 3,
+	name: 'Limited Edition III',
+	description: 'create 100 edtions',
+	badgeUrl: 'http://test.com'
+};
+
+testData.limitedEditionAttribs = {
+	id: 1,
+	title: 'Limited Edition',
+	description: 'Complete limited edition track'
+};
+
 testData.sprinterAttribs = {
 	id: 1,
 	name: 'Sprinter',
@@ -129,6 +156,23 @@ testData.createCreatorCreator = function() {
 		)
 		.then(() =>
 			new TitleType(this.creatorCreatorAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
+testData.createLimitedEdition = function() {
+	return new AchievementType(this.limitedEditionIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.limitedEditionIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new AchievementType(this.limitedEditionIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new TitleType(this.limitedEditionAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
