@@ -70,24 +70,23 @@ function awardTitle(editorId, tier) {
 				};
 				return new TitleUnlock(titleAttribs)
 					.fetch({require: true})
-					.then(() =>
-						Promise.resolve('already unlocked')
-					)
+					.then(() => {
+						const out = {};
+						out[tier.titleName] =
+							'already unlocked';
+						return out;
+					})
 					.catch(() =>
 						new TitleUnlock(titleAttribs)
 							.save(null, {method: 'insert'})
+							.then((unlock) => {
+								const out = {};
+								out[tier.titleName] =
+									unlock.toJSON();
+								return out;
+							})
 					);
 			})
-			.then((unlock) => {
-				const out = {};
-				if (unlock.id) {
-					out[tier.titleName] = unlock.toJSON();
-				}
-				else {
-					out[tier.titleName] = unlock;
-				}
-				return out;
-			});
 	}
 	else {
 		titlePromise = Promise.resolve(false);
