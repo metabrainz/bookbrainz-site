@@ -51,16 +51,8 @@ function tests() {
 		it('should give someone with a creator revision Creator Creator I',
 			() => {
 				Achievement.__set__({
-					getTypeRevisions: (type, editor) => {
-						let rowCountPromise;
-						if (type === 'creatorRevision') {
-							rowCountPromise = Promise.resolve(1);
-						}
-						else {
-							rowCountPromise = Promise.resolve(0);
-						}
-						return rowCountPromise;
-					}
+					getTypeRevisions:
+						testData.typeRevisionHelper('creatorRevision', 1)
 				});
 
 				const achievementPromise = testData.createEditor()
@@ -85,16 +77,8 @@ function tests() {
 		it('should give someone with 10 creator revisions Creator Creator II',
 			() => {
 				Achievement.__set__({
-					getTypeRevisions: (type, editor) => {
-						let rowCountPromise;
-						if (type === 'creatorRevision') {
-							rowCountPromise = Promise.resolve(10);
-						}
-						else {
-							rowCountPromise = Promise.resolve(0);
-						}
-						return rowCountPromise;
-					}
+					getTypeRevisions:
+						testData.typeRevisionHelper('creatorRevision', 10)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>
@@ -117,16 +101,8 @@ function tests() {
 		it('should give someone with 100 creator revisions Creator Creator III',
 			() => {
 				Achievement.__set__({
-					getTypeRevisions: (type, editor) => {
-						let rowCountPromise;
-						if (type === 'creatorRevision') {
-							rowCountPromise = Promise.resolve(100);
-						}
-						else {
-							rowCountPromise = Promise.resolve(0);
-						}
-						return rowCountPromise;
-					}
+					getTypeRevisions:
+						testData.typeRevisionHelper('creatorRevision', 100)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>
