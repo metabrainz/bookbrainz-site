@@ -224,7 +224,6 @@ router.get('/:id/revisions', (req, res, next) => {
 							editorJSON.title =
 								unlock.relations.title.attributes;
 						}
-						console.log(editorJSON);
 						return editorJSON;
 					});
 			}
