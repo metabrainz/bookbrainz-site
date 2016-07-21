@@ -367,7 +367,7 @@ function rankUpdate(editorId, bodyRank, rank) {
 		});
 }
 
-router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
+router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 	const userId = parseInt(req.params.id, 10);
 	const editorPromise = new Editor({id: userId})
 		.fetch({
@@ -397,9 +397,11 @@ router.post('/:id/achievements', auth.isAuthenticated, (req, res) => {
 				rankOnePromise,
 				rankTwoPromise,
 				rankThreePromise
-			])
-		);
-
+			]))
+				.then((rankJSON) => {
+					res.redirect(`/editor/${req.params.id}`);
+					return rankJSON;
+				});
 	handler.sendPromiseResult(res, rankPromise);
 });
 
