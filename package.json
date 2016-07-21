@@ -6,7 +6,8 @@
     "start": "node ./scripts/www",
     "debug": "cross-env DEBUG=bbsite nodemon ./scripts/www",
     "lint": "eslint --ext .js --ext .jsx src test templates scripts app.js gulpfile.js",
-    "test": "npm run lint && gulp"
+    "test": "npm run lint && gulp",
+    "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator"
   },
   "dependencies": {
     "bluebird": "^3.3.4",
@@ -70,7 +71,9 @@
     "gulp-uglify": "^1.1.0",
     "mkdirp": "^0.5.0",
     "mocha": "^2.0.0",
+    "nightwatch": "^0.9.5",
     "nodemon": "^1.9.2",
+    "saucelabs": "^1.2.0",
     "supertest": "^1.1.0",
     "vinyl-source-stream": "^1.0.0"
   }
