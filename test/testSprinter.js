@@ -28,6 +28,8 @@ const Editor = require('./bookbrainz-data').Editor;
 const Achievement = require('../src/server/helpers/achievement.js');
 const testData = require('../data/testData.js');
 
+const sprinterThreshold = 10;
+
 describe('Sprinter Achievement', () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
@@ -38,7 +40,7 @@ describe('Sprinter Achievement', () => {
 	afterEach(testData.truncate);
 
 	it('should give someone with 10 revisions in an hour Sprinter', () => {
-		const achievementPromise = testData.sprinterHelper(10)
+		const achievementPromise = testData.sprinterHelper(sprinterThreshold)
 			.then(() => new Editor({name: testData.editorAttribs.name})
 				.fetch()
 			)
@@ -59,7 +61,8 @@ describe('Sprinter Achievement', () => {
 
 
 	it('should not give someone with 9 revisions in an hour Sprinter', () => {
-		const achievementPromise = testData.sprinterHelper(9)
+		const achievementPromise =
+			testData.sprinterHelper(sprinterThreshold - 1)
 			.then(() => new Editor({name: testData.editorAttribs.name})
 				.fetch()
 			)

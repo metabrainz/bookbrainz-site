@@ -27,6 +27,10 @@ const Promise = require('bluebird');
 const testData = require('../data/testData.js');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
+const publisherIThreshold = 1;
+const publisherIIThreshold = 10;
+const publisherIIIThreshold = 100;
+
 function tests() {
 	describe('Publisher achievement', () => {
 		beforeEach(() => testData.createPublisher());
@@ -37,7 +41,9 @@ function tests() {
 			() => {
 				Achievement.__set__({
 					getTypeRevisions:
-						testData.typeRevisionHelper('publisherRevision', 1)
+						testData.typeRevisionHelper(
+							'publisherRevision', publisherIThreshold
+						)
 				});
 
 				const achievementPromise = testData.createEditor()
@@ -63,7 +69,9 @@ function tests() {
 			() => {
 				Achievement.__set__({
 					getTypeRevisions:
-						testData.typeRevisionHelper('publisherRevision', 10)
+						testData.typeRevisionHelper(
+							'publisherRevision', publisherIIThreshold
+						)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>
@@ -87,7 +95,9 @@ function tests() {
 			() => {
 				Achievement.__set__({
 					getTypeRevisions:
-						testData.typeRevisionHelper('publisherRevision', 100)
+						testData.typeRevisionHelper(
+							'publisherRevision', publisherIIIThreshold
+						)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>
@@ -116,8 +126,10 @@ function tests() {
 		it('should not give someone with 0 creator revisions Publisher I',
 			() => {
 				Achievement.__set__({
-					getTypeRevisions: (type, editor) =>
-						Promise.resolve(0)
+					getTypeRevisions:
+						testData.typeRevisionHelper(
+							'publisherRevision', 0
+						)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>

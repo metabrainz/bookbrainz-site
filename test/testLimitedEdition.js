@@ -27,6 +27,10 @@ const Promise = require('bluebird');
 const testData = require('../data/testData.js');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
+const limitedEditionIThreshold = 1;
+const limitedEditionIIThreshold = 10;
+const limitedEditionIIIThreshold = 100;
+
 function tests() {
 	describe('Limited Edition achievement', () => {
 		beforeEach(() => testData.createLimitedEdition());
@@ -37,7 +41,9 @@ function tests() {
 			() => {
 				Achievement.__set__({
 					getTypeRevisions:
-						testData.typeRevisionHelper('editionRevision', 1)
+						testData.typeRevisionHelper(
+							'editionRevision', limitedEditionIThreshold
+						)
 				});
 
 				const achievementPromise = testData.createEditor()
@@ -63,7 +69,9 @@ function tests() {
 			() => {
 				Achievement.__set__({
 					getTypeRevisions:
-						testData.typeRevisionHelper('editionRevision', 10)
+						testData.typeRevisionHelper(
+							'editionRevision', limitedEditionIIThreshold
+						)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>
@@ -87,7 +95,9 @@ function tests() {
 			() => {
 				Achievement.__set__({
 					getTypeRevisions:
-						testData.typeRevisionHelper('editionRevision', 100)
+						testData.typeRevisionHelper(
+							'editionRevision', limitedEditionIIIThreshold
+						)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>
@@ -116,8 +126,10 @@ function tests() {
 		it('should not give someone with 0 creator revisions Limited Edition I',
 			() => {
 				Achievement.__set__({
-					getTypeRevisions: (type, editor) =>
-						Promise.resolve(0)
+					getTypeRevisions:
+						testData.typeRevisionHelper(
+							'editionRevision', 0
+						)
 				});
 				const achievementPromise = testData.createEditor()
 					.then((editor) =>
