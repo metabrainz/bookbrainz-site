@@ -23,7 +23,7 @@ const Achievement = require('./parts/achievement.jsx');
 				rank3: this.rank3
 			};
 
-			request.post('/editor/:id/achievements')
+			request.post('/editor/:id/achievements/')
 				.send(data)
 				.then(() => {
 					window.location.href = `/editor/${this.state.editor.id}`;
