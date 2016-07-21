@@ -133,25 +133,6 @@ testData.createCreatorCreator = function() {
 		);
 }
 
-testData.creatorCreatorHelper = function(creatorNumber) {
-	const promiseList = [];
-	for (let i = 0; i < creatorNumber; i++) {
-		promiseList.push(
-			new Revision({
-				authorId: this.editorAttribs.id
-			})
-				.save(null, {method: 'insert'})
-				.then((revision) => {
-				//need to figure out how to generate a bbid here
-				return new CreatorRevision({
-					id: revision.id
-				})
-				.save(null, {method: 'insert'});
-			})
-		);
-	}
-}
-
 testData.createSprinter = function() {
 	return new AchievementType(this.sprinterAttribs)
 		.save(null, {method: 'insert'})
