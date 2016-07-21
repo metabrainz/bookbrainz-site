@@ -153,4 +153,17 @@ testData.sprinterHelper = function(numRevisions) {
 	return Promise.all(promiseList);
 }
 
+testData.typeRevisionHelper = function(revisionType, rowcount) {
+	return function(type, editor) {
+		let rowCountPromise;
+		if (type == revisionType) {
+			rowCountPromise = Promise.resolve(rowcount);
+		}
+		else {
+			rowCountPromise = Promise.resolve(0);
+		}
+		return rowCountPromise;
+	};
+}
+
 module.exports = testData;
