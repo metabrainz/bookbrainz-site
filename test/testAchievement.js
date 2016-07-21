@@ -30,6 +30,7 @@ const Promise = require('bluebird');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const awardAchievement = Achievement.__get__('awardAchievement');
+const awardTitle = Achievement.__get__('awardTitle');
 
 function tests() {
 	describe('awardAchievement', () => {
@@ -77,6 +78,57 @@ function tests() {
 					awardAchievement(
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
+					)
+				);
+
+			return expect(unlockPromise).to.eventually.be.rejected;
+		});
+	});
+	describe('awardTitle', () => {
+		afterEach(testData.truncate);
+
+		it('should award titles', () => {
+			const unlockPromise = testData.createEditor()
+				.then(() =>
+					testData.createRevisionist()
+				)
+				.then(() =>
+					awardTitle(
+						testData.editorAttribs.id,
+						{titleName: testData.revisionistAttribs.title}
+					)
+				);
+
+			return Promise.all([
+				expect(unlockPromise).to.eventually.have.deep.property(
+					'Revisionist.editorId',
+					testData.editorAttribs.id
+				),
+				expect(unlockPromise).to.eventually.have.deep.property(
+					'Revisionist.titleId',
+					testData.revisionistAttribs.id
+				)
+			]);
+		});
+
+		it('should reject invalid editors', () => {
+			const unlockPromise = testData.createRevisionist()
+				.then(() =>
+					awardTitle(
+						testData.editorAttribs.id,
+						{titleName: testData.revisionistAttribs.title}
+					)
+				);
+
+			return expect(unlockPromise).to.eventually.be.rejected;
+		});
+
+		it('should reject invalid titles', () => {
+			const unlockPromise = testData.createEditor()
+				.then(() =>
+					awardTitle(
+						testData.editorAttribs.id,
+						{titleName: testData.revisionistAttribs.title}
 					)
 				);
 
