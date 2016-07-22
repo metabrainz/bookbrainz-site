@@ -143,6 +143,7 @@ function testTiers(signal, editorId, tiers) {
 		);
 }
 
+// returns the number of typeRevisions an editor has
 function getTypeRevisions(type, editor) {
 	const snakeType = _.snakeCase(type);
 	const rawsql = `SELECT foo.id, bookbrainz.${snakeType}.id \
