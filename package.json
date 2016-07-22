@@ -73,6 +73,7 @@
     "mocha": "^2.0.0",
     "nightwatch": "^0.9.5",
     "nodemon": "^1.9.2",
+	"rewire": "v2.5.2",
     "saucelabs": "^1.2.0",
     "supertest": "^1.1.0",
     "vinyl-source-stream": "^1.0.0"
