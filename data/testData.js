@@ -275,8 +275,7 @@ testData.typeRevisionHelper = function(revisionType, rowcount) {
 	};
 }
 
-testData.truncate = function truncate() {
-	return utils.truncateTables(Bookshelf, [
+testData.truncate = () => utils.truncateTables(Bookshelf, [
 		'bookbrainz.editor',
 		'bookbrainz.editor_type',
 		'bookbrainz.achievement_type',
@@ -286,6 +285,5 @@ testData.truncate = function truncate() {
 		'bookbrainz.revision',
 		'musicbrainz.gender'
 	]);
-}
 
 module.exports = testData;
