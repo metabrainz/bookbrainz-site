@@ -60,7 +60,10 @@ function awardAchievement(editorId, achievementName) {
 					return out;
 				});
 		})
-		.catch((error) => Promise.reject(error));
+		.catch((error) => {
+			console.error(error);
+			return Promise.reject(error);
+		});
 }
 
 function awardTitle(editorId, tier) {
@@ -80,9 +83,10 @@ function awardTitle(editorId, tier) {
 						return out;
 					});
 			})
-			.catch((error) =>
-				Promise.reject(error)
-			);
+			.catch((error) => {
+				console.error(error);
+				return Promise.reject(error);
+			});
 	}
 	else {
 		titlePromise = Promise.resolve(false);
