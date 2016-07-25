@@ -232,33 +232,33 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
-function processFunRunner(editorId) {
+function getEditsInDays(editorId, days) {
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
 		WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL \'6 days\');`;
+		and created_at > (SELECT CURRENT_DATE - INTERVAL \'${days} days\');`;
 
 	return Bookshelf.knex.raw(rawSql)
-		.then((out) => {
+		.then((out) => out.rowCount);
+}
+
+function processFunRunner(editorId) {
+	return getEditsInDays(editorId, 6)
+		.then((rowCount) => {
 			const tiers = [
 				{threshold: 7, name: 'Fun Runner', titleName: 'Fun Runner'}
 			];
-			return testTiers(out.rowCount, editorId, tiers);
+			return testTiers(rowCount, editorId, tiers);
 		});
 }
 
 function processMarathoner(editorId) {
-	const rawSql =
-		`SELECT DISTINCT created_at::date from bookbrainz.revision \
-		WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL \'29 days\');`;
-
-	return Bookshelf.knex.raw(rawSql)
-		.then((out) => {
+	return getEditsInDays(editorId, 29)
+		.then((rowCount) => {
 			const tiers = [
 				{threshold: 30, name: 'Marathoner', titleName: 'Marathoner'}
 			];
-			return testTiers(out.rowCount, editorId, tiers);
+			return testTiers(rowCount, editorId, tiers);
 		});
 }
 
