@@ -65,6 +65,12 @@ function tests() {
 			]);
 		});
 
+		// suppress warnings from rejections
+		Achievement.__set__('console', {
+			warn() {},
+			error() {}
+		});
+
 		it('should reject invalid editors', () => {
 			const unlockPromise = testData.createRevisionist()
 				.then(() =>
