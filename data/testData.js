@@ -178,6 +178,19 @@ testData.funRunnerTitleAttribs = {
 	description: 'Complete Fun Runner track'
 };
 
+testData.marathonerAttribs = {
+	id: 1,
+	name: 'Marathoner',
+	description: 'create a revision a day for 30 days',
+	badgeUrl: 'http://test.com'
+};
+
+testData.marathonerTitleAttribs = {
+	id: 1,
+	title: 'Marathoner',
+	description: 'Complete Marathoner track'
+};
+
 testData.createEditor = function() {
 	return new EditorType(this.editorTypeAttribs)
 		.save(null, {method: 'insert'})
@@ -280,6 +293,15 @@ testData.createFunRunner = function() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(this.funRunnerTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
+}
+
+testData.createMarathoner = function() {
+	return new AchievementType(this.marathonerAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.marathonerTitleAttribs)
 			.save(null, {method: 'insert'})
 		);
 }
