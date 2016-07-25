@@ -165,6 +165,19 @@ testData.sprinterTitleAttribs = {
 	description: 'Complete Creator Creator track'
 };
 
+testData.funRunnerAttribs = {
+	id: 1,
+	name: 'Fun Runner',
+	description: 'create a revision a day for a week',
+	badgeUrl: 'http://test.com'
+};
+
+testData.funRunnerTitleAttribs = {
+	id: 1,
+	title: 'Fun Runner',
+	description: 'Complete Fun Runner track'
+};
+
 testData.createEditor = function() {
 	return new EditorType(this.editorTypeAttribs)
 		.save(null, {method: 'insert'})
@@ -260,6 +273,15 @@ testData.sprinterHelper = function(numRevisions) {
 		);
 	}
 	return Promise.all(promiseList);
+}
+
+testData.createFunRunner = function() {
+	return new AchievementType(this.funRunnerAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.funRunnerTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
 }
 
 testData.typeRevisionHelper = function(revisionType, rowcount) {
