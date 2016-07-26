@@ -28,7 +28,7 @@ const Editor = require('./bookbrainz-data').Editor;
 const Achievement = require('../src/server/helpers/achievement.js');
 const testData = require('../data/testData.js');
 
-describe('Revisionist achievement', () => {
+module.exports = () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
 			testData.createRevisionist()
@@ -133,4 +133,4 @@ describe('Revisionist achievement', () => {
 
 		return expect(achievementPromise).to.eventually.equal(false);
 	});
-});
+};

@@ -32,7 +32,7 @@ const testData = require('../data/testData.js');
 const marathonerDays = 29;
 const marathonerThreshold = 30;
 
-describe('Marathoner Achievement', () => {
+module.exports = () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
 			testData.createMarathoner()
@@ -101,4 +101,4 @@ describe('Marathoner Achievement', () => {
 
 			return expect(achievementPromise).to.eventually.equal(false);
 		});
-});
+};

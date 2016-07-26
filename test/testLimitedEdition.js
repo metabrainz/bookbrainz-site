@@ -31,117 +31,113 @@ const limitedEditionIThreshold = 1;
 const limitedEditionIIThreshold = 10;
 const limitedEditionIIIThreshold = 100;
 
-function tests() {
-	describe('Limited Edition achievement', () => {
-		beforeEach(() => testData.createLimitedEdition());
+module.exports = function tests() {
+	beforeEach(() => testData.createLimitedEdition());
 
-		afterEach(testData.truncate);
+	afterEach(testData.truncate);
 
-		it('should give someone with a creator revision Limited Edition I',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'editionRevision', limitedEditionIThreshold
-						)
-				});
-
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+	it('should give someone with a creator revision Limited Edition I',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'editionRevision', limitedEditionIThreshold
 					)
-					.then((edit) =>
-						edit.limitedEdition['Limited Edition I']
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.limitedEditionIAttribs.id)
-				]);
-			}
-		);
-
-		it('should give someone with 10 creator revisions Limited Edition  II',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'editionRevision', limitedEditionIIThreshold
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
-					)
-					.then((edit) =>
-						edit.limitedEdition['Limited Edition II']
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.limitedEditionIIAttribs.id)
-				]);
 			});
 
-		it('should give someone with 100 edition revisions Limited Edition III',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'editionRevision', limitedEditionIIIThreshold
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.limitedEdition['Limited Edition I']
+				);
+
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have
+				.property('editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have
+				.property('achievementId',
+					testData.limitedEditionIAttribs.id)
+			]);
+		}
+	);
+
+	it('should give someone with 10 creator revisions Limited Edition  II',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'editionRevision', limitedEditionIIThreshold
 					)
-					.then((edit) =>
-						edit.limitedEdition
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Limited Edition III.editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Limited Edition III.achievementId',
-						testData.limitedEditionIIIAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Limited Edition.editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Limited Edition.titleId',
-						testData.limitedEditionAttribs.id)
-				]);
 			});
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.limitedEdition['Limited Edition II']
+				);
 
-		it('should not give someone with 0 creator revisions Limited Edition I',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'editionRevision', 0
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have
+				.property('editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have
+				.property('achievementId',
+					testData.limitedEditionIIAttribs.id)
+			]);
+		});
+
+	it('should give someone with 100 edition revisions Limited Edition III',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'editionRevision', limitedEditionIIIThreshold
 					)
-					.then((edit) =>
-						edit.limitedEdition['Limited Edition I']
-					);
-
-				return expect(achievementPromise).to.eventually.equal(false);
 			});
-	});
-}
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.limitedEdition
+				);
 
-describe('Limited Edition Achievements', tests);
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Limited Edition III.editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Limited Edition III.achievementId',
+					testData.limitedEditionIIIAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Limited Edition.editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Limited Edition.titleId',
+					testData.limitedEditionAttribs.id)
+			]);
+		});
+
+	it('should not give someone with 0 creator revisions Limited Edition I',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'editionRevision', 0
+					)
+			});
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.limitedEdition['Limited Edition I']
+				);
+
+			return expect(achievementPromise).to.eventually.equal(false);
+		});
+};

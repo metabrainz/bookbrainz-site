@@ -32,7 +32,7 @@ const testData = require('../data/testData.js');
 const funRunnerThreshold = 7;
 const funRunnerDays = 6;
 
-describe('Fun Runner Achievement', () => {
+module.exports = () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
 			testData.createFunRunner()
@@ -101,4 +101,4 @@ describe('Fun Runner Achievement', () => {
 
 			return expect(achievementPromise).to.eventually.equal(false);
 		});
-});
+};

@@ -29,6 +29,13 @@ const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
+const testCreatorCreator = require('./testCreatorCreator.js');
+const testFunRunner = require('./testFunRunner.js');
+const testLimitedEdition = require('./testLimitedEdition.js');
+const testMarathoner = require('./testMarathoner.js');
+const testPublisher = require('./testPublisher.js');
+const testRevisionist = require('./testRevisionist.js');
+const testSprinter = require('./testSprinter.js');
 
 function tests() {
 	describe('awardAchievement', () => {
@@ -133,6 +140,13 @@ function tests() {
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
 	});
+	describe('Creator Creator Achievement', testCreatorCreator);
+	describe('Fun Runner Achievement', testFunRunner);
+	describe('Limited Edition Achievement', testLimitedEdition);
+	describe('Marathoner Achievement', testMarathoner);
+	describe('Publisher Achievement', testPublisher);
+	describe('Revisionist Achievement', testRevisionist);
+	describe('Sprinter Achievement', testSprinter);
 }
 
 describe('achievement module', tests);
