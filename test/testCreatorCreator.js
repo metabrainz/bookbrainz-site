@@ -37,7 +37,7 @@ module.exports = function tests() {
 
 	afterEach(testData.truncate);
 
-	it('should give someone with a creator revision Creator Creator I',
+	it('I should be given to someone with a creator revision',
 		() => {
 			Achievement.__set__({
 				getTypeRevisions:
@@ -65,7 +65,7 @@ module.exports = function tests() {
 		}
 	);
 
-	it('should give someone with 10 creator revisions Creator Creator II',
+	it('II should be given to someone with 10 creator revisions',
 		() => {
 			Achievement.__set__({
 				getTypeRevisions:
@@ -91,7 +91,7 @@ module.exports = function tests() {
 			]);
 		});
 
-	it('should give someone with 100 creator revisions Creator Creator III',
+	it('III should be given to someone with 100 creator revisions',
 		() => {
 			Achievement.__set__({
 				getTypeRevisions:
@@ -123,7 +123,7 @@ module.exports = function tests() {
 			]);
 		});
 
-	it('should not give someone with 0 creator revisions Creator Creator I',
+	it('should not be given to someone with 0 creator revisions',
 		() => {
 			Achievement.__set__({
 				getTypeRevisions:

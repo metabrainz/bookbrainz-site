@@ -41,7 +41,7 @@ module.exports = () => {
 
 	afterEach(testData.truncate);
 
-	it('should give someone with a revision a day for a week Fun Runner',
+	it('should be given to someone with a revision a day for a week',
 		() => {
 			Achievement.__set__({
 				getEditsInDays: (editorId, days) => {
@@ -74,7 +74,7 @@ module.exports = () => {
 			]);
 		});
 
-	it('shouldn\'t give someone without a revision a day for a week Fun Runner',
+	it('shouldn\'t be given to someone without a revision a day for a week',
 		() => {
 			Achievement.__set__({
 				getEditsInDays: (editorId, days) => {
