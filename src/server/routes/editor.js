@@ -337,6 +337,7 @@ router.get('/:id/achievements', (req, res, next) => {
 
 function rankUpdate(editorId, bodyRank, rank) {
 	return new AchievementUnlock({
+		editorId,
 		profileRank: rank
 	})
 		.fetch()
