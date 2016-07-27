@@ -28,7 +28,7 @@ function EntityLink(props) {
 	);
 }
 
-EntityLink.displayName = 'EntitySpinner';
+EntityLink.displayName = 'EntityLink';
 EntityLink.propTypes = {
 	bbid: React.PropTypes.string,
 	text: React.PropTypes.string,

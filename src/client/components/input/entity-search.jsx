@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,161 @@ const Icon = require('react-fontawesome');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const $ = require('jquery');
-const _ = require('lodash');
+const _assign = require('lodash.assign');
 
 const Select = require('./select2.jsx');
 
-const EntitySearch = React.createClass({
-	displayName: 'entitySearchInput',
-	propTypes: {
+(() => {
+	'use strict';
+
+	class EntitySearch extends React.Component {
+		constructor(props) {
+			super(props);
+
+			this.loadedEntities = {};
+		}
+
+		getValue() {
+			const bbid = this.select.getValue();
+
+			if (bbid) {
+				return this.loadedEntities[bbid];
+			}
+
+			return null;
+		}
+
+		render() {
+			const self = this;
+
+			if (this.props.defaultValue) {
+				this.loadedEntities[this.props.defaultValue.bbid] =
+					this.props.defaultValue;
+			}
+
+			if (this.props.value) {
+				this.loadedEntities[this.props.value.bbid] = this.props.value;
+			}
+
+			function entityToOption(entity) {
+				return {
+					id: entity.bbid,
+					text: entity.defaultAlias ?
+						entity.defaultAlias.name : '(unnamed)',
+					disambiguation: entity.disambiguation ?
+						entity.disambiguation.comment : null,
+					type: entity.type
+				};
+			}
+
+			const select2Options = {
+				minimumInputLength: 1,
+				ajax: {
+					url: '/search/autocomplete',
+					data(params) {
+						const queryParams = {
+							q: params.term,
+							page: params.page,
+							collection: self.props.collection
+						};
+
+						return queryParams;
+					},
+					processResults(results) {
+						if (results.error) {
+							return {
+								results: [{
+									id: null,
+									text: results.error
+								}]
+							};
+						}
+
+						results.forEach((result) => {
+							self.loadedEntities[result.bbid] = result;
+						});
+
+						return {
+							results: results.map(entityToOption)
+						};
+					}
+				},
+				templateResult(result) {
+					let template = result.text;
+
+					const ENTITY_TYPE_ICONS = {
+						Creator: 'user',
+						Edition: 'book',
+						Publication: 'th-list',
+						Publisher: 'university',
+						Work: 'file-text-o'
+					};
+
+					/* eslint prefer-template: 0 */
+					if (result.type) {
+						template = ReactDOMServer.renderToStaticMarkup(
+								<Icon name={ENTITY_TYPE_ICONS[result.type]}/>
+							) + ` ${template}`;
+					}
+
+					if (result.disambiguation) {
+						template += ReactDOMServer.renderToStaticMarkup(
+							<span className="disambig">
+							({result.disambiguation})
+						</span>
+						);
+					}
+
+					return $.parseHTML(template);
+				}
+			};
+
+			_assign(select2Options, this.props.select2Options);
+
+			const options = this.props.options || [];
+
+			function keyFromValue(value) {
+				let key = null;
+
+				if (value && value.bbid) {
+					options.unshift(entityToOption(value));
+					key = value.bbid;
+				}
+
+				return key;
+			}
+
+			const defaultKey = keyFromValue(this.props.defaultValue);
+			const key = keyFromValue(this.props.value);
+
+			return (
+				<Select
+					dynamicOptions
+					noDefault
+					bsStyle={this.props.bsStyle}
+					defaultValue={defaultKey}
+					disabled={this.props.disabled}
+					groupClassName={this.props.groupClassName}
+					help={this.props.help}
+					idAttribute="id"
+					label={this.props.label}
+					labelAttribute="text"
+					labelClassName={this.props.labelClassName}
+					options={options}
+					placeholder={this.props.placeholder}
+					ref={(ref) => this.select = ref}
+					select2Options={select2Options}
+					standalone={this.props.standalone}
+					value={key}
+					wrapperClassName={this.props.wrapperClassName}
+					onChange={this.props.onChange}
+				/>
+			);
+		}
+	}
+
+	EntitySearch.displayName = 'EntitySearch';
+	EntitySearch.propTypes = {
 		bsStyle: React.PropTypes.string,
 		defaultValue: React.PropTypes.shape({
 			bbid: React.PropTypes.string
@@ -46,147 +194,7 @@ const EntitySearch = React.createClass({
 		}),
 		wrapperClassName: React.PropTypes.string,
 		onChange: React.PropTypes.func
-	},
-	loadedEntities: {},
-	getValue() {
-		'use strict';
+	};
 
-		const bbid = this.select.getValue();
-		if (bbid) {
-			return this.loadedEntities[bbid];
-		}
-
-		return null;
-	},
-	render() {
-		'use strict';
-
-		const self = this;
-
-		if (this.props.defaultValue) {
-			this.loadedEntities[this.props.defaultValue.bbid] =
-				this.props.defaultValue;
-		}
-
-		if (this.props.value) {
-			this.loadedEntities[this.props.value.bbid] = this.props.value;
-		}
-
-		function entityToOption(entity) {
-			return {
-				id: entity.bbid,
-				text: entity.defaultAlias ?
-					entity.defaultAlias.name : '(unnamed)',
-				disambiguation: entity.disambiguation ?
-					entity.disambiguation.comment : null,
-				type: entity.type
-			};
-		}
-
-		const select2Options = {
-			minimumInputLength: 1,
-			ajax: {
-				url: '/search/autocomplete',
-				data(params) {
-					const queryParams = {
-						q: params.term,
-						page: params.page,
-						collection: self.props.collection
-					};
-
-					return queryParams;
-				},
-				processResults(results) {
-					if (results.error) {
-						return {
-							results: [{
-								id: null,
-								text: results.error
-							}]
-						};
-					}
-
-					results.forEach((result) => {
-						self.loadedEntities[result.bbid] = result;
-					});
-
-					return {
-						results: results.map(entityToOption)
-					};
-				}
-			},
-			templateResult(result) {
-				let template = result.text;
-
-				const ENTITY_TYPE_ICONS = {
-					Creator: 'user',
-					Edition: 'book',
-					Publication: 'th-list',
-					Publisher: 'university',
-					Work: 'file-text-o'
-				};
-
-				/* eslint prefer-template: 0 */
-				if (result.type) {
-					template = ReactDOMServer.renderToStaticMarkup(
-						<Icon name={ENTITY_TYPE_ICONS[result.type]}/>
-					) + ` ${template}`;
-				}
-
-				if (result.disambiguation) {
-					template += ReactDOMServer.renderToStaticMarkup(
-						<span className="disambig">
-							({result.disambiguation})
-						</span>
-					);
-				}
-
-				return $.parseHTML(template);
-			}
-		};
-
-		_.extend(select2Options, this.props.select2Options);
-
-		const options = this.props.options || [];
-
-		function keyFromValue(value) {
-			let key = null;
-
-			if (value && value.bbid) {
-				options.unshift(entityToOption(value));
-				key = value.bbid;
-			}
-
-			return key;
-		}
-
-		const defaultKey = keyFromValue(this.props.defaultValue);
-		const key = keyFromValue(this.props.value);
-
-		return (
-			<Select
-				dynamicOptions
-				noDefault
-				bsStyle={this.props.bsStyle}
-				defaultValue={defaultKey}
-				disabled={this.props.disabled}
-				groupClassName={this.props.groupClassName}
-				help={this.props.help}
-				idAttribute="id"
-				label={this.props.label}
-				labelAttribute="text"
-				labelClassName={this.props.labelClassName}
-				options={options}
-				placeholder={this.props.placeholder}
-				ref={(ref) => this.select = ref}
-				select2Options={select2Options}
-				standalone={this.props.standalone}
-				value={key}
-				wrapperClassName={this.props.wrapperClassName}
-				onChange={this.props.onChange}
-			/>
-		);
-	}
-});
-
-module.exports = EntitySearch;
+	module.exports = EntitySearch;
+})();

@@ -24,63 +24,63 @@ const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 const Panel = require('react-bootstrap').Panel;
 
-const LoadingSpinner = require('../loading_spinner.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
 
-module.exports = React.createClass({
-	displayName: 'EntityDeletionForm',
-	propTypes: {
-		entity: React.PropTypes.object
-	},
-	getInitialState() {
-		'use strict';
+(() => {
+	'use strict';
 
-		return {
-			error: null,
-			waiting: false
-		};
-	},
-	handleSubmit(event) {
-		'use strict';
+	class EntityDeletionForm extends React.Component {
+		constructor(props) {
+			super(props);
 
-		event.preventDefault();
+			this.state = {
+				error: null,
+				waiting: false
+			};
 
-		this.setState({
-			error: null,
-			waiting: true
-		});
-
-		request.post(this.deleteUrl)
-			.send()
-			.then(() => {
-				window.location.href = this.entityUrl;
-			})
-			.catch((res) => {
-				const error = res.body.error;
-
-				this.setState({
-					error,
-					waiting: false
-				});
-			});
-	},
-	render() {
-		'use strict';
-
-		const entity = this.props.entity;
-
-		this.entityUrl = `/${entity.type.toLowerCase()}/${entity.bbid}`;
-		this.deleteUrl = `${this.entityUrl}/delete/handler`;
-
-		let errorComponent = null;
-		if (this.state.error) {
-			errorComponent =
-				(<Alert bsStyle="danger">{this.state.error}</Alert>);
+			this.handleSubmit = this.handleSubmit.bind(this);
 		}
 
-		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
+		handleSubmit(event) {
+			event.preventDefault();
 
-		const footerComponent = (
-			<span className="clearfix">
+			this.setState({
+				error: null,
+				waiting: true
+			});
+
+			request.post(this.deleteUrl)
+				.send()
+				.then(() => {
+					window.location.href = this.entityUrl;
+				})
+				.catch((res) => {
+					const error = res.body.error;
+
+					this.setState({
+						error,
+						waiting: false
+					});
+				});
+		}
+
+		render() {
+			const entity = this.props.entity;
+
+			this.entityUrl = `/${entity.type.toLowerCase()}/${entity.bbid}`;
+			this.deleteUrl = `${this.entityUrl}/delete/handler`;
+
+			let errorComponent = null;
+			if (this.state.error) {
+				errorComponent =
+					(<Alert bsStyle="danger">{this.state.error}</Alert>);
+			}
+
+			const loadingComponent =
+				this.state.waiting ? <LoadingSpinner/> : null;
+
+			const footerComponent = (
+				<span className="clearfix">
 				<Button
 					bsStyle="danger"
 					className="pull-right"
@@ -96,40 +96,48 @@ module.exports = React.createClass({
 				</Button>
 			</span>
 
-		);
+			);
 
-		const headerComponent = (<h3>Confirm Deletion</h3>);
+			const headerComponent = (<h3>Confirm Deletion</h3>);
 
-		const entityName = entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)';
+			const entityName = entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)';
 
-		return (
-			<div className="row">
-				{loadingComponent}
-				<div className="col-md-6 col-md-offset-3">
-					{errorComponent}
-					<form
-						onSubmit={this.handleSubmit}
-					>
-						<Panel
-							bsStyle="danger"
-							footer={footerComponent}
-							header={headerComponent}
+			return (
+				<div className="row">
+					{loadingComponent}
+					<div className="col-md-6 col-md-offset-3">
+						{errorComponent}
+						<form
+							onSubmit={this.handleSubmit}
 						>
-							If you're sure that {entity.type} {entityName}
-							should be deleted, please enter a revision note
-							below and confirm deletion.
+							<Panel
+								bsStyle="danger"
+								footer={footerComponent}
+								header={headerComponent}
+							>
+								If you're sure that {entity.type} {entityName}
+								should be deleted, please enter a revision note
+								below and confirm deletion.
 
-							<Input
-								ref={(ref) => this.note = ref}
-								rows="5"
-								type="textarea"
-								wrapperClassName="margin-top-1"
-							/>
-						</Panel>
-					</form>
+								<Input
+									ref={(ref) => this.note = ref}
+									rows="5"
+									type="textarea"
+									wrapperClassName="margin-top-1"
+								/>
+							</Panel>
+						</form>
+					</div>
 				</div>
-			</div>
-		);
+			);
+		}
 	}
-});
+
+	EntityDeletionForm.displayName = 'EntityDeletionForm';
+	EntityDeletionForm.propTypes = {
+		entity: React.PropTypes.object
+	};
+
+	module.exports = EntityDeletionForm;
+})();

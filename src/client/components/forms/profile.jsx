@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,73 +23,82 @@ const request = require('superagent-bluebird-promise');
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
-const LoadingSpinner = require('../loading_spinner.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
 
-module.exports = React.createClass({
-	displayName: 'profileForm',
-	propTypes: {
+(() => {
+	'use strict';
+
+	class ProfileForm extends React.Component {
+		constructor(props) {
+			super(props);
+
+			this.state = {
+				bio: this.props.bio,
+				waiting: false
+			};
+
+			// React does not autobind non-React class methods
+			this.handleSubmit = this.handleSubmit.bind(this);
+		}
+
+		handleSubmit(evt) {
+			evt.preventDefault();
+
+			const data = {
+				id: this.props.id,
+				bio: this.bio.getValue().trim()
+			};
+
+			this.setState({waiting: true});
+
+			request.post('/editor/edit/handler')
+				.send(data).promise()
+				.then((res) => {
+					const editor = res.body;
+					window.location.href = `/editor/${editor.id}`;
+				});
+		}
+
+		render() {
+			const loadingElement =
+				this.state.waiting ? <LoadingSpinner/> : null;
+
+			return (
+				<form
+					className="form-horizontal"
+					onSubmit={this.handleSubmit}
+				>
+					{loadingElement}
+					<Input
+						defaultValue={this.state.bio}
+						label="Bio"
+						labelClassName="col-md-3"
+						ref={(ref) => this.bio = ref}
+						type="textarea"
+						wrapperClassName="col-md-9"
+					/>
+					<div className="form-group">
+						<div className="col-md-4 col-md-offset-4">
+							<Button
+								block
+								bsSize="large"
+								bsStyle="primary"
+								type="submit"
+							>
+								Update!
+							</Button>
+						</div>
+					</div>
+				</form>
+			);
+		}
+	}
+
+	ProfileForm.displayName = 'ProfileForm';
+	ProfileForm.propTypes = {
 		bio: React.PropTypes.string,
 		id: React.PropTypes.number
-	},
-	getInitialState() {
-		'use strict';
+	};
 
-		return {
-			bio: this.props.bio,
-			waiting: false
-		};
-	},
-	handleSubmit(evt) {
-		'use strict';
-
-		evt.preventDefault();
-
-		const data = {
-			id: this.props.id,
-			bio: this.bio.getValue().trim()
-		};
-
-		this.setState({waiting: true});
-
-		request.post('/editor/edit/handler')
-			.send(data).promise()
-			.then((res) => {
-				const editor = res.body;
-				window.location.href = `/editor/${editor.id}`;
-			});
-	},
-	render() {
-		'use strict';
-
-		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
-
-		return (
-			<form
-				className="form-horizontal"
-				onSubmit={this.handleSubmit}
-			>
-				{loadingElement}
-				<Input
-					defaultValue={this.state.bio}
-					label="Bio"
-					labelClassName="col-md-3"
-					ref={(ref) => this.bio = ref}
-					type="textarea"
-					wrapperClassName="col-md-9"
-				/>
-				<div className="form-group">
-					<div className="col-md-4 col-md-offset-4">
-						<Button
-							block
-							bsSize="large"
-							bsStyle="primary"
-							type="submit"
-						>
-							Update!
-						</Button>
-					</div>
-				</div>
-			</form>
-		);
-	}
-});
+	module.exports = ProfileForm;
+})();
