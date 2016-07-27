@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,96 +23,109 @@ const request = require('superagent-bluebird-promise');
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
-const LoadingSpinner = require('../loading_spinner.jsx');
+const LoadingSpinner = require('../loading-spinner.jsx');
 
-module.exports = React.createClass({
-	displayName: 'profileForm',
-	propTypes: {
+(() => {
+	'use strict';
+
+	class ProfileForm extends React.Component {
+		constructor(props) {
+			super(props);
+
+			this.state = {
+				bio: this.props.editor.bio,
+				title: toString(this.props.editor.titleUnlockId),
+				waiting: false
+			};
+
+			// React does not autobind non-React class methods
+			this.handleSubmit = this.handleSubmit.bind(this);
+		}
+
+		handleSubmit(evt) {
+			evt.preventDefault();
+
+			const data = {
+				id: this.props.id,
+				bio: this.bio.getValue().trim(),
+				title: this.title.value
+			};
+
+			this.setState({waiting: true});
+
+			request.post('/editor/edit/handler')
+				.send(data).promise()
+				.then(() => {
+					window.location.href = `/editor/${this.props.editor.id}`;
+				});
+		}
+
+		render() {
+			const loadingElement =
+				this.state.waiting ? <LoadingSpinner/> : null;
+			const titles = this.props.titles.map((unlock) =>
+				(
+					<option
+						key={unlock.id}
+						value={unlock.id}
+					>
+						{unlock.title.title}
+					</option>
+				)
+			);
+
+			return (
+				<form
+					className="form-horizontal"
+					onSubmit={this.handleSubmit}
+				>
+					{loadingElement}
+					<Input
+						defaultValue={this.state.bio}
+						label="Bio"
+						labelClassName="col-md-3"
+						ref={(ref) => this.bio = ref}
+						type="textarea"
+						wrapperClassName="col-md-9"
+					/>
+					<div className="form-group">
+						<div className="col-md-4 col-md-offset-4">
+							<label>Title</label>
+							<select
+								className="form-control"
+								name="title"
+								ref={(ref) => this.title = ref}
+								value={this.title}
+							>
+								<option value="none">none</option>
+								{titles}
+							</select>
+						</div>
+					</div>
+					<div className="form-group">
+						<div className="col-md-4 col-md-offset-4">
+							<Button
+								block
+								bsSize="large"
+								bsStyle="primary"
+								type="submit"
+							>
+								Update!
+							</Button>
+						</div>
+					</div>
+				</form>
+			);
+		}
+	}
+
+	ProfileForm.displayName = 'ProfileForm';
+	ProfileForm.propTypes = {
 		bio: React.PropTypes.string,
 		editor: React.PropTypes.object,
 		id: React.PropTypes.number,
 		titles: React.PropTypes.array
-	},
-	getInitialState() {
-		'use strict';
-		return {
-			bio: this.props.editor.bio,
-			title: toString(this.props.editor.titleUnlockId),
-			waiting: false
-		};
-	},
-	handleSubmit(evt) {
-		'use strict';
+	};
 
-		evt.preventDefault();
-		const data = {
-			id: this.props.editor.id,
-			bio: this.bio.getValue().trim(),
-			title: this.title.value
-		};
-		this.setState({waiting: true});
-
-		request.post('/editor/edit/handler')
-			.send(data).promise()
-			.then(() => {
-				window.location.href = `/editor/${this.props.editor.id}`;
-			});
-	},
-	render() {
-		'use strict';
-		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
-		const titles = this.props.titles.map((unlock) =>
-			(
-				<option
-					key={unlock.id}
-					value={unlock.id}
-				>
-					{unlock.title.title}
-				</option>
-			)
-		);
-
-		return (
-			<form
-				className="form-horizontal"
-				onSubmit={this.handleSubmit}
-			>
-				{loadingElement}
-				<Input
-					defaultValue={this.state.bio}
-					label="Bio"
-					labelClassName="col-md-3"
-					ref={(ref) => this.bio = ref}
-					type="textarea"
-					wrapperClassName="col-md-9"
-				/>
-				<div className="form-group">
-					<div className="col-md-4 col-md-offset-4">
-						<label>Title</label>
-						<select
-							className="form-control"
-							name="title"
-							ref={(ref) => this.title = ref}
-							value={this.title}
-						>
-							<option value="none">none</option>
-							{titles}
-						</select>
-					</div>
-				</div>
-				<div className="form-group">
-					<div className="col-md-4 col-md-offset-4">
-						<Button
-							block
-							bsSize="large"
-							bsStyle="primary"
-							type="submit"
-						>
-							Update!
-						</Button>
-					</div>
-				</div>
-			</form>
-		);
-	}
-});
+	module.exports = ProfileForm;
+})();

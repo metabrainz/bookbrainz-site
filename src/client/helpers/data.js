@@ -16,14 +16,38 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const RegistrationForm = React.createFactory(
-	require('../components/forms/registrationDetails.jsx')
-);
-const props = JSON.parse(document.getElementById('props').innerHTML);
+const _find = require('lodash.find');
 
-ReactDOM.render(
-	RegistrationForm(props),
-	document.getElementById('registration-form')
-);
+const data = {};
+
+data.entityHasChanged = (initial, current) => {
+	'use strict';
+
+	return (initial && initial.bbid) !== (current && current.bbid);
+};
+
+data.getEntityLink = (entity) => {
+	'use strict';
+
+	const bbid = entity.bbid;
+
+	return `/${entity.type.toLowerCase()}/${bbid}`;
+};
+
+data.identifierIsValid = (typeId, value, identifierTypes) => {
+	'use strict';
+
+	if (!value) {
+		return false;
+	}
+
+	const selectedType = _find(identifierTypes, (type) => type.id === typeId);
+
+	if (selectedType) {
+		return new RegExp(selectedType.validationRegex).test(value);
+	}
+
+	return false;
+};
+
+module.exports = data;

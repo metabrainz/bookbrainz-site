@@ -30,6 +30,7 @@
     "lodash": "^4.7.0",
     "lodash.assign": "^4.0.8",
     "lodash.compact": "^3.0.1",
+    "lodash.debounce": "^4.0.6",
     "lodash.filter": "^4.3.0",
     "lodash.find": "^4.3.0",
     "lodash.isequal": "^4.1.4",
@@ -73,7 +74,7 @@
     "mocha": "^2.0.0",
     "nightwatch": "^0.9.5",
     "nodemon": "^1.9.2",
-	"rewire": "v2.5.2",
+    "rewire": "v2.5.2",
     "saucelabs": "^1.2.0",
     "supertest": "^1.1.0",
     "vinyl-source-stream": "^1.0.0"
