@@ -54,27 +54,20 @@ const Achievement = require('./parts/achievement.jsx');
 					});
 				});
 		}
-		render() {
-			const achievements = this.state.achievement.model
-					.map((achievement) => {
-						let achievementHTML;
-						if (achievement.unlocked) {
-							achievementHTML = (
-								<Achievement achievement={achievement}/>
-							);
-						}
-						return achievementHTML;
-					});
-			const locked = this.state.achievement.model.map((achievement) => {
-				let achievementHTML = null;
-				if (!achievement.unlocked) {
+		renderAchievements(unlocked) {
+			return this.state.achievement.model.map((achievement) => {
+				let achievementHTML;
+				if (achievement.unlocked === unlocked) {
 					achievementHTML = (
 						<Achievement achievement={achievement}/>
 					);
 				}
 				return achievementHTML;
 			});
-
+		}
+		render() {
+			const achievements = this.renderAchievements(true);
+			const locked = this.renderAchievements(false);
 			const rankName = this.state.achievement.model.map((achievement) => {
 				let optionHTML = null;
 				if (achievement.unlocked) {
