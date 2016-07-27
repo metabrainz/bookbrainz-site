@@ -20,8 +20,6 @@
 
 'use strict';
 
-const Promise = require('bluebird');
-
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const express = require('express');
@@ -29,54 +27,110 @@ const express = require('express');
 const Editor = require('bookbrainz-data').Editor;
 const EditorType = require('bookbrainz-data').EditorType;
 
-const error = require('../helpers/error');
+const handler = require('../helpers/handler');
 
 const FormSubmissionError = require('../helpers/error').FormSubmissionError;
 
-const RegisterPage = React.createFactory(
-	require('../../client/components/forms/registration.jsx')
+const RegisterAuthPage = React.createFactory(
+	require('../../client/components/pages/registrationAuth.jsx')
 );
+const RegisterDetailPage = React.createFactory(
+	require('../../client/components/forms/registrationDetails.jsx')
+);
+const loadGenders = require('../helpers/middleware').loadGenders;
 
 const router = express.Router();
+const _ = require('lodash');
 
-router.get('/', (req, res) =>
-	res.render('register', {
+const config = require('../helpers/config');
+const Log = require('log');
+const log = new Log(config.site.log);
+
+router.get('/', (req, res) => {
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
+
+	return res.render('page', {
 		title: 'Register',
-		markup: ReactDOMServer.renderToString(RegisterPage())
-	})
-);
+		markup: ReactDOMServer.renderToString(RegisterAuthPage())
+	});
+});
+
+router.get('/details', loadGenders, (req, res) => {
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
+
+	if (!req.session.mbProfile) {
+		res.redirect('/auth');
+	}
+
+	const gender = _.find(res.locals.genders, {
+		name: _.capitalize(req.session.mbProfile.gender)
+	});
+
+	const props = {
+		name: req.session.mbProfile.sub,
+		gender,
+		genders: res.locals.genders
+	};
+
+	return res.render('registrationDetails', {
+		title: 'Register',
+		props,
+		markup: ReactDOMServer.renderToString(RegisterDetailPage(props))
+	});
+});
 
 router.post('/handler', (req, res) => {
-	new Promise((resolve) => {
-		if (!req.body.password) {
-			throw new FormSubmissionError('No password set');
-		}
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
 
-		if (req.body.password !== req.body.passwordRepeat) {
-			throw new FormSubmissionError('Passwords do not match');
-		}
+	if (!req.session.mbProfile) {
+		return res.redirect('/auth');
+	}
 
-		resolve();
-	})
-		.then(() =>
-			// Fetch the default EditorType from the database
-			EditorType.forge({label: 'Editor'})
-				.fetch({require: true})
-		)
+	// Fetch the default EditorType from the database
+	const registerPromise = EditorType.forge({label: 'Editor'})
+		.fetch({require: true})
 		.then((editorType) =>
 			// Create a new Editor and add to the database
 			new Editor({
-				name: req.body.username,
-				email: req.body.email,
-				password: req.body.password,
-				typeId: editorType.id
+				name: req.body.displayName,
+				typeId: editorType.id,
+				genderId: req.body.gender,
+				birthDate: req.body.birthday,
+				metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+				cachedMetabrainzName: req.session.mbProfile.sub
 			})
 			.save()
 		)
-		.then((editor) =>
-			res.send(editor.toJSON())
-		)
-		.catch((err) => error.sendErrorAsJSON(res, err));
+		.then((editor) => {
+			req.session.mbProfile = null;
+			return editor.toJSON();
+		})
+		.catch((err) => {
+			log.debug(err);
+
+			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
+				throw new FormSubmissionError(
+					'That username already exists - please try using' +
+					' another, or link your existing BookBrainz account by' +
+					' signing in and visiting your profile.'
+				);
+			}
+
+			throw new FormSubmissionError(
+				'Something went wrong when registering, please try again!'
+			);
+		});
+
+	return handler.sendPromiseResult(res, registerPromise);
 });
 
 module.exports = router;

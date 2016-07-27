@@ -82,8 +82,14 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/handler', (req, res) =>
-	entityRoutes.handleDelete(req, res, PublicationHeader, PublicationRevision)
+router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	(req, res) =>
+		entityRoutes.handleDelete(
+			req,
+			res,
+			PublicationHeader,
+			PublicationRevision
+		)
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
@@ -138,13 +144,13 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.createEntity(
 		req, res, 'Publication', _.pick(req.body, 'typeId')
 	)
 );
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.editEntity(
 		req, res, 'Publication', _.pick(req.body, 'typeId')
 	)

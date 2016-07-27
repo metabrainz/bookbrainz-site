@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +17,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const RegistrationForm = React.createFactory(
-	require('../components/forms/registration.jsx')
-);
+'use strict';
 
-ReactDOM.render(
-	RegistrationForm(),
-	document.getElementById('registration-form')
-);
+const error = require('./error');
+
+const handler = {};
+
+handler.sendPromiseResult = (res, promise, processingCallback) =>
+	promise
+		.then((result) => {
+			res.send(result);
+
+			if (typeof processingCallback === 'function') {
+				return processingCallback(result);
+			}
+
+			return result;
+		})
+		.catch((err) => error.sendErrorAsJSON(res, err));
+
+module.exports = handler;

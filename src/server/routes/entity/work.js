@@ -76,8 +76,9 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/handler', (req, res) =>
-	entityRoutes.handleDelete(req, res, WorkHeader, WorkRevision)
+router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	(req, res) =>
+		entityRoutes.handleDelete(req, res, WorkHeader, WorkRevision)
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
@@ -144,13 +145,13 @@ const additionalWorkSets = [
 	}
 ];
 
-router.post('/create/handler', auth.isAuthenticated, (req, res) =>
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.createEntity(
 		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
 	)
 );
 
-router.post('/:bbid/edit/handler', auth.isAuthenticated, (req, res) =>
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.editEntity(
 		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
 	)

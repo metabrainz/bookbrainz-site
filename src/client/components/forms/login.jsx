@@ -135,6 +135,17 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 							>
 								Log In
 							</Button>
+							<Button
+								block
+								bsSize="large"
+								href="/auth"
+							>
+								<img
+									className="margin-right-0-5"
+									src="/images/MusicBrainz_logo_icon.svg"
+								/>
+								Login with MusicBrainz
+							</Button>
 							<hr/>
 							<Button
 								block

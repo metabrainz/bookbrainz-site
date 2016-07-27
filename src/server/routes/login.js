@@ -28,7 +28,7 @@ const express = require('express');
 const passport = require('passport');
 const status = require('http-status');
 
-const error = require('../helpers/error');
+const handler = require('../helpers/handler');
 
 const AuthenticationFailedError =
 	require('../helpers/error').AuthenticationFailedError;
@@ -39,12 +39,17 @@ const LoginPage = React.createFactory(
 
 const router = express.Router();
 
-router.get('/login', (req, res) =>
-	res.render('login', {
+router.get('/login', (req, res) => {
+	// Check whether the user is logged in - if so, redirect to profile page
+	if (req.user) {
+		return res.redirect(`/editor/${req.user.id}`);
+	}
+
+	return res.render('login', {
 		title: 'Log In',
 		markup: ReactDOMServer.renderToString(LoginPage())
-	})
-);
+	});
+});
 
 router.get('/logout', (req, res) => {
 	req.logOut();
@@ -53,7 +58,7 @@ router.get('/logout', (req, res) => {
 
 router.post('/login/handler', (req, res, next) => {
 	passport.authenticate('local', (authErr, user) => {
-		new Promise((resolve, reject) => {
+		const authPromise = new Promise((resolve, reject) => {
 			if (authErr) {
 				reject(authErr);
 			}
@@ -81,9 +86,12 @@ router.post('/login/handler', (req, res, next) => {
 
 				delete req.session.redirectTo;
 
-				return res.send({redirectTo});
-			})
-			.catch((err) => error.sendErrorAsJSON(res, err));
+				return {
+					redirectTo
+				};
+			});
+
+		handler.sendPromiseResult(res, authPromise);
 	})(req, res, next);
 });
 

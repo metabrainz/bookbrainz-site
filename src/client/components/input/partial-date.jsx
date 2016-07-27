@@ -57,7 +57,7 @@ const yRegex = /^\d{4}$/;
 		}
 
 		getValue() {
-			return this.state.value;
+			return this.validate(this.input.getValue().trim());
 		}
 
 		handleChange() {
@@ -71,6 +71,10 @@ const yRegex = /^\d{4}$/;
 				value: input,
 				valid: PartialDate.validate(input)
 			});
+
+			if (this.props.onChange) {
+				this.props.onChange();
+			}
 		}
 
 		valid() {
@@ -114,7 +118,8 @@ const yRegex = /^\d{4}$/;
 		label: React.PropTypes.string,
 		labelClassName: React.PropTypes.string,
 		placeholder: React.PropTypes.string,
-		wrapperClassName: React.PropTypes.string
+		wrapperClassName: React.PropTypes.string,
+		onChange: React.PropTypes.func
 	};
 
 	module.exports = PartialDate;

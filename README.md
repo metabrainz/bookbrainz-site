@@ -10,17 +10,19 @@
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:
 
-* bin - scripts used during the development and deployment of BookBrainz.
-* public - static files which are served by node as part of the site.
-* routes - node.js source files defining the endpoints of the site.
-* views - Jade templates defining how the site looks, together with required
-  client JavaScript.
+* config - the config to be used when running the site - copy the example files and edit, dropping the ".example" suffix.
+* scripts - scripts used during the development and deployment of BookBrainz.
+* src - node.js source files defining the site logic and user interface.
+* static - static files which are served by node as part of the site.
+* templates - Jade templates defining how the site looks - we're slowly
+replacing these with React.
+* test - unit tests and functional tests for the site
 
 Additionally, after building the client JavaScript (see below), the following
 directories will exist:
 
-* build - the browserify-built JavaScript files.
-* public/js - minified JavaScript files which are referred to by the
+* static/stylesheets - the CSS generated from compiling the project LESS files (src/client/stylesheets).
+* static/js - minified JavaScript files which are referred to by the
   site pages.
 
 ## Setup
@@ -52,13 +54,8 @@ You also need to install [redis](http://redis.io/) either locally or have a mach
 
 ## Configuration
 
-In order for the site to work, it requires an updated BookBrainz [webservice](https://github.com/bookbrainz/bookbrainz-ws) (the backend) and a redis server for storing user sessions.
-
-Redis is quite easy to set up but setting up your own webservice does require a bit more work. If you however do not want to go through the hassle of doing this, the MetaBrainz foundation provides a public development webservice.
-
-Create a copy of development.json.example and rename it to development.json.
-You can then either leave it as is to use the public development webservice or change the variables to point to your own.
-Be aware that you will have to change the clientID if you do the latter.
+Create a copy of development.json.example and rename it to development.json. Then, edit the values so that they are correct
+for your environment.
 
 ## Building and running
 ### Building the client-side JS
@@ -74,27 +71,39 @@ accomplish this.
 ### Running the site
 
 To run the site after installing dependencies and compiling the client-side JS,
-use the following command:
+use the following command. The server will automatically restart after any
+changes are made to the code:
 
-    npm run-script debug
+    npm run debug
 
-Or, if you're using Windows:
+## Testing
+### Unit Tests
+Running unit tests is fairly straightforward - with all dependencies installed,
+type the following command:
 
-    npm run-script debug_win
+    npm run test
 
-### Watch Mode
+Unit tests are automatically run over at Travis CI for all branches and pull
+requests.
 
-If you're doing rapid prototyping of some new feature, it can be helpful to run the site in watch mode,
-where every change to any source file results in a reloading of the server. This uses nodemon which is installed globally with:
+### Browser Tests
+Browser testing, using Selenium, allows for the overall system to be tested
+to see if it looks and behaves as expected in a range of web browsers. This is
+more complex to set up, and must be run manually.
 
-    npm install -g nodemon
+Firstly, the main developers use Sauce Labs for browser testing in the cloud.
+To run browser tests, you'll want to sign up to this service,
+[here](https://saucelabs.com/) - there is a free open source plan.
 
-After nodemon is installed, run these two commands in separate terminal windows:
+Secondly, download [Sauce
+Connect](https://wiki.saucelabs.com/display/DOCS/Basic+Sauce+Connect+Setup) to
+allow the selenium clients at Sauce Labs to tunnel through to your locally
+hosted instance of BookBrainz. You'll need to run Sauce Connect, providing it
+with your Sauce Labs username and access key, as follows:
 
-    gulp watch
-    DEBUG=bbsite nodemon ./bin/www
+    ./sc -u YOUR_USERNAME -k YOUR_ACCESS_KEY
 
-Or on Windows:
+Finally, run the BookBrainz server, as detailed in the previous section of this
+README, and then run the browser testing command:
 
-    gulp watch
-    set DEBUG=bbsite & nodemon bin\\www
+    npm run browser-test
