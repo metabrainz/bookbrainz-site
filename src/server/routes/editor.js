@@ -113,14 +113,12 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		.then((editor) => {
 			let editorTitleUnlock;
 			if (req.body.title === 'none') {
-				editorTitleUnlock = editor.set('titleUnlockId', null)
-					.save();
+				editorTitleUnlock = editor.set('titleUnlockId', null);
 			}
 			else {
-				editorTitleUnlock = editor.set('titleUnlockId', req.body.title)
-					.save();
+				editorTitleUnlock = editor.set('titleUnlockId', req.body.title);
 			}
-			return editorTitleUnlock;
+			return editorTitleUnlock.save();
 		})
 		.then((editor) =>
 			editor.toJSON()
