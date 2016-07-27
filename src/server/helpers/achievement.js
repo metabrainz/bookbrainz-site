@@ -30,6 +30,21 @@ const Bookshelf = require('bookbrainz-data').bookshelf;
 
 const _ = require('lodash');
 
+function awardUnlock(UnlockType, awardAttribs) {
+	return new UnlockType(awardAttribs)
+		.fetch({require: true})
+		.then(() =>
+			Promise.resolve('already unlocked')
+		)
+		.catch(() =>
+			new UnlockType(awardAttribs)
+				.save(null, {method: 'insert'})
+				.then((unlock) =>
+					unlock.toJSON()
+				)
+		);
+}
+
 function awardAchievement(editorId, achievementName) {
 	return new AchievementType({name: achievementName})
 		.fetch({require: true})
@@ -38,22 +53,12 @@ function awardAchievement(editorId, achievementName) {
 				editorId,
 				achievementId: achievementTier.id
 			};
-			return new AchievementUnlock(achievementAttribs)
-				.fetch({require: true})
-				.then(() => {
+			return awardUnlock(AchievementUnlock, achievementAttribs)
+				.then((unlock) => {
 					const out = {};
-					out[achievementName] = 'already unlocked';
-					return Promise.resolve(out);
-				})
-				.catch(() =>
-					new AchievementUnlock(achievementAttribs)
-						.save(null, {method: 'insert'})
-						.then((unlock) => {
-							const out = {};
-							out[achievementName] = unlock.toJSON();
-							return out;
-						})
-				);
+					out[achievementName] = unlock;
+					return out;
+				});
 		})
 		.catch((error) => Promise.reject(error));
 }
@@ -68,24 +73,12 @@ function awardTitle(editorId, tier) {
 					editorId,
 					titleId: title.id
 				};
-				return new TitleUnlock(titleAttribs)
-					.fetch({require: true})
-					.then(() => {
+				return awardUnlock(TitleUnlock, titleAttribs)
+					.then((unlock) => {
 						const out = {};
-						out[tier.titleName] =
-							'already unlocked';
+						out[tier.titleName] = unlock;
 						return out;
-					})
-					.catch(() =>
-						new TitleUnlock(titleAttribs)
-							.save(null, {method: 'insert'})
-							.then((unlock) => {
-								const out = {};
-								out[tier.titleName] =
-									unlock.toJSON();
-								return out;
-							})
-					);
+					});
 			})
 			.catch((error) =>
 				Promise.reject(error)
