@@ -85,6 +85,14 @@ function awardAchievement(editorId, achievementName) {
 		});
 }
 
+/**
+ * Awards a Title
+ * @param {int} editorId - The editor the title will be assigned to
+ * @param {object} tier - Achievement Tier the Title (if it exists) belongs to
+ * @returns {object} - {tier.titleName: unlock} where unlock comes from
+ * awardUnlock or false if the title is not in the tier
+ * @memberof module:Achievement
+ */
 function awardTitle(editorId, tier) {
 	let titlePromise;
 	if (tier.titleName) {
