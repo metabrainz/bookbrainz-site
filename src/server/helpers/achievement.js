@@ -56,6 +56,14 @@ function awardUnlock(UnlockType, awardAttribs) {
 		);
 }
 
+/**
+ * Awards an Achievement
+ * @param {int} editorId - The editor the achievement will be awarded to
+ * @param {string} achievementName - Name of achievement in database
+ * @returns {object} - {achievementName: unlock} where unlock is JSON returned
+ * from awardUnlock
+ * @memberof module:Achievement
+ */
 function awardAchievement(editorId, achievementName) {
 	return new AchievementType({name: achievementName})
 		.fetch({require: true})
