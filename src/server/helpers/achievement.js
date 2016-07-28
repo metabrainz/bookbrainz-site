@@ -288,7 +288,12 @@ function achievementToUnlockId(achievementUnlock) {
 	});
 	return unlockIds;
 }
-
+/**
+ * Gets number of distinct days the editor made an edit on within set limit
+ * @param {int} editorId - Editor to query on
+ * @param {int} days - Number of days before today to collect edits from
+ * @returns {int} - Number of days edits were performed on
+ */
 function getEditsInDays(editorId, days) {
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
