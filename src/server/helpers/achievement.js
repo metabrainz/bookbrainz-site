@@ -60,7 +60,10 @@ function awardAchievement(editorId, achievementName) {
 					return out;
 				});
 		})
-		.catch((error) => Promise.reject(error));
+		.catch((error) => {
+			console.error(error);
+			return Promise.reject(error);
+		});
 }
 
 function awardTitle(editorId, tier) {
@@ -80,9 +83,10 @@ function awardTitle(editorId, tier) {
 						return out;
 					});
 			})
-			.catch((error) =>
-				Promise.reject(error)
-			);
+			.catch((error) => {
+				console.error(error);
+				return Promise.reject(error);
+			});
 	}
 	else {
 		titlePromise = Promise.resolve(false);
@@ -139,12 +143,13 @@ function testTiers(signal, editorId, tiers) {
 // returns the number of typeRevisions an editor has
 function getTypeRevisions(type, editor) {
 	const snakeType = _.snakeCase(type);
-	const rawsql = `SELECT foo.id, bookbrainz.${snakeType}.id \
-				FROM (SELECT * FROM bookbrainz.revision \
-				WHERE author_id=${editor}) AS foo \
+	const rawsql = `SELECT revisions.id, bookbrainz.${snakeType}.id \
+				FROM \
+				(SELECT * FROM bookbrainz.revision \
+				WHERE author_id=${editor}) AS revisions \
 				INNER JOIN \
 				bookbrainz.${snakeType} on \
-				foo.id = bookbrainz.${snakeType}.id`;
+				revisions.id = bookbrainz.${snakeType}.id`;
 	return Bookshelf.knex.raw(rawsql)
 		.then((out) => out.rowCount);
 }
@@ -227,6 +232,37 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
+function getEditsInDays(editorId, days) {
+	const rawSql =
+		`SELECT DISTINCT created_at::date from bookbrainz.revision \
+		WHERE author_id=${editorId} \
+		and created_at > (SELECT CURRENT_DATE - INTERVAL \'${days} days\');`;
+
+	return Bookshelf.knex.raw(rawSql)
+		.then((out) => out.rowCount);
+}
+
+function processFunRunner(editorId) {
+	return getEditsInDays(editorId, 6)
+		.then((rowCount) => {
+			const tiers = [
+				{threshold: 7, name: 'Fun Runner', titleName: 'Fun Runner'}
+			];
+			return testTiers(rowCount, editorId, tiers);
+		});
+}
+
+function processMarathoner(editorId) {
+	return getEditsInDays(editorId, 29)
+		.then((rowCount) => {
+			const tiers = [
+				{threshold: 30, name: 'Marathoner', titleName: 'Marathoner'}
+			];
+			return testTiers(rowCount, editorId, tiers);
+		});
+}
+
+
 achievement.processPageVisit = () => {
 };
 
@@ -237,18 +273,24 @@ achievement.processEdit = (userid) =>
 		processLimitedEdition(userid),
 		processPublisher(userid),
 		processSprinter(userid),
+		processFunRunner(userid),
+		processMarathoner(userid),
 		(revisionist,
 		creatorCreator,
 		limitedEdition,
 		publisher,
-		sprinter) => {
+		sprinter,
+		funRunner,
+		marathoner) => {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),
 				achievementToUnlockId(creatorCreator),
 				achievementToUnlockId(limitedEdition),
 				achievementToUnlockId(publisher),
-				achievementToUnlockId(sprinter)
+				achievementToUnlockId(sprinter),
+				achievementToUnlockId(funRunner),
+				achievementToUnlockId(marathoner)
 			);
 			alert = [].concat.apply([], alert);
 			alert = alert.join(',');
@@ -258,6 +300,8 @@ achievement.processEdit = (userid) =>
 				limitedEdition,
 				publisher,
 				sprinter,
+				funRunner,
+				marathoner,
 				alert
 			};
 		}

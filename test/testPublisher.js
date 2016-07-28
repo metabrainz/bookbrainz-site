@@ -31,117 +31,114 @@ const publisherIThreshold = 1;
 const publisherIIThreshold = 10;
 const publisherIIIThreshold = 100;
 
-function tests() {
-	describe('Publisher achievement', () => {
-		beforeEach(() => testData.createPublisher());
+module.exports = function tests() {
+	beforeEach(() => testData.createPublisher());
 
-		afterEach(testData.truncate);
+	afterEach(testData.truncate);
 
-		it('should give someone with a creator revision Publisher I',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'publisherRevision', publisherIThreshold
-						)
-				});
-
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+	it('I should be given to someone with a publisher revision',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'publisherRevision', publisherIThreshold
 					)
-					.then((edit) =>
-						edit.publisher['Publisher I']
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.publisherIAttribs.id)
-				]);
-			}
-		);
-
-		it('should give someone with 10 Publisher revisionss Publisher II',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'publisherRevision', publisherIIThreshold
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
-					)
-					.then((edit) =>
-						edit.publisher['Publisher II']
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.publisherIIAttribs.id)
-				]);
 			});
 
-		it('should give someone with 100 edition revisions Limited Edition III',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'publisherRevision', publisherIIIThreshold
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.publisher['Publisher I']
+				);
+
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have
+				.property('editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have
+				.property('achievementId',
+					testData.publisherIAttribs.id)
+			]);
+		}
+	);
+
+	it('II should be given to someone with 10 publisher revisions',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'publisherRevision', publisherIIThreshold
 					)
-					.then((edit) =>
-						edit.publisher
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Publisher III.editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Publisher III.achievementId',
-						testData.publisherIIIAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Publisher.editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Publisher.titleId',
-						testData.publisherAttribs.id)
-				]);
 			});
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.publisher['Publisher II']
+				);
 
-		it('should not give someone with 0 creator revisions Publisher I',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'publisherRevision', 0
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have
+				.property('editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have
+				.property('achievementId',
+					testData.publisherIIAttribs.id)
+			]);
+		});
+
+	it('III should be given to someone with 100 edition revisions',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'publisherRevision', publisherIIIThreshold
 					)
-					.then((edit) =>
-						edit.publisher['Publisher I']
-					);
-
-				return expect(achievementPromise).to.eventually.equal(false);
 			});
-	});
-}
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.publisher
+				);
 
-describe('Publisher Achievements', tests);
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Publisher III.editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Publisher III.achievementId',
+					testData.publisherIIIAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Publisher.editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Publisher.titleId',
+					testData.publisherAttribs.id)
+			]);
+		});
+
+	it('should not be given to someone with 0 publisher revisions',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'publisherRevision', 0
+					)
+			});
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.publisher['Publisher I']
+				);
+
+			return expect(achievementPromise).to.eventually.equal(false);
+		});
+};
+

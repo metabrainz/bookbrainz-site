@@ -28,7 +28,7 @@ const Editor = require('./bookbrainz-data').Editor;
 const Achievement = require('../src/server/helpers/achievement.js');
 const testData = require('../data/testData.js');
 
-describe('Revisionist achievement', () => {
+module.exports = () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
 			testData.createRevisionist()
@@ -37,7 +37,7 @@ describe('Revisionist achievement', () => {
 
 	afterEach(testData.truncate);
 
-	it('should give someone with a revision Revisionist I', () => {
+	it('I should be given to someone with a revision', () => {
 		const achievementPromise = new Editor({
 			name: testData.editorAttribs.name
 		})
@@ -62,7 +62,7 @@ describe('Revisionist achievement', () => {
 		]);
 	});
 
-	it('should give someone with 50 revisions Revisionist II', () => {
+	it('II should be given to someone with 50 revisions', () => {
 		const achievementPromise = new Editor({
 			name: testData.editorAttribs.name
 		})
@@ -87,7 +87,7 @@ describe('Revisionist achievement', () => {
 		]);
 	});
 
-	it('should give someone with 250 revisions Revisionist III and Revisionist',
+	it('III should be given to someone with 250 revisions',
 		() => {
 			const achievementPromise = new Editor({
 				name: testData.editorAttribs.name
@@ -119,7 +119,7 @@ describe('Revisionist achievement', () => {
 			]);
 		});
 
-	it('should not give someone without a revision Revisionist I', () => {
+	it('should not be given to someone without a revision', () => {
 		const achievementPromise = new Editor({
 			name: testData.editorAttribs.name
 		})
@@ -133,4 +133,4 @@ describe('Revisionist achievement', () => {
 
 		return expect(achievementPromise).to.eventually.equal(false);
 	});
-});
+};

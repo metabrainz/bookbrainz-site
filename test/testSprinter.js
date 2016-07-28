@@ -30,7 +30,7 @@ const testData = require('../data/testData.js');
 
 const sprinterThreshold = 10;
 
-describe('Sprinter Achievement', () => {
+module.exports = () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
 			testData.createSprinter()
@@ -75,4 +75,4 @@ describe('Sprinter Achievement', () => {
 
 		return expect(achievementPromise).to.eventually.equal(false);
 	});
-});
+};

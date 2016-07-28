@@ -32,117 +32,114 @@ const creatorCreatorIIThreshold = 10;
 const creatorCreatorIIIThreshold = 100;
 
 
-function tests() {
-	describe('Creator Creator achievement', () => {
-		beforeEach(() => testData.createCreatorCreator());
+module.exports = function tests() {
+	beforeEach(() => testData.createCreatorCreator());
 
-		afterEach(testData.truncate);
+	afterEach(testData.truncate);
 
-		it('should give someone with a creator revision Creator Creator I',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'creatorRevision', creatorCreatorIThreshold
-						)
-				});
-
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+	it('I should be given to someone with a creator revision',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'creatorRevision', creatorCreatorIThreshold
 					)
-					.then((edit) =>
-						edit.creatorCreator['Creator Creator I']
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.creatorCreatorIAttribs.id)
-				]);
-			}
-		);
-
-		it('should give someone with 10 creator revisions Creator Creator II',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'creatorRevision', creatorCreatorIIThreshold
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
-					)
-					.then((edit) =>
-						edit.creatorCreator['Creator Creator II']
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.creatorCreatorIIAttribs.id)
-				]);
 			});
 
-		it('should give someone with 100 creator revisions Creator Creator III',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'creatorRevision', creatorCreatorIIIThreshold
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.creatorCreator['Creator Creator I']
+				);
+
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have
+				.property('editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have
+				.property('achievementId',
+					testData.creatorCreatorIAttribs.id)
+			]);
+		}
+	);
+
+	it('II should be given to someone with 10 creator revisions',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'creatorRevision', creatorCreatorIIThreshold
 					)
-					.then((edit) =>
-						edit.creatorCreator
-					);
-
-				return Promise.all([
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Creator Creator III.editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Creator Creator III.achievementId',
-						testData.creatorCreatorIIIAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Creator Creator.editorId',
-						testData.editorAttribs.id),
-					expect(achievementPromise).to.eventually.have.deep
-					.property('Creator Creator.titleId',
-						testData.creatorCreatorAttribs.id)
-				]);
 			});
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.creatorCreator['Creator Creator II']
+				);
 
-		it('should not give someone with 0 creator revisions Creator Creator I',
-			() => {
-				Achievement.__set__({
-					getTypeRevisions:
-						testData.typeRevisionHelper(
-							'creatorRevision', 0
-						)
-				});
-				const achievementPromise = testData.createEditor()
-					.then((editor) =>
-						Achievement.processEdit(editor.id)
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have
+				.property('editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have
+				.property('achievementId',
+					testData.creatorCreatorIIAttribs.id)
+			]);
+		});
+
+	it('III should be given to someone with 100 creator revisions',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'creatorRevision', creatorCreatorIIIThreshold
 					)
-					.then((edit) =>
-						edit.creatorCreator['Creator Creator I']
-					);
-
-				return expect(achievementPromise).to.eventually.equal(false);
 			});
-	});
-}
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.creatorCreator
+				);
 
-describe('Creator Creator Achievements', tests);
+			return Promise.all([
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Creator Creator III.editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Creator Creator III.achievementId',
+					testData.creatorCreatorIIIAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Creator Creator.editorId',
+					testData.editorAttribs.id),
+				expect(achievementPromise).to.eventually.have.deep
+				.property('Creator Creator.titleId',
+					testData.creatorCreatorAttribs.id)
+			]);
+		});
+
+	it('should not be given to someone with 0 creator revisions',
+		() => {
+			Achievement.__set__({
+				getTypeRevisions:
+					testData.typeRevisionHelper(
+						'creatorRevision', 0
+					)
+			});
+			const achievementPromise = testData.createEditor()
+				.then((editor) =>
+					Achievement.processEdit(editor.id)
+				)
+				.then((edit) =>
+					edit.creatorCreator['Creator Creator I']
+				);
+
+			return expect(achievementPromise).to.eventually.equal(false);
+		});
+};
+

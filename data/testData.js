@@ -165,6 +165,32 @@ testData.sprinterTitleAttribs = {
 	description: 'Complete Creator Creator track'
 };
 
+testData.funRunnerAttribs = {
+	id: 1,
+	name: 'Fun Runner',
+	description: 'create a revision a day for a week',
+	badgeUrl: 'http://test.com'
+};
+
+testData.funRunnerTitleAttribs = {
+	id: 1,
+	title: 'Fun Runner',
+	description: 'Complete Fun Runner track'
+};
+
+testData.marathonerAttribs = {
+	id: 1,
+	name: 'Marathoner',
+	description: 'create a revision a day for 30 days',
+	badgeUrl: 'http://test.com'
+};
+
+testData.marathonerTitleAttribs = {
+	id: 1,
+	title: 'Marathoner',
+	description: 'Complete Marathoner track'
+};
+
 testData.createEditor = function() {
 	return new EditorType(this.editorTypeAttribs)
 		.save(null, {method: 'insert'})
@@ -262,6 +288,24 @@ testData.sprinterHelper = function(numRevisions) {
 	return Promise.all(promiseList);
 }
 
+testData.createFunRunner = function() {
+	return new AchievementType(this.funRunnerAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.funRunnerTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
+}
+
+testData.createMarathoner = function() {
+	return new AchievementType(this.marathonerAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.marathonerTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
+}
+
 testData.typeRevisionHelper = function(revisionType, rowcount) {
 	return function(type, editor) {
 		let rowCountPromise;
@@ -275,8 +319,7 @@ testData.typeRevisionHelper = function(revisionType, rowcount) {
 	};
 }
 
-testData.truncate = function truncate() {
-	return utils.truncateTables(Bookshelf, [
+testData.truncate = () => utils.truncateTables(Bookshelf, [
 		'bookbrainz.editor',
 		'bookbrainz.editor_type',
 		'bookbrainz.achievement_type',
@@ -286,6 +329,5 @@ testData.truncate = function truncate() {
 		'bookbrainz.revision',
 		'musicbrainz.gender'
 	]);
-}
 
 module.exports = testData;
