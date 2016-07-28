@@ -3,12 +3,18 @@ extends ../layout
 block body
 	.row
 		.col-md-12
-			h1=editor.name
+			if editor.title
+				div
+					a(href=" " title=editor.title.description)
+						h1=editor.title.title + " " + editor.name
+			else
+				h1=editor.name
 	.row
 		.col-md-12
 			ul.nav.nav-tabs
-				li.active: a(href='./'+editor.id) Profile
-				li: a(href='./'+editor.id+'/revisions') Revisions
+				li.active: a(href='/editor/'+editor.id) Profile
+				li: a(href='/editor/'+editor.id+'/revisions') Revisions
+				li: a(href='/editor/'+editor.id+'/achievements') Achievements
 	.row
 		.col-md-12
 			h2 Basic Info
@@ -49,3 +55,27 @@ block body
 				dd=editor.revisionsApplied
 				dt Revisions Reverted
 				dd=editor.revisionsReverted
+			h2 Badges
+			.row(height="200px", margin="0", padding="0")
+				each model in achievement.model
+					.col-sm-4
+						.well
+							img(height="100px", src=model.achievement.badgeUrl).center-block
+							p.text-center=model.achievement.name
+							p.text-center=model.achievement.description
+							p.text-center="unlocked: " + model.unlockedAt
+				if achievement.length == 0
+					.col-sm-12
+						.well(height="100%")
+							img(height="160px", src="/images/sadface.png").center-block
+							p.text-center No badge to show, use the achievement menu to see available achievements
+				if achievement.length == 1
+					.col-sm-8
+						.well(height="100%")
+							img(height="160px", src="/images/sadface.png").center-block
+							p.text-center No badge to show, use the achievement menu to see available achievements
+				if achievement.length == 2
+					.col-sm-4
+						.well(height="100%")
+							img(height="160px", src="/images/sadface.png").center-block
+							p.text-center No badge to show, use the achievement menu to see available achievements

@@ -1,0 +1,22 @@
+extends ../layout
+
+block body
+	.row
+		.col-md-12
+			if editor.title
+				div
+					a(href=" " title=editor.title.description)
+						h1=editor.title.title + " " + editor.name
+			else
+				h1=editor.name
+	.row
+		.col-md-12
+			ul.nav.nav-tabs
+				li: a(href='/editor/'+editor.id) Profile
+				li: a(href='/editor/'+editor.id+'/revisions') Revisions
+				li.active: a(href='/editor/'+editor.id+'/achievements') Achievements
+	.row
+		.col-sm-12
+			#achievements-form!= markup
+
+	

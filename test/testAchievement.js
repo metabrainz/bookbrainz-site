@@ -22,120 +22,117 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
-const utils = require('../node_modules/bookbrainz-data/util.js');
+const rewire = require('rewire');
+const testData = require('../data/testData.js');
 const Promise = require('bluebird');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
-const _ = require('lodash');
+const awardAchievement = Achievement.__get__('awardAchievement');
+const awardTitle = Achievement.__get__('awardTitle');
 
-const bookbrainzData = require('./bookbrainz-data.js');
-const Bookshelf = require('./bookbrainz-data.js').bookshelf;
-const AchievementType = require('./bookbrainz-data').AchievementType;
-const AchievementUnlock = require('./bookbrainz-data').AchievementUnlock;
-const Editor = require('./bookbrainz-data').Editor;
-const EditorType = require('./bookbrainz-data').EditorType;
-const Achievement = require('../src/server/helpers/achievement.js');
-const Gender = require('./bookbrainz-data').Gender;
+function tests() {
+	describe('awardAchievement', () => {
+		afterEach(testData.truncate);
 
-const genderAttribs = {
-	id: 1,
-	name: 'test'
-};
+		it('should award achievements', () => {
+			const unlockPromise = testData.createEditor()
+				.then(() =>
+					testData.createRevisionist()
+				)
+				.then(() =>
+					awardAchievement(
+						testData.editorAttribs.id,
+						testData.revisionistIAttribs.name
+					)
+				);
 
-const editorTypeAttribs = {
-	id: 1,
-	label: 'test_type'
-};
+			return Promise.all([
+				expect(unlockPromise).to.eventually.have.deep.property(
+					'Revisionist I.editorId',
+					testData.editorAttribs.id
+				),
+				expect(unlockPromise).to.eventually.have.deep.property(
+					'Revisionist I.achievementId',
+					testData.revisionistIAttribs.id
+				)
+			]);
+		});
 
-const reviserAttribs = {
-	id: 1,
-	name: 'alice',
-	email: 'alice@test.org',
-	password: 'test',
-	typeId: 1,
-	revisionsApplied: 1
-};
+		it('should reject invalid editors', () => {
+			const unlockPromise = testData.createRevisionist()
+				.then(() =>
+					awardAchievement(
+						testData.editorAttribs.id,
+						testData.revisionistIAttribs.name
+					)
+				);
 
-const editorAttribs = {
-	id: 2,
-	name: 'bob',
-	email: 'bob@test.org',
-	password: 'test',
-	typeId: 1,
-	revisionsApplied: 0
-};
+			return expect(unlockPromise).to.eventually.be.rejected;
+		});
 
-const reviserAttribsOptional = _.assign(_.clone(reviserAttribs), {
-	genderId: 1
-});
+		it('should reject invalid achievements', () => {
+			const unlockPromise = testData.createEditor()
+				.then(() =>
+					awardAchievement(
+						testData.editorAttribs.id,
+						testData.revisionistIAttribs.name
+					)
+				);
 
-const editorAttribsOptional = _.assign(_.clone(editorAttribs), {
-	genderId: 1
-});
+			return expect(unlockPromise).to.eventually.be.rejected;
+		});
+	});
+	describe('awardTitle', () => {
+		afterEach(testData.truncate);
 
-const revisionistAttribs = {
-	id: 1,
-	name: 'Revisionist I',
-	description: 'create one revision',
-	badgeUrl: 'http://test.com'
-};
+		it('should award titles', () => {
+			const unlockPromise = testData.createEditor()
+				.then(() =>
+					testData.createRevisionist()
+				)
+				.then(() =>
+					awardTitle(
+						testData.editorAttribs.id,
+						{titleName: testData.revisionistAttribs.title}
+					)
+				);
 
-function truncate() {
-	return utils.truncateTables(Bookshelf, [
-		'bookbrainz.editor',
-		'bookbrainz.editor_type',
-		'bookbrainz.achievement_type',
-		'bookbrainz.achievement_unlock',
-		'musicbrainz.gender'
-	]);
+			return Promise.all([
+				expect(unlockPromise).to.eventually.have.deep.property(
+					'Revisionist.editorId',
+					testData.editorAttribs.id
+				),
+				expect(unlockPromise).to.eventually.have.deep.property(
+					'Revisionist.titleId',
+					testData.revisionistAttribs.id
+				)
+			]);
+		});
+
+		it('should reject invalid editors', () => {
+			const unlockPromise = testData.createRevisionist()
+				.then(() =>
+					awardTitle(
+						testData.editorAttribs.id,
+						{titleName: testData.revisionistAttribs.title}
+					)
+				);
+
+			return expect(unlockPromise).to.eventually.be.rejected;
+		});
+
+		it('should reject invalid titles', () => {
+			const unlockPromise = testData.createEditor()
+				.then(() =>
+					awardTitle(
+						testData.editorAttribs.id,
+						{titleName: testData.revisionistAttribs.title}
+					)
+				);
+
+			return expect(unlockPromise).to.eventually.be.rejected;
+		});
+	});
 }
 
-describe('Revisionist achievement', () => {
-	beforeEach(() => new Gender(genderAttribs)
-			.save(null, {method: 'insert'})
-			.then(() => {
-				new EditorType(editorTypeAttribs)
-				.save(null, {method: 'insert'});
-			})
-			.then(() =>
-				new AchievementType(revisionistAttribs)
-				.save(null, {method: 'insert'})
-			)
-			.then(() =>
-				new Editor(reviserAttribsOptional)
-				.save(null, {method: 'insert'})
-			)
-			.then(() =>
-				new Editor(editorAttribsOptional)
-				.save(null, {method: 'insert'})
-			)
-	);
-
-	afterEach(truncate);
-
-	it('should give someone with a revision Revisionist I', () => {
-		const achievementPromise = new Editor(reviserAttribsOptional.name)
-			.fetch()
-			.then((editor) =>
-				Achievement.processEdit(editor.id)
-			);
-
-		return Promise.all([
-			expect(achievementPromise).to.eventually.have
-			.deep.property('attributes.editorId',
-				reviserAttribs.id),
-			expect(achievementPromise).to.eventually.have
-				.deep.property('attributes.achievementId',
-					revisionistAttribs.id)
-		]);
-	});
-
-	it('should not give someone without a revision Revisionist I', () => {
-		const achievementPromise = new Editor({name: editorAttribs.name})
-			.fetch()
-			.then((editor) =>
-				Achievement.processEdit(editor.id)
-			);
-
-		return expect(achievementPromise).to.eventually.equal(false);
-	});
-});
+describe('achievement module', tests);

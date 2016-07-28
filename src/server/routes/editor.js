@@ -26,7 +26,10 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
+const AchievementType = require('bookbrainz-data').AchievementType;
+const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
+const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 
 const auth = require('../helpers/auth');
 const handler = require('../helpers/handler');
@@ -38,17 +41,48 @@ const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile.jsx')
 );
 
+const AchievementForm = React.createFactory(
+	require('../../client/components/forms/achievements.jsx')
+);
+
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
-	new Editor({id: parseInt(req.user.id, 10)})
+	const editorPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch()
-		.then((editor) => {
+		.then((editor) =>
+			editor.toJSON()
+		);
+
+	const titlePromise = new TitleUnlock()
+		.where('editor_id', parseInt(req.user.id, 10))
+		.fetchAll({
+			withRelated: ['title']
+		})
+		.then((unlock) => {
+			let titleJSON;
+			if (unlock !== null) {
+				titleJSON = unlock.toJSON();
+			}
+			else {
+				titleJSON = {};
+			}
+			return titleJSON;
+		});
+
+	Promise.join(editorPromise, titlePromise,
+		(editorJSON, titleJSON) => {
 			const markup =
-				ReactDOMServer.renderToString(ProfileForm(editor.toJSON()));
+				ReactDOMServer.renderToString(ProfileForm({
+					editor: editorJSON,
+					titles: titleJSON
+				}));
 
 			res.render('editor/edit', {
-				props: editor.toJSON(),
+				props: {
+					editor: editorJSON,
+					titles: titleJSON
+				},
 				markup
 			});
 		})
@@ -76,34 +110,90 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			editor.set('bio', req.body.bio)
 				.save()
 		)
-		.then((editor) => editor.toJSON());
+		.then((editor) => {
+			let editorTitleUnlock;
+			if (req.body.title === 'none') {
+				editorTitleUnlock = editor.set('titleUnlockId', null);
+			}
+			else {
+				editorTitleUnlock = editor.set('titleUnlockId', req.body.title);
+			}
+			return editorTitleUnlock.save();
+		})
+		.then((editor) =>
+			editor.toJSON()
+		);
 
-	handler.sendPromiseResult(res, editPromise);
+	return handler.sendPromiseResult(res, editPromise);
 });
 
 router.get('/:id', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
 
-	new Editor({id: userId})
+	const editor = new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender']
 		})
-		.then((editor) => {
-			let editorJSON = editor.toJSON();
+		.then((editordata) => {
+			let editorJSON = editordata.toJSON();
 
 			if (!req.user || userId !== req.user.id) {
 				editorJSON = _.omit(editorJSON, ['password', 'email']);
 			}
 
-			res.render('editor/editor', {
-				editor: editorJSON
-			});
+			return editorJSON;
+		})
+		.then((editorJSON) => {
+			let editorTitleJSON;
+			if (editorJSON.titleUnlockId === null) {
+				editorTitleJSON = Promise.resolve(editorJSON);
+			}
+			else {
+				editorTitleJSON = new TitleUnlock({
+					id: editorJSON.titleUnlockId
+				})
+					.fetch({
+						withRelated: ['title']
+					})
+					.then((unlock) => {
+						if (unlock !== null) {
+							editorJSON.title =
+								unlock.relations.title.attributes;
+						}
+						return editorJSON;
+					});
+			}
+			return editorTitleJSON;
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
 		})
 		.catch(next);
+
+	const achievement = new AchievementUnlock()
+		.where('editor_id', userId)
+		.where('profile_rank', '<=', '3')
+		.query((qb) => qb.limit(3))
+		.orderBy('profile_rank', 'ASC')
+		.fetchAll({
+			withRelated: ['achievement']
+		})
+		.then((achievements) => {
+			const achievementJSON = {
+				length: achievements.length,
+				model: achievements.toJSON()
+			};
+			return achievementJSON;
+		});
+
+	Promise.join(achievement, editor,
+		(achievementJSON, editorJSON) =>
+			res.render('editor/editor', {
+				editor: editorJSON,
+				achievement: achievementJSON
+			})
+	);
 });
 
 router.get('/:id/revisions', (req, res, next) => {
@@ -117,14 +207,200 @@ router.get('/:id/revisions', (req, res, next) => {
 			}
 		})
 		.then((editor) => {
+			const editorJSON = editor.toJSON();
+			let editorTitleJSON;
+			if (editorJSON.titleUnlockId === null) {
+				editorTitleJSON = Promise.resolve(editorJSON);
+			}
+			else {
+				editorTitleJSON = new TitleUnlock({editorId: editorJSON.id})
+					.fetch({
+						withRelated: ['title']
+					})
+					.then((unlock) => {
+						if (unlock !== null) {
+							editorJSON.title =
+								unlock.relations.title.attributes;
+						}
+						return editorJSON;
+					});
+			}
+			return editorTitleJSON;
+		})
+		.then((editorJSON) => {
 			res.render('editor/revisions', {
-				editor: editor.toJSON()
+				editor: editorJSON
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
 		})
 		.catch(next);
+});
+
+router.get('/:id/achievements', (req, res, next) => {
+	const userId = parseInt(req.params.id, 10);
+	const editor = new Editor({id: userId})
+		.fetch({
+			require: true,
+			withRelated: ['type', 'gender']
+		})
+		.then((editordata) => {
+			let editorJSON = editordata.toJSON();
+
+			if (!req.user || userId !== req.user.id) {
+				editorJSON = _.omit(editorJSON, ['password', 'email']);
+				editorJSON.authenticated = false;
+			}
+			else {
+				editorJSON.authenticated = true;
+			}
+
+			return editorJSON;
+		})
+		.then((editorJSON) => {
+			let editorTitleJSON;
+			if (editorJSON.titleUnlockId === null) {
+				editorTitleJSON = Promise.resolve(editorJSON);
+			}
+			else {
+				editorTitleJSON = new TitleUnlock({editorId: userId})
+					.fetch({
+						withRelated: ['title']
+					})
+					.then((unlock) => {
+						if (unlock !== null) {
+							editorJSON.title =
+								unlock.relations.title.attributes;
+						}
+						return editorJSON;
+					});
+			}
+			return editorTitleJSON;
+		})
+		.catch(Editor.NotFoundError, () => {
+			throw new NotFoundError('Editor not found');
+		})
+		.catch(next);
+
+
+	const achievement = new AchievementUnlock()
+		.where('editor_id', userId)
+		.fetchAll()
+		.then((unlocks) => {
+			const unlocked = [];
+			for (let i = 0; i < unlocks.length; i++) {
+				unlocked[i] =
+					unlocks.models[i].attributes.achievementId;
+			}
+			return unlocked;
+		})
+		.then((unlocks) =>
+			new AchievementType()
+				.orderBy('id', 'ASC')
+				.fetchAll()
+				.then((achievements) => {
+					const achievementsJSON = {
+						model: achievements.toJSON()
+					};
+					for (let i = 0; i < achievementsJSON.model.length; i++) {
+						if (unlocks.indexOf(
+									achievementsJSON.model[i].id) >= 0) {
+							achievementsJSON.model[i].unlocked = true;
+						}
+						else {
+							achievementsJSON.model[i].unlocked = false;
+						}
+					}
+					return achievementsJSON;
+				}
+			)
+		);
+
+	Promise.join(achievement, editor,
+		(achievementJSON, editorJSON) => {
+			const markup =
+				ReactDOMServer.renderToString(AchievementForm({
+					editor: editorJSON,
+					achievement: achievementJSON
+				}));
+
+			res.render('editor/achievements', {
+				editor: editorJSON,
+				markup
+			});
+		}
+	);
+});
+
+function rankUpdate(editorId, bodyRank, rank) {
+	return new AchievementUnlock({
+		editorId,
+		profileRank: rank
+	})
+		.fetch()
+		.then((unlock) => {
+			if (unlock !== null) {
+				unlock.set('profileRank', null)
+					.save();
+			}
+		})
+		.then(() => {
+			let updatePromise;
+			if (bodyRank !== 'none') {
+				updatePromise = new AchievementUnlock({
+					achievement_id: parseInt(bodyRank, 10),
+					editor_id: parseInt(editorId, 10)
+				})
+					.fetch({require: true})
+					.then((unlock) =>
+						unlock.set('profileRank', rank)
+							.save()
+					);
+			}
+			else {
+				updatePromise = Promise.resolve(false);
+			}
+			return updatePromise;
+		});
+}
+
+router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
+	const userId = parseInt(req.params.id, 10);
+	const editorPromise = new Editor({id: userId})
+		.fetch({
+			require: true,
+			withRelated: ['type', 'gender']
+		})
+		.then((editordata) => {
+			let editorJSON;
+
+			if (!req.user || userId !== req.user.id) {
+				editorJSON = Promise.reject(new Error('Not authenticated'));
+			}
+			else {
+				editorJSON = Promise.resolve(editordata.toJSON());
+			}
+			return editorJSON;
+		});
+
+	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
+	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
+	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
+
+
+	const rankPromise =
+		editorPromise.then(() =>
+			Promise.all([
+				rankOnePromise,
+				rankTwoPromise,
+				rankThreePromise
+			]))
+				.then((rankJSON) => {
+					res.redirect(`/editor/${req.params.id}`);
+					return rankJSON;
+				});
+	handler.sendPromiseResult(res, rankPromise);
 });
 
 module.exports = router;

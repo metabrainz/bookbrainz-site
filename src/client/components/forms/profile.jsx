@@ -33,7 +33,8 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 			super(props);
 
 			this.state = {
-				bio: this.props.bio,
+				bio: this.props.editor.bio,
+				title: toString(this.props.editor.titleUnlockId),
 				waiting: false
 			};
 
@@ -45,23 +46,33 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 			evt.preventDefault();
 
 			const data = {
-				id: this.props.id,
-				bio: this.bio.getValue().trim()
+				id: this.props.editor.id,
+				bio: this.bio.getValue().trim(),
+				title: this.title.value
 			};
 
 			this.setState({waiting: true});
 
 			request.post('/editor/edit/handler')
 				.send(data).promise()
-				.then((res) => {
-					const editor = res.body;
-					window.location.href = `/editor/${editor.id}`;
+				.then(() => {
+					window.location.href = `/editor/${this.props.editor.id}`;
 				});
 		}
 
 		render() {
 			const loadingElement =
 				this.state.waiting ? <LoadingSpinner/> : null;
+			const titles = this.props.titles.map((unlock) =>
+				(
+					<option
+						key={unlock.id}
+						value={unlock.id}
+					>
+						{unlock.title.title}
+					</option>
+				)
+			);
 
 			return (
 				<form
@@ -77,6 +88,20 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 						type="textarea"
 						wrapperClassName="col-md-9"
 					/>
+					<div className="form-group">
+						<div className="col-md-4 col-md-offset-4">
+							<label>Title</label>
+							<select
+								className="form-control"
+								name="title"
+								ref={(ref) => this.title = ref}
+								value={this.title}
+							>
+								<option value="none">none</option>
+								{titles}
+							</select>
+						</div>
+					</div>
 					<div className="form-group">
 						<div className="col-md-4 col-md-offset-4">
 							<Button
@@ -96,8 +121,8 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 
 	ProfileForm.displayName = 'ProfileForm';
 	ProfileForm.propTypes = {
-		bio: React.PropTypes.string,
-		id: React.PropTypes.number
+		editor: React.PropTypes.object,
+		titles: React.PropTypes.array
 	};
 
 	module.exports = ProfileForm;
