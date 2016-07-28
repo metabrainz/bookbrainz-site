@@ -143,7 +143,21 @@ function awardListToAwardObject(awardList) {
 	return track;
 }
 
-// tiers = [{threshold, name, (titleName)}] (optional)
+/**
+ * Takes a list of achievement 'tiers' and awards the related achievement and
+ * title if the signal is greater than or equal to the threshold
+ * @param {int} signal - Value tier threshold will be compared against
+ * @param {int} editorId - Editor to award achievements/titles to
+ * @param {object} tiers - Object with threshold and relatedachievement/title
+ * names
+ * @example
+ * testTiers(10, 1, [{
+ * 	threshold: 10, name: 'achievement I', titleName: 'achievement'
+ * }])
+ * //returns {'achievement I': achievementJSON}
+ * @returns {object} - Returns a track of achievements keyed by achievement
+ * name/title containing their respective unlockJSON each tier
+ */
 function testTiers(signal, editorId, tiers) {
 	const tierPromise = tiers.map((tier) => {
 		let tierOut;
