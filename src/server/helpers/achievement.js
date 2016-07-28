@@ -121,9 +121,19 @@ function awardTitle(editorId, tier) {
 	return titlePromise;
 }
 
-function awardListToAwardObject(tier) {
+/**
+ * Reformats a list of list of achievements objects to an object keyed by the
+ * achievement names
+ * @example
+ * awardListToAwardObject([[{'Achievement I': unlockI}]])
+ * //returns {'Achievement I': unlockI}
+ * @param {object} awardList - List of List of achievement unlocks
+ * @returns {object} - Object keyed by achievement name with values
+ * unlock json
+ */
+function awardListToAwardObject(awardList) {
 	const track = {};
-	tier.forEach((awardSet) => {
+	awardList.forEach((awardSet) => {
 		awardSet.forEach((award) => {
 			Object.keys(award).forEach((key) => {
 				track[key] = award[key];
