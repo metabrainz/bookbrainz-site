@@ -37,7 +37,6 @@ testData.editorTypeAttribs = {
 testData.editorAttribs = {
 	id: 1,
 	name: 'bob',
-	email: 'bob@test.org',
 	password: 'test',
 	typeId: 1,
 	revisionsApplied: 0
