@@ -279,15 +279,6 @@ function processSprinter(editorId) {
 		});
 }
 
-function achievementToUnlockId(achievementUnlock) {
-	const unlockIds = [];
-	Object.keys(achievementUnlock).forEach((key) => {
-		if (achievementUnlock[key].id) {
-			unlockIds.push(String(achievementUnlock[key].id));
-		}
-	});
-	return unlockIds;
-}
 /**
  * Gets number of distinct days the editor made an edit on within set limit
  * @param {int} editorId - Editor to query on
@@ -324,6 +315,15 @@ function processMarathoner(editorId) {
 		});
 }
 
+function achievementToUnlockId(achievementUnlock) {
+	const unlockIds = [];
+	Object.keys(achievementUnlock).forEach((key) => {
+		if (achievementUnlock[key].id) {
+			unlockIds.push(String(achievementUnlock[key].id));
+		}
+	});
+	return unlockIds;
+}
 
 achievement.processPageVisit = () => {
 };
