@@ -315,6 +315,13 @@ function processMarathoner(editorId) {
 		});
 }
 
+/**
+ * Converts achievementTier object to a list of achievementUnlock id's,
+ * this will be used to notify the user which achievement they unlocked
+ * @param {object}  achievementUnlock - A track of achievements containing
+ * unlock JSON for each
+ * @returns {list} - A list of achievementUnlock id's
+ */
 function achievementToUnlockId(achievementUnlock) {
 	const unlockIds = [];
 	Object.keys(achievementUnlock).forEach((key) => {
