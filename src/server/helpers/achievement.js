@@ -191,7 +191,13 @@ function testTiers(signal, editorId, tiers) {
 		);
 }
 
-// returns the number of typeRevisions an editor has
+/**
+ * Returns number of revisions of a certain type there are for the specified
+ * editor
+ * @param {string} type - Camelcase name of the type to query
+ * @param {int} editor - Editor id being queried
+ * @returns {int} - Number of revisions of type (type)
+ */
 function getTypeRevisions(type, editor) {
 	const snakeType = _.snakeCase(type);
 	const rawsql = `SELECT revisions.id, bookbrainz.${snakeType}.id \
