@@ -35,6 +35,12 @@ const _ = require('lodash');
  */
 const achievement = {};
 
+/**
+ * Awards an Unlock type with awardAttribs if not already awarded
+ * @param {function} UnlockType - Either TitleUnlock or AchievementUnlock
+ * @param {object} awardAttribs - Values that are supplied to Unlock constructor
+ * @returns {object} - 'already unlocked' or JSON of new unlock
+ */
 function awardUnlock(UnlockType, awardAttribs) {
 	return new UnlockType(awardAttribs)
 		.fetch({require: true})
