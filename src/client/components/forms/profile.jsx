@@ -46,7 +46,7 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 			evt.preventDefault();
 
 			const data = {
-				id: this.props.id,
+				id: this.props.editor.id,
 				bio: this.bio.getValue().trim(),
 				title: this.title.value
 			};
@@ -121,9 +121,7 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 
 	ProfileForm.displayName = 'ProfileForm';
 	ProfileForm.propTypes = {
-		bio: React.PropTypes.string,
 		editor: React.PropTypes.object,
-		id: React.PropTypes.number,
 		titles: React.PropTypes.array
 	};
 
