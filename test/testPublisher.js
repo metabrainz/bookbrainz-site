@@ -36,7 +36,7 @@ module.exports = function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a publisher revision',
+	it('I should be given to someone with a publication creation',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
@@ -64,7 +64,7 @@ module.exports = function tests() {
 		}
 	);
 
-	it('II should be given to someone with 10 publisher revisions',
+	it('II should be given to someone with 10 publication creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
@@ -90,7 +90,7 @@ module.exports = function tests() {
 			]);
 		});
 
-	it('III should be given to someone with 100 edition revisions',
+	it('III should be given to someone with 100 publication creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
@@ -122,7 +122,7 @@ module.exports = function tests() {
 			]);
 		});
 
-	it('should not be given to someone with 0 publisher revisions',
+	it('should not be given to someone with 0 publication creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:

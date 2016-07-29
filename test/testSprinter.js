@@ -39,7 +39,7 @@ module.exports = () => {
 
 	afterEach(testData.truncate);
 
-	it('should give someone with 10 revisions in an hour Sprinter', () => {
+	it('should be given to someone with 10 revisions in an hour', () => {
 		const achievementPromise = testData.sprinterHelper(sprinterThreshold)
 			.then(() => new Editor({name: testData.editorAttribs.name})
 				.fetch()
@@ -60,7 +60,7 @@ module.exports = () => {
 	});
 
 
-	it('should not give someone with 9 revisions in an hour Sprinter', () => {
+	it('should not be given to someone with 9 revisions in an hour', () => {
 		const achievementPromise =
 			testData.sprinterHelper(sprinterThreshold - 1)
 			.then(() => new Editor({name: testData.editorAttribs.name})
