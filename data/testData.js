@@ -185,6 +185,34 @@ testData.workerBeeAttribs = {
 	title: 'Worker Bee',
 };
 
+
+testData.publisherCreatorIAttribs = {
+	id: 1,
+	name: 'Publisher Creator I',
+	description: 'create 1 worker',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherCreatorIIAttribs = {
+	id: 2,
+	name: 'Publisher Creator II',
+	description: 'create 10 creators',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherCreatorIIIAttribs = {
+	id: 3,
+	name: 'Publisher Creator III',
+	description: 'create 100 creators',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherCreatorAttribs = {
+	id: 1,
+	description: 'finish publisher creator track',
+	title: 'Publisher Creator',
+};
+
 testData.sprinterTitleAttribs = {
 	id: 1,
 	title: 'Sprinter',
@@ -307,6 +335,23 @@ testData.createWorkerBee = function() {
 		)
 		.then(() =>
 			new TitleType(this.workerBeeAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
+testData.createPublisherCreator = function() {
+	return new AchievementType(this.publisherCreatorIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.publisherCreatorIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new AchievementType(this.publisherCreatorIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new TitleType(this.publisherCreatorAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
