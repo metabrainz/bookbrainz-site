@@ -36,6 +36,7 @@ const testMarathoner = require('./testMarathoner.js');
 const testPublisher = require('./testPublisher.js');
 const testRevisionist = require('./testRevisionist.js');
 const testSprinter = require('./testSprinter.js');
+const testWorkerBee = require('./testWorkerBee.js');
 
 function tests() {
 	describe('awardAchievement', () => {
@@ -153,6 +154,7 @@ function tests() {
 	describe('Publisher Achievement', testPublisher);
 	describe('Revisionist Achievement', testRevisionist);
 	describe('Sprinter Achievement', testSprinter);
+	describe('Worker Bee Achievement', testWorkerBee);
 }
 
 describe('achievement module', tests);
