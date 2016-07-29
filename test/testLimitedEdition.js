@@ -39,9 +39,9 @@ module.exports = function tests() {
 	it('I should given to someone with an edition revision',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'editionRevision', limitedEditionIThreshold
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'edition_revision', limitedEditionIThreshold
 					)
 			});
 
@@ -67,9 +67,9 @@ module.exports = function tests() {
 	it('II should be given to someone with 10 edition revisions',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'editionRevision', limitedEditionIIThreshold
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'edition_revision', limitedEditionIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -93,9 +93,9 @@ module.exports = function tests() {
 	it('III should be given to someone with 100 edition revisions',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'editionRevision', limitedEditionIIIThreshold
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'edition_revision', limitedEditionIIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -125,9 +125,9 @@ module.exports = function tests() {
 	it('should not given to someone with 0 edition revisions',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'editionRevision', 0
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'edition_revision', 0
 					)
 			});
 			const achievementPromise = testData.createEditor()

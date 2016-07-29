@@ -318,6 +318,19 @@ testData.typeRevisionHelper = function(revisionType, rowcount) {
 	};
 }
 
+testData.typeCreationHelper = function(revisionTypeString, rowCount) {
+	return function(type, string, editor) {
+		let rowCountPromise;
+		if (string === revisionTypeString) {
+			rowCountPromise = Promise.resolve(rowCount);
+		}
+		else {
+			rowCountPromise = Promise.resolve(0);
+		}
+		return rowCountPromise;
+	};
+}
+
 testData.truncate = () => utils.truncateTables(Bookshelf, [
 		'bookbrainz.editor',
 		'bookbrainz.editor_type',
