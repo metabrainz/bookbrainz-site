@@ -427,6 +427,8 @@ achievement.processEdit = (userid) =>
 		creatorCreator,
 		limitedEdition,
 		publisher,
+		publisherCreator,
+		workerBee,
 		sprinter,
 		funRunner,
 		marathoner) => {
@@ -436,6 +438,8 @@ achievement.processEdit = (userid) =>
 				achievementToUnlockId(creatorCreator),
 				achievementToUnlockId(limitedEdition),
 				achievementToUnlockId(publisher),
+				achievementToUnlockId(publisherCreator),
+				achievementToUnlockId(workerBee),
 				achievementToUnlockId(sprinter),
 				achievementToUnlockId(funRunner),
 				achievementToUnlockId(marathoner)
@@ -447,6 +451,8 @@ achievement.processEdit = (userid) =>
 				creatorCreator,
 				limitedEdition,
 				publisher,
+				publisherCreator,
+				workerBee,
 				sprinter,
 				funRunner,
 				marathoner,
