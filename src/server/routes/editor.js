@@ -239,6 +239,22 @@ router.get('/:id/revisions', (req, res, next) => {
 		.catch(next);
 });
 
+function setAchievementUnlockedField(achievements, unlockIds) {
+	const model = achievements.map((achievementType) => {
+		const achievementJSON = achievementType.toJSON();
+		if (unlockIds.indexOf(achievementJSON.id) >= 0) {
+			achievementJSON.unlocked = true;
+		}
+		else {
+			achievementJSON.unlocked = false;
+		}
+		return achievementJSON;
+	});
+	return {
+		model
+	};
+}
+
 router.get('/:id/achievements', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
 	const editorJSONPromise = new Editor({id: userId})
@@ -286,7 +302,6 @@ router.get('/:id/achievements', (req, res, next) => {
 		})
 		.catch(next);
 
-
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.fetchAll()
@@ -297,23 +312,9 @@ router.get('/:id/achievements', (req, res, next) => {
 			new AchievementType()
 				.orderBy('id', 'ASC')
 				.fetchAll()
-				.then((achievements) => {
-					const model = achievements.map((achievementType) => {
-						const achievementJSON = achievementType.toJSON();
-						if (unlocks.indexOf(achievementJSON.id) >= 0) {
-							achievementJSON.unlocked = true;
-						}
-						else {
-							achievementJSON.unlocked = false;
-						}
-						return achievementJSON;
-					});
-					const achievementsJSON = {
-						model
-					};
-					return achievementsJSON;
-				}
-			)
+				.then((achievements) =>
+					setAchievementUnlockedField(achievements, unlocks)
+				)
 		);
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
