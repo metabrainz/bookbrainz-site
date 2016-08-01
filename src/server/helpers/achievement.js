@@ -33,7 +33,6 @@ const WorkRevision = require('bookbrainz-data').WorkRevision;
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
 
-const _ = require('lodash');
 
 /**
  * Achievement Module
