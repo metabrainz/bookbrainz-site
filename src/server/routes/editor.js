@@ -53,7 +53,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		.then((editor) => editor.toJSON());
 
 	const titleJSONPromise = new TitleUnlock()
-		.where({'editor_id': parseInt(req.user.id, 10)})
+		.where(_.snakeCase('editorId'), parseInt(req.user.id, 10))
 		.fetchAll({
 			withRelated: ['title']
 		})
@@ -171,7 +171,7 @@ router.get('/:id', (req, res, next) => {
 		.catch(next);
 
 	const achievementJSONPromise = new AchievementUnlock()
-		.where('editor_id', userId)
+		.where(_.snakeCase('editorId'), userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
 		.orderBy('profile_rank', 'ASC')
