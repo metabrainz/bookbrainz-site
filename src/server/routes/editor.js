@@ -212,7 +212,9 @@ router.get('/:id/revisions', (req, res, next) => {
 				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				editorTitleJSON = new TitleUnlock({id: editorJSON.titleUnlockId})
+				editorTitleJSON = new TitleUnlock({
+					id: editorJSON.titleUnlockId
+				})
 					.fetch({
 						withRelated: ['title']
 					})
@@ -263,7 +265,9 @@ router.get('/:id/achievements', (req, res, next) => {
 				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				editorTitleJSON =  new TitleUnlock({id: editorJSON.titleUnlockId})
+				editorTitleJSON = new TitleUnlock({
+					id: editorJSON.titleUnlockId
+				})
 					.fetch({
 						withRelated: ['title']
 					})
@@ -286,29 +290,24 @@ router.get('/:id/achievements', (req, res, next) => {
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.fetchAll()
-		.then((unlocks) => {
-			const unlocked = unlocks.map('attributes.achievementId');
-			/*for (let i = 0; i < unlocks.length; i++) {
-				unlocked[i] =
-					unlocks.models[i].attributes.achievementId;
-			}*/
-			return unlocked;
-		})
+		.then((unlocks) =>
+			unlocks.map('attributes.achievementId')
+		)
 		.then((unlocks) =>
 			new AchievementType()
 				.orderBy('id', 'ASC')
 				.fetchAll()
 				.then((achievements) => {
-					const model = achievements.map((achievement) => {
-						achievement = achievement.toJSON();
-						if (unlocks.indexOf(achievement.id) >= 0) {
-							achievement.unlocked = true;
+					const model = achievements.map((achievementType) => {
+						const achievementJSON = achievementType.toJSON();
+						if (unlocks.indexOf(achievementJSON.id) >= 0) {
+							achievementJSON.unlocked = true;
 						}
 						else {
-							achievement.unlocked = false;
+							achievementJSON.unlocked = false;
 						}
-						return achievement;
-					})
+						return achievementJSON;
+					});
 					const achievementsJSON = {
 						model
 					};
