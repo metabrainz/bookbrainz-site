@@ -57,7 +57,7 @@ const yRegex = /^\d{4}$/;
 		}
 
 		getValue() {
-			return this.validate(this.input.getValue().trim());
+			return this.state.value;
 		}
 
 		handleChange() {
@@ -78,7 +78,7 @@ const yRegex = /^\d{4}$/;
 		}
 
 		valid() {
-			return this.state.valid;
+			return PartialDate.validate(this.input.getValue().trim());
 		}
 
 		validationState() {
