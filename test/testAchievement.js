@@ -94,7 +94,7 @@ function tests() {
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
 					)
-				);
+				)
 
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
@@ -133,7 +133,7 @@ function tests() {
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}
 					)
-				);
+				)
 
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
@@ -152,6 +152,7 @@ function tests() {
 	});
 	describe('Creator Creator Achievement', testCreatorCreator);
 	describe('Fun Runner Achievement', testFunRunner);
+	describe('Hot Off the Press Achievement', testHotOffThePress);
 	describe('Limited Edition Achievement', testLimitedEdition);
 	describe('Marathoner Achievement', testMarathoner);
 	describe('Publisher Achievement', testPublisher);
@@ -160,7 +161,6 @@ function tests() {
 	describe('Sprinter Achievement', testSprinter);
 	describe('Time Traveller Achievement', testTimeTraveller);
 	describe('Worker Bee Achievement', testWorkerBee);
-	describe('Hot Off the Press Achievement', testHotOffThePress);
 }
 
 describe('achievement module', tests);
