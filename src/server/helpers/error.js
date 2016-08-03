@@ -118,6 +118,22 @@ function sendErrorAsJSON(res, err) {
 	res.status(errorToSend.status).send({error: errorToSend.message});
 }
 
+class AwardNotFoundError extends Error {
+	constructor(message) {
+		super();
+
+		// We can't access the subclass's default message before calling super,
+		// so we set it manually here
+		this.message = message || this.constructor.defaultMessage;
+
+		this.name = this.constructor.name;
+	}
+
+	static get defaultMessage() {
+		return 'An achievement was not found';
+	}
+}
+
 const errors = {
 	AuthenticationFailedError,
 	FormSubmissionError,
@@ -126,7 +142,8 @@ const errors = {
 	PermissionDeniedError,
 	SiteError,
 	renderError,
-	sendErrorAsJSON
+	sendErrorAsJSON,
+	AwardNotFoundError
 };
 
 module.exports = errors;

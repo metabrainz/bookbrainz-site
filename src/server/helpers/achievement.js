@@ -31,7 +31,7 @@ const WorkRevision = require('bookbrainz-data').WorkRevision;
 
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
-
+const AwardNotFoundError = require('./error.js').AwardNotFoundError;
 
 /**
  * Achievement Module
@@ -83,10 +83,11 @@ function awardAchievement(editorId, achievementName) {
 					return out;
 				});
 		})
-		.catch((error) => {
-			console.error(error);
-			return Promise.reject(error);
-		});
+		.catch((error) =>
+			Promise.reject(new AwardNotFoundError(
+				`Achievement ${achievementName} not found in database`
+			))
+		);
 }
 
 /**
@@ -114,10 +115,11 @@ function awardTitle(editorId, tier) {
 						return out;
 					});
 			})
-			.catch((error) => {
-				console.error(error);
-				return Promise.reject(error);
-			});
+			.catch((error) =>
+				Promise.reject(new AwardNotFoundError(
+					`Title ${tier.titleName} not found in database`
+				))
+			);
 	}
 	else {
 		titlePromise = Promise.resolve(false);
@@ -178,7 +180,8 @@ function testTiers(signal, editorId, tiers) {
 					out.push(achievementUnlock);
 					return out;
 				}
-			);
+			)
+				.catch((error) => console.log(error));;
 		}
 		else {
 			const out = {};
