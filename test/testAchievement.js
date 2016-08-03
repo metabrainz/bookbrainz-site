@@ -39,6 +39,7 @@ const testRevisionist = require('./testRevisionist.js');
 const testSprinter = require('./testSprinter.js');
 const testWorkerBee = require('./testWorkerBee.js');
 const testTimeTraveller = require('./testTimeTraveller.js');
+const testHotOffThePress = require('./testHotOffThePress.js');
 
 function tests() {
 	describe('awardAchievement', () => {
@@ -159,6 +160,7 @@ function tests() {
 	describe('Sprinter Achievement', testSprinter);
 	describe('Time Traveller Achievement', testTimeTraveller);
 	describe('Worker Bee Achievement', testWorkerBee);
+	describe('Hot Off the Press Achievement', testHotOffThePress);
 }
 
 describe('achievement module', tests);
