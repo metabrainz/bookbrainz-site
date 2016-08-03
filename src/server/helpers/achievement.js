@@ -449,6 +449,24 @@ function processTimeTraveller(editorId, revisionId) {
 		.catch((err) => ({'Time Traveller': err}));
 }
 
+function processHotOffThePress(editorId, revisionId) {
+	return getEditionDateDifference(revisionId)
+		.then((diff) => {
+			if (diff < 0) {
+				const tiers = [{
+					threshold: -7,
+					name: 'Hot Off the Press',
+					titleName: 'Hot Off the Press'
+				}];
+				return testTiers(diff, editorId, tiers);
+			}
+			else {
+				return {'Hot Off the Press': false};
+			}
+		})
+		.catch((err) => ({'Hot Off the Press': err}));
+}
+
 achievement.processPageVisit = () => {
 };
 
@@ -472,6 +490,7 @@ achievement.processEdit = (userId, revisionId) =>
 		processFunRunner(userId),
 		processMarathoner(userId),
 		processTimeTraveller(userId, revisionId),
+		processHotOffThePress(userId, revisionId),
 		(revisionist,
 		creatorCreator,
 		limitedEdition,
@@ -481,7 +500,8 @@ achievement.processEdit = (userId, revisionId) =>
 		sprinter,
 		funRunner,
 		marathoner,
-		timeTraveller) => {
+		timeTraveller,
+		hotOffThePress) => {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),
@@ -493,7 +513,8 @@ achievement.processEdit = (userId, revisionId) =>
 				achievementToUnlockId(sprinter),
 				achievementToUnlockId(funRunner),
 				achievementToUnlockId(marathoner),
-				achievementToUnlockId(timeTraveller)
+				achievementToUnlockId(timeTraveller),
+				achievementToUnlockId(hotOffThePress)
 			);
 			alert = [].concat.apply([], alert);
 			alert = alert.join(',');
@@ -508,6 +529,7 @@ achievement.processEdit = (userId, revisionId) =>
 				funRunner,
 				marathoner,
 				timeTraveller,
+				hotOffThePress,
 				alert
 			};
 		}
