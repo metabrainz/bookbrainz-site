@@ -122,8 +122,9 @@ function awardTitle(editorId, tier) {
 }
 
 /**
- * Reformats a list of list of achievements objects to an object keyed by the
- * achievement names
+ * In testTiers a tier is mapped to a list of achievements/titles this
+ * converts it to an object keyed by achievementName where it is easier
+ * to find a specific achievement.
  * @example
  * awardListToAwardObject([[{'Achievement I': unlockI}]])
  * //returns {'Achievement I': unlockI}
