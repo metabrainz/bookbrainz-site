@@ -441,41 +441,6 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
-function processTimeTraveller(editorId) {
-	return getLatestCreation(editorId)
-		.then((revision) => {
-			let timeTravellerPromise;
-			// possible edge case if no change on an edit
-			if (revision) {
-				timeTravellerPromise = getReleaseDate(revision.id)
-					.then((date) => {
-						let achievementPromise;
-						if (date === false) {
-							achievementPromise = Promise.resolve(false);
-						}
-						else {
-							let diff = Date.now() - date.getTime();
-							// convert diff to number of days
-							diff /= 1000 * 60 * 60 * 24;
-							const tiers = [{
-								threshold: -1,
-								name: 'Time Traveller',
-								titleName: 'Time Traveller'
-							}];
-							achievementPromise =
-								testTiers(diff, editorId, tiers);
-						}
-						return achievementPromise;
-					})
-					.catch(() => Promise.resolve(false));
-			}
-			else {
-				timeTravellerPromise = Promise.resolve(false);
-			}
-			return timeTravellerPromise;
-		});
-}
-
 function getEditionDateDifference(revisionId) {
 	return new EditionRevision({id: revisionId}).fetch()
 		.then((edition) =>
@@ -511,6 +476,19 @@ function getEditionDateDifference(revisionId) {
 		.catch(() => Promise.reject(new Error('no date attribute')));
 }
 
+function processTimeTraveller(editorId, revisionId) {
+	return getEditionDateDifference(revisionId)
+		.then((diff) => {
+			const tiers = [{
+				threshold: 0,
+				name: 'Time Traveller',
+				titleName: 'Time Traveller'
+			}];
+			return testTiers(diff, editorId, tiers);
+		})
+		.catch((err) => ({'Time Traveller': err}));
+}
+
 achievement.processPageVisit = () => {
 };
 
@@ -524,16 +502,16 @@ achievement.processPageVisit = () => {
  */
 achievement.processEdit = (userId, revisionId) =>
 	Promise.join(
-		processRevisionist(userid),
-		processCreatorCreator(userid),
-		processLimitedEdition(userid),
-		processPublisher(userid),
-		processPublisherCreator(userid),
-		processWorkerBee(userid),
-		processSprinter(userid),
-		processFunRunner(userid),
-		processMarathoner(userid),
-		processTimeTraveller(userid),
+		processRevisionist(userId),
+		processCreatorCreator(userId),
+		processLimitedEdition(userId),
+		processPublisher(userId),
+		processPublisherCreator(userId),
+		processWorkerBee(userId),
+		processSprinter(userId),
+		processFunRunner(userId),
+		processMarathoner(userId),
+		processTimeTraveller(userId, revisionId),
 		(revisionist,
 		creatorCreator,
 		limitedEdition,
