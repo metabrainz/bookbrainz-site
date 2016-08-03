@@ -21,7 +21,6 @@
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
-const Revision = require('bookbrainz-data').Revision;
 const TitleType = require('bookbrainz-data').TitleType;
 const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 const CreatorRevision = require('bookbrainz-data').CreatorRevision;
