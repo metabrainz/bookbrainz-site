@@ -281,7 +281,8 @@ function processSprinter(editorId) {
 }
 
 /**
- * Gets number of distinct days the editor made an edit on within set limit
+ * Gets number of distinct days the editor created revisions within specified
+ * time limit
  * @param {int} editorId - Editor to query on
  * @param {int} days - Number of days before today to collect edits from
  * @returns {int} - Number of days edits were performed on
