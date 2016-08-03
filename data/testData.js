@@ -245,6 +245,19 @@ testData.marathonerTitleAttribs = {
 	description: 'Complete Marathoner track'
 };
 
+testData.timeTravellerAttribs = {
+	id: 1,
+	name: 'Time Traveller',
+	description: 'test description',
+	badgeUrl: 'http://test.com'
+};
+
+testData.timeTravellerTitleAttribs = {
+	id: 1,
+	title: 'Time Traveller',
+	description: 'test description'
+};
+
 testData.createEditor = function() {
 	return new EditorType(this.editorTypeAttribs)
 		.save(null, {method: 'insert'})
@@ -390,6 +403,15 @@ testData.createMarathoner = function() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(this.marathonerTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
+}
+
+testData.createTimeTraveller = function() {
+	return new AchievementType(this.timeTravellerAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.timeTravellerTitleAttribs)
 			.save(null, {method: 'insert'})
 		);
 }
