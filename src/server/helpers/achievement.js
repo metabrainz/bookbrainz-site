@@ -482,11 +482,12 @@ achievement.processPageVisit = () => {
 /**
  * Run each time an edit occurs on the site, will test for each achievement
  * type
- * @param {int} userid - Id of the user to query
+ * @param {int} userId - Id of the user to query
+ * @param {int} revisionId - Id of latest revision
  * @returns {object} - Output of each achievement test as well as an alert
  * containing id's for each unlocked achievement in .alert
  */
-achievement.processEdit = (userid) =>
+achievement.processEdit = (userId, revisionId) =>
 	Promise.join(
 		processRevisionist(userid),
 		processCreatorCreator(userid),
