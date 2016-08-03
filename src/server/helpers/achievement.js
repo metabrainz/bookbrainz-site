@@ -476,6 +476,41 @@ function processTimeTraveller(editorId) {
 		});
 }
 
+function getEditionDateDifference(revisionId) {
+	return new EditionRevision({id: revisionId}).fetch()
+		.then((edition) =>
+			edition.related('data').fetch()
+		)
+		.then((data) =>
+			data.related('releaseEventSet').fetch()
+		)
+		.then((releaseEventSet) =>
+			releaseEventSet.related('releaseEvents').fetch()
+		)
+		.then((releaseEvents) => {
+			let differencePromise;
+			if (releaseEvents.length > 0) {
+				const oneDayMs = 1000 * 60 * 60 * 24;
+				console.log(releaseEvents.models[0]);
+				const attribs = releaseEvents.models[0].attributes;
+				const date = new Date(
+					attribs.year,
+					attribs.month - 1,
+					attribs.day
+				);
+				const now = new Date(Date.now());
+				differencePromise =
+					Math.round((date.getTime() - now.getTime()) / oneDayMs);
+			}
+			else {
+				differencePromise =
+					Promise.reject(new Error('no date attribute'));
+			}
+			return differencePromise;
+		})
+		.catch(() => Promise.reject(new Error('no date attribute')));
+}
+
 achievement.processPageVisit = () => {
 };
 
