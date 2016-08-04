@@ -17,6 +17,8 @@
  */
 
 const React = require('react');
+const StickyContainer = require('react-sticky').StickyContainer;
+const Sticky = require('react-sticky').Sticky;
 const request = require('superagent-bluebird-promise');
 const Achievement = require('./parts/achievement.jsx');
 const DragAndDrop = require('../input/dndSelector.jsx').DragAndDrop;
@@ -103,13 +105,17 @@ const DragAndDrop = require('../input/dndSelector.jsx').DragAndDrop;
 				)
 			}
 			return (
-				<div>
-					{rankUpdate}
-					<div className="h1">Unlocked Achievements</div>
-					{achievements}
-					<div className="h1">Locked Achievements</div>
-					{locked}
-				</div>
+				<StickyContainer>
+					<Sticky topOffset={-80} style={{background: 'white','margin-top': 64, width: '100%'}}>
+						{rankUpdate}
+					</Sticky>
+					<div>
+						<div className="h1">Unlocked Achievements</div>
+						{achievements}
+						<div className="h1">Locked Achievements</div>
+						{locked}
+					</div>
+				</StickyContainer>
 			);
 		}
 	}
