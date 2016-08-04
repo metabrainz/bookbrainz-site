@@ -173,8 +173,10 @@ router.get('/:id', (req, res, next) => {
 	// concatenating the diffs
 	const revisionPromise = new Revision({id: req.params.id})
 		.fetch({withRelated: ['author', 'notes', 'notes.author']})
-		.then((revision) => {
-			return new TitleUnlock({id: revision.relations.author.attributes.titleUnlockId})
+		.then((revision) =>
+			new TitleUnlock({
+				id: revision.relations.author.attributes.titleUnlockId
+			})
 				.fetch({
 					require: true,
 					withRelated: ['title']
@@ -185,12 +187,12 @@ router.get('/:id', (req, res, next) => {
 				})
 				.catch(() => {
 					revision.relations.title = {
-						title: "No Title Set",
-						description: "This user hasn't selected a title"
-					}
+						title: 'No Title Set',
+						description: 'This user hasn\'t selected a title'
+					};
 					return revision;
-				});
-		});
+				})
+		);
 
 	function _createRevision(model) {
 		return model.forge()
