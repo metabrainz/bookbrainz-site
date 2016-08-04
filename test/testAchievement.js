@@ -94,7 +94,7 @@ function tests() {
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
 					)
-				)
+				);
 
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
@@ -133,7 +133,7 @@ function tests() {
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}
 					)
-				)
+				);
 
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
