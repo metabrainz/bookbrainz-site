@@ -25,11 +25,22 @@ const TitleType = require('bookbrainz-data').TitleType;
 const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 
 const Promise = require('bluebird');
-const achievement = {};
 const Bookshelf = require('bookbrainz-data').bookshelf;
 
 const _ = require('lodash');
 
+/**
+ * Achievement Module
+ * @module Achievement
+ */
+const achievement = {};
+
+/**
+ * Awards an Unlock type with awardAttribs if not already awarded
+ * @param {function} UnlockType - Either TitleUnlock or AchievementUnlock
+ * @param {object} awardAttribs - Values that are supplied to Unlock constructor
+ * @returns {object} - 'already unlocked' or JSON of new unlock
+ */
 function awardUnlock(UnlockType, awardAttribs) {
 	return new UnlockType(awardAttribs)
 		.fetch({require: true})
@@ -45,6 +56,14 @@ function awardUnlock(UnlockType, awardAttribs) {
 		);
 }
 
+/**
+ * Awards an Achievement
+ * @param {int} editorId - The editor the achievement will be awarded to
+ * @param {string} achievementName - Name of achievement in database
+ * @returns {object} - {achievementName: unlock} where unlock is JSON returned
+ * from awardUnlock
+ * @memberof module:Achievement
+ */
 function awardAchievement(editorId, achievementName) {
 	return new AchievementType({name: achievementName})
 		.fetch({require: true})
@@ -66,6 +85,14 @@ function awardAchievement(editorId, achievementName) {
 		});
 }
 
+/**
+ * Awards a Title
+ * @param {int} editorId - The editor the title will be assigned to
+ * @param {object} tier - Achievement Tier the Title (if it exists) belongs to
+ * @returns {object} - {tier.titleName: unlock} where unlock comes from
+ * awardUnlock or false if the title is not in the tier
+ * @memberof module:Achievement
+ */
 function awardTitle(editorId, tier) {
 	let titlePromise;
 	if (tier.titleName) {
@@ -94,9 +121,20 @@ function awardTitle(editorId, tier) {
 	return titlePromise;
 }
 
-function awardListToAwardObject(tier) {
+/**
+ * In testTiers a tier is mapped to a list of achievements/titles this
+ * converts it to an object keyed by achievementName where it is easier
+ * to find a specific achievement.
+ * @example
+ * awardListToAwardObject([[{'Achievement I': unlockI}]])
+ * //returns {'Achievement I': unlockI}
+ * @param {object} awardList - List of List of achievement unlocks
+ * @returns {object} - Object keyed by achievement name with values
+ * unlock json
+ */
+function awardListToAwardObject(awardList) {
 	const track = {};
-	tier.forEach((awardSet) => {
+	awardList.forEach((awardSet) => {
 		awardSet.forEach((award) => {
 			Object.keys(award).forEach((key) => {
 				track[key] = award[key];
@@ -106,7 +144,21 @@ function awardListToAwardObject(tier) {
 	return track;
 }
 
-// tiers = [{threshold, name, (titleName)}] (optional)
+/**
+ * Takes a list of achievement 'tiers' and awards the related achievement and
+ * title if the signal is greater than or equal to the threshold
+ * @param {int} signal - Value tier threshold will be compared against
+ * @param {int} editorId - Editor to award achievements/titles to
+ * @param {object} tiers - Object with threshold and relatedachievement/title
+ * names
+ * @example
+ * testTiers(10, 1, [{
+ * 	threshold: 10, name: 'achievement I', titleName: 'achievement'
+ * }])
+ * //returns {'achievement I': achievementJSON}
+ * @returns {object} - Returns a track of achievements keyed by achievement
+ * name/title containing their respective unlockJSON each tier
+ */
 function testTiers(signal, editorId, tiers) {
 	const tierPromise = tiers.map((tier) => {
 		let tierOut;
@@ -140,7 +192,13 @@ function testTiers(signal, editorId, tiers) {
 		);
 }
 
-// returns the number of typeRevisions an editor has
+/**
+ * Returns number of revisions of a certain type there are for the specified
+ * editor
+ * @param {string} type - Camelcase name of the type to query
+ * @param {int} editor - Editor id being queried
+ * @returns {int} - Number of revisions of type (type)
+ */
 function getTypeRevisions(type, editor) {
 	const snakeType = _.snakeCase(type);
 	const rawsql = `SELECT revisions.id, bookbrainz.${snakeType}.id \
@@ -222,16 +280,13 @@ function processSprinter(editorId) {
 		});
 }
 
-function achievementToUnlockId(achievementUnlock) {
-	const unlockIds = [];
-	Object.keys(achievementUnlock).forEach((key) => {
-		if (achievementUnlock[key].id) {
-			unlockIds.push(String(achievementUnlock[key].id));
-		}
-	});
-	return unlockIds;
-}
-
+/**
+ * Gets number of distinct days the editor created revisions within specified
+ * time limit
+ * @param {int} editorId - Editor to query on
+ * @param {int} days - Number of days before today to collect edits from
+ * @returns {int} - Number of days edits were performed on
+ */
 function getEditsInDays(editorId, days) {
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
@@ -262,10 +317,33 @@ function processMarathoner(editorId) {
 		});
 }
 
+/**
+ * Converts achievementTier object to a list of achievementUnlock id's,
+ * this will be used to notify the user which achievement they unlocked
+ * @param {object}  achievementUnlock - A track of achievements containing
+ * unlock JSON for each
+ * @returns {list} - A list of achievementUnlock id's
+ */
+function achievementToUnlockId(achievementUnlock) {
+	const unlockIds = [];
+	Object.keys(achievementUnlock).forEach((key) => {
+		if (achievementUnlock[key].id) {
+			unlockIds.push(String(achievementUnlock[key].id));
+		}
+	});
+	return unlockIds;
+}
 
 achievement.processPageVisit = () => {
 };
 
+/**
+ * Run each time an edit occurs on the site, will test for each achievement
+ * type
+ * @param {int} userid - Id of the user to query
+ * @returns {object} - Output of each achievement test as well as an alert
+ * containing id's for each unlocked achievement in .alert
+ */
 achievement.processEdit = (userid) =>
 	Promise.join(
 		processRevisionist(userid),
