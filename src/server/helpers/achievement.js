@@ -83,7 +83,7 @@ function awardAchievement(editorId, achievementName) {
 					return out;
 				});
 		})
-		.catch((error) =>
+		.catch(() =>
 			Promise.reject(new AwardNotFoundError(
 				`Achievement ${achievementName} not found in database`
 			))
@@ -115,7 +115,7 @@ function awardTitle(editorId, tier) {
 						return out;
 					});
 			})
-			.catch((error) =>
+			.catch(() =>
 				Promise.reject(new AwardNotFoundError(
 					`Title ${tier.titleName} not found in database`
 				))
@@ -181,7 +181,7 @@ function testTiers(signal, editorId, tiers) {
 					return out;
 				}
 			)
-				.catch((error) => console.log(error));;
+				.catch((error) => console.log(error));
 		}
 		else {
 			const out = {};
@@ -417,7 +417,7 @@ function getEditionDateDifference(revisionId) {
 		.then((releaseEvents) => {
 			let differencePromise;
 			if (releaseEvents.length > 0) {
-				const oneDayMs = 1000 * 60 * 60 * 24;
+				const msInOneDay = 86400000;
 				console.log(releaseEvents.models[0]);
 				const attribs = releaseEvents.models[0].attributes;
 				const date = new Date(
@@ -427,7 +427,7 @@ function getEditionDateDifference(revisionId) {
 				);
 				const now = new Date(Date.now());
 				differencePromise =
-					Math.round((date.getTime() - now.getTime()) / oneDayMs);
+					Math.round((date.getTime() - now.getTime()) / msInOneDay);
 			}
 			else {
 				differencePromise =
@@ -454,17 +454,21 @@ function processTimeTraveller(editorId, revisionId) {
 function processHotOffThePress(editorId, revisionId) {
 	return getEditionDateDifference(revisionId)
 		.then((diff) => {
+			let achievementPromise;
 			if (diff < 0) {
 				const tiers = [{
 					threshold: -7,
 					name: 'Hot Off the Press',
 					titleName: 'Hot Off the Press'
 				}];
-				return testTiers(diff, editorId, tiers);
+				achievementPromise = testTiers(diff, editorId, tiers);
 			}
 			else {
-				return {'Hot Off the Press': false};
+				achievementPromise = Promise.resolve(
+					{'Hot Off the Press': false}
+				);
 			}
+			return achievementPromise;
 		})
 		.catch((err) => ({'Hot Off the Press': err}));
 }
