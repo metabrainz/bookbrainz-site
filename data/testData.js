@@ -161,21 +161,21 @@ testData.sprinterAttribs = {
 testData.workerBeeIAttribs = {
 	id: 1,
 	name: 'Worker Bee I',
-	description: 'create 1 worker',
+	description: 'create 1 work',
 	badgeUrl: 'http://test.com'
 };
 
 testData.workerBeeIIAttribs = {
 	id: 2,
 	name: 'Worker Bee II',
-	description: 'create 10 creators',
+	description: 'create 10 works',
 	badgeUrl: 'http://test.com'
 };
 
 testData.workerBeeIIIAttribs = {
 	id: 3,
 	name: 'Worker Bee III',
-	description: 'create 100 creators',
+	description: 'create 100 works',
 	badgeUrl: 'http://test.com'
 };
 
@@ -189,21 +189,21 @@ testData.workerBeeAttribs = {
 testData.publisherCreatorIAttribs = {
 	id: 1,
 	name: 'Publisher Creator I',
-	description: 'create 1 worker',
+	description: 'create 1 publisher',
 	badgeUrl: 'http://test.com'
 };
 
 testData.publisherCreatorIIAttribs = {
 	id: 2,
 	name: 'Publisher Creator II',
-	description: 'create 10 creators',
+	description: 'create 10 publishers',
 	badgeUrl: 'http://test.com'
 };
 
 testData.publisherCreatorIIIAttribs = {
 	id: 3,
 	name: 'Publisher Creator III',
-	description: 'create 100 creators',
+	description: 'create 100 publishers',
 	badgeUrl: 'http://test.com'
 };
 
