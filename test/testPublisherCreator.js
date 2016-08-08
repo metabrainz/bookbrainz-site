@@ -128,7 +128,7 @@ module.exports = function tests() {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'creator_revision', 0
+						'publisher_revision', 0
 					)
 			});
 			const achievementPromise = testData.createEditor()
