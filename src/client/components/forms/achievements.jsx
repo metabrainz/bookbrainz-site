@@ -74,17 +74,6 @@ const DragAndDrop = require('../input/dndSelector.jsx').DragAndDrop;
 		render() {
 			const achievements = this.renderAchievements(true);
 			const locked = this.renderAchievements(false);
-			const rankName = this.state.achievement.model.map((achievement) => {
-				let optionHTML = null;
-				if (achievement.unlocked) {
-					optionHTML = (<option value={achievement.id}>
-						{achievement.name}
-					</option>);
-				}
-				return optionHTML;
-			});
-
-			const nullOption = (<option value="none"> </option>);
 
 			let rankUpdate;
 			console.log(this.state.editor.authenticated);
