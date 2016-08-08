@@ -48,14 +48,12 @@ const AchievementForm = React.createFactory(
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
-	const editorPromise = new Editor({id: parseInt(req.user.id, 10)})
+	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch()
-		.then((editor) =>
-			editor.toJSON()
-		);
+		.then((editor) => editor.toJSON());
 
-	const titlePromise = new TitleUnlock()
-		.where('editor_id', parseInt(req.user.id, 10))
+	const titleJSONPromise = new TitleUnlock()
+		.where(_.snakeCase('editorId'), parseInt(req.user.id, 10))
 		.fetchAll({
 			withRelated: ['title']
 		})
@@ -70,7 +68,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			return titleJSON;
 		});
 
-	Promise.join(editorPromise, titlePromise,
+	Promise.join(editorJSONPromise, titleJSONPromise,
 		(editorJSON, titleJSON) => {
 			const markup =
 				ReactDOMServer.renderToString(ProfileForm({
@@ -85,12 +83,13 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 				},
 				markup
 			});
-		})
+		}
+	)
 		.catch(next);
 });
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const editPromise = new Promise((resolve) => {
+	const editorJSONPromise = new Promise((resolve) => {
 		if (req.user && req.body.id === req.user.id) {
 			resolve();
 		}
@@ -112,7 +111,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		)
 		.then((editor) => {
 			let editorTitleUnlock;
-			if (req.body.title === 'none') {
+			if (!req.body.title) {
 				editorTitleUnlock = editor.set('titleUnlockId', null);
 			}
 			else {
@@ -124,13 +123,13 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			editor.toJSON()
 		);
 
-	return handler.sendPromiseResult(res, editPromise);
+	handler.sendPromiseResult(res, editorJSONPromise);
 });
 
 router.get('/:id', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
 
-	const editor = new Editor({id: userId})
+	const editorJSONPromise = new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender']
@@ -171,8 +170,8 @@ router.get('/:id', (req, res, next) => {
 		})
 		.catch(next);
 
-	const achievement = new AchievementUnlock()
-		.where('editor_id', userId)
+	const achievementJSONPromise = new AchievementUnlock()
+		.where(_.snakeCase('editorId'), userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
 		.orderBy('profile_rank', 'ASC')
@@ -187,7 +186,7 @@ router.get('/:id', (req, res, next) => {
 			return achievementJSON;
 		});
 
-	Promise.join(achievement, editor,
+	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) =>
 			res.render('editor/editor', {
 				editor: editorJSON,
@@ -213,7 +212,9 @@ router.get('/:id/revisions', (req, res, next) => {
 				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				editorTitleJSON = new TitleUnlock({editorId: editorJSON.id})
+				editorTitleJSON = new TitleUnlock({
+					id: editorJSON.titleUnlockId
+				})
 					.fetch({
 						withRelated: ['title']
 					})
@@ -238,9 +239,25 @@ router.get('/:id/revisions', (req, res, next) => {
 		.catch(next);
 });
 
+function setAchievementUnlockedField(achievements, unlockIds) {
+	const model = achievements.map((achievementType) => {
+		const achievementJSON = achievementType.toJSON();
+		if (unlockIds.indexOf(achievementJSON.id) >= 0) {
+			achievementJSON.unlocked = true;
+		}
+		else {
+			achievementJSON.unlocked = false;
+		}
+		return achievementJSON;
+	});
+	return {
+		model
+	};
+}
+
 router.get('/:id/achievements', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
-	const editor = new Editor({id: userId})
+	const editorJSONPromise = new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender']
@@ -264,7 +281,9 @@ router.get('/:id/achievements', (req, res, next) => {
 				editorTitleJSON = Promise.resolve(editorJSON);
 			}
 			else {
-				editorTitleJSON = new TitleUnlock({editorId: userId})
+				editorTitleJSON = new TitleUnlock({
+					id: editorJSON.titleUnlockId
+				})
 					.fetch({
 						withRelated: ['title']
 					})
@@ -283,41 +302,22 @@ router.get('/:id/achievements', (req, res, next) => {
 		})
 		.catch(next);
 
-
-	const achievement = new AchievementUnlock()
+	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.fetchAll()
-		.then((unlocks) => {
-			const unlocked = [];
-			for (let i = 0; i < unlocks.length; i++) {
-				unlocked[i] =
-					unlocks.models[i].attributes.achievementId;
-			}
-			return unlocked;
-		})
+		.then((unlocks) =>
+			unlocks.map('attributes.achievementId')
+		)
 		.then((unlocks) =>
 			new AchievementType()
 				.orderBy('id', 'ASC')
 				.fetchAll()
-				.then((achievements) => {
-					const achievementsJSON = {
-						model: achievements.toJSON()
-					};
-					for (let i = 0; i < achievementsJSON.model.length; i++) {
-						if (unlocks.indexOf(
-									achievementsJSON.model[i].id) >= 0) {
-							achievementsJSON.model[i].unlocked = true;
-						}
-						else {
-							achievementsJSON.model[i].unlocked = false;
-						}
-					}
-					return achievementsJSON;
-				}
-			)
+				.then((achievements) =>
+					setAchievementUnlockedField(achievements, unlocks)
+				)
 		);
 
-	Promise.join(achievement, editor,
+	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
 			const markup =
 				ReactDOMServer.renderToString(AchievementForm({
@@ -349,8 +349,8 @@ function rankUpdate(editorId, bodyRank, rank) {
 			let updatePromise;
 			if (bodyRank !== 'none') {
 				updatePromise = new AchievementUnlock({
-					achievement_id: parseInt(bodyRank, 10),
-					editor_id: parseInt(editorId, 10)
+					achievementId: parseInt(bodyRank, 10),
+					editorId: parseInt(editorId, 10)
 				})
 					.fetch({require: true})
 					.then((unlock) =>

@@ -158,6 +158,61 @@ testData.sprinterAttribs = {
 	badgeUrl: 'http://test.com'
 };
 
+testData.workerBeeIAttribs = {
+	id: 1,
+	name: 'Worker Bee I',
+	description: 'create 1 work',
+	badgeUrl: 'http://test.com'
+};
+
+testData.workerBeeIIAttribs = {
+	id: 2,
+	name: 'Worker Bee II',
+	description: 'create 10 works',
+	badgeUrl: 'http://test.com'
+};
+
+testData.workerBeeIIIAttribs = {
+	id: 3,
+	name: 'Worker Bee III',
+	description: 'create 100 works',
+	badgeUrl: 'http://test.com'
+};
+
+testData.workerBeeAttribs = {
+	id: 1,
+	description: 'finish worker bee track',
+	title: 'Worker Bee',
+};
+
+
+testData.publisherCreatorIAttribs = {
+	id: 1,
+	name: 'Publisher Creator I',
+	description: 'create 1 publisher',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherCreatorIIAttribs = {
+	id: 2,
+	name: 'Publisher Creator II',
+	description: 'create 10 publishers',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherCreatorIIIAttribs = {
+	id: 3,
+	name: 'Publisher Creator III',
+	description: 'create 100 publishers',
+	badgeUrl: 'http://test.com'
+};
+
+testData.publisherCreatorAttribs = {
+	id: 1,
+	description: 'finish publisher creator track',
+	title: 'Publisher Creator',
+};
+
 testData.sprinterTitleAttribs = {
 	id: 1,
 	title: 'Sprinter',
@@ -267,6 +322,40 @@ testData.createPublisher = function() {
 		);
 }
 
+testData.createWorkerBee = function() {
+	return new AchievementType(this.workerBeeIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.workerBeeIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new AchievementType(this.workerBeeIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new TitleType(this.workerBeeAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
+testData.createPublisherCreator = function() {
+	return new AchievementType(this.publisherCreatorIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.publisherCreatorIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new AchievementType(this.publisherCreatorIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new TitleType(this.publisherCreatorAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
 testData.createSprinter = function() {
 	return new AchievementType(this.sprinterAttribs)
 		.save(null, {method: 'insert'})
@@ -310,6 +399,19 @@ testData.typeRevisionHelper = function(revisionType, rowcount) {
 		let rowCountPromise;
 		if (type == revisionType) {
 			rowCountPromise = Promise.resolve(rowcount);
+		}
+		else {
+			rowCountPromise = Promise.resolve(0);
+		}
+		return rowCountPromise;
+	};
+}
+
+testData.typeCreationHelper = function(revisionTypeString, rowCount) {
+	return function(type, string, editor) {
+		let rowCountPromise;
+		if (string === revisionTypeString) {
+			rowCountPromise = Promise.resolve(rowCount);
 		}
 		else {
 			rowCountPromise = Promise.resolve(0);

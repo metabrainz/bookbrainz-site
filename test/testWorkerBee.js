@@ -27,21 +27,22 @@ const Promise = require('bluebird');
 const testData = require('../data/testData.js');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
-const publisherIThreshold = 1;
-const publisherIIThreshold = 10;
-const publisherIIIThreshold = 100;
+const workerBeeIThreshold = 1;
+const workerBeeIIThreshold = 10;
+const workerBeeIIIThreshold = 100;
+
 
 module.exports = function tests() {
-	beforeEach(() => testData.createPublisher());
+	beforeEach(() => testData.createWorkerBee());
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a publication creation',
+	it('I should be given to someone with a work creation',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIThreshold
+						'work_revision', workerBeeIThreshold
 					)
 			});
 
@@ -50,7 +51,7 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher['Publisher I']
+					edit.workerBee['Worker Bee I']
 				);
 
 			return Promise.all([
@@ -59,17 +60,17 @@ module.exports = function tests() {
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
 				.property('achievementId',
-					testData.publisherIAttribs.id)
+					testData.workerBeeIAttribs.id)
 			]);
 		}
 	);
 
-	it('II should be given to someone with 10 publication creations',
+	it('II should be given to someone with 10 work creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIIThreshold
+						'work_revision', workerBeeIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -77,7 +78,7 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher['Publisher II']
+					edit.workerBee['Worker Bee II']
 				);
 
 			return Promise.all([
@@ -86,16 +87,16 @@ module.exports = function tests() {
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
 				.property('achievementId',
-					testData.publisherIIAttribs.id)
+					testData.workerBeeIIAttribs.id)
 			]);
 		});
 
-	it('III should be given to someone with 100 publication creations',
+	it('III should be given to someone with 100 work creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIIIThreshold
+						'work_revision', workerBeeIIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -103,31 +104,31 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher
+					edit.workerBee
 				);
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher III.editorId',
+				.property('Worker Bee III.editorId',
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher III.achievementId',
-					testData.publisherIIIAttribs.id),
+				.property('Worker Bee III.achievementId',
+					testData.workerBeeIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher.editorId',
+				.property('Worker Bee.editorId',
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher.titleId',
-					testData.publisherAttribs.id)
+				.property('Worker Bee.titleId',
+					testData.workerBeeAttribs.id)
 			]);
 		});
 
-	it('should not be given to someone with 0 publication creations',
+	it('should not be given to someone with 0 work creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', 0
+						'work_revision', 0
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -135,10 +136,9 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher['Publisher I']
+					edit.workerBee['Worker Bee I']
 				);
 
 			return expect(achievementPromise).to.eventually.equal(false);
 		});
 };
-

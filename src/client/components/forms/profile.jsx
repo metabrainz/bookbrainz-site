@@ -24,6 +24,7 @@ const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
 const LoadingSpinner = require('../loading-spinner.jsx');
+const Select = require('../input/select2.jsx');
 
 (() => {
 	'use strict';
@@ -44,12 +45,14 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 
 		handleSubmit(evt) {
 			evt.preventDefault();
-
 			const data = {
 				id: this.props.editor.id,
-				bio: this.bio.getValue().trim(),
-				title: this.title.value
+				bio: this.bio.getValue().trim()
 			};
+			const title = this.title.getValue();
+			if (title !== '') {
+				data.title = title;
+			}
 
 			this.setState({waiting: true});
 
@@ -63,17 +66,11 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 		render() {
 			const loadingElement =
 				this.state.waiting ? <LoadingSpinner/> : null;
-			const titles = this.props.titles.map((unlock) =>
-				(
-					<option
-						key={unlock.id}
-						value={unlock.id}
-					>
-						{unlock.title.title}
-					</option>
-				)
-			);
-
+			const titles = this.props.titles.map((unlock) => {
+				const title = unlock.title;
+				title.unlockId = unlock.id;
+				return title;
+			});
 			return (
 				<form
 					className="form-horizontal"
@@ -88,20 +85,16 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 						type="textarea"
 						wrapperClassName="col-md-9"
 					/>
-					<div className="form-group">
-						<div className="col-md-4 col-md-offset-4">
-							<label>Title</label>
-							<select
-								className="form-control"
-								name="title"
-								ref={(ref) => this.title = ref}
-								value={this.title}
-							>
-								<option value="none">none</option>
-								{titles}
-							</select>
-						</div>
-					</div>
+					<Select
+						idAttribute="unlockId"
+						label="Title"
+						labelAttribute="title"
+						labelClassName="col-md-4"
+						options={titles}
+						placeholder="Select title"
+						ref={(ref) => this.title = ref}
+						wrapperClassName="col-md-4"
+					/>
 					<div className="form-group">
 						<div className="col-md-4 col-md-offset-4">
 							<Button
@@ -117,7 +110,7 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 				</form>
 			);
 		}
-	}
+}
 
 	ProfileForm.displayName = 'ProfileForm';
 	ProfileForm.propTypes = {

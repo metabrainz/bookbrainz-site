@@ -37,12 +37,12 @@ module.exports = function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a creator revision',
+	it('I should be given to someone with a creator creation',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'creatorRevision', creatorCreatorIThreshold
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'creator_revision', creatorCreatorIThreshold
 					)
 			});
 
@@ -65,12 +65,12 @@ module.exports = function tests() {
 		}
 	);
 
-	it('II should be given to someone with 10 creator revisions',
+	it('II should be given to someone with 10 creator creations',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'creatorRevision', creatorCreatorIIThreshold
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'creator_revision', creatorCreatorIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -91,12 +91,12 @@ module.exports = function tests() {
 			]);
 		});
 
-	it('III should be given to someone with 100 creator revisions',
+	it('III should be given to someone with 100 creator creations',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'creatorRevision', creatorCreatorIIIThreshold
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'creator_revision', creatorCreatorIIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -123,12 +123,12 @@ module.exports = function tests() {
 			]);
 		});
 
-	it('should not be given to someone with 0 creator revisions',
+	it('should not be given to someone with 0 creator creations',
 		() => {
 			Achievement.__set__({
-				getTypeRevisions:
-					testData.typeRevisionHelper(
-						'creatorRevision', 0
+				getTypeCreation:
+					testData.typeCreationHelper(
+						'creator_revision', 0
 					)
 			});
 			const achievementPromise = testData.createEditor()

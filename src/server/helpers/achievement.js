@@ -21,13 +21,18 @@
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
+const Revision = require('bookbrainz-data').Revision;
 const TitleType = require('bookbrainz-data').TitleType;
 const TitleUnlock = require('bookbrainz-data').TitleUnlock;
+const CreatorRevision = require('bookbrainz-data').CreatorRevision;
+const EditionRevision = require('bookbrainz-data').EditionRevision;
+const PublicationRevision = require('bookbrainz-data').PublicationRevision;
+const PublisherRevision = require('bookbrainz-data').PublisherRevision;
+const WorkRevision = require('bookbrainz-data').WorkRevision;
 
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
 
-const _ = require('lodash');
 
 /**
  * Achievement Module
@@ -195,21 +200,51 @@ function testTiers(signal, editorId, tiers) {
 /**
  * Returns number of revisions of a certain type there are for the specified
  * editor
- * @param {string} type - Camelcase name of the type to query
+ * @param {function} revisionType - Constructor for the revisionType
+ * @param {string} revisionString - Snake case string of revisionType
  * @param {int} editor - Editor id being queried
  * @returns {int} - Number of revisions of type (type)
  */
-function getTypeRevisions(type, editor) {
-	const snakeType = _.snakeCase(type);
-	const rawsql = `SELECT revisions.id, bookbrainz.${snakeType}.id \
-				FROM \
-				(SELECT * FROM bookbrainz.revision \
-				WHERE author_id=${editor}) AS revisions \
-				INNER JOIN \
-				bookbrainz.${snakeType} on \
-				revisions.id = bookbrainz.${snakeType}.id`;
-	return Bookshelf.knex.raw(rawsql)
-		.then((out) => out.rowCount);
+function getTypeRevisions(revisionType, revisionString, editor) {
+	return revisionType
+		.query((qb) => {
+			qb.innerJoin('bookbrainz.revision',
+				'bookbrainz.revision.id',
+				`bookbrainz.${revisionString}.id`);
+			qb.groupBy(`${revisionString}.id`,
+				`${revisionString}.bbid`,
+				'revision.id');
+			qb.where('bookbrainz.revision.author_id', '=', editor);
+		})
+		.fetchAll()
+		.then((out) => out.length);
+}
+
+/**
+ * Returns number of revisions of a certain type created by a specified
+ * editor
+ * @param {function} revisionType - Constructor for the revisionType
+ * @param {string} revisionString - Snake case string of revisionType
+ * @param {int} editor - Editor id being queried
+ * @returns {int} - Number of revisions of type (type)
+ */
+function getTypeCreation(revisionType, revisionString, editor) {
+	return revisionType
+		.query((qb) => {
+			qb.innerJoin('bookbrainz.revision',
+				'bookbrainz.revision.id',
+				`bookbrainz.${revisionString}.id`);
+			qb.groupBy(`${revisionString}.id`,
+				`${revisionString}.bbid`,
+				'revision.id');
+			qb.where('bookbrainz.revision.author_id', '=', editor);
+			qb.leftOuterJoin('bookbrainz.revision_parent',
+				'bookbrainz.revision_parent.child_id',
+				`bookbrainz.${revisionString}.id`);
+			qb.whereNull('bookbrainz.revision_parent.parent_id');
+		})
+		.fetchAll()
+		.then((out) => out.length);
 }
 
 function processRevisionist(editorId) {
@@ -228,7 +263,7 @@ function processRevisionist(editorId) {
 }
 
 function processCreatorCreator(editorId) {
-	return getTypeRevisions('creatorRevision', editorId)
+	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
 				{threshold: 100, name: 'Creator Creator III',
@@ -241,7 +276,7 @@ function processCreatorCreator(editorId) {
 }
 
 function processLimitedEdition(editorId) {
-	return getTypeRevisions('editionRevision', editorId)
+	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
 				{threshold: 100, name: 'Limited Edition III',
@@ -254,13 +289,45 @@ function processLimitedEdition(editorId) {
 }
 
 function processPublisher(editorId) {
-	return getTypeRevisions('publisherRevision', editorId)
+	return getTypeCreation(new PublicationRevision(),
+		'publication_revision',
+		editorId)
 		.then((rowCount) => {
 			const tiers = [
 				{threshold: 100, name: 'Publisher III',
 					titleName: 'Publisher'},
 				{threshold: 10, name: 'Publisher II'},
 				{threshold: 1, name: 'Publisher I'}
+			];
+			return testTiers(rowCount, editorId, tiers);
+		});
+}
+
+function processPublisherCreator(editorId) {
+	return getTypeCreation(new PublisherRevision(),
+		'publisher_revision',
+		editorId)
+		.then((rowCount) => {
+			const tiers = [
+				{threshold: 100, name: 'Publisher Creator III',
+					titleName: 'Publisher Creator'},
+				{threshold: 10, name: 'Publisher Creator II'},
+				{threshold: 1, name: 'Publisher Creator I'}
+			];
+			return testTiers(rowCount, editorId, tiers);
+		});
+}
+
+function processWorkerBee(editorId) {
+	return getTypeCreation(new WorkRevision(),
+		'work_revision',
+		editorId)
+		.then((rowCount) => {
+			const tiers = [
+				{threshold: 100, name: 'Worker Bee III',
+					titleName: 'Worker Bee'},
+				{threshold: 10, name: 'Worker Bee II'},
+				{threshold: 1, name: 'Worker Bee I'}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -350,6 +417,8 @@ achievement.processEdit = (userid) =>
 		processCreatorCreator(userid),
 		processLimitedEdition(userid),
 		processPublisher(userid),
+		processPublisherCreator(userid),
+		processWorkerBee(userid),
 		processSprinter(userid),
 		processFunRunner(userid),
 		processMarathoner(userid),
@@ -357,6 +426,8 @@ achievement.processEdit = (userid) =>
 		creatorCreator,
 		limitedEdition,
 		publisher,
+		publisherCreator,
+		workerBee,
 		sprinter,
 		funRunner,
 		marathoner) => {
@@ -366,6 +437,8 @@ achievement.processEdit = (userid) =>
 				achievementToUnlockId(creatorCreator),
 				achievementToUnlockId(limitedEdition),
 				achievementToUnlockId(publisher),
+				achievementToUnlockId(publisherCreator),
+				achievementToUnlockId(workerBee),
 				achievementToUnlockId(sprinter),
 				achievementToUnlockId(funRunner),
 				achievementToUnlockId(marathoner)
@@ -377,6 +450,8 @@ achievement.processEdit = (userid) =>
 				creatorCreator,
 				limitedEdition,
 				publisher,
+				publisherCreator,
+				workerBee,
 				sprinter,
 				funRunner,
 				marathoner,

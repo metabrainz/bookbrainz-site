@@ -34,8 +34,10 @@ const testFunRunner = require('./testFunRunner.js');
 const testLimitedEdition = require('./testLimitedEdition.js');
 const testMarathoner = require('./testMarathoner.js');
 const testPublisher = require('./testPublisher.js');
+const testPublisherCreator = require('./testPublisherCreator.js');
 const testRevisionist = require('./testRevisionist.js');
 const testSprinter = require('./testSprinter.js');
+const testWorkerBee = require('./testWorkerBee.js');
 
 function tests() {
 	describe('awardAchievement', () => {
@@ -151,8 +153,10 @@ function tests() {
 	describe('Limited Edition Achievement', testLimitedEdition);
 	describe('Marathoner Achievement', testMarathoner);
 	describe('Publisher Achievement', testPublisher);
+	describe('Publisher Creator Achievement', testPublisherCreator);
 	describe('Revisionist Achievement', testRevisionist);
 	describe('Sprinter Achievement', testSprinter);
+	describe('Worker Bee Achievement', testWorkerBee);
 }
 
 describe('achievement module', tests);
