@@ -106,10 +106,10 @@ const DragAndDrop = require('../input/dndSelector.jsx').DragAndDrop;
 			}
 			return (
 				<StickyContainer>
-					<Sticky topOffset={-80} style={{background: 'white','margin-top': 64, width: '100%'}}>
+					<Sticky topOffset={-80} style={{zIndex: 10, background: 'white','margin-top': 64, flex: '1'}}>
 						{rankUpdate}
 					</Sticky>
-					<div>
+					<div style={{zIndex: 1}}>
 						<div className="h1">Unlocked Achievements</div>
 						{achievements}
 						<div className="h1">Locked Achievements</div>

@@ -37,6 +37,7 @@ const DragAndDropImage = require('../../input/dndSelector.jsx').DragAndDropImage
 						src={this.state.achievement.badgeUrl}
 						achievementId={this.state.achievement.id}
 						achievementName={this.state.achievement.name}
+						style={{zIndex: 2}}
 					/>
 				);
 			}
@@ -44,6 +45,7 @@ const DragAndDropImage = require('../../input/dndSelector.jsx').DragAndDropImage
 				imgElement = (
 					<img
 						height="100px"
+						style={{zIndex:2}}
 						src={this.state.achievement.badgeUrl}
 					/>
 				)
