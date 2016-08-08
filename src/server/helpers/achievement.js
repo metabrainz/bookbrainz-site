@@ -33,6 +33,7 @@ const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
 const AwardNotFoundError = require('./error.js').AwardNotFoundError;
+const _ = require('lodash');
 
 /**
  * Achievement Module
@@ -474,7 +475,8 @@ function processHotOffThePress(editorId, revisionId) {
 }
 
 function processExplorer(editorId) {
-	return new EditorEntityVisits({editorId})
+	return new EditorEntityVisits()
+		.where(_.snakeCase('editorId'), editorId)
 		.fetchAll({require: true})
 		.then((visits) => {
 			const tiers = [
@@ -484,7 +486,8 @@ function processExplorer(editorId) {
 			];
 			console.log(visits.length);
 			return testTiers(visits.length, editorId, tiers);
-		});
+		})
+		.catch((err) => ({'Explorer': err}));
 }
 
 achievement.processPageVisit = (userId) => {
