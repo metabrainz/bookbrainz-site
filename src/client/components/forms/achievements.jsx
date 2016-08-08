@@ -79,31 +79,46 @@ const DragAndDrop = require('../input/dndSelector.jsx').DragAndDrop;
 			console.log(this.state.editor.authenticated);
 			if (this.state.editor.authenticated) {
 				rankUpdate = (
-					<form id="rankSelectForm" method="post" className="form-horizontal">
+					<form
+						className="form-horizontal"
+						id="rankSelectForm"
+						method="post"
+					>
 						<div className="row dnd-container form-group">
 							<DragAndDrop name="rank1"/>
 							<DragAndDrop name="rank2"/>
 							<DragAndDrop name="rank3"/>
 						</div>
 						<div className="form-group">
-							<button type="submit" className="btn btn-default">
+							<button
+								className="btn btn-default"
+								type="submit"
+							>
 								update
 							</button>
 						</div>
 					</form>
-				)
+				);
 			}
 			return (
 				<StickyContainer>
-					<Sticky topOffset={-80} style={{zIndex: 10, background: 'white','margin-top': 64, flex: '1'}}>
-						{rankUpdate}
-					</Sticky>
-					<div style={{zIndex: 1}}>
-						<div className="h1">Unlocked Achievements</div>
-						{achievements}
-						<div className="h1">Locked Achievements</div>
-						{locked}
-					</div>
+					<Sticky
+						style={{
+							zIndex: 10,
+							background: 'white',
+							'margin-top': 64,
+							flex: '1'
+						}}
+						topOffset={-80}
+					>
+							{rankUpdate}
+						</Sticky>
+						<div style={{zIndex: 1}}>
+							<div className="h1">Unlocked Achievements</div>
+							{achievements}
+							<div className="h1">Locked Achievements</div>
+							{locked}
+						</div>
 				</StickyContainer>
 			);
 		}
