@@ -50,12 +50,12 @@ const Select = require('../input/select2.jsx');
 				bio: this.bio.getValue().trim(),
 				title: this.title.getValue()
 			};
-			console.log(data);
+
 			this.setState({waiting: true});
 
 			request.post('/editor/edit/handler')
 				.send(data).promise()
-				.then((res) => {
+				.then(() => {
 					window.location.href = `/editor/${this.props.editor.id}`;
 				});
 		}
