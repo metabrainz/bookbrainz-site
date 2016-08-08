@@ -47,9 +47,12 @@ const Select = require('../input/select2.jsx');
 			evt.preventDefault();
 			const data = {
 				id: this.props.editor.id,
-				bio: this.bio.getValue().trim(),
-				title: this.title.getValue()
+				bio: this.bio.getValue().trim()
 			};
+			const title = this.title.getValue();
+			if (title !== '') {
+				data.title = title;
+			}
 
 			this.setState({waiting: true});
 
@@ -83,8 +86,6 @@ const Select = require('../input/select2.jsx');
 						wrapperClassName="col-md-9"
 					/>
 					<Select
-						noDefault
-						defaultValue={this.title}
 						idAttribute="unlockId"
 						label="Title"
 						labelAttribute="title"
