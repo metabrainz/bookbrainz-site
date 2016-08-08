@@ -266,7 +266,7 @@ function processCreatorCreator(editorId) {
 	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 25, name: 'Creator Creator III',
+				{threshold: 100, name: 'Creator Creator III',
 					titleName: 'Creator Creator'},
 				{threshold: 10, name: 'Creator Creator II'},
 				{threshold: 1, name: 'Creator Creator I'}
@@ -279,7 +279,7 @@ function processLimitedEdition(editorId) {
 	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 25, name: 'Limited Edition III',
+				{threshold: 100, name: 'Limited Edition III',
 					titleName: 'Limited Edition'},
 				{threshold: 10, name: 'Limited Edition II'},
 				{threshold: 1, name: 'Limited Edition I'}
@@ -294,7 +294,7 @@ function processPublisher(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 25, name: 'Publisher III',
+				{threshold: 100, name: 'Publisher III',
 					titleName: 'Publisher'},
 				{threshold: 10, name: 'Publisher II'},
 				{threshold: 1, name: 'Publisher I'}
@@ -309,7 +309,7 @@ function processPublisherCreator(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 25, name: 'Publisher Creator III',
+				{threshold: 100, name: 'Publisher Creator III',
 					titleName: 'Publisher Creator'},
 				{threshold: 10, name: 'Publisher Creator II'},
 				{threshold: 1, name: 'Publisher Creator I'}
@@ -324,7 +324,7 @@ function processWorkerBee(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 25, name: 'Worker Bee III',
+				{threshold: 100, name: 'Worker Bee III',
 					titleName: 'Worker Bee'},
 				{threshold: 10, name: 'Worker Bee II'},
 				{threshold: 1, name: 'Worker Bee I'}
