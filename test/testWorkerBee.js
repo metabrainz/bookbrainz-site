@@ -37,7 +37,7 @@ module.exports = function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a Work creation',
+	it('I should be given to someone with a work creation',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
@@ -123,7 +123,7 @@ module.exports = function tests() {
 			]);
 		});
 
-	it('should not be given to someone with 0 creator creations',
+	it('should not be given to someone with 0 work creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
