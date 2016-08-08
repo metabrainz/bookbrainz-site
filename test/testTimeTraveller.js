@@ -45,7 +45,7 @@ module.exports = () => {
 	it('should be given to someone with edition revision released after today',
 		() => {
 			Achievement.__set__({
-				getEditionDateDifference: (revisionId) =>
+				getEditionDateDifference: () =>
 					Promise.resolve(timeTravellerThreshold)
 			});
 
@@ -71,7 +71,7 @@ module.exports = () => {
 	it('shouldn\'t be given to someone with edition revision already released',
 		() => {
 			Achievement.__set__({
-				getEditionDateDifference: (revisionId) =>
+				getEditionDateDifference: () =>
 					Promise.resolve(timeTravellerThreshold - 1)
 			});
 
