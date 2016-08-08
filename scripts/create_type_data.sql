@@ -24,9 +24,9 @@ INSERT INTO bookbrainz.achievement_type ("name", "description", "badge_url") VAL
 	('Worker Bee I', 'Create one work', '/images/revisionistI.svg'),
 	('Worker Bee II', 'Create 10 works', '/images/revisionistI.svg'),
 	('Worker Bee III', 'Create 100 editions', '/images/revisionistI.svg'),
-	('Explorer I', 'View 10 different entities', '/images/revisionistI.svg'),
-	('Explorer II', 'View 100 different entities', '/images/revisionistI.svg'),
-	('Explorer III', 'View 1000 different entities', '/images/revisionistI.svg');
+	('Explorer I', 'View 1 different entities', '/images/revisionistI.svg'),
+	('Explorer II', 'View 10 different entities', '/images/revisionistI.svg'),
+	('Explorer III', 'View 100 different entities', '/images/revisionistI.svg');
 
 INSERT INTO bookbrainz.title_type ("title", "description") VALUES
 	('Revisionist', 'Complete the Revisionist series of badges'),
