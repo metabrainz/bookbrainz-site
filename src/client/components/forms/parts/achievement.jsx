@@ -17,7 +17,9 @@
  */
 
 const React = require('react');
-const DragAndDropImage = require('../../input/dndSelector.jsx').DragAndDropImage;
+const DragAndDropImage =
+	require('../../input/dndSelector.jsx').DragAndDropImage;
+
 (() => {
 	'use strict';
 	class Achievement extends React.Component {
@@ -33,10 +35,10 @@ const DragAndDropImage = require('../../input/dndSelector.jsx').DragAndDropImage
 			if (this.state.unlocked) {
 				imgElement = (
 					<DragAndDropImage
-						height="100px"
-						src={this.state.achievement.badgeUrl}
 						achievementId={this.state.achievement.id}
 						achievementName={this.state.achievement.name}
+						height="100px"
+						src={this.state.achievement.badgeUrl}
 						style={{zIndex: 2}}
 					/>
 				);
@@ -45,10 +47,10 @@ const DragAndDropImage = require('../../input/dndSelector.jsx').DragAndDropImage
 				imgElement = (
 					<img
 						height="100px"
-						style={{zIndex:2}}
 						src={this.state.achievement.badgeUrl}
+						style={{zIndex: 2}}
 					/>
-				)
+				);
 			}
 			return (
 				<div className="row well">
@@ -73,7 +75,8 @@ const DragAndDropImage = require('../../input/dndSelector.jsx').DragAndDropImage
 			badgeUrl: React.PropTypes.string,
 			description: React.PropTypes.string,
 			name: React.PropTypes.string
-		})
+		}),
+		unlocked: React.PropTypes.array
 	};
 
 	module.exports = Achievement;
