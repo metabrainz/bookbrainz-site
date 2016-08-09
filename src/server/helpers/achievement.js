@@ -418,7 +418,6 @@ function getEditionDateDifference(revisionId) {
 			let differencePromise;
 			if (releaseEvents.length > 0) {
 				const msInOneDay = 86400000;
-				console.log(releaseEvents.models[0]);
 				const attribs = releaseEvents.models[0].attributes;
 				const date = new Date(
 					attribs.year,
