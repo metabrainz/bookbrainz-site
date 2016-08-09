@@ -135,4 +135,10 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 	error.renderError(res, err);
 });
 
-module.exports = app;
+const debug = require('debug')('bbsite');
+
+app.set('port', process.env.PORT || 9099);
+
+const server = app.listen(app.get('port'), () => {
+	debug(`Express server listening on port ${server.address().port}`);
+});
