@@ -75,11 +75,10 @@ function bundle() {
 
 function less() {
 	return gulp.src([
-		'./src/client/stylesheets/style.less',
-		'./src/client/stylesheets/font-awesome.less'
+		'./src/client/stylesheets/style.less'
 	])
 		.pipe(gulpless({
-			paths: [path.join(__dirname, './node_modules/bootstrap/less')]
+			paths: [path.join(__dirname, './src/client/stylesheets/bootstrap')]
 		}))
 		.pipe(prefixer('last 4 versions'))
 		.pipe(cleanCSS())
