@@ -117,6 +117,9 @@ const EntityLink = require('../entity-link.jsx');
 				</div>
 			));
 
+			const editorTitle =
+				`${revision.title.title}: ${revision.title.description}`;
+
 			let revisionNotes = revision.notes.map((note) => {
 				const timeCreated =
 					new Date(note.postedAt).toTimeString();
@@ -132,7 +135,10 @@ const EntityLink = require('../entity-link.jsx');
 							<p>{note.content}</p>
 							<p className="text-right">
 								—&nbsp;
-								<a href={`/editor/${note.author.id}`}>
+								<a
+									href={`/editor/${note.author.id}`}
+									title={editorTitle}
+								>
 									{note.author.name}
 								</a>
 								, {`${timeCreated}, ${dateCreated}`}
@@ -148,9 +154,6 @@ const EntityLink = require('../entity-link.jsx');
 
 			const dateRevisionCreated =
 				new Date(revision.createdAt).toDateString();
-
-			const editorTitle =
-				`${revision.title.title}: ${revision.title.description}`;
 
 			return (
 				<div>
