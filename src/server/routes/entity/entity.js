@@ -33,6 +33,7 @@ const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
+const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
@@ -588,7 +589,7 @@ module.exports.createEntity = (
 						if (unlock.alert) {
 							entityJSON.alert = unlock.alert;
 						}
-						return entityJSON;
+						return {entityJSON, editorJSON};
 					});
 			});
 	});
@@ -768,7 +769,7 @@ module.exports.editEntity = (
 				entity.toJSON()
 			)
 			.then((entityJSON) => {
-				return achievement.processEdit(req.user.id, entity.revisionId)
+				return achievement.processEdit(req.user.id, entityJSON.revisionId)
 					.then((unlock) => {
 						if (unlock.alert) {
 							entityJSON.alert = unlock.alert;
