@@ -18,7 +18,7 @@
 
 const React = require('react');
 const DragAndDropImage =
-	require('../../input/dndSelector.jsx').DragAndDropImage;
+	require('../../input/dragAndDropImage.jsx');
 
 (() => {
 	'use strict';

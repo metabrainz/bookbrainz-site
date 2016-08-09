@@ -21,7 +21,7 @@ const StickyContainer = require('react-sticky').StickyContainer;
 const Sticky = require('react-sticky').Sticky;
 const request = require('superagent-bluebird-promise');
 const Achievement = require('./parts/achievement.jsx');
-const DragAndDrop = require('../input/dndSelector.jsx').DragAndDrop;
+const DragAndDrop = require('../input/dragAndDrop.jsx');
 
 (() => {
 	'use strict';
