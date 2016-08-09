@@ -480,9 +480,9 @@ function processExplorer(editorId) {
 		.fetchAll({require: true})
 		.then((visits) => {
 			const tiers = [
-				{threshold: 1, name: 'Explorer I'},
-				{threshold: 10, name: 'Explorer II'},
-				{threshold: 100, name: 'Explorer II', titleName: 'Explorer'}
+				{threshold: 10, name: 'Explorer I'},
+				{threshold: 100, name: 'Explorer II'},
+				{threshold: 1000, name: 'Explorer II', titleName: 'Explorer'}
 			];
 			console.log(visits.length);
 			return testTiers(visits.length, editorId, tiers);
