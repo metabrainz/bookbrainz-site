@@ -484,15 +484,17 @@ function processExplorer(editorId) {
 				{threshold: 100, name: 'Explorer II'},
 				{threshold: 1000, name: 'Explorer II', titleName: 'Explorer'}
 			];
-			console.log(visits.length);
 			return testTiers(visits.length, editorId, tiers);
 		})
 		.catch((err) => ({'Explorer': err}));
 }
 
 achievement.processPageVisit = (userId) => {
-	return Promise.all(
-		processExplorer(userId)
+	return Promise.join(
+		processExplorer(userId),
+		(explorer) => ({
+			explorer
+		})
 	);
 };
 
