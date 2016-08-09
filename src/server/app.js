@@ -36,15 +36,15 @@ const staticCache = require('express-static-cache');
 
 const bookbrainzData = require('bookbrainz-data');
 
-const config = require('./src/server/helpers/config');
+const config = require('./helpers/config');
 
 // Before we start pulling in local helpers, we need to initialize the database;
 // otherwise, the models we depend on won't exist
 bookbrainzData.init(config.database);
 
-const auth = require('./src/server/helpers/auth');
-const error = require('./src/server/helpers/error');
-const search = require('./src/server/helpers/search');
+const auth = require('./helpers/auth');
+const error = require('./helpers/error');
+const search = require('./helpers/search');
 
 // We need to install JSX before pulling in the routes, as they end up requiring
 // React components written in JSX, and things will blow up
@@ -52,9 +52,9 @@ jsx.install({
 	extension: '.jsx'
 });
 
-const routes = require('./src/server/routes');
+const routes = require('./routes');
 
-const NotFoundError = require('./src/server/helpers/error').NotFoundError;
+const NotFoundError = require('./helpers/error').NotFoundError;
 
 Promise.config({
 	warnings: true,
@@ -65,13 +65,13 @@ Promise.config({
 const app = express();
 
 // Set up jade as view engine
-app.set('views', path.join(__dirname, 'templates'));
+app.set('views', path.join(__dirname, '../../templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
 app.set('trust proxy', config.site.proxyTrust);
 
-app.use(favicon(path.join(__dirname, 'static/images/icons/favicon.ico')));
+app.use(favicon(path.join(__dirname, '../../static/images/icons/favicon.ico')));
 
 if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
@@ -83,10 +83,10 @@ app.use(bodyParser.urlencoded({
 }));
 
 // Set up serving of static assets
-app.use(staticCache(path.join(__dirname, 'static/js'), {
+app.use(staticCache(path.join(__dirname, '../../static/js'), {
 	buffer: true
 }));
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, '../../static')));
 
 const RedisStore = redis(session);
 app.use(session({
