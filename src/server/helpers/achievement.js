@@ -83,7 +83,10 @@ function awardAchievement(editorId, achievementName) {
 					const out = {};
 					out[achievementName] = unlock;
 					return out;
-				});
+				})
+				.catch((err) =>
+					console.log(err)
+				);
 		})
 		.catch(() =>
 			Promise.reject(new AwardNotFoundError(
@@ -115,7 +118,10 @@ function awardTitle(editorId, tier) {
 						const out = {};
 						out[tier.titleName] = unlock;
 						return out;
-					});
+					})
+					.catch((err) =>
+						console.log(err)
+					);
 			})
 			.catch(() =>
 				Promise.reject(new AwardNotFoundError(
