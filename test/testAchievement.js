@@ -30,6 +30,7 @@ const Achievement = rewire('../src/server/helpers/achievement.js');
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
 const testCreatorCreator = require('./testCreatorCreator.js');
+const testExplorer = require('./testExplorer.js');
 const testFunRunner = require('./testFunRunner.js');
 const testLimitedEdition = require('./testLimitedEdition.js');
 const testMarathoner = require('./testMarathoner.js');
@@ -151,6 +152,7 @@ function tests() {
 		});
 	});
 	describe('Creator Creator Achievement', testCreatorCreator);
+	describe('Explorer Achievement', testExplorer);
 	describe('Fun Runner Achievement', testFunRunner);
 	describe('Hot Off the Press Achievement', testHotOffThePress);
 	describe('Limited Edition Achievement', testLimitedEdition);
