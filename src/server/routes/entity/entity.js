@@ -28,7 +28,6 @@ const _ = require('lodash');
 // XXX: Don't pull in bookshelf directly
 const bookshelf = require('bookbrainz-data').bookshelf;
 
-const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
@@ -85,14 +84,13 @@ module.exports.displayEntity = (req, res) => {
 					withRelated: 'achievement'
 				})
 				.then((unlock) => {
-					if (req.user.id == unlock.attributes.editorId) {
-						return ({name: unlock.relations.achievement.attributes.name});
+					let unlockName;
+					if (req.user.id === unlock.attributes.editorId) {
+						unlockName = {
+							name: unlock.relations.achievement.attributes.name
+						};
 					}
-					else {
-						// gives error on client side, this case shouldn't
-						// come from server, only manual url manipulation)
-						return;
-					}
+					return unlockName;
 				})
 				.catch((error) => {
 					console.log(error);
