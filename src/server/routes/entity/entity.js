@@ -47,7 +47,6 @@ const DeletionForm = React.createFactory(
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
-
 	// Get unique identifier types for display
 	const identifierTypes = entity.identifierSet &&
 		_.uniq(
@@ -62,12 +61,13 @@ module.exports.displayEntity = (req, res) => {
 			bbid: res.locals.entity.bbid
 		})
 		.save(null, {method: 'insert'})
-		.then(() => {
-			achievement.processPageVisit(res.locals.user.id);
-		})
-		.catch(() => {
-			// ignore duplicate visits
-		});
+		.then(() =>
+			achievement.processPageVisit(res.locals.user.id)
+		)
+		.catch(() =>
+			// error caused by duplicates we do not want in database
+			Promise.resolve(false)
+		);
 	}
 	else {
 		editorEntityVisitPromise = Promise.resolve(false);
