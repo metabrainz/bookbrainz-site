@@ -493,7 +493,7 @@ function processExplorer(editorId) {
 			const tiers = [
 				{threshold: 10, name: 'Explorer I'},
 				{threshold: 100, name: 'Explorer II'},
-				{threshold: 1000, name: 'Explorer II', titleName: 'Explorer'}
+				{threshold: 1000, name: 'Explorer III', titleName: 'Explorer'}
 			];
 			return testTiers(visits, editorId, tiers);
 		})
