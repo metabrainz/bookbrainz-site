@@ -474,19 +474,24 @@ function processHotOffThePress(editorId, revisionId) {
 		.catch((err) => ({'Hot Off the Press': err}));
 }
 
-function processExplorer(editorId) {
+function getEntityVisits(editorId) {
 	return new EditorEntityVisits()
 		.where(_.snakeCase('editorId'), editorId)
 		.fetchAll({require: true})
+		.then((visits) => visits.length);
+}
+
+function processExplorer(editorId) {
+	return getEntityVisits(editorId)
 		.then((visits) => {
 			const tiers = [
 				{threshold: 10, name: 'Explorer I'},
 				{threshold: 100, name: 'Explorer II'},
 				{threshold: 1000, name: 'Explorer II', titleName: 'Explorer'}
 			];
-			return testTiers(visits.length, editorId, tiers);
+			return testTiers(visits, editorId, tiers);
 		})
-		.catch((err) => ({'Explorer': err}));
+		.catch((err) => ({Explorer: err}));
 }
 
 achievement.processPageVisit = (userId) => {
