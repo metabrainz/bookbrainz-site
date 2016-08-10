@@ -494,14 +494,13 @@ function processExplorer(editorId) {
 		.catch((err) => ({Explorer: err}));
 }
 
-achievement.processPageVisit = (userId) => {
-	return Promise.join(
+achievement.processPageVisit = (userId) =>
+	Promise.join(
 		processExplorer(userId),
 		(explorer) => ({
 			explorer
 		})
 	);
-};
 
 /**
  * Run each time an edit occurs on the site, will test for each achievement
