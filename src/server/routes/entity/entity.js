@@ -581,15 +581,9 @@ module.exports.createEntity = (
 					})
 			)
 			.then((entity) => entity.toJSON())
-			.then((entityJSON) => {
-				return achievement.processEdit(req.user.id)
-					.then((unlock) => {
-						if (unlock.alert) {
-							entityJSON.alert = unlock.alert;
-						}
-						return {entityJSON, editorJSON};
-					});
-			});
+			.then((entityJSON) =>
+				({entityJSON, editorJSON})
+			);
 	});
 
 	entityCreationPromise.then((creationJSON) =>
@@ -597,6 +591,11 @@ module.exports.createEntity = (
 			creationJSON.editorJSON.id,
 			creationJSON.entityJSON.revisionId
 		)
+			.then((unlock) => {
+				if (unlock.alert) {
+					creationJSON.entityJSON.alert = unlock.alert;
+				}
+			})
 			.then(() => creationJSON.entityJSON)
 	);
 
@@ -766,15 +765,15 @@ module.exports.editEntity = (
 			.then((entity) =>
 				entity.toJSON()
 			)
-			.then((entityJSON) => {
-				return achievement.processEdit(req.user.id, entityJSON.revisionId)
+			.then((entityJSON) =>
+				achievement.processEdit(req.user.id, entityJSON.revisionId)
 					.then((unlock) => {
 						if (unlock.alert) {
 							entityJSON.alert = unlock.alert;
 						}
 						return entityJSON;
-					});
-			});
+					})
+			);
 	});
 
 	return handler.sendPromiseResult(
