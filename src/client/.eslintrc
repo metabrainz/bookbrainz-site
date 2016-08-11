@@ -70,7 +70,7 @@ rules:
     - 1
     -
       ignoreStateless: false
-  react/no-set-state: 0
+  react/no-set-state: 1
   react/no-unknown-property: 2
   react/prop-types: 1 # Revisit this
   react/react-in-jsx-scope: 2
