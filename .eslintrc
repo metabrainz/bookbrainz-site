@@ -5,6 +5,7 @@ ecmaFeatures:
   - generators
 env:
   node: true
+  es6: true
 rules:
   arrow-body-style: 2
   comma-dangle: 2
