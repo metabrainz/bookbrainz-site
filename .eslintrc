@@ -27,6 +27,8 @@ rules:
   no-extra-parens:
     - 2
     - all
+    -
+      nestedBinaryExpressions: false
   no-extra-semi: 2
   no-func-assign: 2
   no-inner-declarations:
