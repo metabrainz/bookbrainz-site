@@ -10,13 +10,19 @@
     "clean": "rm -Rf src/client/stylesheets/bootstrap src/client/stylesheets/font-awesome static/stylesheets/* static/js/*",
     "prepublish": "npm run clean && npm run mkdirs && npm run copy-bootstrap && npm run copy-font-awesome && npm run copy-select2",
     "start": "node ./src/server/app.js",
-    "debug": "cross-env DEBUG=bbsite nodemon ./src/server/app.js",
+    "watch-server-js": "cross-env DEBUG=bbsite nodemon src/server/app.js --watch src/server --exec babel-node",
+    "watch-client-js": "cd src/client/controllers; watchify -t [babelify] ../../../templates/layout.js editor/edit.js entity/creator.js entity/edition.js entity/publication.js entity/publisher.js entity/work.js deletion.js login.js relationship.js search.js -p [ factor-bundle -o ../../../static/js/layout.js -o ../../../static/js/editor/edit.js -o ../../../static/js/entity/creator.js -o ../../../static/js/entity/edition.js -o ../../../static/js/entity/publication.js -o ../../../static/js/entity/publisher.js -o ../../../static/js/entity/work.js -o ../../../static/js/deletion.js -o ../../../static/js/login.js -o ../../../static/js/relationship.js -o ../../../static/js/search.js ] -o ../../../static/js/bundle.js -dv",
+    "watch-less": "cd src/client/stylesheets; catw -c 'lessc --include-path=bootstrap -' 'style.less' -o ../../../static/stylesheets/style.css -v",
+    "debug": "npm run watch-less & npm run watch-client-js & npm run watch-server-js",
     "lint": "eslint --ext .js --ext .jsx src test templates scripts gulpfile.js",
     "test": "npm run lint && gulp",
 	"jsdoc": "node_modules/.bin/jsdoc -r src",
     "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator"
   },
   "dependencies": {
+    "babel-plugin-array-includes": "^2.0.3",
+    "babel-preset-es2015-node": "^6.1.0",
+    "babel-preset-react": "^6.11.1",
     "bluebird": "^3.3.4",
     "body-parser": "^1.14.1",
     "bookbrainz-data": "git+https://github.com/bookbrainz/bookbrainz-data-js.git",
@@ -86,6 +92,7 @@
     "rewire": "v2.5.2",
     "saucelabs": "^1.2.0",
     "supertest": "^1.1.0",
-    "vinyl-source-stream": "^1.0.0"
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^3.7.0"
   }
 }
