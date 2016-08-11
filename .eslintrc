@@ -212,7 +212,7 @@ rules:
   linebreak-style: 2
   max-nested-callbacks:
     - 2
-    - 3
+    - 5
   new-cap:
     - 2
     -
