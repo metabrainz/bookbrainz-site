@@ -90,12 +90,22 @@ const DragAndDrop = require('../input/dragAndDrop.jsx');
 							<DragAndDrop name="rank3"/>
 						</div>
 						<div className="form-group">
-							<button
-								className="btn btn-default"
-								type="submit"
-							>
-								update
-							</button>
+							<span>
+								<button
+									className="btn btn-default"
+									type="submit"
+								>
+									update
+								</button>
+								<p
+									style={{
+										marginLeft: '10px',
+										display: 'inline-block'
+									}}
+								>
+									click badge to unset
+								</p>
+							</span>
 						</div>
 					</form>
 				);
