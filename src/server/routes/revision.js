@@ -171,7 +171,10 @@ router.get('/:id', (req, res, next) => {
 	// objects with the same ID, formatting each revision individually, then
 	// concatenating the diffs
 	const revisionPromise = new Revision({id: req.params.id})
-		.fetch({withRelated: ['author', 'notes', 'notes.author']});
+		.fetch({withRelated: [
+			'author', 'author.titleUnlock.title', 'notes', 'notes.author',
+			'notes.author.titleUnlock.title'
+		]});
 
 	function _createRevision(model) {
 		return model.forge()
@@ -219,7 +222,6 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-
 			const props = {revision: revision.toJSON(), diffs};
 			res.render('page', {
 				title: 'RevisionPage',
