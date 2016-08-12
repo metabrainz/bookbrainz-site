@@ -96,6 +96,18 @@ const EntityLink = require('../entity-link.jsx');
 			return _compact(result);
 		}
 
+		static formatTitle(author) {
+			let title;
+			if (author.titleUnlock.title) {
+				const authorTitle = author.titleUnlock.title;
+				title = `${authorTitle.title}: ${authorTitle.description}`;
+			}
+			else {
+				title = 'No Title Set: This user hasn\'t selected a title';
+			}
+			return title;
+		}
+
 		render() {
 			const revision = this.props.revision;
 			const diffs = this.props.diffs;
@@ -118,14 +130,15 @@ const EntityLink = require('../entity-link.jsx');
 			));
 
 			const editorTitle =
-				`${revision.title.title}: ${revision.title.description}`;
+				RevisionPage.formatTitle(revision.author);
 
 			let revisionNotes = revision.notes.map((note) => {
 				const timeCreated =
 					new Date(note.postedAt).toTimeString();
 				const dateCreated =
 					new Date(note.postedAt).toDateString();
-
+				const noteAuthorTitle =
+					RevisionPage.formatTitle(note.author);
 				return (
 					<div
 						className="panel panel-default"
@@ -137,7 +150,7 @@ const EntityLink = require('../entity-link.jsx');
 								—&nbsp;
 								<a
 									href={`/editor/${note.author.id}`}
-									title={editorTitle}
+									title={noteAuthorTitle}
 								>
 									{note.author.name}
 								</a>

@@ -31,7 +31,6 @@ const EditionRevision = require('bookbrainz-data').EditionRevision;
 const PublicationRevision = require('bookbrainz-data').PublicationRevision;
 const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 const Revision = require('bookbrainz-data').Revision;
-const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
 
 const baseFormatter = require('../helpers/diffFormatters/base');
@@ -172,27 +171,10 @@ router.get('/:id', (req, res, next) => {
 	// objects with the same ID, formatting each revision individually, then
 	// concatenating the diffs
 	const revisionPromise = new Revision({id: req.params.id})
-		.fetch({withRelated: ['author', 'notes', 'notes.author']})
-		.then((revision) =>
-			new TitleUnlock({
-				id: revision.relations.author.attributes.titleUnlockId
-			})
-				.fetch({
-					require: true,
-					withRelated: ['title']
-				})
-				.then((title) => {
-					revision.relations.title = title.relations.title;
-					return revision;
-				})
-				.catch(() => {
-					revision.relations.title = {
-						title: 'No Title Set',
-						description: 'This user hasn\'t selected a title'
-					};
-					return revision;
-				})
-		);
+		.fetch({withRelated: [
+			'author', 'author.titleUnlock.title', 'notes', 'notes.author',
+			'notes.author.titleUnlock.title'
+		]});
 
 	function _createRevision(model) {
 		return model.forge()
