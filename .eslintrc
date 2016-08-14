@@ -1,8 +1,8 @@
 ---
 parserOptions:
   ecmaVersion: 6
-ecmaFeatures:
-  - generators
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
 env:
   node: true
   es6: true

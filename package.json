@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "babel-plugin-array-includes": "^2.0.3",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-es2015-node": "^6.1.0",
     "babel-preset-react": "^6.11.1",
     "bluebird": "^3.3.4",
