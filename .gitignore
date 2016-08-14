@@ -2,6 +2,10 @@
 /static/js
 /static/stylesheets/
 /config
+/src/client/stylesheets/bootstrap
+/src/client/stylesheets/font-awesome
+/src/client/stylesheets/react-select
+/reports
 
 ### Node ###
 # Logs
