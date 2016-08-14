@@ -2,9 +2,11 @@ doctype html
 html
 	head
 		title= title ? title + ' – BookBrainz' : 'BookBrainz – The Open Book Database'
+		link(rel='stylesheet', href='/stylesheets/react-virtualized.css')
 		link(rel='stylesheet', href='/stylesheets/style.css')
 		link(rel='stylesheet', href='/stylesheets/select2.min.css')
 		link(rel='stylesheet', href='/stylesheets/select2-bootstrap.min.css')
+		link(rel='stylesheet', href='/stylesheets/react-virtualized-select.css')
 
 		include favicon
 	body
