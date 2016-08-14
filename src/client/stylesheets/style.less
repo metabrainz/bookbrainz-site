@@ -20,6 +20,7 @@
 
 @import "lobes/less/theme.less";
 @import "font-awesome/font-awesome.less";
+@import "react-select/select.less";
 
 /* Modifications to Lobes */
 /* ====================== */
@@ -192,4 +193,18 @@ html {
 .select2-container .select2-selection--multiple
 		.select2-search__field:not([placeholder='']) {
 	width: 100% !important;
+}
+
+
+/* react-select styling */
+.Select-control {
+       height: @input-height-base;
+       border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+       .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+       .form-control-focus();
+
+}
+
+.Select-placeholder {
+       color: @input-color-placeholder;
 }
