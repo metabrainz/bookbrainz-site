@@ -21,7 +21,6 @@
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
-const Revision = require('bookbrainz-data').Revision;
 const TitleType = require('bookbrainz-data').TitleType;
 const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 const CreatorRevision = require('bookbrainz-data').CreatorRevision;
@@ -32,7 +31,7 @@ const WorkRevision = require('bookbrainz-data').WorkRevision;
 
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
-
+const AwardNotFoundError = require('./error.js').AwardNotFoundError;
 
 /**
  * Achievement Module
@@ -84,10 +83,11 @@ function awardAchievement(editorId, achievementName) {
 					return out;
 				});
 		})
-		.catch((error) => {
-			console.error(error);
-			return Promise.reject(error);
-		});
+		.catch(() =>
+			Promise.reject(new AwardNotFoundError(
+				`Achievement ${achievementName} not found in database`
+			))
+		);
 }
 
 /**
@@ -115,10 +115,11 @@ function awardTitle(editorId, tier) {
 						return out;
 					});
 			})
-			.catch((error) => {
-				console.error(error);
-				return Promise.reject(error);
-			});
+			.catch(() =>
+				Promise.reject(new AwardNotFoundError(
+					`Title ${tier.titleName} not found in database`
+				))
+			);
 	}
 	else {
 		titlePromise = Promise.resolve(false);
@@ -179,7 +180,8 @@ function testTiers(signal, editorId, tiers) {
 					out.push(achievementUnlock);
 					return out;
 				}
-			);
+			)
+				.catch((error) => console.log(error));
 		}
 		else {
 			const out = {};
@@ -401,27 +403,99 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
+function getEditionDateDifference(revisionId) {
+	return new EditionRevision({id: revisionId}).fetch()
+		.then((edition) =>
+			edition.related('data').fetch()
+		)
+		.then((data) =>
+			data.related('releaseEventSet').fetch()
+		)
+		.then((releaseEventSet) =>
+			releaseEventSet.related('releaseEvents').fetch()
+		)
+		.then((releaseEvents) => {
+			let differencePromise;
+			if (releaseEvents.length > 0) {
+				const msInOneDay = 86400000;
+				const attribs = releaseEvents.models[0].attributes;
+				const date = new Date(
+					attribs.year,
+					attribs.month - 1,
+					attribs.day
+				);
+				const now = new Date(Date.now());
+				differencePromise =
+					Math.round((date.getTime() - now.getTime()) / msInOneDay);
+			}
+			else {
+				differencePromise =
+					Promise.reject(new Error('no date attribute'));
+			}
+			return differencePromise;
+		})
+		.catch(() => Promise.reject(new Error('no date attribute')));
+}
+
+function processTimeTraveller(editorId, revisionId) {
+	return getEditionDateDifference(revisionId)
+		.then((diff) => {
+			const tiers = [{
+				threshold: 0,
+				name: 'Time Traveller',
+				titleName: 'Time Traveller'
+			}];
+			return testTiers(diff, editorId, tiers);
+		})
+		.catch((err) => ({'Time Traveller': err}));
+}
+
+function processHotOffThePress(editorId, revisionId) {
+	return getEditionDateDifference(revisionId)
+		.then((diff) => {
+			let achievementPromise;
+			if (diff < 0) {
+				const tiers = [{
+					threshold: -7,
+					name: 'Hot Off the Press',
+					titleName: 'Hot Off the Press'
+				}];
+				achievementPromise = testTiers(diff, editorId, tiers);
+			}
+			else {
+				achievementPromise = Promise.resolve(
+					{'Hot Off the Press': false}
+				);
+			}
+			return achievementPromise;
+		})
+		.catch((err) => ({'Hot Off the Press': err}));
+}
+
 achievement.processPageVisit = () => {
 };
 
 /**
  * Run each time an edit occurs on the site, will test for each achievement
  * type
- * @param {int} userid - Id of the user to query
+ * @param {int} userId - Id of the user to query
+ * @param {int} revisionId - Id of latest revision
  * @returns {object} - Output of each achievement test as well as an alert
  * containing id's for each unlocked achievement in .alert
  */
-achievement.processEdit = (userid) =>
+achievement.processEdit = (userId, revisionId) =>
 	Promise.join(
-		processRevisionist(userid),
-		processCreatorCreator(userid),
-		processLimitedEdition(userid),
-		processPublisher(userid),
-		processPublisherCreator(userid),
-		processWorkerBee(userid),
-		processSprinter(userid),
-		processFunRunner(userid),
-		processMarathoner(userid),
+		processRevisionist(userId),
+		processCreatorCreator(userId),
+		processLimitedEdition(userId),
+		processPublisher(userId),
+		processPublisherCreator(userId),
+		processWorkerBee(userId),
+		processSprinter(userId),
+		processFunRunner(userId),
+		processMarathoner(userId),
+		processTimeTraveller(userId, revisionId),
+		processHotOffThePress(userId, revisionId),
 		(revisionist,
 		creatorCreator,
 		limitedEdition,
@@ -430,7 +504,9 @@ achievement.processEdit = (userid) =>
 		workerBee,
 		sprinter,
 		funRunner,
-		marathoner) => {
+		marathoner,
+		timeTraveller,
+		hotOffThePress) => {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),
@@ -441,7 +517,9 @@ achievement.processEdit = (userid) =>
 				achievementToUnlockId(workerBee),
 				achievementToUnlockId(sprinter),
 				achievementToUnlockId(funRunner),
-				achievementToUnlockId(marathoner)
+				achievementToUnlockId(marathoner),
+				achievementToUnlockId(timeTraveller),
+				achievementToUnlockId(hotOffThePress)
 			);
 			alert = [].concat.apply([], alert);
 			alert = alert.join(',');
@@ -455,6 +533,8 @@ achievement.processEdit = (userid) =>
 				sprinter,
 				funRunner,
 				marathoner,
+				timeTraveller,
+				hotOffThePress,
 				alert
 			};
 		}

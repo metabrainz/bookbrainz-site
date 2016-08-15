@@ -519,10 +519,6 @@ module.exports.createEntity = (
 				return model.forge(propsToSet)
 					.save(null, {method: 'insert', transacting});
 			})
-			.then((entityModel) =>
-				achievement.processEdit(req.user.id)
-					.then(() => entityModel)
-			)
 			.then(
 				(entityModel) =>
 					entityModel.refresh({
@@ -530,12 +526,26 @@ module.exports.createEntity = (
 						transacting
 					})
 			)
-			.then((entity) => entity.toJSON());
+			.then((entity) =>
+				({
+					entityJSON: entity.toJSON(),
+					editorJSON
+				})
+
+			);
 	});
+
+	const achievementPromise = entityCreationPromise.then((creationJSON) =>
+		achievement.processEdit(
+			creationJSON.editorJSON.id,
+			creationJSON.entityJSON.revisionId
+		)
+			.then(() => creationJSON.entityJSON)
+	);
 
 	return handler.sendPromiseResult(
 		res,
-		entityCreationPromise,
+		achievementPromise,
 		search.indexEntity
 	);
 };
@@ -690,17 +700,19 @@ module.exports.editEntity = (
 					editorUpdatePromise,
 					parentAddedPromise,
 					notePromise
-				)
-				.then((promises) => {
-					achievement.processEdit(req.user.id);
-					return promises;
-				});
+				);
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
 					.fetch({withRelated: ['defaultAlias'], transacting})
 			)
-			.then((entity) => entity.toJSON());
+			.then((entity) =>
+				achievement.processEdit(
+					req.user.id,
+					entity.attributes.revisionId
+				)
+					.then(() => entity.toJSON())
+			);
 	});
 
 	return handler.sendPromiseResult(
