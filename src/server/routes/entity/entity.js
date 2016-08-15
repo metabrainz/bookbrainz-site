@@ -535,7 +535,7 @@ module.exports.createEntity = (
 			);
 	});
 
-	entityCreationPromise.then((creationJSON) =>
+	const achievementPromise = entityCreationPromise.then((creationJSON) =>
 		achievement.processEdit(
 			creationJSON.editorJSON.id,
 			creationJSON.entityJSON.revisionId
@@ -545,7 +545,7 @@ module.exports.createEntity = (
 
 	return handler.sendPromiseResult(
 		res,
-		entityCreationPromise,
+		achievementPromise,
 		search.indexEntity
 	);
 };
