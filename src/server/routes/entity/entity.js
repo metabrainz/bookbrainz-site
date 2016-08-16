@@ -59,7 +59,7 @@ module.exports.displayEntity = (req, res) => {
 	let editorEntityVisitPromise;
 	if (res.locals.user) {
 		editorEntityVisitPromise = new EditorEntityVisits({
-			editor_id: res.locals.user.id,
+			editorId: res.locals.user.id,
 			bbid: res.locals.entity.bbid
 		})
 		.save(null, {method: 'insert'})
