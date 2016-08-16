@@ -580,23 +580,20 @@ module.exports.createEntity = (
 						transacting
 					})
 			)
-			.then((entity) => entity.toJSON())
-			.then((entityJSON) =>
-				({entityJSON, editorJSON})
-			);
+			.then((entity) => entity.toJSON());
 	});
 
-	entityCreationPromise.then((creationJSON) =>
+	entityCreationPromise.then((entityJSON) =>
 		achievement.processEdit(
-			creationJSON.editorJSON.id,
-			creationJSON.entityJSON.revisionId
+			editorJSON.id,
+			entityJSON.revisionId
 		)
 			.then((unlock) => {
 				if (unlock.alert) {
-					creationJSON.entityJSON.alert = unlock.alert;
+					entityJSON.alert = unlock.alert;
 				}
 			})
-			.then(() => creationJSON.entityJSON)
+			.then(() => entityJSON)
 	);
 
 	return handler.sendPromiseResult(
