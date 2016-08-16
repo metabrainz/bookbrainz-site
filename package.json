@@ -13,7 +13,7 @@
   "dependencies": {
     "bluebird": "^3.3.4",
     "body-parser": "^1.14.1",
-    "bookbrainz-data": "git+https://github.com/bookbrainz/bookbrainz-data-js.git#explorer",
+    "bookbrainz-data": "git+https://github.com/bookbrainz/bookbrainz-data-js.git",
     "bootstrap": "^3.3.2",
     "co": "^4.6.0",
     "connect-redis": "^3.0.1",
