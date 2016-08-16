@@ -24,4 +24,7 @@ const AchievementForm = React.createFactory(
 );
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
-ReactDOM.render(AchievementForm(props), document.getElementById('achievementsForm'));
+ReactDOM.render(
+	AchievementForm(props),
+	document.getElementById('achievementsForm')
+);

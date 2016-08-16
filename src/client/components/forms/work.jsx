@@ -101,7 +101,14 @@ const WorkData = require('./parts/work-data.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					window.location.href = `/work/${res.body.bbid}`;
+					const editionHref = `/work/${res.body.bbid}`;
+					if (res.body.alert) {
+						const alertHref = `?alert=${res.body.alert}`;
+						window.location.href = `${editionHref}${alertHref}`;
+					}
+					else {
+						window.location.href = `${editionHref}`;
+					}
 				})
 				.catch((error) => {
 					self.setState({error});

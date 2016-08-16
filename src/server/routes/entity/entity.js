@@ -28,9 +28,11 @@ const _ = require('lodash');
 // XXX: Don't pull in bookshelf directly
 const bookshelf = require('bookbrainz-data').bookshelf;
 
+const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
+const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
@@ -54,10 +56,62 @@ module.exports.displayEntity = (req, res) => {
 			(type) => type.id
 		);
 
-	res.render(
-		`entity/view/${entity.type.toLowerCase()}`,
-		{identifierTypes}
-	);
+	let editorEntityVisitPromise;
+	if (res.locals.user) {
+		editorEntityVisitPromise = new EditorEntityVisits({
+			editorId: res.locals.user.id,
+			bbid: res.locals.entity.bbid
+		})
+		.save(null, {method: 'insert'})
+		.then(() => {
+			achievement.processPageVisit(res.locals.user.id);
+		})
+		.catch(() => {
+			// ignore duplicate visits
+		});
+	}
+	else {
+		editorEntityVisitPromise = Promise.resolve(false);
+	}
+
+	let alertPromise;
+	if (req.query.alert) {
+		const achievements = req.query.alert.split(',');
+		const promiseList = achievements.map((achievementAlert) =>
+			new AchievementUnlock({id: achievementAlert})
+				.fetch({
+					require: 'true',
+					withRelated: 'achievement'
+				})
+				.then((unlock) => {
+					let unlockName;
+					if (req.user.id === unlock.attributes.editorId) {
+						unlockName = {
+							name: unlock.relations.achievement.attributes.name
+						};
+					}
+					return unlockName;
+				})
+				.catch((error) => {
+					console.log(error);
+				})
+		);
+		alertPromise = Promise.all(promiseList);
+	}
+	else {
+		alertPromise = Promise.resolve(false);
+	}
+
+	return Promise.join(
+		editorEntityVisitPromise,
+		alertPromise,
+		(visit, alert) => {
+			res.render(
+				`entity/view/${entity.type.toLowerCase()}`,
+				{identifierTypes,
+				alert}
+			);
+		});
 };
 
 module.exports.displayDeleteEntity = (req, res) => {
@@ -526,21 +580,20 @@ module.exports.createEntity = (
 						transacting
 					})
 			)
-			.then((entity) =>
-				({
-					entityJSON: entity.toJSON(),
-					editorJSON
-				})
-
-			);
+			.then((entity) => entity.toJSON());
 	});
 
-	const achievementPromise = entityCreationPromise.then((creationJSON) =>
+	const achievementPromise = entityCreationPromise.then((entityJSON) =>
 		achievement.processEdit(
-			creationJSON.editorJSON.id,
-			creationJSON.entityJSON.revisionId
+			editorJSON.id,
+			entityJSON.revisionId
 		)
-			.then(() => creationJSON.entityJSON)
+			.then((unlock) => {
+				if (unlock.alert) {
+					entityJSON.alert = unlock.alert;
+				}
+			})
+			.then(() => entityJSON)
 	);
 
 	return handler.sendPromiseResult(
@@ -707,11 +760,16 @@ module.exports.editEntity = (
 					.fetch({withRelated: ['defaultAlias'], transacting})
 			)
 			.then((entity) =>
-				achievement.processEdit(
-					req.user.id,
-					entity.attributes.revisionId
-				)
-					.then(() => entity.toJSON())
+				entity.toJSON()
+			)
+			.then((entityJSON) =>
+				achievement.processEdit(req.user.id, entityJSON.revisionId)
+					.then((unlock) => {
+						if (unlock.alert) {
+							entityJSON.alert = unlock.alert;
+						}
+						return entityJSON;
+					})
 			);
 	});
 
