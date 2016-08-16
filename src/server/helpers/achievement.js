@@ -411,6 +411,11 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
+/**
+ * Gets days since edition release date, positive implies released in future
+ * @param {int} revisionId - Revision to get release date of
+ * @returns {int} - Days since edition was released
+ */
 function getEditionDateDifference(revisionId) {
 	return new EditionRevision({id: revisionId}).fetch()
 		.then((edition) =>
@@ -480,6 +485,11 @@ function processHotOffThePress(editorId, revisionId) {
 		.catch((err) => ({'Hot Off the Press': err}));
 }
 
+/*
+ * Returns number of distinct entities viewed by an editor
+ * @param {int} editorId - Editor to get views for
+ * @returns {int} - Number of views user has
+ */
 function getEntityVisits(editorId) {
 	return new EditorEntityVisits()
 		.where(_.snakeCase('editorId'), editorId)
@@ -499,6 +509,7 @@ function processExplorer(editorId) {
 		})
 		.catch((err) => ({Explorer: err}));
 }
+
 
 achievement.processPageVisit = (userId) =>
 	Promise.join(
