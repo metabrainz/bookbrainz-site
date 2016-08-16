@@ -43,7 +43,7 @@ module.exports = () => {
 	it('should be given to someone with edition revision released this week',
 		() => {
 			Achievement.__set__({
-				getEditionDateDifference: (revisionId) =>
+				getEditionDateDifference: () =>
 					Promise.resolve(hotOffThePressThreshold)
 			});
 
@@ -70,7 +70,7 @@ module.exports = () => {
 	it('shouldn\'t be given when edition revision released a week ago',
 		() => {
 			Achievement.__set__({
-				getEditionDateDifference: (revisionId) =>
+				getEditionDateDifference: () =>
 					Promise.resolve(hotOffThePressThreshold - 1)
 			});
 
