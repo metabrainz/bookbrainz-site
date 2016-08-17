@@ -514,9 +514,18 @@ function processExplorer(editorId) {
 achievement.processPageVisit = (userId) =>
 	Promise.join(
 		processExplorer(userId),
-		(explorer) => ({
-			explorer
-		})
+		(explorer) => {
+			let alert = [];
+			alert.push(
+				achievementToUnlockId(explorer)
+			);
+			alert = [].concat.apply([], alert);
+			alert = alert.join(',');
+			return {
+				explorer,
+				alert
+			};
+		}
 	);
 
 /**
