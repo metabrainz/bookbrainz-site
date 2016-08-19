@@ -118,7 +118,7 @@ function sendErrorAsJSON(res, err) {
 	res.status(errorToSend.status).send({error: errorToSend.message});
 }
 
-class AwardNotFoundError extends Error {
+class AwardNotUnlockedError extends Error {
 	constructor(message) {
 		super();
 
@@ -130,7 +130,7 @@ class AwardNotFoundError extends Error {
 	}
 
 	static get defaultMessage() {
-		return 'An achievement was not found';
+		return 'An award was not unlocked';
 	}
 }
 
@@ -143,7 +143,7 @@ const errors = {
 	SiteError,
 	renderError,
 	sendErrorAsJSON,
-	AwardNotFoundError
+	AwardNotUnlockedError
 };
 
 module.exports = errors;

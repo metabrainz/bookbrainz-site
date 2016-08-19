@@ -32,7 +32,7 @@ const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
-const AwardNotFoundError = require('./error.js').AwardNotFoundError;
+const AwardNotUnlockedError = require('./error.js').AwardNotUnlockedError;
 const _ = require('lodash');
 
 /**
@@ -49,16 +49,23 @@ const achievement = {};
  */
 function awardUnlock(UnlockType, awardAttribs) {
 	return new UnlockType(awardAttribs)
-		.fetch({require: true})
-		.then(() =>
-			Promise.resolve('already unlocked')
-		)
-		.catch(() =>
-			new UnlockType(awardAttribs)
-				.save(null, {method: 'insert'})
-				.then((unlock) =>
-					unlock.toJSON()
-				)
+		.fetch()
+		.then((award) => {
+			let unlockPromise;
+			if (award !== null) {
+				unlockPromise = Promise.resolve('already unlocked');
+			}
+			else {
+				unlockPromise = new UnlockType(awardAttribs)
+					.save(null, {method: 'insert'})
+					.then((unlock) =>
+						unlock.toJSON()
+					);
+			}
+			return unlockPromise;
+		})
+		.catch((error) =>
+			Promise.reject(error)
 		);
 }
 
@@ -72,29 +79,32 @@ function awardUnlock(UnlockType, awardAttribs) {
  */
 function awardAchievement(editorId, achievementName) {
 	return new AchievementType({name: achievementName})
-		.fetch({require: true})
+		.fetch()
 		.then((achievementTier) => {
-			const achievementAttribs = {
-				editorId,
-				achievementId: achievementTier.id
-			};
-			return awardUnlock(AchievementUnlock, achievementAttribs)
-				.then((unlock) => {
-					const out = {};
-					out[achievementName] = unlock;
-					return out;
-				})
-				// Prevents an invalid editorId from outputting a confusing
-				// AwardNotFoundError
-				.catch((err) =>
-					console.log(err)
-				);
-		})
-		.catch(() =>
-			Promise.reject(new AwardNotFoundError(
-				`Achievement ${achievementName} not found in database`
-			))
-		);
+			let awardPromise;
+			if (achievementTier !== null) {
+				const achievementAttribs = {
+					editorId,
+					achievementId: achievementTier.id
+				};
+				awardPromise =
+					awardUnlock(AchievementUnlock, achievementAttribs)
+						.then((unlock) => {
+							const out = {};
+							out[achievementName] = unlock;
+							return out;
+						})
+						.catch((err) => Promise.reject(
+							new AwardNotUnlockedError(err.message)
+						));
+			}
+			else {
+				awardPromise = Promise.reject(new AwardNotUnlockedError(
+					`Achievement ${achievementName} not found in database`
+				));
+			}
+			return awardPromise;
+		});
 }
 
 /**
@@ -109,29 +119,31 @@ function awardTitle(editorId, tier) {
 	let titlePromise;
 	if (tier.titleName) {
 		titlePromise = new TitleType({title: tier.titleName})
-			.fetch({require: true})
+			.fetch()
 			.then((title) => {
-				const titleAttribs = {
-					editorId,
-					titleId: title.id
-				};
-				return awardUnlock(TitleUnlock, titleAttribs)
-					.then((unlock) => {
-						const out = {};
-						out[tier.titleName] = unlock;
-						return out;
-					})
-					// Prevents an invalid editorId from outputting a confusing
-					// AwardNotFoundError
-					.catch((err) =>
-						console.log(err)
-					);
-			})
-			.catch(() =>
-				Promise.reject(new AwardNotFoundError(
-					`Title ${tier.titleName} not found in database`
-				))
-			);
+				let awardPromise;
+				if (title !== null) {
+					const titleAttribs = {
+						editorId,
+						titleId: title.id
+					};
+					awardPromise = awardUnlock(TitleUnlock, titleAttribs)
+						.then((unlock) => {
+							const out = {};
+							out[tier.titleName] = unlock;
+							return out;
+						})
+						.catch((err) => Promise.reject(
+							new AwardNotUnlockedError(err.message)
+						));
+				}
+				else {
+					awardPromise = Promise.reject(new AwardNotUnlockedError(
+						`Title ${tier.titleName} not found in database`
+					));
+				}
+				return awardPromise;
+			});
 	}
 	else {
 		titlePromise = Promise.resolve(false);
