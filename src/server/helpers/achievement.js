@@ -84,6 +84,8 @@ function awardAchievement(editorId, achievementName) {
 					out[achievementName] = unlock;
 					return out;
 				})
+				// Prevents an invalid editorId from outputting a confusing
+				// AwardNotFoundError
 				.catch((err) =>
 					console.log(err)
 				);
@@ -119,6 +121,8 @@ function awardTitle(editorId, tier) {
 						out[tier.titleName] = unlock;
 						return out;
 					})
+					// Prevents an invalid editorId from outputting a confusing
+					// AwardNotFoundError
 					.catch((err) =>
 						console.log(err)
 					);
