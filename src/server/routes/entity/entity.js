@@ -78,12 +78,12 @@ module.exports.displayEntity = (req, res) => {
 		if (visitAlert.alert) {
 			alertIds = alertIds.concat(visitAlert.alert.split(',').map((id) =>
 				parseInt(id, 10)
-			))
+			));
 		}
 		if (req.query.alert) {
 			alertIds = alertIds.concat(req.query.alert.split(',').map((id) =>
 				parseInt(id, 10)
-			))
+			));
 		}
 		if (alertIds.length > 0) {
 			const promiseList = alertIds.map((achievementAlert) =>
