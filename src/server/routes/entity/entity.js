@@ -36,7 +36,6 @@ const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
-
 const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
@@ -48,7 +47,6 @@ const DeletionForm = React.createFactory(
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
-
 	// Get unique identifier types for display
 	const identifierTypes = entity.identifierSet &&
 		_.uniq(
@@ -63,55 +61,68 @@ module.exports.displayEntity = (req, res) => {
 			bbid: res.locals.entity.bbid
 		})
 		.save(null, {method: 'insert'})
-		.then(() => {
-			achievement.processPageVisit(res.locals.user.id);
-		})
-		.catch(() => {
-			// ignore duplicate visits
-		});
+		.then(() =>
+			achievement.processPageVisit(res.locals.user.id)
+		)
+		.catch(() =>
+			// error caused by duplicates we do not want in database
+			Promise.resolve(false)
+		);
 	}
 	else {
 		editorEntityVisitPromise = Promise.resolve(false);
 	}
 
-	let alertPromise;
-	if (req.query.alert) {
-		const achievements = req.query.alert.split(',');
-		const promiseList = achievements.map((achievementAlert) =>
-			new AchievementUnlock({id: achievementAlert})
-				.fetch({
-					require: 'true',
-					withRelated: 'achievement'
-				})
-				.then((unlock) => {
-					let unlockName;
-					if (req.user.id === unlock.attributes.editorId) {
-						unlockName = {
-							name: unlock.relations.achievement.attributes.name
-						};
-					}
-					return unlockName;
-				})
-				.catch((error) => {
-					console.log(error);
-				})
-		);
-		alertPromise = Promise.all(promiseList);
-	}
-	else {
-		alertPromise = Promise.resolve(false);
-	}
-
-	return Promise.join(
-		editorEntityVisitPromise,
-		alertPromise,
-		(visit, alert) => {
-			res.render(
-				`entity/view/${entity.type.toLowerCase()}`,
-				{identifierTypes,
-				alert}
+	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
+		let alertIds = [];
+		if (visitAlert.alert) {
+			alertIds = alertIds.concat(visitAlert.alert.split(',').map((id) =>
+				parseInt(id, 10)
+			));
+		}
+		if (req.query.alert) {
+			alertIds = alertIds.concat(req.query.alert.split(',').map((id) =>
+				parseInt(id, 10)
+			));
+		}
+		if (alertIds.length > 0) {
+			const promiseList = alertIds.map((achievementAlert) =>
+				new AchievementUnlock({id: achievementAlert})
+					.fetch({
+						require: 'true',
+						withRelated: 'achievement'
+					})
+					.then((unlock) =>
+						unlock.toJSON()
+					)
+					.then((unlock) => {
+						let unlockName;
+						if (req.user.id === unlock.editorId) {
+							unlockName = {
+								name: unlock.achievement.name
+							};
+						}
+						return unlockName;
+					})
+					.catch((error) => {
+						console.log(error);
+					})
 			);
-		});
+			alertPromise = Promise.all(promiseList);
+		}
+		else {
+			alertPromise = Promise.resolve(false);
+		}
+		return alertPromise;
+	});
+
+	return alertPromise.then((alert) => {
+		res.render(
+			`entity/view/${entity.type.toLowerCase()}`,
+			{identifierTypes,
+			alert}
+		);
+	});
 };
 
 module.exports.displayDeleteEntity = (req, res) => {

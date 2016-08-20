@@ -28,10 +28,12 @@ const EditionRevision = require('bookbrainz-data').EditionRevision;
 const PublicationRevision = require('bookbrainz-data').PublicationRevision;
 const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
+const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
-const AwardNotFoundError = require('./error.js').AwardNotFoundError;
+const AwardNotUnlockedError = require('./error.js').AwardNotUnlockedError;
+const _ = require('lodash');
 
 /**
  * Achievement Module
@@ -47,16 +49,23 @@ const achievement = {};
  */
 function awardUnlock(UnlockType, awardAttribs) {
 	return new UnlockType(awardAttribs)
-		.fetch({require: true})
-		.then(() =>
-			Promise.resolve('already unlocked')
-		)
-		.catch(() =>
-			new UnlockType(awardAttribs)
-				.save(null, {method: 'insert'})
-				.then((unlock) =>
-					unlock.toJSON()
-				)
+		.fetch()
+		.then((award) => {
+			let unlockPromise;
+			if (award !== null) {
+				unlockPromise = Promise.resolve('already unlocked');
+			}
+			else {
+				unlockPromise = new UnlockType(awardAttribs)
+					.save(null, {method: 'insert'})
+					.then((unlock) =>
+						unlock.toJSON()
+					);
+			}
+			return unlockPromise;
+		})
+		.catch((error) =>
+			Promise.reject(error)
 		);
 }
 
@@ -70,24 +79,32 @@ function awardUnlock(UnlockType, awardAttribs) {
  */
 function awardAchievement(editorId, achievementName) {
 	return new AchievementType({name: achievementName})
-		.fetch({require: true})
+		.fetch()
 		.then((achievementTier) => {
-			const achievementAttribs = {
-				editorId,
-				achievementId: achievementTier.id
-			};
-			return awardUnlock(AchievementUnlock, achievementAttribs)
-				.then((unlock) => {
-					const out = {};
-					out[achievementName] = unlock;
-					return out;
-				});
-		})
-		.catch(() =>
-			Promise.reject(new AwardNotFoundError(
-				`Achievement ${achievementName} not found in database`
-			))
-		);
+			let awardPromise;
+			if (achievementTier !== null) {
+				const achievementAttribs = {
+					editorId,
+					achievementId: achievementTier.id
+				};
+				awardPromise =
+					awardUnlock(AchievementUnlock, achievementAttribs)
+						.then((unlock) => {
+							const out = {};
+							out[achievementName] = unlock;
+							return out;
+						})
+						.catch((err) => Promise.reject(
+							new AwardNotUnlockedError(err.message)
+						));
+			}
+			else {
+				awardPromise = Promise.reject(new AwardNotUnlockedError(
+					`Achievement ${achievementName} not found in database`
+				));
+			}
+			return awardPromise;
+		});
 }
 
 /**
@@ -102,24 +119,31 @@ function awardTitle(editorId, tier) {
 	let titlePromise;
 	if (tier.titleName) {
 		titlePromise = new TitleType({title: tier.titleName})
-			.fetch({require: true})
+			.fetch()
 			.then((title) => {
-				const titleAttribs = {
-					editorId,
-					titleId: title.id
-				};
-				return awardUnlock(TitleUnlock, titleAttribs)
-					.then((unlock) => {
-						const out = {};
-						out[tier.titleName] = unlock;
-						return out;
-					});
-			})
-			.catch(() =>
-				Promise.reject(new AwardNotFoundError(
-					`Title ${tier.titleName} not found in database`
-				))
-			);
+				let awardPromise;
+				if (title !== null) {
+					const titleAttribs = {
+						editorId,
+						titleId: title.id
+					};
+					awardPromise = awardUnlock(TitleUnlock, titleAttribs)
+						.then((unlock) => {
+							const out = {};
+							out[tier.titleName] = unlock;
+							return out;
+						})
+						.catch((err) => Promise.reject(
+							new AwardNotUnlockedError(err.message)
+						));
+				}
+				else {
+					awardPromise = Promise.reject(new AwardNotUnlockedError(
+						`Title ${tier.titleName} not found in database`
+					));
+				}
+				return awardPromise;
+			});
 	}
 	else {
 		titlePromise = Promise.resolve(false);
@@ -403,6 +427,11 @@ function achievementToUnlockId(achievementUnlock) {
 	return unlockIds;
 }
 
+/**
+ * Gets days since edition release date, positive implies released in future
+ * @param {int} revisionId - Revision to get release date of
+ * @returns {int} - Days since edition was released
+ */
 function getEditionDateDifference(revisionId) {
 	return new EditionRevision({id: revisionId}).fetch()
 		.then((edition) =>
@@ -472,8 +501,48 @@ function processHotOffThePress(editorId, revisionId) {
 		.catch((err) => ({'Hot Off the Press': err}));
 }
 
-achievement.processPageVisit = () => {
-};
+/*
+ * Returns number of distinct entities viewed by an editor
+ * @param {int} editorId - Editor to get views for
+ * @returns {int} - Number of views user has
+ */
+function getEntityVisits(editorId) {
+	return new EditorEntityVisits()
+		.where(_.snakeCase('editorId'), editorId)
+		.fetchAll({require: true})
+		.then((visits) => visits.length);
+}
+
+function processExplorer(editorId) {
+	return getEntityVisits(editorId)
+		.then((visits) => {
+			const tiers = [
+				{threshold: 10, name: 'Explorer I'},
+				{threshold: 100, name: 'Explorer II'},
+				{threshold: 1000, name: 'Explorer III', titleName: 'Explorer'}
+			];
+			return testTiers(visits, editorId, tiers);
+		})
+		.catch((err) => ({Explorer: err}));
+}
+
+
+achievement.processPageVisit = (userId) =>
+	Promise.join(
+		processExplorer(userId),
+		(explorer) => {
+			let alert = [];
+			alert.push(
+				achievementToUnlockId(explorer)
+			);
+			alert = [].concat.apply([], alert);
+			alert = alert.join(',');
+			return {
+				explorer,
+				alert
+			};
+		}
+	);
 
 /**
  * Run each time an edit occurs on the site, will test for each achievement

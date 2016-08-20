@@ -185,6 +185,32 @@ testData.workerBeeAttribs = {
 	title: 'Worker Bee',
 };
 
+testData.explorerIAttribs = {
+	id: 1,
+	name: 'Explorer I',
+	description: 'view 10 entities',
+	badgeUrl: 'http://test.com'
+};
+
+testData.explorerIIAttribs = {
+	id: 2,
+	name: 'Explorer II',
+	description: 'view 100 entities',
+	badgeUrl: 'http://test.com'
+};
+
+testData.explorerIIIAttribs = {
+	id: 3,
+	name: 'Explorer III',
+	description: 'view 1000 entities',
+	badgeUrl: 'http://test.com'
+};
+
+testData.explorerTitleAttribs = {
+	id: 1,
+	description: 'finish explorer track',
+	title: 'Explorer',
+};
 
 testData.publisherCreatorIAttribs = {
 	id: 1,
@@ -378,6 +404,23 @@ testData.createPublisherCreator = function() {
 		)
 		.then(() =>
 			new TitleType(this.publisherCreatorAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
+testData.createExplorer = function() {
+	return new AchievementType(this.explorerIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.explorerIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new AchievementType(this.explorerIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new TitleType(this.explorerTitleAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
