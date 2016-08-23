@@ -22,13 +22,8 @@ import React from 'react';
 import ValidationLabel from './validation-label';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
+import {updateNameField} from './actions';
 
-function updateNameField(value) {
-	return {
-		type: 'UPDATE_NAME_FIELD',
-		value
-	};
-}
 
 /**
  * Container component. Renders the name field for the alias section of entity

@@ -22,13 +22,8 @@ import React from 'react';
 import ValidationLabel from './validation-label';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
+import {updateSortNameField} from './actions';
 
-function updateSortNameField(value) {
-	return {
-		type: 'UPDATE_SORT_NAME_FIELD',
-		value
-	};
-}
 
 function stripDot(name) {
 	return name.replace(/\./g, '');

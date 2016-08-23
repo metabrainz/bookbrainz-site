@@ -21,6 +21,7 @@ import {Col, Input, Row} from 'react-bootstrap';
 import React from 'react';
 import VirtualizedSelect from 'react-virtualized-select';
 import {connect} from 'react-redux';
+import {updateLanguageField} from './actions';
 
 let LanguageField = ({
 	dispatch,
@@ -39,10 +40,7 @@ let LanguageField = ({
 					options={languageOptions}
 					value={selectValue}
 					onChange={(value) =>
-						dispatch({
-							type: 'UPDATE_LANGUAGE_FIELD',
-							value
-						})
+						dispatch(updateLanguageField(value.value))
 					}
 				/>
 			</Input>
