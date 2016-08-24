@@ -38,7 +38,7 @@ function updateDisambiguationField(value) {
  * @returns {Object} a React component containing the rendered input
  */
 function DisambiguationField({
-	onChange
+	...props
 }) {
 	return (
 		<Row>
@@ -54,16 +54,13 @@ function DisambiguationField({
 						</span>
 					}
 					type="text"
-					onChange={onChange}
+					{...props}
 				/>
 			</Col>
 		</Row>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';
-DisambiguationField.propTypes = {
-	onChange: React.PropTypes.func
-};
 
 export default connect(
 	null,
