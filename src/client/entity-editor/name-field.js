@@ -24,6 +24,7 @@ import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import {updateNameField} from './actions';
 
+const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 /**
  * Container component. Renders the name field for the alias section of entity
@@ -31,27 +32,19 @@ import {updateNameField} from './actions';
  *
  * @returns {Object} a React component containing the rendered input
  */
-let NameField = ({
-	dispatch,
-	storedNameValue = '',
-	storedSortNameValue = ''
-}) => {
-	let input;
-
+function NameField({
+	empty,
+	error,
+	onChange
+}) {
 	const label = (
 		<ValidationLabel
-			empty={
-				storedNameValue.length === 0 &&
-				storedSortNameValue.length === 0
-			}
-			error={storedNameValue === 0}
+			empty={empty}
+			error={error}
 		>
 			Name
 		</ValidationLabel>
 	);
-
-	const KEYSTROKE_DEBOUNCE_TIME = 250;
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 
 	return (
 		<Row>
@@ -61,28 +54,42 @@ let NameField = ({
 			>
 				<Input
 					label={label}
-					ref={(node) => { input = node; }}
 					type="text"
-					onChange={() => debouncedDispatch(
-						updateNameField(input.getInputDOMNode().value)
-					)}
+					onChange={onChange}
 				/>
 			</Col>
 		</Row>
 	);
-};
+}
 NameField.displayName = 'NameField';
 NameField.propTypes = {
-	dispatch: React.PropTypes.func,
-	storedNameValue: React.PropTypes.string,
-	storedSortNameValue: React.PropTypes.string
+	empty: React.PropTypes.bool,
+	error: React.PropTypes.bool,
+	onChange: React.PropTypes.func
 };
 
-NameField = connect(
-	(state) => ({
-		storedNameValue: state.get('nameValue'),
-		storedSortNameValue: state.get('sortNameValue')
-	})
-)(NameField);
+function isEmpty(state) {
+	return state.get('nameValue').length === 0 &&
+		state.get('sortNameValue').length === 0;
+}
 
-export default NameField;
+function isError(state) {
+	return state.get('nameValue').length === 0;
+}
+
+function mapStateToProps(state) {
+	return {
+		empty: isEmpty(state),
+		error: isError(state)
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+	return {
+		onChange: (event) =>
+			debouncedDispatch(updateNameField(event.target.value))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NameField);
