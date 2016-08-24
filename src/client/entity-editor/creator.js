@@ -17,26 +17,27 @@
  */
 
 import CreatorData from './creator-data';
+import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
 import {createStore} from 'redux';
 
-function reducer(state = {}, action) {
+function reducer(state = Immutable.Map({nameValue: '', sortNameValue: ''}), action) {
 	switch (action.type) {
 		case 'UPDATE_NAME_FIELD':
-			return Object.assign({}, state, {nameValue: action.value});
+			return state.set('nameValue', action.value);
 		case 'UPDATE_SORT_NAME_FIELD':
-			return Object.assign({}, state, {sortNameValue: action.value});
+			return state.set('sortNameValue', action.value);
 		case 'UPDATE_LANGUAGE_FIELD':
-			return Object.assign({}, state, {languageValue: action.value});
+			return state.set('languageValue', action.value);
 		case 'SHOW_DISAMBIGUATION':
-			return Object.assign({}, state, {disambiguationVisible: true});
+			return state.set('disambiguationVisible', true);
 		// no default
 	}
 	return state;
 }
 
-const store = createStore(reducer, {});
+const store = createStore(reducer, Immutable.Map({nameValue: '', sortNameValue: ''}));
 
 const Creator = ({
 	languages

@@ -52,12 +52,12 @@ LanguageField.displayName = 'LanguageField';
 LanguageField.propTypes = {
 	dispatch: React.PropTypes.func,
 	languageOptions: React.PropTypes.array,
-	selectValue: React.PropTypes.object
+	selectValue: React.PropTypes.number
 };
 
 LanguageField = connect(
 	(state) => ({
-		selectValue: state.languageValue
+		selectValue: state.get('languageValue')
 	})
 )(LanguageField);
 

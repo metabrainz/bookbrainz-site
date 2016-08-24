@@ -152,8 +152,8 @@ SortNameField.propTypes = {
 
 SortNameField = connect(
 	(state) => ({
-		storedNameValue: state.nameValue,
-		storedSortNameValue: state.sortNameValue
+		storedNameValue: state.get('nameValue'),
+		storedSortNameValue: state.get('sortNameValue')
 	})
 )(SortNameField);
 

@@ -155,7 +155,7 @@ CreatorData.propTypes = {
 
 CreatorData = connect(
 	(state) => ({
-		disambiguationVisible: state.disambiguationVisible
+		disambiguationVisible: state.get('disambiguationVisible')
 	})
 )(CreatorData);
 
