@@ -22,8 +22,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 let DisambiguationButton = ({
-	dispatch,
-	...rest
+	...props
 }) => (
 	<Col
 		className="text-center"
@@ -32,20 +31,21 @@ let DisambiguationButton = ({
 	>
 		<Button
 			bsStyle="link"
-			onClick={() => dispatch({
-				type: 'SHOW_DISAMBIGUATION'
-			})}
-			{...rest}
+			{...props}
 		>
 			Add disambiguation…
 		</Button>
 	</Col>
 );
 DisambiguationButton.displayName = 'DisambiguationButton';
-DisambiguationButton.propTypes = {
-	dispatch: React.PropTypes.func
-};
 
-DisambiguationButton = connect()(DisambiguationButton);
+DisambiguationButton = connect(
+	null,
+	(dispatch) => ({
+		onClick: () => dispatch({
+			type: 'SHOW_DISAMBIGUATION'
+		})
+	})
+)(DisambiguationButton);
 
 export default DisambiguationButton;
