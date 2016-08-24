@@ -26,6 +26,13 @@ import {updateSortNameField} from './actions';
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
+/**
+ * Removes all period characters (dots) from the input string, returning a new
+ * string.
+ *
+ * @param {String} name the input string to strip
+ * @returns {String} the string with dots removed
+ */
 function stripDot(name) {
 	return name.replace(/\./g, '');
 }
@@ -98,6 +105,10 @@ function SortNameField({
 }) {
 	let input;
 
+	function handleGuessClick() {
+		input.getInputDOMNode().value = makeSortName(storedNameValue);
+	}
+
 	const label = (
 		<ValidationLabel
 			empty={empty}
@@ -106,10 +117,6 @@ function SortNameField({
 			Sort Name
 		</ValidationLabel>
 	);
-
-	function handleGuessClick() {
-		input.getInputDOMNode().value = makeSortName(storedNameValue);
-	}
 
 	const guessButton = (
 		<Button
