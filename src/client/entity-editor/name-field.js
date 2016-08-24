@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Input, Row} from 'react-bootstrap';
+import {Input} from 'react-bootstrap';
 
 import React from 'react';
 import ValidationLabel from './validation-label';
@@ -47,18 +47,11 @@ function NameField({
 	);
 
 	return (
-		<Row>
-			<Col
-				md={6}
-				mdOffset={3}
-			>
-				<Input
-					label={label}
-					type="text"
-					onChange={onChange}
-				/>
-			</Col>
-		</Row>
+		<Input
+			label={label}
+			type="text"
+			onChange={onChange}
+		/>
 	);
 }
 NameField.displayName = 'NameField';

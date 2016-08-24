@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Input, Row} from 'react-bootstrap';
+import {Button, Input} from 'react-bootstrap';
 
 import React from 'react';
 import ValidationLabel from './validation-label';
@@ -121,20 +121,13 @@ function SortNameField({
 	);
 
 	return (
-		<Row>
-			<Col
-				md={6}
-				mdOffset={3}
-			>
-				<Input
-					buttonAfter={guessButton}
-					label={label}
-					ref={(node) => { input = node; }}
-					type="text"
-					onChange={onChange}
-				/>
-			</Col>
-		</Row>
+		<Input
+			buttonAfter={guessButton}
+			label={label}
+			ref={(node) => { input = node; }}
+			type="text"
+			onChange={onChange}
+		/>
 	);
 }
 SortNameField.displayName = 'SortNameField';

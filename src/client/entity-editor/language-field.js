@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Input, Row} from 'react-bootstrap';
+import {Input} from 'react-bootstrap';
 
 import React from 'react';
 import VirtualizedSelect from 'react-virtualized-select';
@@ -29,22 +29,15 @@ function LanguageField({
 	onChange
 }) {
 	return (
-		<Row>
-			<Col
-				md={6}
-				mdOffset={3}
-			>
-				<Input
-					label="Language"
-				>
-					<VirtualizedSelect
-						options={languageOptions}
-						value={selectValue}
-						onChange={onChange}
-					/>
-				</Input>
-			</Col>
-		</Row>
+		<Input
+			label="Language"
+		>
+			<VirtualizedSelect
+				options={languageOptions}
+				value={selectValue}
+				onChange={onChange}
+			/>
+		</Input>
 	);
 }
 LanguageField.displayName = 'LanguageField';

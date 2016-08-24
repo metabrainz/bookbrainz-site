@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Input, Row} from 'react-bootstrap';
+import {Input} from 'react-bootstrap';
 
 import React from 'react';
 import _debounce from 'lodash.debounce';
@@ -41,23 +41,16 @@ function DisambiguationField({
 	...props
 }) {
 	return (
-		<Row>
-			<Col
-				md={6}
-				mdOffset={3}
-			>
-				<Input
-					label={
-						<span>
-							Disambiguation
-							<span className="text-muted"> (optional)</span>
-						</span>
-					}
-					type="text"
-					{...props}
-				/>
-			</Col>
-		</Row>
+		<Input
+			label={
+				<span>
+					Disambiguation
+					<span className="text-muted"> (optional)</span>
+				</span>
+			}
+			type="text"
+			{...props}
+		/>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';

@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 
 import React from 'react';
 import {connect} from 'react-redux';
@@ -24,18 +24,12 @@ import {connect} from 'react-redux';
 let DisambiguationButton = ({
 	...props
 }) => (
-	<Col
-		className="text-center"
-		md={4}
-		mdOffset={4}
+	<Button
+		bsStyle="link"
+		{...props}
 	>
-		<Button
-			bsStyle="link"
-			{...props}
-		>
-			Add disambiguation…
-		</Button>
-	</Col>
+		Add disambiguation…
+	</Button>
 );
 DisambiguationButton.displayName = 'DisambiguationButton';
 

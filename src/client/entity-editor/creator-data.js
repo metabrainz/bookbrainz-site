@@ -44,19 +44,38 @@ let CreatorData = ({
 				What is the Creator called?
 			</h2>
 			<form>
-				<NameField/>
-				<SortNameField/>
-				<LanguageField languageOptions={languageOptionsForDisplay}/>
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<NameField/>
+					</Col>
+				</Row>
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<SortNameField/>
+					</Col>
+				</Row>
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<LanguageField
+							languageOptions={languageOptionsForDisplay}
+						/>
+					</Col>
+				</Row>
 				<Row className="margin-top-1">
-					<DisambiguationButton disabled={disambiguationVisible}/>
+					<Col className="text-center" md={4} mdOffset={4}>
+						<DisambiguationButton disabled={disambiguationVisible}/>
+					</Col>
 					<Col
 						className="text-center"
 						md={4}
 					>
 						<Button bsStyle="link">Add more aliases…</Button>
+				</Row>
+				<Row>
+					<Col md={6} mdOffset={3}>
+						{disambiguationVisible && <DisambiguationField/>}
 					</Col>
 				</Row>
-				{disambiguationVisible && <DisambiguationField/>}
 				<h2>
 					What else do you know about the Creator?
 				</h2>
