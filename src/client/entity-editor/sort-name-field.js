@@ -24,6 +24,7 @@ import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import {updateSortNameField} from './actions';
 
+const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 function stripDot(name) {
 	return name.replace(/\./g, '');
@@ -84,25 +85,23 @@ function makeSortName(name) {
 }
 
 /**
- * Container component. Renders the sort name field for the alias section of
- * entity editing forms.
+ * Presentational component. Renders the sort name field for the alias section
+ * of entity editing forms.
  *
  * @returns {Object} a React component containing the rendered input
  */
-let SortNameField = ({
-	dispatch,
-	storedNameValue = '',
-	storedSortNameValue = ''
-}) => {
+function SortNameField({
+	empty,
+	error,
+	onChange,
+	storedNameValue
+}) {
 	let input;
 
 	const label = (
 		<ValidationLabel
-			empty={
-				storedNameValue.length === 0 &&
-				storedSortNameValue.length === 0
-			}
-			error={storedSortNameValue.length === 0}
+			empty={empty}
+			error={error}
 		>
 			Sort Name
 		</ValidationLabel>
@@ -121,9 +120,6 @@ let SortNameField = ({
 		</Button>
 	);
 
-	const KEYSTROKE_DEBOUNCE_TIME = 250;
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
-
 	return (
 		<Row>
 			<Col
@@ -135,26 +131,43 @@ let SortNameField = ({
 					label={label}
 					ref={(node) => { input = node; }}
 					type="text"
-					onChange={() => debouncedDispatch(
-						updateSortNameField(input.getInputDOMNode().value)
-					)}
+					onChange={onChange}
 				/>
 			</Col>
 		</Row>
 	);
-};
+}
 SortNameField.displayName = 'SortNameField';
 SortNameField.propTypes = {
-	dispatch: React.PropTypes.func,
+	empty: React.PropTypes.bool,
+	error: React.PropTypes.bool,
 	storedNameValue: React.PropTypes.string,
-	storedSortNameValue: React.PropTypes.string
+	onChange: React.PropTypes.func
 };
 
-SortNameField = connect(
-	(state) => ({
-		storedNameValue: state.get('nameValue'),
-		storedSortNameValue: state.get('sortNameValue')
-	})
-)(SortNameField);
+function isEmpty(state) {
+	return !(state.get('nameValue') || state.get('sortNameValue'));
+}
 
-export default SortNameField;
+function isError(state) {
+	return !(state.get('sortNameValue'));
+}
+
+function mapStateToProps(state) {
+	return {
+		empty: isEmpty(state),
+		error: isError(state),
+		storedNameValue: state.get('nameValue')
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+	return {
+		onChange: (event) => debouncedDispatch(
+			updateSortNameField(event.target.value)
+		)
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SortNameField);
