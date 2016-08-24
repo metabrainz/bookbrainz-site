@@ -108,6 +108,44 @@ body {
 .margin-right-0-5 {margin-right: unit(0.5, em) !important};
 .margin-left-0-5 {margin-left: unit(0.5, em) !important};
 
+.generate-margins-d(@n, @i: 0) when (@i =< @n) {
+	.margin-top-d@{i} {
+		margin-top: unit((@i/10), em) !important;
+	}
+	.margin-bottom-d@{i} {
+		margin-bottom: unit((@i/10), em) !important;
+	}
+	.margin-left-d@{i} {
+		margin-left: unit((@i/10), em) !important;
+	}
+	.margin-right-d@{i} {
+		margin-right: unit((@i/10), em) !important;
+	}
+	.margin-sides-d@{i} {
+		margin-left: unit((@i/10), em) !important;
+		margin-right: unit((@i/10), em) !important;
+	}
+
+	.padding-top-d@{i} {
+		padding-top: unit((@i/10), em) !important;
+	}
+	.padding-bottom-d@{i} {
+		padding-bottom: unit((@i/10), em) !important;
+	}
+	.padding-left-d@{i} {
+		padding-left: unit((@i/10), em) !important;
+	}
+	.padding-right-d@{i} {
+		padding-right: unit((@i/10), em) !important;
+	}
+	.padding-sides-d@{i} {
+		padding-left: unit((@i/10), em) !important;
+		padding-right: unit((@i/10), em) !important;
+	}
+	.generate-margins-d(@n, (@i + 1));
+}
+.generate-margins-d(60);
+
 .no-sides-border {
 	border-left: 0px;
 	border-right: 0px;
