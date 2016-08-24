@@ -23,42 +23,42 @@ import VirtualizedSelect from 'react-virtualized-select';
 import {connect} from 'react-redux';
 import {updateLanguageField} from './actions';
 
-let LanguageField = ({
-	dispatch,
+function LanguageField({
 	selectValue,
-	languageOptions
-}) => (
-	<Row>
-		<Col
-			md={6}
-			mdOffset={3}
-		>
-			<Input
-				label="Language"
+	languageOptions,
+	onChange
+}) {
+	return (
+		<Row>
+			<Col
+				md={6}
+				mdOffset={3}
 			>
-				<VirtualizedSelect
-					options={languageOptions}
-					value={selectValue}
-					onChange={(value) =>
-						dispatch(updateLanguageField(value.value))
-					}
-				/>
-			</Input>
-		</Col>
-	</Row>
-);
-
+				<Input
+					label="Language"
+				>
+					<VirtualizedSelect
+						options={languageOptions}
+						value={selectValue}
+						onChange={onChange}
+					/>
+				</Input>
+			</Col>
+		</Row>
+	);
+}
 LanguageField.displayName = 'LanguageField';
 LanguageField.propTypes = {
-	dispatch: React.PropTypes.func,
 	languageOptions: React.PropTypes.array,
-	selectValue: React.PropTypes.number
+	selectValue: React.PropTypes.number,
+	onChange: React.PropTypes.func
 };
 
-LanguageField = connect(
+export default connect(
 	(state) => ({
 		selectValue: state.get('languageValue')
+	}),
+	(dispatch) => ({
+		onChange: (value) => dispatch(updateLanguageField(value.value))
 	})
 )(LanguageField);
-
-export default LanguageField;

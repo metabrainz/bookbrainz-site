@@ -22,6 +22,8 @@ import React from 'react';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+
 function updateDisambiguationField(value) {
 	return {
 		type: 'UPDATE_DISAMBIGUATION_FIELD',
@@ -30,19 +32,14 @@ function updateDisambiguationField(value) {
 }
 
 /**
- * Container component. Renders the name field for the alias section of entity
- * editing forms.
+ * Presentational component. Renders the name field for the alias section of
+ * entity editing forms.
  *
  * @returns {Object} a React component containing the rendered input
  */
-let DisambiguationField = ({
-	dispatch
-}) => {
-	let input;
-
-	const KEYSTROKE_DEBOUNCE_TIME = 250;
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
-
+function DisambiguationField({
+	onChange
+}) {
 	return (
 		<Row>
 			<Col
@@ -56,21 +53,26 @@ let DisambiguationField = ({
 							<span className="text-muted"> (optional)</span>
 						</span>
 					}
-					ref={(node) => { input = node; }}
 					type="text"
-					onChange={() => debouncedDispatch(
-						updateDisambiguationField(input.getInputDOMNode().value)
-					)}
+					onChange={onChange}
 				/>
 			</Col>
 		</Row>
 	);
-};
+}
 DisambiguationField.displayName = 'DisambiguationField';
 DisambiguationField.propTypes = {
-	dispatch: React.PropTypes.func
+	onChange: React.PropTypes.func
 };
 
-DisambiguationField = connect()(DisambiguationField);
-
-export default DisambiguationField;
+export default connect(
+	null,
+	(dispatch) => {
+		const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+		return {
+			onChange: (event) => debouncedDispatch(
+				updateDisambiguationField(event.target.value)
+			)
+		};
+	}
+)(DisambiguationField);
