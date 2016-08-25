@@ -18,14 +18,14 @@
 
 import {Button, Col, Input, Panel, Row} from 'react-bootstrap';
 
-import DisambiguationButton from './disambiguation-button';
-import DisambiguationField from './disambiguation-field';
-import LanguageField from './language-field';
-import NameField from './name-field';
+import DisambiguationButton from './disambiguation-button-container';
+import DisambiguationField from './disambiguation-field-container';
+import LanguageField from './language-field-container';
+import NameField from './name-field-container';
 import PartialDate from '../components/input/partial-date.jsx';
 import React from 'react';
 import Select from 'react-select';
-import SortNameField from './sort-name-field';
+import SortNameField from './sort-name-field-container';
 import ValidationLabel from './validation-label';
 import {connect} from 'react-redux';
 

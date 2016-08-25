@@ -16,22 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+import DisambiguationField from 'disambiguation-field';
+import _debounce from 'lodash.debounce';
+import {connect} from 'react-redux';
+import {updateDisambiguationField} from './actions';
 
-import React from 'react';
-import VirtualizedSelect from 'react-virtualized-select';
+const KEYSTROKE_DEBOUNCE_TIME = 250;
 
-function LanguageField({
-	...props
-}) {
-	return (
-		<Input
-			label="Language"
-		>
-			<VirtualizedSelect {...props}/>
-		</Input>
-	);
+function mapDispatchToProps(dispatch) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+	return {
+		onChange: (event) => debouncedDispatch(
+			updateDisambiguationField(event.target.value)
+		)
+	};
 }
-LanguageField.displayName = 'LanguageField';
 
-export default LanguageField;
+export default connect(null, mapDispatchToProps)(DisambiguationField);

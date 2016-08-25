@@ -16,35 +16,36 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
-const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
-const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
-const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
+import SortNameField from './sort-name-field';
+import _debounce from 'lodash.debounce';
+import {connect} from 'react-redux';
+import {updateSortNameField} from './actions';
 
-export function updateNameField(value) {
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+
+function isEmpty(state) {
+	return !(state.get('nameValue') || state.get('sortNameValue'));
+}
+
+function isError(state) {
+	return !(state.get('sortNameValue'));
+}
+
+function mapStateToProps(state) {
 	return {
-		type: UPDATE_NAME_FIELD,
-		value
+		empty: isEmpty(state),
+		error: isError(state),
+		storedNameValue: state.get('nameValue')
 	};
 }
 
-export function updateSortNameField(value) {
+function mapDispatchToProps(dispatch) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
-		type: UPDATE_SORT_NAME_FIELD,
-		value
+		onChange: (event) => debouncedDispatch(
+			updateSortNameField(event.target.value)
+		)
 	};
 }
 
-export function updateLanguageField(value) {
-	return {
-		type: UPDATE_LANGUAGE_FIELD,
-		value
-	};
-}
-
-export function updateDisambiguationField(value) {
-	return {
-		type: UPDATE_DISAMBIGUATION_FIELD,
-		value
-	};
-}
+export default connect(mapStateToProps, mapDispatchToProps)(SortNameField);

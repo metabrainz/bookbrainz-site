@@ -16,44 +16,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+import NameField from './name-field';
+import _debounce from 'lodash.debounce';
+import {connect} from 'react-redux';
+import {updateNameField} from './actions';
 
-import React from 'react';
-import ValidationLabel from './validation-label';
+const KEYSTROKE_DEBOUNCE_TIME = 250;
 
-/**
- * Presentational component. Renders the name field for the alias section of
- * entity editing forms.
- *
- * @returns {Object} a React component containing the rendered input
- */
-function NameField({
-	empty,
-	error,
-	onChange
-}) {
-	const label = (
-		<ValidationLabel
-			empty={empty}
-			error={error}
-		>
-			Name
-		</ValidationLabel>
-	);
-
-	return (
-		<Input
-			label={label}
-			type="text"
-			onChange={onChange}
-		/>
-	);
+function isEmpty(state) {
+	return state.get('nameValue').length === 0 &&
+		state.get('sortNameValue').length === 0;
 }
-NameField.displayName = 'NameField';
-NameField.propTypes = {
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool,
-	onChange: React.PropTypes.func
-};
 
-export default NameField;
+function isError(state) {
+	return state.get('nameValue').length === 0;
+}
+
+function mapStateToProps(state) {
+	return {
+		empty: isEmpty(state),
+		error: isError(state)
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+	return {
+		onChange: (event) =>
+			debouncedDispatch(updateNameField(event.target.value))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NameField);

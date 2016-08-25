@@ -20,11 +20,6 @@ import {Button, Input} from 'react-bootstrap';
 
 import React from 'react';
 import ValidationLabel from './validation-label';
-import _debounce from 'lodash.debounce';
-import {connect} from 'react-redux';
-import {updateSortNameField} from './actions';
-
-const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 /**
  * Removes all period characters (dots) from the input string, returning a new
@@ -145,29 +140,4 @@ SortNameField.propTypes = {
 	onChange: React.PropTypes.func
 };
 
-function isEmpty(state) {
-	return !(state.get('nameValue') || state.get('sortNameValue'));
-}
-
-function isError(state) {
-	return !(state.get('sortNameValue'));
-}
-
-function mapStateToProps(state) {
-	return {
-		empty: isEmpty(state),
-		error: isError(state),
-		storedNameValue: state.get('nameValue')
-	};
-}
-
-function mapDispatchToProps(dispatch) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
-	return {
-		onChange: (event) => debouncedDispatch(
-			updateSortNameField(event.target.value)
-		)
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SortNameField);
+export default SortNameField;

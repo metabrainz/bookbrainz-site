@@ -16,22 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+import DisambiguationButton from './disambiguation-button';
+import {connect} from 'react-redux';
 
-import React from 'react';
-import VirtualizedSelect from 'react-virtualized-select';
-
-function LanguageField({
-	...props
-}) {
-	return (
-		<Input
-			label="Language"
-		>
-			<VirtualizedSelect {...props}/>
-		</Input>
-	);
+function mapDispatchToProps(dispatch) {
+	return {
+		onClick: () => dispatch({
+			type: 'SHOW_DISAMBIGUATION'
+		})
+	};
 }
-LanguageField.displayName = 'LanguageField';
 
-export default LanguageField;
+export default connect(null, mapDispatchToProps)(DisambiguationButton);

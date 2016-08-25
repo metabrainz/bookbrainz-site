@@ -17,19 +17,7 @@
  */
 
 import {Input} from 'react-bootstrap';
-
 import React from 'react';
-import _debounce from 'lodash.debounce';
-import {connect} from 'react-redux';
-
-const KEYSTROKE_DEBOUNCE_TIME = 250;
-
-function updateDisambiguationField(value) {
-	return {
-		type: 'UPDATE_DISAMBIGUATION_FIELD',
-		value
-	};
-}
 
 /**
  * Presentational component. Renders the name field for the alias section of
@@ -55,14 +43,4 @@ function DisambiguationField({
 }
 DisambiguationField.displayName = 'DisambiguationField';
 
-export default connect(
-	null,
-	(dispatch) => {
-		const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
-		return {
-			onChange: (event) => debouncedDispatch(
-				updateDisambiguationField(event.target.value)
-			)
-		};
-	}
-)(DisambiguationField);
+export default DisambiguationField;

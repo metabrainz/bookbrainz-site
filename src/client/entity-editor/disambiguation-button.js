@@ -17,29 +17,20 @@
  */
 
 import {Button} from 'react-bootstrap';
-
 import React from 'react';
-import {connect} from 'react-redux';
 
-let DisambiguationButton = ({
+function DisambiguationButton({
 	...props
-}) => (
-	<Button
-		bsStyle="link"
-		{...props}
-	>
-		Add disambiguation…
-	</Button>
-);
+}) {
+	return (
+		<Button
+			bsStyle="link"
+			{...props}
+		>
+			Add disambiguation…
+		</Button>
+	);
+}
 DisambiguationButton.displayName = 'DisambiguationButton';
-
-DisambiguationButton = connect(
-	null,
-	(dispatch) => ({
-		onClick: () => dispatch({
-			type: 'SHOW_DISAMBIGUATION'
-		})
-	})
-)(DisambiguationButton);
 
 export default DisambiguationButton;

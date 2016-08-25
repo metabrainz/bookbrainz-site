@@ -16,22 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+import LanguageField from './language-field';
+import {connect} from 'react-redux';
+import {updateLanguageField} from './actions';
 
-import React from 'react';
-import VirtualizedSelect from 'react-virtualized-select';
-
-function LanguageField({
-	...props
-}) {
-	return (
-		<Input
-			label="Language"
-		>
-			<VirtualizedSelect {...props}/>
-		</Input>
-	);
+function mapStateToProps(state) {
+	return {
+		value: state.get('languageValue')
+	};
 }
-LanguageField.displayName = 'LanguageField';
 
-export default LanguageField;
+function mapDispatchToProps(dispatch) {
+	return {
+		onChange: (value) => dispatch(updateLanguageField(value.value))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LanguageField);
