@@ -24,34 +24,28 @@ import {connect} from 'react-redux';
 import {updateLanguageField} from './actions';
 
 function LanguageField({
-	selectValue,
-	languageOptions,
-	onChange
+	...props
 }) {
 	return (
 		<Input
 			label="Language"
 		>
-			<VirtualizedSelect
-				options={languageOptions}
-				value={selectValue}
-				onChange={onChange}
-			/>
+			<VirtualizedSelect {...props}/>
 		</Input>
 	);
 }
 LanguageField.displayName = 'LanguageField';
-LanguageField.propTypes = {
-	languageOptions: React.PropTypes.array,
-	selectValue: React.PropTypes.number,
-	onChange: React.PropTypes.func
-};
 
-export default connect(
-	(state) => ({
-		selectValue: state.get('languageValue')
-	}),
-	(dispatch) => ({
+function mapStateToProps(state) {
+	return {
+		value: state.get('languageValue')
+	};
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
 		onChange: (value) => dispatch(updateLanguageField(value.value))
-	})
-)(LanguageField);
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LanguageField);

@@ -57,7 +57,7 @@ let CreatorData = ({
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<LanguageField
-							languageOptions={languageOptionsForDisplay}
+							options={languageOptionsForDisplay}
 						/>
 					</Col>
 				</Row>
