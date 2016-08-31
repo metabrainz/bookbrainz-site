@@ -21,6 +21,7 @@ const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
 const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
+const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 
 export function updateNameField(value) {
 	return {
@@ -53,5 +54,11 @@ export function updateDisambiguationField(value) {
 export function showAliasEditor() {
 	return {
 		type: SHOW_ALIAS_EDITOR
+	};
+}
+
+export function hideAliasEditor() {
+	return {
+		type: HIDE_ALIAS_EDITOR
 	};
 }

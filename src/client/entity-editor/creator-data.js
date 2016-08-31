@@ -19,6 +19,7 @@
 import {Button, Col, Input, Panel, Row} from 'react-bootstrap';
 
 import AliasButton from './alias-button-container';
+import AliasEditor from './alias-editor/alias-editor';
 import DisambiguationButton from './disambiguation-button-container';
 import DisambiguationField from './disambiguation-field-container';
 import LanguageField from './language-field-container';
@@ -30,7 +31,9 @@ import SortNameField from './sort-name-field-container';
 import ValidationLabel from './validation-label';
 import {connect} from 'react-redux';
 
+
 let CreatorData = ({
+	aliasEditorVisible,
 	disambiguationVisible,
 	languageOptions
 }) => {
@@ -41,6 +44,10 @@ let CreatorData = ({
 
 	return (
 		<Panel>
+			<AliasEditor
+				languageOptions={languageOptionsForDisplay}
+				show={aliasEditorVisible}
+			/>
 			<h2>
 				What is the Creator called?
 			</h2>
@@ -167,13 +174,15 @@ let CreatorData = ({
 };
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
+	aliasEditorVisible: React.PropTypes.bool,
 	disambiguationVisible: React.PropTypes.bool,
 	languageOptions: React.PropTypes.array
 };
 
 CreatorData = connect(
 	(state) => ({
-		disambiguationVisible: state.get('disambiguationVisible')
+		disambiguationVisible: state.get('disambiguationVisible'),
+		aliasEditorVisible: state.get('aliasEditorVisible')
 	})
 )(CreatorData);
 
