@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import DisambiguationField from 'disambiguation-field';
+import DisambiguationField from './disambiguation-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import {updateDisambiguationField} from './actions';
