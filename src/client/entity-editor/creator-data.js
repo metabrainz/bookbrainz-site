@@ -18,6 +18,7 @@
 
 import {Button, Col, Input, Panel, Row} from 'react-bootstrap';
 
+import AliasButton from './alias-button-container';
 import DisambiguationButton from './disambiguation-button-container';
 import DisambiguationField from './disambiguation-field-container';
 import LanguageField from './language-field-container';
@@ -65,11 +66,9 @@ let CreatorData = ({
 					<Col className="text-center" md={4} mdOffset={4}>
 						<DisambiguationButton disabled={disambiguationVisible}/>
 					</Col>
-					<Col
-						className="text-center"
-						md={4}
-					>
-						<Button bsStyle="link">Add more aliases…</Button>
+					<Col className="text-center" md={4}>
+						<AliasButton/>
+					</Col>
 				</Row>
 				<Row>
 					<Col md={6} mdOffset={3}>

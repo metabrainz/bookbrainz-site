@@ -32,6 +32,10 @@ function reducer(state = Immutable.Map({nameValue: '', sortNameValue: ''}), acti
 			return state.set('languageValue', action.value);
 		case 'SHOW_DISAMBIGUATION':
 			return state.set('disambiguationVisible', true);
+		case 'SHOW_ALIAS_EDITOR':
+			return state.set('aliasEditorVisible', true);
+		case 'HIDE_ALIAS_EDITOR':
+			return state.set('aliasEditorVisible', false);
 		// no default
 	}
 	return state;

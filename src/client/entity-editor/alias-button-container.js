@@ -16,42 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
-const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
-const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
-const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
-const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
+import AliasButton from './alias-button';
+import {connect} from 'react-redux';
+import {showAliasEditor} from './actions';
 
-export function updateNameField(value) {
+function mapDispatchToProps(dispatch) {
 	return {
-		type: UPDATE_NAME_FIELD,
-		value
+		onClick: () => dispatch(showAliasEditor())
 	};
 }
 
-export function updateSortNameField(value) {
-	return {
-		type: UPDATE_SORT_NAME_FIELD,
-		value
-	};
-}
-
-export function updateLanguageField(value) {
-	return {
-		type: UPDATE_LANGUAGE_FIELD,
-		value
-	};
-}
-
-export function updateDisambiguationField(value) {
-	return {
-		type: UPDATE_DISAMBIGUATION_FIELD,
-		value
-	};
-}
-
-export function showAliasEditor() {
-	return {
-		type: SHOW_ALIAS_EDITOR
-	};
-}
+export default connect(null, mapDispatchToProps)(AliasButton);
