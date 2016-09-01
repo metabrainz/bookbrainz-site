@@ -26,7 +26,6 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const passport = require('passport');
-const status = require('http-status');
 
 const handler = require('../helpers/handler');
 
@@ -49,11 +48,6 @@ router.get('/login', (req, res) => {
 		title: 'Log In',
 		markup: ReactDOMServer.renderToString(LoginPage())
 	});
-});
-
-router.get('/logout', (req, res) => {
-	req.logOut();
-	res.redirect(status.SEE_OTHER, '/');
 });
 
 router.post('/login/handler', (req, res, next) => {
