@@ -63,9 +63,9 @@ html
 										|&nbsp;Sign Out
 						else
 							li
-								a(href='/login')
+								a(href='/auth')
 									span.fa.fa-sign-in
-									|&nbsp;Sign In
+									|&nbsp;Sign In / Register
 
 					unless (homepage || hideSearch)
 						form.navbar-form.navbar-right(role='search', action='/search')
