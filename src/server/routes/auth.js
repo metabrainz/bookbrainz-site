@@ -22,6 +22,7 @@ const express = require('express');
 const router = express.Router();
 
 const passport = require('passport');
+const status = require('http-status');
 
 router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
 
@@ -48,5 +49,10 @@ router.get('/cb',
 		})(req, res, next);
 	}
 );
+
+router.get('/logout', (req, res) => {
+	req.logOut();
+	res.redirect(status.SEE_OTHER, '/');
+});
 
 module.exports = router;

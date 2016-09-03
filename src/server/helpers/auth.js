@@ -21,7 +21,6 @@
 
 const Promise = require('bluebird');
 
-const LocalStrategy = require('passport-local').Strategy;
 const passport = require('passport');
 const MusicBrainzOAuth2Strategy =
 	require('passport-musicbrainz-oauth2').Strategy;
@@ -59,28 +58,6 @@ function updateCachedMBName(bbUserModel, mbUserJSON) {
 }
 
 auth.init = (app) => {
-	passport.use(
-		new LocalStrategy((username, password, done) => {
-			new Editor({name: username}).fetch({require: true})
-				.then((model) =>
-					model.checkPassword(password)
-						.then((res) => {
-							if (res) {
-								return done(null, model.toJSON());
-							}
-
-							return done(null, false, {
-								message: 'Incorrect password.'
-							});
-						})
-				)
-				.catch(Editor.NotFoundError, () => {
-					done(null, false, {message: 'Incorrect username.'});
-				})
-				.catch(done);
-		})
-	);
-
 	passport.use(new MusicBrainzOAuth2Strategy(
 		_.assign(
 			{
