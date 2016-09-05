@@ -10,11 +10,6 @@ ALTER TABLE bookbrainz.editor
 	ADD COLUMN cached_metabrainz_name VARCHAR(64);
 ALTER TABLE bookbrainz.editor
 	ALTER COLUMN password DROP NOT NULL;
-ALTER TABLE bookbrainz.editor
-	ADD CONSTRAINT password_or_metabrainz_account_check
-	CHECK (
-		password IS NOT NULL OR metabrainz_user_id IS NOT NULL
-	);
 
 
 -- Add core achievement system

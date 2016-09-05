@@ -44,8 +44,6 @@ DROP TABLE bookbrainz.achievement_type;
 
 -- Remove OAuth
 ALTER TABLE bookbrainz.editor
-	DROP CONSTRAINT password_or_metabrainz_account_check;
-ALTER TABLE bookbrainz.editor
 	DROP COLUMN metabrainz_user_id;
 ALTER TABLE bookbrainz.editor
 	DROP COLUMN cached_metabrainz_name;
