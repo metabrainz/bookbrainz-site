@@ -33,14 +33,10 @@ CREATE TABLE bookbrainz.editor (
 	type_id INT NOT NULL,
 	gender_id INT,
 	area_id INT,
-	password CHAR(60) CHECK (password <> ''),
 	revisions_applied INT NOT NULL DEFAULT 0 CHECK (revisions_applied >= 0),
 	revisions_reverted INT NOT NULL DEFAULT 0 CHECK (revisions_reverted >= 0),
 	total_revisions INT NOT NULL DEFAULT 0 CHECK (total_revisions >= 0),
-	title_unlock_id INT,
-	CHECK (
-		password IS NOT NULL OR metabrainz_user_id IS NOT NULL
-	)
+	title_unlock_id INT
 );
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id) DEFERRABLE;
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
