@@ -119,9 +119,9 @@ router.post('/handler', (req, res) => {
 
 			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
 				throw new FormSubmissionError(
-					'That username already exists - please try using' +
-					' another, or link your existing BookBrainz account by' +
-					' signing in and visiting your profile.'
+					'That username already exists - please try using another,' +
+					' or contact us to have your existing BookBrainz account' +
+					' linked to a MusicBrainz account.'
 				);
 			}
 

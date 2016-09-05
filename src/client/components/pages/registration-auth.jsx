@@ -36,9 +36,11 @@ function RegistrationAuth() {
 				redirected back to BookBrainz to continue registration!
 			</p>
 			<Alert bsStyle="warning">
-				If you already registered for BookBrainz, please log in to your
-				existing account and click "Link My MusicBrainz Account" instead
-				of registering again!
+				If you already registered for BookBrainz, and your account
+				isn't linked to a MusicBrainz account, please contact us using
+				one of the links on our homepage instead of registering. We'll
+				update your account details to link your account so that you
+				can sign in.
 			</Alert>
 			<div className="text-center">
 				<Button
