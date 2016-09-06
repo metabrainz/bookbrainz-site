@@ -103,7 +103,7 @@ auth.isAuthenticated = (req, res, next) => {
 
 	req.session.redirectTo = req.originalUrl;
 
-	return res.redirect(status.SEE_OTHER, '/login');
+	return res.redirect(status.SEE_OTHER, '/auth');
 };
 
 auth.isAuthenticatedForHandler = (req, res, next) => {
