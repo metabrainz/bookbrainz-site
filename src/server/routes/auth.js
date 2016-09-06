@@ -44,7 +44,10 @@ router.get('/cb',
 					return next(loginErr);
 				}
 
-				return res.redirect('/');
+				const redirectTo =
+					req.session.redirectTo ? req.session.redirectTo : '/';
+				req.session.redirectTo = null;
+				return res.redirect(redirectTo);
 			});
 		})(req, res, next);
 	}
