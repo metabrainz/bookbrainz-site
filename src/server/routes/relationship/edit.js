@@ -57,20 +57,32 @@ function getEntityByType(entity, withRelated, transacting) {
 function copyRelationshipsAndAdd(
 	transacting, oldRelationshipSet, newRelationshipSet, newRelationship
 ) {
-	const oldRelationshipsPromise =
-		oldRelationshipSet.related('relationships').fetch({transacting});
-	const newRelationshipsPromise =
-		newRelationshipSet.related('relationships').fetch({transacting});
+	const oldRelationshipSetPromise = oldRelationshipSet.fetch({transacting});
+	oldRelationshipSetPromise.then((relationshipSet) => {
+		const newRelationshipsPromise =
+			newRelationshipSet.related('relationships').fetch({transacting});
 
-	return Promise.join(oldRelationshipsPromise, newRelationshipsPromise,
-		(oldRelationships, newRelationships) => {
-			const relationshipsToBeAdded = _.concat(
-				oldRelationships.map('id'), newRelationship.get('id')
+		if (!relationshipSet) {
+			return newRelationshipsPromise.then((newRelationships) =>
+				newRelationships.attach(
+					newRelationship.get('id'), {transacting}
+				)
 			);
-			return newRelationships
-				.attach(relationshipsToBeAdded, {transacting});
 		}
-	);
+
+		const oldRelationshipsPromise =
+			relationshipSet.related('relationships').fetch({transacting});
+
+		return Promise.join(oldRelationshipsPromise, newRelationshipsPromise,
+			(oldRelationships, newRelationships) => {
+				const relationshipsToBeAdded = _.concat(
+					oldRelationships.map('id'), newRelationship.get('id')
+				);
+				return newRelationships
+					.attach(relationshipsToBeAdded, {transacting});
+			}
+		);
+	});
 }
 
 function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
