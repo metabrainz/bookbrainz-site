@@ -49,7 +49,7 @@ module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
 	// Get unique identifier types for display
 	const identifierTypes = entity.identifierSet &&
-		_.uniq(
+		_.uniqBy(
 			_.map(entity.identifierSet.identifiers, 'type'),
 			(type) => type.id
 		);
