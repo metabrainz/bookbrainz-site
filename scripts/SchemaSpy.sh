@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 if [ $# -ne 4 ]; then
   echo 'Usage: SchemaSpy.sh [username] [password] [database] [host]';
