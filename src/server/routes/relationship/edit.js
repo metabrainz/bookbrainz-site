@@ -58,7 +58,7 @@ function copyRelationshipsAndAdd(
 	transacting, oldRelationshipSet, newRelationshipSet, newRelationship
 ) {
 	const oldRelationshipSetPromise = oldRelationshipSet.fetch({transacting});
-	oldRelationshipSetPromise.then((relationshipSet) => {
+	return oldRelationshipSetPromise.then((relationshipSet) => {
 		const newRelationshipsPromise =
 			newRelationshipSet.related('relationships').fetch({transacting});
 
