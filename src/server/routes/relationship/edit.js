@@ -108,9 +108,19 @@ function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
 	// Add the previous revision as a parent of this revision.
 	const parentAddedPromise = Promise.join(
 		revisionParentsPromise, entityPromise,
-		(parents, entity) => parents.attach(
-			entity.get('revisionId'), {transacting}
-		)
+		(parents, entity) => {
+			const parentSet = parents.find(
+				(parent) => parent.get('id') === entity.get('revisionId')
+			);
+
+			if (parentSet) {
+				return Promise.resolve(null);
+			}
+
+			return parents.attach(
+				entity.get('revisionId'), {transacting}
+			);
+		}
 	);
 
 	// Finally, update the revision ID and relationship set ID of the entity
@@ -161,13 +171,15 @@ function createRelationship(relationship, editorJSON) {
 					newRevision
 				);
 
-				const targetPromise = addRelationshipToEntity(
-					transacting, relationship.target, newRelationship,
-					newRevision
+				const targetPromise = sourcePromise.then(() =>
+					addRelationshipToEntity(
+						transacting, relationship.target, newRelationship,
+						newRevision
+					)
 				);
 
 				return Promise.join(
-					editorUpdatePromise, sourcePromise, targetPromise
+					editorUpdatePromise, targetPromise
 				);
 			});
 	});
