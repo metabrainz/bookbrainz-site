@@ -17,23 +17,45 @@
  */
 
 const React = require('react');
+const DragAndDropImage =
+	require('../../input/dragAndDropImage.jsx');
+
 (() => {
 	'use strict';
 	class Achievement extends React.Component {
 		constructor(props) {
 			super(props);
 			this.state = {
-				achievement: props.achievement
+				achievement: props.achievement,
+				unlocked: props.unlocked
 			};
 		}
 		render() {
+			let imgElement;
+			if (this.state.unlocked) {
+				imgElement = (
+					<DragAndDropImage
+						achievementId={this.state.achievement.id}
+						achievementName={this.state.achievement.name}
+						height="100px"
+						src={this.state.achievement.badgeUrl}
+						style={{zIndex: 2}}
+					/>
+				);
+			}
+			else {
+				imgElement = (
+					<img
+						height="100px"
+						src={this.state.achievement.badgeUrl}
+						style={{zIndex: 2}}
+					/>
+				);
+			}
 			return (
 				<div className="row well">
 					<div className="col-sm-2">
-						<img
-							height="100px"
-							src={this.state.achievement.badgeUrl}
-						/>
+						{imgElement}
 					</div>
 					<div className="col-sm-8">
 						<div className="h2">
@@ -53,7 +75,8 @@ const React = require('react');
 			badgeUrl: React.PropTypes.string,
 			description: React.PropTypes.string,
 			name: React.PropTypes.string
-		})
+		}),
+		unlocked: React.PropTypes.array
 	};
 
 	module.exports = Achievement;

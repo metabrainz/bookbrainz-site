@@ -20,7 +20,7 @@
     "debug": "npm run watch-less & npm run watch-client-js & npm run watch-server-js",
     "lint": "eslint --ext .js --ext .jsx src test templates scripts gulpfile.js",
     "test": "npm run lint && gulp",
-	"jsdoc": "node_modules/.bin/jsdoc -r src",
+    "jsdoc": "node_modules/.bin/jsdoc -r src",
     "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator"
   },
   "dependencies": {
@@ -57,12 +57,12 @@
     "morgan": "~1.7.0",
     "node-jsx": "^0.13.3",
     "passport": "^0.3.2",
-    "passport-local": "^1.0.0",
     "passport-musicbrainz-oauth2": "git+https://github.com/LordSputnik/passport-musicbrainz-oauth2.git",
     "react": "^0.14.8",
     "react-bootstrap": "^0.28.5",
     "react-dom": "^0.14.8",
     "react-fontawesome": "^0.3.3",
+    "react-sticky": "^5.0.4",
     "select2": "^4.0.2",
     "select2-bootstrap-theme": "0.1.0-beta.4",
     "serve-favicon": "~2.3.0",

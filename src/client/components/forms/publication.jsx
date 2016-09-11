@@ -57,7 +57,6 @@ const RevisionNote = require('./parts/revision-note.jsx');
 				dataValid: this.data.valid()
 			});
 		}
-
 		handleBackClick() {
 			this.handleTabSelect(this.state.tab - 1);
 		}
@@ -94,7 +93,14 @@ const RevisionNote = require('./parts/revision-note.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					window.location.href = `/publication/${res.body.bbid}`;
+					const editionHref = `/publication/${res.body.bbid}`;
+					if (res.body.alert) {
+						const alertHref = `?alert=${res.body.alert}`;
+						window.location.href = `${editionHref}${alertHref}`;
+					}
+					else {
+						window.location.href = `${editionHref}`;
+					}
 				})
 				.catch((error) => {
 					this.setState({error});

@@ -17,8 +17,11 @@
  */
 
 const React = require('react');
+const StickyContainer = require('react-sticky').StickyContainer;
+const Sticky = require('react-sticky').Sticky;
 const request = require('superagent-bluebird-promise');
 const Achievement = require('./parts/achievement.jsx');
+const DragAndDrop = require('../input/dragAndDrop.jsx');
 
 (() => {
 	'use strict';
@@ -59,7 +62,10 @@ const Achievement = require('./parts/achievement.jsx');
 				let achievementHTML;
 				if (achievement.unlocked === unlocked) {
 					achievementHTML = (
-						<Achievement achievement={achievement}/>
+						<Achievement
+							achievement={achievement}
+							unlocked={unlocked}
+						/>
 					);
 				}
 				return achievementHTML;
@@ -68,17 +74,6 @@ const Achievement = require('./parts/achievement.jsx');
 		render() {
 			const achievements = this.renderAchievements(true);
 			const locked = this.renderAchievements(false);
-			const rankName = this.state.achievement.model.map((achievement) => {
-				let optionHTML = null;
-				if (achievement.unlocked) {
-					optionHTML = (<option value={achievement.id}>
-						{achievement.name}
-					</option>);
-				}
-				return optionHTML;
-			});
-
-			const nullOption = (<option value="none"> </option>);
 
 			let rankUpdate;
 			console.log(this.state.editor.authenticated);
@@ -89,65 +84,52 @@ const Achievement = require('./parts/achievement.jsx');
 						id="rankSelectForm"
 						method="post"
 					>
-						<div className="form-group">
-							<label>Rank 1</label>
-							<div className="selectContainer">
-								<select
-									className="form-control"
-									name="rank1"
-									value={this.rank1}
-								>
-									{nullOption}
-									{rankName}
-								</select>
-							</div>
+						<div className="row dnd-container form-group">
+							<DragAndDrop name="rank1"/>
+							<DragAndDrop name="rank2"/>
+							<DragAndDrop name="rank3"/>
 						</div>
-
 						<div className="form-group">
-							<label>Rank 2</label>
-							<div className="selectContainer">
-								<select
-									className="form-control"
-									name="rank2"
+							<span>
+								<button
+									className="btn btn-default"
+									type="submit"
 								>
-									{nullOption}
-									{rankName}
-								</select>
-							</div>
-						</div>
-
-						<div className="form-group">
-							<label>Rank 3</label>
-							<div className="selectContainer">
-								<select
-									className="form-control"
-									name="rank3"
+									update
+								</button>
+								<p
+									style={{
+										marginLeft: '10px',
+										display: 'inline-block'
+									}}
 								>
-									{nullOption}
-									{rankName}
-								</select>
-							</div>
-						</div>
-
-						<div className="form-group">
-							<button
-								className="btn btn-default"
-								type="submit"
-							>
-								update
-							</button>
+									click badge to unset
+								</p>
+							</span>
 						</div>
 					</form>
 				);
 			}
 			return (
-				<div>
-					<div className="h1">Unlocked Achievements</div>
-					{achievements}
-					{rankUpdate}
-					<div className="h1">Locked Achievements</div>
-					{locked}
-				</div>
+				<StickyContainer>
+					<Sticky
+						style={{
+							zIndex: 10,
+							background: 'white',
+							'margin-top': 64,
+							flex: '1'
+						}}
+						topOffset={-80}
+					>
+							{rankUpdate}
+						</Sticky>
+						<div style={{zIndex: 1}}>
+							<div className="h1">Unlocked Achievements</div>
+							{achievements}
+							<div className="h1">Locked Achievements</div>
+							{locked}
+						</div>
+				</StickyContainer>
 			);
 		}
 	}

@@ -28,13 +28,14 @@ const _ = require('lodash');
 // XXX: Don't pull in bookshelf directly
 const bookshelf = require('bookbrainz-data').bookshelf;
 
+const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const AliasSet = require('bookbrainz-data').AliasSet;
 const Annotation = require('bookbrainz-data').Annotation;
 const Disambiguation = require('bookbrainz-data').Disambiguation;
+const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
 const IdentifierSet = require('bookbrainz-data').IdentifierSet;
 const Note = require('bookbrainz-data').Note;
 const Revision = require('bookbrainz-data').Revision;
-
 const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
@@ -46,18 +47,82 @@ const DeletionForm = React.createFactory(
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
-
 	// Get unique identifier types for display
 	const identifierTypes = entity.identifierSet &&
-		_.uniq(
+		_.uniqBy(
 			_.map(entity.identifierSet.identifiers, 'type'),
 			(type) => type.id
 		);
 
-	res.render(
-		`entity/view/${entity.type.toLowerCase()}`,
-		{identifierTypes}
-	);
+	let editorEntityVisitPromise;
+	if (res.locals.user) {
+		editorEntityVisitPromise = new EditorEntityVisits({
+			editorId: res.locals.user.id,
+			bbid: res.locals.entity.bbid
+		})
+		.save(null, {method: 'insert'})
+		.then(() =>
+			achievement.processPageVisit(res.locals.user.id)
+		)
+		.catch(() =>
+			// error caused by duplicates we do not want in database
+			Promise.resolve(false)
+		);
+	}
+	else {
+		editorEntityVisitPromise = Promise.resolve(false);
+	}
+
+	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
+		let alertIds = [];
+		if (visitAlert.alert) {
+			alertIds = alertIds.concat(visitAlert.alert.split(',').map((id) =>
+				parseInt(id, 10)
+			));
+		}
+		if (req.query.alert) {
+			alertIds = alertIds.concat(req.query.alert.split(',').map((id) =>
+				parseInt(id, 10)
+			));
+		}
+		if (alertIds.length > 0) {
+			const promiseList = alertIds.map((achievementAlert) =>
+				new AchievementUnlock({id: achievementAlert})
+					.fetch({
+						require: 'true',
+						withRelated: 'achievement'
+					})
+					.then((unlock) =>
+						unlock.toJSON()
+					)
+					.then((unlock) => {
+						let unlockName;
+						if (req.user.id === unlock.editorId) {
+							unlockName = {
+								name: unlock.achievement.name
+							};
+						}
+						return unlockName;
+					})
+					.catch((error) => {
+						console.log(error);
+					})
+			);
+			alertPromise = Promise.all(promiseList);
+		}
+		else {
+			alertPromise = Promise.resolve(false);
+		}
+		return alertPromise;
+	});
+
+	return alertPromise.then((alert) => {
+		res.render(
+			`entity/view/${entity.type.toLowerCase()}`,
+			{identifierTypes,
+			alert}
+		);
+	});
 };
 
 module.exports.displayDeleteEntity = (req, res) => {
@@ -519,10 +584,6 @@ module.exports.createEntity = (
 				return model.forge(propsToSet)
 					.save(null, {method: 'insert', transacting});
 			})
-			.then((entityModel) =>
-				achievement.processEdit(req.user.id)
-					.then(() => entityModel)
-			)
 			.then(
 				(entityModel) =>
 					entityModel.refresh({
@@ -533,9 +594,22 @@ module.exports.createEntity = (
 			.then((entity) => entity.toJSON());
 	});
 
+	const achievementPromise = entityCreationPromise.then((entityJSON) =>
+		achievement.processEdit(
+			editorJSON.id,
+			entityJSON.revisionId
+		)
+			.then((unlock) => {
+				if (unlock.alert) {
+					entityJSON.alert = unlock.alert;
+				}
+			})
+			.then(() => entityJSON)
+	);
+
 	return handler.sendPromiseResult(
 		res,
-		entityCreationPromise,
+		achievementPromise,
 		search.indexEntity
 	);
 };
@@ -690,17 +764,24 @@ module.exports.editEntity = (
 					editorUpdatePromise,
 					parentAddedPromise,
 					notePromise
-				)
-				.then((promises) => {
-					achievement.processEdit(req.user.id);
-					return promises;
-				});
+				);
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
 					.fetch({withRelated: ['defaultAlias'], transacting})
 			)
-			.then((entity) => entity.toJSON());
+			.then((entity) =>
+				entity.toJSON()
+			)
+			.then((entityJSON) =>
+				achievement.processEdit(req.user.id, entityJSON.revisionId)
+					.then((unlock) => {
+						if (unlock.alert) {
+							entityJSON.alert = unlock.alert;
+						}
+						return entityJSON;
+					})
+			);
 	});
 
 	return handler.sendPromiseResult(
