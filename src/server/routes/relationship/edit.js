@@ -42,7 +42,7 @@ const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 
 const EditForm = React.createFactory(
-	require('../../../client/components/forms/relationship.jsx')
+	require('../../../client/components/forms/relationship')
 );
 
 const relationshipHelper = {};
@@ -57,20 +57,32 @@ function getEntityByType(entity, withRelated, transacting) {
 function copyRelationshipsAndAdd(
 	transacting, oldRelationshipSet, newRelationshipSet, newRelationship
 ) {
-	const oldRelationshipsPromise =
-		oldRelationshipSet.related('relationships').fetch({transacting});
-	const newRelationshipsPromise =
-		newRelationshipSet.related('relationships').fetch({transacting});
+	const oldRelationshipSetPromise = oldRelationshipSet.fetch({transacting});
+	return oldRelationshipSetPromise.then((relationshipSet) => {
+		const newRelationshipsPromise =
+			newRelationshipSet.related('relationships').fetch({transacting});
 
-	return Promise.join(oldRelationshipsPromise, newRelationshipsPromise,
-		(oldRelationships, newRelationships) => {
-			const relationshipsToBeAdded = _.concat(
-				oldRelationships.map('id'), newRelationship.get('id')
+		if (!relationshipSet) {
+			return newRelationshipsPromise.then((newRelationships) =>
+				newRelationships.attach(
+					newRelationship.get('id'), {transacting}
+				)
 			);
-			return newRelationships
-				.attach(relationshipsToBeAdded, {transacting});
 		}
-	);
+
+		const oldRelationshipsPromise =
+			relationshipSet.related('relationships').fetch({transacting});
+
+		return Promise.join(oldRelationshipsPromise, newRelationshipsPromise,
+			(oldRelationships, newRelationships) => {
+				const relationshipsToBeAdded = _.concat(
+					oldRelationships.map('id'), newRelationship.get('id')
+				);
+				return newRelationships
+					.attach(relationshipsToBeAdded, {transacting});
+			}
+		);
+	});
 }
 
 function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
@@ -96,9 +108,19 @@ function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
 	// Add the previous revision as a parent of this revision.
 	const parentAddedPromise = Promise.join(
 		revisionParentsPromise, entityPromise,
-		(parents, entity) => parents.attach(
-			entity.get('revisionId'), {transacting}
-		)
+		(parents, entity) => {
+			const parentSet = parents.find(
+				(parent) => parent.get('id') === entity.get('revisionId')
+			);
+
+			if (parentSet) {
+				return Promise.resolve(null);
+			}
+
+			return parents.attach(
+				entity.get('revisionId'), {transacting}
+			);
+		}
 	);
 
 	// Finally, update the revision ID and relationship set ID of the entity
@@ -149,13 +171,15 @@ function createRelationship(relationship, editorJSON) {
 					newRevision
 				);
 
-				const targetPromise = addRelationshipToEntity(
-					transacting, relationship.target, newRelationship,
-					newRevision
+				const targetPromise = sourcePromise.then(() =>
+					addRelationshipToEntity(
+						transacting, relationship.target, newRelationship,
+						newRevision
+					)
 				);
 
 				return Promise.join(
-					editorUpdatePromise, sourcePromise, targetPromise
+					editorUpdatePromise, targetPromise
 				);
 			});
 	});

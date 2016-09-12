@@ -32,10 +32,10 @@ const handler = require('../helpers/handler');
 const FormSubmissionError = require('../helpers/error').FormSubmissionError;
 
 const RegisterAuthPage = React.createFactory(
-	require('../../client/components/pages/registration-auth.jsx')
+	require('../../client/components/pages/registration-auth')
 );
 const RegisterDetailPage = React.createFactory(
-	require('../../client/components/forms/registration-details.jsx')
+	require('../../client/components/forms/registration-details')
 );
 const loadGenders = require('../helpers/middleware').loadGenders;
 
@@ -119,9 +119,9 @@ router.post('/handler', (req, res) => {
 
 			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
 				throw new FormSubmissionError(
-					'That username already exists - please try using' +
-					' another, or link your existing BookBrainz account by' +
-					' signing in and visiting your profile.'
+					'That username already exists - please try using another,' +
+					' or contact us to have your existing BookBrainz account' +
+					' linked to a MusicBrainz account.'
 				);
 			}
 

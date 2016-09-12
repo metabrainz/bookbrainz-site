@@ -24,10 +24,10 @@ const Alert = require('react-bootstrap').Alert;
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 const PageHeader = require('react-bootstrap').PageHeader;
-const Select = require('../input/select2.jsx');
-const PartialDate = require('../input/partial-date.jsx');
+const Select = require('../input/select2');
+const PartialDate = require('../input/partial-date');
 
-const LoadingSpinner = require('../loading-spinner.jsx');
+const LoadingSpinner = require('../loading-spinner');
 const validators = require('../../helpers/react-validators');
 
 (() => {

@@ -21,7 +21,7 @@
 const React = require('react');
 const _compact = require('lodash.compact');
 
-const EntityLink = require('../entity-link.jsx');
+const EntityLink = require('../entity-link');
 
 (() => {
 	'use strict';
@@ -96,6 +96,18 @@ const EntityLink = require('../entity-link.jsx');
 			return _compact(result);
 		}
 
+		static formatTitle(author) {
+			let title;
+			if (author.titleUnlock.title) {
+				const authorTitle = author.titleUnlock.title;
+				title = `${authorTitle.title}: ${authorTitle.description}`;
+			}
+			else {
+				title = 'No Title Set: This user hasn\'t selected a title';
+			}
+			return title;
+		}
+
 		render() {
 			const revision = this.props.revision;
 			const diffs = this.props.diffs;
@@ -117,12 +129,16 @@ const EntityLink = require('../entity-link.jsx');
 				</div>
 			));
 
+			const editorTitle =
+				RevisionPage.formatTitle(revision.author);
+
 			let revisionNotes = revision.notes.map((note) => {
 				const timeCreated =
 					new Date(note.postedAt).toTimeString();
 				const dateCreated =
 					new Date(note.postedAt).toDateString();
-
+				const noteAuthorTitle =
+					RevisionPage.formatTitle(note.author);
 				return (
 					<div
 						className="panel panel-default"
@@ -132,7 +148,10 @@ const EntityLink = require('../entity-link.jsx');
 							<p>{note.content}</p>
 							<p className="text-right">
 								—&nbsp;
-								<a href={`/editor/${note.author.id}`}>
+								<a
+									href={`/editor/${note.author.id}`}
+									title={noteAuthorTitle}
+								>
 									{note.author.name}
 								</a>
 								, {`${timeCreated}, ${dateCreated}`}
@@ -155,7 +174,10 @@ const EntityLink = require('../entity-link.jsx');
 					{diffDivs}
 					<p className="text-right">
 						Created by&nbsp;
-						<a href={`/editor/${revision.author.id}`}>
+						<a
+							href={`/editor/${revision.author.id}`}
+							title={editorTitle}
+						>
 							{revision.author.name}
 						</a>
 						, {dateRevisionCreated}

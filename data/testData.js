@@ -185,6 +185,32 @@ testData.workerBeeAttribs = {
 	title: 'Worker Bee',
 };
 
+testData.explorerIAttribs = {
+	id: 1,
+	name: 'Explorer I',
+	description: 'view 10 entities',
+	badgeUrl: 'http://test.com'
+};
+
+testData.explorerIIAttribs = {
+	id: 2,
+	name: 'Explorer II',
+	description: 'view 100 entities',
+	badgeUrl: 'http://test.com'
+};
+
+testData.explorerIIIAttribs = {
+	id: 3,
+	name: 'Explorer III',
+	description: 'view 1000 entities',
+	badgeUrl: 'http://test.com'
+};
+
+testData.explorerTitleAttribs = {
+	id: 1,
+	description: 'finish explorer track',
+	title: 'Explorer',
+};
 
 testData.publisherCreatorIAttribs = {
 	id: 1,
@@ -243,6 +269,32 @@ testData.marathonerTitleAttribs = {
 	id: 1,
 	title: 'Marathoner',
 	description: 'Complete Marathoner track'
+};
+
+testData.timeTravellerAttribs = {
+	id: 1,
+	name: 'Time Traveller',
+	description: 'test description',
+	badgeUrl: 'http://test.com'
+};
+
+testData.timeTravellerTitleAttribs = {
+	id: 1,
+	title: 'Time Traveller',
+	description: 'test description'
+};
+
+testData.hotOffThePressAttribs = {
+	id: 1,
+	name: 'Hot Off the Press',
+	description: 'test description',
+	badgeUrl: 'http://test.com'
+};
+
+testData.hotOffThePressTitleAttribs = {
+	id: 1,
+	title: 'Hot Off the Press',
+	description: 'test description'
 };
 
 testData.createEditor = function() {
@@ -356,6 +408,23 @@ testData.createPublisherCreator = function() {
 		);
 }
 
+testData.createExplorer = function() {
+	return new AchievementType(this.explorerIAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new AchievementType(this.explorerIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new AchievementType(this.explorerIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(() =>
+			new TitleType(this.explorerTitleAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
 testData.createSprinter = function() {
 	return new AchievementType(this.sprinterAttribs)
 		.save(null, {method: 'insert'})
@@ -390,6 +459,24 @@ testData.createMarathoner = function() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(this.marathonerTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
+}
+
+testData.createTimeTraveller = function() {
+	return new AchievementType(this.timeTravellerAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.timeTravellerTitleAttribs)
+			.save(null, {method: 'insert'})
+		);
+}
+
+testData.createHotOffThePress = function() {
+	return new AchievementType(this.hotOffThePressAttribs)
+		.save(null, {method: 'insert'})
+		.then(() =>
+			new TitleType(this.hotOffThePressTitleAttribs)
 			.save(null, {method: 'insert'})
 		);
 }

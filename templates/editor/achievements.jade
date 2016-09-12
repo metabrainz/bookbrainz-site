@@ -3,20 +3,22 @@ extends ../layout
 block body
 	.row
 		.col-md-12
-			if editor.title
+			if props.editor.title
 				div
-					a(href=" " title=editor.title.description)
-						h1=editor.title.title + " " + editor.name
+					a(href=" " title=props.editor.title.description)
+						h1=props.editor.title.title + " " + props.editor.name
 			else
-				h1=editor.name
+				h1=props.editor.name
 	.row
 		.col-md-12
 			ul.nav.nav-tabs
-				li: a(href='/editor/'+editor.id) Profile
-				li: a(href='/editor/'+editor.id+'/revisions') Revisions
-				li.active: a(href='/editor/'+editor.id+'/achievements') Achievements
+				li: a(href='/editor/'+props.editor.id) Profile
+				li: a(href='/editor/'+props.editor.id+'/revisions') Revisions
+				li.active: a(href='/editor/'+props.editor.id+'/achievements') Achievements
 	.row
-		.col-sm-12
-			#achievements-form!= markup
+		.col-md-10-offset-1
+			#achievementsForm!= markup
 
-	
+block js
+	script(type='application/json')#props!= JSON.stringify(props)
+	script(src='/js/editor/achievement.js')

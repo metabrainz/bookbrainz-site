@@ -38,11 +38,11 @@ const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
 
 const ProfileForm = React.createFactory(
-	require('../../client/components/forms/profile.jsx')
+	require('../../client/components/forms/profile')
 );
 
 const AchievementForm = React.createFactory(
-	require('../../client/components/forms/achievements.jsx')
+	require('../../client/components/forms/achievements')
 );
 
 const router = express.Router();
@@ -326,7 +326,10 @@ router.get('/:id/achievements', (req, res, next) => {
 				}));
 
 			res.render('editor/achievements', {
-				editor: editorJSON,
+				props: {
+					editor: editorJSON,
+					achievement: achievementJSON
+				},
 				markup
 			});
 		}
@@ -347,7 +350,7 @@ function rankUpdate(editorId, bodyRank, rank) {
 		})
 		.then(() => {
 			let updatePromise;
-			if (bodyRank !== 'none') {
+			if (bodyRank !== '') {
 				updatePromise = new AchievementUnlock({
 					achievementId: parseInt(bodyRank, 10),
 					editorId: parseInt(editorId, 10)

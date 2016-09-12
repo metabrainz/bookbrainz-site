@@ -24,15 +24,15 @@ const request = require('superagent-bluebird-promise');
 const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
-const Aliases = require('./parts/alias-list.jsx');
-const LoadingSpinner = require('../loading-spinner.jsx');
-const RevisionNote = require('./parts/revision-note.jsx');
-const WorkData = require('./parts/work-data.jsx');
+const Aliases = require('./parts/alias-list');
+const LoadingSpinner = require('../loading-spinner');
+const PublisherData = require('./parts/publisher-data');
+const RevisionNote = require('./parts/revision-note');
 
 (() => {
 	'use strict';
 
-	class WorkForm extends React.Component {
+	class PublisherForm extends React.Component {
 		constructor(props) {
 			super(props);
 
@@ -58,13 +58,11 @@ const WorkData = require('./parts/work-data.jsx');
 			});
 		}
 
-		handleBackClick(evt) {
-			evt.preventDefault();
+		handleBackClick() {
 			this.handleTabSelect(this.state.tab - 1);
 		}
 
-		handleNextClick(evt) {
-			evt.preventDefault();
+		handleNextClick() {
 			this.handleTabSelect(this.state.tab + 1);
 		}
 
@@ -76,24 +74,22 @@ const WorkData = require('./parts/work-data.jsx');
 			}
 
 			const aliasData = this.aliases.getValue();
-			const workData = this.data.getValue();
+			const publisherData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
-
 			const data = {
 				aliases: aliasData.slice(0, -1),
-				languages: workData.languages.map(
-					(languageId) => parseInt(languageId, 10)
-				),
-				typeId: parseInt(workData.workType, 10),
-				disambiguation: workData.disambiguation,
-				annotation: workData.annotation,
-				identifiers: workData.identifiers,
+				beginDate: publisherData.beginDate,
+				endDate: publisherData.endDate,
+				ended: publisherData.ended,
+				typeId: parseInt(publisherData.publisherType, 10),
+				disambiguation: publisherData.disambiguation,
+				annotation: publisherData.annotation,
+				identifiers: publisherData.identifiers,
 				note: revisionNote
 			};
 
 			this.setState({waiting: true});
 
-			const self = this;
 			request.post(this.props.submissionUrl)
 				.send(data).promise()
 				.then((res) => {
@@ -101,16 +97,23 @@ const WorkData = require('./parts/work-data.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					window.location.href = `/work/${res.body.bbid}`;
+					const editionHref = `/publisher/${res.body.bbid}`;
+					if (res.body.alert) {
+						const alertHref = `?alert=${res.body.alert}`;
+						window.location.href = `${editionHref}${alertHref}`;
+					}
+					else {
+						window.location.href = `${editionHref}`;
+					}
 				})
 				.catch((error) => {
-					self.setState({error});
+					this.setState({error});
 				});
 		}
 
 		render() {
 			let aliases = null;
-			const prefillData = this.props.work;
+			const prefillData = this.props.publisher;
 			if (prefillData) {
 				aliases = prefillData.aliasSet.aliases.map((alias) => ({
 					id: alias.id,
@@ -168,13 +171,12 @@ const WorkData = require('./parts/work-data.jsx');
 							visible={this.state.tab === 1}
 							onNextClick={this.handleNextClick}
 						/>
-						<WorkData
+						<PublisherData
 							identifierTypes={this.props.identifierTypes}
-							languages={this.props.languages}
+							publisher={this.props.publisher}
+							publisherTypes={this.props.publisherTypes}
 							ref={(ref) => this.data = ref}
 							visible={this.state.tab === 2}
-							work={this.props.work}
-							workTypes={this.props.workTypes}
 							onBackClick={this.handleBackClick}
 							onNextClick={this.handleNextClick}
 						/>
@@ -191,14 +193,14 @@ const WorkData = require('./parts/work-data.jsx');
 		}
 	}
 
-	WorkForm.displayName = 'WorkForm';
-	WorkForm.propTypes = {
+	PublisherForm.displayName = 'PublisherForm';
+	PublisherForm.propTypes = {
 		identifierTypes: React.PropTypes.array,
 		languages: React.PropTypes.array,
-		submissionUrl: React.PropTypes.string,
-		work: React.PropTypes.object,
-		workTypes: React.PropTypes.array
+		publisher: React.PropTypes.object,
+		publisherTypes: React.PropTypes.array,
+		submissionUrl: React.PropTypes.string
 	};
 
-	module.exports = WorkForm;
+	module.exports = PublisherForm;
 })();

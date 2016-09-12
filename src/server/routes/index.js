@@ -31,19 +31,19 @@ const utils = require('../helpers/utils');
 const _ = require('lodash');
 
 const AboutPage = React.createFactory(
-	require('../../client/components/pages/about.jsx')
+	require('../../client/components/pages/about')
 );
 const ContributePage = React.createFactory(
-	require('../../client/components/pages/contribute.jsx')
+	require('../../client/components/pages/contribute')
 );
 const DevelopPage = React.createFactory(
-	require('../../client/components/pages/develop.jsx')
+	require('../../client/components/pages/develop')
 );
 const PrivacyPage = React.createFactory(
-	require('../../client/components/pages/privacy.jsx')
+	require('../../client/components/pages/privacy')
 );
 const LicensingPage = React.createFactory(
-	require('../../client/components/pages/licensing.jsx')
+	require('../../client/components/pages/licensing')
 );
 
 /* GET home page. */

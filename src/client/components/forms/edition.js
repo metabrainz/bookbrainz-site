@@ -24,10 +24,10 @@ const request = require('superagent-bluebird-promise');
 const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
-const Aliases = require('./parts/alias-list.jsx');
-const RevisionNote = require('./parts/revision-note.jsx');
-const EditionData = require('./parts/edition-data.jsx');
-const LoadingSpinner = require('../loading-spinner.jsx');
+const Aliases = require('./parts/alias-list');
+const RevisionNote = require('./parts/revision-note');
+const EditionData = require('./parts/edition-data');
+const LoadingSpinner = require('../loading-spinner');
 
 (() => {
 	'use strict';
@@ -105,7 +105,14 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					window.location.href = `/edition/${res.body.bbid}`;
+					const editionHref = `/edition/${res.body.bbid}`;
+					if (res.body.alert) {
+						const alertHref = `?alert=${res.body.alert}`;
+						window.location.href = `${editionHref}${alertHref}`;
+					}
+					else {
+						window.location.href = `${editionHref}`;
+					}
 				})
 				.catch((error) => {
 					self.setState({error});

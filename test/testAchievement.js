@@ -30,6 +30,7 @@ const Achievement = rewire('../src/server/helpers/achievement.js');
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
 const testCreatorCreator = require('./testCreatorCreator.js');
+const testExplorer = require('./testExplorer.js');
 const testFunRunner = require('./testFunRunner.js');
 const testLimitedEdition = require('./testLimitedEdition.js');
 const testMarathoner = require('./testMarathoner.js');
@@ -38,6 +39,8 @@ const testPublisherCreator = require('./testPublisherCreator.js');
 const testRevisionist = require('./testRevisionist.js');
 const testSprinter = require('./testSprinter.js');
 const testWorkerBee = require('./testWorkerBee.js');
+const testTimeTraveller = require('./testTimeTraveller.js');
+const testHotOffThePress = require('./testHotOffThePress.js');
 
 function tests() {
 	describe('awardAchievement', () => {
@@ -149,13 +152,16 @@ function tests() {
 		});
 	});
 	describe('Creator Creator Achievement', testCreatorCreator);
+	describe('Explorer Achievement', testExplorer);
 	describe('Fun Runner Achievement', testFunRunner);
+	describe('Hot Off the Press Achievement', testHotOffThePress);
 	describe('Limited Edition Achievement', testLimitedEdition);
 	describe('Marathoner Achievement', testMarathoner);
 	describe('Publisher Achievement', testPublisher);
 	describe('Publisher Creator Achievement', testPublisherCreator);
 	describe('Revisionist Achievement', testRevisionist);
 	describe('Sprinter Achievement', testSprinter);
+	describe('Time Traveller Achievement', testTimeTraveller);
 	describe('Worker Bee Achievement', testWorkerBee);
 }
 

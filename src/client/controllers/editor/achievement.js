@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016  Sean Burke
+ * Copyright (C) 2015  Ben Ockmore
+ *               2015  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +19,12 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const LoginForm = React.createFactory(
-	require('../components/forms/login.jsx')
+const AchievementForm = React.createFactory(
+	require('../../components/forms/achievements')
 );
+const props = JSON.parse(document.getElementById('props').innerHTML);
 
-ReactDOM.render(LoginForm(), document.getElementById('login-form'));
+ReactDOM.render(
+	AchievementForm(props),
+	document.getElementById('achievementsForm')
+);

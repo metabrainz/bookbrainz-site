@@ -20,7 +20,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const RegistrationForm = React.createFactory(
-	require('../components/forms/registration-details.jsx')
+	require('../components/forms/registration-details')
 );
 const props = JSON.parse(document.getElementById('props').innerHTML);
 

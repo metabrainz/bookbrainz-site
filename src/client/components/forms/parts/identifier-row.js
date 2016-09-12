@@ -23,7 +23,7 @@ const React = require('react');
 const Input = require('react-bootstrap').Input;
 const Button = require('react-bootstrap').Button;
 
-const Select = require('../../input/select2.jsx');
+const Select = require('../../input/select2');
 
 const data = require('../../../helpers/data');
 const validators = require('../../../helpers/react-validators');

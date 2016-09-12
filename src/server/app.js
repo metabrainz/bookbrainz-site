@@ -28,7 +28,6 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const favicon = require('serve-favicon');
 const git = require('git-rev');
-const jsx = require('node-jsx');
 const logger = require('morgan');
 const redis = require('connect-redis');
 const session = require('express-session');
@@ -48,9 +47,6 @@ const search = require('./helpers/search');
 
 // We need to install JSX before pulling in the routes, as they end up requiring
 // React components written in JSX, and things will blow up
-jsx.install({
-	extension: '.jsx'
-});
 
 const routes = require('./routes');
 

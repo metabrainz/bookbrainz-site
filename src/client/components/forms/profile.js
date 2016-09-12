@@ -23,8 +23,8 @@ const request = require('superagent-bluebird-promise');
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
-const LoadingSpinner = require('../loading-spinner.jsx');
-const Select = require('../input/select2.jsx');
+const LoadingSpinner = require('../loading-spinner');
+const Select = require('../input/select2');
 
 (() => {
 	'use strict';

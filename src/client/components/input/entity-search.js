@@ -23,7 +23,7 @@ const ReactDOMServer = require('react-dom/server');
 const $ = require('jquery');
 const _assign = require('lodash.assign');
 
-const Select = require('./select2.jsx');
+const Select = require('./select2');
 
 (() => {
 	'use strict';

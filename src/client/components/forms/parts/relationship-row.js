@@ -25,8 +25,8 @@ const _find = require('lodash.find');
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 
-const Select = require('../../input/select2.jsx');
-const SearchSelect = require('../../input/entity-search.jsx');
+const Select = require('../../input/select2');
+const SearchSelect = require('../../input/entity-search');
 
 const dataHelper = require('../../../helpers/data');
 const validators = require('../../../helpers/react-validators');
