@@ -24,15 +24,15 @@ const request = require('superagent-bluebird-promise');
 const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
-const Aliases = require('./parts/alias-list.jsx');
-const LoadingSpinner = require('../loading-spinner.jsx');
-const RevisionNote = require('./parts/revision-note.jsx');
-const WorkData = require('./parts/work-data.jsx');
+const Aliases = require('./parts/alias-list');
+const RevisionNote = require('./parts/revision-note');
+const EditionData = require('./parts/edition-data');
+const LoadingSpinner = require('../loading-spinner');
 
 (() => {
 	'use strict';
 
-	class WorkForm extends React.Component {
+	class EditionForm extends React.Component {
 		constructor(props) {
 			super(props);
 
@@ -58,13 +58,11 @@ const WorkData = require('./parts/work-data.jsx');
 			});
 		}
 
-		handleBackClick(evt) {
-			evt.preventDefault();
+		handleBackClick() {
 			this.handleTabSelect(this.state.tab - 1);
 		}
 
-		handleNextClick(evt) {
-			evt.preventDefault();
+		handleNextClick() {
 			this.handleTabSelect(this.state.tab + 1);
 		}
 
@@ -76,18 +74,24 @@ const WorkData = require('./parts/work-data.jsx');
 			}
 
 			const aliasData = this.aliases.getValue();
-			const workData = this.data.getValue();
+			const editionData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
-
 			const data = {
 				aliases: aliasData.slice(0, -1),
-				languages: workData.languages.map(
-					(languageId) => parseInt(languageId, 10)
-				),
-				typeId: parseInt(workData.workType, 10),
-				disambiguation: workData.disambiguation,
-				annotation: workData.annotation,
-				identifiers: workData.identifiers,
+				publicationBbid: editionData.publication,
+				publishers: editionData.publishers,
+				releaseEvents: editionData.releaseEvents,
+				languages: editionData.languages,
+				formatId: parseInt(editionData.editionFormat, 10),
+				statusId: parseInt(editionData.editionStatus, 10),
+				disambiguation: editionData.disambiguation,
+				annotation: editionData.annotation,
+				identifiers: editionData.identifiers,
+				pages: parseInt(editionData.pages, 10),
+				weight: parseInt(editionData.weight, 10),
+				width: parseInt(editionData.width, 10),
+				height: parseInt(editionData.height, 10),
+				depth: parseInt(editionData.depth, 10),
 				note: revisionNote
 			};
 
@@ -101,7 +105,7 @@ const WorkData = require('./parts/work-data.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					const editionHref = `/work/${res.body.bbid}`;
+					const editionHref = `/edition/${res.body.bbid}`;
 					if (res.body.alert) {
 						const alertHref = `?alert=${res.body.alert}`;
 						window.location.href = `${editionHref}${alertHref}`;
@@ -117,7 +121,7 @@ const WorkData = require('./parts/work-data.jsx');
 
 		render() {
 			let aliases = null;
-			const prefillData = this.props.work;
+			const prefillData = this.props.edition;
 			if (prefillData) {
 				aliases = prefillData.aliasSet.aliases.map((alias) => ({
 					id: alias.id,
@@ -175,13 +179,16 @@ const WorkData = require('./parts/work-data.jsx');
 							visible={this.state.tab === 1}
 							onNextClick={this.handleNextClick}
 						/>
-						<WorkData
+						<EditionData
+							edition={this.props.edition}
+							editionFormats={this.props.editionFormats}
+							editionStatuses={this.props.editionStatuses}
 							identifierTypes={this.props.identifierTypes}
 							languages={this.props.languages}
+							publication={this.props.publication}
+							publisher={this.props.publisher}
 							ref={(ref) => this.data = ref}
 							visible={this.state.tab === 2}
-							work={this.props.work}
-							workTypes={this.props.workTypes}
 							onBackClick={this.handleBackClick}
 							onNextClick={this.handleNextClick}
 						/>
@@ -198,14 +205,17 @@ const WorkData = require('./parts/work-data.jsx');
 		}
 	}
 
-	WorkForm.displayName = 'WorkForm';
-	WorkForm.propTypes = {
+	EditionForm.displayName = 'EditionForm';
+	EditionForm.propTypes = {
+		edition: React.PropTypes.object,
+		editionFormats: React.PropTypes.array,
+		editionStatuses: React.PropTypes.array,
 		identifierTypes: React.PropTypes.array,
 		languages: React.PropTypes.array,
-		submissionUrl: React.PropTypes.string,
-		work: React.PropTypes.object,
-		workTypes: React.PropTypes.array
+		publication: React.PropTypes.object,
+		publisher: React.PropTypes.object,
+		submissionUrl: React.PropTypes.string
 	};
 
-	module.exports = WorkForm;
+	module.exports = EditionForm;
 })();

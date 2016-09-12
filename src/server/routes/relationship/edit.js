@@ -42,7 +42,7 @@ const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;
 
 const EditForm = React.createFactory(
-	require('../../../client/components/forms/relationship.jsx')
+	require('../../../client/components/forms/relationship')
 );
 
 const relationshipHelper = {};

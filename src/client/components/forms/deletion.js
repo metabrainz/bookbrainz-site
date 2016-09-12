@@ -24,7 +24,7 @@ const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 const Panel = require('react-bootstrap').Panel;
 
-const LoadingSpinner = require('../loading-spinner.jsx');
+const LoadingSpinner = require('../loading-spinner');
 
 (() => {
 	'use strict';

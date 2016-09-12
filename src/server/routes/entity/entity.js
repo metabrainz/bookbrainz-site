@@ -42,7 +42,7 @@ const utils = require('../../helpers/utils');
 const achievement = require('../../helpers/achievement');
 
 const DeletionForm = React.createFactory(
-	require('../../../client/components/forms/deletion.jsx')
+	require('../../../client/components/forms/deletion')
 );
 
 module.exports.displayEntity = (req, res) => {

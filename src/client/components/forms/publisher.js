@@ -24,15 +24,15 @@ const request = require('superagent-bluebird-promise');
 const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
-const Aliases = require('./parts/alias-list.jsx');
-const LoadingSpinner = require('../loading-spinner.jsx');
-const PublicationData = require('./parts/publication-data.jsx');
-const RevisionNote = require('./parts/revision-note.jsx');
+const Aliases = require('./parts/alias-list');
+const LoadingSpinner = require('../loading-spinner');
+const PublisherData = require('./parts/publisher-data');
+const RevisionNote = require('./parts/revision-note');
 
 (() => {
 	'use strict';
 
-	class PublicationForm extends React.Component {
+	class PublisherForm extends React.Component {
 		constructor(props) {
 			super(props);
 
@@ -57,6 +57,7 @@ const RevisionNote = require('./parts/revision-note.jsx');
 				dataValid: this.data.valid()
 			});
 		}
+
 		handleBackClick() {
 			this.handleTabSelect(this.state.tab - 1);
 		}
@@ -73,14 +74,17 @@ const RevisionNote = require('./parts/revision-note.jsx');
 			}
 
 			const aliasData = this.aliases.getValue();
-			const publicationData = this.data.getValue();
+			const publisherData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
 			const data = {
 				aliases: aliasData.slice(0, -1),
-				typeId: parseInt(publicationData.publicationType, 10),
-				disambiguation: publicationData.disambiguation,
-				annotation: publicationData.annotation,
-				identifiers: publicationData.identifiers,
+				beginDate: publisherData.beginDate,
+				endDate: publisherData.endDate,
+				ended: publisherData.ended,
+				typeId: parseInt(publisherData.publisherType, 10),
+				disambiguation: publisherData.disambiguation,
+				annotation: publisherData.annotation,
+				identifiers: publisherData.identifiers,
 				note: revisionNote
 			};
 
@@ -93,7 +97,7 @@ const RevisionNote = require('./parts/revision-note.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					const editionHref = `/publication/${res.body.bbid}`;
+					const editionHref = `/publisher/${res.body.bbid}`;
 					if (res.body.alert) {
 						const alertHref = `?alert=${res.body.alert}`;
 						window.location.href = `${editionHref}${alertHref}`;
@@ -109,7 +113,7 @@ const RevisionNote = require('./parts/revision-note.jsx');
 
 		render() {
 			let aliases = null;
-			const prefillData = this.props.publication;
+			const prefillData = this.props.publisher;
 			if (prefillData) {
 				aliases = prefillData.aliasSet.aliases.map((alias) => ({
 					id: alias.id,
@@ -167,10 +171,10 @@ const RevisionNote = require('./parts/revision-note.jsx');
 							visible={this.state.tab === 1}
 							onNextClick={this.handleNextClick}
 						/>
-						<PublicationData
+						<PublisherData
 							identifierTypes={this.props.identifierTypes}
-							publication={this.props.publication}
-							publicationTypes={this.props.publicationTypes}
+							publisher={this.props.publisher}
+							publisherTypes={this.props.publisherTypes}
 							ref={(ref) => this.data = ref}
 							visible={this.state.tab === 2}
 							onBackClick={this.handleBackClick}
@@ -189,14 +193,14 @@ const RevisionNote = require('./parts/revision-note.jsx');
 		}
 	}
 
-	PublicationForm.displayName = 'PublicationForm';
-	PublicationForm.propTypes = {
+	PublisherForm.displayName = 'PublisherForm';
+	PublisherForm.propTypes = {
 		identifierTypes: React.PropTypes.array,
 		languages: React.PropTypes.array,
-		publication: React.PropTypes.object,
-		publicationTypes: React.PropTypes.array,
+		publisher: React.PropTypes.object,
+		publisherTypes: React.PropTypes.array,
 		submissionUrl: React.PropTypes.string
 	};
 
-	module.exports = PublicationForm;
+	module.exports = PublisherForm;
 })();

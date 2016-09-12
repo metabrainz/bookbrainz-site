@@ -20,8 +20,8 @@ const React = require('react');
 const StickyContainer = require('react-sticky').StickyContainer;
 const Sticky = require('react-sticky').Sticky;
 const request = require('superagent-bluebird-promise');
-const Achievement = require('./parts/achievement.jsx');
-const DragAndDrop = require('../input/dragAndDrop.jsx');
+const Achievement = require('./parts/achievement');
+const DragAndDrop = require('../input/dragAndDrop');
 
 (() => {
 	'use strict';

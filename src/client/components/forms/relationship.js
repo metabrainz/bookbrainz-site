@@ -31,7 +31,7 @@ const PageHeader = require('react-bootstrap').PageHeader;
 const dataHelper = require('../../helpers/data');
 const validators = require('../../helpers/react-validators');
 
-const RelationshipRow = require('./parts/relationship-row.jsx');
+const RelationshipRow = require('./parts/relationship-row');
 
 function isRelationshipNew(initialType, initialTarget) {
 	'use strict';

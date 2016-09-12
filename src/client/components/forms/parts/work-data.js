@@ -22,33 +22,19 @@ const React = require('react');
 
 const Input = require('react-bootstrap').Input;
 
-const Identifiers = require('./identifier-list.jsx');
-const PartialDate = require('../../input/partial-date.jsx');
-const Select = require('../../input/select2.jsx');
+const Identifiers = require('./identifier-list');
+const Select = require('../../input/select2');
 
 const validators = require('../../../helpers/react-validators');
 
 (() => {
 	'use strict';
 
-	class PublisherData extends React.Component {
-		constructor(props) {
-			super(props);
-
-			this.state = {
-				ended: this.props.publisher ? this.props.publisher.ended : false
-			};
-
-			// React does not autobind non-React class methods
-			this.handleEnded = this.handleEnded.bind(this);
-		}
-
+	class WorkData extends React.Component {
 		getValue() {
 			return {
-				beginDate: this.begin.getValue(),
-				endDate: this.ended.getChecked() ? this.end.getValue() : '',
-				ended: this.ended.getChecked(),
-				publisherType: this.publisherType.getValue(),
+				languages: this.languages.getValue(),
+				workType: this.workType.getValue(),
 				disambiguation: this.disambiguation.getValue(),
 				annotation: this.annotation.getValue(),
 				identifiers: this.identifiers.getValue()
@@ -56,29 +42,24 @@ const validators = require('../../../helpers/react-validators');
 		}
 
 		valid() {
-			return this.begin.valid() &&
-				(!this.ended.getValue() || this.end.valid()) &&
-				this.identifiers.valid();
-		}
-
-		handleEnded() {
-			this.setState({ended: this.ended.getChecked()});
+			return this.identifiers.valid();
 		}
 
 		render() {
-			let initialBeginDate = null;
-			let initialEndDate = null;
-			let initialPublisherType = null;
+			let initialLanguages = [];
+			let initialWorkType = null;
 			let initialDisambiguation = null;
 			let initialAnnotation = null;
 			let initialIdentifiers = [];
 
-			const prefillData = this.props.publisher;
+			const prefillData = this.props.work;
 			if (prefillData) {
-				initialBeginDate = prefillData.beginDate;
-				initialEndDate = prefillData.endDate;
-				initialPublisherType = prefillData.publisherType ?
-					prefillData.publisherType.id : null;
+				initialLanguages = prefillData.languageSet &&
+					prefillData.languageSet.languages.map(
+						(language) => language.id
+					);
+				initialWorkType = prefillData.workType ?
+					prefillData.workType.id : null;
 				initialDisambiguation = prefillData.disambiguation ?
 					prefillData.disambiguation.comment : null;
 				initialAnnotation = prefillData.annotation ?
@@ -97,48 +78,37 @@ const validators = require('../../../helpers/react-validators');
 			};
 
 			return (
-				<div className={this.props.visible === false ? 'hidden' : ''}>
+				<div className={(this.props.visible === false) ? 'hidden' : ''}>
 					<h2>Add Data</h2>
 					<p className="lead">
 						Fill out any data you know about the entity.
 					</p>
 
 					<div className="form-horizontal">
-						<PartialDate
-							defaultValue={initialBeginDate}
-							label="Begin Date"
+						<Select
+							multiple
+							noDefault
+							defaultValue={initialLanguages}
+							idAttribute="id"
+							label="Languages"
+							labelAttribute="name"
 							labelClassName="col-md-4"
-							placeholder="YYYY-MM-DD"
-							ref={(ref) => this.begin = ref}
+							options={this.props.languages}
+							placeholder="Select work languages…"
+							ref={(ref) => this.languages = ref}
+							select2Options={select2Options}
 							wrapperClassName="col-md-4"
-						/>
-						<PartialDate
-							defaultValue={initialEndDate}
-							groupClassName={this.state.ended ? '' : 'hidden'}
-							label="End Date"
-							labelClassName="col-md-4"
-							placeholder="YYYY-MM-DD"
-							ref={(ref) => this.end = ref}
-							wrapperClassName="col-md-4"
-						/>
-						<Input
-							defaultChecked={this.state.ended}
-							label="Ended"
-							ref={(ref) => this.ended = ref}
-							type="checkbox"
-							wrapperClassName="col-md-offset-4 col-md-4"
-							onChange={this.handleEnded}
 						/>
 						<Select
 							noDefault
-							defaultValue={initialPublisherType}
+							defaultValue={initialWorkType}
 							idAttribute="id"
 							label="Type"
 							labelAttribute="label"
 							labelClassName="col-md-4"
-							options={this.props.publisherTypes}
-							placeholder="Select publisher type…"
-							ref={(ref) => this.publisherType = ref}
+							options={this.props.workTypes}
+							placeholder="Select work type…"
+							ref={(ref) => this.workType = ref}
 							select2Options={select2Options}
 							wrapperClassName="col-md-4"
 						/>
@@ -165,6 +135,7 @@ const validators = require('../../../helpers/react-validators');
 							type="textarea"
 							wrapperClassName="col-md-6"
 						/>
+
 						<nav className="margin-top-1">
 							<ul className="pager">
 								<li className="previous">
@@ -199,31 +170,31 @@ const validators = require('../../../helpers/react-validators');
 		}
 	}
 
-	PublisherData.displayName = 'PublisherData';
-	PublisherData.propTypes = {
-		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-		publisher: React.PropTypes.shape({
+	WorkData.displayName = 'WorkData';
+	WorkData.propTypes = {
+		identifierTypes: React.PropTypes.arrayOf(
+			validators.labeledProperty
+		),
+		languages: React.PropTypes.arrayOf(validators.namedProperty),
+		visible: React.PropTypes.bool,
+		work: React.PropTypes.shape({
 			annotation: React.PropTypes.shape({
 				content: React.PropTypes.string
 			}),
-			begin_date: React.PropTypes.string,
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
 			}),
-			end_date: React.PropTypes.string,
-			ended: React.PropTypes.bool,
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
 				typeId: React.PropTypes.number
 			})),
-			publisherType: validators.labeledProperty
+			workType: validators.labeledProperty
 		}),
-		publisherTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-		visible: React.PropTypes.bool,
+		workTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func
 	};
 
-	module.exports = PublisherData;
+	module.exports = WorkData;
 })();

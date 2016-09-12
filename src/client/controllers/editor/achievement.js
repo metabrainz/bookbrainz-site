@@ -20,7 +20,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const AchievementForm = React.createFactory(
-	require('../../components/forms/achievements.jsx')
+	require('../../components/forms/achievements')
 );
 const props = JSON.parse(document.getElementById('props').innerHTML);
 

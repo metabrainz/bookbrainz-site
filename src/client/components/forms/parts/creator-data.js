@@ -22,19 +22,34 @@ const React = require('react');
 
 const Input = require('react-bootstrap').Input;
 
-const Identifiers = require('./identifier-list.jsx');
-const Select = require('../../input/select2.jsx');
+const Identifiers = require('./identifier-list');
+const PartialDate = require('../../input/partial-date');
+const Select = require('../../input/select2');
 
 const validators = require('../../../helpers/react-validators');
 
 (() => {
 	'use strict';
 
-	class WorkData extends React.Component {
+	class CreatorData extends React.Component {
+		constructor(props) {
+			super(props);
+
+			this.state = {
+				ended: this.props.creator ? this.props.creator.ended : false
+			};
+
+			// React does not autobind non-React class methods
+			this.handleEnded = this.handleEnded.bind(this);
+		}
+
 		getValue() {
 			return {
-				languages: this.languages.getValue(),
-				workType: this.workType.getValue(),
+				beginDate: this.begin.getValue(),
+				endDate: this.ended.getChecked() ? this.end.getValue() : '',
+				ended: this.ended.getChecked(),
+				gender: this.gender.getValue(),
+				creatorType: this.creatorType.getValue(),
 				disambiguation: this.disambiguation.getValue(),
 				annotation: this.annotation.getValue(),
 				identifiers: this.identifiers.getValue()
@@ -42,24 +57,32 @@ const validators = require('../../../helpers/react-validators');
 		}
 
 		valid() {
-			return this.identifiers.valid();
+			return this.begin.valid() &&
+				(!this.ended.getValue() || this.end.valid()) &&
+				this.identifiers.valid();
+		}
+
+		handleEnded() {
+			this.setState({ended: this.ended.getChecked()});
 		}
 
 		render() {
-			let initialLanguages = [];
-			let initialWorkType = null;
+			let initialBeginDate = null;
+			let initialEndDate = null;
+			let initialGender = null;
+			let initialCreatorType = null;
 			let initialDisambiguation = null;
 			let initialAnnotation = null;
 			let initialIdentifiers = [];
 
-			const prefillData = this.props.work;
+			const prefillData = this.props.creator;
 			if (prefillData) {
-				initialLanguages = prefillData.languageSet &&
-					prefillData.languageSet.languages.map(
-						(language) => language.id
-					);
-				initialWorkType = prefillData.workType ?
-					prefillData.workType.id : null;
+				initialBeginDate = prefillData.beginDate;
+				initialEndDate = prefillData.endDate;
+				initialGender = prefillData.gender ?
+					prefillData.gender.id : null;
+				initialCreatorType = prefillData.creatorType ?
+					prefillData.creatorType.id : null;
 				initialDisambiguation = prefillData.disambiguation ?
 					prefillData.disambiguation.comment : null;
 				initialAnnotation = prefillData.annotation ?
@@ -78,37 +101,61 @@ const validators = require('../../../helpers/react-validators');
 			};
 
 			return (
-				<div className={(this.props.visible === false) ? 'hidden' : ''}>
+				<div className={this.props.visible === false ? 'hidden' : ''}>
 					<h2>Add Data</h2>
 					<p className="lead">
 						Fill out any data you know about the entity.
 					</p>
 
 					<div className="form-horizontal">
+						<PartialDate
+							defaultValue={initialBeginDate}
+							label="Begin Date"
+							labelClassName="col-md-4"
+							placeholder="YYYY-MM-DD"
+							ref={(ref) => this.begin = ref}
+							wrapperClassName="col-md-4"
+						/>
+						<PartialDate
+							defaultValue={initialEndDate}
+							groupClassName={this.state.ended ? '' : 'hidden'}
+							label="End Date"
+							labelClassName="col-md-4"
+							placeholder="YYYY-MM-DD"
+							ref={(ref) => this.end = ref}
+							wrapperClassName="col-md-4"
+						/>
+						<Input
+							defaultChecked={this.state.ended}
+							label="Ended"
+							ref={(ref) => this.ended = ref}
+							type="checkbox"
+							wrapperClassName="col-md-offset-4 col-md-4"
+							onChange={this.handleEnded}
+						/>
 						<Select
-							multiple
 							noDefault
-							defaultValue={initialLanguages}
+							defaultValue={initialGender}
 							idAttribute="id"
-							label="Languages"
+							label="Gender"
 							labelAttribute="name"
 							labelClassName="col-md-4"
-							options={this.props.languages}
-							placeholder="Select work languages…"
-							ref={(ref) => this.languages = ref}
+							options={this.props.genders}
+							placeholder="Select gender…"
+							ref={(ref) => this.gender = ref}
 							select2Options={select2Options}
 							wrapperClassName="col-md-4"
 						/>
 						<Select
 							noDefault
-							defaultValue={initialWorkType}
+							defaultValue={initialCreatorType}
 							idAttribute="id"
 							label="Type"
 							labelAttribute="label"
 							labelClassName="col-md-4"
-							options={this.props.workTypes}
-							placeholder="Select work type…"
-							ref={(ref) => this.workType = ref}
+							options={this.props.creatorTypes}
+							placeholder="Select creator type…"
+							ref={(ref) => this.creatorType = ref}
 							select2Options={select2Options}
 							wrapperClassName="col-md-4"
 						/>
@@ -135,7 +182,6 @@ const validators = require('../../../helpers/react-validators');
 							type="textarea"
 							wrapperClassName="col-md-6"
 						/>
-
 						<nav className="margin-top-1">
 							<ul className="pager">
 								<li className="previous">
@@ -170,31 +216,35 @@ const validators = require('../../../helpers/react-validators');
 		}
 	}
 
-	WorkData.displayName = 'WorkData';
-	WorkData.propTypes = {
-		identifierTypes: React.PropTypes.arrayOf(
-			validators.labeledProperty
-		),
-		languages: React.PropTypes.arrayOf(validators.namedProperty),
-		visible: React.PropTypes.bool,
-		work: React.PropTypes.shape({
-			annotation: React.PropTypes.shape({
-				content: React.PropTypes.string
-			}),
+	CreatorData.displayName = 'CreatorData';
+	CreatorData.propTypes = {
+		creator: React.PropTypes.shape({
+			beginDate: React.PropTypes.string,
+			endDate: React.PropTypes.string,
+			ended: React.PropTypes.bool,
+			gender: validators.namedProperty,
+			creatorType: validators.labeledProperty,
 			disambiguation: React.PropTypes.shape({
 				comment: React.PropTypes.string
+			}),
+			annotation: React.PropTypes.shape({
+				content: React.PropTypes.string
 			}),
 			identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 				id: React.PropTypes.number,
 				value: React.PropTypes.string,
 				typeId: React.PropTypes.number
-			})),
-			workType: validators.labeledProperty
+			}))
 		}),
-		workTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+		creatorTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+		genders: React.PropTypes.arrayOf(validators.namedProperty),
+		identifierTypes: React.PropTypes.arrayOf(
+			validators.labeledProperty
+		),
+		visible: React.PropTypes.bool,
 		onBackClick: React.PropTypes.func,
 		onNextClick: React.PropTypes.func
 	};
 
-	module.exports = WorkData;
+	module.exports = CreatorData;
 })();

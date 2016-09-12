@@ -24,15 +24,15 @@ const request = require('superagent-bluebird-promise');
 const Nav = require('react-bootstrap').Nav;
 const NavItem = require('react-bootstrap').NavItem;
 
-const Aliases = require('./parts/alias-list.jsx');
-const RevisionNote = require('./parts/revision-note.jsx');
-const EditionData = require('./parts/edition-data.jsx');
-const LoadingSpinner = require('../loading-spinner.jsx');
+const Aliases = require('./parts/alias-list');
+const LoadingSpinner = require('../loading-spinner');
+const PublicationData = require('./parts/publication-data');
+const RevisionNote = require('./parts/revision-note');
 
 (() => {
 	'use strict';
 
-	class EditionForm extends React.Component {
+	class PublicationForm extends React.Component {
 		constructor(props) {
 			super(props);
 
@@ -57,7 +57,6 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 				dataValid: this.data.valid()
 			});
 		}
-
 		handleBackClick() {
 			this.handleTabSelect(this.state.tab - 1);
 		}
@@ -74,30 +73,19 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 			}
 
 			const aliasData = this.aliases.getValue();
-			const editionData = this.data.getValue();
+			const publicationData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
 			const data = {
 				aliases: aliasData.slice(0, -1),
-				publicationBbid: editionData.publication,
-				publishers: editionData.publishers,
-				releaseEvents: editionData.releaseEvents,
-				languages: editionData.languages,
-				formatId: parseInt(editionData.editionFormat, 10),
-				statusId: parseInt(editionData.editionStatus, 10),
-				disambiguation: editionData.disambiguation,
-				annotation: editionData.annotation,
-				identifiers: editionData.identifiers,
-				pages: parseInt(editionData.pages, 10),
-				weight: parseInt(editionData.weight, 10),
-				width: parseInt(editionData.width, 10),
-				height: parseInt(editionData.height, 10),
-				depth: parseInt(editionData.depth, 10),
+				typeId: parseInt(publicationData.publicationType, 10),
+				disambiguation: publicationData.disambiguation,
+				annotation: publicationData.annotation,
+				identifiers: publicationData.identifiers,
 				note: revisionNote
 			};
 
 			this.setState({waiting: true});
 
-			const self = this;
 			request.post(this.props.submissionUrl)
 				.send(data).promise()
 				.then((res) => {
@@ -105,7 +93,7 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 						window.location.replace('/login');
 						return;
 					}
-					const editionHref = `/edition/${res.body.bbid}`;
+					const editionHref = `/publication/${res.body.bbid}`;
 					if (res.body.alert) {
 						const alertHref = `?alert=${res.body.alert}`;
 						window.location.href = `${editionHref}${alertHref}`;
@@ -115,13 +103,13 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 					}
 				})
 				.catch((error) => {
-					self.setState({error});
+					this.setState({error});
 				});
 		}
 
 		render() {
 			let aliases = null;
-			const prefillData = this.props.edition;
+			const prefillData = this.props.publication;
 			if (prefillData) {
 				aliases = prefillData.aliasSet.aliases.map((alias) => ({
 					id: alias.id,
@@ -179,14 +167,10 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 							visible={this.state.tab === 1}
 							onNextClick={this.handleNextClick}
 						/>
-						<EditionData
-							edition={this.props.edition}
-							editionFormats={this.props.editionFormats}
-							editionStatuses={this.props.editionStatuses}
+						<PublicationData
 							identifierTypes={this.props.identifierTypes}
-							languages={this.props.languages}
 							publication={this.props.publication}
-							publisher={this.props.publisher}
+							publicationTypes={this.props.publicationTypes}
 							ref={(ref) => this.data = ref}
 							visible={this.state.tab === 2}
 							onBackClick={this.handleBackClick}
@@ -205,17 +189,14 @@ const LoadingSpinner = require('../loading-spinner.jsx');
 		}
 	}
 
-	EditionForm.displayName = 'EditionForm';
-	EditionForm.propTypes = {
-		edition: React.PropTypes.object,
-		editionFormats: React.PropTypes.array,
-		editionStatuses: React.PropTypes.array,
+	PublicationForm.displayName = 'PublicationForm';
+	PublicationForm.propTypes = {
 		identifierTypes: React.PropTypes.array,
 		languages: React.PropTypes.array,
 		publication: React.PropTypes.object,
-		publisher: React.PropTypes.object,
+		publicationTypes: React.PropTypes.array,
 		submissionUrl: React.PropTypes.string
 	};
 
-	module.exports = EditionForm;
+	module.exports = PublicationForm;
 })();

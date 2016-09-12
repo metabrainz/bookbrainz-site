@@ -19,7 +19,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const EditForm = React.createFactory(
-	require('../components/forms/relationship.jsx')
+	require('../components/forms/relationship')
 );
 const props = JSON.parse(document.getElementById('props').innerHTML);
 

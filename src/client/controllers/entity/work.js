@@ -18,9 +18,7 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const EditForm = React.createFactory(
-	require('../../components/forms/work.jsx')
-);
+const EditForm = React.createFactory(require('../../components/forms/work'));
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
 ReactDOM.render(EditForm(props), document.getElementById('workForm'));

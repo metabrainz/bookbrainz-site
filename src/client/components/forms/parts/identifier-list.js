@@ -19,7 +19,7 @@
 
 const React = require('react');
 
-const IdentifierRow = require('./identifier-row.jsx');
+const IdentifierRow = require('./identifier-row');
 
 const dataHelper = require('../../../helpers/data');
 const validators = require('../../../helpers/react-validators');

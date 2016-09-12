@@ -18,9 +18,7 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const SearchPage = React.createFactory(
-	require('../components/pages/search.jsx')
-);
+const SearchPage = React.createFactory(require('../components/pages/search'));
 
 const propsDOM = document.getElementById('props');
 const props = propsDOM ? JSON.parse(propsDOM.innerHTML) : {};

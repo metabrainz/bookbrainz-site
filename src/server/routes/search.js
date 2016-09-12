@@ -32,7 +32,7 @@ const search = require('../helpers/search');
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
 
 const SearchPage = React.createFactory(
-	require('../../client/components/pages/search.jsx')
+	require('../../client/components/pages/search')
 );
 
 const router = express.Router();

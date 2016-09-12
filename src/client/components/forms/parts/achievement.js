@@ -17,8 +17,7 @@
  */
 
 const React = require('react');
-const DragAndDropImage =
-	require('../../input/dragAndDropImage.jsx');
+const DragAndDropImage = require('../../input/dragAndDropImage');
 
 (() => {
 	'use strict';

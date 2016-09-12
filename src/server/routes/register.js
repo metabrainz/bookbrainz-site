@@ -32,10 +32,10 @@ const handler = require('../helpers/handler');
 const FormSubmissionError = require('../helpers/error').FormSubmissionError;
 
 const RegisterAuthPage = React.createFactory(
-	require('../../client/components/pages/registration-auth.jsx')
+	require('../../client/components/pages/registration-auth')
 );
 const RegisterDetailPage = React.createFactory(
-	require('../../client/components/forms/registration-details.jsx')
+	require('../../client/components/forms/registration-details')
 );
 const loadGenders = require('../helpers/middleware').loadGenders;
 

@@ -19,7 +19,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const EditForm = React.createFactory(
-	require('../../components/forms/publication.jsx')
+	require('../../components/forms/publication')
 );
 const props = JSON.parse(document.getElementById('props').innerHTML);
 

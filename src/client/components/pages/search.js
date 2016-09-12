@@ -20,8 +20,8 @@
 const React = require('react');
 const request = require('superagent-bluebird-promise');
 
-const SearchField = require('./parts/search-field.jsx');
-const SearchResults = require('./parts/search-results.jsx');
+const SearchField = require('./parts/search-field');
+const SearchResults = require('./parts/search-results');
 
 (() => {
 	'use strict';

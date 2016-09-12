@@ -20,7 +20,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const ProfileForm = React.createFactory(
-	require('../../components/forms/profile.jsx')
+	require('../../components/forms/profile')
 );
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
