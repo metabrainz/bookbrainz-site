@@ -24,7 +24,7 @@ import DisambiguationButton from './disambiguation-button-container';
 import DisambiguationField from './disambiguation-field-container';
 import LanguageField from './language-field-container';
 import NameField from './name-field-container';
-import PartialDate from '../components/input/partial-date.jsx';
+import PartialDate from '../components/input/partial-date';
 import React from 'react';
 import Select from 'react-select';
 import SortNameField from './sort-name-field-container';
