@@ -47,16 +47,15 @@ function reducer(
 		case 'HIDE_ALIAS_EDITOR':
 			return state.set('aliasEditorVisible', false);
 		case 'ADD_ALIAS':
-			return state.set(
-				'aliases', state.get('aliases').push(Immutable.Map({
+			return state.update('aliases', (aliases) =>
+				aliases.push(Immutable.Map({
 					id: action.id,
 					name: '',
 					sortName: ''
 				}))
 			);
 		case 'UPDATE_ALIAS_NAME':
-			return state.get('aliases').get(action.index)
-				.set('name', action.value);
+			return state.setIn(['aliases', action.index, 'name'], action.value);
 		// no default
 	}
 	return state;
