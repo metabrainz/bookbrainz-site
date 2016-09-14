@@ -35,7 +35,8 @@ function isError(state) {
 function mapStateToProps(state) {
 	return {
 		empty: isEmpty(state),
-		error: isError(state)
+		error: isError(state),
+		defaultValue: state.get('nameValue')
 	};
 }
 

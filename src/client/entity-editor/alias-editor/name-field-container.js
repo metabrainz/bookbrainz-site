@@ -41,7 +41,8 @@ function isError(state, index) {
 function mapStateToProps(state, {index}) {
 	return {
 		empty: isEmpty(state, index),
-		error: isError(state, index)
+		error: isError(state, index),
+		defaultValue: state.getIn(['aliases', index, 'name'])
 	};
 }
 

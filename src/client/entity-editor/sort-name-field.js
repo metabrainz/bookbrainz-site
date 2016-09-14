@@ -96,7 +96,8 @@ function SortNameField({
 	empty,
 	error,
 	onChange,
-	storedNameValue
+	storedNameValue,
+	...rest
 }) {
 	let input;
 
@@ -129,6 +130,7 @@ function SortNameField({
 			ref={(node) => { input = node; }}
 			type="text"
 			onChange={onChange}
+			{...rest}
 		/>
 	);
 }

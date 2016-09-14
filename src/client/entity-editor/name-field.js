@@ -30,7 +30,8 @@ import ValidationLabel from './validation-label';
 function NameField({
 	empty,
 	error,
-	onChange
+	onChange,
+	...rest
 }) {
 	const label = (
 		<ValidationLabel
@@ -46,6 +47,7 @@ function NameField({
 			label={label}
 			type="text"
 			onChange={onChange}
+			{...rest}
 		/>
 	);
 }

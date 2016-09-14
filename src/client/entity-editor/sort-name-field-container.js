@@ -35,7 +35,8 @@ function mapStateToProps(state) {
 	return {
 		empty: isEmpty(state),
 		error: isError(state),
-		storedNameValue: state.get('nameValue')
+		storedNameValue: state.get('nameValue'),
+		defaultValue: state.get('sortNameValue')
 	};
 }
 
