@@ -19,18 +19,21 @@
 
 import {Button, Col, Row} from 'react-bootstrap';
 import LanguageField from '../language-field';
-import NameField from '../name-field';
+import NameField from './name-field-container';
 import PrimaryCheck from './primary-check';
 import React from 'react';
 import SortNameField from '../sort-name-field';
 
+
+
 const AliasRow = ({
-	languageOptions
+	languageOptions,
+	index
 }) => (
 	<div>
 		<Row>
 			<Col md={4}>
-				<NameField/>
+				<NameField index={index}/>
 			</Col>
 			<Col md={4}>
 				<SortNameField/>
@@ -53,5 +56,9 @@ const AliasRow = ({
 	</div>
 );
 AliasRow.displayName = 'AliasEditor.AliasRow';
+AliasRow.propTypes = {
+	index: React.PropTypes.number,
+	languageOptions: React.PropTypes.array
+};
 
 export default AliasRow;
