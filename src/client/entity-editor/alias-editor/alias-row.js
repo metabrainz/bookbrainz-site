@@ -22,9 +22,7 @@ import LanguageField from '../language-field';
 import NameField from './name-field-container';
 import PrimaryCheck from './primary-check';
 import React from 'react';
-import SortNameField from '../sort-name-field';
-
-
+import SortNameField from './sort-name-field-container';
 
 const AliasRow = ({
 	languageOptions,
@@ -36,7 +34,7 @@ const AliasRow = ({
 				<NameField index={index}/>
 			</Col>
 			<Col md={4}>
-				<SortNameField/>
+				<SortNameField index={index}/>
 			</Col>
 			<Col md={4}>
 				<LanguageField options={languageOptions}/>

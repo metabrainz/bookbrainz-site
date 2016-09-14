@@ -56,6 +56,8 @@ function reducer(
 			);
 		case 'UPDATE_ALIAS_NAME':
 			return state.setIn(['aliases', action.index, 'name'], action.value);
+		case 'UPDATE_ALIAS_SORT_NAME':
+			return state.setIn(['aliases', action.index, 'sortName'], action.value);
 		// no default
 	}
 	return state;
