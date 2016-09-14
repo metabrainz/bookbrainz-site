@@ -22,7 +22,17 @@ import {Provider} from 'react-redux';
 import React from 'react';
 import {createStore} from 'redux';
 
-function reducer(state = Immutable.Map({nameValue: '', sortNameValue: ''}), action) {
+function reducer(
+	state = Immutable.Map({
+		nameValue: '',
+		sortNameValue: '',
+		aliases: Immutable.List(),
+		languageValue: null,
+		disambiguationVisible: false,
+		aliasEditorVisible: false
+	}),
+	action
+) {
 	switch (action.type) {
 		case 'UPDATE_NAME_FIELD':
 			return state.set('nameValue', action.value);
@@ -36,12 +46,30 @@ function reducer(state = Immutable.Map({nameValue: '', sortNameValue: ''}), acti
 			return state.set('aliasEditorVisible', true);
 		case 'HIDE_ALIAS_EDITOR':
 			return state.set('aliasEditorVisible', false);
+		case 'ADD_ALIAS':
+			return state.set(
+				'aliases', state.get('aliases').push(Immutable.Map({
+					id: action.id,
+					name: '',
+					sortName: ''
+				}))
+			);
+		case 'UPDATE_ALIAS_NAME':
+			return state.get('aliases').get(action.index)
+				.set('name', action.value);
 		// no default
 	}
 	return state;
 }
 
-const store = createStore(reducer, Immutable.Map({nameValue: '', sortNameValue: ''}));
+const store = createStore(reducer, Immutable.Map({
+	nameValue: '',
+	sortNameValue: '',
+	aliases: Immutable.List(),
+	languageValue: null,
+	disambiguationVisible: false,
+	aliasEditorVisible: false
+}), window.devToolsExtension && window.devToolsExtension());
 
 const Creator = ({
 	languages
