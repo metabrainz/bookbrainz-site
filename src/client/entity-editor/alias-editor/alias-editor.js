@@ -19,6 +19,7 @@
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 
 import AliasRow from './alias-row';
+import AddAliasButton from './add-alias-button';
 import React from 'react';
 import {connect} from 'react-redux';
 import {hideAliasEditor} from '../actions';
@@ -42,9 +43,7 @@ const AliasEditor = ({
 			<AliasRow languageOptions={languageOptions}/>
 			<Row>
 				<Col className="text-right" md={3} mdOffset={9}>
-					<Button block bsStyle="success">
-						Add alias
-					</Button>
+					<AddAliasButton/>
 				</Col>
 			</Row>
 		</Modal.Body>
