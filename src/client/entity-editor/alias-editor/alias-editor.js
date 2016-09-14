@@ -18,8 +18,8 @@
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 
-import AliasRow from './alias-row';
 import AddAliasButton from './add-alias-button';
+import AliasRowList from './alias-row-list';
 import React from 'react';
 import {connect} from 'react-redux';
 import {hideAliasEditor} from '../actions';
@@ -40,7 +40,7 @@ const AliasEditor = ({
 			<div className="text-center">
 				<p className="text-muted">This entity has no aliases</p>
 			</div>
-			<AliasRow languageOptions={languageOptions}/>
+			<AliasRowList languageOptions={languageOptions}/>
 			<Row>
 				<Col className="text-right" md={3} mdOffset={9}>
 					<AddAliasButton/>
