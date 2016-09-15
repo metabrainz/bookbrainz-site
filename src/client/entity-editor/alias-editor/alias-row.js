@@ -18,7 +18,7 @@
 
 
 import {Button, Col, Row} from 'react-bootstrap';
-import LanguageField from '../language-field';
+import LanguageField from './language-field-container';
 import NameField from './name-field-container';
 import PrimaryCheck from './primary-check';
 import React from 'react';
@@ -37,7 +37,7 @@ const AliasRow = ({
 				<SortNameField index={index}/>
 			</Col>
 			<Col md={4}>
-				<LanguageField options={languageOptions}/>
+				<LanguageField index={index} options={languageOptions}/>
 			</Col>
 		</Row>
 		<Row>
