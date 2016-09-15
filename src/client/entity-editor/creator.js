@@ -66,6 +66,11 @@ function reducer(
 				['aliases', action.index, 'language'],
 				action.value
 			);
+		case 'UPDATE_ALIAS_PRIMARY':
+			return state.setIn(
+				['aliases', action.index, 'primary'],
+				action.value
+			);
 		// no default
 	}
 	return state;

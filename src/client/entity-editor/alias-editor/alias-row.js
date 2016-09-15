@@ -42,7 +42,7 @@ const AliasRow = ({
 		</Row>
 		<Row>
 			<Col md={2} mdOffset={5}>
-				<PrimaryCheck/>
+				<PrimaryCheck index={index}/>
 			</Col>
 			<Col className="text-right" md={3} mdOffset={2}>
 				<Button block bsStyle="danger" className="margin-top-d05">

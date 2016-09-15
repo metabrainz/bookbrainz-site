@@ -18,12 +18,29 @@
 
 import {Input} from 'react-bootstrap';
 import React from 'react';
+import {connect} from 'react-redux';
+import {updateAliasPrimary} from '../actions';
 
-function PrimaryCheck() {
+function PrimaryCheck({
+	...props
+}) {
 	return (
-		<Input label="Primary" type="checkbox"/>
+		<Input label="Primary" type="checkbox" {...props}/>
 	);
 }
 PrimaryCheck.displayName = 'AliasEditor.PrimaryCheck';
 
-export default PrimaryCheck;
+function mapStateToProps(state, {index}) {
+	return {
+		defaultChecked: state.getIn(['aliases', index, 'primary'])
+	};
+}
+
+function mapDispatchToProps(dispatch, {index}) {
+	return {
+		onClick: (event) =>
+			dispatch(updateAliasPrimary(index, event.target.checked))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrimaryCheck);
