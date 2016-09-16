@@ -26,7 +26,7 @@ function reducer(
 	state = Immutable.Map({
 		nameValue: '',
 		sortNameValue: '',
-		aliases: Immutable.List(),
+		aliases: Immutable.Map(),
 		languageValue: null,
 		disambiguationVisible: false,
 		aliasEditorVisible: false
@@ -48,7 +48,7 @@ function reducer(
 			return state.set('aliasEditorVisible', false);
 		case 'ADD_ALIAS':
 			return state.update('aliases', (aliases) =>
-				aliases.push(Immutable.Map({
+				aliases.set(action.id, Immutable.Map({
 					id: action.id,
 					name: '',
 					sortName: ''
