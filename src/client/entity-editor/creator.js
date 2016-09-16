@@ -71,6 +71,8 @@ function reducer(
 				['aliases', action.index, 'primary'],
 				action.value
 			);
+		case 'REMOVE_ALIAS':
+			return state.deleteIn(['aliases', action.index]);
 		// no default
 	}
 	return state;

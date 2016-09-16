@@ -27,6 +27,7 @@ const UPDATE_ALIAS_SORT_NAME = 'UPDATE_ALIAS_SORT_NAME';
 const ADD_ALIAS = 'ADD_ALIAS';
 const UPDATE_ALIAS_LANGUAGE = 'UPDATE_ALIAS_LANGUAGE';
 const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
+const REMOVE_ALIAS = 'REMOVE_ALIAS';
 
 export function updateNameField(value) {
 	return {
@@ -105,5 +106,12 @@ export function addAlias() {
 	return {
 		type: ADD_ALIAS,
 		id: nextAliasId++
+	};
+}
+
+export function removeAlias(index) {
+	return {
+		type: REMOVE_ALIAS,
+		index
 	};
 }

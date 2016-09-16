@@ -22,6 +22,7 @@ import LanguageField from './language-field-container';
 import NameField from './name-field-container';
 import PrimaryCheck from './primary-check';
 import React from 'react';
+import RemoveAliasButton from './remove-alias-button';
 import SortNameField from './sort-name-field-container';
 
 const AliasRow = ({
@@ -45,9 +46,7 @@ const AliasRow = ({
 				<PrimaryCheck index={index}/>
 			</Col>
 			<Col className="text-right" md={3} mdOffset={2}>
-				<Button block bsStyle="danger" className="margin-top-d05">
-					Remove
-				</Button>
+				<RemoveAliasButton index={index}/>
 			</Col>
 		</Row>
 		<hr/>
