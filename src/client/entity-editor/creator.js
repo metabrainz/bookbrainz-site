@@ -81,7 +81,7 @@ function reducer(
 const store = createStore(reducer, Immutable.Map({
 	nameValue: '',
 	sortNameValue: '',
-	aliases: Immutable.List(),
+	aliases: Immutable.Map(),
 	languageValue: null,
 	disambiguationVisible: false,
 	aliasEditorVisible: false
