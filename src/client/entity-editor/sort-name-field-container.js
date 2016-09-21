@@ -31,7 +31,8 @@ function isError(state) {
 	return !(state.get('sortNameValue'));
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(rootState) {
+	const state = rootState.get('core');
 	return {
 		empty: isEmpty(state),
 		error: isError(state),

@@ -179,11 +179,14 @@ CreatorData.propTypes = {
 	languageOptions: React.PropTypes.array
 };
 
-CreatorData = connect(
-	(state) => ({
+function mapStateToProps(rootState) {
+	const state = rootState.get('core');
+	return {
 		disambiguationVisible: state.get('disambiguationVisible'),
 		aliasEditorVisible: state.get('aliasEditorVisible')
-	})
-)(CreatorData);
+	};
+}
+
+CreatorData = connect(mapStateToProps)(CreatorData);
 
 export default CreatorData;

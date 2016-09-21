@@ -32,7 +32,8 @@ function isError(state) {
 	return state.get('nameValue').length === 0;
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(rootState) {
+	const state = rootState.get('core');
 	return {
 		empty: isEmpty(state),
 		error: isError(state),

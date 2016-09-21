@@ -20,7 +20,8 @@ import LanguageField from './language-field';
 import {connect} from 'react-redux';
 import {updateLanguageField} from './actions';
 
-function mapStateToProps(state) {
+function mapStateToProps(rootState) {
+	const state = rootState.get('core');
 	return {
 		value: state.get('languageValue')
 	};

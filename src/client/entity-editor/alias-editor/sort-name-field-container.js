@@ -24,30 +24,24 @@ import {updateAliasSortName} from '../actions';
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 function isEmpty(state, index) {
-	const name = state.get('aliases').get(index)
-		.get('name');
-	const sortName = state.get('aliases').get(index)
-		.get('sortName');
-
-	console.log(name);
-	console.log(sortName);
-	console.log((name.length === 0) && (sortName.length === 0));
+	const name = state.get(index).get('name');
+	const sortName = state.get(index).get('sortName');
 
 	return (name.length === 0) && (sortName.length === 0);
 }
 
 function isError(state, index) {
-	const sortName = state.get('aliases').get(index)
-		.get('sortName');
+	const sortName = state.get(index).get('sortName');
 	return sortName.length === 0;
 }
 
-function mapStateToProps(state, {index}) {
+function mapStateToProps(rootState, {index}) {
+	const state = rootState.get('aliases');
 	return {
 		empty: isEmpty(state, index),
 		error: isError(state, index),
-		storedNameValue: state.getIn(['aliases', index, 'name']),
-		defaultValue: state.getIn(['aliases', index, 'sortName'])
+		storedNameValue: state.getIn([index, 'name']),
+		defaultValue: state.getIn([index, 'sortName'])
 	};
 }
 

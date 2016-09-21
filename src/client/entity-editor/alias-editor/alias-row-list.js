@@ -32,10 +32,10 @@ function AliasRowList({
 	return (
 		<div>
 			{
-				aliases.map((alias) =>
+				aliases.map((alias, id) =>
 					<AliasRow
-						index={alias.get('id')}
-						key={alias.get('id')}
+						index={id}
+						key={id}
 						languageOptions={languageOptions}
 					/>
 				)

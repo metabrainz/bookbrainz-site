@@ -20,9 +20,10 @@ import LanguageField from '../language-field';
 import {connect} from 'react-redux';
 import {updateAliasLanguage} from '../actions';
 
-function mapStateToProps(state, {index}) {
+function mapStateToProps(rootState, {index}) {
+	const state = rootState.get('aliases');
 	return {
-		value: state.getIn(['aliases', index, 'language'])
+		value: state.getIn([index, 'language'])
 	};
 }
 

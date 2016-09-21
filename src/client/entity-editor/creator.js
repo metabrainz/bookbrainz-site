@@ -16,17 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
 import CreatorData from './creator-data';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
+import {combineReducers} from 'redux-immutable';
 import {createStore} from 'redux';
+import aliasEditorReducer from './alias-editor/reducer';
 
-function reducer(
+function coreReducer(
 	state = Immutable.Map({
 		nameValue: '',
 		sortNameValue: '',
-		aliases: Immutable.Map(),
 		languageValue: null,
 		disambiguationVisible: false,
 		aliasEditorVisible: false
@@ -46,46 +48,41 @@ function reducer(
 			return state.set('aliasEditorVisible', true);
 		case 'HIDE_ALIAS_EDITOR':
 			return state.set('aliasEditorVisible', false);
-		case 'ADD_ALIAS':
-			return state.update('aliases', (aliases) =>
-				aliases.set(action.id, Immutable.Map({
-					id: action.id,
-					name: '',
-					sortName: ''
-				}))
-			);
-		case 'UPDATE_ALIAS_NAME':
-			return state.setIn(['aliases', action.index, 'name'], action.value);
-		case 'UPDATE_ALIAS_SORT_NAME':
-			return state.setIn(
-				['aliases', action.index, 'sortName'],
-				action.value
-			);
-		case 'UPDATE_ALIAS_LANGUAGE':
-			return state.setIn(
-				['aliases', action.index, 'language'],
-				action.value
-			);
-		case 'UPDATE_ALIAS_PRIMARY':
-			return state.setIn(
-				['aliases', action.index, 'primary'],
-				action.value
-			);
-		case 'REMOVE_ALIAS':
-			return state.deleteIn(['aliases', action.index]);
 		// no default
 	}
 	return state;
 }
 
-const store = createStore(reducer, Immutable.Map({
-	nameValue: '',
-	sortNameValue: '',
-	aliases: Immutable.Map(),
-	languageValue: null,
-	disambiguationVisible: false,
-	aliasEditorVisible: false
-}), window.devToolsExtension && window.devToolsExtension());
+const rootReducer = combineReducers({
+	core: coreReducer,
+	aliases: aliasEditorReducer
+});
+
+let store = null;
+if (typeof window === 'undefined') {
+	store = createStore(rootReducer, Immutable.Map({
+		core: Immutable.Map({
+			nameValue: '',
+			sortNameValue: '',
+			languageValue: null,
+			disambiguationVisible: false,
+			aliasEditorVisible: false
+		}),
+		aliases: Immutable.Map()
+	}));
+}
+else {
+	store = createStore(rootReducer, Immutable.Map({
+		core: Immutable.Map({
+			nameValue: '',
+			sortNameValue: '',
+			languageValue: null,
+			disambiguationVisible: false,
+			aliasEditorVisible: false
+		}),
+		aliases: Immutable.Map()
+	}), window.devToolsExtension && window.devToolsExtension());
+}
 
 const Creator = ({
 	languages

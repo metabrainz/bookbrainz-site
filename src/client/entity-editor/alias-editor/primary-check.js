@@ -30,9 +30,10 @@ function PrimaryCheck({
 }
 PrimaryCheck.displayName = 'AliasEditor.PrimaryCheck';
 
-function mapStateToProps(state, {index}) {
+function mapStateToProps(rootState, {index}) {
+	const state = rootState.get('aliases');
 	return {
-		defaultChecked: state.getIn(['aliases', index, 'primary'])
+		defaultChecked: state.getIn([index, 'primary'])
 	};
 }
 
