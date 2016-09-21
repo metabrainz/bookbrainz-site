@@ -16,20 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import NameField from './name-field';
+import SortNameField from '../common/sort-name-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
-import {updateNameField} from './actions';
+import {updateSortNameField} from '../actions';
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 function isEmpty(state) {
-	return state.get('nameValue').length === 0 &&
-		state.get('sortNameValue').length === 0;
+	return !(state.get('nameValue') || state.get('sortNameValue'));
 }
 
 function isError(state) {
-	return state.get('nameValue').length === 0;
+	return !(state.get('sortNameValue'));
 }
 
 function mapStateToProps(rootState) {
@@ -37,16 +36,18 @@ function mapStateToProps(rootState) {
 	return {
 		empty: isEmpty(state),
 		error: isError(state),
-		defaultValue: state.get('nameValue')
+		storedNameValue: state.get('nameValue'),
+		defaultValue: state.get('sortNameValue')
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
-		onChange: (event) =>
-			debouncedDispatch(updateNameField(event.target.value))
+		onChange: (event) => debouncedDispatch(
+			updateSortNameField(event.target.value)
+		)
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NameField);
+export default connect(mapStateToProps, mapDispatchToProps)(SortNameField);

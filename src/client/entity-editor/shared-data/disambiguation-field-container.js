@@ -19,7 +19,7 @@
 import DisambiguationField from './disambiguation-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
-import {updateDisambiguationField} from './actions';
+import {updateDisambiguationField} from '../actions';
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 

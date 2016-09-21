@@ -16,14 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import AliasButton from './alias-button';
+import LanguageField from '../common/language-field';
 import {connect} from 'react-redux';
-import {showAliasEditor} from './actions';
+import {updateLanguageField} from '../actions';
 
-function mapDispatchToProps(dispatch) {
+function mapStateToProps(rootState) {
+	const state = rootState.get('core');
 	return {
-		onClick: () => dispatch(showAliasEditor())
+		value: state.get('languageValue')
 	};
 }
 
-export default connect(null, mapDispatchToProps)(AliasButton);
+function mapDispatchToProps(dispatch) {
+	return {
+		onChange: (value) => dispatch(updateLanguageField(value.value))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LanguageField);

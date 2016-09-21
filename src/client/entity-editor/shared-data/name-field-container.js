@@ -16,21 +16,37 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import LanguageField from './language-field';
+import NameField from '../common/name-field';
+import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
-import {updateLanguageField} from './actions';
+import {updateNameField} from '../actions';
+
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+
+function isEmpty(state) {
+	return state.get('nameValue').length === 0 &&
+		state.get('sortNameValue').length === 0;
+}
+
+function isError(state) {
+	return state.get('nameValue').length === 0;
+}
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('core');
 	return {
-		value: state.get('languageValue')
+		empty: isEmpty(state),
+		error: isError(state),
+		defaultValue: state.get('nameValue')
 	};
 }
 
 function mapDispatchToProps(dispatch) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
-		onChange: (value) => dispatch(updateLanguageField(value.value))
+		onChange: (event) =>
+			debouncedDispatch(updateNameField(event.target.value))
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LanguageField);
+export default connect(mapStateToProps, mapDispatchToProps)(NameField);

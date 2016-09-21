@@ -18,17 +18,17 @@
 
 import {Button, Col, Input, Panel, Row} from 'react-bootstrap';
 
-import AliasButton from './alias-button-container';
+import AliasButton from './shared-data/alias-button-container';
 import AliasEditor from './alias-editor/alias-editor';
-import DisambiguationButton from './disambiguation-button-container';
-import DisambiguationField from './disambiguation-field-container';
-import LanguageField from './language-field-container';
-import NameField from './name-field-container';
+import DisambiguationButton from './shared-data/disambiguation-button-container';
+import DisambiguationField from './shared-data/disambiguation-field-container';
+import LanguageField from './shared-data/language-field-container';
+import NameField from './shared-data/name-field-container';
 import PartialDate from '../components/input/partial-date';
 import React from 'react';
 import Select from 'react-select';
-import SortNameField from './sort-name-field-container';
-import ValidationLabel from './validation-label';
+import SortNameField from './shared-data/sort-name-field-container';
+import ValidationLabel from './common/validation-label';
 import {connect} from 'react-redux';
 
 

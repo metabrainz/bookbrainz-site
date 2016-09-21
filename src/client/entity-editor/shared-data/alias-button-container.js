@@ -16,46 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+import AliasButton from './alias-button';
+import {connect} from 'react-redux';
+import {showAliasEditor} from '../actions';
 
-import React from 'react';
-import ValidationLabel from './validation-label';
-
-/**
- * Presentational component. Renders the name field for the alias section of
- * entity editing forms.
- *
- * @returns {Object} a React component containing the rendered input
- */
-function NameField({
-	empty,
-	error,
-	onChange,
-	...rest
-}) {
-	const label = (
-		<ValidationLabel
-			empty={empty}
-			error={error}
-		>
-			Name
-		</ValidationLabel>
-	);
-
-	return (
-		<Input
-			label={label}
-			type="text"
-			onChange={onChange}
-			{...rest}
-		/>
-	);
+function mapDispatchToProps(dispatch) {
+	return {
+		onClick: () => dispatch(showAliasEditor())
+	};
 }
-NameField.displayName = 'NameField';
-NameField.propTypes = {
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool,
-	onChange: React.PropTypes.func
-};
 
-export default NameField;
+export default connect(null, mapDispatchToProps)(AliasButton);

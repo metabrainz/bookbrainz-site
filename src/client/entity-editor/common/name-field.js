@@ -16,21 +16,46 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import LanguageField from '../common/language-field';
-import {connect} from 'react-redux';
-import {updateAliasLanguage} from '../actions';
+import {Input} from 'react-bootstrap';
 
-function mapStateToProps(rootState, {index}) {
-	const state = rootState.get('aliases');
-	return {
-		value: state.getIn([index, 'language'])
-	};
+import React from 'react';
+import ValidationLabel from '../common/validation-label';
+
+/**
+ * Presentational component. Renders the name field for the alias section of
+ * entity editing forms.
+ *
+ * @returns {Object} a React component containing the rendered input
+ */
+function NameField({
+	empty,
+	error,
+	onChange,
+	...rest
+}) {
+	const label = (
+		<ValidationLabel
+			empty={empty}
+			error={error}
+		>
+			Name
+		</ValidationLabel>
+	);
+
+	return (
+		<Input
+			label={label}
+			type="text"
+			onChange={onChange}
+			{...rest}
+		/>
+	);
 }
+NameField.displayName = 'NameField';
+NameField.propTypes = {
+	empty: React.PropTypes.bool,
+	error: React.PropTypes.bool,
+	onChange: React.PropTypes.func
+};
 
-function mapDispatchToProps(dispatch, {index}) {
-	return {
-		onChange: (value) => dispatch(updateAliasLanguage(index, value.value))
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LanguageField);
+export default NameField;

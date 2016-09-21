@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import NameField from '../name-field';
+import NameField from '../common/name-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import {updateAliasName} from '../actions';
