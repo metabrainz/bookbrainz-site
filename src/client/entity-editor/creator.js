@@ -16,11 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
- import AliasEditor from './alias-editor/alias-editor';
- import CreatorData from './creator-data/creator-data';
- import {Panel} from 'react-bootstrap';
-  import SharedData from './shared-data/shared-data';
- import {connect} from 'react-redux';
+import CreatorData from './creator-data';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
