@@ -28,11 +28,13 @@ import {combineReducers} from 'redux-immutable';
 import {createStore} from 'redux';
 import aliasEditorReducer from './alias-editor/reducer';
 import sharedDataReducer from './shared-data/reducer';
+import creatorDataReducer from './creator-data/reducer';
 
 
 const rootReducer = combineReducers({
 	sharedData: sharedDataReducer,
-	aliasEditor: aliasEditorReducer
+	aliasEditor: aliasEditorReducer,
+	creatorData: creatorDataReducer
 });
 
 let store = null;
@@ -62,15 +64,17 @@ else {
 }
 
 const Creator = ({
-	languages
+	languages,
+	genders
 }) => (
 	<Provider store={store}>
-		<CreatorData languageOptions={languages}/>
+		<CreatorData languageOptions={languages} genderOptions={genders}/>
 	</Provider>
 );
 Creator.displayName = 'Creator';
 Creator.propTypes = {
-	languages: React.PropTypes.array
+	languages: React.PropTypes.array,
+	genders: React.PropTypes.array
 };
 
 export default Creator;

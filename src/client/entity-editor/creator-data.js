@@ -28,11 +28,17 @@ import {connect} from 'react-redux';
 let Wrapper = ({
 	aliasEditorVisible,
 	disambiguationVisible,
-	languageOptions
+	languageOptions,
+	genderOptions
 }) => {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		value: language.id,
 		label: language.name
+	}));
+
+	const genderOptionsForDisplay = genderOptions.map((gender) => ({
+		value: gender.id,
+		label: gender.name
 	}));
 
 	return (
@@ -45,7 +51,9 @@ let Wrapper = ({
 				disambiguationVisible={disambiguationVisible}
 				languageOptions={languageOptionsForDisplay}
 			/>
-			<CreatorData/>
+			<CreatorData
+				genderOptions={genderOptionsForDisplay}
+			/>
 		</Panel>
 	);
 };
@@ -53,7 +61,8 @@ Wrapper.displayName = 'Wrapper';
 Wrapper.propTypes = {
 	aliasEditorVisible: React.PropTypes.bool,
 	disambiguationVisible: React.PropTypes.bool,
-	languageOptions: React.PropTypes.array
+	languageOptions: React.PropTypes.array,
+	genderOptions: React.PropTypes.array
 };
 
 function mapStateToProps(rootState) {
