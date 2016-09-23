@@ -16,45 +16,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
-import CreatorData from './creator-data';
+ import AliasEditor from './alias-editor/alias-editor';
+ import CreatorData from './creator-data/creator-data';
+ import {Panel} from 'react-bootstrap';
+  import SharedData from './shared-data/shared-data';
+ import {connect} from 'react-redux';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
 import {combineReducers} from 'redux-immutable';
 import {createStore} from 'redux';
 import aliasEditorReducer from './alias-editor/reducer';
+import sharedDataReducer from './shared-data/reducer';
 
-function coreReducer(
-	state = Immutable.Map({
-		nameValue: '',
-		sortNameValue: '',
-		languageValue: null,
-		disambiguationVisible: false,
-		aliasEditorVisible: false
-	}),
-	action
-) {
-	switch (action.type) {
-		case 'UPDATE_NAME_FIELD':
-			return state.set('nameValue', action.value);
-		case 'UPDATE_SORT_NAME_FIELD':
-			return state.set('sortNameValue', action.value);
-		case 'UPDATE_LANGUAGE_FIELD':
-			return state.set('languageValue', action.value);
-		case 'SHOW_DISAMBIGUATION':
-			return state.set('disambiguationVisible', true);
-		case 'SHOW_ALIAS_EDITOR':
-			return state.set('aliasEditorVisible', true);
-		case 'HIDE_ALIAS_EDITOR':
-			return state.set('aliasEditorVisible', false);
-		// no default
-	}
-	return state;
-}
 
 const rootReducer = combineReducers({
-	core: coreReducer,
+	core: sharedDataReducer,
 	aliases: aliasEditorReducer
 });
 
