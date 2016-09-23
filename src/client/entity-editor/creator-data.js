@@ -16,23 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Input, Panel, Row} from 'react-bootstrap';
 
-import AliasButton from './shared-data/alias-button-container';
 import AliasEditor from './alias-editor/alias-editor';
-import DisambiguationButton from './shared-data/disambiguation-button-container';
-import DisambiguationField from './shared-data/disambiguation-field-container';
-import LanguageField from './shared-data/language-field-container';
-import NameField from './shared-data/name-field-container';
-import PartialDate from '../components/input/partial-date';
+import CreatorData from './creator-data/creator-data';
+import {Panel} from 'react-bootstrap';
 import React from 'react';
-import Select from 'react-select';
-import SortNameField from './shared-data/sort-name-field-container';
-import ValidationLabel from './common/validation-label';
+import SharedData from './shared-data/shared-data';
 import {connect} from 'react-redux';
 
 
-let CreatorData = ({
+let Wrapper = ({
 	aliasEditorVisible,
 	disambiguationVisible,
 	languageOptions
@@ -48,132 +41,16 @@ let CreatorData = ({
 				languageOptions={languageOptionsForDisplay}
 				show={aliasEditorVisible}
 			/>
-			<h2>
-				What is the Creator called?
-			</h2>
-			<form>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<NameField/>
-					</Col>
-				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<SortNameField/>
-					</Col>
-				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<LanguageField
-							options={languageOptionsForDisplay}
-						/>
-					</Col>
-				</Row>
-				<Row className="margin-top-1">
-					<Col className="text-center" md={4} mdOffset={4}>
-						<DisambiguationButton disabled={disambiguationVisible}/>
-					</Col>
-					<Col className="text-center" md={4}>
-						<AliasButton/>
-					</Col>
-				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						{disambiguationVisible && <DisambiguationField/>}
-					</Col>
-				</Row>
-				<h2>
-					What else do you know about the Creator?
-				</h2>
-				<p className="text-muted">
-					All fields optional — leave something blank if you don't
-					know it
-				</p>
-				<Row>
-					<Col
-						md={6}
-						mdOffset={3}
-					>
-						<Input
-							label="Gender"
-						>
-							<Select
-								options={[{
-									value: 1,
-									label: 'Hello'
-								}]}
-							/>
-						</Input>
-					</Col>
-				</Row>
-				<Row>
-					<Col
-						md={6}
-						mdOffset={3}
-					>
-						<Input
-							label="Type"
-						>
-							<Select
-								options={[{
-									value: 1,
-									label: 'Hello'
-								}]}
-							/>
-						</Input>
-					</Col>
-				</Row>
-				<Row>
-					<Col
-						md={6}
-						mdOffset={3}
-					>
-						<PartialDate
-							label={
-								<ValidationLabel empty>
-									Date of Birth
-								</ValidationLabel>
-							}
-							type="text"
-						/>
-					</Col>
-				</Row>
-				<div className="text-center">
-					<Input
-						label="Died?"
-						type="checkbox"
-						wrapperClassName="margin-top-0"
-					/>
-				</div>
-				<Row>
-					<Col
-						md={6}
-						mdOffset={3}
-					>
-						<PartialDate
-							label={
-								<ValidationLabel empty>
-									Date of Death
-								</ValidationLabel>
-							}
-							type="text"
-						/>
-					</Col>
-				</Row>
-				<div className="text-center margin-top-1">
-					<a>Add identifiers (eg. MBID, Wikidata ID)…</a>
-				</div>
-				<div className="text-center margin-top-1">
-					<Button bsStyle="success">
-						Preview and Submit
-					</Button>
-				</div>
-			</form>
+			<SharedData
+				disambiguationVisible={disambiguationVisible}
+				languageOptions={languageOptionsForDisplay}
+			/>
+			<CreatorData/>
 		</Panel>
 	);
 };
-CreatorData.displayName = 'CreatorData';
-CreatorData.propTypes = {
+Wrapper.displayName = 'Wrapper';
+Wrapper.propTypes = {
 	aliasEditorVisible: React.PropTypes.bool,
 	disambiguationVisible: React.PropTypes.bool,
 	languageOptions: React.PropTypes.array
@@ -187,6 +64,6 @@ function mapStateToProps(rootState) {
 	};
 }
 
-CreatorData = connect(mapStateToProps)(CreatorData);
+Wrapper = connect(mapStateToProps)(Wrapper);
 
-export default CreatorData;
+export default Wrapper;
