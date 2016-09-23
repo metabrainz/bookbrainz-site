@@ -57,7 +57,7 @@ Wrapper.propTypes = {
 };
 
 function mapStateToProps(rootState) {
-	const state = rootState.get('core');
+	const state = rootState.get('sharedData');
 	return {
 		disambiguationVisible: state.get('disambiguationVisible'),
 		aliasEditorVisible: state.get('aliasEditorVisible')

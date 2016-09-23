@@ -32,7 +32,7 @@ function isError(state) {
 }
 
 function mapStateToProps(rootState) {
-	const state = rootState.get('core');
+	const state = rootState.get('sharedData');
 	return {
 		empty: isEmpty(state),
 		error: isError(state),

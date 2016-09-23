@@ -21,7 +21,7 @@ import {connect} from 'react-redux';
 import {updateAliasLanguage} from '../actions';
 
 function mapStateToProps(rootState, {index}) {
-	const state = rootState.get('aliases');
+	const state = rootState.get('aliasEditor');
 	return {
 		value: state.getIn([index, 'language'])
 	};

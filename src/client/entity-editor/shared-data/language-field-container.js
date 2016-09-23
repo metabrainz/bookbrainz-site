@@ -21,7 +21,7 @@ import {connect} from 'react-redux';
 import {updateLanguageField} from '../actions';
 
 function mapStateToProps(rootState) {
-	const state = rootState.get('core');
+	const state = rootState.get('sharedData');
 	return {
 		value: state.get('languageValue')
 	};

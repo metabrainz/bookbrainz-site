@@ -31,33 +31,33 @@ import sharedDataReducer from './shared-data/reducer';
 
 
 const rootReducer = combineReducers({
-	core: sharedDataReducer,
-	aliases: aliasEditorReducer
+	sharedData: sharedDataReducer,
+	aliasEditor: aliasEditorReducer
 });
 
 let store = null;
 if (typeof window === 'undefined') {
 	store = createStore(rootReducer, Immutable.Map({
-		core: Immutable.Map({
+		sharedData: Immutable.Map({
 			nameValue: '',
 			sortNameValue: '',
 			languageValue: null,
 			disambiguationVisible: false,
 			aliasEditorVisible: false
 		}),
-		aliases: Immutable.Map()
+		aliasEditor: Immutable.Map()
 	}));
 }
 else {
 	store = createStore(rootReducer, Immutable.Map({
-		core: Immutable.Map({
+		sharedData: Immutable.Map({
 			nameValue: '',
 			sortNameValue: '',
 			languageValue: null,
 			disambiguationVisible: false,
 			aliasEditorVisible: false
 		}),
-		aliases: Immutable.Map()
+		aliasEditor: Immutable.Map()
 	}), window.devToolsExtension && window.devToolsExtension());
 }
 

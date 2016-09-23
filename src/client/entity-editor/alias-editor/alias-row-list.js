@@ -51,7 +51,7 @@ AliasRowList.propTypes = {
 
 function mapStateToProps(state) {
 	return {
-		aliases: state.get('aliases')
+		aliases: state.get('aliasEditor')
 	};
 }
 

@@ -36,7 +36,7 @@ function isError(state, index) {
 }
 
 function mapStateToProps(rootState, {index}) {
-	const state = rootState.get('aliases');
+	const state = rootState.get('aliasEditor');
 	return {
 		empty: isEmpty(state, index),
 		error: isError(state, index),

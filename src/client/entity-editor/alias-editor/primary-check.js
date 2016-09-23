@@ -31,7 +31,7 @@ function PrimaryCheck({
 PrimaryCheck.displayName = 'AliasEditor.PrimaryCheck';
 
 function mapStateToProps(rootState, {index}) {
-	const state = rootState.get('aliases');
+	const state = rootState.get('aliasEditor');
 	return {
 		defaultChecked: state.getIn([index, 'primary'])
 	};
