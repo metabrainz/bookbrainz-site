@@ -61,10 +61,11 @@ else {
 
 const Creator = ({
 	languages,
-	genders
+	genders,
+	creatorTypes
 }) => (
 	<Provider store={store}>
-		<CreatorData languageOptions={languages} genderOptions={genders}/>
+		<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes}/>
 	</Provider>
 );
 Creator.displayName = 'Creator';

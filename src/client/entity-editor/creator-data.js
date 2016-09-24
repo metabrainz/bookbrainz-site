@@ -29,7 +29,8 @@ let Wrapper = ({
 	aliasEditorVisible,
 	disambiguationVisible,
 	languageOptions,
-	genderOptions
+	genderOptions,
+	creatorTypes
 }) => {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		value: language.id,
@@ -39,6 +40,11 @@ let Wrapper = ({
 	const genderOptionsForDisplay = genderOptions.map((gender) => ({
 		value: gender.id,
 		label: gender.name
+	}));
+
+	const creatorTypesForDisplay = creatorTypes.map((type) => ({
+		value: type.id,
+		label: type.label
 	}));
 
 	return (
@@ -52,6 +58,7 @@ let Wrapper = ({
 				languageOptions={languageOptionsForDisplay}
 			/>
 			<CreatorData
+				creatorTypes={creatorTypesForDisplay}
 				genderOptions={genderOptionsForDisplay}
 			/>
 		</Panel>
@@ -62,7 +69,8 @@ Wrapper.propTypes = {
 	aliasEditorVisible: React.PropTypes.bool,
 	disambiguationVisible: React.PropTypes.bool,
 	languageOptions: React.PropTypes.array,
-	genderOptions: React.PropTypes.array
+	genderOptions: React.PropTypes.array,
+	creatorTypes: React.PropTypes.array
 };
 
 function mapStateToProps(rootState) {

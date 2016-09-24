@@ -18,6 +18,7 @@
 
 import {Button, Col, Input, Row} from 'react-bootstrap';
 import GenderField from './gender-field-container';
+import TypeField from './type-field-container';
 import PartialDate from '../../components/input/partial-date';
 import React from 'react';
 import Select from 'react-select';
@@ -25,7 +26,8 @@ import ValidationLabel from '../common/validation-label';
 
 
 function CreatorData({
-	genderOptions
+	genderOptions,
+	creatorTypes
 }) {
 	return (
 		<form>
@@ -37,28 +39,13 @@ function CreatorData({
 				know it
 			</p>
 			<Row>
-				<Col
-					md={6}
-					mdOffset={3}
-				>
-					<GenderField options={genderOptions}/>
+				<Col md={6} mdOffset={3}>
+					<TypeField options={creatorTypes}/>
 				</Col>
 			</Row>
 			<Row>
-				<Col
-					md={6}
-					mdOffset={3}
-				>
-					<Input
-						label="Type"
-					>
-						<Select
-							options={[{
-								value: 1,
-								label: 'Hello'
-							}]}
-						/>
-					</Input>
+				<Col md={6} mdOffset={3}>
+					<GenderField options={genderOptions}/>
 				</Col>
 			</Row>
 			<Row>

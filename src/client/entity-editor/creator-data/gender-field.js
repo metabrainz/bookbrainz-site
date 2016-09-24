@@ -21,10 +21,11 @@ import React from 'react';
 import Select from 'react-select';
 
 function GenderField({
+	show,
 	...props
 }) {
 	return (
-		<Input label="Gender">
+		<Input groupClassName={show || 'hidden'} label="Gender">
 			<Select {...props}/>
 		</Input>
 	);

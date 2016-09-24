@@ -22,8 +22,10 @@ import {updateGender} from '../actions';
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('creatorData');
+
 	return {
-		value: state.get('gender')
+		value: state.get('gender'),
+		show: state.get('singular')
 	};
 }
 

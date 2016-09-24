@@ -29,6 +29,7 @@ const UPDATE_ALIAS_LANGUAGE = 'UPDATE_ALIAS_LANGUAGE';
 const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
 const REMOVE_ALIAS = 'REMOVE_ALIAS';
 const UPDATE_GENDER = 'UPDATE_GENDER';
+const UPDATE_TYPE = 'UPDATE_TYPE';
 
 export function updateNameField(value) {
 	return {
@@ -121,5 +122,13 @@ export function updateGender(value) {
 	return {
 		type: UPDATE_GENDER,
 		value
+	};
+}
+
+export function updateType(value, singular) {
+	return {
+		type: UPDATE_TYPE,
+		value,
+		singular
 	};
 }

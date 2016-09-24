@@ -16,23 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
+import {Input} from 'react-bootstrap';
+import React from 'react';
+import Select from 'react-select';
 
-function reducer(
-	state = Immutable.Map({
-		gender: null,
-		type: null
-	}),
-	action
-) {
-	switch (action.type) {
-		case 'UPDATE_GENDER':
-			return state.set('gender', action.value);
-		case 'UPDATE_TYPE':
-			return state.set('type', action.value).set('singular', action.singular);
-		// no default
-	}
-	return state;
+function TypeField({
+	...props
+}) {
+	return (
+		<Input label="Type">
+			<Select {...props}/>
+		</Input>
+	);
 }
+TypeField.displayName = 'TypeField';
 
-export default reducer;
+export default TypeField;

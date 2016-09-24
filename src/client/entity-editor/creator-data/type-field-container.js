@@ -16,23 +16,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
+import TypeField from './type-field';
+import {connect} from 'react-redux';
+import {updateType} from '../actions';
 
-function reducer(
-	state = Immutable.Map({
-		gender: null,
-		type: null
-	}),
-	action
-) {
-	switch (action.type) {
-		case 'UPDATE_GENDER':
-			return state.set('gender', action.value);
-		case 'UPDATE_TYPE':
-			return state.set('type', action.value).set('singular', action.singular);
-		// no default
-	}
-	return state;
+function mapStateToProps(rootState) {
+	const state = rootState.get('creatorData');
+	return {
+		value: state.get('type')
+	};
 }
 
-export default reducer;
+function mapDispatchToProps(dispatch, {options}) {
+	const personType = options.find((type) => type.label === 'Person');
+	return {
+		onChange: (value) => dispatch(
+			updateType(value.value, value.value === personType.value)
+		)
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TypeField);
