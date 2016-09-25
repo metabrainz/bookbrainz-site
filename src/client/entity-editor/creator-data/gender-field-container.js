@@ -31,7 +31,7 @@ function mapStateToProps(rootState) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onChange: (value) => dispatch(updateGender(value.value))
+		onChange: (value) => dispatch(updateGender(value && value.value))
 	};
 }
 
