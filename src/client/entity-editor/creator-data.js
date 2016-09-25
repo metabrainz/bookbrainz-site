@@ -67,10 +67,10 @@ let Wrapper = ({
 Wrapper.displayName = 'Wrapper';
 Wrapper.propTypes = {
 	aliasEditorVisible: React.PropTypes.bool,
+	creatorTypes: React.PropTypes.array,
 	disambiguationVisible: React.PropTypes.bool,
-	languageOptions: React.PropTypes.array,
 	genderOptions: React.PropTypes.array,
-	creatorTypes: React.PropTypes.array
+	languageOptions: React.PropTypes.array
 };
 
 function mapStateToProps(rootState) {
