@@ -30,6 +30,10 @@ function reducer(
 			return state.set('gender', action.value);
 		case 'UPDATE_TYPE':
 			return state.set('type', action.value).set('singular', action.singular);
+		case 'UPDATE_BEGIN_DATE':
+			return state.set('beginDate', action.value);
+		case 'UPDATE_END_DATE':
+			return state.set('endDate', action.value);
 		// no default
 	}
 	return state;

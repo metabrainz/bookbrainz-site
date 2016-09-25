@@ -30,6 +30,8 @@ const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
 const REMOVE_ALIAS = 'REMOVE_ALIAS';
 const UPDATE_GENDER = 'UPDATE_GENDER';
 const UPDATE_TYPE = 'UPDATE_TYPE';
+const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
+const UPDATE_END_DATE = 'UPDATE_END_DATE';
 
 export function updateNameField(value) {
 	return {
@@ -132,3 +134,18 @@ export function updateType(value, singular) {
 		singular
 	};
 }
+
+export function updateBeginDate(value) {
+	return {
+		type: UPDATE_BEGIN_DATE,
+		value
+	};
+}
+
+export function updateEndDate(value) {
+	return {
+		type: UPDATE_END_DATE,
+		value
+	};
+}
+

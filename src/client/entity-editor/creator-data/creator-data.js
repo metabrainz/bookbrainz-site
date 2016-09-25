@@ -19,6 +19,8 @@
 import {Button, Col, Input, Row} from 'react-bootstrap';
 import GenderField from './gender-field-container';
 import TypeField from './type-field-container';
+import BeginField from './begin-field-container';
+import EndField from './end-field-container';
 import PartialDate from '../../components/input/partial-date';
 import React from 'react';
 import Select from 'react-select';
@@ -49,18 +51,8 @@ function CreatorData({
 				</Col>
 			</Row>
 			<Row>
-				<Col
-					md={6}
-					mdOffset={3}
-				>
-					<PartialDate
-						label={
-							<ValidationLabel empty>
-								Date of Birth
-							</ValidationLabel>
-						}
-						type="text"
-					/>
+				<Col md={6} mdOffset={3}>
+					<BeginField show/>
 				</Col>
 			</Row>
 			<div className="text-center">
@@ -71,18 +63,8 @@ function CreatorData({
 				/>
 			</div>
 			<Row>
-				<Col
-					md={6}
-					mdOffset={3}
-				>
-					<PartialDate
-						label={
-							<ValidationLabel empty>
-								Date of Death
-							</ValidationLabel>
-						}
-						type="text"
-					/>
+				<Col md={6} mdOffset={3}>
+					<EndField/>
 				</Col>
 			</Row>
 			<div className="text-center margin-top-1">
