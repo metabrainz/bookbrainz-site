@@ -21,6 +21,7 @@ import GenderField from './gender-field-container';
 import TypeField from './type-field-container';
 import BeginField from './begin-field-container';
 import EndField from './end-field-container';
+import EndedCheck from './ended-check-container';
 import PartialDate from '../../components/input/partial-date';
 import React from 'react';
 import Select from 'react-select';
@@ -56,11 +57,7 @@ function CreatorData({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Input
-					label="Died?"
-					type="checkbox"
-					wrapperClassName="margin-top-0"
-				/>
+				<EndedCheck/>
 			</div>
 			<Row>
 				<Col md={6} mdOffset={3}>

@@ -32,6 +32,7 @@ const UPDATE_GENDER = 'UPDATE_GENDER';
 const UPDATE_TYPE = 'UPDATE_TYPE';
 const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
 const UPDATE_END_DATE = 'UPDATE_END_DATE';
+const UPDATE_ENDED = 'UPDATE_ENDED';
 
 export function updateNameField(value) {
 	return {
@@ -149,3 +150,9 @@ export function updateEndDate(value) {
 	};
 }
 
+export function updateEnded(value) {
+	return {
+		type: UPDATE_ENDED,
+		value
+	};
+}

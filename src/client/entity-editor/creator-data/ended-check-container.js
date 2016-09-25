@@ -16,29 +16,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
+import EndedCheck from './ended-check';
+import {connect} from 'react-redux';
+import {updateEnded} from '../actions';
 
-function reducer(
-	state = Immutable.Map({
-		gender: null,
-		type: null
-	}),
-	action
-) {
-	switch (action.type) {
-		case 'UPDATE_GENDER':
-			return state.set('gender', action.value);
-		case 'UPDATE_TYPE':
-			return state.set('type', action.value).set('singular', action.singular);
-		case 'UPDATE_BEGIN_DATE':
-			return state.set('beginDate', action.value);
-		case 'UPDATE_END_DATE':
-			return state.set('endDate', action.value);
-		case 'UPDATE_ENDED':
-			return state.set('ended', action.value);
-		// no default
-	}
-	return state;
+function mapStateToProps(rootState) {
+	const state = rootState.get('creatorData');
+
+	const labelText = state.get('singular') ?
+		'Died?' :
+		'Dissolved?';
+
+	return {
+		label: labelText
+	};
 }
 
-export default reducer;
+function mapDispatchToProps(dispatch) {
+	return {
+		onChange: (event) =>
+			dispatch(updateEnded(event.target.checked))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EndedCheck);

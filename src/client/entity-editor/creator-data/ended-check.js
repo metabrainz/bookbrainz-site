@@ -16,29 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
+import {Input} from 'react-bootstrap';
+import React from 'react';
 
-function reducer(
-	state = Immutable.Map({
-		gender: null,
-		type: null
-	}),
-	action
-) {
-	switch (action.type) {
-		case 'UPDATE_GENDER':
-			return state.set('gender', action.value);
-		case 'UPDATE_TYPE':
-			return state.set('type', action.value).set('singular', action.singular);
-		case 'UPDATE_BEGIN_DATE':
-			return state.set('beginDate', action.value);
-		case 'UPDATE_END_DATE':
-			return state.set('endDate', action.value);
-		case 'UPDATE_ENDED':
-			return state.set('ended', action.value);
-		// no default
-	}
-	return state;
+function EndedCheck({
+	...props
+}) {
+	return (
+		<Input type="checkbox" wrapperClassName="margin-top-0" {...props}/>
+	);
 }
+EndedCheck.displayName = 'EndedCheck';
 
-export default reducer;
+export default EndedCheck;
