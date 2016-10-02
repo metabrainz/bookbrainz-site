@@ -20,10 +20,16 @@ import AliasButton from './alias-button';
 import {connect} from 'react-redux';
 import {showAliasEditor} from '../actions';
 
+function mapStateToProps(state) {
+	return {
+		numAliases: state.get('aliasEditor').size
+	};
+}
+
 function mapDispatchToProps(dispatch) {
 	return {
 		onClick: () => dispatch(showAliasEditor())
 	};
 }
 
-export default connect(null, mapDispatchToProps)(AliasButton);
+export default connect(mapStateToProps, mapDispatchToProps)(AliasButton);

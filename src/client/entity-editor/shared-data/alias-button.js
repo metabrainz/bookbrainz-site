@@ -20,11 +20,16 @@ import {Button} from 'react-bootstrap';
 import React from 'react';
 
 function AliasButton({
+	numAliases,
 	...props
 }) {
+	const text = numAliases > 0 ?
+		`Edit ${numAliases} aliases…` :
+		'Add aliases…';
+
 	return (
 		<Button bsStyle="link" {...props}>
-			Add more aliases…
+			{text}
 		</Button>
 	);
 }
