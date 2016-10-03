@@ -16,26 +16,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
+import {Button} from 'react-bootstrap';
+import React from 'react';
+import {connect} from 'react-redux';
+import {removeIdentifier} from '../actions';
 
-const DEFAULT_IDENTIFIER = Immutable.Map({
-	value: '',
-	type: null
-});
+function RemoveIdentifierButton({
+	onClick
+}) {
+	return (
+		<Button
+			block
+			bsStyle="danger"
+			className="margin-top-d15"
+			onClick={onClick}
+		>
+			Remove
+		</Button>
+	);
+}
+RemoveIdentifierButton.displayName = 'RemoveIdentifierButton';
+RemoveIdentifierButton.propTypes = {
+	onClick: React.PropTypes.func
+};
 
-function reducer(
-	state = Immutable.Map(),
-	action
-) {
-	switch (action.type) {
-		case 'ADD_IDENTIFIER':
-			return state.set(action.id, DEFAULT_IDENTIFIER);
-		case 'REMOVE_IDENTIFIER':
-			return state.delete(action.index);
-
-		// no default
-	}
-	return state;
+function mapDispatchToProps(dispatch, {index}) {
+	return {
+		onClick: () => dispatch(removeIdentifier(index))
+	};
 }
 
-export default reducer;
+export default connect(null, mapDispatchToProps)(RemoveIdentifierButton);

@@ -36,6 +36,7 @@ const UPDATE_ENDED = 'UPDATE_ENDED';
 const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
 const ADD_IDENTIFIER = 'ADD_IDENTIFIER';
+const REMOVE_IDENTIFIER = 'REMOVE_IDENTIFIER';
 
 export function updateNameField(value) {
 	return {
@@ -177,5 +178,12 @@ export function addIdentifier() {
 	return {
 		type: ADD_IDENTIFIER,
 		id: nextIdentifierId++
+	};
+}
+
+export function removeIdentifier(index) {
+	return {
+		type: REMOVE_IDENTIFIER,
+		index
 	};
 }
