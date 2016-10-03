@@ -23,9 +23,13 @@ function AliasButton({
 	numAliases,
 	...props
 }) {
-	const text = numAliases > 0 ?
-		`Edit ${numAliases} aliases…` :
-		'Add aliases…';
+	let text = 'Add aliases…';
+	if (numAliases === 1) {
+		text = 'Edit 1 alias…';
+	}
+	else if (numAliases > 1) {
+		text = `Edit ${numAliases} aliases…`;
+	}
 
 	return (
 		<Button bsStyle="link" {...props}>
@@ -34,5 +38,8 @@ function AliasButton({
 	);
 }
 AliasButton.displayName = 'AliasButton';
+AliasButton.propTypes = {
+	numAliases: React.PropTypes.number
+};
 
 export default AliasButton;
