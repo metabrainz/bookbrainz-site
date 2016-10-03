@@ -16,41 +16,36 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
+import {Input} from 'react-bootstrap';
 
-const DEFAULT_IDENTIFIER = Immutable.Map({
-	value: '',
-	type: null
-});
+import React from 'react';
+import Select from 'react-select';
+import {connect} from 'react-redux';
+import {updateIdentifierType} from '../actions';
 
-function reducer(
-	state = Immutable.Map(),
-	action
-) {
-	switch (action.type) {
-		case 'ADD_IDENTIFIER':
-			return state.set(action.id, DEFAULT_IDENTIFIER);
-		case 'UPDATE_IDENTIFIER_VALUE':
-			{
-				const updatedValue = state.setIn(
-					[action.index, 'value'], action.value
-				);
-				if (action.suggestedType) {
-					return updatedValue.setIn(
-						[action.index, 'type'], action.suggestedType.id
-					);
-				}
 
-				return updatedValue;
-			}
-		case 'UPDATE_IDENTIFIER_TYPE':
-			return state.setIn([action.index, 'type'], action.value);
-		case 'REMOVE_IDENTIFIER':
-			return state.delete(action.index);
+function TypeField({
+	...props
+}) {
+	return (
+		<Input label="Type">
+			<Select {...props}/>
+		</Input>
+	);
+}
+TypeField.displayName = 'TypeField';
 
-		// no default
-	}
-	return state;
+function mapStateToProps(rootState, {index}) {
+	const state = rootState.get('identifierEditor');
+	return {
+		value: state.getIn([index, 'type'])
+	};
 }
 
-export default reducer;
+function mapDispatchToProps(dispatch, {index}) {
+	return {
+		onChange: (value) => dispatch(updateIdentifierType(index, value.value))
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TypeField);
