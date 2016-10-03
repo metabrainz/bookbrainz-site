@@ -30,6 +30,19 @@ function reducer(
 	switch (action.type) {
 		case 'ADD_IDENTIFIER':
 			return state.set(action.id, DEFAULT_IDENTIFIER);
+		case 'UPDATE_IDENTIFIER_VALUE':
+			{
+				const updatedValue = state.setIn(
+					[action.index, 'value'], action.value
+				);
+				if (action.suggestedType) {
+					return updatedValue.setIn(
+						[action.index, 'type'], action.suggestedType.id
+					);
+				}
+
+				return updatedValue;
+			}
 		case 'REMOVE_IDENTIFIER':
 			return state.delete(action.index);
 
