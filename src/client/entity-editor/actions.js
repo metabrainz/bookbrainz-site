@@ -35,6 +35,7 @@ const UPDATE_END_DATE = 'UPDATE_END_DATE';
 const UPDATE_ENDED = 'UPDATE_ENDED';
 const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
+const ADD_IDENTIFIER = 'ADD_IDENTIFIER';
 
 export function updateNameField(value) {
 	return {
@@ -168,5 +169,13 @@ export function showIdentifierEditor() {
 export function hideIdentifierEditor() {
 	return {
 		type: HIDE_IDENTIFIER_EDITOR
+	};
+}
+
+let nextIdentifierId = 0;
+export function addIdentifier() {
+	return {
+		type: ADD_IDENTIFIER,
+		id: nextIdentifierId++
 	};
 }

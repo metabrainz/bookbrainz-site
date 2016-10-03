@@ -25,12 +25,13 @@ import {createStore} from 'redux';
 import aliasEditorReducer from './alias-editor/reducer';
 import sharedDataReducer from './shared-data/reducer';
 import creatorDataReducer from './creator-data/reducer';
-
+import identifierEditorReducer from './identifier-editor/reducer';
 
 const rootReducer = combineReducers({
 	sharedData: sharedDataReducer,
 	aliasEditor: aliasEditorReducer,
-	creatorData: creatorDataReducer
+	creatorData: creatorDataReducer,
+	identifierEditor: identifierEditorReducer
 });
 
 let store = null;
