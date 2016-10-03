@@ -41,6 +41,10 @@ function reducer(
 			return state.set('aliasEditorVisible', true);
 		case 'HIDE_ALIAS_EDITOR':
 			return state.set('aliasEditorVisible', false);
+		case 'SHOW_IDENTIFIER_EDITOR':
+			return state.set('identifierEditorVisible', true);
+		case 'HIDE_IDENTIFIER_EDITOR':
+			return state.set('identifierEditorVisible', false);
 		// no default
 	}
 	return state;

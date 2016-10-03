@@ -20,6 +20,7 @@ import {Col, Row} from 'react-bootstrap';
 import AliasButton from './alias-button-container';
 import DisambiguationButton from './disambiguation-button-container';
 import DisambiguationField from './disambiguation-field-container';
+import IdentifierButton from './identifier-button';
 import LanguageField from './language-field-container';
 import NameField from './name-field-container';
 import React from 'react';
@@ -58,6 +59,9 @@ function SharedData({
 					</Col>
 					<Col className="text-center" md={4}>
 						<DisambiguationButton disabled={disambiguationVisible}/>
+					</Col>
+					<Col className="text-center" md={4}>
+						<IdentifierButton/>
 					</Col>
 				</Row>
 				<Row>

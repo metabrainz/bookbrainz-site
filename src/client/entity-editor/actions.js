@@ -33,6 +33,8 @@ const UPDATE_TYPE = 'UPDATE_TYPE';
 const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
 const UPDATE_END_DATE = 'UPDATE_END_DATE';
 const UPDATE_ENDED = 'UPDATE_ENDED';
+const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
+const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
 
 export function updateNameField(value) {
 	return {
@@ -154,5 +156,17 @@ export function updateEnded(value) {
 	return {
 		type: UPDATE_ENDED,
 		value
+	};
+}
+
+export function showIdentifierEditor() {
+	return {
+		type: SHOW_IDENTIFIER_EDITOR
+	};
+}
+
+export function hideIdentifierEditor() {
+	return {
+		type: HIDE_IDENTIFIER_EDITOR
 	};
 }

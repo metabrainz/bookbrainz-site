@@ -65,9 +65,6 @@ function CreatorData({
 				</Col>
 			</Row>
 			<div className="text-center margin-top-1">
-				<a>Add identifiers (eg. MBID, Wikidata ID)…</a>
-			</div>
-			<div className="text-center margin-top-1">
 				<Button bsStyle="success">
 					Preview and Submit
 				</Button>
