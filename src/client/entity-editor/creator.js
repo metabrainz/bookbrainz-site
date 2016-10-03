@@ -71,7 +71,8 @@ const Creator = ({
 Creator.displayName = 'Creator';
 Creator.propTypes = {
 	languages: React.PropTypes.array,
-	genders: React.PropTypes.array
+	genders: React.PropTypes.array,
+	creatorTypes: React.PropTypes.array
 };
 
 export default Creator;
