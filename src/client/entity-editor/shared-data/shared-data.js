@@ -53,11 +53,11 @@ function SharedData({
 					</Col>
 				</Row>
 				<Row className="margin-top-1">
-					<Col className="text-center" md={4} mdOffset={4}>
-						<DisambiguationButton disabled={disambiguationVisible}/>
-					</Col>
 					<Col className="text-center" md={4}>
 						<AliasButton/>
+					</Col>
+					<Col className="text-center" md={4}>
+						<DisambiguationButton disabled={disambiguationVisible}/>
 					</Col>
 				</Row>
 				<Row>
