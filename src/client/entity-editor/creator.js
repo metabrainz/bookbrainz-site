@@ -63,17 +63,19 @@ else {
 const Creator = ({
 	languages,
 	genders,
-	creatorTypes
+	creatorTypes,
+	identifierTypes
 }) => (
 	<Provider store={store}>
-		<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes}/>
+		<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes} identifierTypes={identifierTypes}/>
 	</Provider>
 );
 Creator.displayName = 'Creator';
 Creator.propTypes = {
 	languages: React.PropTypes.array,
 	genders: React.PropTypes.array,
-	creatorTypes: React.PropTypes.array
+	creatorTypes: React.PropTypes.array,
+	identifierTypes: React.PropTypes.array
 };
 
 export default Creator;

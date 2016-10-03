@@ -19,6 +19,7 @@
 
 import AliasEditor from './alias-editor/alias-editor';
 import CreatorData from './creator-data/creator-data';
+import IdentifierEditor from './identifier-editor/identifier-editor';
 import {Panel} from 'react-bootstrap';
 import React from 'react';
 import SharedData from './shared-data/shared-data';
@@ -28,8 +29,10 @@ import {connect} from 'react-redux';
 let Wrapper = ({
 	aliasEditorVisible,
 	disambiguationVisible,
+	identifierEditorVisible,
 	languageOptions,
 	genderOptions,
+	identifierTypes,
 	creatorTypes
 }) => {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -61,6 +64,10 @@ let Wrapper = ({
 				creatorTypes={creatorTypesForDisplay}
 				genderOptions={genderOptionsForDisplay}
 			/>
+			<IdentifierEditor
+				show={identifierEditorVisible}
+				typeOptions={identifierTypes}
+			/>
 		</Panel>
 	);
 };
@@ -70,6 +77,8 @@ Wrapper.propTypes = {
 	creatorTypes: React.PropTypes.array,
 	disambiguationVisible: React.PropTypes.bool,
 	genderOptions: React.PropTypes.array,
+	identifierEditorVisible: React.PropTypes.array,
+	identifierTypes: React.PropTypes.array,
 	languageOptions: React.PropTypes.array
 };
 
@@ -77,7 +86,8 @@ function mapStateToProps(rootState) {
 	const state = rootState.get('sharedData');
 	return {
 		disambiguationVisible: state.get('disambiguationVisible'),
-		aliasEditorVisible: state.get('aliasEditorVisible')
+		aliasEditorVisible: state.get('aliasEditorVisible'),
+		identifierEditorVisible: state.get('identifierEditorVisible')
 	};
 }
 
