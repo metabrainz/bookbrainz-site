@@ -33,7 +33,8 @@ let Wrapper = ({
 	languageOptions,
 	genderOptions,
 	identifierTypes,
-	creatorTypes
+	creatorTypes,
+	submissionUrl
 }) => {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		value: language.id,
@@ -63,6 +64,7 @@ let Wrapper = ({
 			<CreatorData
 				creatorTypes={creatorTypesForDisplay}
 				genderOptions={genderOptionsForDisplay}
+				submissionUrl={submissionUrl}
 			/>
 			<IdentifierEditor
 				show={identifierEditorVisible}

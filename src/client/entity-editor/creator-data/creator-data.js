@@ -23,6 +23,8 @@ import BeginField from './begin-field-container';
 import EndField from './end-field-container';
 import EndedCheck from './ended-check-container';
 import PartialDate from '../../components/input/partial-date';
+import SubmitButton from '../common/submit-button';
+import ErrorText from '../common/error-text';
 import React from 'react';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
@@ -30,7 +32,8 @@ import ValidationLabel from '../common/validation-label';
 
 function CreatorData({
 	genderOptions,
-	creatorTypes
+	creatorTypes,
+	submissionUrl
 }) {
 	return (
 		<form>
@@ -65,9 +68,10 @@ function CreatorData({
 				</Col>
 			</Row>
 			<div className="text-center margin-top-1">
-				<Button bsStyle="success">
-					Preview and Submit
-				</Button>
+				<SubmitButton url={submissionUrl}/>
+			</div>
+			<div className="text-center margin-top-1">
+				<ErrorText/>
 			</div>
 		</form>
 	);

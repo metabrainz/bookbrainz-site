@@ -36,6 +36,8 @@ function reducer(
 			return state.set('endDate', action.value);
 		case 'UPDATE_ENDED':
 			return state.set('ended', action.value);
+		case 'SET_SUBMIT_ERROR':
+			return state.set('submitError', action.error);
 		// no default
 	}
 	return state;

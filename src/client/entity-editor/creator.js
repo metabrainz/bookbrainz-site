@@ -64,10 +64,11 @@ const Creator = ({
 	languages,
 	genders,
 	creatorTypes,
-	identifierTypes
+	identifierTypes,
+	submissionUrl
 }) => (
 	<Provider store={store}>
-		<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes} identifierTypes={identifierTypes}/>
+		<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes} identifierTypes={identifierTypes} submissionUrl={submissionUrl}/>
 	</Provider>
 );
 Creator.displayName = 'Creator';

@@ -39,6 +39,7 @@ const ADD_IDENTIFIER = 'ADD_IDENTIFIER';
 const REMOVE_IDENTIFIER = 'REMOVE_IDENTIFIER';
 const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
 const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
+const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 
 export function updateNameField(value) {
 	return {
@@ -204,5 +205,12 @@ export function updateIdentifierType(index, value) {
 		type: UPDATE_IDENTIFIER_TYPE,
 		index,
 		value
+	};
+}
+
+export function setSubmitError(error) {
+	return {
+		type: SET_SUBMIT_ERROR,
+		error
 	};
 }
