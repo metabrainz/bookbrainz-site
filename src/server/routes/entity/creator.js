@@ -139,6 +139,26 @@ const additionalCreatorProps = [
 	'typeId', 'genderId', 'areaId', 'beginDate', 'endDate', 'ended'
 ];
 
+
+function transformNewForm(data) {
+	let aliases = _.map(data.aliasEditor, ({languageId, ...rest}) => ({
+		language: languageId,
+		...rest
+	}));
+
+	aliases = [{
+		name: data.sharedData.nameValue,
+		sortName: data.sharedData.sortNameValue,
+		languageId: data.sharedData.languageValue,
+		primary: true,
+		default: true
+	}, ...aliases];
+
+	return {
+		aliases
+	};
+}
+
 router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	entityRoutes.createEntity(
 		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
