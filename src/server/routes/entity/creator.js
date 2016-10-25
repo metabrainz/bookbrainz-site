@@ -173,16 +173,18 @@ function transformNewForm(data) {
 	};
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
-	entityRoutes.createEntity(
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	req.body = transformNewForm(req.body);
+	return entityRoutes.createEntity(
 		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-	)
-);
+	);
+});
 
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
-	entityRoutes.editEntity(
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	req.body = transformNewForm(req.body);
+	return entityRoutes.editEntity(
 		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-	)
-);
+	);
+});
 
 module.exports = router;
