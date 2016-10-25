@@ -34,43 +34,97 @@ const rootReducer = combineReducers({
 	identifierEditor: identifierEditorReducer
 });
 
-let store = null;
-if (typeof window === 'undefined') {
-	store = createStore(rootReducer, Immutable.Map({
+function generateInitialState(creator, creatorTypes) {
+	if (!creator) {
+		return Immutable.Map({
+			sharedData: Immutable.Map({
+				name: '',
+				sortName: '',
+				language: null,
+				disambiguation: '',
+				disambiguationVisible: false,
+				aliasEditorVisible: false
+			}),
+			aliasEditor: Immutable.Map()
+		});
+	}
+
+	const aliases = creator.aliasSet ?
+		creator.aliasSet.aliases.map(({language, ...rest}) => ({
+			language: language.id,
+			...rest
+		})) :
+		[];
+
+	const name = aliases.length > 0 ?
+	aliases[0] :
+	{
+		name: '',
+		sortName: '',
+		language: null
+	};
+
+	const aliasDict = {};
+	aliases.slice(1).forEach((alias) => aliasDict[alias.id] = alias);
+
+	const initialGender = creator.gender && creator.gender.id;
+	const initialCreatorType = creator.creatorType && creator.creatorType.id;
+	const initialDisambiguation = creator.disambiguation && creator.disambiguation.comment;
+	const identifiers = creator.identifierSet ?
+		creator.identifierSet.identifiers.map(({type, ...rest}) => ({
+			type: type.id,
+			...rest
+		})) :
+		[];
+
+	const identifierDict = {};
+	identifiers.forEach(
+		(identifier) => identifierDict[identifier.id] = identifier
+	);
+
+	const personType = creatorTypes.find((type) => type.label === 'Person');
+	return Immutable.Map({
 		sharedData: Immutable.Map({
-			name: '',
-			sortName: '',
-			language: null,
-			disambiguationVisible: false,
-			aliasEditorVisible: false
+			disambiguationVisible: Boolean(initialDisambiguation),
+			disambiguation: initialDisambiguation,
+			aliasEditorVisible: false,
+			...name
 		}),
-		aliasEditor: Immutable.Map()
-	}));
-}
-else {
-	store = createStore(rootReducer, Immutable.Map({
-		sharedData: Immutable.Map({
-			name: '',
-			sortName: '',
-			language: null,
-			disambiguationVisible: false,
-			aliasEditorVisible: false
+		aliasEditor: Immutable.fromJS(aliasDict),
+		creatorData: Immutable.Map({
+			gender: initialGender,
+			type: initialCreatorType,
+			beginDate: creator.beginDate,
+			endDate: creator.endDate,
+			ended: creator.ended,
+			singular: initialCreatorType === personType.id
 		}),
-		aliasEditor: Immutable.Map()
-	}), window.devToolsExtension && window.devToolsExtension());
+		identifierEditor: Immutable.fromJS(identifierDict)
+	});
 }
 
 const Creator = ({
 	languages,
 	genders,
+	creator,
 	creatorTypes,
 	identifierTypes,
 	submissionUrl
-}) => (
-	<Provider store={store}>
-		<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes} identifierTypes={identifierTypes} submissionUrl={submissionUrl}/>
-	</Provider>
-);
+}) => {
+	let store = null;
+	if (typeof window === 'undefined') {
+		store = createStore(rootReducer, generateInitialState(creator, creatorTypes));
+	}
+	else {
+		store = createStore(rootReducer, generateInitialState(creator, creatorTypes), window.devToolsExtension && window.devToolsExtension());
+	}
+
+	return (
+		<Provider store={store}>
+			<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes} identifierTypes={identifierTypes} submissionUrl={submissionUrl}/>
+		</Provider>
+	);
+};
 Creator.displayName = 'Creator';
 Creator.propTypes = {
 	languages: React.PropTypes.array,
