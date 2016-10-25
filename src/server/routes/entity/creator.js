@@ -141,8 +141,9 @@ const additionalCreatorProps = [
 
 
 function transformNewForm(data) {
-	let aliases = _.map(data.aliasEditor, ({languageId, ...rest}) => ({
-		language: languageId,
+	let aliases = _.map(data.aliasEditor, ({language, ...rest}) => ({
+		default: false,
+		languageId: language,
 		...rest
 	}));
 
