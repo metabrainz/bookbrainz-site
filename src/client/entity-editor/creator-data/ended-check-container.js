@@ -28,7 +28,8 @@ function mapStateToProps(rootState) {
 		'Dissolved?';
 
 	return {
-		label: labelText
+		label: labelText,
+		defaultChecked: state.get('ended')
 	};
 }
 

@@ -48,7 +48,8 @@ function mapStateToProps(rootState) {
 	return {
 		label: labelText,
 		error: !isPartialDateValid(state.get('beginDate')),
-		empty: !state.get('beginDate')
+		empty: !state.get('beginDate'),
+		defaultValue: state.get('beginDate')
 	};
 }
 

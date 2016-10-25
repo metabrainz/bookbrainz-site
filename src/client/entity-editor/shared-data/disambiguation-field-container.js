@@ -23,6 +23,13 @@ import {updateDisambiguationField} from '../actions';
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
+function mapStateToProps(rootState) {
+	const state = rootState.get('sharedData');
+	return {
+		defaultValue: state.get('disambiguation')
+	};
+}
+
 function mapDispatchToProps(dispatch) {
 	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
@@ -32,4 +39,4 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-export default connect(null, mapDispatchToProps)(DisambiguationField);
+export default connect(mapStateToProps, mapDispatchToProps)(DisambiguationField);

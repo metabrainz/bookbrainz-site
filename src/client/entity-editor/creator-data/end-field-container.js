@@ -49,7 +49,8 @@ function mapStateToProps(rootState) {
 		label: labelText,
 		show: state.get('ended'),
 		error: !isPartialDateValid(state.get('endDate')),
-		empty: !state.get('endDate')
+		empty: !state.get('endDate'),
+		defaultValue: state.get('endDate')
 	};
 }
 
