@@ -45,6 +45,8 @@ function reducer(
 			return state.set('identifierEditorVisible', true);
 		case 'HIDE_IDENTIFIER_EDITOR':
 			return state.set('identifierEditorVisible', false);
+		case 'UPDATE_DISAMBIGUATION_FIELD':
+			return state.set('disambiguation', action.value);
 		// no default
 	}
 	return state;
