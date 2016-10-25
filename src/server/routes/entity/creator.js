@@ -148,6 +148,7 @@ function transformNewForm(data) {
 	}));
 
 	aliases = [{
+		id: data.sharedData.id,
 		name: data.sharedData.name,
 		sortName: data.sharedData.sortName,
 		languageId: data.sharedData.language,
