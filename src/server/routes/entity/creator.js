@@ -156,8 +156,20 @@ function transformNewForm(data) {
 		default: true
 	}, ...aliases];
 
+	const identifiers = _.map(data.identifierEditor, ({type, ...rest}) => ({
+		typeId: type,
+		...rest
+	}));
+
 	return {
-		aliases
+		aliases,
+		identifiers,
+		disambiguation: data.sharedData.disambiguation,
+		genderId: data.creatorData.gender,
+		typeId: data.creatorData.type,
+		beginDate: data.creatorData.beginDate,
+		endDate: data.creatorData.ended ? data.creatorData.endDate : '',
+		ended: data.creatorData.ended
 	};
 }
 
