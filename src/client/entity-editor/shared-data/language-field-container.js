@@ -23,7 +23,7 @@ import {updateLanguageField} from '../actions';
 function mapStateToProps(rootState) {
 	const state = rootState.get('sharedData');
 	return {
-		value: state.get('languageValue')
+		value: state.get('language')
 	};
 }
 

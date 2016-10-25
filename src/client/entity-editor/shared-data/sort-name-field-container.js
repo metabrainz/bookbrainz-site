@@ -24,11 +24,11 @@ import {updateSortNameField} from '../actions';
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 function isEmpty(state) {
-	return !(state.get('nameValue') || state.get('sortNameValue'));
+	return !(state.get('name') || state.get('sortName'));
 }
 
 function isError(state) {
-	return !(state.get('sortNameValue'));
+	return !(state.get('sortName'));
 }
 
 function mapStateToProps(rootState) {
@@ -36,8 +36,8 @@ function mapStateToProps(rootState) {
 	return {
 		empty: isEmpty(state),
 		error: isError(state),
-		storedNameValue: state.get('nameValue'),
-		defaultValue: state.get('sortNameValue')
+		storedNameValue: state.get('name'),
+		defaultValue: state.get('sortName')
 	};
 }
 

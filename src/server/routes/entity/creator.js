@@ -147,9 +147,9 @@ function transformNewForm(data) {
 	}));
 
 	aliases = [{
-		name: data.sharedData.nameValue,
-		sortName: data.sharedData.sortNameValue,
-		languageId: data.sharedData.languageValue,
+		name: data.sharedData.name,
+		sortName: data.sharedData.sortName,
+		languageId: data.sharedData.language,
 		primary: true,
 		default: true
 	}, ...aliases];

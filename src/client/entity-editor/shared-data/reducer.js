@@ -20,9 +20,9 @@ import Immutable from 'immutable';
 
 function reducer(
 	state = Immutable.Map({
-		nameValue: '',
-		sortNameValue: '',
-		languageValue: null,
+		name: '',
+		sortName: '',
+		language: null,
 		disambiguationVisible: false,
 		aliasEditorVisible: false
 	}),
@@ -30,11 +30,11 @@ function reducer(
 ) {
 	switch (action.type) {
 		case 'UPDATE_NAME_FIELD':
-			return state.set('nameValue', action.value);
+			return state.set('name', action.value);
 		case 'UPDATE_SORT_NAME_FIELD':
-			return state.set('sortNameValue', action.value);
+			return state.set('sortName', action.value);
 		case 'UPDATE_LANGUAGE_FIELD':
-			return state.set('languageValue', action.value);
+			return state.set('language', action.value);
 		case 'SHOW_DISAMBIGUATION':
 			return state.set('disambiguationVisible', true);
 		case 'SHOW_ALIAS_EDITOR':

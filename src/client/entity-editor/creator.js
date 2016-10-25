@@ -38,9 +38,9 @@ let store = null;
 if (typeof window === 'undefined') {
 	store = createStore(rootReducer, Immutable.Map({
 		sharedData: Immutable.Map({
-			nameValue: '',
-			sortNameValue: '',
-			languageValue: null,
+			name: '',
+			sortName: '',
+			language: null,
 			disambiguationVisible: false,
 			aliasEditorVisible: false
 		}),
@@ -50,9 +50,9 @@ if (typeof window === 'undefined') {
 else {
 	store = createStore(rootReducer, Immutable.Map({
 		sharedData: Immutable.Map({
-			nameValue: '',
-			sortNameValue: '',
-			languageValue: null,
+			name: '',
+			sortName: '',
+			language: null,
 			disambiguationVisible: false,
 			aliasEditorVisible: false
 		}),

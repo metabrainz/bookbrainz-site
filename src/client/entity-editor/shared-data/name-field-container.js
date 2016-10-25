@@ -24,12 +24,12 @@ import {updateNameField} from '../actions';
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 function isEmpty(state) {
-	return state.get('nameValue').length === 0 &&
-		state.get('sortNameValue').length === 0;
+	return state.get('name').length === 0 &&
+		state.get('sortName').length === 0;
 }
 
 function isError(state) {
-	return state.get('nameValue').length === 0;
+	return state.get('name').length === 0;
 }
 
 function mapStateToProps(rootState) {
@@ -37,7 +37,7 @@ function mapStateToProps(rootState) {
 	return {
 		empty: isEmpty(state),
 		error: isError(state),
-		defaultValue: state.get('nameValue')
+		defaultValue: state.get('name')
 	};
 }
 
