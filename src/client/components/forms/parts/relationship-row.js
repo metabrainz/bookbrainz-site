@@ -328,9 +328,10 @@ function getRelationshipTypeById(types, id) {
 							</div>
 							<div className="row">
 								<div className="col-md-4">
-									<p dangerouslySetInnerHTML={
-										this.renderedRelationship()
-									}
+									<p
+										dangerouslySetInnerHTML={
+											this.renderedRelationship()
+										}
 									/>
 								</div>
 								<div className="col-md-5">
