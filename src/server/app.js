@@ -60,14 +60,16 @@ Promise.config({
 // Initialize application
 const app = express();
 
+const rootDir = path.join(__dirname, '../../');
+
 // Set up jade as view engine
-app.set('views', path.join(__dirname, '../../templates'));
+app.set('views', path.join(rootDir, 'templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
 app.set('trust proxy', config.site.proxyTrust);
 
-app.use(favicon(path.join(__dirname, '../../static/images/icons/favicon.ico')));
+app.use(favicon(path.join(rootDir, 'static/images/icons/favicon.ico')));
 
 if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
@@ -79,10 +81,10 @@ app.use(bodyParser.urlencoded({
 }));
 
 // Set up serving of static assets
-app.use(staticCache(path.join(__dirname, '../../static/js'), {
+app.use(staticCache(path.join(rootDir, 'static/js'), {
 	buffer: true
 }));
-app.use(express.static(path.join(__dirname, '../../static')));
+app.use(express.static(path.join(rootDir, 'static')));
 
 const RedisStore = redis(session);
 app.use(session({
