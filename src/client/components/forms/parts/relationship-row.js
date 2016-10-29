@@ -62,320 +62,316 @@ function getRelationshipTypeById(types, id) {
 	);
 }
 
-(() => {
-	'use strict';
+class RelationshipRow extends React.Component {
+	constructor(props) {
+		super(props);
 
-	class RelationshipRow extends React.Component {
-		constructor(props) {
-			super(props);
+		this.state = {
+			deleted: false,
+			entitiesSwapped: false,
+			swapped: false
+		};
 
-			this.state = {
-				deleted: false,
-				entitiesSwapped: false,
-				swapped: false
-			};
+		// React does not autobind non-React class methods
+		this.swap = this.swap.bind(this);
+		this.handleDeleteClick = this.handleDeleteClick.bind(this);
+		this.handleResetClick = this.handleResetClick.bind(this);
+	}
 
-			// React does not autobind non-React class methods
-			this.swap = this.swap.bind(this);
-			this.handleDeleteClick = this.handleDeleteClick.bind(this);
-			this.handleResetClick = this.handleResetClick.bind(this);
+	getValue() {
+		return {
+			source: this.source.getValue(),
+			target: this.target.getValue(),
+			typeId: this.type.getValue() ?
+				parseInt(this.type.getValue(), 10) : null
+		};
+	}
+
+	swap() {
+		this.setState({a: this.state.b, b: this.state.a});
+	}
+
+	handleDeleteClick() {
+		this.setState({deleted: true});
+		this.props.onDelete();
+	}
+
+	handleResetClick() {
+		this.setState({deleted: false});
+	}
+
+	selected() {
+		return this.select.getChecked();
+	}
+
+	added() {
+		const initiallyEmpty = !this.props.relationship.initialTarget &&
+			!this.props.relationship.initialTypeId;
+		const nowSet = this.props.relationship.target ||
+			this.props.relationship.typeId;
+
+		return Boolean(initiallyEmpty && nowSet);
+	}
+
+	edited() {
+		const rel = this.props.relationship;
+		const aChanged =
+			dataHelper.entityHasChanged(rel.initialSource, rel.source);
+		const bChanged =
+			dataHelper.entityHasChanged(rel.initialTarget, rel.target);
+		const typeChanged = rel.typeId !== rel.initialTypeId;
+
+		return Boolean(aChanged || bChanged || typeChanged);
+	}
+
+	renderedRelationship() {
+		const rel = this.props.relationship;
+
+		if (!this.valid()) {
+			return null;
 		}
 
-		getValue() {
-			return {
-				source: this.source.getValue(),
-				target: this.target.getValue(),
-				typeId: this.type.getValue() ?
-					parseInt(this.type.getValue(), 10) : null
-			};
+		rel.type = this.currentRelationshipType();
+
+		return {__html: renderRelationship(rel)};
+	}
+
+	rowClass() {
+		if (this.disabled()) {
+			return ' disabled';
 		}
 
-		swap() {
-			this.setState({a: this.state.b, b: this.state.a});
+		if (this.state.deleted) {
+			return ' list-group-item-danger';
 		}
 
-		handleDeleteClick() {
-			this.setState({deleted: true});
-			this.props.onDelete();
+		if (this.added()) {
+			return ' list-group-item-success';
 		}
 
-		handleResetClick() {
-			this.setState({deleted: false});
+		if (this.edited()) {
+			return ' list-group-item-warning';
 		}
 
-		selected() {
-			return this.select.getChecked();
-		}
+		return '';
+	}
 
-		added() {
-			const initiallyEmpty = !this.props.relationship.initialTarget &&
-				!this.props.relationship.initialTypeId;
-			const nowSet = this.props.relationship.target ||
-				this.props.relationship.typeId;
+	valid() {
+		const rel = this.props.relationship;
 
-			return Boolean(initiallyEmpty && nowSet);
-		}
+		return Boolean(rel.source && rel.target && rel.typeId);
+	}
 
-		edited() {
-			const rel = this.props.relationship;
-			const aChanged =
-				dataHelper.entityHasChanged(rel.initialSource, rel.source);
-			const bChanged =
-				dataHelper.entityHasChanged(rel.initialTarget, rel.target);
-			const typeChanged = rel.typeId !== rel.initialTypeId;
+	disabled() {
+		// Temporarily disable editing until the webservice/orm supports
+		// this
+		const rel = this.props.relationship;
 
-			return Boolean(aChanged || bChanged || typeChanged);
-		}
+		return Boolean(rel.initialSource && rel.initialTarget);
+	}
 
-		renderedRelationship() {
-			const rel = this.props.relationship;
+	currentRelationshipType() {
+		return getRelationshipTypeById(
+			this.props.relationshipTypes, this.props.relationship.typeId
+		);
+	}
 
-			if (!this.valid()) {
+	render() {
+		const deleteButton = this.rowClass() || this.valid() ? (
+			<Button
+				bsStyle="danger"
+				onClick={this.handleDeleteClick}
+			>
+				<Icon name="times"/>&nbsp;Delete
+				<span className="sr-only"> Relationship</span>
+			</Button>
+		) : null;
+
+		const resetButton = (
+			<Button
+				bsStyle="primary"
+				onClick={this.handleResetClick}
+			>
+				<Icon name="undo"/>&nbsp;Reset
+				<span className="sr-only"> Relationship</span>
+			</Button>
+		);
+
+		const swapButton = (
+			<Button
+				bsStyle="primary"
+				onClick={this.props.onSwap}
+			>
+				<Icon name="exchange"/>&nbsp;Swap
+				<span className="sr-only"> Entities</span>
+			</Button>
+		);
+
+		function _entityToOption(entity) {
+			if (!entity) {
 				return null;
 			}
 
-			rel.type = this.currentRelationshipType();
+			entity.text = entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)';
+			entity.id = entity.bbid;
 
-			return {__html: renderRelationship(rel)};
+			return entity;
 		}
 
-		rowClass() {
-			if (this.disabled()) {
-				return ' disabled';
-			}
+		const sourceEntity =
+			_entityToOption(this.props.relationship.source);
+		const targetEntity =
+			_entityToOption(this.props.relationship.target);
 
-			if (this.state.deleted) {
-				return ' list-group-item-danger';
-			}
-
-			if (this.added()) {
-				return ' list-group-item-success';
-			}
-
-			if (this.edited()) {
-				return ' list-group-item-warning';
-			}
-
-			return '';
+		let validationState = null;
+		if (this.rowClass()) {
+			validationState = this.valid() ? 'success' : 'error';
 		}
 
-		valid() {
-			const rel = this.props.relationship;
+		const select2Options = {
+			allowClear: false,
+			width: '100%'
+		};
 
-			return Boolean(rel.source && rel.target && rel.typeId);
-		}
+		const targetInput = (
+			<SearchSelect
+				standalone
+				bsStyle={validationState}
+				disabled={
+				this.disabled() || this.state.deleted ||
+				(targetEntity && targetEntity.bbid) ===
+					this.props.entity.bbid
+			}
+				labelClassName="col-md-4"
+				placeholder="Select entity…"
+				ref={(ref) => this.target = ref}
+				select2Options={select2Options}
+				value={targetEntity}
+				wrapperClassName="col-md-4"
+				onChange={this.props.onChange}
+			/>
+		);
 
-		disabled() {
-			// Temporarily disable editing until the webservice/orm supports
-			// this
-			const rel = this.props.relationship;
+		const deleteOrResetButton =
+			this.state.deleted ? resetButton : deleteButton;
 
-			return Boolean(rel.initialSource && rel.initialTarget);
-		}
-
-		currentRelationshipType() {
-			return getRelationshipTypeById(
-				this.props.relationshipTypes, this.props.relationship.typeId
+		let deprecationWarning = null;
+		const currentType = this.currentRelationshipType();
+		if (currentType && currentType.deprecated) {
+			deprecationWarning = (
+				<span className="text-danger">
+				<Icon name="warning"/>&nbsp;
+					Relationship type deprecated &mdash; please avoid!
+			</span>
 			);
 		}
 
-		render() {
-			const deleteButton = this.rowClass() || this.valid() ? (
-				<Button
-					bsStyle="danger"
-					onClick={this.handleDeleteClick}
-				>
-					<Icon name="times"/>&nbsp;Delete
-					<span className="sr-only"> Relationship</span>
-				</Button>
-			) : null;
-
-			const resetButton = (
-				<Button
-					bsStyle="primary"
-					onClick={this.handleResetClick}
-				>
-					<Icon name="undo"/>&nbsp;Reset
-					<span className="sr-only"> Relationship</span>
-				</Button>
-			);
-
-			const swapButton = (
-				<Button
-					bsStyle="primary"
-					onClick={this.props.onSwap}
-				>
-					<Icon name="exchange"/>&nbsp;Swap
-					<span className="sr-only"> Entities</span>
-				</Button>
-			);
-
-			function _entityToOption(entity) {
-				if (!entity) {
-					return null;
+		return (
+			<div
+				className={
+					`list-group-item margin-top-1 + ${this.rowClass()}`
 				}
-
-				entity.text = entity.defaultAlias ?
-					entity.defaultAlias.name : '(unnamed)';
-				entity.id = entity.bbid;
-
-				return entity;
-			}
-
-			const sourceEntity =
-				_entityToOption(this.props.relationship.source);
-			const targetEntity =
-				_entityToOption(this.props.relationship.target);
-
-			let validationState = null;
-			if (this.rowClass()) {
-				validationState = this.valid() ? 'success' : 'error';
-			}
-
-			const select2Options = {
-				allowClear: false,
-				width: '100%'
-			};
-
-			const targetInput = (
-				<SearchSelect
-					standalone
-					bsStyle={validationState}
-					disabled={
-					this.disabled() || this.state.deleted ||
-					(targetEntity && targetEntity.bbid) ===
-						this.props.entity.bbid
-				}
-					labelClassName="col-md-4"
-					placeholder="Select entity…"
-					ref={(ref) => this.target = ref}
-					select2Options={select2Options}
-					value={targetEntity}
-					wrapperClassName="col-md-4"
-					onChange={this.props.onChange}
-				/>
-			);
-
-			const deleteOrResetButton =
-				this.state.deleted ? resetButton : deleteButton;
-
-			let deprecationWarning = null;
-			const currentType = this.currentRelationshipType();
-			if (currentType && currentType.deprecated) {
-				deprecationWarning = (
-					<span className="text-danger">
-					<Icon name="warning"/>&nbsp;
-						Relationship type deprecated &mdash; please avoid!
-				</span>
-				);
-			}
-
-			return (
-				<div
-					className={
-						`list-group-item margin-top-1 + ${this.rowClass()}`
-					}
-				>
-					<div className="row">
-						<div className="col-md-1 text-center margin-top-1">
-							<Input
-								className="margin-left-0"
-								disabled={this.disabled() || this.state.deleted}
-								label=" "
-								ref={(ref) => this.select = ref}
-								type="checkbox"
-								onClick={this.props.onSelect}
+			>
+				<div className="row">
+					<div className="col-md-1 text-center margin-top-1">
+						<Input
+							className="margin-left-0"
+							disabled={this.disabled() || this.state.deleted}
+							label=" "
+							ref={(ref) => this.select = ref}
+							type="checkbox"
+							onClick={this.props.onSelect}
+						/>
+					</div>
+					<div className="col-md-11">
+						<div className="row">
+							<SearchSelect
+								standalone
+								bsStyle={validationState}
+								disabled={
+								this.disabled() || this.state.deleted ||
+								(sourceEntity && sourceEntity.bbid) ===
+									this.props.entity.bbid
+							}
+								labelClassName="col-md-4"
+								placeholder="Select entity…"
+								ref={(ref) => this.source = ref}
+								select2Options={select2Options}
+								value={sourceEntity}
+								wrapperClassName="col-md-4"
+								onChange={this.props.onChange}
 							/>
-						</div>
-						<div className="col-md-11">
-							<div className="row">
-								<SearchSelect
-									standalone
+							<div className="col-md-4">
+								<Select
+									noDefault
 									bsStyle={validationState}
-									disabled={
-									this.disabled() || this.state.deleted ||
-									(sourceEntity && sourceEntity.bbid) ===
-										this.props.entity.bbid
+									defaultValue={
+									this.props.relationship.typeId
 								}
-									labelClassName="col-md-4"
-									placeholder="Select entity…"
-									ref={(ref) => this.source = ref}
+									disabled={
+									this.disabled() || this.state.deleted
+								}
+									idAttribute="id"
+									labelAttribute="label"
+									options={this.props.relationshipTypes}
+									placeholder="Select relationship type…"
+									ref={(ref) => this.type = ref}
 									select2Options={select2Options}
-									value={sourceEntity}
-									wrapperClassName="col-md-4"
 									onChange={this.props.onChange}
 								/>
-								<div className="col-md-4">
-									<Select
-										noDefault
-										bsStyle={validationState}
-										defaultValue={
-										this.props.relationship.typeId
-									}
-										disabled={
-										this.disabled() || this.state.deleted
-									}
-										idAttribute="id"
-										labelAttribute="label"
-										options={this.props.relationshipTypes}
-										placeholder="Select relationship type…"
-										ref={(ref) => this.type = ref}
-										select2Options={select2Options}
-										onChange={this.props.onChange}
-									/>
-								</div>
-								{targetInput}
 							</div>
-							<div className="row">
-								<div className="col-md-4">
-									<p
-										dangerouslySetInnerHTML={
-											this.renderedRelationship()
-										}
-									/>
-								</div>
-								<div className="col-md-5">
-									{deprecationWarning}
-								</div>
-								<div className="col-md-3 text-right">
-									{
-										this.state.deleted || this.disabled() ?
-											null : swapButton
+							{targetInput}
+						</div>
+						<div className="row">
+							<div className="col-md-4">
+								<p
+									dangerouslySetInnerHTML={
+										this.renderedRelationship()
 									}
-									{
-										this.disabled() ?
-											null : deleteOrResetButton
-									}
-								</div>
+								/>
+							</div>
+							<div className="col-md-5">
+								{deprecationWarning}
+							</div>
+							<div className="col-md-3 text-right">
+								{
+									this.state.deleted || this.disabled() ?
+										null : swapButton
+								}
+								{
+									this.disabled() ?
+										null : deleteOrResetButton
+								}
+							</div>
 
-							</div>
 						</div>
 					</div>
-
 				</div>
-			);
-		}
+
+			</div>
+		);
 	}
+}
 
-	RelationshipRow.displayName = 'RelationshipRow';
-	RelationshipRow.propTypes = {
-		entity: React.PropTypes.shape({
-			bbid: React.PropTypes.string
-		}),
-		relationship: React.PropTypes.shape({
-			source: React.PropTypes.object,
-			target: React.PropTypes.object,
-			typeId: React.PropTypes.number,
-			initialSource: React.PropTypes.object,
-			initialTarget: React.PropTypes.object,
-			initialTypeId: React.PropTypes.number
-		}),
-		relationshipTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-		onChange: React.PropTypes.func,
-		onDelete: React.PropTypes.func,
-		onSelect: React.PropTypes.func,
-		onSwap: React.PropTypes.func
-	};
+RelationshipRow.displayName = 'RelationshipRow';
+RelationshipRow.propTypes = {
+	entity: React.PropTypes.shape({
+		bbid: React.PropTypes.string
+	}),
+	relationship: React.PropTypes.shape({
+		source: React.PropTypes.object,
+		target: React.PropTypes.object,
+		typeId: React.PropTypes.number,
+		initialSource: React.PropTypes.object,
+		initialTarget: React.PropTypes.object,
+		initialTypeId: React.PropTypes.number
+	}),
+	relationshipTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+	onChange: React.PropTypes.func,
+	onDelete: React.PropTypes.func,
+	onSelect: React.PropTypes.func,
+	onSwap: React.PropTypes.func
+};
 
-	module.exports = RelationshipRow;
-})();
+module.exports = RelationshipRow;

@@ -87,172 +87,168 @@ function makeSortName(name) {
 	return `${lastName}, ${words.join(' ')}`;
 }
 
-(() => {
-	'use strict';
+class AliasRow extends React.Component {
+	constructor(props) {
+		super(props);
 
-	class AliasRow extends React.Component {
-		constructor(props) {
-			super(props);
+		this.state = {
+			sortName: this.props.sortName || null
+		};
 
-			this.state = {
-				sortName: this.props.sortName || null
-			};
-
-			// React does not autobind non-React class methods
-			this.handleGuessSortNameClick =
-				this.handleGuessSortNameClick.bind(this);
-			this.handleSortNameChange = this.handleSortNameChange.bind(this);
-		}
-
-		getValue() {
-			return {
-				id: parseInt(this.id.getValue(), 10),
-				name: this.name.getValue(),
-				sortName: this.sortName.getValue(),
-				languageId: parseInt(this.languageId.getValue(), 10) || null,
-				primary: this.primary.getChecked(),
-				default: this.default.getChecked()
-			};
-		}
-
-		validationState() {
-			if (this.props.name || this.state.sortName || this.props.default ||
-					this.props.languageId || !this.props.primary) {
-				if (this.props.name && this.state.sortName) {
-					return 'success';
-				}
-
-				return 'error';
-			}
-
-			return null;
-		}
-
-		getValid() {
-			return Boolean(
-				this.name.getValue() && this.sortName.getValue()
-			);
-		}
-
-		handleGuessSortNameClick() {
-			const name = this.name.getValue();
-
-			this.setState({sortName: makeSortName(name)});
-		}
-
-		handleSortNameChange(event) {
-			this.setState({sortName: event.target.value});
-		}
-
-		render() {
-			const guessSortNameButton = (
-				<Button
-					bsStyle="link"
-					title="Guess Sort Name"
-					onClick={this.handleGuessSortNameClick}
-				>
-					<Icon name="magic"/>
-				</Button>
-			);
-
-			const select2Options = {
-				allowClear: true
-			};
-
-			return (
-				<div
-					className="row"
-					onChange={this.props.onChange}
-				>
-					<Input
-						defaultValue={this.props.aliasId}
-						ref={(ref) => this.id = ref}
-						type="hidden"
-					/>
-					<div className="col-md-3">
-						<Input
-							bsStyle={this.validationState()}
-							defaultValue={this.props.name}
-							ref={(ref) => this.name = ref}
-							type="text"
-							wrapperClassName="col-md-11"
-						/> &nbsp;
-					</div>
-					<div className="col-md-3">
-						<Input
-							bsStyle={this.validationState()}
-							buttonAfter={guessSortNameButton}
-							ref={(ref) => this.sortName = ref}
-							type="text"
-							value={this.state.sortName}
-							wrapperClassName="col-md-11"
-							onChange={this.handleSortNameChange}
-						/> &nbsp;
-					</div>
-					<div className="col-md-3">
-						<Select
-							noDefault
-							bsStyle={this.validationState()}
-							defaultValue={this.props.languageId}
-							idAttribute="id"
-							labelAttribute="name"
-							options={this.props.languages}
-							placeholder="Select alias language…"
-							ref={(ref) => this.languageId = ref}
-							select2Options={select2Options}
-							wrapperClassName="col-md-11"
-							onChange={this.props.onChange}
-						/>
-					</div>
-					<div className="col-md-1">
-						<Input
-							defaultChecked={this.props.primary}
-							label=" "
-							ref={(ref) => this.primary = ref}
-							type="checkbox"
-							wrapperClassName="col-md-11"
-						/>
-					</div>
-					<div className="col-md-1">
-						<Input
-							defaultChecked={this.props.default}
-							label=" "
-							name="default"
-							ref={(ref) => this.default = ref}
-							type="radio"
-							wrapperClassName="col-md-11"
-						/>
-					</div>
-					<div className="col-md-1 text-right">
-						<Button
-							bsStyle="danger"
-							className={this.props.removeHidden ? 'hidden' : ''}
-							onClick={this.props.onRemove}
-						>
-							<Icon name="times"/>
-						</Button>
-					</div>
-				</div>
-			);
-		}
+		// React does not autobind non-React class methods
+		this.handleGuessSortNameClick =
+			this.handleGuessSortNameClick.bind(this);
+		this.handleSortNameChange = this.handleSortNameChange.bind(this);
 	}
 
-	AliasRow.displayName = 'AliasRow';
-	AliasRow.propTypes = {
-		aliasId: React.PropTypes.number,
-		default: React.PropTypes.bool,
-		languageId: React.PropTypes.number,
-		languages: React.PropTypes.arrayOf(React.PropTypes.shape({
-			id: React.PropTypes.number.isRequired,
-			name: React.PropTypes.string.isRequired
-		})).isRequired,
-		name: React.PropTypes.string,
-		primary: React.PropTypes.bool,
-		removeHidden: React.PropTypes.bool,
-		sortName: React.PropTypes.string,
-		onChange: React.PropTypes.func,
-		onRemove: React.PropTypes.func
-	};
+	getValue() {
+		return {
+			id: parseInt(this.id.getValue(), 10),
+			name: this.name.getValue(),
+			sortName: this.sortName.getValue(),
+			languageId: parseInt(this.languageId.getValue(), 10) || null,
+			primary: this.primary.getChecked(),
+			default: this.default.getChecked()
+		};
+	}
 
-	module.exports = AliasRow;
-})();
+	validationState() {
+		if (this.props.name || this.state.sortName || this.props.default ||
+				this.props.languageId || !this.props.primary) {
+			if (this.props.name && this.state.sortName) {
+				return 'success';
+			}
+
+			return 'error';
+		}
+
+		return null;
+	}
+
+	getValid() {
+		return Boolean(
+			this.name.getValue() && this.sortName.getValue()
+		);
+	}
+
+	handleGuessSortNameClick() {
+		const name = this.name.getValue();
+
+		this.setState({sortName: makeSortName(name)});
+	}
+
+	handleSortNameChange(event) {
+		this.setState({sortName: event.target.value});
+	}
+
+	render() {
+		const guessSortNameButton = (
+			<Button
+				bsStyle="link"
+				title="Guess Sort Name"
+				onClick={this.handleGuessSortNameClick}
+			>
+				<Icon name="magic"/>
+			</Button>
+		);
+
+		const select2Options = {
+			allowClear: true
+		};
+
+		return (
+			<div
+				className="row"
+				onChange={this.props.onChange}
+			>
+				<Input
+					defaultValue={this.props.aliasId}
+					ref={(ref) => this.id = ref}
+					type="hidden"
+				/>
+				<div className="col-md-3">
+					<Input
+						bsStyle={this.validationState()}
+						defaultValue={this.props.name}
+						ref={(ref) => this.name = ref}
+						type="text"
+						wrapperClassName="col-md-11"
+					/> &nbsp;
+				</div>
+				<div className="col-md-3">
+					<Input
+						bsStyle={this.validationState()}
+						buttonAfter={guessSortNameButton}
+						ref={(ref) => this.sortName = ref}
+						type="text"
+						value={this.state.sortName}
+						wrapperClassName="col-md-11"
+						onChange={this.handleSortNameChange}
+					/> &nbsp;
+				</div>
+				<div className="col-md-3">
+					<Select
+						noDefault
+						bsStyle={this.validationState()}
+						defaultValue={this.props.languageId}
+						idAttribute="id"
+						labelAttribute="name"
+						options={this.props.languages}
+						placeholder="Select alias language…"
+						ref={(ref) => this.languageId = ref}
+						select2Options={select2Options}
+						wrapperClassName="col-md-11"
+						onChange={this.props.onChange}
+					/>
+				</div>
+				<div className="col-md-1">
+					<Input
+						defaultChecked={this.props.primary}
+						label=" "
+						ref={(ref) => this.primary = ref}
+						type="checkbox"
+						wrapperClassName="col-md-11"
+					/>
+				</div>
+				<div className="col-md-1">
+					<Input
+						defaultChecked={this.props.default}
+						label=" "
+						name="default"
+						ref={(ref) => this.default = ref}
+						type="radio"
+						wrapperClassName="col-md-11"
+					/>
+				</div>
+				<div className="col-md-1 text-right">
+					<Button
+						bsStyle="danger"
+						className={this.props.removeHidden ? 'hidden' : ''}
+						onClick={this.props.onRemove}
+					>
+						<Icon name="times"/>
+					</Button>
+				</div>
+			</div>
+		);
+	}
+}
+
+AliasRow.displayName = 'AliasRow';
+AliasRow.propTypes = {
+	aliasId: React.PropTypes.number,
+	default: React.PropTypes.bool,
+	languageId: React.PropTypes.number,
+	languages: React.PropTypes.arrayOf(React.PropTypes.shape({
+		id: React.PropTypes.number.isRequired,
+		name: React.PropTypes.string.isRequired
+	})).isRequired,
+	name: React.PropTypes.string,
+	primary: React.PropTypes.bool,
+	removeHidden: React.PropTypes.bool,
+	sortName: React.PropTypes.string,
+	onChange: React.PropTypes.func,
+	onRemove: React.PropTypes.func
+};
+
+module.exports = AliasRow;
