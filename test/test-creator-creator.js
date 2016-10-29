@@ -24,24 +24,25 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 const rewire = require('rewire');
 const Promise = require('bluebird');
-const testData = require('../data/testData.js');
+const testData = require('../data/test-data.js');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
-const publisherIThreshold = 1;
-const publisherIIThreshold = 10;
-const publisherIIIThreshold = 100;
+const creatorCreatorIThreshold = 1;
+const creatorCreatorIIThreshold = 10;
+const creatorCreatorIIIThreshold = 100;
+
 
 module.exports = function tests() {
-	beforeEach(() => testData.createPublisher());
+	beforeEach(() => testData.createCreatorCreator());
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a publication creation',
+	it('I should be given to someone with a creator creation',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIThreshold
+						'creator_revision', creatorCreatorIThreshold
 					)
 			});
 
@@ -50,7 +51,7 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher['Publisher I']
+					edit.creatorCreator['Creator Creator I']
 				);
 
 			return Promise.all([
@@ -59,17 +60,17 @@ module.exports = function tests() {
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
 				.property('achievementId',
-					testData.publisherIAttribs.id)
+					testData.creatorCreatorIAttribs.id)
 			]);
 		}
 	);
 
-	it('II should be given to someone with 10 publication creations',
+	it('II should be given to someone with 10 creator creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIIThreshold
+						'creator_revision', creatorCreatorIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -77,7 +78,7 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher['Publisher II']
+					edit.creatorCreator['Creator Creator II']
 				);
 
 			return Promise.all([
@@ -86,16 +87,16 @@ module.exports = function tests() {
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
 				.property('achievementId',
-					testData.publisherIIAttribs.id)
+					testData.creatorCreatorIIAttribs.id)
 			]);
 		});
 
-	it('III should be given to someone with 100 publication creations',
+	it('III should be given to someone with 100 creator creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIIIThreshold
+						'creator_revision', creatorCreatorIIIThreshold
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -103,31 +104,31 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher
+					edit.creatorCreator
 				);
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher III.editorId',
+				.property('Creator Creator III.editorId',
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher III.achievementId',
-					testData.publisherIIIAttribs.id),
+				.property('Creator Creator III.achievementId',
+					testData.creatorCreatorIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher.editorId',
+				.property('Creator Creator.editorId',
 					testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher.titleId',
-					testData.publisherAttribs.id)
+				.property('Creator Creator.titleId',
+					testData.creatorCreatorAttribs.id)
 			]);
 		});
 
-	it('should not be given to someone with 0 publication creations',
+	it('should not be given to someone with 0 creator creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', 0
+						'creator_revision', 0
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -135,10 +136,9 @@ module.exports = function tests() {
 					Achievement.processEdit(editor.id)
 				)
 				.then((edit) =>
-					edit.publisher['Publisher I']
+					edit.creatorCreator['Creator Creator I']
 				);
 
 			return expect(achievementPromise).to.eventually.equal(false);
 		});
 };
-

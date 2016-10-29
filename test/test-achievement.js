@@ -23,24 +23,24 @@ const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 const rewire = require('rewire');
-const testData = require('../data/testData.js');
+const testData = require('../data/test-data.js');
 const Promise = require('bluebird');
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
-const testCreatorCreator = require('./testCreatorCreator.js');
-const testExplorer = require('./testExplorer.js');
-const testFunRunner = require('./testFunRunner.js');
-const testLimitedEdition = require('./testLimitedEdition.js');
-const testMarathoner = require('./testMarathoner.js');
-const testPublisher = require('./testPublisher.js');
-const testPublisherCreator = require('./testPublisherCreator.js');
-const testRevisionist = require('./testRevisionist.js');
-const testSprinter = require('./testSprinter.js');
-const testWorkerBee = require('./testWorkerBee.js');
-const testTimeTraveller = require('./testTimeTraveller.js');
-const testHotOffThePress = require('./testHotOffThePress.js');
+const testCreatorCreator = require('./test-creator-creator.js');
+const testExplorer = require('./test-explorer.js');
+const testFunRunner = require('./test-fun-runner.js');
+const testLimitedEdition = require('./test-limited-edition.js');
+const testMarathoner = require('./test-marathoner.js');
+const testPublisher = require('./test-publisher.js');
+const testPublisherCreator = require('./test-publisher-creator.js');
+const testRevisionist = require('./test-revisionist.js');
+const testSprinter = require('./test-sprinter.js');
+const testWorkerBee = require('./test-worker-bee.js');
+const testTimeTraveller = require('./test-time-traveller.js');
+const testHotOffThePress = require('./test-hot-off-the-press.js');
 
 function tests() {
 	describe('awardAchievement', () => {

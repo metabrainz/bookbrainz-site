@@ -27,7 +27,7 @@ const rewire = require('rewire');
 
 const Editor = require('./bookbrainz-data').Editor;
 const Achievement = rewire('../src/server/helpers/achievement.js');
-const testData = require('../data/testData.js');
+const testData = require('../data/test-data.js');
 
 const funRunnerThreshold = 7;
 const funRunnerDays = 6;
