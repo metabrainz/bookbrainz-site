@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd src/client/controllers
+pushd src/client/controllers
 browserify -t [babelify] \
 		../../../templates/layout.js \
 		editor/edit.js \
@@ -24,3 +24,4 @@ browserify -t [babelify] \
 		-o ../../../static/js/relationship.js \
 		-o ../../../static/js/search.js \
 	] > ../../../static/js/bundle.js
+popd

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd src/client/controllers
+pushd src/client/controllers
 watchify -t [babelify] \
 		../../../templates/layout.js \
 		editor/edit.js \
@@ -24,3 +24,4 @@ watchify -t [babelify] \
 		-o ../../../static/js/relationship.js \
 		-o ../../../static/js/search.js \
 	] -o ../../../static/js/bundle.js -dv
+popd
