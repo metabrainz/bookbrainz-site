@@ -52,6 +52,16 @@ search.init = (options) => {
 	}, options);
 
 	_client = ElasticSearch.Client(config);
+
+	// Automatically index on app startup if we haven't already
+	_client.indices.exists({index: _index})
+		.then((mainIndexExists) {
+			if (mainIndexExists) {
+				return null;
+			}
+
+			return search.generateIndex();
+		});
 };
 
 function _fetchEntityModelsForESResults(results) {
