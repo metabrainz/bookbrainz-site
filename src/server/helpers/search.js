@@ -55,7 +55,7 @@ search.init = (options) => {
 
 	// Automatically index on app startup if we haven't already
 	_client.indices.exists({index: _index})
-		.then((mainIndexExists) {
+		.then((mainIndexExists) => {
 			if (mainIndexExists) {
 				return null;
 			}
