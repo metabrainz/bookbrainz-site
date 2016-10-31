@@ -27,7 +27,7 @@ const Promise = require('bluebird');
 const Editor = require('./bookbrainz-data').Editor;
 const rewire = require('rewire');
 const Achievement = rewire('../src/server/helpers/achievement.js');
-const testData = require('../data/testData.js');
+const testData = require('../data/test-data.js');
 
 const explorerIThreshold = 10;
 const explorerIIThreshold = 100;

@@ -27,78 +27,63 @@ const rewire = require('rewire');
 
 const Editor = require('./bookbrainz-data').Editor;
 const Achievement = rewire('../src/server/helpers/achievement.js');
-const testData = require('../data/testData.js');
+const testData = require('../data/test-data.js');
 
-const marathonerDays = 29;
-const marathonerThreshold = 30;
+const hotOffThePressThreshold = -7;
 
 module.exports = () => {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
-			testData.createMarathoner()
+			testData.createHotOffThePress()
 		)
 	);
 
 	afterEach(testData.truncate);
 
-	it('should be given to someone with a revision a day for 30 days',
+	it('should be given to someone with edition revision released this week',
 		() => {
 			Achievement.__set__({
-				getEditsInDays: (editorId, days) => {
-					let editPromise;
-					if (days === marathonerDays) {
-						editPromise = Promise.resolve(marathonerThreshold);
-					}
-					else {
-						editPromise = Promise.resolve(0);
-					}
-					return editPromise;
-				}
+				getEditionDateDifference: () =>
+					Promise.resolve(hotOffThePressThreshold)
 			});
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					Achievement.processEdit(editor.id)
-				)
-				.then((edit) =>
-					edit.marathoner.Marathoner
-				);
+
+			const achievementPromise =
+				new Editor({name: testData.editorAttribs.name})
+					.fetch()
+					.then((editor) =>
+						Achievement.processEdit(editor.id)
+					)
+					.then((edit) =>
+						edit.hotOffThePress['Hot Off the Press']
+					);
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
 					.property('editorId', testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-					.property('achievementId', testData.marathonerAttribs.id)
+				.property('achievementId',
+					testData.hotOffThePressAttribs.id)
 			]);
-		});
+		}
+	);
 
-	it('shouldn\'t be given to someone without a revision a day for 30 days',
+	it('shouldn\'t be given when edition revision released a week ago',
 		() => {
 			Achievement.__set__({
-				getEditsInDays: (editorId, days) => {
-					let editPromise;
-					if (days === marathonerDays) {
-						editPromise = Promise.resolve(marathonerThreshold - 1);
-					}
-					else {
-						editPromise = Promise.resolve(0);
-					}
-					return editPromise;
-				}
+				getEditionDateDifference: () =>
+					Promise.resolve(hotOffThePressThreshold - 1)
 			});
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					Achievement.processEdit(editor.id)
-				)
-				.then((edit) =>
-					edit.marathoner.Marathoner
-				);
 
-			return expect(achievementPromise).to.eventually.equal(false);
+			const achievementPromise =
+				new Editor({name: testData.editorAttribs.name})
+					.fetch()
+					.then((editor) =>
+						Achievement.processEdit(editor.id)
+					)
+					.then((edit) =>
+						edit.timeTraveller
+					);
+
+			expect(achievementPromise).to.eventually.equal(false);
 		});
 };
