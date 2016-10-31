@@ -1,6 +1,9 @@
 # Project-specific directories
 /static/js
 /static/stylesheets/
+/lib
+/src/client/stylesheets/bootstrap
+/src/client/stylesheets/font-awesome
 /config
 
 ### Node ###
@@ -68,7 +71,6 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
 
 ### Windows ###
 # Windows image file caches
