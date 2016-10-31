@@ -22,71 +22,67 @@ const React = require('react');
 
 const Input = require('react-bootstrap').Input;
 
-(() => {
-	'use strict';
+class RevisionNote extends React.Component {
+	render() {
+		return (
+			<div className={this.props.visible === false ? 'hidden' : ''}>
+				<h2>Submit Revision</h2>
+				<p className="lead">
+					Finally, add this revision to an edit.
+				</p>
 
-	class RevisionNote extends React.Component {
-		render() {
-			return (
-				<div className={this.props.visible === false ? 'hidden' : ''}>
-					<h2>Submit Revision</h2>
-					<p className="lead">
-						Finally, add this revision to an edit.
-					</p>
-
-					<div className="form-horizontal">
-						<Input
-							label="Revision Note"
-							labelClassName="col-md-3"
-							ref={(ref) => this.note = ref}
-							rows="6"
-							type="textarea"
-							wrapperClassName="col-md-6"
-						/>
-					</div>
-
-					<nav className="margin-top-1">
-						<ul className="pager">
-							<li className="previous">
-								<a
-									href="#"
-									onClick={this.props.onBackClick}
-								>
-									<Icon
-										aria-hidden="true"
-										name="angle-double-left"
-									/>
-									Back
-								</a>
-							</li>
-							<li
-								className={
-								this.props.submitDisabled ?
-								'next disabled' : 'next'
-							}
-							>
-								<a
-									href="#"
-									onClick={this.props.onSubmit}
-								>
-									Submit
-								</a>
-							</li>
-						</ul>
-					</nav>
+				<div className="form-horizontal">
+					<Input
+						label="Revision Note"
+						labelClassName="col-md-3"
+						ref={(ref) => this.note = ref}
+						rows="6"
+						type="textarea"
+						wrapperClassName="col-md-6"
+					/>
 				</div>
-			);
-		}
+
+				<nav className="margin-top-1">
+					<ul className="pager">
+						<li className="previous">
+							<a
+								href="#"
+								onClick={this.props.onBackClick}
+							>
+								<Icon
+									aria-hidden="true"
+									name="angle-double-left"
+								/>
+								Back
+							</a>
+						</li>
+						<li
+							className={
+							this.props.submitDisabled ?
+							'next disabled' : 'next'
+						}
+						>
+							<a
+								href="#"
+								onClick={this.props.onSubmit}
+							>
+								Submit
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+		);
 	}
+}
 
-	RevisionNote.displayName = 'RevisionNote';
-	RevisionNote.propTypes = {
-		nextClick: React.PropTypes.func,
-		submitDisabled: React.PropTypes.bool,
-		visible: React.PropTypes.bool,
-		onBackClick: React.PropTypes.func,
-		onSubmit: React.PropTypes.func
-	};
+RevisionNote.displayName = 'RevisionNote';
+RevisionNote.propTypes = {
+	nextClick: React.PropTypes.func,
+	submitDisabled: React.PropTypes.bool,
+	visible: React.PropTypes.bool,
+	onBackClick: React.PropTypes.func,
+	onSubmit: React.PropTypes.func
+};
 
-	module.exports = RevisionNote;
-})();
+module.exports = RevisionNote;

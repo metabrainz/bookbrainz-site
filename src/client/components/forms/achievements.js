@@ -23,122 +23,118 @@ const request = require('superagent-bluebird-promise');
 const Achievement = require('./parts/achievement');
 const DragAndDrop = require('../input/dragAndDrop');
 
-(() => {
-	'use strict';
+class AchievementForm extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			editor: props.editor,
+			achievement: props.achievement
+		};
+	}
+	handleSubmit(event) {
+		event.preventDefault();
 
-	class AchievementForm extends React.Component {
-		constructor(props) {
-			super(props);
-			this.state = {
-				editor: props.editor,
-				achievement: props.achievement
-			};
-		}
-		handleSubmit(event) {
-			event.preventDefault();
+		const data = {
+			id: this.state.editor.id,
+			rank1: this.rank1,
+			rank2: this.rank2,
+			rank3: this.rank3
+		};
 
-			const data = {
-				id: this.state.editor.id,
-				rank1: this.rank1,
-				rank2: this.rank2,
-				rank3: this.rank3
-			};
-
-			request.post('/editor/:id/achievements/')
-				.send(data)
-				.then(() => {
-					window.location.href = `/editor/${this.state.editor.id}`;
-				})
-				.catch((res) => {
-					const error = res.body.error;
-					this.setState({
-						error,
-						waiting: false
-					});
+		request.post('/editor/:id/achievements/')
+			.send(data)
+			.then(() => {
+				window.location.href = `/editor/${this.state.editor.id}`;
+			})
+			.catch((res) => {
+				const error = res.body.error;
+				this.setState({
+					error,
+					waiting: false
 				});
-		}
-		renderAchievements(unlocked) {
-			return this.state.achievement.model.map((achievement) => {
-				let achievementHTML;
-				if (achievement.unlocked === unlocked) {
-					achievementHTML = (
-						<Achievement
-							achievement={achievement}
-							unlocked={unlocked}
-						/>
-					);
-				}
-				return achievementHTML;
 			});
-		}
-		render() {
-			const achievements = this.renderAchievements(true);
-			const locked = this.renderAchievements(false);
-
-			let rankUpdate;
-			console.log(this.state.editor.authenticated);
-			if (this.state.editor.authenticated) {
-				rankUpdate = (
-					<form
-						className="form-horizontal"
-						id="rankSelectForm"
-						method="post"
-					>
-						<div className="row dnd-container form-group">
-							<DragAndDrop name="rank1"/>
-							<DragAndDrop name="rank2"/>
-							<DragAndDrop name="rank3"/>
-						</div>
-						<div className="form-group">
-							<span>
-								<button
-									className="btn btn-default"
-									type="submit"
-								>
-									update
-								</button>
-								<p
-									style={{
-										marginLeft: '10px',
-										display: 'inline-block'
-									}}
-								>
-									click badge to unset
-								</p>
-							</span>
-						</div>
-					</form>
+	}
+	renderAchievements(unlocked) {
+		return this.state.achievement.model.map((achievement) => {
+			let achievementHTML;
+			if (achievement.unlocked === unlocked) {
+				achievementHTML = (
+					<Achievement
+						achievement={achievement}
+						unlocked={unlocked}
+					/>
 				);
 			}
-			return (
-				<StickyContainer>
-					<Sticky
-						style={{
-							zIndex: 10,
-							background: 'white',
-							'margin-top': 64,
-							flex: '1'
-						}}
-						topOffset={-80}
-					>
-							{rankUpdate}
-						</Sticky>
-						<div style={{zIndex: 1}}>
-							<div className="h1">Unlocked Achievements</div>
-							{achievements}
-							<div className="h1">Locked Achievements</div>
-							{locked}
-						</div>
-				</StickyContainer>
+			return achievementHTML;
+		});
+	}
+	render() {
+		const achievements = this.renderAchievements(true);
+		const locked = this.renderAchievements(false);
+
+		let rankUpdate;
+		console.log(this.state.editor.authenticated);
+		if (this.state.editor.authenticated) {
+			rankUpdate = (
+				<form
+					className="form-horizontal"
+					id="rankSelectForm"
+					method="post"
+				>
+					<div className="row dnd-container form-group">
+						<DragAndDrop name="rank1"/>
+						<DragAndDrop name="rank2"/>
+						<DragAndDrop name="rank3"/>
+					</div>
+					<div className="form-group">
+						<span>
+							<button
+								className="btn btn-default"
+								type="submit"
+							>
+								update
+							</button>
+							<p
+								style={{
+									marginLeft: '10px',
+									display: 'inline-block'
+								}}
+							>
+								click badge to unset
+							</p>
+						</span>
+					</div>
+				</form>
 			);
 		}
+		return (
+			<StickyContainer>
+				<Sticky
+					style={{
+						zIndex: 10,
+						background: 'white',
+						'margin-top': 64,
+						flex: '1'
+					}}
+					topOffset={-80}
+				>
+						{rankUpdate}
+					</Sticky>
+					<div style={{zIndex: 1}}>
+						<div className="h1">Unlocked Achievements</div>
+						{achievements}
+						<div className="h1">Locked Achievements</div>
+						{locked}
+					</div>
+			</StickyContainer>
+		);
 	}
+}
 
-	AchievementForm.displayName = 'AchievementForm';
-	AchievementForm.propTypes = {
-		achievement: React.PropTypes.object,
-		editor: React.PropTypes.object
-	};
+AchievementForm.displayName = 'AchievementForm';
+AchievementForm.propTypes = {
+	achievement: React.PropTypes.object,
+	editor: React.PropTypes.object
+};
 
-	module.exports = AchievementForm;
-})();
+module.exports = AchievementForm;

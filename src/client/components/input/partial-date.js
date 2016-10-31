@@ -25,102 +25,98 @@ const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
 const ymRegex = /^\d{4}-\d{2}$/;
 const yRegex = /^\d{4}$/;
 
-(() => {
-	'use strict';
-
-	class PartialDate extends React.Component {
-		static validate(value) {
-			if (!value) {
-				return true;
-			}
-
-			const validSyntax = Boolean(
-				ymdRegex.test(value) ||
-				ymRegex.test(value) ||
-				yRegex.test(value)
-			);
-			const validValue = !isNaN(Date.parse(value));
-
-			return validSyntax && validValue;
+class PartialDate extends React.Component {
+	static validate(value) {
+		if (!value) {
+			return true;
 		}
 
-		constructor(props) {
-			super(props);
+		const validSyntax = Boolean(
+			ymdRegex.test(value) ||
+			ymRegex.test(value) ||
+			yRegex.test(value)
+		);
+		const validValue = !isNaN(Date.parse(value));
 
-			this.state = {
-				value: this.props.defaultValue,
-				valid: PartialDate.validate(this.props.defaultValue)
-			};
+		return validSyntax && validValue;
+	}
 
-			// React does not autobind non-React class methods
-			this.handleChange = this.handleChange.bind(this);
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			value: this.props.defaultValue,
+			valid: PartialDate.validate(this.props.defaultValue)
+		};
+
+		// React does not autobind non-React class methods
+		this.handleChange = this.handleChange.bind(this);
+	}
+
+	getValue() {
+		return this.state.value;
+	}
+
+	handleChange() {
+		const input = this.input.getValue().trim();
+
+		if (input.length > 10) {
+			return;
 		}
 
-		getValue() {
-			return this.state.value;
-		}
+		this.setState({
+			value: input,
+			valid: PartialDate.validate(input)
+		});
 
-		handleChange() {
-			const input = this.input.getValue().trim();
-
-			if (input.length > 10) {
-				return;
-			}
-
-			this.setState({
-				value: input,
-				valid: PartialDate.validate(input)
-			});
-
-			if (this.props.onChange) {
-				this.props.onChange();
-			}
-		}
-
-		valid() {
-			return PartialDate.validate(this.input.getValue().trim());
-		}
-
-		validationState() {
-			let validationClass = null;
-
-			if (this.state.value) {
-				validationClass = this.state.valid ? 'success' : 'error';
-			}
-
-			return validationClass;
-		}
-
-		render() {
-			return (
-				<Input
-					bsStyle={this.validationState()}
-					groupClassName={this.props.groupClassName}
-					help={this.props.help}
-					label={this.props.label}
-					labelClassName={this.props.labelClassName}
-					placeholder={this.props.placeholder}
-					ref={(ref) => this.input = ref}
-					type="text"
-					value={this.state.value}
-					wrapperClassName={this.props.wrapperClassName}
-					onChange={this.handleChange}
-				/>
-			);
+		if (this.props.onChange) {
+			this.props.onChange();
 		}
 	}
 
-	PartialDate.displayName = 'PartialDate';
-	PartialDate.propTypes = {
-		defaultValue: React.PropTypes.string,
-		groupClassName: React.PropTypes.string,
-		help: React.PropTypes.string,
-		label: React.PropTypes.string,
-		labelClassName: React.PropTypes.string,
-		placeholder: React.PropTypes.string,
-		wrapperClassName: React.PropTypes.string,
-		onChange: React.PropTypes.func
-	};
+	valid() {
+		return PartialDate.validate(this.input.getValue().trim());
+	}
 
-	module.exports = PartialDate;
-})();
+	validationState() {
+		let validationClass = null;
+
+		if (this.state.value) {
+			validationClass = this.state.valid ? 'success' : 'error';
+		}
+
+		return validationClass;
+	}
+
+	render() {
+		return (
+			<Input
+				bsStyle={this.validationState()}
+				groupClassName={this.props.groupClassName}
+				help={this.props.help}
+				label={this.props.label}
+				labelClassName={this.props.labelClassName}
+				placeholder={this.props.placeholder}
+				ref={(ref) => this.input = ref}
+				type="text"
+				value={this.state.value}
+				wrapperClassName={this.props.wrapperClassName}
+				onChange={this.handleChange}
+			/>
+		);
+	}
+}
+
+PartialDate.displayName = 'PartialDate';
+PartialDate.propTypes = {
+	defaultValue: React.PropTypes.string,
+	groupClassName: React.PropTypes.string,
+	help: React.PropTypes.string,
+	label: React.PropTypes.string,
+	labelClassName: React.PropTypes.string,
+	placeholder: React.PropTypes.string,
+	wrapperClassName: React.PropTypes.string,
+	onChange: React.PropTypes.func
+};
+
+module.exports = PartialDate;
