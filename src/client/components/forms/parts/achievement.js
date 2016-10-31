@@ -19,64 +19,61 @@
 const React = require('react');
 const DragAndDropImage = require('../../input/dragAndDropImage');
 
-(() => {
-	'use strict';
-	class Achievement extends React.Component {
-		constructor(props) {
-			super(props);
-			this.state = {
-				achievement: props.achievement,
-				unlocked: props.unlocked
-			};
-		}
-		render() {
-			let imgElement;
-			if (this.state.unlocked) {
-				imgElement = (
-					<DragAndDropImage
-						achievementId={this.state.achievement.id}
-						achievementName={this.state.achievement.name}
-						height="100px"
-						src={this.state.achievement.badgeUrl}
-						style={{zIndex: 2}}
-					/>
-				);
-			}
-			else {
-				imgElement = (
-					<img
-						height="100px"
-						src={this.state.achievement.badgeUrl}
-						style={{zIndex: 2}}
-					/>
-				);
-			}
-			return (
-				<div className="row well">
-					<div className="col-sm-2">
-						{imgElement}
-					</div>
-					<div className="col-sm-8">
-						<div className="h2">
-							{this.state.achievement.name}
-						</div>
-						<p>{this.state.achievement.description}</p>
-					</div>
-				</div>
+class Achievement extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			achievement: props.achievement,
+			unlocked: props.unlocked
+		};
+	}
+	render() {
+		let imgElement;
+		if (this.state.unlocked) {
+			imgElement = (
+				<DragAndDropImage
+					achievementId={this.state.achievement.id}
+					achievementName={this.state.achievement.name}
+					height="100px"
+					src={this.state.achievement.badgeUrl}
+					style={{zIndex: 2}}
+				/>
 			);
 		}
+		else {
+			imgElement = (
+				<img
+					height="100px"
+					src={this.state.achievement.badgeUrl}
+					style={{zIndex: 2}}
+				/>
+			);
+		}
+		return (
+			<div className="row well">
+				<div className="col-sm-2">
+					{imgElement}
+				</div>
+				<div className="col-sm-8">
+					<div className="h2">
+						{this.state.achievement.name}
+					</div>
+					<p>{this.state.achievement.description}</p>
+				</div>
+			</div>
+		);
 	}
+}
 
-	Achievement.displayName = 'achievement';
+Achievement.displayName = 'achievement';
 
-	Achievement.propTypes = {
-		achievement: React.PropTypes.shape({
-			badgeUrl: React.PropTypes.string,
-			description: React.PropTypes.string,
-			name: React.PropTypes.string
-		}),
-		unlocked: React.PropTypes.array
-	};
+Achievement.propTypes = {
+	achievement: React.PropTypes.shape({
+		badgeUrl: React.PropTypes.string,
+		description: React.PropTypes.string,
+		name: React.PropTypes.string
+	}),
+	unlocked: React.PropTypes.array
+};
 
-	module.exports = Achievement;
-})();
+module.exports = Achievement;

@@ -36,60 +36,56 @@ const SearchButton = (
 
 const updateDelay = 300;
 
-(() => {
-	'use strict';
+class SearchField extends React.Component {
+	constructor(props) {
+		super(props);
 
-	class SearchField extends React.Component {
-		constructor(props) {
-			super(props);
+		// React does not autobind non-React class methods
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.change = this.change.bind(this);
+	}
 
-			// React does not autobind non-React class methods
-			this.handleSubmit = this.handleSubmit.bind(this);
-			this.change = this.change.bind(this);
-		}
+	handleSubmit(event) {
+		event.preventDefault();
+		event.stopPropagation();
 
-		handleSubmit(event) {
-			event.preventDefault();
-			event.stopPropagation();
+		this.props.onSearch(this.query.getValue());
+	}
 
-			this.props.onSearch(this.query.getValue());
-		}
+	change() {
+		const inputValue = this.query.getValue();
 
-		change() {
-			const inputValue = this.query.getValue();
-
-			if (!inputValue.match(/^ *$/)) {
-				this.props.onSearch(inputValue);
-			}
-		}
-
-		render() {
-			return (
-				<div className="row">
-					<div className="col-md-6 col-md-offset-3">
-						<form
-							action="/search"
-							className="form-horizontal whole-page-form"
-							onSubmit={this.handleSubmit}
-						>
-							<Input
-								buttonAfter={SearchButton}
-								name="q"
-								ref={(ref) => this.query = ref}
-								type="text"
-								onChange={_debounce(this.change, updateDelay)}
-							/>
-						</form>
-					</div>
-				</div>
-			);
+		if (!inputValue.match(/^ *$/)) {
+			this.props.onSearch(inputValue);
 		}
 	}
 
-	SearchField.displayName = 'SearchField';
-	SearchField.propTypes = {
-		onSearch: React.PropTypes.func.isRequired
-	};
+	render() {
+		return (
+			<div className="row">
+				<div className="col-md-6 col-md-offset-3">
+					<form
+						action="/search"
+						className="form-horizontal whole-page-form"
+						onSubmit={this.handleSubmit}
+					>
+						<Input
+							buttonAfter={SearchButton}
+							name="q"
+							ref={(ref) => this.query = ref}
+							type="text"
+							onChange={_debounce(this.change, updateDelay)}
+						/>
+					</form>
+				</div>
+			</div>
+		);
+	}
+}
 
-	module.exports = SearchField;
-})();
+SearchField.displayName = 'SearchField';
+SearchField.propTypes = {
+	onSearch: React.PropTypes.func.isRequired
+};
+
+module.exports = SearchField;

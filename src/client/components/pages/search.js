@@ -23,43 +23,39 @@ const request = require('superagent-bluebird-promise');
 const SearchField = require('./parts/search-field');
 const SearchResults = require('./parts/search-results');
 
-(() => {
-	'use strict';
+class SearchPage extends React.Component {
+	constructor(props) {
+		super(props);
 
-	class SearchPage extends React.Component {
-		constructor(props) {
-			super(props);
+		this.state = {
+			results: this.props.initialResults
+		};
 
-			this.state = {
-				results: this.props.initialResults
-			};
-
-			// React does not autobind non-React class methods
-			this.handleSearch = this.handleSearch.bind(this);
-		}
-
-		handleSearch(q) {
-			request.get(`./search/autocomplete?q=${q}`)
-				.then((res) => JSON.parse(res.text))
-				.then((data) => {
-					this.setState({results: data});
-				});
-		}
-
-		render() {
-			return (
-				<div id="searchPage">
-					<SearchField onSearch={this.handleSearch}/>
-					<SearchResults results={this.state.results}/>
-				</div>
-			);
-		}
+		// React does not autobind non-React class methods
+		this.handleSearch = this.handleSearch.bind(this);
 	}
 
-	SearchPage.displayName = 'SearchPage';
-	SearchPage.propTypes = {
-		initialResults: React.PropTypes.array
-	};
+	handleSearch(q) {
+		request.get(`./search/autocomplete?q=${q}`)
+			.then((res) => JSON.parse(res.text))
+			.then((data) => {
+				this.setState({results: data});
+			});
+	}
 
-	module.exports = SearchPage;
-})();
+	render() {
+		return (
+			<div id="searchPage">
+				<SearchField onSearch={this.handleSearch}/>
+				<SearchResults results={this.state.results}/>
+			</div>
+		);
+	}
+}
+
+SearchPage.displayName = 'SearchPage';
+SearchPage.propTypes = {
+	initialResults: React.PropTypes.array
+};
+
+module.exports = SearchPage;
