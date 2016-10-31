@@ -43,7 +43,7 @@ const releaseEventSetFormatter =
 	require('../helpers/diffFormatters/releaseEventSet');
 
 const RevisionPage = React.createFactory(
-	require('../../client/components/pages/revision.jsx')
+	require('../../client/components/pages/revision')
 );
 
 const router = express.Router();

@@ -54,7 +54,7 @@ const loadLanguages =
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 const EditForm = React.createFactory(
-	require('../../../client/components/forms/edition.jsx')
+	require('../../../client/components/forms/edition')
 );
 
 const router = express.Router();

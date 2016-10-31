@@ -44,7 +44,7 @@ const loadPublisherTypes =
 const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
 
 const EditForm = React.createFactory(
-	require('../../../client/components/forms/publisher.jsx')
+	require('../../../client/components/forms/publisher')
 );
 
 const router = express.Router();

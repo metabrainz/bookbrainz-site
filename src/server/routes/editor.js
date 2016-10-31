@@ -38,11 +38,11 @@ const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
 
 const ProfileForm = React.createFactory(
-	require('../../client/components/forms/profile.jsx')
+	require('../../client/components/forms/profile')
 );
 
 const AchievementForm = React.createFactory(
-	require('../../client/components/forms/achievements.jsx')
+	require('../../client/components/forms/achievements')
 );
 
 const router = express.Router();

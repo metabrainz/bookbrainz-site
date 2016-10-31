@@ -19,7 +19,7 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const DeletionForm = React.createFactory(
-	require('../components/forms/deletion.jsx')
+	require('../components/forms/deletion')
 );
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
