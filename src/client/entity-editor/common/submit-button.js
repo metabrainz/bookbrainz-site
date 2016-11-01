@@ -50,7 +50,7 @@ function submit(url, data) {
 		.promise()
 		.then((response) => {
 			if (!response.body) {
-				return window.location.replace('/login');
+				window.location.replace('/login');
 			}
 
 			const redirectUrl = `/creator/${response.body.bbid}`;
