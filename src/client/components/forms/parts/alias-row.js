@@ -50,7 +50,7 @@ function makeSortName(name) {
 		return '';
 	}
 
-	const words = trimmedName.replace(/\,/g, '').split(' ');
+	const words = trimmedName.replace(/,/g, '').split(' ');
 
 	// If there's only one word, simply copy the name as the sort name
 	if (words.length === 1) {
