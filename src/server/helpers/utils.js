@@ -19,6 +19,8 @@
 
 'use strict';
 
+/* eslint prefer-rest-params: 1, prefer-reflect: 1 */
+
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
 const Editor = require('bookbrainz-data').Editor;

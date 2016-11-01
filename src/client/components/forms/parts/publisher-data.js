@@ -212,6 +212,7 @@ const validators = require('../../../helpers/react-validators');
 		}
 	}
 
+	/* eslint camelcase: 0 */
 	PublisherData.displayName = 'PublisherData';
 	PublisherData.propTypes = {
 		identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),

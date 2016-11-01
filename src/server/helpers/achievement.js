@@ -18,6 +18,8 @@
 
 'use strict';
 
+/* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
+
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
