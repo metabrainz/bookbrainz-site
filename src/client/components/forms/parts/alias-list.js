@@ -74,37 +74,42 @@ const AliasRow = require('./alias-row');
 			const existingAlias = this.state.aliases[changedRowIndex];
 
 			const aliasSortNameJustSetOrUnset = (
-				!existingAlias.sortName && updatedAlias.sortName ||
-				existingAlias.sortName && !updatedAlias.sortName
+				(!existingAlias.sortName && updatedAlias.sortName) ||
+				(existingAlias.sortName && !updatedAlias.sortName)
 			);
 
 			const aliasNameJustSetOrUnset = (
-				!existingAlias.name && updatedAlias.name ||
-				existingAlias.name && !updatedAlias.name
+				(!existingAlias.name && updatedAlias.name) ||
+				(existingAlias.name && !updatedAlias.name)
 			);
 
 			const aliasLanguageJustSetOrUnset = (
-				!existingAlias.languageId && updatedAlias.languageId ||
-				existingAlias.languageId && !updatedAlias.languageId
+				(!existingAlias.languageId && updatedAlias.languageId) ||
+				(existingAlias.languageId && !updatedAlias.languageId)
 			);
 
 			const lastAliasModified =
 				changedRowIndex === this.state.aliases.length - 1;
 
 			const defaultJustCheckedOrUnchecked = (
-				!existingAlias.default && updatedAlias.default ||
-				updatedAlias.default && !existingAlias.default
+				(!existingAlias.default && updatedAlias.default) ||
+				(updatedAlias.default && !existingAlias.default)
 			);
 
 			const primaryJustCheckedOrUnchecked = (
-				!existingAlias.primary && updatedAlias.primary ||
-				updatedAlias.primary && !existingAlias.primary
+				(!existingAlias.primary && updatedAlias.primary) ||
+				(updatedAlias.primary && !existingAlias.primary)
 			);
 
 			return Boolean(
 				aliasSortNameJustSetOrUnset || aliasNameJustSetOrUnset ||
-				aliasLanguageJustSetOrUnset || lastAliasModified &&
-				(defaultJustCheckedOrUnchecked || primaryJustCheckedOrUnchecked)
+				aliasLanguageJustSetOrUnset || (
+					lastAliasModified &&
+					(
+						defaultJustCheckedOrUnchecked ||
+						primaryJustCheckedOrUnchecked
+					)
+				)
 			);
 		}
 
