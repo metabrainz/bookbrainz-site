@@ -41,6 +41,10 @@ function SubmitButton({
 		</div>
 	);
 }
+SubmitButton.displayName = 'SubmitButton';
+SubmitButton.propTypes = {
+	error: React.PropTypes.string
+};
 
 function submit(url, data) {
 	return request.post(url).send(data)

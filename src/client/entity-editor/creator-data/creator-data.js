@@ -74,7 +74,9 @@ function CreatorData({
 }
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
-
+	creatorTypes: React.PropTypes.array,
+	genderOptions: React.PropTypes.array,
+	submissionUrl: React.PropTypes.string
 };
 
 export default CreatorData;

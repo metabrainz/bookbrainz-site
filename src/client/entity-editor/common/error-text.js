@@ -27,6 +27,10 @@ function ErrorText({
 		<Alert bsStyle="error">{children}</Alert>
 	);
 }
+ErrorText.displayName = 'ErrorText';
+ErrorText.propTypes = {
+	children: React.PropTypes.node
+};
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('creatorData');

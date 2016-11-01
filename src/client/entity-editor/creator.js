@@ -133,10 +133,12 @@ const Creator = ({
 };
 Creator.displayName = 'Creator';
 Creator.propTypes = {
-	languages: React.PropTypes.array,
-	genders: React.PropTypes.array,
+	creator: React.PropTypes.object,
 	creatorTypes: React.PropTypes.array,
-	identifierTypes: React.PropTypes.array
+	genders: React.PropTypes.array,
+	identifierTypes: React.PropTypes.array,
+	languages: React.PropTypes.array,
+	submissionUrl: React.PropTypes.string
 };
 
 export default Creator;
