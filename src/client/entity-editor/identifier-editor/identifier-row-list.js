@@ -49,7 +49,7 @@ IdentifierRowList.propTypes = {
 	typeOptions: React.PropTypes.array
 };
 
-function mapStateToProps(state, {typeOptions}) {
+function mapStateToProps(state) {
 	return {
 		identifiers: state.get('identifierEditor')
 	};
