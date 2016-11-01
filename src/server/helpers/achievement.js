@@ -667,7 +667,7 @@ achievement.processEdit = (userId, revisionId) =>
 
 
 achievement.processComment = () => {
-
+	// empty
 };
 
 module.exports = achievement;

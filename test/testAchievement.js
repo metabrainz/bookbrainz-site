@@ -72,8 +72,12 @@ function tests() {
 
 		// suppress warnings from rejections
 		Achievement.__set__('console', {
-			warn() {},
-			error() {}
+			warn() {
+				// empty
+			},
+			error() {
+				// empty
+			}
 		});
 
 		it('should reject invalid editors', () => {
