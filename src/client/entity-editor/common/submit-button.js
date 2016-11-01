@@ -25,7 +25,6 @@ import {setSubmitError} from '../actions';
 
 function SubmitButton({
 	error,
-	url,
 	...rest
 }) {
 	const errorElement = error ?
