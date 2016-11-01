@@ -186,7 +186,10 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 				id: revision.get('id'),
 				bbid: entity.bbid,
 				dataId: null
-			}).save(null, {method: 'insert', transacting}));
+			}).save(null, {
+				method: 'insert',
+				transacting
+			}));
 
 		const entityHeaderPromise = newEntityRevisionPromise
 			.then((entityRevision) => new HeaderModel({
@@ -590,7 +593,10 @@ module.exports.createEntity = (
 				const model = utils.getEntityModelByType(entityType);
 
 				return model.forge(propsToSet)
-					.save(null, {method: 'insert', transacting});
+					.save(null, {
+						method: 'insert',
+						transacting
+					});
 			})
 			.then(
 				(entityModel) =>
@@ -641,7 +647,10 @@ module.exports.editEntity = (
 
 		const oldAliasSetPromise = currentEntity.aliasSet &&
 			new AliasSet({id: currentEntity.aliasSet.id})
-				.fetch({withRelated: ['aliases'], transacting});
+				.fetch({
+					withRelated: ['aliases'],
+					transacting
+				});
 
 		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
 			.then((oldAliasSet) =>
@@ -654,7 +663,10 @@ module.exports.editEntity = (
 
 		const oldIdentSetPromise = currentEntity.identifierSet &&
 			new IdentifierSet({id: currentEntity.identifierSet.id})
-				.fetch({withRelated: ['identifiers'], transacting});
+				.fetch({
+					withRelated: ['identifiers'],
+					transacting
+				});
 
 		const identSetPromise = Promise.resolve(oldIdentSetPromise)
 			.then((oldIdentifierSet) =>
@@ -768,7 +780,10 @@ module.exports.editEntity = (
 				);
 
 				return Promise.join(
-					entity.save(null, {method: 'update', transacting}),
+					entity.save(null, {
+						method: 'update',
+						transacting
+					}),
 					editorUpdatePromise,
 					parentAddedPromise,
 					notePromise
@@ -776,7 +791,10 @@ module.exports.editEntity = (
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
-					.fetch({withRelated: ['defaultAlias'], transacting})
+					.fetch({
+						withRelated: ['defaultAlias'],
+						transacting
+					})
 			)
 			.then((entity) =>
 				entity.toJSON()

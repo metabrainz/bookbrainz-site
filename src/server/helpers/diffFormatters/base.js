@@ -26,14 +26,27 @@ function formatRow(kind, key, lhs, rhs) {
 	}
 
 	if (kind === 'N' || _.isNil(lhs)) {
-		return {kind: 'N', key, rhs};
+		return {
+			kind: 'N',
+			key,
+			rhs
+		};
 	}
 
 	if (kind === 'D' || _.isNil(rhs)) {
-		return {kind: 'D', key, lhs};
+		return {
+			kind: 'D',
+			key,
+			lhs
+		};
 	}
 
-	return {kind, key, lhs, rhs};
+	return {
+		kind,
+		key,
+		lhs,
+		rhs
+	};
 }
 module.exports.formatRow = formatRow;
 

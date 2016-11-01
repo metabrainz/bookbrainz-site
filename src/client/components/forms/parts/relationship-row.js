@@ -93,7 +93,10 @@ function getRelationshipTypeById(types, id) {
 		}
 
 		swap() {
-			this.setState({a: this.state.b, b: this.state.a});
+			this.setState({
+				a: this.state.b,
+				b: this.state.a
+			});
 		}
 
 		handleDeleteClick() {

@@ -50,8 +50,10 @@ const relationshipHelper = {};
 function getEntityByType(entity, withRelated, transacting) {
 	const model = utils.getEntityModelByType(entity.type);
 
-	return model.forge({bbid: entity.bbid})
-		.fetch({withRelated, transacting});
+	return model.forge({bbid: entity.bbid}).fetch({
+		withRelated,
+		transacting
+	});
 }
 
 function copyRelationshipsAndAdd(
@@ -211,7 +213,10 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 					const markup =
 						ReactDOMServer.renderToString(EditForm(props));
 
-					res.render('relationship/edit', {props, markup});
+					res.render('relationship/edit', {
+						props,
+						markup
+					});
 				})
 				.catch(next);
 		}

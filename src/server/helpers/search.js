@@ -198,7 +198,10 @@ search.generateIndex = () => {
 			}
 		})
 		.then(() => _client.indices.create(
-			{index: _index, body: indexMappings}
+			{
+				index: _index,
+				body: indexMappings
+			}
 		))
 		.then(() => {
 			const baseRelations = [
@@ -208,7 +211,10 @@ search.generateIndex = () => {
 			];
 
 			const entityBehaviors = [
-				{model: Creator, relations: ['gender', 'creatorType']},
+				{
+					model: Creator,
+					relations: ['gender', 'creatorType']
+				},
 				{
 					model: Edition,
 					relations: [
@@ -217,9 +223,18 @@ search.generateIndex = () => {
 						'editionStatus'
 					]
 				},
-				{model: Publication, relations: ['publicationType']},
-				{model: Publisher, relations: ['publisherType']},
-				{model: Work, relations: ['workType']}
+				{
+					model: Publication,
+					relations: ['publicationType']
+				},
+				{
+					model: Publisher,
+					relations: ['publisherType']
+				},
+				{
+					model: Work,
+					relations: ['workType']
+				}
 			];
 
 			// Update the indexed entries for each entity type

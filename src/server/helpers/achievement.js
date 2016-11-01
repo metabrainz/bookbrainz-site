@@ -279,10 +279,18 @@ function processRevisionist(editorId) {
 		.then((editor) => {
 			const revisions = editor.attributes.revisionsApplied;
 			const tiers = [
-				{threshold: 250, name: 'Revisionist III',
+				{
+					threshold: 250,
+					name: 'Revisionist III',
 					titleName: 'Revisionist'},
-				{threshold: 50, name: 'Revisionist II'},
-				{threshold: 1, name: 'Revisionist I'}
+				{
+					threshold: 50,
+					name: 'Revisionist II'
+				},
+				{
+					threshold: 1,
+					name: 'Revisionist I'
+				}
 			];
 			return testTiers(revisions, editorId, tiers);
 		});
@@ -292,10 +300,19 @@ function processCreatorCreator(editorId) {
 	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Creator Creator III',
-					titleName: 'Creator Creator'},
-				{threshold: 10, name: 'Creator Creator II'},
-				{threshold: 1, name: 'Creator Creator I'}
+				{
+					threshold: 100,
+					name: 'Creator Creator III',
+					titleName: 'Creator Creator'
+				},
+				{
+					threshold: 10,
+					name: 'Creator Creator II'
+				},
+				{
+					threshold: 1,
+					name: 'Creator Creator I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -305,10 +322,19 @@ function processLimitedEdition(editorId) {
 	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Limited Edition III',
-					titleName: 'Limited Edition'},
-				{threshold: 10, name: 'Limited Edition II'},
-				{threshold: 1, name: 'Limited Edition I'}
+				{
+					threshold: 100,
+					name: 'Limited Edition III',
+					titleName: 'Limited Edition'
+				},
+				{
+					threshold: 10,
+					name: 'Limited Edition II'
+				},
+				{
+					threshold: 1,
+					name: 'Limited Edition I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -320,10 +346,19 @@ function processPublisher(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Publisher III',
-					titleName: 'Publisher'},
-				{threshold: 10, name: 'Publisher II'},
-				{threshold: 1, name: 'Publisher I'}
+				{
+					threshold: 100,
+					name: 'Publisher III',
+					titleName: 'Publisher'
+				},
+				{
+					threshold: 10,
+					name: 'Publisher II'
+				},
+				{
+					threshold: 1,
+					name: 'Publisher I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -335,10 +370,19 @@ function processPublisherCreator(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Publisher Creator III',
-					titleName: 'Publisher Creator'},
-				{threshold: 10, name: 'Publisher Creator II'},
-				{threshold: 1, name: 'Publisher Creator I'}
+				{
+					threshold: 100,
+					name: 'Publisher Creator III',
+					titleName: 'Publisher Creator'
+				},
+				{
+					threshold: 10,
+					name: 'Publisher Creator II'
+				},
+				{
+					threshold: 1,
+					name: 'Publisher Creator I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -350,10 +394,19 @@ function processWorkerBee(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Worker Bee III',
-					titleName: 'Worker Bee'},
-				{threshold: 10, name: 'Worker Bee II'},
-				{threshold: 1, name: 'Worker Bee I'}
+				{
+					threshold: 100,
+					name: 'Worker Bee III',
+					titleName: 'Worker Bee'
+				},
+				{
+					threshold: 10,
+					name: 'Worker Bee II'
+				},
+				{
+					threshold: 1,
+					name: 'Worker Bee I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -367,7 +420,11 @@ function processSprinter(editorId) {
 	return Bookshelf.knex.raw(rawSql)
 		.then((out) => {
 			const tiers = [
-				{threshold: 10, name: 'Sprinter', titleName: 'Sprinter'}
+				{
+					threshold: 10,
+					name: 'Sprinter',
+					titleName: 'Sprinter'
+				}
 			];
 			return testTiers(out.rowCount, editorId, tiers);
 		});
@@ -394,7 +451,11 @@ function processFunRunner(editorId) {
 	return getEditsInDays(editorId, 6)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 7, name: 'Fun Runner', titleName: 'Fun Runner'}
+				{
+					threshold: 7,
+					name: 'Fun Runner',
+					titleName: 'Fun Runner'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -404,7 +465,10 @@ function processMarathoner(editorId) {
 	return getEditsInDays(editorId, 29)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 30, name: 'Marathoner', titleName: 'Marathoner'}
+				{
+					threshold: 30,
+					name: 'Marathoner',
+					titleName: 'Marathoner'}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -517,9 +581,19 @@ function processExplorer(editorId) {
 	return getEntityVisits(editorId)
 		.then((visits) => {
 			const tiers = [
-				{threshold: 10, name: 'Explorer I'},
-				{threshold: 100, name: 'Explorer II'},
-				{threshold: 1000, name: 'Explorer III', titleName: 'Explorer'}
+				{
+					threshold: 10,
+					name: 'Explorer I'
+				},
+				{
+					threshold: 100,
+					name: 'Explorer II'
+				},
+				{
+					threshold: 1000,
+					name: 'Explorer III',
+					titleName: 'Explorer'
+				}
 			];
 			return testTiers(visits, editorId, tiers);
 		})

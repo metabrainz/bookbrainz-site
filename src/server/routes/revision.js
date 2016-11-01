@@ -222,7 +222,10 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-			const props = {revision: revision.toJSON(), diffs};
+			const props = {
+				revision: revision.toJSON(),
+				diffs
+			};
 			res.render('page', {
 				title: 'RevisionPage',
 				markup: ReactDOMServer.renderToString(RevisionPage(props))
