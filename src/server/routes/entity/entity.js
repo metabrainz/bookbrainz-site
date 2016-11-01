@@ -215,7 +215,9 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 	const newSetIds = _.map(newSet, idField);
 
 	const oldSetHash = {};
-	oldSet.forEach((item) => { oldSetHash[item[idField]] = item; });
+	oldSet.forEach((item) => {
+		oldSetHash[item[idField]] = item;
+	});
 
 	// First, determine whether any items have been deleted or added, by
 	// excluding all new IDs from the old IDs and checking whether any IDs

@@ -40,6 +40,7 @@ const _ = require('lodash');
 const config = require('../helpers/config');
 const Log = require('log');
 const log = new Log(config.site.log);
+
 /**
  * Achievement Module
  * @module Achievement

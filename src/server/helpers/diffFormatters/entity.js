@@ -335,9 +335,9 @@ function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		}
 
 		const rawChangeSets = diff.changes.map((change) =>
-			formatEntityChange(diff.entity, change) ||
-			entityFormatter &&
-			entityFormatter(change)
+			formatEntityChange(diff.entity, change) || (
+				entityFormatter && entityFormatter(change)
+			)
 		);
 
 		formattedDiff.changes = _.sortBy(

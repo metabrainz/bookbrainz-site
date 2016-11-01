@@ -148,12 +148,10 @@ function transformNewForm(data) {
 	}));
 
 	aliases = [{
-		id: data.sharedData.id,
-		name: data.sharedData.name,
-		sortName: data.sharedData.sortName,
 		languageId: data.sharedData.language,
 		primary: true,
-		default: true
+		default: true,
+		...data.sharedData
 	}, ...aliases];
 
 	const identifiers = _.map(data.identifierEditor, ({type, ...rest}) => ({
@@ -182,11 +180,13 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	);
 });
 
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	req.body = transformNewForm(req.body);
-	return entityRoutes.editEntity(
-		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-	);
-});
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	(req, res) => {
+		req.body = transformNewForm(req.body);
+		return entityRoutes.editEntity(
+			req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
+		);
+	}
+);
 
 module.exports = router;
