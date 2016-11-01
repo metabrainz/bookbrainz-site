@@ -54,7 +54,9 @@ const validators = require('../../helpers/react-validators');
 			const birthday = this.birthday.getValue();
 			const data = {
 				displayName: this.displayName.getValue(),
-				gender: gender ? parseInt(gender, 10) : null,
+				gender: gender ?
+					parseInt(gender, 10) :
+					null,
 				birthday: birthday || null
 			};
 
@@ -99,7 +101,8 @@ const validators = require('../../helpers/react-validators');
 			}
 
 			const loadingComponent = this.state.waiting ?
-				<LoadingSpinner/> : null;
+				<LoadingSpinner/> :
+				null;
 
 			const initialGender = this.props.gender && this.props.gender.id;
 			const select2Options = {

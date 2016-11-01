@@ -72,9 +72,9 @@ function makeSortName(name) {
 	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;
 
 	// Test this to check that splice will not have a 0 deleteCount
-	const suffixWords = (
-		lastSuffix < words.length ? words.splice(lastSuffix) : []
-	);
+	const suffixWords = lastSuffix < words.length ?
+		words.splice(lastSuffix) :
+		[];
 
 	// Rearrange names to (last name, other names)
 	const INDEX_BEFORE_END = -1;
@@ -159,6 +159,10 @@ function makeSortName(name) {
 				allowClear: true
 			};
 
+			const removeHiddenClass = this.props.removeHidden ?
+				'hidden' :
+				'';
+
 			return (
 				<div
 					className="row"
@@ -226,7 +230,7 @@ function makeSortName(name) {
 					<div className="col-md-1 text-right">
 						<Button
 							bsStyle="danger"
-							className={this.props.removeHidden ? 'hidden' : ''}
+							className={removeHiddenClass}
 							onClick={this.props.onRemove}
 						>
 							<Icon name="times"/>

@@ -76,8 +76,9 @@ const LoadingSpinner = require('../loading-spinner');
 					(<Alert bsStyle="danger">{this.state.error}</Alert>);
 			}
 
-			const loadingComponent =
-				this.state.waiting ? <LoadingSpinner/> : null;
+			const loadingComponent = this.state.waiting ?
+				<LoadingSpinner/> :
+				null;
 
 			const footerComponent = (
 				<span className="clearfix">
@@ -101,7 +102,8 @@ const LoadingSpinner = require('../loading-spinner');
 			const headerComponent = (<h3>Confirm Deletion</h3>);
 
 			const entityName = entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)';
+				entity.defaultAlias.name :
+				'(unnamed)';
 
 			return (
 				<div className="row">

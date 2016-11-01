@@ -38,7 +38,8 @@ function SearchResults(props) {
 			<td>
 				<a href={`/${result.type.toLowerCase()}/${result.bbid}`}>
 					{result.defaultAlias ?
-						result.defaultAlias.name : '(unnamed)'
+						result.defaultAlias.name :
+						'(unnamed)'
 					}
 				</a>
 			</td>

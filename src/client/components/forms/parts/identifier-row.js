@@ -47,7 +47,11 @@ const validators = require('../../../helpers/react-validators');
 					this.props.types
 				);
 
-				return (isValid ? 'success' : 'error');
+				return (
+					isValid ?
+						'success' :
+						'error'
+				);
 			}
 
 			if (this.props.value) {
@@ -69,6 +73,9 @@ const validators = require('../../../helpers/react-validators');
 				allowClear: false
 			};
 
+			const removeHiddenClass = this.props.removeHidden ?
+				'hidden' :
+				'';
 			return (
 				<div className="row">
 					<div className="col-md-4">
@@ -99,7 +106,7 @@ const validators = require('../../../helpers/react-validators');
 					<div className="col-md-2">
 						<Button
 							bsStyle="danger"
-							className={this.props.removeHidden ? 'hidden' : ''}
+							className={removeHiddenClass}
 							onClick={this.props.onRemove}
 						>
 							<Icon name="times"/>

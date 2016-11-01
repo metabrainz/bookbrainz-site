@@ -27,8 +27,11 @@ const Input = require('react-bootstrap').Input;
 
 	class RevisionNote extends React.Component {
 		render() {
+			const revisionNoteVisibleClass = this.props.visible === false ?
+				'hidden' :
+				'';
 			return (
-				<div className={this.props.visible === false ? 'hidden' : ''}>
+				<div className={revisionNoteVisibleClass}>
 					<h2>Submit Revision</h2>
 					<p className="lead">
 						Finally, add this revision to an edit.
@@ -62,7 +65,8 @@ const Input = require('react-bootstrap').Input;
 							<li
 								className={
 								this.props.submitDisabled ?
-								'next disabled' : 'next'
+									'next disabled' :
+									'next'
 							}
 							>
 								<a

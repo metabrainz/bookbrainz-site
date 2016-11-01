@@ -188,8 +188,11 @@ const AliasRow = require('./alias-row');
 				/>
 			));
 
+			const aliasListVisibleClass = this.props.visible ?
+				'' :
+				'hidden';
 			return (
-				<div className={this.props.visible === false ? 'hidden' : ''}>
+				<div className={aliasListVisibleClass}>
 					<h2>Add Aliases</h2>
 					<p className="lead">Add some aliases to the entity.</p>
 					<div className="form-horizontal">

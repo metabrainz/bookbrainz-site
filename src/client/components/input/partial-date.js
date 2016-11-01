@@ -85,7 +85,9 @@ const yRegex = /^\d{4}$/;
 			let validationClass = null;
 
 			if (this.state.value) {
-				validationClass = this.state.valid ? 'success' : 'error';
+				validationClass = this.state.valid ?
+					'success' :
+					'error';
 			}
 
 			return validationClass;

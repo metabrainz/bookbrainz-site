@@ -36,7 +36,9 @@ const validators = require('../../../helpers/react-validators');
 			super(props);
 
 			this.state = {
-				ended: this.props.creator ? this.props.creator.ended : false
+				ended: this.props.creator ?
+					this.props.creator.ended :
+					false
 			};
 
 			// React does not autobind non-React class methods
@@ -46,7 +48,9 @@ const validators = require('../../../helpers/react-validators');
 		getValue() {
 			return {
 				beginDate: this.begin.getValue(),
-				endDate: this.ended.getChecked() ? this.end.getValue() : '',
+				endDate: this.ended.getChecked() ?
+					this.end.getValue() :
+					'',
 				ended: this.ended.getChecked(),
 				gender: this.gender.getValue(),
 				creatorType: this.creatorType.getValue(),
@@ -80,13 +84,17 @@ const validators = require('../../../helpers/react-validators');
 				initialBeginDate = prefillData.beginDate;
 				initialEndDate = prefillData.endDate;
 				initialGender = prefillData.gender ?
-					prefillData.gender.id : null;
+					prefillData.gender.id :
+					null;
 				initialCreatorType = prefillData.creatorType ?
-					prefillData.creatorType.id : null;
+					prefillData.creatorType.id :
+					null;
 				initialDisambiguation = prefillData.disambiguation ?
-					prefillData.disambiguation.comment : null;
+					prefillData.disambiguation.comment :
+					null;
 				initialAnnotation = prefillData.annotation ?
-					prefillData.annotation.content : null;
+					prefillData.annotation.content :
+					null;
 				initialIdentifiers = prefillData.identifierSet &&
 					prefillData.identifierSet.identifiers.map((identifier) => ({
 						id: identifier.id,
@@ -100,8 +108,14 @@ const validators = require('../../../helpers/react-validators');
 				width: '100%'
 			};
 
+			const dataTabVisibleClass = this.props.visible ?
+				'' :
+				'hidden';
+			const endDateVisibleClass = this.state.ended ?
+				'' :
+				'hidden';
 			return (
-				<div className={this.props.visible === false ? 'hidden' : ''}>
+				<div className={dataTabVisibleClass}>
 					<h2>Add Data</h2>
 					<p className="lead">
 						Fill out any data you know about the entity.
@@ -118,7 +132,7 @@ const validators = require('../../../helpers/react-validators');
 						/>
 						<PartialDate
 							defaultValue={initialEndDate}
-							groupClassName={this.state.ended ? '' : 'hidden'}
+							groupClassName={endDateVisibleClass}
 							label="End Date"
 							labelClassName="col-md-4"
 							placeholder="YYYY-MM-DD"

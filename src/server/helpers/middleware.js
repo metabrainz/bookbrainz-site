@@ -44,8 +44,9 @@ function makeLoader(model, propName, sortFunc) {
 			.then((results) => {
 				const resultsSerial = results.toJSON();
 
-				res.locals[propName] =
-					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
+				res.locals[propName] = sortFunc ?
+					resultsSerial.sort(sortFunc) :
+					resultsSerial;
 
 				next();
 			})
@@ -96,7 +97,8 @@ middleware.loadEntityRelationships = (req, res, next) => {
 		)
 		.then((relationshipSet) => {
 			entity.relationships = relationshipSet ?
-				relationshipSet.related('relationships').toJSON() : [];
+				relationshipSet.related('relationships').toJSON() :
+				[];
 
 			function getEntityWithAlias(relEntity) {
 				const model = utils.getEntityModelByType(relEntity.type);

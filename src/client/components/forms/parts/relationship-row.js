@@ -46,7 +46,8 @@ function renderRelationship(relationship) {
 		].map((entity) => {
 			// Linkify source and target based on default alias
 			const name = entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)';
+				entity.defaultAlias.name :
+				'(unnamed)';
 			return `<a href="${dataHelper.getEntityLink(entity)}">${name}</a>`;
 		})
 	};
@@ -86,7 +87,8 @@ function getRelationshipTypeById(types, id) {
 				source: this.source.getValue(),
 				target: this.target.getValue(),
 				typeId: this.type.getValue() ?
-					parseInt(this.type.getValue(), 10) : null
+					parseInt(this.type.getValue(), 10) :
+					null
 			};
 		}
 
@@ -216,7 +218,8 @@ function getRelationshipTypeById(types, id) {
 				}
 
 				entity.text = entity.defaultAlias ?
-					entity.defaultAlias.name : '(unnamed)';
+					entity.defaultAlias.name :
+					'(unnamed)';
 				entity.id = entity.bbid;
 
 				return entity;
@@ -229,7 +232,9 @@ function getRelationshipTypeById(types, id) {
 
 			let validationState = null;
 			if (this.rowClass()) {
-				validationState = this.valid() ? 'success' : 'error';
+				validationState = this.valid() ?
+					'success' :
+					'error';
 			}
 
 			const select2Options = {
@@ -256,8 +261,9 @@ function getRelationshipTypeById(types, id) {
 				/>
 			);
 
-			const deleteOrResetButton =
-				this.state.deleted ? resetButton : deleteButton;
+			const deleteOrResetButton = this.state.deleted ?
+				resetButton :
+				deleteButton;
 
 			let deprecationWarning = null;
 			const currentType = this.currentRelationshipType();
@@ -339,11 +345,13 @@ function getRelationshipTypeById(types, id) {
 								<div className="col-md-3 text-right">
 									{
 										this.state.deleted || this.disabled() ?
-											null : swapButton
+											null :
+											swapButton
 									}
 									{
 										this.disabled() ?
-											null : deleteOrResetButton
+											null :
+											deleteOrResetButton
 									}
 								</div>
 

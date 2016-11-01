@@ -61,9 +61,11 @@ const Select = require('./select2');
 				return {
 					id: entity.bbid,
 					text: entity.defaultAlias ?
-						entity.defaultAlias.name : '(unnamed)',
+						entity.defaultAlias.name :
+						'(unnamed)',
 					disambiguation: entity.disambiguation ?
-						entity.disambiguation.comment : null,
+						entity.disambiguation.comment :
+						null,
 					type: entity.type
 				};
 			}

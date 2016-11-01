@@ -251,8 +251,9 @@ function updatedOrNewSetItems(oldSet, newSet, compareFields) {
 }
 
 function processFormSet(transacting, oldSet, formItems, setMetadata) {
-	const oldItems =
-		oldSet ? oldSet.related(setMetadata.propName).toJSON() : [];
+	const oldItems = oldSet ?
+		oldSet.related(setMetadata.propName).toJSON() :
+		[];
 
 	// If there's no change, return the old set
 	if (!setHasChanged(
@@ -332,8 +333,9 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 function processFormAliases(
 	transacting, oldAliasSet, oldDefaultAliasId, newAliases
 ) {
-	const oldAliases =
-		oldAliasSet ? oldAliasSet.related('aliases').toJSON() : [];
+	const oldAliases = oldAliasSet ?
+		oldAliasSet.related('aliases').toJSON() :
+		[];
 	const aliasCompareFields =
 		['name', 'sortName', 'languageId', 'primary'];
 	const aliasesHaveChanged = setHasChanged(
@@ -391,8 +393,9 @@ function processFormAliases(
 }
 
 function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
-	const oldIdents =
-		oldIdentSet ? oldIdentSet.related('identifiers').toJSON() : [];
+	const oldIdents = oldIdentSet ?
+		oldIdentSet.related('identifiers').toJSON() :
+		[];
 	const identCompareFields =
 		['value', 'typeId'];
 	const identsHaveChanged = setHasChanged(
@@ -444,10 +447,12 @@ function processFormAnnotation(
 		return oldAnnotation;
 	}
 
-	return newContent ? new Annotation({
-		content: newContent,
-		lastRevisionId: revision.get('id')
-	}).save(null, {transacting}) : null;
+	return newContent ?
+		new Annotation({
+			content: newContent,
+			lastRevisionId: revision.get('id')
+		}).save(null, {transacting}) :
+		null;
 }
 
 function processFormDisambiguation(
@@ -459,9 +464,11 @@ function processFormDisambiguation(
 		return oldDisambiguation;
 	}
 
-	return newComment ? new Disambiguation({
-		comment: newComment
-	}).save(null, {transacting}) : null;
+	return newComment ?
+		new Disambiguation({
+			comment: newComment
+		}).save(null, {transacting}) :
+		null;
 }
 
 function processEntitySets(derivedSets, currentEntity, body, transacting) {
@@ -496,8 +503,9 @@ function processEntitySets(derivedSets, currentEntity, body, transacting) {
 			)
 			.then((newSet) => {
 				const newProp = {};
-				newProp[derivedSet.entityIdField] =
-					newSet ? newSet.get('id') : null;
+				newProp[derivedSet.entityIdField] = newSet ?
+					newSet.get('id') :
+					null;
 
 				return newProp;
 			});
