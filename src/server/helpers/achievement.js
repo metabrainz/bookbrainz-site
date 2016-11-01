@@ -229,29 +229,6 @@ function testTiers(signal, editorId, tiers) {
 }
 
 /**
- * Returns number of revisions of a certain type there are for the specified
- * editor
- * @param {function} revisionType - Constructor for the revisionType
- * @param {string} revisionString - Snake case string of revisionType
- * @param {int} editor - Editor id being queried
- * @returns {int} - Number of revisions of type (type)
- */
-function getTypeRevisions(revisionType, revisionString, editor) {
-	return revisionType
-		.query((qb) => {
-			qb.innerJoin('bookbrainz.revision',
-				'bookbrainz.revision.id',
-				`bookbrainz.${revisionString}.id`);
-			qb.groupBy(`${revisionString}.id`,
-				`${revisionString}.bbid`,
-				'revision.id');
-			qb.where('bookbrainz.revision.author_id', '=', editor);
-		})
-		.fetchAll()
-		.then((out) => out.length);
-}
-
-/**
  * Returns number of revisions of a certain type created by a specified
  * editor
  * @param {function} revisionType - Constructor for the revisionType
