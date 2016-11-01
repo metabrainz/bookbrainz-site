@@ -289,11 +289,7 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 	let createPropertiesPromise = null;
 	let idsToAttach;
 
-	if (!setMetadata.mutableFields) {
-		// If the set's elements aren't mutable, it should just be a list of IDs
-		idsToAttach = formItems;
-	}
-	else {
+	if (setMetadata.mutableFields) {
 		// If there are items in the set which haven't changed, get their IDs
 		const unchangedItems = unchangedSetItems(
 			oldItems,
@@ -319,6 +315,10 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 					)
 				)
 			);
+	}
+	else {
+		// If the set's elements aren't mutable, it should just be a list of IDs
+		idsToAttach = formItems;
 	}
 
 	// Link any IDs for unchanged items (including immutable) to the set

@@ -59,11 +59,11 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		})
 		.then((unlock) => {
 			let titleJSON;
-			if (unlock !== null) {
-				titleJSON = unlock.toJSON();
+			if (unlock === null) {
+				titleJSON = {};
 			}
 			else {
-				titleJSON = {};
+				titleJSON = unlock.toJSON();
 			}
 			return titleJSON;
 		});
@@ -111,11 +111,11 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		)
 		.then((editor) => {
 			let editorTitleUnlock;
-			if (!req.body.title) {
-				editorTitleUnlock = editor.set('titleUnlockId', null);
+			if (req.body.title) {
+				editorTitleUnlock = editor.set('titleUnlockId', req.body.title);
 			}
 			else {
-				editorTitleUnlock = editor.set('titleUnlockId', req.body.title);
+				editorTitleUnlock = editor.set('titleUnlockId', null);
 			}
 			return editorTitleUnlock.save();
 		})
@@ -350,7 +350,10 @@ function rankUpdate(editorId, bodyRank, rank) {
 		})
 		.then(() => {
 			let updatePromise;
-			if (bodyRank !== '') {
+			if (bodyRank === '') {
+				updatePromise = Promise.resolve(false);
+			}
+			else {
 				updatePromise = new AchievementUnlock({
 					achievementId: parseInt(bodyRank, 10),
 					editorId: parseInt(editorId, 10)
@@ -360,9 +363,6 @@ function rankUpdate(editorId, bodyRank, rank) {
 						unlock.set('profileRank', rank)
 							.save()
 					);
-			}
-			else {
-				updatePromise = Promise.resolve(false);
 			}
 			return updatePromise;
 		});

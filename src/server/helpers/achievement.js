@@ -55,15 +55,15 @@ function awardUnlock(UnlockType, awardAttribs) {
 		.fetch()
 		.then((award) => {
 			let unlockPromise;
-			if (award !== null) {
-				unlockPromise = Promise.resolve('already unlocked');
-			}
-			else {
+			if (award === null) {
 				unlockPromise = new UnlockType(awardAttribs)
 					.save(null, {method: 'insert'})
 					.then((unlock) =>
 						unlock.toJSON()
 					);
+			}
+			else {
+				unlockPromise = Promise.resolve('already unlocked');
 			}
 			return unlockPromise;
 		})
@@ -85,7 +85,12 @@ function awardAchievement(editorId, achievementName) {
 		.fetch()
 		.then((achievementTier) => {
 			let awardPromise;
-			if (achievementTier !== null) {
+			if (achievementTier === null) {
+				awardPromise = Promise.reject(new AwardNotUnlockedError(
+					`Achievement ${achievementName} not found in database`
+				));
+			}
+			else {
 				const achievementAttribs = {
 					editorId,
 					achievementId: achievementTier.id
@@ -100,11 +105,6 @@ function awardAchievement(editorId, achievementName) {
 						.catch((err) => Promise.reject(
 							new AwardNotUnlockedError(err.message)
 						));
-			}
-			else {
-				awardPromise = Promise.reject(new AwardNotUnlockedError(
-					`Achievement ${achievementName} not found in database`
-				));
 			}
 			return awardPromise;
 		});
@@ -125,7 +125,12 @@ function awardTitle(editorId, tier) {
 			.fetch()
 			.then((title) => {
 				let awardPromise;
-				if (title !== null) {
+				if (title === null) {
+					awardPromise = Promise.reject(new AwardNotUnlockedError(
+						`Title ${tier.titleName} not found in database`
+					));
+				}
+				else {
 					const titleAttribs = {
 						editorId,
 						titleId: title.id
@@ -139,11 +144,6 @@ function awardTitle(editorId, tier) {
 						.catch((err) => Promise.reject(
 							new AwardNotUnlockedError(err.message)
 						));
-				}
-				else {
-					awardPromise = Promise.reject(new AwardNotUnlockedError(
-						`Title ${tier.titleName} not found in database`
-					));
 				}
 				return awardPromise;
 			});
