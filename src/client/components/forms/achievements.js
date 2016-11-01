@@ -76,7 +76,6 @@ const DragAndDrop = require('../input/dragAndDrop');
 			const locked = this.renderAchievements(false);
 
 			let rankUpdate;
-			console.log(this.state.editor.authenticated);
 			if (this.state.editor.authenticated) {
 				rankUpdate = (
 					<form

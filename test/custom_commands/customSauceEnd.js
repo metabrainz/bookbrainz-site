@@ -19,6 +19,5 @@ exports.command = function command() {
 		name: jobName
 	}, () => {});
 
-	console.log(`SauceOnDemandSessionID=${sessionid} job-name=${jobName}`);
 	this.end();
 };

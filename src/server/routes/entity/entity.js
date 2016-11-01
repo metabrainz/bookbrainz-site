@@ -25,6 +25,10 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const _ = require('lodash');
 
+const config = require('../helpers/config');
+const Log = require('log');
+const log = new Log(config.site.log);
+
 // XXX: Don't pull in bookshelf directly
 const bookshelf = require('bookbrainz-data').bookshelf;
 
@@ -105,7 +109,7 @@ module.exports.displayEntity = (req, res) => {
 						return unlockName;
 					})
 					.catch((error) => {
-						console.log(error);
+						log.debug(error);
 					})
 			);
 			alertPromise = Promise.all(promiseList);

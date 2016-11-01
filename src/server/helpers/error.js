@@ -19,6 +19,9 @@
 'use strict';
 
 const status = require('http-status');
+const config = require('../helpers/config');
+const Log = require('log');
+const log = new Log(config.site.log);
 
 class SiteError extends Error {
 	constructor(message) {
@@ -91,8 +94,8 @@ class PermissionDeniedError extends SiteError {
 }
 
 function _logError(err) {
-	console.log(err);
-	console.log(err.stack);
+	log.error(err);
+	log.debug(err.stack);
 }
 
 function _getErrorToSend(err) {

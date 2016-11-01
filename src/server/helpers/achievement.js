@@ -35,6 +35,9 @@ const Bookshelf = require('bookbrainz-data').bookshelf;
 const AwardNotUnlockedError = require('./error.js').AwardNotUnlockedError;
 const _ = require('lodash');
 
+const config = require('../helpers/config');
+const Log = require('log');
+const log = new Log(config.site.log);
 /**
  * Achievement Module
  * @module Achievement
@@ -205,7 +208,7 @@ function testTiers(signal, editorId, tiers) {
 					return out;
 				}
 			)
-				.catch((error) => console.log(error));
+				.catch((error) => log.debug(error));
 		}
 		else {
 			const out = {};
