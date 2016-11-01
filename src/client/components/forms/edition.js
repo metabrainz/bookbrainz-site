@@ -100,7 +100,8 @@ const LoadingSpinner = require('../loading-spinner');
 
 			const self = this;
 			request.post(this.props.submissionUrl)
-				.send(data).promise()
+				.send(data)
+				.promise()
 				.then((res) => {
 					if (!res.body) {
 						window.location.replace('/login');

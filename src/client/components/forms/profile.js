@@ -57,7 +57,8 @@ const Select = require('../input/select2');
 			this.setState({waiting: true});
 
 			request.post('/editor/edit/handler')
-				.send(data).promise()
+				.send(data)
+				.promise()
 				.then(() => {
 					window.location.href = `/editor/${this.props.editor.id}`;
 				});

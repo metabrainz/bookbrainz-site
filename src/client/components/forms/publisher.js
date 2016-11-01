@@ -92,7 +92,8 @@ const RevisionNote = require('./parts/revision-note');
 			this.setState({waiting: true});
 
 			request.post(this.props.submissionUrl)
-				.send(data).promise()
+				.send(data)
+				.promise()
 				.then((res) => {
 					if (!res.body) {
 						window.location.replace('/login');

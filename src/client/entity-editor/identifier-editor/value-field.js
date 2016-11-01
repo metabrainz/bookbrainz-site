@@ -83,7 +83,8 @@ function mapDispatchToProps(dispatch, {index, types}) {
 			const guessedType =
 				data.guessIdentifierType(event.target.value, types);
 			if (guessedType) {
-				const result = new RegExp(guessedType.detectionRegex).exec(event.target.value);
+				const result = new RegExp(guessedType.detectionRegex)
+					.exec(event.target.value);
 				event.target.value = result[1];
 			}
 			return debouncedDispatch(updateIdentifierValue(index, event.target.value, guessedType));
