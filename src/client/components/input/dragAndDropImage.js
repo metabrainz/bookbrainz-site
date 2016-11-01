@@ -1,5 +1,4 @@
 const React = require('react');
-const Input = require('react-bootstrap').Input;
 
 (() => {
 	'use strict';

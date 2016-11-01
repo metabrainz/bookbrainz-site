@@ -17,7 +17,7 @@
  */
 
 
-import {Button, Col, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 import LanguageField from './language-field-container';
 import NameField from './name-field-container';
 import PrimaryCheck from './primary-check';

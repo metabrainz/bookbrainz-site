@@ -16,19 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Input, Row} from 'react-bootstrap';
-import GenderField from './gender-field-container';
-import TypeField from './type-field-container';
+import {Col, Row} from 'react-bootstrap';
 import BeginField from './begin-field-container';
 import EndField from './end-field-container';
 import EndedCheck from './ended-check-container';
-import PartialDate from '../../components/input/partial-date';
-import SubmitButton from '../common/submit-button';
 import ErrorText from '../common/error-text';
+import GenderField from './gender-field-container';
 import React from 'react';
-import Select from 'react-select';
-import ValidationLabel from '../common/validation-label';
-
+import SubmitButton from '../common/submit-button';
+import TypeField from './type-field-container';
 
 function CreatorData({
 	genderOptions,

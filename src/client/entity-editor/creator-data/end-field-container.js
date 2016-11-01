@@ -17,8 +17,8 @@
  */
 
 import DateField from './date-field';
-import {connect} from 'react-redux';
 import _debounce from 'lodash.debounce';
+import {connect} from 'react-redux';
 import {updateEndDate} from '../actions';
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;

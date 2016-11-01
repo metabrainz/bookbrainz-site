@@ -20,12 +20,12 @@ import CreatorData from './creator-data';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
+import aliasEditorReducer from './alias-editor/reducer';
 import {combineReducers} from 'redux-immutable';
 import {createStore} from 'redux';
-import aliasEditorReducer from './alias-editor/reducer';
-import sharedDataReducer from './shared-data/reducer';
 import creatorDataReducer from './creator-data/reducer';
 import identifierEditorReducer from './identifier-editor/reducer';
+import sharedDataReducer from './shared-data/reducer';
 
 const rootReducer = combineReducers({
 	sharedData: sharedDataReducer,

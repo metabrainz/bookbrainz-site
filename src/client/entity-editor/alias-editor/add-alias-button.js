@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {addAlias} from '../actions';
 import {Button} from 'react-bootstrap';
 import React from 'react';
+import {addAlias} from '../actions';
 import {connect} from 'react-redux';
 
 function AddAliasButton({

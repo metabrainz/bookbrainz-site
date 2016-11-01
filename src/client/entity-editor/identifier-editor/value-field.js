@@ -16,14 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {suggestIdentifierType, updateIdentifierValue} from '../actions';
 import {Input} from 'react-bootstrap';
-
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import data from '../../helpers/data';
+import {updateIdentifierValue} from '../actions';
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 

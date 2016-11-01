@@ -19,8 +19,8 @@
 import {Button} from 'react-bootstrap';
 
 import React from 'react';
-import request from 'superagent-bluebird-promise';
 import {connect} from 'react-redux';
+import request from 'superagent-bluebird-promise';
 import {setSubmitError} from '../actions';
 
 function SubmitButton({

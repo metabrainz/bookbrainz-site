@@ -17,11 +17,11 @@
  */
 
 
-import {Button, Col, Input, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 import React from 'react';
-import ValueField from './value-field';
-import TypeField from './type-field';
 import RemoveIdentifierButton from './remove-identifier-button';
+import TypeField from './type-field';
+import ValueField from './value-field';
 
 function IdentifierRow({
 	typeOptions,
