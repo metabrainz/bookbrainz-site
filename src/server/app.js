@@ -133,7 +133,8 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 
 const debug = require('debug')('bbsite');
 
-app.set('port', process.env.PORT || 9099);
+const DEFAULT_PORT = 9099;
+app.set('port', process.env.PORT || DEFAULT_PORT);
 
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);

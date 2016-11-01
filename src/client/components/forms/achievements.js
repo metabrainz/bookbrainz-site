@@ -110,13 +110,15 @@ const DragAndDrop = require('../input/dragAndDrop');
 					</form>
 				);
 			}
+
+			const STICKY_TOP_MARGIN = 64;
 			return (
 				<StickyContainer>
 					<Sticky
 						style={{
 							zIndex: 10,
 							background: 'white',
-							'margin-top': 64,
+							'margin-top': STICKY_TOP_MARGIN,
 							flex: '1'
 						}}
 						topOffset={-80}

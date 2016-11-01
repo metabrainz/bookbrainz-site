@@ -63,12 +63,13 @@ module.exports = () => {
 	});
 
 	it('II should be given to someone with 50 revisions', () => {
+		const revisionsApplied = 50;
 		const achievementPromise = new Editor({
 			name: testData.editorAttribs.name
 		})
 			.fetch()
 			.then((editor) =>
-				editor.set({revisionsApplied: 50})
+				editor.set({revisionsApplied})
 				.save()
 			)
 			.then((editor) =>
@@ -89,12 +90,13 @@ module.exports = () => {
 
 	it('III should be given to someone with 250 revisions',
 		() => {
+			const revisionsApplied = 250;
 			const achievementPromise = new Editor({
 				name: testData.editorAttribs.name
 			})
 				.fetch()
 				.then((editor) =>
-					editor.set({revisionsApplied: 250})
+					editor.set({revisionsApplied})
 						.save()
 				)
 				.then((editor) =>

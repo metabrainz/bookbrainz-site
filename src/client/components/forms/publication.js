@@ -75,8 +75,9 @@ const RevisionNote = require('./parts/revision-note');
 			const aliasData = this.aliases.getValue();
 			const publicationData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
+			const PENULTIMATE_ELEMENT = -1;
 			const data = {
-				aliases: aliasData.slice(0, -1),
+				aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 				typeId: parseInt(publicationData.publicationType, 10),
 				disambiguation: publicationData.disambiguation,
 				annotation: publicationData.annotation,

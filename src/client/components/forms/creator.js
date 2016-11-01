@@ -73,11 +73,12 @@ const RevisionNote = require('./parts/revision-note');
 				return;
 			}
 
+			const PENULTIMATE_ELEMENT = -1;
 			const aliasData = this.aliases.getValue();
 			const creatorData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
 			const data = {
-				aliases: aliasData.slice(0, -1),
+				aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 				beginDate: creatorData.beginDate,
 				endDate: creatorData.endDate,
 				ended: creatorData.ended,

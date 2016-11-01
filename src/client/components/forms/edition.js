@@ -73,11 +73,12 @@ const LoadingSpinner = require('../loading-spinner');
 				return;
 			}
 
+			const PENULTIMATE_ELEMENT = -1;
 			const aliasData = this.aliases.getValue();
 			const editionData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
 			const data = {
-				aliases: aliasData.slice(0, -1),
+				aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 				publicationBbid: editionData.publication,
 				publishers: editionData.publishers,
 				releaseEvents: editionData.releaseEvents,

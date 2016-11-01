@@ -79,8 +79,9 @@ const WorkData = require('./parts/work-data');
 			const workData = this.data.getValue();
 			const revisionNote = this.revision.note.getValue();
 
+			const PENULTIMATE_ELEMENT = -1;
 			const data = {
-				aliases: aliasData.slice(0, -1),
+				aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 				languages: workData.languages.map(
 					(languageId) => parseInt(languageId, 10)
 				),
