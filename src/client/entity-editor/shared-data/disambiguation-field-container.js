@@ -39,4 +39,6 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisambiguationField);
+export default connect(mapStateToProps, mapDispatchToProps)(
+	DisambiguationField
+);

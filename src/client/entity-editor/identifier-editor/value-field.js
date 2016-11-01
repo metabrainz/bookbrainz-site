@@ -86,7 +86,9 @@ function mapDispatchToProps(dispatch, {index, types}) {
 					.exec(event.target.value);
 				event.target.value = result[1];
 			}
-			return debouncedDispatch(updateIdentifierValue(index, event.target.value, guessedType));
+			return debouncedDispatch(
+				updateIdentifierValue(index, event.target.value, guessedType)
+			);
 		}
 	};
 }

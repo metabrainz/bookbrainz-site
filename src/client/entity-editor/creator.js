@@ -69,7 +69,8 @@ function generateInitialState(creator, creatorTypes) {
 
 	const initialGender = creator.gender && creator.gender.id;
 	const initialCreatorType = creator.creatorType && creator.creatorType.id;
-	const initialDisambiguation = creator.disambiguation && creator.disambiguation.comment;
+	const initialDisambiguation =
+		creator.disambiguation && creator.disambiguation.comment;
 	const identifiers = creator.identifierSet ?
 		creator.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
@@ -113,10 +114,17 @@ const Creator = ({
 }) => {
 	let store = null;
 	if (typeof window === 'undefined') {
-		store = createStore(rootReducer, generateInitialState(creator, creatorTypes));
+		store = createStore(
+			rootReducer,
+			generateInitialState(creator, creatorTypes)
+		);
 	}
 	else {
-		store = createStore(rootReducer, generateInitialState(creator, creatorTypes), window.devToolsExtension && window.devToolsExtension());
+		store = createStore(
+			rootReducer,
+			generateInitialState(creator, creatorTypes),
+			window.devToolsExtension && window.devToolsExtension()
+		);
 	}
 
 	return (

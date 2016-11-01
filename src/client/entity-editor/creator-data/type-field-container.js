@@ -31,7 +31,10 @@ function mapDispatchToProps(dispatch, {options}) {
 	const personType = options.find((type) => type.label === 'Person');
 	return {
 		onChange: (value) => dispatch(
-			updateType(value && value.value, (value && value.value) === personType.value)
+			updateType(
+				value && value.value,
+				(value && value.value) === personType.value
+			)
 		)
 	};
 }
