@@ -82,21 +82,20 @@ const LoadingSpinner = require('../loading-spinner');
 
 			const footerComponent = (
 				<span className="clearfix">
-				<Button
-					bsStyle="danger"
-					className="pull-right"
-					type="submit"
-				>
-					Delete
-				</Button>
-				<Button
-					className="pull-right"
-					href={this.entityUrl}
-				>
-					Cancel
-				</Button>
-			</span>
-
+					<Button
+						bsStyle="danger"
+						className="pull-right"
+						type="submit"
+					>
+						Delete
+					</Button>
+					<Button
+						className="pull-right"
+						href={this.entityUrl}
+					>
+						Cancel
+					</Button>
+				</span>
 			);
 
 			const headerComponent = (<h3>Confirm Deletion</h3>);

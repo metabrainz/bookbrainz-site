@@ -39,7 +39,10 @@ function IdentifierRow({
 					<ValueField index={index} types={typeOptions}/>
 				</Col>
 				<Col md={4}>
-					<TypeField index={index} options={identifierTypesForDisplay}/>
+					<TypeField
+						index={index}
+						options={identifierTypesForDisplay}
+					/>
 				</Col>
 				<Col className="text-right" md={3} mdOffset={1}>
 					<RemoveIdentifierButton index={index}/>

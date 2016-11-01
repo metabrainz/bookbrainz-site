@@ -44,7 +44,8 @@ const Input = require('react-bootstrap').Input;
 		}
 		render() {
 			return (
-				<div className="well col-sm-4"
+				<div
+					className="well col-sm-4"
 					onClick={this.handleClick}
 					onDragOver={this.handleDragOver}
 					onDrop={this.handleDrop}

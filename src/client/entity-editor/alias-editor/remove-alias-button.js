@@ -25,7 +25,12 @@ function RemoveAliasButton({
 	onClick
 }) {
 	return (
-		<Button block bsStyle="danger" className="margin-top-d5" onClick={onClick}>
+		<Button
+			block
+			bsStyle="danger"
+			className="margin-top-d5"
+			onClick={onClick}
+		>
 			Remove
 		</Button>
 	);

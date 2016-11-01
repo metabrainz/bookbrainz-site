@@ -262,15 +262,15 @@ function isRelationshipNew(initialType, initialTarget) {
 			return (
 				<div>
 					<PageHeader>
-					<span className="pull-right">
-						<Button
-							bsStyle="danger"
-							disabled={this.state.numSelected === 0}
-							onClick={this.handleBulkDelete}
-						>
-							{`Delete Selected ${numSelectedString}`}
-						</Button>
-					</span>
+						<span className="pull-right">
+							<Button
+								bsStyle="danger"
+								disabled={this.state.numSelected === 0}
+								onClick={this.handleBulkDelete}
+							>
+								{`Delete Selected ${numSelectedString}`}
+							</Button>
+						</span>
 						Relationship Editor
 					</PageHeader>
 					<Alert

@@ -121,14 +121,14 @@ const DragAndDrop = require('../input/dragAndDrop');
 						}}
 						topOffset={-80}
 					>
-							{rankUpdate}
-						</Sticky>
-						<div style={{zIndex: 1}}>
-							<div className="h1">Unlocked Achievements</div>
-							{achievements}
-							<div className="h1">Locked Achievements</div>
-							{locked}
-						</div>
+						{rankUpdate}
+					</Sticky>
+					<div style={{zIndex: 1}}>
+						<div className="h1">Unlocked Achievements</div>
+						{achievements}
+						<div className="h1">Locked Achievements</div>
+						{locked}
+					</div>
 				</StickyContainer>
 			);
 		}

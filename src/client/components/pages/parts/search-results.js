@@ -55,13 +55,13 @@ function SearchResults(props) {
 			className="table table-striped"
 		>
 			<thead>
-			<tr>
-				<th>Alias</th>
-				<th>Type</th>
-			</tr>
+				<tr>
+					<th>Alias</th>
+					<th>Type</th>
+				</tr>
 			</thead>
 			<tbody>
-			{results}
+				{results}
 			</tbody>
 		</Table>
 	);

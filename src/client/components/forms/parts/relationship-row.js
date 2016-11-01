@@ -273,9 +273,9 @@ function getRelationshipTypeById(types, id) {
 			if (currentType && currentType.deprecated) {
 				deprecationWarning = (
 					<span className="text-danger">
-					<Icon name="warning"/>&nbsp;
+						<Icon name="warning"/>&nbsp;
 						Relationship type deprecated &mdash; please avoid!
-				</span>
+					</span>
 				);
 			}
 
@@ -337,9 +337,10 @@ function getRelationshipTypeById(types, id) {
 							</div>
 							<div className="row">
 								<div className="col-md-4">
-									<p dangerouslySetInnerHTML={
-										this.renderedRelationship()
-									}
+									<p
+										dangerouslySetInnerHTML={
+											this.renderedRelationship()
+										}
 									/>
 								</div>
 								<div className="col-md-5">

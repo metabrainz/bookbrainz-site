@@ -121,7 +121,13 @@ const Creator = ({
 
 	return (
 		<Provider store={store}>
-			<CreatorData languageOptions={languages} genderOptions={genders} creatorTypes={creatorTypes} identifierTypes={identifierTypes} submissionUrl={submissionUrl}/>
+			<CreatorData
+				creatorTypes={creatorTypes}
+				genderOptions={genders}
+				identifierTypes={identifierTypes}
+				languageOptions={languages}
+				submissionUrl={submissionUrl}
+			/>
 		</Provider>
 	);
 };

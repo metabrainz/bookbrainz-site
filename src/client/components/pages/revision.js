@@ -40,9 +40,7 @@ const EntityLink = require('../entity-link');
 		static formatChange(change) {
 			if (change.kind === 'N') {
 				return (
-					<tr className="success"
-						key={change.key}
-					>
+					<tr className="success" key={change.key}>
 						<th scope="row">{change.key}</th>
 						<td> — </td>
 						<td>
@@ -54,10 +52,7 @@ const EntityLink = require('../entity-link');
 
 			if (change.kind === 'E') {
 				return (
-					<tr
-						className="warning"
-						key={change.key}
-					>
+					<tr className="warning" key={change.key}>
 						<th scope="row">{change.key}</th>
 						<td>
 							{RevisionPage.formatValueList(change.lhs)}
@@ -71,10 +66,7 @@ const EntityLink = require('../entity-link');
 
 			if (change.kind === 'D') {
 				return (
-					<tr
-						className="danger"
-						key={change.key}
-					>
+					<tr className="danger" key={change.key}>
 						<th scope="row">{change.key}</th>
 						<td>
 							{RevisionPage.formatValueList(change.lhs)}
@@ -140,10 +132,7 @@ const EntityLink = require('../entity-link');
 				const noteAuthorTitle =
 					RevisionPage.formatTitle(note.author);
 				return (
-					<div
-						className="panel panel-default"
-						key={note.id}
-					>
+					<div className="panel panel-default" key={note.id}>
 						<div className="panel-body">
 							<p>{note.content}</p>
 							<p className="text-right">
