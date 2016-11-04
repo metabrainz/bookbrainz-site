@@ -19,7 +19,7 @@
 'use strict';
 
 const status = require('http-status');
-const config = require('../helpers/config');
+const config = require('./config');
 const Log = require('log');
 const log = new Log(config.site.log);
 

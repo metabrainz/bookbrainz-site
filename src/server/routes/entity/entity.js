@@ -25,7 +25,7 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const _ = require('lodash');
 
-const config = require('../helpers/config');
+const config = require('../../helpers/config');
 const Log = require('log');
 const log = new Log(config.site.log);
 

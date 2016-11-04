@@ -37,7 +37,7 @@ const Bookshelf = require('bookbrainz-data').bookshelf;
 const AwardNotUnlockedError = require('./error.js').AwardNotUnlockedError;
 const _ = require('lodash');
 
-const config = require('../helpers/config');
+const config = require('./config');
 const Log = require('log');
 const log = new Log(config.site.log);
 
