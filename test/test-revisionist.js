@@ -26,7 +26,7 @@ const Promise = require('bluebird');
 
 const Editor = require('./bookbrainz-data').Editor;
 const Achievement = require('../src/server/helpers/achievement.js');
-const testData = require('../data/testData.js');
+const testData = require('../data/test-data.js');
 
 module.exports = () => {
 	beforeEach(() => testData.createEditor()

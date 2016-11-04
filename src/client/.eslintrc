@@ -18,17 +18,11 @@ rules:
   react/no-find-dom-node: 2
   react/no-render-return-value: 2
   react/require-render-return: 2
-  react/jsx-first-prop-new-line:
-    - 2
-    - multiline
   react/jsx-boolean-value: 2
   react/jsx-closing-bracket-location:
     - 2
     - tag-aligned
   react/jsx-curly-spacing: 2
-  react/jsx-indent:
-    - 2
-    - tab
   react/jsx-indent-props:
     - 2
     - tab

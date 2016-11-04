@@ -28,104 +28,100 @@ const Select = require('../../input/select2');
 const data = require('../../../helpers/data');
 const validators = require('../../../helpers/react-validators');
 
-(() => {
-	'use strict';
-
-	class IdentifierRow extends React.Component {
-		getValue() {
-			return {
-				typeId: parseInt(this.typeId.getValue(), 10),
-				value: this.value.getValue()
-			};
-		}
-
-		validationState() {
-			if (this.props.typeId) {
-				const isValid = data.identifierIsValid(
-					this.props.typeId,
-					this.props.value,
-					this.props.types
-				);
-
-				return (
-					isValid ?
-						'success' :
-						'error'
-				);
-			}
-
-			if (this.props.value) {
-				return 'error';
-			}
-
-			return null;
-		}
-
-		getValid() {
-			const value = this.value.getValue();
-			const typeId = parseInt(this.typeId.getValue(), 10);
-
-			return data.identifierIsValid(typeId, value, this.props.types);
-		}
-
-		render() {
-			const select2Options = {
-				allowClear: false
-			};
-
-			const removeHiddenClass = this.props.removeHidden ?
-				'hidden' :
-				'';
-			return (
-				<div className="row">
-					<div className="col-md-4">
-						<Select
-							noDefault
-							bsStyle={this.validationState()}
-							idAttribute="id"
-							labelAttribute="label"
-							options={this.props.types}
-							placeholder="Select identifier type…"
-							ref={(ref) => this.typeId = ref}
-							select2Options={select2Options}
-							value={this.props.typeId}
-							wrapperClassName="col-md-12"
-							onChange={this.props.onChange}
-						/>
-					</div>
-					<div className="col-md-4">
-						<Input
-							bsStyle={this.validationState()}
-							ref={(ref) => this.value = ref}
-							type="text"
-							value={this.props.value}
-							wrapperClassName="col-md-12"
-							onChange={this.props.onChange}
-						/>
-					</div>
-					<div className="col-md-2">
-						<Button
-							bsStyle="danger"
-							className={removeHiddenClass}
-							onClick={this.props.onRemove}
-						>
-							<Icon name="times"/>
-						</Button>
-					</div>
-				</div>
-			);
-		}
+class IdentifierRow extends React.Component {
+	getValue() {
+		return {
+			typeId: parseInt(this.typeId.getValue(), 10),
+			value: this.value.getValue()
+		};
 	}
 
-	IdentifierRow.displayName = 'IdentifierRow';
-	IdentifierRow.propTypes = {
-		removeHidden: React.PropTypes.bool,
-		typeId: React.PropTypes.number,
-		types: React.PropTypes.arrayOf(validators.labeledProperty),
-		value: React.PropTypes.string,
-		onChange: React.PropTypes.func,
-		onRemove: React.PropTypes.func
-	};
+	validationState() {
+		if (this.props.typeId) {
+			const isValid = data.identifierIsValid(
+				this.props.typeId,
+				this.props.value,
+				this.props.types
+			);
 
-	module.exports = IdentifierRow;
-})();
+			return (
+				isValid ?
+					'success' :
+					'error'
+			);
+		}
+
+		if (this.props.value) {
+			return 'error';
+		}
+
+		return null;
+	}
+
+	getValid() {
+		const value = this.value.getValue();
+		const typeId = parseInt(this.typeId.getValue(), 10);
+
+		return data.identifierIsValid(typeId, value, this.props.types);
+	}
+
+	render() {
+		const select2Options = {
+			allowClear: false
+		};
+
+		const removeHiddenClass = this.props.removeHidden ?
+			'hidden' :
+			'';
+		return (
+			<div className="row">
+				<div className="col-md-4">
+					<Select
+						noDefault
+						bsStyle={this.validationState()}
+						idAttribute="id"
+						labelAttribute="label"
+						options={this.props.types}
+						placeholder="Select identifier type…"
+						ref={(ref) => this.typeId = ref}
+						select2Options={select2Options}
+						value={this.props.typeId}
+						wrapperClassName="col-md-12"
+						onChange={this.props.onChange}
+					/>
+				</div>
+				<div className="col-md-4">
+					<Input
+						bsStyle={this.validationState()}
+						ref={(ref) => this.value = ref}
+						type="text"
+						value={this.props.value}
+						wrapperClassName="col-md-12"
+						onChange={this.props.onChange}
+					/>
+				</div>
+				<div className="col-md-2">
+					<Button
+						bsStyle="danger"
+						className={removeHiddenClass}
+						onClick={this.props.onRemove}
+					>
+						<Icon name="times"/>
+					</Button>
+				</div>
+			</div>
+		);
+	}
+}
+
+IdentifierRow.displayName = 'IdentifierRow';
+IdentifierRow.propTypes = {
+	removeHidden: React.PropTypes.bool,
+	typeId: React.PropTypes.number,
+	types: React.PropTypes.arrayOf(validators.labeledProperty),
+	value: React.PropTypes.string,
+	onChange: React.PropTypes.func,
+	onRemove: React.PropTypes.func
+};
+
+module.exports = IdentifierRow;

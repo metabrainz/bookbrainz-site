@@ -24,173 +24,169 @@ const IdentifierRow = require('./identifier-row');
 const dataHelper = require('../../../helpers/data');
 const validators = require('../../../helpers/react-validators');
 
-(() => {
-	'use strict';
+class IdentifierList extends React.Component {
+	constructor(props) {
+		super(props);
 
-	class IdentifierList extends React.Component {
-		constructor(props) {
-			super(props);
+		const existing = this.props.identifiers || [];
+		existing.push({
+			value: '',
+			typeId: null
+		});
 
-			const existing = this.props.identifiers || [];
-			existing.push({
+		existing.forEach((identifier, i) => {
+			identifier.key = i;
+			identifier.valid = true;
+		});
+
+		this.state = {
+			identifiers: existing,
+			rowsSpawned: existing.length
+		};
+
+		// React does not autobind non-React class methods
+		this.getValue = this.getValue.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.valid = this.valid.bind(this);
+		this.handleRemove = this.handleRemove.bind(this);
+	}
+
+	getValue() {
+		const LAST_IDENTIFIER = -1;
+		return this.state.identifiers.slice(0, LAST_IDENTIFIER)
+			.map((identifier) => {
+				const data = {
+					value: identifier.value,
+					typeId: identifier.typeId
+				};
+
+				if (identifier.id) {
+					data.id = identifier.id;
+				}
+
+				return data;
+			});
+	}
+
+	handleChange(index) {
+		const updatedIdentifiers = this.state.identifiers.slice();
+		const updatedIdentifier = this.refs[index].getValue();
+
+		// Attempt to guess the type, if the value was previously blank
+		if (this.state.identifiers[index].value === '') {
+			let newValue = updatedIdentifier.value;
+			this.props.types.forEach((type) => {
+				if (type.detectionRegex) {
+					const detectionRegex = new RegExp(type.detectionRegex);
+					const regexResult =
+						detectionRegex.exec(updatedIdentifier.value);
+
+					if (regexResult) {
+						// Don't assign directly to updatedIdentifier, to
+						// avoid multiple transformations
+						newValue = regexResult[1];
+						updatedIdentifier.typeId = type.id;
+					}
+				}
+			});
+			updatedIdentifier.value = newValue;
+		}
+
+		updatedIdentifiers[index] = {
+			value: updatedIdentifier.value,
+			typeId: updatedIdentifier.typeId,
+			key: updatedIdentifiers[index].key,
+			valid:
+				dataHelper.identifierIsValid(
+					updatedIdentifier.typeId,
+					updatedIdentifier.value,
+					this.props.types
+				)
+		};
+
+		if (this.state.identifiers[index].id) {
+			updatedIdentifiers[index].id = this.state.identifiers[index].id;
+		}
+
+		let rowsSpawned = this.state.rowsSpawned;
+		if (index === this.state.identifiers.length - 1) {
+			updatedIdentifiers.push({
 				value: '',
-				typeId: null
+				typeId: null,
+				key: rowsSpawned,
+				valid: true
 			});
 
-			existing.forEach((identifier, i) => {
-				identifier.key = i;
-				identifier.valid = true;
-			});
-
-			this.state = {
-				identifiers: existing,
-				rowsSpawned: existing.length
-			};
-
-			// React does not autobind non-React class methods
-			this.getValue = this.getValue.bind(this);
-			this.handleChange = this.handleChange.bind(this);
-			this.valid = this.valid.bind(this);
-			this.handleRemove = this.handleRemove.bind(this);
+			rowsSpawned++;
 		}
 
-		getValue() {
-			const LAST_IDENTIFIER = -1;
-			return this.state.identifiers.slice(0, LAST_IDENTIFIER)
-				.map((identifier) => {
-					const data = {
-						value: identifier.value,
-						typeId: identifier.typeId
-					};
+		this.setState({
+			identifiers: updatedIdentifiers,
+			rowsSpawned
+		});
+	}
 
-					if (identifier.id) {
-						data.id = identifier.id;
-					}
+	valid() {
+		return this.state.identifiers.every(
+			(identifier) =>
+				identifier.valid
+		);
+	}
 
-					return data;
-				});
-		}
+	handleRemove(index) {
+		const updatedIdentifiers = this.state.identifiers.slice();
 
-		handleChange(index) {
-			const updatedIdentifiers = this.state.identifiers.slice();
-			const updatedIdentifier = this.refs[index].getValue();
-
-			// Attempt to guess the type, if the value was previously blank
-			if (this.state.identifiers[index].value === '') {
-				let newValue = updatedIdentifier.value;
-				this.props.types.forEach((type) => {
-					if (type.detectionRegex) {
-						const detectionRegex = new RegExp(type.detectionRegex);
-						const regexResult =
-							detectionRegex.exec(updatedIdentifier.value);
-
-						if (regexResult) {
-							// Don't assign directly to updatedIdentifier, to
-							// avoid multiple transformations
-							newValue = regexResult[1];
-							updatedIdentifier.typeId = type.id;
-						}
-					}
-				});
-				updatedIdentifier.value = newValue;
-			}
-
-			updatedIdentifiers[index] = {
-				value: updatedIdentifier.value,
-				typeId: updatedIdentifier.typeId,
-				key: updatedIdentifiers[index].key,
-				valid:
-					dataHelper.identifierIsValid(
-						updatedIdentifier.typeId,
-						updatedIdentifier.value,
-						this.props.types
-					)
-			};
-
-			if (this.state.identifiers[index].id) {
-				updatedIdentifiers[index].id = this.state.identifiers[index].id;
-			}
-
-			let rowsSpawned = this.state.rowsSpawned;
-			if (index === this.state.identifiers.length - 1) {
-				updatedIdentifiers.push({
-					value: '',
-					typeId: null,
-					key: rowsSpawned,
-					valid: true
-				});
-
-				rowsSpawned++;
-			}
+		if (index !== this.state.identifiers.length - 1) {
+			updatedIdentifiers.splice(index, 1);
 
 			this.setState({
-				identifiers: updatedIdentifiers,
-				rowsSpawned
+				identifiers: updatedIdentifiers
 			});
-		}
-
-		valid() {
-			return this.state.identifiers.every(
-				(identifier) =>
-					identifier.valid
-			);
-		}
-
-		handleRemove(index) {
-			const updatedIdentifiers = this.state.identifiers.slice();
-
-			if (index !== this.state.identifiers.length - 1) {
-				updatedIdentifiers.splice(index, 1);
-
-				this.setState({
-					identifiers: updatedIdentifiers
-				});
-			}
-		}
-
-		render() {
-			const self = this;
-
-			const rows = this.state.identifiers.map((identifier, index) =>
-				<IdentifierRow
-					key={identifier.key}
-					ref={index}
-					removeHidden={index === self.state.identifiers.length - 1}
-					typeId={identifier.typeId}
-					types={self.props.types}
-					value={identifier.value}
-					onChange={self.handleChange.bind(null, index)}
-					onRemove={self.handleRemove.bind(null, index)}
-				/>
-			);
-
-			return (
-				<div>
-					<div className="row margin-top-1">
-						<label className="col-md-3 text-right">
-							Identifiers
-						</label>
-						<label className="col-md-3 text-center">Type</label>
-						<label className="col-md-3 text-center">Value</label>
-					</div>
-					<div className="row">
-						<div className="col-md-9 col-md-offset-3">
-							{rows}
-						</div>
-					</div>
-				</div>
-			);
 		}
 	}
 
-	IdentifierList.displayName = 'IdentifierList';
-	IdentifierList.propTypes = {
-		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
-			value: React.PropTypes.string,
-			typeId: React.PropTypes.number
-		})),
-		types: React.PropTypes.arrayOf(validators.labeledProperty)
-	};
+	render() {
+		const self = this;
 
-	module.exports = IdentifierList;
-})();
+		const rows = this.state.identifiers.map((identifier, index) =>
+			<IdentifierRow
+				key={identifier.key}
+				ref={index}
+				removeHidden={index === self.state.identifiers.length - 1}
+				typeId={identifier.typeId}
+				types={self.props.types}
+				value={identifier.value}
+				onChange={self.handleChange.bind(null, index)}
+				onRemove={self.handleRemove.bind(null, index)}
+			/>
+		);
+
+		return (
+			<div>
+				<div className="row margin-top-1">
+					<label className="col-md-3 text-right">
+						Identifiers
+					</label>
+					<label className="col-md-3 text-center">Type</label>
+					<label className="col-md-3 text-center">Value</label>
+				</div>
+				<div className="row">
+					<div className="col-md-9 col-md-offset-3">
+						{rows}
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+IdentifierList.displayName = 'IdentifierList';
+IdentifierList.propTypes = {
+	identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
+		value: React.PropTypes.string,
+		typeId: React.PropTypes.number
+	})),
+	types: React.PropTypes.arrayOf(validators.labeledProperty)
+};
+
+module.exports = IdentifierList;

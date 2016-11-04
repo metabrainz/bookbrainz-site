@@ -39,53 +39,26 @@ Dependencies can be installed using the node package manager:
 
     npm install
 
-In order to use the `gulp` command, you have to install it globally:
-
-    npm install -g gulp
-
-If you prefer not installing packages globally, you can skip this step and use `node_modules/.bin/gulp` instead of `gulp` in the later steps.
-
-You can then install gulp locally:
-
-    npm install gulp
-
-
-You also need to install [redis](http://redis.io/) either locally or have a machine running it available.
+You also need to install [postgres](https://www.postgresql.org/) and
+[redis](http://redis.io/).
 
 ## Configuration
 
-Create a copy of development.json.example and rename it to development.json. Then, edit the values so that they are correct
-for your environment.
+Create a copy of development.json.example and rename it to development.json.
+Then, edit the values so that they are correct for your environment.
 
 ## Building and running
-### Building the client-side JS
+A number of subcommands exist to manage the installation and run the server.
+These are described here - any commands not listed should not be called
+directly:
 
-The client-side JS is designed to use the `require()` function provided by
-browserify. In order to get usable JS files, the source JS has to be processed
-by browserify and then minified. There are two built-in gulp tasks to
-accomplish this.
-
-    gulp
-    gulp compress
-
-### Running the site
-
-To run the site after installing dependencies and compiling the client-side JS,
-use the following command. The server will automatically restart after any
-changes are made to the code:
-
-    npm run debug
+	* start - start the server in production mode, with code built once
+	* debug - start the server in debug mode, with code watched for changes
+	* lint - check the code for syntax and style issues
+	* test - perform linting and attempt to compile the code
+	* jsdoc - build the documentation for JSDoc annotated functions within the code
 
 ## Testing
-### Unit Tests
-Running unit tests is fairly straightforward - with all dependencies installed,
-type the following command:
-
-    npm run test
-
-Unit tests are automatically run over at Travis CI for all branches and pull
-requests.
-
 ### Browser Tests
 Browser testing, using Selenium, allows for the overall system to be tested
 to see if it looks and behaves as expected in a range of web browsers. This is
