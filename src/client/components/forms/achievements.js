@@ -21,7 +21,7 @@ const StickyContainer = require('react-sticky').StickyContainer;
 const Sticky = require('react-sticky').Sticky;
 const request = require('superagent-bluebird-promise');
 const Achievement = require('./parts/achievement');
-const DragAndDrop = require('../input/dragAndDrop');
+const DragAndDrop = require('../input/drag-and-drop');
 
 class AchievementForm extends React.Component {
 	constructor(props) {
