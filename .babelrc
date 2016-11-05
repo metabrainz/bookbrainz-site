@@ -2,7 +2,13 @@
   "plugins": [
     "transform-es2015-modules-commonjs",
     "transform-object-rest-spread",
-    "array-includes"
+    "array-includes",
+    [
+        "transform-runtime", {
+            "polyfill": false,
+            "regenerator": true
+        }
+    ]
   ],
   "presets": [
     "es2015",
