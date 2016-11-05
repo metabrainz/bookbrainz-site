@@ -71,6 +71,7 @@
     "react-redux": "^4.4.5",
     "react-select": "^1.0.0-beta14",
     "react-sticky": "^5.0.4",
+    "react-virtualized": "^8.4.1",
     "react-virtualized-select": "^1.3.0",
     "redux": "^3.5.2",
     "redux-immutable": "^3.0.7",
