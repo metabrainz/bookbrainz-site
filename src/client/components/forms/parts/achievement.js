@@ -17,7 +17,7 @@
  */
 
 const React = require('react');
-const DragAndDropImage = require('../../input/dragAndDropImage');
+const DragAndDropImage = require('../../input/drag-and-drop-image');
 
 class Achievement extends React.Component {
 	constructor(props) {
