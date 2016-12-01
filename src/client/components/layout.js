@@ -18,17 +18,21 @@
 
 const React = require('react');
 
-const bootstrap = require("react-bootstrap")
-const Nav = bootstrap.Nav
-const Footer = require('./footer')
+const Footer = require('./footer');
 
 class Layout extends React.Component {
 
-	render() {
+	constructor(props) {
+		super(props);
+		this.state = {};
+		this.renderNavContent = this.renderNavContent.bind(this);
+		this.renderNavHeader = this.renderNavHeader.bind(this);
+	}
 
-		const { homepage, user, hideSearch, siteRevision, repositoryUrl } = this.props
+	renderNavHeader() {
+		const {homepage} = this.props;
 
-		const navHeader = (
+		return (
 			<div className="navbar-header">
 				<a role="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" className="navbar-toggle collapsed">
 					<span className="sr-only">Toggle navigation</span>
@@ -45,11 +49,15 @@ class Layout extends React.Component {
 				</a>
 			</div>
 		);
+	}
 
-		const navContent = (
+	renderNavContent() {
+		const {user, homepage, hideSearch} = this.props;
+
+		return (
 			<div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
 				<ul className="nav navbar-nav navbar-right">
-					{user && user.id ? 
+					{user && user.id ?
 						<div>
 							<li className="dropdown">
 								<a id="dNewEntities" href="#" data-toggle="dropdown" role="button" aria-expanded="false" className="dropdown-toggle">
@@ -77,11 +85,13 @@ class Layout extends React.Component {
 						</div>
 						:
 						<li>
-							<a href="/auth"><span className="fa fa-sign-in"></span>&nbsp;Sign In / Register</a>
+							<a href="/auth">
+								<span className="fa fa-sign-in"></span>&nbsp;Sign In / Register
+							</a>
 						</li>
 					}
 				</ul>
-				{!(homepage || hideSearch) && 
+				{!(homepage || hideSearch) &&
 				<form role="search" action="/search" className="navbar-form navbar-right">
 					<div className="form-group">
 						<div className="input-group">
@@ -90,29 +100,33 @@ class Layout extends React.Component {
 						</div>
 					</div>
 				</form>
-			}
-		</div>
+				}
+			</div>
+		);
+	}
 
-	);
+	render() {
+		const {homepage, siteRevision, repositoryUrl} = this.props;
 
-		const children = homepage ? 
-		React.Children.map( this.props.children, child => React.cloneElement(child, {...this.props}))
-		:
-		(<div id="content" className="container">
-			{ React.Children.map( this.props.children, child => React.cloneElement(child, {...this.props}))}
-		</div>)
+		// Shallow merges parents props into child components
+		const children = homepage ? React.Children.map(this.props.children, (Child) => React.cloneElement(Child, this.props)) : (
+			<div id="content" className="container">
+				{ React.Children.map(this.props.children, (Child) => React.cloneElement(Child, this.props))}
+			</div>);
 
 		return (
 			<div>
 				<a href="#content" className="sr-only sr-only-focusable">Skip to main content</a>
-				<Nav role="navigation" navbar={true} className="navbar-fixed-top BookBrainz">
+				<div role="navigation" className="navbar navbar-default navbar-fixed-top BookBrainz">
 					<div className="container-fluid">
-						{navHeader}
-						{navContent}
+						{this.renderNavHeader()}
+						{this.renderNavContent()}
 					</div>
-				</Nav>
+				</div>
 				{children}
-				<Footer siteRevision={siteRevision} repositoryUrl={repositoryUrl} />
+				<Footer repositoryUrl={repositoryUrl}
+					siteRevision={siteRevision}
+				/>
 			</div>
 		);
 	}
@@ -121,21 +135,21 @@ class Layout extends React.Component {
 Layout.displayName = 'Layout';
 Layout.propTypes = {
 	achievement: React.PropTypes.object,
-	editor: React.PropTypes.object,
-	repositoryUrl: React.PropTypes.string,
-	siteRevision: React.PropTypes.string,
-	user: React.PropTypes.object,
 	basedir: React.PropTypes.string,
+	creatorTypes: React.PropTypes.array,
+	editor: React.PropTypes.object,
 	entity: React.PropTypes.object,
+	genders: React.PropTypes.array,
+	hideSearch: React.PropTypes.bool,
+	identifierTypes: React.PropTypes.array,
+	languages: React.PropTypes.array,
 	publicationTypes: React.PropTypes.array,
 	publisherTypes: React.PropTypes.array,
-	identifierTypes: React.PropTypes.array,
+	repositoryUrl: React.PropTypes.string,
+	siteRevision: React.PropTypes.string,
 	title: React.PropTypes.string,
-	languages: React.PropTypes.array,
-	workTypes: React.PropTypes.array,
-	genders: React.PropTypes.array,
-	creatorTypes: React.PropTypes.array,
-	hideSearch: React.PropTypes.bool
+	user: React.PropTypes.object,
+	workTypes: React.PropTypes.array
 };
 
 module.exports = Layout;
