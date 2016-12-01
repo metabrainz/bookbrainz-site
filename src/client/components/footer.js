@@ -44,7 +44,7 @@ class Footer extends React.Component {
 								<a href="/privacy"><small>Privacy & Terms</small></a>
 							</Col>
 						</Row>
-						<Row>
+						<Row className="text-center">
 							<small>Alpha Software — <a href={`${repositoryUrl}commit/${siteRevision}`}>{siteRevision}</a> — <a href="#">Report a Bug</a></small>
 						</Row>
 					</Grid>
