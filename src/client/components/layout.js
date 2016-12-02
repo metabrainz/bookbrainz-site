@@ -20,6 +20,19 @@ const React = require('react');
 
 const Footer = require('./footer');
 
+
+/**
+ * Returns list of component children that have been injected with the specified props (does not override existing ones)
+ * @param {Object} props - The props object that is injected into the children
+ * @returns {Array}
+ */
+function injectChildElemsWithProps(props) {
+	return React.Children.map(props.children, (Child) => {
+		const filteredProps = Object.assign({}, props, Child.props);
+		return React.cloneElement(Child, filteredProps);
+	});
+}
+
 class Layout extends React.Component {
 
 	constructor(props) {
@@ -109,9 +122,9 @@ class Layout extends React.Component {
 		const {homepage, siteRevision, repositoryUrl} = this.props;
 
 		// Shallow merges parents props into child components
-		const children = homepage ? React.Children.map(this.props.children, (Child) => React.cloneElement(Child, this.props)) : (
+		const children = homepage ? React.Children.map(this.props.children, (Child) => injectChildElemsWithProps(this.props)) : (
 			<div id="content" className="container">
-				{ React.Children.map(this.props.children, (Child) => React.cloneElement(Child, this.props))}
+				{injectChildElemsWithProps(this.props)}
 			</div>);
 
 		return (
