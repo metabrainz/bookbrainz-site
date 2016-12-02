@@ -36,7 +36,6 @@ const staticCache = require('express-static-cache');
 const bookbrainzData = require('bookbrainz-data');
 
 const config = require('./helpers/config');
-require('node-jsx').install({harmony: true});
 
 // Before we start pulling in local helpers, we need to initialize the database;
 // otherwise, the models we depend on won't exist

@@ -58,7 +58,6 @@
     "lodash.omit": "^4.2.1",
     "log": "^1.4.0",
     "morgan": "~1.7.0",
-    "node-jsx": "^0.13.3",
     "passport": "^0.3.2",
     "passport-musicbrainz-oauth2": "git+https://github.com/LordSputnik/passport-musicbrainz-oauth2.git",
     "react": "^0.14.8",
