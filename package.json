@@ -16,7 +16,7 @@
     "watch-client-js": "./scripts/watch-client-js.sh",
     "watch-less": "./scripts/watch-less.sh",
     "debug": "npm run watch-less & npm run watch-client-js & npm run watch-server-js",
-    "lint": "eslint src test templates",
+    "lint": "eslint --fix src test templates",
     "test": "npm run lint && npm run prestart",
     "jsdoc": "node_modules/.bin/jsdoc -r src",
     "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator"
