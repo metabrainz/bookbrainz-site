@@ -54,7 +54,7 @@ router.get('/', (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
-		const props = Object.assign(req.app.locals, {
+		const props = Object.assign({}, req.app.locals, {
 			recent: _.take(entities, numRevisionsOnHomepage),
 			homepage: true
 		})
