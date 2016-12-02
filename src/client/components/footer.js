@@ -35,10 +35,17 @@ class Footer extends React.Component {
 					<Grid fluid>
 						<Row>
 							<Col sm={4}>
-								<small>Tested with <a href="https://www.browserstack.com/" target="_blank"><img alt="BrowserStack Logo" height="25" src="/images/BrowserStack.png"/></a></small>
+								<small>Tested with
+									<a href="https://www.browserstack.com/"
+										rel="noopener noreferrer"
+										target="_blank"
+									>
+									<img alt="BrowserStack Logo" height="25" src="/images/BrowserStack.png"/></a></small>
 							</Col>
 							<Col className="text-center" sm={4}>
-								<small>Cover image by <a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a> (<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)</small>
+								<small>Cover image by <a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
+									(<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)
+								</small>
 							</Col>
 							<Col className="text-right" sm={4}>
 								<a href="/privacy"><small>Privacy & Terms</small></a>

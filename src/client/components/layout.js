@@ -23,10 +23,11 @@ const Footer = require('./footer');
 
 /**
  * Returns list of component children that have been injected with the specified props (does not override existing ones)
- * @param {Object} props - The props object that is injected into the children
- * @returns {Array}
+ * @param {Object} props - The props object that contains children and will be re-injected into children
+ * @returns {Array} list of children
  */
 function injectChildElemsWithProps(props) {
+	'use strict';
 	return React.Children.map(props.children, (Child) => {
 		const filteredProps = Object.assign({}, props, Child.props);
 		return React.cloneElement(Child, filteredProps);
@@ -47,16 +48,15 @@ class Layout extends React.Component {
 
 		return (
 			<div className="navbar-header">
-				<a role="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" className="navbar-toggle collapsed">
+				<a className="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" role="button">
 					<span className="sr-only">Toggle navigation</span>
-					<span className="icon-bar"></span>
-					<span className="icon-bar"></span>
-					<span className="icon-bar"></span>
+					<span className="icon-bar"/>
+					<span className="icon-bar"/>
+					<span className="icon-bar"/>
 				</a>
-				<a href="/" className="navbar-brand logo">
+				<a className="navbar-brand logo" href="/">
 					{homepage ?
-						<img alt="BookBrainz icon" src="/images/BookBrainz_logo_icon.svg" title="BookBrainz"/>
-						:
+						<img alt="BookBrainz icon" src="/images/BookBrainz_logo_icon.svg" title="BookBrainz"/> :
 						<img alt="BookBrainz icon" src="/images/BookBrainz_logo_mini.svg" title="BookBrainz"/>
 					}
 				</a>
@@ -68,48 +68,51 @@ class Layout extends React.Component {
 		const {user, homepage, hideSearch} = this.props;
 
 		return (
-			<div id="bs-example-navbar-collapse-1" className="collapse navbar-collapse">
+			<div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul className="nav navbar-nav navbar-right">
 					{user && user.id ?
 						<div>
 							<li className="dropdown">
-								<a id="dNewEntities" href="#" data-toggle="dropdown" role="button" aria-expanded="false" className="dropdown-toggle">
-									<span className="fa fa-plus"></span>&nbsp;Create&nbsp;
-									<span className="caret"></span>
+								<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dNewEntities" role="button">
+									<span className="fa fa-plus"/>&nbsp;Create&nbsp;
+									<span className="caret"/>
 								</a>
-								<ul role="menu" aria-labelledby="dNewEntities" className="dropdown-menu">
+								<ul aria-labelledby="dNewEntities" className="dropdown-menu" role="menu">
 									<li><a href="/publication/create">Create Publication</a></li>
 									<li><a href="/edition/create">Create Edition</a></li>
 									<li><a href="/work/create">Create Work</a></li>
-									<li className="divider"></li>
+									<li className="divider"/>
 									<li><a href="/creator/create">Create Creator</a></li>
 									<li><a href="/publisher/create">Create Publisher</a></li>
 								</ul>
 							</li>
 							<li className="dropdown">
-								<a id="dUserDropdown" href="#" data-toggle="dropdown" role="button" aria-expanded="false" className="dropdown-toggle">
-									<span className="fa fa-user"></span><span>&nbsp; {user.name}</span><span className="caret"></span>
+								<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dUserDropdown" role="button">
+									<span className="fa fa-user"/><span>&nbsp; {user.name}</span><span className="caret"/>
 								</a>
-								<ul role="menu" aria-labelledby="dUserDropdown" className="dropdown-menu">
-									<li><a href={`/editor/${user.id}`}><span className="fa fa-info fa-fw"></span>&nbsp;Profile</a></li>
-									<li><a href="/logout"><span className="fa fa-sign-out fa-fw"></span>&nbsp;Sign Out</a></li>
+								<ul aria-labelledby="dUserDropdown" className="dropdown-menu" role="menu">
+									<li><a href={`/editor/${user.id}`}><span className="fa fa-info fa-fw"/>&nbsp;Profile</a></li>
+									<li><a href="/logout"><span className="fa fa-sign-out fa-fw"/>&nbsp;Sign Out</a></li>
 								</ul>
 							</li>
-						</div>
-						:
+						</div> :
 						<li>
 							<a href="/auth">
-								<span className="fa fa-sign-in"></span>&nbsp;Sign In / Register
+								<span className="fa fa-sign-in"/>&nbsp;Sign In / Register
 							</a>
 						</li>
 					}
 				</ul>
 				{!(homepage || hideSearch) &&
-				<form role="search" action="/search" className="navbar-form navbar-right">
+				<form action="/search" className="navbar-form navbar-right" role="search">
 					<div className="form-group">
 						<div className="input-group">
-						<input type="text" placeholder="Search for..." name="q" className="form-control"/><span className="input-group-btn">
-							<button type="submit" className="btn btn-success"><span className="fa fa-search"></span></button></span>
+						<input className="form-control" name="q" placeholder="Search for..." type="text"/>
+							<span className="input-group-btn">
+								<button className="btn btn-success"type="submit">
+									<span className="fa fa-search"/>
+								</button>
+						</span>
 						</div>
 					</div>
 				</form>
@@ -122,15 +125,17 @@ class Layout extends React.Component {
 		const {homepage, siteRevision, repositoryUrl} = this.props;
 
 		// Shallow merges parents props into child components
-		const children = homepage ? React.Children.map(this.props.children, (Child) => injectChildElemsWithProps(this.props)) : (
-			<div id="content" className="container">
+		const children = homepage ? React.Children.map(this.props.children, (Child) => injectChildElemsWithProps(this.props)) :
+			<div className="container" id="content">
 				{injectChildElemsWithProps(this.props)}
-			</div>);
+			</div>;
 
 		return (
 			<div>
-				<a href="#content" className="sr-only sr-only-focusable">Skip to main content</a>
-				<div role="navigation" className="navbar navbar-default navbar-fixed-top BookBrainz">
+				<a className="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+				<div className="navbar navbar-default navbar-fixed-top BookBrainz"
+					role="navigation"
+				>
 					<div className="container-fluid">
 						{this.renderNavHeader()}
 						{this.renderNavContent()}

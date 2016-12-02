@@ -59,29 +59,47 @@ class IndexPage extends React.Component {
 		return (
 			<div>
 				<div className="alert alert-warning text-center">
-					<p>Under development — adventurous users, please test and add data! Give us feedback about bugs, glitches and potential improvements at <a href="//tickets.musicbrainz.org/browse/BB">MusicBrainz JIRA!</a></p>
+					<p>Under development — adventurous users, please test and add data! Give us feedback about bugs,
+					glitches and potential improvements at <a href="//tickets.musicbrainz.org/browse/BB">MusicBrainz JIRA!</a>
+					</p>
 				</div>
 				<div id="background-image">
-					<div id="background-overlay" className="text-center">
-						<div className="container"><img src="/images/BookBrainz_text.svg" width="500" alt="BookBrainz logo" title="BookBrainz" className="img-responsive center-block"/>
-						<div className="row">
-							<div className="col-md-8 col-md-offset-2">
-								<form role="search" action="/search">
-									<div className="input-group input-group-lg margin-top-5">
-									<input type="text" autoFocus="autofocus" placeholder="Search for..." name="q" className="form-control"/><span className="input-group-btn">
-										<button type="submit" className="btn btn-success"><span className="fa fa-search"></span></button></span>
+					<div className="text-center" id="background-overlay">
+						<div className="container">
+							<img alt="BookBrainz logo" className="img-responsive center-block" src="/images/BookBrainz_text.svg" title="BookBrainz" width="500"/>
+							<div className="row">
+								<div className="col-md-8 col-md-offset-2">
+									<form action="/search" role="search">
+										<div className="input-group input-group-lg margin-top-5">
+										<input autoFocus="autofocus" className="form-control" name="q" placeholder="Search for..." type="text"/>
+											<span className="input-group-btn">
+												<button className="btn btn-success" type="submit"><span className="fa fa-search"/></button>
+											</span>
+										</div>
+									</form>
+									<div className="row margin-top-4">
+										<div className="col-sm-4"><a className="btn btn-block btn-lg btn-default" href="/about">About</a></div>
+										<div className="col-sm-4"><a className="btn btn-block btn-lg btn-default" href="/contribute">Contribute</a></div>
+										<div className="col-sm-4"><a className="btn btn-block btn-lg btn-default" href="/develop">Develop</a></div>
 									</div>
-								</form>
-								<div className="row margin-top-4">
-									<div className="col-sm-4"><a href="/about" className="btn btn-block btn-lg btn-default">About</a></div>
-									<div className="col-sm-4"><a href="/contribute" className="btn btn-block btn-lg btn-default">Contribute</a></div>
-									<div className="col-sm-4"><a href="/develop" className="btn btn-block btn-lg btn-default">Develop</a></div>
-								</div>
-								<div className="margin-top-3">
-									<h4 className="contact-text">Contact Us</h4><span className="fa fa-circle margin-sides-1 contact-text"></span><a href="//webchat.freenode.net/?channels=#metabrainz"><span className="fa fa-comment fa-2x contact-text"></span></a><span className="fa fa-circle margin-sides-1 contact-text"></span><a href="//twitter.com/intent/tweet?screen_name=BookBrainz"><span className="fa fa-twitter fa-2x contact-text"></span></a><span className="fa fa-circle margin-sides-1 contact-text"></span><a href="mailto:bookbrainz-users@groups.io"><span className="fa fa-envelope fa-2x contact-text"></span></a><span className="fa fa-circle margin-sides-1 contact-text"></span>
+									<div className="margin-top-3">
+										<h4 className="contact-text">Contact Us</h4>
+										<span className="fa fa-circle margin-sides-1 contact-text"/>
+										<a href="//webchat.freenode.net/?channels=#metabrainz">
+											<span className="fa fa-comment fa-2x contact-text"/>
+										</a>
+										<span className="fa fa-circle margin-sides-1 contact-text"/>
+										<a href="//twitter.com/intent/tweet?screen_name=BookBrainz">
+											<span className="fa fa-twitter fa-2x contact-text"/>
+										</a>
+										<span className="fa fa-circle margin-sides-1 contact-text"/>
+										<a href="mailto:bookbrainz-users@groups.io">
+											<span className="fa fa-envelope fa-2x contact-text"/>
+										</a>
+										<span className="fa fa-circle margin-sides-1 contact-text"/>
+									</div>
 								</div>
 							</div>
-						</div>
 						</div>
 					</div>
 				</div>
@@ -109,16 +127,19 @@ class IndexPage extends React.Component {
 				</div>
 				<hr/>
 				<div className="row">
-					<div className="col-md-2 text-center margin-top-4"><span className="fa fa-user fa-5x"></span></div>
+					<div className="col-md-2 text-center margin-top-4"><span className="fa fa-user fa-5x"/></div>
 					<div className="col-md-10">
 						<h2>Join Us!</h2>
-						<p className="lead">First off,&nbsp;<a href="/about" target="blank">read about us</a>&nbsp;and&nbsp;<a href="/contribute" target="blank">how you can help</a>. Then, if you think you want to stick around, hit the button
-						below to sign up for a free BookBrainz account!
+						<p className="lead">
+							First off,&nbsp;<a href="/about" target="blank">read about us</a>&nbsp;and&nbsp;
+							<a href="/contribute" target="blank">how you can help</a>.
+							Then, if you think you want to stick around, hit the button
+							below to sign up for a free BookBrainz account!
 						</p>
 					</div>
 				</div>
 				<div className="text-center margin-top-1 margin-bottom-3">
-					<a href="/register" className="btn btn-success btn-lg">Register!</a>
+					<a className="btn btn-success btn-lg" href="/register">Register!</a>
 				</div>
 				{recent &&
 					<div>
@@ -130,14 +151,16 @@ class IndexPage extends React.Component {
 									{recent.map((entity) => {
 										const name = entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 										return (
-											<a href="/revision/revisionId" key={entity.bbid} className="list-group-item">
+											<a className="list-group-item" href="/revision/revisionId" key={entity.bbid} >
 												<div className="row">
 													<div className="col-md-2">{`r${entity.revisionId}`}</div>
 													<div className="col-md-6">
 														<span className={`fa ${picture_classes[entity.type]}`}/>
 														<span className="margin-left-1">{name}</span>
 													</div>
-													<div className="col-md-4">{(new Date(Date.parse(entity.revision.revision.createdAt)).toLocaleDateString())}</div>
+													<div className="col-md-4">
+														{(new Date(Date.parse(entity.revision.revision.createdAt)).toLocaleDateString())}
+													</div>
 												</div>
 											</a>
 										);
