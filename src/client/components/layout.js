@@ -69,40 +69,40 @@ class Layout extends React.Component {
 
 		return (
 			<div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul className="nav navbar-nav navbar-right">
-					{user && user.id ?
-						<div>
-							<li className="dropdown">
-								<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dNewEntities" role="button">
-									<span className="fa fa-plus"/>&nbsp;Create&nbsp;
-									<span className="caret"/>
-								</a>
-								<ul aria-labelledby="dNewEntities" className="dropdown-menu" role="menu">
-									<li><a href="/publication/create">Create Publication</a></li>
-									<li><a href="/edition/create">Create Edition</a></li>
-									<li><a href="/work/create">Create Work</a></li>
-									<li className="divider"/>
-									<li><a href="/creator/create">Create Creator</a></li>
-									<li><a href="/publisher/create">Create Publisher</a></li>
-								</ul>
-							</li>
-							<li className="dropdown">
-								<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dUserDropdown" role="button">
-									<span className="fa fa-user"/><span>&nbsp; {user.name}</span><span className="caret"/>
-								</a>
-								<ul aria-labelledby="dUserDropdown" className="dropdown-menu" role="menu">
-									<li><a href={`/editor/${user.id}`}><span className="fa fa-info fa-fw"/>&nbsp;Profile</a></li>
-									<li><a href="/logout"><span className="fa fa-sign-out fa-fw"/>&nbsp;Sign Out</a></li>
-								</ul>
-							</li>
-						</div> :
+				{user && user.id ?
+					<ul className="nav navbar-nav navbar-right">
+						<li className="dropdown">
+							<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dNewEntities" role="button">
+								<span className="fa fa-plus"/>&nbsp;Create&nbsp;
+								<span className="caret"/>
+							</a>
+							<ul aria-labelledby="dNewEntities" className="dropdown-menu" role="menu">
+								<li><a href="/publication/create">Create Publication</a></li>
+								<li><a href="/edition/create">Create Edition</a></li>
+								<li><a href="/work/create">Create Work</a></li>
+								<li className="divider"/>
+								<li><a href="/creator/create">Create Creator</a></li>
+								<li><a href="/publisher/create">Create Publisher</a></li>
+							</ul>
+						</li>
+						<li className="dropdown">
+							<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dUserDropdown" role="button">
+								<span className="fa fa-user"/><span>&nbsp; {user.name}</span><span className="caret"/>
+							</a>
+							<ul aria-labelledby="dUserDropdown" className="dropdown-menu" role="menu">
+								<li><a href={`/editor/${user.id}`}><span className="fa fa-info fa-fw"/>&nbsp;Profile</a></li>
+								<li><a href="/logout"><span className="fa fa-sign-out fa-fw"/>&nbsp;Sign Out</a></li>
+							</ul>
+						</li>
+					</ul> :
+					<ul className="nav navbar-nav navbar-right">
 						<li>
 							<a href="/auth">
 								<span className="fa fa-sign-in"/>&nbsp;Sign In / Register
 							</a>
 						</li>
-					}
-				</ul>
+					</ul>
+				}
 				{!(homepage || hideSearch) &&
 				<form action="/search" className="navbar-form navbar-right" role="search">
 					<div className="form-group">
