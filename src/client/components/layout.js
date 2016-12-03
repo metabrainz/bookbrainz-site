@@ -18,6 +18,13 @@
 
 const React = require('react');
 
+const bootstrap = require('react-bootstrap');
+
+const Nav = bootstrap.Nav;
+const Navbar = bootstrap.Navbar;
+const MenuItem = bootstrap.MenuItem;
+const FormGroup = bootstrap.FormGroup;
+
 const Footer = require('./footer');
 
 
@@ -47,20 +54,15 @@ class Layout extends React.Component {
 		const {homepage} = this.props;
 
 		return (
-			<div className="navbar-header">
-				<a className="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" role="button">
-					<span className="sr-only">Toggle navigation</span>
-					<span className="icon-bar"/>
-					<span className="icon-bar"/>
-					<span className="icon-bar"/>
-				</a>
-				<a className="navbar-brand logo" href="/">
+			<Navbar.Header>
+				<Navbar.Brand className="logo" href="/">
 					{homepage ?
 						<img alt="BookBrainz icon" src="/images/BookBrainz_logo_icon.svg" title="BookBrainz"/> :
 						<img alt="BookBrainz icon" src="/images/BookBrainz_logo_mini.svg" title="BookBrainz"/>
 					}
-				</a>
-			</div>
+				</Navbar.Brand>
+				<Navbar.Toggle/>
+			</Navbar.Header>
 		);
 	}
 
@@ -68,21 +70,21 @@ class Layout extends React.Component {
 		const {user, homepage, hideSearch} = this.props;
 
 		return (
-			<div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{user && user.id ?
-					<ul className="nav navbar-nav navbar-right">
+					<Nav pullRight>
 						<li className="dropdown">
 							<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dNewEntities" role="button">
 								<span className="fa fa-plus"/>&nbsp;Create&nbsp;
 								<span className="caret"/>
 							</a>
 							<ul aria-labelledby="dNewEntities" className="dropdown-menu" role="menu">
-								<li><a href="/publication/create">Create Publication</a></li>
-								<li><a href="/edition/create">Create Edition</a></li>
-								<li><a href="/work/create">Create Work</a></li>
+								<MenuItem href="/publication/create">Create Publication</MenuItem>
+								<MenuItem href="/edition/create">Create Edition</MenuItem>
+								<MenuItem href="/work/create">Create Work</MenuItem>
 								<li className="divider"/>
-								<li><a href="/creator/create">Create Creator</a></li>
-								<li><a href="/publisher/create">Create Publisher</a></li>
+								<MenuItem href="/creator/create">Create Creator</MenuItem>
+								<MenuItem href="/publisher/create">Create Publisher</MenuItem>
 							</ul>
 						</li>
 						<li className="dropdown">
@@ -90,34 +92,32 @@ class Layout extends React.Component {
 								<span className="fa fa-user"/><span>&nbsp; {user.name}</span><span className="caret"/>
 							</a>
 							<ul aria-labelledby="dUserDropdown" className="dropdown-menu" role="menu">
-								<li><a href={`/editor/${user.id}`}><span className="fa fa-info fa-fw"/>&nbsp;Profile</a></li>
-								<li><a href="/logout"><span className="fa fa-sign-out fa-fw"/>&nbsp;Sign Out</a></li>
+								<MenuItem href={`/editor/${user.id}`}><span className="fa fa-info fa-fw"/>&nbsp;Profile</MenuItem>
+								<MenuItem href="/logout"><span className="fa fa-sign-out fa-fw"/>&nbsp;Sign Out</MenuItem>
 							</ul>
 						</li>
-					</ul> :
-					<ul className="nav navbar-nav navbar-right">
-						<li>
-							<a href="/auth">
-								<span className="fa fa-sign-in"/>&nbsp;Sign In / Register
-							</a>
-						</li>
-					</ul>
+					</Nav> :
+					<Nav pullRight>
+						<MenuItem href="/auth">
+							<span className="fa fa-sign-in"/>&nbsp;Sign In / Register
+						</MenuItem>
+					</Nav>
 				}
 				{!(homepage || hideSearch) &&
-				<form action="/search" className="navbar-form navbar-right" role="search">
-					<div className="form-group">
+				<Navbar.Form pullRight action="/search" role="search">
+					<FormGroup>
 						<div className="input-group">
-						<input className="form-control" name="q" placeholder="Search for..." type="text"/>
+							<input className="form-control" name="q" placeholder="Search for..." type="text"/>
 							<span className="input-group-btn">
 								<button className="btn btn-success"type="submit">
 									<span className="fa fa-search"/>
 								</button>
-						</span>
+							</span>
 						</div>
-					</div>
-				</form>
+					</FormGroup>
+				</Navbar.Form>
 				}
-			</div>
+			</Navbar.Collapse>
 		);
 	}
 
@@ -133,14 +133,10 @@ class Layout extends React.Component {
 		return (
 			<div>
 				<a className="sr-only sr-only-focusable" href="#content">Skip to main content</a>
-				<div className="navbar navbar-default navbar-fixed-top BookBrainz"
-					role="navigation"
-				>
-					<div className="container-fluid">
-						{this.renderNavHeader()}
-						{this.renderNavContent()}
-					</div>
-				</div>
+				<Navbar fixedTop fluid className="BookBrainz" role="navigation">
+					{this.renderNavHeader()}
+					{this.renderNavContent()}
+				</Navbar>
 				{children}
 				<Footer repositoryUrl={repositoryUrl}
 					siteRevision={siteRevision}
