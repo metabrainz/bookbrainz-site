@@ -37,6 +37,15 @@
 
 const React = require('react');
 
+const bootstrap = require('react-bootstrap');
+const Alert = bootstrap.Alert;
+const Grid = bootstrap.Grid;
+const Row = bootstrap.Row;
+const Col = bootstrap.Col;
+const Button = bootstrap.Button;
+const ListGroup = bootstrap.ListGroup;
+const ListGroupItem = bootstrap.ListGroupItem;
+
 const picture_classes = {
 	Edition: 'fa-book',
 	Publication: 'fa-th-list',
@@ -58,30 +67,30 @@ class IndexPage extends React.Component {
 	renderHeader() {
 		return (
 			<div>
-				<div className="alert alert-warning text-center">
+				<Alert bsStyle="warning" className="text-center">
 					<p>Under development — adventurous users, please test and add data! Give us feedback about bugs,
 					glitches and potential improvements at <a href="//tickets.musicbrainz.org/browse/BB">MusicBrainz JIRA!</a>
 					</p>
-				</div>
+				</Alert>
 				<div id="background-image">
 					<div className="text-center" id="background-overlay">
-						<div className="container">
+						<Grid>
 							<img alt="BookBrainz logo" className="img-responsive center-block" src="/images/BookBrainz_text.svg" title="BookBrainz" width="500"/>
-							<div className="row">
-								<div className="col-md-8 col-md-offset-2">
+							<Row>
+								<Col md={8} mdOffset={2}>
 									<form action="/search" role="search">
 										<div className="input-group input-group-lg margin-top-5">
-										<input autoFocus="autofocus" className="form-control" name="q" placeholder="Search for..." type="text"/>
+											<input autoFocus="autofocus" className="form-control" name="q" placeholder="Search for..." type="text"/>
 											<span className="input-group-btn">
-												<button className="btn btn-success" type="submit"><span className="fa fa-search"/></button>
+												<Button bsStyle="success" type="submit"><span className="fa fa-search"/></Button>
 											</span>
 										</div>
 									</form>
-									<div className="row margin-top-4">
-										<div className="col-sm-4"><a className="btn btn-block btn-lg btn-default" href="/about">About</a></div>
-										<div className="col-sm-4"><a className="btn btn-block btn-lg btn-default" href="/contribute">Contribute</a></div>
-										<div className="col-sm-4"><a className="btn btn-block btn-lg btn-default" href="/develop">Develop</a></div>
-									</div>
+									<Row className="margin-top-4">
+										<Col sm={4}><Button block bsSize="large" href="/about">About</Button></Col>
+										<Col sm={4}><Button block bsSize="large" href="/contribute">Contribute</Button></Col>
+										<Col sm={4}><Button block bsSize="large" href="/develop">Develop</Button></Col>
+									</Row>
 									<div className="margin-top-3">
 										<h4 className="contact-text">Contact Us</h4>
 										<span className="fa fa-circle margin-sides-1 contact-text"/>
@@ -98,9 +107,9 @@ class IndexPage extends React.Component {
 										</a>
 										<span className="fa fa-circle margin-sides-1 contact-text"/>
 									</div>
-								</div>
-							</div>
-						</div>
+								</Col>
+							</Row>
+						</Grid>
 					</div>
 				</div>
 			</div>
@@ -111,9 +120,9 @@ class IndexPage extends React.Component {
 		const {recent} = this.props;
 
 		return (
-			<div className="container">
-				<div className="row">
-					<div className="col-md-8 col-md-offset-2">
+			<Grid>
+				<Row>
+					<Col md={8} mdOffset={2}>
 						<h1 className="text-center">The Open Book Database</h1>
 						<p className="lead text-justify">
 							BookBrainz is a project to create an online database of information
@@ -123,12 +132,12 @@ class IndexPage extends React.Component {
 							BookBrainz, whether through editing our information, helping out with
 							development, or just spreading the word about our project.
 						</p>
-					</div>
-				</div>
+					</Col>
+				</Row>
 				<hr/>
-				<div className="row">
-					<div className="col-md-2 text-center margin-top-4"><span className="fa fa-user fa-5x"/></div>
-					<div className="col-md-10">
+				<Row>
+					<Col className="text-center margin-top-4" md={2}><span className="fa fa-user fa-5x"/></Col>
+					<Col md={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
 							First off,&nbsp;<a href="/about" target="blank">read about us</a>&nbsp;and&nbsp;
@@ -136,41 +145,41 @@ class IndexPage extends React.Component {
 							Then, if you think you want to stick around, hit the button
 							below to sign up for a free BookBrainz account!
 						</p>
-					</div>
-				</div>
+					</Col>
+				</Row>
 				<div className="text-center margin-top-1 margin-bottom-3">
-					<a className="btn btn-success btn-lg" href="/register">Register!</a>
+					<Button bsSize="large" bsStyle="success" href="/register">Register!</Button>
 				</div>
 				{recent &&
 					<div>
 						<hr/>
-						<div className="row">
-							<div className="col-md-12">
+						<Row>
+							<Col md={12}>
 								<h2 className="text-center">Recent Activity</h2>
-								<div className="list-group">
+								<ListGroup>
 									{recent.map((entity) => {
 										const name = entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 										return (
-											<a className="list-group-item" href="/revision/revisionId" key={entity.bbid} >
-												<div className="row">
-													<div className="col-md-2">{`r${entity.revisionId}`}</div>
-													<div className="col-md-6">
+											<ListGroupItem href={`/revision/${entity.revisionId}`} key={entity.bbid} >
+												<Row>
+													<Col md={2}>{`r${entity.revisionId}`}</Col>
+													<Col md={6}>
 														<span className={`fa ${picture_classes[entity.type]}`}/>
 														<span className="margin-left-1">{name}</span>
-													</div>
-													<div className="col-md-4">
+													</Col>
+													<Col md={4}>
 														{(new Date(Date.parse(entity.revision.revision.createdAt)).toLocaleDateString())}
-													</div>
-												</div>
-											</a>
+													</Col>
+												</Row>
+											</ListGroupItem>
 										);
 									})}
-								</div>
-							</div>
-						</div>
+								</ListGroup>
+							</Col>
+						</Row>
 					</div>
 				}
-			</div>
+			</Grid>
 		);
 	}
 
