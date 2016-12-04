@@ -30,6 +30,14 @@ const PublicationData = require('./parts/publication-data');
 const RevisionNote = require('./parts/revision-note');
 
 class PublicationForm extends React.Component {
+
+	/**
+	 * Initializes component state to default values and binds class
+	 * methods to proper context so that they can be directly invoked
+	 * without explicit binding
+	 *
+	 * @param {object} props - Properties object passed down from parents
+	 */
 	constructor(props) {
 		super(props);
 
@@ -47,21 +55,46 @@ class PublicationForm extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	/**
+	 * Sets 'tab' state variable to the first parameter and checks if
+	 * alias form is valid, storing the result as a boolean 'aliasesValid' in
+	 * state
+	 *
+	 * @param {number} tab - Indicates the current tab
+	 * @returns {undefined}
+	 */
 	handleTabSelect(tab) {
 		this.setState({
 			tab,
-			aliasesValid: this.aliases.valid(),
-			dataValid: this.data.valid()
+			aliasesValid: this.aliases.valid()
 		});
 	}
+
+	/**
+	 * Decrements 'tab' state variable and moves to previous tab form
+	 *
+	 * @returns {undefined}
+	 */
 	handleBackClick() {
 		this.handleTabSelect(this.state.tab - 1);
 	}
 
+	/**
+	 * Increments 'tab' state variable and moves to following tab form
+	 *
+	 * @returns {undefined}
+	 */
 	handleNextClick() {
 		this.handleTabSelect(this.state.tab + 1);
 	}
 
+	/**
+	 * Extracts user input from forms, formats the changes to publisher,
+	 * and submits it to the server.
+	 *
+	 * @param {object} evt - Event object passed in by event dispatcher
+	 * @returns {undefined}
+	 */
 	handleSubmit(evt) {
 		evt.preventDefault();
 
@@ -104,6 +137,13 @@ class PublicationForm extends React.Component {
 			});
 	}
 
+	/**
+	 * Renders the component: Includes a top nav bar, 3 forms that change
+	 * visibility based the 'tab' state variable, and a loading spinner that
+	 * appears when the 'waiting' state variable is true.
+	 *
+	 * @returns {object} - JSX to render
+	 */
 	render() {
 		let aliases = null;
 		const prefillData = this.props.publication;
