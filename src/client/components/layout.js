@@ -1,5 +1,9 @@
 /*
- * Copyright (C) 2016  Max Prettyjohns
+ * Copyright (C) 2016  Daniel Hsing
+ * 				 2016  Ben Ockmore
+ * 				 2016  Sean Burke
+ * 				 2016  Ohm Patel
+ *				 2015  Leo Verto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +19,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+/* eslint max-len: "warn" */
 const React = require('react');
 
 const bootstrap = require('react-bootstrap');
@@ -58,8 +62,14 @@ class Layout extends React.Component {
 			<Navbar.Header>
 				<Navbar.Brand className="logo" href="/">
 					{homepage ?
-						<img alt="BookBrainz icon" src="/images/BookBrainz_logo_icon.svg" title="BookBrainz"/> :
-						<img alt="BookBrainz icon" src="/images/BookBrainz_logo_mini.svg" title="BookBrainz"/>
+						<img alt="BookBrainz icon"
+							src="/images/BookBrainz_logo_icon.svg"
+							title="BookBrainz"
+						/> :
+						<img alt="BookBrainz icon"
+							src="/images/BookBrainz_logo_mini.svg"
+							title="BookBrainz"
+						/>
 					}
 				</Navbar.Brand>
 				<Navbar.Toggle/>
@@ -75,11 +85,21 @@ class Layout extends React.Component {
 				{user && user.id ?
 					<Nav pullRight>
 						<li className="dropdown">
-							<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dNewEntities" role="button">
+							<a aria-expanded="false"
+								className="dropdown-toggle"
+								data-toggle="dropdown"
+								href="#"
+								id="dNewEntities"
+								role="button"
+							>
 								<FontAwesome name="plus"/>{' Create '}
 								<span className="caret"/>
 							</a>
-							<ul aria-labelledby="dNewEntities" className="dropdown-menu" role="menu">
+							<ul
+								aria-labelledby="dNewEntities"
+								className="dropdown-menu"
+								role="menu"
+							>
 								<MenuItem href="/publication/create">Create Publication</MenuItem>
 								<MenuItem href="/edition/create">Create Edition</MenuItem>
 								<MenuItem href="/work/create">Create Work</MenuItem>
@@ -89,15 +109,28 @@ class Layout extends React.Component {
 							</ul>
 						</li>
 						<li className="dropdown">
-							<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dUserDropdown" role="button">
+							<a aria-expanded="false"
+								className="dropdown-toggle"
+								data-toggle="dropdown"
+								href="#"
+								id="dUserDropdown"
+								role="button"
+							>
 								<FontAwesome name="user"/><span>{` ${user.name}`}</span><span className="caret"/>
 							</a>
-							<ul aria-labelledby="dUserDropdown" className="dropdown-menu" role="menu">
+							<ul aria-labelledby="dUserDropdown"
+								className="dropdown-menu"
+								role="menu"
+							>
 								<MenuItem href={`/editor/${user.id}`}>
-									<FontAwesome fixedWidth name="info"/>{' Profile'}
+									<FontAwesome fixedWidth
+										name="info"
+									/>{' Profile'}
 								</MenuItem>
 								<MenuItem href="/logout">
-									<FontAwesome fixedWidth name="sign-out"/>{' Sign Out'}
+									<FontAwesome fixedWidth
+										name="sign-out"
+									/>{' Sign Out'}
 								</MenuItem>
 							</ul>
 						</li>
@@ -109,12 +142,21 @@ class Layout extends React.Component {
 					</Nav>
 				}
 				{!(homepage || hideSearch) &&
-				<Navbar.Form pullRight action="/search" role="search">
+				<Navbar.Form pullRight
+					action="/search"
+					role="search"
+				>
 					<FormGroup>
 						<div className="input-group">
-							<input className="form-control" name="q" placeholder="Search for..." type="text"/>
+							<input className="form-control"
+								name="q"
+								placeholder="Search for..."
+								type="text"
+							/>
 							<span className="input-group-btn">
-								<button className="btn btn-success"type="submit">
+								<button className="btn btn-success"
+									type="submit"
+								>
 									<FontAwesome name="search"/>
 								</button>
 							</span>
@@ -137,7 +179,9 @@ class Layout extends React.Component {
 
 		return (
 			<div>
-				<a className="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+				<a className="sr-only sr-only-focusable"
+					href="#content"
+				>Skip to main content</a>
 				<Navbar fixedTop fluid className="BookBrainz" role="navigation">
 					{this.renderNavHeader()}
 					{this.renderNavContent()}

@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2016  Max Prettyjohns
+* Copyright (C) 2016  Daniel Hsing
+ * 				2016  Ben Ockmore
+ * 				2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+/* eslint max-len: "warn" */
 const React = require('react');
 
 const bootstrap = require('react-bootstrap');
@@ -39,19 +41,33 @@ class Footer extends React.Component {
 									rel="noopener noreferrer"
 									target="_blank"
 								>
-								<img alt="BrowserStack Logo" height="25" src="/images/BrowserStack.png"/></a></small>
+									<img alt="BrowserStack Logo"
+										 height="25"
+										 src="/images/BrowserStack.png"
+									/>
+								</a>
+							</small>
 						</Col>
-						<Col className="text-center" sm={4}>
-							<small>Cover image by <a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
+						<Col className="text-center"
+							sm={4}
+						>
+							<small>Cover image by
+								<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
 								{' ('}<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)
 							</small>
 						</Col>
-						<Col className="text-right" sm={4}>
-							<a href="/privacy"><small>Privacy & Terms</small></a>
+						<Col className="text-right"
+							 sm={4}
+						>
+							<a href="/privacy">
+								<small>Privacy & Terms</small>
+							</a>
 						</Col>
 					</Row>
 					<Row className="text-center">
-						<small>Alpha Software — <a href={`${repositoryUrl}commit/${siteRevision}`}>{siteRevision}</a> — <a href="#">Report a Bug</a></small>
+						<small>
+							Alpha Software — <a href={`${repositoryUrl}commit/${siteRevision}`}>{siteRevision}</a> — <a href="#">Report a Bug</a>
+						</small>
 					</Row>
 				</Grid>
 			</footer>
