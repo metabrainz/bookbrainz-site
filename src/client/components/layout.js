@@ -19,6 +19,7 @@
 const React = require('react');
 
 const bootstrap = require('react-bootstrap');
+const FontAwesome = require('react-fontawesome');
 
 const Nav = bootstrap.Nav;
 const Navbar = bootstrap.Navbar;
@@ -75,7 +76,7 @@ class Layout extends React.Component {
 					<Nav pullRight>
 						<li className="dropdown">
 							<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dNewEntities" role="button">
-								<span className="fa fa-plus"/>&nbsp;Create&nbsp;
+								<FontAwesome name="plus"/>{' Create '}
 								<span className="caret"/>
 							</a>
 							<ul aria-labelledby="dNewEntities" className="dropdown-menu" role="menu">
@@ -89,17 +90,21 @@ class Layout extends React.Component {
 						</li>
 						<li className="dropdown">
 							<a aria-expanded="false" className="dropdown-toggle" data-toggle="dropdown" href="#" id="dUserDropdown" role="button">
-								<span className="fa fa-user"/><span>&nbsp; {user.name}</span><span className="caret"/>
+								<FontAwesome name="user"/><span>{` ${user.name}`}</span><span className="caret"/>
 							</a>
 							<ul aria-labelledby="dUserDropdown" className="dropdown-menu" role="menu">
-								<MenuItem href={`/editor/${user.id}`}><span className="fa fa-info fa-fw"/>&nbsp;Profile</MenuItem>
-								<MenuItem href="/logout"><span className="fa fa-sign-out fa-fw"/>&nbsp;Sign Out</MenuItem>
+								<MenuItem href={`/editor/${user.id}`}>
+									<FontAwesome fixedWidth name="info"/>{' Profile'}
+								</MenuItem>
+								<MenuItem href="/logout">
+									<FontAwesome fixedWidth name="sign-out"/>{' Sign Out'}
+								</MenuItem>
 							</ul>
 						</li>
 					</Nav> :
 					<Nav pullRight>
 						<MenuItem href="/auth">
-							<span className="fa fa-sign-in"/>&nbsp;Sign In / Register
+							<FontAwesome name="sign-in"/>{' Sign In / Register'}
 						</MenuItem>
 					</Nav>
 				}
@@ -110,7 +115,7 @@ class Layout extends React.Component {
 							<input className="form-control" name="q" placeholder="Search for..." type="text"/>
 							<span className="input-group-btn">
 								<button className="btn btn-success"type="submit">
-									<span className="fa fa-search"/>
+									<FontAwesome name="search"/>
 								</button>
 							</span>
 						</div>

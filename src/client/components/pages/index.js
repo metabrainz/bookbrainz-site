@@ -38,6 +38,8 @@
 const React = require('react');
 
 const bootstrap = require('react-bootstrap');
+const FontAwesome = require('react-fontawesome');
+
 const Alert = bootstrap.Alert;
 const Grid = bootstrap.Grid;
 const Row = bootstrap.Row;
@@ -47,11 +49,11 @@ const ListGroup = bootstrap.ListGroup;
 const ListGroupItem = bootstrap.ListGroupItem;
 
 const picture_classes = {
-	Edition: 'fa-book',
-	Publication: 'fa-th-list',
-	Creator: 'fa-user',
-	Publisher: 'fa-university',
-	Work: 'fa-file-text-o'
+	Edition: 'book',
+	Publication: 'th-list',
+	Creator: 'user',
+	Publisher: 'university',
+	Work: 'file-text-o'
 };
 
 
@@ -82,7 +84,9 @@ class IndexPage extends React.Component {
 										<div className="input-group input-group-lg margin-top-5">
 											<input autoFocus="autofocus" className="form-control" name="q" placeholder="Search for..." type="text"/>
 											<span className="input-group-btn">
-												<Button bsStyle="success" type="submit"><span className="fa fa-search"/></Button>
+												<Button bsStyle="success" type="submit">
+													<FontAwesome name="search"/>
+												</Button>
 											</span>
 										</div>
 									</form>
@@ -93,19 +97,19 @@ class IndexPage extends React.Component {
 									</Row>
 									<div className="margin-top-3">
 										<h4 className="contact-text">Contact Us</h4>
-										<span className="fa fa-circle margin-sides-1 contact-text"/>
+										<FontAwesome className="margin-sides-1 contact-text" name="circle"/>
 										<a href="//webchat.freenode.net/?channels=#metabrainz">
-											<span className="fa fa-comment fa-2x contact-text"/>
+											<FontAwesome className="contact-text" name="comment" size="2x"/>
 										</a>
-										<span className="fa fa-circle margin-sides-1 contact-text"/>
+										<FontAwesome className="margin-sides-1 contact-text" name="circle"/>
 										<a href="//twitter.com/intent/tweet?screen_name=BookBrainz">
-											<span className="fa fa-twitter fa-2x contact-text"/>
+											<FontAwesome className="contact-text" name="twitter" size="2x"/>
 										</a>
-										<span className="fa fa-circle margin-sides-1 contact-text"/>
+										<FontAwesome className="margin-sides-1 contact-text" name="circle"/>
 										<a href="mailto:bookbrainz-users@groups.io">
-											<span className="fa fa-envelope fa-2x contact-text"/>
+											<FontAwesome className="contact-text" name="envelope" size="2x"/>
 										</a>
-										<span className="fa fa-circle margin-sides-1 contact-text"/>
+										<FontAwesome className="margin-sides-1 contact-text" name="circle"/>
 									</div>
 								</Col>
 							</Row>
@@ -136,11 +140,13 @@ class IndexPage extends React.Component {
 				</Row>
 				<hr/>
 				<Row>
-					<Col className="text-center margin-top-4" md={2}><span className="fa fa-user fa-5x"/></Col>
+					<Col className="text-center margin-top-4" md={2}>
+						<FontAwesome name="user" size="5x"/>
+					</Col>
 					<Col md={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
-							First off,&nbsp;<a href="/about" target="blank">read about us</a>&nbsp;and&nbsp;
+							First off,{' '}<a href="/about" target="blank">read about us</a>{' and '}
 							<a href="/contribute" target="blank">how you can help</a>.
 							Then, if you think you want to stick around, hit the button
 							below to sign up for a free BookBrainz account!
@@ -164,7 +170,7 @@ class IndexPage extends React.Component {
 												<Row>
 													<Col md={2}>{`r${entity.revisionId}`}</Col>
 													<Col md={6}>
-														<span className={`fa ${picture_classes[entity.type]}`}/>
+														<FontAwesome name={picture_classes[entity.type]}/>
 														<span className="margin-left-1">{name}</span>
 													</Col>
 													<Col md={4}>
