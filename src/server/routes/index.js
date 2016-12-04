@@ -59,9 +59,9 @@ router.get('/', (req, res, next) => {
 			homepage: true
 		});
 
-		// Renders react components server side and injects markup into target file
+		// Renders react components server side and injects markup into target
+		// file
 		// object spread injects the app.locals variables into React as props
-		// GOTCHA: Props passed into children components will be overriden by parent props
 		res.render('target', {
 			markup: ReactDOMServer.renderToString(
 				<Layout {...props}>
