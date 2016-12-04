@@ -56,8 +56,12 @@ class IndexPage extends React.Component {
 				<Alert bsStyle="warning"
 					className="text-center"
 				>
-					<p>Under development — adventurous users, please test and add data! Give us feedback about bugs,
-					glitches and potential improvements at <a href="//tickets.musicbrainz.org/browse/BB">MusicBrainz JIRA!</a>
+					<p>Under development — adventurous users, please test and
+					 add data! Give us feedback about bugs,
+					glitches and potential improvements at
+					{' '}<a href="//tickets.musicbrainz.org/browse/BB">
+						MusicBrainz JIRA!
+					</a>
 					</p>
 				</Alert>
 				<div id="background-image">
@@ -115,7 +119,9 @@ class IndexPage extends React.Component {
 										</Col>
 									</Row>
 									<div className="margin-top-3">
-										<h4 className="contact-text">Contact Us</h4>
+										<h4 className="contact-text">
+											Contact Us
+										</h4>
 										<FontAwesome className="margin-sides-1 contact-text"
 											name="circle"
 										/>
@@ -167,12 +173,14 @@ class IndexPage extends React.Component {
 					>
 						<h1 className="text-center">The Open Book Database</h1>
 						<p className="lead text-justify">
-							BookBrainz is a project to create an online database of information
-							about every single book, magazine, journal and other publication ever
-							written. We make all the data that we collect available to the whole
-							world to consume and use as they see fit. Anyone can contribute to
-							BookBrainz, whether through editing our information, helping out with
-							development, or just spreading the word about our project.
+							BookBrainz is a project to create an online database
+							of information about every single book, magazine,
+							journal and other publication ever written. We make
+							all the data that we collect available to the whole
+							world to consume and use as they see fit. Anyone can
+							contribute to BookBrainz, whether through editing
+							our information, helping out with development, or
+							just spreading the word about our project.
 						</p>
 					</Col>
 				</Row>
@@ -188,10 +196,15 @@ class IndexPage extends React.Component {
 					<Col md={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
-							First off,{' '}<a href="/about" target="blank">read about us</a>{' and '}
-							<a href="/contribute" target="blank">how you can help</a>.
-							Then, if you think you want to stick around, hit the button
-							below to sign up for a free BookBrainz account!
+							First off,{' '}
+							<a href="/about"
+								target="blank"
+							>read about us</a>{' and '}
+							<a href="/contribute"
+								target="blank"
+							>how you can help</a>. Then, if you think you want
+							to stick around, hit the button below to sign up
+							for a free BookBrainz account!
 						</p>
 					</Col>
 				</Row>
@@ -211,7 +224,9 @@ class IndexPage extends React.Component {
 									{recent.map((entity) => {
 										const name = entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 										return (
-											<ListGroupItem href={`/revision/${entity.revisionId}`} key={entity.bbid} >
+											<ListGroupItem href={`/revision/${entity.revisionId}`}
+												key={entity.bbid}
+											>
 												<Row>
 													<Col md={2}>{`r${entity.revisionId}`}</Col>
 													<Col md={6}>

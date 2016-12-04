@@ -25,54 +25,56 @@ const Grid = bootstrap.Grid;
 const Col = bootstrap.Col;
 const Row = bootstrap.Row;
 
-class Footer extends React.Component {
+function Footer(props) {
+	'use strict';
 
-	render() {
-		const repositoryUrl = this.props.repositoryUrl;
-		const siteRevision = this.props.siteRevision;
+	const repositoryUrl = props.repositoryUrl;
+	const siteRevision = props.siteRevision;
 
-		return (
-			<footer className="footer">
-				<Grid fluid>
-					<Row>
-						<Col sm={4}>
-							<small>{'Tested with '}
-								<a href="https://www.browserstack.com/"
-									rel="noopener noreferrer"
-									target="_blank"
-								>
-									<img alt="BrowserStack Logo"
-										 height="25"
-										 src="/images/BrowserStack.png"
-									/>
-								</a>
-							</small>
-						</Col>
-						<Col className="text-center"
-							sm={4}
-						>
-							<small>Cover image by
-								<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
-								{' ('}<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)
-							</small>
-						</Col>
-						<Col className="text-right"
-							 sm={4}
-						>
-							<a href="/privacy">
-								<small>Privacy & Terms</small>
+	return (
+		<footer className="footer">
+			<Grid fluid>
+				<Row>
+					<Col sm={4}>
+						<small>{'Tested with '}
+							<a href="https://www.browserstack.com/"
+								rel="noopener noreferrer"
+								target="_blank"
+							>
+								<img alt="BrowserStack Logo"
+									height="25"
+									src="/images/BrowserStack.png"
+								/>
 							</a>
-						</Col>
-					</Row>
-					<Row className="text-center">
-						<small>
-							Alpha Software — <a href={`${repositoryUrl}commit/${siteRevision}`}>{siteRevision}</a> — <a href="#">Report a Bug</a>
 						</small>
-					</Row>
-				</Grid>
-			</footer>
-		);
-	}
+					</Col>
+					<Col className="text-center"
+						sm={4}
+					>
+						<small>Cover image by{' '}
+							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
+							{' ('}<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)
+						</small>
+					</Col>
+					<Col className="text-right"
+						sm={4}
+					>
+						<a href="/privacy">
+							<small>Privacy & Terms</small>
+						</a>
+					</Col>
+				</Row>
+				<Row className="text-center">
+					<small>
+						Alpha Software —{' '}
+						<a href={`${repositoryUrl}commit/${siteRevision}`}>
+							{siteRevision}
+						</a> — <a href="#">Report a Bug</a>
+					</small>
+				</Row>
+			</Grid>
+		</footer>
+	);
 }
 
 Footer.displayName = 'Footer';

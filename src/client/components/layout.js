@@ -34,8 +34,10 @@ const Footer = require('./footer');
 
 
 /**
- * Returns list of component children that have been injected with the specified props (does not override existing ones)
- * @param {Object} props - The props object that contains children and will be re-injected into children
+ * Returns list of component children that have been injected with the specified
+ * props (does not override existing ones)
+ * @param {Object} props - The props object that contains children and will be
+ * re-injected into children
  * @returns {Array} list of children
  */
 function injectChildElemsWithProps(props) {
@@ -60,7 +62,9 @@ class Layout extends React.Component {
 
 		return (
 			<Navbar.Header>
-				<Navbar.Brand className="logo" href="/">
+				<Navbar.Brand className="logo"
+					href="/"
+				>
 					{homepage ?
 						<img alt="BookBrainz icon"
 							src="/images/BookBrainz_logo_icon.svg"
@@ -100,12 +104,22 @@ class Layout extends React.Component {
 								className="dropdown-menu"
 								role="menu"
 							>
-								<MenuItem href="/publication/create">Create Publication</MenuItem>
-								<MenuItem href="/edition/create">Create Edition</MenuItem>
-								<MenuItem href="/work/create">Create Work</MenuItem>
+								<MenuItem href="/publication/create">
+									Create Publication
+								</MenuItem>
+								<MenuItem href="/edition/create">
+									Create Edition
+								</MenuItem>
+								<MenuItem href="/work/create">
+									Create Work
+								</MenuItem>
 								<li className="divider"/>
-								<MenuItem href="/creator/create">Create Creator</MenuItem>
-								<MenuItem href="/publisher/create">Create Publisher</MenuItem>
+								<MenuItem href="/creator/create">
+									Create Creator
+								</MenuItem>
+								<MenuItem href="/publisher/create">
+									Create Publisher
+								</MenuItem>
 							</ul>
 						</li>
 						<li className="dropdown">
@@ -116,7 +130,9 @@ class Layout extends React.Component {
 								id="dUserDropdown"
 								role="button"
 							>
-								<FontAwesome name="user"/><span>{` ${user.name}`}</span><span className="caret"/>
+								<FontAwesome name="user"/>
+								<span>{`  ${user.name}`}</span>
+								<span className="caret"/>
 							</a>
 							<ul aria-labelledby="dUserDropdown"
 								className="dropdown-menu"
@@ -172,8 +188,10 @@ class Layout extends React.Component {
 		const {homepage, siteRevision, repositoryUrl} = this.props;
 
 		// Shallow merges parents props into child components
-		const children = homepage ? React.Children.map(this.props.children, (Child) => injectChildElemsWithProps(this.props)) :
-			<div className="container" id="content">
+		const children = homepage ? injectChildElemsWithProps(this.props) :
+			<div className="container"
+				id="content"
+			>
 				{injectChildElemsWithProps(this.props)}
 			</div>;
 
@@ -182,7 +200,11 @@ class Layout extends React.Component {
 				<a className="sr-only sr-only-focusable"
 					href="#content"
 				>Skip to main content</a>
-				<Navbar fixedTop fluid className="BookBrainz" role="navigation">
+				<Navbar fixedTop
+					fluid
+					className="BookBrainz"
+					role="navigation"
+				>
 					{this.renderNavHeader()}
 					{this.renderNavContent()}
 				</Navbar>
@@ -199,11 +221,13 @@ Layout.displayName = 'Layout';
 Layout.propTypes = {
 	achievement: React.PropTypes.object,
 	basedir: React.PropTypes.string,
+	children: React.PropTypes.node,
 	creatorTypes: React.PropTypes.array,
 	editor: React.PropTypes.object,
 	entity: React.PropTypes.object,
 	genders: React.PropTypes.array,
 	hideSearch: React.PropTypes.bool,
+	homepage: React.PropTypes.bool,
 	identifierTypes: React.PropTypes.array,
 	languages: React.PropTypes.array,
 	publicationTypes: React.PropTypes.array,
