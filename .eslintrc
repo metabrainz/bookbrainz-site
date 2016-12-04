@@ -300,7 +300,7 @@ rules:
     - 6
   max-len:
     - 2
-    - 170
+    - 80
     - 4
   max-lines: 1
   max-params:
