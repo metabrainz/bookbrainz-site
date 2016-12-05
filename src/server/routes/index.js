@@ -30,6 +30,9 @@ const utils = require('../helpers/utils');
 
 const _ = require('lodash');
 
+const Layout = require('../../client/components/layout');
+const Index = require('../../client/components/pages/index');
+
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about')
 );
@@ -51,9 +54,20 @@ router.get('/', (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
-		res.render('index', {
+		const props = Object.assign({}, req.app.locals, res.locals, {
 			recent: _.take(entities, numRevisionsOnHomepage),
 			homepage: true
+		});
+
+		// Renders react components server side and injects markup into target
+		// file
+		// object spread injects the app.locals variables into React as props
+		res.render('target', {
+			markup: ReactDOMServer.renderToString(
+				<Layout {...props}>
+					<Index />
+				</Layout>
+			)
 		});
 	}
 
@@ -94,6 +108,7 @@ function _createStaticRoute(route, title, pageComponent) {
 	router.get(route, (req, res) => {
 		res.render('page', {
 			title,
+			homepage: false,
 			markup: ReactDOMServer.renderToString(pageComponent())
 		});
 	});
