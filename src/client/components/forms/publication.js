@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+/* eslint valid-jsdoc: "warn" */
 const Icon = require('react-fontawesome');
 const React = require('react');
 const request = require('superagent-bluebird-promise');
@@ -56,12 +56,10 @@ class PublicationForm extends React.Component {
 	}
 
 	/**
-	 * Sets 'tab' state variable to the first parameter and checks if
-	 * alias form is valid, storing the result as a boolean 'aliasesValid' in
-	 * state
+	 * Changes the current tab to the one specified and checks
+	 * if the alias form is valid.
 	 *
 	 * @param {number} tab - Indicates the current tab
-	 * @returns {undefined}
 	 */
 	handleTabSelect(tab) {
 		this.setState({
@@ -71,29 +69,26 @@ class PublicationForm extends React.Component {
 	}
 
 	/**
-	 * Decrements 'tab' state variable and moves to previous tab form
+	 * Event handler that moves user to previous tab
 	 *
-	 * @returns {undefined}
 	 */
 	handleBackClick() {
 		this.handleTabSelect(this.state.tab - 1);
 	}
 
 	/**
-	 * Increments 'tab' state variable and moves to following tab form
+	 * Event handler that moves user to following tab
 	 *
-	 * @returns {undefined}
 	 */
 	handleNextClick() {
 		this.handleTabSelect(this.state.tab + 1);
 	}
 
 	/**
-	 * Extracts user input from forms, formats the changes to publisher,
-	 * and submits it to the server.
+	 * Extracts user revisions to publications and sends it to the server
+	 * to be saved
 	 *
 	 * @param {object} evt - Event object passed in by event dispatcher
-	 * @returns {undefined}
 	 */
 	handleSubmit(evt) {
 		evt.preventDefault();
@@ -140,7 +135,7 @@ class PublicationForm extends React.Component {
 	/**
 	 * Renders the component: Includes a top nav bar, 3 forms that change
 	 * visibility based the 'tab' state variable, and a loading spinner that
-	 * appears when the 'waiting' state variable is true.
+	 * appears for certain async operations
 	 *
 	 * @returns {object} - JSX to render
 	 */

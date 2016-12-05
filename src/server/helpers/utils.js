@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+/* eslint valid-jsdoc: "warn" */
 'use strict';
 
 const Creator = require('bookbrainz-data').Creator;
@@ -29,6 +29,7 @@ const Promise = require('bluebird');
 
 /**
  * Returns an API path for interacting with the given entity object
+ *
  * @param {object} entity - Entity object
  * @returns {string} - URL path to interact with entity
  */
@@ -39,6 +40,7 @@ function getEntityLink(entity) {
 
 /**
  * Returns all entity models defined with the Bookshelf ORM
+ *
  * @returns {object} - Object mapping model name to the entity model
  */
 function getEntityModels() {
@@ -53,6 +55,7 @@ function getEntityModels() {
 
 /**
  * Retrieves a Bookshelf ORM model given the model name
+ *
  * @param {string} type - Name or type of model
  * @throws {Error} Throws a custom error if the param 'type' does not
  * map to a model
@@ -71,6 +74,7 @@ function getEntityModelByType(type) {
 
 /**
  * Regular expression for valid BookBrainz IDs
+ *
  * @type {RegExp}
  * @private
  */
@@ -79,6 +83,7 @@ const _bbidRegex =
 
 /**
  * Tests if a BookBrainz ID is valid
+ *
  * @param {string} bbid - BookBrainz ID to validate
  * @returns {boolean} - Returns true if BookBrainz ID is valid
  */
@@ -87,8 +92,10 @@ function isValidBBID(bbid) {
 }
 
 /**
- * Curried template literal tag where data object is passed in as
- * latter argument and object keys are used as template values.
+ * Helper function that allows the values of an object that
+ * is passed in at a later time to be interpolated into a
+ * string
+ *
  * @param {string[]} strings - Array of string literals from template
  * @returns {function(*)} - Takes an object/array as an argument.
  * When invoked, it will return a string with all the key names from
@@ -112,6 +119,7 @@ function template(strings) {
 
 /**
  * Generates a page title for an entity object
+ *
  * @param {object} entity - Entity object
  * @param {string} titleForUnnamed - Fallback title in case entity has no name
  * @param {function} templateForNamed - Accepts an object with a name field and
@@ -136,8 +144,8 @@ function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
 }
 
 /**
- * Increments totalRevisions and revisionsApplied fields on the
- * bookshelf editor object/row with the specified id
+ * Adds to the edit count of the specified editor
+ *
  * @param {string} id - ID of editor object/row
  * @param {object} transacting - Bookshelf transaction object
  * @returns {Promise} - Resolves to the updated editor model
@@ -153,9 +161,9 @@ function incrementEditorEditCountById(id, transacting) {
 
 /**
  * Removes all rows from a selection of database tables
+ *
  * @param {object} Bookshelf - Bookshelf instance connected to database
  * @param {string[]} tables - List of tables to truncate
- * @returns {undefined}
  */
 function truncateTables(Bookshelf, tables) {
 	Promise.each(tables,
