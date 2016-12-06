@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint valid-jsdoc: "warn" */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }], max-len: "warn" */
 'use strict';
 
 const Creator = require('bookbrainz-data').Creator;
@@ -28,7 +28,7 @@ const Work = require('bookbrainz-data').Work;
 const Promise = require('bluebird');
 
 /**
- * Returns an API path for interacting with the given entity object
+ * Returns an API path for interacting with the given Bookshelf entity model
  *
  * @param {object} entity - Entity object
  * @returns {string} - URL path to interact with entity
@@ -39,7 +39,7 @@ function getEntityLink(entity) {
 }
 
 /**
- * Returns all entity models defined with the Bookshelf ORM
+ * Returns all entity models defined in bookbrainz-data-js
  *
  * @returns {object} - Object mapping model name to the entity model
  */
@@ -54,7 +54,7 @@ function getEntityModels() {
 }
 
 /**
- * Retrieves a Bookshelf ORM model given the model name
+ * Retrieves the Bookshelf entity model with the given the model name
  *
  * @param {string} type - Name or type of model
  * @throws {Error} Throws a custom error if the param 'type' does not
@@ -73,7 +73,7 @@ function getEntityModelByType(type) {
 }
 
 /**
- * Regular expression for valid BookBrainz IDs
+ * Regular expression for valid BookBrainz UUIDs (bbid)
  *
  * @type {RegExp}
  * @private
@@ -82,19 +82,22 @@ const _bbidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 /**
- * Tests if a BookBrainz ID is valid
+ * Tests if a BookBrainz UUID is valid
  *
- * @param {string} bbid - BookBrainz ID to validate
- * @returns {boolean} - Returns true if BookBrainz ID is valid
+ * @param {string} bbid - BookBrainz UUID to validate
+ * @returns {boolean} - Returns true if BookBrainz UUID is valid
  */
 function isValidBBID(bbid) {
 	return _bbidRegex.test(bbid);
 }
 
 /**
- * Helper function that allows the values of an object that
+ * Helper-function / template-tag that allows the values of an object that
  * is passed in at a later time to be interpolated into a
- * string
+ * string.
+ *
+ * Cribbed from MDN documentation on template literals:
+ * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals
  *
  * @param {string[]} strings - Array of string literals from template
  * @returns {function(*)} - Takes an object/array as an argument.
@@ -102,7 +105,6 @@ function isValidBBID(bbid) {
  * the tagged template literal replaced with their corresponding values
  * from the newly passed in object.
  */
-// Cribbed from MDN documentation on template literals
 function template(strings) {
 	const keys = Array.prototype.slice.call(arguments, 1);
 
@@ -118,7 +120,7 @@ function template(strings) {
 }
 
 /**
- * Generates a page title for an entity object
+ * Generates a page title for an entity row
  *
  * @param {object} entity - Entity object
  * @param {string} titleForUnnamed - Fallback title in case entity has no name
@@ -144,10 +146,11 @@ function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
 }
 
 /**
- * Adds to the edit count of the specified editor
+ * Adds 1 to the edit count of the specified editor
  *
- * @param {string} id - ID of editor object/row
- * @param {object} transacting - Bookshelf transaction object
+ * @param {string} id - row ID of editor to be updated
+ * @param {object} transacting - Bookshelf transaction object (must be in
+ * progress)
  * @returns {Promise} - Resolves to the updated editor model
  */
 function incrementEditorEditCountById(id, transacting) {

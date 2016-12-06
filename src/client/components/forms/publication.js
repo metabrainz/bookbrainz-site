@@ -16,7 +16,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint valid-jsdoc: "warn" */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
+
 const Icon = require('react-fontawesome');
 const React = require('react');
 const request = require('superagent-bluebird-promise');
@@ -56,10 +57,10 @@ class PublicationForm extends React.Component {
 	}
 
 	/**
-	 * Changes the current tab to the one specified and checks
-	 * if the alias form is valid.
+	 * Changes the selected tab and refreshes validity
+	 * of aliases form into state
 	 *
-	 * @param {number} tab - Indicates the current tab
+	 * @param {number} tab - Indicates the selected tab
 	 */
 	handleTabSelect(tab) {
 		this.setState({
