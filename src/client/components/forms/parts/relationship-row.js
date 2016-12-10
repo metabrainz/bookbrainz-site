@@ -238,6 +238,7 @@ class RelationshipRow extends React.Component {
 			<SearchSelect
 				standalone
 				bsStyle={validationState}
+				collection={this.props.collection}
 				disabled={
 				this.disabled() || this.state.deleted ||
 				(targetEntity && targetEntity.bbid) ===
@@ -356,6 +357,7 @@ class RelationshipRow extends React.Component {
 
 RelationshipRow.displayName = 'RelationshipRow';
 RelationshipRow.propTypes = {
+	collection: React.PropTypes.string,
 	entity: React.PropTypes.shape({
 		bbid: React.PropTypes.string
 	}),

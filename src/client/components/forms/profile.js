@@ -25,6 +25,9 @@ const Input = require('react-bootstrap').Input;
 
 const LoadingSpinner = require('../loading-spinner');
 const Select = require('../input/select2');
+const SearchSelect = require('../input/entity-search');
+
+const validators = require('../../helpers/react-validators');
 
 class ProfileForm extends React.Component {
 	constructor(props) {
@@ -33,6 +36,8 @@ class ProfileForm extends React.Component {
 		this.state = {
 			bio: this.props.editor.bio,
 			title: toString(this.props.editor.titleUnlockId),
+			area: this.props.editor.area ?
+				this.props.editor.area.id : null,
 			waiting: false
 		};
 
@@ -43,6 +48,7 @@ class ProfileForm extends React.Component {
 	handleSubmit(evt) {
 		evt.preventDefault();
 		const data = {
+			areaId: parseInt(this.area.getValue(), 10),
 			id: this.props.editor.id,
 			bio: this.bio.getValue().trim()
 		};
@@ -50,7 +56,6 @@ class ProfileForm extends React.Component {
 		if (title !== '') {
 			data.title = title;
 		}
-
 		this.setState({waiting: true});
 
 		request.post('/editor/edit/handler')
@@ -92,6 +97,16 @@ class ProfileForm extends React.Component {
 					ref={(ref) => this.title = ref}
 					wrapperClassName="col-md-4"
 				/>
+				<SearchSelect
+					noDefault
+					collection="area"
+					defaultValue={this.state.area}
+					label="Area"
+					labelClassName="col-md-4"
+					placeholder="Select area..."
+					ref={(ref) => this.area = ref}
+					wrapperClassName="col-md-4"
+				/>
 				<div className="form-group">
 					<div className="col-md-4 col-md-offset-4">
 						<Button
@@ -111,7 +126,12 @@ class ProfileForm extends React.Component {
 
 ProfileForm.displayName = 'ProfileForm';
 ProfileForm.propTypes = {
-	editor: React.PropTypes.object,
+	editor: React.PropTypes.shape({
+		id: React.PropTypes.number,
+		area: validators.labeledProperty,
+		bio: React.PropTypes.string,
+		titleUnlockId: React.PropTypes.number
+	}),
 	titles: React.PropTypes.array
 };
 

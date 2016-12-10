@@ -207,6 +207,8 @@ search.generateIndex = () => {
 				throw err;
 			}
 		})
+		// GOTCHA: index creation is buggy
+		// https://tickets.metabrainz.org/browse/BB-205
 		.then(() => _client.indices.create(
 			{index: _index, body: indexMappings}
 		))
@@ -218,7 +220,9 @@ search.generateIndex = () => {
 			];
 
 			const entityBehaviors = [
-				{model: Creator, relations: ['gender', 'creatorType']},
+				{model: Creator,
+					relations:
+						['gender', 'creatorType', 'beginArea', 'endArea']},
 				{
 					model: Edition,
 					relations: [
@@ -228,7 +232,7 @@ search.generateIndex = () => {
 					]
 				},
 				{model: Publication, relations: ['publicationType']},
-				{model: Publisher, relations: ['publisherType']},
+				{model: Publisher, relations: ['publisherType', 'area']},
 				{model: Work, relations: ['workType']}
 			];
 

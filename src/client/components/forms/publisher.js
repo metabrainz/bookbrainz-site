@@ -74,6 +74,7 @@ class PublisherForm extends React.Component {
 		const publisherData = this.data.getValue();
 		const revisionNote = this.revision.note.getValue();
 		const data = {
+			areaId: parseInt(publisherData.area, 10),
 			aliases: aliasData.slice(0, -1),
 			beginDate: publisherData.beginDate,
 			endDate: publisherData.endDate,

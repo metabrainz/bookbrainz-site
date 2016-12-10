@@ -75,7 +75,9 @@ class CreatorForm extends React.Component {
 		const revisionNote = this.revision.note.getValue();
 		const data = {
 			aliases: aliasData.slice(0, -1),
+			beginAreaId: parseInt(creatorData.beginArea, 10),
 			beginDate: creatorData.beginDate,
+			endAreaId: parseInt(creatorData.endArea, 10),
 			endDate: creatorData.endDate,
 			ended: creatorData.ended,
 			genderId: parseInt(creatorData.gender, 10),

@@ -120,6 +120,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			return editorTitleUnlock.save();
 		})
 		.then((editor) =>
+			editor.set('areaId', req.body.areaId)
+				.save()
+		)
+		.then((editor) =>
 			editor.toJSON()
 		);
 
@@ -132,7 +136,7 @@ router.get('/:id', (req, res, next) => {
 	const editorJSONPromise = new Editor({id: userId})
 		.fetch({
 			require: true,
-			withRelated: ['type', 'gender']
+			withRelated: ['type', 'gender', 'area']
 		})
 		.then((editordata) => {
 			let editorJSON = editordata.toJSON();
@@ -260,7 +264,7 @@ router.get('/:id/achievements', (req, res, next) => {
 	const editorJSONPromise = new Editor({id: userId})
 		.fetch({
 			require: true,
-			withRelated: ['type', 'gender']
+			withRelated: ['type', 'gender', 'area']
 		})
 		.then((editordata) => {
 			let editorJSON = editordata.toJSON();
@@ -373,7 +377,7 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 	const editorPromise = new Editor({id: userId})
 		.fetch({
 			require: true,
-			withRelated: ['type', 'gender']
+			withRelated: ['type', 'gender', 'area']
 		})
 		.then((editordata) => {
 			let editorJSON;
