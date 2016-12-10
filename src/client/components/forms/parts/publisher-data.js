@@ -76,7 +76,8 @@ class PublisherData extends React.Component {
 
 		const prefillData = this.props.publisher;
 		if (prefillData) {
-			initialArea = prefillData.area;
+			initialArea = prefillData.area ?
+				prefillData.area.id : null;
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
 			initialPublisherType = prefillData.publisherType ?
@@ -216,6 +217,7 @@ PublisherData.displayName = 'PublisherData';
 PublisherData.propTypes = {
 	identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 	publisher: React.PropTypes.shape({
+		area: validators.labeledProperty,
 		annotation: React.PropTypes.shape({
 			content: React.PropTypes.string
 		}),

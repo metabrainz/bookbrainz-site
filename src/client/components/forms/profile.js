@@ -27,6 +27,8 @@ const LoadingSpinner = require('../loading-spinner');
 const Select = require('../input/select2');
 const SearchSelect = require('../input/entity-search');
 
+const validators = require('../../helpers/react-validators');
+
 class ProfileForm extends React.Component {
 	constructor(props) {
 		super(props);
@@ -34,7 +36,8 @@ class ProfileForm extends React.Component {
 		this.state = {
 			bio: this.props.editor.bio,
 			title: toString(this.props.editor.titleUnlockId),
-			area: this.props.editor.area,
+			area: this.props.editor.area ?
+				this.props.editor.area.id : null,
 			waiting: false
 		};
 
@@ -45,7 +48,7 @@ class ProfileForm extends React.Component {
 	handleSubmit(evt) {
 		evt.preventDefault();
 		const data = {
-			area: this.area.getValue(),
+			areaId: parseInt(this.area.getValue(), 10),
 			id: this.props.editor.id,
 			bio: this.bio.getValue().trim()
 		};
@@ -63,6 +66,7 @@ class ProfileForm extends React.Component {
 	}
 
 	render() {
+		console.log(this.props);
 		const loadingElement =
 			this.state.waiting ? <LoadingSpinner/> : null;
 		const titles = this.props.titles.map((unlock) => {
@@ -123,7 +127,12 @@ class ProfileForm extends React.Component {
 
 ProfileForm.displayName = 'ProfileForm';
 ProfileForm.propTypes = {
-	editor: React.PropTypes.object,
+	editor: React.PropTypes.shape({
+		id: React.PropTypes.number,
+		area: validators.labeledProperty,
+		bio: React.PropTypes.string,
+		titleUnlockId: React.PropTypes.number
+	}),
 	titles: React.PropTypes.array
 };
 

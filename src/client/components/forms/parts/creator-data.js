@@ -80,9 +80,11 @@ class CreatorData extends React.Component {
 
 		const prefillData = this.props.creator;
 		if (prefillData) {
-			initialBeginArea = prefillData.beginArea;
+			initialBeginArea = prefillData.beginArea ?
+				prefillData.beginArea.id : null;
 			initialBeginDate = prefillData.beginDate;
-			initialEndArea = prefillData.endArea;
+			initialEndArea = prefillData.endArea ?
+				prefillData.endArea.id : null;
 			initialEndDate = prefillData.endDate;
 			initialGender = prefillData.gender ?
 				prefillData.gender.id : null;
@@ -246,7 +248,9 @@ class CreatorData extends React.Component {
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
 	creator: React.PropTypes.shape({
+		beginArea: validators.labeledProperty,
 		beginDate: React.PropTypes.string,
+		endArea: validators.labeledProperty,
 		endDate: React.PropTypes.string,
 		ended: React.PropTypes.bool,
 		gender: validators.namedProperty,
