@@ -37,6 +37,10 @@ const SearchPage = React.createFactory(
 
 const router = express.Router();
 
+/**
+ * Returns React markup for the search page that is rendered by the user's
+ * browser
+ */
 router.get('/', (req, res, next) => {
 	const query = req.query.q;
 	const collection = req.query.collection || null;
@@ -57,6 +61,10 @@ router.get('/', (req, res, next) => {
 		.catch(next);
 });
 
+/**
+ * Returns autocomplete results for a given user query. Can be further
+ * filtered by collection type
+ */
 router.get('/autocomplete', (req, res) => {
 	const query = req.query.q;
 	const collection = req.query.collection || null;
@@ -66,6 +74,11 @@ router.get('/autocomplete', (req, res) => {
 	handler.sendPromiseResult(res, searchPromise);
 });
 
+/**
+ * Regenerates search index. Only accessible to authenticated users
+ *
+ * @throws {PermissionDeniedError} - Thrown if user is not 'trusted'
+ */
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	const indexPromise = new Promise((resolve) => {
 		// TODO: This is hacky, and we should replace it once we switch to SOLR.
