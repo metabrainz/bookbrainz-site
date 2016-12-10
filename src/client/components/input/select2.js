@@ -16,6 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
 const React = require('react');
 const _assign = require('lodash.assign');
@@ -31,10 +32,21 @@ if (typeof window !== 'undefined') {
 }
 
 class Select extends React.Component {
+
+	/**
+	 * Invoked after component mount that initializes select2
+	 * input
+	 */
 	componentDidMount() {
 		this.initSelect2();
 	}
 
+	/**
+	 * Used by React to determine if component should be re-rendered
+	 *
+	 * @param {object} nextProps - Props object that is being received
+	 * @returns {boolean} - Component will be re-rendered if true
+	 */
 	shouldComponentUpdate(nextProps) {
 		const nextPropsOmitOptions = _omit(nextProps, 'options');
 		const currentPropsOmitOptions = _omit(this.props, 'options');
@@ -48,22 +60,43 @@ class Select extends React.Component {
 		);
 	}
 
+	/**
+	 * Invoked before new props/state are received that prevents
+	 * input change events from being dispatched to handlers
+	 */
 	componentWillUpdate() {
 		this.disableOnChange();
 	}
 
+	/**
+	 * Invoked after new props/state are received that
+	 * re-initializes input element with change handlers
+	 */
 	componentDidUpdate() {
 		this.initSelect2();
 	}
 
+	/**
+	 * Invoked before component unmount that removes input change
+	 * handlers
+	 */
 	componentWillUnmount() {
 		this.disableOnChange();
 	}
 
+	/**
+	 * Extracts selected option from input
+	 *
+	 * @returns {string} - Value of selected option
+	 */
 	getValue() {
 		return this.target.getValue();
 	}
 
+	/**
+	 * Initializes select2 input with library options and attaches an input
+	 * change handler
+	 */
 	initSelect2() {
 		const mountElement = $(this.target.getInputDOMNode());
 
@@ -87,6 +120,9 @@ class Select extends React.Component {
 		mountElement.on('change', this.props.onChange);
 	}
 
+	/**
+	 * Prevents firing of input change handlers
+	 */
 	disableOnChange() {
 		const select = $(this.target.getInputDOMNode());
 
@@ -95,6 +131,11 @@ class Select extends React.Component {
 		select.off('change');
 	}
 
+	/**
+	 * Used by React to render the component
+	 *
+	 * @returns {object} - JSX to render
+	 */
 	render() {
 		let options = [];
 		if (this.props.options) {
