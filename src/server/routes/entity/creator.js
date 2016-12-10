@@ -54,7 +54,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Creator,
-		['creatorType', 'gender'],
+		['creatorType', 'gender', 'beginArea', 'endArea'],
 		'Creator not found'
 	)
 );

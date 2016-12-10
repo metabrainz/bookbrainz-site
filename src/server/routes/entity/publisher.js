@@ -54,7 +54,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Publisher,
-		['publisherType'],
+		['publisherType', 'area'],
 		'Publisher not found'
 	)
 );
