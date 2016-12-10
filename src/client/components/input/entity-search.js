@@ -171,7 +171,6 @@ class EntitySearch extends React.Component {
 	}
 }
 
-
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
 	bsStyle: React.PropTypes.string,

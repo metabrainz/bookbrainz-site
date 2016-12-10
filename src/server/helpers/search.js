@@ -26,7 +26,6 @@ const _ = require('lodash');
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
-const Editor = require('bookbrainz-data').Editor;
 const Work = require('bookbrainz-data').Work;
 const Publisher = require('bookbrainz-data').Publisher;
 
@@ -130,7 +129,6 @@ search.indexEntity = (entity) =>
 		body: entity
 	});
 
-
 search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 
@@ -210,6 +208,7 @@ search.generateIndex = () => {
 			}
 		})
 		// GOTCHA: index creation is buggy
+		// https://tickets.metabrainz.org/browse/BB-205
 		.then(() => _client.indices.create(
 			{index: _index, body: indexMappings}
 		))
