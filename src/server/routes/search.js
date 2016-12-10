@@ -39,7 +39,7 @@ const router = express.Router();
 
 /**
  * Returns React markup for the search page that is rendered by the user's
- * browser
+ * browser.
  */
 router.get('/', (req, res, next) => {
 	const query = req.query.q;
@@ -62,8 +62,8 @@ router.get('/', (req, res, next) => {
 });
 
 /**
- * Returns autocomplete results for a given user query. Can be further
- * filtered by collection type
+ * Returns autocomplete results for a given user query. Can be further filtered
+ * by collection type.
  */
 router.get('/autocomplete', (req, res) => {
 	const query = req.query.q;
@@ -75,9 +75,9 @@ router.get('/autocomplete', (req, res) => {
 });
 
 /**
- * Regenerates search index. Only accessible to authenticated users
+ * Regenerates search index. Restricted to administrators.
  *
- * @throws {PermissionDeniedError} - Thrown if user is not 'trusted'
+ * @throws {PermissionDeniedError} - Thrown if user is not admin.
  */
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	const indexPromise = new Promise((resolve) => {

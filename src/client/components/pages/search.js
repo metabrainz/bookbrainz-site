@@ -29,9 +29,9 @@ class SearchPage extends React.Component {
 	/**
 	 * Initializes component state to default values and binds class
 	 * methods to proper context so that they can be directly invoked
-	 * without explicit binding
+	 * without explicit binding.
 	 *
-	 * @param {object} props - Properties object passed down from parents
+	 * @param {object} props - Properties object passed down from parents.
 	 */
 	constructor(props) {
 		super(props);
@@ -45,9 +45,9 @@ class SearchPage extends React.Component {
 	}
 
 	/**
-	 * Gets search results from user query
+	 * Gets search results from user query.
 	 *
-	 * @param {string} q - Query string entered by user
+	 * @param {string} q - Query string entered by user.
 	 */
 	handleSearch(q) {
 		request.get(`./search/autocomplete?q=${q}`)
@@ -59,9 +59,9 @@ class SearchPage extends React.Component {
 
 	/**
 	 * Renders the component: Search bar with results table located vertically
-	 * below it
+	 * below it.
 	 *
-	 * @returns {object} - JSX to render
+	 * @returns {object} - JSX to render.
 	 */
 	render() {
 		return (
