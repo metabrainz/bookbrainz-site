@@ -120,6 +120,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			return editorTitleUnlock.save();
 		})
 		.then((editor) =>
+			editor.set('areaId', req.body.areaId)
+				.save()
+		)
+		.then((editor) =>
 			editor.toJSON()
 		);
 

@@ -136,7 +136,8 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 );
 
 const additionalCreatorProps = [
-	'typeId', 'genderId', 'areaId', 'beginDate', 'endDate', 'ended'
+	'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
+	'endAreaId'
 ];
 
 router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>

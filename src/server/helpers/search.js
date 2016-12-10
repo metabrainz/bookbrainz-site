@@ -26,6 +26,7 @@ const _ = require('lodash');
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
+const Editor = require('bookbrainz-data').Editor;
 const Work = require('bookbrainz-data').Work;
 const Publisher = require('bookbrainz-data').Publisher;
 
@@ -129,6 +130,7 @@ search.indexEntity = (entity) =>
 		body: entity
 	});
 
+
 search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 
@@ -207,6 +209,7 @@ search.generateIndex = () => {
 				throw err;
 			}
 		})
+		// GOTCHA: index creation is buggy
 		.then(() => _client.indices.create(
 			{index: _index, body: indexMappings}
 		))
@@ -218,7 +221,9 @@ search.generateIndex = () => {
 			];
 
 			const entityBehaviors = [
-				{model: Creator, relations: ['gender', 'creatorType']},
+				{model: Creator,
+					relations:
+						['gender', 'creatorType', 'beginArea', 'endArea']},
 				{
 					model: Edition,
 					relations: [
@@ -228,7 +233,7 @@ search.generateIndex = () => {
 					]
 				},
 				{model: Publication, relations: ['publicationType']},
-				{model: Publisher, relations: ['publisherType']},
+				{model: Publisher, relations: ['publisherType', 'area']},
 				{model: Work, relations: ['workType']}
 			];
 
