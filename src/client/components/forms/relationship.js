@@ -295,6 +295,7 @@ class RelationshipEditor extends React.Component {
 
 RelationshipEditor.displayName = 'RelationshipEditor';
 RelationshipEditor.propTypes = {
+	collection: React.PropTypes.string,
 	entity: React.PropTypes.shape({
 		bbid: React.PropTypes.string
 	}),
