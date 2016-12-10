@@ -66,7 +66,6 @@ class ProfileForm extends React.Component {
 	}
 
 	render() {
-		console.log(this.props);
 		const loadingElement =
 			this.state.waiting ? <LoadingSpinner/> : null;
 		const titles = this.props.titles.map((unlock) => {

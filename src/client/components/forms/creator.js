@@ -87,7 +87,6 @@ class CreatorForm extends React.Component {
 			identifiers: creatorData.identifiers,
 			note: revisionNote
 		};
-		console.log(data);
 
 		this.setState({waiting: true});
 
