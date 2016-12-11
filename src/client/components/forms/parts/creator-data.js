@@ -29,6 +29,8 @@ const Select = require('../../input/select2');
 const SearchSelect = require('../../input/entity-search');
 
 const validators = require('../../../helpers/react-validators');
+const injectDefaultAliasName =
+	require('../../../helpers/utils').injectDefaultAliasName;
 
 class CreatorData extends React.Component {
 	constructor(props) {
@@ -43,10 +45,13 @@ class CreatorData extends React.Component {
 	}
 
 	getValue() {
+		const beginArea = this.beginArea.getValue();
+		const endArea = this.endArea.getValue();
+
 		return {
-			beginArea: this.beginArea.getValue(),
+			beginArea: beginArea ? beginArea.id : null,
 			beginDate: this.begin.getValue(),
-			endArea: this.endArea.getValue(),
+			endArea: endArea ? endArea.id : null,
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
 			gender: this.gender.getValue(),
@@ -79,12 +84,18 @@ class CreatorData extends React.Component {
 		let initialIdentifiers = [];
 
 		const prefillData = this.props.creator;
+
+		console.log(prefillData);
+
 		if (prefillData) {
-			initialBeginArea = prefillData.beginArea ?
-				prefillData.beginArea.id : null;
+			if (prefillData.beginArea) {
+				initialBeginArea = prefillData.beginArea;
+			}
+			if (prefillData.endArea) {
+				initialEndArea = prefillData.endArea;
+			}
+
 			initialBeginDate = prefillData.beginDate;
-			initialEndArea = prefillData.endArea ?
-				prefillData.endArea.id : null;
 			initialEndDate = prefillData.endDate;
 			initialGender = prefillData.gender ?
 				prefillData.gender.id : null;
@@ -169,7 +180,7 @@ class CreatorData extends React.Component {
 					<SearchSelect
 						noDefault
 						collection="area"
-						defaultValue={initialBeginArea}
+						defaultValue={injectDefaultAliasName(initialBeginArea)}
 						label="Begin Area"
 						labelClassName="col-md-4"
 						placeholder="Select begin area..."
@@ -180,7 +191,7 @@ class CreatorData extends React.Component {
 					<SearchSelect
 						noDefault
 						collection="area"
-						defaultValue={initialEndArea}
+						defaultValue={injectDefaultAliasName(initialEndArea)}
 						label="End Area"
 						labelClassName="col-md-4"
 						placeholder="Select end area..."
