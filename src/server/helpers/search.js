@@ -74,8 +74,7 @@ function _fetchEntityModelsForESResults(results) {
 		const entityStub = hit._source;
 
 		if (entityStub.type === 'Area') {
-			return Area.forge({bbid: entityStub.bbid})
-				.where({gid: entityStub.bbid})
+			return Area.forge({gid: entityStub.bbid})
 				.fetch()
 				.then((area) => {
 					const areaJSON = area.toJSON();
@@ -275,13 +274,14 @@ search.generateIndex = () => {
 			);
 		})
 		.then(() =>
-			 Promise.all(Area.forge()
-				 // countries only
+			Area.forge()
+				// countries only
 				.where({type: 1})
 				.fetchAll()
 				.then((collection) => collection.toJSON())
 				.map(search.indexArea)
-		))
+
+		)
 		.then(search.refreshIndex);
 };
 

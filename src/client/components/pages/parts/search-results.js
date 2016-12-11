@@ -37,15 +37,16 @@ function SearchResults(props) {
 		// No redirect link for Area entity results
 		const name = result.defaultAlias ? result.defaultAlias.name :
 			'(unnamed)';
-		const alias = result.type === 'Area' ? name :
-			<a href={`/${result.type.toLowerCase()}/${result.bbid}`}>
-				{name}
-			</a>;
+		const link = result.type === 'Area' ?
+			`//musicbrainz.org/area/${result.bbid}` :
+			`/${result.type.toLowerCase()}/${result.bbid}`;
 
 		return (
 			<tr key={result.bbid}>
 				<td>
-					{alias}
+					<a href={link}>
+						{name}
+					</a>
 				</td>
 				<td>
 					{result.type}
