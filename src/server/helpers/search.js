@@ -90,8 +90,6 @@ function _fetchEntityModelsForESResults(results) {
 		return model.forge({bbid: entityStub.bbid})
 			.fetch({withRelated: ['defaultAlias']})
 			.then((entity) => entity.toJSON());
-
-
 	});
 }
 

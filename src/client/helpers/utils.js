@@ -1,13 +1,17 @@
-'use strict';
-
+/**
+ * Injects entity model object with a default alias name property.
+ *
+ * @param {object} instance - Entity object.
+ * @returns {object} - New object with injected properties.
+ */
 function injectDefaultAliasName(instance) {
+	'use strict';
 	if (instance && instance.name) {
-		const injectedObj = Object.assign({}, instance, {
+		return Object.assign({}, instance, {
 			defaultAlias: {
 				name: instance.name
 			}
 		});
-		return injectedObj;
 	}
 	return instance;
 }

@@ -77,7 +77,7 @@ class ProfileForm extends React.Component {
 			return title;
 		});
 		const select2Options = {
-			width: "100%",
+			width: '100%',
 			allowClear: true
 		};
 
