@@ -33,20 +33,26 @@ function SearchResults(props) {
 		);
 	}
 
-	const results = props.results.map((result) => (
-		<tr key={result.bbid}>
-			<td>
-				<a href={`/${result.type.toLowerCase()}/${result.bbid}`}>
-					{result.defaultAlias ?
-						result.defaultAlias.name : '(unnamed)'
-					}
-				</a>
-			</td>
-			<td>
-				{result.type}
-			</td>
-		</tr>
-	));
+	const results = props.results.map((result) => {
+		// No redirect link for Area entity results
+		const name = result.defaultAlias ? result.defaultAlias.name :
+			'(unnamed)';
+		const alias = result.type === 'Area' ? name :
+			<a href={`/${result.type.toLowerCase()}/${result.bbid}`}>
+				{name}
+			</a>;
+
+		return (
+			<tr key={result.bbid}>
+				<td>
+					{alias}
+				</td>
+				<td>
+					{result.type}
+				</td>
+			</tr>
+		);
+	});
 
 	return (
 		<Table
