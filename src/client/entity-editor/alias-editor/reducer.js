@@ -16,6 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {
+	ADD_ALIAS, REMOVE_ALIAS, UPDATE_ALIAS_LANGUAGE,
+	UPDATE_ALIAS_NAME, UPDATE_ALIAS_PRIMARY, UPDATE_ALIAS_SORT_NAME
+} from './actions';
 import Immutable from 'immutable';
 
 const DEFAULT_ALIAS = Immutable.Map({
@@ -30,17 +34,17 @@ function reducer(
 	action
 ) {
 	switch (action.type) {
-		case 'ADD_ALIAS':
+		case ADD_ALIAS:
 			return state.set(action.id, DEFAULT_ALIAS);
-		case 'UPDATE_ALIAS_NAME':
+		case UPDATE_ALIAS_NAME:
 			return state.setIn([action.index, 'name'], action.value);
-		case 'UPDATE_ALIAS_SORT_NAME':
+		case UPDATE_ALIAS_SORT_NAME:
 			return state.setIn([action.index, 'sortName'], action.value);
-		case 'UPDATE_ALIAS_LANGUAGE':
+		case UPDATE_ALIAS_LANGUAGE:
 			return state.setIn([action.index, 'language'], action.value);
-		case 'UPDATE_ALIAS_PRIMARY':
+		case UPDATE_ALIAS_PRIMARY:
 			return state.setIn([action.index, 'primary'], action.value);
-		case 'REMOVE_ALIAS':
+		case REMOVE_ALIAS:
 			return state.delete(action.index);
 		// no default
 	}

@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
 import Immutable from 'immutable';
 
 function reducer(
@@ -39,7 +40,7 @@ function reducer(
 			return state.set('disambiguationVisible', true);
 		case 'SHOW_ALIAS_EDITOR':
 			return state.set('aliasEditorVisible', true);
-		case 'HIDE_ALIAS_EDITOR':
+		case HIDE_ALIAS_EDITOR:
 			return state.set('aliasEditorVisible', false);
 		case 'SHOW_IDENTIFIER_EDITOR':
 			return state.set('identifierEditorVisible', true);
