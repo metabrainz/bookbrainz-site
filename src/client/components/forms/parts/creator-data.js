@@ -85,8 +85,6 @@ class CreatorData extends React.Component {
 
 		const prefillData = this.props.creator;
 
-		console.log(prefillData);
-
 		if (prefillData) {
 			if (prefillData.beginArea) {
 				initialBeginArea = prefillData.beginArea;

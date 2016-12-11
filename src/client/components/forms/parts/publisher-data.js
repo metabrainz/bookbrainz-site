@@ -29,6 +29,8 @@ const Select = require('../../input/select2');
 const SearchSelect = require('../../input/entity-search');
 
 const validators = require('../../../helpers/react-validators');
+const injectDefaultAliasName =
+	require('../../../helpers/utils').injectDefaultAliasName;
 
 class PublisherData extends React.Component {
 	constructor(props) {
@@ -43,8 +45,10 @@ class PublisherData extends React.Component {
 	}
 
 	getValue() {
+		const area = this.area.getValue();
+
 		return {
-			area: this.area.getValue(),
+			area: area ? area.id : null,
 			beginDate: this.begin.getValue(),
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
@@ -76,8 +80,10 @@ class PublisherData extends React.Component {
 
 		const prefillData = this.props.publisher;
 		if (prefillData) {
-			initialArea = prefillData.area ?
-				prefillData.area.id : null;
+			if (prefillData.area) {
+				initialArea = prefillData.area;
+			}
+
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
 			initialPublisherType = prefillData.publisherType ?
@@ -148,7 +154,7 @@ class PublisherData extends React.Component {
 					<SearchSelect
 						noDefault
 						collection="area"
-						defaultValue={initialArea}
+						defaultValue={injectDefaultAliasName(initialArea)}
 						label="Area"
 						labelClassName="col-md-4"
 						placeholder="Select area..."
