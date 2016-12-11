@@ -28,6 +28,8 @@ const Select = require('../input/select2');
 const SearchSelect = require('../input/entity-search');
 
 const validators = require('../../helpers/react-validators');
+const injectDefaultAliasName =
+	require('../../helpers/utils').injectDefaultAliasName;
 
 class ProfileForm extends React.Component {
 	constructor(props) {
@@ -37,7 +39,7 @@ class ProfileForm extends React.Component {
 			bio: this.props.editor.bio,
 			title: toString(this.props.editor.titleUnlockId),
 			area: this.props.editor.area ?
-				this.props.editor.area.id : null,
+				this.props.editor.area : null,
 			waiting: false
 		};
 
@@ -47,8 +49,10 @@ class ProfileForm extends React.Component {
 
 	handleSubmit(evt) {
 		evt.preventDefault();
+		const area = this.area.getValue();
+
 		const data = {
-			areaId: parseInt(this.area.getValue(), 10),
+			areaId: area ? parseInt(area.id, 10) : null,
 			id: this.props.editor.id,
 			bio: this.bio.getValue().trim()
 		};
@@ -56,7 +60,6 @@ class ProfileForm extends React.Component {
 		if (title !== '') {
 			data.title = title;
 		}
-		this.setState({waiting: true});
 
 		request.post('/editor/edit/handler')
 			.send(data).promise()
@@ -73,6 +76,12 @@ class ProfileForm extends React.Component {
 			title.unlockId = unlock.id;
 			return title;
 		});
+		const select2Options = {
+			width: "100%",
+			allowClear: true
+		};
+
+
 		return (
 			<form
 				className="form-horizontal"
@@ -100,11 +109,12 @@ class ProfileForm extends React.Component {
 				<SearchSelect
 					noDefault
 					collection="area"
-					defaultValue={this.state.area}
+					defaultValue={injectDefaultAliasName(this.state.area)}
 					label="Area"
 					labelClassName="col-md-4"
 					placeholder="Select area..."
 					ref={(ref) => this.area = ref}
+					select2Options={select2Options}
 					wrapperClassName="col-md-4"
 				/>
 				<div className="form-group">
