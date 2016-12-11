@@ -23,6 +23,7 @@ const Promise = require('bluebird');
 const ElasticSearch = require('elasticsearch');
 const _ = require('lodash');
 
+const Area = require('bookbrainz-data').Area;
 const Publication = require('bookbrainz-data').Publication;
 const Creator = require('bookbrainz-data').Creator;
 const Edition = require('bookbrainz-data').Edition;
@@ -71,11 +72,26 @@ function _fetchEntityModelsForESResults(results) {
 
 	return Promise.map(results.hits, (hit) => {
 		const entityStub = hit._source;
-		const model = utils.getEntityModelByType(entityStub.type);
 
+		if (entityStub.type === 'Area') {
+			return Area.forge({bbid: entityStub.bbid})
+				.where({gid: entityStub.bbid})
+				.fetch()
+				.then((area) => {
+					const areaJSON = area.toJSON();
+					areaJSON.defaultAlias = {
+						name: areaJSON.name
+					};
+					areaJSON.type = 'Area';
+					return areaJSON;
+				});
+		}
+		const model = utils.getEntityModelByType(entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
 			.fetch({withRelated: ['defaultAlias']})
 			.then((entity) => entity.toJSON());
+
+
 	});
 }
 
@@ -121,6 +137,20 @@ search.autocomplete = (query, collection) => {
 	return _searchForEntities(dslQuery);
 };
 
+search.indexArea = (area) =>
+	_client.index({
+		index: _index,
+		id: area.gid,
+		type: 'area',
+		body: {
+			defaultAlias: {
+				name: area.name
+			},
+			bbid: area.gid,
+			type: 'Area'
+		}
+	});
+
 search.indexEntity = (entity) =>
 	_client.index({
 		index: _index,
@@ -128,6 +158,7 @@ search.indexEntity = (entity) =>
 		type: entity.type.toLowerCase(),
 		body: entity
 	});
+
 
 search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
@@ -246,6 +277,14 @@ search.generateIndex = () => {
 					.map(search.indexEntity)
 			);
 		})
+		.then(() =>
+			 Promise.all(Area.forge()
+				 // countries only
+				.where({type: 1})
+				.fetchAll()
+				.then((collection) => collection.toJSON())
+				.map(search.indexArea)
+		))
 		.then(search.refreshIndex);
 };
 
