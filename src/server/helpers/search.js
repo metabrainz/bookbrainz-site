@@ -157,7 +157,6 @@ search.indexEntity = (entity) =>
 		body: entity
 	});
 
-
 search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 

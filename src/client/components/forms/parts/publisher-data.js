@@ -46,7 +46,6 @@ class PublisherData extends React.Component {
 
 	getValue() {
 		const area = this.area.getValue();
-
 		return {
 			area: area ? area.id : null,
 			beginDate: this.begin.getValue(),
@@ -83,7 +82,6 @@ class PublisherData extends React.Component {
 			if (prefillData.area) {
 				initialArea = prefillData.area;
 			}
-
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
 			initialPublisherType = prefillData.publisherType ?

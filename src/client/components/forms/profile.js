@@ -50,7 +50,6 @@ class ProfileForm extends React.Component {
 	handleSubmit(evt) {
 		evt.preventDefault();
 		const area = this.area.getValue();
-
 		const data = {
 			areaId: area ? parseInt(area.id, 10) : null,
 			id: this.props.editor.id,
@@ -80,8 +79,6 @@ class ProfileForm extends React.Component {
 			width: '100%',
 			allowClear: true
 		};
-
-
 		return (
 			<form
 				className="form-horizontal"

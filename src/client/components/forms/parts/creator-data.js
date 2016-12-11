@@ -47,7 +47,6 @@ class CreatorData extends React.Component {
 	getValue() {
 		const beginArea = this.beginArea.getValue();
 		const endArea = this.endArea.getValue();
-
 		return {
 			beginArea: beginArea ? beginArea.id : null,
 			beginDate: this.begin.getValue(),
@@ -84,7 +83,6 @@ class CreatorData extends React.Component {
 		let initialIdentifiers = [];
 
 		const prefillData = this.props.creator;
-
 		if (prefillData) {
 			if (prefillData.beginArea) {
 				initialBeginArea = prefillData.beginArea;
@@ -92,7 +90,6 @@ class CreatorData extends React.Component {
 			if (prefillData.endArea) {
 				initialEndArea = prefillData.endArea;
 			}
-
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
 			initialGender = prefillData.gender ?
