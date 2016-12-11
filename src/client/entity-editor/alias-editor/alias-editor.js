@@ -18,14 +18,16 @@
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 
-import AddAliasButton from './add-alias-button';
-import AliasRowList from './alias-row-list';
+import {addAlias, hideAliasEditor} from '../actions';
+import AliasRowContainer from './alias-row-container';
 import React from 'react';
 import {connect} from 'react-redux';
-import {hideAliasEditor} from '../actions';
+
 
 const AliasEditor = ({
+	aliases,
 	languageOptions,
+	onAddButtonClick,
 	onClose,
 	show
 }) => (
@@ -40,10 +42,22 @@ const AliasEditor = ({
 			<div className="text-center">
 				<p className="text-muted">This entity has no aliases</p>
 			</div>
-			<AliasRowList languageOptions={languageOptions}/>
+			<div>
+				{
+					aliases.map((alias, id) =>
+						<AliasRowContainer
+							index={id}
+							key={id}
+							languageOptions={languageOptions}
+						/>
+					)
+				}
+			</div>
 			<Row>
 				<Col className="text-right" md={3} mdOffset={9}>
-					<AddAliasButton/>
+					<Button bsStyle="success" onClick={onAddButtonClick}>
+						Add alias
+					</Button>
 				</Col>
 			</Row>
 		</Modal.Body>
@@ -55,15 +69,26 @@ const AliasEditor = ({
 );
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
+	aliases: React.PropTypes.array,
 	languageOptions: React.PropTypes.array,
 	show: React.PropTypes.bool,
+	onAddButtonClick: React.PropTypes.func,
 	onClose: React.PropTypes.func
 };
 
+
 function mapDispatchToProps(dispatch) {
 	return {
-		onClose: () => dispatch(hideAliasEditor())
+		onClose: () => dispatch(hideAliasEditor()),
+		onAddButtonClick: () => dispatch(addAlias())
 	};
 }
 
-export default connect(null, mapDispatchToProps)(AliasEditor);
+function mapStateToProps(rootState) {
+	return {
+		aliases: rootState.get('aliasEditor')
+	};
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AliasEditor);

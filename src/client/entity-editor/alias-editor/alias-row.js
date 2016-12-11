@@ -17,36 +17,74 @@
  */
 
 
-import {Col, Row} from 'react-bootstrap';
-import LanguageField from './language-field-container';
-import NameField from './name-field-container';
-import PrimaryCheck from './primary-check';
+import {Button, Col, Input, Row} from 'react-bootstrap';
+import LanguageField from '../common/language-field';
+import NameField from '../common/name-field';
 import React from 'react';
-import RemoveAliasButton from './remove-alias-button';
-import SortNameField from './sort-name-field-container';
+import SortNameField from '../common/sort-name-field';
 
+function isAliasEmpty(nameValue, sortNameValue) {
+	return nameValue.length === 0 && sortNameValue.length === 0;
+}
+
+/* Presentational component */
 const AliasRow = ({
 	languageOptions,
-	index
+	languageValue,
+	nameValue,
+	sortNameValue,
+	primaryChecked,
+	onLanguageChange,
+	onNameChange,
+	onSortNameChange,
+	onRemoveButtonClick,
+	onPrimaryClick
 }) => (
 	<div>
 		<Row>
 			<Col md={4}>
-				<NameField index={index}/>
+				<NameField
+					defaultValue={nameValue}
+					empty={isAliasEmpty(nameValue, sortNameValue)}
+					error={!nameValue}
+					onChange={onNameChange}
+				/>
 			</Col>
 			<Col md={4}>
-				<SortNameField index={index}/>
+				<SortNameField
+					defaultValue={sortNameValue}
+					empty={isAliasEmpty(nameValue, sortNameValue)}
+					error={!sortNameValue}
+					storedNameValue={nameValue}
+					onChange={onSortNameChange}
+				/>
 			</Col>
 			<Col md={4}>
-				<LanguageField index={index} options={languageOptions}/>
+				<LanguageField
+					options={languageOptions}
+					value={languageValue}
+					onChange={onLanguageChange}
+				/>
 			</Col>
 		</Row>
 		<Row>
 			<Col md={2} mdOffset={5}>
-				<PrimaryCheck index={index}/>
+				<Input
+					defaultChecked={primaryChecked}
+					label="Primary"
+					type="checkbox"
+					onClick={onPrimaryClick}
+				/>
 			</Col>
 			<Col className="text-right" md={3} mdOffset={2}>
-				<RemoveAliasButton index={index}/>
+				<Button
+					block
+					bsStyle="danger"
+					className="margin-top-d5"
+					onClick={onRemoveButtonClick}
+				>
+					Remove
+				</Button>
 			</Col>
 		</Row>
 		<hr/>
@@ -54,8 +92,16 @@ const AliasRow = ({
 );
 AliasRow.displayName = 'AliasEditor.AliasRow';
 AliasRow.propTypes = {
-	index: React.PropTypes.number,
-	languageOptions: React.PropTypes.array
+	languageOptions: React.PropTypes.array,
+	languageValue: React.PropTypes.number,
+	nameValue: React.PropTypes.string,
+	primaryChecked: React.PropTypes.bool,
+	sortNameValue: React.PropTypes.string,
+	onLanguageChange: React.PropTypes.func,
+	onNameChange: React.PropTypes.func,
+	onPrimaryClick: React.PropTypes.func,
+	onRemoveButtonClick: React.PropTypes.func,
+	onSortNameChange: React.PropTypes.func
 };
 
 export default AliasRow;
