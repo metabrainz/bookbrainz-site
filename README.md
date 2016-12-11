@@ -63,24 +63,7 @@ database dump.
 
 Firstly, begin downloading the latest BookBrainz dump from https://bookbrainz.org/dumps/latest.tar.bz2.
 
-Next, create a new PostgreSQL user called *bookbrainz*, using the following
-command. When the prompt appears, choose a password, and make a note of it:
-
-    sudo -u postgres createuser -P bookbrainz
-
-Now, open up the `pg_hba.conf` file for your installation (in Ubuntu, at
-`/etc/postgresql/<version>/main/pg_hba.conf`), and grant password-based access to
-the `bookbrainz` database by adding this line at the bottom of the file:
-
-    local bookbrainz bookbrainz md5
-
-When this is done, you should restart postgresql. Then, you should create the
-`bookbrainz` database:
-
-    sudo -u postgres psql -c "CREATE DATABASE bookbrainz OWNER bookbrainz"
-
-Then, uncompress the `latest.tar.bz2` file you downloaded earlier, using the
-bzip2 command:
+Then, uncompress the `latest.tar.bz2` file, using the bzip2 command:
 
     bzip2 -d latest.tar.bz2
 
@@ -94,7 +77,7 @@ At this point, the database is set up, and the following command should give
 you a list of usernames of BookBrainz editors (after entering the password from
 earlier):
 
-    psql -U bookbrainz -W bookbrainz -c "SELECT name FROM bookbrainz.editor"
+    sudo -u postgres bookbrainz -c "SELECT name FROM bookbrainz.editor"
 
 ### Cloning
 
@@ -110,7 +93,7 @@ Currently used submodules:
 To clone the repository and point the local HEAD to the latest commit in the
 `stable` branch, something like the following command should work:
 
-    git clone --recursive -b stable https://github.com/bookbrainz/bookbrainz-site.git
+    git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
 
 ### Installing Packages
 The site depends on a number of node packages, which can be installed using npm,
