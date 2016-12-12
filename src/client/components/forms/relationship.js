@@ -33,13 +33,31 @@ const validators = require('../../helpers/react-validators');
 
 const RelationshipRow = require('./parts/relationship-row');
 
+/**
+ * This function checks if the relationship is new
+ * @param: {boolean} initialType - Initial type of the relationship.
+ * @param: {boolean} initialTarget - Initial target of the relationship.
+ * Returns boolean value if initialType and initialTarget are both false
+ * If there is a new relationship, then in the render function,
+   the relationship type of the RelationshipRow
+   is set to a non-deprecated type. (const typesWithoutDeprecated)
+ */
 function isRelationshipNew(initialType, initialTarget) {
 	'use strict';
-
 	return !(initialType || initialTarget);
 }
-
+/**
+ * This class makes it possible for a user to edit a relationship.
+ * The render() function in this class generates an
+   HTML div with a RelationshipEditor.
+*/
 class RelationshipEditor extends React.Component {
+	/**
+	* This is a constructor.
+	* @param: {props} props - from React.Component constructor
+	* Returns a RelationshipEditor.
+	* @constructor
+	*/
 	constructor(props) {
 		super(props);
 
@@ -78,7 +96,13 @@ class RelationshipEditor extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSelect = this.handleSelect.bind(this);
 	}
-
+	/**
+	* This function returns an array of values for updated relationships.
+	* Return type: array
+	* Used in function getInternalValue() to find the updated relationships
+	(which getInternalValue() needs to find the relationships where the
+	target, source or type has changed)
+	*/
 	getValue() {
 		const relationships = [];
 
@@ -88,7 +112,10 @@ class RelationshipEditor extends React.Component {
 
 		return relationships;
 	}
-
+	/**
+	* This function submits the changed, valid relationships.
+	* It is activated once the SUBMIT button has been clicked.
+	*/
 	handleSubmit() {
 		const changedRelationships = _filter(
 			this.state.relationships, (rel) => rel.changed && rel.valid
@@ -102,7 +129,15 @@ class RelationshipEditor extends React.Component {
 					dataHelper.getEntityLink(this.props.entity);
 			});
 	}
-
+	/**
+	* This function goes through the list of updated relationships
+	  and changes the "changed" boolean of each relationship
+	  if the source, target, or type changed.
+	  It also updates the "valid" boolean of each relationship.
+	* Returns the new list of updated relationships.
+	* It is used to access all the updated relationships in function deleteRowIfNew, swap and
+    	handleChange.
+	*//
 	getInternalValue() {
 		const updatedRelationships = this.getValue();
 
@@ -124,7 +159,13 @@ class RelationshipEditor extends React.Component {
 
 		return updatedRelationships;
 	}
-
+	/**
+		* This function swaps the source and the target of a specified row of updated relationships.
+		* @param: {integer} changedRowIndex - Row index that has been recently changed.
+		* Used in render() function to define a new function with bind, onSwap,
+		  which refers to the swapped element as this,
+		  and takes in the parameter index using global context.
+    */
 	swap(changedRowIndex) {
 		const updatedRelationships = this.getInternalValue();
 
@@ -141,7 +182,10 @@ class RelationshipEditor extends React.Component {
 			rowsSpawned
 		});
 	}
-
+	/**
+	* This function deletes all relationships which have not been selected.
+	* It doesn't take any parameters, and returns void.
+	*/
 	handleBulkDelete() {
 		const relationshipsToDelete = _.reject(
 			this.state.relationships.map((rel, idx) => (
@@ -153,7 +197,13 @@ class RelationshipEditor extends React.Component {
 			this.refs[idx].handleDeleteClick();
 		});
 	}
-
+	/**
+	* This function takes in a row index, checks if it is the last relationship
+	 and if it is, then a new row is added.
+	* @param: {array} updatedRelationships - relationships with correct changed and valid booleans.
+	* @param: {integer} (index) changedRowIndex - Row index which has been recently changed.
+	* Returns the total number of added rows.
+	*/
 	addRowIfNeeded(updatedRelationships, changedRowIndex) {
 		let rowsSpawned = this.state.rowsSpawned;
 		if (changedRowIndex === this.state.relationships.length - 1) {
@@ -170,7 +220,12 @@ class RelationshipEditor extends React.Component {
 
 		return rowsSpawned;
 	}
-
+	/**
+	* This takes in a row index and checks if it is new.
+	* If it is, then it is deleted and numSelected decreases by 1.
+	* @param: {integer} rowToDelete - Row index which may be deleted if it's new
+	* It updates the new state.
+	*/
 	deleteRowIfNew(rowToDelete) {
 		if (this.refs[rowToDelete].added()) {
 			const updatedRelationships = this.getInternalValue();
@@ -188,7 +243,12 @@ class RelationshipEditor extends React.Component {
 			});
 		}
 	}
-
+	/**
+	* This takes in a row index, finds out the updated relationships,
+	and spawns some rows if the row index needs to, then updates the state
+	with these two.
+	* @param: {integer} changedRowIndex - Row index which has been recently changed.
+	*/
 	handleChange(changedRowIndex) {
 		const updatedRelationships = this.getInternalValue();
 
@@ -200,7 +260,14 @@ class RelationshipEditor extends React.Component {
 			rowsSpawned
 		});
 	}
-
+	/**
+	* This function takes in a row index, checks if it is selected,
+	and updates the state with the new number.
+	* @param: {integer} selectedRowIndex - Row index which has been selected.
+	* Used in render() function to define a new function with bind, onSelect,
+	  which refers to the handled element as this,
+	  and takes in the parameter index using global context.
+	*/
 	handleSelect(selectedRowIndex) {
 		let newNumSelected = this.state.numSelected;
 
@@ -215,7 +282,10 @@ class RelationshipEditor extends React.Component {
 			numSelected: newNumSelected
 		});
 	}
-
+	/**
+	* Returns a boolean true if there are relationships which have been changed and are valid
+	* This affects the SUBMIT button visibility (i.e., if there is no data to submit, then it will be disabled.
+	*/
 	hasDataToSubmit() {
 		const changedRelationships = _filter(
 			this.state.relationships, (rel) =>
@@ -224,7 +294,12 @@ class RelationshipEditor extends React.Component {
 
 		return changedRelationships.length > 0;
 	}
-
+	/**
+	* This function creates a display of all relationships
+	in current state. It also creates a SUBMIT button to submit
+	new relationships.
+	* Returns an HTML div with a RelationshipEditor.
+	*/
 	render() {
 		const typesWithoutDeprecated = _filter(
 			this.props.relationshipTypes, (type) => !type.deprecated
