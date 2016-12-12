@@ -30,7 +30,7 @@ const utils = require('../helpers/utils');
 
 const _ = require('lodash');
 
-const Layout = require('../../client/components/layout');
+const Layout = require('../../client/containers/layout');
 const Index = require('../../client/components/pages/index');
 
 const AboutPage = React.createFactory(

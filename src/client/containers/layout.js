@@ -31,7 +31,7 @@ const Nav = bootstrap.Nav;
 const Navbar = bootstrap.Navbar;
 const MenuItem = bootstrap.MenuItem;
 
-const Footer = require('./footer');
+const Footer = require('./../components/footer');
 
 class Layout extends React.Component {
 
