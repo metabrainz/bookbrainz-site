@@ -38,7 +38,7 @@ const SearchPage = React.createFactory(
 const router = express.Router();
 
 /**
- * Returns React markup for the search page that is rendered by the user's
+ * Generates React markup for the search page that is rendered by the user's
  * browser.
  */
 router.get('/', (req, res, next) => {
@@ -62,8 +62,8 @@ router.get('/', (req, res, next) => {
 });
 
 /**
- * Returns autocomplete results for a given user query. Can be further filtered
- * by collection type.
+ * Responds with autocomplete results for a given user query. Can be further
+ * filtered by collection type.
  */
 router.get('/autocomplete', (req, res) => {
 	const query = req.query.q;

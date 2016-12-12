@@ -45,7 +45,8 @@ class SearchPage extends React.Component {
 	}
 
 	/**
-	 * Gets search results from user query.
+	 * Gets user text query from the SearchField component and retrieves
+	 * autocomplete search results.
 	 *
 	 * @param {string} q - Query string entered by user.
 	 */

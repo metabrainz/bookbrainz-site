@@ -116,7 +116,7 @@ class Select extends React.Component {
 	}
 
 	/**
-	 * Prevents firing of input change handlers.
+	 * Removes the input change handlers.
 	 */
 	disableOnChange() {
 		const select = $(this.target.getInputDOMNode());
@@ -127,7 +127,8 @@ class Select extends React.Component {
 	}
 
 	/**
-	 * Used by React to render the component.
+	 * Used by React to render the component: A select input that allows users
+	 * to select from a list of supplied options.
 	 *
 	 * @returns {object} - JSX to render.
 	 */
