@@ -49,7 +49,9 @@ const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
-		.fetch()
+		.fetch({
+			withRelated: ['area']
+		})
 		.then((editor) => editor.toJSON());
 
 	const titleJSONPromise = new TitleUnlock()

@@ -105,7 +105,8 @@ class EntitySearch extends React.Component {
 					Edition: 'book',
 					Publication: 'th-list',
 					Publisher: 'university',
-					Work: 'file-text-o'
+					Work: 'file-text-o',
+					Area: 'globe'
 				};
 
 				/* eslint prefer-template: 0 */
