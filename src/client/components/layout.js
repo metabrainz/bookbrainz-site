@@ -30,7 +30,6 @@ const injectChildElemsWithProps =
 const Nav = bootstrap.Nav;
 const Navbar = bootstrap.Navbar;
 const MenuItem = bootstrap.MenuItem;
-const FormGroup = bootstrap.FormGroup;
 
 const Footer = require('./footer');
 
@@ -145,25 +144,25 @@ class Layout extends React.Component {
 				}
 				{!(homepage || hideSearch) &&
 				<Navbar.Form pullRight
-					action="/search"
-					role="search"
+					 action="/search"
+					 role="search"
 				>
-					<FormGroup>
+					<div className="form-group">
 						<div className="input-group">
 							<input className="form-control"
-								name="q"
-								placeholder="Search for..."
-								type="text"
+								   name="q"
+								   placeholder="Search for..."
+								   type="text"
 							/>
 							<span className="input-group-btn">
-								<button className="btn btn-success"
-									type="submit"
-								>
-									<FontAwesome name="search"/>
-								</button>
-							</span>
+									<button className="btn btn-success"
+										type="submit"
+									>
+										<FontAwesome name="search"/>
+									</button>
+								</span>
 						</div>
-					</FormGroup>
+					</div>
 				</Navbar.Form>
 				}
 			</Navbar.Collapse>
