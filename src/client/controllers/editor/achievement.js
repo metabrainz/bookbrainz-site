@@ -19,12 +19,20 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const AchievementForm = React.createFactory(
-	require('../../components/forms/achievements')
-);
+const AchievementsTab =
+	require('../../components/pages/parts/editor-achievements');
+const Layout =
+	require('../../containers/layout');
+const EditorContainer =
+	require('../../containers/editor');
+
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
 ReactDOM.render(
-	AchievementForm(props),
-	document.getElementById('achievementsForm')
+	<Layout {...props}>
+		<EditorContainer tabActive={2}>
+			<AchievementsTab/>
+		</EditorContainer>
+	</Layout>,
+	document.getElementById('target')
 );

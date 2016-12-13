@@ -20,10 +20,12 @@ const React = require('react');
 const StickyContainer = require('react-sticky').StickyContainer;
 const Sticky = require('react-sticky').Sticky;
 const request = require('superagent-bluebird-promise');
-const Achievement = require('./parts/achievement');
-const DragAndDrop = require('../input/drag-and-drop');
+const Achievement = require('./../../forms/parts/achievement');
+const DragAndDrop = require('../../input/drag-and-drop');
+const bootstrap = require('react-bootstrap');
+const Row = bootstrap.Row;
 
-class AchievementForm extends React.Component {
+class EditorAchievementTab extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -108,33 +110,39 @@ class AchievementForm extends React.Component {
 			);
 		}
 		return (
-			<StickyContainer>
-				<Sticky
-					style={{
-						zIndex: 10,
-						background: 'white',
-						'margin-top': 64,
-						flex: '1'
-					}}
-					topOffset={-80}
-				>
-						{rankUpdate}
-					</Sticky>
-					<div style={{zIndex: 1}}>
-						<div className="h1">Unlocked Achievements</div>
-						{achievements}
-						<div className="h1">Locked Achievements</div>
-						{locked}
+			<Row>
+				<div className="col-md-10-offset-1">
+					<div id="achievementsForm">
+						<StickyContainer>
+							<Sticky
+								style={{
+									zIndex: 10,
+									background: 'white',
+									'margin-top': 64,
+									flex: '1'
+								}}
+								topOffset={-80}
+							>
+								{rankUpdate}
+							</Sticky>
+							<div style={{zIndex: 1}}>
+								<div className="h1">Unlocked Achievements</div>
+								{achievements}
+								<div className="h1">Locked Achievements</div>
+								{locked}
+							</div>
+						</StickyContainer>
 					</div>
-			</StickyContainer>
+				</div>
+			</Row>
 		);
 	}
 }
 
-AchievementForm.displayName = 'AchievementForm';
-AchievementForm.propTypes = {
+EditorAchievementTab.displayName = 'EditorAchievementTab';
+EditorAchievementTab.propTypes = {
 	achievement: React.PropTypes.object,
 	editor: React.PropTypes.object
 };
 
-module.exports = AchievementForm;
+module.exports = EditorAchievementTab;

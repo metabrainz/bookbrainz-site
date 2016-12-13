@@ -31,6 +31,7 @@ class DragAndDrop extends React.Component {
 
 		try {
 			data = JSON.parse(ev.dataTransfer.getData('text'));
+			console.log(data);
 		}
 		catch (err) {
 			return;

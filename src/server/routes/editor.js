@@ -209,7 +209,8 @@ router.get('/:id', (req, res, next) => {
 							<ProfileTab/>
 						</EditorContainer>
 					</Layout>
-				)
+				),
+				props
 			});
 		}
 	);
@@ -359,7 +360,8 @@ router.get('/:id/achievements', (req, res, next) => {
 							<AchievementsTab/>
 						</EditorContainer>
 					</Layout>
-				)
+				),
+				script: '/js/editor/achievement.js'
 			});
 		}
 	);
