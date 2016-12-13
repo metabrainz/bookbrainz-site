@@ -34,7 +34,8 @@ const validators = require('../../helpers/react-validators');
 const RelationshipRow = require('./parts/relationship-row');
 
 /**
- * Checks if the relationship is new by checking that the fields weren't set when the form was loaded
+ * Checks if the relationship is new by checking that
+   the fields weren't set when the form was loaded
  * @param {boolean} initialType - Initial type of the relationship.
  * @param {boolean} initialTarget - Initial target of the relationship.
  * @returns {boolean} True if initialType and initialTarget are both false
@@ -47,13 +48,15 @@ function isRelationshipNew(initialType, initialTarget) {
 }
 
 /**
- * This class is a subclass of ReactComponent, which allows the user to create and edit a relationship.
+ * This class is a subclass of ReactComponent,
+ which allows the user to create and edit a relationship.
 */
 
 class RelationshipEditor extends React.Component {
 	/**
 	 * This is a constructor.
-	 * It binds the event handler functions defined in the class to the class instance.
+	 * It binds the event handler functions defined
+	 in the class to the class instance.
 	 * @param {props} props - from React.Component constructor
 	 * @constructor
 	*/
@@ -96,8 +99,9 @@ class RelationshipEditor extends React.Component {
 		this.handleSelect = this.handleSelect.bind(this);
 	}
 	/**
-	 * Creates an array of all of the information for all relationships present on the form.
-	 * @returns {integer[]} relationships - All of the information
+	 * Creates an array of all of the information	 
+	 for all relationships present on the form.
+	 * @returns {integer} relationships - All of the information
 	*/
 	getValue() {
 		const relationships = [];
@@ -111,6 +115,7 @@ class RelationshipEditor extends React.Component {
 	/**
 	 * Submits the changed, valid relationships.
 	 * It is triggered by the onClick event of the SUBMIT button.
+	 * @returns {void}
 	*/
 	handleSubmit() {
 		const changedRelationships = _filter(
@@ -126,10 +131,11 @@ class RelationshipEditor extends React.Component {
 			});
 	}
 	/**
-	 * Gets a list of relationships on the form from getValue(),
-	 and adds additional information derived from the state that is used internally.
-	 * @returns {integer[]} updatedRelationships - New list of relationships on the form.
-	*/
+   	* Gets a list of relationships on the form from getValue(),
+	and adds additional information derived from
+	the state that is used internally.
+	* @returns {integer} updatedRelationships
+	- New list of relationships on the form.	*/
 	getInternalValue() {
 		const updatedRelationships = this.getValue();
 
@@ -152,8 +158,10 @@ class RelationshipEditor extends React.Component {
 		return updatedRelationships;
 	}
 	/**
-	 * Swaps the source and the target of a specified row of updated relationships.
-	 * @param {integer} changedRowIndex - Row index that has been recently changed.
+	 * Swaps the source and the target
+	 of a specified row of updated relationships.
+	 * @param {integer} changedRowIndex - Row index that has been changed.
+	 * @returns {void}
 	*/
 	swap(changedRowIndex) {
 		const updatedRelationships = this.getInternalValue();
@@ -189,9 +197,11 @@ class RelationshipEditor extends React.Component {
 	/**
 	 * This function takes in a row index, checks if it is the last relationship
 	 and if it is, then a new row is added.
-	 * @param {integer[]} updatedRelationships - Relationships with correct changed and valid booleans.
-	 * @param {integer} changedRowIndex - Row index which has been recently changed.
-	 * @returns {integer} rowsSpawned - Total number of rows since the form was loaded.
+	 * @param {integer} updatedRelationships -
+	   Relationships with correct changed and valid booleans.
+	 * @param {integer} changedRowIndex - Row index which has been changed.
+	 * @returns {integer} rowsSpawned -
+       Total number of rows since the form was loaded.
 	*/
 	addRowIfNeeded(updatedRelationships, changedRowIndex) {
 		let rowsSpawned = this.state.rowsSpawned;
@@ -210,10 +220,13 @@ class RelationshipEditor extends React.Component {
 		return rowsSpawned;
 	}
 	/**
-	 * This takes in a row index and checks if the row has been added since the form was loaded.
-	 * If the row was part of the selection, then the number of selected rows is decremented
+	 * This takes in a row index and checks if the row has been added
+       since the form was loaded.
+	 * If the row was part of the selection, then the number of
+       selected rows is decremented
 	 * @param {integer} rowToDelete - Row index which may be deleted if it's new
 	 * Updates the new state.
+	 * @returns {void}
 	*/
 	deleteRowIfNew(rowToDelete) {
 		if (this.refs[rowToDelete].added()) {
@@ -233,9 +246,12 @@ class RelationshipEditor extends React.Component {
 		}
 	}
 	/**
-	 * Gets the most current information about relationships in the form, and saves it in the form state,
-	 to update the state following a change and propagate the change to the displayed UI.
-	 * @param {integer} changedRowIndex - Row index which has been recently changed.
+	 * Gets the most current information about relationships in the form,
+	   and saves it in the form state,
+	   to update the state following a change and propagate the change
+	   to the displayed UI.
+	 * @param {integer} changedRowIndex - Row index which has been changed.
+	 * @returns {void}
 	*/
 	handleChange(changedRowIndex) {
 		const updatedRelationships = this.getInternalValue();
@@ -252,6 +268,7 @@ class RelationshipEditor extends React.Component {
 	 * Takes in a row index, checks if it is selected,
 	 and updates the state with the new number of selected relationships.
 	 * @param {integer} selectedRowIndex - Row index which has been selected.
+	 * @returns {void}
 	*/
 	handleSelect(selectedRowIndex) {
 		let newNumSelected = this.state.numSelected;
@@ -269,9 +286,10 @@ class RelationshipEditor extends React.Component {
 	}
 	/**
 	 * Checks if there are relationships which have been changed and are valid.
-	 * This affects the SUBMIT button visibility (i.e., if there is no data to submit, then it will be disabled).
+	 * This affects the SUBMIT button visibility
+       (i.e., if there is no data to submit, then it will be disabled).
 	 * @returns {boolean}
-	*/
+	 */
 	hasDataToSubmit() {
 		const changedRelationships = _filter(
 			this.state.relationships, (rel) =>
