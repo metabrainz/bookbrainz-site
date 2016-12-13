@@ -37,14 +37,17 @@ const handler = require('../helpers/handler');
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
 
+const RevisionsTab =
+	require('../../client/components/pages/parts/editor-revisions');
+const ProfileTab =
+	require('../../client/components/pages/parts/editor-profile');
+const AchievementsTab =
+	require('../../client/components/pages/parts/editor-achievements');
+const EditorContainer = require('../../client/containers/editor');
+const Layout = require('../../client/containers/layout');
 const ProfileForm = React.createFactory(
 	require('../../client/components/forms/profile')
 );
-
-const AchievementForm = React.createFactory(
-	require('../../client/components/forms/achievements')
-);
-
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
@@ -192,12 +195,23 @@ router.get('/:id', (req, res, next) => {
 			return achievementJSON;
 		});
 
+
 	Promise.join(achievementJSONPromise, editorJSONPromise,
-		(achievementJSON, editorJSON) =>
-			res.render('editor/editor', {
+		(achievementJSON, editorJSON) => {
+			const props = Object.assign({}, req.app.locals, res.locals, {
 				editor: editorJSON,
 				achievement: achievementJSON
-			})
+			});
+			res.render('target', {
+				markup: ReactDOMServer.renderToString(
+					<Layout {...props} >
+						<EditorContainer tabActive={0}>
+							<ProfileTab/>
+						</EditorContainer>
+					</Layout>
+				)
+			});
+		}
 	);
 });
 
@@ -235,8 +249,17 @@ router.get('/:id/revisions', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.then((editorJSON) => {
-			res.render('editor/revisions', {
+			const props = Object.assign({}, req.app.locals, res.locals, {
 				editor: editorJSON
+			});
+			res.render('target', {
+				markup: ReactDOMServer.renderToString(
+					<Layout {...props}>
+						<EditorContainer tabActive={1}>
+							<RevisionsTab/>
+						</EditorContainer>
+					</Layout>
+				)
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
@@ -325,18 +348,18 @@ router.get('/:id/achievements', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const markup =
-				ReactDOMServer.renderToString(AchievementForm({
-					editor: editorJSON,
-					achievement: achievementJSON
-				}));
-
-			res.render('editor/achievements', {
-				props: {
-					editor: editorJSON,
-					achievement: achievementJSON
-				},
-				markup
+			const props = Object.assign({}, req.app.locals, res.locals, {
+				editor: editorJSON,
+				achievement: achievementJSON
+			});
+			res.render('target', {
+				markup: ReactDOMServer.renderToString(
+					<Layout {...props}>
+						<EditorContainer tabActive={2}>
+							<AchievementsTab/>
+						</EditorContainer>
+					</Layout>
+				)
 			});
 		}
 	);
