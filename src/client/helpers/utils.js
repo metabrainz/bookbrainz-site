@@ -17,6 +17,7 @@
  */
 
 const React = require('react');
+const _ = require('lodash');
 
 /**
  * Returns list of component children that have been injected with the specified
@@ -27,8 +28,9 @@ const React = require('react');
  */
 function injectChildElemsWithProps(props) {
 	'use strict';
+	const propsWithoutChild = _.omit(props, 'children');
 	return React.Children.map(props.children, (Child) => {
-		const filteredProps = Object.assign({}, props, Child.props);
+		const filteredProps = Object.assign({}, propsWithoutChild, Child.props);
 		return React.cloneElement(Child, filteredProps);
 	});
 }
