@@ -99,7 +99,7 @@ class RelationshipEditor extends React.Component {
 		this.handleSelect = this.handleSelect.bind(this);
 	}
 	/**
-	 * Creates an array of all of the information	 
+	 * Creates an array of all of the information
 	 for all relationships present on the form.
 	 * @returns {integer} relationships - All of the information
 	*/
@@ -182,6 +182,7 @@ class RelationshipEditor extends React.Component {
 	/**
 	 * This function deletes all relationships which have been selected.
 	 * Triggered by the onClick event of the DELETE SELECTED button.
+	 * @returns {void}
 	*/
 	handleBulkDelete() {
 		const relationshipsToDelete = _.reject(
@@ -288,7 +289,7 @@ class RelationshipEditor extends React.Component {
 	 * Checks if there are relationships which have been changed and are valid.
 	 * This affects the SUBMIT button visibility
        (i.e., if there is no data to submit, then it will be disabled).
-	 * @returns {boolean}
+	 * @returns {boolean} True if there are any changed relationships.
 	 */
 	hasDataToSubmit() {
 		const changedRelationships = _filter(
