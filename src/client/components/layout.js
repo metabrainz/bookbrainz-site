@@ -24,6 +24,8 @@ const React = require('react');
 
 const bootstrap = require('react-bootstrap');
 const FontAwesome = require('react-fontawesome');
+const injectChildElemsWithProps =
+	require('../helpers/utils').injectChildElemsWithProps;
 
 const Nav = bootstrap.Nav;
 const Navbar = bootstrap.Navbar;
@@ -31,22 +33,6 @@ const MenuItem = bootstrap.MenuItem;
 const FormGroup = bootstrap.FormGroup;
 
 const Footer = require('./footer');
-
-
-/**
- * Returns list of component children that have been injected with the specified
- * props (does not override existing ones)
- * @param {Object} props - The props object that contains children and will be
- * re-injected into children
- * @returns {Array} list of children
- */
-function injectChildElemsWithProps(props) {
-	'use strict';
-	return React.Children.map(props.children, (Child) => {
-		const filteredProps = Object.assign({}, props, Child.props);
-		return React.cloneElement(Child, filteredProps);
-	});
-}
 
 class Layout extends React.Component {
 
