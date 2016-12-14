@@ -63,6 +63,7 @@ class EditorAchievementTab extends React.Component {
 				achievementHTML = (
 					<Achievement
 						achievement={achievement}
+						key={`${this.state.editor.id}${achievement.id}`}
 						unlocked={unlocked}
 					/>
 				);
@@ -118,7 +119,7 @@ class EditorAchievementTab extends React.Component {
 								style={{
 									zIndex: 10,
 									background: 'white',
-									'margin-top': 64,
+									marginTop: 64,
 									flex: '1'
 								}}
 								topOffset={-80}
@@ -141,8 +142,14 @@ class EditorAchievementTab extends React.Component {
 
 EditorAchievementTab.displayName = 'EditorAchievementTab';
 EditorAchievementTab.propTypes = {
-	achievement: React.PropTypes.object,
-	editor: React.PropTypes.object
+	achievement: React.PropTypes.shape({
+		model: React.PropTypes.array
+
+	}),
+	editor: React.PropTypes.shape({
+		id: React.PropTypes.number,
+		authenticated: React.PropTypes.bool
+	})
 };
 
 module.exports = EditorAchievementTab;

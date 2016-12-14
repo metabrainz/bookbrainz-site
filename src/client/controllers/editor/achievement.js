@@ -26,7 +26,8 @@ const Layout =
 const EditorContainer =
 	require('../../containers/editor');
 
-const props = JSON.parse(document.getElementById('props').innerHTML);
+const propsTarget = document.getElementById('props');
+const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 ReactDOM.render(
 	<Layout {...props}>

@@ -28,7 +28,7 @@ class DragAndDropImage extends React.Component {
 
 DragAndDropImage.displayName = 'DragAndDropImage';
 DragAndDropImage.propTypes = {
-	achievementId: React.PropTypes.string,
+	achievementId: React.PropTypes.number,
 	achievementName: React.PropTypes.string,
 	height: React.PropTypes.string,
 	src: React.PropTypes.string
