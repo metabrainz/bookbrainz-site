@@ -23,10 +23,8 @@
   },
   "dependencies": {
     "babel-cli": "^6.18.0",
-    "babel-plugin-array-includes": "^2.0.3",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
     "babel-preset-es2015-node": "^6.1.0",
-    "babel-preset-react": "^6.11.1",
     "babelify": "^7.3.0",
     "bluebird": "^3.3.4",
     "body-parser": "^1.14.1",
