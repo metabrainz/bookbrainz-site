@@ -81,6 +81,7 @@ function formatAreaChange(change, label) {
 	return formatChange(
 		change,
 		label || 'Area',
+		// eslint-disable-next-line
 		(side) => typeof side === 'string' ? [side] : side && [side.name]
 	);
 }
