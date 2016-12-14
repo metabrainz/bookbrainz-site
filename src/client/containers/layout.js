@@ -47,19 +47,19 @@ class Layout extends React.Component {
 
 		return (
 			<Navbar.Header>
-				<Navbar.Brand className="logo"
-					href="/"
-				>
-					{homepage ?
-						<img alt="BookBrainz icon"
-							src="/images/BookBrainz_logo_icon.svg"
-							title="BookBrainz"
-						/> :
-						<img alt="BookBrainz icon"
-							src="/images/BookBrainz_logo_mini.svg"
-							title="BookBrainz"
-						/>
-					}
+				<Navbar.Brand className="logo">
+					<a href="/">
+						{homepage ?
+							<img alt="BookBrainz icon"
+								src="/images/BookBrainz_logo_icon.svg"
+								title="BookBrainz"
+							/> :
+							<img alt="BookBrainz icon"
+								src="/images/BookBrainz_logo_mini.svg"
+								title="BookBrainz"
+							/>
+						}
+					</a>
 				</Navbar.Brand>
 				<Navbar.Toggle/>
 			</Navbar.Header>
