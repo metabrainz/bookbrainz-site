@@ -136,6 +136,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 				title: 'Add Edition',
 				heading: 'Create Edition',
 				subheading: 'Add a new Edition to BookBrainz',
+				script: 'edition',
 				props,
 				markup
 			});

@@ -104,6 +104,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
 			title: 'Add Creator',
 			heading: 'Create Creator',
 			subheading: 'Add a new Creator to BookBrainz',
+			script: 'creator',
 			props,
 			markup
 		});

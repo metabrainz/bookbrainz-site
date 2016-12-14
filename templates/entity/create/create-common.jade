@@ -1,0 +1,24 @@
+extends /layout
+
+block body
+    .container#content
+        .row
+            h1=heading
+                small=' ' + subheading
+        .row
+            noscript
+                .alert.alert-danger(role='alert') This page will not function correctly without JavaScript! Please enable JavaScript to use this page.
+        if script == 'creator'
+            #creatorForm
+        else if script == 'edition'
+            #editionForm
+        else if script == 'publication'
+            #publicationForm
+        else if script == 'publisher'
+            #publisherForm
+        else if script == 'work'
+            #workForm
+
+block js
+    script(type='application/json')#props!= JSON.stringify(props)
+    script(src='/js/entity/#{script}.js')

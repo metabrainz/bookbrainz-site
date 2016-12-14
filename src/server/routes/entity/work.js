@@ -104,6 +104,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 			title: 'Add Work',
 			heading: 'Create Work',
 			subheading: 'Add a new Work to BookBrainz',
+			script: 'work',
 			props,
 			markup
 		});

@@ -194,9 +194,10 @@ router.get('/:id', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) =>
-			res.render('editor/editor', {
+			res.render('editor/editor-common', {
 				editor: editorJSON,
-				achievement: achievementJSON
+				achievement: achievementJSON,
+                feature: 'editor'
 			})
 	);
 });
@@ -235,8 +236,9 @@ router.get('/:id/revisions', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.then((editorJSON) => {
-			res.render('editor/revisions', {
-				editor: editorJSON
+			res.render('editor/editor-common', {
+				editor: editorJSON,
+                feature: 'revisions'
 			});
 		})
 		.catch(Editor.NotFoundError, () => {

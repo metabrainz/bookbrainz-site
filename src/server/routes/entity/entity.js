@@ -130,8 +130,10 @@ module.exports.displayDeleteEntity = (req, res) => {
 		entity: res.locals.entity
 	};
 
-	res.render('entity/delete', {
+	res.render('common', {
 		markup: ReactDOMServer.renderToString(DeletionForm(props)),
+		task: 'delete',
+		script: 'deletion',
 		props
 	});
 };

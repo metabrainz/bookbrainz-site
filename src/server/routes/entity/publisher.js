@@ -117,6 +117,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages,
 			title: 'Add Publisher',
 			heading: 'Create Publisher',
 			subheading: 'Add a new Publisher to BookBrainz',
+			script: 'publisher',
 			props,
 			markup
 		});
