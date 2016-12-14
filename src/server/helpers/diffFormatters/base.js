@@ -76,3 +76,12 @@ function formatScalarChange(change, label) {
 	return formatChange(change, label, (side) => side && [side]);
 }
 module.exports.formatScalarChange = formatScalarChange;
+
+function formatAreaChange(change, label) {
+	return formatChange(
+		change,
+		label || 'Area',
+		(side) => typeof side === 'string' ? [side] : side && [side.name]
+	);
+}
+module.exports.formatAreaChange = formatAreaChange;

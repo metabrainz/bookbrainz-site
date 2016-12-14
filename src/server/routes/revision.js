@@ -69,6 +69,16 @@ function formatCreatorChange(change) {
 		return baseFormatter.formatTypeChange(change, 'Creator Type');
 	}
 
+	if (_.isEqual(change.path, ['beginArea']) ||
+			_.isEqual(change.path, ['beginArea', 'name'])) {
+		return baseFormatter.formatAreaChange(change, 'Begin Area');
+	}
+
+	if (_.isEqual(change.path, ['endArea'] ||
+			_.isEqual(change.path, ['beginArea']))) {
+		return baseFormatter.formatAreaChange(change, 'End Area');
+	}
+
 	return null;
 }
 
@@ -128,6 +138,11 @@ function formatPublisherChange(change) {
 
 	if (_.isEqual(change.path, ['type'])) {
 		return baseFormatter.formatTypeChange(change, 'Publisher Type');
+	}
+
+	if (_.isEqual(change.path, ['area']) ||
+			_.isEqual(change.path, ['area', 'name'])) {
+		return baseFormatter.formatAreaChange(change);
 	}
 
 	return null;
