@@ -69,6 +69,9 @@ class Layout extends React.Component {
 	renderNavContent() {
 		const {user, homepage, hideSearch} = this.props;
 
+		/* GOTCHA: Usage of react-bootstrap FormGroup component inside
+		*  Navbar.Form causes a DOM mutation
+		*/
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{user && user.id ?

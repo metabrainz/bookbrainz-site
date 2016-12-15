@@ -202,15 +202,14 @@ router.get('/:id', (req, res, next) => {
 				editor: editorJSON,
 				achievement: achievementJSON
 			});
-			res.render('target', {
-				markup: ReactDOMServer.renderToString(
-					<Layout {...props} >
-						<EditorContainer tabActive={0}>
-							<ProfileTab/>
-						</EditorContainer>
-					</Layout>
-				)
-			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...props} >
+					<EditorContainer tabActive={0}>
+						<ProfileTab/>
+					</EditorContainer>
+				</Layout>
+			);
+			res.render('target', {markup});
 		}
 	);
 });
@@ -252,15 +251,14 @@ router.get('/:id/revisions', (req, res, next) => {
 			const props = Object.assign({}, req.app.locals, res.locals, {
 				editor: editorJSON
 			});
-			res.render('target', {
-				markup: ReactDOMServer.renderToString(
-					<Layout {...props}>
-						<EditorContainer tabActive={1}>
-							<RevisionsTab/>
-						</EditorContainer>
-					</Layout>
-				)
-			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...props}>
+					<EditorContainer tabActive={1}>
+						<RevisionsTab/>
+					</EditorContainer>
+				</Layout>
+			);
+			res.render('target', {markup});
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new NotFoundError('Editor not found');
@@ -352,17 +350,15 @@ router.get('/:id/achievements', (req, res, next) => {
 				editor: editorJSON,
 				achievement: achievementJSON
 			});
-			res.render('target', {
-				markup: ReactDOMServer.renderToString(
-					<Layout {...props}>
-						<EditorContainer tabActive={2}>
-							<AchievementsTab/>
-						</EditorContainer>
-					</Layout>
-				),
-				script: '/js/editor/achievement.js',
-				props
-			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...props}>
+					<EditorContainer tabActive={2}>
+						<AchievementsTab/>
+					</EditorContainer>
+				</Layout>
+			);
+			const script = '/js/editor/achievement.js';
+			res.render('target', {markup, script, props});
 		}
 	);
 });

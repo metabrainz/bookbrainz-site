@@ -58,17 +58,15 @@ router.get('/', (req, res, next) => {
 			recent: _.take(entities, numRevisionsOnHomepage),
 			homepage: true
 		});
-
 		// Renders react components server side and injects markup into target
 		// file
 		// object spread injects the app.locals variables into React as props
-		res.render('target', {
-			markup: ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<Index />
-				</Layout>
-			)
-		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...props}>
+				<Index />
+			</Layout>
+		);
+		res.render('target', {markup});
 	}
 
 	const entityModels = utils.getEntityModels();
