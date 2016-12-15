@@ -1,4 +1,4 @@
-extends /templates/layout
+extends layout
 
 block body
     if task == "edit"
@@ -6,6 +6,8 @@ block body
             #relationshipForm
     else if task == "delete"
         h1 Delete Entity
+        .row.margin-top-2
+            #deletion-form!= markup
     else
         .row
             .col-md-12

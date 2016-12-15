@@ -132,7 +132,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 		function render(props) {
 			const markup = ReactDOMServer.renderToString(EditForm(props));
 
-			res.render('entity/create/edition', {
+			res.render('entity/create/create-common', {
 				title: 'Add Edition',
 				heading: 'Create Edition',
 				subheading: 'Add a new Edition to BookBrainz',
@@ -163,7 +163,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
-		res.render('entity/create/edition', {
+		res.render('entity/create/create-common', {
 			title: 'Edit Edition',
 			heading: 'Edit Edition',
 			subheading: 'Edit an existing Edition in BookBrainz',
