@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
+ * Copyright (C) 2016  Daniel Hsing
+ * 				 2015  Ben Ockmore
  *               2015  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
