@@ -24,29 +24,14 @@ const React = require('react');
 
 const bootstrap = require('react-bootstrap');
 const FontAwesome = require('react-fontawesome');
+const injectChildElemsWithProps =
+	require('../helpers/utils').injectChildElemsWithProps;
 
 const Nav = bootstrap.Nav;
 const Navbar = bootstrap.Navbar;
 const MenuItem = bootstrap.MenuItem;
-const FormGroup = bootstrap.FormGroup;
 
-const Footer = require('./footer');
-
-
-/**
- * Returns list of component children that have been injected with the specified
- * props (does not override existing ones)
- * @param {Object} props - The props object that contains children and will be
- * re-injected into children
- * @returns {Array} list of children
- */
-function injectChildElemsWithProps(props) {
-	'use strict';
-	return React.Children.map(props.children, (Child) => {
-		const filteredProps = Object.assign({}, props, Child.props);
-		return React.cloneElement(Child, filteredProps);
-	});
-}
+const Footer = require('./../components/footer');
 
 class Layout extends React.Component {
 
@@ -62,19 +47,19 @@ class Layout extends React.Component {
 
 		return (
 			<Navbar.Header>
-				<Navbar.Brand className="logo"
-					href="/"
-				>
-					{homepage ?
-						<img alt="BookBrainz icon"
-							src="/images/BookBrainz_logo_icon.svg"
-							title="BookBrainz"
-						/> :
-						<img alt="BookBrainz icon"
-							src="/images/BookBrainz_logo_mini.svg"
-							title="BookBrainz"
-						/>
-					}
+				<Navbar.Brand className="logo">
+					<a href="/">
+						{homepage ?
+							<img alt="BookBrainz icon"
+								src="/images/BookBrainz_logo_icon.svg"
+								title="BookBrainz"
+							/> :
+							<img alt="BookBrainz icon"
+								src="/images/BookBrainz_logo_mini.svg"
+								title="BookBrainz"
+							/>
+						}
+					</a>
 				</Navbar.Brand>
 				<Navbar.Toggle/>
 			</Navbar.Header>
@@ -84,6 +69,9 @@ class Layout extends React.Component {
 	renderNavContent() {
 		const {user, homepage, hideSearch} = this.props;
 
+		/* GOTCHA: Usage of react-bootstrap FormGroup component inside
+		*  Navbar.Form causes a DOM mutation
+		*/
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{user && user.id ?
@@ -159,25 +147,25 @@ class Layout extends React.Component {
 				}
 				{!(homepage || hideSearch) &&
 				<Navbar.Form pullRight
-					action="/search"
-					role="search"
+					 action="/search"
+					 role="search"
 				>
-					<FormGroup>
+					<div className="form-group">
 						<div className="input-group">
 							<input className="form-control"
-								name="q"
-								placeholder="Search for..."
-								type="text"
+								   name="q"
+								   placeholder="Search for..."
+								   type="text"
 							/>
 							<span className="input-group-btn">
-								<button className="btn btn-success"
-									type="submit"
-								>
-									<FontAwesome name="search"/>
-								</button>
-							</span>
+									<button className="btn btn-success"
+										type="submit"
+									>
+										<FontAwesome name="search"/>
+									</button>
+								</span>
 						</div>
-					</FormGroup>
+					</div>
 				</Navbar.Form>
 				}
 			</Navbar.Collapse>

@@ -8,6 +8,9 @@ html
 
 		include favicon
 	body
-		div!= markup
+		div#target!= markup
 		script(src='/js/bundle.js')
 		script(src='/js/layout.js')
+		if props && script
+			script(type='application/json')#props!= JSON.stringify(props)
+			script(src=script)
