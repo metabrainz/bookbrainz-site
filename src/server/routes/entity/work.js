@@ -130,6 +130,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			title: 'Edit Work',
 			heading: 'Edit Work',
 			subheading: 'Edit an existing Work in BookBrainz',
+			script: 'work',
 			props,
 			markup
 		});

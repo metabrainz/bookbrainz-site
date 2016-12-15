@@ -130,6 +130,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			title: 'Edit Creator',
 			heading: 'Edit Creator',
 			subheading: 'Edit an existing Creator in BookBrainz',
+			script: 'creator',
 			props,
 			markup
 		});

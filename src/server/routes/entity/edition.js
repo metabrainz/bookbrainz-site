@@ -167,6 +167,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			title: 'Edit Edition',
 			heading: 'Edit Edition',
 			subheading: 'Edit an existing Edition in BookBrainz',
+			script: 'edition',
 			props,
 			markup
 		});

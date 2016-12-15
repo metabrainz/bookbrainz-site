@@ -142,6 +142,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			title: 'Edit Publisher',
 			heading: 'Edit Publisher',
 			subheading: 'Edit an existing Publisher in BookBrainz',
+			script: 'publisher',
 			props,
 			markup
 		});

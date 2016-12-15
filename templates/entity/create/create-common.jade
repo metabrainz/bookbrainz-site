@@ -8,16 +8,7 @@ block body
         .row
             noscript
                 .alert.alert-danger(role='alert') This page will not function correctly without JavaScript! Please enable JavaScript to use this page.
-        if script == 'creator'
-            #creatorForm
-        else if script == 'edition'
-            #editionForm
-        else if script == 'publication'
-            #publicationForm
-        else if script == 'publisher'
-            #publisherForm
-        else if script == 'work'
-            #workForm
+        #entityForm
 
 block js
     script(type='application/json')#props!= JSON.stringify(props)

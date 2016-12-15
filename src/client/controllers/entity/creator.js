@@ -21,4 +21,4 @@ const ReactDOM = require('react-dom');
 const EditForm = React.createFactory(require('../../components/forms/creator'));
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
-ReactDOM.render(EditForm(props), document.getElementById('creatorForm'));
+ReactDOM.render(EditForm(props), document.getElementById('entityForm'));
