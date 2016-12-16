@@ -18,28 +18,10 @@
 
 
 import {Button, Col, Input, Row} from 'react-bootstrap';
-import {
-	removeIdentifier, updateIdentifierType, updateIdentifierValue
-} from '../actions';
 import React from 'react';
 import Select from 'react-select';
 import ValueField from './value-field';
-import _debounce from 'lodash.debounce';
-import {connect} from 'react-redux';
-import data from '../../helpers/data';
 
-function handleValueChange(debouncedDispatch, event, index, types) {
-	const guessedType =
-		data.guessIdentifierType(event.target.value, types);
-	if (guessedType) {
-		const result = new RegExp(guessedType.detectionRegex)
-			.exec(event.target.value);
-		event.target.value = result[1];
-	}
-	return debouncedDispatch(
-		updateIdentifierValue(index, event.target.value, guessedType)
-	);
-}
 
 function IdentifierRow({
 	typeOptions,
@@ -103,26 +85,4 @@ IdentifierRow.propTypes = {
 	onValueChange: React.PropTypes.func
 };
 
-
-function mapStateToProps(rootState, {index}) {
-	const state = rootState.get('identifierEditor');
-	return {
-		valueValue: state.getIn([index, 'value']),
-		typeValue: state.getIn([index, 'type'])
-	};
-}
-
-const KEYSTROKE_DEBOUNCE_TIME = 250;
-function mapDispatchToProps(dispatch, {index, typeOptions}) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
-	return {
-		onTypeChange: (value) =>
-			dispatch(updateIdentifierType(index, value && value.value)),
-		onRemoveButtonClick: () => dispatch(removeIdentifier(index)),
-		onValueChange: (event) =>
-			handleValueChange(debouncedDispatch, event, index, typeOptions)
-	};
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(IdentifierRow);
+export default IdentifierRow;

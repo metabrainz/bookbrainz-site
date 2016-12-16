@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import IdentifierRow from './identifier-row';
+import IdentifierRowContainer from './identifier-row-container';
 import React from 'react';
 import {connect} from 'react-redux';
 
@@ -33,7 +33,7 @@ function IdentifierRowList({
 		<div>
 			{
 				identifiers.map((identifier, id) =>
-					<IdentifierRow
+					<IdentifierRowContainer
 						index={id}
 						key={id}
 						typeOptions={typeOptions}
