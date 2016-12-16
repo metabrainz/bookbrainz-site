@@ -51,8 +51,10 @@ router.get('/', (req, res, next) => {
 			initialResults: entities
 		}))
 		.then((props) => {
-			res.render('search', {
+			res.render('common', {
 				title: 'Search Results',
+				task: 'search',
+				script: 'search',
 				props,
 				markup: ReactDOMServer.renderToString(SearchPage(props)),
 				hideSearch: true

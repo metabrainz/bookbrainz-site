@@ -211,7 +211,10 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 					const markup =
 						ReactDOMServer.renderToString(EditForm(props));
 
-					res.render('relationship/edit', {props, markup});
+					res.render('common', {props,
+						markup,
+						task: 'edit',
+						script: 'relationship'});
 				})
 				.catch(next);
 		}

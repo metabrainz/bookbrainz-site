@@ -100,10 +100,11 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
-		return res.render('entity/create/work', {
+		return res.render('entity/create/create-common', {
 			title: 'Add Work',
 			heading: 'Create Work',
 			subheading: 'Add a new Work to BookBrainz',
+			script: 'work',
 			props,
 			markup
 		});
@@ -125,10 +126,11 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
-		return res.render('entity/create/work', {
+		return res.render('entity/create/create-common', {
 			title: 'Edit Work',
 			heading: 'Edit Work',
 			subheading: 'Edit an existing Work in BookBrainz',
+			script: 'work',
 			props,
 			markup
 		});
