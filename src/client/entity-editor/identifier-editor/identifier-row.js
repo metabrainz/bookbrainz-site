@@ -17,15 +17,38 @@
  */
 
 
-import {Col, Row} from 'react-bootstrap';
+import {Button, Col, Input, Row} from 'react-bootstrap';
+import {
+	removeIdentifier, updateIdentifierType, updateIdentifierValue
+} from '../actions';
 import React from 'react';
-import RemoveIdentifierButton from './remove-identifier-button';
-import TypeField from './type-field';
+import Select from 'react-select';
 import ValueField from './value-field';
+import _debounce from 'lodash.debounce';
+import {connect} from 'react-redux';
+import data from '../../helpers/data';
+
+function handleValueChange(debouncedDispatch, event, index, types) {
+	const guessedType =
+		data.guessIdentifierType(event.target.value, types);
+	if (guessedType) {
+		const result = new RegExp(guessedType.detectionRegex)
+			.exec(event.target.value);
+		event.target.value = result[1];
+	}
+	return debouncedDispatch(
+		updateIdentifierValue(index, event.target.value, guessedType)
+	);
+}
 
 function IdentifierRow({
 	typeOptions,
-	index
+	index,
+	valueValue,
+	typeValue,
+	onTypeChange,
+	onRemoveButtonClick,
+	onValueChange
 }) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		value: type.id,
@@ -36,16 +59,33 @@ function IdentifierRow({
 		<div>
 			<Row>
 				<Col md={4}>
-					<ValueField index={index} types={typeOptions}/>
-				</Col>
-				<Col md={4}>
-					<TypeField
+					<ValueField
 						index={index}
-						options={identifierTypesForDisplay}
+						typeValue={typeValue}
+						types={typeOptions}
+						valueValue={valueValue}
+						onChange={onValueChange}
 					/>
 				</Col>
+				<Col md={4}>
+					<Input label="Type">
+						<Select
+							index={index}
+							options={identifierTypesForDisplay}
+							value={typeValue}
+							onChange={onTypeChange}
+						/>
+					</Input>
+				</Col>
 				<Col className="text-right" md={3} mdOffset={1}>
-					<RemoveIdentifierButton index={index}/>
+					<Button
+						block
+						bsStyle="danger"
+						className="margin-top-d15"
+						onClick={onRemoveButtonClick}
+					>
+						Remove
+					</Button>
 				</Col>
 			</Row>
 			<hr/>
@@ -55,7 +95,34 @@ function IdentifierRow({
 IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 IdentifierRow.propTypes = {
 	index: React.PropTypes.number,
-	typeOptions: React.PropTypes.array
+	typeOptions: React.PropTypes.array,
+	typeValue: React.PropTypes.number,
+	valueValue: React.PropTypes.string,
+	onRemoveButtonClick: React.PropTypes.func,
+	onTypeChange: React.PropTypes.func,
+	onValueChange: React.PropTypes.func
 };
 
-export default IdentifierRow;
+
+function mapStateToProps(rootState, {index}) {
+	const state = rootState.get('identifierEditor');
+	return {
+		valueValue: state.getIn([index, 'value']),
+		typeValue: state.getIn([index, 'type'])
+	};
+}
+
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+function mapDispatchToProps(dispatch, {index, typeOptions}) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+	return {
+		onTypeChange: (value) =>
+			dispatch(updateIdentifierType(index, value && value.value)),
+		onRemoveButtonClick: () => dispatch(removeIdentifier(index)),
+		onValueChange: (event) =>
+			handleValueChange(debouncedDispatch, event, index, typeOptions)
+	};
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(IdentifierRow);

@@ -19,12 +19,15 @@
 import {Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
-import _debounce from 'lodash.debounce';
-import {connect} from 'react-redux';
 import data from '../../helpers/data';
-import {updateIdentifierValue} from '../actions';
 
-const KEYSTROKE_DEBOUNCE_TIME = 250;
+function isEmpty(valueValue, typeValue) {
+	return !valueValue && typeValue === null;
+}
+
+function isError(valueValue, typeValue, types) {
+	return !data.identifierIsValid(typeValue, valueValue, types);
+}
 
 /**
  * Presentational component. Renders the name field for the alias section of
@@ -33,64 +36,33 @@ const KEYSTROKE_DEBOUNCE_TIME = 250;
  * @returns {Object} a React component containing the rendered input
  */
 function ValueField({
-	empty,
-	error,
+	valueValue,
+	typeValue,
+	types,
 	...rest
 }) {
 	const label = (
-		<ValidationLabel empty={empty} error={error}>
+		<ValidationLabel
+			empty={isEmpty(valueValue, typeValue)}
+			error={isError(valueValue, typeValue, types)}
+		>
 			Value
 		</ValidationLabel>
 	);
 
 	return (
-		<Input label={label} type="text" {...rest}/>
+		<Input
+			defaultValue={valueValue}
+			label={label}
+			type="text" {...rest}
+		/>
 	);
 }
 ValueField.displayName = 'ValueField';
 ValueField.propTypes = {
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool
+	typeValue: React.PropTypes.number,
+	types: React.PropTypes.array,
+	valueValue: React.PropTypes.string
 };
 
-function isEmpty(state, index) {
-	const value = state.get(index).get('value');
-	const type = state.get(index).get('type');
-
-	return value && type === null;
-}
-
-function isError(state, types, index) {
-	const value = state.get(index).get('value');
-
-	return !data.identifierIsValid(state.getIn([index, 'type']), value, types);
-}
-
-function mapStateToProps(rootState, {index, types}) {
-	const state = rootState.get('identifierEditor');
-	return {
-		empty: isEmpty(state, index),
-		error: isError(state, types, index),
-		defaultValue: state.getIn([index, 'value'])
-	};
-}
-
-function mapDispatchToProps(dispatch, {index, types}) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
-	return {
-		onChange: (event) => {
-			const guessedType =
-				data.guessIdentifierType(event.target.value, types);
-			if (guessedType) {
-				const result = new RegExp(guessedType.detectionRegex)
-					.exec(event.target.value);
-				event.target.value = result[1];
-			}
-			return debouncedDispatch(
-				updateIdentifierValue(index, event.target.value, guessedType)
-			);
-		}
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ValueField);
+export default ValueField;
