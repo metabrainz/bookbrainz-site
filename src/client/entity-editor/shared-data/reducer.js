@@ -17,6 +17,7 @@
  */
 
 import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
+import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
 import Immutable from 'immutable';
 
 function reducer(
@@ -44,7 +45,7 @@ function reducer(
 			return state.set('aliasEditorVisible', false);
 		case 'SHOW_IDENTIFIER_EDITOR':
 			return state.set('identifierEditorVisible', true);
-		case 'HIDE_IDENTIFIER_EDITOR':
+		case HIDE_IDENTIFIER_EDITOR:
 			return state.set('identifierEditorVisible', false);
 		case 'UPDATE_DISAMBIGUATION_FIELD':
 			return state.set('disambiguation', action.value);

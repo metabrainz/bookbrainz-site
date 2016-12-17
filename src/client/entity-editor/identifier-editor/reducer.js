@@ -16,6 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {
+	ADD_IDENTIFIER, REMOVE_IDENTIFIER, UPDATE_IDENTIFIER_TYPE,
+	UPDATE_IDENTIFIER_VALUE
+} from './actions';
 import Immutable from 'immutable';
 
 const DEFAULT_IDENTIFIER = Immutable.Map({
@@ -28,9 +32,9 @@ function reducer(
 	action
 ) {
 	switch (action.type) {
-		case 'ADD_IDENTIFIER':
+		case ADD_IDENTIFIER:
 			return state.set(action.id, DEFAULT_IDENTIFIER);
-		case 'UPDATE_IDENTIFIER_VALUE':
+		case UPDATE_IDENTIFIER_VALUE:
 			{
 				const updatedValue = state.setIn(
 					[action.index, 'value'], action.value
@@ -43,9 +47,9 @@ function reducer(
 
 				return updatedValue;
 			}
-		case 'UPDATE_IDENTIFIER_TYPE':
+		case UPDATE_IDENTIFIER_TYPE:
 			return state.setIn([action.index, 'type'], action.value);
-		case 'REMOVE_IDENTIFIER':
+		case REMOVE_IDENTIFIER:
 			return state.delete(action.index);
 
 		// no default
