@@ -17,15 +17,16 @@
  */
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-
-import AddIdentifierButton from './add-identifier-button';
-import IdentifierRowList from './identifier-row-list';
+import {addIdentifier, hideIdentifierEditor} from '../actions';
+import IdentifierRowContainer from './identifier-row-container';
 import React from 'react';
 import {connect} from 'react-redux';
-import {hideIdentifierEditor} from '../actions';
+
 
 const IdentifierEditor = ({
+	identifiers,
 	typeOptions,
+	onAddButtonClick,
 	onClose,
 	show
 }) => (
@@ -40,10 +41,20 @@ const IdentifierEditor = ({
 			<div className="text-center">
 				<p className="text-muted">This entity has no identifiers</p>
 			</div>
-			<IdentifierRowList typeOptions={typeOptions}/>
+			{
+				identifiers.map((identifier, id) =>
+					<IdentifierRowContainer
+						index={id}
+						key={id}
+						typeOptions={typeOptions}
+					/>
+				)
+			}
 			<Row>
 				<Col className="text-right" md={3} mdOffset={9}>
-					<AddIdentifierButton/>
+					<Button bsStyle="success" onClick={onAddButtonClick}>
+						Add identifier
+					</Button>
 				</Col>
 			</Row>
 		</Modal.Body>
@@ -55,15 +66,24 @@ const IdentifierEditor = ({
 );
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
+	identifiers: React.PropTypes.object,
 	show: React.PropTypes.bool,
 	typeOptions: React.PropTypes.array,
+	onAddButtonClick: React.PropTypes.func,
 	onClose: React.PropTypes.func
 };
 
-function mapDispatchToProps(dispatch) {
+function mapStateToProps(state) {
 	return {
-		onClose: () => dispatch(hideIdentifierEditor())
+		identifiers: state.get('identifierEditor')
 	};
 }
 
-export default connect(null, mapDispatchToProps)(IdentifierEditor);
+function mapDispatchToProps(dispatch) {
+	return {
+		onClose: () => dispatch(hideIdentifierEditor()),
+		onAddButtonClick: () => dispatch(addIdentifier())
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(IdentifierEditor);
