@@ -81,6 +81,8 @@ class EditorProfileTab extends React.Component {
 					<dd>
 					{musicbrainzAccount}
 					</dd>
+					<dt>Area</dt>
+					<dd>{editor.area ? editor.area.name : '?'}</dd>
 					<dt>Type</dt>
 					<dd>{editor.type.label}</dd>
 					<dt>Reputation</dt>
