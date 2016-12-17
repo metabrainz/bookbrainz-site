@@ -74,8 +74,8 @@ function formatCreatorChange(change) {
 		return baseFormatter.formatAreaChange(change, 'Begin Area');
 	}
 
-	if (_.isEqual(change.path, ['endArea'] ||
-			_.isEqual(change.path, ['beginArea']))) {
+	if (_.isEqual(change.path, ['endArea']) ||
+			_.isEqual(change.path, ['endArea', 'name'])) {
 		return baseFormatter.formatAreaChange(change, 'End Area');
 	}
 
