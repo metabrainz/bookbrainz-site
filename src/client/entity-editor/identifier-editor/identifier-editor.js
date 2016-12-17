@@ -17,7 +17,7 @@
  */
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {addIdentifier, hideIdentifierEditor} from '../actions';
+import {addIdentifier, hideIdentifierEditor} from './actions';
 import IdentifierRowContainer from './identifier-row-container';
 import React from 'react';
 import {connect} from 'react-redux';

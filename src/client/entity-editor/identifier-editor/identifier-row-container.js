@@ -18,7 +18,7 @@
 
 import {
 	removeIdentifier, updateIdentifierType, updateIdentifierValue
-} from '../actions';
+} from './actions';
 import IdentifierRow from './identifier-row';
 import React from 'react';
 import _debounce from 'lodash.debounce';
