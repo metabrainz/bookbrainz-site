@@ -110,4 +110,3 @@ EntityRevisions.propTypes = {
 };
 
 module.exports = EntityRevisions;
-
