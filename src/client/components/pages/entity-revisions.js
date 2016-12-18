@@ -78,7 +78,11 @@ class EntityRevisions extends React.Component {
 							key={`${revision.revision.author.id}${revision.id}`}
 						>
 							{header}
-							{revision.revision.note}
+							{revision.revision.notes.length > 0 &&
+								<p className="list-group-item-text">
+									{revision.revision.notes[0].content}
+								</p>
+							}
 						</ListGroupItem>
 					);
 				})}

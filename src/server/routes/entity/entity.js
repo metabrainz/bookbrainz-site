@@ -146,11 +146,13 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 
 	return new RevisionModel()
 		.where({bbid})
-		.fetchAll({withRelated: ['revision', 'revision.author']})
+		.fetchAll({
+			withRelated: ['revision', 'revision.author', 'revision.notes']
+		})
 		.then((collection) => {
 			const revisions = collection.toJSON();
 			const props = Object.assign({}, req.app.locals, res.locals, {
-				revisions,
+				revisions
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...props}>
