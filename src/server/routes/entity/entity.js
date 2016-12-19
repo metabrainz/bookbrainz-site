@@ -41,6 +41,9 @@ const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 const achievement = require('../../helpers/achievement');
 
+const Layout = require('../../../client/containers/layout');
+const EntityRevisions =
+	require('../../../client/components/pages/entity-revisions');
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion')
 );
@@ -143,10 +146,20 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 
 	return new RevisionModel()
 		.where({bbid})
-		.fetchAll({withRelated: ['revision', 'revision.author']})
+		.fetchAll({
+			withRelated: ['revision', 'revision.author', 'revision.notes']
+		})
 		.then((collection) => {
 			const revisions = collection.toJSON();
-			return res.render('entity/revisions', {revisions});
+			const props = Object.assign({}, req.app.locals, res.locals, {
+				revisions
+			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...props}>
+					<EntityRevisions/>
+				</Layout>
+			);
+			return res.render('target', {markup});
 		})
 		.catch(next);
 };
