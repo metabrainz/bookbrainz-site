@@ -29,7 +29,7 @@ class EntityRevisions extends React.Component {
 	constructor(props) {
 		super(props);
 		this.renderHeader = this.renderHeader.bind(this);
-		this.renderRevisions = this.renderRevisions.bind(this);
+		this.renderRevision = this.renderRevision.bind(this);
 	}
 
 	renderHeader() {
@@ -54,48 +54,45 @@ class EntityRevisions extends React.Component {
 		);
 	}
 
-	renderRevisions() {
-		const {revisions} = this.props;
+	renderRevision(revision) {
+		const createdDate = new Date(revision.revision.createdAt);
+		const dateLabel = (Date.now() - createdDate < 86400000) ?
+			createdDate.toLocaleTimeString() :
+			createdDate.toLocaleDateString();
+		const header = (
+			<h4 className="list-group-item-heading">
+				<small className="pull-right">
+				{`${revision.revision.author.name}, ${dateLabel}`}
+				</small>
+				{`r${revision.id}`}
+			</h4>
+		);
 
 		return (
-			<ListGroup>
-				{revisions.map((revision) => {
-					const createdDate = new Date(revision.revision.createdAt);
-					const dateLabel = Date.now() - createdDate < 86400000 ?
-						createdDate.toLocaleTimeString() :
-						createdDate.toLocaleDateString();
-					const header = (
-						<h4 className="list-group-item-heading">
-							<small className="pull-right">
-							{`${revision.revision.author.name}, ${dateLabel}`}
-							</small>
-							{`r${revision.id}`}
-						</h4>
-					);
-					return (
-						<ListGroupItem
-							href={`/revision/${revision.id}`}
-							key={`${revision.revision.author.id}${revision.id}`}
-						>
-							{header}
-							{revision.revision.notes.length > 0 &&
-								<p className="list-group-item-text">
-									{revision.revision.notes[0].content}
-								</p>
-							}
-						</ListGroupItem>
-					);
-				})}
-			</ListGroup>
+			<ListGroupItem
+				href={`/revision/${revision.id}`}
+				key={`${revision.revision.author.id}${revision.id}`}
+			>
+				{header}
+				{revision.revision.notes.length > 0 &&
+					<p className="list-group-item-text">
+						{revision.revision.notes[0].content}
+					</p>
+				}
+			</ListGroupItem>
 		);
 	}
 
 	render() {
+		const {revisions} = this.props;
+
 		return (
 			<div>
 				{this.renderHeader()}
 				<h2>Revision History</h2>
-				{this.renderRevisions()}
+				<ListGroup>
+					{revisions.map(this.renderRevision)}
+				</ListGroup>
 			</div>
 		);
 	}
