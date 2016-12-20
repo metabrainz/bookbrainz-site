@@ -18,7 +18,7 @@
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addIdentifier, hideIdentifierEditor} from './actions';
-import IdentifierRowContainer from './identifier-row-container';
+import IdentifierRow from './identifier-row';
 import React from 'react';
 import {connect} from 'react-redux';
 
@@ -43,7 +43,7 @@ const IdentifierEditor = ({
 			</div>
 			{
 				identifiers.map((identifier, id) =>
-					<IdentifierRowContainer
+					<IdentifierRow
 						index={id}
 						key={id}
 						typeOptions={typeOptions}

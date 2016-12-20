@@ -19,7 +19,7 @@
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addAlias, hideAliasEditor} from './actions';
-import AliasRowContainer from './alias-row-container';
+import AliasRow from './alias-row';
 import React from 'react';
 import {connect} from 'react-redux';
 
@@ -45,7 +45,7 @@ const AliasEditor = ({
 			<div>
 				{
 					aliases.map((alias, id) =>
-						<AliasRowContainer
+						<AliasRow
 							index={id}
 							key={id}
 							languageOptions={languageOptions}

@@ -18,10 +18,16 @@
 
 
 import {Button, Col, Input, Row} from 'react-bootstrap';
+import {
+	removeAlias, updateAliasLanguage, updateAliasName,
+	updateAliasPrimary, updateAliasSortName
+} from '../actions';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
+import _debounce from 'lodash.debounce';
+import {connect} from 'react-redux';
 
 function isAliasEmpty(nameValue, sortNameValue) {
 	return nameValue.length === 0 && sortNameValue.length === 0;
@@ -104,4 +110,32 @@ AliasRow.propTypes = {
 	onSortNameChange: React.PropTypes.func
 };
 
-export default AliasRow;
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+function mapDispatchToProps(dispatch, {index}) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+	return {
+		onLanguageChange: (value) =>
+			dispatch(updateAliasLanguage(index, value.value)),
+		onNameChange: (event) =>
+			debouncedDispatch(updateAliasName(index, event.target.value)),
+		onPrimaryClick: (event) =>
+			dispatch(updateAliasPrimary(index, event.target.checked)),
+		onRemoveButtonClick: () =>
+			dispatch(removeAlias(index)),
+		onSortNameChange: (event) =>
+			debouncedDispatch(updateAliasSortName(index, event.target.value))
+	};
+}
+
+function mapStateToProps(rootState, {index}) {
+	const state = rootState.get('aliasEditor');
+	return {
+		nameValue: state.getIn([index, 'name']),
+		languageValue: state.getIn([index, 'language']),
+		primaryChecked: state.getIn([index, 'primary']),
+		sortNameValue: state.getIn([index, 'sortName'])
+	};
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AliasRow);
