@@ -25,6 +25,7 @@ const Col = bootstrap.Col;
 const Button = bootstrap.Button;
 const Input = bootstrap.Input;
 const _compact = require('lodash.compact');
+const request = require('superagent-bluebird-promise');
 
 const EntityLink = require('../entity-link');
 
@@ -118,12 +119,22 @@ class RevisionPage extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		const inputValue = this.commentInput.getValue();
-		console.log(inputValue);
+		const data = {
+			note: this.noteInput.getValue()
+		};
+		console.log(data);
+		request.post(`/revision/${this.props.revision.id}/note`)
+			.send(data).promise()
+			.then(() => {
+				location.reload();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	render() {
-		const { revision, diffs, user } = this.props;
+		const {revision, diffs, user} = this.props;
 
 		const diffDivs = diffs.map((diff) => (
 			<div key="{diff.entity.bbid}">
@@ -205,8 +216,8 @@ class RevisionPage extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<Input
-								label="Additional Revision Comments"
-								ref={(ref) => this.commentInput = ref}
+								label="Additional Revision Notes"
+								ref={(ref) => this.noteInput = ref}
 								rows="6"
 								type="textarea"
 								wrapperClassName="col-md-12"
@@ -214,7 +225,7 @@ class RevisionPage extends React.Component {
 							<Button
 								bsStyle="primary"
 								className="pull-right margin-top-1"
-								title="Submit revision comment"
+								title="Submit revision note"
 								type="submit"
 							>
 								Submit
