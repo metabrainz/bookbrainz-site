@@ -12,6 +12,7 @@ watchify -t [babelify] \
 		entity/work.js \
 		deletion.js \
 		relationship.js \
+		revision.js \
 		search.js \
 	-p [ factor-bundle \
 		-o ../../../static/js/layout.js \
@@ -24,6 +25,7 @@ watchify -t [babelify] \
 		-o ../../../static/js/entity/work.js \
 		-o ../../../static/js/deletion.js \
 		-o ../../../static/js/relationship.js \
+		-o ../../../static/js/revision.js \
 		-o ../../../static/js/search.js \
 	] -o ../../../static/js/bundle.js -dv
 popd
