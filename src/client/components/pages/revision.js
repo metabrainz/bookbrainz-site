@@ -19,11 +19,17 @@
  */
 
 const React = require('react');
+const bootstrap = require('react-bootstrap');
+const Row = bootstrap.Row;
+const Col = bootstrap.Col;
+const Button = bootstrap.Button;
+const Input = bootstrap.Input;
 const _compact = require('lodash.compact');
 
 const EntityLink = require('../entity-link');
 
 class RevisionPage extends React.Component {
+
 	static formatValueList(list) {
 		if (!list) {
 			return null;
@@ -105,9 +111,19 @@ class RevisionPage extends React.Component {
 		return title;
 	}
 
+	constructor(props) {
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(event) {
+		event.preventDefault();
+		const inputValue = this.commentInput.getValue();
+		console.log(inputValue);
+	}
+
 	render() {
-		const revision = this.props.revision;
-		const diffs = this.props.diffs;
+		const { revision, diffs, user } = this.props;
 
 		const diffDivs = diffs.map((diff) => (
 			<div key="{diff.entity.bbid}">
@@ -166,24 +182,47 @@ class RevisionPage extends React.Component {
 			new Date(revision.createdAt).toDateString();
 
 		return (
-			<div>
-				<h1>Revision #{revision.id}</h1>
-				{diffDivs}
-				<p className="text-right">
-					Created by&nbsp;
-					<a
-						href={`/editor/${revision.author.id}`}
-						title={editorTitle}
-					>
-						{revision.author.name}
-					</a>
-					, {dateRevisionCreated}
-				</p>
+			<Row>
+				<Col md={12}>
+					<h1>Revision #{revision.id}</h1>
+					{diffDivs}
+					<p className="text-right">
+						Created by&nbsp;
+						<a
+							href={`/editor/${revision.author.id}`}
+							title={editorTitle}
+						>
+							{revision.author.name}
+						</a>
+						, {dateRevisionCreated}
+					</p>
 
-				<h3>Revision Notes</h3>
-				{revisionNotes}
-
-			</div>
+					<h3>Revision Notes</h3>
+					{revisionNotes}
+					{user &&
+						<form
+							className="margin-top-2"
+							onSubmit={this.handleSubmit}
+						>
+							<Input
+								label="Additional Revision Comments"
+								ref={(ref) => this.commentInput = ref}
+								rows="6"
+								type="textarea"
+								wrapperClassName="col-md-12"
+							/>
+							<Button
+								bsStyle="primary"
+								className="pull-right margin-top-1"
+								title="Submit revision comment"
+								type="submit"
+							>
+								Submit
+							</Button>
+						</form>
+					}
+				</Col>
+			</Row>
 		);
 	}
 }
