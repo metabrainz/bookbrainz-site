@@ -42,9 +42,9 @@ const publisherSetFormatter =
 const releaseEventSetFormatter =
 	require('../helpers/diffFormatters/releaseEventSet');
 
-const RevisionPage = React.createFactory(
-	require('../../client/components/pages/revision')
-);
+const Layout = require('../../client/containers/layout');
+const RevisionPage = require('../../client/components/pages/revision');
+
 
 const router = express.Router();
 
@@ -237,11 +237,18 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-			const props = {revision: revision.toJSON(), diffs};
-			res.render('page', {
+			const props = Object.assign({}, req.app.locals, res.locals, {
+				revision: revision.toJSON(),
 				title: 'RevisionPage',
-				markup: ReactDOMServer.renderToString(RevisionPage(props))
+				diffs
 			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...props}>
+					<RevisionPage />
+				</Layout>
+			);
+			const script = '/js/revision.js';
+			res.render('target', {script, props, markup});
 		}
 	)
 		.catch(next);
