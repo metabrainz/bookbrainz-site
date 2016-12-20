@@ -41,6 +41,7 @@ const publisherSetFormatter =
 	require('../helpers/diffFormatters/publisherSet');
 const releaseEventSetFormatter =
 	require('../helpers/diffFormatters/releaseEventSet');
+const entityRoutes = require('./entity/entity');
 
 const Layout = require('../../client/containers/layout');
 const RevisionPage = require('../../client/components/pages/revision');
@@ -252,6 +253,10 @@ router.get('/:id', (req, res, next) => {
 		}
 	)
 		.catch(next);
+});
+
+router.post('/:id/note', (req, res) => {
+	entityRoutes.addNoteToRevision(req, res);
 });
 
 module.exports = router;

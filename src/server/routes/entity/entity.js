@@ -166,9 +166,11 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 
 function _createNote(content, editor, revision, transacting) {
 	if (content) {
+		const revisionId = typeof revision === 'string' ?
+			revision : revision.get('id');
 		return new Note({
 			authorId: editor.id,
-			revisionId: revision.get('id'),
+			revisionId,
 			content
 		})
 			.save(null, {transacting});
@@ -176,6 +178,16 @@ function _createNote(content, editor, revision, transacting) {
 
 	return null;
 }
+
+module.exports.addNoteToRevision = (req, res) => {
+	const editorJSON = req.session.passport.user;
+	const revisionNotePromise = bookshelf.transaction((transacting) =>
+		_createNote(
+			req.body.note, editorJSON, req.params.id, transacting
+		)
+	);
+	return handler.sendPromiseResult(res, revisionNotePromise);
+};
 
 module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 	const entity = res.locals.entity;
