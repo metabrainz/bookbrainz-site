@@ -145,9 +145,7 @@ class RelationshipEditor extends React.Component {
 	handleBulkDelete() {
 		const relationshipsToDelete = _.reject(
 			this.state.relationships.map((rel, idx) => (
-				this.refs[idx].selected() ?
-					idx :
-					null
+				this.refs[idx].selected() ? idx : null
 			)), (idx) => idx === null
 		);
 
@@ -241,9 +239,7 @@ class RelationshipEditor extends React.Component {
 				relationshipTypes={
 					isRelationshipNew(
 						rel.initialTypeId, rel.initialTarget
-					) ?
-						typesWithoutDeprecated :
-						this.props.relationshipTypes
+					) ? typesWithoutDeprecated : this.props.relationshipTypes
 				}
 				onChange={this.handleChange.bind(null, index)}
 				onDelete={this.deleteRowIfNew.bind(null, index)}
@@ -252,9 +248,8 @@ class RelationshipEditor extends React.Component {
 			/>
 		));
 
-		const numSelectedString = this.state.numSelected ?
-			`(${this.state.numSelected})` :
-			'';
+		const numSelectedString =
+			this.state.numSelected ? `(${this.state.numSelected})` : '';
 
 		return (
 			<div>

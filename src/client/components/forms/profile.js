@@ -62,9 +62,7 @@ class ProfileForm extends React.Component {
 	}
 
 	render() {
-		const loadingElement = this.state.waiting ?
-			<LoadingSpinner/> :
-			null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 		const titles = this.props.titles.map((unlock) => {
 			const title = unlock.title;
 			title.unlockId = unlock.id;

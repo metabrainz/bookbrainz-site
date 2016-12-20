@@ -33,9 +33,7 @@ class PublisherData extends React.Component {
 		super(props);
 
 		this.state = {
-			ended: this.props.publisher ?
-				this.props.publisher.ended :
-				false
+			ended: this.props.publisher ? this.props.publisher.ended : false
 		};
 
 		// React does not autobind non-React class methods
@@ -45,9 +43,7 @@ class PublisherData extends React.Component {
 	getValue() {
 		return {
 			beginDate: this.begin.getValue(),
-			endDate: this.ended.getChecked() ?
-				this.end.getValue() :
-				'',
+			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
 			publisherType: this.publisherType.getValue(),
 			disambiguation: this.disambiguation.getValue(),
@@ -79,14 +75,11 @@ class PublisherData extends React.Component {
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
 			initialPublisherType = prefillData.publisherType ?
-				prefillData.publisherType.id :
-				null;
+				prefillData.publisherType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
-				prefillData.disambiguation.comment :
-				null;
+				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
-				prefillData.annotation.content :
-				null;
+				prefillData.annotation.content : null;
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
@@ -100,12 +93,8 @@ class PublisherData extends React.Component {
 			width: '100%'
 		};
 
-		const publisherDataVisibleClass = this.props.visible ?
-			'' :
-			'hidden';
-		const endDataHiddenClass = this.state.ended ?
-			'' :
-			'hidden';
+		const publisherDataVisibleClass = this.props.visible ? '' : 'hidden';
+		const endDataHiddenClass = this.state.ended ? '' : 'hidden';
 		return (
 			<div className={publisherDataVisibleClass}>
 				<h2>Add Data</h2>

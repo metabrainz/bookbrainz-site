@@ -74,10 +74,7 @@ function formatEndedChange(change) {
 		formatChange(
 			change,
 			'Ended',
-			(side) => [_.isNull(side) || (side ?
-				'Yes' :
-				'No'
-			)]
+			(side) => [_.isNull(side) || (side ? 'Yes' : 'No')]
 		)
 	];
 }

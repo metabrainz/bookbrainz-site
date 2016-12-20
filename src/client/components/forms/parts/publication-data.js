@@ -50,14 +50,11 @@ class PublicationData extends React.Component {
 		const prefillData = this.props.publication;
 		if (prefillData) {
 			initialPublicationType = prefillData.publicationType ?
-				prefillData.publicationType.id :
-				null;
+				prefillData.publicationType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
-				prefillData.disambiguation.comment :
-				null;
+				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
-				prefillData.annotation.content :
-				null;
+				prefillData.annotation.content : null;
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
@@ -71,9 +68,7 @@ class PublicationData extends React.Component {
 			width: '100%'
 		};
 
-		const publicationDataVisibleClass = (this.props.visible === false) ?
-			'hidden' :
-			'';
+		const publicationDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
 			<div className={publicationDataVisibleClass}>
 				<h2>Add Data</h2>

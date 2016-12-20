@@ -41,9 +41,7 @@ function isPartialDateValid(value) {
 function mapStateToProps(rootState) {
 	const state = rootState.get('creatorData');
 
-	const labelText = state.get('singular') ?
-		'Date of Birth' :
-		'Date Founded';
+	const labelText = state.get('singular') ? 'Date of Birth' : 'Date Founded';
 
 	return {
 		label: labelText,

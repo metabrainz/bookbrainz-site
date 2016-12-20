@@ -53,12 +53,9 @@ function generateInitialState(creator, creatorTypes) {
 		creator.aliasSet.aliases.map(({language, ...rest}) => ({
 			language: language.id,
 			...rest
-		})) :
-		[];
+		})) : [];
 
-	const name = aliases.length > 0 ?
-	aliases[0] :
-	{
+	const name = aliases.length > 0 ? aliases[0] : {
 		name: '',
 		sortName: '',
 		language: null
@@ -75,8 +72,7 @@ function generateInitialState(creator, creatorTypes) {
 		creator.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
 			...rest
-		})) :
-		[];
+		})) : [];
 
 	const identifierDict = {};
 	identifiers.forEach(

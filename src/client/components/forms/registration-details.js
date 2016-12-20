@@ -51,9 +51,7 @@ class RegistrationForm extends React.Component {
 		const birthday = this.birthday.getValue();
 		const data = {
 			displayName: this.displayName.getValue(),
-			gender: gender ?
-				parseInt(gender, 10) :
-				null,
+			gender: gender ? parseInt(gender, 10) : null,
 			birthday: birthday || null
 		};
 
@@ -97,9 +95,7 @@ class RegistrationForm extends React.Component {
 				(<Alert bsStyle="danger">{this.state.error}</Alert>);
 		}
 
-		const loadingComponent = this.state.waiting ?
-			<LoadingSpinner/> :
-			null;
+		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const initialGender = this.props.gender && this.props.gender.id;
 		const select2Options = {

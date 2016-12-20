@@ -23,9 +23,7 @@ import {updateEnded} from '../actions';
 function mapStateToProps(rootState) {
 	const state = rootState.get('creatorData');
 
-	const labelText = state.get('singular') ?
-		'Died?' :
-		'Dissolved?';
+	const labelText = state.get('singular') ? 'Died?' : 'Dissolved?';
 
 	return {
 		label: labelText,

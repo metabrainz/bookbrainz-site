@@ -27,9 +27,7 @@ function SubmitButton({
 	error,
 	...rest
 }) {
-	const errorElement = error ?
-		<span>{error}</span> :
-		null;
+	const errorElement = error ? <span>{error}</span> : null;
 
 	return (
 		<div>

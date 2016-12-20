@@ -190,9 +190,7 @@ class AliasList extends React.Component {
 			/>
 		));
 
-		const aliasListVisibleClass = this.props.visible ?
-			'' :
-			'hidden';
+		const aliasListVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
 			<div className={aliasListVisibleClass}>
 				<h2>Add Aliases</h2>

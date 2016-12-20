@@ -135,9 +135,7 @@ class EditionForm extends React.Component {
 		const submitEnabled =
 			this.state.aliasesValid && this.state.dataValid;
 
-		const loadingElement = this.state.waiting ?
-			<LoadingSpinner/> :
-			null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const invalidIcon = (
 			<span>&nbsp;

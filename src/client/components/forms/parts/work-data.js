@@ -56,14 +56,11 @@ class WorkData extends React.Component {
 					(language) => language.id
 				);
 			initialWorkType = prefillData.workType ?
-				prefillData.workType.id :
-				null;
+				prefillData.workType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
-				prefillData.disambiguation.comment :
-				null;
+				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
-				prefillData.annotation.content :
-				null;
+				prefillData.annotation.content : null;
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
@@ -77,9 +74,7 @@ class WorkData extends React.Component {
 			width: '100%'
 		};
 
-		const workDataVisibleClass = (this.props.visible === false) ?
-			'hidden' :
-			'';
+		const workDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
 			<div className={workDataVisibleClass}>
 				<h2>Add Data</h2>

@@ -111,10 +111,7 @@ function formatAliasModified(change) {
 			formatChange(
 				change,
 				`Alias ${change.path[2]} -> Primary`,
-				(side) => !_.isNull(side) && [side.primary ?
-					'Yes' :
-					'No'
-				]
+				(side) => !_.isNull(side) && [side.primary ? 'Yes' : 'No']
 			)
 		];
 	}

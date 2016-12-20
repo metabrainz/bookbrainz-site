@@ -42,10 +42,10 @@ class EditionData extends React.Component {
 		if (this.release.getValue()) {
 			const edition = this.props.edition;
 
-			const releaseEventId = edition && edition.releaseEventSet &&
-			edition.releaseEventSet.releaseEvents ?
-				edition.releaseEventSet.releaseEvents[0].id :
-				null;
+			const releaseEventId = (
+				edition && edition.releaseEventSet &&
+				edition.releaseEventSet.releaseEvents
+			) ? edition.releaseEventSet.releaseEvents[0].id : null;
 
 			releaseEvents.push({
 				id: releaseEventId,
@@ -54,12 +54,8 @@ class EditionData extends React.Component {
 		}
 
 		return {
-			publication: publication ?
-				publication.bbid :
-				null,
-			publishers: publisher ?
-				[publisher.bbid] :
-				null,
+			publication: publication ? publication.bbid : null,
+			publishers: publisher ? [publisher.bbid] : null,
 			releaseEvents,
 			languages: this.languages.getValue().map(
 				(languageId) => parseInt(languageId, 10)
@@ -123,32 +119,23 @@ class EditionData extends React.Component {
 				);
 
 			initialEditionFormat = prefillData.editionFormat ?
-				prefillData.editionFormat.id :
-				null;
+				prefillData.editionFormat.id : null;
 			initialEditionStatus = prefillData.editionStatus ?
-				prefillData.editionStatus.id :
-				null;
+				prefillData.editionStatus.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
-				prefillData.disambiguation.comment :
-				null;
+				prefillData.disambiguation.comment : null;
 			initialAnnotation = prefillData.annotation ?
-				prefillData.annotation.content :
-				null;
+				prefillData.annotation.content : null;
 			initialPages = prefillData.pages || prefillData.pages === 0 ?
-				prefillData.pages :
-				null;
+				prefillData.pages : null;
 			initialWidth = prefillData.width || prefillData.width === 0 ?
-				prefillData.width :
-				null;
+				prefillData.width : null;
 			initialHeight = prefillData.height || prefillData.height === 0 ?
-				prefillData.height :
-				null;
+				prefillData.height : null;
 			initialDepth = prefillData.depth || prefillData.depth === 0 ?
-				prefillData.depth :
-				null;
+				prefillData.depth : null;
 			initialWeight = prefillData.weight || prefillData.weight === 0 ?
-				prefillData.weight :
-				null;
+				prefillData.weight : null;
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
@@ -175,9 +162,7 @@ class EditionData extends React.Component {
 
 		publicationSelect2Options.allowClear = false;
 
-		const editionDataVisibleClass = this.props.visible ?
-			'' :
-			'hidden';
+		const editionDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
 			<div className={editionDataVisibleClass}>
 				<h2>Add Data</h2>

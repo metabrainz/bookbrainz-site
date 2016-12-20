@@ -35,9 +35,8 @@ function renderRelationship(relationship) {
 			relationship.target
 		].map((entity) => {
 			// Linkify source and target based on default alias
-			const name = entity.defaultAlias ?
-				entity.defaultAlias.name :
-				'(unnamed)';
+			const name =
+				entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 			return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
 		})
 	};

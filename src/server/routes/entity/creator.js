@@ -166,9 +166,7 @@ function transformNewForm(data) {
 		genderId: data.creatorData.gender,
 		typeId: data.creatorData.type,
 		beginDate: data.creatorData.beginDate,
-		endDate: data.creatorData.ended ?
-			data.creatorData.endDate :
-			'',
+		endDate: data.creatorData.ended ? data.creatorData.endDate : '',
 		ended: data.creatorData.ended
 	};
 }

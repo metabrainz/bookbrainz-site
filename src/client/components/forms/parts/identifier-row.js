@@ -44,11 +44,7 @@ class IdentifierRow extends React.Component {
 				this.props.types
 			);
 
-			return (
-				isValid ?
-					'success' :
-					'error'
-			);
+			return isValid ? 'success' : 'error';
 		}
 
 		if (this.props.value) {
@@ -70,9 +66,7 @@ class IdentifierRow extends React.Component {
 			allowClear: false
 		};
 
-		const removeHiddenClass = this.props.removeHidden ?
-			'hidden' :
-			'';
+		const removeHiddenClass = this.props.removeHidden ? 'hidden' : '';
 		return (
 			<div className="row">
 				<div className="col-md-4">
