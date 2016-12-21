@@ -81,7 +81,6 @@ rules:
     - 2
     - allow-null
   no-alert: 2
-  guard-for-in: 2
   no-caller: 2
   no-div-regex: 2
   no-else-return: 2

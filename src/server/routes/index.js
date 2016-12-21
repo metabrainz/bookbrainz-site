@@ -22,7 +22,6 @@
 
 const express = require('express');
 const router = express.Router();
-const Promise = require('bluebird');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
@@ -50,7 +49,7 @@ const LicensingPage = React.createFactory(
 );
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
@@ -58,6 +57,7 @@ router.get('/', (req, res, next) => {
 			recent: _.take(entities, numRevisionsOnHomepage),
 			homepage: true
 		});
+
 		// Renders react components server side and injects markup into target
 		// file
 		// object spread injects the app.locals variables into React as props
@@ -71,34 +71,39 @@ router.get('/', (req, res, next) => {
 
 	const entityModels = utils.getEntityModels();
 
-	const latestEntitiesPromise =
-		Promise.all(_.map(entityModels, (model, name) =>
-			model.query((qb) => {
+	try {
+		let latestEntities = [];
+
+		for (const modelName in entityModels) {
+			const model = entityModels[modelName];
+
+			const collection = await model.query((qb) => {
 				qb
 					.leftJoin(
 						'bookbrainz.revision',
-						`bookbrainz.${_.snakeCase(name)}.revision_id`,
+						`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
 						'bookbrainz.revision.id'
 					)
 					.where('master', true)
 					.orderBy('bookbrainz.revision.created_at', 'desc')
 					.limit(numRevisionsOnHomepage);
 			})
-			.fetchAll({
-				withRelated: ['defaultAlias', 'revision.revision']
-			})
-			.then((collection) => collection.toJSON())
-		));
+				.fetchAll({
+					withRelated: ['defaultAlias', 'revision.revision']
+				});
 
-	latestEntitiesPromise
-		.then((latestEntitiesByType) => {
-			const latestEntities = _.orderBy(
-				_.flatten(latestEntitiesByType), 'revision.revision.createdAt',
-				['desc']
-			);
-			render(latestEntities);
-		})
-		.catch(next);
+			latestEntities = latestEntities.concat(collection.toJSON());
+		}
+
+		const orderedEntities = _.orderBy(
+			latestEntities, 'revision.revision.createdAt',
+			['desc']
+		);
+		return render(orderedEntities);
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 // Helper function to create pages that don't require custom logic
