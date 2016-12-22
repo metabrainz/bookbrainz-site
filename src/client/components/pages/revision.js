@@ -19,18 +19,16 @@
  */
 
 const React = require('react');
-const bootstrap = require('react-bootstrap');
-const Row = bootstrap.Row;
-const Col = bootstrap.Col;
-const Button = bootstrap.Button;
-const Input = bootstrap.Input;
+const Row = require('react-bootstrap').Row;
+const Col = require('react-bootstrap').Col;
+const Button = require('react-bootstrap').Button;
+const Input = require('react-bootstrap').Input;
 const _compact = require('lodash.compact');
 const request = require('superagent-bluebird-promise');
 
 const EntityLink = require('../entity-link');
 
 class RevisionPage extends React.Component {
-
 	static formatValueList(list) {
 		if (!list) {
 			return null;
@@ -122,7 +120,6 @@ class RevisionPage extends React.Component {
 		const data = {
 			note: this.noteInput.getValue()
 		};
-		console.log(data);
 		request.post(`/revision/${this.props.revision.id}/note`)
 			.send(data).promise()
 			.then(() => {
@@ -216,7 +213,7 @@ class RevisionPage extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<Input
-								label="Additional Revision Notes"
+								label="Add Note"
 								ref={(ref) => this.noteInput = ref}
 								rows="6"
 								type="textarea"

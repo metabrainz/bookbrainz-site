@@ -166,8 +166,7 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 
 function _createNote(content, editor, revision, transacting) {
 	if (content) {
-		const revisionId = typeof revision === 'string' ?
-			revision : revision.get('id');
+		const revisionId = revision.get('id');
 		return new Note({
 			authorId: editor.id,
 			revisionId,
@@ -181,9 +180,10 @@ function _createNote(content, editor, revision, transacting) {
 
 module.exports.addNoteToRevision = (req, res) => {
 	const editorJSON = req.session.passport.user;
+	const revision = Revision.forge({id: req.params.id});
 	const revisionNotePromise = bookshelf.transaction((transacting) =>
 		_createNote(
-			req.body.note, editorJSON, req.params.id, transacting
+			req.body.note, editorJSON, revision, transacting
 		)
 	);
 	return handler.sendPromiseResult(res, revisionNotePromise);
