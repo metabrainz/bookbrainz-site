@@ -27,8 +27,10 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
 const utils = require('../helpers/utils');
+const propHelpers = require('../helpers/props');
 
 const _ = require('lodash');
+
 
 const Layout = require('../../client/containers/layout');
 const Index = require('../../client/components/pages/index');
@@ -54,16 +56,15 @@ router.get('/', (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
-		const props = Object.assign({}, req.app.locals, res.locals, {
-			recent: _.take(entities, numRevisionsOnHomepage),
-			homepage: true
+		const props = propHelpers.generateProps(req, res, {
+			homepage: true,
+			recent: _.take(entities, numRevisionsOnHomepage)
 		});
-		// Renders react components server side and injects markup into target
-		// file
-		// object spread injects the app.locals variables into React as props
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...props}>
-				<Index />
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<Index
+					recent={props.recent}
+				/>
 			</Layout>
 		);
 		res.render('target', {markup});

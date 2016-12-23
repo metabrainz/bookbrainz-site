@@ -24,8 +24,6 @@ const React = require('react');
 
 const bootstrap = require('react-bootstrap');
 const FontAwesome = require('react-fontawesome');
-const injectChildElemsWithProps =
-	require('../helpers/utils').injectChildElemsWithProps;
 
 const Nav = bootstrap.Nav;
 const Navbar = bootstrap.Navbar;
@@ -173,14 +171,14 @@ class Layout extends React.Component {
 	}
 
 	render() {
-		const {homepage, siteRevision, repositoryUrl} = this.props;
+		const {homepage, siteRevision, repositoryUrl, children} = this.props;
 
 		// Shallow merges parents props into child components
-		const children = homepage ? injectChildElemsWithProps(this.props) :
+		const childNode = homepage ? children :
 			<div className="container"
 				id="content"
 			>
-				{injectChildElemsWithProps(this.props)}
+				{children}
 			</div>;
 
 		return (
@@ -196,7 +194,7 @@ class Layout extends React.Component {
 					{this.renderNavHeader()}
 					{this.renderNavContent()}
 				</Navbar>
-				{children}
+				{childNode}
 				<Footer repositoryUrl={repositoryUrl}
 					siteRevision={siteRevision}
 				/>

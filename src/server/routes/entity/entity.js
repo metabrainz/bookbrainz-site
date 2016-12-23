@@ -40,6 +40,7 @@ const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 const achievement = require('../../helpers/achievement');
+const propHelpers = require('../../helpers/props');
 
 const Layout = require('../../../client/containers/layout');
 const EntityRevisions =
@@ -151,12 +152,15 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 		})
 		.then((collection) => {
 			const revisions = collection.toJSON();
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				revisions
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<EntityRevisions/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityRevisions
+						entity={props.entity}
+						revisions={props.revisions}
+					/>
 				</Layout>
 			);
 			return res.render('target', {markup});

@@ -21,10 +21,11 @@ const ReactDOM = require('react-dom');
 const Layout = require('../containers/layout');
 const RevisionPage = require('../components/pages/revision');
 
+const propHelpers = require('../../server/helpers/props');
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
-	<Layout {...props}>
+	<Layout {...propHelpers.extractLayoutProps(props)}>
 		<RevisionPage
 			diffs={props.diffs}
 			revision={props.revision}

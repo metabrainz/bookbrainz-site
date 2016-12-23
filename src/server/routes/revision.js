@@ -33,6 +33,7 @@ const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 const Revision = require('bookbrainz-data').Revision;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
 
+const propHelpers = require('../helpers/props');
 const baseFormatter = require('../helpers/diffFormatters/base');
 const entityFormatter = require('../helpers/diffFormatters/entity');
 const languageSetFormatter =
@@ -238,14 +239,17 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				revision: revision.toJSON(),
 				title: 'RevisionPage',
 				diffs
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<RevisionPage />
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<RevisionPage
+						diffs={props.diffs}
+						revision={props.revision}
+					/>
 				</Layout>
 			);
 			const script = '/js/revision.js';
