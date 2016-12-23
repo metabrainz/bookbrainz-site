@@ -33,24 +33,24 @@ function reducer(
 ) {
 	switch (action.type) {
 		case ADD_IDENTIFIER:
-			return state.set(action.id, DEFAULT_IDENTIFIER);
+			return state.set(action.rowId, DEFAULT_IDENTIFIER);
 		case UPDATE_IDENTIFIER_VALUE:
 			{
 				const updatedValue = state.setIn(
-					[action.index, 'value'], action.value
+					[action.rowId, 'value'], action.value
 				);
 				if (action.suggestedType) {
 					return updatedValue.setIn(
-						[action.index, 'type'], action.suggestedType.id
+						[action.rowId, 'type'], action.suggestedType.id
 					);
 				}
 
 				return updatedValue;
 			}
 		case UPDATE_IDENTIFIER_TYPE:
-			return state.setIn([action.index, 'type'], action.value);
+			return state.setIn([action.rowId, 'type'], action.value);
 		case REMOVE_IDENTIFIER:
-			return state.delete(action.index);
+			return state.delete(action.rowId);
 
 		// no default
 	}

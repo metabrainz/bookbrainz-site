@@ -35,17 +35,17 @@ function reducer(
 ) {
 	switch (action.type) {
 		case ADD_ALIAS:
-			return state.set(action.id, DEFAULT_ALIAS);
+			return state.set(action.rowId, DEFAULT_ALIAS);
 		case UPDATE_ALIAS_NAME:
-			return state.setIn([action.index, 'name'], action.value);
+			return state.setIn([action.rowId, 'name'], action.value);
 		case UPDATE_ALIAS_SORT_NAME:
-			return state.setIn([action.index, 'sortName'], action.value);
+			return state.setIn([action.rowId, 'sortName'], action.value);
 		case UPDATE_ALIAS_LANGUAGE:
-			return state.setIn([action.index, 'language'], action.value);
+			return state.setIn([action.rowId, 'language'], action.value);
 		case UPDATE_ALIAS_PRIMARY:
-			return state.setIn([action.index, 'primary'], action.value);
+			return state.setIn([action.rowId, 'primary'], action.value);
 		case REMOVE_ALIAS:
-			return state.delete(action.index);
+			return state.delete(action.rowId);
 		// no default
 	}
 	return state;

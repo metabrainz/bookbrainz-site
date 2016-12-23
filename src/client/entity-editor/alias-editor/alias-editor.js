@@ -44,10 +44,10 @@ const AliasEditor = ({
 			</div>
 			<div>
 				{
-					aliases.map((alias, id) =>
+					aliases.map((alias, rowId) =>
 						<AliasRow
-							index={id}
-							key={id}
+							index={rowId}
+							key={rowId}
 							languageOptions={languageOptions}
 						/>
 					)

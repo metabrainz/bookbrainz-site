@@ -29,34 +29,34 @@ export function hideIdentifierEditor() {
 	};
 }
 
-let nextIdentifierId = 0;
+let nextIdentifierRowId = 0;
 export function addIdentifier() {
 	return {
 		type: ADD_IDENTIFIER,
-		id: nextIdentifierId++
+		rowId: nextIdentifierRowId++
 	};
 }
 
-export function removeIdentifier(index) {
+export function removeIdentifier(rowId) {
 	return {
 		type: REMOVE_IDENTIFIER,
-		index
+		rowId
 	};
 }
 
-export function updateIdentifierValue(index, value, suggestedType) {
+export function updateIdentifierValue(rowId, value, suggestedType) {
 	return {
 		type: UPDATE_IDENTIFIER_VALUE,
-		index,
+		rowId,
 		suggestedType,
 		value
 	};
 }
 
-export function updateIdentifierType(index, value) {
+export function updateIdentifierType(rowId, value) {
 	return {
 		type: UPDATE_IDENTIFIER_TYPE,
-		index,
+		rowId,
 		value
 	};
 }

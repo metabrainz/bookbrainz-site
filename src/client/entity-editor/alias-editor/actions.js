@@ -24,50 +24,50 @@ export const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
 export const REMOVE_ALIAS = 'REMOVE_ALIAS';
 export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 
-export function updateAliasName(index, value) {
+export function updateAliasName(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_NAME,
-		index,
+		rowId,
 		value
 	};
 }
 
-export function updateAliasSortName(index, value) {
+export function updateAliasSortName(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_SORT_NAME,
-		index,
+		rowId,
 		value
 	};
 }
 
-export function updateAliasLanguage(index, value) {
+export function updateAliasLanguage(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_LANGUAGE,
-		index,
+		rowId,
 		value
 	};
 }
 
-export function updateAliasPrimary(index, value) {
+export function updateAliasPrimary(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_PRIMARY,
-		index,
+		rowId,
 		value
 	};
 }
 
-let nextAliasId = 0;
+let nextAliasRowId = 0;
 export function addAlias() {
 	return {
 		type: ADD_ALIAS,
-		id: nextAliasId++
+		rowId: nextAliasRowId++
 	};
 }
 
-export function removeAlias(index) {
+export function removeAlias(rowId) {
 	return {
 		type: REMOVE_ALIAS,
-		index
+		rowId
 	};
 }
 
