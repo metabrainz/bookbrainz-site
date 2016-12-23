@@ -28,7 +28,7 @@ const DEFAULT_IDENTIFIER = Immutable.Map({
 });
 
 function reducer(
-	state = Immutable.Map(),
+	state = Immutable.OrderedMap(),
 	action
 ) {
 	switch (action.type) {

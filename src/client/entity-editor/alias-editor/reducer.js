@@ -30,7 +30,7 @@ const DEFAULT_ALIAS = Immutable.Map({
 });
 
 function reducer(
-	state = Immutable.Map(),
+	state = Immutable.OrderedMap(),
 	action
 ) {
 	switch (action.type) {
