@@ -21,7 +21,7 @@ import {Button, Col, Input, Row} from 'react-bootstrap';
 import {
 	removeAlias, updateAliasLanguage, updateAliasName,
 	updateAliasPrimary, updateAliasSortName
-} from '../actions';
+} from './actions';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import React from 'react';
