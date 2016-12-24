@@ -33,9 +33,8 @@ class RevisionPage extends React.Component {
 		if (!list) {
 			return null;
 		}
-
 		return list.map((val, idx) => (
-			<div key={idx}>{val.toString()}</div>
+			<div key={`${idx}${val}`}>{val.toString()}</div>
 		));
 	}
 
@@ -134,7 +133,7 @@ class RevisionPage extends React.Component {
 		const {revision, diffs, user} = this.props;
 
 		const diffDivs = diffs.map((diff) => (
-			<div key="{diff.entity.bbid}">
+			<div key={diff.entity.bbid}>
 				<h3>
 					<EntityLink
 						bbid={diff.entity.bbid}
@@ -238,7 +237,8 @@ class RevisionPage extends React.Component {
 RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: React.PropTypes.any.isRequired,
-	revision: React.PropTypes.any.isRequired
+	revision: React.PropTypes.any.isRequired,
+	user: React.PropTypes.object
 };
 
 module.exports = RevisionPage;

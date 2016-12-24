@@ -249,6 +249,7 @@ router.get('/:id', (req, res, next) => {
 					<RevisionPage
 						diffs={props.diffs}
 						revision={props.revision}
+						user={props.user}
 					/>
 				</Layout>
 			);

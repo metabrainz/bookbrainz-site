@@ -29,6 +29,7 @@ const markup = (
 		<RevisionPage
 			diffs={props.diffs}
 			revision={props.revision}
+			user={props.user}
 		/>
 	</Layout>
 );
