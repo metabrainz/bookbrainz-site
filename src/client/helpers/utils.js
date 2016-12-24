@@ -16,25 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const _ = require('lodash');
-
-/**
- * Returns list of component children that have been injected with the specified
- * props (does not override existing ones)
- * @param {Object} props - The props object that contains children and will be
- * re-injected into children
- * @returns {Array} list of children
- */
-function injectChildElemsWithProps(props) {
-	'use strict';
-	const propsWithoutChild = _.omit(props, 'children');
-	return React.Children.map(props.children, (Child) => {
-		const filteredProps = Object.assign({}, propsWithoutChild, Child.props);
-		return React.cloneElement(Child, filteredProps);
-	});
-}
-
 /**
  * Injects entity model object with a default alias name property.
  *
@@ -53,5 +34,4 @@ function injectDefaultAliasName(instance) {
 	return instance;
 }
 
-exports.injectChildElemsWithProps = injectChildElemsWithProps;
 exports.injectDefaultAliasName = injectDefaultAliasName;
