@@ -58,9 +58,11 @@ export function updateAliasPrimary(rowId, value) {
 
 let nextAliasRowId = 0;
 export function addAlias() {
+	/* Prepend 'n' here to indicate new alias, and avoid conflicts with IDs of
+	 * existing aliases. */
 	return {
 		type: ADD_ALIAS,
-		rowId: nextAliasRowId++
+		rowId: `n${nextAliasRowId++}`
 	};
 }
 

@@ -31,9 +31,11 @@ export function hideIdentifierEditor() {
 
 let nextIdentifierRowId = 0;
 export function addIdentifier() {
+	/* Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
+	 * of existing identifiers. */
 	return {
 		type: ADD_IDENTIFIER,
-		rowId: nextIdentifierRowId++
+		rowId: `n${nextIdentifierRowId++}`
 	};
 }
 

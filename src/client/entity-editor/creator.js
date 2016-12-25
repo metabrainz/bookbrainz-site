@@ -62,8 +62,6 @@ function generateInitialState(creator, creatorTypes) {
 	};
 
 	const aliasDict = {};
-	// FIXME: alias.id can conflict with internal ID generation. This is very
-	// bad!
 	aliases.slice(1).forEach((alias) => aliasDict[alias.id] = alias);
 
 	const initialGender = creator.gender && creator.gender.id;
