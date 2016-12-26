@@ -24,8 +24,6 @@ const React = require('react');
 
 const bootstrap = require('react-bootstrap');
 const FontAwesome = require('react-fontawesome');
-const injectChildElemsWithProps =
-	require('../helpers/utils').injectChildElemsWithProps;
 
 const Nav = bootstrap.Nav;
 const Navbar = bootstrap.Navbar;
@@ -173,14 +171,14 @@ class Layout extends React.Component {
 	}
 
 	render() {
-		const {homepage, siteRevision, repositoryUrl} = this.props;
+		const {homepage, siteRevision, repositoryUrl, children} = this.props;
 
 		// Shallow merges parents props into child components
-		const children = homepage ? injectChildElemsWithProps(this.props) :
+		const childNode = homepage ? children :
 			<div className="container"
 				id="content"
 			>
-				{injectChildElemsWithProps(this.props)}
+				{children}
 			</div>;
 
 		return (
@@ -196,7 +194,7 @@ class Layout extends React.Component {
 					{this.renderNavHeader()}
 					{this.renderNavContent()}
 				</Navbar>
-				{children}
+				{childNode}
 				<Footer repositoryUrl={repositoryUrl}
 					siteRevision={siteRevision}
 				/>
@@ -207,24 +205,12 @@ class Layout extends React.Component {
 
 Layout.displayName = 'Layout';
 Layout.propTypes = {
-	achievement: React.PropTypes.object,
-	basedir: React.PropTypes.string,
 	children: React.PropTypes.node,
-	creatorTypes: React.PropTypes.array,
-	editor: React.PropTypes.object,
-	entity: React.PropTypes.object,
-	genders: React.PropTypes.array,
 	hideSearch: React.PropTypes.bool,
 	homepage: React.PropTypes.bool,
-	identifierTypes: React.PropTypes.array,
-	languages: React.PropTypes.array,
-	publicationTypes: React.PropTypes.array,
-	publisherTypes: React.PropTypes.array,
 	repositoryUrl: React.PropTypes.string,
 	siteRevision: React.PropTypes.string,
-	title: React.PropTypes.string,
-	user: React.PropTypes.object,
-	workTypes: React.PropTypes.array
+	user: React.PropTypes.object
 };
 
 module.exports = Layout;

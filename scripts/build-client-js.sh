@@ -11,7 +11,9 @@ browserify -t [babelify] \
 		entity/publisher.js \
 		entity/work.js \
 		deletion.js \
+		registrationDetails.js \
 		relationship.js \
+		revision.js \
 		search.js \
 	-p [ factor-bundle \
 		-o ../../../static/js/layout.js \
@@ -23,7 +25,9 @@ browserify -t [babelify] \
 		-o ../../../static/js/entity/publisher.js \
 		-o ../../../static/js/entity/work.js \
 		-o ../../../static/js/deletion.js \
+		-o ../../../static/js/registrationDetails.js \
 		-o ../../../static/js/relationship.js \
+		-o ../../../static/js/revision.js \
 		-o ../../../static/js/search.js \
 	] > ../../../static/js/bundle.js
 popd

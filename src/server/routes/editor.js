@@ -33,6 +33,7 @@ const TitleUnlock = require('bookbrainz-data').TitleUnlock;
 
 const auth = require('../helpers/auth');
 const handler = require('../helpers/handler');
+const propHelpers = require('../helpers/props');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
@@ -198,14 +199,21 @@ router.get('/:id', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				editor: editorJSON,
-				achievement: achievementJSON
+				achievement: achievementJSON,
+				tabActive: 0
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props} >
-					<EditorContainer tabActive={0}>
-						<ProfileTab/>
+				<Layout {...propHelpers.extractLayoutProps(props)} >
+					<EditorContainer
+						{...propHelpers.extractEditorProps(props)}
+					>
+						<ProfileTab
+							achievement={props.achievement}
+							editor={props.editor}
+							user={props.user}
+						/>
 					</EditorContainer>
 				</Layout>
 			);
@@ -248,13 +256,18 @@ router.get('/:id/revisions', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.then((editorJSON) => {
-			const props = Object.assign({}, req.app.locals, res.locals, {
-				editor: editorJSON
+			const props = propHelpers.generateProps(req, res, {
+				editor: editorJSON,
+				tabActive: 1
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<EditorContainer tabActive={1}>
-						<RevisionsTab/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EditorContainer
+						{...propHelpers.extractEditorProps(props)}
+					>
+						<RevisionsTab
+							editor={props.editor}
+						/>
 					</EditorContainer>
 				</Layout>
 			);
@@ -346,14 +359,20 @@ router.get('/:id/achievements', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				editor: editorJSON,
-				achievement: achievementJSON
+				achievement: achievementJSON,
+				tabActive: 2
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<EditorContainer tabActive={2}>
-						<AchievementsTab/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EditorContainer
+						{...propHelpers.extractEditorProps(props)}
+					>
+						<AchievementsTab
+							achievement={props.achievement}
+							editor={props.editor}
+						/>
 					</EditorContainer>
 				</Layout>
 			);

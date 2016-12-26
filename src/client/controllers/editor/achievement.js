@@ -26,14 +26,20 @@ const Layout =
 	require('../../containers/layout');
 const EditorContainer =
 	require('../../containers/editor');
+const propHelpers = require('../../../server/helpers/props');
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 ReactDOM.render(
-	<Layout {...props}>
-		<EditorContainer tabActive={2}>
-			<AchievementsTab/>
+	<Layout {...propHelpers.extractLayoutProps(props)}>
+		<EditorContainer
+			{...propHelpers.extractEditorProps(props)}
+		>
+			<AchievementsTab
+				achievement={props.achievement}
+				editor={props.editor}
+			/>
 		</EditorContainer>
 	</Layout>,
 	document.getElementById('target')

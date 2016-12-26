@@ -15,23 +15,25 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+'use strict';
 
-/**
- * Injects entity model object with a default alias name property.
- *
- * @param {object} instance - Entity object.
- * @returns {object} - New object with injected properties.
- */
-function injectDefaultAliasName(instance) {
-	'use strict';
-	if (instance && instance.name) {
-		return Object.assign({}, instance, {
-			defaultAlias: {
-				name: instance.name
-			}
-		});
-	}
-	return instance;
-}
+module.exports.generateProps = function generateProps(req, res, props) {
+	return Object.assign({}, req.app.locals, res.locals, props);
+};
 
-exports.injectDefaultAliasName = injectDefaultAliasName;
+module.exports.extractLayoutProps = function extractLayoutProps(props) {
+	return {
+		homepage: props.homepage,
+		siteRevision: props.siteRevision,
+		repositoryUrl: props.repositoryUrl,
+		user: props.user,
+		hideSearch: props.hideSearch
+	};
+};
+
+module.exports.extractEditorProps = function extractEditorProps(props) {
+	return {
+		editor: props.editor,
+		tabActive: props.tabActive
+	};
+};

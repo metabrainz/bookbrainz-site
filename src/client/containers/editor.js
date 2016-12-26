@@ -27,14 +27,10 @@ const Col = bootstrap.Col;
 const Nav = bootstrap.Nav;
 const NavItem = bootstrap.NavItem;
 
-const injectChildElemsWithProps =
-	require('../helpers/utils').injectChildElemsWithProps;
-
 class EditorContainer extends React.Component {
 
 	render() {
-		const children = injectChildElemsWithProps(this.props);
-		const {tabActive, editor} = this.props;
+		const {tabActive, editor, children} = this.props;
 
 		return (
 			<div>

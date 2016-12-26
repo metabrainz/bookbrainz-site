@@ -40,6 +40,7 @@ const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 const achievement = require('../../helpers/achievement');
+const propHelpers = require('../../helpers/props');
 
 const Layout = require('../../../client/containers/layout');
 const EntityRevisions =
@@ -151,12 +152,15 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 		})
 		.then((collection) => {
 			const revisions = collection.toJSON();
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				revisions
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<EntityRevisions/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityRevisions
+						entity={props.entity}
+						revisions={props.revisions}
+					/>
 				</Layout>
 			);
 			return res.render('target', {markup});
@@ -166,9 +170,10 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 
 function _createNote(content, editor, revision, transacting) {
 	if (content) {
+		const revisionId = revision.get('id');
 		return new Note({
 			authorId: editor.id,
-			revisionId: revision.get('id'),
+			revisionId,
 			content
 		})
 			.save(null, {transacting});
@@ -176,6 +181,17 @@ function _createNote(content, editor, revision, transacting) {
 
 	return null;
 }
+
+module.exports.addNoteToRevision = (req, res) => {
+	const editorJSON = req.session.passport.user;
+	const revision = Revision.forge({id: req.params.id});
+	const revisionNotePromise = bookshelf.transaction((transacting) =>
+		_createNote(
+			req.body.note, editorJSON, revision, transacting
+		)
+	);
+	return handler.sendPromiseResult(res, revisionNotePromise);
+};
 
 module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 	const entity = res.locals.entity;

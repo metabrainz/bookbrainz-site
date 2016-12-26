@@ -16,22 +16,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/**
- * Injects entity model object with a default alias name property.
- *
- * @param {object} instance - Entity object.
- * @returns {object} - New object with injected properties.
- */
-function injectDefaultAliasName(instance) {
-	'use strict';
-	if (instance && instance.name) {
-		return Object.assign({}, instance, {
-			defaultAlias: {
-				name: instance.name
-			}
-		});
-	}
-	return instance;
-}
+const React = require('react');
+const ReactDOM = require('react-dom');
+const Layout = require('../containers/layout');
+const RevisionPage = require('../components/pages/revision');
 
-exports.injectDefaultAliasName = injectDefaultAliasName;
+const propHelpers = require('../../server/helpers/props');
+const propsTarget = document.getElementById('props');
+const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
+const markup = (
+	<Layout {...propHelpers.extractLayoutProps(props)}>
+		<RevisionPage
+			diffs={props.diffs}
+			revision={props.revision}
+			user={props.user}
+		/>
+	</Layout>
+);
+
+ReactDOM.render(markup, document.getElementById('target'));
