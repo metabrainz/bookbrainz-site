@@ -123,8 +123,7 @@ module.exports.displayEntity = (req, res) => {
 	return alertPromise.then((alert) => {
 		res.render(
 			`entity/view/${entity.type.toLowerCase()}`,
-			{identifierTypes,
-			alert}
+			{identifierTypes, alert}
 		);
 	});
 };
