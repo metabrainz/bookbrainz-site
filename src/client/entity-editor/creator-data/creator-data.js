@@ -17,19 +17,52 @@
  */
 
 import {Col, Row} from 'react-bootstrap';
-import BeginField from './begin-field-container';
-import EndField from './end-field-container';
-import EndedCheck from './ended-check-container';
+import {
+	updateBeginDate, updateEndDate, updateEnded, updateGender, updateType
+} from '../actions';
+import DateField from './date-field';
+import EndedCheck from './ended-check';
 import ErrorText from '../common/error-text';
-import GenderField from './gender-field-container';
+import GenderField from './gender-field';
 import React from 'react';
 import SubmitButton from '../common/submit-button';
-import TypeField from './type-field-container';
+import TypeField from './type-field';
+import _debounce from 'lodash.debounce';
+import {connect} from 'react-redux';
+
+function isPartialDateValid(value) {
+	const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
+	const ymRegex = /^\d{4}-\d{2}$/;
+	const yRegex = /^\d{4}$/;
+
+	const validSyntax = Boolean(
+		ymdRegex.test(value) ||
+		ymRegex.test(value) ||
+		yRegex.test(value)
+	);
+	const validValue = !isNaN(Date.parse(value));
+
+	return validSyntax && validValue;
+}
 
 function CreatorData({
-	genderOptions,
+	beginDateLabel,
+	beginDateValue,
 	creatorTypes,
-	submissionUrl
+	endDateLabel,
+	endDateValue,
+	endedChecked,
+	endedLabel,
+	genderOptions,
+	genderShow,
+	genderValue,
+	submissionUrl,
+	typeValue,
+	onBeginDateChange,
+	onEndDateChange,
+	onEndedChange,
+	onGenderChange,
+	onTypeChange
 }) {
 	return (
 		<form>
@@ -37,30 +70,57 @@ function CreatorData({
 				What else do you know about the Creator?
 			</h2>
 			<p className="text-muted">
-				All fields optional — leave something blank if you don't
+				All fields optional — leave something blank if you don&rsquo;t
 				know it
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<TypeField options={creatorTypes}/>
+					<TypeField
+						options={creatorTypes}
+						value={typeValue}
+						onChange={onTypeChange}
+					/>
 				</Col>
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<GenderField options={genderOptions}/>
+					<GenderField
+						options={genderOptions}
+						show={genderShow}
+						value={genderValue}
+						onChange={onGenderChange}
+					/>
 				</Col>
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<BeginField show/>
+					<DateField
+						show
+						defaultValue={beginDateValue}
+						empty={!beginDateValue}
+						error={!isPartialDateValid(beginDateValue)}
+						label={beginDateLabel}
+						onChange={onBeginDateChange}
+					/>
 				</Col>
 			</Row>
 			<div className="text-center">
-				<EndedCheck/>
+				<EndedCheck
+					defaultChecked={endedChecked}
+					label={endedLabel}
+					onChange={onEndedChange}
+				/>
 			</div>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<EndField/>
+					<DateField
+						defaultValue={endDateValue}
+						empty={!endDateValue}
+						error={!isPartialDateValid(endDateValue)}
+						label={endDateLabel}
+						show={endedChecked}
+						onChange={onEndDateChange}
+					/>
 				</Col>
 			</Row>
 			<div className="text-center margin-top-1">
@@ -74,9 +134,69 @@ function CreatorData({
 }
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
+	beginDateLabel: React.PropTypes.string,
+	beginDateValue: React.PropTypes.string,
 	creatorTypes: React.PropTypes.array,
+	endDateLabel: React.PropTypes.string,
+	endDateValue: React.PropTypes.string,
+	endedChecked: React.PropTypes.bool,
+	endedLabel: React.PropTypes.string,
 	genderOptions: React.PropTypes.array,
-	submissionUrl: React.PropTypes.string
+	genderShow: React.PropTypes.bool,
+	genderValue: React.PropTypes.number,
+	submissionUrl: React.PropTypes.string,
+	typeValue: React.PropTypes.number,
+	onBeginDateChange: React.PropTypes.func,
+	onEndDateChange: React.PropTypes.func,
+	onEndedChange: React.PropTypes.func,
+	onGenderChange: React.PropTypes.func,
+	onTypeChange: React.PropTypes.func
 };
 
-export default CreatorData;
+function mapStateToProps(rootState, {creatorTypes}) {
+	const state = rootState.get('creatorData');
+
+	const endDateLabel =
+		state.get('singular') ? 'Date of Death' : 'Date Dissolved';
+	const endedLabel = state.get('singular') ? 'Died?' : 'Dissolved?';
+	const beginDateLabel =
+		state.get('singular') ? 'Date of Birth' : 'Date Founded';
+
+	return {
+		beginDateLabel,
+		beginDateError: !isPartialDateValid(state.get('beginDate')),
+		beginDateEmpty: !state.get('beginDate'),
+		beginDateValue: state.get('beginDate'),
+		endDateLabel,
+		endedLabel,
+		endedChecked: state.get('ended'),
+		endDateValue: state.get('endDate'),
+		genderValue: state.get('gender'),
+		genderShow: state.get('singular'),
+		typeValue: state.get('type')
+	};
+}
+
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+function mapDispatchToProps(dispatch, {creatorTypes}) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
+	const personType = creatorTypes.find((type) => type.label === 'Person');
+	return {
+		onBeginDateChange: (event) =>
+			debouncedDispatch(updateBeginDate(event.target.value)),
+		onEndDateChange: (event) =>
+			debouncedDispatch(updateEndDate(event.target.value)),
+		onEndedChange: (event) =>
+			dispatch(updateEnded(event.target.checked)),
+		onGenderChange: (value) =>
+			dispatch(updateGender(value && value.value)),
+		onTypeChange: (value) => dispatch(
+			updateType(
+				value && value.value,
+				(value && value.value) === personType.value
+			)
+		)
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreatorData);
