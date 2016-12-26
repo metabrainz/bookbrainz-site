@@ -39,9 +39,10 @@ class EditorProfileTab extends React.Component {
 
 	renderBasicInfo() {
 		const {user, editor} = this.props;
-		const {cachedMetabrainzName, metabrainzUserId} = editor;
+		const {cachedMetabrainzName, metabrainzUserId, name, gender, birthDate} = editor;
 		const createdAtDate = (new Date(editor.createdAt)).toUTCString();
 		const lastActiveDate = (new Date(editor.activeAt)).toUTCString();
+		const birthday = (new Date(birthDate)).toUTCString();
 
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {
@@ -81,8 +82,14 @@ class EditorProfileTab extends React.Component {
 					<dd>
 					{musicbrainzAccount}
 					</dd>
+					<dt>Display Name</dt>
+					<dd>{name}</dd>
+					<dt>Birth Date</dt>
+					<dd>{birthday || '?'}</dd>
 					<dt>Area</dt>
 					<dd>{editor.area ? editor.area.name : '?'}</dd>
+					<dt>Gender</dt>
+					<dd>{gender ? gender.name : '?'}</dd>
 					<dt>Type</dt>
 					<dd>{editor.type.label}</dd>
 					<dt>Reputation</dt>
