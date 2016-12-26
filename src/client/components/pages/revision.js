@@ -216,7 +216,6 @@ class RevisionPage extends React.Component {
 								ref={(ref) => this.noteInput = ref}
 								rows="6"
 								type="textarea"
-								wrapperClassName="col-md-12"
 							/>
 							<Button
 								bsStyle="primary"
