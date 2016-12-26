@@ -38,7 +38,7 @@ const _index = 'bookbrainz';
 
 let _client = null;
 
-search.init = (options) => {
+search.init = async (options) => {
 	const config = _.extend({
 		defer() {
 			const defer = {};
@@ -55,14 +55,13 @@ search.init = (options) => {
 	_client = ElasticSearch.Client(config);
 
 	// Automatically index on app startup if we haven't already
-	_client.indices.exists({index: _index})
-		.then((mainIndexExists) => {
-			if (mainIndexExists) {
-				return null;
-			}
+	const mainIndexExists = await _client.indices.exists({index: _index});
 
-			return search.generateIndex();
-		});
+	if (mainIndexExists) {
+		return null;
+	}
+
+	return search.generateIndex();
 };
 
 function _fetchEntityModelsForESResults(results) {
@@ -159,7 +158,7 @@ search.indexEntity = (entity) =>
 search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 
-search.generateIndex = () => {
+search.generateIndex = async () => {
 	const indexMappings = {
 		settings: {
 			analysis: {
@@ -224,65 +223,71 @@ search.generateIndex = () => {
 	};
 
 	// First, drop index and recreate
-	return _client.indices.delete({index: _index})
-		.catch((err) => {
-			/**
-			 * If the index is missing, don't worry, it probably never existed;
-			 * otherwise, rethrow
- 			 */
-			if (!err.message.startsWith('IndexMissingException')) {
-				throw err;
-			}
-		})
-		// GOTCHA: index creation is buggy
-		// https://tickets.metabrainz.org/browse/BB-205
-		.then(() => _client.indices.create(
-			{index: _index, body: indexMappings}
-		))
-		.then(() => {
-			const baseRelations = [
-				'annotation',
-				'disambiguation',
-				'defaultAlias'
-			];
+	const mainIndexExists = await _client.indices.exists({index: _index});
 
-			const entityBehaviors = [
-				{model: Creator,
-					relations:
-						['gender', 'creatorType', 'beginArea', 'endArea']},
-				{
-					model: Edition,
-					relations: [
-						'publication',
-						'editionFormat',
-						'editionStatus'
-					]
-				},
-				{model: Publication, relations: ['publicationType']},
-				{model: Publisher, relations: ['publisherType', 'area']},
-				{model: Work, relations: ['workType']}
-			];
+	if (mainIndexExists) {
+		await _client.indices.delete({index: _index});
+	}
 
-			// Update the indexed entries for each entity type
-			return Promise.map(entityBehaviors, (behavior) =>
-				behavior.model.forge()
-					.fetchAll({
-						withRelated: baseRelations.concat(behavior.relations)
-					})
-					.then((collection) => collection.toJSON())
-					.map(search.indexEntity)
-			);
-		})
-		.then(() =>
-			Area.forge()
-				// countries only
-				.where({type: 1})
-				.fetchAll()
-				.then((collection) => collection.toJSON())
-				.map(search.indexArea)
+	await _client.indices.create(
+		{index: _index, body: indexMappings}
+	);
 
-		)
-		.then(search.refreshIndex);
+	const baseRelations = [
+		'annotation',
+		'disambiguation',
+		'defaultAlias'
+	];
+
+	const entityBehaviors = [
+		{
+			model: Creator,
+			relations: [
+				'gender',
+				'creatorType',
+				'beginArea',
+				'endArea'
+			]
+		},
+		{
+			model: Edition,
+			relations: [
+				'publication',
+				'editionFormat',
+				'editionStatus'
+			]
+		},
+		{model: Publication, relations: ['publicationType']},
+		{model: Publisher, relations: ['publisherType', 'area']},
+		{model: Work, relations: ['workType']}
+	];
+
+	// Update the indexed entries for each entity type
+	for (const behavior of entityBehaviors) {
+		const collection = await behavior.model.forge()
+			.fetchAll({
+				withRelated: baseRelations.concat(behavior.relations)
+			});
+
+		const entities = collection.toJSON();
+
+		for (const entity of entities) {
+			await search.indexEntity(entity);
+		}
+	}
+
+	const areaCollection = await Area.forge()
+		// countries only
+		.where({type: 1})
+		.fetchAll();
+
+	const areas = areaCollection.toJSON();
+
+	for (const area of areas) {
+		await search.indexArea(area);
+	}
+
+	await search.refreshIndex();
 };
 
 search.searchByName = (name, collection) => {
