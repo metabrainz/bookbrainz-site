@@ -23,6 +23,8 @@ const Row = require('react-bootstrap').Row;
 const Col = require('react-bootstrap').Col;
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
+const ListGroup = require('react-bootstrap').ListGroup;
+const ListGroupItem = require('react-bootstrap').ListGroupItem;
 const _compact = require('lodash.compact');
 const request = require('superagent-bluebird-promise');
 
@@ -160,11 +162,10 @@ class RevisionPage extends React.Component {
 			const noteAuthorTitle =
 				RevisionPage.formatTitle(note.author);
 			return (
-				<div
-					className="panel panel-default"
+				<ListGroupItem
 					key={note.id}
 				>
-					<div className="panel-body">
+					<div>
 						<p>{note.content}</p>
 						<p className="text-right">
 							—&nbsp;
@@ -177,7 +178,7 @@ class RevisionPage extends React.Component {
 							, {`${timeCreated}, ${dateCreated}`}
 						</p>
 					</div>
-				</div>
+				</ListGroupItem>
 			);
 		});
 
@@ -205,7 +206,9 @@ class RevisionPage extends React.Component {
 					</p>
 
 					<h3>Revision Notes</h3>
-					{revisionNotes}
+					<ListGroup>
+						{revisionNotes}
+					</ListGroup>
 					{user &&
 						<form
 							className="margin-top-2"
