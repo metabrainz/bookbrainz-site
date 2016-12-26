@@ -19,8 +19,6 @@
 
 'use strict';
 
-const Promise = require('bluebird');
-
 const passport = require('passport');
 const MusicBrainzOAuth2Strategy =
 	require('passport-musicbrainz-oauth2').Strategy;
@@ -36,24 +34,23 @@ const auth = {};
 const _ = require('lodash');
 
 const config = require('./config');
-const co = require('co');
 
-const linkMBAccount = co.wrap(function* linkMBAccount(bbUserJSON, mbUserJSON) {
-	const fetchedEditor = yield new Editor({id: bbUserJSON.id})
+async function _linkMBAccount(bbUserJSON, mbUserJSON) {
+	const fetchedEditor = await new Editor({id: bbUserJSON.id})
 		.fetch({require: true});
 
 	return fetchedEditor.save({
 		metabrainzUserId: mbUserJSON.metabrainz_user_id,
 		cachedMetabrainzName: mbUserJSON.sub
 	});
-});
+}
 
-function getAccountByMBUserId(mbUserJSON) {
+function _getAccountByMBUserId(mbUserJSON) {
 	return new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
 		.fetch({require: true});
 }
 
-function updateCachedMBName(bbUserModel, mbUserJSON) {
+function _updateCachedMBName(bbUserModel, mbUserJSON) {
 	return bbUserModel.save({cachedMetabrainzName: mbUserJSON.sub});
 }
 
@@ -65,22 +62,25 @@ auth.init = (app) => {
 				passReqToCallback: true
 			}, config.musicbrainz
 		),
-		(req, accessToken, refreshToken, profile, done) => {
-			if (req.user) {
-				// Logged in, associate
-				return linkMBAccount(req.user, profile)
-					.then((linkedUser) => done(null, linkedUser.toJSON()));
-			}
+		async (req, accessToken, refreshToken, profile, done) => {
+			try {
+				if (req.user) {
+					const linkedUser = await _linkMBAccount(req.user, profile);
 
-			// Not logged in, authenticate
-			return getAccountByMBUserId(profile)
-				.then((fetchedUser) =>
-					updateCachedMBName(fetchedUser, profile)
-				)
-				.then((fetchedUser) => done(null, fetchedUser.toJSON()))
-				.catch(() => {
-					done(null, false, profile);
-				});
+					// Logged in, associate
+					return done(null, linkedUser.toJSON());
+				}
+
+				// Not logged in, authenticate
+				const fetchedUser = await _getAccountByMBUserId(profile);
+
+				await _updateCachedMBName(fetchedUser, profile);
+
+				return done(null, fetchedUser.toJSON());
+			}
+			catch (err) {
+				return done(null, false, profile);
+			}
 		}
 	));
 
@@ -107,15 +107,11 @@ auth.isAuthenticated = (req, res, next) => {
 };
 
 auth.isAuthenticatedForHandler = (req, res, next) => {
-	new Promise((resolve) => {
-		if (req.isAuthenticated()) {
-			resolve();
-		}
+	if (req.isAuthenticated()) {
+		return next();
+	}
 
-		throw new NotAuthenticatedError();
-	})
-		.then(() => next())
-		.catch((err) => error.sendErrorAsJSON(res, err));
+	return error.sendErrorAsJSON(res, new NotAuthenticatedError());
 };
 
 module.exports = auth;
