@@ -70,11 +70,10 @@ export function updateGender(value) {
 	};
 }
 
-export function updateType(value, singular) {
+export function updateType(value) {
 	return {
 		type: UPDATE_TYPE,
-		value,
-		singular
+		value
 	};
 }
 

@@ -156,11 +156,13 @@ CreatorData.propTypes = {
 function mapStateToProps(rootState, {creatorTypes}) {
 	const state = rootState.get('creatorData');
 
-	const endDateLabel =
-		state.get('singular') ? 'Date of Death' : 'Date Dissolved';
-	const endedLabel = state.get('singular') ? 'Died?' : 'Dissolved?';
-	const beginDateLabel =
-		state.get('singular') ? 'Date of Birth' : 'Date Founded';
+	const typeValue = state.get('type');
+	const personType = creatorTypes.find((type) => type.label === 'Person');
+	const singular = typeValue === personType.value;
+
+	const endDateLabel = singular ? 'Date of Death' : 'Date Dissolved';
+	const endedLabel = singular ? 'Died?' : 'Dissolved?';
+	const beginDateLabel = singular ? 'Date of Birth' : 'Date Founded';
 
 	return {
 		beginDateLabel,
@@ -172,15 +174,14 @@ function mapStateToProps(rootState, {creatorTypes}) {
 		endedChecked: state.get('ended'),
 		endDateValue: state.get('endDate'),
 		genderValue: state.get('gender'),
-		genderShow: state.get('singular'),
-		typeValue: state.get('type')
+		genderShow: singular,
+		typeValue
 	};
 }
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 function mapDispatchToProps(dispatch, {creatorTypes}) {
 	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
-	const personType = creatorTypes.find((type) => type.label === 'Person');
 	return {
 		onBeginDateChange: (event) =>
 			debouncedDispatch(updateBeginDate(event.target.value)),
@@ -190,12 +191,8 @@ function mapDispatchToProps(dispatch, {creatorTypes}) {
 			dispatch(updateEnded(event.target.checked)),
 		onGenderChange: (value) =>
 			dispatch(updateGender(value && value.value)),
-		onTypeChange: (value) => dispatch(
-			updateType(
-				value && value.value,
-				(value && value.value) === personType.value
-			)
-		)
+		onTypeChange: (value) =>
+			dispatch(updateType(value && value.value))
 	};
 }
 
