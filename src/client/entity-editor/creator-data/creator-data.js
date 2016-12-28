@@ -166,8 +166,6 @@ function mapStateToProps(rootState, {creatorTypes}) {
 
 	return {
 		beginDateLabel,
-		beginDateError: !isPartialDateValid(state.get('beginDate')),
-		beginDateEmpty: !state.get('beginDate'),
 		beginDateValue: state.get('beginDate'),
 		endDateLabel,
 		endedLabel,
