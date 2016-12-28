@@ -16,19 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
+import {Col, Row, Input} from 'react-bootstrap';
 import {
 	updateBeginDate, updateEndDate, updateEnded, updateGender, updateType
 } from '../actions';
 import DateField from './date-field';
-import EndedCheck from './ended-check';
 import ErrorText from '../common/error-text';
-import GenderField from './gender-field';
 import React from 'react';
+import Select from 'react-select';
 import SubmitButton from '../common/submit-button';
 import TypeField from './type-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
+
 
 function isPartialDateValid(value) {
 	const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -75,21 +75,27 @@ function CreatorData({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<TypeField
-						options={creatorTypes}
-						value={typeValue}
-						onChange={onTypeChange}
-					/>
+					<Input label="Type">
+						<Select
+							options={creatorTypes}
+							value={typeValue}
+							onChange={onTypeChange}
+						/>
+					</Input>
 				</Col>
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<GenderField
-						options={genderOptions}
-						show={genderShow}
-						value={genderValue}
-						onChange={onGenderChange}
-					/>
+					<Input
+						groupClassName={genderShow || 'hidden'}
+						label="Gender"
+					>
+						<Select
+							options={genderOptions}
+							value={genderValue}
+							onChange={onGenderChange}
+						/>
+					</Input>
 				</Col>
 			</Row>
 			<Row>
@@ -105,9 +111,11 @@ function CreatorData({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<EndedCheck
+				<Input
 					defaultChecked={endedChecked}
 					label={endedLabel}
+					type="checkbox"
+					wrapperClassName="margin-top-0"
 					onChange={onEndedChange}
 				/>
 			</div>
