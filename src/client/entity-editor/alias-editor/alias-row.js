@@ -28,10 +28,7 @@ import React from 'react';
 import SortNameField from '../common/sort-name-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
-
-function isAliasEmpty(nameValue, sortNameValue) {
-	return nameValue.length === 0 && sortNameValue.length === 0;
-}
+import {isAliasEmpty} from '../helpers';
 
 /* Presentational component */
 const AliasRow = ({

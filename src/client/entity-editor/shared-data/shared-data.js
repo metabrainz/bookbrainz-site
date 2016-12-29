@@ -30,10 +30,8 @@ import React from 'react';
 import SortNameField from '../common/sort-name-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
+import {isAliasEmpty} from '../helpers';
 
-function isAliasEmpty(nameValue, sortNameValue) {
-	return !(nameValue.length || sortNameValue.length);
-}
 
 function SharedData({
 	disambiguationDefaultValue,
