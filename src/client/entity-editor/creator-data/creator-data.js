@@ -25,7 +25,6 @@ import ErrorText from '../common/error-text';
 import React from 'react';
 import Select from 'react-select';
 import SubmitButton from '../common/submit-button';
-import TypeField from './type-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 

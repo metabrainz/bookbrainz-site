@@ -18,8 +18,6 @@
 
 import {Button} from 'react-bootstrap';
 import React from 'react';
-import {connect} from 'react-redux';
-import {showIdentifierEditor} from '../actions';
 
 function IdentifierButton({
 	numIdentifiers,
@@ -44,16 +42,4 @@ IdentifierButton.propTypes = {
 	numIdentifiers: React.PropTypes.number
 };
 
-function mapStateToProps(state) {
-	return {
-		numIdentifiers: state.get('identifierEditor').size
-	};
-}
-
-function mapDispatchToProps(dispatch) {
-	return {
-		onClick: () => dispatch(showIdentifierEditor())
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(IdentifierButton);
+export default IdentifierButton;

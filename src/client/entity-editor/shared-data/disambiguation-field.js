@@ -28,17 +28,15 @@ import React from 'react';
 function DisambiguationField({
 	...props
 }) {
+	const label = (
+		<span>
+			Disambiguation
+			<span className="text-muted"> (optional)</span>
+		</span>
+	);
+
 	return (
-		<Input
-			label={
-				<span>
-					Disambiguation
-					<span className="text-muted"> (optional)</span>
-				</span>
-			}
-			type="text"
-			{...props}
-		/>
+		<Input label={label} type="text" {...props}/>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';
