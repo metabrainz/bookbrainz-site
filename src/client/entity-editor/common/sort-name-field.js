@@ -99,7 +99,9 @@ function SortNameField({
 	let input;
 
 	function handleGuessClick() {
-		input.getInputDOMNode().value = makeSortName(storedNameValue);
+		const generatedSortName = makeSortName(storedNameValue);
+		input.getInputDOMNode().value = generatedSortName;
+		onChange({target: {value: generatedSortName}});
 	}
 
 	const label = (
