@@ -16,6 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
 const Icon = require('react-fontawesome');
 const React = require('react');
@@ -29,7 +30,16 @@ const CreatorData = require('./parts/creator-data');
 const LoadingSpinner = require('../loading-spinner');
 const RevisionNote = require('./parts/revision-note');
 
+/**
+* This is an extended class of the React Component to
+* create and edit a creator
+*/
 class CreatorForm extends React.Component {
+	/**
+	* Binds the class methods to their respective data.
+	* @constructor
+	* @param {object} props - Object of properties passed in the constructor
+	*/
 	constructor(props) {
 		super(props);
 
@@ -47,6 +57,11 @@ class CreatorForm extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	/**
+	 * Changes to the selected tab of tab 'number' and checks validity
+	 * of aliases and data.
+	 * @param {number} tab - 'number' denotes the selected tab number
+	 */
 	handleTabSelect(tab) {
 		this.setState({
 			tab,
@@ -55,14 +70,25 @@ class CreatorForm extends React.Component {
 		});
 	}
 
+	/**
+	* Handler which directs the viewer to the previous tab
+	*/
 	handleBackClick() {
 		this.handleTabSelect(this.state.tab - 1);
 	}
 
+	/**
+	* Handler which directs the viewer to the next tab
+	*/
 	handleNextClick() {
 		this.handleTabSelect(this.state.tab + 1);
 	}
 
+	/**
+	* Handler which collects the creator information edited by the author
+	*	and sends it to the server to be processed.
+	* @param {object} evt - Event object passed in the Handler
+	*/
 	handleSubmit(evt) {
 		evt.preventDefault();
 
@@ -111,6 +137,12 @@ class CreatorForm extends React.Component {
 			});
 	}
 
+	/**
+	* Renders the document and allows the author to submit the data
+	* Includes a loading spinner if there is delay in data display due to
+	* connectivity.
+	* @return {ReactElement} a HTML document which displays a creatoreditor
+	*/
 	render() {
 		let aliases = null;
 		const prefillData = this.props.creator;
