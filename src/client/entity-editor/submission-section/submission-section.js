@@ -16,9 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import ErrorText from './error-text';
+import {Alert, Button} from 'react-bootstrap';
 import React from 'react';
-import SubmitButton from './submit-button';
 import {connect} from 'react-redux';
 import request from 'superagent-bluebird-promise';
 import {setSubmitError} from '../actions';
@@ -30,10 +29,12 @@ function SubmissionSection({
 	return (
 		<div>
 			<div className="text-center margin-top-1">
-				<SubmitButton onClick={onSubmitClick}/>
+				<Button bsStyle="success" onClick={onSubmitClick}>
+					Submit
+				</Button>
 			</div>
 			<div className="text-center margin-top-1">
-				<ErrorText>{error}</ErrorText>
+				<Alert bsStyle="error">{error}</Alert>
 			</div>
 		</div>
 	);
