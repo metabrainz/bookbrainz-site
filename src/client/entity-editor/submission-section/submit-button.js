@@ -16,28 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import React from 'react';
-import {connect} from 'react-redux';
 
-function ErrorText({
-	children
+function SubmitButton({
+	...props
 }) {
 	return (
-		<Alert bsStyle="error">{children}</Alert>
+		<div>
+			<Button bsStyle="success" {...props}>
+				Submit
+			</Button>
+		</div>
 	);
 }
-ErrorText.displayName = 'ErrorText';
-ErrorText.propTypes = {
-	children: React.PropTypes.node
-};
+SubmitButton.displayName = 'SubmitButton';
 
-function mapStateToProps(rootState) {
-	const state = rootState.get('creatorSection');
-	return {
-		children: state.get('submitError')
-	};
-}
-
-
-export default connect(mapStateToProps)(ErrorText);
+export default SubmitButton;

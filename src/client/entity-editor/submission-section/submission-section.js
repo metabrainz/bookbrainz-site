@@ -16,31 +16,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button} from 'react-bootstrap';
-
+import ErrorText from './error-text';
 import React from 'react';
+import SubmitButton from './submit-button';
 import {connect} from 'react-redux';
 import request from 'superagent-bluebird-promise';
 import {setSubmitError} from '../actions';
 
-function SubmitButton({
+function SubmissionSection({
 	error,
-	...rest
+	onSubmitClick
 }) {
-	const errorElement = error ? <span>{error}</span> : null;
-
 	return (
 		<div>
-			<Button bsStyle="success" {...rest}>
-				Submit
-			</Button>
-			{errorElement}
+			<div className="text-center margin-top-1">
+				<SubmitButton onClick={onSubmitClick}/>
+			</div>
+			<div className="text-center margin-top-1">
+				<ErrorText>{error}</ErrorText>
+			</div>
 		</div>
 	);
 }
-SubmitButton.displayName = 'SubmitButton';
-SubmitButton.propTypes = {
-	error: React.PropTypes.string
+SubmissionSection.displayName = 'CreatorSection';
+SubmissionSection.propTypes = {
+	error: React.PropTypes.node,
+	submissionUrl: React.PropTypes.string,
+	onSubmitClick: React.PropTypes.func
 };
 
 function submit(url, data) {
@@ -62,9 +64,11 @@ function submit(url, data) {
 		});
 }
 
-function mapStateToProps(state, {url}) {
+function mapStateToProps(rootState, {submissionUrl}) {
+	const state = rootState.get('creatorSection');
 	return {
-		onClick: () => submit(url, state)
+		onSubmitClick: () => submit(submissionUrl, rootState),
+		error: state.get('submitError')
 	};
 }
 
@@ -76,11 +80,11 @@ function mapDispatchToProps(dispatch) {
 
 function mergeProps(stateProps, dispatchProps) {
 	return {
-		onClick: () => stateProps.onClick()
+		onSubmitClick: () => stateProps.onSubmitClick()
 			.catch((error) => dispatchProps.onSubmitError(error))
 	};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
-	SubmitButton
+	SubmissionSection
 );

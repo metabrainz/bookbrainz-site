@@ -21,10 +21,8 @@ import {
 	updateBeginDate, updateEndDate, updateEnded, updateGender, updateType
 } from './actions';
 import DateField from './date-field';
-import ErrorText from '../common/error-text';
 import React from 'react';
 import Select from 'react-select';
-import SubmitButton from '../common/submit-button';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 
@@ -55,7 +53,6 @@ function CreatorSection({
 	genderOptions,
 	genderShow,
 	genderValue,
-	submissionUrl,
 	typeValue,
 	onBeginDateChange,
 	onEndDateChange,
@@ -130,12 +127,6 @@ function CreatorSection({
 					/>
 				</Col>
 			</Row>
-			<div className="text-center margin-top-1">
-				<SubmitButton url={submissionUrl}/>
-			</div>
-			<div className="text-center margin-top-1">
-				<ErrorText/>
-			</div>
 		</form>
 	);
 }
@@ -151,7 +142,6 @@ CreatorSection.propTypes = {
 	genderOptions: React.PropTypes.array,
 	genderShow: React.PropTypes.bool,
 	genderValue: React.PropTypes.number,
-	submissionUrl: React.PropTypes.string,
 	typeValue: React.PropTypes.number,
 	onBeginDateChange: React.PropTypes.func,
 	onEndDateChange: React.PropTypes.func,

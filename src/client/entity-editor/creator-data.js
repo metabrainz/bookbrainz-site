@@ -22,6 +22,7 @@ import ButtonBar from './button-bar/button-bar';
 import CreatorSection from './creator-section/creator-section';
 import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
+import SubmissionSection from './submission-section/submission-section'
 import {Panel} from 'react-bootstrap';
 import React from 'react';
 import {connect} from 'react-redux';
@@ -64,6 +65,8 @@ let Wrapper = ({
 			<CreatorSection
 				creatorTypes={creatorTypesForDisplay}
 				genderOptions={genderOptionsForDisplay}
+			/>
+			<SubmissionSection
 				submissionUrl={submissionUrl}
 			/>
 			<IdentifierEditor
