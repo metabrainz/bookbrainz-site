@@ -18,8 +18,8 @@
 
 import {Button, Col, Row} from 'react-bootstrap';
 import {
-	showAliasEditor, showIdentifierEditor
-} from '../actions';
+	showAliasEditor, showDisambiguation, showIdentifierEditor
+} from './actions';
 import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import React from 'react';
@@ -92,9 +92,7 @@ function mapDispatchToProps(dispatch) {
 	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
 		onAliasButtonClick: () => dispatch(showAliasEditor()),
-		onDisambiguationButtonClick: () => dispatch({
-			type: 'SHOW_DISAMBIGUATION'
-		}),
+		onDisambiguationButtonClick: () => dispatch(showDisambiguation()),
 		onIdentifierButtonClick: () => dispatch(showIdentifierEditor())
 	};
 }

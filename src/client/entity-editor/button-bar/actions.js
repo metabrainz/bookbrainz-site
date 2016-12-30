@@ -17,52 +17,25 @@
  */
 
 
-const UPDATE_GENDER = 'UPDATE_GENDER';
-const UPDATE_TYPE = 'UPDATE_TYPE';
-const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
-const UPDATE_END_DATE = 'UPDATE_END_DATE';
-const UPDATE_ENDED = 'UPDATE_ENDED';
-const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
+export const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
+export const SHOW_DISAMBIGUATION = 'SHOW_DISAMBIGUATION';
+export const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 
 
-export function updateGender(value) {
+export function showAliasEditor() {
 	return {
-		type: UPDATE_GENDER,
-		value
+		type: SHOW_ALIAS_EDITOR
 	};
 }
 
-export function updateType(value) {
+export function showDisambiguation() {
 	return {
-		type: UPDATE_TYPE,
-		value
+		type: SHOW_DISAMBIGUATION
 	};
 }
 
-export function updateBeginDate(value) {
+export function showIdentifierEditor() {
 	return {
-		type: UPDATE_BEGIN_DATE,
-		value
-	};
-}
-
-export function updateEndDate(value) {
-	return {
-		type: UPDATE_END_DATE,
-		value
-	};
-}
-
-export function updateEnded(value) {
-	return {
-		type: UPDATE_ENDED,
-		value
-	};
-}
-
-export function setSubmitError(error) {
-	return {
-		type: SET_SUBMIT_ERROR,
-		error
+		type: SHOW_IDENTIFIER_EDITOR
 	};
 }
