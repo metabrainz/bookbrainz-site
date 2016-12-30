@@ -16,10 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
-const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
-const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
-const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
+
 const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
 const UPDATE_GENDER = 'UPDATE_GENDER';
 const UPDATE_TYPE = 'UPDATE_TYPE';
@@ -28,34 +25,6 @@ const UPDATE_END_DATE = 'UPDATE_END_DATE';
 const UPDATE_ENDED = 'UPDATE_ENDED';
 const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
-
-export function updateNameField(value) {
-	return {
-		type: UPDATE_NAME_FIELD,
-		value
-	};
-}
-
-export function updateSortNameField(value) {
-	return {
-		type: UPDATE_SORT_NAME_FIELD,
-		value
-	};
-}
-
-export function updateLanguageField(value) {
-	return {
-		type: UPDATE_LANGUAGE_FIELD,
-		value
-	};
-}
-
-export function updateDisambiguationField(value) {
-	return {
-		type: UPDATE_DISAMBIGUATION_FIELD,
-		value
-	};
-}
 
 export function showAliasEditor() {
 	return {

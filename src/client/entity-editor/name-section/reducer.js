@@ -16,8 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
-import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
+import {
+	UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD, UPDATE_NAME_FIELD,
+	UPDATE_SORT_NAME_FIELD
+} from './actions';
 import Immutable from 'immutable';
 
 function reducer(
@@ -25,29 +27,18 @@ function reducer(
 		name: '',
 		sortName: '',
 		language: null,
-		disambiguationVisible: false,
-		aliasEditorVisible: false
+		disambiguation: ''
 	}),
 	action
 ) {
 	switch (action.type) {
-		case 'UPDATE_NAME_FIELD':
+		case UPDATE_NAME_FIELD:
 			return state.set('name', action.value);
-		case 'UPDATE_SORT_NAME_FIELD':
+		case UPDATE_SORT_NAME_FIELD:
 			return state.set('sortName', action.value);
-		case 'UPDATE_LANGUAGE_FIELD':
+		case UPDATE_LANGUAGE_FIELD:
 			return state.set('language', action.value);
-		case 'SHOW_DISAMBIGUATION':
-			return state.set('disambiguationVisible', true);
-		case 'SHOW_ALIAS_EDITOR':
-			return state.set('aliasEditorVisible', true);
-		case HIDE_ALIAS_EDITOR:
-			return state.set('aliasEditorVisible', false);
-		case 'SHOW_IDENTIFIER_EDITOR':
-			return state.set('identifierEditorVisible', true);
-		case HIDE_IDENTIFIER_EDITOR:
-			return state.set('identifierEditorVisible', false);
-		case 'UPDATE_DISAMBIGUATION_FIELD':
+		case UPDATE_DISAMBIGUATION_FIELD:
 			return state.set('disambiguation', action.value);
 		// no default
 	}

@@ -18,74 +18,26 @@
 
 import {Button, Col, Row} from 'react-bootstrap';
 import {
-	showAliasEditor, showIdentifierEditor, updateDisambiguationField,
-	updateLanguageField, updateNameField, updateSortNameField
+	showAliasEditor, showIdentifierEditor
 } from '../actions';
 import AliasButton from './alias-button';
-import DisambiguationField from './disambiguation-field';
 import IdentifierButton from './identifier-button';
-import LanguageField from '../common/language-field';
-import NameField from '../common/name-field';
 import React from 'react';
-import SortNameField from '../common/sort-name-field';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
-import {isAliasEmpty} from '../helpers';
 
 
-function SharedData({
-	disambiguationDefaultValue,
+function ButtonBar({
 	disambiguationVisible,
-	languageOptions,
-	languageValue,
-	nameValue,
 	numAliases,
 	numIdentifiers,
-	sortNameValue,
 	onAliasButtonClick,
 	onDisambiguationButtonClick,
-	onDisambiguationChange,
-	onIdentifierButtonClick,
-	onLanguageChange,
-	onNameChange,
-	onSortNameChange
+	onIdentifierButtonClick
 }) {
 	return (
 		<div>
-			<h2>
-				What is the Creator called?
-			</h2>
 			<form>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<NameField
-							defaultValue={nameValue}
-							empty={isAliasEmpty(nameValue, sortNameValue)}
-							error={!nameValue}
-							onChange={onNameChange}
-						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<SortNameField
-							defaultValue={sortNameValue}
-							empty={isAliasEmpty(nameValue, sortNameValue)}
-							error={!sortNameValue}
-							storedNameValue={nameValue}
-							onChange={onSortNameChange}
-						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<LanguageField
-							options={languageOptions}
-							value={languageValue}
-							onChange={onLanguageChange}
-						/>
-					</Col>
-				</Row>
 				<Row className="margin-top-1">
 					<Col className="text-center" md={4}>
 						<AliasButton
@@ -109,44 +61,24 @@ function SharedData({
 						/>
 					</Col>
 				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						{
-							disambiguationVisible &&
-							<DisambiguationField
-								defaultValue={disambiguationDefaultValue}
-								onChange={onDisambiguationChange}
-							/>
-						}
-					</Col>
-				</Row>
 			</form>
 		</div>
 	);
 }
-SharedData.displayName = 'SharedData';
-SharedData.propTypes = {
-	disambiguationDefaultValue: React.PropTypes.string,
+ButtonBar.displayName = 'ButtonBar';
+ButtonBar.propTypes = {
 	disambiguationVisible: React.PropTypes.bool,
-	languageOptions: React.PropTypes.array,
-	languageValue: React.PropTypes.string,
-	nameValue: React.PropTypes.string,
 	numAliases: React.PropTypes.number,
 	numIdentifiers: React.PropTypes.number,
-	sortNameValue: React.PropTypes.string,
 	onAliasButtonClick: React.PropTypes.func,
 	onDisambiguationButtonClick: React.PropTypes.func,
-	onDisambiguationChange: React.PropTypes.func,
-	onIdentifierButtonClick: React.PropTypes.func,
-	onLanguageChange: React.PropTypes.func,
-	onNameChange: React.PropTypes.func,
-	onSortNameChange: React.PropTypes.func
+	onIdentifierButtonClick: React.PropTypes.func
 };
 
 function mapStateToProps(rootState) {
-	const state = rootState.get('sharedData');
+	const state = rootState.get('buttonBar');
 	return {
-		disambiguationDefaultValue: state.get('disambiguation'),
+		disambiguationVisible: state.get('disambiguationVisible'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
 		numAliases: rootState.get('aliasEditor').size,
@@ -160,13 +92,6 @@ function mapDispatchToProps(dispatch) {
 	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
 		onAliasButtonClick: () => dispatch(showAliasEditor()),
-		onSortNameChange: (event) =>
-			debouncedDispatch(updateSortNameField(event.target.value)),
-		onNameChange: (event) =>
-			debouncedDispatch(updateNameField(event.target.value)),
-		onLanguageChange: (value) => dispatch(updateLanguageField(value.value)),
-		onDisambiguationChange: (event) =>
-			debouncedDispatch(updateDisambiguationField(event.target.value)),
 		onDisambiguationButtonClick: () => dispatch({
 			type: 'SHOW_DISAMBIGUATION'
 		}),
@@ -174,4 +99,4 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SharedData);
+export default connect(mapStateToProps, mapDispatchToProps)(ButtonBar);

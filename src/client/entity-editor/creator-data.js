@@ -18,17 +18,17 @@
 
 
 import AliasEditor from './alias-editor/alias-editor';
+import ButtonBar from './button-bar/button-bar';
 import CreatorData from './creator-data/creator-data';
 import IdentifierEditor from './identifier-editor/identifier-editor';
+import NameSection from './name-section/name-section';
 import {Panel} from 'react-bootstrap';
 import React from 'react';
-import SharedData from './shared-data/shared-data';
 import {connect} from 'react-redux';
 
 
 let Wrapper = ({
 	aliasEditorVisible,
-	disambiguationVisible,
 	identifierEditorVisible,
 	languageOptions,
 	genderOptions,
@@ -57,10 +57,10 @@ let Wrapper = ({
 				languageOptions={languageOptionsForDisplay}
 				show={aliasEditorVisible}
 			/>
-			<SharedData
-				disambiguationVisible={disambiguationVisible}
+			<NameSection
 				languageOptions={languageOptionsForDisplay}
 			/>
+			<ButtonBar/>
 			<CreatorData
 				creatorTypes={creatorTypesForDisplay}
 				genderOptions={genderOptionsForDisplay}
@@ -77,7 +77,6 @@ Wrapper.displayName = 'Wrapper';
 Wrapper.propTypes = {
 	aliasEditorVisible: React.PropTypes.bool,
 	creatorTypes: React.PropTypes.array,
-	disambiguationVisible: React.PropTypes.bool,
 	genderOptions: React.PropTypes.array,
 	identifierEditorVisible: React.PropTypes.array,
 	identifierTypes: React.PropTypes.array,
@@ -85,9 +84,8 @@ Wrapper.propTypes = {
 };
 
 function mapStateToProps(rootState) {
-	const state = rootState.get('sharedData');
+	const state = rootState.get('buttonBar');
 	return {
-		disambiguationVisible: state.get('disambiguationVisible'),
 		aliasEditorVisible: state.get('aliasEditorVisible'),
 		identifierEditorVisible: state.get('identifierEditorVisible')
 	};
