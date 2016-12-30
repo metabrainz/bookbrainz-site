@@ -24,14 +24,14 @@ import aliasEditorReducer from './alias-editor/reducer';
 import buttonBarReducer from './button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import {createStore} from 'redux';
-import creatorDataReducer from './creator-data/reducer';
+import creatorSectionReducer from './creator-section/reducer';
 import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
 
 const rootReducer = combineReducers({
 	buttonBar: buttonBarReducer,
 	aliasEditor: aliasEditorReducer,
-	creatorData: creatorDataReducer,
+	creatorSection: creatorSectionReducer,
 	identifierEditor: identifierEditorReducer,
 	nameSection: nameSectionReducer
 });
@@ -90,7 +90,7 @@ function generateInitialState(creator, creatorTypes) {
 			...name
 		}),
 		aliasEditor: Immutable.fromJS(aliasDict),
-		creatorData: Immutable.Map({
+		creatorSection: Immutable.Map({
 			gender: initialGender,
 			type: initialCreatorType,
 			beginDate: creator.beginDate,

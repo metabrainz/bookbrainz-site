@@ -17,48 +17,8 @@
  */
 
 
-const UPDATE_GENDER = 'UPDATE_GENDER';
-const UPDATE_TYPE = 'UPDATE_TYPE';
-const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
-const UPDATE_END_DATE = 'UPDATE_END_DATE';
-const UPDATE_ENDED = 'UPDATE_ENDED';
 const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 
-
-export function updateGender(value) {
-	return {
-		type: UPDATE_GENDER,
-		value
-	};
-}
-
-export function updateType(value) {
-	return {
-		type: UPDATE_TYPE,
-		value
-	};
-}
-
-export function updateBeginDate(value) {
-	return {
-		type: UPDATE_BEGIN_DATE,
-		value
-	};
-}
-
-export function updateEndDate(value) {
-	return {
-		type: UPDATE_END_DATE,
-		value
-	};
-}
-
-export function updateEnded(value) {
-	return {
-		type: UPDATE_ENDED,
-		value
-	};
-}
 
 export function setSubmitError(error) {
 	return {

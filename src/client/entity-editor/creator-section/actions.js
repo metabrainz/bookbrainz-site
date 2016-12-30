@@ -16,31 +16,45 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
 
-function reducer(
-	state = Immutable.Map({
-		gender: null,
-		type: null
-	}),
-	action
-) {
-	switch (action.type) {
-		case 'UPDATE_GENDER':
-			return state.set('gender', action.value);
-		case 'UPDATE_TYPE':
-			return state.set('type', action.value);
-		case 'UPDATE_BEGIN_DATE':
-			return state.set('beginDate', action.value);
-		case 'UPDATE_END_DATE':
-			return state.set('endDate', action.value);
-		case 'UPDATE_ENDED':
-			return state.set('ended', action.value);
-		case 'SET_SUBMIT_ERROR':
-			return state.set('submitError', action.error);
-		// no default
-	}
-	return state;
+export const UPDATE_GENDER = 'UPDATE_GENDER';
+export const UPDATE_TYPE = 'UPDATE_TYPE';
+export const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
+export const UPDATE_END_DATE = 'UPDATE_END_DATE';
+export const UPDATE_ENDED = 'UPDATE_ENDED';
+
+
+export function updateGender(value) {
+	return {
+		type: UPDATE_GENDER,
+		value
+	};
 }
 
-export default reducer;
+export function updateType(value) {
+	return {
+		type: UPDATE_TYPE,
+		value
+	};
+}
+
+export function updateBeginDate(value) {
+	return {
+		type: UPDATE_BEGIN_DATE,
+		value
+	};
+}
+
+export function updateEndDate(value) {
+	return {
+		type: UPDATE_END_DATE,
+		value
+	};
+}
+
+export function updateEnded(value) {
+	return {
+		type: UPDATE_ENDED,
+		value
+	};
+}

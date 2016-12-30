@@ -19,7 +19,7 @@
 
 import AliasEditor from './alias-editor/alias-editor';
 import ButtonBar from './button-bar/button-bar';
-import CreatorData from './creator-data/creator-data';
+import CreatorSection from './creator-section/creator-section';
 import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
 import {Panel} from 'react-bootstrap';
@@ -61,7 +61,7 @@ let Wrapper = ({
 				languageOptions={languageOptionsForDisplay}
 			/>
 			<ButtonBar/>
-			<CreatorData
+			<CreatorSection
 				creatorTypes={creatorTypesForDisplay}
 				genderOptions={genderOptionsForDisplay}
 				submissionUrl={submissionUrl}

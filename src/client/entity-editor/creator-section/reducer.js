@@ -16,28 +16,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert} from 'react-bootstrap';
-import React from 'react';
-import {connect} from 'react-redux';
+import {
+	UPDATE_BEGIN_DATE, UPDATE_ENDED, UPDATE_END_DATE, UPDATE_GENDER, UPDATE_TYPE
+} from './actions';
+import Immutable from 'immutable';
 
-function ErrorText({
-	children
-}) {
-	return (
-		<Alert bsStyle="error">{children}</Alert>
-	);
+function reducer(
+	state = Immutable.Map({
+		gender: null,
+		type: null
+	}),
+	action
+) {
+	switch (action.type) {
+		case UPDATE_GENDER:
+			return state.set('gender', action.value);
+		case UPDATE_TYPE:
+			return state.set('type', action.value);
+		case UPDATE_BEGIN_DATE:
+			return state.set('beginDate', action.value);
+		case UPDATE_END_DATE:
+			return state.set('endDate', action.value);
+		case UPDATE_ENDED:
+			return state.set('ended', action.value);
+		case 'SET_SUBMIT_ERROR':
+			return state.set('submitError', action.error);
+		// no default
+	}
+	return state;
 }
-ErrorText.displayName = 'ErrorText';
-ErrorText.propTypes = {
-	children: React.PropTypes.node
-};
 
-function mapStateToProps(rootState) {
-	const state = rootState.get('creatorSection');
-	return {
-		children: state.get('submitError')
-	};
-}
-
-
-export default connect(mapStateToProps)(ErrorText);
+export default reducer;

@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row, Input} from 'react-bootstrap';
+import {Col, Input, Row} from 'react-bootstrap';
 import {
 	updateBeginDate, updateEndDate, updateEnded, updateGender, updateType
-} from '../actions';
+} from './actions';
 import DateField from './date-field';
 import ErrorText from '../common/error-text';
 import React from 'react';
@@ -44,7 +44,7 @@ function isPartialDateValid(value) {
 	return validSyntax && validValue;
 }
 
-function CreatorData({
+function CreatorSection({
 	beginDateLabel,
 	beginDateValue,
 	creatorTypes,
@@ -139,8 +139,8 @@ function CreatorData({
 		</form>
 	);
 }
-CreatorData.displayName = 'CreatorData';
-CreatorData.propTypes = {
+CreatorSection.displayName = 'CreatorSection';
+CreatorSection.propTypes = {
 	beginDateLabel: React.PropTypes.string,
 	beginDateValue: React.PropTypes.string,
 	creatorTypes: React.PropTypes.array,
@@ -161,7 +161,7 @@ CreatorData.propTypes = {
 };
 
 function mapStateToProps(rootState, {creatorTypes}) {
-	const state = rootState.get('creatorData');
+	const state = rootState.get('creatorSection');
 
 	const typeValue = state.get('type');
 	const personType = creatorTypes.find((type) => type.label === 'Person');
@@ -201,4 +201,4 @@ function mapDispatchToProps(dispatch, {creatorTypes}) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreatorData);
+export default connect(mapStateToProps, mapDispatchToProps)(CreatorSection);
