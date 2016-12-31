@@ -16,18 +16,39 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Button} from 'react-bootstrap';
+import {Alert, Button, Col, Input, Row} from 'react-bootstrap';
 import {setSubmitError, updateRevisionNote} from './actions';
 import React from 'react';
+import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import request from 'superagent-bluebird-promise';
 
 function SubmissionSection({
 	error,
+	onNoteChange,
 	onSubmitClick
 }) {
 	return (
 		<div>
+			<h2>
+				Submit Your Revision
+			</h2>
+			<p className="text-muted">
+				Enter a note describing what you&rsquo;ve done and what sources
+				you used, and hit the submit button to finish editing
+			</p>
+			<form>
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<Input
+							label="Revision Note"
+							rows="6"
+							type="textarea"
+							onChange={onNoteChange}
+						/>
+					</Col>
+				</Row>
+			</form>
 			<div className="text-center margin-top-1">
 				<Button bsStyle="success" onClick={onSubmitClick}>
 					Submit
@@ -39,10 +60,11 @@ function SubmissionSection({
 		</div>
 	);
 }
-SubmissionSection.displayName = 'CreatorSection';
+SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	error: React.PropTypes.node,
 	submissionUrl: React.PropTypes.string,
+	onNoteChange: React.PropTypes.func,
 	onSubmitClick: React.PropTypes.func
 };
 
@@ -66,24 +88,28 @@ function submit(url, data) {
 }
 
 function mapStateToProps(rootState, {submissionUrl}) {
-	const state = rootState.get('creatorSection');
+	const state = rootState.get('submissionSection');
 	return {
 		onSubmitClick: () => submit(submissionUrl, rootState),
 		error: state.get('submitError')
 	};
 }
 
+const KEYSTROKE_DEBOUNCE_TIME = 250;
 function mapDispatchToProps(dispatch) {
+	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
+		onNoteChange: (event) =>
+			debouncedDispatch(updateRevisionNote(event.target.value)),
 		onSubmitError: (error) => dispatch(setSubmitError(error.message))
 	};
 }
 
-function mergeProps(stateProps, dispatchProps) {
-	return {
+function mergeProps(stateProps, dispatchProps, ownProps) {
+	return Object.assign({}, ownProps, stateProps, dispatchProps, {
 		onSubmitClick: () => stateProps.onSubmitClick()
 			.catch((error) => dispatchProps.onSubmitError(error))
-	};
+	});
 }
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
