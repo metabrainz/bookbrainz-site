@@ -15,11 +15,16 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint valid-jsdoc: "error" */
 
 const React = require('react');
 
 const PageHeader = require('react-bootstrap').PageHeader;
 
+/**
+* Renders the document and display the 'Develop' Page.
+* @returns {ReactElement} a HTML document to display the Develop Page
+*/
 function DevelopPage() {
 	'use strict';
 

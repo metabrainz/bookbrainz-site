@@ -16,6 +16,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint valid-jsdoc: "error" */
+
 const React = require('react');
 const bootstrap = require('react-bootstrap');
 
@@ -24,14 +26,28 @@ const Col = bootstrap.Col;
 const ListGroup = bootstrap.ListGroup;
 const ListGroupItem = bootstrap.ListGroupItem;
 
+/**
+* The class is derived from React Component base class and
+* renders the 'Entity Revisions' page.
+*/
 class EntityRevisions extends React.Component {
 
+/**
+* Binds the class methods to their respective data.
+* @constructor
+* @param {object} props - Object of properties passed to the component
+*/
 	constructor(props) {
 		super(props);
 		this.renderHeader = this.renderHeader.bind(this);
 		this.renderRevision = this.renderRevision.bind(this);
 	}
 
+/**
+* Renders the Header of the page consisting of Entity name and
+* disambiguation comment.
+* @returns {ReactElement} a HTML document which is a a part of Revision page
+*/
 	renderHeader() {
 		const {entity} = this.props;
 
@@ -54,6 +70,14 @@ class EntityRevisions extends React.Component {
 		);
 	}
 
+/**
+* Renders the data related to Revision such as 'author' and 'date'.
+* It also displays 'Revision Notes' column which displays the first revison note
+* which is a summary of the changes made in the revision.
+* @param {object} revision object is passed for the revison to be represented
+* by the rendered component.
+* @returns {ReactElement} a HTML document which is a part of Revision Page
+*/
 	renderRevision(revision) {
 		const createdDate = new Date(revision.revision.createdAt);
 		const dateLabel = (Date.now() - createdDate < 86400000) ?
@@ -83,6 +107,12 @@ class EntityRevisions extends React.Component {
 		);
 	}
 
+/**
+* Renders the EntityRevisions page, which is a list of all the revisions made
+* to an entity, along with information about the author and the
+* first revision note for each revision.
+* @returns {ReactElement} a HTML document which is a part of the Revision page
+*/
 	render() {
 		const {revisions} = this.props;
 
