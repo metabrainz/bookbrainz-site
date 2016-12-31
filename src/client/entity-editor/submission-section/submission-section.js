@@ -22,12 +22,16 @@ import React from 'react';
 import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import request from 'superagent-bluebird-promise';
+import classNames from 'classnames';
 
 function SubmissionSection({
-	error,
+	errorText,
 	onNoteChange,
 	onSubmitClick
 }) {
+	const errorAlertClass =
+		classNames('text-center', 'margin-top-1', {hidden: !errorText});
+
 	return (
 		<div>
 			<h2>
@@ -54,15 +58,15 @@ function SubmissionSection({
 					Submit
 				</Button>
 			</div>
-			<div className="text-center margin-top-1">
-				<Alert bsStyle="error">{error}</Alert>
+			<div className={errorAlertClass}>
+				<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
 			</div>
 		</div>
 	);
 }
 SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
-	error: React.PropTypes.node,
+	errorText: React.PropTypes.node,
 	submissionUrl: React.PropTypes.string,
 	onNoteChange: React.PropTypes.func,
 	onSubmitClick: React.PropTypes.func
@@ -91,7 +95,7 @@ function mapStateToProps(rootState, {submissionUrl}) {
 	const state = rootState.get('submissionSection');
 	return {
 		onSubmitClick: () => submit(submissionUrl, rootState),
-		error: state.get('submitError')
+		errorText: state.get('submitError')
 	};
 }
 
