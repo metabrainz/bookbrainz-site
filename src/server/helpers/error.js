@@ -19,6 +19,11 @@
 'use strict';
 
 const status = require('http-status');
+const React = require('react');
+const ReactDOMServer = require('react-dom/server');
+const propHelpers = require('./props');
+const Layout = require('../../client/containers/Layout');
+const ErrorPage = require('../../client/components/pages/error');
 
 class SiteError extends Error {
 	constructor(message) {
@@ -106,10 +111,19 @@ function _getErrorToSend(err) {
 	return new SiteError();
 }
 
-function renderError(res, err) {
+function renderError(req, res, err) {
 	const errorToSend = _getErrorToSend(err);
-
-	res.status(errorToSend.status).render('error', {error: errorToSend});
+	const props = propHelpers.generateProps(req, res, {
+		error: errorToSend
+	});
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<ErrorPage
+				error={props.error}
+			/>
+		</Layout>
+	);
+	res.status(errorToSend.status).render('target', {markup});
 }
 
 function sendErrorAsJSON(res, err) {

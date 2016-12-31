@@ -130,7 +130,7 @@ app.use((req, res, next) => {
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-	error.renderError(res, err);
+	error.renderError(req, res, err);
 });
 
 const debug = require('debug')('bbsite');
