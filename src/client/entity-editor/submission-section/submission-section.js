@@ -17,10 +17,10 @@
  */
 
 import {Alert, Button} from 'react-bootstrap';
+import {setSubmitError, updateRevisionNote} from './actions';
 import React from 'react';
 import {connect} from 'react-redux';
 import request from 'superagent-bluebird-promise';
-import {setSubmitError} from '../actions';
 
 function SubmissionSection({
 	error,

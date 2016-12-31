@@ -18,7 +18,7 @@
 
 import {
 	SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
-} from '../actions';
+} from './actions';
 import Immutable from 'immutable';
 
 function reducer(
