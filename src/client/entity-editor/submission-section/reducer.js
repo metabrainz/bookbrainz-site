@@ -17,28 +17,21 @@
  */
 
 import {
-	UPDATE_BEGIN_DATE, UPDATE_ENDED, UPDATE_END_DATE, UPDATE_GENDER, UPDATE_TYPE
-} from './actions';
+	SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
+} from '../actions';
 import Immutable from 'immutable';
 
 function reducer(
 	state = Immutable.Map({
-		gender: null,
-		type: null
+		note: ''
 	}),
 	action
 ) {
 	switch (action.type) {
-		case UPDATE_GENDER:
-			return state.set('gender', action.value);
-		case UPDATE_TYPE:
-			return state.set('type', action.value);
-		case UPDATE_BEGIN_DATE:
-			return state.set('beginDate', action.value);
-		case UPDATE_END_DATE:
-			return state.set('endDate', action.value);
-		case UPDATE_ENDED:
-			return state.set('ended', action.value);
+		case UPDATE_REVISION_NOTE:
+			return state.set('note', action.value);
+		case SET_SUBMIT_ERROR:
+			return state.set('submitError', action.error);
 		// no default
 	}
 	return state;

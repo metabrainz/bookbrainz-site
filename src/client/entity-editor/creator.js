@@ -27,13 +27,15 @@ import {createStore} from 'redux';
 import creatorSectionReducer from './creator-section/reducer';
 import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
+import submissionSectionReducer from './submission-section/reducer'
 
 const rootReducer = combineReducers({
 	buttonBar: buttonBarReducer,
 	aliasEditor: aliasEditorReducer,
 	creatorSection: creatorSectionReducer,
 	identifierEditor: identifierEditorReducer,
-	nameSection: nameSectionReducer
+	nameSection: nameSectionReducer,
+	submissionSection: submissionSectionReducer
 });
 
 function generateInitialState(creator, creatorTypes) {
