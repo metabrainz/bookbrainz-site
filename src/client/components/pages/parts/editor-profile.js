@@ -39,7 +39,11 @@ class EditorProfileTab extends React.Component {
 
 	renderBasicInfo() {
 		const {user, editor} = this.props;
-		const {cachedMetabrainzName, metabrainzUserId, name, gender, birthDate} = editor;
+		const {cachedMetabrainzName,
+			metabrainzUserId,
+			name,
+			gender,
+			birthDate} = editor;
 		const createdAtDate = (new Date(editor.createdAt)).toUTCString();
 		const lastActiveDate = (new Date(editor.activeAt)).toUTCString();
 		const birthday = (new Date(birthDate)).toUTCString();

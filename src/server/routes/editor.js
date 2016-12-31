@@ -58,7 +58,6 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			withRelated: ['area', 'gender']
 		})
 		.then((editor) => editor.toJSON());
-1
 	const titleJSONPromise = new TitleUnlock()
 		.where(_.snakeCase('editorId'), parseInt(req.user.id, 10))
 		.fetchAll({
@@ -85,21 +84,22 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 
 	Promise.join(editorJSONPromise, titleJSONPromise, genderJSONPromise,
 		(editorJSON, titleJSON, genderJSON) => {
-			const markup =
-				ReactDOMServer.renderToString(ProfileForm({
-					editor: editorJSON,
-					titles: titleJSON,
-					genders: genderJSON
-				}));
-
-			res.render('editor/edit', {
-				props: {
-					editor: editorJSON,
-					titles: titleJSON,
-					genders: genderJSON
-				},
-				markup
+			const props = propHelpers.generateProps(req, res, {
+				editor: editorJSON,
+				titles: titleJSON,
+				genders: genderJSON
 			});
+			const script = '/js/editor/edit.js';
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<ProfileForm
+						editor={props.editor}
+						genders={props.genders}
+						titles={props.titles}
+					/>
+				</Layout>
+			);
+			res.render('target', {props, markup, script});
 		}
 	)
 		.catch(next);

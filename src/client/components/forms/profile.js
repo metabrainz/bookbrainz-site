@@ -27,6 +27,8 @@
 const React = require('react');
 const request = require('superagent-bluebird-promise');
 
+const Grid = require('react-bootstrap').Grid;
+const Row = require('react-bootstrap').Row;
 const Button = require('react-bootstrap').Button;
 const Input = require('react-bootstrap').Input;
 const Col = require('react-bootstrap').Col;
@@ -130,83 +132,99 @@ class ProfileForm extends React.Component {
 		}
 
 		return (
-			<form
-				className="form-horizontal"
-				onSubmit={this.handleSubmit}
-			>
-				{loadingElement}
-				<Input
-					defaultValue={initialDisplayName}
-					label="Display Name"
-					labelClassName="col-md-4"
-					ref={(ref) => this.name = ref}
-					type="text"
-					wrapperClassName="col-md-4"
-				/>
-				<Input
-					defaultValue={initialBio}
-					label="Bio"
-					labelClassName="col-md-3"
-					ref={(ref) => this.bio = ref}
-					type="textarea"
-					wrapperClassName="col-md-9"
-				/>
-				<Select
-					idAttribute="unlockId"
-					label="Title"
-					labelAttribute="title"
-					labelClassName="col-md-4"
-					options={titleOptions}
-					placeholder="Select title"
-					ref={(ref) => this.title = ref}
-					wrapperClassName="col-md-4"
-				/>
-				<SearchSelect
-					noDefault
-					collection="area"
-					defaultValue={initialArea}
-					label="Area"
-					labelClassName="col-md-4"
-					placeholder="Select area..."
-					ref={(ref) => this.area = ref}
-					select2Options={select2Options}
-					wrapperClassName="col-md-4"
-				/>
-				<Select
-					defaultValue={initialGender}
-					idAttribute="id"
-					label="Gender"
-					labelAttribute="name"
-					labelClassName="col-md-4"
-					options={genderOptions}
-					placeholder="Select Gender"
-					ref={(ref) => this.gender = ref}
-					wrapperClassName="col-md-4"
-				/>
-				<PartialDate
-					defaultValue={initialBirthDate}
-					label="Birth Date"
-					labelClassName="col-md-4"
-					placeholder="YYYY-MM-DD"
-					ref={(ref) => this.birthDate = ref}
-					wrapperClassName="col-md-4"
-				/>
-				<div className="form-group">
-					<Col
-						md={4}
-						mdOffset={4}
-					>
-						<Button
-							block
-							bsSize="large"
-							bsStyle="primary"
-							type="submit"
-						>
-							Update!
-						</Button>
+			<Grid>
+				<h1>Edit Profile</h1>
+				<Row>
+					<Col md={12}>
+						<p className="lead">Edit your public profile.</p>
 					</Col>
-				</div>
-			</form>
+				</Row>
+				<Row>
+					<Col
+						id="profileForm"
+						md={6}
+						mdOffset={3}
+					>
+						<form
+							className="form-horizontal"
+							onSubmit={this.handleSubmit}
+						>
+							{loadingElement}
+							<Input
+								defaultValue={initialDisplayName}
+								label="Display Name"
+								labelClassName="col-md-4"
+								ref={(ref) => this.name = ref}
+								type="text"
+								wrapperClassName="col-md-4"
+							/>
+							<Input
+								defaultValue={initialBio}
+								label="Bio"
+								labelClassName="col-md-3"
+								ref={(ref) => this.bio = ref}
+								type="textarea"
+								wrapperClassName="col-md-9"
+							/>
+							<Select
+								idAttribute="unlockId"
+								label="Title"
+								labelAttribute="title"
+								labelClassName="col-md-4"
+								options={titleOptions}
+								placeholder="Select title"
+								ref={(ref) => this.title = ref}
+								wrapperClassName="col-md-4"
+							/>
+							<SearchSelect
+								noDefault
+								collection="area"
+								defaultValue={initialArea}
+								label="Area"
+								labelClassName="col-md-4"
+								placeholder="Select area..."
+								ref={(ref) => this.area = ref}
+								select2Options={select2Options}
+								wrapperClassName="col-md-4"
+							/>
+							<Select
+								defaultValue={initialGender}
+								idAttribute="id"
+								label="Gender"
+								labelAttribute="name"
+								labelClassName="col-md-4"
+								options={genderOptions}
+								placeholder="Select Gender"
+								ref={(ref) => this.gender = ref}
+								wrapperClassName="col-md-4"
+							/>
+							<PartialDate
+								defaultValue={initialBirthDate}
+								label="Birth Date"
+								labelClassName="col-md-4"
+								placeholder="YYYY-MM-DD"
+								ref={(ref) => this.birthDate = ref}
+								wrapperClassName="col-md-4"
+							/>
+							<div className="form-group">
+								<Col
+									md={4}
+									mdOffset={4}
+								>
+									<Button
+										block
+										bsSize="large"
+										bsStyle="primary"
+										type="submit"
+									>
+										Update!
+									</Button>
+								</Col>
+							</div>
+						</form>
+					</Col>
+				</Row>
+			</Grid>
 		);
 	}
 }
