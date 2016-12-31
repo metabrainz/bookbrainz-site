@@ -17,12 +17,20 @@
  */
 
 
-const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
+export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
+export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
 
 
 export function setSubmitError(error) {
 	return {
 		type: SET_SUBMIT_ERROR,
 		error
+	};
+}
+
+export function updateRevisionNote(value) {
+	return {
+		type: UPDATE_REVISION_NOTE,
+		value
 	};
 }
