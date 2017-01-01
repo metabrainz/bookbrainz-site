@@ -63,6 +63,7 @@ rules:
     -
       prefer:
         return: returns
+      requireReturn: false
   valid-typeof: 2
   no-unexpected-multiline: 2
 
