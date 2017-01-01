@@ -112,6 +112,10 @@ class WorkForm extends React.Component {
 			});
 	}
 
+	/**
+	* description of the function render
+	* Enter the details
+	*/
 	render() {
 		let aliases = null;
 		const prefillData = this.props.work;
