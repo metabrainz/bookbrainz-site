@@ -26,6 +26,7 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * History of BookBrainz
 * Chat mediums of BookBrainz
 * The core components of BookBrainz
+* @returns {ReactElement} a HTML document which displays the About page
 */
 function AboutPage() {
 	'use strict';
