@@ -20,6 +20,11 @@ const React = require('react');
 
 const PageHeader = require('react-bootstrap').PageHeader;
 
+/**
+* Description of the function PrivacyPage
+* @param {Privacy} the privacy policy of MusicBrainz
+* @return {ReactElement} HTML file is displayed
+*/
 function PrivacyPage() {
 	'use strict';
 
