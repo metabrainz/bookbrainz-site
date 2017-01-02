@@ -25,8 +25,8 @@ const Alert = require('react-bootstrap').Alert;
 
 /**
 * Description of the function RegistrationAuth
-* @param {Register} to sign up as an editor of Bookbrainz
-* @return {Element} HTML file is displayed
+* to sign up as an editor of Bookbrainz
+* @return {ReactElement} HTML file is displayes RegistrationAuth
 */
 function RegistrationAuth() {
 	'use strict';
