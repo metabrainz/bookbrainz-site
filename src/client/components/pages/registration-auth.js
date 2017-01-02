@@ -23,6 +23,11 @@ const Button = require('react-bootstrap').Button;
 const PageHeader = require('react-bootstrap').PageHeader;
 const Alert = require('react-bootstrap').Alert;
 
+/**
+* Description of the function RegistrationAuth
+* @param {Register} to sign up as an editor of Bookbrainz
+* @return {Element} HTML file is displayed
+*/
 function RegistrationAuth() {
 	'use strict';
 
