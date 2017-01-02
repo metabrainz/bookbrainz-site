@@ -23,7 +23,7 @@ const PageHeader = require('react-bootstrap').PageHeader;
 /**
 * Description of the function PrivacyPage
 * the privacy policy of MusicBrainz
-* @return {ReactElement} a HTML file is displayed
+* @returns {ReactElement} a HTML file is displayed
 */
 function PrivacyPage() {
 	'use strict';
