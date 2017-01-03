@@ -20,6 +20,11 @@ const React = require('react');
 
 const PageHeader = require('react-bootstrap').PageHeader;
 
+/**
+* Renders the the document and displays the 'Contribute' page.
+* @returns {ReactElement} a HTML document which displays the
+* Contribute page
+*/
 function ContributePage() {
 	'use strict';
 

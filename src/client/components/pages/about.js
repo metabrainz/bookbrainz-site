@@ -20,6 +20,11 @@ const React = require('react');
 
 const PageHeader = require('react-bootstrap').PageHeader;
 
+/**
+* Renders the document and displays the 'About' page.
+* @returns {ReactElement} a HTML document which displays the About
+* page
+*/
 function AboutPage() {
 	'use strict';
 
@@ -110,7 +115,8 @@ function AboutPage() {
 			<p>
 				The core components of BookBrainz are the site, the
 				webservice and the database. All of these components are
-				running on MetaBrainz's Sakura server, which also runs&nbsp;
+				running on MetaBrainz's Sakura server, which also runs
+        &nbsp;
 				<a href="https://critiquebrainz.org/">
 					CritiqueBrainz
 				</a>.
