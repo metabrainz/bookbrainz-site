@@ -33,7 +33,7 @@ class EntityRevisions extends React.Component {
 /**
 * Binds the class methods to their respective data.
 * @constructor
-* @param {object} props Properties passed to the component
+* @param {object} props - Properties passed to the component
 */
 	constructor(props) {
 		super(props);
@@ -72,7 +72,7 @@ class EntityRevisions extends React.Component {
 * Renders the data related to Revision such as 'author' and 'date'.
 * It also displays the first revison note which is a summary of the changes
 * made in the revision.
-* @param {object} revision The revision to be represented by the
+* @param {object} revision - The revision to be represented by the
 * rendered component.
 * @returns {ReactElement} a HTML document which is a part of the Revision page
 */
