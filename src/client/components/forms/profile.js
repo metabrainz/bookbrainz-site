@@ -142,108 +142,60 @@ class ProfileForm extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							{loadingElement}
-							<Row>
-								<Col
-									md={4}
-									mdOffset={2}
-								>
-									<Input
-										defaultValue={initialDisplayName}
-										label="Display Name"
-										ref={(ref) => this.name = ref}
-										type="text"
-									/>
-								</Col>
-							</Row>
-							<Row>
-								<Col
-									md={8}
-									mdOffset={2}
-								>
-									<Input
-										defaultValue={initialBio}
-										label="Bio"
-										ref={(ref) => this.bio = ref}
-										type="textarea"
-									/>
-								</Col>
-							</Row>
+							<Input
+								defaultValue={initialDisplayName}
+								label="Display Name"
+								ref={(ref) => this.name = ref}
+								type="text"
+							/>
+							<Input
+								defaultValue={initialBio}
+								label="Bio"
+								ref={(ref) => this.bio = ref}
+								type="textarea"
+							/>
 							{titleOptions.length > 0 &&
-								<Row>
-									<Col
-										md={4}
-										mdOffset={2}
-									>
-										<Select
-											idAttribute="unlockId"
-											label="Title"
-											labelAttribute="title"
-											options={titleOptions}
-											placeholder="Select title"
-											ref={(ref) => this.title = ref}
-										/>
-									</Col>
-								</Row>
+								<Select
+									idAttribute="unlockId"
+									label="Title"
+									labelAttribute="title"
+									options={titleOptions}
+									placeholder="Select title"
+									ref={(ref) => this.title = ref}
+								/>
 							}
-							<Row>
-								<Col
-									md={4}
-									mdOffset={2}
+							<SearchSelect
+								noDefault
+								collection="area"
+								defaultValue={initialArea}
+								label="Area"
+								placeholder="Select area..."
+								ref={(ref) => this.area = ref}
+								select2Options={select2Options}
+							/>
+							<Select
+								defaultValue={initialGender}
+								idAttribute="id"
+								label="Gender"
+								labelAttribute="name"
+								options={genderOptions}
+								placeholder="Select Gender"
+								ref={(ref) => this.gender = ref}
+							/>
+							<PartialDate
+								defaultValue={initialBirthDate}
+								label="Birth Date"
+								placeholder="YYYY-MM-DD"
+								ref={(ref) => this.birthDate = ref}
+							/>
+							<div className="form-group text-center">
+								<Button
+									bsSize="large"
+									bsStyle="primary"
+									type="submit"
 								>
-									<SearchSelect
-										noDefault
-										collection="area"
-										defaultValue={initialArea}
-										label="Area"
-										placeholder="Select area..."
-										ref={(ref) => this.area = ref}
-										select2Options={select2Options}
-									/>
-								</Col>
-							</Row>
-							<Row>
-								<Col
-									md={4}
-									mdOffset={2}
-								>
-									<Select
-										defaultValue={initialGender}
-										idAttribute="id"
-										label="Gender"
-										labelAttribute="name"
-										options={genderOptions}
-										placeholder="Select Gender"
-										ref={(ref) => this.gender = ref}
-									/>
-								</Col>
-							</Row>
-							<Row>
-								<Col
-									md={4}
-									mdOffset={2}
-								>
-									<PartialDate
-										defaultValue={initialBirthDate}
-										label="Birth Date"
-										placeholder="YYYY-MM-DD"
-										ref={(ref) => this.birthDate = ref}
-									/>
-								</Col>
-							</Row>
-							<div className="form-group">
-								<Col
-									md={4}
-									mdOffset={4}
-								>
-									<Button
-										block
-										bsSize="large"
-										bsStyle="primary"
-										type="submit"
-									>
-										Update!
-									</Button>
-								</Col>
+									Update!
+								</Button>
 							</div>
 						</form>
 					</Col>
