@@ -16,7 +16,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
 const React = require('react');
 const bootstrap = require('react-bootstrap');
 
@@ -34,7 +33,7 @@ class EntityRevisions extends React.Component {
 /**
 * Binds the class methods to their respective data.
 * @constructor
-* @param {object} props - Properties passed to the component
+* @param {object} props Properties passed to the component
 */
 	constructor(props) {
 		super(props);
@@ -73,7 +72,7 @@ class EntityRevisions extends React.Component {
 * Renders the data related to Revision such as 'author' and 'date'.
 * It also displays the first revison note which is a summary of the changes
 * made in the revision.
-* @param {object} revision - For the revision to be represented by the
+* @param {object} revision The revision to be represented by the
 * rendered component.
 * @returns {ReactElement} a HTML document which is a part of the Revision page
 */
