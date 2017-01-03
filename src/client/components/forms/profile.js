@@ -65,7 +65,7 @@ class ProfileForm extends React.Component {
 		}
 		const area = this.area.getValue();
 		const gender = this.gender.getValue();
-		const title = this.title.getValue();
+		const title = this.title && this.title.getValue();
 		const name = this.name.getValue().trim();
 		const bio = this.bio.getValue().trim();
 		const birthDate = this.birthDate.getValue();
