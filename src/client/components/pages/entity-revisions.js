@@ -73,7 +73,7 @@ class EntityRevisions extends React.Component {
 * Renders the data related to Revision such as 'author' and 'date'.
 * It also displays the first revison note which is a summary of the changes
 * made in the revision.
-* @param {object} revision for the revison to be represented  by the
+* @param {object} revision - For the revision to be represented by the
 * rendered component.
 * @returns {ReactElement} a HTML document which is a part of the Revision page
 */
