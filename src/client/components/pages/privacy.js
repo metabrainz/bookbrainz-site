@@ -21,9 +21,8 @@ const React = require('react');
 const PageHeader = require('react-bootstrap').PageHeader;
 
 /**
-* the privacy policy of BookBrainz
-* param {object} href- link to the privacy policy of BookBrainz
-* @returns {ReactElement} a HTML file is displayed
+* Renders the document and displays the 'privacy policy of BookBrainz'
+* @returns {ReactElement} a HTML file is displayes the privacy policy
 */
 function PrivacyPage() {
 	'use strict';
