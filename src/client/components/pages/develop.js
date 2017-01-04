@@ -20,6 +20,10 @@ const React = require('react');
 
 const PageHeader = require('react-bootstrap').PageHeader;
 
+/**
+* Renders the document and displays the 'Develop' page.
+* @returns {ReactElement} a HTML document to display the Develop page
+*/
 function DevelopPage() {
 	'use strict';
 

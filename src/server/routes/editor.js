@@ -30,6 +30,7 @@ const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
 const TitleUnlock = require('bookbrainz-data').TitleUnlock;
+const Gender = require('bookbrainz-data').Gender;
 
 const auth = require('../helpers/auth');
 const handler = require('../helpers/handler');
@@ -54,10 +55,9 @@ const router = express.Router();
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch({
-			withRelated: ['area']
+			withRelated: ['area', 'gender']
 		})
 		.then((editor) => editor.toJSON());
-
 	const titleJSONPromise = new TitleUnlock()
 		.where(_.snakeCase('editorId'), parseInt(req.user.id, 10))
 		.fetchAll({
@@ -73,22 +73,33 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			}
 			return titleJSON;
 		});
+	const genderJSONPromise = new Gender()
+		.fetchAll()
+		.then((gender) => {
+			if (gender) {
+				return gender.toJSON();
+			}
+			return [];
+		});
 
-	Promise.join(editorJSONPromise, titleJSONPromise,
-		(editorJSON, titleJSON) => {
-			const markup =
-				ReactDOMServer.renderToString(ProfileForm({
-					editor: editorJSON,
-					titles: titleJSON
-				}));
-
-			res.render('editor/edit', {
-				props: {
-					editor: editorJSON,
-					titles: titleJSON
-				},
-				markup
+	Promise.join(editorJSONPromise, titleJSONPromise, genderJSONPromise,
+		(editorJSON, titleJSON, genderJSON) => {
+			const props = propHelpers.generateProps(req, res, {
+				editor: editorJSON,
+				titles: titleJSON,
+				genders: genderJSON
 			});
+			const script = '/js/editor/edit.js';
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<ProfileForm
+						editor={props.editor}
+						genders={props.genders}
+						titles={props.titles}
+					/>
+				</Layout>
+			);
+			res.render('target', {props, markup, script});
 		}
 	)
 		.catch(next);
@@ -113,6 +124,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		.then((editor) =>
 			// Modify the user to match the updates from the form
 			editor.set('bio', req.body.bio)
+				.set('areaId', req.body.areaId)
+				.set('genderId', req.body.genderId)
+				.set('birthDate', req.body.birthDate)
+				.set('name', req.body.name)
 				.save()
 		)
 		.then((editor) => {
@@ -125,10 +140,6 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			}
 			return editorTitleUnlock.save();
 		})
-		.then((editor) =>
-			editor.set('areaId', req.body.areaId)
-				.save()
-		)
 		.then((editor) =>
 			editor.toJSON()
 		);
