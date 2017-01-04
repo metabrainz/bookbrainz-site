@@ -24,7 +24,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 const Alert = require('react-bootstrap').Alert;
 
 /**
-* Description of the function RegistrationAuth
 * to sign up as an editor of Bookbrainz
 * @returns {ReactElement} HTML file is displayed
 */
