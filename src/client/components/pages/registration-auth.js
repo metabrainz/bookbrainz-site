@@ -24,8 +24,9 @@ const PageHeader = require('react-bootstrap').PageHeader;
 const Alert = require('react-bootstrap').Alert;
 
 /**
-* to sign up as an editor of Bookbrainz
-* @returns {ReactElement} HTML file is displayed
+* Renders the document to sign up as an editor of Bookbrainz
+* It gives the details of to how to handle the BookBrainz account with MusicBrainz
+* @returns {ReactElement} HTML file is displayes sign up process
 */
 function RegistrationAuth() {
 	'use strict';
