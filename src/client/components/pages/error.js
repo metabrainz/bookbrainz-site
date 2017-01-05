@@ -17,6 +17,8 @@
  */
 const React = require('react');
 const Button = require('react-bootstrap').Button;
+const Grid = require('react-bootstrap').Grid;
+const Row = require('react-bootstrap').Row;
 
 /**
  * Links to different pages
@@ -30,39 +32,31 @@ class ErrorPage extends React.Component {
 		if (typeof detailedMessage === 'string') {
 			detailedMessage = [detailedMessage];
 		}
-
+		/* to-do: Adjust margins for error status title and message once image
+		   is added in
+		*/
 		return (
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'center',
-					justifyContent: 'center'
-				}}
-			>
-				<h1>{error.status}</h1>
-				<b
-					style={{
-						marginTop: '1.5em',
-						fontSize: '1.2em',
-						marginBottom: '1em'
-					}}
-				>
-					{error.message}
-				</b>
-				{Boolean(detailedMessage) &&
-					detailedMessage.map((message, idx) =>
-						<span
-							key={`detailedMsg${idx}`}
-							style={{marginTop: '0.3em'}}
-						>
-							{message}
-						</span>
-					)
-				}
-				<div
-					style={{marginTop: '1em'}}
-				>
+			<Grid className="text-center">
+				<Row className="margin-bottom-6">
+					<h1>{error.status}</h1>
+				</Row>
+				<Row className="margin-top-6 margin-bottom-2">
+					<b style={{fontSize: '1.2em'}}>
+						{error.message}
+					</b>
+				</Row>
+				<div>
+					{Boolean(detailedMessage) &&
+						detailedMessage.map((message, idx) =>
+							<Row key={`detailedMsg${idx}`}>
+								<span>
+									{message}
+								</span>
+							</Row>
+						)
+					}
+				</div>
+				<Row className="margin-top-1">
 					<Button
 						bsSize="small"
 						bsStyle="link"
@@ -70,8 +64,8 @@ class ErrorPage extends React.Component {
 					>
 						Return to Main Page
 					</Button>
-				</div>
-			</div>
+				</Row>
+			</Grid>
 		);
 	}
 }

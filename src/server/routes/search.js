@@ -87,7 +87,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
 
 		if (trustedUsers.indexOf(req.user.name) === -1) {
-			throw new PermissionDeniedError();
+			throw new PermissionDeniedError(null, req);
 		}
 
 		resolve();
