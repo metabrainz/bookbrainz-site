@@ -125,7 +125,7 @@ routes(app);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	next(new NotFoundError());
+	next(new NotFoundError(null, req));
 });
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such

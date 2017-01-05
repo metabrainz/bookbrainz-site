@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const React = require('react');
-const bootstrap = require('react-bootstrap');
+const Button = require('react-bootstrap').Button;
 
 /**
  * Links to different pages
@@ -26,12 +26,51 @@ class ErrorPage extends React.Component {
 
 	render() {
 		const {error} = this.props;
-		console.log(error);
+		let detailedMessage = error.detailedMessage;
+		if (typeof detailedMessage === 'string') {
+			detailedMessage = [detailedMessage];
+		}
 
 		return (
-			<div>
-				<h1>{error.message}</h1>
-				<h2>{error.status}</h2>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					justifyContent: 'center'
+				}}
+			>
+				<h1>{error.status}</h1>
+				<b
+					style={{
+						marginTop: '1.5em',
+						fontSize: '1.2em',
+						marginBottom: '1em'
+					}}
+				>
+					{error.message}
+				</b>
+				{Boolean(detailedMessage) &&
+					detailedMessage.map((message, idx) =>
+						<span
+							key={`detailedMsg${idx}`}
+							style={{marginTop: '0.3em'}}
+						>
+							{message}
+						</span>
+					)
+				}
+				<div
+					style={{marginTop: '1em'}}
+				>
+					<Button
+						bsSize="small"
+						bsStyle="link"
+						href="/"
+					>
+						Return to Main Page
+					</Button>
+				</div>
 			</div>
 		);
 	}
@@ -40,7 +79,8 @@ ErrorPage.displayName = 'ErrorPage';
 ErrorPage.propTypes = {
 	error: React.PropTypes.shape({
 		message: React.PropTypes.string,
-		status: React.PropTypes.number
+		status: React.PropTypes.number,
+		detailedMessage: React.PropTypes.string
 	})
 };
 

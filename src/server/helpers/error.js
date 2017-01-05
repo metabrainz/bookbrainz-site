@@ -26,12 +26,14 @@ const Layout = require('../../client/containers/Layout');
 const ErrorPage = require('../../client/components/pages/error');
 
 class SiteError extends Error {
-	constructor(message) {
+	constructor(message, req) {
 		super();
 
 		// We can't access the subclass's default message before calling super,
 		// so we set it manually here
 		this.message = message || this.constructor.defaultMessage;
+		this.detailedMessage = this.constructor.detailedMessage &&
+			this.constructor.detailedMessage(req);
 
 		this.name = this.constructor.name;
 		this.status = this.constructor.status;
@@ -82,6 +84,13 @@ class NotFoundError extends SiteError {
 
 	static get status() {
 		return status.NOT_FOUND;
+	}
+
+	static detailedMessage(req) {
+		return [
+			`No content exists at the path requested: ${req.path}`,
+			'Please make sure you have entered in the correct address!'
+		];
 	}
 }
 
