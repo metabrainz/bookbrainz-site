@@ -22,18 +22,16 @@ const status = require('http-status');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const propHelpers = require('./props');
-const Layout = require('../../client/containers/Layout');
+const Layout = require('../../client/containers/layout');
 const ErrorPage = require('../../client/components/pages/error');
 
 class SiteError extends Error {
-	constructor(message, req) {
+	constructor(message) {
 		super();
 
 		// We can't access the subclass's default message before calling super,
 		// so we set it manually here
 		this.message = message || this.constructor.defaultMessage;
-		this.detailedMessage = this.constructor.detailedMessage &&
-			this.constructor.detailedMessage(req);
 
 		this.name = this.constructor.name;
 		this.status = this.constructor.status;
@@ -45,6 +43,14 @@ class SiteError extends Error {
 
 	static get status() {
 		return status.INTERNAL_SERVER_ERROR;
+	}
+}
+
+class PathError extends SiteError {
+	constructor(message, req) {
+		super(message);
+		this.detailedMessage = this.constructor.detailedMessage &&
+				this.constructor.detailedMessage(req);
 	}
 }
 
@@ -77,7 +83,7 @@ class NotAuthenticatedError extends _AuthenticationError {
 	}
 }
 
-class NotFoundError extends SiteError {
+class NotFoundError extends PathError {
 	static get defaultMessage() {
 		return 'Page not found';
 	}
@@ -94,13 +100,20 @@ class NotFoundError extends SiteError {
 	}
 }
 
-class PermissionDeniedError extends SiteError {
+class PermissionDeniedError extends PathError {
 	static get defaultMessage() {
 		return 'You do not have permission to access this page';
 	}
 
 	static get status() {
 		return status.FORBIDDEN;
+	}
+
+	static detailedMessage(req) {
+		return [
+			`You do not have permission to access the following path: ${req.path}`,
+			'Please make sure you have entered in the correct credentials and address!'
+		]
 	}
 }
 
