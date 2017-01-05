@@ -77,7 +77,7 @@ At this point, the database is set up, and the following command should give
 you a list of usernames of BookBrainz editors (after entering the password from
 earlier):
 
-    sudo -u postgres bookbrainz -c "SELECT name FROM bookbrainz.editor"
+    sudo -u postgres psql bookbrainz -c "SELECT name FROM bookbrainz.editor"
 
 ### Cloning
 
