@@ -26,7 +26,7 @@ const Alert = require('react-bootstrap').Alert;
 /**
 * Renders a page allowing the user to sign in to MusicBrainz to
 * continue the BookBrainz registration process.
-* @returns {ReactElement} element containing the Registaion process
+* @returns {ReactElement} an element containing the rendered output.
 */
 
 function RegistrationAuth() {
