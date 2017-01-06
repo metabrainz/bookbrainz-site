@@ -28,7 +28,6 @@ const Alert = require('react-bootstrap').Alert;
 * continue the BookBrainz registration process.
 * @returns {ReactElement} an element containing the rendered output.
 */
-
 function RegistrationAuth() {
 	'use strict';
 
