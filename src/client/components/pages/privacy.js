@@ -17,11 +17,13 @@
  */
 
 const React = require('react');
+
 const PageHeader = require('react-bootstrap').PageHeader;
 
 /**
-* Renders a page containing a link to the current MusicBrainz privacy policy, 
-* which will form the basis of a future privacy policy for BookBrainz.
+* Renders a page containing a link to the current MusicBrainz privacy 
+* policy , which will form the basis of a future privacy policy 
+* for BookBrainz.
 * @returns {ReactElement} an element containing the rendered output
 */
 function PrivacyPage() {
