@@ -24,9 +24,8 @@ const PageHeader = require('react-bootstrap').PageHeader;
 const Alert = require('react-bootstrap').Alert;
 
 /**
-* Renders a page allowing the user to sign in or register BookBrainz with the
-* MusicBrainz account , it gives the details of how to handle the BookBrainz
-* account with MusicBrainz.
+* Renders a page allowing the user to sign in to MusicBrainz to
+* continue the BookBrainz registration process.
 * @returns {ReactElement} element containing the Registaion process
 */
 
