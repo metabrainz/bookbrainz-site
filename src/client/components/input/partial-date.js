@@ -25,7 +25,17 @@ const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
 const ymRegex = /^\d{4}-\d{2}$/;
 const yRegex = /^\d{4}$/;
 
+/**
+* This class is derived from the React Component base class
+* to render the date field and check validity of the value filled in it.
+*/
 class PartialDate extends React.Component {
+	/**
+	* Function to check validity of the date filled in the field.
+	* @param {string} value - Date filled in field is passed in the validator.
+	* @returns {boolean} - Returns true either if no data is filled in the field
+	* or is the date filled in the field is valid.
+	*/
 	static validate(value) {
 		if (!value) {
 			return true;
@@ -41,6 +51,11 @@ class PartialDate extends React.Component {
 		return validSyntax && validValue;
 	}
 
+	/**
+	* Binds the class methods to their respective data.
+	* @constructor
+	* @param {object} props - Properties passed to the component.
+	*/
 	constructor(props) {
 		super(props);
 
@@ -53,10 +68,18 @@ class PartialDate extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 	}
 
+	/**
+	* To get the value filled in the form field.
+	* @returns {string} - Value filled in the form field.
+	*/
 	getValue() {
 		return this.state.value;
 	}
 
+	/**
+	* Track the changes in the date field of the form and validate the value in
+	* the field after each change.
+	*/
 	handleChange() {
 		const input = this.input.getValue().trim();
 
@@ -74,10 +97,20 @@ class PartialDate extends React.Component {
 		}
 	}
 
+	/**
+	* Calls the date validator function of the 'PartialDate' class.
+	* @returns {boolean} - The result as obtained from the date validator.
+	*/
 	valid() {
 		return PartialDate.validate(this.input.getValue().trim());
 	}
 
+	/**
+	* Checks that whether the editor has succesfully filled the date field in
+	* the form or not based on results by valid() function which checks the date
+	* filled is valid or not.
+	* @returns {string} validationClass - State of the date field in the form.
+	*/
 	validationState() {
 		let validationClass = null;
 
@@ -88,6 +121,10 @@ class PartialDate extends React.Component {
 		return validationClass;
 	}
 
+	/**
+	* Renders the date input field in the form.
+	* @returns {ReactElement} - A HTMl field in the form.
+	*/
 	render() {
 		return (
 			<Input
