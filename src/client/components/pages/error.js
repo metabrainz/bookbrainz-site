@@ -41,12 +41,12 @@ class ErrorPage extends React.Component {
 					<h1>{error.status}</h1>
 				</Row>
 				<Row className="margin-top-6 margin-bottom-2">
-					<b style={{fontSize: '1.2em'}}>
+					<b className="lead">
 						{error.message}
 					</b>
 				</Row>
 				<div>
-					{Boolean(detailedMessage) &&
+					{detailedMessage &&
 						detailedMessage.map((message, idx) =>
 							<Row key={`detailedMsg${idx}`}>
 								<span>
