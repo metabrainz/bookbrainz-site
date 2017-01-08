@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const strftime = require('strftime');
+const moment = require('moment');
 /**
  * Injects entity model object with a default alias name property.
  *
@@ -36,10 +36,11 @@ function injectDefaultAliasName(instance) {
 
 function formatDate(date, includeTime) {
 	'use strict';
+	const formatter = moment(date);
 	if (includeTime) {
-		return strftime('%Y-%m-%d %H:%M:%S', date);
+		return formatter.format('YYYY-MM-DD HH:mm:ss');
 	}
-	return strftime('%Y-%m-%d', date);
+	return formatter.format('YYYY-MM-DD');
 }
 
 exports.injectDefaultAliasName = injectDefaultAliasName;
