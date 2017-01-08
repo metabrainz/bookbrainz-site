@@ -18,6 +18,7 @@
  */
 const React = require('react');
 const bootstrap = require('react-bootstrap');
+const formatDate = require('../../helpers/utils').formatDate;
 
 const Row = bootstrap.Row;
 const Col = bootstrap.Col;
@@ -78,9 +79,11 @@ class EntityRevisions extends React.Component {
 */
 	renderRevision(revision) {
 		const createdDate = new Date(revision.revision.createdAt);
-		const dateLabel = (Date.now() - createdDate < 86400000) ?
-			createdDate.toLocaleTimeString() :
-			createdDate.toLocaleDateString();
+		let includeTime = false;
+		if (Date.now() - createdDate.getTime() < 86400000) {
+			includeTime = true;
+		}
+		const dateLabel = formatDate(createdDate, includeTime);
 		const header = (
 			<h4 className="list-group-item-heading">
 				<small className="pull-right">

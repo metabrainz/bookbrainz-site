@@ -20,6 +20,7 @@
 const Icon = require('react-fontawesome');
 const React = require('react');
 const _assign = require('lodash.assign');
+const formatDate = require('../../../helpers/utils').formatDate;
 
 const Input = require('react-bootstrap').Input;
 
@@ -109,7 +110,9 @@ class EditionData extends React.Component {
 			if (prefillData.releaseEventSet &&
 				prefillData.releaseEventSet.releaseEvents) {
 				initialReleaseDate =
-					prefillData.releaseEventSet.releaseEvents[0].date;
+					formatDate(new Date(
+						prefillData.releaseEventSet.releaseEvents[0].date
+					));
 			}
 
 			initialLanguages = prefillData.languageSet &&

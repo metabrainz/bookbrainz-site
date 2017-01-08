@@ -22,6 +22,7 @@ const React = require('react');
 
 const bootstrap = require('react-bootstrap');
 const FontAwesome = require('react-fontawesome');
+const formatDate = require('../../../helpers/utils').formatDate;
 
 const Row = bootstrap.Row;
 const Col = bootstrap.Col;
@@ -44,9 +45,9 @@ class EditorProfileTab extends React.Component {
 			name,
 			gender,
 			birthDate} = editor;
-		const createdAtDate = (new Date(editor.createdAt)).toUTCString();
-		const lastActiveDate = (new Date(editor.activeAt)).toUTCString();
-		const birthday = (new Date(birthDate)).toUTCString();
+		const createdAtDate = formatDate(new Date(editor.createdAt), true);
+		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
+		const birthday = formatDate(new Date(birthDate), true);
 
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {

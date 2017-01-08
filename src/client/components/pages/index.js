@@ -23,6 +23,7 @@ const React = require('react');
 
 const bootstrap = require('react-bootstrap');
 const FontAwesome = require('react-fontawesome');
+const formatDate = require('../../helpers/utils').formatDate;
 
 const Alert = bootstrap.Alert;
 const Grid = bootstrap.Grid;
@@ -234,7 +235,7 @@ class IndexPage extends React.Component {
 														<span className="margin-left-1">{name}</span>
 													</Col>
 													<Col md={4}>
-														{(new Date(Date.parse(entity.revision.revision.createdAt)).toLocaleDateString())}
+														{formatDate(new Date(entity.revision.revision.createdAt))}
 													</Col>
 												</Row>
 											</ListGroupItem>
