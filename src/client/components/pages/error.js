@@ -40,10 +40,10 @@ class ErrorPage extends React.Component {
 				<Row className="margin-bottom-6">
 					<h1>{error.status}</h1>
 				</Row>
-				<Row className="margin-top-6 margin-bottom-2">
-					<b className="lead">
-						{error.message}
-					</b>
+				<Row className="margin-top-6 margin-bottom-1">
+					<p className="lead">
+						<b>{error.message}</b>
+					</p>
 				</Row>
 				<div>
 					{detailedMessage &&
