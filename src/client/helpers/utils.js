@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+const strftime = require('strftime');
 /**
  * Injects entity model object with a default alias name property.
  *
@@ -34,4 +34,13 @@ function injectDefaultAliasName(instance) {
 	return instance;
 }
 
+function formatDate(date, includeTime) {
+	'use strict';
+	if (includeTime) {
+		return strftime('%Y-%m-%d %H:%M:%S', date);
+	}
+	return strftime('%Y-%m-%d', date);
+}
+
 exports.injectDefaultAliasName = injectDefaultAliasName;
+exports.formatDate = formatDate;

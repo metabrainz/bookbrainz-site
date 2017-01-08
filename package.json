@@ -67,6 +67,7 @@
     "select2": "^4.0.2",
     "select2-bootstrap-theme": "0.1.0-beta.4",
     "serve-favicon": "~2.3.0",
+    "strftime": "^0.10.0",
     "superagent": "^1.8.2",
     "superagent-bluebird-promise": "^3.0.0"
   },
