@@ -19,7 +19,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint indent: 0 */
+/* eslint indent: 0,  react/no-danger: 0 */
 const React = require('react');
 const FontAwesome = require('react-fontawesome');
 const formatDate = require('../helpers/utils').formatDate;
@@ -153,19 +153,19 @@ class EntityContainer extends React.Component {
 			const editUrl =
 				`/${entity.type.toLowerCase()}/${entity.bbid}/relationships`;
 			const identifiers = entity.identifierSet &&
-				identifierTypes.map((type) => {
+				identifierTypes.map((type, idx) => {
 					const identifierValues =
 						entity.identifierSet.identifiers.filter((identifier) =>
 							identifier.type.id === type.id
-						).map((identifier, idx) =>
+						).map((identifier, index) =>
 							<dd
-								key={`${identifier.id}${idx}`}
+								key={`${identifier.id}${index}`}
 							>
 								{identifier.value}
-								</dd>
+							</dd>
 						);
 					return [
-						<dt key={type.id}>{type.label}</dt>,
+						<dt key={`type${type.id}${idx}`}>{type.label}</dt>,
 						identifierValues
 					];
 				});
@@ -215,10 +215,11 @@ class EntityContainer extends React.Component {
 							<ul className="list-unstyled">
 								{entity.relationships.map((relationship, idx) =>
 									<li
+										dangerouslySetInnerHTML={{
+											__html: relationship.rendered
+										}}
 										key={`relationship${idx}`}
-									>
-										{relationship.rendered}
-									</li>
+									/>
 								)}
 							</ul>
 						}
