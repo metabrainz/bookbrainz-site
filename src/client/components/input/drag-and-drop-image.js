@@ -2,8 +2,8 @@ const React = require('react');
 const Input = require('react-bootstrap').Input;
 
 /**
-* This class is derived from the React Component base class to render the
-* drag and drop image functionality.
+* This class is derived from the React Component base class to render an image
+* which supports drag and drop functionality.
 */
 class DragAndDropImage extends React.Component {
 	/**
@@ -15,8 +15,9 @@ class DragAndDropImage extends React.Component {
 		this.handleDragStart = this.handleDragStart.bind(this);
 	}
 	/**
-	* Binds the data of the achievement badge on drag start to the data of the
-	* of the achievements displayed on the profile of the editor.
+	* Transfers the data of the achievement badge component properties to the
+	* DragAndDrop event, which is used for displaying achievement data on the
+	* profile editor page.
 	* @param {object} ev - Passed in the function to be initialized with data
 	* onDragStart.
 	*/
@@ -29,8 +30,9 @@ class DragAndDropImage extends React.Component {
 		ev.dataTransfer.setData('text', JSON.stringify(data));
 	}
 	/**
-	* Renders the DragAndDrop functionality of achievement badges.
-	* @returns {ReactElement} a HTML DragAndDrop functionality.
+	* Renders an image of the achievement badges which supports
+	* DragAndDrop functionality.
+	* @returns {ReactElement} a HTML image supporting DragAndDrop functionality.
 	*/
 	render() {
 		return (
