@@ -67,6 +67,7 @@ class EntityRevisions extends React.Component {
 					<hr/>
 				</Col>
 			</Row>
+
 		);
 	}
 

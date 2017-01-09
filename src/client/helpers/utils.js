@@ -65,7 +65,7 @@ function extractAttribute(attr, path) {
 	return '?';
 }
 
-exports.extractAttribute = extractAttribute;
 exports.injectDefaultAliasName = injectDefaultAliasName;
 exports.formatDate = formatDate;
 exports.isWithinDayFromNow = isWithinDayFromNow;
+exports.extractAttribute = extractAttribute;
