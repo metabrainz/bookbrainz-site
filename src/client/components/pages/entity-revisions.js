@@ -19,6 +19,7 @@
 const React = require('react');
 const bootstrap = require('react-bootstrap');
 const formatDate = require('../../helpers/utils').formatDate;
+const isWithinDay = require('../../helpers/utils').isWithinDay;
 
 const Row = bootstrap.Row;
 const Col = bootstrap.Col;
@@ -79,11 +80,8 @@ class EntityRevisions extends React.Component {
 */
 	renderRevision(revision) {
 		const createdDate = new Date(revision.revision.createdAt);
-		let includeTime = false;
-		if (Date.now() - createdDate.getTime() < 86400000) {
-			includeTime = true;
-		}
-		const dateLabel = formatDate(createdDate, includeTime);
+		const dateLabel =
+			formatDate(createdDate, isWithinDay(createdDate));
 		const header = (
 			<h4 className="list-group-item-heading">
 				<small className="pull-right">
