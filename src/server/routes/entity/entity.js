@@ -45,9 +45,15 @@ const propHelpers = require('../../helpers/props');
 const Layout = require('../../../client/containers/layout');
 const EntityRevisions =
 	require('../../../client/components/pages/entity-revisions');
+const EntityContainer = require('../../../client/containers/entity');
+const EditionPage = require('../../../client/components/pages/entity/edition');
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion')
 );
+
+const entityComponents = {
+	edition: EditionPage
+};
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -121,11 +127,36 @@ module.exports.displayEntity = (req, res) => {
 	});
 
 	return alertPromise.then((alert) => {
-		res.render(
-			`entity/view/${entity.type.toLowerCase()}`,
-			{identifierTypes,
-			alert}
-		);
+		const EntityComponent = entityComponents[entity.type.toLowerCase()];
+		if (EntityComponent) {
+			const props = propHelpers.generateProps(req, res, {
+				identifierTypes,
+				alert
+			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityContainer
+						{...propHelpers.extractEntityProps(props)}
+						iconName={EntityComponent.iconName}
+						attributes={EntityComponent.attributes(props.entity)}
+					>
+						<EntityComponent
+							entity={props.entity}
+						/>
+					</EntityContainer>
+				</Layout>
+			);
+			res.render('target', {markup, props});
+		}
+		else {
+			res.render(
+				`entity/view/${entity.type.toLowerCase()}`,
+				{
+					identifierTypes,
+					alert
+				}
+			);
+		}
 	});
 };
 

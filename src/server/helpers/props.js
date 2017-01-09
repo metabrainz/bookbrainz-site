@@ -37,3 +37,11 @@ module.exports.extractEditorProps = function extractEditorProps(props) {
 		tabActive: props.tabActive
 	};
 };
+
+module.exports.extractEntityProps = function extractEntityProps(props) {
+	return {
+		alert: props.alert,
+		entity: props.entity,
+		identifierTypes: props.identifierTypes
+	};
+};
