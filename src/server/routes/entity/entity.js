@@ -137,7 +137,8 @@ module.exports.displayEntity = (req, res) => {
 	});
 
 	return alertPromise.then((alert) => {
-		const EntityComponent = entityComponents[entity.type.toLowerCase()];
+		const entityName = entity.type.toLowerCase();
+		const EntityComponent = entityComponents[entityName];
 		if (EntityComponent) {
 			const props = propHelpers.generateProps(req, res, {
 				identifierTypes,
@@ -159,12 +160,8 @@ module.exports.displayEntity = (req, res) => {
 			res.render('target', {markup, props});
 		}
 		else {
-			res.render(
-				`entity/view/${entity.type.toLowerCase()}`,
-				{
-					identifierTypes,
-					alert
-				}
+			throw new Error(
+				`Component was not found for the following entity:${entityName}`
 			);
 		}
 	});
