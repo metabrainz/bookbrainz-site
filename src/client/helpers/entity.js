@@ -17,6 +17,9 @@
  */
 /* eslint-disable react/display-name */
 const React = require('react');
+const FontAwesome = require('react-fontawesome');
+const Button = require('react-bootstrap').Button;
+const Table = require('react-bootstrap').Table;
 const formatDate = require('./utils').formatDate;
 const _ = require('lodash');
 
@@ -59,6 +62,64 @@ function showBeginEndDate(entity) {
 	);
 }
 
+function showEntityEditions(entity) {
+	'use strict';
+	return (
+		<div>
+			<h2>
+				Editions
+				<Button
+					bsStyle="success"
+					className="pull-right"
+					href={`/edition/create?publication=${entity.bbid}`}
+				>
+					<FontAwesome name="plus"/>
+					{'  Add Edition'}
+				</Button>
+			</h2>
+			<Table striped>
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th>Release Date</th>
+				</tr>
+				</thead>
+				<tbody>
+				{entity.editions.map((edition, idx) => {
+					const editionName = edition.defaultAlias ?
+						edition.defaultAlias.name : '(unnamed)';
+					const editionComment = (edition.disambiguation &&
+					edition.disambiguation.comment) ?
+						` (${edition.disambiguation.comment})` : '';
+					const releaseEventDate = (edition.releaseEventSet &&
+						edition.releaseEventSet.releaseEvents &&
+						edition.releaseEventSet.releaseEvents[0]) &&
+						edition.releaseEventSet.releaseEvents[0].date;
+					return (
+						<tr
+							key={`${edition.bbid}${idx}`}
+						>
+							<td>
+								<a href={`/edition/${edition.bbid}`}>
+									{editionName}
+								</a>
+								<span className="text-muted">
+										{editionComment}
+									</span>
+							</td>
+							<td>
+								{formatDate(new Date(releaseEventDate))}
+							</td>
+						</tr>
+					);
+				})}
+				</tbody>
+			</Table>
+		</div>
+	);
+}
+
 exports.extractAttribute = extractAttribute;
 exports.showEntityType = showEntityType;
 exports.showBeginEndDate = showBeginEndDate;
+exports.showEntityEditions = showEntityEditions;
