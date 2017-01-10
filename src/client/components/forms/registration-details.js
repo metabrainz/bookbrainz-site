@@ -104,6 +104,10 @@ class RegistrationForm extends React.Component {
 			width: '100%'
 		};
 
+		function birthdayValidation(value) {
+			return Date.parse(value) < Date.now();
+		}
+
 		return (
 			<div>
 				<PageHeader>Register</PageHeader>
@@ -157,6 +161,7 @@ class RegistrationForm extends React.Component {
 								wrapperClassName="col-md-4"
 							/>
 							<PartialDate
+								customValidation={birthdayValidation}
 								label="Birthday"
 								labelClassName="col-md-4"
 								placeholder="YYYY-MM-DD"
