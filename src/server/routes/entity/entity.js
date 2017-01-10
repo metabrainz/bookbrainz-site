@@ -47,12 +47,14 @@ const EntityRevisions =
 	require('../../../client/components/pages/entity-revisions');
 const EntityContainer = require('../../../client/containers/entity');
 const EditionPage = require('../../../client/components/pages/entity/edition');
+const CreatorPage = require('../../../client/components/pages/entity/creator');
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion')
 );
 
 const entityComponents = {
-	edition: EditionPage
+	edition: EditionPage,
+	creator: CreatorPage
 };
 
 module.exports.displayEntity = (req, res) => {

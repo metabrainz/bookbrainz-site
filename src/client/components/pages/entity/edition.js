@@ -20,7 +20,7 @@
 const React = require('react');
 const FontAwesome = require('react-fontawesome');
 const formatDate = require('../../../helpers/utils').formatDate;
-const extractAttribute = require('../../../helpers/utils').extractAttribute;
+const extractAttribute = require('../../../helpers/entity').extractAttribute;
 
 class EditionPage extends React.Component {
 
