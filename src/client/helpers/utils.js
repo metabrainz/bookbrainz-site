@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const moment = require('moment');
-const _ = require('lodash');
 /**
  * Injects entity model object with a default alias name property.
  *
@@ -54,18 +53,6 @@ function isWithinDayFromNow(date) {
 	return Boolean(Date.now() - date.getTime() < 86400000);
 }
 
-function extractAttribute(attr, path) {
-	'use strict';
-	if (attr) {
-		if (path) {
-			return _.get(attr, path, '?');
-		}
-		return attr;
-	}
-	return '?';
-}
-
 exports.injectDefaultAliasName = injectDefaultAliasName;
 exports.formatDate = formatDate;
 exports.isWithinDayFromNow = isWithinDayFromNow;
-exports.extractAttribute = extractAttribute;
