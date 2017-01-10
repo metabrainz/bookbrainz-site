@@ -18,6 +18,7 @@
  */
 const React = require('react');
 const request = require('superagent-bluebird-promise');
+const formatDate = require('../../helpers/utils').formatDate;
 
 const Grid = require('react-bootstrap').Grid;
 const Row = require('react-bootstrap').Row;
@@ -47,7 +48,7 @@ class ProfileForm extends React.Component {
 			gender: props.editor.gender ?
 				props.editor.gender : null,
 			birthDate: props.editor.birthDate ?
-				new Date(props.editor.birthDate) : null,
+				formatDate(new Date(props.editor.birthDate)) : null,
 			titles: props.titles,
 			genders: props.genders,
 			waiting: false
@@ -98,7 +99,6 @@ class ProfileForm extends React.Component {
 			width: '100%',
 			allowClear: true
 		};
-		const birthDate = this.state.birthDate;
 		const genderOptions = this.state.genders.map((gender) => ({
 			id: gender.id,
 			name: gender.name
@@ -113,15 +113,7 @@ class ProfileForm extends React.Component {
 		const initialGender = this.state.gender ? this.state.gender.id : null;
 		const initialBio = this.state.bio;
 		const initialArea = injectDefaultAliasName(this.state.area);
-		let initialBirthDate = null;
-		if (birthDate) {
-			const year = birthDate.getFullYear();
-			const month = birthDate.getMonth() < 9 ?
-				`0${birthDate.getMonth() + 1}` : birthDate.getMonth() + 1;
-			const day = birthDate.getDay() < 10 ? `0${birthDate.getDay()}` :
-				birthDate.getDay();
-			initialBirthDate = `${year}-${month}-${day}`;
-		}
+		const initialBirthDate = this.state.birthDate;
 
 		return (
 			<Grid>

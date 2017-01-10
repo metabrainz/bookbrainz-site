@@ -27,6 +27,7 @@ const Identifiers = require('./identifier-list');
 const PartialDate = require('../../input/partial-date');
 const Select = require('../../input/select2');
 const SearchSelect = require('../../input/entity-search');
+const formatDate = require('../../../helpers/utils').formatDate;
 
 const validators = require('../../../helpers/react-validators');
 const injectDefaultAliasName =
@@ -90,8 +91,8 @@ class CreatorData extends React.Component {
 			if (prefillData.endArea) {
 				initialEndArea = prefillData.endArea;
 			}
-			initialBeginDate = prefillData.beginDate;
-			initialEndDate = prefillData.endDate;
+			initialBeginDate = formatDate(new Date(prefillData.beginDate));
+			initialEndDate = formatDate(new Date(prefillData.endDate));
 			initialGender = prefillData.gender ?
 				prefillData.gender.id : null;
 			initialCreatorType = prefillData.creatorType ?

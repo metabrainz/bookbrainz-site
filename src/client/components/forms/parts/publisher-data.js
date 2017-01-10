@@ -31,6 +31,7 @@ const SearchSelect = require('../../input/entity-search');
 const validators = require('../../../helpers/react-validators');
 const injectDefaultAliasName =
 	require('../../../helpers/utils').injectDefaultAliasName;
+const formatDate = require('../../../helpers/utils').formatDate;
 
 class PublisherData extends React.Component {
 	constructor(props) {
@@ -76,14 +77,15 @@ class PublisherData extends React.Component {
 		let initialDisambiguation = null;
 		let initialAnnotation = null;
 		let initialIdentifiers = [];
+		console.log(this.props.publisher);
 
 		const prefillData = this.props.publisher;
 		if (prefillData) {
 			if (prefillData.area) {
 				initialArea = prefillData.area;
 			}
-			initialBeginDate = prefillData.beginDate;
-			initialEndDate = prefillData.endDate;
+			initialBeginDate = formatDate(new Date(prefillData.beginDate));
+			initialEndDate = formatDate(new Date(prefillData.endDate));
 			initialPublisherType = prefillData.publisherType ?
 				prefillData.publisherType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?

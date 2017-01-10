@@ -163,7 +163,9 @@ class EditorProfileTab extends React.Component {
 									{model.achievement.description}
 								</p>
 								<p className="text-center">
-									{`unlocked: ${model.unlockedAt}`}
+									{`unlocked: ${formatDate(new Date(
+											model.unlockedAt
+									), true)}`}
 								</p>
 							</div>
 						</Col>
