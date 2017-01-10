@@ -123,6 +123,10 @@ class ProfileForm extends React.Component {
 			initialBirthDate = `${year}-${month}-${day}`;
 		}
 
+		function birthdayValidation(value) {
+			return Date.parse(value) < Date.now();
+		}
+
 		return (
 			<Grid>
 				<h1>Edit Profile</h1>
@@ -183,6 +187,7 @@ class ProfileForm extends React.Component {
 								ref={(ref) => this.gender = ref}
 							/>
 							<PartialDate
+								customValidation={birthdayValidation}
 								defaultValue={initialBirthDate}
 								label="Birth Date"
 								placeholder="YYYY-MM-DD"
