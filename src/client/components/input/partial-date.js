@@ -27,16 +27,16 @@ const yRegex = /^\d{4}$/;
 
 /**
 * This class is derived from the React Component base class
-* to render the partial date of any of the formats "YYYY", "YYYY-MM",
-* "YYYY-MM-DD" which allows the editor to be vague where information is not
+* to render a partial date (any of the formats "YYYY", "YYYY-MM",
+* "YYYY-MM-DD"). This allows the editor to be vague where information is not
 * known. It also checks validity of the value filled in the date field.
 */
 class PartialDate extends React.Component {
 	/**
-	* Function to check validity of the date filled in the field.
-	* @param {string} value - Date filled in field is passed in the validator.
-	* @returns {boolean} - Returns true either if no data is filled in the field
-	* or if the date filled in the field is valid.
+	* Function to check validity of the partial date.
+	* @param {string} value - Partial Date to be validated.
+	* @returns {boolean} - True if the partial date value is null or if
+	* the partial date is valid.
 	*/
 	static validate(value) {
 		if (!value) {
@@ -79,8 +79,10 @@ class PartialDate extends React.Component {
 	}
 
 	/**
-	* Track the changes in the date field of the form and validate the value in
-	* the field after each change and it updates the component state.
+	* An event handler, which is triggered whenever the value in the date field
+	* changes and then, it validates the PartialDate value and updates
+	* the components state with the new value and validation state.
+	* It also triggers the onChange function if the validation state is true.
 	*/
 	handleChange() {
 		const input = this.input.getValue().trim();
@@ -109,9 +111,10 @@ class PartialDate extends React.Component {
 	}
 
 	/**
-  * Applies correct validationClass to the CSS of the field input. based on
+  * Applies correct validationClass to the CSS of the field input, based on
 	* results obtained from the valid() function.
-	* @returns {string} validationClass - State of the date field in the form.
+	* @returns {string} validationClass - The validation class to be applied to
+	* the date field.
 	*/
 	validationState() {
 		let validationClass = null;
