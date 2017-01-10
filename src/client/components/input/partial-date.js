@@ -81,7 +81,7 @@ class PartialDate extends React.Component {
 	/**
 	* An event handler, which is triggered whenever the value in the date field
 	* changes and then, it validates the PartialDate value and updates
-	* the components state with the new value and validation state.
+	* the component's state with the new value and validation state.
 	* It also triggers the onChange function if the validation state is true.
 	*/
 	handleChange() {
