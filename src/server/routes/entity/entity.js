@@ -50,6 +50,8 @@ const EditionPage = require('../../../client/components/pages/entity/edition');
 const CreatorPage = require('../../../client/components/pages/entity/creator');
 const PublicationPage =
 	require('../../../client/components/pages/entity/publication');
+const PublisherPage =
+	require('../../../client/components/pages/entity/publisher');
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion')
 );
@@ -57,7 +59,8 @@ const DeletionForm = React.createFactory(
 const entityComponents = {
 	edition: EditionPage,
 	creator: CreatorPage,
-	publication: PublicationPage
+	publication: PublicationPage,
+	publisher: PublisherPage
 };
 
 module.exports.displayEntity = (req, res) => {
