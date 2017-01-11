@@ -36,6 +36,7 @@ function injectDefaultAliasName(instance) {
 
 function formatDate(date, includeTime) {
 	'use strict';
+	// second condition checks if object is a Date -- avoids cross-frame issues
 	if (!date || !(Object.prototype.toString.call(date) === '[object Date]') ||
 		isNaN(date.getTime())) {
 		return null;
