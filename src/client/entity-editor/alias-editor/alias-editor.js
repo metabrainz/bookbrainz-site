@@ -21,8 +21,8 @@ import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addAlias, hideAliasEditor} from './actions';
 import AliasRow from './alias-row';
 import React from 'react';
+import classNames from 'classnames';
 import {connect} from 'react-redux';
-
 
 const AliasEditor = ({
 	aliases,
@@ -30,43 +30,47 @@ const AliasEditor = ({
 	onAddButtonClick,
 	onClose,
 	show
-}) => (
-	<Modal bsSize="large" show={show} onHide={onClose}>
-		<Modal.Header>
-			<Modal.Title>
-				Alias Editor
-			</Modal.Title>
-		</Modal.Header>
+}) => {
+	const noAliasesTextClass =
+		classNames('text-center', {hidden: aliases.size});
+	return (
+		<Modal bsSize="large" show={show} onHide={onClose}>
+			<Modal.Header>
+				<Modal.Title>
+					Alias Editor
+				</Modal.Title>
+			</Modal.Header>
 
-		<Modal.Body>
-			<div className="text-center">
-				<p className="text-muted">This entity has no aliases</p>
-			</div>
-			<div>
-				{
-					aliases.map((alias, rowId) =>
-						<AliasRow
-							index={rowId}
-							key={rowId}
-							languageOptions={languageOptions}
-						/>
-					)
-				}
-			</div>
-			<Row>
-				<Col className="text-right" md={3} mdOffset={9}>
-					<Button bsStyle="success" onClick={onAddButtonClick}>
-						Add alias
-					</Button>
-				</Col>
-			</Row>
-		</Modal.Body>
+			<Modal.Body>
+				<div className={noAliasesTextClass}>
+					<p className="text-muted">This entity has no aliases</p>
+				</div>
+				<div>
+					{
+						aliases.map((alias, rowId) =>
+							<AliasRow
+								index={rowId}
+								key={rowId}
+								languageOptions={languageOptions}
+							/>
+						)
+					}
+				</div>
+				<Row>
+					<Col className="text-right" md={3} mdOffset={9}>
+						<Button bsStyle="success" onClick={onAddButtonClick}>
+							Add alias
+						</Button>
+					</Col>
+				</Row>
+			</Modal.Body>
 
-		<Modal.Footer>
-			<Button bsStyle="primary" onClick={onClose}>Close</Button>
-		</Modal.Footer>
-	</Modal>
-);
+			<Modal.Footer>
+				<Button bsStyle="primary" onClick={onClose}>Close</Button>
+			</Modal.Footer>
+		</Modal>
+	);
+};
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
 	aliases: React.PropTypes.array,

@@ -20,6 +20,7 @@ import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addIdentifier, hideIdentifierEditor} from './actions';
 import IdentifierRow from './identifier-row';
 import React from 'react';
+import classNames from 'classnames';
 import {connect} from 'react-redux';
 
 
@@ -29,41 +30,47 @@ const IdentifierEditor = ({
 	onAddButtonClick,
 	onClose,
 	show
-}) => (
-	<Modal bsSize="large" show={show} onHide={onClose}>
-		<Modal.Header>
-			<Modal.Title>
-				Identifier Editor
-			</Modal.Title>
-		</Modal.Header>
+}) => {
+	const noIdentifiersTextClass =
+		classNames('text-center', {hidden: identifiers.size});
+	return (
+		<Modal bsSize="large" show={show} onHide={onClose}>
+			<Modal.Header>
+				<Modal.Title>
+					Identifier Editor
+				</Modal.Title>
+			</Modal.Header>
 
-		<Modal.Body>
-			<div className="text-center">
-				<p className="text-muted">This entity has no identifiers</p>
-			</div>
-			{
-				identifiers.map((identifier, rowId) =>
-					<IdentifierRow
-						index={rowId}
-						key={rowId}
-						typeOptions={typeOptions}
-					/>
-				)
-			}
-			<Row>
-				<Col className="text-right" md={3} mdOffset={9}>
-					<Button bsStyle="success" onClick={onAddButtonClick}>
-						Add identifier
-					</Button>
-				</Col>
-			</Row>
-		</Modal.Body>
+			<Modal.Body>
+				<div className={noIdentifiersTextClass}>
+					<p className="text-muted">This entity has no identifiers</p>
+				</div>
+				<div>
+				{
+					identifiers.map((identifier, rowId) =>
+						<IdentifierRow
+							index={rowId}
+							key={rowId}
+							typeOptions={typeOptions}
+						/>
+					)
+				}
+				</div>
+				<Row>
+					<Col className="text-right" md={3} mdOffset={9}>
+						<Button bsStyle="success" onClick={onAddButtonClick}>
+							Add identifier
+						</Button>
+					</Col>
+				</Row>
+			</Modal.Body>
 
-		<Modal.Footer>
-			<Button bsStyle="primary" onClick={onClose}>Close</Button>
-		</Modal.Footer>
-	</Modal>
-);
+			<Modal.Footer>
+				<Button bsStyle="primary" onClick={onClose}>Close</Button>
+			</Modal.Footer>
+		</Modal>
+	);
+};
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
 	identifiers: React.PropTypes.object,
