@@ -53,7 +53,7 @@ const AliasEditor = ({
 								key={rowId}
 								languageOptions={languageOptions}
 							/>
-						)
+						).toArray()
 					}
 				</div>
 				<Row>

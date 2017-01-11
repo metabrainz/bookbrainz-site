@@ -46,15 +46,15 @@ const IdentifierEditor = ({
 					<p className="text-muted">This entity has no identifiers</p>
 				</div>
 				<div>
-				{
-					identifiers.map((identifier, rowId) =>
-						<IdentifierRow
-							index={rowId}
-							key={rowId}
-							typeOptions={typeOptions}
-						/>
-					)
-				}
+					{
+						identifiers.map((identifier, rowId) =>
+							<IdentifierRow
+								index={rowId}
+								key={rowId}
+								typeOptions={typeOptions}
+							/>
+						).toArray()
+					}
 				</div>
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
