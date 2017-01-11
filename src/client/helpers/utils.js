@@ -47,11 +47,11 @@ function formatDate(date, includeTime) {
 	return formatter.format('YYYY-MM-DD');
 }
 
-function isWithinDay(date) {
+function isWithinDayFromNow(date) {
 	'use strict';
 	return Boolean(Date.now() - date.getTime() < 86400000);
 }
 
 exports.injectDefaultAliasName = injectDefaultAliasName;
 exports.formatDate = formatDate;
-exports.isWithinDay = isWithinDay;
+exports.isWithinDayFromNow = isWithinDayFromNow;
