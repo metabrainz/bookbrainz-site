@@ -21,6 +21,8 @@
 const React = require('react');
 
 const bootstrap = require('react-bootstrap');
+const formatDate = require('../../../helpers/utils').formatDate;
+const isWithinDayFromNow = require('../../../helpers/utils').isWithinDayFromNow;
 
 const ListGroup = bootstrap.ListGroup;
 const ListGroupItem = bootstrap.ListGroupItem;
@@ -37,9 +39,9 @@ class EditorRevisionsTab extends React.Component {
 				<ListGroup>
 					{revisions.map((revision) => {
 						const createdDate = new Date(revision.createdAt);
-						const dateLabel = Date.now() - createdDate < 86400000 ?
-							createdDate.toLocaleTimeString() :
-							createdDate.toLocaleDateString();
+						const dateLabel =
+							formatDate(createdDate,
+								isWithinDayFromNow(createdDate));
 						const header = (
 							<h4 className="list-group-item-heading">
 								<small className="pull-right">

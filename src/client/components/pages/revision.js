@@ -27,6 +27,7 @@ const ListGroup = require('react-bootstrap').ListGroup;
 const ListGroupItem = require('react-bootstrap').ListGroupItem;
 const _compact = require('lodash.compact');
 const request = require('superagent-bluebird-promise');
+const formatDate = require('../../helpers/utils').formatDate;
 
 const EntityLink = require('../entity-link');
 
@@ -155,10 +156,7 @@ class RevisionPage extends React.Component {
 			RevisionPage.formatTitle(revision.author);
 
 		let revisionNotes = revision.notes.map((note) => {
-			const timeCreated =
-				new Date(note.postedAt).toTimeString();
-			const dateCreated =
-				new Date(note.postedAt).toDateString();
+			const timeCreated = formatDate(new Date(note.postedAt), true);
 			const noteAuthorTitle =
 				RevisionPage.formatTitle(note.author);
 			return (
@@ -175,7 +173,7 @@ class RevisionPage extends React.Component {
 							>
 								{note.author.name}
 							</a>
-							, {`${timeCreated}, ${dateCreated}`}
+							, {`${timeCreated}`}
 						</p>
 					</div>
 				</ListGroupItem>
@@ -186,8 +184,7 @@ class RevisionPage extends React.Component {
 			revisionNotes = (<p> No revision notes present </p>);
 		}
 
-		const dateRevisionCreated =
-			new Date(revision.createdAt).toDateString();
+		const dateRevisionCreated = formatDate(new Date(revision.createdAt));
 
 		return (
 			<Row>
