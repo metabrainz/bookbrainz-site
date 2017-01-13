@@ -29,6 +29,8 @@ const PartialDate = require('../input/partial-date');
 
 const LoadingSpinner = require('../loading-spinner');
 const validators = require('../../helpers/react-validators');
+const isValidUserBirthday =
+	require('../../helpers/utils').isValidUserBirthday;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -157,6 +159,7 @@ class RegistrationForm extends React.Component {
 								wrapperClassName="col-md-4"
 							/>
 							<PartialDate
+								customValidator={isValidUserBirthday}
 								label="Birthday"
 								labelClassName="col-md-4"
 								placeholder="YYYY-MM-DD"

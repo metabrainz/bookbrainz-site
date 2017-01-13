@@ -26,7 +26,7 @@ const ymRegex = /^\d{4}-\d{2}$/;
 const yRegex = /^\d{4}$/;
 
 class PartialDate extends React.Component {
-	static validate(value) {
+	static validate(value, customValidator) {
 		if (!value) {
 			return true;
 		}
@@ -38,7 +38,12 @@ class PartialDate extends React.Component {
 		);
 		const validValue = !isNaN(Date.parse(value));
 
-		return validSyntax && validValue;
+		let passesCustomValidation = true;
+		if (customValidator) {
+			passesCustomValidation = Boolean(customValidator(value));
+		}
+
+		return validSyntax && validValue && passesCustomValidation;
 	}
 
 	constructor(props) {
@@ -66,7 +71,9 @@ class PartialDate extends React.Component {
 
 		this.setState({
 			value: input,
-			valid: PartialDate.validate(input)
+			valid: PartialDate.validate(input,
+					this.props.customValidator
+			)
 		});
 
 		if (this.props.onChange) {
@@ -75,7 +82,9 @@ class PartialDate extends React.Component {
 	}
 
 	valid() {
-		return PartialDate.validate(this.input.getValue().trim());
+		return PartialDate.validate(this.input.getValue().trim(),
+			this.props.customValidator
+		);
 	}
 
 	validationState() {
@@ -109,6 +118,7 @@ class PartialDate extends React.Component {
 
 PartialDate.displayName = 'PartialDate';
 PartialDate.propTypes = {
+	customValidator: React.PropTypes.func,
 	defaultValue: React.PropTypes.string,
 	groupClassName: React.PropTypes.string,
 	help: React.PropTypes.string,

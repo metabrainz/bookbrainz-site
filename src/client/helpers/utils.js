@@ -34,4 +34,17 @@ function injectDefaultAliasName(instance) {
 	return instance;
 }
 
+/**
+ * Adds extra validation for form fields recording user's birthdays.
+ * Specifically checks that a given date value is in the past.
+ *
+ * @param {string} value - Date that is going to be validated.
+ * @returns {boolean} - True if value is a date in the past. False otherwise.
+ */
+function isValidUserBirthday(value) {
+	'use strict';
+	return Date.parse(value) < Date.now();
+}
+
 exports.injectDefaultAliasName = injectDefaultAliasName;
+exports.isValidUserBirthday = isValidUserBirthday;

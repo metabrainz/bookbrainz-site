@@ -33,6 +33,8 @@ const PartialDate = require('../input/partial-date');
 const validators = require('../../helpers/react-validators');
 const injectDefaultAliasName =
 	require('../../helpers/utils').injectDefaultAliasName;
+const isValidUserBirthday =
+	require('../../helpers/utils').isValidUserBirthday;
 
 class ProfileForm extends React.Component {
 	constructor(props) {
@@ -183,6 +185,7 @@ class ProfileForm extends React.Component {
 								ref={(ref) => this.gender = ref}
 							/>
 							<PartialDate
+								customValidator={isValidUserBirthday}
 								defaultValue={initialBirthDate}
 								label="Birth Date"
 								placeholder="YYYY-MM-DD"
