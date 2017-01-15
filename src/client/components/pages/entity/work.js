@@ -18,33 +18,42 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint strict: 0 */
 const React = require('react');
-const showEntityType = require('../../../helpers/entity').showEntityType;
+const EntityPage = require('../../../containers/entity');
+const AttributeList = require('./../parts/attribute-list');
+const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
+const extractEntityProps =
+	require('../../../../server/helpers/props').extractEntityProps;
 
-class WorkPage extends React.Component {
-
-	static get iconName() {
-		return 'file-text-o';
-	}
-
-	static attributes(entity) {
-		const languages = (entity.languageSet && entity.languageSet.languages) ?
-			entity.languageSet.languages.map(
-				(language) => language.name
-			).join(', ') : '?';
-		return (
-			<div>
-				{showEntityType(entity.workType)}
-				<dt>Languages</dt>
-				<dd>{languages}</dd>
-			</div>
-		);
-	}
-
-	render() {
-		return null;
-	}
+function WorkPage(props) {
+	const {entity} = props;
+	const attributes = (
+		<AttributeList
+			attributes={WorkPage.getAttributes(entity)}
+		/>
+	);
+	return (
+		<EntityPage
+			attributes={attributes}
+			iconName="file-text-o"
+			{...extractEntityProps(props)}
+		/>
+	);
 }
+WorkPage.getAttributes = (entity) => {
+	const languages = (entity.languageSet && entity.languageSet.languages) ?
+		entity.languageSet.languages.map(
+			(language) => language.name
+		).join(', ') : '?';
+	return [
+		getTypeAttribute(entity.workType),
+		{title: 'Languages', data: languages}
+	];
+};
 WorkPage.displayName = 'WorkPage';
+WorkPage.propTypes = {
+	entity: React.PropTypes.object
+};
 
 module.exports = WorkPage;

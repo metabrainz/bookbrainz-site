@@ -18,35 +18,40 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint strict: 0 */
 const React = require('react');
-const showEntityType = require('../../../helpers/entity').showEntityType;
-const showBeginEndDate = require('../../../helpers/entity').showBeginEndDate;
+const EntityPage = require('../../../containers/entity');
+const AttributeList = require('./../parts/attribute-list');
+const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
+const getDateAttributes = require('../../../helpers/entity').getDateAttributes;
+const extractAttribute = require('../../../helpers/entity').extractAttribute;
+const extractEntityProps =
+	require('../../../../server/helpers/props').extractEntityProps;
 const showEntityEditions =
 	require('../../../helpers/entity').showEntityEditions;
-const extractAttribute = require('../../../helpers/entity').extractAttribute;
 
-class PublisherPage extends React.Component {
-
-	static get iconName() {
-		return 'university';
-	}
-
-	static attributes(entity) {
-		return (
-			<div>
-				{showEntityType(entity.publisherType)}
-				<dt>Area</dt>
-				<dd>{extractAttribute(entity.area, 'name')}</dd>
-				{showBeginEndDate(entity)}
-			</div>
-		);
-	}
-
-	render() {
-		const {entity} = this.props;
-		return showEntityEditions(entity);
-	}
+function PublisherPage(props) {
+	const {entity} = props;
+	const attributes = (
+		<AttributeList
+			attributes={PublisherPage.getAttributes(entity)}
+		/>
+	);
+	return (
+		<EntityPage
+			attributes={attributes}
+			iconName="university"
+			{...extractEntityProps(props)}
+		>
+			{showEntityEditions(entity)}
+		</EntityPage>
+	);
 }
+PublisherPage.getAttributes = (entity) => ([
+	getTypeAttribute(entity.publisherType),
+	{title: 'Area', data: extractAttribute(entity.area, 'name')},
+	getDateAttributes(entity)
+]);
 PublisherPage.displayName = 'PublisherPage';
 PublisherPage.propTypes = {
 	entity: React.PropTypes.object

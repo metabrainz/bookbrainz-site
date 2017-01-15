@@ -18,26 +18,35 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint strict: 0 */
 const React = require('react');
-const showEntityType = require('../../../helpers/entity').showEntityType;
+const EntityPage = require('../../../containers/entity');
+const AttributeList = require('./../parts/attribute-list');
+const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
+const extractEntityProps =
+	require('../../../../server/helpers/props').extractEntityProps;
+
 const showEntityEditions =
 	require('../../../helpers/entity').showEntityEditions;
 
-class PublicationPage extends React.Component {
-
-	static get iconName() {
-		return 'th-list';
-	}
-
-	static attributes(entity) {
-		return showEntityType(entity.publicationType);
-	}
-
-	render() {
-		const {entity} = this.props;
-		return showEntityEditions(entity);
-	}
+function PublicationPage(props) {
+	const {entity} = props;
+	const attributes = (
+		<AttributeList
+			attributes={PublicationPage.getAttributes(entity)}
+		/>
+	);
+	return (
+		<EntityPage
+			attributes={attributes}
+			iconName="th-list"
+			{...extractEntityProps(props)}
+		>
+			{showEntityEditions(entity)}
+		</EntityPage>
+	);
 }
+PublicationPage.getAttributes = (entity) => ([getTypeAttribute(entity)]);
 PublicationPage.displayName = 'PublicationPage';
 PublicationPage.propTypes = {
 	entity: React.PropTypes.object

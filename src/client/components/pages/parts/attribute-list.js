@@ -35,7 +35,7 @@ AttributeList.displayName = 'AttributeList';
 AttributeList.propTypes = {
 	attributes: React.PropTypes.arrayOf(React.PropTypes.shape({
 		title: React.PropTypes.string,
-		data: React.PropTypes.string
+		data: React.PropTypes.any
 	}))
 };
 

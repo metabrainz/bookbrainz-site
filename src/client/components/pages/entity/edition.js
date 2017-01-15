@@ -17,84 +17,82 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint strict: 0 */
 const React = require('react');
 const FontAwesome = require('react-fontawesome');
 const formatDate = require('../../../helpers/utils').formatDate;
+const EntityPage = require('../../../containers/entity');
+const AttributeList = require('./../parts/attribute-list');
 const extractAttribute = require('../../../helpers/entity').extractAttribute;
+const extractEntityProps =
+	require('../../../../server/helpers/props').extractEntityProps;
 
-class EditionPage extends React.Component {
-
-	static get iconName() {
-		return 'book';
-	}
-
-	static attributes(entity) {
-		const editionStatus = extractAttribute(entity.editionStatus, 'label');
-		const editionFormat = extractAttribute(entity.editionFormat, 'label');
-		const languages = (entity.languageSet && entity.languageSet.languages) ?
-			entity.languageSet.languages.map(
-				(language) => language.name
-			).join(', ') : '?';
-		const publishers =
-			(entity.publisherSet && entity.publisherSet.publishers.length > 0) ?
-				entity.publisherSet.publishers.map((publisher) =>
-					<a
-						href={`/publisher/${publisher.bbid}`}
-						key={publisher.bbid}
-					>
-						{publisher.defaultAlias.name}
-					</a>
-				) : '?';
-		const releaseDate = (entity.releaseEventSet &&
-		entity.releaseEventSet.releaseEvents &&
-		entity.releaseEventSet.releaseEvents.length) ?
-			formatDate(new Date(entity.releaseEventSet.releaseEvents[0].date)) :
-			'?';
-		const pageCount = extractAttribute(entity.pages);
-		const weight = extractAttribute(entity.weight);
-		const width = extractAttribute(entity.width);
-		const height = extractAttribute(entity.height);
-		const depth = extractAttribute(entity.depth);
-
-		return (
-			<div>
-				<dt>Status</dt>
-				<dd>{editionStatus}</dd>
-				<dt>Format</dt>
-				<dd>{editionFormat}</dd>
-				<dt>Languages</dt>
-				<dd>{languages}</dd>
-				<dt>Publishers</dt>
-				<dd>{publishers}</dd>
-				<dt>Release Date</dt>
-				<dd>{releaseDate}</dd>
-				<dt>Page Count</dt>
-				<dd>{pageCount}</dd>
-				<dt>Weight</dt>
-				<dd>{weight}</dd>
-				<dt>Dimensions (W×H×D)</dt>
-				<dd>{`${width}×${height}×${depth} mm`}</dd>
-			</div>
-		);
-	}
-
-	render() {
-		const {entity} = this.props;
-		return (
+function EditionPage(props) {
+	const {entity} = props;
+	const attributes = (
+		<AttributeList
+			attributes={EditionPage.getAttributes(entity)}
+		/>
+	);
+	return (
+		<EntityPage
+			attributes={attributes}
+			iconName="book"
+			{...extractEntityProps(props)}
+		>
 			<p>
 				{entity.publication ?
 					<a href={`/publication/${entity.publication.bbid}`}>
 						<FontAwesome name="external-link"/>
 						{' See all other editions'}
 					</a> :
-						<span className="bg-danger">
+					<span className="bg-danger">
 							Publication unset - please add one if you see this!
 						</span>
 				}
 			</p>
-		);
-	}
+		</EntityPage>
+	);
 }
+EditionPage.getAttributes = (entity) => {
+	const editionStatus = extractAttribute(entity.editionStatus, 'label');
+	const editionFormat = extractAttribute(entity.editionFormat, 'label');
+	const languages = (entity.languageSet && entity.languageSet.languages) ?
+		entity.languageSet.languages.map(
+			(language) => language.name
+		).join(', ') : '?';
+	const publishers =
+		(entity.publisherSet && entity.publisherSet.publishers.length > 0) ?
+			entity.publisherSet.publishers.map((publisher) =>
+				<a
+					href={`/publisher/${publisher.bbid}`}
+					key={publisher.bbid}
+				>
+					{publisher.defaultAlias.name}
+				</a>
+			) : '?';
+	const releaseDate = (entity.releaseEventSet &&
+	entity.releaseEventSet.releaseEvents &&
+	entity.releaseEventSet.releaseEvents.length) ?
+		formatDate(new Date(entity.releaseEventSet.releaseEvents[0].date)) :
+		'?';
+	const pageCount = extractAttribute(entity.pages);
+	const weight = extractAttribute(entity.weight);
+	const width = extractAttribute(entity.width);
+	const height = extractAttribute(entity.height);
+	const depth = extractAttribute(entity.depth);
+	const dimensions = `${width}×${height}×${depth} mm`;
+	return [
+		{title: 'Status', data: editionStatus},
+		{title: 'Format', data: editionFormat},
+		{title: 'Language', data: languages},
+		{title: 'Publishers', data: publishers},
+		{title: 'Release Date', data: releaseDate},
+		{title: 'Page Count', data: pageCount},
+		{title: 'Weight', data: weight},
+		{title: 'Dimensions', data: dimensions}
+	];
+};
 EditionPage.displayName = 'EditionPage';
 EditionPage.propTypes = {
 	entity: React.PropTypes.object
