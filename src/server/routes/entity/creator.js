@@ -110,11 +110,73 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
 	}
 );
 
+function getDefaultAliasIndex(aliases) {
+	const index = aliases.findIndex((alias) => alias.default);
+	return index > 0 ? index : 0;
+}
+
+function creatorToFormState(creator) {
+	const aliases = creator.aliasSet ?
+		creator.aliasSet.aliases.map(({language, ...rest}) => ({
+			language: language.id,
+			...rest
+		})) : [];
+
+	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
+
+	const aliasEditor = {};
+	aliases.forEach((alias) => { aliasEditor[alias.id] = alias; });
+
+	const buttonBar = {
+		aliasEditorVisible: false,
+		identifierEditorVisible: false,
+		disambiguationVisible: Boolean(creator.disambiguation)
+	};
+
+	const nameSection = _.isEmpty(defaultAliasList) ? {
+		name: '',
+		sortName: '',
+		language: null
+	} : defaultAliasList[0];
+	nameSection.disambiguation =
+		creator.disambiguation && creator.disambiguation.comment;
+
+	const identifiers = creator.identifierSet ?
+		creator.identifierSet.identifiers.map(({type, ...rest}) => ({
+			type: type.id,
+			...rest
+		})) : [];
+
+	const identifierEditor = {};
+	identifiers.forEach(
+		(identifier) => { identifierEditor[identifier.id] = identifier; }
+	);
+
+	const creatorSection = {
+		gender: creator.gender && creator.gender.id,
+		type: creator.creatorType && creator.creatorType.id,
+		beginDate: creator.beginDate,
+		endDate: creator.endDate,
+		ended: creator.ended
+	};
+
+	return {
+		aliasEditor,
+		buttonBar,
+		creatorSection,
+		identifierEditor,
+		nameSection
+	};
+}
+
+
 router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	loadGenders, loadLanguages, loadCreatorTypes, (req, res) => {
 		const creator = res.locals.entity;
 
 		const props = {
+			initialState: creatorToFormState(creator),
 			languageOptions: res.locals.languages,
 			genderOptions: res.locals.genders,
 			creatorTypes: res.locals.creatorTypes,

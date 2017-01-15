@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import CreatorData from './creator-data';
+import EntityData from './creator-data';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
@@ -26,115 +26,34 @@ import creatorSectionReducer from './creator-section/reducer';
 
 const rootReducer = createRootReducer('creatorSection', creatorSectionReducer);
 
-function generateInitialState(creator, creatorTypes) {
-	if (!creator) {
-		return Immutable.Map({
-			sharedData: Immutable.Map({
-				name: '',
-				sortName: '',
-				language: null,
-				disambiguation: '',
-				disambiguationVisible: false,
-				aliasEditorVisible: false
-			}),
-			aliasEditor: Immutable.Map()
-		});
-	}
-
-	const aliases = creator.aliasSet ?
-		creator.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
-			...rest
-		})) : [];
-
-	const name = aliases.length > 0 ? aliases[0] : {
-		name: '',
-		sortName: '',
-		language: null
-	};
-
-	const aliasDict = {};
-	aliases.slice(1).forEach((alias) => aliasDict[alias.id] = alias);
-
-	const initialGender = creator.gender && creator.gender.id;
-	const initialCreatorType = creator.creatorType && creator.creatorType.id;
-	const initialDisambiguation =
-		creator.disambiguation && creator.disambiguation.comment;
-	const identifiers = creator.identifierSet ?
-		creator.identifierSet.identifiers.map(({type, ...rest}) => ({
-			type: type.id,
-			...rest
-		})) : [];
-
-	const identifierDict = {};
-	identifiers.forEach(
-		(identifier) => identifierDict[identifier.id] = identifier
-	);
-
-	const personType = creatorTypes.find((type) => type.label === 'Person');
-	return Immutable.Map({
-		sharedData: Immutable.Map({
-			disambiguationVisible: Boolean(initialDisambiguation),
-			disambiguation: initialDisambiguation,
-			aliasEditorVisible: false,
-			...name
-		}),
-		aliasEditor: Immutable.fromJS(aliasDict),
-		creatorSection: Immutable.Map({
-			gender: initialGender,
-			type: initialCreatorType,
-			beginDate: creator.beginDate,
-			endDate: creator.endDate,
-			ended: creator.ended,
-			singular: initialCreatorType === personType.id
-		}),
-		identifierEditor: Immutable.fromJS(identifierDict)
-	});
-}
-
-const Creator = ({
-	languageOptions,
-	genderOptions,
-	creator,
-	creatorTypes,
-	identifierTypes,
-	submissionUrl
+const EntityEditor = ({
+	initialState,
+	...rest
 }) => {
 	let store = null;
 	if (typeof window === 'undefined') {
 		store = createStore(
 			rootReducer,
-			generateInitialState(creator, creatorTypes)
+			Immutable.fromJS(initialState)
 		);
 	}
 	else {
 		store = createStore(
 			rootReducer,
-			generateInitialState(creator, creatorTypes),
+			Immutable.fromJS(initialState),
 			window.devToolsExtension && window.devToolsExtension()
 		);
 	}
 
 	return (
 		<Provider store={store}>
-			<CreatorData
-				creatorTypes={creatorTypes}
-				genderOptions={genderOptions}
-				identifierTypes={identifierTypes}
-				languageOptions={languageOptions}
-				submissionUrl={submissionUrl}
-			/>
+			<EntityData {...rest}/>
 		</Provider>
 	);
 };
-Creator.displayName = 'Creator';
-Creator.propTypes = {
-	creator: React.PropTypes.object,
-	creatorTypes: React.PropTypes.array,
-	gendersOptions: React.PropTypes.array,
-	identifierTypes: React.PropTypes.array,
-	languagesOptions: React.PropTypes.array,
-	submissionUrl: React.PropTypes.string
+EntityEditor.displayName = 'EntityEditor';
+EntityEditor.propTypes = {
+	initialState: React.PropTypes.object
 };
 
-export default Creator;
+export default EntityEditor;
