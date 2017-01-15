@@ -20,14 +20,13 @@ const React = require('react');
 const FontAwesome = require('react-fontawesome');
 const Button = require('react-bootstrap').Button;
 const Table = require('react-bootstrap').Table;
-const formatDate = require('./utils').formatDate;
-const _ = require('lodash');
+const _get = require('lodash.get');
 
 function extractAttribute(attr, path) {
 	'use strict';
 	if (attr) {
 		if (path) {
-			return _.get(attr, path, '?');
+			return _get(attr, path, '?');
 		}
 		return attr;
 	}
