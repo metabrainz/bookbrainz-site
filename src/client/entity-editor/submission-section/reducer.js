@@ -23,7 +23,8 @@ import Immutable from 'immutable';
 
 function reducer(
 	state = Immutable.Map({
-		note: ''
+		note: '',
+		submitError: ''
 	}),
 	action
 ) {

@@ -24,7 +24,10 @@ import Immutable from 'immutable';
 function reducer(
 	state = Immutable.Map({
 		gender: null,
-		type: null
+		type: null,
+		beginDate: '',
+		endDate: '',
+		ended: false
 	}),
 	action
 ) {
