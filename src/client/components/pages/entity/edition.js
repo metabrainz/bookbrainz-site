@@ -72,7 +72,7 @@ EditionPage.getAttributes = (entity) => {
 	const releaseDate = (entity.releaseEventSet &&
 	entity.releaseEventSet.releaseEvents &&
 	entity.releaseEventSet.releaseEvents.length) ?
-		formatDate(new Date(entity.releaseEventSet.releaseEvents[0].date)) :
+		entity.releaseEventSet.releaseEvents[0].date :
 		'?';
 	const pageCount = extractAttribute(entity.pages);
 	const weight = extractAttribute(entity.weight);

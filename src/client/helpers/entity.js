@@ -52,12 +52,12 @@ function getDateAttributes(entity) {
 	'use strict';
 	const attributes = [{
 		title: 'Begin Date',
-		data: extractAttribute(formatDate(new Date(entity.beginDate)))
+		data: extractAttribute(entity.beginDate)
 	}];
 	if (entity.ended) {
 		attributes.push({
 			title: 'End Date',
-			data: extractAttribute(formatDate(new Date(entity.endDate)))
+			data: extractAttribute(entity.endDate)
 		});
 	}
 	return attributes;
@@ -110,7 +110,7 @@ function showEntityEditions(entity) {
 								</span>
 							</td>
 							<td>
-								{formatDate(new Date(releaseEventDate))}
+								{releaseEventDate}
 							</td>
 						</tr>
 					);
