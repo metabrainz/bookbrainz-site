@@ -22,6 +22,8 @@
 const React = require('react');
 const EntityPage = require('../../../containers/entity');
 const AttributeList = require('./../parts/attribute-list');
+const getLanguageAttribute =
+	require('../../../helpers/entity').getLanguageAttribute;
 const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
 const extractEntityProps =
 	require('../../../../server/helpers/props').extractEntityProps;
@@ -41,16 +43,10 @@ function WorkPage(props) {
 		/>
 	);
 }
-WorkPage.getAttributes = (entity) => {
-	const languages = (entity.languageSet && entity.languageSet.languages) ?
-		entity.languageSet.languages.map(
-			(language) => language.name
-		).join(', ') : '?';
-	return [
-		getTypeAttribute(entity.workType),
-		{title: 'Languages', data: languages}
-	];
-};
+WorkPage.getAttributes = (entity) => ([
+	getTypeAttribute(entity.workType),
+	getLanguageAttribute(entity)
+]);
 WorkPage.displayName = 'WorkPage';
 WorkPage.propTypes = {
 	entity: React.PropTypes.object

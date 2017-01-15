@@ -23,6 +23,8 @@ const FontAwesome = require('react-fontawesome');
 const formatDate = require('../../../helpers/utils').formatDate;
 const EntityPage = require('../../../containers/entity');
 const AttributeList = require('./../parts/attribute-list');
+const getLanguageAttribute =
+	require('../../../helpers/entity').getLanguageAttribute;
 const extractAttribute = require('../../../helpers/entity').extractAttribute;
 const extractEntityProps =
 	require('../../../../server/helpers/props').extractEntityProps;
@@ -57,10 +59,6 @@ function EditionPage(props) {
 EditionPage.getAttributes = (entity) => {
 	const editionStatus = extractAttribute(entity.editionStatus, 'label');
 	const editionFormat = extractAttribute(entity.editionFormat, 'label');
-	const languages = (entity.languageSet && entity.languageSet.languages) ?
-		entity.languageSet.languages.map(
-			(language) => language.name
-		).join(', ') : '?';
 	const publishers =
 		(entity.publisherSet && entity.publisherSet.publishers.length > 0) ?
 			entity.publisherSet.publishers.map((publisher) =>
@@ -85,7 +83,7 @@ EditionPage.getAttributes = (entity) => {
 	return [
 		{title: 'Status', data: editionStatus},
 		{title: 'Format', data: editionFormat},
-		{title: 'Language', data: languages},
+		getLanguageAttribute(entity),
 		{title: 'Publishers', data: publishers},
 		{title: 'Release Date', data: releaseDate},
 		{title: 'Page Count', data: pageCount},

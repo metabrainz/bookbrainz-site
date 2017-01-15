@@ -34,6 +34,15 @@ function extractAttribute(attr, path) {
 	return '?';
 }
 
+function getLanguageAttribute(entity) {
+	'use strict';
+	const languages = (entity.languageSet && entity.languageSet.languages) ?
+		entity.languageSet.languages.map(
+			(language) => language.name
+		).join(', ') : '?';
+	return {title: 'Languages', data: languages};
+}
+
 function getTypeAttribute(entityType) {
 	'use strict';
 	return {title: 'Type', data: extractAttribute(entityType, 'label')};
@@ -114,4 +123,5 @@ function showEntityEditions(entity) {
 exports.extractAttribute = extractAttribute;
 exports.getTypeAttribute = getTypeAttribute;
 exports.getDateAttributes = getDateAttributes;
+exports.getLanguageAttribute = getLanguageAttribute;
 exports.showEntityEditions = showEntityEditions;
