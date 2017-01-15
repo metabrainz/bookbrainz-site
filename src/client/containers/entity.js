@@ -39,7 +39,6 @@ class EntityContainer extends React.Component {
 
 	renderAlert() {
 		const {alert} = this.props;
-		console.log(alert);
 		return (
 			<Row>
 				<Col md={12}>
@@ -141,100 +140,101 @@ class EntityContainer extends React.Component {
 		);
 	}
 
-	renderContent() {
-		const {
+	renderEntityDetails() {
+		const {identifierTypes,
 			entity,
 			iconName,
-			identifierTypes,
-			children,
-			attributes
+			attributes,
+			children
 		} = this.props;
-		if (entity.revision.dataId) {
-			const editUrl =
-				`/${entity.type.toLowerCase()}/${entity.bbid}/relationships`;
-			const identifiers = entity.identifierSet &&
-				identifierTypes.map((type, idx) => {
-					const identifierValues =
-						entity.identifierSet.identifiers.filter((identifier) =>
-							identifier.type.id === type.id
-						).map((identifier, index) =>
-							<dd
-								key={`${identifier.id}${index}`}
-							>
-								{identifier.value}
-							</dd>
-						);
-					return [
-						<dt key={`type${type.id}${idx}`}>{type.label}</dt>,
-						identifierValues
-					];
-				});
-			return (
-				<Row>
-					<Col
-						md={4}
-						mdPush={8}
-					>
-						<div className="text-center">
-							<FontAwesome
-								className="picture-fallback-icon-large"
-								name={iconName}
-							/>
-						</div>
-						<hr/>
-						<dl>
-							{attributes}
-							<dt>Last Modified</dt>
-							<dd>
-								{formatDate(new Date(
-									entity.revision.revision.createdAt
-								))}
-							</dd>
-							{identifiers}
-						</dl>
-					</Col>
-					<Col
-						md={8}
-						mdPull={4}
-					>
-						{entity.annotation &&
-							<blockquote>
-								<p>{entity.annotation.content}</p>
-								<footer>
-									{`updated ${formatDate(
-										new Date(
-										entity.annotation.lastRevision.createdAt
-										)
-									)}`}
-								</footer>
-							</blockquote>
-						}
-						{children}
-						<h2>Relationships</h2>
-						{entity.relationships &&
-							<ul className="list-unstyled">
-								{entity.relationships.map((relationship, idx) =>
-									<li
-										dangerouslySetInnerHTML={{
-											__html: relationship.rendered
-										}}
-										key={`relationship${idx}`}
-									/>
-								)}
-							</ul>
-						}
-						<Button
-							bsStyle="warning"
-							className="entity-action"
-							href={editUrl}
+		const editUrl =
+			`/${entity.type.toLowerCase()}/${entity.bbid}/relationships`;
+		const identifiers = entity.identifierSet &&
+			identifierTypes.map((type, idx) => {
+				const identifierValues =
+					entity.identifierSet.identifiers.filter((identifier) =>
+						identifier.type.id === type.id
+					).map((identifier, index) =>
+						<dd
+							key={`${identifier.id}${index}`}
 						>
-							<FontAwesome name="pencil"/>
-							{' Edit'}
-						</Button>
-					</Col>
-				</Row>
-			);
-		}
+							{identifier.value}
+						</dd>
+					);
+				return [
+					<dt key={`type${type.id}${idx}`}>{type.label}</dt>,
+					identifierValues
+				];
+			});
+		return (
+			<Row>
+				<Col
+					md={4}
+					mdPush={8}
+				>
+					<div className="text-center">
+						<FontAwesome
+							className="picture-fallback-icon-large"
+							name={iconName}
+						/>
+					</div>
+					<hr/>
+					<dl>
+						{attributes}
+						<dt>Last Modified</dt>
+						<dd>
+							{formatDate(new Date(
+								entity.revision.revision.createdAt
+							))}
+						</dd>
+						{identifiers}
+					</dl>
+				</Col>
+				<Col
+					md={8}
+					mdPull={4}
+				>
+					{entity.annotation &&
+					<blockquote>
+						<p>{entity.annotation.content}</p>
+						<footer>
+							{`updated ${formatDate(
+								new Date(
+									entity.annotation.lastRevision.createdAt
+								)
+							)}`}
+						</footer>
+					</blockquote>
+					}
+					{children}
+					<h2>Relationships</h2>
+					{entity.relationships &&
+					<ul className="list-unstyled">
+						{entity.relationships.map((relationship, idx) =>
+							<li
+								dangerouslySetInnerHTML={{
+									__html: relationship.rendered
+								}}
+								key={`relationship${idx}`}
+							/>
+						)}
+					</ul>
+					}
+					<Button
+						bsStyle="warning"
+						className="entity-action"
+						href={editUrl}
+					>
+						<FontAwesome name="pencil"/>
+						{' Edit'}
+					</Button>
+				</Col>
+			</Row>
+		);
+	}
+
+	renderEntityRemoved() {
+		const {entity} = this.props;
 		return (
 			<Row
 				className="margin-top-2"
@@ -256,6 +256,14 @@ class EntityContainer extends React.Component {
 				</Col>
 			</Row>
 		);
+	}
+
+	renderContent() {
+		const {entity} = this.props;
+		if (entity.revision.dataId) {
+			return this.renderEntityDetails();
+		}
+		return this.renderEntityRemoved();
 	}
 
 	render() {
