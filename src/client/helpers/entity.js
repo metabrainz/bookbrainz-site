@@ -34,32 +34,24 @@ function extractAttribute(attr, path) {
 	return '?';
 }
 
-function showEntityType(entityType) {
+function getTypeAttribute(entityType) {
 	'use strict';
-	return (
-		<div>
-			<dt>Type</dt>
-			<dd>{extractAttribute(entityType, 'label')}</dd>
-		</div>
-	);
+	return {title: 'Type', data: extractAttribute(entityType, 'label')};
 }
 
-function showBeginEndDate(entity) {
+function getDateAttributes(entity) {
 	'use strict';
-	return (
-		<div>
-			<dt>Begin Date</dt>
-			<dd>{extractAttribute(formatDate(new Date(entity.beginDate)))}</dd>
-			{entity.ended &&
-				<div>
-					<dt>End Date</dt>
-					<dd>{extractAttribute(
-						formatDate(new Date(entity.endDate))
-					)}</dd>
-				</div>
-			}
-		</div>
-	);
+	const attributes = [{
+		title: 'Begin Date',
+		data: extractAttribute(formatDate(new Date(entity.beginDate)))
+	}];
+	if (entity.ended) {
+		attributes.push({
+			title: 'End Date',
+			data: extractAttribute(formatDate(new Date(entity.endDate)))
+		});
+	}
+	return attributes;
 }
 
 function showEntityEditions(entity) {
@@ -120,6 +112,6 @@ function showEntityEditions(entity) {
 }
 
 exports.extractAttribute = extractAttribute;
-exports.showEntityType = showEntityType;
-exports.showBeginEndDate = showBeginEndDate;
+exports.getTypeAttribute = getTypeAttribute;
+exports.getDateAttributes = getDateAttributes;
 exports.showEntityEditions = showEntityEditions;
