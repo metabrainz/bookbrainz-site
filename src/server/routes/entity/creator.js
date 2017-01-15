@@ -91,8 +91,8 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
 	loadLanguages, loadCreatorTypes, (req, res) => {
 		const props = {
-			languages: res.locals.languages,
-			genders: res.locals.genders,
+			languageOptions: res.locals.languages,
+			genderOptions: res.locals.genders,
 			creatorTypes: res.locals.creatorTypes,
 			identifierTypes: res.locals.identifierTypes,
 			submissionUrl: '/creator/create/handler'
@@ -115,8 +115,8 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 		const creator = res.locals.entity;
 
 		const props = {
-			languages: res.locals.languages,
-			genders: res.locals.genders,
+			languageOptions: res.locals.languages,
+			genderOptions: res.locals.genders,
 			creatorTypes: res.locals.creatorTypes,
 			creator,
 			identifierTypes: res.locals.identifierTypes,

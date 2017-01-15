@@ -93,8 +93,8 @@ function generateInitialState(creator, creatorTypes) {
 }
 
 const Creator = ({
-	languages,
-	genders,
+	languageOptions,
+	genderOptions,
 	creator,
 	creatorTypes,
 	identifierTypes,
@@ -119,9 +119,9 @@ const Creator = ({
 		<Provider store={store}>
 			<CreatorData
 				creatorTypes={creatorTypes}
-				genderOptions={genders}
+				genderOptions={genderOptions}
 				identifierTypes={identifierTypes}
-				languageOptions={languages}
+				languageOptions={languageOptions}
 				submissionUrl={submissionUrl}
 			/>
 		</Provider>
@@ -131,9 +131,9 @@ Creator.displayName = 'Creator';
 Creator.propTypes = {
 	creator: React.PropTypes.object,
 	creatorTypes: React.PropTypes.array,
-	genders: React.PropTypes.array,
+	gendersOptions: React.PropTypes.array,
 	identifierTypes: React.PropTypes.array,
-	languages: React.PropTypes.array,
+	languagesOptions: React.PropTypes.array,
 	submissionUrl: React.PropTypes.string
 };
 
