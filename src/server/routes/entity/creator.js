@@ -141,17 +141,19 @@ const additionalCreatorProps = [
 
 
 function transformNewForm(data) {
-	let aliases = _.map(data.aliasEditor, ({language, ...rest}) => ({
+	let aliases = _.map(data.aliasEditor, ({language, name, sortName}) => ({
 		default: false,
 		languageId: language,
-		...rest
+		name,
+		sortName
 	}));
 
 	aliases = [{
-		languageId: data.sharedData.language,
+		name: data.nameSection.name,
+		sortName: data.nameSection.sortName,
+		languageId: data.nameSection.language,
 		primary: true,
-		default: true,
-		...data.sharedData
+		default: true
 	}, ...aliases];
 
 	const identifiers = _.map(data.identifierEditor, ({type, ...rest}) => ({
@@ -162,12 +164,12 @@ function transformNewForm(data) {
 	return {
 		aliases,
 		identifiers,
-		disambiguation: data.sharedData.disambiguation,
-		genderId: data.creatorData.gender,
-		typeId: data.creatorData.type,
-		beginDate: data.creatorData.beginDate,
-		endDate: data.creatorData.ended ? data.creatorData.endDate : '',
-		ended: data.creatorData.ended
+		disambiguation: data.nameSection.disambiguation,
+		genderId: data.creatorSection.gender,
+		typeId: data.creatorSection.type,
+		beginDate: data.creatorSection.beginDate,
+		endDate: data.creatorSection.ended ? data.creatorSection.endDate : '',
+		ended: data.creatorSection.ended
 	};
 }
 
