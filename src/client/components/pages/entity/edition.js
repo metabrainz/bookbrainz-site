@@ -20,7 +20,6 @@
 /* eslint strict: 0 */
 const React = require('react');
 const FontAwesome = require('react-fontawesome');
-const formatDate = require('../../../helpers/utils').formatDate;
 const EntityPage = require('../../../containers/entity');
 const AttributeList = require('./../parts/attribute-list');
 const getLanguageAttribute =
@@ -75,7 +74,7 @@ EditionPage.getAttributes = (entity) => {
 		entity.releaseEventSet.releaseEvents[0].date :
 		'?';
 	const pageCount = extractAttribute(entity.pages);
-	const weight = extractAttribute(entity.weight);
+	const weight = `${extractAttribute(entity.weight)} g`;
 	const width = extractAttribute(entity.width);
 	const height = extractAttribute(entity.height);
 	const depth = extractAttribute(entity.depth);
@@ -88,7 +87,7 @@ EditionPage.getAttributes = (entity) => {
 		{title: 'Release Date', data: releaseDate},
 		{title: 'Page Count', data: pageCount},
 		{title: 'Weight', data: weight},
-		{title: 'Dimensions', data: dimensions}
+		{title: 'Dimensions (W×H×D)', data: dimensions}
 	];
 };
 EditionPage.displayName = 'EditionPage';
