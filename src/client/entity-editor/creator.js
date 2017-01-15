@@ -20,23 +20,11 @@ import CreatorData from './creator-data';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
-import aliasEditorReducer from './alias-editor/reducer';
-import buttonBarReducer from './button-bar/reducer';
-import {combineReducers} from 'redux-immutable';
+import {createRootReducer} from './helpers';
 import {createStore} from 'redux';
 import creatorSectionReducer from './creator-section/reducer';
-import identifierEditorReducer from './identifier-editor/reducer';
-import nameSectionReducer from './name-section/reducer';
-import submissionSectionReducer from './submission-section/reducer'
 
-const rootReducer = combineReducers({
-	buttonBar: buttonBarReducer,
-	aliasEditor: aliasEditorReducer,
-	creatorSection: creatorSectionReducer,
-	identifierEditor: identifierEditorReducer,
-	nameSection: nameSectionReducer,
-	submissionSection: submissionSectionReducer
-});
+const rootReducer = createRootReducer('creatorSection', creatorSectionReducer);
 
 function generateInitialState(creator, creatorTypes) {
 	if (!creator) {
