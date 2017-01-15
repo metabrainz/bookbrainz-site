@@ -146,15 +146,9 @@ module.exports.displayEntity = (req, res) => {
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EntityContainer
+					<EntityComponent
 						{...propHelpers.extractEntityProps(props)}
-						iconName={EntityComponent.iconName}
-						attributes={EntityComponent.attributes(props.entity)}
-					>
-						<EntityComponent
-							entity={props.entity}
-						/>
-					</EntityContainer>
+					/>
 				</Layout>
 			);
 			res.render('target', {markup, props});

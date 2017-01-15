@@ -18,36 +18,44 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint strict: 0 */
 const React = require('react');
-const showEntityType = require('../../../helpers/entity').showEntityType;
-const showBeginEndDate = require('../../../helpers/entity').showBeginEndDate;
+const EntityPage = require('../../../containers/entity');
+const AttributeList = require('./../parts/attribute-list');
+const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
+const getDateAttributes = require('../../../helpers/entity').getDateAttributes;
 const extractAttribute = require('../../../helpers/entity').extractAttribute;
+const extractEntityProps =
+	require('../../../../server/helpers/props').extractEntityProps;
 
-class CreatorPage extends React.Component {
-
-	static get iconName() {
-		return 'user';
-	}
-
-	static attributes(entity) {
-		return (
-			<div>
-				{showEntityType(entity.creatorType)}
-				<dt>Gender</dt>
-				<dd>{extractAttribute(entity.gender, 'name')}</dd>
-				<dt>Begin Area</dt>
-				<dd>{extractAttribute(entity.beginArea, 'name')}</dd>
-				<dt>End Area</dt>
-				<dd>{extractAttribute(entity.endArea, 'name')}</dd>
-				{showBeginEndDate(entity)}
-			</div>
-		);
-	}
-
-	render() {
-		return null;
-	}
+function CreatorPage(props) {
+	const {entity} = props;
+	const attributes = (
+		<AttributeList
+			attributes={CreatorPage.getAttributes(entity)}
+		/>
+	);
+	return (
+		<EntityPage
+			attributes={attributes}
+			iconName="user"
+			{...extractEntityProps(props)}
+		/>
+	);
 }
 CreatorPage.displayName = 'CreatorPage';
+CreatorPage.propTypes = {
+	entity: React.PropTypes.object
+};
+CreatorPage.getAttributes = (entity) => ([
+	getTypeAttribute(entity.creatorType),
+	{title: 'Gender', data: extractAttribute(entity.gender, 'name')},
+	{
+		title: 'Begin Area',
+		data: extractAttribute(entity.beginArea, 'name')
+	},
+	{title: 'End Area', data: extractAttribute(entity.endArea, 'name')},
+	getDateAttributes(entity)
+]);
 
 module.exports = CreatorPage;
