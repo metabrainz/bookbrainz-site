@@ -49,8 +49,8 @@ function EditionPage(props) {
 						{' See all other editions'}
 					</a> :
 					<span className="bg-danger">
-							Publication unset - please add one if you see this!
-						</span>
+						Publication unset - please add one if you see this!
+					</span>
 				}
 			</p>
 		</EntityPage>

@@ -72,7 +72,8 @@ function showEntityEditions(entity) {
 				<Button
 					bsStyle="success"
 					className="pull-right"
-					href={`/edition/create?publication=${entity.bbid}`}
+					href={`/edition/create?${
+						entity.type.toLowerCase()}=${entity.bbid}`}
 				>
 					<FontAwesome name="plus"/>
 					{'  Add Edition'}
@@ -105,8 +106,8 @@ function showEntityEditions(entity) {
 									{editionName}
 								</a>
 								<span className="text-muted">
-										{editionComment}
-									</span>
+									{editionComment}
+								</span>
 							</td>
 							<td>
 								{formatDate(new Date(releaseEventDate))}

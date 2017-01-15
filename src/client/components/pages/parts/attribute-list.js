@@ -17,12 +17,12 @@
  */
 /* eslint strict: 0 */
 const React = require('react');
-const _ = require('lodash');
+const _flatten = require('lodash.flatten');
 
 function AttributeList({attributes}) {
 	return (
 		<div>
-			{_.flatten(attributes).map((attribute, idx) =>
+			{_flatten(attributes).map((attribute, idx) =>
 				<div key={`attribute${idx}`}>
 					<dt>{attribute.title}</dt>
 					<dd>{attribute.data}</dd>
