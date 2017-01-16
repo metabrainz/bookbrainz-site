@@ -15,33 +15,28 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-'use strict';
+/* eslint strict: 0 */
+const React = require('react');
+const _flatten = require('lodash.flatten');
 
-module.exports.generateProps = function generateProps(req, res, props) {
-	return Object.assign({}, req.app.locals, res.locals, props);
+function AttributeList({attributes}) {
+	return (
+		<div>
+			{_flatten(attributes).map((attribute, idx) =>
+				<div key={`attribute${idx}`}>
+					<dt>{attribute.title}</dt>
+					<dd>{attribute.data}</dd>
+				</div>
+			)}
+		</div>
+	);
+}
+AttributeList.displayName = 'AttributeList';
+AttributeList.propTypes = {
+	attributes: React.PropTypes.arrayOf(React.PropTypes.shape({
+		title: React.PropTypes.string,
+		data: React.PropTypes.any
+	}))
 };
 
-module.exports.extractLayoutProps = function extractLayoutProps(props) {
-	return {
-		homepage: props.homepage,
-		siteRevision: props.siteRevision,
-		repositoryUrl: props.repositoryUrl,
-		user: props.user,
-		hideSearch: props.hideSearch
-	};
-};
-
-module.exports.extractEditorProps = function extractEditorProps(props) {
-	return {
-		editor: props.editor,
-		tabActive: props.tabActive
-	};
-};
-
-module.exports.extractEntityProps = function extractEntityProps(props) {
-	return {
-		alert: props.alert,
-		entity: props.entity,
-		identifierTypes: props.identifierTypes
-	};
-};
+module.exports = AttributeList;

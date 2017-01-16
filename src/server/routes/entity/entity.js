@@ -45,9 +45,25 @@ const propHelpers = require('../../helpers/props');
 const Layout = require('../../../client/containers/layout');
 const EntityRevisions =
 	require('../../../client/components/pages/entity-revisions');
+const EntityContainer = require('../../../client/containers/entity');
+const EditionPage = require('../../../client/components/pages/entity/edition');
+const CreatorPage = require('../../../client/components/pages/entity/creator');
+const PublicationPage =
+	require('../../../client/components/pages/entity/publication');
+const PublisherPage =
+	require('../../../client/components/pages/entity/publisher');
+const WorkPage = require('../../../client/components/pages/entity/work');
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion')
 );
+
+const entityComponents = {
+	edition: EditionPage,
+	creator: CreatorPage,
+	publication: PublicationPage,
+	publisher: PublisherPage,
+	work: WorkPage
+};
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -121,11 +137,27 @@ module.exports.displayEntity = (req, res) => {
 	});
 
 	return alertPromise.then((alert) => {
-		res.render(
-			`entity/view/${entity.type.toLowerCase()}`,
-			{identifierTypes,
-			alert}
-		);
+		const entityName = entity.type.toLowerCase();
+		const EntityComponent = entityComponents[entityName];
+		if (EntityComponent) {
+			const props = propHelpers.generateProps(req, res, {
+				identifierTypes,
+				alert
+			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityComponent
+						{...propHelpers.extractEntityProps(props)}
+					/>
+				</Layout>
+			);
+			res.render('target', {markup, props});
+		}
+		else {
+			throw new Error(
+				`Component was not found for the following entity:${entityName}`
+			);
+		}
 	});
 };
 
