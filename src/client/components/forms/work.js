@@ -144,7 +144,8 @@ class WorkForm extends React.Component {
 	 * Renders the form component to allow the user to input
 	 * and submit data about a Work. Also shows a loading spinner
 	 * if connectivity causes a delay in submission.
-	 * @return {ReactElement} - React element corresponding to the rendered WorkEditor component
+	 * @return {ReactElement} - React element corresponding to the
+	 * rendered WorkEditor component
 	 */
 	render() {
 		let aliases = null;
