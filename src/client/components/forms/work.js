@@ -38,7 +38,7 @@ const WorkData = require('./parts/work-data');
 class WorkForm extends React.Component {
 	/**
 	 * Binds class methods to their respective data.
-	 * @param {object} props - Properties passed into the constructor 
+	 * @param {object} props - Properties passed into the constructor
 	 */
 	constructor(props) {
 		super(props);
