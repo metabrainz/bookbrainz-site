@@ -24,26 +24,22 @@ import {createRootReducer} from './helpers';
 import {createStore} from 'redux';
 import creatorSectionReducer from './creator-section/reducer';
 
-const rootReducer = createRootReducer('creatorSection', creatorSectionReducer);
+function createStoreWithDevTools(rootReducer, initialState) {
+	if (typeof window === 'undefined' || !window.devToolsExtension) {
+		return createStore(rootReducer, Immutable.fromJS(initialState));
+	}
+	return createStore(
+		rootReducer, Immutable.fromJS(initialState), window.devToolsExtension()
+	);
+}
 
 const EntityEditor = ({
 	initialState,
 	...rest
 }) => {
-	let store = null;
-	if (typeof window === 'undefined') {
-		store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-	}
-	else {
-		store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState),
-			window.devToolsExtension && window.devToolsExtension()
-		);
-	}
+	const rootReducer =
+		createRootReducer('creatorSection', creatorSectionReducer);
+	const store = createStoreWithDevTools(rootReducer, initialState);
 
 	return (
 		<Provider store={store}>
