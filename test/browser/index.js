@@ -1,5 +1,3 @@
-'use strict';
-
 const DEFAULT_TIMEOUT = 1000;
 
 module.exports = {

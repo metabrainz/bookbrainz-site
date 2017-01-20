@@ -27,8 +27,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * @returns {ReactElement} an element containing the rendered output
 */
 function PrivacyPage() {
-	'use strict';
-
 	return (
 		<div>
 			<PageHeader>Privacy</PageHeader>

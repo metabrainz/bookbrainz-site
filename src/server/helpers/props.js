@@ -1,3 +1,4 @@
+/* @flow */
 /*
  * Copyright (C) 2016  Daniel Hsing
  *
@@ -15,13 +16,16 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-'use strict';
+import type {$Request, $Response} from 'express';
 
-module.exports.generateProps = function generateProps(req, res, props) {
+module.exports.generateProps = function generateProps(
+		req: $Request,
+		res: $Response,
+		props: Object) {
 	return Object.assign({}, req.app.locals, res.locals, props);
 };
 
-module.exports.extractLayoutProps = function extractLayoutProps(props) {
+module.exports.extractLayoutProps = function extractLayoutProps(props: Object) {
 	return {
 		homepage: props.homepage,
 		siteRevision: props.siteRevision,
@@ -31,14 +35,14 @@ module.exports.extractLayoutProps = function extractLayoutProps(props) {
 	};
 };
 
-module.exports.extractEditorProps = function extractEditorProps(props) {
+module.exports.extractEditorProps = function extractEditorProps(props: Object) {
 	return {
 		editor: props.editor,
 		tabActive: props.tabActive
 	};
 };
 
-module.exports.extractEntityProps = function extractEntityProps(props) {
+module.exports.extractEntityProps = function extractEntityProps(props: Object) {
 	return {
 		alert: props.alert,
 		entity: props.entity,

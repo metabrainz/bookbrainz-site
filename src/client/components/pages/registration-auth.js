@@ -29,8 +29,6 @@ const Alert = require('react-bootstrap').Alert;
 * @returns {ReactElement} an element containing the rendered output.
 */
 function RegistrationAuth() {
-	'use strict';
-
 	return (
 		<div>
 			<PageHeader>Register</PageHeader>

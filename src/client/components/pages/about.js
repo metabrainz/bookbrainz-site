@@ -26,8 +26,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * page
 */
 function AboutPage() {
-	'use strict';
-
 	const NESLink =
 		'https://ocharles.org.uk/blog/posts/' +
 			'2012-07-10-nes-does-it-better-1.html';

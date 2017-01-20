@@ -1,10 +1,14 @@
 ---
+parser: babel-eslint
+plugins:
+  - flowtype
 parserOptions:
   ecmaVersion: 8
   ecmaFeatures:
     jsx: true,
     modules: false
     generators: true
+    impliedStrict: true
     experimentalObjectRestSpread: true
 env:
   node: true

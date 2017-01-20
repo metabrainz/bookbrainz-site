@@ -23,7 +23,6 @@ const Table = require('react-bootstrap').Table;
 const _get = require('lodash.get');
 
 function extractAttribute(attr, path) {
-	'use strict';
 	if (attr) {
 		if (path) {
 			return _get(attr, path, '?');
@@ -34,7 +33,6 @@ function extractAttribute(attr, path) {
 }
 
 function getLanguageAttribute(entity) {
-	'use strict';
 	const languages = (entity.languageSet && entity.languageSet.languages) ?
 		entity.languageSet.languages.map(
 			(language) => language.name
@@ -43,12 +41,10 @@ function getLanguageAttribute(entity) {
 }
 
 function getTypeAttribute(entityType) {
-	'use strict';
 	return {title: 'Type', data: extractAttribute(entityType, 'label')};
 }
 
 function getDateAttributes(entity) {
-	'use strict';
 	const attributes = [{
 		title: 'Begin Date',
 		data: extractAttribute(entity.beginDate)
@@ -63,7 +59,6 @@ function getDateAttributes(entity) {
 }
 
 function showEntityEditions(entity) {
-	'use strict';
 	return (
 		<div>
 			<h2>

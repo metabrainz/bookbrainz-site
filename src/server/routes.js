@@ -18,9 +18,6 @@
  */
 
 /* eslint global-require: 0 */
-
-'use strict';
-
 const relationshipHelper = require('./routes/relationship/edit');
 
 function initRootRoutes(app) {
