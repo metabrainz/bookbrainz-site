@@ -44,7 +44,7 @@ const utils = require('../../helpers/utils');
 const entityRoutes = require('./entity');
 
 const EditForm = React.createFactory(
-	require('../../../client/entity-editor/creator').default
+	require('../../../client/entity-editor/root-component').default
 );
 
 const router = express.Router();

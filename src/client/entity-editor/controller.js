@@ -16,12 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import EditForm from './creator';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-const EditFormFactory = React.createFactory(EditForm);
+import RootComponent from './root-component';
 
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
-ReactDOM.render(EditFormFactory(props), document.getElementById('creatorForm'));
+ReactDOM.render(
+	<RootComponent {...props}/>, document.getElementById('creatorForm')
+);

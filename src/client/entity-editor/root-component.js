@@ -16,7 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import EntityData from './creator-data';
+ /* TODO: Drop this component, and follow
+  * http://redux.js.org/docs/recipes/ServerRendering.html instead once server
+  * code is using modules, which will happen ASAP after the PR for this code
+  * is closed.
+  */
+
+import CreatorData from './creator-data';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
@@ -24,16 +30,16 @@ import {createRootReducer} from './helpers';
 import {createStore} from 'redux';
 import creatorSectionReducer from './creator-section/reducer';
 
-function createStoreWithDevTools(rootReducer, initialState) {
+function createStoreWithDevTools(reducer, state) {
 	if (typeof window === 'undefined' || !window.devToolsExtension) {
-		return createStore(rootReducer, Immutable.fromJS(initialState));
+		return createStore(reducer, Immutable.fromJS(state));
 	}
 	return createStore(
-		rootReducer, Immutable.fromJS(initialState), window.devToolsExtension()
+		reducer, Immutable.fromJS(state), window.devToolsExtension()
 	);
 }
 
-const EntityEditor = ({
+const RootComponent = ({
 	initialState,
 	...rest
 }) => {
@@ -43,13 +49,13 @@ const EntityEditor = ({
 
 	return (
 		<Provider store={store}>
-			<EntityData {...rest}/>
+			<CreatorData {...rest}/>
 		</Provider>
 	);
 };
-EntityEditor.displayName = 'EntityEditor';
-EntityEditor.propTypes = {
+RootComponent.displayName = 'RootComponent';
+RootComponent.propTypes = {
 	initialState: React.PropTypes.object
 };
 
-export default EntityEditor;
+export default RootComponent;
