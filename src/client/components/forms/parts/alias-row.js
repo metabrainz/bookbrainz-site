@@ -28,14 +28,10 @@ const Button = require('react-bootstrap').Button;
 const Select = require('../../input/select2');
 
 function stripDot(name) {
-	'use strict';
-
 	return name.replace(/\./g, '');
 }
 
 function makeSortName(name) {
-	'use strict';
-
 	const articles = ['a', 'an', 'the', 'los', 'las', 'el', 'la'];
 	const suffixes = [
 		'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi',

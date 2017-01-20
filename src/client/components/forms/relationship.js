@@ -43,8 +43,6 @@ const RelationshipRow = require('./parts/relationship-row');
  */
 
 function isRelationshipNew(initialType, initialTarget) {
-	'use strict';
-
 	return !(initialType || initialTarget);
 }
 

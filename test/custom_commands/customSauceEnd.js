@@ -1,8 +1,5 @@
 // Based on code from:
 // https://github.com/saucelabs-sample-test-frameworks/JS-Nightwatch.js
-
-'use strict';
-
 const SauceLabs = require('saucelabs');
 
 exports.command = function command() {

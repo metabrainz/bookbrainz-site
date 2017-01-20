@@ -32,8 +32,6 @@ const dataHelper = require('../../../helpers/data');
 const validators = require('../../../helpers/react-validators');
 
 function renderRelationship(relationship) {
-	'use strict';
-
 	const template = Handlebars.compile(
 		relationship.type.displayTemplate,
 		{noEscape: true}
@@ -55,8 +53,6 @@ function renderRelationship(relationship) {
 }
 
 function getRelationshipTypeById(types, id) {
-	'use strict';
-
 	return _find(
 		types, (type) => type.id === id
 	);

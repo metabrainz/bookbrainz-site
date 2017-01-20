@@ -25,8 +25,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * @returns {ReactElement} a HTML document to display the Develop page
 */
 function DevelopPage() {
-	'use strict';
-
 	return (
 		<div>
 			<PageHeader>Developing with BookBrainz</PageHeader>

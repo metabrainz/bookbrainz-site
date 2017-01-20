@@ -1,3 +1,4 @@
+/* @flow */
 /*
  * Copyright (C) 2016  Daniel Hsing
  *
@@ -15,8 +16,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-'use strict';
-
 module.exports.generateProps = function generateProps(req, res, props) {
 	return Object.assign({}, req.app.locals, res.locals, props);
 };

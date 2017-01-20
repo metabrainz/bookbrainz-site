@@ -21,8 +21,6 @@ const Icon = require('react-fontawesome');
 const React = require('react');
 
 function LoadingSpinner() {
-	'use strict';
-
 	return (
 		<div className="loading-background">
 			<Icon

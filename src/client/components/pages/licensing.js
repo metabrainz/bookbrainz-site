@@ -21,8 +21,6 @@ const React = require('react');
 const PageHeader = require('react-bootstrap').PageHeader;
 
 function LicensingPage() {
-	'use strict';
-
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';
 	const CC0Image = 'http://i.creativecommons.org/p/zero/1.0/88x31.png';
 

@@ -19,8 +19,6 @@
 const React = require('react');
 
 function EntityLink(props) {
-	'use strict';
-
 	return (
 		<a href={`/${props.type.toLowerCase()}/${props.bbid}`}>
 			{props.text}

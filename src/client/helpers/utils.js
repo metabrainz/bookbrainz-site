@@ -23,7 +23,6 @@ const moment = require('moment');
  * @returns {object} - New object with injected properties.
  */
 function injectDefaultAliasName(instance) {
-	'use strict';
 	if (instance && instance.name) {
 		return Object.assign({}, instance, {
 			defaultAlias: {
@@ -35,7 +34,6 @@ function injectDefaultAliasName(instance) {
 }
 
 function formatDate(date, includeTime) {
-	'use strict';
 	// second condition checks if object is a Date -- avoids cross-frame issues
 	if (!date || !(Object.prototype.toString.call(date) === '[object Date]') ||
 		isNaN(date.getTime())) {
@@ -49,7 +47,6 @@ function formatDate(date, includeTime) {
 }
 
 function isWithinDayFromNow(date) {
-	'use strict';
 	return Boolean(Date.now() - date.getTime() < 86400000);
 }
 

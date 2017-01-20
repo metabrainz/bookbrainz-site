@@ -22,8 +22,6 @@ const React = require('react');
 const Table = require('react-bootstrap').Table;
 
 function SearchResults(props) {
-	'use strict';
-
 	const noResults = !props.results || props.results.length === 0;
 	if (noResults) {
 		return (

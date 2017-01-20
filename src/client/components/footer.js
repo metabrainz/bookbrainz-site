@@ -26,8 +26,6 @@ const Col = bootstrap.Col;
 const Row = bootstrap.Row;
 
 function Footer(props) {
-	'use strict';
-
 	const repositoryUrl = props.repositoryUrl;
 	const siteRevision = props.siteRevision;
 

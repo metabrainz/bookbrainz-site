@@ -26,8 +26,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * Contribute page
 */
 function ContributePage() {
-	'use strict';
-
 	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
 	const styleLink =
 		'https://bb-user-guide.readthedocs.org/en/latest/' +
