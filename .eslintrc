@@ -8,6 +8,7 @@ parserOptions:
     jsx: true,
     modules: false
     generators: true
+    impliedStrict: true
     experimentalObjectRestSpread: true
 env:
   node: true
