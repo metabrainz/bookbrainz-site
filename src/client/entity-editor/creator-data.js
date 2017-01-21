@@ -22,11 +22,10 @@ import ButtonBar from './button-bar/button-bar';
 import CreatorSection from './creator-section/creator-section';
 import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
-import SubmissionSection from './submission-section/submission-section'
 import {Panel} from 'react-bootstrap';
 import React from 'react';
+import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
-
 
 let Wrapper = ({
 	aliasEditorVisible,
@@ -83,7 +82,8 @@ Wrapper.propTypes = {
 	genderOptions: React.PropTypes.array,
 	identifierEditorVisible: React.PropTypes.array,
 	identifierTypes: React.PropTypes.array,
-	languageOptions: React.PropTypes.array
+	languageOptions: React.PropTypes.array,
+	submissionUrl: React.PropTypes.string
 };
 
 function mapStateToProps(rootState) {
