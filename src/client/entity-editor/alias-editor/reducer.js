@@ -22,7 +22,7 @@ import {
 } from './actions';
 import Immutable from 'immutable';
 
-const DEFAULT_ALIAS = Immutable.Map({
+const EMPTY_ALIAS = Immutable.Map({
 	name: '',
 	sortName: '',
 	language: null,
@@ -36,7 +36,7 @@ function reducer(
 	const {payload, type} = action;
 	switch (action.type) {
 		case ADD_ALIAS_ROW:
-			return state.set(payload, DEFAULT_ALIAS);
+			return state.set(payload, EMPTY_ALIAS);
 		case UPDATE_ALIAS_NAME:
 			return state.setIn([payload.rowId, 'name'], payload.value);
 		case UPDATE_ALIAS_SORT_NAME:

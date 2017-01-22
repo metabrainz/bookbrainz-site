@@ -22,7 +22,7 @@ import {
 } from './actions';
 import Immutable from 'immutable';
 
-const DEFAULT_IDENTIFIER = Immutable.Map({
+const EMPTY_IDENTIFIER = Immutable.Map({
 	value: '',
 	type: null
 });
@@ -34,7 +34,7 @@ function reducer(
 	const {type, payload} = action;
 	switch (type) {
 		case ADD_IDENTIFIER_ROW:
-			return state.set(payload, DEFAULT_IDENTIFIER);
+			return state.set(payload, EMPTY_IDENTIFIER);
 		case UPDATE_IDENTIFIER_VALUE:
 			{
 				const updatedValue = state.setIn(
