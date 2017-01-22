@@ -21,7 +21,7 @@ import buttonBarReducer from './button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
-import submissionSectionReducer from './submission-section/reducer'
+import submissionSectionReducer from './submission-section/reducer';
 
 export function isAliasEmpty(nameValue, sortNameValue) {
 	return !(nameValue.length || sortNameValue.length);
