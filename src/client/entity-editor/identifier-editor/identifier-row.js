@@ -83,7 +83,7 @@ function IdentifierRow({
 }
 IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 IdentifierRow.propTypes = {
-	index: React.PropTypes.number,
+	index: React.PropTypes.string,
 	typeOptions: React.PropTypes.array,
 	typeValue: React.PropTypes.number,
 	valueValue: React.PropTypes.string,
