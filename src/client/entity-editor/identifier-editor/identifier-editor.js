@@ -17,7 +17,7 @@
  */
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {addIdentifier, hideIdentifierEditor} from './actions';
+import {addIdentifierRow, hideIdentifierEditor} from './actions';
 import IdentifierRow from './identifier-row';
 import React from 'react';
 import classNames from 'classnames';
@@ -89,7 +89,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => dispatch(hideIdentifierEditor()),
-		onAddButtonClick: () => dispatch(addIdentifier())
+		onAddButtonClick: () => dispatch(addIdentifierRow())
 	};
 }
 

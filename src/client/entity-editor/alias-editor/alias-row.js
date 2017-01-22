@@ -19,7 +19,7 @@
 
 import {Button, Col, Input, Row} from 'react-bootstrap';
 import {
-	removeAlias, updateAliasLanguage, updateAliasName,
+	removeAliasRow, updateAliasLanguage, updateAliasName,
 	updateAliasPrimary, updateAliasSortName
 } from './actions';
 import LanguageField from '../common/language-field';
@@ -118,7 +118,7 @@ function mapDispatchToProps(dispatch, {index}) {
 		onPrimaryClick: (event) =>
 			dispatch(updateAliasPrimary(index, event.target.checked)),
 		onRemoveButtonClick: () =>
-			dispatch(removeAlias(index)),
+			dispatch(removeAliasRow(index)),
 		onSortNameChange: (event) =>
 			debouncedDispatch(updateAliasSortName(index, event.target.value))
 	};

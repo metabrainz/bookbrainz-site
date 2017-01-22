@@ -18,7 +18,7 @@
 
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {addAlias, hideAliasEditor} from './actions';
+import {addAliasRow, hideAliasEditor} from './actions';
 import AliasRow from './alias-row';
 import React from 'react';
 import classNames from 'classnames';
@@ -84,7 +84,7 @@ AliasEditor.propTypes = {
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => dispatch(hideAliasEditor()),
-		onAddButtonClick: () => dispatch(addAlias())
+		onAddButtonClick: () => dispatch(addAliasRow())
 	};
 }
 

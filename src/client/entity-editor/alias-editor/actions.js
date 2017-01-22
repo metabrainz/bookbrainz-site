@@ -18,10 +18,10 @@
 
 export const UPDATE_ALIAS_NAME = 'UPDATE_ALIAS_NAME';
 export const UPDATE_ALIAS_SORT_NAME = 'UPDATE_ALIAS_SORT_NAME';
-export const ADD_ALIAS = 'ADD_ALIAS';
+export const ADD_ALIAS_ROW = 'ADD_ALIAS_ROW';
 export const UPDATE_ALIAS_LANGUAGE = 'UPDATE_ALIAS_LANGUAGE';
 export const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
-export const REMOVE_ALIAS = 'REMOVE_ALIAS';
+export const REMOVE_ALIAS_ROW = 'REMOVE_ALIAS_ROW';
 export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 
 export function updateAliasName(rowId, value) {
@@ -65,18 +65,18 @@ export function updateAliasPrimary(rowId, value) {
 }
 
 let nextAliasRowId = 0;
-export function addAlias() {
+export function addAliasRow() {
 	/* Prepend 'n' here to indicate new alias, and avoid conflicts with IDs of
 	 * existing aliases. */
 	return {
-		type: ADD_ALIAS,
+		type: ADD_ALIAS_ROW,
 		payload: `n${nextAliasRowId++}`
 	};
 }
 
-export function removeAlias(rowId) {
+export function removeAliasRow(rowId) {
 	return {
-		type: REMOVE_ALIAS,
+		type: REMOVE_ALIAS_ROW,
 		payload: rowId
 	};
 }

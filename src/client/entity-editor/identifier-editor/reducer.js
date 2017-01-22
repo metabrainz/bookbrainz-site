@@ -17,7 +17,7 @@
  */
 
 import {
-	ADD_IDENTIFIER, REMOVE_IDENTIFIER, UPDATE_IDENTIFIER_TYPE,
+	ADD_IDENTIFIER_ROW, REMOVE_IDENTIFIER_ROW, UPDATE_IDENTIFIER_TYPE,
 	UPDATE_IDENTIFIER_VALUE
 } from './actions';
 import Immutable from 'immutable';
@@ -33,7 +33,7 @@ function reducer(
 ) {
 	const {type, payload} = action;
 	switch (type) {
-		case ADD_IDENTIFIER:
+		case ADD_IDENTIFIER_ROW:
 			return state.set(payload, DEFAULT_IDENTIFIER);
 		case UPDATE_IDENTIFIER_VALUE:
 			{
@@ -50,7 +50,7 @@ function reducer(
 			}
 		case UPDATE_IDENTIFIER_TYPE:
 			return state.setIn([payload.rowId, 'type'], payload.value);
-		case REMOVE_IDENTIFIER:
+		case REMOVE_IDENTIFIER_ROW:
 			return state.delete(payload);
 
 		// no default

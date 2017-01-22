@@ -17,7 +17,7 @@
  */
 
 import {
-	ADD_ALIAS, REMOVE_ALIAS, UPDATE_ALIAS_LANGUAGE,
+	ADD_ALIAS_ROW, REMOVE_ALIAS_ROW, UPDATE_ALIAS_LANGUAGE,
 	UPDATE_ALIAS_NAME, UPDATE_ALIAS_PRIMARY, UPDATE_ALIAS_SORT_NAME
 } from './actions';
 import Immutable from 'immutable';
@@ -35,7 +35,7 @@ function reducer(
 ) {
 	const {payload, type} = action;
 	switch (action.type) {
-		case ADD_ALIAS:
+		case ADD_ALIAS_ROW:
 			return state.set(payload, DEFAULT_ALIAS);
 		case UPDATE_ALIAS_NAME:
 			return state.setIn([payload.rowId, 'name'], payload.value);
@@ -45,7 +45,7 @@ function reducer(
 			return state.setIn([payload.rowId, 'language'], payload.value);
 		case UPDATE_ALIAS_PRIMARY:
 			return state.setIn([payload.rowId, 'primary'], payload.value);
-		case REMOVE_ALIAS:
+		case REMOVE_ALIAS_ROW:
 			return state.delete(payload);
 		// no default
 	}

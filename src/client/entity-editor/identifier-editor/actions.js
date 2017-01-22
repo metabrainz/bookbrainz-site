@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-export const ADD_IDENTIFIER = 'ADD_IDENTIFIER';
-export const REMOVE_IDENTIFIER = 'REMOVE_IDENTIFIER';
+export const ADD_IDENTIFIER_ROW = 'ADD_IDENTIFIER_ROW';
+export const REMOVE_IDENTIFIER_ROW = 'REMOVE_IDENTIFIER_ROW';
 export const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
 export const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
 export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
@@ -30,18 +30,18 @@ export function hideIdentifierEditor() {
 }
 
 let nextIdentifierRowId = 0;
-export function addIdentifier() {
+export function addIdentifierRow() {
 	/* Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
 	 * of existing identifiers. */
 	return {
-		type: ADD_IDENTIFIER,
+		type: ADD_IDENTIFIER_ROW,
 		payload: `n${nextIdentifierRowId++}`
 	};
 }
 
-export function removeIdentifier(rowId) {
+export function removeIdentifierRow(rowId) {
 	return {
-		type: REMOVE_IDENTIFIER,
+		type: REMOVE_IDENTIFIER_ROW,
 		payload: rowId
 	};
 }

@@ -19,7 +19,7 @@
 
 import {Button, Col, Input, Row} from 'react-bootstrap';
 import {
-	removeIdentifier, updateIdentifierType, updateIdentifierValue
+	removeIdentifierRow, updateIdentifierType, updateIdentifierValue
 } from './actions';
 import React from 'react';
 import Select from 'react-select';
@@ -119,7 +119,7 @@ function mapDispatchToProps(dispatch, {index, typeOptions}) {
 	return {
 		onTypeChange: (value) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
-		onRemoveButtonClick: () => dispatch(removeIdentifier(index)),
+		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onValueChange: (event) =>
 			handleValueChange(debouncedDispatch, event, index, typeOptions)
 	};
