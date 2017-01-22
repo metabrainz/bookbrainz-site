@@ -27,7 +27,7 @@ import {connect} from 'react-redux';
 const AliasEditor = ({
 	aliases,
 	languageOptions,
-	onAddButtonClick,
+	onAddAlias,
 	onClose,
 	show
 }) => {
@@ -58,7 +58,7 @@ const AliasEditor = ({
 				</div>
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
-						<Button bsStyle="success" onClick={onAddButtonClick}>
+						<Button bsStyle="success" onClick={onAddAlias}>
 							Add alias
 						</Button>
 					</Col>
@@ -76,7 +76,7 @@ AliasEditor.propTypes = {
 	aliases: React.PropTypes.array,
 	languageOptions: React.PropTypes.array,
 	show: React.PropTypes.bool,
-	onAddButtonClick: React.PropTypes.func,
+	onAddAlias: React.PropTypes.func,
 	onClose: React.PropTypes.func
 };
 
@@ -84,7 +84,7 @@ AliasEditor.propTypes = {
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => dispatch(hideAliasEditor()),
-		onAddButtonClick: () => dispatch(addAliasRow())
+		onAddAlias: () => dispatch(addAliasRow())
 	};
 }
 
