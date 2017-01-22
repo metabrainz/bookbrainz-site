@@ -46,10 +46,13 @@ function IdentifierRow({
 			<Row>
 				<Col md={4}>
 					<ValueField
+						defaultValue={valueValue}
+						empty={!valueValue && typeValue === null}
+						error={!data.identifierIsValid(
+							typeValue, valueValue, typeOptions
+						)}
 						index={index}
 						typeValue={typeValue}
-						types={typeOptions}
-						valueValue={valueValue}
 						onChange={onValueChange}
 					/>
 				</Col>

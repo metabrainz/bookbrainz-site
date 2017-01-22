@@ -19,15 +19,6 @@
 import {Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
-import data from '../../helpers/data';
-
-function isEmpty(valueValue, typeValue) {
-	return !valueValue && typeValue === null;
-}
-
-function isError(valueValue, typeValue, types) {
-	return !data.identifierIsValid(typeValue, valueValue, types);
-}
 
 /**
  * Presentational component. Renders the name field for the alias section of
@@ -36,23 +27,18 @@ function isError(valueValue, typeValue, types) {
  * @returns {Object} a React component containing the rendered input
  */
 function ValueField({
-	valueValue,
-	typeValue,
-	types,
+	error,
+	empty,
 	...rest
 }) {
 	const label = (
-		<ValidationLabel
-			empty={isEmpty(valueValue, typeValue)}
-			error={isError(valueValue, typeValue, types)}
-		>
+		<ValidationLabel empty={empty} error={error}>
 			Value
 		</ValidationLabel>
 	);
 
 	return (
 		<Input
-			defaultValue={valueValue}
 			label={label}
 			type="text" {...rest}
 		/>
@@ -60,9 +46,8 @@ function ValueField({
 }
 ValueField.displayName = 'ValueField';
 ValueField.propTypes = {
-	typeValue: React.PropTypes.number,
-	types: React.PropTypes.array,
-	valueValue: React.PropTypes.string
+	empty: React.PropTypes.bool,
+	error: React.PropTypes.bool
 };
 
 export default ValueField;
