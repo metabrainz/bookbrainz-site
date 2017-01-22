@@ -37,7 +37,7 @@ const RevisionNote = require('./parts/revision-note');
  */
 
 class PublisherForm extends React.Component {
-	
+
 	/**
 	 * Binds class methods to their respective data.
 	 * @param {object} props - Properties passed into the constructor
