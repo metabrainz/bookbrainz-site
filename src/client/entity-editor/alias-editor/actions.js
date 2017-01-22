@@ -24,6 +24,16 @@ export const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
 export const REMOVE_ALIAS_ROW = 'REMOVE_ALIAS_ROW';
 export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 
+/**
+ * Produces an action indicating that the name for a particular alias within
+ * the editor should be updated with the provided value. The action is
+ * marked to be debounced by the keystroke debouncer defined for
+ * redux-debounce.
+ *
+ * @param {number} rowId - The ID of the row in the alias editor to update.
+ * @param {string} value - The new value to be used for the alias name.
+ * @returns {Object} The resulting UPDATE_ALIAS_NAME action.
+ **/
 export function debouncedUpdateAliasName(rowId, value) {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -35,6 +45,16 @@ export function debouncedUpdateAliasName(rowId, value) {
 	};
 }
 
+/**
+ * Produces an action indicating that the sort name for a particular alias
+ * within the editor should be updated with the provided value. The action is
+ * marked to be debounced by the keystroke debouncer defined for
+ * redux-debounce.
+ *
+ * @param {number} rowId - The ID of the row in the alias editor to update.
+ * @param {string} value - The new value to be used for the alias sort name.
+ * @returns {Object} The resulting UPDATE_ALIAS_SORT_NAME action.
+ **/
 export function debouncedUpdateAliasSortName(rowId, value) {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -46,6 +66,14 @@ export function debouncedUpdateAliasSortName(rowId, value) {
 	};
 }
 
+/**
+ * Produces an action indicating that the language for a particular alias
+ * within the editor should be updated with the provided value.
+ *
+ * @param {number} rowId - The ID of the row in the alias editor to update.
+ * @param {number} value - The new value to be used for the alias language ID.
+ * @returns {Object} The resulting UPDATE_ALIAS_LANGUAGE action.
+ **/
 export function updateAliasLanguage(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_LANGUAGE,
@@ -56,6 +84,14 @@ export function updateAliasLanguage(rowId, value) {
 	};
 }
 
+/**
+ * Produces an action indicating that the primary flag for a particular alias
+ * within the editor should be updated with the provided value.
+ *
+ * @param {number} rowId - The ID of the row in the alias editor to update.
+ * @param {boolean} value - The new value to be used for the alias primary flag.
+ * @returns {Object} The resulting UPDATE_ALIAS_PRIMARY action.
+ **/
 export function updateAliasPrimary(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_PRIMARY,
@@ -67,6 +103,14 @@ export function updateAliasPrimary(rowId, value) {
 }
 
 let nextAliasRowId = 0;
+
+/**
+ * Produces an action indicating that a row for a new alias should be added
+ * to the alias editor. The row is assigned an ID based on an incrementing
+ * variable existing on the client.
+ *
+ * @returns {Object} The resulting ADD_ALIAS_ROW action.
+ **/
 export function addAliasRow() {
 	/* Prepend 'n' here to indicate new alias, and avoid conflicts with IDs of
 	 * existing aliases. */
@@ -76,6 +120,13 @@ export function addAliasRow() {
 	};
 }
 
+/**
+ * Produces an action indicating that the row with the provided ID should be
+ * removed from the alias editor.
+ *
+ * @param {number} rowId - The ID for the row to be deleted.
+ * @returns {Object} The resulting REMOVE_ALIAS_ROW action.
+ **/
 export function removeAliasRow(rowId) {
 	return {
 		type: REMOVE_ALIAS_ROW,
@@ -83,6 +134,14 @@ export function removeAliasRow(rowId) {
 	};
 }
 
+/**
+ * Produces an action indicating that the alias editor should be hidden from
+ * view.
+ *
+ * @see showAliasEditor
+ *
+ * @returns {Object} The resulting HIDE_ALIAS_EDITOR action.
+ **/
 export function hideAliasEditor() {
 	return {
 		type: HIDE_ALIAS_EDITOR

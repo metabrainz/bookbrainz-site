@@ -20,7 +20,14 @@
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
 
-
+/**
+ * Produces an action indicating that the submit error for the editing form
+ * should be updated with the provided value. This error is displayed in an
+ * Alert if set, to indicate to the user what went wrong.
+ *
+ * @param {string} error - The error message to be set for the form.
+ * @returns {Object} The resulting SET_SUBMIT_ERROR action.
+ **/
 export function setSubmitError(error) {
 	return {
 		type: SET_SUBMIT_ERROR,
@@ -28,6 +35,14 @@ export function setSubmitError(error) {
 	};
 }
 
+/**
+ * Produces an action indicating that the revision note for the editing form
+ * should be updated with the provided value. The action is marked to be
+ * debounced by the keystroke debouncer defined for redux-debounce.
+ *
+ * @param {string} value - The new value to be used for the revision note.
+ * @returns {Object} The resulting UPDATE_REVISION_NOTE action.
+ **/
 export function debounceUpdateRevisionNote(value) {
 	return {
 		meta: {debounce: 'keystroke'},

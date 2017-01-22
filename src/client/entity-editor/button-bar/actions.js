@@ -21,19 +21,39 @@ export const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
 export const SHOW_DISAMBIGUATION = 'SHOW_DISAMBIGUATION';
 export const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 
-
+/**
+ * Produces an action indicating that the alias editor should be made visible.
+ *
+ * @see hideAliasEditor
+ *
+ * @returns {Object} The resulting SHOW_ALIAS_EDITOR action.
+ **/
 export function showAliasEditor() {
 	return {
 		type: SHOW_ALIAS_EDITOR
 	};
 }
 
+/**
+ * Produces an action indicating that the disambiguation field should be
+ * made visible.
+ *
+ * @returns {Object} The resulting SHOW_DISAMBIGUATION action.
+ **/
 export function showDisambiguation() {
 	return {
 		type: SHOW_DISAMBIGUATION
 	};
 }
 
+/**
+ * Produces an action indicating that the identifier editor should be made
+ * visible.
+ *
+ * @see hideIdentifierEditor
+ *
+ * @returns {Object} The resulting SHOW_IDENTIFIER_EDITOR action.
+ **/
 export function showIdentifierEditor() {
 	return {
 		type: SHOW_IDENTIFIER_EDITOR

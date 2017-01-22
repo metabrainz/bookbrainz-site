@@ -21,6 +21,15 @@ export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 
+
+/**
+ * Produces an action indicating that the name for the entity being edited
+ * should be updated with the provided value. The action is marked to be
+ * debounced by the keystroke debouncer defined for redux-debounce.
+ *
+ * @param {string} newName - The new value to be used for the name.
+ * @returns {Object} The resulting UPDATE_NAME_FIELD action.
+ **/
 export function debouncedUpdateNameField(newName) {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -29,6 +38,14 @@ export function debouncedUpdateNameField(newName) {
 	};
 }
 
+/**
+ * Produces an action indicating that the sort name for the entity being edited
+ * should be updated with the provided value. The action is marked to be
+ * debounced by the keystroke debouncer defined for redux-debounce.
+ *
+ * @param {string} newSortName - The new value to be used for the sort name.
+ * @returns {Object} The resulting UPDATE_SORT_NAME_FIELD action.
+ **/
 export function debouncedUpdateSortNameField(newSortName) {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -37,6 +54,13 @@ export function debouncedUpdateSortNameField(newSortName) {
 	};
 }
 
+/**
+ * Produces an action indicating that the language of the name for the entity
+ * being edited should be updated with the provided value.
+ *
+ * @param {string} newLanguageId - The new value to be used for the language ID.
+ * @returns {Object} The resulting UPDATE_LANGUAGE_FIELD action.
+ **/
 export function updateLanguageField(newLanguageId) {
 	return {
 		type: UPDATE_LANGUAGE_FIELD,
@@ -44,6 +68,15 @@ export function updateLanguageField(newLanguageId) {
 	};
 }
 
+/**
+ * Produces an action indicating that the disambiguation for the entity being
+ * edited should be updated with the provided value. The action is marked to be
+ * debounced by the keystroke debouncer defined for redux-debounce.
+ *
+ * @param {string} newDisambiguation - The new value to be used for the
+ *        disambiguation.
+ * @returns {Object} The resulting UPDATE_SORT_NAME_FIELD action.
+ **/
 export function debouncedUpdateDisambiguationField(newDisambiguation) {
 	return {
 		meta: {debounce: 'keystroke'},
