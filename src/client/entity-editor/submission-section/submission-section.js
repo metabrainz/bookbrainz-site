@@ -72,6 +72,11 @@ SubmissionSection.propTypes = {
 };
 
 function submit(url, data) {
+	/* TODO: Not the best way to do this, but once we unify the
+	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
+	 * pass the entity type and generate both URLs from that.
+	 */
+	const submissionEntity = url.split('/')[1];
 	return request.post(url).send(data)
 		.promise()
 		.then((response) => {
@@ -79,7 +84,7 @@ function submit(url, data) {
 				window.location.replace('/login');
 			}
 
-			const redirectUrl = `/creator/${response.body.bbid}`;
+			const redirectUrl = `/${submissionEntity}/${response.body.bbid}`;
 			if (response.body.alert) {
 				const alertParam = `?alert=${response.body.alert}`;
 				window.location.href = `${redirectUrl}${alertParam}`;
