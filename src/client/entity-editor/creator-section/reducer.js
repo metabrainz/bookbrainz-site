@@ -31,17 +31,18 @@ function reducer(
 	}),
 	action
 ) {
-	switch (action.type) {
+	const {type, payload} = action;
+	switch (type) {
 		case UPDATE_GENDER:
-			return state.set('gender', action.value);
+			return state.set('gender', payload);
 		case UPDATE_TYPE:
-			return state.set('type', action.value);
+			return state.set('type', payload);
 		case UPDATE_BEGIN_DATE:
-			return state.set('beginDate', action.value);
+			return state.set('beginDate', payload);
 		case UPDATE_END_DATE:
-			return state.set('endDate', action.value);
+			return state.set('endDate', payload);
 		case UPDATE_ENDED:
-			return state.set('ended', action.value);
+			return state.set('ended', payload);
 		// no default
 	}
 	return state;

@@ -27,32 +27,40 @@ export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 export function updateAliasName(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_NAME,
-		rowId,
-		value
+		payload: {
+			rowId,
+			value
+		}
 	};
 }
 
 export function updateAliasSortName(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_SORT_NAME,
-		rowId,
-		value
+		payload: {
+			rowId,
+			value
+		}
 	};
 }
 
 export function updateAliasLanguage(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_LANGUAGE,
-		rowId,
-		value
+		payload: {
+			rowId,
+			value
+		}
 	};
 }
 
 export function updateAliasPrimary(rowId, value) {
 	return {
 		type: UPDATE_ALIAS_PRIMARY,
-		rowId,
-		value
+		payload: {
+			rowId,
+			value
+		}
 	};
 }
 
@@ -62,14 +70,14 @@ export function addAlias() {
 	 * existing aliases. */
 	return {
 		type: ADD_ALIAS,
-		rowId: `n${nextAliasRowId++}`
+		payload: `n${nextAliasRowId++}`
 	};
 }
 
 export function removeAlias(rowId) {
 	return {
 		type: REMOVE_ALIAS,
-		rowId
+		payload: rowId
 	};
 }
 

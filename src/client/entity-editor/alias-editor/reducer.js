@@ -33,19 +33,20 @@ function reducer(
 	state = Immutable.OrderedMap(),
 	action
 ) {
+	const {payload, type} = action;
 	switch (action.type) {
 		case ADD_ALIAS:
-			return state.set(action.rowId, DEFAULT_ALIAS);
+			return state.set(payload, DEFAULT_ALIAS);
 		case UPDATE_ALIAS_NAME:
-			return state.setIn([action.rowId, 'name'], action.value);
+			return state.setIn([payload.rowId, 'name'], payload.value);
 		case UPDATE_ALIAS_SORT_NAME:
-			return state.setIn([action.rowId, 'sortName'], action.value);
+			return state.setIn([payload.rowId, 'sortName'], payload.value);
 		case UPDATE_ALIAS_LANGUAGE:
-			return state.setIn([action.rowId, 'language'], action.value);
+			return state.setIn([payload.rowId, 'language'], payload.value);
 		case UPDATE_ALIAS_PRIMARY:
-			return state.setIn([action.rowId, 'primary'], action.value);
+			return state.setIn([payload.rowId, 'primary'], payload.value);
 		case REMOVE_ALIAS:
-			return state.delete(action.rowId);
+			return state.delete(payload);
 		// no default
 	}
 	return state;

@@ -31,26 +31,27 @@ function reducer(
 	state = Immutable.OrderedMap(),
 	action
 ) {
-	switch (action.type) {
+	const {type, payload} = action;
+	switch (type) {
 		case ADD_IDENTIFIER:
-			return state.set(action.rowId, DEFAULT_IDENTIFIER);
+			return state.set(payload, DEFAULT_IDENTIFIER);
 		case UPDATE_IDENTIFIER_VALUE:
 			{
 				const updatedValue = state.setIn(
-					[action.rowId, 'value'], action.value
+					[payload.rowId, 'value'], payload.value
 				);
-				if (action.suggestedType) {
+				if (payload.suggestedType) {
 					return updatedValue.setIn(
-						[action.rowId, 'type'], action.suggestedType.id
+						[payload.rowId, 'type'], payload.suggestedType.id
 					);
 				}
 
 				return updatedValue;
 			}
 		case UPDATE_IDENTIFIER_TYPE:
-			return state.setIn([action.rowId, 'type'], action.value);
+			return state.setIn([payload.rowId, 'type'], payload.value);
 		case REMOVE_IDENTIFIER:
-			return state.delete(action.rowId);
+			return state.delete(payload);
 
 		// no default
 	}

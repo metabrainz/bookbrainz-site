@@ -35,30 +35,34 @@ export function addIdentifier() {
 	 * of existing identifiers. */
 	return {
 		type: ADD_IDENTIFIER,
-		rowId: `n${nextIdentifierRowId++}`
+		payload: `n${nextIdentifierRowId++}`
 	};
 }
 
 export function removeIdentifier(rowId) {
 	return {
 		type: REMOVE_IDENTIFIER,
-		rowId
+		payload: rowId
 	};
 }
 
 export function updateIdentifierValue(rowId, value, suggestedType) {
 	return {
 		type: UPDATE_IDENTIFIER_VALUE,
-		rowId,
-		suggestedType,
-		value
+		payload: {
+			rowId,
+			suggestedType,
+			value
+		}
 	};
 }
 
 export function updateIdentifierType(rowId, value) {
 	return {
 		type: UPDATE_IDENTIFIER_TYPE,
-		rowId,
-		value
+		payload: {
+			rowId,
+			value
+		}
 	};
 }

@@ -21,30 +21,30 @@ export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 
-export function updateNameField(value) {
+export function updateNameField(newName) {
 	return {
 		type: UPDATE_NAME_FIELD,
-		value
+		payload: newName
 	};
 }
 
-export function updateSortNameField(value) {
+export function updateSortNameField(newSortName) {
 	return {
 		type: UPDATE_SORT_NAME_FIELD,
-		value
+		payload: newSortName
 	};
 }
 
-export function updateLanguageField(value) {
+export function updateLanguageField(newLanguageId) {
 	return {
 		type: UPDATE_LANGUAGE_FIELD,
-		value
+		payload: newLanguageId
 	};
 }
 
-export function updateDisambiguationField(value) {
+export function updateDisambiguationField(newDisambiguation) {
 	return {
 		type: UPDATE_DISAMBIGUATION_FIELD,
-		value
+		payload: newDisambiguation
 	};
 }

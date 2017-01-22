@@ -24,37 +24,37 @@ export const UPDATE_END_DATE = 'UPDATE_END_DATE';
 export const UPDATE_ENDED = 'UPDATE_ENDED';
 
 
-export function updateGender(value) {
+export function updateGender(newGenderId) {
 	return {
 		type: UPDATE_GENDER,
-		value
+		payload: newGenderId
 	};
 }
 
-export function updateType(value) {
+export function updateType(newTypeId) {
 	return {
 		type: UPDATE_TYPE,
-		value
+		payload: newTypeId
 	};
 }
 
-export function updateBeginDate(value) {
+export function updateBeginDate(newBeginDate) {
 	return {
 		type: UPDATE_BEGIN_DATE,
-		value
+		payload: newBeginDate
 	};
 }
 
-export function updateEndDate(value) {
+export function updateEndDate(newEndDate) {
 	return {
 		type: UPDATE_END_DATE,
-		value
+		payload: newEndDate
 	};
 }
 
-export function updateEnded(value) {
+export function updateEnded(newEnded) {
 	return {
 		type: UPDATE_ENDED,
-		value
+		payload: newEnded
 	};
 }

@@ -31,15 +31,16 @@ function reducer(
 	}),
 	action
 ) {
-	switch (action.type) {
+	const {payload, type} = action;
+	switch (type) {
 		case UPDATE_NAME_FIELD:
-			return state.set('name', action.value);
+			return state.set('name', payload);
 		case UPDATE_SORT_NAME_FIELD:
-			return state.set('sortName', action.value);
+			return state.set('sortName', payload);
 		case UPDATE_LANGUAGE_FIELD:
-			return state.set('language', action.value);
+			return state.set('language', payload);
 		case UPDATE_DISAMBIGUATION_FIELD:
-			return state.set('disambiguation', action.value);
+			return state.set('disambiguation', payload);
 		// no default
 	}
 	return state;
