@@ -19,14 +19,13 @@
 
 import {Button, Col, Input, Row} from 'react-bootstrap';
 import {
-	removeAliasRow, updateAliasLanguage, updateAliasName,
-	updateAliasPrimary, updateAliasSortName
+	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
+	updateAliasLanguage, updateAliasPrimary
 } from './actions';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
-import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import {isAliasEmpty} from '../helpers';
 
@@ -107,20 +106,18 @@ AliasRow.propTypes = {
 	onSortNameChange: React.PropTypes.func
 };
 
-const KEYSTROKE_DEBOUNCE_TIME = 250;
 function mapDispatchToProps(dispatch, {index}) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
 		onLanguageChange: (value) =>
 			dispatch(updateAliasLanguage(index, value.value)),
 		onNameChange: (event) =>
-			debouncedDispatch(updateAliasName(index, event.target.value)),
+			dispatch(debouncedUpdateAliasName(index, event.target.value)),
 		onPrimaryClick: (event) =>
 			dispatch(updateAliasPrimary(index, event.target.checked)),
 		onRemoveButtonClick: () =>
 			dispatch(removeAliasRow(index)),
 		onSortNameChange: (event) =>
-			debouncedDispatch(updateAliasSortName(index, event.target.value))
+			dispatch(debouncedUpdateAliasSortName(index, event.target.value))
 	};
 }
 

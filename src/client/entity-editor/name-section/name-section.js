@@ -18,8 +18,8 @@
 
 import {Col, Row} from 'react-bootstrap';
 import {
-	updateDisambiguationField, updateLanguageField, updateNameField,
-	updateSortNameField
+	debouncedUpdateDisambiguationField, debouncedUpdateNameField,
+	debouncedUpdateSortNameField, updateLanguageField
 } from './actions';
 import DisambiguationField from './disambiguation-field';
 import LanguageField from '../common/language-field';
@@ -121,17 +121,15 @@ function mapStateToProps(rootState) {
 	};
 }
 
-const KEYSTROKE_DEBOUNCE_TIME = 250;
 function mapDispatchToProps(dispatch) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
 		onSortNameChange: (event) =>
-			debouncedDispatch(updateSortNameField(event.target.value)),
+			dispatch(debouncedUpdateSortNameField(event.target.value)),
 		onNameChange: (event) =>
-			debouncedDispatch(updateNameField(event.target.value)),
+			dispatch(debouncedUpdateNameField(event.target.value)),
 		onLanguageChange: (value) => dispatch(updateLanguageField(value.value)),
 		onDisambiguationChange: (event) =>
-			debouncedDispatch(updateDisambiguationField(event.target.value)),
+			dispatch(debouncedUpdateDisambiguationField(event.target.value))
 	};
 }
 

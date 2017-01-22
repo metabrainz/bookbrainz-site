@@ -46,8 +46,9 @@ export function removeIdentifierRow(rowId) {
 	};
 }
 
-export function updateIdentifierValue(rowId, value, suggestedType) {
+export function debouncedUpdateIdentifierValue(rowId, value, suggestedType) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_IDENTIFIER_VALUE,
 		payload: {
 			rowId,

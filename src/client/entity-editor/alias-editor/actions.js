@@ -24,8 +24,9 @@ export const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
 export const REMOVE_ALIAS_ROW = 'REMOVE_ALIAS_ROW';
 export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 
-export function updateAliasName(rowId, value) {
+export function debouncedUpdateAliasName(rowId, value) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_ALIAS_NAME,
 		payload: {
 			rowId,
@@ -34,8 +35,9 @@ export function updateAliasName(rowId, value) {
 	};
 }
 
-export function updateAliasSortName(rowId, value) {
+export function debouncedUpdateAliasSortName(rowId, value) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_ALIAS_SORT_NAME,
 		payload: {
 			rowId,

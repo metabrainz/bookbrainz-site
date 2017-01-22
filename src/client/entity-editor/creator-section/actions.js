@@ -38,15 +38,17 @@ export function updateType(newTypeId) {
 	};
 }
 
-export function updateBeginDate(newBeginDate) {
+export function debouncedUpdateBeginDate(newBeginDate) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_BEGIN_DATE,
 		payload: newBeginDate
 	};
 }
 
-export function updateEndDate(newEndDate) {
+export function debouncedUpdateEndDate(newEndDate) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_END_DATE,
 		payload: newEndDate
 	};

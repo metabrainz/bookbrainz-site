@@ -87,9 +87,7 @@ function mapStateToProps(rootState) {
 	};
 }
 
-const KEYSTROKE_DEBOUNCE_TIME = 250;
 function mapDispatchToProps(dispatch) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
 		onAliasButtonClick: () => dispatch(showAliasEditor()),
 		onDisambiguationButtonClick: () => dispatch(showDisambiguation()),

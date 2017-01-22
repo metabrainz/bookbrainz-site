@@ -17,12 +17,11 @@
  */
 
 import {Alert, Button, Col, Input, Row} from 'react-bootstrap';
-import {setSubmitError, updateRevisionNote} from './actions';
+import {debounceUpdateRevisionNote, setSubmitError} from './actions';
 import React from 'react';
-import _debounce from 'lodash.debounce';
+import classNames from 'classnames';
 import {connect} from 'react-redux';
 import request from 'superagent-bluebird-promise';
-import classNames from 'classnames';
 
 function SubmissionSection({
 	errorText,
@@ -99,12 +98,10 @@ function mapStateToProps(rootState, {submissionUrl}) {
 	};
 }
 
-const KEYSTROKE_DEBOUNCE_TIME = 250;
 function mapDispatchToProps(dispatch) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
 		onNoteChange: (event) =>
-			debouncedDispatch(updateRevisionNote(event.target.value)),
+			dispatch(debounceUpdateRevisionNote(event.target.value)),
 		onSubmitError: (error) => dispatch(setSubmitError(error.message))
 	};
 }

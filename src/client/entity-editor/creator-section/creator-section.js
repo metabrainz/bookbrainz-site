@@ -18,7 +18,8 @@
 
 import {Col, Input, Row} from 'react-bootstrap';
 import {
-	updateBeginDate, updateEndDate, updateEnded, updateGender, updateType
+	debouncedUpdateBeginDate, debouncedUpdateEndDate, updateEnded,
+	updateGender, updateType
 } from './actions';
 import DateField from './date-field';
 import React from 'react';
@@ -174,14 +175,12 @@ function mapStateToProps(rootState, {creatorTypes}) {
 	};
 }
 
-const KEYSTROKE_DEBOUNCE_TIME = 250;
 function mapDispatchToProps(dispatch, {creatorTypes}) {
-	const debouncedDispatch = _debounce(dispatch, KEYSTROKE_DEBOUNCE_TIME);
 	return {
 		onBeginDateChange: (event) =>
-			debouncedDispatch(updateBeginDate(event.target.value)),
+			dispatch(debouncedUpdateBeginDate(event.target.value)),
 		onEndDateChange: (event) =>
-			debouncedDispatch(updateEndDate(event.target.value)),
+			dispatch(debouncedUpdateEndDate(event.target.value)),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onGenderChange: (value) =>

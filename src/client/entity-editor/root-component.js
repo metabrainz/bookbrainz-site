@@ -22,20 +22,21 @@
   * is closed.
   */
 
+import {applyMiddleware, compose, createStore} from 'redux';
 import CreatorData from './creator-data';
 import Immutable from 'immutable';
 import {Provider} from 'react-redux';
 import React from 'react';
+import createDebounce from 'redux-debounce';
 import {createRootReducer} from './helpers';
-import {createStore} from 'redux';
 import creatorSectionReducer from './creator-section/reducer';
 
-function createStoreWithDevTools(reducer, state) {
-	if (typeof window === 'undefined' || !window.devToolsExtension) {
-		return createStore(reducer, Immutable.fromJS(state));
-	}
-	return createStore(
-		reducer, Immutable.fromJS(state), window.devToolsExtension()
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+
+function shouldDevToolsBeInjected() {
+	return (
+		typeof window === 'object' &&
+		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
 }
 
@@ -45,7 +46,15 @@ const RootComponent = ({
 }) => {
 	const rootReducer =
 		createRootReducer('creatorSection', creatorSectionReducer);
-	const store = createStoreWithDevTools(rootReducer, initialState);
+	const debouncer = createDebounce({
+		keystroke: KEYSTROKE_DEBOUNCE_TIME
+	});
+	const composeEnhancers = shouldDevToolsBeInjected() ?
+		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
+	const store = createStore(
+		rootReducer, Immutable.fromJS(initialState),
+		composeEnhancers(applyMiddleware(debouncer))
+	);
 
 	return (
 		<Provider store={store}>

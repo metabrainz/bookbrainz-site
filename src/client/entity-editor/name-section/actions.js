@@ -21,15 +21,17 @@ export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 
-export function updateNameField(newName) {
+export function debouncedUpdateNameField(newName) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_NAME_FIELD,
 		payload: newName
 	};
 }
 
-export function updateSortNameField(newSortName) {
+export function debouncedUpdateSortNameField(newSortName) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_SORT_NAME_FIELD,
 		payload: newSortName
 	};
@@ -42,8 +44,9 @@ export function updateLanguageField(newLanguageId) {
 	};
 }
 
-export function updateDisambiguationField(newDisambiguation) {
+export function debouncedUpdateDisambiguationField(newDisambiguation) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_DISAMBIGUATION_FIELD,
 		payload: newDisambiguation
 	};

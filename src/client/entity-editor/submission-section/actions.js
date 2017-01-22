@@ -28,8 +28,9 @@ export function setSubmitError(error) {
 	};
 }
 
-export function updateRevisionNote(value) {
+export function debounceUpdateRevisionNote(value) {
 	return {
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_REVISION_NOTE,
 		value
 	};
