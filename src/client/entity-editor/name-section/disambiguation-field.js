@@ -23,6 +23,8 @@ import React from 'react';
  * Presentational component. Renders the name field for the alias section of
  * entity editing forms.
  *
+ * @param {Object} props - an object containing the properties to be passed
+ *        down to the child input element.
  * @returns {Object} a React component containing the rendered input
  */
 function DisambiguationField(props) {
