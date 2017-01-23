@@ -45,9 +45,7 @@ function NameSection({
 }) {
 	return (
 		<div>
-			<h2>
-				What is the Creator called?
-			</h2>
+			<h2>What is the Creator called?</h2>
 			<form>
 				<Row>
 					<Col md={6} mdOffset={3}>

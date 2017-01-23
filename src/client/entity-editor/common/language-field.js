@@ -21,13 +21,9 @@ import {Input} from 'react-bootstrap';
 import React from 'react';
 import VirtualizedSelect from 'react-virtualized-select';
 
-function LanguageField({
-	...props
-}) {
+function LanguageField(props) {
 	return (
-		<Input
-			label="Language"
-		>
+		<Input label="Language">
 			<VirtualizedSelect {...props}/>
 		</Input>
 	);

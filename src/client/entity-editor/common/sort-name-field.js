@@ -105,21 +105,11 @@ function SortNameField({
 	}
 
 	const label = (
-		<ValidationLabel
-			empty={empty}
-			error={error}
-		>
-			Sort Name
-		</ValidationLabel>
+		<ValidationLabel empty={empty} error={error}>Sort Name</ValidationLabel>
 	);
 
 	const guessButton = (
-		<Button
-			bsStyle="primary"
-			onClick={handleGuessClick}
-		>
-			Guess
-		</Button>
+		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>
 	);
 
 	return (

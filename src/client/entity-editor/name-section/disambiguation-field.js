@@ -25,9 +25,7 @@ import React from 'react';
  *
  * @returns {Object} a React component containing the rendered input
  */
-function DisambiguationField({
-	...props
-}) {
+function DisambiguationField(props) {
 	const label = (
 		<span>
 			Disambiguation

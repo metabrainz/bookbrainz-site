@@ -34,21 +34,11 @@ function NameField({
 	...rest
 }) {
 	const label = (
-		<ValidationLabel
-			empty={empty}
-			error={error}
-		>
-			Name
-		</ValidationLabel>
+		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>
 	);
 
 	return (
-		<Input
-			label={label}
-			type="text"
-			onChange={onChange}
-			{...rest}
-		/>
+		<Input label={label} type="text" onChange={onChange} {...rest}/>
 	);
 }
 NameField.displayName = 'NameField';

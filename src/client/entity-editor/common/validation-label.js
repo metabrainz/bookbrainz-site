@@ -52,15 +52,8 @@ function ValidationLabel({
 	empty,
 	error
 }) {
-	let iconElement = null;
-	if (icon(empty, error)) {
-		iconElement = (
-			<Icon
-				className="margin-left-0-5"
-				name={icon(empty, error)}
-			/>
-		);
-	}
+	const iconElement = icon(empty, error) &&
+		<Icon className="margin-left-0-5" name={icon(empty, error)}/>;
 
 	return (
 		<span className={contextualColor(empty, error)}>

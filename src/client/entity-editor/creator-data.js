@@ -57,17 +57,13 @@ let Wrapper = ({
 				languageOptions={languageOptionsForDisplay}
 				show={aliasEditorVisible}
 			/>
-			<NameSection
-				languageOptions={languageOptionsForDisplay}
-			/>
+			<NameSection languageOptions={languageOptionsForDisplay}/>
 			<ButtonBar/>
 			<CreatorSection
 				creatorTypes={creatorTypesForDisplay}
 				genderOptions={genderOptionsForDisplay}
 			/>
-			<SubmissionSection
-				submissionUrl={submissionUrl}
-			/>
+			<SubmissionSection submissionUrl={submissionUrl}/>
 			<IdentifierEditor
 				show={identifierEditorVisible}
 				typeOptions={identifierTypes}
