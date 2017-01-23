@@ -41,5 +41,11 @@ function DateField({
 	);
 }
 DateField.displayName = 'DateField';
+DateField.propTypes = {
+	empty: React.PropTypes.bool,
+	error: React.PropTypes.bool,
+	label: React.PropTypes.string,
+	show: React.PropTypes.bool
+};
 
 export default DateField;
