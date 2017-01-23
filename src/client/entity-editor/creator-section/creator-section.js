@@ -24,7 +24,6 @@ import {
 import DateField from './date-field';
 import React from 'react';
 import Select from 'react-select';
-import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 
 
@@ -175,7 +174,7 @@ function mapStateToProps(rootState, {creatorTypes}) {
 	};
 }
 
-function mapDispatchToProps(dispatch, {creatorTypes}) {
+function mapDispatchToProps(dispatch) {
 	return {
 		onBeginDateChange: (event) =>
 			dispatch(debouncedUpdateBeginDate(event.target.value)),

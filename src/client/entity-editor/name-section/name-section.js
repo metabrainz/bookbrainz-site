@@ -26,7 +26,6 @@ import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
-import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 import {isAliasEmpty} from '../helpers';
 

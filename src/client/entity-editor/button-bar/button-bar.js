@@ -23,7 +23,6 @@ import {
 import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import React from 'react';
-import _debounce from 'lodash.debounce';
 import {connect} from 'react-redux';
 
 
