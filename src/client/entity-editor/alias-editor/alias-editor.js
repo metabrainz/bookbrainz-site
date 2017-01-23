@@ -24,6 +24,24 @@ import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
+/**
+ * Container component. The AliasEditor component contains a number of AliasRow
+ * elements, and renders these inside a modal, which appears when the show
+ * property of the component is set.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Array} props.aliases - The list of aliases to be rendered in the
+ *        editor.
+ * @param {Array} props.languageOptions - The list of possible language for an
+ *        alias.
+ * @param {Function} props.onAddAlias - A function to be called when the button
+ *        to add an alias is clicked.
+ * @param {Function} props.onClose - A function to be called when the button to
+ *        close the editor is clicked.
+ * @param {boolean} props.show - Whether or not the editor modal should be
+ *        visible.
+ * @returns {ReactElement} React element containing the rendered AliasEditor.
+ **/
 const AliasEditor = ({
 	aliases,
 	languageOptions,

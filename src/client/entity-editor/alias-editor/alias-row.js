@@ -29,7 +29,34 @@ import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
 import {isAliasEmpty} from '../helpers';
 
-/* Presentational component */
+/**
+ * Container component. The AliasRow component renders a single Row containing
+ * several input fields, allowing the user to set the name, sort name, language
+ * and primary flag for an alias in the AliasEditor. A button is also included
+ * to remove the alias from the editor.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {number} props.languageValue - The ID of the language currently
+ *        selected.
+ * @param {Array} props.languageOptions - The list of possible language for an
+ *        alias.
+ * @param {string} props.nameValue - The name currently set for this alias.
+ * @param {string} props.sortNameValue - The sort name currently set for this
+ *        alias.
+ * @param {string} props.primaryChecked - Whether or not the primary checkbox
+ *        is checked.
+ * @param {Function} props.onLanguageChange - A function to be called when a
+ *        new alias language is selected.
+ * @param {Function} props.onNameChange - A function to be called when the
+ *        name for the alias is changed.
+ * @param {Function} props.onSortNameChange - A function to be called when the
+ *        sort name for the alias is changed.
+ * @param {Function} props.onRemoveButtonClick - A function to be called when
+ *        the button to remove the alias is clicked.
+ * @param {Function} props.onPrimaryClick - A function to be called when
+ *        the primary checkbox is clicked.
+ * @returns {ReactElement} React element containing the rendered AliasEditor.
+ **/
 const AliasRow = ({
 	languageOptions,
 	languageValue,
