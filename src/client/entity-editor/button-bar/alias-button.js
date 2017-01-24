@@ -19,6 +19,17 @@
 import {Button} from 'react-bootstrap';
 import React from 'react';
 
+/**
+ * Presentational component. The AliasButton component renders a button
+ * component in the style of a link. The link text indicates the number of
+ * aliases currently set in the AliasEditor, and invites the user to add new or
+ * edit existing aliases.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {number} props.numAliases - The number of aliases present in the
+ *        AliasEditor - used to determine the correct button label.
+ * @returns {ReactElement} React element containing the rendered AliasButton.
+ **/
 function AliasButton({
 	numAliases,
 	...props

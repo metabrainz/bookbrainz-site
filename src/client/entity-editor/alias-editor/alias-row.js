@@ -55,7 +55,7 @@ import {isAliasEmpty} from '../helpers';
  *        the button to remove the alias is clicked.
  * @param {Function} props.onPrimaryClick - A function to be called when
  *        the primary checkbox is clicked.
- * @returns {ReactElement} React element containing the rendered AliasEditor.
+ * @returns {ReactElement} React element containing the rendered AliasRow.
  **/
 const AliasRow = ({
 	languageOptions,
