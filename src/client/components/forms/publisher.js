@@ -39,8 +39,11 @@ const RevisionNote = require('./parts/revision-note');
 class PublisherForm extends React.Component {
 
 	/**
-	 * Binds class methods to their respective data.
-	 * @param {object} props - Properties passed into the constructor
+	 * Constructs a new instance of the PublisherForm class.
+	 * This constructor calls the constructor of the React.Component class,
+	 * initializes the component state, and binds class methods to the
+	 * class instance.
+	 * @param {object} props - The properties of the component
 	 */
 	constructor(props) {
 		super(props);
@@ -60,8 +63,7 @@ class PublisherForm extends React.Component {
 	}
 
 	/**
-	 * Changes to the tab selected by the user, which has the number
-	 * in 'tab', and checks the validity of the alias and other data.
+	 * Changes to the tab selected by the user.
 	 * @param {number} tab - the number of the selected tab.
 	 */
 	handleTabSelect(tab) {
@@ -88,7 +90,7 @@ class PublisherForm extends React.Component {
 
 	/**
 	 * Handler to send publisher information in the form to the server.
-	 * @param {Event} evt - used to prevent event propagation
+	 * @param {Event} evt - The submission event that triggered the handler
 	 */
 	handleSubmit(evt) {
 		evt.preventDefault();
@@ -139,11 +141,11 @@ class PublisherForm extends React.Component {
 	}
 
 	/**
-	 * Renders the form component to allow the user to input
-	 * and submit data about a Publisher. Also shows a loading
-	 * spinner if connectivity causes a delay in submission.
-	 * @return {ReactElement} - React element corresponding to
-	 * the rendered PublisherEditor component
+	 * Renders the form component to allow the user to input and submit
+	 * data about a Publisher. Also shows a loading spinner if connectivity
+	 * causes a delay in submission.
+	 * @return {ReactElement} - React element corresponding to the rendered
+	 * PublisherEditor component
 	 */
 	render() {
 		let aliases = null;
