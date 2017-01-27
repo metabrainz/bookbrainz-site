@@ -29,7 +29,6 @@ import data from '../../helpers/data';
 
 function IdentifierRow({
 	typeOptions,
-	index,
 	valueValue,
 	typeValue,
 	onTypeChange,
@@ -51,7 +50,6 @@ function IdentifierRow({
 						error={!data.identifierIsValid(
 							typeValue, valueValue, typeOptions
 						)}
-						index={index}
 						typeValue={typeValue}
 						onChange={onValueChange}
 					/>
@@ -59,7 +57,6 @@ function IdentifierRow({
 				<Col md={4}>
 					<Input label="Type">
 						<Select
-							index={index}
 							options={identifierTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
@@ -83,7 +80,6 @@ function IdentifierRow({
 }
 IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 IdentifierRow.propTypes = {
-	index: React.PropTypes.string,
 	typeOptions: React.PropTypes.array,
 	typeValue: React.PropTypes.number,
 	valueValue: React.PropTypes.string,
