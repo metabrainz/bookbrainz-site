@@ -32,7 +32,7 @@ import {connect} from 'react-redux';
  * @param {Object} props - The properties passed to the component.
  * @param {Array} props.aliases - The list of aliases to be rendered in the
  *        editor.
- * @param {Array} props.languageOptions - The list of possible language for an
+ * @param {Array} props.languageOptions - The list of possible languages for an
  *        alias.
  * @param {Function} props.onAddAlias - A function to be called when the button
  *        to add an alias is clicked.

@@ -38,7 +38,7 @@ import {isAliasEmpty} from '../helpers';
  * @param {Object} props - The properties passed to the component.
  * @param {number} props.languageValue - The ID of the language currently
  *        selected.
- * @param {Array} props.languageOptions - The list of possible language for an
+ * @param {Array} props.languageOptions - The list of possible languages for an
  *        alias.
  * @param {string} props.nameValue - The name currently set for this alias.
  * @param {string} props.sortNameValue - The sort name currently set for this
