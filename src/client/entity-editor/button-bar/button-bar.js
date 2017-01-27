@@ -78,11 +78,8 @@ function mapStateToProps(rootState) {
 	const state = rootState.get('buttonBar');
 	return {
 		disambiguationVisible: state.get('disambiguationVisible'),
-		languageValue: state.get('language'),
-		nameValue: state.get('name'),
 		numAliases: rootState.get('aliasEditor').size,
-		numIdentifiers: rootState.get('identifierEditor').size,
-		sortNameValue: state.get('sortName')
+		numIdentifiers: rootState.get('identifierEditor').size
 	};
 }
 
