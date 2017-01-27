@@ -24,6 +24,25 @@ import classNames from 'classnames';
 import {connect} from 'react-redux';
 
 
+/**
+ * Container component. The IdentifierEditor component contains a number of
+ * IdentifierRow elements, and renders these inside a modal, which appears when
+ * the show property of the component is set.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Array} props.identifiers - The list of identifiers to be rendered in
+ *        the editor.
+ * @param {Array} props.typeOptions - The list of possible types for an
+ *        identifier.
+ * @param {Function} props.onAddIdentifier - A function to be called when the
+ *        button to add an identifier is clicked.
+ * @param {Function} props.onClose - A function to be called when the button to
+ *        close the editor is clicked.
+ * @param {boolean} props.show - Whether or not the editor modal should be
+ *        visible.
+ * @returns {ReactElement} React element containing the rendered
+ *          IdentifierEditor.
+ **/
 const IdentifierEditor = ({
 	identifiers,
 	typeOptions,

@@ -27,6 +27,26 @@ import ValueField from './value-field';
 import {connect} from 'react-redux';
 import data from '../../helpers/data';
 
+/**
+ * Container component. The IdentifierRow component renders a single Row
+ * containing several input fields, allowing the user to set the value and type
+ * for an identifier in the IdentifierEditor. A button is also included to
+ * remove the identifier from the editor.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Array} props.typeOptions - The list of possible types for an
+ *        identifier.
+ * @param {number} props.typeValue - The ID of the type currently selected.
+ * @param {string} props.valueValue - The value currently set for this
+ *        identifier.
+ * @param {Function} props.onTypeChange - A function to be called when a new
+ *        identifier type is selected.
+ * @param {Function} props.onRemoveButtonClick - A function to be called when
+ *        the button to remove the identifier is clicked.
+ * @param {Function} props.onValueChange - A function to be called when the
+ *        value for the identifier is changed.
+ * @returns {ReactElement} React element containing the rendered IdentifierRow.
+ **/
 function IdentifierRow({
 	typeOptions,
 	valueValue,
