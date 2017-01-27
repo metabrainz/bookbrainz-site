@@ -27,7 +27,7 @@ import {connect} from 'react-redux';
 const IdentifierEditor = ({
 	identifiers,
 	typeOptions,
-	onAddButtonClick,
+	onAddIdentifier,
 	onClose,
 	show
 }) => {
@@ -58,7 +58,7 @@ const IdentifierEditor = ({
 				</div>
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
-						<Button bsStyle="success" onClick={onAddButtonClick}>
+						<Button bsStyle="success" onClick={onAddIdentifier}>
 							Add identifier
 						</Button>
 					</Col>
@@ -76,7 +76,7 @@ IdentifierEditor.propTypes = {
 	identifiers: React.PropTypes.object,
 	show: React.PropTypes.bool,
 	typeOptions: React.PropTypes.array,
-	onAddButtonClick: React.PropTypes.func,
+	onAddIdentifier: React.PropTypes.func,
 	onClose: React.PropTypes.func
 };
 
@@ -89,7 +89,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => dispatch(hideIdentifierEditor()),
-		onAddButtonClick: () => dispatch(addIdentifierRow())
+		onAddIdentifier: () => dispatch(addIdentifierRow())
 	};
 }
 
