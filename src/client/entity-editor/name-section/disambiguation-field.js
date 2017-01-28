@@ -20,8 +20,8 @@ import {Input} from 'react-bootstrap';
 import React from 'react';
 
 /**
- * Presentational component. Renders the name field for the alias section of
- * entity editing forms.
+ * Presentational component. Renders the disambiguation field for the name
+ * section of entity editing forms.
  *
  * @param {Object} props - an object containing the properties to be passed
  *        down to the child input element.
