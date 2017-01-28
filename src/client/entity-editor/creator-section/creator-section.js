@@ -42,6 +42,43 @@ function isPartialDateValid(value) {
 	return validSyntax && validValue;
 }
 
+/**
+ * Container component. The CreatorSection component contains input fields
+ * specific to the creator entity. The intention is that this component is
+ * rendered as a modular section within the entity editor.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.beginDateLabel - The label to be used for the begin
+ *        date input.
+ * @param {string} props.beginDateValue - The begin date currently set for
+ *        this creator.
+ * @param {Array} props.creatorTypes - The list of possible types for a creator.
+ * @param {string} props.endDateLabel - The label to be used for the end date
+ *        input.
+ * @param {string} props.endDateValue - The end date currently set for this
+ *        creator.
+ * @param {boolean} props.endedChecked - Whether or not the ended checkbox
+ *        is checked.
+ * @param {string} props.endedLabel - The label to be used for the ended
+ *        checkbox input.
+ * @param {Array} props.genderOptions - The list of possible genders.
+ * @param {boolean} props.genderShow - Whether or not the gender field should
+ *        be shown (only for creators which represent people).
+ * @param {number} props.genderValue - The ID of the gender currently selected.
+ * @param {number} props.typeValue - The ID of the type currently selected for
+ *        the creator.
+ * @param {Function} props.onBeginDateChange - A function to be called when
+ *        the begin date is changed.
+ * @param {Function} props.onEndDateChange - A function to be called when
+ *        the end date is changed.
+ * @param {Function} props.onEndedChange - A function to be called when
+ *        the ended checkbox is toggled.
+ * @param {Function} props.onGenderChange - A function to be called when
+ *        a different gender is selected.
+ * @param {Function} props.onTypeChange - A function to be called when
+ *        a different creator type is selected.
+ * @returns {ReactElement} React element containing the rendered CreatorSection.
+ */
 function CreatorSection({
 	beginDateLabel,
 	beginDateValue,

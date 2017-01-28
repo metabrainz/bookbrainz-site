@@ -27,6 +27,27 @@ import React from 'react';
 import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
 
+/**
+ * Container component. Renders all of the sections of the entity editing form
+ * for creators.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {boolean} props.aliasEditorVisible - Whether the alias editor modal
+ *        should be made visible.
+ * @param {boolean} props.identifierEditorVisible - Whether the identifier
+ *        editor modal should be made visible.
+ * @param {Array} props.languageOptions - The list of possible languages for
+ *        language selection fields.
+ * @param {Array} props.genderOptions - The list of possible genders for gender
+ *        selection fields.
+ * @param {Array} props.identifierTypes - The list of possible identifier types
+ *        for identifier type selection fields.
+ * @param {Array} props.creatorTypes - The list of possible creator types for
+ *        creator type selection fields.
+ * @param {string} props.submissionUrl - The URL to send the form data to upon
+ *        submission.
+ * @returns {ReactElement} React element containing the rendered CreatorData.
+ */
 const CreatorData = ({
 	aliasEditorVisible,
 	identifierEditorVisible,

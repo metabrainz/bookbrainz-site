@@ -40,6 +40,16 @@ function shouldDevToolsBeInjected() {
 	);
 }
 
+/**
+ * Root component. Wraps the entity data component in a react-redux store
+ * provider component, allowing the store to be implicitly available to all
+ * descendent elements.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.initialState - The initial state passed to the
+ *        createStore function to initialize the Redux store.
+ * @returns {ReactElement} React element containing the rendered RootComponent.
+ */
 const RootComponent = ({
 	initialState,
 	...rest

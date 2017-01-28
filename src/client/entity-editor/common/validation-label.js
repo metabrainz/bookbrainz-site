@@ -47,6 +47,20 @@ function contextualColor(empty, error) {
 }
 
 
+/**
+ * Presentational component. This component renders a textual label, intended
+ * to be used with an input. Some formatting is applied and an icon is chosen
+ * based on the validation state passed in via the component properties.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {node} props.children - The element or value to display within the
+ *        label.
+ * @param {boolean} props.empty - A flag indicating whether the associated
+ *        input is empty.
+ * @param {boolean} props.error - A flag indicating whether there has been an
+ *        error validating the contents of the associated input field.
+ * @returns {Object} A React component containing the rendered input.
+ */
 function ValidationLabel({
 	children,
 	empty,

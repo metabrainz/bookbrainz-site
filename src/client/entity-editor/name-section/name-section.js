@@ -29,7 +29,34 @@ import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
 import {isAliasEmpty} from '../helpers';
 
-
+/**
+ * Container component. The NameSection component contains input fields for
+ * setting the name of an entity. It also allows setting of the entity's
+ * disambiguation. The intention is that this component is rendered as a
+ * modular section within the entity editor.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.disambiguationDefaultValue - The default value for the
+ *        disambiguation field.
+ * @param {boolean} props.disambiguationVisible - Whether or not the
+ *        disambiguation field should be visible.
+ * @param {Array} props.languageOptions - The list of possible languages for the
+ *        entity name.
+ * @param {string} props.languageValue - The ID of the language currently
+ *        selected for the entity name.
+ * @param {string} props.nameValue - The name currently set for this entity.
+ * @param {string} props.sortNameValue - The sort name currently set for this
+ *        entity.
+ * @param {Function} props.onLanguageChange - A function to be called when a
+ *        different language type is selected.
+ * @param {Function} props.onNameChange - A function to be called when the name
+ *        is changed.
+ * @param {Function} props.onSortNameChange - A function to be called when the
+ *        sort name is changed.
+ * @param {Function} props.onDisambiguationChange - A function to be called when
+ *        the disambiguation is changed.
+ * @returns {ReactElement} React element containing the rendered NameSection.
+ */
 function NameSection({
 	disambiguationDefaultValue,
 	disambiguationVisible,

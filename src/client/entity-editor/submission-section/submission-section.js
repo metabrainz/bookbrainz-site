@@ -23,6 +23,22 @@ import classNames from 'classnames';
 import {connect} from 'react-redux';
 import request from 'superagent-bluebird-promise';
 
+/**
+ * Container component. The SubmissionSection component contains a button for
+ * submitting the changes made on the entity editing form as a revision, and a
+ * field for entering a note for this revision. It also displays any errors
+ * encountered while submitting the revision to the server.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.errorText - A message to be displayed within the
+ *        component in the case of an error.
+ * @param {Function} props.onNoteChange - A function to be called when the
+ *        revision note is changed.
+ * @param {Function} props.onSubmitClick - A function to be called when the
+ *        submit button is clicked.
+ * @returns {ReactElement} React element containing the rendered
+ *          SubmissionSection.
+ */
 function SubmissionSection({
 	errorText,
 	onNoteChange,

@@ -21,6 +21,15 @@ import {Input} from 'react-bootstrap';
 import React from 'react';
 import VirtualizedSelect from 'react-virtualized-select';
 
+/**
+ * Presentational component. This component renders a dropdown selection box
+ * allowing the user to select from a list of provided language options. The
+ * input is labelled with a ValidationLabel containing the text 'Language'.
+ *
+ * @param {Object} props - The properties passed to the component, which are
+ *        then passed to the underlying VirtualizedSelect component.
+ * @returns {Object} A React component containing the rendered input.
+ */
 function LanguageField(props) {
 	return (
 		<Input label="Language">

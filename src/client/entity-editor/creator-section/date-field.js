@@ -20,6 +20,20 @@ import {Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
+/**
+ * Presentational component. This component renders a plain text input which
+ * can be hidden, and an associated ValidationLabel.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {boolean} props.error - Passed to the ValidationLabel within the
+ *        component to indicate a validation error.
+ * @param {boolean} props.empty - Passed to the ValidationLabel within the
+ *        component to indicate that the field is empty.
+ * @param {boolean} props.show - Determines the visibility of the field - if
+ *        falsey, bootstrap's 'hidden' class is applied.
+ * @param {string} props.label - The text to be used for the input label.
+ * @returns {Object} A React component containing the rendered input.
+ */
 function DateField({
 	show,
 	label,
