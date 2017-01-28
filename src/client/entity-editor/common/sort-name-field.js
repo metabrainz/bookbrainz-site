@@ -83,12 +83,23 @@ function makeSortName(name) {
 	return `${lastName}, ${words.join(' ')}`;
 }
 
-/**
- * Presentational component. Renders the sort name field for the alias section
- * of entity editing forms.
- *
- * @returns {Object} a React component containing the rendered input
- */
+ /**
+  * Presentational component. This component renders a plain text input which
+  * incorporates a 'Guess Sort Name' button, and a ValidationLabel for a field
+  * labelled 'Sort Name'. When clicked, the 'Guess Sort Name' button uses the
+  * name value passed to the component to guess an appropriate sort name.
+  *
+  * @param {Object} props - The properties passed to the component.
+  * @param {boolean} props.error - Passed to the ValidationLabel within the
+  *        component to indicate a validation error.
+  * @param {boolean} props.empty - Passed to the ValidationLabel within the
+  *        component to indicate that the field is empty.
+  * @param {Function} props.onChange - Function to be called when the value in
+  *        the wrapped input changes.
+  * @param {string} props.storedNameValue - The name value to be used to
+  *        generate the sort name when the 'Guess Sort Name' button is clicked.
+  * @returns {Object} a React component containing the rendered input
+  */
 function SortNameField({
 	empty,
 	error,

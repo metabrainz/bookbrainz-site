@@ -22,9 +22,16 @@ import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
 /**
- * Presentational component. Renders the name field for the alias section of
- * entity editing forms.
+ * Presentational component. This component renders a plain text input and a
+ * ValidationLabel for a field labelled 'Name'.
  *
+ * @param {Object} props - The properties passed to the component.
+ * @param {boolean} props.error - Passed to the ValidationLabel within the
+ *        component to indicate a validation error.
+ * @param {boolean} props.empty - Passed to the ValidationLabel within the
+ *        component to indicate that the field is empty.
+ * @param {Function} props.onChange - Function to be called when the value in
+ *        the wrapped input changes.
  * @returns {Object} a React component containing the rendered input
  */
 function NameField({
