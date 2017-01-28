@@ -27,7 +27,7 @@ import React from 'react';
 import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
 
-let Wrapper = ({
+const CreatorData = ({
 	aliasEditorVisible,
 	identifierEditorVisible,
 	languageOptions,
@@ -71,8 +71,8 @@ let Wrapper = ({
 		</Panel>
 	);
 };
-Wrapper.displayName = 'Wrapper';
-Wrapper.propTypes = {
+CreatorData.displayName = 'CreatorData';
+CreatorData.propTypes = {
 	aliasEditorVisible: React.PropTypes.bool,
 	creatorTypes: React.PropTypes.array,
 	genderOptions: React.PropTypes.array,
@@ -90,6 +90,4 @@ function mapStateToProps(rootState) {
 	};
 }
 
-Wrapper = connect(mapStateToProps)(Wrapper);
-
-export default Wrapper;
+export default connect(mapStateToProps)(CreatorData);
