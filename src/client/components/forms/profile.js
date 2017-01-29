@@ -204,6 +204,11 @@ ProfileForm.propTypes = {
 		id: React.PropTypes.number,
 		area: validators.labeledProperty,
 		bio: React.PropTypes.string,
+		birthDate: React.PropTypes.object,
+		gender: React.PropTypes.shape({
+			id: React.PropTypes.number
+		}),
+		name: React.PropTypes.string,
 		titleUnlockId: React.PropTypes.number
 	}),
 	genders: React.PropTypes.array,
