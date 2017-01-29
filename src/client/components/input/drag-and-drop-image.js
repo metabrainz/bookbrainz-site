@@ -1,5 +1,4 @@
 const React = require('react');
-const Input = require('react-bootstrap').Input;
 
 /**
 * This class is derived from the React Component base class and renders
