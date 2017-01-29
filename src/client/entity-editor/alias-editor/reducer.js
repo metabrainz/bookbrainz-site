@@ -34,7 +34,7 @@ function reducer(
 	action
 ) {
 	const {payload, type} = action;
-	switch (action.type) {
+	switch (type) {
 		case ADD_ALIAS_ROW:
 			return state.set(payload, EMPTY_ALIAS);
 		case UPDATE_ALIAS_NAME:
