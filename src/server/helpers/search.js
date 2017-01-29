@@ -38,7 +38,7 @@ const _index = 'bookbrainz';
 
 let _client = null;
 
-search.init = (options) => {
+search.init = async (options) => {
 	const config = _.extend({
 		defer() {
 			const defer = {};
@@ -55,14 +55,13 @@ search.init = (options) => {
 	_client = ElasticSearch.Client(config);
 
 	// Automatically index on app startup if we haven't already
-	_client.indices.exists({index: _index})
-		.then((mainIndexExists) => {
-			if (mainIndexExists) {
-				return null;
-			}
+	const mainIndexExists = await _client.indices.exists({index: _index});
 
-			return search.generateIndex();
-		});
+	if (mainIndexExists) {
+		return null;
+	}
+
+	return search.generateIndex();
 };
 
 function _fetchEntityModelsForESResults(results) {
@@ -160,7 +159,7 @@ search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
-search.generateIndex = () => {
+search.generateIndex = async () => {
 	const indexMappings = {
 		settings: {
 			analysis: {
@@ -225,69 +224,69 @@ search.generateIndex = () => {
 	};
 
 	// First, drop index and recreate
-	return _client.indices.delete({index: _index})
-		.catch((err) => {
-			/**
-			 * If the index is missing, don't worry, it probably never existed;
-			 * otherwise, rethrow
- 			 */
-			if (!err.message.startsWith('IndexMissingException')) {
-				throw err;
-			}
+	const mainIndexExists = await _client.indices.exists({index: _index});
+
+	if (mainIndexExists) {
+		await _client.indices.delete({index: _index});
+	}
+
+	await _client.indices.create(
+		{index: _index, body: indexMappings}
+	);
+
+	const baseRelations = [
+		'annotation',
+		'disambiguation',
+		'defaultAlias'
+	];
+
+	const entityBehaviors = [
+		{
+			model: Creator,
+			relations: [
+				'gender',
+				'creatorType',
+				'beginArea',
+				'endArea'
+			]
+		},
+		{
+			model: Edition,
+			relations: [
+				'publication',
+				'editionFormat',
+				'editionStatus'
+			]
+		},
+		{model: Publication, relations: ['publicationType']},
+		{model: Publisher, relations: ['publisherType', 'area']},
+		{model: Work, relations: ['workType']}
+	];
+
+	// Update the indexed entries for each entity type
+	const behaviorPromise = entityBehaviors.map((behavior) =>
+		behavior.model.forge().fetchAll({
+			withRelated: baseRelations.concat(behavior.relations)
 		})
-		// GOTCHA: index creation is buggy
-		// https://tickets.metabrainz.org/browse/BB-205
-		.then(() => _client.indices.create(
-			{
-				index: _index,
-				body: indexMappings
-			}
+	);
+	const entityLists = await Promise.all(behaviorPromise);
+	const indexedEntities = entityLists.map((entityList) =>
+		Promise.all(entityList.toJSON().map((entity) =>
+			search.indexEntity(entity)
 		))
-		.then(() => {
-			const baseRelations = [
-				'annotation',
-				'disambiguation',
-				'defaultAlias'
-			];
+	);
+	await Promise.all(indexedEntities);
 
-			const entityBehaviors = [
-				{
-					model: Creator,
-					relations: ['gender', 'creatorType', 'beginArea', 'endArea']
-				},
-				{
-					model: Edition,
-					relations: [
-						'publication',
-						'editionFormat',
-						'editionStatus'
-					]
-				},
-				{model: Publication, relations: ['publicationType']},
-				{model: Publisher, relations: ['publisherType', 'area']},
-				{model: Work, relations: ['workType']}
-			];
+	const areaCollection = await Area.forge()
+		// countries only
+		.where({type: 1})
+		.fetchAll();
 
-			// Update the indexed entries for each entity type
-			return Promise.map(entityBehaviors, (behavior) =>
-				behavior.model.forge()
-					.fetchAll({
-						withRelated: baseRelations.concat(behavior.relations)
-					})
-					.then((collection) => collection.toJSON())
-					.map(search.indexEntity)
-			);
-		})
-		.then(() =>
-			Area.forge()
-				// countries only
-				.where({type: 1})
-				.fetchAll()
-				.then((collection) => collection.toJSON())
-				.map(search.indexArea)
+	const areas = areaCollection.toJSON();
+	const indexedAreas = areas.map((area) => search.indexArea(area));
+	await Promise.all(indexedAreas);
 
-		)
-		.then(search.refreshIndex);
+	await search.refreshIndex();
 };
 
 search.searchByName = (name, collection) => {
