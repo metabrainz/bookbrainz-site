@@ -75,6 +75,7 @@ class PublisherForm extends React.Component {
 		const revisionNote = this.revision.note.getValue();
 		const PENULTIMATE_ELEMENT = -1;
 		const data = {
+			areaId: parseInt(publisherData.area, 10),
 			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 			beginDate: publisherData.beginDate,
 			endDate: publisherData.endDate,

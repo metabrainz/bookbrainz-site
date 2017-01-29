@@ -105,7 +105,8 @@ class EntitySearch extends React.Component {
 					Edition: 'book',
 					Publication: 'th-list',
 					Publisher: 'university',
-					Work: 'file-text-o'
+					Work: 'file-text-o',
+					Area: 'globe'
 				};
 
 				/* eslint prefer-template: 0 */
@@ -174,6 +175,7 @@ class EntitySearch extends React.Component {
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
 	bsStyle: React.PropTypes.string,
+	collection: React.PropTypes.string,
 	defaultValue: React.PropTypes.shape({
 		bbid: React.PropTypes.string
 	}),

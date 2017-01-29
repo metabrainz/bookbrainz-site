@@ -1,7 +1,10 @@
 ---
 parserOptions:
-  ecmaVersion: 6
+  ecmaVersion: 8
   ecmaFeatures:
+    jsx: true,
+    modules: false
+    generators: true
     experimentalObjectRestSpread: true
 env:
   node: true
@@ -61,6 +64,7 @@ rules:
     -
       prefer:
         return: returns
+      requireReturn: false
   valid-typeof: 2
   no-unexpected-multiline: 2
 
@@ -81,7 +85,6 @@ rules:
     - 2
     - allow-null
   no-alert: 2
-  guard-for-in: 2
   no-caller: 2
   no-div-regex: 2
   no-else-return: 2
@@ -117,7 +120,6 @@ rules:
   no-self-compare: 2
   no-sequences: 2
   no-throw-literal: 2
-  no-unused-expressions: 2
   no-unused-labels: 2
   no-useless-call: 2
   no-useless-concat: 2
@@ -276,7 +278,6 @@ rules:
   wrap-regex: 2
 
   # ECMAScript 6
-  arrow-parens: 2
   arrow-spacing: 2
   constructor-super: 2
   generator-star-spacing:

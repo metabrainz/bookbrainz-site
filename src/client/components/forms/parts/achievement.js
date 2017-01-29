@@ -73,7 +73,7 @@ Achievement.propTypes = {
 		description: React.PropTypes.string,
 		name: React.PropTypes.string
 	}),
-	unlocked: React.PropTypes.array
+	unlocked: React.PropTypes.bool
 };
 
 module.exports = Achievement;

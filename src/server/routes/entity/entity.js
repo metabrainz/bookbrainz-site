@@ -44,10 +44,30 @@ const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 const achievement = require('../../helpers/achievement');
+const propHelpers = require('../../helpers/props');
 
+const Layout = require('../../../client/containers/layout');
+const EntityRevisions =
+	require('../../../client/components/pages/entity-revisions');
+const EntityContainer = require('../../../client/containers/entity');
+const EditionPage = require('../../../client/components/pages/entity/edition');
+const CreatorPage = require('../../../client/components/pages/entity/creator');
+const PublicationPage =
+	require('../../../client/components/pages/entity/publication');
+const PublisherPage =
+	require('../../../client/components/pages/entity/publisher');
+const WorkPage = require('../../../client/components/pages/entity/work');
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion')
 );
+
+const entityComponents = {
+	edition: EditionPage,
+	creator: CreatorPage,
+	publication: PublicationPage,
+	publisher: PublisherPage,
+	work: WorkPage
+};
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -121,10 +141,27 @@ module.exports.displayEntity = (req, res) => {
 	});
 
 	return alertPromise.then((alert) => {
-		res.render(
-			`entity/view/${entity.type.toLowerCase()}`,
-			{identifierTypes, alert}
-		);
+		const entityName = entity.type.toLowerCase();
+		const EntityComponent = entityComponents[entityName];
+		if (EntityComponent) {
+			const props = propHelpers.generateProps(req, res, {
+				identifierTypes,
+				alert
+			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityComponent
+						{...propHelpers.extractEntityProps(props)}
+					/>
+				</Layout>
+			);
+			res.render('target', {markup, props});
+		}
+		else {
+			throw new Error(
+				`Component was not found for the following entity:${entityName}`
+			);
+		}
 	});
 };
 
@@ -133,8 +170,10 @@ module.exports.displayDeleteEntity = (req, res) => {
 		entity: res.locals.entity
 	};
 
-	res.render('entity/delete', {
+	res.render('common', {
 		markup: ReactDOMServer.renderToString(DeletionForm(props)),
+		task: 'delete',
+		script: 'deletion',
 		props
 	});
 };
@@ -144,19 +183,33 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 
 	return new RevisionModel()
 		.where({bbid})
-		.fetchAll({withRelated: ['revision', 'revision.author']})
+		.fetchAll({
+			withRelated: ['revision', 'revision.author', 'revision.notes']
+		})
 		.then((collection) => {
 			const revisions = collection.toJSON();
-			return res.render('entity/revisions', {revisions});
+			const props = propHelpers.generateProps(req, res, {
+				revisions
+			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityRevisions
+						entity={props.entity}
+						revisions={props.revisions}
+					/>
+				</Layout>
+			);
+			return res.render('target', {markup});
 		})
 		.catch(next);
 };
 
 function _createNote(content, editor, revision, transacting) {
 	if (content) {
+		const revisionId = revision.get('id');
 		return new Note({
 			authorId: editor.id,
-			revisionId: revision.get('id'),
+			revisionId,
 			content
 		})
 			.save(null, {transacting});
@@ -164,6 +217,17 @@ function _createNote(content, editor, revision, transacting) {
 
 	return null;
 }
+
+module.exports.addNoteToRevision = (req, res) => {
+	const editorJSON = req.session.passport.user;
+	const revision = Revision.forge({id: req.params.id});
+	const revisionNotePromise = bookshelf.transaction((transacting) =>
+		_createNote(
+			req.body.note, editorJSON, revision, transacting
+		)
+	);
+	return handler.sendPromiseResult(res, revisionNotePromise);
+};
 
 module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 	const entity = res.locals.entity;

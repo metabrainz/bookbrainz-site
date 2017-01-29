@@ -25,27 +25,90 @@ directories will exist:
 * static/js - minified JavaScript files which are referred to by the
   site pages.
 
-## Setup
+## Setting up a local BookBrainz server
+### Installing Dependencies
+BookBrainz depends on having PostgreSQL, Redis and Elasticsearch and NodeJS set
+up and running.
+
+To get PostgreSQL, use one of the following commands:
+
+**Debian-based OS**
+
+    sudo apt-get install postgresql
+
+**Red Hat-based OS**
+
+    sudo yum install postgresql-server
+
+To install Redis, run similar commands to get the dependency from your package
+manager:
+
+**Debian-based OS**
+
+    sudo apt-get install redis-server
+
+**Red Hat-based OS**
+
+    sudo yum install redis
+
+To install Elasticsearch, follow the instructions at https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html
+
+And finally, for NodeJS, choose the correct installation file, or view the
+instructions for package managers at https://nodejs.org/en/download/current/
+
+### Setting up Dependencies
+No setup is required for Redis or Elasticsearch. However, it is necessary to
+perform some initialization for PostgreSQL and import the latest BookBrainz
+database dump.
+
+Firstly, begin downloading the latest BookBrainz dump from https://bookbrainz.org/dumps/latest.tar.bz2.
+
+Then, uncompress the `latest.tar.bz2` file, using the bzip2 command:
+
+    bzip2 -d latest.tar.bz2
+
+This will give you a file that you can *restore* into PostgreSQL, which will
+set up data identical to the data we have on the bookbrainz.org website. To do
+this, run:
+
+    sudo -u postgres pg_restore -e -C -O latest.tar -d postgres
+
+At this point, the database is set up, and the following command should give
+you a list of usernames of BookBrainz editors (after entering the password from
+earlier):
+
+    sudo -u postgres psql bookbrainz -c "SELECT name FROM bookbrainz.editor"
+
 ### Cloning
 
-Since this project makes use of [git submodules](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules), you need to use `git clone --recursive` to clone it. Alternatively you can follow the directions in the documentation linked here to manually initialize submodules.
+Since this project makes use of
+[git submodules](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules), you
+need to use `git clone --recursive` to clone it. Alternatively you can follow
+the directions in the documentation linked here to manually initialize
+submodules.
 
 Currently used submodules:
 *  [MonkeyDo/lobes](https://github.com/MonkeyDo/lobes) in `src/client/stylesheets/lobes`
 
-## Installing dependencies
+To clone the repository and point the local HEAD to the latest commit in the
+`stable` branch, something like the following command should work:
 
-Dependencies can be installed using the node package manager:
+    git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
+
+### Installing Packages
+The site depends on a number of node packages, which can be installed using npm,
+which is bundled with NodeJS:
 
     npm install
 
-You also need to install [postgres](https://www.postgresql.org/) and
-[redis](http://redis.io/).
+This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
 
 Create a copy of development.json.example and rename it to development.json.
-Then, edit the values so that they are correct for your environment.
+Then, edit the values so that they are correct for your environment. If the
+prior instructions have been followed, it should only be necessary to change
+the PostgreSQL username and password.
 
 ## Building and running
 A number of subcommands exist to manage the installation and run the server.

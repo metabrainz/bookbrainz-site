@@ -78,8 +78,10 @@ router.get('/details', loadGenders, (req, res) => {
 		genders: res.locals.genders
 	};
 
-	return res.render('registrationDetails', {
+	return res.render('common', {
 		title: 'Register',
+		task: 'registrationDetails',
+		script: 'registrationDetails',
 		props,
 		markup: ReactDOMServer.renderToString(RegisterDetailPage(props))
 	});

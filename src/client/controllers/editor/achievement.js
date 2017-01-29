@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
+ * Copyright (C) 2016  Daniel Hsing
+ * 				 2015  Ben Ockmore
  *               2015  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,12 +20,27 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const AchievementForm = React.createFactory(
-	require('../../components/forms/achievements')
-);
-const props = JSON.parse(document.getElementById('props').innerHTML);
+const AchievementsTab =
+	require('../../components/pages/parts/editor-achievements');
+const Layout =
+	require('../../containers/layout');
+const EditorContainer =
+	require('../../containers/editor');
+const propHelpers = require('../../../server/helpers/props');
+
+const propsTarget = document.getElementById('props');
+const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 ReactDOM.render(
-	AchievementForm(props),
-	document.getElementById('achievementsForm')
+	<Layout {...propHelpers.extractLayoutProps(props)}>
+		<EditorContainer
+			{...propHelpers.extractEditorProps(props)}
+		>
+			<AchievementsTab
+				achievement={props.achievement}
+				editor={props.editor}
+			/>
+		</EditorContainer>
+	</Layout>,
+	document.getElementById('target')
 );

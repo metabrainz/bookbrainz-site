@@ -16,6 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint no-return-assign: 0 */
 
 const Icon = require('react-fontawesome');
 const React = require('react');
@@ -25,8 +26,11 @@ const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifier-list');
 const PartialDate = require('../../input/partial-date');
 const Select = require('../../input/select2');
+const SearchSelect = require('../../input/entity-search');
 
 const validators = require('../../../helpers/react-validators');
+const injectDefaultAliasName =
+	require('../../../helpers/utils').injectDefaultAliasName;
 
 class CreatorData extends React.Component {
 	constructor(props) {
@@ -41,8 +45,12 @@ class CreatorData extends React.Component {
 	}
 
 	getValue() {
+		const beginArea = this.beginArea.getValue();
+		const endArea = this.endArea.getValue();
 		return {
+			beginArea: beginArea ? beginArea.id : null,
 			beginDate: this.begin.getValue(),
+			endArea: endArea ? endArea.id : null,
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
 			gender: this.gender.getValue(),
@@ -64,8 +72,10 @@ class CreatorData extends React.Component {
 	}
 
 	render() {
+		let initialBeginArea = null;
 		let initialBeginDate = null;
 		let initialEndDate = null;
+		let initialEndArea = null;
 		let initialGender = null;
 		let initialCreatorType = null;
 		let initialDisambiguation = null;
@@ -74,6 +84,12 @@ class CreatorData extends React.Component {
 
 		const prefillData = this.props.creator;
 		if (prefillData) {
+			if (prefillData.beginArea) {
+				initialBeginArea = prefillData.beginArea;
+			}
+			if (prefillData.endArea) {
+				initialEndArea = prefillData.endArea;
+			}
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
 			initialGender = prefillData.gender ? prefillData.gender.id : null;
@@ -157,6 +173,28 @@ class CreatorData extends React.Component {
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
+					<SearchSelect
+						noDefault
+						collection="area"
+						defaultValue={injectDefaultAliasName(initialBeginArea)}
+						label="Begin Area"
+						labelClassName="col-md-4"
+						placeholder="Select begin area..."
+						ref={(ref) => this.beginArea = ref}
+						select2Options={select2Options}
+						wrapperClassName="col-md-4"
+					/>
+					<SearchSelect
+						noDefault
+						collection="area"
+						defaultValue={injectDefaultAliasName(initialEndArea)}
+						label="End Area"
+						labelClassName="col-md-4"
+						placeholder="Select end area..."
+						ref={(ref) => this.endArea = ref}
+						select2Options={select2Options}
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
@@ -217,7 +255,9 @@ class CreatorData extends React.Component {
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
 	creator: React.PropTypes.shape({
+		beginArea: validators.labeledProperty,
 		beginDate: React.PropTypes.string,
+		endArea: validators.labeledProperty,
 		endDate: React.PropTypes.string,
 		ended: React.PropTypes.bool,
 		gender: validators.namedProperty,

@@ -22,13 +22,17 @@
 
 const express = require('express');
 const router = express.Router();
-const Promise = require('bluebird');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
 const utils = require('../helpers/utils');
+const propHelpers = require('../helpers/props');
 
 const _ = require('lodash');
+
+
+const Layout = require('../../client/containers/layout');
+const Index = require('../../client/components/pages/index');
 
 const AboutPage = React.createFactory(
 	require('../../client/components/pages/about')
@@ -47,46 +51,63 @@ const LicensingPage = React.createFactory(
 );
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
-		res.render('index', {
-			recent: _.take(entities, numRevisionsOnHomepage),
-			homepage: true
+		const props = propHelpers.generateProps(req, res, {
+			homepage: true,
+			recent: _.take(entities, numRevisionsOnHomepage)
 		});
+
+		// Renders react components server side and injects markup into target
+		// file
+		// object spread injects the app.locals variables into React as props
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<Index
+					recent={props.recent}
+				/>
+			</Layout>
+		);
+		res.render('target', {markup});
 	}
 
 	const entityModels = utils.getEntityModels();
 
-	const latestEntitiesPromise =
-		Promise.all(_.map(entityModels, (model, name) =>
-			model.query((qb) => {
+	try {
+		let latestEntities = [];
+
+		for (const modelName in entityModels) {
+			const model = entityModels[modelName];
+
+			const collection = await model.query((qb) => {
 				qb
 					.leftJoin(
 						'bookbrainz.revision',
-						`bookbrainz.${_.snakeCase(name)}.revision_id`,
+						`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
 						'bookbrainz.revision.id'
 					)
 					.where('master', true)
 					.orderBy('bookbrainz.revision.created_at', 'desc')
 					.limit(numRevisionsOnHomepage);
 			})
-			.fetchAll({
-				withRelated: ['defaultAlias', 'revision.revision']
-			})
-			.then((collection) => collection.toJSON())
-		));
+				.fetchAll({
+					withRelated: ['defaultAlias', 'revision.revision']
+				});
 
-	latestEntitiesPromise
-		.then((latestEntitiesByType) => {
-			const latestEntities = _.orderBy(
-				_.flatten(latestEntitiesByType), 'revision.revision.createdAt',
-				['desc']
-			);
-			render(latestEntities);
-		})
-		.catch(next);
+			latestEntities = latestEntities.concat(collection.toJSON());
+		}
+
+		const orderedEntities = _.orderBy(
+			latestEntities, 'revision.revision.createdAt',
+			['desc']
+		);
+		return render(orderedEntities);
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 // Helper function to create pages that don't require custom logic
@@ -94,6 +115,7 @@ function _createStaticRoute(route, title, pageComponent) {
 	router.get(route, (req, res) => {
 		res.render('page', {
 			title,
+			homepage: false,
 			markup: ReactDOMServer.renderToString(pageComponent())
 		});
 	});

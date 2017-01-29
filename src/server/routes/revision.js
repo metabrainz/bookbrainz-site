@@ -33,6 +33,7 @@ const PublisherRevision = require('bookbrainz-data').PublisherRevision;
 const Revision = require('bookbrainz-data').Revision;
 const WorkRevision = require('bookbrainz-data').WorkRevision;
 
+const propHelpers = require('../helpers/props');
 const baseFormatter = require('../helpers/diffFormatters/base');
 const entityFormatter = require('../helpers/diffFormatters/entity');
 const languageSetFormatter =
@@ -41,10 +42,11 @@ const publisherSetFormatter =
 	require('../helpers/diffFormatters/publisherSet');
 const releaseEventSetFormatter =
 	require('../helpers/diffFormatters/releaseEventSet');
+const entityRoutes = require('./entity/entity');
 
-const RevisionPage = React.createFactory(
-	require('../../client/components/pages/revision')
-);
+const Layout = require('../../client/containers/layout');
+const RevisionPage = require('../../client/components/pages/revision');
+
 
 const router = express.Router();
 
@@ -67,6 +69,16 @@ function formatCreatorChange(change) {
 
 	if (_.isEqual(change.path, ['type'])) {
 		return baseFormatter.formatTypeChange(change, 'Creator Type');
+	}
+
+	if (_.isEqual(change.path, ['beginArea']) ||
+			_.isEqual(change.path, ['beginArea', 'name'])) {
+		return baseFormatter.formatAreaChange(change, 'Begin Area');
+	}
+
+	if (_.isEqual(change.path, ['endArea']) ||
+			_.isEqual(change.path, ['endArea', 'name'])) {
+		return baseFormatter.formatAreaChange(change, 'End Area');
 	}
 
 	return null;
@@ -128,6 +140,11 @@ function formatPublisherChange(change) {
 
 	if (_.isEqual(change.path, ['type'])) {
 		return baseFormatter.formatTypeChange(change, 'Publisher Type');
+	}
+
+	if (_.isEqual(change.path, ['area']) ||
+			_.isEqual(change.path, ['area', 'name'])) {
+		return baseFormatter.formatAreaChange(change);
 	}
 
 	return null;
@@ -222,17 +239,29 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-			const props = {
+			const props = propHelpers.generateProps(req, res, {
 				revision: revision.toJSON(),
-				diffs
-			};
-			res.render('page', {
 				title: 'RevisionPage',
-				markup: ReactDOMServer.renderToString(RevisionPage(props))
+				diffs
 			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<RevisionPage
+						diffs={props.diffs}
+						revision={props.revision}
+						user={props.user}
+					/>
+				</Layout>
+			);
+			const script = '/js/revision.js';
+			res.render('target', {script, props, markup});
 		}
 	)
 		.catch(next);
+});
+
+router.post('/:id/note', (req, res) => {
+	entityRoutes.addNoteToRevision(req, res);
 });
 
 module.exports = router;

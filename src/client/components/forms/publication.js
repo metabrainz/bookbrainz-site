@@ -16,6 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
 const Icon = require('react-fontawesome');
 const React = require('react');
@@ -30,6 +31,14 @@ const PublicationData = require('./parts/publication-data');
 const RevisionNote = require('./parts/revision-note');
 
 class PublicationForm extends React.Component {
+
+	/**
+	 * Initializes component state to default values and binds class
+	 * methods to proper context so that they can be directly invoked
+	 * without explicit binding
+	 *
+	 * @param {object} props - Properties object passed down from parents
+	 */
 	constructor(props) {
 		super(props);
 
@@ -47,21 +56,41 @@ class PublicationForm extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	/**
+	 * Changes the selected tab and refreshes validity
+	 * of aliases form into state
+	 *
+	 * @param {number} tab - Indicates the selected tab
+	 */
 	handleTabSelect(tab) {
 		this.setState({
 			tab,
-			aliasesValid: this.aliases.valid(),
-			dataValid: this.data.valid()
+			aliasesValid: this.aliases.valid()
 		});
 	}
+
+	/**
+	 * Event handler that moves user to previous tab
+	 *
+	 */
 	handleBackClick() {
 		this.handleTabSelect(this.state.tab - 1);
 	}
 
+	/**
+	 * Event handler that moves user to following tab
+	 *
+	 */
 	handleNextClick() {
 		this.handleTabSelect(this.state.tab + 1);
 	}
 
+	/**
+	 * Extracts user revisions to publications and sends it to the server
+	 * to be saved
+	 *
+	 * @param {object} evt - Event object passed in by event dispatcher
+	 */
 	handleSubmit(evt) {
 		evt.preventDefault();
 
@@ -106,6 +135,13 @@ class PublicationForm extends React.Component {
 			});
 	}
 
+	/**
+	 * Renders the component: Includes a top nav bar, 3 forms that change
+	 * visibility based the 'tab' state variable, and a loading spinner that
+	 * appears for certain async operations
+	 *
+	 * @returns {object} - JSX to render
+	 */
 	render() {
 		let aliases = null;
 		const prefillData = this.props.publication;

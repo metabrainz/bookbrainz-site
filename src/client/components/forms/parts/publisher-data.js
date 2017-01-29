@@ -16,6 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint no-return-assign: 0 */
 
 const Icon = require('react-fontawesome');
 const React = require('react');
@@ -25,8 +26,11 @@ const Input = require('react-bootstrap').Input;
 const Identifiers = require('./identifier-list');
 const PartialDate = require('../../input/partial-date');
 const Select = require('../../input/select2');
+const SearchSelect = require('../../input/entity-search');
 
 const validators = require('../../../helpers/react-validators');
+const injectDefaultAliasName =
+	require('../../../helpers/utils').injectDefaultAliasName;
 
 class PublisherData extends React.Component {
 	constructor(props) {
@@ -41,7 +45,9 @@ class PublisherData extends React.Component {
 	}
 
 	getValue() {
+		const area = this.area.getValue();
 		return {
+			area: area ? area.id : null,
 			beginDate: this.begin.getValue(),
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
@@ -63,6 +69,7 @@ class PublisherData extends React.Component {
 	}
 
 	render() {
+		let initialArea = null;
 		let initialBeginDate = null;
 		let initialEndDate = null;
 		let initialPublisherType = null;
@@ -72,6 +79,9 @@ class PublisherData extends React.Component {
 
 		const prefillData = this.props.publisher;
 		if (prefillData) {
+			if (prefillData.area) {
+				initialArea = prefillData.area;
+			}
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
 			initialPublisherType = prefillData.publisherType ?
@@ -141,6 +151,17 @@ class PublisherData extends React.Component {
 						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
+					<SearchSelect
+						noDefault
+						collection="area"
+						defaultValue={injectDefaultAliasName(initialArea)}
+						label="Area"
+						labelClassName="col-md-4"
+						placeholder="Select area..."
+						ref={(ref) => this.area = ref}
+						select2Options={select2Options}
+						wrapperClassName="col-md-4"
+					/>
 					<hr/>
 					<Identifiers
 						identifiers={initialIdentifiers}
@@ -203,6 +224,7 @@ PublisherData.displayName = 'PublisherData';
 PublisherData.propTypes = {
 	identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 	publisher: React.PropTypes.shape({
+		area: validators.labeledProperty,
 		annotation: React.PropTypes.shape({
 			content: React.PropTypes.string
 		}),

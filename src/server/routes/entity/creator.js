@@ -54,7 +54,7 @@ router.param(
 	'bbid',
 	makeEntityLoader(
 		Creator,
-		['creatorType', 'gender'],
+		['creatorType', 'gender', 'beginArea', 'endArea'],
 		'Creator not found'
 	)
 );
@@ -100,10 +100,11 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
-		res.render('entity/create/creator', {
+		res.render('entity/create/create-common', {
 			title: 'Add Creator',
 			heading: 'Create Creator',
 			subheading: 'Add a new Creator to BookBrainz',
+			script: 'creator',
 			props,
 			markup
 		});
@@ -187,10 +188,11 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
-		res.render('entity/create/creator', {
+		res.render('entity/create/create-common', {
 			title: 'Edit Creator',
 			heading: 'Edit Creator',
 			subheading: 'Edit an existing Creator in BookBrainz',
+			script: 'creator',
 			props,
 			markup
 		});
@@ -198,7 +200,8 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 );
 
 const additionalCreatorProps = [
-	'typeId', 'genderId', 'areaId', 'beginDate', 'endDate', 'ended'
+	'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
+	'endAreaId'
 ];
 
 
