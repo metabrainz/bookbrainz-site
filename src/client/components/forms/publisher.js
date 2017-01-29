@@ -73,9 +73,10 @@ class PublisherForm extends React.Component {
 		const aliasData = this.aliases.getValue();
 		const publisherData = this.data.getValue();
 		const revisionNote = this.revision.note.getValue();
+		const PENULTIMATE_ELEMENT = -1;
 		const data = {
 			areaId: parseInt(publisherData.area, 10),
-			aliases: aliasData.slice(0, -1),
+			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 			beginDate: publisherData.beginDate,
 			endDate: publisherData.endDate,
 			ended: publisherData.ended,
@@ -89,7 +90,8 @@ class PublisherForm extends React.Component {
 		this.setState({waiting: true});
 
 		request.post(this.props.submissionUrl)
-			.send(data).promise()
+			.send(data)
+			.promise()
 			.then((res) => {
 				if (!res.body) {
 					window.location.replace('/login');
@@ -126,8 +128,7 @@ class PublisherForm extends React.Component {
 		const submitEnabled =
 			this.state.aliasesValid && this.state.dataValid;
 
-		const loadingElement =
-			this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const invalidIcon = (
 			<span>&nbsp;

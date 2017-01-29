@@ -25,6 +25,10 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const _ = require('lodash');
 
+const config = require('../../helpers/config');
+const Log = require('log');
+const log = new Log(config.site.log);
+
 // XXX: Don't pull in bookshelf directly
 const bookshelf = require('bookbrainz-data').bookshelf;
 
@@ -125,7 +129,7 @@ module.exports.displayEntity = (req, res) => {
 						return unlockName;
 					})
 					.catch((error) => {
-						console.log(error);
+						log.debug(error);
 					})
 			);
 			alertPromise = Promise.all(promiseList);
@@ -249,7 +253,10 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 				id: revision.get('id'),
 				bbid: entity.bbid,
 				dataId: null
-			}).save(null, {method: 'insert', transacting}));
+			}).save(null, {
+				method: 'insert',
+				transacting
+			}));
 
 		const entityHeaderPromise = newEntityRevisionPromise
 			.then((entityRevision) => new HeaderModel({
@@ -271,7 +278,9 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 	const newSetIds = _.map(newSet, idField);
 
 	const oldSetHash = {};
-	oldSet.forEach((item) => { oldSetHash[item[idField]] = item; });
+	oldSet.forEach((item) => {
+		oldSetHash[item[idField]] = item;
+	});
 
 	// First, determine whether any items have been deleted or added, by
 	// excluding all new IDs from the old IDs and checking whether any IDs
@@ -344,11 +353,7 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 	let createPropertiesPromise = null;
 	let idsToAttach;
 
-	if (!setMetadata.mutableFields) {
-		// If the set's elements aren't mutable, it should just be a list of IDs
-		idsToAttach = formItems;
-	}
-	else {
+	if (setMetadata.mutableFields) {
 		// If there are items in the set which haven't changed, get their IDs
 		const unchangedItems = unchangedSetItems(
 			oldItems,
@@ -374,6 +379,10 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 					)
 				)
 			);
+	}
+	else {
+		// If the set's elements aren't mutable, it should just be a list of IDs
+		idsToAttach = formItems;
 	}
 
 	// Link any IDs for unchanged items (including immutable) to the set
@@ -645,7 +654,10 @@ module.exports.createEntity = (
 				const model = utils.getEntityModelByType(entityType);
 
 				return model.forge(propsToSet)
-					.save(null, {method: 'insert', transacting});
+					.save(null, {
+						method: 'insert',
+						transacting
+					});
 			})
 			.then(
 				(entityModel) =>
@@ -696,7 +708,10 @@ module.exports.editEntity = (
 
 		const oldAliasSetPromise = currentEntity.aliasSet &&
 			new AliasSet({id: currentEntity.aliasSet.id})
-				.fetch({withRelated: ['aliases'], transacting});
+				.fetch({
+					withRelated: ['aliases'],
+					transacting
+				});
 
 		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
 			.then((oldAliasSet) =>
@@ -709,7 +724,10 @@ module.exports.editEntity = (
 
 		const oldIdentSetPromise = currentEntity.identifierSet &&
 			new IdentifierSet({id: currentEntity.identifierSet.id})
-				.fetch({withRelated: ['identifiers'], transacting});
+				.fetch({
+					withRelated: ['identifiers'],
+					transacting
+				});
 
 		const identSetPromise = Promise.resolve(oldIdentSetPromise)
 			.then((oldIdentifierSet) =>
@@ -823,7 +841,10 @@ module.exports.editEntity = (
 				);
 
 				return Promise.join(
-					entity.save(null, {method: 'update', transacting}),
+					entity.save(null, {
+						method: 'update',
+						transacting
+					}),
 					editorUpdatePromise,
 					parentAddedPromise,
 					notePromise
@@ -831,7 +852,10 @@ module.exports.editEntity = (
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
-					.fetch({withRelated: ['defaultAlias'], transacting})
+					.fetch({
+						withRelated: ['defaultAlias'],
+						transacting
+					})
 			)
 			.then((entity) =>
 				entity.toJSON()

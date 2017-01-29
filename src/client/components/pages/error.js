@@ -32,6 +32,7 @@ class ErrorPage extends React.Component {
 		if (typeof detailedMessage === 'string') {
 			detailedMessage = [detailedMessage];
 		}
+
 		/* to-do: Adjust margins for error status title and message once image
 		   is added in
 		*/

@@ -3,6 +3,7 @@
 pushd src/client/controllers
 browserify -t [babelify] \
 		../../../templates/layout.js \
+		../entity-editor/controller.js \
 		editor/edit.js \
 		editor/achievement.js \
 		entity/creator.js \
@@ -17,6 +18,7 @@ browserify -t [babelify] \
 		search.js \
 	-p [ factor-bundle \
 		-o ../../../static/js/layout.js \
+		-o ../../../static/js/entity-editor.js \
 		-o ../../../static/js/editor/edit.js \
 		-o ../../../static/js/editor/achievement.js \
 		-o ../../../static/js/entity/creator.js \

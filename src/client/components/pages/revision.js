@@ -44,9 +44,7 @@ class RevisionPage extends React.Component {
 	static formatChange(change) {
 		if (change.kind === 'N') {
 			return (
-				<tr className="success"
-					key={change.key}
-				>
+				<tr className="success" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td> — </td>
 					<td>
@@ -58,10 +56,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'E') {
 			return (
-				<tr
-					className="warning"
-					key={change.key}
-				>
+				<tr className="warning" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs)}
@@ -75,10 +70,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'D') {
 			return (
-				<tr
-					className="danger"
-					key={change.key}
-				>
+				<tr className="danger" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs)}

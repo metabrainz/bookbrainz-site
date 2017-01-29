@@ -78,6 +78,7 @@ class WorkForm extends React.Component {
 		evt.preventDefault();
 		this.handleTabSelect(this.state.tab - 1);
 	}
+
 	/**
          * Handler to direct the user to the next tab.
          * @param {Event} evt - used to prevent event propagation
@@ -103,8 +104,9 @@ class WorkForm extends React.Component {
 		const workData = this.data.getValue();
 		const revisionNote = this.revision.note.getValue();
 
+		const PENULTIMATE_ELEMENT = -1;
 		const data = {
-			aliases: aliasData.slice(0, -1),
+			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 			languages: workData.languages.map(
 				(languageId) => parseInt(languageId, 10)
 			),
@@ -120,7 +122,8 @@ class WorkForm extends React.Component {
 
 		const self = this;
 		request.post(this.props.submissionUrl)
-			.send(data).promise()
+			.send(data)
+			.promise()
 			.then((res) => {
 				if (!res.body) {
 					window.location.replace('/login');
@@ -164,8 +167,7 @@ class WorkForm extends React.Component {
 		const submitEnabled =
 			this.state.aliasesValid && this.state.dataValid;
 
-		const loadingElement =
-			this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const invalidIcon = (
 			<span>&nbsp;

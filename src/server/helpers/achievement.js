@@ -18,6 +18,8 @@
 
 'use strict';
 
+/* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
+
 const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
@@ -34,6 +36,10 @@ const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
 const AwardNotUnlockedError = require('./error.js').AwardNotUnlockedError;
 const _ = require('lodash');
+
+const config = require('./config');
+const Log = require('log');
+const log = new Log(config.site.log);
 
 /**
  * Achievement Module
@@ -52,15 +58,15 @@ function awardUnlock(UnlockType, awardAttribs) {
 		.fetch()
 		.then((award) => {
 			let unlockPromise;
-			if (award !== null) {
-				unlockPromise = Promise.resolve('already unlocked');
-			}
-			else {
+			if (award === null) {
 				unlockPromise = new UnlockType(awardAttribs)
 					.save(null, {method: 'insert'})
 					.then((unlock) =>
 						unlock.toJSON()
 					);
+			}
+			else {
+				unlockPromise = Promise.resolve('already unlocked');
 			}
 			return unlockPromise;
 		})
@@ -82,7 +88,12 @@ function awardAchievement(editorId, achievementName) {
 		.fetch()
 		.then((achievementTier) => {
 			let awardPromise;
-			if (achievementTier !== null) {
+			if (achievementTier === null) {
+				awardPromise = Promise.reject(new AwardNotUnlockedError(
+					`Achievement ${achievementName} not found in database`
+				));
+			}
+			else {
 				const achievementAttribs = {
 					editorId,
 					achievementId: achievementTier.id
@@ -97,11 +108,6 @@ function awardAchievement(editorId, achievementName) {
 						.catch((err) => Promise.reject(
 							new AwardNotUnlockedError(err.message)
 						));
-			}
-			else {
-				awardPromise = Promise.reject(new AwardNotUnlockedError(
-					`Achievement ${achievementName} not found in database`
-				));
 			}
 			return awardPromise;
 		});
@@ -122,7 +128,12 @@ function awardTitle(editorId, tier) {
 			.fetch()
 			.then((title) => {
 				let awardPromise;
-				if (title !== null) {
+				if (title === null) {
+					awardPromise = Promise.reject(new AwardNotUnlockedError(
+						`Title ${tier.titleName} not found in database`
+					));
+				}
+				else {
 					const titleAttribs = {
 						editorId,
 						titleId: title.id
@@ -136,11 +147,6 @@ function awardTitle(editorId, tier) {
 						.catch((err) => Promise.reject(
 							new AwardNotUnlockedError(err.message)
 						));
-				}
-				else {
-					awardPromise = Promise.reject(new AwardNotUnlockedError(
-						`Title ${tier.titleName} not found in database`
-					));
 				}
 				return awardPromise;
 			});
@@ -205,7 +211,7 @@ function testTiers(signal, editorId, tiers) {
 					return out;
 				}
 			)
-				.catch((error) => console.log(error));
+				.catch((error) => log.debug(error));
 		}
 		else {
 			const out = {};
@@ -221,29 +227,6 @@ function testTiers(signal, editorId, tiers) {
 		.then((awardList) =>
 			awardListToAwardObject(awardList)
 		);
-}
-
-/**
- * Returns number of revisions of a certain type there are for the specified
- * editor
- * @param {function} revisionType - Constructor for the revisionType
- * @param {string} revisionString - Snake case string of revisionType
- * @param {int} editor - Editor id being queried
- * @returns {int} - Number of revisions of type (type)
- */
-function getTypeRevisions(revisionType, revisionString, editor) {
-	return revisionType
-		.query((qb) => {
-			qb.innerJoin('bookbrainz.revision',
-				'bookbrainz.revision.id',
-				`bookbrainz.${revisionString}.id`);
-			qb.groupBy(`${revisionString}.id`,
-				`${revisionString}.bbid`,
-				'revision.id');
-			qb.where('bookbrainz.revision.author_id', '=', editor);
-		})
-		.fetchAll()
-		.then((out) => out.length);
 }
 
 /**
@@ -279,10 +262,18 @@ function processRevisionist(editorId) {
 		.then((editor) => {
 			const revisions = editor.attributes.revisionsApplied;
 			const tiers = [
-				{threshold: 250, name: 'Revisionist III',
+				{
+					threshold: 250,
+					name: 'Revisionist III',
 					titleName: 'Revisionist'},
-				{threshold: 50, name: 'Revisionist II'},
-				{threshold: 1, name: 'Revisionist I'}
+				{
+					threshold: 50,
+					name: 'Revisionist II'
+				},
+				{
+					threshold: 1,
+					name: 'Revisionist I'
+				}
 			];
 			return testTiers(revisions, editorId, tiers);
 		});
@@ -292,10 +283,19 @@ function processCreatorCreator(editorId) {
 	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Creator Creator III',
-					titleName: 'Creator Creator'},
-				{threshold: 10, name: 'Creator Creator II'},
-				{threshold: 1, name: 'Creator Creator I'}
+				{
+					threshold: 100,
+					name: 'Creator Creator III',
+					titleName: 'Creator Creator'
+				},
+				{
+					threshold: 10,
+					name: 'Creator Creator II'
+				},
+				{
+					threshold: 1,
+					name: 'Creator Creator I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -305,10 +305,19 @@ function processLimitedEdition(editorId) {
 	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Limited Edition III',
-					titleName: 'Limited Edition'},
-				{threshold: 10, name: 'Limited Edition II'},
-				{threshold: 1, name: 'Limited Edition I'}
+				{
+					threshold: 100,
+					name: 'Limited Edition III',
+					titleName: 'Limited Edition'
+				},
+				{
+					threshold: 10,
+					name: 'Limited Edition II'
+				},
+				{
+					threshold: 1,
+					name: 'Limited Edition I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -320,10 +329,19 @@ function processPublisher(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Publisher III',
-					titleName: 'Publisher'},
-				{threshold: 10, name: 'Publisher II'},
-				{threshold: 1, name: 'Publisher I'}
+				{
+					threshold: 100,
+					name: 'Publisher III',
+					titleName: 'Publisher'
+				},
+				{
+					threshold: 10,
+					name: 'Publisher II'
+				},
+				{
+					threshold: 1,
+					name: 'Publisher I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -335,10 +353,19 @@ function processPublisherCreator(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Publisher Creator III',
-					titleName: 'Publisher Creator'},
-				{threshold: 10, name: 'Publisher Creator II'},
-				{threshold: 1, name: 'Publisher Creator I'}
+				{
+					threshold: 100,
+					name: 'Publisher Creator III',
+					titleName: 'Publisher Creator'
+				},
+				{
+					threshold: 10,
+					name: 'Publisher Creator II'
+				},
+				{
+					threshold: 1,
+					name: 'Publisher Creator I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -350,10 +377,19 @@ function processWorkerBee(editorId) {
 		editorId)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 100, name: 'Worker Bee III',
-					titleName: 'Worker Bee'},
-				{threshold: 10, name: 'Worker Bee II'},
-				{threshold: 1, name: 'Worker Bee I'}
+				{
+					threshold: 100,
+					name: 'Worker Bee III',
+					titleName: 'Worker Bee'
+				},
+				{
+					threshold: 10,
+					name: 'Worker Bee II'
+				},
+				{
+					threshold: 1,
+					name: 'Worker Bee I'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -367,7 +403,11 @@ function processSprinter(editorId) {
 	return Bookshelf.knex.raw(rawSql)
 		.then((out) => {
 			const tiers = [
-				{threshold: 10, name: 'Sprinter', titleName: 'Sprinter'}
+				{
+					threshold: 10,
+					name: 'Sprinter',
+					titleName: 'Sprinter'
+				}
 			];
 			return testTiers(out.rowCount, editorId, tiers);
 		});
@@ -394,7 +434,11 @@ function processFunRunner(editorId) {
 	return getEditsInDays(editorId, 6)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 7, name: 'Fun Runner', titleName: 'Fun Runner'}
+				{
+					threshold: 7,
+					name: 'Fun Runner',
+					titleName: 'Fun Runner'
+				}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -404,7 +448,10 @@ function processMarathoner(editorId) {
 	return getEditsInDays(editorId, 29)
 		.then((rowCount) => {
 			const tiers = [
-				{threshold: 30, name: 'Marathoner', titleName: 'Marathoner'}
+				{
+					threshold: 30,
+					name: 'Marathoner',
+					titleName: 'Marathoner'}
 			];
 			return testTiers(rowCount, editorId, tiers);
 		});
@@ -517,9 +564,19 @@ function processExplorer(editorId) {
 	return getEntityVisits(editorId)
 		.then((visits) => {
 			const tiers = [
-				{threshold: 10, name: 'Explorer I'},
-				{threshold: 100, name: 'Explorer II'},
-				{threshold: 1000, name: 'Explorer III', titleName: 'Explorer'}
+				{
+					threshold: 10,
+					name: 'Explorer I'
+				},
+				{
+					threshold: 100,
+					name: 'Explorer II'
+				},
+				{
+					threshold: 1000,
+					name: 'Explorer III',
+					titleName: 'Explorer'
+				}
 			];
 			return testTiers(visits, editorId, tiers);
 		})
@@ -611,7 +668,7 @@ achievement.processEdit = (userId, revisionId) =>
 
 
 achievement.processComment = () => {
-
+	// empty
 };
 
 module.exports = achievement;

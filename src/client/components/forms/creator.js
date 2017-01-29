@@ -96,11 +96,12 @@ class CreatorForm extends React.Component {
 			return;
 		}
 
+		const PENULTIMATE_ELEMENT = -1;
 		const aliasData = this.aliases.getValue();
 		const creatorData = this.data.getValue();
 		const revisionNote = this.revision.note.getValue();
 		const data = {
-			aliases: aliasData.slice(0, -1),
+			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 			beginAreaId: parseInt(creatorData.beginArea, 10),
 			beginDate: creatorData.beginDate,
 			endAreaId: parseInt(creatorData.endArea, 10),
@@ -117,7 +118,8 @@ class CreatorForm extends React.Component {
 		this.setState({waiting: true});
 
 		request.post(this.props.submissionUrl)
-			.send(data).promise()
+			.send(data)
+			.promise()
 			.then((res) => {
 				if (!res.body) {
 					window.location.replace('/login');
@@ -160,8 +162,7 @@ class CreatorForm extends React.Component {
 		const submitEnabled =
 			this.state.aliasesValid && this.state.dataValid;
 
-		const loadingElement =
-			this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const invalidIcon = (
 			<span>&nbsp;

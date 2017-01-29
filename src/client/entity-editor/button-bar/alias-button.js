@@ -1,0 +1,56 @@
+/*
+ * Copyright (C) 2016  Ben Ockmore
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+import {Button} from 'react-bootstrap';
+import React from 'react';
+
+/**
+ * Presentational component. The AliasButton component renders a button
+ * component in the style of a link. The link text indicates the number of
+ * aliases currently set in the AliasEditor, and invites the user to add new or
+ * edit existing aliases.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {number} props.numAliases - The number of aliases present in the
+ *        AliasEditor - used to determine the correct button label.
+ * @returns {ReactElement} React element containing the rendered AliasButton.
+ **/
+function AliasButton({
+	numAliases,
+	...props
+}) {
+	let text = 'Add aliases…';
+	if (numAliases === 1) {
+		text = 'Edit 1 alias…';
+	}
+	else if (numAliases > 1) {
+		text = `Edit ${numAliases} aliases…`;
+	}
+
+	return (
+		<Button bsStyle="link" {...props}>
+			{text}
+		</Button>
+	);
+}
+AliasButton.displayName = 'AliasButton';
+AliasButton.propTypes = {
+	numAliases: React.PropTypes.number
+};
+
+export default AliasButton;

@@ -17,8 +17,9 @@ exports.command = function command() {
 	saucelabs.updateJob(sessionid, {
 		passed: this.currentTest.results.failed === 0,
 		name: jobName
-	}, () => {});
+	}, () => {
+		// empty
+	});
 
-	console.log(`SauceOnDemandSessionID=${sessionid} job-name=${jobName}`);
 	this.end();
 };

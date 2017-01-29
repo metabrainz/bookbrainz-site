@@ -77,7 +77,6 @@ class EditorAchievementTab extends React.Component {
 		const locked = this.renderAchievements(false);
 
 		let rankUpdate;
-		console.log(this.state.editor.authenticated);
 		if (this.state.editor.authenticated) {
 			rankUpdate = (
 				<form
@@ -111,6 +110,8 @@ class EditorAchievementTab extends React.Component {
 				</form>
 			);
 		}
+
+		const STICKY_TOP_MARGIN = 64;
 		return (
 			<Row>
 				<div className="col-md-10-offset-1">
@@ -120,7 +121,7 @@ class EditorAchievementTab extends React.Component {
 								style={{
 									zIndex: 10,
 									background: 'white',
-									marginTop: 64,
+									marginTop: STICKY_TOP_MARGIN,
 									flex: '1'
 								}}
 								topOffset={-80}

@@ -19,6 +19,9 @@
 'use strict';
 
 const status = require('http-status');
+const config = require('./config');
+const Log = require('log');
+const log = new Log(config.site.log);
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const propHelpers = require('./props');
@@ -120,8 +123,8 @@ ${req.path}`,
 }
 
 function _logError(err) {
-	console.log(err);
-	console.log(err.stack);
+	log.error(err);
+	log.debug(err.stack);
 }
 
 function _getErrorToSend(err) {

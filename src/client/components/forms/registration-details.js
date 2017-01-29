@@ -95,8 +95,7 @@ class RegistrationForm extends React.Component {
 				(<Alert bsStyle="danger">{this.state.error}</Alert>);
 		}
 
-		const loadingComponent = this.state.waiting ?
-			<LoadingSpinner/> : null;
+		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const initialGender = this.props.gender && this.props.gender.id;
 		const select2Options = {

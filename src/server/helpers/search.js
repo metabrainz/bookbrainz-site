@@ -159,6 +159,7 @@ search.indexEntity = (entity) =>
 search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 
+/* eslint camelcase: 0, no-magic-numbers: 1 */
 search.generateIndex = () => {
 	const indexMappings = {
 		settings: {
@@ -237,7 +238,10 @@ search.generateIndex = () => {
 		// GOTCHA: index creation is buggy
 		// https://tickets.metabrainz.org/browse/BB-205
 		.then(() => _client.indices.create(
-			{index: _index, body: indexMappings}
+			{
+				index: _index,
+				body: indexMappings
+			}
 		))
 		.then(() => {
 			const baseRelations = [
@@ -247,9 +251,10 @@ search.generateIndex = () => {
 			];
 
 			const entityBehaviors = [
-				{model: Creator,
-					relations:
-						['gender', 'creatorType', 'beginArea', 'endArea']},
+				{
+					model: Creator,
+					relations: ['gender', 'creatorType', 'beginArea', 'endArea']
+				},
 				{
 					model: Edition,
 					relations: [

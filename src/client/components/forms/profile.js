@@ -82,7 +82,8 @@ class ProfileForm extends React.Component {
 		};
 
 		request.post('/editor/edit/handler')
-			.send(data).promise()
+			.send(data)
+			.promise()
 			.then(() => {
 				window.location.href = `/editor/${this.props.editor.id}`;
 			});

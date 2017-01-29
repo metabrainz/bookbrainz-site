@@ -92,8 +92,7 @@ class CreatorData extends React.Component {
 			}
 			initialBeginDate = prefillData.beginDate;
 			initialEndDate = prefillData.endDate;
-			initialGender = prefillData.gender ?
-				prefillData.gender.id : null;
+			initialGender = prefillData.gender ? prefillData.gender.id : null;
 			initialCreatorType = prefillData.creatorType ?
 				prefillData.creatorType.id : null;
 			initialDisambiguation = prefillData.disambiguation ?
@@ -113,8 +112,10 @@ class CreatorData extends React.Component {
 			width: '100%'
 		};
 
+		const dataTabVisibleClass = this.props.visible ? '' : 'hidden';
+		const endDateVisibleClass = this.state.ended ? '' : 'hidden';
 		return (
-			<div className={this.props.visible === false ? 'hidden' : ''}>
+			<div className={dataTabVisibleClass}>
 				<h2>Add Data</h2>
 				<p className="lead">
 					Fill out any data you know about the entity.
@@ -131,7 +132,7 @@ class CreatorData extends React.Component {
 					/>
 					<PartialDate
 						defaultValue={initialEndDate}
-						groupClassName={this.state.ended ? '' : 'hidden'}
+						groupClassName={endDateVisibleClass}
 						label="End Date"
 						labelClassName="col-md-4"
 						placeholder="YYYY-MM-DD"

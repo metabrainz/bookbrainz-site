@@ -50,7 +50,7 @@ function makeSortName(name) {
 		return '';
 	}
 
-	const words = trimmedName.replace(/\,/g, '').split(' ');
+	const words = trimmedName.replace(/,/g, '').split(' ');
 
 	// If there's only one word, simply copy the name as the sort name
 	if (words.length === 1) {
@@ -72,9 +72,8 @@ function makeSortName(name) {
 	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;
 
 	// Test this to check that splice will not have a 0 deleteCount
-	const suffixWords = (
-		lastSuffix < words.length ? words.splice(lastSuffix) : []
-	);
+	const suffixWords =
+		(lastSuffix < words.length) ? words.splice(lastSuffix) : [];
 
 	// Rearrange names to (last name, other names)
 	const INDEX_BEFORE_END = -1;
@@ -156,6 +155,8 @@ class AliasRow extends React.Component {
 			allowClear: true
 		};
 
+		const removeHiddenClass = this.props.removeHidden ? 'hidden' : '';
+
 		return (
 			<div
 				className="row"
@@ -223,7 +224,7 @@ class AliasRow extends React.Component {
 				<div className="col-md-1 text-right">
 					<Button
 						bsStyle="danger"
-						className={this.props.removeHidden ? 'hidden' : ''}
+						className={removeHiddenClass}
 						onClick={this.props.onRemove}
 					>
 						<Icon name="times"/>
