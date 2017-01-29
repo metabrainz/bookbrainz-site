@@ -78,6 +78,7 @@ class WorkForm extends React.Component {
 		evt.preventDefault();
 		this.handleTabSelect(this.state.tab - 1);
 	}
+
 	/**
          * Handler to direct the user to the next tab.
          * @param {Event} evt - used to prevent event propagation

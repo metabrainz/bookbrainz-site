@@ -14,6 +14,7 @@ class DragAndDropImage extends React.Component {
 		super();
 		this.handleDragStart = this.handleDragStart.bind(this);
 	}
+
 	/**
 	* Transfers the data of the achievement badge component properties to the
 	* DragAndDrop event, which in turn transfers the data on handleDrop to that
@@ -30,6 +31,7 @@ class DragAndDropImage extends React.Component {
 		};
 		ev.dataTransfer.setData('text', JSON.stringify(data));
 	}
+
 	/**
 	* Renders an image of a particular achievement badge, which can be dragged
 	* to set the user's publicly showcased achievements

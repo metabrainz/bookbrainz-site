@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 const moment = require('moment');
+
 /**
  * Injects entity model object with a default alias name property.
  *
