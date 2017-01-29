@@ -1,10 +1,17 @@
 {
   "plugins": [
     "transform-es2015-modules-commonjs",
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "array-includes",
+    [
+        "transform-runtime", {
+            "polyfill": false,
+            "regenerator": true
+        }
+    ]
   ],
   "presets": [
-    "es2015-node",
+    "es2015",
     "es2016",
     "es2017",
     "react"

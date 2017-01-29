@@ -25,6 +25,10 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const _ = require('lodash');
 
+const config = require('../../helpers/config');
+const Log = require('log');
+const log = new Log(config.site.log);
+
 // XXX: Don't pull in bookshelf directly
 const bookshelf = require('bookbrainz-data').bookshelf;
 
@@ -40,13 +44,30 @@ const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
 const achievement = require('../../helpers/achievement');
+const propHelpers = require('../../helpers/props');
 
 const Layout = require('../../../client/containers/layout');
 const EntityRevisions =
 	require('../../../client/components/pages/entity-revisions');
+const EntityContainer = require('../../../client/containers/entity');
+const EditionPage = require('../../../client/components/pages/entity/edition');
+const CreatorPage = require('../../../client/components/pages/entity/creator');
+const PublicationPage =
+	require('../../../client/components/pages/entity/publication');
+const PublisherPage =
+	require('../../../client/components/pages/entity/publisher');
+const WorkPage = require('../../../client/components/pages/entity/work');
 const DeletionForm = React.createFactory(
 	require('../../../client/components/forms/deletion')
 );
+
+const entityComponents = {
+	edition: EditionPage,
+	creator: CreatorPage,
+	publication: PublicationPage,
+	publisher: PublisherPage,
+	work: WorkPage
+};
 
 module.exports.displayEntity = (req, res) => {
 	const entity = res.locals.entity;
@@ -108,7 +129,7 @@ module.exports.displayEntity = (req, res) => {
 						return unlockName;
 					})
 					.catch((error) => {
-						console.log(error);
+						log.debug(error);
 					})
 			);
 			alertPromise = Promise.all(promiseList);
@@ -120,11 +141,27 @@ module.exports.displayEntity = (req, res) => {
 	});
 
 	return alertPromise.then((alert) => {
-		res.render(
-			`entity/view/${entity.type.toLowerCase()}`,
-			{identifierTypes,
-			alert}
-		);
+		const entityName = entity.type.toLowerCase();
+		const EntityComponent = entityComponents[entityName];
+		if (EntityComponent) {
+			const props = propHelpers.generateProps(req, res, {
+				identifierTypes,
+				alert
+			});
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityComponent
+						{...propHelpers.extractEntityProps(props)}
+					/>
+				</Layout>
+			);
+			res.render('target', {markup, props});
+		}
+		else {
+			throw new Error(
+				`Component was not found for the following entity:${entityName}`
+			);
+		}
 	});
 };
 
@@ -151,12 +188,15 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 		})
 		.then((collection) => {
 			const revisions = collection.toJSON();
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				revisions
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<EntityRevisions/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EntityRevisions
+						entity={props.entity}
+						revisions={props.revisions}
+					/>
 				</Layout>
 			);
 			return res.render('target', {markup});
@@ -166,9 +206,10 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 
 function _createNote(content, editor, revision, transacting) {
 	if (content) {
+		const revisionId = revision.get('id');
 		return new Note({
 			authorId: editor.id,
-			revisionId: revision.get('id'),
+			revisionId,
 			content
 		})
 			.save(null, {transacting});
@@ -176,6 +217,17 @@ function _createNote(content, editor, revision, transacting) {
 
 	return null;
 }
+
+module.exports.addNoteToRevision = (req, res) => {
+	const editorJSON = req.session.passport.user;
+	const revision = Revision.forge({id: req.params.id});
+	const revisionNotePromise = bookshelf.transaction((transacting) =>
+		_createNote(
+			req.body.note, editorJSON, revision, transacting
+		)
+	);
+	return handler.sendPromiseResult(res, revisionNotePromise);
+};
 
 module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 	const entity = res.locals.entity;
@@ -201,7 +253,10 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 				id: revision.get('id'),
 				bbid: entity.bbid,
 				dataId: null
-			}).save(null, {method: 'insert', transacting}));
+			}).save(null, {
+				method: 'insert',
+				transacting
+			}));
 
 		const entityHeaderPromise = newEntityRevisionPromise
 			.then((entityRevision) => new HeaderModel({
@@ -223,7 +278,9 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 	const newSetIds = _.map(newSet, idField);
 
 	const oldSetHash = {};
-	oldSet.forEach((item) => { oldSetHash[item[idField]] = item; });
+	oldSet.forEach((item) => {
+		oldSetHash[item[idField]] = item;
+	});
 
 	// First, determine whether any items have been deleted or added, by
 	// excluding all new IDs from the old IDs and checking whether any IDs
@@ -296,11 +353,7 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 	let createPropertiesPromise = null;
 	let idsToAttach;
 
-	if (!setMetadata.mutableFields) {
-		// If the set's elements aren't mutable, it should just be a list of IDs
-		idsToAttach = formItems;
-	}
-	else {
+	if (setMetadata.mutableFields) {
 		// If there are items in the set which haven't changed, get their IDs
 		const unchangedItems = unchangedSetItems(
 			oldItems,
@@ -326,6 +379,10 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 					)
 				)
 			);
+	}
+	else {
+		// If the set's elements aren't mutable, it should just be a list of IDs
+		idsToAttach = formItems;
 	}
 
 	// Link any IDs for unchanged items (including immutable) to the set
@@ -597,7 +654,10 @@ module.exports.createEntity = (
 				const model = utils.getEntityModelByType(entityType);
 
 				return model.forge(propsToSet)
-					.save(null, {method: 'insert', transacting});
+					.save(null, {
+						method: 'insert',
+						transacting
+					});
 			})
 			.then(
 				(entityModel) =>
@@ -648,7 +708,10 @@ module.exports.editEntity = (
 
 		const oldAliasSetPromise = currentEntity.aliasSet &&
 			new AliasSet({id: currentEntity.aliasSet.id})
-				.fetch({withRelated: ['aliases'], transacting});
+				.fetch({
+					withRelated: ['aliases'],
+					transacting
+				});
 
 		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
 			.then((oldAliasSet) =>
@@ -661,7 +724,10 @@ module.exports.editEntity = (
 
 		const oldIdentSetPromise = currentEntity.identifierSet &&
 			new IdentifierSet({id: currentEntity.identifierSet.id})
-				.fetch({withRelated: ['identifiers'], transacting});
+				.fetch({
+					withRelated: ['identifiers'],
+					transacting
+				});
 
 		const identSetPromise = Promise.resolve(oldIdentSetPromise)
 			.then((oldIdentifierSet) =>
@@ -775,7 +841,10 @@ module.exports.editEntity = (
 				);
 
 				return Promise.join(
-					entity.save(null, {method: 'update', transacting}),
+					entity.save(null, {
+						method: 'update',
+						transacting
+					}),
 					editorUpdatePromise,
 					parentAddedPromise,
 					notePromise
@@ -783,7 +852,10 @@ module.exports.editEntity = (
 			})
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
-					.fetch({withRelated: ['defaultAlias'], transacting})
+					.fetch({
+						withRelated: ['defaultAlias'],
+						transacting
+					})
 			)
 			.then((entity) =>
 				entity.toJSON()

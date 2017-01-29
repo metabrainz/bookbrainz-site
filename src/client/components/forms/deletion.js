@@ -73,32 +73,30 @@ class EntityDeletionForm extends React.Component {
 				(<Alert bsStyle="danger">{this.state.error}</Alert>);
 		}
 
-		const loadingComponent =
-			this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const footerComponent = (
 			<span className="clearfix">
-			<Button
-				bsStyle="danger"
-				className="pull-right"
-				type="submit"
-			>
-				Delete
-			</Button>
-			<Button
-				className="pull-right"
-				href={this.entityUrl}
-			>
-				Cancel
-			</Button>
-		</span>
-
+				<Button
+					bsStyle="danger"
+					className="pull-right"
+					type="submit"
+				>
+					Delete
+				</Button>
+				<Button
+					className="pull-right"
+					href={this.entityUrl}
+				>
+					Cancel
+				</Button>
+			</span>
 		);
 
 		const headerComponent = (<h3>Confirm Deletion</h3>);
 
-		const entityName = entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)';
+		const entityName =
+			entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 
 		return (
 			<div className="row">

@@ -16,6 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
 const Icon = require('react-fontawesome');
 const React = require('react');
@@ -29,7 +30,16 @@ const LoadingSpinner = require('../loading-spinner');
 const RevisionNote = require('./parts/revision-note');
 const WorkData = require('./parts/work-data');
 
+/**
+ * React component to define a form to create and edit
+ * a Work.
+ * @extends React.Component
+ */
 class WorkForm extends React.Component {
+	/**
+	 * Binds class methods to their respective data.
+	 * @param {object} props - Properties passed into the constructor
+	 */
 	constructor(props) {
 		super(props);
 
@@ -47,6 +57,11 @@ class WorkForm extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	/**
+	 * Changes to the tab selected by the user, which has the number
+	 * in 'tab', and checks the validity of the alias and other data.
+	 * @param {number} tab - the number of the selected tab
+	 */
 	handleTabSelect(tab) {
 		this.setState({
 			tab,
@@ -55,16 +70,28 @@ class WorkForm extends React.Component {
 		});
 	}
 
+	/**
+	 * Handler to direct the user to the previous tab.
+	 * @param {Event} evt - used to prevent event propagation
+	 */
 	handleBackClick(evt) {
 		evt.preventDefault();
 		this.handleTabSelect(this.state.tab - 1);
 	}
 
+	/**
+         * Handler to direct the user to the next tab.
+         * @param {Event} evt - used to prevent event propagation
+         */
 	handleNextClick(evt) {
 		evt.preventDefault();
 		this.handleTabSelect(this.state.tab + 1);
 	}
 
+	/**
+         * Handler to send work information in the form to the server.
+         * @param {Event} evt - used to prevent event propagation
+         */
 	handleSubmit(evt) {
 		evt.preventDefault();
 
@@ -72,12 +99,14 @@ class WorkForm extends React.Component {
 			return;
 		}
 
+		// Collect form data
 		const aliasData = this.aliases.getValue();
 		const workData = this.data.getValue();
 		const revisionNote = this.revision.note.getValue();
 
+		const PENULTIMATE_ELEMENT = -1;
 		const data = {
-			aliases: aliasData.slice(0, -1),
+			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 			languages: workData.languages.map(
 				(languageId) => parseInt(languageId, 10)
 			),
@@ -88,11 +117,13 @@ class WorkForm extends React.Component {
 			note: revisionNote
 		};
 
+		// Shows a loading spinner in render()
 		this.setState({waiting: true});
 
 		const self = this;
 		request.post(this.props.submissionUrl)
-			.send(data).promise()
+			.send(data)
+			.promise()
 			.then((res) => {
 				if (!res.body) {
 					window.location.replace('/login');
@@ -112,6 +143,13 @@ class WorkForm extends React.Component {
 			});
 	}
 
+	/**
+	 * Renders the form component to allow the user to input
+	 * and submit data about a Work. Also shows a loading spinner
+	 * if connectivity causes a delay in submission.
+	 * @return {ReactElement} - React element corresponding to the
+	 * rendered WorkEditor component
+	 */
 	render() {
 		let aliases = null;
 		const prefillData = this.props.work;
@@ -129,8 +167,7 @@ class WorkForm extends React.Component {
 		const submitEnabled =
 			this.state.aliasesValid && this.state.dataValid;
 
-		const loadingElement =
-			this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const invalidIcon = (
 			<span>&nbsp;

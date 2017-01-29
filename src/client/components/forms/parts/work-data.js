@@ -74,8 +74,9 @@ class WorkData extends React.Component {
 			width: '100%'
 		};
 
+		const workDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={workDataVisibleClass}>
 				<h2>Add Data</h2>
 				<p className="lead">
 					Fill out any data you know about the entity.

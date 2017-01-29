@@ -1,0 +1,9 @@
+{
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "func-style": 0,
+    "react/jsx-no-bind": [2, {"allowArrowFunctions": true}]
+  }
+}

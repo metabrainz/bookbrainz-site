@@ -148,7 +148,10 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 	return (req, res, next, bbid) => {
 		if (utils.isValidBBID(bbid)) {
 			return model.forge({bbid})
-				.fetch({require: true, withRelated: relations})
+				.fetch({
+					require: true,
+					withRelated: relations
+				})
 				.then((entity) => {
 					res.locals.entity = entity.toJSON();
 

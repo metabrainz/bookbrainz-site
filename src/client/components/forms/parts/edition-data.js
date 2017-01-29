@@ -42,9 +42,10 @@ class EditionData extends React.Component {
 		if (this.release.getValue()) {
 			const edition = this.props.edition;
 
-			const releaseEventId = edition && edition.releaseEventSet &&
-			edition.releaseEventSet.releaseEvents ?
-				edition.releaseEventSet.releaseEvents[0].id : null;
+			const releaseEventId = (
+				edition && edition.releaseEventSet &&
+				edition.releaseEventSet.releaseEvents
+			) ? edition.releaseEventSet.releaseEvents[0].id : null;
 
 			releaseEvents.push({
 				id: releaseEventId,
@@ -161,8 +162,9 @@ class EditionData extends React.Component {
 
 		publicationSelect2Options.allowClear = false;
 
+		const editionDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
-			<div className={this.props.visible === false ? 'hidden' : ''}>
+			<div className={editionDataVisibleClass}>
 				<h2>Add Data</h2>
 				<p className="lead">
 					Fill out any data you know about the entity.

@@ -158,6 +158,7 @@ search.indexEntity = (entity) =>
 search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 
+/* eslint camelcase: 0, no-magic-numbers: 1 */
 search.generateIndex = async () => {
 	const indexMappings = {
 		settings: {

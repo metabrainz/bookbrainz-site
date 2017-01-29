@@ -70,11 +70,12 @@ class EditionForm extends React.Component {
 			return;
 		}
 
+		const PENULTIMATE_ELEMENT = -1;
 		const aliasData = this.aliases.getValue();
 		const editionData = this.data.getValue();
 		const revisionNote = this.revision.note.getValue();
 		const data = {
-			aliases: aliasData.slice(0, -1),
+			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
 			publicationBbid: editionData.publication,
 			publishers: editionData.publishers,
 			releaseEvents: editionData.releaseEvents,
@@ -96,7 +97,8 @@ class EditionForm extends React.Component {
 
 		const self = this;
 		request.post(this.props.submissionUrl)
-			.send(data).promise()
+			.send(data)
+			.promise()
 			.then((res) => {
 				if (!res.body) {
 					window.location.replace('/login');
@@ -133,8 +135,7 @@ class EditionForm extends React.Component {
 		const submitEnabled =
 			this.state.aliasesValid && this.state.dataValid;
 
-		const loadingElement =
-			this.state.waiting ? <LoadingSpinner/> : null;
+		const loadingElement = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const invalidIcon = (
 			<span>&nbsp;

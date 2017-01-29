@@ -19,9 +19,20 @@
 
 const React = require('react');
 const ReactDOM = require('react-dom');
-const ProfileForm = React.createFactory(
-	require('../../components/forms/profile')
-);
-const props = JSON.parse(document.getElementById('props').innerHTML);
+const Layout = require('../../containers/layout');
+const ProfileForm = require('../../components/forms/profile');
+const propHelpers = require('../../../server/helpers/props');
 
-ReactDOM.render(ProfileForm(props), document.getElementById('profileForm'));
+const propsTarget = document.getElementById('props');
+const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
+
+ReactDOM.render(
+	<Layout {...propHelpers.extractLayoutProps(props)}>
+		<ProfileForm
+			editor={props.editor}
+			genders={props.genders}
+			titles={props.titles}
+		/>
+	</Layout>,
+	document.getElementById('target')
+);

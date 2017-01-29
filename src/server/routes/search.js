@@ -86,8 +86,9 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		// TODO: This is hacky, and we should replace it once we switch to SOLR.
 		const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
 
-		if (trustedUsers.indexOf(req.user.name) === -1) {
-			throw new PermissionDeniedError();
+		const NO_MATCH = -1;
+		if (trustedUsers.indexOf(req.user.name) === NO_MATCH) {
+			throw new PermissionDeniedError(null, req);
 		}
 
 		resolve();

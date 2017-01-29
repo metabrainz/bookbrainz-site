@@ -30,9 +30,11 @@ const AchievementType = require('bookbrainz-data').AchievementType;
 const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
 const Editor = require('bookbrainz-data').Editor;
 const TitleUnlock = require('bookbrainz-data').TitleUnlock;
+const Gender = require('bookbrainz-data').Gender;
 
 const auth = require('../helpers/auth');
 const handler = require('../helpers/handler');
+const propHelpers = require('../helpers/props');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
@@ -53,10 +55,9 @@ const router = express.Router();
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch({
-			withRelated: ['area']
+			withRelated: ['area', 'gender']
 		})
 		.then((editor) => editor.toJSON());
-
 	const titleJSONPromise = new TitleUnlock()
 		.where(_.snakeCase('editorId'), parseInt(req.user.id, 10))
 		.fetchAll({
@@ -64,30 +65,41 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		})
 		.then((unlock) => {
 			let titleJSON;
-			if (unlock !== null) {
-				titleJSON = unlock.toJSON();
+			if (unlock === null) {
+				titleJSON = {};
 			}
 			else {
-				titleJSON = {};
+				titleJSON = unlock.toJSON();
 			}
 			return titleJSON;
 		});
+	const genderJSONPromise = new Gender()
+		.fetchAll()
+		.then((gender) => {
+			if (gender) {
+				return gender.toJSON();
+			}
+			return [];
+		});
 
-	Promise.join(editorJSONPromise, titleJSONPromise,
-		(editorJSON, titleJSON) => {
-			const markup =
-				ReactDOMServer.renderToString(ProfileForm({
-					editor: editorJSON,
-					titles: titleJSON
-				}));
-
-			res.render('editor/edit', {
-				props: {
-					editor: editorJSON,
-					titles: titleJSON
-				},
-				markup
+	Promise.join(editorJSONPromise, titleJSONPromise, genderJSONPromise,
+		(editorJSON, titleJSON, genderJSON) => {
+			const props = propHelpers.generateProps(req, res, {
+				editor: editorJSON,
+				titles: titleJSON,
+				genders: genderJSON
 			});
+			const script = '/js/editor/edit.js';
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<ProfileForm
+						editor={props.editor}
+						genders={props.genders}
+						titles={props.titles}
+					/>
+				</Layout>
+			);
+			res.render('target', {props, markup, script});
 		}
 	)
 		.catch(next);
@@ -101,7 +113,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 
 		// Edit is for a user other than the current one
 		throw new PermissionDeniedError(
-			'You do not have permission to edit that user'
+			'You do not have permission to edit that user', req
 		);
 	})
 		.then(() =>
@@ -112,22 +124,22 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		.then((editor) =>
 			// Modify the user to match the updates from the form
 			editor.set('bio', req.body.bio)
+				.set('areaId', req.body.areaId)
+				.set('genderId', req.body.genderId)
+				.set('birthDate', req.body.birthDate)
+				.set('name', req.body.name)
 				.save()
 		)
 		.then((editor) => {
 			let editorTitleUnlock;
-			if (!req.body.title) {
-				editorTitleUnlock = editor.set('titleUnlockId', null);
+			if (req.body.title) {
+				editorTitleUnlock = editor.set('titleUnlockId', req.body.title);
 			}
 			else {
-				editorTitleUnlock = editor.set('titleUnlockId', req.body.title);
+				editorTitleUnlock = editor.set('titleUnlockId', null);
 			}
 			return editorTitleUnlock.save();
 		})
-		.then((editor) =>
-			editor.set('areaId', req.body.areaId)
-				.save()
-		)
 		.then((editor) =>
 			editor.toJSON()
 		);
@@ -198,14 +210,21 @@ router.get('/:id', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				editor: editorJSON,
-				achievement: achievementJSON
+				achievement: achievementJSON,
+				tabActive: 0
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props} >
-					<EditorContainer tabActive={0}>
-						<ProfileTab/>
+				<Layout {...propHelpers.extractLayoutProps(props)} >
+					<EditorContainer
+						{...propHelpers.extractEditorProps(props)}
+					>
+						<ProfileTab
+							achievement={props.achievement}
+							editor={props.editor}
+							user={props.user}
+						/>
 					</EditorContainer>
 				</Layout>
 			);
@@ -248,13 +267,18 @@ router.get('/:id/revisions', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.then((editorJSON) => {
-			const props = Object.assign({}, req.app.locals, res.locals, {
-				editor: editorJSON
+			const props = propHelpers.generateProps(req, res, {
+				editor: editorJSON,
+				tabActive: 1
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<EditorContainer tabActive={1}>
-						<RevisionsTab/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EditorContainer
+						{...propHelpers.extractEditorProps(props)}
+					>
+						<RevisionsTab
+							editor={props.editor}
+						/>
 					</EditorContainer>
 				</Layout>
 			);
@@ -346,14 +370,20 @@ router.get('/:id/achievements', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = Object.assign({}, req.app.locals, res.locals, {
+			const props = propHelpers.generateProps(req, res, {
 				editor: editorJSON,
-				achievement: achievementJSON
+				achievement: achievementJSON,
+				tabActive: 2
 			});
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...props}>
-					<EditorContainer tabActive={2}>
-						<AchievementsTab/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EditorContainer
+						{...propHelpers.extractEditorProps(props)}
+					>
+						<AchievementsTab
+							achievement={props.achievement}
+							editor={props.editor}
+						/>
 					</EditorContainer>
 				</Layout>
 			);
@@ -377,7 +407,10 @@ function rankUpdate(editorId, bodyRank, rank) {
 		})
 		.then(() => {
 			let updatePromise;
-			if (bodyRank !== '') {
+			if (bodyRank === '') {
+				updatePromise = Promise.resolve(false);
+			}
+			else {
 				updatePromise = new AchievementUnlock({
 					achievementId: parseInt(bodyRank, 10),
 					editorId: parseInt(editorId, 10)
@@ -387,9 +420,6 @@ function rankUpdate(editorId, bodyRank, rank) {
 						unlock.set('profileRank', rank)
 							.save()
 					);
-			}
-			else {
-				updatePromise = Promise.resolve(false);
 			}
 			return updatePromise;
 		});

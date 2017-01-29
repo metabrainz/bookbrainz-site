@@ -44,6 +44,7 @@ rules:
     -
       enforceConst: true
       detectObjects: true
+      ignoreArrayIndexes: true
       ignore:
         - 0
         - 1
@@ -63,6 +64,7 @@ rules:
     -
       prefer:
         return: returns
+      requireReturn: false
   valid-typeof: 2
   no-unexpected-multiline: 2
 
@@ -70,7 +72,9 @@ rules:
   accessor-pairs: 2
   consistent-return: 2
   block-scoped-var: 2
-  complexity: 0
+  complexity:
+    - 1
+    - 10
   curly: 2
   default-case: 2
   dot-notation: 2
@@ -108,7 +112,7 @@ rules:
   no-octal-escape: 2
   no-octal: 2
   no-param-reassign: 2
-  no-process-env: 0
+  no-process-env: 1
   no-proto: 2
   no-redeclare: 2
   no-return-assign: 2
@@ -210,7 +214,8 @@ rules:
   lines-around-comment:
     - 2
     -
-      beforeBlockComment: false
+      allowBlockStart: true
+      beforeBlockComment: true
   key-spacing: 2
   linebreak-style: 2
   max-nested-callbacks:

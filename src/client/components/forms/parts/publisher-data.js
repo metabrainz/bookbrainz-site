@@ -103,8 +103,10 @@ class PublisherData extends React.Component {
 			width: '100%'
 		};
 
+		const publisherDataVisibleClass = this.props.visible ? '' : 'hidden';
+		const endDataHiddenClass = this.state.ended ? '' : 'hidden';
 		return (
-			<div className={this.props.visible === false ? 'hidden' : ''}>
+			<div className={publisherDataVisibleClass}>
 				<h2>Add Data</h2>
 				<p className="lead">
 					Fill out any data you know about the entity.
@@ -121,7 +123,7 @@ class PublisherData extends React.Component {
 					/>
 					<PartialDate
 						defaultValue={initialEndDate}
-						groupClassName={this.state.ended ? '' : 'hidden'}
+						groupClassName={endDataHiddenClass}
 						label="End Date"
 						labelClassName="col-md-4"
 						placeholder="YYYY-MM-DD"
@@ -217,6 +219,7 @@ class PublisherData extends React.Component {
 	}
 }
 
+/* eslint camelcase: 0 */
 PublisherData.displayName = 'PublisherData';
 PublisherData.propTypes = {
 	identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),

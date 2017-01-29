@@ -28,7 +28,7 @@ rules:
     - tab
   react/jsx-key: 2
   react/jsx-no-comment-textnodes: 2
-  react/jsx-max-props-per-line: 1
+  react/jsx-max-props-per-line: 0
   react/jsx-no-bind:
     - 1
     -

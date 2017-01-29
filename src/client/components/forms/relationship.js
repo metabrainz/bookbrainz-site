@@ -99,6 +99,7 @@ class RelationshipEditor extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 		this.handleSelect = this.handleSelect.bind(this);
 	}
+
 	/**
 	 * Creates an array of all of the information
 	 * for all relationships present on the form.
@@ -113,6 +114,7 @@ class RelationshipEditor extends React.Component {
 
 		return relationships;
 	}
+
 	/**
 	 * Submits the changed, valid relationships.
 	 * It is triggered by the onClick event of the SUBMIT button.
@@ -130,6 +132,7 @@ class RelationshipEditor extends React.Component {
 					dataHelper.getEntityLink(this.props.entity);
 			});
 	}
+
 	/**
    	* Gets a list of relationships on the form from getValue(),
 	* and adds additional information derived from
@@ -157,6 +160,7 @@ class RelationshipEditor extends React.Component {
 
 		return updatedRelationships;
 	}
+
 	/**
 	 * Swaps the source and the target
 	 * of a specified row of updated relationships.
@@ -178,6 +182,7 @@ class RelationshipEditor extends React.Component {
 			rowsSpawned
 		});
 	}
+
 	/**
 	 * This function deletes all relationships which have been selected.
 	 * Triggered by the onClick event of the DELETE SELECTED button.
@@ -193,6 +198,7 @@ class RelationshipEditor extends React.Component {
 			this.refs[idx].handleDeleteClick();
 		});
 	}
+
 	/**
 	 * This function takes in a row index, checks if it is the last relationship
 	 * and if it is, then a new row is added.
@@ -218,6 +224,7 @@ class RelationshipEditor extends React.Component {
 
 		return rowsSpawned;
 	}
+
 	/**
 	 * This takes in a row index and checks if the row has been added
      * since the form was loaded.
@@ -243,6 +250,7 @@ class RelationshipEditor extends React.Component {
 			});
 		}
 	}
+
 	/**
 	 * Gets the most current information about relationships in the form,
 	 * and saves it in the form state,
@@ -261,6 +269,7 @@ class RelationshipEditor extends React.Component {
 			rowsSpawned
 		});
 	}
+
 	/**
 	 * Takes in a row index, checks if it is selected,
 	 * and updates the state with the new number of selected relationships.
@@ -280,6 +289,7 @@ class RelationshipEditor extends React.Component {
 			numSelected: newNumSelected
 		});
 	}
+
 	/**
 	 * Checks if there are relationships which have been changed and are valid.
 	 * This affects the SUBMIT button visibility
@@ -294,6 +304,7 @@ class RelationshipEditor extends React.Component {
 
 		return changedRelationships.length > 0;
 	}
+
 	/**
    	 * Creates a display of all relationships in their current state.
 	 * Creates a SUBMIT button to submit new relationships
@@ -312,10 +323,10 @@ class RelationshipEditor extends React.Component {
 				ref={index}
 				relationship={rel}
 				relationshipTypes={
-				isRelationshipNew(
-					rel.initialTypeId, rel.initialTarget
-				) ? typesWithoutDeprecated : this.props.relationshipTypes
-			}
+					isRelationshipNew(
+						rel.initialTypeId, rel.initialTarget
+					) ? typesWithoutDeprecated : this.props.relationshipTypes
+				}
 				onChange={this.handleChange.bind(null, index)}
 				onDelete={this.deleteRowIfNew.bind(null, index)}
 				onSelect={this.handleSelect.bind(null, index)}
@@ -329,15 +340,15 @@ class RelationshipEditor extends React.Component {
 		return (
 			<div>
 				<PageHeader>
-				<span className="pull-right">
-					<Button
-						bsStyle="danger"
-						disabled={this.state.numSelected === 0}
-						onClick={this.handleBulkDelete}
-					>
-						{`Delete Selected ${numSelectedString}`}
-					</Button>
-				</span>
+					<span className="pull-right">
+						<Button
+							bsStyle="danger"
+							disabled={this.state.numSelected === 0}
+							onClick={this.handleBulkDelete}
+						>
+							{`Delete Selected ${numSelectedString}`}
+						</Button>
+					</span>
 					Relationship Editor
 				</PageHeader>
 				<Alert

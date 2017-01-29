@@ -112,15 +112,15 @@ class EntitySearch extends React.Component {
 				/* eslint prefer-template: 0 */
 				if (result.type) {
 					template = ReactDOMServer.renderToStaticMarkup(
-							<Icon name={ENTITY_TYPE_ICONS[result.type]}/>
-						) + ` ${template}`;
+						<Icon name={ENTITY_TYPE_ICONS[result.type]}/>
+					) + ` ${template}`;
 				}
 
 				if (result.disambiguation) {
 					template += ReactDOMServer.renderToStaticMarkup(
 						<span className="disambig">
-						({result.disambiguation})
-					</span>
+							({result.disambiguation})
+						</span>
 					);
 				}
 

@@ -92,8 +92,9 @@ function formatAliasModified(change) {
 		];
 	}
 
+	const REQUIRED_DEPTH = 4;
 	const aliasLanguageChanged =
-		change.path.length > 4 && change.path[3] === 'language' &&
+		change.path.length > REQUIRED_DEPTH && change.path[3] === 'language' &&
 		change.path[4] === 'name';
 	if (aliasLanguageChanged) {
 		return [
@@ -193,7 +194,8 @@ function formatIdentifierModified(change) {
 		];
 	}
 
-	if (change.path.length > 4 && change.path[3] === 'type' &&
+	const REQUIRED_DEPTH = 4;
+	if (change.path.length > REQUIRED_DEPTH && change.path[3] === 'type' &&
 			change.path[4] === 'label') {
 		return [
 			formatChange(
@@ -330,9 +332,9 @@ function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		}
 
 		const rawChangeSets = diff.changes.map((change) =>
-			formatEntityChange(diff.entity, change) ||
-			entityFormatter &&
-			entityFormatter(change)
+			formatEntityChange(diff.entity, change) || (
+				entityFormatter && entityFormatter(change)
+			)
 		);
 
 		formattedDiff.changes = _.sortBy(

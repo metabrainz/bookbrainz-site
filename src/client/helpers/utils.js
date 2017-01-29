@@ -15,25 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-const React = require('react');
-const _ = require('lodash');
-
-/**
- * Returns list of component children that have been injected with the specified
- * props (does not override existing ones)
- * @param {Object} props - The props object that contains children and will be
- * re-injected into children
- * @returns {Array} list of children
- */
-function injectChildElemsWithProps(props) {
-	'use strict';
-	const propsWithoutChild = _.omit(props, 'children');
-	return React.Children.map(props.children, (Child) => {
-		const filteredProps = Object.assign({}, propsWithoutChild, Child.props);
-		return React.cloneElement(Child, filteredProps);
-	});
-}
+const moment = require('moment');
 
 /**
  * Injects entity model object with a default alias name property.
@@ -53,5 +35,25 @@ function injectDefaultAliasName(instance) {
 	return instance;
 }
 
-exports.injectChildElemsWithProps = injectChildElemsWithProps;
+function formatDate(date, includeTime) {
+	'use strict';
+	// second condition checks if object is a Date -- avoids cross-frame issues
+	if (!date || !(Object.prototype.toString.call(date) === '[object Date]') ||
+		isNaN(date.getTime())) {
+		return null;
+	}
+	const formatter = moment(date);
+	if (includeTime) {
+		return formatter.format('YYYY-MM-DD HH:mm:ss');
+	}
+	return formatter.format('YYYY-MM-DD');
+}
+
+function isWithinDayFromNow(date) {
+	'use strict';
+	return Boolean(Date.now() - date.getTime() < 86400000);
+}
+
 exports.injectDefaultAliasName = injectDefaultAliasName;
+exports.formatDate = formatDate;
+exports.isWithinDayFromNow = isWithinDayFromNow;

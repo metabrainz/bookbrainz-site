@@ -125,17 +125,18 @@ routes(app);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	next(new NotFoundError());
+	next(new NotFoundError(null, req));
 });
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-	error.renderError(res, err);
+	error.renderError(req, res, err);
 });
 
 const debug = require('debug')('bbsite');
 
-app.set('port', process.env.PORT || 9099);
+const DEFAULT_PORT = 9099;
+app.set('port', process.env.PORT || DEFAULT_PORT);
 
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);

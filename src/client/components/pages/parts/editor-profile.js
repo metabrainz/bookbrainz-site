@@ -22,6 +22,7 @@ const React = require('react');
 
 const bootstrap = require('react-bootstrap');
 const FontAwesome = require('react-fontawesome');
+const formatDate = require('../../../helpers/utils').formatDate;
 
 const Row = bootstrap.Row;
 const Col = bootstrap.Col;
@@ -39,9 +40,14 @@ class EditorProfileTab extends React.Component {
 
 	renderBasicInfo() {
 		const {user, editor} = this.props;
-		const {cachedMetabrainzName, metabrainzUserId} = editor;
-		const createdAtDate = (new Date(editor.createdAt)).toUTCString();
-		const lastActiveDate = (new Date(editor.activeAt)).toUTCString();
+		const {cachedMetabrainzName,
+			metabrainzUserId,
+			name,
+			gender,
+			birthDate} = editor;
+		const createdAtDate = formatDate(new Date(editor.createdAt), true);
+		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
+		const birthday = formatDate(new Date(birthDate), true);
 
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {
@@ -81,8 +87,14 @@ class EditorProfileTab extends React.Component {
 					<dd>
 					{musicbrainzAccount}
 					</dd>
+					<dt>Display Name</dt>
+					<dd>{name}</dd>
+					<dt>Birth Date</dt>
+					<dd>{birthday || '?'}</dd>
 					<dt>Area</dt>
 					<dd>{editor.area ? editor.area.name : '?'}</dd>
+					<dt>Gender</dt>
+					<dd>{gender ? gender.name : '?'}</dd>
 					<dt>Type</dt>
 					<dd>{editor.type.label}</dd>
 					<dt>Reputation</dt>
@@ -151,7 +163,9 @@ class EditorProfileTab extends React.Component {
 									{model.achievement.description}
 								</p>
 								<p className="text-center">
-									{`unlocked: ${model.unlockedAt}`}
+									{`unlocked: ${formatDate(new Date(
+											model.unlockedAt
+									), true)}`}
 								</p>
 							</div>
 						</Col>

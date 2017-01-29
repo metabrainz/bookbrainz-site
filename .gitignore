@@ -5,6 +5,10 @@
 /src/client/stylesheets/bootstrap
 /src/client/stylesheets/font-awesome
 /config
+/src/client/stylesheets/bootstrap
+/src/client/stylesheets/font-awesome
+/src/client/stylesheets/react-select
+/reports
 
 ### Node ###
 # Logs

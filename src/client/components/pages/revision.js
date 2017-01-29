@@ -19,7 +19,15 @@
  */
 
 const React = require('react');
+const Row = require('react-bootstrap').Row;
+const Col = require('react-bootstrap').Col;
+const Button = require('react-bootstrap').Button;
+const Input = require('react-bootstrap').Input;
+const ListGroup = require('react-bootstrap').ListGroup;
+const ListGroupItem = require('react-bootstrap').ListGroupItem;
 const _compact = require('lodash.compact');
+const request = require('superagent-bluebird-promise');
+const formatDate = require('../../helpers/utils').formatDate;
 
 const EntityLink = require('../entity-link');
 
@@ -28,18 +36,15 @@ class RevisionPage extends React.Component {
 		if (!list) {
 			return null;
 		}
-
 		return list.map((val, idx) => (
-			<div key={idx}>{val.toString()}</div>
+			<div key={`${idx}${val}`}>{val.toString()}</div>
 		));
 	}
 
 	static formatChange(change) {
 		if (change.kind === 'N') {
 			return (
-				<tr className="success"
-					key={change.key}
-				>
+				<tr className="success" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td> — </td>
 					<td>
@@ -51,10 +56,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'E') {
 			return (
-				<tr
-					className="warning"
-					key={change.key}
-				>
+				<tr className="warning" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs)}
@@ -68,10 +70,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'D') {
 			return (
-				<tr
-					className="danger"
-					key={change.key}
-				>
+				<tr className="danger" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs)}
@@ -105,12 +104,31 @@ class RevisionPage extends React.Component {
 		return title;
 	}
 
+	constructor(props) {
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	handleSubmit(event) {
+		event.preventDefault();
+		const data = {
+			note: this.noteInput.getValue()
+		};
+		request.post(`/revision/${this.props.revision.id}/note`)
+			.send(data).promise()
+			.then(() => {
+				location.reload();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
 	render() {
-		const revision = this.props.revision;
-		const diffs = this.props.diffs;
+		const {revision, diffs, user} = this.props;
 
 		const diffDivs = diffs.map((diff) => (
-			<div key="{diff.entity.bbid}">
+			<div key={diff.entity.bbid}>
 				<h3>
 					<EntityLink
 						bbid={diff.entity.bbid}
@@ -130,18 +148,14 @@ class RevisionPage extends React.Component {
 			RevisionPage.formatTitle(revision.author);
 
 		let revisionNotes = revision.notes.map((note) => {
-			const timeCreated =
-				new Date(note.postedAt).toTimeString();
-			const dateCreated =
-				new Date(note.postedAt).toDateString();
+			const timeCreated = formatDate(new Date(note.postedAt), true);
 			const noteAuthorTitle =
 				RevisionPage.formatTitle(note.author);
 			return (
-				<div
-					className="panel panel-default"
+				<ListGroupItem
 					key={note.id}
 				>
-					<div className="panel-body">
+					<div>
 						<p>{note.content}</p>
 						<p className="text-right">
 							—&nbsp;
@@ -151,10 +165,10 @@ class RevisionPage extends React.Component {
 							>
 								{note.author.name}
 							</a>
-							, {`${timeCreated}, ${dateCreated}`}
+							, {`${timeCreated}`}
 						</p>
 					</div>
-				</div>
+				</ListGroupItem>
 			);
 		});
 
@@ -162,28 +176,51 @@ class RevisionPage extends React.Component {
 			revisionNotes = (<p> No revision notes present </p>);
 		}
 
-		const dateRevisionCreated =
-			new Date(revision.createdAt).toDateString();
+		const dateRevisionCreated = formatDate(new Date(revision.createdAt));
 
 		return (
-			<div>
-				<h1>Revision #{revision.id}</h1>
-				{diffDivs}
-				<p className="text-right">
-					Created by&nbsp;
-					<a
-						href={`/editor/${revision.author.id}`}
-						title={editorTitle}
-					>
-						{revision.author.name}
-					</a>
-					, {dateRevisionCreated}
-				</p>
+			<Row>
+				<Col md={12}>
+					<h1>Revision #{revision.id}</h1>
+					{diffDivs}
+					<p className="text-right">
+						Created by&nbsp;
+						<a
+							href={`/editor/${revision.author.id}`}
+							title={editorTitle}
+						>
+							{revision.author.name}
+						</a>
+						, {dateRevisionCreated}
+					</p>
 
-				<h3>Revision Notes</h3>
-				{revisionNotes}
-
-			</div>
+					<h3>Revision Notes</h3>
+					<ListGroup>
+						{revisionNotes}
+					</ListGroup>
+					{user &&
+						<form
+							className="margin-top-2"
+							onSubmit={this.handleSubmit}
+						>
+							<Input
+								label="Add Note"
+								ref={(ref) => this.noteInput = ref}
+								rows="6"
+								type="textarea"
+							/>
+							<Button
+								bsStyle="primary"
+								className="pull-right margin-top-1"
+								title="Submit revision note"
+								type="submit"
+							>
+								Submit
+							</Button>
+						</form>
+					}
+				</Col>
+			</Row>
 		);
 	}
 }
@@ -191,7 +228,8 @@ class RevisionPage extends React.Component {
 RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: React.PropTypes.any.isRequired,
-	revision: React.PropTypes.any.isRequired
+	revision: React.PropTypes.any.isRequired,
+	user: React.PropTypes.object
 };
 
 module.exports = RevisionPage;

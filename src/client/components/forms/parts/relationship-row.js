@@ -45,8 +45,8 @@ function renderRelationship(relationship) {
 			relationship.target
 		].map((entity) => {
 			// Linkify source and target based on default alias
-			const name = entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)';
+			const name =
+				entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 			return `<a href="${dataHelper.getEntityLink(entity)}">${name}</a>`;
 		})
 	};
@@ -88,7 +88,10 @@ class RelationshipRow extends React.Component {
 	}
 
 	swap() {
-		this.setState({a: this.state.b, b: this.state.a});
+		this.setState({
+			a: this.state.b,
+			b: this.state.a
+		});
 	}
 
 	handleDeleteClick() {
@@ -212,8 +215,8 @@ class RelationshipRow extends React.Component {
 				return null;
 			}
 
-			entity.text = entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)';
+			entity.text =
+				entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 			entity.id = entity.bbid;
 
 			return entity;
@@ -262,9 +265,9 @@ class RelationshipRow extends React.Component {
 		if (currentType && currentType.deprecated) {
 			deprecationWarning = (
 				<span className="text-danger">
-				<Icon name="warning"/>&nbsp;
+					<Icon name="warning"/>&nbsp;
 					Relationship type deprecated &mdash; please avoid!
-			</span>
+				</span>
 			);
 		}
 
@@ -341,8 +344,7 @@ class RelationshipRow extends React.Component {
 										null : swapButton
 								}
 								{
-									this.disabled() ?
-										null : deleteOrResetButton
+									this.disabled() ? null : deleteOrResetButton
 								}
 							</div>
 

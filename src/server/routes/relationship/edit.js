@@ -50,8 +50,10 @@ const relationshipHelper = {};
 function getEntityByType(entity, withRelated, transacting) {
 	const model = utils.getEntityModelByType(entity.type);
 
-	return model.forge({bbid: entity.bbid})
-		.fetch({withRelated, transacting});
+	return model.forge({bbid: entity.bbid}).fetch({
+		withRelated,
+		transacting
+	});
 }
 
 function copyRelationshipsAndAdd(

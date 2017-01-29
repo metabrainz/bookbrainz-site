@@ -50,4 +50,24 @@ data.identifierIsValid = (typeId, value, identifierTypes) => {
 	return false;
 };
 
+data.guessIdentifierType = (value, identifierTypes) => {
+	'use strict';
+
+	if (!value) {
+		return null;
+	}
+
+	return identifierTypes.find((type) => {
+		if (type.detectionRegex) {
+			const detectionRegex = new RegExp(type.detectionRegex);
+			const regexResult = detectionRegex.exec(value);
+
+			if (regexResult) {
+				return true;
+			}
+		}
+		return false;
+	});
+};
+
 module.exports = data;

@@ -68,8 +68,9 @@ class PublicationData extends React.Component {
 			width: '100%'
 		};
 
+		const publicationDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
-			<div className={(this.props.visible === false) ? 'hidden' : ''}>
+			<div className={publicationDataVisibleClass}>
 				<h2>Add Data</h2>
 				<p className="lead">
 					Fill out any data you know about the entity.
