@@ -7,17 +7,20 @@ env:
 plugins:
   - react
 rules:
-  no-extra-parens:
-    - 0
-    - all
   react/display-name:
-      - 2
-      -
-          ignoreTranspilerName: true
+    - 2
+    -
+      ignoreTranspilerName: true
+  react/forbid-component-props: 0
+  react/no-children-prop: 2
+  react/no-danger-with-children: 2
   react/no-deprecated: 2
   react/no-find-dom-node: 2
   react/no-render-return-value: 2
+  react/no-unescaped-entities: 1
+  react/no-unused-prop-types: 1
   react/require-render-return: 2
+  react/style-prop-object: 2
   react/jsx-boolean-value: 2
   react/jsx-closing-bracket-location:
     - 2
@@ -41,6 +44,12 @@ rules:
   react/jsx-no-undef: 2
   react/jsx-pascal-case: 2
   react/jsx-no-target-blank: 2
+  react/jsx-tag-spacing:
+    - 2
+    -
+      beforeSelfClosing: never
+  react/no-array-index-key: 1
+  react/require-default-props: 1
   jsx-quotes: 2
   react/sort-prop-types:
     - 2
@@ -70,7 +79,7 @@ rules:
   react/react-in-jsx-scope: 2
   react/self-closing-comp: 2
   react/sort-comp: 2
-  react/jsx-wrap-multilines: 2
+  react/jsx-wrap-multilines: 1
   react/prefer-es6-class:
       - 1
       - always

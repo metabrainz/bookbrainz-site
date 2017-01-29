@@ -11,7 +11,11 @@ env:
   es6: true
 rules:
   arrow-body-style: 2
+  class-methods-use-this: 1
   comma-dangle: 2
+  func-call-spacing:
+    - 2
+  lines-around-directive: 1
   no-case-declarations: 2
   no-cond-assign:
     - 2
@@ -28,12 +32,14 @@ rules:
   no-ex-assign: 2
   no-extra-boolean-cast: 2
   no-extra-parens:
-    - 2
+    - 1
     - all
     -
       nestedBinaryExpressions: false
+      ignoreJSX: multi-line
   no-extra-semi: 2
   no-func-assign: 2
+  no-global-assign: 2
   no-inner-declarations:
     - 2
     - both
@@ -56,8 +62,14 @@ rules:
   no-prototype-builtins: 2
   no-regex-spaces: 2
   no-sparse-arrays: 2
+  no-template-curly-in-string: 2
   no-unreachable: 2
   no-unsafe-finally: 2
+  no-unsafe-negation: 2
+  prefer-numeric-literals: 2
+  prefer-destructuring: 1
+  prefer-promise-reject-errors: 2
+  sort-keys: 1
   use-isnan: 2
   valid-jsdoc:
     - 2
@@ -84,7 +96,9 @@ rules:
   eqeqeq:
     - 2
     - allow-null
+  func-name-matching: 1
   no-alert: 2
+  no-await-in-loop: 1
   no-caller: 2
   no-div-regex: 2
   no-else-return: 2
@@ -116,6 +130,7 @@ rules:
   no-proto: 2
   no-redeclare: 2
   no-return-assign: 2
+  no-return-await: 2
   no-script-url: 2
   no-self-compare: 2
   no-sequences: 2
@@ -123,6 +138,8 @@ rules:
   no-unused-labels: 2
   no-useless-call: 2
   no-useless-concat: 2
+  no-useless-escape: 1
+  no-useless-return: 2
   no-void: 2
   no-warning-comments: 1
   no-with: 2
