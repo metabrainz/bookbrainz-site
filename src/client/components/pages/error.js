@@ -24,51 +24,50 @@ const Row = require('react-bootstrap').Row;
  * Links to different pages
  */
 
-class ErrorPage extends React.Component {
+function ErrorPage(props) {
+	'use strict';
 
-	render() {
-		const {error} = this.props;
-		let detailedMessage = error.detailedMessage;
-		if (typeof detailedMessage === 'string') {
-			detailedMessage = [detailedMessage];
-		}
-
-		/* to-do: Adjust margins for error status title and message once image
-		   is added in
-		*/
-		return (
-			<Grid className="text-center">
-				<Row className="margin-bottom-6">
-					<h1>{error.status}</h1>
-				</Row>
-				<Row className="margin-top-6 margin-bottom-1">
-					<p className="lead">
-						<b>{error.message}</b>
-					</p>
-				</Row>
-				<div>
-					{detailedMessage &&
-						detailedMessage.map((message, idx) =>
-							<Row key={`detailedMsg${idx}`}>
-								<span>
-									{message}
-								</span>
-							</Row>
-						)
-					}
-				</div>
-				<Row className="margin-top-1">
-					<Button
-						bsSize="small"
-						bsStyle="link"
-						href="/"
-					>
-						Return to Main Page
-					</Button>
-				</Row>
-			</Grid>
-		);
+	const {error} = props;
+	let detailedMessage = error.detailedMessage;
+	if (typeof detailedMessage === 'string') {
+		detailedMessage = [detailedMessage];
 	}
+
+	/* to-do: Adjust margins for error status title and message once image
+	   is added in
+	*/
+	return (
+		<Grid className="text-center">
+			<Row className="margin-bottom-6">
+				<h1>{error.status}</h1>
+			</Row>
+			<Row className="margin-top-6 margin-bottom-1">
+				<p className="lead">
+					<b>{error.message}</b>
+				</p>
+			</Row>
+			<div>
+				{detailedMessage &&
+					detailedMessage.map((message, idx) =>
+						<Row key={`detailedMsg${idx}`}>
+							<span>
+								{message}
+							</span>
+						</Row>
+					)
+				}
+			</div>
+			<Row className="margin-top-1">
+				<Button
+					bsSize="small"
+					bsStyle="link"
+					href="/"
+				>
+					Return to Main Page
+				</Button>
+			</Row>
+		</Grid>
+	);
 }
 ErrorPage.displayName = 'ErrorPage';
 ErrorPage.propTypes = {

@@ -27,60 +27,59 @@ const Col = bootstrap.Col;
 const Nav = bootstrap.Nav;
 const NavItem = bootstrap.NavItem;
 
-class EditorContainer extends React.Component {
+function EditorContainer(props) {
+	'use strict';
 
-	render() {
-		const {tabActive, editor, children} = this.props;
+	const {tabActive, editor, children} = this.props;
 
-		return (
-			<div>
-				<Row>
-					<Col md={12}>
-						{editor.title ?
-						<div>
-							<a
-								href=" "
-								title={editor.title.description}
-							>
-								<h1>
-									{`${editor.title.title} ${editor.name}`}
-								</h1>
-							</a>
-						</div> :
-						<h1>
-							{editor.name}
-						</h1>
-						}
-					</Col>
-				</Row>
-				<Row>
-					<Col md={12}>
-						<Nav bsStyle="tabs">
-							<NavItem
-								active={tabActive === 0}
-								href={`/editor/${editor.id}`}
-							>
-								Profile
-							</NavItem>
-							<NavItem
-								active={tabActive === 1}
-								href={`/editor/${editor.id}/revisions`}
-							>
-								Revisions
-							</NavItem>
-							<NavItem
-								active={tabActive === 2}
-								href={`/editor/${editor.id}/achievements`}
-							>
-								Achievements
-							</NavItem>
-						</Nav>
-					</Col>
-				</Row>
-				{children}
-			</div>
-		);
-	}
+	return (
+		<div>
+			<Row>
+				<Col md={12}>
+					{editor.title ?
+					<div>
+						<a
+							href=" "
+							title={editor.title.description}
+						>
+							<h1>
+								{`${editor.title.title} ${editor.name}`}
+							</h1>
+						</a>
+					</div> :
+					<h1>
+						{editor.name}
+					</h1>
+					}
+				</Col>
+			</Row>
+			<Row>
+				<Col md={12}>
+					<Nav bsStyle="tabs">
+						<NavItem
+							active={tabActive === 0}
+							href={`/editor/${editor.id}`}
+						>
+							Profile
+						</NavItem>
+						<NavItem
+							active={tabActive === 1}
+							href={`/editor/${editor.id}/revisions`}
+						>
+							Revisions
+						</NavItem>
+						<NavItem
+							active={tabActive === 2}
+							href={`/editor/${editor.id}/achievements`}
+						>
+							Achievements
+						</NavItem>
+					</Nav>
+				</Col>
+			</Row>
+			{children}
+		</div>
+	);
 }
 
 EditorContainer.displayName = 'EditorContainer';

@@ -27,45 +27,43 @@ const isWithinDayFromNow = require('../../../helpers/utils').isWithinDayFromNow;
 const ListGroup = bootstrap.ListGroup;
 const ListGroupItem = bootstrap.ListGroupItem;
 
-class EditorRevisionsTab extends React.Component {
+function EditorRevisionsTab(props) {
+	'use strict';
 
-	render() {
-		const {editor} = this.props;
-		const revisions = editor.revisions;
+	const {editor} = props;
+	const revisions = editor.revisions;
 
-		return (
-			<div>
-				<h2>Revision History</h2>
-				<ListGroup>
-					{revisions.map((revision) => {
-						const createdDate = new Date(revision.createdAt);
-						const dateLabel =
-							formatDate(createdDate,
-								isWithinDayFromNow(createdDate));
-						const header = (
-							<h4 className="list-group-item-heading">
-								<small className="pull-right">
-									{`${editor.name} - ${dateLabel}`}
-								</small>
-								{`r${revision.id}`}
-							</h4>
-						);
-						return (
-						<ListGroupItem
-							href={`/revision/${revision.id}`}
-							key={`${editor.id}${revision.id}`}
-						>
-							{header}
-							{revision.note}
-						</ListGroupItem>
-						);
-					})}
-				</ListGroup>
-			</div>
-		);
-	}
+	return (
+		<div>
+			<h2>Revision History</h2>
+			<ListGroup>
+				{revisions.map((revision) => {
+					const createdDate = new Date(revision.createdAt);
+					const dateLabel =
+						formatDate(createdDate,
+							isWithinDayFromNow(createdDate));
+					const header = (
+						<h4 className="list-group-item-heading">
+							<small className="pull-right">
+								{`${editor.name} - ${dateLabel}`}
+							</small>
+							{`r${revision.id}`}
+						</h4>
+					);
+					return (
+					<ListGroupItem
+						href={`/revision/${revision.id}`}
+						key={`${editor.id}${revision.id}`}
+					>
+						{header}
+						{revision.note}
+					</ListGroupItem>
+					);
+				})}
+			</ListGroup>
+		</div>
+	);
 }
-
 EditorRevisionsTab.displayName = 'EditorRevisionsTab';
 EditorRevisionsTab.propTypes = {
 	editor: React.PropTypes.shape({
