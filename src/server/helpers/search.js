@@ -263,18 +263,18 @@ search.generateIndex = async () => {
 	];
 
 	// Update the indexed entries for each entity type
-	for (const behavior of entityBehaviors) {
-		const collection = await behavior.model.forge()
-			.fetchAll({
-				withRelated: baseRelations.concat(behavior.relations)
-			});
-
-		const entities = collection.toJSON();
-
-		for (const entity of entities) {
-			await search.indexEntity(entity);
-		}
-	}
+	const behaviorPromise = entityBehaviors.map((behavior) =>
+		behavior.model.forge().fetchAll({
+			withRelated: baseRelations.concat(behavior.relations)
+		})
+	);
+	const entityLists = await Promise.all(behaviorPromise);
+	const indexedEntities = entityLists.map((entityList) =>
+		Promise.all(entityList.toJSON().map((entity) =>
+			search.indexEntity(entity)
+		))
+	);
+	await Promise.all(indexedEntities);
 
 	const areaCollection = await Area.forge()
 		// countries only
@@ -282,10 +282,8 @@ search.generateIndex = async () => {
 		.fetchAll();
 
 	const areas = areaCollection.toJSON();
-
-	for (const area of areas) {
-		await search.indexArea(area);
-	}
+	const indexedAreas = areas.map((area) => search.indexArea(area));
+	await Promise.all(indexedAreas);
 
 	await search.refreshIndex();
 };
