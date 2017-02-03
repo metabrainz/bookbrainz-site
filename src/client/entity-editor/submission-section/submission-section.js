@@ -82,9 +82,9 @@ function SubmissionSection({
 SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	errorText: React.PropTypes.node,
-	submissionUrl: React.PropTypes.string,
 	onNoteChange: React.PropTypes.func,
-	onSubmitClick: React.PropTypes.func
+	onSubmitClick: React.PropTypes.func,
+	submissionUrl: React.PropTypes.string
 };
 
 function submit(url, data) {
@@ -114,8 +114,8 @@ function submit(url, data) {
 function mapStateToProps(rootState, {submissionUrl}) {
 	const state = rootState.get('submissionSection');
 	return {
-		onSubmitClick: () => submit(submissionUrl, rootState),
-		errorText: state.get('submitError')
+		errorText: state.get('submitError'),
+		onSubmitClick: () => submit(submissionUrl, rootState)
 	};
 }
 

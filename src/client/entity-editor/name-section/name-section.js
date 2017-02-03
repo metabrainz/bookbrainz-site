@@ -125,11 +125,11 @@ NameSection.propTypes = {
 	languageOptions: React.PropTypes.array,
 	languageValue: React.PropTypes.string,
 	nameValue: React.PropTypes.string,
-	sortNameValue: React.PropTypes.string,
 	onDisambiguationChange: React.PropTypes.func,
 	onLanguageChange: React.PropTypes.func,
 	onNameChange: React.PropTypes.func,
-	onSortNameChange: React.PropTypes.func
+	onSortNameChange: React.PropTypes.func,
+	sortNameValue: React.PropTypes.string
 };
 
 
@@ -147,13 +147,13 @@ function mapStateToProps(rootState) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onSortNameChange: (event) =>
-			dispatch(debouncedUpdateSortNameField(event.target.value)),
+		onDisambiguationChange: (event) =>
+			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
+		onLanguageChange: (value) => dispatch(updateLanguageField(value.value)),
 		onNameChange: (event) =>
 			dispatch(debouncedUpdateNameField(event.target.value)),
-		onLanguageChange: (value) => dispatch(updateLanguageField(value.value)),
-		onDisambiguationChange: (event) =>
-			dispatch(debouncedUpdateDisambiguationField(event.target.value))
+		onSortNameChange: (event) =>
+			dispatch(debouncedUpdateSortNameField(event.target.value))
 	};
 }
 

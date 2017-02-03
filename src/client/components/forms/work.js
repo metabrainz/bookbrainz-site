@@ -44,9 +44,9 @@ class WorkForm extends React.Component {
 		super(props);
 
 		this.state = {
-			tab: 1,
 			aliasesValid: true,
 			dataValid: true,
+			tab: 1,
 			waiting: false
 		};
 
@@ -64,9 +64,9 @@ class WorkForm extends React.Component {
 	 */
 	handleTabSelect(tab) {
 		this.setState({
-			tab,
 			aliasesValid: this.aliases.valid(),
-			dataValid: this.data.valid()
+			dataValid: this.data.valid(),
+			tab
 		});
 	}
 
@@ -107,14 +107,14 @@ class WorkForm extends React.Component {
 		const PENULTIMATE_ELEMENT = -1;
 		const data = {
 			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
+			annotation: workData.annotation,
+			disambiguation: workData.disambiguation,
+			identifiers: workData.identifiers,
 			languages: workData.languages.map(
 				(languageId) => parseInt(languageId, 10)
 			),
-			typeId: parseInt(workData.workType, 10),
-			disambiguation: workData.disambiguation,
-			annotation: workData.annotation,
-			identifiers: workData.identifiers,
-			note: revisionNote
+			note: revisionNote,
+			typeId: parseInt(workData.workType, 10)
 		};
 
 		// Shows a loading spinner in render()
@@ -155,12 +155,12 @@ class WorkForm extends React.Component {
 		const prefillData = this.props.work;
 		if (prefillData) {
 			aliases = prefillData.aliasSet.aliases.map((alias) => ({
+				default: alias.id === prefillData.defaultAlias.id,
 				id: alias.id,
-				name: alias.name,
-				sortName: alias.sortName,
 				languageId: alias.languageId,
+				name: alias.name,
 				primary: alias.primary,
-				default: alias.id === prefillData.defaultAlias.id
+				sortName: alias.sortName
 			}));
 		}
 

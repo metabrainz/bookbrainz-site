@@ -29,8 +29,8 @@ export function isAliasEmpty(nameValue, sortNameValue) {
 
 export function createRootReducer(entityReducerKey, entityReducer) {
 	return combineReducers({
-		buttonBar: buttonBarReducer,
 		aliasEditor: aliasEditorReducer,
+		buttonBar: buttonBarReducer,
 		[entityReducerKey]: entityReducer,
 		identifierEditor: identifierEditorReducer,
 		nameSection: nameSectionReducer,

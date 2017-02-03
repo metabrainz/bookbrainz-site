@@ -55,7 +55,7 @@ rules:
     - 2
     -
       ignoreCase: false
-      callbacksLast: true
+      callbacksLast: false
       requiredFirst: false
   react/jsx-sort-props:
     - 2

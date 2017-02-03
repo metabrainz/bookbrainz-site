@@ -178,12 +178,12 @@ function truncateTables(Bookshelf, tables) {
 }
 
 module.exports = {
+	createEntityPageTitle,
 	getEntityLink,
-	getEntityModels,
 	getEntityModelByType,
+	getEntityModels,
+	incrementEditorEditCountById,
 	isValidBBID,
 	template,
-	createEntityPageTitle,
-	incrementEditorEditCountById,
 	truncateTables
 };

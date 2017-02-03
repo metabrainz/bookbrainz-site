@@ -7,16 +7,16 @@ const SauceLabs = require('saucelabs');
 
 exports.command = function command() {
 	const saucelabs = new SauceLabs({
-		username: process.env.SAUCE_USERNAME,
-		password: process.env.SAUCE_ACCESS_KEY
+		password: process.env.SAUCE_ACCESS_KEY,
+		username: process.env.SAUCE_USERNAME
 	});
 
 	const sessionid = this.capabilities['webdriver.remote.sessionid'];
 	const jobName = this.currentTest.name;
 
 	saucelabs.updateJob(sessionid, {
-		passed: this.currentTest.results.failed === 0,
-		name: jobName
+		name: jobName,
+		passed: this.currentTest.results.failed === 0
 	}, () => {
 		// empty
 	});

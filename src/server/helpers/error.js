@@ -177,14 +177,14 @@ class AwardNotUnlockedError extends Error {
 
 const errors = {
 	AuthenticationFailedError,
+	AwardNotUnlockedError,
 	FormSubmissionError,
 	NotAuthenticatedError,
 	NotFoundError,
 	PermissionDeniedError,
 	SiteError,
 	renderError,
-	sendErrorAsJSON,
-	AwardNotUnlockedError
+	sendErrorAsJSON
 };
 
 module.exports = errors;

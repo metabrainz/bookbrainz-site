@@ -179,12 +179,12 @@ CreatorSection.propTypes = {
 	genderOptions: React.PropTypes.array,
 	genderShow: React.PropTypes.bool,
 	genderValue: React.PropTypes.number,
-	typeValue: React.PropTypes.number,
 	onBeginDateChange: React.PropTypes.func,
 	onEndDateChange: React.PropTypes.func,
 	onEndedChange: React.PropTypes.func,
 	onGenderChange: React.PropTypes.func,
-	onTypeChange: React.PropTypes.func
+	onTypeChange: React.PropTypes.func,
+	typeValue: React.PropTypes.number
 };
 
 function mapStateToProps(rootState, {creatorTypes}) {
@@ -202,11 +202,11 @@ function mapStateToProps(rootState, {creatorTypes}) {
 		beginDateLabel,
 		beginDateValue: state.get('beginDate'),
 		endDateLabel,
-		endedLabel,
-		endedChecked: state.get('ended'),
 		endDateValue: state.get('endDate'),
-		genderValue: state.get('gender'),
+		endedChecked: state.get('ended'),
+		endedLabel,
 		genderShow: singular,
+		genderValue: state.get('gender'),
 		typeValue
 	};
 }

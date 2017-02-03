@@ -40,17 +40,17 @@ class ProfileForm extends React.Component {
 		super(props);
 
 		this.state = {
-			bio: props.editor.bio,
-			title: toString(props.editor.titleUnlockId),
 			area: props.editor.area ?
-				props.editor.area : null,
-			name: props.editor.name,
-			gender: props.editor.gender ?
-				props.editor.gender : null,
+			props.editor.area : null,
+			bio: props.editor.bio,
 			birthDate: props.editor.birthDate ?
 				formatDate(new Date(props.editor.birthDate)) : null,
-			titles: props.titles,
+			gender: props.editor.gender ?
+				props.editor.gender : null,
 			genders: props.genders,
+			name: props.editor.name,
+			title: toString(props.editor.titleUnlockId),
+			titles: props.titles,
 			waiting: false
 		};
 
@@ -72,13 +72,13 @@ class ProfileForm extends React.Component {
 		const birthDate = this.birthDate.getValue();
 
 		const data = {
-			genderId: gender ? parseInt(gender, 10) : null,
 			areaId: area ? parseInt(area.id, 10) : null,
 			bio,
-			title,
-			name,
+			birthDate,
+			genderId: gender ? parseInt(gender, 10) : null,
 			id: this.props.editor.id,
-			birthDate
+			name,
+			title
 		};
 
 		request.post('/editor/edit/handler')
@@ -97,8 +97,8 @@ class ProfileForm extends React.Component {
 		const loadingElement =
 			this.state.waiting ? <LoadingSpinner/> : null;
 		const select2Options = {
-			width: '100%',
-			allowClear: true
+			allowClear: true,
+			width: '100%'
 		};
 		const genderOptions = this.state.genders.map((gender) => ({
 			id: gender.id,
@@ -201,13 +201,13 @@ class ProfileForm extends React.Component {
 ProfileForm.displayName = 'ProfileForm';
 ProfileForm.propTypes = {
 	editor: React.PropTypes.shape({
-		id: React.PropTypes.number,
 		area: validators.labeledProperty,
 		bio: React.PropTypes.string,
 		birthDate: React.PropTypes.object,
 		gender: React.PropTypes.shape({
 			id: React.PropTypes.number
 		}),
+		id: React.PropTypes.number,
 		name: React.PropTypes.string,
 		titleUnlockId: React.PropTypes.number
 	}),

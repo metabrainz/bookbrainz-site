@@ -67,9 +67,9 @@ function EditorRevisionsTab(props) {
 EditorRevisionsTab.displayName = 'EditorRevisionsTab';
 EditorRevisionsTab.propTypes = {
 	editor: React.PropTypes.shape({
-		revisions: React.PropTypes.array,
+		id: React.PropTypes.number,
 		name: React.PropTypes.string,
-		id: React.PropTypes.number
+		revisions: React.PropTypes.array
 	})
 };
 

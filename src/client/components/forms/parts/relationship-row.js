@@ -363,19 +363,19 @@ RelationshipRow.propTypes = {
 	entity: React.PropTypes.shape({
 		bbid: React.PropTypes.string
 	}),
-	relationship: React.PropTypes.shape({
-		source: React.PropTypes.object,
-		target: React.PropTypes.object,
-		typeId: React.PropTypes.number,
-		initialSource: React.PropTypes.object,
-		initialTarget: React.PropTypes.object,
-		initialTypeId: React.PropTypes.number
-	}),
-	relationshipTypes: React.PropTypes.arrayOf(validators.labeledProperty),
 	onChange: React.PropTypes.func,
 	onDelete: React.PropTypes.func,
 	onSelect: React.PropTypes.func,
-	onSwap: React.PropTypes.func
+	onSwap: React.PropTypes.func,
+	relationship: React.PropTypes.shape({
+		initialSource: React.PropTypes.object,
+		initialTarget: React.PropTypes.object,
+		initialTypeId: React.PropTypes.number,
+		source: React.PropTypes.object,
+		target: React.PropTypes.object,
+		typeId: React.PropTypes.number
+	}),
+	relationshipTypes: React.PropTypes.arrayOf(validators.labeledProperty)
 };
 
 module.exports = RelationshipRow;

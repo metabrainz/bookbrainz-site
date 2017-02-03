@@ -36,8 +36,8 @@ class RegistrationForm extends React.Component {
 
 		this.state = {
 			error: null,
-			waiting: false,
-			valid: this.isValid()
+			valid: this.isValid(),
+			waiting: false
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,9 +50,9 @@ class RegistrationForm extends React.Component {
 		const gender = this.gender.getValue();
 		const birthday = this.birthday.getValue();
 		const data = {
+			birthday: birthday || null,
 			displayName: this.displayName.getValue(),
-			gender: gender ? parseInt(gender, 10) : null,
-			birthday: birthday || null
+			gender: gender ? parseInt(gender, 10) : null
 		};
 
 		this.setState({

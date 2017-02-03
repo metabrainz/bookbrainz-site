@@ -69,7 +69,7 @@ rules:
   prefer-numeric-literals: 2
   prefer-destructuring: 1
   prefer-promise-reject-errors: 2
-  sort-keys: 1
+  sort-keys: 2
   use-isnan: 2
   valid-jsdoc:
     - 2

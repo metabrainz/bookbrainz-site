@@ -40,8 +40,8 @@ async function _linkMBAccount(bbUserJSON, mbUserJSON) {
 		.fetch({require: true});
 
 	return fetchedEditor.save({
-		metabrainzUserId: mbUserJSON.metabrainz_user_id,
-		cachedMetabrainzName: mbUserJSON.sub
+		cachedMetabrainzName: mbUserJSON.sub,
+		metabrainzUserId: mbUserJSON.metabrainz_user_id
 	});
 }
 
@@ -58,8 +58,8 @@ auth.init = (app) => {
 	passport.use(new MusicBrainzOAuth2Strategy(
 		_.assign(
 			{
-				scope: 'profile',
-				passReqToCallback: true
+				passReqToCallback: true,
+				scope: 'profile'
 			}, config.musicbrainz
 		),
 		async (req, accessToken, refreshToken, profile, done) => {

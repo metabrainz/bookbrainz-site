@@ -34,9 +34,9 @@ class PublisherForm extends React.Component {
 		super(props);
 
 		this.state = {
-			tab: 1,
 			aliasesValid: true,
 			dataValid: true,
+			tab: 1,
 			waiting: false
 		};
 
@@ -49,9 +49,9 @@ class PublisherForm extends React.Component {
 
 	handleTabSelect(tab) {
 		this.setState({
-			tab,
 			aliasesValid: this.aliases.valid(),
-			dataValid: this.data.valid()
+			dataValid: this.data.valid(),
+			tab
 		});
 	}
 
@@ -75,16 +75,16 @@ class PublisherForm extends React.Component {
 		const revisionNote = this.revision.note.getValue();
 		const PENULTIMATE_ELEMENT = -1;
 		const data = {
-			areaId: parseInt(publisherData.area, 10),
 			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
+			annotation: publisherData.annotation,
+			areaId: parseInt(publisherData.area, 10),
 			beginDate: publisherData.beginDate,
+			disambiguation: publisherData.disambiguation,
 			endDate: publisherData.endDate,
 			ended: publisherData.ended,
-			typeId: parseInt(publisherData.publisherType, 10),
-			disambiguation: publisherData.disambiguation,
-			annotation: publisherData.annotation,
 			identifiers: publisherData.identifiers,
-			note: revisionNote
+			note: revisionNote,
+			typeId: parseInt(publisherData.publisherType, 10)
 		};
 
 		this.setState({waiting: true});
@@ -116,12 +116,12 @@ class PublisherForm extends React.Component {
 		const prefillData = this.props.publisher;
 		if (prefillData) {
 			aliases = prefillData.aliasSet.aliases.map((alias) => ({
+				default: alias.id === prefillData.defaultAlias.id,
 				id: alias.id,
-				name: alias.name,
-				sortName: alias.sortName,
 				languageId: alias.languageId,
+				name: alias.name,
 				primary: alias.primary,
-				default: alias.id === prefillData.defaultAlias.id
+				sortName: alias.sortName
 			}));
 		}
 

@@ -31,8 +31,8 @@ export const UPDATE_ENDED = 'UPDATE_ENDED';
  **/
 export function updateGender(newGenderId) {
 	return {
-		type: UPDATE_GENDER,
-		payload: newGenderId
+		payload: newGenderId,
+		type: UPDATE_GENDER
 	};
 }
 
@@ -45,8 +45,8 @@ export function updateGender(newGenderId) {
  **/
 export function updateType(newTypeId) {
 	return {
-		type: UPDATE_TYPE,
-		payload: newTypeId
+		payload: newTypeId,
+		type: UPDATE_TYPE
 	};
 }
 
@@ -61,8 +61,8 @@ export function updateType(newTypeId) {
 export function debouncedUpdateBeginDate(newBeginDate) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_BEGIN_DATE,
-		payload: newBeginDate
+		payload: newBeginDate,
+		type: UPDATE_BEGIN_DATE
 	};
 }
 
@@ -77,8 +77,8 @@ export function debouncedUpdateBeginDate(newBeginDate) {
 export function debouncedUpdateEndDate(newEndDate) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_END_DATE,
-		payload: newEndDate
+		payload: newEndDate,
+		type: UPDATE_END_DATE
 	};
 }
 
@@ -91,7 +91,7 @@ export function debouncedUpdateEndDate(newEndDate) {
  **/
 export function updateEnded(newEnded) {
 	return {
-		type: UPDATE_ENDED,
-		payload: newEnded
+		payload: newEnded,
+		type: UPDATE_ENDED
 	};
 }

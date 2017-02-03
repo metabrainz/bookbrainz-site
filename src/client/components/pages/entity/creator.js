@@ -49,12 +49,12 @@ CreatorPage.propTypes = {
 };
 CreatorPage.getAttributes = (entity) => ([
 	getTypeAttribute(entity.creatorType),
-	{title: 'Gender', data: extractAttribute(entity.gender, 'name')},
+	{data: extractAttribute(entity.gender, 'name'), title: 'Gender'},
 	{
-		title: 'Begin Area',
-		data: extractAttribute(entity.beginArea, 'name')
+		data: extractAttribute(entity.beginArea, 'name'),
+		title: 'Begin Area'
 	},
-	{title: 'End Area', data: extractAttribute(entity.endArea, 'name')},
+	{data: extractAttribute(entity.endArea, 'name'), title: 'End Area'},
 	getDateAttributes(entity)
 ]);
 

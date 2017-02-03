@@ -49,8 +49,8 @@ export function addIdentifierRow() {
 	/* Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
 	 * of existing identifiers. */
 	return {
-		type: ADD_IDENTIFIER_ROW,
-		payload: `n${nextIdentifierRowId++}`
+		payload: `n${nextIdentifierRowId++}`,
+		type: ADD_IDENTIFIER_ROW
 	};
 }
 
@@ -63,8 +63,8 @@ export function addIdentifierRow() {
  **/
 export function removeIdentifierRow(rowId) {
 	return {
-		type: REMOVE_IDENTIFIER_ROW,
-		payload: rowId
+		payload: rowId,
+		type: REMOVE_IDENTIFIER_ROW
 	};
 }
 
@@ -84,12 +84,12 @@ export function removeIdentifierRow(rowId) {
 export function debouncedUpdateIdentifierValue(rowId, value, suggestedType) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_IDENTIFIER_VALUE,
 		payload: {
 			rowId,
 			suggestedType,
 			value
-		}
+		},
+		type: UPDATE_IDENTIFIER_VALUE
 	};
 }
 
@@ -103,10 +103,10 @@ export function debouncedUpdateIdentifierValue(rowId, value, suggestedType) {
  **/
 export function updateIdentifierType(rowId, value) {
 	return {
-		type: UPDATE_IDENTIFIER_TYPE,
 		payload: {
 			rowId,
 			value
-		}
+		},
+		type: UPDATE_IDENTIFIER_TYPE
 	};
 }

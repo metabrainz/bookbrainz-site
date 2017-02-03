@@ -47,14 +47,14 @@ class PublisherData extends React.Component {
 	getValue() {
 		const area = this.area.getValue();
 		return {
+			annotation: this.annotation.getValue(),
 			area: area ? area.id : null,
 			beginDate: this.begin.getValue(),
+			disambiguation: this.disambiguation.getValue(),
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
-			publisherType: this.publisherType.getValue(),
-			disambiguation: this.disambiguation.getValue(),
-			annotation: this.annotation.getValue(),
-			identifiers: this.identifiers.getValue()
+			identifiers: this.identifiers.getValue(),
+			publisherType: this.publisherType.getValue()
 		};
 	}
 
@@ -93,8 +93,8 @@ class PublisherData extends React.Component {
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
-					value: identifier.value,
-					typeId: identifier.type.id
+					typeId: identifier.type.id,
+					value: identifier.value
 				}));
 		}
 
@@ -223,11 +223,13 @@ class PublisherData extends React.Component {
 PublisherData.displayName = 'PublisherData';
 PublisherData.propTypes = {
 	identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+	onBackClick: React.PropTypes.func,
+	onNextClick: React.PropTypes.func,
 	publisher: React.PropTypes.shape({
-		area: validators.labeledProperty,
 		annotation: React.PropTypes.shape({
 			content: React.PropTypes.string
 		}),
+		area: validators.labeledProperty,
 		begin_date: React.PropTypes.string,
 		disambiguation: React.PropTypes.shape({
 			comment: React.PropTypes.string
@@ -236,15 +238,13 @@ PublisherData.propTypes = {
 		ended: React.PropTypes.bool,
 		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
-			value: React.PropTypes.string,
-			typeId: React.PropTypes.number
+			typeId: React.PropTypes.number,
+			value: React.PropTypes.string
 		})),
 		publisherType: validators.labeledProperty
 	}),
 	publisherTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-	visible: React.PropTypes.bool,
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func
+	visible: React.PropTypes.bool
 };
 
 module.exports = PublisherData;

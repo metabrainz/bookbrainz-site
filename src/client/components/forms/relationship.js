@@ -86,9 +86,9 @@ class RelationshipEditor extends React.Component {
 
 		this.state = {
 			loadedEntities: this.props.loadedEntities,
+			numSelected: 0,
 			relationships: existing,
-			rowsSpawned: existing.length,
-			numSelected: 0
+			rowsSpawned: existing.length
 		};
 
 		// React does not autobind non-React class methods
@@ -215,10 +215,10 @@ class RelationshipEditor extends React.Component {
 				initialSource: this.props.entity,
 				initialTarget: null,
 				initialTypeId: null,
+				key: rowsSpawned++,
 				source: this.props.entity,
 				target: null,
-				typeId: null,
-				key: rowsSpawned++
+				typeId: null
 			});
 		}
 
@@ -245,8 +245,8 @@ class RelationshipEditor extends React.Component {
 			}
 
 			this.setState({
-				relationships: updatedRelationships,
-				numSelected: newNumSelected
+				numSelected: newNumSelected,
+				relationships: updatedRelationships
 			});
 		}
 	}

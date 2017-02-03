@@ -112,18 +112,18 @@ search.autocomplete = (query, collection) => {
 		queryBody = {
 			match: {
 				'defaultAlias.name.autocomplete': {
-					query,
-					minimum_should_match: '80%'
+					minimum_should_match: '80%',
+					query
 				}
 			}
 		};
 	}
 
 	const dslQuery = {
-		index: _index,
 		body: {
 			query: queryBody
-		}
+		},
+		index: _index
 	};
 
 	if (collection) {
@@ -135,24 +135,24 @@ search.autocomplete = (query, collection) => {
 
 search.indexArea = (area) =>
 	_client.index({
-		index: _index,
-		id: area.gid,
-		type: 'area',
 		body: {
+			bbid: area.gid,
 			defaultAlias: {
 				name: area.name
 			},
-			bbid: area.gid,
 			type: 'Area'
-		}
+		},
+		id: area.gid,
+		index: _index,
+		type: 'area'
 	});
 
 search.indexEntity = (entity) =>
 	_client.index({
-		index: _index,
+		body: entity,
 		id: entity.bbid,
-		type: entity.type.toLowerCase(),
-		body: entity
+		index: _index,
+		type: entity.type.toLowerCase()
 	});
 
 search.refreshIndex = () =>
@@ -161,62 +161,62 @@ search.refreshIndex = () =>
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 search.generateIndex = async () => {
 	const indexMappings = {
-		settings: {
-			analysis: {
-				filter: {
-					trigrams_filter: {
-						type: 'ngram',
-						min_gram: 1,
-						max_gram: 3
-					},
-					edge_filter: {
-						type: 'edge_ngram',
-						min_gram: 1,
-						max_gram: 20
-					}
-				},
-				analyzer: {
-					trigrams: {
-						type: 'custom',
-						tokenizer: 'standard',
-						filter: [
-							'asciifolding',
-							'lowercase',
-							'trigrams_filter'
-						]
-					},
-					edge: {
-						type: 'custom',
-						tokenizer: 'standard',
-						filter: [
-							'asciifolding',
-							'lowercase',
-							'edge_filter'
-						]
-					}
-				}
-			}
-		},
 		mappings: {
 			_default_: {
 				properties: {
 					defaultAlias: {
-						type: 'object',
 						properties: {
 							name: {
-								type: 'string',
 								fields: {
-									search: {
-										type: 'string',
-										analyzer: 'trigrams'
-									},
 									autocomplete: {
-										type: 'string',
-										analyzer: 'edge'
+										analyzer: 'edge',
+										type: 'string'
+									},
+									search: {
+										analyzer: 'trigrams',
+										type: 'string'
 									}
-								}
+								},
+								type: 'string'
 							}
-						}
+						},
+						type: 'object'
+					}
+				}
+			}
+		},
+		settings: {
+			analysis: {
+				analyzer: {
+					edge: {
+						filter: [
+							'asciifolding',
+							'lowercase',
+							'edge_filter'
+						],
+						tokenizer: 'standard',
+						type: 'custom'
+					},
+					trigrams: {
+						filter: [
+							'asciifolding',
+							'lowercase',
+							'trigrams_filter'
+						],
+						tokenizer: 'standard',
+						type: 'custom'
+					}
+				},
+				filter: {
+					edge_filter: {
+						max_gram: 20,
+						min_gram: 1,
+						type: 'edge_ngram'
+					},
+					trigrams_filter: {
+						max_gram: 3,
+						min_gram: 1,
+						type: 'ngram'
 					}
 				}
 			}
@@ -231,7 +231,7 @@ search.generateIndex = async () => {
 	}
 
 	await _client.indices.create(
-		{index: _index, body: indexMappings}
+		{body: indexMappings, index: _index}
 	);
 
 	const baseRelations = [
@@ -291,17 +291,17 @@ search.generateIndex = async () => {
 
 search.searchByName = (name, collection) => {
 	const dslQuery = {
-		index: _index,
 		body: {
 			query: {
 				match: {
 					'defaultAlias.name.search': {
-						query: name,
-						minimum_should_match: '80%'
+						minimum_should_match: '80%',
+						query: name
 					}
 				}
 			}
-		}
+		},
+		index: _index
 	};
 
 	if (collection) {

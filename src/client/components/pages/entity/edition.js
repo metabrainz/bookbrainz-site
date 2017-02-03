@@ -80,14 +80,14 @@ EditionPage.getAttributes = (entity) => {
 	const depth = extractAttribute(entity.depth);
 	const dimensions = `${width}×${height}×${depth} mm`;
 	return [
-		{title: 'Status', data: editionStatus},
-		{title: 'Format', data: editionFormat},
+		{data: editionStatus, title: 'Status'},
+		{data: editionFormat, title: 'Format'},
 		getLanguageAttribute(entity),
-		{title: 'Publishers', data: publishers},
-		{title: 'Release Date', data: releaseDate},
-		{title: 'Page Count', data: pageCount},
-		{title: 'Weight', data: weight},
-		{title: 'Dimensions (W×H×D)', data: dimensions}
+		{data: publishers, title: 'Publishers'},
+		{data: releaseDate, title: 'Release Date'},
+		{data: pageCount, title: 'Page Count'},
+		{data: weight, title: 'Weight'},
+		{data: dimensions, title: 'Dimensions (W×H×D)'}
 	];
 };
 EditionPage.displayName = 'EditionPage';

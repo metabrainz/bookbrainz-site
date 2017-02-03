@@ -62,8 +62,8 @@ const DeletionForm = React.createFactory(
 );
 
 const entityComponents = {
-	edition: EditionPage,
 	creator: CreatorPage,
+	edition: EditionPage,
 	publication: PublicationPage,
 	publisher: PublisherPage,
 	work: WorkPage
@@ -81,8 +81,8 @@ module.exports.displayEntity = (req, res) => {
 	let editorEntityVisitPromise;
 	if (res.locals.user) {
 		editorEntityVisitPromise = new EditorEntityVisits({
-			editorId: res.locals.user.id,
-			bbid: res.locals.entity.bbid
+			bbid: res.locals.entity.bbid,
+			editorId: res.locals.user.id
 		})
 		.save(null, {method: 'insert'})
 		.then(() =>
@@ -145,8 +145,8 @@ module.exports.displayEntity = (req, res) => {
 		const EntityComponent = entityComponents[entityName];
 		if (EntityComponent) {
 			const props = propHelpers.generateProps(req, res, {
-				identifierTypes,
-				alert
+				alert,
+				identifierTypes
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -172,9 +172,9 @@ module.exports.displayDeleteEntity = (req, res) => {
 
 	res.render('common', {
 		markup: ReactDOMServer.renderToString(DeletionForm(props)),
-		task: 'delete',
+		props,
 		script: 'deletion',
-		props
+		task: 'delete'
 	});
 };
 
@@ -209,8 +209,8 @@ function _createNote(content, editor, revision, transacting) {
 		const revisionId = revision.get('id');
 		return new Note({
 			authorId: editor.id,
-			revisionId,
-			content
+			content,
+			revisionId
 		})
 			.save(null, {transacting});
 	}
@@ -250,9 +250,9 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 		// and update the entity header
 		const newEntityRevisionPromise = newRevisionPromise
 			.then((revision) => new RevisionModel({
-				id: revision.get('id'),
 				bbid: entity.bbid,
-				dataId: null
+				dataId: null,
+				id: revision.get('id')
 			}).save(null, {
 				method: 'insert',
 				transacting
@@ -551,8 +551,8 @@ function processEntitySets(derivedSets, currentEntity, body, transacting) {
 				id: currentEntity[derivedSet.name].id
 			})
 				.fetch({
-					withRelated: [derivedSet.propName],
-					transacting
+					transacting,
+					withRelated: [derivedSet.propName]
 				});
 		}
 
@@ -644,10 +644,10 @@ module.exports.createEntity = (
 			) => {
 				const propsToSet = _.extend({
 					aliasSetId: aliasSet && aliasSet.get('id'),
-					identifierSetId: identSet && identSet.get('id'),
 					annotationId: annotation && annotation.get('id'),
 					disambiguationId:
 						disambiguation && disambiguation.get('id'),
+					identifierSetId: identSet && identSet.get('id'),
 					revisionId: newRevision.get('id')
 				}, allProps);
 
@@ -662,8 +662,8 @@ module.exports.createEntity = (
 			.then(
 				(entityModel) =>
 					entityModel.refresh({
-						withRelated: ['defaultAlias'],
-						transacting
+						transacting,
+						withRelated: ['defaultAlias']
 					})
 			)
 			.then((entity) => entity.toJSON());
@@ -709,8 +709,8 @@ module.exports.editEntity = (
 		const oldAliasSetPromise = currentEntity.aliasSet &&
 			new AliasSet({id: currentEntity.aliasSet.id})
 				.fetch({
-					withRelated: ['aliases'],
-					transacting
+					transacting,
+					withRelated: ['aliases']
 				});
 
 		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
@@ -725,8 +725,8 @@ module.exports.editEntity = (
 		const oldIdentSetPromise = currentEntity.identifierSet &&
 			new IdentifierSet({id: currentEntity.identifierSet.id})
 				.fetch({
-					withRelated: ['identifiers'],
-					transacting
+					transacting,
+					withRelated: ['identifiers']
 				});
 
 		const identSetPromise = Promise.resolve(oldIdentSetPromise)
@@ -785,9 +785,10 @@ module.exports.editEntity = (
 			) => {
 				const propsToSet = _.extend({
 					aliasSetId: aliasSet && aliasSet.get('id'),
-					identifierSetId: identSet && identSet.get('id'),
 					annotationId: annotation && annotation.get('id'),
-					disambiguationId: disambiguation && disambiguation.get('id')
+					disambiguationId:
+						disambiguation && disambiguation.get('id'),
+					identifierSetId: identSet && identSet.get('id')
 				}, allProps);
 
 				// Construct a set of differences between the new values and old
@@ -853,8 +854,8 @@ module.exports.editEntity = (
 			.spread(
 				() => model.forge({bbid: currentEntity.bbid})
 					.fetch({
-						withRelated: ['defaultAlias'],
-						transacting
+						transacting,
+						withRelated: ['defaultAlias']
 					})
 			)
 			.then((entity) =>

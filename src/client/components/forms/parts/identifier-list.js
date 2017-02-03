@@ -30,8 +30,8 @@ class IdentifierList extends React.Component {
 
 		const existing = this.props.identifiers || [];
 		existing.push({
-			value: '',
-			typeId: null
+			typeId: null,
+			value: ''
 		});
 
 		existing.forEach((identifier, i) => {
@@ -56,8 +56,8 @@ class IdentifierList extends React.Component {
 		return this.state.identifiers.slice(0, LAST_IDENTIFIER)
 			.map((identifier) => {
 				const data = {
-					value: identifier.value,
-					typeId: identifier.typeId
+					typeId: identifier.typeId,
+					value: identifier.value
 				};
 
 				if (identifier.id) {
@@ -93,15 +93,15 @@ class IdentifierList extends React.Component {
 		}
 
 		updatedIdentifiers[index] = {
-			value: updatedIdentifier.value,
-			typeId: updatedIdentifier.typeId,
 			key: updatedIdentifiers[index].key,
+			typeId: updatedIdentifier.typeId,
 			valid:
 				dataHelper.identifierIsValid(
 					updatedIdentifier.typeId,
 					updatedIdentifier.value,
 					this.props.types
-				)
+				),
+			value: updatedIdentifier.value
 		};
 
 		if (this.state.identifiers[index].id) {
@@ -111,10 +111,10 @@ class IdentifierList extends React.Component {
 		let rowsSpawned = this.state.rowsSpawned;
 		if (index === this.state.identifiers.length - 1) {
 			updatedIdentifiers.push({
-				value: '',
-				typeId: null,
 				key: rowsSpawned,
-				valid: true
+				typeId: null,
+				valid: true,
+				value: ''
 			});
 
 			rowsSpawned++;
@@ -183,8 +183,8 @@ class IdentifierList extends React.Component {
 IdentifierList.displayName = 'IdentifierList';
 IdentifierList.propTypes = {
 	identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
-		value: React.PropTypes.string,
-		typeId: React.PropTypes.number
+		typeId: React.PropTypes.number,
+		value: React.PropTypes.string
 	})),
 	types: React.PropTypes.arrayOf(validators.labeledProperty)
 };

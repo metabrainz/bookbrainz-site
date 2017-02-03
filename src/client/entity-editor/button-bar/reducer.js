@@ -25,8 +25,8 @@ import Immutable from 'immutable';
 
 function reducer(
 	state = Immutable.Map({
-		disambiguationVisible: false,
 		aliasEditorVisible: false,
+		disambiguationVisible: false,
 		identifierEditorVisible: false
 	}),
 	action

@@ -34,9 +34,9 @@ const ListGroup = bootstrap.ListGroup;
 const ListGroupItem = bootstrap.ListGroupItem;
 
 const picture_classes = {
+	Creator: 'user',
 	Edition: 'book',
 	Publication: 'th-list',
-	Creator: 'user',
 	Publisher: 'university',
 	Work: 'file-text-o'
 };

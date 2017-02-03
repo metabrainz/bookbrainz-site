@@ -102,21 +102,21 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 	loadLanguages, loadPublicationTypes, (req, res) => {
 		const props = {
+			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
 			publicationTypes: res.locals.publicationTypes,
-			identifierTypes: res.locals.identifierTypes,
 			submissionUrl: '/publication/create/handler'
 		};
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/create-common', {
-			title: 'Add Publication',
 			heading: 'Create Publication',
-			subheading: 'Add a new Publication to BookBrainz',
-			script: 'publication',
+			markup,
 			props,
-			markup
+			script: 'publication',
+			subheading: 'Add a new Publication to BookBrainz',
+			title: 'Add Publication'
 		});
 	}
 );
@@ -126,22 +126,22 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 		const publication = res.locals.entity;
 
 		const props = {
-			languages: res.locals.languages,
-			publicationTypes: res.locals.publicationTypes,
-			publication,
 			identifierTypes: res.locals.identifierTypes,
+			languages: res.locals.languages,
+			publication,
+			publicationTypes: res.locals.publicationTypes,
 			submissionUrl: `/publication/${publication.bbid}/edit/handler`
 		};
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/create-common', {
-			title: 'Edit Publication',
 			heading: 'Edit Publication',
-			subheading: 'Edit an existing Publication in BookBrainz',
-			script: 'publication',
+			markup,
 			props,
-			markup
+			script: 'publication',
+			subheading: 'Edit an existing Publication in BookBrainz',
+			title: 'Edit Publication'
 		});
 	}
 );

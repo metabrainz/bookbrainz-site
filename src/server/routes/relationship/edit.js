@@ -51,8 +51,8 @@ function getEntityByType(entity, withRelated, transacting) {
 	const model = utils.getEntityModelByType(entity.type);
 
 	return model.forge({bbid: entity.bbid}).fetch({
-		withRelated,
-		transacting
+		transacting,
+		withRelated
 	});
 }
 
@@ -156,9 +156,9 @@ function createRelationship(relationship, editorJSON) {
 
 		// Make new relationship
 		const newRelationshipPromise = new Relationship({
-			typeId: relationship.typeId,
 			sourceBbid: relationship.source.bbid,
-			targetBbid: relationship.target.bbid
+			targetBbid: relationship.target.bbid,
+			typeId: relationship.typeId
 		}).save(null, {transacting});
 
 		const newRevisionPromise = new Revision({
@@ -205,18 +205,20 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 					// _.omit is used here to avoid "Circular reference" errors
 					const props = {
 						entity: _.omit(res.locals.entity, 'relationships'),
-						relationships: res.locals.entity.relationships,
+						loadedEntities,
 						relationshipTypes,
-						loadedEntities
+						relationships: res.locals.entity.relationships
 					};
 
 					const markup =
 						ReactDOMServer.renderToString(EditForm(props));
 
-					res.render('common', {props,
+					res.render('common', {
 						markup,
-						task: 'edit',
-						script: 'relationship'});
+						props,
+						script: 'relationship',
+						task: 'edit'
+					});
 				})
 				.catch(next);
 		}

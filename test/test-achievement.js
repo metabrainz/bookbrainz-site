@@ -72,10 +72,10 @@ function tests() {
 
 		// suppress warnings from rejections
 		Achievement.__set__('console', {
-			warn() {
+			error() {
 				// empty
 			},
-			error() {
+			warn() {
 				// empty
 			}
 		});

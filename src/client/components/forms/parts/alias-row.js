@@ -102,12 +102,12 @@ class AliasRow extends React.Component {
 
 	getValue() {
 		return {
+			default: this.default.getChecked(),
 			id: parseInt(this.id.getValue(), 10),
-			name: this.name.getValue(),
-			sortName: this.sortName.getValue(),
 			languageId: parseInt(this.languageId.getValue(), 10) || null,
+			name: this.name.getValue(),
 			primary: this.primary.getChecked(),
-			default: this.default.getChecked()
+			sortName: this.sortName.getValue()
 		};
 	}
 
@@ -245,11 +245,11 @@ AliasRow.propTypes = {
 		name: React.PropTypes.string.isRequired
 	})).isRequired,
 	name: React.PropTypes.string,
+	onChange: React.PropTypes.func,
+	onRemove: React.PropTypes.func,
 	primary: React.PropTypes.bool,
 	removeHidden: React.PropTypes.bool,
-	sortName: React.PropTypes.string,
-	onChange: React.PropTypes.func,
-	onRemove: React.PropTypes.func
+	sortName: React.PropTypes.string
 };
 
 module.exports = AliasRow;

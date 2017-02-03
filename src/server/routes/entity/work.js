@@ -92,21 +92,21 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 	loadLanguages, loadWorkTypes,
 	(req, res) => {
 		const props = {
-			languages: res.locals.languages,
-			workTypes: res.locals.workTypes,
 			identifierTypes: res.locals.identifierTypes,
-			submissionUrl: '/work/create/handler'
+			languages: res.locals.languages,
+			submissionUrl: '/work/create/handler',
+			workTypes: res.locals.workTypes
 		};
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		return res.render('entity/create/create-common', {
-			title: 'Add Work',
 			heading: 'Create Work',
-			subheading: 'Add a new Work to BookBrainz',
-			script: 'work',
+			markup,
 			props,
-			markup
+			script: 'work',
+			subheading: 'Add a new Work to BookBrainz',
+			title: 'Add Work'
 		});
 	}
 );
@@ -117,33 +117,33 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 		const work = res.locals.entity;
 
 		const props = {
-			languages: res.locals.languages,
-			workTypes: res.locals.workTypes,
-			work,
 			identifierTypes: res.locals.identifierTypes,
-			submissionUrl: `/work/${work.bbid}/edit/handler`
+			languages: res.locals.languages,
+			submissionUrl: `/work/${work.bbid}/edit/handler`,
+			work,
+			workTypes: res.locals.workTypes
 		};
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		return res.render('entity/create/create-common', {
-			title: 'Edit Work',
 			heading: 'Edit Work',
-			subheading: 'Edit an existing Work in BookBrainz',
-			script: 'work',
+			markup,
 			props,
-			markup
+			script: 'work',
+			subheading: 'Edit an existing Work in BookBrainz',
+			title: 'Edit Work'
 		});
 	}
 );
 
 const additionalWorkSets = [
 	{
-		name: 'languageSet',
-		idField: 'id',
 		entityIdField: 'languageSetId',
-		propName: 'languages',
-		model: LanguageSet
+		idField: 'id',
+		model: LanguageSet,
+		name: 'languageSet',
+		propName: 'languages'
 	}
 ];
 

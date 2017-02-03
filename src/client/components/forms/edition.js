@@ -34,9 +34,9 @@ class EditionForm extends React.Component {
 		super(props);
 
 		this.state = {
-			tab: 1,
 			aliasesValid: true,
 			dataValid: true,
+			tab: 1,
 			waiting: false
 		};
 
@@ -49,9 +49,9 @@ class EditionForm extends React.Component {
 
 	handleTabSelect(tab) {
 		this.setState({
-			tab,
 			aliasesValid: this.aliases.valid(),
-			dataValid: this.data.valid()
+			dataValid: this.data.valid(),
+			tab
 		});
 	}
 
@@ -76,21 +76,21 @@ class EditionForm extends React.Component {
 		const revisionNote = this.revision.note.getValue();
 		const data = {
 			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
+			annotation: editionData.annotation,
+			depth: parseInt(editionData.depth, 10),
+			disambiguation: editionData.disambiguation,
+			formatId: parseInt(editionData.editionFormat, 10),
+			height: parseInt(editionData.height, 10),
+			identifiers: editionData.identifiers,
+			languages: editionData.languages,
+			note: revisionNote,
+			pages: parseInt(editionData.pages, 10),
 			publicationBbid: editionData.publication,
 			publishers: editionData.publishers,
 			releaseEvents: editionData.releaseEvents,
-			languages: editionData.languages,
-			formatId: parseInt(editionData.editionFormat, 10),
 			statusId: parseInt(editionData.editionStatus, 10),
-			disambiguation: editionData.disambiguation,
-			annotation: editionData.annotation,
-			identifiers: editionData.identifiers,
-			pages: parseInt(editionData.pages, 10),
 			weight: parseInt(editionData.weight, 10),
-			width: parseInt(editionData.width, 10),
-			height: parseInt(editionData.height, 10),
-			depth: parseInt(editionData.depth, 10),
-			note: revisionNote
+			width: parseInt(editionData.width, 10)
 		};
 
 		this.setState({waiting: true});
@@ -123,12 +123,12 @@ class EditionForm extends React.Component {
 		const prefillData = this.props.edition;
 		if (prefillData) {
 			aliases = prefillData.aliasSet.aliases.map((alias) => ({
+				default: alias.id === prefillData.defaultAlias.id,
 				id: alias.id,
-				name: alias.name,
-				sortName: alias.sortName,
 				languageId: alias.languageId,
+				name: alias.name,
 				primary: alias.primary,
-				default: alias.id === prefillData.defaultAlias.id
+				sortName: alias.sortName
 			}));
 		}
 

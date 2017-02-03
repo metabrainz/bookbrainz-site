@@ -78,10 +78,10 @@ class RevisionNote extends React.Component {
 RevisionNote.displayName = 'RevisionNote';
 RevisionNote.propTypes = {
 	nextClick: React.PropTypes.func,
-	submitDisabled: React.PropTypes.bool,
-	visible: React.PropTypes.bool,
 	onBackClick: React.PropTypes.func,
-	onSubmit: React.PropTypes.func
+	onSubmit: React.PropTypes.func,
+	submitDisabled: React.PropTypes.bool,
+	visible: React.PropTypes.bool
 };
 
 module.exports = RevisionNote;

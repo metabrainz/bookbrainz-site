@@ -56,24 +56,22 @@ class EntitySearch extends React.Component {
 
 		function entityToOption(entity) {
 			return {
+				disambiguation: entity.disambiguation ?
+					entity.disambiguation.comment : null,
 				id: entity.bbid,
 				text: entity.defaultAlias ?
 					entity.defaultAlias.name : '(unnamed)',
-				disambiguation: entity.disambiguation ?
-					entity.disambiguation.comment : null,
 				type: entity.type
 			};
 		}
 
 		const select2Options = {
-			minimumInputLength: 1,
 			ajax: {
-				url: '/search/autocomplete',
 				data(params) {
 					const queryParams = {
-						q: params.term,
+						collection: self.props.collection,
 						page: params.page,
-						collection: self.props.collection
+						q: params.term
 					};
 
 					return queryParams;
@@ -95,18 +93,20 @@ class EntitySearch extends React.Component {
 					return {
 						results: results.map(entityToOption)
 					};
-				}
+				},
+				url: '/search/autocomplete'
 			},
+			minimumInputLength: 1,
 			templateResult(result) {
 				let template = result.text;
 
 				const ENTITY_TYPE_ICONS = {
+					Area: 'globe',
 					Creator: 'user',
 					Edition: 'book',
 					Publication: 'th-list',
 					Publisher: 'university',
-					Work: 'file-text-o',
-					Area: 'globe'
+					Work: 'file-text-o'
 				};
 
 				/* eslint prefer-template: 0 */
@@ -184,6 +184,7 @@ EntitySearch.propTypes = {
 	help: React.PropTypes.string,
 	label: React.PropTypes.string,
 	labelClassName: React.PropTypes.string,
+	onChange: React.PropTypes.func,
 	options: React.PropTypes.object,
 	placeholder: React.PropTypes.string,
 	select2Options: React.PropTypes.object,
@@ -191,8 +192,7 @@ EntitySearch.propTypes = {
 	value: React.PropTypes.shape({
 		bbid: React.PropTypes.string
 	}),
-	wrapperClassName: React.PropTypes.string,
-	onChange: React.PropTypes.func
+	wrapperClassName: React.PropTypes.string
 };
 
 module.exports = EntitySearch;

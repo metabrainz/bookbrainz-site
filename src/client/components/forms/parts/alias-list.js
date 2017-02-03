@@ -30,11 +30,11 @@ class AliasList extends React.Component {
 
 		const existing = this.props.aliases || [];
 		existing.push({
-			name: '',
-			sortName: '',
+			default: false,
 			languageId: null,
+			name: '',
 			primary: true,
-			default: false
+			sortName: ''
 		});
 
 		existing.forEach((alias, i) => {
@@ -121,12 +121,12 @@ class AliasList extends React.Component {
 			let rowsSpawned = this.state.rowsSpawned;
 			if (changedRowIndex === this.state.aliases.length - 1) {
 				updatedAliases.push({
-					name: '',
-					sortName: '',
-					languageId: null,
-					primary: true,
 					default: false,
-					key: rowsSpawned++
+					key: rowsSpawned++,
+					languageId: null,
+					name: '',
+					primary: true,
+					sortName: ''
 				});
 			}
 
@@ -230,8 +230,8 @@ class AliasList extends React.Component {
 AliasList.displayName = 'AliasList';
 AliasList.propTypes = {
 	aliases: React.PropTypes.array,
-	visible: React.PropTypes.bool,
-	onNextClick: React.PropTypes.func
+	onNextClick: React.PropTypes.func,
+	visible: React.PropTypes.bool
 };
 
 module.exports = AliasList;

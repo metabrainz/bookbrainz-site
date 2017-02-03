@@ -93,16 +93,16 @@ AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
 	aliases: React.PropTypes.array,
 	languageOptions: React.PropTypes.array,
-	show: React.PropTypes.bool,
 	onAddAlias: React.PropTypes.func,
-	onClose: React.PropTypes.func
+	onClose: React.PropTypes.func,
+	show: React.PropTypes.bool
 };
 
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onClose: () => dispatch(hideAliasEditor()),
-		onAddAlias: () => dispatch(addAliasRow())
+		onAddAlias: () => dispatch(addAliasRow()),
+		onClose: () => dispatch(hideAliasEditor())
 	};
 }
 

@@ -30,11 +30,11 @@ const validators = require('../../../helpers/react-validators');
 class WorkData extends React.Component {
 	getValue() {
 		return {
-			languages: this.languages.getValue(),
-			workType: this.workType.getValue(),
-			disambiguation: this.disambiguation.getValue(),
 			annotation: this.annotation.getValue(),
-			identifiers: this.identifiers.getValue()
+			disambiguation: this.disambiguation.getValue(),
+			identifiers: this.identifiers.getValue(),
+			languages: this.languages.getValue(),
+			workType: this.workType.getValue()
 		};
 	}
 
@@ -64,8 +64,8 @@ class WorkData extends React.Component {
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
-					value: identifier.value,
-					typeId: identifier.type.id
+					typeId: identifier.type.id,
+					value: identifier.value
 				}));
 		}
 
@@ -174,6 +174,8 @@ WorkData.propTypes = {
 		validators.labeledProperty
 	),
 	languages: React.PropTypes.arrayOf(validators.namedProperty),
+	onBackClick: React.PropTypes.func,
+	onNextClick: React.PropTypes.func,
 	visible: React.PropTypes.bool,
 	work: React.PropTypes.shape({
 		annotation: React.PropTypes.shape({
@@ -184,14 +186,12 @@ WorkData.propTypes = {
 		}),
 		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
-			value: React.PropTypes.string,
-			typeId: React.PropTypes.number
+			typeId: React.PropTypes.number,
+			value: React.PropTypes.string
 		})),
 		workType: validators.labeledProperty
 	}),
-	workTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func
+	workTypes: React.PropTypes.arrayOf(validators.labeledProperty)
 };
 
 module.exports = WorkData;

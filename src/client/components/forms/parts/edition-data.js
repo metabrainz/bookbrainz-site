@@ -48,28 +48,28 @@ class EditionData extends React.Component {
 			) ? edition.releaseEventSet.releaseEvents[0].id : null;
 
 			releaseEvents.push({
-				id: releaseEventId,
-				date: this.release.getValue()
+				date: this.release.getValue(),
+				id: releaseEventId
 			});
 		}
 
 		return {
-			publication: publication ? publication.bbid : null,
-			publishers: publisher ? [publisher.bbid] : null,
-			releaseEvents,
+			annotation: this.annotation.getValue(),
+			depth: this.depth.getValue(),
+			disambiguation: this.disambiguation.getValue(),
+			editionFormat: this.editionFormat.getValue(),
+			editionStatus: this.editionStatus.getValue(),
+			height: this.height.getValue(),
+			identifiers: this.identifiers.getValue(),
 			languages: this.languages.getValue().map(
 				(languageId) => parseInt(languageId, 10)
 			),
-			editionFormat: this.editionFormat.getValue(),
-			editionStatus: this.editionStatus.getValue(),
-			disambiguation: this.disambiguation.getValue(),
-			annotation: this.annotation.getValue(),
-			identifiers: this.identifiers.getValue(),
 			pages: this.pages.getValue(),
-			width: this.width.getValue(),
-			height: this.height.getValue(),
-			depth: this.depth.getValue(),
-			weight: this.weight.getValue()
+			publication: publication ? publication.bbid : null,
+			publishers: publisher ? [publisher.bbid] : null,
+			releaseEvents,
+			weight: this.weight.getValue(),
+			width: this.width.getValue()
 		};
 	}
 
@@ -139,8 +139,8 @@ class EditionData extends React.Component {
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
-					value: identifier.value,
-					typeId: identifier.type.id
+					typeId: identifier.type.id,
+					value: identifier.value
 				}));
 		}
 
@@ -373,8 +373,8 @@ EditionData.propTypes = {
 		height: React.PropTypes.number,
 		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
-			value: React.PropTypes.string,
-			typeId: React.PropTypes.number
+			typeId: React.PropTypes.number,
+			value: React.PropTypes.string
 		})),
 		languages: React.PropTypes.arrayOf(validators.namedProperty),
 		pages: React.PropTypes.number,
@@ -392,11 +392,11 @@ EditionData.propTypes = {
 		validators.labeledProperty
 	),
 	languages: React.PropTypes.arrayOf(validators.namedProperty),
+	onBackClick: React.PropTypes.func,
+	onNextClick: React.PropTypes.func,
 	publication: validators.entityProperty,
 	publisher: validators.entityProperty,
-	visible: React.PropTypes.bool,
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func
+	visible: React.PropTypes.bool
 };
 
 module.exports = EditionData;

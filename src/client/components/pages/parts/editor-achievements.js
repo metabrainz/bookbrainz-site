@@ -30,8 +30,8 @@ class EditorAchievementTab extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			editor: props.editor,
-			achievement: props.achievement
+			achievement: props.achievement,
+			editor: props.editor
 		};
 	}
 	handleSubmit(event) {
@@ -99,8 +99,8 @@ class EditorAchievementTab extends React.Component {
 							</button>
 							<p
 								style={{
-									marginLeft: '10px',
-									display: 'inline-block'
+									display: 'inline-block',
+									marginLeft: '10px'
 								}}
 							>
 								click badge to unset
@@ -119,10 +119,10 @@ class EditorAchievementTab extends React.Component {
 						<StickyContainer>
 							<Sticky
 								style={{
-									zIndex: 10,
 									background: 'white',
+									flex: '1',
 									marginTop: STICKY_TOP_MARGIN,
-									flex: '1'
+									zIndex: 10
 								}}
 								topOffset={-80}
 							>
@@ -149,8 +149,8 @@ EditorAchievementTab.propTypes = {
 
 	}),
 	editor: React.PropTypes.shape({
-		id: React.PropTypes.number,
-		authenticated: React.PropTypes.bool
+		authenticated: React.PropTypes.bool,
+		id: React.PropTypes.number
 	})
 };
 

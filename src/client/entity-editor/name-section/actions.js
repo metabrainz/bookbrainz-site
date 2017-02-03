@@ -33,8 +33,8 @@ export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 export function debouncedUpdateNameField(newName) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_NAME_FIELD,
-		payload: newName
+		payload: newName,
+		type: UPDATE_NAME_FIELD
 	};
 }
 
@@ -49,8 +49,8 @@ export function debouncedUpdateNameField(newName) {
 export function debouncedUpdateSortNameField(newSortName) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_SORT_NAME_FIELD,
-		payload: newSortName
+		payload: newSortName,
+		type: UPDATE_SORT_NAME_FIELD
 	};
 }
 
@@ -63,8 +63,8 @@ export function debouncedUpdateSortNameField(newSortName) {
  **/
 export function updateLanguageField(newLanguageId) {
 	return {
-		type: UPDATE_LANGUAGE_FIELD,
-		payload: newLanguageId
+		payload: newLanguageId,
+		type: UPDATE_LANGUAGE_FIELD
 	};
 }
 
@@ -80,7 +80,7 @@ export function updateLanguageField(newLanguageId) {
 export function debouncedUpdateDisambiguationField(newDisambiguation) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_DISAMBIGUATION_FIELD,
-		payload: newDisambiguation
+		payload: newDisambiguation,
+		type: UPDATE_DISAMBIGUATION_FIELD
 	};
 }

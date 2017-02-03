@@ -53,8 +53,8 @@ const routes = require('./routes');
 const NotFoundError = require('./helpers/error').NotFoundError;
 
 Promise.config({
-	warnings: true,
-	longStackTraces: true
+	longStackTraces: true,
+	warnings: true
 });
 
 // Initialize application
@@ -88,17 +88,17 @@ app.use(express.static(path.join(rootDir, 'static')));
 
 const RedisStore = redis(session);
 app.use(session({
+	cookie: {
+		secure: config.session.secure
+	},
+	resave: false,
+	saveUninitialized: false,
+	secret: config.session.secret,
 	store: new RedisStore({
 		host: config.session.redis.host,
 		port: config.session.redis.port,
 		ttl: config.session.redis.ttl
-	}),
-	cookie: {
-		secure: config.session.secure
-	},
-	secret: config.session.secret,
-	resave: false,
-	saveUninitialized: false
+	})
 }));
 
 

@@ -47,17 +47,17 @@ router.get('/', (req, res, next) => {
 
 	search.searchByName(query, collection)
 		.then((entities) => ({
-			query,
-			initialResults: entities
+			initialResults: entities,
+			query
 		}))
 		.then((props) => {
 			res.render('common', {
-				title: 'Search Results',
-				task: 'search',
-				script: 'search',
-				props,
+				hideSearch: true,
 				markup: ReactDOMServer.renderToString(SearchPage(props)),
-				hideSearch: true
+				props,
+				script: 'search',
+				task: 'search',
+				title: 'Search Results'
 			});
 		})
 		.catch(next);

@@ -27,23 +27,23 @@ function formatRow(kind, key, lhs, rhs) {
 
 	if (kind === 'N' || _.isNil(lhs)) {
 		return {
-			kind: 'N',
 			key,
+			kind: 'N',
 			rhs
 		};
 	}
 
 	if (kind === 'D' || _.isNil(rhs)) {
 		return {
-			kind: 'D',
 			key,
+			kind: 'D',
 			lhs
 		};
 	}
 
 	return {
-		kind,
 		key,
+		kind,
 		lhs,
 		rhs
 	};

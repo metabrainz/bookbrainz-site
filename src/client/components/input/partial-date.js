@@ -62,8 +62,8 @@ class PartialDate extends React.Component {
 		super(props);
 
 		this.state = {
-			value: this.props.defaultValue,
-			valid: PartialDate.validate(this.props.defaultValue)
+			valid: PartialDate.validate(this.props.defaultValue),
+			value: this.props.defaultValue
 		};
 
 		// React does not autobind non-React class methods
@@ -92,8 +92,8 @@ class PartialDate extends React.Component {
 		}
 
 		this.setState({
-			value: input,
-			valid: PartialDate.validate(input)
+			valid: PartialDate.validate(input),
+			value: input
 		});
 
 		if (this.props.onChange) {
@@ -156,9 +156,9 @@ PartialDate.propTypes = {
 	help: React.PropTypes.string,
 	label: React.PropTypes.string,
 	labelClassName: React.PropTypes.string,
+	onChange: React.PropTypes.func,
 	placeholder: React.PropTypes.string,
-	wrapperClassName: React.PropTypes.string,
-	onChange: React.PropTypes.func
+	wrapperClassName: React.PropTypes.string
 };
 
 module.exports = PartialDate;

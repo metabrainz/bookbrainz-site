@@ -91,22 +91,22 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
 	loadLanguages, loadCreatorTypes, (req, res) => {
 		const props = {
-			languageOptions: res.locals.languages,
-			genderOptions: res.locals.genders,
 			creatorTypes: res.locals.creatorTypes,
+			genderOptions: res.locals.genders,
 			identifierTypes: res.locals.identifierTypes,
+			languageOptions: res.locals.languages,
 			submissionUrl: '/creator/create/handler'
 		};
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/create-common', {
-			title: 'Add Creator',
 			heading: 'Create Creator',
-			subheading: 'Add a new Creator to BookBrainz',
-			script: 'creator',
+			markup,
 			props,
-			markup
+			script: 'creator',
+			subheading: 'Add a new Creator to BookBrainz',
+			title: 'Add Creator'
 		});
 	}
 );
@@ -131,14 +131,14 @@ function creatorToFormState(creator) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		identifierEditorVisible: false,
-		disambiguationVisible: Boolean(creator.disambiguation)
+		disambiguationVisible: Boolean(creator.disambiguation),
+		identifierEditorVisible: false
 	};
 
 	const nameSection = _.isEmpty(defaultAliasList) ? {
+		language: null,
 		name: '',
-		sortName: '',
-		language: null
+		sortName: ''
 	} : defaultAliasList[0];
 	nameSection.disambiguation =
 		creator.disambiguation && creator.disambiguation.comment;
@@ -155,11 +155,11 @@ function creatorToFormState(creator) {
 	);
 
 	const creatorSection = {
-		gender: creator.gender && creator.gender.id,
-		type: creator.creatorType && creator.creatorType.id,
 		beginDate: creator.beginDate,
 		endDate: creator.endDate,
-		ended: creator.ended
+		ended: creator.ended,
+		gender: creator.gender && creator.gender.id,
+		type: creator.creatorType && creator.creatorType.id
 	};
 
 	return {
@@ -177,24 +177,24 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 		const creator = res.locals.entity;
 
 		const props = {
+			creator,
+			creatorTypes: res.locals.creatorTypes,
+			genderOptions: res.locals.genders,
+			identifierTypes: res.locals.identifierTypes,
 			initialState: creatorToFormState(creator),
 			languageOptions: res.locals.languages,
-			genderOptions: res.locals.genders,
-			creatorTypes: res.locals.creatorTypes,
-			creator,
-			identifierTypes: res.locals.identifierTypes,
 			submissionUrl: `/creator/${creator.bbid}/edit/handler`
 		};
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/create-common', {
-			title: 'Edit Creator',
 			heading: 'Edit Creator',
-			subheading: 'Edit an existing Creator in BookBrainz',
-			script: 'creator',
+			markup,
 			props,
-			markup
+			script: 'creator',
+			subheading: 'Edit an existing Creator in BookBrainz',
+			title: 'Edit Creator'
 		});
 	}
 );
@@ -214,11 +214,11 @@ function transformNewForm(data) {
 	}));
 
 	aliases = [{
-		name: data.nameSection.name,
-		sortName: data.nameSection.sortName,
+		default: true,
 		languageId: data.nameSection.language,
+		name: data.nameSection.name,
 		primary: true,
-		default: true
+		sortName: data.nameSection.sortName
 	}, ...aliases];
 
 	const identifiers = _.map(data.identifierEditor, ({type, ...rest}) => ({
@@ -228,13 +228,13 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
-		identifiers,
-		disambiguation: data.nameSection.disambiguation,
-		genderId: data.creatorSection.gender,
-		typeId: data.creatorSection.type,
 		beginDate: data.creatorSection.beginDate,
+		disambiguation: data.nameSection.disambiguation,
 		endDate: data.creatorSection.ended ? data.creatorSection.endDate : '',
-		ended: data.creatorSection.ended
+		ended: data.creatorSection.ended,
+		genderId: data.creatorSection.gender,
+		identifiers,
+		typeId: data.creatorSection.type
 	};
 }
 

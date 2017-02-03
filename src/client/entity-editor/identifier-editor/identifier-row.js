@@ -56,8 +56,8 @@ function IdentifierRow({
 	onValueChange
 }) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
-		value: type.id,
-		label: type.label
+		label: type.label,
+		value: type.id
 	}));
 
 	return (
@@ -100,12 +100,12 @@ function IdentifierRow({
 }
 IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 IdentifierRow.propTypes = {
-	typeOptions: React.PropTypes.array,
-	typeValue: React.PropTypes.number,
-	valueValue: React.PropTypes.string,
 	onRemoveButtonClick: React.PropTypes.func,
 	onTypeChange: React.PropTypes.func,
-	onValueChange: React.PropTypes.func
+	onValueChange: React.PropTypes.func,
+	typeOptions: React.PropTypes.array,
+	typeValue: React.PropTypes.number,
+	valueValue: React.PropTypes.string
 };
 
 
@@ -126,17 +126,17 @@ function handleValueChange(dispatch, event, index, types) {
 function mapStateToProps(rootState, {index}) {
 	const state = rootState.get('identifierEditor');
 	return {
-		valueValue: state.getIn([index, 'value']),
-		typeValue: state.getIn([index, 'type'])
+		typeValue: state.getIn([index, 'type']),
+		valueValue: state.getIn([index, 'value'])
 	};
 }
 
 
 function mapDispatchToProps(dispatch, {index, typeOptions}) {
 	return {
+		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onTypeChange: (value) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
-		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onValueChange: (event) =>
 			handleValueChange(dispatch, event, index, typeOptions)
 	};

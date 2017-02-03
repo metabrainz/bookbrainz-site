@@ -240,9 +240,9 @@ router.get('/:id', (req, res, next) => {
 				)
 			);
 			const props = propHelpers.generateProps(req, res, {
+				diffs,
 				revision: revision.toJSON(),
-				title: 'RevisionPage',
-				diffs
+				title: 'RevisionPage'
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -254,7 +254,7 @@ router.get('/:id', (req, res, next) => {
 				</Layout>
 			);
 			const script = '/js/revision.js';
-			res.render('target', {script, props, markup});
+			res.render('target', {markup, props, script});
 		}
 	)
 		.catch(next);

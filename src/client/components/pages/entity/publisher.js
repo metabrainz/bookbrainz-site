@@ -49,7 +49,7 @@ function PublisherPage(props) {
 }
 PublisherPage.getAttributes = (entity) => ([
 	getTypeAttribute(entity.publisherType),
-	{title: 'Area', data: extractAttribute(entity.area, 'name')},
+	{data: extractAttribute(entity.area, 'name'), title: 'Area'},
 	getDateAttributes(entity)
 ]);
 PublisherPage.displayName = 'PublisherPage';

@@ -23,8 +23,8 @@ import {
 import Immutable from 'immutable';
 
 const EMPTY_IDENTIFIER = Immutable.Map({
-	value: '',
-	type: null
+	type: null,
+	value: ''
 });
 
 function reducer(

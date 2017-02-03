@@ -30,10 +30,10 @@ const validators = require('../../../helpers/react-validators');
 class PublicationData extends React.Component {
 	getValue() {
 		return {
-			publicationType: this.publicationType.getValue(),
-			disambiguation: this.disambiguation.getValue(),
 			annotation: this.annotation.getValue(),
-			identifiers: this.identifiers.getValue()
+			disambiguation: this.disambiguation.getValue(),
+			identifiers: this.identifiers.getValue(),
+			publicationType: this.publicationType.getValue()
 		};
 	}
 
@@ -58,8 +58,8 @@ class PublicationData extends React.Component {
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
-					value: identifier.value,
-					typeId: identifier.type.id
+					typeId: identifier.type.id,
+					value: identifier.value
 				}));
 		}
 
@@ -150,6 +150,8 @@ class PublicationData extends React.Component {
 PublicationData.displayName = 'PublicationData';
 PublicationData.propTypes = {
 	identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+	onBackClick: React.PropTypes.func,
+	onNextClick: React.PropTypes.func,
 	publication: React.PropTypes.shape({
 		annotation: React.PropTypes.shape({
 			content: React.PropTypes.string
@@ -159,15 +161,13 @@ PublicationData.propTypes = {
 		}),
 		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
-			value: React.PropTypes.string,
-			typeId: React.PropTypes.number
+			typeId: React.PropTypes.number,
+			value: React.PropTypes.string
 		})),
 		publicationType: validators.labeledProperty
 	}),
 	publicationTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-	visible: React.PropTypes.bool,
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func
+	visible: React.PropTypes.bool
 };
 
 module.exports = PublicationData;

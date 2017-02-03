@@ -30,8 +30,8 @@ export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
  **/
 export function setSubmitError(error) {
 	return {
-		type: SET_SUBMIT_ERROR,
-		error
+		error,
+		type: SET_SUBMIT_ERROR
 	};
 }
 

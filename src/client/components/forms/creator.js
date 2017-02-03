@@ -44,9 +44,9 @@ class CreatorForm extends React.Component {
 		super(props);
 
 		this.state = {
-			tab: 1,
 			aliasesValid: true,
 			dataValid: true,
+			tab: 1,
 			waiting: false
 		};
 
@@ -64,9 +64,9 @@ class CreatorForm extends React.Component {
 	 */
 	handleTabSelect(tab) {
 		this.setState({
-			tab,
 			aliasesValid: this.aliases.valid(),
-			dataValid: this.data.valid()
+			dataValid: this.data.valid(),
+			tab
 		});
 	}
 
@@ -102,17 +102,17 @@ class CreatorForm extends React.Component {
 		const revisionNote = this.revision.note.getValue();
 		const data = {
 			aliases: aliasData.slice(0, PENULTIMATE_ELEMENT),
+			annotation: creatorData.annotation,
 			beginAreaId: parseInt(creatorData.beginArea, 10),
 			beginDate: creatorData.beginDate,
+			disambiguation: creatorData.disambiguation,
 			endAreaId: parseInt(creatorData.endArea, 10),
 			endDate: creatorData.endDate,
 			ended: creatorData.ended,
 			genderId: parseInt(creatorData.gender, 10),
-			typeId: parseInt(creatorData.creatorType, 10),
-			disambiguation: creatorData.disambiguation,
-			annotation: creatorData.annotation,
 			identifiers: creatorData.identifiers,
-			note: revisionNote
+			note: revisionNote,
+			typeId: parseInt(creatorData.creatorType, 10)
 		};
 
 		this.setState({waiting: true});
@@ -150,12 +150,12 @@ class CreatorForm extends React.Component {
 		const prefillData = this.props.creator;
 		if (prefillData) {
 			aliases = prefillData.aliasSet.aliases.map((alias) => ({
+				default: alias.id === prefillData.defaultAlias.id,
 				id: alias.id,
-				name: alias.name,
-				sortName: alias.sortName,
 				languageId: alias.languageId,
+				name: alias.name,
 				primary: alias.primary,
-				default: alias.id === prefillData.defaultAlias.id
+				sortName: alias.sortName
 			}));
 		}
 

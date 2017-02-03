@@ -58,18 +58,18 @@ const CreatorData = ({
 	submissionUrl
 }) => {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
-		value: language.id,
-		label: language.name
+		label: language.name,
+		value: language.id
 	}));
 
 	const genderOptionsForDisplay = genderOptions.map((gender) => ({
-		value: gender.id,
-		label: gender.name
+		label: gender.name,
+		value: gender.id
 	}));
 
 	const creatorTypesForDisplay = creatorTypes.map((type) => ({
-		value: type.id,
-		label: type.label
+		label: type.label,
+		value: type.id
 	}));
 
 	return (

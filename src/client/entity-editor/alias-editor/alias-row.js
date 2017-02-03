@@ -124,13 +124,13 @@ AliasRow.propTypes = {
 	languageOptions: React.PropTypes.array,
 	languageValue: React.PropTypes.number,
 	nameValue: React.PropTypes.string,
-	primaryChecked: React.PropTypes.bool,
-	sortNameValue: React.PropTypes.string,
 	onLanguageChange: React.PropTypes.func,
 	onNameChange: React.PropTypes.func,
 	onPrimaryClick: React.PropTypes.func,
 	onRemoveButtonClick: React.PropTypes.func,
-	onSortNameChange: React.PropTypes.func
+	onSortNameChange: React.PropTypes.func,
+	primaryChecked: React.PropTypes.bool,
+	sortNameValue: React.PropTypes.string
 };
 
 function mapDispatchToProps(dispatch, {index}) {
@@ -151,8 +151,8 @@ function mapDispatchToProps(dispatch, {index}) {
 function mapStateToProps(rootState, {index}) {
 	const state = rootState.get('aliasEditor');
 	return {
-		nameValue: state.getIn([index, 'name']),
 		languageValue: state.getIn([index, 'language']),
+		nameValue: state.getIn([index, 'name']),
 		primaryChecked: state.getIn([index, 'primary']),
 		sortNameValue: state.getIn([index, 'sortName'])
 	};

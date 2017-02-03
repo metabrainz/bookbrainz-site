@@ -110,10 +110,10 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 	loadEditionStatuses, loadEditionFormats, loadLanguages,
 	(req, res, next) => {
 		const propsPromise = {
-			languages: res.locals.languages,
-			editionStatuses: res.locals.editionStatuses,
 			editionFormats: res.locals.editionFormats,
+			editionStatuses: res.locals.editionStatuses,
 			identifierTypes: res.locals.identifierTypes,
+			languages: res.locals.languages,
 			submissionUrl: '/edition/create/handler'
 		};
 
@@ -133,12 +133,12 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 			const markup = ReactDOMServer.renderToString(EditForm(props));
 
 			res.render('entity/create/create-common', {
-				title: 'Add Edition',
 				heading: 'Create Edition',
-				subheading: 'Add a new Edition to BookBrainz',
-				script: 'edition',
+				markup,
 				props,
-				markup
+				script: 'edition',
+				subheading: 'Add a new Edition to BookBrainz',
+				title: 'Add Edition'
 			});
 		}
 
@@ -153,23 +153,23 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 		const edition = res.locals.entity;
 
 		const props = {
-			languages: res.locals.languages,
-			editionStatuses: res.locals.editionStatuses,
-			editionFormats: res.locals.editionFormats,
-			identifierTypes: res.locals.identifierTypes,
 			edition,
+			editionFormats: res.locals.editionFormats,
+			editionStatuses: res.locals.editionStatuses,
+			identifierTypes: res.locals.identifierTypes,
+			languages: res.locals.languages,
 			submissionUrl: `/edition/${edition.bbid}/edit/handler`
 		};
 
 		const markup = ReactDOMServer.renderToString(EditForm(props));
 
 		res.render('entity/create/create-common', {
-			title: 'Edit Edition',
 			heading: 'Edit Edition',
-			subheading: 'Edit an existing Edition in BookBrainz',
-			script: 'edition',
+			markup,
 			props,
-			markup
+			script: 'edition',
+			subheading: 'Edit an existing Edition in BookBrainz',
+			title: 'Edit Edition'
 		});
 	}
 );
@@ -181,29 +181,29 @@ const additionalEditionProps = [
 
 const additionalEditionSets = [
 	{
-		name: 'languageSet',
-		idField: 'id',
 		entityIdField: 'languageSetId',
-		propName: 'languages',
-		model: LanguageSet
-	},
-	{
-		name: 'publisherSet',
-		idField: 'bbid',
-		entityIdField: 'publisherSetId',
-		propName: 'publishers',
-		model: PublisherSet
-	},
-	{
-		name: 'releaseEventSet',
 		idField: 'id',
+		model: LanguageSet,
+		name: 'languageSet',
+		propName: 'languages'
+	},
+	{
+		entityIdField: 'publisherSetId',
+		idField: 'bbid',
+		model: PublisherSet,
+		name: 'publisherSet',
+		propName: 'publishers'
+	},
+	{
 		entityIdField: 'releaseEventSetId',
-		propName: 'releaseEvents',
+		idField: 'id',
 		model: ReleaseEventSet,
 		mutableFields: [
 			'date',
 			'areaId'
-		]
+		],
+		name: 'releaseEventSet',
+		propName: 'releaseEvents'
 	}
 ];
 

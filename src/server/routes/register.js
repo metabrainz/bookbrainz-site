@@ -53,8 +53,8 @@ router.get('/', (req, res) => {
 	}
 
 	return res.render('page', {
-		title: 'Register',
-		markup: ReactDOMServer.renderToString(RegisterAuthPage())
+		markup: ReactDOMServer.renderToString(RegisterAuthPage()),
+		title: 'Register'
 	});
 });
 
@@ -73,17 +73,17 @@ router.get('/details', loadGenders, (req, res) => {
 	});
 
 	const props = {
-		name: req.session.mbProfile.sub,
 		gender,
-		genders: res.locals.genders
+		genders: res.locals.genders,
+		name: req.session.mbProfile.sub
 	};
 
 	return res.render('common', {
-		title: 'Register',
-		task: 'registrationDetails',
-		script: 'registrationDetails',
+		markup: ReactDOMServer.renderToString(RegisterDetailPage(props)),
 		props,
-		markup: ReactDOMServer.renderToString(RegisterDetailPage(props))
+		script: 'registrationDetails',
+		task: 'registrationDetails',
+		title: 'Register'
 	});
 });
 
@@ -103,12 +103,12 @@ router.post('/handler', (req, res) => {
 		.then((editorType) =>
 			// Create a new Editor and add to the database
 			new Editor({
-				name: req.body.displayName,
-				typeId: editorType.id,
-				genderId: req.body.gender,
 				birthDate: req.body.birthday,
+				cachedMetabrainzName: req.session.mbProfile.sub,
+				genderId: req.body.gender,
 				metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
-				cachedMetabrainzName: req.session.mbProfile.sub
+				name: req.body.displayName,
+				typeId: editorType.id
 			})
 			.save()
 		)

@@ -110,12 +110,12 @@ class IdentifierRow extends React.Component {
 
 IdentifierRow.displayName = 'IdentifierRow';
 IdentifierRow.propTypes = {
+	onChange: React.PropTypes.func,
+	onRemove: React.PropTypes.func,
 	removeHidden: React.PropTypes.bool,
 	typeId: React.PropTypes.number,
 	types: React.PropTypes.arrayOf(validators.labeledProperty),
-	value: React.PropTypes.string,
-	onChange: React.PropTypes.func,
-	onRemove: React.PropTypes.func
+	value: React.PropTypes.string
 };
 
 module.exports = IdentifierRow;

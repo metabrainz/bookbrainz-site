@@ -48,15 +48,15 @@ class CreatorData extends React.Component {
 		const beginArea = this.beginArea.getValue();
 		const endArea = this.endArea.getValue();
 		return {
+			annotation: this.annotation.getValue(),
 			beginArea: beginArea ? beginArea.id : null,
 			beginDate: this.begin.getValue(),
+			creatorType: this.creatorType.getValue(),
+			disambiguation: this.disambiguation.getValue(),
 			endArea: endArea ? endArea.id : null,
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
 			gender: this.gender.getValue(),
-			creatorType: this.creatorType.getValue(),
-			disambiguation: this.disambiguation.getValue(),
-			annotation: this.annotation.getValue(),
 			identifiers: this.identifiers.getValue()
 		};
 	}
@@ -102,8 +102,8 @@ class CreatorData extends React.Component {
 			initialIdentifiers = prefillData.identifierSet &&
 				prefillData.identifierSet.identifiers.map((identifier) => ({
 					id: identifier.id,
-					value: identifier.value,
-					typeId: identifier.type.id
+					typeId: identifier.type.id,
+					value: identifier.value
 				}));
 		}
 
@@ -255,23 +255,23 @@ class CreatorData extends React.Component {
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
 	creator: React.PropTypes.shape({
+		annotation: React.PropTypes.shape({
+			content: React.PropTypes.string
+		}),
 		beginArea: validators.labeledProperty,
 		beginDate: React.PropTypes.string,
-		endArea: validators.labeledProperty,
-		endDate: React.PropTypes.string,
-		ended: React.PropTypes.bool,
-		gender: validators.namedProperty,
 		creatorType: validators.labeledProperty,
 		disambiguation: React.PropTypes.shape({
 			comment: React.PropTypes.string
 		}),
-		annotation: React.PropTypes.shape({
-			content: React.PropTypes.string
-		}),
+		endArea: validators.labeledProperty,
+		endDate: React.PropTypes.string,
+		ended: React.PropTypes.bool,
+		gender: validators.namedProperty,
 		identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 			id: React.PropTypes.number,
-			value: React.PropTypes.string,
-			typeId: React.PropTypes.number
+			typeId: React.PropTypes.number,
+			value: React.PropTypes.string
 		}))
 	}),
 	creatorTypes: React.PropTypes.arrayOf(validators.labeledProperty),
@@ -279,9 +279,9 @@ CreatorData.propTypes = {
 	identifierTypes: React.PropTypes.arrayOf(
 		validators.labeledProperty
 	),
-	visible: React.PropTypes.bool,
 	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func
+	onNextClick: React.PropTypes.func,
+	visible: React.PropTypes.bool
 };
 
 module.exports = CreatorData;

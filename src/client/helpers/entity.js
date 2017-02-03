@@ -39,24 +39,24 @@ function getLanguageAttribute(entity) {
 		entity.languageSet.languages.map(
 			(language) => language.name
 		).join(', ') : '?';
-	return {title: 'Languages', data: languages};
+	return {data: languages, title: 'Languages'};
 }
 
 function getTypeAttribute(entityType) {
 	'use strict';
-	return {title: 'Type', data: extractAttribute(entityType, 'label')};
+	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
 }
 
 function getDateAttributes(entity) {
 	'use strict';
 	const attributes = [{
-		title: 'Begin Date',
-		data: extractAttribute(entity.beginDate)
+		data: extractAttribute(entity.beginDate),
+		title: 'Begin Date'
 	}];
 	if (entity.ended) {
 		attributes.push({
-			title: 'End Date',
-			data: extractAttribute(entity.endDate)
+			data: extractAttribute(entity.endDate),
+			title: 'End Date'
 		});
 	}
 	return attributes;

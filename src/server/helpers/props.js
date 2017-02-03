@@ -23,11 +23,11 @@ module.exports.generateProps = function generateProps(req, res, props) {
 
 module.exports.extractLayoutProps = function extractLayoutProps(props) {
 	return {
+		hideSearch: props.hideSearch,
 		homepage: props.homepage,
-		siteRevision: props.siteRevision,
 		repositoryUrl: props.repositoryUrl,
-		user: props.user,
-		hideSearch: props.hideSearch
+		siteRevision: props.siteRevision,
+		user: props.user
 	};
 };
 

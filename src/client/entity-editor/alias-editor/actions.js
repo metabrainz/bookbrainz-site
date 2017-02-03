@@ -37,11 +37,11 @@ export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 export function debouncedUpdateAliasName(rowId, value) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_ALIAS_NAME,
 		payload: {
 			rowId,
 			value
-		}
+		},
+		type: UPDATE_ALIAS_NAME
 	};
 }
 
@@ -58,11 +58,11 @@ export function debouncedUpdateAliasName(rowId, value) {
 export function debouncedUpdateAliasSortName(rowId, value) {
 	return {
 		meta: {debounce: 'keystroke'},
-		type: UPDATE_ALIAS_SORT_NAME,
 		payload: {
 			rowId,
 			value
-		}
+		},
+		type: UPDATE_ALIAS_SORT_NAME
 	};
 }
 
@@ -76,11 +76,11 @@ export function debouncedUpdateAliasSortName(rowId, value) {
  **/
 export function updateAliasLanguage(rowId, value) {
 	return {
-		type: UPDATE_ALIAS_LANGUAGE,
 		payload: {
 			rowId,
 			value
-		}
+		},
+		type: UPDATE_ALIAS_LANGUAGE
 	};
 }
 
@@ -94,11 +94,11 @@ export function updateAliasLanguage(rowId, value) {
  **/
 export function updateAliasPrimary(rowId, value) {
 	return {
-		type: UPDATE_ALIAS_PRIMARY,
 		payload: {
 			rowId,
 			value
-		}
+		},
+		type: UPDATE_ALIAS_PRIMARY
 	};
 }
 
@@ -115,8 +115,8 @@ export function addAliasRow() {
 	/* Prepend 'n' here to indicate new alias, and avoid conflicts with IDs of
 	 * existing aliases. */
 	return {
-		type: ADD_ALIAS_ROW,
-		payload: `n${nextAliasRowId++}`
+		payload: `n${nextAliasRowId++}`,
+		type: ADD_ALIAS_ROW
 	};
 }
 
@@ -129,8 +129,8 @@ export function addAliasRow() {
  **/
 export function removeAliasRow(rowId) {
 	return {
-		type: REMOVE_ALIAS_ROW,
-		payload: rowId
+		payload: rowId,
+		type: REMOVE_ALIAS_ROW
 	};
 }
 

@@ -93,10 +93,10 @@ const IdentifierEditor = ({
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
 	identifiers: React.PropTypes.object,
-	show: React.PropTypes.bool,
-	typeOptions: React.PropTypes.array,
 	onAddIdentifier: React.PropTypes.func,
-	onClose: React.PropTypes.func
+	onClose: React.PropTypes.func,
+	show: React.PropTypes.bool,
+	typeOptions: React.PropTypes.array
 };
 
 function mapStateToProps(state) {
@@ -107,8 +107,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onClose: () => dispatch(hideIdentifierEditor()),
-		onAddIdentifier: () => dispatch(addIdentifierRow())
+		onAddIdentifier: () => dispatch(addIdentifierRow()),
+		onClose: () => dispatch(hideIdentifierEditor())
 	};
 }
 

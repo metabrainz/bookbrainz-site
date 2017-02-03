@@ -167,10 +167,10 @@ Select.propTypes = {
 	idAttribute: React.PropTypes.string,
 	labelAttribute: React.PropTypes.string,
 	multiple: React.PropTypes.bool,
+	onChange: React.PropTypes.func,
 	options: React.PropTypes.array,
 	placeholder: React.PropTypes.string,
-	select2Options: React.PropTypes.object,
-	onChange: React.PropTypes.func
+	select2Options: React.PropTypes.object
 };
 Select.defaultProps = {
 	dynamicOptions: false

@@ -86,8 +86,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		(editorJSON, titleJSON, genderJSON) => {
 			const props = propHelpers.generateProps(req, res, {
 				editor: editorJSON,
-				titles: titleJSON,
-				genders: genderJSON
+				genders: genderJSON,
+				titles: titleJSON
 			});
 			const script = '/js/editor/edit.js';
 			const markup = ReactDOMServer.renderToString(
@@ -99,7 +99,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 					/>
 				</Layout>
 			);
-			res.render('target', {props, markup, script});
+			res.render('target', {markup, props, script});
 		}
 	)
 		.catch(next);
@@ -211,8 +211,8 @@ router.get('/:id', (req, res, next) => {
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
 			const props = propHelpers.generateProps(req, res, {
-				editor: editorJSON,
 				achievement: achievementJSON,
+				editor: editorJSON,
 				tabActive: 0
 			});
 			const markup = ReactDOMServer.renderToString(
@@ -371,8 +371,8 @@ router.get('/:id/achievements', (req, res, next) => {
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
 			const props = propHelpers.generateProps(req, res, {
-				editor: editorJSON,
 				achievement: achievementJSON,
+				editor: editorJSON,
 				tabActive: 2
 			});
 			const markup = ReactDOMServer.renderToString(
@@ -388,7 +388,7 @@ router.get('/:id/achievements', (req, res, next) => {
 				</Layout>
 			);
 			const script = '/js/editor/achievement.js';
-			res.render('target', {markup, script, props});
+			res.render('target', {markup, props, script});
 		}
 	);
 });

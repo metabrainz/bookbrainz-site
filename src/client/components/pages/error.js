@@ -72,9 +72,9 @@ function ErrorPage(props) {
 ErrorPage.displayName = 'ErrorPage';
 ErrorPage.propTypes = {
 	error: React.PropTypes.shape({
+		detailedMessage: React.PropTypes.string,
 		message: React.PropTypes.string,
-		status: React.PropTypes.number,
-		detailedMessage: React.PropTypes.string
+		status: React.PropTypes.number
 	})
 };
 

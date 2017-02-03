@@ -114,9 +114,9 @@ router.get('/', async (req, res, next) => {
 function _createStaticRoute(route, title, pageComponent) {
 	router.get(route, (req, res) => {
 		res.render('page', {
-			title,
 			homepage: false,
-			markup: ReactDOMServer.renderToString(pageComponent())
+			markup: ReactDOMServer.renderToString(pageComponent()),
+			title
 		});
 	});
 }

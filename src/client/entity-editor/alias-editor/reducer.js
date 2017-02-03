@@ -23,10 +23,10 @@ import {
 import Immutable from 'immutable';
 
 const EMPTY_ALIAS = Immutable.Map({
-	name: '',
-	sortName: '',
 	language: null,
-	primary: false
+	name: '',
+	primary: false,
+	sortName: ''
 });
 
 function reducer(

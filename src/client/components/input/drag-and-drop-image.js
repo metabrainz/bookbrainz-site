@@ -25,8 +25,8 @@ class DragAndDropImage extends React.Component {
 	handleDragStart(ev) {
 		const data = {
 			id: this.props.achievementId,
-			src: this.props.src,
-			name: this.props.achievementName
+			name: this.props.achievementName,
+			src: this.props.src
 		};
 		ev.dataTransfer.setData('text', JSON.stringify(data));
 	}
