@@ -24,6 +24,7 @@ const _get = require('lodash.get');
 
 function extractAttribute(attr, path) {
 	'use strict';
+
 	if (attr) {
 		if (path) {
 			return _get(attr, path, '?');
@@ -35,6 +36,7 @@ function extractAttribute(attr, path) {
 
 function getLanguageAttribute(entity) {
 	'use strict';
+
 	const languages = (entity.languageSet && entity.languageSet.languages) ?
 		entity.languageSet.languages.map(
 			(language) => language.name
@@ -44,11 +46,13 @@ function getLanguageAttribute(entity) {
 
 function getTypeAttribute(entityType) {
 	'use strict';
+
 	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
 }
 
 function getDateAttributes(entity) {
 	'use strict';
+
 	const attributes = [{
 		data: extractAttribute(entity.beginDate),
 		title: 'Begin Date'
@@ -64,6 +68,7 @@ function getDateAttributes(entity) {
 
 function showEntityEditions(entity) {
 	'use strict';
+
 	return (
 		<div>
 			<h2>
