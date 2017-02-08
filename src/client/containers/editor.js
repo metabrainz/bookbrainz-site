@@ -30,7 +30,7 @@ const NavItem = bootstrap.NavItem;
 function EditorContainer(props) {
 	'use strict';
 
-	const {tabActive, editor, children} = this.props;
+	const {tabActive, editor, children} = props;
 
 	return (
 		<div>
