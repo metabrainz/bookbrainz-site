@@ -172,6 +172,7 @@ class EntitySearch extends React.Component {
 	}
 }
 
+// TODO: pass props to underlying Select using spread syntax
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
 	bsStyle: React.PropTypes.string,

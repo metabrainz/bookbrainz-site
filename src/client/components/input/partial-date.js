@@ -149,6 +149,7 @@ class PartialDate extends React.Component {
 	}
 }
 
+// TODO: pass props to underlying Input using spread syntax
 PartialDate.displayName = 'PartialDate';
 PartialDate.propTypes = {
 	defaultValue: React.PropTypes.string,
