@@ -51,7 +51,7 @@ PublicationPage.getAttributes = (entity) => ([getTypeAttribute(
 )]);
 PublicationPage.displayName = 'PublicationPage';
 PublicationPage.propTypes = {
-	entity: React.PropTypes.object
+	entity: React.PropTypes.object.isRequired
 };
 
 module.exports = PublicationPage;

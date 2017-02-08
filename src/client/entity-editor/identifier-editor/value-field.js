@@ -52,5 +52,9 @@ ValueField.propTypes = {
 	empty: React.PropTypes.bool,
 	error: React.PropTypes.bool
 };
+ValueField.defaultProps = {
+	empty: true,
+	error: false
+};
 
 export default ValueField;

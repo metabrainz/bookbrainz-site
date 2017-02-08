@@ -84,11 +84,12 @@ function EditorContainer(props) {
 
 EditorContainer.displayName = 'EditorContainer';
 EditorContainer.propTypes = {
+	children: React.PropType.node.isRequired,
 	editor: React.PropTypes.shape({
 		id: React.PropTypes.number,
 		name: React.PropTypes.string,
 		title: React.PropTypes.object
-	}),
+	}).isRequired,
 	tabActive: React.PropTypes.number.isRequired
 };
 

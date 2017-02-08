@@ -362,7 +362,7 @@ RelationshipRow.propTypes = {
 	collection: React.PropTypes.string,
 	entity: React.PropTypes.shape({
 		bbid: React.PropTypes.string
-	}),
+	}).isRequired,
 	onChange: React.PropTypes.func,
 	onDelete: React.PropTypes.func,
 	onSelect: React.PropTypes.func,
@@ -374,8 +374,16 @@ RelationshipRow.propTypes = {
 		source: React.PropTypes.object,
 		target: React.PropTypes.object,
 		typeId: React.PropTypes.number
-	}),
-	relationshipTypes: React.PropTypes.arrayOf(validators.labeledProperty)
+	}).isRequired,
+	relationshipTypes:
+		React.PropTypes.arrayOf(validators.labeledProperty).isRequired
+};
+RelationshipRow.defaultProps = {
+	collection: null,
+	onChange: null,
+	onDelete: null,
+	onSelect: null,
+	onSwap: null
 };
 
 module.exports = RelationshipRow;

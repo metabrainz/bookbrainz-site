@@ -72,8 +72,11 @@ Achievement.propTypes = {
 		badgeUrl: React.PropTypes.string,
 		description: React.PropTypes.string,
 		name: React.PropTypes.string
-	}),
+	}).isRequired,
 	unlocked: React.PropTypes.bool
+};
+Achievement.defaultProps = {
+	unlocked: false
 };
 
 module.exports = Achievement;

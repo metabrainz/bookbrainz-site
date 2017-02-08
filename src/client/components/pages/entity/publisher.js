@@ -54,7 +54,7 @@ PublisherPage.getAttributes = (entity) => ([
 ]);
 PublisherPage.displayName = 'PublisherPage';
 PublisherPage.propTypes = {
-	entity: React.PropTypes.object
+	entity: React.PropTypes.object.isRequired
 };
 
 module.exports = PublisherPage;

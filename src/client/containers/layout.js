@@ -205,12 +205,16 @@ class Layout extends React.Component {
 
 Layout.displayName = 'Layout';
 Layout.propTypes = {
-	children: React.PropTypes.node,
+	children: React.PropTypes.node.isRequired,
 	hideSearch: React.PropTypes.bool,
 	homepage: React.PropTypes.bool,
-	repositoryUrl: React.PropTypes.string,
-	siteRevision: React.PropTypes.string,
+	repositoryUrl: React.PropTypes.string.isRequired,
+	siteRevision: React.PropTypes.string.isRequired,
 	user: React.PropTypes.object
 };
-
+Layout.defaultProps = {
+	hideSearch: false,
+	homepage: false,
+	user: null
+};
 module.exports = Layout;

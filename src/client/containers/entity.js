@@ -281,11 +281,14 @@ class EntityContainer extends React.Component {
 EntityContainer.displayName = 'EntityContainer';
 EntityContainer.propTypes = {
 	alert: React.PropTypes.array,
-	attributes: React.PropTypes.node,
-	children: React.PropTypes.node,
-	entity: React.PropTypes.object,
-	iconName: React.PropTypes.string,
-	identifierTypes: React.PropTypes.array
+	attributes: React.PropTypes.node.isRequired,
+	children: React.PropTypes.node.isRequired,
+	entity: React.PropTypes.object.isRequired,
+	iconName: React.PropTypes.string.isRequired,
+	identifierTypes: React.PropTypes.array.isRequired
+};
+EntityContainer.defaultProps = {
+	alert: null
 };
 
 module.exports = EntityContainer;

@@ -222,9 +222,10 @@ class PublisherData extends React.Component {
 /* eslint camelcase: 0 */
 PublisherData.displayName = 'PublisherData';
 PublisherData.propTypes = {
-	identifierTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func,
+	identifierTypes:
+		React.PropTypes.arrayOf(validators.labeledProperty).isRequired,
+	onBackClick: React.PropTypes.func.isRequired,
+	onNextClick: React.PropTypes.func.isRequired,
 	publisher: React.PropTypes.shape({
 		annotation: React.PropTypes.shape({
 			content: React.PropTypes.string
@@ -242,9 +243,10 @@ PublisherData.propTypes = {
 			value: React.PropTypes.string
 		})),
 		publisherType: validators.labeledProperty
-	}),
-	publisherTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-	visible: React.PropTypes.bool
+	}).isRequired,
+	publisherTypes:
+		React.PropTypes.arrayOf(validators.labeledProperty).isRequired,
+	visible: React.PropTypes.bool.isRequired
 };
 
 module.exports = PublisherData;

@@ -169,22 +169,22 @@ function CreatorSection({
 }
 CreatorSection.displayName = 'CreatorSection';
 CreatorSection.propTypes = {
-	beginDateLabel: React.PropTypes.string,
-	beginDateValue: React.PropTypes.string,
-	creatorTypes: React.PropTypes.array,
-	endDateLabel: React.PropTypes.string,
-	endDateValue: React.PropTypes.string,
-	endedChecked: React.PropTypes.bool,
-	endedLabel: React.PropTypes.string,
-	genderOptions: React.PropTypes.array,
-	genderShow: React.PropTypes.bool,
-	genderValue: React.PropTypes.number,
-	onBeginDateChange: React.PropTypes.func,
-	onEndDateChange: React.PropTypes.func,
-	onEndedChange: React.PropTypes.func,
-	onGenderChange: React.PropTypes.func,
-	onTypeChange: React.PropTypes.func,
-	typeValue: React.PropTypes.number
+	beginDateLabel: React.PropTypes.string.isRequired,
+	beginDateValue: React.PropTypes.string.isRequired,
+	creatorTypes: React.PropTypes.array.isRequired,
+	endDateLabel: React.PropTypes.string.isRequired,
+	endDateValue: React.PropTypes.string.isRequired,
+	endedChecked: React.PropTypes.bool.isRequired,
+	endedLabel: React.PropTypes.string.isRequired,
+	genderOptions: React.PropTypes.array.isRequired,
+	genderShow: React.PropTypes.bool.isRequired,
+	genderValue: React.PropTypes.number.isRequired,
+	onBeginDateChange: React.PropTypes.func.isRequired,
+	onEndDateChange: React.PropTypes.func.isRequired,
+	onEndedChange: React.PropTypes.func.isRequired,
+	onGenderChange: React.PropTypes.func.isRequired,
+	onTypeChange: React.PropTypes.func.isRequired,
+	typeValue: React.PropTypes.number.isRequired
 };
 
 function mapStateToProps(rootState, {creatorTypes}) {

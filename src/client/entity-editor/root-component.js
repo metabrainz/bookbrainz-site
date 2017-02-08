@@ -74,7 +74,7 @@ const RootComponent = ({
 };
 RootComponent.displayName = 'RootComponent';
 RootComponent.propTypes = {
-	initialState: React.PropTypes.object
+	initialState: React.PropTypes.object.isRequired
 };
 
 export default RootComponent;

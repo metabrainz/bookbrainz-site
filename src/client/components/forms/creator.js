@@ -229,12 +229,12 @@ class CreatorForm extends React.Component {
 
 CreatorForm.displayName = 'CreatorForm';
 CreatorForm.propTypes = {
-	creator: React.PropTypes.object,
-	creatorTypes: React.PropTypes.array,
-	genders: React.PropTypes.array,
-	identifierTypes: React.PropTypes.array,
-	languages: React.PropTypes.array,
-	submissionUrl: React.PropTypes.string
+	creator: React.PropTypes.object.isRequired,
+	creatorTypes: React.PropTypes.array.isRequired,
+	genders: React.PropTypes.array.isRequired,
+	identifierTypes: React.PropTypes.array.isRequired,
+	languages: React.PropTypes.array.isRequired,
+	submissionUrl: React.PropTypes.string.isRequired
 };
 
 module.exports = CreatorForm;

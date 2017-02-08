@@ -234,11 +234,11 @@ class WorkForm extends React.Component {
 
 WorkForm.displayName = 'WorkForm';
 WorkForm.propTypes = {
-	identifierTypes: React.PropTypes.array,
-	languages: React.PropTypes.array,
-	submissionUrl: React.PropTypes.string,
-	work: React.PropTypes.object,
-	workTypes: React.PropTypes.array
+	identifierTypes: React.PropTypes.array.isRequired,
+	languages: React.PropTypes.array.isRequired,
+	submissionUrl: React.PropTypes.string.isRequired,
+	work: React.PropTypes.object.isRequired,
+	workTypes: React.PropTypes.array.isRequired
 };
 
 module.exports = WorkForm;

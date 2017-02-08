@@ -383,20 +383,21 @@ EditionData.propTypes = {
 		releaseDate: React.PropTypes.string,
 		weight: React.PropTypes.number,
 		width: React.PropTypes.number
-	}),
-	editionFormats: React.PropTypes.arrayOf(validators.labeledProperty),
+	}).isRequired,
+	editionFormats:
+		React.PropTypes.arrayOf(validators.labeledProperty).isRequired,
 	editionStatuses: React.PropTypes.arrayOf(
 		validators.labeledProperty
-	),
+	).isRequired,
 	identifierTypes: React.PropTypes.arrayOf(
 		validators.labeledProperty
-	),
-	languages: React.PropTypes.arrayOf(validators.namedProperty),
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func,
-	publication: validators.entityProperty,
-	publisher: validators.entityProperty,
-	visible: React.PropTypes.bool
+	).isRequired,
+	languages: React.PropTypes.arrayOf(validators.namedProperty).isRequired,
+	onBackClick: React.PropTypes.func.isRequired,
+	onNextClick: React.PropTypes.func.isRequired,
+	publication: validators.entityProperty.isRequired,
+	publisher: validators.entityProperty.isRequired,
+	visible: React.PropTypes.bool.isRequired
 };
 
 module.exports = EditionData;

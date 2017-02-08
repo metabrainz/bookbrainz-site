@@ -75,7 +75,7 @@ ErrorPage.propTypes = {
 		detailedMessage: React.PropTypes.string,
 		message: React.PropTypes.string,
 		status: React.PropTypes.number
-	})
+	}).isRequired
 };
 
 module.exports = ErrorPage;

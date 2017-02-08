@@ -78,5 +78,8 @@ SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
 	initialResults: React.PropTypes.array
 };
+SearchPage.defaultProps = {
+	initialResults: []
+};
 
 module.exports = SearchPage;

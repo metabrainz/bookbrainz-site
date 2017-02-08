@@ -85,7 +85,6 @@ class RelationshipEditor extends React.Component {
 		});
 
 		this.state = {
-			loadedEntities: this.props.loadedEntities,
 			numSelected: 0,
 			relationships: existing,
 			rowsSpawned: existing.length
@@ -381,17 +380,16 @@ class RelationshipEditor extends React.Component {
 
 RelationshipEditor.displayName = 'RelationshipEditor';
 RelationshipEditor.propTypes = {
-	collection: React.PropTypes.string,
 	entity: React.PropTypes.shape({
 		bbid: React.PropTypes.string
-	}),
-	loadedEntities: React.PropTypes.object,
-	relationshipTypes: React.PropTypes.arrayOf(validators.labeledProperty),
+	}).isRequired,
+	relationshipTypes:
+		React.PropTypes.arrayOf(validators.labeledProperty).isRequired,
 	relationships: React.PropTypes.arrayOf(React.PropTypes.shape({
 		source: React.PropTypes.object,
 		target: React.PropTypes.object,
 		typeId: React.PropTypes.number
-	}))
+	})).isRequired
 };
 
 module.exports = RelationshipEditor;

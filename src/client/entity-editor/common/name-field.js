@@ -54,5 +54,10 @@ NameField.propTypes = {
 	error: React.PropTypes.bool,
 	onChange: React.PropTypes.func
 };
+NameField.defaultProps = {
+	empty: true,
+	error: false,
+	onChange: null
+};
 
 export default NameField;

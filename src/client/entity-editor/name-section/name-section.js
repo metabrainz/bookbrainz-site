@@ -120,16 +120,16 @@ function NameSection({
 }
 NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
-	disambiguationDefaultValue: React.PropTypes.string,
-	disambiguationVisible: React.PropTypes.bool,
-	languageOptions: React.PropTypes.array,
-	languageValue: React.PropTypes.string,
-	nameValue: React.PropTypes.string,
-	onDisambiguationChange: React.PropTypes.func,
-	onLanguageChange: React.PropTypes.func,
-	onNameChange: React.PropTypes.func,
-	onSortNameChange: React.PropTypes.func,
-	sortNameValue: React.PropTypes.string
+	disambiguationDefaultValue: React.PropTypes.string.isRequired,
+	disambiguationVisible: React.PropTypes.bool.isRequired,
+	languageOptions: React.PropTypes.array.isRequired,
+	languageValue: React.PropTypes.string.isRequired,
+	nameValue: React.PropTypes.string.isRequired,
+	onDisambiguationChange: React.PropTypes.func.isRequired,
+	onLanguageChange: React.PropTypes.func.isRequired,
+	onNameChange: React.PropTypes.func.isRequired,
+	onSortNameChange: React.PropTypes.func.isRequired,
+	sortNameValue: React.PropTypes.string.isRequired
 };
 
 

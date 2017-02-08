@@ -100,12 +100,12 @@ function IdentifierRow({
 }
 IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 IdentifierRow.propTypes = {
-	onRemoveButtonClick: React.PropTypes.func,
-	onTypeChange: React.PropTypes.func,
-	onValueChange: React.PropTypes.func,
-	typeOptions: React.PropTypes.array,
-	typeValue: React.PropTypes.number,
-	valueValue: React.PropTypes.string
+	onRemoveButtonClick: React.PropTypes.func.isRequired,
+	onTypeChange: React.PropTypes.func.isRequired,
+	onValueChange: React.PropTypes.func.isRequired,
+	typeOptions: React.PropTypes.array.isRequired,
+	typeValue: React.PropTypes.number.isRequired,
+	valueValue: React.PropTypes.string.isRequired
 };
 
 

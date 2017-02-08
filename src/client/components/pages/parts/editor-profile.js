@@ -208,9 +208,12 @@ class EditorProfileTab extends React.Component {
 
 EditorProfileTab.displayName = 'EditorProfileTab';
 EditorProfileTab.propTypes = {
-	achievement: React.PropTypes.object,
-	editor: React.PropTypes.object,
+	achievement: React.PropTypes.object.isRequired,
+	editor: React.PropTypes.object.isRequired,
 	user: React.PropTypes.object
+};
+EditorProfileTab.defaultProps = {
+	user: null
 };
 
 module.exports = EditorProfileTab;

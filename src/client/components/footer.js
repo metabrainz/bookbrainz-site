@@ -79,8 +79,8 @@ function Footer(props) {
 
 Footer.displayName = 'Footer';
 Footer.propTypes = {
-	repositoryUrl: React.PropTypes.string,
-	siteRevision: React.PropTypes.string
+	repositoryUrl: React.PropTypes.string.isRequired,
+	siteRevision: React.PropTypes.string.isRequired
 };
 
 module.exports = Footer;

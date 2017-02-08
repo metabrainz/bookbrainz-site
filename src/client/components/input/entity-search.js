@@ -185,7 +185,7 @@ EntitySearch.propTypes = {
 	label: React.PropTypes.string,
 	labelClassName: React.PropTypes.string,
 	onChange: React.PropTypes.func,
-	options: React.PropTypes.object,
+	options: React.PropTypes.array.isRequired,
 	placeholder: React.PropTypes.string,
 	select2Options: React.PropTypes.object,
 	standalone: React.PropTypes.bool,
@@ -193,6 +193,22 @@ EntitySearch.propTypes = {
 		bbid: React.PropTypes.string
 	}),
 	wrapperClassName: React.PropTypes.string
+};
+EntitySearch.defaultProps = {
+	bsStyle: null,
+	collection: null,
+	defaultValue: null,
+	disabled: null,
+	groupClassName: null,
+	help: null,
+	label: null,
+	labelClassName: null,
+	onChange: null,
+	placeholder: null,
+	select2Options: {},
+	standalone: null,
+	value: null,
+	wrapperClassName: null
 };
 
 module.exports = EntitySearch;

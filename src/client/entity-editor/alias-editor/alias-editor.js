@@ -91,13 +91,15 @@ const AliasEditor = ({
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
-	aliases: React.PropTypes.array,
-	languageOptions: React.PropTypes.array,
-	onAddAlias: React.PropTypes.func,
-	onClose: React.PropTypes.func,
+	aliases: React.PropTypes.array.isRequired,
+	languageOptions: React.PropTypes.array.isRequired,
+	onAddAlias: React.PropTypes.func.isRequired,
+	onClose: React.PropTypes.func.isRequired,
 	show: React.PropTypes.bool
 };
-
+AliasEditor.defaultProps = {
+	show: false
+};
 
 function mapDispatchToProps(dispatch) {
 	return {

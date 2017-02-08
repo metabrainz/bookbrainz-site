@@ -81,10 +81,10 @@ function SubmissionSection({
 }
 SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
-	errorText: React.PropTypes.node,
-	onNoteChange: React.PropTypes.func,
-	onSubmitClick: React.PropTypes.func,
-	submissionUrl: React.PropTypes.string
+	errorText: React.PropTypes.node.isRequired,
+	onNoteChange: React.PropTypes.func.isRequired,
+	onSubmitClick: React.PropTypes.func.isRequired,
+	submissionUrl: React.PropTypes.string.isRequired
 };
 
 function submit(url, data) {

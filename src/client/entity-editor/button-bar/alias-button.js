@@ -50,7 +50,7 @@ function AliasButton({
 }
 AliasButton.displayName = 'AliasButton';
 AliasButton.propTypes = {
-	numAliases: React.PropTypes.number
+	numAliases: React.PropTypes.number.isRequired
 };
 
 export default AliasButton;

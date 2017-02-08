@@ -205,14 +205,18 @@ class EditionForm extends React.Component {
 
 EditionForm.displayName = 'EditionForm';
 EditionForm.propTypes = {
-	edition: React.PropTypes.object,
-	editionFormats: React.PropTypes.array,
-	editionStatuses: React.PropTypes.array,
-	identifierTypes: React.PropTypes.array,
-	languages: React.PropTypes.array,
+	edition: React.PropTypes.object.isRequired,
+	editionFormats: React.PropTypes.array.isRequired,
+	editionStatuses: React.PropTypes.array.isRequired,
+	identifierTypes: React.PropTypes.array.isRequired,
+	languages: React.PropTypes.array.isRequired,
 	publication: React.PropTypes.object,
 	publisher: React.PropTypes.object,
-	submissionUrl: React.PropTypes.string
+	submissionUrl: React.PropTypes.string.isRequired
+};
+EditionForm.defaultProps = {
+	publication: null,
+	publisher: null
 };
 
 module.exports = EditionForm;

@@ -67,7 +67,7 @@ class DragAndDrop extends React.Component {
 
 DragAndDrop.displayName = 'DragAndDrop';
 DragAndDrop.propTypes = {
-	name: React.PropTypes.string
+	name: React.PropTypes.string.isRequired
 };
 
 module.exports = DragAndDrop;

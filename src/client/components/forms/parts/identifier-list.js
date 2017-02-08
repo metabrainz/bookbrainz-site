@@ -185,8 +185,8 @@ IdentifierList.propTypes = {
 	identifiers: React.PropTypes.arrayOf(React.PropTypes.shape({
 		typeId: React.PropTypes.number,
 		value: React.PropTypes.string
-	})),
-	types: React.PropTypes.arrayOf(validators.labeledProperty)
+	})).isRequired,
+	types: React.PropTypes.arrayOf(validators.labeledProperty).isRequired
 };
 
 module.exports = IdentifierList;

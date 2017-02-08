@@ -139,7 +139,12 @@ SortNameField.propTypes = {
 	empty: React.PropTypes.bool,
 	error: React.PropTypes.bool,
 	onChange: React.PropTypes.func,
-	storedNameValue: React.PropTypes.string
+	storedNameValue: React.PropTypes.string.isRequired
+};
+SortNameField.defaultProps = {
+	empty: true,
+	error: false,
+	onChange: null
 };
 
 export default SortNameField;

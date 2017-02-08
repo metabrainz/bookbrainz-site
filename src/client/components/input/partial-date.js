@@ -160,5 +160,15 @@ PartialDate.propTypes = {
 	placeholder: React.PropTypes.string,
 	wrapperClassName: React.PropTypes.string
 };
+PartialDate.defaultProps = {
+	defaultValue: null,
+	groupClassName: null,
+	help: null,
+	label: null,
+	labelClassName: null,
+	onChange: null,
+	placeholder: null,
+	wrapperClassName: null
+};
 
 module.exports = PartialDate;

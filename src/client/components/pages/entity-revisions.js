@@ -131,8 +131,8 @@ EntityRevisions.propTypes = {
 	entity: React.PropTypes.shape({
 		defaultAlias: React.PropTypes.object,
 		disambiguation: React.PropTypes.object
-	}),
-	revisions: React.PropTypes.array
+	}).isRequired,
+	revisions: React.PropTypes.array.isRequired
 };
 
 module.exports = EntityRevisions;

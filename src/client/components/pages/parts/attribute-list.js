@@ -36,7 +36,7 @@ AttributeList.propTypes = {
 	attributes: React.PropTypes.arrayOf(React.PropTypes.shape({
 		data: React.PropTypes.any,
 		title: React.PropTypes.string
-	}))
+	})).isRequired
 };
 
 module.exports = AttributeList;

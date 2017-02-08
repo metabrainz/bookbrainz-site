@@ -131,7 +131,7 @@ class EntityDeletionForm extends React.Component {
 
 EntityDeletionForm.displayName = 'EntityDeletionForm';
 EntityDeletionForm.propTypes = {
-	entity: React.PropTypes.object
+	entity: React.PropTypes.object.isRequired
 };
 
 module.exports = EntityDeletionForm;

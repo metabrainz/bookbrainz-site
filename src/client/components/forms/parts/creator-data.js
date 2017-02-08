@@ -273,15 +273,16 @@ CreatorData.propTypes = {
 			typeId: React.PropTypes.number,
 			value: React.PropTypes.string
 		}))
-	}),
-	creatorTypes: React.PropTypes.arrayOf(validators.labeledProperty),
-	genders: React.PropTypes.arrayOf(validators.namedProperty),
+	}).isRequired,
+	creatorTypes:
+		React.PropTypes.arrayOf(validators.labeledProperty).isRequired,
+	genders: React.PropTypes.arrayOf(validators.namedProperty).isRequired,
 	identifierTypes: React.PropTypes.arrayOf(
 		validators.labeledProperty
-	),
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func,
-	visible: React.PropTypes.bool
+	).isRequired,
+	onBackClick: React.PropTypes.func.isRequired,
+	onNextClick: React.PropTypes.func.isRequired,
+	visible: React.PropTypes.bool.isRequired
 };
 
 module.exports = CreatorData;

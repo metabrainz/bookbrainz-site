@@ -194,11 +194,11 @@ class PublisherForm extends React.Component {
 
 PublisherForm.displayName = 'PublisherForm';
 PublisherForm.propTypes = {
-	identifierTypes: React.PropTypes.array,
-	languages: React.PropTypes.array,
-	publisher: React.PropTypes.object,
-	publisherTypes: React.PropTypes.array,
-	submissionUrl: React.PropTypes.string
+	identifierTypes: React.PropTypes.array.isRequired,
+	languages: React.PropTypes.array.isRequired,
+	publisher: React.PropTypes.object.isRequired,
+	publisherTypes: React.PropTypes.array.isRequired,
+	submissionUrl: React.PropTypes.string.isRequired
 };
 
 module.exports = PublisherForm;

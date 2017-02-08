@@ -186,8 +186,12 @@ class RegistrationForm extends React.Component {
 RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
 	gender: validators.namedProperty,
-	genders: React.PropTypes.arrayOf(validators.namedProperty),
+	genders: React.PropTypes.arrayOf(validators.namedProperty).isRequired,
 	name: React.PropTypes.string
+};
+RegistrationForm.defaultProps = {
+	gender: null,
+	name: null
 };
 
 module.exports = RegistrationForm;

@@ -262,7 +262,7 @@ class IndexPage extends React.Component {
 
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
-	recent: React.PropTypes.array
+	recent: React.PropTypes.array.isRequired
 };
 
 module.exports = IndexPage;

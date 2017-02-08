@@ -94,13 +94,13 @@ const CreatorData = ({
 };
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
-	aliasEditorVisible: React.PropTypes.bool,
-	creatorTypes: React.PropTypes.array,
-	genderOptions: React.PropTypes.array,
-	identifierEditorVisible: React.PropTypes.array,
-	identifierTypes: React.PropTypes.array,
-	languageOptions: React.PropTypes.array,
-	submissionUrl: React.PropTypes.string
+	aliasEditorVisible: React.PropTypes.bool.isRequired,
+	creatorTypes: React.PropTypes.array.isRequired,
+	genderOptions: React.PropTypes.array.isRequired,
+	identifierEditorVisible: React.PropTypes.array.isRequired,
+	identifierTypes: React.PropTypes.array.isRequired,
+	languageOptions: React.PropTypes.array.isRequired,
+	submissionUrl: React.PropTypes.string.isRequired
 };
 
 function mapStateToProps(rootState) {

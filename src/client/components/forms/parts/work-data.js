@@ -172,11 +172,11 @@ WorkData.displayName = 'WorkData';
 WorkData.propTypes = {
 	identifierTypes: React.PropTypes.arrayOf(
 		validators.labeledProperty
-	),
-	languages: React.PropTypes.arrayOf(validators.namedProperty),
-	onBackClick: React.PropTypes.func,
-	onNextClick: React.PropTypes.func,
-	visible: React.PropTypes.bool,
+	).isRequired,
+	languages: React.PropTypes.arrayOf(validators.namedProperty).isRequired,
+	onBackClick: React.PropTypes.func.isRequired,
+	onNextClick: React.PropTypes.func.isRequired,
+	visible: React.PropTypes.bool.isRequired,
 	work: React.PropTypes.shape({
 		annotation: React.PropTypes.shape({
 			content: React.PropTypes.string
@@ -190,8 +190,8 @@ WorkData.propTypes = {
 			value: React.PropTypes.string
 		})),
 		workType: validators.labeledProperty
-	}),
-	workTypes: React.PropTypes.arrayOf(validators.labeledProperty)
+	}).isRequired,
+	workTypes: React.PropTypes.arrayOf(validators.labeledProperty).isRequired
 };
 
 module.exports = WorkData;

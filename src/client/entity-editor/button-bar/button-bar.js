@@ -88,12 +88,12 @@ function ButtonBar({
 }
 ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
-	disambiguationVisible: React.PropTypes.bool,
-	numAliases: React.PropTypes.number,
-	numIdentifiers: React.PropTypes.number,
-	onAliasButtonClick: React.PropTypes.func,
-	onDisambiguationButtonClick: React.PropTypes.func,
-	onIdentifierButtonClick: React.PropTypes.func
+	disambiguationVisible: React.PropTypes.bool.isRequired,
+	numAliases: React.PropTypes.number.isRequired,
+	numIdentifiers: React.PropTypes.number.isRequired,
+	onAliasButtonClick: React.PropTypes.func.isRequired,
+	onDisambiguationButtonClick: React.PropTypes.func.isRequired,
+	onIdentifierButtonClick: React.PropTypes.func.isRequired
 };
 
 function mapStateToProps(rootState) {

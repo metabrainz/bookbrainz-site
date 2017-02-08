@@ -75,8 +75,10 @@ function SearchResults(props) {
 
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
-	error: React.PropTypes.string,
 	results: React.PropTypes.array
+};
+SearchResults.defaultProps = {
+	results: null
 };
 
 module.exports = SearchResults;

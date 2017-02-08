@@ -210,9 +210,9 @@ ProfileForm.propTypes = {
 		id: React.PropTypes.number,
 		name: React.PropTypes.string,
 		titleUnlockId: React.PropTypes.number
-	}),
-	genders: React.PropTypes.array,
-	titles: React.PropTypes.array
+	}).isRequired,
+	genders: React.PropTypes.array.isRequired,
+	titles: React.PropTypes.array.isRequired
 };
 
 module.exports = ProfileForm;

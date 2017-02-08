@@ -164,8 +164,8 @@ class Select extends React.Component {
 Select.displayName = 'Select2Input';
 Select.propTypes = {
 	dynamicOptions: React.PropTypes.bool,
-	idAttribute: React.PropTypes.string,
-	labelAttribute: React.PropTypes.string,
+	idAttribute: React.PropTypes.string.isRequired,
+	labelAttribute: React.PropTypes.string.isRequired,
 	multiple: React.PropTypes.bool,
 	onChange: React.PropTypes.func,
 	options: React.PropTypes.array,
@@ -173,7 +173,12 @@ Select.propTypes = {
 	select2Options: React.PropTypes.object
 };
 Select.defaultProps = {
-	dynamicOptions: false
+	dynamicOptions: false,
+	multiple: false,
+	onChange: null,
+	options: null,
+	placeholder: null,
+	select2Options: null
 };
 
 module.exports = Select;

@@ -70,7 +70,7 @@ EditorRevisionsTab.propTypes = {
 		id: React.PropTypes.number,
 		name: React.PropTypes.string,
 		revisions: React.PropTypes.array
-	})
+	}).isRequired
 };
 
 module.exports = EditorRevisionsTab;

@@ -229,9 +229,9 @@ class AliasList extends React.Component {
 
 AliasList.displayName = 'AliasList';
 AliasList.propTypes = {
-	aliases: React.PropTypes.array,
-	onNextClick: React.PropTypes.func,
-	visible: React.PropTypes.bool
+	aliases: React.PropTypes.array.isRequired,
+	onNextClick: React.PropTypes.func.isRequired,
+	visible: React.PropTypes.bool.isRequired
 };
 
 module.exports = AliasList;

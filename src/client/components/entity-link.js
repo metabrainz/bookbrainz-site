@@ -30,9 +30,9 @@ function EntityLink(props) {
 
 EntityLink.displayName = 'EntityLink';
 EntityLink.propTypes = {
-	bbid: React.PropTypes.string,
-	text: React.PropTypes.string,
-	type: React.PropTypes.string
+	bbid: React.PropTypes.string.isRequired,
+	text: React.PropTypes.string.isRequired,
+	type: React.PropTypes.string.isRequired
 };
 
 module.exports = EntityLink;

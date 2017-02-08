@@ -146,12 +146,11 @@ EditorAchievementTab.displayName = 'EditorAchievementTab';
 EditorAchievementTab.propTypes = {
 	achievement: React.PropTypes.shape({
 		model: React.PropTypes.array
-
-	}),
+	}).isRequired,
 	editor: React.PropTypes.shape({
 		authenticated: React.PropTypes.bool,
 		id: React.PropTypes.number
-	})
+	}).isRequired
 };
 
 module.exports = EditorAchievementTab;

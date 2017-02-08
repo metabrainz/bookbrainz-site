@@ -52,7 +52,7 @@ function IdentifierButton({
 }
 IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
-	numIdentifiers: React.PropTypes.number
+	numIdentifiers: React.PropTypes.number.isRequired
 };
 
 export default IdentifierButton;

@@ -237,19 +237,24 @@ class AliasRow extends React.Component {
 
 AliasRow.displayName = 'AliasRow';
 AliasRow.propTypes = {
-	aliasId: React.PropTypes.number,
-	default: React.PropTypes.bool,
-	languageId: React.PropTypes.number,
+	aliasId: React.PropTypes.number.isRequired,
+	default: React.PropTypes.bool.isRequired,
+	languageId: React.PropTypes.number.isRequired,
 	languages: React.PropTypes.arrayOf(React.PropTypes.shape({
 		id: React.PropTypes.number.isRequired,
 		name: React.PropTypes.string.isRequired
 	})).isRequired,
-	name: React.PropTypes.string,
+	name: React.PropTypes.string.isRequired,
 	onChange: React.PropTypes.func,
 	onRemove: React.PropTypes.func,
-	primary: React.PropTypes.bool,
+	primary: React.PropTypes.bool.isRequired,
 	removeHidden: React.PropTypes.bool,
-	sortName: React.PropTypes.string
+	sortName: React.PropTypes.string.isRequired
+};
+AliasRow.defaultProps = {
+	onChange: null,
+	onRemove: null,
+	removeHidden: false
 };
 
 module.exports = AliasRow;

@@ -82,5 +82,10 @@ ValidationLabel.propTypes = {
 	empty: React.PropTypes.bool,
 	error: React.PropTypes.bool
 };
+ValidationLabel.defaultProps = {
+	children: null,
+	empty: true,
+	error: false
+};
 
 export default ValidationLabel;

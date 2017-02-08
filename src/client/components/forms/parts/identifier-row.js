@@ -113,9 +113,14 @@ IdentifierRow.propTypes = {
 	onChange: React.PropTypes.func,
 	onRemove: React.PropTypes.func,
 	removeHidden: React.PropTypes.bool,
-	typeId: React.PropTypes.number,
-	types: React.PropTypes.arrayOf(validators.labeledProperty),
-	value: React.PropTypes.string
+	typeId: React.PropTypes.number.isRequired,
+	types: React.PropTypes.arrayOf(validators.labeledProperty).isRequired,
+	value: React.PropTypes.string.isRequired
+};
+IdentifierRow.defaultProps = {
+	onChange: null,
+	onRemove: null,
+	removeHidden: false
 };
 
 module.exports = IdentifierRow;

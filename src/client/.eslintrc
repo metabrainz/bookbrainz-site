@@ -49,7 +49,7 @@ rules:
     -
       beforeSelfClosing: never
   react/no-array-index-key: 1
-  react/require-default-props: 1
+  react/require-default-props: 2
   jsx-quotes: 2
   react/sort-prop-types:
     - 2

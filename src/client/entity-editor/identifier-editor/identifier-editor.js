@@ -92,11 +92,14 @@ const IdentifierEditor = ({
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
-	identifiers: React.PropTypes.object,
-	onAddIdentifier: React.PropTypes.func,
-	onClose: React.PropTypes.func,
+	identifiers: React.PropTypes.object.isRequired,
+	onAddIdentifier: React.PropTypes.func.isRequired,
+	onClose: React.PropTypes.func.isRequired,
 	show: React.PropTypes.bool,
-	typeOptions: React.PropTypes.array
+	typeOptions: React.PropTypes.array.isRequired
+};
+IdentifierEditor.defaultProps = {
+	show: false
 };
 
 function mapStateToProps(state) {

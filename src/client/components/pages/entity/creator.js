@@ -45,7 +45,7 @@ function CreatorPage(props) {
 }
 CreatorPage.displayName = 'CreatorPage';
 CreatorPage.propTypes = {
-	entity: React.PropTypes.object
+	entity: React.PropTypes.object.isRequired
 };
 CreatorPage.getAttributes = (entity) => ([
 	getTypeAttribute(entity.creatorType),

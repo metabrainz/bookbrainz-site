@@ -121,16 +121,16 @@ const AliasRow = ({
 );
 AliasRow.displayName = 'AliasEditor.AliasRow';
 AliasRow.propTypes = {
-	languageOptions: React.PropTypes.array,
-	languageValue: React.PropTypes.number,
-	nameValue: React.PropTypes.string,
-	onLanguageChange: React.PropTypes.func,
-	onNameChange: React.PropTypes.func,
-	onPrimaryClick: React.PropTypes.func,
-	onRemoveButtonClick: React.PropTypes.func,
-	onSortNameChange: React.PropTypes.func,
-	primaryChecked: React.PropTypes.bool,
-	sortNameValue: React.PropTypes.string
+	languageOptions: React.PropTypes.array.isRequired,
+	languageValue: React.PropTypes.number.isRequired,
+	nameValue: React.PropTypes.string.isRequired,
+	onLanguageChange: React.PropTypes.func.isRequired,
+	onNameChange: React.PropTypes.func.isRequired,
+	onPrimaryClick: React.PropTypes.func.isRequired,
+	onRemoveButtonClick: React.PropTypes.func.isRequired,
+	onSortNameChange: React.PropTypes.func.isRequired,
+	primaryChecked: React.PropTypes.bool.isRequired,
+	sortNameValue: React.PropTypes.string.isRequired
 };
 
 function mapDispatchToProps(dispatch, {index}) {

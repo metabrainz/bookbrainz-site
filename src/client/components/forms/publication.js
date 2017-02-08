@@ -225,11 +225,11 @@ class PublicationForm extends React.Component {
 
 PublicationForm.displayName = 'PublicationForm';
 PublicationForm.propTypes = {
-	identifierTypes: React.PropTypes.array,
-	languages: React.PropTypes.array,
-	publication: React.PropTypes.object,
-	publicationTypes: React.PropTypes.array,
-	submissionUrl: React.PropTypes.string
+	identifierTypes: React.PropTypes.array.isRequired,
+	languages: React.PropTypes.array.isRequired,
+	publication: React.PropTypes.object.isRequired,
+	publicationTypes: React.PropTypes.array.isRequired,
+	submissionUrl: React.PropTypes.string.isRequired
 };
 
 module.exports = PublicationForm;

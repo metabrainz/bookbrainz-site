@@ -231,5 +231,8 @@ RevisionPage.propTypes = {
 	revision: React.PropTypes.any.isRequired,
 	user: React.PropTypes.object
 };
+RevisionPage.defaultProps = {
+	user: null
+};
 
 module.exports = RevisionPage;
