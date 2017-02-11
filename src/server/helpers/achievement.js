@@ -260,7 +260,7 @@ function processRevisionist(editorId) {
 	return new Editor({id: editorId})
 		.fetch()
 		.then((editor) => {
-			const revisions = editor.attributes.revisionsApplied;
+			const revisions = editor.get('revisionsApplied');
 			const tiers = [
 				{
 					name: 'Revisionist III',

@@ -22,7 +22,7 @@ process.env.NODE_ENV = 'testing';
 
 const request = require('supertest');
 const status = require('http-status');
-const app = require('../app');
+const app = require('../src/server/app');
 
 describe('GET /', () => {
 	it('should return 200', (done) => {

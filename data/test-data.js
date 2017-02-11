@@ -37,8 +37,9 @@ testData.editorTypeAttribs = {
 testData.editorAttribs = {
 	id: 1,
 	name: 'bob',
-	password: 'test',
 	typeId: 1,
+	metabrainzUserId: 1,
+	cachedMetabrainzName: 'Bob',
 	revisionsApplied: 0
 };
 

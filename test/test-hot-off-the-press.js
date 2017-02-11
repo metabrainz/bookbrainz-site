@@ -81,9 +81,9 @@ module.exports = () => {
 						Achievement.processEdit(editor.id)
 					)
 					.then((edit) =>
-						edit.timeTraveller
+						edit.timeTraveller['Time Traveller']
 					);
 
-			expect(achievementPromise).to.eventually.equal(false);
+			return expect(achievementPromise).to.eventually.equal(false);
 		});
 };
