@@ -25,7 +25,9 @@ const expect = chai.expect;
 const rewire = require('rewire');
 const Promise = require('bluebird');
 const testData = require('../data/test-data.js');
-const Achievement = rewire('../src/server/helpers/achievement.js');
+const {TEST_LIB} = process.env;
+const Achievement =
+	rewire(`../${TEST_LIB ? 'lib' : 'src'}/server/helpers/achievement.js`);
 
 const creatorCreatorIThreshold = 1;
 const creatorCreatorIIThreshold = 10;
