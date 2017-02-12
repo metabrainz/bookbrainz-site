@@ -27,6 +27,15 @@ addons:
       - secure: >-
           iodugg1i+wqxRqF3+kRVdL+yTnyNnWTbPI+OZ7AccLeKVgM8yEcJrgJD55EJ/q6HhTUBF439Y0QxRyFwXyqUHQcndm4Y/erRqHsniw/w4CdJgq9At7aXc7RyaSS5644LciTpq/Ml6E34wkYG0+udhJkVfTgW1OiawHunl01vcvw=
 
+before_script:
+  - git clone https://github.com/bookbrainz/bookbrainz-sql.git
+  - psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres
+  - psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres
+  - psql -f bookbrainz-sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres
+  - psql -f bookbrainz-sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
+  - psql -f bookbrainz-sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
+  - cp ./config/testing.json.example ./config/testing.json
+
 script:
   - npm run-script test-ci
 
