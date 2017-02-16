@@ -28,9 +28,7 @@ const rewire = require('rewire');
 const Editor = require('./bookbrainz-data').Editor;
 const testData = require('../data/test-data.js');
 
-const {TEST_LIB} = process.env;
-const Achievement =
-	rewire(`../${TEST_LIB ? 'lib' : 'src'}/server/helpers/achievement.js`);
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const hotOffThePressThreshold = -7;
 

@@ -24,10 +24,8 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 const Promise = require('bluebird');
 
+const Achievement = require('../src/server/helpers/achievement');
 const Editor = require('./bookbrainz-data').Editor;
-const {TEST_LIB} = process.env;
-const Achievement =
-	require(`../${TEST_LIB ? 'lib' : 'src'}/server/helpers/achievement`);
 const testData = require('../data/test-data.js');
 
 module.exports = () => {

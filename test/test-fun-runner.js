@@ -26,10 +26,8 @@ const Promise = require('bluebird');
 const rewire = require('rewire');
 
 const Editor = require('./bookbrainz-data').Editor;
-const {TEST_LIB} = process.env;
-const Achievement =
-	rewire(`../${TEST_LIB ? 'lib' : 'src'}/server/helpers/achievement.js`);
 const testData = require('../data/test-data.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const funRunnerThreshold = 7;
 const funRunnerDays = 6;

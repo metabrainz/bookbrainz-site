@@ -22,8 +22,7 @@ process.env.NODE_ENV = 'testing';
 
 const request = require('supertest');
 const status = require('http-status');
-const {TEST_LIB} = process.env;
-const app = require(`../${TEST_LIB ? 'lib' : 'src'}/server/app`);
+const app = require('../src/server/app');
 
 describe('GET /', () => {
 	it('should return 200', (done) => {
