@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import bookbrainzData from 'bookbrainz-data';
+import config from '../config/testing.json';
 
-const config = require('../config/testing.json');
-const bookbrainzData = require('bookbrainz-data');
 bookbrainzData.init(config.database);
+
 // opens up database connection for later use in tests
-module.exports = bookbrainzData;
+export default bookbrainzData;

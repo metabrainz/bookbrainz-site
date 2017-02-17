@@ -16,22 +16,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as testData from '../data/test-data.js';
+import Promise from 'bluebird';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import rewire from 'rewire';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-const expect = chai.expect;
-const rewire = require('rewire');
-const Promise = require('bluebird');
-const testData = require('../data/test-data.js');
+const {expect} = chai;
+
 const Achievement =	rewire('../src/server/helpers/achievement.js');
 
 const limitedEditionIThreshold = 1;
 const limitedEditionIIThreshold = 10;
 const limitedEditionIIIThreshold = 100;
 
-module.exports = function tests() {
+export default function tests() {
 	beforeEach(() => testData.createLimitedEdition());
 
 	afterEach(testData.truncate);
@@ -140,4 +140,4 @@ module.exports = function tests() {
 
 			return expect(achievementPromise).to.eventually.equal(false);
 		});
-};
+}

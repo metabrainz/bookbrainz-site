@@ -16,24 +16,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as testData from '../data/test-data.js';
+import Promise from 'bluebird';
+import bookbrainzData from './bookbrainz-data';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import rewire from 'rewire';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-const expect = chai.expect;
-const Promise = require('bluebird');
-const rewire = require('rewire');
+const {expect} = chai;
+const {Editor} = bookbrainzData;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
-const Editor = require('./bookbrainz-data').Editor;
-const testData = require('../data/test-data.js');
 
 const timeTravellerThreshold = 0;
 
 const processTimeTraveller = Achievement.__get__('processTimeTraveller');
 
-module.exports = () => {
+export default function tests() {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
 			testData.createTimeTraveller()
@@ -87,4 +87,4 @@ module.exports = () => {
 
 			expect(achievementPromise).to.eventually.equal(false);
 		});
-};
+}

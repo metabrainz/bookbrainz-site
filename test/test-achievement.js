@@ -16,31 +16,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as testData from '../data/test-data.js';
+import Promise from 'bluebird';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import rewire from 'rewire';
+import testCreatorCreator from './test-creator-creator.js';
+import testExplorer from './test-explorer.js';
+import testFunRunner from './test-fun-runner.js';
+import testHotOffThePress from './test-hot-off-the-press.js';
+import testLimitedEdition from './test-limited-edition.js';
+import testMarathoner from './test-marathoner.js';
+import testPublisher from './test-publisher.js';
+import testPublisherCreator from './test-publisher-creator.js';
+import testRevisionist from './test-revisionist.js';
+import testSprinter from './test-sprinter.js';
+import testTimeTraveller from './test-time-traveller.js';
+import testWorkerBee from './test-worker-bee.js';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-const expect = chai.expect;
-const rewire = require('rewire');
-const testData = require('../data/test-data.js');
-const Promise = require('bluebird');
+const {expect} = chai;
 
 const Achievement =	rewire('../src/server/helpers/achievement.js');
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
-const testCreatorCreator = require('./test-creator-creator.js');
-const testExplorer = require('./test-explorer.js');
-const testFunRunner = require('./test-fun-runner.js');
-const testLimitedEdition = require('./test-limited-edition.js');
-const testMarathoner = require('./test-marathoner.js');
-const testPublisher = require('./test-publisher.js');
-const testPublisherCreator = require('./test-publisher-creator.js');
-const testRevisionist = require('./test-revisionist.js');
-const testSprinter = require('./test-sprinter.js');
-const testWorkerBee = require('./test-worker-bee.js');
-const testTimeTraveller = require('./test-time-traveller.js');
-const testHotOffThePress = require('./test-hot-off-the-press.js');
 
 function tests() {
 	describe('awardAchievement', () => {

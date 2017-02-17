@@ -1,8 +1,9 @@
 ---
 parserOptions:
   ecmaVersion: 8
+  sourceType: module
   ecmaFeatures:
-    jsx: true,
+    jsx: true
     modules: false
     generators: true
     experimentalObjectRestSpread: true
@@ -152,7 +153,7 @@ rules:
 
   # Strict Mode
   strict:
-    - 2
+    - 1
     - global
 
   # Variables

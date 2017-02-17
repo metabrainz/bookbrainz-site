@@ -16,21 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as testData from '../data/test-data.js';
+import Promise from 'bluebird';
+import bookbrainzData from './bookbrainz-data';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
-const expect = chai.expect;
-const Promise = require('bluebird');
-
-const Editor = require('./bookbrainz-data').Editor;
-const testData = require('../data/test-data.js');
+const {expect} = chai;
+const {Editor} = bookbrainzData;
 
 const Achievement = require('../src/server/helpers/achievement');
 const sprinterThreshold = 10;
 
-module.exports = () => {
+export default function tests() {
 	beforeEach(() => testData.createEditor()
 		.then(() =>
 			testData.createSprinter()
@@ -75,4 +74,4 @@ module.exports = () => {
 
 		return expect(achievementPromise).to.eventually.equal(false);
 	});
-};
+}

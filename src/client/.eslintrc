@@ -92,6 +92,6 @@ rules:
   react/prefer-stateless-function: 1
   react/jsx-handler-names: 1
   strict:
-    - 2
+    - 1
     - function
   no-return-assign: 0
