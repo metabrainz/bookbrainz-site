@@ -141,3 +141,5 @@ app.set('port', process.env.PORT || DEFAULT_PORT);
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);
 });
+
+module.exports = server;
