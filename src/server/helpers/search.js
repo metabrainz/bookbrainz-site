@@ -23,12 +23,8 @@ const Promise = require('bluebird');
 const ElasticSearch = require('elasticsearch');
 const _ = require('lodash');
 
-const Area = require('bookbrainz-data').Area;
-const Publication = require('bookbrainz-data').Publication;
-const Creator = require('bookbrainz-data').Creator;
-const Edition = require('bookbrainz-data').Edition;
-const Work = require('bookbrainz-data').Work;
-const Publisher = require('bookbrainz-data').Publisher;
+const bookbrainzData = require('bookbrainz-data');
+const {Area, Creator, Edition, Publication, Publisher, Work} = bookbrainzData;
 
 const utils = require('../helpers/utils');
 

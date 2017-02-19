@@ -24,10 +24,8 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const LanguageSet = require('bookbrainz-data').LanguageSet;
-const Work = require('bookbrainz-data').Work;
-const WorkHeader = require('bookbrainz-data').WorkHeader;
-const WorkRevision = require('bookbrainz-data').WorkRevision;
+const bookbrainzData = require('bookbrainz-data');
+const {LanguageSet, Work, WorkHeader, WorkRevision} = bookbrainzData;
 
 const auth = require('../../helpers/auth');
 const utils = require('../../helpers/utils');

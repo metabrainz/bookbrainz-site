@@ -24,8 +24,8 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 
-const Editor = require('bookbrainz-data').Editor;
-const EditorType = require('bookbrainz-data').EditorType;
+const bookbrainzData = require('bookbrainz-data');
+const {Editor, EditorType} = bookbrainzData;
 
 const handler = require('../helpers/handler');
 

@@ -20,17 +20,12 @@
 
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 
-const AchievementType = require('bookbrainz-data').AchievementType;
-const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
-const Editor = require('bookbrainz-data').Editor;
-const TitleType = require('bookbrainz-data').TitleType;
-const TitleUnlock = require('bookbrainz-data').TitleUnlock;
-const CreatorRevision = require('bookbrainz-data').CreatorRevision;
-const EditionRevision = require('bookbrainz-data').EditionRevision;
-const PublicationRevision = require('bookbrainz-data').PublicationRevision;
-const PublisherRevision = require('bookbrainz-data').PublisherRevision;
-const WorkRevision = require('bookbrainz-data').WorkRevision;
-const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
+const bookbrainzData = require('bookbrainz-data');
+const {
+	AchievementType, AchievementUnlock, bookshelf, CreatorRevision,
+	EditionRevision, Editor, EditorEntityVisits, PublicationRevision,
+	PublisherRevision, TitleType, TitleUnlock, WorkRevision
+} = bookbrainzData;
 
 const Promise = require('bluebird');
 const Bookshelf = require('bookbrainz-data').bookshelf;
@@ -401,7 +396,7 @@ function processSprinter(editorId) {
 		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL \'1 hour\');`;
 
-	return Bookshelf.knex.raw(rawSql)
+	return bookshelf.knex.raw(rawSql)
 		.then((out) => {
 			const tiers = [
 				{
@@ -427,7 +422,7 @@ function getEditsInDays(editorId, days) {
 		WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL \'${days} days\');`;
 
-	return Bookshelf.knex.raw(rawSql)
+	return bookshelf.knex.raw(rawSql)
 		.then((out) => out.rowCount);
 }
 

@@ -26,14 +26,11 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const Edition = require('bookbrainz-data').Edition;
-const EditionHeader = require('bookbrainz-data').EditionHeader;
-const EditionRevision = require('bookbrainz-data').EditionRevision;
-const LanguageSet = require('bookbrainz-data').LanguageSet;
-const Publication = require('bookbrainz-data').Publication;
-const Publisher = require('bookbrainz-data').Publisher;
-const PublisherSet = require('bookbrainz-data').PublisherSet;
-const ReleaseEventSet = require('bookbrainz-data').ReleaseEventSet;
+const bookbrainzData = require('bookbrainz-data');
+const {
+	Edition, EditionHeader, EditionRevision, LanguageSet, Publication,
+	Publisher, PublisherSet, ReleaseEventSet
+} = bookbrainzData;
 
 const auth = require('../../helpers/auth');
 const utils = require('../../helpers/utils');

@@ -24,9 +24,8 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const Creator = require('bookbrainz-data').Creator;
-const CreatorRevision = require('bookbrainz-data').CreatorRevision;
-const CreatorHeader = require('bookbrainz-data').CreatorHeader;
+const bookbrainzData = require('bookbrainz-data');
+const {Creator, CreatorRevision, CreatorHeader} = bookbrainzData;
 
 /* Middleware loader functions. */
 const loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;

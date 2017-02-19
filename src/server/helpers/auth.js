@@ -24,7 +24,8 @@ const MusicBrainzOAuth2Strategy =
 	require('passport-musicbrainz-oauth2').Strategy;
 const status = require('http-status');
 
-const Editor = require('bookbrainz-data').Editor;
+const bookbrainzData = require('bookbrainz-data');
+const {Editor} = bookbrainzData;
 
 const error = require('../helpers/error');
 

@@ -26,12 +26,11 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const CreatorRevision = require('bookbrainz-data').CreatorRevision;
-const EditionRevision = require('bookbrainz-data').EditionRevision;
-const PublicationRevision = require('bookbrainz-data').PublicationRevision;
-const PublisherRevision = require('bookbrainz-data').PublisherRevision;
-const Revision = require('bookbrainz-data').Revision;
-const WorkRevision = require('bookbrainz-data').WorkRevision;
+const bookbrainzData = require('bookbrainz-data');
+const {
+	CreatorRevision, EditionRevision, PublicationRevision, PublisherRevision,
+	Revision, WorkRevision
+} = bookbrainzData;
 
 const propHelpers = require('../helpers/props');
 const baseFormatter = require('../helpers/diffFormatters/base');

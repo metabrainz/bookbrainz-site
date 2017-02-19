@@ -24,9 +24,8 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const Publication = require('bookbrainz-data').Publication;
-const PublicationHeader = require('bookbrainz-data').PublicationHeader;
-const PublicationRevision = require('bookbrainz-data').PublicationRevision;
+const bookbrainzData = require('bookbrainz-data');
+const {Publication, PublicationHeader, PublicationRevision} = bookbrainzData;
 
 const auth = require('../../helpers/auth');
 const utils = require('../../helpers/utils');

@@ -26,17 +26,15 @@ const ReactDOMServer = require('react-dom/server');
 const _ = require('lodash');
 
 // XXX: Don't directly pull in bookshelf
-const bookshelf = require('bookbrainz-data').bookshelf;
+const bookbrainzData = require('bookbrainz-data');
+const {
+	Editor, Relationship, RelationshipSet, RelationshipType, Revision,
+	bookshelf
+} = bookbrainzData;
 
 const auth = require('../../helpers/auth');
 const error = require('../../helpers/error');
 const utils = require('../../helpers/utils');
-
-const Editor = require('bookbrainz-data').Editor;
-const Relationship = require('bookbrainz-data').Relationship;
-const RelationshipSet = require('bookbrainz-data').RelationshipSet;
-const RelationshipType = require('bookbrainz-data').RelationshipType;
-const Revision = require('bookbrainz-data').Revision;
 
 const loadEntityRelationships =
 	require('../../helpers/middleware').loadEntityRelationships;

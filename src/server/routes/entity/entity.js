@@ -30,16 +30,11 @@ const Log = require('log');
 const log = new Log(config.site.log);
 
 // XXX: Don't pull in bookshelf directly
-const bookshelf = require('bookbrainz-data').bookshelf;
-
-const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
-const AliasSet = require('bookbrainz-data').AliasSet;
-const Annotation = require('bookbrainz-data').Annotation;
-const Disambiguation = require('bookbrainz-data').Disambiguation;
-const EditorEntityVisits = require('bookbrainz-data').EditorEntityVisits;
-const IdentifierSet = require('bookbrainz-data').IdentifierSet;
-const Note = require('bookbrainz-data').Note;
-const Revision = require('bookbrainz-data').Revision;
+const bookbrainzData = require('bookbrainz-data');
+const {
+	AchievementUnlock, AliasSet, Annotation, Disambiguation,
+	EditorEntityVisits, IdentifierSet, Note, Revision, bookshelf
+} = bookbrainzData;
 const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');

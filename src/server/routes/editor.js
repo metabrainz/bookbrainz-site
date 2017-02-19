@@ -26,11 +26,10 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const AchievementType = require('bookbrainz-data').AchievementType;
-const AchievementUnlock = require('bookbrainz-data').AchievementUnlock;
-const Editor = require('bookbrainz-data').Editor;
-const TitleUnlock = require('bookbrainz-data').TitleUnlock;
-const Gender = require('bookbrainz-data').Gender;
+const bookbrainzData = require('bookbrainz-data');
+const {
+	AchievementType, AchievementUnlock, Editor, Gender, TitleUnlock
+} = bookbrainzData;
 
 const auth = require('../helpers/auth');
 const handler = require('../helpers/handler');

@@ -22,13 +22,10 @@
 
 /* eslint prefer-rest-params: 1, prefer-reflect: 1 */
 
-const Area = require('bookbrainz-data').Area;
-const Creator = require('bookbrainz-data').Creator;
-const Edition = require('bookbrainz-data').Edition;
-const Editor = require('bookbrainz-data').Editor;
-const Publication = require('bookbrainz-data').Publication;
-const Publisher = require('bookbrainz-data').Publisher;
-const Work = require('bookbrainz-data').Work;
+const bookbrainzData = require('bookbrainz-data');
+const {
+	Area, Creator, Edition, Editor, Publication, Publisher, Work
+} = bookbrainzData;
 const Promise = require('bluebird');
 
 /**
