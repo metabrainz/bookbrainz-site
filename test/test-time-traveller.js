@@ -18,14 +18,14 @@
 
 import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
-import bookbrainzData from './bookbrainz-data';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
-const {Editor} = bookbrainzData;
+const {Editor} = orm;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
@@ -53,7 +53,7 @@ export default function tests() {
 				new Editor({name: testData.editorAttribs.name})
 					.fetch()
 					.then((editor) =>
-						processTimeTraveller(editor.id)
+						processTimeTraveller(orm, editor.id)
 					)
 					.then((edit) =>
 						edit['Time Traveller']
@@ -79,7 +79,7 @@ export default function tests() {
 				new Editor({name: testData.editorAttribs.name})
 					.fetch()
 					.then((editor) =>
-						processTimeTraveller(editor.id)
+						processTimeTraveller(orm, editor.id)
 					)
 					.then((edit) =>
 						edit['Time Traveller']

@@ -52,6 +52,7 @@ const LicensingPage = React.createFactory(
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
+	const {orm} = req.app.locals;
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
@@ -73,7 +74,7 @@ router.get('/', async (req, res, next) => {
 		res.render('target', {markup});
 	}
 
-	const entityModels = utils.getEntityModels();
+	const entityModels = utils.getEntityModels(orm);
 
 	try {
 		let latestEntities = [];

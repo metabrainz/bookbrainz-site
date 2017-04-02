@@ -26,12 +26,6 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {
-	Edition, EditionHeader, EditionRevision, LanguageSet, Publication,
-	Publisher, PublisherSet, ReleaseEventSet
-} = bookbrainzData;
-
 const auth = require('../../helpers/auth');
 const utils = require('../../helpers/utils');
 
@@ -60,7 +54,7 @@ const router = express.Router();
 router.param(
 	'bbid',
 	makeEntityLoader(
-		Edition,
+		'Edition',
 		[
 			'publication.defaultAlias',
 			'languageSet.languages',
@@ -87,6 +81,7 @@ router.get('/:bbid', loadEntityRelationships, (req, res) => {
 });
 
 router.get('/:bbid/revisions', (req, res, next) => {
+	const {EditionRevision} = req.app.locals.orm;
 	_setEditionTitle(res);
 	entityRoutes.displayRevisions(req, res, next, EditionRevision);
 });
@@ -97,8 +92,13 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) =>
-		entityRoutes.handleDelete(req, res, EditionHeader, EditionRevision)
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {EditionHeader, EditionRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, EditionHeader, EditionRevision
+		);
+	}
 );
 
 // Creation
@@ -106,6 +106,7 @@ router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
 router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 	loadEditionStatuses, loadEditionFormats, loadLanguages,
 	(req, res, next) => {
+		const {Publication, Publisher} = req.app.locals.orm;
 		const propsPromise = {
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
@@ -176,52 +177,59 @@ const additionalEditionProps = [
 	'formatId', 'statusId'
 ];
 
-const additionalEditionSets = [
-	{
-		entityIdField: 'languageSetId',
-		idField: 'id',
-		model: LanguageSet,
-		name: 'languageSet',
-		propName: 'languages'
-	},
-	{
-		entityIdField: 'publisherSetId',
-		idField: 'bbid',
-		model: PublisherSet,
-		name: 'publisherSet',
-		propName: 'publishers'
-	},
-	{
-		entityIdField: 'releaseEventSetId',
-		idField: 'id',
-		model: ReleaseEventSet,
-		mutableFields: [
-			'date',
-			'areaId'
-		],
-		name: 'releaseEventSet',
-		propName: 'releaseEvents'
+function getAdditionalEditionSets(orm) {
+	const {LanguageSet, PublisherSet, ReleaseEventSet} = orm;
+	return [
+		{
+			entityIdField: 'languageSetId',
+			idField: 'id',
+			model: LanguageSet,
+			name: 'languageSet',
+			propName: 'languages'
+		},
+		{
+			entityIdField: 'publisherSetId',
+			idField: 'bbid',
+			model: PublisherSet,
+			name: 'publisherSet',
+			propName: 'publishers'
+		},
+		{
+			entityIdField: 'releaseEventSetId',
+			idField: 'id',
+			model: ReleaseEventSet,
+			mutableFields: [
+				'date',
+				'areaId'
+			],
+			name: 'releaseEventSet',
+			propName: 'releaseEvents'
+		}
+	];
+}
+
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	const {orm} = req.app.locals;
+	return entityRoutes.createEntity(
+		req,
+		res,
+		'Edition',
+		_.pick(req.body, additionalEditionProps),
+		getAdditionalEditionSets(orm)
+	);
+});
+
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	(req, res) => {
+		const {orm} = req.app.locals;
+		return entityRoutes.editEntity(
+			req,
+			res,
+			'Edition',
+			_.pick(req.body, additionalEditionProps),
+			getAdditionalEditionSets(orm)
+		);
 	}
-];
-
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
-	entityRoutes.createEntity(
-		req,
-		res,
-		'Edition',
-		_.pick(req.body, additionalEditionProps),
-		additionalEditionSets
-	)
-);
-
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
-	entityRoutes.editEntity(
-		req,
-		res,
-		'Edition',
-		_.pick(req.body, additionalEditionProps),
-		additionalEditionSets
-	)
 );
 
 module.exports = router;

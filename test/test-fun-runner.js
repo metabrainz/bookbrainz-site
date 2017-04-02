@@ -18,14 +18,14 @@
 
 import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
-import bookbrainzData from './bookbrainz-data';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
-const {Editor} = bookbrainzData;
+const {Editor} = orm;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
@@ -44,7 +44,7 @@ export default function tests() {
 	it('should be given to someone with a revision a day for a week',
 		() => {
 			Achievement.__set__({
-				getEditsInDays: (editorId, days) => {
+				getEditsInDays: (_orm, editorId, days) => {
 					let editPromise;
 					if (days === funRunnerDays) {
 						editPromise = Promise.resolve(funRunnerThreshold);
@@ -60,7 +60,7 @@ export default function tests() {
 			})
 			.fetch()
 			.then((editor) =>
-				Achievement.processEdit(editor.id)
+				Achievement.processEdit(orm, editor.id)
 			)
 			.then((edit) =>
 				edit.funRunner['Fun Runner']
@@ -93,7 +93,7 @@ export default function tests() {
 			})
 			.fetch()
 			.then((editor) =>
-				Achievement.processEdit(editor.id)
+				Achievement.processEdit(orm, editor.id)
 			)
 			.then((edit) =>
 				edit.funRunner['Fun Runner']

@@ -22,10 +22,6 @@
 
 /* eslint prefer-rest-params: 1, prefer-reflect: 1 */
 
-const bookbrainzData = require('bookbrainz-data');
-const {
-	Area, Creator, Edition, Editor, Publication, Publisher, Work
-} = bookbrainzData;
 const Promise = require('bluebird');
 
 /**
@@ -42,9 +38,11 @@ function getEntityLink(entity) {
 /**
  * Returns all entity models defined in bookbrainz-data-js
  *
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @returns {object} - Object mapping model name to the entity model
  */
-function getEntityModels() {
+function getEntityModels(orm) {
+	const {Creator, Edition, Publication, Publisher, Work} = orm;
 	return {
 		Creator,
 		Edition,
@@ -57,14 +55,15 @@ function getEntityModels() {
 /**
  * Retrieves the Bookshelf entity model with the given the model name
  *
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {string} type - Name or type of model
  * @throws {Error} Throws a custom error if the param 'type' does not
  * map to a model
  * @returns {object} - Bookshelf model object with the type specified in the
  * single param
  */
-function getEntityModelByType(type) {
-	const entityModels = getEntityModels();
+function getEntityModelByType(orm, type) {
+	const entityModels = getEntityModels(orm);
 
 	if (!entityModels[type]) {
 		throw new Error('Unrecognized entity type');
@@ -149,12 +148,14 @@ function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
 /**
  * Adds 1 to the edit count of the specified editor
  *
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {string} id - row ID of editor to be updated
  * @param {object} transacting - Bookshelf transaction object (must be in
  * progress)
  * @returns {Promise} - Resolves to the updated editor model
  */
-function incrementEditorEditCountById(id, transacting) {
+function incrementEditorEditCountById(orm, id, transacting) {
+	const {Editor} = orm;
 	return new Editor({id})
 		.fetch({transacting})
 		.then((editor) => {

@@ -24,9 +24,6 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {Creator, CreatorRevision, CreatorHeader} = bookbrainzData;
-
 /* Middleware loader functions. */
 const loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
 const loadEntityRelationships =
@@ -52,7 +49,7 @@ const router = express.Router();
 router.param(
 	'bbid',
 	makeEntityLoader(
-		Creator,
+		'Creator',
 		['creatorType', 'gender', 'beginArea', 'endArea'],
 		'Creator not found'
 	)
@@ -77,11 +74,17 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) =>
-		entityRoutes.handleDelete(req, res, CreatorHeader, CreatorRevision)
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {CreatorHeader, CreatorRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, CreatorHeader, CreatorRevision
+		);
+	}
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
+	const {CreatorRevision} = req.app.locals.orm;
 	_setCreatorTitle(res);
 	entityRoutes.displayRevisions(req, res, next, CreatorRevision);
 });

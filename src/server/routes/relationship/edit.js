@@ -25,13 +25,6 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const _ = require('lodash');
 
-// XXX: Don't directly pull in bookshelf
-const bookbrainzData = require('bookbrainz-data');
-const {
-	Editor, Relationship, RelationshipSet, RelationshipType, Revision,
-	bookshelf
-} = bookbrainzData;
-
 const auth = require('../../helpers/auth');
 const error = require('../../helpers/error');
 const utils = require('../../helpers/utils');
@@ -45,8 +38,8 @@ const EditForm = React.createFactory(
 
 const relationshipHelper = {};
 
-function getEntityByType(entity, withRelated, transacting) {
-	const model = utils.getEntityModelByType(entity.type);
+function getEntityByType(orm, entity, withRelated, transacting) {
+	const model = utils.getEntityModelByType(orm, entity.type);
 
 	return model.forge({bbid: entity.bbid}).fetch({
 		transacting,
@@ -85,11 +78,12 @@ function copyRelationshipsAndAdd(
 	});
 }
 
-function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
+function addRelationshipToEntity(orm, transacting, entityJSON, rel, revision) {
+	const {RelationshipSet} = orm;
 	const newRelationshipSetPromise =
 		new RelationshipSet().save(null, {transacting});
 	const entityPromise =
-		getEntityByType(entityJSON, 'relationshipSet', transacting);
+		getEntityByType(orm, entityJSON, 'relationshipSet', transacting);
 
 	// Add all the old relationships to the new set, plus the new relationship
 	const relationshipsBuiltPromise =
@@ -138,7 +132,8 @@ function addRelationshipToEntity(transacting, entityJSON, rel, revision) {
 	);
 }
 
-function createRelationship(relationship, editorJSON) {
+function createRelationship(orm, relationship, editorJSON) {
+	const {Editor, Relationship, Revision, bookshelf} = orm;
 	return bookshelf.transaction((transacting) => {
 		const editorUpdatePromise = new Editor({id: editorJSON.id})
 			.fetch({transacting})
@@ -167,13 +162,13 @@ function createRelationship(relationship, editorJSON) {
 		return Promise.join(newRelationshipPromise, newRevisionPromise,
 			(newRelationship, newRevision) => {
 				const sourcePromise = addRelationshipToEntity(
-					transacting, relationship.source, newRelationship,
+					orm, transacting, relationship.source, newRelationship,
 					newRevision
 				);
 
 				const targetPromise = sourcePromise.then(() =>
 					addRelationshipToEntity(
-						transacting, relationship.target, newRelationship,
+						orm, transacting, relationship.target, newRelationship,
 						newRevision
 					)
 				);
@@ -189,7 +184,9 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 	router.get('/:bbid/relationships', auth.isAuthenticated,
 		loadEntityRelationships,
 		(req, res, next) => {
-			const relationshipTypesPromise = new RelationshipType().fetchAll();
+			const {RelationshipType} = req.app.locals.orm;
+			const relationshipTypesPromise =
+				new RelationshipType().fetchAll();
 
 			const loadedEntities = {};
 			res.locals.entity.relationships.forEach((relationship) => {
@@ -224,6 +221,7 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 
 	router.post('/:bbid/relationships/handler', auth.isAuthenticatedForHandler,
 		(req, res) => {
+			const {orm} = req.app.locals;
 			function relationshipValid(relationship) {
 				return _.has(relationship, 'typeId') &&
 					_.has(relationship, 'source.bbid') &&
@@ -238,7 +236,9 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 						return null;
 					}
 
-					return createRelationship(rel, req.session.passport.user);
+					return createRelationship(
+						orm, rel, req.session.passport.user
+					);
 				})
 			);
 

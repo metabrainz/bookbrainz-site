@@ -26,11 +26,6 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {
-	AchievementType, AchievementUnlock, Editor, Gender, TitleUnlock
-} = bookbrainzData;
-
 const auth = require('../helpers/auth');
 const handler = require('../helpers/handler');
 const propHelpers = require('../helpers/props');
@@ -52,6 +47,7 @@ const ProfileForm = React.createFactory(
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
+	const {Editor, Gender, TitleUnlock} = req.app.locals.orm;
 	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch({
 			withRelated: ['area', 'gender']
@@ -105,6 +101,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 });
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	const {Editor} = req.app.locals.orm;
 	const editorJSONPromise = new Promise((resolve) => {
 		if (req.user && req.body.id === req.user.id) {
 			resolve();
@@ -147,6 +144,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 });
 
 router.get('/:id', (req, res, next) => {
+	const {AchievementUnlock, Editor, TitleUnlock} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
 	const editorJSONPromise = new Editor({id: userId})
@@ -233,6 +231,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 router.get('/:id/revisions', (req, res, next) => {
+	const {Editor, TitleUnlock} = req.app.locals.orm;
 	new Editor({id: parseInt(req.params.id, 10)})
 		.fetch({
 			require: true,
@@ -306,6 +305,9 @@ function setAchievementUnlockedField(achievements, unlockIds) {
 }
 
 router.get('/:id/achievements', (req, res, next) => {
+	const {
+		AchievementType, AchievementUnlock, Editor, TitleUnlock
+	} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 	const editorJSONPromise = new Editor({id: userId})
 		.fetch({
@@ -392,7 +394,8 @@ router.get('/:id/achievements', (req, res, next) => {
 	);
 });
 
-function rankUpdate(editorId, bodyRank, rank) {
+function rankUpdate(orm, editorId, bodyRank, rank) {
+	const {AchievementUnlock} = orm;
 	return new AchievementUnlock({
 		editorId,
 		profileRank: rank
@@ -425,6 +428,8 @@ function rankUpdate(editorId, bodyRank, rank) {
 }
 
 router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
+	const {orm} = req.app.locals;
+	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
 	const editorPromise = new Editor({id: userId})
 		.fetch({
@@ -443,9 +448,9 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 			return editorJSON;
 		});
 
-	const rankOnePromise = rankUpdate(req.params.id, req.body.rank1, 1);
-	const rankTwoPromise = rankUpdate(req.params.id, req.body.rank2, 2);
-	const rankThreePromise = rankUpdate(req.params.id, req.body.rank3, 3);
+	const rankOnePromise = rankUpdate(orm, req.params.id, req.body.rank1, 1);
+	const rankTwoPromise = rankUpdate(orm, req.params.id, req.body.rank2, 2);
+	const rankThreePromise = rankUpdate(orm, req.params.id, req.body.rank3, 3);
 
 
 	const rankPromise =

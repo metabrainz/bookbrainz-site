@@ -16,11 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import bookbrainzData from '../test/bookbrainz-data';
+import orm from '../test/bookbrainz-data';
+
 const {
-	bookshelf, Editor, EditorType, AchievementType, TitleType, Revision
-} = bookbrainzData;
-const utils = require('../node_modules/bookbrainz-data/util.js');
+	bookshelf, util, Editor, EditorType, AchievementType, TitleType, Revision
+} = orm;
 
 export const editorTypeAttribs = {
 	id: 1,
@@ -502,7 +502,7 @@ export function typeCreationHelper(revisionTypeString, rowCount) {
 }
 
 export function truncate() {
-	return utils.truncateTables(bookshelf, [
+	return util.truncateTables(bookshelf, [
 		'bookbrainz.editor',
 		'bookbrainz.editor_type',
 		'bookbrainz.achievement_type',

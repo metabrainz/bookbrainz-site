@@ -24,9 +24,6 @@ const MusicBrainzOAuth2Strategy =
 	require('passport-musicbrainz-oauth2').Strategy;
 const status = require('http-status');
 
-const bookbrainzData = require('bookbrainz-data');
-const {Editor} = bookbrainzData;
-
 const error = require('../helpers/error');
 
 const NotAuthenticatedError = require('../helpers/error').NotAuthenticatedError;
@@ -36,7 +33,8 @@ const _ = require('lodash');
 
 const config = require('./config');
 
-async function _linkMBAccount(bbUserJSON, mbUserJSON) {
+async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
+	const {Editor} = orm;
 	const fetchedEditor = await new Editor({id: bbUserJSON.id})
 		.fetch({require: true});
 
@@ -46,7 +44,8 @@ async function _linkMBAccount(bbUserJSON, mbUserJSON) {
 	});
 }
 
-function _getAccountByMBUserId(mbUserJSON) {
+function _getAccountByMBUserId(orm, mbUserJSON) {
+	const {Editor} = orm;
 	return new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
 		.fetch({require: true});
 }
@@ -56,6 +55,7 @@ function _updateCachedMBName(bbUserModel, mbUserJSON) {
 }
 
 auth.init = (app) => {
+	const {orm} = app.locals;
 	passport.use(new MusicBrainzOAuth2Strategy(
 		_.assign(
 			{
@@ -66,14 +66,15 @@ auth.init = (app) => {
 		async (req, accessToken, refreshToken, profile, done) => {
 			try {
 				if (req.user) {
-					const linkedUser = await _linkMBAccount(req.user, profile);
+					const linkedUser =
+						await _linkMBAccount(orm, req.user, profile);
 
 					// Logged in, associate
 					return done(null, linkedUser.toJSON());
 				}
 
 				// Not logged in, authenticate
-				const fetchedUser = await _getAccountByMBUserId(profile);
+				const fetchedUser = await _getAccountByMBUserId(orm, profile);
 
 				await _updateCachedMBName(fetchedUser, profile);
 

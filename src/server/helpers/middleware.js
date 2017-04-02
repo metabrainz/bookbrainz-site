@@ -21,20 +21,15 @@
 
 const Promise = require('bluebird');
 
-const bookbrainzData = require('bookbrainz-data');
-const {
-	CreatorType, EditionFormat, EditionStatus, Gender, IdentifierType,
-	Language, PublicationType, PublisherType, RelationshipSet, WorkType
-} = bookbrainzData;
-
 const renderRelationship = require('../helpers/render');
 const utils = require('../helpers/utils');
 
 const NotFoundError = require('../helpers/error').NotFoundError;
 const SiteError = require('../helpers/error').SiteError;
 
-function makeLoader(model, propName, sortFunc) {
+function makeLoader(modelName, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
+		const model = req.app.locals.orm[modelName];
 		model.fetchAll()
 			.then((results) => {
 				const resultsSerial = results.toJSON();
@@ -50,18 +45,19 @@ function makeLoader(model, propName, sortFunc) {
 
 const middleware = {};
 
-middleware.loadCreatorTypes = makeLoader(CreatorType, 'creatorTypes');
-middleware.loadEditionFormats = makeLoader(EditionFormat, 'editionFormats');
-middleware.loadEditionStatuses = makeLoader(EditionStatus, 'editionStatuses');
-middleware.loadIdentifierTypes = makeLoader(IdentifierType, 'identifierTypes');
+middleware.loadCreatorTypes = makeLoader('CreatorType', 'creatorTypes');
+middleware.loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
+middleware.loadEditionStatuses = makeLoader('EditionStatus', 'editionStatuses');
+middleware.loadIdentifierTypes =
+	makeLoader('IdentifierType', 'identifierTypes');
 middleware.loadPublicationTypes =
-	makeLoader(PublicationType, 'publicationTypes');
-middleware.loadPublisherTypes = makeLoader(PublisherType, 'publisherTypes');
-middleware.loadWorkTypes = makeLoader(WorkType, 'workTypes');
+	makeLoader('PublicationType', 'publicationTypes');
+middleware.loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
+middleware.loadWorkTypes = makeLoader('WorkType', 'workTypes');
 
-middleware.loadGenders = makeLoader(Gender, 'genders', (a, b) => a.id > b.id);
+middleware.loadGenders = makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
 
-middleware.loadLanguages = makeLoader(Language, 'languages', (a, b) => {
+middleware.loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	if (a.frequency !== b.frequency) {
 		return b.frequency - a.frequency;
 	}
@@ -70,6 +66,8 @@ middleware.loadLanguages = makeLoader(Language, 'languages', (a, b) => {
 });
 
 middleware.loadEntityRelationships = (req, res, next) => {
+	const {orm} = req.app.locals;
+	const {RelationshipSet} = orm;
 	const entity = res.locals.entity;
 
 	new Promise((resolve) => {
@@ -94,7 +92,7 @@ middleware.loadEntityRelationships = (req, res, next) => {
 				relationshipSet.related('relationships').toJSON() : [];
 
 			function getEntityWithAlias(relEntity) {
-				const model = utils.getEntityModelByType(relEntity.type);
+				const model = utils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
 					.fetch({withRelated: 'defaultAlias'});
@@ -129,7 +127,7 @@ middleware.loadEntityRelationships = (req, res, next) => {
 		.catch(next);
 };
 
-middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
+middleware.makeEntityLoader = (modelName, additionalRels, errMessage) => {
 	const relations = [
 		'aliasSet.aliases.language',
 		'annotation.lastRevision',
@@ -141,6 +139,7 @@ middleware.makeEntityLoader = (model, additionalRels, errMessage) => {
 	].concat(additionalRels);
 
 	return (req, res, next, bbid) => {
+		const model = req.app.locals.orm[modelName];
 		if (utils.isValidBBID(bbid)) {
 			return model.forge({bbid})
 				.fetch({

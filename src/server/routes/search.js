@@ -42,10 +42,11 @@ const router = express.Router();
  * browser.
  */
 router.get('/', (req, res, next) => {
+	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
 
-	search.searchByName(query, collection)
+	search.searchByName(orm, query, collection)
 		.then((entities) => ({
 			initialResults: entities,
 			query
@@ -68,10 +69,11 @@ router.get('/', (req, res, next) => {
  * filtered by collection type.
  */
 router.get('/autocomplete', (req, res) => {
+	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
 
-	const searchPromise = search.autocomplete(query, collection);
+	const searchPromise = search.autocomplete(orm, query, collection);
 
 	handler.sendPromiseResult(res, searchPromise);
 });

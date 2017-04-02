@@ -18,13 +18,13 @@
 
 import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
-import bookbrainzData from './bookbrainz-data';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import orm from './bookbrainz-data';
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
-const {Editor} = bookbrainzData;
+const {Editor} = orm;
 
 const Achievement = require('../src/server/helpers/achievement');
 
@@ -47,7 +47,7 @@ export default function tests() {
 				.save()
 			)
 			.then((editor) =>
-				Achievement.processEdit(editor.id)
+				Achievement.processEdit(orm, editor.id)
 			)
 			.then((edit) =>
 				edit.revisionist['Revisionist I']
@@ -73,7 +73,7 @@ export default function tests() {
 				.save()
 			)
 			.then((editor) =>
-				Achievement.processEdit(editor.id)
+				Achievement.processEdit(orm, editor.id)
 			)
 			.then((edit) =>
 				edit.revisionist
@@ -100,7 +100,7 @@ export default function tests() {
 						.save()
 				)
 				.then((editor) =>
-					Achievement.processEdit(editor.id)
+					Achievement.processEdit(orm, editor.id)
 				)
 				.then((edit) =>
 					edit.revisionist
@@ -127,7 +127,7 @@ export default function tests() {
 		})
 			.fetch()
 			.then((editor) =>
-				Achievement.processEdit(editor.id)
+				Achievement.processEdit(orm, editor.id)
 			)
 			.then((edit) =>
 				edit.revisionist['Revisionist I']

@@ -38,7 +38,7 @@
     "babelify": "^7.3.0",
     "bluebird": "^3.3.4",
     "body-parser": "^1.14.1",
-    "bookbrainz-data": "git+https://github.com/bookbrainz/bookbrainz-data-js.git",
+    "bookbrainz-data": "^1.0.0",
     "bootstrap": "^3.3.2",
     "browserify": "^14.0.0",
     "catw": "^1.0.1",

@@ -20,15 +20,8 @@
 
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 
-const bookbrainzData = require('bookbrainz-data');
-const {
-	AchievementType, AchievementUnlock, bookshelf, CreatorRevision,
-	EditionRevision, Editor, EditorEntityVisits, PublicationRevision,
-	PublisherRevision, TitleType, TitleUnlock, WorkRevision
-} = bookbrainzData;
 
 const Promise = require('bluebird');
-const Bookshelf = require('bookbrainz-data').bookshelf;
 const AwardNotUnlockedError = require('./error.js').AwardNotUnlockedError;
 const _ = require('lodash');
 
@@ -72,13 +65,15 @@ function awardUnlock(UnlockType, awardAttribs) {
 
 /**
  * Awards an Achievement
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} editorId - The editor the achievement will be awarded to
  * @param {string} achievementName - Name of achievement in database
  * @returns {object} - {achievementName: unlock} where unlock is JSON returned
  * from awardUnlock
  * @memberof module:Achievement
  */
-function awardAchievement(editorId, achievementName) {
+function awardAchievement(orm, editorId, achievementName) {
+	const {AchievementType, AchievementUnlock} = orm;
 	return new AchievementType({name: achievementName})
 		.fetch()
 		.then((achievementTier) => {
@@ -110,13 +105,15 @@ function awardAchievement(editorId, achievementName) {
 
 /**
  * Awards a Title
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} editorId - The editor the title will be assigned to
  * @param {object} tier - Achievement Tier the Title (if it exists) belongs to
  * @returns {object} - {tier.titleName: unlock} where unlock comes from
  * awardUnlock or false if the title is not in the tier
  * @memberof module:Achievement
  */
-function awardTitle(editorId, tier) {
+function awardTitle(orm, editorId, tier) {
+	const {TitleType, TitleUnlock} = orm;
 	let titlePromise;
 	if (tier.titleName) {
 		titlePromise = new TitleType({title: tier.titleName})
@@ -178,6 +175,7 @@ function awardListToAwardObject(awardList) {
 /**
  * Takes a list of achievement 'tiers' and awards the related achievement and
  * title if the signal is greater than or equal to the threshold
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} signal - Value tier threshold will be compared against
  * @param {int} editorId - Editor to award achievements/titles to
  * @param {object} tiers - Object with threshold and relatedachievement/title
@@ -190,13 +188,13 @@ function awardListToAwardObject(awardList) {
  * @returns {object} - Returns a track of achievements keyed by achievement
  * name/title containing their respective unlockJSON each tier
  */
-function testTiers(signal, editorId, tiers) {
+function testTiers(orm, signal, editorId, tiers) {
 	const tierPromise = tiers.map((tier) => {
 		let tierOut;
 		if (signal >= tier.threshold) {
 			tierOut = Promise.join(
-				awardAchievement(editorId, tier.name),
-				awardTitle(editorId, tier),
+				awardAchievement(orm, editorId, tier.name),
+				awardTitle(orm, editorId, tier),
 				(achievementUnlock, title) => {
 					const out = [];
 					if (title) {
@@ -251,7 +249,8 @@ function getTypeCreation(revisionType, revisionString, editor) {
 		.then((out) => out.length);
 }
 
-function processRevisionist(editorId) {
+function processRevisionist(orm, editorId) {
+	const {Editor} = orm;
 	return new Editor({id: editorId})
 		.fetch()
 		.then((editor) => {
@@ -271,11 +270,12 @@ function processRevisionist(editorId) {
 					threshold: 1
 				}
 			];
-			return testTiers(revisions, editorId, tiers);
+			return testTiers(orm, revisions, editorId, tiers);
 		});
 }
 
-function processCreatorCreator(editorId) {
+function processCreatorCreator(orm, editorId) {
+	const {CreatorRevision} = orm;
 	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
@@ -293,11 +293,12 @@ function processCreatorCreator(editorId) {
 					threshold: 1
 				}
 			];
-			return testTiers(rowCount, editorId, tiers);
+			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
 
-function processLimitedEdition(editorId) {
+function processLimitedEdition(orm, editorId) {
+	const {EditionRevision} = orm;
 	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
@@ -315,11 +316,12 @@ function processLimitedEdition(editorId) {
 					threshold: 1
 				}
 			];
-			return testTiers(rowCount, editorId, tiers);
+			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
 
-function processPublisher(editorId) {
+function processPublisher(orm, editorId) {
+	const {PublicationRevision} = orm;
 	return getTypeCreation(new PublicationRevision(),
 		'publication_revision',
 		editorId)
@@ -339,11 +341,12 @@ function processPublisher(editorId) {
 					threshold: 1
 				}
 			];
-			return testTiers(rowCount, editorId, tiers);
+			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
 
-function processPublisherCreator(editorId) {
+function processPublisherCreator(orm, editorId) {
+	const {PublisherRevision} = orm;
 	return getTypeCreation(new PublisherRevision(),
 		'publisher_revision',
 		editorId)
@@ -363,11 +366,12 @@ function processPublisherCreator(editorId) {
 					threshold: 1
 				}
 			];
-			return testTiers(rowCount, editorId, tiers);
+			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
 
-function processWorkerBee(editorId) {
+function processWorkerBee(orm, editorId) {
+	const {WorkRevision} = orm;
 	return getTypeCreation(new WorkRevision(),
 		'work_revision',
 		editorId)
@@ -387,11 +391,12 @@ function processWorkerBee(editorId) {
 					threshold: 1
 				}
 			];
-			return testTiers(rowCount, editorId, tiers);
+			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
 
-function processSprinter(editorId) {
+function processSprinter(orm, editorId) {
+	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL \'1 hour\');`;
@@ -405,18 +410,20 @@ function processSprinter(editorId) {
 					titleName: 'Sprinter'
 				}
 			];
-			return testTiers(out.rowCount, editorId, tiers);
+			return testTiers(orm, out.rowCount, editorId, tiers);
 		});
 }
 
 /**
  * Gets number of distinct days the editor created revisions within specified
  * time limit
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} editorId - Editor to query on
  * @param {int} days - Number of days before today to collect edits from
  * @returns {int} - Number of days edits were performed on
  */
-function getEditsInDays(editorId, days) {
+function getEditsInDays(orm, editorId, days) {
+	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
 		WHERE author_id=${editorId} \
@@ -426,8 +433,8 @@ function getEditsInDays(editorId, days) {
 		.then((out) => out.rowCount);
 }
 
-function processFunRunner(editorId) {
-	return getEditsInDays(editorId, 6)
+function processFunRunner(orm, editorId) {
+	return getEditsInDays(orm, editorId, 6)
 		.then((rowCount) => {
 			const tiers = [
 				{
@@ -436,12 +443,12 @@ function processFunRunner(editorId) {
 					titleName: 'Fun Runner'
 				}
 			];
-			return testTiers(rowCount, editorId, tiers);
+			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
 
-function processMarathoner(editorId) {
-	return getEditsInDays(editorId, 29)
+function processMarathoner(orm, editorId) {
+	return getEditsInDays(orm, editorId, 29)
 		.then((rowCount) => {
 			const tiers = [
 				{
@@ -449,7 +456,7 @@ function processMarathoner(editorId) {
 					threshold: 30,
 					titleName: 'Marathoner'}
 			];
-			return testTiers(rowCount, editorId, tiers);
+			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
 
@@ -472,10 +479,12 @@ function achievementToUnlockId(achievementUnlock) {
 
 /**
  * Gets days since edition release date, positive implies released in future
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} revisionId - Revision to get release date of
  * @returns {int} - Days since edition was released
  */
-function getEditionDateDifference(revisionId) {
+function getEditionDateDifference(orm, revisionId) {
+	const {EditionRevision} = orm;
 	return new EditionRevision({id: revisionId}).fetch()
 		.then((edition) =>
 			edition.related('data').fetch()
@@ -509,21 +518,21 @@ function getEditionDateDifference(revisionId) {
 		.catch(() => Promise.reject(new Error('no date attribute')));
 }
 
-function processTimeTraveller(editorId, revisionId) {
-	return getEditionDateDifference(revisionId)
+function processTimeTraveller(orm, editorId, revisionId) {
+	return getEditionDateDifference(orm, revisionId)
 		.then((diff) => {
 			const tiers = [{
 				name: 'Time Traveller',
 				threshold: 0,
 				titleName: 'Time Traveller'
 			}];
-			return testTiers(diff, editorId, tiers);
+			return testTiers(orm, diff, editorId, tiers);
 		})
 		.catch((err) => ({'Time Traveller': err}));
 }
 
-function processHotOffThePress(editorId, revisionId) {
-	return getEditionDateDifference(revisionId)
+function processHotOffThePress(orm, editorId, revisionId) {
+	return getEditionDateDifference(orm, revisionId)
 		.then((diff) => {
 			let achievementPromise;
 			if (diff < 0) {
@@ -532,7 +541,7 @@ function processHotOffThePress(editorId, revisionId) {
 					threshold: -7,
 					titleName: 'Hot Off the Press'
 				}];
-				achievementPromise = testTiers(diff, editorId, tiers);
+				achievementPromise = testTiers(orm, diff, editorId, tiers);
 			}
 			else {
 				achievementPromise = Promise.resolve(
@@ -544,19 +553,21 @@ function processHotOffThePress(editorId, revisionId) {
 		.catch((err) => ({'Hot Off the Press': err}));
 }
 
-/*
+/**
  * Returns number of distinct entities viewed by an editor
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} editorId - Editor to get views for
  * @returns {int} - Number of views user has
  */
-function getEntityVisits(editorId) {
+function getEntityVisits(orm, editorId) {
+	const {EditorEntityVisits} = orm;
 	return new EditorEntityVisits()
 		.where(_.snakeCase('editorId'), editorId)
 		.fetchAll({require: true})
 		.then((visits) => visits.length);
 }
 
-function processExplorer(editorId) {
+function processExplorer(orm, editorId) {
 	return getEntityVisits(editorId)
 		.then((visits) => {
 			const tiers = [
@@ -574,15 +585,15 @@ function processExplorer(editorId) {
 					titleName: 'Explorer'
 				}
 			];
-			return testTiers(visits, editorId, tiers);
+			return testTiers(orm, visits, editorId, tiers);
 		})
 		.catch((err) => ({Explorer: err}));
 }
 
 
-achievement.processPageVisit = (userId) =>
+achievement.processPageVisit = (orm, userId) =>
 	Promise.join(
-		processExplorer(userId),
+		processExplorer(orm, userId),
 		(explorer) => {
 			let alert = [];
 			alert.push(
@@ -600,24 +611,25 @@ achievement.processPageVisit = (userId) =>
 /**
  * Run each time an edit occurs on the site, will test for each achievement
  * type
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} userId - Id of the user to query
  * @param {int} revisionId - Id of latest revision
  * @returns {object} - Output of each achievement test as well as an alert
  * containing id's for each unlocked achievement in .alert
  */
-achievement.processEdit = (userId, revisionId) =>
+achievement.processEdit = (orm, userId, revisionId) =>
 	Promise.join(
-		processRevisionist(userId),
-		processCreatorCreator(userId),
-		processLimitedEdition(userId),
-		processPublisher(userId),
-		processPublisherCreator(userId),
-		processWorkerBee(userId),
-		processSprinter(userId),
-		processFunRunner(userId),
-		processMarathoner(userId),
-		processTimeTraveller(userId, revisionId),
-		processHotOffThePress(userId, revisionId),
+		processRevisionist(orm, userId),
+		processCreatorCreator(orm, userId),
+		processLimitedEdition(orm, userId),
+		processPublisher(orm, userId),
+		processPublisherCreator(orm, userId),
+		processWorkerBee(orm, userId),
+		processSprinter(orm, userId),
+		processFunRunner(orm, userId),
+		processMarathoner(orm, userId),
+		processTimeTraveller(orm, userId, revisionId),
+		processHotOffThePress(orm, userId, revisionId),
 		(revisionist,
 		creatorCreator,
 		limitedEdition,

@@ -24,9 +24,6 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {Publication, PublicationHeader, PublicationRevision} = bookbrainzData;
-
 const auth = require('../../helpers/auth');
 const utils = require('../../helpers/utils');
 
@@ -52,7 +49,7 @@ const router = express.Router();
 router.param(
 	'bbid',
 	makeEntityLoader(
-		Publication,
+		'Publication',
 		[
 			'publicationType',
 			'editions.defaultAlias',
@@ -82,16 +79,17 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) =>
-		entityRoutes.handleDelete(
-			req,
-			res,
-			PublicationHeader,
-			PublicationRevision
-		)
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {PublicationHeader, PublicationRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, PublicationHeader, PublicationRevision
+		);
+	}
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
+	const {PublicationRevision} = req.app.locals.orm;
 	_setPublicationTitle(res);
 	entityRoutes.displayRevisions(req, res, next, PublicationRevision);
 });

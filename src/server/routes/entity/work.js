@@ -24,9 +24,6 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {LanguageSet, Work, WorkHeader, WorkRevision} = bookbrainzData;
-
 const auth = require('../../helpers/auth');
 const utils = require('../../helpers/utils');
 
@@ -50,7 +47,7 @@ const router = express.Router();
 router.param(
 	'bbid',
 	makeEntityLoader(
-		Work,
+		'Work',
 		['workType', 'languageSet.languages'],
 		'Work not found'
 	)
@@ -75,11 +72,17 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) =>
-		entityRoutes.handleDelete(req, res, WorkHeader, WorkRevision)
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {WorkHeader, WorkRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, WorkHeader, WorkRevision
+		);
+	}
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
+	const {WorkRevision} = req.app.locals.orm;
 	_setWorkTitle(res);
 	entityRoutes.displayRevisions(req, res, next, WorkRevision);
 });
@@ -135,26 +138,36 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-const additionalWorkSets = [
-	{
-		entityIdField: 'languageSetId',
-		idField: 'id',
-		model: LanguageSet,
-		name: 'languageSet',
-		propName: 'languages'
+function getAdditionalWorkSets(orm) {
+	const {LanguageSet} = orm;
+	return [
+		{
+			entityIdField: 'languageSetId',
+			idField: 'id',
+			model: LanguageSet,
+			name: 'languageSet',
+			propName: 'languages'
+		}
+	];
+}
+
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	const {orm} = req.app.locals;
+
+	return entityRoutes.createEntity(
+		req, res, 'Work', _.pick(req.body, 'typeId'), getAdditionalWorkSets(orm)
+	);
+});
+
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	(req, res) => {
+		const {orm} = req.app.locals;
+
+		return entityRoutes.editEntity(
+			req, res, 'Work', _.pick(req.body, 'typeId'),
+			getAdditionalWorkSets(orm)
+		);
 	}
-];
-
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
-	entityRoutes.createEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
-	)
-);
-
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
-	entityRoutes.editEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId'), additionalWorkSets
-	)
 );
 
 module.exports = router;

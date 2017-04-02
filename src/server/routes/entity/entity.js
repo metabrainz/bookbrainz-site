@@ -29,12 +29,6 @@ const config = require('../../helpers/config');
 const Log = require('log');
 const log = new Log(config.site.log);
 
-// XXX: Don't pull in bookshelf directly
-const bookbrainzData = require('bookbrainz-data');
-const {
-	AchievementUnlock, AliasSet, Annotation, Disambiguation,
-	EditorEntityVisits, IdentifierSet, Note, Revision, bookshelf
-} = bookbrainzData;
 const handler = require('../../helpers/handler');
 const search = require('../../helpers/search');
 const utils = require('../../helpers/utils');
@@ -65,6 +59,8 @@ const entityComponents = {
 };
 
 module.exports.displayEntity = (req, res) => {
+	const {orm} = req.app.locals;
+	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const entity = res.locals.entity;
 	// Get unique identifier types for display
 	const identifierTypes = entity.identifierSet &&
@@ -81,7 +77,7 @@ module.exports.displayEntity = (req, res) => {
 		})
 		.save(null, {method: 'insert'})
 		.then(() =>
-			achievement.processPageVisit(res.locals.user.id)
+			achievement.processPageVisit(orm, res.locals.user.id)
 		)
 		.catch(() =>
 			// error caused by duplicates we do not want in database
@@ -199,7 +195,8 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 		.catch(next);
 };
 
-function _createNote(content, editor, revision, transacting) {
+function _createNote(orm, content, editor, revision, transacting) {
+	const {Note} = orm;
 	if (content) {
 		const revisionId = revision.get('id');
 		return new Note({
@@ -214,23 +211,26 @@ function _createNote(content, editor, revision, transacting) {
 }
 
 module.exports.addNoteToRevision = (req, res) => {
+	const {orm} = req.app.locals;
+	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const revision = Revision.forge({id: req.params.id});
 	const revisionNotePromise = bookshelf.transaction((transacting) =>
 		_createNote(
-			req.body.note, editorJSON, revision, transacting
+			orm, req.body.note, editorJSON, revision, transacting
 		)
 	);
 	return handler.sendPromiseResult(res, revisionNotePromise);
 };
 
-module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
+module.exports.handleDelete = (orm, req, res, HeaderModel, RevisionModel) => {
 	const entity = res.locals.entity;
+	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 
 	const entityDeletePromise = bookshelf.transaction((transacting) => {
 		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(editorJSON.id, transacting);
+			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
 
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
@@ -238,7 +238,7 @@ module.exports.handleDelete = (req, res, HeaderModel, RevisionModel) => {
 
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
-				req.body.note, editorJSON, revision, transacting
+				orm, req.body.note, editorJSON, revision, transacting
 			));
 
 		// No trigger for deletions, so manually create the <Entity>Revision
@@ -397,8 +397,9 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 }
 
 function processFormAliases(
-	transacting, oldAliasSet, oldDefaultAliasId, newAliases
+	orm, transacting, oldAliasSet, oldDefaultAliasId, newAliases
 ) {
+	const {AliasSet} = orm;
 	const oldAliases =
 		oldAliasSet ? oldAliasSet.related('aliases').toJSON() : [];
 	const aliasCompareFields =
@@ -457,7 +458,8 @@ function processFormAliases(
 	);
 }
 
-function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
+function processFormIdentifiers(orm, transacting, oldIdentSet, newIdents) {
+	const {IdentifierSet} = orm;
 	const oldIdents =
 		oldIdentSet ? oldIdentSet.related('identifiers').toJSON() : [];
 	const identCompareFields =
@@ -503,8 +505,9 @@ function processFormIdentifiers(transacting, oldIdentSet, newIdents) {
 }
 
 function processFormAnnotation(
-	transacting, oldAnnotation, newContent, revision
+	orm, transacting, oldAnnotation, newContent, revision
 ) {
+	const {Annotation} = orm;
 	const oldContent = oldAnnotation && oldAnnotation.get('content');
 
 	if (newContent === oldContent) {
@@ -518,8 +521,9 @@ function processFormAnnotation(
 }
 
 function processFormDisambiguation(
-	transacting, oldDisambiguation, newComment
+	orm, transacting, oldDisambiguation, newComment
 ) {
+	const {Disambiguation} = orm;
 	const oldComment = oldDisambiguation && oldDisambiguation.get('comment');
 
 	if (newComment === oldComment) {
@@ -581,10 +585,12 @@ module.exports.createEntity = (
 	derivedProps,
 	derivedSets
 ) => {
+	const {orm} = req.app.locals;
+	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const entityCreationPromise = bookshelf.transaction((transacting) => {
 		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(editorJSON.id, transacting);
+			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
 
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
@@ -592,25 +598,25 @@ module.exports.createEntity = (
 
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
-				req.body.note, editorJSON, revision, transacting
+				orm, req.body.note, editorJSON, revision, transacting
 			));
 
 		const aliasSetPromise = processFormAliases(
-			transacting, null, null, req.body.aliases || []
+			orm, transacting, null, null, req.body.aliases || []
 		);
 
 		const identSetPromise = processFormIdentifiers(
-			transacting, null, req.body.identifiers || []
+			orm, transacting, null, req.body.identifiers || []
 		);
 
 		const annotationPromise = newRevisionPromise.then((revision) =>
 			processFormAnnotation(
-				transacting, null, req.body.annotation, revision
+				orm, transacting, null, req.body.annotation, revision
 			)
 		);
 
 		const disambiguationPromise = processFormDisambiguation(
-			transacting, null, req.body.disambiguation
+			orm, transacting, null, req.body.disambiguation
 		);
 
 		const derivedPropsPromise = Promise.resolve(
@@ -646,7 +652,7 @@ module.exports.createEntity = (
 					revisionId: newRevision.get('id')
 				}, allProps);
 
-				const model = utils.getEntityModelByType(entityType);
+				const model = utils.getEntityModelByType(orm, entityType);
 
 				return model.forge(propsToSet)
 					.save(null, {
@@ -666,6 +672,7 @@ module.exports.createEntity = (
 
 	const achievementPromise = entityCreationPromise.then((entityJSON) =>
 		achievement.processEdit(
+			orm,
 			editorJSON.id,
 			entityJSON.revisionId
 		)
@@ -691,8 +698,13 @@ module.exports.editEntity = (
 	derivedProps,
 	derivedSets
 ) => {
+	const {orm} = req.app.locals;
+	const {
+		AliasSet, Annotation, Disambiguation, IdentifierSet, Revision,
+		bookshelf
+	} = orm;
 	const editorJSON = req.session.passport.user;
-	const model = utils.getEntityModelByType(entityType);
+	const model = utils.getEntityModelByType(orm, entityType);
 
 	const entityEditPromise = bookshelf.transaction((transacting) => {
 		const currentEntity = res.locals.entity;
@@ -711,7 +723,7 @@ module.exports.editEntity = (
 		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
 			.then((oldAliasSet) =>
 				processFormAliases(
-					transacting, oldAliasSet,
+					orm, transacting, oldAliasSet,
 					oldAliasSet.get('defaultAliasId'),
 					req.body.aliases || []
 				)
@@ -727,7 +739,7 @@ module.exports.editEntity = (
 		const identSetPromise = Promise.resolve(oldIdentSetPromise)
 			.then((oldIdentifierSet) =>
 				processFormIdentifiers(
-					transacting, oldIdentifierSet,
+					orm, transacting, oldIdentifierSet,
 					req.body.identifiers || []
 				)
 			);
@@ -740,7 +752,8 @@ module.exports.editEntity = (
 			newRevisionPromise, Promise.resolve(oldAnnotationPromise),
 			(revision, oldAnnotation) =>
 				processFormAnnotation(
-					transacting, oldAnnotation, req.body.annotation, revision
+					orm, transacting, oldAnnotation, req.body.annotation,
+					revision
 				)
 			);
 
@@ -751,7 +764,7 @@ module.exports.editEntity = (
 		const disambiguationPromise = Promise.resolve(oldDisambiguationPromise)
 			.then((oldDisambiguation) =>
 				processFormDisambiguation(
-					transacting, oldDisambiguation, req.body.disambiguation
+					orm, transacting, oldDisambiguation, req.body.disambiguation
 				)
 			);
 
@@ -818,6 +831,7 @@ module.exports.editEntity = (
 
 				const editorUpdatePromise =
 					utils.incrementEditorEditCountById(
+						orm,
 						editorJSON.id,
 						transacting
 					);
@@ -833,7 +847,7 @@ module.exports.editEntity = (
 					);
 
 				const notePromise = _createNote(
-					req.body.note, editorJSON, newRevision, transacting
+					orm, req.body.note, editorJSON, newRevision, transacting
 				);
 
 				return Promise.join(
@@ -857,7 +871,7 @@ module.exports.editEntity = (
 				entity.toJSON()
 			)
 			.then((entityJSON) =>
-				achievement.processEdit(req.user.id, entityJSON.revisionId)
+				achievement.processEdit(orm, req.user.id, entityJSON.revisionId)
 					.then((unlock) => {
 						if (unlock.alert) {
 							entityJSON.alert = unlock.alert;

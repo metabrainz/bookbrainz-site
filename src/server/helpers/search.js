@@ -23,9 +23,6 @@ const Promise = require('bluebird');
 const ElasticSearch = require('elasticsearch');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {Area, Creator, Edition, Publication, Publisher, Work} = bookbrainzData;
-
 const utils = require('../helpers/utils');
 
 const search = {};
@@ -60,7 +57,9 @@ search.init = async (options) => {
 	return search.generateIndex();
 };
 
-function _fetchEntityModelsForESResults(results) {
+function _fetchEntityModelsForESResults(orm, results) {
+	const {Area} = orm;
+
 	if (!results.hits) {
 		return null;
 	}
@@ -80,7 +79,7 @@ function _fetchEntityModelsForESResults(results) {
 					return areaJSON;
 				});
 		}
-		const model = utils.getEntityModelByType(entityStub.type);
+		const model = utils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
 			.fetch({withRelated: ['defaultAlias']})
 			.then((entity) => entity.toJSON());
@@ -88,13 +87,13 @@ function _fetchEntityModelsForESResults(results) {
 }
 
 // Returns the results of a search translated to entity objects
-function _searchForEntities(dslQuery) {
+function _searchForEntities(orm, dslQuery) {
 	return _client.search(dslQuery)
 		.then((searchResponse) => searchResponse.hits)
-		.then((results) => _fetchEntityModelsForESResults(results));
+		.then((results) => _fetchEntityModelsForESResults(orm, results));
 }
 
-search.autocomplete = (query, collection) => {
+search.autocomplete = (orm, query, collection) => {
 	let queryBody = null;
 
 	if (utils.isValidBBID(query)) {
@@ -126,7 +125,7 @@ search.autocomplete = (query, collection) => {
 		dslQuery.type = collection;
 	}
 
-	return _searchForEntities(dslQuery);
+	return _searchForEntities(orm, dslQuery);
 };
 
 search.indexArea = (area) =>
@@ -155,7 +154,8 @@ search.refreshIndex = () =>
 	_client.indices.refresh({index: _index});
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
-search.generateIndex = async () => {
+search.generateIndex = async (orm) => {
+	const {Area, Creator, Edition, Publication, Publisher, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -285,7 +285,7 @@ search.generateIndex = async () => {
 	await search.refreshIndex();
 };
 
-search.searchByName = (name, collection) => {
+search.searchByName = (orm, name, collection) => {
 	const dslQuery = {
 		body: {
 			query: {
@@ -304,7 +304,7 @@ search.searchByName = (name, collection) => {
 		dslQuery.type = collection;
 	}
 
-	return _searchForEntities(dslQuery);
+	return _searchForEntities(orm, dslQuery);
 };
 
 module.exports = search;

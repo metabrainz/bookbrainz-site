@@ -20,6 +20,7 @@ import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import orm from './bookbrainz-data';
 import rewire from 'rewire';
 import testCreatorCreator from './test-creator-creator.js';
 import testExplorer from './test-explorer.js';
@@ -52,6 +53,7 @@ function tests() {
 				)
 				.then(() =>
 					awardAchievement(
+						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
 					)
@@ -83,6 +85,7 @@ function tests() {
 			const unlockPromise = testData.createRevisionist()
 				.then(() =>
 					awardAchievement(
+						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
 					)
@@ -95,6 +98,7 @@ function tests() {
 			const unlockPromise = testData.createEditor()
 				.then(() =>
 					awardAchievement(
+						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
 					)
@@ -113,6 +117,7 @@ function tests() {
 				)
 				.then(() =>
 					awardTitle(
+						orm,
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}
 					)
@@ -134,6 +139,7 @@ function tests() {
 			const unlockPromise = testData.createRevisionist()
 				.then(() =>
 					awardTitle(
+						orm,
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}
 					)
@@ -146,6 +152,7 @@ function tests() {
 			const unlockPromise = testData.createEditor()
 				.then(() =>
 					awardTitle(
+						orm,
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}
 					)

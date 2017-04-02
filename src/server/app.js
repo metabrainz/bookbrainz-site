@@ -33,13 +33,9 @@ const redis = require('connect-redis');
 const session = require('express-session');
 const staticCache = require('express-static-cache');
 
-const bookbrainzData = require('bookbrainz-data');
 
 const config = require('./helpers/config');
 
-// Before we start pulling in local helpers, we need to initialize the database;
-// otherwise, the models we depend on won't exist
-bookbrainzData.init(config.database);
 
 const auth = require('./helpers/auth');
 const error = require('./helpers/error');
@@ -51,6 +47,7 @@ const search = require('./helpers/search');
 const routes = require('./routes');
 
 const NotFoundError = require('./helpers/error').NotFoundError;
+import BookBrainzData from 'bookbrainz-data';
 
 Promise.config({
 	longStackTraces: true,
@@ -59,6 +56,7 @@ Promise.config({
 
 // Initialize application
 const app = express();
+app.locals.orm = BookBrainzData(config.database);
 
 const rootDir = path.join(__dirname, '../../');
 

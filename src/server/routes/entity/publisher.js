@@ -24,9 +24,6 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {Publisher, PublisherHeader, PublisherRevision} = bookbrainzData;
-
 const auth = require('../../helpers/auth');
 const utils = require('../../helpers/utils');
 
@@ -52,7 +49,7 @@ const router = express.Router();
 router.param(
 	'bbid',
 	makeEntityLoader(
-		Publisher,
+		'Publisher',
 		['publisherType', 'area'],
 		'Publisher not found'
 	)
@@ -68,6 +65,7 @@ function _setPublisherTitle(res) {
 
 router.get('/:bbid', loadEntityRelationships, (req, res, next) => {
 	// Fetch editions
+	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
 		'defaultAlias', 'disambiguation', 'releaseEventSet.releaseEvents'
 	];
@@ -90,11 +88,17 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) =>
-		entityRoutes.handleDelete(req, res, PublisherHeader, PublisherRevision)
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {PublisherHeader, PublisherRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, PublisherHeader, PublisherRevision
+		);
+	}
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
+	const {PublisherRevision} = req.app.locals.orm;
 	_setPublisherTitle(res);
 	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });

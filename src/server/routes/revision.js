@@ -26,11 +26,6 @@ const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 const _ = require('lodash');
 
-const bookbrainzData = require('bookbrainz-data');
-const {
-	CreatorRevision, EditionRevision, PublicationRevision, PublisherRevision,
-	Revision, WorkRevision
-} = bookbrainzData;
 
 const propHelpers = require('../helpers/props');
 const baseFormatter = require('../helpers/diffFormatters/base');
@@ -183,6 +178,11 @@ function diffRevisionsWithParents(revisions) {
 }
 
 router.get('/:id', (req, res, next) => {
+	const {
+		CreatorRevision, EditionRevision, PublicationRevision,
+		PublisherRevision, Revision, WorkRevision
+	} = req.app.locals.orm;
+
 	// Here, we need to get the Revision, then get all <Entity>Revision
 	// objects with the same ID, formatting each revision individually, then
 	// concatenating the diffs

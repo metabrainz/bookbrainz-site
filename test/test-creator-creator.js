@@ -20,6 +20,7 @@ import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 chai.use(chaiAsPromised);
@@ -47,7 +48,7 @@ export default function tests() {
 
 			const achievementPromise = testData.createEditor()
 				.then((editor) =>
-					Achievement.processEdit(editor.id)
+					Achievement.processEdit(orm, editor.id)
 				)
 				.then((edit) =>
 					edit.creatorCreator['Creator Creator I']
@@ -74,7 +75,7 @@ export default function tests() {
 			});
 			const achievementPromise = testData.createEditor()
 				.then((editor) =>
-					Achievement.processEdit(editor.id)
+					Achievement.processEdit(orm, editor.id)
 				)
 				.then((edit) =>
 					edit.creatorCreator['Creator Creator II']
@@ -100,7 +101,7 @@ export default function tests() {
 			});
 			const achievementPromise = testData.createEditor()
 				.then((editor) =>
-					Achievement.processEdit(editor.id)
+					Achievement.processEdit(orm, editor.id)
 				)
 				.then((edit) =>
 					edit.creatorCreator
@@ -132,7 +133,7 @@ export default function tests() {
 			});
 			const achievementPromise = testData.createEditor()
 				.then((editor) =>
-					Achievement.processEdit(editor.id)
+					Achievement.processEdit(orm, editor.id)
 				)
 				.then((edit) =>
 					edit.creatorCreator['Creator Creator I']

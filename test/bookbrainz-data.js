@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
+ * Copyright (C) 2015-2017  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import bookbrainzData from 'bookbrainz-data';
+import BookBrainzData from 'bookbrainz-data';
 import config from '../config/testing.json';
 
-bookbrainzData.init(config.database);
+const orm = BookBrainzData(config.database);
 
 // opens up database connection for later use in tests
-export default bookbrainzData;
+export default orm;

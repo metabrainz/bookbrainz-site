@@ -24,9 +24,6 @@ const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const express = require('express');
 
-const bookbrainzData = require('bookbrainz-data');
-const {Editor, EditorType} = bookbrainzData;
-
 const handler = require('../helpers/handler');
 
 const FormSubmissionError = require('../helpers/error').FormSubmissionError;
@@ -88,6 +85,8 @@ router.get('/details', loadGenders, (req, res) => {
 });
 
 router.post('/handler', (req, res) => {
+	const {Editor, EditorType} = req.app.locals.orm;
+
 	// Check whether the user is logged in - if so, redirect to profile page
 	if (req.user) {
 		return res.redirect(`/editor/${req.user.id}`);
