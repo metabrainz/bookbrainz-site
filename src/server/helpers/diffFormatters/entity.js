@@ -16,29 +16,29 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const _ = require('lodash');
-
-const formatRow = require('./base').formatRow;
-const formatChange = require('./base').formatChange;
+import * as base from './base';
+import _ from 'lodash';
 
 function formatNewAnnotation(change) {
-	return formatChange(change, 'Annotation', (side) => [side && side.content]);
+	return base.formatChange(
+		change, 'Annotation', (side) => [side && side.content]
+	);
 }
 
 function formatNewDisambiguation(change) {
-	return formatChange(
+	return base.formatChange(
 		change, 'Disambiguation', (side) => [side && side.comment]
 	);
 }
 
 function formatChangedAnnotation(change) {
-	return formatChange(change, 'Annotation', (side) => side && [side]);
+	return base.formatChange(change, 'Annotation', (side) => side && [side]);
 }
 
 function formatChangedDisambiguation(change) {
-	return formatChange(change, 'Disambiguation', (side) => side && [side]);
+	return base.formatChange(
+		change, 'Disambiguation', (side) => side && [side]
+	);
 }
 
 function formatNewAliasSet(change) {
@@ -46,13 +46,13 @@ function formatNewAliasSet(change) {
 	const changes = [];
 	if (rhs.defaultAlias && rhs.defaultAliasId) {
 		changes.push(
-			formatRow('N', 'Default Alias', null, [rhs.defaultAlias.name])
+			base.formatRow('N', 'Default Alias', null, [rhs.defaultAlias.name])
 		);
 	}
 
 	if (rhs.aliases && rhs.aliases.length) {
 		changes.push(
-			formatRow(
+			base.formatRow(
 				'N', 'Aliases', null, rhs.aliases.map((alias) => alias.name)
 			)
 		);
@@ -63,7 +63,7 @@ function formatNewAliasSet(change) {
 
 function formatAliasAddOrDelete(change) {
 	return [
-		formatChange(
+		base.formatChange(
 			change.item,
 			'Aliases',
 			(side) => side && [`${side.name} (${side.sortName})`]
@@ -74,7 +74,7 @@ function formatAliasAddOrDelete(change) {
 function formatAliasModified(change) {
 	if (change.path.length > 3 && change.path[3] === 'name') {
 		return [
-			formatChange(
+			base.formatChange(
 				change,
 				`Alias ${change.path[2]} -> Name`,
 				(side) => side && [side]
@@ -84,7 +84,7 @@ function formatAliasModified(change) {
 
 	if (change.path.length > 3 && change.path[3] === 'sortName') {
 		return [
-			formatChange(
+			base.formatChange(
 				change,
 				`Alias ${change.path[2]} -> Sort Name`,
 				(side) => side && [side]
@@ -98,7 +98,7 @@ function formatAliasModified(change) {
 		change.path[4] === 'name';
 	if (aliasLanguageChanged) {
 		return [
-			formatChange(
+			base.formatChange(
 				change,
 				`Alias ${change.path[2]} -> Language`,
 				(side) => side && [side]
@@ -108,7 +108,7 @@ function formatAliasModified(change) {
 
 	if (change.path.length > 3 && change.path[3] === 'primary') {
 		return [
-			formatChange(
+			base.formatChange(
 				change,
 				`Alias ${change.path[2]} -> Primary`,
 				(side) => !_.isNull(side) && [side.primary ? 'Yes' : 'No']
@@ -122,7 +122,7 @@ function formatAliasModified(change) {
 function formatDefaultAliasModified(change) {
 	if (change.path.length > 2 && change.path[2] === 'name') {
 		return [
-			formatChange(change, 'Default Alias', (side) => side && [side])
+			base.formatChange(change, 'Default Alias', (side) => side && [side])
 		];
 	}
 
@@ -163,7 +163,7 @@ function formatAlias(change) {
 function formatNewIdentifierSet(change) {
 	const rhs = change.rhs;
 	if (rhs.identifiers && rhs.identifiers.length > 0) {
-		return [formatRow(
+		return [base.formatRow(
 			'N', 'Identifiers', null, rhs.identifiers.map(
 				(identifier) => `${identifier.type.label}: ${identifier.value}`
 			)
@@ -175,7 +175,7 @@ function formatNewIdentifierSet(change) {
 
 function formatIdentifierAddOrDelete(change) {
 	return [
-		formatChange(
+		base.formatChange(
 			change.item,
 			`Identifier ${change.index}`,
 			(side) => side && [`${side.type.label}: ${side.value}`]
@@ -186,7 +186,7 @@ function formatIdentifierAddOrDelete(change) {
 function formatIdentifierModified(change) {
 	if (change.path.length > 3 && change.path[3] === 'value') {
 		return [
-			formatChange(
+			base.formatChange(
 				change,
 				`Identifier ${change.path[2]} -> Value`,
 				(side) => side && [side]
@@ -198,7 +198,7 @@ function formatIdentifierModified(change) {
 	if (change.path.length > REQUIRED_DEPTH && change.path[3] === 'type' &&
 			change.path[4] === 'label') {
 		return [
-			formatChange(
+			base.formatChange(
 				change,
 				`Identifier ${change.path[2]} -> Type`,
 				(side) => side && [side]
@@ -244,18 +244,22 @@ function formatRelationshipAdd(entity, change) {
 
 	if (rhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
-			formatRow('N', 'Relationship Source Entity', null, [rhs.sourceBbid])
+			base.formatRow(
+				'N', 'Relationship Source Entity', null, [rhs.sourceBbid]
+			)
 		);
 	}
 	else {
 		changes.push(
-			formatRow('N', 'Relationship Target Entity', null, [rhs.targetBbid])
+			base.formatRow(
+				'N', 'Relationship Target Entity', null, [rhs.targetBbid]
+			)
 		);
 	}
 
 	if (rhs.type && rhs.type.label) {
 		changes.push(
-			formatRow('N', 'Relationship Type', null, [rhs.type.label])
+			base.formatRow('N', 'Relationship Type', null, [rhs.type.label])
 		);
 	}
 
@@ -313,7 +317,7 @@ function formatEntityChange(entity, change) {
 	return null;
 }
 
-function formatEntityDiffs(diffs, entityType, entityFormatter) {
+export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 	if (!diffs) {
 		return [];
 	}
@@ -345,4 +349,3 @@ function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		return formattedDiff;
 	});
 }
-module.exports.formatEntityDiffs = formatEntityDiffs;

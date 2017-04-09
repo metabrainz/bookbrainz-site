@@ -16,11 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import _ from 'lodash';
 
-const _ = require('lodash');
-
-function formatRow(kind, key, lhs, rhs) {
+export function formatRow(kind, key, lhs, rhs) {
 	if (_.isNil(lhs) && _.isNil(rhs)) {
 		return [];
 	}
@@ -48,9 +46,8 @@ function formatRow(kind, key, lhs, rhs) {
 		rhs
 	};
 }
-module.exports.formatRow = formatRow;
 
-function formatChange(change, label, transformer) {
+export function formatChange(change, label, transformer) {
 	return formatRow(
 		change.kind,
 		label,
@@ -58,18 +55,16 @@ function formatChange(change, label, transformer) {
 		transformer(change.rhs)
 	);
 }
-module.exports.formatChange = formatChange;
 
-function formatGenderChange(change) {
+export function formatGenderChange(change) {
 	return formatChange(
 		change,
 		'Gender',
 		(side) => side && [side.name]
 	);
 }
-module.exports.formatGenderChange = formatGenderChange;
 
-function formatEndedChange(change) {
+export function formatEndedChange(change) {
 	return [
 		formatChange(
 			change,
@@ -78,19 +73,16 @@ function formatEndedChange(change) {
 		)
 	];
 }
-module.exports.formatEndedChange = formatEndedChange;
 
-function formatTypeChange(change, label) {
+export function formatTypeChange(change, label) {
 	return formatChange(change, label, (side) => side && [side.label]);
 }
-module.exports.formatTypeChange = formatTypeChange;
 
-function formatScalarChange(change, label) {
+export function formatScalarChange(change, label) {
 	return formatChange(change, label, (side) => side && [side]);
 }
-module.exports.formatScalarChange = formatScalarChange;
 
-function formatAreaChange(change, label) {
+export function formatAreaChange(change, label) {
 	return formatChange(
 		change,
 		label || 'Area',
@@ -98,4 +90,3 @@ function formatAreaChange(change, label) {
 		(side) => typeof side === 'string' ? [side] : side && [side.name]
 	);
 }
-module.exports.formatAreaChange = formatAreaChange;

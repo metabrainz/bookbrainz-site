@@ -16,13 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-module.exports.generateProps = function generateProps(req, res, props) {
+export function generateProps(req, res, props) {
 	return Object.assign({}, req.app.locals, res.locals, props);
-};
+}
 
-module.exports.extractLayoutProps = function extractLayoutProps(props) {
+export function extractLayoutProps(props) {
 	return {
 		hideSearch: props.hideSearch,
 		homepage: props.homepage,
@@ -30,19 +28,19 @@ module.exports.extractLayoutProps = function extractLayoutProps(props) {
 		siteRevision: props.siteRevision,
 		user: props.user
 	};
-};
+}
 
-module.exports.extractEditorProps = function extractEditorProps(props) {
+export function extractEditorProps(props) {
 	return {
 		editor: props.editor,
 		tabActive: props.tabActive
 	};
-};
+}
 
-module.exports.extractEntityProps = function extractEntityProps(props) {
+export function extractEntityProps(props) {
 	return {
 		alert: props.alert,
 		entity: props.entity,
 		identifierTypes: props.identifierTypes
 	};
-};
+}

@@ -18,36 +18,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const path = require('path');
-
-const Promise = require('bluebird');
-
-const bodyParser = require('body-parser');
-const express = require('express');
-const favicon = require('serve-favicon');
-const git = require('git-rev');
-const logger = require('morgan');
-const redis = require('connect-redis');
-const session = require('express-session');
-const staticCache = require('express-static-cache');
-
-
-const config = require('./helpers/config');
-
-
-const auth = require('./helpers/auth');
-const error = require('./helpers/error');
-const search = require('./helpers/search');
-
-// We need to install JSX before pulling in the routes, as they end up requiring
-// React components written in JSX, and things will blow up
-
-const routes = require('./routes');
-
-const NotFoundError = require('./helpers/error').NotFoundError;
+import * as auth from './helpers/auth';
+import * as error from './helpers/error';
+import * as search from './helpers/search';
 import BookBrainzData from 'bookbrainz-data';
+import Debug from 'debug';
+import Promise from 'bluebird';
+import bodyParser from 'body-parser';
+import config from './helpers/config';
+import express from 'express';
+import favicon from 'serve-favicon';
+import git from 'git-rev';
+import logger from 'morgan';
+import path from 'path';
+import redis from 'connect-redis';
+import routes from './routes';
+import session from 'express-session';
+import staticCache from 'express-static-cache';
 
 Promise.config({
 	longStackTraces: true,
@@ -123,7 +110,7 @@ routes(app);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	next(new NotFoundError(null, req));
+	next(new error.NotFoundError(null, req));
 });
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
@@ -131,7 +118,7 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 	error.renderError(req, res, err);
 });
 
-const debug = require('debug')('bbsite');
+const debug = Debug('bbsite');
 
 const DEFAULT_PORT = 9099;
 app.set('port', process.env.PORT || DEFAULT_PORT);
@@ -140,4 +127,4 @@ const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);
 });
 
-module.exports = server;
+export default server;

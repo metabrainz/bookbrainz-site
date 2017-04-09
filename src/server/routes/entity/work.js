@@ -17,36 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const express = require('express');
-const _ = require('lodash');
-
-const auth = require('../../helpers/auth');
-const utils = require('../../helpers/utils');
-
-const entityRoutes = require('./entity');
-
-/* Middleware loader functions. */
-const loadEntityRelationships =
-	require('../../helpers/middleware').loadEntityRelationships;
-const loadIdentifierTypes =
-	require('../../helpers/middleware').loadIdentifierTypes;
-const loadLanguages = require('../../helpers/middleware').loadLanguages;
-const loadWorkTypes = require('../../helpers/middleware').loadWorkTypes;
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
-const EditForm =
-	React.createFactory(require('../../../client/components/forms/work'));
+import * as auth from '../../helpers/auth';
+import * as entityRoutes from './entity';
+import * as middleware from '../../helpers/middleware';
+import * as utils from '../../helpers/utils';
+import EditForm from '../../../client/components/forms/work';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import _ from 'lodash';
+import express from 'express';
 
 const router = express.Router();
 
 /* If the route specifies a BBID, load the Work for it. */
 router.param(
 	'bbid',
-	makeEntityLoader(
+	middleware.makeEntityLoader(
 		'Work',
 		['workType', 'languageSet.languages'],
 		'Work not found'
@@ -61,7 +47,7 @@ function _setWorkTitle(res) {
 	);
 }
 
-router.get('/:bbid', loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setWorkTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -89,8 +75,8 @@ router.get('/:bbid/revisions', (req, res, next) => {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
-	loadLanguages, loadWorkTypes,
+router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadWorkTypes,
 	(req, res) => {
 		const props = {
 			identifierTypes: res.locals.identifierTypes,
@@ -99,7 +85,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 			workTypes: res.locals.workTypes
 		};
 
-		const markup = ReactDOMServer.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
 		return res.render('entity/create/create-common', {
 			heading: 'Create Work',
@@ -112,8 +98,8 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes,
 	}
 );
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
-	loadWorkTypes, loadLanguages,
+router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadWorkTypes, middleware.loadLanguages,
 	(req, res) => {
 		const work = res.locals.entity;
 
@@ -125,7 +111,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			workTypes: res.locals.workTypes
 		};
 
-		const markup = ReactDOMServer.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
 		return res.render('entity/create/create-common', {
 			heading: 'Edit Work',
@@ -170,4 +156,4 @@ router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	}
 );
 
-module.exports = router;
+export default router;

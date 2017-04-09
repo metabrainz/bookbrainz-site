@@ -16,9 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const set = require('./set');
+import * as set from './set';
 
 function formatNewPublisherSet(change) {
 	function transformer(rhs) {
@@ -40,7 +38,7 @@ function formatPublisherModified(change) {
 	return set.formatItemModified(change, 'Publisher', ['bbid']);
 }
 
-function formatPublisherSet(change) {
+export function format(change) {
 	return set.format(
 		change, 'publisherSet', 'publishers',
 		formatNewPublisherSet,
@@ -48,9 +46,7 @@ function formatPublisherSet(change) {
 		formatPublisherModified
 	);
 }
-module.exports.format = formatPublisherSet;
 
-function publisherSetChanged(change) {
+export function changed(change) {
 	return set.changed(change, 'publisherSet', 'publishers');
 }
-module.exports.changed = publisherSetChanged;

@@ -17,33 +17,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as auth from '../helpers/auth';
+import * as error from '../helpers/error';
+import * as handler from '../helpers/handler';
+import * as propHelpers from '../helpers/props';
+import AchievementsTab from
+	'../../client/components/pages/parts/editor-achievements';
+import EditorContainer from '../../client/containers/editor';
+import Layout from '../../client/containers/layout';
+import ProfileForm from '../../client/components/forms/profile';
+import ProfileTab from '../../client/components/pages/parts/editor-profile';
+import Promise from 'bluebird';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import RevisionsTab from '../../client/components/pages/parts/editor-revisions';
+import _ from 'lodash';
+import express from 'express';
 
-const Promise = require('bluebird');
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const express = require('express');
-const _ = require('lodash');
-
-const auth = require('../helpers/auth');
-const handler = require('../helpers/handler');
-const propHelpers = require('../helpers/props');
-
-const NotFoundError = require('../helpers/error').NotFoundError;
-const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
-
-const RevisionsTab =
-	require('../../client/components/pages/parts/editor-revisions');
-const ProfileTab =
-	require('../../client/components/pages/parts/editor-profile');
-const AchievementsTab =
-	require('../../client/components/pages/parts/editor-achievements');
-const EditorContainer = require('../../client/containers/editor');
-const Layout = require('../../client/containers/layout');
-const ProfileForm = React.createFactory(
-	require('../../client/components/forms/profile')
-);
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
@@ -108,7 +98,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		}
 
 		// Edit is for a user other than the current one
-		throw new PermissionDeniedError(
+		throw new error.PermissionDeniedError(
 			'You do not have permission to edit that user', req
 		);
 	})
@@ -184,7 +174,7 @@ router.get('/:id', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.catch(Editor.NotFoundError, () => {
-			throw new NotFoundError('Editor not found');
+			throw new error.NotFoundError('Editor not found');
 		})
 		.catch(next);
 
@@ -283,7 +273,7 @@ router.get('/:id/revisions', (req, res, next) => {
 			res.render('target', {markup});
 		})
 		.catch(Editor.NotFoundError, () => {
-			throw new NotFoundError('Editor not found');
+			throw new error.NotFoundError('Editor not found');
 		})
 		.catch(next);
 });
@@ -350,7 +340,7 @@ router.get('/:id/achievements', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.catch(Editor.NotFoundError, () => {
-			throw new NotFoundError('Editor not found');
+			throw new error.NotFoundError('Editor not found');
 		})
 		.catch(next);
 
@@ -467,4 +457,4 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 	handler.sendPromiseResult(res, rankPromise);
 });
 
-module.exports = router;
+export default router;

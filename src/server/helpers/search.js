@@ -16,46 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const Promise = require('bluebird');
-
-const ElasticSearch = require('elasticsearch');
-const _ = require('lodash');
-
-const utils = require('../helpers/utils');
-
-const search = {};
+import * as utils from '../helpers/utils';
+import ElasticSearch from 'elasticsearch';
+import Promise from 'bluebird';
+import _ from 'lodash';
 
 const _index = 'bookbrainz';
 
 let _client = null;
 
-search.init = async (options) => {
-	const config = _.extend({
-		defer() {
-			const defer = {};
-
-			defer.promise = new Promise((resolve, reject) => {
-				defer.resolve = resolve;
-				defer.reject = reject;
-			});
-
-			return defer;
-		}
-	}, options);
-
-	_client = ElasticSearch.Client(config);
-
-	// Automatically index on app startup if we haven't already
-	const mainIndexExists = await _client.indices.exists({index: _index});
-
-	if (mainIndexExists) {
-		return null;
-	}
-
-	return search.generateIndex();
-};
 
 function _fetchEntityModelsForESResults(orm, results) {
 	const {Area} = orm;
@@ -93,7 +62,7 @@ function _searchForEntities(orm, dslQuery) {
 		.then((results) => _fetchEntityModelsForESResults(orm, results));
 }
 
-search.autocomplete = (orm, query, collection) => {
+export function autocomplete(orm, query, collection) {
 	let queryBody = null;
 
 	if (utils.isValidBBID(query)) {
@@ -126,10 +95,10 @@ search.autocomplete = (orm, query, collection) => {
 	}
 
 	return _searchForEntities(orm, dslQuery);
-};
+}
 
-search.indexArea = (area) =>
-	_client.index({
+export function indexArea(area) {
+	return _client.index({
 		body: {
 			bbid: area.gid,
 			defaultAlias: {
@@ -141,20 +110,23 @@ search.indexArea = (area) =>
 		index: _index,
 		type: 'area'
 	});
+}
 
-search.indexEntity = (entity) =>
-	_client.index({
+export function indexEntity(entity) {
+	return _client.index({
 		body: entity,
 		id: entity.bbid,
 		index: _index,
 		type: entity.type.toLowerCase()
 	});
+}
 
-search.refreshIndex = () =>
-	_client.indices.refresh({index: _index});
+export function refreshIndex() {
+	return _client.indices.refresh({index: _index});
+}
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
-search.generateIndex = async (orm) => {
+export async function generateIndex(orm) {
 	const {Area, Creator, Edition, Publication, Publisher, Work} = orm;
 	const indexMappings = {
 		mappings: {
@@ -268,7 +240,7 @@ search.generateIndex = async (orm) => {
 	const entityLists = await Promise.all(behaviorPromise);
 	const indexedEntities = entityLists.map((entityList) =>
 		Promise.all(entityList.toJSON().map((entity) =>
-			search.indexEntity(entity)
+			indexEntity(entity)
 		))
 	);
 	await Promise.all(indexedEntities);
@@ -279,13 +251,13 @@ search.generateIndex = async (orm) => {
 		.fetchAll();
 
 	const areas = areaCollection.toJSON();
-	const indexedAreas = areas.map((area) => search.indexArea(area));
+	const indexedAreas = areas.map((area) => indexArea(area));
 	await Promise.all(indexedAreas);
 
-	await search.refreshIndex();
-};
+	await refreshIndex();
+}
 
-search.searchByName = (orm, name, collection) => {
+export function searchByName(orm, name, collection) {
 	const dslQuery = {
 		body: {
 			query: {
@@ -305,6 +277,30 @@ search.searchByName = (orm, name, collection) => {
 	}
 
 	return _searchForEntities(orm, dslQuery);
-};
+}
 
-module.exports = search;
+export async function init(options) {
+	const config = _.extend({
+		defer() {
+			const defer = {};
+
+			defer.promise = new Promise((resolve, reject) => {
+				defer.resolve = resolve;
+				defer.reject = reject;
+			});
+
+			return defer;
+		}
+	}, options);
+
+	_client = ElasticSearch.Client(config);
+
+	// Automatically index on app startup if we haven't already
+	const mainIndexExists = await _client.indices.exists({index: _index});
+
+	if (mainIndexExists) {
+		return null;
+	}
+
+	return generateIndex();
+}

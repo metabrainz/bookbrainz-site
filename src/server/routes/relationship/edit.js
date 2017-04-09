@@ -17,26 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const Promise = require('bluebird');
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const _ = require('lodash');
-
-const auth = require('../../helpers/auth');
-const error = require('../../helpers/error');
-const utils = require('../../helpers/utils');
-
-const loadEntityRelationships =
-	require('../../helpers/middleware').loadEntityRelationships;
-
-const EditForm = React.createFactory(
-	require('../../../client/components/forms/relationship')
-);
-
-const relationshipHelper = {};
+import * as auth from '../../helpers/auth';
+import * as error from '../../helpers/error';
+import * as middleware from '../../helpers/middleware';
+import * as utils from '../../helpers/utils';
+import EditForm from '../../../client/components/forms/relationship';
+import Promise from 'bluebird';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import _ from 'lodash';
 
 function getEntityByType(orm, entity, withRelated, transacting) {
 	const model = utils.getEntityModelByType(orm, entity.type);
@@ -180,9 +169,9 @@ function createRelationship(orm, relationship, editorJSON) {
 	});
 }
 
-relationshipHelper.addEditRoutes = function addEditRoutes(router) {
+export function addEditRoutes(router) {
 	router.get('/:bbid/relationships', auth.isAuthenticated,
-		loadEntityRelationships,
+		middleware.loadEntityRelationships,
 		(req, res, next) => {
 			const {RelationshipType} = req.app.locals.orm;
 			const relationshipTypesPromise =
@@ -206,7 +195,7 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 					};
 
 					const markup =
-						ReactDOMServer.renderToString(EditForm(props));
+						ReactDOMServer.renderToString(<EditForm {...props}/>);
 
 					res.render('common', {
 						markup,
@@ -249,6 +238,4 @@ relationshipHelper.addEditRoutes = function addEditRoutes(router) {
 				.catch((err) => error.sendErrorAsJSON(res, err));
 		}
 	);
-};
-
-module.exports = relationshipHelper;
+}

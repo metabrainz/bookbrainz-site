@@ -17,11 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const Handlebars = require('handlebars');
-
-const utils = require('./utils');
+import * as utils from './utils';
+import Handlebars from 'handlebars';
 
 function renderRelationship(relationship) {
 	const template = Handlebars.compile(
@@ -44,4 +41,4 @@ function renderRelationship(relationship) {
 	return template(data);
 }
 
-module.exports = renderRelationship;
+export default renderRelationship;

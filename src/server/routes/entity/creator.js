@@ -17,38 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const express = require('express');
-const _ = require('lodash');
-
-/* Middleware loader functions. */
-const loadCreatorTypes = require('../../helpers/middleware').loadCreatorTypes;
-const loadEntityRelationships =
-	require('../../helpers/middleware').loadEntityRelationships;
-const loadGenders = require('../../helpers/middleware').loadGenders;
-const loadIdentifierTypes =
-	require('../../helpers/middleware').loadIdentifierTypes;
-const loadLanguages = require('../../helpers/middleware').loadLanguages;
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
-const auth = require('../../helpers/auth');
-const utils = require('../../helpers/utils');
-
-const entityRoutes = require('./entity');
-
-const EditForm = React.createFactory(
-	require('../../../client/entity-editor/root-component').default
-);
+import * as auth from '../../helpers/auth';
+import * as entityRoutes from './entity';
+import * as middleware from '../../helpers/middleware';
+import * as utils from '../../helpers/utils';
+import EditForm from '../../../client/entity-editor/root-component';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import _ from 'lodash';
+import express from 'express';
 
 const router = express.Router();
 
 /* If the route specifies a BBID, load the Creator for it. */
 router.param(
 	'bbid',
-	makeEntityLoader(
+	middleware.makeEntityLoader(
 		'Creator',
 		['creatorType', 'gender', 'beginArea', 'endArea'],
 		'Creator not found'
@@ -63,7 +47,7 @@ function _setCreatorTitle(res) {
 	);
 }
 
-router.get('/:bbid', loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setCreatorTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -90,8 +74,9 @@ router.get('/:bbid/revisions', (req, res, next) => {
 });
 
 // Creation
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
-	loadLanguages, loadCreatorTypes, (req, res) => {
+router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadGenders,	middleware.loadLanguages,
+	middleware.loadCreatorTypes, (req, res) => {
 		const props = {
 			creatorTypes: res.locals.creatorTypes,
 			genderOptions: res.locals.genders,
@@ -100,7 +85,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadGenders,
 			submissionUrl: '/creator/create/handler'
 		};
 
-		const markup = ReactDOMServer.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
 		res.render('entity/create/create-common', {
 			heading: 'Create Creator',
@@ -174,8 +159,11 @@ function creatorToFormState(creator) {
 }
 
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
-	loadGenders, loadLanguages, loadCreatorTypes, (req, res) => {
+router.get(
+	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadGenders, middleware.loadLanguages,
+	middleware.loadCreatorTypes,
+	(req, res) => {
 		const creator = res.locals.entity;
 
 		const props = {
@@ -188,7 +176,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/creator/${creator.bbid}/edit/handler`
 		};
 
-		const markup = ReactDOMServer.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
 		res.render('entity/create/create-common', {
 			heading: 'Edit Creator',
@@ -256,4 +244,4 @@ router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	}
 );
 
-module.exports = router;
+export default router;

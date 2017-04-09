@@ -16,13 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import express from 'express';
+import passport from 'passport';
+import status from 'http-status';
 
-const express = require('express');
+
 const router = express.Router();
-
-const passport = require('passport');
-const status = require('http-status');
 
 router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
 
@@ -58,4 +57,4 @@ router.get('/logout', (req, res) => {
 	res.redirect(status.SEE_OTHER, '/');
 });
 
-module.exports = router;
+export default router;

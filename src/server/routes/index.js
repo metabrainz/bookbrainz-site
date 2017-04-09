@@ -18,37 +18,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as propHelpers from '../helpers/props';
+import * as utils from '../helpers/utils';
+import AboutPage from '../../client/components/pages/about';
+import ContributePage from '../../client/components/pages/contribute';
+import DevelopPage from '../../client/components/pages/develop';
+import Index from '../../client/components/pages/index';
+import Layout from '../../client/containers/layout';
+import LicensingPage from '../../client/components/pages/licensing';
+import PrivacyPage from '../../client/components/pages/privacy';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import _ from 'lodash';
+import express from 'express';
 
-const express = require('express');
 const router = express.Router();
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-
-const utils = require('../helpers/utils');
-const propHelpers = require('../helpers/props');
-
-const _ = require('lodash');
-
-
-const Layout = require('../../client/containers/layout');
-const Index = require('../../client/components/pages/index');
-
-const AboutPage = React.createFactory(
-	require('../../client/components/pages/about')
-);
-const ContributePage = React.createFactory(
-	require('../../client/components/pages/contribute')
-);
-const DevelopPage = React.createFactory(
-	require('../../client/components/pages/develop')
-);
-const PrivacyPage = React.createFactory(
-	require('../../client/components/pages/privacy')
-);
-const LicensingPage = React.createFactory(
-	require('../../client/components/pages/licensing')
-);
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
@@ -112,11 +96,11 @@ router.get('/', async (req, res, next) => {
 });
 
 // Helper function to create pages that don't require custom logic
-function _createStaticRoute(route, title, pageComponent) {
+function _createStaticRoute(route, title, PageComponent) {
 	router.get(route, (req, res) => {
 		res.render('page', {
 			homepage: false,
-			markup: ReactDOMServer.renderToString(pageComponent()),
+			markup: ReactDOMServer.renderToString(<PageComponent/>),
 			title
 		});
 	});
@@ -128,4 +112,4 @@ _createStaticRoute('/develop', 'Develop', DevelopPage);
 _createStaticRoute('/licensing', 'Licensing', LicensingPage);
 _createStaticRoute('/privacy', 'Privacy', PrivacyPage);
 
-module.exports = router;
+export default router;

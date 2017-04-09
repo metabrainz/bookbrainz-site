@@ -17,23 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const Promise = require('bluebird');
-
-const express = require('express');
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-
-const auth = require('../helpers/auth');
-const handler = require('../helpers/handler');
-const search = require('../helpers/search');
-
-const PermissionDeniedError = require('../helpers/error').PermissionDeniedError;
-
-const SearchPage = React.createFactory(
-	require('../../client/components/pages/search')
-);
+import * as auth from '../helpers/auth';
+import * as error from '../helpers/error';
+import * as handler from '../helpers/handler';
+import * as search from '../helpers/search';
+import Promise from 'bluebird';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import SearchPage from '../../client/components/pages/search';
+import express from 'express';
 
 const router = express.Router();
 
@@ -54,7 +46,7 @@ router.get('/', (req, res, next) => {
 		.then((props) => {
 			res.render('common', {
 				hideSearch: true,
-				markup: ReactDOMServer.renderToString(SearchPage(props)),
+				markup: ReactDOMServer.renderToString(<SearchPage {...props}/>),
 				props,
 				script: 'search',
 				task: 'search',
@@ -81,7 +73,7 @@ router.get('/autocomplete', (req, res) => {
 /**
  * Regenerates search index. Restricted to administrators.
  *
- * @throws {PermissionDeniedError} - Thrown if user is not admin.
+ * @throws {error.PermissionDeniedError} - Thrown if user is not admin.
  */
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	const indexPromise = new Promise((resolve) => {
@@ -90,7 +82,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 
 		const NO_MATCH = -1;
 		if (trustedUsers.indexOf(req.user.name) === NO_MATCH) {
-			throw new PermissionDeniedError(null, req);
+			throw new error.PermissionDeniedError(null, req);
 		}
 
 		resolve();
@@ -101,4 +93,4 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	handler.sendPromiseResult(res, indexPromise);
 });
 
-module.exports = router;
+export default router;

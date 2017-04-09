@@ -16,19 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as propHelpers from './props';
+import ErrorPage from '../../client/components/pages/error';
+import Layout from '../../client/containers/layout';
+import Log from 'log';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import config from './config';
+import status from 'http-status';
 
-const status = require('http-status');
-const config = require('./config');
-const Log = require('log');
 const log = new Log(config.site.log);
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const propHelpers = require('./props');
-const Layout = require('../../client/containers/layout');
-const ErrorPage = require('../../client/components/pages/error');
 
-class SiteError extends Error {
+export class SiteError extends Error {
 	constructor(message) {
 		super();
 
@@ -63,14 +62,14 @@ class _AuthenticationError extends SiteError {
 	}
 }
 
-class AuthenticationFailedError extends _AuthenticationError {
+export class AuthenticationFailedError extends _AuthenticationError {
 	static get defaultMessage() {
 		return 'Invalid authentication credentials';
 	}
 }
 
 // For use when something slips past client-side validation
-class FormSubmissionError extends SiteError {
+export class FormSubmissionError extends SiteError {
 	static get defaultMessage() {
 		return 'Form contained invalid data';
 	}
@@ -80,13 +79,13 @@ class FormSubmissionError extends SiteError {
 	}
 }
 
-class NotAuthenticatedError extends _AuthenticationError {
+export class NotAuthenticatedError extends _AuthenticationError {
 	static get defaultMessage() {
 		return 'You are not currently authenticated';
 	}
 }
 
-class NotFoundError extends PathError {
+export class NotFoundError extends PathError {
 	static get defaultMessage() {
 		return 'Page not found';
 	}
@@ -103,7 +102,7 @@ class NotFoundError extends PathError {
 	}
 }
 
-class PermissionDeniedError extends PathError {
+export class PermissionDeniedError extends PathError {
 	static get defaultMessage() {
 		return 'You do not have permission to access this page';
 	}
@@ -114,9 +113,9 @@ class PermissionDeniedError extends PathError {
 
 	static detailedMessage(req) {
 		return [
-			`You do not have permission to access the following path: 
-${req.path}`,
-			`Please make sure you have entered in the correct credentials and 
+			`You do not have permission to access the following path:
+			${req.path}`,
+			`Please make sure you have entered in the correct credentials and
 			address!`
 		];
 	}
@@ -138,7 +137,7 @@ function _getErrorToSend(err) {
 	return new SiteError();
 }
 
-function renderError(req, res, err) {
+export function renderError(req, res, err) {
 	const errorToSend = _getErrorToSend(err);
 	const props = propHelpers.generateProps(req, res, {
 		error: errorToSend
@@ -153,13 +152,13 @@ function renderError(req, res, err) {
 	res.status(errorToSend.status).render('target', {markup});
 }
 
-function sendErrorAsJSON(res, err) {
+export function sendErrorAsJSON(res, err) {
 	const errorToSend = _getErrorToSend(err);
 
 	res.status(errorToSend.status).send({error: errorToSend.message});
 }
 
-class AwardNotUnlockedError extends Error {
+export class AwardNotUnlockedError extends Error {
 	constructor(message) {
 		super();
 
@@ -174,17 +173,3 @@ class AwardNotUnlockedError extends Error {
 		return 'An award was not unlocked';
 	}
 }
-
-const errors = {
-	AuthenticationFailedError,
-	AwardNotUnlockedError,
-	FormSubmissionError,
-	NotAuthenticatedError,
-	NotFoundError,
-	PermissionDeniedError,
-	SiteError,
-	renderError,
-	sendErrorAsJSON
-};
-
-module.exports = errors;

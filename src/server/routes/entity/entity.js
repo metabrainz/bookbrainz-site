@@ -17,38 +17,29 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as achievement from '../../helpers/achievement';
+import * as handler from '../../helpers/handler';
+import * as propHelpers from '../../helpers/props';
+import * as search from '../../helpers/search';
+import * as utils from '../../helpers/utils';
+import CreatorPage from '../../../client/components/pages/entity/creator';
+import DeletionForm from '../../../client/components/forms/deletion';
+import EditionPage from '../../../client/components/pages/entity/edition';
+import EntityContainer from '../../../client/containers/entity';
+import EntityRevisions from '../../../client/components/pages/entity-revisions';
+import Layout from '../../../client/containers/layout';
+import Log from 'log';
+import Promise from 'bluebird';
+import PublicationPage from
+	'../../../client/components/pages/entity/publication';
+import PublisherPage from '../../../client/components/pages/entity/publisher';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import WorkPage from '../../../client/components/pages/entity/work';
+import _ from 'lodash';
+import config from '../../helpers/config';
 
-const Promise = require('bluebird');
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const _ = require('lodash');
-
-const config = require('../../helpers/config');
-const Log = require('log');
 const log = new Log(config.site.log);
-
-const handler = require('../../helpers/handler');
-const search = require('../../helpers/search');
-const utils = require('../../helpers/utils');
-const achievement = require('../../helpers/achievement');
-const propHelpers = require('../../helpers/props');
-
-const Layout = require('../../../client/containers/layout');
-const EntityRevisions =
-	require('../../../client/components/pages/entity-revisions');
-const EntityContainer = require('../../../client/containers/entity');
-const EditionPage = require('../../../client/components/pages/entity/edition');
-const CreatorPage = require('../../../client/components/pages/entity/creator');
-const PublicationPage =
-	require('../../../client/components/pages/entity/publication');
-const PublisherPage =
-	require('../../../client/components/pages/entity/publisher');
-const WorkPage = require('../../../client/components/pages/entity/work');
-const DeletionForm = React.createFactory(
-	require('../../../client/components/forms/deletion')
-);
 
 const entityComponents = {
 	creator: CreatorPage,
@@ -58,7 +49,7 @@ const entityComponents = {
 	work: WorkPage
 };
 
-module.exports.displayEntity = (req, res) => {
+export function displayEntity(req, res) {
 	const {orm} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const entity = res.locals.entity;
@@ -154,22 +145,22 @@ module.exports.displayEntity = (req, res) => {
 			);
 		}
 	});
-};
+}
 
-module.exports.displayDeleteEntity = (req, res) => {
+export function displayDeleteEntity(req, res) {
 	const props = {
 		entity: res.locals.entity
 	};
 
 	res.render('common', {
-		markup: ReactDOMServer.renderToString(DeletionForm(props)),
+		markup: ReactDOMServer.renderToString(<DeletionForm {...props}/>),
 		props,
 		script: 'deletion',
 		task: 'delete'
 	});
-};
+}
 
-module.exports.displayRevisions = (req, res, next, RevisionModel) => {
+export function displayRevisions(req, res, next, RevisionModel) {
 	const bbid = req.params.bbid;
 
 	return new RevisionModel()
@@ -193,7 +184,7 @@ module.exports.displayRevisions = (req, res, next, RevisionModel) => {
 			return res.render('target', {markup});
 		})
 		.catch(next);
-};
+}
 
 function _createNote(orm, content, editor, revision, transacting) {
 	const {Note} = orm;
@@ -210,7 +201,7 @@ function _createNote(orm, content, editor, revision, transacting) {
 	return null;
 }
 
-module.exports.addNoteToRevision = (req, res) => {
+export function addNoteToRevision(req, res) {
 	const {orm} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
@@ -221,9 +212,9 @@ module.exports.addNoteToRevision = (req, res) => {
 		)
 	);
 	return handler.sendPromiseResult(res, revisionNotePromise);
-};
+}
 
-module.exports.handleDelete = (orm, req, res, HeaderModel, RevisionModel) => {
+export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 	const entity = res.locals.entity;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
@@ -266,7 +257,7 @@ module.exports.handleDelete = (orm, req, res, HeaderModel, RevisionModel) => {
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise);
-};
+}
 
 function setHasChanged(oldSet, newSet, idField, compareFields) {
 	const oldSetIds = _.map(oldSet, idField);
@@ -474,7 +465,8 @@ function processFormIdentifiers(orm, transacting, oldIdentSet, newIdents) {
 	}
 
 	// Make a new identifier set
-	const newIdentSetPromise = new IdentifierSet().save(null, {transacting});
+	const newIdentSetPromise =
+		new IdentifierSet().save(null, {transacting});
 	const newIdentsPromise = newIdentSetPromise.then((newIdentSet) =>
 		newIdentSet.related('identifiers').fetch({transacting})
 	);
@@ -578,13 +570,13 @@ function processEntitySets(derivedSets, currentEntity, body, transacting) {
 		);
 }
 
-module.exports.createEntity = (
+export function createEntity(
 	req,
 	res,
 	entityType,
 	derivedProps,
 	derivedSets
-) => {
+) {
 	const {orm} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
@@ -689,15 +681,15 @@ module.exports.createEntity = (
 		achievementPromise,
 		search.indexEntity
 	);
-};
+}
 
-module.exports.editEntity = (
+export function editEntity(
 	req,
 	res,
 	entityType,
 	derivedProps,
 	derivedSets
-) => {
+) {
 	const {orm} = req.app.locals;
 	const {
 		AliasSet, Annotation, Disambiguation, IdentifierSet, Revision,
@@ -886,4 +878,4 @@ module.exports.editEntity = (
 		entityEditPromise,
 		search.indexEntity
 	);
-};
+}

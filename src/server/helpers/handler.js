@@ -17,14 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as error from './error';
 
-const error = require('./error');
-
-const handler = {};
-
-handler.sendPromiseResult = (res, promise, processingCallback) =>
-	promise
+export function sendPromiseResult(res, promise, processingCallback) {
+	return promise
 		.then((result) => {
 			res.send(result);
 
@@ -35,5 +31,4 @@ handler.sendPromiseResult = (res, promise, processingCallback) =>
 			return result;
 		})
 		.catch((err) => error.sendErrorAsJSON(res, err));
-
-module.exports = handler;
+}

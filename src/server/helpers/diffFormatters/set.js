@@ -16,42 +16,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as base from './base';
+import _ from 'lodash';
 
-const _ = require('lodash');
-
-const formatRow = require('./base').formatRow;
-const formatChange = require('./base').formatChange;
-
-function formatNewSet(change, label, itemProp, transformerFunc) {
+export function formatNewSet(change, label, itemProp, transformerFunc) {
 	const rhs = change.rhs;
 	if (rhs[itemProp] && rhs[itemProp].length > 0) {
-		return [formatRow('N', label, null, transformerFunc(rhs))];
+		return [base.formatRow('N', label, null, transformerFunc(rhs))];
 	}
 
 	return [];
 }
-module.exports.formatNewSet = formatNewSet;
 
-function formatItemAddOrDelete(change, label, transformerFunc) {
+export function formatItemAddOrDelete(change, label, transformerFunc) {
 	return [
-		formatChange(change.item, label, transformerFunc)
+		base.formatChange(change.item, label, transformerFunc)
 	];
 }
-module.exports.formatItemAddOrDelete = formatItemAddOrDelete;
 
-function formatItemModified(change, label, formattedProps) {
+export function formatItemModified(change, label, formattedProps) {
 	if (change.path.length > 3 && _.includes(formattedProps, change.path[3])) {
 		return [
-			formatChange(change, label, (side) => side && [side])
+			base.formatChange(change, label, (side) => side && [side])
 		];
 	}
 
 	return [];
 }
-module.exports.formatItemModified = formatItemModified;
 
-function formatSet(
+export function format(
 	change, setProp, itemProp, newSetFormatter, addDeleteFormatter,
 	modifyFormatter
 ) {
@@ -78,10 +71,8 @@ function formatSet(
 
 	return null;
 }
-module.exports.format = formatSet;
 
-function setChanged(change, setProp, itemProp) {
+export function changed(change, setProp, itemProp) {
 	return _.isEqual(change.path, [setProp]) ||
 		_.isEqual(change.path.slice(0, 2), [setProp, itemProp]);
 }
-module.exports.changed = setChanged;

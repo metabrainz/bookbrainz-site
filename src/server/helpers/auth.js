@@ -17,21 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
+import * as error from '../helpers/error';
+import _ from 'lodash';
+import config from './config';
+import passport from 'passport';
+import status from 'http-status';
 
-const passport = require('passport');
-const MusicBrainzOAuth2Strategy =
-	require('passport-musicbrainz-oauth2').Strategy;
-const status = require('http-status');
-
-const error = require('../helpers/error');
-
-const NotAuthenticatedError = require('../helpers/error').NotAuthenticatedError;
-
-const auth = {};
-const _ = require('lodash');
-
-const config = require('./config');
+const MusicBrainzOAuth2Strategy = MusicBrainzOAuth.Strategy;
 
 async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
 	const {Editor} = orm;
@@ -54,7 +47,7 @@ function _updateCachedMBName(bbUserModel, mbUserJSON) {
 	return bbUserModel.save({cachedMetabrainzName: mbUserJSON.sub});
 }
 
-auth.init = (app) => {
+export function init(app) {
 	const {orm} = app.locals;
 	passport.use(new MusicBrainzOAuth2Strategy(
 		_.assign(
@@ -96,9 +89,9 @@ auth.init = (app) => {
 
 	app.use(passport.initialize());
 	app.use(passport.session());
-};
+}
 
-auth.isAuthenticated = (req, res, next) => {
+export function isAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}
@@ -106,14 +99,12 @@ auth.isAuthenticated = (req, res, next) => {
 	req.session.redirectTo = req.originalUrl;
 
 	return res.redirect(status.SEE_OTHER, '/auth');
-};
+}
 
-auth.isAuthenticatedForHandler = (req, res, next) => {
+export function isAuthenticatedForHandler(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}
 
-	return error.sendErrorAsJSON(res, new NotAuthenticatedError());
-};
-
-module.exports = auth;
+	return error.sendErrorAsJSON(res, new error.NotAuthenticatedError());
+}

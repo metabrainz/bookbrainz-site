@@ -18,29 +18,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const express = require('express');
-
-const handler = require('../helpers/handler');
-
-const FormSubmissionError = require('../helpers/error').FormSubmissionError;
-
-const RegisterAuthPage = React.createFactory(
-	require('../../client/components/pages/registration-auth')
-);
-const RegisterDetailPage = React.createFactory(
-	require('../../client/components/forms/registration-details')
-);
-const loadGenders = require('../helpers/middleware').loadGenders;
+import * as error from '../helpers/error';
+import * as handler from '../helpers/handler';
+import * as middleware from '../helpers/middleware';
+import Log from 'log';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import RegisterAuthPage from '../../client/components/pages/registration-auth';
+import RegisterDetailPage from
+	'../../client/components/forms/registration-details';
+import _ from 'lodash';
+import config from '../helpers/config';
+import express from 'express';
 
 const router = express.Router();
-const _ = require('lodash');
-
-const config = require('../helpers/config');
-const Log = require('log');
 const log = new Log(config.site.log);
 
 router.get('/', (req, res) => {
@@ -50,12 +41,12 @@ router.get('/', (req, res) => {
 	}
 
 	return res.render('page', {
-		markup: ReactDOMServer.renderToString(RegisterAuthPage()),
+		markup: ReactDOMServer.renderToString(<RegisterAuthPage/>),
 		title: 'Register'
 	});
 });
 
-router.get('/details', loadGenders, (req, res) => {
+router.get('/details', middleware.loadGenders, (req, res) => {
 	// Check whether the user is logged in - if so, redirect to profile page
 	if (req.user) {
 		return res.redirect(`/editor/${req.user.id}`);
@@ -76,7 +67,7 @@ router.get('/details', loadGenders, (req, res) => {
 	};
 
 	return res.render('common', {
-		markup: ReactDOMServer.renderToString(RegisterDetailPage(props)),
+		markup: ReactDOMServer.renderToString(<RegisterDetailPage {...props}/>),
 		props,
 		script: 'registrationDetails',
 		task: 'registrationDetails',
@@ -119,14 +110,14 @@ router.post('/handler', (req, res) => {
 			log.debug(err);
 
 			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
-				throw new FormSubmissionError(
+				throw new error.FormSubmissionError(
 					'That username already exists - please try using another,' +
 					' or contact us to have your existing BookBrainz account' +
 					' linked to a MusicBrainz account.'
 				);
 			}
 
-			throw new FormSubmissionError(
+			throw new error.FormSubmissionError(
 				'Something went wrong when registering, please try again!'
 			);
 		});
@@ -134,4 +125,4 @@ router.post('/handler', (req, res) => {
 	return handler.sendPromiseResult(res, registerPromise);
 });
 
-module.exports = router;
+export default router;

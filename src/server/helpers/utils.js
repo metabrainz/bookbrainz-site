@@ -18,11 +18,9 @@
  */
 /* eslint valid-jsdoc: ["error", { "requireReturn": false }], max-len: "warn" */
 
-'use strict';
-
 /* eslint prefer-rest-params: 1, prefer-reflect: 1 */
 
-const Promise = require('bluebird');
+import Promise from 'bluebird';
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -30,7 +28,7 @@ const Promise = require('bluebird');
  * @param {object} entity - Entity object
  * @returns {string} - URL path to interact with entity
  */
-function getEntityLink(entity) {
+export function getEntityLink(entity) {
 	const bbid = entity.bbid;
 	return `/${entity.type.toLowerCase()}/${bbid}`;
 }
@@ -41,7 +39,7 @@ function getEntityLink(entity) {
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @returns {object} - Object mapping model name to the entity model
  */
-function getEntityModels(orm) {
+export function getEntityModels(orm) {
 	const {Creator, Edition, Publication, Publisher, Work} = orm;
 	return {
 		Creator,
@@ -62,7 +60,7 @@ function getEntityModels(orm) {
  * @returns {object} - Bookshelf model object with the type specified in the
  * single param
  */
-function getEntityModelByType(orm, type) {
+export function getEntityModelByType(orm, type) {
 	const entityModels = getEntityModels(orm);
 
 	if (!entityModels[type]) {
@@ -87,7 +85,7 @@ const _bbidRegex =
  * @param {string} bbid - BookBrainz UUID to validate
  * @returns {boolean} - Returns true if BookBrainz UUID is valid
  */
-function isValidBBID(bbid) {
+export function isValidBBID(bbid) {
 	return _bbidRegex.test(bbid);
 }
 
@@ -105,7 +103,7 @@ function isValidBBID(bbid) {
  * the tagged template literal replaced with their corresponding values
  * from the newly passed in object.
  */
-function template(strings) {
+export function template(strings) {
 	const keys = Array.prototype.slice.call(arguments, 1);
 
 	return (values) => {
@@ -128,7 +126,7 @@ function template(strings) {
  * uses it to generate a title string
  * @returns {string} - Title string
  */
-function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
+export function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
 	/**
 	 * User-visible strings should _never_ be created by concatenation; when we
 	 * start to implement localization, it will create problems for users of
@@ -154,7 +152,7 @@ function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
  * progress)
  * @returns {Promise} - Resolves to the updated editor model
  */
-function incrementEditorEditCountById(orm, id, transacting) {
+export function incrementEditorEditCountById(orm, id, transacting) {
 	const {Editor} = orm;
 	return new Editor({id})
 		.fetch({transacting})
@@ -170,19 +168,8 @@ function incrementEditorEditCountById(orm, id, transacting) {
  * @param {object} Bookshelf - Bookshelf instance connected to database
  * @param {string[]} tables - List of tables to truncate
  */
-function truncateTables(Bookshelf, tables) {
+export function truncateTables(Bookshelf, tables) {
 	Promise.each(tables,
 		(table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
 	);
 }
-
-module.exports = {
-	createEntityPageTitle,
-	getEntityLink,
-	getEntityModelByType,
-	getEntityModels,
-	incrementEditorEditCountById,
-	isValidBBID,
-	template,
-	truncateTables
-};

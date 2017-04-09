@@ -17,38 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const express = require('express');
-const _ = require('lodash');
-
-const auth = require('../../helpers/auth');
-const utils = require('../../helpers/utils');
-
-const entityRoutes = require('./entity');
-
-/* Middleware loader functions. */
-const loadEntityRelationships =
-	require('../../helpers/middleware').loadEntityRelationships;
-const loadIdentifierTypes =
-	require('../../helpers/middleware').loadIdentifierTypes;
-const loadLanguages = require('../../helpers/middleware').loadLanguages;
-const loadPublisherTypes =
-	require('../../helpers/middleware').loadPublisherTypes;
-const makeEntityLoader = require('../../helpers/middleware').makeEntityLoader;
-
-const EditForm = React.createFactory(
-	require('../../../client/components/forms/publisher')
-);
+import * as auth from '../../helpers/auth';
+import * as entityRoutes from './entity';
+import * as middleware from '../../helpers/middleware';
+import * as utils from '../../helpers/utils';
+import EditForm from '../../../client/components/forms/publisher';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import _ from 'lodash';
+import express from 'express';
 
 const router = express.Router();
 
 /* If the route specifies a BBID, load the Publisher for it. */
 router.param(
 	'bbid',
-	makeEntityLoader(
+	middleware.makeEntityLoader(
 		'Publisher',
 		['publisherType', 'area'],
 		'Publisher not found'
@@ -63,7 +47,7 @@ function _setPublisherTitle(res) {
 	);
 }
 
-router.get('/:bbid', loadEntityRelationships, (req, res, next) => {
+router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 	// Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
@@ -105,8 +89,9 @@ router.get('/:bbid/revisions', (req, res, next) => {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages,
-	loadPublisherTypes, (req, res) => {
+router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
+	(req, res) => {
 		const props = {
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
@@ -114,7 +99,7 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages,
 			submissionUrl: '/publisher/create/handler'
 		};
 
-		const markup = ReactDOMServer.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
 		res.render('entity/create/create-common', {
 			heading: 'Create Publisher',
@@ -127,8 +112,9 @@ router.get('/create', auth.isAuthenticated, loadIdentifierTypes, loadLanguages,
 	}
 );
 
-router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
-	loadPublisherTypes, loadLanguages, (req, res) => {
+router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadPublisherTypes, middleware.loadLanguages,
+	(req, res) => {
 		const publisher = res.locals.entity;
 
 		const props = {
@@ -139,7 +125,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, loadIdentifierTypes,
 			submissionUrl: `/publisher/${publisher.bbid}/edit/handler`
 		};
 
-		const markup = ReactDOMServer.renderToString(EditForm(props));
+		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
 		res.render('entity/create/create-common', {
 			heading: 'Edit Publisher',
@@ -168,4 +154,4 @@ router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, (req, res) =>
 	)
 );
 
-module.exports = router;
+export default router;

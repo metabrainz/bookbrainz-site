@@ -17,15 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const Promise = require('bluebird');
-
-const renderRelationship = require('../helpers/render');
-const utils = require('../helpers/utils');
-
-const NotFoundError = require('../helpers/error').NotFoundError;
-const SiteError = require('../helpers/error').SiteError;
+import * as error from '../helpers/error';
+import * as utils from '../helpers/utils';
+import Promise from 'bluebird';
+import renderRelationship from '../helpers/render';
 
 function makeLoader(modelName, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
@@ -43,21 +38,21 @@ function makeLoader(modelName, propName, sortFunc) {
 	};
 }
 
-const middleware = {};
-
-middleware.loadCreatorTypes = makeLoader('CreatorType', 'creatorTypes');
-middleware.loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
-middleware.loadEditionStatuses = makeLoader('EditionStatus', 'editionStatuses');
-middleware.loadIdentifierTypes =
+export const loadCreatorTypes = makeLoader('CreatorType', 'creatorTypes');
+export const loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
+export const loadEditionStatuses =
+	makeLoader('EditionStatus', 'editionStatuses');
+export const loadIdentifierTypes =
 	makeLoader('IdentifierType', 'identifierTypes');
-middleware.loadPublicationTypes =
+export const loadPublicationTypes =
 	makeLoader('PublicationType', 'publicationTypes');
-middleware.loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
-middleware.loadWorkTypes = makeLoader('WorkType', 'workTypes');
+export const loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
+export const loadWorkTypes = makeLoader('WorkType', 'workTypes');
 
-middleware.loadGenders = makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
+export const loadGenders =
+	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
 
-middleware.loadLanguages = makeLoader('Language', 'languages', (a, b) => {
+export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	if (a.frequency !== b.frequency) {
 		return b.frequency - a.frequency;
 	}
@@ -65,14 +60,14 @@ middleware.loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
-middleware.loadEntityRelationships = (req, res, next) => {
+export function loadEntityRelationships(req, res, next) {
 	const {orm} = req.app.locals;
 	const {RelationshipSet} = orm;
 	const entity = res.locals.entity;
 
 	new Promise((resolve) => {
 		if (!entity) {
-			throw new SiteError('Failed to load entity');
+			throw new error.SiteError('Failed to load entity');
 		}
 
 		resolve();
@@ -125,9 +120,9 @@ middleware.loadEntityRelationships = (req, res, next) => {
 			next();
 		})
 		.catch(next);
-};
+}
 
-middleware.makeEntityLoader = (modelName, additionalRels, errMessage) => {
+export function makeEntityLoader(modelName, additionalRels, errMessage) {
 	const relations = [
 		'aliasSet.aliases.language',
 		'annotation.lastRevision',
@@ -152,13 +147,11 @@ middleware.makeEntityLoader = (modelName, additionalRels, errMessage) => {
 					next();
 				})
 				.catch(model.NotFoundError, () => {
-					throw new NotFoundError(errMessage);
+					throw new error.NotFoundError(errMessage);
 				})
 				.catch(next);
 		}
 
 		return next('route');
 	};
-};
-
-module.exports = middleware;
+}

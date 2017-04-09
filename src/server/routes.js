@@ -17,60 +17,56 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/* eslint global-require: 0 */
-
-'use strict';
-
-const relationshipHelper = require('./routes/relationship/edit');
+import * as relationshipHelper from './routes/relationship/edit';
+import authRouter from './routes/auth';
+import creatorRouter from './routes/entity/creator';
+import editionRouter from './routes/entity/edition';
+import editorRouter from './routes/editor';
+import indexRouter from './routes/index';
+import publicationRouter from './routes/entity/publication';
+import publisherRouter from './routes/entity/publisher';
+import registerRouter from './routes/register';
+import revisionRouter from './routes/revision';
+import searchRouter from './routes/search';
+import workRouter from './routes/entity/work';
 
 function initRootRoutes(app) {
-	app.use('/', require('./routes/index'));
-	app.use('/', require('./routes/auth'));
-	app.use('/search', require('./routes/search'));
-	app.use('/register', require('./routes/register'));
+	app.use('/', indexRouter);
+	app.use('/', authRouter);
+	app.use('/search', searchRouter);
+	app.use('/register', registerRouter);
 }
 
 function initPublicationRoutes(app) {
-	const router = require('./routes/entity/publication');
-
-	app.use('/publication', router);
-	relationshipHelper.addEditRoutes(router);
+	app.use('/publication', publicationRouter);
+	relationshipHelper.addEditRoutes(publicationRouter);
 }
 
 function initCreatorRoutes(app) {
-	const router = require('./routes/entity/creator');
-
-	app.use('/creator', router);
-	relationshipHelper.addEditRoutes(router);
+	app.use('/creator', creatorRouter);
+	relationshipHelper.addEditRoutes(creatorRouter);
 }
 
 function initEditionRoutes(app) {
-	const router = require('./routes/entity/edition');
-
-	app.use('/edition', router);
-	relationshipHelper.addEditRoutes(router);
+	app.use('/edition', editionRouter);
+	relationshipHelper.addEditRoutes(editionRouter);
 }
 
 function initWorkRoutes(app) {
-	const router = require('./routes/entity/work');
-
-	app.use('/work', router);
-	relationshipHelper.addEditRoutes(router);
+	app.use('/work', workRouter);
+	relationshipHelper.addEditRoutes(workRouter);
 }
 
 function initPublisherRoutes(app) {
-	const router = require('./routes/entity/publisher');
-
-	app.use('/publisher', router);
-	relationshipHelper.addEditRoutes(router);
+	app.use('/publisher', publisherRouter);
+	relationshipHelper.addEditRoutes(publisherRouter);
 }
 
 function initRevisionRoutes(app) {
-	const router = require('./routes/revision');
-	app.use('/revision', router);
+	app.use('/revision', revisionRouter);
 }
 
-module.exports = function initRoutes(app) {
+function initRoutes(app) {
 	initRootRoutes(app);
 
 	initPublicationRoutes(app);
@@ -80,5 +76,7 @@ module.exports = function initRoutes(app) {
 	initPublisherRoutes(app);
 	initRevisionRoutes(app);
 
-	app.use('/editor', require('./routes/editor'));
-};
+	app.use('/editor', editorRouter);
+}
+
+export default initRoutes;

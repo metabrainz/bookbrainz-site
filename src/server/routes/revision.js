@@ -17,30 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
-const Promise = require('bluebird');
-
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const express = require('express');
-const _ = require('lodash');
-
-
-const propHelpers = require('../helpers/props');
-const baseFormatter = require('../helpers/diffFormatters/base');
-const entityFormatter = require('../helpers/diffFormatters/entity');
-const languageSetFormatter =
-	require('../helpers/diffFormatters/languageSet');
-const publisherSetFormatter =
-	require('../helpers/diffFormatters/publisherSet');
-const releaseEventSetFormatter =
-	require('../helpers/diffFormatters/releaseEventSet');
-const entityRoutes = require('./entity/entity');
-
-const Layout = require('../../client/containers/layout');
-const RevisionPage = require('../../client/components/pages/revision');
-
+import * as baseFormatter from '../helpers/diffFormatters/base';
+import * as entityFormatter from '../helpers/diffFormatters/entity';
+import * as entityRoutes from './entity/entity';
+import * as languageSetFormatter from '../helpers/diffFormatters/languageSet';
+import * as propHelpers from '../helpers/props';
+import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
+import * as releaseEventSetFormatter from
+	'../helpers/diffFormatters/releaseEventSet';
+import Layout from '../../client/containers/layout';
+import Promise from 'bluebird';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import RevisionPage from '../../client/components/pages/revision';
+import _ from 'lodash';
+import express from 'express';
 
 const router = express.Router();
 
@@ -263,4 +254,4 @@ router.post('/:id/note', (req, res) => {
 	entityRoutes.addNoteToRevision(req, res);
 });
 
-module.exports = router;
+export default router;

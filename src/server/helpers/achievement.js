@@ -16,24 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
+ /**
+  * Achievement Module
+  * @module Achievement
+  */
 
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
+import * as error from './error';
+import Log from 'log';
+import Promise from 'bluebird';
+import _ from 'lodash';
+import config from './config';
 
-
-const Promise = require('bluebird');
-const AwardNotUnlockedError = require('./error.js').AwardNotUnlockedError;
-const _ = require('lodash');
-
-const config = require('./config');
-const Log = require('log');
 const log = new Log(config.site.log);
-
-/**
- * Achievement Module
- * @module Achievement
- */
-const achievement = {};
 
 /**
  * Awards an Unlock type with awardAttribs if not already awarded
@@ -58,8 +53,8 @@ function awardUnlock(UnlockType, awardAttribs) {
 			}
 			return unlockPromise;
 		})
-		.catch((error) =>
-			Promise.reject(error)
+		.catch((err) =>
+			Promise.reject(err)
 		);
 }
 
@@ -79,7 +74,7 @@ function awardAchievement(orm, editorId, achievementName) {
 		.then((achievementTier) => {
 			let awardPromise;
 			if (achievementTier === null) {
-				awardPromise = Promise.reject(new AwardNotUnlockedError(
+				awardPromise = Promise.reject(new error.AwardNotUnlockedError(
 					`Achievement ${achievementName} not found in database`
 				));
 			}
@@ -96,7 +91,7 @@ function awardAchievement(orm, editorId, achievementName) {
 							return out;
 						})
 						.catch((err) => Promise.reject(
-							new AwardNotUnlockedError(err.message)
+							new error.AwardNotUnlockedError(err.message)
 						));
 			}
 			return awardPromise;
@@ -121,9 +116,11 @@ function awardTitle(orm, editorId, tier) {
 			.then((title) => {
 				let awardPromise;
 				if (title === null) {
-					awardPromise = Promise.reject(new AwardNotUnlockedError(
-						`Title ${tier.titleName} not found in database`
-					));
+					awardPromise = Promise.reject(
+						new error.AwardNotUnlockedError(
+							`Title ${tier.titleName} not found in database`
+						)
+					);
 				}
 				else {
 					const titleAttribs = {
@@ -137,7 +134,7 @@ function awardTitle(orm, editorId, tier) {
 							return out;
 						})
 						.catch((err) => Promise.reject(
-							new AwardNotUnlockedError(err.message)
+							new error.AwardNotUnlockedError(err.message)
 						));
 				}
 				return awardPromise;
@@ -204,7 +201,7 @@ function testTiers(orm, signal, editorId, tiers) {
 					return out;
 				}
 			)
-				.catch((error) => log.debug(error));
+				.catch((err) => log.debug(err));
 		}
 		else {
 			const out = {};
@@ -591,8 +588,8 @@ function processExplorer(orm, editorId) {
 }
 
 
-achievement.processPageVisit = (orm, userId) =>
-	Promise.join(
+export function processPageVisit(orm, userId) {
+	return Promise.join(
 		processExplorer(orm, userId),
 		(explorer) => {
 			let alert = [];
@@ -607,6 +604,7 @@ achievement.processPageVisit = (orm, userId) =>
 			};
 		}
 	);
+}
 
 /**
  * Run each time an edit occurs on the site, will test for each achievement
@@ -617,8 +615,8 @@ achievement.processPageVisit = (orm, userId) =>
  * @returns {object} - Output of each achievement test as well as an alert
  * containing id's for each unlocked achievement in .alert
  */
-achievement.processEdit = (orm, userId, revisionId) =>
-	Promise.join(
+export function processEdit(orm, userId, revisionId) {
+	return Promise.join(
 		processRevisionist(orm, userId),
 		processCreatorCreator(orm, userId),
 		processLimitedEdition(orm, userId),
@@ -673,10 +671,8 @@ achievement.processEdit = (orm, userId, revisionId) =>
 			};
 		}
 	);
+}
 
-
-achievement.processComment = () => {
+export function processComment() {
 	// empty
-};
-
-module.exports = achievement;
+}
