@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import LoadingSpinner from '../loading-spinner';
 import React from 'react';
-import bootstrap from 'react-bootstrap';
 import request from 'superagent-bluebird-promise';
 
 const {Alert, Button, Input, Panel} = bootstrap;

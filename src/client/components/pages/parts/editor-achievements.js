@@ -18,10 +18,10 @@
  */
 
 import * as ReactSticky from 'react-sticky';
+import * as bootstrap from 'react-bootstrap';
 import Achievement from '../../forms/parts/achievement';
 import DragAndDrop from '../../input/drag-and-drop';
 import React from 'react';
-import bootstrap from 'react-bootstrap';
 import request from 'superagent-bluebird-promise';
 
 const {Row} = bootstrap;

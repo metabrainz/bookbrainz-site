@@ -19,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import React from 'react';
-import bootstrap from 'react-bootstrap';
 
 const {Col, Nav, NavItem, Row} = bootstrap;
 

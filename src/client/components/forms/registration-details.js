@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import * as validators from '../../helpers/react-validators';
 import LoadingSpinner from '../loading-spinner';
 import PartialDate from '../input/partial-date';
 import React from 'react';
 import Select from '../input/select2';
-import bootstrap from 'react-bootstrap';
 import request from 'superagent-bluebird-promise';
 
 const {Alert, Button, Input, PageHeader} = bootstrap;

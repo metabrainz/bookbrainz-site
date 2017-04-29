@@ -17,10 +17,10 @@
  */
 /* eslint-disable react/display-name */
 
+import * as bootstrap from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 import _get from 'lodash.get';
-import bootstrap from 'react-bootstrap';
 
 const {Button, Table} = bootstrap;
 

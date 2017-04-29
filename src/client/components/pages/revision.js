@@ -18,11 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import EntityLink from '../entity-link';
 import React from 'react';
 import _compact from 'lodash.compact';
-import bootstrap from 'react-bootstrap';
 import request from 'superagent-bluebird-promise';
 
 const {Button, Col, Input, ListGroup, ListGroupItem, Row} = bootstrap;

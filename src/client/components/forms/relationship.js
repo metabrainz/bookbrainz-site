@@ -18,13 +18,13 @@
  */
  /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
+import * as bootstrap from 'react-bootstrap';
 import * as dataHelper from '../../helpers/data';
 import * as validators from '../../helpers/react-validators';
 import React from 'react';
 import RelationshipRow from './parts/relationship-row';
 import _ from 'lodash';
 import _filter from 'lodash.filter';
-import bootstrap from 'react-bootstrap';
 import request from 'superagent-bluebird-promise';
 
 const {Alert, Button, PageHeader} = bootstrap;

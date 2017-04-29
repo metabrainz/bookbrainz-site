@@ -18,11 +18,11 @@
  */
 /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
+import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 import _assign from 'lodash.assign';
 import _isEqual from 'lodash.isequal';
 import _omit from 'lodash.omit';
-import bootstrap from 'react-bootstrap';
 
 const {Input} = bootstrap;
 

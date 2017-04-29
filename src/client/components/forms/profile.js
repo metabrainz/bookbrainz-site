@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
 import LoadingSpinner from '../loading-spinner';
@@ -24,7 +25,6 @@ import PartialDate from '../input/partial-date';
 import React from 'react';
 import SearchSelect from '../input/entity-search';
 import Select from '../input/select2';
-import bootstrap from 'react-bootstrap';
 import request from 'superagent-bluebird-promise';
 
 const {Button, Col, Grid, Input, Row} = bootstrap;

@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import * as dataHelper from '../../../helpers/data';
 import * as validators from '../../../helpers/react-validators';
 import Handlebars from 'handlebars';
@@ -25,7 +26,6 @@ import React from 'react';
 import SearchSelect from '../../input/entity-search';
 import Select from '../../input/select2';
 import _find from 'lodash.find';
-import bootstrap from 'react-bootstrap';
 
 const {Button, Input} = bootstrap;
 

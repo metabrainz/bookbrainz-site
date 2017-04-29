@@ -19,10 +19,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint max-len: "warn" */
+import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
-import bootstrap from 'react-bootstrap';
 
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;

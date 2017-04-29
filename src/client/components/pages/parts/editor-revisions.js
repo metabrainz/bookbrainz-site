@@ -19,9 +19,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 import React from 'react';
-import bootstrap from 'react-bootstrap';
 
 const {ListGroup, ListGroupItem} = bootstrap;
 const {formatDate, isWithinDayFromNow} = utilsHelper;

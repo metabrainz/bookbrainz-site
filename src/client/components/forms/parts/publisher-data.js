@@ -18,6 +18,7 @@
  */
 /* eslint no-return-assign: 0 */
 
+import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 import * as validators from '../../../helpers/react-validators';
 import Icon from 'react-fontawesome';
@@ -26,7 +27,6 @@ import PartialDate from '../../input/partial-date';
 import React from 'react';
 import SearchSelect from '../../input/entity-search';
 import Select from '../../input/select2';
-import bootstrap from 'react-bootstrap';
 
 const {Input} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
