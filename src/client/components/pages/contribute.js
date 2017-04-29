@@ -16,9 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const PageHeader = require('react-bootstrap').PageHeader;
+const {PageHeader} = bootstrap;
 
 /**
 * Renders the the document and displays the 'Contribute' page.
@@ -26,8 +27,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * Contribute page
 */
 function ContributePage() {
-	'use strict';
-
 	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
 	const styleLink =
 		'https://bb-user-guide.readthedocs.org/en/latest/' +
@@ -91,4 +90,4 @@ function ContributePage() {
 
 ContributePage.displayName = 'ContributePage';
 
-module.exports = ContributePage;
+export default ContributePage;

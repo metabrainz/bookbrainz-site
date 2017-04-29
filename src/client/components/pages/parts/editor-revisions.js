@@ -18,18 +18,15 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
 
-const bootstrap = require('react-bootstrap');
-const formatDate = require('../../../helpers/utils').formatDate;
-const isWithinDayFromNow = require('../../../helpers/utils').isWithinDayFromNow;
+import * as utilsHelper from '../../../helpers/utils';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const ListGroup = bootstrap.ListGroup;
-const ListGroupItem = bootstrap.ListGroupItem;
+const {ListGroup, ListGroupItem} = bootstrap;
+const {formatDate, isWithinDayFromNow} = utilsHelper;
 
 function EditorRevisionsTab(props) {
-	'use strict';
-
 	const {editor} = props;
 	const revisions = editor.revisions;
 
@@ -73,4 +70,4 @@ EditorRevisionsTab.propTypes = {
 	}).isRequired
 };
 
-module.exports = EditorRevisionsTab;
+export default EditorRevisionsTab;

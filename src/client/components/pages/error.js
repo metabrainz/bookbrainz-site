@@ -15,18 +15,17 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
-const Button = require('react-bootstrap').Button;
-const Grid = require('react-bootstrap').Grid;
-const Row = require('react-bootstrap').Row;
+
+import React from 'react';
+import bootstrap from 'react-bootstrap';
+
+const {Button, Grid, Row} = bootstrap;
 
 /**
  * Links to different pages
  */
 
 function ErrorPage(props) {
-	'use strict';
-
 	const {error} = props;
 	let detailedMessage = error.detailedMessage;
 	if (typeof detailedMessage === 'string') {
@@ -78,4 +77,4 @@ ErrorPage.propTypes = {
 	}).isRequired
 };
 
-module.exports = ErrorPage;
+export default ErrorPage;

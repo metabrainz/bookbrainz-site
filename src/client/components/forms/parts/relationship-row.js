@@ -17,23 +17,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Handlebars = require('handlebars');
-const Icon = require('react-fontawesome');
-const React = require('react');
-const _find = require('lodash.find');
+import * as dataHelper from '../../../helpers/data';
+import * as validators from '../../../helpers/react-validators';
+import Handlebars from 'handlebars';
+import Icon from 'react-fontawesome';
+import React from 'react';
+import SearchSelect from '../../input/entity-search';
+import Select from '../../input/select2';
+import _find from 'lodash.find';
+import bootstrap from 'react-bootstrap';
 
-const Button = require('react-bootstrap').Button;
-const Input = require('react-bootstrap').Input;
+const {Button, Input} = bootstrap;
 
-const Select = require('../../input/select2');
-const SearchSelect = require('../../input/entity-search');
-
-const dataHelper = require('../../../helpers/data');
-const validators = require('../../../helpers/react-validators');
 
 function renderRelationship(relationship) {
-	'use strict';
-
 	const template = Handlebars.compile(
 		relationship.type.displayTemplate,
 		{noEscape: true}
@@ -55,8 +52,6 @@ function renderRelationship(relationship) {
 }
 
 function getRelationshipTypeById(types, id) {
-	'use strict';
-
 	return _find(
 		types, (type) => type.id === id
 	);
@@ -386,4 +381,4 @@ RelationshipRow.defaultProps = {
 	onSwap: null
 };
 
-module.exports = RelationshipRow;
+export default RelationshipRow;

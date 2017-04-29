@@ -18,16 +18,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
 
-const bootstrap = require('react-bootstrap');
-const FontAwesome = require('react-fontawesome');
-const formatDate = require('../../../helpers/utils').formatDate;
+import * as utilsHelper from '../../../helpers/utils';
+import FontAwesome from 'react-fontawesome';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const Row = bootstrap.Row;
-const Col = bootstrap.Col;
-const Button = bootstrap.Button;
-const Image = bootstrap.Image;
+const {Button, Col, Image, Row} = bootstrap;
+const {formatDate} = utilsHelper;
 
 class EditorProfileTab extends React.Component {
 
@@ -216,4 +214,4 @@ EditorProfileTab.defaultProps = {
 	user: null
 };
 
-module.exports = EditorProfileTab;
+export default EditorProfileTab;

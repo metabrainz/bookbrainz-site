@@ -16,12 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const Layout = require('../containers/layout');
-const RevisionPage = require('../components/pages/revision');
+import * as propHelpers from '../../server/helpers/props';
+import Layout from '../containers/layout';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import RevisionPage from '../components/pages/revision';
 
-const propHelpers = require('../../server/helpers/props');
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (

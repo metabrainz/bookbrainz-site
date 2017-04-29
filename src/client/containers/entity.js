@@ -20,15 +20,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint indent: 0,  react/no-danger: 0 */
-const React = require('react');
-const FontAwesome = require('react-fontawesome');
-const formatDate = require('../helpers/utils').formatDate;
+import * as utilsHelper from '../helpers/utils';
+import FontAwesome from 'react-fontawesome';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const Row = require('react-bootstrap').Row;
-const Col = require('react-bootstrap').Col;
-const Alert = require('react-bootstrap').Alert;
-const Button = require('react-bootstrap').Button;
-const Panel = require('react-bootstrap').Panel;
+const {Alert, Button, Col, Row, Panel} = bootstrap;
+const {formatDate} = utilsHelper;
 
 class EntityContainer extends React.Component {
 
@@ -291,4 +289,4 @@ EntityContainer.defaultProps = {
 	alert: null
 };
 
-module.exports = EntityContainer;
+export default EntityContainer;

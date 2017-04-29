@@ -16,17 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const PageHeader = require('react-bootstrap').PageHeader;
+const {PageHeader} = bootstrap;
 
 /**
 * Renders the document and displays the 'Develop' page.
 * @returns {ReactElement} a HTML document to display the Develop page
 */
 function DevelopPage() {
-	'use strict';
-
 	return (
 		<div>
 			<PageHeader>Developing with BookBrainz</PageHeader>
@@ -76,4 +75,4 @@ function DevelopPage() {
 
 DevelopPage.displayName = 'DevelopPage';
 
-module.exports = DevelopPage;
+export default DevelopPage;

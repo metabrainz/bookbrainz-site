@@ -17,6 +17,7 @@
  */
 
 
+import * as data from '../../helpers/data';
 import {Button, Col, Input, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateIdentifierValue, removeIdentifierRow, updateIdentifierType
@@ -25,7 +26,6 @@ import React from 'react';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {connect} from 'react-redux';
-import data from '../../helpers/data';
 
 /**
  * Container component. The IdentifierRow component renders a single Row

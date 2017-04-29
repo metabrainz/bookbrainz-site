@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
-const _debounce = require('lodash.debounce');
+import Icon from 'react-fontawesome';
+import React from 'react';
+import _debounce from 'lodash.debounce';
+import bootstrap from 'react-bootstrap';
 
-const Button = require('react-bootstrap').Button;
-const Input = require('react-bootstrap').Input;
+const {Button, Input} = bootstrap;
 
 const SearchButton = (
 	<Button
@@ -88,4 +88,4 @@ SearchField.propTypes = {
 	onSearch: React.PropTypes.func.isRequired
 };
 
-module.exports = SearchField;
+export default SearchField;

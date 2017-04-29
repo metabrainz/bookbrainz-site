@@ -16,15 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const request = require('superagent-bluebird-promise');
+import LoadingSpinner from '../loading-spinner';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
 
-const Alert = require('react-bootstrap').Alert;
-const Button = require('react-bootstrap').Button;
-const Input = require('react-bootstrap').Input;
-const Panel = require('react-bootstrap').Panel;
-
-const LoadingSpinner = require('../loading-spinner');
+const {Alert, Button, Input, Panel} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -134,4 +131,4 @@ EntityDeletionForm.propTypes = {
 	entity: React.PropTypes.object.isRequired
 };
 
-module.exports = EntityDeletionForm;
+export default EntityDeletionForm;

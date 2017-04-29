@@ -16,9 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const PageHeader = require('react-bootstrap').PageHeader;
+const {PageHeader} = bootstrap;
 
 /**
 * Renders the document and displays the 'About' page.
@@ -26,8 +27,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * page
 */
 function AboutPage() {
-	'use strict';
-
 	const NESLink =
 		'https://ocharles.org.uk/blog/posts/' +
 			'2012-07-10-nes-does-it-better-1.html';
@@ -139,4 +138,4 @@ function AboutPage() {
 
 AboutPage.displayName = 'AboutPage';
 
-module.exports = AboutPage;
+export default AboutPage;

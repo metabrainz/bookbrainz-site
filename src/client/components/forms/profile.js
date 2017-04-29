@@ -16,24 +16,19 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
-const request = require('superagent-bluebird-promise');
-const formatDate = require('../../helpers/utils').formatDate;
 
-const Grid = require('react-bootstrap').Grid;
-const Row = require('react-bootstrap').Row;
-const Button = require('react-bootstrap').Button;
-const Input = require('react-bootstrap').Input;
-const Col = require('react-bootstrap').Col;
+import * as utilsHelper from '../../helpers/utils';
+import * as validators from '../../helpers/react-validators';
+import LoadingSpinner from '../loading-spinner';
+import PartialDate from '../input/partial-date';
+import React from 'react';
+import SearchSelect from '../input/entity-search';
+import Select from '../input/select2';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
 
-const LoadingSpinner = require('../loading-spinner');
-const Select = require('../input/select2');
-const SearchSelect = require('../input/entity-search');
-const PartialDate = require('../input/partial-date');
-
-const validators = require('../../helpers/react-validators');
-const injectDefaultAliasName =
-	require('../../helpers/utils').injectDefaultAliasName;
+const {Button, Col, Grid, Input, Row} = bootstrap;
+const {formatDate, injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
 	constructor(props) {
@@ -215,4 +210,4 @@ ProfileForm.propTypes = {
 	titles: React.PropTypes.array.isRequired
 };
 
-module.exports = ProfileForm;
+export default ProfileForm;

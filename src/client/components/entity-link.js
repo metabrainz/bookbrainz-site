@@ -16,11 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
 
 function EntityLink(props) {
-	'use strict';
-
 	return (
 		<a href={`/${props.type.toLowerCase()}/${props.bbid}`}>
 			{props.text}
@@ -35,4 +33,4 @@ EntityLink.propTypes = {
 	type: React.PropTypes.string.isRequired
 };
 
-module.exports = EntityLink;
+export default EntityLink;

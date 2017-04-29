@@ -16,11 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const EditForm = React.createFactory(
-	require('../components/forms/relationship')
-);
+import EditForm from '../components/forms/relationship';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
-ReactDOM.render(EditForm(props), document.getElementById('relationshipForm'));
+ReactDOM.render(
+	<EditForm {...props}/>,
+	document.getElementById('relationshipForm')
+);

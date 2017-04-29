@@ -17,18 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
-const _assign = require('lodash.assign');
+import * as validators from '../../../helpers/react-validators';
+import Icon from 'react-fontawesome';
+import Identifiers from './identifier-list';
+import PartialDate from '../../input/partial-date';
+import React from 'react';
+import SearchSelect from '../../input/entity-search';
+import Select from '../../input/select2';
+import _assign from 'lodash.assign';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
+const {Input} = bootstrap;
 
-const Identifiers = require('./identifier-list');
-const PartialDate = require('../../input/partial-date');
-const SearchSelect = require('../../input/entity-search');
-const Select = require('../../input/select2');
-
-const validators = require('../../../helpers/react-validators');
 
 class EditionData extends React.Component {
 	getValue() {
@@ -400,4 +400,4 @@ EditionData.propTypes = {
 	visible: React.PropTypes.bool.isRequired
 };
 
-module.exports = EditionData;
+export default EditionData;

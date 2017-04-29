@@ -17,12 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-
-const IdentifierRow = require('./identifier-row');
-
-const dataHelper = require('../../../helpers/data');
-const validators = require('../../../helpers/react-validators');
+import * as dataHelper from '../../../helpers/data';
+import * as validators from '../../../helpers/react-validators';
+import IdentifierRow from './identifier-row';
+import React from 'react';
 
 class IdentifierList extends React.Component {
 	constructor(props) {
@@ -189,4 +187,4 @@ IdentifierList.propTypes = {
 	types: React.PropTypes.arrayOf(validators.labeledProperty).isRequired
 };
 
-module.exports = IdentifierList;
+export default IdentifierList;

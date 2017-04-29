@@ -18,15 +18,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint strict: 0 */
-const React = require('react');
-const FontAwesome = require('react-fontawesome');
-const EntityPage = require('../../../containers/entity');
-const AttributeList = require('./../parts/attribute-list');
-const getLanguageAttribute =
-	require('../../../helpers/entity').getLanguageAttribute;
-const extractAttribute = require('../../../helpers/entity').extractAttribute;
-const extractEntityProps =
-	require('../../../../server/helpers/props').extractEntityProps;
+
+import * as entityHelper from '../../../helpers/entity';
+import * as propsHelper from '../../../../server/helpers/props';
+import AttributeList from '../parts/attribute-list';
+import EntityPage from '../../../containers/entity';
+import FontAwesome from 'react-fontawesome';
+import React from 'react';
+
+const {extractAttribute, getLanguageAttribute} = entityHelper;
+const {extractEntityProps} = propsHelper;
 
 function EditionPage(props) {
 	const {entity} = props;
@@ -95,4 +96,4 @@ EditionPage.propTypes = {
 	entity: React.PropTypes.object.isRequired
 };
 
-module.exports = EditionPage;
+export default EditionPage;

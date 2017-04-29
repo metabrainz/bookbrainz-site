@@ -18,18 +18,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const Row = require('react-bootstrap').Row;
-const Col = require('react-bootstrap').Col;
-const Button = require('react-bootstrap').Button;
-const Input = require('react-bootstrap').Input;
-const ListGroup = require('react-bootstrap').ListGroup;
-const ListGroupItem = require('react-bootstrap').ListGroupItem;
-const _compact = require('lodash.compact');
-const request = require('superagent-bluebird-promise');
-const formatDate = require('../../helpers/utils').formatDate;
+import * as utilsHelper from '../../helpers/utils';
+import EntityLink from '../entity-link';
+import React from 'react';
+import _compact from 'lodash.compact';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
 
-const EntityLink = require('../entity-link');
+const {Button, Col, Input, ListGroup, ListGroupItem, Row} = bootstrap;
+const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
 	static formatValueList(list) {
@@ -235,4 +232,4 @@ RevisionPage.defaultProps = {
 	user: null
 };
 
-module.exports = RevisionPage;
+export default RevisionPage;

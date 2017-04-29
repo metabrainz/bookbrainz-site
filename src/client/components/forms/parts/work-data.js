@@ -17,15 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
+import * as validators from '../../../helpers/react-validators';
+import Icon from 'react-fontawesome';
+import Identifiers from './identifier-list';
+import React from 'react';
+import Select from '../../input/select2';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
-
-const Identifiers = require('./identifier-list');
-const Select = require('../../input/select2');
-
-const validators = require('../../../helpers/react-validators');
+const {Input} = bootstrap;
 
 class WorkData extends React.Component {
 	getValue() {
@@ -194,4 +193,4 @@ WorkData.propTypes = {
 	workTypes: React.PropTypes.arrayOf(validators.labeledProperty).isRequired
 };
 
-module.exports = WorkData;
+export default WorkData;

@@ -16,15 +16,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
-const bootstrap = require('react-bootstrap');
-const formatDate = require('../../helpers/utils').formatDate;
-const isWithinDayFromNow = require('../../helpers/utils').isWithinDayFromNow;
 
-const Row = bootstrap.Row;
-const Col = bootstrap.Col;
-const ListGroup = bootstrap.ListGroup;
-const ListGroupItem = bootstrap.ListGroupItem;
+import * as utilsHelper from '../../helpers/utils';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
+
+const {Col, ListGroup, ListGroupItem, Row} = bootstrap;
+const {formatDate, isWithinDayFromNow} = utilsHelper;
 
 /**
 * The class is derived from the React Component base class and
@@ -135,4 +133,4 @@ EntityRevisions.propTypes = {
 	revisions: React.PropTypes.array.isRequired
 };
 
-module.exports = EntityRevisions;
+export default EntityRevisions;

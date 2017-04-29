@@ -18,15 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const AchievementsTab =
-	require('../../components/pages/parts/editor-achievements');
-const Layout =
-	require('../../containers/layout');
-const EditorContainer =
-	require('../../containers/editor');
-const propHelpers = require('../../../server/helpers/props');
+import * as propHelpers from '../../../server/helpers/props';
+import AchievementsTab from '../../components/pages/parts/editor-achievements';
+import EditorContainer from '../../containers/editor';
+import Layout from '../../containers/layout';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};

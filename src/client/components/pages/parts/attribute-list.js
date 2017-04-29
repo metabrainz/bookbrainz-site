@@ -15,9 +15,9 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint strict: 0 */
-const React = require('react');
-const _flatten = require('lodash.flatten');
+
+import React from 'react';
+import _flatten from 'lodash.flatten';
 
 function AttributeList({attributes}) {
 	return (
@@ -39,4 +39,4 @@ AttributeList.propTypes = {
 	})).isRequired
 };
 
-module.exports = AttributeList;
+export default AttributeList;

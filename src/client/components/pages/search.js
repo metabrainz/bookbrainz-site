@@ -18,11 +18,10 @@
  */
 /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
-const React = require('react');
-const request = require('superagent-bluebird-promise');
-
-const SearchField = require('./parts/search-field');
-const SearchResults = require('./parts/search-results');
+import React from 'react';
+import SearchField from './parts/search-field';
+import SearchResults from './parts/search-results';
+import request from 'superagent-bluebird-promise';
 
 class SearchPage extends React.Component {
 
@@ -82,4 +81,4 @@ SearchPage.defaultProps = {
 	initialResults: []
 };
 
-module.exports = SearchPage;
+export default SearchPage;

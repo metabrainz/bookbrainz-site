@@ -15,7 +15,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const moment = require('moment');
+
+import moment from 'moment';
 
 /**
  * Injects entity model object with a default alias name property.
@@ -23,9 +24,7 @@ const moment = require('moment');
  * @param {object} instance - Entity object.
  * @returns {object} - New object with injected properties.
  */
-function injectDefaultAliasName(instance) {
-	'use strict';
-
+export function injectDefaultAliasName(instance) {
 	if (instance && instance.name) {
 		return Object.assign({}, instance, {
 			defaultAlias: {
@@ -36,9 +35,7 @@ function injectDefaultAliasName(instance) {
 	return instance;
 }
 
-function formatDate(date, includeTime) {
-	'use strict';
-
+export function formatDate(date, includeTime) {
 	// second condition checks if object is a Date -- avoids cross-frame issues
 	if (!date || !(Object.prototype.toString.call(date) === '[object Date]') ||
 		isNaN(date.getTime())) {
@@ -51,12 +48,6 @@ function formatDate(date, includeTime) {
 	return formatter.format('YYYY-MM-DD');
 }
 
-function isWithinDayFromNow(date) {
-	'use strict';
-
+export function isWithinDayFromNow(date) {
 	return Boolean(Date.now() - date.getTime() < 86400000);
 }
-
-exports.injectDefaultAliasName = injectDefaultAliasName;
-exports.formatDate = formatDate;
-exports.isWithinDayFromNow = isWithinDayFromNow;

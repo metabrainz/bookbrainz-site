@@ -16,13 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const PageHeader = require('react-bootstrap').PageHeader;
+const {PageHeader} = bootstrap;
 
 function LicensingPage() {
-	'use strict';
-
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';
 	const CC0Image = 'http://i.creativecommons.org/p/zero/1.0/88x31.png';
 
@@ -116,4 +115,4 @@ function LicensingPage() {
 
 LicensingPage.displayName = 'LicensingPage';
 
-module.exports = LicensingPage;
+export default LicensingPage;

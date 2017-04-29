@@ -19,14 +19,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint strict: 0 */
-const React = require('react');
-const EntityPage = require('../../../containers/entity');
-const AttributeList = require('./../parts/attribute-list');
-const getLanguageAttribute =
-	require('../../../helpers/entity').getLanguageAttribute;
-const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
-const extractEntityProps =
-	require('../../../../server/helpers/props').extractEntityProps;
+
+import * as entityHelper from '../../../helpers/entity';
+import * as propsHelper from '../../../../server/helpers/props';
+import AttributeList from '../parts/attribute-list';
+import EntityPage from '../../../containers/entity';
+import React from 'react';
+
+const {getLanguageAttribute, getTypeAttribute} = entityHelper;
+const {extractEntityProps} = propsHelper;
 
 function WorkPage(props) {
 	const {entity} = props;
@@ -52,4 +53,4 @@ WorkPage.propTypes = {
 	entity: React.PropTypes.object.isRequired
 };
 
-module.exports = WorkPage;
+export default WorkPage;

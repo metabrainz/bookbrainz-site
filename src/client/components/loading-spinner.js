@@ -17,12 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
+import Icon from 'react-fontawesome';
+import React from 'react';
 
 function LoadingSpinner() {
-	'use strict';
-
 	return (
 		<div className="loading-background">
 			<Icon
@@ -37,4 +35,4 @@ function LoadingSpinner() {
 
 LoadingSpinner.displayName = 'LoadingSpinner';
 
-module.exports = LoadingSpinner;
+export default LoadingSpinner;

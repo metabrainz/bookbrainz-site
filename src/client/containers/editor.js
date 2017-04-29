@@ -18,18 +18,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
 
-const bootstrap = require('react-bootstrap');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const Row = bootstrap.Row;
-const Col = bootstrap.Col;
-const Nav = bootstrap.Nav;
-const NavItem = bootstrap.NavItem;
+const {Col, Nav, NavItem, Row} = bootstrap;
 
 function EditorContainer(props) {
-	'use strict';
-
 	const {tabActive, editor, children} = props;
 
 	return (
@@ -93,4 +88,4 @@ EditorContainer.propTypes = {
 	tabActive: React.PropTypes.number.isRequired
 };
 
-module.exports = EditorContainer;
+export default EditorContainer;

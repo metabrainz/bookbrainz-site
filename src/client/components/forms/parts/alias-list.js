@@ -19,10 +19,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
-
-const AliasRow = require('./alias-row');
+import AliasRow from './alias-row';
+import Icon from 'react-fontawesome';
+import React from 'react';
 
 class AliasList extends React.Component {
 	constructor(props) {
@@ -234,4 +233,4 @@ AliasList.propTypes = {
 	visible: React.PropTypes.bool.isRequired
 };
 
-module.exports = AliasList;
+export default AliasList;

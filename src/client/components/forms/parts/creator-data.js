@@ -18,19 +18,18 @@
  */
 /* eslint no-return-assign: 0 */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
+import * as utilsHelper from '../../../helpers/utils';
+import * as validators from '../../../helpers/react-validators';
+import Icon from 'react-fontawesome';
+import Identifiers from './identifier-list';
+import PartialDate from '../../input/partial-date';
+import React from 'react';
+import SearchSelect from '../../input/entity-search';
+import Select from '../../input/select2';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
-
-const Identifiers = require('./identifier-list');
-const PartialDate = require('../../input/partial-date');
-const Select = require('../../input/select2');
-const SearchSelect = require('../../input/entity-search');
-
-const validators = require('../../../helpers/react-validators');
-const injectDefaultAliasName =
-	require('../../../helpers/utils').injectDefaultAliasName;
+const {Input} = bootstrap;
+const {injectDefaultAliasName} = utilsHelper;
 
 class CreatorData extends React.Component {
 	constructor(props) {
@@ -285,4 +284,4 @@ CreatorData.propTypes = {
 	visible: React.PropTypes.bool.isRequired
 };
 
-module.exports = CreatorData;
+export default CreatorData;

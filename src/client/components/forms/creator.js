@@ -18,17 +18,16 @@
  */
 /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
-const request = require('superagent-bluebird-promise');
+import Aliases from './parts/alias-list';
+import CreatorData from './parts/creator-data';
+import Icon from 'react-fontawesome';
+import LoadingSpinner from '../loading-spinner';
+import React from 'react';
+import RevisionNote from './parts/revision-note';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
 
-const Nav = require('react-bootstrap').Nav;
-const NavItem = require('react-bootstrap').NavItem;
-
-const Aliases = require('./parts/alias-list');
-const CreatorData = require('./parts/creator-data');
-const LoadingSpinner = require('../loading-spinner');
-const RevisionNote = require('./parts/revision-note');
+const {Nav, NavItem} = bootstrap;
 
 /**
 * This is an extended class of the React Component to
@@ -237,4 +236,4 @@ CreatorForm.propTypes = {
 	submissionUrl: React.PropTypes.string.isRequired
 };
 
-module.exports = CreatorForm;
+export default CreatorForm;

@@ -16,12 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const SearchPage = React.createFactory(require('../components/pages/search'));
+import React from 'react';
+import ReactDOM from 'react-dom';
+import SearchPage from '../components/pages/search';
 
 const propsDOM = document.getElementById('props');
 const props = propsDOM ? JSON.parse(propsDOM.innerHTML) : {};
+
 ReactDOM.render(
-	SearchPage(props), document.getElementById('searchPage').parentNode
+	<SearchPage {...props}/>, document.getElementById('searchPage').parentNode
 );

@@ -18,17 +18,16 @@
  */
 /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
-const request = require('superagent-bluebird-promise');
+import Aliases from './parts/alias-list';
+import Icon from 'react-fontawesome';
+import LoadingSpinner from '../loading-spinner';
+import PublicationData from './parts/publication-data';
+import React from 'react';
+import RevisionNote from './parts/revision-note';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
 
-const Nav = require('react-bootstrap').Nav;
-const NavItem = require('react-bootstrap').NavItem;
-
-const Aliases = require('./parts/alias-list');
-const LoadingSpinner = require('../loading-spinner');
-const PublicationData = require('./parts/publication-data');
-const RevisionNote = require('./parts/revision-note');
+const {Nav, NavItem} = bootstrap;
 
 class PublicationForm extends React.Component {
 
@@ -232,4 +231,4 @@ PublicationForm.propTypes = {
 	submissionUrl: React.PropTypes.string.isRequired
 };
 
-module.exports = PublicationForm;
+export default PublicationForm;

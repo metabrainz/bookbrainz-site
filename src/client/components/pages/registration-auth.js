@@ -17,11 +17,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
 
-const Button = require('react-bootstrap').Button;
-const PageHeader = require('react-bootstrap').PageHeader;
-const Alert = require('react-bootstrap').Alert;
+import React from 'react';
+import bootstrap from 'react-bootstrap';
+
+const {Alert, Button, PageHeader} = bootstrap;
 
 /**
 * Renders a page allowing the user to sign in to MusicBrainz to
@@ -29,8 +29,6 @@ const Alert = require('react-bootstrap').Alert;
 * @returns {ReactElement} an element containing the rendered output.
 */
 function RegistrationAuth() {
-	'use strict';
-
 	return (
 		<div>
 			<PageHeader>Register</PageHeader>
@@ -65,4 +63,4 @@ function RegistrationAuth() {
 
 RegistrationAuth.displayName = 'RegistrationForm';
 
-module.exports = RegistrationAuth;
+export default RegistrationAuth;

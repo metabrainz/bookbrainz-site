@@ -17,18 +17,16 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-const React = require('react');
-const request = require('superagent-bluebird-promise');
 
-const Alert = require('react-bootstrap').Alert;
-const Button = require('react-bootstrap').Button;
-const Input = require('react-bootstrap').Input;
-const PageHeader = require('react-bootstrap').PageHeader;
-const Select = require('../input/select2');
-const PartialDate = require('../input/partial-date');
+import * as validators from '../../helpers/react-validators';
+import LoadingSpinner from '../loading-spinner';
+import PartialDate from '../input/partial-date';
+import React from 'react';
+import Select from '../input/select2';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
 
-const LoadingSpinner = require('../loading-spinner');
-const validators = require('../../helpers/react-validators');
+const {Alert, Button, Input, PageHeader} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -194,4 +192,4 @@ RegistrationForm.defaultProps = {
 	name: null
 };
 
-module.exports = RegistrationForm;
+export default RegistrationForm;

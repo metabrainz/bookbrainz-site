@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const Table = require('react-bootstrap').Table;
+const {Table} = bootstrap;
 
 function SearchResults(props) {
-	'use strict';
-
 	const noResults = !props.results || props.results.length === 0;
 	if (noResults) {
 		return (
@@ -81,4 +80,4 @@ SearchResults.defaultProps = {
 	results: null
 };
 
-module.exports = SearchResults;
+export default SearchResults;

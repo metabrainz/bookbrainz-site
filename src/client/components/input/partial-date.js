@@ -17,9 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
+const {Input} = bootstrap;
 
 const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
 const ymRegex = /^\d{4}-\d{2}$/;
@@ -172,4 +173,4 @@ PartialDate.defaultProps = {
 	wrapperClassName: null
 };
 
-module.exports = PartialDate;
+export default PartialDate;

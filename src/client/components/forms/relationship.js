@@ -18,21 +18,16 @@
  */
  /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
-const React = require('react');
-const request = require('superagent-bluebird-promise');
-const _filter = require('lodash.filter');
+import * as dataHelper from '../../helpers/data';
+import * as validators from '../../helpers/react-validators';
+import React from 'react';
+import RelationshipRow from './parts/relationship-row';
+import _ from 'lodash';
+import _filter from 'lodash.filter';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
 
-// XXX: Replace with lodash.reject when breakage is fixed
-const _ = require('lodash');
-
-const Alert = require('react-bootstrap').Alert;
-const Button = require('react-bootstrap').Button;
-const PageHeader = require('react-bootstrap').PageHeader;
-
-const dataHelper = require('../../helpers/data');
-const validators = require('../../helpers/react-validators');
-
-const RelationshipRow = require('./parts/relationship-row');
+const {Alert, Button, PageHeader} = bootstrap;
 
 /**
  * Checks if the relationship is new by checking that
@@ -43,8 +38,6 @@ const RelationshipRow = require('./parts/relationship-row');
  */
 
 function isRelationshipNew(initialType, initialTarget) {
-	'use strict';
-
 	return !(initialType || initialTarget);
 }
 
@@ -392,4 +385,4 @@ RelationshipEditor.propTypes = {
 	})).isRequired
 };
 
-module.exports = RelationshipEditor;
+export default RelationshipEditor;

@@ -18,12 +18,13 @@
  */
 /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
-const React = require('react');
-const _assign = require('lodash.assign');
-const _isEqual = require('lodash.isequal');
-const _omit = require('lodash.omit');
+import React from 'react';
+import _assign from 'lodash.assign';
+import _isEqual from 'lodash.isequal';
+import _omit from 'lodash.omit';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
+const {Input} = bootstrap;
 
 let $ = null;
 if (typeof window !== 'undefined') {
@@ -181,4 +182,4 @@ Select.defaultProps = {
 	select2Options: null
 };
 
-module.exports = Select;
+export default Select;

@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
-const ReactDOMServer = require('react-dom/server');
-const $ = require('jquery');
-const _assign = require('lodash.assign');
-
-const Select = require('./select2');
+import $ from 'jquery';
+import Icon from 'react-fontawesome';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+import Select from './select2';
+import _assign from 'lodash.assign';
 
 class EntitySearch extends React.Component {
 	constructor(props) {
@@ -212,4 +211,4 @@ EntitySearch.defaultProps = {
 	wrapperClassName: null
 };
 
-module.exports = EntitySearch;
+export default EntitySearch;

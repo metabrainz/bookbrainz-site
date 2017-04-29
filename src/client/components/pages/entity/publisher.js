@@ -19,16 +19,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint strict: 0 */
-const React = require('react');
-const EntityPage = require('../../../containers/entity');
-const AttributeList = require('./../parts/attribute-list');
-const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
-const getDateAttributes = require('../../../helpers/entity').getDateAttributes;
-const extractAttribute = require('../../../helpers/entity').extractAttribute;
-const extractEntityProps =
-	require('../../../../server/helpers/props').extractEntityProps;
-const showEntityEditions =
-	require('../../../helpers/entity').showEntityEditions;
+
+import * as entityHelper from '../../../helpers/entity';
+import * as propsHelper from '../../../../server/helpers/props';
+import AttributeList from '../parts/attribute-list';
+import EntityPage from '../../../containers/entity';
+import React from 'react';
+
+const {
+	extractAttribute, getTypeAttribute, getDateAttributes, showEntityEditions
+} = entityHelper;
+const {extractEntityProps} = propsHelper;
 
 function PublisherPage(props) {
 	const {entity} = props;
@@ -57,4 +58,4 @@ PublisherPage.propTypes = {
 	entity: React.PropTypes.object.isRequired
 };
 
-module.exports = PublisherPage;
+export default PublisherPage;

@@ -19,23 +19,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
+import Icon from 'react-fontawesome';
+import React from 'react';
+import Select from '../../input/select2';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
-const Button = require('react-bootstrap').Button;
-
-const Select = require('../../input/select2');
+const {Button, Input} = bootstrap;
 
 function stripDot(name) {
-	'use strict';
-
 	return name.replace(/\./g, '');
 }
 
 function makeSortName(name) {
-	'use strict';
-
 	const articles = ['a', 'an', 'the', 'los', 'las', 'el', 'la'];
 	const suffixes = [
 		'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi',
@@ -256,5 +251,4 @@ AliasRow.defaultProps = {
 	onRemove: null,
 	removeHidden: false
 };
-
-module.exports = AliasRow;
+export default AliasRow;

@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const DragAndDropImage = require('../../input/drag-and-drop-image');
+import DragAndDropImage from '../../input/drag-and-drop-image';
+import React from 'react';
 
 class Achievement extends React.Component {
 	constructor(props) {
@@ -79,4 +79,4 @@ Achievement.defaultProps = {
 	unlocked: false
 };
 
-module.exports = Achievement;
+export default Achievement;

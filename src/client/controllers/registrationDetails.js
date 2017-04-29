@@ -17,14 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const RegistrationForm = React.createFactory(
-	require('../components/forms/registration-details')
-);
+import React from 'react';
+import ReactDOM from 'react-dom';
+import RegistrationForm from '../components/forms/registration-details';
+
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
 ReactDOM.render(
-	RegistrationForm(props),
+	<RegistrationForm {...props}/>,
 	document.getElementById('registration-form')
 );

@@ -19,15 +19,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint strict: 0 */
-const React = require('react');
-const EntityPage = require('../../../containers/entity');
-const AttributeList = require('./../parts/attribute-list');
-const getTypeAttribute = require('../../../helpers/entity').getTypeAttribute;
-const extractEntityProps =
-	require('../../../../server/helpers/props').extractEntityProps;
 
-const showEntityEditions =
-	require('../../../helpers/entity').showEntityEditions;
+import * as entityHelper from '../../../helpers/entity';
+import * as propsHelper from '../../../../server/helpers/props';
+import AttributeList from '../parts/attribute-list';
+import EntityPage from '../../../containers/entity';
+import React from 'react';
+
+const {getTypeAttribute, showEntityEditions} = entityHelper;
+const {extractEntityProps} = propsHelper;
 
 function PublicationPage(props) {
 	const {entity} = props;
@@ -54,4 +54,4 @@ PublicationPage.propTypes = {
 	entity: React.PropTypes.object.isRequired
 };
 
-module.exports = PublicationPage;
+export default PublicationPage;

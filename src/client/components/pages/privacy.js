@@ -16,9 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const PageHeader = require('react-bootstrap').PageHeader;
+const {PageHeader} = bootstrap;
 
 /**
 * Renders a page containing a link to the current MusicBrainz privacy
@@ -27,8 +28,6 @@ const PageHeader = require('react-bootstrap').PageHeader;
 * @returns {ReactElement} an element containing the rendered output
 */
 function PrivacyPage() {
-	'use strict';
-
 	return (
 		<div>
 			<PageHeader>Privacy</PageHeader>
@@ -52,4 +51,4 @@ function PrivacyPage() {
 
 PrivacyPage.displayName = 'PrivacyPage';
 
-module.exports = PrivacyPage;
+export default PrivacyPage;

@@ -20,16 +20,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint max-len: "warn" */
-const React = require('react');
+import FontAwesome from 'react-fontawesome';
+import Footer from './../components/footer';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const bootstrap = require('react-bootstrap');
-const FontAwesome = require('react-fontawesome');
-
-const Nav = bootstrap.Nav;
-const Navbar = bootstrap.Navbar;
-const MenuItem = bootstrap.MenuItem;
-
-const Footer = require('./../components/footer');
+const {MenuItem, Nav, Navbar} = bootstrap;
 
 class Layout extends React.Component {
 
@@ -217,4 +213,5 @@ Layout.defaultProps = {
 	homepage: false,
 	user: null
 };
-module.exports = Layout;
+
+export default Layout;

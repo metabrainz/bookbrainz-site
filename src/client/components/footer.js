@@ -18,16 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint max-len: "warn" */
-const React = require('react');
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const bootstrap = require('react-bootstrap');
-const Grid = bootstrap.Grid;
-const Col = bootstrap.Col;
-const Row = bootstrap.Row;
+const {Col, Grid, Row} = bootstrap;
 
 function Footer(props) {
-	'use strict';
-
 	const repositoryUrl = props.repositoryUrl;
 	const siteRevision = props.siteRevision;
 
@@ -83,4 +79,4 @@ Footer.propTypes = {
 	siteRevision: React.PropTypes.string.isRequired
 };
 
-module.exports = Footer;
+export default Footer;

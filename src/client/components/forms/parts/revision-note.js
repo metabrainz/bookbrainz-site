@@ -17,10 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
+import Icon from 'react-fontawesome';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
+const {Input} = bootstrap;
 
 class RevisionNote extends React.Component {
 	render() {
@@ -83,4 +84,4 @@ RevisionNote.propTypes = {
 	visible: React.PropTypes.bool.isRequired
 };
 
-module.exports = RevisionNote;
+export default RevisionNote;

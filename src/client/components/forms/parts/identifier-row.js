@@ -17,16 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const Icon = require('react-fontawesome');
-const React = require('react');
+import * as data from '../../../helpers/data';
+import * as validators from '../../../helpers/react-validators';
+import Icon from 'react-fontawesome';
+import React from 'react';
+import Select from '../../input/select2';
+import bootstrap from 'react-bootstrap';
 
-const Input = require('react-bootstrap').Input;
-const Button = require('react-bootstrap').Button;
-
-const Select = require('../../input/select2');
-
-const data = require('../../../helpers/data');
-const validators = require('../../../helpers/react-validators');
+const {Button, Input} = bootstrap;
 
 class IdentifierRow extends React.Component {
 	getValue() {
@@ -123,4 +121,4 @@ IdentifierRow.defaultProps = {
 	removeHidden: false
 };
 
-module.exports = IdentifierRow;
+export default IdentifierRow;

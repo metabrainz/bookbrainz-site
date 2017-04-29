@@ -17,14 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const StickyContainer = require('react-sticky').StickyContainer;
-const Sticky = require('react-sticky').Sticky;
-const request = require('superagent-bluebird-promise');
-const Achievement = require('./../../forms/parts/achievement');
-const DragAndDrop = require('../../input/drag-and-drop');
-const bootstrap = require('react-bootstrap');
-const Row = bootstrap.Row;
+import * as ReactSticky from 'react-sticky';
+import Achievement from '../../forms/parts/achievement';
+import DragAndDrop from '../../input/drag-and-drop';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
+import request from 'superagent-bluebird-promise';
+
+const {Row} = bootstrap;
+const {Sticky, StickyContainer} = ReactSticky;
 
 class EditorAchievementTab extends React.Component {
 	constructor(props) {
@@ -153,4 +154,4 @@ EditorAchievementTab.propTypes = {
 	}).isRequired
 };
 
-module.exports = EditorAchievementTab;
+export default EditorAchievementTab;

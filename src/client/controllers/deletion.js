@@ -16,11 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const DeletionForm = React.createFactory(
-	require('../components/forms/deletion')
-);
+import DeletionForm from '../components/forms/deletion';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 const props = JSON.parse(document.getElementById('props').innerHTML);
 
-ReactDOM.render(DeletionForm(props), document.getElementById('deletion-form'));
+ReactDOM.render(
+	<DeletionForm {...props}/>,
+	document.getElementById('deletion-form')
+);

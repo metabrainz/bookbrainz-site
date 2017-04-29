@@ -16,15 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint-disable react/display-name */
-const React = require('react');
-const FontAwesome = require('react-fontawesome');
-const Button = require('react-bootstrap').Button;
-const Table = require('react-bootstrap').Table;
-const _get = require('lodash.get');
 
-function extractAttribute(attr, path) {
-	'use strict';
+import FontAwesome from 'react-fontawesome';
+import React from 'react';
+import _get from 'lodash.get';
+import bootstrap from 'react-bootstrap';
 
+const {Button, Table} = bootstrap;
+
+export function extractAttribute(attr, path) {
 	if (attr) {
 		if (path) {
 			return _get(attr, path, '?');
@@ -34,9 +34,7 @@ function extractAttribute(attr, path) {
 	return '?';
 }
 
-function getLanguageAttribute(entity) {
-	'use strict';
-
+export function getLanguageAttribute(entity) {
 	const languages = (entity.languageSet && entity.languageSet.languages) ?
 		entity.languageSet.languages.map(
 			(language) => language.name
@@ -44,15 +42,11 @@ function getLanguageAttribute(entity) {
 	return {data: languages, title: 'Languages'};
 }
 
-function getTypeAttribute(entityType) {
-	'use strict';
-
+export function getTypeAttribute(entityType) {
 	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
 }
 
-function getDateAttributes(entity) {
-	'use strict';
-
+export function getDateAttributes(entity) {
 	const attributes = [{
 		data: extractAttribute(entity.beginDate),
 		title: 'Begin Date'
@@ -66,9 +60,7 @@ function getDateAttributes(entity) {
 	return attributes;
 }
 
-function showEntityEditions(entity) {
-	'use strict';
-
+export function showEntityEditions(entity) {
 	return (
 		<div>
 			<h2>
@@ -124,9 +116,3 @@ function showEntityEditions(entity) {
 		</div>
 	);
 }
-
-exports.extractAttribute = extractAttribute;
-exports.getTypeAttribute = getTypeAttribute;
-exports.getDateAttributes = getDateAttributes;
-exports.getLanguageAttribute = getLanguageAttribute;
-exports.showEntityEditions = showEntityEditions;

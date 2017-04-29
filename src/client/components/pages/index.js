@@ -19,19 +19,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint max-len: "warn" */
-const React = require('react');
+import * as utilsHelper from '../../helpers/utils';
+import FontAwesome from 'react-fontawesome';
+import React from 'react';
+import bootstrap from 'react-bootstrap';
 
-const bootstrap = require('react-bootstrap');
-const FontAwesome = require('react-fontawesome');
-const formatDate = require('../../helpers/utils').formatDate;
-
-const Alert = bootstrap.Alert;
-const Grid = bootstrap.Grid;
-const Row = bootstrap.Row;
-const Col = bootstrap.Col;
-const Button = bootstrap.Button;
-const ListGroup = bootstrap.ListGroup;
-const ListGroupItem = bootstrap.ListGroupItem;
+const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
+const {formatDate} = utilsHelper;
 
 const picture_classes = {
 	Creator: 'user',
@@ -265,4 +259,4 @@ IndexPage.propTypes = {
 	recent: React.PropTypes.array.isRequired
 };
 
-module.exports = IndexPage;
+export default IndexPage;
