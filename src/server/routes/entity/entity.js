@@ -24,7 +24,7 @@ import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
 import CreatorPage from '../../../client/components/pages/entity/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
-import EditionPage from '../../../client/components/pages/entity/edition';
+import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityContainer from '../../../client/containers/entity';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
