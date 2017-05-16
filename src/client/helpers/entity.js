@@ -116,3 +116,60 @@ export function showEntityEditions(entity) {
 		</div>
 	);
 }
+
+export function getEntityLabel(entity) {
+	if (!entity.revision.dataId) {
+		return `${entity.type} ${entity.bbid}`;
+	}
+
+	if (entity.defaultAlias) {
+		return `${entity.defaultAlias.name} `;
+	}
+
+	return '(unnamed)';
+}
+
+export function getEditionReleaseDate(edition) {
+	const hasReleaseEvents = edition.releaseEventSet &&
+		edition.releaseEventSet.releaseEvents &&
+		edition.releaseEventSet.releaseEvents.length;
+
+	if (hasReleaseEvents) {
+		return edition.releaseEventSet.releaseEvents[0].date;
+	}
+
+	return '?';
+}
+
+export function getEditionPublishers(edition) {
+	const hasPublishers = edition.publisherSet &&
+		edition.publisherSet.publishers.length > 0;
+
+	if (hasPublishers) {
+		return edition.publisherSet.publishers.map((publisher) =>
+			<a
+				href={`/publisher/${publisher.bbid}`}
+				key={publisher.bbid}
+			>
+				{publisher.defaultAlias.name}
+			</a>
+		);
+	}
+
+	return '?';
+}
+
+export function getEntityDisambiguation(entity) {
+	if (entity.disambiguation) {
+		return <small>{`(${entity.disambiguation.comment})`}</small>;
+	}
+
+	return null;
+}
+
+export function getEntityUrl(entity) {
+	const entityType = entity.type.toLowerCase();
+	const entityId = entity.bbid;
+
+	return `/${entityType}/${entityId}`;
+}

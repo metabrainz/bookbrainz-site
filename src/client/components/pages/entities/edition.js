@@ -20,134 +20,90 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
 import EntityFooter from './footer';
+import EntityIdentifiers from './identifiers';
+import EntityImage from './image';
 import EntityRelationships from './relationships';
+import EntityTitle from './title';
 import Icon from 'react-fontawesome';
 import React from 'react';
 
-const {extractAttribute, getLanguageAttribute} = entityHelper;
 const {
-	Button, Col, Image, Row
-} = bootstrap;
+	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
+	getLanguageAttribute
+} = entityHelper;
+const {Col, Row} = bootstrap;
+
+function EditionAttributes({edition}) {
+	const status = extractAttribute(edition.editionStatus, 'label');
+	const format = extractAttribute(edition.editionFormat, 'label');
+	const pageCount = extractAttribute(edition.pages);
+	const weight = extractAttribute(edition.weight);
+	const width = extractAttribute(edition.width);
+	const height = extractAttribute(edition.height);
+	const depth = extractAttribute(edition.depth);
+
+	const releaseDate = getEditionReleaseDate(edition);
+	const publishers = getEditionPublishers(edition);
+
+	return (
+		<div>
+			<Row>
+				<Col md={3}>
+					<dl>
+						<dt>Release Date</dt>
+						<dd>{releaseDate}</dd>
+						<dt>Format</dt>
+						<dd>{format}</dd>
+						<dt>Status</dt>
+						<dd>{status}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dl>
+						<dt>Dimensions (WxHxD)</dt>
+						<dd>{width}&times;{height}&times;{depth} mm</dd>
+						<dt>Weight</dt>
+						<dd>{weight} g</dd>
+						<dt>Page Count</dt>
+						<dd>{pageCount}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dl>
+						<dt>Languages</dt>
+						<dd>{getLanguageAttribute(edition).data}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dl>
+						<dt>Publishers</dt>
+						<dd>
+							{publishers}
+						</dd>
+					</dl>
+				</Col>
+			</Row>
+		</div>
+	);
+}
+EditionAttributes.displayName = 'EditionAttributes';
+EditionAttributes.propTypes = {
+	edition: React.PropTypes.object.isRequired
+};
 
 
 function EditionDisplayPage({entity, identifierTypes}) {
-	let entityLabel = null;
-	if (entity.revision.dataId) {
-		entityLabel = entity.defaultAlias ?
-			`${entity.defaultAlias.name} ` :
-				'(unnamed)';
-	}
-	else {
-		entityLabel = `${entity.type} ${entity.bbid}`;
-	}
-	const editionStatus = extractAttribute(entity.editionStatus, 'label');
-	const editionFormat = extractAttribute(entity.editionFormat, 'label');
-	const releaseDate = (entity.releaseEventSet &&
-	entity.releaseEventSet.releaseEvents &&
-	entity.releaseEventSet.releaseEvents.length) ?
-		entity.releaseEventSet.releaseEvents[0].date :
-		'?';
-	const pageCount = extractAttribute(entity.pages);
-	const weight = extractAttribute(entity.weight);
-	const width = extractAttribute(entity.width);
-	const height = extractAttribute(entity.height);
-	const depth = extractAttribute(entity.depth);
-	const publishers =
-		(entity.publisherSet && entity.publisherSet.publishers.length > 0) ?
-			entity.publisherSet.publishers.map((publisher) =>
-				<a
-					href={`/publisher/${publisher.bbid}`}
-					key={publisher.bbid}
-				>
-					{publisher.defaultAlias.name}
-				</a>
-			) : '?';
-
-	const identifiers = entity.identifierSet &&
-		identifierTypes.map((type, idx) => {
-			const identifierValues =
-				entity.identifierSet.identifiers.filter((identifier) =>
-					identifier.type.id === type.id
-				).map((identifier, index) =>
-					<dd
-						key={`${identifier.id}${index}`}
-					>
-						{identifier.value}
-					</dd>
-				);
-			return [
-				<dt key={`type${type.id}${idx}`}>{type.label}</dt>,
-				identifierValues
-			];
-		});
-	const editUrl =
-		`/${entity.type.toLowerCase()}/${entity.bbid}/relationships`;
-	const entityType = entity.type.toLowerCase();
-	const entityId = entity.bbid;
-	const urlPrefix = `/${entityType}/${entityId}`;
+	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
 			<Row style={{backgroundColor: '#f1edeb'}}>
 				<Col className="text-center" md={2}>
-					{entity.imageUrl ?
-						<Image
-							responsive
-							className="margin-top-1 margin-bottom-1"
-							src={entity.imageUrl}
-						/> :
-						<Icon
-							className="margin-top-1 margin-bottom-1"
-							name="book"
-							size="5x"
-						/>
-					}
+					<EntityImage backupIcon="book" imageUrl={entity.imageUrl}/>
 				</Col>
 				<Col md={10}>
-					<h1>{entityLabel}
-						{entity.disambiguation &&
-							<small>
-								{`(${entity.disambiguation.comment})`}
-							</small>
-						}
-					</h1>
-					<hr/>
-					<Row>
-						<Col md={3}>
-							<dl>
-								<dt>Release Date</dt>
-								<dd>{releaseDate}</dd>
-								<dt>Format</dt>
-								<dd>{editionFormat}</dd>
-								<dt>Status</dt>
-								<dd>{editionStatus}</dd>
-							</dl>
-						</Col>
-						<Col md={3}>
-							<dl>
-								<dt>Dimensions (WxHxD)</dt>
-								<dd>{width}&times;{height}&times;{depth} mm</dd>
-								<dt>Weight</dt>
-								<dd>{weight} g</dd>
-								<dt>Page Count</dt>
-								<dd>{pageCount}</dd>
-							</dl>
-						</Col>
-						<Col md={3}>
-							<dl>
-								<dt>Languages</dt>
-								<dd>{getLanguageAttribute(entity).data}</dd>
-							</dl>
-						</Col>
-						<Col md={3}>
-							<dl>
-								<dt>Publishers</dt>
-								<dd>
-									{publishers}
-								</dd>
-							</dl>
-						</Col>
-					</Row>
-					<div style={{marginBottom: '0.5em'}}>
+					<EntityTitle entity={entity}/>
+					<EditionAttributes edition={entity}/>
+					<div style={{marginBottom: '1em'}}>
 						<a href={`/publication/${entity.publication.bbid}`}>
 							<Icon name="external-link"/>
 							<span>&nbsp;See all other editions</span>
@@ -160,8 +116,10 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					<EntityRelationships relationships={entity.relationships}/>
 				</Col>
 				<Col md={4}>
-					<h2>Identifiers</h2>
-					{identifiers}
+					<EntityIdentifiers
+						identifierSet={entity.identifierSet}
+						identifierTypes={identifierTypes}
+					/>
 				</Col>
 			</Row>
 			<hr className="margin-top-4"/>
@@ -172,7 +130,6 @@ function EditionDisplayPage({entity, identifierTypes}) {
 		</div>
 	);
 }
-
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: React.PropTypes.object.isRequired,
