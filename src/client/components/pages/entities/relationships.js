@@ -41,7 +41,7 @@ function EntityRelationships({entityUrl, relationships}) {
 			}
 			<Button
 				bsStyle="warning"
-				className="margin-top-2"
+				className="margin-top-d15"
 				href={`${entityUrl}/relationships`}
 			>
 				<Icon name="pencil"/>

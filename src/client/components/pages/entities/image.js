@@ -28,7 +28,7 @@ function EntityImage({backupIcon, imageUrl}) {
 		return (
 			<Image
 				responsive
-				className="margin-top-1 margin-bottom-1"
+				className="margin-top-d10 margin-bottom-d10"
 				src={imageUrl}
 			/>
 		);
@@ -36,7 +36,7 @@ function EntityImage({backupIcon, imageUrl}) {
 
 	return (
 		<Icon
-			className="margin-top-1 margin-bottom-1"
+			className="margin-top-d10 margin-bottom-d10"
 			name={backupIcon}
 			size="5x"
 		/>

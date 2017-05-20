@@ -57,7 +57,7 @@ function EntityFooter({entityUrl, lastModified}) {
 					</ButtonGroup>
 				</Col>
 			</Row>
-			<div className="text-center margin-top-1">
+			<div className="text-center margin-top-d10">
 				<dl>
 					<dt>Last Modified</dt>
 					<dd>{formatDate(new Date(lastModified))}</dd>

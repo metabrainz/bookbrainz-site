@@ -96,14 +96,14 @@ function EditionDisplayPage({entity, identifierTypes}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
-			<Row style={{backgroundColor: '#f1edeb'}}>
+			<Row className="entity-display-background">
 				<Col className="text-center" md={2}>
 					<EntityImage backupIcon="book" imageUrl={entity.imageUrl}/>
 				</Col>
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
 					<EditionAttributes edition={entity}/>
-					<div style={{marginBottom: '1em'}}>
+					<div className="margin-bottom-d15">
 						<a href={`/publication/${entity.publication.bbid}`}>
 							<Icon name="external-link"/>
 							<span>&nbsp;See all other editions</span>
@@ -122,7 +122,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					/>
 				</Col>
 			</Row>
-			<hr className="margin-top-4"/>
+			<hr className="margin-top-d40"/>
 			<EntityFooter
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
