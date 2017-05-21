@@ -133,7 +133,10 @@ function EditionDisplayPage({entity, identifierTypes}) {
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: React.PropTypes.object.isRequired,
-	identifierTypes: React.PropTypes.array.isRequired
+	identifierTypes: React.PropTypes.array
+};
+EditionDisplayPage.defaultProps = {
+	identifierTypes: []
 };
 
 export default EditionDisplayPage;

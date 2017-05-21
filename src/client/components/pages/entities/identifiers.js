@@ -23,7 +23,7 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 		<div>
 			<h2>Identifiers</h2>
 			{
-				identifierSet.identifiers &&
+				identifierSet && identifierSet.identifiers &&
 				identifierTypes.map((type) => {
 					const identifierValues =
 						identifierSet.identifiers
