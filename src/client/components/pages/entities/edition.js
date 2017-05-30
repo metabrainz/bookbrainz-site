@@ -97,7 +97,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="text-center" md={2}>
+				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage backupIcon="book" imageUrl={entity.imageUrl}/>
 				</Col>
 				<Col md={10}>
