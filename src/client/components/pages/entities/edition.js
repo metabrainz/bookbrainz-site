@@ -113,7 +113,10 @@ function EditionDisplayPage({entity, identifierTypes}) {
 			</Row>
 			<Row>
 				<Col md={8}>
-					<EntityRelationships relationships={entity.relationships}/>
+					<EntityRelationships
+						entityUrl={urlPrefix}
+						relationships={entity.relationships}
+					/>
 				</Col>
 				<Col md={4}>
 					<EntityIdentifiers
