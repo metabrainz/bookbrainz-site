@@ -32,7 +32,7 @@ import Log from 'log';
 import Promise from 'bluebird';
 import PublicationPage from
 	'../../../client/components/pages/entity/publication';
-import PublisherPage from '../../../client/components/pages/entity/publisher';
+import PublisherPage from '../../../client/components/pages/entities/publisher';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entity/work';
