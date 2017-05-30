@@ -118,7 +118,7 @@ export function showEntityEditions(entity) {
 }
 
 export function getEntityLabel(entity) {
-	if (!entity.revision.dataId) {
+	if (entity.revision && !entity.revision.dataId) {
 		return `${entity.type} ${entity.bbid}`;
 	}
 
