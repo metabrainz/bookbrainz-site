@@ -27,9 +27,7 @@ import EntityRelationships from './relationships';
 import EntityTitle from './title';
 import React from 'react';
 
-const {
-	extractAttribute, getTypeAttribute, getEntityUrl
-} = entityHelper;
+const {extractAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function PublisherAttributes({publisher}) {

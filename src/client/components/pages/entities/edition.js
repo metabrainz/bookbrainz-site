@@ -44,6 +44,7 @@ function EditionAttributes({edition}) {
 
 	const releaseDate = getEditionReleaseDate(edition);
 	const publishers = getEditionPublishers(edition);
+	const languages = getLanguageAttribute(edition).data;
 
 	return (
 		<div>
@@ -71,7 +72,7 @@ function EditionAttributes({edition}) {
 				<Col md={3}>
 					<dl>
 						<dt>Languages</dt>
-						<dd>{getLanguageAttribute(edition).data}</dd>
+						<dd>{languages}</dd>
 					</dl>
 				</Col>
 				<Col md={3}>
