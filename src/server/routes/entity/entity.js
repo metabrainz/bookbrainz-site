@@ -22,7 +22,7 @@ import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
-import CreatorPage from '../../../client/components/pages/entity/creator';
+import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityContainer from '../../../client/containers/entity';
@@ -31,11 +31,11 @@ import Layout from '../../../client/containers/layout';
 import Log from 'log';
 import Promise from 'bluebird';
 import PublicationPage from
-	'../../../client/components/pages/entity/publication';
+	'../../../client/components/pages/entities/publication';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import WorkPage from '../../../client/components/pages/entity/work';
+import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../helpers/config';
 
