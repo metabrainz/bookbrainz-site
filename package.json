@@ -96,7 +96,9 @@
     "superagent-bluebird-promise": "^4.1.0"
   },
   "devDependencies": {
+    "babel-core": "^6.25.0",
     "babel-plugin-istanbul": "^4.0.0",
+    "babel-register": "^6.24.1",
     "chai": "^3.3.0",
     "chai-as-promised": "^6.0.0",
     "eslint": "^3.14.1",
