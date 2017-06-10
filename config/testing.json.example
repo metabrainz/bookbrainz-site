@@ -4,8 +4,8 @@
 		"clientID": "f8accd51-33d2-4d9b-a2c1-c01a76a4f096"
 	},
 	"musicbrainz": {
-		"clientID": "",
-		"clientSecret": "",
+		"clientID": "y0dHLdQC2CAXbGvZa4IbZm",
+		"clientSecret": "M0PFECp7vPYW9Vn4kB4L2B",
 		"callbackURL": "http://localhost:9099/cb"
 	},
 	"session": {

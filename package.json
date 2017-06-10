@@ -18,7 +18,7 @@
     "debug": "npm run watch-less & npm run watch-client-js & npm run watch-server-js",
     "lint": "eslint src test templates",
     "lint-errors": "eslint --quiet src test templates",
-    "test": "npm run lint && npm run prestart &&  mocha --compilers js:babel-core/register",
+    "test": "npm run lint && npm run prestart && cross-env NODE_ENV=testing mocha --compilers js:babel-core/register",
     "test-cov": "cross-env BABEL_ENV=cov nyc --require=babel-register --source-maps=false --instrument=false npm run test",
     "test-ci": "cross-env BABEL_ENV=cov nyc --require=babel-register --source-maps=false --instrument=false --report=lcovonly npm test",
     "test-lib": "npm run lint && npm run prestart && cross-env TEST_LIB=1 mocha --compilers js:babel-core/register",
