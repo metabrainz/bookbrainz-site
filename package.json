@@ -36,6 +36,7 @@
     "babel-preset-es2016": "^6.16.0",
     "babel-preset-es2017": "^6.16.0",
     "babel-preset-react": "^6.11.1",
+    "babel-runtime": "^6.23.0",
     "babelify": "^7.3.0",
     "bluebird": "^3.3.4",
     "body-parser": "^1.14.1",
