@@ -24,7 +24,8 @@
     "test-ci": "cross-env BABEL_ENV=cov nyc --require=babel-register --source-maps=false --instrument=false --report=lcovonly npm test",
     "test-lib": "npm run lint && npm run prestart && cross-env TEST_LIB=1 mocha --compilers js:babel-core/register",
     "jsdoc": "node_modules/.bin/jsdoc -r src",
-    "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator"
+    "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator",
+    "flow": "flow"
   },
   "dependencies": {
     "babel-cli": "^6.18.0",
