@@ -16,6 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
 import * as bootstrap from 'react-bootstrap';
 import Aliases from './parts/alias-list';
@@ -28,7 +29,21 @@ import request from 'superagent-bluebird-promise';
 
 const {Nav, NavItem} = bootstrap;
 
+/**
+ * React component to define a form to create and edit
+ * a Publisher.
+ * @extends React.Component
+ */
+
 class PublisherForm extends React.Component {
+
+	/**
+	 * Constructs a new instance of the PublisherForm class.
+	 * This constructor calls the constructor of the React.Component class,
+	 * initializes the component state, and binds class methods to the
+	 * class instance.
+	 * @param {object} props - The properties of the component
+	 */
 	constructor(props) {
 		super(props);
 
@@ -46,6 +61,10 @@ class PublisherForm extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
+	/**
+	 * Changes to the tab selected by the user.
+	 * @param {number} tab - the number of the selected tab.
+	 */
 	handleTabSelect(tab) {
 		this.setState({
 			aliasesValid: this.aliases.valid(),
@@ -54,14 +73,24 @@ class PublisherForm extends React.Component {
 		});
 	}
 
+	/**
+	 * Handler to direct the user to the previous tab.
+	 */
 	handleBackClick() {
 		this.handleTabSelect(this.state.tab - 1);
 	}
 
+	/**
+	 * Handler to direct the user to the next tab.
+	 */
 	handleNextClick() {
 		this.handleTabSelect(this.state.tab + 1);
 	}
 
+	/**
+	 * Handler to send publisher information in the form to the server.
+	 * @param {Event} evt - The submission event that triggered the handler
+	 */
 	handleSubmit(evt) {
 		evt.preventDefault();
 
@@ -69,6 +98,7 @@ class PublisherForm extends React.Component {
 			return;
 		}
 
+		// Collect form data
 		const aliasData = this.aliases.getValue();
 		const publisherData = this.data.getValue();
 		const revisionNote = this.revision.note.getValue();
@@ -86,6 +116,7 @@ class PublisherForm extends React.Component {
 			typeId: parseInt(publisherData.publisherType, 10)
 		};
 
+		// Shows a loading spinner in render()
 		this.setState({waiting: true});
 
 		request.post(this.props.submissionUrl)
@@ -110,6 +141,13 @@ class PublisherForm extends React.Component {
 			});
 	}
 
+	/**
+	 * Renders the form component to allow the user to input and submit
+	 * data about a Publisher. Also shows a loading spinner if connectivity
+	 * causes a delay in submission.
+	 * @return {ReactElement} - React element corresponding to the rendered
+	 * PublisherEditor component
+	 */
 	render() {
 		let aliases = null;
 		const prefillData = this.props.publisher;
