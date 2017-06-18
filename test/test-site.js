@@ -16,12 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import app from '../lib/server/app';
 import request from 'supertest';
 import status from 'http-status';
 
 process.env.NODE_ENV = 'testing';
-
-const app = require('../src/server/app');
 
 describe('GET /', () => {
 	it('should return 200', (done) => {

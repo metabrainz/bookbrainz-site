@@ -65,7 +65,7 @@ function Footer(props) {
 						Alpha Software —{' '}
 						<a href={`${repositoryUrl}commit/${siteRevision}`}>
 							{siteRevision}
-						</a> — <a href="#">Report a Bug</a>
+						</a> — <a href="https://tickets.metabrainz.org/projects/BB/issues/">Report a Bug</a>
 					</small>
 				</Row>
 			</Grid>

@@ -1,9 +1,4 @@
 {
-  "env": {
-    "cov": {
-      "plugins": ["istanbul"]
-    }
-  },
   "plugins": [
     "transform-es2015-modules-commonjs",
     "transform-object-rest-spread",
@@ -16,9 +11,10 @@
     ]
   ],
   "presets": [
-    "es2015",
-    "es2016",
-    "es2017",
-    "react"
+	  "flow",
+	  "es2015",
+	  "es2016",
+	  "es2017",
+	  "react"
   ]
 }
