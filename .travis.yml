@@ -22,10 +22,6 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-  code_climate:
-    repo_token:
-      - secure: >-
-          iodugg1i+wqxRqF3+kRVdL+yTnyNnWTbPI+OZ7AccLeKVgM8yEcJrgJD55EJ/q6HhTUBF439Y0QxRyFwXyqUHQcndm4Y/erRqHsniw/w4CdJgq9At7aXc7RyaSS5644LciTpq/Ml6E34wkYG0+udhJkVfTgW1OiawHunl01vcvw=
 
 before_script:
   - git clone https://github.com/bookbrainz/bookbrainz-sql.git
@@ -41,4 +37,3 @@ script:
 
 after_script:
   - npm install -g coveralls && coveralls < coverage/lcov.info
-  - npm install -g codeclimate-test-reporter && codeclimate-test-reporter < coverage/lcov.info
