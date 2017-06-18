@@ -21,7 +21,7 @@
     "lint-errors": "eslint --quiet src test templates",
     "test": "npm run lint && npm run prestart && cross-env NODE_ENV=test mocha",
     "test-cov": "nyc --reporter=text npm run test",
-    "test-ci": "cross-env BABEL_ENV=cov nyc --require=babel-register --source-maps=false --instrument=false --report=lcovonly npm test",
+    "test-ci": "nyc --reporter=lcovonly --reporter=text-summary npm run test",
     "jsdoc": "node_modules/.bin/jsdoc -r src",
     "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator",
     "flow": "flow"

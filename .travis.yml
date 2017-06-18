@@ -40,4 +40,5 @@ script:
   - npm run-script test-ci
 
 after_script:
+  - npm install -g coveralls && coveralls < coverage/lcov.info
   - npm install -g codeclimate-test-reporter && codeclimate-test-reporter < coverage/lcov.info
