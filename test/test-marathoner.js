@@ -27,7 +27,7 @@ chai.use(chaiAsPromised);
 const {expect} = chai;
 const {Editor} = orm;
 
-const Achievement = rewire('../src/server/helpers/achievement.js');
+const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 const marathonerDays = 29;
 const marathonerThreshold = 30;

@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as achievement from '../lib/server/helpers/achievement';
 import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
@@ -26,7 +27,6 @@ chai.use(chaiAsPromised);
 const {expect} = chai;
 const {Editor} = orm;
 
-const Achievement = require('../src/server/helpers/achievement');
 const sprinterThreshold = 10;
 
 export default function tests() {
@@ -44,7 +44,7 @@ export default function tests() {
 				.fetch()
 			)
 			.then((editor) =>
-				Achievement.processEdit(orm, editor.id)
+				achievement.processEdit(orm, editor.id)
 			)
 			.then((edit) =>
 				edit.sprinter.Sprinter
@@ -66,7 +66,7 @@ export default function tests() {
 				.fetch()
 			)
 			.then((editor) =>
-				Achievement.processEdit(orm, editor.id)
+				achievement.processEdit(orm, editor.id)
 			)
 			.then((edit) =>
 				edit.sprinter.Sprinter

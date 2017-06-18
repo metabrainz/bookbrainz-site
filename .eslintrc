@@ -451,6 +451,7 @@ rules:
     -
       allow:
         - "**/src/**"
+        - "**/lib/**"
         - "**/data/**"
         - "**/config/**"
         - "react-dom/server"

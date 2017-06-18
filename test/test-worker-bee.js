@@ -26,7 +26,7 @@ import rewire from 'rewire';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-const Achievement = rewire('../src/server/helpers/achievement.js');
+const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 const workerBeeIThreshold = 1;
 const workerBeeIIThreshold = 10;
