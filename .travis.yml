@@ -34,7 +34,7 @@ before_script:
   - psql -f bookbrainz-sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres
   - psql -f bookbrainz-sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
   - psql -f bookbrainz-sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
-  - cp ./config/testing.json.example ./config/testing.json
+  - cp ./config/test.json.example ./config/test.json
 
 script:
   - npm run-script test-ci
