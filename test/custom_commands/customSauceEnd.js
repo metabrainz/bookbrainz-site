@@ -3,7 +3,8 @@
 
 import SauceLabs from 'saucelabs';
 
-exports.command = function command() {
+/* eslint no-invalid-this: 0 */
+export function command() {
 	const saucelabs = new SauceLabs({
 		password: process.env.SAUCE_ACCESS_KEY,
 		username: process.env.SAUCE_USERNAME
@@ -20,4 +21,4 @@ exports.command = function command() {
 	});
 
 	this.end();
-};
+}
