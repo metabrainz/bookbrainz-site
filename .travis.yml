@@ -6,6 +6,13 @@ node_js:
 
 notifications:
   email: false
+  irc:
+    channels:
+      - "chat.freenode.net#metabrainz"
+    on_success: always
+    on_failure: always
+    template:
+      - "Project %{repository_name} build #%{build_number}: %{result} in %{elapsed_time}: %{build_url}"
 
 sudo: false
 
