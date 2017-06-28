@@ -29,7 +29,6 @@ const {Alert, Button, Col, Row, Panel} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class EntityContainer extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.renderAlert = this.renderAlert.bind(this);
@@ -139,7 +138,8 @@ class EntityContainer extends React.Component {
 	}
 
 	renderEntityDetails() {
-		const {identifierTypes,
+		const {
+			identifierTypes,
 			entity,
 			iconName,
 			attributes,

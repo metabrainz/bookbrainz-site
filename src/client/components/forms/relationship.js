@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
- /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
+/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
 import * as bootstrap from 'react-bootstrap';
 import * as dataHelper from '../../helpers/data';
@@ -291,7 +291,7 @@ class RelationshipEditor extends React.Component {
 	hasDataToSubmit() {
 		const changedRelationships = _filter(
 			this.state.relationships, (rel) =>
-			rel.changed && rel.valid
+				rel.changed && rel.valid
 		);
 
 		return changedRelationships.length > 0;

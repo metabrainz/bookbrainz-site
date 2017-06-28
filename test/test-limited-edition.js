@@ -56,11 +56,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.limitedEditionIAttribs.id)
+					.property('achievementId',
+						testData.limitedEditionIAttribs.id)
 			]);
 		}
 	);
@@ -83,11 +83,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.limitedEditionIIAttribs.id)
+					.property('achievementId',
+						testData.limitedEditionIIAttribs.id)
 			]);
 		});
 
@@ -109,17 +109,17 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Limited Edition III.editorId',
-					testData.editorAttribs.id),
+					.property('Limited Edition III.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Limited Edition III.achievementId',
-					testData.limitedEditionIIIAttribs.id),
+					.property('Limited Edition III.achievementId',
+						testData.limitedEditionIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Limited Edition.editorId',
-					testData.editorAttribs.id),
+					.property('Limited Edition.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Limited Edition.titleId',
-					testData.limitedEditionAttribs.id)
+					.property('Limited Edition.titleId',
+						testData.limitedEditionAttribs.id)
 			]);
 		});
 

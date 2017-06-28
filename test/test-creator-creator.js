@@ -56,11 +56,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.creatorCreatorIAttribs.id)
+					.property('achievementId',
+						testData.creatorCreatorIAttribs.id)
 			]);
 		}
 	);
@@ -83,11 +83,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.creatorCreatorIIAttribs.id)
+					.property('achievementId',
+						testData.creatorCreatorIIAttribs.id)
 			]);
 		});
 
@@ -109,17 +109,17 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Creator Creator III.editorId',
-					testData.editorAttribs.id),
+					.property('Creator Creator III.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Creator Creator III.achievementId',
-					testData.creatorCreatorIIIAttribs.id),
+					.property('Creator Creator III.achievementId',
+						testData.creatorCreatorIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Creator Creator.editorId',
-					testData.editorAttribs.id),
+					.property('Creator Creator.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Creator Creator.titleId',
-					testData.creatorCreatorAttribs.id)
+					.property('Creator Creator.titleId',
+						testData.creatorCreatorAttribs.id)
 			]);
 		});
 

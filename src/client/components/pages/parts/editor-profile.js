@@ -28,7 +28,6 @@ const {Button, Col, Image, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class EditorProfileTab extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.renderBasicInfo = this.renderBasicInfo.bind(this);
@@ -38,11 +37,13 @@ class EditorProfileTab extends React.Component {
 
 	renderBasicInfo() {
 		const {user, editor} = this.props;
-		const {cachedMetabrainzName,
+		const {
+			cachedMetabrainzName,
 			metabrainzUserId,
 			name,
 			gender,
-			birthDate} = editor;
+			birthDate
+		} = editor;
 		const createdAtDate = formatDate(new Date(editor.createdAt), true);
 		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
 		const birthday = formatDate(new Date(birthDate), true);
@@ -83,7 +84,7 @@ class EditorProfileTab extends React.Component {
 				<dl className="dl-horizontal">
 					<dt>MusicBrainz Account</dt>
 					<dd>
-					{musicbrainzAccount}
+						{musicbrainzAccount}
 					</dd>
 					<dt>Display Name</dt>
 					<dd>{name}</dd>
@@ -145,9 +146,7 @@ class EditorProfileTab extends React.Component {
 					padding="0"
 				>
 					{achievement.model.map((model) =>
-						<Col key={`achievementModel${model.id}`}
-							 sm={4}
-						>
+						<Col key={`achievementModel${model.id}`} sm={4}>
 							<div className="well">
 								<Image
 									className="center-block"
@@ -162,7 +161,7 @@ class EditorProfileTab extends React.Component {
 								</p>
 								<p className="text-center">
 									{`unlocked: ${formatDate(new Date(
-											model.unlockedAt
+										model.unlockedAt
 									), true)}`}
 								</p>
 							</div>

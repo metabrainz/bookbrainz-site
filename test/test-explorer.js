@@ -60,9 +60,9 @@ export default function tests() {
 
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have
-			.property('editorId', testData.editorAttribs.id),
+				.property('editorId', testData.editorAttribs.id),
 			expect(achievementPromise).to.eventually.have
-			.property('achievementId',
+				.property('achievementId',
 					testData.explorerIAttribs.id)
 		]);
 	});
@@ -85,9 +85,9 @@ export default function tests() {
 
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have
-			.property('editorId', testData.editorAttribs.id),
+				.property('editorId', testData.editorAttribs.id),
 			expect(achievementPromise).to.eventually.have
-			.property('achievementId',
+				.property('achievementId',
 					testData.explorerIIAttribs.id)
 		]);
 	});
@@ -111,9 +111,9 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId', testData.editorAttribs.id),
+					.property('editorId', testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
+					.property('achievementId',
 						testData.explorerIIIAttribs.id)
 			]);
 		});

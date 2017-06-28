@@ -77,40 +77,40 @@ export function showEntityEditions(entity) {
 			</h2>
 			<Table striped>
 				<thead>
-				<tr>
-					<th>Name</th>
-					<th>Release Date</th>
-				</tr>
+					<tr>
+						<th>Name</th>
+						<th>Release Date</th>
+					</tr>
 				</thead>
 				<tbody>
-				{entity.editions.map((edition, idx) => {
-					const editionName = edition.defaultAlias ?
-						edition.defaultAlias.name : '(unnamed)';
-					const editionComment = (edition.disambiguation &&
-					edition.disambiguation.comment) ?
-						` (${edition.disambiguation.comment})` : '';
-					const releaseEventDate = (edition.releaseEventSet &&
-						edition.releaseEventSet.releaseEvents &&
-						edition.releaseEventSet.releaseEvents[0]) &&
-						edition.releaseEventSet.releaseEvents[0].date;
-					return (
-						<tr
-							key={`${edition.bbid}${idx}`}
-						>
-							<td>
-								<a href={`/edition/${edition.bbid}`}>
-									{editionName}
-								</a>
-								<span className="text-muted">
-									{editionComment}
-								</span>
-							</td>
-							<td>
-								{releaseEventDate}
-							</td>
-						</tr>
-					);
-				})}
+					{entity.editions.map((edition, idx) => {
+						const editionName = edition.defaultAlias ?
+							edition.defaultAlias.name : '(unnamed)';
+						const editionComment = (edition.disambiguation &&
+						edition.disambiguation.comment) ?
+							` (${edition.disambiguation.comment})` : '';
+						const releaseEventDate = (edition.releaseEventSet &&
+							edition.releaseEventSet.releaseEvents &&
+							edition.releaseEventSet.releaseEvents[0]) &&
+							edition.releaseEventSet.releaseEvents[0].date;
+						return (
+							<tr
+								key={`${edition.bbid}${idx}`}
+							>
+								<td>
+									<a href={`/edition/${edition.bbid}`}>
+										{editionName}
+									</a>
+									<span className="text-muted">
+										{editionComment}
+									</span>
+								</td>
+								<td>
+									{releaseEventDate}
+								</td>
+							</tr>
+						);
+					})}
 				</tbody>
 			</Table>
 		</div>

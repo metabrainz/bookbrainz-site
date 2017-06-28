@@ -62,15 +62,15 @@ export default function tests() {
 	it('should not be given to someone with 9 revisions in an hour', () => {
 		const achievementPromise =
 			testData.sprinterHelper(sprinterThreshold - 1)
-			.then(() => new Editor({name: testData.editorAttribs.name})
-				.fetch()
-			)
-			.then((editor) =>
-				achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.sprinter.Sprinter
-			);
+				.then(() => new Editor({name: testData.editorAttribs.name})
+					.fetch()
+				)
+				.then((editor) =>
+					achievement.processEdit(orm, editor.id)
+				)
+				.then((edit) =>
+					edit.sprinter.Sprinter
+				);
 
 		return expect(achievementPromise).to.eventually.equal(false);
 	});

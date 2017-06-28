@@ -61,8 +61,8 @@ export default function tests() {
 				expect(achievementPromise).to.eventually.have
 					.property('editorId', testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.hotOffThePressAttribs.id)
+					.property('achievementId',
+						testData.hotOffThePressAttribs.id)
 			]);
 		}
 	);

@@ -135,7 +135,7 @@ class RevisionPage extends React.Component {
 				</h3>
 				<table className="table table-bordered text-center">
 					<tbody>
-					{RevisionPage.formatDiff(diff)}
+						{RevisionPage.formatDiff(diff)}
 					</tbody>
 				</table>
 			</div>

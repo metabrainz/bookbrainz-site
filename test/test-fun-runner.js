@@ -58,13 +58,13 @@ export default function tests() {
 			const achievementPromise = new Editor({
 				name: testData.editorAttribs.name
 			})
-			.fetch()
-			.then((editor) =>
-				Achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.funRunner['Fun Runner']
-			);
+				.fetch()
+				.then((editor) =>
+					Achievement.processEdit(orm, editor.id)
+				)
+				.then((edit) =>
+					edit.funRunner['Fun Runner']
+				);
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
@@ -91,13 +91,13 @@ export default function tests() {
 			const achievementPromise = new Editor({
 				name: testData.editorAttribs.name
 			})
-			.fetch()
-			.then((editor) =>
-				Achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.funRunner['Fun Runner']
-			);
+				.fetch()
+				.then((editor) =>
+					Achievement.processEdit(orm, editor.id)
+				)
+				.then((edit) =>
+					edit.funRunner['Fun Runner']
+				);
 
 			return expect(achievementPromise).to.eventually.equal(false);
 		});

@@ -82,7 +82,7 @@ function addRelationshipToEntity(orm, transacting, entityJSON, rel, revision) {
 					transacting, entity.related('relationshipSet'), newRelSet,
 					rel
 				)
-			);
+		);
 
 	// Get the parents of the new revision
 	const revisionParentsPromise =

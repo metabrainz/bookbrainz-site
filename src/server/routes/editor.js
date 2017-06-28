@@ -450,10 +450,10 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 				rankTwoPromise,
 				rankThreePromise
 			]))
-				.then((rankJSON) => {
-					res.redirect(`/editor/${req.params.id}`);
-					return rankJSON;
-				});
+			.then((rankJSON) => {
+				res.redirect(`/editor/${req.params.id}`);
+				return rankJSON;
+			});
 	handler.sendPromiseResult(res, rankPromise);
 });
 

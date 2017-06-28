@@ -36,7 +36,6 @@ const {Nav, NavItem} = bootstrap;
  */
 
 class PublisherForm extends React.Component {
-
 	/**
 	 * Constructs a new instance of the PublisherForm class.
 	 * This constructor calls the constructor of the React.Component class,

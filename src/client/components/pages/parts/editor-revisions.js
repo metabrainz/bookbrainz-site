@@ -48,13 +48,13 @@ function EditorRevisionsTab(props) {
 						</h4>
 					);
 					return (
-					<ListGroupItem
-						href={`/revision/${revision.id}`}
-						key={`${editor.id}${revision.id}`}
-					>
-						{header}
-						{revision.note}
-					</ListGroupItem>
+						<ListGroupItem
+							href={`/revision/${revision.id}`}
+							key={`${editor.id}${revision.id}`}
+						>
+							{header}
+							{revision.note}
+						</ListGroupItem>
 					);
 				})}
 			</ListGroup>

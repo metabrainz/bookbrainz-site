@@ -57,11 +57,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.workerBeeIAttribs.id)
+					.property('achievementId',
+						testData.workerBeeIAttribs.id)
 			]);
 		}
 	);
@@ -84,11 +84,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.workerBeeIIAttribs.id)
+					.property('achievementId',
+						testData.workerBeeIIAttribs.id)
 			]);
 		});
 
@@ -110,17 +110,17 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Worker Bee III.editorId',
-					testData.editorAttribs.id),
+					.property('Worker Bee III.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Worker Bee III.achievementId',
-					testData.workerBeeIIIAttribs.id),
+					.property('Worker Bee III.achievementId',
+						testData.workerBeeIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Worker Bee.editorId',
-					testData.editorAttribs.id),
+					.property('Worker Bee.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Worker Bee.titleId',
-					testData.workerBeeAttribs.id)
+					.property('Worker Bee.titleId',
+						testData.workerBeeAttribs.id)
 			]);
 		});
 

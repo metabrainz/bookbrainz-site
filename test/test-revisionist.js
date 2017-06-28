@@ -43,7 +43,7 @@ export default function tests() {
 			.fetch()
 			.then((editor) =>
 				editor.set({revisionsApplied: 1})
-				.save()
+					.save()
 			)
 			.then((editor) =>
 				achievement.processEdit(orm, editor.id)
@@ -54,9 +54,9 @@ export default function tests() {
 
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have
-			.property('editorId', testData.editorAttribs.id),
+				.property('editorId', testData.editorAttribs.id),
 			expect(achievementPromise).to.eventually.have
-			.property('achievementId',
+				.property('achievementId',
 					testData.revisionistIAttribs.id)
 		]);
 	});
@@ -69,7 +69,7 @@ export default function tests() {
 			.fetch()
 			.then((editor) =>
 				editor.set({revisionsApplied})
-				.save()
+					.save()
 			)
 			.then((editor) =>
 				achievement.processEdit(orm, editor.id)
@@ -80,10 +80,10 @@ export default function tests() {
 
 		return Promise.all([
 			expect(achievementPromise).to.eventually.have.deep
-			.property('Revisionist II.editorId', testData.editorAttribs.id),
+				.property('Revisionist II.editorId', testData.editorAttribs.id),
 			expect(achievementPromise).to.eventually.have.deep
-			.property('Revisionist II.achievementId',
-				testData.revisionistIIAttribs.id)
+				.property('Revisionist II.achievementId',
+					testData.revisionistIIAttribs.id)
 		]);
 	});
 
@@ -107,16 +107,17 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Revisionist III.editorId',
-					testData.editorAttribs.id),
+					.property('Revisionist III.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Revisionist III.achievementId',
-					testData.revisionistIIIAttribs.id),
+					.property('Revisionist III.achievementId',
+						testData.revisionistIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Revisionist.editorId', testData.editorAttribs.id),
+					.property('Revisionist.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Revisionist.titleId',
-					testData.revisionistAttribs.id)
+					.property('Revisionist.titleId',
+						testData.revisionistAttribs.id)
 			]);
 		});
 

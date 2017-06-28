@@ -16,11 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
- /* TODO: Drop this component, and follow
-  * http://redux.js.org/docs/recipes/ServerRendering.html instead once server
-  * code is using modules, which will happen ASAP after the PR for this code
-  * is closed.
-  */
+/* TODO: Drop this component, and follow
+ * http://redux.js.org/docs/recipes/ServerRendering.html instead once server
+ * code is using modules, which will happen ASAP after the PR for this code
+ * is closed.
+ */
 
 import {applyMiddleware, compose, createStore} from 'redux';
 import CreatorData from './creator-data';

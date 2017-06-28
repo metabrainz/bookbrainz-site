@@ -27,11 +27,14 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 				identifierTypes.map((type) => {
 					const identifierValues =
 						identifierSet.identifiers
-						.filter((identifier) => identifier.type.id === type.id)
-						.map(
-							(identifier) =>
-							<dd key={identifier.id}>{identifier.value}</dd>
-						);
+							.filter(
+								(identifier) => identifier.type.id === type.id)
+							.map(
+								(identifier) =>
+									<dd key={identifier.id}>
+										{identifier.value}
+									</dd>
+							);
 
 					return [
 						<dt key={type.id}>{type.label}</dt>,

@@ -238,10 +238,10 @@ class RelationshipRow extends React.Component {
 				bsStyle={validationState}
 				collection={this.props.collection}
 				disabled={
-				this.disabled() || this.state.deleted ||
-				(targetEntity && targetEntity.bbid) ===
-					this.props.entity.bbid
-			}
+					this.disabled() || this.state.deleted ||
+					(targetEntity && targetEntity.bbid) ===
+						this.props.entity.bbid
+				}
 				labelClassName="col-md-4"
 				placeholder="Select entity…"
 				ref={(ref) => this.target = ref}
@@ -289,10 +289,10 @@ class RelationshipRow extends React.Component {
 								standalone
 								bsStyle={validationState}
 								disabled={
-								this.disabled() || this.state.deleted ||
-								(sourceEntity && sourceEntity.bbid) ===
-									this.props.entity.bbid
-							}
+									this.disabled() || this.state.deleted ||
+									(sourceEntity && sourceEntity.bbid) ===
+										this.props.entity.bbid
+								}
 								labelClassName="col-md-4"
 								placeholder="Select entity…"
 								ref={(ref) => this.source = ref}
@@ -306,11 +306,11 @@ class RelationshipRow extends React.Component {
 									noDefault
 									bsStyle={validationState}
 									defaultValue={
-									this.props.relationship.typeId
-								}
+										this.props.relationship.typeId
+									}
 									disabled={
-									this.disabled() || this.state.deleted
-								}
+										this.disabled() || this.state.deleted
+									}
 									idAttribute="id"
 									labelAttribute="label"
 									options={this.props.relationshipTypes}

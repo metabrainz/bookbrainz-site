@@ -66,14 +66,14 @@ export function displayEntity(req, res) {
 			bbid: res.locals.entity.bbid,
 			editorId: res.locals.user.id
 		})
-		.save(null, {method: 'insert'})
-		.then(() =>
-			achievement.processPageVisit(orm, res.locals.user.id)
-		)
-		.catch(() =>
-			// error caused by duplicates we do not want in database
-			Promise.resolve(false)
-		);
+			.save(null, {method: 'insert'})
+			.then(() =>
+				achievement.processPageVisit(orm, res.locals.user.id)
+			)
+			.catch(() =>
+				// error caused by duplicates we do not want in database
+				Promise.resolve(false)
+			);
 	}
 	else {
 		editorEntityVisitPromise = Promise.resolve(false);
@@ -313,12 +313,11 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 		oldSet ? oldSet.related(setMetadata.propName).toJSON() : [];
 
 	// If there's no change, return the old set
-	if (!setHasChanged(
-			oldItems,
-			formItems,
-			setMetadata.idField,
-			setMetadata.mutableFields
-		)) {
+	const noChangeToSet = !setHasChanged(
+		oldItems, formItems, setMetadata.idField, setMetadata.mutableFields
+	);
+
+	if (noChangeToSet) {
 		return oldSet;
 	}
 
@@ -747,7 +746,7 @@ export function editEntity(
 					orm, transacting, oldAnnotation, req.body.annotation,
 					revision
 				)
-			);
+		);
 
 		const oldDisambiguationPromise = currentEntity.disambiguation &&
 			new Disambiguation({id: currentEntity.disambiguation.id})

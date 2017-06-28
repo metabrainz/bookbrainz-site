@@ -28,7 +28,6 @@ import React from 'react';
 const {MenuItem, Nav, Navbar} = bootstrap;
 
 class Layout extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -44,11 +43,13 @@ class Layout extends React.Component {
 				<Navbar.Brand className="logo">
 					<a href="/">
 						{homepage ?
-							<img alt="BookBrainz icon"
+							<img
+								alt="BookBrainz icon"
 								src="/images/BookBrainz_logo_icon.svg"
 								title="BookBrainz"
 							/> :
-							<img alt="BookBrainz icon"
+							<img
+								alt="BookBrainz icon"
 								src="/images/BookBrainz_logo_mini.svg"
 								title="BookBrainz"
 							/>
@@ -71,7 +72,8 @@ class Layout extends React.Component {
 				{user && user.id ?
 					<Nav pullRight>
 						<li className="dropdown">
-							<a aria-expanded="false"
+							<a
+								aria-expanded="false"
 								className="dropdown-toggle"
 								data-toggle="dropdown"
 								href="#"
@@ -105,7 +107,8 @@ class Layout extends React.Component {
 							</ul>
 						</li>
 						<li className="dropdown">
-							<a aria-expanded="false"
+							<a
+								aria-expanded="false"
 								className="dropdown-toggle"
 								data-toggle="dropdown"
 								href="#"
@@ -116,17 +119,20 @@ class Layout extends React.Component {
 								<span>{`  ${user.name}`}</span>
 								<span className="caret"/>
 							</a>
-							<ul aria-labelledby="dUserDropdown"
+							<ul
+								aria-labelledby="dUserDropdown"
 								className="dropdown-menu"
 								role="menu"
 							>
 								<MenuItem href={`/editor/${user.id}`}>
-									<FontAwesome fixedWidth
+									<FontAwesome
+										fixedWidth
 										name="info"
 									/>{' Profile'}
 								</MenuItem>
 								<MenuItem href="/logout">
-									<FontAwesome fixedWidth
+									<FontAwesome
+										fixedWidth
 										name="sign-out"
 									/>{' Sign Out'}
 								</MenuItem>
@@ -140,24 +146,27 @@ class Layout extends React.Component {
 					</Nav>
 				}
 				{!(homepage || hideSearch) &&
-				<Navbar.Form pullRight
-					 action="/search"
-					 role="search"
+				<Navbar.Form
+					pullRight
+					action="/search"
+					role="search"
 				>
 					<div className="form-group">
 						<div className="input-group">
-							<input className="form-control"
-								   name="q"
-								   placeholder="Search for..."
-								   type="text"
+							<input
+								className="form-control"
+								name="q"
+								placeholder="Search for..."
+								type="text"
 							/>
 							<span className="input-group-btn">
-									<button className="btn btn-success"
-										type="submit"
-									>
-										<FontAwesome name="search"/>
-									</button>
-								</span>
+								<button
+									className="btn btn-success"
+									type="submit"
+								>
+									<FontAwesome name="search"/>
+								</button>
+							</span>
 						</div>
 					</div>
 				</Navbar.Form>
@@ -171,18 +180,20 @@ class Layout extends React.Component {
 
 		// Shallow merges parents props into child components
 		const childNode = homepage ? children :
-			<div className="container"
-				id="content"
-			>
+			<div className="container" id="content">
 				{children}
 			</div>;
 
 		return (
 			<div>
-				<a className="sr-only sr-only-focusable"
+				<a
+					className="sr-only sr-only-focusable"
 					href="#content"
-				>Skip to main content</a>
-				<Navbar fixedTop
+				>
+					Skip to main content
+				</a>
+				<Navbar
+					fixedTop
 					fluid
 					className="BookBrainz"
 					role="navigation"
@@ -191,7 +202,8 @@ class Layout extends React.Component {
 					{this.renderNavContent()}
 				</Navbar>
 				{childNode}
-				<Footer repositoryUrl={repositoryUrl}
+				<Footer
+					repositoryUrl={repositoryUrl}
 					siteRevision={siteRevision}
 				/>
 			</div>

@@ -22,6 +22,7 @@ import {
 } from './actions';
 import Immutable from 'immutable';
 
+
 const EMPTY_IDENTIFIER = Immutable.Map({
 	type: null,
 	value: ''
@@ -36,18 +37,18 @@ function reducer(
 		case ADD_IDENTIFIER_ROW:
 			return state.set(payload, EMPTY_IDENTIFIER);
 		case UPDATE_IDENTIFIER_VALUE:
-			{
-				const updatedValue = state.setIn(
-					[payload.rowId, 'value'], payload.value
+		{
+			const updatedValue = state.setIn(
+				[payload.rowId, 'value'], payload.value
+			);
+			if (payload.suggestedType) {
+				return updatedValue.setIn(
+					[payload.rowId, 'type'], payload.suggestedType.id
 				);
-				if (payload.suggestedType) {
-					return updatedValue.setIn(
-						[payload.rowId, 'type'], payload.suggestedType.id
-					);
-				}
-
-				return updatedValue;
 			}
+
+			return updatedValue;
+		}
 		case UPDATE_IDENTIFIER_TYPE:
 			return state.setIn([payload.rowId, 'type'], payload.value);
 		case REMOVE_IDENTIFIER_ROW:

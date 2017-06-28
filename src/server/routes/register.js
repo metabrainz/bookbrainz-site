@@ -100,7 +100,7 @@ router.post('/handler', (req, res) => {
 				name: req.body.displayName,
 				typeId: editorType.id
 			})
-			.save()
+				.save()
 		)
 		.then((editor) => {
 			req.session.mbProfile = null;

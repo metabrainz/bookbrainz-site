@@ -32,19 +32,19 @@ function EditorContainer(props) {
 			<Row>
 				<Col md={12}>
 					{editor.title ?
-					<div>
-						<a
-							href=" "
-							title={editor.title.description}
-						>
-							<h1>
-								{`${editor.title.title} ${editor.name}`}
-							</h1>
-						</a>
-					</div> :
-					<h1>
-						{editor.name}
-					</h1>
+						<div>
+							<a
+								href=" "
+								title={editor.title.description}
+							>
+								<h1>
+									{`${editor.title.title} ${editor.name}`}
+								</h1>
+							</a>
+						</div> :
+						<h1>
+							{editor.name}
+						</h1>
 					}
 				</Col>
 			</Row>

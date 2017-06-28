@@ -36,7 +36,7 @@ class ProfileForm extends React.Component {
 
 		this.state = {
 			area: props.editor.area ?
-			props.editor.area : null,
+				props.editor.area : null,
 			bio: props.editor.bio,
 			birthDate: props.editor.birthDate ?
 				formatDate(new Date(props.editor.birthDate)) : null,

@@ -27,17 +27,21 @@ class DragAndDrop extends React.Component {
 		this.handleClick = this.handleClick.bind(this);
 		this.handleDragOver = this.handleDragOver.bind(this);
 		this.handleDrop = this.handleDrop.bind(this);
-		this.state = {achievement: {
-			name: 'drag badge to set',
-			src: '/images/blankbadge.svg'
-		}};
+		this.state = {
+			achievement: {
+				name: 'drag badge to set',
+				src: '/images/blankbadge.svg'
+			}
+		};
 	}
 	handleClick(ev) {
 		ev.preventDefault();
-		this.setState({achievement: {
-			name: 'drag badge to set',
-			src: '/images/blankbadge.svg'
-		}});
+		this.setState({
+			achievement: {
+				name: 'drag badge to set',
+				src: '/images/blankbadge.svg'
+			}
+		});
 	}
 	handleDragOver(ev) {
 		ev.preventDefault();
@@ -62,7 +66,8 @@ class DragAndDrop extends React.Component {
 	}
 	render() {
 		return (
-			<div className="well col-sm-4"
+			<div
+				className="well col-sm-4"
 				onClick={this.handleClick}
 				onDragOver={this.handleDragOver}
 				onDrop={this.handleDrop}

@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
- /**
-  * Achievement Module
-  * @module Achievement
-  */
+/**
+ * Achievement Module
+ * @module Achievement
+ */
 
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from './error';
@@ -447,12 +447,11 @@ function processFunRunner(orm, editorId) {
 function processMarathoner(orm, editorId) {
 	return getEditsInDays(orm, editorId, 29)
 		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Marathoner',
-					threshold: 30,
-					titleName: 'Marathoner'}
-			];
+			const tiers = [{
+				name: 'Marathoner',
+				threshold: 30,
+				titleName: 'Marathoner'
+			}];
 			return testTiers(orm, rowCount, editorId, tiers);
 		});
 }
@@ -628,17 +627,19 @@ export function processEdit(orm, userId, revisionId) {
 		processMarathoner(orm, userId),
 		processTimeTraveller(orm, userId, revisionId),
 		processHotOffThePress(orm, userId, revisionId),
-		(revisionist,
-		creatorCreator,
-		limitedEdition,
-		publisher,
-		publisherCreator,
-		workerBee,
-		sprinter,
-		funRunner,
-		marathoner,
-		timeTraveller,
-		hotOffThePress) => {
+		(
+			revisionist,
+			creatorCreator,
+			limitedEdition,
+			publisher,
+			publisherCreator,
+			workerBee,
+			sprinter,
+			funRunner,
+			marathoner,
+			timeTraveller,
+			hotOffThePress
+		) => {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),

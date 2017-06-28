@@ -37,7 +37,6 @@ const picture_classes = {
 
 
 class IndexPage extends React.Component {
-
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -48,44 +47,40 @@ class IndexPage extends React.Component {
 	renderHeader() {
 		return (
 			<div>
-				<Alert bsStyle="warning"
-					className="text-center"
-				>
-					<p>Under development — adventurous users, please test and
-					 add data! Give us feedback about bugs,
-					glitches and potential improvements at
-					{' '}<a href="//tickets.musicbrainz.org/browse/BB">
-						MusicBrainz JIRA!
-					</a>
+				<Alert bsStyle="warning" className="text-center">
+					<p>
+						Under development — adventurous users, please test and
+						add data! Give us feedback about bugs, glitches and
+						potential improvements at {' '}
+						<a href="//tickets.musicbrainz.org/browse/BB">
+							MusicBrainz JIRA!
+						</a>
 					</p>
 				</Alert>
 				<div id="background-image">
-					<div className="text-center"
-						id="background-overlay"
-					>
+					<div className="text-center" id="background-overlay">
 						<Grid>
-							<img alt="BookBrainz logo"
+							<img
+								alt="BookBrainz logo"
 								className="img-responsive center-block"
 								src="/images/BookBrainz_text.svg"
 								title="BookBrainz"
 								width="500"
 							/>
 							<Row>
-								<Col md={8}
-									mdOffset={2}
-								>
-									<form action="/search"
-										role="search"
-									>
+								<Col md={8} mdOffset={2}>
+									<form action="/search" role="search">
 										<div className="input-group input-group-lg margin-top-5">
-											<input autoFocus="autofocus"
+											<input
+												autoFocus="autofocus"
 												className="form-control"
 												name="q"
 												placeholder="Search for..."
 												type="text"
 											/>
 											<span className="input-group-btn">
-												<Button bsStyle="success"
+												<Button
+													bsStyle="success"
 													type="submit"
 												>
 													<FontAwesome name="search"/>
@@ -95,56 +90,72 @@ class IndexPage extends React.Component {
 									</form>
 									<Row className="margin-top-4">
 										<Col sm={4}>
-											<Button block
+											<Button
+												block
 												bsSize="large"
 												href="/about"
-											>About</Button>
+											>
+												About
+											</Button>
 										</Col>
 										<Col sm={4}>
-											<Button block
+											<Button
+												block
 												bsSize="large"
 												href="/contribute"
-											>Contribute</Button>
+											>
+												Contribute
+											</Button>
 										</Col>
 										<Col sm={4}>
-											<Button block
+											<Button
+												block
 												bsSize="large"
 												href="/develop"
-											>Develop</Button>
+											>
+												Develop
+											</Button>
 										</Col>
 									</Row>
 									<div className="margin-top-3">
 										<h4 className="contact-text">
 											Contact Us
 										</h4>
-										<FontAwesome className="margin-sides-1 contact-text"
+										<FontAwesome
+											className="margin-sides-1 contact-text"
 											name="circle"
 										/>
 										<a href="//webchat.freenode.net/?channels=#metabrainz">
-											<FontAwesome className="contact-text"
+											<FontAwesome
+												className="contact-text"
 												name="comment"
 												size="2x"
 											/>
 										</a>
-										<FontAwesome className="margin-sides-1 contact-text"
+										<FontAwesome
+											className="margin-sides-1 contact-text"
 											name="circle"
 										/>
 										<a href="//twitter.com/intent/tweet?screen_name=BookBrainz">
-											<FontAwesome className="contact-text"
+											<FontAwesome
+												className="contact-text"
 												name="twitter"
 												size="2x"
 											/>
 										</a>
-										<FontAwesome className="margin-sides-1 contact-text"
+										<FontAwesome
+											className="margin-sides-1 contact-text"
 											name="circle"
 										/>
 										<a href="mailto:bookbrainz-users@groups.io">
-											<FontAwesome className="contact-text"
+											<FontAwesome
+												className="contact-text"
 												name="envelope"
 												size="2x"
 											/>
 										</a>
-										<FontAwesome className="margin-sides-1 contact-text"
+										<FontAwesome
+											className="margin-sides-1 contact-text"
 											name="circle"
 										/>
 									</div>
@@ -163,9 +174,7 @@ class IndexPage extends React.Component {
 		return (
 			<Grid>
 				<Row>
-					<Col md={8}
-						mdOffset={2}
-					>
+					<Col md={8} mdOffset={2}>
 						<h1 className="text-center">The Open Book Database</h1>
 						<p className="lead text-justify">
 							BookBrainz is a project to create an online database
@@ -181,33 +190,28 @@ class IndexPage extends React.Component {
 				</Row>
 				<hr/>
 				<Row>
-					<Col className="text-center margin-top-4"
-						md={2}
-					>
-						<FontAwesome name="user"
-							size="5x"
-						/>
+					<Col className="text-center margin-top-4" md={2}>
+						<FontAwesome name="user" size="5x"/>
 					</Col>
 					<Col md={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
 							First off,{' '}
-							<a href="/about"
-								target="blank"
-							>read about us</a>{' and '}
-							<a href="/contribute"
-								target="blank"
-							>how you can help</a>. Then, if you think you want
+							<a href="/about" target="blank">
+								read about us
+							</a>{' and '}
+							<a href="/contribute" target="blank">
+								how you can help
+							</a>. Then, if you think you want
 							to stick around, hit the button below to sign up
 							for a free BookBrainz account!
 						</p>
 					</Col>
 				</Row>
 				<div className="text-center margin-top-1 margin-bottom-3">
-					<Button bsSize="large"
-						bsStyle="success"
-						href="/register"
-					>Register!</Button>
+					<Button bsSize="large" bsStyle="success" href="/register">
+						Register!
+					</Button>
 				</div>
 				{recent &&
 					<div>
@@ -219,7 +223,8 @@ class IndexPage extends React.Component {
 									{recent.map((entity) => {
 										const name = entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 										return (
-											<ListGroupItem href={`/revision/${entity.revisionId}`}
+											<ListGroupItem
+												href={`/revision/${entity.revisionId}`}
 												key={entity.bbid}
 											>
 												<Row>

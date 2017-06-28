@@ -63,8 +63,7 @@ DateField.propTypes = {
 };
 DateField.defaultProps = {
 	empty: true,
-	error: false,
-	show: false
+	error: false
 };
 
 export default DateField;

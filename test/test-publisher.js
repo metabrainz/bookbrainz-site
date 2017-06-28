@@ -56,11 +56,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.publisherIAttribs.id)
+					.property('achievementId',
+						testData.publisherIAttribs.id)
 			]);
 		}
 	);
@@ -83,11 +83,11 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have
-				.property('editorId',
-					testData.editorAttribs.id),
+					.property('editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.publisherIIAttribs.id)
+					.property('achievementId',
+						testData.publisherIIAttribs.id)
 			]);
 		});
 
@@ -109,17 +109,17 @@ export default function tests() {
 
 			return Promise.all([
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher III.editorId',
-					testData.editorAttribs.id),
+					.property('Publisher III.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher III.achievementId',
-					testData.publisherIIIAttribs.id),
+					.property('Publisher III.achievementId',
+						testData.publisherIIIAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher.editorId',
-					testData.editorAttribs.id),
+					.property('Publisher.editorId',
+						testData.editorAttribs.id),
 				expect(achievementPromise).to.eventually.have.deep
-				.property('Publisher.titleId',
-					testData.publisherAttribs.id)
+					.property('Publisher.titleId',
+						testData.publisherAttribs.id)
 			]);
 		});
 

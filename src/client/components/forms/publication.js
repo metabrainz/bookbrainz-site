@@ -30,7 +30,6 @@ import request from 'superagent-bluebird-promise';
 const {Nav, NavItem} = bootstrap;
 
 class PublicationForm extends React.Component {
-
 	/**
 	 * Initializes component state to default values and binds class
 	 * methods to proper context so that they can be directly invoked
