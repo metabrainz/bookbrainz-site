@@ -60,11 +60,11 @@ function tests() {
 				);
 
 			return Promise.all([
-				expect(unlockPromise).to.eventually.have.deep.property(
+				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist I.editorId',
 					testData.editorAttribs.id
 				),
-				expect(unlockPromise).to.eventually.have.deep.property(
+				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist I.achievementId',
 					testData.revisionistIAttribs.id
 				)
@@ -124,11 +124,11 @@ function tests() {
 				);
 
 			return Promise.all([
-				expect(unlockPromise).to.eventually.have.deep.property(
+				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist.editorId',
 					testData.editorAttribs.id
 				),
-				expect(unlockPromise).to.eventually.have.deep.property(
+				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist.titleId',
 					testData.revisionistAttribs.id
 				)

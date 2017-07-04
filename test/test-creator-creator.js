@@ -108,16 +108,16 @@ export default function tests() {
 				);
 
 			return Promise.all([
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Creator Creator III.editorId',
 						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Creator Creator III.achievementId',
 						testData.creatorCreatorIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Creator Creator.editorId',
 						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Creator Creator.titleId',
 						testData.creatorCreatorAttribs.id)
 			]);

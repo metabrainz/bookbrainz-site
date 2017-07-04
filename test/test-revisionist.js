@@ -79,9 +79,9 @@ export default function tests() {
 			);
 
 		return Promise.all([
-			expect(achievementPromise).to.eventually.have.deep
+			expect(achievementPromise).to.eventually.have.nested
 				.property('Revisionist II.editorId', testData.editorAttribs.id),
-			expect(achievementPromise).to.eventually.have.deep
+			expect(achievementPromise).to.eventually.have.nested
 				.property('Revisionist II.achievementId',
 					testData.revisionistIIAttribs.id)
 		]);
@@ -106,16 +106,16 @@ export default function tests() {
 				);
 
 			return Promise.all([
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Revisionist III.editorId',
 						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Revisionist III.achievementId',
 						testData.revisionistIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Revisionist.editorId',
 						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.deep
+				expect(achievementPromise).to.eventually.have.nested
 					.property('Revisionist.titleId',
 						testData.revisionistAttribs.id)
 			]);
