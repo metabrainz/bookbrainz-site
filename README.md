@@ -96,10 +96,11 @@ To clone the repository and point the local HEAD to the latest commit in the
     git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
 
 ### Installing Packages
-The site depends on a number of node packages, which can be installed using npm,
-which is bundled with NodeJS:
+The site depends on a number of node packages, which can be installed using yarn,
+which can be installed using npm:
 
-    npm install
+    npm install -g yarn
+    yarn install
 
 This command will also compile the site LESS and JavaScript source files.
 
@@ -142,4 +143,4 @@ with your Sauce Labs username and access key, as follows:
 Finally, run the BookBrainz server, as detailed in the previous section of this
 README, and then run the browser testing command:
 
-    npm run browser-test
+    yarn run browser-test
