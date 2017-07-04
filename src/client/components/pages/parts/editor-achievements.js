@@ -118,16 +118,23 @@ class EditorAchievementTab extends React.Component {
 				<div className="col-md-10-offset-1">
 					<div id="achievementsForm">
 						<StickyContainer>
-							<Sticky
-								style={{
-									background: 'white',
-									flex: '1',
-									marginTop: STICKY_TOP_MARGIN,
-									zIndex: 10
-								}}
-								topOffset={-80}
-							>
-								{rankUpdate}
+							<Sticky topOffset={-80}>
+								{
+									({style}) => {
+										const updatedStyle = {
+											...style,
+											background: 'white',
+											flex: '1',
+											marginTop: STICKY_TOP_MARGIN,
+											zIndex: 10
+										};
+										return (
+											<div style={updatedStyle}>
+												{rankUpdate}
+											</div>
+										);
+									}
+								}
 							</Sticky>
 							<div style={{zIndex: 1}}>
 								<div className="h1">Unlocked Achievements</div>

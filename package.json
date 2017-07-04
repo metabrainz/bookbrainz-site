@@ -86,7 +86,7 @@
     "react-fontawesome": "^1.5.0",
     "react-redux": "^5.0.2",
     "react-select": "^1.0.0-beta14",
-    "react-sticky": "^5.0.4",
+    "react-sticky": "^6.0.1",
     "react-virtualized": "^9.8.0",
     "react-virtualized-select": "^3.0.1",
     "redux": "^3.7.1",
