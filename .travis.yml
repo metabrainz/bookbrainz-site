@@ -39,6 +39,7 @@ before_script:
   - psql -f bookbrainz-sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
   - psql -f bookbrainz-sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
   - cp ./config/test.json.example ./config/test.json
+  - ./node_modules/.bin/eslint -v
 
 script:
   - npm run-script test-ci
