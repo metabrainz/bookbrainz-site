@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import EditForm from '../../entity-editor/root-component';
+import EditForm from '../../components/forms/creator';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

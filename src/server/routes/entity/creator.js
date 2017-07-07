@@ -21,7 +21,7 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
-import EditForm from '../../../client/entity-editor/root-component';
+import EditForm from '../../../client/components/forms/creator';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
@@ -79,15 +79,15 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadCreatorTypes, (req, res) => {
 		const props = {
 			creatorTypes: res.locals.creatorTypes,
-			genderOptions: res.locals.genders,
+			genders: res.locals.genders,
 			identifierTypes: res.locals.identifierTypes,
-			languageOptions: res.locals.languages,
+			languages: res.locals.languages,
 			submissionUrl: '/creator/create/handler'
 		};
 
 		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
-		res.render('entity/create/create-common', {
+		return res.render('entity/create/create-common', {
 			heading: 'Create Creator',
 			markup,
 			props,
@@ -169,16 +169,15 @@ router.get(
 		const props = {
 			creator,
 			creatorTypes: res.locals.creatorTypes,
-			genderOptions: res.locals.genders,
+			genders: res.locals.genders,
 			identifierTypes: res.locals.identifierTypes,
-			initialState: creatorToFormState(creator),
-			languageOptions: res.locals.languages,
+			languages: res.locals.languages,
 			submissionUrl: `/creator/${creator.bbid}/edit/handler`
 		};
 
 		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
 
-		res.render('entity/create/create-common', {
+		return res.render('entity/create/create-common', {
 			heading: 'Edit Creator',
 			markup,
 			props,
@@ -228,20 +227,17 @@ function transformNewForm(data) {
 	};
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	req.body = transformNewForm(req.body);
-	return entityRoutes.createEntity(
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
+	entityRoutes.createEntity(
 		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-	);
-});
+	)
+);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		req.body = transformNewForm(req.body);
-		return entityRoutes.editEntity(
+	(req, res) =>
+		entityRoutes.editEntity(
 			req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-		);
-	}
+		)
 );
 
 export default router;
