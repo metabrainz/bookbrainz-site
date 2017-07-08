@@ -29,6 +29,7 @@ import config from './helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
 import git from 'git-rev';
+import initInflux from './influx';
 import logger from 'morgan';
 import path from 'path';
 import redis from 'connect-redis';
@@ -86,6 +87,9 @@ app.use(session({
 	})
 }));
 
+if (config.influx) {
+	initInflux(app, config.influx);
+}
 
 // Authentication code depends on session, so init session first
 auth.init(app);

@@ -60,6 +60,7 @@
     "handlebars": "^4.0.5",
     "http-status": "^1.0.0",
     "immutable": "^3.8.1",
+    "influx": "^5.0.7",
     "jade": "~1.11.0",
     "jquery": "^3.1.1",
     "jquery.mousewheel": "^3.1.9",
