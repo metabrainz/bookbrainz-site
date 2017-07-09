@@ -5,7 +5,6 @@ function init(app, config) {
 	const influx = new Influx.InfluxDB({
 		database: config.database || 'bookbrainz',
 		host: config.host || 'localhost',
-		username: 'grafana',
 		password: 'grafana',
 		schema: [
 			{
@@ -14,12 +13,14 @@ function init(app, config) {
 				},
 				measurement: 'response_times',
 				tags: [
-					'status',
+					'domain',
 					'path',
+					'status',
 					'verb'
 				]
 			}
-		]
+		],
+		username: 'grafana'
 	});
 
 	app.use((req, res, next) => {
@@ -32,7 +33,10 @@ function init(app, config) {
 				fields: {duration},
 				measurement: 'response_times',
 				tags: {
-					path: req.path, status: res.statusCode, verb: req.method
+					domain: config.domain || 'localhost',
+					path: req.path,
+					status: res.statusCode,
+					verb: req.method
 				}
 			};
 
