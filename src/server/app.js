@@ -93,7 +93,7 @@ if (config.influx) {
 
 // Authentication code depends on session, so init session first
 auth.init(app);
-search.init(config.search);
+search.init(app.locals.orm, config.search);
 
 // Set up constants that will remain valid for the life of the app
 git.short((revision) => {

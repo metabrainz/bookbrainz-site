@@ -279,7 +279,7 @@ export function searchByName(orm, name, collection) {
 	return _searchForEntities(orm, dslQuery);
 }
 
-export async function init(options) {
+export async function init(orm, options) {
 	const config = _.extend({
 		defer() {
 			const defer = {};
@@ -302,5 +302,5 @@ export async function init(options) {
 		return null;
 	}
 
-	return generateIndex();
+	return generateIndex(orm);
 }
