@@ -76,6 +76,7 @@ router.get('/autocomplete', (req, res) => {
  * @throws {error.PermissionDeniedError} - Thrown if user is not admin.
  */
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
+	const {orm} = req.app.locals;
 	const indexPromise = new Promise((resolve) => {
 		// TODO: This is hacky, and we should replace it once we switch to SOLR.
 		const trustedUsers = ['Leftmost Cat', 'LordSputnik'];
@@ -87,7 +88,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 
 		resolve();
 	})
-		.then(() => search.generateIndex())
+		.then(() => search.generateIndex(orm))
 		.then(() => ({success: true}));
 
 	handler.sendPromiseResult(res, indexPromise);
