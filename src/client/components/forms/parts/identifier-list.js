@@ -44,7 +44,8 @@ class IdentifierList extends React.Component {
 
 		// React does not autobind non-React class methods
 		this.getValue = this.getValue.bind(this);
-		this.handleChange = this.handleChange.bind(this);
+		this.handleTypeChange = this.handleTypeChange.bind(this);
+		this.handleValueChange = this.handleValueChange.bind(this);
 		this.valid = this.valid.bind(this);
 		this.handleRemove = this.handleRemove.bind(this);
 	}
@@ -66,7 +67,39 @@ class IdentifierList extends React.Component {
 			});
 	}
 
-	handleChange(index) {
+	handleTypeChange(index, newType) {
+		const updatedIdentifiers = this.state.identifiers.slice();
+
+		updatedIdentifiers[index].typeId = newType;
+		updatedIdentifiers[index].valid = dataHelper.identifierIsValid(
+			updatedIdentifiers[index].typeId,
+			updatedIdentifiers[index].value,
+			this.props.types
+		);
+
+		if (this.state.identifiers[index].id) {
+			updatedIdentifiers[index].id = this.state.identifiers[index].id;
+		}
+
+		let rowsSpawned = this.state.rowsSpawned;
+		if (index === this.state.identifiers.length - 1) {
+			updatedIdentifiers.push({
+				key: rowsSpawned,
+				typeId: null,
+				valid: true,
+				value: ''
+			});
+
+			rowsSpawned++;
+		}
+
+		this.setState({
+			identifiers: updatedIdentifiers,
+			rowsSpawned
+		});
+	}
+
+	handleValueChange(index) {
 		const updatedIdentifiers = this.state.identifiers.slice();
 		const updatedIdentifier = this.refs[index].getValue();
 
@@ -154,8 +187,9 @@ class IdentifierList extends React.Component {
 				typeId={identifier.typeId}
 				types={self.props.types}
 				value={identifier.value}
-				onChange={self.handleChange.bind(null, index)}
 				onRemove={self.handleRemove.bind(null, index)}
+				onTypeChange={self.handleTypeChange.bind(null, index)}
+				onValueChange={self.handleValueChange.bind(null, index)}
 			/>
 		);
 

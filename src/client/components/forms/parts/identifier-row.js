@@ -22,7 +22,8 @@ import * as data from '../../../helpers/data';
 import * as validators from '../../../helpers/react-validators';
 import Icon from 'react-fontawesome';
 import React from 'react';
-import Select from '../../input/select2';
+import ReactSelect from 'react-select';
+import SelectWrapper from '../../input/select-wrapper';
 
 const {Button, Input} = bootstrap;
 
@@ -68,18 +69,16 @@ class IdentifierRow extends React.Component {
 		return (
 			<div className="row">
 				<div className="col-md-4">
-					<Select
-						noDefault
-						bsStyle={this.validationState()}
+					<SelectWrapper
+						base={ReactSelect}
 						idAttribute="id"
 						labelAttribute="label"
 						options={this.props.types}
 						placeholder="Select identifier type…"
 						ref={(ref) => this.typeId = ref}
-						select2Options={select2Options}
 						value={this.props.typeId}
 						wrapperClassName="col-md-12"
-						onChange={this.props.onChange}
+						onChange={this.props.onTypeChange}
 					/>
 				</div>
 				<div className="col-md-4">
@@ -89,7 +88,7 @@ class IdentifierRow extends React.Component {
 						type="text"
 						value={this.props.value}
 						wrapperClassName="col-md-12"
-						onChange={this.props.onChange}
+						onChange={this.props.onValueChange}
 					/>
 				</div>
 				<div className="col-md-2">
@@ -108,16 +107,18 @@ class IdentifierRow extends React.Component {
 
 IdentifierRow.displayName = 'IdentifierRow';
 IdentifierRow.propTypes = {
-	onChange: React.PropTypes.func,
 	onRemove: React.PropTypes.func,
+	onTypeChange: React.PropTypes.func,
+	onValueChange: React.PropTypes.func,
 	removeHidden: React.PropTypes.bool,
 	typeId: React.PropTypes.number.isRequired,
 	types: React.PropTypes.arrayOf(validators.labeledProperty).isRequired,
 	value: React.PropTypes.string.isRequired
 };
 IdentifierRow.defaultProps = {
-	onChange: null,
 	onRemove: null,
+	onTypeChange: null,
+	onValueChange: null,
 	removeHidden: false
 };
 
