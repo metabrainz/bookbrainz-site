@@ -39,27 +39,22 @@ function initRootRoutes(app) {
 
 function initPublicationRoutes(app) {
 	app.use('/publication', publicationRouter);
-	relationshipHelper.addEditRoutes(publicationRouter);
 }
 
 function initCreatorRoutes(app) {
 	app.use('/creator', creatorRouter);
-	relationshipHelper.addEditRoutes(creatorRouter);
 }
 
 function initEditionRoutes(app) {
 	app.use('/edition', editionRouter);
-	relationshipHelper.addEditRoutes(editionRouter);
 }
 
 function initWorkRoutes(app) {
 	app.use('/work', workRouter);
-	relationshipHelper.addEditRoutes(workRouter);
 }
 
 function initPublisherRoutes(app) {
 	app.use('/publisher', publisherRouter);
-	relationshipHelper.addEditRoutes(publisherRouter);
 }
 
 function initRevisionRoutes(app) {

@@ -39,14 +39,6 @@ function EntityRelationships({entityUrl, relationships}) {
 				)}
 			</ul>
 			}
-			<Button
-				bsStyle="warning"
-				className="margin-top-d15"
-				href={`${entityUrl}/relationships`}
-			>
-				<Icon name="pencil"/>
-				{' Edit Relationships'}
-			</Button>
 		</div>
 	);
 }
