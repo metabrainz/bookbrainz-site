@@ -31,7 +31,7 @@ function EntityFooter({entityUrl, lastModified}) {
 	return (
 		<div>
 			<Row>
-				<Col md={4} mdOffset={4}>
+				<Col md={6} mdOffset={3}>
 					<ButtonGroup justified>
 						<Button
 							bsStyle="warning"
