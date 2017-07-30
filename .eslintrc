@@ -431,7 +431,7 @@ rules:
   react/no-multi-comp:
     - 1
     -
-      ignoreStateless: false
+      ignoreStateless: true
   react/no-set-state: 1
   react/no-unknown-property: 2
   react/prop-types: 1 # Revisit this
