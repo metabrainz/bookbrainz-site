@@ -23,8 +23,10 @@ import * as validators from '../../helpers/react-validators';
 import LoadingSpinner from '../loading-spinner';
 import PartialDate from '../input/partial-date';
 import React from 'react';
-import Select from '../input/select2';
+import ReactSelect from 'react-select';
+import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent-bluebird-promise';
+
 
 const {Alert, Button, Input, PageHeader} = bootstrap;
 
@@ -96,10 +98,6 @@ class RegistrationForm extends React.Component {
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
 
 		const initialGender = this.props.gender && this.props.gender.id;
-		const select2Options = {
-			allowClear: true,
-			width: '100%'
-		};
 
 		return (
 			<div>
@@ -140,8 +138,8 @@ class RegistrationForm extends React.Component {
 								that will be displayed on your profile
 								page.
 							</p>
-							<Select
-								noDefault
+							<SelectWrapper
+								base={ReactSelect}
 								defaultValue={initialGender}
 								idAttribute="id"
 								label="Gender"
@@ -150,7 +148,6 @@ class RegistrationForm extends React.Component {
 								options={this.props.genders}
 								placeholder="Select gender…"
 								ref={(ref) => this.gender = ref}
-								select2Options={select2Options}
 								wrapperClassName="col-md-4"
 							/>
 							<PartialDate
