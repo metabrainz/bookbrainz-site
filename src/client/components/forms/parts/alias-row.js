@@ -22,7 +22,9 @@
 import * as bootstrap from 'react-bootstrap';
 import Icon from 'react-fontawesome';
 import React from 'react';
-import Select from '../../input/select2';
+import SelectWrapper from '../../input/select-wrapper';
+import VirtualizedSelect from 'react-virtualized-select';
+
 
 const {Button, Input} = bootstrap;
 
@@ -146,10 +148,6 @@ class AliasRow extends React.Component {
 			</Button>
 		);
 
-		const select2Options = {
-			allowClear: true
-		};
-
 		const removeHiddenClass = this.props.removeHidden ? 'hidden' : '';
 
 		return (
@@ -183,16 +181,14 @@ class AliasRow extends React.Component {
 					/> &nbsp;
 				</div>
 				<div className="col-md-3">
-					<Select
-						noDefault
-						bsStyle={this.validationState()}
+					<SelectWrapper
+						base={VirtualizedSelect}
 						defaultValue={this.props.languageId}
 						idAttribute="id"
 						labelAttribute="name"
 						options={this.props.languages}
 						placeholder="Select alias language…"
 						ref={(ref) => this.languageId = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-11"
 						onChange={this.props.onChange}
 					/>
