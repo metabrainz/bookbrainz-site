@@ -25,8 +25,10 @@ import Icon from 'react-fontawesome';
 import Identifiers from './identifier-list';
 import PartialDate from '../../input/partial-date';
 import React from 'react';
+import ReactSelect from 'react-select';
 import SearchSelect from '../../input/entity-search';
-import Select from '../../input/select2';
+import SelectWrapper from '../../input/select-wrapper';
+
 
 const {Input} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
@@ -44,10 +46,9 @@ class PublisherData extends React.Component {
 	}
 
 	getValue() {
-		const area = this.area.getValue();
 		return {
 			annotation: this.annotation.getValue(),
-			area: area ? area.id : null,
+			area: this.area.getValue(),
 			beginDate: this.begin.getValue(),
 			disambiguation: this.disambiguation.getValue(),
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
@@ -97,11 +98,6 @@ class PublisherData extends React.Component {
 				}));
 		}
 
-		const select2Options = {
-			allowClear: true,
-			width: '100%'
-		};
-
 		const publisherDataVisibleClass = this.props.visible ? '' : 'hidden';
 		const endDataHiddenClass = this.state.ended ? '' : 'hidden';
 		return (
@@ -137,8 +133,8 @@ class PublisherData extends React.Component {
 						wrapperClassName="col-md-offset-4 col-md-4"
 						onChange={this.handleEnded}
 					/>
-					<Select
-						noDefault
+					<SelectWrapper
+						base={ReactSelect}
 						defaultValue={initialPublisherType}
 						idAttribute="id"
 						label="Type"
@@ -147,18 +143,15 @@ class PublisherData extends React.Component {
 						options={this.props.publisherTypes}
 						placeholder="Select publisher type…"
 						ref={(ref) => this.publisherType = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<SearchSelect
-						noDefault
 						collection="area"
 						defaultValue={injectDefaultAliasName(initialArea)}
 						label="Area"
 						labelClassName="col-md-4"
 						placeholder="Select area..."
 						ref={(ref) => this.area = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
