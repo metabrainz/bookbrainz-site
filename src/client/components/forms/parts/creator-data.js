@@ -25,8 +25,10 @@ import Icon from 'react-fontawesome';
 import Identifiers from './identifier-list';
 import PartialDate from '../../input/partial-date';
 import React from 'react';
+import ReactSelect from 'react-select';
 import SearchSelect from '../../input/entity-search';
-import Select from '../../input/select2';
+import SelectWrapper from '../../input/select-wrapper';
+
 
 const {Input} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
@@ -44,15 +46,13 @@ class CreatorData extends React.Component {
 	}
 
 	getValue() {
-		const beginArea = this.beginArea.getValue();
-		const endArea = this.endArea.getValue();
 		return {
 			annotation: this.annotation.getValue(),
-			beginArea: beginArea ? beginArea.id : null,
+			beginArea: this.beginArea.getValue(),
 			beginDate: this.begin.getValue(),
 			creatorType: this.creatorType.getValue(),
 			disambiguation: this.disambiguation.getValue(),
-			endArea: endArea ? endArea.id : null,
+			endArea: this.endArea.getValue(),
 			endDate: this.ended.getChecked() ? this.end.getValue() : '',
 			ended: this.ended.getChecked(),
 			gender: this.gender.getValue(),
@@ -146,8 +146,8 @@ class CreatorData extends React.Component {
 						wrapperClassName="col-md-offset-4 col-md-4"
 						onChange={this.handleEnded}
 					/>
-					<Select
-						noDefault
+					<SelectWrapper
+						base={ReactSelect}
 						defaultValue={initialGender}
 						idAttribute="id"
 						label="Gender"
@@ -156,11 +156,10 @@ class CreatorData extends React.Component {
 						options={this.props.genders}
 						placeholder="Select gender…"
 						ref={(ref) => this.gender = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
-					<Select
-						noDefault
+					<SelectWrapper
+						base={ReactSelect}
 						defaultValue={initialCreatorType}
 						idAttribute="id"
 						label="Type"
@@ -169,18 +168,15 @@ class CreatorData extends React.Component {
 						options={this.props.creatorTypes}
 						placeholder="Select creator type…"
 						ref={(ref) => this.creatorType = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<SearchSelect
-						noDefault
 						collection="area"
 						defaultValue={injectDefaultAliasName(initialBeginArea)}
 						label="Begin Area"
 						labelClassName="col-md-4"
 						placeholder="Select begin area..."
 						ref={(ref) => this.beginArea = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<SearchSelect
