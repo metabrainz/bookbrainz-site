@@ -23,9 +23,11 @@ import * as validators from '../../helpers/react-validators';
 import LoadingSpinner from '../loading-spinner';
 import PartialDate from '../input/partial-date';
 import React from 'react';
+import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
-import Select from '../input/select2';
+import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent-bluebird-promise';
+
 
 const {Button, Col, Grid, Input, Row} = bootstrap;
 const {formatDate, injectDefaultAliasName} = utilsHelper;
@@ -91,10 +93,6 @@ class ProfileForm extends React.Component {
 	render() {
 		const loadingElement =
 			this.state.waiting ? <LoadingSpinner/> : null;
-		const select2Options = {
-			allowClear: true,
-			width: '100%'
-		};
 		const genderOptions = this.state.genders.map((gender) => ({
 			id: gender.id,
 			name: gender.name
@@ -143,7 +141,8 @@ class ProfileForm extends React.Component {
 								type="textarea"
 							/>
 							{titleOptions.length > 0 &&
-								<Select
+								<SelectWrapper
+									base={ReactSelect}
 									idAttribute="unlockId"
 									label="Title"
 									labelAttribute="title"
@@ -153,15 +152,14 @@ class ProfileForm extends React.Component {
 								/>
 							}
 							<SearchSelect
-								noDefault
 								collection="area"
 								defaultValue={initialArea}
 								label="Area"
 								placeholder="Select area..."
 								ref={(ref) => this.area = ref}
-								select2Options={select2Options}
 							/>
-							<Select
+							<SelectWrapper
+								base={ReactSelect}
 								defaultValue={initialGender}
 								idAttribute="id"
 								label="Gender"
