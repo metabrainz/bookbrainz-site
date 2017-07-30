@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015       Ben Ockmore
+ * Copyright (C) 2015-2017  Ben Ockmore
  *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,198 +17,131 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import $ from 'jquery';
 import Icon from 'react-fontawesome';
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import Select from './select2';
-import _assign from 'lodash.assign';
+import ReactSelect from 'react-select';
+import SelectWrapper from './select-wrapper';
+import request from 'superagent-bluebird-promise';
+
+/**
+ * Determines whether an entity provided to the EntitySearch component is an
+ * Area, using the present attributes.
+ *
+ * @param {Object} entity the entity to test
+ * @returns {boolean} true if the entity looks like an Area
+ **/
+function isArea(entity) {
+	if (entity.type === 'Area') {
+		return true;
+	}
+
+	if (entity.gid) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Takes an entity and converts it to a format acceptable to react-select.
+ *
+ * @param {Object} entity the entity to convert
+ * @returns {Object} the formatted data
+ **/
+function entityToOption(entity) {
+	const id = isArea(entity) ? entity.id : entity.bbid;
+
+	return {
+		disambiguation: entity.disambiguation ?
+			entity.disambiguation.comment : null,
+		id,
+		text: entity.defaultAlias ?
+			entity.defaultAlias.name : '(unnamed)',
+		type: entity.type
+	};
+}
 
 class EntitySearch extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.loadedEntities = {};
+		this.fetchOptions = this.fetchOptions.bind(this);
+		this.renderOption = this.renderOption.bind(this);
 	}
 
 	getValue() {
-		const bbid = this.select.getValue();
+		return this.select.getValue();
+	}
 
-		if (bbid) {
-			return this.loadedEntities[bbid];
-		}
+	fetchOptions(query) {
+		return request
+			.get('/search/autocomplete')
+			.query({
+				collection: this.props.collection,
+				q: query
+			})
+			.then((response) => {
+				console.log(response.body.map(entityToOption));
+				return {
+					options: response.body.map(entityToOption)
+				};
+			});
+	}
 
-		return null;
+	renderOption(option) {
+		const ENTITY_TYPE_ICONS = {
+			Area: 'globe',
+			Creator: 'user',
+			Edition: 'book',
+			Publication: 'th-list',
+			Publisher: 'university',
+			Work: 'file-text-o'
+		};
+
+		return (
+			<div>
+				{option.type && <Icon name={ENTITY_TYPE_ICONS[option.type]}/>}
+				{' '}
+				{option.text}
+				{
+					option.disambiguation &&
+					<span className="disambig">
+						({option.disambiguation})
+					</span>
+				}
+			</div>
+		);
 	}
 
 	render() {
-		const self = this;
-
-		if (this.props.defaultValue) {
-			this.loadedEntities[this.props.defaultValue.bbid] =
-				this.props.defaultValue;
-		}
-
-		if (this.props.value) {
-			this.loadedEntities[this.props.value.bbid] = this.props.value;
-		}
-
-		function entityToOption(entity) {
-			return {
-				disambiguation: entity.disambiguation ?
-					entity.disambiguation.comment : null,
-				id: entity.bbid,
-				text: entity.defaultAlias ?
-					entity.defaultAlias.name : '(unnamed)',
-				type: entity.type
-			};
-		}
-
-		const select2Options = {
-			ajax: {
-				data(params) {
-					const queryParams = {
-						collection: self.props.collection,
-						page: params.page,
-						q: params.term
-					};
-
-					return queryParams;
-				},
-				processResults(results) {
-					if (results.error) {
-						return {
-							results: [{
-								id: null,
-								text: results.error
-							}]
-						};
-					}
-
-					results.forEach((result) => {
-						self.loadedEntities[result.bbid] = result;
-					});
-
-					return {
-						results: results.map(entityToOption)
-					};
-				},
-				url: '/search/autocomplete'
-			},
-			minimumInputLength: 1,
-			templateResult(result) {
-				let template = result.text;
-
-				const ENTITY_TYPE_ICONS = {
-					Area: 'globe',
-					Creator: 'user',
-					Edition: 'book',
-					Publication: 'th-list',
-					Publisher: 'university',
-					Work: 'file-text-o'
-				};
-
-				/* eslint prefer-template: 0 */
-				if (result.type) {
-					template = ReactDOMServer.renderToStaticMarkup(
-						<Icon name={ENTITY_TYPE_ICONS[result.type]}/>
-					) + ` ${template}`;
-				}
-
-				if (result.disambiguation) {
-					template += ReactDOMServer.renderToStaticMarkup(
-						<span className="disambig">
-							({result.disambiguation})
-						</span>
-					);
-				}
-
-				return $.parseHTML(template);
-			}
-		};
-
-		_assign(select2Options, this.props.select2Options);
-
-		const options = this.props.options || [];
-
-		function keyFromValue(value) {
-			let key = null;
-
-			if (value && value.bbid) {
-				options.unshift(entityToOption(value));
-				key = value.bbid;
-			}
-
-			return key;
-		}
-
-		const defaultKey = keyFromValue(this.props.defaultValue);
-		const key = keyFromValue(this.props.value);
+		const {collection, defaultValue, ...props} = this.props;
 
 		return (
-			<Select
-				dynamicOptions
-				noDefault
-				bsStyle={this.props.bsStyle}
-				defaultValue={defaultKey}
-				disabled={this.props.disabled}
-				groupClassName={this.props.groupClassName}
-				help={this.props.help}
+			<SelectWrapper
+				base={ReactSelect.Async}
+				defaultValue={defaultValue && entityToOption(defaultValue)}
 				idAttribute="id"
-				label={this.props.label}
 				labelAttribute="text"
-				labelClassName={this.props.labelClassName}
-				options={options}
-				placeholder={this.props.placeholder}
+				loadOptions={this.fetchOptions}
+				optionRenderer={this.renderOption}
 				ref={(ref) => this.select = ref}
-				select2Options={select2Options}
-				standalone={this.props.standalone}
-				value={key}
-				wrapperClassName={this.props.wrapperClassName}
-				onChange={this.props.onChange}
+				{...props}
 			/>
 		);
 	}
 }
 
-// TODO: pass props to underlying Select using spread syntax
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
-	bsStyle: React.PropTypes.string,
 	collection: React.PropTypes.string,
 	defaultValue: React.PropTypes.shape({
 		bbid: React.PropTypes.string
-	}),
-	disabled: React.PropTypes.bool,
-	groupClassName: React.PropTypes.string,
-	help: React.PropTypes.string,
-	label: React.PropTypes.string,
-	labelClassName: React.PropTypes.string,
-	onChange: React.PropTypes.func,
-	options: React.PropTypes.array.isRequired,
-	placeholder: React.PropTypes.string,
-	select2Options: React.PropTypes.object,
-	standalone: React.PropTypes.bool,
-	value: React.PropTypes.shape({
-		bbid: React.PropTypes.string
-	}),
-	wrapperClassName: React.PropTypes.string
+	})
 };
 EntitySearch.defaultProps = {
-	bsStyle: null,
 	collection: null,
-	defaultValue: null,
-	disabled: null,
-	groupClassName: null,
-	help: null,
-	label: null,
-	labelClassName: null,
-	onChange: null,
-	placeholder: null,
-	select2Options: {},
-	standalone: null,
-	value: null,
-	wrapperClassName: null
+	defaultValue: null
+
 };
 
 export default EntitySearch;
