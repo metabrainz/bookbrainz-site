@@ -22,7 +22,9 @@ import * as validators from '../../../helpers/react-validators';
 import Icon from 'react-fontawesome';
 import Identifiers from './identifier-list';
 import React from 'react';
-import Select from '../../input/select2';
+import ReactSelect from 'react-select';
+import SelectWrapper from '../../input/select-wrapper';
+
 
 const {Input} = bootstrap;
 
@@ -62,11 +64,6 @@ class PublicationData extends React.Component {
 				}));
 		}
 
-		const select2Options = {
-			allowClear: true,
-			width: '100%'
-		};
-
 		const publicationDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
 			<div className={publicationDataVisibleClass}>
@@ -76,8 +73,8 @@ class PublicationData extends React.Component {
 				</p>
 
 				<div className="form-horizontal">
-					<Select
-						noDefault
+					<SelectWrapper
+						base={ReactSelect}
 						defaultValue={initialPublicationType}
 						idAttribute="id"
 						label="Type"
@@ -86,7 +83,6 @@ class PublicationData extends React.Component {
 						options={this.props.publicationTypes}
 						placeholder="Select publication type…"
 						ref={(ref) => this.publicationType = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
