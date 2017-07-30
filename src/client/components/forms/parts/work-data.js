@@ -22,7 +22,10 @@ import * as validators from '../../../helpers/react-validators';
 import Icon from 'react-fontawesome';
 import Identifiers from './identifier-list';
 import React from 'react';
-import Select from '../../input/select2';
+import ReactSelect from 'react-select';
+import SelectWrapper from '../../input/select-wrapper';
+import VirtualizedSelect from 'react-virtualized-select';
+
 
 const {Input} = bootstrap;
 
@@ -68,11 +71,6 @@ class WorkData extends React.Component {
 				}));
 		}
 
-		const select2Options = {
-			allowClear: true,
-			width: '100%'
-		};
-
 		const workDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
 			<div className={workDataVisibleClass}>
@@ -82,9 +80,9 @@ class WorkData extends React.Component {
 				</p>
 
 				<div className="form-horizontal">
-					<Select
+					<SelectWrapper
 						multiple
-						noDefault
+						base={VirtualizedSelect}
 						defaultValue={initialLanguages}
 						idAttribute="id"
 						label="Languages"
@@ -93,11 +91,10 @@ class WorkData extends React.Component {
 						options={this.props.languages}
 						placeholder="Select work languages…"
 						ref={(ref) => this.languages = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
-					<Select
-						noDefault
+					<SelectWrapper
+						base={ReactSelect}
 						defaultValue={initialWorkType}
 						idAttribute="id"
 						label="Type"
@@ -106,7 +103,6 @@ class WorkData extends React.Component {
 						options={this.props.workTypes}
 						placeholder="Select work type…"
 						ref={(ref) => this.workType = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
