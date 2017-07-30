@@ -23,8 +23,10 @@ import Icon from 'react-fontawesome';
 import Identifiers from './identifier-list';
 import PartialDate from '../../input/partial-date';
 import React from 'react';
+import ReactSelect from 'react-select';
 import SearchSelect from '../../input/entity-search';
-import Select from '../../input/select2';
+import SelectWrapper from '../../input/select-wrapper';
+import VirtualizedSelect from 'react-virtualized-select';
 import _assign from 'lodash.assign';
 
 const {Input} = bootstrap;
@@ -32,9 +34,6 @@ const {Input} = bootstrap;
 
 class EditionData extends React.Component {
 	getValue() {
-		const publication = this.publication.getValue();
-		const publisher = this.publisher.getValue();
-
 		const releaseEvents = [];
 
 		// If the release date field isn't empty, create a release event
@@ -65,8 +64,8 @@ class EditionData extends React.Component {
 				(languageId) => parseInt(languageId, 10)
 			),
 			pages: this.pages.getValue(),
-			publication: publication ? publication.bbid : null,
-			publishers: publisher ? [publisher.bbid] : null,
+			publication: this.publication.getValue(),
+			publishers: [this.publisher.getValue()],
 			releaseEvents,
 			weight: this.weight.getValue(),
 			width: this.width.getValue()
@@ -152,16 +151,6 @@ class EditionData extends React.Component {
 			initialPublisher = this.props.publisher;
 		}
 
-		const defaultSelect2Options = {
-			allowClear: true,
-			width: '100%'
-		};
-
-		const publicationSelect2Options =
-			_assign({}, defaultSelect2Options);
-
-		publicationSelect2Options.allowClear = false;
-
 		const editionDataVisibleClass = this.props.visible ? '' : 'hidden';
 		return (
 			<div className={editionDataVisibleClass}>
@@ -175,23 +164,18 @@ class EditionData extends React.Component {
 						collection="publication"
 						defaultValue={initialPublication}
 						label="Publication"
-						labelAttribute="name"
 						labelClassName="col-md-4"
 						placeholder="Select publication…"
 						ref={(ref) => this.publication = ref}
-						select2Options={publicationSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<SearchSelect
-						nodefault
 						collection="publisher"
 						defaultValue={initialPublisher}
 						label="Publisher"
-						labelAttribute="name"
 						labelClassName="col-md-4"
 						placeholder="Select publisher…"
 						ref={(ref) => this.publisher = ref}
-						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<PartialDate
@@ -202,9 +186,9 @@ class EditionData extends React.Component {
 						ref={(ref) => this.release = ref}
 						wrapperClassName="col-md-4"
 					/>
-					<Select
+					<SelectWrapper
 						multiple
-						noDefault
+						base={VirtualizedSelect}
 						defaultValue={initialLanguages}
 						idAttribute="id"
 						label="Languages"
@@ -213,11 +197,10 @@ class EditionData extends React.Component {
 						options={this.props.languages}
 						placeholder="Select edition languages…"
 						ref={(ref) => this.languages = ref}
-						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
-					<Select
-						noDefault
+					<SelectWrapper
+						base={ReactSelect}
 						defaultValue={initialEditionFormat}
 						idAttribute="id"
 						label="Format"
@@ -226,11 +209,10 @@ class EditionData extends React.Component {
 						options={this.props.editionFormats}
 						placeholder="Select edition format…"
 						ref={(ref) => this.editionFormat = ref}
-						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
-					<Select
-						noDefault
+					<SelectWrapper
+						base={ReactSelect}
 						defaultValue={initialEditionStatus}
 						idAttribute="id"
 						label="Status"
@@ -239,7 +221,6 @@ class EditionData extends React.Component {
 						options={this.props.editionStatuses}
 						placeholder="Select edition status…"
 						ref={(ref) => this.editionStatus = ref}
-						select2Options={defaultSelect2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
