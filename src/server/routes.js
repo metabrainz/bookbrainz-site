@@ -17,7 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as relationshipHelper from './routes/relationship/edit';
 import authRouter from './routes/auth';
 import creatorRouter from './routes/entity/creator';
 import editionRouter from './routes/entity/edition';
