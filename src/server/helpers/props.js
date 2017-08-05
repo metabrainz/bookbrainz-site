@@ -44,6 +44,10 @@ export function extractEditorProps(props) {
 	return _.pick(props, EDITOR_PROPS);
 }
 
+export function extractChildProps(props) {
+	return _.omit(props, LAYOUT_PROPS);
+}
+
 export function extractEntityProps(props) {
 	return {
 		alert: props.alert,
