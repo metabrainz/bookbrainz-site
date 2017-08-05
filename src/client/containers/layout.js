@@ -25,7 +25,7 @@ import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import React from 'react';
 
-const {MenuItem, Nav, Navbar} = bootstrap;
+const {MenuItem, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -67,77 +67,63 @@ class Layout extends React.Component {
 		/* GOTCHA: Usage of react-bootstrap FormGroup component inside
 		*  Navbar.Form causes a DOM mutation
 		*/
+		const createDropdownTitle = (
+			<span>
+				<FontAwesome name="plus"/>{'  Create'}
+			</span>
+		);
+
+		const userDropdownTitle = user && (
+			<span>
+				<FontAwesome name="user"/>
+				{`  ${user.name}`}
+			</span>
+		);
+
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{user && user.id ?
 					<Nav pullRight>
-						<li className="dropdown">
-							<a
-								aria-expanded="false"
-								className="dropdown-toggle"
-								data-toggle="dropdown"
-								href="#"
-								id="dNewEntities"
-								role="button"
-							>
-								<FontAwesome name="plus"/>{' Create '}
-								<span className="caret"/>
-							</a>
-							<ul
-								aria-labelledby="dNewEntities"
-								className="dropdown-menu"
-								role="menu"
-							>
-								<MenuItem href="/publication/create">
-									Create Publication
-								</MenuItem>
-								<MenuItem href="/edition/create">
-									Create Edition
-								</MenuItem>
-								<MenuItem href="/work/create">
-									Create Work
-								</MenuItem>
-								<li className="divider"/>
-								<MenuItem href="/creator/create">
-									Create Creator
-								</MenuItem>
-								<MenuItem href="/publisher/create">
-									Create Publisher
-								</MenuItem>
-							</ul>
-						</li>
-						<li className="dropdown">
-							<a
-								aria-expanded="false"
-								className="dropdown-toggle"
-								data-toggle="dropdown"
-								href="#"
-								id="dUserDropdown"
-								role="button"
-							>
-								<FontAwesome name="user"/>
-								<span>{`  ${user.name}`}</span>
-								<span className="caret"/>
-							</a>
-							<ul
-								aria-labelledby="dUserDropdown"
-								className="dropdown-menu"
-								role="menu"
-							>
-								<MenuItem href={`/editor/${user.id}`}>
-									<FontAwesome
-										fixedWidth
-										name="info"
-									/>{' Profile'}
-								</MenuItem>
-								<MenuItem href="/logout">
-									<FontAwesome
-										fixedWidth
-										name="sign-out"
-									/>{' Sign Out'}
-								</MenuItem>
-							</ul>
-						</li>
+						<NavDropdown
+							eventKey={1}
+							id="create-dropdown"
+							title={createDropdownTitle}
+						>
+							<MenuItem href="/publication/create">
+								Create Publication
+							</MenuItem>
+							<MenuItem href="/edition/create">
+								Create Edition
+							</MenuItem>
+							<MenuItem href="/work/create">
+								Create Work
+							</MenuItem>
+							<MenuItem divider/>
+							<MenuItem href="/creator/create">
+								Create Creator
+							</MenuItem>
+							<MenuItem href="/publisher/create">
+								Create Publisher
+							</MenuItem>
+						</NavDropdown>
+						<NavDropdown
+							eventKey={2}
+							id="user-dropdown"
+							title={userDropdownTitle}
+						>
+							<MenuItem href={`/editor/${user.id}`}>
+								<FontAwesome
+									fixedWidth
+									name="info"
+								/>{' Profile'}
+							</MenuItem>
+							<MenuItem href="/logout">
+								<FontAwesome
+									fixedWidth
+									name="sign-out"
+								/>{' Sign Out'}
+							</MenuItem>
+						</NavDropdown>
 					</Nav> :
 					<Nav pullRight>
 						<MenuItem href="/auth">
@@ -217,12 +203,14 @@ Layout.propTypes = {
 	hideSearch: React.PropTypes.bool,
 	homepage: React.PropTypes.bool,
 	repositoryUrl: React.PropTypes.string.isRequired,
+	requiresJS: React.PropTypes.bool,
 	siteRevision: React.PropTypes.string.isRequired,
 	user: React.PropTypes.object
 };
 Layout.defaultProps = {
 	hideSearch: false,
 	homepage: false,
+	requiresJS: false,
 	user: null
 };
 
