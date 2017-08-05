@@ -34,9 +34,9 @@ class RevisionPage extends React.Component {
 		if (!list) {
 			return null;
 		}
-		return list.map((val, idx) => (
+		return list.map((val, idx) =>
 			<div key={`${idx}${val}`}>{val.toString()}</div>
-		));
+		);
 	}
 
 	static formatChange(change) {
@@ -171,7 +171,7 @@ class RevisionPage extends React.Component {
 		});
 
 		if (revisionNotes.length === 0) {
-			revisionNotes = (<p> No revision notes present </p>);
+			revisionNotes = <p> No revision notes present </p>;
 		}
 
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt));

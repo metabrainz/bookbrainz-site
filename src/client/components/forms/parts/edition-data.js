@@ -42,10 +42,10 @@ class EditionData extends React.Component {
 		if (this.release.getValue()) {
 			const edition = this.props.edition;
 
-			const releaseEventId = (
+			const releaseEventId =
 				edition && edition.releaseEventSet &&
-				edition.releaseEventSet.releaseEvents
-			) ? edition.releaseEventSet.releaseEvents[0].id : null;
+				edition.releaseEventSet.releaseEvents ?
+					edition.releaseEventSet.releaseEvents[0].id : null;
 
 			releaseEvents.push({
 				date: this.release.getValue(),

@@ -61,7 +61,7 @@ EditionPage.getAttributes = (entity) => {
 	const editionStatus = extractAttribute(entity.editionStatus, 'label');
 	const editionFormat = extractAttribute(entity.editionFormat, 'label');
 	const publishers =
-		(entity.publisherSet && entity.publisherSet.publishers.length > 0) ?
+		entity.publisherSet && entity.publisherSet.publishers.length > 0 ?
 			entity.publisherSet.publishers.map((publisher) =>
 				<a
 					href={`/publisher/${publisher.bbid}`}
@@ -70,11 +70,10 @@ EditionPage.getAttributes = (entity) => {
 					{publisher.defaultAlias.name}
 				</a>
 			) : '?';
-	const releaseDate = (entity.releaseEventSet &&
-	entity.releaseEventSet.releaseEvents &&
-	entity.releaseEventSet.releaseEvents.length) ?
-		entity.releaseEventSet.releaseEvents[0].date :
-		'?';
+	const releaseDate = entity.releaseEventSet &&
+		entity.releaseEventSet.releaseEvents &&
+		entity.releaseEventSet.releaseEvents.length ?
+		entity.releaseEventSet.releaseEvents[0].date : '?';
 	const pageCount = extractAttribute(entity.pages);
 	const weight = `${extractAttribute(entity.weight)} g`;
 	const width = extractAttribute(entity.width);

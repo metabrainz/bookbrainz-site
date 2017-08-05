@@ -47,9 +47,9 @@ function PublicationPage(props) {
 		</EntityPage>
 	);
 }
-PublicationPage.getAttributes = (entity) => ([getTypeAttribute(
+PublicationPage.getAttributes = (entity) => [getTypeAttribute(
 	entity.publicationType
-)]);
+)];
 PublicationPage.displayName = 'PublicationPage';
 PublicationPage.propTypes = {
 	entity: React.PropTypes.object.isRequired

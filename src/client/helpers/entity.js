@@ -36,7 +36,7 @@ export function extractAttribute(attr, path) {
 }
 
 export function getLanguageAttribute(entity) {
-	const languages = (entity.languageSet && entity.languageSet.languages) ?
+	const languages = entity.languageSet && entity.languageSet.languages ?
 		entity.languageSet.languages.map(
 			(language) => language.name
 		).join(', ') : '?';
@@ -87,8 +87,8 @@ export function showEntityEditions(entity) {
 					{entity.editions.map((edition, idx) => {
 						const editionName = edition.defaultAlias ?
 							edition.defaultAlias.name : '(unnamed)';
-						const editionComment = (edition.disambiguation &&
-						edition.disambiguation.comment) ?
+						const editionComment = edition.disambiguation &&
+							edition.disambiguation.comment ?
 							` (${edition.disambiguation.comment})` : '';
 						const releaseEventDate = (edition.releaseEventSet &&
 							edition.releaseEventSet.releaseEvents &&

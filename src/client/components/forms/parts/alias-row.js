@@ -70,7 +70,7 @@ function makeSortName(name) {
 
 	// Test this to check that splice will not have a 0 deleteCount
 	const suffixWords =
-		(lastSuffix < words.length) ? words.splice(lastSuffix) : [];
+		lastSuffix < words.length ? words.splice(lastSuffix) : [];
 
 	// Rearrange names to (last name, other names)
 	const INDEX_BEFORE_END = -1;

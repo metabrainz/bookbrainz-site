@@ -68,7 +68,7 @@ class EntityDeletionForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				(<Alert bsStyle="danger">{this.state.error}</Alert>);
+				<Alert bsStyle="danger">{this.state.error}</Alert>;
 		}
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
@@ -91,7 +91,7 @@ class EntityDeletionForm extends React.Component {
 			</span>
 		);
 
-		const headerComponent = (<h3>Confirm Deletion</h3>);
+		const headerComponent = <h3>Confirm Deletion</h3>;
 
 		const entityName =
 			entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';

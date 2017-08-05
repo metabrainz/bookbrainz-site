@@ -49,11 +49,11 @@ function PublisherPage(props) {
 		</EntityPage>
 	);
 }
-PublisherPage.getAttributes = (entity) => ([
+PublisherPage.getAttributes = (entity) => [
 	getTypeAttribute(entity.publisherType),
 	{data: extractAttribute(entity.area, 'name'), title: 'Area'},
 	getDateAttributes(entity)
-]);
+];
 PublisherPage.displayName = 'PublisherPage';
 PublisherPage.propTypes = {
 	entity: React.PropTypes.object.isRequired

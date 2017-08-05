@@ -40,9 +40,8 @@ function NameField({
 	onChange,
 	...rest
 }) {
-	const label = (
-		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>
-	);
+	const label =
+		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>;
 
 	return (
 		<Input label={label} type="text" onChange={onChange} {...rest}/>

@@ -92,7 +92,7 @@ class RegistrationForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				(<Alert bsStyle="danger">{this.state.error}</Alert>);
+				<Alert bsStyle="danger">{this.state.error}</Alert>;
 		}
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;

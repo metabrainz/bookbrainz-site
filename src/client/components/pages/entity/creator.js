@@ -49,7 +49,7 @@ CreatorPage.displayName = 'CreatorPage';
 CreatorPage.propTypes = {
 	entity: React.PropTypes.object.isRequired
 };
-CreatorPage.getAttributes = (entity) => ([
+CreatorPage.getAttributes = (entity) => [
 	getTypeAttribute(entity.creatorType),
 	{data: extractAttribute(entity.gender, 'name'), title: 'Gender'},
 	{
@@ -58,6 +58,6 @@ CreatorPage.getAttributes = (entity) => ([
 	},
 	{data: extractAttribute(entity.endArea, 'name'), title: 'End Area'},
 	getDateAttributes(entity)
-]);
+];
 
 export default CreatorPage;

@@ -41,9 +41,8 @@ function DateField({
 	error,
 	...rest
 }) {
-	const labelElement = (
-		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>
-	);
+	const labelElement =
+		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
 	return (
 		<Input

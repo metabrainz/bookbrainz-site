@@ -45,10 +45,10 @@ function WorkPage(props) {
 		/>
 	);
 }
-WorkPage.getAttributes = (entity) => ([
+WorkPage.getAttributes = (entity) => [
 	getTypeAttribute(entity.workType),
 	getLanguageAttribute(entity)
-]);
+];
 WorkPage.displayName = 'WorkPage';
 WorkPage.propTypes = {
 	entity: React.PropTypes.object.isRequired

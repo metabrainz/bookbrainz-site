@@ -70,33 +70,28 @@ class AliasList extends React.Component {
 		const updatedAlias = this.refs[changedRowIndex].getValue();
 		const existingAlias = this.state.aliases[changedRowIndex];
 
-		const aliasSortNameJustSetOrUnset = (
+		const aliasSortNameJustSetOrUnset =
 			(!existingAlias.sortName && updatedAlias.sortName) ||
-			(existingAlias.sortName && !updatedAlias.sortName)
-		);
+			(existingAlias.sortName && !updatedAlias.sortName);
 
-		const aliasNameJustSetOrUnset = (
+		const aliasNameJustSetOrUnset =
 			(!existingAlias.name && updatedAlias.name) ||
-			(existingAlias.name && !updatedAlias.name)
-		);
+			(existingAlias.name && !updatedAlias.name);
 
-		const aliasLanguageJustSetOrUnset = (
+		const aliasLanguageJustSetOrUnset =
 			(!existingAlias.languageId && updatedAlias.languageId) ||
-			(existingAlias.languageId && !updatedAlias.languageId)
-		);
+			(existingAlias.languageId && !updatedAlias.languageId);
 
 		const lastAliasModified =
 			changedRowIndex === this.state.aliases.length - 1;
 
-		const defaultJustCheckedOrUnchecked = (
+		const defaultJustCheckedOrUnchecked =
 			(!existingAlias.default && updatedAlias.default) ||
-			(updatedAlias.default && !existingAlias.default)
-		);
+			(updatedAlias.default && !existingAlias.default);
 
-		const primaryJustCheckedOrUnchecked = (
+		const primaryJustCheckedOrUnchecked =
 			(!existingAlias.primary && updatedAlias.primary) ||
-			(updatedAlias.primary && !existingAlias.primary)
-		);
+			(updatedAlias.primary && !existingAlias.primary);
 
 		return Boolean(
 			aliasSortNameJustSetOrUnset || aliasNameJustSetOrUnset ||
