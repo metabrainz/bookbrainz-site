@@ -10,7 +10,8 @@ html
 	body
 		div#target!= markup
 		script(src='/js/bundle.js')
-		script(src='/js/layout.js')
+		if page
+			script(type='application/json')#page!= page
 		if props && script
 			script(type='application/json')#props!= JSON.stringify(props)
 			script(src=script)

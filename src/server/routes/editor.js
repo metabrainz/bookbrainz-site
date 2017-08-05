@@ -208,14 +208,18 @@ router.get('/:id', (req, res, next) => {
 						{...propHelpers.extractEditorProps(props)}
 					>
 						<ProfileTab
-							achievement={props.achievement}
-							editor={props.editor}
 							user={props.user}
+							{...propHelpers.extractChildProps(props)}
 						/>
 					</EditorContainer>
 				</Layout>
 			);
-			res.render('target', {markup});
+			res.render('target', {
+				markup,
+				page: 'profile',
+				props,
+				script: '/js/editor/editor.js'
+			});
 		}
 	);
 });
@@ -270,7 +274,12 @@ router.get('/:id/revisions', (req, res, next) => {
 					</EditorContainer>
 				</Layout>
 			);
-			res.render('target', {markup});
+			res.render('target', {
+				markup,
+				page: 'revisions',
+				props,
+				script: '/js/editor/editor.js'
+			});
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found');
