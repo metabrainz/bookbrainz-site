@@ -42,7 +42,8 @@ router.get('/', async (req, res, next) => {
 	function render(entities) {
 		const props = propHelpers.generateProps(req, res, {
 			homepage: true,
-			recent: _.take(entities, numRevisionsOnHomepage)
+			recent: _.take(entities, numRevisionsOnHomepage),
+			requireJS: Boolean(res.locals.user)
 		});
 
 		// Renders react components server side and injects markup into target
@@ -55,7 +56,12 @@ router.get('/', async (req, res, next) => {
 				/>
 			</Layout>
 		);
-		res.render('target', {markup});
+		res.render('target', {
+			markup,
+			page: 'Index',
+			props,
+			script: '/js/index.js'
+		});
 	}
 
 	const entityModels = utils.getEntityModels(orm);
@@ -98,9 +104,19 @@ router.get('/', async (req, res, next) => {
 // Helper function to create pages that don't require custom logic
 function _createStaticRoute(route, title, PageComponent) {
 	router.get(route, (req, res) => {
-		res.render('page', {
-			homepage: false,
-			markup: ReactDOMServer.renderToString(<PageComponent/>),
+		const props = propHelpers.generateProps(req, res);
+
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<PageComponent/>
+			</Layout>
+		);
+
+		res.render('target', {
+			markup,
+			page: title,
+			props,
+			script: '/js/index.js',
 			title
 		});
 	});
