@@ -183,10 +183,7 @@ class Layout extends React.Component {
 
 		return (
 			<div>
-				<a
-					className="sr-only sr-only-focusable"
-					href="#content"
-				>
+				<a className="sr-only sr-only-focusable" href="#content">
 					Skip to main content
 				</a>
 				<Navbar
