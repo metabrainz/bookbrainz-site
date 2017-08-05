@@ -20,6 +20,7 @@
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
+
 const {Table} = bootstrap;
 
 function SearchResults(props) {

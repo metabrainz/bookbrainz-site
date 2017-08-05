@@ -18,6 +18,7 @@
 
 import _find from 'lodash.find';
 
+
 export function entityHasChanged(initial, current) {
 	return (initial && initial.bbid) !== (current && current.bbid);
 }

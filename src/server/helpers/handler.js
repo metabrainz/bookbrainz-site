@@ -19,6 +19,7 @@
 
 import * as error from './error';
 
+
 export function sendPromiseResult(res, promise, processingCallback) {
 	return promise
 		.then((result) => {

@@ -18,6 +18,7 @@
 
 import React from 'react';
 
+
 function EntityIdentifiers({identifierSet, identifierTypes}) {
 	return (
 		<div>

@@ -39,6 +39,7 @@ import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../helpers/config';
 
+
 const log = new Log(config.site.log);
 
 const entityComponents = {

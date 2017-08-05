@@ -27,6 +27,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import WorkPage from '../../components/pages/entities/work';
 
+
 const entityComponents = {
 	creator: CreatorPage,
 	edition: EditionPage,

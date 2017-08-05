@@ -20,6 +20,7 @@ import * as entityHelper from '../../../helpers/entity';
 
 import React from 'react';
 
+
 const {
 	getEntityDisambiguation, getEntityLabel
 } = entityHelper;

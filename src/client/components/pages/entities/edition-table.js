@@ -22,6 +22,7 @@ import * as entityHelper from '../../../helpers/entity';
 import Icon from 'react-fontawesome';
 import React from 'react';
 
+
 const {
 	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation
 } = entityHelper;

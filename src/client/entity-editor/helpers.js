@@ -23,6 +23,7 @@ import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 
+
 export function isAliasEmpty(nameValue, sortNameValue) {
 	return !(nameValue.length || sortNameValue.length);
 }

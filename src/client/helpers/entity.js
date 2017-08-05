@@ -22,6 +22,7 @@ import FontAwesome from 'react-fontawesome';
 import React from 'react';
 import _get from 'lodash.get';
 
+
 const {Button, Table} = bootstrap;
 
 export function extractAttribute(attr, path) {

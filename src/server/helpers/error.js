@@ -25,6 +25,7 @@ import ReactDOMServer from 'react-dom/server';
 import config from './config';
 import status from 'http-status';
 
+
 const log = new Log(config.site.log);
 
 export class SiteError extends Error {

@@ -26,6 +26,7 @@ import EntityRelationships from './relationships';
 import EntityTitle from './title';
 import React from 'react';
 
+
 const {getLanguageAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
 const {Col, Row} = bootstrap;
 

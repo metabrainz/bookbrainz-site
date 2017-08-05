@@ -22,6 +22,7 @@ import * as validators from '../../../helpers/react-validators';
 import IdentifierRow from './identifier-row';
 import React from 'react';
 
+
 class IdentifierList extends React.Component {
 	constructor(props) {
 		super(props);

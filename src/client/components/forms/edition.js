@@ -26,6 +26,7 @@ import React from 'react';
 import RevisionNote from './parts/revision-note';
 import request from 'superagent-bluebird-promise';
 
+
 const {Nav, NavItem, PageHeader} = bootstrap;
 
 class EditionForm extends React.Component {

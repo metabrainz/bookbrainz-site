@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 export const entityProperty = React.PropTypes.shape({
 	bbid: React.PropTypes.string,
 	defaultAlias: React.PropTypes.shape({

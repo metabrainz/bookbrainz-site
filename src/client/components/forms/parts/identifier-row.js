@@ -25,6 +25,7 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../../input/select-wrapper';
 
+
 const {Button, Input} = bootstrap;
 
 class IdentifierRow extends React.Component {

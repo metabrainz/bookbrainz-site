@@ -23,6 +23,7 @@ import AliasRow from './alias-row';
 import Icon from 'react-fontawesome';
 import React from 'react';
 
+
 class AliasList extends React.Component {
 	constructor(props) {
 		super(props);

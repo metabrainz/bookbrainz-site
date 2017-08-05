@@ -21,6 +21,7 @@
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
+
 const {Col, Grid, Row} = bootstrap;
 
 function Footer(props) {

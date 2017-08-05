@@ -22,6 +22,7 @@ import * as utilsHelper from '../../../helpers/utils';
 import Icon from 'react-fontawesome';
 import React from 'react';
 
+
 const {formatDate} = utilsHelper;
 const {
 	Button, ButtonGroup, Col, Row

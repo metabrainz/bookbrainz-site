@@ -19,6 +19,7 @@
 import DragAndDropImage from '../../input/drag-and-drop-image';
 import React from 'react';
 
+
 class Achievement extends React.Component {
 	constructor(props) {
 		super(props);

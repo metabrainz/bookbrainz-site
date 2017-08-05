@@ -24,6 +24,7 @@ import * as utilsHelper from '../../../helpers/utils';
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 
+
 const {Button, Col, Image, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 

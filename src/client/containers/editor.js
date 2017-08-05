@@ -22,6 +22,7 @@
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
+
 const {Col, Nav, NavItem, Row} = bootstrap;
 
 function EditorContainer(props) {

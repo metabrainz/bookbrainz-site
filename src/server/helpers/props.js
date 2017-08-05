@@ -18,6 +18,7 @@
 
 import _ from 'lodash';
 
+
 const LAYOUT_PROPS = [
 	'hideSearch',
 	'homepage',

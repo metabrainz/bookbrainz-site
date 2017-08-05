@@ -23,6 +23,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
 
+
 chai.use(chaiAsPromised);
 const {expect} = chai;
 const {Editor} = orm;

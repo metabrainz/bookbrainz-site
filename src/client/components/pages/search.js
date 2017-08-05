@@ -23,6 +23,7 @@ import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 import request from 'superagent-bluebird-promise';
 
+
 class SearchPage extends React.Component {
 	/**
 	 * Initializes component state to default values and binds class

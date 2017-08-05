@@ -21,6 +21,7 @@ import LoadingSpinner from '../loading-spinner';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
 
+
 const {Alert, Button, Col, Input, Row, Panel} = bootstrap;
 
 class EntityDeletionForm extends React.Component {

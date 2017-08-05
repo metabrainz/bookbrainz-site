@@ -22,6 +22,7 @@ import {
 } from './actions';
 import Immutable from 'immutable';
 
+
 const EMPTY_ALIAS = Immutable.Map({
 	language: null,
 	name: '',

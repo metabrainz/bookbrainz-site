@@ -24,6 +24,7 @@ import _assign from 'lodash.assign';
 import _isEqual from 'lodash.isequal';
 import _omit from 'lodash.omit';
 
+
 const {Input} = bootstrap;
 
 let $ = null;

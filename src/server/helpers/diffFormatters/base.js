@@ -18,6 +18,7 @@
 
 import _ from 'lodash';
 
+
 export function formatRow(kind, key, lhs, rhs) {
 	if (_.isNil(lhs) && _.isNil(rhs)) {
 		return [];

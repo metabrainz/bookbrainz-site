@@ -27,6 +27,7 @@ import RevisionNote from './parts/revision-note';
 import WorkData from './parts/work-data';
 import request from 'superagent-bluebird-promise';
 
+
 const {Nav, NavItem, PageHeader} = bootstrap;
 
 /**

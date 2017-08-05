@@ -27,6 +27,7 @@ import EntityTitle from './title';
 import Icon from 'react-fontawesome';
 import React from 'react';
 
+
 const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
 	getLanguageAttribute

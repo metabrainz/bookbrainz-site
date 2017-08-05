@@ -26,6 +26,7 @@ import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
 import React from 'react';
 
+
 const {
 	extractAttribute, getTypeAttribute, getDateAttributes, showEntityEditions
 } = entityHelper;

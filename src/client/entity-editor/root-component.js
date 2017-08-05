@@ -31,6 +31,7 @@ import createDebounce from 'redux-debounce';
 import {createRootReducer} from './helpers';
 import creatorSectionReducer from './creator-section/reducer';
 
+
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 function shouldDevToolsBeInjected() {

@@ -20,6 +20,7 @@ import app from '../lib/server/app';
 import request from 'supertest';
 import status from 'http-status';
 
+
 process.env.NODE_ENV = 'testing';
 
 describe('GET /', () => {

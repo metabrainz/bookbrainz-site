@@ -22,6 +22,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import RevisionPage from '../components/pages/revision';
 
+
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (

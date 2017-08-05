@@ -29,6 +29,7 @@ import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
 import express from 'express';
 
+
 const router = express.Router();
 
 /**

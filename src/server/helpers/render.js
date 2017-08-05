@@ -20,6 +20,7 @@
 import * as utils from './utils';
 import Handlebars from 'handlebars';
 
+
 function renderRelationship(relationship) {
 	const template = Handlebars.compile(
 		relationship.type.displayTemplate,

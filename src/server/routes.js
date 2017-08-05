@@ -29,6 +29,7 @@ import revisionRouter from './routes/revision';
 import searchRouter from './routes/search';
 import workRouter from './routes/entity/work';
 
+
 function initRootRoutes(app) {
 	app.use('/', indexRouter);
 	app.use('/', authRouter);

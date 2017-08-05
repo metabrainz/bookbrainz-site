@@ -21,6 +21,7 @@ import ElasticSearch from 'elasticsearch';
 import Promise from 'bluebird';
 import _ from 'lodash';
 
+
 const _index = 'bookbrainz';
 
 let _client = null;

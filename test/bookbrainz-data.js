@@ -19,6 +19,7 @@
 import BookBrainzData from 'bookbrainz-data';
 import config from '../config/test.json';
 
+
 const orm = BookBrainzData(config.database);
 
 // opens up database connection for later use in tests

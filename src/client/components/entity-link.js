@@ -18,6 +18,7 @@
 
 import React from 'react';
 
+
 function EntityLink(props) {
 	return (
 		<a href={`/${props.type.toLowerCase()}/${props.bbid}`}>

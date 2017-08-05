@@ -24,6 +24,7 @@ import config from './config';
 import passport from 'passport';
 import status from 'http-status';
 
+
 const MusicBrainzOAuth2Strategy = MusicBrainzOAuth.Strategy;
 
 async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {

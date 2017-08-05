@@ -26,6 +26,7 @@ import EntityPage from '../../../containers/entity';
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 
+
 const {extractAttribute, getLanguageAttribute} = entityHelper;
 const {extractEntityProps} = propsHelper;
 

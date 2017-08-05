@@ -23,6 +23,7 @@ import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
 import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
 import Immutable from 'immutable';
 
+
 function reducer(
 	state = Immutable.Map({
 		aliasEditorVisible: false,

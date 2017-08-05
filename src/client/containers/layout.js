@@ -25,6 +25,7 @@ import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import React from 'react';
 
+
 const {MenuItem, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {

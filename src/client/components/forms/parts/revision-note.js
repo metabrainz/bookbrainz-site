@@ -21,6 +21,7 @@ import * as bootstrap from 'react-bootstrap';
 import Icon from 'react-fontawesome';
 import React from 'react';
 
+
 const {Input} = bootstrap;
 
 class RevisionNote extends React.Component {

@@ -34,6 +34,7 @@ import RevisionsTab from '../../client/components/pages/parts/editor-revisions';
 import _ from 'lodash';
 import express from 'express';
 
+
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {
