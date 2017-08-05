@@ -137,7 +137,12 @@ export function displayEntity(req, res) {
 					/>
 				</Layout>
 			);
-			res.render('target', {markup, props});
+			res.render('target', {
+				markup,
+				page: entityName,
+				props,
+				script: '/js/entity/entity.js'
+			});
 		}
 		else {
 			throw new Error(
