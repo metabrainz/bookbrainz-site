@@ -49,7 +49,7 @@ class SearchPage extends React.Component {
 	 * @param {string} q - Query string entered by user.
 	 */
 	handleSearch(q) {
-		request.get(`./search/autocomplete?q=${q}`)
+		request.get(`./search/search?q=${q}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
 				this.setState({results: data});

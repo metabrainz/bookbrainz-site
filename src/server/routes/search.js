@@ -66,6 +66,16 @@ router.get('/', (req, res, next) => {
 		.catch(next);
 });
 
+router.get('/search', (req, res) => {
+	const {orm} = req.app.locals;
+	const query = req.query.q;
+	const collection = req.query.collection || null;
+
+	const searchPromise = search.searchByName(orm, query, collection);
+
+	handler.sendPromiseResult(res, searchPromise);
+});
+
 /**
  * Responds with autocomplete results for a given user query. Can be further
  * filtered by collection type.
