@@ -20,12 +20,15 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
 import EditForm from '../../../client/components/forms/publication';
+import Layout from '../../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
+
 
 const router = express.Router();
 
@@ -83,20 +86,25 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublicationTypes, (req, res) => {
 		const props = {
+			heading: 'Create Publication',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
 			publicationTypes: res.locals.publicationTypes,
+			requiresJS: true,
+			subheading: 'Add a new Publication to BookBrainz',
 			submissionUrl: '/publication/create/handler'
 		};
 
-		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditForm {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
 
-		res.render('entity/create/create-common', {
-			heading: 'Create Publication',
+		res.render('target', {
 			markup,
 			props,
-			script: 'publication',
-			subheading: 'Add a new Publication to BookBrainz',
+			script: '/js/entity/publication.js',
 			title: 'Add Publication'
 		});
 	}
@@ -107,21 +115,26 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const publication = res.locals.entity;
 
 		const props = {
+			heading: 'Edit Publication',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
 			publication,
 			publicationTypes: res.locals.publicationTypes,
+			requiresJS: true,
+			subheading: 'Edit an existing Publication in BookBrainz',
 			submissionUrl: `/publication/${publication.bbid}/edit/handler`
 		};
 
-		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditForm {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
 
-		res.render('entity/create/create-common', {
-			heading: 'Edit Publication',
+		res.render('target', {
 			markup,
 			props,
-			script: 'publication',
-			subheading: 'Edit an existing Publication in BookBrainz',
+			script: '/js/entity/publication.js',
 			title: 'Edit Publication'
 		});
 	}

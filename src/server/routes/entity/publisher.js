@@ -20,8 +20,10 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
 import EditForm from '../../../client/components/forms/publisher';
+import Layout from '../../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
@@ -93,20 +95,25 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	(req, res) => {
 		const props = {
+			heading: 'Create Publisher',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
 			publisherTypes: res.locals.publisherTypes,
+			requiresJS: true,
+			subheading: 'Add a new Publisher to BookBrainz',
 			submissionUrl: '/publisher/create/handler'
 		};
 
-		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditForm {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
 
-		res.render('entity/create/create-common', {
-			heading: 'Create Publisher',
+		res.render('target', {
 			markup,
 			props,
-			script: 'publisher',
-			subheading: 'Add a new Publisher to BookBrainz',
+			script: '/js/entity/publisher.js',
 			title: 'Add Publisher'
 		});
 	}
@@ -118,21 +125,26 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const publisher = res.locals.entity;
 
 		const props = {
+			heading: 'Edit Publisher',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
 			publisher,
 			publisherTypes: res.locals.publisherTypes,
+			requiresJS: true,
+			subheading: 'Edit an existing Publisher in BookBrainz',
 			submissionUrl: `/publisher/${publisher.bbid}/edit/handler`
 		};
 
-		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditForm {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
 
-		res.render('entity/create/create-common', {
-			heading: 'Edit Publisher',
+		res.render('target', {
 			markup,
 			props,
-			script: 'publisher',
-			subheading: 'Edit an existing Publisher in BookBrainz',
+			script: '/js/entity/publisher.js',
 			title: 'Edit Publisher'
 		});
 	}

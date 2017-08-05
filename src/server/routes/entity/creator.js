@@ -20,8 +20,10 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
 import EditForm from '../../../client/components/forms/creator';
+import Layout from '../../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
@@ -80,19 +82,24 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const props = {
 			creatorTypes: res.locals.creatorTypes,
 			genders: res.locals.genders,
+			heading: 'Create Creator',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
+			requiresJS: true,
+			subheading: 'Add a new Creator to BookBrainz',
 			submissionUrl: '/creator/create/handler'
 		};
 
-		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditForm {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
 
-		return res.render('entity/create/create-common', {
-			heading: 'Create Creator',
+		return res.render('target', {
 			markup,
 			props,
-			script: 'creator',
-			subheading: 'Add a new Creator to BookBrainz',
+			script: '/js/entity/creator.js',
 			title: 'Add Creator'
 		});
 	}
@@ -166,23 +173,28 @@ router.get(
 	(req, res) => {
 		const creator = res.locals.entity;
 
-		const props = {
+		const props = propHelpers.generateProps(req, res, {
 			creator,
 			creatorTypes: res.locals.creatorTypes,
 			genders: res.locals.genders,
+			heading: 'Edit Creator',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
+			requiresJS: true,
+			subheading: 'Edit an existing Creator in BookBrainz',
 			submissionUrl: `/creator/${creator.bbid}/edit/handler`
-		};
+		});
 
-		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditForm {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
 
-		return res.render('entity/create/create-common', {
-			heading: 'Edit Creator',
+		return res.render('target', {
 			markup,
 			props,
-			script: 'creator',
-			subheading: 'Edit an existing Creator in BookBrainz',
+			script: '/js/entity/creator.js',
 			title: 'Edit Creator'
 		});
 	}

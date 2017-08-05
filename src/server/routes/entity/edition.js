@@ -20,8 +20,10 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
 import EditForm from '../../../client/components/forms/edition';
+import Layout from '../../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -88,13 +90,16 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
 	(req, res, next) => {
 		const {Publication, Publisher} = req.app.locals.orm;
-		const propsPromise = {
+		const propsPromise = propHelpers.generateProps(req, res, {
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
+			heading: 'Create Edition',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
+			requiresJS: true,
+			subheading: 'Add a new Edition to BookBrainz',
 			submissionUrl: '/edition/create/handler'
-		};
+		});
 
 		if (req.query.publication) {
 			propsPromise.publication =
@@ -110,15 +115,15 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		function render(props) {
 			const markup = ReactDOMServer.renderToString(
-				<EditForm {...props}/>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<EditForm {...propHelpers.extractChildProps(props)}/>
+				</Layout>
 			);
 
-			res.render('entity/create/create-common', {
-				heading: 'Create Edition',
+			res.render('target', {
 				markup,
 				props,
-				script: 'edition',
-				subheading: 'Add a new Edition to BookBrainz',
+				script: '/js/entity/edition.js',
 				title: 'Add Edition'
 			});
 		}
@@ -135,23 +140,28 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	(req, res) => {
 		const edition = res.locals.entity;
 
-		const props = {
+		const props = propHelpers.generateProps(req, res, {
 			edition,
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
+			heading: 'Edit Edition',
 			identifierTypes: res.locals.identifierTypes,
 			languages: res.locals.languages,
-			submissionUrl: `/edition/${edition.bbid}/edit/handler`
-		};
+			requiresJS: true,
+			subheading: 'Edit an existing Edition in BookBrainz',
+			submissionUrl: '/edition/create/handler'
+		});
 
-		const markup = ReactDOMServer.renderToString(<EditForm {...props}/>);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditForm {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
 
-		res.render('entity/create/create-common', {
-			heading: 'Edit Edition',
+		res.render('target', {
 			markup,
 			props,
-			script: 'edition',
-			subheading: 'Edit an existing Edition in BookBrainz',
+			script: '/js/entity/edition.js',
 			title: 'Edit Edition'
 		});
 	}
