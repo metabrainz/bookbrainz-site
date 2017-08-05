@@ -16,13 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as propHelpers from '../../server/helpers/props';
+import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SearchPage from '../components/pages/search';
 
-const propsDOM = document.getElementById('props');
-const props = propsDOM ? JSON.parse(propsDOM.innerHTML) : {};
+const propsTarget = document.getElementById('props');
+const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.render(
-	<SearchPage {...props}/>, document.getElementById('searchPage').parentNode
+const markup = (
+	<Layout {...propHelpers.extractLayoutProps(props)}>
+		<SearchPage initialResults={props.initialResults}/>
+	</Layout>
 );
+
+ReactDOM.render(markup, document.getElementById('target'));

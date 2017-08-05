@@ -20,7 +20,9 @@
 import * as auth from '../helpers/auth';
 import * as error from '../helpers/error';
 import * as handler from '../helpers/handler';
+import * as propHelpers from '../helpers/props';
 import * as search from '../helpers/search';
+import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -43,13 +45,21 @@ router.get('/', (req, res, next) => {
 			initialResults: entities,
 			query
 		}))
-		.then((props) => {
-			res.render('common', {
+		.then((searchResults) => {
+			const props = propHelpers.generateProps(req, res, {
 				hideSearch: true,
-				markup: ReactDOMServer.renderToString(<SearchPage {...props}/>),
-				props,
-				script: 'search',
-				task: 'search',
+				...searchResults
+			});
+
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<SearchPage initialResults={props.initialResults}/>
+				</Layout>
+			);
+
+			res.render('target', {
+				markup, props,
+				script: '/js/search.js',
 				title: 'Search Results'
 			});
 		})
