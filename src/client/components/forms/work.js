@@ -27,7 +27,7 @@ import RevisionNote from './parts/revision-note';
 import WorkData from './parts/work-data';
 import request from 'superagent-bluebird-promise';
 
-const {Nav, NavItem} = bootstrap;
+const {Nav, NavItem, PageHeader} = bootstrap;
 
 /**
  * React component to define a form to create and edit
@@ -179,7 +179,9 @@ class WorkForm extends React.Component {
 
 		return (
 			<div>
-				{loadingElement}
+				<PageHeader>
+					{this.props.heading} <small>{this.props.subheading}</small>
+				</PageHeader>
 
 				<Nav
 					activeKey={this.state.tab}

@@ -27,7 +27,7 @@ import React from 'react';
 import RevisionNote from './parts/revision-note';
 import request from 'superagent-bluebird-promise';
 
-const {Nav, NavItem} = bootstrap;
+const {Nav, NavItem, PageHeader} = bootstrap;
 
 class PublicationForm extends React.Component {
 	/**
@@ -170,7 +170,9 @@ class PublicationForm extends React.Component {
 
 		return (
 			<div>
-				{loadingElement}
+				<PageHeader>
+					{this.props.heading} <small>{this.props.subheading}</small>
+				</PageHeader>
 
 				<Nav
 					activeKey={this.state.tab}
