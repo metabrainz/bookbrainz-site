@@ -16,10 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as propHelpers from '../../../server/helpers/props';
 import EditForm from '../../components/forms/work';
+import Layout from '../../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const props = JSON.parse(document.getElementById('props').innerHTML);
 
-ReactDOM.render(<EditForm {...props}/>, document.getElementById('entityForm'));
+const propsTarget = document.getElementById('props');
+const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
+
+const markup = (
+	<Layout {...propHelpers.extractLayoutProps(props)}>
+		<EditForm {...propHelpers.extractChildProps(props)}/>
+	</Layout>
+);
+
+ReactDOM.render(markup, document.getElementById('target'));
