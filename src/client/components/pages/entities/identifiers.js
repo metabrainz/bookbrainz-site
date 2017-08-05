@@ -31,10 +31,11 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 							.filter(
 								(identifier) => identifier.type.id === type.id)
 							.map(
-								(identifier) =>
+								(identifier) => (
 									<dd key={identifier.id}>
 										{identifier.value}
 									</dd>
+								)
 							);
 
 					return [

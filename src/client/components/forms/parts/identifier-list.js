@@ -180,7 +180,7 @@ class IdentifierList extends React.Component {
 	render() {
 		const self = this;
 
-		const rows = this.state.identifiers.map((identifier, index) =>
+		const rows = this.state.identifiers.map((identifier, index) => (
 			<IdentifierRow
 				key={identifier.key}
 				ref={index}
@@ -192,7 +192,7 @@ class IdentifierList extends React.Component {
 				onTypeChange={self.handleTypeChange.bind(null, index)}
 				onValueChange={self.handleValueChange.bind(null, index)}
 			/>
-		);
+		));
 
 		return (
 			<div>

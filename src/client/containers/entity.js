@@ -43,13 +43,11 @@ class EntityContainer extends React.Component {
 					<Alert bsStyle="info">
 						<div>
 							<strong>Achievement unlocked:</strong>
-							{alert.map((achievement) =>
-								<p
-									key={achievement.id}
-								>
-								{achievement.name}
+							{alert.map((achievement) => (
+								<p key={achievement.id}>
+									{achievement.name}
 								</p>
-							)}
+							))}
 						</div>
 						<div>
 							<strong>
@@ -153,13 +151,13 @@ class EntityContainer extends React.Component {
 				const identifierValues =
 					entity.identifierSet.identifiers.filter((identifier) =>
 						identifier.type.id === type.id
-					).map((identifier, index) =>
+					).map((identifier, index) => (
 						<dd
 							key={`${identifier.id}${index}`}
 						>
 							{identifier.value}
 						</dd>
-					);
+					));
 				return [
 					<dt key={`type${type.id}${idx}`}>{type.label}</dt>,
 					identifierValues
@@ -209,14 +207,14 @@ class EntityContainer extends React.Component {
 					<h2>Relationships</h2>
 					{entity.relationships &&
 					<ul className="list-unstyled">
-						{entity.relationships.map((relationship, idx) =>
+						{entity.relationships.map((relationship, idx) => (
 							<li
 								dangerouslySetInnerHTML={{
 									__html: relationship.rendered
 								}}
 								key={`relationship${idx}`}
 							/>
-						)}
+						))}
 					</ul>
 					}
 					<Button

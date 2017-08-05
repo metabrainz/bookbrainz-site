@@ -48,13 +48,13 @@ function ErrorPage(props) {
 			</Row>
 			<div>
 				{detailedMessage &&
-					detailedMessage.map((message, idx) =>
+					detailedMessage.map((message, idx) => (
 						<Row key={`detailedMsg${idx}`}>
 							<span>
 								{message}
 							</span>
 						</Row>
-					)
+					))
 				}
 			</div>
 			<Row className="margin-top-1">

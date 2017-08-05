@@ -30,14 +30,14 @@ function EntityRelationships({entityUrl, relationships}) {
 			<h2>Relationships</h2>
 			{relationships &&
 			<ul className="list-unstyled">
-				{relationships.map((relationship) =>
+				{relationships.map((relationship) => (
 					<li
 						dangerouslySetInnerHTML={{
 							__html: relationship.rendered
 						}}
 						key={relationship.id}
 					/>
-				)}
+				))}
 			</ul>
 			}
 		</div>

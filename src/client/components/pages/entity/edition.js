@@ -62,14 +62,14 @@ EditionPage.getAttributes = (entity) => {
 	const editionFormat = extractAttribute(entity.editionFormat, 'label');
 	const publishers =
 		entity.publisherSet && entity.publisherSet.publishers.length > 0 ?
-			entity.publisherSet.publishers.map((publisher) =>
+			entity.publisherSet.publishers.map((publisher) => (
 				<a
 					href={`/publisher/${publisher.bbid}`}
 					key={publisher.bbid}
 				>
 					{publisher.defaultAlias.name}
 				</a>
-			) : '?';
+			)) : '?';
 	const releaseDate = entity.releaseEventSet &&
 		entity.releaseEventSet.releaseEvents &&
 		entity.releaseEventSet.releaseEvents.length ?

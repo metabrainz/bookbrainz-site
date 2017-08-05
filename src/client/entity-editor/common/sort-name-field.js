@@ -115,10 +115,11 @@ function SortNameField({
 		onChange({target: {value: generatedSortName}});
 	}
 
-	const label =
+	const label = (
 		<ValidationLabel empty={empty} error={error}>
 			Sort Name
-		</ValidationLabel>;
+		</ValidationLabel>
+	);
 
 	const guessButton =
 		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;

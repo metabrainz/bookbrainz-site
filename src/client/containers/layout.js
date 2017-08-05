@@ -166,7 +166,7 @@ class Layout extends React.Component {
 		const {homepage, siteRevision, repositoryUrl, children, requiresJS} = this.props;
 
 		// Shallow merges parents props into child components
-		const childNode = homepage ? children :
+		const childNode = homepage ? children : (
 			<div className="container" id="content">
 				{requiresJS &&
 					<div>
@@ -180,7 +180,8 @@ class Layout extends React.Component {
 					</div>
 				}
 				{children}
-			</div>;
+			</div>
+		);
 
 		return (
 			<div>

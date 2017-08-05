@@ -63,12 +63,12 @@ function EditionTable({entity}) {
 				</thead>
 				<tbody>
 					{
-						entity.editions.map((edition) =>
+						entity.editions.map((edition) => (
 							<EditionTableRow
 								edition={edition}
 								key={edition.bbid}
 							/>
-						)
+						))
 					}
 				</tbody>
 			</Table>

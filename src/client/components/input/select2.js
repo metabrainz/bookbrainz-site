@@ -137,14 +137,14 @@ class Select extends React.Component {
 	render() {
 		let options = [];
 		if (this.props.options) {
-			options = this.props.options.map((op) =>
+			options = this.props.options.map((op) => (
 				<option
 					key={op[this.props.idAttribute]}
 					value={op[this.props.idAttribute]}
 				>
 					{op[this.props.labelAttribute]}
 				</option>
-			);
+			));
 		}
 
 		if (this.props.placeholder) {

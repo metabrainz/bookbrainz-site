@@ -19,15 +19,16 @@
 import React from 'react';
 import _flatten from 'lodash.flatten';
 
+
 function AttributeList({attributes}) {
 	return (
 		<div>
-			{_flatten(attributes).map((attribute, idx) =>
+			{_flatten(attributes).map((attribute, idx) => (
 				<div key={`attribute${idx}`}>
 					<dt>{attribute.title}</dt>
 					<dd>{attribute.data}</dd>
 				</div>
-			)}
+			))}
 		</div>
 	);
 }

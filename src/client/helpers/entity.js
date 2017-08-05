@@ -147,13 +147,14 @@ export function getEditionPublishers(edition) {
 		edition.publisherSet.publishers.length > 0;
 
 	if (hasPublishers) {
-		return edition.publisherSet.publishers.map((publisher) =>
+		return edition.publisherSet.publishers.map((publisher) => (
 			<a
 				href={`/publisher/${publisher.bbid}`}
 				key={publisher.bbid}
 			>
 				{publisher.defaultAlias.name}
 			</a>
+		)
 		);
 	}
 

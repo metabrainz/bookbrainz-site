@@ -65,13 +65,13 @@ const AliasEditor = ({
 				</div>
 				<div>
 					{
-						aliases.map((alias, rowId) =>
+						aliases.map((alias, rowId) => (
 							<AliasRow
 								index={rowId}
 								key={rowId}
 								languageOptions={languageOptions}
 							/>
-						).toArray()
+						)).toArray()
 					}
 				</div>
 				<Row>

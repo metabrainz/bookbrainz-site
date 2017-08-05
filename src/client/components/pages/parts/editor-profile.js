@@ -146,7 +146,7 @@ class EditorProfileTab extends React.Component {
 					margin="0"
 					padding="0"
 				>
-					{achievement.model.map((model) =>
+					{achievement.model.map((model) => (
 						<Col key={`achievementModel${model.id}`} sm={4}>
 							<div className="well">
 								<Image
@@ -167,7 +167,7 @@ class EditorProfileTab extends React.Component {
 								</p>
 							</div>
 						</Col>
-					)}
+					))}
 					{achievement.length < 3 &&
 						<Col sm={achievementBsSize}>
 							<div
