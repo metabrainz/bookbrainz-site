@@ -148,16 +148,15 @@ export function displayEntity(req, res) {
 }
 
 export function displayDeleteEntity(req, res) {
-	const props = {
-		entity: res.locals.entity
-	};
+	const props = propHelpers.generateProps(req, res);
 
-	res.render('common', {
-		markup: ReactDOMServer.renderToString(<DeletionForm {...props}/>),
-		props,
-		script: 'deletion',
-		task: 'delete'
-	});
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<DeletionForm entity={props.entity}/>
+		</Layout>
+	);
+
+	res.render('target', {markup, props, script: '/js/deletion.js'});
 }
 
 export function displayRevisions(req, res, next, RevisionModel) {
@@ -181,7 +180,12 @@ export function displayRevisions(req, res, next, RevisionModel) {
 					/>
 				</Layout>
 			);
-			return res.render('target', {markup});
+			return res.render('target', {
+				markup,
+				page: 'revisions',
+				props,
+				script: '/js/entity/entity.js'
+			});
 		})
 		.catch(next);
 }

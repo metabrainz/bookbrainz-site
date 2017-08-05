@@ -21,7 +21,7 @@ import LoadingSpinner from '../loading-spinner';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
 
-const {Alert, Button, Input, Panel} = bootstrap;
+const {Alert, Button, Col, Input, Row, Panel} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -96,31 +96,32 @@ class EntityDeletionForm extends React.Component {
 			entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 
 		return (
-			<div className="row">
-				{loadingComponent}
-				<div className="col-md-6 col-md-offset-3">
-					{errorComponent}
-					<form
-						onSubmit={this.handleSubmit}
-					>
-						<Panel
-							bsStyle="danger"
-							footer={footerComponent}
-							header={headerComponent}
-						>
-							If you're sure that {entity.type} {entityName}
-							should be deleted, please enter a revision note
-							below and confirm deletion.
+			<div id="deletion-form">
+				<h1>Delete Entity</h1>
+				<Row className="margin-top-2">
+					{loadingComponent}
+					<Col md={6} mdOffset={3}>
+						{errorComponent}
+						<form onSubmit={this.handleSubmit}>
+							<Panel
+								bsStyle="danger"
+								footer={footerComponent}
+								header={headerComponent}
+							>
+								If you're sure that {entity.type} {entityName}
+								should be deleted, please enter a revision note
+								below and confirm deletion.
 
-							<Input
-								ref={(ref) => this.note = ref}
-								rows="5"
-								type="textarea"
-								wrapperClassName="margin-top-1"
-							/>
-						</Panel>
-					</form>
-				</div>
+								<Input
+									ref={(ref) => this.note = ref}
+									rows="5"
+									type="textarea"
+									wrapperClassName="margin-top-1"
+								/>
+							</Panel>
+						</form>
+					</Col>
+				</Row>
 			</div>
 		);
 	}
