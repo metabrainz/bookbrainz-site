@@ -21,6 +21,8 @@
 import * as error from '../helpers/error';
 import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
+import * as propHelpers from '../helpers/props';
+import Layout from '../../client/containers/layout';
 import Log from 'log';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -40,10 +42,15 @@ router.get('/', (req, res) => {
 		return res.redirect(`/editor/${req.user.id}`);
 	}
 
-	return res.render('page', {
-		markup: ReactDOMServer.renderToString(<RegisterAuthPage/>),
-		title: 'Register'
-	});
+	const props = propHelpers.generateProps(req, res);
+
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<RegisterAuthPage/>
+		</Layout>
+	);
+
+	return res.render('target', {markup, title: 'Register'});
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -60,17 +67,26 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 		name: _.capitalize(req.session.mbProfile.gender)
 	});
 
-	const props = {
+	const props = propHelpers.generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
 		name: req.session.mbProfile.sub
-	};
+	});
 
-	return res.render('common', {
-		markup: ReactDOMServer.renderToString(<RegisterDetailPage {...props}/>),
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<RegisterDetailPage
+				gender={props.gender}
+				genders={props.genders}
+				name={props.name}
+			/>
+		</Layout>
+	);
+
+	return res.render('target', {
+		markup,
 		props,
-		script: 'registrationDetails',
-		task: 'registrationDetails',
+		script: '/js/registrationDetails.js',
 		title: 'Register'
 	});
 });
