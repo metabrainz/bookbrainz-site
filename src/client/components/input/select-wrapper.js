@@ -122,7 +122,7 @@ SelectWrapper.propTypes = {
 	label: React.PropTypes.string,
 	labelAttribute: React.PropTypes.string.isRequired,
 	labelClassName: React.PropTypes.string,
-	multiple: React.PropTypes.boolean,
+	multiple: React.PropTypes.bool,
 	onChange: React.PropTypes.func,
 	value: React.PropTypes.oneOfType([
 		React.PropTypes.string,
