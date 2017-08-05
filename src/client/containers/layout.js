@@ -132,9 +132,9 @@ class Layout extends React.Component {
 					</Nav>
 				}
 				{!(homepage || hideSearch) &&
-				<Navbar.Form
-					pullRight
+				<form
 					action="/search"
+					className="navbar-form navbar-right"
 					role="search"
 				>
 					<div className="form-group">
@@ -155,7 +155,7 @@ class Layout extends React.Component {
 							</span>
 						</div>
 					</div>
-				</Navbar.Form>
+				</form>
 				}
 			</Navbar.Collapse>
 		);
