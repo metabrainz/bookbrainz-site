@@ -48,28 +48,18 @@ import {connect} from 'react-redux';
  *        submission.
  * @returns {ReactElement} React element containing the rendered CreatorData.
  */
-const CreatorData = ({
-	aliasEditorVisible,
-	identifierEditorVisible,
-	languageOptions,
-	genderOptions,
-	identifierTypes,
-	creatorTypes,
-	submissionUrl
-}) => {
+const CreatorData = (props) => {
+	const {
+		aliasEditorVisible,
+		identifierEditorVisible,
+		languageOptions,
+		identifierTypes,
+		submissionUrl
+	} = props;
+
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
 		value: language.id
-	}));
-
-	const genderOptionsForDisplay = genderOptions.map((gender) => ({
-		label: gender.name,
-		value: gender.id
-	}));
-
-	const creatorTypesForDisplay = creatorTypes.map((type) => ({
-		label: type.label,
-		value: type.id
 	}));
 
 	return (
@@ -80,10 +70,7 @@ const CreatorData = ({
 			/>
 			<NameSection languageOptions={languageOptionsForDisplay}/>
 			<ButtonBar/>
-			<CreatorSection
-				creatorTypes={creatorTypesForDisplay}
-				genderOptions={genderOptionsForDisplay}
-			/>
+			<CreatorSection {...props}/>
 			<SubmissionSection submissionUrl={submissionUrl}/>
 			<IdentifierEditor
 				show={identifierEditorVisible}
@@ -95,8 +82,6 @@ const CreatorData = ({
 CreatorData.displayName = 'CreatorData';
 CreatorData.propTypes = {
 	aliasEditorVisible: React.PropTypes.bool.isRequired,
-	creatorTypes: React.PropTypes.array.isRequired,
-	genderOptions: React.PropTypes.array.isRequired,
 	identifierEditorVisible: React.PropTypes.array.isRequired,
 	identifierTypes: React.PropTypes.array.isRequired,
 	languageOptions: React.PropTypes.array.isRequired,

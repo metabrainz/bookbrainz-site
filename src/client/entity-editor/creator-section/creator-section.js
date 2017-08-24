@@ -97,6 +97,16 @@ function CreatorSection({
 	onGenderChange,
 	onTypeChange
 }) {
+	const genderOptionsForDisplay = genderOptions.map((gender) => ({
+		label: gender.name,
+		value: gender.id
+	}));
+
+	const creatorTypesForDisplay = creatorTypes.map((type) => ({
+		label: type.label,
+		value: type.id
+	}));
+
 	return (
 		<form>
 			<h2>
@@ -110,7 +120,7 @@ function CreatorSection({
 				<Col md={6} mdOffset={3}>
 					<Input label="Type">
 						<Select
-							options={creatorTypes}
+							options={creatorTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
@@ -124,7 +134,7 @@ function CreatorSection({
 						label="Gender"
 					>
 						<Select
-							options={genderOptions}
+							options={genderOptionsForDisplay}
 							value={genderValue}
 							onChange={onGenderChange}
 						/>
@@ -192,7 +202,7 @@ function mapStateToProps(rootState, {creatorTypes}) {
 
 	const typeValue = state.get('type');
 	const personType = creatorTypes.find((type) => type.label === 'Person');
-	const singular = typeValue === personType.value;
+	const singular = typeValue === personType.id;
 
 	const endDateLabel = singular ? 'Date of Death' : 'Date Dissolved';
 	const endedLabel = singular ? 'Died?' : 'Dissolved?';
