@@ -106,6 +106,7 @@
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-register": "^6.24.1",
     "chai": "^4.0.2",
     "chai-as-promised": "^7.0.0",
