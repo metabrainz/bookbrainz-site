@@ -62,10 +62,6 @@ class IdentifierRow extends React.Component {
 	}
 
 	render() {
-		const select2Options = {
-			allowClear: false
-		};
-
 		const removeHiddenClass = this.props.removeHidden ? 'hidden' : '';
 		return (
 			<div className="row">

@@ -106,11 +106,6 @@ class CreatorData extends React.Component {
 				}));
 		}
 
-		const select2Options = {
-			allowClear: true,
-			width: '100%'
-		};
-
 		const dataTabVisibleClass = this.props.visible ? '' : 'hidden';
 		const endDateVisibleClass = this.state.ended ? '' : 'hidden';
 		return (
@@ -187,7 +182,6 @@ class CreatorData extends React.Component {
 						labelClassName="col-md-4"
 						placeholder="Select end area..."
 						ref={(ref) => this.endArea = ref}
-						select2Options={select2Options}
 						wrapperClassName="col-md-4"
 					/>
 					<hr/>
