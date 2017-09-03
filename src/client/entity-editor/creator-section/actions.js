@@ -16,20 +16,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 export const UPDATE_GENDER = 'UPDATE_GENDER';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
 export const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
 export const UPDATE_END_DATE = 'UPDATE_END_DATE';
 export const UPDATE_ENDED = 'UPDATE_ENDED';
 
+export type Action = {
+	type: string,
+	payload?: mixed,
+	metadata?: {
+		debounce?: string
+	}
+};
+
 /**
  * Produces an action indicating that the gender for the creator being edited
  * should be updated with the provided value.
  *
  * @param {number} newGenderId - The new value to be used for the gender ID.
- * @returns {Object} The resulting UPDATE_GENDER action.
+ * @returns {Action} The resulting UPDATE_GENDER action.
  **/
-export function updateGender(newGenderId) {
+export function updateGender(newGenderId: number): Action {
 	return {
 		payload: newGenderId,
 		type: UPDATE_GENDER
@@ -41,9 +51,9 @@ export function updateGender(newGenderId) {
  * edited should be updated with the provided value.
  *
  * @param {number} newTypeId - The new value to be used for the creator type ID.
- * @returns {Object} The resulting UPDATE_TYPE action.
+ * @returns {Action} The resulting UPDATE_TYPE action.
  **/
-export function updateType(newTypeId) {
+export function updateType(newTypeId: number): Action {
 	return {
 		payload: newTypeId,
 		type: UPDATE_TYPE
@@ -56,9 +66,9 @@ export function updateType(newTypeId) {
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
  * @param {string} newBeginDate - The new value to be used for the begin date.
- * @returns {Object} The resulting UPDATE_BEGIN_DATE action.
+ * @returns {Action} The resulting UPDATE_BEGIN_DATE action.
  **/
-export function debouncedUpdateBeginDate(newBeginDate) {
+export function debouncedUpdateBeginDate(newBeginDate: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newBeginDate,
@@ -72,9 +82,9 @@ export function debouncedUpdateBeginDate(newBeginDate) {
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
  * @param {string} newEndDate - The new value to be used for the end date.
- * @returns {Object} The resulting UPDATE_END_DATE action.
+ * @returns {Action} The resulting UPDATE_END_DATE action.
  **/
-export function debouncedUpdateEndDate(newEndDate) {
+export function debouncedUpdateEndDate(newEndDate: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newEndDate,
@@ -87,9 +97,9 @@ export function debouncedUpdateEndDate(newEndDate) {
  * edited should be updated with the provided value.
  *
  * @param {boolean} newEnded - The new value to be used for the ended flag.
- * @returns {Object} The resulting UPDATE_ENDED action.
+ * @returns {Action} The resulting UPDATE_ENDED action.
  **/
-export function updateEnded(newEnded) {
+export function updateEnded(newEnded: boolean): Action {
 	return {
 		payload: newEnded,
 		type: UPDATE_ENDED

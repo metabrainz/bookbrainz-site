@@ -16,11 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 export const ADD_IDENTIFIER_ROW = 'ADD_IDENTIFIER_ROW';
 export const REMOVE_IDENTIFIER_ROW = 'REMOVE_IDENTIFIER_ROW';
 export const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
 export const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
 export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
+
+export type Action = {
+	type: string,
+	payload?: mixed,
+	metadata?: {
+		debounce?: string
+	}
+};
 
 /**
  * Produces an action indicating that the identifier editor should be hidden
@@ -28,9 +38,9 @@ export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
  *
  * @see showIdentifierEditor
  *
- * @returns {Object} The resulting HIDE_IDENTIFIER_EDITOR action.
+ * @returns {Action} The resulting HIDE_IDENTIFIER_EDITOR action.
  **/
-export function hideIdentifierEditor() {
+export function hideIdentifierEditor(): Action {
 	return {
 		type: HIDE_IDENTIFIER_EDITOR
 	};
@@ -43,9 +53,9 @@ let nextIdentifierRowId = 0;
  * to the identifier editor. The row is assigned an ID based on an incrementing
  * variable existing on the client.
  *
- * @returns {Object} The resulting ADD_IDENTIFIER_ROW action.
+ * @returns {Action} The resulting ADD_IDENTIFIER_ROW action.
  **/
-export function addIdentifierRow() {
+export function addIdentifierRow(): Action {
 	/* Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
 	 * of existing identifiers. */
 	return {
@@ -59,9 +69,9 @@ export function addIdentifierRow() {
  * removed from the identifier editor.
  *
  * @param {number} rowId - The ID for the row to be deleted.
- * @returns {Object} The resulting REMOVE_IDENTIFIER_ROW action.
+ * @returns {Action} The resulting REMOVE_IDENTIFIER_ROW action.
  **/
-export function removeIdentifierRow(rowId) {
+export function removeIdentifierRow(rowId: number): Action {
 	return {
 		payload: rowId,
 		type: REMOVE_IDENTIFIER_ROW
@@ -79,9 +89,11 @@ export function removeIdentifierRow(rowId) {
  * @param {string} value - The new value to be used for the identifier value.
  * @param {number} suggestedType - The ID for the type suggested by the new
  *        value.
- * @returns {Object} The resulting UPDATE_IDENTIFIER_VALUE action.
+ * @returns {Action} The resulting UPDATE_IDENTIFIER_VALUE action.
  **/
-export function debouncedUpdateIdentifierValue(rowId, value, suggestedType) {
+export function debouncedUpdateIdentifierValue(
+	rowId: number, value: string, suggestedType: number
+): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: {
@@ -99,9 +111,9 @@ export function debouncedUpdateIdentifierValue(rowId, value, suggestedType) {
  *
  * @param {number} rowId - The ID of the row in the identifier editor to update.
  * @param {number} value - The new value to be used for the identifier type ID.
- * @returns {Object} The resulting UPDATE_IDENTIFIER_TYPE action.
+ * @returns {Action} The resulting UPDATE_IDENTIFIER_TYPE action.
  **/
-export function updateIdentifierType(rowId, value) {
+export function updateIdentifierType(rowId: number, value: number): Action {
 	return {
 		payload: {
 			rowId,

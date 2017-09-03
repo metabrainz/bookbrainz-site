@@ -16,11 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 export const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
 export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 
+export type Action = {
+	type: string,
+	payload?: mixed,
+	metadata?: {
+		debounce?: string
+	}
+};
 
 /**
  * Produces an action indicating that the name for the entity being edited
@@ -28,9 +37,9 @@ export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
  * @param {string} newName - The new value to be used for the name.
- * @returns {Object} The resulting UPDATE_NAME_FIELD action.
+ * @returns {Action} The resulting UPDATE_NAME_FIELD action.
  **/
-export function debouncedUpdateNameField(newName) {
+export function debouncedUpdateNameField(newName: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newName,
@@ -44,9 +53,9 @@ export function debouncedUpdateNameField(newName) {
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
  * @param {string} newSortName - The new value to be used for the sort name.
- * @returns {Object} The resulting UPDATE_SORT_NAME_FIELD action.
+ * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
  **/
-export function debouncedUpdateSortNameField(newSortName) {
+export function debouncedUpdateSortNameField(newSortName: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newSortName,
@@ -59,9 +68,9 @@ export function debouncedUpdateSortNameField(newSortName) {
  * being edited should be updated with the provided value.
  *
  * @param {string} newLanguageId - The new value to be used for the language ID.
- * @returns {Object} The resulting UPDATE_LANGUAGE_FIELD action.
+ * @returns {Action} The resulting UPDATE_LANGUAGE_FIELD action.
  **/
-export function updateLanguageField(newLanguageId) {
+export function updateLanguageField(newLanguageId: string): Action {
 	return {
 		payload: newLanguageId,
 		type: UPDATE_LANGUAGE_FIELD
@@ -75,9 +84,11 @@ export function updateLanguageField(newLanguageId) {
  *
  * @param {string} newDisambiguation - The new value to be used for the
  *        disambiguation.
- * @returns {Object} The resulting UPDATE_SORT_NAME_FIELD action.
+ * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
  **/
-export function debouncedUpdateDisambiguationField(newDisambiguation) {
+export function debouncedUpdateDisambiguationField(
+	newDisambiguation: string
+): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newDisambiguation,

@@ -16,9 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
+
+export type Action = {
+	type: string,
+	payload?: mixed,
+	metadata?: {
+		debounce?: string
+	}
+};
 
 /**
  * Produces an action indicating that the submit error for the editing form
@@ -26,9 +35,9 @@ export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
  * Alert if set, to indicate to the user what went wrong.
  *
  * @param {string} error - The error message to be set for the form.
- * @returns {Object} The resulting SET_SUBMIT_ERROR action.
+ * @returns {Action} The resulting SET_SUBMIT_ERROR action.
  **/
-export function setSubmitError(error) {
+export function setSubmitError(error: string): Action {
 	return {
 		error,
 		type: SET_SUBMIT_ERROR
@@ -41,9 +50,9 @@ export function setSubmitError(error) {
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
  * @param {string} value - The new value to be used for the revision note.
- * @returns {Object} The resulting UPDATE_REVISION_NOTE action.
+ * @returns {Action} The resulting UPDATE_REVISION_NOTE action.
  **/
-export function debounceUpdateRevisionNote(value) {
+export function debounceUpdateRevisionNote(value: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		type: UPDATE_REVISION_NOTE,

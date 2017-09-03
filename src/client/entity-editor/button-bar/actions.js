@@ -16,19 +16,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
 
 export const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
 export const SHOW_DISAMBIGUATION = 'SHOW_DISAMBIGUATION';
 export const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
+
+export type Action = {
+	type: string,
+	payload?: mixed,
+	metadata?: {
+		debounce?: string
+	}
+};
 
 /**
  * Produces an action indicating that the alias editor should be made visible.
  *
  * @see hideAliasEditor
  *
- * @returns {Object} The resulting SHOW_ALIAS_EDITOR action.
+ * @returns {Action} The resulting SHOW_ALIAS_EDITOR action.
  **/
-export function showAliasEditor() {
+export function showAliasEditor(): Action {
 	return {
 		type: SHOW_ALIAS_EDITOR
 	};
@@ -38,9 +47,9 @@ export function showAliasEditor() {
  * Produces an action indicating that the disambiguation field should be
  * made visible.
  *
- * @returns {Object} The resulting SHOW_DISAMBIGUATION action.
+ * @returns {Action} The resulting SHOW_DISAMBIGUATION action.
  **/
-export function showDisambiguation() {
+export function showDisambiguation(): Action {
 	return {
 		type: SHOW_DISAMBIGUATION
 	};
@@ -52,9 +61,9 @@ export function showDisambiguation() {
  *
  * @see hideIdentifierEditor
  *
- * @returns {Object} The resulting SHOW_IDENTIFIER_EDITOR action.
+ * @returns {Action} The resulting SHOW_IDENTIFIER_EDITOR action.
  **/
-export function showIdentifierEditor() {
+export function showIdentifierEditor(): Action {
 	return {
 		type: SHOW_IDENTIFIER_EDITOR
 	};
