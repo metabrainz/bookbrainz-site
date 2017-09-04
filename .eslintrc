@@ -481,3 +481,4 @@ rules:
       count: 2
   import/no-unassigned-import: 1
   import/no-named-default: 2
+  flowtype/semi: 2
