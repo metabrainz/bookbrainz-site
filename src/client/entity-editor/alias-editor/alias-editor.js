@@ -49,6 +49,11 @@ const AliasEditor = ({
 	onClose,
 	show
 }) => {
+	const languageOptionsForDisplay = languageOptions.map((language) => ({
+		label: language.name,
+		value: language.id
+	}));
+
 	const noAliasesTextClass =
 		classNames('text-center', {hidden: aliases.size});
 	return (
@@ -69,7 +74,7 @@ const AliasEditor = ({
 							<AliasRow
 								index={rowId}
 								key={rowId}
-								languageOptions={languageOptions}
+								languageOptions={languageOptionsForDisplay}
 							/>
 						)).toArray()
 					}

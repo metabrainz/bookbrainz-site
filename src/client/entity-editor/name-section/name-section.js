@@ -69,6 +69,11 @@ function NameSection({
 	onSortNameChange,
 	onDisambiguationChange
 }) {
+	const languageOptionsForDisplay = languageOptions.map((language) => ({
+		label: language.name,
+		value: language.id
+	}));
+
 	return (
 		<div>
 			<h2>What is the Creator called?</h2>
@@ -97,7 +102,7 @@ function NameSection({
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<LanguageField
-							options={languageOptions}
+							options={languageOptionsForDisplay}
 							value={languageValue}
 							onChange={onLanguageChange}
 						/>

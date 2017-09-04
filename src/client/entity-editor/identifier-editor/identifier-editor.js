@@ -32,7 +32,7 @@ import {connect} from 'react-redux';
  * @param {Object} props - The properties passed to the component.
  * @param {Array} props.identifiers - The list of identifiers to be rendered in
  *        the editor.
- * @param {Array} props.typeOptions - The list of possible types for an
+ * @param {Array} props.identifierTypes - The list of possible types for an
  *        identifier.
  * @param {Function} props.onAddIdentifier - A function to be called when the
  *        button to add an identifier is clicked.
@@ -45,7 +45,7 @@ import {connect} from 'react-redux';
  **/
 const IdentifierEditor = ({
 	identifiers,
-	typeOptions,
+	identifierTypes,
 	onAddIdentifier,
 	onClose,
 	show
@@ -70,7 +70,7 @@ const IdentifierEditor = ({
 							<IdentifierRow
 								index={rowId}
 								key={rowId}
-								typeOptions={typeOptions}
+								typeOptions={identifierTypes}
 							/>
 						)).toArray()
 					}
@@ -92,11 +92,11 @@ const IdentifierEditor = ({
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
+	identifierTypes: React.PropTypes.array.isRequired,
 	identifiers: React.PropTypes.object.isRequired,
 	onAddIdentifier: React.PropTypes.func.isRequired,
 	onClose: React.PropTypes.func.isRequired,
-	show: React.PropTypes.bool,
-	typeOptions: React.PropTypes.array.isRequired
+	show: React.PropTypes.bool
 };
 IdentifierEditor.defaultProps = {
 	show: false
