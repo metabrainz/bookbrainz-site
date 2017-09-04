@@ -17,7 +17,7 @@
  */
 
 import * as propHelpers from '../../../server/helpers/props';
-import EditForm from '../../components/forms/creator';
+import EditForm from '../../entity-editor/entity-editor';
 import Layout from '../../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';

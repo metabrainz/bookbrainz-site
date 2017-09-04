@@ -27,6 +27,7 @@ import {Panel} from 'react-bootstrap';
 import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
 
+
 type OwnProps = {
 	children: React.Element<any>
 };
@@ -39,8 +40,7 @@ type StateProps = {
 type Props = StateProps & OwnProps;
 
 /**
- * Container component. Renders all of the sections of the entity editing form
- * for creators.
+ * Container component. Renders all of the sections of the entity editing form.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {boolean} props.aliasEditorVisible - Whether the alias editor modal
@@ -49,9 +49,9 @@ type Props = StateProps & OwnProps;
  *        editor modal should be made visible.
  * @param {React.Node} props.children - The child content to wrap with this
  *        entity editor form.
- * @returns {ReactElement} React element containing the rendered EntityForm.
+ * @returns {ReactElement} React element containing the rendered EntityEditor.
  */
-const EntityForm = (props: Props) => {
+const EntityEditor = (props: Props) => {
 	const {
 		aliasEditorVisible,
 		children,
@@ -72,7 +72,7 @@ const EntityForm = (props: Props) => {
 		</Panel>
 	);
 };
-EntityForm.displayName = 'EntityForm';
+EntityEditor.displayName = 'EntityEditor';
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('buttonBar');
@@ -82,4 +82,4 @@ function mapStateToProps(rootState): StateProps {
 	};
 }
 
-export default connect(mapStateToProps)(EntityForm);
+export default connect(mapStateToProps)(EntityEditor);
