@@ -225,6 +225,9 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 
 	const typeValue = state.get('type');
 	const personType = creatorTypes.find((type) => type.label === 'Person');
+	if (!personType) {
+		throw new Error('there should be a person with label "Person"');
+	}
 	const singular = typeValue === personType.id;
 
 	const endDateLabel = singular ? 'Date of Death' : 'Date Dissolved';

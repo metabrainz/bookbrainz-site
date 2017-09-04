@@ -76,7 +76,7 @@ function makeSortName(name: string): string {
 	// Rearrange names to (last name, other names)
 	const INDEX_BEFORE_END = -1;
 
-	let lastName = words.splice(INDEX_BEFORE_END);
+	let [lastName] = words.splice(INDEX_BEFORE_END);
 	if (suffixWords.length > 0) {
 		lastName += ` ${suffixWords.join(' ')}`;
 	}
@@ -126,8 +126,13 @@ function SortNameField({
 
 	function handleGuessClick() {
 		const generatedSortName = makeSortName(storedNameValue);
-		input.getInputDOMNode().value = generatedSortName;
-		onChange({target: {value: generatedSortName}});
+		if (input) {
+			input.getInputDOMNode().value = generatedSortName;
+		}
+
+		if (onChange) {
+			onChange({target: {value: generatedSortName}});
+		}
 	}
 
 	const label = (
