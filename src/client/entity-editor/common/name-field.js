@@ -16,10 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+// @flow
 
+import {Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
+
+
+type Props = {
+	empty?: boolean,
+	error?: boolean,
+	onChange?: () => mixed
+};
 
 /**
  * Presentational component. This component renders a plain text input and a
@@ -39,7 +47,8 @@ function NameField({
 	error,
 	onChange,
 	...rest
-}) {
+	}: Props
+) {
 	const label =
 		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>;
 
@@ -48,11 +57,6 @@ function NameField({
 	);
 }
 NameField.displayName = 'NameField';
-NameField.propTypes = {
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool,
-	onChange: React.PropTypes.func
-};
 NameField.defaultProps = {
 	empty: true,
 	error: false,

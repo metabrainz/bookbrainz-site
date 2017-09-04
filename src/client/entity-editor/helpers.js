@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import aliasEditorReducer from './alias-editor/reducer';
 import buttonBarReducer from './button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
@@ -24,7 +26,9 @@ import nameSectionReducer from './name-section/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 
 
-export function isAliasEmpty(nameValue, sortNameValue) {
+export function isAliasEmpty(
+	nameValue: string, sortNameValue: string
+): boolean {
 	return !(nameValue.length || sortNameValue.length);
 }
 

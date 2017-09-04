@@ -16,8 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Input} from 'react-bootstrap';
+// @flow
 
+import {Button, Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
@@ -28,11 +29,11 @@ import ValidationLabel from '../common/validation-label';
  * @param {String} name the input string to strip
  * @returns {String} the string with dots removed
  */
-function stripDot(name) {
+function stripDot(name: string): string {
 	return name.replace(/\./g, '');
 }
 
-function makeSortName(name) {
+function makeSortName(name: string): string {
 	const articles = ['a', 'an', 'the', 'los', 'las', 'el', 'la'];
 	const suffixes = [
 		'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi',
@@ -83,6 +84,19 @@ function makeSortName(name) {
 	return `${lastName}, ${words.join(' ')}`;
 }
 
+type onChangeParamType = {
+	target: {
+		value: string
+	}
+};
+
+type Props = {
+	empty?: boolean,
+	error?: boolean,
+	onChange?: (onChangeParamType) => mixed,
+	storedNameValue: string
+};
+
 /**
  * Presentational component. This component renders a plain text input which
  * incorporates a 'Guess Sort Name' button, and a ValidationLabel for a field
@@ -106,7 +120,8 @@ function SortNameField({
 	onChange,
 	storedNameValue,
 	...rest
-}) {
+	}: Props
+) {
 	let input;
 
 	function handleGuessClick() {
@@ -136,12 +151,6 @@ function SortNameField({
 	);
 }
 SortNameField.displayName = 'SortNameField';
-SortNameField.propTypes = {
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool,
-	onChange: React.PropTypes.func,
-	storedNameValue: React.PropTypes.string.isRequired
-};
 SortNameField.defaultProps = {
 	empty: true,
 	error: false,

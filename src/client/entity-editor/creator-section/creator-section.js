@@ -16,18 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Input, Row} from 'react-bootstrap';
+// @flow
+
 import {
-	debouncedUpdateBeginDate, debouncedUpdateEndDate, updateEnded,
+	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate, updateEnded,
 	updateGender, updateType
 } from './actions';
+import {Col, Input, Row} from 'react-bootstrap';
 import DateField from './date-field';
+import {type Dispatch} from 'redux';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
 
-function isPartialDateValid(value) {
+function isPartialDateValid(value: string): boolean {
 	const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
 	const ymRegex = /^\d{4}-\d{2}$/;
 	const yRegex = /^\d{4}$/;
@@ -41,6 +44,43 @@ function isPartialDateValid(value) {
 
 	return validSyntax && validValue;
 }
+
+type CreatorType = {
+	label: string,
+	id: number
+};
+
+type GenderOptions = {
+	name: string,
+	id: number
+};
+
+type StateProps = {
+	beginDateLabel: string,
+	beginDateValue: string,
+	endDateLabel: string,
+	endDateValue: string,
+	endedChecked: boolean,
+	endedLabel: string,
+	genderShow: boolean,
+	genderValue: number,
+	typeValue: number
+};
+
+type DispatchProps = {
+	onBeginDateChange: (SyntheticInputEvent<>) => mixed,
+	onEndDateChange: (SyntheticInputEvent<>) => mixed,
+	onEndedChange: (SyntheticInputEvent<>) => mixed,
+	onGenderChange: ({value: number} | null) => mixed,
+	onTypeChange: ({value: number} | null) => mixed
+};
+
+type OwnProps = {
+	creatorTypes: Array<CreatorType>,
+	genderOptions: Array<GenderOptions>
+};
+
+type Props = StateProps & DispatchProps & OwnProps;
 
 /**
  * Container component. The CreatorSection component contains input fields
@@ -96,7 +136,8 @@ function CreatorSection({
 	onEndedChange,
 	onGenderChange,
 	onTypeChange
-}) {
+	}: Props
+) {
 	const genderOptionsForDisplay = genderOptions.map((gender) => ({
 		label: gender.name,
 		value: gender.id
@@ -178,26 +219,8 @@ function CreatorSection({
 	);
 }
 CreatorSection.displayName = 'CreatorSection';
-CreatorSection.propTypes = {
-	beginDateLabel: React.PropTypes.string.isRequired,
-	beginDateValue: React.PropTypes.string.isRequired,
-	creatorTypes: React.PropTypes.array.isRequired,
-	endDateLabel: React.PropTypes.string.isRequired,
-	endDateValue: React.PropTypes.string.isRequired,
-	endedChecked: React.PropTypes.bool.isRequired,
-	endedLabel: React.PropTypes.string.isRequired,
-	genderOptions: React.PropTypes.array.isRequired,
-	genderShow: React.PropTypes.bool.isRequired,
-	genderValue: React.PropTypes.number.isRequired,
-	onBeginDateChange: React.PropTypes.func.isRequired,
-	onEndDateChange: React.PropTypes.func.isRequired,
-	onEndedChange: React.PropTypes.func.isRequired,
-	onGenderChange: React.PropTypes.func.isRequired,
-	onTypeChange: React.PropTypes.func.isRequired,
-	typeValue: React.PropTypes.number.isRequired
-};
 
-function mapStateToProps(rootState, {creatorTypes}) {
+function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 	const state = rootState.get('creatorSection');
 
 	const typeValue = state.get('type');
@@ -221,7 +244,7 @@ function mapStateToProps(rootState, {creatorTypes}) {
 	};
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginDateChange: (event) =>
 			dispatch(debouncedUpdateBeginDate(event.target.value)),

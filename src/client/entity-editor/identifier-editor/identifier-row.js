@@ -16,16 +16,43 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
 
 import * as data from '../../helpers/data';
-import {Button, Col, Input, Row} from 'react-bootstrap';
 import {
-	debouncedUpdateIdentifierValue, removeIdentifierRow, updateIdentifierType
+	type Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
+	updateIdentifierType
 } from './actions';
+import {Button, Col, Input, Row} from 'react-bootstrap';
+import {type Dispatch} from 'redux';
 import React from 'react';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {connect} from 'react-redux';
+
+
+type TypeOption = {
+	label: string,
+	id: number
+};
+
+type OwnProps = {
+	index: number,
+	typeOptions: Array<TypeOption>
+};
+
+type StateProps = {
+	valueValue: string,
+	typeValue: number
+};
+
+type DispatchProps = {
+	onTypeChange: ({value: number}) => mixed,
+	onRemoveButtonClick: () => mixed,
+	onValueChange: (SyntheticInputEvent<>) => mixed
+};
+
+type Props = StateProps & DispatchProps & OwnProps;
 
 /**
  * Container component. The IdentifierRow component renders a single Row
@@ -54,7 +81,8 @@ function IdentifierRow({
 	onTypeChange,
 	onRemoveButtonClick,
 	onValueChange
-}) {
+	}: Props
+) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -99,17 +127,14 @@ function IdentifierRow({
 	);
 }
 IdentifierRow.displayName = 'IdentifierEditor.Identifier';
-IdentifierRow.propTypes = {
-	onRemoveButtonClick: React.PropTypes.func.isRequired,
-	onTypeChange: React.PropTypes.func.isRequired,
-	onValueChange: React.PropTypes.func.isRequired,
-	typeOptions: React.PropTypes.array.isRequired,
-	typeValue: React.PropTypes.number.isRequired,
-	valueValue: React.PropTypes.string.isRequired
-};
 
 
-function handleValueChange(dispatch, event, index, types) {
+function handleValueChange(
+	dispatch: Dispatch<Action>,
+	event: SyntheticInputEvent<>,
+	index: number,
+	types: Array<TypeOption>
+) {
 	const guessedType =
 		data.guessIdentifierType(event.target.value, types);
 	if (guessedType) {
@@ -123,7 +148,7 @@ function handleValueChange(dispatch, event, index, types) {
 }
 
 
-function mapStateToProps(rootState, {index}) {
+function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('identifierEditor');
 	return {
 		typeValue: state.getIn([index, 'type']),
@@ -132,17 +157,17 @@ function mapStateToProps(rootState, {index}) {
 }
 
 
-function mapDispatchToProps(dispatch, {index, typeOptions}) {
+function mapDispatchToProps(
+	dispatch: Dispatch<Action>,
+	{index, typeOptions}: OwnProps
+): DispatchProps {
 	return {
 		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
-		onTypeChange: (value) =>
+		onTypeChange: (value: {value: number}) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
-		onValueChange: (event) =>
+		onValueChange: (event: SyntheticInputEvent<>) =>
 			handleValueChange(dispatch, event, index, typeOptions)
 	};
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(
-	IdentifierRow
-);
+export default connect(mapStateToProps, mapDispatchToProps)(IdentifierRow);

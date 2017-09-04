@@ -16,12 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
 
+import * as React from 'react';
 import Icon from 'react-fontawesome';
-import React from 'react';
 
 
-function icon(empty, error) {
+function icon(empty: ?boolean, error: ?boolean): string | null {
 	if (empty) {
 		return null;
 	}
@@ -34,7 +35,7 @@ function icon(empty, error) {
 }
 
 
-function contextualColor(empty, error) {
+function contextualColor(empty: ?boolean, error: ?boolean): string | null {
 	if (empty) {
 		return null;
 	}
@@ -46,6 +47,11 @@ function contextualColor(empty, error) {
 	return 'text-success';
 }
 
+type Props = {
+	children?: React.Node,
+	empty?: boolean,
+	error?: boolean
+};
 
 /**
  * Presentational component. This component renders a textual label, intended
@@ -65,7 +71,8 @@ function ValidationLabel({
 	children,
 	empty,
 	error
-}) {
+	}: Props
+) {
 	const iconElement = icon(empty, error) &&
 		<Icon className="margin-left-0-5" name={icon(empty, error)}/>;
 
@@ -77,11 +84,6 @@ function ValidationLabel({
 	);
 }
 ValidationLabel.displayName = 'ValidationLabel';
-ValidationLabel.propTypes = {
-	children: React.PropTypes.node,
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool
-};
 ValidationLabel.defaultProps = {
 	children: null,
 	empty: true,

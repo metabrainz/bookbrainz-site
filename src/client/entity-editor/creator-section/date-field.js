@@ -16,9 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import {Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
+
+
+type Props = {
+	show: boolean,
+	label: string,
+	empty?: boolean,
+	error?: boolean
+};
 
 /**
  * Presentational component. This component renders a plain text input which
@@ -40,7 +50,8 @@ function DateField({
 	empty,
 	error,
 	...rest
-}) {
+	}: Props
+) {
 	const labelElement =
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
@@ -54,12 +65,6 @@ function DateField({
 	);
 }
 DateField.displayName = 'DateField';
-DateField.propTypes = {
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool,
-	label: React.PropTypes.string.isRequired,
-	show: React.PropTypes.bool.isRequired
-};
 DateField.defaultProps = {
 	empty: true,
 	error: false

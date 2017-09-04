@@ -39,7 +39,7 @@ export type Action = {
  * @param {number} newGenderId - The new value to be used for the gender ID.
  * @returns {Action} The resulting UPDATE_GENDER action.
  **/
-export function updateGender(newGenderId: number): Action {
+export function updateGender(newGenderId: ?number): Action {
 	return {
 		payload: newGenderId,
 		type: UPDATE_GENDER
@@ -53,7 +53,7 @@ export function updateGender(newGenderId: number): Action {
  * @param {number} newTypeId - The new value to be used for the creator type ID.
  * @returns {Action} The resulting UPDATE_TYPE action.
  **/
-export function updateType(newTypeId: number): Action {
+export function updateType(newTypeId: ?number): Action {
 	return {
 		payload: newTypeId,
 		type: UPDATE_TYPE

@@ -16,22 +16,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	UPDATE_BEGIN_DATE, UPDATE_ENDED, UPDATE_END_DATE, UPDATE_GENDER, UPDATE_TYPE
-} from './actions';
-import Immutable from 'immutable';
+// @flow
 
+import {
+	type Action, UPDATE_BEGIN_DATE, UPDATE_ENDED, UPDATE_END_DATE,
+	UPDATE_GENDER, UPDATE_TYPE
+} from './actions';
+import {Map} from 'immutable';
+
+
+type State = Map<string, any>;
 
 function reducer(
-	state = Immutable.Map({
+	state: State = Map({
 		beginDate: '',
 		endDate: '',
 		ended: false,
 		gender: null,
 		type: null
 	}),
-	action
-) {
+	action: Action
+): State {
 	const {type, payload} = action;
 	switch (type) {
 		case UPDATE_GENDER:
