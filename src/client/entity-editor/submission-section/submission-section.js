@@ -41,7 +41,7 @@ import {connect} from 'react-redux';
 function SubmissionSection({
 	errorText,
 	onNoteChange,
-	onSubmitClick
+	onSubmit
 }) {
 	const errorAlertClass =
 		classNames('text-center', 'margin-top-1', {hidden: !errorText});
@@ -68,7 +68,7 @@ function SubmissionSection({
 				</Row>
 			</form>
 			<div className="text-center margin-top-1">
-				<Button bsStyle="success" onClick={onSubmitClick}>
+				<Button bsStyle="success" onClick={onSubmit}>
 					Submit
 				</Button>
 			</div>
@@ -82,7 +82,7 @@ SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	errorText: React.PropTypes.node.isRequired,
 	onNoteChange: React.PropTypes.func.isRequired,
-	onSubmitClick: React.PropTypes.func.isRequired,
+	onSubmit: React.PropTypes.func.isRequired,
 	submissionUrl: React.PropTypes.string.isRequired
 };
 
@@ -98,7 +98,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
 		onNoteChange: (event) =>
 			dispatch(debounceUpdateRevisionNote(event.target.value)),
-		onSubmitClick: () => dispatch(submit(submissionUrl))
+		onSubmit: () => dispatch(submit(submissionUrl))
 	};
 }
 
