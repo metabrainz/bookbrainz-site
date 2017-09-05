@@ -16,13 +16,52 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* Following convention at
+ * http://redux.js.org/docs/recipes/ServerRendering.html
+ */
+
+import * as helpers from './helpers';
+import * as propHelpers from '../../server/helpers/props';
+import {applyMiddleware, compose, createStore} from 'redux';
+import EntityEditor from './entity-editor';
+import Immutable from 'immutable';
+import Layout from '../containers/layout';
+import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RootComponent from './root-component';
+import createDebounce from 'redux-debounce';
 
 
-const props = JSON.parse(document.getElementById('props').innerHTML);
+const {createRootReducer, getEntitySection, shouldDevToolsBeInjected} = helpers;
 
-ReactDOM.render(
-	<RootComponent {...props}/>, document.getElementById('creatorForm')
+const KEYSTROKE_DEBOUNCE_TIME = 250;
+
+const propsTarget = document.getElementById('props');
+const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
+const {initialState, ...rest} = props;
+
+const EntitySection = getEntitySection(props.entityType);
+
+const rootReducer = createRootReducer(props.entityType);
+const debouncer = createDebounce({keystroke: KEYSTROKE_DEBOUNCE_TIME});
+const composeEnhancers = shouldDevToolsBeInjected() ?
+	window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
+
+
+const store = createStore(
+	rootReducer,
+	Immutable.fromJS(initialState),
+	composeEnhancers(applyMiddleware(debouncer))
 );
+
+const markup = (
+	<Layout {...propHelpers.extractLayoutProps(rest)}>
+		<Provider store={store}>
+			<EntityEditor {...propHelpers.extractChildProps(rest)}>
+				<EntitySection/>
+			</EntityEditor>
+		</Provider>
+	</Layout>
+);
+
+ReactDOM.render(markup, document.getElementById('target'));
