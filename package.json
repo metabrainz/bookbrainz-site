@@ -114,7 +114,7 @@
     "eslint-plugin-flowtype": "^2.34.1",
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-react": "^7.1.0",
-    "flow-bin": "^0.48.0",
+    "flow-bin": "^0.54.0",
     "jsdoc": "^3.4.0",
     "mocha": "^3.2.0",
     "nightwatch": "^0.9.16",
