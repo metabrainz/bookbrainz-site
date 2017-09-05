@@ -58,7 +58,10 @@ function getEntitySectionReducerName(entityType: string): string {
 	return `${entityType}Section`;
 }
 
-export function createRootReducer(entityReducerKey, entityReducer) {
+export function createRootReducer(entityType: string) {
+	const entityReducerKey = getEntitySectionReducerName(entityType);
+	const entityReducer = getEntitySectionReducer(entityType);
+
 	return combineReducers({
 		aliasEditor: aliasEditorReducer,
 		buttonBar: buttonBarReducer,
