@@ -17,11 +17,10 @@
  */
 
 import {Alert, Button, Col, Input, Row} from 'react-bootstrap';
-import {debounceUpdateRevisionNote, setSubmitError} from './actions';
+import {debounceUpdateRevisionNote, submit} from './actions';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-import request from 'superagent-bluebird-promise';
 
 /**
  * Container component. The SubmissionSection component contains a button for
@@ -87,53 +86,20 @@ SubmissionSection.propTypes = {
 	submissionUrl: React.PropTypes.string.isRequired
 };
 
-function submit(url, data) {
-	/* TODO: Not the best way to do this, but once we unify the
-	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
-	 * pass the entity type and generate both URLs from that.
-	 */
-	const submissionEntity = url.split('/')[1];
-	return request.post(url).send(data)
-		.promise()
-		.then((response) => {
-			if (!response.body) {
-				window.location.replace('/login');
-			}
-
-			const redirectUrl = `/${submissionEntity}/${response.body.bbid}`;
-			if (response.body.alert) {
-				const alertParam = `?alert=${response.body.alert}`;
-				window.location.href = `${redirectUrl}${alertParam}`;
-			}
-			else {
-				window.location.href = redirectUrl;
-			}
-		});
-}
-
-function mapStateToProps(rootState, {submissionUrl}) {
+function mapStateToProps(rootState) {
 	const state = rootState.get('submissionSection');
 	return {
-		errorText: state.get('submitError'),
-		onSubmitClick: () => submit(submissionUrl, rootState)
+		errorText: state.get('submitError')
 	};
 }
 
-function mapDispatchToProps(dispatch) {
+
+function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
 		onNoteChange: (event) =>
 			dispatch(debounceUpdateRevisionNote(event.target.value)),
-		onSubmitError: (error) => dispatch(setSubmitError(error.message))
+		onSubmitClick: () => dispatch(submit(submissionUrl))
 	};
 }
 
-function mergeProps(stateProps, dispatchProps, ownProps) {
-	return Object.assign({}, ownProps, stateProps, dispatchProps, {
-		onSubmitClick: () => stateProps.onSubmitClick()
-			.catch((error) => dispatchProps.onSubmitError(error))
-	});
-}
-
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(
-	SubmissionSection
-);
+export default connect(mapStateToProps, mapDispatchToProps)(SubmissionSection);

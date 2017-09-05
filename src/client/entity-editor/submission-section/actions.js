@@ -18,6 +18,11 @@
 
 // @flow
 
+import type {Map} from 'immutable';
+import type {Promise} from 'bluebird';
+import request from 'superagent-bluebird-promise';
+
+
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
 
@@ -57,5 +62,49 @@ export function debounceUpdateRevisionNote(value: string): Action {
 		meta: {debounce: 'keystroke'},
 		type: UPDATE_REVISION_NOTE,
 		value
+	};
+}
+
+type Response = {
+	body: {
+		bbid: string,
+		alert?: string
+	}
+};
+
+function postSubmission(url: string, data: Map<string, mixed>): Promise {
+	/* TODO: Not the best way to do this, but once we unify the
+	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
+	 * pass the entity type and generate both URLs from that.
+	 */
+	const [, submissionEntity] = url.split('/');
+	return request.post(url).send(data)
+		.promise()
+		.then((response: Response) => {
+			if (!response.body) {
+				window.location.replace('/login');
+			}
+
+			const redirectUrl = `/${submissionEntity}/${response.body.bbid}`;
+			if (response.body.alert) {
+				const alertParam = `?alert=${response.body.alert}`;
+				window.location.href = `${redirectUrl}${alertParam}`;
+			}
+			else {
+				window.location.href = redirectUrl;
+			}
+		});
+}
+
+export function submit(
+	submissionUrl: string
+): ((Action) => mixed, () => Map<string, mixed>) => mixed {
+	return function (dispatch, getState) {
+		const rootState = getState();
+		return postSubmission(submissionUrl, rootState)
+			.catch(
+				(error: {message: string}) =>
+					dispatch(setSubmitError(error.message))
+			);
 	};
 }
