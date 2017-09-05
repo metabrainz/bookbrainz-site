@@ -26,6 +26,7 @@ import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
+import _ from 'lodash';
 import {connect} from 'react-redux';
 import {isAliasEmpty} from '../helpers';
 
@@ -60,6 +61,7 @@ import {isAliasEmpty} from '../helpers';
 function NameSection({
 	disambiguationDefaultValue,
 	disambiguationVisible,
+	entityType,
 	languageOptions,
 	languageValue,
 	nameValue,
@@ -76,7 +78,7 @@ function NameSection({
 
 	return (
 		<div>
-			<h2>What is the Creator called?</h2>
+			<h2>{`What is the ${_.capitalize(entityType)} called?`}</h2>
 			<form>
 				<Row>
 					<Col md={6} mdOffset={3}>
