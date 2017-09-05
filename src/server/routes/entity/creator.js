@@ -18,17 +18,23 @@
  */
 
 import * as auth from '../../helpers/auth';
+import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
-import EditForm from '../../../client/components/forms/creator';
+import EntityEditor from '../../../client/entity-editor/entity-editor';
+import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
+import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
+import {createStore} from 'redux';
 import express from 'express';
 
+
+const {createRootReducer, getEntitySection} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -80,27 +86,46 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders,	middleware.loadLanguages,
 	middleware.loadCreatorTypes, (req, res) => {
-		const props = {
+		const props = propHelpers.generateProps(req, res, {
 			creatorTypes: res.locals.creatorTypes,
-			genders: res.locals.genders,
+			entityType: 'creator',
+			genderOptions: res.locals.genders,
 			heading: 'Create Creator',
 			identifierTypes: res.locals.identifierTypes,
-			languages: res.locals.languages,
+			initialState: {},
+			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Add a new Creator to BookBrainz',
 			submissionUrl: '/creator/create/handler'
-		};
+		});
+
+		const {initialState, ...rest} = props;
+
+		const rootReducer = createRootReducer(props.entityType);
+
+		const store = createStore(
+			rootReducer,
+			Immutable.fromJS(initialState)
+		);
+
+		const EntitySection = getEntitySection(props.entityType);
 
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<EditForm {...propHelpers.extractChildProps(props)}/>
+			<Layout {...propHelpers.extractLayoutProps(rest)}>
+				<Provider store={store}>
+					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+						<EntitySection/>
+					</EntityEditor>
+				</Provider>
 			</Layout>
 		);
+
+		props.initialState = store.getState();
 
 		return res.render('target', {
 			markup,
 			props,
-			script: '/js/entity/creator.js',
+			script: '/js/entity-editor.js',
 			title: 'Add Creator'
 		});
 	}
@@ -177,10 +202,12 @@ router.get(
 		const props = propHelpers.generateProps(req, res, {
 			creator,
 			creatorTypes: res.locals.creatorTypes,
-			genders: res.locals.genders,
+			entityType: 'creator',
+			genderOptions: res.locals.genders,
 			heading: 'Edit Creator',
 			identifierTypes: res.locals.identifierTypes,
-			languages: res.locals.languages,
+			initialState: creatorToFormState(creator),
+			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Edit an existing Creator in BookBrainz',
 			submissionUrl: `/creator/${creator.bbid}/edit/handler`
@@ -188,7 +215,7 @@ router.get(
 
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<EditForm {...propHelpers.extractChildProps(props)}/>
+				<EntityEditor {...propHelpers.extractChildProps(props)}/>
 			</Layout>
 		);
 
@@ -240,17 +267,20 @@ function transformNewForm(data) {
 	};
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) =>
-	entityRoutes.createEntity(
+router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	req.body = transformNewForm(req.body);
+	return entityRoutes.createEntity(
 		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-	)
-);
+	);
+});
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) =>
-		entityRoutes.editEntity(
+	(req, res) => {
+		req.body = transformNewForm(req.body);
+		return entityRoutes.editEntity(
 			req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-		)
+		);
+	}
 );
 
 export default router;
