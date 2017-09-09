@@ -18,17 +18,23 @@
  */
 
 import * as auth from '../../helpers/auth';
+import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
-import EditForm from '../../../client/components/forms/work';
+import EntityEditor from '../../../client/entity-editor/entity-editor';
+import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
+import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
+import {createStore} from 'redux';
 import express from 'express';
 
+
+const {createRootReducer, getEntitySection} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -81,58 +87,156 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	(req, res) => {
-		const props = {
+		const props = propHelpers.generateProps(req, res, {
+			entityType: 'work',
 			heading: 'Create Work',
 			identifierTypes: res.locals.identifierTypes,
-			languages: res.locals.languages,
+			initialState: {},
+			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Add a new Work to BookBrainz',
 			submissionUrl: '/work/create/handler',
 			workTypes: res.locals.workTypes
-		};
+		});
+
+		const {initialState, ...rest} = props;
+
+		const rootReducer = createRootReducer(props.entityType);
+
+		const store = createStore(
+			rootReducer,
+			Immutable.fromJS(initialState)
+		);
+
+		const EntitySection = getEntitySection(props.entityType);
 
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<EditForm {...propHelpers.extractChildProps(props)}/>
+			<Layout {...propHelpers.extractLayoutProps(rest)}>
+				<Provider store={store}>
+					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+						<EntitySection/>
+					</EntityEditor>
+				</Provider>
 			</Layout>
 		);
+
+		props.initialState = store.getState();
 
 		return res.render('target', {
 			markup,
 			props,
-			script: '/js/entity/work.js',
+			script: '/js/entity-editor.js',
 			title: 'Add Work'
 		});
 	}
 );
+
+function getDefaultAliasIndex(aliases) {
+	const index = aliases.findIndex((alias) => alias.default);
+	return index > 0 ? index : 0;
+}
+
+function workToFormState(work) {
+	const aliases = work.aliasSet ?
+		work.aliasSet.aliases.map(({language, ...rest}) => ({
+			language: language.id,
+			...rest
+		})) : [];
+
+	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
+
+	const aliasEditor = {};
+	aliases.forEach((alias) => { aliasEditor[alias.id] = alias; });
+
+	const buttonBar = {
+		aliasEditorVisible: false,
+		disambiguationVisible: Boolean(work.disambiguation),
+		identifierEditorVisible: false
+	};
+
+	const nameSection = _.isEmpty(defaultAliasList) ? {
+		language: null,
+		name: '',
+		sortName: ''
+	} : defaultAliasList[0];
+	nameSection.disambiguation =
+		work.disambiguation && work.disambiguation.comment;
+
+	const identifiers = work.identifierSet ?
+		work.identifierSet.identifiers.map(({type, ...rest}) => ({
+			type: type.id,
+			...rest
+		})) : [];
+
+	const identifierEditor = {};
+	identifiers.forEach(
+		(identifier) => { identifierEditor[identifier.id] = identifier; }
+	);
+
+	const workSection = {
+		languages: work.languageSet ? work.languageSet.languages.map(
+			({id, name}) => ({label: name, value: id})
+		) : [],
+		type: work.workType && work.workType.id
+	};
+
+	return {
+		aliasEditor,
+		buttonBar,
+		identifierEditor,
+		nameSection,
+		workSection
+	};
+}
 
 router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadWorkTypes, middleware.loadLanguages,
 	(req, res) => {
 		const work = res.locals.entity;
 
-		const props = {
+		workToFormState(work);
+
+		const props = propHelpers.generateProps(req, res, {
+			entityType: 'work',
 			heading: 'Edit Work',
 			identifierTypes: res.locals.identifierTypes,
-			languages: res.locals.languages,
+			initialState: workToFormState(work),
+			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Edit an existing Work in BookBrainz',
 			submissionUrl: `/work/${work.bbid}/edit/handler`,
-			work,
 			workTypes: res.locals.workTypes
-		};
+		});
+
+		const {initialState, ...rest} = props;
+
+		const rootReducer = createRootReducer(props.entityType);
+
+		const store = createStore(
+			rootReducer,
+			Immutable.fromJS(initialState)
+		);
+
+		const EntitySection = getEntitySection(props.entityType);
 
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<EditForm {...propHelpers.extractChildProps(props)}/>
+			<Layout {...propHelpers.extractLayoutProps(rest)}>
+				<Provider store={store}>
+					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+						<EntitySection/>
+					</EntityEditor>
+				</Provider>
 			</Layout>
 		);
+
+		props.initialState = store.getState();
 
 		return res.render('target', {
 			markup,
 			props,
-			script: '/js/entity/work.js',
-			title: 'Edit Work'
+			script: '/js/entity-editor.js',
+			title: 'Add Work'
 		});
 	}
 );
@@ -150,9 +254,44 @@ function getAdditionalWorkSets(orm) {
 	];
 }
 
+
+function transformNewForm(data) {
+	let aliases = _.map(data.aliasEditor, ({language, name, sortName}) => ({
+		default: false,
+		languageId: language,
+		name,
+		sortName
+	}));
+
+	aliases = [{
+		default: true,
+		languageId: data.nameSection.language,
+		name: data.nameSection.name,
+		primary: true,
+		sortName: data.nameSection.sortName
+	}, ...aliases];
+
+	const identifiers = _.map(data.identifierEditor, ({type, ...rest}) => ({
+		typeId: type,
+		...rest
+	}));
+
+	const languages = _.map(data.workSection.languages, (language) => language.value);
+	console.log(languages);
+	console.log(data.workSection.type);
+
+	return {
+		aliases,
+		disambiguation: data.nameSection.disambiguation,
+		identifiers,
+		languages,
+		typeId: data.workSection.type
+	};
+}
+
 router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	const {orm} = req.app.locals;
-
+	req.body = transformNewForm(req.body);
 	return entityRoutes.createEntity(
 		req, res, 'Work', _.pick(req.body, 'typeId'), getAdditionalWorkSets(orm)
 	);
@@ -161,7 +300,7 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
 		const {orm} = req.app.locals;
-
+		req.body = transformNewForm(req.body);
 		return entityRoutes.editEntity(
 			req, res, 'Work', _.pick(req.body, 'typeId'),
 			getAdditionalWorkSets(orm)
