@@ -40,6 +40,11 @@ type LanguageOption = {
 	id: number
 };
 
+type DisplayLanguageOption = {
+	label: string,
+	value: number
+};
+
 type OwnProps = {
 	languageOptions: Array<LanguageOption>,
 	workTypes: Array<WorkType>
@@ -51,7 +56,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onLanguagesChange: (Array<LanguageOption>) => mixed,
+	onLanguagesChange: (Array<DisplayLanguageOption>) => mixed,
 	onTypeChange: (?{value: number}) => mixed
 };
 
@@ -136,7 +141,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onLanguagesChange: (values: Array<LanguageOption>) =>
+		onLanguagesChange: (values: Array<DisplayLanguageOption>) =>
 			dispatch(updateLanguages(values)),
 		onTypeChange: (value: ?{value: number}) =>
 			dispatch(updateType(value && value.value))

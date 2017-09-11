@@ -22,8 +22,8 @@ export const UPDATE_LANGUAGES = 'UPDATE_LANGUAGES';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
 
 type LanguageOption = {
-	name: string,
-	id: number
+	label: string,
+	value: number
 };
 
 export type Action = {
