@@ -23,7 +23,7 @@ import {
 	updateGender, updateType
 } from './actions';
 import {Col, Input, Row} from 'react-bootstrap';
-import DateField from './date-field';
+import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
 import React from 'react';
 import Select from 'react-select';
