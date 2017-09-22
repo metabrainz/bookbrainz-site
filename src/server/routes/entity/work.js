@@ -276,15 +276,16 @@ function transformNewForm(data) {
 		...rest
 	}));
 
-	const languages = _.map(data.workSection.languages, (language) => language.value);
-	console.log(languages);
-	console.log(data.workSection.type);
+	const languages = _.map(
+		data.workSection.languages, (language) => language.value
+	);
 
 	return {
 		aliases,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		languages,
+		note: data.submissionSection.note,
 		typeId: data.workSection.type
 	};
 }

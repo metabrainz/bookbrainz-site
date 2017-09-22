@@ -263,6 +263,7 @@ function transformNewForm(data) {
 		ended: data.creatorSection.ended,
 		genderId: data.creatorSection.gender,
 		identifiers,
+		note: data.submissionSection.note,
 		typeId: data.creatorSection.type
 	};
 }
