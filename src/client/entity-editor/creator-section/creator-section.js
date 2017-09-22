@@ -190,6 +190,7 @@ function CreatorSection({
 						empty={!beginDateValue}
 						error={!isPartialDateValid(beginDateValue)}
 						label={beginDateLabel}
+						placeholder="YYYY-MM-DD"
 						onChange={onBeginDateChange}
 					/>
 				</Col>
@@ -210,6 +211,7 @@ function CreatorSection({
 						empty={!endDateValue}
 						error={!isPartialDateValid(endDateValue)}
 						label={endDateLabel}
+						placeholder="YYYY-MM-DD"
 						show={endedChecked}
 						onChange={onEndDateChange}
 					/>
