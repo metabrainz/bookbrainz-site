@@ -18,18 +18,24 @@
  */
 
 import * as auth from '../../helpers/auth';
+import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
-import EditForm from '../../../client/components/forms/edition';
+import EntityEditor from '../../../client/entity-editor/entity-editor';
+import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
 import Promise from 'bluebird';
+import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
+import {createStore} from 'redux';
 import express from 'express';
 
+
+const {createRootReducer, getEntitySection} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -94,9 +100,11 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const propsPromise = propHelpers.generateProps(req, res, {
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
+			entityType: 'edition',
 			heading: 'Create Edition',
 			identifierTypes: res.locals.identifierTypes,
-			languages: res.locals.languages,
+			initialState: {},
+			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Add a new Edition to BookBrainz',
 			submissionUrl: '/edition/create/handler'
@@ -115,16 +123,33 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		}
 
 		function render(props) {
+			const {initialState, ...rest} = props;
+
+			const rootReducer = createRootReducer(props.entityType);
+
+			const store = createStore(
+				rootReducer,
+				Immutable.fromJS(initialState)
+			);
+
+			const EntitySection = getEntitySection(props.entityType);
+
 			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EditForm {...propHelpers.extractChildProps(props)}/>
+				<Layout {...propHelpers.extractLayoutProps(rest)}>
+					<Provider store={store}>
+						<EntityEditor {...propHelpers.extractChildProps(rest)}>
+							<EntitySection/>
+						</EntityEditor>
+					</Provider>
 				</Layout>
 			);
 
-			res.render('target', {
+			props.initialState = store.getState();
+
+			return res.render('target', {
 				markup,
 				props,
-				script: '/js/entity/edition.js',
+				script: '/js/entity-editor.js',
 				title: 'Add Edition'
 			});
 		}
@@ -135,6 +160,105 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	}
 );
 
+
+function getDefaultAliasIndex(aliases) {
+	const index = aliases.findIndex((alias) => alias.default);
+	return index > 0 ? index : 0;
+}
+
+function entityToOption(entity) {
+	return {
+		disambiguation: entity.disambiguation ?
+			entity.disambiguation.comment : null,
+		id: entity.bbid,
+		text: entity.defaultAlias ?
+			entity.defaultAlias.name : '(unnamed)',
+		type: entity.type
+	};
+}
+
+function editionToFormState(edition) {
+	console.log(JSON.stringify(edition, null, 4));
+
+	const aliases = edition.aliasSet ?
+		edition.aliasSet.aliases.map(({language, ...rest}) => ({
+			language: language.id,
+			...rest
+		})) : [];
+
+	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
+
+	const aliasEditor = {};
+	aliases.forEach((alias) => { aliasEditor[alias.id] = alias; });
+
+	const buttonBar = {
+		aliasEditorVisible: false,
+		disambiguationVisible: Boolean(edition.disambiguation),
+		identifierEditorVisible: false
+	};
+
+	const nameSection = _.isEmpty(defaultAliasList) ? {
+		language: null,
+		name: '',
+		sortName: ''
+	} : defaultAliasList[0];
+	nameSection.disambiguation =
+		edition.disambiguation && edition.disambiguation.comment;
+
+	const identifiers = edition.identifierSet ?
+		edition.identifierSet.identifiers.map(({type, ...rest}) => ({
+			type: type.id,
+			...rest
+		})) : [];
+
+	const identifierEditor = {};
+	identifiers.forEach(
+		(identifier) => { identifierEditor[identifier.id] = identifier; }
+	);
+
+	const physicalVisible = !(
+		_.isNull(edition.depth) && _.isNull(edition.height) &&
+		_.isNull(edition.pages) && _.isNull(edition.weight) &&
+		_.isNull(edition.width)
+	);
+
+	const releaseDate = edition.releaseEventSet &&
+		_.isEmpty(edition.releaseEventSet.releaseEvents) ?
+		null : edition.releaseEventSet.releaseEvents[0].date;
+
+	const publisher = edition.publisherSet &&
+		_.isEmpty(edition.publisherSet.publishers) ?
+		null : entityToOption(edition.publisherSet.publishers[0]);
+
+	const publication = entityToOption(edition.publication);
+
+	const editionSection = {
+		depth: edition.depth,
+		format: edition.editionFormat && edition.editionFormat.id,
+		height: edition.height,
+		languages: edition.languageSet ? edition.languageSet.languages.map(
+			({id, name}) => ({label: name, value: id})
+		) : [],
+		pages: edition.pages,
+		physicalVisible,
+		publication,
+		publisher,
+		releaseDate,
+		status: edition.editionStatus && edition.editionStatus.id,
+		weight: edition.weight,
+		width: edition.width
+	};
+
+	return {
+		aliasEditor,
+		buttonBar,
+		editionSection,
+		identifierEditor,
+		nameSection
+	};
+}
+
 router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
@@ -142,31 +266,101 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const edition = res.locals.entity;
 
 		const props = propHelpers.generateProps(req, res, {
-			edition,
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
+			entityType: 'edition',
 			heading: 'Edit Edition',
 			identifierTypes: res.locals.identifierTypes,
-			languages: res.locals.languages,
+			initialState: editionToFormState(edition),
+			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Edit an existing Edition in BookBrainz',
-			submissionUrl: '/edition/create/handler'
+			submissionUrl: `/edition/${edition.bbid}/edit/handler`
 		});
 
+		const {initialState, ...rest} = props;
+
+		const rootReducer = createRootReducer(props.entityType);
+
+		const store = createStore(
+			rootReducer,
+			Immutable.fromJS(initialState)
+		);
+
+		const EntitySection = getEntitySection(props.entityType);
+
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<EditForm {...propHelpers.extractChildProps(props)}/>
+			<Layout {...propHelpers.extractLayoutProps(rest)}>
+				<Provider store={store}>
+					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+						<EntitySection/>
+					</EntityEditor>
+				</Provider>
 			</Layout>
 		);
 
-		res.render('target', {
+		props.initialState = store.getState();
+
+		return res.render('target', {
 			markup,
 			props,
-			script: '/js/entity/edition.js',
+			script: '/js/entity-editor.js',
 			title: 'Edit Edition'
 		});
 	}
 );
+
+
+function transformNewForm(data) {
+	let aliases = _.map(data.aliasEditor, ({language, name, sortName}) => ({
+		default: false,
+		languageId: language,
+		name,
+		sortName
+	}));
+
+	aliases = [{
+		default: true,
+		languageId: data.nameSection.language,
+		name: data.nameSection.name,
+		primary: true,
+		sortName: data.nameSection.sortName
+	}, ...aliases];
+
+	const identifiers = _.map(data.identifierEditor, ({type, ...rest}) => ({
+		typeId: type,
+		...rest
+	}));
+
+	let releaseEvents = [];
+	if (data.editionSection.releaseDate) {
+		releaseEvents = [{date: data.editionSection.releaseDate}];
+	}
+
+	const languages = _.map(
+		data.editionSection.languages, (language) => language.value
+	);
+
+	return {
+		aliases,
+		depth: parseInt(data.editionSection.depth, 10),
+		disambiguation: data.nameSection.disambiguation,
+		formatId: parseInt(data.editionSection.format, 10),
+		height: parseInt(data.editionSection.height, 10),
+		identifiers,
+		languages,
+		note: data.submissionSection.note,
+		pages: parseInt(data.editionSection.pages, 10),
+		publicationBbid: data.editionSection.publication &&
+			data.editionSection.publication.id,
+		publishers: data.editionSection.publisher &&
+			[data.editionSection.publisher.id],
+		releaseEvents,
+		statusId: parseInt(data.editionSection.status, 10),
+		weight: parseInt(data.editionSection.weight, 10),
+		width: parseInt(data.editionSection.width, 10)
+	};
+}
 
 const additionalEditionProps = [
 	'publicationBbid', 'width', 'height', 'depth', 'weight', 'pages',
@@ -206,6 +400,7 @@ function getAdditionalEditionSets(orm) {
 
 router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	const {orm} = req.app.locals;
+	req.body = transformNewForm(req.body);
 	return entityRoutes.createEntity(
 		req,
 		res,
@@ -218,6 +413,7 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
 		const {orm} = req.app.locals;
+		req.body = transformNewForm(req.body);
 		return entityRoutes.editEntity(
 			req,
 			res,
