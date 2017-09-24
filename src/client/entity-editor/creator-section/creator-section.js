@@ -18,6 +18,7 @@
 
 // @flow
 
+import * as helpers from '../helpers';
 import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateBeginArea, updateEndArea, updateEnded, updateGender, updateType
@@ -31,21 +32,7 @@ import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
-
-function isPartialDateValid(value: string): boolean {
-	const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
-	const ymRegex = /^\d{4}-\d{2}$/;
-	const yRegex = /^\d{4}$/;
-
-	const validSyntax = Boolean(
-		ymdRegex.test(value) ||
-		ymRegex.test(value) ||
-		yRegex.test(value)
-	);
-	const validValue = !isNaN(Date.parse(value));
-
-	return validSyntax && validValue;
-}
+const {isPartialDateValid} = helpers;
 
 type CreatorType = {
 	label: string,

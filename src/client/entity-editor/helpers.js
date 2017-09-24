@@ -82,3 +82,23 @@ export function shouldDevToolsBeInjected(): boolean {
 		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
 }
+
+
+export function isPartialDateValid(value: ?string): boolean {
+	const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
+	const ymRegex = /^\d{4}-\d{2}$/;
+	const yRegex = /^\d{4}$/;
+
+	if (!value) {
+		return true;
+	}
+
+	const validSyntax = Boolean(
+		ymdRegex.test(value) ||
+		ymRegex.test(value) ||
+		yRegex.test(value)
+	);
+	const validValue = !isNaN(Date.parse(value));
+
+	return validSyntax && validValue;
+}
