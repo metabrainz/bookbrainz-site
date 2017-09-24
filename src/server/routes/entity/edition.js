@@ -178,8 +178,6 @@ function entityToOption(entity) {
 }
 
 function editionToFormState(edition) {
-	console.log(JSON.stringify(edition, null, 4));
-
 	const aliases = edition.aliasSet ?
 		edition.aliasSet.aliases.map(({language, ...rest}) => ({
 			language: language.id,

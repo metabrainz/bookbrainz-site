@@ -40,8 +40,6 @@ function init(app, config) {
 				}
 			};
 
-			console.log(JSON.stringify(data, null, 2));
-
 			influx.writePoints([
 				data
 			]).catch(err => {

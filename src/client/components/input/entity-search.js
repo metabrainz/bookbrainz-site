@@ -80,12 +80,9 @@ class EntitySearch extends React.Component {
 				collection: this.props.collection,
 				q: query
 			})
-			.then((response) => {
-				console.log(response.body.map(entityToOption));
-				return {
-					options: response.body.map(entityToOption)
-				};
-			});
+			.then((response) => ({
+				options: response.body.map(entityToOption)
+			}));
 	}
 
 	renderOption(option) {

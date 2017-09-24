@@ -71,7 +71,6 @@ type OptionProps = {
 };
 
 function Option({disambiguation, text, type}: OptionProps) {
-	console.log(text);
 	const ENTITY_TYPE_ICONS = {
 		Area: 'globe',
 		Creator: 'user',
