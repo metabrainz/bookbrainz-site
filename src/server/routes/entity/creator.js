@@ -230,16 +230,33 @@ router.get(
 			submissionUrl: `/creator/${creator.bbid}/edit/handler`
 		});
 
+		const {initialState, ...rest} = props;
+
+		const rootReducer = createRootReducer(props.entityType);
+
+		const store = createStore(
+			rootReducer,
+			Immutable.fromJS(initialState)
+		);
+
+		const EntitySection = getEntitySection(props.entityType);
+
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<EntityEditor {...propHelpers.extractChildProps(props)}/>
+			<Layout {...propHelpers.extractLayoutProps(rest)}>
+				<Provider store={store}>
+					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+						<EntitySection/>
+					</EntityEditor>
+				</Provider>
 			</Layout>
 		);
+
+		props.initialState = store.getState();
 
 		return res.render('target', {
 			markup,
 			props,
-			script: '/js/entity/creator.js',
+			script: '/js/entity-editor.js',
 			title: 'Edit Creator'
 		});
 	}
