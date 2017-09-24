@@ -20,6 +20,8 @@
 
 import CreatorSection from './creator-section/creator-section';
 import EditionSection from './edition-section/edition-section';
+import PublicationSection from './publication-section/publication-section';
+import PublisherSection from './publisher-section/publisher-section';
 import WorkSection from './work-section/work-section';
 import aliasEditorReducer from './alias-editor/reducer';
 import buttonBarReducer from './button-bar/reducer';
@@ -28,6 +30,8 @@ import creatorSectionReducer from './creator-section/reducer';
 import editionSectionReducer from './edition-section/reducer';
 import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
+import publicationSectionReducer from './publication-section/reducer';
+import publisherSectionReducer from './publisher-section/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 import workSectionReducer from './work-section/reducer';
 
@@ -42,6 +46,8 @@ export function getEntitySection(entityType: string) {
 	const SECTION_MAP = {
 		creator: CreatorSection,
 		edition: EditionSection,
+		publication: PublicationSection,
+		publisher: PublisherSection,
 		work: WorkSection
 	};
 
@@ -52,6 +58,8 @@ function getEntitySectionReducer(entityType: string) {
 	const SECTION_REDUCER_MAP = {
 		creator: creatorSectionReducer,
 		edition: editionSectionReducer,
+		publication: publicationSectionReducer,
+		publisher: publisherSectionReducer,
 		work: workSectionReducer
 	};
 
