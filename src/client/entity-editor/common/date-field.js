@@ -24,7 +24,7 @@ import ValidationLabel from '../common/validation-label';
 
 
 type Props = {
-	show: boolean,
+	show?: boolean,
 	label: string,
 	empty?: boolean,
 	error?: boolean
@@ -67,7 +67,8 @@ function DateField({
 DateField.displayName = 'DateField';
 DateField.defaultProps = {
 	empty: true,
-	error: false
+	error: false,
+	show: true
 };
 
 export default DateField;

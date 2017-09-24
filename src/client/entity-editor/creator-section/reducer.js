@@ -18,17 +18,17 @@
 
 // @flow
 
+import * as Immutable from 'immutable';
 import {
-	type Action, UPDATE_BEGIN_DATE, UPDATE_ENDED, UPDATE_END_DATE,
-	UPDATE_GENDER, UPDATE_TYPE
+	type Action, UPDATE_BEGIN_AREA, UPDATE_BEGIN_DATE, UPDATE_ENDED,
+	UPDATE_END_AREA, UPDATE_END_DATE, UPDATE_GENDER, UPDATE_TYPE
 } from './actions';
-import {Map} from 'immutable';
 
 
-type State = Map<string, any>;
+type State = Immutable.Map<string, any>;
 
 function reducer(
-	state: State = Map({
+	state: State = Immutable.Map({
 		beginDate: '',
 		endDate: '',
 		ended: false,
@@ -43,8 +43,12 @@ function reducer(
 			return state.set('gender', payload);
 		case UPDATE_TYPE:
 			return state.set('type', payload);
+		case UPDATE_BEGIN_AREA:
+			return state.set('beginArea', Immutable.fromJS(payload));
 		case UPDATE_BEGIN_DATE:
 			return state.set('beginDate', payload);
+		case UPDATE_END_AREA:
+			return state.set('endArea', Immutable.fromJS(payload));
 		case UPDATE_END_DATE:
 			return state.set('endDate', payload);
 		case UPDATE_ENDED:

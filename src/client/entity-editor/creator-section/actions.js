@@ -20,7 +20,9 @@
 
 export const UPDATE_GENDER = 'UPDATE_GENDER';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
+export const UPDATE_BEGIN_AREA = 'UPDATE_BEGIN_AREA';
 export const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
+export const UPDATE_END_AREA = 'UPDATE_END_AREA';
 export const UPDATE_END_DATE = 'UPDATE_END_DATE';
 export const UPDATE_ENDED = 'UPDATE_ENDED';
 
@@ -30,6 +32,13 @@ export type Action = {
 	metadata?: {
 		debounce?: string
 	}
+};
+
+type Area = {
+	disambiguation: ?string,
+	id: string | number,
+	text: string,
+	type: string
 };
 
 /**
@@ -77,6 +86,20 @@ export function debouncedUpdateBeginDate(newBeginDate: string): Action {
 }
 
 /**
+ * Produces an action indicating that the begin area for the creator being
+ * edited should be updated with the provided value.
+ *
+ * @param {Area} newBeginArea - The new value to be used for the begin area.
+ * @returns {Action} The resulting UPDATE_BEGIN_AREA action.
+ **/
+export function updateBeginArea(newBeginArea: ?Area): Action {
+	return {
+		payload: newBeginArea,
+		type: UPDATE_BEGIN_AREA
+	};
+}
+
+/**
  * Produces an action indicating that the end date for the creator being
  * edited should be updated with the provided value. The action is marked to be
  * debounced by the keystroke debouncer defined for redux-debounce.
@@ -89,6 +112,20 @@ export function debouncedUpdateEndDate(newEndDate: string): Action {
 		meta: {debounce: 'keystroke'},
 		payload: newEndDate,
 		type: UPDATE_END_DATE
+	};
+}
+
+/**
+ * Produces an action indicating that the end area for the creator being
+ * edited should be updated with the provided value.
+ *
+ * @param {Area} newEndArea - The new value to be used for the end area.
+ * @returns {Action} The resulting UPDATE_END_AREA action.
+ **/
+export function updateEndArea(newEndArea: ?Area): Action {
+	return {
+		payload: newEndArea,
+		type: UPDATE_END_AREA
 	};
 }
 

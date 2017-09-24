@@ -19,12 +19,14 @@
 // @flow
 
 import {
-	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate, updateEnded,
-	updateGender, updateType
+	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
+	updateBeginArea, updateEndArea, updateEnded, updateGender, updateType
 } from './actions';
 import {Col, Input, Row} from 'react-bootstrap';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
+import EntitySearchField from '../common/entity-search-field';
+import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
@@ -55,9 +57,19 @@ type GenderOptions = {
 	id: number
 };
 
+type Area = {
+	disambiguation: ?string,
+	id: string | number,
+	text: string,
+	type: string
+};
+
+
 type StateProps = {
+	beginAreaValue: Map<string, any>,
 	beginDateLabel: string,
 	beginDateValue: string,
+	endAreaValue: Map<string, any>,
 	endDateLabel: string,
 	endDateValue: string,
 	endedChecked: boolean,
@@ -68,7 +80,9 @@ type StateProps = {
 };
 
 type DispatchProps = {
+	onBeginAreaChange: (?Area) => mixed,
 	onBeginDateChange: (SyntheticInputEvent<>) => mixed,
+	onEndAreaChange: (?Area) => mixed,
 	onEndDateChange: (SyntheticInputEvent<>) => mixed,
 	onEndedChange: (SyntheticInputEvent<>) => mixed,
 	onGenderChange: ({value: number} | null) => mixed,
@@ -122,7 +136,9 @@ type Props = StateProps & DispatchProps & OwnProps;
 function CreatorSection({
 	beginDateLabel,
 	beginDateValue,
+	beginAreaValue,
 	creatorTypes,
+	endAreaValue,
 	endDateLabel,
 	endDateValue,
 	endedChecked,
@@ -131,7 +147,9 @@ function CreatorSection({
 	genderShow,
 	genderValue,
 	typeValue,
+	onBeginAreaChange,
 	onBeginDateChange,
+	onEndAreaChange,
 	onEndDateChange,
 	onEndedChange,
 	onGenderChange,
@@ -195,6 +213,16 @@ function CreatorSection({
 					/>
 				</Col>
 			</Row>
+			<Row>
+				<Col md={6} mdOffset={3}>
+					<EntitySearchField
+						label="Begin Area"
+						type="area"
+						value={beginAreaValue && beginAreaValue.toJS()}
+						onChange={onBeginAreaChange}
+					/>
+				</Col>
+			</Row>
 			<div className="text-center">
 				<Input
 					defaultChecked={endedChecked}
@@ -204,19 +232,32 @@ function CreatorSection({
 					onChange={onEndedChange}
 				/>
 			</div>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<DateField
-						defaultValue={endDateValue}
-						empty={!endDateValue}
-						error={!isPartialDateValid(endDateValue)}
-						label={endDateLabel}
-						placeholder="YYYY-MM-DD"
-						show={endedChecked}
-						onChange={onEndDateChange}
-					/>
-				</Col>
-			</Row>
+			{endedChecked &&
+				<div>
+					<Row>
+						<Col md={6} mdOffset={3}>
+							<DateField
+								defaultValue={endDateValue}
+								empty={!endDateValue}
+								error={!isPartialDateValid(endDateValue)}
+								label={endDateLabel}
+								placeholder="YYYY-MM-DD"
+								onChange={onEndDateChange}
+							/>
+						</Col>
+					</Row>
+					<Row>
+						<Col md={6} mdOffset={3}>
+							<EntitySearchField
+								label="End Area"
+								type="area"
+								value={endAreaValue && endAreaValue.toJS()}
+								onChange={onEndAreaChange}
+							/>
+						</Col>
+					</Row>
+				</div>
+			}
 		</form>
 	);
 }
@@ -237,8 +278,10 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 	const beginDateLabel = singular ? 'Date of Birth' : 'Date Founded';
 
 	return {
+		beginAreaValue: state.get('beginArea'),
 		beginDateLabel,
 		beginDateValue: state.get('beginDate'),
+		endAreaValue: state.get('endArea'),
 		endDateLabel,
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
@@ -251,8 +294,10 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
+		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
 		onBeginDateChange: (event) =>
 			dispatch(debouncedUpdateBeginDate(event.target.value)),
+		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
 		onEndDateChange: (event) =>
 			dispatch(debouncedUpdateEndDate(event.target.value)),
 		onEndedChange: (event) =>

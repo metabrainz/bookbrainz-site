@@ -136,6 +136,21 @@ function getDefaultAliasIndex(aliases) {
 	return index > 0 ? index : 0;
 }
 
+function areaToOption(area) {
+	if (!area) {
+		return null;
+	}
+
+	const {id} = area;
+
+	return {
+		disambiguation: area.comment,
+		id,
+		text: area.name,
+		type: 'area'
+	};
+}
+
 function creatorToFormState(creator) {
 	const aliases = creator.aliasSet ?
 		creator.aliasSet.aliases.map(({language, ...rest}) => ({
@@ -175,7 +190,9 @@ function creatorToFormState(creator) {
 	);
 
 	const creatorSection = {
+		beginArea: areaToOption(creator.beginArea),
 		beginDate: creator.beginDate,
+		endArea: areaToOption(creator.endArea),
 		endDate: creator.endDate,
 		ended: creator.ended,
 		gender: creator.gender && creator.gender.id,
@@ -257,8 +274,12 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
+		beginAreaId: data.creatorSection.beginArea &&
+			data.creatorSection.beginArea.id,
 		beginDate: data.creatorSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
+		endAreaId: data.creatorSection.endArea &&
+			data.creatorSection.endArea.id,
 		endDate: data.creatorSection.ended ? data.creatorSection.endDate : '',
 		ended: data.creatorSection.ended,
 		genderId: data.creatorSection.gender,
