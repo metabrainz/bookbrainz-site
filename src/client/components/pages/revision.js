@@ -22,7 +22,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import EntityLink from '../entity-link';
 import React from 'react';
-import _compact from 'lodash.compact';
+import _ from 'lodash';
 import request from 'superagent-bluebird-promise';
 
 
@@ -87,7 +87,7 @@ class RevisionPage extends React.Component {
 				RevisionPage.formatChange(change)
 		);
 
-		return _compact(result);
+		return _.compact(result);
 	}
 
 	static formatTitle(author) {

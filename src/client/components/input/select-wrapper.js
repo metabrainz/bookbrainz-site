@@ -20,22 +20,20 @@
  */
 
 import React from 'react';
-import _isArray from 'lodash.isarray';
-import _isNil from 'lodash.isnil';
-import _isObject from 'lodash.isobject';
+import _ from 'lodash';
 import classNames from 'classnames';
 
 
 function wangleID(value, idAttribute) {
-	if (_isArray(value)) {
+	if (_.isArray(value)) {
 		return value.map(
 			(aValue) => (
-				_isObject(aValue) ? aValue[idAttribute] : aValue
+				_.isObject(aValue) ? aValue[idAttribute] : aValue
 			)
 		);
 	}
 
-	return _isObject(value) ? value[idAttribute] : value;
+	return _.isObject(value) ? value[idAttribute] : value;
 }
 
 
@@ -64,7 +62,7 @@ class SelectWrapper extends React.Component {
 	}
 
 	getValue() {
-		const childValue = _isNil(this.props.value) ?
+		const childValue = _.isNil(this.props.value) ?
 			this.currentValue : this.props.value;
 
 		return wangleID(childValue, this.props.idAttribute);
@@ -86,7 +84,7 @@ class SelectWrapper extends React.Component {
 
 		const Child = base;
 
-		const childValue = _isNil(value) ? this.state.value : value;
+		const childValue = _.isNil(value) ? this.state.value : value;
 		const labelClasses = classNames('control-label', labelClassName);
 
 		return (

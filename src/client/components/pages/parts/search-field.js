@@ -20,7 +20,7 @@
 import * as bootstrap from 'react-bootstrap';
 import Icon from 'react-fontawesome';
 import React from 'react';
-import _debounce from 'lodash.debounce';
+import _ from 'lodash';
 
 
 const {Button, Input} = bootstrap;
@@ -75,7 +75,7 @@ class SearchField extends React.Component {
 							name="q"
 							ref={(ref) => this.query = ref}
 							type="text"
-							onChange={_debounce(this.change, updateDelay)}
+							onChange={_.debounce(this.change, updateDelay)}
 						/>
 					</form>
 				</div>
