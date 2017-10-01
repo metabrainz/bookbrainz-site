@@ -68,12 +68,12 @@ router.get('/', async (req, res, next) => {
 	const entityModels = utils.getEntityModels(orm);
 
 	try {
-		let latestEntities = [];
+		const queryPromises = [];
 
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
 
-			const collection = await model.query((qb) => {
+			queryPromises.push(model.query((qb) => {
 				qb
 					.leftJoin(
 						'bookbrainz.revision',
@@ -86,10 +86,15 @@ router.get('/', async (req, res, next) => {
 			})
 				.fetchAll({
 					withRelated: ['defaultAlias', 'revision.revision']
-				});
-
-			latestEntities = latestEntities.concat(collection.toJSON());
+				})
+			);
 		}
+
+		const entitiesCollections = await Promise.all(queryPromises);
+		const latestEntities = entitiesCollections.reduce(
+			(accumulator, value) => accumulator.concat(value.toJSON()),
+			[]
+		);
 
 		const orderedEntities = _.orderBy(
 			latestEntities, 'revision.revision.createdAt',
