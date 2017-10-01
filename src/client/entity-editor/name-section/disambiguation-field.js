@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+import CustomInput from '../../input';
 import React from 'react';
 
 /**
@@ -36,7 +36,7 @@ function DisambiguationField(props) {
 	);
 
 	return (
-		<Input label={label} type="text" {...props}/>
+		<CustomInput label={label} type="text" {...props}/>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';

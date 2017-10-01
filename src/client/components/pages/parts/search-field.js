@@ -18,12 +18,13 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import CustomInput from '../../../input';
 import Icon from 'react-fontawesome';
 import React from 'react';
 import _ from 'lodash';
 
 
-const {Button, Input} = bootstrap;
+const {Button} = bootstrap;
 
 const SearchButton = (
 	<Button
@@ -70,7 +71,7 @@ class SearchField extends React.Component {
 						className="form-horizontal whole-page-form"
 						onSubmit={this.handleSubmit}
 					>
-						<Input
+						<CustomInput
 							buttonAfter={SearchButton}
 							name="q"
 							ref={(ref) => this.query = ref}

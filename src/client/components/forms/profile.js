@@ -20,6 +20,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
+import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PartialDate from '../input/partial-date';
 import React from 'react';
@@ -28,8 +29,7 @@ import SearchSelect from '../input/entity-search';
 import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent-bluebird-promise';
 
-
-const {Button, Col, Grid, Input, Row} = bootstrap;
+const {Button, Col, Grid, Row} = bootstrap;
 const {formatDate, injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -128,13 +128,13 @@ class ProfileForm extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							{loadingElement}
-							<Input
+							<CustomInput
 								defaultValue={initialDisplayName}
 								label="Display Name"
 								ref={(ref) => this.name = ref}
 								type="text"
 							/>
-							<Input
+							<CustomInput
 								defaultValue={initialBio}
 								label="Bio"
 								ref={(ref) => this.bio = ref}

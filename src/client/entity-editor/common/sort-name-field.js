@@ -18,7 +18,8 @@
 
 // @flow
 
-import {Button, Input} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
+import CustomInput from '../../input';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
@@ -145,7 +146,7 @@ function SortNameField({
 		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	return (
-		<Input
+		<CustomInput
 			buttonAfter={guessButton}
 			label={label}
 			ref={(node) => { input = node; }}

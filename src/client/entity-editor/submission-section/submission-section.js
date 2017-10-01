@@ -16,8 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Button, Col, Input, Row} from 'react-bootstrap';
+import {Alert, Button, Col, Row} from 'react-bootstrap';
 import {debounceUpdateRevisionNote, submit} from './actions';
+import CustomInput from '../../input';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
@@ -58,7 +59,7 @@ function SubmissionSection({
 			<form>
 				<Row>
 					<Col md={6} mdOffset={3}>
-						<Input
+						<CustomInput
 							label="Revision Note"
 							rows="6"
 							type="textarea"

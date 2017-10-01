@@ -23,6 +23,7 @@ import {
 } from './actions';
 import {Col, Input, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
+import CustomInput from '../../input';
 import {type Dispatch} from 'redux';
 import LanguageField from '../common/language-field';
 import React from 'react';
@@ -105,13 +106,13 @@ function WorkSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<Input label="Type">
+					<CustomInput label="Type">
 						<Select
 							options={workTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</Input>
+					</CustomInput>
 				</Col>
 			</Row>
 			<Row>

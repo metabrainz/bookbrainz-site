@@ -18,6 +18,7 @@
 
 // @flow
 
+import CustomInput from '../../input';
 import {Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
@@ -56,7 +57,7 @@ function DateField({
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
 	return (
-		<Input
+		<CustomInput
 			groupClassName={show || 'hidden'}
 			label={labelElement}
 			type="text"

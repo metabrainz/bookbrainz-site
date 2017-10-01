@@ -20,13 +20,13 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
+import CustomInput from '../../input';
 import EntityLink from '../entity-link';
 import React from 'react';
 import _ from 'lodash';
 import request from 'superagent-bluebird-promise';
 
-
-const {Button, Col, Input, ListGroup, ListGroupItem, Row} = bootstrap;
+const {Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
@@ -201,7 +201,7 @@ class RevisionPage extends React.Component {
 							className="margin-top-2"
 							onSubmit={this.handleSubmit}
 						>
-							<Input
+							<CustomInput
 								label="Add Note"
 								ref={(ref) => this.noteInput = ref}
 								rows="6"

@@ -19,8 +19,8 @@
 
 // @flow
 
+import CustomInput from '../../input';
 import Icon from 'react-fontawesome';
-import {Input} from 'react-bootstrap';
 import React from 'react';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
@@ -142,7 +142,7 @@ function EntitySearchField(
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
 	return (
-		<Input label={labelElement}>
+		<CustomInput label={labelElement}>
 			<Select.Async
 				labelKey="text"
 				loadOptions={fetchOptions}
@@ -150,7 +150,7 @@ function EntitySearchField(
 				valueKey="id"
 				{...rest}
 			/>
-		</Input>
+		</CustomInput>
 	);
 }
 EntitySearchField.displayName = 'EntitySearchField';

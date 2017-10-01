@@ -26,8 +26,9 @@ import {
 	showPhysical, updateFormat, updateLanguages,
 	updatePublication, updatePublisher, updateStatus
 } from './actions';
-import {Button, Col, Input, Row} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
+import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
 import EntitySearchField from '../common/entity-search-field';
@@ -224,43 +225,43 @@ function EditionSection({
 			</Row>
 			<Row>
 				<Col md={3} mdOffset={3}>
-					<Input label="Format">
+					<CustomInput label="Format">
 						<Select
 							options={editionFormatsForDisplay}
 							value={formatValue}
 							onChange={onFormatChange}
 						/>
-					</Input>
+					</CustomInput>
 				</Col>
 				<Col md={3}>
-					<Input label="Status">
+					<CustomInput label="Status">
 						<Select
 							options={editionStatusesForDisplay}
 							value={statusValue}
 							onChange={onStatusChange}
 						/>
-					</Input>
+					</CustomInput>
 				</Col>
 			</Row>
 			{
 				physicalVisible &&
 				<Row>
 					<Col md={3} mdOffset={3}>
-						<Input
+						<CustomInput
 							addonAfter="mm"
 							defaultValue={widthValue}
 							label="Width"
 							type="number"
 							onChange={onWidthChange}
 						/>
-						<Input
+						<CustomInput
 							addonAfter="mm"
 							defaultValue={heightValue}
 							label="Height"
 							type="number"
 							onChange={onHeightChange}
 						/>
-						<Input
+						<CustomInput
 							addonAfter="mm"
 							defaultValue={depthValue}
 							label="Depth"
@@ -269,14 +270,14 @@ function EditionSection({
 						/>
 					</Col>
 					<Col md={3}>
-						<Input
+						<CustomInput
 							addonAfter="g"
 							defaultValue={weightValue}
 							label="Weight"
 							type="number"
 							onChange={onWeightChange}
 						/>
-						<Input
+						<CustomInput
 							addonAfter="pages"
 							defaultValue={pagesValue}
 							label="Page Count"

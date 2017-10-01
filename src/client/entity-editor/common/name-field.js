@@ -18,7 +18,7 @@
 
 // @flow
 
-import {Input} from 'react-bootstrap';
+import CustomInput from '../../input';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
@@ -53,7 +53,7 @@ function NameField({
 		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>;
 
 	return (
-		<Input label={label} type="text" onChange={onChange} {...rest}/>
+		<CustomInput label={label} type="text" onChange={onChange} {...rest}/>
 	);
 }
 NameField.displayName = 'NameField';

@@ -19,7 +19,8 @@
 // @flow
 
 import {type Action, updateType} from './actions';
-import {Col, Input, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
+import CustomInput from '../../input';
 import {type Dispatch} from 'redux';
 import type {Map} from 'immutable';
 import React from 'react';
@@ -83,13 +84,13 @@ function PublicationSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<Input label="Type">
+					<CustomInput label="Type">
 						<Select
 							options={publicationTypesForDisplay}
 							value={typeValue && typeValue.toJS()}
 							onChange={onTypeChange}
 						/>
-					</Input>
+					</CustomInput>
 				</Col>
 			</Row>
 		</form>

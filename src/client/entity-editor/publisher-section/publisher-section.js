@@ -23,7 +23,8 @@ import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateArea, updateEnded, updateType
 } from './actions';
-import {Col, Input, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
+import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
 import EntitySearchField from '../common/entity-search-field';
@@ -131,13 +132,13 @@ function PublisherSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<Input label="Type">
+					<CustomInput label="Type">
 						<Select
 							options={publisherTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</Input>
+					</CustomInput>
 				</Col>
 			</Row>
 			<Row>
@@ -164,7 +165,7 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Input
+				<CustomInput
 					defaultChecked={endedChecked}
 					label="Dissolved?"
 					type="checkbox"

@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Input} from 'react-bootstrap';
+import CustomInput from '../../input';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
@@ -44,7 +44,7 @@ function ValueField({
 	);
 
 	return (
-		<Input label={label} type="text" {...rest}/>
+		<CustomInput label={label} type="text" {...rest}/>
 	);
 }
 ValueField.displayName = 'ValueField';

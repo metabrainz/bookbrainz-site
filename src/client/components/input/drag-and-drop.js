@@ -16,11 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import CustomInput from '../../input';
 import React from 'react';
 
-
-const {Input} = bootstrap;
 
 class DragAndDrop extends React.Component {
 	constructor() {
@@ -73,7 +71,7 @@ class DragAndDrop extends React.Component {
 				onDragOver={this.handleDragOver}
 				onDrop={this.handleDrop}
 			>
-				<Input
+				<CustomInput
 					name={this.props.name}
 					type="hidden"
 					value={this.state.achievement.id}

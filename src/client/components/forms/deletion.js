@@ -17,12 +17,13 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
 
 
-const {Alert, Button, Col, Input, Row, Panel} = bootstrap;
+const {Alert, Button, Col, Row, Panel} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -113,7 +114,7 @@ class EntityDeletionForm extends React.Component {
 								should be deleted, please enter a revision note
 								below and confirm deletion.
 
-								<Input
+								<CustomInput
 									ref={(ref) => this.note = ref}
 									rows="5"
 									type="textarea"

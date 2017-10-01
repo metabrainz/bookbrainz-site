@@ -17,11 +17,12 @@
  */
 
 
-import {Button, Col, Input, Row} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
 	updateAliasLanguage, updateAliasPrimary
 } from './actions';
+import CustomInput from '../../input';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import React from 'react';
@@ -98,7 +99,7 @@ const AliasRow = ({
 		</Row>
 		<Row>
 			<Col md={2} mdOffset={5}>
-				<Input
+				<CustomInput
 					defaultChecked={primaryChecked}
 					label="Primary"
 					type="checkbox"

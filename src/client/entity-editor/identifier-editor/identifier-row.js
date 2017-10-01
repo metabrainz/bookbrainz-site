@@ -23,7 +23,8 @@ import {
 	type Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
 } from './actions';
-import {Button, Col, Input, Row} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
+import CustomInput from '../../input';
 import {type Dispatch} from 'redux';
 import React from 'react';
 import Select from 'react-select';
@@ -103,13 +104,13 @@ function IdentifierRow({
 					/>
 				</Col>
 				<Col md={4}>
-					<Input label="Type">
+					<CustomInput label="Type">
 						<Select
 							options={identifierTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</Input>
+					</CustomInput>
 				</Col>
 				<Col className="text-right" md={3} mdOffset={1}>
 					<Button

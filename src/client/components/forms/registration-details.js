@@ -20,6 +20,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as validators from '../../helpers/react-validators';
+import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PartialDate from '../input/partial-date';
 import React from 'react';
@@ -28,7 +29,7 @@ import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent-bluebird-promise';
 
 
-const {Alert, Button, Input, PageHeader} = bootstrap;
+const {Alert, Button, PageHeader} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -122,7 +123,7 @@ class RegistrationForm extends React.Component {
 								name is correct. This is the name that
 								other editors will get to know you by.
 							</p>
-							<Input
+							<CustomInput
 								className="form-control"
 								defaultValue={this.props.name}
 								label="Display Name"

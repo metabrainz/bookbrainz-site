@@ -17,11 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import CustomInput from '../../input';
 import React from 'react';
 
-
-const {Input} = bootstrap;
 
 const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
 const ymRegex = /^\d{4}-\d{2}$/;
@@ -134,7 +132,7 @@ class PartialDate extends React.Component {
 	*/
 	render() {
 		return (
-			<Input
+			<CustomInput
 				bsStyle={this.validationState()}
 				groupClassName={this.props.groupClassName}
 				help={this.props.help}
