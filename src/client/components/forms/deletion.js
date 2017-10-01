@@ -50,7 +50,7 @@ class EntityDeletionForm extends React.Component {
 				window.location.href = this.entityUrl;
 			})
 			.catch((res) => {
-				const error = res.body.error;
+				const {error} = res.body;
 
 				this.setState({
 					error,
@@ -60,7 +60,7 @@ class EntityDeletionForm extends React.Component {
 	}
 
 	render() {
-		const entity = this.props.entity;
+		const {entity} = this.props;
 
 		this.entityUrl = `/${entity.type.toLowerCase()}/${entity.bbid}`;
 		this.deleteUrl = `${this.entityUrl}/delete/handler`;

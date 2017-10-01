@@ -331,7 +331,7 @@ rules:
     - 2
     - 80
     - 4
-  max-lines: 1
+  max-lines: 0
   max-params:
     - 1
     - 6

@@ -163,7 +163,13 @@ class Layout extends React.Component {
 	}
 
 	render() {
-		const {homepage, siteRevision, repositoryUrl, children, requiresJS} = this.props;
+		const {
+			homepage,
+			siteRevision,
+			repositoryUrl,
+			children,
+			requiresJS
+		} = this.props;
 
 		// Shallow merges parents props into child components
 		const childNode = homepage ? children : (

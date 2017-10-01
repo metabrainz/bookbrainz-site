@@ -29,8 +29,7 @@ import Promise from 'bluebird';
  * @returns {string} - URL path to interact with entity
  */
 export function getEntityLink(entity) {
-	const bbid = entity.bbid;
-	return `/${entity.type.toLowerCase()}/${bbid}`;
+	return `/${entity.type.toLowerCase()}/${entity.bbid}`;
 }
 
 /**
@@ -126,7 +125,11 @@ export function template(strings) {
  * uses it to generate a title string
  * @returns {string} - Title string
  */
-export function createEntityPageTitle(entity, titleForUnnamed, templateForNamed) {
+export function createEntityPageTitle(
+	entity,
+	titleForUnnamed,
+	templateForNamed
+) {
 	/**
 	 * User-visible strings should _never_ be created by concatenation; when we
 	 * start to implement localization, it will create problems for users of
