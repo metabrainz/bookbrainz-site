@@ -98,7 +98,7 @@ class ProfileForm extends React.Component {
 			name: gender.name
 		}));
 		const titleOptions = this.state.titles.map((unlock) => {
-			const title = unlock.title;
+			const {title} = unlock;
 			title.unlockId = unlock.id;
 			return title;
 		});

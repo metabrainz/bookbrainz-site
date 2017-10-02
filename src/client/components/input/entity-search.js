@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Async} from 'react-select';
 import Icon from 'react-fontawesome';
 import React from 'react';
-import ReactSelect from 'react-select';
 import SelectWrapper from './select-wrapper';
 import request from 'superagent-bluebird-promise';
 
@@ -111,11 +111,11 @@ class EntitySearch extends React.Component {
 	}
 
 	render() {
-		const {collection, defaultValue, ...props} = this.props;
+		const {defaultValue, ...props} = this.props;
 
 		return (
 			<SelectWrapper
-				base={ReactSelect.Async}
+				base={Async}
 				defaultValue={defaultValue && entityToOption(defaultValue)}
 				idAttribute="id"
 				labelAttribute="text"

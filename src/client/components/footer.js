@@ -25,8 +25,7 @@ import React from 'react';
 const {Col, Grid, Row} = bootstrap;
 
 function Footer(props) {
-	const repositoryUrl = props.repositoryUrl;
-	const siteRevision = props.siteRevision;
+	const {repositoryUrl, siteRevision} = props;
 
 	return (
 		<footer className="footer">

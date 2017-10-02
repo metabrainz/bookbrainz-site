@@ -16,10 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-'use strict';
-
 /* Pull in environment-specific configuration. */
 const env = process.env.NODE_ENV || 'development';
 const config = require(`../../../config/${env}`);
 
-module.exports = config;
+export default config;

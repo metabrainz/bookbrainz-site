@@ -84,7 +84,7 @@ export function showEntityEditions(entity) {
 					</tr>
 				</thead>
 				<tbody>
-					{entity.editions.map((edition, idx) => {
+					{entity.editions.map((edition) => {
 						const editionName = edition.defaultAlias ?
 							edition.defaultAlias.name : '(unnamed)';
 						const editionComment = edition.disambiguation &&
@@ -96,7 +96,7 @@ export function showEntityEditions(entity) {
 							edition.releaseEventSet.releaseEvents[0].date;
 						return (
 							<tr
-								key={`${edition.bbid}${idx}`}
+								key={`${edition.bbid}`}
 							>
 								<td>
 									<a href={`/edition/${edition.bbid}`}>

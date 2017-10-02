@@ -83,8 +83,7 @@ function WorkSection({
 	workTypes,
 	onLanguagesChange,
 	onTypeChange
-	}: Props
-) {
+}: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
 		value: language.id

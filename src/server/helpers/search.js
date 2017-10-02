@@ -178,7 +178,7 @@ export async function generateIndex(orm) {
 				},
 				filter: {
 					edge_filter: {
-						max_gram: 20,
+						max_gram: 20, // eslint-disable-line no-magic-numbers
 						min_gram: 1,
 						type: 'edge_ngram'
 					},

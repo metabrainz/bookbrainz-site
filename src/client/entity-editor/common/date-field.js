@@ -51,8 +51,7 @@ function DateField({
 	empty,
 	error,
 	...rest
-	}: Props
-) {
+}: Props) {
 	const labelElement =
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 

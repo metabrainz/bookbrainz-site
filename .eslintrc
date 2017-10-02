@@ -283,7 +283,7 @@ rules:
     - 2
     - single
     - avoid-escape
-  require-jsdoc: 1
+  require-jsdoc: 0
   semi-spacing:
     - 2
     -
@@ -331,7 +331,7 @@ rules:
     - 2
     - 80
     - 4
-  max-lines: 1
+  max-lines: 0
   max-params:
     - 1
     - 6

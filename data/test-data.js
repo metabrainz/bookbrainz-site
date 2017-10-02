@@ -28,19 +28,19 @@ export const editorTypeAttribs = {
 };
 
 export const editorAttribs = {
-	id: 1,
-	name: 'bob',
-	typeId: 1,
-	metabrainzUserId: 1,
 	cachedMetabrainzName: 'Bob',
-	revisionsApplied: 0
+	id: 1,
+	metabrainzUserId: 1,
+	name: 'bob',
+	revisionsApplied: 0,
+	typeId: 1
 };
 
 export const revisionistIAttribs = {
-	id: 1,
-	name: 'Revisionist I',
+	badgeUrl: 'http://test.com',
 	description: 'create one revision',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Revisionist I'
 };
 
 export const revisionistIIAttribs = {
@@ -228,15 +228,15 @@ export const publisherCreatorIIIAttribs = {
 };
 
 export const publisherCreatorAttribs = {
-	id: 1,
 	description: 'finish publisher creator track',
-	title: 'Publisher Creator',
+	id: 1,
+	title: 'Publisher Creator'
 };
 
 export const sprinterTitleAttribs = {
+	description: 'Complete Creator Creator track',
 	id: 1,
-	title: 'Sprinter',
-	description: 'Complete Creator Creator track'
+	title: 'Sprinter'
 };
 
 export const funRunnerAttribs = {
@@ -273,22 +273,22 @@ export const timeTravellerAttribs = {
 };
 
 export const timeTravellerTitleAttribs = {
+	description: 'test description',
 	id: 1,
-	title: 'Time Traveller',
-	description: 'test description'
+	title: 'Time Traveller'
 };
 
 export const hotOffThePressAttribs = {
-	id: 1,
-	name: 'Hot Off the Press',
+	badgeUrl: 'http://test.com',
 	description: 'test description',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Hot Off the Press'
 };
 
 export const hotOffThePressTitleAttribs = {
+	description: 'test description',
 	id: 1,
-	title: 'Hot Off the Press',
-	description: 'test description'
+	title: 'Hot Off the Press'
 };
 
 export function createEditor() {
@@ -296,7 +296,7 @@ export function createEditor() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new Editor(editorAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		);
 }
 
@@ -305,15 +305,15 @@ export function createRevisionist() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new AchievementType(revisionistIIAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		)
 		.then(() =>
 			new AchievementType(revisionistIIIAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		)
 		.then(() =>
 			new TitleType(revisionistAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		);
 }
 
@@ -424,7 +424,7 @@ export function createSprinter() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(sprinterTitleAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		);
 }
 
@@ -444,7 +444,7 @@ export function createFunRunner() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(funRunnerTitleAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		);
 }
 
@@ -453,7 +453,7 @@ export function createMarathoner() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(marathonerTitleAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		);
 }
 
@@ -462,7 +462,7 @@ export function createTimeTraveller() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(timeTravellerTitleAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		);
 }
 
@@ -471,12 +471,12 @@ export function createHotOffThePress() {
 		.save(null, {method: 'insert'})
 		.then(() =>
 			new TitleType(hotOffThePressTitleAttribs)
-			.save(null, {method: 'insert'})
+				.save(null, {method: 'insert'})
 		);
 }
 
 export function typeRevisionHelper(revisionType, rowcount) {
-	return function(type, editor) {
+	return (type, editor) => {
 		let rowCountPromise;
 		if (type === revisionType) {
 			rowCountPromise = Promise.resolve(rowcount);
@@ -489,7 +489,7 @@ export function typeRevisionHelper(revisionType, rowcount) {
 }
 
 export function typeCreationHelper(revisionTypeString, rowCount) {
-	return function(type, string, editor) {
+	return (type, string, editor) => {
 		let rowCountPromise;
 		if (string === revisionTypeString) {
 			rowCountPromise = Promise.resolve(rowCount);

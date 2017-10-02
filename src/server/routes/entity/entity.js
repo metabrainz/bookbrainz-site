@@ -25,7 +25,6 @@ import * as utils from '../../helpers/utils';
 import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionPage from '../../../client/components/pages/entities/edition';
-import EntityContainer from '../../../client/containers/entity';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
 import Log from 'log';
@@ -53,7 +52,7 @@ const entityComponents = {
 export function displayEntity(req, res) {
 	const {orm} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
-	const entity = res.locals.entity;
+	const {entity} = res.locals;
 	// Get unique identifier types for display
 	const identifierTypes = entity.identifierSet &&
 		_.uniqBy(
@@ -166,7 +165,7 @@ export function displayDeleteEntity(req, res) {
 }
 
 export function displayRevisions(req, res, next, RevisionModel) {
-	const bbid = req.params.bbid;
+	const {bbid} = req.params;
 
 	return new RevisionModel()
 		.where({bbid})
@@ -225,7 +224,7 @@ export function addNoteToRevision(req, res) {
 }
 
 export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
-	const entity = res.locals.entity;
+	const {entity} = res.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 

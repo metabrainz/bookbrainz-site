@@ -153,8 +153,7 @@ function EditionSection({
 	statusValue,
 	weightValue,
 	widthValue
-	}: Props
-) {
+}: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
 		value: language.id

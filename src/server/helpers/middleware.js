@@ -26,7 +26,7 @@ import renderRelationship from '../helpers/render';
 function makeLoader(modelName, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
 		const model = req.app.locals.orm[modelName];
-		model.fetchAll()
+		return model.fetchAll()
 			.then((results) => {
 				const resultsSerial = results.toJSON();
 
@@ -64,7 +64,7 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 export function loadEntityRelationships(req, res, next) {
 	const {orm} = req.app.locals;
 	const {RelationshipSet} = orm;
-	const entity = res.locals.entity;
+	const {entity} = res.locals;
 
 	new Promise((resolve) => {
 		if (!entity) {
