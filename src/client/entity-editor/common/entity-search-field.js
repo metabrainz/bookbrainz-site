@@ -124,7 +124,7 @@ function EntitySearchField(
 		error,
 		type,
 		...rest
-		}: EntitySearchFieldProps
+	}: EntitySearchFieldProps
 ) {
 	function fetchOptions(query) {
 		return request

@@ -65,8 +65,7 @@ function PublicationSection({
 	publicationTypes,
 	typeValue,
 	onTypeChange
-	}: Props
-) {
+}: Props) {
 	const publicationTypesForDisplay = publicationTypes.map((type) => ({
 		label: type.label,
 		value: type.id

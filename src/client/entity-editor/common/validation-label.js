@@ -71,8 +71,7 @@ function ValidationLabel({
 	children,
 	empty,
 	error
-	}: Props
-) {
+}: Props) {
 	const iconElement = icon(empty, error) &&
 		<Icon className="margin-left-0-5" name={icon(empty, error)}/>;
 

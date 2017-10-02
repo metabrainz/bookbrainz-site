@@ -47,8 +47,7 @@ function NameField({
 	error,
 	onChange,
 	...rest
-	}: Props
-) {
+}: Props) {
 	const label =
 		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>;
 

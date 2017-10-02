@@ -120,8 +120,7 @@ function SortNameField({
 	onChange,
 	storedNameValue,
 	...rest
-	}: Props
-) {
+}: Props) {
 	let input;
 
 	function handleGuessClick() {

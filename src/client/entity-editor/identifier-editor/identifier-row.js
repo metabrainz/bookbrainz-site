@@ -81,8 +81,7 @@ function IdentifierRow({
 	onTypeChange,
 	onRemoveButtonClick,
 	onValueChange
-	}: Props
-) {
+}: Props) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id

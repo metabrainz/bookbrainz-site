@@ -32,6 +32,7 @@ import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
+
 const {isPartialDateValid} = helpers;
 
 type CreatorType = {
@@ -141,8 +142,7 @@ function CreatorSection({
 	onEndedChange,
 	onGenderChange,
 	onTypeChange
-	}: Props
-) {
+}: Props) {
 	const genderOptionsForDisplay = genderOptions.map((gender) => ({
 		label: gender.name,
 		value: gender.id

@@ -147,19 +147,19 @@ class EntityContainer extends React.Component {
 		const editUrl =
 			`/${entity.type.toLowerCase()}/${entity.bbid}/relationships`;
 		const identifiers = entity.identifierSet &&
-			identifierTypes.map((type, idx) => {
+			identifierTypes.map((type) => {
 				const identifierValues =
 					entity.identifierSet.identifiers.filter((identifier) =>
 						identifier.type.id === type.id
-					).map((identifier, index) => (
+					).map((identifier) => (
 						<dd
-							key={`${identifier.id}${index}`}
+							key={`${identifier.id}`}
 						>
 							{identifier.value}
 						</dd>
 					));
 				return [
-					<dt key={`type${type.id}${idx}`}>{type.label}</dt>,
+					<dt key={`type${type.id}`}>{type.label}</dt>,
 					identifierValues
 				];
 			});
@@ -246,9 +246,9 @@ class EntityContainer extends React.Component {
 					>
 						This entity has been deleted by an editor. This is most
 						likely because it was added accidentally or
-						incorrectly. If you're sure this entity should still
+						incorrectly. If you’re sure this entity should still
 						exist, you will be able to undelete it in a future
-						version of BookBrainz, but that's not quite ready yet.
+						version of BookBrainz, but that’s not quite ready yet.
 					</Panel>
 				</Col>
 			</Row>
