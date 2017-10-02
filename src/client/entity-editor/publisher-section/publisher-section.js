@@ -113,8 +113,7 @@ function PublisherSection({
 	onEndDateChange,
 	onEndedChange,
 	onTypeChange
-	}: Props
-) {
+}: Props) {
 	const publisherTypesForDisplay = publisherTypes.map((type) => ({
 		label: type.label,
 		value: type.id
