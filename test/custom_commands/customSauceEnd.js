@@ -3,7 +3,7 @@
 
 import SauceLabs from 'saucelabs';
 
-/* eslint no-invalid-this: 0 */
+/* eslint-disable babel/no-invalid-this */
 export function command() {
 	const saucelabs = new SauceLabs({
 		password: process.env.SAUCE_ACCESS_KEY,
@@ -22,3 +22,4 @@ export function command() {
 
 	this.end();
 }
+/* eslint-enable babel/no-invalid-this */
