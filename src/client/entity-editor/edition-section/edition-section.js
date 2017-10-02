@@ -36,7 +36,9 @@ import LanguageField from '../common/language-field';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import makeImmutable from '../common/make-immutable';
 
+const ImmutableLanguageField = makeImmutable(LanguageField);
 
 const {isPartialDateValid} = helpers;
 
@@ -181,7 +183,7 @@ function EditionSection({
 					<EntitySearchField
 						label="Publication"
 						type="publication"
-						value={publicationValue && publicationValue.toJS()}
+						value={publicationValue}
 						onChange={onPublicationChange}
 					/>
 				</Col>
@@ -195,7 +197,7 @@ function EditionSection({
 					<EntitySearchField
 						label="Publisher"
 						type="publisher"
-						value={publisherValue && publisherValue.toJS()}
+						value={publisherValue}
 						onChange={onPublisherChange}
 					/>
 				</Col>
@@ -215,10 +217,10 @@ function EditionSection({
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<LanguageField
+					<ImmutableLanguageField
 						multi
 						options={languageOptionsForDisplay}
-						value={languageValues.toJS()}
+						value={languageValues}
 						onChange={onLanguagesChange}
 					/>
 				</Col>

@@ -26,7 +26,10 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import makeImmutable from '../common/make-immutable';
 
+
+const ImmutableSelect = makeImmutable(Select);
 
 type PublicationType = {
 	label: string,
@@ -85,9 +88,9 @@ function PublicationSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<CustomInput label="Type">
-						<Select
+						<ImmutableSelect
 							options={publicationTypesForDisplay}
-							value={typeValue && typeValue.toJS()}
+							value={typeValue}
 							onChange={onTypeChange}
 						/>
 					</CustomInput>

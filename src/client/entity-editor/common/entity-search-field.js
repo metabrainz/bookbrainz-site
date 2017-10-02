@@ -22,9 +22,13 @@
 import CustomInput from '../../input';
 import Icon from 'react-fontawesome';
 import React from 'react';
-import Select from 'react-select';
+import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
+import makeImmutable from './make-immutable';
 import request from 'superagent-bluebird-promise';
+
+
+const ImmutableAsyncSelect = makeImmutable(SelectAsync);
 
 /**
  * Determines whether an entity provided to the EntitySearch component is an
@@ -143,7 +147,7 @@ function EntitySearchField(
 
 	return (
 		<CustomInput label={labelElement}>
-			<Select.Async
+			<ImmutableAsyncSelect
 				labelKey="text"
 				loadOptions={fetchOptions}
 				optionRenderer={Option}

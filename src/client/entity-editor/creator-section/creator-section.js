@@ -206,7 +206,7 @@ function CreatorSection({
 					<EntitySearchField
 						label="Begin Area"
 						type="area"
-						value={beginAreaValue && beginAreaValue.toJS()}
+						value={beginAreaValue}
 						onChange={onBeginAreaChange}
 					/>
 				</Col>
@@ -239,7 +239,7 @@ function CreatorSection({
 							<EntitySearchField
 								label="End Area"
 								type="area"
-								value={endAreaValue && endAreaValue.toJS()}
+								value={endAreaValue}
 								onChange={onEndAreaChange}
 							/>
 						</Col>

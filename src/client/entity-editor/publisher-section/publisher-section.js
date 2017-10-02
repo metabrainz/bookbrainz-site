@@ -146,7 +146,7 @@ function PublisherSection({
 					<EntitySearchField
 						label="Area"
 						type="area"
-						value={areaValue && areaValue.toJS()}
+						value={areaValue}
 						onChange={onAreaChange}
 					/>
 				</Col>
