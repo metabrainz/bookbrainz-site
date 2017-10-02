@@ -99,9 +99,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		}
 
 		// Edit is for a user other than the current one
-		throw new error.PermissionDeniedError(
-			'You do not have permission to edit that user', req
-		);
+		throw new error.PermissionDeniedError({
+			message: 'You do not have permission to edit that user',
+			req
+		});
 	})
 		.then(() =>
 			// Fetch the current user from the database

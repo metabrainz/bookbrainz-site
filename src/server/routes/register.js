@@ -127,16 +127,16 @@ router.post('/handler', (req, res) => {
 			log.debug(err);
 
 			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
-				throw new error.FormSubmissionError(
+				throw new error.FormSubmissionError({message:
 					'That username already exists - please try using another,' +
 					' or contact us to have your existing BookBrainz account' +
 					' linked to a MusicBrainz account.'
-				);
+				});
 			}
 
-			throw new error.FormSubmissionError(
+			throw new error.FormSubmissionError({message:
 				'Something went wrong when registering, please try again!'
-			);
+			});
 		});
 
 	return handler.sendPromiseResult(res, registerPromise);

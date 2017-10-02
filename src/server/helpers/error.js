@@ -23,104 +23,111 @@ import Log from 'log';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import config from './config';
-import status from 'http-status';
+import statusCodes from 'http-status';
 
 
 const log = new Log(config.site.log);
 
 export class SiteError extends Error {
-	constructor(message) {
+	constructor({
+		message = 'An unhandled error occured',
+		name = null,
+		status = statusCodes.INTERNAL_SERVER_ERROR
+	} = {}) {
 		super();
 
-		// We can't access the subclass's default message before calling super,
-		// so we set it manually here
-		this.message = message || this.constructor.defaultMessage;
-
-		this.name = this.constructor.name;
-		this.status = this.constructor.status;
-	}
-
-	static get defaultMessage() {
-		return 'An unhandled error occurred';
-	}
-
-	static get status() {
-		return status.INTERNAL_SERVER_ERROR;
+		this.message = message;
+		this.name = name;
+		this.status = status;
 	}
 }
 
 class PathError extends SiteError {
-	constructor(message, req) {
-		super(message);
-		this.detailedMessage = this.constructor.detailedMessage &&
-				this.constructor.detailedMessage(req);
+	constructor({
+		detailedMessage,
+		...props
+	}) {
+		super(props);
+		this.detailedMessage = detailedMessage;
 	}
 }
 
 class _AuthenticationError extends SiteError {
-	static get status() {
-		return status.UNAUTHORIZED;
+	constructor(props) {
+		super({status: statusCodes.UNAUTHORIZED, ...props});
 	}
 }
 
 export class AuthenticationFailedError extends _AuthenticationError {
-	static get defaultMessage() {
-		return 'Invalid authentication credentials';
+	constructor(props) {
+		super({defaultMessage: 'Invalid authentication credentials', ...props});
 	}
 }
 
 // For use when something slips past client-side validation
 export class FormSubmissionError extends SiteError {
-	static get defaultMessage() {
-		return 'Form contained invalid data';
-	}
-
-	static get status() {
-		return status.BAD_REQUEST;
+	constructor(props) {
+		super({
+			defaultMessage: 'Form contained invalid data',
+			status: statusCodes.BAD_REQUEST,
+			...props
+		});
 	}
 }
 
 export class NotAuthenticatedError extends _AuthenticationError {
-	static get defaultMessage() {
-		return 'You are not currently authenticated';
+	constructor(props) {
+		super({
+			defaultMessage: 'You are not currently authenticated',
+			...props
+		});
 	}
 }
 
 export class NotFoundError extends PathError {
-	static get defaultMessage() {
-		return 'Page not found';
-	}
-
-	static get status() {
-		return status.NOT_FOUND;
-	}
-
-	static detailedMessage(req) {
-		return [
+	constructor({req = {path: 'N/A'}, ...rest}) {
+		const detailedMessage = [
 			`No content exists at the path requested: ${req.path}`,
 			'Please make sure you have entered in the correct address!'
 		];
+
+		super({
+			defaultMessage: 'Page not found',
+			detailedMessage,
+			status: statusCodes.NOT_FOUND,
+			...rest
+		});
 	}
 }
 
 export class PermissionDeniedError extends PathError {
-	static get defaultMessage() {
-		return 'You do not have permission to access this page';
-	}
-
-	static get status() {
-		return status.FORBIDDEN;
-	}
-
-	static detailedMessage(req) {
-		return [
+	constructor({req = {path: 'N/A'}, ...rest}) {
+		const detailedMessage = [
 			`You do not have permission to access the following path:
 			${req.path}`,
 			`Please make sure you have entered in the correct credentials and
 			address!`
 		];
+
+		super({
+			defaultMessage: 'You do not have permission to access this page',
+			detailedMessage,
+			status: statusCodes.FORBIDDEN,
+			...rest
+		});
 	}
 }
+
+
+export class AwardNotUnlockedError extends SiteError {
+	constructor(props) {
+		super({
+			defaultMessage: 'An award was not unlocked',
+			...props
+		});
+	}
+}
+
 
 function _logError(err) {
 	log.error(err);
@@ -157,20 +164,4 @@ export function sendErrorAsJSON(res, err) {
 	const errorToSend = _getErrorToSend(err);
 
 	res.status(errorToSend.status).send({error: errorToSend.message});
-}
-
-export class AwardNotUnlockedError extends Error {
-	constructor(message) {
-		super();
-
-		// We can't access the subclass's default message before calling super,
-		// so we set it manually here
-		this.message = message || this.constructor.defaultMessage;
-
-		this.name = this.constructor.name;
-	}
-
-	static get defaultMessage() {
-		return 'An award was not unlocked';
-	}
 }
