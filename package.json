@@ -26,6 +26,9 @@
     "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator",
     "flow": "flow"
   },
+  "engines": {
+    "node": ">=6.0"
+  },
   "dependencies": {
     "babel-cli": "^6.18.0",
     "babel-plugin-array-includes": "^2.0.3",
