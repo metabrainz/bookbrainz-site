@@ -24,9 +24,9 @@ export function entityHasChanged(initial, current) {
 }
 
 export function getEntityLink(entity) {
-	const bbid = entity.bbid;
+	const {bbid, type} = entity;
 
-	return `/${entity.type.toLowerCase()}/${bbid}`;
+	return `/${type.toLowerCase()}/${bbid}`;
 }
 
 export function identifierIsValid(typeId, value, identifierTypes) {

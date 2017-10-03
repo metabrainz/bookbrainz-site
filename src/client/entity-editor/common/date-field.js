@@ -19,7 +19,6 @@
 // @flow
 
 import CustomInput from '../../input';
-import {Input} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 

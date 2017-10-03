@@ -67,7 +67,7 @@ class RegistrationForm extends React.Component {
 				window.location.href = '/login';
 			})
 			.catch((res) => {
-				const error = res.body.error;
+				const {error} = res.body;
 				this.setState({
 					error,
 					waiting: false
@@ -108,7 +108,7 @@ class RegistrationForm extends React.Component {
 					are now just one step away from becoming a BookBrainz
 					editor. The following form allows you to specify
 					additional information that will let other users know
-					a little bit more about you. When you're done, just
+					a little bit more about you. When you’re done, just
 					click the green button at the bottom of the page.
 				</div>
 				<div className="row">

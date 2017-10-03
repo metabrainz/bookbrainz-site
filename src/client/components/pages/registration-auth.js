@@ -36,13 +36,13 @@ function RegistrationAuth() {
 			<p>
 				To sign up as an editor of BookBrainz, you need to first
 				have a MusicBrainz account. Please click the button below
-				to sign in or register with MusicBrainz. You'll then be
+				to sign in or register with MusicBrainz. You’ll then be
 				redirected back to BookBrainz to continue registration!
 			</p>
 			<Alert bsStyle="warning">
 				If you already registered for BookBrainz, and your account
-				isn't linked to a MusicBrainz account, please contact us using
-				one of the links on our homepage instead of registering. We'll
+				isn’t linked to a MusicBrainz account, please contact us using
+				one of the links on our homepage instead of registering. We’ll
 				update your account details to link your account so that you
 				can sign in.
 			</Alert>

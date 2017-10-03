@@ -76,7 +76,6 @@ class SelectWrapper extends React.Component {
 			labelAttribute,
 			labelClassName,
 			multiple,
-			onChange,
 			wrapperClassName,
 			value,
 			...props

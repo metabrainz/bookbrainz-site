@@ -21,7 +21,7 @@
 import {
 	type Action, updateLanguages, updateType
 } from './actions';
-import {Col, Input, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import CustomInput from '../../input';
 import {type Dispatch} from 'redux';

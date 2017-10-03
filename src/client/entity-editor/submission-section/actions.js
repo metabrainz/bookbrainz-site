@@ -99,7 +99,7 @@ function postSubmission(url: string, data: Map<string, mixed>): Promise {
 export function submit(
 	submissionUrl: string
 ): ((Action) => mixed, () => Map<string, mixed>) => mixed {
-	return function (dispatch, getState) {
+	return (dispatch, getState) => {
 		const rootState = getState();
 		return postSubmission(submissionUrl, rootState)
 			.catch(

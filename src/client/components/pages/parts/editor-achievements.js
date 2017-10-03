@@ -52,7 +52,7 @@ class EditorAchievementTab extends React.Component {
 				window.location.href = `/editor/${this.state.editor.id}`;
 			})
 			.catch((res) => {
-				const error = res.body.error;
+				const {error} = res.body;
 				this.setState({
 					error,
 					waiting: false

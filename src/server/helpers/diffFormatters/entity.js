@@ -43,7 +43,7 @@ function formatChangedDisambiguation(change) {
 }
 
 function formatNewAliasSet(change) {
-	const rhs = change.rhs;
+	const {rhs} = change;
 	const changes = [];
 	if (rhs.defaultAlias && rhs.defaultAliasId) {
 		changes.push(
@@ -162,7 +162,7 @@ function formatAlias(change) {
 }
 
 function formatNewIdentifierSet(change) {
-	const rhs = change.rhs;
+	const {rhs} = change;
 	if (rhs.identifiers && rhs.identifiers.length > 0) {
 		return [base.formatRow(
 			'N', 'Identifiers', null, rhs.identifiers.map(
@@ -237,7 +237,7 @@ function formatIdentifier(change) {
 
 function formatRelationshipAdd(entity, change) {
 	const changes = [];
-	const rhs = change.item.rhs;
+	const {rhs} = change.item;
 
 	if (!rhs) {
 		return changes;

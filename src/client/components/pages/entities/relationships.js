@@ -16,13 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
-
-import Icon from 'react-fontawesome';
 import React from 'react';
 
-
-const {Button} = bootstrap;
 
 function EntityRelationships({entityUrl, relationships}) {
 	return (

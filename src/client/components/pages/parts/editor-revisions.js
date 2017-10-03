@@ -29,7 +29,7 @@ const {formatDate, isWithinDayFromNow} = utilsHelper;
 
 function EditorRevisionsTab(props) {
 	const {editor} = props;
-	const revisions = editor.revisions;
+	const {revisions} = editor;
 
 	return (
 		<div>

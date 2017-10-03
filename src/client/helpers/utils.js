@@ -48,6 +48,8 @@ export function formatDate(date, includeTime) {
 	return formatter.format('YYYY-MM-DD');
 }
 
+const MILLISECONDS_PER_DAY = 86400000;
+
 export function isWithinDayFromNow(date) {
-	return Boolean(Date.now() - date.getTime() < 86400000);
+	return Boolean(Date.now() - date.getTime() < MILLISECONDS_PER_DAY);
 }

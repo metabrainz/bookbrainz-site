@@ -124,7 +124,6 @@ export class PermissionDeniedError extends PathError {
 
 function _logError(err) {
 	log.error(err);
-	log.debug(err.stack);
 }
 
 function _getErrorToSend(err) {

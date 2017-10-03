@@ -110,7 +110,7 @@ class EntityDeletionForm extends React.Component {
 								footer={footerComponent}
 								header={headerComponent}
 							>
-								If you're sure that {entity.type} {entityName}
+								If you’re sure that {entity.type} {entityName}
 								should be deleted, please enter a revision note
 								below and confirm deletion.
 

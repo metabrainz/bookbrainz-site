@@ -397,7 +397,7 @@ function processSprinter(orm, editorId) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL \'1 hour\');`;
+		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
 
 	return bookshelf.knex.raw(rawSql)
 		.then((out) => {
@@ -425,7 +425,7 @@ function getEditsInDays(orm, editorId, days) {
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
 		WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL \'${days} days\');`;
+		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
 
 	return bookshelf.knex.raw(rawSql)
 		.then((out) => out.rowCount);
@@ -588,22 +588,16 @@ function processExplorer(orm, editorId) {
 }
 
 
-export function processPageVisit(orm, userId) {
-	return Promise.join(
-		processExplorer(orm, userId),
-		(explorer) => {
-			let alert = [];
-			alert.push(
-				achievementToUnlockId(explorer)
-			);
-			alert = [].concat.apply([], alert);
-			alert = alert.join(',');
-			return {
-				alert,
-				explorer
-			};
-		}
-	);
+export async function processPageVisit(orm, userId) {
+	const explorer = await processExplorer(orm, userId);
+
+	const unlockIds = achievementToUnlockId(explorer);
+	const alert = unlockIds.join(',');
+
+	return {
+		alert,
+		explorer
+	};
 }
 
 /**
