@@ -104,7 +104,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 
 		const NO_MATCH = -1;
 		if (trustedUsers.indexOf(req.user.name) === NO_MATCH) {
-			throw new error.PermissionDeniedError({req});
+			throw new error.PermissionDeniedError(null, req);
 		}
 
 		resolve();

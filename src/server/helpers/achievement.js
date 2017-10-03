@@ -75,10 +75,9 @@ function awardAchievement(orm, editorId, achievementName) {
 		.then((achievementTier) => {
 			let awardPromise;
 			if (achievementTier === null) {
-				awardPromise = Promise.reject(new error.AwardNotUnlockedError({
-					message:
-						`Achievement ${achievementName} not found in database`
-				}));
+				awardPromise = Promise.reject(new error.AwardNotUnlockedError(
+					`Achievement ${achievementName} not found in database`
+				));
 			}
 			else {
 				const achievementAttribs = {
@@ -93,9 +92,7 @@ function awardAchievement(orm, editorId, achievementName) {
 							return out;
 						})
 						.catch((err) => Promise.reject(
-							new error.AwardNotUnlockedError({
-								message: err.message
-							})
+							new error.AwardNotUnlockedError(err.message)
 						));
 			}
 			return awardPromise;
@@ -121,10 +118,9 @@ function awardTitle(orm, editorId, tier) {
 				let awardPromise;
 				if (title === null) {
 					awardPromise = Promise.reject(
-						new error.AwardNotUnlockedError({
-							message:
-								`Title ${tier.titleName} not found in database`
-						})
+						new error.AwardNotUnlockedError(
+							`Title ${tier.titleName} not found in database`
+						)
 					);
 				}
 				else {
@@ -139,9 +135,7 @@ function awardTitle(orm, editorId, tier) {
 							return out;
 						})
 						.catch((err) => Promise.reject(
-							new error.AwardNotUnlockedError({
-								message: err.message
-							})
+							new error.AwardNotUnlockedError(err.message)
 						));
 				}
 				return awardPromise;

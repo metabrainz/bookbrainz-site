@@ -68,7 +68,7 @@ export function loadEntityRelationships(req, res, next) {
 
 	new Promise((resolve) => {
 		if (!entity) {
-			throw new error.SiteError({message: 'Failed to load entity'});
+			throw new error.SiteError('Failed to load entity');
 		}
 
 		resolve();
