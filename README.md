@@ -105,14 +105,16 @@ which can be installed using npm:
 This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
+Create an account on  https://musicbrainz.org. Go to https://musicbrainz.org/account/applications and set up an application
+using any name with web application and put `http://localhost:9099/cb`  in rollback URL section.
 
-Create a copy of development.json.example and rename it to development.json.
-Then, edit the values so that they are correct for your environment. If the
-prior instructions have been followed, it should only be necessary to change
-the PostgreSQL username and password.
+Go to Config directory and Create a copy of development.json.example and rename it to development.json.
+Then, edit the values of clientID, clientSecret of musicBrainz section, values of clientID and clientSecret are given created 
+application and change the PostgreSQL username and password.
 
 ## Building and running
 A number of subcommands exist to manage the installation and run the server.
+Before using these subcommands <br/> like `npm start`, you should must start redis server using command: `redis-server` and Elasticsearch server. <br/>
 These are described here - any commands not listed should not be called
 directly:
 
