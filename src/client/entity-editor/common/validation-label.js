@@ -85,7 +85,7 @@ function ValidationLabel({
 ValidationLabel.displayName = 'ValidationLabel';
 ValidationLabel.defaultProps = {
 	children: null,
-	empty: true,
+	empty: false,
 	error: false
 };
 

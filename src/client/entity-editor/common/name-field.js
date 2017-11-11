@@ -25,7 +25,7 @@ import ValidationLabel from '../common/validation-label';
 
 type Props = {
 	empty?: boolean,
-	error?: boolean,
+	error?: boolean
 };
 
 /**
@@ -55,8 +55,8 @@ function NameField({
 }
 NameField.displayName = 'NameField';
 NameField.defaultProps = {
-	empty: true,
-	error: false,
+	empty: false,
+	error: false
 };
 
 export default NameField;

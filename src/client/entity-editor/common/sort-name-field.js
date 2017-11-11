@@ -157,7 +157,7 @@ function SortNameField({
 }
 SortNameField.displayName = 'SortNameField';
 SortNameField.defaultProps = {
-	empty: true,
+	empty: false,
 	error: false,
 	onChange: null
 };
