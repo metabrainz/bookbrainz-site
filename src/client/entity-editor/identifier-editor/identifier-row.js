@@ -30,6 +30,7 @@ import React from 'react';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {connect} from 'react-redux';
+import {validateIdentifierValue} from '../validators/common';
 
 
 type TypeOption = {
@@ -62,6 +63,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  * remove the identifier from the editor.
  *
  * @param {Object} props - The properties passed to the component.
+ * @param {number} props.index - The index of the row in the parent editor.
  * @param {Array} props.typeOptions - The list of possible types for an
  *        identifier.
  * @param {number} props.typeValue - The ID of the type currently selected.
@@ -76,6 +78,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered IdentifierRow.
  **/
 function IdentifierRow({
+	index,
 	typeOptions,
 	valueValue,
 	typeValue,
