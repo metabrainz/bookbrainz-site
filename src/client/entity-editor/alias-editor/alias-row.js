@@ -22,7 +22,9 @@ import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
 	updateAliasLanguage, updateAliasPrimary
 } from './actions';
-import CustomInput from '../../input';
+import {
+	validateAliasLanguage, validateAliasName, validateAliasSortName
+} from '../validators/common';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import React from 'react';
@@ -75,22 +77,30 @@ const AliasRow = ({
 			<Col md={4}>
 				<NameField
 					defaultValue={nameValue}
-					empty={isAliasEmpty(nameValue, sortNameValue)}
-					error={!nameValue}
+					empty={
+						isAliasEmpty(nameValue, sortNameValue, languageValue)
+					}
+					error={!validateAliasName(nameValue)}
 					onChange={onNameChange}
 				/>
 			</Col>
 			<Col md={4}>
 				<SortNameField
 					defaultValue={sortNameValue}
-					empty={isAliasEmpty(nameValue, sortNameValue)}
-					error={!sortNameValue}
+					empty={
+						isAliasEmpty(nameValue, sortNameValue, languageValue)
+					}
+					error={!validateAliasSortName(sortNameValue)}
 					storedNameValue={nameValue}
 					onChange={onSortNameChange}
 				/>
 			</Col>
 			<Col md={4}>
 				<LanguageField
+					empty={
+						isAliasEmpty(nameValue, sortNameValue, languageValue)
+					}
+					error={!validateAliasLanguage(languageValue)}
 					instanceId="language"
 					options={languageOptions}
 					value={languageValue}
