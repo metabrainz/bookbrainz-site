@@ -95,16 +95,16 @@ function IdentifierRow({
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
-						error={!data.identifierIsValid(
-							typeValue, valueValue, typeOptions
+						error={!validateIdentifierValue(
+							valueValue, typeValue, typeOptions
 						)}
-						typeValue={typeValue}
 						onChange={onValueChange}
 					/>
 				</Col>
 				<Col md={4}>
 					<CustomInput label="Type">
 						<Select
+							instanceId={`identifierType${index}`}
 							options={identifierTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}

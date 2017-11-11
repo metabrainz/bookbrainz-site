@@ -91,6 +91,7 @@ const AliasRow = ({
 			</Col>
 			<Col md={4}>
 				<LanguageField
+					instanceId="language"
 					options={languageOptions}
 					value={languageValue}
 					onChange={onLanguageChange}

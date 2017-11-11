@@ -167,6 +167,7 @@ function CreatorSection({
 				<Col md={6} mdOffset={3}>
 					<CustomInput label="Type">
 						<Select
+							instanceId="creatorType"
 							options={creatorTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
@@ -181,6 +182,7 @@ function CreatorSection({
 						label="Gender"
 					>
 						<Select
+							instanceId="gender"
 							options={genderOptionsForDisplay}
 							value={genderValue}
 							onChange={onGenderChange}
@@ -204,6 +206,7 @@ function CreatorSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<EntitySearchField
+						instanceId="beginArea"
 						label="Begin Area"
 						type="area"
 						value={beginAreaValue}
@@ -237,6 +240,7 @@ function CreatorSection({
 					<Row>
 						<Col md={6} mdOffset={3}>
 							<EntitySearchField
+								instanceId="endArea"
 								label="End Area"
 								type="area"
 								value={endAreaValue}

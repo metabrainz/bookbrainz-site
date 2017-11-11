@@ -107,6 +107,7 @@ function WorkSection({
 				<Col md={6} mdOffset={3}>
 					<CustomInput label="Type">
 						<Select
+							instanceId="workType"
 							options={workTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
@@ -118,6 +119,7 @@ function WorkSection({
 				<Col md={6} mdOffset={3}>
 					<LanguageField
 						multi
+						instanceId="language"
 						options={languageOptionsForDisplay}
 						value={languageValues.toJS()}
 						onChange={onLanguagesChange}

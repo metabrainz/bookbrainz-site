@@ -180,6 +180,7 @@ function EditionSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<EntitySearchField
+						instanceId="publication"
 						label="Publication"
 						type="publication"
 						value={publicationValue}
@@ -194,6 +195,7 @@ function EditionSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<EntitySearchField
+						instanceId="publisher"
 						label="Publisher"
 						type="publisher"
 						value={publisherValue}
@@ -218,6 +220,7 @@ function EditionSection({
 				<Col md={6} mdOffset={3}>
 					<ImmutableLanguageField
 						multi
+						instanceId="language"
 						options={languageOptionsForDisplay}
 						value={languageValues}
 						onChange={onLanguagesChange}
@@ -228,6 +231,7 @@ function EditionSection({
 				<Col md={3} mdOffset={3}>
 					<CustomInput label="Format">
 						<Select
+							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
 							value={formatValue}
 							onChange={onFormatChange}
@@ -237,6 +241,7 @@ function EditionSection({
 				<Col md={3}>
 					<CustomInput label="Status">
 						<Select
+							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
 							value={statusValue}
 							onChange={onStatusChange}

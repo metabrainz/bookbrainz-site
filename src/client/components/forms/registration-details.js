@@ -143,6 +143,7 @@ class RegistrationForm extends React.Component {
 								base={ReactSelect}
 								defaultValue={initialGender}
 								idAttribute="id"
+								instanceId="gender"
 								label="Gender"
 								labelAttribute="name"
 								labelClassName="col-md-4"

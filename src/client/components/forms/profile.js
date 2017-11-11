@@ -144,6 +144,7 @@ class ProfileForm extends React.Component {
 								<SelectWrapper
 									base={ReactSelect}
 									idAttribute="unlockId"
+									instanceId="title"
 									label="Title"
 									labelAttribute="title"
 									options={titleOptions}
@@ -162,6 +163,7 @@ class ProfileForm extends React.Component {
 								base={ReactSelect}
 								defaultValue={initialGender}
 								idAttribute="id"
+								instanceId="gender"
 								label="Gender"
 								labelAttribute="name"
 								options={genderOptions}

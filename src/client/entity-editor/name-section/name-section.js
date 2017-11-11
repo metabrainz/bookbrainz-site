@@ -104,6 +104,7 @@ function NameSection({
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<LanguageField
+							instanceId="language"
 							options={languageOptionsForDisplay}
 							value={languageValue}
 							onChange={onLanguageChange}

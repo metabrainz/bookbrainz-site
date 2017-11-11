@@ -133,6 +133,7 @@ function PublisherSection({
 				<Col md={6} mdOffset={3}>
 					<CustomInput label="Type">
 						<Select
+							instanceId="publisherType"
 							options={publisherTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
@@ -143,6 +144,7 @@ function PublisherSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<EntitySearchField
+						instanceId="area"
 						label="Area"
 						type="area"
 						value={areaValue}
