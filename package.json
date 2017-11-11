@@ -19,7 +19,7 @@
     "debug": "npm run watch-less & npm run watch-client-js & npm run watch-server-js",
     "lint": "npm run prestart && eslint src test templates",
     "lint-errors": "npm run prestart && eslint --quiet src test templates",
-    "test": "npm run lint && cross-env NODE_ENV=test mocha",
+    "test": "npm run lint-errors && cross-env NODE_ENV=test mocha",
     "test-cov": "nyc --reporter=text npm run test",
     "test-ci": "nyc --reporter=lcovonly --reporter=text-summary npm run test",
     "jsdoc": "node_modules/.bin/jsdoc -r src",
