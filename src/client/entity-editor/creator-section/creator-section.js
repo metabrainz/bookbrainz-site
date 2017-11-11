@@ -23,7 +23,7 @@ import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateBeginArea, updateEndArea, updateEnded, updateGender, updateType
 } from './actions';
-import {Col, Row} from 'react-bootstrap';
+import {Checkbox, Col, Row} from 'react-bootstrap';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
@@ -215,13 +215,12 @@ function CreatorSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<CustomInput
+				<Checkbox
 					defaultChecked={endedChecked}
-					label={endedLabel}
-					type="checkbox"
-					wrapperClassName="margin-top-0"
 					onChange={onEndedChange}
-				/>
+				>
+					{endedLabel}
+				</Checkbox>
 			</div>
 			{endedChecked &&
 				<div>

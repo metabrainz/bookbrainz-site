@@ -17,7 +17,7 @@
  */
 
 
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Checkbox, Col, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
 	updateAliasLanguage, updateAliasPrimary
@@ -100,12 +100,12 @@ const AliasRow = ({
 		</Row>
 		<Row>
 			<Col md={2} mdOffset={5}>
-				<CustomInput
+				<Checkbox
 					defaultChecked={primaryChecked}
-					label="Primary"
-					type="checkbox"
-					onClick={onPrimaryClick}
-				/>
+					onChange={onPrimaryClick}
+				>
+					Primary
+				</Checkbox>
 			</Col>
 			<Col className="text-right" md={3} mdOffset={2}>
 				<Button

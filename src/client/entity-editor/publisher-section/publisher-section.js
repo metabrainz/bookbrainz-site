@@ -23,7 +23,7 @@ import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateArea, updateEnded, updateType
 } from './actions';
-import {Col, Row} from 'react-bootstrap';
+import {Checkbox, Col, Row} from 'react-bootstrap';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
@@ -166,13 +166,12 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<CustomInput
+				<Checkbox
 					defaultChecked={endedChecked}
-					label="Dissolved?"
-					type="checkbox"
-					wrapperClassName="margin-top-0"
 					onChange={onEndedChange}
-				/>
+				>
+					Dissolved?
+				</Checkbox>
 			</div>
 			{endedChecked &&
 				<div>
