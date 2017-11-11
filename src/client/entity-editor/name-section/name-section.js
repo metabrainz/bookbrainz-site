@@ -143,13 +143,16 @@ NameSection.propTypes = {
 	disambiguationDefaultValue: React.PropTypes.string.isRequired,
 	disambiguationVisible: React.PropTypes.bool.isRequired,
 	languageOptions: React.PropTypes.array.isRequired,
-	languageValue: React.PropTypes.string.isRequired,
+	languageValue: React.PropTypes.number,
 	nameValue: React.PropTypes.string.isRequired,
 	onDisambiguationChange: React.PropTypes.func.isRequired,
 	onLanguageChange: React.PropTypes.func.isRequired,
 	onNameChange: React.PropTypes.func.isRequired,
 	onSortNameChange: React.PropTypes.func.isRequired,
 	sortNameValue: React.PropTypes.string.isRequired
+};
+NameSection.defaultProps = {
+	languageValue: null
 };
 
 
