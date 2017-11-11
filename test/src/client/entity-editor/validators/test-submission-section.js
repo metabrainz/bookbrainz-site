@@ -23,7 +23,7 @@ import {
 } from '../../../../../src/client/entity-editor/validators/common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {testValidateRequiredStringFunc} from './helpers';
+import {testValidateStringFunc} from './helpers';
 
 
 chai.use(chaiAsPromised);
@@ -31,7 +31,7 @@ const {expect} = chai;
 
 
 function describeValidateSubmissionSectionNote() {
-	testValidateRequiredStringFunc(validateSubmissionSectionNote);
+	testValidateStringFunc(validateSubmissionSectionNote);
 }
 
 

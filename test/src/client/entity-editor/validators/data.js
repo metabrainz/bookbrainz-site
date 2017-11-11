@@ -55,6 +55,7 @@ export const INVALID_IDENTIFIERS = [
 ];
 
 export const VALID_NAME_SECTION = {
+	disambiguation: '',
 	language: 1,
 	name: 'test',
 	sortName: 'test'

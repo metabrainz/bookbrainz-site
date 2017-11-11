@@ -53,7 +53,7 @@ export function testValidatePositiveIntegerFunc(
 	});
 }
 
-export function testValidateRequiredStringFunc(
+export function testValidateStringFunc(
 	validationFunc, required = true
 ) {
 	it('should pass any non-empty string value', () => {
@@ -63,7 +63,7 @@ export function testValidateRequiredStringFunc(
 
 	it('should reject an empty string', () => {
 		const result = validationFunc('');
-		expect(result).to.be.false;
+		expect(result).to.equal(!required);
 	});
 
 	it('should reject any non-string value', () => {

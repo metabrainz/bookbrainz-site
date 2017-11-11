@@ -22,7 +22,7 @@ import {
 } from './data';
 import {
 	testValidateBooleanFunc, testValidatePositiveIntegerFunc,
-	testValidateRequiredStringFunc
+	testValidateStringFunc
 } from './helpers';
 import {
 	validateAlias, validateAliasLanguage, validateAliasName,
@@ -37,11 +37,11 @@ const {expect} = chai;
 
 
 function describeValidateAliasName() {
-	testValidateRequiredStringFunc(validateAliasName);
+	testValidateStringFunc(validateAliasName);
 }
 
 function describeValidateAliasSortName() {
-	testValidateRequiredStringFunc(validateAliasSortName);
+	testValidateStringFunc(validateAliasSortName);
 }
 
 function describeValidateAliasLanguage() {

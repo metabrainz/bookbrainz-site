@@ -22,7 +22,7 @@ import {
 	VALID_IDENTIFIERS
 } from './data';
 import {
-	testValidatePositiveIntegerFunc, testValidateRequiredStringFunc
+	testValidatePositiveIntegerFunc, testValidateStringFunc
 } from './helpers';
 import {
 	validateIdentifier, validateIdentifierType, validateIdentifierValue,
@@ -37,7 +37,7 @@ const {expect} = chai;
 
 
 function describeValidateIdentifierValueNoIdentifierTypes() {
-	testValidateRequiredStringFunc(validateIdentifierValue);
+	testValidateStringFunc(validateIdentifierValue);
 }
 
 function describeValidateIdentifierValueWithIdentifierTypes() {

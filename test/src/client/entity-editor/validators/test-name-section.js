@@ -19,10 +19,11 @@
 import * as Immutable from 'immutable';
 import {INVALID_NAME_SECTION, VALID_NAME_SECTION} from './data';
 import {
-	testValidatePositiveIntegerFunc, testValidateRequiredStringFunc
+	testValidatePositiveIntegerFunc, testValidateStringFunc
 } from './helpers';
 import {
-	validateNameSection, validateNameSectionLanguage, validateNameSectionName,
+	validateNameSection, validateNameSectionDisambiguation,
+	validateNameSectionLanguage, validateNameSectionName,
 	validateNameSectionSortName
 } from '../../../../../src/client/entity-editor/validators/common';
 import chai from 'chai';
@@ -34,15 +35,19 @@ const {expect} = chai;
 
 
 function describeValidateNameSectionName() {
-	testValidateRequiredStringFunc(validateNameSectionName);
+	testValidateStringFunc(validateNameSectionName);
 }
 
 function describeValidateNameSectionSortName() {
-	testValidateRequiredStringFunc(validateNameSectionSortName);
+	testValidateStringFunc(validateNameSectionSortName);
 }
 
 function describeValidateNameSectionLanguage() {
 	testValidatePositiveIntegerFunc(validateNameSectionLanguage);
+}
+
+function describeValidateNameSectionDisambiguation() {
+	testValidateStringFunc(validateNameSectionDisambiguation, false);
 }
 
 
@@ -78,6 +83,13 @@ function describeValidateNameSection() {
 		expect(result).to.be.false;
 	});
 
+	it('should reject an Object with an invalid disambiguation', () => {
+		const result = validateNameSection(
+			{...VALID_NAME_SECTION, disambiguation: 2}
+		);
+		expect(result).to.be.false;
+	});
+
 	it('should reject an invalid Immutable.Map', () => {
 		const result = validateNameSection(
 			Immutable.fromJS(INVALID_NAME_SECTION)
@@ -106,6 +118,10 @@ function tests() {
 	describe(
 		'validateNameSectionLanguage',
 		describeValidateNameSectionLanguage
+	);
+	describe(
+		'validateNameSectionDisambiguation',
+		describeValidateNameSectionDisambiguation
 	);
 	describe('validateNameSection', describeValidateNameSection);
 }
