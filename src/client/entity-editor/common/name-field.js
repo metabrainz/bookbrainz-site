@@ -26,7 +26,6 @@ import ValidationLabel from '../common/validation-label';
 type Props = {
 	empty?: boolean,
 	error?: boolean,
-	onChange?: () => mixed
 };
 
 /**
@@ -45,21 +44,19 @@ type Props = {
 function NameField({
 	empty,
 	error,
-	onChange,
 	...rest
 }: Props) {
 	const label =
 		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>;
 
 	return (
-		<CustomInput label={label} type="text" onChange={onChange} {...rest}/>
+		<CustomInput label={label} type="text" {...rest}/>
 	);
 }
 NameField.displayName = 'NameField';
 NameField.defaultProps = {
 	empty: true,
 	error: false,
-	onChange: null
 };
 
 export default NameField;
