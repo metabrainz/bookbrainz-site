@@ -84,7 +84,9 @@ function NameSection({
 					<Col md={6} mdOffset={3}>
 						<NameField
 							defaultValue={nameValue}
-							empty={isAliasEmpty(nameValue, sortNameValue)}
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
 							error={!nameValue}
 							onChange={onNameChange}
 						/>
@@ -94,7 +96,9 @@ function NameSection({
 					<Col md={6} mdOffset={3}>
 						<SortNameField
 							defaultValue={sortNameValue}
-							empty={isAliasEmpty(nameValue, sortNameValue)}
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
 							error={!sortNameValue}
 							storedNameValue={nameValue}
 							onChange={onSortNameChange}

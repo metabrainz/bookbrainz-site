@@ -37,9 +37,9 @@ import workSectionReducer from './work-section/reducer';
 
 
 export function isAliasEmpty(
-	nameValue: string, sortNameValue: string
+	nameValue: string, sortNameValue: string, languageValue: ?number
 ): boolean {
-	return !(nameValue.length || sortNameValue.length);
+	return !(nameValue.length || sortNameValue.length || languageValue);
 }
 
 export function getEntitySection(entityType: string) {
