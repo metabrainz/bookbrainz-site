@@ -92,7 +92,7 @@ class RevisionPage extends React.Component {
 
 	static formatTitle(author) {
 		let title;
-		if (author.titleUnlock.title) {
+		if (_.get(author, ['titleUnlock', 'title'], null)) {
 			const authorTitle = author.titleUnlock.title;
 			title = `${authorTitle.title}: ${authorTitle.description}`;
 		}
