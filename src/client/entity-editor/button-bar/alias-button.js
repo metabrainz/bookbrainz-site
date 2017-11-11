@@ -17,7 +17,9 @@
  */
 
 import {Button} from 'react-bootstrap';
+import Icon from 'react-fontawesome';
 import React from 'react';
+
 
 /**
  * Presentational component. The AliasButton component renders a button
@@ -31,6 +33,7 @@ import React from 'react';
  * @returns {ReactElement} React element containing the rendered AliasButton.
  **/
 function AliasButton({
+	aliasesInvalid,
 	numAliases,
 	...props
 }) {
@@ -42,14 +45,19 @@ function AliasButton({
 		text = `Edit ${numAliases} aliases…`;
 	}
 
+	const iconElement = aliasesInvalid &&
+		<Icon className="margin-right-0-5 text-danger" name="times"/>;
+
 	return (
 		<Button bsStyle="link" {...props}>
+			{iconElement}
 			{text}
 		</Button>
 	);
 }
 AliasButton.displayName = 'AliasButton';
 AliasButton.propTypes = {
+	aliasesInvalid: React.PropTypes.bool.isRequired,
 	numAliases: React.PropTypes.number.isRequired
 };
 

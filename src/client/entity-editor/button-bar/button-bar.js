@@ -20,6 +20,7 @@ import {Button, Col, Row} from 'react-bootstrap';
 import {
 	showAliasEditor, showDisambiguation, showIdentifierEditor
 } from './actions';
+import {validateAliases, validateIdentifiers} from '../validators/common';
 import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import React from 'react';
@@ -49,7 +50,9 @@ import {connect} from 'react-redux';
  * @returns {ReactElement} React element containing the rendered ButtonBar.
  **/
 function ButtonBar({
+	aliasesInvalid,
 	disambiguationVisible,
+	identifiersInvalid,
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
@@ -62,6 +65,7 @@ function ButtonBar({
 				<Row className="margin-top-1">
 					<Col className="text-center" md={4}>
 						<AliasButton
+							aliasesInvalid={aliasesInvalid}
 							numAliases={numAliases}
 							onClick={onAliasButtonClick}
 						/>
@@ -77,6 +81,7 @@ function ButtonBar({
 					</Col>
 					<Col className="text-center" md={4}>
 						<IdentifierButton
+							identifiersInvalid={identifiersInvalid}
 							numIdentifiers={numIdentifiers}
 							onClick={onIdentifierButtonClick}
 						/>
@@ -88,7 +93,9 @@ function ButtonBar({
 }
 ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
+	aliasesInvalid: React.PropTypes.bool.isRequired,
 	disambiguationVisible: React.PropTypes.bool.isRequired,
+	identifiersInvalid: React.PropTypes.bool.isRequired,
 	numAliases: React.PropTypes.number.isRequired,
 	numIdentifiers: React.PropTypes.number.isRequired,
 	onAliasButtonClick: React.PropTypes.func.isRequired,
@@ -99,7 +106,11 @@ ButtonBar.propTypes = {
 function mapStateToProps(rootState) {
 	const state = rootState.get('buttonBar');
 	return {
+		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
 		disambiguationVisible: state.get('disambiguationVisible'),
+		identifiersInvalid: !validateIdentifiers(
+			rootState.get('identifierEditor')
+		),
 		numAliases: rootState.get('aliasEditor').size,
 		numIdentifiers: rootState.get('identifierEditor').size
 	};

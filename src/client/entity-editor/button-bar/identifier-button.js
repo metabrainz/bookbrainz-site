@@ -17,6 +17,7 @@
  */
 
 import {Button} from 'react-bootstrap';
+import Icon from 'react-fontawesome';
 import React from 'react';
 
 
@@ -33,6 +34,7 @@ import React from 'react';
  *          IdentifierButton.
  **/
 function IdentifierButton({
+	identifiersInvalid,
 	numIdentifiers,
 	...props
 }) {
@@ -44,14 +46,19 @@ function IdentifierButton({
 		text = `Edit ${numIdentifiers} identifiers (eg. MBID, Wikidata ID)…`;
 	}
 
+	const iconElement = identifiersInvalid &&
+		<Icon className="margin-right-0-5 text-danger" name="times"/>;
+
 	return (
 		<Button bsStyle="link" {...props}>
+			{iconElement}
 			{text}
 		</Button>
 	);
 }
 IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
+	identifiersInvalid: React.PropTypes.bool.isRequired,
 	numIdentifiers: React.PropTypes.number.isRequired
 };
 
