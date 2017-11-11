@@ -302,7 +302,7 @@ function transformNewForm(data) {
 		aliases,
 		areaId: data.publisherSection.area && data.publisherSection.area.id,
 		beginDate: data.publisherSection.beginDate,
-		disambiguation: data.publisherSection.disambiguation,
+		disambiguation: data.nameSection.disambiguation,
 		endDate: data.publisherSection.ended ?
 			data.publisherSection.endDate : '',
 		ended: data.publisherSection.ended,
