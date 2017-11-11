@@ -21,6 +21,7 @@
 import CustomInput from '../../input';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
+import classNames from 'classnames';
 
 
 type Props = {
@@ -54,9 +55,10 @@ function DateField({
 	const labelElement =
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
+	const groupClassName = classNames({hidden: !show});
 	return (
 		<CustomInput
-			groupClassName={show || 'hidden'}
+			groupClassName={groupClassName}
 			label={labelElement}
 			type="text"
 			{...rest}
