@@ -21,6 +21,9 @@ import {
 	debouncedUpdateDisambiguationField, debouncedUpdateNameField,
 	debouncedUpdateSortNameField, updateLanguageField
 } from './actions';
+import {
+	validateNameSectionName, validateNameSectionSortName
+} from '../validators/common';
 import DisambiguationField from './disambiguation-field';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
@@ -87,7 +90,7 @@ function NameSection({
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}
-							error={!nameValue}
+							error={!validateNameSectionName(nameValue)}
 							onChange={onNameChange}
 						/>
 					</Col>
@@ -99,7 +102,7 @@ function NameSection({
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}
-							error={!sortNameValue}
+							error={!validateNameSectionSortName(sortNameValue)}
 							storedNameValue={nameValue}
 							onChange={onSortNameChange}
 						/>
