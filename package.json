@@ -91,7 +91,8 @@
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.3",
     "superagent": "^3.4.1",
-    "superagent-bluebird-promise": "^4.1.0"
+    "superagent-bluebird-promise": "^4.1.0",
+    "validator": "^9.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
