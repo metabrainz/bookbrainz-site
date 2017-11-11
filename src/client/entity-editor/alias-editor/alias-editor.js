@@ -96,7 +96,7 @@ const AliasEditor = ({
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
-	aliases: React.PropTypes.array.isRequired,
+	aliases: React.PropTypes.object.isRequired,
 	languageOptions: React.PropTypes.array.isRequired,
 	onAddAlias: React.PropTypes.func.isRequired,
 	onClose: React.PropTypes.func.isRequired,
