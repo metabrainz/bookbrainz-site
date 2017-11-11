@@ -41,6 +41,7 @@ import {connect} from 'react-redux';
  */
 function SubmissionSection({
 	errorText,
+	formValid,
 	onNoteChange,
 	onSubmit
 }) {
@@ -69,7 +70,11 @@ function SubmissionSection({
 				</Row>
 			</form>
 			<div className="text-center margin-top-1">
-				<Button bsStyle="success" onClick={onSubmit}>
+				<Button
+					bsStyle="success"
+					disabled={!formValid}
+					onClick={onSubmit}
+				>
 					Submit
 				</Button>
 			</div>
@@ -82,15 +87,17 @@ function SubmissionSection({
 SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	errorText: React.PropTypes.node.isRequired,
+	formValid: React.PropTypes.bool.isRequired,
 	onNoteChange: React.PropTypes.func.isRequired,
 	onSubmit: React.PropTypes.func.isRequired,
 	submissionUrl: React.PropTypes.string.isRequired
 };
 
-function mapStateToProps(rootState) {
+function mapStateToProps(rootState, {validate}) {
 	const state = rootState.get('submissionSection');
 	return {
-		errorText: state.get('submitError')
+		errorText: state.get('submitError'),
+		formValid: validate(rootState)
 	};
 }
 
