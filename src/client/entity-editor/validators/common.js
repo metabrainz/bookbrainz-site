@@ -19,7 +19,7 @@
 // @flow
 
 import {
-	get, validatePositiveInteger, validateRequiredString
+	get, validateOptionalString, validatePositiveInteger, validateRequiredString
 } from './base';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
@@ -142,6 +142,9 @@ export function validateNameSectionLanguage(value: any): boolean {
 	return validatePositiveInteger(value, true);
 }
 
+export function validateNameSectionDisambiguation(value: any): boolean {
+	return validateOptionalString(value);
+}
 
 export function validateNameSection(
 	values: any
@@ -149,7 +152,8 @@ export function validateNameSection(
 	return (
 		validateNameSectionName(get(values, 'name', null)) &&
 		validateNameSectionSortName(get(values, 'sortName', null)) &&
-		validateNameSectionLanguage(get(values, 'language', null))
+		validateNameSectionLanguage(get(values, 'language', null)) &&
+		validateNameSectionDisambiguation(get(values, 'disambiguation', null))
 	);
 }
 

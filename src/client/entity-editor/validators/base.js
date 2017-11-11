@@ -61,6 +61,10 @@ export function nilOrInteger(value: any): boolean {
 	return _.isNil(value) || _.isInteger(value);
 }
 
+export function validateOptionalString(value: any): boolean {
+	return nilOrString(value);
+}
+
 export function validateRequiredString(value: any): boolean {
 	if (!_.isString(value)) {
 		return false;
