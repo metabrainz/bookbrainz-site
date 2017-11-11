@@ -33,7 +33,9 @@ import ReduxThunk from 'redux-thunk';
 import createDebounce from 'redux-debounce';
 
 
-const {createRootReducer, getEntitySection, shouldDevToolsBeInjected} = helpers;
+const {
+	createRootReducer, getValidator, getEntitySection, shouldDevToolsBeInjected
+} = helpers;
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
@@ -58,7 +60,10 @@ const store = createStore(
 const markup = (
 	<Layout {...propHelpers.extractLayoutProps(rest)}>
 		<Provider store={store}>
-			<EntityEditor {...propHelpers.extractChildProps(rest)}>
+			<EntityEditor
+				validate={getValidator(props.entityType)}
+				{...propHelpers.extractChildProps(rest)}
+			>
 				<EntitySection/>
 			</EntityEditor>
 		</Provider>
