@@ -16,9 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import CustomInput from '../../input';
 import React from 'react';
+import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
+
+
+type Props = {
+	empty?: boolean,
+	error?: boolean
+};
 
 /**
  * Presentational component. This component renders a dropdown selection box
@@ -27,15 +36,31 @@ import VirtualizedSelect from 'react-virtualized-select';
  *
  * @param {Object} props - The properties passed to the component, which are
  *        then passed to the underlying VirtualizedSelect component.
+ * @param {boolean} props.error - Passed to the ValidationLabel within the
+ *        component to indicate a validation error.
+ * @param {boolean} props.empty - Passed to the ValidationLabel within the
+ *        component to indicate that the field is empty.
  * @returns {Object} A React component containing the rendered input.
  */
-function LanguageField(props) {
+function LanguageField({
+	empty,
+	error,
+	...rest
+}: Props) {
+	const label = (
+		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
+	);
+
 	return (
-		<CustomInput label="Language">
-			<VirtualizedSelect {...props}/>
+		<CustomInput label={label}>
+			<VirtualizedSelect {...rest}/>
 		</CustomInput>
 	);
 }
 LanguageField.displayName = 'LanguageField';
+LanguageField.defaultProps = {
+	empty: false,
+	error: false
+};
 
 export default LanguageField;

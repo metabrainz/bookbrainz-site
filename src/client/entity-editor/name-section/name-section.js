@@ -22,7 +22,8 @@ import {
 	debouncedUpdateSortNameField, updateLanguageField
 } from './actions';
 import {
-	validateNameSectionName, validateNameSectionSortName
+	validateNameSectionLanguage, validateNameSectionName,
+	validateNameSectionSortName
 } from '../validators/common';
 import DisambiguationField from './disambiguation-field';
 import LanguageField from '../common/language-field';
@@ -111,6 +112,10 @@ function NameSection({
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<LanguageField
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
+							error={!validateNameSectionLanguage(languageValue)}
 							instanceId="language"
 							options={languageOptionsForDisplay}
 							value={languageValue}
