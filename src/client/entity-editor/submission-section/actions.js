@@ -21,6 +21,7 @@
 import type {Map} from 'immutable';
 import type {Promise} from 'bluebird';
 import request from 'superagent-bluebird-promise';
+import _ from 'lodash';
 
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
@@ -77,6 +78,7 @@ function postSubmission(url: string, data: Map<string, mixed>): Promise {
 	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
 	 * pass the entity type and generate both URLs from that.
 	 */
+
 	const [, submissionEntity] = url.split('/');
 	return request.post(url).send(data)
 		.promise()
@@ -103,8 +105,14 @@ export function submit(
 		const rootState = getState();
 		return postSubmission(submissionUrl, rootState)
 			.catch(
-				(error: {message: string}) =>
-					dispatch(setSubmitError(error.message))
+				(error: {message: string}) => {
+					// Use server-set message first, otherwise internal
+					// superagent message
+					const message =
+						_.get(error, ['res', 'body', 'error'], null) ||
+						error.message;
+					return dispatch(setSubmitError(message));
+				}
 			);
 	};
 }
