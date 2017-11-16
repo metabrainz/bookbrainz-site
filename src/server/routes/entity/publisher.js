@@ -20,10 +20,12 @@
 import * as auth from '../../helpers/auth';
 import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
+import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
 import EntityEditor from '../../../client/entity-editor/entity-editor';
+import {FormSubmissionError} from '../../helpers/error';
 import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
 import {Provider} from 'react-redux';
@@ -317,6 +319,12 @@ const additionalPublisherProps = [
 ];
 
 router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	const validate = getValidator('publisher');
+	if (!validate(req.body)) {
+		const err = new FormSubmissionError();
+		error.sendErrorAsJSON(res, err);
+	}
+
 	req.body = transformNewForm(req.body);
 	return entityRoutes.createEntity(
 		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
@@ -325,6 +333,12 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
+		const validate = getValidator('publisher');
+		if (!validate(req.body)) {
+			const err = new FormSubmissionError();
+			error.sendErrorAsJSON(res, err);
+		}
+
 		req.body = transformNewForm(req.body);
 		return entityRoutes.editEntity(
 			req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
