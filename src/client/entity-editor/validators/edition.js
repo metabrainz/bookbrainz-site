@@ -18,64 +18,93 @@
 
 // @flow
 
-import {get, validateDate, validatePositiveInteger} from './base';
+import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
 	validateAliases, validateIdentifiers, validateNameSection,
 	validateSubmissionSection
 } from './common';
+import {Iterable} from 'immutable';
 import _ from 'lodash';
 
 
 export function validateEditionSectionDepth(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateEditionSectionFormat(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateEditionSectionHeight(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateEditionSectionLanguage(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(get(value, 'value', null), true);
 }
 
-export function validateEditionSectionLanguages(data: ?any): boolean {
-	return true;
+export function validateEditionSectionLanguages(values: ?any): boolean {
+	if (!values) {
+		return true;
+	}
+
+	let every = (object, predicate) => _.every(object, predicate);
+	if (Iterable.isIterable(values)) {
+		every = (object, predicate) => object.every(predicate);
+	}
+	else if (!_.isObject(values)) {
+		return false;
+	}
+
+	return every(values, (value) => validateEditionSectionLanguage(value));
 }
 
 export function validateEditionSectionPages(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateEditionSectionPublication(value: ?any): boolean {
-	return true;
+	return validateUUID(get(value, 'id', null), true);
 }
 
 export function validateEditionSectionPublisher(value: ?any): boolean {
-	return true;
+	if (!value) {
+		return true;
+	}
+
+	return validateUUID(get(value, 'id', null), true);
 }
 
 export function validateEditionSectionReleaseDate(value: ?any): boolean {
-	return true;
+	return validateDate(value);
 }
 
 export function validateEditionSectionStatus(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateEditionSectionWeight(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateEditionSectionWidth(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateEditionSection(data: any): boolean {
-	return true;
+	return (
+		validateEditionSectionDepth(get(data, 'depth', null)) &&
+		validateEditionSectionFormat(get(data, 'format', null)) &&
+		validateEditionSectionHeight(get(data, 'height', null)) &&
+		validateEditionSectionLanguages(get(data, 'languages', null)) &&
+		validateEditionSectionPages(get(data, 'pages', null)) &&
+		validateEditionSectionPublication(get(data, 'publication', null)) &&
+		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
+		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)) &&
+		validateEditionSectionStatus(get(data, 'status', null)) &&
+		validateEditionSectionWeight(get(data, 'weight', null)) &&
+		validateEditionSectionWidth(get(data, 'width', null))
+	);
 }
 
 export function validateForm(

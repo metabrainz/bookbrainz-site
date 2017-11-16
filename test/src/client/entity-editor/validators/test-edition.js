@@ -112,9 +112,9 @@ function describeValidateEditionSectionLanguage() {
 		expect(result).to.be.false;
 	});
 
-	it('should pass a null value', () => {
+	it('should reject a null value', () => {
 		const result = validateEditionSectionLanguage(null);
-		expect(result).to.be.true;
+		expect(result).to.be.false;
 	});
 }
 
@@ -163,9 +163,9 @@ function describeValidateEditionSectionLanguages() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject a null value', () => {
+	it('should pass a null value', () => {
 		const result = validateEditionSectionLanguages(null);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 }
 
@@ -209,9 +209,9 @@ function describeValidateEditionSectionPublication() {
 		expect(result).to.be.false;
 	});
 
-	it('should pass a null value', () => {
+	it('should reject a null value', () => {
 		const result = validateEditionSectionPublication(null);
-		expect(result).to.be.true;
+		expect(result).to.be.false;
 	});
 }
 

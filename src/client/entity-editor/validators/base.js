@@ -106,3 +106,17 @@ export function validateDate(
 
 	return !value || validator.isISO8601(value);
 }
+
+export function validateUUID(
+	value: mixed, required: boolean = false
+): boolean {
+	if (absentAndRequired(value, required)) {
+		return false;
+	}
+
+	if (!nilOrString(value)) {
+		return false;
+	}
+
+	return !value || validator.isUUID(value);
+}
