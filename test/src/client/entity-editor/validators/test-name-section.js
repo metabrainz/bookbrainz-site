@@ -25,7 +25,7 @@ import {
 	validateNameSection, validateNameSectionDisambiguation,
 	validateNameSectionLanguage, validateNameSectionName,
 	validateNameSectionSortName
-} from '../../../../../src/client/entity-editor/validators/common';
+} from '../../../../../lib/client/entity-editor/validators/common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
