@@ -18,7 +18,6 @@
 
 // @flow
 
-import * as helpers from '../helpers';
 import {
 	type Action, debouncedUpdateDepth, debouncedUpdateHeight,
 	debouncedUpdatePages, debouncedUpdateReleaseDate,
@@ -28,19 +27,25 @@ import {
 } from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
+import {
+	validateEditionSectionDepth, validateEditionSectionHeight,
+	validateEditionSectionPages, validateEditionSectionReleaseDate,
+	validateEditionSectionWeight, validateEditionSectionWidth
+} from '../validators/edition';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
 import EntitySearchField from '../common/entity-search-field';
 import LanguageField from '../common/language-field';
+import NumericField from '../common/numeric-field';
 import React from 'react';
 import Select from 'react-select';
+import _ from 'lodash';
 import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
 
-const ImmutableLanguageField = makeImmutable(LanguageField);
 
-const {isPartialDateValid} = helpers;
+const ImmutableLanguageField = makeImmutable(LanguageField);
 
 type EditionFormat = {
 	label: string,
@@ -209,7 +214,9 @@ function EditionSection({
 						show
 						defaultValue={releaseDateValue}
 						empty={!releaseDateValue}
-						error={!isPartialDateValid(releaseDateValue)}
+						error={
+							!validateEditionSectionReleaseDate(releaseDateValue)
+						}
 						label="Release Date"
 						placeholder="YYYY-MM-DD"
 						onChange={onReleaseDateChange}
@@ -253,41 +260,46 @@ function EditionSection({
 				physicalVisible &&
 				<Row>
 					<Col md={3} mdOffset={3}>
-						<CustomInput
+						<NumericField
 							addonAfter="mm"
 							defaultValue={widthValue}
+							empty={_.isNil(widthValue)}
+							error={!validateEditionSectionWidth(widthValue)}
 							label="Width"
-							type="number"
 							onChange={onWidthChange}
 						/>
-						<CustomInput
+						<NumericField
 							addonAfter="mm"
 							defaultValue={heightValue}
+							empty={_.isNil(heightValue)}
+							error={!validateEditionSectionHeight(heightValue)}
 							label="Height"
-							type="number"
 							onChange={onHeightChange}
 						/>
-						<CustomInput
+						<NumericField
 							addonAfter="mm"
 							defaultValue={depthValue}
+							empty={_.isNil(depthValue)}
+							error={!validateEditionSectionDepth(depthValue)}
 							label="Depth"
-							type="number"
 							onChange={onDepthChange}
 						/>
 					</Col>
 					<Col md={3}>
-						<CustomInput
+						<NumericField
 							addonAfter="g"
 							defaultValue={weightValue}
+							empty={_.isNil(weightValue)}
+							error={!validateEditionSectionWeight(weightValue)}
 							label="Weight"
-							type="number"
 							onChange={onWeightChange}
 						/>
-						<CustomInput
+						<NumericField
 							addonAfter="pages"
 							defaultValue={pagesValue}
+							empty={_.isNil(pagesValue)}
+							error={!validateEditionSectionPages(pagesValue)}
 							label="Page Count"
-							type="number"
 							onChange={onPagesChange}
 						/>
 					</Col>
@@ -331,19 +343,19 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onDepthChange: (event) => dispatch(
-			debouncedUpdateDepth(parseInt(event.target.value, 10))
-		),
+		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
+			event.target.value ? parseInt(event.target.value, 10) : null
+		)),
 		onFormatChange: (value: ?{value: number}) =>
 			dispatch(updateFormat(value && value.value)),
-		onHeightChange: (event) => dispatch(
-			debouncedUpdateHeight(parseInt(event.target.value, 10))
-		),
+		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
+			event.target.value ? parseInt(event.target.value, 10) : null
+		)),
 		onLanguagesChange: (values: Array<LanguageOption>) =>
 			dispatch(updateLanguages(values)),
-		onPagesChange: (event) => dispatch(
-			debouncedUpdatePages(parseInt(event.target.value, 10))
-		),
+		onPagesChange: (event) => dispatch(debouncedUpdatePages(
+			event.target.value ? parseInt(event.target.value, 10) : null
+		)),
 		onPhysicalButtonClick: () => dispatch(showPhysical()),
 		onPublicationChange: (value) => dispatch(updatePublication(value)),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
@@ -351,12 +363,12 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			dispatch(debouncedUpdateReleaseDate(event.target.value)),
 		onStatusChange: (value: ?{value: number}) =>
 			dispatch(updateStatus(value && value.value)),
-		onWeightChange: (event) => dispatch(
-			debouncedUpdateWeight(parseInt(event.target.value, 10))
-		),
-		onWidthChange: (event) => dispatch(
-			debouncedUpdateWidth(parseInt(event.target.value, 10))
-		)
+		onWeightChange: (event) => dispatch(debouncedUpdateWeight(
+			event.target.value ? parseInt(event.target.value, 10) : null
+		)),
+		onWidthChange: (event) => dispatch(debouncedUpdateWidth(
+			event.target.value ? parseInt(event.target.value, 10) : null
+		))
 	};
 }
 
