@@ -23,6 +23,9 @@ import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateArea, updateEnded, updateType
 } from './actions';
+import {
+	validatePublisherSectionBeginDate, validatePublisherSectionEndDate
+} from '../validators/publisher';
 import {Checkbox, Col, Row} from 'react-bootstrap';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
@@ -158,7 +161,9 @@ function PublisherSection({
 						show
 						defaultValue={beginDateValue}
 						empty={!beginDateValue}
-						error={!isPartialDateValid(beginDateValue)}
+						error={
+							!validatePublisherSectionBeginDate(beginDateValue)
+						}
 						label="Date Founded"
 						placeholder="YYYY-MM-DD"
 						onChange={onBeginDateChange}
@@ -180,7 +185,9 @@ function PublisherSection({
 							<DateField
 								defaultValue={endDateValue}
 								empty={!endDateValue}
-								error={!isPartialDateValid(endDateValue)}
+								error={!validatePublisherSectionEndDate(
+									endDateValue
+								)}
 								label="Date Dissolved"
 								placeholder="YYYY-MM-DD"
 								onChange={onEndDateChange}
