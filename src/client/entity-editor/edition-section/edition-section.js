@@ -226,6 +226,7 @@ function EditionSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<ImmutableLanguageField
+						empty
 						multi
 						instanceId="language"
 						options={languageOptionsForDisplay}
