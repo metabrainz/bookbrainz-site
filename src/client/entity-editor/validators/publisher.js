@@ -57,7 +57,7 @@ export function validatePublisherSection(data: any): boolean {
 		validatePublisherSectionArea(get(data, 'area', null)) &&
 		validatePublisherSectionBeginDate(get(data, 'beginDate', null)) &&
 		validatePublisherSectionEndDate(get(data, 'endDate', null)) &&
-		validatePublisherSectionEnded(get(data, 'ended', null)) &&
+		validatePublisherSectionEnded(get(data, 'ended', false)) &&
 		validatePublisherSectionType(get(data, 'type', null))
 	);
 }
