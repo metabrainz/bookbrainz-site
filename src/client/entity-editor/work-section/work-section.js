@@ -29,6 +29,10 @@ import LanguageField from '../common/language-field';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import makeImmutable from '../common/make-immutable';
+
+
+const ImmutableLanguageField = makeImmutable(LanguageField);
 
 
 type WorkType = {
@@ -117,11 +121,12 @@ function WorkSection({
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<LanguageField
+					<ImmutableLanguageField
+						empty
 						multi
 						instanceId="language"
 						options={languageOptionsForDisplay}
-						value={languageValues.toJS()}
+						value={languageValues}
 						onChange={onLanguagesChange}
 					/>
 				</Col>
