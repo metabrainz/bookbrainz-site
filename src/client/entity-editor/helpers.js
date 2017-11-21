@@ -35,6 +35,7 @@ import publisherSectionReducer from './publisher-section/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 import {validateForm as validateEditionForm} from './validators/edition.js';
 import {validateForm as validatePublisherForm} from './validators/publisher.js';
+import {validateForm as validateWork} from './validators/work.js';
 import workSectionReducer from './work-section/reducer';
 
 
@@ -71,7 +72,8 @@ function getEntitySectionReducer(entityType: string) {
 export function getValidator(entityType: string) {
 	const VALIDATOR_MAP = {
 		edition: validateEditionForm,
-		publisher: validatePublisherForm
+		publisher: validatePublisherForm,
+		work: validateWork
 	};
 
 	return VALIDATOR_MAP[entityType];

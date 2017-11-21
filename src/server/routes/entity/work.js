@@ -34,7 +34,7 @@ import {createStore} from 'redux';
 import express from 'express';
 
 
-const {createRootReducer, getEntitySection} = entityEditorHelpers;
+const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -113,7 +113,10 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(rest)}>
 				<Provider store={store}>
-					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+					<EntityEditor
+						validate={getValidator(props.entityType)}
+						{...propHelpers.extractChildProps(rest)}
+					>
 						<EntitySection/>
 					</EntityEditor>
 				</Provider>
@@ -223,7 +226,10 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(rest)}>
 				<Provider store={store}>
-					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+					<EntityEditor
+						validate={getValidator(props.entityType)}
+						{...propHelpers.extractChildProps(rest)}
+					>
 						<EntitySection/>
 					</EntityEditor>
 				</Provider>
