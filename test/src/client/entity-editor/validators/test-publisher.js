@@ -164,14 +164,14 @@ function describeValidatePublisherSection() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject any other non-null data type', () => {
+	it('should pass any other non-null data type', () => {
 		const result = validatePublisherSection(1);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 
-	it('should reject a null value', () => {
+	it('should pass a null value', () => {
 		const result = validatePublisherSection(null);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 }
 
