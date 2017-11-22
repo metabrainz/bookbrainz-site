@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as Immutable from 'immutable';
+import {INVALID_AREA, VALID_AREA} from './data';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -117,6 +119,45 @@ export function testValidateDateFunc(validationFunc, required = true) {
 
 	it('should reject any non-string value', () => {
 		const result = validationFunc({});
+		expect(result).to.be.false;
+	});
+
+	it(`should ${required ? 'reject' : 'pass'} a null value`, () => {
+		const result = validationFunc(null);
+		expect(result).to.equal(!required);
+	});
+}
+
+
+export function testValidateAreaFunc(validationFunc, required = true) {
+	it('should pass a valid Object', () => {
+		const result = validationFunc(VALID_AREA);
+		expect(result).to.be.true;
+	});
+
+	it('should pass a valid Immutable.Map', () => {
+		const result = validationFunc(
+			Immutable.fromJS(VALID_AREA)
+		);
+		expect(result).to.be.true;
+	});
+
+	it('should reject an Object with an invalid ID', () => {
+		const result = validationFunc(
+			{...VALID_AREA, id: null}
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an invalid Immutable.Map', () => {
+		const result = validationFunc(
+			Immutable.fromJS(INVALID_AREA)
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject any other non-null data type', () => {
+		const result = validationFunc(1);
 		expect(result).to.be.false;
 	});
 

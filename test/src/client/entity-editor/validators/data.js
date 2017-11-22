@@ -70,3 +70,6 @@ export const VALID_SUBMISSION_SECTION = {
 export const INVALID_SUBMISSION_SECTION = {
 	...VALID_SUBMISSION_SECTION, note: null
 };
+
+export const VALID_AREA = {id: 1};
+export const INVALID_AREA = {id: null};

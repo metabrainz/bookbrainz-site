@@ -23,7 +23,7 @@ import {
 	VALID_IDENTIFIERS, VALID_NAME_SECTION, VALID_SUBMISSION_SECTION
 } from './data';
 import {
-	testValidateBooleanFunc, testValidateDateFunc,
+	testValidateAreaFunc, testValidateBooleanFunc, testValidateDateFunc,
 	testValidatePositiveIntegerFunc
 } from './helpers';
 import {
@@ -40,43 +40,7 @@ const {expect} = chai;
 
 
 function describeValidatePublisherSectionArea() {
-	const validArea = {id: 1};
-
-	it('should pass a valid Object', () => {
-		const result = validatePublisherSectionArea(validArea);
-		expect(result).to.be.true;
-	});
-
-	it('should pass a valid Immutable.Map', () => {
-		const result = validatePublisherSectionArea(
-			Immutable.fromJS(validArea)
-		);
-		expect(result).to.be.true;
-	});
-
-	it('should reject an Object with an invalid ID', () => {
-		const result = validatePublisherSectionArea({...validArea, id: null});
-		expect(result).to.be.false;
-	});
-
-	const invalidAlias = {id: null};
-
-	it('should reject an invalid Immutable.Map', () => {
-		const result = validatePublisherSectionArea(
-			Immutable.fromJS(invalidAlias)
-		);
-		expect(result).to.be.false;
-	});
-
-	it('should reject any other non-null data type', () => {
-		const result = validatePublisherSectionArea(1);
-		expect(result).to.be.false;
-	});
-
-	it('should pass a null value', () => {
-		const result = validatePublisherSectionArea(null);
-		expect(result).to.be.true;
-	});
+	testValidateAreaFunc(validatePublisherSectionArea);
 }
 
 function describeValidatePublisherSectionBeginDate() {
