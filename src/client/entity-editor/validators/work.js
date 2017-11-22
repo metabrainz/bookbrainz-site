@@ -18,23 +18,46 @@
 
 // @flow
 
+import * as Immutable from 'immutable';
+import {get, validatePositiveInteger} from './base';
+import {
+	validateAliases, validateIdentifiers, validateNameSection,
+	validateSubmissionSection
+} from './common';
+import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
-
 export function validateWorkSectionType(value: ?any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateWorkSectionLanguage(value: ?any): boolean {
-	return true;
+	if (!value) {
+		return true;
+	}
+
+	return validatePositiveInteger(get(value, 'value', null), true);
 }
 
 export function validateWorkSection(data: any): boolean {
-	return true;
+	return (
+		validateWorkSectionType(get(data, 'type', null)) &&
+		validateWorkSectionLanguage(get(data, 'language', null))
+	);
 }
 
 export function validateForm(
 	formData: any, identifierTypes?: ?Array<_IdentifierType>
 ): boolean {
-	return true;
+	const conditions = [
+		validateAliases(get(formData, 'aliasEditor', {})),
+		validateIdentifiers(
+			get(formData, 'identifierEditor', {}), identifierTypes
+		),
+		validateNameSection(get(formData, 'nameSection', {})),
+		validateWorkSection(get(formData, 'workSection', {})),
+		validateSubmissionSection(get(formData, 'submissionSection', {}))
+	];
+
+	return _.every(conditions);
 }
