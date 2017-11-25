@@ -887,3 +887,32 @@ export function editEntity(
 		search.indexEntity
 	);
 }
+
+export function constructAliases(aliasEditor, nameSection) {
+	const aliases = _.map(aliasEditor,
+		({id, language, name, primary, sortName}) => ({
+			default: false,
+			id,
+			languageId: language,
+			name,
+			primary,
+			sortName
+		})
+	);
+
+	return [{
+		default: true,
+		languageId: nameSection.language,
+		name: nameSection.name,
+		primary: true,
+		sortName: nameSection.sortName
+	}, ...aliases];
+}
+
+export function constructIdentifiers(identifierEditor) {
+	return _.map(identifierEditor, ({id, type, value}) => ({
+		id,
+		typeId: type,
+		value
+	}));
+}

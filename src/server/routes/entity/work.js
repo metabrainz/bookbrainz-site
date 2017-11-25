@@ -263,25 +263,13 @@ function getAdditionalWorkSets(orm) {
 
 
 function transformNewForm(data) {
-	let aliases = _.map(data.aliasEditor, ({language, name, sortName}) => ({
-		default: false,
-		languageId: language,
-		name,
-		sortName
-	}));
+	const aliases = entityRoutes.constructAliases(
+		data.aliasEditor, data.nameSection
+	);
 
-	aliases = [{
-		default: true,
-		languageId: data.nameSection.language,
-		name: data.nameSection.name,
-		primary: true,
-		sortName: data.nameSection.sortName
-	}, ...aliases];
-
-	const identifiers = _.map(data.identifierEditor, ({type, ...rest}) => ({
-		typeId: type,
-		...rest
-	}));
+	const identifiers = entityRoutes.constructIdentifiers(
+		data.identifierEditor
+	);
 
 	const languages = _.map(
 		data.workSection.languages, (language) => language.value
