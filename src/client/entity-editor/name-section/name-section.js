@@ -140,7 +140,7 @@ function NameSection({
 }
 NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
-	disambiguationDefaultValue: React.PropTypes.string.isRequired,
+	disambiguationDefaultValue: React.PropTypes.string,
 	disambiguationVisible: React.PropTypes.bool.isRequired,
 	languageOptions: React.PropTypes.array.isRequired,
 	languageValue: React.PropTypes.number,
@@ -152,6 +152,7 @@ NameSection.propTypes = {
 	sortNameValue: React.PropTypes.string.isRequired
 };
 NameSection.defaultProps = {
+	disambiguationDefaultValue: null,
 	languageValue: null
 };
 
