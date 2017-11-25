@@ -30,7 +30,7 @@ import {
 	validateCreatorSection, validateCreatorSectionBeginArea,
 	validateCreatorSectionBeginDate, validateCreatorSectionEndArea,
 	validateCreatorSectionEndDate, validateCreatorSectionEnded,
-	validateCreatorSectionType, validateForm
+	validateCreatorSectionGender, validateCreatorSectionType, validateForm
 } from '../../../../../lib/client/entity-editor/validators/creator';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -288,6 +288,10 @@ function tests() {
 	describe(
 		'validateCreatorSectionEnded',
 		describeValidateCreatorSectionEnded
+	);
+	describe(
+		'validateCreatorSectionGender',
+		describeValidateCreatorSectionGender
 	);
 	describe(
 		'validateCreatorSectionType',
