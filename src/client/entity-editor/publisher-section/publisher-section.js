@@ -23,10 +23,10 @@ import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateArea, updateEnded, updateType
 } from './actions';
+import {Checkbox, Col, Row} from 'react-bootstrap';
 import {
 	validatePublisherSectionBeginDate, validatePublisherSectionEndDate
 } from '../validators/publisher';
-import {Checkbox, Col, Row} from 'react-bootstrap';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';

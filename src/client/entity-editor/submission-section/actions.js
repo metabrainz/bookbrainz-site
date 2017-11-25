@@ -20,8 +20,8 @@
 
 import type {Map} from 'immutable';
 import type {Promise} from 'bluebird';
-import request from 'superagent-bluebird-promise';
 import _ from 'lodash';
+import request from 'superagent-bluebird-promise';
 
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
