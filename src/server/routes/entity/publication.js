@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
+import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../helpers/props';
 import * as utils from '../../helpers/utils';
@@ -34,7 +35,7 @@ import {createStore} from 'redux';
 import express from 'express';
 
 
-const {createRootReducer, getEntitySection} = entityEditorHelpers;
+const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -117,7 +118,10 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(rest)}>
 				<Provider store={store}>
-					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+					<EntityEditor
+						validate={getValidator(props.entityType)}
+						{...propHelpers.extractChildProps(rest)}
+					>
 						<EntitySection/>
 					</EntityEditor>
 				</Provider>
@@ -225,7 +229,10 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(rest)}>
 				<Provider store={store}>
-					<EntityEditor {...propHelpers.extractChildProps(rest)}>
+					<EntityEditor
+						validate={getValidator(props.entityType)}
+						{...propHelpers.extractChildProps(rest)}
+					>
 						<EntitySection/>
 					</EntityEditor>
 				</Provider>
@@ -275,6 +282,12 @@ function transformNewForm(data) {
 }
 
 router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
+	const validate = getValidator('publication');
+	if (!validate(req.body)) {
+		const err = new error.FormSubmissionError();
+		error.sendErrorAsJSON(res, err);
+	}
+
 	req.body = transformNewForm(req.body);
 	return entityRoutes.createEntity(
 		req, res, 'Publication', _.pick(req.body, 'typeId')
@@ -283,6 +296,12 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
+		const validate = getValidator('publication');
+		if (!validate(req.body)) {
+			const err = new error.FormSubmissionError();
+			error.sendErrorAsJSON(res, err);
+		}
+
 		req.body = transformNewForm(req.body);
 		return entityRoutes.editEntity(
 			req, res, 'Publication', _.pick(req.body, 'typeId')
