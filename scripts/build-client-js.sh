@@ -6,6 +6,7 @@ browserify -t [babelify] \
 		editor/edit.js \
 		editor/achievement.js \
 		editor/editor.js \
+		entity/entity.js \
 		deletion.js \
 		index.js \
 		registrationDetails.js \
@@ -16,6 +17,7 @@ browserify -t [babelify] \
 		-o ../../../static/js/editor/edit.js \
 		-o ../../../static/js/editor/achievement.js \
 		-o ../../../static/js/editor/editor.js \
+		-o ../../../static/js/entity/entity.js \
 		-o ../../../static/js/deletion.js \
 		-o ../../../static/js/index.js \
 		-o ../../../static/js/registrationDetails.js \
