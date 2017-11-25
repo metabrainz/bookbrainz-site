@@ -40,7 +40,7 @@ const {expect} = chai;
 
 
 function describeValidatePublisherSectionArea() {
-	testValidateAreaFunc(validatePublisherSectionArea);
+	testValidateAreaFunc(validatePublisherSectionArea, false);
 }
 
 function describeValidatePublisherSectionBeginDate() {

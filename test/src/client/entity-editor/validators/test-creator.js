@@ -82,7 +82,7 @@ function describeValidateCreatorSection() {
 
 	it('should pass a valid Immutable.Map', () => {
 		const result = validateCreatorSection(
-			Immutable.fromJS(INVALID_CREATOR_SECTION)
+			Immutable.fromJS(VALID_CREATOR_SECTION)
 		);
 		expect(result).to.be.true;
 	});
@@ -290,4 +290,4 @@ function tests() {
 	);
 }
 
-describe('validatePublisherSection* functions', tests);
+describe('validateCreatorSection* functions', tests);
