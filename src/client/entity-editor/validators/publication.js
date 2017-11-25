@@ -18,16 +18,35 @@
 
 // @flow
 
+import {get, validatePositiveInteger} from './base';
+import {
+	validateAliases, validateIdentifiers, validateNameSection,
+	validateSubmissionSection
+} from './common';
+import _ from 'lodash';
+import type {_IdentifierType} from '../../../types';
+
+
 export function validatePublicationSectionType(value: any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validatePublicationSection(data: any): boolean {
-	return true;
+	return validatePublicationSectionType(get(data, 'type', null));
 }
 
 export function validateForm(
 	formData: any, identifierTypes?: ?Array<_IdentifierType>
 ): boolean {
-	return true;
+	const conditions = [
+		validateAliases(get(formData, 'aliasEditor', {})),
+		validateIdentifiers(
+			get(formData, 'identifierEditor', {}), identifierTypes
+		),
+		validateNameSection(get(formData, 'nameSection', {})),
+		validatePublicationSection(get(formData, 'publicationSection', {})),
+		validateSubmissionSection(get(formData, 'submissionSection', {}))
+	];
+
+	return _.every(conditions);
 }
