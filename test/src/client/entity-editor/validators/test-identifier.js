@@ -154,12 +154,12 @@ function describeValidateIdentifier() {
 
 
 function describeValidateIdentifiers() {
-	it('should pass an Array of two valid Objects', () => {
+	it('should pass an Object of two valid Objects', () => {
 		const result = validateIdentifiers(VALID_IDENTIFIERS, IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
-	it('should pass an Immutable.List of valid Immutable.Maps', () => { // eslint-disable-line max-len
+	it('should pass an Immutable.Map of valid Immutable.Maps', () => { // eslint-disable-line max-len
 		const result = validateIdentifiers(
 			Immutable.fromJS(VALID_IDENTIFIERS),
 			IDENTIFIER_TYPES
@@ -167,17 +167,17 @@ function describeValidateIdentifiers() {
 		expect(result).to.be.true;
 	});
 
-	it('should pass an empty Array', () => {
-		const result = validateIdentifiers([], IDENTIFIER_TYPES);
+	it('should pass an empty Object', () => {
+		const result = validateIdentifiers({}, IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
-	it('should pass an empty Immutable.List', () => {
-		const result = validateIdentifiers(Immutable.List(), IDENTIFIER_TYPES);
+	it('should pass an empty Immutable.Map', () => {
+		const result = validateIdentifiers(Immutable.Map(), IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
-	it('should reject an Array containing one invalid Object', () => { // eslint-disable-line max-len
+	it('should reject an Object containing one invalid Object', () => { // eslint-disable-line max-len
 		const result = validateIdentifiers(
 			INVALID_IDENTIFIERS,
 			IDENTIFIER_TYPES
@@ -185,7 +185,7 @@ function describeValidateIdentifiers() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.List containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
+	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
 		const result = validateIdentifiers(
 			Immutable.fromJS(INVALID_IDENTIFIERS),
 			IDENTIFIER_TYPES

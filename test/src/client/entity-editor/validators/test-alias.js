@@ -101,32 +101,32 @@ function describeValidateAlias() {
 
 
 function describeValidateAliases() {
-	it('should pass an Array of two valid Objects', () => {
+	it('should pass an Object of two valid Objects', () => {
 		const result = validateAliases(VALID_ALIASES);
 		expect(result).to.be.true;
 	});
 
-	it('should pass an Immutable.List of valid Immutable.Maps', () => {
+	it('should pass an Immutable.Map of valid Immutable.Maps', () => {
 		const result = validateAliases(Immutable.fromJS(VALID_ALIASES));
 		expect(result).to.be.true;
 	});
 
-	it('should pass an empty Array', () => {
-		const result = validateAliases([]);
+	it('should pass an empty Object', () => {
+		const result = validateAliases({});
 		expect(result).to.be.true;
 	});
 
-	it('should pass an empty Immutable.List', () => {
-		const result = validateAliases(Immutable.List());
+	it('should pass an empty Immutable.Map', () => {
+		const result = validateAliases(Immutable.Map());
 		expect(result).to.be.true;
 	});
 
-	it('should reject an Array containing one invalid Object', () => {
+	it('should reject an Object containing one invalid Object', () => {
 		const result = validateAliases(INVALID_ALIASES);
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.List containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
+	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
 		const result = validateAliases(Immutable.fromJS(INVALID_ALIASES));
 		expect(result).to.be.false;
 	});

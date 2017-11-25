@@ -23,25 +23,27 @@ export const VALID_ALIAS = {
 	sortName: 'test'
 };
 
-export const VALID_ALIASES = [
-	VALID_ALIAS, VALID_ALIAS
-];
+export const VALID_ALIASES = {
+	1: VALID_ALIAS,
+	n0: VALID_ALIAS
+};
 
 export const INVALID_ALIAS = {...VALID_ALIAS, language: null};
 
-export const INVALID_ALIASES = [
-	VALID_ALIAS, INVALID_ALIAS
-];
-
+export const INVALID_ALIASES = {
+	1: VALID_ALIAS,
+	n0: INVALID_ALIAS
+};
 
 export const VALID_IDENTIFIER = {
 	type: 1,
 	value: 'B076KQRJV1'
 };
 
-export const VALID_IDENTIFIERS = [
-	VALID_IDENTIFIER, VALID_IDENTIFIER
-];
+export const VALID_IDENTIFIERS = {
+	1: VALID_IDENTIFIER,
+	n0: VALID_IDENTIFIER
+};
 
 export const IDENTIFIER_TYPES = [{
 	id: 1,
@@ -50,9 +52,10 @@ export const IDENTIFIER_TYPES = [{
 
 export const INVALID_IDENTIFIER = {...VALID_IDENTIFIERS, value: 'B076QRJV1'};
 
-export const INVALID_IDENTIFIERS = [
-	VALID_IDENTIFIERS, INVALID_IDENTIFIER
-];
+export const INVALID_IDENTIFIERS = {
+	1: VALID_IDENTIFIERS,
+	n0: INVALID_IDENTIFIER
+};
 
 export const VALID_NAME_SECTION = {
 	disambiguation: '',
