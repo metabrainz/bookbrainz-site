@@ -70,6 +70,7 @@ export function validateCreatorSection(data: any): boolean {
 		validateCreatorSectionEndArea(get(data, 'endArea', null)) &&
 		validateCreatorSectionEndDate(get(data, 'endDate', null)) &&
 		validateCreatorSectionEnded(get(data, 'ended', null)) &&
+		validateCreatorSectionType(get(data, 'gender', null)) &&
 		validateCreatorSectionType(get(data, 'type', null))
 	);
 }
