@@ -35,7 +35,7 @@ function reducer(
 	const {type, payload} = action;
 	switch (type) {
 		case UPDATE_TYPE:
-			return state.set('type', Immutable.fromJS(payload));
+			return state.set('type', payload);
 		// no default
 	}
 	return state;

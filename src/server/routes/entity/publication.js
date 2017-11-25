@@ -184,10 +184,7 @@ function publicationToFormState(publication) {
 	);
 
 	const publicationSection = {
-		type: publication.publicationType && {
-			label: publication.publicationType.label,
-			value: publication.publicationType.id
-		}
+		type: publication.publicationType && publication.publicationType.id
 	};
 
 	return {
@@ -264,8 +261,7 @@ function transformNewForm(data) {
 		disambiguation: data.publicationSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
-		typeId: data.publicationSection.type &&
-			data.publicationSection.type.value
+		typeId: data.publicationSection.type
 	};
 }
 

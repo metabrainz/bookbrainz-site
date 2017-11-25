@@ -29,8 +29,6 @@ import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
 
 
-const ImmutableSelect = makeImmutable(Select);
-
 type PublicationType = {
 	label: string,
 	id: number
@@ -87,7 +85,8 @@ function PublicationSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<CustomInput label="Type">
-						<ImmutableSelect
+						<Select
+							instanceId="publicationType"
 							options={publicationTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
@@ -110,7 +109,7 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onTypeChange: (value) => dispatch(updateType(value))
+		onTypeChange: (value) => dispatch(updateType(value && value.value))
 	};
 }
 

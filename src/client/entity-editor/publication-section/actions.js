@@ -28,10 +28,6 @@ export type Action = {
 	}
 };
 
-type PublicationType = {
-	label: string,
-	id: number
-};
 
 /**
  * Produces an action indicating that the publisher type for the publisher
@@ -40,7 +36,7 @@ type PublicationType = {
  * @param {number} newType - The new value to be used for the publisher type.
  * @returns {Action} The resulting UPDATE_TYPE action.
  **/
-export function updateType(newType: ?PublicationType): Action {
+export function updateType(newType: ?number): Action {
 	return {
 		payload: newType,
 		type: UPDATE_TYPE
