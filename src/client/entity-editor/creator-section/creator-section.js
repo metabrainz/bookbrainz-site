@@ -24,6 +24,9 @@ import {
 	updateBeginArea, updateEndArea, updateEnded, updateGender, updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
+import {
+	validateCreatorSectionBeginDate, validateCreatorSectionEndDate
+} from '../validators/creator';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import {type Dispatch} from 'redux';
@@ -196,7 +199,7 @@ function CreatorSection({
 						show
 						defaultValue={beginDateValue}
 						empty={!beginDateValue}
-						error={!isPartialDateValid(beginDateValue)}
+						error={!validateCreatorSectionBeginDate(beginDateValue)}
 						label={beginDateLabel}
 						placeholder="YYYY-MM-DD"
 						onChange={onBeginDateChange}
@@ -229,7 +232,11 @@ function CreatorSection({
 							<DateField
 								defaultValue={endDateValue}
 								empty={!endDateValue}
-								error={!isPartialDateValid(endDateValue)}
+								error={
+									!validateCreatorSectionEndDate(
+										endDateValue
+									)
+								}
 								label={endDateLabel}
 								placeholder="YYYY-MM-DD"
 								onChange={onEndDateChange}
