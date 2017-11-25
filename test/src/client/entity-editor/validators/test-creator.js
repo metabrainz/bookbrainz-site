@@ -221,7 +221,7 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid publisher section', () => {
+	it('should reject an Object with an invalid creator section', () => {
 		const result = validateForm(
 			{
 				...validForm,
