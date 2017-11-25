@@ -103,13 +103,13 @@ ButtonBar.propTypes = {
 	onIdentifierButtonClick: React.PropTypes.func.isRequired
 };
 
-function mapStateToProps(rootState) {
+function mapStateToProps(rootState, {identifierTypes}) {
 	const state = rootState.get('buttonBar');
 	return {
 		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
 		disambiguationVisible: state.get('disambiguationVisible'),
 		identifiersInvalid: !validateIdentifiers(
-			rootState.get('identifierEditor')
+			rootState.get('identifierEditor'), identifierTypes
 		),
 		numAliases: rootState.get('aliasEditor').size,
 		numIdentifiers: rootState.get('identifierEditor').size

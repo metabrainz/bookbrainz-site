@@ -62,7 +62,7 @@ const EntityEditor = (props: Props) => {
 		<Panel>
 			<AliasEditor show={aliasEditorVisible} {...props}/>
 			<NameSection {...props}/>
-			<ButtonBar/>
+			<ButtonBar {...props}/>
 			{React.cloneElement(
 				React.Children.only(children),
 				{...props})
