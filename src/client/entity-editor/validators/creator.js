@@ -18,39 +18,70 @@
 
 // @flow
 
+import {get, validateDate, validatePositiveInteger} from './base';
+import {
+	validateAliases, validateIdentifiers, validateNameSection,
+	validateSubmissionSection
+} from './common';
+import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
 
 export function validateCreatorSectionBeginArea(value: any): boolean {
-	return true;
+	if (!value) {
+		return true;
+	}
+
+	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
 export function validateCreatorSectionBeginDate(value: any): boolean {
-	return true;
+	return validateDate(value);
 }
 
 export function validateCreatorSectionEndArea(value: any): boolean {
-	return true;
+	if (!value) {
+		return true;
+	}
+
+	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
 export function validateCreatorSectionEndDate(value: any): boolean {
-	return true;
+	return validateDate(value);
 }
 
 export function validateCreatorSectionEnded(value: any): boolean {
-	return true;
+	return _.isNull(value) || _.isBoolean(value);
 }
 
 export function validateCreatorSectionType(value: any): boolean {
-	return true;
+	return validatePositiveInteger(value);
 }
 
 export function validateCreatorSection(data: any): boolean {
-	return true;
+	return (
+		validateCreatorSectionBeginArea(get(data, 'beginArea', null)) &&
+		validateCreatorSectionBeginDate(get(data, 'beginDate', null)) &&
+		validateCreatorSectionEndArea(get(data, 'endArea', null)) &&
+		validateCreatorSectionEndDate(get(data, 'endDate', null)) &&
+		validateCreatorSectionEnded(get(data, 'ended', null)) &&
+		validateCreatorSectionType(get(data, 'type', null))
+	);
 }
 
 export function validateForm(
 	formData: any, identifierTypes?: ?Array<_IdentifierType>
 ): boolean {
-	return true;
+	const conditions = [
+		validateAliases(get(formData, 'aliasEditor', {})),
+		validateIdentifiers(
+			get(formData, 'identifierEditor', {}), identifierTypes
+		),
+		validateNameSection(get(formData, 'nameSection', {})),
+		validateCreatorSection(get(formData, 'creatorSection', {})),
+		validateSubmissionSection(get(formData, 'submissionSection', {}))
+	];
+
+	return _.every(conditions);
 }
