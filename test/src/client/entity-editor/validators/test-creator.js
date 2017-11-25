@@ -64,12 +64,17 @@ function describeValidateCreatorSectionType() {
 	testValidatePositiveIntegerFunc(validateCreatorSectionType, false);
 }
 
+function describeValidateCreatorSectionGender() {
+	testValidatePositiveIntegerFunc(validateCreatorSectionGender, false);
+}
+
 const VALID_CREATOR_SECTION = {
 	beginArea: null,
 	beginDate: null,
 	endArea: null,
 	endDate: null,
 	ended: true,
+	gender: 1,
 	type: 1
 };
 const INVALID_CREATOR_SECTION = {...VALID_CREATOR_SECTION, type: {}};
@@ -135,6 +140,14 @@ function describeValidateCreatorSection() {
 		expect(result).to.be.false;
 	});
 
+	it('should reject an Object with an invalid gender', () => {
+		const result = validateCreatorSection({
+			...VALID_CREATOR_SECTION,
+			gender: {}
+		});
+		expect(result).to.be.false;
+	});
+
 	it('should reject an invalid Immutable.Map', () => {
 		const result = validateCreatorSection(
 			Immutable.fromJS(INVALID_CREATOR_SECTION)
@@ -157,9 +170,9 @@ function describeValidateCreatorSection() {
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
+		creatorSection: VALID_CREATOR_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
-		creatorSection: VALID_CREATOR_SECTION,
 		submissionSection: VALID_SUBMISSION_SECTION
 	};
 

@@ -59,6 +59,10 @@ export function validateCreatorSectionType(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
+export function validateCreatorSectionGender(value: any): boolean {
+	return validatePositiveInteger(value);
+}
+
 export function validateCreatorSection(data: any): boolean {
 	return (
 		validateCreatorSectionBeginArea(get(data, 'beginArea', null)) &&
