@@ -91,6 +91,18 @@ router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
 	}
 );
 
+function entityToOption(entity) {
+	return {
+		disambiguation: entity.disambiguation ?
+			entity.disambiguation.comment : null,
+		id: entity.bbid,
+		text: entity.defaultAlias ?
+			entity.defaultAlias.name : '(unnamed)',
+		type: entity.type
+	};
+}
+
+
 // Creation
 
 router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
@@ -114,19 +126,33 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 		if (req.query.publication) {
 			propsPromise.publication =
 				Publication.forge({bbid: req.query.publication})
-					.fetch({withRelated: 'defaultAlias'});
+					.fetch({withRelated: 'defaultAlias'})
+					.then((data) => entityToOption(data.toJSON()));
 		}
 
 		if (req.query.publisher) {
 			propsPromise.publisher =
 				Publisher.forge({bbid: req.query.publisher})
-					.fetch({withRelated: 'defaultAlias'});
+					.fetch({withRelated: 'defaultAlias'})
+					.then((data) => entityToOption(data.toJSON()));
 		}
 
 		function render(props) {
 			const {initialState, ...rest} = props;
 
 			const rootReducer = createRootReducer(props.entityType);
+
+			if (props.publisher || props.publication) {
+				initialState.editionSection = {};
+			}
+
+			if (props.publisher) {
+				initialState.editionSection.publisher = props.publisher;
+			}
+
+			if (props.publication) {
+				initialState.editionSection.publication = props.publication;
+			}
 
 			const store = createStore(
 				rootReducer,
@@ -168,17 +194,6 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 function getDefaultAliasIndex(aliases) {
 	const index = aliases.findIndex((alias) => alias.default);
 	return index > 0 ? index : 0;
-}
-
-function entityToOption(entity) {
-	return {
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
-		id: entity.bbid,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
-	};
 }
 
 function editionToFormState(edition) {
