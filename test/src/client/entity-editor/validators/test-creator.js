@@ -57,7 +57,7 @@ function describeValidateCreatorSectionEndDate() {
 }
 
 function describeValidateCreatorSectionEnded() {
-	testValidateBooleanFunc(validateCreatorSectionEnded);
+	testValidateBooleanFunc(validateCreatorSectionEnded, false);
 }
 
 function describeValidateCreatorSectionType() {
@@ -122,7 +122,7 @@ function describeValidateCreatorSection() {
 	it('should reject an Object with an invalid ended flag', () => {
 		const result = validateCreatorSection({
 			...VALID_CREATOR_SECTION,
-			ended: null
+			ended: 1
 		});
 		expect(result).to.be.false;
 	});

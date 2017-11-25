@@ -52,7 +52,7 @@ function describeValidatePublisherSectionEndDate() {
 }
 
 function describeValidatePublisherSectionEnded() {
-	testValidateBooleanFunc(validatePublisherSectionEnded);
+	testValidateBooleanFunc(validatePublisherSectionEnded, false);
 }
 
 function describeValidatePublisherSectionType() {
@@ -108,7 +108,7 @@ function describeValidatePublisherSection() {
 	it('should reject an Object with an invalid ended flag', () => {
 		const result = validatePublisherSection({
 			...VALID_PUBLISHER_SECTION,
-			ended: null
+			ended: 1
 		});
 		expect(result).to.be.false;
 	});

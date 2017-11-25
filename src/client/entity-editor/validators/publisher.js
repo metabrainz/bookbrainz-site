@@ -44,7 +44,7 @@ export function validatePublisherSectionEndDate(value: any): boolean {
 }
 
 export function validatePublisherSectionEnded(value: any): boolean {
-	return _.isBoolean(value);
+	return _.isNull(value) || _.isBoolean(value);
 }
 
 export function validatePublisherSectionType(value: any): boolean {
@@ -57,7 +57,7 @@ export function validatePublisherSection(data: any): boolean {
 		validatePublisherSectionArea(get(data, 'area', null)) &&
 		validatePublisherSectionBeginDate(get(data, 'beginDate', null)) &&
 		validatePublisherSectionEndDate(get(data, 'endDate', null)) &&
-		validatePublisherSectionEnded(get(data, 'ended', false)) &&
+		validatePublisherSectionEnded(get(data, 'ended', null)) &&
 		validatePublisherSectionType(get(data, 'type', null))
 	);
 }
