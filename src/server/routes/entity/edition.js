@@ -350,22 +350,29 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
-		depth: parseInt(data.editionSection.depth, 10),
+		depth: data.editionSection.depth &&
+			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
-		formatId: parseInt(data.editionSection.format, 10),
-		height: parseInt(data.editionSection.height, 10),
+		formatId: data.editionSection.format &&
+			parseInt(data.editionSection.format, 10),
+		height: data.editionSection.height &&
+			parseInt(data.editionSection.height, 10),
 		identifiers,
 		languages,
 		note: data.submissionSection.note,
-		pages: parseInt(data.editionSection.pages, 10),
+		pages: data.editionSection.pages &&
+			parseInt(data.editionSection.pages, 10),
 		publicationBbid: data.editionSection.publication &&
 			data.editionSection.publication.id,
 		publishers: data.editionSection.publisher &&
 			[data.editionSection.publisher.id],
 		releaseEvents,
-		statusId: parseInt(data.editionSection.status, 10),
-		weight: parseInt(data.editionSection.weight, 10),
-		width: parseInt(data.editionSection.width, 10)
+		statusId: data.editionSection.status &&
+			parseInt(data.editionSection.status, 10),
+		weight: data.editionSection.weight &&
+			parseInt(data.editionSection.weight, 10),
+		width: data.editionSection.width &&
+			parseInt(data.editionSection.width, 10)
 	};
 }
 
