@@ -44,6 +44,11 @@ export function testValidatePositiveIntegerFunc(
 		expect(result).to.be.false;
 	});
 
+	it('should reject NaN', () => {
+		const result = validationFunc(NaN);
+		expect(result).to.be.false;
+	});
+
 	it('should reject any non-number value', () => {
 		const result = validationFunc({});
 		expect(result).to.be.false;
