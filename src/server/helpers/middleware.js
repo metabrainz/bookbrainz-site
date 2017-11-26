@@ -148,7 +148,7 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 					next();
 				})
 				.catch(model.NotFoundError, () => {
-					throw new error.NotFoundError(errMessage);
+					throw new error.NotFoundError(errMessage, req);
 				})
 				.catch(next);
 		}

@@ -175,7 +175,7 @@ router.get('/:id', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found');
+			throw new error.NotFoundError('Editor not found', req);
 		})
 		.catch(next);
 
@@ -283,7 +283,7 @@ router.get('/:id/revisions', (req, res, next) => {
 			});
 		})
 		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found');
+			throw new error.NotFoundError('Editor not found', req);
 		})
 		.catch(next);
 });
@@ -350,7 +350,7 @@ router.get('/:id/achievements', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found');
+			throw new error.NotFoundError('Editor not found', req);
 		})
 		.catch(next);
 
