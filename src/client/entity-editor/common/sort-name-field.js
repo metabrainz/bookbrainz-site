@@ -127,7 +127,7 @@ function SortNameField({
 	function handleGuessClick() {
 		const generatedSortName = makeSortName(storedNameValue);
 		if (input) {
-			input.getInputDOMNode().value = generatedSortName;
+			input.getDOMNode().value = generatedSortName;
 		}
 
 		if (onChange) {
