@@ -149,13 +149,17 @@ export function renderError(req, res, err) {
 			/>
 		</Layout>
 	);
-	res.status(errorToSend.status).render('target', {markup});
+	res.status(
+		errorToSend.status || status.INTERNAL_SERVER_ERROR
+	).render('target', {markup});
 }
 
 export function sendErrorAsJSON(res, err) {
 	const errorToSend = _getErrorToSend(err);
 
-	res.status(errorToSend.status).send({error: errorToSend.message});
+	res.status(
+		errorToSend.status || status.INTERNAL_SERVER_ERROR
+	).send({error: errorToSend.message});
 }
 
 export class AwardNotUnlockedError extends Error {
