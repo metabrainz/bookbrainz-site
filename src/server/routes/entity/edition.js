@@ -244,9 +244,10 @@ function editionToFormState(edition) {
 		_.isEmpty(edition.releaseEventSet.releaseEvents) ?
 		null : edition.releaseEventSet.releaseEvents[0].date;
 
-	const publisher = edition.publisherSet &&
+	const publisher = edition.publisherSet && (
 		_.isEmpty(edition.publisherSet.publishers) ?
-		null : entityToOption(edition.publisherSet.publishers[0]);
+			null : entityToOption(edition.publisherSet.publishers[0])
+	);
 
 	const publication = entityToOption(edition.publication);
 
