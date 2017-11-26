@@ -151,7 +151,7 @@ AliasRow.defaultProps = {
 function mapDispatchToProps(dispatch, {index}) {
 	return {
 		onLanguageChange: (value) =>
-			dispatch(updateAliasLanguage(index, value.value)),
+			dispatch(updateAliasLanguage(index, value && value.value)),
 		onNameChange: (event) =>
 			dispatch(debouncedUpdateAliasName(index, event.target.value)),
 		onPrimaryClick: (event) =>

@@ -70,7 +70,7 @@ export function debouncedUpdateSortNameField(newSortName: string): Action {
  * @param {string} newLanguageId - The new value to be used for the language ID.
  * @returns {Action} The resulting UPDATE_LANGUAGE_FIELD action.
  **/
-export function updateLanguageField(newLanguageId: string): Action {
+export function updateLanguageField(newLanguageId: ?number): Action {
 	return {
 		payload: newLanguageId,
 		type: UPDATE_LANGUAGE_FIELD

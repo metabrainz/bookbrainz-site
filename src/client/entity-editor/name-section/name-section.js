@@ -173,7 +173,8 @@ function mapDispatchToProps(dispatch) {
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
-		onLanguageChange: (value) => dispatch(updateLanguageField(value.value)),
+		onLanguageChange: (value) =>
+			dispatch(updateLanguageField(value && value.value)),
 		onNameChange: (event) =>
 			dispatch(debouncedUpdateNameField(event.target.value)),
 		onSortNameChange: (event) =>

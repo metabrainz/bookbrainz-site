@@ -86,7 +86,7 @@ export function debouncedUpdateAliasSortName(
  * @param {number} value - The new value to be used for the alias language ID.
  * @returns {Action} The resulting UPDATE_ALIAS_LANGUAGE action.
  **/
-export function updateAliasLanguage(rowId: number, value: number): Action {
+export function updateAliasLanguage(rowId: number, value: ?number): Action {
 	return {
 		payload: {
 			rowId,
