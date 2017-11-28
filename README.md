@@ -25,6 +25,10 @@ directories will exist:
 * static/js - minified JavaScript files which are referred to by the
   site pages.
 
+## Documentation
+
+Auto-generated developer documentation can be found at our corresponding [doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our contributing guide can be found [here](CONTRIBUTING.md).
+
 ## Setting up a local BookBrainz server
 ### Installing Dependencies
 BookBrainz depends on having PostgreSQL, Redis and Elasticsearch and NodeJS set
