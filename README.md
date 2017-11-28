@@ -25,6 +25,10 @@ directories will exist:
 * static/js - minified JavaScript files which are referred to by the
   site pages.
 
+## Documentation
+
+Auto-generated developer documentation can be found at our corresponding [doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our contributing guide can be found [here](CONTRIBUTING.md).
+
 ## Setting up a local BookBrainz server
 ### Installing Dependencies
 BookBrainz depends on having PostgreSQL, Redis and Elasticsearch and NodeJS set
@@ -96,11 +100,10 @@ To clone the repository and point the local HEAD to the latest commit in the
     git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
 
 ### Installing Packages
-The site depends on a number of node packages, which can be installed using yarn,
-which can be installed using npm:
+The site depends on a number of node packages which can be installed using npm:
 
-    npm install -g yarn
-    yarn install
+	cd bookbrainz-site/
+    npm install
 
 This command will also compile the site LESS and JavaScript source files.
 
@@ -143,4 +146,4 @@ with your Sauce Labs username and access key, as follows:
 Finally, run the BookBrainz server, as detailed in the previous section of this
 README, and then run the browser testing command:
 
-    yarn run browser-test
+    npm run browser-test
