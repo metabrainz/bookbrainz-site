@@ -85,7 +85,11 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 					/>
 				</Layout>
 			);
-			res.render('target', {markup, props, script});
+			res.render('target', {
+				markup, 
+				props: propHelpers.escapeProps(props), 
+				script
+			});
 		}
 	)
 		.catch(next);
@@ -218,7 +222,7 @@ router.get('/:id', (req, res, next) => {
 			res.render('target', {
 				markup,
 				page: 'profile',
-				props,
+				props: propHelpers.escapeProps(props),
 				script: '/js/editor/editor.js'
 			});
 		}
@@ -278,7 +282,7 @@ router.get('/:id/revisions', (req, res, next) => {
 			res.render('target', {
 				markup,
 				page: 'revisions',
-				props,
+				props: propHelpers.escapeProps(props),
 				script: '/js/editor/editor.js'
 			});
 		})
@@ -389,7 +393,11 @@ router.get('/:id/achievements', (req, res, next) => {
 				</Layout>
 			);
 			const script = '/js/editor/achievement.js';
-			res.render('target', {markup, props, script});
+			res.render('target', {
+				markup, 
+				props: propHelpers.escapeProps(props), 
+				script
+			});
 		}
 	);
 });

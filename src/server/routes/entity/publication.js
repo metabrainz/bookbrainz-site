@@ -132,7 +132,7 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		return res.render('target', {
 			markup,
-			props,
+			props: propHelpers.escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Publisher'
 		});
@@ -240,7 +240,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		return res.render('target', {
 			markup,
-			props,
+			props: propHelpers.escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Edit Publication'
 		});

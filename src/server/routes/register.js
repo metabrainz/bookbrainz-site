@@ -86,7 +86,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 
 	return res.render('target', {
 		markup,
-		props,
+		props: propHelpers.escapeProps(props),
 		script: '/js/registrationDetails.js',
 		title: 'Register'
 	});

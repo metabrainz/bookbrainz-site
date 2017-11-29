@@ -247,7 +247,11 @@ router.get('/:id', (req, res, next) => {
 				</Layout>
 			);
 			const script = '/js/revision.js';
-			res.render('target', {markup, props, script});
+			res.render('target', {
+				markup, 
+				props: propHelpers.escapeProps(props), 
+				script
+			});
 		}
 	)
 		.catch(next);

@@ -60,7 +60,7 @@ router.get('/', async (req, res, next) => {
 		res.render('target', {
 			markup,
 			page: 'Index',
-			props,
+			props: propHelpers.escapeProps(props),
 			script: '/js/index.js'
 		});
 	}
@@ -121,7 +121,7 @@ function _createStaticRoute(route, title, PageComponent) {
 		res.render('target', {
 			markup,
 			page: title,
-			props,
+			props: propHelpers.escapeProps(props),
 			script: '/js/index.js',
 			title
 		});
