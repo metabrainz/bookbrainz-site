@@ -263,10 +263,22 @@ export function searchByName(orm, name, collection) {
 	const dslQuery = {
 		body: {
 			query: {
-				match: {
-					'defaultAlias.name.search': {
-						minimum_should_match: '80%',
-						query: name
+				bool: {
+					must: {
+						match: {
+							'defaultAlias.name.search': {
+								minimum_should_match: '75%',
+								query: name
+							}
+						}
+					},
+					should: {
+						match: {
+							'defaultAlias.name': {
+								boost: 1.3, // eslint-disable-line max-len,no-magic-numbers
+								query: name
+							}
+						}
 					}
 				}
 			}
