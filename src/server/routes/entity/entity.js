@@ -140,7 +140,7 @@ export function displayEntity(req, res) {
 			res.render('target', {
 				markup,
 				page: entityName,
-				props,
+				props: propHelpers.escapeProps(props),
 				script: '/js/entity/entity.js'
 			});
 		}
@@ -161,7 +161,11 @@ export function displayDeleteEntity(req, res) {
 		</Layout>
 	);
 
-	res.render('target', {markup, props, script: '/js/deletion.js'});
+	res.render('target', {
+		markup,
+		props: propHelpers.escapeProps(props),
+		script: '/js/deletion.js'
+	});
 }
 
 export function displayRevisions(req, res, next, RevisionModel) {
@@ -188,7 +192,7 @@ export function displayRevisions(req, res, next, RevisionModel) {
 			return res.render('target', {
 				markup,
 				page: 'revisions',
-				props,
+				props: propHelpers.escapeProps(props),
 				script: '/js/entity/entity.js'
 			});
 		})

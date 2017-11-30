@@ -17,6 +17,7 @@
  */
 
 import _ from 'lodash';
+import jsesc from 'jsesc';
 
 
 const LAYOUT_PROPS = [
@@ -32,6 +33,14 @@ const EDITOR_PROPS = [
 	'editor',
 	'tabActive'
 ];
+
+// JSON.stringify that escapes characters in string output
+export function escapeProps(props) {
+	return jsesc(props, {
+		isScriptContext: true,
+		json: true
+	});
+}
 
 export function generateProps(req, res, props) {
 	return Object.assign({}, req.app.locals, res.locals, props);
