@@ -139,14 +139,14 @@ export async function generateIndex(orm) {
 								fields: {
 									autocomplete: {
 										analyzer: 'edge',
-										type: 'string'
+										type: 'text'
 									},
 									search: {
 										analyzer: 'trigrams',
-										type: 'string'
+										type: 'text'
 									}
 								},
-								type: 'string'
+								type: 'text'
 							}
 						},
 						type: 'object'
@@ -169,10 +169,9 @@ export async function generateIndex(orm) {
 					trigrams: {
 						filter: [
 							'asciifolding',
-							'lowercase',
-							'trigrams_filter'
+							'lowercase'
 						],
-						tokenizer: 'standard',
+						tokenizer: 'trigrams',
 						type: 'custom'
 					}
 				},
@@ -181,8 +180,10 @@ export async function generateIndex(orm) {
 						max_gram: 20, // eslint-disable-line no-magic-numbers
 						min_gram: 1,
 						type: 'edge_ngram'
-					},
-					trigrams_filter: {
+					}
+				},
+				tokenizer: {
+					trigrams: {
 						max_gram: 3,
 						min_gram: 1,
 						type: 'ngram'
@@ -262,10 +263,22 @@ export function searchByName(orm, name, collection) {
 	const dslQuery = {
 		body: {
 			query: {
-				match: {
-					'defaultAlias.name.search': {
-						minimum_should_match: '80%',
-						query: name
+				bool: {
+					must: {
+						match: {
+							'defaultAlias.name.search': {
+								minimum_should_match: '75%',
+								query: name
+							}
+						}
+					},
+					should: {
+						match: {
+							'defaultAlias.name': {
+								boost: 1.3, // eslint-disable-line max-len,no-magic-numbers
+								query: name
+							}
+						}
 					}
 				}
 			}
