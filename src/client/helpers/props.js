@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Daniel Hsing
+ * Copyright (C) 2017  Daniel Hsing
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,16 +16,38 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import jsesc from 'jsesc';
+import {omit, pick} from 'lodash';
 
-// JSON.stringify that escapes characters in string output
-export function escapeProps(props) {
-	return jsesc(props, {
-		isScriptContext: true,
-		json: true
-	});
+const LAYOUT_PROPS = [
+	'hideSearch',
+	'homepage',
+	'repositoryUrl',
+	'requiresJS',
+	'siteRevision',
+	'user'
+];
+
+const EDITOR_PROPS = [
+	'editor',
+	'tabActive'
+];
+
+export function extractLayoutProps(props) {
+	return pick(props, LAYOUT_PROPS);
 }
 
-export function generateProps(req, res, props) {
-	return Object.assign({}, req.app.locals, res.locals, props);
+export function extractEditorProps(props) {
+	return pick(props, EDITOR_PROPS);
+}
+
+export function extractChildProps(props) {
+	return omit(props, LAYOUT_PROPS);
+}
+
+export function extractEntityProps(props) {
+	return {
+		alert: props.alert,
+		entity: props.entity,
+		identifierTypes: props.identifierTypes
+	};
 }
