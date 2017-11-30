@@ -169,10 +169,9 @@ export async function generateIndex(orm) {
 					trigrams: {
 						filter: [
 							'asciifolding',
-							'lowercase',
-							'trigrams_filter'
+							'lowercase'
 						],
-						tokenizer: 'standard',
+						tokenizer: 'trigrams',
 						type: 'custom'
 					}
 				},
@@ -181,8 +180,10 @@ export async function generateIndex(orm) {
 						max_gram: 20, // eslint-disable-line no-magic-numbers
 						min_gram: 1,
 						type: 'edge_ngram'
-					},
-					trigrams_filter: {
+					}
+				},
+				tokenizer: {
+					trigrams: {
 						max_gram: 3,
 						min_gram: 1,
 						type: 'ngram'
