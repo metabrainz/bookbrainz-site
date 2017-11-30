@@ -139,14 +139,14 @@ export async function generateIndex(orm) {
 								fields: {
 									autocomplete: {
 										analyzer: 'edge',
-										type: 'string'
+										type: 'text'
 									},
 									search: {
 										analyzer: 'trigrams',
-										type: 'string'
+										type: 'text'
 									}
 								},
-								type: 'string'
+								type: 'text'
 							}
 						},
 						type: 'object'
