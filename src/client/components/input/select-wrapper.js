@@ -27,9 +27,9 @@ import classNames from 'classnames';
 function wangleID(value, idAttribute) {
 	if (_.isArray(value)) {
 		return value.map(
-			(aValue) => (
-				_.isObject(aValue) ? aValue[idAttribute] : aValue
-			)
+			(aValue) =>
+				(_.isObject(aValue) ? aValue[idAttribute] : aValue)
+
 		);
 	}
 

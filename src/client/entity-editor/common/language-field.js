@@ -47,9 +47,9 @@ function LanguageField({
 	error,
 	...rest
 }: Props) {
-	const label = (
+	const label =
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
-	);
+	;
 
 	return (
 		<CustomInput label={label}>

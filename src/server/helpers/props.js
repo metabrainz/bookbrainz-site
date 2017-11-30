@@ -17,7 +17,7 @@
  */
 
 import _ from 'lodash';
-import jsesc from 'jsesc'
+import jsesc from 'jsesc';
 
 
 const LAYOUT_PROPS = [
@@ -37,9 +37,9 @@ const EDITOR_PROPS = [
 // JSON.stringify that escapes characters in string output
 export function escapeProps(props) {
 	return jsesc(props, {
-		json: true,
-		isScriptContext: true
-	})
+		isScriptContext: true,
+		json: true
+	});
 }
 
 export function generateProps(req, res, props) {

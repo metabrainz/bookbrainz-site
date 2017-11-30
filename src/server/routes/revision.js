@@ -248,8 +248,8 @@ router.get('/:id', (req, res, next) => {
 			);
 			const script = '/js/revision.js';
 			res.render('target', {
-				markup, 
-				props: propHelpers.escapeProps(props), 
+				markup,
+				props: propHelpers.escapeProps(props),
 				script
 			});
 		}

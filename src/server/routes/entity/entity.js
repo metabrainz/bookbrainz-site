@@ -162,8 +162,8 @@ export function displayDeleteEntity(req, res) {
 	);
 
 	res.render('target', {
-		markup, 
-		props: propHelpers.escapeProps(props), 
+		markup,
+		props: propHelpers.escapeProps(props),
 		script: '/js/deletion.js'
 	});
 }

@@ -59,7 +59,7 @@ router.get('/', (req, res, next) => {
 			);
 
 			res.render('target', {
-				markup, 
+				markup,
 				props: propHelpers.escapeProps(props),
 				script: '/js/search.js',
 				title: 'Search Results'

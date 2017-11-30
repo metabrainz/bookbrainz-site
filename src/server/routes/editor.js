@@ -86,8 +86,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 				</Layout>
 			);
 			res.render('target', {
-				markup, 
-				props: propHelpers.escapeProps(props), 
+				markup,
+				props: propHelpers.escapeProps(props),
 				script
 			});
 		}
@@ -394,8 +394,8 @@ router.get('/:id/achievements', (req, res, next) => {
 			);
 			const script = '/js/editor/achievement.js';
 			res.render('target', {
-				markup, 
-				props: propHelpers.escapeProps(props), 
+				markup,
+				props: propHelpers.escapeProps(props),
 				script
 			});
 		}
