@@ -16,7 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from '../../../server/helpers/props';
+import {
+	extractEntityProps,
+	extractLayoutProps
+} from '../../helpers/props';
 import CreatorPage from '../../components/pages/entities/creator';
 import EditionPage from '../../components/pages/entities/edition';
 import EntityRevisions from '../../components/pages/entity-revisions';
@@ -47,7 +50,7 @@ const Child = entityComponents[page] || CreatorPage;
 let markup = null;
 if (page === 'revisions') {
 	markup = (
-		<Layout {...propHelpers.extractLayoutProps(props)}>
+		<Layout {...extractLayoutProps(props)}>
 			<EntityRevisions
 				entity={props.entity}
 				revisions={props.revisions}
@@ -57,8 +60,8 @@ if (page === 'revisions') {
 }
 else {
 	markup = (
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<Child {...propHelpers.extractEntityProps(props)}/>
+		<Layout {...extractLayoutProps(props)}>
+			<Child {...extractEntityProps(props)}/>
 		</Layout>
 	);
 }

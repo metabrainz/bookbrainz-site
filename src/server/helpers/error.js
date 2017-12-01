@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from './props';
+import * as propHelpers from '../../client/helpers/props';
 import ErrorPage from '../../client/components/pages/error';
 import Layout from '../../client/containers/layout';
 import Log from 'log';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import config from './config';
+import {generateProps} from './props';
 import status from 'http-status';
 
 
@@ -139,7 +140,7 @@ function _getErrorToSend(err) {
 
 export function renderError(req, res, err) {
 	const errorToSend = _getErrorToSend(err);
-	const props = propHelpers.generateProps(req, res, {
+	const props = generateProps(req, res, {
 		error: errorToSend
 	});
 	const markup = ReactDOMServer.renderToString(

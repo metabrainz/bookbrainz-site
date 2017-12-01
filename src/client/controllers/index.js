@@ -16,7 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from '../../server/helpers/props';
+import {
+	extractChildProps,
+	extractLayoutProps
+} from '../helpers/props';
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
@@ -46,8 +49,8 @@ const pageMap = {
 const Child = pageMap[page] || Index;
 
 const markup = (
-	<Layout {...propHelpers.extractLayoutProps(props)}>
-		<Child {...propHelpers.extractChildProps(props)}/>
+	<Layout {...extractLayoutProps(props)}>
+		<Child {...extractChildProps(props)}/>
 	</Layout>
 );
 

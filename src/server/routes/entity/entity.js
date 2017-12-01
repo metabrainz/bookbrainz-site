@@ -19,9 +19,10 @@
 
 import * as achievement from '../../helpers/achievement';
 import * as handler from '../../helpers/handler';
-import * as propHelpers from '../../helpers/props';
+import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+import {escapeProps, generateProps} from '../../helpers/props';
 import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionPage from '../../../client/components/pages/entities/edition';
@@ -126,7 +127,7 @@ export function displayEntity(req, res) {
 		const entityName = entity.type.toLowerCase();
 		const EntityComponent = entityComponents[entityName];
 		if (EntityComponent) {
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				alert,
 				identifierTypes
 			});
@@ -140,7 +141,7 @@ export function displayEntity(req, res) {
 			res.render('target', {
 				markup,
 				page: entityName,
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script: '/js/entity/entity.js'
 			});
 		}
@@ -153,7 +154,7 @@ export function displayEntity(req, res) {
 }
 
 export function displayDeleteEntity(req, res) {
-	const props = propHelpers.generateProps(req, res);
+	const props = generateProps(req, res);
 
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -163,7 +164,7 @@ export function displayDeleteEntity(req, res) {
 
 	res.render('target', {
 		markup,
-		props: propHelpers.escapeProps(props),
+		props: escapeProps(props),
 		script: '/js/deletion.js'
 	});
 }
@@ -178,7 +179,7 @@ export function displayRevisions(req, res, next, RevisionModel) {
 		})
 		.then((collection) => {
 			const revisions = collection.toJSON();
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				revisions
 			});
 			const markup = ReactDOMServer.renderToString(
@@ -192,7 +193,7 @@ export function displayRevisions(req, res, next, RevisionModel) {
 			return res.render('target', {
 				markup,
 				page: 'revisions',
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script: '/js/entity/entity.js'
 			});
 		})

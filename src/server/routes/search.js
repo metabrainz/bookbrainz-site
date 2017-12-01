@@ -20,8 +20,9 @@
 import * as auth from '../helpers/auth';
 import * as error from '../helpers/error';
 import * as handler from '../helpers/handler';
-import * as propHelpers from '../helpers/props';
+import * as propHelpers from '../../client/helpers/props';
 import * as search from '../helpers/search';
+import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
@@ -47,7 +48,7 @@ router.get('/', (req, res, next) => {
 			query
 		}))
 		.then((searchResults) => {
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				hideSearch: true,
 				...searchResults
 			});
@@ -60,7 +61,7 @@ router.get('/', (req, res, next) => {
 
 			res.render('target', {
 				markup,
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script: '/js/search.js',
 				title: 'Search Results'
 			});

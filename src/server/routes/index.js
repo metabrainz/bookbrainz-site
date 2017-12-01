@@ -18,8 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from '../helpers/props';
+import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
+import {escapeProps, generateProps} from '../helpers/props';
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
@@ -41,7 +42,7 @@ router.get('/', async (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(entities) {
-		const props = propHelpers.generateProps(req, res, {
+		const props = generateProps(req, res, {
 			homepage: true,
 			recent: _.take(entities, numRevisionsOnHomepage),
 			requireJS: Boolean(res.locals.user)
@@ -60,7 +61,7 @@ router.get('/', async (req, res, next) => {
 		res.render('target', {
 			markup,
 			page: 'Index',
-			props: propHelpers.escapeProps(props),
+			props: escapeProps(props),
 			script: '/js/index.js'
 		});
 	}
@@ -110,7 +111,7 @@ router.get('/', async (req, res, next) => {
 // Helper function to create pages that don't require custom logic
 function _createStaticRoute(route, title, PageComponent) {
 	router.get(route, (req, res) => {
-		const props = propHelpers.generateProps(req, res);
+		const props = generateProps(req, res);
 
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -121,7 +122,7 @@ function _createStaticRoute(route, title, PageComponent) {
 		res.render('target', {
 			markup,
 			page: title,
-			props: propHelpers.escapeProps(props),
+			props: escapeProps(props),
 			script: '/js/index.js',
 			title
 		});

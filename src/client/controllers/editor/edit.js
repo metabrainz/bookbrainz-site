@@ -17,18 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from '../../../server/helpers/props';
 import Layout from '../../containers/layout';
 import ProfileForm from '../../components/forms/profile';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {extractLayoutProps} from '../../helpers/props';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 ReactDOM.render(
-	<Layout {...propHelpers.extractLayoutProps(props)}>
+	<Layout {...extractLayoutProps(props)}>
 		<ProfileForm
 			editor={props.editor}
 			genders={props.genders}

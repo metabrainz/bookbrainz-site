@@ -20,7 +20,8 @@
 import * as auth from '../helpers/auth';
 import * as error from '../helpers/error';
 import * as handler from '../helpers/handler';
-import * as propHelpers from '../helpers/props';
+import * as propHelpers from '../../client/helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from
 	'../../client/components/pages/parts/editor-achievements';
 import EditorContainer from '../../client/containers/editor';
@@ -70,7 +71,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 
 	Promise.join(editorJSONPromise, titleJSONPromise, genderJSONPromise,
 		(editorJSON, titleJSON, genderJSON) => {
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				editor: editorJSON,
 				genders: genderJSON,
 				titles: titleJSON
@@ -87,7 +88,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			);
 			res.render('target', {
 				markup,
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script
 			});
 		}
@@ -202,7 +203,7 @@ router.get('/:id', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
 				tabActive: 0
@@ -222,7 +223,7 @@ router.get('/:id', (req, res, next) => {
 			res.render('target', {
 				markup,
 				page: 'profile',
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script: '/js/editor/editor.js'
 			});
 		}
@@ -264,7 +265,7 @@ router.get('/:id/revisions', (req, res, next) => {
 			return editorTitleJSON;
 		})
 		.then((editorJSON) => {
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				editor: editorJSON,
 				tabActive: 1
 			});
@@ -282,7 +283,7 @@ router.get('/:id/revisions', (req, res, next) => {
 			res.render('target', {
 				markup,
 				page: 'revisions',
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script: '/js/editor/editor.js'
 			});
 		})
@@ -375,7 +376,7 @@ router.get('/:id/achievements', (req, res, next) => {
 
 	Promise.join(achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
 				tabActive: 2
@@ -395,7 +396,7 @@ router.get('/:id/achievements', (req, res, next) => {
 			const script = '/js/editor/achievement.js';
 			res.render('target', {
 				markup,
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script
 			});
 		}

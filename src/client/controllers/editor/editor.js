@@ -17,7 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from '../../../server/helpers/props';
+import {
+	extractChildProps,
+	extractEditorProps,
+	extractLayoutProps
+} from '../../helpers/props';
 import EditorContainer from '../../containers/editor';
 import Layout from '../../containers/layout';
 import ProfileTab from '../../components/pages/parts/editor-profile';
@@ -41,15 +45,15 @@ else {
 	tab = (
 		<ProfileTab
 			user={props.user}
-			{...propHelpers.extractChildProps(props)}
+			{...extractChildProps(props)}
 		/>
 	);
 }
 
 const markup = (
-	<Layout {...propHelpers.extractLayoutProps(props)} >
+	<Layout {...extractLayoutProps(props)} >
 		<EditorContainer
-			{...propHelpers.extractEditorProps(props)}
+			{...extractEditorProps(props)}
 		>
 			{tab}
 		</EditorContainer>
