@@ -51,6 +51,7 @@
     "catw": "^1.0.1",
     "classnames": "^2.2.5",
     "co": "^4.6.0",
+    "compression": "^1.7.1",
     "connect-redis": "^3.0.1",
     "cross-env": "^5.0.1",
     "debug": "^2.2.0",

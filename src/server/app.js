@@ -25,6 +25,7 @@ import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
 import bodyParser from 'body-parser';
+import compression from 'compression';
 import config from './helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
@@ -36,7 +37,6 @@ import redis from 'connect-redis';
 import routes from './routes';
 import session from 'express-session';
 import staticCache from 'express-static-cache';
-
 
 Promise.config({
 	longStackTraces: true,
@@ -66,6 +66,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
+app.use(compression());
 
 // Set up serving of static assets
 app.use(staticCache(path.join(rootDir, 'static/js'), {
