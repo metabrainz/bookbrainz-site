@@ -36,7 +36,7 @@ import redis from 'connect-redis';
 import routes from './routes';
 import session from 'express-session';
 import staticCache from 'express-static-cache';
-
+import compression from 'compression';
 
 Promise.config({
 	longStackTraces: true,
@@ -66,6 +66,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
+app.use(compression());
 
 // Set up serving of static assets
 app.use(staticCache(path.join(rootDir, 'static/js'), {
