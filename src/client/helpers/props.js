@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015  Ohm Patel
+ * Copyright (C) 2017  Daniel Hsing
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,38 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Layout from '../containers/layout';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import SearchPage from '../components/pages/search';
-import {extractLayoutProps} from '../helpers/props';
+import {omit, pick} from 'lodash';
 
-const propsTarget = document.getElementById('props');
-const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
+const LAYOUT_PROPS = [
+	'hideSearch',
+	'homepage',
+	'repositoryUrl',
+	'requiresJS',
+	'siteRevision',
+	'user'
+];
 
-const markup = (
-	<Layout {...extractLayoutProps(props)}>
-		<SearchPage initialResults={props.initialResults}/>
-	</Layout>
-);
+const EDITOR_PROPS = [
+	'editor',
+	'tabActive'
+];
 
-ReactDOM.render(markup, document.getElementById('target'));
+export function extractLayoutProps(props) {
+	return pick(props, LAYOUT_PROPS);
+}
+
+export function extractEditorProps(props) {
+	return pick(props, EDITOR_PROPS);
+}
+
+export function extractChildProps(props) {
+	return omit(props, LAYOUT_PROPS);
+}
+
+export function extractEntityProps(props) {
+	return {
+		alert: props.alert,
+		entity: props.entity,
+		identifierTypes: props.identifierTypes
+	};
+}

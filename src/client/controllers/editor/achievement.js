@@ -18,7 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from '../../../server/helpers/props';
+import {
+	extractEditorProps,
+	extractLayoutProps
+} from '../../helpers/props';
 import AchievementsTab from '../../components/pages/parts/editor-achievements';
 import EditorContainer from '../../containers/editor';
 import Layout from '../../containers/layout';
@@ -30,9 +33,9 @@ const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 ReactDOM.render(
-	<Layout {...propHelpers.extractLayoutProps(props)}>
+	<Layout {...extractLayoutProps(props)}>
 		<EditorContainer
-			{...propHelpers.extractEditorProps(props)}
+			{...extractEditorProps(props)}
 		>
 			<AchievementsTab
 				achievement={props.achievement}

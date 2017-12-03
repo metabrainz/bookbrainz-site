@@ -21,14 +21,13 @@
 /* eslint strict: 0 */
 
 import * as entityHelper from '../../../helpers/entity';
-import * as propsHelper from '../../../../server/helpers/props';
 import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
 import React from 'react';
+import {extractEntityProps} from '../../../helpers/props';
 
 
 const {getLanguageAttribute, getTypeAttribute} = entityHelper;
-const {extractEntityProps} = propsHelper;
 
 function WorkPage(props) {
 	const {entity} = props;

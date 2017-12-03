@@ -21,10 +21,11 @@ import * as baseFormatter from '../helpers/diffFormatters/base';
 import * as entityFormatter from '../helpers/diffFormatters/entity';
 import * as entityRoutes from './entity/entity';
 import * as languageSetFormatter from '../helpers/diffFormatters/languageSet';
-import * as propHelpers from '../helpers/props';
+import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
 import * as releaseEventSetFormatter from
 	'../helpers/diffFormatters/releaseEventSet';
+import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
@@ -232,7 +233,7 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-			const props = propHelpers.generateProps(req, res, {
+			const props = generateProps(req, res, {
 				diffs,
 				revision: revision.toJSON(),
 				title: 'RevisionPage'
@@ -249,7 +250,7 @@ router.get('/:id', (req, res, next) => {
 			const script = '/js/revision.js';
 			res.render('target', {
 				markup,
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script
 			});
 		}

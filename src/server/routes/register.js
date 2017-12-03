@@ -21,7 +21,8 @@
 import * as error from '../helpers/error';
 import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
-import * as propHelpers from '../helpers/props';
+import * as propHelpers from '../../client/helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import Log from 'log';
 import React from 'react';
@@ -43,7 +44,7 @@ router.get('/', (req, res) => {
 		return res.redirect(`/editor/${req.user.id}`);
 	}
 
-	const props = propHelpers.generateProps(req, res);
+	const props = generateProps(req, res);
 
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -68,7 +69,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 		name: _.capitalize(req.session.mbProfile.gender)
 	});
 
-	const props = propHelpers.generateProps(req, res, {
+	const props = generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
 		name: req.session.mbProfile.sub
@@ -86,7 +87,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 
 	return res.render('target', {
 		markup,
-		props: propHelpers.escapeProps(props),
+		props: escapeProps(props),
 		script: '/js/registrationDetails.js',
 		title: 'Register'
 	});

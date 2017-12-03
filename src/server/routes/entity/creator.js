@@ -22,8 +22,9 @@ import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../helpers/props';
+import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
+import {escapeProps, generateProps} from '../../helpers/props';
 import EntityEditor from '../../../client/entity-editor/entity-editor';
 import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
@@ -87,7 +88,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders,	middleware.loadLanguages,
 	middleware.loadCreatorTypes, (req, res) => {
-		const props = propHelpers.generateProps(req, res, {
+		const props = generateProps(req, res, {
 			creatorTypes: res.locals.creatorTypes,
 			entityType: 'creator',
 			genderOptions: res.locals.genders,
@@ -128,7 +129,7 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		return res.render('target', {
 			markup,
-			props: propHelpers.escapeProps(props),
+			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Creator'
 		});
@@ -220,7 +221,7 @@ router.get(
 	(req, res) => {
 		const creator = res.locals.entity;
 
-		const props = propHelpers.generateProps(req, res, {
+		const props = generateProps(req, res, {
 			creator,
 			creatorTypes: res.locals.creatorTypes,
 			entityType: 'creator',
@@ -262,7 +263,7 @@ router.get(
 
 		return res.render('target', {
 			markup,
-			props: propHelpers.escapeProps(props),
+			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Edit Creator'
 		});

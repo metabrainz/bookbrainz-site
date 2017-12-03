@@ -17,18 +17,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as propHelpers from '../../server/helpers/props';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RegistrationForm from '../components/forms/registration-details';
+import {extractLayoutProps} from '../helpers/props';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 const markup = (
-	<Layout {...propHelpers.extractLayoutProps(props)}>
+	<Layout {...extractLayoutProps(props)}>
 		<RegistrationForm
 			gender={props.gender}
 			genders={props.genders}

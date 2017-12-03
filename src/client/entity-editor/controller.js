@@ -21,8 +21,11 @@
  */
 
 import * as helpers from './helpers';
-import * as propHelpers from '../../server/helpers/props';
 import {applyMiddleware, compose, createStore} from 'redux';
+import {
+	extractChildProps,
+	extractLayoutProps
+} from '../helpers/props';
 import EntityEditor from './entity-editor';
 import Immutable from 'immutable';
 import Layout from '../containers/layout';
@@ -58,11 +61,11 @@ const store = createStore(
 );
 
 const markup = (
-	<Layout {...propHelpers.extractLayoutProps(rest)}>
+	<Layout {...extractLayoutProps(rest)}>
 		<Provider store={store}>
 			<EntityEditor
 				validate={getValidator(props.entityType)}
-				{...propHelpers.extractChildProps(rest)}
+				{...extractChildProps(rest)}
 			>
 				<EntitySection/>
 			</EntityEditor>

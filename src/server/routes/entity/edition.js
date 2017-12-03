@@ -22,8 +22,9 @@ import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../helpers/props';
+import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
+import {escapeProps, generateProps} from '../../helpers/props';
 import EntityEditor from '../../../client/entity-editor/entity-editor';
 import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
@@ -110,7 +111,7 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
 	(req, res, next) => {
 		const {Publication, Publisher} = req.app.locals.orm;
-		const propsPromise = propHelpers.generateProps(req, res, {
+		const propsPromise = generateProps(req, res, {
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
 			entityType: 'edition',
@@ -178,7 +179,7 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 			return res.render('target', {
 				markup,
-				props: propHelpers.escapeProps(props),
+				props: escapeProps(props),
 				script: '/js/entity-editor.js',
 				title: 'Add Edition'
 			});
@@ -283,7 +284,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	(req, res) => {
 		const edition = res.locals.entity;
 
-		const props = propHelpers.generateProps(req, res, {
+		const props = generateProps(req, res, {
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
 			entityType: 'edition',
@@ -324,7 +325,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		return res.render('target', {
 			markup,
-			props: propHelpers.escapeProps(props),
+			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Edit Edition'
 		});

@@ -16,23 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import _ from 'lodash';
 import jsesc from 'jsesc';
-
-
-const LAYOUT_PROPS = [
-	'hideSearch',
-	'homepage',
-	'repositoryUrl',
-	'requiresJS',
-	'siteRevision',
-	'user'
-];
-
-const EDITOR_PROPS = [
-	'editor',
-	'tabActive'
-];
 
 // JSON.stringify that escapes characters in string output
 export function escapeProps(props) {
@@ -44,24 +28,4 @@ export function escapeProps(props) {
 
 export function generateProps(req, res, props) {
 	return Object.assign({}, req.app.locals, res.locals, props);
-}
-
-export function extractLayoutProps(props) {
-	return _.pick(props, LAYOUT_PROPS);
-}
-
-export function extractEditorProps(props) {
-	return _.pick(props, EDITOR_PROPS);
-}
-
-export function extractChildProps(props) {
-	return _.omit(props, LAYOUT_PROPS);
-}
-
-export function extractEntityProps(props) {
-	return {
-		alert: props.alert,
-		entity: props.entity,
-		identifierTypes: props.identifierTypes
-	};
 }

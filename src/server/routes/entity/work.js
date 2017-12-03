@@ -22,8 +22,9 @@ import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../helpers/props';
+import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
+import {escapeProps, generateProps} from '../../helpers/props';
 import EntityEditor from '../../../client/entity-editor/entity-editor';
 import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
@@ -88,7 +89,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	(req, res) => {
-		const props = propHelpers.generateProps(req, res, {
+		const props = generateProps(req, res, {
 			entityType: 'work',
 			heading: 'Create Work',
 			identifierTypes: res.locals.identifierTypes,
@@ -128,7 +129,7 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		return res.render('target', {
 			markup,
-			props: propHelpers.escapeProps(props),
+			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Work'
 		});
@@ -201,7 +202,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		workToFormState(work);
 
-		const props = propHelpers.generateProps(req, res, {
+		const props = generateProps(req, res, {
 			entityType: 'work',
 			heading: 'Edit Work',
 			identifierTypes: res.locals.identifierTypes,
@@ -241,7 +242,7 @@ router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 
 		return res.render('target', {
 			markup,
-			props: propHelpers.escapeProps(props),
+			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Work'
 		});
