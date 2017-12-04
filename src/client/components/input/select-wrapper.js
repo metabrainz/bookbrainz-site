@@ -94,13 +94,13 @@ class SelectWrapper extends React.Component {
 				}
 				<div className={wrapperClassName}>
 					<Child
+						{...props}
 						labelKey={labelAttribute}
 						multi={multiple}
 						ref={(ref) => this.select = ref}
 						value={childValue}
 						valueKey={idAttribute}
 						onChange={this.handleChange}
-						{...props}
 					/>
 				</div>
 			</div>
