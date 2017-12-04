@@ -21,6 +21,7 @@ import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 
 
@@ -51,12 +52,11 @@ export default function tests() {
 				edit.sprinter.Sprinter
 			);
 
-		return Promise.all([
-			expect(achievementPromise).to.eventually.have
-				.property('editorId', testData.editorAttribs.id),
-			expect(achievementPromise).to.eventually.have
-				.property('achievementId', testData.sprinterAttribs.id)
-		]);
+		return expectAchievementIds(
+			achievementPromise,
+			testData.editorAttribs.id,
+			testData.sprinterAttribs.id
+		);
 	});
 
 

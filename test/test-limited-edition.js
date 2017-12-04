@@ -17,6 +17,7 @@
  */
 
 import * as testData from '../data/test-data.js';
+import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -55,14 +56,11 @@ export default function tests() {
 					edit.limitedEdition['Limited Edition I']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.limitedEditionIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.limitedEditionIAttribs.id
+			);
 		}
 	);
 
@@ -82,14 +80,11 @@ export default function tests() {
 					edit.limitedEdition['Limited Edition II']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.limitedEditionIIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.limitedEditionIIAttribs.id
+			);
 		});
 
 	it('III should be given to someone with 100 edition creations',
@@ -108,20 +103,13 @@ export default function tests() {
 					edit.limitedEdition
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Limited Edition III.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Limited Edition III.achievementId',
-						testData.limitedEditionIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Limited Edition.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Limited Edition.titleId',
-						testData.limitedEditionAttribs.id)
-			]);
+			return expectAchievementIdsNested(
+				achievementPromise,
+				'Limited Edition',
+				testData.editorAttribs.id,
+				testData.limitedEditionIIIAttribs.id,
+				testData.limitedEditionAttribs.id,
+			);
 		});
 
 	it('should not given to someone with 0 edition creations',
