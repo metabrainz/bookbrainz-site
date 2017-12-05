@@ -17,6 +17,7 @@
  */
 
 import * as testData from '../data/test-data.js';
+import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -55,14 +56,11 @@ export default function tests() {
 					edit.creatorCreator['Creator Creator I']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.creatorCreatorIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.creatorCreatorIAttribs.id
+			);
 		}
 	);
 
@@ -82,14 +80,11 @@ export default function tests() {
 					edit.creatorCreator['Creator Creator II']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.creatorCreatorIIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.creatorCreatorIIAttribs.id
+			);
 		});
 
 	it('III should be given to someone with 100 creator creations',
@@ -108,20 +103,13 @@ export default function tests() {
 					edit.creatorCreator
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Creator Creator III.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Creator Creator III.achievementId',
-						testData.creatorCreatorIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Creator Creator.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Creator Creator.titleId',
-						testData.creatorCreatorAttribs.id)
-			]);
+			return expectAchievementIdsNested(
+				achievementPromise,
+				'Creator Creator',
+				testData.editorAttribs.id,
+				testData.creatorCreatorIIIAttribs.id,
+				testData.creatorCreatorAttribs.id,
+			);
 		});
 
 	it('should not be given to someone with 0 creator creations',

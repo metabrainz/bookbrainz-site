@@ -17,6 +17,7 @@
  */
 
 import * as testData from '../data/test-data.js';
+import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -56,14 +57,11 @@ export default function tests() {
 					edit.publisherCreator['Publisher Creator I']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.publisherCreatorIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.publisherCreatorIAttribs.id
+			);
 		}
 	);
 
@@ -83,14 +81,11 @@ export default function tests() {
 					edit.publisherCreator['Publisher Creator II']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.publisherCreatorIIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.publisherCreatorIIAttribs.id
+			);
 		});
 
 	it('III should be given to someone with 100 publisher creations',
@@ -109,20 +104,13 @@ export default function tests() {
 					edit.publisherCreator
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher Creator III.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher Creator III.achievementId',
-						testData.publisherCreatorIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher Creator.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher Creator.titleId',
-						testData.publisherCreatorAttribs.id)
-			]);
+			return expectAchievementIdsNested(
+				achievementPromise,
+				'Publisher Creator',
+				testData.editorAttribs.id,
+				testData.publisherCreatorIIIAttribs.id,
+				testData.publisherCreatorAttribs.id,
+			);
 		});
 
 	it('should not be given to someone with 0 publisher creations',

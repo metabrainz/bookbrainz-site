@@ -18,6 +18,7 @@
 
 import * as achievement from '../lib/server/helpers/achievement';
 import * as testData from '../data/test-data.js';
+import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -53,13 +54,11 @@ export default function tests() {
 				edit.revisionist['Revisionist I']
 			);
 
-		return Promise.all([
-			expect(achievementPromise).to.eventually.have
-				.property('editorId', testData.editorAttribs.id),
-			expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.revisionistIAttribs.id)
-		]);
+		return expectAchievementIds(
+			achievementPromise,
+			testData.editorAttribs.id,
+			testData.revisionistIAttribs.id
+		);
 	});
 
 	it('II should be given to someone with 50 revisions', () => {
@@ -106,20 +105,13 @@ export default function tests() {
 					edit.revisionist
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Revisionist III.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Revisionist III.achievementId',
-						testData.revisionistIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Revisionist.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Revisionist.titleId',
-						testData.revisionistAttribs.id)
-			]);
+			return expectAchievementIdsNested(
+				achievementPromise,
+				'Revisionist',
+				testData.editorAttribs.id,
+				testData.revisionistIIIAttribs.id,
+				testData.revisionistAttribs.id,
+			);
 		});
 
 	it('should not be given to someone without a revision', () => {

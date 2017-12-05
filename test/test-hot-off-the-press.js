@@ -20,6 +20,7 @@ import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
@@ -58,13 +59,11 @@ export default function tests() {
 						edit.hotOffThePress['Hot Off the Press']
 					);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId', testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.hotOffThePressAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.hotOffThePressAttribs.id
+			);
 		}
 	);
 

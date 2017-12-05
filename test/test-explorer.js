@@ -20,6 +20,7 @@ import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
@@ -59,13 +60,11 @@ export default function tests() {
 				edit.explorer['Explorer I']
 			);
 
-		return Promise.all([
-			expect(achievementPromise).to.eventually.have
-				.property('editorId', testData.editorAttribs.id),
-			expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.explorerIAttribs.id)
-		]);
+		return expectAchievementIds(
+			achievementPromise,
+			testData.editorAttribs.id,
+			testData.explorerIAttribs.id
+		);
 	});
 
 	it('II should be given to someone with 100 entity views', () => {
@@ -84,13 +83,11 @@ export default function tests() {
 				edit.explorer['Explorer II']
 			);
 
-		return Promise.all([
-			expect(achievementPromise).to.eventually.have
-				.property('editorId', testData.editorAttribs.id),
-			expect(achievementPromise).to.eventually.have
-				.property('achievementId',
-					testData.explorerIIAttribs.id)
-		]);
+		return expectAchievementIds(
+			achievementPromise,
+			testData.editorAttribs.id,
+			testData.explorerIIAttribs.id
+		);
 	});
 
 	it('III should be given to someone with 1000 entity views',
@@ -110,13 +107,11 @@ export default function tests() {
 					edit.explorer['Explorer III']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId', testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.explorerIIIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.explorerIIIAttribs.id
+			);
 		});
 
 	it('I should not be given to someone with 9 entity views', () => {

@@ -20,6 +20,7 @@ import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
@@ -67,12 +68,11 @@ export default function tests() {
 					edit.funRunner['Fun Runner']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId', testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId', testData.funRunnerAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.funRunnerAttribs.id
+			);
 		});
 
 	it('shouldn\'t be given to someone without a revision a day for a week',

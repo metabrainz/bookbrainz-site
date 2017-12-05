@@ -17,6 +17,7 @@
  */
 
 import * as testData from '../data/test-data.js';
+import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -55,14 +56,11 @@ export default function tests() {
 					edit.publisher['Publisher I']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.publisherIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.publisherIAttribs.id
+			);
 		}
 	);
 
@@ -82,14 +80,11 @@ export default function tests() {
 					edit.publisher['Publisher II']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.publisherIIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.publisherIIAttribs.id
+			);
 		});
 
 	it('III should be given to someone with 100 publication creations',
@@ -108,20 +103,13 @@ export default function tests() {
 					edit.publisher
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher III.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher III.achievementId',
-						testData.publisherIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Publisher.titleId',
-						testData.publisherAttribs.id)
-			]);
+			return expectAchievementIdsNested(
+				achievementPromise,
+				'Publisher',
+				testData.editorAttribs.id,
+				testData.publisherIIIAttribs.id,
+				testData.publisherAttribs.id,
+			);
 		});
 
 	it('should not be given to someone with 0 publication creations',

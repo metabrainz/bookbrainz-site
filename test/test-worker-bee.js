@@ -17,6 +17,7 @@
  */
 
 import * as testData from '../data/test-data.js';
+import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -56,14 +57,11 @@ export default function tests() {
 					edit.workerBee['Worker Bee I']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.workerBeeIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.workerBeeIAttribs.id
+			);
 		}
 	);
 
@@ -83,14 +81,11 @@ export default function tests() {
 					edit.workerBee['Worker Bee II']
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have
-					.property('editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have
-					.property('achievementId',
-						testData.workerBeeIIAttribs.id)
-			]);
+			return expectAchievementIds(
+				achievementPromise,
+				testData.editorAttribs.id,
+				testData.workerBeeIIAttribs.id
+			);
 		});
 
 	it('III should be given to someone with 100 work creations',
@@ -109,20 +104,13 @@ export default function tests() {
 					edit.workerBee
 				);
 
-			return Promise.all([
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Worker Bee III.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Worker Bee III.achievementId',
-						testData.workerBeeIIIAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Worker Bee.editorId',
-						testData.editorAttribs.id),
-				expect(achievementPromise).to.eventually.have.nested
-					.property('Worker Bee.titleId',
-						testData.workerBeeAttribs.id)
-			]);
+			return expectAchievementIdsNested(
+				achievementPromise,
+				'Worker Bee',
+				testData.editorAttribs.id,
+				testData.workerBeeIIIAttribs.id,
+				testData.workerBeeAttribs.id,
+			);
 		});
 
 	it('should not be given to someone with 0 work creations',
