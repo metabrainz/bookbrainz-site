@@ -1,4 +1,4 @@
-export default () => {
+export default ({markup, script, page, prop}) => {
   return `
     <!DOCTYPE html>
     <html>
@@ -19,10 +19,13 @@ export default () => {
         <link rel="icon" type="image/png" href="/images/icons/favicon-16x16.png" sizes="16x16">
         <link rel="icon" type="image/png" href="/images/icons/favicon-16x16.png" sizes="16x16">
         <link rel="manifest" href="/manifest.json">
+
         <link rel="stylesheet" href="/stylesheets/style.css">
         <link rel="stylesheet" href="/stylesheets/react-virtualized.css">
         <link rel="stylesheet" href="/stylesheets/react-virtualized-select.css">
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <meta name="apple-mobile-web-app-title" content="BookBrainz">
         <meta name="application-name" content="BookBrainz">
         <meta name="msapplication-TileColor" content="#da532c">
@@ -30,8 +33,11 @@ export default () => {
         <meta name="theme-color" content="#754e37">
       </head>
       <body>
-    	<div id="target"></div>
+    	<div id="target">${markup}</div>
     	<script src="/js/bundle.js"></script>
+    	<script type="application/json" id="page">${page}</script>
+    	<script type="application/json" id="props">${props}</script>
+    	<script src=${script}></script>
   	  </body>
     </html>
   `;
