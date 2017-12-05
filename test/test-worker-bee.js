@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint import/namespace: ['error', { allowComputed: true }] */
 import * as testData from '../data/test-data.js';
 import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import Promise from 'bluebird';
@@ -30,10 +31,32 @@ const {expect} = chai;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
-const workerBeeIThreshold = 1;
-const workerBeeIIThreshold = 10;
-const workerBeeIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
 
+function test(threshold, rev) {
+	Achievement.__set__({
+		getTypeCreation:
+			testData.typeCreationHelper(
+				'work_revision', threshold
+			)
+	});
+
+	const achievementPromise = testData.createEditor()
+		.then((editor) =>
+			Achievement.processEdit(orm, editor.id)
+		)
+		.then((edit) =>
+			edit.workerBee[`Worker Bee ${rev}`]
+		);
+
+	return expectAchievementIds(
+		achievementPromise,
+		testData.editorAttribs.id,
+		testData[`workerBee${rev}Attribs`].id
+	);
+}
 
 export default function tests() {
 	beforeEach(() => testData.createWorkerBee());
@@ -41,59 +64,19 @@ export default function tests() {
 	afterEach(testData.truncate);
 
 	it('I should be given to someone with a work creation',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'work_revision', workerBeeIThreshold
-					)
-			});
-
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.workerBee['Worker Bee I']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.workerBeeIAttribs.id
-			);
-		}
+		() => test(thresholdI, 'I')
 	);
 
 	it('II should be given to someone with 10 work creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'work_revision', workerBeeIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.workerBee['Worker Bee II']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.workerBeeIIAttribs.id
-			);
-		});
+		() => test(thresholdII, 'II')
+	);
 
 	it('III should be given to someone with 100 work creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'work_revision', workerBeeIIIThreshold
+						'work_revision', thresholdIII
 					)
 			});
 			const achievementPromise = testData.createEditor()

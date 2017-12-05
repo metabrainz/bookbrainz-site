@@ -17,6 +17,7 @@
  */
 
 import * as achievement from '../lib/server/helpers/achievement';
+/* eslint import/namespace: ['error', { allowComputed: true }] */
 import * as testData from '../data/test-data.js';
 import Promise from 'bluebird';
 import chai from 'chai';
