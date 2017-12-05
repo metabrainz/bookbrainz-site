@@ -1,4 +1,4 @@
-export default ({markup, script, page, prop}) => {
+export default ({markup, script, page, props}) => {
   return `
     <!DOCTYPE html>
     <html>
