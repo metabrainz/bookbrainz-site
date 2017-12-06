@@ -29,7 +29,8 @@ const {Button, Grid, Row} = bootstrap;
 
 function ErrorPage(props) {
 	const {error} = props;
-	let detailedMessage = error.detailedMessage;
+	let {detailedMessage} = error;
+
 	if (typeof detailedMessage === 'string') {
 		detailedMessage = [detailedMessage];
 	}

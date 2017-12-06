@@ -18,7 +18,6 @@
 
 // @flow
 
-import * as Immutable from 'immutable';
 import {get, validatePositiveInteger} from './base';
 import {
 	validateAliases, validateIdentifiers, validateNameSection,

@@ -23,7 +23,7 @@ import {
 	VALID_IDENTIFIERS, VALID_NAME_SECTION, VALID_SUBMISSION_SECTION
 } from './data';
 import {
-	testValidateBooleanFunc, testValidateDateFunc,
+	testValidateDateFunc,
 	testValidatePositiveIntegerFunc
 } from './helpers';
 import {

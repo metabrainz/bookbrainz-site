@@ -18,7 +18,6 @@
 
 // @flow
 
-import * as helpers from '../helpers';
 import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateArea, updateEnded, updateType
@@ -36,8 +35,6 @@ import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
-
-const {isPartialDateValid} = helpers;
 
 type PublisherType = {
 	label: string,

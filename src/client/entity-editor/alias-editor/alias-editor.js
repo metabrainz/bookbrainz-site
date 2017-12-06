@@ -119,5 +119,4 @@ function mapStateToProps(rootState) {
 	};
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(AliasEditor);
