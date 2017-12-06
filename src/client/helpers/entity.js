@@ -25,14 +25,6 @@ import _ from 'lodash';
 
 const {Button, Table} = bootstrap;
 
-export const ENTITY_TYPES = {
-	creator: 'creator',
-	edition: 'edition',
-	publication: 'publication',
-	publisher: 'publisher',
-	work: 'work'
-};
-
 export function extractAttribute(attr, path) {
 	if (attr) {
 		if (path) {

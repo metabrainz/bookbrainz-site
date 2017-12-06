@@ -1,4 +1,4 @@
-import {ENTITY_TYPES} from '../helpers/entity';
+
 import PropTypes from 'prop-types';
 
 
@@ -9,7 +9,13 @@ export const entityProperty = PropTypes.shape({
 	})
 });
 
-export const entityTypeProperty = PropTypes.oneOf(ENTITY_TYPES);
+export const entityTypeProperty = PropTypes.oneOf([
+	'creator',
+	'edition',
+	'publication',
+	'publisher',
+	'work'
+]);
 
 export const labeledProperty = PropTypes.shape({
 	id: PropTypes.number,
