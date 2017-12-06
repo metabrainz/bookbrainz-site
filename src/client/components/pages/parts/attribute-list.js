@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -34,9 +35,9 @@ function AttributeList({attributes}) {
 }
 AttributeList.displayName = 'AttributeList';
 AttributeList.propTypes = {
-	attributes: React.PropTypes.arrayOf(React.PropTypes.shape({
-		data: React.PropTypes.any,
-		title: React.PropTypes.string
+	attributes: PropTypes.arrayOf(PropTypes.shape({
+		data: PropTypes.any,
+		title: PropTypes.string
 	})).isRequired
 };
 

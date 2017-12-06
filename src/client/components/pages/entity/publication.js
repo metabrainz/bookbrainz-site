@@ -23,6 +23,7 @@
 import * as entityHelper from '../../../helpers/entity';
 import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {extractEntityProps} from '../../../helpers/props';
 
@@ -51,7 +52,7 @@ PublicationPage.getAttributes = (entity) => [getTypeAttribute(
 )];
 PublicationPage.displayName = 'PublicationPage';
 PublicationPage.propTypes = {
-	entity: React.PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired
 };
 
 export default PublicationPage;

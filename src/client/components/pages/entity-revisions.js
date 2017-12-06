@@ -19,6 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -127,11 +128,11 @@ class EntityRevisions extends React.Component {
 }
 EntityRevisions.displayName = 'EntityRevisions';
 EntityRevisions.propTypes = {
-	entity: React.PropTypes.shape({
-		defaultAlias: React.PropTypes.object,
-		disambiguation: React.PropTypes.object
+	entity: PropTypes.shape({
+		defaultAlias: PropTypes.object,
+		disambiguation: PropTypes.object
 	}).isRequired,
-	revisions: React.PropTypes.array.isRequired
+	revisions: PropTypes.array.isRequired
 };
 
 export default EntityRevisions;

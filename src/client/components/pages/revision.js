@@ -22,6 +22,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import request from 'superagent-bluebird-promise';
@@ -226,9 +227,9 @@ class RevisionPage extends React.Component {
 
 RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
-	diffs: React.PropTypes.any.isRequired,
-	revision: React.PropTypes.any.isRequired,
-	user: React.PropTypes.object
+	diffs: PropTypes.any.isRequired,
+	revision: PropTypes.any.isRequired,
+	user: PropTypes.object
 };
 RevisionPage.defaultProps = {
 	user: null

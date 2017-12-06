@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -45,8 +46,8 @@ function EntityImage({backupIcon, imageUrl}) {
 }
 EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
-	backupIcon: React.PropTypes.string.isRequired,
-	imageUrl: React.PropTypes.string.isRequired
+	backupIcon: PropTypes.string.isRequired,
+	imageUrl: PropTypes.string.isRequired
 };
 
 export default EntityImage;

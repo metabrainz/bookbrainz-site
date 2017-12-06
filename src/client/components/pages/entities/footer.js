@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -69,8 +70,8 @@ function EntityFooter({entityUrl, lastModified}) {
 }
 EntityFooter.displayName = 'EntityFooter';
 EntityFooter.propTypes = {
-	entityUrl: React.PropTypes.string.isRequired,
-	lastModified: React.PropTypes.string.isRequired
+	entityUrl: PropTypes.string.isRequired,
+	lastModified: PropTypes.string.isRequired
 };
 
 export default EntityFooter;

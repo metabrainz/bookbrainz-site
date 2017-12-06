@@ -19,6 +19,7 @@
 import {Alert, Button, Col, Row} from 'react-bootstrap';
 import {debounceUpdateRevisionNote, submit} from './actions';
 import CustomInput from '../../input';
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
@@ -86,11 +87,10 @@ function SubmissionSection({
 }
 SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
-	errorText: React.PropTypes.node.isRequired,
-	formValid: React.PropTypes.bool.isRequired,
-	onNoteChange: React.PropTypes.func.isRequired,
-	onSubmit: React.PropTypes.func.isRequired,
-	submissionUrl: React.PropTypes.string.isRequired
+	errorText: PropTypes.node.isRequired,
+	formValid: PropTypes.bool.isRequired,
+	onNoteChange: PropTypes.func.isRequired,
+	onSubmit: PropTypes.func.isRequired
 };
 
 function mapStateToProps(rootState, {validate}) {

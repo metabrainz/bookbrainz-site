@@ -25,6 +25,7 @@ import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
 import EntityRelationships from './relationships';
 import EntityTitle from './title';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -73,7 +74,7 @@ function PublisherAttributes({publisher}) {
 }
 PublisherAttributes.displayName = 'PublisherAttributes';
 PublisherAttributes.propTypes = {
-	publisher: React.PropTypes.object.isRequired
+	publisher: PropTypes.object.isRequired
 };
 
 
@@ -118,8 +119,8 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 }
 PublisherDisplayPage.displayName = 'PublisherDisplayPage';
 PublisherDisplayPage.propTypes = {
-	entity: React.PropTypes.object.isRequired,
-	identifierTypes: React.PropTypes.array
+	entity: PropTypes.object.isRequired,
+	identifierTypes: PropTypes.array
 };
 PublisherDisplayPage.defaultProps = {
 	identifierTypes: []

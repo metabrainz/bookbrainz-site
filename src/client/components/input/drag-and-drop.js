@@ -17,6 +17,7 @@
  */
 
 import CustomInput from '../../input';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -91,7 +92,7 @@ class DragAndDrop extends React.Component {
 
 DragAndDrop.displayName = 'DragAndDrop';
 DragAndDrop.propTypes = {
-	name: React.PropTypes.string.isRequired
+	name: PropTypes.string.isRequired
 };
 
 export default DragAndDrop;

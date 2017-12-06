@@ -19,6 +19,7 @@
 
 import {Async} from 'react-select';
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
 import request from 'superagent-bluebird-promise';
@@ -130,9 +131,9 @@ class EntitySearch extends React.Component {
 
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
-	collection: React.PropTypes.string,
-	defaultValue: React.PropTypes.shape({
-		bbid: React.PropTypes.string
+	collection: PropTypes.string,
+	defaultValue: PropTypes.shape({
+		bbid: PropTypes.string
 	})
 };
 EntitySearch.defaultProps = {

@@ -27,6 +27,7 @@ import {
 } from '../validators/common';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
+import PropTypes from 'prop-types';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
@@ -133,16 +134,16 @@ const AliasRow = ({
 );
 AliasRow.displayName = 'AliasEditor.AliasRow';
 AliasRow.propTypes = {
-	languageOptions: React.PropTypes.array.isRequired,
-	languageValue: React.PropTypes.number,
-	nameValue: React.PropTypes.string.isRequired,
-	onLanguageChange: React.PropTypes.func.isRequired,
-	onNameChange: React.PropTypes.func.isRequired,
-	onPrimaryClick: React.PropTypes.func.isRequired,
-	onRemoveButtonClick: React.PropTypes.func.isRequired,
-	onSortNameChange: React.PropTypes.func.isRequired,
-	primaryChecked: React.PropTypes.bool.isRequired,
-	sortNameValue: React.PropTypes.string.isRequired
+	languageOptions: PropTypes.array.isRequired,
+	languageValue: PropTypes.number,
+	nameValue: PropTypes.string.isRequired,
+	onLanguageChange: PropTypes.func.isRequired,
+	onNameChange: PropTypes.func.isRequired,
+	onPrimaryClick: PropTypes.func.isRequired,
+	onRemoveButtonClick: PropTypes.func.isRequired,
+	onSortNameChange: PropTypes.func.isRequired,
+	primaryChecked: PropTypes.bool.isRequired,
+	sortNameValue: PropTypes.string.isRequired
 };
 AliasRow.defaultProps = {
 	languageValue: null

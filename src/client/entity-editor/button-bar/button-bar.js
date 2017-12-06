@@ -23,6 +23,7 @@ import {
 import {validateAliases, validateIdentifiers} from '../validators/common';
 import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 
@@ -93,14 +94,14 @@ function ButtonBar({
 }
 ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
-	aliasesInvalid: React.PropTypes.bool.isRequired,
-	disambiguationVisible: React.PropTypes.bool.isRequired,
-	identifiersInvalid: React.PropTypes.bool.isRequired,
-	numAliases: React.PropTypes.number.isRequired,
-	numIdentifiers: React.PropTypes.number.isRequired,
-	onAliasButtonClick: React.PropTypes.func.isRequired,
-	onDisambiguationButtonClick: React.PropTypes.func.isRequired,
-	onIdentifierButtonClick: React.PropTypes.func.isRequired
+	aliasesInvalid: PropTypes.bool.isRequired,
+	disambiguationVisible: PropTypes.bool.isRequired,
+	identifiersInvalid: PropTypes.bool.isRequired,
+	numAliases: PropTypes.number.isRequired,
+	numIdentifiers: PropTypes.number.isRequired,
+	onAliasButtonClick: PropTypes.func.isRequired,
+	onDisambiguationButtonClick: PropTypes.func.isRequired,
+	onIdentifierButtonClick: PropTypes.func.isRequired
 };
 
 function mapStateToProps(rootState, {identifierTypes}) {

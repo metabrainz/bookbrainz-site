@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -40,8 +41,8 @@ function EntityRelationships({entityUrl, relationships}) {
 }
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
-	entityUrl: React.PropTypes.string.isRequired,
-	relationships: React.PropTypes.array.isRequired
+	entityUrl: PropTypes.string.isRequired,
+	relationships: PropTypes.array.isRequired
 };
 
 export default EntityRelationships;

@@ -23,6 +23,7 @@ import * as validators from '../../helpers/react-validators';
 import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PartialDate from '../input/partial-date';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
@@ -183,8 +184,8 @@ class RegistrationForm extends React.Component {
 RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
 	gender: validators.namedProperty,
-	genders: React.PropTypes.arrayOf(validators.namedProperty).isRequired,
-	name: React.PropTypes.string
+	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
+	name: PropTypes.string
 };
 RegistrationForm.defaultProps = {
 	gender: null,

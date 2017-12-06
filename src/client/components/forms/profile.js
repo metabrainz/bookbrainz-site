@@ -23,6 +23,7 @@ import * as validators from '../../helpers/react-validators';
 import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PartialDate from '../input/partial-date';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
@@ -196,19 +197,19 @@ class ProfileForm extends React.Component {
 
 ProfileForm.displayName = 'ProfileForm';
 ProfileForm.propTypes = {
-	editor: React.PropTypes.shape({
+	editor: PropTypes.shape({
 		area: validators.labeledProperty,
-		bio: React.PropTypes.string,
-		birthDate: React.PropTypes.object,
-		gender: React.PropTypes.shape({
-			id: React.PropTypes.number
+		bio: PropTypes.string,
+		birthDate: PropTypes.object,
+		gender: PropTypes.shape({
+			id: PropTypes.number
 		}),
-		id: React.PropTypes.number,
-		name: React.PropTypes.string,
-		titleUnlockId: React.PropTypes.number
+		id: PropTypes.number,
+		name: PropTypes.string,
+		titleUnlockId: PropTypes.number
 	}).isRequired,
-	genders: React.PropTypes.array.isRequired,
-	titles: React.PropTypes.array.isRequired
+	genders: PropTypes.array.isRequired,
+	titles: PropTypes.array.isRequired
 };
 
 export default ProfileForm;

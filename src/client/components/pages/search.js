@@ -18,6 +18,7 @@
  */
 /* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
@@ -75,7 +76,7 @@ class SearchPage extends React.Component {
 
 SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
-	initialResults: React.PropTypes.array
+	initialResults: PropTypes.array
 };
 SearchPage.defaultProps = {
 	initialResults: []

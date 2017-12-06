@@ -22,6 +22,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 import FontAwesome from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -206,9 +207,9 @@ class EditorProfileTab extends React.Component {
 
 EditorProfileTab.displayName = 'EditorProfileTab';
 EditorProfileTab.propTypes = {
-	achievement: React.PropTypes.object.isRequired,
-	editor: React.PropTypes.object.isRequired,
-	user: React.PropTypes.object
+	achievement: PropTypes.object.isRequired,
+	editor: PropTypes.object.isRequired,
+	user: PropTypes.object
 };
 EditorProfileTab.defaultProps = {
 	user: null

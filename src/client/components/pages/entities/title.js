@@ -18,6 +18,7 @@
 
 import * as entityHelper from '../../../helpers/entity';
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -38,7 +39,7 @@ function EntityTitle({entity}) {
 }
 EntityTitle.displayName = 'EntityTitle';
 EntityTitle.propTypes = {
-	entity: React.PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired
 };
 
 export default EntityTitle;

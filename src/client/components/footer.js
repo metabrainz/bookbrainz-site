@@ -19,6 +19,7 @@
  */
 /* eslint max-len: "warn" */
 import * as bootstrap from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -73,8 +74,8 @@ function Footer(props) {
 
 Footer.displayName = 'Footer';
 Footer.propTypes = {
-	repositoryUrl: React.PropTypes.string.isRequired,
-	siteRevision: React.PropTypes.string.isRequired
+	repositoryUrl: PropTypes.string.isRequired,
+	siteRevision: PropTypes.string.isRequired
 };
 
 export default Footer;

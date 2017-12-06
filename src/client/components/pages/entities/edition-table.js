@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -47,7 +48,7 @@ function EditionTableRow({edition}) {
 }
 EditionTableRow.displayName = 'EditionTableRow';
 EditionTableRow.propTypes = {
-	edition: React.PropTypes.object.isRequired
+	edition: PropTypes.object.isRequired
 };
 
 function EditionTable({entity}) {
@@ -86,7 +87,7 @@ function EditionTable({entity}) {
 }
 EditionTable.displayName = 'EditionTable';
 EditionTable.propTypes = {
-	entity: React.PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired
 };
 
 export default EditionTable;

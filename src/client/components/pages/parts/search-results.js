@@ -18,6 +18,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -75,7 +76,7 @@ function SearchResults(props) {
 
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
-	results: React.PropTypes.array
+	results: PropTypes.array
 };
 SearchResults.defaultProps = {
 	results: null

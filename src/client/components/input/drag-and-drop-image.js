@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 /**
@@ -68,10 +69,10 @@ class DragAndDropImage extends React.Component {
 
 DragAndDropImage.displayName = 'DragAndDropImage';
 DragAndDropImage.propTypes = {
-	achievementId: React.PropTypes.number.isRequired,
-	achievementName: React.PropTypes.string.isRequired,
-	height: React.PropTypes.string.isRequired,
-	src: React.PropTypes.string.isRequired
+	achievementId: PropTypes.number.isRequired,
+	achievementName: PropTypes.string.isRequired,
+	height: PropTypes.string.isRequired,
+	src: PropTypes.string.isRequired
 };
 
 export default DragAndDropImage;

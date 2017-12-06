@@ -23,6 +23,7 @@
 import * as entityHelper from '../../../helpers/entity';
 import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {extractEntityProps} from '../../../helpers/props';
 
@@ -46,7 +47,7 @@ function CreatorPage(props) {
 }
 CreatorPage.displayName = 'CreatorPage';
 CreatorPage.propTypes = {
-	entity: React.PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired
 };
 CreatorPage.getAttributes = (entity) => [
 	getTypeAttribute(entity.creatorType),

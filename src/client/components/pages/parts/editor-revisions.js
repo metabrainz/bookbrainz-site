@@ -21,6 +21,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -64,10 +65,10 @@ function EditorRevisionsTab(props) {
 }
 EditorRevisionsTab.displayName = 'EditorRevisionsTab';
 EditorRevisionsTab.propTypes = {
-	editor: React.PropTypes.shape({
-		id: React.PropTypes.number,
-		name: React.PropTypes.string,
-		revisions: React.PropTypes.array
+	editor: PropTypes.shape({
+		id: PropTypes.number,
+		name: PropTypes.string,
+		revisions: PropTypes.array
 	}).isRequired
 };
 

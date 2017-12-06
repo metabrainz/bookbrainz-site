@@ -1,19 +1,22 @@
-import React from 'react';
+import {ENTITY_TYPES} from '../helpers/entity';
+import PropTypes from 'prop-types';
 
 
-export const entityProperty = React.PropTypes.shape({
-	bbid: React.PropTypes.string,
-	defaultAlias: React.PropTypes.shape({
-		name: React.PropTypes.string
+export const entityProperty = PropTypes.shape({
+	bbid: PropTypes.string,
+	defaultAlias: PropTypes.shape({
+		name: PropTypes.string
 	})
 });
 
-export const labeledProperty = React.PropTypes.shape({
-	id: React.PropTypes.number,
-	label: React.PropTypes.string
+export const entityTypeProperty = PropTypes.oneOf(ENTITY_TYPES);
+
+export const labeledProperty = PropTypes.shape({
+	id: PropTypes.number,
+	label: PropTypes.string
 });
 
-export const namedProperty = React.PropTypes.shape({
-	id: React.PropTypes.number,
-	name: React.PropTypes.string
+export const namedProperty = PropTypes.shape({
+	id: PropTypes.number,
+	name: PropTypes.string
 });

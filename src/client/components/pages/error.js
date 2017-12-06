@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -71,10 +72,10 @@ function ErrorPage(props) {
 }
 ErrorPage.displayName = 'ErrorPage';
 ErrorPage.propTypes = {
-	error: React.PropTypes.shape({
-		detailedMessage: React.PropTypes.string,
-		message: React.PropTypes.string,
-		status: React.PropTypes.number
+	error: PropTypes.shape({
+		detailedMessage: PropTypes.string,
+		message: PropTypes.string,
+		status: PropTypes.number
 	}).isRequired
 };
 

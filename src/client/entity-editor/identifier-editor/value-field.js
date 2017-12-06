@@ -17,6 +17,7 @@
  */
 
 import CustomInput from '../../input';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
@@ -49,8 +50,8 @@ function ValueField({
 }
 ValueField.displayName = 'ValueField';
 ValueField.propTypes = {
-	empty: React.PropTypes.bool,
-	error: React.PropTypes.bool
+	empty: PropTypes.bool,
+	error: PropTypes.bool
 };
 ValueField.defaultProps = {
 	empty: true,

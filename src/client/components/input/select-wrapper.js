@@ -19,6 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
@@ -109,24 +110,24 @@ class SelectWrapper extends React.Component {
 }
 SelectWrapper.displayName = 'SelectWrapper';
 SelectWrapper.propTypes = {
-	base: React.PropTypes.any.isRequired,
-	defaultValue: React.PropTypes.oneOfType([
-		React.PropTypes.string,
-		React.PropTypes.number,
-		React.PropTypes.object
+	base: PropTypes.any.isRequired,
+	defaultValue: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.number,
+		PropTypes.object
 	]),
-	idAttribute: React.PropTypes.string.isRequired,
-	label: React.PropTypes.string,
-	labelAttribute: React.PropTypes.string.isRequired,
-	labelClassName: React.PropTypes.string,
-	multiple: React.PropTypes.bool,
-	onChange: React.PropTypes.func,
-	value: React.PropTypes.oneOfType([
-		React.PropTypes.string,
-		React.PropTypes.number,
-		React.PropTypes.object
+	idAttribute: PropTypes.string.isRequired,
+	label: PropTypes.string,
+	labelAttribute: PropTypes.string.isRequired,
+	labelClassName: PropTypes.string,
+	multiple: PropTypes.bool,
+	onChange: PropTypes.func,
+	value: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.number,
+		PropTypes.object
 	]),
-	wrapperClassName: React.PropTypes.string
+	wrapperClassName: PropTypes.string
 };
 SelectWrapper.defaultProps = {
 	defaultValue: null,

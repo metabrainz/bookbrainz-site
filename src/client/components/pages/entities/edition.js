@@ -25,6 +25,7 @@ import EntityImage from './image';
 import EntityRelationships from './relationships';
 import EntityTitle from './title';
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -90,7 +91,7 @@ function EditionAttributes({edition}) {
 }
 EditionAttributes.displayName = 'EditionAttributes';
 EditionAttributes.propTypes = {
-	edition: React.PropTypes.object.isRequired
+	edition: PropTypes.object.isRequired
 };
 
 
@@ -137,8 +138,8 @@ function EditionDisplayPage({entity, identifierTypes}) {
 }
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
-	entity: React.PropTypes.object.isRequired,
-	identifierTypes: React.PropTypes.array
+	entity: PropTypes.object.isRequired,
+	identifierTypes: PropTypes.array
 };
 EditionDisplayPage.defaultProps = {
 	identifierTypes: []

@@ -18,6 +18,7 @@
  */
 
 import CustomInput from '../../input';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -152,14 +153,14 @@ class PartialDate extends React.Component {
 // TODO: pass props to underlying Input using spread syntax
 PartialDate.displayName = 'PartialDate';
 PartialDate.propTypes = {
-	defaultValue: React.PropTypes.string,
-	groupClassName: React.PropTypes.string,
-	help: React.PropTypes.string,
-	label: React.PropTypes.string,
-	labelClassName: React.PropTypes.string,
-	onChange: React.PropTypes.func,
-	placeholder: React.PropTypes.string,
-	wrapperClassName: React.PropTypes.string
+	defaultValue: PropTypes.string,
+	groupClassName: PropTypes.string,
+	help: PropTypes.string,
+	label: PropTypes.string,
+	labelClassName: PropTypes.string,
+	onChange: PropTypes.func,
+	placeholder: PropTypes.string,
+	wrapperClassName: PropTypes.string
 };
 PartialDate.defaultProps = {
 	defaultValue: null,

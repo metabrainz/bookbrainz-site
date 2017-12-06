@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
+import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
 
@@ -131,7 +132,7 @@ class EntityDeletionForm extends React.Component {
 
 EntityDeletionForm.displayName = 'EntityDeletionForm';
 EntityDeletionForm.propTypes = {
-	entity: React.PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired
 };
 
 export default EntityDeletionForm;
