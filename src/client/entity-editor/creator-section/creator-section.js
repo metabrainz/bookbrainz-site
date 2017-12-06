@@ -28,7 +28,6 @@ import {
 } from '../validators/creator';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
-import {type Dispatch} from 'redux';
 import EntitySearchField from '../common/entity-search-field';
 import type {Map} from 'immutable';
 import React from 'react';

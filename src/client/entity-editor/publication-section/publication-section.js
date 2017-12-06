@@ -21,7 +21,6 @@
 import {type Action, updateType} from './actions';
 import {Col, Row} from 'react-bootstrap';
 import CustomInput from '../../input';
-import {type Dispatch} from 'redux';
 import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
@@ -38,7 +37,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onTypeChange: (?PublicationType) => mixed
+	onTypeChange: ({value: number} | null) => mixed
 };
 
 type OwnProps = {

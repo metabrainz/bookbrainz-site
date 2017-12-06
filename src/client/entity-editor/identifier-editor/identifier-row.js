@@ -24,23 +24,20 @@ import {
 	updateIdentifierType
 } from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
+import {
+	type IdentifierType,
+	validateIdentifierValue
+} from '../validators/common';
 import CustomInput from '../../input';
-import {type Dispatch} from 'redux';
 import React from 'react';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {connect} from 'react-redux';
-import {validateIdentifierValue} from '../validators/common';
 
-
-type TypeOption = {
-	label: string,
-	id: number
-};
 
 type OwnProps = {
 	index: number,
-	typeOptions: Array<TypeOption>
+	typeOptions: Array<IdentifierType>
 };
 
 type StateProps = {
@@ -136,7 +133,7 @@ function handleValueChange(
 	dispatch: Dispatch<Action>,
 	event: SyntheticInputEvent<>,
 	index: number,
-	types: Array<TypeOption>
+	types: Array<IdentifierType>
 ) {
 	const guessedType =
 		data.guessIdentifierType(event.target.value, types);

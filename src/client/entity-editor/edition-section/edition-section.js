@@ -34,7 +34,6 @@ import {
 } from '../validators/edition';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
-import {type Dispatch} from 'redux';
 import EntitySearchField from '../common/entity-search-field';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
