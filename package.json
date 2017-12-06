@@ -23,7 +23,6 @@
     "test-cov": "nyc --reporter=text npm run test",
     "test-ci": "nyc --reporter=lcovonly --reporter=text-summary npm run test",
     "jsdoc": "node_modules/.bin/jsdoc -r src",
-    "browser-test": "nightwatch --config config/nightwatch.local.json -e chrome,firefox,internet_explorer_10,android_s4_emulator,iphone_6_simulator",
     "flow": "flow"
   },
   "engines": {
@@ -111,7 +110,6 @@
     "flow-bin": "^0.54.0",
     "jsdoc": "^3.4.0",
     "mocha": "^3.2.0",
-    "nightwatch": "^0.9.16",
     "nodemon": "^1.9.2",
     "nyc": "^11.0.2",
     "rewire": "v2.5.2",

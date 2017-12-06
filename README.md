@@ -124,26 +124,3 @@ directly:
 	* lint - check the code for syntax and style issues
 	* test - perform linting and attempt to compile the code
 	* jsdoc - build the documentation for JSDoc annotated functions within the code
-
-## Testing
-### Browser Tests
-Browser testing, using Selenium, allows for the overall system to be tested
-to see if it looks and behaves as expected in a range of web browsers. This is
-more complex to set up, and must be run manually.
-
-Firstly, the main developers use Sauce Labs for browser testing in the cloud.
-To run browser tests, you'll want to sign up to this service,
-[here](https://saucelabs.com/) - there is a free open source plan.
-
-Secondly, download [Sauce
-Connect](https://wiki.saucelabs.com/display/DOCS/Basic+Sauce+Connect+Setup) to
-allow the selenium clients at Sauce Labs to tunnel through to your locally
-hosted instance of BookBrainz. You'll need to run Sauce Connect, providing it
-with your Sauce Labs username and access key, as follows:
-
-    ./sc -u YOUR_USERNAME -k YOUR_ACCESS_KEY
-
-Finally, run the BookBrainz server, as detailed in the previous section of this
-README, and then run the browser testing command:
-
-    npm run browser-test
