@@ -18,7 +18,6 @@
 
 // @flow
 
-import * as helpers from '../helpers';
 import {
 	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
 	updateBeginArea, updateEndArea, updateEnded, updateGender, updateType
@@ -29,15 +28,12 @@ import {
 } from '../validators/creator';
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
-import {type Dispatch} from 'redux';
 import EntitySearchField from '../common/entity-search-field';
 import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
-
-const {isPartialDateValid} = helpers;
 
 type CreatorType = {
 	label: string,

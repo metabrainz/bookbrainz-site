@@ -20,6 +20,7 @@
 import * as bootstrap from 'react-bootstrap';
 import CustomInput from '../../../input';
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
@@ -87,7 +88,7 @@ class SearchField extends React.Component {
 
 SearchField.displayName = 'SearchField';
 SearchField.propTypes = {
-	onSearch: React.PropTypes.func.isRequired
+	onSearch: PropTypes.func.isRequired
 };
 
 export default SearchField;

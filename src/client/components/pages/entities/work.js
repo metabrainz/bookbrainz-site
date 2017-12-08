@@ -24,6 +24,7 @@ import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
 import EntityRelationships from './relationships';
 import EntityTitle from './title';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -56,7 +57,7 @@ function WorkAttributes({work}) {
 }
 WorkAttributes.displayName = 'WorkAttributes';
 WorkAttributes.propTypes = {
-	work: React.PropTypes.object.isRequired
+	work: PropTypes.object.isRequired
 };
 
 
@@ -100,8 +101,8 @@ function WorkDisplayPage({entity, identifierTypes}) {
 }
 WorkDisplayPage.displayName = 'WorkDisplayPage';
 WorkDisplayPage.propTypes = {
-	entity: React.PropTypes.object.isRequired,
-	identifierTypes: React.PropTypes.array
+	entity: PropTypes.object.isRequired,
+	identifierTypes: PropTypes.array
 };
 WorkDisplayPage.defaultProps = {
 	identifierTypes: []

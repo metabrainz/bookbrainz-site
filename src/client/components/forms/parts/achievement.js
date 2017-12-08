@@ -17,6 +17,7 @@
  */
 
 import DragAndDropImage from '../../input/drag-and-drop-image';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -69,12 +70,12 @@ class Achievement extends React.Component {
 Achievement.displayName = 'achievement';
 
 Achievement.propTypes = {
-	achievement: React.PropTypes.shape({
-		badgeUrl: React.PropTypes.string,
-		description: React.PropTypes.string,
-		name: React.PropTypes.string
+	achievement: PropTypes.shape({
+		badgeUrl: PropTypes.string,
+		description: PropTypes.string,
+		name: PropTypes.string
 	}).isRequired,
-	unlocked: React.PropTypes.bool
+	unlocked: PropTypes.bool
 };
 Achievement.defaultProps = {
 	unlocked: false

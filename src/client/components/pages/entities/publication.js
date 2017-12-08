@@ -25,6 +25,7 @@ import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
 import EntityRelationships from './relationships';
 import EntityTitle from './title';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -49,7 +50,7 @@ function PublicationAttributes({publication}) {
 }
 PublicationAttributes.displayName = 'PublicationAttributes';
 PublicationAttributes.propTypes = {
-	publication: React.PropTypes.object.isRequired
+	publication: PropTypes.object.isRequired
 };
 
 
@@ -94,8 +95,8 @@ function PublicationDisplayPage({entity, identifierTypes}) {
 }
 PublicationDisplayPage.displayName = 'PublicationDisplayPage';
 PublicationDisplayPage.propTypes = {
-	entity: React.PropTypes.object.isRequired,
-	identifierTypes: React.PropTypes.array
+	entity: PropTypes.object.isRequired,
+	identifierTypes: PropTypes.array
 };
 PublicationDisplayPage.defaultProps = {
 	identifierTypes: []

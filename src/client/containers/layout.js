@@ -23,6 +23,7 @@
 import * as bootstrap from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -215,13 +216,13 @@ class Layout extends React.Component {
 
 Layout.displayName = 'Layout';
 Layout.propTypes = {
-	children: React.PropTypes.node.isRequired,
-	hideSearch: React.PropTypes.bool,
-	homepage: React.PropTypes.bool,
-	repositoryUrl: React.PropTypes.string.isRequired,
-	requiresJS: React.PropTypes.bool,
-	siteRevision: React.PropTypes.string.isRequired,
-	user: React.PropTypes.object
+	children: PropTypes.node.isRequired,
+	hideSearch: PropTypes.bool,
+	homepage: PropTypes.bool,
+	repositoryUrl: PropTypes.string.isRequired,
+	requiresJS: PropTypes.bool,
+	siteRevision: PropTypes.string.isRequired,
+	user: PropTypes.object
 };
 Layout.defaultProps = {
 	hideSearch: false,

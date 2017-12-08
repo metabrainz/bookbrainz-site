@@ -22,6 +22,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import FontAwesome from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -262,7 +263,7 @@ class IndexPage extends React.Component {
 
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
-	recent: React.PropTypes.array.isRequired
+	recent: PropTypes.array.isRequired
 };
 
 export default IndexPage;

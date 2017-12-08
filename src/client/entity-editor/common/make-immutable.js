@@ -24,7 +24,7 @@ import {Iterable} from 'immutable';
 import _ from 'lodash';
 
 
-function makeImmutable(WrappedComponent: React.ComponentType<{}>) {
+function makeImmutable(WrappedComponent: React.ComponentType<Object>) {
 	function immutableComponent(
 		propsIm: {}
 	): React.Node {

@@ -28,10 +28,12 @@ import {
 import DisambiguationField from './disambiguation-field';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
+import PropTypes from 'prop-types';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {entityTypeProperty} from '../../helpers/react-validators';
 import {isAliasEmpty} from '../helpers';
 
 /**
@@ -140,16 +142,17 @@ function NameSection({
 }
 NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
-	disambiguationDefaultValue: React.PropTypes.string,
-	disambiguationVisible: React.PropTypes.bool.isRequired,
-	languageOptions: React.PropTypes.array.isRequired,
-	languageValue: React.PropTypes.number,
-	nameValue: React.PropTypes.string.isRequired,
-	onDisambiguationChange: React.PropTypes.func.isRequired,
-	onLanguageChange: React.PropTypes.func.isRequired,
-	onNameChange: React.PropTypes.func.isRequired,
-	onSortNameChange: React.PropTypes.func.isRequired,
-	sortNameValue: React.PropTypes.string.isRequired
+	disambiguationDefaultValue: PropTypes.string,
+	disambiguationVisible: PropTypes.bool.isRequired,
+	entityType: entityTypeProperty.isRequired,
+	languageOptions: PropTypes.array.isRequired,
+	languageValue: PropTypes.number,
+	nameValue: PropTypes.string.isRequired,
+	onDisambiguationChange: PropTypes.func.isRequired,
+	onLanguageChange: PropTypes.func.isRequired,
+	onNameChange: PropTypes.func.isRequired,
+	onSortNameChange: PropTypes.func.isRequired,
+	sortNameValue: PropTypes.string.isRequired
 };
 NameSection.defaultProps = {
 	disambiguationDefaultValue: null,

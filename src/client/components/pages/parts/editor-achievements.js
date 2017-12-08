@@ -21,6 +21,7 @@ import * as ReactSticky from 'react-sticky';
 import * as bootstrap from 'react-bootstrap';
 import Achievement from '../../forms/parts/achievement';
 import DragAndDrop from '../../input/drag-and-drop';
+import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
 
@@ -153,12 +154,12 @@ class EditorAchievementTab extends React.Component {
 
 EditorAchievementTab.displayName = 'EditorAchievementTab';
 EditorAchievementTab.propTypes = {
-	achievement: React.PropTypes.shape({
-		model: React.PropTypes.array
+	achievement: PropTypes.shape({
+		model: PropTypes.array
 	}).isRequired,
-	editor: React.PropTypes.shape({
-		authenticated: React.PropTypes.bool,
-		id: React.PropTypes.number
+	editor: PropTypes.shape({
+		authenticated: PropTypes.bool,
+		id: PropTypes.number
 	}).isRequired
 };
 

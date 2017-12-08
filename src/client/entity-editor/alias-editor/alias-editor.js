@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addAliasRow, hideAliasEditor} from './actions';
 import AliasRow from './alias-row';
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
@@ -96,11 +96,11 @@ const AliasEditor = ({
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
-	aliases: React.PropTypes.object.isRequired,
-	languageOptions: React.PropTypes.array.isRequired,
-	onAddAlias: React.PropTypes.func.isRequired,
-	onClose: React.PropTypes.func.isRequired,
-	show: React.PropTypes.bool
+	aliases: PropTypes.object.isRequired,
+	languageOptions: PropTypes.array.isRequired,
+	onAddAlias: PropTypes.func.isRequired,
+	onClose: PropTypes.func.isRequired,
+	show: PropTypes.bool
 };
 AliasEditor.defaultProps = {
 	show: false
@@ -118,6 +118,5 @@ function mapStateToProps(rootState) {
 		aliases: rootState.get('aliasEditor')
 	};
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(AliasEditor);

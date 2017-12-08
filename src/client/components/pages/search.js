@@ -16,8 +16,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint valid-jsdoc: ["error", { "requireReturn": false }] */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
@@ -75,7 +75,7 @@ class SearchPage extends React.Component {
 
 SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
-	initialResults: React.PropTypes.array
+	initialResults: PropTypes.array
 };
 SearchPage.defaultProps = {
 	initialResults: []

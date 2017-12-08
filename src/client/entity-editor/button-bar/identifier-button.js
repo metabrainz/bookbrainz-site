@@ -18,6 +18,7 @@
 
 import {Button} from 'react-bootstrap';
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -58,8 +59,8 @@ function IdentifierButton({
 }
 IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
-	identifiersInvalid: React.PropTypes.bool.isRequired,
-	numIdentifiers: React.PropTypes.number.isRequired
+	identifiersInvalid: PropTypes.bool.isRequired,
+	numIdentifiers: PropTypes.number.isRequired
 };
 
 export default IdentifierButton;

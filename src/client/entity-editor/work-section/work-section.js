@@ -24,7 +24,6 @@ import {
 import {Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import CustomInput from '../../input';
-import {type Dispatch} from 'redux';
 import LanguageField from '../common/language-field';
 import React from 'react';
 import Select from 'react-select';

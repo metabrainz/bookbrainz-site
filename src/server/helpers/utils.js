@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint valid-jsdoc: ["error", { "requireReturn": false }], max-len: "warn" */
+/* eslint max-len: "warn" */
 
 /* eslint prefer-rest-params: 1, prefer-reflect: 1 */
 

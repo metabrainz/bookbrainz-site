@@ -17,7 +17,6 @@
  */
 
 import * as testData from '../data/test-data.js';
-import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {expectAchievementIds} from './common';

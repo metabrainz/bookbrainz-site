@@ -23,6 +23,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../helpers/utils';
 import FontAwesome from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -277,12 +278,12 @@ class EntityContainer extends React.Component {
 }
 EntityContainer.displayName = 'EntityContainer';
 EntityContainer.propTypes = {
-	alert: React.PropTypes.array,
-	attributes: React.PropTypes.node.isRequired,
-	children: React.PropTypes.node.isRequired,
-	entity: React.PropTypes.object.isRequired,
-	iconName: React.PropTypes.string.isRequired,
-	identifierTypes: React.PropTypes.array.isRequired
+	alert: PropTypes.array,
+	attributes: PropTypes.node.isRequired,
+	children: PropTypes.node.isRequired,
+	entity: PropTypes.object.isRequired,
+	iconName: PropTypes.string.isRequired,
+	identifierTypes: PropTypes.array.isRequired
 };
 EntityContainer.defaultProps = {
 	alert: null

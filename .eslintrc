@@ -20,7 +20,7 @@ env:
   es6: true
 rules:
   arrow-body-style: 2
-  class-methods-use-this: 1
+  class-methods-use-this: 0
   comma-dangle: 2
   func-call-spacing:
     - 2
@@ -76,7 +76,11 @@ rules:
   no-unsafe-finally: 2
   no-unsafe-negation: 2
   prefer-numeric-literals: 2
-  prefer-destructuring: 1
+  prefer-destructuring:
+    - 1
+    -
+      array: false
+      object: true
   prefer-promise-reject-errors: 2
   sort-keys: 2
   use-isnan: 2

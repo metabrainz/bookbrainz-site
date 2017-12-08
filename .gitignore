@@ -70,3 +70,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# Tern analysis server config
+.tern-project

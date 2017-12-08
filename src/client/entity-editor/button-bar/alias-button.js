@@ -18,6 +18,7 @@
 
 import {Button} from 'react-bootstrap';
 import Icon from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -57,8 +58,8 @@ function AliasButton({
 }
 AliasButton.displayName = 'AliasButton';
 AliasButton.propTypes = {
-	aliasesInvalid: React.PropTypes.bool.isRequired,
-	numAliases: React.PropTypes.number.isRequired
+	aliasesInvalid: PropTypes.bool.isRequired,
+	numAliases: PropTypes.number.isRequired
 };
 
 export default AliasButton;

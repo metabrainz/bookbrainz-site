@@ -38,6 +38,7 @@ import routes from './routes';
 import session from 'express-session';
 import staticCache from 'express-static-cache';
 
+
 Promise.config({
 	longStackTraces: true,
 	warnings: true

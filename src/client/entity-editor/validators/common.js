@@ -62,7 +62,7 @@ export function validateAliases(values: any): boolean {
 	return every(values, (value) => validateAlias(value));
 }
 
-type IdentifierType = {
+export type IdentifierType = {
 	id: number,
 	label: string,
 	validationRegex: string

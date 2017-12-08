@@ -18,8 +18,8 @@
 
 // @flow
 
+import * as React from 'react';
 import CustomInput from '../../input';
-import React from 'react';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
 
@@ -46,7 +46,7 @@ function LanguageField({
 	empty,
 	error,
 	...rest
-}: Props) {
+}: Props): React.Node {
 	const label =
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
 	;

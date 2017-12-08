@@ -20,6 +20,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -80,13 +81,13 @@ function EditorContainer(props) {
 
 EditorContainer.displayName = 'EditorContainer';
 EditorContainer.propTypes = {
-	children: React.PropTypes.node.isRequired,
-	editor: React.PropTypes.shape({
-		id: React.PropTypes.number,
-		name: React.PropTypes.string,
-		title: React.PropTypes.object
+	children: PropTypes.node.isRequired,
+	editor: PropTypes.shape({
+		id: PropTypes.number,
+		name: PropTypes.string,
+		title: PropTypes.object
 	}).isRequired,
-	tabActive: React.PropTypes.number.isRequired
+	tabActive: PropTypes.number.isRequired
 };
 
 export default EditorContainer;

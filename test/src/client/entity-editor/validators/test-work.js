@@ -23,15 +23,12 @@ import {
 	VALID_IDENTIFIERS, VALID_NAME_SECTION, VALID_SUBMISSION_SECTION
 } from './data';
 import {
-	testValidateBooleanFunc, testValidateDateFunc,
-	testValidatePositiveIntegerFunc
-} from './helpers';
-import {
 	validateForm, validateWorkSection, validateWorkSectionLanguage,
 	validateWorkSectionType
 } from '../../../../../lib/client/entity-editor/validators/work';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import {testValidatePositiveIntegerFunc} from './helpers';
 
 
 chai.use(chaiAsPromised);

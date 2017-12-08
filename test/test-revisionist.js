@@ -19,7 +19,6 @@
 import * as achievement from '../lib/server/helpers/achievement';
 import * as testData from '../data/test-data.js';
 import {expectAchievementIds, expectAchievementIdsNested} from './common';
-import Promise from 'bluebird';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';

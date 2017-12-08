@@ -24,6 +24,7 @@ import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
 import EntityRelationships from './relationships';
 import EntityTitle from './title';
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -79,7 +80,7 @@ function CreatorAttributes({creator}) {
 }
 CreatorAttributes.displayName = 'CreatorAttributes';
 CreatorAttributes.propTypes = {
-	creator: React.PropTypes.object.isRequired
+	creator: PropTypes.object.isRequired
 };
 
 
@@ -123,8 +124,8 @@ function CreatorDisplayPage({entity, identifierTypes}) {
 }
 CreatorDisplayPage.displayName = 'CreatorDisplayPage';
 CreatorDisplayPage.propTypes = {
-	entity: React.PropTypes.object.isRequired,
-	identifierTypes: React.PropTypes.array
+	entity: PropTypes.object.isRequired,
+	identifierTypes: PropTypes.array
 };
 CreatorDisplayPage.defaultProps = {
 	identifierTypes: []

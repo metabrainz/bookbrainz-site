@@ -19,6 +19,7 @@
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addIdentifierRow, hideIdentifierEditor} from './actions';
 import IdentifierRow from './identifier-row';
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
@@ -92,11 +93,11 @@ const IdentifierEditor = ({
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
-	identifierTypes: React.PropTypes.array.isRequired,
-	identifiers: React.PropTypes.object.isRequired,
-	onAddIdentifier: React.PropTypes.func.isRequired,
-	onClose: React.PropTypes.func.isRequired,
-	show: React.PropTypes.bool
+	identifierTypes: PropTypes.array.isRequired,
+	identifiers: PropTypes.object.isRequired,
+	onAddIdentifier: PropTypes.func.isRequired,
+	onClose: PropTypes.func.isRequired,
+	show: PropTypes.bool
 };
 IdentifierEditor.defaultProps = {
 	show: false

@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -49,8 +50,8 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 }
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
-	identifierSet: React.PropTypes.object.isRequired,
-	identifierTypes: React.PropTypes.array.isRequired
+	identifierSet: PropTypes.object.isRequired,
+	identifierTypes: PropTypes.array.isRequired
 };
 
 export default EntityIdentifiers;
