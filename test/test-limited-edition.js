@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint import/namespace: ['error', { allowComputed: true }] */
 import * as testData from '../data/test-data.js';
 import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
@@ -29,9 +30,32 @@ const {expect} = chai;
 
 const Achievement =	rewire('../lib/server/helpers/achievement.js');
 
-const limitedEditionIThreshold = 1;
-const limitedEditionIIThreshold = 10;
-const limitedEditionIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
+
+function test(threshold, rev) {
+	Achievement.__set__({
+		getTypeCreation:
+			testData.typeCreationHelper(
+				'edition_revision', threshold
+			)
+	});
+
+	const achievementPromise = testData.createEditor()
+		.then((editor) =>
+			Achievement.processEdit(orm, editor.id)
+		)
+		.then((edit) =>
+			edit.limitedEdition[`Limited Edition ${rev}`]
+		);
+
+	return expectAchievementIds(
+		achievementPromise,
+		testData.editorAttribs.id,
+		testData[`limitedEdition${rev}Attribs`].id
+	);
+}
 
 export default function tests() {
 	beforeEach(() => testData.createLimitedEdition());
@@ -39,59 +63,19 @@ export default function tests() {
 	afterEach(testData.truncate);
 
 	it('I should given to someone with an edition creation',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'edition_revision', limitedEditionIThreshold
-					)
-			});
-
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition I']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.limitedEditionIAttribs.id
-			);
-		}
+		() => test(thresholdI, 'I')
 	);
 
 	it('II should be given to someone with 10 edition creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'edition_revision', limitedEditionIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition II']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.limitedEditionIIAttribs.id
-			);
-		});
+		() => test(thresholdII, 'II')
+	);
 
 	it('III should be given to someone with 100 edition creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'edition_revision', limitedEditionIIIThreshold
+						'edition_revision', thresholdIII
 					)
 			});
 			const achievementPromise = testData.createEditor()

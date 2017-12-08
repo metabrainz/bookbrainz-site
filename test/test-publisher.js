@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint import/namespace: ['error', { allowComputed: true }] */
 import * as testData from '../data/test-data.js';
 import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
@@ -29,9 +30,32 @@ const {expect} = chai;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
-const publisherIThreshold = 1;
-const publisherIIThreshold = 10;
-const publisherIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
+
+function test(threshold, rev) {
+	Achievement.__set__({
+		getTypeCreation:
+			testData.typeCreationHelper(
+				'publication_revision', threshold
+			)
+	});
+
+	const achievementPromise = testData.createEditor()
+		.then((editor) =>
+			Achievement.processEdit(orm, editor.id)
+		)
+		.then((edit) =>
+			edit.publisher[`Publisher ${rev}`]
+		);
+
+	return expectAchievementIds(
+		achievementPromise,
+		testData.editorAttribs.id,
+		testData[`publisher${rev}Attribs`].id
+	);
+}
 
 export default function tests() {
 	beforeEach(() => testData.createPublisher());
@@ -39,59 +63,19 @@ export default function tests() {
 	afterEach(testData.truncate);
 
 	it('I should be given to someone with a publication creation',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publication_revision', publisherIThreshold
-					)
-			});
-
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisher['Publisher I']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.publisherIAttribs.id
-			);
-		}
+		() => test(thresholdI, 'I')
 	);
 
 	it('II should be given to someone with 10 publication creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publication_revision', publisherIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisher['Publisher II']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.publisherIIAttribs.id
-			);
-		});
+		() => test(thresholdII, 'II')
+	);
 
 	it('III should be given to someone with 100 publication creations',
 		() => {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIIIThreshold
+						'publication_revision', thresholdIII
 					)
 			});
 			const achievementPromise = testData.createEditor()
