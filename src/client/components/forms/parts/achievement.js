@@ -29,6 +29,7 @@ class Achievement extends React.Component {
 			unlocked: props.unlocked
 		};
 	}
+
 	render() {
 		let imgElement;
 		if (this.state.unlocked) {

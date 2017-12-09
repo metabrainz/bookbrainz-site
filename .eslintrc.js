@@ -266,7 +266,7 @@ const stylisticIssuesRules = {
 			beforeBlockComment: true
 		}
 	],
-	'lines-between-class-members': TRANSITION_WARNING,
+	'lines-between-class-members': ERROR,
 	'max-depth': [
 		ERROR,
 		6

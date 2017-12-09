@@ -37,6 +37,7 @@ class EditorAchievementTab extends React.Component {
 			editor: props.editor
 		};
 	}
+
 	handleSubmit(event) {
 		event.preventDefault();
 
@@ -60,6 +61,7 @@ class EditorAchievementTab extends React.Component {
 				});
 			});
 	}
+
 	renderAchievements(unlocked) {
 		return this.state.achievement.model.map((achievement) => {
 			let achievementHTML;
@@ -75,6 +77,7 @@ class EditorAchievementTab extends React.Component {
 			return achievementHTML;
 		});
 	}
+
 	render() {
 		const achievements = this.renderAchievements(true);
 		const locked = this.renderAchievements(false);

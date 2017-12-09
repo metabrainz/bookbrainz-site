@@ -34,6 +34,7 @@ class DragAndDrop extends React.Component {
 			}
 		};
 	}
+
 	handleClick(ev) {
 		ev.preventDefault();
 		this.setState({
@@ -43,12 +44,15 @@ class DragAndDrop extends React.Component {
 			}
 		});
 	}
+
 	handleDragOver(ev) {
 		ev.preventDefault();
 	}
+
 	addChild(data) {
 		this.setState({achievement: data});
 	}
+
 	handleDrop(ev) {
 		ev.preventDefault();
 		let data;
@@ -61,9 +65,11 @@ class DragAndDrop extends React.Component {
 		}
 		this.addChild(data);
 	}
+
 	getValue() {
 		return this.target.getValue();
 	}
+
 	render() {
 		return (
 			<div
