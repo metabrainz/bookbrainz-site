@@ -160,8 +160,7 @@ function EntitySearchField(
 EntitySearchField.displayName = 'EntitySearchField';
 EntitySearchField.defaultProps = {
 	empty: true,
-	error: false,
-	type: null
+	error: false
 };
 
 export default EntitySearchField;

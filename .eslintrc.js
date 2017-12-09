@@ -487,7 +487,7 @@ const reactRules = {
 	],
 	'react/prefer-stateless-function': TRANSITION_WARNING,
 	'react/require-default-props': [
-		TRANSITION_WARNING,
+		ERROR,
 		{
 			forbidDefaultForRequired: true
 		}
