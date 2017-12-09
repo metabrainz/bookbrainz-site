@@ -1,7 +1,10 @@
 import * as Influx from 'influx';
+import Log from 'log';
 
 // Adapted from https://node-influx.github.io/manual/tutorial.html
 function init(app, config) {
+	const log = new Log(config.site.log);
+
 	const influx = new Influx.InfluxDB({
 		database: config.database || 'bookbrainz',
 		host: config.host || 'localhost',
@@ -43,7 +46,7 @@ function init(app, config) {
 			influx.writePoints([
 				data
 			]).catch(err => {
-				console.error(`Error saving data to InfluxDB! ${err.stack}`);
+				log.error(`Error saving data to InfluxDB! ${err.stack}`);
 			});
 		});
 

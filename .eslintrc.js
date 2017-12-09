@@ -42,7 +42,7 @@ const possibleErrorsRules = {
 	'for-direction': ERROR,
 	'getter-return': ERROR,
 	'no-await-in-loop': ERROR,
-	'no-console': TRANSITION_WARNING,
+	'no-console': ERROR,
 	'no-extra-parens': [
 		TRANSITION_WARNING,
 		'all',
