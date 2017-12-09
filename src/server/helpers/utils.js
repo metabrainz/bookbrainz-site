@@ -171,9 +171,11 @@ export function incrementEditorEditCountById(orm, id, transacting) {
  *
  * @param {object} Bookshelf - Bookshelf instance connected to database
  * @param {string[]} tables - List of tables to truncate
+ * @returns {Promise} a promise which will be fulfilled when the operation to
+ *                    truncate tables completes
  */
 export function truncateTables(Bookshelf, tables) {
-	Promise.each(tables,
-		(table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
+	return Promise.each(
+		tables, (table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
 	);
 }
