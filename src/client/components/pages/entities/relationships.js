@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function EntityRelationships({entityUrl, relationships}) {
+function EntityRelationships({relationships}) {
 	return (
 		<div>
 			<h2>Relationships</h2>
@@ -41,7 +41,6 @@ function EntityRelationships({entityUrl, relationships}) {
 }
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
-	entityUrl: PropTypes.string.isRequired,
 	relationships: PropTypes.array.isRequired
 };
 
