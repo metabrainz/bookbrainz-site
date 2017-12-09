@@ -169,6 +169,11 @@ rules:
     - stroustrup
     -
       allowSingleLine: true
+  function-paren-newline:
+    - 1
+    - consistent
+  lines-between-class-members: 1
+  multiline-comment-style: 1
   # Transitional
   camelcase:
     - 0
@@ -352,13 +357,17 @@ rules:
     -
       beforeSelfClosing: never
   react/no-array-index-key: 1
-  react/require-default-props: 2
+  react/require-default-props:
+    - 1
+    -
+      forbidDefaultForRequired: true
   react/sort-prop-types:
     - 2
     -
       ignoreCase: false
       callbacksLast: false
       requiredFirst: false
+      sortShapeProp: true
   react/jsx-sort-props:
     - 2
     -
@@ -384,6 +393,14 @@ rules:
   react/prefer-stateless-function: 1
   react/jsx-handler-names: 1
   react/jsx-first-prop-new-line: 2
+  react/jsx-one-expression-per-line: 1
+  react/no-access-state-in-setstate: 2
+  react/button-has-type: 2
+  react/jsx-curly-brace-presence: 2
+  react/no-unused-state: 1
+  react/boolean-prop-naming: 2
+  react/no-typos: 1
+
   import/no-absolute-path: 2
   import/no-dynamic-require: 1
   import/no-internal-modules:
