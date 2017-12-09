@@ -32,10 +32,12 @@ const options = {
 	]
 };
 
-const ERROR = 'error';
-const TRANSITION_WARNING = 'warn'; // warnings that should be reviewed soon
-const KEEP_WARNING = 'warn'; // warnings that should stay warnings
-const IGNORE = 'ignore';
+
+// Generally, don't change TRANSITION_* severities unless you're LordSputnik ;)
+const ERROR = 2;
+const TRANSITION_WARNING = 1; // warnings that should be reviewed soon
+const WARNING = 1; // warnings that should stay warnings
+const TRANSITION_IGNORE = 0; // ignores that should be reviewed soon
 
 // These should not be removed at all.
 const possibleErrorsRules = {
@@ -44,11 +46,13 @@ const possibleErrorsRules = {
 	'no-await-in-loop': ERROR,
 	'no-console': ERROR,
 	'no-extra-parens': [
-		TRANSITION_WARNING,
+		ERROR,
 		'all',
 		{
+			enforceForArrowConditionals: false,
 			ignoreJSX: 'multi-line',
-			nestedBinaryExpressions: false
+			nestedBinaryExpressions: false,
+			returnAssign: false
 		}
 	],
 	'no-prototype-builtins': ERROR,
@@ -83,7 +87,7 @@ const bestPracticesRules = {
 		ERROR,
 		'allow-null'
 	],
-	'guard-for-in': TRANSITION_WARNING,
+	'guard-for-in': ERROR,
 	'no-alert': ERROR,
 	'no-caller': ERROR,
 	'no-div-regex': ERROR,
@@ -103,7 +107,7 @@ const bestPracticesRules = {
 	'no-lone-blocks': ERROR,
 	'no-loop-func': ERROR,
 	'no-magic-numbers': [
-		TRANSITION_WARNING,
+		TRANSITION_IGNORE,
 		{
 			detectObjects: true,
 			enforceConst: true,
@@ -137,7 +141,7 @@ const bestPracticesRules = {
 	'no-useless-concat': ERROR,
 	'no-useless-return': ERROR,
 	'no-void': ERROR,
-	'no-warning-comments': KEEP_WARNING,
+	'no-warning-comments': WARNING,
 	'no-with': ERROR,
 	'prefer-promise-reject-errors': ERROR,
 	radix: ERROR,
@@ -152,14 +156,14 @@ const bestPracticesRules = {
 
 const strictModeRules = {
 	strict: [
-		TRANSITION_WARNING,
+		ERROR,
 		'global'
 	]
 };
 
 const variablesRules = {
 	'init-declarations': TRANSITION_WARNING,
-	'no-catch-shadow': TRANSITION_WARNING,
+	'no-catch-shadow': ERROR,
 	'no-label-var': ERROR,
 	'no-shadow': ERROR,
 	'no-shadow-restricted-names': ERROR,
@@ -220,8 +224,8 @@ const stylisticIssuesRules = {
 	],
 	'eol-last': ERROR,
 	'func-call-spacing': ERROR,
-	'func-name-matching': TRANSITION_WARNING,
-	'func-names': TRANSITION_WARNING,
+	'func-name-matching': ERROR,
+	'func-names': ERROR,
 	'func-style': [
 		ERROR,
 		'declaration'
@@ -273,8 +277,11 @@ const stylisticIssuesRules = {
 	],
 	'max-len': [
 		ERROR,
-		80,
-		4
+		{
+			code: 80,
+			ignoreUrls: true,
+			tabWidth: 4
+		}
 	],
 	'max-lines': TRANSITION_WARNING,
 	'max-nested-callbacks': [
@@ -283,11 +290,11 @@ const stylisticIssuesRules = {
 	],
 	'max-params': [
 		TRANSITION_WARNING,
-		6
+		4
 	],
 	'max-statements': [
 		TRANSITION_WARNING,
-		50
+		15
 	],
 	'multiline-comment-style': ERROR,
 	'new-parens': ERROR,
@@ -332,7 +339,7 @@ const stylisticIssuesRules = {
 		'single',
 		'avoid-escape'
 	],
-	'require-jsdoc': TRANSITION_WARNING,
+	'require-jsdoc': TRANSITION_IGNORE,
 	'semi-spacing': [
 		ERROR,
 		{
@@ -382,7 +389,7 @@ const ecmaScript6Rules = {
 	'prefer-arrow-callback': ERROR,
 	'prefer-const': ERROR,
 	'prefer-destructuring': [
-		TRANSITION_WARNING,
+		ERROR,
 		{
 			array: false,
 			object: true
@@ -431,22 +438,21 @@ const reactRules = {
 			children: true
 		}
 	],
-	'react/jsx-equals-spacing': TRANSITION_WARNING,
+	'react/jsx-equals-spacing': ERROR,
 	'react/jsx-first-prop-new-line': ERROR,
-	'react/jsx-handler-names': TRANSITION_WARNING,
+	'react/jsx-handler-names': ERROR,
 	'react/jsx-indent-props': [
 		ERROR,
 		'tab'
 	],
-	'react/jsx-max-props-per-line': TRANSITION_WARNING,
 	'react/jsx-no-bind': [
-		TRANSITION_WARNING,
+		ERROR,
 		{
 			ignoreRefs: true
 		}
 	],
-	'react/jsx-no-literals': TRANSITION_WARNING,
-	'react/jsx-one-expression-per-line': TRANSITION_WARNING,
+	'react/jsx-no-literals': TRANSITION_IGNORE,
+	'react/jsx-one-expression-per-line': TRANSITION_IGNORE,
 	'react/jsx-pascal-case': ERROR,
 	'react/jsx-sort-props': [
 		ERROR,
@@ -462,30 +468,30 @@ const reactRules = {
 			beforeSelfClosing: 'never'
 		}
 	],
-	'react/jsx-wrap-multilines': TRANSITION_WARNING,
+	'react/jsx-wrap-multilines': ERROR,
 	'react/no-access-state-in-setstate': ERROR,
 	'react/no-array-index-key': TRANSITION_WARNING,
 	'react/no-danger': TRANSITION_WARNING,
-	'react/no-did-mount-set-state': TRANSITION_WARNING,
+	'react/no-did-mount-set-state': ERROR,
 	'react/no-did-update-set-state': ERROR,
 	'react/no-direct-mutation-state': ERROR,
 	'react/no-multi-comp': [
-		TRANSITION_WARNING,
+		ERROR,
 		{
 			ignoreStateless: true
 		}
 	],
 	'react/no-redundant-should-component-update': ERROR,
 	'react/no-set-state': TRANSITION_WARNING,
-	'react/no-typos': TRANSITION_WARNING,
-	'react/no-unused-prop-types': TRANSITION_WARNING,
+	'react/no-typos': ERROR,
+	'react/no-unused-prop-types': ERROR,
 	'react/no-unused-state': TRANSITION_WARNING,
 	'react/no-will-update-set-state': ERROR,
 	'react/prefer-es6-class': [
-		TRANSITION_WARNING,
+		ERROR,
 		'always'
 	],
-	'react/prefer-stateless-function': TRANSITION_WARNING,
+	'react/prefer-stateless-function': ERROR,
 	'react/require-default-props': [
 		ERROR,
 		{
@@ -510,14 +516,14 @@ const reactRules = {
 const es6ImportRules = {
 	'import/first': ERROR,
 	'import/newline-after-import': [
-		TRANSITION_WARNING,
+		ERROR,
 		{
 			count: 2
 		}
 	],
 	'import/no-absolute-path': ERROR,
 	'import/no-amd': ERROR,
-	'import/no-commonjs': TRANSITION_WARNING,
+	'import/no-commonjs': ERROR,
 	'import/no-duplicates': ERROR,
 	'import/no-dynamic-require': TRANSITION_WARNING,
 	'import/no-extraneous-dependencies': ERROR,
@@ -537,8 +543,7 @@ const es6ImportRules = {
 	'import/no-named-as-default': ERROR,
 	'import/no-named-as-default-member': ERROR,
 	'import/no-named-default': ERROR,
-	'import/no-nodejs-modules': TRANSITION_WARNING,
-	'import/no-unassigned-import': TRANSITION_WARNING
+	'import/no-unassigned-import': ERROR
 };
 
 options.rules = Object.assign(

@@ -73,6 +73,7 @@ router.get('/', async (req, res, next) => {
 	try {
 		const queryPromises = [];
 
+		// eslint-disable-next-line guard-for-in
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
 

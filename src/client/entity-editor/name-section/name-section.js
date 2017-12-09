@@ -144,7 +144,7 @@ NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
 	disambiguationVisible: PropTypes.bool.isRequired,
-	entityType: entityTypeProperty.isRequired,
+	entityType: entityTypeProperty.isRequired, // eslint-disable-line react/no-typos, max-len
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,

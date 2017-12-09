@@ -103,6 +103,7 @@ export function isValidBBID(bbid) {
  * from the newly passed in object.
  */
 export function template(strings) {
+	// eslint-disable-next-line prefer-reflect, prefer-rest-params
 	const keys = Array.prototype.slice.call(arguments, 1);
 
 	return (values) => {
