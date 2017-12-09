@@ -32,25 +32,29 @@ const options = {
 	]
 };
 
+const ERROR = 'error';
+const TRANSITION_WARNING = 'warn'; // warnings that should be reviewed soon
+const KEEP_WARNING = 'warn'; // warnings that should stay warnings
+const IGNORE = 'ignore';
 
 // These should not be removed at all.
 const possibleErrorsRules = {
-	'for-direction': 2,
-	'getter-return': 2,
-	'no-await-in-loop': 2,
-	'no-console': 1,
+	'for-direction': ERROR,
+	'getter-return': ERROR,
+	'no-await-in-loop': ERROR,
+	'no-console': TRANSITION_WARNING,
 	'no-extra-parens': [
-		1,
+		TRANSITION_WARNING,
 		'all',
 		{
 			ignoreJSX: 'multi-line',
 			nestedBinaryExpressions: false
 		}
 	],
-	'no-prototype-builtins': 2,
-	'no-template-curly-in-string': 2,
+	'no-prototype-builtins': ERROR,
+	'no-template-curly-in-string': ERROR,
 	'valid-jsdoc': [
-		2,
+		ERROR,
 		{
 			prefer: {
 				return: 'returns'
@@ -62,44 +66,44 @@ const possibleErrorsRules = {
 
 // These should probably not be removed at all.
 const bestPracticesRules = {
-	'accessor-pairs': 2,
-	'array-callback-return': 2,
-	'block-scoped-var': 2,
-	'class-methods-use-this': 1,
-	complexity: 2,
-	'consistent-return': 2,
-	curly: 2,
-	'default-case': 2,
+	'accessor-pairs': ERROR,
+	'array-callback-return': ERROR,
+	'block-scoped-var': ERROR,
+	'class-methods-use-this': TRANSITION_WARNING,
+	complexity: ERROR,
+	'consistent-return': ERROR,
+	curly: ERROR,
+	'default-case': ERROR,
 	'dot-location': [
-		2,
+		ERROR,
 		'property'
 	],
-	'dot-notation': 2,
+	'dot-notation': ERROR,
 	eqeqeq: [
-		2,
+		ERROR,
 		'allow-null'
 	],
-	'guard-for-in': 1,
-	'no-alert': 2,
-	'no-caller': 2,
-	'no-div-regex': 2,
-	'no-else-return': 2,
-	'no-empty-function': 2,
-	'no-eq-null': 2,
-	'no-eval': 2,
-	'no-extend-native': 2,
-	'no-extra-bind': 2,
-	'no-extra-label': 2,
-	'no-floating-decimal': 2,
-	'no-implicit-coercion': 2,
-	'no-implicit-globals': 2,
-	'no-implied-eval': 2,
-	'no-iterator': 2,
-	'no-labels': 2,
-	'no-lone-blocks': 2,
-	'no-loop-func': 2,
+	'guard-for-in': TRANSITION_WARNING,
+	'no-alert': ERROR,
+	'no-caller': ERROR,
+	'no-div-regex': ERROR,
+	'no-else-return': ERROR,
+	'no-empty-function': ERROR,
+	'no-eq-null': ERROR,
+	'no-eval': ERROR,
+	'no-extend-native': ERROR,
+	'no-extra-bind': ERROR,
+	'no-extra-label': ERROR,
+	'no-floating-decimal': ERROR,
+	'no-implicit-coercion': ERROR,
+	'no-implicit-globals': ERROR,
+	'no-implied-eval': ERROR,
+	'no-iterator': ERROR,
+	'no-labels': ERROR,
+	'no-lone-blocks': ERROR,
+	'no-loop-func': ERROR,
 	'no-magic-numbers': [
-		1,
+		TRANSITION_WARNING,
 		{
 			detectObjects: true,
 			enforceConst: true,
@@ -113,61 +117,61 @@ const bestPracticesRules = {
 			ignoreArrayIndexes: true
 		}
 	],
-	'no-multi-spaces': 2,
-	'no-multi-str': 2,
-	'no-new': 2,
-	'no-new-func': 2,
-	'no-new-wrappers': 2,
-	'no-octal-escape': 2,
-	'no-param-reassign': 2,
-	'no-proto': 2,
-	'no-return-assign': 2,
-	'no-return-await': 2,
-	'no-script-url': 2,
-	'no-self-compare': 2,
-	'no-sequences': 2,
-	'no-throw-literal': 2,
-	'no-unmodified-loop-condition': 2,
-	'no-unused-expressions': 1,
-	'no-useless-call': 2,
-	'no-useless-concat': 2,
-	'no-useless-return': 2,
-	'no-void': 2,
-	'no-warning-comments': 1, // keep as 1
-	'no-with': 2,
-	'prefer-promise-reject-errors': 2,
-	radix: 2,
-	'require-await': 2,
-	'vars-on-top': 2,
+	'no-multi-spaces': ERROR,
+	'no-multi-str': ERROR,
+	'no-new': ERROR,
+	'no-new-func': ERROR,
+	'no-new-wrappers': ERROR,
+	'no-octal-escape': ERROR,
+	'no-param-reassign': ERROR,
+	'no-proto': ERROR,
+	'no-return-assign': ERROR,
+	'no-return-await': ERROR,
+	'no-script-url': ERROR,
+	'no-self-compare': ERROR,
+	'no-sequences': ERROR,
+	'no-throw-literal': ERROR,
+	'no-unmodified-loop-condition': ERROR,
+	'no-unused-expressions': TRANSITION_WARNING,
+	'no-useless-call': ERROR,
+	'no-useless-concat': ERROR,
+	'no-useless-return': ERROR,
+	'no-void': ERROR,
+	'no-warning-comments': KEEP_WARNING,
+	'no-with': ERROR,
+	'prefer-promise-reject-errors': ERROR,
+	radix: ERROR,
+	'require-await': ERROR,
+	'vars-on-top': ERROR,
 	'wrap-iife': [
-		2,
+		ERROR,
 		'any'
 	],
-	yoda: 2
+	yoda: ERROR
 };
 
 const strictModeRules = {
 	strict: [
-		1,
+		TRANSITION_WARNING,
 		'global'
 	]
 };
 
 const variablesRules = {
-	'init-declarations': 0,
-	'no-catch-shadow': 0,
-	'no-label-var': 2,
-	'no-shadow': 2,
-	'no-shadow-restricted-names': 2,
-	'no-undef-init': 2,
-	'no-undefined': 2,
-	'no-unused-vars': 1,
-	'no-use-before-define': 2
+	'init-declarations': TRANSITION_WARNING,
+	'no-catch-shadow': TRANSITION_WARNING,
+	'no-label-var': ERROR,
+	'no-shadow': ERROR,
+	'no-shadow-restricted-names': ERROR,
+	'no-undef-init': ERROR,
+	'no-undefined': ERROR,
+	'no-unused-vars': TRANSITION_WARNING,
+	'no-use-before-define': ERROR
 };
 
 const nodeAndCommonJSRules = {
 	'callback-return': [
-		2,
+		ERROR,
 		[
 			'callback',
 			'cb',
@@ -175,59 +179,59 @@ const nodeAndCommonJSRules = {
 			'done'
 		]
 	],
-	'global-require': 2,
-	'handle-callback-err': 2,
-	'no-mixed-requires': 2,
-	'no-new-require': 2,
-	'no-path-concat': 2,
-	'no-process-env': 1,
-	'no-process-exit': 2,
-	'no-sync': 2
+	'global-require': ERROR,
+	'handle-callback-err': ERROR,
+	'no-mixed-requires': ERROR,
+	'no-new-require': ERROR,
+	'no-path-concat': ERROR,
+	'no-process-env': TRANSITION_WARNING,
+	'no-process-exit': ERROR,
+	'no-sync': ERROR
 };
 
 // Agreement of all project leads needed before changing these.
 const stylisticIssuesRules = {
 	'array-bracket-newline': [
-		2,
+		ERROR,
 		'consistent'
 	],
-	'array-bracket-spacing': 2,
-	'block-spacing': 2,
+	'array-bracket-spacing': ERROR,
+	'block-spacing': ERROR,
 	'brace-style': [
-		2,
+		ERROR,
 		'stroustrup',
 		{
 			allowSingleLine: true
 		}
 	],
 	camelcase: [
-		0,
+		TRANSITION_WARNING,
 		{
 			properties: 'always'
 		}
 	],
-	'comma-dangle': 2,
-	'comma-spacing': 2,
-	'comma-style': 2,
-	'computed-property-spacing': 2,
+	'comma-dangle': ERROR,
+	'comma-spacing': ERROR,
+	'comma-style': ERROR,
+	'computed-property-spacing': ERROR,
 	'consistent-this': [
-		2,
+		ERROR,
 		'self'
 	],
-	'eol-last': 2,
-	'func-call-spacing': 2,
-	'func-name-matching': 1,
-	'func-names': 1,
+	'eol-last': ERROR,
+	'func-call-spacing': ERROR,
+	'func-name-matching': TRANSITION_WARNING,
+	'func-names': TRANSITION_WARNING,
 	'func-style': [
-		2,
+		ERROR,
 		'declaration'
 	],
 	'function-paren-newline': [
-		1,
+		TRANSITION_WARNING,
 		'consistent'
 	],
 	'id-length': [
-		2,
+		ERROR,
 		{
 			exceptions: [
 				'x',
@@ -241,7 +245,7 @@ const stylisticIssuesRules = {
 		}
 	],
 	indent: [
-		2,
+		ERROR,
 		'tab',
 		{
 			SwitchCase: 1,
@@ -249,203 +253,203 @@ const stylisticIssuesRules = {
 		}
 	],
 	'jsx-quotes': [
-		2,
+		ERROR,
 		'prefer-double'
 	],
-	'key-spacing': 2,
-	'keyword-spacing': 2,
-	'linebreak-style': 2,
+	'key-spacing': ERROR,
+	'keyword-spacing': ERROR,
+	'linebreak-style': ERROR,
 	'lines-around-comment': [
-		2,
+		ERROR,
 		{
 			allowBlockStart: true,
 			beforeBlockComment: true
 		}
 	],
-	'lines-between-class-members': 1,
+	'lines-between-class-members': TRANSITION_WARNING,
 	'max-depth': [
-		2,
+		ERROR,
 		6
 	],
 	'max-len': [
-		2,
+		ERROR,
 		80,
 		4
 	],
-	'max-lines': 0,
+	'max-lines': TRANSITION_WARNING,
 	'max-nested-callbacks': [
-		2,
+		ERROR,
 		5
 	],
 	'max-params': [
-		1,
+		TRANSITION_WARNING,
 		6
 	],
 	'max-statements': [
-		1,
+		TRANSITION_WARNING,
 		50
 	],
-	'multiline-comment-style': 1,
-	'new-parens': 2,
-	'no-array-constructor': 2,
-	'no-bitwise': 2,
-	'no-continue': 2,
-	'no-inline-comments': 2,
-	'no-lonely-if': 2,
+	'multiline-comment-style': TRANSITION_WARNING,
+	'new-parens': ERROR,
+	'no-array-constructor': ERROR,
+	'no-bitwise': ERROR,
+	'no-continue': ERROR,
+	'no-inline-comments': ERROR,
+	'no-lonely-if': ERROR,
 	'no-mixed-spaces-and-tabs': [
-		2,
+		ERROR,
 		'smart-tabs'
 	],
-	'no-multiple-empty-lines': 2,
-	'no-nested-ternary': 2,
-	'no-new-object': 2,
-	'no-trailing-spaces': 2,
-	'no-unneeded-ternary': 2,
-	'no-whitespace-before-property': 2,
+	'no-multiple-empty-lines': ERROR,
+	'no-nested-ternary': ERROR,
+	'no-new-object': ERROR,
+	'no-trailing-spaces': ERROR,
+	'no-unneeded-ternary': ERROR,
+	'no-whitespace-before-property': ERROR,
 	'object-curly-newline': [
-		2,
+		ERROR,
 		{consistent: true}
 	],
 	'one-var': [
-		2,
+		ERROR,
 		'never'
 	],
-	'operator-assignment': 2,
+	'operator-assignment': ERROR,
 	'operator-linebreak': [
-		2,
+		ERROR,
 		'after'
 	],
 	'padded-blocks': [
-		2,
+		ERROR,
 		'never'
 	],
 	'quote-props': [
-		2,
+		ERROR,
 		'as-needed'
 	],
 	quotes: [
-		2,
+		ERROR,
 		'single',
 		'avoid-escape'
 	],
-	'require-jsdoc': 0,
+	'require-jsdoc': TRANSITION_WARNING,
 	'semi-spacing': [
-		2,
+		ERROR,
 		{
 			after: true,
 			before: false
 		}
 	],
-	'sort-keys': 2,
-	'sort-vars': 2,
-	'space-before-blocks': 2,
+	'sort-keys': ERROR,
+	'sort-vars': ERROR,
+	'space-before-blocks': ERROR,
 	'space-before-function-paren': [
-		2,
+		ERROR,
 		{
 			named: 'never'
 		}
 	],
-	'space-in-parens': 2,
-	'space-infix-ops': 2,
-	'space-unary-ops': 2,
-	'spaced-comment': 2,
-	'unicode-bom': 2,
-	'wrap-regex': 2
+	'space-in-parens': ERROR,
+	'space-infix-ops': ERROR,
+	'space-unary-ops': ERROR,
+	'spaced-comment': ERROR,
+	'unicode-bom': ERROR,
+	'wrap-regex': ERROR
 };
 
 const ecmaScript6Rules = {
-	'arrow-body-style': 2,
-	'arrow-spacing': 2,
+	'arrow-body-style': ERROR,
+	'arrow-spacing': ERROR,
 	'generator-star-spacing': [
-		2,
+		ERROR,
 		{
 			after: true,
 			before: false
 		}
 	],
 	'no-confusing-arrow': [
-		2,
+		ERROR,
 		{
 			allowParens: true
 		}
 	],
-	'no-duplicate-imports': 2,
-	'no-useless-computed-key': 2,
-	'no-useless-constructor': 2,
-	'no-useless-rename': 2,
-	'no-var': 2,
-	'object-shorthand': 2,
-	'prefer-arrow-callback': 2,
-	'prefer-const': 2,
+	'no-duplicate-imports': ERROR,
+	'no-useless-computed-key': ERROR,
+	'no-useless-constructor': ERROR,
+	'no-useless-rename': ERROR,
+	'no-var': ERROR,
+	'object-shorthand': ERROR,
+	'prefer-arrow-callback': ERROR,
+	'prefer-const': ERROR,
 	'prefer-destructuring': [
-		1,
+		TRANSITION_WARNING,
 		{
 			array: false,
 			object: true
 		}
 	],
-	'prefer-numeric-literals': 2,
-	'prefer-template': 2,
-	'rest-spread-spacing': 2,
-	'sort-imports': 2,
-	'template-curly-spacing': 2,
-	'yield-star-spacing': 2
+	'prefer-numeric-literals': ERROR,
+	'prefer-template': ERROR,
+	'rest-spread-spacing': ERROR,
+	'sort-imports': ERROR,
+	'template-curly-spacing': ERROR,
+	'yield-star-spacing': ERROR
 };
 
 const babelRules = {
 	'babel/new-cap': [
-		2,
+		ERROR,
 		{
 			capIsNew: false
 		}
 	],
-	'babel/no-invalid-this': 2,
-	'babel/object-curly-spacing': 2,
-	'babel/semi': 2
+	'babel/no-invalid-this': ERROR,
+	'babel/object-curly-spacing': ERROR,
+	'babel/semi': ERROR
 };
 
 const flowTypeRules = {
-	'flowtype/semi': 2
+	'flowtype/semi': ERROR
 };
 
 const reactRules = {
-	'react/boolean-prop-naming': 2,
-	'react/button-has-type': 2,
-	'react/default-props-match-prop-types': 2,
-	'react/forbid-component-props': 0,
-	'react/forbid-foreign-prop-types': 2,
-	'react/jsx-boolean-value': 2,
+	'react/boolean-prop-naming': ERROR,
+	'react/button-has-type': ERROR,
+	'react/default-props-match-prop-types': ERROR,
+	'react/forbid-component-props': TRANSITION_WARNING,
+	'react/forbid-foreign-prop-types': ERROR,
+	'react/jsx-boolean-value': ERROR,
 	'react/jsx-closing-bracket-location': [
-		2,
+		ERROR,
 		'tag-aligned'
 	],
-	'react/jsx-closing-tag-location': 2,
-	'react/jsx-curly-brace-presence': 2,
+	'react/jsx-closing-tag-location': ERROR,
+	'react/jsx-curly-brace-presence': ERROR,
 	'react/jsx-curly-spacing': [
-		2,
+		ERROR,
 		{
 			children: true
 		}
 	],
-	'react/jsx-equals-spacing': 1,
-	'react/jsx-first-prop-new-line': 2,
-	'react/jsx-handler-names': 1,
+	'react/jsx-equals-spacing': TRANSITION_WARNING,
+	'react/jsx-first-prop-new-line': ERROR,
+	'react/jsx-handler-names': TRANSITION_WARNING,
 	'react/jsx-indent-props': [
-		2,
+		ERROR,
 		'tab'
 	],
-	'react/jsx-max-props-per-line': 0,
+	'react/jsx-max-props-per-line': TRANSITION_WARNING,
 	'react/jsx-no-bind': [
-		1,
+		TRANSITION_WARNING,
 		{
 			ignoreRefs: true
 		}
 	],
-	'react/jsx-no-literals': 0,
-	'react/jsx-one-expression-per-line': 1,
-	'react/jsx-pascal-case': 2,
+	'react/jsx-no-literals': TRANSITION_WARNING,
+	'react/jsx-one-expression-per-line': TRANSITION_WARNING,
+	'react/jsx-pascal-case': ERROR,
 	'react/jsx-sort-props': [
-		2,
+		ERROR,
 		{
 			callbacksLast: true,
 			ignoreCase: false,
@@ -453,45 +457,45 @@ const reactRules = {
 		}
 	],
 	'react/jsx-tag-spacing': [
-		2,
+		ERROR,
 		{
 			beforeSelfClosing: 'never'
 		}
 	],
-	'react/jsx-wrap-multilines': 1,
-	'react/no-access-state-in-setstate': 2,
-	'react/no-array-index-key': 1,
-	'react/no-danger': 1,
-	'react/no-did-mount-set-state': 1,
-	'react/no-did-update-set-state': 2,
-	'react/no-direct-mutation-state': 2,
+	'react/jsx-wrap-multilines': TRANSITION_WARNING,
+	'react/no-access-state-in-setstate': ERROR,
+	'react/no-array-index-key': TRANSITION_WARNING,
+	'react/no-danger': TRANSITION_WARNING,
+	'react/no-did-mount-set-state': TRANSITION_WARNING,
+	'react/no-did-update-set-state': ERROR,
+	'react/no-direct-mutation-state': ERROR,
 	'react/no-multi-comp': [
-		1,
+		TRANSITION_WARNING,
 		{
 			ignoreStateless: true
 		}
 	],
-	'react/no-redundant-should-component-update': 2,
-	'react/no-set-state': 1,
-	'react/no-typos': 1,
-	'react/no-unused-prop-types': 1,
-	'react/no-unused-state': 1,
-	'react/no-will-update-set-state': 2,
+	'react/no-redundant-should-component-update': ERROR,
+	'react/no-set-state': TRANSITION_WARNING,
+	'react/no-typos': TRANSITION_WARNING,
+	'react/no-unused-prop-types': TRANSITION_WARNING,
+	'react/no-unused-state': TRANSITION_WARNING,
+	'react/no-will-update-set-state': ERROR,
 	'react/prefer-es6-class': [
-		1,
+		TRANSITION_WARNING,
 		'always'
 	],
-	'react/prefer-stateless-function': 1,
+	'react/prefer-stateless-function': TRANSITION_WARNING,
 	'react/require-default-props': [
-		1,
+		TRANSITION_WARNING,
 		{
 			forbidDefaultForRequired: true
 		}
 	],
-	'react/self-closing-comp': 2,
-	'react/sort-comp': 2,
+	'react/self-closing-comp': ERROR,
+	'react/sort-comp': ERROR,
 	'react/sort-prop-types': [
-		2,
+		ERROR,
 		{
 			callbacksLast: false,
 			ignoreCase: false,
@@ -499,26 +503,26 @@ const reactRules = {
 			sortShapeProp: true
 		}
 	],
-	'react/style-prop-object': 2,
-	'react/void-dom-elements-no-children': 2
+	'react/style-prop-object': ERROR,
+	'react/void-dom-elements-no-children': ERROR
 };
 
 const es6ImportRules = {
-	'import/first': 2,
+	'import/first': ERROR,
 	'import/newline-after-import': [
-		1,
+		TRANSITION_WARNING,
 		{
 			count: 2
 		}
 	],
-	'import/no-absolute-path': 2,
-	'import/no-amd': 2,
-	'import/no-commonjs': 1,
-	'import/no-duplicates': 2,
-	'import/no-dynamic-require': 1,
-	'import/no-extraneous-dependencies': 2,
+	'import/no-absolute-path': ERROR,
+	'import/no-amd': ERROR,
+	'import/no-commonjs': TRANSITION_WARNING,
+	'import/no-duplicates': ERROR,
+	'import/no-dynamic-require': TRANSITION_WARNING,
+	'import/no-extraneous-dependencies': ERROR,
 	'import/no-internal-modules': [
-		2,
+		ERROR,
 		{
 			allow: [
 				'**/src/**',
@@ -529,12 +533,12 @@ const es6ImportRules = {
 			]
 		}
 	],
-	'import/no-mutable-exports': 2,
-	'import/no-named-as-default': 2,
-	'import/no-named-as-default-member': 2,
-	'import/no-named-default': 2,
-	'import/no-nodejs-modules': 0,
-	'import/no-unassigned-import': 1
+	'import/no-mutable-exports': ERROR,
+	'import/no-named-as-default': ERROR,
+	'import/no-named-as-default-member': ERROR,
+	'import/no-named-default': ERROR,
+	'import/no-nodejs-modules': TRANSITION_WARNING,
+	'import/no-unassigned-import': TRANSITION_WARNING
 };
 
 options.rules = Object.assign(
