@@ -74,20 +74,21 @@ router.get('/', async (req, res, next) => {
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
 
-			queryPromises.push(model.query((qb) => {
-				qb
-					.leftJoin(
-						'bookbrainz.revision',
-						`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
-						'bookbrainz.revision.id'
-					)
-					.where('master', true)
-					.orderBy('bookbrainz.revision.created_at', 'desc')
-					.limit(numRevisionsOnHomepage);
-			})
-				.fetchAll({
-					withRelated: ['defaultAlias', 'revision.revision']
+			queryPromises.push(
+				model.query((qb) => {
+					qb
+						.leftJoin(
+							'bookbrainz.revision',
+							`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
+							'bookbrainz.revision.id'
+						)
+						.where('master', true)
+						.orderBy('bookbrainz.revision.created_at', 'desc')
+						.limit(numRevisionsOnHomepage);
 				})
+					.fetchAll({
+						withRelated: ['defaultAlias', 'revision.revision']
+					})
 			);
 		}
 

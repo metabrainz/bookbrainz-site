@@ -28,8 +28,9 @@ function makeImmutable(WrappedComponent: React.ComponentType<Object>) {
 	function immutableComponent(
 		propsIm: {}
 	): React.Node {
-		const propsJS = _.mapValues(propsIm, (value) =>
-			(Iterable.isIterable(value) ? value.toJS() : value)
+		const propsJS = _.mapValues(
+			propsIm,
+			(value) => (Iterable.isIterable(value) ? value.toJS() : value)
 		);
 
 		return <WrappedComponent {...propsJS}/>;

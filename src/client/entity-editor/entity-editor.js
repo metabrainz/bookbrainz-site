@@ -63,9 +63,11 @@ const EntityEditor = (props: Props) => {
 			<AliasEditor show={aliasEditorVisible} {...props}/>
 			<NameSection {...props}/>
 			<ButtonBar {...props}/>
-			{React.cloneElement(
-				React.Children.only(children),
-				{...props})
+			{
+				React.cloneElement(
+					React.Children.only(children),
+					{...props}
+				)
 			}
 			<SubmissionSection {...props}/>
 			<IdentifierEditor show={identifierEditorVisible} {...props}/>

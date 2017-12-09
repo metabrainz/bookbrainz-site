@@ -73,8 +73,8 @@ export function loadEntityRelationships(req, res, next) {
 
 		resolve();
 	})
-		.then(() =>
-			RelationshipSet.forge({id: entity.relationshipSetId})
+		.then(
+			() => RelationshipSet.forge({id: entity.relationshipSetId})
 				.fetch({
 					withRelated: [
 						'relationships.source',
@@ -99,8 +99,9 @@ export function loadEntityRelationships(req, res, next) {
 			 * a good way of polymorphically fetching the right specific entity,
 			 * we need to fetch default alias in a somewhat sketchier way.
 			 */
-			return Promise.map(entity.relationships, (relationship) =>
-				Promise.join(
+			return Promise.map(
+				entity.relationships,
+				(relationship) => Promise.join(
 					getEntityWithAlias(relationship.source),
 					getEntityWithAlias(relationship.target),
 					(source, target) => {

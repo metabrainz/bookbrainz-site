@@ -30,7 +30,8 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 					const identifierValues =
 						identifierSet.identifiers
 							.filter(
-								(identifier) => identifier.type.id === type.id)
+								(identifier) => identifier.type.id === type.id
+							)
 							.map(
 								(identifier) => (
 									<dd key={identifier.id}>

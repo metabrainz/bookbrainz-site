@@ -150,8 +150,8 @@ class EntityContainer extends React.Component {
 		const identifiers = entity.identifierSet &&
 			identifierTypes.map((type) => {
 				const identifierValues =
-					entity.identifierSet.identifiers.filter((identifier) =>
-						identifier.type.id === type.id
+					entity.identifierSet.identifiers.filter(
+						(identifier) => identifier.type.id === type.id
 					).map((identifier) => (
 						<dd
 							key={`${identifier.id}`}

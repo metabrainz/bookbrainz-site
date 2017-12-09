@@ -336,10 +336,11 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 			return formattedDiff;
 		}
 
-		const rawChangeSets = diff.changes.map((change) =>
-			formatEntityChange(diff.entity, change) || (
-				entityFormatter && entityFormatter(change)
-			)
+		const rawChangeSets = diff.changes.map(
+			(change) =>
+				formatEntityChange(diff.entity, change) || (
+					entityFormatter && entityFormatter(change)
+				)
 		);
 
 		formattedDiff.changes = _.sortBy(

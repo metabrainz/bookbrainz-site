@@ -159,14 +159,15 @@ function formatPublicationChange(change) {
 
 function diffRevisionsWithParents(revisions) {
 	// revisions - collection of revisions matching id
-	return Promise.all(revisions.map((revision) =>
-		revision.parent()
-			.then((parent) =>
-				Promise.props({
-					changes: revision.diff(parent),
-					entity: revision.related('entity')
-				})
-			)
+	return Promise.all(revisions.map(
+		(revision) =>
+			revision.parent()
+				.then(
+					(parent) => Promise.props({
+						changes: revision.diff(parent),
+						entity: revision.related('entity')
+					})
+				)
 	));
 }
 
@@ -200,7 +201,8 @@ router.get('/:id', (req, res, next) => {
 	const publisherDiffsPromise = _createRevision(PublisherRevision);
 	const workDiffsPromise = _createRevision(WorkRevision);
 
-	Promise.join(revisionPromise, creatorDiffsPromise, editionDiffsPromise,
+	Promise.join(
+		revisionPromise, creatorDiffsPromise, editionDiffsPromise,
 		workDiffsPromise, publisherDiffsPromise, publicationDiffsPromise,
 		(
 			revision, creatorDiffs, editionDiffs, workDiffs, publisherDiffs,

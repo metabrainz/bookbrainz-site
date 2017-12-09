@@ -82,7 +82,8 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+router.post(
+	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
 		const {orm} = req.app.locals;
 		const {PublisherHeader, PublisherRevision} = orm;
@@ -100,7 +101,8 @@ router.get('/:bbid/revisions', (req, res, next) => {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+router.get(
+	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	(req, res) => {
 		const props = generateProps(req, res, {
@@ -226,7 +228,8 @@ function publisherToFormState(publisher) {
 	};
 }
 
-router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
+router.get(
+	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadPublisherTypes, middleware.loadLanguages,
 	(req, res) => {
 		const publisher = res.locals.entity;
@@ -319,7 +322,8 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	);
 });
 
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+router.post(
+	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
 		const validate = getValidator('publisher');
 		if (!validate(req.body)) {

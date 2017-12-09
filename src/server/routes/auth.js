@@ -25,32 +25,30 @@ const router = express.Router();
 
 router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
 
-router.get('/cb',
-	(req, res, next) => {
-		passport.authenticate('musicbrainz-oauth2', (authErr, user, info) => {
-			if (authErr) {
-				return next(authErr);
+router.get('/cb', (req, res, next) => {
+	passport.authenticate('musicbrainz-oauth2', (authErr, user, info) => {
+		if (authErr) {
+			return next(authErr);
+		}
+
+		if (!user) {
+			// Set profile in session, and continue to registration
+			req.session.mbProfile = info;
+			return res.redirect('/register/details');
+		}
+
+		return req.logIn(user, (loginErr) => {
+			if (loginErr) {
+				return next(loginErr);
 			}
 
-			if (!user) {
-				// Set profile in session, and continue to registration
-				req.session.mbProfile = info;
-				return res.redirect('/register/details');
-			}
-
-			return req.logIn(user, (loginErr) => {
-				if (loginErr) {
-					return next(loginErr);
-				}
-
-				const redirectTo =
-					req.session.redirectTo ? req.session.redirectTo : '/';
-				req.session.redirectTo = null;
-				return res.redirect(redirectTo);
-			});
-		})(req, res, next);
-	}
-);
+			const redirectTo =
+				req.session.redirectTo ? req.session.redirectTo : '/';
+			req.session.redirectTo = null;
+			return res.redirect(redirectTo);
+		});
+	})(req, res, next);
+});
 
 router.get('/logout', (req, res) => {
 	req.logOut();

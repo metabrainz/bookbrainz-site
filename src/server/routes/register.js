@@ -108,17 +108,18 @@ router.post('/handler', (req, res) => {
 	// Fetch the default EditorType from the database
 	const registerPromise = EditorType.forge({label: 'Editor'})
 		.fetch({require: true})
-		.then((editorType) =>
+		.then(
 			// Create a new Editor and add to the database
-			new Editor({
-				birthDate: req.body.birthday,
-				cachedMetabrainzName: req.session.mbProfile.sub,
-				genderId: req.body.gender,
-				metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
-				name: req.body.displayName,
-				typeId: editorType.id
-			})
-				.save()
+			(editorType) =>
+				new Editor({
+					birthDate: req.body.birthday,
+					cachedMetabrainzName: req.session.mbProfile.sub,
+					genderId: req.body.gender,
+					metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+					name: req.body.displayName,
+					typeId: editorType.id
+				})
+					.save()
 		)
 		.then((editor) => {
 			req.session.mbProfile = null;

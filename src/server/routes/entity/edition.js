@@ -82,7 +82,8 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
-router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+router.post(
+	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
 		const {orm} = req.app.locals;
 		const {EditionHeader, EditionRevision} = orm;
@@ -106,7 +107,8 @@ function entityToOption(entity) {
 
 // Creation
 
-router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+router.get(
+	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res, next) => {
@@ -278,7 +280,8 @@ function editionToFormState(edition) {
 	};
 }
 
-router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
+router.get(
+	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res) => {
@@ -433,7 +436,8 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	);
 });
 
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+router.post(
+	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
 		const {orm} = req.app.locals;
 

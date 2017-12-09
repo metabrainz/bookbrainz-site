@@ -234,16 +234,16 @@ export async function generateIndex(orm) {
 	];
 
 	// Update the indexed entries for each entity type
-	const behaviorPromise = entityBehaviors.map((behavior) =>
-		behavior.model.forge().fetchAll({
+	const behaviorPromise = entityBehaviors.map(
+		(behavior) => behavior.model.forge().fetchAll({
 			withRelated: baseRelations.concat(behavior.relations)
 		})
 	);
 	const entityLists = await Promise.all(behaviorPromise);
-	const indexedEntities = entityLists.map((entityList) =>
-		Promise.all(entityList.toJSON().map((entity) =>
-			indexEntity(entity)
-		))
+	const indexedEntities = entityLists.map(
+		(entityList) => Promise.all(
+			entityList.toJSON().map((entity) => indexEntity(entity))
+		)
 	);
 	await Promise.all(indexedEntities);
 

@@ -68,12 +68,10 @@ export function displayEntity(req, res) {
 			editorId: res.locals.user.id
 		})
 			.save(null, {method: 'insert'})
-			.then(() =>
-				achievement.processPageVisit(orm, res.locals.user.id)
-			)
-			.catch(() =>
+			.then(() => achievement.processPageVisit(orm, res.locals.user.id))
+			.catch(
 				// error caused by duplicates we do not want in database
-				Promise.resolve(false)
+				() => Promise.resolve(false)
 			);
 	}
 	else {
@@ -83,37 +81,38 @@ export function displayEntity(req, res) {
 	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
 		let alertIds = [];
 		if (visitAlert.alert) {
-			alertIds = alertIds.concat(visitAlert.alert.split(',').map((id) =>
-				parseInt(id, 10)
+			alertIds = alertIds.concat(visitAlert.alert.split(',').map(
+				(id) => parseInt(id, 10)
 			));
 		}
 		if (req.query.alert) {
-			alertIds = alertIds.concat(req.query.alert.split(',').map((id) =>
-				parseInt(id, 10)
+			alertIds = alertIds.concat(req.query.alert.split(',').map(
+				(id) =>	parseInt(id, 10)
 			));
 		}
 		if (alertIds.length > 0) {
-			const promiseList = alertIds.map((achievementAlert) =>
-				new AchievementUnlock({id: achievementAlert})
-					.fetch({
-						require: 'true',
-						withRelated: 'achievement'
-					})
-					.then((unlock) =>
-						unlock.toJSON()
+			const promiseList = alertIds.map(
+				(achievementAlert) =>
+					new AchievementUnlock(
+						{id: achievementAlert}
 					)
-					.then((unlock) => {
-						let unlockName;
-						if (req.user.id === unlock.editorId) {
-							unlockName = {
-								name: unlock.achievement.name
-							};
-						}
-						return unlockName;
-					})
-					.catch((error) => {
-						log.debug(error);
-					})
+						.fetch({
+							require: 'true',
+							withRelated: 'achievement'
+						})
+						.then((unlock) => unlock.toJSON())
+						.then((unlock) => {
+							let unlockName;
+							if (req.user.id === unlock.editorId) {
+								unlockName = {
+									name: unlock.achievement.name
+								};
+							}
+							return unlockName;
+						})
+						.catch((error) => {
+							log.debug(error);
+						})
 			);
 			alertPromise = Promise.all(promiseList);
 		}
@@ -220,8 +219,8 @@ export function addNoteToRevision(req, res) {
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const revision = Revision.forge({id: req.params.id});
-	const revisionNotePromise = bookshelf.transaction((transacting) =>
-		_createNote(
+	const revisionNotePromise = bookshelf.transaction(
+		(transacting) => _createNote(
 			orm, req.body.note, editorJSON, revision, transacting
 		)
 	);
@@ -344,8 +343,8 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 		.save(null, {transacting});
 
 	const fetchCollectionPromise = newSetPromise
-		.then((newSet) =>
-			newSet.related(setMetadata.propName)
+		.then(
+			(newSet) => newSet.related(setMetadata.propName)
 				.fetch({transacting})
 		);
 
@@ -370,14 +369,13 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 		);
 
 		createPropertiesPromise = fetchCollectionPromise
-			.then((collection) =>
-				Promise.map(updatedOrNewItems, (item) =>
+			.then((collection) => Promise.map(
+				updatedOrNewItems, (item) =>
 					collection.create(
 						_.omit(item, setMetadata.idField),
 						{transacting}
 					)
-				)
-			);
+			));
 	}
 	else {
 		// If the set's elements aren't mutable, it should just be a list of IDs
@@ -386,9 +384,7 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 
 	// Link any IDs for unchanged items (including immutable) to the set
 	const attachPropertiesPromise = fetchCollectionPromise
-		.then((collection) =>
-			collection.attach(idsToAttach, {transacting})
-		);
+		.then((collection) => collection.attach(idsToAttach, {transacting}));
 
 	// Ensure that any linking that needs to happen to the set is completed
 	// and return the new set's object
@@ -421,15 +417,17 @@ function processFormAliases(
 
 	// Make a new alias set
 	const newAliasSetPromise = new AliasSet().save(null, {transacting});
-	const newAliasesPromise = newAliasSetPromise.then((newAliasSet) =>
-		newAliasSet.related('aliases').fetch({transacting})
+	const newAliasesPromise = newAliasSetPromise.then(
+		(newAliasSet) => newAliasSet.related('aliases').fetch({transacting})
 	);
 
 	// Copy across any old aliases that are exactly the same in the new set
 	const unchangedAliases =
 		unchangedSetItems(oldAliases, newAliases, aliasCompareFields);
-	const oldAliasesAttachedPromise = newAliasesPromise.then((collection) =>
-		collection.attach(_.map(unchangedAliases, 'id'), {transacting})
+	const oldAliasesAttachedPromise = newAliasesPromise.then(
+		(collection) => collection.attach(
+			_.map(unchangedAliases, 'id'), {transacting}
+		)
 	);
 
 	// Create new aliases for any new or updated aliases, and attach them to
@@ -437,24 +435,26 @@ function processFormAliases(
 	const newOrUpdatedAliases =
 		updatedOrNewSetItems(oldAliases, newAliases, aliasCompareFields);
 	const allAliasesAttachedPromise = oldAliasesAttachedPromise
-		.then((collection) =>
-			Promise.all(
-				_.map(newOrUpdatedAliases, (alias) =>
-					collection.create(
+		.then(
+			(collection) =>
+				Promise.all(
+					_.map(newOrUpdatedAliases, (alias) => collection.create(
 						_.omit(alias, 'id', 'default'),
 						{transacting}
-					)
+					))
 				)
-			).then(() => collection)
+					.then(() => collection)
 		);
 
 	// Set the default alias
-	return Promise.join(newAliasSetPromise, allAliasesAttachedPromise,
+	return Promise.join(
+		newAliasSetPromise, allAliasesAttachedPromise,
 		(newAliasSet, collection) => {
-			const defaultAlias = collection.find((alias) =>
-				alias.get('name') === newDefaultAlias.name &&
-				alias.get('sortName') === newDefaultAlias.sortName &&
-				alias.get('languageId') === newDefaultAlias.languageId
+			const defaultAlias = collection.find(
+				(alias) =>
+					alias.get('name') === newDefaultAlias.name &&
+					alias.get('sortName') === newDefaultAlias.sortName &&
+					alias.get('languageId') === newDefaultAlias.languageId
 			);
 			newAliasSet.set('defaultAliasId', defaultAlias.get('id'));
 			return newAliasSet.save(null, {transacting});
@@ -480,15 +480,17 @@ function processFormIdentifiers(orm, transacting, oldIdentSet, newIdents) {
 	// Make a new identifier set
 	const newIdentSetPromise =
 		new IdentifierSet().save(null, {transacting});
-	const newIdentsPromise = newIdentSetPromise.then((newIdentSet) =>
-		newIdentSet.related('identifiers').fetch({transacting})
+	const newIdentsPromise = newIdentSetPromise.then(
+		(newIdentSet) => newIdentSet.related('identifiers').fetch({transacting})
 	);
 
 	// Copy across any old aliases that are exactly the same in the new set
 	const unchangedIdents =
 		unchangedSetItems(oldIdents, newIdents, identCompareFields);
-	const oldIdentsAttachedPromise = newIdentsPromise.then((collection) =>
-		collection.attach(_.map(unchangedIdents, 'id'), {transacting})
+	const oldIdentsAttachedPromise = newIdentsPromise.then(
+		(collection) => collection.attach(
+			_.map(unchangedIdents, 'id'), {transacting}
+		)
 	);
 
 	// Create new aliases for any new or updated aliases, and attach them to
@@ -496,15 +498,18 @@ function processFormIdentifiers(orm, transacting, oldIdentSet, newIdents) {
 	const newOrUpdatedIdents =
 		updatedOrNewSetItems(oldIdents, newIdents, identCompareFields);
 	const allIdentsAttachedPromise = oldIdentsAttachedPromise
-		.then((collection) =>
-			Promise.all(
-				_.map(newOrUpdatedIdents, (ident) =>
-					collection.create(_.omit(ident, 'id'), {transacting})
+		.then(
+			(collection) =>
+				Promise.all(
+					_.map(newOrUpdatedIdents, (ident) => collection.create(
+						_.omit(ident, 'id'), {transacting}
+					))
 				)
-			).then(() => collection)
+					.then(() => collection)
 		);
 
-	return Promise.join(newIdentSetPromise, allIdentsAttachedPromise,
+	return Promise.join(
+		newIdentSetPromise, allIdentsAttachedPromise,
 		(newIdentSet) => newIdentSet
 	);
 }
@@ -578,8 +583,10 @@ function processEntitySets(derivedSets, currentEntity, body, transacting) {
 				return newProp;
 			});
 	})
-		.then((newProps) =>
-			_.reduce(newProps, (result, value) => _.assign(result, value), {})
+		.then(
+			(newProps) => _.reduce(
+				newProps, (result, value) => _.assign(result, value), {}
+			)
 		);
 }
 
@@ -614,8 +621,8 @@ export function createEntity(
 			orm, transacting, null, req.body.identifiers || []
 		);
 
-		const annotationPromise = newRevisionPromise.then((revision) =>
-			processFormAnnotation(
+		const annotationPromise = newRevisionPromise.then(
+			(revision) => processFormAnnotation(
 				orm, transacting, null, req.body.annotation, revision
 			)
 		);
@@ -632,8 +639,8 @@ export function createEntity(
 				transacting
 			)
 		)
-			.then((derivedSetProps) =>
-				_.merge({}, derivedProps, derivedSetProps)
+			.then(
+				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)
 			);
 
 		return Promise.join(
@@ -664,7 +671,8 @@ export function createEntity(
 						method: 'insert',
 						transacting
 					});
-			})
+			}
+		)
 			.then(
 				(entityModel) =>
 					entityModel.refresh({
@@ -675,11 +683,9 @@ export function createEntity(
 			.then((entity) => entity.toJSON());
 	});
 
-	const achievementPromise = entityCreationPromise.then((entityJSON) =>
-		achievement.processEdit(
-			orm,
-			editorJSON.id,
-			entityJSON.revisionId
+	const achievementPromise = entityCreationPromise.then(
+		(entityJSON) => achievement.processEdit(
+			orm, editorJSON.id, entityJSON.revisionId
 		)
 			.then((unlock) => {
 				if (unlock.alert) {
@@ -726,8 +732,8 @@ export function editEntity(
 				});
 
 		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
-			.then((oldAliasSet) =>
-				processFormAliases(
+			.then(
+				(oldAliasSet) => processFormAliases(
 					orm, transacting, oldAliasSet,
 					oldAliasSet.get('defaultAliasId'),
 					req.body.aliases || []
@@ -742,8 +748,8 @@ export function editEntity(
 				});
 
 		const identSetPromise = Promise.resolve(oldIdentSetPromise)
-			.then((oldIdentifierSet) =>
-				processFormIdentifiers(
+			.then(
+				(oldIdentifierSet) => processFormIdentifiers(
 					orm, transacting, oldIdentifierSet,
 					req.body.identifiers || []
 				)
@@ -767,8 +773,8 @@ export function editEntity(
 				.fetch({transacting});
 
 		const disambiguationPromise = Promise.resolve(oldDisambiguationPromise)
-			.then((oldDisambiguation) =>
-				processFormDisambiguation(
+			.then(
+				(oldDisambiguation) => processFormDisambiguation(
 					orm, transacting, oldDisambiguation, req.body.disambiguation
 				)
 			);
@@ -781,8 +787,8 @@ export function editEntity(
 				transacting
 			)
 		)
-			.then((derivedSetProps) =>
-				_.merge({}, derivedProps, derivedSetProps)
+			.then(
+				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)
 			);
 
 		return Promise.join(
@@ -828,9 +834,7 @@ export function editEntity(
 			}
 		)
 			.spread((newRevision, entity, annotation, changedProps) => {
-				_.forOwn(changedProps, (value, key) =>
-					entity.set(key, value)
-				);
+				_.forOwn(changedProps, (value, key) => entity.set(key, value));
 
 				entity.set('revisionId', newRevision.get('id'));
 
@@ -847,8 +851,10 @@ export function editEntity(
 
 				// Add the previous revision as a parent of this revision.
 				const parentAddedPromise =
-					revisionParentsPromise.then((parents) =>
-						parents.attach(currentEntity.revisionId, {transacting})
+					revisionParentsPromise.then(
+						(parents) => parents.attach(
+							currentEntity.revisionId, {transacting}
+						)
 					);
 
 				const notePromise = _createNote(
@@ -872,11 +878,11 @@ export function editEntity(
 						withRelated: ['defaultAlias']
 					})
 			)
-			.then((entity) =>
-				entity.toJSON()
-			)
-			.then((entityJSON) =>
-				achievement.processEdit(orm, req.user.id, entityJSON.revisionId)
+			.then((entity) => entity.toJSON())
+			.then(
+				(entityJSON) => achievement.processEdit(
+					orm, req.user.id, entityJSON.revisionId
+				)
 					.then((unlock) => {
 						if (unlock.alert) {
 							entityJSON.alert = unlock.alert;
@@ -894,7 +900,8 @@ export function editEntity(
 }
 
 export function constructAliases(aliasEditor, nameSection) {
-	const aliases = _.map(aliasEditor,
+	const aliases = _.map(
+		aliasEditor,
 		({id, language, name, primary, sortName}) => ({
 			default: false,
 			id,

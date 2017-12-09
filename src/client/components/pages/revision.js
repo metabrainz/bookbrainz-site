@@ -36,8 +36,8 @@ class RevisionPage extends React.Component {
 		if (!list) {
 			return null;
 		}
-		return list.map((val, idx) =>
-			<div key={`${idx}${val}`}>{val.toString()}</div>
+		return list.map(
+			(val, idx) => <div key={`${idx}${val}`}>{val.toString()}</div>
 		);
 	}
 

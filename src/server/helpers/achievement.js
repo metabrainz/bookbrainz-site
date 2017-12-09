@@ -45,18 +45,14 @@ function awardUnlock(UnlockType, awardAttribs) {
 			if (award === null) {
 				unlockPromise = new UnlockType(awardAttribs)
 					.save(null, {method: 'insert'})
-					.then((unlock) =>
-						unlock.toJSON()
-					);
+					.then((unlock) => unlock.toJSON());
 			}
 			else {
 				unlockPromise = Promise.resolve('already unlocked');
 			}
 			return unlockPromise;
 		})
-		.catch((err) =>
-			Promise.reject(err)
-		);
+		.catch((err) => Promise.reject(err));
 }
 
 /**
@@ -215,9 +211,7 @@ function testTiers(orm, signal, editorId, tiers) {
 		return tierOut;
 	});
 	return Promise.all(tierPromise)
-		.then((awardList) =>
-			awardListToAwardObject(awardList)
-		);
+		.then((awardList) => awardListToAwardObject(awardList));
 }
 
 /**
@@ -483,14 +477,11 @@ function achievementToUnlockId(achievementUnlock) {
 function getEditionDateDifference(orm, revisionId) {
 	const {EditionRevision} = orm;
 	return new EditionRevision({id: revisionId}).fetch()
-		.then((edition) =>
-			edition.related('data').fetch()
-		)
-		.then((data) =>
-			data.related('releaseEventSet').fetch()
-		)
-		.then((releaseEventSet) =>
-			releaseEventSet.related('releaseEvents').fetch()
+		.then((edition) => edition.related('data').fetch())
+		.then((data) => data.related('releaseEventSet').fetch())
+		.then(
+			(releaseEventSet) =>
+				releaseEventSet.related('releaseEvents').fetch()
 		)
 		.then((releaseEvents) => {
 			let differencePromise;

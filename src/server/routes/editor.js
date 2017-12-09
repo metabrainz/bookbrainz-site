@@ -69,7 +69,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			return [];
 		});
 
-	Promise.join(editorJSONPromise, titleJSONPromise, genderJSONPromise,
+	Promise.join(
+		editorJSONPromise, titleJSONPromise, genderJSONPromise,
 		(editorJSON, titleJSON, genderJSON) => {
 			const props = generateProps(req, res, {
 				editor: editorJSON,
@@ -108,14 +109,13 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			'You do not have permission to edit that user', req
 		);
 	})
-		.then(() =>
+		.then(
 			// Fetch the current user from the database
-			Editor.forge({id: parseInt(req.user.id, 10)})
-				.fetch()
+			() => Editor.forge({id: parseInt(req.user.id, 10)}).fetch()
 		)
-		.then((editor) =>
+		.then(
 			// Modify the user to match the updates from the form
-			editor.set('bio', req.body.bio)
+			(editor) => editor.set('bio', req.body.bio)
 				.set('areaId', req.body.areaId)
 				.set('genderId', req.body.genderId)
 				.set('birthDate', req.body.birthDate)
@@ -132,9 +132,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			}
 			return editorTitleUnlock.save();
 		})
-		.then((editor) =>
-			editor.toJSON()
-		);
+		.then((editor) => editor.toJSON());
 
 	handler.sendPromiseResult(res, editorJSONPromise);
 });
@@ -201,7 +199,8 @@ router.get('/:id', (req, res, next) => {
 		});
 
 
-	Promise.join(achievementJSONPromise, editorJSONPromise,
+	Promise.join(
+		achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
 			const props = generateProps(req, res, {
 				achievement: achievementJSON,
@@ -362,19 +361,18 @@ router.get('/:id/achievements', (req, res, next) => {
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.fetchAll()
-		.then((unlocks) =>
-			unlocks.map('attributes.achievementId')
-		)
-		.then((unlocks) =>
-			new AchievementType()
+		.then((unlocks) => unlocks.map('attributes.achievementId'))
+		.then(
+			(unlocks) => new AchievementType()
 				.orderBy('id', 'ASC')
 				.fetchAll()
-				.then((achievements) =>
-					setAchievementUnlockedField(achievements, unlocks)
-				)
+				.then((achievements) => setAchievementUnlockedField(
+					achievements, unlocks
+				))
 		);
 
-	Promise.join(achievementJSONPromise, editorJSONPromise,
+	Promise.join(
+		achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
 			const props = generateProps(req, res, {
 				achievement: achievementJSON,
@@ -427,10 +425,7 @@ function rankUpdate(orm, editorId, bodyRank, rank) {
 					editorId: parseInt(editorId, 10)
 				})
 					.fetch({require: true})
-					.then((unlock) =>
-						unlock.set('profileRank', rank)
-							.save()
-					);
+					.then((unlock) => unlock.set('profileRank', rank).save());
 			}
 			return updatePromise;
 		});
