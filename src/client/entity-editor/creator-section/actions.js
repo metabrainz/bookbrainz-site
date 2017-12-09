@@ -47,7 +47,7 @@ type Area = {
  *
  * @param {number} newGenderId - The new value to be used for the gender ID.
  * @returns {Action} The resulting UPDATE_GENDER action.
- **/
+ */
 export function updateGender(newGenderId: ?number): Action {
 	return {
 		payload: newGenderId,
@@ -61,7 +61,7 @@ export function updateGender(newGenderId: ?number): Action {
  *
  * @param {number} newTypeId - The new value to be used for the creator type ID.
  * @returns {Action} The resulting UPDATE_TYPE action.
- **/
+ */
 export function updateType(newTypeId: ?number): Action {
 	return {
 		payload: newTypeId,
@@ -76,7 +76,7 @@ export function updateType(newTypeId: ?number): Action {
  *
  * @param {string} newBeginDate - The new value to be used for the begin date.
  * @returns {Action} The resulting UPDATE_BEGIN_DATE action.
- **/
+ */
 export function debouncedUpdateBeginDate(newBeginDate: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -91,7 +91,7 @@ export function debouncedUpdateBeginDate(newBeginDate: string): Action {
  *
  * @param {Area} newBeginArea - The new value to be used for the begin area.
  * @returns {Action} The resulting UPDATE_BEGIN_AREA action.
- **/
+ */
 export function updateBeginArea(newBeginArea: ?Area): Action {
 	return {
 		payload: newBeginArea,
@@ -106,7 +106,7 @@ export function updateBeginArea(newBeginArea: ?Area): Action {
  *
  * @param {string} newEndDate - The new value to be used for the end date.
  * @returns {Action} The resulting UPDATE_END_DATE action.
- **/
+ */
 export function debouncedUpdateEndDate(newEndDate: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -121,7 +121,7 @@ export function debouncedUpdateEndDate(newEndDate: string): Action {
  *
  * @param {Area} newEndArea - The new value to be used for the end area.
  * @returns {Action} The resulting UPDATE_END_AREA action.
- **/
+ */
 export function updateEndArea(newEndArea: ?Area): Action {
 	return {
 		payload: newEndArea,
@@ -135,7 +135,7 @@ export function updateEndArea(newEndArea: ?Area): Action {
  *
  * @param {boolean} newEnded - The new value to be used for the ended flag.
  * @returns {Action} The resulting UPDATE_ENDED action.
- **/
+ */
 export function updateEnded(newEnded: boolean): Action {
 	return {
 		payload: newEnded,

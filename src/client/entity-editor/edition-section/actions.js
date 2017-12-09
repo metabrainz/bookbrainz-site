@@ -61,7 +61,7 @@ export const SHOW_PHYSICAL = 'SHOW_PHYSICAL';
  * @param {number} newStatusId - The new value to be used for the edition
  *                 status ID.
  * @returns {Action} The resulting UPDATE_STATUS action.
- **/
+ */
 export function updateStatus(newStatusId: ?number): Action {
 	return {
 		payload: newStatusId,
@@ -76,7 +76,7 @@ export function updateStatus(newStatusId: ?number): Action {
  * @param {number} newFormatId - The new value to be used for the edition
  *                 format ID.
  * @returns {Action} The resulting UPDATE_FORMAT action.
- **/
+ */
 export function updateFormat(newFormatId: ?number): Action {
 	return {
 		payload: newFormatId,
@@ -92,7 +92,7 @@ export function updateFormat(newFormatId: ?number): Action {
  * @param {string} newReleaseDate - The new value to be used for the release
  *                 date.
  * @returns {Action} The resulting UPDATE_RELEASE_DATE action.
- **/
+ */
 export function debouncedUpdateReleaseDate(newReleaseDate: ?string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -108,7 +108,7 @@ export function debouncedUpdateReleaseDate(newReleaseDate: ?string): Action {
  * @param {LanguageOption} newLanguages - The new objects to be used for the
  *                         edition languages.
  * @returns {Action} The resulting UPDATE_LANGUAGES action.
- **/
+ */
 export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 	return {
 		payload: newLanguages,
@@ -121,7 +121,7 @@ export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
  * form should be shown.
  *
  * @returns {Action} The resulting SHOW_PHYSICAL action.
- **/
+ */
 export function showPhysical(): Action {
 	return {
 		type: SHOW_PHYSICAL
@@ -135,7 +135,7 @@ export function showPhysical(): Action {
  * @param {Publisher} newPublisher - The new publisher object to be set for
  *                                   the edition.
  * @returns {Action} The resulting UPDATE_PUBLISHER action.
- **/
+ */
 export function updatePublisher(newPublisher: Publisher): Action {
 	return {
 		payload: newPublisher,
@@ -150,7 +150,7 @@ export function updatePublisher(newPublisher: Publisher): Action {
  * @param {Publication} newPublication - The new publication object to be set
  *                      for the edition.
  * @returns {Action} The resulting UPDATE_PUBLICATION action.
- **/
+ */
 export function updatePublication(newPublication: Publication): Action {
 	return {
 		payload: newPublication,
@@ -165,7 +165,7 @@ export function updatePublication(newPublication: Publication): Action {
  *
  * @param {number} value - The new value to be used for the edition weight.
  * @returns {Action} The resulting UPDATE_WEIGHT action.
- **/
+ */
 export function debouncedUpdateWeight(value: ?number): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -181,7 +181,7 @@ export function debouncedUpdateWeight(value: ?number): Action {
  *
  * @param {number} value - The new value to be used for the number of pages.
  * @returns {Action} The resulting UPDATE_PAGES action.
- **/
+ */
 export function debouncedUpdatePages(value: ?number): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -197,7 +197,7 @@ export function debouncedUpdatePages(value: ?number): Action {
  *
  * @param {number} value - The new value to be used for the width.
  * @returns {Action} The resulting UPDATE_WIDTH action.
- **/
+ */
 export function debouncedUpdateWidth(value: ?number): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -213,7 +213,7 @@ export function debouncedUpdateWidth(value: ?number): Action {
  *
  * @param {number} value - The new value to be used for the height.
  * @returns {Action} The resulting UPDATE_HEIGHT action.
- **/
+ */
 export function debouncedUpdateHeight(value: ?number): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -229,7 +229,7 @@ export function debouncedUpdateHeight(value: ?number): Action {
  *
  * @param {number} value - The new value to be used for the depth.
  * @returns {Action} The resulting UPDATE_DEPTH action.
- **/
+ */
 export function debouncedUpdateDepth(value: ?number): Action {
 	return {
 		meta: {debounce: 'keystroke'},

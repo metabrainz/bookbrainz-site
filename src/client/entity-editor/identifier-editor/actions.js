@@ -39,7 +39,7 @@ export type Action = {
  * @see showIdentifierEditor
  *
  * @returns {Action} The resulting HIDE_IDENTIFIER_EDITOR action.
- **/
+ */
 export function hideIdentifierEditor(): Action {
 	return {
 		type: HIDE_IDENTIFIER_EDITOR
@@ -54,10 +54,12 @@ let nextIdentifierRowId = 0;
  * variable existing on the client.
  *
  * @returns {Action} The resulting ADD_IDENTIFIER_ROW action.
- **/
+ */
 export function addIdentifierRow(): Action {
-	/* Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
-	 * of existing identifiers. */
+	/*
+	 * Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
+	 * of existing identifiers.
+	 */
 	return {
 		payload: `n${nextIdentifierRowId++}`,
 		type: ADD_IDENTIFIER_ROW
@@ -70,7 +72,7 @@ export function addIdentifierRow(): Action {
  *
  * @param {number} rowId - The ID for the row to be deleted.
  * @returns {Action} The resulting REMOVE_IDENTIFIER_ROW action.
- **/
+ */
 export function removeIdentifierRow(rowId: number): Action {
 	return {
 		payload: rowId,
@@ -90,7 +92,7 @@ export function removeIdentifierRow(rowId: number): Action {
  * @param {number} suggestedType - The ID for the type suggested by the new
  *        value.
  * @returns {Action} The resulting UPDATE_IDENTIFIER_VALUE action.
- **/
+ */
 export function debouncedUpdateIdentifierValue(
 	rowId: number, value: string, suggestedType: number
 ): Action {
@@ -112,7 +114,7 @@ export function debouncedUpdateIdentifierValue(
  * @param {number} rowId - The ID of the row in the identifier editor to update.
  * @param {number} value - The new value to be used for the identifier type ID.
  * @returns {Action} The resulting UPDATE_IDENTIFIER_TYPE action.
- **/
+ */
 export function updateIdentifierType(rowId: number, value: number): Action {
 	return {
 		payload: {

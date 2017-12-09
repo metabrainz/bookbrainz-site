@@ -289,7 +289,7 @@ const stylisticIssuesRules = {
 		TRANSITION_WARNING,
 		50
 	],
-	'multiline-comment-style': TRANSITION_WARNING,
+	'multiline-comment-style': ERROR,
 	'new-parens': ERROR,
 	'no-array-constructor': ERROR,
 	'no-bitwise': ERROR,

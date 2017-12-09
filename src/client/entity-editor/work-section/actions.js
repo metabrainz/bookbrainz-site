@@ -38,7 +38,7 @@ export type Action = {
  *
  * @param {number} newTypeId - The new value to be used for the work type ID.
  * @returns {Action} The resulting UPDATE_TYPE action.
- **/
+ */
 export function updateType(newTypeId: ?number): Action {
 	return {
 		payload: newTypeId,
@@ -53,7 +53,7 @@ export function updateType(newTypeId: ?number): Action {
  * @param {LanguageOption} newLanguages - The new objects to be used for the
  *                         work languages.
  * @returns {Action} The resulting UPDATE_LANGUAGES action.
- **/
+ */
 export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 	return {
 		payload: newLanguages,

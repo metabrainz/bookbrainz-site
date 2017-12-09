@@ -38,7 +38,7 @@ export type Action = {
  *
  * @param {string} newName - The new value to be used for the name.
  * @returns {Action} The resulting UPDATE_NAME_FIELD action.
- **/
+ */
 export function debouncedUpdateNameField(newName: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -54,7 +54,7 @@ export function debouncedUpdateNameField(newName: string): Action {
  *
  * @param {string} newSortName - The new value to be used for the sort name.
  * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
- **/
+ */
 export function debouncedUpdateSortNameField(newSortName: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -69,7 +69,7 @@ export function debouncedUpdateSortNameField(newSortName: string): Action {
  *
  * @param {string} newLanguageId - The new value to be used for the language ID.
  * @returns {Action} The resulting UPDATE_LANGUAGE_FIELD action.
- **/
+ */
 export function updateLanguageField(newLanguageId: ?number): Action {
 	return {
 		payload: newLanguageId,
@@ -85,7 +85,7 @@ export function updateLanguageField(newLanguageId: ?number): Action {
  * @param {string} newDisambiguation - The new value to be used for the
  *        disambiguation.
  * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
- **/
+ */
 export function debouncedUpdateDisambiguationField(
 	newDisambiguation: string
 ): Action {

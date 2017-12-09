@@ -36,7 +36,7 @@ export type Action = {
  * @see hideAliasEditor
  *
  * @returns {Action} The resulting SHOW_ALIAS_EDITOR action.
- **/
+ */
 export function showAliasEditor(): Action {
 	return {
 		type: SHOW_ALIAS_EDITOR
@@ -48,7 +48,7 @@ export function showAliasEditor(): Action {
  * made visible.
  *
  * @returns {Action} The resulting SHOW_DISAMBIGUATION action.
- **/
+ */
 export function showDisambiguation(): Action {
 	return {
 		type: SHOW_DISAMBIGUATION
@@ -62,7 +62,7 @@ export function showDisambiguation(): Action {
  * @see hideIdentifierEditor
  *
  * @returns {Action} The resulting SHOW_IDENTIFIER_EDITOR action.
- **/
+ */
 export function showIdentifierEditor(): Action {
 	return {
 		type: SHOW_IDENTIFIER_EDITOR

@@ -42,7 +42,7 @@ export type Action = {
  *
  * @param {string} error - The error message to be set for the form.
  * @returns {Action} The resulting SET_SUBMIT_ERROR action.
- **/
+ */
 export function setSubmitError(error: string): Action {
 	return {
 		error,
@@ -57,7 +57,7 @@ export function setSubmitError(error: string): Action {
  *
  * @param {string} value - The new value to be used for the revision note.
  * @returns {Action} The resulting UPDATE_REVISION_NOTE action.
- **/
+ */
 export function debounceUpdateRevisionNote(value: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -74,7 +74,8 @@ type Response = {
 };
 
 function postSubmission(url: string, data: Map<string, mixed>): Promise {
-	/* TODO: Not the best way to do this, but once we unify the
+	/*
+	 * TODO: Not the best way to do this, but once we unify the
 	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
 	 * pass the entity type and generate both URLs from that.
 	 */
@@ -106,8 +107,10 @@ export function submit(
 		return postSubmission(submissionUrl, rootState)
 			.catch(
 				(error: {message: string}) => {
-					// Use server-set message first, otherwise internal
-					// superagent message
+					/*
+					 * Use server-set message first, otherwise internal
+					 * superagent message
+					 */
 					const message =
 						_.get(error, ['res', 'body', 'error'], null) ||
 						error.message;

@@ -23,11 +23,11 @@ import React from 'react';
 const {PageHeader} = bootstrap;
 
 /**
-* Renders a page containing a link to the current MusicBrainz privacy
-* policy, which will form the basis of a future privacy policy
-* for BookBrainz.
-* @returns {ReactElement} an element containing the rendered output
-*/
+ * Renders a page containing a link to the current MusicBrainz privacy
+ * policy, which will form the basis of a future privacy policy
+ * for BookBrainz.
+ * @returns {ReactElement} an element containing the rendered output
+ */
 function PrivacyPage() {
 	return (
 		<div>

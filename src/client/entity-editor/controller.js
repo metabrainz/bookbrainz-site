@@ -16,7 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/* Following convention at
+/*
+ * Following convention at
  * http://redux.js.org/docs/recipes/ServerRendering.html
  */
 

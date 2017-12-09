@@ -30,7 +30,7 @@ import request from 'superagent-bluebird-promise';
  *
  * @param {Object} entity the entity to test
  * @returns {boolean} true if the entity looks like an Area
- **/
+ */
 function isArea(entity) {
 	if (entity.type === 'Area') {
 		return true;
@@ -48,7 +48,7 @@ function isArea(entity) {
  *
  * @param {Object} entity the entity to convert
  * @returns {Object} the formatted data
- **/
+ */
 function entityToOption(entity) {
 	const id = isArea(entity) ? entity.id : entity.bbid;
 

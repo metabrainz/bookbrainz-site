@@ -27,18 +27,18 @@ const ymRegex = /^\d{4}-\d{2}$/;
 const yRegex = /^\d{4}$/;
 
 /**
-* This class is derived from the React Component base class
-* to render a partial date (any of the formats "YYYY", "YYYY-MM",
-* "YYYY-MM-DD"). This allows the editor to be vague where information is not
-* known. It also checks validity of the value filled in the date field.
-*/
+ * This class is derived from the React Component base class
+ * to render a partial date (any of the formats "YYYY", "YYYY-MM",
+ * "YYYY-MM-DD"). This allows the editor to be vague where information is not
+ * known. It also checks validity of the value filled in the date field.
+ */
 class PartialDate extends React.Component {
 	/**
-	* Function to check validity of the partial date.
-	* @param {string} value - Partial Date to be validated.
-	* @returns {boolean} - True if the partial date value is null or if
-	* the partial date is valid.
-	*/
+	 * Function to check validity of the partial date.
+	 * @param {string} value - Partial Date to be validated.
+	 * @returns {boolean} - True if the partial date value is null or if
+	 * the partial date is valid.
+	 */
 	static validate(value) {
 		if (!value) {
 			return true;
@@ -55,10 +55,10 @@ class PartialDate extends React.Component {
 	}
 
 	/**
-	* Binds the class methods to their respective data.
-	* @constructor
-	* @param {object} props - Properties passed to the component.
-	*/
+	 * Binds the class methods to their respective data.
+	 * @constructor
+	 * @param {object} props - Properties passed to the component.
+	 */
 	constructor(props) {
 		super(props);
 
@@ -72,19 +72,19 @@ class PartialDate extends React.Component {
 	}
 
 	/**
-	* To get the value filled in the form field.
-	* @returns {string} - Value filled in the form field.
-	*/
+	 * To get the value filled in the form field.
+	 * @returns {string} - Value filled in the form field.
+	 */
 	getValue() {
 		return this.state.value;
 	}
 
 	/**
-	* An event handler, which is triggered whenever the value in the date field
-	* changes and then, it validates the PartialDate value and updates
-	* the component's state with the new value and validation state.
-	* It also triggers the onChange function if the validation state is true.
-	*/
+	 * An event handler, which is triggered whenever the value in the date field
+	 * changes and then, it validates the PartialDate value and updates
+	 * the component's state with the new value and validation state.
+	 * It also triggers the onChange function if the validation state is true.
+	 */
 	handleChange() {
 		const input = this.input.getValue().trim();
 
@@ -103,20 +103,20 @@ class PartialDate extends React.Component {
 	}
 
 	/**
-	* Calls the date validator function of the 'PartialDate' class and the value
-	* filled in the date field is passed for validation.
-	* @returns {boolean} - The result as obtained from the date validator.
-	*/
+	 * Calls the date validator function of the 'PartialDate' class and the
+	 * value filled in the date field is passed for validation.
+	 * @returns {boolean} - The result as obtained from the date validator.
+	 */
 	valid() {
 		return PartialDate.validate(this.input.getValue().trim());
 	}
 
 	/**
-  * Applies correct validationClass to the CSS of the field input, based on
-	* results obtained from the valid() function.
-	* @returns {string} validationClass - The validation class to be applied to
-	* the date field.
-	*/
+	 * Applies correct validationClass to the CSS of the field input, based on
+	 * results obtained from the valid() function.
+	 * @returns {string} validationClass - The validation class to be applied to
+	 * the date field.
+	 */
 	validationState() {
 		let validationClass = null;
 
@@ -128,9 +128,9 @@ class PartialDate extends React.Component {
 	}
 
 	/**
-	* Renders the PartialDate input field.
-	* @returns {ReactElement} - The rendered input field element.
-	*/
+	 * Renders the PartialDate input field.
+	 * @returns {ReactElement} - The rendered input field element.
+	 */
 	render() {
 		return (
 			<CustomInput

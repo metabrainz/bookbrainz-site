@@ -41,7 +41,7 @@ import {connect} from 'react-redux';
  * @param {boolean} props.show - Whether or not the editor modal should be
  *        visible.
  * @returns {ReactElement} React element containing the rendered AliasEditor.
- **/
+ */
 const AliasEditor = ({
 	aliases,
 	languageOptions,

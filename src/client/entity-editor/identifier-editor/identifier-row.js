@@ -73,7 +73,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @param {Function} props.onValueChange - A function to be called when the
  *        value for the identifier is changed.
  * @returns {ReactElement} React element containing the rendered IdentifierRow.
- **/
+ */
 function IdentifierRow({
 	index,
 	typeOptions,

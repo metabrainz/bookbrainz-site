@@ -60,7 +60,7 @@ import {isAliasEmpty} from '../helpers';
  * @param {Function} props.onPrimaryClick - A function to be called when
  *        the primary checkbox is clicked.
  * @returns {ReactElement} React element containing the rendered AliasRow.
- **/
+ */
 const AliasRow = ({
 	languageOptions,
 	languageValue,

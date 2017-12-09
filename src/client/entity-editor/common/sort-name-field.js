@@ -42,8 +42,10 @@ function makeSortName(name: string): string {
 		'dmd', 'dds', 'esq'
 	];
 
-	// Remove leading and trailing spaces, and return a blank sort name if
-	// the string is empty
+	/*
+	 * Remove leading and trailing spaces, and return a blank sort name if
+	 * the string is empty
+	 */
 	const trimmedName = name.trim();
 	if (trimmedName.length === 0) {
 		return '';
@@ -64,8 +66,10 @@ function makeSortName(name: string): string {
 		return `${words.slice(1).join(' ')}, ${firstWord}`;
 	}
 
-	// From here on, it is assumed that the sort name is for a person
-	// Split suffixes
+	/*
+	 * From here on, it is assumed that the sort name is for a person
+	 * Split suffixes
+	 */
 	const isWordSuffix =
 		words.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
 	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;

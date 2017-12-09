@@ -32,7 +32,7 @@ import React from 'react';
  * @param {number} props.numAliases - The number of aliases present in the
  *        AliasEditor - used to determine the correct button label.
  * @returns {ReactElement} React element containing the rendered AliasButton.
- **/
+ */
 function AliasButton({
 	aliasesInvalid,
 	numAliases,

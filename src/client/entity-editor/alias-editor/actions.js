@@ -43,7 +43,7 @@ export type Action = {
  * @param {number} rowId - The ID of the row in the alias editor to update.
  * @param {string} value - The new value to be used for the alias name.
  * @returns {Action} The resulting UPDATE_ALIAS_NAME action.
- **/
+ */
 export function debouncedUpdateAliasName(rowId: number, value: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -64,7 +64,7 @@ export function debouncedUpdateAliasName(rowId: number, value: string): Action {
  * @param {number} rowId - The ID of the row in the alias editor to update.
  * @param {string} value - The new value to be used for the alias sort name.
  * @returns {Action} The resulting UPDATE_ALIAS_SORT_NAME action.
- **/
+ */
 export function debouncedUpdateAliasSortName(
 	rowId: number, value: string
 ): Action {
@@ -85,7 +85,7 @@ export function debouncedUpdateAliasSortName(
  * @param {number} rowId - The ID of the row in the alias editor to update.
  * @param {number} value - The new value to be used for the alias language ID.
  * @returns {Action} The resulting UPDATE_ALIAS_LANGUAGE action.
- **/
+ */
 export function updateAliasLanguage(rowId: number, value: ?number): Action {
 	return {
 		payload: {
@@ -103,7 +103,7 @@ export function updateAliasLanguage(rowId: number, value: ?number): Action {
  * @param {number} rowId - The ID of the row in the alias editor to update.
  * @param {boolean} value - The new value to be used for the alias primary flag.
  * @returns {Action} The resulting UPDATE_ALIAS_PRIMARY action.
- **/
+ */
 export function updateAliasPrimary(rowId: number, value: boolean): Action {
 	return {
 		payload: {
@@ -122,10 +122,12 @@ let nextAliasRowId = 0;
  * variable existing on the client.
  *
  * @returns {Action} The resulting ADD_ALIAS_ROW action.
- **/
+ */
 export function addAliasRow(): Action {
-	/* Prepend 'n' here to indicate new alias, and avoid conflicts with IDs of
-	 * existing aliases. */
+	/*
+	 * Prepend 'n' here to indicate new alias, and avoid conflicts with IDs of
+	 * existing aliases.
+	 */
 	return {
 		payload: `n${nextAliasRowId++}`,
 		type: ADD_ALIAS_ROW
@@ -138,7 +140,7 @@ export function addAliasRow(): Action {
  *
  * @param {number} rowId - The ID for the row to be deleted.
  * @returns {Action} The resulting REMOVE_ALIAS_ROW action.
- **/
+ */
 export function removeAliasRow(rowId: number): Action {
 	return {
 		payload: rowId,
@@ -153,7 +155,7 @@ export function removeAliasRow(rowId: number): Action {
  * @see showAliasEditor
  *
  * @returns {Action} The resulting HIDE_ALIAS_EDITOR action.
- **/
+ */
 export function hideAliasEditor(): Action {
 	return {
 		type: HIDE_ALIAS_EDITOR

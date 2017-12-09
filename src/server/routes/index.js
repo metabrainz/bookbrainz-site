@@ -48,9 +48,11 @@ router.get('/', async (req, res, next) => {
 			requireJS: Boolean(res.locals.user)
 		});
 
-		// Renders react components server side and injects markup into target
-		// file
-		// object spread injects the app.locals variables into React as props
+		/*
+		 * Renders react components server side and injects markup into target
+		 * file object spread injects the app.locals variables into React as
+		 * props
+		 */
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<Index

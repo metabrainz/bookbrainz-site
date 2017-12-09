@@ -35,9 +35,10 @@ function ErrorPage(props) {
 		detailedMessage = [detailedMessage];
 	}
 
-	/* to-do: Adjust margins for error status title and message once image
-	   is added in
-	*/
+	/*
+	 * to-do: Adjust margins for error status title and message once image
+	 * is added in
+	 */
 	return (
 		<Grid className="text-center">
 			<Row className="margin-bottom-6">

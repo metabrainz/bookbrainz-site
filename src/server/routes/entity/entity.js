@@ -245,8 +245,10 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 				orm, req.body.note, editorJSON, revision, transacting
 			));
 
-		// No trigger for deletions, so manually create the <Entity>Revision
-		// and update the entity header
+		/*
+		 * No trigger for deletions, so manually create the <Entity>Revision
+		 * and update the entity header
+		 */
 		const newEntityRevisionPromise = newRevisionPromise
 			.then((revision) => new RevisionModel({
 				bbid: entity.bbid,
@@ -281,9 +283,11 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 		oldSetHash[item[idField]] = item;
 	});
 
-	// First, determine whether any items have been deleted or added, by
-	// excluding all new IDs from the old IDs and checking whether any IDs
-	// remain, and vice versa
+	/*
+	 * First, determine whether any items have been deleted or added, by
+	 * excluding all new IDs from the old IDs and checking whether any IDs
+	 * remain, and vice versa
+	 */
 	const itemsHaveBeenDeletedOrAdded =
 		_.difference(oldSetIds, newSetIds).length > 0 ||
 		_.difference(newSetIds, oldSetIds).length > 0;
@@ -292,8 +296,10 @@ function setHasChanged(oldSet, newSet, idField, compareFields) {
 		return true;
 	}
 
-	// If no list of fields for comparison is provided and no items have been
-	// deleted or added, consider the set unchanged
+	/*
+	 * If no list of fields for comparison is provided and no items have been
+	 * deleted or added, consider the set unchanged
+	 */
 	if (_.isEmpty(compareFields)) {
 		return false;
 	}
@@ -360,8 +366,10 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 		);
 		idsToAttach = _.map(unchangedItems, setMetadata.idField);
 
-		// If there are new items in the set or items in the set have otherwise
-		// changed, add rows to the database and connect them to the set
+		/*
+		 * If there are new items in the set or items in the set have otherwise
+		 * changed, add rows to the database and connect them to the set
+		 */
 		const updatedOrNewItems = updatedOrNewSetItems(
 			oldItems,
 			formItems,
@@ -386,8 +394,10 @@ function processFormSet(transacting, oldSet, formItems, setMetadata) {
 	const attachPropertiesPromise = fetchCollectionPromise
 		.then((collection) => collection.attach(idsToAttach, {transacting}));
 
-	// Ensure that any linking that needs to happen to the set is completed
-	// and return the new set's object
+	/*
+	 * Ensure that any linking that needs to happen to the set is completed
+	 * and return the new set's object
+	 */
 	return Promise.join(
 		newSetPromise,
 		Promise.resolve(createPropertiesPromise),
@@ -408,8 +418,10 @@ function processFormAliases(
 		oldAliases, newAliases, 'id', aliasCompareFields
 	);
 
-	// If there is no change to the set of aliases, and the default alias is
-	// the same, skip alias processing
+	/*
+	 * If there is no change to the set of aliases, and the default alias is
+	 * the same, skip alias processing
+	 */
 	const newDefaultAlias = _.find(newAliases, 'default');
 	if (!aliasesHaveChanged && newDefaultAlias.id === oldDefaultAliasId) {
 		return oldAliasSet;
@@ -430,8 +442,10 @@ function processFormAliases(
 		)
 	);
 
-	// Create new aliases for any new or updated aliases, and attach them to
-	// the set
+	/*
+	 * Create new aliases for any new or updated aliases, and attach them to
+	 * the set
+	 */
 	const newOrUpdatedAliases =
 		updatedOrNewSetItems(oldAliases, newAliases, aliasCompareFields);
 	const allAliasesAttachedPromise = oldAliasesAttachedPromise
@@ -493,8 +507,10 @@ function processFormIdentifiers(orm, transacting, oldIdentSet, newIdents) {
 		)
 	);
 
-	// Create new aliases for any new or updated aliases, and attach them to
-	// the set
+	/*
+	 * Create new aliases for any new or updated aliases, and attach them to
+	 * the set
+	 */
 	const newOrUpdatedIdents =
 		updatedOrNewSetItems(oldIdents, newIdents, identCompareFields);
 	const allIdentsAttachedPromise = oldIdentsAttachedPromise

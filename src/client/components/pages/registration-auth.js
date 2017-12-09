@@ -25,10 +25,10 @@ import React from 'react';
 const {Alert, Button, PageHeader} = bootstrap;
 
 /**
-* Renders a page allowing the user to sign in to MusicBrainz to
-* continue the BookBrainz registration process.
-* @returns {ReactElement} an element containing the rendered output.
-*/
+ * Renders a page allowing the user to sign in to MusicBrainz to
+ * continue the BookBrainz registration process.
+ * @returns {ReactElement} an element containing the rendered output.
+ */
 function RegistrationAuth() {
 	return (
 		<div>

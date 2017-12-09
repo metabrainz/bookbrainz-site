@@ -66,9 +66,10 @@ class Layout extends React.Component {
 	renderNavContent() {
 		const {user, homepage, hideSearch} = this.props;
 
-		/* GOTCHA: Usage of react-bootstrap FormGroup component inside
-		*  Navbar.Form causes a DOM mutation
-		*/
+		/*
+		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
+		 * Navbar.Form causes a DOM mutation
+		 */
 		const createDropdownTitle = (
 			<span>
 				<FontAwesome name="plus"/>{'  Create'}

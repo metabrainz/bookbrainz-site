@@ -23,10 +23,10 @@ import React from 'react';
 const {PageHeader} = bootstrap;
 
 /**
-* Renders the the document and displays the 'Contribute' page.
-* @returns {ReactElement} a HTML document which displays the
-* Contribute page
-*/
+ * Renders the the document and displays the 'Contribute' page.
+ * @returns {ReactElement} a HTML document which displays the
+ * Contribute page
+ */
 function ContributePage() {
 	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
 	const styleLink =

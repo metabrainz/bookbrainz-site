@@ -1,5 +1,7 @@
-// Based on code from:
-// https://github.com/saucelabs-sample-test-frameworks/JS-Nightwatch.js
+/*
+ * Based on code from:
+ * https://github.com/saucelabs-sample-test-frameworks/JS-Nightwatch.js
+ */
 
 import SauceLabs from 'saucelabs';
 

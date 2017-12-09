@@ -1,8 +1,8 @@
 /*
-* Copyright (C) 2016  Daniel Hsing
- * 				2016  Ben Ockmore
- * 				2015  Sean Burke
- *				2015  Leo Verto
+ * Copyright (C) 2016  Daniel Hsing
+ *               2016  Ben Ockmore
+ *               2015  Sean Burke
+ *               2015  Leo Verto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -49,7 +49,7 @@ import {connect} from 'react-redux';
  * @param {Function} props.onIdentifierButtonClick - A function to be called
  *        when the IdentifierButton is clicked.
  * @returns {ReactElement} React element containing the rendered ButtonBar.
- **/
+ */
 function ButtonBar({
 	aliasesInvalid,
 	disambiguationVisible,

@@ -33,8 +33,10 @@ export class SiteError extends Error {
 	constructor(message) {
 		super();
 
-		// We can't access the subclass's default message before calling super,
-		// so we set it manually here
+		/*
+		 * We can't access the subclass's default message before calling super,
+		 * so we set it manually here
+		 */
 		this.message = message || this.constructor.defaultMessage;
 
 		this.name = this.constructor.name;
@@ -132,8 +134,10 @@ function _getErrorToSend(err) {
 		return err;
 	}
 
-	// If we haven't generated the error ourselves with display in mind, log
-	// instead and return a new generic SiteError
+	/*
+	 * If we haven't generated the error ourselves with display in mind, log
+	 * instead and return a new generic SiteError
+	 */
 	_logError(err);
 	return new SiteError();
 }
@@ -167,8 +171,10 @@ export class AwardNotUnlockedError extends Error {
 	constructor(message) {
 		super();
 
-		// We can't access the subclass's default message before calling super,
-		// so we set it manually here
+		/*
+		 * We can't access the subclass's default message before calling super,
+		 * so we set it manually here
+		 */
 		this.message = message || this.constructor.defaultMessage;
 
 		this.name = this.constructor.name;

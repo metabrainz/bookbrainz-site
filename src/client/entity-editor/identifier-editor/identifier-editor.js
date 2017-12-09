@@ -43,7 +43,7 @@ import {connect} from 'react-redux';
  *        visible.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierEditor.
- **/
+ */
 const IdentifierEditor = ({
 	identifiers,
 	identifierTypes,

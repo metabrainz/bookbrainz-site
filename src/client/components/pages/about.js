@@ -23,10 +23,10 @@ import React from 'react';
 const {PageHeader} = bootstrap;
 
 /**
-* Renders the document and displays the 'About' page.
-* @returns {ReactElement} a HTML document which displays the About
-* page
-*/
+ * Renders the document and displays the 'About' page.
+ * @returns {ReactElement} a HTML document which displays the About
+ * page
+ */
 function AboutPage() {
 	const NESLink =
 		'https://ocharles.org.uk/blog/posts/' +

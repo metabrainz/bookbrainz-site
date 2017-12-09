@@ -35,7 +35,7 @@ export type Action = {
  *
  * @param {number} newType - The new value to be used for the publisher type.
  * @returns {Action} The resulting UPDATE_TYPE action.
- **/
+ */
 export function updateType(newType: ?number): Action {
 	return {
 		payload: newType,

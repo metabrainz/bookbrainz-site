@@ -33,7 +33,7 @@ import React from 'react';
  *        the IdentifierEditor - used to determine the correct button label.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierButton.
- **/
+ */
 function IdentifierButton({
 	identifiersInvalid,
 	numIdentifiers,

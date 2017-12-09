@@ -177,9 +177,11 @@ router.get('/:id', (req, res, next) => {
 		PublisherRevision, Revision, WorkRevision
 	} = req.app.locals.orm;
 
-	// Here, we need to get the Revision, then get all <Entity>Revision
-	// objects with the same ID, formatting each revision individually, then
-	// concatenating the diffs
+	/*
+	 * Here, we need to get the Revision, then get all <Entity>Revision
+	 * objects with the same ID, formatting each revision individually, then
+	 * concatenating the diffs
+	 */
 	const revisionPromise = new Revision({id: req.params.id})
 		.fetch({
 			withRelated: [
