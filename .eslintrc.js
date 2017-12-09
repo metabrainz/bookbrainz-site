@@ -30,6 +30,8 @@ const options = {
 	]
 };
 
+
+// These should not be removed at all.
 const possibleErrorsRules = {
 	'no-await-in-loop': 1,
 	'no-console': 0,
@@ -54,10 +56,10 @@ const possibleErrorsRules = {
 	]
 };
 
+// These should probably not be removed at all.
 const bestPracticesRules = {
 	'accessor-pairs': 2,
 	'array-callback-return': 2,
-	'babel/no-invalid-this': 2,
 	'block-scoped-var': 2,
 	'class-methods-use-this': 0,
 	complexity: [
@@ -179,6 +181,7 @@ const nodeAndCommonJSRules = {
 	'no-sync': 2
 };
 
+// Agreement of all project leads needed before changing these.
 const stylisticIssuesRules = {
 	'array-bracket-spacing': 2,
 	'block-spacing': 2,
@@ -204,7 +207,7 @@ const stylisticIssuesRules = {
 		'self'
 	],
 	'eol-last': 2,
-	'func-call-spacing': [2],
+	'func-call-spacing': 2,
 	'func-name-matching': 1,
 	'func-names': 1,
 	'func-style': [
@@ -377,14 +380,6 @@ const ecmaScript6Rules = {
 	'yield-star-spacing': 2
 };
 
-
-const deprecatedRules = {
-	'lines-around-directive': 2,
-	'no-native-reassign': 2,
-	'no-negated-in-lhs': 2,
-	'no-spaced-func': 2
-};
-
 const babelRules = {
 	'babel/new-cap': [
 		2,
@@ -392,6 +387,7 @@ const babelRules = {
 			capIsNew: false
 		}
 	],
+	'babel/no-invalid-this': 2,
 	'babel/object-curly-spacing': 2,
 	'babel/semi': 2
 };
@@ -531,7 +527,6 @@ const es6ImportRules = {
 
 options.rules = Object.assign(
 	{},
-	deprecatedRules,
 	possibleErrorsRules,
 	bestPracticesRules,
 	strictModeRules,
