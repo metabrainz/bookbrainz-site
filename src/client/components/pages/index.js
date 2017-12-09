@@ -29,7 +29,7 @@ import React from 'react';
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
-const picture_classes = {
+const PICTURE_CLASSES = {
 	Creator: 'user',
 	Edition: 'book',
 	Publication: 'th-list',
@@ -232,7 +232,7 @@ class IndexPage extends React.Component {
 												<Row>
 													<Col md={2}>{`r${entity.revisionId}`}</Col>
 													<Col md={6}>
-														<FontAwesome name={picture_classes[entity.type]}/>
+														<FontAwesome name={PICTURE_CLASSES[entity.type]}/>
 														<span className="margin-left-1">{name}</span>
 													</Col>
 													<Col md={4}>

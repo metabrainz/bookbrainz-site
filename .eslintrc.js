@@ -205,7 +205,7 @@ const stylisticIssuesRules = {
 		}
 	],
 	camelcase: [
-		TRANSITION_WARNING,
+		ERROR,
 		{
 			properties: 'always'
 		}
