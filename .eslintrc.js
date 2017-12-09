@@ -1,4 +1,6 @@
 /* eslint-disable import/unambiguous, import/no-commonjs, no-magic-numbers */
+/* eslint-disable no-inline-comments */
+
 
 const options = {
 	env: {
@@ -33,8 +35,10 @@ const options = {
 
 // These should not be removed at all.
 const possibleErrorsRules = {
-	'no-await-in-loop': 1,
-	'no-console': 0,
+	'for-direction': 2,
+	'getter-return': 2,
+	'no-await-in-loop': 2,
+	'no-console': 1,
 	'no-extra-parens': [
 		1,
 		'all',
@@ -61,11 +65,8 @@ const bestPracticesRules = {
 	'accessor-pairs': 2,
 	'array-callback-return': 2,
 	'block-scoped-var': 2,
-	'class-methods-use-this': 0,
-	complexity: [
-		1,
-		10
-	],
+	'class-methods-use-this': 1,
+	complexity: 2,
 	'consistent-return': 2,
 	curly: 2,
 	'default-case': 2,
@@ -78,10 +79,12 @@ const bestPracticesRules = {
 		2,
 		'allow-null'
 	],
+	'guard-for-in': 1,
 	'no-alert': 2,
 	'no-caller': 2,
 	'no-div-regex': 2,
 	'no-else-return': 2,
+	'no-empty-function': 2,
 	'no-eq-null': 2,
 	'no-eval': 2,
 	'no-extend-native': 2,
@@ -130,10 +133,11 @@ const bestPracticesRules = {
 	'no-useless-concat': 2,
 	'no-useless-return': 2,
 	'no-void': 2,
-	'no-warning-comments': 1,
+	'no-warning-comments': 1, // keep as 1
 	'no-with': 2,
 	'prefer-promise-reject-errors': 2,
 	radix: 2,
+	'require-await': 2,
 	'vars-on-top': 2,
 	'wrap-iife': [
 		2,
@@ -183,6 +187,10 @@ const nodeAndCommonJSRules = {
 
 // Agreement of all project leads needed before changing these.
 const stylisticIssuesRules = {
+	'array-bracket-newline': [
+		2,
+		'consistent'
+	],
 	'array-bracket-spacing': 2,
 	'block-spacing': 2,
 	'brace-style': [
@@ -294,6 +302,10 @@ const stylisticIssuesRules = {
 	'no-trailing-spaces': 2,
 	'no-unneeded-ternary': 2,
 	'no-whitespace-before-property': 2,
+	'object-curly-newline': [
+		2,
+		{consistent: true}
+	],
 	'one-var': [
 		2,
 		'never'
