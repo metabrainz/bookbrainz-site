@@ -27,6 +27,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
+import _ from 'lodash';
 import request from 'superagent-bluebird-promise';
 
 
@@ -64,8 +65,14 @@ class RegistrationForm extends React.Component {
 
 		request.post('/register/handler')
 			.send(data)
-			.then(() => {
-				window.location.href = '/login';
+			.then((res) => {
+				const editorId = _.get(res, 'body.id', null);
+				if (!editorId) {
+					window.location.href = '/';
+				}
+				else {
+					window.location.href = `/editor/${res.body.id}`;
+				}
 			})
 			.catch((res) => {
 				const {error} = res.body;
