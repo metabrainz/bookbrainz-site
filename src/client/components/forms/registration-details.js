@@ -66,13 +66,7 @@ class RegistrationForm extends React.Component {
 		request.post('/register/handler')
 			.send(data)
 			.then((res) => {
-				const editorId = _.get(res, 'body.id', null);
-				if (!editorId) {
-					window.location.href = '/';
-				}
-				else {
-					window.location.href = `/editor/${res.body.id}`;
-				}
+				window.location.href = '/auth';
 			})
 			.catch((res) => {
 				const {error} = res.body;
