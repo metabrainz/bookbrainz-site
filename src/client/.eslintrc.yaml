@@ -1,5 +1,0 @@
----
-env:
-  browser: true
-rules:
-  no-return-assign: 0
