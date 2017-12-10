@@ -535,6 +535,7 @@ const es6ImportRules = {
 				'**/lib/**',
 				'**/data/**',
 				'**/config/**',
+				'**/test/**',
 				'react-dom/server'
 			]
 		}

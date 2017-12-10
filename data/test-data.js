@@ -18,6 +18,7 @@
 
 import orm from '../test/bookbrainz-data';
 
+
 const {
 	bookshelf, util, Editor, EditorType, AchievementType, TitleType, Revision
 } = orm;
@@ -44,187 +45,187 @@ export const revisionistIAttribs = {
 };
 
 export const revisionistIIAttribs = {
-	id: 2,
-	name: 'Revisionist II',
+	badgeUrl: 'http://test.com',
 	description: 'create 25 revisions',
-	badgeUrl: 'http://test.com'
+	id: 2,
+	name: 'Revisionist II'
 };
 
 export const revisionistIIIAttribs = {
-	id: 3,
-	name: 'Revisionist III',
+	badgeUrl: 'http://test.com',
 	description: 'create 250 revisions',
-	badgeUrl: 'http://test.com'
+	id: 3,
+	name: 'Revisionist III'
 };
 
 export const revisionistAttribs = {
+	description: 'create 250 revisions',
 	id: 1,
-	title: 'Revisionist',
-	description: 'create 250 revisions'
+	title: 'Revisionist'
 };
 
 export const creatorCreatorIAttribs = {
-	id: 1,
-	name: 'Creator Creator I',
+	badgeUrl: 'http://test.com',
 	description: 'create one creator',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Creator Creator I'
 };
 
 export const creatorCreatorIIAttribs = {
-	id: 2,
-	name: 'Creator Creator II',
+	badgeUrl: 'http://test.com',
 	description: 'create 10 creators',
-	badgeUrl: 'http://test.com'
+	id: 2,
+	name: 'Creator Creator II'
 };
 
 export const creatorCreatorIIIAttribs = {
-	id: 3,
-	name: 'Creator Creator III',
+	badgeUrl: 'http://test.com',
 	description: 'create 100 creators',
-	badgeUrl: 'http://test.com'
+	id: 3,
+	name: 'Creator Creator III'
 };
 
 export const creatorCreatorAttribs = {
+	description: 'Complete Creator Creator track',
 	id: 1,
-	title: 'Creator Creator',
-	description: 'Complete Creator Creator track'
+	title: 'Creator Creator'
 };
 
 export const limitedEditionIAttribs = {
-	id: 1,
-	name: 'Limited Edition I',
+	badgeUrl: 'http://test.com',
 	description: 'create one edition',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Limited Edition I'
 };
 
 export const limitedEditionIIAttribs = {
-	id: 2,
-	name: 'Limited Edition II',
+	badgeUrl: 'http://test.com',
 	description: 'create 10 editions',
-	badgeUrl: 'http://test.com'
+	id: 2,
+	name: 'Limited Edition II'
 };
 
 export const limitedEditionIIIAttribs = {
-	id: 3,
-	name: 'Limited Edition III',
+	badgeUrl: 'http://test.com',
 	description: 'create 100 edtions',
-	badgeUrl: 'http://test.com'
+	id: 3,
+	name: 'Limited Edition III'
 };
 
 export const limitedEditionAttribs = {
+	description: 'Complete limited edition track',
 	id: 1,
-	title: 'Limited Edition',
-	description: 'Complete limited edition track'
+	title: 'Limited Edition'
 };
 
 
 export const publisherIAttribs = {
-	id: 1,
-	name: 'Publisher I',
+	badgeUrl: 'http://test.com',
 	description: 'create one publisher',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Publisher I'
 };
 
 export const publisherIIAttribs = {
-	id: 2,
-	name: 'Publisher II',
+	badgeUrl: 'http://test.com',
 	description: 'create 10 publishers',
-	badgeUrl: 'http://test.com'
+	id: 2,
+	name: 'Publisher II'
 };
 
 export const publisherIIIAttribs = {
-	id: 3,
-	name: 'Publisher III',
+	badgeUrl: 'http://test.com',
 	description: 'create 100 publishers',
-	badgeUrl: 'http://test.com'
+	id: 3,
+	name: 'Publisher III'
 };
 
 export const publisherAttribs = {
+	description: 'Complete publisher track',
 	id: 1,
-	title: 'Publisher',
-	description: 'Complete publisher track'
+	title: 'Publisher'
 };
 
 export const sprinterAttribs = {
-	id: 1,
-	name: 'Sprinter',
+	badgeUrl: 'http://test.com',
 	description: 'create 100 creators',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Sprinter'
 };
 
 export const workerBeeIAttribs = {
-	id: 1,
-	name: 'Worker Bee I',
+	badgeUrl: 'http://test.com',
 	description: 'create 1 work',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Worker Bee I'
 };
 
 export const workerBeeIIAttribs = {
-	id: 2,
-	name: 'Worker Bee II',
+	badgeUrl: 'http://test.com',
 	description: 'create 10 works',
-	badgeUrl: 'http://test.com'
+	id: 2,
+	name: 'Worker Bee II'
 };
 
 export const workerBeeIIIAttribs = {
-	id: 3,
-	name: 'Worker Bee III',
+	badgeUrl: 'http://test.com',
 	description: 'create 100 works',
-	badgeUrl: 'http://test.com'
+	id: 3,
+	name: 'Worker Bee III'
 };
 
 export const workerBeeAttribs = {
-	id: 1,
 	description: 'finish worker bee track',
-	title: 'Worker Bee',
+	id: 1,
+	title: 'Worker Bee'
 };
 
 export const explorerIAttribs = {
-	id: 1,
-	name: 'Explorer I',
+	badgeUrl: 'http://test.com',
 	description: 'view 10 entities',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Explorer I'
 };
 
 export const explorerIIAttribs = {
-	id: 2,
-	name: 'Explorer II',
+	badgeUrl: 'http://test.com',
 	description: 'view 100 entities',
-	badgeUrl: 'http://test.com'
+	id: 2,
+	name: 'Explorer II'
 };
 
 export const explorerIIIAttribs = {
-	id: 3,
-	name: 'Explorer III',
+	badgeUrl: 'http://test.com',
 	description: 'view 1000 entities',
-	badgeUrl: 'http://test.com'
+	id: 3,
+	name: 'Explorer III'
 };
 
 export const explorerTitleAttribs = {
-	id: 1,
 	description: 'finish explorer track',
-	title: 'Explorer',
+	id: 1,
+	title: 'Explorer'
 };
 
 export const publisherCreatorIAttribs = {
-	id: 1,
-	name: 'Publisher Creator I',
+	badgeUrl: 'http://test.com',
 	description: 'create 1 publisher',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Publisher Creator I'
 };
 
 export const publisherCreatorIIAttribs = {
-	id: 2,
-	name: 'Publisher Creator II',
+	badgeUrl: 'http://test.com',
 	description: 'create 10 publishers',
-	badgeUrl: 'http://test.com'
+	id: 2,
+	name: 'Publisher Creator II'
 };
 
 export const publisherCreatorIIIAttribs = {
-	id: 3,
-	name: 'Publisher Creator III',
+	badgeUrl: 'http://test.com',
 	description: 'create 100 publishers',
-	badgeUrl: 'http://test.com'
+	id: 3,
+	name: 'Publisher Creator III'
 };
 
 export const publisherCreatorAttribs = {
@@ -240,36 +241,36 @@ export const sprinterTitleAttribs = {
 };
 
 export const funRunnerAttribs = {
-	id: 1,
-	name: 'Fun Runner',
+	badgeUrl: 'http://test.com',
 	description: 'create a revision a day for a week',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Fun Runner'
 };
 
 export const funRunnerTitleAttribs = {
+	description: 'Complete Fun Runner track',
 	id: 1,
-	title: 'Fun Runner',
-	description: 'Complete Fun Runner track'
+	title: 'Fun Runner'
 };
 
 export const marathonerAttribs = {
-	id: 1,
-	name: 'Marathoner',
+	badgeUrl: 'http://test.com',
 	description: 'create a revision a day for 30 days',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Marathoner'
 };
 
 export const marathonerTitleAttribs = {
+	description: 'Complete Marathoner track',
 	id: 1,
-	title: 'Marathoner',
-	description: 'Complete Marathoner track'
+	title: 'Marathoner'
 };
 
 export const timeTravellerAttribs = {
-	id: 1,
-	name: 'Time Traveller',
+	badgeUrl: 'http://test.com',
 	description: 'test description',
-	badgeUrl: 'http://test.com'
+	id: 1,
+	name: 'Time Traveller'
 };
 
 export const timeTravellerTitleAttribs = {
@@ -294,8 +295,8 @@ export const hotOffThePressTitleAttribs = {
 export function createEditor() {
 	return new EditorType(editorTypeAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new Editor(editorAttribs)
+		.then(
+			() => new Editor(editorAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -303,16 +304,16 @@ export function createEditor() {
 export function createRevisionist() {
 	return new AchievementType(revisionistIAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new AchievementType(revisionistIIAttribs)
+		.then(
+			() => new AchievementType(revisionistIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new AchievementType(revisionistIIIAttribs)
+		.then(
+			() => new AchievementType(revisionistIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new TitleType(revisionistAttribs)
+		.then(
+			() => new TitleType(revisionistAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -320,16 +321,16 @@ export function createRevisionist() {
 export function createCreatorCreator() {
 	return new AchievementType(creatorCreatorIAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new AchievementType(creatorCreatorIIAttribs)
+		.then(
+			() => new AchievementType(creatorCreatorIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new AchievementType(creatorCreatorIIIAttribs)
+		.then(
+			() => new AchievementType(creatorCreatorIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new TitleType(creatorCreatorAttribs)
+		.then(
+			() => new TitleType(creatorCreatorAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -337,16 +338,16 @@ export function createCreatorCreator() {
 export function createLimitedEdition() {
 	return new AchievementType(limitedEditionIAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new AchievementType(limitedEditionIIAttribs)
+		.then(
+			() => new AchievementType(limitedEditionIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new AchievementType(limitedEditionIIIAttribs)
+		.then(
+			() => new AchievementType(limitedEditionIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new TitleType(limitedEditionAttribs)
+		.then(
+			() => new TitleType(limitedEditionAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -354,16 +355,16 @@ export function createLimitedEdition() {
 export function createPublisher() {
 	return new AchievementType(publisherIAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new AchievementType(publisherIIAttribs)
+		.then(
+			() => new AchievementType(publisherIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new AchievementType(publisherIIIAttribs)
+		.then(
+			() => new AchievementType(publisherIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new TitleType(publisherAttribs)
+		.then(
+			() => new TitleType(publisherAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -371,16 +372,16 @@ export function createPublisher() {
 export function createWorkerBee() {
 	return new AchievementType(workerBeeIAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new AchievementType(workerBeeIIAttribs)
+		.then(
+			() => new AchievementType(workerBeeIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new AchievementType(workerBeeIIIAttribs)
+		.then(
+			() => new AchievementType(workerBeeIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new TitleType(workerBeeAttribs)
+		.then(
+			() => new TitleType(workerBeeAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -388,16 +389,16 @@ export function createWorkerBee() {
 export function createPublisherCreator() {
 	return new AchievementType(publisherCreatorIAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new AchievementType(publisherCreatorIIAttribs)
+		.then(
+			() => new AchievementType(publisherCreatorIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new AchievementType(publisherCreatorIIIAttribs)
+		.then(
+			() => new AchievementType(publisherCreatorIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new TitleType(publisherCreatorAttribs)
+		.then(
+			() => new TitleType(publisherCreatorAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -405,16 +406,16 @@ export function createPublisherCreator() {
 export function createExplorer() {
 	return new AchievementType(explorerIAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new AchievementType(explorerIIAttribs)
+		.then(
+			() => new AchievementType(explorerIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new AchievementType(explorerIIIAttribs)
+		.then(
+			() => new AchievementType(explorerIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
-		.then(() =>
-			new TitleType(explorerTitleAttribs)
+		.then(
+			() => new TitleType(explorerTitleAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -422,8 +423,8 @@ export function createExplorer() {
 export function createSprinter() {
 	return new AchievementType(sprinterAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new TitleType(sprinterTitleAttribs)
+		.then(
+			() => new TitleType(sprinterTitleAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -442,8 +443,8 @@ export function sprinterHelper(numRevisions) {
 export function createFunRunner() {
 	return new AchievementType(funRunnerAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new TitleType(funRunnerTitleAttribs)
+		.then(
+			() => new TitleType(funRunnerTitleAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -451,8 +452,8 @@ export function createFunRunner() {
 export function createMarathoner() {
 	return new AchievementType(marathonerAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new TitleType(marathonerTitleAttribs)
+		.then(
+			() => new TitleType(marathonerTitleAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -460,8 +461,8 @@ export function createMarathoner() {
 export function createTimeTraveller() {
 	return new AchievementType(timeTravellerAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new TitleType(timeTravellerTitleAttribs)
+		.then(
+			() => new TitleType(timeTravellerTitleAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
@@ -469,14 +470,14 @@ export function createTimeTraveller() {
 export function createHotOffThePress() {
 	return new AchievementType(hotOffThePressAttribs)
 		.save(null, {method: 'insert'})
-		.then(() =>
-			new TitleType(hotOffThePressTitleAttribs)
+		.then(
+			() => new TitleType(hotOffThePressTitleAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
 
 export function typeRevisionHelper(revisionType, rowcount) {
-	return (type, editor) => {
+	return (type) => {
 		let rowCountPromise;
 		if (type === revisionType) {
 			rowCountPromise = Promise.resolve(rowcount);
@@ -489,7 +490,7 @@ export function typeRevisionHelper(revisionType, rowcount) {
 }
 
 export function typeCreationHelper(revisionTypeString, rowCount) {
-	return (type, string, editor) => {
+	return (type, string) => {
 		let rowCountPromise;
 		if (string === revisionTypeString) {
 			rowCountPromise = Promise.resolve(rowCount);
