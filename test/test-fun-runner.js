@@ -18,67 +18,70 @@
 
 import * as common from './common';
 import * as testData from '../data/test-data.js';
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-
-chai.use(chaiAsPromised);
-const {expect} = chai;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 const funRunnerThreshold = 7;
 const funRunnerDays = 6;
 
-export default function tests() {
-	beforeEach(
-		() => testData.createEditor()
-			.then(() => testData.createFunRunner())
-	);
+function rewireEditsInDaysTwo(threshold) {
+	return common.rewireAchievement(Achievement, {
+		getEditsInDays: (editorId, days) => {
+			let editPromise;
+			if (days === funRunnerDays) {
+				editPromise = Promise.resolve(threshold);
+			}
+			else {
+				editPromise = Promise.resolve(0);
+			}
+			return editPromise;
+		}
+	});
+}
 
+function rewireEditsInDaysThree(threshold) {
+	return common.rewireAchievement(Achievement, {
+		getEditsInDays: (_orm, editorId, days) => {
+			let editPromise;
+			if (days === funRunnerDays) {
+				editPromise = Promise.resolve(threshold);
+			}
+			else {
+				editPromise = Promise.resolve(0);
+			}
+			return editPromise;
+		}
+	});
+}
+
+function generateLabeled() {
+	return common.generate(Achievement, orm, false, 'funRunner', 'Fun Runner');
+}
+
+function expectIds(rev) {
+	return common.expectIds('funRunner', rev);
+}
+
+export default function tests() {
+	beforeEach(() => testData.createEditor()
+		.then(() => testData.createFunRunner())
+	);
 	afterEach(testData.truncate);
 
 	const test1 = common.testAchievement(
-		common.rewireAchievement(Achievement, {
-			getEditsInDays: (_orm, editorId, days) => {
-				let editPromise;
-				if (days === funRunnerDays) {
-					editPromise = Promise.resolve(funRunnerThreshold);
-				}
-				else {
-					editPromise = Promise.resolve(0);
-				}
-				return editPromise;
-			}
-		}),
-		common.generateProcessEditNamed(
-			Achievement, orm, 'funRunner', 'Fun Runner'
-		),
-		common.expectIds(
-			'funRunner', ''
-		)
+		rewireEditsInDaysThree(funRunnerThreshold),
+		generateLabeled(),
+		expectIds('')
 	);
 	it('should be given to someone with a revision a day for a week', test1);
 
 	const test2 = common.testAchievement(
-		common.rewireAchievement(Achievement, {
-			getEditsInDays: (editorId, days) => {
-				let editPromise;
-				if (days === funRunnerDays) {
-					editPromise = Promise.resolve(funRunnerThreshold - 1);
-				}
-				else {
-					editPromise = Promise.resolve(0);
-				}
-				return editPromise;
-			}
-		}),
-		common.generateProcessEditNamed(
-			Achievement, orm, 'funRunner', 'Fun Runner'
-		),
-		(promise) => expect(promise).to.eventually.equal(false)
+		rewireEditsInDaysTwo(funRunnerThreshold - 1),
+		generateLabeled(),
+		common.expectFalse()
 	);
 	it('shouldn\'t be given to someone without a revision a day for a week',
 		test2);

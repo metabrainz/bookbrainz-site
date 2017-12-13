@@ -25,12 +25,27 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
+export function expectFalse() {
+	return (promise) => expect(promise).to.eventually.equal(false);
+}
+
 export function expectIds(prop, rev) {
 	return (promise) => Promise.all([
 		expect(promise).to.eventually.have
 			.property('editorId', testData.editorAttribs.id),
 		expect(promise).to.eventually.have
 			.property('achievementId', testData[`${prop}${rev}Attribs`].id)
+	]);
+}
+
+export function expectRevNamedIds(name, prop, rev) {
+	return (promise) => Promise.all([
+		expect(promise).to.eventually.have.nested
+			.property(`${name} ${rev}.editorId`,
+				testData.editorAttribs.id),
+		expect(promise).to.eventually.have.nested
+			.property(`${name} ${rev}.achievementId`,
+				testData[`${prop}${rev}Attribs`].id)
 	]);
 }
 
@@ -51,17 +66,22 @@ export function expectIdsNested(name, prop, rev) {
 	]);
 }
 
-export function generateProcessEdit(Achievement, orm, func, name, rev) {
-	return () => testData.createEditor()
-		.then((editor) => Achievement.processEdit(orm, editor.id))
-		.then((edit) => edit[func][`${name} ${rev}`]);
-}
+export function generate(Achievement, orm, full) {
+	return () => {
+		const editor = full ? testData.createEditor() :
+			new orm.Editor({name: testData.editorAttribs.name}).fetch();
+		return editor
+			.then((edit) => Achievement.processEdit(orm, edit.id))
+			.then((edit) => {
+				let value = edit;
 
-export function generateProcessEditNamed(Achievement, orm, func, name) {
-	return () => new orm.Editor({name: testData.editorAttribs.name})
-		.fetch()
-		.then((editor) => Achievement.processEdit(orm, editor.id))
-		.then((edit) => edit[func][name]);
+				for (let index = 3; index < arguments.length; index++) {
+					value = value[arguments[index]];
+				}
+
+				return value;
+			});
+	};
 }
 
 export function rewireAchievement(Achievement, rewiring) {

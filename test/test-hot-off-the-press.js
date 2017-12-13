@@ -18,51 +18,51 @@
 
 import * as common from './common';
 import * as testData from '../data/test-data.js';
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-
-chai.use(chaiAsPromised);
-const {expect} = chai;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 const hotOffThePressThreshold = -7;
 
-export default function tests() {
-	beforeEach(
-		() => testData.createEditor()
-			.then(() => testData.createHotOffThePress())
-	);
+function rewireEditionDateDifference(threshold) {
+	return common.rewireAchievement(Achievement, {
+		getEditionDateDifference: () =>
+			Promise.resolve(threshold)
+	});
+}
 
+function generateLabeled() {
+	return common.generate(
+		Achievement, orm, false, 'hotOffThePress', 'Hot Off the Press'
+	);
+}
+
+function expectIds(rev) {
+	return common.expectIds('hotOffThePress', rev);
+}
+
+export default function tests() {
+	beforeEach(() => testData.createEditor()
+		.then(() => testData.createHotOffThePress())
+	);
 	afterEach(testData.truncate);
 
 	const test1 = common.testAchievement(
-		common.rewireAchievement(Achievement, {
-			getEditionDateDifference: () =>
-				Promise.resolve(hotOffThePressThreshold)
-		}),
-		common.generateProcessEditNamed(
-			Achievement, orm, 'hotOffThePress', 'Hot Off the Press'
-		),
-		common.expectIds(
-			'hotOffThePress', ''
-		)
+		rewireEditionDateDifference(hotOffThePressThreshold),
+		generateLabeled(),
+		expectIds('')
 	);
 	it('should be given to someone with edition revision released this week',
 		test1);
 
 	const test2 = common.testAchievement(
-		common.rewireAchievement(Achievement, {
-			getEditionDateDifference: () =>
-				Promise.resolve(hotOffThePressThreshold - 1)
-		}),
-		common.generateProcessEditNamed(
-			Achievement, orm, 'timeTraveller', 'Time Traveller'
+		rewireEditionDateDifference(hotOffThePressThreshold - 1),
+		common.generate(
+			Achievement, orm, false, 'timeTraveller', 'Time Traveller'
 		),
-		(promise) => expect(promise).to.eventually.equal(false)
+		common.expectFalse()
 	);
 	it('shouldn\'t be given when edition revision released a week ago', test2);
 }

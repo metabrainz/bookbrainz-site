@@ -18,56 +18,52 @@
 
 import * as common from './common';
 import * as testData from '../data/test-data.js';
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 
-chai.use(chaiAsPromised);
-const {expect} = chai;
 const {Editor} = orm;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
+const processTimeTraveller = Achievement.__get__('processTimeTraveller');
 
 const timeTravellerThreshold = 0;
 
-const processTimeTraveller = Achievement.__get__('processTimeTraveller');
+function rewireEditionDateDifference(threshold) {
+	return common.rewireAchievement(Achievement, {
+		getEditionDateDifference: () =>
+			Promise.resolve(threshold)
+	});
+}
+
+function expectIds(rev) {
+	return common.expectIds('timeTraveller', rev);
+}
 
 export default function tests() {
-	beforeEach(
-		() => testData.createEditor()
-			.then(() => testData.createTimeTraveller())
+	beforeEach(() => testData.createEditor()
+		.then(() => testData.createTimeTraveller())
 	);
-
 	afterEach(testData.truncate);
 
 	const test1 = common.testAchievement(
-		common.rewireAchievement(Achievement, {
-			getEditionDateDifference: () =>
-				Promise.resolve(timeTravellerThreshold)
-		}),
+		rewireEditionDateDifference(timeTravellerThreshold),
 		() => new Editor({name: testData.editorAttribs.name})
 			.fetch()
 			.then((editor) => processTimeTraveller(orm, editor.id))
 			.then((edit) => edit['Time Traveller']),
-		common.expectIds(
-			'timeTraveller', ''
-		)
+		expectIds('')
 	);
 	it('should be given to someone with edition revision released after today',
 		test1);
 
 	const test2 = common.testAchievement(
-		common.rewireAchievement(Achievement, {
-			getEditionDateDifference: () =>
-				Promise.resolve(timeTravellerThreshold - 1)
-		}),
+		rewireEditionDateDifference(timeTravellerThreshold - 1),
 		() => new Editor({name: testData.editorAttribs.name})
 			.fetch()
 			.then((editor) => processTimeTraveller(orm, editor.id))
 			.then((edit) => edit['Time Traveller']),
-		(promise) => expect(promise).to.eventually.equal(false)
+		common.expectFalse()
 	);
 	it('shouldn\'t be given to someone with edition revision already released',
 		test2);
