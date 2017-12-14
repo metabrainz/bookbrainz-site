@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
-import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
@@ -29,9 +29,9 @@ const {expect} = chai;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
-const publisherCreatorIThreshold = 1;
-const publisherCreatorIIThreshold = 10;
-const publisherCreatorIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
 
 
 export default function tests() {
@@ -39,95 +39,59 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a publisher creation',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', publisherCreatorIThreshold
-					)
-			});
-
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator['Publisher Creator I']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.publisherCreatorIAttribs.id
-			);
-		}
+	const test1 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', thresholdI
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
+		),
+		common.expectIds(
+			'publisherCreator', 'I'
+		)
 	);
+	it('I should be given to someone with a publisher creation', test1);
 
-	it('II should be given to someone with 10 publisher creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', publisherCreatorIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator['Publisher Creator II']
-				);
+	const test2 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', thresholdII
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'publisherCreator', 'Publisher Creator', 'II'
+		),
+		common.expectIds(
+			'publisherCreator', 'II'
+		)
+	);
+	it('II should be given to someone with 10 publisher creations', test2);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.publisherCreatorIIAttribs.id
-			);
-		});
+	const test3 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', thresholdIII
+		),
+		() => testData.createEditor()
+			.then((editor) =>
+				Achievement.processEdit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.publisherCreator
+			),
+		common.expectIdsNested(
+			'Publisher Creator',
+			'publisherCreator',
+			'III'
+		)
+	);
+	it('III should be given to someone with 100 publisher creations', test3);
 
-	it('III should be given to someone with 100 publisher creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', publisherCreatorIIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator
-				);
-
-			return expectAchievementIdsNested(
-				achievementPromise,
-				'Publisher Creator',
-				testData.editorAttribs.id,
-				testData.publisherCreatorIIIAttribs.id,
-				testData.publisherCreatorAttribs.id,
-			);
-		});
-
-	it('should not be given to someone with 0 publisher creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', 0
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator['Publisher Creator I']
-				);
-
-			return expect(achievementPromise).to.eventually.equal(false);
-		});
+	const test4 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', 0
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('should not be given to someone with 0 publisher creations', test4);
 }

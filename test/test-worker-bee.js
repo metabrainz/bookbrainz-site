@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
-import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
@@ -29,9 +29,9 @@ const {expect} = chai;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
-const workerBeeIThreshold = 1;
-const workerBeeIIThreshold = 10;
-const workerBeeIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
 
 
 export default function tests() {
@@ -39,95 +39,59 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a work creation',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'work_revision', workerBeeIThreshold
-					)
-			});
-
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.workerBee['Worker Bee I']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.workerBeeIAttribs.id
-			);
-		}
+	const test1 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'work', thresholdI
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'workerBee', 'Worker Bee', 'I'
+		),
+		common.expectIds(
+			'workerBee', 'I'
+		)
 	);
+	it('I should be given to someone with a work creation', test1);
 
-	it('II should be given to someone with 10 work creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'work_revision', workerBeeIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.workerBee['Worker Bee II']
-				);
+	const test2 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'work', thresholdII
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'workerBee', 'Worker Bee', 'II'
+		),
+		common.expectIds(
+			'workerBee', 'II'
+		)
+	);
+	it('II should be given to someone with 10 work creations', test2);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.workerBeeIIAttribs.id
-			);
-		});
+	const test3 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'work', thresholdIII
+		),
+		() => testData.createEditor()
+			.then((editor) =>
+				Achievement.processEdit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.workerBee
+			),
+		common.expectIdsNested(
+			'Worker Bee',
+			'workerBee',
+			'III'
+		)
+	);
+	it('III should be given to someone with 100 work creations', test3);
 
-	it('III should be given to someone with 100 work creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'work_revision', workerBeeIIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.workerBee
-				);
-
-			return expectAchievementIdsNested(
-				achievementPromise,
-				'Worker Bee',
-				testData.editorAttribs.id,
-				testData.workerBeeIIIAttribs.id,
-				testData.workerBeeAttribs.id,
-			);
-		});
-
-	it('should not be given to someone with 0 work creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'work_revision', 0
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.workerBee['Worker Bee I']
-				);
-
-			return expect(achievementPromise).to.eventually.equal(false);
-		});
+	const test4 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'work_revision', 0
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'workerBee', 'Worker Bee', 'I'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('should not be given to someone with 0 work creations', test4);
 }

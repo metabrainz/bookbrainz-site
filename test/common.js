@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint import/namespace: ['error', { allowComputed: true }] */
+import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -23,25 +25,62 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-export function expectAchievementIds(promise, editorId, achievementId) {
-	return Promise.all([
+export function expectIds(prop, rev) {
+	return (promise) => Promise.all([
 		expect(promise).to.eventually.have
-			.property('editorId', editorId),
+			.property('editorId', testData.editorAttribs.id),
 		expect(promise).to.eventually.have
-			.property('achievementId', achievementId)
+			.property('achievementId', testData[`${prop}${rev}Attribs`].id)
 	]);
 }
 
-export function expectAchievementIdsNested(promise, name,
-	editorId, achievementId, titleId) {
-	return Promise.all([
+export function expectIdsNested(name, prop, rev) {
+	return (promise) => Promise.all([
 		expect(promise).to.eventually.have.nested
-			.property(`${name} III.editorId`, editorId),
+			.property(`${name} ${rev}.editorId`,
+				testData.editorAttribs.id),
 		expect(promise).to.eventually.have.nested
-			.property(`${name} III.achievementId`, achievementId),
+			.property(`${name} ${rev}.achievementId`,
+				testData[`${prop}${rev}Attribs`].id),
 		expect(promise).to.eventually.have.nested
-			.property(`${name}.editorId`, editorId),
+			.property(`${name}.editorId`,
+				testData.editorAttribs.id),
 		expect(promise).to.eventually.have.nested
-			.property(`${name}.titleId`, titleId)
+			.property(`${name}.titleId`,
+				testData[`${prop}Attribs`].id)
 	]);
+}
+
+export function generateProcessEdit(Achievement, orm, func, name, rev) {
+	return () => testData.createEditor()
+		.then((editor) => Achievement.processEdit(orm, editor.id))
+		.then((edit) => edit[func][`${name} ${rev}`]);
+}
+
+export function generateProcessEditNamed(Achievement, orm, func, name) {
+	return () => new orm.Editor({name: testData.editorAttribs.name})
+		.fetch()
+		.then((editor) => Achievement.processEdit(orm, editor.id))
+		.then((edit) => edit[func][name]);
+}
+
+export function rewireAchievement(Achievement, rewiring) {
+	return () => Achievement.__set__(rewiring);
+}
+
+export function rewireTypeCreation(Achievement, name, threshold) {
+	return rewireAchievement(Achievement, {
+		getTypeCreation:
+			testData.typeCreationHelper(
+				`${name}_revision`, threshold
+			)
+	});
+}
+
+export function testAchievement(rewiring, generator, expectations) {
+	return () => {
+		rewiring();
+		const promise = generator();
+		return expectations(promise);
+	};
 }

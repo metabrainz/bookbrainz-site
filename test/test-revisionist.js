@@ -17,16 +17,19 @@
  */
 
 import * as achievement from '../lib/server/helpers/achievement';
+import * as common from './common';
 import * as testData from '../data/test-data.js';
-import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
+import rewire from 'rewire';
 
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
 const {Editor} = orm;
+
+const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 export default function tests() {
 	beforeEach(() => testData.createEditor()
@@ -37,8 +40,9 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a revision', () => {
-		const achievementPromise = new Editor({
+	const test1 = common.testAchievement(
+		common.rewireAchievement(Achievement, {}),
+		() => new Editor({
 			name: testData.editorAttribs.name
 		})
 			.fetch()
@@ -51,23 +55,21 @@ export default function tests() {
 			)
 			.then((edit) =>
 				edit.revisionist['Revisionist I']
-			);
+			),
+		common.expectIds(
+			'revisionist', 'I'
+		)
+	);
+	it('I should be given to someone with a revision', test1);
 
-		return expectAchievementIds(
-			achievementPromise,
-			testData.editorAttribs.id,
-			testData.revisionistIAttribs.id
-		);
-	});
-
-	it('II should be given to someone with 50 revisions', () => {
-		const revisionsApplied = 50;
-		const achievementPromise = new Editor({
+	const test2 = common.testAchievement(
+		common.rewireAchievement(Achievement, {}),
+		() => new Editor({
 			name: testData.editorAttribs.name
 		})
 			.fetch()
 			.then((editor) =>
-				editor.set({revisionsApplied})
+				editor.set({revisionsApplied: 50})
 					.save()
 			)
 			.then((editor) =>
@@ -75,46 +77,44 @@ export default function tests() {
 			)
 			.then((edit) =>
 				edit.revisionist
-			);
-
-		return Promise.all([
-			expect(achievementPromise).to.eventually.have.nested
+			),
+		(promise) => Promise.all([
+			expect(promise).to.eventually.have.nested
 				.property('Revisionist II.editorId', testData.editorAttribs.id),
-			expect(achievementPromise).to.eventually.have.nested
+			expect(promise).to.eventually.have.nested
 				.property('Revisionist II.achievementId',
 					testData.revisionistIIAttribs.id)
-		]);
-	});
+		])
+	);
+	it('II should be given to someone with 50 revisions', test2);
 
-	it('III should be given to someone with 250 revisions',
-		() => {
-			const revisionsApplied = 250;
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					editor.set({revisionsApplied})
-						.save()
-				)
-				.then((editor) =>
-					achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.revisionist
-				);
+	const test3 = common.testAchievement(
+		common.rewireAchievement(Achievement, {}),
+		() => new Editor({
+			name: testData.editorAttribs.name
+		})
+			.fetch()
+			.then((editor) =>
+				editor.set({revisionsApplied: 250})
+					.save()
+			)
+			.then((editor) =>
+				achievement.processEdit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.revisionist
+			),
+		common.expectIdsNested(
+			'Revisionist',
+			'revisionist',
+			'III'
+		)
+	);
+	it('III should be given to someone with 250 revisions', test3);
 
-			return expectAchievementIdsNested(
-				achievementPromise,
-				'Revisionist',
-				testData.editorAttribs.id,
-				testData.revisionistIIIAttribs.id,
-				testData.revisionistAttribs.id,
-			);
-		});
-
-	it('should not be given to someone without a revision', () => {
-		const achievementPromise = new Editor({
+	const test4 = common.testAchievement(
+		common.rewireAchievement(Achievement, {}),
+		() => new Editor({
 			name: testData.editorAttribs.name
 		})
 			.fetch()
@@ -123,8 +123,8 @@ export default function tests() {
 			)
 			.then((edit) =>
 				edit.revisionist['Revisionist I']
-			);
-
-		return expect(achievementPromise).to.eventually.equal(false);
-	});
+			),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('should not be given to someone without a revision', test4);
 }

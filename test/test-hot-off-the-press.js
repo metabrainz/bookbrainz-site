@@ -16,17 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
-const {Editor} = orm;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
@@ -41,48 +40,30 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('should be given to someone with edition revision released this week',
-		() => {
-			Achievement.__set__({
-				getEditionDateDifference: () =>
-					Promise.resolve(hotOffThePressThreshold)
-			});
-
-			const achievementPromise =
-				new Editor({name: testData.editorAttribs.name})
-					.fetch()
-					.then((editor) =>
-						Achievement.processEdit(orm, editor.id)
-					)
-					.then((edit) =>
-						edit.hotOffThePress['Hot Off the Press']
-					);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.hotOffThePressAttribs.id
-			);
-		}
+	const test1 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditionDateDifference: () =>
+				Promise.resolve(hotOffThePressThreshold)
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'hotOffThePress', 'Hot Off the Press'
+		),
+		common.expectIds(
+			'hotOffThePress', ''
+		)
 	);
+	it('should be given to someone with edition revision released this week',
+		test1);
 
-	it('shouldn\'t be given when edition revision released a week ago',
-		() => {
-			Achievement.__set__({
-				getEditionDateDifference: () =>
-					Promise.resolve(hotOffThePressThreshold - 1)
-			});
-
-			const achievementPromise =
-				new Editor({name: testData.editorAttribs.name})
-					.fetch()
-					.then((editor) =>
-						Achievement.processEdit(orm, editor.id)
-					)
-					.then((edit) =>
-						edit.timeTraveller['Time Traveller']
-					);
-
-			return expect(achievementPromise).to.eventually.equal(false);
-		});
+	const test2 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditionDateDifference: () =>
+				Promise.resolve(hotOffThePressThreshold - 1)
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'timeTraveller', 'Time Traveller'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('shouldn\'t be given when edition revision released a week ago', test2);
 }

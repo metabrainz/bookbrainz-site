@@ -16,17 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
-const {Editor} = orm;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
@@ -42,63 +41,46 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('should be given to someone with a revision a day for 30 days',
-		() => {
-			Achievement.__set__({
-				getEditsInDays: (_orm, editorId, days) => {
-					let editPromise;
-					if (days === marathonerDays) {
-						editPromise = Promise.resolve(marathonerThreshold);
-					}
-					else {
-						editPromise = Promise.resolve(0);
-					}
-					return editPromise;
+	const test1 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditsInDays: (_orm, editorId, days) => {
+				let editPromise;
+				if (days === marathonerDays) {
+					editPromise = Promise.resolve(marathonerThreshold);
 				}
-			});
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.marathoner.Marathoner
-				);
+				else {
+					editPromise = Promise.resolve(0);
+				}
+				return editPromise;
+			}
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'marathoner', 'Marathoner'
+		),
+		common.expectIds(
+			'marathoner', ''
+		)
+	);
+	it('should be given to someone with a revision a day for 30 days', test1);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.marathonerAttribs.id
-			);
-		});
-
+	const test2 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditsInDays: (editorId, days) => {
+				let editPromise;
+				if (days === marathonerDays) {
+					editPromise = Promise.resolve(marathonerThreshold - 1);
+				}
+				else {
+					editPromise = Promise.resolve(0);
+				}
+				return editPromise;
+			}
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'marathoner', 'Marathoner'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
 	it('shouldn\'t be given to someone without a revision a day for 30 days',
-		() => {
-			Achievement.__set__({
-				getEditsInDays: (editorId, days) => {
-					let editPromise;
-					if (days === marathonerDays) {
-						editPromise = Promise.resolve(marathonerThreshold - 1);
-					}
-					else {
-						editPromise = Promise.resolve(0);
-					}
-					return editPromise;
-				}
-			});
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.marathoner.Marathoner
-				);
-
-			return expect(achievementPromise).to.eventually.equal(false);
-		});
+		test2);
 }

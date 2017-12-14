@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
-import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
@@ -29,104 +29,68 @@ const {expect} = chai;
 
 const Achievement =	rewire('../lib/server/helpers/achievement.js');
 
-const limitedEditionIThreshold = 1;
-const limitedEditionIIThreshold = 10;
-const limitedEditionIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
 
 export default function tests() {
 	beforeEach(() => testData.createLimitedEdition());
 
 	afterEach(testData.truncate);
 
-	it('I should given to someone with an edition creation',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'edition_revision', limitedEditionIThreshold
-					)
-			});
-
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition I']
-				);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.limitedEditionIAttribs.id
-			);
-		}
+	const test1 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', thresholdI
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
+		),
+		common.expectIds(
+			'limitedEdition', 'I'
+		)
 	);
+	it('I should given to someone with an edition creation', test1);
 
-	it('II should be given to someone with 10 edition creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'edition_revision', limitedEditionIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition II']
-				);
+	const test2 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', thresholdII
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'limitedEdition', 'Limited Edition', 'II'
+		),
+		common.expectIds(
+			'limitedEdition', 'II'
+		)
+	);
+	it('II should be given to someone with 10 edition creations', test2);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.limitedEditionIIAttribs.id
-			);
-		});
+	const test3 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', thresholdIII
+		),
+		() => testData.createEditor()
+			.then((editor) =>
+				Achievement.processEdit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.limitedEdition
+			),
+		common.expectIdsNested(
+			'Limited Edition',
+			'limitedEdition',
+			'III'
+		)
+	);
+	it('III should be given to someone with 100 edition creations', test3);
 
-	it('III should be given to someone with 100 edition creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'edition_revision', limitedEditionIIIThreshold
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition
-				);
-
-			return expectAchievementIdsNested(
-				achievementPromise,
-				'Limited Edition',
-				testData.editorAttribs.id,
-				testData.limitedEditionIIIAttribs.id,
-				testData.limitedEditionAttribs.id,
-			);
-		});
-
-	it('should not given to someone with 0 edition creations',
-		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'edition_revision', 0
-					)
-			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition I']
-				);
-
-			return expect(achievementPromise).to.eventually.equal(false);
-		});
+	const test4 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', 0
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('should not given to someone with 0 edition creations', test4);
 }

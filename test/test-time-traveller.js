@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
@@ -43,48 +43,41 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('should be given to someone with edition revision released after today',
-		() => {
-			Achievement.__set__({
-				getEditionDateDifference: () =>
-					Promise.resolve(timeTravellerThreshold)
-			});
-
-			const achievementPromise =
-				new Editor({name: testData.editorAttribs.name})
-					.fetch()
-					.then((editor) =>
-						processTimeTraveller(orm, editor.id)
-					)
-					.then((edit) =>
-						edit['Time Traveller']
-					);
-
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.timeTravellerAttribs.id
-			);
-		}
+	const test1 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditionDateDifference: () =>
+				Promise.resolve(timeTravellerThreshold)
+		}),
+		() => new Editor({name: testData.editorAttribs.name})
+			.fetch()
+			.then((editor) =>
+				processTimeTraveller(orm, editor.id)
+			)
+			.then((edit) =>
+				edit['Time Traveller']
+			),
+		common.expectIds(
+			'timeTraveller', ''
+		)
 	);
+	it('should be given to someone with edition revision released after today',
+		test1);
 
+	const test2 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditionDateDifference: () =>
+				Promise.resolve(timeTravellerThreshold - 1)
+		}),
+		() => new Editor({name: testData.editorAttribs.name})
+			.fetch()
+			.then((editor) =>
+				processTimeTraveller(orm, editor.id)
+			)
+			.then((edit) =>
+				edit['Time Traveller']
+			),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
 	it('shouldn\'t be given to someone with edition revision already released',
-		() => {
-			Achievement.__set__({
-				getEditionDateDifference: () =>
-					Promise.resolve(timeTravellerThreshold - 1)
-			});
-
-			const achievementPromise =
-				new Editor({name: testData.editorAttribs.name})
-					.fetch()
-					.then((editor) =>
-						processTimeTraveller(orm, editor.id)
-					)
-					.then((edit) =>
-						edit['Time Traveller']
-					);
-
-			expect(achievementPromise).to.eventually.equal(false);
-		});
+		test2);
 }
