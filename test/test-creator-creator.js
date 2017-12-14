@@ -40,12 +40,9 @@ export default function tests() {
 
 	it('I should be given to someone with a creator creation',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'creator_revision', thresholdI
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'creator', thresholdI
+			)();
 
 			const promise = common.generateProcessEdit(
 				Achievement, orm, 'creatorCreator', 'Creator Creator', 'I'
@@ -59,12 +56,9 @@ export default function tests() {
 
 	it('II should be given to someone with 10 creator creations',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'creator_revision', thresholdII
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'creator', thresholdII
+			)();
 
 			const promise = common.generateProcessEdit(
 				Achievement, orm, 'creatorCreator', 'Creator Creator', 'II'
@@ -77,12 +71,9 @@ export default function tests() {
 
 	it('III should be given to someone with 100 creator creations',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'creator_revision', thresholdIII
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'creator', thresholdIII
+			)();
 
 			const promise = testData.createEditor()
 				.then((editor) =>
@@ -101,12 +92,9 @@ export default function tests() {
 
 	it('should not be given to someone with 0 creator creations',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'creator_revision', 0
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'creator_revision', 0
+			)();
 
 			const promise = common.generateProcessEdit(
 				Achievement, orm, 'creatorCreator', 'Creator Creator', 'I'

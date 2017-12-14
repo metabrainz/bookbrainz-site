@@ -41,12 +41,9 @@ export default function tests() {
 
 	it('I should be given to someone with a publisher creation',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', thresholdI
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'publisher', thresholdI
+			)();
 
 			const promise = common.generateProcessEdit(
 				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
@@ -60,12 +57,9 @@ export default function tests() {
 
 	it('II should be given to someone with 10 publisher creations',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', thresholdII
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'publisher', thresholdII
+			)();
 
 			const promise = common.generateProcessEdit(
 				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'II'
@@ -78,12 +72,9 @@ export default function tests() {
 
 	it('III should be given to someone with 100 publisher creations',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', thresholdIII
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'publisher', thresholdIII
+			)();
 
 			const promise = testData.createEditor()
 				.then((editor) =>
@@ -102,12 +93,9 @@ export default function tests() {
 
 	it('should not be given to someone with 0 publisher creations',
 		() => {
-			Achievement.__set__({
-				getTypeCreation:
-					testData.typeCreationHelper(
-						'publisher_revision', 0
-					)
-			});
+			common.rewireTypeCreation(
+				Achievement, 'publisher', 0
+			)();
 
 			const promise = common.generateProcessEdit(
 				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'

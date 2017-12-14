@@ -43,7 +43,7 @@ export default function tests() {
 
 	it('should be given to someone with a revision a day for 30 days',
 		() => {
-			Achievement.__set__({
+			common.rewireAchievement(Achievement, {
 				getEditsInDays: (_orm, editorId, days) => {
 					let editPromise;
 					if (days === marathonerDays) {
@@ -54,7 +54,7 @@ export default function tests() {
 					}
 					return editPromise;
 				}
-			});
+			})();
 
 			const promise = common.generateProcessEditNamed(
 				Achievement, orm, 'marathoner', 'Marathoner'
@@ -67,7 +67,7 @@ export default function tests() {
 
 	it('shouldn\'t be given to someone without a revision a day for 30 days',
 		() => {
-			Achievement.__set__({
+			common.rewireAchievement(Achievement, {
 				getEditsInDays: (editorId, days) => {
 					let editPromise;
 					if (days === marathonerDays) {
@@ -78,7 +78,7 @@ export default function tests() {
 					}
 					return editPromise;
 				}
-			});
+			})();
 
 			const promise = common.generateProcessEditNamed(
 				Achievement, orm, 'marathoner', 'Marathoner'

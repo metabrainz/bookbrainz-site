@@ -44,9 +44,9 @@ export default function tests() {
 	afterEach(testData.truncate);
 
 	it('I should be given to someone with 10 entity views', () => {
-		Achievement.__set__({
+		common.rewireAchievement(Achievement, {
 			getEntityVisits: () => Promise.resolve(thresholdI)
-		});
+		})();
 
 		const achievementPromise = new Editor({
 			name: testData.editorAttribs.name
@@ -65,9 +65,9 @@ export default function tests() {
 	});
 
 	it('II should be given to someone with 100 entity views', () => {
-		Achievement.__set__({
+		common.rewireAchievement(Achievement, {
 			getEntityVisits: () => Promise.resolve(thresholdII)
-		});
+		})();
 
 		const achievementPromise = new Editor({
 			name: testData.editorAttribs.name
@@ -87,9 +87,9 @@ export default function tests() {
 
 	it('III should be given to someone with 1000 entity views',
 		() => {
-			Achievement.__set__({
+			common.rewireAchievement(Achievement, {
 				getEntityVisits: () => Promise.resolve(thresholdIII)
-			});
+			})();
 
 			const achievementPromise = new Editor({
 				name: testData.editorAttribs.name
@@ -108,9 +108,9 @@ export default function tests() {
 		});
 
 	it('I should not be given to someone with 9 entity views', () => {
-		Achievement.__set__({
+		common.rewireAchievement(Achievement, {
 			getEntityVisits: () => Promise.resolve(thresholdI - 1)
-		});
+		})();
 
 		const achievementPromise = new Editor({
 			name: testData.editorAttribs.name

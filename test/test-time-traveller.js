@@ -45,10 +45,10 @@ export default function tests() {
 
 	it('should be given to someone with edition revision released after today',
 		() => {
-			Achievement.__set__({
+			common.rewireAchievement(Achievement, {
 				getEditionDateDifference: () =>
 					Promise.resolve(timeTravellerThreshold)
-			});
+			})();
 
 			const achievementPromise =
 				new Editor({name: testData.editorAttribs.name})
@@ -68,10 +68,10 @@ export default function tests() {
 
 	it('shouldn\'t be given to someone with edition revision already released',
 		() => {
-			Achievement.__set__({
+			common.rewireAchievement(Achievement, {
 				getEditionDateDifference: () =>
 					Promise.resolve(timeTravellerThreshold - 1)
-			});
+			})();
 
 			const achievementPromise =
 				new Editor({name: testData.editorAttribs.name})

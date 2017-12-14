@@ -63,3 +63,16 @@ export function generateProcessEditNamed(Achievement, orm, func, name) {
 		.then((editor) => Achievement.processEdit(orm, editor.id))
 		.then((edit) => edit[func][name]);
 }
+
+export function rewireAchievement(Achievement, rewiring) {
+	return () => Achievement.__set__(rewiring);
+}
+
+export function rewireTypeCreation(Achievement, name, threshold) {
+	return rewireAchievement(Achievement, {
+		getTypeCreation:
+			testData.typeCreationHelper(
+				`${name}_revision`, threshold
+			)
+	});
+}

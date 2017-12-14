@@ -42,10 +42,10 @@ export default function tests() {
 
 	it('should be given to someone with edition revision released this week',
 		() => {
-			Achievement.__set__({
+			common.rewireAchievement(Achievement, {
 				getEditionDateDifference: () =>
 					Promise.resolve(hotOffThePressThreshold)
-			});
+			})();
 
 			const promise = common.generateProcessEditNamed(
 				Achievement, orm, 'hotOffThePress', 'Hot Off the Press'
@@ -59,10 +59,10 @@ export default function tests() {
 
 	it('shouldn\'t be given when edition revision released a week ago',
 		() => {
-			Achievement.__set__({
+			common.rewireAchievement(Achievement, {
 				getEditionDateDifference: () =>
 					Promise.resolve(hotOffThePressThreshold - 1)
-			});
+			})();
 
 			const promise = common.generateProcessEditNamed(
 				Achievement, orm, 'timeTraveller', 'Time Traveller'
