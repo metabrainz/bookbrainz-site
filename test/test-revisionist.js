@@ -17,8 +17,8 @@
  */
 
 import * as achievement from '../lib/server/helpers/achievement';
+import * as common from './common';
 import * as testData from '../data/test-data.js';
-import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
@@ -53,11 +53,9 @@ export default function tests() {
 				edit.revisionist['Revisionist I']
 			);
 
-		return expectAchievementIds(
-			achievementPromise,
-			testData.editorAttribs.id,
-			testData.revisionistIAttribs.id
-		);
+		return common.expectIds(
+			'revisionist', 'I'
+		)(achievementPromise);
 	});
 
 	it('II should be given to someone with 50 revisions', () => {
@@ -104,13 +102,11 @@ export default function tests() {
 					edit.revisionist
 				);
 
-			return expectAchievementIdsNested(
-				achievementPromise,
+			return common.expectIdsNested(
 				'Revisionist',
-				testData.editorAttribs.id,
-				testData.revisionistIIIAttribs.id,
-				testData.revisionistAttribs.id,
-			);
+				'revisionist',
+				'III'
+			)(achievementPromise);
 		});
 
 	it('should not be given to someone without a revision', () => {

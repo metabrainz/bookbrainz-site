@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
@@ -58,11 +58,9 @@ export default function tests() {
 						edit.hotOffThePress['Hot Off the Press']
 					);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.hotOffThePressAttribs.id
-			);
+			return common.expectIds(
+				'hotOffThePress', ''
+			)(achievementPromise);
 		}
 	);
 

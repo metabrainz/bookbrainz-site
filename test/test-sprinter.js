@@ -17,10 +17,10 @@
  */
 
 import * as achievement from '../lib/server/helpers/achievement';
+import * as common from './common';
 import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 
 
@@ -51,11 +51,9 @@ export default function tests() {
 				edit.sprinter.Sprinter
 			);
 
-		return expectAchievementIds(
-			achievementPromise,
-			testData.editorAttribs.id,
-			testData.sprinterAttribs.id
-		);
+		return common.expectIds(
+			'sprinter', ''
+		)(achievementPromise);
 	});
 
 

@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
-import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
@@ -29,9 +29,9 @@ const {expect} = chai;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
-const workerBeeIThreshold = 1;
-const workerBeeIIThreshold = 10;
-const workerBeeIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
 
 
 export default function tests() {
@@ -44,7 +44,7 @@ export default function tests() {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'work_revision', workerBeeIThreshold
+						'work_revision', thresholdI
 					)
 			});
 
@@ -56,11 +56,9 @@ export default function tests() {
 					edit.workerBee['Worker Bee I']
 				);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.workerBeeIAttribs.id
-			);
+			return common.expectIds(
+				'workerBee', 'I'
+			)(achievementPromise);
 		}
 	);
 
@@ -69,7 +67,7 @@ export default function tests() {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'work_revision', workerBeeIIThreshold
+						'work_revision', thresholdII
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -80,11 +78,9 @@ export default function tests() {
 					edit.workerBee['Worker Bee II']
 				);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.workerBeeIIAttribs.id
-			);
+			return common.expectIds(
+				'workerBee', 'II'
+			)(achievementPromise);
 		});
 
 	it('III should be given to someone with 100 work creations',
@@ -92,7 +88,7 @@ export default function tests() {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'work_revision', workerBeeIIIThreshold
+						'work_revision', thresholdIII
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -103,13 +99,11 @@ export default function tests() {
 					edit.workerBee
 				);
 
-			return expectAchievementIdsNested(
-				achievementPromise,
+			return common.expectIdsNested(
 				'Worker Bee',
-				testData.editorAttribs.id,
-				testData.workerBeeIIIAttribs.id,
-				testData.workerBeeAttribs.id,
-			);
+				'workerBee',
+				'III'
+			)(achievementPromise);
 		});
 
 	it('should not be given to someone with 0 work creations',

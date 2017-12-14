@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
-import {expectAchievementIds, expectAchievementIdsNested} from './common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
@@ -29,9 +29,9 @@ const {expect} = chai;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
-const publisherIThreshold = 1;
-const publisherIIThreshold = 10;
-const publisherIIIThreshold = 100;
+const thresholdI = 1;
+const thresholdII = 10;
+const thresholdIII = 100;
 
 export default function tests() {
 	beforeEach(() => testData.createPublisher());
@@ -43,7 +43,7 @@ export default function tests() {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIThreshold
+						'publication_revision', thresholdI
 					)
 			});
 
@@ -55,11 +55,9 @@ export default function tests() {
 					edit.publisher['Publisher I']
 				);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.publisherIAttribs.id
-			);
+			return common.expectIds(
+				'publisher', 'I'
+			)(achievementPromise);
 		}
 	);
 
@@ -68,7 +66,7 @@ export default function tests() {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIIThreshold
+						'publication_revision', thresholdII
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -79,11 +77,9 @@ export default function tests() {
 					edit.publisher['Publisher II']
 				);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.publisherIIAttribs.id
-			);
+			return common.expectIds(
+				'publisher', 'II'
+			)(achievementPromise);
 		});
 
 	it('III should be given to someone with 100 publication creations',
@@ -91,7 +87,7 @@ export default function tests() {
 			Achievement.__set__({
 				getTypeCreation:
 					testData.typeCreationHelper(
-						'publication_revision', publisherIIIThreshold
+						'publication_revision', thresholdIII
 					)
 			});
 			const achievementPromise = testData.createEditor()
@@ -102,13 +98,11 @@ export default function tests() {
 					edit.publisher
 				);
 
-			return expectAchievementIdsNested(
-				achievementPromise,
+			return common.expectIdsNested(
 				'Publisher',
-				testData.editorAttribs.id,
-				testData.publisherIIIAttribs.id,
-				testData.publisherAttribs.id,
-			);
+				'publisher',
+				'III'
+			)(achievementPromise);
 		});
 
 	it('should not be given to someone with 0 publication creations',

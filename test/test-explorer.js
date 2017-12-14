@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as common from './common';
 import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {expectAchievementIds} from './common';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
@@ -30,9 +30,9 @@ const {Editor} = orm;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
-const explorerIThreshold = 10;
-const explorerIIThreshold = 100;
-const explorerIIIThreshold = 1000;
+const thresholdI = 10;
+const thresholdII = 100;
+const thresholdIII = 1000;
 
 export default function tests() {
 	beforeEach(() => testData.createEditor()
@@ -45,7 +45,7 @@ export default function tests() {
 
 	it('I should be given to someone with 10 entity views', () => {
 		Achievement.__set__({
-			getEntityVisits: () => Promise.resolve(explorerIThreshold)
+			getEntityVisits: () => Promise.resolve(thresholdI)
 		});
 
 		const achievementPromise = new Editor({
@@ -59,16 +59,14 @@ export default function tests() {
 				edit.explorer['Explorer I']
 			);
 
-		return expectAchievementIds(
-			achievementPromise,
-			testData.editorAttribs.id,
-			testData.explorerIAttribs.id
-		);
+		return common.expectIds(
+			'explorer', 'I'
+		)(achievementPromise);
 	});
 
 	it('II should be given to someone with 100 entity views', () => {
 		Achievement.__set__({
-			getEntityVisits: () => Promise.resolve(explorerIIThreshold)
+			getEntityVisits: () => Promise.resolve(thresholdII)
 		});
 
 		const achievementPromise = new Editor({
@@ -82,17 +80,15 @@ export default function tests() {
 				edit.explorer['Explorer II']
 			);
 
-		return expectAchievementIds(
-			achievementPromise,
-			testData.editorAttribs.id,
-			testData.explorerIIAttribs.id
-		);
+		return common.expectIds(
+			'explorer', 'II'
+		)(achievementPromise);
 	});
 
 	it('III should be given to someone with 1000 entity views',
 		() => {
 			Achievement.__set__({
-				getEntityVisits: () => Promise.resolve(explorerIIIThreshold)
+				getEntityVisits: () => Promise.resolve(thresholdIII)
 			});
 
 			const achievementPromise = new Editor({
@@ -106,16 +102,14 @@ export default function tests() {
 					edit.explorer['Explorer III']
 				);
 
-			return expectAchievementIds(
-				achievementPromise,
-				testData.editorAttribs.id,
-				testData.explorerIIIAttribs.id
-			);
+			return common.expectIds(
+				'explorer', 'III'
+			)(achievementPromise);
 		});
 
 	it('I should not be given to someone with 9 entity views', () => {
 		Achievement.__set__({
-			getEntityVisits: () => Promise.resolve(explorerIThreshold - 1)
+			getEntityVisits: () => Promise.resolve(thresholdI - 1)
 		});
 
 		const achievementPromise = new Editor({
