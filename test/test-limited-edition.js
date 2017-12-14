@@ -38,68 +38,59 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should given to someone with an edition creation',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'edition', thresholdI
-			)();
-
-			const promise = common.generateProcessEdit(
-				Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
-			)();
-
-			return common.expectIds(
-				'limitedEdition', 'I'
-			)(promise);
-		}
+	const test1 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', thresholdI
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
+		),
+		common.expectIds(
+			'limitedEdition', 'I'
+		)
 	);
+	it('I should given to someone with an edition creation', test1);
 
-	it('II should be given to someone with 10 edition creations',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'edition', thresholdII
-			)();
+	const test2 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', thresholdII
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'limitedEdition', 'Limited Edition', 'II'
+		),
+		common.expectIds(
+			'limitedEdition', 'II'
+		)
+	);
+	it('II should be given to someone with 10 edition creations', test2);
 
-			const promise = common.generateProcessEdit(
-				Achievement, orm, 'limitedEdition', 'Limited Edition', 'II'
-			)();
+	const test3 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', thresholdIII
+		),
+		() => testData.createEditor()
+			.then((editor) =>
+				Achievement.processEdit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.limitedEdition
+			),
+		common.expectIdsNested(
+			'Limited Edition',
+			'limitedEdition',
+			'III'
+		)
+	);
+	it('III should be given to someone with 100 edition creations', test3);
 
-			return common.expectIds(
-				'limitedEdition', 'II'
-			)(promise);
-		});
-
-	it('III should be given to someone with 100 edition creations',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'edition', thresholdIII
-			)();
-
-			const promise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition
-				);
-
-			return common.expectIdsNested(
-				'Limited Edition',
-				'limitedEdition',
-				'III'
-			)(promise);
-		});
-
-	it('should not given to someone with 0 edition creations',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'edition', 0
-			)();
-
-			const promise = common.generateProcessEdit(
-				Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
-			)();
-
-			return expect(promise).to.eventually.equal(false);
-		});
+	const test4 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'edition', 0
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('should not given to someone with 0 edition creations', test4);
 }

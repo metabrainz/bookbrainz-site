@@ -39,68 +39,59 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with a publisher creation',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'publisher', thresholdI
-			)();
-
-			const promise = common.generateProcessEdit(
-				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
-			)();
-
-			return common.expectIds(
-				'publisherCreator', 'I'
-			)(promise);
-		}
+	const test1 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', thresholdI
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
+		),
+		common.expectIds(
+			'publisherCreator', 'I'
+		)
 	);
+	it('I should be given to someone with a publisher creation', test1);
 
-	it('II should be given to someone with 10 publisher creations',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'publisher', thresholdII
-			)();
+	const test2 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', thresholdII
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'publisherCreator', 'Publisher Creator', 'II'
+		),
+		common.expectIds(
+			'publisherCreator', 'II'
+		)
+	);
+	it('II should be given to someone with 10 publisher creations', test2);
 
-			const promise = common.generateProcessEdit(
-				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'II'
-			)();
+	const test3 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', thresholdIII
+		),
+		() => testData.createEditor()
+			.then((editor) =>
+				Achievement.processEdit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.publisherCreator
+			),
+		common.expectIdsNested(
+			'Publisher Creator',
+			'publisherCreator',
+			'III'
+		)
+	);
+	it('III should be given to someone with 100 publisher creations', test3);
 
-			return common.expectIds(
-				'publisherCreator', 'II'
-			)(promise);
-		});
-
-	it('III should be given to someone with 100 publisher creations',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'publisher', thresholdIII
-			)();
-
-			const promise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator
-				);
-
-			return common.expectIdsNested(
-				'Publisher Creator',
-				'publisherCreator',
-				'III'
-			)(promise);
-		});
-
-	it('should not be given to someone with 0 publisher creations',
-		() => {
-			common.rewireTypeCreation(
-				Achievement, 'publisher', 0
-			)();
-
-			const promise = common.generateProcessEdit(
-				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
-			)();
-
-			return expect(promise).to.eventually.equal(false);
-		});
+	const test4 = common.testAchievement(
+		common.rewireTypeCreation(
+			Achievement, 'publisher', 0
+		),
+		common.generateProcessEdit(
+			Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('should not be given to someone with 0 publisher creations', test4);
 }

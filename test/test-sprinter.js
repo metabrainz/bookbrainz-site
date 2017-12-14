@@ -22,11 +22,14 @@ import * as testData from '../data/test-data.js';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
+import rewire from 'rewire';
 
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
 const {Editor} = orm;
+
+const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 const sprinterThreshold = 10;
 
@@ -39,8 +42,9 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('should be given to someone with 10 revisions in an hour', () => {
-		const achievementPromise = testData.sprinterHelper(sprinterThreshold)
+	const test1 = common.testAchievement(
+		common.rewireAchievement(Achievement, {}),
+		() => testData.sprinterHelper(sprinterThreshold)
 			.then(() => new Editor({name: testData.editorAttribs.name})
 				.fetch()
 			)
@@ -49,27 +53,26 @@ export default function tests() {
 			)
 			.then((edit) =>
 				edit.sprinter.Sprinter
-			);
-
-		return common.expectIds(
+			),
+		common.expectIds(
 			'sprinter', ''
-		)(achievementPromise);
-	});
+		)
+	);
+	it('should be given to someone with 10 revisions in an hour', test1);
 
-
-	it('should not be given to someone with 9 revisions in an hour', () => {
-		const achievementPromise =
-			testData.sprinterHelper(sprinterThreshold - 1)
-				.then(() => new Editor({name: testData.editorAttribs.name})
-					.fetch()
-				)
-				.then((editor) =>
-					achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.sprinter.Sprinter
-				);
-
-		return expect(achievementPromise).to.eventually.equal(false);
-	});
+	const test2 = common.testAchievement(
+		common.rewireAchievement(Achievement, {}),
+		() => testData.sprinterHelper(sprinterThreshold - 1)
+			.then(() => new Editor({name: testData.editorAttribs.name})
+				.fetch()
+			)
+			.then((editor) =>
+				achievement.processEdit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.sprinter.Sprinter
+			),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('should not be given to someone with 9 revisions in an hour', test2);
 }

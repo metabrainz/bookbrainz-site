@@ -41,49 +41,46 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('should be given to someone with a revision a day for 30 days',
-		() => {
-			common.rewireAchievement(Achievement, {
-				getEditsInDays: (_orm, editorId, days) => {
-					let editPromise;
-					if (days === marathonerDays) {
-						editPromise = Promise.resolve(marathonerThreshold);
-					}
-					else {
-						editPromise = Promise.resolve(0);
-					}
-					return editPromise;
+	const test1 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditsInDays: (_orm, editorId, days) => {
+				let editPromise;
+				if (days === marathonerDays) {
+					editPromise = Promise.resolve(marathonerThreshold);
 				}
-			})();
+				else {
+					editPromise = Promise.resolve(0);
+				}
+				return editPromise;
+			}
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'marathoner', 'Marathoner'
+		),
+		common.expectIds(
+			'marathoner', ''
+		)
+	);
+	it('should be given to someone with a revision a day for 30 days', test1);
 
-			const promise = common.generateProcessEditNamed(
-				Achievement, orm, 'marathoner', 'Marathoner'
-			)();
-
-			return common.expectIds(
-				'marathoner', ''
-			)(promise);
-		});
-
+	const test2 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditsInDays: (editorId, days) => {
+				let editPromise;
+				if (days === marathonerDays) {
+					editPromise = Promise.resolve(marathonerThreshold - 1);
+				}
+				else {
+					editPromise = Promise.resolve(0);
+				}
+				return editPromise;
+			}
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'marathoner', 'Marathoner'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
 	it('shouldn\'t be given to someone without a revision a day for 30 days',
-		() => {
-			common.rewireAchievement(Achievement, {
-				getEditsInDays: (editorId, days) => {
-					let editPromise;
-					if (days === marathonerDays) {
-						editPromise = Promise.resolve(marathonerThreshold - 1);
-					}
-					else {
-						editPromise = Promise.resolve(0);
-					}
-					return editPromise;
-				}
-			})();
-
-			const promise = common.generateProcessEditNamed(
-				Achievement, orm, 'marathoner', 'Marathoner'
-			)();
-
-			return expect(promise).to.eventually.equal(false);
-		});
+		test2);
 }

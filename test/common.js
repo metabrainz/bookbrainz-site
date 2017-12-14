@@ -76,3 +76,11 @@ export function rewireTypeCreation(Achievement, name, threshold) {
 			)
 	});
 }
+
+export function testAchievement(rewiring, generator, expectations) {
+	return () => {
+		rewiring();
+		const promise = generator();
+		return expectations(promise);
+	};
+}

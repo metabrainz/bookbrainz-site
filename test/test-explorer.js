@@ -43,12 +43,11 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('I should be given to someone with 10 entity views', () => {
+	const test1 = common.testAchievement(
 		common.rewireAchievement(Achievement, {
 			getEntityVisits: () => Promise.resolve(thresholdI)
-		})();
-
-		const achievementPromise = new Editor({
+		}),
+		() => new Editor({
 			name: testData.editorAttribs.name
 		})
 			.fetch()
@@ -57,19 +56,18 @@ export default function tests() {
 			)
 			.then((edit) =>
 				edit.explorer['Explorer I']
-			);
-
-		return common.expectIds(
+			),
+		common.expectIds(
 			'explorer', 'I'
-		)(achievementPromise);
-	});
+		)
+	);
+	it('I should be given to someone with 10 entity views', test1);
 
-	it('II should be given to someone with 100 entity views', () => {
+	const test2 = common.testAchievement(
 		common.rewireAchievement(Achievement, {
 			getEntityVisits: () => Promise.resolve(thresholdII)
-		})();
-
-		const achievementPromise = new Editor({
+		}),
+		() => new Editor({
 			name: testData.editorAttribs.name
 		})
 			.fetch()
@@ -78,41 +76,38 @@ export default function tests() {
 			)
 			.then((edit) =>
 				edit.explorer['Explorer II']
-			);
-
-		return common.expectIds(
+			),
+		common.expectIds(
 			'explorer', 'II'
-		)(achievementPromise);
-	});
+		)
+	);
+	it('II should be given to someone with 100 entity views', test2);
 
-	it('III should be given to someone with 1000 entity views',
-		() => {
-			common.rewireAchievement(Achievement, {
-				getEntityVisits: () => Promise.resolve(thresholdIII)
-			})();
+	const test3 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEntityVisits: () => Promise.resolve(thresholdIII)
+		}),
+		() => new Editor({
+			name: testData.editorAttribs.name
+		})
+			.fetch()
+			.then((editor) =>
+				Achievement.processPageVisit(orm, editor.id)
+			)
+			.then((edit) =>
+				edit.explorer['Explorer III']
+			),
+		common.expectIds(
+			'explorer', 'III'
+		)
+	);
+	it('III should be given to someone with 1000 entity views', test3);
 
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					Achievement.processPageVisit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.explorer['Explorer III']
-				);
-
-			return common.expectIds(
-				'explorer', 'III'
-			)(achievementPromise);
-		});
-
-	it('I should not be given to someone with 9 entity views', () => {
+	const test4 = common.testAchievement(
 		common.rewireAchievement(Achievement, {
 			getEntityVisits: () => Promise.resolve(thresholdI - 1)
-		})();
-
-		const achievementPromise = new Editor({
+		}),
+		() => new Editor({
 			name: testData.editorAttribs.name
 		})
 			.fetch()
@@ -121,8 +116,8 @@ export default function tests() {
 			)
 			.then((edit) =>
 				edit.explorer['Explorer I']
-			);
-
-		return expect(achievementPromise).to.eventually.equal(false);
-	});
+			),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('I should not be given to someone with 9 entity views', test4);
 }

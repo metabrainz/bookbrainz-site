@@ -40,34 +40,30 @@ export default function tests() {
 
 	afterEach(testData.truncate);
 
-	it('should be given to someone with edition revision released this week',
-		() => {
-			common.rewireAchievement(Achievement, {
-				getEditionDateDifference: () =>
-					Promise.resolve(hotOffThePressThreshold)
-			})();
-
-			const promise = common.generateProcessEditNamed(
-				Achievement, orm, 'hotOffThePress', 'Hot Off the Press'
-			)();
-
-			return common.expectIds(
-				'hotOffThePress', ''
-			)(promise);
-		}
+	const test1 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditionDateDifference: () =>
+				Promise.resolve(hotOffThePressThreshold)
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'hotOffThePress', 'Hot Off the Press'
+		),
+		common.expectIds(
+			'hotOffThePress', ''
+		)
 	);
+	it('should be given to someone with edition revision released this week',
+		test1);
 
-	it('shouldn\'t be given when edition revision released a week ago',
-		() => {
-			common.rewireAchievement(Achievement, {
-				getEditionDateDifference: () =>
-					Promise.resolve(hotOffThePressThreshold - 1)
-			})();
-
-			const promise = common.generateProcessEditNamed(
-				Achievement, orm, 'timeTraveller', 'Time Traveller'
-			)();
-
-			return expect(promise).to.eventually.equal(false);
-		});
+	const test2 = common.testAchievement(
+		common.rewireAchievement(Achievement, {
+			getEditionDateDifference: () =>
+				Promise.resolve(hotOffThePressThreshold - 1)
+		}),
+		common.generateProcessEditNamed(
+			Achievement, orm, 'timeTraveller', 'Time Traveller'
+		),
+		(promise) => expect(promise).to.eventually.equal(false)
+	);
+	it('shouldn\'t be given when edition revision released a week ago', test2);
 }
