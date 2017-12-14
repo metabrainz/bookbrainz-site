@@ -50,3 +50,16 @@ export function expectIdsNested(name, prop, rev) {
 				testData[`${prop}Attribs`].id)
 	]);
 }
+
+export function generateProcessEdit(Achievement, orm, func, name, rev) {
+	return () => testData.createEditor()
+		.then((editor) => Achievement.processEdit(orm, editor.id))
+		.then((edit) => edit[func][`${name} ${rev}`]);
+}
+
+export function generateProcessEditNamed(Achievement, orm, func, name) {
+	return () => new orm.Editor({name: testData.editorAttribs.name})
+		.fetch()
+		.then((editor) => Achievement.processEdit(orm, editor.id))
+		.then((edit) => edit[func][name]);
+}

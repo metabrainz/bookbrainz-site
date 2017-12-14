@@ -47,17 +47,13 @@ export default function tests() {
 					)
 			});
 
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition I']
-				);
+			const promise = common.generateProcessEdit(
+				Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
+			)();
 
 			return common.expectIds(
 				'limitedEdition', 'I'
-			)(achievementPromise);
+			)(promise);
 		}
 	);
 
@@ -69,17 +65,14 @@ export default function tests() {
 						'edition_revision', thresholdII
 					)
 			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition II']
-				);
+
+			const promise = common.generateProcessEdit(
+				Achievement, orm, 'limitedEdition', 'Limited Edition', 'II'
+			)();
 
 			return common.expectIds(
 				'limitedEdition', 'II'
-			)(achievementPromise);
+			)(promise);
 		});
 
 	it('III should be given to someone with 100 edition creations',
@@ -90,7 +83,8 @@ export default function tests() {
 						'edition_revision', thresholdIII
 					)
 			});
-			const achievementPromise = testData.createEditor()
+
+			const promise = testData.createEditor()
 				.then((editor) =>
 					Achievement.processEdit(orm, editor.id)
 				)
@@ -102,7 +96,7 @@ export default function tests() {
 				'Limited Edition',
 				'limitedEdition',
 				'III'
-			)(achievementPromise);
+			)(promise);
 		});
 
 	it('should not given to someone with 0 edition creations',
@@ -113,14 +107,11 @@ export default function tests() {
 						'edition_revision', 0
 					)
 			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.limitedEdition['Limited Edition I']
-				);
 
-			return expect(achievementPromise).to.eventually.equal(false);
+			const promise = common.generateProcessEdit(
+				Achievement, orm, 'limitedEdition', 'Limited Edition', 'I'
+			)();
+
+			return expect(promise).to.eventually.equal(false);
 		});
 }

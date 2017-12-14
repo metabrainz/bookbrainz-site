@@ -26,7 +26,6 @@ import rewire from 'rewire';
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
-const {Editor} = orm;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
@@ -56,20 +55,14 @@ export default function tests() {
 					return editPromise;
 				}
 			});
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.marathoner.Marathoner
-				);
+
+			const promise = common.generateProcessEditNamed(
+				Achievement, orm, 'marathoner', 'Marathoner'
+			)();
 
 			return common.expectIds(
 				'marathoner', ''
-			)(achievementPromise);
+			)(promise);
 		});
 
 	it('shouldn\'t be given to someone without a revision a day for 30 days',
@@ -86,17 +79,11 @@ export default function tests() {
 					return editPromise;
 				}
 			});
-			const achievementPromise = new Editor({
-				name: testData.editorAttribs.name
-			})
-				.fetch()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.marathoner.Marathoner
-				);
 
-			return expect(achievementPromise).to.eventually.equal(false);
+			const promise = common.generateProcessEditNamed(
+				Achievement, orm, 'marathoner', 'Marathoner'
+			)();
+
+			return expect(promise).to.eventually.equal(false);
 		});
 }

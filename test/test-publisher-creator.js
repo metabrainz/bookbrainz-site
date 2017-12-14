@@ -48,17 +48,13 @@ export default function tests() {
 					)
 			});
 
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator['Publisher Creator I']
-				);
+			const promise = common.generateProcessEdit(
+				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
+			)();
 
 			return common.expectIds(
 				'publisherCreator', 'I'
-			)(achievementPromise);
+			)(promise);
 		}
 	);
 
@@ -70,17 +66,14 @@ export default function tests() {
 						'publisher_revision', thresholdII
 					)
 			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator['Publisher Creator II']
-				);
+
+			const promise = common.generateProcessEdit(
+				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'II'
+			)();
 
 			return common.expectIds(
 				'publisherCreator', 'II'
-			)(achievementPromise);
+			)(promise);
 		});
 
 	it('III should be given to someone with 100 publisher creations',
@@ -91,7 +84,8 @@ export default function tests() {
 						'publisher_revision', thresholdIII
 					)
 			});
-			const achievementPromise = testData.createEditor()
+
+			const promise = testData.createEditor()
 				.then((editor) =>
 					Achievement.processEdit(orm, editor.id)
 				)
@@ -103,7 +97,7 @@ export default function tests() {
 				'Publisher Creator',
 				'publisherCreator',
 				'III'
-			)(achievementPromise);
+			)(promise);
 		});
 
 	it('should not be given to someone with 0 publisher creations',
@@ -114,14 +108,11 @@ export default function tests() {
 						'publisher_revision', 0
 					)
 			});
-			const achievementPromise = testData.createEditor()
-				.then((editor) =>
-					Achievement.processEdit(orm, editor.id)
-				)
-				.then((edit) =>
-					edit.publisherCreator['Publisher Creator I']
-				);
 
-			return expect(achievementPromise).to.eventually.equal(false);
+			const promise = common.generateProcessEdit(
+				Achievement, orm, 'publisherCreator', 'Publisher Creator', 'I'
+			)();
+
+			return expect(promise).to.eventually.equal(false);
 		});
 }

@@ -26,7 +26,6 @@ import rewire from 'rewire';
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
-const {Editor} = orm;
 
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
@@ -48,19 +47,13 @@ export default function tests() {
 					Promise.resolve(hotOffThePressThreshold)
 			});
 
-			const achievementPromise =
-				new Editor({name: testData.editorAttribs.name})
-					.fetch()
-					.then((editor) =>
-						Achievement.processEdit(orm, editor.id)
-					)
-					.then((edit) =>
-						edit.hotOffThePress['Hot Off the Press']
-					);
+			const promise = common.generateProcessEditNamed(
+				Achievement, orm, 'hotOffThePress', 'Hot Off the Press'
+			)();
 
 			return common.expectIds(
 				'hotOffThePress', ''
-			)(achievementPromise);
+			)(promise);
 		}
 	);
 
@@ -71,16 +64,10 @@ export default function tests() {
 					Promise.resolve(hotOffThePressThreshold - 1)
 			});
 
-			const achievementPromise =
-				new Editor({name: testData.editorAttribs.name})
-					.fetch()
-					.then((editor) =>
-						Achievement.processEdit(orm, editor.id)
-					)
-					.then((edit) =>
-						edit.timeTraveller['Time Traveller']
-					);
+			const promise = common.generateProcessEditNamed(
+				Achievement, orm, 'timeTraveller', 'Time Traveller'
+			)();
 
-			return expect(achievementPromise).to.eventually.equal(false);
+			return expect(promise).to.eventually.equal(false);
 		});
 }
