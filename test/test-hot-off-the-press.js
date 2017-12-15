@@ -27,7 +27,7 @@ const Achievement = rewire('../lib/server/helpers/achievement.js');
 const hotOffThePressThreshold = -7;
 
 function rewireEditionDateDifference(threshold) {
-	return common.rewireAchievement(Achievement, {
+	return common.rewire(Achievement, {
 		getEditionDateDifference: () =>
 			Promise.resolve(threshold)
 	});

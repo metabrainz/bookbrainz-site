@@ -29,7 +29,7 @@ const thresholdII = 10;
 const thresholdIII = 100;
 
 function rewireTypeCreation(threshold) {
-	return common.rewireAchievementTypeCreation(Achievement, 'edition', threshold);
+	return common.rewireTypeCreation(Achievement, 'edition', threshold);
 }
 
 function generateLabeled(rev) {
@@ -43,7 +43,7 @@ function expectIds(rev) {
 }
 
 function expectAllNamedIds(rev) {
-	return common.expectIdsNested('Limited Edition', 'limitedEdition', rev);
+	return common.expectAllNamedIds('Limited Edition', 'limitedEdition', rev);
 }
 
 export default function tests() {

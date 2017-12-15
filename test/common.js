@@ -49,7 +49,7 @@ export function expectRevNamedIds(name, prop, rev) {
 	]);
 }
 
-export function expectIdsNested(name, prop, rev) {
+export function expectAllNamedIds(name, prop, rev) {
 	return (promise) => Promise.all([
 		expect(promise).to.eventually.have.nested
 			.property(`${name} ${rev}.editorId`,
@@ -84,12 +84,12 @@ export function generate(Achievement, orm, full) {
 	};
 }
 
-export function rewireAchievement(Achievement, rewiring) {
+export function rewire(Achievement, rewiring) {
 	return () => Achievement.__set__(rewiring);
 }
 
 export function rewireTypeCreation(Achievement, name, threshold) {
-	return rewireAchievement(Achievement, {
+	return rewire(Achievement, {
 		getTypeCreation:
 			testData.typeCreationHelper(
 				`${name}_revision`, threshold

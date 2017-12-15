@@ -30,7 +30,7 @@ const Achievement = rewire('../lib/server/helpers/achievement.js');
 const sprinterThreshold = 10;
 
 function rewireNothing() {
-	return common.rewireAchievement(Achievement, {});
+	return common.rewire(Achievement, {});
 }
 
 function expectIds(rev) {

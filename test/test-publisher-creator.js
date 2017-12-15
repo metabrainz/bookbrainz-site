@@ -29,7 +29,7 @@ const thresholdII = 10;
 const thresholdIII = 100;
 
 function rewireTypeCreation(threshold) {
-	return common.rewireAchievementTypeCreation(Achievement, 'publisher', threshold);
+	return common.rewireTypeCreation(Achievement, 'publisher', threshold);
 }
 
 function generate() {
@@ -47,7 +47,7 @@ function expectIds(rev) {
 }
 
 function expectAllNamedIds(rev) {
-	return common.expectIdsNested(
+	return common.expectAllNamedIds(
 		'Publisher Creator', 'publisherCreator', rev
 	);
 }

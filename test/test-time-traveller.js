@@ -30,7 +30,7 @@ const processTimeTraveller = Achievement.__get__('processTimeTraveller');
 const timeTravellerThreshold = 0;
 
 function rewireEditionDateDifference(threshold) {
-	return common.rewireAchievement(Achievement, {
+	return common.rewire(Achievement, {
 		getEditionDateDifference: () =>
 			Promise.resolve(threshold)
 	});

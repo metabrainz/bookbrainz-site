@@ -29,7 +29,7 @@ const thresholdII = 10;
 const thresholdIII = 100;
 
 function rewireTypeCreation(threshold) {
-	return common.rewireAchievementTypeCreation(Achievement, 'work', threshold);
+	return common.rewireTypeCreation(Achievement, 'work', threshold);
 }
 
 function generate() {
@@ -47,7 +47,7 @@ function expectIds(rev) {
 }
 
 function expectAllNamedIds(rev) {
-	return common.expectIdsNested('Worker Bee', 'workerBee', rev);
+	return common.expectAllNamedIds('Worker Bee', 'workerBee', rev);
 }
 
 export default function tests() {

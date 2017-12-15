@@ -28,7 +28,7 @@ const {Editor} = orm;
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 function rewireNothing() {
-	return common.rewireAchievement(Achievement, {});
+	return common.rewire(Achievement, {});
 }
 
 function expectIds(rev) {
@@ -40,7 +40,7 @@ function expectRevNamedIds(rev) {
 }
 
 function expectAllNamedIds(rev) {
-	return common.expectIdsNested('Revisionist', 'revisionist', rev);
+	return common.expectAllNamedIds('Revisionist', 'revisionist', rev);
 }
 
 export default function tests() {

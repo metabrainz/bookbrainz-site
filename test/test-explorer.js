@@ -31,7 +31,7 @@ const thresholdII = 100;
 const thresholdIII = 1000;
 
 function rewireEntityVisits(threshold) {
-	return common.rewireAchievement(Achievement, {
+	return common.rewire(Achievement, {
 		getEntityVisits: () => Promise.resolve(threshold)
 	});
 }
