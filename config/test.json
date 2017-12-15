@@ -1,6 +1,5 @@
 {
 	"site": {
-		"webservice": "http://localhost:5000/ws",
 		"clientID": "f8accd51-33d2-4d9b-a2c1-c01a76a4f096"
 	},
 	"musicbrainz": {

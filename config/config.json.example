@@ -1,6 +1,5 @@
 {
 	"site": {
-		"webservice": "http://bookbrainz.mbsandbox.org/ws",
 		"proxyTrust": true,
 		"log": "debug"
 	},
