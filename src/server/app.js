@@ -51,7 +51,7 @@ app.locals.orm = BookBrainzData(config.database);
 const rootDir = path.join(__dirname, '../../');
 
 // Set up jade as view engine
-app.set('views', path.join(rootDir, 'templates'));
+app.set('views', path.join(rootDir, 'src/server/templates'));
 app.set('view engine', 'jade');
 app.locals.basedir = app.get('views');
 
