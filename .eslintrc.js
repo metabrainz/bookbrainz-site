@@ -73,7 +73,6 @@ const bestPracticesRules = {
 	'accessor-pairs': ERROR,
 	'array-callback-return': ERROR,
 	'block-scoped-var': ERROR,
-	'class-methods-use-this': TRANSITION_WARNING,
 	complexity: ERROR,
 	'consistent-return': ERROR,
 	curly: ERROR,
@@ -162,14 +161,13 @@ const strictModeRules = {
 };
 
 const variablesRules = {
-	'init-declarations': TRANSITION_WARNING,
 	'no-catch-shadow': ERROR,
 	'no-label-var': ERROR,
 	'no-shadow': ERROR,
 	'no-shadow-restricted-names': ERROR,
 	'no-undef-init': ERROR,
 	'no-undefined': ERROR,
-	'no-unused-vars': ERROR,
+	'no-unused-vars': WARNING,
 	'no-use-before-define': ERROR
 };
 
@@ -283,18 +281,9 @@ const stylisticIssuesRules = {
 			tabWidth: 4
 		}
 	],
-	'max-lines': TRANSITION_WARNING,
 	'max-nested-callbacks': [
 		ERROR,
 		5
-	],
-	'max-params': [
-		TRANSITION_WARNING,
-		4
-	],
-	'max-statements': [
-		TRANSITION_WARNING,
-		15
 	],
 	'multiline-comment-style': ERROR,
 	'new-parens': ERROR,
@@ -309,7 +298,6 @@ const stylisticIssuesRules = {
 	],
 	'no-multiple-empty-lines': ERROR,
 	'no-nested-ternary': ERROR,
-	'no-new-object': ERROR,
 	'no-trailing-spaces': ERROR,
 	'no-unneeded-ternary': ERROR,
 	'no-whitespace-before-property': ERROR,
@@ -387,7 +375,7 @@ const ecmaScript6Rules = {
 	'no-var': ERROR,
 	'object-shorthand': ERROR,
 	'prefer-arrow-callback': ERROR,
-	'prefer-const': ERROR,
+	'prefer-const': WARNING,
 	'prefer-destructuring': [
 		ERROR,
 		{
@@ -423,7 +411,6 @@ const reactRules = {
 	'react/boolean-prop-naming': ERROR,
 	'react/button-has-type': ERROR,
 	'react/default-props-match-prop-types': ERROR,
-	'react/forbid-component-props': TRANSITION_WARNING,
 	'react/forbid-foreign-prop-types': ERROR,
 	'react/jsx-boolean-value': ERROR,
 	'react/jsx-closing-bracket-location': [
@@ -482,7 +469,6 @@ const reactRules = {
 		}
 	],
 	'react/no-redundant-should-component-update': ERROR,
-	'react/no-set-state': TRANSITION_WARNING,
 	'react/no-typos': ERROR,
 	'react/no-unused-prop-types': ERROR,
 	'react/no-unused-state': TRANSITION_WARNING,
