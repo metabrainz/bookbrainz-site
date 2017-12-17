@@ -38,7 +38,6 @@ RUN rm -rf scripts/ src/ .babelrc package.json
 COPY docker/config.json.ctmpl ./
 
 # Remove once we're converted away from jade
-COPY config/ config/
 COPY templates/ templates/
 
 RUN chown -R bookbrainz:bookbrainz $BB_ROOT

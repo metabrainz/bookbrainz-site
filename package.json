@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "copy-client-scripts": "./scripts/copy-client-scripts.sh",
-    "mkdirs": "mkdir -p static/js/editor static/js/entity static/stylesheets",
+    "mkdirs": "mkdir -p config static/js/editor static/js/entity static/stylesheets",
     "clean": "./scripts/clean.sh",
     "prepublishOnly": "npm run clean && npm run mkdirs && npm run copy-client-scripts",
     "postinstall": "npm run prepublishOnly",
