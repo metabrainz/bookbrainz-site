@@ -2,4 +2,4 @@
 
 cd /home/bookbrainz/bookbrainz-site
 export NODE_ENV="production"
-node ./lib/server/app.js
+exec node ./lib/server/app.js
