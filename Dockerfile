@@ -33,6 +33,7 @@ RUN npm run mkdirs && \
 
 # Clean up files that aren't needed for production
 RUN apt-get remove -y $BUILD_DEPS && \
+    apt-get autoremove -y && \
     npm prune --production && \
     rm -rf scripts/ src/ .babelrc package.json
 
