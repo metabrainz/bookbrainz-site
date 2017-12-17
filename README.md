@@ -109,9 +109,9 @@ This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
 
-Create a copy of development.json.example and rename it to development.json.
-Then, edit the values so that they are correct for your environment. If the
-prior instructions have been followed, it should only be necessary to change
+Create a copy of `config.json.example` and rename it to `config.json`. Then,
+edit the values so that they are correct for your environment. If the prior
+instructions have been followed, it should only be necessary to change
 the PostgreSQL username and password.
 
 ## Building and running
