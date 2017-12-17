@@ -7,12 +7,12 @@ ARG BUILD_DEPS=" \
 ARG RUN_DEPS=" \
     nodejs"
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
-RUN apt-get update
-RUN apt-get install --no-install-suggests --no-install-recommends -y \
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get update && \
+    apt-get install --no-install-suggests --no-install-recommends -y \
         $BUILD_DEPS \
-        $RUN_DEPS
-RUN rm -rf /var/lib/apt/lists/*
+        $RUN_DEPS && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --shell /bin/bash bookbrainz
 
@@ -28,12 +28,12 @@ COPY .babelrc ./
 COPY package.json ./
 
 RUN npm install
-RUN npm run mkdirs
-RUN npm run prestart
+RUN npm run mkdirs && \
+    npm run prestart
 
 # Clean up files that aren't needed for production
-RUN npm prune --production
-RUN rm -rf scripts/ src/ .babelrc package.json
+RUN npm prune --production && \
+    rm -rf scripts/ src/ .babelrc package.json
 
 COPY docker/config.json.ctmpl ./
 
