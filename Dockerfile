@@ -26,6 +26,7 @@ COPY src/ src/
 COPY static/ static/
 COPY .babelrc ./
 COPY package.json ./
+COPY package-lock.json ./
 
 RUN npm install
 RUN npm run mkdirs && \

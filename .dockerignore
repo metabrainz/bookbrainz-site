@@ -18,5 +18,4 @@ test/
 .tern-project
 .travis-yml
 LICENSE
-package-lock.json
 README.md
