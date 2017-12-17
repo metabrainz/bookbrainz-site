@@ -1,14 +1,14 @@
-# Project-specific directories
+# Project-specific files and directories
 /static/js
 /static/stylesheets/
 /lib
 /src/client/stylesheets/bootstrap
 /src/client/stylesheets/font-awesome
-/config
 /src/client/stylesheets/bootstrap
 /src/client/stylesheets/font-awesome
 /src/client/stylesheets/react-select
 /reports
+/config/config.json
 
 ### Node ###
 # Logs

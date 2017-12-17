@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /home/bookbrainz/bookbrainz-site
+export NODE_ENV="production"
+exec node ./lib/server/app.js

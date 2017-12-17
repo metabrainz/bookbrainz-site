@@ -1,4 +1,5 @@
 # BookBrainz Site
+
 [![Build Status](https://img.shields.io/travis/bookbrainz/bookbrainz-site.svg)](https://travis-ci.org/bookbrainz/bookbrainz-site)
 [![Dependency Status](https://img.shields.io/david/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site)
 [![devDependency Status](https://img.shields.io/david/dev/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site#info=devDependencies)
@@ -10,27 +11,33 @@
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:
 
-* config - the config to be used when running the site - copy the example files and edit, dropping the ".example" suffix.
-* scripts - scripts used during the development and deployment of BookBrainz.
-* src - node.js source files defining the site logic and user interface.
-* static - static files which are served by node as part of the site.
-* templates - Jade templates defining how the site looks - we're slowly
-replacing these with React.
-* test - unit tests and functional tests for the site
+* `config` - the config to be used when running the site; copy the example files
+  and edit, dropping the `.example` suffix.
+* `scripts` - scripts used during the development and deployment of BookBrainz.
+* `src` - node.js source files defining the site logic and user interface.
+* `static` - static files which are served by node as part of the site.
+* `templates` - Jade templates defining how the site looks - we're slowly
+  replacing these with React.
+* `test` - unit tests and functional tests for the site.
 
 Additionally, after building the client JavaScript (see below), the following
 directories will exist:
 
-* static/stylesheets - the CSS generated from compiling the project LESS files (src/client/stylesheets).
-* static/js - minified JavaScript files which are referred to by the
-  site pages.
+* `static/stylesheets` - the CSS generated from compiling the project LESS files
+  (`src/client/stylesheets`).
+* `static/js` - minified JavaScript files which are referred to by the site
+  pages.
 
 ## Documentation
 
-Auto-generated developer documentation can be found at our corresponding [doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our contributing guide can be found [here](CONTRIBUTING.md).
+Auto-generated developer documentation can be found at our corresponding
+[doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our
+contributing guide can be found [here](CONTRIBUTING.md).
 
 ## Setting up a local BookBrainz server
+
 ### Installing Dependencies
+
 BookBrainz depends on having PostgreSQL, Redis and Elasticsearch and NodeJS set
 up and running.
 
@@ -55,17 +62,20 @@ manager:
 
     sudo yum install redis
 
-To install Elasticsearch, follow the instructions at https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html
+To install Elasticsearch, follow the instructions at
+https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html
 
 And finally, for NodeJS, choose the correct installation file, or view the
 instructions for package managers at https://nodejs.org/en/download/current/
 
 ### Setting up Dependencies
+
 No setup is required for Redis or Elasticsearch. However, it is necessary to
 perform some initialization for PostgreSQL and import the latest BookBrainz
 database dump.
 
-Firstly, begin downloading the latest BookBrainz dump from https://bookbrainz.org/dumps/latest.tar.bz2.
+Firstly, begin downloading the latest BookBrainz dump from
+https://bookbrainz.org/dumps/latest.tar.bz2.
 
 Then, uncompress the `latest.tar.bz2` file, using the bzip2 command:
 
@@ -92,7 +102,8 @@ the directions in the documentation linked here to manually initialize
 submodules.
 
 Currently used submodules:
-*  [MonkeyDo/lobes](https://github.com/MonkeyDo/lobes) in `src/client/stylesheets/lobes`
+* [MonkeyDo/lobes](https://github.com/MonkeyDo/lobes) in
+  `src/client/stylesheets/lobes`
 
 To clone the repository and point the local HEAD to the latest commit in the
 `stable` branch, something like the following command should work:
@@ -102,25 +113,25 @@ To clone the repository and point the local HEAD to the latest commit in the
 ### Installing Packages
 The site depends on a number of node packages which can be installed using npm:
 
-	cd bookbrainz-site/
+    cd bookbrainz-site/
     npm install
 
 This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
 
-Create a copy of development.json.example and rename it to development.json.
-Then, edit the values so that they are correct for your environment. If the
-prior instructions have been followed, it should only be necessary to change
+Create a copy of `config.json.example` and rename it to `config.json`. Then,
+edit the values so that they are correct for your environment. If the prior
+instructions have been followed, it should only be necessary to change
 the PostgreSQL username and password.
 
 ## Building and running
 A number of subcommands exist to manage the installation and run the server.
-These are described here - any commands not listed should not be called
-directly:
+These are described here; any commands not listed should not be called directly:
 
-	* start - start the server in production mode, with code built once
-	* debug - start the server in debug mode, with code watched for changes
-	* lint - check the code for syntax and style issues
-	* test - perform linting and attempt to compile the code
-	* jsdoc - build the documentation for JSDoc annotated functions within the code
+* start - start the server in production mode, with code built once
+* debug - start the server in debug mode, with code watched for changes
+* lint - check the code for syntax and style issues
+* test - perform linting and attempt to compile the code
+* jsdoc - build the documentation for JSDoc annotated functions within the
+  code

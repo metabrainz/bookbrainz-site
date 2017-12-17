@@ -1,0 +1,15 @@
+{
+	"db": {
+		"database": "foo",
+		"user": "bar"
+	},
+	"musicbrainz_auth": {
+		"client_id": "fake",
+		"client_secret": "(noidea)",
+		"callback_url": "http://localhost:9099/cb"
+	},
+	"session": {
+		"redis_ttl": 5,
+		"secret": "oranges are okay"
+	}
+}

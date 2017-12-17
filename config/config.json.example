@@ -1,6 +1,5 @@
 {
 	"site": {
-		"webservice": "http://bookbrainz.mbsandbox.org/ws",
 		"proxyTrust": true,
 		"log": "debug"
 	},
@@ -28,6 +27,9 @@
 		}
 	},
 	"search": {
-	    "host": "localhost:9200"
+	    "host": "localhost:9200",
+	    "apiVersion": "5.5",
+	    "maxRetries": -1,
+	    "deadTimeout": 2000
 	}
 }

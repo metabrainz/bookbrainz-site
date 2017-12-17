@@ -26,11 +26,10 @@ import Log from 'log';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import config from '../../../server/helpers/config';
 import request from 'superagent-bluebird-promise';
 
 
-const log = new Log(config.site.log);
+const log = new Log('debug');
 
 const {Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;

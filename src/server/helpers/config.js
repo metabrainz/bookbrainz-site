@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015  Sean Burke
+ * Copyright (C) 2015-2017  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {readFileSync} from 'fs';
+
+
 /* Pull in environment-specific configuration. */
-const env = process.env.NODE_ENV || 'development';
-const config = require(`../../../config/${env}`);
+const env = process.env.NODE_ENV || 'development'; // eslint-disable-line no-process-env,max-len
+
+let configFileBasename = 'config';
+if (env === 'test') {
+	configFileBasename = 'test';
+}
+
+const configContents =
+	readFileSync(`config/${configFileBasename}.json`);
+const config = JSON.parse(configContents);
 
 export default config;
