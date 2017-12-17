@@ -32,7 +32,8 @@ RUN npm run mkdirs && \
     npm run prestart
 
 # Clean up files that aren't needed for production
-RUN npm prune --production && \
+RUN apt-get remove $BUILD_DEPS && \
+    npm prune --production && \
     rm -rf scripts/ src/ .babelrc package.json
 
 COPY docker/config.json.ctmpl ./
