@@ -41,7 +41,7 @@
 		"host": "{{.Address}}:{{.Port}}",
 {{- end}}
 {{- end}}
-		"apiVersion": "5.6",
+		"apiVersion": "5.5",
 		"maxRetries": -1,
 		"deadTimeout": 2000
 	}
