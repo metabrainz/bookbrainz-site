@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2017  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint max-len: "warn" */
 
-/* eslint prefer-rest-params: 1, prefer-reflect: 1 */
-
-import Promise from 'bluebird';
+// @flow
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -28,7 +25,7 @@ import Promise from 'bluebird';
  * @param {object} entity - Entity object
  * @returns {string} - URL path to interact with entity
  */
-export function getEntityLink(entity) {
+export function getEntityLink(entity: Object): string {
 	return `/${entity.type.toLowerCase()}/${entity.bbid}`;
 }
 
@@ -38,7 +35,7 @@ export function getEntityLink(entity) {
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @returns {object} - Object mapping model name to the entity model
  */
-export function getEntityModels(orm) {
+export function getEntityModels(orm: Object): Object {
 	const {Creator, Edition, Publication, Publisher, Work} = orm;
 	return {
 		Creator,
@@ -59,7 +56,7 @@ export function getEntityModels(orm) {
  * @returns {object} - Bookshelf model object with the type specified in the
  * single param
  */
-export function getEntityModelByType(orm, type) {
+export function getEntityModelByType(orm: Object, type: string): Object {
 	const entityModels = getEntityModels(orm);
 
 	if (!entityModels[type]) {
@@ -84,7 +81,7 @@ const _bbidRegex =
  * @param {string} bbid - BookBrainz UUID to validate
  * @returns {boolean} - Returns true if BookBrainz UUID is valid
  */
-export function isValidBBID(bbid) {
+export function isValidBBID(bbid: string): boolean {
 	return _bbidRegex.test(bbid);
 }
 
@@ -102,11 +99,11 @@ export function isValidBBID(bbid) {
  * the tagged template literal replaced with their corresponding values
  * from the newly passed in object.
  */
-export function template(strings) {
+export function template(strings: Array<string>): Function {
 	// eslint-disable-next-line prefer-reflect, prefer-rest-params
 	const keys = Array.prototype.slice.call(arguments, 1);
 
-	return (values) => {
+	return (values): string => {
 		const result = [strings[0]];
 
 		keys.forEach((key, i) => {
@@ -127,10 +124,10 @@ export function template(strings) {
  * @returns {string} - Title string
  */
 export function createEntityPageTitle(
-	entity,
-	titleForUnnamed,
-	templateForNamed
-) {
+	entity: Object,
+	titleForUnnamed: string,
+	templateForNamed: Function
+): string {
 	/**
 	 * User-visible strings should _never_ be created by concatenation; when we
 	 * start to implement localization, it will create problems for users of
@@ -156,7 +153,11 @@ export function createEntityPageTitle(
  * progress)
  * @returns {Promise} - Resolves to the updated editor model
  */
-export function incrementEditorEditCountById(orm, id, transacting) {
+export function incrementEditorEditCountById(
+	orm: Object,
+	id: string,
+	transacting: Object
+): Promise<Object> {
 	const {Editor} = orm;
 	return new Editor({id})
 		.fetch({transacting})
@@ -174,8 +175,7 @@ export function incrementEditorEditCountById(orm, id, transacting) {
  * @returns {Promise} a promise which will be fulfilled when the operation to
  *                    truncate tables completes
  */
-export function truncateTables(Bookshelf, tables) {
-	return Promise.each(
-		tables, (table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
-	);
+export function truncateTables(Bookshelf: Object, tables: Array<string>) {
+	return Promise.all(tables.map((table) =>
+		Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)));
 }
