@@ -46,6 +46,38 @@ export function getEntityModels(orm: Object): Object {
 	};
 }
 
+export function filterIdentifierTypesByEntityType(
+	identifierTypes: Array<Object>,
+	entityType: string
+): Array<Object> {
+	return identifierTypes.filter(
+		(type) => type.entityType === entityType
+	);
+}
+
+export function filterIdentifierTypesByEntity(
+	identifierTypes: Array<Object>,
+	entity: Object
+): Array<Object> {
+	const typesOnEntity = new Set();
+
+	if (!entity.identifierSet || entity.identifierSet.identifiers.length < 1) {
+		/*
+		 * If there are no identifiers, skip the work of trying to add types
+		 * which shouldn't be on this entity.
+		 */
+		return filterIdentifierTypesByEntityType(identifierTypes, entity.type);
+	}
+
+	for (const identifier of entity.identifierSet.identifiers) {
+		typesOnEntity.add(identifier.type.id);
+	}
+
+	return identifierTypes.filter(
+		(type) => type.entityType === entity.type || typesOnEntity.has(type.id)
+	);
+}
+
 /**
  * Retrieves the Bookshelf entity model with the given the model name
  *
