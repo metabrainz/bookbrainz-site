@@ -115,8 +115,8 @@ function AboutPage() {
 			<p>
 				The core components of BookBrainz are the site, the
 				webservice and the database. All of these components are
-				running on MetaBrainz&rsquo;s Sakura server, which also runs
-        &nbsp;
+				running on MetaBrainz&rsquo;s Sakura server, which also
+				runs&nbsp;
 				<a href="https://critiquebrainz.org/">
 					CritiqueBrainz
 				</a>.

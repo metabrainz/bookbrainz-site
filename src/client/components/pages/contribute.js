@@ -58,7 +58,7 @@ function ContributePage() {
 					BookBrainz style guidelines
 				</a> when adding data.
 				Unfortunately the aforementioned are still work in progress
-				and should they not cover some cases, please refer to the
+				and should they not cover some cases, please refer to the&nbsp;
 				<a href="http://musicbrainz.org/doc/Style">
 					MusicBrainz ones
 				</a>, adapting as necessary.
