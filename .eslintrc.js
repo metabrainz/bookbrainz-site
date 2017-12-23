@@ -483,7 +483,6 @@ const reactRules = {
 	],
 	'react/no-redundant-should-component-update': ERROR,
 	'react/no-set-state': TRANSITION_WARNING,
-	'react/no-typos': ERROR,
 	'react/no-unused-prop-types': ERROR,
 	'react/no-unused-state': TRANSITION_WARNING,
 	'react/no-will-update-set-state': ERROR,
