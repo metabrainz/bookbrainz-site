@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 pushd src/client/controllers
-watchify -t [babelify] \
+cross-env BABEL_ENV="browser" watchify -t [babelify] \
 		../entity-editor/controller.js \
 		editor/edit.js \
 		editor/achievement.js \
