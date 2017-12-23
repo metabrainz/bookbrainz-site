@@ -28,8 +28,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "eslint",
-      "git add"
+      "eslint"
     ]
   },
   "engines": {
