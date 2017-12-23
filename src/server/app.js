@@ -112,6 +112,14 @@ app.use((req, res, next) => {
 	res.locals.repositoryUrl = repositoryUrl;
 	res.locals.alerts = [];
 
+	if (!req.session) {
+		res.locals.alerts.push({
+			level: 'danger',
+			message: 'We are currently experiencing technical difficulties; ' +
+				'logins will not work until this is resolved.'
+		});
+	}
+
 	// Add user data to every rendered route
 	res.locals.user = req.user;
 
