@@ -116,7 +116,7 @@ app.use((req, res, next) => {
 		res.locals.alerts.push({
 			level: 'danger',
 			message: 'We are currently experiencing technical difficulties; ' +
-				'logins will not work until this is resolved.'
+				'signing in will not work until this is resolved.'
 		});
 	}
 
