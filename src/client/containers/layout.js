@@ -191,14 +191,17 @@ class Layout extends React.Component {
 			</div>
 		);
 
-		const alerts = [];
-		for (const alert of this.props.alerts) {
-			alerts.push(
-				<Alert bsStyle={alert.level} className="text-center">
+		const alerts = this.props.alerts.map(
+			(alert, idx) => (
+				<Alert
+					bsStyle={alert.level}
+					className="text-center"
+					key={idx}
+				>
 					<p>{alert.message}</p>
 				</Alert>
-			);
-		}
+			)
+		);
 
 		return (
 			<div>
