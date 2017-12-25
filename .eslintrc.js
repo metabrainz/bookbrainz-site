@@ -73,6 +73,7 @@ const bestPracticesRules = {
 	'accessor-pairs': ERROR,
 	'array-callback-return': ERROR,
 	'block-scoped-var': ERROR,
+	'class-methods-use-this': TRANSITION_IGNORE,
 	complexity: ERROR,
 	'consistent-return': ERROR,
 	curly: ERROR,
@@ -161,6 +162,7 @@ const strictModeRules = {
 };
 
 const variablesRules = {
+	'init-declarations': TRANSITION_IGNORE,
 	'no-catch-shadow': ERROR,
 	'no-label-var': ERROR,
 	'no-shadow': ERROR,
@@ -281,9 +283,18 @@ const stylisticIssuesRules = {
 			tabWidth: 4
 		}
 	],
+	'max-lines': TRANSITION_IGNORE,
 	'max-nested-callbacks': [
 		ERROR,
 		5
+	],
+	'max-params': [
+		TRANSITION_IGNORE,
+		4
+	],
+	'max-statements': [
+		TRANSITION_IGNORE,
+		15
 	],
 	'multiline-comment-style': ERROR,
 	'new-parens': ERROR,
@@ -298,6 +309,7 @@ const stylisticIssuesRules = {
 	],
 	'no-multiple-empty-lines': ERROR,
 	'no-nested-ternary': ERROR,
+	'no-new-object': TRANSITION_IGNORE,
 	'no-trailing-spaces': ERROR,
 	'no-unneeded-ternary': ERROR,
 	'no-whitespace-before-property': ERROR,
@@ -411,6 +423,7 @@ const reactRules = {
 	'react/boolean-prop-naming': ERROR,
 	'react/button-has-type': ERROR,
 	'react/default-props-match-prop-types': ERROR,
+	'react/forbid-component-props': TRANSITION_IGNORE,
 	'react/forbid-foreign-prop-types': ERROR,
 	'react/jsx-boolean-value': ERROR,
 	'react/jsx-closing-bracket-location': [
@@ -469,6 +482,7 @@ const reactRules = {
 		}
 	],
 	'react/no-redundant-should-component-update': ERROR,
+	'react/no-set-state': TRANSITION_IGNORE,
 	'react/no-typos': ERROR,
 	'react/no-unused-prop-types': ERROR,
 	'react/no-unused-state': TRANSITION_WARNING,
