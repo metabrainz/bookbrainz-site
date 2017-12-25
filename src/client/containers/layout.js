@@ -27,7 +27,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {MenuItem, Nav, Navbar, NavDropdown} = bootstrap;
+const {Alert, MenuItem, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -191,6 +191,18 @@ class Layout extends React.Component {
 			</div>
 		);
 
+		const alerts = this.props.alerts.map(
+			(alert, idx) => (
+				<Alert
+					bsStyle={alert.level}
+					className="text-center"
+					key={idx}
+				>
+					<p>{alert.message}</p>
+				</Alert>
+			)
+		);
+
 		return (
 			<div>
 				<a className="sr-only sr-only-focusable" href="#content">
@@ -205,6 +217,7 @@ class Layout extends React.Component {
 					{this.renderNavHeader()}
 					{this.renderNavContent()}
 				</Navbar>
+				{alerts}
 				{childNode}
 				<Footer
 					repositoryUrl={repositoryUrl}
@@ -217,6 +230,7 @@ class Layout extends React.Component {
 
 Layout.displayName = 'Layout';
 Layout.propTypes = {
+	alerts: PropTypes.array.isRequired,
 	children: PropTypes.node.isRequired,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,

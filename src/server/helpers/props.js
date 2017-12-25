@@ -27,5 +27,5 @@ export function escapeProps(props) {
 }
 
 export function generateProps(req, res, props) {
-	return Object.assign({}, req.app.locals, res.locals, props);
+	return Object.assign({}, res.locals, props);
 }
