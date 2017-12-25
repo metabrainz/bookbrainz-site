@@ -112,13 +112,18 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res, next) => {
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
+			res.locals.identifierTypes,
+			'Edition'
+		);
+
 		const {Publication, Publisher} = req.app.locals.orm;
 		const propsPromise = generateProps(req, res, {
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
 			entityType: 'edition',
 			heading: 'Create Edition',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: {},
 			languageOptions: res.locals.languages,
 			requiresJS: true,
@@ -288,12 +293,17 @@ router.get(
 	(req, res) => {
 		const edition = res.locals.entity;
 
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
+			res.locals.identifierTypes,
+			edition
+		);
+
 		const props = generateProps(req, res, {
 			editionFormats: res.locals.editionFormats,
 			editionStatuses: res.locals.editionStatuses,
 			entityType: 'edition',
 			heading: 'Edit Edition',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: editionToFormState(edition),
 			languageOptions: res.locals.languages,
 			requiresJS: true,

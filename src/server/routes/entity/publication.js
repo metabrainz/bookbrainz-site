@@ -95,10 +95,15 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublicationTypes, (req, res) => {
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
+			res.locals.identifierTypes,
+			'Publication'
+		);
+
 		const props = generateProps(req, res, {
 			entityType: 'publication',
 			heading: 'Create Publication',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: {},
 			languageOptions: res.locals.languages,
 			publicationTypes: res.locals.publicationTypes,
@@ -205,10 +210,15 @@ router.get(
 	(req, res) => {
 		const publication = res.locals.entity;
 
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
+			res.locals.identifierTypes,
+			publication
+		);
+
 		const props = generateProps(req, res, {
 			entityType: 'publication',
 			heading: 'Edit Publication',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: publicationToFormState(publication),
 			languageOptions: res.locals.languages,
 			publicationTypes: res.locals.publicationTypes,
