@@ -19,6 +19,8 @@
 
 // @flow
 
+import Promise from 'bluebird';
+
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
  *
@@ -208,6 +210,7 @@ export function incrementEditorEditCountById(
  *                    truncate tables completes
  */
 export function truncateTables(Bookshelf: Object, tables: Array<string>) {
-	return Promise.all(tables.map((table) =>
-		Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)));
+	return Promise.each(
+		tables, (table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
+	);
 }
