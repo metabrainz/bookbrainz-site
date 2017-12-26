@@ -32,7 +32,7 @@ import ReactDOM from 'react-dom';
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.render(
+ReactDOM.hydrate(
 	<Layout {...extractLayoutProps(props)}>
 		<EditorContainer
 			{...extractEditorProps(props)}

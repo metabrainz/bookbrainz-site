@@ -27,7 +27,7 @@ import {extractLayoutProps} from '../../helpers/props';
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.render(
+ReactDOM.hydrate(
 	<Layout {...extractLayoutProps(props)}>
 		<ProfileForm
 			editor={props.editor}
