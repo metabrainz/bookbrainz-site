@@ -69,12 +69,8 @@ export default function tests() {
 			Achievement, 'publication', thresholdIII
 		),
 		() => testData.createEditor()
-			.then((editor) =>
-				Achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.publisher
-			),
+			.then((editor) => Achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.publisher),
 		common.expectIdsNested(
 			'Publisher',
 			'publisher',

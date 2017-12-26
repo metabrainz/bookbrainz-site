@@ -20,6 +20,7 @@ import {omit, pick} from 'lodash';
 
 
 const LAYOUT_PROPS = [
+	'alerts',
 	'hideSearch',
 	'homepage',
 	'repositoryUrl',

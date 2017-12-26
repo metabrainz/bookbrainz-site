@@ -69,12 +69,8 @@ export default function tests() {
 			Achievement, 'creator', thresholdIII
 		),
 		() => testData.createEditor()
-			.then((editor) =>
-				Achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.creatorCreator
-			),
+			.then((editor) => Achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.creatorCreator),
 		common.expectIdsNested(
 			'Creator Creator',
 			'creatorCreator',

@@ -23,9 +23,9 @@ import _ from 'lodash';
 
 
 const _index = 'bookbrainz';
+const _bulkIndexSize = 40;
 
 let _client = null;
-
 
 function _fetchEntityModelsForESResults(orm, results) {
 	const {Area} = orm;
@@ -63,6 +63,46 @@ function _searchForEntities(orm, dslQuery) {
 		.then((results) => _fetchEntityModelsForESResults(orm, results));
 }
 
+async function _bulkIndexEntities(entities) {
+	if (entities.length === 0) {
+		return;
+	}
+
+	const bulkOperations = entities.reduce((accumulator, entity) => {
+		accumulator.push({
+			index: {
+				_id: entity.bbid,
+				_index,
+				_type: entity.type.toLowerCase()
+			}
+		});
+		accumulator.push(entity);
+
+		return accumulator;
+	}, []);
+
+	await _client.bulk({
+		body: bulkOperations
+	});
+}
+
+async function _processEntityListForBulk(entityList) {
+	const indexOperations = [];
+
+	let bulkQueue = [];
+	for (const entity of entityList) {
+		bulkQueue.push(entity);
+
+		if (bulkQueue.length >= _bulkIndexSize) {
+			indexOperations.push(_bulkIndexEntities(bulkQueue));
+			bulkQueue = [];
+		}
+	}
+	indexOperations.push(_bulkIndexEntities(bulkQueue));
+
+	await Promise.all(indexOperations);
+}
+
 export function autocomplete(orm, query, collection) {
 	let queryBody = null;
 
@@ -96,21 +136,6 @@ export function autocomplete(orm, query, collection) {
 	}
 
 	return _searchForEntities(orm, dslQuery);
-}
-
-export function indexArea(area) {
-	return _client.index({
-		body: {
-			bbid: area.gid,
-			defaultAlias: {
-				name: area.name
-			},
-			type: 'Area'
-		},
-		id: area.gid,
-		index: _index,
-		type: 'area'
-	});
 }
 
 export function indexEntity(entity) {
@@ -240,12 +265,13 @@ export async function generateIndex(orm) {
 		})
 	);
 	const entityLists = await Promise.all(behaviorPromise);
-	const indexedEntities = entityLists.map(
-		(entityList) => Promise.all(
-			entityList.toJSON().map((entity) => indexEntity(entity))
-		)
-	);
-	await Promise.all(indexedEntities);
+
+	const listIndexes = [];
+	for (const entityList of entityLists) {
+		const listArray = entityList.toJSON();
+		listIndexes.push(_processEntityListForBulk(listArray));
+	}
+	await Promise.all(listIndexes);
 
 	const areaCollection = await Area.forge()
 		// countries only
@@ -253,8 +279,14 @@ export async function generateIndex(orm) {
 		.fetchAll();
 
 	const areas = areaCollection.toJSON();
-	const indexedAreas = areas.map((area) => indexArea(area));
-	await Promise.all(indexedAreas);
+	const processedAreas = areas.map((area) => new Object({
+		bbid: area.gid,
+		defaultAlias: {
+			name: area.name
+		},
+		type: 'Area'
+	}));
+	await _processEntityListForBulk(processedAreas);
 
 	await refreshIndex();
 }

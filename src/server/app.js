@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014-2015  Ben Ockmore
- *               2015-2016  Sean Burke
+ *               2015-2017  Sean Burke
  *               2015       Leo Verto
  *
  * This program is free software; you can redistribute it and/or modify
@@ -99,14 +99,28 @@ auth.init(app);
 search.init(app.locals.orm, config.search);
 
 // Set up constants that will remain valid for the life of the app
+let siteRevision = 'unknown';
 git.short((revision) => {
-	app.locals.siteRevision = revision;
+	siteRevision = revision;
 });
 
-app.locals.repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
+const repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
 
-// Add user data to every rendered route
 app.use((req, res, next) => {
+	// Set up globally-used properties
+	res.locals.siteRevision = siteRevision;
+	res.locals.repositoryUrl = repositoryUrl;
+	res.locals.alerts = [];
+
+	if (!req.session) {
+		res.locals.alerts.push({
+			level: 'danger',
+			message: 'We are currently experiencing technical difficulties; ' +
+				'signing in will not work until this is resolved.'
+		});
+	}
+
+	// Add user data to every rendered route
 	res.locals.user = req.user;
 
 	next();

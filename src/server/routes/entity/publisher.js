@@ -105,10 +105,15 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	(req, res) => {
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
+			res.locals.identifierTypes,
+			'Publisher'
+		);
+
 		const props = generateProps(req, res, {
 			entityType: 'publisher',
 			heading: 'Create Publisher',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: {},
 			languageOptions: res.locals.languages,
 			publisherTypes: res.locals.publisherTypes,
@@ -234,10 +239,15 @@ router.get(
 	(req, res) => {
 		const publisher = res.locals.entity;
 
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
+			res.locals.identifierTypes,
+			publisher
+		);
+
 		const props = generateProps(req, res, {
 			entityType: 'publisher',
 			heading: 'Edit Publisher',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: publisherToFormState(publisher),
 			languageOptions: res.locals.languages,
 			publisherTypes: res.locals.publisherTypes,

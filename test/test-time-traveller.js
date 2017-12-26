@@ -35,10 +35,9 @@ const timeTravellerThreshold = 0;
 const processTimeTraveller = Achievement.__get__('processTimeTraveller');
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() =>
-			testData.createTimeTraveller()
-		)
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createTimeTraveller())
 	);
 
 	afterEach(testData.truncate);
@@ -50,12 +49,8 @@ export default function tests() {
 		}),
 		() => new Editor({name: testData.editorAttribs.name})
 			.fetch()
-			.then((editor) =>
-				processTimeTraveller(orm, editor.id)
-			)
-			.then((edit) =>
-				edit['Time Traveller']
-			),
+			.then((editor) => processTimeTraveller(orm, editor.id))
+			.then((edit) => edit['Time Traveller']),
 		common.expectIds(
 			'timeTraveller', ''
 		)
@@ -70,12 +65,8 @@ export default function tests() {
 		}),
 		() => new Editor({name: testData.editorAttribs.name})
 			.fetch()
-			.then((editor) =>
-				processTimeTraveller(orm, editor.id)
-			)
-			.then((edit) =>
-				edit['Time Traveller']
-			),
+			.then((editor) => processTimeTraveller(orm, editor.id))
+			.then((edit) => edit['Time Traveller']),
 		(promise) => expect(promise).to.eventually.equal(false)
 	);
 	it('shouldn\'t be given to someone with edition revision already released',

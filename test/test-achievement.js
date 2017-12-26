@@ -48,11 +48,9 @@ function tests() {
 
 		it('should award achievements', () => {
 			const unlockPromise = testData.createEditor()
-				.then(() =>
-					testData.createRevisionist()
-				)
-				.then(() =>
-					awardAchievement(
+				.then(() => testData.createRevisionist())
+				.then(
+					() => awardAchievement(
 						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
@@ -83,8 +81,8 @@ function tests() {
 
 		it('should reject invalid editors', () => {
 			const unlockPromise = testData.createRevisionist()
-				.then(() =>
-					awardAchievement(
+				.then(
+					() => awardAchievement(
 						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
@@ -96,8 +94,8 @@ function tests() {
 
 		it('should reject invalid achievements', () => {
 			const unlockPromise = testData.createEditor()
-				.then(() =>
-					awardAchievement(
+				.then(
+					() => awardAchievement(
 						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
@@ -112,11 +110,9 @@ function tests() {
 
 		it('should award titles', () => {
 			const unlockPromise = testData.createEditor()
-				.then(() =>
-					testData.createRevisionist()
-				)
-				.then(() =>
-					awardTitle(
+				.then(() => testData.createRevisionist())
+				.then(
+					() => awardTitle(
 						orm,
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}
@@ -137,8 +133,8 @@ function tests() {
 
 		it('should reject invalid editors', () => {
 			const unlockPromise = testData.createRevisionist()
-				.then(() =>
-					awardTitle(
+				.then(
+					() => awardTitle(
 						orm,
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}
@@ -150,8 +146,8 @@ function tests() {
 
 		it('should reject invalid titles', () => {
 			const unlockPromise = testData.createEditor()
-				.then(() =>
-					awardTitle(
+				.then(
+					() => awardTitle(
 						orm,
 						testData.editorAttribs.id,
 						{titleName: testData.revisionistAttribs.title}

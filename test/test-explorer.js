@@ -35,10 +35,9 @@ const thresholdII = 100;
 const thresholdIII = 1000;
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() =>
-			testData.createExplorer()
-		)
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createExplorer())
 	);
 
 	afterEach(testData.truncate);
@@ -51,12 +50,8 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				Achievement.processPageVisit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.explorer['Explorer I']
-			),
+			.then((editor) => Achievement.processPageVisit(orm, editor.id))
+			.then((edit) => edit.explorer['Explorer I']),
 		common.expectIds(
 			'explorer', 'I'
 		)
@@ -71,12 +66,8 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				Achievement.processPageVisit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.explorer['Explorer II']
-			),
+			.then((editor) => Achievement.processPageVisit(orm, editor.id))
+			.then((edit) => edit.explorer['Explorer II']),
 		common.expectIds(
 			'explorer', 'II'
 		)
@@ -91,12 +82,8 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				Achievement.processPageVisit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.explorer['Explorer III']
-			),
+			.then((editor) => Achievement.processPageVisit(orm, editor.id))
+			.then((edit) => edit.explorer['Explorer III']),
 		common.expectIds(
 			'explorer', 'III'
 		)
@@ -111,12 +98,8 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				Achievement.processPageVisit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.explorer['Explorer I']
-			),
+			.then((editor) => Achievement.processPageVisit(orm, editor.id))
+			.then((edit) => edit.explorer['Explorer I']),
 		(promise) => expect(promise).to.eventually.equal(false)
 	);
 	it('I should not be given to someone with 9 entity views', test4);

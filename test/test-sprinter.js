@@ -34,10 +34,9 @@ const Achievement = rewire('../lib/server/helpers/achievement.js');
 const sprinterThreshold = 10;
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() =>
-			testData.createSprinter()
-		)
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createSprinter())
 	);
 
 	afterEach(testData.truncate);
@@ -45,15 +44,9 @@ export default function tests() {
 	const test1 = common.testAchievement(
 		common.rewireAchievement(Achievement, {}),
 		() => testData.sprinterHelper(sprinterThreshold)
-			.then(() => new Editor({name: testData.editorAttribs.name})
-				.fetch()
-			)
-			.then((editor) =>
-				achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.sprinter.Sprinter
-			),
+			.then(() => new Editor({name: testData.editorAttribs.name}).fetch())
+			.then((editor) => achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.sprinter.Sprinter),
 		common.expectIds(
 			'sprinter', ''
 		)
@@ -63,15 +56,9 @@ export default function tests() {
 	const test2 = common.testAchievement(
 		common.rewireAchievement(Achievement, {}),
 		() => testData.sprinterHelper(sprinterThreshold - 1)
-			.then(() => new Editor({name: testData.editorAttribs.name})
-				.fetch()
-			)
-			.then((editor) =>
-				achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.sprinter.Sprinter
-			),
+			.then(() => new Editor({name: testData.editorAttribs.name}).fetch())
+			.then((editor) => achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.sprinter.Sprinter),
 		(promise) => expect(promise).to.eventually.equal(false)
 	);
 	it('should not be given to someone with 9 revisions in an hour', test2);

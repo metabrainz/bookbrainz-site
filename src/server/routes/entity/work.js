@@ -91,10 +91,15 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	(req, res) => {
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
+			res.locals.identifierTypes,
+			'Work'
+		);
+
 		const props = generateProps(req, res, {
 			entityType: 'work',
 			heading: 'Create Work',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: {},
 			languageOptions: res.locals.languages,
 			requiresJS: true,
@@ -203,12 +208,17 @@ router.get(
 	(req, res) => {
 		const work = res.locals.entity;
 
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
+			res.locals.identifierTypes,
+			work
+		);
+
 		workToFormState(work);
 
 		const props = generateProps(req, res, {
 			entityType: 'work',
 			heading: 'Edit Work',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: workToFormState(work),
 			languageOptions: res.locals.languages,
 			requiresJS: true,

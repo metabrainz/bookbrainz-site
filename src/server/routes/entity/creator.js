@@ -90,12 +90,17 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders,	middleware.loadLanguages,
 	middleware.loadCreatorTypes, (req, res) => {
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
+			res.locals.identifierTypes,
+			'Creator'
+		);
+
 		const props = generateProps(req, res, {
 			creatorTypes: res.locals.creatorTypes,
 			entityType: 'creator',
 			genderOptions: res.locals.genders,
 			heading: 'Create Creator',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: {},
 			languageOptions: res.locals.languages,
 			requiresJS: true,
@@ -223,13 +228,18 @@ router.get(
 	(req, res) => {
 		const creator = res.locals.entity;
 
+		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
+			res.locals.identifierTypes,
+			creator
+		);
+
 		const props = generateProps(req, res, {
 			creator,
 			creatorTypes: res.locals.creatorTypes,
 			entityType: 'creator',
 			genderOptions: res.locals.genders,
 			heading: 'Edit Creator',
-			identifierTypes: res.locals.identifierTypes,
+			identifierTypes: filteredIdentifierTypes,
 			initialState: creatorToFormState(creator),
 			languageOptions: res.locals.languages,
 			requiresJS: true,

@@ -70,12 +70,8 @@ export default function tests() {
 			Achievement, 'work', thresholdIII
 		),
 		() => testData.createEditor()
-			.then((editor) =>
-				Achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.workerBee
-			),
+			.then((editor) => Achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.workerBee),
 		common.expectIdsNested(
 			'Worker Bee',
 			'workerBee',
