@@ -32,10 +32,9 @@ const Achievement = rewire('../lib/server/helpers/achievement.js');
 const hotOffThePressThreshold = -7;
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() =>
-			testData.createHotOffThePress()
-		)
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createHotOffThePress())
 	);
 
 	afterEach(testData.truncate);

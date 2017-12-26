@@ -33,10 +33,9 @@ const funRunnerThreshold = 7;
 const funRunnerDays = 6;
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() =>
-			testData.createFunRunner()
-		)
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createFunRunner())
 	);
 
 	afterEach(testData.truncate);

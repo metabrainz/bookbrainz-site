@@ -32,10 +32,9 @@ const {Editor} = orm;
 const Achievement = rewire('../lib/server/helpers/achievement.js');
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() =>
-			testData.createRevisionist()
-		)
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createRevisionist())
 	);
 
 	afterEach(testData.truncate);
@@ -46,16 +45,9 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				editor.set({revisionsApplied: 1})
-					.save()
-			)
-			.then((editor) =>
-				achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.revisionist['Revisionist I']
-			),
+			.then((editor) => editor.set({revisionsApplied: 1}).save())
+			.then((editor) => achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.revisionist['Revisionist I']),
 		common.expectIds(
 			'revisionist', 'I'
 		)
@@ -68,16 +60,9 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				editor.set({revisionsApplied: 50})
-					.save()
-			)
-			.then((editor) =>
-				achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.revisionist
-			),
+			.then((editor) => editor.set({revisionsApplied: 50}).save())
+			.then((editor) => achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.revisionist),
 		(promise) => Promise.all([
 			expect(promise).to.eventually.have.nested
 				.property('Revisionist II.editorId', testData.editorAttribs.id),
@@ -94,16 +79,9 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				editor.set({revisionsApplied: 250})
-					.save()
-			)
-			.then((editor) =>
-				achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.revisionist
-			),
+			.then((editor) => editor.set({revisionsApplied: 250}).save())
+			.then((editor) => achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.revisionist),
 		common.expectIdsNested(
 			'Revisionist',
 			'revisionist',
@@ -118,12 +96,8 @@ export default function tests() {
 			name: testData.editorAttribs.name
 		})
 			.fetch()
-			.then((editor) =>
-				achievement.processEdit(orm, editor.id)
-			)
-			.then((edit) =>
-				edit.revisionist['Revisionist I']
-			),
+			.then((editor) => achievement.processEdit(orm, editor.id))
+			.then((edit) => edit.revisionist['Revisionist I']),
 		(promise) => expect(promise).to.eventually.equal(false)
 	);
 	it('should not be given to someone without a revision', test4);
