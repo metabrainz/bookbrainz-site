@@ -6,16 +6,52 @@
     "transform-class-properties",
     "array-includes",
     [
-        "transform-runtime", {
-            "polyfill": false,
-            "regenerator": true
-        }
+      "transform-runtime", {
+        "polyfill": false,
+        "regenerator": true
+      }
     ]
   ],
   "presets": [
-	  "flow",
-	  "es2016",
-	  "es2017",
-	  "react"
-  ]
+    "flow",
+    "react",
+    ["env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ],
+  "env": {
+    "browser": {
+      "plugins": [
+        "lodash",
+        "transform-es2015-modules-commonjs",
+        "transform-object-rest-spread",
+        "transform-class-properties",
+        "array-includes",
+        [
+          "transform-runtime", {
+            "polyfill": false,
+            "regenerator": true
+          }
+        ]
+      ],
+      "presets": [
+        "flow",
+        "react",
+        ["env", {
+          "targets": {
+            "browsers": [
+              "chrome >= 44",
+              "edge >= 14",
+              "firefox >= 40",
+              "ie >= 11",
+              "opera >= 43",
+              "safari >= 9"
+            ]
+          }
+        }]
+      ]
+    }
+  }
 }
