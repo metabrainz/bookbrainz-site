@@ -183,7 +183,7 @@ class RegistrationForm extends React.Component {
 
 RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
-	gender: validators.namedProperty, // eslint-disable-line react/no-typos
+	gender: validators.namedProperty,
 	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
 	name: PropTypes.string
 };
