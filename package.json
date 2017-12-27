@@ -24,6 +24,7 @@
     "test-ci": "nyc --reporter=lcovonly --reporter=text-summary npm run test",
     "jsdoc": "node_modules/.bin/jsdoc -r src",
     "flow": "flow",
+    "dupreport": "jsinspect src/ || true",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -112,6 +113,7 @@
     "husky": "^0.14.3",
     "jsdoc": "^3.4.0",
     "less": "^2.7.3",
+    "jsinspect": "^0.12.7",
     "lint-staged": "^6.0.0",
     "mocha": "^3.2.0",
     "nodemon": "^1.12.5",
