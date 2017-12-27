@@ -1,0 +1,7 @@
+{
+    "threshold": 35,
+    "identifiers": true,
+    "literals": true,
+    "truncate": 100,
+    "reporter": "default"
+}
