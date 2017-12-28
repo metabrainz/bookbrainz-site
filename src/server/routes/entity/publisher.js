@@ -126,27 +126,6 @@ router.get(
 	}
 );
 
-
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
-function areaToOption(area) {
-	if (!area) {
-		return null;
-	}
-
-	const {id} = area;
-
-	return {
-		disambiguation: area.comment,
-		id,
-		text: area.name,
-		type: 'area'
-	};
-}
-
 function publisherToFormState(publisher) {
 	const aliases = publisher.aliasSet ?
 		publisher.aliasSet.aliases.map(({language, ...rest}) => ({
@@ -154,7 +133,7 @@ function publisherToFormState(publisher) {
 			...rest
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -186,7 +165,7 @@ function publisherToFormState(publisher) {
 	);
 
 	const publisherSection = {
-		area: areaToOption(publisher.area),
+		area: entityRoutes.areaToOption(publisher.area),
 		beginDate: publisher.beginDate,
 		endDate: publisher.endDate,
 		ended: publisher.ended,

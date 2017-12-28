@@ -111,26 +111,6 @@ router.get(
 	}
 );
 
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
-function areaToOption(area) {
-	if (!area) {
-		return null;
-	}
-
-	const {id} = area;
-
-	return {
-		disambiguation: area.comment,
-		id,
-		text: area.name,
-		type: 'area'
-	};
-}
-
 function creatorToFormState(creator) {
 	const aliases = creator.aliasSet ?
 		creator.aliasSet.aliases.map(({language, ...rest}) => ({
@@ -138,7 +118,7 @@ function creatorToFormState(creator) {
 			...rest
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -170,9 +150,9 @@ function creatorToFormState(creator) {
 	);
 
 	const creatorSection = {
-		beginArea: areaToOption(creator.beginArea),
+		beginArea: entityRoutes.areaToOption(creator.beginArea),
 		beginDate: creator.beginDate,
-		endArea: areaToOption(creator.endArea),
+		endArea: entityRoutes.areaToOption(creator.endArea),
 		endDate: creator.endDate,
 		ended: creator.ended,
 		gender: creator.gender && creator.gender.id,
