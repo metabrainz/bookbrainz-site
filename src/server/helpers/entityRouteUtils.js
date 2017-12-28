@@ -20,6 +20,8 @@
 
 import * as Immutable from 'immutable';
 import * as entityEditorHelpers from '../../client/entity-editor/helpers';
+import * as entityRoutes from '../routes/entity/entity';
+import * as error from './error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from './utils';
 import EntityEditor from '../../client/entity-editor/entity-editor';
@@ -93,4 +95,59 @@ export function entityEditorMarkup(
 	props.initialState = store.getState();
 
 	return markup;
+}
+
+
+/**
+ * Callback for any transformations to the request body
+ * @callback transformCallback
+ * @param {object} body - request body
+ */
+
+/**
+ * Handler for create or edit actions
+ * @callback transformCallback
+ * @param {object} req - request object
+ * @param {object} res - response object
+ */
+
+/**
+ * Additional callback to pass data to createEntity
+ * @callback createCallback
+ * @param {object} req - request object
+ * @param {object} res - response object
+ */
+
+/**
+ * Makes a middleware handler for create or edit actions on entities.
+ * @param {string} entityType - entity type
+ * @param {transformCallback} transformNewForm - callback
+ * @param {(string|string[])} propertiesToPick - props from transformed
+ * request body to pick.
+ * @param {createCallback} createCallback - a callback that returns any
+ * additional data for createEntity.
+ * @returns {createOrEditHandler} createOrEditHandler - middleware handler
+ */
+export function makeEntityCreateOrEditHandler(
+	entityType: string,
+	transformNewForm: Function,
+	propertiesToPick: string | string[],
+	createCallback?: (req: Object, res: Object) => any =
+	(req, res) => null) {
+	const entityName = _.capitalize(entityType);
+	return function createOrEditHandler(
+		req: express.request,
+		res: express.response) {
+		const validate = getValidator(entityType);
+		if (!validate(req.body)) {
+			const err = new error.FormSubmissionError();
+			error.sendErrorAsJSON(res, err);
+		}
+
+		req.body = transformNewForm(req.body);
+		return entityRoutes.createEntity(
+			req, res, entityName, _.pick(req.body, propertiesToPick),
+			createCallback(req, res)
+		);
+	};
 }
