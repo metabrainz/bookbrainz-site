@@ -20,12 +20,12 @@
 import * as auth from '../../helpers/auth';
 import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
 	entityEditorMarkup,
-	generateEntityProps
+	generateEntityProps,
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
@@ -254,33 +254,14 @@ function transformNewForm(data) {
 	};
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const validate = getValidator('creator');
-	if (!validate(req.body)) {
-		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
-	}
-
-	req.body = transformNewForm(req.body);
-	return entityRoutes.createEntity(
-		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-	);
-});
-
-router.post(
-	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const validate = getValidator('creator');
-		if (!validate(req.body)) {
-			const err = new error.FormSubmissionError();
-			error.sendErrorAsJSON(res, err);
-		}
-
-		req.body = transformNewForm(req.body);
-		return entityRoutes.editEntity(
-			req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-		);
-	}
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'creator', transformNewForm, additionalCreatorProps
 );
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
 export default router;

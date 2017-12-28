@@ -20,12 +20,12 @@
 import * as auth from '../../helpers/auth';
 import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
 	entityEditorMarkup,
-	generateEntityProps
+	generateEntityProps,
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 import Promise from 'bluebird';
 import _ from 'lodash';
@@ -369,45 +369,14 @@ function getAdditionalEditionSets(orm) {
 	];
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const {orm} = req.app.locals;
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'edition', transformNewForm, additionalEditionProps, (req, res) =>
+		getAdditionalEditionSets(req.app.locals.orm));
 
-	const validate = getValidator('edition');
-	if (!validate(req.body)) {
-		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
-	}
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
-	req.body = transformNewForm(req.body);
-	return entityRoutes.createEntity(
-		req,
-		res,
-		'Edition',
-		_.pick(req.body, additionalEditionProps),
-		getAdditionalEditionSets(orm)
-	);
-});
-
-router.post(
-	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const {orm} = req.app.locals;
-
-		const validate = getValidator('edition');
-		if (!validate(req.body)) {
-			const err = new error.FormSubmissionError();
-			error.sendErrorAsJSON(res, err);
-		}
-
-		req.body = transformNewForm(req.body);
-		return entityRoutes.editEntity(
-			req,
-			res,
-			'Edition',
-			_.pick(req.body, additionalEditionProps),
-			getAdditionalEditionSets(orm)
-		);
-	}
-);
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
 export default router;
