@@ -22,23 +22,18 @@ import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import EntityEditor from '../../../client/entity-editor/entity-editor';
-import Immutable from 'immutable';
-import Layout from '../../../client/containers/layout';
+import {
+	entityEditorMarkup,
+	generateEntityProps
+} from '../../helpers/entityRouteUtils';
 import Promise from 'bluebird';
-import {Provider} from 'react-redux';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
-import {createStore} from 'redux';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
-import {generateEntityProps} from '../../helpers/entityRouteUtils';
 
 
-const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
+const {createRootReducer, getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -143,8 +138,6 @@ router.get(
 		function render(props) {
 			const {initialState, ...rest} = props;
 
-			const rootReducer = createRootReducer(props.entityType);
-
 			if (props.publisher || props.publication) {
 				initialState.editionSection = {};
 			}
@@ -157,28 +150,9 @@ router.get(
 				initialState.editionSection.publication = props.publication;
 			}
 
-			const store = createStore(
-				rootReducer,
-				Immutable.fromJS(initialState)
-			);
+			const rootReducer = createRootReducer(props.entityType);
 
-			const EntitySection = getEntitySection(props.entityType);
-
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(rest)}>
-					<Provider store={store}>
-						<EntityEditor
-							validate={getValidator(props.entityType)}
-							{...propHelpers.extractChildProps(rest)}
-						>
-							<EntitySection/>
-						</EntityEditor>
-					</Provider>
-				</Layout>
-			);
-
-			props.initialState = store.getState();
-
+			const markup = entityEditorMarkup(props, rootReducer);
 			return res.render('target', {
 				markup,
 				props: escapeProps(props),
@@ -301,32 +275,9 @@ router.get(
 			}
 		);
 
-		const {initialState, ...rest} = props;
-
 		const rootReducer = createRootReducer(props.entityType);
 
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
-
+		const markup = entityEditorMarkup(props, rootReducer);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
