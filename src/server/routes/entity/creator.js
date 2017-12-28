@@ -24,7 +24,6 @@ import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import {escapeProps, generateProps} from '../../helpers/props';
 import EntityEditor from '../../../client/entity-editor/entity-editor';
 import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
@@ -33,7 +32,9 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {generateEntityProps} from '../../helpers/entityRouteUtils';
 
 
 const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
@@ -95,17 +96,13 @@ router.get(
 			'Creator'
 		);
 
-		const props = generateProps(req, res, {
-			entityType: 'creator',
-			genderOptions: res.locals.genders,
-			heading: 'Create Creator',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: {},
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Add a new Creator to BookBrainz',
-			submissionUrl: '/creator/create/handler'
-		});
+		const props = generateEntityProps(
+			'creator', 'create', req, res, {
+				genderOptions: res.locals.genders,
+				identifierTypes: filteredIdentifierTypes,
+				submissionUrl: '/creator/create/handler'
+			}
+		);
 
 		const {initialState, ...rest} = props;
 
@@ -232,18 +229,14 @@ router.get(
 			creator
 		);
 
-		const props = generateProps(req, res, {
-			creator,
-			entityType: 'creator',
-			genderOptions: res.locals.genders,
-			heading: 'Edit Creator',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: creatorToFormState(creator),
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Edit an existing Creator in BookBrainz',
-			submissionUrl: `/creator/${creator.bbid}/edit/handler`
-		});
+		const props = generateEntityProps(
+			'creator', 'edit', req, res, {
+				genderOptions: res.locals.genders,
+				identifierTypes: filteredIdentifierTypes,
+				initialState: creatorToFormState(creator),
+				submissionUrl: `/creator/${creator.bbid}/edit/handler`
+			}
+		);
 
 		const {initialState, ...rest} = props;
 

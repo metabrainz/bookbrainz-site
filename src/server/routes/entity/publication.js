@@ -24,7 +24,6 @@ import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import {escapeProps, generateProps} from '../../helpers/props';
 import EntityEditor from '../../../client/entity-editor/entity-editor';
 import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
@@ -33,7 +32,9 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {generateEntityProps} from '../../helpers/entityRouteUtils';
 
 
 const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
@@ -100,16 +101,12 @@ router.get(
 			'Publication'
 		);
 
-		const props = generateProps(req, res, {
-			entityType: 'publication',
-			heading: 'Create Publication',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: {},
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Add a new Publication to BookBrainz',
-			submissionUrl: '/publication/create/handler'
-		});
+		const props = generateEntityProps(
+			'publication', 'create', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				submissionUrl: '/publication/create/handler'
+			}
+		);
 
 		const {initialState, ...rest} = props;
 
@@ -214,16 +211,13 @@ router.get(
 			publication
 		);
 
-		const props = generateProps(req, res, {
-			entityType: 'publication',
-			heading: 'Edit Publication',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: publicationToFormState(publication),
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Edit an existing Publication in BookBrainz',
-			submissionUrl: `/publication/${publication.bbid}/edit/handler`
-		});
+		const props = generateEntityProps(
+			'publication', 'edit', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				initialState: publicationToFormState(publication),
+				submissionUrl: `/publication/${publication.bbid}/edit/handler`
+			}
+		);
 
 		const {initialState, ...rest} = props;
 

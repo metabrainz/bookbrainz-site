@@ -24,7 +24,6 @@ import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import {escapeProps, generateProps} from '../../helpers/props';
 import EntityEditor from '../../../client/entity-editor/entity-editor';
 import Immutable from 'immutable';
 import Layout from '../../../client/containers/layout';
@@ -33,7 +32,9 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {generateEntityProps} from '../../helpers/entityRouteUtils';
 
 
 const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
@@ -96,16 +97,12 @@ router.get(
 			'Work'
 		);
 
-		const props = generateProps(req, res, {
-			entityType: 'work',
-			heading: 'Create Work',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: {},
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Add a new Work to BookBrainz',
-			submissionUrl: '/work/create/handler'
-		});
+		const props = generateEntityProps(
+			'work', 'create', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				submissionUrl: '/work/create/handler'
+			}
+		);
 
 		const {initialState, ...rest} = props;
 
@@ -214,16 +211,13 @@ router.get(
 
 		workToFormState(work);
 
-		const props = generateProps(req, res, {
-			entityType: 'work',
-			heading: 'Edit Work',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: workToFormState(work),
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Edit an existing Work in BookBrainz',
-			submissionUrl: `/work/${work.bbid}/edit/handler`
-		});
+		const props = generateEntityProps(
+			'work', 'edit', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				initialState: workToFormState(work),
+				submissionUrl: `/work/${work.bbid}/edit/handler`
+			}
+		);
 
 		const {initialState, ...rest} = props;
 
