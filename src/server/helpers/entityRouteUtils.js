@@ -18,11 +18,22 @@
 
 // @flow
 
+import * as Immutable from 'immutable';
+import * as entityEditorHelpers from '../../client/entity-editor/helpers';
+import * as propHelpers from '../../client/helpers/props';
 import * as utils from './utils';
+import EntityEditor from '../../client/entity-editor/entity-editor';
+import Layout from '../../client/containers/layout';
+import {Provider} from 'react-redux';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
+import {createStore} from 'redux';
 import express from 'express';
 import {generateProps} from './props';
 
+
+const {getEntitySection, getValidator} = entityEditorHelpers;
 
 type EntityAction = 'create' | 'edit';
 
@@ -52,4 +63,34 @@ export function generateEntityProps(
 	}, additionalProps);
 
 	return generateProps(req, res, props);
+}
+
+/**
+ * Return markup for the entity editor.
+ * @param {object} props - react props
+ * @param {function} rootReducer - redux root reducer
+ * @returns {string} - HTML string
+ */
+export function entityEditorMarkup(
+	props: { initialState: Object,
+			 entityType: string },
+	rootReducer: Function) {
+	const {initialState, ...rest} = props;
+	const store = createStore(rootReducer, Immutable.fromJS(initialState));
+	const EntitySection = getEntitySection(props.entityType);
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(rest)}>
+			<Provider store={store}>
+				<EntityEditor
+					validate={getValidator(props.entityType)}
+					{...propHelpers.extractChildProps(rest)}
+				>
+					<EntitySection/>
+				</EntityEditor>
+			</Provider>
+		</Layout>
+	);
+	props.initialState = store.getState();
+
+	return markup;
 }
