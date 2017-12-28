@@ -106,7 +106,6 @@ router.get(
 			identifierTypes: filteredIdentifierTypes,
 			initialState: {},
 			languageOptions: res.locals.languages,
-			publicationTypes: res.locals.publicationTypes,
 			requiresJS: true,
 			subheading: 'Add a new Publication to BookBrainz',
 			submissionUrl: '/publication/create/handler'
@@ -221,7 +220,6 @@ router.get(
 			identifierTypes: filteredIdentifierTypes,
 			initialState: publicationToFormState(publication),
 			languageOptions: res.locals.languages,
-			publicationTypes: res.locals.publicationTypes,
 			requiresJS: true,
 			subheading: 'Edit an existing Publication in BookBrainz',
 			submissionUrl: `/publication/${publication.bbid}/edit/handler`

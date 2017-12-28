@@ -96,7 +96,6 @@ router.get(
 		);
 
 		const props = generateProps(req, res, {
-			creatorTypes: res.locals.creatorTypes,
 			entityType: 'creator',
 			genderOptions: res.locals.genders,
 			heading: 'Create Creator',
@@ -235,7 +234,6 @@ router.get(
 
 		const props = generateProps(req, res, {
 			creator,
-			creatorTypes: res.locals.creatorTypes,
 			entityType: 'creator',
 			genderOptions: res.locals.genders,
 			heading: 'Edit Creator',

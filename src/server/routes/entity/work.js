@@ -104,8 +104,7 @@ router.get(
 			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Add a new Work to BookBrainz',
-			submissionUrl: '/work/create/handler',
-			workTypes: res.locals.workTypes
+			submissionUrl: '/work/create/handler'
 		});
 
 		const {initialState, ...rest} = props;
@@ -223,8 +222,7 @@ router.get(
 			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: 'Edit an existing Work in BookBrainz',
-			submissionUrl: `/work/${work.bbid}/edit/handler`,
-			workTypes: res.locals.workTypes
+			submissionUrl: `/work/${work.bbid}/edit/handler`
 		});
 
 		const {initialState, ...rest} = props;

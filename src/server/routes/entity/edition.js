@@ -119,8 +119,6 @@ router.get(
 
 		const {Publication, Publisher} = req.app.locals.orm;
 		const propsPromise = generateProps(req, res, {
-			editionFormats: res.locals.editionFormats,
-			editionStatuses: res.locals.editionStatuses,
 			entityType: 'edition',
 			heading: 'Create Edition',
 			identifierTypes: filteredIdentifierTypes,
@@ -299,8 +297,6 @@ router.get(
 		);
 
 		const props = generateProps(req, res, {
-			editionFormats: res.locals.editionFormats,
-			editionStatuses: res.locals.editionStatuses,
 			entityType: 'edition',
 			heading: 'Edit Edition',
 			identifierTypes: filteredIdentifierTypes,

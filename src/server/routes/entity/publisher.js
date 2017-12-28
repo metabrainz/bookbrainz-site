@@ -116,7 +116,6 @@ router.get(
 			identifierTypes: filteredIdentifierTypes,
 			initialState: {},
 			languageOptions: res.locals.languages,
-			publisherTypes: res.locals.publisherTypes,
 			requiresJS: true,
 			subheading: 'Add a new Publisher to BookBrainz',
 			submissionUrl: '/publisher/create/handler'
@@ -250,7 +249,6 @@ router.get(
 			identifierTypes: filteredIdentifierTypes,
 			initialState: publisherToFormState(publisher),
 			languageOptions: res.locals.languages,
-			publisherTypes: res.locals.publisherTypes,
 			requiresJS: true,
 			subheading: 'Edit an existing Publisher in BookBrainz',
 			submissionUrl: `/publisher/${publisher.bbid}/edit/handler`
