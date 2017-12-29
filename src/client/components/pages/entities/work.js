@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
+import EntityDetails from './details';
 import EntityFooter from './footer';
 import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
@@ -77,20 +78,11 @@ function WorkDisplayPage({entity, identifierTypes}) {
 					<WorkAttributes work={entity}/>
 				</Col>
 			</Row>
-			<Row>
-				<Col md={8}>
-					<EntityRelationships
-						entityUrl={urlPrefix}
-						relationships={entity.relationships}
-					/>
-				</Col>
-				<Col md={4}>
-					<EntityIdentifiers
-						identifierSet={entity.identifierSet}
-						identifierTypes={identifierTypes}
-					/>
-				</Col>
-			</Row>
+			<EntityDetails
+				entity={entity}
+				identifierTypes={identifierTypes}
+				urlPrefix={urlPrefix}
+			/>
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				entityUrl={urlPrefix}

@@ -22,21 +22,18 @@ import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import {escapeProps, generateProps} from '../../helpers/props';
-import EntityEditor from '../../../client/entity-editor/entity-editor';
-import Immutable from 'immutable';
-import Layout from '../../../client/containers/layout';
-import {Provider} from 'react-redux';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+import {
+	entityEditorMarkup,
+	generateEntityProps,
+	makeEntityCreateOrEditHandler
+} from '../../helpers/entityRouteUtils';
 import _ from 'lodash';
-import {createStore} from 'redux';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
 
-const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
+const {createRootReducer, getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -96,44 +93,16 @@ router.get(
 			'Work'
 		);
 
-		const props = generateProps(req, res, {
-			entityType: 'work',
-			heading: 'Create Work',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: {},
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Add a new Work to BookBrainz',
-			submissionUrl: '/work/create/handler',
-			workTypes: res.locals.workTypes
-		});
-
-		const {initialState, ...rest} = props;
+		const props = generateEntityProps(
+			'work', 'create', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				submissionUrl: '/work/create/handler'
+			}
+		);
 
 		const rootReducer = createRootReducer(props.entityType);
 
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
-
+		const markup = entityEditorMarkup(props, rootReducer);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -215,44 +184,17 @@ router.get(
 
 		workToFormState(work);
 
-		const props = generateProps(req, res, {
-			entityType: 'work',
-			heading: 'Edit Work',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: workToFormState(work),
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Edit an existing Work in BookBrainz',
-			submissionUrl: `/work/${work.bbid}/edit/handler`,
-			workTypes: res.locals.workTypes
-		});
-
-		const {initialState, ...rest} = props;
+		const props = generateEntityProps(
+			'work', 'edit', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				initialState: workToFormState(work),
+				submissionUrl: `/work/${work.bbid}/edit/handler`
+			}
+		);
 
 		const rootReducer = createRootReducer(props.entityType);
 
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
-
+		const markup = entityEditorMarkup(props, rootReducer);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -299,38 +241,14 @@ function transformNewForm(data) {
 	};
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const {orm} = req.app.locals;
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'work', transformNewForm, 'typeId', (req, res) =>
+		getAdditionalWorkSets(req.app.locals.orm));
 
-	const validate = getValidator('work');
-	if (!validate(req.body)) {
-		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
-	}
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
-	req.body = transformNewForm(req.body);
-	return entityRoutes.createEntity(
-		req, res, 'Work', _.pick(req.body, 'typeId'), getAdditionalWorkSets(orm)
-	);
-});
-
-router.post(
-	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const {orm} = req.app.locals;
-
-		const validate = getValidator('work');
-		if (!validate(req.body)) {
-			const err = new error.FormSubmissionError();
-			error.sendErrorAsJSON(res, err);
-		}
-
-		req.body = transformNewForm(req.body);
-		return entityRoutes.editEntity(
-			req, res, 'Work', _.pick(req.body, 'typeId'),
-			getAdditionalWorkSets(orm)
-		);
-	}
-);
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
 export default router;

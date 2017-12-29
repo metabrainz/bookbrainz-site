@@ -22,21 +22,18 @@ import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import {escapeProps, generateProps} from '../../helpers/props';
-import EntityEditor from '../../../client/entity-editor/entity-editor';
-import Immutable from 'immutable';
-import Layout from '../../../client/containers/layout';
-import {Provider} from 'react-redux';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+import {
+	entityEditorMarkup,
+	generateEntityProps,
+	makeEntityCreateOrEditHandler
+} from '../../helpers/entityRouteUtils';
 import _ from 'lodash';
-import {createStore} from 'redux';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
 
-const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
+const {createRootReducer, getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -110,44 +107,16 @@ router.get(
 			'Publisher'
 		);
 
-		const props = generateProps(req, res, {
-			entityType: 'publisher',
-			heading: 'Create Publisher',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: {},
-			languageOptions: res.locals.languages,
-			publisherTypes: res.locals.publisherTypes,
-			requiresJS: true,
-			subheading: 'Add a new Publisher to BookBrainz',
-			submissionUrl: '/publisher/create/handler'
-		});
-
-		const {initialState, ...rest} = props;
+		const props = generateEntityProps(
+			'publisher', 'create', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				submissionUrl: '/publisher/create/handler'
+			}
+		);
 
 		const rootReducer = createRootReducer(props.entityType);
 
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
-
+		const markup = entityEditorMarkup(props, rootReducer);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -157,27 +126,6 @@ router.get(
 	}
 );
 
-
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
-function areaToOption(area) {
-	if (!area) {
-		return null;
-	}
-
-	const {id} = area;
-
-	return {
-		disambiguation: area.comment,
-		id,
-		text: area.name,
-		type: 'area'
-	};
-}
-
 function publisherToFormState(publisher) {
 	const aliases = publisher.aliasSet ?
 		publisher.aliasSet.aliases.map(({language, ...rest}) => ({
@@ -185,7 +133,7 @@ function publisherToFormState(publisher) {
 			...rest
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -217,7 +165,7 @@ function publisherToFormState(publisher) {
 	);
 
 	const publisherSection = {
-		area: areaToOption(publisher.area),
+		area: entityRoutes.areaToOption(publisher.area),
 		beginDate: publisher.beginDate,
 		endDate: publisher.endDate,
 		ended: publisher.ended,
@@ -244,44 +192,17 @@ router.get(
 			publisher
 		);
 
-		const props = generateProps(req, res, {
-			entityType: 'publisher',
-			heading: 'Edit Publisher',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: publisherToFormState(publisher),
-			languageOptions: res.locals.languages,
-			publisherTypes: res.locals.publisherTypes,
-			requiresJS: true,
-			subheading: 'Edit an existing Publisher in BookBrainz',
-			submissionUrl: `/publisher/${publisher.bbid}/edit/handler`
-		});
-
-		const {initialState, ...rest} = props;
+		const props = generateEntityProps(
+			'publisher', 'edit', req, res, {
+				identifierTypes: filteredIdentifierTypes,
+				initialState: publisherToFormState(publisher),
+				submissionUrl: `/publisher/${publisher.bbid}/create/handler`
+			}
+		);
 
 		const rootReducer = createRootReducer(props.entityType);
 
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
-
+		const markup = entityEditorMarkup(props, rootReducer);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -319,33 +240,13 @@ const additionalPublisherProps = [
 	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
 ];
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const validate = getValidator('publisher');
-	if (!validate(req.body)) {
-		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
-	}
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'publisher', transformNewForm, additionalPublisherProps);
 
-	req.body = transformNewForm(req.body);
-	return entityRoutes.createEntity(
-		req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
-	);
-});
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
-router.post(
-	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const validate = getValidator('publisher');
-		if (!validate(req.body)) {
-			const err = new error.FormSubmissionError();
-			error.sendErrorAsJSON(res, err);
-		}
-
-		req.body = transformNewForm(req.body);
-		return entityRoutes.editEntity(
-			req, res, 'Publisher', _.pick(req.body, additionalPublisherProps)
-		);
-	}
-);
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
 export default router;

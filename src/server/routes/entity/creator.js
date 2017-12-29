@@ -20,23 +20,19 @@
 import * as auth from '../../helpers/auth';
 import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import {escapeProps, generateProps} from '../../helpers/props';
-import EntityEditor from '../../../client/entity-editor/entity-editor';
-import Immutable from 'immutable';
-import Layout from '../../../client/containers/layout';
-import {Provider} from 'react-redux';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+import {
+	entityEditorMarkup,
+	generateEntityProps,
+	makeEntityCreateOrEditHandler
+} from '../../helpers/entityRouteUtils';
 import _ from 'lodash';
-import {createStore} from 'redux';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
 
-const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
+const {createRootReducer, getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -95,45 +91,17 @@ router.get(
 			'Creator'
 		);
 
-		const props = generateProps(req, res, {
-			creatorTypes: res.locals.creatorTypes,
-			entityType: 'creator',
-			genderOptions: res.locals.genders,
-			heading: 'Create Creator',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: {},
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Add a new Creator to BookBrainz',
-			submissionUrl: '/creator/create/handler'
-		});
-
-		const {initialState, ...rest} = props;
+		const props = generateEntityProps(
+			'creator', 'create', req, res, {
+				genderOptions: res.locals.genders,
+				identifierTypes: filteredIdentifierTypes,
+				submissionUrl: '/creator/create/handler'
+			}
+		);
 
 		const rootReducer = createRootReducer(props.entityType);
 
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
-
+		const markup = entityEditorMarkup(props, rootReducer);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -143,26 +111,6 @@ router.get(
 	}
 );
 
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
-function areaToOption(area) {
-	if (!area) {
-		return null;
-	}
-
-	const {id} = area;
-
-	return {
-		disambiguation: area.comment,
-		id,
-		text: area.name,
-		type: 'area'
-	};
-}
-
 function creatorToFormState(creator) {
 	const aliases = creator.aliasSet ?
 		creator.aliasSet.aliases.map(({language, ...rest}) => ({
@@ -170,7 +118,7 @@ function creatorToFormState(creator) {
 			...rest
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -202,9 +150,9 @@ function creatorToFormState(creator) {
 	);
 
 	const creatorSection = {
-		beginArea: areaToOption(creator.beginArea),
+		beginArea: entityRoutes.areaToOption(creator.beginArea),
 		beginDate: creator.beginDate,
-		endArea: areaToOption(creator.endArea),
+		endArea: entityRoutes.areaToOption(creator.endArea),
 		endDate: creator.endDate,
 		ended: creator.ended,
 		gender: creator.gender && creator.gender.id,
@@ -233,46 +181,18 @@ router.get(
 			creator
 		);
 
-		const props = generateProps(req, res, {
-			creator,
-			creatorTypes: res.locals.creatorTypes,
-			entityType: 'creator',
-			genderOptions: res.locals.genders,
-			heading: 'Edit Creator',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: creatorToFormState(creator),
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Edit an existing Creator in BookBrainz',
-			submissionUrl: `/creator/${creator.bbid}/edit/handler`
-		});
-
-		const {initialState, ...rest} = props;
+		const props = generateEntityProps(
+			'creator', 'edit', req, res, {
+				genderOptions: res.locals.genders,
+				identifierTypes: filteredIdentifierTypes,
+				initialState: creatorToFormState(creator),
+				submissionUrl: `/creator/${creator.bbid}/edit/handler`
+			}
+		);
 
 		const rootReducer = createRootReducer(props.entityType);
 
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
-
+		const markup = entityEditorMarkup(props, rootReducer);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -314,33 +234,14 @@ function transformNewForm(data) {
 	};
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const validate = getValidator('creator');
-	if (!validate(req.body)) {
-		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
-	}
-
-	req.body = transformNewForm(req.body);
-	return entityRoutes.createEntity(
-		req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-	);
-});
-
-router.post(
-	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const validate = getValidator('creator');
-		if (!validate(req.body)) {
-			const err = new error.FormSubmissionError();
-			error.sendErrorAsJSON(res, err);
-		}
-
-		req.body = transformNewForm(req.body);
-		return entityRoutes.editEntity(
-			req, res, 'Creator', _.pick(req.body, additionalCreatorProps)
-		);
-	}
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'creator', transformNewForm, additionalCreatorProps
 );
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
 
 export default router;

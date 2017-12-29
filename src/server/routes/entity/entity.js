@@ -944,3 +944,23 @@ export function constructIdentifiers(identifierEditor) {
 		value
 	}));
 }
+
+export function getDefaultAliasIndex(aliases) {
+	const index = aliases.findIndex((alias) => alias.default);
+	return index > 0 ? index : 0;
+}
+
+export function areaToOption(area) {
+	if (!area) {
+		return null;
+	}
+
+	const {id} = area;
+
+	return {
+		disambiguation: area.comment,
+		id,
+		text: area.name,
+		type: 'area'
+	};
+}
