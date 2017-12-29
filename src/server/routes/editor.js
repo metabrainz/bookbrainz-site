@@ -160,11 +160,10 @@ function getEditorTitleJSON(editorJSON, TitleUnlock) {
 	return editorTitleJSON;
 }
 
-router.get('/:id', (req, res, next) => {
-	const {AchievementUnlock, Editor, TitleUnlock} = req.app.locals.orm;
-	const userId = parseInt(req.params.id, 10);
+function getIdEditorJSONPromise(userId, req) {
+	const {Editor, TitleUnlock} = req.app.locals.orm;
 
-	const editorJSONPromise = new Editor({id: userId})
+	return new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender', 'area']
@@ -181,8 +180,15 @@ router.get('/:id', (req, res, next) => {
 		.then(getEditorTitleJSON, TitleUnlock)
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
-		})
-		.catch(next);
+		});
+}
+
+router.get('/:id', (req, res, next) => {
+	const {AchievementUnlock, Editor, TitleUnlock} = req.app.locals.orm;
+	const userId = parseInt(req.params.id, 10);
+
+	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
+		  .catch(next);
 
 	const achievementJSONPromise = new AchievementUnlock()
 		.where(_.snakeCase('editorId'), userId)
@@ -293,29 +299,9 @@ router.get('/:id/achievements', (req, res, next) => {
 		AchievementType, AchievementUnlock, Editor, TitleUnlock
 	} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
-	const editorJSONPromise = new Editor({id: userId})
-		.fetch({
-			require: true,
-			withRelated: ['type', 'gender', 'area']
-		})
-		.then((editordata) => {
-			let editorJSON = editordata.toJSON();
 
-			if (!req.user || userId !== req.user.id) {
-				editorJSON = _.omit(editorJSON, ['password', 'email']);
-				editorJSON.authenticated = false;
-			}
-			else {
-				editorJSON.authenticated = true;
-			}
-
-			return editorJSON;
-		})
-		.then(getEditorTitleJSON, TitleUnlock)
-		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found', req);
-		})
-		.catch(next);
+	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
+		  .catch(next);
 
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
