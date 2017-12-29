@@ -137,6 +137,29 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	handler.sendPromiseResult(res, editorJSONPromise);
 });
 
+function getEditorTitleJSON(editorJSON, TitleUnlock) {
+	let editorTitleJSON;
+	if (editorJSON.titleUnlockId === null) {
+		editorTitleJSON = Promise.resolve(editorJSON);
+	}
+	else {
+		editorTitleJSON = new TitleUnlock({
+			id: editorJSON.titleUnlockId
+		})
+			.fetch({
+				withRelated: ['title']
+			})
+			.then((unlock) => {
+				if (unlock !== null) {
+					editorJSON.title =
+						unlock.relations.title.attributes;
+				}
+				return editorJSON;
+			});
+	}
+	return editorTitleJSON;
+}
+
 router.get('/:id', (req, res, next) => {
 	const {AchievementUnlock, Editor, TitleUnlock} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
@@ -155,28 +178,7 @@ router.get('/:id', (req, res, next) => {
 
 			return editorJSON;
 		})
-		.then((editorJSON) => {
-			let editorTitleJSON;
-			if (editorJSON.titleUnlockId === null) {
-				editorTitleJSON = Promise.resolve(editorJSON);
-			}
-			else {
-				editorTitleJSON = new TitleUnlock({
-					id: editorJSON.titleUnlockId
-				})
-					.fetch({
-						withRelated: ['title']
-					})
-					.then((unlock) => {
-						if (unlock !== null) {
-							editorJSON.title =
-								unlock.relations.title.attributes;
-						}
-						return editorJSON;
-					});
-			}
-			return editorTitleJSON;
-		})
+		.then(getEditorTitleJSON, TitleUnlock)
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
 		})
@@ -240,29 +242,7 @@ router.get('/:id/revisions', (req, res, next) => {
 				}
 			}
 		})
-		.then((editor) => {
-			const editorJSON = editor.toJSON();
-			let editorTitleJSON;
-			if (editorJSON.titleUnlockId === null) {
-				editorTitleJSON = Promise.resolve(editorJSON);
-			}
-			else {
-				editorTitleJSON = new TitleUnlock({
-					id: editorJSON.titleUnlockId
-				})
-					.fetch({
-						withRelated: ['title']
-					})
-					.then((unlock) => {
-						if (unlock !== null) {
-							editorJSON.title =
-								unlock.relations.title.attributes;
-						}
-						return editorJSON;
-					});
-			}
-			return editorTitleJSON;
-		})
+		.then(getEditorTitleJSON, TitleUnlock)
 		.then((editorJSON) => {
 			const props = generateProps(req, res, {
 				editor: editorJSON,
@@ -331,28 +311,7 @@ router.get('/:id/achievements', (req, res, next) => {
 
 			return editorJSON;
 		})
-		.then((editorJSON) => {
-			let editorTitleJSON;
-			if (editorJSON.titleUnlockId === null) {
-				editorTitleJSON = Promise.resolve(editorJSON);
-			}
-			else {
-				editorTitleJSON = new TitleUnlock({
-					id: editorJSON.titleUnlockId
-				})
-					.fetch({
-						withRelated: ['title']
-					})
-					.then((unlock) => {
-						if (unlock !== null) {
-							editorJSON.title =
-								unlock.relations.title.attributes;
-						}
-						return editorJSON;
-					});
-			}
-			return editorTitleJSON;
-		})
+		.then(getEditorTitleJSON, TitleUnlock)
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
 		})
@@ -430,6 +389,7 @@ function rankUpdate(orm, editorId, bodyRank, rank) {
 			return updatePromise;
 		});
 }
+
 
 router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 	const {orm} = req.app.locals;
