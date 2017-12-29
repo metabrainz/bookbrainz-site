@@ -19,10 +19,10 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
-import EntityDetails from './details';
 import EntityFooter from './footer';
 import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
+import EntityLinks from './links';
 import EntityRelationships from './relationships';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
@@ -78,7 +78,7 @@ function WorkDisplayPage({entity, identifierTypes}) {
 					<WorkAttributes work={entity}/>
 				</Col>
 			</Row>
-			<EntityDetails
+			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}
 				urlPrefix={urlPrefix}

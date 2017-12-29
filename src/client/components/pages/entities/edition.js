@@ -19,9 +19,9 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
-import EntityDetails from './details';
 import EntityFooter from './footer';
 import EntityImage from './image';
+import EntityLinks from './links';
 import EntityTitle from './title';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
@@ -113,7 +113,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					</div>
 				</Col>
 			</Row>
-			<EntityDetails
+			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}
 				urlPrefix={urlPrefix}

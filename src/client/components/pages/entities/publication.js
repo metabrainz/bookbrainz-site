@@ -20,9 +20,9 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
 import EditionTable from './edition-table';
-import EntityDetails from './details';
 import EntityFooter from './footer';
 import EntityImage from './image';
+import EntityLinks from './links';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -70,7 +70,7 @@ function PublicationDisplayPage({entity, identifierTypes}) {
 				</Col>
 			</Row>
 			<EditionTable entity={entity}/>
-			<EntityDetails
+			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}
 				urlPrefix={urlPrefix}

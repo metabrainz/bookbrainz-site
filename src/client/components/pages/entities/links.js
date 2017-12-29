@@ -26,7 +26,7 @@ import React from 'react';
 
 const {Col, Row} = bootstrap;
 
-function EntityDetails({entity, identifierTypes, urlPrefix}) {
+function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	return (
 		<Row>
 			<Col md={8}>
@@ -44,14 +44,14 @@ function EntityDetails({entity, identifierTypes, urlPrefix}) {
 		</Row>
 	);
 }
-EntityDetails.displayName = 'EntityDetails';
-EntityDetails.propTypes = {
+EntityLinks.displayName = 'EntityLinks';
+EntityLinks.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
 	urlPrefix: PropTypes.string.isRequired
 };
-EntityDetails.defaultProps = {
+EntityLinks.defaultProps = {
 	identifierTypes: []
 };
 
-export default EntityDetails;
+export default EntityLinks;

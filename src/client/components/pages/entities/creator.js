@@ -19,9 +19,9 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
-import EntityDetails from './details';
 import EntityFooter from './footer';
 import EntityImage from './image';
+import EntityLinks from './links';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -99,7 +99,7 @@ function CreatorDisplayPage({entity, identifierTypes}) {
 					<CreatorAttributes creator={entity}/>
 				</Col>
 			</Row>
-			<EntityDetails
+			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}
 				urlPrefix={urlPrefix}
