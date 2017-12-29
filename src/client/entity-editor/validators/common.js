@@ -67,7 +67,7 @@ export function validateAlias(value: any): boolean {
 }
 
 export const validateAliases = _.partial(
-	validateMultiple, _, validateAlias);
+	validateMultiple, _.partial.placeholder, validateAlias);
 
 export type IdentifierType = {
 	id: number,
@@ -124,7 +124,8 @@ export function validateIdentifier(
 }
 
 export const validateIdentifiers = _.partial(
-	validateMultiple, _, validateIdentifier, _);
+	validateMultiple, _.partial.placeholder,
+	validateIdentifier, _.partial.placeholder);
 
 export function validateNameSectionName(value: any): boolean {
 	return validateRequiredString(value);
