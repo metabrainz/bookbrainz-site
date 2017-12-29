@@ -69,6 +69,7 @@ export function generateEntityProps(
 
 /**
  * Return markup for the entity editor.
+ * This also modifies the props value with a new initialState!
  * @param {object} props - react props
  * @param {function} rootReducer - redux root reducer
  * @returns {string} - HTML string
