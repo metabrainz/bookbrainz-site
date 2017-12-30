@@ -108,17 +108,9 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res, next) => {
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
-			res.locals.identifierTypes,
-			'Edition'
-		);
-
 		const {Publication, Publisher} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
-			'edition', 'create', req, res, {
-				identifierTypes: filteredIdentifierTypes,
-				submissionUrl: '/edition/create/handler'
-			}
+			'edition', 'create', req, res, {}
 		);
 
 		if (req.query.publication) {
@@ -260,19 +252,8 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res) => {
-		const edition = res.locals.entity;
-
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
-			res.locals.identifierTypes,
-			edition
-		);
-
 		const props = generateEntityProps(
-			'edition', 'edit', req, res, {
-				identifierTypes: filteredIdentifierTypes,
-				initialState: editionToFormState(edition),
-				submissionUrl: `/edition/${edition.bbid}/edit/handler`
-			}
+			'edition', 'edit', req, res, {}, editionToFormState
 		);
 
 		const rootReducer = createRootReducer(props.entityType);

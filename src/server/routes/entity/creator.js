@@ -86,16 +86,9 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders,	middleware.loadLanguages,
 	middleware.loadCreatorTypes, (req, res) => {
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
-			res.locals.identifierTypes,
-			'Creator'
-		);
-
 		const props = generateEntityProps(
 			'creator', 'create', req, res, {
-				genderOptions: res.locals.genders,
-				identifierTypes: filteredIdentifierTypes,
-				submissionUrl: '/creator/create/handler'
+				genderOptions: res.locals.genders
 			}
 		);
 
@@ -174,20 +167,10 @@ router.get(
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadCreatorTypes,
 	(req, res) => {
-		const creator = res.locals.entity;
-
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
-			res.locals.identifierTypes,
-			creator
-		);
-
 		const props = generateEntityProps(
 			'creator', 'edit', req, res, {
-				genderOptions: res.locals.genders,
-				identifierTypes: filteredIdentifierTypes,
-				initialState: creatorToFormState(creator),
-				submissionUrl: `/creator/${creator.bbid}/edit/handler`
-			}
+				genderOptions: res.locals.genders
+			}, creatorToFormState
 		);
 
 		const rootReducer = createRootReducer(props.entityType);

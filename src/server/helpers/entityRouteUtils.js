@@ -40,29 +40,55 @@ const {getEntitySection, getValidator} = entityEditorHelpers;
 type EntityAction = 'create' | 'edit';
 
 /**
+ * Callback to get the initial state
+ * @callback initialState
+ * @param {object} entity - entity
+ */
+
+/**
  * Returns a props object with reasonable defaults for entity creation/editing.
  * @param {string} entityType - entity type
  * @param {string} action - 'create' or 'edit'
  * @param {request} req - request object
  * @param {response} res - response object
  * @param {object} additionalProps - additional props
+ * @param {initialStateCallback} initialStateCallback - callback
+ * to get the initial state
  * @returns {object} - props
  */
 export function generateEntityProps(
 	entityType: string, action: EntityAction,
 	req: express.request, res: express.response,
-	additionalProps: Object): Object {
+	additionalProps: Object,
+	initialStateCallback: (entity: ?Object) => Object =
+	(entity) => new Object()): Object {
 	const entityName = _.capitalize(entityType);
+	const {entity} = res.locals;
+
+	const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
+		res.locals.identifierTypes,
+		entity ? entity : entityName
+	);
+
+	const submissionUrl = entity ?
+		`/${entityType}/${entity.bbid}/edit/handler` :
+		`/${entityType}/create/handler`;
+
 	const props = Object.assign({
 		entityType,
 		heading: `${_.capitalize(action)} ${entityName}`,
-		initialState: {},
+		identifierTypes: filteredIdentifierTypes,
+		initialState: initialStateCallback(entity),
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		subheading: action === 'create' ?
 			`Add a new ${entityName} to BookBrainz` :
-			`Edit an existing ${entityName} on BookBrainz`
+			`Edit an existing ${entityName} on BookBrainz`,
+		submissionUrl
 	}, additionalProps);
+
+	// Dynamically set property with name entityType
+	props[entityType] = entity;
 
 	return generateProps(req, res, props);
 }

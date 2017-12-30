@@ -88,16 +88,8 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	(req, res) => {
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
-			res.locals.identifierTypes,
-			'Work'
-		);
-
 		const props = generateEntityProps(
-			'work', 'create', req, res, {
-				identifierTypes: filteredIdentifierTypes,
-				submissionUrl: '/work/create/handler'
-			}
+			'work', 'create', req, res, {}
 		);
 
 		const rootReducer = createRootReducer(props.entityType);
@@ -175,21 +167,8 @@ router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadWorkTypes, middleware.loadLanguages,
 	(req, res) => {
-		const work = res.locals.entity;
-
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
-			res.locals.identifierTypes,
-			work
-		);
-
-		workToFormState(work);
-
 		const props = generateEntityProps(
-			'work', 'edit', req, res, {
-				identifierTypes: filteredIdentifierTypes,
-				initialState: workToFormState(work),
-				submissionUrl: `/work/${work.bbid}/edit/handler`
-			}
+			'work', 'edit', req, res, {}, workToFormState
 		);
 
 		const rootReducer = createRootReducer(props.entityType);

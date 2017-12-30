@@ -102,16 +102,8 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	(req, res) => {
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
-			res.locals.identifierTypes,
-			'Publisher'
-		);
-
 		const props = generateEntityProps(
-			'publisher', 'create', req, res, {
-				identifierTypes: filteredIdentifierTypes,
-				submissionUrl: '/publisher/create/handler'
-			}
+			'publisher', 'create', req, res, {}
 		);
 
 		const rootReducer = createRootReducer(props.entityType);
@@ -185,19 +177,8 @@ router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadPublisherTypes, middleware.loadLanguages,
 	(req, res) => {
-		const publisher = res.locals.entity;
-
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
-			res.locals.identifierTypes,
-			publisher
-		);
-
 		const props = generateEntityProps(
-			'publisher', 'edit', req, res, {
-				identifierTypes: filteredIdentifierTypes,
-				initialState: publisherToFormState(publisher),
-				submissionUrl: `/publisher/${publisher.bbid}/create/handler`
-			}
+			'publisher', 'edit', req, res, {}, publisherToFormState
 		);
 
 		const rootReducer = createRootReducer(props.entityType);
