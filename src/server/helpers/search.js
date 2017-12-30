@@ -23,7 +23,7 @@ import _ from 'lodash';
 
 
 const _index = 'bookbrainz';
-const _bulkIndexSize = 40;
+const _bulkIndexSize = 128;
 
 let _client = null;
 
