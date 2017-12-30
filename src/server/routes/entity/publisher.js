@@ -244,9 +244,9 @@ const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'publisher', transformNewForm, additionalPublisherProps);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
+	_.partial(createOrEditHandler, 'create'));
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
+	_.partial(createOrEditHandler, 'edit'));
 
 export default router;

@@ -113,8 +113,9 @@ export function entityEditorMarkup(
  */
 
 /**
- * Additional callback to pass data to createEntity
- * @callback createCallback
+ * Additional callback to pass data to the entity
+ * create/edit function
+ * @callback additionalCallback
  * @param {object} req - request object
  * @param {object} res - response object
  */
@@ -122,21 +123,22 @@ export function entityEditorMarkup(
 /**
  * Makes a middleware handler for create or edit actions on entities.
  * @param {string} entityType - entity type
- * @param {transformCallback} transformNewForm - callback
+ * @param {transformCallback} transformNewForm - callback for transformations
  * @param {(string|string[])} propertiesToPick - props from transformed
  * request body to pick.
- * @param {createCallback} createCallback - a callback that returns any
- * additional data for createEntity.
+ * @param {additionalCallback} additionalCallback - a callback that returns any
+ * additional data for the entity creation/editing.
  * @returns {createOrEditHandler} createOrEditHandler - middleware handler
  */
 export function makeEntityCreateOrEditHandler(
 	entityType: string,
 	transformNewForm: Function,
 	propertiesToPick: string | string[],
-	createCallback?: (req: Object, res: Object) => any =
+	additionalCallback?: (req: Object, res: Object) => any =
 	(req, res) => null) {
 	const entityName = _.capitalize(entityType);
 	return function createOrEditHandler(
+		action: EntityAction,
 		req: express.request,
 		res: express.response) {
 		const validate = getValidator(entityType);
@@ -146,9 +148,14 @@ export function makeEntityCreateOrEditHandler(
 		}
 
 		req.body = transformNewForm(req.body);
-		return entityRoutes.createEntity(
+
+		const entityFunction = action === 'create' ?
+			  entityRoutes.createEntity :
+			  entityRoutes.editEntity;
+
+		return entityFunction(
 			req, res, entityName, _.pick(req.body, propertiesToPick),
-			createCallback(req, res)
+			additionalCallback(req, res)
 		);
 	};
 }
