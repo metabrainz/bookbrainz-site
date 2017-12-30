@@ -260,9 +260,14 @@ export async function generateIndex(orm) {
 
 	// Update the indexed entries for each entity type
 	const behaviorPromise = entityBehaviors.map(
-		(behavior) => behavior.model.forge().fetchAll({
-			withRelated: baseRelations.concat(behavior.relations)
-		})
+		(behavior) => behavior.model.forge()
+			.query((qb) => {
+				qb.where('master', true);
+				qb.whereNotNull('data_id');
+			})
+			.fetchAll({
+				withRelated: baseRelations.concat(behavior.relations)
+			})
 	);
 	const entityLists = await Promise.all(behaviorPromise);
 
