@@ -88,11 +88,10 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	(req, res) => {
-		const props = generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', 'create', req, res, {}
-		);
+		));
 
-		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -165,11 +164,10 @@ router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadWorkTypes, middleware.loadLanguages,
 	(req, res) => {
-		const props = generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', 'edit', req, res, {}, workToFormState
-		);
+		));
 
-		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),

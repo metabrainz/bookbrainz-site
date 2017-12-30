@@ -98,7 +98,7 @@ export function generateEntityProps(
  * This also modifies the props value with a new initialState!
  * @param {object} props - react props
  * @param {function} rootReducer - redux root reducer
- * @returns {string} - HTML string
+ * @returns {object} - Updated props and HTML string with markup
  */
 export function entityEditorMarkup(
 	props: { initialState: Object,
@@ -121,7 +121,7 @@ export function entityEditorMarkup(
 	);
 	props.initialState = store.getState();
 
-	return markup;
+	return {markup, props};
 }
 
 

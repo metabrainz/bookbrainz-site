@@ -128,7 +128,7 @@ router.get(
 		}
 
 		function render(props) {
-			const {initialState, ...rest} = props;
+			let {initialState, ...rest} = props;
 
 			if (props.publisher || props.publication) {
 				initialState.editionSection = {};
@@ -142,10 +142,10 @@ router.get(
 				initialState.editionSection.publication = props.publication;
 			}
 
-			const markup = entityEditorMarkup(props);
+			const {updatedProps, markup} = entityEditorMarkup(props);
 			return res.render('target', {
 				markup,
-				props: escapeProps(props),
+				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
 				title: 'Add Edition'
 			});
@@ -250,11 +250,10 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res) => {
-		const props = generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'edition', 'edit', req, res, {}, editionToFormState
-		);
+		));
 
-		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),

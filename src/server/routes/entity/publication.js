@@ -92,11 +92,10 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublicationTypes, (req, res) => {
-		const props = generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publication', 'create', req, res, {}
-		);
+		));
 
-		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -167,11 +166,10 @@ router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadPublicationTypes, middleware.loadLanguages,
 	(req, res) => {
-		const props = generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publication', 'edit', req, res, {}, publicationToFormState
-		);
+		));
 
-		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),

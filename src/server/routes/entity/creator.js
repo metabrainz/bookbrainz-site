@@ -86,13 +86,12 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders,	middleware.loadLanguages,
 	middleware.loadCreatorTypes, (req, res) => {
-		const props = generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'creator', 'create', req, res, {
 				genderOptions: res.locals.genders
 			}
-		);
+		));
 
-		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
@@ -165,13 +164,12 @@ router.get(
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadCreatorTypes,
 	(req, res) => {
-		const props = generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'creator', 'edit', req, res, {
 				genderOptions: res.locals.genders
 			}, creatorToFormState
-		);
+		));
 
-		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),
