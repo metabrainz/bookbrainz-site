@@ -33,7 +33,7 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
 
-const {createRootReducer, getValidator} = entityEditorHelpers;
+const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -142,9 +142,7 @@ router.get(
 				initialState.editionSection.publication = props.publication;
 			}
 
-			const rootReducer = createRootReducer(props.entityType);
-
-			const markup = entityEditorMarkup(props, rootReducer);
+			const markup = entityEditorMarkup(props);
 			return res.render('target', {
 				markup,
 				props: escapeProps(props),
@@ -256,9 +254,7 @@ router.get(
 			'edition', 'edit', req, res, {}, editionToFormState
 		);
 
-		const rootReducer = createRootReducer(props.entityType);
-
-		const markup = entityEditorMarkup(props, rootReducer);
+		const markup = entityEditorMarkup(props);
 		return res.render('target', {
 			markup,
 			props: escapeProps(props),

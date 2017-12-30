@@ -35,7 +35,7 @@ import express from 'express';
 import {generateProps} from './props';
 
 
-const {getEntitySection, getValidator} = entityEditorHelpers;
+const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
 
 type EntityAction = 'create' | 'edit';
 
@@ -102,9 +102,9 @@ export function generateEntityProps(
  */
 export function entityEditorMarkup(
 	props: { initialState: Object,
-			 entityType: string },
-	rootReducer: Function) {
+			 entityType: string }) {
 	const {initialState, ...rest} = props;
+	const rootReducer = createRootReducer(props.entityType);
 	const store = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySection(props.entityType);
 	const markup = ReactDOMServer.renderToString(
