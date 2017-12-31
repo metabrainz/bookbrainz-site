@@ -374,6 +374,8 @@ export function searchByName(orm, name, collection) {
 }
 
 export async function init(orm, options) {
+	// Default requestTimeOut is 30000ms which become short for reindexing now
+	options.requestTimeOut = 60000;
 	const config = _.extend({
 		defer() {
 			const defer = {};
