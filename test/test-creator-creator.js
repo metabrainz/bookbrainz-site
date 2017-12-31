@@ -32,12 +32,12 @@ function rewireTypeCreation(threshold) {
 	return common.rewireTypeCreation(Achievement, 'creator', threshold);
 }
 
-function generate() {
-	return common.generate(Achievement, orm, true, 'creatorCreator');
+function getAttrPromise() {
+	return common.getAttrPromise(Achievement, orm, true, 'creatorCreator');
 }
 
-function generateLabeled(rev) {
-	return common.generate(
+function getRevAttrPromise(rev) {
+	return common.getAttrPromise(
 		Achievement, orm, true, 'creatorCreator', `Creator Creator ${rev}`
 	);
 }
@@ -56,28 +56,28 @@ export default function tests() {
 
 	const test1 = common.testAchievement(
 		rewireTypeCreation(thresholdI),
-		generateLabeled('I'),
+		getRevAttrPromise('I'),
 		expectIds('I')
 	);
 	it('I should be given to someone with a creator creation', test1);
 
 	const test2 = common.testAchievement(
 		rewireTypeCreation(thresholdII),
-		generateLabeled('II'),
+		getRevAttrPromise('II'),
 		expectIds('II')
 	);
 	it('II should be given to someone with 10 creator creations', test2);
 
 	const test3 = common.testAchievement(
 		rewireTypeCreation(thresholdIII),
-		generate(),
+		getAttrPromise(),
 		expectAllNamedIds('III')
 	);
 	it('III should be given to someone with 100 creator creations', test3);
 
 	const test4 = common.testAchievement(
 		rewireTypeCreation(0),
-		generateLabeled('I'),
+		getRevAttrPromise('I'),
 		common.expectFalse()
 	);
 	it('should not be given to someone with 0 creator creations', test4);

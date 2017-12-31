@@ -66,14 +66,14 @@ export function expectAllNamedIds(name, prop, rev) {
 	]);
 }
 
-export function generate(Achievement, orm, full) {
+export function getAttrPromise(Achievement, orm, full) {
 	return () => {
-		const editor = full ? testData.createEditor() :
+		const editorPromise = full ? testData.createEditor() :
 			new orm.Editor({name: testData.editorAttribs.name}).fetch();
-		return editor
-			.then((edit) => Achievement.processEdit(orm, edit.id))
-			.then((edit) => {
-				let value = edit;
+		return editorPromise
+			.then((editor) => Achievement.processEdit(orm, editor.id))
+			.then((editor) => {
+				let value = editor;
 
 				for (let index = 3; index < arguments.length; index++) {
 					value = value[arguments[index]];
@@ -97,10 +97,10 @@ export function rewireTypeCreation(Achievement, name, threshold) {
 	});
 }
 
-export function testAchievement(rewiring, generator, expectations) {
+export function testAchievement(rewiring, attrPromise, expectations) {
 	return () => {
 		rewiring();
-		const promise = generator();
+		const promise = attrPromise();
 		return expectations(promise);
 	};
 }

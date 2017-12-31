@@ -57,8 +57,8 @@ function rewireEditsInDaysThree(threshold) {
 	});
 }
 
-function generateLabeled() {
-	return common.generate(Achievement, orm, false, 'marathoner', 'Marathoner');
+function getRevAttrPromise() {
+	return common.getAttrPromise(Achievement, orm, false, 'marathoner', 'Marathoner');
 }
 
 function expectIds(rev) {
@@ -73,14 +73,14 @@ export default function tests() {
 
 	const test1 = common.testAchievement(
 		rewireEditsInDaysThree(marathonerThreshold),
-		generateLabeled(),
+		getRevAttrPromise(),
 		expectIds('')
 	);
 	it('should be given to someone with a revision a day for 30 days', test1);
 
 	const test2 = common.testAchievement(
 		rewireEditsInDaysTwo(marathonerThreshold - 1),
-		generateLabeled(),
+		getRevAttrPromise(),
 		common.expectFalse()
 	);
 	it('shouldn\'t be given to someone without a revision a day for 30 days',

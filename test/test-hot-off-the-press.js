@@ -33,8 +33,8 @@ function rewireEditionDateDifference(threshold) {
 	});
 }
 
-function generateLabeled() {
-	return common.generate(
+function getRevAttrPromise() {
+	return common.getAttrPromise(
 		Achievement, orm, false, 'hotOffThePress', 'Hot Off the Press'
 	);
 }
@@ -51,7 +51,7 @@ export default function tests() {
 
 	const test1 = common.testAchievement(
 		rewireEditionDateDifference(hotOffThePressThreshold),
-		generateLabeled(),
+		getRevAttrPromise(),
 		expectIds('')
 	);
 	it('should be given to someone with edition revision released this week',
@@ -59,7 +59,7 @@ export default function tests() {
 
 	const test2 = common.testAchievement(
 		rewireEditionDateDifference(hotOffThePressThreshold - 1),
-		common.generate(
+		common.getAttrPromise(
 			Achievement, orm, false, 'timeTraveller', 'Time Traveller'
 		),
 		common.expectFalse()

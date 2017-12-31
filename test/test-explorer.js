@@ -36,7 +36,7 @@ function rewireEntityVisits(threshold) {
 	});
 }
 
-function generatePageVisit(rev) {
+function getPageVisitAttrPromise(rev) {
 	return () => new Editor({name: testData.editorAttribs.name})
 		.fetch()
 		.then((editor) => Achievement.processPageVisit(orm, editor.id))
@@ -55,28 +55,28 @@ export default function tests() {
 
 	const test1 = common.testAchievement(
 		rewireEntityVisits(thresholdI),
-		generatePageVisit('I'),
+		getPageVisitAttrPromise('I'),
 		expectIds('I')
 	);
 	it('I should be given to someone with 10 entity views', test1);
 
 	const test2 = common.testAchievement(
 		rewireEntityVisits(thresholdII),
-		generatePageVisit('II'),
+		getPageVisitAttrPromise('II'),
 		expectIds('II')
 	);
 	it('II should be given to someone with 100 entity views', test2);
 
 	const test3 = common.testAchievement(
 		rewireEntityVisits(thresholdIII),
-		generatePageVisit('III'),
+		getPageVisitAttrPromise('III'),
 		expectIds('III')
 	);
 	it('III should be given to someone with 1000 entity views', test3);
 
 	const test4 = common.testAchievement(
 		rewireEntityVisits(thresholdI - 1),
-		generatePageVisit('I'),
+		getPageVisitAttrPromise('I'),
 		common.expectFalse()
 	);
 	it('I should not be given to someone with 9 entity views', test4);

@@ -32,8 +32,8 @@ function rewireTypeCreation(threshold) {
 	return common.rewireTypeCreation(Achievement, 'edition', threshold);
 }
 
-function generateLabeled(rev) {
-	return common.generate(
+function getRevAttrPromise(rev) {
+	return common.getAttrPromise(
 		Achievement, orm, true, 'limitedEdition', `Limited Edition ${rev}`
 	);
 }
@@ -52,28 +52,28 @@ export default function tests() {
 
 	const test1 = common.testAchievement(
 		rewireTypeCreation(thresholdI),
-		generateLabeled('I'),
+		getRevAttrPromise('I'),
 		expectIds('I')
 	);
 	it('I should given to someone with an edition creation', test1);
 
 	const test2 = common.testAchievement(
 		rewireTypeCreation(thresholdII),
-		generateLabeled('II'),
+		getRevAttrPromise('II'),
 		expectIds('II')
 	);
 	it('II should be given to someone with 10 edition creations', test2);
 
 	const test3 = common.testAchievement(
 		rewireTypeCreation(thresholdIII),
-		common.generate(Achievement, orm, true, 'limitedEdition'),
+		common.getAttrPromise(Achievement, orm, true, 'limitedEdition'),
 		expectAllNamedIds('III')
 	);
 	it('III should be given to someone with 100 edition creations', test3);
 
 	const test4 = common.testAchievement(
 		rewireTypeCreation(0),
-		generateLabeled('I'),
+		getRevAttrPromise('I'),
 		common.expectFalse()
 	);
 	it('should not given to someone with 0 edition creations', test4);
