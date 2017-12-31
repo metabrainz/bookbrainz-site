@@ -34,6 +34,7 @@ function makeLoader(modelName, propName, sortFunc) {
 					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
 
 				next();
+				return null;
 			})
 			.catch(next);
 	};
@@ -147,6 +148,7 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 					res.locals.entity = entity.toJSON();
 
 					next();
+					return null;
 				})
 				.catch(model.NotFoundError, () => {
 					throw new error.NotFoundError(errMessage, req);
