@@ -32,6 +32,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
+import target from '../templates/target';
 
 
 const router = express.Router();
@@ -60,12 +61,13 @@ router.get('/', async (req, res, next) => {
 				/>
 			</Layout>
 		);
-		res.render('target', {
+
+		res.send(target({
 			markup,
 			page: 'Index',
 			props: escapeProps(props),
 			script: '/js/index.js'
-		});
+		}));
 	}
 
 	const entityModels = utils.getEntityModels(orm);
