@@ -123,9 +123,13 @@ export function entityEditorMarkup(
 			</Provider>
 		</Layout>
 	);
-	props.initialState = store.getState();
 
-	return {markup, props};
+	return {
+		markup,
+		props: Object.assign({}, props, {
+			intitialState: store.getState()
+		})
+	};
 }
 
 
