@@ -66,7 +66,7 @@ export default ({
 				`<script id='page' type='application/json'>${page}</script>`}
 			${props && script &&
 				`<script id='props' type='application/json'> ${props}</script>
-				<script src='${script}></script>`}
+				<script src='${script}'></script>`}
 		</body>
 	  </html>
 	`;
