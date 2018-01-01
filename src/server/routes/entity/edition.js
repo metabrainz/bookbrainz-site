@@ -128,7 +128,7 @@ router.get(
 		}
 
 		function render(props) {
-			let {initialState, ...rest} = props;
+			const {initialState, ...rest} = props;
 
 			if (props.publisher || props.publication) {
 				initialState.editionSection = {};
