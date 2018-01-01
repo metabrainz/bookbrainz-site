@@ -65,9 +65,11 @@ export function generateEntityProps(
 	const {entity} = res.locals;
 	const isEdit = Boolean(entity);
 
-	const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
-		res.locals.identifierTypes,
-		isEdit ? entity : entityName
+	const getFilteredIdentifierTypes = isEdit ?
+		_.partialRight(utils.filterIdentifierTypesByEntity, entity) :
+		_.partialRight(utils.filterIdentifierTypesByEntityType, entityName);
+	const filteredIdentifierTypes = getFilteredIdentifierTypes(
+		res.locals.identifierTypes
 	);
 
 	const submissionUrl = isEdit ?
