@@ -273,7 +273,7 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
-		disambiguation: data.publicationSection.disambiguation,
+		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
 		typeId: data.publicationSection.type
