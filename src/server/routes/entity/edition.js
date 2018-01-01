@@ -20,24 +20,20 @@
 import * as auth from '../../helpers/auth';
 import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
-import * as propHelpers from '../../../client/helpers/props';
 import * as utils from '../../helpers/utils';
-import {escapeProps, generateProps} from '../../helpers/props';
-import EntityEditor from '../../../client/entity-editor/entity-editor';
-import Immutable from 'immutable';
-import Layout from '../../../client/containers/layout';
+import {
+	entityEditorMarkup,
+	generateEntityProps,
+	makeEntityCreateOrEditHandler
+} from '../../helpers/entityRouteUtils';
 import Promise from 'bluebird';
-import {Provider} from 'react-redux';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
-import {createStore} from 'redux';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
 
-const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
+const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -112,24 +108,10 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res, next) => {
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntityType(
-			res.locals.identifierTypes,
-			'Edition'
-		);
-
 		const {Publication, Publisher} = req.app.locals.orm;
-		const propsPromise = generateProps(req, res, {
-			editionFormats: res.locals.editionFormats,
-			editionStatuses: res.locals.editionStatuses,
-			entityType: 'edition',
-			heading: 'Create Edition',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: {},
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Add a new Edition to BookBrainz',
-			submissionUrl: '/edition/create/handler'
-		});
+		const propsPromise = generateEntityProps(
+			'edition', req, res, {}
+		);
 
 		if (req.query.publication) {
 			propsPromise.publication =
@@ -148,8 +130,6 @@ router.get(
 		function render(props) {
 			const {initialState, ...rest} = props;
 
-			const rootReducer = createRootReducer(props.entityType);
-
 			if (props.publisher || props.publication) {
 				initialState.editionSection = {};
 			}
@@ -162,31 +142,12 @@ router.get(
 				initialState.editionSection.publication = props.publication;
 			}
 
-			const store = createStore(
-				rootReducer,
-				Immutable.fromJS(initialState)
-			);
-
-			const EntitySection = getEntitySection(props.entityType);
-
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(rest)}>
-					<Provider store={store}>
-						<EntityEditor
-							validate={getValidator(props.entityType)}
-							{...propHelpers.extractChildProps(rest)}
-						>
-							<EntitySection/>
-						</EntityEditor>
-					</Provider>
-				</Layout>
-			);
-
-			props.initialState = store.getState();
-
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
 			return res.render('target', {
 				markup,
-				props: escapeProps(props),
+				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
 				title: 'Add Edition'
 			});
@@ -291,51 +252,9 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages,
 	(req, res) => {
-		const edition = res.locals.entity;
-
-		const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
-			res.locals.identifierTypes,
-			edition
-		);
-
-		const props = generateProps(req, res, {
-			editionFormats: res.locals.editionFormats,
-			editionStatuses: res.locals.editionStatuses,
-			entityType: 'edition',
-			heading: 'Edit Edition',
-			identifierTypes: filteredIdentifierTypes,
-			initialState: editionToFormState(edition),
-			languageOptions: res.locals.languages,
-			requiresJS: true,
-			subheading: 'Edit an existing Edition in BookBrainz',
-			submissionUrl: `/edition/${edition.bbid}/edit/handler`
-		});
-
-		const {initialState, ...rest} = props;
-
-		const rootReducer = createRootReducer(props.entityType);
-
-		const store = createStore(
-			rootReducer,
-			Immutable.fromJS(initialState)
-		);
-
-		const EntitySection = getEntitySection(props.entityType);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(rest)}>
-				<Provider store={store}>
-					<EntityEditor
-						validate={getValidator(props.entityType)}
-						{...propHelpers.extractChildProps(rest)}
-					>
-						<EntitySection/>
-					</EntityEditor>
-				</Provider>
-			</Layout>
-		);
-
-		props.initialState = store.getState();
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
+			'edition', req, res, {}, editionToFormState
+		));
 
 		return res.render('target', {
 			markup,
@@ -428,45 +347,14 @@ function getAdditionalEditionSets(orm) {
 	];
 }
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const {orm} = req.app.locals;
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'edition', transformNewForm, additionalEditionProps, (req, res) =>
+		getAdditionalEditionSets(req.app.locals.orm));
 
-	const validate = getValidator('edition');
-	if (!validate(req.body)) {
-		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
-	}
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	_.partial(createOrEditHandler, 'create'));
 
-	req.body = transformNewForm(req.body);
-	return entityRoutes.createEntity(
-		req,
-		res,
-		'Edition',
-		_.pick(req.body, additionalEditionProps),
-		getAdditionalEditionSets(orm)
-	);
-});
-
-router.post(
-	'/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const {orm} = req.app.locals;
-
-		const validate = getValidator('edition');
-		if (!validate(req.body)) {
-			const err = new error.FormSubmissionError();
-			error.sendErrorAsJSON(res, err);
-		}
-
-		req.body = transformNewForm(req.body);
-		return entityRoutes.editEntity(
-			req,
-			res,
-			'Edition',
-			_.pick(req.body, additionalEditionProps),
-			getAdditionalEditionSets(orm)
-		);
-	}
-);
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+	_.partial(createOrEditHandler, 'edit'));
 
 export default router;

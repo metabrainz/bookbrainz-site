@@ -21,9 +21,8 @@ import * as entityHelper from '../../../helpers/entity';
 
 import EditionTable from './edition-table';
 import EntityFooter from './footer';
-import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
-import EntityRelationships from './relationships';
+import EntityLinks from './links';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -71,20 +70,11 @@ function PublicationDisplayPage({entity, identifierTypes}) {
 				</Col>
 			</Row>
 			<EditionTable entity={entity}/>
-			<Row>
-				<Col md={8}>
-					<EntityRelationships
-						entityUrl={urlPrefix}
-						relationships={entity.relationships}
-					/>
-				</Col>
-				<Col md={4}>
-					<EntityIdentifiers
-						identifierSet={entity.identifierSet}
-						identifierTypes={identifierTypes}
-					/>
-				</Col>
-			</Row>
+			<EntityLinks
+				entity={entity}
+				identifierTypes={identifierTypes}
+				urlPrefix={urlPrefix}
+			/>
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				entityUrl={urlPrefix}

@@ -25,6 +25,22 @@ import {Iterable} from 'immutable';
 import _ from 'lodash';
 
 
+export function validateMultiple(
+	values: any[],
+	validationFunction: (value: any, ...rest: any[]) => boolean,
+	additionalArgs?: any): boolean {
+	let every = (object, predicate) => _.every(object, predicate);
+	if (Iterable.isIterable(values)) {
+		every = (object, predicate) => object.every(predicate);
+	}
+	else if (!_.isObject(values)) {
+		return false;
+	}
+
+	return every(values, (value) =>
+		validationFunction(value, additionalArgs));
+}
+
 export function validateAliasName(value: any): boolean {
 	return validateRequiredString(value);
 }
@@ -50,17 +66,8 @@ export function validateAlias(value: any): boolean {
 	);
 }
 
-export function validateAliases(values: any): boolean {
-	let every = (object, predicate) => _.every(object, predicate);
-	if (Iterable.isIterable(values)) {
-		every = (object, predicate) => object.every(predicate);
-	}
-	else if (!_.isObject(values)) {
-		return false;
-	}
-
-	return every(values, (value) => validateAlias(value));
-}
+export const validateAliases = _.partial(
+	validateMultiple, _.partial.placeholder, validateAlias);
 
 export type IdentifierType = {
 	id: number,
@@ -116,19 +123,9 @@ export function validateIdentifier(
 	);
 }
 
-export function validateIdentifiers(
-	values: any, types?: ?Array<IdentifierType>
-): boolean {
-	let every = (object, predicate) => _.every(object, predicate);
-	if (Iterable.isIterable(values)) {
-		every = (object, predicate) => object.every(predicate);
-	}
-	else if (!_.isObject(values)) {
-		return false;
-	}
-
-	return every(values, (value) => validateIdentifier(value, types));
-}
+export const validateIdentifiers = _.partial(
+	validateMultiple, _.partial.placeholder,
+	validateIdentifier, _.partial.placeholder);
 
 export function validateNameSectionName(value: any): boolean {
 	return validateRequiredString(value);
