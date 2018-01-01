@@ -177,7 +177,7 @@ function getIdEditorJSONPromise(userId, req) {
 
 			return editorJSON;
 		})
-		.then(getEditorTitleJSON(TitleUnlock))
+		.then(_.partialRight(getEditorTitleJSON, TitleUnlock))
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
 		});
@@ -248,7 +248,7 @@ router.get('/:id/revisions', (req, res, next) => {
 				}
 			}
 		})
-		.then(getEditorTitleJSON(TitleUnlock))
+		.then((editor) => getEditorTitleJSON(editor.toJSON(), TitleUnlock))
 		.then((editorJSON) => {
 			const props = generateProps(req, res, {
 				editor: editorJSON,
