@@ -142,7 +142,9 @@ router.get(
 				initialState.editionSection.publication = props.publication;
 			}
 
-			const {updatedProps, markup} = entityEditorMarkup(props);
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
 			return res.render('target', {
 				markup,
 				props: escapeProps(updatedProps),
