@@ -103,7 +103,7 @@ router.get(
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'publisher', 'create', req, res, {}
+			'publisher', req, res, {}
 		));
 
 		return res.render('target', {
@@ -175,7 +175,7 @@ router.get(
 	middleware.loadPublisherTypes, middleware.loadLanguages,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'publisher', 'edit', req, res, {}, publisherToFormState
+			'publisher', req, res, {}, publisherToFormState
 		));
 
 		return res.render('target', {

@@ -93,7 +93,7 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublicationTypes, (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'publication', 'create', req, res, {}
+			'publication', req, res, {}
 		));
 
 		return res.render('target', {
@@ -167,7 +167,7 @@ router.get(
 	middleware.loadPublicationTypes, middleware.loadLanguages,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'publication', 'edit', req, res, {}, publicationToFormState
+			'publication', req, res, {}, publicationToFormState
 		));
 
 		return res.render('target', {

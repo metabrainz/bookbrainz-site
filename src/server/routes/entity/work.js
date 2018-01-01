@@ -89,7 +89,7 @@ router.get(
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'work', 'create', req, res, {}
+			'work', req, res, {}
 		));
 
 		return res.render('target', {
@@ -165,7 +165,7 @@ router.get(
 	middleware.loadWorkTypes, middleware.loadLanguages,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'work', 'edit', req, res, {}, workToFormState
+			'work', req, res, {}, workToFormState
 		));
 
 		return res.render('target', {

@@ -48,7 +48,6 @@ type EntityAction = 'create' | 'edit';
 /**
  * Returns a props object with reasonable defaults for entity creation/editing.
  * @param {string} entityType - entity type
- * @param {string} action - 'create' or 'edit'
  * @param {request} req - request object
  * @param {response} res - response object
  * @param {object} additionalProps - additional props
@@ -57,33 +56,36 @@ type EntityAction = 'create' | 'edit';
  * @returns {object} - props
  */
 export function generateEntityProps(
-	entityType: string, action: EntityAction,
+	entityType: string,
 	req: express.request, res: express.response,
 	additionalProps: Object,
 	initialStateCallback: (entity: ?Object) => Object =
 	(entity) => new Object()): Object {
 	const entityName = _.capitalize(entityType);
 	const {entity} = res.locals;
+	const isEdit = Boolean(entity);
 
 	const filteredIdentifierTypes = utils.filterIdentifierTypesByEntity(
 		res.locals.identifierTypes,
-		entity ? entity : entityName
+		isEdit ? entity : entityName
 	);
 
-	const submissionUrl = entity ?
+	const submissionUrl = isEdit ?
 		`/${entityType}/${entity.bbid}/edit/handler` :
 		`/${entityType}/create/handler`;
 
 	const props = Object.assign({
 		entityType,
-		heading: `${_.capitalize(action)} ${entityName}`,
+		heading: isEdit ?
+			`Edit ${entityName}` :
+			`Create ${entityName}`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(entity),
 		languageOptions: res.locals.languages,
 		requiresJS: true,
-		subheading: action === 'create' ?
-			`Add a new ${entityName} to BookBrainz` :
-			`Edit an existing ${entityName} on BookBrainz`,
+		subheading: isEdit ?
+			`Edit an existing ${entityName} on BookBrainz` :
+			`Add a new ${entityName} to BookBrainz`,
 		submissionUrl
 	}, additionalProps);
 

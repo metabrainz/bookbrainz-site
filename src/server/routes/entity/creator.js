@@ -87,7 +87,7 @@ router.get(
 	middleware.loadGenders,	middleware.loadLanguages,
 	middleware.loadCreatorTypes, (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'creator', 'create', req, res, {
+			'creator', req, res, {
 				genderOptions: res.locals.genders
 			}
 		));
@@ -165,7 +165,7 @@ router.get(
 	middleware.loadCreatorTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'creator', 'edit', req, res, {
+			'creator', req, res, {
 				genderOptions: res.locals.genders
 			}, creatorToFormState
 		));

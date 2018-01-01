@@ -110,7 +110,7 @@ router.get(
 	(req, res, next) => {
 		const {Publication, Publisher} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
-			'edition', 'create', req, res, {}
+			'edition', req, res, {}
 		);
 
 		if (req.query.publication) {
@@ -253,7 +253,7 @@ router.get(
 	middleware.loadLanguages,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'edition', 'edit', req, res, {}, editionToFormState
+			'edition', req, res, {}, editionToFormState
 		));
 
 		return res.render('target', {
