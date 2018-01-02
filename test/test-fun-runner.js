@@ -58,7 +58,9 @@ function rewireEditsInDaysThree(threshold) {
 }
 
 function getRevAttrPromise() {
-	return common.getAttrPromise(Achievement, orm, false, 'funRunner', 'Fun Runner');
+	return common.getAttrPromise(
+		Achievement, orm, false, 'funRunner', 'Fun Runner'
+	);
 }
 
 function expectIds(rev) {
