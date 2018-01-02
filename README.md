@@ -7,6 +7,7 @@
 <a href="https://www.browserstack.com/">
 <img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
 </a>
+[![Help Contribute to Open Source](https://www.codetriage.com/bookbrainz/bookbrainz-site/badges/users.svg)](https://www.codetriage.com/bookbrainz/bookbrainz-site)
 
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:
