@@ -25,6 +25,10 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
+export function expectFalse() {
+	return (promise) => expect(promise).to.eventually.equal(false);
+}
+
 export function expectIds(prop, rev) {
 	return (promise) => Promise.all([
 		expect(promise).to.eventually.have
@@ -34,7 +38,18 @@ export function expectIds(prop, rev) {
 	]);
 }
 
-export function expectIdsNested(name, prop, rev) {
+export function expectRevNamedIds(name, prop, rev) {
+	return (promise) => Promise.all([
+		expect(promise).to.eventually.have.nested
+			.property(`${name} ${rev}.editorId`,
+				testData.editorAttribs.id),
+		expect(promise).to.eventually.have.nested
+			.property(`${name} ${rev}.achievementId`,
+				testData[`${prop}${rev}Attribs`].id)
+	]);
+}
+
+export function expectAllNamedIds(name, prop, rev) {
 	return (promise) => Promise.all([
 		expect(promise).to.eventually.have.nested
 			.property(`${name} ${rev}.editorId`,
@@ -51,25 +66,30 @@ export function expectIdsNested(name, prop, rev) {
 	]);
 }
 
-export function generateProcessEdit(Achievement, orm, func, name, rev) {
-	return () => testData.createEditor()
-		.then((editor) => Achievement.processEdit(orm, editor.id))
-		.then((edit) => edit[func][`${name} ${rev}`]);
+export function getAttrPromise(Achievement, orm, full) {
+	return () => {
+		const editorPromise = full ? testData.createEditor() :
+			new orm.Editor({name: testData.editorAttribs.name}).fetch();
+		return editorPromise
+			.then((editor) => Achievement.processEdit(orm, editor.id))
+			.then((editor) => {
+				let value = editor;
+
+				for (let index = 3; index < arguments.length; index++) {
+					value = value[arguments[index]];
+				}
+
+				return value;
+			});
+	};
 }
 
-export function generateProcessEditNamed(Achievement, orm, func, name) {
-	return () => new orm.Editor({name: testData.editorAttribs.name})
-		.fetch()
-		.then((editor) => Achievement.processEdit(orm, editor.id))
-		.then((edit) => edit[func][name]);
-}
-
-export function rewireAchievement(Achievement, rewiring) {
+export function rewire(Achievement, rewiring) {
 	return () => Achievement.__set__(rewiring);
 }
 
 export function rewireTypeCreation(Achievement, name, threshold) {
-	return rewireAchievement(Achievement, {
+	return rewire(Achievement, {
 		getTypeCreation:
 			testData.typeCreationHelper(
 				`${name}_revision`, threshold
@@ -77,10 +97,10 @@ export function rewireTypeCreation(Achievement, name, threshold) {
 	});
 }
 
-export function testAchievement(rewiring, generator, expectations) {
+export function testAchievement(rewiring, attrPromise, expectations) {
 	return () => {
 		rewiring();
-		const promise = generator();
+		const promise = attrPromise();
 		return expectations(promise);
 	};
 }
