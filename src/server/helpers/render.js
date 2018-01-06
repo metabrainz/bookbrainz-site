@@ -16,10 +16,23 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+// @flow
 
 import * as utils from './utils';
 import Handlebars from 'handlebars';
 
+
+type EntityInRelationship = {
+	bbid: number | string,
+	defaultAlias?: {name: string},
+	type: string
+};
+
+type Relationship = {
+	source: EntityInRelationship,
+	target: EntityInRelationship,
+	type: {displayTemplate: string}
+};
 
 /**
  * @typedef {Object} EntityInRelationship
@@ -42,7 +55,7 @@ import Handlebars from 'handlebars';
  * @param {Relationship} relationship - Relationship object.
  * @returns {string} - Rendered HTML string.
  */
-function renderRelationship(relationship) {
+function renderRelationship(relationship: Relationship) {
 	const template = Handlebars.compile(
 		relationship.type.displayTemplate,
 		{noEscape: true}
