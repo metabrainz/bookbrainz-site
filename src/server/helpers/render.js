@@ -21,6 +21,27 @@ import * as utils from './utils';
 import Handlebars from 'handlebars';
 
 
+/**
+ * @typedef {Object} EntityInRelationship
+ * @property {number|string} bbid
+ * @property {?Object} defaultAlias
+ * @property {string} defaultAlias.name
+ * @property {string} type
+ */
+
+/**
+ * @typedef {Object} Relationship
+ * @property {EntityInRelationship} source
+ * @property {EntityInRelationship} target
+ * @property {Object} type
+ * @property {string} type.displayTemplate
+ */
+
+/**
+ * Renders a relationship object.
+ * @param {Relationship} relationship - Relationship object.
+ * @returns {string} - Rendered HTML string.
+ */
 function renderRelationship(relationship) {
 	const template = Handlebars.compile(
 		relationship.type.displayTemplate,
