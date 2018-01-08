@@ -51,7 +51,7 @@ type Relationship = {
  */
 
 /**
- * Renders a relationship object.
+ * Returns the markup corresponding to the given entity relationship.
  * @param {Relationship} relationship - Relationship object.
  * @returns {string} - Rendered HTML string.
  */
