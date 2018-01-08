@@ -23,12 +23,12 @@ const relationshipTests = {
 	fullySpecified: {
 		rel: {
 			source: {
-				bbid: 1,
+				bbid: '1',
 				defaultAlias: {name: 'test'},
 				type: 'test-type'
 			},
 			target: {
-				bbid: 2,
+				bbid: '2',
 				defaultAlias: {name: 'test2'},
 				type: 'test-type2'
 			},
@@ -42,11 +42,11 @@ const relationshipTests = {
 	unnamedSource: {
 		rel: {
 			source: {
-				bbid: 1,
+				bbid: '1',
 				type: 'test-type'
 			},
 			target: {
-				bbid: 2,
+				bbid: '2',
 				defaultAlias: {name: 'test2'},
 				type: 'test-type2'
 			},

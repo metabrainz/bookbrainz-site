@@ -23,7 +23,7 @@ import Handlebars from 'handlebars';
 
 
 type EntityInRelationship = {
-	bbid: number | string,
+	bbid: string,
 	defaultAlias?: {name: string},
 	type: string
 };
@@ -36,7 +36,7 @@ type Relationship = {
 
 /**
  * @typedef {Object} EntityInRelationship
- * @property {number|string} bbid
+ * @property {string} bbid
  * @property {?Object} defaultAlias
  * @property {string} defaultAlias.name
  * @property {string} type
