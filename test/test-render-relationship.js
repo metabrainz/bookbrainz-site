@@ -55,6 +55,25 @@ const relationshipTests = {
 			'<a href="/test-type2/2">test2</a>'
 		].join('')
 	},
+	fullySpecifiedWithNumericBbids: {
+		rel: {
+			source: {
+				bbid: 1,
+				defaultAlias: {name: 'test'},
+				type: 'test-type'
+			},
+			target: {
+				bbid: 2,
+				defaultAlias: {name: 'test2'},
+				type: 'test-type2'
+			},
+			type: {displayTemplate: '{{entities.[0]}}{{entities.[1]}}'}
+		},
+		renderedRel: [
+			'<a href="/test-type/1">test</a>',
+			'<a href="/test-type2/2">test2</a>'
+		].join('')
+	},
 	unnamedSource: {
 		rel: {
 			source: {
@@ -84,6 +103,8 @@ function makeRelationshipTest(test) {
 describe('renderRelationship', () => {
 	it('renders a fully specified relationship',
 	   makeRelationshipTest(relationshipTests.fullySpecified));
+	it('renders a fully specified relationship with numeric bbids',
+	   makeRelationshipTest(relationshipTests.fullySpecifiedWithNumericBbids));
 	it('renders a relationship where the source entity is unnamed',
 	   makeRelationshipTest(relationshipTests.unnamedSource));
 	it('works with an empty template',
