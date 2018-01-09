@@ -74,6 +74,30 @@ const relationshipTests = {
 			'<a href="/test-type2/2">test2</a>'
 		].join('')
 	},
+	nullEntities: {
+		error: TypeError,
+		rel: {
+			source: null,
+			target: null,
+			type: {displayTemplate: '{{entities.[0]}}{{entitites.[1]}}'}
+		}
+	},
+	nullTemplate: {
+		error: 'null',
+		rel: {
+			source: {
+				bbid: '1',
+				defaultAlias: {name: 'test'},
+				type: 'test-type'
+			},
+			target: {
+				bbid: '2',
+				defaultAlias: {name: 'test2'},
+				type: 'test-type2'
+			},
+			type: {displayTemplate: null}
+		}
+	},
 	unnamedSource: {
 		rel: {
 			source: {
@@ -96,7 +120,13 @@ const relationshipTests = {
 
 function makeRelationshipTest(test) {
 	return () => {
-		expect(renderRelationship(test.rel)).to.equal(test.renderedRel);
+		if ('error' in test) {
+			expect(() => renderRelationship(test.rel))
+				.to.throw(test.error);
+		}
+		else {
+			expect(renderRelationship(test.rel)).to.equal(test.renderedRel);
+		}
 	};
 }
 
@@ -109,4 +139,8 @@ describe('renderRelationship', () => {
 	   makeRelationshipTest(relationshipTests.unnamedSource));
 	it('works with an empty template',
 	   makeRelationshipTest(relationshipTests.emptyTemplate));
+	it('throws on null entities',
+	   makeRelationshipTest(relationshipTests.nullEntities));
+	it('throws on a null template',
+	   makeRelationshipTest(relationshipTests.nullTemplate));
 });
