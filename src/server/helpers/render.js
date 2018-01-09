@@ -52,6 +52,10 @@ type Relationship = {
 
 /**
  * Returns the markup corresponding to the given entity relationship.
+ * This markup is defined by a Handlebars template in
+ * relationship.type.displayTemplate.
+ * This function is used, for example, to render
+ * relationships on entity display pages.
  * @param {Relationship} relationship - Relationship object.
  * @returns {string} - Rendered HTML string.
  */
