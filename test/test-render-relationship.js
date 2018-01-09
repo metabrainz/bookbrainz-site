@@ -20,6 +20,22 @@ import renderRelationship from '../src/server/helpers/render.js';
 
 
 const relationshipTests = {
+	emptyTemplate: {
+		rel: {
+			source: {
+				bbid: '1',
+				defaultAlias: {name: 'test'},
+				type: 'test-type'
+			},
+			target: {
+				bbid: '2',
+				defaultAlias: {name: 'test2'},
+				type: 'test-type2'
+			},
+			type: {displayTemplate: ''}
+		},
+		renderedRel: ''
+	},
 	fullySpecified: {
 		rel: {
 			source: {
@@ -70,4 +86,6 @@ describe('renderRelationship', () => {
 	   makeRelationshipTest(relationshipTests.fullySpecified));
 	it('renders a relationship where the source entity is unnamed',
 	   makeRelationshipTest(relationshipTests.unnamedSource));
+	it('works with an empty template',
+	   makeRelationshipTest(relationshipTests.emptyTemplate));
 });
