@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
  *               2015  Sean Burke
+ *               2018  Eshan Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +17,50 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+// @flow
 
 import * as utils from './utils';
 import Handlebars from 'handlebars';
 
 
-function renderRelationship(relationship) {
+type EntityInRelationship = {
+	bbid: string,
+	defaultAlias?: {name: string},
+	type: string
+};
+
+type Relationship = {
+	source: EntityInRelationship,
+	target: EntityInRelationship,
+	type: {displayTemplate: string}
+};
+
+/**
+ * @typedef {Object} EntityInRelationship
+ * @property {string} bbid
+ * @property {?Object} defaultAlias
+ * @property {string} defaultAlias.name
+ * @property {string} type
+ */
+
+/**
+ * @typedef {Object} Relationship
+ * @property {EntityInRelationship} source
+ * @property {EntityInRelationship} target
+ * @property {Object} type
+ * @property {string} type.displayTemplate
+ */
+
+/**
+ * Returns the markup corresponding to the given entity relationship.
+ * This markup is defined by a Handlebars template in
+ * relationship.type.displayTemplate.
+ * This function is used, for example, to render
+ * relationships on entity display pages.
+ * @param {Relationship} relationship - Relationship object.
+ * @returns {string} - Rendered HTML string.
+ */
+function renderRelationship(relationship: Relationship) {
 	const template = Handlebars.compile(
 		relationship.type.displayTemplate,
 		{noEscape: true}
