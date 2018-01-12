@@ -27,7 +27,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Alert, MenuItem, Nav, Navbar, NavDropdown} = bootstrap;
+const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -129,9 +129,9 @@ class Layout extends React.Component {
 						</NavDropdown>
 					</Nav> :
 					<Nav pullRight>
-						<MenuItem href="/auth">
+						<NavItem href="/auth">
 							<FontAwesome name="sign-in"/>{' Sign In / Register'}
-						</MenuItem>
+						</NavItem>
 					</Nav>
 				}
 				{!(homepage || hideSearch) &&

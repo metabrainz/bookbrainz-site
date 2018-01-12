@@ -35,4 +35,4 @@ const markup = (
 	</Layout>
 );
 
-ReactDOM.render(markup, document.getElementById('target'));
+ReactDOM.hydrate(markup, document.getElementById('target'));
