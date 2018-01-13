@@ -954,13 +954,33 @@ export function areaToOption(area) {
 	if (!area) {
 		return null;
 	}
-
 	const {id} = area;
-
 	return {
 		disambiguation: area.comment,
 		id,
 		text: area.name,
 		type: 'area'
 	};
+}
+
+export function compareEntitiesByDate(a, b) {
+	const aDate = _.get(a, 'releaseEventSet.releaseEvents[0].date', null);
+	const bDate = _.get(b, 'releaseEventSet.releaseEvents[0].date', null);
+	if (_.isNull(aDate)) {
+		/*
+		 * return a positive value,
+		 * so that non-null dates always come before null dates.
+		 */
+		return 1;
+	}
+
+	if (_.isNull(bDate)) {
+		/*
+		 * return a negative value,
+		 * so that non-null dates always come before null dates.
+		 */
+		return -1;
+	}
+
+	return new Date(aDate).getTime() - new Date(bDate).getTime();
 }
