@@ -23,5 +23,5 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		-o ../../../static/js/registrationDetails.js \
 		-o ../../../static/js/revision.js \
 		-o ../../../static/js/search.js \
-	] | uglifyjs > ../../../static/js/bundle.js
+	] | uglifyjs -c -m > ../../../static/js/bundle.js
 popd
