@@ -71,7 +71,7 @@ class ProfileForm extends React.Component {
 		const birthDate = this.birthDate.getValue();
 
 		const data = {
-			areaId: area ? parseInt(area.id, 10) : null,
+			areaId: area ? parseInt(area, 10) : null,
 			bio,
 			birthDate,
 			genderId: gender ? parseInt(gender, 10) : null,
