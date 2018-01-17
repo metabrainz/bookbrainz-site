@@ -23,7 +23,7 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		-o ../../../static/js/registrationDetails.js \
 		-o ../../../static/js/revision.js \
 		-o ../../../static/js/search.js \
-	] | uglifyjs -cm | gzip > ../../../static/js/bundle.js.gz
+	] > ../../../static/js/bundle.js
 	
 	uglifyjs -cm -- ../../../static/js/entity-editor.js  	  | gzip --best > ../../../static/js/entity-editor.js.gz
 	uglifyjs -cm -- ../../../static/js/editor/edit.js 	  | gzip --best > ../../../static/js/editor/edit.js.gz
@@ -35,5 +35,6 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 	uglifyjs -cm -- ../../../static/js/registrationDetails.js | gzip --best > ../../../static/js/registrationDetails.js.gz
 	uglifyjs -cm -- ../../../static/js/revision.js 		  | gzip --best > ../../../static/js/revision.js.gz
 	uglifyjs -cm -- ../../../static/js/search.js 		  | gzip --best > ../../../static/js/search.js.gz
+	uglifyjs -cm -- ../../../static/js/bundle.js     | gzip --best > ../../../static/js/bundle.js.gz
 	
 popd
