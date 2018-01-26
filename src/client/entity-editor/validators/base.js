@@ -20,8 +20,11 @@
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
+import moment from 'moment';
 import validator from 'validator';
 
+
+const dateFormat = 'YYYY-MM-DD';
 
 export function get(
 	object: any,
@@ -104,7 +107,7 @@ export function validateDate(
 		return false;
 	}
 
-	return !value || validator.isISO8601(value);
+	return !value || moment(value, dateFormat, true).isValid();
 }
 
 export function validateUUID(
