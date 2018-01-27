@@ -24,7 +24,7 @@ import moment from 'moment';
 import validator from 'validator';
 
 
-const dateFormat = 'YYYY-MM-DD';
+const VALID_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM', 'YYYY'];
 
 export function get(
 	object: any,
@@ -107,7 +107,7 @@ export function validateDate(
 		return false;
 	}
 
-	return !value || moment(value, dateFormat, true).isValid();
+	return !value || moment(value, VALID_DATE_FORMATS, true).isValid();
 }
 
 export function validateUUID(
