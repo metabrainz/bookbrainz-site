@@ -110,6 +110,29 @@ export function validateDate(
 	return !value || moment(value, VALID_DATE_FORMATS, true).isValid();
 }
 
+export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
+	if (!nilOrString(beginValue) || !nilOrString(endValue)) {
+		return false;
+	}
+
+	if (!beginValue || !endValue || !validateDate(beginValue) ||
+		!validateDate(endValue)) {
+		return true;
+	}
+
+	const dateFormat = (value) => VALID_DATE_FORMATS.find(
+		(format) => moment(value, format, true).isValid()
+	);
+
+	const baseFormat = [dateFormat(beginValue), dateFormat(endValue)].reduce(
+		(prev, cur) => (prev.length < cur.length ? prev : cur)
+	);
+
+	return moment(beginValue, baseFormat).isSameOrBefore(
+		moment(endValue, baseFormat)
+	);
+}
+
 export function validateUUID(
 	value: mixed, required: boolean = false
 ): boolean {

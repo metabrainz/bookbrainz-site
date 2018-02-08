@@ -182,7 +182,7 @@ function PublisherSection({
 								defaultValue={endDateValue}
 								empty={!endDateValue}
 								error={!validatePublisherSectionEndDate(
-									endDateValue
+									beginDateValue, endDateValue
 								)}
 								label="Date Dissolved"
 								placeholder="YYYY-MM-DD"

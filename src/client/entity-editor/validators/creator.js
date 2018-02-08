@@ -18,7 +18,7 @@
 
 // @flow
 
-import {get, validateDate, validatePositiveInteger} from './base';
+import {dateIsBefore, get, validateDate, validatePositiveInteger} from './base';
 import {
 	validateAliases, validateIdentifiers, validateNameSection,
 	validateSubmissionSection
@@ -47,8 +47,10 @@ export function validateCreatorSectionEndArea(value: any): boolean {
 	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
-export function validateCreatorSectionEndDate(value: any): boolean {
-	return validateDate(value);
+export function validateCreatorSectionEndDate(
+	beginValue: any, endValue: any
+): boolean {
+	return validateDate(endValue) && dateIsBefore(beginValue, endValue);
 }
 
 export function validateCreatorSectionEnded(value: any): boolean {
@@ -68,7 +70,9 @@ export function validateCreatorSection(data: any): boolean {
 		validateCreatorSectionBeginArea(get(data, 'beginArea', null)) &&
 		validateCreatorSectionBeginDate(get(data, 'beginDate', null)) &&
 		validateCreatorSectionEndArea(get(data, 'endArea', null)) &&
-		validateCreatorSectionEndDate(get(data, 'endDate', null)) &&
+		validateCreatorSectionEndDate(
+			get(data, 'beginDate', null), get(data, 'endDate', null)
+		) &&
 		validateCreatorSectionEnded(get(data, 'ended', null)) &&
 		validateCreatorSectionType(get(data, 'gender', null)) &&
 		validateCreatorSectionType(get(data, 'type', null))
