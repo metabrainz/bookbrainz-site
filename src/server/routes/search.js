@@ -55,7 +55,10 @@ router.get('/', (req, res, next) => {
 
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<SearchPage initialResults={props.initialResults}/>
+					<SearchPage
+						initialResults={props.initialResults}
+						query={query}
+					/>
 				</Layout>
 			);
 

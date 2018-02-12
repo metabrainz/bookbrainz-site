@@ -57,20 +57,29 @@ function SearchResults(props) {
 	});
 
 	return (
-		<Table
-			responsive
-			className="table table-striped"
-		>
-			<thead>
-				<tr>
-					<th>Alias</th>
-					<th>Type</th>
-				</tr>
-			</thead>
-			<tbody>
-				{results}
-			</tbody>
-		</Table>
+		<div>
+			<div style={{color: '#754e37',
+				fontSize: 16,
+				fontWeight: 'Bold',
+				paddingLeft: 8}}
+			>
+				Search Results
+			</div>
+			<Table
+				responsive
+				className="table table-striped"
+			>
+				<thead>
+					<tr>
+						<th>Alias</th>
+						<th>Type</th>
+					</tr>
+				</thead>
+				<tbody>
+					{results}
+				</tbody>
+			</Table>
+		</div>
 	);
 }
 
