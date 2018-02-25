@@ -134,6 +134,12 @@ class Layout extends React.Component {
 						</NavItem>
 					</Nav>
 				}
+				<Nav pullRight>
+					<NavItem href="/statistics">
+						<FontAwesome name="statistics"/>
+						{' Statistics '}
+					</NavItem>
+				</Nav>
 				{!(homepage || hideSearch) &&
 				<form
 					action="/search"

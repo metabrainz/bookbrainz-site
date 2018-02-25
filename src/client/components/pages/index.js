@@ -91,7 +91,7 @@ class IndexPage extends React.Component {
 										</div>
 									</form>
 									<Row className="margin-top-4">
-										<Col sm={3}>
+										<Col sm={4}>
 											<Button
 												block
 												bsSize="large"
@@ -100,7 +100,7 @@ class IndexPage extends React.Component {
 												About
 											</Button>
 										</Col>
-										<Col sm={3}>
+										<Col sm={4}>
 											<Button
 												block
 												bsSize="large"
@@ -109,22 +109,13 @@ class IndexPage extends React.Component {
 												Contribute
 											</Button>
 										</Col>
-										<Col sm={3}>
+										<Col sm={4}>
 											<Button
 												block
 												bsSize="large"
 												href="/develop"
 											>
 												Develop
-											</Button>
-										</Col>
-										<Col sm={3}>
-											<Button
-												block
-												bsSize="large"
-												href="/statistics"
-											>
-												Statistics
 											</Button>
 										</Col>
 									</Row>
