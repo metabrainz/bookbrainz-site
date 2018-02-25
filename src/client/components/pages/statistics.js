@@ -17,80 +17,87 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as utilsHelper from '../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
 const {PageHeader, Table} = bootstrap;
+const {formatDate} = utilsHelper;
+
+/**
+ * Renders the document and displays the topEditors table.
+ * @returns {ReactElement} a HTML document which displays the topEditors table
+ * in thre statistics page
+ */
+
+function TopEditorsTable(props) {
+	const {editors} = props;
+	return (
+		<div>
+			<div>
+				<h2 className="text-center">Top 10 Editors</h2>
+			</div>
+			<Table
+				bordered
+				condensed
+				striped
+			>
+				<thead>
+					<tr>
+						<th >#</th>
+						<th>Editor&apos;s Name</th>
+						<th>Total Revisions</th>
+						<th>Registration Date</th>
+					</tr>
+				</thead>
+				<tbody>
+					{
+						editors.map((entity, i) => (
+							<tr key={entity.id}>
+								<td>{i + 1}</td>
+								<td>
+									<a
+										href={`/editor/${entity.id}`}
+									>
+										{entity.name}
+									</a>
+								</td>
+								<td>{entity.totalRevisions}</td>
+								<td>
+									{formatDate(new Date(entity.createdAt))}
+								</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</Table>
+		</div>
+	);
+}
 
 /**
  * Renders the document and displays the 'Statistics' page.
  * @returns {ReactElement} a HTML document which displays the Statistics
  * page
  */
-class StatisticsPage extends React.Component {
-	constructor(props) {
-		super(props);
-		this.renderTopEditorsTable = this.renderTopEditorsTable.bind(this);
-	}
 
-	renderTopEditorsTable(topEditors) {
-		return (
-			<div>
-				<div>
-					<h2 className="text-center">Top 10 Editors</h2>
-				</div>
-				<Table
-					bordered
-					striped
-				>
-					<thead>
-					    <tr>
-							<th>#</th>
-							<th>Editor&apos;s Name</th>
-							<th>Total Revisions</th>
-					    </tr>
-					</thead>
-					<tbody>
-						{
-							topEditors.map((entity, i) => (
-								<tr key={entity.id}>
-									<td>{i + 1}</td>
-									<td>
-										<a
-											href={`/editor/${entity.id}`}
-										>
-											{entity.name}
-										</a>
-									</td>
-									<td>{entity.totalRevisions}</td>
-								</tr>
-							))
-						}
-					</tbody>
-				</Table>
-			</div>
-		);
-	}
-
-	render() {
-		const {topEditors} = this.props;
-		return (
-			<div>
-				<PageHeader>Statistics of BookBrainz</PageHeader>
-				{topEditors.length &&
-					<div>
-						{this.renderTopEditorsTable(topEditors)}
-					</div>
-				}
-			</div>
-		);
-	}
+function StatisticsPage(props) {
+	const {topEditors} = props;
+	return (
+		<div>
+			<PageHeader>Statistics of BookBrainz</PageHeader>
+			<TopEditorsTable editors={topEditors}/>
+		</div>
+	);
 }
 
 StatisticsPage.displayName = 'StatisticsPage';
 StatisticsPage.propTypes = {
 	topEditors: PropTypes.array.isRequired
+};
+TopEditorsTable.propTypes = {
+	editors: PropTypes.array.isRequired
 };
 
 export default StatisticsPage;
