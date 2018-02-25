@@ -22,7 +22,6 @@ import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import StatisticsPage from '../../client/components/pages/statistics';
-import _ from 'lodash';
 import express from 'express';
 
 
@@ -30,7 +29,8 @@ const router = express.Router();
 
 /* Get Statistics Page */
 router.get('/', (req, res) => {
-	const {Editor} = req.app.locals.orm;
+	const {orm} = req.app.locals;
+	const {Editor} = orm;
 
 	/*
 	 *	Here We are fetching top 10 Edirors
@@ -38,13 +38,12 @@ router.get('/', (req, res) => {
 	 */
 	const getTopEditors = new Editor()
 		.query((q) =>
-			q.orderBy(_.snakeCase('totalRevisions'), 'desc')
+			q.orderBy('total_revisions', 'desc')
 			 .limit(10))
 		.fetchAll()
 		.then((collection) =>
 			collection.models.map((model) =>
-				model.attributes
-			));
+				model.attributes));
 
 	getTopEditors.then((topEditors) => {
 		const props = generateProps(req, res, {
@@ -53,7 +52,7 @@ router.get('/', (req, res) => {
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<StatisticsPage
-					topEditors={props.topEditors}
+					topEditors={topEditors}
 				/>
 			</Layout>
 		);
