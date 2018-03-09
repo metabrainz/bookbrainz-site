@@ -53,19 +53,17 @@ function TopEditorsTable(props) {
 				</thead>
 				<tbody>
 					{
-						editors.map((entity, i) => (
-							<tr key={entity.id}>
+						editors.map((editor, i) => (
+							<tr key={editor.id}>
 								<td>{i + 1}</td>
 								<td>
-									<a
-										href={`/editor/${entity.id}`}
-									>
-										{entity.name}
+									<a	href={`/editor/${editor.id}`}>
+										{editor.name}
 									</a>
 								</td>
-								<td>{entity.totalRevisions}</td>
+								<td>{editor.totalRevisions}</td>
 								<td>
-									{formatDate(new Date(entity.createdAt))}
+									{formatDate(new Date(editor.createdAt))}
 								</td>
 							</tr>
 						))
