@@ -35,9 +35,7 @@ function TopEditorsTable(props) {
 	const {editors} = props;
 	return (
 		<div>
-			<div>
-				<h2 className="text-center">Top 10 Editors</h2>
-			</div>
+			<div> <h2 className="text-center">Top 10 Editors</h2> </div>
 			<Table
 				bordered
 				condensed
@@ -74,9 +72,13 @@ function TopEditorsTable(props) {
 	);
 }
 
+TopEditorsTable.propTypes = {
+	editors: PropTypes.array.isRequired
+};
+
 /**
  * Renders the document and displays the 'Statistics' page.
- * @returns {ReactElement} a HTML document which displays the Statistics
+ * @returns {ReactElement} a HTML document which displays the statistics
  * page
  */
 
@@ -93,9 +95,6 @@ function StatisticsPage(props) {
 StatisticsPage.displayName = 'StatisticsPage';
 StatisticsPage.propTypes = {
 	topEditors: PropTypes.array.isRequired
-};
-TopEditorsTable.propTypes = {
-	editors: PropTypes.array.isRequired
 };
 
 export default StatisticsPage;
