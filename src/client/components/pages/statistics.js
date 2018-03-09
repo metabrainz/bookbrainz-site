@@ -28,7 +28,7 @@ const {formatDate} = utilsHelper;
 /**
  * Renders the document and displays the topEditors table.
  * @returns {ReactElement} a HTML document which displays the topEditors table
- * in thre statistics page
+ * in the statistics page
  */
 
 function TopEditorsTable(props) {
