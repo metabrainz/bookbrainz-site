@@ -38,14 +38,21 @@ function icon(empty: ?boolean, error: ?boolean, warn: ?boolean): string | null {
 	return 'check';
 }
 
-
-function contextualColor(empty: ?boolean, error: ?boolean): string | null {
+function contextualColor(
+	empty: ?boolean,
+	error: ?boolean,
+	warn: ?boolean
+): string | null {
 	if (empty) {
 		return null;
 	}
 
 	if (error) {
 		return 'text-danger';
+	}
+
+	if (warn) {
+		return 'text-warning';
 	}
 
 	return 'text-success';
