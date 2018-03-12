@@ -18,8 +18,8 @@
 
 import {Col, Row} from 'react-bootstrap';
 import {
-	debouncedUpdateDisambiguationField, debouncedUpdateNameField,
-	debouncedUpdateSortNameField, updateLanguageField
+	checkIfNameExists, debouncedUpdateDisambiguationField,
+	debouncedUpdateNameField, debouncedUpdateSortNameField, updateLanguageField
 } from './actions';
 import {
 	validateNameSectionLanguage, validateNameSectionName,
@@ -74,13 +74,20 @@ function NameSection({
 	sortNameValue,
 	onLanguageChange,
 	onNameChange,
+	onNameChangeCheckIfExists,
 	onSortNameChange,
-	onDisambiguationChange
+	onDisambiguationChange,
+	warnIfExists
 }) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
 		value: language.id
 	}));
+
+	function handleNameChange(event) {
+		onNameChange(event.target.value);
+		onNameChangeCheckIfExists(event.target.value);
+	}
 
 	return (
 		<div>
@@ -94,7 +101,8 @@ function NameSection({
 								nameValue, sortNameValue, languageValue
 							)}
 							error={!validateNameSectionName(nameValue)}
-							onChange={onNameChange}
+							warn={warnIfExists}
+							onChange={handleNameChange}
 						/>
 					</Col>
 				</Row>
@@ -151,8 +159,10 @@ NameSection.propTypes = {
 	onDisambiguationChange: PropTypes.func.isRequired,
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
+	onNameChangeCheckIfExists: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
-	sortNameValue: PropTypes.string.isRequired
+	sortNameValue: PropTypes.string.isRequired,
+	warnIfExists: PropTypes.bool.isRequired
 };
 NameSection.defaultProps = {
 	disambiguationDefaultValue: null,
@@ -168,18 +178,22 @@ function mapStateToProps(rootState) {
 			rootState.getIn(['buttonBar', 'disambiguationVisible']),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
-		sortNameValue: state.get('sortName')
+		sortNameValue: state.get('sortName'),
+		warnIfExists: state.get('warnIfExists')
 	};
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, {entityType}) {
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
 		onLanguageChange: (value) =>
 			dispatch(updateLanguageField(value && value.value)),
-		onNameChange: (event) =>
-			dispatch(debouncedUpdateNameField(event.target.value)),
+		onNameChange: (value) =>
+			dispatch(debouncedUpdateNameField(value, entityType)),
+		onNameChangeCheckIfExists: _.debounce((value) => {
+			dispatch(checkIfNameExists(value, entityType));
+		}, 500),
 		onSortNameChange: (event) =>
 			dispatch(debouncedUpdateSortNameField(event.target.value))
 	};
