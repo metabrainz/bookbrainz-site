@@ -339,6 +339,31 @@ export async function generateIndex(orm) {
 	await refreshIndex();
 }
 
+export function checkIfExists(orm, name, collection) {
+	const {bookshelf} = orm;
+	const rawSql = `
+		SELECT (
+			CASE WHEN count > 0 THEN 'true' ELSE 'false' END
+		) FROM (
+			SELECT COUNT(*)
+			AS count
+			FROM ${collection}
+			JOIN (
+				SELECT DISTINCT set_id
+				FROM alias_set__alias
+				WHERE alias_id IN (
+					SELECT id
+					FROM alias
+					WHERE name = '${name}'
+				)
+			) AS sets
+			ON sets.set_id = ${collection}.alias_set_id
+			WHERE master = 'true'
+		) AS result;`;
+
+	return bookshelf.knex.raw(rawSql).then(val => val.rows[0].case);
+}
+
 export function searchByName(orm, name, collection) {
 	const dslQuery = {
 		body: {
