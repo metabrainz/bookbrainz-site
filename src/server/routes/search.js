@@ -94,6 +94,19 @@ router.get('/autocomplete', (req, res) => {
 });
 
 /**
+ * Responds with stringified boolean value which signifies if the given user
+ * query already exists
+ */
+router.get('/exists', (req, res) => {
+	const {orm} = req.app.locals;
+	const {q, collection} = req.query;
+
+	const searchPromise = search.checkIfExists(orm, q, collection);
+
+	handler.sendPromiseResult(res, searchPromise);
+});
+
+/**
  * Regenerates search index. Restricted to administrators.
  *
  * @throws {error.PermissionDeniedError} - Thrown if user is not admin.
