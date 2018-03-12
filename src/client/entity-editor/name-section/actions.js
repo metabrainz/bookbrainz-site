@@ -18,10 +18,14 @@
 
 // @flow
 
+import request from 'superagent-bluebird-promise';
+
+
 export const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
 export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
+export const UPDATE_WARN_IF_EXISTS = 'UPDATE_WARN_IF_EXISTS';
 
 export type Action = {
 	type: string,
@@ -93,5 +97,35 @@ export function debouncedUpdateDisambiguationField(
 		meta: {debounce: 'keystroke'},
 		payload: newDisambiguation,
 		type: UPDATE_DISAMBIGUATION_FIELD
+	};
+}
+
+/**
+ * Produces an action containing boolean value indicating if the name of the
+ * entity already exists. This is done by asynchronously checking if the name
+ * of the entity already exists in the database.
+ *
+ * @param  {string} name - The value to be checked if it already exists.
+ * @param  {string} entityType - The entity type of the value to be checked.
+ * @returns {many_prompts~inner} The returned function.
+ */
+export function checkIfNameExists(
+	name: string,
+	entityType: string
+): ((Action) => mixed) => mixed {
+	/**
+	 * @param  {function} dispatch - The redux dispatch function.
+	 */
+	return (dispatch) => {
+		request.get('/search/exists')
+			.query({
+				collection: entityType,
+				q: name
+			})
+			.then(res => dispatch({
+				payload: res.text === 'true',
+				type: UPDATE_WARN_IF_EXISTS
+			}))
+			.catch((error: {message: string}) => error);
 	};
 }
