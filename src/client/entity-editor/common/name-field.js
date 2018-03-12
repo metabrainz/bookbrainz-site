@@ -25,7 +25,8 @@ import ValidationLabel from '../common/validation-label';
 
 type Props = {
 	empty?: boolean,
-	error?: boolean
+	error?: boolean,
+	warn?: boolean
 };
 
 /**
@@ -35,6 +36,8 @@ type Props = {
  * @param {Object} props - The properties passed to the component.
  * @param {boolean} props.error - Passed to the ValidationLabel within the
  *        component to indicate a validation error.
+ * @param {boolean} props.warn - Passed to the ValidationLabel within the
+ * 		  component to indicate a validation warning.
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
  * @param {Function} props.onChange - Function to be called when the value in
@@ -44,10 +47,14 @@ type Props = {
 function NameField({
 	empty,
 	error,
+	warn,
 	...rest
 }: Props) {
-	const label =
-		<ValidationLabel empty={empty} error={error}>Name</ValidationLabel>;
+	const label = (
+		<ValidationLabel empty={empty} error={error} warn={warn}>
+			Name
+		</ValidationLabel>
+	);
 
 	return (
 		<CustomInput label={label} type="text" {...rest}/>
@@ -56,7 +63,8 @@ function NameField({
 NameField.displayName = 'NameField';
 NameField.defaultProps = {
 	empty: false,
-	error: false
+	error: false,
+	warn: false
 };
 
 export default NameField;
