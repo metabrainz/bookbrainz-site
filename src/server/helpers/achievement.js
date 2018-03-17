@@ -25,7 +25,6 @@
 import * as error from './error';
 import Log from 'log';
 import Promise from 'bluebird';
-import _ from 'lodash';
 import config from './config';
 
 
@@ -550,7 +549,7 @@ function processHotOffThePress(orm, editorId, revisionId) {
 function getEntityVisits(orm, editorId) {
 	const {EditorEntityVisits} = orm;
 	return new EditorEntityVisits()
-		.where(_.snakeCase('editorId'), editorId)
+		.where('editor_id', editorId)
 		.fetchAll({require: true})
 		.then((visits) => visits.length);
 }
