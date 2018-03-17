@@ -27,6 +27,7 @@ import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
 import searchRouter from './routes/search';
+import statisticsRouter from './routes/statistics';
 import workRouter from './routes/entity/work';
 
 
@@ -35,6 +36,7 @@ function initRootRoutes(app) {
 	app.use('/', authRouter);
 	app.use('/search', searchRouter);
 	app.use('/register', registerRouter);
+	app.use('/statistics', statisticsRouter);
 }
 
 function initPublicationRoutes(app) {

@@ -12,6 +12,7 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		registrationDetails.js \
 		revision.js \
 		search.js \
+		statistics.js \
 	-p [ factor-bundle \
 		-o ../../../static/js/entity-editor.js \
 		-o ../../../static/js/editor/edit.js \
@@ -23,5 +24,6 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		-o ../../../static/js/registrationDetails.js \
 		-o ../../../static/js/revision.js \
 		-o ../../../static/js/search.js \
+		-o ../../../static/js/statistics.js \
 	] > ../../../static/js/bundle.js
 popd
