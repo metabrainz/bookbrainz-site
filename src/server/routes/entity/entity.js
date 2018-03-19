@@ -267,7 +267,8 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
-			newEntityRevisionPromise, entityHeaderPromise
+			newEntityRevisionPromise, entityHeaderPromise,
+			search.deleteEntity(entity)
 		);
 	});
 
