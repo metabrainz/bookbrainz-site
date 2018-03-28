@@ -231,6 +231,7 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 	const {entity} = res.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
+	const currentEntity = res.locals.entity;
 
 	const entityDeletePromise = bookshelf.transaction((transacting) => {
 		const editorUpdatePromise =
@@ -239,6 +240,20 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
+
+		// Get the parents of the new revision
+		const revisionParentsPromise = newRevisionPromise
+			.then((revision) =>
+				revision.related('parents').fetch({transacting})
+			);
+
+		// Add the previous revision as a parent of this revision.
+		const parentAddedPromise =
+			revisionParentsPromise.then(
+				(parents) => parents.attach(
+					currentEntity.revisionId, {transacting}
+				)
+			);
 
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
@@ -267,7 +282,7 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
-			newEntityRevisionPromise, entityHeaderPromise
+			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise
 		);
 	});
 
