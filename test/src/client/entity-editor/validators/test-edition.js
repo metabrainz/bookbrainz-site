@@ -34,7 +34,7 @@ import {
 	validateEditionSectionPublisher, validateEditionSectionReleaseDate,
 	validateEditionSectionStatus, validateEditionSectionWeight,
 	validateEditionSectionWidth, validateForm
-} from '../../../../../lib/client/entity-editor/validators/edition';
+} from '../../../../../src/client/entity-editor/validators/edition';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 

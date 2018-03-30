@@ -22,7 +22,7 @@ import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 
-const Achievement = rewire('../lib/server/helpers/achievement.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const marathonerDays = 29;
 const marathonerThreshold = 30;

@@ -24,7 +24,7 @@ import {
 } from './data';
 import {
 	validateForm, validatePublicationSection, validatePublicationSectionType
-} from '../../../../../lib/client/entity-editor/validators/publication';
+} from '../../../../../src/client/entity-editor/validators/publication';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {testValidatePositiveIntegerFunc} from './helpers';

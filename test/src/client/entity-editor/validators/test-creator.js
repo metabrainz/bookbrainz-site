@@ -31,7 +31,7 @@ import {
 	validateCreatorSectionBeginDate, validateCreatorSectionEndArea,
 	validateCreatorSectionEndDate, validateCreatorSectionEnded,
 	validateCreatorSectionGender, validateCreatorSectionType, validateForm
-} from '../../../../../lib/client/entity-editor/validators/creator';
+} from '../../../../../src/client/entity-editor/validators/creator';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
