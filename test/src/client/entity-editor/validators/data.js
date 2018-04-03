@@ -136,4 +136,14 @@ export const VALID_DATE_PAIR = [
 	{first: '1997-12-31', second: '1998-01'},
 	{first: '1997-12-31', second: '1998-01-01'}
 ];
-
+export const INVALID_DATE_PAIR = [
+	{first: '1998', second: '1997'},
+	{first: '1998-01', second: '1997'},
+	{first: '1998-01-01', second: '1997'},
+	{first: '1998', second: '1997-12'},
+	{first: '1998-01', second: '1997-12'},
+	{first: '1998-01-01', second: '1997-12'},
+	{first: '1998', second: '1997-12-31'},
+	{first: '1998-01', second: '1997-12-31'},
+	{first: '1998-01-01', second: '1997-12-31'}
+];
