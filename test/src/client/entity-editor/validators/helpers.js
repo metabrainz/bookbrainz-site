@@ -18,7 +18,7 @@
 
 import * as Immutable from 'immutable';
 import {
-	INVALID_AREA, INVALID_BEGIN_DATE_PAIR, INVALID_DATE_PAIR,
+	INVALID_AREA, INVALID_BEGIN_DATE_PAIR, INVALID_DATES, INVALID_DATE_PAIR,
 	INVALID_END_DATE_PAIR, VALID_AREA, VALID_DATE_PAIR
 } from './data';
 import chai from 'chai';
@@ -128,6 +128,12 @@ export function testValidateDateFunc(validationFunc, required = true) {
 	it('should reject any non-string value', () => {
 		const result = validationFunc({});
 		expect(result).to.be.false;
+	});
+
+	it('should reject all other forms of invalid dates', () => {
+		expect(INVALID_DATES.reduce((res, date) =>
+			res || validationFunc(date), false
+		)).to.be.false;
 	});
 
 	it(`should ${required ? 'reject' : 'pass'} a null value`, () => {
