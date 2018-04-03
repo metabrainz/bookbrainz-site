@@ -147,3 +147,12 @@ export const INVALID_DATE_PAIR = [
 	{first: '1998-01', second: '1997-12-31'},
 	{first: '1998-01-01', second: '1997-12-31'}
 ];
+export const INVALID_BEGIN_DATE_PAIR = [
+	{first: null, second: '1997'},
+	{first: '', second: '1997'},
+	// Begin date is invalid
+	{first: '1997-13', second: '1992'},
+	{first: '1992-12-41', second: ''},
+	// Begin date is an invalid leap year
+	{first: '2014-02-29', second: '1997-12'}
+];
