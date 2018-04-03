@@ -24,7 +24,7 @@ import {
 } from './data';
 import {
 	testValidateAreaFunc, testValidateBooleanFunc, testValidateDateFunc,
-	testValidatePositiveIntegerFunc
+	testValidateEndDateFunc, testValidatePositiveIntegerFunc
 } from './helpers';
 import {
 	validateForm, validatePublisherSection, validatePublisherSectionArea,
@@ -48,7 +48,7 @@ function describeValidatePublisherSectionBeginDate() {
 }
 
 function describeValidatePublisherSectionEndDate() {
-	testValidateDateFunc(validatePublisherSectionEndDate, false);
+	testValidateEndDateFunc(validatePublisherSectionEndDate, false);
 }
 
 function describeValidatePublisherSectionEnded() {
