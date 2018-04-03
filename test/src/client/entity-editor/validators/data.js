@@ -118,3 +118,22 @@ export const INVALID_DATES = [
 	'2014-02-29'
 ];
 
+export const VALID_DATE_PAIR = [
+	{first: '', second: ''},
+	{first: '', second: '1998'},
+	{first: '', second: '1998-01'},
+	{first: '', second: '1998-01-01'},
+	{first: '1997', second: ''},
+	{first: '1997', second: '1998'},
+	{first: '1997', second: '1998-01'},
+	{first: '1997', second: '1998-01-01'},
+	{first: '1997-12', second: ''},
+	{first: '1997-12', second: '1998'},
+	{first: '1997-12', second: '1998-01'},
+	{first: '1997-12', second: '1998-01-01'},
+	{first: '1997-12-31', second: ''},
+	{first: '1997-12-31', second: '1998'},
+	{first: '1997-12-31', second: '1998-01'},
+	{first: '1997-12-31', second: '1998-01-01'}
+];
+
