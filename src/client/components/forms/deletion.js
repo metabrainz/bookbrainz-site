@@ -49,7 +49,7 @@ class EntityDeletionForm extends React.Component {
 		request.post(this.deleteUrl)
 			.send()
 			.then(() => {
-				window.location.href = this.entityUrl;
+				window.location.href = '/';
 			})
 			.catch((res) => {
 				const {error} = res.body;
