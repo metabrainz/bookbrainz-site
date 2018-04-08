@@ -62,6 +62,7 @@ function _setPublicationTitle(res) {
 
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setPublicationTitle(res);
+	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 	entityRoutes.displayEntity(req, res);
 });
 
