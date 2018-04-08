@@ -91,7 +91,7 @@ app.use(session({
 }));
 
 if (config.influx) {
-	initInflux(app, config.influx);
+	initInflux(app, config);
 }
 
 // Authentication code depends on session, so init session first
