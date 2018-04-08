@@ -91,9 +91,6 @@ export function generateEntityProps(
 		submissionUrl
 	}, additionalProps);
 
-	// Dynamically set property with name entityType
-	props[entityType] = entity;
-
 	return generateProps(req, res, props);
 }
 
