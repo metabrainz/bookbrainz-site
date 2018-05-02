@@ -131,9 +131,19 @@ export function checkIfNameExists(
 	};
 }
 
+/**
+ * Produces an action containing search results of the name entered by the user.
+ *  This is done by asynchronously calling the route /search/autocomplete.
+ *
+ * @param  {string} name - The value to be checked if it already exists.
+ * @returns {many_prompts~inner} The returned function.
+ */
 export function searchName(
 	name: string
 ): ((Action) => mixed) => mixed {
+	/**
+	 * @param  {function} dispatch - The redux dispatch function.
+	 */
 	return (dispatch) => {
 		request.get('/search/autocomplete')
 			.query({
