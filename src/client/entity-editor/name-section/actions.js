@@ -26,6 +26,7 @@ export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 export const UPDATE_WARN_IF_EXISTS = 'UPDATE_WARN_IF_EXISTS';
+export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS';
 
 export type Action = {
 	type: string,
@@ -127,5 +128,20 @@ export function checkIfNameExists(
 				type: UPDATE_WARN_IF_EXISTS
 			}))
 			.catch((error: {message: string}) => error);
+	};
+}
+
+export function searchName(
+	name: string
+): ((Action) => mixed) => mixed {
+	return (dispatch) => {
+		request.get('/search/autocomplete')
+			.query({
+				q: name
+			})
+			.then(res => dispatch({
+				payload: JSON.parse(res.text),
+				type: UPDATE_SEARCH_RESULTS
+			}));
 	};
 }
