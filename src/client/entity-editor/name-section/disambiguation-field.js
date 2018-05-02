@@ -16,29 +16,53 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import CustomInput from '../../input';
 import React from 'react';
+import ValidationLabel from '../common/validation-label';
+
+
+type Props = {
+	empty?: boolean,
+	error?: boolean,
+	required?: boolean
+};
 
 /**
  * Presentational component. Renders the disambiguation field for the name
  * section of entity editing forms.
  *
+ * @param {boolean} props.error - Passed to the ValidationLabel within the
+ *        component to indicate a validation error.
  * @param {Object} props - an object containing the properties to be passed
  *        down to the child input element.
  * @returns {Object} a React component containing the rendered input
  */
-function DisambiguationField(props) {
+function DisambiguationField({
+	empty,
+	error,
+	required,
+	...rest
+}: Props) {
 	const label = (
-		<span>
+		<ValidationLabel empty={empty} error={error}>
 			Disambiguation
-			<span className="text-muted"> (optional)</span>
-		</span>
+			{required || null ? null :
+				<span className="text-muted"> (optional)</span>
+			}
+		</ValidationLabel>
 	);
 
 	return (
-		<CustomInput label={label} type="text" {...props}/>
+		<CustomInput label={label} type="text" {...rest}/>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';
+DisambiguationField.defaultProps = {
+	empty: false,
+	error: false,
+	required: false
+};
 
 export default DisambiguationField;
