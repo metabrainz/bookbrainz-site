@@ -124,7 +124,7 @@ export function checkIfNameExists(
 				q: name
 			})
 			.then(res => dispatch({
-				payload: res.text === 'true',
+				payload: JSON.parse(res.text) || null,
 				type: UPDATE_WARN_IF_EXISTS
 			}))
 			.catch((error: {message: string}) => error);

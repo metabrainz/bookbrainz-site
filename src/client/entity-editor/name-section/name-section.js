@@ -16,25 +16,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
+import {Alert, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
 import {
-	debouncedUpdateDisambiguationField, debouncedUpdateNameField,
-	debouncedUpdateSortNameField, updateLanguageField
+	checkIfNameExists, debouncedUpdateDisambiguationField,
+	debouncedUpdateNameField, debouncedUpdateSortNameField, searchName,
+	updateLanguageField
 } from './actions';
+import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
 import {
-	validateNameSectionLanguage, validateNameSectionName,
-	validateNameSectionSortName
+	validateNameSectionDisambiguation, validateNameSectionLanguage,
+	validateNameSectionName, validateNameSectionSortName
 } from '../validators/common';
 import DisambiguationField from './disambiguation-field';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
+import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {entityTypeProperty} from '../../helpers/react-validators';
-import {isAliasEmpty} from '../helpers';
 
 /**
  * Container component. The NameSection component contains input fields for
@@ -68,19 +70,32 @@ function NameSection({
 	disambiguationDefaultValue,
 	disambiguationVisible,
 	entityType,
+	exactMatches,
 	languageOptions,
 	languageValue,
 	nameValue,
 	sortNameValue,
 	onLanguageChange,
 	onNameChange,
+	onNameChangeCheckIfExists,
+	onNameChangeSearchName,
 	onSortNameChange,
-	onDisambiguationChange
+	onDisambiguationChange,
+	searchResults
 }) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
 		value: language.id
 	}));
+
+	function handleNameChange(event) {
+		onNameChange(event.target.value);
+		onNameChangeCheckIfExists(event.target.value);
+		onNameChangeSearchName(event.target.value);
+	}
+
+	const warnIfExists = exactMatches || null ?
+		exactMatches.length !== 0 : false;
 
 	return (
 		<div>
@@ -94,9 +109,54 @@ function NameSection({
 								nameValue, sortNameValue, languageValue
 							)}
 							error={!validateNameSectionName(nameValue)}
-							onChange={onNameChange}
+							warn={(isRequiredDisambiguationEmpty(
+								warnIfExists,
+								disambiguationDefaultValue
+							))}
+							onChange={handleNameChange}
 						/>
 					</Col>
+					<Col md={6} mdOffset={3}>
+						{isRequiredDisambiguationEmpty(
+							warnIfExists,
+							disambiguationDefaultValue
+						) ?
+							<Alert bsStyle="warning">
+								We found the
+								following {_.capitalize(entityType)} with
+								exactly the same name:
+								<ListGroup>
+									{exactMatches.map(({bbid}) =>
+										(
+											<ListGroupItem
+												bsStyle="warning"
+												href={`/${entityType}/${bbid}`}
+												key={`${bbid}`}
+											>
+												{nameValue}
+											</ListGroupItem>
+										)
+									)}
+								</ListGroup>
+								If you are sure your entry is different,
+								please add disambiguation below to help us
+								differentiate between them. Once the
+								disambiguation has been entered, this warning
+								will disappear.
+							</Alert> : null
+						}
+					</Col>
+				</Row>
+				<Row>
+					{!(searchResults || null) ? null :
+						<Col md={6} mdOffset={3}>
+							The {_.capitalize(entityType)} you are adding may
+							already exist in our database. If it appears below,
+							please use that {_.capitalize(entityType)} by
+							clicking on it instead of adding a new one.
+							<SearchResults results={searchResults}/>
+						</Col>
+					}
 				</Row>
 				<Row>
 					<Col md={6} mdOffset={3}>
@@ -128,9 +188,16 @@ function NameSection({
 				<Row>
 					<Col md={6} mdOffset={3}>
 						{
-							disambiguationVisible &&
+							(warnIfExists || disambiguationVisible) &&
 							<DisambiguationField
 								defaultValue={disambiguationDefaultValue}
+								error={isRequiredDisambiguationEmpty(
+									warnIfExists,
+									disambiguationDefaultValue
+								) || !validateNameSectionDisambiguation(
+										disambiguationDefaultValue
+									)}
+								required={warnIfExists}
 								onChange={onDisambiguationChange}
 							/>
 						}
@@ -145,18 +212,24 @@ NameSection.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
 	disambiguationVisible: PropTypes.bool.isRequired,
 	entityType: entityTypeProperty.isRequired, // eslint-disable-line react/no-typos, max-len
+	exactMatches: PropTypes.array,
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
 	onDisambiguationChange: PropTypes.func.isRequired,
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
+	onNameChangeCheckIfExists: PropTypes.func.isRequired,
+	onNameChangeSearchName: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
+	searchResults: PropTypes.array,
 	sortNameValue: PropTypes.string.isRequired
 };
 NameSection.defaultProps = {
 	disambiguationDefaultValue: null,
-	languageValue: null
+	exactMatches: null,
+	languageValue: null,
+	searchResults: null
 };
 
 
@@ -166,20 +239,28 @@ function mapStateToProps(rootState) {
 		disambiguationDefaultValue: state.get('disambiguation'),
 		disambiguationVisible:
 			rootState.getIn(['buttonBar', 'disambiguationVisible']),
+		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
+		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
 	};
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, {entityType}) {
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
 		onLanguageChange: (value) =>
 			dispatch(updateLanguageField(value && value.value)),
-		onNameChange: (event) =>
-			dispatch(debouncedUpdateNameField(event.target.value)),
+		onNameChange: (value) =>
+			dispatch(debouncedUpdateNameField(value, entityType)),
+		onNameChangeCheckIfExists: _.debounce((value) => {
+			dispatch(checkIfNameExists(value, entityType));
+		}, 500),
+		onNameChangeSearchName: _.debounce((value) => {
+			dispatch(searchName(value));
+		}, 500),
 		onSortNameChange: (event) =>
 			dispatch(debouncedUpdateSortNameField(event.target.value))
 	};

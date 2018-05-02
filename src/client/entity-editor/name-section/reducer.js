@@ -26,11 +26,11 @@ import Immutable from 'immutable';
 function reducer(
 	state = Immutable.Map({
 		disambiguation: '',
+		exactMatches: null,
 		language: null,
 		name: '',
 		searchResults: null,
-		sortName: '',
-		warnIfExists: false
+		sortName: ''
 	}),
 	action
 ) {
@@ -47,7 +47,7 @@ function reducer(
 		case UPDATE_SEARCH_RESULTS:
 			return state.set('searchResults', payload);
 		case UPDATE_WARN_IF_EXISTS:
-			return state.set('warnIfExists', payload);
+			return state.set('exactMatches', payload);
 		// no default
 	}
 	return state;
