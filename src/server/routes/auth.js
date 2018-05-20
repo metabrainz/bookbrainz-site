@@ -16,8 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import _ from 'lodash';
 import express from 'express';
 import passport from 'passport';
+import request from 'superagent';
 import status from 'http-status';
 
 
@@ -53,6 +55,70 @@ router.get('/cb', (req, res, next) => {
 router.get('/logout', (req, res) => {
 	req.logOut();
 	res.redirect(status.SEE_OTHER, '/');
+});
+
+async function deleteUserAndGetResCode(orm, metabrainzUserID, accessToken) {
+	if (!_.isString(accessToken)) {
+		return status.BAD_REQUEST;
+	}
+
+	const USER_INFO_URL = 'https://musicbrainz.org/oauth2/userinfo';
+	const CORRECT_MUSICBRAINZ_USER = 'UserDeleter';
+	const CORRECT_METABRAINZ_USER_ID = 2007538;
+
+	// First, query MusicBrainz to check that the accessToken is valid
+	const deleteAuthorizationGranted = await request.get(USER_INFO_URL)
+		.set('Authorization', `Bearer ${accessToken}`)
+		.then(
+			(res) =>
+				res.ok &&
+				res.body.sub === CORRECT_MUSICBRAINZ_USER &&
+				res.body.metabrainz_user_id === CORRECT_METABRAINZ_USER_ID
+		)
+		.catch(
+			// Any kind of error -> handle by saying that authorization is not
+			// granted.
+			() => false
+		);
+
+	// If not valid, return a 400 response.
+	if (!deleteAuthorizationGranted) {
+		// Return an error status code - not able to get authorization
+		return status.BAD_REQUEST;
+	}
+
+	// Try to delete the user
+	const deleteUserByMetaBrainzID =
+		orm.func.user.deleteUserByMetaBrainzID(orm.knex);
+
+	let success = false;
+	try {
+		success = await deleteUserByMetaBrainzID(metabrainzUserID);
+	}
+	catch (err) {
+		// Any kind of uncaught error here, give an ISE
+		return status.INTERNAL_SERVER_ERROR;
+	}
+
+	if (success) {
+		// If the user could be deleted, return a 200 response.
+		return status.OK;
+	}
+
+	// Otherwise, the user was not found, return a 404 response.
+	return status.NOT_FOUND;
+}
+
+router.get('/delete-user/:metabrainzUserID', (req, res) => {
+	const {metabrainzUserID} = req.params;
+	const accessToken = req.query.access_token;
+
+	return deleteUserAndGetResCode(
+		req.app.locals.orm, metabrainzUserID, accessToken
+	)
+		.then((statusCode) => {
+			res.sendStatus(statusCode);
+		});
 });
 
 export default router;
