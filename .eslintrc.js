@@ -296,7 +296,6 @@ const stylisticIssuesRules = {
 		TRANSITION_IGNORE,
 		15
 	],
-	'multiline-comment-style': ERROR,
 	'new-parens': ERROR,
 	'no-array-constructor': ERROR,
 	'no-bitwise': ERROR,
