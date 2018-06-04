@@ -44,10 +44,13 @@ ALTER TABLE bookbrainz.work_import ADD FOREIGN KEY (data_id) REFERENCES bookbrai
 
 -- Table to store votes cast to discard an import
 CREATE TABLE IF NOT EXISTS bookbrainz.discard_votes (
-    id SERIAL PRIMARY KEY,
     import_id INT NOT NULL,
     editor_id INT NOT NULL,
-    voted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+    voted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+    PRIMARY KEY (
+        import_id,
+        editor_id
+    )
 );
 ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
