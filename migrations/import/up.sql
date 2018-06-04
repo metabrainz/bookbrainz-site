@@ -9,35 +9,35 @@ CREATE TABLE IF NOT EXISTS bookbrainz.import (
 -- Tables linking import and relevant data in entitytype_data tables
 CREATE TABLE IF NOT EXISTS bookbrainz.creator_import (
 	import_id INT PRIMARY KEY,
-	data_id INT
+	data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.creator_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.creator_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.edition_import (
 	import_id INT PRIMARY KEY,
-	data_id INT
+	data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.edition_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.edition_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.publication_import (
 	import_id INT PRIMARY KEY,
-	data_id INT
+	data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.publication_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.publication_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publication_data (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.publisher_import (
 	import_id INT PRIMARY KEY,
-	data_id INT
+	data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.publisher_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.publisher_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.work_import (
 	import_id INT PRIMARY KEY,
-	data_id INT
+	data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.work_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.work_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
