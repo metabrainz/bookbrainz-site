@@ -58,7 +58,7 @@ ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (editor_id) REFERENCES book
 -- Table to store all origin sources of imported data
 CREATE TABLE IF NOT EXISTS bookbrainz.origin_source (
     id SERIAL PRIMARY KEY,
-    value TEXT NOT NULL CHECK (value <> '')
+    name TEXT NOT NULL CHECK (name <> '')
 );
 
 -- Table to store source metadata linked with import and (upon it's subsequent upgrade) with entity
