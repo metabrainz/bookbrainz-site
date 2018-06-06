@@ -62,23 +62,23 @@ CREATE TABLE IF NOT EXISTS bookbrainz.origin_source (
 );
 
 -- Table to store source metadata linked with import and (upon it's subsequent upgrade) with entity
--- The origin_name_id refers to the source of the import, a foreign key reference to origin_import
+-- The origin_source_id refers to the source of the import, a foreign key reference to origin_import
 -- The origin_id is the designated id of the import data item at it's source
 CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
     import_id INT,
-    origin_name_id INT NOT NULL,
+    origin_source_id INT NOT NULL,
     origin_id TEXT NOT NULL CHECK (origin_id <> ''),
     imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
     last_edited VARCHAR(10),
     entity_id UUID DEFAULT NULL,
     metadata jsonb,
     PRIMARY KEY (
-        origin_name_id,
+        origin_source_id,
         origin_id
     )
 );
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (entity_id) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
-ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_name_id) REFERENCES bookbrainz.origin_source (id);
+ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_source_id) REFERENCES bookbrainz.origin_source (id);
 
 COMMIT;
