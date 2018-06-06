@@ -56,7 +56,7 @@ ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (import_id) REFERENCES book
 ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 
 -- Table to store all origin sources of imported data
-CREATE TABLE IF NOT EXISTS bookbrainz.origin_import (
+CREATE TABLE IF NOT EXISTS bookbrainz.origin_source (
     id SERIAL PRIMARY KEY,
     value TEXT NOT NULL CHECK (value <> '')
 );
@@ -79,6 +79,6 @@ CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
 );
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (entity_id) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
-ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_name_id) REFERENCES bookbrainz.origin_import (id);
+ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_name_id) REFERENCES bookbrainz.origin_source (id);
 
 COMMIT;
