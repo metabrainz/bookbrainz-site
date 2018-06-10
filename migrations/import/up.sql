@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
     origin_source_id INT NOT NULL,
     origin_id TEXT NOT NULL CHECK (origin_id <> ''),
     imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-    last_edited DATE,
+    last_edited TIMESTAMP WITHOUT TIME ZONE,
     entity_id UUID DEFAULT NULL,
     import_metadata jsonb,
     CHECK (
