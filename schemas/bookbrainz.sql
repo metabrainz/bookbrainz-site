@@ -610,6 +610,85 @@ CREATE TABLE bookbrainz._editor_entity_visits (
 ALTER TABLE bookbrainz._editor_entity_visits ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz._editor_entity_visits ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
+CREATE TABLE IF NOT EXISTS bookbrainz.import (
+    id SERIAL PRIMARY KEY,
+    type bookbrainz.entity_type NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.creator_import (
+	import_id INT PRIMARY KEY,
+	data_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.creator_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.creator_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.edition_import (
+	import_id INT PRIMARY KEY,
+	data_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.edition_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.edition_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.publication_import (
+	import_id INT PRIMARY KEY,
+	data_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.publication_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.publication_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publication_data (id);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.publisher_import (
+	import_id INT PRIMARY KEY,
+	data_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.publisher_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.publisher_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.work_import (
+	import_id INT PRIMARY KEY,
+	data_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.work_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.work_import ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.discard_votes (
+    import_id INT NOT NULL,
+    editor_id INT NOT NULL,
+    voted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+    PRIMARY KEY (
+        import_id,
+        editor_id
+    )
+);
+ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.origin_source (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL CHECK (name <> '')
+);
+
+CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
+    import_id INT,
+    origin_source_id INT NOT NULL,
+    origin_id TEXT NOT NULL CHECK (origin_id <> ''),
+    imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+    last_edited TIMESTAMP WITHOUT TIME ZONE,
+    entity_id UUID DEFAULT NULL,
+    import_metadata jsonb,
+    CHECK (
+            ((import_id IS NULL) AND NOT (entity_id IS NULL))
+        OR
+            (NOT (import_id IS NULL) and (entity_id IS NULL))
+    ),
+    PRIMARY KEY (
+        origin_source_id,
+        origin_id
+    )
+);
+ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (entity_id) REFERENCES bookbrainz.entity (bbid);
+ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_source_id) REFERENCES bookbrainz.origin_source (id);
+
 -- Views --
 
 CREATE VIEW bookbrainz.creator AS
