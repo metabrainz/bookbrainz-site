@@ -196,7 +196,10 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Creator, Edition, Publication, Publisher, Work} = orm;
+	const {Area, Creator, Edition, Publication, Publisher, Work,
+		CreatorImport, EditionImport, PublicationImport, PublisherImport,
+		WorkImport} = orm;
+
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -302,7 +305,7 @@ export async function generateIndex(orm) {
 	];
 
 	// Update the indexed entries for each entity type
-	const behaviorPromise = entityBehaviors.map(
+	const entityBehaviorPromise = entityBehaviors.map(
 		(behavior) => behavior.model.forge()
 			.query((qb) => {
 				qb.where('master', true);
@@ -312,13 +315,54 @@ export async function generateIndex(orm) {
 				withRelated: baseRelations.concat(behavior.relations)
 			})
 	);
-	const entityLists = await Promise.all(behaviorPromise);
+	const entityLists = await Promise.all(entityBehaviorPromise);
+
+	const importBehaviors = [
+		{
+			model: CreatorImport,
+			relations: [
+				'gender',
+				'creatorType',
+				'beginArea',
+				'endArea'
+			]
+		},
+		{
+			model: EditionImport,
+			relations: [
+				'publication',
+				'editionFormat',
+				'editionStatus'
+			]
+		},
+		{model: PublicationImport, relations: ['publicationType']},
+		{model: PublisherImport, relations: ['publisherType', 'area']},
+		{model: WorkImport, relations: ['workType']}
+	];
+
+	const importBehaviorPromise = importBehaviors.map(
+		(behavior) => behavior.model.forge()
+			.query((qb) => {
+				qb.whereNotNull('data_id');
+			})
+			.fetchAll({
+				withRelated: baseRelations.concat(behavior.relations)
+			})
+	);
+	const importLists = await Promise.all(importBehaviorPromise);
 
 	const listIndexes = [];
+	// Process entity lists
 	for (const entityList of entityLists) {
 		const listArray = entityList.toJSON();
 		listIndexes.push(_processEntityListForBulk(listArray));
 	}
+	// Process import lists
+	for (const importList of importLists) {
+		const listArray = importList.toJSON();
+		listIndexes.push(_processEntityListForBulk(listArray));
+	}
+
 	await Promise.all(listIndexes);
 
 	const areaCollection = await Area.forge()
