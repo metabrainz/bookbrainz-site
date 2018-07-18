@@ -48,6 +48,12 @@ export function getEntityModels(orm: Object): Object {
 	};
 }
 
+/**
+ * Returns all import models defined in bookbrainz-data-js
+ *
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @returns {object} - Object mapping model name to the import model
+ */
 export function getImportModels(orm: Object): Object {
 	const {CreatorImport, EditionImport, PublicationImport, PublisherImport,
 		WorkImport} = orm;
@@ -113,6 +119,16 @@ export function getEntityModelByType(orm: Object, type: string): Object {
 	return entityModels[type];
 }
 
+/**
+ * Retrieves the Bookshelf import model with the given the model name
+ *
+ * @param  {Object} orm - The BookBrainz ORM, initialized during app setup
+ * @param  {string} type - Name or type of model
+ * @throws {Error} Throws a custom error if the param 'type' does not
+ * map to a model
+ * @returns {object} - Bookshelf model object with the type specified in the
+ * single param
+ */
 export function getImportModelByType(orm: Object, type: string): Object {
 	const importModels = getImportModels(orm);
 
