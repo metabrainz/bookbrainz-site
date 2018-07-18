@@ -113,6 +113,16 @@ export function getEntityModelByType(orm: Object, type: string): Object {
 	return entityModels[type];
 }
 
+export function getImportModelByType(orm: Object, type: string): Object {
+	const importModels = getImportModels(orm);
+
+	if (!importModels[type]) {
+		throw new Error('Unrecognized import type');
+	}
+
+	return importModels[type];
+}
+
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
  *
