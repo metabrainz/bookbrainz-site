@@ -48,6 +48,19 @@ export function getEntityModels(orm: Object): Object {
 	};
 }
 
+export function getImportModels(orm: Object): Object {
+	const {CreatorImport, EditionImport, PublicationImport, PublisherImport,
+		WorkImport} = orm;
+
+	return {
+		CreatorImport,
+		EditionImport,
+		PublicationImport,
+		PublisherImport,
+		WorkImport
+	};
+}
+
 export function filterIdentifierTypesByEntityType(
 	identifierTypes: Array<Object>,
 	entityType: string
