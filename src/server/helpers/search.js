@@ -54,10 +54,22 @@ function _fetchEntityModelsForESResults(orm, results) {
 					return areaJSON;
 				});
 		}
-		const model = utils.getEntityModelByType(orm, entityStub.type);
-		return model.forge({bbid: entityStub.bbid})
-			.fetch({withRelated: ['defaultAlias']})
-			.then((entity) => entity.toJSON());
+
+		if (entityStub.bbid) {
+			const model = utils.getEntityModelByType(orm, entityStub.type);
+			return model.forge({bbid: entityStub.bbid})
+				.fetch({withRelated: ['defaultAlias']})
+				.then((entity) => entity.toJSON());
+		}
+		else if (entityStub.importId) {
+			const modelType = `${entityStub.type}Import`;
+			const model = utils.getImportModelByType(orm, modelType);
+			return model.forge({importId: entityStub.importId})
+				.fetch({withRelated: ['defaultAlias']})
+				.then((importObj) => importObj.toJSON());
+		}
+
+		return Promise.resolve(null);
 	});
 }
 
