@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ohm Patel
  *               2016  Sean Burke
+ *               2018  Shivam Tripathi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +69,11 @@ class SearchPage extends React.Component {
 			<div id="searchPage">
 				<SearchField onSearch={this.handleSearch}/>
 				<SearchResults results={this.state.results}/>
+				<h4 style={{color: 'maroon'}}>
+					Entries marked in red have been automatically imported.
+					Kindly review them to make them a part of our BookBrainz
+					database.
+				</h4>
 			</div>
 		);
 	}
