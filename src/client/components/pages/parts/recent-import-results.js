@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {formatDate} = utilsHelper;
+const {formatDate, getImportUrl} = utilsHelper;
 const {Table} = bootstrap;
 
 /**
@@ -58,7 +58,7 @@ function RecentImportsTable(props) {
 								<tr key={id}>
 									<td>{i + 1 + offset}</td>
 									<td>
-										<a	href={`/imports/${type}/${id}`}>
+										<a	href={getImportUrl(type, id)}>
 											{imports.defaultAlias.name}
 										</a>
 									</td>
