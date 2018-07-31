@@ -53,3 +53,8 @@ const MILLISECONDS_PER_DAY = 86400000;
 export function isWithinDayFromNow(date) {
 	return Boolean(Date.now() - date.getTime() < MILLISECONDS_PER_DAY);
 }
+
+export function getImportUrl(importType, importId) {
+	return `/imports/${importType.toLowerCase()}/${importId}`;
+}
+
