@@ -53,3 +53,11 @@ export function extractEntityProps(props) {
 		identifierTypes: props.identifierTypes
 	};
 }
+
+export function extractImportEntityProps(props) {
+	return {
+		alert: props.alert,
+		identifierTypes: props.identifierTypes,
+		importEntity: props.importEntity
+	};
+}
