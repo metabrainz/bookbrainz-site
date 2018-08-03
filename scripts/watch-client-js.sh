@@ -6,6 +6,7 @@ cross-env BABEL_ENV="browser" watchify -t [babelify] \
 		editor/edit.js \
 		editor/achievement.js \
 		editor/editor.js \
+		import-entity/import-entity.js \
 		entity/entity.js \
 		deletion.js \
 		index.js \
@@ -13,11 +14,13 @@ cross-env BABEL_ENV="browser" watchify -t [babelify] \
 		revision.js \
 		search.js \
 		statistics.js \
+		recent-imports.js \
 	-p [ factor-bundle \
 		-o ../../../static/js/entity-editor.js \
 		-o ../../../static/js/editor/edit.js \
 		-o ../../../static/js/editor/achievement.js \
 		-o ../../../static/js/editor/editor.js \
+		-o ../../../static/js/import-entity/import-entity.js \
 		-o ../../../static/js/entity/entity.js \
 		-o ../../../static/js/deletion.js \
 		-o ../../../static/js/index.js \
@@ -25,5 +28,6 @@ cross-env BABEL_ENV="browser" watchify -t [babelify] \
 		-o ../../../static/js/revision.js \
 		-o ../../../static/js/search.js \
 		-o ../../../static/js/statistics.js \
+		-o ../../../static/js/recent-imports.js \
 	] -o ../../../static/js/bundle.js -dv
 popd
