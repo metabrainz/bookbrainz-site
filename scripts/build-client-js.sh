@@ -7,6 +7,7 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		editor/achievement.js \
 		editor/editor.js \
 		entity/entity.js \
+		import-entity/import-entity.js \
 		deletion.js \
 		index.js \
 		registrationDetails.js \
@@ -20,6 +21,7 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		-o ../../../static/js/editor/achievement.js \
 		-o ../../../static/js/editor/editor.js \
 		-o ../../../static/js/entity/entity.js \
+		-o ../../../static/js/import-entity/import-entity.js \
 		-o ../../../static/js/deletion.js \
 		-o ../../../static/js/index.js \
 		-o ../../../static/js/registrationDetails.js \
