@@ -29,7 +29,7 @@ const {
 	Button, ButtonGroup, Col, Row
 } = bootstrap;
 
-function ImportFooter({importUrl, importedAt, source, type}) {
+function ImportFooter({importUrl, importedAt, source}) {
 	return (
 		<div>
 			<Row>
@@ -76,8 +76,7 @@ ImportFooter.displayName = 'ImportFooter';
 ImportFooter.propTypes = {
 	importUrl: PropTypes.string.isRequired,
 	importedAt: PropTypes.string.isRequired,
-	source: PropTypes.string.isRequired,
-	type: PropTypes.string.isRequired
+	source: PropTypes.string.isRequired
 };
 
 export default ImportFooter;
