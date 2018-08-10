@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
+ *               2018       Shivam Tripathi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,8 @@
 import * as error from '../helpers/error';
 import * as utils from '../helpers/utils';
 import Promise from 'bluebird';
+import _ from 'lodash';
+import moment from 'moment';
 import renderRelationship from '../helpers/render';
 
 
@@ -152,6 +155,65 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 					throw new error.NotFoundError(errMessage, req);
 				})
 				.catch(next);
+		}
+
+		return next('route');
+	};
+}
+
+export function makeImportLoader(modelName, additionalRels, errMessage) {
+	const relations = [
+		'aliasSet.aliases.language',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type'
+	].concat(additionalRels);
+
+	return async (req, res, next, _importId) => {
+		const importId = parseInt(_importId, 10);
+
+		const {orm} = req.app.locals;
+		const model = utils.getImportModelByType(orm, modelName);
+		if (utils.isValidImportId(importId)) {
+			try {
+				const importEntityRecord = await model.forge({importId})
+					.fetch({
+						withRelated: relations
+					});
+				res.locals.importEntity = importEntityRecord.toJSON();
+
+				const [votes, details] = await orm.bookshelf.transaction(
+					(transacting) =>
+						Promise.all([
+							orm.func.imports.discardVotesCast(
+								transacting, importId
+							),
+							orm.func.imports.getImportDetails(
+								transacting, importId
+							)
+						])
+				);
+
+				if (_.get(req, 'session.passport.user.id')) {
+					const editorId = req.session.passport.user.id;
+					res.locals.importEntity.hasVoted =
+						votes.length > 0 && Boolean(votes.filter(
+							vote => vote.editorId === editorId
+						));
+				}
+				else {
+					res.locals.importEntity.hasVoted = false;
+				}
+
+				res.locals.importEntity.source = details.source;
+				res.locals.importEntity.importedAt =
+					moment(details.importedAt).format('YYYY-MM-DD');
+			}
+			catch (err) {
+				throw new error.NotFoundError(errMessage, req);
+			}
+
+			return next();
 		}
 
 		return next('route');
