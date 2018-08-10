@@ -41,7 +41,10 @@ function EntityRelationships({relationships}) {
 }
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
-	relationships: PropTypes.array.isRequired
+	relationships: PropTypes.array
+};
+EntityRelationships.defaultProps = {
+	relationships: []
 };
 
 export default EntityRelationships;
