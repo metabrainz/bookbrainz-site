@@ -16,11 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Layout from '../containers/layout';
+import Layout from '../../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RecentImports from '../components/pages/recent-imports';
-import {extractLayoutProps} from '../helpers/props';
+import RecentImports from
+	'../../components/pages/import-entities/recent-imports';
+import {extractLayoutProps} from '../../helpers/props';
 
 
 const propsTarget = document.getElementById('props');
