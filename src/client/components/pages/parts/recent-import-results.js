@@ -17,12 +17,14 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as importHelper from '../../../helpers/import-entity';
 import * as utilsHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {formatDate, getImportUrl} = utilsHelper;
+const {formatDate} = utilsHelper;
+const {getImportUrl} = importHelper;
 const {Table} = bootstrap;
 
 /**
@@ -51,23 +53,22 @@ function RecentImportsTable(props) {
 				</thead>
 				<tbody>
 					{
-						recentImports.map((imports, i) => {
-							const type = imports.type.toLowerCase();
-							const {import_id: id, importedAt} = imports;
+						recentImports.map((importEntity, i) => {
+							const {importId, importedAt} = importEntity;
 							return (
-								<tr key={id}>
+								<tr key={importId}>
 									<td>{i + 1 + offset}</td>
 									<td>
-										<a	href={getImportUrl(type, id)}>
-											{imports.defaultAlias.name}
+										<a	href={getImportUrl(importEntity)}>
+											{importEntity.defaultAlias.name}
 										</a>
 									</td>
-									<td>{imports.type}</td>
+									<td>{importEntity.type}</td>
 									<td>
 										{formatDate(new Date(importedAt))}
 									</td>
 									<td>
-										{imports.source}
+										{importEntity.source}
 									</td>
 								</tr>
 							);
