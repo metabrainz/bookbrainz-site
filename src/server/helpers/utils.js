@@ -21,6 +21,8 @@
 // @flow
 
 import Promise from 'bluebird';
+import _ from 'lodash';
+
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -157,6 +159,10 @@ const _bbidRegex =
  */
 export function isValidBBID(bbid: string): boolean {
 	return _bbidRegex.test(bbid);
+}
+
+export function isValidImportId(id: number): boolean {
+	return _.isNumber(id);
 }
 
 /**
