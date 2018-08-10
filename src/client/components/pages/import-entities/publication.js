@@ -31,7 +31,7 @@ import _ from 'lodash';
 
 const {getTypeAttribute} = entityHelper;
 const {getImportUrl} = importHelper;
-const {Col, Row} = bootstrap;
+const {Alert, Col, Row} = bootstrap;
 
 function ImportPublicationAttributes({publication}) {
 	const type = getTypeAttribute(publication.publicationType).data;
@@ -78,13 +78,18 @@ function ImportPublicationDisplayPage({importEntity, identifierTypes}) {
 			/>
 			<hr className="margin-top-d40"/>
 			<Row>
-				<h4 className="text-center" style={{fontWeight: 'bold'}}>
+				<Alert
+					bsStyle="success"
+					className="text-center"
+					style={{fontWeight: 'bold'}}
+				>
 					{`This ${_.startCase(importEntity.type.toLowerCase())} `}
 					{'has been automatically added. Kindly approve/discard it '}
 					{'to help us improve our data.'}
-				</h4>
+				</Alert>
 			</Row>
 			<ImportFooter
+				hasVoted={importEntity.hasVoted}
 				importUrl={urlPrefix}
 				importedAt={importEntity.importedAt}
 				source={importEntity.source}
