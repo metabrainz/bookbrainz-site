@@ -21,7 +21,7 @@ import authRouter from './routes/auth';
 import creatorRouter from './routes/entity/creator';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
-import importRouter from './routes/imports';
+import importRouter from './routes/import-entity';
 import indexRouter from './routes/index';
 import publicationRouter from './routes/entity/publication';
 import publisherRouter from './routes/entity/publisher';
