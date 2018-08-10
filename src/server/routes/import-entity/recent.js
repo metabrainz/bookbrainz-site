@@ -21,7 +21,8 @@ import {escapeProps, generateProps} from '../../helpers/props';
 import Layout from '../../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import RecentImports from '../../../client/components/pages/recent-imports';
+import RecentImports from
+	'../../../client/components/pages/import-entities/recent-imports';
 import express from 'express';
 
 
@@ -78,7 +79,7 @@ function recentImportsRoute(req, res) {
 	res.render('target', {
 		markup,
 		props: escapeProps(props),
-		script: '/js/recent-imports.js',
+		script: '/js/import-entity/recent-imports.js',
 		title: 'Recent Imports'
 	});
 }
