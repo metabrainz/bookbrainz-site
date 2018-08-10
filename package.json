@@ -81,6 +81,7 @@
     "serve-favicon": "^2.4.3",
     "superagent": "^3.8.2",
     "superagent-bluebird-promise": "^4.1.0",
+    "uuid": "^3.3.2",
     "validator": "^9.1.2"
   },
   "devDependencies": {
