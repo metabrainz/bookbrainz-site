@@ -17,40 +17,23 @@
  */
 
 import {
-	extractEntityProps,
+	extractImportEntityProps,
 	extractLayoutProps
 } from '../../helpers/props';
-import ImportCreatorPage from '../../components/pages/import-entities/creator';
-import ImportEditionPage from '../../components/pages/entities/edition';
-import ImportPublicationPage from
-	'../../components/pages/import-entities/publication';
-import ImportPublisherPage from
-	'../../components/pages/import-entities/publisher';
-import ImportWorkPage from '../../components/pages/import-entities/work';
+import ImportEntityPages from '../../components/pages/import-entities';
 import Layout from '../../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 
-const entityComponents = {
-	creator: ImportCreatorPage,
-	edition: ImportEditionPage,
-	publication: ImportPublicationPage,
-	publisher: ImportPublisherPage,
-	work: ImportWorkPage
-};
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-const pageTarget = document.getElementById('page');
-const page = pageTarget ? pageTarget.innerHTML : '';
-
-const Child = entityComponents[page] || ImportCreatorPage;
+const Child = ImportEntityPages[props.importEntity.type];
 
 const markup = (
 	<Layout {...extractLayoutProps(props)}>
-		<Child {...extractEntityProps(props)}/>
+		<Child {...extractImportEntityProps(props)}/>
 	</Layout>
 );
 
