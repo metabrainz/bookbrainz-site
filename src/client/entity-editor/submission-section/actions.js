@@ -80,7 +80,7 @@ function postSubmission(url: string, data: Map<string, mixed>): Promise {
 	 * pass the entity type and generate both URLs from that.
 	 */
 
-	const [, submissionEntity] = url.split('/');
+	const [, submissionEntity, importSubmissionEntity] = url.split('/');
 	return request.post(url).send(data)
 		.promise()
 		.then((response: Response) => {
@@ -89,7 +89,13 @@ function postSubmission(url: string, data: Map<string, mixed>): Promise {
 			}
 
 			const redirectUrl = `/${submissionEntity}/${response.body.bbid}`;
-			if (response.body.alert) {
+			const importRedirectUrl =
+				`/${importSubmissionEntity}/${response.body.bbid}`;
+
+			if (submissionEntity === 'imports') {
+				window.location.href = importRedirectUrl;
+			}
+			else if (response.body.alert) {
 				const alertParam = `?alert=${response.body.alert}`;
 				window.location.href = `${redirectUrl}${alertParam}`;
 			}
