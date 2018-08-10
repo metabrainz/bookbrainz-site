@@ -28,5 +28,11 @@ export function getImportLabel(importEntity) {
 export function getImportUrl(importEntity) {
 	const type = importEntity.type.toLowerCase();
 	const id = importEntity.importId;
-	return `/imports/${type.toLowerCase()}/${id}`;
+	return `/imports/${type}/${id}`;
+}
+
+export function getImportDiscardUrl(importEntity) {
+	const type = importEntity.type.toLowerCase();
+	const id = importEntity.importId;
+	return `/imports/${type}/${id}/discard/handler`;
 }
