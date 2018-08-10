@@ -26,10 +26,16 @@ import React from 'react';
 
 const {formatDate} = utilsHelper;
 const {
-	Button, ButtonGroup, Col, Row
+	Button, ButtonGroup, Col, Row, Tooltip
 } = bootstrap;
 
-function ImportFooter({importUrl, importedAt, source}) {
+function ImportFooter({importUrl, importedAt, source, hasVoted}) {
+	const tooltip = (
+		<Tooltip id="tooltip">
+		  <strong>You can only vote once to discard an import.</strong>
+		</Tooltip>
+	  );
+
 	return (
 		<div>
 			<Row>
@@ -51,7 +57,9 @@ function ImportFooter({importUrl, importedAt, source}) {
 						</Button>
 						<Button
 							bsStyle="danger"
-							href={`${importUrl}/delete`}
+							disabled={hasVoted}
+							href={`${importUrl}/discard`}
+							overlay={hasVoted ? tooltip : null}
 							title="Discard"
 						>
 							<Icon name="remove"/>&nbsp;Discard
@@ -74,6 +82,7 @@ function ImportFooter({importUrl, importedAt, source}) {
 }
 ImportFooter.displayName = 'ImportFooter';
 ImportFooter.propTypes = {
+	hasVoted: PropTypes.bool.isRequired,
 	importUrl: PropTypes.string.isRequired,
 	importedAt: PropTypes.string.isRequired,
 	source: PropTypes.string.isRequired
