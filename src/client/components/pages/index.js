@@ -24,6 +24,7 @@ import * as utilsHelper from '../../helpers/utils';
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {hot} from 'react-hot-loader';
 
 
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
@@ -266,4 +267,5 @@ IndexPage.propTypes = {
 	recent: PropTypes.array.isRequired
 };
 
-export default IndexPage;
+// Export as hot module (see https://github.com/gaearon/react-hot-loader)
+export default hot(module)(IndexPage);

@@ -17,6 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint global-require: 'warn' */
 
 import * as auth from './helpers/auth';
 import * as error from './helpers/error';
@@ -70,9 +71,29 @@ app.use(bodyParser.urlencoded({
 app.use(compression());
 
 // Set up serving of static assets
-app.use(staticCache(path.join(rootDir, 'static/js'), {
-	buffer: true
-}));
+if (process.env.NODE_ENV === 'development') {
+	const webpack = require('webpack');
+	const webpackDevMiddleware = require('webpack-dev-middleware');
+	const webpackHotMiddleware = require('webpack-hot-middleware');
+
+	const webpackConfig = require(path.resolve(rootDir, './webpack.client'));
+	const compiler = webpack(webpackConfig);
+
+	app.use(webpackDevMiddleware(compiler, {
+		// lazy: false,
+		logTime: true,
+		noInfo: false,
+		publicPath: webpackConfig.output.publicPath
+		// serverSideRender: false
+	}));
+
+	app.use(webpackHotMiddleware(compiler));
+}
+else {
+	app.use(staticCache(path.join(rootDir, 'static/js'), {
+		buffer: true
+	}));
+}
 app.use(express.static(path.join(rootDir, 'static')));
 
 const RedisStore = redis(session);

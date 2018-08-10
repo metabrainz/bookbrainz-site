@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {hot} from 'react-hot-loader';
 
 
 const {PageHeader, Table} = bootstrap;
@@ -97,4 +98,5 @@ StatisticsPage.propTypes = {
 	topEditors: PropTypes.array.isRequired
 };
 
-export default StatisticsPage;
+// Export as hot module (see https://github.com/gaearon/react-hot-loader)
+export default hot(module)(StatisticsPage);
