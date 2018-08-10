@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+pushd static/js
+mkdir -p editor entity import-entity
+popd
 pushd src/client/controllers
 cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		../entity-editor/controller.js \
@@ -14,7 +17,8 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		revision.js \
 		search.js \
 		statistics.js \
-		recent-imports.js \
+		import-entity/recent-imports.js \
+		import-entity/discard-import-entity.js \
 	-p [ factor-bundle \
 		-o ../../../static/js/entity-editor.js \
 		-o ../../../static/js/editor/edit.js \
@@ -28,6 +32,7 @@ cross-env BABEL_ENV="browser" browserify -t [babelify] \
 		-o ../../../static/js/revision.js \
 		-o ../../../static/js/search.js \
 		-o ../../../static/js/statistics.js \
-		-o ../../../static/js/recent-imports.js \
+		-o ../../../static/js/import-entity/recent-imports.js \
+		-o ../../../static/js/import-entity/discard-import-entity.js \
 	] > ../../../static/js/bundle.js
 popd
