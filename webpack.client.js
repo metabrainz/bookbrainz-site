@@ -57,7 +57,6 @@ let config = {
 						presets: [
 							'flow',
 							'react',
-							'react-hmre',
 							['env', {
 								targets: {
 									node: 'current'
@@ -144,10 +143,9 @@ else {
 	config.plugins = [
 		...config.plugins,
 		new webpack.NamedModulesPlugin(),
-		new webpack.HotModuleReplacementPlugin()
+		new webpack.HotModuleReplacementPlugin(),
 		// Because of server-side rendering, we want the physical files to exist on disk
-		// ,
-		// new WriteAssetsWebpackPlugin({ force: true, extension: ['js'] })
+		new WriteAssetsWebpackPlugin({extension: ['js'], force: true})
 	]
 
 	if (process.env.BUNDLE_ANALYZER) {
