@@ -72,11 +72,6 @@ CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
     last_edited TIMESTAMP WITHOUT TIME ZONE,
     entity_id UUID DEFAULT NULL,
     import_metadata jsonb,
-    CHECK (
-            ((import_id IS NULL) AND NOT (entity_id IS NULL))
-        OR
-            (NOT (import_id IS NULL) and (entity_id IS NULL))
-    ),
     PRIMARY KEY (
         origin_source_id,
         origin_id
@@ -85,8 +80,6 @@ CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (entity_id) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_source_id) REFERENCES bookbrainz.origin_source (id);
-
-COMMIT;
 
 -- view --
 CREATE VIEW bookbrainz.creator_import AS
@@ -200,3 +193,5 @@ CREATE VIEW bookbrainz.work_import AS
     LEFT JOIN bookbrainz.work_data work_data ON work_import_header.data_id = work_data.id
     LEFT JOIN bookbrainz.alias_set alias_set ON work_data.alias_set_id = alias_set.id
     WHERE import.type = 'Work';
+
+COMMIT;
