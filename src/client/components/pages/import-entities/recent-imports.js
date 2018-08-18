@@ -101,6 +101,7 @@ class RecentImports extends React.Component {
 					first={paginationProps.hasBeginningPage}
 					items={paginationProps.totalPages}
 					last={paginationProps.hasEndPage}
+					maxButtons={10}
 					next={paginationProps.hasNextPage}
 					prev={paginationProps.hasPreviousPage}
 					onSelect={this.handleClick}
