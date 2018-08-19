@@ -172,9 +172,9 @@ export function makeImportLoader(modelName, additionalRels, errMessage) {
 	return async (req, res, next, _importId) => {
 		const importId = parseInt(_importId, 10);
 
+		if (utils.isValidImportId(importId)) {
 		const {orm} = req.app.locals;
 		const model = utils.getImportModelByType(orm, modelName);
-		if (utils.isValidImportId(importId)) {
 			try {
 				const importEntityRecord = await model.forge({importId})
 					.fetch({

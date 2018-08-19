@@ -162,7 +162,7 @@ export function isValidBBID(bbid: string): boolean {
 }
 
 export function isValidImportId(id: number): boolean {
-	return _.isNumber(id);
+	return _.isFinite(id) && id > 0;
 }
 
 /**

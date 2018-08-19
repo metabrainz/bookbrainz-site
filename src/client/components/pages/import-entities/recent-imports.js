@@ -49,7 +49,6 @@ class RecentImports extends React.Component {
 		};
 
 		this.handleClick = this.handleClick.bind(this);
-		this.handleCb = this.handleCb.bind(this);
 	}
 
 	componentDidMount() {
@@ -75,10 +74,6 @@ class RecentImports extends React.Component {
 			currentPage, limit, offset, paginationProps, recentImports,
 			totalResults
 		});
-	}
-
-	handleCb() {
-		this.handleClick(this.state.currentPage + 1);
 	}
 
 	render() {

@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2018 Shivam Tripathi
+ * Copyright (C) 2017 Ben Ockmore
+ *               2018 Shivam Tripathi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,38 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {constructAliases, constructIdentifiers} from '../entity/entity';
 import _ from 'lodash';
 
-
-export function constructAliases(aliasEditor, nameSection) {
-	const aliases = _.map(
-		aliasEditor,
-		({id, language, name, primary, sortName}) => ({
-			default: false,
-			id,
-			languageId: language,
-			name,
-			primary,
-			sortName
-		})
-	);
-
-	return [{
-		default: true,
-		languageId: nameSection.language,
-		name: nameSection.name,
-		primary: true,
-		sortName: nameSection.sortName
-	}, ...aliases];
-}
-
-export function constructIdentifiers(identifierEditor) {
-	return _.map(identifierEditor, ({id, type, value}) => ({
-		id,
-		typeId: type,
-		value
-	}));
-}
 
 export function formToCreatorState(data) {
 	const aliases = constructAliases(data.aliasEditor, data.nameSection);

@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2018 Shivam Tripathi
+ * Copyright (C) 2016 Ben Ockmore
+ *               2018 Shivam Tripathi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,12 +102,12 @@ export function handleDiscardImportEntity(req, res) {
 	const {orm} = req.app.locals;
 	const editorId = req.session.passport.user.id;
 	const {importEntity} = res.locals;
-	orm.bookshelf.transaction(async transacting => {
+	orm.bookshelf.transaction(async (transacting) => {
 		try {
 			await orm.func.imports.castDiscardVote(
 				transacting, importEntity.importId, editorId
 			);
-			// To-do: Add code to remove importEntity from the search index
+			// Todo: Add code to remove importEntity from the search index
 			res.status(200).send();
 		}
 		catch (err) {
@@ -119,7 +120,7 @@ export async function approveImportEntity(req, res) {
 	const {orm} = res.app.locals;
 	const editorId = req.session.passport.user.id;
 	const {importEntity} = res.locals;
-	const entity = await orm.bookshelf.transaction(transacting =>
+	const entity = await orm.bookshelf.transaction((transacting) =>
 		orm.func.imports.approveImport(
 			{editorId, importEntity, orm, transacting}
 		));
