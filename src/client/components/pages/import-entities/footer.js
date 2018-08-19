@@ -44,14 +44,14 @@ function ImportFooter({importUrl, importedAt, source, hasVoted}) {
 						<Button
 							bsStyle="success"
 							href={`${importUrl}/approve`}
-							title="Upgrade"
+							title="Approve"
 						>
 							<Icon name="check"/>&nbsp;Approve
 						</Button>
 						<Button
 							bsStyle="warning"
 							href={`${importUrl}/edit`}
-							title="Edit"
+							title="Edit & Approve"
 						>
 							<Icon name="pencil"/>&nbsp;Edit & Approve
 						</Button>
