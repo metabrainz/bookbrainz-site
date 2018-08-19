@@ -80,17 +80,12 @@ export function displayDiscardImportEntity(req, res) {
 		res.redirect(importUrl);
 	}
 
-	if (!req.session.token) {
-		req.session.token = uuid();
-	}
-	const {token} = req.session;
-	const props = generateProps(req, res, {token});
+	const props = generateProps(req, res);
 	const {DiscardImportEntityPage} = importEntityPages;
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
 			<DiscardImportEntityPage
 				importEntity={props.importEntity}
-				token={props.token}
 			/>
 		</Layout>
 	);
@@ -103,13 +98,6 @@ export function displayDiscardImportEntity(req, res) {
 }
 
 export function handleDiscardImportEntity(req, res) {
-	const {headers} = req;
-	const token = headers['x-auth-token'];
-
-	if (token !== req.session.token) {
-		res.status(401).send({error: 'No token provided.'});
-	}
-
 	const {orm} = req.app.locals;
 	const editorId = req.session.passport.user.id;
 	const {importEntity} = res.locals;

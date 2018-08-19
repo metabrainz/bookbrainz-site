@@ -31,7 +31,6 @@ const markup = (
 	<Layout {...extractLayoutProps(props)}>
 		<DeletionImportEntityPage
 			importEntity={props.importEntity}
-			token={props.token}
 		/>
 	</Layout>
 );

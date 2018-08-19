@@ -32,7 +32,6 @@ class DiscardImportEntity extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.token = props.token;
 		this.state = {
 			error: null,
 			waiting: false
@@ -53,8 +52,6 @@ class DiscardImportEntity extends React.Component {
 		const importUrl = getImportUrl(this.props.importEntity);
 
 		request.post(discardUrl)
-			.set('x-auth-token', this.props.token)
-			.send({token: this.token})
 			.then(() => {
 				window.location.href = importUrl;
 			})
@@ -134,8 +131,7 @@ class DiscardImportEntity extends React.Component {
 
 DiscardImportEntity.displayName = 'DiscardImportEntity';
 DiscardImportEntity.propTypes = {
-	importEntity: PropTypes.object.isRequired,
-	token: PropTypes.string.isRequired
+	importEntity: PropTypes.object.isRequired
 };
 
 export default DiscardImportEntity;
