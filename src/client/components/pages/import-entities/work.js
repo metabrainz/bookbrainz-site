@@ -58,8 +58,7 @@ function ImportWorkDisplayPage({importEntity, identifierTypes}) {
 			<Row>
 				<Alert
 					bsStyle="success"
-					className="text-center"
-					style={{fontWeight: 'bold'}}
+					className="text-center font-weight-bold"
 				>
 					{`This ${_.startCase(importEntity.type.toLowerCase())} `}
 					{'has been automatically added. Kindly approve/discard it '}

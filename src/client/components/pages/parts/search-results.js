@@ -61,8 +61,8 @@ function SearchResults(props) {
 			<tr key={result.id}>
 				<td>
 					<a
+						className={result.importId ? 'color-red' : ''}
 						href={link}
-						style={result.importId ? {color: 'red'} : null}
 					>
 						{name}
 					</a>

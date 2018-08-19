@@ -98,12 +98,12 @@ class DiscardImportEntity extends React.Component {
 						>
 							We really appreciate your efforts in helping us
 							improve our database. The {importEntity.type}
-							<b style={{color: 'red'}}> {entityName} </b>
+							<b className="color-red"> {entityName} </b>
 							has been automatically added to
 							our records and will be permanently deleted in
 							case multiple editors find it to be corrupt.
 							If you’re sure that the {importEntity.type}
-							<b style={{color: 'red'}}> {entityName} </b>
+							<b className="color-red"> {entityName} </b>
 							should be discarded, please press the confirm
 							button below. Other wise click cancel to get back
 							to the imported entity page.
