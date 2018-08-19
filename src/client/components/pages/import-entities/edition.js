@@ -17,9 +17,9 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as entityHelper from '../../../helpers/entity';
 import * as importHelper from '../../../helpers/import-entity';
 
+import {EditionAttributes} from '../entities/edition';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
@@ -29,72 +29,9 @@ import React from 'react';
 import _ from 'lodash';
 
 
-const {
-	extractAttribute, getEditionPublishers, getEditionReleaseDate,
-	getLanguageAttribute
-} = entityHelper;
 const {getImportUrl} = importHelper;
 
 const {Alert, Col, Row} = bootstrap;
-
-function ImportEditionAttributes({edition}) {
-	const status = extractAttribute(edition.editionStatus, 'label');
-	const format = extractAttribute(edition.editionFormat, 'label');
-	const pageCount = extractAttribute(edition.pages);
-	const weight = extractAttribute(edition.weight);
-	const width = extractAttribute(edition.width);
-	const height = extractAttribute(edition.height);
-	const depth = extractAttribute(edition.depth);
-
-	const releaseDate = getEditionReleaseDate(edition);
-	const publishers = getEditionPublishers(edition);
-	const languages = getLanguageAttribute(edition).data;
-
-	return (
-		<div>
-			<Row>
-				<Col md={3}>
-					<dl>
-						<dt>Release Date</dt>
-						<dd>{releaseDate}</dd>
-						<dt>Format</dt>
-						<dd>{format}</dd>
-						<dt>Status</dt>
-						<dd>{status}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Dimensions (WxHxD)</dt>
-						<dd>{width}&times;{height}&times;{depth} mm</dd>
-						<dt>Weight</dt>
-						<dd>{weight} g</dd>
-						<dt>Page Count</dt>
-						<dd>{pageCount}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Languages</dt>
-						<dd>{languages}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Publishers</dt>
-						<dd>
-							{publishers}
-						</dd>
-					</dl>
-				</Col>
-			</Row>
-		</div>
-	);
-}
-ImportEditionAttributes.displayName = 'EditionAttributes';
-ImportEditionAttributes.propTypes = {
-	edition: PropTypes.object.isRequired
-};
 
 
 function ImportEditionDisplayPage({importEntity, identifierTypes}) {
@@ -110,7 +47,7 @@ function ImportEditionDisplayPage({importEntity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<ImportTitle importEntity={importEntity}/>
-					<ImportEditionAttributes edition={importEntity}/>
+					<EditionAttributes edition={importEntity}/>
 				</Col>
 			</Row>
 			<EntityLinks

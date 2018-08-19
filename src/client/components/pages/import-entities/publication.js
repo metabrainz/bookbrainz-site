@@ -17,7 +17,6 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as entityHelper from '../../../helpers/entity';
 import * as importHelper from '../../../helpers/import-entity';
 
 import EntityImage from '../entities/image';
@@ -25,34 +24,13 @@ import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
 import ImportTitle from './title';
 import PropTypes from 'prop-types';
+import {PublicationAttributes} from '../entities/publication';
 import React from 'react';
 import _ from 'lodash';
 
 
-const {getTypeAttribute} = entityHelper;
 const {getImportUrl} = importHelper;
 const {Alert, Col, Row} = bootstrap;
-
-function ImportPublicationAttributes({publication}) {
-	const type = getTypeAttribute(publication.publicationType).data;
-
-	return (
-		<div>
-			<Row>
-				<Col md={3}>
-					<dl>
-						<dt>Type</dt>
-						<dd>{type}</dd>
-					</dl>
-				</Col>
-			</Row>
-		</div>
-	);
-}
-ImportPublicationAttributes.displayName = 'ImportPublicationAttributes';
-ImportPublicationAttributes.propTypes = {
-	publication: PropTypes.object.isRequired
-};
 
 
 function ImportPublicationDisplayPage({importEntity, identifierTypes}) {
@@ -68,7 +46,7 @@ function ImportPublicationDisplayPage({importEntity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<ImportTitle importEntity={importEntity}/>
-					<ImportPublicationAttributes publication={importEntity}/>
+					<PublicationAttributes publication={importEntity}/>
 				</Col>
 			</Row>
 			<EntityLinks

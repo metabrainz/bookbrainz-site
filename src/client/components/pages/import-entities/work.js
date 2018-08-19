@@ -17,7 +17,6 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as entityHelper from '../../../helpers/entity';
 import * as importHelper from '../../../helpers/import-entity';
 
 import EntityImage from '../entities/image';
@@ -26,41 +25,12 @@ import ImportFooter from './footer';
 import ImportTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {WorkAttributes} from '../entities/work';
 import _ from 'lodash';
 
 
-const {getLanguageAttribute, getTypeAttribute} = entityHelper;
 const {getImportUrl} = importHelper;
 const {Alert, Col, Row} = bootstrap;
-
-
-function ImportWorkAttributes({work}) {
-	const type = getTypeAttribute(work.workType).data;
-	const languages = getLanguageAttribute(work).data;
-
-	return (
-		<div>
-			<Row>
-				<Col md={3}>
-					<dl>
-						<dt>Type</dt>
-						<dd>{type}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Language</dt>
-						<dd>{languages}</dd>
-					</dl>
-				</Col>
-			</Row>
-		</div>
-	);
-}
-ImportWorkAttributes.displayName = 'WorkAttributes';
-ImportWorkAttributes.propTypes = {
-	work: PropTypes.object.isRequired
-};
 
 
 function ImportWorkDisplayPage({importEntity, identifierTypes}) {
@@ -76,7 +46,7 @@ function ImportWorkDisplayPage({importEntity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<ImportTitle importEntity={importEntity}/>
-					<ImportWorkAttributes work={importEntity}/>
+					<WorkAttributes work={importEntity}/>
 				</Col>
 			</Row>
 			<EntityLinks

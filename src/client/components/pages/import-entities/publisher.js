@@ -17,7 +17,6 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as entityHelper from '../../../helpers/entity';
 import * as importHelper from '../../../helpers/import-entity';
 
 import EntityImage from '../entities/image';
@@ -25,59 +24,14 @@ import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
 import ImportTitle from './title';
 import PropTypes from 'prop-types';
+import {PublisherAttributes} from '../entities/publisher';
 import React from 'react';
 import _ from 'lodash';
 
 
-const {extractAttribute, getTypeAttribute} = entityHelper;
 const {getImportUrl} = importHelper;
 
 const {Alert, Col, Row} = bootstrap;
-
-function ImportPublisherAttributes({publisher}) {
-	const type = getTypeAttribute(publisher.publisherType).data;
-	const area = extractAttribute(publisher.area, 'name');
-	const beginDate = extractAttribute(publisher.beginDate);
-	const endDate = extractAttribute(publisher.endDate);
-
-	return (
-		<div>
-			<Row>
-				<Col md={3}>
-					<dl>
-						<dt>Type</dt>
-						<dd>{type}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Area</dt>
-						<dd>{area}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Date Founded</dt>
-						<dd>{beginDate}</dd>
-					</dl>
-				</Col>
-				{
-					publisher.ended &&
-					<Col md={3}>
-						<dl>
-							<dt>Date Dissolved</dt>
-							<dd>{endDate}</dd>
-						</dl>
-					</Col>
-				}
-			</Row>
-		</div>
-	);
-}
-ImportPublisherAttributes.displayName = 'PublisherAttributes';
-ImportPublisherAttributes.propTypes = {
-	publisher: PropTypes.object.isRequired
-};
 
 
 function ImportPublisherDisplayPage({importEntity, identifierTypes}) {
@@ -93,7 +47,7 @@ function ImportPublisherDisplayPage({importEntity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<ImportTitle importEntity={importEntity}/>
-					<ImportPublisherAttributes publisher={importEntity}/>
+					<PublisherAttributes publisher={importEntity}/>
 				</Col>
 			</Row>
 			<EntityLinks

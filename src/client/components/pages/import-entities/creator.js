@@ -17,9 +17,9 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as entityHelper from '../../../helpers/entity';
 import * as importHelper from '../../../helpers/import-entity';
 
+import {CreatorAttributes} from '../entities/creator';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
@@ -29,62 +29,8 @@ import React from 'react';
 import _ from 'lodash';
 
 
-const {extractAttribute, getTypeAttribute} = entityHelper;
 const {getImportUrl} = importHelper;
-
 const {Alert, Col, Row} = bootstrap;
-
-
-function ImportCreatorAttributes({creator}) {
-	const type = getTypeAttribute(creator.creatorType).data;
-	const gender = extractAttribute(creator.gender, 'name');
-	const beginArea = extractAttribute(creator.beginArea, 'name');
-	const endArea = extractAttribute(creator.endArea, 'name');
-	const beginDate = extractAttribute(creator.beginDate);
-	const endDate = extractAttribute(creator.endDate);
-
-	return (
-		<div>
-			<Row>
-				<Col md={3}>
-					<dl>
-						<dt>Type</dt>
-						<dd>{type}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Gender</dt>
-						<dd>{gender}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Begin Date</dt>
-						<dd>{beginDate}</dd>
-						<dt>Begin Area</dt>
-						<dd>{beginArea}</dd>
-					</dl>
-				</Col>
-				{
-					creator.ended &&
-					<Col md={3}>
-						<dl>
-							<dt>End Date</dt>
-							<dd>{endDate}</dd>
-							<dt>End Area</dt>
-							<dd>{endArea}</dd>
-						</dl>
-					</Col>
-				}
-			</Row>
-		</div>
-	);
-}
-ImportCreatorAttributes.displayName = 'CreatorAttributes';
-ImportCreatorAttributes.propTypes = {
-	creator: PropTypes.object.isRequired
-};
 
 
 function ImportCreatorDisplayPage({importEntity, identifierTypes}) {
@@ -100,7 +46,7 @@ function ImportCreatorDisplayPage({importEntity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<ImportTitle importEntity={importEntity}/>
-					<ImportCreatorAttributes creator={importEntity}/>
+					<CreatorAttributes creator={importEntity}/>
 				</Col>
 			</Row>
 			<EntityLinks
