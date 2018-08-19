@@ -23,7 +23,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Table} = bootstrap;
+const {Label, Table} = bootstrap;
 
 function SearchResults(props) {
 	const noResults = !props.results || props.results.length === 0;
@@ -51,11 +51,7 @@ function SearchResults(props) {
 			link = `/imports/${result.type.toLowerCase()}/${result.importId}`;
 		}
 		result.id = result.bbid || result.importId;
-		const tag = result.importId ? (
-			<span style={{color: 'red', fontWeight: 'bold'}}>
-				(Imported)
-			</span>
-		) : null;
+		const tag = result.importId ? <Label> Imported </Label> : null;
 
 		return (
 			<tr key={result.id}>
