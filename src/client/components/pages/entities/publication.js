@@ -31,7 +31,7 @@ import React from 'react';
 const {getTypeAttribute, getEntityUrl} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function PublicationAttributes({publication}) {
+export function PublicationAttributes({publication}) {
 	const type = getTypeAttribute(publication.publicationType).data;
 
 	return (

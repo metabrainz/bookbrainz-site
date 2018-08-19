@@ -31,7 +31,7 @@ const {extractAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
-function CreatorAttributes({creator}) {
+export function CreatorAttributes({creator}) {
 	const type = getTypeAttribute(creator.creatorType).data;
 	const gender = extractAttribute(creator.gender, 'name');
 	const beginArea = extractAttribute(creator.beginArea, 'name');

@@ -34,7 +34,7 @@ const {
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
-function EditionAttributes({edition}) {
+export function EditionAttributes({edition}) {
 	const status = extractAttribute(edition.editionStatus, 'label');
 	const format = extractAttribute(edition.editionFormat, 'label');
 	const pageCount = extractAttribute(edition.pages);

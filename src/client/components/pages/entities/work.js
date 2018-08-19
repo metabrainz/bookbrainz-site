@@ -33,7 +33,7 @@ const {getLanguageAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
-function WorkAttributes({work}) {
+export function WorkAttributes({work}) {
 	const type = getTypeAttribute(work.workType).data;
 	const languages = getLanguageAttribute(work).data;
 

@@ -33,7 +33,7 @@ import React from 'react';
 const {extractAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function PublisherAttributes({publisher}) {
+export function PublisherAttributes({publisher}) {
 	const type = getTypeAttribute(publisher.publisherType).data;
 	const area = extractAttribute(publisher.area, 'name');
 	const beginDate = extractAttribute(publisher.beginDate);
