@@ -69,7 +69,8 @@ class SearchPage extends React.Component {
 			<div id="searchPage">
 				<SearchField onSearch={this.handleSearch}/>
 				<SearchResults results={this.state.results}/>
-				<h4 style={{color: 'maroon'}}>
+				<br/>
+				<h4 className="color-red">
 					Entries marked in red have been automatically imported.
 					Kindly review them to make them a part of our BookBrainz
 					database.
