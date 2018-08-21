@@ -63,9 +63,9 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
+			dev: process.env.NODE_ENV === 'development',
 			markup,
 			page: 'Index',
-			prod: process.env.NODE_ENV === 'production',
 			props: escapeProps(props),
 			script: '/js/index.js'
 		}));

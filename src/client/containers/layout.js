@@ -34,7 +34,7 @@ import {hot} from 'react-hot-loader';
 
 
 if (!process.env.SSR) {
-	require('../stylesheets/style.less');
+	require('../../client/stylesheets/style.less');
 }
 
 const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;

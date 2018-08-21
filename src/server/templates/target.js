@@ -42,7 +42,7 @@ export default ({
 	title,
 	markup,
 	page,
-	prod,
+	dev,
 	props,
 	script
 }) => `
@@ -51,11 +51,11 @@ export default ({
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>
-		${prod ?
+		${!dev ?
 		`<link rel='stylesheet' href='/stylesheets/style.css' />
-		<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
-		<link rel='stylesheet'
-			href='/stylesheets/react-virtualized-select.css' />` : ''}
+			<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
+			<link rel='stylesheet'
+				href='/stylesheets/react-virtualized-select.css' />` : ''}
 			<meta name='viewport'
 				content='width=device-width, initial-scale=1' />
 			${favicon}
