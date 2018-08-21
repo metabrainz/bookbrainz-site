@@ -80,9 +80,11 @@ let config = {
 							sourceMap: !production
 						}
 					},
+					'resolve-url-loader',
 					{
 						loader: 'less-loader',
 						options: {
+							paths: [path.resolve(__dirname, 'node_modules', 'bootstrap', 'less')],
 							sourceMap: !production
 						}
 					}
@@ -121,31 +123,43 @@ let config = {
 					name: 'bundle',
 					test: /[\\/]node_modules[\\/]/
 				}
+				// Haven't figured out production less compilation yet
+				// ,
+				// styles: {
+				// 	chunks: 'all',
+				// 	enforce: true,
+				// 	name: 'style',
+				// 	test: /\.(le|c)ss$/
+				// }
 			}
 		}
 	},
 	plugins:[
 		new MiniCssExtractPlugin({
-			chunkFilename: 'stylesheets/[id].css',
+			// chunkFilename: 'stylesheets/[id].css',
+			// filename: 'stylesheets/style.css'
 			filename: 'stylesheets/[name].css'
-		})
+		}),
+		new CleanWebpackPlugin(['static/js' /* , 'static/stylesheets' */]),
+		new WriteAssetsWebpackPlugin({extension: ['js', 'css'], force: true})
 	]
 }
 
 
 if (production) {
-	config.plugins = [
-		...config.plugins,
-		new CleanWebpackPlugin(['static/js', 'static/stylesheets'])
-	];
+	// Haven't figured out production less compilation yet
+	/* config.optimization.splitChunks.cacheGroups.styles = {
+		chunks: 'all',
+		enforce: true,
+		name: 'style',
+		test: /\.(le|c)ss$/
+	}; */
 }
 else {
 	config.plugins = [
 		...config.plugins,
 		new webpack.NamedModulesPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
-		// Because of server-side rendering, we want the physical files to exist on disk
-		new WriteAssetsWebpackPlugin({extension: ['js'], force: true})
+		new webpack.HotModuleReplacementPlugin()
 	]
 
 	if (process.env.BUNDLE_ANALYZER) {
