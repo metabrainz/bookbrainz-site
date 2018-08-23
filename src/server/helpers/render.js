@@ -20,7 +20,6 @@
 // @flow
 
 import * as utils from './utils';
-import Handlebars from 'handlebars';
 
 
 type EntityInRelationship = {
@@ -61,10 +60,13 @@ type Relationship = {
  * @returns {string} - Rendered HTML string.
  */
 function renderRelationship(relationship: Relationship) {
-	const template = Handlebars.compile(
-		relationship.type.displayTemplate,
-		{noEscape: true}
-	);
+	function template(data) {
+		return (
+			`${data.entities[0]} ` +
+			`${relationship.type.linkPhrase} ` +
+			`${data.entities[1]}`
+		);
+	}
 
 	const data = {
 		entities: [
