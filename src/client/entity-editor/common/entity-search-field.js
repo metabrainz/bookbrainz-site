@@ -116,6 +116,7 @@ function EntitySearchField(
 	return (
 		<CustomInput label={labelElement}>
 			<ImmutableAsyncSelect
+				labelKey="text"
 				loadOptions={fetchOptions}
 				optionRenderer={Entity}
 				valueRenderer={Entity}
