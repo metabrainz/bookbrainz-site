@@ -209,12 +209,12 @@ export function displayRevisions(
 		.catch(next);
 }
 
-function _createNote(orm, content, editor, revision, transacting) {
+function _createNote(orm, content, editorID, revision, transacting) {
 	const {Note} = orm;
 	if (content) {
 		const revisionId = revision.get('id');
 		return new Note({
-			authorId: editor.id,
+			authorId: editorID,
 			content,
 			revisionId
 		})
@@ -232,7 +232,7 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	const {body}: {body: any} = req;
 	const revisionNotePromise = bookshelf.transaction(
 		(transacting) => _createNote(
-			orm, body.note, editorJSON, revision, transacting
+			orm, body.note, editorJSON.id, revision, transacting
 		)
 	);
 	return handler.sendPromiseResult(res, revisionNotePromise);
@@ -257,7 +257,7 @@ export function handleDelete(
 
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
-				orm, body.note, editorJSON, revision, transacting
+				orm, body.note, editorJSON.id, revision, transacting
 			));
 
 		/*
@@ -641,7 +641,7 @@ export function createEntity(
 
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
-				orm, req.body.note, editorJSON, revision, transacting
+				orm, req.body.note, editorJSON.id, revision, transacting
 			));
 
 		const aliasSetPromise = processFormAliases(
@@ -889,7 +889,7 @@ export function editEntity(
 					);
 
 				const notePromise = _createNote(
-					orm, req.body.note, editorJSON, newRevision, transacting
+					orm, req.body.note, editorJSON.id, newRevision, transacting
 				);
 
 				return Promise.join(
