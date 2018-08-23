@@ -17,11 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import * as achievement from '../../helpers/achievement';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+import type {$Request, $Response, NextFunction} from 'express';
 import {escapeProps, generateProps} from '../../helpers/props';
 import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
@@ -40,6 +43,8 @@ import _ from 'lodash';
 import config from '../../helpers/config';
 
 
+type PassportRequest = $Request & {user: any, session: any};
+
 const log = new Log(config.site.log);
 
 const entityComponents = {
@@ -50,11 +55,13 @@ const entityComponents = {
 	work: WorkPage
 };
 
-export function displayEntity(req, res) {
-	const {orm} = req.app.locals;
+export function displayEntity(req: PassportRequest, res: $Response) {
+	const {orm}: {orm: any} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
-	const {entity} = res.locals;
+	const {locals: resLocals}: {locals: any} = res;
+	const {entity}: {entity: any} = resLocals;
 	// Get unique identifier types for display
+	// $FlowFixMe
 	const identifierTypes = entity.identifierSet &&
 		_.uniqBy(
 			_.map(entity.identifierSet.identifiers, 'type'),
@@ -62,13 +69,13 @@ export function displayEntity(req, res) {
 		);
 
 	let editorEntityVisitPromise;
-	if (res.locals.user) {
+	if (resLocals.user) {
 		editorEntityVisitPromise = new EditorEntityVisits({
-			bbid: res.locals.entity.bbid,
-			editorId: res.locals.user.id
+			bbid: resLocals.entity.bbid,
+			editorId: resLocals.user.id
 		})
 			.save(null, {method: 'insert'})
-			.then(() => achievement.processPageVisit(orm, res.locals.user.id))
+			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
 			.catch(
 				// error caused by duplicates we do not want in database
 				() => Promise.resolve(false)
@@ -85,7 +92,8 @@ export function displayEntity(req, res) {
 				(id) => parseInt(id, 10)
 			));
 		}
-		if (req.query.alert) {
+		if (_.isString(req.query.alert)) {
+			// $FlowFixMe
 			alertIds = alertIds.concat(req.query.alert.split(',').map(
 				(id) =>	parseInt(id, 10)
 			));
@@ -152,7 +160,7 @@ export function displayEntity(req, res) {
 	});
 }
 
-export function displayDeleteEntity(req, res) {
+export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	const props = generateProps(req, res);
 
 	const markup = ReactDOMServer.renderToString(
@@ -168,7 +176,9 @@ export function displayDeleteEntity(req, res) {
 	});
 }
 
-export function displayRevisions(req, res, next, RevisionModel) {
+export function displayRevisions(
+	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
+) {
 	const {bbid} = req.params;
 
 	return new RevisionModel()
@@ -214,23 +224,28 @@ function _createNote(orm, content, editor, revision, transacting) {
 	return null;
 }
 
-export function addNoteToRevision(req, res) {
-	const {orm} = req.app.locals;
+export function addNoteToRevision(req: PassportRequest, res: $Response) {
+	const {orm}: {orm: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const revision = Revision.forge({id: req.params.id});
+	const {body}: {body: any} = req;
 	const revisionNotePromise = bookshelf.transaction(
 		(transacting) => _createNote(
-			orm, req.body.note, editorJSON, revision, transacting
+			orm, body.note, editorJSON, revision, transacting
 		)
 	);
 	return handler.sendPromiseResult(res, revisionNotePromise);
 }
 
-export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
-	const {entity} = res.locals;
+export function handleDelete(
+	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
+	RevisionModel: any
+) {
+	const {entity}: {entity: any} = res.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
+	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction((transacting) => {
 		const editorUpdatePromise =
@@ -242,7 +257,7 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
-				orm, req.body.note, editorJSON, revision, transacting
+				orm, body.note, editorJSON, revision, transacting
 			));
 
 		/*
@@ -915,13 +930,32 @@ export function editEntity(
 	);
 }
 
-export function constructAliases(aliasEditor, nameSection) {
+type AliasEditorT = {
+	language: ?number,
+	name: string,
+	primary: boolean,
+	sortName: string
+};
+
+type NameSectionT = {
+	disambiguation: string,
+	language: ?number,
+	name: string,
+	sortName: string
+};
+
+export function constructAliases(
+	aliasEditor: {[string]: AliasEditorT}, nameSection: NameSectionT
+) {
 	const aliases = _.map(
 		aliasEditor,
-		({id, language, name, primary, sortName}) => ({
+		(
+			{language: languageId, name, primary, sortName}: AliasEditorT,
+			id
+		) => ({
 			default: false,
 			id,
-			languageId: language,
+			languageId,
 			name,
 			primary,
 			sortName
@@ -930,6 +964,7 @@ export function constructAliases(aliasEditor, nameSection) {
 
 	return [{
 		default: true,
+		id: nameSection.id,
 		languageId: nameSection.language,
 		name: nameSection.name,
 		primary: true,
@@ -937,12 +972,19 @@ export function constructAliases(aliasEditor, nameSection) {
 	}, ...aliases];
 }
 
-export function constructIdentifiers(identifierEditor) {
-	return _.map(identifierEditor, ({id, type, value}) => ({
-		id,
-		typeId: type,
-		value
-	}));
+type IdentifierEditorT = {
+	type: number,
+	value: string
+};
+
+export function constructIdentifiers(
+	identifierEditor: {[string]: IdentifierEditorT}
+) {
+	return _.map(
+		identifierEditor,
+		({type: typeId, value}: IdentifierEditorT, id: string) =>
+			({id, typeId, value})
+	);
 }
 
 export function getDefaultAliasIndex(aliases) {
@@ -950,7 +992,9 @@ export function getDefaultAliasIndex(aliases) {
 	return index > 0 ? index : 0;
 }
 
-export function areaToOption(area) {
+export function areaToOption(
+	area: {comment: string, id: number, name: string}
+) {
 	if (!area) {
 		return null;
 	}
