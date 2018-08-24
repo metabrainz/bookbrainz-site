@@ -390,7 +390,6 @@ function processEntitySets(
 	return Promise.resolve(null);
 }
 
-
 async function getNextAliasSet(orm, transacting, currentEntity, body) {
 	const {AliasSet} = orm;
 
@@ -464,7 +463,7 @@ export function createEntity(
 	const {orm} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
-	const entityCreationPromise = bookshelf.transaction((transacting) => {
+	const entityCreationPromise = bookshelf.transaction(async (transacting) => {
 		const editorUpdatePromise =
 			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
 
@@ -494,51 +493,42 @@ export function createEntity(
 		const disambiguationPromise =
 			getNextDisambiguation(orm, transacting, null, req.body);
 
-		const derivedPropsPromise = processEntitySets(
+		const entitySetIdsPromise = processEntitySets(
 			orm, null, entityType, req.body, transacting
-		)
-			.then(
-				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)
-			);
+		);
 
-		return Promise.join(
+		const [
+			newRevision, aliasSet, identSet, annotation, disambiguation,
+			entitySetIds
+		] = await Promise.all([
 			newRevisionPromise, aliasSetPromise, identSetPromise,
-			annotationPromise, disambiguationPromise, derivedPropsPromise,
-			editorUpdatePromise, notePromise,
-			(
-				newRevision,
-				aliasSet,
-				identSet,
-				annotation,
-				disambiguation,
-				allProps
-			) => {
-				const propsToSet = _.extend({
-					aliasSetId: aliasSet && aliasSet.get('id'),
-					annotationId: annotation && annotation.get('id'),
-					disambiguationId:
-						disambiguation && disambiguation.get('id'),
-					identifierSetId: identSet && identSet.get('id'),
-					revisionId: newRevision.get('id')
-				}, allProps);
+			annotationPromise, disambiguationPromise, entitySetIdsPromise,
+			editorUpdatePromise, notePromise
+		]);
 
-				const model = utils.getEntityModelByType(orm, entityType);
+		const propsToSet = _.extend({
+			aliasSetId: aliasSet && aliasSet.get('id'),
+			annotationId: annotation && annotation.get('id'),
+			disambiguationId:
+				disambiguation && disambiguation.get('id'),
+			identifierSetId: identSet && identSet.get('id'),
+			revisionId: newRevision.get('id')
+		}, derivedProps, entitySetIds);
 
-				return model.forge(propsToSet)
-					.save(null, {
-						method: 'insert',
-						transacting
-					});
-			}
-		)
-			.then(
-				(entityModel) =>
-					entityModel.refresh({
-						transacting,
-						withRelated: ['defaultAlias']
-					})
-			)
-			.then((entity) => entity.toJSON());
+		const model = utils.getEntityModelByType(orm, entityType);
+
+		const entityModel = await model.forge(propsToSet)
+			.save(null, {
+				method: 'insert',
+				transacting
+			});
+
+		const entity = await entityModel.refresh({
+			transacting,
+			withRelated: ['defaultAlias']
+		});
+
+		return entity.toJSON();
 	});
 
 	const achievementPromise = entityCreationPromise.then(
@@ -571,7 +561,7 @@ export function editEntity(
 	const editorJSON = req.session.passport.user;
 	const model = utils.getEntityModelByType(orm, entityType);
 
-	const entityEditPromise = bookshelf.transaction((transacting) => {
+	const entityEditPromise = bookshelf.transaction(async (transacting) => {
 		const currentEntity = res.locals.entity;
 
 		const newRevisionPromise = new Revision({
@@ -595,112 +585,100 @@ export function editEntity(
 		const disambiguationPromise =
 			getNextDisambiguation(orm, transacting, currentEntity, req.body);
 
-		const derivedPropsPromise = processEntitySets(
+		const entitySetIdsPromise = processEntitySets(
 			orm, currentEntity, entityType, req.body, transacting
-		)
-			.then(
-				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)
-			);
+		);
 
-		return Promise.join(
-			newRevisionPromise,
-			aliasSetPromise,
-			identSetPromise,
-			annotationPromise,
-			disambiguationPromise,
-			derivedPropsPromise,
-			(
-				newRevision, aliasSet, identSet,
-				annotation, disambiguation, allProps
-			) => {
-				const propsToSet = _.extend({
-					aliasSetId: aliasSet && aliasSet.get('id'),
-					annotationId: annotation && annotation.get('id'),
-					disambiguationId:
-						disambiguation && disambiguation.get('id'),
-					identifierSetId: identSet && identSet.get('id')
-				}, allProps);
+		const [
+			newRevision, aliasSet, identSet, annotation, disambiguation,
+			entitySetIds
+		] = await Promise.all([
+			newRevisionPromise, aliasSetPromise, identSetPromise,
+			annotationPromise, disambiguationPromise, entitySetIdsPromise
+		]);
 
-				// Construct a set of differences between the new values and old
-				const changedProps =
-					_.reduce(propsToSet, (result, value, key) => {
-						if (!_.isEqual(value, currentEntity[key])) {
-							result[key] = value;
-						}
+		const propsToSet = _.extend({
+			aliasSetId: aliasSet && aliasSet.get('id'),
+			annotationId: annotation && annotation.get('id'),
+			disambiguationId:
+				disambiguation && disambiguation.get('id'),
+			identifierSetId: identSet && identSet.get('id')
+		}, derivedProps, entitySetIds);
 
-						return result;
-					}, {});
-
-				// If there are no differences, bail
-				if (_.isEmpty(changedProps)) {
-					throw new Error('Entity did not change');
+		// Construct a set of differences between the new values and old
+		const changedProps =
+			_.reduce(propsToSet, (result, value, key) => {
+				if (!_.isEqual(value, currentEntity[key])) {
+					result[key] = value;
 				}
 
-				const entityPromise = model.forge({bbid: currentEntity.bbid})
-					.fetch();
+				return result;
+			}, {});
 
-				return Promise.join(
-					newRevisionPromise, entityPromise, annotation, changedProps
-				);
-			}
-		)
-			.spread((newRevision, entity, annotation, changedProps) => {
-				_.forOwn(changedProps, (value, key) => entity.set(key, value));
+		// If there are no differences, bail
+		if (_.isEmpty(changedProps)) {
+			throw new Error('Entity did not change');
+		}
 
-				entity.set('revisionId', newRevision.get('id'));
+		const entityPromise = model.forge({bbid: currentEntity.bbid})
+			.fetch();
 
-				const editorUpdatePromise =
-					utils.incrementEditorEditCountById(
-						orm,
-						editorJSON.id,
-						transacting
-					);
+		const entity = await entityPromise;
 
-				// Get the parents of the new revision
-				const revisionParentsPromise =
-					newRevision.related('parents').fetch({transacting});
+		_.forOwn(changedProps, (value, key) => entity.set(key, value));
 
-				// Add the previous revision as a parent of this revision.
-				const parentAddedPromise =
-					revisionParentsPromise.then(
-						(parents) => parents.attach(
-							currentEntity.revisionId, {transacting}
-						)
-					);
+		entity.set('revisionId', newRevision.get('id'));
 
-				const notePromise = _createNote(
-					orm, req.body.note, editorJSON.id, newRevision, transacting
-				);
-
-				return Promise.join(
-					entity.save(null, {
-						method: 'update',
-						transacting
-					}),
-					editorUpdatePromise,
-					parentAddedPromise,
-					notePromise
-				);
-			})
-			.spread(
-				() => model.forge({bbid: currentEntity.bbid})
-					.fetch({
-						transacting,
-						withRelated: ['defaultAlias']
-					})
-			)
-			.then((entity) => entity.toJSON())
-			.then(
-				(entityJSON) => achievement.processEdit(
-					orm, req.user.id, entityJSON.revisionId
-				)
-					.then((unlock) => {
-						if (unlock.alert) {
-							entityJSON.alert = unlock.alert;
-						}
-						return entityJSON;
-					})
+		const editorUpdatePromise =
+			utils.incrementEditorEditCountById(
+				orm,
+				editorJSON.id,
+				transacting
 			);
+
+		// Get the parents of the new revision
+		const revisionParentsPromise =
+			newRevision.related('parents').fetch({transacting});
+
+		// Add the previous revision as a parent of this revision.
+		const parentAddedPromise =
+			revisionParentsPromise.then(
+				(parents) => parents.attach(
+					currentEntity.revisionId, {transacting}
+				)
+			);
+
+		const notePromise = _createNote(
+			orm, req.body.note, editorJSON.id, newRevision, transacting
+		);
+
+		await Promise.join(
+			entity.save(null, {
+				method: 'update',
+				transacting
+			}),
+			editorUpdatePromise,
+			parentAddedPromise,
+			notePromise
+		);
+
+		const updatedEntity = await model.forge({bbid: currentEntity.bbid})
+			.fetch({
+				transacting,
+				withRelated: ['defaultAlias']
+			});
+
+		const entityJSON = updatedEntity.toJSON();
+
+		return achievement.processEdit(
+			orm, req.user.id, entityJSON.revisionId
+		)
+			.then((unlock) => {
+				if (unlock.alert) {
+					entityJSON.alert = unlock.alert;
+				}
+				return entityJSON;
+			});
 	});
 
 	return handler.sendPromiseResult(
