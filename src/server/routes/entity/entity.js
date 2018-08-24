@@ -289,344 +289,177 @@ export function handleDelete(
 	return handler.sendPromiseResult(res, entityDeletePromise);
 }
 
-function setHasChanged(oldSet, newSet, idField, compareFields) {
-	const oldSetIds = _.map(oldSet, idField);
-	const newSetIds = _.map(newSet, idField);
+type ProcessEditionSetsBody = {
+	languages: Array<Language>,
+	publishers: Array<Publisher>,
+	releaseEvents: Array<ReleaseEvent>
+};
 
-	const oldSetHash = {};
-	oldSet.forEach((item) => {
-		oldSetHash[item[idField]] = item;
-	});
-
-	/*
-	 * First, determine whether any items have been deleted or added, by
-	 * excluding all new IDs from the old IDs and checking whether any IDs
-	 * remain, and vice versa
-	 */
-	const itemsHaveBeenDeletedOrAdded =
-		_.difference(oldSetIds, newSetIds).length > 0 ||
-		_.difference(newSetIds, oldSetIds).length > 0;
-
-	if (itemsHaveBeenDeletedOrAdded) {
-		return true;
-	}
-
-	/*
-	 * If no list of fields for comparison is provided and no items have been
-	 * deleted or added, consider the set unchanged
-	 */
-	if (_.isEmpty(compareFields)) {
-		return false;
-	}
-
-	// If not, return true if any items have changed (are not equal)
-	return _.some(newSet, (newItem) => {
-		const oldRepresentation =
-			_.pick(oldSetHash[newItem[idField]], compareFields);
-		const newRepresentation = _.pick(newItem, compareFields);
-		return !_.isEqual(oldRepresentation, newRepresentation);
-	});
-}
-
-function unchangedSetItems(oldSet, newSet, compareFields) {
-	return _.intersectionBy(
-		newSet,
-		oldSet,
-		(item) => _.pick(item, compareFields)
-	);
-}
-
-function updatedOrNewSetItems(oldSet, newSet, compareFields) {
-	return _.differenceBy(
-		newSet, oldSet, (item) => _.pick(item, compareFields)
-	);
-}
-
-function processFormSet(transacting, oldSet, formItems, setMetadata) {
-	const oldItems =
-		oldSet ? oldSet.related(setMetadata.propName).toJSON() : [];
-
-	// If there's no change, return the old set
-	const noChangeToSet = !setHasChanged(
-		oldItems, formItems, setMetadata.idField, setMetadata.mutableFields
-	);
-
-	if (noChangeToSet) {
-		return oldSet;
-	}
-
-	// If we have no items for the set, the set should be null
-	if (_.isEmpty(formItems)) {
-		return null;
-	}
-
-	const newSetPromise = setMetadata.model.forge()
-		.save(null, {transacting});
-
-	const fetchCollectionPromise = newSetPromise
-		.then(
-			(newSet) => newSet.related(setMetadata.propName)
-				.fetch({transacting})
-		);
-
-	let createPropertiesPromise = null;
-	let idsToAttach;
-
-	if (setMetadata.mutableFields) {
-		// If there are items in the set which haven't changed, get their IDs
-		const unchangedItems = unchangedSetItems(
-			oldItems,
-			formItems,
-			setMetadata.mutableFields
-		);
-		idsToAttach = _.map(unchangedItems, setMetadata.idField);
-
-		/*
-		 * If there are new items in the set or items in the set have otherwise
-		 * changed, add rows to the database and connect them to the set
-		 */
-		const updatedOrNewItems = updatedOrNewSetItems(
-			oldItems,
-			formItems,
-			setMetadata.mutableFields
-		);
-
-		createPropertiesPromise = fetchCollectionPromise
-			.then((collection) => Promise.map(
-				updatedOrNewItems, (item) =>
-					collection.create(
-						_.omit(item, setMetadata.idField),
-						{transacting}
-					)
-			));
-	}
-	else {
-		// If the set's elements aren't mutable, it should just be a list of IDs
-		idsToAttach = formItems;
-	}
-
-	// Link any IDs for unchanged items (including immutable) to the set
-	const attachPropertiesPromise = fetchCollectionPromise
-		.then((collection) => collection.attach(idsToAttach, {transacting}));
-
-	/*
-	 * Ensure that any linking that needs to happen to the set is completed
-	 * and return the new set's object
-	 */
-	return Promise.join(
-		newSetPromise,
-		Promise.resolve(createPropertiesPromise),
-		attachPropertiesPromise,
-		(newSet) => newSet
-	);
-}
-
-function processFormAliases(
-	orm, transacting, oldAliasSet, oldDefaultAliasId, newAliases
+async function processEditionSets(
+	orm: any,
+	currentEntity: ?{},
+	body: ProcessEditionSetsBody,
+	transacting: Transaction
 ) {
+	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
+
+	const oldLanguageSet = await (
+		languageSetID &&
+		orm.LanguageSet.forge({id: languageSetID})
+			.fetch({transacting, withRelated: ['languages']})
+	);
+
+	const languages = _.get(body, 'languages') || [];
+	const newLanguageSetIDPromise = orm.func.language.updateLanguageSet(
+		orm, transacting, oldLanguageSet,
+		languages.map((languageID) => ({id: languageID}))
+	)
+		.then((set) => set && set.get('id'));
+
+	const publisherSetID = _.get(currentEntity, ['publisherSet', 'id']);
+
+	const oldPublisherSet = await (
+		publisherSetID &&
+		orm.PublisherSet.forge({id: publisherSetID})
+			.fetch({transacting, withRelated: ['publishers']})
+	);
+
+	const publishers = _.get(body, 'publishers') || [];
+	const newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(
+		orm, transacting, oldPublisherSet,
+		publishers.map((publisherBBID) => ({bbid: publisherBBID}))
+	)
+		.then((set) => set && set.get('id'));
+
+	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
+
+	const oldReleaseEventSet = await (
+		releaseEventSetID &&
+		orm.ReleaseEventSet.forge({id: releaseEventSetID})
+			.fetch({transacting, withRelated: ['releaseEvents']})
+	);
+
+	const releaseEvents = _.get(body, 'releaseEvents') || [];
+	const newReleaseEventSetIDPromise =
+		orm.func.releaseEvent.updateReleaseEventSet(
+			orm, transacting, oldReleaseEventSet, releaseEvents
+		)
+			.then((set) => set && set.get('id'));
+
+	return Promise.props({
+		languageSetId: newLanguageSetIDPromise,
+		publisherSetId: newPublisherSetIDPromise,
+		releaseEventSetId: newReleaseEventSetIDPromise
+	});
+}
+
+async function processWorkSets(
+	orm, currentEntity: ?{}, body: {languages: Array<Language>},
+	transacting: Transaction
+) {
+	const id = _.get(currentEntity, ['languageSet', 'id']);
+
+	const oldSet = await (
+		id &&
+		orm.LanguageSet.forge({id})
+			.fetch({transacting, withRelated: ['languages']})
+	);
+
+	return Promise.props({
+		languageSetId: orm.func.language.updateLanguageSet(
+			orm, transacting, oldSet, body.languages
+		)
+	});
+}
+
+function processEntitySets(
+	orm: any,
+	currentEntity: ?{},
+	entityType: EntityTypeString,
+	body: any,
+	transacting: Transaction
+) {
+	if (entityType === 'Edition') {
+		return processEditionSets(orm, currentEntity, body, transacting);
+	}
+
+	if (entityType === 'Work') {
+		return processWorkSets(orm, currentEntity, body, transacting);
+	}
+
+	return Promise.resolve(null);
+}
+
+
+async function getNextAliasSet(orm, transacting, currentEntity, body) {
 	const {AliasSet} = orm;
-	const oldAliases =
-		oldAliasSet ? oldAliasSet.related('aliases').toJSON() : [];
-	const aliasCompareFields =
-		['name', 'sortName', 'languageId', 'primary'];
-	const aliasesHaveChanged = setHasChanged(
-		oldAliases, newAliases, 'id', aliasCompareFields
+
+	const id = _.get(currentEntity, ['aliasSet', 'id']);
+
+	const oldAliasSet = await (
+		id &&
+		new AliasSet({id}).fetch({transacting, withRelated: ['aliases']})
 	);
 
-	/*
-	 * If there is no change to the set of aliases, and the default alias is
-	 * the same, skip alias processing
-	 */
-	const newDefaultAlias = _.find(newAliases, 'default');
-	if (!aliasesHaveChanged && newDefaultAlias.id === oldDefaultAliasId) {
-		return oldAliasSet;
-	}
-
-	// Make a new alias set
-	const newAliasSetPromise = new AliasSet().save(null, {transacting});
-	const newAliasesPromise = newAliasSetPromise.then(
-		(newAliasSet) => newAliasSet.related('aliases').fetch({transacting})
-	);
-
-	// Copy across any old aliases that are exactly the same in the new set
-	const unchangedAliases =
-		unchangedSetItems(oldAliases, newAliases, aliasCompareFields);
-	const oldAliasesAttachedPromise = newAliasesPromise.then(
-		(collection) => collection.attach(
-			_.map(unchangedAliases, 'id'), {transacting}
-		)
-	);
-
-	/*
-	 * Create new aliases for any new or updated aliases, and attach them to
-	 * the set
-	 */
-	const newOrUpdatedAliases =
-		updatedOrNewSetItems(oldAliases, newAliases, aliasCompareFields);
-	const allAliasesAttachedPromise = oldAliasesAttachedPromise
-		.then(
-			(collection) =>
-				Promise.all(
-					_.map(newOrUpdatedAliases, (alias) => collection.create(
-						_.omit(alias, 'id', 'default'),
-						{transacting}
-					))
-				)
-					.then(() => collection)
-		);
-
-	// Set the default alias
-	return Promise.join(
-		newAliasSetPromise, allAliasesAttachedPromise,
-		(newAliasSet, collection) => {
-			const defaultAlias = collection.find(
-				(alias) =>
-					alias.get('name') === newDefaultAlias.name &&
-					alias.get('sortName') === newDefaultAlias.sortName &&
-					alias.get('languageId') === newDefaultAlias.languageId
-			);
-			newAliasSet.set('defaultAliasId', defaultAlias.get('id'));
-			return newAliasSet.save(null, {transacting});
-		}
+	return orm.func.alias.updateAliasSet(
+		orm, transacting, oldAliasSet,
+		oldAliasSet && oldAliasSet.get('defaultAliasId'),
+		body.aliases || []
 	);
 }
 
-function processFormIdentifiers(orm, transacting, oldIdentSet, newIdents) {
+async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 	const {IdentifierSet} = orm;
-	const oldIdents =
-		oldIdentSet ? oldIdentSet.related('identifiers').toJSON() : [];
-	const identCompareFields =
-		['value', 'typeId'];
-	const identsHaveChanged = setHasChanged(
-		oldIdents, newIdents, 'id', identCompareFields
+
+	const id = _.get(currentEntity, ['identifierSet', 'id']);
+
+	const oldIdentifierSet = await (
+		id &&
+		new IdentifierSet({id}).fetch({
+			transacting, withRelated: ['identifiers']
+		})
 	);
 
-	// If there is no change to the set of identifiers
-	if (!identsHaveChanged) {
-		return oldIdentSet;
-	}
-
-	// Make a new identifier set
-	const newIdentSetPromise =
-		new IdentifierSet().save(null, {transacting});
-	const newIdentsPromise = newIdentSetPromise.then(
-		(newIdentSet) => newIdentSet.related('identifiers').fetch({transacting})
-	);
-
-	// Copy across any old aliases that are exactly the same in the new set
-	const unchangedIdents =
-		unchangedSetItems(oldIdents, newIdents, identCompareFields);
-	const oldIdentsAttachedPromise = newIdentsPromise.then(
-		(collection) => collection.attach(
-			_.map(unchangedIdents, 'id'), {transacting}
-		)
-	);
-
-	/*
-	 * Create new aliases for any new or updated aliases, and attach them to
-	 * the set
-	 */
-	const newOrUpdatedIdents =
-		updatedOrNewSetItems(oldIdents, newIdents, identCompareFields);
-	const allIdentsAttachedPromise = oldIdentsAttachedPromise
-		.then(
-			(collection) =>
-				Promise.all(
-					_.map(newOrUpdatedIdents, (ident) => collection.create(
-						_.omit(ident, 'id'), {transacting}
-					))
-				)
-					.then(() => collection)
-		);
-
-	return Promise.join(
-		newIdentSetPromise, allIdentsAttachedPromise,
-		(newIdentSet) => newIdentSet
+	return orm.func.identifier.updateIdentifierSet(
+		orm, transacting, oldIdentifierSet, body.identifiers || []
 	);
 }
 
-function processFormAnnotation(
-	orm, transacting, oldAnnotation, newContent, revision
+async function getNextAnnotation(
+	orm, transacting, currentEntity, body, revision
 ) {
 	const {Annotation} = orm;
-	const oldContent = oldAnnotation && oldAnnotation.get('content');
 
-	if (newContent === oldContent) {
-		return oldAnnotation;
-	}
+	const id = _.get(currentEntity, ['annotation', 'id']);
 
-	return newContent ? new Annotation({
-		content: newContent,
-		lastRevisionId: revision.get('id')
-	}).save(null, {transacting}) : null;
+	const oldAnnotation = await (
+		id && new Annotation({id}).fetch({transacting})
+	);
+
+	return orm.func.annotation.updateAnnotation(
+		orm, transacting, oldAnnotation, body.annotation, revision
+	);
 }
 
-function processFormDisambiguation(
-	orm, transacting, oldDisambiguation, newComment
-) {
+async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 	const {Disambiguation} = orm;
-	const oldComment = oldDisambiguation && oldDisambiguation.get('comment');
 
-	if (newComment === oldComment) {
-		return oldDisambiguation;
-	}
+	const id = _.get(currentEntity, ['disambiguation', 'id']);
 
-	return newComment ? new Disambiguation({
-		comment: newComment
-	}).save(null, {transacting}) : null;
-}
+	const oldDisambiguation = await (
+		id && new Disambiguation({id}).fetch({transacting})
+	);
 
-function processEntitySets(derivedSets, currentEntity, body, transacting) {
-	if (!derivedSets) {
-		return null;
-	}
-
-	return Promise.map(derivedSets, (derivedSet) => {
-		const newItems = body[derivedSet.propName];
-
-		let oldSetPromise = null;
-
-		if (currentEntity && currentEntity[derivedSet.name]) {
-			oldSetPromise = derivedSet.model.forge({
-				id: currentEntity[derivedSet.name].id
-			})
-				.fetch({
-					transacting,
-					withRelated: [derivedSet.propName]
-				});
-		}
-
-		return Promise.resolve(oldSetPromise)
-			.then(
-				(oldSet) =>
-					processFormSet(
-						transacting,
-						oldSet,
-						newItems,
-						derivedSet
-					)
-			)
-			.then((newSet) => {
-				const newProp = {};
-				newProp[derivedSet.entityIdField] =
-					newSet ? newSet.get('id') : null;
-
-				return newProp;
-			});
-	})
-		.then(
-			(newProps) => _.reduce(
-				newProps, (result, value) => _.assign(result, value), {}
-			)
-		);
+	return orm.func.disambiguation.updateDisambiguation(
+		orm, transacting, oldDisambiguation, body.disambiguation
+	);
 }
 
 export function createEntity(
 	req,
 	res,
 	entityType,
-	derivedProps,
-	derivedSets
+	derivedProps
 ) {
 	const {orm} = req.app.locals;
 	const {Revision, bookshelf} = orm;
@@ -644,31 +477,25 @@ export function createEntity(
 				orm, req.body.note, editorJSON.id, revision, transacting
 			));
 
-		const aliasSetPromise = processFormAliases(
-			orm, transacting, null, null, req.body.aliases || []
+		const aliasSetPromise = getNextAliasSet(
+			orm, transacting, null, req.body
 		);
 
-		const identSetPromise = processFormIdentifiers(
-			orm, transacting, null, req.body.identifiers || []
+		const identSetPromise = getNextIdentifierSet(
+			orm, transacting, null, req.body
 		);
 
 		const annotationPromise = newRevisionPromise.then(
-			(revision) => processFormAnnotation(
-				orm, transacting, null, req.body.annotation, revision
+			(revision) => getNextAnnotation(
+				orm, transacting, null, req.body, revision
 			)
 		);
 
-		const disambiguationPromise = processFormDisambiguation(
-			orm, transacting, null, req.body.disambiguation
-		);
+		const disambiguationPromise =
+			getNextDisambiguation(orm, transacting, null, req.body);
 
-		const derivedPropsPromise = Promise.resolve(
-			processEntitySets(
-				derivedSets,
-				null,
-				req.body,
-				transacting
-			)
+		const derivedPropsPromise = processEntitySets(
+			orm, null, entityType, req.body, transacting
 		)
 			.then(
 				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)
@@ -737,14 +564,10 @@ export function editEntity(
 	req,
 	res,
 	entityType,
-	derivedProps,
-	derivedSets
+	derivedProps
 ) {
 	const {orm} = req.app.locals;
-	const {
-		AliasSet, Annotation, Disambiguation, IdentifierSet, Revision,
-		bookshelf
-	} = orm;
+	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const model = utils.getEntityModelByType(orm, entityType);
 
@@ -755,68 +578,25 @@ export function editEntity(
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
-		const oldAliasSetPromise = currentEntity.aliasSet &&
-			new AliasSet({id: currentEntity.aliasSet.id})
-				.fetch({
-					transacting,
-					withRelated: ['aliases']
-				});
+		const aliasSetPromise =
+			getNextAliasSet(orm, transacting, currentEntity, req.body);
 
-		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
-			.then(
-				(oldAliasSet) => processFormAliases(
-					orm, transacting, oldAliasSet,
-					oldAliasSet.get('defaultAliasId'),
-					req.body.aliases || []
-				)
-			);
+		const identSetPromise =
+			getNextIdentifierSet(orm, transacting, currentEntity, req.body);
 
-		const oldIdentSetPromise = currentEntity.identifierSet &&
-			new IdentifierSet({id: currentEntity.identifierSet.id})
-				.fetch({
-					transacting,
-					withRelated: ['identifiers']
-				});
-
-		const identSetPromise = Promise.resolve(oldIdentSetPromise)
-			.then(
-				(oldIdentifierSet) => processFormIdentifiers(
-					orm, transacting, oldIdentifierSet,
-					req.body.identifiers || []
-				)
-			);
-
-		const oldAnnotationPromise = currentEntity.annotation &&
-			new Annotation({id: currentEntity.annotation.id})
-				.fetch({transacting});
-
-		const annotationPromise = Promise.join(
-			newRevisionPromise, Promise.resolve(oldAnnotationPromise),
-			(revision, oldAnnotation) =>
-				processFormAnnotation(
-					orm, transacting, oldAnnotation, req.body.annotation,
+		const annotationPromise = newRevisionPromise.then(
+			(revision) =>
+				getNextAnnotation(
+					orm, transacting, currentEntity, req.body,
 					revision
 				)
 		);
 
-		const oldDisambiguationPromise = currentEntity.disambiguation &&
-			new Disambiguation({id: currentEntity.disambiguation.id})
-				.fetch({transacting});
+		const disambiguationPromise =
+			getNextDisambiguation(orm, transacting, currentEntity, req.body);
 
-		const disambiguationPromise = Promise.resolve(oldDisambiguationPromise)
-			.then(
-				(oldDisambiguation) => processFormDisambiguation(
-					orm, transacting, oldDisambiguation, req.body.disambiguation
-				)
-			);
-
-		const derivedPropsPromise = Promise.resolve(
-			processEntitySets(
-				derivedSets,
-				currentEntity,
-				req.body,
-				transacting
-			)
+		const derivedPropsPromise = processEntitySets(
+			orm, currentEntity, entityType, req.body, transacting
 		)
 			.then(
 				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)

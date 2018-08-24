@@ -177,20 +177,6 @@ router.get(
 	}
 );
 
-function getAdditionalWorkSets(orm) {
-	const {LanguageSet} = orm;
-	return [
-		{
-			entityIdField: 'languageSetId',
-			idField: 'id',
-			model: LanguageSet,
-			name: 'languageSet',
-			propName: 'languages'
-		}
-	];
-}
-
-
 function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
@@ -215,8 +201,8 @@ function transformNewForm(data) {
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'work', transformNewForm, 'typeId', (req, res) =>
-		getAdditionalWorkSets(req.app.locals.orm));
+	'work', transformNewForm, 'typeId'
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	_.partial(createOrEditHandler, 'create'));

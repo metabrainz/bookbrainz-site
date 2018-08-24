@@ -165,8 +165,7 @@ export function makeEntityCreateOrEditHandler(
 	entityType: string,
 	transformNewForm: Function,
 	propertiesToPick: string | string[],
-	additionalCallback?: (req: Object, res: Object) => any =
-	(req, res) => null) {
+) {
 	const entityName = _.capitalize(entityType);
 	return function createOrEditHandler(
 		action: EntityAction,
@@ -185,8 +184,7 @@ export function makeEntityCreateOrEditHandler(
 			  entityRoutes.editEntity;
 
 		return entityFunction(
-			req, res, entityName, _.pick(req.body, propertiesToPick),
-			additionalCallback(req, res)
+			req, res, entityName, _.pick(req.body, propertiesToPick)
 		);
 	};
 }

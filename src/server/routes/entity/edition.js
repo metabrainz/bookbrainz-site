@@ -316,40 +316,9 @@ const additionalEditionProps = [
 	'formatId', 'statusId'
 ];
 
-function getAdditionalEditionSets(orm) {
-	const {LanguageSet, PublisherSet, ReleaseEventSet} = orm;
-	return [
-		{
-			entityIdField: 'languageSetId',
-			idField: 'id',
-			model: LanguageSet,
-			name: 'languageSet',
-			propName: 'languages'
-		},
-		{
-			entityIdField: 'publisherSetId',
-			idField: 'bbid',
-			model: PublisherSet,
-			name: 'publisherSet',
-			propName: 'publishers'
-		},
-		{
-			entityIdField: 'releaseEventSetId',
-			idField: 'id',
-			model: ReleaseEventSet,
-			mutableFields: [
-				'date',
-				'areaId'
-			],
-			name: 'releaseEventSet',
-			propName: 'releaseEvents'
-		}
-	];
-}
-
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'edition', transformNewForm, additionalEditionProps, (req, res) =>
-		getAdditionalEditionSets(req.app.locals.orm));
+	'edition', transformNewForm, additionalEditionProps
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	_.partial(createOrEditHandler, 'create'));
