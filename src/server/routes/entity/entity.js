@@ -454,6 +454,73 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 	);
 }
 
+async function getChangedProps(
+	orm, transacting, isNew, currentEntity, body, entityType,
+	newRevisionPromise, derivedProps
+) {
+	const aliasSetPromise =
+		getNextAliasSet(orm, transacting, currentEntity, body);
+
+	const identSetPromise =
+		getNextIdentifierSet(orm, transacting, currentEntity, body);
+
+	const annotationPromise = newRevisionPromise.then(
+		(revision) => getNextAnnotation(
+			orm, transacting, currentEntity, body, revision
+		)
+	);
+
+	const disambiguationPromise =
+		getNextDisambiguation(orm, transacting, currentEntity, body);
+
+	const entitySetIdsPromise =
+		processEntitySets(orm, currentEntity, entityType, body, transacting);
+
+	const [
+		aliasSet, identSet, annotation, disambiguation, entitySetIds
+	] = await Promise.all([
+		aliasSetPromise, identSetPromise, annotationPromise,
+		disambiguationPromise, entitySetIdsPromise
+	]);
+
+	const propsToSet = {
+		aliasSetId: aliasSet && aliasSet.get('id'),
+		annotationId: annotation && annotation.get('id'),
+		disambiguationId:
+			disambiguation && disambiguation.get('id'),
+		identifierSetId: identSet && identSet.get('id'),
+		...derivedProps,
+		...entitySetIds
+	};
+
+	if (isNew) {
+		return propsToSet;
+	}
+
+	// Construct a set of differences between the new values and old
+	return _.reduce(propsToSet, (result, value, key) => {
+		if (!_.isEqual(value, currentEntity[key])) {
+			result[key] = value;
+		}
+
+		return result;
+	}, {});
+}
+
+function fetchOrCreateMainEntity(
+	orm, transacting, isNew, currentEntity, entityType
+) {
+	const model = utils.getEntityModelByType(orm, entityType);
+
+	const entity = model.forge({bbid: currentEntity.bbid});
+
+	if (isNew) {
+		return Promise.resolve(entity);
+	}
+
+	return entity.fetch({transacting});
+}
+
 export function createEntity(
 	req,
 	res,
@@ -476,54 +543,28 @@ export function createEntity(
 				orm, req.body.note, editorJSON.id, revision, transacting
 			));
 
-		const aliasSetPromise = getNextAliasSet(
-			orm, transacting, null, req.body
-		);
-
-		const identSetPromise = getNextIdentifierSet(
-			orm, transacting, null, req.body
-		);
-
-		const annotationPromise = newRevisionPromise.then(
-			(revision) => getNextAnnotation(
-				orm, transacting, null, req.body, revision
-			)
-		);
-
-		const disambiguationPromise =
-			getNextDisambiguation(orm, transacting, null, req.body);
-
-		const entitySetIdsPromise = processEntitySets(
-			orm, null, entityType, req.body, transacting
+		const changedPropsPromise = getChangedProps(
+			orm, transacting, true, null, req.body, entityType,
+			newRevisionPromise, derivedProps
 		);
 
 		const [
-			newRevision, aliasSet, identSet, annotation, disambiguation,
-			entitySetIds
+			newRevision, propsToSet
 		] = await Promise.all([
-			newRevisionPromise, aliasSetPromise, identSetPromise,
-			annotationPromise, disambiguationPromise, entitySetIdsPromise,
-			editorUpdatePromise, notePromise
+			newRevisionPromise, changedPropsPromise, editorUpdatePromise,
+			notePromise
 		]);
-
-		const propsToSet = _.extend({
-			aliasSetId: aliasSet && aliasSet.get('id'),
-			annotationId: annotation && annotation.get('id'),
-			disambiguationId:
-				disambiguation && disambiguation.get('id'),
-			identifierSetId: identSet && identSet.get('id'),
-			revisionId: newRevision.get('id')
-		}, derivedProps, entitySetIds);
 
 		const model = utils.getEntityModelByType(orm, entityType);
 
-		const entityModel = await model.forge(propsToSet)
-			.save(null, {
-				method: 'insert',
-				transacting
-			});
+		const entityModel = model.forge(propsToSet);
+		entityModel.set('revisionId', newRevision.get('id'));
+		const savedEntity = await entityModel.save(null, {
+			method: 'insert',
+			transacting
+		});
 
-		const entity = await entityModel.refresh({
+		const entity = await savedEntity.refresh({
 			transacting,
 			withRelated: ['defaultAlias']
 		});
@@ -568,62 +609,24 @@ export function editEntity(
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
-		const aliasSetPromise =
-			getNextAliasSet(orm, transacting, currentEntity, req.body);
-
-		const identSetPromise =
-			getNextIdentifierSet(orm, transacting, currentEntity, req.body);
-
-		const annotationPromise = newRevisionPromise.then(
-			(revision) =>
-				getNextAnnotation(
-					orm, transacting, currentEntity, req.body,
-					revision
-				)
+		const changedPropsPromise = getChangedProps(
+			orm, transacting, false, currentEntity, req.body, entityType,
+			newRevisionPromise, derivedProps
 		);
 
-		const disambiguationPromise =
-			getNextDisambiguation(orm, transacting, currentEntity, req.body);
-
-		const entitySetIdsPromise = processEntitySets(
-			orm, currentEntity, entityType, req.body, transacting
-		);
-
-		const [
-			newRevision, aliasSet, identSet, annotation, disambiguation,
-			entitySetIds
-		] = await Promise.all([
-			newRevisionPromise, aliasSetPromise, identSetPromise,
-			annotationPromise, disambiguationPromise, entitySetIdsPromise
-		]);
-
-		const propsToSet = _.extend({
-			aliasSetId: aliasSet && aliasSet.get('id'),
-			annotationId: annotation && annotation.get('id'),
-			disambiguationId:
-				disambiguation && disambiguation.get('id'),
-			identifierSetId: identSet && identSet.get('id')
-		}, derivedProps, entitySetIds);
-
-		// Construct a set of differences between the new values and old
-		const changedProps =
-			_.reduce(propsToSet, (result, value, key) => {
-				if (!_.isEqual(value, currentEntity[key])) {
-					result[key] = value;
-				}
-
-				return result;
-			}, {});
+		const [newRevision, changedProps] =
+			await Promise.all([
+				newRevisionPromise, changedPropsPromise
+			]);
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps)) {
 			throw new Error('Entity did not change');
 		}
 
-		const entityPromise = model.forge({bbid: currentEntity.bbid})
-			.fetch();
-
-		const entity = await entityPromise;
+		const entity = await fetchOrCreateMainEntity(
+			orm, transacting, false, currentEntity, entityType
+		);
 
 		_.forOwn(changedProps, (value, key) => entity.set(key, value));
 
