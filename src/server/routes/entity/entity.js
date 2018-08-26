@@ -25,6 +25,11 @@ import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
 import type {$Request, $Response, NextFunction} from 'express';
+import type {
+	EntityTypeString, FormLanguageT as Language,
+	FormPublisherT as Publisher, FormReleaseEventT as ReleaseEvent,
+	Transaction
+} from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
 import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
@@ -574,14 +579,17 @@ async function saveEntitiesAndFinishRevision(
 }
 
 export function handleCreateOrEditEntity(
-	req,
-	res,
-	entityType,
-	derivedProps
+	req: PassportRequest,
+	res: $Response,
+	entityType: EntityTypeString,
+	derivedProps: {}
 ) {
-	const {orm} = req.app.locals;
+	const {orm}: {orm: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
+	const editorJSON = req.user;
+
+	const {body}: {body: any} = req;
+	const {locals: resLocals}: {locals: any} = res;
 
 	let currentEntity: ?{
 		aliasSet: ?{id: number},
@@ -590,7 +598,7 @@ export function handleCreateOrEditEntity(
 		disambiguation: ?{id: number},
 		identifierSet: ?{id: number},
 		type: EntityTypeString
-	} = res.locals.entity;
+	} = resLocals.entity;
 
 	const entityEditPromise = bookshelf.transaction(async (transacting) => {
 		// Determine if a new entity is being created
@@ -608,7 +616,7 @@ export function handleCreateOrEditEntity(
 		}).save(null, {transacting});
 
 		const changedPropsPromise = getChangedProps(
-			orm, transacting, isNew, currentEntity, req.body, entityType,
+			orm, transacting, isNew, currentEntity, body, entityType,
 			newRevisionPromise, derivedProps
 		);
 
@@ -630,7 +638,7 @@ export function handleCreateOrEditEntity(
 
 		const savedMainEntity = await saveEntitiesAndFinishRevision(
 			orm, transacting, isNew, newRevision, mainEntity, [mainEntity],
-			editorJSON.id, req.body.note
+			editorJSON.id, body.note
 		);
 
 		const refreshedEntity = await savedMainEntity.refresh({
