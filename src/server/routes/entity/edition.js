@@ -18,7 +18,6 @@
  */
 
 import * as auth from '../../helpers/auth';
-import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
@@ -32,8 +31,6 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
-
-const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -106,7 +103,7 @@ function entityToOption(entity) {
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
-	middleware.loadLanguages,
+	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	(req, res, next) => {
 		const {Publication, Publisher} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
@@ -238,19 +235,34 @@ function editionToFormState(edition) {
 		width: edition.width
 	};
 
+	const relationshipSection = {
+		relationships: {}
+	};
+
+	edition.relationships.forEach((relationship) => (
+		relationshipSection.relationships[relationship.id] = {
+			relationshipType: relationship.type,
+			rowID: relationship.id,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		}
+	));
+
 	return {
 		aliasEditor,
 		buttonBar,
 		editionSection,
 		identifierEditor,
-		nameSection
+		nameSection,
+		relationshipSection
 	};
 }
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
-	middleware.loadLanguages,
+	middleware.loadLanguages, middleware.loadEntityRelationships,
+	middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'edition', req, res, {}, editionToFormState
@@ -272,6 +284,10 @@ function transformNewForm(data) {
 
 	const identifiers = entityRoutes.constructIdentifiers(
 		data.identifierEditor
+	);
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
 	);
 
 	let releaseEvents = [];
@@ -301,6 +317,7 @@ function transformNewForm(data) {
 			data.editionSection.publication.id,
 		publishers: data.editionSection.publisher &&
 			[data.editionSection.publisher.id],
+		relationships,
 		releaseEvents,
 		statusId: data.editionSection.status &&
 			parseInt(data.editionSection.status, 10),

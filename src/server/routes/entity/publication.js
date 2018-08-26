@@ -18,7 +18,6 @@
  */
 
 import * as auth from '../../helpers/auth';
-import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
@@ -32,8 +31,6 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
-
-const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -92,7 +89,8 @@ router.get('/:bbid/revisions', (req, res, next) => {
 
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadPublicationTypes, (req, res) => {
+	middleware.loadLanguages, middleware.loadPublicationTypes,
+	middleware.loadRelationshipTypes, (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publication', req, res, {}
 		));
@@ -154,18 +152,33 @@ function publicationToFormState(publication) {
 		type: publication.publicationType && publication.publicationType.id
 	};
 
+	const relationshipSection = {
+		relationships: {}
+	};
+
+	publication.relationships.forEach((relationship) => (
+		relationshipSection.relationships[relationship.id] = {
+			relationshipType: relationship.type,
+			rowID: relationship.id,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		}
+	));
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
-		publicationSection
+		publicationSection,
+		relationshipSection
 	};
 }
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadPublicationTypes, middleware.loadLanguages,
+	middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publication', req, res, {}, publicationToFormState
@@ -189,11 +202,16 @@ function transformNewForm(data) {
 		data.identifierEditor
 	);
 
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+
 	return {
 		aliases,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
+		relationships,
 		typeId: data.publicationSection.type
 	};
 }

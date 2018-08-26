@@ -18,7 +18,6 @@
  */
 
 import * as auth from '../../helpers/auth';
-import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
@@ -32,8 +31,6 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 
-
-const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -87,6 +84,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', req, res, {}
@@ -151,11 +149,25 @@ function workToFormState(work) {
 		type: work.workType && work.workType.id
 	};
 
+	const relationshipSection = {
+		relationships: {}
+	};
+
+	work.relationships.forEach((relationship) => (
+		relationshipSection.relationships[relationship.id] = {
+			relationshipType: relationship.type,
+			rowID: relationship.id,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		}
+	));
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
+		relationshipSection,
 		workSection
 	};
 }
@@ -163,6 +175,7 @@ function workToFormState(work) {
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadWorkTypes, middleware.loadLanguages,
+	middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', req, res, {}, workToFormState
@@ -186,6 +199,10 @@ function transformNewForm(data) {
 		data.identifierEditor
 	);
 
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+
 	const languages = _.map(
 		data.workSection.languages, (language) => language.value
 	);
@@ -196,6 +213,7 @@ function transformNewForm(data) {
 		identifiers,
 		languages,
 		note: data.submissionSection.note,
+		relationships,
 		typeId: data.workSection.type
 	};
 }
