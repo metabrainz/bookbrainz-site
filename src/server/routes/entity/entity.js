@@ -429,6 +429,27 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 	);
 }
 
+async function getNextRelationshipSets(
+	orm, transacting, currentEntity, body
+) {
+	const {RelationshipSet} = orm;
+
+	const id = _.get(currentEntity, ['relationshipSet', 'id']);
+
+	const oldRelationshipSet = await (
+		id &&
+		new RelationshipSet({id}).fetch({
+			transacting, withRelated: ['relationships']
+		})
+	);
+
+	const updatedRelationships = orm.func.relationship.updateRelationshipSets(
+		orm, transacting, oldRelationshipSet, body.relationships || []
+	);
+
+	return updatedRelationships;
+}
+
 async function getNextAnnotation(
 	orm, transacting, currentEntity, body, revision
 ) {
@@ -526,6 +547,26 @@ function fetchOrCreateMainEntity(
 	return entity.fetch({transacting});
 }
 
+async function getEntityByBBID(orm, transacting, bbid) {
+	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+
+	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
+	return model.forge({bbid}).fetch({transacting});
+}
+
+function fetchEntitiesForRelationships(
+	orm, transacting, currentEntity, relationshipSets
+) {
+	const bbidsToFetch = _.without(
+		_.keys(relationshipSets), _.get(currentEntity, 'bbid')
+	);
+
+	return Promise.all(bbidsToFetch.map(
+		(bbid) =>
+			getEntityByBBID(orm, transacting, bbid)
+	));
+}
+
 async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	if (_.isEmpty(parentRevisionIDs)) {
 		return Promise.resolve(null);
@@ -607,6 +648,16 @@ export function handleCreateOrEditEntity(
 		if (isNew) {
 			const newEntity = await new orm.Entity({type: entityType})
 				.save(null, {transacting});
+			const newEntityBBID = newEntity.get('bbid');
+			body.relationships = _.map(
+				body.relationships,
+				({sourceBbid, targetBbid, ...others}) => ({
+					sourceBbid: sourceBbid || newEntityBBID,
+					targetBbid: targetBbid || newEntityBBID,
+					...others
+				})
+			);
+
 			currentEntity = newEntity.toJSON();
 		}
 
@@ -615,17 +666,22 @@ export function handleCreateOrEditEntity(
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
+		const relationshipSetsPromise = getNextRelationshipSets(
+			orm, transacting, currentEntity, body
+		);
+
 		const changedPropsPromise = getChangedProps(
 			orm, transacting, isNew, currentEntity, body, entityType,
 			newRevisionPromise, derivedProps
 		);
 
-		const [newRevision, changedProps] = await Promise.all([
-			newRevisionPromise, changedPropsPromise
-		]);
+		const [newRevision, changedProps, relationshipSets] =
+			await Promise.all([
+				newRevisionPromise, changedPropsPromise, relationshipSetsPromise
+			]);
 
 		// If there are no differences, bail
-		if (_.isEmpty(changedProps)) {
+		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
 			throw new Error('Entity did not change');
 		}
 
@@ -634,10 +690,26 @@ export function handleCreateOrEditEntity(
 			orm, transacting, isNew, currentEntity, entityType
 		);
 
+		// Fetch all entities that definitely exist
+		const otherEntities = await fetchEntitiesForRelationships(
+			orm, transacting, currentEntity, relationshipSets
+		);
+
 		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
+		const allEntities = [...otherEntities, mainEntity];
+
+		_.forEach(allEntities, (entityModel) => {
+			const bbid: string = entityModel.get('bbid');
+			if (_.has(relationshipSets, bbid)) {
+				entityModel.set(
+					'relationshipSetId', relationshipSets[bbid].get('id')
+				);
+			}
+		});
+
 		const savedMainEntity = await saveEntitiesAndFinishRevision(
-			orm, transacting, isNew, newRevision, mainEntity, [mainEntity],
+			orm, transacting, isNew, newRevision, mainEntity, allEntities,
 			editorJSON.id, body.note
 		);
 
