@@ -627,8 +627,8 @@ export function createEntity(
 				if (unlock.alert) {
 					entityJSON.alert = unlock.alert;
 				}
+				return entityJSON;
 			})
-			.then(() => entityJSON)
 	);
 
 	return handler.sendPromiseResult(
@@ -647,7 +647,6 @@ export function editEntity(
 	const {orm} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
-	const model = utils.getEntityModelByType(orm, entityType);
 
 	const entityEditPromise = bookshelf.transaction(async (transacting) => {
 		const currentEntity = res.locals.entity;
@@ -686,22 +685,24 @@ export function editEntity(
 			withRelated: ['defaultAlias']
 		});
 
-		const entityJSON = refreshedEntity.toJSON();
+		return refreshedEntity.toJSON();
+	});
 
-		return achievement.processEdit(
-			orm, req.user.id, entityJSON.revisionId
+	const achievementPromise = entityEditPromise.then(
+		(entityJSON) => achievement.processEdit(
+			orm, editorJSON.id, entityJSON.revisionId
 		)
 			.then((unlock) => {
 				if (unlock.alert) {
 					entityJSON.alert = unlock.alert;
 				}
 				return entityJSON;
-			});
-	});
+			})
+	);
 
 	return handler.sendPromiseResult(
 		res,
-		entityEditPromise,
+		achievementPromise,
 		search.indexEntity
 	);
 }
