@@ -78,6 +78,7 @@ app.use(express.static(path.join(rootDir, 'static')));
 const RedisStore = redis(session);
 app.use(session({
 	cookie: {
+		maxAge: config.session.maxAge,
 		secure: config.session.secure
 	},
 	resave: false,
@@ -85,8 +86,7 @@ app.use(session({
 	secret: config.session.secret,
 	store: new RedisStore({
 		host: config.session.redis.host,
-		port: config.session.redis.port,
-		ttl: config.session.redis.ttl
+		port: config.session.redis.port
 	})
 }));
 

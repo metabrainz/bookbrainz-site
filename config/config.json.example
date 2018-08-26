@@ -9,12 +9,12 @@
 		"callbackURL": ""
 	},
 	"session": {
+		"maxAge": 2592000000,
 		"secret": "Something here!",
 		"secure": false,
 		"redis": {
 			"host": "localhost",
-			"port": 6379,
-			"ttl": 3600
+			"port": 6379
 		}
 	},
 	"database": {
