@@ -179,11 +179,7 @@ export function makeEntityCreateOrEditHandler(
 
 		req.body = transformNewForm(req.body);
 
-		const entityFunction = action === 'create' ?
-			  entityRoutes.createEntity :
-			  entityRoutes.editEntity;
-
-		return entityFunction(
+		return entityRoutes.handleCreateOrEditEntity(
 			req, res, entityName, _.pick(req.body, propertiesToPick)
 		);
 	};
