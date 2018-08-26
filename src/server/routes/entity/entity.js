@@ -705,7 +705,8 @@ export function handleCreateOrEditEntity(
 			const bbid: string = entityModel.get('bbid');
 			if (_.has(relationshipSets, bbid)) {
 				entityModel.set(
-					'relationshipSetId', relationshipSets[bbid].get('id')
+					'relationshipSetId',
+					relationshipSets[bbid] && relationshipSets[bbid].get('id')
 				);
 			}
 		});
