@@ -170,7 +170,6 @@ export function makeEntityCreateOrEditHandler(
 	const validate = getValidator(entityType);
 
 	return function createOrEditHandler(
-		action: EntityAction,
 		req: express.request,
 		res: express.response
 	) {
