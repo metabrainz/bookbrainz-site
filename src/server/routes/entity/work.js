@@ -174,7 +174,7 @@ function workToFormState(work) {
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadWorkTypes, middleware.loadLanguages,
-	middleware.loadRelationshipTypes,
+	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', req, res, {}, workToFormState

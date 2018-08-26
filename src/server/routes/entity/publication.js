@@ -177,7 +177,7 @@ function publicationToFormState(publication) {
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadPublicationTypes, middleware.loadLanguages,
-	middleware.loadRelationshipTypes,
+	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publication', req, res, {}, publicationToFormState
