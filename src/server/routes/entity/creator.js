@@ -148,6 +148,9 @@ function creatorToFormState(creator) {
 	};
 
 	const relationshipSection = {
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
 		relationships: {}
 	};
 

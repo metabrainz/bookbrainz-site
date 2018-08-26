@@ -236,6 +236,9 @@ function editionToFormState(edition) {
 	};
 
 	const relationshipSection = {
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
 		relationships: {}
 	};
 

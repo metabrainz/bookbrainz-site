@@ -21,7 +21,7 @@
 import * as Immutable from 'immutable';
 import {
 	type Action, editRelationship, hideRelationshipEditor, removeRelationship,
-	saveRelationship, showRelationshipEditor
+	saveRelationship, showRelationshipEditor, undoLastSave
 } from './actions';
 import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
 import type {
@@ -100,7 +100,8 @@ type StateProps = {
 	entityName: string,
 	relationships: Immutable.List<any>,
 	relationshipEditorProps: Immutable.Map<string, any>,
-	showEditor: boolean
+	showEditor: boolean,
+	undoPossible: boolean
 };
 
 type DispatchProps = {
@@ -108,7 +109,8 @@ type DispatchProps = {
 	onEditorClose: () => mixed,
 	onEditorSave: (_Relationship) => mixed,
 	onEdit: (number) => mixed,
-	onRemove: (number) => mixed
+	onRemove: (number) => mixed,
+	onUndo: () => mixed
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -117,7 +119,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 function RelationshipSection({
 	entity, entityType, entityName, showEditor, relationships,
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
-	onEditorClose, onEditorSave, onEdit, onRemove
+	onEditorClose, onEditorSave, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
@@ -162,12 +164,27 @@ function RelationshipSection({
 				>
 					<Button
 						bsStyle="success"
-						onClick={(onAddRelationship)}
+						onClick={onAddRelationship}
 					>
 						Add relationship
 					</Button>
 				</Col>
 			</Row>
+			{undoPossible &&
+				<Row className="margin-top-d5">
+					<Col
+						className="text-center"
+						md={4}
+						mdOffset={4}
+					>
+						<Button
+							onClick={onUndo}
+						>
+							Undo last action
+						</Button>
+					</Col>
+				</Row>
+			}
 		</div>
 	);
 }
@@ -178,7 +195,8 @@ function mapStateToProps(rootState): StateProps {
 		entityName: rootState.getIn(['nameSection', 'name']),
 		relationshipEditorProps: state.get('relationshipEditorProps'),
 		relationships: state.get('relationships'),
-		showEditor: state.get('relationshipEditorVisible')
+		showEditor: state.get('relationshipEditorVisible'),
+		undoPossible: state.get('lastRelationships') !== null
 	};
 }
 
@@ -188,7 +206,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEdit: (rowID) => dispatch(editRelationship(rowID)),
 		onEditorClose: () => dispatch(hideRelationshipEditor()),
 		onEditorSave: (data) => dispatch(saveRelationship(data)),
-		onRemove: (rowID) => dispatch(removeRelationship(rowID))
+		onRemove: (rowID) => dispatch(removeRelationship(rowID)),
+		onUndo: () => dispatch(undoLastSave())
 	};
 }
 

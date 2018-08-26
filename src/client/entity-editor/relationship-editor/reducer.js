@@ -19,12 +19,13 @@
 import * as Immutable from 'immutable';
 import {
 	EDIT_RELATIONSHIP, HIDE_RELATIONSHIP_EDITOR, REMOVE_RELATIONSHIP,
-	SAVE_RELATIONSHIP, SHOW_RELATIONSHIP_EDITOR
+	SAVE_RELATIONSHIP, SHOW_RELATIONSHIP_EDITOR, UNDO_LAST_SAVE
 } from './actions';
 
 
 function reducer(
 	state = Immutable.Map({
+		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
 		relationships: Immutable.OrderedMap()
@@ -47,7 +48,8 @@ function reducer(
 				Immutable.fromJS({rowID, ...action.payload.data})
 			)
 				.set('relationshipEditorProps', null)
-				.set('relationshipEditorVisible', false);
+				.set('relationshipEditorVisible', false)
+				.set('lastRelationships', state.get('relationships'));
 		}
 		case EDIT_RELATIONSHIP:
 			return state.set(
@@ -55,7 +57,11 @@ function reducer(
 				state.getIn(['relationships', action.payload])
 			).set('relationshipEditorVisible', true);
 		case REMOVE_RELATIONSHIP:
-			return state.deleteIn(['relationships', action.payload]);
+			return state.deleteIn(['relationships', action.payload])
+				.set('lastRelationships', state.get('relationships'));
+		case UNDO_LAST_SAVE:
+			return state.set('relationships', state.get('lastRelationships'))
+				.set('lastRelationships', null);
 		// no default
 	}
 	return state;

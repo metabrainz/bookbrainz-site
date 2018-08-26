@@ -149,6 +149,9 @@ function workToFormState(work) {
 	};
 
 	const relationshipSection = {
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
 		relationships: {}
 	};
 

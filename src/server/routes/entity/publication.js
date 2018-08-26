@@ -152,6 +152,9 @@ function publicationToFormState(publication) {
 	};
 
 	const relationshipSection = {
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
 		relationships: {}
 	};
 
