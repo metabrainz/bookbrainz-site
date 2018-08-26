@@ -19,7 +19,6 @@
 
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {

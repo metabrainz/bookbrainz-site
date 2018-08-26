@@ -19,7 +19,6 @@
 
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
@@ -236,7 +235,8 @@ const additionalPublisherProps = [
 ];
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'publisher', transformNewForm, additionalPublisherProps);
+	'publisher', transformNewForm, additionalPublisherProps
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
