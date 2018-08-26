@@ -797,6 +797,18 @@ export function constructIdentifiers(
 	);
 }
 
+export function constructRelationships(relationshipSection) {
+	return _.map(
+		relationshipSection.relationships,
+		({rowID, relationshipType, sourceEntity, targetEntity}) => ({
+			id: rowID,
+			sourceBbid: _.get(sourceEntity, 'bbid'),
+			targetBbid: _.get(targetEntity, 'bbid'),
+			typeId: relationshipType.id
+		})
+	);
+}
+
 export function getDefaultAliasIndex(aliases) {
 	const index = aliases.findIndex((alias) => alias.default);
 	return index > 0 ? index : 0;
