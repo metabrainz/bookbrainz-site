@@ -521,6 +521,58 @@ function fetchOrCreateMainEntity(
 	return entity.fetch({transacting});
 }
 
+async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
+	if (_.isEmpty(parentRevisionIDs)) {
+		return Promise.resolve(null);
+	}
+
+	// Get the parents of the new revision
+	const parents =
+		await newRevision.related('parents').fetch({transacting});
+
+	// Add the previous revision as a parent of this revision.
+	return parents.attach(parentRevisionIDs, {transacting});
+}
+
+async function saveEntitiesAndFinishRevision(
+	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
+	updatedEntities: [], editorID: number, note: string
+) {
+	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
+		(entityModel) => entityModel.get('revisionId')
+	)));
+
+	const entitiesSavedPromise = Promise.all(
+		_.map(updatedEntities, (entityModel) => {
+			entityModel.set('revisionId', newRevision.get('id'));
+
+			const shouldInsert =
+				entityModel.get('bbid') === mainEntity.get('bbid') && isNew;
+			const method = shouldInsert ? 'insert' : 'update';
+			return entityModel.save(null, {method, transacting});
+		})
+	);
+
+	const editorUpdatePromise =
+		utils.incrementEditorEditCountById(orm, editorID, transacting);
+
+	const notePromise = _createNote(
+		orm, note, editorID, newRevision, transacting
+	);
+
+	const parentsAddedPromise =
+		setParentRevisions(transacting, newRevision, parentRevisionIDs);
+
+	await Promise.all([
+		entitiesSavedPromise,
+		editorUpdatePromise,
+		parentsAddedPromise,
+		notePromise
+	]);
+
+	return mainEntity;
+}
+
 export function createEntity(
 	req,
 	res,
@@ -531,45 +583,40 @@ export function createEntity(
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const entityCreationPromise = bookshelf.transaction(async (transacting) => {
-		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
+		const newEntity = await new orm.Entity({type: entityType})
+			.save(null, {transacting});
+		const currentEntity = newEntity.toJSON();
 
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
-		const notePromise = newRevisionPromise
-			.then((revision) => _createNote(
-				orm, req.body.note, editorJSON.id, revision, transacting
-			));
-
 		const changedPropsPromise = getChangedProps(
-			orm, transacting, true, null, req.body, entityType,
+			orm, transacting, true, currentEntity, req.body, entityType,
 			newRevisionPromise, derivedProps
 		);
 
-		const [
-			newRevision, propsToSet
-		] = await Promise.all([
-			newRevisionPromise, changedPropsPromise, editorUpdatePromise,
-			notePromise
+		const [newRevision, propsToSet] = await Promise.all([
+			newRevisionPromise, changedPropsPromise
 		]);
 
-		const model = utils.getEntityModelByType(orm, entityType);
+		const mainEntity = await fetchOrCreateMainEntity(
+			orm, transacting, true, currentEntity, entityType
+		);
 
-		const entityModel = model.forge(propsToSet);
-		entityModel.set('revisionId', newRevision.get('id'));
-		const savedEntity = await entityModel.save(null, {
-			method: 'insert',
-			transacting
-		});
+		_.forOwn(propsToSet, (value, key) => mainEntity.set(key, value));
 
-		const entity = await savedEntity.refresh({
+		const savedMainEntity = saveEntitiesAndFinishRevision(
+			orm, transacting, true, newRevision, mainEntity, [mainEntity],
+			editorJSON.id, req.body.note
+		);
+
+		const refreshedEntity = await savedMainEntity.refresh({
 			transacting,
 			withRelated: ['defaultAlias']
 		});
 
-		return entity.toJSON();
+		return refreshedEntity.toJSON();
 	});
 
 	const achievementPromise = entityCreationPromise.then(
@@ -614,64 +661,32 @@ export function editEntity(
 			newRevisionPromise, derivedProps
 		);
 
-		const [newRevision, changedProps] =
-			await Promise.all([
-				newRevisionPromise, changedPropsPromise
-			]);
+		const [newRevision, changedProps] = await Promise.all([
+			newRevisionPromise, changedPropsPromise
+		]);
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps)) {
 			throw new Error('Entity did not change');
 		}
 
-		const entity = await fetchOrCreateMainEntity(
+		const mainEntity = await fetchOrCreateMainEntity(
 			orm, transacting, false, currentEntity, entityType
 		);
 
-		_.forOwn(changedProps, (value, key) => entity.set(key, value));
+		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
-		entity.set('revisionId', newRevision.get('id'));
-
-		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(
-				orm,
-				editorJSON.id,
-				transacting
-			);
-
-		// Get the parents of the new revision
-		const revisionParentsPromise =
-			newRevision.related('parents').fetch({transacting});
-
-		// Add the previous revision as a parent of this revision.
-		const parentAddedPromise =
-			revisionParentsPromise.then(
-				(parents) => parents.attach(
-					currentEntity.revisionId, {transacting}
-				)
-			);
-
-		const notePromise = _createNote(
-			orm, req.body.note, editorJSON.id, newRevision, transacting
+		const savedMainEntity = await saveEntitiesAndFinishRevision(
+			orm, transacting, false, newRevision, mainEntity, [mainEntity],
+			editorJSON.id, req.body.note
 		);
 
-		await Promise.join(
-			entity.save(null, {
-				method: 'update',
-				transacting
-			}),
-			editorUpdatePromise,
-			parentAddedPromise,
-			notePromise
-		);
+		const refreshedEntity = await savedMainEntity.refresh({
+			transacting,
+			withRelated: ['defaultAlias']
+		});
 
-		const updatedEntity = await model.forge({bbid: currentEntity.bbid})
-			.fetch({
-				transacting,
-				withRelated: ['defaultAlias']
-			});
-
-		const entityJSON = updatedEntity.toJSON();
+		const entityJSON = refreshedEntity.toJSON();
 
 		return achievement.processEdit(
 			orm, req.user.id, entityJSON.revisionId
