@@ -1,6 +1,13 @@
 BEGIN;
 
-UPDATE bookbrainz.relationship_type SET deprecated=true WHERE id=3;
+UPDATE bookbrainz.relationship_type
+	SET
+		deprecated=true,
+		link_phrase='is an edition of',
+		reverse_link_phrase='has an edition',
+		source_entity_type='Edition',
+		target_entity_type='Publication'
+	WHERE id=3;
 
 INSERT INTO bookbrainz.relationship_type (
 	label,
@@ -139,7 +146,7 @@ INSERT INTO bookbrainz.relationship_type (
 	target_entity_type
 ) VALUES (
 	'Collaboration',
-	'This is used to specify that a creator collaborated on a short-term project, for cases where creator credits can\'t be used.',
+	'This is used to specify that a creator collaborated on a short-term project, for cases where creator credits can''t be used.',
 	'is/was a collaborator on',
 	'has/had a collaborator',
 	'Creator',
@@ -748,7 +755,7 @@ UPDATE bookbrainz.relationship_type
 		reverse_link_phrase='was inspired by',
 		source_entity_type='Work',
 		target_entity_type='Work'
-	WHERE id=10;
+	WHERE id=6;
 
 INSERT INTO bookbrainz.relationship_type (
 	label,
@@ -822,4 +829,6 @@ UPDATE bookbrainz.relationship_type
 		description='Indicates that one work is a parody of another work',
 		source_entity_type='Work',
 		target_entity_type='Work'
-	WHERE id=10;
+	WHERE id=7;
+
+COMMIT;

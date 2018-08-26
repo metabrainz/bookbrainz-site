@@ -6,11 +6,6 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
 		creator_data_id INT;
 	BEGIN
 		IF (TG_OP = 'INSERT') THEN
-			IF (NEW.bbid IS NULL) THEN
-				INSERT INTO bookbrainz.entity(type) VALUES('Creator') RETURNING bookbrainz.entity.bbid INTO NEW.bbid;
-			ELSE
-				INSERT INTO bookbrainz.entity(bbid, type) VALUES(NEW.bbid, 'Creator');
-			END IF;
 			INSERT INTO bookbrainz.creator_header(bbid) VALUES(NEW.bbid);
 		END IF;
 
@@ -56,11 +51,6 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_edition() RETURNS TRIGGER
 		edition_data_id INT;
 	BEGIN
 		IF (TG_OP = 'INSERT') THEN
-			IF (NEW.bbid IS NULL) THEN
-				INSERT INTO bookbrainz.entity(type) VALUES('Edition') RETURNING bookbrainz.entity.bbid INTO NEW.bbid;
-			ELSE
-				INSERT INTO bookbrainz.entity(bbid, type) VALUES(NEW.bbid, 'Edition');
-			END IF;
 			INSERT INTO bookbrainz.edition_header(bbid) VALUES(NEW.bbid);
 		END IF;
 
@@ -103,11 +93,6 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_work() RETURNS TRIGGER
 		work_data_id INT;
 	BEGIN
 		IF (TG_OP = 'INSERT') THEN
-			IF (NEW.bbid IS NULL) THEN
-				INSERT INTO bookbrainz.entity(type) VALUES('Work') RETURNING bookbrainz.entity.bbid INTO NEW.bbid;
-			ELSE
-				INSERT INTO bookbrainz.entity(bbid, type) VALUES(NEW.bbid, 'Work');
-			END IF;
 			INSERT INTO bookbrainz.work_header(bbid) VALUES(NEW.bbid);
 		END IF;
 
@@ -145,11 +130,6 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_publisher() RETURNS TRIGGER
 		publisher_data_id INT;
 	BEGIN
 		IF (TG_OP = 'INSERT') THEN
-			IF (NEW.bbid IS NULL) THEN
-				INSERT INTO bookbrainz.entity(type) VALUES('Publisher') RETURNING bookbrainz.entity.bbid INTO NEW.bbid;
-			ELSE
-				INSERT INTO bookbrainz.entity(bbid, type) VALUES(NEW.bbid, 'Publisher');
-			END IF;
 			INSERT INTO bookbrainz.publisher_header(bbid) VALUES(NEW.bbid);
 		END IF;
 
@@ -194,11 +174,6 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_publication() RETURNS TRIGGER
 		publication_data_id INT;
 	BEGIN
 		IF (TG_OP = 'INSERT') THEN
-			IF (NEW.bbid IS NULL) THEN
-				INSERT INTO bookbrainz.entity(type) VALUES('Publication') RETURNING bookbrainz.entity.bbid INTO NEW.bbid;
-			ELSE
-				INSERT INTO bookbrainz.entity(bbid, type) VALUES(NEW.bbid, 'Publication');
-			END IF;
 			INSERT INTO bookbrainz.publication_header(bbid) VALUES(NEW.bbid);
 		END IF;
 
