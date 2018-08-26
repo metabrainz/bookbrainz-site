@@ -370,10 +370,12 @@ async function processWorkSets(
 			.fetch({transacting, withRelated: ['languages']})
 	);
 
+	const languages = _.get(body, 'languages') || [];
 	return Promise.props({
 		languageSetId: orm.func.language.updateLanguageSet(
-			orm, transacting, oldSet, body.languages
-		)
+			orm, transacting, oldSet,
+			languages.map((languageID) => ({id: languageID}))
+		).then((set) => set && set.get('id'))
 	});
 }
 
