@@ -167,11 +167,13 @@ export function makeEntityCreateOrEditHandler(
 	propertiesToPick: string | string[],
 ) {
 	const entityName = _.capitalize(entityType);
+	const validate = getValidator(entityType);
+
 	return function createOrEditHandler(
 		action: EntityAction,
 		req: express.request,
-		res: express.response) {
-		const validate = getValidator(entityType);
+		res: express.response
+	) {
 		if (!validate(req.body)) {
 			const err = new error.FormSubmissionError();
 			error.sendErrorAsJSON(res, err);
