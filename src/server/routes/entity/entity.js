@@ -573,7 +573,7 @@ async function saveEntitiesAndFinishRevision(
 	return mainEntity;
 }
 
-export function createEntity(
+export function handleCreateOrEditEntity(
 	req,
 	res,
 	entityType,
@@ -582,81 +582,33 @@ export function createEntity(
 	const {orm} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
-	const entityCreationPromise = bookshelf.transaction(async (transacting) => {
-		const newEntity = await new orm.Entity({type: entityType})
-			.save(null, {transacting});
-		const currentEntity = newEntity.toJSON();
 
-		const newRevisionPromise = new Revision({
-			authorId: editorJSON.id
-		}).save(null, {transacting});
-
-		const changedPropsPromise = getChangedProps(
-			orm, transacting, true, currentEntity, req.body, entityType,
-			newRevisionPromise, derivedProps
-		);
-
-		const [newRevision, propsToSet] = await Promise.all([
-			newRevisionPromise, changedPropsPromise
-		]);
-
-		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, true, currentEntity, entityType
-		);
-
-		_.forOwn(propsToSet, (value, key) => mainEntity.set(key, value));
-
-		const savedMainEntity = saveEntitiesAndFinishRevision(
-			orm, transacting, true, newRevision, mainEntity, [mainEntity],
-			editorJSON.id, req.body.note
-		);
-
-		const refreshedEntity = await savedMainEntity.refresh({
-			transacting,
-			withRelated: ['defaultAlias']
-		});
-
-		return refreshedEntity.toJSON();
-	});
-
-	const achievementPromise = entityCreationPromise.then(
-		(entityJSON) => achievement.processEdit(
-			orm, editorJSON.id, entityJSON.revisionId
-		)
-			.then((unlock) => {
-				if (unlock.alert) {
-					entityJSON.alert = unlock.alert;
-				}
-				return entityJSON;
-			})
-	);
-
-	return handler.sendPromiseResult(
-		res,
-		achievementPromise,
-		search.indexEntity
-	);
-}
-
-export function editEntity(
-	req,
-	res,
-	entityType,
-	derivedProps
-) {
-	const {orm} = req.app.locals;
-	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
+	let currentEntity: ?{
+		aliasSet: ?{id: number},
+		annotation: ?{id: number},
+		bbid: string,
+		disambiguation: ?{id: number},
+		identifierSet: ?{id: number},
+		type: EntityTypeString
+	} = res.locals.entity;
 
 	const entityEditPromise = bookshelf.transaction(async (transacting) => {
-		const currentEntity = res.locals.entity;
+		// Determine if a new entity is being created
+		const isNew = !currentEntity;
 
+		if (isNew) {
+			const newEntity = await new orm.Entity({type: entityType})
+				.save(null, {transacting});
+			currentEntity = newEntity.toJSON();
+		}
+
+		// Then, edit the entity
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
 		const changedPropsPromise = getChangedProps(
-			orm, transacting, false, currentEntity, req.body, entityType,
+			orm, transacting, isNew, currentEntity, req.body, entityType,
 			newRevisionPromise, derivedProps
 		);
 
@@ -669,14 +621,15 @@ export function editEntity(
 			throw new Error('Entity did not change');
 		}
 
+		// Fetch or create main entity
 		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, false, currentEntity, entityType
+			orm, transacting, isNew, currentEntity, entityType
 		);
 
 		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
 		const savedMainEntity = await saveEntitiesAndFinishRevision(
-			orm, transacting, false, newRevision, mainEntity, [mainEntity],
+			orm, transacting, isNew, newRevision, mainEntity, [mainEntity],
 			editorJSON.id, req.body.note
 		);
 
