@@ -18,8 +18,8 @@
 
 import * as Immutable from 'immutable';
 import {
-	EDIT_RELATIONSHIP, HIDE_RELATIONSHIP_EDITOR, SAVE_RELATIONSHIP,
-	SHOW_RELATIONSHIP_EDITOR
+	EDIT_RELATIONSHIP, HIDE_RELATIONSHIP_EDITOR, REMOVE_RELATIONSHIP,
+	SAVE_RELATIONSHIP, SHOW_RELATIONSHIP_EDITOR
 } from './actions';
 
 
@@ -54,6 +54,8 @@ function reducer(
 				'relationshipEditorProps',
 				state.getIn(['relationships', action.payload])
 			).set('relationshipEditorVisible', true);
+		case REMOVE_RELATIONSHIP:
+			return state.deleteIn(['relationships', action.payload]);
 		// no default
 	}
 	return state;

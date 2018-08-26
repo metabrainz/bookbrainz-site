@@ -25,6 +25,7 @@ export const SHOW_RELATIONSHIP_EDITOR = 'SHOW_RELATIONSHIP_EDITOR';
 export const HIDE_RELATIONSHIP_EDITOR = 'HIDE_RELATIONSHIP_EDITOR';
 export const SAVE_RELATIONSHIP = 'SAVE_RELATIONSHIP';
 export const EDIT_RELATIONSHIP = 'EDIT_RELATIONSHIP';
+export const REMOVE_RELATIONSHIP = 'REMOVE_RELATIONSHIP';
 
 export type Action = {
 	type: string,
@@ -58,5 +59,12 @@ export function editRelationship(rowID: number): Action {
 	return {
 		payload: rowID,
 		type: EDIT_RELATIONSHIP
+	};
+}
+
+export function removeRelationship(rowID: number): Action {
+	return {
+		payload: rowID,
+		type: REMOVE_RELATIONSHIP
 	};
 }

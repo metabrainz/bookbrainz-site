@@ -20,8 +20,8 @@
 
 import * as Immutable from 'immutable';
 import {
-	type Action, editRelationship, hideRelationshipEditor, saveRelationship,
-	showRelationshipEditor
+	type Action, editRelationship, hideRelationshipEditor, removeRelationship,
+	saveRelationship, showRelationshipEditor
 } from './actions';
 import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
 import type {
@@ -39,11 +39,12 @@ import {connect} from 'react-redux';
 type RelationshipListProps = {
 	contextEntity: Entity,
 	relationships: Array<RelationshipForDisplay>,
-	onEdit: (number) => mixed
+	onEdit: (number) => mixed,
+	onRemove: (number) => mixed
 };
 
 function RelationshipList(
-	{contextEntity, relationships, onEdit}: RelationshipListProps
+	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
 ) {
 	/* eslint-disable react/jsx-no-bind */
 
@@ -71,7 +72,12 @@ function RelationshipList(
 							</Button>
 						</ButtonGroup>
 						<ButtonGroup>
-							<Button bsStyle="danger">Remove</Button>
+							<Button
+								bsStyle="danger"
+								onClick={onRemove.bind(this, rowID)}
+							>
+								Remove
+							</Button>
 						</ButtonGroup>
 					</ButtonGroup>
 				</Col>
@@ -101,7 +107,8 @@ type DispatchProps = {
 	onAddRelationship: () => mixed,
 	onEditorClose: () => mixed,
 	onEditorSave: (_Relationship) => mixed,
-	onEdit: (number) => mixed
+	onEdit: (number) => mixed,
+	onRemove: (number) => mixed
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -110,7 +117,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 function RelationshipSection({
 	entity, entityType, entityName, showEditor, relationships,
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
-	onEditorClose, onEditorSave, onEdit
+	onEditorClose, onEditorSave, onEdit, onRemove
 }: Props) {
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
@@ -143,6 +150,7 @@ function RelationshipSection({
 						contextEntity={baseEntity}
 						relationships={relationships.toJS()}
 						onEdit={onEdit}
+						onRemove={onRemove}
 					/>
 				</Col>
 			</Row>
@@ -179,7 +187,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onAddRelationship: () => dispatch(showRelationshipEditor()),
 		onEdit: (rowID) => dispatch(editRelationship(rowID)),
 		onEditorClose: () => dispatch(hideRelationshipEditor()),
-		onEditorSave: (data) => dispatch(saveRelationship(data))
+		onEditorSave: (data) => dispatch(saveRelationship(data)),
+		onRemove: (rowID) => dispatch(removeRelationship(rowID))
 	};
 }
 
