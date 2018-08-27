@@ -25,7 +25,8 @@ let config = {
 		'editor/achievement': ['./controllers/editor/achievement.js'],
 		'editor/edit': ['./controllers/editor/edit.js'],
 		'editor/editor': ['./controllers/editor/editor.js'],
-		'entity/entity': ['./controllers/entity/entity.js']
+		'entity/entity': ['./controllers/entity/entity.js'],
+		'entity-editor': ['./entity-editor/controller.js']
 	},
 	output: {
 		chunkFilename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
@@ -116,6 +117,7 @@ let config = {
 		]
 	},
 	optimization: {
+		minimize: production,
 		splitChunks: {
 			cacheGroups: {
 				commons: {
@@ -140,8 +142,24 @@ let config = {
 			// filename: 'stylesheets/style.css'
 			filename: 'stylesheets/[name].css'
 		}),
-		new CleanWebpackPlugin(['static/js' /* , 'static/stylesheets' */]),
-		new WriteAssetsWebpackPlugin({extension: ['js', 'css'], force: true})
+		new CleanWebpackPlugin(
+			[
+				'static/js',
+				// Clean up hot-update files that are created by react-hot-loader and written to disk by WriteAssetsWebpackPlugin
+				// Working on a way for WriteAssetsWebpackPlugin to ignore .hot-update.js files but no luck so far.
+				'static/**/*.hot-update.js',
+				'static/editor',
+				'static/entity'
+				/* , 'static/stylesheets' */
+			],
+			{exclude:[".keep"]}
+		),
+		// Because of server-side rendering and the absence of a static html file we could modify with HtmlWebpackPlugin,
+		// we need the js files to exist on disk
+		new WriteAssetsWebpackPlugin({
+			extension: ['js', 'css'],
+			force: true
+		})
 	]
 }
 

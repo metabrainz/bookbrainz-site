@@ -26,6 +26,7 @@ import NameSection from './name-section/name-section';
 import {Panel} from 'react-bootstrap';
 import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
+import {hot} from 'react-hot-loader';
 
 
 type OwnProps = {
@@ -84,4 +85,5 @@ function mapStateToProps(rootState): StateProps {
 	};
 }
 
-export default connect(mapStateToProps)(EntityEditor);
+// Export as hot module (see https://github.com/gaearon/react-hot-loader)
+export default hot(module)(connect(mapStateToProps)(EntityEditor));
