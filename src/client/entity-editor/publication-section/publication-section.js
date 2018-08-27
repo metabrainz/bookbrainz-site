@@ -25,6 +25,7 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {hot} from 'react-hot-loader';
 
 
 type PublicationType = {
@@ -111,4 +112,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublicationSection);
+
+/* eslint-disable-next-line max-len */
+export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(PublicationSection));

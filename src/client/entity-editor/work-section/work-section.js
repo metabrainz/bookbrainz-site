@@ -28,6 +28,7 @@ import LanguageField from '../common/language-field';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {hot} from 'react-hot-loader';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -154,4 +155,5 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkSection);
+/* eslint-disable-next-line max-len */
+export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(WorkSection));
