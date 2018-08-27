@@ -263,8 +263,7 @@ ALTER TABLE bookbrainz.release_event_set__release_event ADD FOREIGN KEY (release
 CREATE TABLE bookbrainz.creator_credit (
 	id SERIAL PRIMARY KEY,
 	creator_count SMALLINT NOT NULL,
-	ref_count INT NOT NULL DEFAULT 0,
-	begin_phrase TEXT NOT NULL DEFAULT ''
+	ref_count INT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE bookbrainz.creator_credit_name (
@@ -346,9 +345,11 @@ CREATE TABLE bookbrainz.publication_data (
 	relationship_set_id INT,
 	annotation_id INT,
 	disambiguation_id INT,
+	creator_credit_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.publication_type (id);
+ALTER TABLE bookbrainz.publication_data ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
 ALTER TABLE bookbrainz.publication_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publication_data (id);
 
 CREATE TABLE bookbrainz.publisher_type (
@@ -407,9 +408,11 @@ CREATE TABLE bookbrainz.work_data (
 	annotation_id INT,
 	disambiguation_id INT,
 	language_set_id INT,
+	creator_credit_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
+ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
 CREATE TABLE bookbrainz.annotation (
@@ -716,7 +719,7 @@ CREATE VIEW bookbrainz.edition AS
 CREATE VIEW bookbrainz.work AS
 	SELECT
 		e.bbid, wd.id AS data_id, wr.id AS revision_id, (wr.id = w.master_revision_id) AS master, wd.annotation_id, wd.disambiguation_id,
-		als.default_alias_id, wd.type_id, wd.alias_set_id, wd.identifier_set_id,
+		als.default_alias_id, wd.type_id, wd.creator_credit_id, wd.alias_set_id, wd.identifier_set_id,
 		wd.relationship_set_id, e.type, wd.language_set_id
 	FROM bookbrainz.work_revision wr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = wr.bbid
@@ -741,7 +744,7 @@ CREATE VIEW bookbrainz.publisher AS
 CREATE VIEW bookbrainz.publication AS
 	SELECT
 		e.bbid, pcd.id AS data_id, pcr.id AS revision_id, (pcr.id = pc.master_revision_id) AS master, pcd.annotation_id, pcd.disambiguation_id,
-		als.default_alias_id, pcd.type_id, pcd.alias_set_id, pcd.identifier_set_id,
+		als.default_alias_id, pcd.type_id, pcd.creator_credit_id, pcd.alias_set_id, pcd.identifier_set_id,
 		pcd.relationship_set_id, e.type
 	FROM bookbrainz.publication_revision pcr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = pcr.bbid
