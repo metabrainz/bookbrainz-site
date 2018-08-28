@@ -83,6 +83,23 @@ function generateRelationshipSelection(
 	return candidateRelationships.filter(isValidRelationship);
 }
 
+function getValidOtherEntityTypes(
+	relationshipTypes: Array<RelationshipType>,
+	baseEntity: Entity
+) {
+	const validEntityTypes = relationshipTypes.map((relationshipType) => {
+		if (relationshipType.sourceEntityType === baseEntity.type) {
+			return _.toLower(relationshipType.targetEntityType);
+		}
+		if (relationshipType.targetEntityType === baseEntity.type) {
+			return _.toLower(relationshipType.sourceEntityType);
+		}
+		return null;
+	});
+
+	return _.uniq(_.compact(validEntityTypes));
+}
+
 type EntitySearchResult = {
 	text: string,
 	id: string | number,
@@ -192,12 +209,16 @@ class RelationshipModal
 	}
 
 	renderEntitySelect() {
+		const {baseEntity, relationshipTypes} = this.props;
+		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
+
 		return (
 			<EntitySearchField
 				cache={false}
 				instanceId="publication"
 				label="Entity"
 				name="entity"
+				type={types}
 				value={this.state.targetEntity}
 				onChange={this.handleEntityChange}
 			/>

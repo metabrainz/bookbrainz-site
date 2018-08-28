@@ -70,7 +70,7 @@ function entityToOption(entity) {
 
 type EntitySearchFieldProps = {
 	label: string,
-	type: string,
+	type: string | Array<string>,
 	empty?: boolean,
 	error?: boolean
 };
@@ -85,7 +85,8 @@ type EntitySearchFieldProps = {
  *        component to indicate a validation error.
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
- * @param {string} props.type - Determines the type of entity to search for.
+ * @param {string | Array<string>} props.type - Determines the types of entity
+ *        to search for.
  * @param {string} props.label - The text to be used for the input label.
  * @returns {Object} A React component containing the rendered input.
  */
