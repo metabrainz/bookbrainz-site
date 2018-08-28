@@ -36,14 +36,6 @@ import _ from 'lodash';
  * action, which allows the rest of the app to
  */
 
-const ENTITY_TYPE_VALUES = [
-	{id: 'creator', label: 'Creator'},
-	{id: 'edition', label: 'Edition'},
-	{id: 'publication', label: 'Publication'},
-	{id: 'publisher', label: 'Publisher'},
-	{id: 'work', label: 'Work'}
-];
-
 function isValidRelationship(relationship: _Relationship) {
 	const {relationshipType, sourceEntity, targetEntity} = relationship;
 
@@ -89,15 +81,15 @@ function getValidOtherEntityTypes(
 ) {
 	const validEntityTypes = relationshipTypes.map((relationshipType) => {
 		if (relationshipType.sourceEntityType === baseEntity.type) {
-			return _.toLower(relationshipType.targetEntityType);
+			return relationshipType.targetEntityType;
 		}
 		if (relationshipType.targetEntityType === baseEntity.type) {
-			return _.toLower(relationshipType.sourceEntityType);
+			return relationshipType.sourceEntityType;
 		}
 		return null;
 	});
 
-	return _.uniq(_.compact(validEntityTypes));
+	return _.uniq(_.compact(validEntityTypes)).sort();
 }
 
 type EntitySearchResult = {
@@ -212,13 +204,17 @@ class RelationshipModal
 		const {baseEntity, relationshipTypes} = this.props;
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
 
+		const label =
+			`Other Entity (${_.join(types.slice(0, -1), ', ')}` +
+			` or ${_.last(types)})`;
+
 		return (
 			<EntitySearchField
 				cache={false}
 				instanceId="publication"
-				label="Entity"
+				label={label}
 				name="entity"
-				type={types}
+				type={types.map(_.toLower)}
 				value={this.state.targetEntity}
 				onChange={this.handleEntityChange}
 			/>
