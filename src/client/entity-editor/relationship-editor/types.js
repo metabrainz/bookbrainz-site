@@ -20,11 +20,6 @@
 
 export type EntityType = string;
 
-export type EntityTypeObject = {
-	id: string,
-	label: string
-};
-
 export type Entity = {
 	bbid: string,
 	defaultAlias?: {

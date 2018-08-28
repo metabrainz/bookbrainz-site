@@ -22,7 +22,7 @@ import {
 	Button, Col, ControlLabel, FormGroup, Modal, ProgressBar, Row
 } from 'react-bootstrap';
 import type {
-	Entity, EntityType, EntityTypeObject, RelationshipType,
+	Entity, EntityType, RelationshipType,
 	RelationshipWithLabel, Relationship as _Relationship
 } from './types';
 import EntitySearchField from '../common/entity-search-field';
@@ -100,7 +100,6 @@ type RelationshipModalProps = {
 };
 
 type RelationshipModalState = {
-	entityType?: ?EntityTypeObject,
 	relationshipType?: ?RelationshipType,
 	relationship?: ?_Relationship,
 	targetEntity?: ?EntitySearchResult
@@ -111,7 +110,6 @@ function getInitState(
 ): RelationshipModalState {
 	if (_.isNull(initRelationship)) {
 		return {
-			entityType: null,
 			relationship: null,
 			relationshipType: null,
 			targetEntity: null
@@ -137,10 +135,6 @@ function getInitState(
 	};
 
 	return {
-		entityType: {
-			id: _.lowerCase(_.get(searchFormatOtherEntity, 'type')),
-			label: _.get(searchFormatOtherEntity, 'type')
-		},
 		relationship: initRelationship,
 		relationshipType: _.get(initRelationship, ['relationshipType']),
 		targetEntity: searchFormatOtherEntity
@@ -160,15 +154,6 @@ class RelationshipModal
 
 		this.state = getInitState(props.baseEntity, props.initRelationship);
 	}
-
-	handleEntityTypeChange = (value: EntityTypeObject) => {
-		this.setState({
-			entityType: value,
-			relationship: null,
-			relationshipType: null,
-			targetEntity: null
-		});
-	};
 
 	handleEntityChange = (value: EntitySearchResult) => {
 		this.setState({
@@ -195,44 +180,24 @@ class RelationshipModal
 	};
 
 	calculateProgressAmount() {
-		if (!this.state.entityType) {
+		if (!this.state.targetEntity) {
 			return 1;
 		}
 
-		if (!this.state.targetEntity) {
-			return 30;
-		}
-
 		if (!this.state.relationshipType) {
-			return 60;
+			return 50;
 		}
 
 		return 100;
-	}
-
-	renderEntityTypeSelect() {
-		return (
-			<FormGroup>
-				<ControlLabel>Entity Type</ControlLabel>
-				<ReactSelect
-					name="entityType"
-					options={ENTITY_TYPE_VALUES}
-					value={this.state.entityType}
-					onChange={this.handleEntityTypeChange}
-				/>
-			</FormGroup>
-		);
 	}
 
 	renderEntitySelect() {
 		return (
 			<EntitySearchField
 				cache={false}
-				disabled={!this.state.entityType}
 				instanceId="publication"
-				label={_.get(this.state, 'entityType.label', 'Entity')}
+				label="Entity"
 				name="entity"
-				type={_.get(this.state, 'entityType.id')}
 				value={this.state.targetEntity}
 				onChange={this.handleEntityChange}
 			/>
@@ -296,19 +261,12 @@ class RelationshipModal
 					<Row>
 						<Col md={10} mdOffset={1}>
 							<form>
-								<Row>
-									<Col md={4}>
-										{this.renderEntityTypeSelect()}
-									</Col>
-									<Col md={8}>
-										{this.renderEntitySelect()}
-									</Col>
-								</Row>
-								<Row>
-									<Col md={12}>
-										{this.renderRelationshipSelect()}
-									</Col>
-								</Row>
+								<div>
+									{this.renderEntitySelect()}
+								</div>
+								<div>
+									{this.renderRelationshipSelect()}
+								</div>
 							</form>
 						</Col>
 					</Row>
