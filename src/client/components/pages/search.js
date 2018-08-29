@@ -21,7 +21,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
-import {hot} from 'react-hot-loader';
 import request from 'superagent-bluebird-promise';
 
 
@@ -82,5 +81,4 @@ SearchPage.defaultProps = {
 	initialResults: []
 };
 
-// Export as hot module (see https://github.com/gaearon/react-hot-loader)
-export default hot(module)(SearchPage);
+export default SearchPage;

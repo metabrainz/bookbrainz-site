@@ -18,7 +18,6 @@
 
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
-import {hot} from 'react-hot-loader';
 
 
 const {PageHeader} = bootstrap;
@@ -117,5 +116,4 @@ function LicensingPage() {
 
 LicensingPage.displayName = 'LicensingPage';
 
-// Export as hot module (see https://github.com/gaearon/react-hot-loader)
-export default hot(module)(LicensingPage);
+export default LicensingPage;

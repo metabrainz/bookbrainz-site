@@ -30,7 +30,6 @@ import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {hot} from 'react-hot-loader';
 
 
 if (!process.env.SSR) {
@@ -262,6 +261,5 @@ Layout.defaultProps = {
 	user: null
 };
 
-// Export as hot module (see https://github.com/gaearon/react-hot-loader)
-export default hot(module)(Layout);
+export default Layout;
 
