@@ -105,7 +105,7 @@ type RelationshipModalProps = {
 	initRelationship: ?_Relationship,
 	onCancel?: () => mixed,
 	onClose?: () => mixed,
-	onSave?: (_Relationship) => mixed
+	onAdd?: (_Relationship) => mixed
 };
 
 type RelationshipModalState = {
@@ -153,9 +153,9 @@ function getInitState(
 class RelationshipModal
 	extends React.Component<RelationshipModalProps, RelationshipModalState> {
 	static defaultProps = {
+		onAdd: null,
 		onCancel: null,
-		onClose: null,
-		onSave: null
+		onClose: null
 	};
 
 	constructor(props: RelationshipModalProps) {
@@ -179,11 +179,11 @@ class RelationshipModal
 		});
 	};
 
-	handleSave = () => {
-		const {onSave} = this.props;
-		if (onSave) {
+	handleAdd = () => {
+		const {onAdd} = this.props;
+		if (onAdd) {
 			if (this.state.relationship) {
-				onSave(this.state.relationship);
+				onAdd(this.state.relationship);
 			}
 		}
 	};
@@ -301,9 +301,9 @@ class RelationshipModal
 					<Button
 						bsStyle="success"
 						disabled={submitDisabled}
-						onClick={this.handleSave}
+						onClick={this.handleAdd}
 					>
-						Save
+						Add
 					</Button>
 				</Modal.Footer>
 			</Modal>
