@@ -111,5 +111,4 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(PublicationSection);
