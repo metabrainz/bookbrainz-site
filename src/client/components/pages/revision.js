@@ -25,7 +25,6 @@ import EntityLink from '../entity-link';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import {hot} from 'react-hot-loader';
 import request from 'superagent-bluebird-promise';
 
 
@@ -238,6 +237,5 @@ RevisionPage.defaultProps = {
 	user: null
 };
 
-// Export as hot module (see https://github.com/gaearon/react-hot-loader)
-export default hot(module)(RevisionPage);
+export default RevisionPage;
 

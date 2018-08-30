@@ -33,7 +33,6 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-import {hot} from 'react-hot-loader';
 
 
 type CreatorType = {
@@ -304,5 +303,4 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-/* eslint-disable-next-line max-len */
-export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(CreatorSection));
+export default connect(mapStateToProps, mapDispatchToProps)(CreatorSection);
