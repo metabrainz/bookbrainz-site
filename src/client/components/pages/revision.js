@@ -238,4 +238,3 @@ RevisionPage.defaultProps = {
 };
 
 export default RevisionPage;
-
