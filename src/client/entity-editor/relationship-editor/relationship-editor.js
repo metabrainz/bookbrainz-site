@@ -31,10 +31,6 @@ import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
 
-/*
- * This is a simple React component. No Redux connection. Has an onSubmit
- * action, which allows the rest of the app to
- */
 
 function isValidRelationship(relationship: _Relationship) {
 	const {relationshipType, sourceEntity, targetEntity} = relationship;
@@ -150,6 +146,29 @@ function getInitState(
 	};
 }
 
+// Disable valid-jsdoc because eslint is looking for a "value" parameter
+/* eslint-disable valid-jsdoc */
+/**
+ * This is a simple React component. No Redux connection. Renders a modal
+ * containing a form with two fields (entity and relationship) and two buttons
+ * (cancel and add), allowing new relationships to be set up and added to the
+ * entity editor.
+ *
+ * @param {Object} props - The properties passed to the component.
+ * @param {Entity} props.baseEntity - The entity currently being edited in the
+ *        entity editor
+ * @param {?_Relationship} props.initRelationship - The relationship being
+ *        edited, if not creating a new relationship.
+ * @param {Array<RelationshipType>} props.relationshipTypes - All the possible
+ *        relationship types for any pair of entities.
+ * @param {Function} props.onCancel - A function to be called when the cancel
+ *        button is clicked.
+ * @param {Function} props.onClose - A function to be called when the modal is
+ *        closed.
+ * @param {Function} props.onAdd - A function to be called when the add button
+ *        is clicked.
+ */
+/* eslint-enable valid-jsdoc */
 class RelationshipModal
 	extends React.Component<RelationshipModalProps, RelationshipModalState> {
 	static defaultProps = {
