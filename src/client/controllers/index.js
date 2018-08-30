@@ -21,6 +21,7 @@ import {
 	extractLayoutProps
 } from '../helpers/props';
 import AboutPage from '../../client/components/pages/about';
+import {AppContainer} from 'react-hot-loader';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
 import Index from '../components/pages/index';
@@ -49,9 +50,11 @@ const pageMap = {
 const Child = pageMap[page] || Index;
 
 const markup = (
-	<Layout {...extractLayoutProps(props)}>
-		<Child {...extractChildProps(props)}/>
-	</Layout>
+	<AppContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<Child {...extractChildProps(props)}/>
+		</Layout>
+	</AppContainer>
 );
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
