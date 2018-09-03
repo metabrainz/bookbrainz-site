@@ -35,8 +35,8 @@ import logger from 'morgan';
 import path from 'path';
 import redis from 'connect-redis';
 import routes from './routes';
+import serveStatic from 'serve-static';
 import session from 'express-session';
-import staticCache from 'express-static-cache';
 
 
 Promise.config({
@@ -70,9 +70,7 @@ app.use(bodyParser.urlencoded({
 app.use(compression());
 
 // Set up serving of static assets
-app.use(staticCache(path.join(rootDir, 'static/js'), {
-	buffer: true
-}));
+app.use(serveStatic(path.join(rootDir, 'static/js')));
 app.use(express.static(path.join(rootDir, 'static')));
 
 const RedisStore = redis(session);
