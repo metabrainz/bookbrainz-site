@@ -41,8 +41,8 @@ function expectIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() => testData.createTimeTraveller())
+	beforeEach(
+		() => testData.createEditor().then(() => testData.createTimeTraveller())
 	);
 	afterEach(testData.truncate);
 

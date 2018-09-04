@@ -68,8 +68,8 @@ function expectIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() => testData.createFunRunner())
+	beforeEach(
+		() => testData.createEditor().then(() => testData.createFunRunner())
 	);
 	afterEach(testData.truncate);
 

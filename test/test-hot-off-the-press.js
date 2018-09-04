@@ -44,8 +44,9 @@ function expectIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() => testData.createHotOffThePress())
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createHotOffThePress())
 	);
 	afterEach(testData.truncate);
 

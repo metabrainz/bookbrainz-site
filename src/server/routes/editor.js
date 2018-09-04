@@ -185,7 +185,7 @@ function getIdEditorJSONPromise(userId, req) {
 }
 
 router.get('/:id', (req, res, next) => {
-	const {AchievementUnlock, Editor, TitleUnlock} = req.app.locals.orm;
+	const {AchievementUnlock} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
@@ -297,7 +297,7 @@ function setAchievementUnlockedField(achievements, unlockIds) {
 
 router.get('/:id/achievements', (req, res, next) => {
 	const {
-		AchievementType, AchievementUnlock, Editor, TitleUnlock
+		AchievementType, AchievementUnlock
 	} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
