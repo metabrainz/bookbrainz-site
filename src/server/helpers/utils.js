@@ -94,7 +94,7 @@ export function getEntityModelByType(orm: Object, type: string): Object {
 	const entityModels = getEntityModels(orm);
 
 	if (!entityModels[type]) {
-		throw new Error('Unrecognized entity type');
+		throw new Error(`Unrecognized entity type: '${type}'`);
 	}
 
 	return entityModels[type];
