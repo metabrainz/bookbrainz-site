@@ -31,6 +31,7 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import target from '../../templates/target';
 
 
 const {getValidator} = entityEditorHelpers;
@@ -108,12 +109,12 @@ router.get(
 			'publisher', req, res, {}
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Publisher'
-		});
+		}));
 	}
 );
 
@@ -180,12 +181,12 @@ router.get(
 			'publisher', req, res, {}, publisherToFormState
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Publisher'
-		});
+		}));
 	}
 );
 

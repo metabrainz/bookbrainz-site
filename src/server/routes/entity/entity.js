@@ -38,6 +38,7 @@ import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../helpers/config';
+import target from '../../templates/target';
 
 
 const log = new Log(config.site.log);
@@ -137,12 +138,12 @@ export function displayEntity(req, res) {
 					/>
 				</Layout>
 			);
-			res.render('target', {
+			res.send(target({
 				markup,
 				page: entityName,
 				props: escapeProps(props),
 				script: '/js/entity/entity.js'
-			});
+			}));
 		}
 		else {
 			throw new Error(
@@ -161,11 +162,11 @@ export function displayDeleteEntity(req, res) {
 		</Layout>
 	);
 
-	res.render('target', {
+	res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/deletion.js'
-	});
+	}));
 }
 
 export function displayRevisions(req, res, next, RevisionModel) {
@@ -189,12 +190,12 @@ export function displayRevisions(req, res, next, RevisionModel) {
 					/>
 				</Layout>
 			);
-			return res.render('target', {
+			return res.send(target({
 				markup,
 				page: 'revisions',
 				props: escapeProps(props),
 				script: '/js/entity/entity.js'
-			});
+			}));
 		})
 		.catch(next);
 }

@@ -31,6 +31,7 @@ import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import target from '../../templates/target';
 
 
 const {getValidator} = entityEditorHelpers;
@@ -145,12 +146,12 @@ router.get(
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
-			return res.render('target', {
+			return res.send(target({
 				markup,
 				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
 				title: 'Add Edition'
-			});
+			}));
 		}
 
 		Promise.props(propsPromise)
@@ -256,12 +257,12 @@ router.get(
 			'edition', req, res, {}, editionToFormState
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Edit Edition'
-		});
+		}));
 	}
 );
 

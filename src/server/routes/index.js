@@ -126,13 +126,13 @@ function _createStaticRoute(route, title, PageComponent) {
 			</Layout>
 		);
 
-		res.render('target', {
+		res.send(target({
 			markup,
 			page: title,
 			props: escapeProps(props),
 			script: '/js/index.js',
 			title
-		});
+		}));
 	});
 }
 

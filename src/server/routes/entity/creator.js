@@ -30,6 +30,7 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import target from '../../templates/target';
 
 
 const {getValidator} = entityEditorHelpers;
@@ -92,12 +93,12 @@ router.get(
 			}
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Creator'
-		});
+		}));
 	}
 );
 
@@ -170,12 +171,12 @@ router.get(
 			}, creatorToFormState
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Edit Creator'
-		});
+		}));
 	}
 );
 
