@@ -5,3 +5,4 @@ nyc
 coverage
 out
 !.eslintrc.js
+webpack.client.js

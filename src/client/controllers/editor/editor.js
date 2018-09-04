@@ -22,6 +22,7 @@ import {
 	extractEditorProps,
 	extractLayoutProps
 } from '../../helpers/props';
+import {AppContainer} from 'react-hot-loader';
 import EditorContainer from '../../containers/editor';
 import Layout from '../../containers/layout';
 import ProfileTab from '../../components/pages/parts/editor-profile';
@@ -51,13 +52,25 @@ else {
 }
 
 const markup = (
-	<Layout {...extractLayoutProps(props)} >
-		<EditorContainer
-			{...extractEditorProps(props)}
-		>
-			{tab}
-		</EditorContainer>
-	</Layout>
+	<AppContainer>
+		<Layout {...extractLayoutProps(props)} >
+			<EditorContainer
+				{...extractEditorProps(props)}
+			>
+				{tab}
+			</EditorContainer>
+		</Layout>
+	</AppContainer>
 );
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}

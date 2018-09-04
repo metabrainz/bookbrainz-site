@@ -2,9 +2,12 @@ doctype html
 html
 	head
 		title= title ? title + ' – BookBrainz' : 'BookBrainz – The Open Book Database'
-		link(rel='stylesheet', href='/stylesheets/style.css')
-		link(rel='stylesheet', href='/stylesheets/react-virtualized.css')
-		link(rel='stylesheet', href='/stylesheets/react-virtualized-select.css')
+		if !dev
+			link(rel='stylesheet', href='/stylesheets/style.css')
+			link(rel='stylesheet', href='/stylesheets/react-virtualized.css')
+			link(rel='stylesheet', href='/stylesheets/react-virtualized-select.css')
+			//- Once css bundling with webpack has been sorted out:
+			//- link(rel='stylesheet', href='/stylesheets/bundle.css')
 		meta(name='viewport', content='width=device-width, initial-scale=1')
 		include favicon
 	body
