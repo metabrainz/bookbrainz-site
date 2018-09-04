@@ -45,7 +45,10 @@ export default ({
 	dev,
 	props,
 	script
-}) => `
+}) => {
+	const pageScript =
+		`<script id='page' type='application/json'>${page}</script>`;
+	return `
 	<!DOCTYPE html>
 	<html>
 		<head>
@@ -64,11 +67,11 @@ export default ({
 		<body>
 			<div id='target'>${markup}</div>
 			<script src='/js/bundle.js'></script>
-			${page &&
-				`<script id='page' type='application/json'>${page}</script>`}
+			${page ? pageScript : ''}
 			${props && script &&
 				`<script id='props' type='application/json'> ${props}</script>
 				<script src='${script}'></script>`}
 		</body>
 	  </html>
 	`;
+};
