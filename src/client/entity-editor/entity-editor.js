@@ -24,6 +24,7 @@ import ButtonBar from './button-bar/button-bar';
 import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
 import {Panel} from 'react-bootstrap';
+import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
 
@@ -63,6 +64,7 @@ const EntityEditor = (props: Props) => {
 			<AliasEditor show={aliasEditorVisible} {...props}/>
 			<NameSection {...props}/>
 			<ButtonBar {...props}/>
+			<RelationshipSection {...props}/>
 			{
 				React.cloneElement(
 					React.Children.only(children),

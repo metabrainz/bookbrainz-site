@@ -18,9 +18,7 @@
  */
 
 import * as auth from '../../helpers/auth';
-import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
@@ -33,8 +31,6 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
-
-const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -88,6 +84,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', req, res, {}
@@ -152,11 +149,28 @@ function workToFormState(work) {
 		type: work.workType && work.workType.id
 	};
 
+	const relationshipSection = {
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
+		relationships: {}
+	};
+
+	work.relationships.forEach((relationship) => (
+		relationshipSection.relationships[relationship.id] = {
+			relationshipType: relationship.type,
+			rowID: relationship.id,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		}
+	));
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
+		relationshipSection,
 		workSection
 	};
 }
@@ -164,6 +178,7 @@ function workToFormState(work) {
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadWorkTypes, middleware.loadLanguages,
+	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', req, res, {}, workToFormState
@@ -178,20 +193,6 @@ router.get(
 	}
 );
 
-function getAdditionalWorkSets(orm) {
-	const {LanguageSet} = orm;
-	return [
-		{
-			entityIdField: 'languageSetId',
-			idField: 'id',
-			model: LanguageSet,
-			name: 'languageSet',
-			propName: 'languages'
-		}
-	];
-}
-
-
 function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
@@ -199,6 +200,10 @@ function transformNewForm(data) {
 
 	const identifiers = entityRoutes.constructIdentifiers(
 		data.identifierEditor
+	);
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
 	);
 
 	const languages = _.map(
@@ -211,18 +216,19 @@ function transformNewForm(data) {
 		identifiers,
 		languages,
 		note: data.submissionSection.note,
+		relationships,
 		typeId: data.workSection.type
 	};
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'work', transformNewForm, 'typeId', (req, res) =>
-		getAdditionalWorkSets(req.app.locals.orm));
+	'work', transformNewForm, 'typeId'
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
-	_.partial(createOrEditHandler, 'create'));
+	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	_.partial(createOrEditHandler, 'edit'));
+	createOrEditHandler);
 
 export default router;

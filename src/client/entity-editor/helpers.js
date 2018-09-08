@@ -32,6 +32,7 @@ import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
 import publicationSectionReducer from './publication-section/reducer';
 import publisherSectionReducer from './publisher-section/reducer';
+import relationshipSectionReducer from './relationship-editor/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 import {validateForm as validateCreatorForm} from './validators/creator.js';
 import {validateForm as validateEditionForm} from './validators/edition.js';
@@ -99,6 +100,7 @@ export function createRootReducer(entityType: string) {
 		[entityReducerKey]: entityReducer,
 		identifierEditor: identifierEditorReducer,
 		nameSection: nameSectionReducer,
+		relationshipSection: relationshipSectionReducer,
 		submissionSection: submissionSectionReducer
 	});
 }
