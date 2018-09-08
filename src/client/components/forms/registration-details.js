@@ -19,6 +19,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
 import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
@@ -31,6 +32,7 @@ import request from 'superagent-bluebird-promise';
 
 
 const {Alert, Button, PageHeader} = bootstrap;
+const {isValidUserBirthday} = utilsHelper;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -154,6 +156,7 @@ class RegistrationForm extends React.Component {
 								wrapperClassName="col-md-4"
 							/>
 							<PartialDate
+								customValidator={isValidUserBirthday}
 								label="Birthday"
 								labelClassName="col-md-4"
 								placeholder="YYYY-MM-DD"
