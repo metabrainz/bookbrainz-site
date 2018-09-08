@@ -177,7 +177,18 @@ export function makeEntityCreateOrEditHandler(
 			const err = new error.FormSubmissionError();
 			error.sendErrorAsJSON(res, err);
 		}
-
+		if (req.body.aliasEditor !== null) {
+			for (const alias in req.body.aliasEditor) {
+				 req.app.locals.orm['Alias']
+					 .forge({name: req.body.aliasEditor[alias].name})
+					 .fetch().then((results) => {
+					 if (results !== null) {
+						 const err = new error.AliasDuplicateError();
+						 error.sendErrorAsJSON(res, err);
+					 }
+				 });
+			}
+		}
 		req.body = transformNewForm(req.body);
 
 		return entityRoutes.handleCreateOrEditEntity(

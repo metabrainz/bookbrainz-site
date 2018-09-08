@@ -84,6 +84,17 @@ export class FormSubmissionError extends SiteError {
 	}
 }
 
+// When Alias Already exists
+export class AliasDuplicateError extends SiteError {
+	static get defaultMessage() {
+		return 'Duplicate Alias';
+	}
+
+	static get status() {
+		return status.BAD_REQUEST;
+	}
+}
+
 export class NotAuthenticatedError extends _AuthenticationError {
 	static get defaultMessage() {
 		return 'You are not currently authenticated';
