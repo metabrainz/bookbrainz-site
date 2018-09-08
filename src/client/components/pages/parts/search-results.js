@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ohm Patel
  *               2016  Sean Burke
+ *               2017 Shivam Tripathi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,19 +39,36 @@ function SearchResults(props) {
 		// No redirect link for Area entity results
 		const name = result.defaultAlias ? result.defaultAlias.name :
 			'(unnamed)';
-		const link = result.type === 'Area' ?
-			`//musicbrainz.org/area/${result.bbid}` :
-			`/${result.type.toLowerCase()}/${result.bbid}`;
+
+		let link = null;
+		if (result.type === 'Area') {
+			link = `//musicbrainz.org/area/${result.bbid}`;
+		}
+		else if (result.bbid) {
+			link = `/${result.type.toLowerCase()}/${result.bbid}`;
+		}
+		else if (result.importId) {
+			link = `/imports/${result.type.toLowerCase()}/${result.importId}`;
+		}
+		result.id = result.bbid || result.importId;
+		const tag = result.importId ? (
+			<span style={{color: 'red', fontWeight: 'bold'}}>
+				(Imported)
+			</span>
+		) : null;
 
 		return (
-			<tr key={result.bbid}>
+			<tr key={result.id}>
 				<td>
-					<a href={link}>
+					<a
+						href={link}
+						style={result.importId ? {color: 'red'} : null}
+					>
 						{name}
 					</a>
 				</td>
 				<td>
-					{result.type}
+					{result.type}{' '}{tag}
 				</td>
 			</tr>
 		);
