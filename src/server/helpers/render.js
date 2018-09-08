@@ -20,6 +20,7 @@
 // @flow
 
 import * as utils from './utils';
+import _ from 'lodash';
 
 
 type EntityInRelationship = {
@@ -60,6 +61,18 @@ type Relationship = {
  * @returns {string} - Rendered HTML string.
  */
 function renderRelationship(relationship: Relationship) {
+	const inputsInvalid =
+		!relationship.source || !relationship.target ||
+		!_.isString(_.get(relationship, 'type.linkPhrase'));
+	if (inputsInvalid) {
+		/* eslint-disable prefer-template */
+		throw new TypeError(
+			'Invalid inputs to renderRelationship:\n' +
+			JSON.stringify(relationship)
+		);
+		/* eslint-enable prefer-template */
+	}
+
 	function template(data) {
 		return (
 			`${data.entities[0]} ` +
@@ -74,8 +87,7 @@ function renderRelationship(relationship: Relationship) {
 			relationship.target
 		].map((entity) => {
 			// Linkify source and target based on default alias
-			const name =
-				entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
+			const name = _.get(entity, 'defaultAlias.name', '(unnamed)');
 			return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
 		})
 	};
