@@ -36,10 +36,11 @@ class PartialDate extends React.Component {
 	/**
 	 * Function to check validity of the partial date.
 	 * @param {string} value - Partial Date to be validated.
+	 * @param {function} customValidator - custom validation function
 	 * @returns {boolean} - True if the partial date value is null or if
 	 * the partial date is valid.
 	 */
-	static validate(value) {
+	static validate(value, customValidator) {
 		if (!value) {
 			return true;
 		}
@@ -51,7 +52,11 @@ class PartialDate extends React.Component {
 		);
 		const validValue = !isNaN(Date.parse(value));
 
-		return validSyntax && validValue;
+		let passesCustomValidation = true;
+		if (customValidator) {
+			passesCustomValidation = Boolean(customValidator(value));
+		}
+		return validSyntax && validValue && passesCustomValidation;
 	}
 
 	/**
@@ -93,7 +98,9 @@ class PartialDate extends React.Component {
 		}
 
 		this.setState({
-			valid: PartialDate.validate(input),
+			valid: PartialDate.validate(input,
+				this.props.customValidator
+			),
 			value: input
 		});
 
@@ -108,7 +115,9 @@ class PartialDate extends React.Component {
 	 * @returns {boolean} - The result as obtained from the date validator.
 	 */
 	valid() {
-		return PartialDate.validate(this.input.getValue().trim());
+		return PartialDate.validate(this.input.getValue().trim(),
+			this.props.customValidator
+		);
 	}
 
 	/**
@@ -153,6 +162,7 @@ class PartialDate extends React.Component {
 // TODO: pass props to underlying Input using spread syntax
 PartialDate.displayName = 'PartialDate';
 PartialDate.propTypes = {
+	customValidator: PropTypes.func,
 	defaultValue: PropTypes.string,
 	groupClassName: PropTypes.string,
 	help: PropTypes.string,
@@ -163,6 +173,7 @@ PartialDate.propTypes = {
 	wrapperClassName: PropTypes.string
 };
 PartialDate.defaultProps = {
+	customValidator: null,
 	defaultValue: null,
 	groupClassName: null,
 	help: null,
