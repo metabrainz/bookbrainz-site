@@ -23,7 +23,7 @@ import type {Relationship} from './types';
 
 export const SHOW_RELATIONSHIP_EDITOR = 'SHOW_RELATIONSHIP_EDITOR';
 export const HIDE_RELATIONSHIP_EDITOR = 'HIDE_RELATIONSHIP_EDITOR';
-export const SAVE_RELATIONSHIP = 'SAVE_RELATIONSHIP';
+export const ADD_RELATIONSHIP = 'ADD_RELATIONSHIP';
 export const EDIT_RELATIONSHIP = 'EDIT_RELATIONSHIP';
 export const REMOVE_RELATIONSHIP = 'REMOVE_RELATIONSHIP';
 export const UNDO_LAST_SAVE = 'UNDO_LAST_SAVE';
@@ -49,10 +49,10 @@ export function hideRelationshipEditor(): Action {
 }
 
 let nextRowID = 0;
-export function saveRelationship(data: Relationship): Action {
+export function addRelationship(data: Relationship): Action {
 	return {
 		payload: {data, rowID: `n${nextRowID++}`},
-		type: SAVE_RELATIONSHIP
+		type: ADD_RELATIONSHIP
 	};
 }
 

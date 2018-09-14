@@ -20,8 +20,8 @@
 
 import * as Immutable from 'immutable';
 import {
-	type Action, editRelationship, hideRelationshipEditor, removeRelationship,
-	saveRelationship, showRelationshipEditor, undoLastSave
+	type Action, addRelationship, editRelationship, hideRelationshipEditor,
+	removeRelationship, showRelationshipEditor, undoLastSave
 } from './actions';
 import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
 import type {
@@ -107,7 +107,7 @@ type StateProps = {
 type DispatchProps = {
 	onAddRelationship: () => mixed,
 	onEditorClose: () => mixed,
-	onEditorSave: (_Relationship) => mixed,
+	onEditorAdd: (_Relationship) => mixed,
 	onEdit: (number) => mixed,
 	onRemove: (number) => mixed,
 	onUndo: () => mixed
@@ -119,7 +119,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 function RelationshipSection({
 	entity, entityType, entityName, showEditor, relationships,
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
-	onEditorClose, onEditorSave, onEdit, onRemove, onUndo, undoPossible
+	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
@@ -136,9 +136,9 @@ function RelationshipSection({
 				relationshipEditorProps && relationshipEditorProps.toJS()
 			}
 			relationshipTypes={relationshipTypes}
+			onAdd={onEditorAdd}
 			onCancel={onEditorClose}
 			onClose={onEditorClose}
-			onSave={onEditorSave}
 		/>
 	);
 
@@ -204,8 +204,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAddRelationship: () => dispatch(showRelationshipEditor()),
 		onEdit: (rowID) => dispatch(editRelationship(rowID)),
+		onEditorAdd: (data) => dispatch(addRelationship(data)),
 		onEditorClose: () => dispatch(hideRelationshipEditor()),
-		onEditorSave: (data) => dispatch(saveRelationship(data)),
 		onRemove: (rowID) => dispatch(removeRelationship(rowID)),
 		onUndo: () => dispatch(undoLastSave())
 	};
