@@ -408,11 +408,9 @@ CREATE TABLE bookbrainz.work_data (
 	annotation_id INT,
 	disambiguation_id INT,
 	language_set_id INT,
-	creator_credit_id INT,
 	type_id INT
 );
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
-ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (creator_credit_id) REFERENCES bookbrainz.creator_credit (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
 CREATE TABLE bookbrainz.annotation (
