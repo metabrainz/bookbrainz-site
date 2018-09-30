@@ -341,23 +341,16 @@ export async function generateIndex(orm) {
 
 export function checkIfExists(orm, name, collection) {
 	const {bookshelf} = orm;
-	const rawSql = `
-		SELECT bbid
-		FROM ${collection}
-		JOIN (
-			SELECT DISTINCT set_id
-			FROM alias_set__alias
-			WHERE alias_id IN (
-				SELECT id
-				FROM alias
-				WHERE name = '${name}'
-			)
-		) AS sets
-		ON sets.set_id = ${collection}.alias_set_id
-		WHERE master = 'true';`;
-
-	return bookshelf.knex.raw(rawSql).then(res => res.rows);
+	return new Promise((resolve) => {
+		bookshelf.transaction(async (transacting) => {
+			resolve(await orm.func.alias.getEntitiesWithMatchingAlias(
+				transacting, _.lowerCase(collection), name
+			));
+		});
+	});
 }
+
+// return bookshelf.knex.raw(rawSql).then(res => res.rows);
 
 export function searchByName(orm, name, collection) {
 	const dslQuery = {
