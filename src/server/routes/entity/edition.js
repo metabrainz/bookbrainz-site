@@ -21,17 +21,18 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
+
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
+
 import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
-
 
 const router = express.Router();
 
@@ -207,6 +208,8 @@ function editionToFormState(edition) {
 		_.isNull(edition.width)
 	);
 
+	const publicationVisible = !_.isNull(edition.publication);
+
 	const releaseDate = edition.releaseEventSet && (
 		_.isEmpty(edition.releaseEventSet.releaseEvents) ?
 			null : edition.releaseEventSet.releaseEvents[0].date
@@ -229,6 +232,7 @@ function editionToFormState(edition) {
 		pages: edition.pages,
 		physicalVisible,
 		publication,
+		publicationVisible,
 		publisher,
 		releaseDate,
 		status: edition.editionStatus && edition.editionStatus.id,

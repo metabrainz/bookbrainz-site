@@ -19,19 +19,32 @@
 // @flow
 
 import {
-	type Action, debouncedUpdateDepth, debouncedUpdateHeight,
-	debouncedUpdatePages, debouncedUpdateReleaseDate,
-	debouncedUpdateWeight, debouncedUpdateWidth,
-	showPhysical, updateFormat, updateLanguages,
-	updatePublication, updatePublisher, updateStatus
+	type Action,
+	debouncedUpdateDepth,
+	debouncedUpdateHeight,
+	debouncedUpdatePages,
+	debouncedUpdateReleaseDate,
+	debouncedUpdateWeight,
+	debouncedUpdateWidth,
+	showPhysical,
+	showPublication,
+	updateFormat,
+	updateLanguages,
+	updatePublication,
+	updatePublisher,
+	updateStatus
 } from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import {
-	validateEditionSectionDepth, validateEditionSectionHeight,
-	validateEditionSectionPages, validateEditionSectionReleaseDate,
-	validateEditionSectionWeight, validateEditionSectionWidth
+	validateEditionSectionDepth,
+	validateEditionSectionHeight,
+	validateEditionSectionPages,
+	validateEditionSectionReleaseDate,
+	validateEditionSectionWeight,
+	validateEditionSectionWidth
 } from '../validators/edition';
+
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import EntitySearchField from '../common/entity-search-field';
@@ -42,7 +55,6 @@ import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
-
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
 
@@ -85,6 +97,7 @@ type StateProps = {
 	pagesValue: ?number,
 	physicalVisible: ?boolean,
 	publisherValue: Map<string, any>,
+	publicationVisible: ?boolean,
 	publicationValue: Map<string, any>,
 	releaseDateValue: ?string,
 	statusValue: ?number,
@@ -100,6 +113,7 @@ type DispatchProps = {
 	onPagesChange: (SyntheticInputEvent<>) => mixed,
 	onPhysicalButtonClick: () => mixed,
 	onPublisherChange: (Publisher) => mixed,
+	onPublicationButtonClick: () => mixed,
 	onPublicationChange: (Publication) => mixed,
 	onReleaseDateChange: (SyntheticInputEvent<>) => mixed,
 	onStatusChange: (?{value: number}) => mixed,
@@ -144,6 +158,7 @@ function EditionSection({
 	onPhysicalButtonClick,
 	onReleaseDateChange,
 	onPagesChange,
+	onPublicationButtonClick,
 	onPublicationChange,
 	onPublisherChange,
 	onStatusChange,
@@ -152,6 +167,7 @@ function EditionSection({
 	pagesValue,
 	physicalVisible,
 	publicationValue,
+	publicationVisible,
 	publisherValue,
 	releaseDateValue,
 	statusValue,
@@ -178,20 +194,6 @@ function EditionSection({
 			<h2>
 				What else do you know about the Edition?
 			</h2>
-			<p className="text-muted">
-				Publication is required — this cannot be blank
-			</p>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<EntitySearchField
-						instanceId="publication"
-						label="Publication"
-						type="publication"
-						value={publicationValue}
-						onChange={onPublicationChange}
-					/>
-				</Col>
-			</Row>
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
@@ -229,6 +231,7 @@ function EditionSection({
 						multi
 						instanceId="language"
 						options={languageOptionsForDisplay}
+						tooltipText="Main language used for the content of the edition"
 						value={languageValues}
 						onChange={onLanguagesChange}
 					/>
@@ -236,7 +239,7 @@ function EditionSection({
 			</Row>
 			<Row>
 				<Col md={3} mdOffset={3}>
-					<CustomInput label="Format">
+					<CustomInput label="Format" tooltipText="The type of printing and binding of the edition, or digital equivalent">
 						<Select
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
@@ -246,7 +249,7 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 				<Col md={3}>
-					<CustomInput label="Status">
+					<CustomInput label="Status" tooltipText="Has the work been published, or is it in a draft stage?">
 						<Select
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
@@ -256,6 +259,42 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 			</Row>
+
+			{
+				!publicationVisible &&
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<Button
+							bsStyle="link"
+							className="text-center"
+							onClick={onPublicationButtonClick}
+						>
+							Group with other existing formats…
+						</Button>
+					</Col>
+				</Row>
+			}
+			{
+				publicationVisible &&
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<div className="text-muted">
+							Group with existing editions in other formats (optional)
+						</div>
+						<EntitySearchField
+							help="Search for an existing edition group fro the same edition in another format (optional)"
+							instanceId="publication"
+							label="Edition Group"
+							tooltipText="Group together Editions with no substantial textual or editorial changes.
+							<br>For example, identical paperback, hardcover and e-book editions."
+							type="publication"
+							value={publicationValue}
+							onChange={onPublicationChange}
+						/>
+					</Col>
+				</Row>
+			}
+
 			{
 				physicalVisible &&
 				<Row>
@@ -305,17 +344,19 @@ function EditionSection({
 					</Col>
 				</Row>
 			}
-			<Row>
-				<Col className="text-center" md={4} mdOffset={4}>
-					<Button
-						bsStyle="link"
-						disabled={physicalVisible}
-						onClick={onPhysicalButtonClick}
-					>
-						Add physical data…
-					</Button>
-				</Col>
-			</Row>
+			{
+				!physicalVisible &&
+				<Row>
+					<Col className="text-center" md={4} mdOffset={4}>
+						<Button
+							bsStyle="link"
+							onClick={onPhysicalButtonClick}
+						>
+							Add physical data…
+						</Button>
+					</Col>
+				</Row>
+			}
 		</form>
 	);
 }
@@ -333,6 +374,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		pagesValue: state.get('pages'),
 		physicalVisible: state.get('physicalVisible'),
 		publicationValue: state.get('publication'),
+		publicationVisible: state.get('publicationVisible'),
 		publisherValue: state.get('publisher'),
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
@@ -357,10 +399,11 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onPhysicalButtonClick: () => dispatch(showPhysical()),
+		onPublicationButtonClick: () => dispatch(showPublication()),
 		onPublicationChange: (value) => dispatch(updatePublication(value)),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
-		onReleaseDateChange: (event) =>
-			dispatch(debouncedUpdateReleaseDate(event.target.value)),
+		onReleaseDateChange: (momentDate) =>
+			dispatch(debouncedUpdateReleaseDate(momentDate.format('YYYY-MM-DD'))),
 		onStatusChange: (value: ?{value: number}) =>
 			dispatch(updateStatus(value && value.value)),
 		onWeightChange: (event) => dispatch(debouncedUpdateWeight(
