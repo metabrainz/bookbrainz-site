@@ -19,16 +19,20 @@
 // @flow
 
 import CustomInput from '../../input';
+import DatePicker from 'react-datepicker';
+import {FormControl} from 'react-bootstrap';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 import classNames from 'classnames';
+import moment from 'moment';
 
 
 type Props = {
 	show?: boolean,
 	label: string,
 	empty?: boolean,
-	error?: boolean
+	error?: boolean,
+	defaultValue?: string
 };
 
 /**
@@ -50,6 +54,7 @@ function DateField({
 	label,
 	empty,
 	error,
+	defaultValue,
 	...rest
 }: Props) {
 	const labelElement =
@@ -60,13 +65,30 @@ function DateField({
 		<CustomInput
 			groupClassName={groupClassName}
 			label={labelElement}
-			type="text"
-			{...rest}
-		/>
+		>
+			<DatePicker
+				peekNextMonth
+				showMonthDropdown
+				showYearDropdown
+				dateFormat="YYYY-MM-DD"
+				dropdownMode="select"
+				selected={moment(defaultValue)}
+				timeFormat="false"
+				viewMode="years"
+				{...rest}
+				customInput={
+					<FormControl
+						value={defaultValue}
+						{...rest}
+					/>
+				}
+			/>
+		</CustomInput>
 	);
 }
 DateField.displayName = 'DateField';
 DateField.defaultProps = {
+	defaultValue: null,
 	empty: true,
 	error: false,
 	show: true

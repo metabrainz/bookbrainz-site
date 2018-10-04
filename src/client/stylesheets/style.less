@@ -22,6 +22,8 @@
 @import "font-awesome/font-awesome.less";
 @import "react-select/select.less";
 
+@import '~react-datepicker/dist/react-datepicker.css';
+
 /*
 With Webpack and less-loader,
 we should be able to import directly from node_modules directory with '~'.
@@ -232,15 +234,37 @@ html {
 
 /* react-select styling */
 .Select-control {
-       height: @input-height-base;
-       border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
-       .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
-       .form-control-focus();
-
+	height: @input-height-base;
+	border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+	.transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+	.form-control-focus();
+	
 }
 
 .Select-placeholder {
-       color: @input-color-placeholder;
+	color: @input-color-placeholder;
+}
+
+/* react-datepicker styling */
+.form-group {
+	.react-datepicker-wrapper, .react-datepicker__input-container {
+		width: 100%;
+	}
+	.react-datepicker {
+		font-family: inherit;
+		font-size: inherit;
+		.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+			width: 2.3rem;
+			line-height: 2.3rem;
+			margin: 0.2rem;
+		}
+		.react-datepicker__current-month, .react-datepicker-time__header {
+			font-size: inherit;
+		}
+		.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
+			font-size: 0.9rem;
+		}
+	}
 }
 
 /* entities/*.js */

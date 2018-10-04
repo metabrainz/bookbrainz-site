@@ -1,12 +1,13 @@
 /* eslint-disable */
 
+import { ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup } from 'react-bootstrap';
 import React, { Component } from 'react';
+
+import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-
+import ReactTooltip from 'react-tooltip';
 import cx from 'classnames';
-
-import { FormGroup, ControlLabel, FormControl, HelpBlock, InputGroup } from 'react-bootstrap';
 
 export default class Input extends Component {
   static propTypes = {
@@ -26,7 +27,8 @@ export default class Input extends Component {
     hasFeedback: PropTypes.bool,
     validationState: PropTypes.string,
     label: PropTypes.oneOfType([ PropTypes.string, PropTypes.node ]),
-    type: PropTypes.string
+    type: PropTypes.string,
+    tooltipText: PropTypes.string
   };
 
   constructor(props, context) {
@@ -101,8 +103,8 @@ export default class Input extends Component {
           </div>
         ) :
         formControl
-    );
-
+        );
+        
     if (!addonBefore && !addonAfter && !buttonBefore && !buttonAfter) {
       return getFormControlWrapped(wrapperClassName);
     }
@@ -128,9 +130,19 @@ export default class Input extends Component {
       labelClassName,
       standalone,
       validationState,
+      tooltipText,
       ...props
     } = this.props;
 
+    const helpIconElement = tooltipText && (
+			<Icon
+				className="margin-left-0-5" data-for={id} data-tip={tooltipText}
+				name="question-circle"
+			/>
+    );
+    const helpTooltipElement = tooltipText &&
+    <ReactTooltip delayShow={50} effect="solid" id={id} place="right" type="dark" multiline={true} />
+    
     return (
       <FormGroup
         controlId={ id }
@@ -141,8 +153,10 @@ export default class Input extends Component {
           <ControlLabel
             bsClass={ cx('control-label', labelClassName) }>
             { label }
+            { helpIconElement }
           </ControlLabel>
         ) }
+        { helpTooltipElement }
         { this.renderInputGroup(props) }
       </FormGroup>
     );
