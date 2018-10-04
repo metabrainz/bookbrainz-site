@@ -19,6 +19,7 @@
 // @flow
 
 import * as React from 'react';
+
 import CustomInput from '../../input';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
@@ -26,7 +27,8 @@ import VirtualizedSelect from 'react-virtualized-select';
 
 type Props = {
 	empty?: boolean,
-	error?: boolean
+	error?: boolean,
+	tooltipText?: string
 };
 
 /**
@@ -45,6 +47,7 @@ type Props = {
 function LanguageField({
 	empty,
 	error,
+	tooltipText,
 	...rest
 }: Props): React.Node {
 	const label =
@@ -52,7 +55,7 @@ function LanguageField({
 	;
 
 	return (
-		<CustomInput label={label}>
+		<CustomInput label={label} tooltipText={tooltipText}>
 			<VirtualizedSelect {...rest}/>
 		</CustomInput>
 	);
@@ -60,7 +63,8 @@ function LanguageField({
 LanguageField.displayName = 'LanguageField';
 LanguageField.defaultProps = {
 	empty: false,
-	error: false
+	error: false,
+	tooltipText: null
 };
 
 export default LanguageField;
