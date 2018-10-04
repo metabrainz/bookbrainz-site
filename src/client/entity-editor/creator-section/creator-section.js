@@ -19,13 +19,21 @@
 // @flow
 
 import {
-	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
-	updateBeginArea, updateEndArea, updateEnded, updateGender, updateType
+	type Action,
+	debouncedUpdateBeginDate,
+	debouncedUpdateEndDate,
+	updateBeginArea,
+	updateEndArea,
+	updateEnded,
+	updateGender,
+	updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
 import {
-	validateCreatorSectionBeginDate, validateCreatorSectionEndDate
+	validateCreatorSectionBeginDate,
+	validateCreatorSectionEndDate
 } from '../validators/creator';
+
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import EntitySearchField from '../common/entity-search-field';
@@ -54,9 +62,11 @@ type Area = {
 
 
 type StateProps = {
+	beginAreaLabel: string,
 	beginAreaValue: Map<string, any>,
 	beginDateLabel: string,
 	beginDateValue: string,
+	endAreaLabel: string,
 	endAreaValue: Map<string, any>,
 	endDateLabel: string,
 	endDateValue: string,
@@ -122,10 +132,12 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered CreatorSection.
  */
 function CreatorSection({
+	beginAreaLabel,
 	beginDateLabel,
 	beginDateValue,
 	beginAreaValue,
 	creatorTypes,
+	endAreaLabel,
 	endAreaValue,
 	endDateLabel,
 	endDateValue,
@@ -206,7 +218,7 @@ function CreatorSection({
 				<Col md={6} mdOffset={3}>
 					<EntitySearchField
 						instanceId="beginArea"
-						label="Begin Area"
+						label={beginAreaLabel}
 						type="area"
 						value={beginAreaValue}
 						onChange={onBeginAreaChange}
@@ -243,7 +255,7 @@ function CreatorSection({
 						<Col md={6} mdOffset={3}>
 							<EntitySearchField
 								instanceId="endArea"
-								label="End Area"
+								label={endAreaLabel}
 								type="area"
 								value={endAreaValue}
 								onChange={onEndAreaChange}
@@ -267,14 +279,18 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 	}
 	const singular = typeValue === personType.id;
 
-	const endDateLabel = singular ? 'Date of Death' : 'Date Dissolved';
-	const endedLabel = singular ? 'Died?' : 'Dissolved?';
-	const beginDateLabel = singular ? 'Date of Birth' : 'Date Founded';
+	const beginDateLabel = !singular ? 'Date founded' : 'Date of birth';
+	const beginAreaLabel = !singular ? 'Place founded' : 'Place of birth';
+	const endedLabel = !singular ? 'Dissolved?' : 'Died?';
+	const endDateLabel = !singular ? 'Date of dissolution' : 'Date of death';
+	const endAreaLabel = !singular ? 'Place of dissolution' : 'Place of death';
 
 	return {
+		beginAreaLabel,
 		beginAreaValue: state.get('beginArea'),
 		beginDateLabel,
 		beginDateValue: state.get('beginDate'),
+		endAreaLabel,
 		endAreaValue: state.get('endArea'),
 		endDateLabel,
 		endDateValue: state.get('endDate'),
