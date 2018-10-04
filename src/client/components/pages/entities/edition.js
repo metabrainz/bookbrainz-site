@@ -108,7 +108,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					<div className="margin-bottom-d15">
 						<a href={`/publication/${entity.publication.bbid}`}>
 							<Icon name="external-link"/>
-							<span>&nbsp;See all other editions</span>
+							<span>&nbsp;See all similar editions</span>
 						</a>
 					</div>
 				</Col>

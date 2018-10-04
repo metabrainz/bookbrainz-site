@@ -24,8 +24,8 @@
 /* eslint import/no-commonjs: "warn" */
 /* eslint global-require: "warn" */
 
-
 import * as bootstrap from 'react-bootstrap';
+
 import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
@@ -81,7 +81,7 @@ class Layout extends React.Component {
 		 */
 		const createDropdownTitle = (
 			<span>
-				<FontAwesome name="plus"/>{'  Create'}
+				<FontAwesome name="plus"/>{'  Add'}
 			</span>
 		);
 
@@ -102,20 +102,20 @@ class Layout extends React.Component {
 							title={createDropdownTitle}
 						>
 							<MenuItem href="/publication/create">
-								Create Publication
+								Add Edition Group
 							</MenuItem>
 							<MenuItem href="/edition/create">
-								Create Edition
+								Add Edition
 							</MenuItem>
 							<MenuItem href="/work/create">
-								Create Work
+								Add Work
 							</MenuItem>
 							<MenuItem divider/>
 							<MenuItem href="/creator/create">
-								Create Creator
+								Add Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">
-								Create Publisher
+								Add Publisher
 							</MenuItem>
 						</NavDropdown>
 						<NavDropdown
@@ -143,6 +143,12 @@ class Layout extends React.Component {
 						</NavItem>
 					</Nav>
 				}
+				<Nav pullRight>
+					<NavItem href="/help">
+						<FontAwesome name="help"/>
+						{' Help '}
+					</NavItem>
+				</Nav>
 				<Nav pullRight>
 					<NavItem href="/statistics">
 						<FontAwesome name="statistics"/>
