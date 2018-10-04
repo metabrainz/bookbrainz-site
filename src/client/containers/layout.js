@@ -101,21 +101,21 @@ class Layout extends React.Component {
 							id="create-dropdown"
 							title={createDropdownTitle}
 						>
-							<MenuItem href="/publication/create">
-								Add Edition Group
+							<MenuItem href="/work/create">
+								<FontAwesome name="file-text-o"/>&nbsp;&nbsp;Work
 							</MenuItem>
 							<MenuItem href="/edition/create">
-								Add Edition
+								<FontAwesome name="book"/>&nbsp;&nbsp;Edition
 							</MenuItem>
-							<MenuItem href="/work/create">
-								Add Work
+							<MenuItem href="/publication/create">
+								<FontAwesome name="th-list"/>&nbsp;&nbsp;Edition Group
 							</MenuItem>
 							<MenuItem divider/>
 							<MenuItem href="/creator/create">
-								Add Author
+								<FontAwesome name="user"/>&nbsp;&nbsp;Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">
-								Add Publisher
+								<FontAwesome name="university"/>&nbsp;&nbsp;Publisher
 							</MenuItem>
 						</NavDropdown>
 						<NavDropdown
