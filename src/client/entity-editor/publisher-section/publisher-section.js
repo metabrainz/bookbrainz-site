@@ -79,7 +79,7 @@ type OwnProps = {
 type Props = StateProps & DispatchProps & OwnProps;
 
 /**
- * Container component. The CreatorSection component contains input fields
+ * Container component. The PublisherSection component contains input fields
  * specific to the publisher entity. The intention is that this component is
  * rendered as a modular section within the entity editor.
  *

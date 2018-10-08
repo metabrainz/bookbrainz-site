@@ -23,6 +23,7 @@
 
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from './error';
+
 import Log from 'log';
 import Promise from 'bluebird';
 import config from './config';
@@ -265,22 +266,22 @@ function processRevisionist(orm, editorId) {
 		});
 }
 
-function processCreatorCreator(orm, editorId) {
-	const {CreatorRevision} = orm;
-	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
+function processAuthorCreator(orm, editorId) {
+	const {AuthorRevision} = orm;
+	return getTypeCreation(new AuthorRevision(), 'creator_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
 				{
-					name: 'Creator Creator III',
+					name: 'Author Creator III',
 					threshold: 100,
-					titleName: 'Creator Creator'
+					titleName: 'Author Creator'
 				},
 				{
-					name: 'Creator Creator II',
+					name: 'Author Creator II',
 					threshold: 10
 				},
 				{
-					name: 'Creator Creator I',
+					name: 'Author Creator I',
 					threshold: 1
 				}
 			];
@@ -602,7 +603,7 @@ export async function processPageVisit(orm, userId) {
 export function processEdit(orm, userId, revisionId) {
 	return Promise.join(
 		processRevisionist(orm, userId),
-		processCreatorCreator(orm, userId),
+		processAuthorCreator(orm, userId),
 		processLimitedEdition(orm, userId),
 		processPublisher(orm, userId),
 		processPublisherCreator(orm, userId),
@@ -614,7 +615,7 @@ export function processEdit(orm, userId, revisionId) {
 		processHotOffThePress(orm, userId, revisionId),
 		(
 			revisionist,
-			creatorCreator,
+			authorCreator,
 			limitedEdition,
 			publisher,
 			publisherCreator,
@@ -628,7 +629,7 @@ export function processEdit(orm, userId, revisionId) {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),
-				achievementToUnlockId(creatorCreator),
+				achievementToUnlockId(authorCreator),
 				achievementToUnlockId(limitedEdition),
 				achievementToUnlockId(publisher),
 				achievementToUnlockId(publisherCreator),
@@ -643,7 +644,7 @@ export function processEdit(orm, userId, revisionId) {
 			alert = alert.join(',');
 			return {
 				alert,
-				creatorCreator,
+				authorCreator,
 				funRunner,
 				hotOffThePress,
 				limitedEdition,

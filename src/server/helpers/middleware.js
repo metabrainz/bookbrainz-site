@@ -19,6 +19,7 @@
 
 import * as error from '../helpers/error';
 import * as utils from '../helpers/utils';
+
 import Promise from 'bluebird';
 import renderRelationship from '../helpers/render';
 
@@ -40,7 +41,7 @@ function makeLoader(modelName, propName, sortFunc) {
 	};
 }
 
-export const loadCreatorTypes = makeLoader('CreatorType', 'creatorTypes');
+export const loadAuthorTypes = makeLoader('AuthorType', 'authorTypes');
 export const loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
 export const loadEditionStatuses =
 	makeLoader('EditionStatus', 'editionStatuses');

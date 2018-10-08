@@ -37,16 +37,16 @@ import {
 	testValidatePositiveIntegerFunc
 } from './helpers';
 import {
-	validateCreatorSection,
-	validateCreatorSectionBeginArea,
-	validateCreatorSectionBeginDate,
-	validateCreatorSectionEndArea,
-	validateCreatorSectionEndDate,
-	validateCreatorSectionEnded,
-	validateCreatorSectionGender,
-	validateCreatorSectionType,
+	validateAuthorSection,
+	validateAuthorSectionBeginArea,
+	validateAuthorSectionBeginDate,
+	validateAuthorSectionEndArea,
+	validateAuthorSectionEndDate,
+	validateAuthorSectionEnded,
+	validateAuthorSectionGender,
+	validateAuthorSectionType,
 	validateForm
-} from '../../../../../src/client/entity-editor/validators/creator';
+} from '../../../../../src/client/entity-editor/validators/author';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -55,35 +55,35 @@ chai.use(chaiAsPromised);
 const {expect} = chai;
 
 
-function describeValidateCreatorSectionBeginArea() {
-	testValidateAreaFunc(validateCreatorSectionBeginArea, false);
+function describeValidateAuthorSectionBeginArea() {
+	testValidateAreaFunc(validateAuthorSectionBeginArea, false);
 }
 
-function describeValidateCreatorSectionEndArea() {
-	testValidateAreaFunc(validateCreatorSectionEndArea, false);
+function describeValidateAuthorSectionEndArea() {
+	testValidateAreaFunc(validateAuthorSectionEndArea, false);
 }
 
-function describeValidateCreatorSectionBeginDate() {
-	testValidateDateFunc(validateCreatorSectionBeginDate, false);
+function describeValidateAuthorSectionBeginDate() {
+	testValidateDateFunc(validateAuthorSectionBeginDate, false);
 }
 
-function describeValidateCreatorSectionEndDate() {
-	testValidateEndDateFunc(validateCreatorSectionEndDate, false);
+function describeValidateAuthorSectionEndDate() {
+	testValidateEndDateFunc(validateAuthorSectionEndDate, false);
 }
 
-function describeValidateCreatorSectionEnded() {
-	testValidateBooleanFunc(validateCreatorSectionEnded, false);
+function describeValidateAuthorSectionEnded() {
+	testValidateBooleanFunc(validateAuthorSectionEnded, false);
 }
 
-function describeValidateCreatorSectionType() {
-	testValidatePositiveIntegerFunc(validateCreatorSectionType, false);
+function describeValidateAuthorSectionType() {
+	testValidatePositiveIntegerFunc(validateAuthorSectionType, false);
 }
 
-function describeValidateCreatorSectionGender() {
-	testValidatePositiveIntegerFunc(validateCreatorSectionGender, false);
+function describeValidateAuthorSectionGender() {
+	testValidatePositiveIntegerFunc(validateAuthorSectionGender, false);
 }
 
-const VALID_CREATOR_SECTION = {
+const VALID_AUTHOR_SECTION = {
 	beginArea: null,
 	beginDate: null,
 	endArea: null,
@@ -92,91 +92,91 @@ const VALID_CREATOR_SECTION = {
 	gender: 1,
 	type: 1
 };
-const INVALID_CREATOR_SECTION = {...VALID_CREATOR_SECTION, type: {}};
+const INVALID_AUTHOR_SECTION = {...VALID_AUTHOR_SECTION, type: {}};
 
-function describeValidateCreatorSection() {
+function describeValidateAuthorSection() {
 	it('should pass a valid Object', () => {
-		const result = validateCreatorSection(VALID_CREATOR_SECTION);
+		const result = validateAuthorSection(VALID_AUTHOR_SECTION);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateCreatorSection(
-			Immutable.fromJS(VALID_CREATOR_SECTION)
+		const result = validateAuthorSection(
+			Immutable.fromJS(VALID_AUTHOR_SECTION)
 		);
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid area', () => {
-		const result = validateCreatorSection({
-			...VALID_CREATOR_SECTION,
+		const result = validateAuthorSection({
+			...VALID_AUTHOR_SECTION,
 			beginArea: {id: null}
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid begin date', () => {
-		const result = validateCreatorSection({
-			...VALID_CREATOR_SECTION,
+		const result = validateAuthorSection({
+			...VALID_AUTHOR_SECTION,
 			beginDate: '201'
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid area', () => {
-		const result = validateCreatorSection({
-			...VALID_CREATOR_SECTION,
+		const result = validateAuthorSection({
+			...VALID_AUTHOR_SECTION,
 			endArea: {id: null}
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid end date', () => {
-		const result = validateCreatorSection({
-			...VALID_CREATOR_SECTION,
+		const result = validateAuthorSection({
+			...VALID_AUTHOR_SECTION,
 			endDate: '201'
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid ended flag', () => {
-		const result = validateCreatorSection({
-			...VALID_CREATOR_SECTION,
+		const result = validateAuthorSection({
+			...VALID_AUTHOR_SECTION,
 			ended: 1
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid type', () => {
-		const result = validateCreatorSection({
-			...VALID_CREATOR_SECTION,
+		const result = validateAuthorSection({
+			...VALID_AUTHOR_SECTION,
 			type: {}
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid gender', () => {
-		const result = validateCreatorSection({
-			...VALID_CREATOR_SECTION,
+		const result = validateAuthorSection({
+			...VALID_AUTHOR_SECTION,
 			gender: {}
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateCreatorSection(
-			Immutable.fromJS(INVALID_CREATOR_SECTION)
+		const result = validateAuthorSection(
+			Immutable.fromJS(INVALID_AUTHOR_SECTION)
 		);
 		expect(result).to.be.false;
 	});
 
 	it('should pass any other non-null data type', () => {
-		const result = validateCreatorSection(1);
+		const result = validateAuthorSection(1);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a null value', () => {
-		const result = validateCreatorSection(null);
+		const result = validateAuthorSection(null);
 		expect(result).to.be.true;
 	});
 }
@@ -185,7 +185,7 @@ function describeValidateCreatorSection() {
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
-		creatorSection: VALID_CREATOR_SECTION,
+		authorSection: VALID_AUTHOR_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
 		submissionSection: VALID_SUBMISSION_SECTION
@@ -236,11 +236,11 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid creator section', () => {
+	it('should reject an Object with an invalid author section', () => {
 		const result = validateForm(
 			{
 				...validForm,
-				creatorSection: INVALID_CREATOR_SECTION
+				authorSection: INVALID_AUTHOR_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
@@ -260,7 +260,7 @@ function describeValidateForm() {
 
 	const invalidForm = {
 		...validForm,
-		creatorSection: INVALID_CREATOR_SECTION
+		authorSection: INVALID_AUTHOR_SECTION
 
 	};
 
@@ -286,36 +286,36 @@ function describeValidateForm() {
 
 function tests() {
 	describe(
-		'validateCreatorSectionBeginArea',
-		describeValidateCreatorSectionBeginArea
+		'validateAuthorSectionBeginArea',
+		describeValidateAuthorSectionBeginArea
 	);
 	describe(
-		'validateCreatorSectionBeginDate',
-		describeValidateCreatorSectionBeginDate
+		'validateAuthorSectionBeginDate',
+		describeValidateAuthorSectionBeginDate
 	);
 	describe(
-		'validateCreatorSectionEndArea',
-		describeValidateCreatorSectionEndArea
+		'validateAuthorSectionEndArea',
+		describeValidateAuthorSectionEndArea
 	);
 	describe(
-		'validateCreatorSectionEndDate',
-		describeValidateCreatorSectionEndDate
+		'validateAuthorSectionEndDate',
+		describeValidateAuthorSectionEndDate
 	);
 	describe(
-		'validateCreatorSectionEnded',
-		describeValidateCreatorSectionEnded
+		'validateAuthorSectionEnded',
+		describeValidateAuthorSectionEnded
 	);
 	describe(
-		'validateCreatorSectionGender',
-		describeValidateCreatorSectionGender
+		'validateAuthorSectionGender',
+		describeValidateAuthorSectionGender
 	);
 	describe(
-		'validateCreatorSectionType',
-		describeValidateCreatorSectionType
+		'validateAuthorSectionType',
+		describeValidateAuthorSectionType
 	);
 	describe(
-		'validateCreatorSection',
-		describeValidateCreatorSection
+		'validateAuthorSection',
+		describeValidateAuthorSection
 	);
 	describe(
 		'validateForm',
@@ -323,4 +323,4 @@ function tests() {
 	);
 }
 
-describe('validateCreatorSection* functions', tests);
+describe('validateAuthorSection* functions', tests);

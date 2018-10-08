@@ -205,7 +205,7 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Creator, Edition, Publication, Publisher, Work} = orm;
+	const {Area, Author, Edition, Publication, Publisher, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -289,10 +289,10 @@ export async function generateIndex(orm) {
 
 	const entityBehaviors = [
 		{
-			model: Creator,
+			model: Author,
 			relations: [
 				'gender',
-				'creatorType',
+				'authorType',
 				'beginArea',
 				'endArea'
 			]

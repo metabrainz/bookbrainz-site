@@ -18,7 +18,7 @@
  */
 
 import authRouter from './routes/auth';
-import creatorRouter from './routes/entity/creator';
+import authorRouter from './routes/entity/author';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
 import indexRouter from './routes/index';
@@ -43,8 +43,9 @@ function initPublicationRoutes(app) {
 	app.use('/publication', publicationRouter);
 }
 
-function initCreatorRoutes(app) {
-	app.use('/creator', creatorRouter);
+function initAuthorRoutes(app) {
+	/* Retro-compatibility for /creator links stored in MusicBrainz */
+	app.use(['/author', '/creator'], authorRouter);
 }
 
 function initEditionRoutes(app) {
@@ -71,7 +72,7 @@ function initRoutes(app) {
 	initRootRoutes(app);
 
 	initPublicationRoutes(app);
-	initCreatorRoutes(app);
+	initAuthorRoutes(app);
 	initEditionRoutes(app);
 	initWorkRoutes(app);
 	initPublisherRoutes(app);

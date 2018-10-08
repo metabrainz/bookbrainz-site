@@ -22,7 +22,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
-import testCreatorCreator from './test-creator-creator.js';
+import testCreatorCreator from './test-author-creator.js';
 import testExplorer from './test-explorer.js';
 import testFunRunner from './test-fun-runner.js';
 import testHotOffThePress from './test-hot-off-the-press.js';
@@ -159,7 +159,7 @@ function tests() {
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
 	});
-	describe('Creator Creator Achievement', testCreatorCreator);
+	describe('Author Creator Achievement', testCreatorCreator);
 	describe('Explorer Achievement', testExplorer);
 	describe('Fun Runner Achievement', testFunRunner);
 	describe('Hot Off the Press Achievement', testHotOffThePress);

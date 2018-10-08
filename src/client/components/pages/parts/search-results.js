@@ -24,7 +24,6 @@ import React from 'react';
 import {differenceBy as _differenceBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
-
 const {Button, ButtonGroup, Col, Row, Table} = bootstrap;
 
 function SearchResults(props) {

@@ -17,7 +17,8 @@
  */
 
 import * as common from './common';
-import * as testData from '../data/test-data.js';
+import * as testData from '../data/test-data';
+
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
@@ -33,25 +34,25 @@ function rewireTypeCreation(threshold) {
 }
 
 function getAttrPromise() {
-	return common.getAttrPromise(Achievement, orm, true, 'creatorCreator');
+	return common.getAttrPromise(Achievement, orm, true, 'authorCreator');
 }
 
 function getRevAttrPromise(rev) {
 	return common.getAttrPromise(
-		Achievement, orm, true, 'creatorCreator', `Creator Creator ${rev}`
+		Achievement, orm, true, 'authorCreator', `Author Creator ${rev}`
 	);
 }
 
 function expectIds(rev) {
-	return common.expectIds('creatorCreator', rev);
+	return common.expectIds('authorCreator', rev);
 }
 
 function expectAllNamedIds(rev) {
-	return common.expectAllNamedIds('Creator Creator', 'creatorCreator', rev);
+	return common.expectAllNamedIds('Author Creator', 'authorCreator', rev);
 }
 
 export default function tests() {
-	beforeEach(() => testData.createCreatorCreator());
+	beforeEach(() => testData.createAuthorCreator());
 	afterEach(testData.truncate);
 
 	const test1 = common.testAchievement(
@@ -59,26 +60,26 @@ export default function tests() {
 		getRevAttrPromise('I'),
 		expectIds('I')
 	);
-	it('I should be given to someone with a creator creation', test1);
+	it('I should be given to someone with an author creation', test1);
 
 	const test2 = common.testAchievement(
 		rewireTypeCreation(thresholdII),
 		getRevAttrPromise('II'),
 		expectIds('II')
 	);
-	it('II should be given to someone with 10 creator creations', test2);
+	it('II should be given to someone with 10 author creations', test2);
 
 	const test3 = common.testAchievement(
 		rewireTypeCreation(thresholdIII),
 		getAttrPromise(),
 		expectAllNamedIds('III')
 	);
-	it('III should be given to someone with 100 creator creations', test3);
+	it('III should be given to someone with 100 author creations', test3);
 
 	const test4 = common.testAchievement(
 		rewireTypeCreation(0),
 		getRevAttrPromise('I'),
 		common.expectFalse()
 	);
-	it('should not be given to someone with 0 creator creations', test4);
+	it('should not be given to someone with 0 author creations', test4);
 }

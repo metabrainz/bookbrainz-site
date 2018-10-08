@@ -35,7 +35,7 @@ import type {
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
 
-import CreatorPage from '../../../client/components/pages/entities/creator';
+import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
@@ -57,7 +57,7 @@ type PassportRequest = $Request & {user: any, session: any};
 const log = new Log(config.site.log);
 
 const entityComponents = {
-	creator: CreatorPage,
+	author: AuthorPage,
 	edition: EditionPage,
 	publication: PublicationPage,
 	publisher: PublisherPage,

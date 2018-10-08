@@ -190,7 +190,7 @@ export function getEntityUrl(entity) {
 
 export const ENTITY_TYPE_ICONS = {
 	Area: 'globe',
-	Creator: 'user',
+	Author: 'user',
 	Edition: 'book',
 	Publication: 'window-restore',
 	Publisher: 'university',

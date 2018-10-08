@@ -20,8 +20,9 @@ import {
 	extractEntityProps,
 	extractLayoutProps
 } from '../../helpers/props';
+
 import {AppContainer} from 'react-hot-loader';
-import CreatorPage from '../../components/pages/entities/creator';
+import AuthorPage from '../../components/pages/entities/author';
 import EditionPage from '../../components/pages/entities/edition';
 import EntityRevisions from '../../components/pages/entity-revisions';
 import Layout from '../../containers/layout';
@@ -33,7 +34,7 @@ import WorkPage from '../../components/pages/entities/work';
 
 
 const entityComponents = {
-	creator: CreatorPage,
+	author: AuthorPage,
 	edition: EditionPage,
 	publication: PublicationPage,
 	publisher: PublisherPage,
@@ -45,7 +46,7 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const pageTarget = document.getElementById('page');
 const page = pageTarget ? pageTarget.innerHTML : '';
 
-const Child = entityComponents[page] || CreatorPage;
+const Child = entityComponents[page] || AuthorPage;
 
 let markup = null;
 if (page === 'revisions') {

@@ -25,7 +25,9 @@ import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
 import * as releaseEventSetFormatter from
 	'../helpers/diffFormatters/releaseEventSet';
+
 import {escapeProps, generateProps} from '../helpers/props';
+
 import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
@@ -38,7 +40,7 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-function formatCreatorChange(change) {
+function formatAuthorChange(change) {
 	if (_.isEqual(change.path, ['beginDate'])) {
 		return baseFormatter.formatScalarChange(change, 'Begin Date');
 	}
@@ -56,7 +58,7 @@ function formatCreatorChange(change) {
 	}
 
 	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Creator Type');
+		return baseFormatter.formatTypeChange(change, 'Author Type');
 	}
 
 	if (_.isEqual(change.path, ['beginArea']) ||
@@ -174,7 +176,7 @@ function diffRevisionsWithParents(revisions) {
 
 router.get('/:id', (req, res, next) => {
 	const {
-		CreatorRevision, EditionRevision, PublicationRevision,
+		AuthorRevision, EditionRevision, PublicationRevision,
 		PublisherRevision, Revision, WorkRevision
 	} = req.app.locals.orm;
 
@@ -198,24 +200,24 @@ router.get('/:id', (req, res, next) => {
 			.then(diffRevisionsWithParents);
 	}
 
-	const creatorDiffsPromise = _createRevision(CreatorRevision);
+	const authorDiffsPromise = _createRevision(AuthorRevision);
 	const editionDiffsPromise = _createRevision(EditionRevision);
 	const publicationDiffsPromise = _createRevision(PublicationRevision);
 	const publisherDiffsPromise = _createRevision(PublisherRevision);
 	const workDiffsPromise = _createRevision(WorkRevision);
 
 	Promise.join(
-		revisionPromise, creatorDiffsPromise, editionDiffsPromise,
+		revisionPromise, authorDiffsPromise, editionDiffsPromise,
 		workDiffsPromise, publisherDiffsPromise, publicationDiffsPromise,
 		(
-			revision, creatorDiffs, editionDiffs, workDiffs, publisherDiffs,
+			revision, authorDiffs, editionDiffs, workDiffs, publisherDiffs,
 			publicationDiffs
 		) => {
 			const diffs = _.concat(
 				entityFormatter.formatEntityDiffs(
-					creatorDiffs,
-					'Creator',
-					formatCreatorChange
+					authorDiffs,
+					'Author',
+					formatAuthorChange
 				),
 				entityFormatter.formatEntityDiffs(
 					editionDiffs,

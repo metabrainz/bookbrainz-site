@@ -1,4 +1,3 @@
-
 import PropTypes from 'prop-types';
 
 
@@ -10,7 +9,7 @@ export const entityProperty = PropTypes.shape({
 });
 
 export const entityTypeProperty = PropTypes.oneOf([
-	'creator',
+	'author',
 	'edition',
 	'publication',
 	'publisher',

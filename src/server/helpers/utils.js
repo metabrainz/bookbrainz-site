@@ -39,9 +39,9 @@ export function getEntityLink(entity: Object): string {
  * @returns {object} - Object mapping model name to the entity model
  */
 export function getEntityModels(orm: Object): Object {
-	const {Creator, Edition, Publication, Publisher, Work} = orm;
+	const {Author, Edition, Publication, Publisher, Work} = orm;
 	return {
-		Creator,
+		Author,
 		Edition,
 		Publication,
 		Publisher,
