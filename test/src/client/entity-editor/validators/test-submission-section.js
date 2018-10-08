@@ -65,7 +65,9 @@ function describeValidateSubmissionSection() {
 	});
 
 	it('should reject any other non-null data type', () => {
-		const result = validateSubmissionSection(1);
+		const result = validateSubmissionSection(
+			{...VALID_SUBMISSION_SECTION, note: 1}
+		);
 		expect(result).to.be.false;
 	});
 
