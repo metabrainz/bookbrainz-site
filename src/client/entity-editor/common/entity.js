@@ -21,6 +21,7 @@
 
 import Icon from 'react-fontawesome';
 import React from 'react';
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
 type EntityProps = {
@@ -34,24 +35,11 @@ type EntityProps = {
 function Entity(
 	{disambiguation, link, text, type, unnamedText}: EntityProps
 ) {
-	const ENTITY_TYPE_ICONS = {
-		Area: 'globe',
-		Creator: 'user',
-		Edition: 'book',
-		Publication: 'th-list',
-		Publisher: 'university',
-		Work: 'file-text-o'
-	};
-
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
 		<span>
 			{
-				type &&
-				<Icon
-					className="margin-right-d1 margin-left-d2"
-					name={ENTITY_TYPE_ICONS[type]}
-				/>
+				type && genEntityIconHTMLElement(type)
 			}
 			{' '}
 			{nameComponent}
