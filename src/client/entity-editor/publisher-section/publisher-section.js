@@ -153,6 +153,7 @@ function PublisherSection({
 					<EntitySearchField
 						instanceId="area"
 						label="Area"
+						tooltipText="Country or place the publisher is registered in"
 						type="area"
 						value={areaValue}
 						onChange={onAreaChange}

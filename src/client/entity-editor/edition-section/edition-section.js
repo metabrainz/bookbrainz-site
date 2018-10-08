@@ -280,7 +280,7 @@ function EditionSection({
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<div className="text-muted">
-							Group with other editions of the same work(s), by the same publisher (optional)
+							Group with other editions of the same work(s), by the same publisher
 						</div>
 						<EntitySearchField
 							help="Search for an existing edition group fro the same edition in another format (optional)"
