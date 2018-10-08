@@ -61,6 +61,8 @@ function DateField({
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
 	const groupClassName = classNames({hidden: !show});
+	const momentDate = moment(defaultValue);
+
 	return (
 		<CustomInput
 			groupClassName={groupClassName}
@@ -72,7 +74,7 @@ function DateField({
 				showYearDropdown
 				dateFormat="YYYY-MM-DD"
 				dropdownMode="select"
-				selected={moment(defaultValue)}
+				selected={momentDate.isValid() ? momentDate : null}
 				timeFormat="false"
 				viewMode="years"
 				{...rest}

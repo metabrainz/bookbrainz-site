@@ -18,12 +18,12 @@
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addIdentifierRow, hideIdentifierEditor} from './actions';
+
 import IdentifierRow from './identifier-row';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-
 
 /**
  * Container component. The IdentifierEditor component contains a number of

@@ -17,6 +17,7 @@
  */
 
 // @flow
+import * as moment from 'moment';
 
 import {
 	type Action,
@@ -305,11 +306,11 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
-		onBeginDateChange: (event) =>
-			dispatch(debouncedUpdateBeginDate(event.target.value)),
+		onBeginDateChange: (momentDate: moment) =>
+			dispatch(debouncedUpdateBeginDate(momentDate.format('YYYY-MM-DD'))),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
-		onEndDateChange: (event) =>
-			dispatch(debouncedUpdateEndDate(event.target.value)),
+		onEndDateChange: (momentDate: moment) =>
+			dispatch(debouncedUpdateEndDate(momentDate.format('YYYY-MM-DD'))),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onGenderChange: (value) =>
