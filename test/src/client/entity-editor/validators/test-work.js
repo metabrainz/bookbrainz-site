@@ -17,19 +17,28 @@
  */
 
 import * as Immutable from 'immutable';
+
 import {
-	IDENTIFIER_TYPES, INVALID_ALIASES, INVALID_IDENTIFIERS,
-	INVALID_NAME_SECTION, INVALID_SUBMISSION_SECTION, VALID_ALIASES,
-	VALID_IDENTIFIERS, VALID_NAME_SECTION, VALID_SUBMISSION_SECTION
+	EMPTY_SUBMISSION_SECTION,
+	IDENTIFIER_TYPES,
+	INVALID_ALIASES,
+	INVALID_IDENTIFIERS,
+	INVALID_NAME_SECTION,
+	VALID_ALIASES,
+	VALID_IDENTIFIERS,
+	VALID_NAME_SECTION,
+	VALID_SUBMISSION_SECTION
 } from './data';
 import {
-	validateForm, validateWorkSection, validateWorkSectionLanguage,
+	validateForm,
+	validateWorkSection,
+	validateWorkSectionLanguage,
 	validateWorkSectionType
 } from '../../../../../src/client/entity-editor/validators/work';
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {testValidatePositiveIntegerFunc} from './helpers';
-
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
@@ -199,20 +208,20 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid submission section', () => {
+	it('should pass an Object with an empty submission section', () => {
 		const result = validateForm(
 			{
 				...validForm,
-				submissionSection: INVALID_SUBMISSION_SECTION
+				submissionSection: EMPTY_SUBMISSION_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 
 	const invalidForm = {
 		...validForm,
-		submissionSection: INVALID_SUBMISSION_SECTION
+		nameSection: INVALID_NAME_SECTION
 	};
 
 	it('should reject an invalid Immutable.Map', () => {
