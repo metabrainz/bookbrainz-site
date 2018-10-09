@@ -181,10 +181,10 @@ export const ENTITY_TYPE_ICONS = {
 	Edition: 'book',
 	Publication: 'th-list',
 	Publisher: 'university',
-	Work: 'file-text-o'
+	Work: 'pen-nib'
 };
 
 export function genEntityIconHTMLElement(entityType) {
 	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
-	return <FontAwesome className="margin-right-0-5" name={ENTITY_TYPE_ICONS[entityType]}/>;
+	return <FontAwesome ariaLabel={entityType} className="margin-right-0-5" name={ENTITY_TYPE_ICONS[entityType]}/>;
 }

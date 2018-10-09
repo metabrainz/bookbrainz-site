@@ -29,7 +29,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getLanguageAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
+const {getLanguageAttribute, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
@@ -69,7 +69,7 @@ function WorkDisplayPage({entity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon="file-text-o"
+						backupIcon={ENTITY_TYPE_ICONS.Work}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>

@@ -30,6 +30,7 @@ import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
 if (!process.env.SSR) {
@@ -102,20 +103,25 @@ class Layout extends React.Component {
 							title={createDropdownTitle}
 						>
 							<MenuItem href="/work/create">
-								<FontAwesome name="file-text-o"/>&nbsp;&nbsp;Work
+								{genEntityIconHTMLElement('Work')}
+								Work
 							</MenuItem>
 							<MenuItem href="/edition/create">
-								<FontAwesome name="book"/>&nbsp;&nbsp;Edition
+								{genEntityIconHTMLElement('Edition')}
+								Edition
 							</MenuItem>
 							<MenuItem href="/publication/create">
-								<FontAwesome name="th-list"/>&nbsp;&nbsp;Edition Group
+								{genEntityIconHTMLElement('Publication')}
+								Edition Group
 							</MenuItem>
 							<MenuItem divider/>
 							<MenuItem href="/creator/create">
-								<FontAwesome name="user"/>&nbsp;&nbsp;Author
+								{genEntityIconHTMLElement('Creator')}
+								Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">
-								<FontAwesome name="university"/>&nbsp;&nbsp;Publisher
+								{genEntityIconHTMLElement('Publisher')}
+								Publisher
 							</MenuItem>
 						</NavDropdown>
 						<NavDropdown

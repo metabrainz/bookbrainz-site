@@ -19,7 +19,9 @@
  */
 
 @import "lobes/less/theme.less";
-@import "font-awesome/font-awesome.less";
+@import "font-awesome/fontawesome.less";
+@import "font-awesome/solid.less";
+@fa-font-path: "../../../../static/fonts";
 @import "react-select/select.less";
 
 @import '~react-datepicker/dist/react-datepicker.css';
@@ -29,7 +31,8 @@ With Webpack and less-loader,
 we should be able to import directly from node_modules directory with '~'.
 The production configuration for webpack needs to be finalized before using this.
 */
-/* @import "~font-awesome/less/font-awesome.less";
+/* @import "~@fortawesome/fontawesome-free/less/fontawesome.less";
+/* @import "~@fortawesome/fontawesome-free/less/solid.less";
 @import "~react-select/less/select.less";
 @import "~react-virtualized/styles.css";
 @import "~react-virtualized-select/styles.css";

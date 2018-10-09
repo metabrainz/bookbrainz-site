@@ -20,14 +20,14 @@
  */
 
 import * as entityHelper from '../../../helpers/entity';
+
 import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {extractEntityProps} from '../../../helpers/props';
 
-
-const {getLanguageAttribute, getTypeAttribute} = entityHelper;
+const {getLanguageAttribute, getTypeAttribute, ENTITY_TYPE_ICONS} = entityHelper;
 
 function WorkPage(props) {
 	const {entity} = props;
@@ -39,7 +39,7 @@ function WorkPage(props) {
 	return (
 		<EntityPage
 			attributes={attributes}
-			iconName="file-text-o"
+			iconName={ENTITY_TYPE_ICONS.Work}
 			{...extractEntityProps(props)}
 		/>
 	);
