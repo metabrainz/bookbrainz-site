@@ -179,7 +179,7 @@ export const ENTITY_TYPE_ICONS = {
 	Area: 'globe',
 	Creator: 'user',
 	Edition: 'book',
-	Publication: 'th-list',
+	Publication: 'window-restore',
 	Publisher: 'university',
 	Work: 'pen-nib'
 };

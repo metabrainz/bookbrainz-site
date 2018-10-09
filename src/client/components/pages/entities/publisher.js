@@ -30,7 +30,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {extractAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
+const {extractAttribute, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function PublisherAttributes({publisher}) {
@@ -86,7 +86,7 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon="university"
+						backupIcon={ENTITY_TYPE_ICONS.publisher}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>

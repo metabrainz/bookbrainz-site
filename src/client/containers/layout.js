@@ -88,7 +88,7 @@ class Layout extends React.Component {
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesome name="user"/>
+				<FontAwesome name="user-circle"/>
 				{`  ${user.name}`}
 			</span>
 		);
@@ -138,26 +138,26 @@ class Layout extends React.Component {
 							<MenuItem href="/logout">
 								<FontAwesome
 									fixedWidth
-									name="sign-out"
+									name="sign-out-alt"
 								/>{' Sign Out'}
 							</MenuItem>
 						</NavDropdown>
 					</Nav> :
 					<Nav pullRight>
 						<NavItem href="/auth">
-							<FontAwesome name="sign-in"/>{' Sign In / Register'}
+							<FontAwesome name="sign-in-alt"/>{' Sign In / Register'}
 						</NavItem>
 					</Nav>
 				}
 				<Nav pullRight>
 					<NavItem href="/help">
-						<FontAwesome name="help"/>
+						<FontAwesome name="question-circle"/>
 						{' Help '}
 					</NavItem>
 				</Nav>
 				<Nav pullRight>
 					<NavItem href="/statistics">
-						<FontAwesome name="statistics"/>
+						<FontAwesome name="chart-line"/>
 						{' Statistics '}
 					</NavItem>
 				</Nav>
