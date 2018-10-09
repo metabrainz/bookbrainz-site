@@ -51,68 +51,67 @@ function HelpPage() {
 			<p>
 				Entities are the main concepts used to describe a bibliographic record through their relationships
 				<br/>
-				<ListGroup>
-					<ListGroupItem><b>{genEntityIconHTMLElement('Creator')}Author</b> – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, etc.</ListGroupItem>
-					<ListGroupItem><b>{genEntityIconHTMLElement('Publisher')}Publisher</b> – publishing company or imprint</ListGroupItem>
-					<ListGroupItem>
-						<b>{genEntityIconHTMLElement('Work')}Work</b> – a distinct intellectual or artistic creation expressed in words and/or images.
-						Here we are not talking, for example, about a physical book, but the introduction, story, illustrations, etc. it contains.
-						<ul>
-							<li>Examples: novel, poem, translation, introduction & foreword, article, research paper, etc.</li>
-						</ul>
-					</ListGroupItem>
-					<ListGroupItem>
-						<b>{genEntityIconHTMLElement('Edition')}Edition</b> –  a published physical or digital version of one or more Works.
-						<ul>
-							<li>Examples: book, anthology, comic book, magazine, leaflet</li>
-							<li>Note: An Author can self-publish an Edition</li>
-						</ul>
-					</ListGroupItem>
-					<ListGroupItem>
-						<b>{genEntityIconHTMLElement('Publication')}Edition Group</b> – a logical grouping of similar Editions of the same Work(s).
-						<ul><li>Example: paperback, hardcover and e-book editions of single Work</li></ul>
-					</ListGroupItem>
-				</ListGroup>
 			</p>
+			<ListGroup>
+				<ListGroupItem><b>{genEntityIconHTMLElement('Creator')}Author</b> – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, etc.</ListGroupItem>
+				<ListGroupItem><b>{genEntityIconHTMLElement('Publisher')}Publisher</b> – publishing company or imprint</ListGroupItem>
+				<ListGroupItem>
+					<b>{genEntityIconHTMLElement('Work')}Work</b> – a distinct intellectual or artistic creation expressed in words and/or images.
+					Here we are not talking, for example, about a physical book, but the introduction, story, illustrations, etc. it contains.
+					<ul>
+						<li>Examples: novel, poem, translation, introduction & foreword, article, research paper, etc.</li>
+					</ul>
+				</ListGroupItem>
+				<ListGroupItem>
+					<b>{genEntityIconHTMLElement('Edition')}Edition</b> –  a published physical or digital version of one or more Works.
+					<ul>
+						<li>Examples: book, anthology, comic book, magazine, leaflet</li>
+						<li>Note: An Author can self-publish an Edition</li>
+					</ul>
+				</ListGroupItem>
+				<ListGroupItem>
+					<b>{genEntityIconHTMLElement('Publication')}Edition Group</b> – a logical grouping of similar Editions of the same Work(s).
+					<ul><li>Example: paperback, hardcover and e-book editions of single Work</li></ul>
+				</ListGroupItem>
+			</ListGroup>
+
 			<h4>Examples</h4>
 			<p>
 				The following examples should help you understand the different entities and how they relate to each other:
 				<br/>
-				The relationship between an <a href="/author/ac59097e-7f86-436d-9308-f6e63871ceff">Author</a> , their <a href="/work/97eafaf5-377a-4703-a12e-d66a30fcfda1">Work (short story)</a> and an <a href="/edition/b3ed75ea-9f74-44fa-833e-fa2c895c6b12"> Edition (anthology)</a> of one or more works
+				The relationship between an <a href="/creator/ac59097e-7f86-436d-9308-f6e63871ceff">Author</a> , their <a href="/work/97eafaf5-377a-4703-a12e-d66a30fcfda1">Work (short story)</a> and an <a href="/edition/b3ed75ea-9f74-44fa-833e-fa2c895c6b12"> Edition (anthology)</a> of one or more works
 				<br/>
 				<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">Paperback</a> and <a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f">E-book</a> editions of the same novel by the same publisher making them part of the same <a href="/publication/540e9c4a-f9fa-427b-a41f-bb12c48f902b">Edition Group</a>
 			</p>
 
 			<hr/>
 			<h2>Frequently Asked Questions</h2>
-			<p>
-				<h4>When should I create a new Edition of a Work?</h4>
-				<ul>
-					<li>When it is published in a different format (e.g. paperback and e-book)</li>
-					<li>When there are substantial content (textual or editorial) changes</li>
-					<li>Translations will both be a new Work and a new Edition for it.</li>
-					<li>Add a relationship between the original and the translated Works</li>
-					<li>New cover or changed credits/attribution on the cover</li>
-				</ul>
-			</p>
-			<p>
-				<h4>When should I not create a new Edition of a Work?</h4>
-				<ul>
-					<li>Minimal changes as in proofreading errors</li>
-					<li>Minimal changes on the cover</li>
-					<li>Reprints of the same Edition. You can mention “Reprint – [date]” in the annotations.</li>
-				</ul>
-			</p>
-			<p>
-				<h4>When should two Editions be part of the same Edition Group?</h4>
-				Generally, when a publisher releases multiple different formats of the same content, meaning:
-				<ul>
-					<li>No substantial textual changes to the Work (corrections aside)</li>
-					<li>Same editorial content (intro, foreword, etc.)</li>
-					<li>Same publisher</li>
-					<li>Same title and cover</li>
-				</ul>
-			</p>
+			<br/>
+			<h4>When should I create a new Edition of a Work?</h4>
+			<ul>
+				<li>When it is published in a different format (e.g. paperback and e-book)</li>
+				<li>When there are substantial content (textual or editorial) changes</li>
+				<li>Translations will both be a new Work and a new Edition for it.</li>
+				<li>Add a relationship between the original and the translated Works</li>
+				<li>New cover or changed credits/attribution on the cover</li>
+			</ul>
+			<br/>
+			<h4>When should I not create a new Edition of a Work?</h4>
+			<ul>
+				<li>Minimal changes as in proofreading errors</li>
+				<li>Minimal changes on the cover</li>
+				<li>Reprints of the same Edition. You can mention “Reprint – [date]” in the annotations.</li>
+			</ul>
+			<br/>
+			<h4>When should two Editions be part of the same Edition Group?</h4>
+			Generally, when a publisher releases multiple different formats of the same content, meaning:
+			<ul>
+				<li>No substantial textual changes to the Work (corrections aside)</li>
+				<li>Same editorial content (intro, foreword, etc.)</li>
+				<li>Same publisher</li>
+				<li>Same title and cover</li>
+			</ul>
+
 			<hr/>
 			<h2>Glossary</h2>
 			<p>
