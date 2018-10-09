@@ -86,7 +86,7 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon={ENTITY_TYPE_ICONS.publisher}
+						backupIcon={ENTITY_TYPE_ICONS.Publisher}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
