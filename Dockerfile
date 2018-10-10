@@ -2,7 +2,9 @@ FROM metabrainz/consul-template-base:v0.18.5-1
 
 ARG BUILD_DEPS=" \
     build-essential \
-    git"
+    git \
+    python \
+    libpq-dev"
 
 ARG RUN_DEPS=" \
     nodejs"
@@ -39,9 +41,6 @@ RUN apt-get remove -y $BUILD_DEPS && \
     rm -rf scripts/ src/ .babelrc package.json
 
 COPY docker/config.json.ctmpl ./
-
-# Remove once we're converted away from jade
-COPY templates/ templates/
 
 RUN chown -R bookbrainz:bookbrainz $BB_ROOT
 
