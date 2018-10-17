@@ -104,6 +104,21 @@ function HelpPage() {
 				<Col md={6}>
 					<h2>Frequently Asked Questions</h2>
 					<br/>
+					<h4>How do I add a book?</h4>
+					First and foremost, search for both the author and the title of the book to avoid creating duplicates.
+					<br/>If a Work and an Edition containing it exist, the questions below will help you decide whether to create a new Edition.
+					<br/>Otherwise, here is a step-by-step procedure:
+					<br/>
+					<br/>
+					<ol>
+						<li>Find or add a new {genEntityIconHTMLElement('Creator')}Author</li>
+						<li>Find or add a new {genEntityIconHTMLElement('Work')}Work with an &#x27;Author wrote Work&#x27; relationship</li>
+						<li>Find or add a new {genEntityIconHTMLElement('Publisher')}Publisher</li>
+						<li>Find or add a new {genEntityIconHTMLElement('Publication')}Edition Group</li>
+						<li>Find or add a new {genEntityIconHTMLElement('Edition')}Edition with a &#x27;contains Work&#x27; relationship and fill in the Publisher</li>
+						<li>If another format of the edition from the same publisher exists (see below), go to the Edition Group and click the &#x27;Add Edition&#x27; button. Repeat step 5.</li>
+					</ol>
+					<br/>
 					<h4>When should I create a new Edition of a Work?</h4>
 					<ul>
 						<li>When it is published in a different format (e.g. paperback and e-book)</li>
