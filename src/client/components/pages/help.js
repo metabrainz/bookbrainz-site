@@ -152,7 +152,7 @@ function HelpPage() {
 					<h2>Glossary</h2>
 					<p>
 					Here is a short description of some of the main terms you will encounter.
-					Some terms are borrowed from MusicBrainz; click on the term to be redirected to the MusicBrainz guidelines.
+					Some terms are borrowed from MusicBrainz; click on the term to be redirected to the MusicBrainz guidelines or a definition.
 					</p>
 					<br/>
 					<ListGroup>
