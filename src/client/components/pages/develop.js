@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
 import React from 'react';
 
 
@@ -34,8 +35,8 @@ function DevelopPage() {
 				We aim to make it as easy as possible to use the data
 				stored in BookBrainz. If you&rsquo;re a developer wanting
 				to make programs that depend on BookBrainz, we have a web
-				service available, and are planning to release database
-				dumps regularly at a later stage in the project.
+				service available, and are releasing database
+				dumps regularly.
 			</p>
 
 			<h2>Web Service</h2>
@@ -54,12 +55,9 @@ function DevelopPage() {
 			<p>
 				The database dumps will be useful if you need to process a
 				lot of data quickly &mdash; in cases where the web service
-				is not able to respond quickly enough. Unfortunately,
-				we&rsquo;re not currently ready to provide database dumps,
-				since BookBrainz is at a very early stage. However, when
-				they are published, you&rsquo;ll be able to download them
-				from this page, so be sure to check back occaisonally if
-				this is something you&rsquo;re interested in.
+				is not able to respond quickly enough.
+				The latest database dump can be found <a href="/dumps/latest.tar.bz2">at this address</a>.
+				A dump is made every week.
 			</p>
 			<h2>Source Code</h2>
 			<p>
