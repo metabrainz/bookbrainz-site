@@ -275,16 +275,21 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 
 	const typeValue = state.get('type');
 	const personType = creatorTypes.find((type) => type.label === 'Person');
+	const groupType = creatorTypes.find((type) => type.label === 'Group');
 	if (!personType) {
-		throw new Error('there should be a person with label "Person"');
+		throw new Error('there should be a creator type with label "Person"');
 	}
+	if (!groupType) {
+		throw new Error('there should be a creator type with label "Group"');
+	}
+	const group = typeValue === groupType.id;
 	const singular = typeValue === personType.id;
 
-	const beginDateLabel = !singular ? 'Date founded' : 'Date of birth';
-	const beginAreaLabel = !singular ? 'Place founded' : 'Place of birth';
-	const endedLabel = !singular ? 'Dissolved?' : 'Died?';
-	const endDateLabel = !singular ? 'Date of dissolution' : 'Date of death';
-	const endAreaLabel = !singular ? 'Place of dissolution' : 'Place of death';
+	const beginDateLabel = group ? 'Date founded' : 'Date of birth';
+	const beginAreaLabel = group ? 'Place founded' : 'Place of birth';
+	const endedLabel = group ? 'Dissolved?' : 'Died?';
+	const endDateLabel = group ? 'Date of dissolution' : 'Date of death';
+	const endAreaLabel = group ? 'Place of dissolution' : 'Place of death';
 
 	return {
 		beginAreaLabel,
