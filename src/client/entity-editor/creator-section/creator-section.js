@@ -283,7 +283,6 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 		throw new Error('there should be a creator type with label "Group"');
 	}
 	const group = typeValue === groupType.id;
-	const singular = typeValue === personType.id;
 
 	const beginDateLabel = group ? 'Date founded' : 'Date of birth';
 	const beginAreaLabel = group ? 'Place founded' : 'Place of birth';
@@ -302,7 +301,7 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
 		endedLabel,
-		genderShow: singular,
+		genderShow: !group,
 		genderValue: state.get('gender'),
 		typeValue
 	};
