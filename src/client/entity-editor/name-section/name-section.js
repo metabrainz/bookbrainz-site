@@ -126,7 +126,7 @@ function NameSection({
 								following {_.capitalize(entityType)} with
 								exactly the same name:
 								<ListGroup>
-									{exactMatches.map(({bbid}) =>
+									{exactMatches.map((bbid) =>
 										(
 											<ListGroupItem
 												bsStyle="warning"
@@ -135,8 +135,7 @@ function NameSection({
 											>
 												{nameValue}
 											</ListGroupItem>
-										)
-									)}
+										))}
 								</ListGroup>
 								If you are sure your entry is different,
 								please add disambiguation below to help us
@@ -194,9 +193,10 @@ function NameSection({
 								error={isRequiredDisambiguationEmpty(
 									warnIfExists,
 									disambiguationDefaultValue
-								) || !validateNameSectionDisambiguation(
-										disambiguationDefaultValue
-									)}
+								) ||
+								!validateNameSectionDisambiguation(
+									disambiguationDefaultValue
+								)}
 								required={warnIfExists}
 								onChange={onDisambiguationChange}
 							/>
@@ -259,7 +259,7 @@ function mapDispatchToProps(dispatch, {entityType}) {
 			dispatch(checkIfNameExists(value, entityType));
 		}, 500),
 		onNameChangeSearchName: _.debounce((value) => {
-			dispatch(searchName(value));
+			dispatch(searchName(value, entityType));
 		}, 500),
 		onSortNameChange: (event) =>
 			dispatch(debouncedUpdateSortNameField(event.target.value))
