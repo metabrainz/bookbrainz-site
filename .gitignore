@@ -10,6 +10,9 @@
 /reports
 /config/config.json
 
+# react-hot-loader files
+/static/**/*.hot-update.js
+
 ### Node ###
 # Logs
 logs

@@ -33,6 +33,7 @@ import RegisterDetailPage from
 import _ from 'lodash';
 import config from '../helpers/config';
 import express from 'express';
+import target from '../templates/target';
 
 
 const router = express.Router();
@@ -52,7 +53,7 @@ router.get('/', (req, res) => {
 		</Layout>
 	);
 
-	return res.render('target', {markup, title: 'Register'});
+	return res.send(target({markup, title: 'Register'}));
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -85,12 +86,12 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 		</Layout>
 	);
 
-	return res.render('target', {
+	return res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/registrationDetails.js',
 		title: 'Register'
-	});
+	}));
 });
 
 router.post('/handler', (req, res) => {

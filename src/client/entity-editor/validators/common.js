@@ -28,7 +28,8 @@ import _ from 'lodash';
 export function validateMultiple(
 	values: any[],
 	validationFunction: (value: any, ...rest: any[]) => boolean,
-	additionalArgs?: any): boolean {
+	additionalArgs?: any
+): boolean {
 	let every = (object, predicate) => _.every(object, predicate);
 	if (Iterable.isIterable(values)) {
 		every = (object, predicate) => object.every(predicate);
@@ -67,7 +68,8 @@ export function validateAlias(value: any): boolean {
 }
 
 export const validateAliases = _.partial(
-	validateMultiple, _.partial.placeholder, validateAlias);
+	validateMultiple, _.partial.placeholder, validateAlias
+);
 
 export type IdentifierType = {
 	id: number,
@@ -125,7 +127,8 @@ export function validateIdentifier(
 
 export const validateIdentifiers = _.partial(
 	validateMultiple, _.partial.placeholder,
-	validateIdentifier, _.partial.placeholder);
+	validateIdentifier, _.partial.placeholder
+);
 
 export function validateNameSectionName(value: any): boolean {
 	return validateRequiredString(value);

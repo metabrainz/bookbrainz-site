@@ -29,6 +29,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
 import express from 'express';
+import target from '../templates/target';
 
 
 const router = express.Router();
@@ -59,12 +60,12 @@ router.get('/', (req, res, next) => {
 				</Layout>
 			);
 
-			res.render('target', {
+			res.send(target({
 				markup,
 				props: escapeProps(props),
 				script: '/js/search.js',
 				title: 'Search Results'
-			});
+			}));
 		})
 		.catch(next);
 });

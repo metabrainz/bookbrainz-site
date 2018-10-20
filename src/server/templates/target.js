@@ -42,18 +42,23 @@ export default ({
 	title,
 	markup,
 	page,
+	dev,
 	props,
 	script
-}) => `
+}) => {
+	const pageScript =
+		`<script id='page' type='application/json'>${page}</script>`;
+	return `
 	<!DOCTYPE html>
 	<html>
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>
-			<link rel='stylesheet' href='/stylesheets/style.css' />
+		${!dev ?
+		`<link rel='stylesheet' href='/stylesheets/style.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
 			<link rel='stylesheet'
-				href='/stylesheets/react-virtualized-select.css' />
+				href='/stylesheets/react-virtualized-select.css' />` : ''}
 			<meta name='viewport'
 				content='width=device-width, initial-scale=1' />
 			${favicon}
@@ -62,11 +67,11 @@ export default ({
 		<body>
 			<div id='target'>${markup}</div>
 			<script src='/js/bundle.js'></script>
-			${page &&
-				`<script id='page' type='application/json'>${page}</script>`}
+			${page ? pageScript : ''}
 			${props && script &&
 				`<script id='props' type='application/json'> ${props}</script>
 				<script src='${script}'></script>`}
 		</body>
 	  </html>
 	`;
+};

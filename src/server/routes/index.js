@@ -63,6 +63,7 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
+			dev: process.env.NODE_ENV === 'development',
 			markup,
 			page: 'Index',
 			props: escapeProps(props),
@@ -125,13 +126,13 @@ function _createStaticRoute(route, title, PageComponent) {
 			</Layout>
 		);
 
-		res.render('target', {
+		res.send(target({
 			markup,
 			page: title,
 			props: escapeProps(props),
 			script: '/js/index.js',
 			title
-		});
+		}));
 	});
 }
 

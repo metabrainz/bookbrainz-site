@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as achievement from '../lib/server/helpers/achievement';
+import * as achievement from '../src/server/helpers/achievement';
 import * as common from './common';
 import * as testData from '../data/test-data.js';
 import orm from './bookbrainz-data';
@@ -25,7 +25,7 @@ import rewire from 'rewire';
 
 const {Editor} = orm;
 
-const Achievement = rewire('../lib/server/helpers/achievement.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const sprinterThreshold = 10;
 
@@ -38,8 +38,8 @@ function expectIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() => testData.createSprinter())
+	beforeEach(
+		() => testData.createEditor().then(() => testData.createSprinter())
 	);
 	afterEach(testData.truncate);
 

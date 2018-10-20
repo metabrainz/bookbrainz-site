@@ -34,6 +34,7 @@ import ReactDOMServer from 'react-dom/server';
 import RevisionsTab from '../../client/components/pages/parts/editor-revisions';
 import _ from 'lodash';
 import express from 'express';
+import target from '../templates/target';
 
 
 const router = express.Router();
@@ -46,7 +47,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		})
 		.then((editor) => editor.toJSON());
 	const titleJSONPromise = new TitleUnlock()
-		.where(_.snakeCase('editorId'), parseInt(req.user.id, 10))
+		.where('editor_id', parseInt(req.user.id, 10))
 		.fetchAll({
 			withRelated: ['title']
 		})
@@ -87,11 +88,11 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 					/>
 				</Layout>
 			);
-			res.render('target', {
+			res.send(target({
 				markup,
 				props: escapeProps(props),
 				script
-			});
+			}));
 		}
 	)
 		.catch(next);
@@ -184,14 +185,14 @@ function getIdEditorJSONPromise(userId, req) {
 }
 
 router.get('/:id', (req, res, next) => {
-	const {AchievementUnlock, Editor, TitleUnlock} = req.app.locals.orm;
+	const {AchievementUnlock} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
 		  .catch(next);
 
 	const achievementJSONPromise = new AchievementUnlock()
-		.where(_.snakeCase('editorId'), userId)
+		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
 		.orderBy('profile_rank', 'ASC')
@@ -227,12 +228,12 @@ router.get('/:id', (req, res, next) => {
 					</EditorContainer>
 				</Layout>
 			);
-			res.render('target', {
+			res.send(target({
 				markup,
 				page: 'profile',
 				props: escapeProps(props),
 				script: '/js/editor/editor.js'
-			});
+			}));
 		}
 	);
 });
@@ -265,12 +266,12 @@ router.get('/:id/revisions', (req, res, next) => {
 					</EditorContainer>
 				</Layout>
 			);
-			res.render('target', {
+			res.send(target({
 				markup,
 				page: 'revisions',
 				props: escapeProps(props),
 				script: '/js/editor/editor.js'
-			});
+			}));
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
@@ -296,7 +297,7 @@ function setAchievementUnlockedField(achievements, unlockIds) {
 
 router.get('/:id/achievements', (req, res, next) => {
 	const {
-		AchievementType, AchievementUnlock, Editor, TitleUnlock
+		AchievementType, AchievementUnlock
 	} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
@@ -337,11 +338,11 @@ router.get('/:id/achievements', (req, res, next) => {
 				</Layout>
 			);
 			const script = '/js/editor/achievement.js';
-			res.render('target', {
+			res.send(target({
 				markup,
 				props: escapeProps(props),
 				script
-			});
+			}));
 		}
 	);
 });

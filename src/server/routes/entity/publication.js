@@ -31,6 +31,7 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import target from '../../templates/target';
 
 
 const {getValidator} = entityEditorHelpers;
@@ -62,6 +63,7 @@ function _setPublicationTitle(res) {
 
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setPublicationTitle(res);
+	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 	entityRoutes.displayEntity(req, res);
 });
 
@@ -96,12 +98,12 @@ router.get(
 			'publication', req, res, {}
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Publication'
-		});
+		}));
 	}
 );
 
@@ -170,12 +172,12 @@ router.get(
 			'publication', req, res, {}, publicationToFormState
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Edit Publication'
-		});
+		}));
 	}
 );
 

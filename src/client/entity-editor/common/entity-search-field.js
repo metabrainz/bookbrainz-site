@@ -20,10 +20,11 @@
 // @flow
 
 import CustomInput from '../../input';
-import Icon from 'react-fontawesome';
+import Entity from './entity';
 import React from 'react';
 import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
+import _ from 'lodash';
 import makeImmutable from './make-immutable';
 import request from 'superagent-bluebird-promise';
 
@@ -59,46 +60,13 @@ function entityToOption(entity) {
 	const id = isArea(entity) ? entity.id : entity.bbid;
 
 	return {
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
+		disambiguation: _.get(entity, ['disambiguation', 'comment']),
 		id,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
+		text: _.get(entity, ['defaultAlias', 'name']),
+		type: entity.type,
+		value: id
 	};
 }
-
-type OptionProps = {
-	disambiguation: string,
-	text: string,
-	type: string
-};
-
-function Option({disambiguation, text, type}: OptionProps) {
-	const ENTITY_TYPE_ICONS = {
-		Area: 'globe',
-		Creator: 'user',
-		Edition: 'book',
-		Publication: 'th-list',
-		Publisher: 'university',
-		Work: 'file-text-o'
-	};
-
-	return (
-		<div>
-			{type && <Icon name={ENTITY_TYPE_ICONS[type]}/>}
-			{' '}
-			{text}
-			{
-				disambiguation &&
-				<span className="disambig">
-					({disambiguation})
-				</span>
-			}
-		</div>
-	);
-}
-Option.displayName = 'Option';
 
 type EntitySearchFieldProps = {
 	label: string,
@@ -150,8 +118,8 @@ function EntitySearchField(
 			<ImmutableAsyncSelect
 				labelKey="text"
 				loadOptions={fetchOptions}
-				optionRenderer={Option}
-				valueKey="id"
+				optionRenderer={Entity}
+				valueRenderer={Entity}
 				{...rest}
 			/>
 		</CustomInput>

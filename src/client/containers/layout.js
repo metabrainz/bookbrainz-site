@@ -20,12 +20,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint max-len: "warn" */
+/* eslint import/no-unassigned-import: "warn" */
+/* eslint import/no-commonjs: "warn" */
+/* eslint global-require: "warn" */
+
+
 import * as bootstrap from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+
+if (!process.env.SSR) {
+	require('../../client/stylesheets/style.less');
+}
 
 const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 
@@ -134,6 +143,12 @@ class Layout extends React.Component {
 						</NavItem>
 					</Nav>
 				}
+				<Nav pullRight>
+					<NavItem href="/statistics">
+						<FontAwesome name="statistics"/>
+						{' Statistics '}
+					</NavItem>
+				</Nav>
 				{!(homepage || hideSearch) &&
 				<form
 					action="/search"
@@ -247,3 +262,4 @@ Layout.defaultProps = {
 };
 
 export default Layout;
+

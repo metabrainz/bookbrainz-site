@@ -20,6 +20,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
+import {hot} from 'react-hot-loader';
 
 
 const {Alert, Button, PageHeader} = bootstrap;
@@ -64,4 +65,5 @@ function RegistrationAuth() {
 
 RegistrationAuth.displayName = 'RegistrationForm';
 
-export default RegistrationAuth;
+// Export as hot module (see https://github.com/gaearon/react-hot-loader)
+export default hot(module)(RegistrationAuth);

@@ -54,8 +54,8 @@ class IndexPage extends React.Component {
 						Under development — adventurous users, please test and
 						add data! Give us feedback about bugs, glitches and
 						potential improvements at {' '}
-						<a href="//tickets.musicbrainz.org/browse/BB">
-							MusicBrainz JIRA!
+						<a href="//tickets.metabrainz.org/projects/BB">
+							MetaBrainz JIRA!
 						</a>
 					</p>
 				</Alert>

@@ -22,14 +22,11 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
-import Log from 'log';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import request from 'superagent-bluebird-promise';
 
-
-const log = new Log('debug');
 
 const {Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
@@ -122,8 +119,10 @@ class RevisionPage extends React.Component {
 			.then(() => {
 				location.reload();
 			})
-			.catch((err) => {
-				log.debug(err);
+			.catch((res) => {
+				// TODO: Add proper error handling.
+				const {error} = res.body;
+				return error;
 			});
 	}
 

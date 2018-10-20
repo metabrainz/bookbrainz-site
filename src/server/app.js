@@ -17,6 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint global-require: 'warn' */
 
 import * as auth from './helpers/auth';
 import * as error from './helpers/error';
@@ -35,8 +36,8 @@ import logger from 'morgan';
 import path from 'path';
 import redis from 'connect-redis';
 import routes from './routes';
+import serveStatic from 'serve-static';
 import session from 'express-session';
-import staticCache from 'express-static-cache';
 
 
 Promise.config({
@@ -49,11 +50,6 @@ const app = express();
 app.locals.orm = BookBrainzData(config.database);
 
 const rootDir = path.join(__dirname, '../../');
-
-// Set up jade as view engine
-app.set('views', path.join(rootDir, 'src/server/templates'));
-app.set('view engine', 'jade');
-app.locals.basedir = app.get('views');
 
 app.set('trust proxy', config.site.proxyTrust);
 
@@ -70,14 +66,33 @@ app.use(bodyParser.urlencoded({
 app.use(compression());
 
 // Set up serving of static assets
-app.use(staticCache(path.join(rootDir, 'static/js'), {
-	buffer: true
-}));
+if (process.env.NODE_ENV === 'development') {
+	const webpack = require('webpack');
+	const webpackDevMiddleware = require('webpack-dev-middleware');
+	const webpackHotMiddleware = require('webpack-hot-middleware');
+
+	const webpackConfig = require(path.resolve(rootDir, './webpack.client'));
+	const compiler = webpack(webpackConfig);
+
+	app.use(webpackDevMiddleware(compiler, {
+		// lazy: false,
+		logTime: true,
+		noInfo: false,
+		publicPath: webpackConfig.output.publicPath
+		// serverSideRender: false
+	}));
+
+	app.use(webpackHotMiddleware(compiler));
+}
+else {
+	app.use(serveStatic(path.join(rootDir, 'static/js')));
+}
 app.use(express.static(path.join(rootDir, 'static')));
 
 const RedisStore = redis(session);
 app.use(session({
 	cookie: {
+		maxAge: config.session.maxAge,
 		secure: config.session.secure
 	},
 	resave: false,
@@ -85,13 +100,12 @@ app.use(session({
 	secret: config.session.secret,
 	store: new RedisStore({
 		host: config.session.redis.host,
-		port: config.session.redis.port,
-		ttl: config.session.redis.ttl
+		port: config.session.redis.port
 	})
 }));
 
 if (config.influx) {
-	initInflux(app, config.influx);
+	initInflux(app, config);
 }
 
 // Authentication code depends on session, so init session first

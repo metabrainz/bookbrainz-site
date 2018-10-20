@@ -24,7 +24,7 @@ import rewire from 'rewire';
 
 const {Editor} = orm;
 
-const Achievement = rewire('../lib/server/helpers/achievement.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const thresholdI = 10;
 const thresholdII = 100;
@@ -48,8 +48,8 @@ function expectIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() => testData.createExplorer())
+	beforeEach(
+		() => testData.createEditor().then(() => testData.createExplorer())
 	);
 	afterEach(testData.truncate);
 

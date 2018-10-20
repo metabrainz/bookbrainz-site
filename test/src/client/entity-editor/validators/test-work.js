@@ -25,7 +25,7 @@ import {
 import {
 	validateForm, validateWorkSection, validateWorkSectionLanguage,
 	validateWorkSectionType
-} from '../../../../../lib/client/entity-editor/validators/work';
+} from '../../../../../src/client/entity-editor/validators/work';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {testValidatePositiveIntegerFunc} from './helpers';

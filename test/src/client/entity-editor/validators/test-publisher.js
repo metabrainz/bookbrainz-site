@@ -30,7 +30,7 @@ import {
 	validateForm, validatePublisherSection, validatePublisherSectionArea,
 	validatePublisherSectionBeginDate, validatePublisherSectionEndDate,
 	validatePublisherSectionEnded, validatePublisherSectionType
-} from '../../../../../lib/client/entity-editor/validators/publisher';
+} from '../../../../../src/client/entity-editor/validators/publisher';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 

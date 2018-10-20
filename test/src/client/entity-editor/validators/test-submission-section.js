@@ -20,7 +20,7 @@ import * as Immutable from 'immutable';
 import {INVALID_SUBMISSION_SECTION, VALID_SUBMISSION_SECTION} from './data';
 import {
 	validateSubmissionSection, validateSubmissionSectionNote
-} from '../../../../../lib/client/entity-editor/validators/common';
+} from '../../../../../src/client/entity-editor/validators/common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {testValidateStringFunc} from './helpers';

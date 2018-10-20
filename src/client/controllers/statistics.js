@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2016  Sean Burke
- *               2016  Ben Ockmore
+ * Copyright (C) 2018 Akhilesh Kumar <akhilesh5991@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,21 +20,16 @@ import {AppContainer} from 'react-hot-loader';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RegistrationForm from '../components/forms/registration-details';
+import StatisticsPage from '../components/pages/statistics';
 import {extractLayoutProps} from '../helpers/props';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
-
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<RegistrationForm
-				gender={props.gender}
-				genders={props.genders}
-				name={props.name}
-			/>
+			<StatisticsPage topEditors={props.topEditors}/>
 		</Layout>
 	</AppContainer>
 );
@@ -51,3 +45,4 @@ ReactDOM.hydrate(markup, document.getElementById('target'));
 if (module.hot) {
 	module.hot.accept();
 }
+
