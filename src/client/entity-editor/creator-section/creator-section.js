@@ -17,15 +17,24 @@
  */
 
 // @flow
+import * as moment from 'moment';
 
 import {
-	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
-	updateBeginArea, updateEndArea, updateEnded, updateGender, updateType
+	type Action,
+	debouncedUpdateBeginDate,
+	debouncedUpdateEndDate,
+	updateBeginArea,
+	updateEndArea,
+	updateEnded,
+	updateGender,
+	updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
 import {
-	validateCreatorSectionBeginDate, validateCreatorSectionEndDate
+	validateCreatorSectionBeginDate,
+	validateCreatorSectionEndDate
 } from '../validators/creator';
+
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import EntitySearchField from '../common/entity-search-field';
@@ -54,9 +63,11 @@ type Area = {
 
 
 type StateProps = {
+	beginAreaLabel: string,
 	beginAreaValue: Map<string, any>,
 	beginDateLabel: string,
 	beginDateValue: string,
+	endAreaLabel: string,
 	endAreaValue: Map<string, any>,
 	endDateLabel: string,
 	endDateValue: string,
@@ -122,10 +133,12 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered CreatorSection.
  */
 function CreatorSection({
+	beginAreaLabel,
 	beginDateLabel,
 	beginDateValue,
 	beginAreaValue,
 	creatorTypes,
+	endAreaLabel,
 	endAreaValue,
 	endDateLabel,
 	endDateValue,
@@ -206,7 +219,7 @@ function CreatorSection({
 				<Col md={6} mdOffset={3}>
 					<EntitySearchField
 						instanceId="beginArea"
-						label="Begin Area"
+						label={beginAreaLabel}
 						type="area"
 						value={beginAreaValue}
 						onChange={onBeginAreaChange}
@@ -243,7 +256,7 @@ function CreatorSection({
 						<Col md={6} mdOffset={3}>
 							<EntitySearchField
 								instanceId="endArea"
-								label="End Area"
+								label={endAreaLabel}
 								type="area"
 								value={endAreaValue}
 								onChange={onEndAreaChange}
@@ -262,25 +275,33 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 
 	const typeValue = state.get('type');
 	const personType = creatorTypes.find((type) => type.label === 'Person');
+	const groupType = creatorTypes.find((type) => type.label === 'Group');
 	if (!personType) {
-		throw new Error('there should be a person with label "Person"');
+		throw new Error('there should be a creator type with label "Person"');
 	}
-	const singular = typeValue === personType.id;
+	if (!groupType) {
+		throw new Error('there should be a creator type with label "Group"');
+	}
+	const group = typeValue === groupType.id;
 
-	const endDateLabel = singular ? 'Date of Death' : 'Date Dissolved';
-	const endedLabel = singular ? 'Died?' : 'Dissolved?';
-	const beginDateLabel = singular ? 'Date of Birth' : 'Date Founded';
+	const beginDateLabel = group ? 'Date founded' : 'Date of birth';
+	const beginAreaLabel = group ? 'Place founded' : 'Place of birth';
+	const endedLabel = group ? 'Dissolved?' : 'Died?';
+	const endDateLabel = group ? 'Date of dissolution' : 'Date of death';
+	const endAreaLabel = group ? 'Place of dissolution' : 'Place of death';
 
 	return {
+		beginAreaLabel,
 		beginAreaValue: state.get('beginArea'),
 		beginDateLabel,
 		beginDateValue: state.get('beginDate'),
+		endAreaLabel,
 		endAreaValue: state.get('endArea'),
 		endDateLabel,
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
 		endedLabel,
-		genderShow: singular,
+		genderShow: !group,
 		genderValue: state.get('gender'),
 		typeValue
 	};
@@ -289,11 +310,11 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
-		onBeginDateChange: (event) =>
-			dispatch(debouncedUpdateBeginDate(event.target.value)),
+		onBeginDateChange: (momentDate: moment) =>
+			dispatch(debouncedUpdateBeginDate(momentDate.format('YYYY-MM-DD'))),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
-		onEndDateChange: (event) =>
-			dispatch(debouncedUpdateEndDate(event.target.value)),
+		onEndDateChange: (momentDate: moment) =>
+			dispatch(debouncedUpdateEndDate(momentDate.format('YYYY-MM-DD'))),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onGenderChange: (value) =>

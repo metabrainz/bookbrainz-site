@@ -55,7 +55,12 @@ function DisambiguationField({
 	);
 
 	return (
-		<CustomInput label={label} type="text" {...rest}/>
+		<CustomInput
+			label={label}
+			tooltipText="If a different entity with the same name already exists or if there is a need for clarification"
+			type="text"
+			{...rest}
+		/>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';

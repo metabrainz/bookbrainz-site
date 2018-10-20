@@ -18,14 +18,22 @@
 
 // @flow
 
+import * as moment from 'moment';
+
 import {
-	type Action, debouncedUpdateBeginDate, debouncedUpdateEndDate,
-	updateArea, updateEnded, updateType
+	type Action,
+	debouncedUpdateBeginDate,
+	debouncedUpdateEndDate,
+	updateArea,
+	updateEnded,
+	updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
 import {
-	validatePublisherSectionBeginDate, validatePublisherSectionEndDate
+	validatePublisherSectionBeginDate,
+	validatePublisherSectionEndDate
 } from '../validators/publisher';
+
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
 import EntitySearchField from '../common/entity-search-field';
@@ -145,6 +153,7 @@ function PublisherSection({
 					<EntitySearchField
 						instanceId="area"
 						label="Area"
+						tooltipText="Country or place the publisher is registered in"
 						type="area"
 						value={areaValue}
 						onChange={onAreaChange}
@@ -212,10 +221,11 @@ function mapStateToProps(rootState): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAreaChange: (value) => dispatch(updateArea(value)),
-		onBeginDateChange: (event) =>
-			dispatch(debouncedUpdateBeginDate(event.target.value)),
-		onEndDateChange: (event) =>
-			dispatch(debouncedUpdateEndDate(event.target.value)),
+		onBeginDateChange: (momentDate: moment) => {
+			dispatch(debouncedUpdateBeginDate(momentDate.format('YYYY-MM-DD')));
+		},
+		onEndDateChange: (momentDate: moment) =>
+			dispatch(debouncedUpdateEndDate(momentDate.format('YYYY-MM-DD'))),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onTypeChange: (value) =>

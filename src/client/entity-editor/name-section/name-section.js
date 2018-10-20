@@ -27,6 +27,7 @@ import {
 	validateNameSectionDisambiguation, validateNameSectionLanguage,
 	validateNameSectionName, validateNameSectionSortName
 } from '../validators/common';
+
 import DisambiguationField from './disambiguation-field';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
@@ -109,6 +110,7 @@ function NameSection({
 								nameValue, sortNameValue, languageValue
 							)}
 							error={!validateNameSectionName(nameValue)}
+							tooltipText={`Official name of the ${_.capitalize(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
 							warn={(isRequiredDisambiguationEmpty(
 								warnIfExists,
 								disambiguationDefaultValue
@@ -179,6 +181,7 @@ function NameSection({
 							error={!validateNameSectionLanguage(languageValue)}
 							instanceId="language"
 							options={languageOptionsForDisplay}
+							tooltipText="Language used for the above name"
 							value={languageValue}
 							onChange={onLanguageChange}
 						/>

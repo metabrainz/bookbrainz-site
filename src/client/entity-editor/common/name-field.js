@@ -26,6 +26,7 @@ import ValidationLabel from '../common/validation-label';
 type Props = {
 	empty?: boolean,
 	error?: boolean,
+	tooltipText?: string,
 	warn?: boolean
 };
 
@@ -47,6 +48,7 @@ type Props = {
 function NameField({
 	empty,
 	error,
+	tooltipText,
 	warn,
 	...rest
 }: Props) {
@@ -57,13 +59,14 @@ function NameField({
 	);
 
 	return (
-		<CustomInput label={label} type="text" {...rest}/>
+		<CustomInput label={label} tooltipText={tooltipText} type="text" {...rest}/>
 	);
 }
 NameField.displayName = 'NameField';
 NameField.defaultProps = {
 	empty: false,
 	error: false,
+	tooltipText: null,
 	warn: false
 };
 

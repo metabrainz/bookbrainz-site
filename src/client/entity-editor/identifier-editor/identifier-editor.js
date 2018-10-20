@@ -18,12 +18,14 @@
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addIdentifierRow, hideIdentifierEditor} from './actions';
+
+import Icon from 'react-fontawesome';
 import IdentifierRow from './identifier-row';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-
 
 /**
  * Container component. The IdentifierEditor component contains a number of
@@ -53,12 +55,19 @@ const IdentifierEditor = ({
 }) => {
 	const noIdentifiersTextClass =
 		classNames('text-center', {hidden: identifiers.size});
+
+	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
+	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
+	const helpIconElement = <Icon className="fa-sm" data-tip={helpText} name="question-circle"/>;
+	const helpTooltipElement = <ReactTooltip multiline delayShow={50} effect="solid" place="right" type="dark"/>;
+
 	return (
 		<Modal bsSize="large" show={show} onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
-					Identifier Editor
+					Identifier Editor {helpIconElement}
 				</Modal.Title>
+				{helpTooltipElement}
 			</Modal.Header>
 
 			<Modal.Body>

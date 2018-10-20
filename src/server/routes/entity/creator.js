@@ -18,7 +18,6 @@
  */
 
 import * as auth from '../../helpers/auth';
-import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
@@ -32,8 +31,6 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
-
-const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -86,7 +83,8 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders,	middleware.loadLanguages,
-	middleware.loadCreatorTypes, (req, res) => {
+	middleware.loadCreatorTypes, middleware.loadRelationshipTypes,
+	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'creator', req, res, {
 				genderOptions: res.locals.genders
@@ -150,12 +148,29 @@ function creatorToFormState(creator) {
 		type: creator.creatorType && creator.creatorType.id
 	};
 
+	const relationshipSection = {
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
+		relationships: {}
+	};
+
+	creator.relationships.forEach((relationship) => (
+		relationshipSection.relationships[relationship.id] = {
+			relationshipType: relationship.type,
+			rowID: relationship.id,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		}
+	));
+
 	return {
 		aliasEditor,
 		buttonBar,
 		creatorSection,
 		identifierEditor,
-		nameSection
+		nameSection,
+		relationshipSection
 	};
 }
 
@@ -163,7 +178,8 @@ function creatorToFormState(creator) {
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
-	middleware.loadCreatorTypes,
+	middleware.loadCreatorTypes, middleware.loadEntityRelationships,
+	middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'creator', req, res, {
@@ -195,6 +211,10 @@ function transformNewForm(data) {
 		data.identifierEditor
 	);
 
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+
 	return {
 		aliases,
 		beginAreaId: data.creatorSection.beginArea &&
@@ -208,6 +228,7 @@ function transformNewForm(data) {
 		genderId: data.creatorSection.gender,
 		identifiers,
 		note: data.submissionSection.note,
+		relationships,
 		typeId: data.creatorSection.type
 	};
 }
@@ -217,9 +238,9 @@ const createOrEditHandler = makeEntityCreateOrEditHandler(
 );
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
-	_.partial(createOrEditHandler, 'create'));
+	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	_.partial(createOrEditHandler, 'edit'));
+	createOrEditHandler);
 
 export default router;
