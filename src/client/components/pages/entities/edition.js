@@ -30,7 +30,7 @@ import React from 'react';
 
 const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute
+	getLanguageAttribute, ENTITY_TYPE_ICONS
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
@@ -100,7 +100,10 @@ function EditionDisplayPage({entity, identifierTypes}) {
 		<div>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
-					<EntityImage backupIcon="book" imageUrl={entity.imageUrl}/>
+					<EntityImage
+						backupIcon={ENTITY_TYPE_ICONS.Edition}
+						imageUrl={entity.imageUrl}
+					/>
 				</Col>
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
@@ -108,7 +111,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					<div className="margin-bottom-d15">
 						<a href={`/publication/${entity.publication.bbid}`}>
 							<Icon name="external-link"/>
-							<span>&nbsp;See all other editions</span>
+							<span>&nbsp;See all similar editions</span>
 						</a>
 					</div>
 				</Col>

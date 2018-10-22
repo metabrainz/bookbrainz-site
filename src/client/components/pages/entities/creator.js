@@ -27,7 +27,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {extractAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
+const {extractAttribute, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
@@ -90,7 +90,7 @@ function CreatorDisplayPage({entity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon="user"
+						backupIcon={ENTITY_TYPE_ICONS.Creator}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>

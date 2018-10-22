@@ -20,10 +20,12 @@ import {
 	extractChildProps,
 	extractLayoutProps
 } from '../helpers/props';
+
 import AboutPage from '../../client/components/pages/about';
 import {AppContainer} from 'react-hot-loader';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
+import HelpPage from '../../client/components/pages/help';
 import Index from '../components/pages/index';
 import Layout from '../containers/layout';
 import LicensingPage from '../../client/components/pages/licensing';
@@ -42,6 +44,7 @@ const pageMap = {
 	About: AboutPage,
 	Contribute: ContributePage,
 	Develop: DevelopPage,
+	Help: HelpPage,
 	Index,
 	Licensing: LicensingPage,
 	Privacy: PrivacyPage

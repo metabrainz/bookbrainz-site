@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
 import React from 'react';
 
 
@@ -48,7 +49,7 @@ function LicensingPage() {
 					disambiguation comment
 				</li>
 				<li>
-					<b>Publication</b>&nbsp;
+					<b>Edition Group</b>&nbsp;
 					BBID, aliases, type and disambiguation comment
 				</li>
 				<li>

@@ -36,7 +36,7 @@ function DisambiguationField(props) {
 	);
 
 	return (
-		<CustomInput label={label} type="text" {...props}/>
+		<CustomInput label={label} tooltipText="If a different entity with the same name already exists or if there is a need for clarification" type="text" {...props}/>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';

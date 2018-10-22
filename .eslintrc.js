@@ -276,9 +276,9 @@ const stylisticIssuesRules = {
 		6
 	],
 	'max-len': [
-		ERROR,
+		WARNING,
 		{
-			code: 80,
+			code: 100,
 			ignoreUrls: true,
 			tabWidth: 4
 		}
@@ -515,7 +515,7 @@ const reactRules = {
 const es6ImportRules = {
 	'import/first': ERROR,
 	'import/newline-after-import': [
-		ERROR,
+		WARNING,
 		{
 			count: 2
 		}
