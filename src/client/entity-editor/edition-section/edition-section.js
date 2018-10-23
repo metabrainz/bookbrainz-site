@@ -196,6 +196,23 @@ function EditionSection({
 				What else do you know about the Edition?
 			</h2>
 			<p className="text-muted">
+				Edition Group is required — this cannot be blank. <a href="/publication/create" target="_blank">Click here</a> to create one if you did not find an existing one.
+			</p>
+			<Row>
+				<Col md={6} mdOffset={3}>
+					<EntitySearchField
+						help="Group with other Editions by the same publisher"
+						instanceId="publication"
+						label="Edition Group"
+						tooltipText="Group together Editions with no substantial textual or editorial changes.
+						<br>For example, identical paperback, hardcover and e-book editions."
+						type="publication"
+						value={publicationValue}
+						onChange={onPublicationChange}
+					/>
+				</Col>
+			</Row>
+			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
 			</p>
@@ -272,26 +289,6 @@ function EditionSection({
 						>
 							Group with other existing formats…
 						</Button>
-					</Col>
-				</Row>
-			}
-			{
-				publicationVisible &&
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<div className="text-muted">
-							Group with other editions of the same work(s), by the same publisher
-						</div>
-						<EntitySearchField
-							help="Search for an existing edition group fro the same edition in another format (optional)"
-							instanceId="publication"
-							label="Edition Group"
-							tooltipText="Group together Editions with no substantial textual or editorial changes.
-							<br>For example, identical paperback, hardcover and e-book editions."
-							type="publication"
-							value={publicationValue}
-							onChange={onPublicationChange}
-						/>
 					</Col>
 				</Row>
 			}
