@@ -57,8 +57,9 @@ export default ({
 		${!dev ?
 		`<link rel='stylesheet' href='/stylesheets/style.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
-			<link rel='stylesheet'
-				href='/stylesheets/react-virtualized-select.css' />` : ''}
+			<link rel='stylesheet' href='/stylesheets/react-virtualized-select.css' />
+			<link rel='stylesheet' href='/stylesheets/react-datepicker.css' />
+				` : ''}
 			<meta name='viewport'
 				content='width=device-width, initial-scale=1' />
 			${favicon}

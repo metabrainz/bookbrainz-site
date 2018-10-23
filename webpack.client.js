@@ -97,7 +97,10 @@ let config = {
 					loader: 'file-loader',
 					options: {
 						name: '[name].[ext]',
-						outputPath: 'fonts/'
+						outputPath: 'webfonts/',
+						paths: [
+							path.resolve(__dirname, 'node_modules', '@fontwasome', 'fontwasome-free')
+						]
 					}
 				}]
 			},
