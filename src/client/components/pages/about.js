@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
 import React from 'react';
 
 
@@ -43,11 +44,7 @@ function AboutPage() {
 			</p>
 
 			<p>
-				BookBrainz is developed by just a small team of volunteers,
-				unlike the&nbsp;
-				<a href="http://musicbrainz.org/">
-					MusicBrainz encyclopaedia
-				</a> on which it is based. Nevertheless, we are committed
+				We are committed
 				to making BookBrainz the definitive source of publication
 				metadata. We hope to attract many contributors, who will be
 				able to use their knowledge of literature to expand the
@@ -96,6 +93,15 @@ function AboutPage() {
 				continued steadily since then. Recently, in order to reduce
 				duplication of code, it was decided to once again use
 				node.js for all code, and work is ongoing to achieve this.
+			</p>
+
+			<p>
+				In September 2018, a full-time position was opened
+				for BookBrainz to become an official project of MetaBrainz,
+				and,&nbsp;
+				<a href="https://github.com/MonkeyDo">
+					Nicolas Pelletier (AKA Monkey)
+				</a> became the project lead.
 			</p>
 
 			<p>

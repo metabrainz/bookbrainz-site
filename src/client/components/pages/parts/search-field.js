@@ -77,6 +77,7 @@ class SearchField extends React.Component {
 							name="q"
 							ref={(ref) => this.query = ref}
 							type="text"
+							value={this.props.query}
 							onChange={_.debounce(this.change, updateDelay)}
 						/>
 					</form>
@@ -88,7 +89,12 @@ class SearchField extends React.Component {
 
 SearchField.displayName = 'SearchField';
 SearchField.propTypes = {
-	onSearch: PropTypes.func.isRequired
+	onSearch: PropTypes.func.isRequired,
+	query: PropTypes.string
+};
+
+SearchField.defaultProps = {
+	query: ''
 };
 
 export default SearchField;

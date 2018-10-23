@@ -49,6 +49,8 @@ export const loadPublicationTypes =
 	makeLoader('PublicationType', 'publicationTypes');
 export const loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
 export const loadWorkTypes = makeLoader('WorkType', 'workTypes');
+export const loadRelationshipTypes =
+	makeLoader('RelationshipType', 'relationshipTypes');
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);

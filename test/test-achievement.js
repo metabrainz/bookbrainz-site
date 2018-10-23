@@ -38,7 +38,7 @@ import testWorkerBee from './test-worker-bee.js';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-const Achievement =	rewire('../lib/server/helpers/achievement.js');
+const Achievement =	rewire('../src/server/helpers/achievement.js');
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
 

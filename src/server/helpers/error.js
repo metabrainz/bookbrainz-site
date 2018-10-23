@@ -25,6 +25,7 @@ import ReactDOMServer from 'react-dom/server';
 import config from './config';
 import {generateProps} from './props';
 import status from 'http-status';
+import target from '../templates/target';
 
 
 const log = new Log(config.site.log);
@@ -156,7 +157,7 @@ export function renderError(req, res, err) {
 	);
 	res.status(
 		errorToSend.status || status.INTERNAL_SERVER_ERROR
-	).render('target', {markup});
+	).send(target({markup}));
 }
 
 export function sendErrorAsJSON(res, err) {

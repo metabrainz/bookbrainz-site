@@ -66,7 +66,10 @@ class SearchPage extends React.Component {
 	render() {
 		return (
 			<div id="searchPage">
-				<SearchField onSearch={this.handleSearch}/>
+				<SearchField
+					query={this.props.query}
+					onSearch={this.handleSearch}
+				/>
 				<SearchResults results={this.state.results}/>
 			</div>
 		);
@@ -75,10 +78,12 @@ class SearchPage extends React.Component {
 
 SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
-	initialResults: PropTypes.array
+	initialResults: PropTypes.array,
+	query: PropTypes.string
 };
 SearchPage.defaultProps = {
-	initialResults: []
+	initialResults: [],
+	query: ''
 };
 
 export default SearchPage;

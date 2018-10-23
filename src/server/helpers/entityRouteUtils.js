@@ -91,9 +91,6 @@ export function generateEntityProps(
 		submissionUrl
 	}, additionalProps);
 
-	// Dynamically set property with name entityType
-	props[entityType] = entity;
-
 	return generateProps(req, res, props);
 }
 
@@ -168,14 +165,14 @@ export function makeEntityCreateOrEditHandler(
 	entityType: string,
 	transformNewForm: Function,
 	propertiesToPick: string | string[],
-	additionalCallback?: (req: Object, res: Object) => any =
-	(req, res) => null) {
+) {
 	const entityName = _.capitalize(entityType);
+	const validate = getValidator(entityType);
+
 	return function createOrEditHandler(
-		action: EntityAction,
 		req: express.request,
-		res: express.response) {
-		const validate = getValidator(entityType);
+		res: express.response
+	) {
 		if (!validate(req.body)) {
 			const err = new error.FormSubmissionError();
 			error.sendErrorAsJSON(res, err);
@@ -183,13 +180,8 @@ export function makeEntityCreateOrEditHandler(
 
 		req.body = transformNewForm(req.body);
 
-		const entityFunction = action === 'create' ?
-			  entityRoutes.createEntity :
-			  entityRoutes.editEntity;
-
-		return entityFunction(
-			req, res, entityName, _.pick(req.body, propertiesToPick),
-			additionalCallback(req, res)
+		return entityRoutes.handleCreateOrEditEntity(
+			req, res, entityName, _.pick(req.body, propertiesToPick)
 		);
 	};
 }

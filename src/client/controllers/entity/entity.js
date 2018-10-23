@@ -20,6 +20,7 @@ import {
 	extractEntityProps,
 	extractLayoutProps
 } from '../../helpers/props';
+import {AppContainer} from 'react-hot-loader';
 import CreatorPage from '../../components/pages/entities/creator';
 import EditionPage from '../../components/pages/entities/edition';
 import EntityRevisions from '../../components/pages/entity-revisions';
@@ -38,7 +39,6 @@ const entityComponents = {
 	publisher: PublisherPage,
 	work: WorkPage
 };
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
@@ -50,20 +50,34 @@ const Child = entityComponents[page] || CreatorPage;
 let markup = null;
 if (page === 'revisions') {
 	markup = (
-		<Layout {...extractLayoutProps(props)}>
-			<EntityRevisions
-				entity={props.entity}
-				revisions={props.revisions}
-			/>
-		</Layout>
+		<AppContainer>
+			<Layout {...extractLayoutProps(props)}>
+				<EntityRevisions
+					entity={props.entity}
+					revisions={props.revisions}
+				/>
+			</Layout>
+		</AppContainer>
 	);
 }
 else {
 	markup = (
-		<Layout {...extractLayoutProps(props)}>
-			<Child {...extractEntityProps(props)}/>
-		</Layout>
+		<AppContainer>
+			<Layout {...extractLayoutProps(props)}>
+				<Child {...extractEntityProps(props)}/>
+			</Layout>
+		</AppContainer>
 	);
 }
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}
