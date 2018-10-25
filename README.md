@@ -121,9 +121,10 @@ This command will also compile the site LESS and JavaScript source files.
 ## Configuration
 
 Create a copy of `config.json.example` and rename it to `config.json`. Then,
-edit the values so that they are correct for your environment. If the prior
-instructions have been followed, it should only be necessary to change
-the PostgreSQL username and password.
+edit the values so that they are correct for your environment.
+You will need to change the PostgreSQL username and password under `database.connection`.
+
+You will also need to set up authentication under `musicbrainz`. Set the `callbackURL`to `"http://localhost:9099/cb"`. To get the `clientID`and `clientSecret` tokens, head to [the MusicBrainz website](https://musicbrainz.org/account/applications) and register a new developer application. You can then copy and paste the tokens for that developer application. 
 
 ## Building and running
 A number of subcommands exist to manage the installation and run the server.
