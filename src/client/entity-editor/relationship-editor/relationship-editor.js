@@ -206,17 +206,6 @@ class RelationshipModal
 			}
 		}
 	};
-	handleKeyPress(event) {
-  		if (event.charCode == 13) {
-    		event.preventDefault();
-   			this.handleAdd;
-  		}
-		if (event.charCode == 27) {
-    		event.preventDefault();
-   			this.onCancel;
-  		}
-	}
-
 
 	calculateProgressAmount() {
 		if (!this.state.targetEntity) {
