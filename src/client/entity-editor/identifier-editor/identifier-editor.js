@@ -17,7 +17,7 @@
  */
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {removeEmptyIdentifiers, addIdentifierRow, hideIdentifierEditor} from './actions';
+import {addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
 
 import Icon from 'react-fontawesome';
 import IdentifierRow from './identifier-row';
