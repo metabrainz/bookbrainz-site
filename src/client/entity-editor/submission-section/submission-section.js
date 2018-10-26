@@ -63,8 +63,10 @@ function SubmissionSection({
 				Submit Your Edit
 			</h2>
 			<p className="text-muted">
-				Enter a note describing what you&rsquo;ve done and what sources
-				you used, and hit the submit button to finish editing
+			{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
+				- Where did you get your info from? A link is worth a thousand words.
+				- What kind of information did you provide? If you made any changes, what are they and why?
+ 				- Do you have any questions concerning the editing process you want to ask? `}
 			</p>
 			<form>
 				<Row>
