@@ -17,7 +17,7 @@
  */
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {addIdentifierRow, hideIdentifierEditor} from './actions';
+import {removeEmptyIdentifiers, addIdentifierRow, hideIdentifierEditor} from './actions';
 
 import Icon from 'react-fontawesome';
 import IdentifierRow from './identifier-row';
@@ -27,7 +27,8 @@ import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
-/**
+
+/**.
  * Container component. The IdentifierEditor component contains a number of
  * IdentifierRow elements, and renders these inside a modal, which appears when
  * the show property of the component is set.
@@ -121,7 +122,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		onAddIdentifier: () => dispatch(addIdentifierRow()),
-		onClose: () => dispatch(hideIdentifierEditor())
+		onClose: () => {
+			dispatch(hideIdentifierEditor());
+			dispatch(removeEmptyIdentifiers())
+		}
 	};
 }
 
