@@ -18,7 +18,7 @@
 
 import {
 	ADD_IDENTIFIER_ROW, REMOVE_IDENTIFIER_ROW, UPDATE_IDENTIFIER_TYPE,
-	UPDATE_IDENTIFIER_VALUE
+	UPDATE_IDENTIFIER_VALUE, REMOVE_EMPTY_IDENTIFIERS
 } from './actions';
 import Immutable from 'immutable';
 
@@ -53,7 +53,10 @@ function reducer(
 			return state.setIn([payload.rowId, 'type'], payload.value);
 		case REMOVE_IDENTIFIER_ROW:
 			return state.delete(payload);
-
+		case REMOVE_EMPTY_IDENTIFIERS:
+			return state.filterNot(identifier => (
+				identifier.get('value') === "" || identifier.get('type') === null)
+			);
 		// no default
 	}
 	return state;
