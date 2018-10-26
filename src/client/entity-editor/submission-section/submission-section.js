@@ -63,7 +63,7 @@ function SubmissionSection({
 				Submit Your Edit
 			</h2>
 			<p className="text-muted">
-			{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
+				{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
 				- Where did you get your info from? A link is worth a thousand words.
 				- What kind of information did you provide? If you made any changes, what are they and why?
  				- Do you have any questions concerning the editing process you want to ask?`}
