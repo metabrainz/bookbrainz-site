@@ -124,7 +124,7 @@ function mapDispatchToProps(dispatch) {
 		onAddIdentifier: () => dispatch(addIdentifierRow()),
 		onClose: () => {
 			dispatch(hideIdentifierEditor());
-			dispatch(removeEmptyIdentifiers())
+			dispatch(removeEmptyIdentifiers());
 		}
 	};
 }
