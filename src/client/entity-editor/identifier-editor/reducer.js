@@ -55,7 +55,7 @@ function reducer(
 			return state.delete(payload);
 		case REMOVE_EMPTY_IDENTIFIERS:
 			return state.filterNot(identifier =>
-				identifier.get('value') === '' || identifier.get('type') === null
+				identifier.get('value') === '' && identifier.get('type') === null
 			);
 		// no default
 	}
