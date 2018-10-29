@@ -45,7 +45,7 @@ function ValueField({
 	);
 
 	return (
-		<CustomInput label={label} type="text" {...rest}/>
+		<CustomInput autoFocus label={label} type="text" {...rest}/>
 	);
 }
 ValueField.displayName = 'ValueField';
