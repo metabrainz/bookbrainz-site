@@ -216,7 +216,6 @@ class RelationshipModal
 		}
 	};
 
-
 	calculateProgressAmount() {
 		if (!this.state.targetEntity) {
 			return 1;
