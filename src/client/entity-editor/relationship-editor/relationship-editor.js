@@ -207,6 +207,13 @@ class RelationshipModal
 		}
 	};
 
+	handleKeyPress = (event) => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			this.handleAdd();
+		}
+	};
+
 	calculateProgressAmount() {
 		if (!this.state.targetEntity) {
 			return 1;
@@ -300,7 +307,7 @@ class RelationshipModal
 								<div>
 									{this.renderEntitySelect()}
 								</div>
-								<div>
+								<div onKeyUp={this.handleKeyPress}>
 									{this.renderRelationshipSelect()}
 								</div>
 							</form>
