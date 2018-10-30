@@ -207,6 +207,15 @@ class RelationshipModal
 		}
 	};
 
+	handleKeyPress = (event) => {
+		if (event.keyCode === 13) {
+			if (this.calculateProgressAmount() === 100) {
+				event.preventDefault();
+				this.handleAdd();
+			}
+		}
+	};
+
 	calculateProgressAmount() {
 		if (!this.state.targetEntity) {
 			return 1;
@@ -278,7 +287,7 @@ class RelationshipModal
 		const submitDisabled = this.calculateProgressAmount() < 100;
 
 		return (
-			<Modal show bsSize="large" onHide={onClose}>
+			<Modal show bsSize="large" onHide={onClose} onKeyUp={this.handleKeyPress}>
 				<Modal.Header>
 					<Modal.Title>Add a relationship</Modal.Title>
 				</Modal.Header>
