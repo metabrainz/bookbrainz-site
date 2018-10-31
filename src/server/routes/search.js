@@ -22,15 +22,18 @@ import * as error from '../helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../helpers/search';
+import * as utils from '../helpers/utils';
+
 import {escapeProps, generateProps} from '../helpers/props';
+
 import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
+import {keys as _keys} from 'lodash';
 import express from 'express';
 import target from '../templates/target';
-
 
 const router = express.Router();
 
@@ -49,14 +52,16 @@ router.get('/', (req, res, next) => {
 			query
 		}))
 		.then((searchResults) => {
+			const entityModels = _keys(utils.getEntityModels(orm));
 			const props = generateProps(req, res, {
+				entityTypes: entityModels,
 				hideSearch: true,
 				...searchResults
 			});
-
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<SearchPage
+						entityTypes={props.entityTypes}
 						initialResults={props.initialResults}
 						query={query}
 					/>

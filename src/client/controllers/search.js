@@ -30,7 +30,10 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<SearchPage initialResults={props.initialResults} query={props.query}/>
+			<SearchPage
+				entityTypes={props.entityTypes}
+				initialResults={props.initialResults} query={props.query}
+			/>
 		</Layout>
 	</AppContainer>
 );

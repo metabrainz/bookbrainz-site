@@ -47,10 +47,12 @@ class SearchPage extends React.Component {
 	 * Gets user text query from the SearchField component and retrieves
 	 * autocomplete search results.
 	 *
-	 * @param {string} q - Query string entered by user.
+	 * @param {string} query - Query string entered by user.
+	 * @param {string} collection - Entity type
 	 */
-	handleSearch(q) {
-		request.get(`./search/search?q=${q}`)
+	handleSearch(query, collection) {
+		const collectionString = collection ? `&collection=${collection}` : '';
+		request.get(`./search/search?q=${query}${collectionString}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
 				this.setState({results: data});
@@ -67,6 +69,7 @@ class SearchPage extends React.Component {
 		return (
 			<div id="searchPage">
 				<SearchField
+					entityTypes={this.props.entityTypes}
 					query={this.props.query}
 					onSearch={this.handleSearch}
 				/>
@@ -78,6 +81,7 @@ class SearchPage extends React.Component {
 
 SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
+	entityTypes: PropTypes.array.isRequired,
 	initialResults: PropTypes.array,
 	query: PropTypes.string
 };
