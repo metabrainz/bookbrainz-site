@@ -15,6 +15,7 @@ const clientConfig = {
 		deletion: ['./controllers/deletion.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
+		merge: ['./controllers/merge.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		revision: ['./controllers/revision.js'],
 		revisions: ['./controllers/revisions.js'],
