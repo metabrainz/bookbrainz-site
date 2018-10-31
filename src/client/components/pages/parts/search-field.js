@@ -18,6 +18,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
 import CustomInput from '../../../input';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
@@ -52,11 +53,11 @@ class SearchField extends React.Component {
 		event.preventDefault();
 		event.stopPropagation();
 
-		this.props.onSearch(this.query.getValue());
+		this.props.onSearch(this.queryInput.getValue());
 	}
 
 	change() {
-		const inputValue = this.query.getValue();
+		const inputValue = this.queryInput.getValue();
 
 		if (!inputValue.match(/^ *$/)) {
 			this.props.onSearch(inputValue);
@@ -74,10 +75,10 @@ class SearchField extends React.Component {
 					>
 						<CustomInput
 							buttonAfter={SearchButton}
+							defaultValue={this.props.query}
 							name="q"
-							ref={(ref) => this.query = ref}
+							ref={(ref) => this.queryInput = ref}
 							type="text"
-							value={this.props.query}
 							onChange={_.debounce(this.change, updateDelay)}
 						/>
 					</form>
