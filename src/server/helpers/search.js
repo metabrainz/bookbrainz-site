@@ -190,6 +190,14 @@ export function indexEntity(entity) {
 	});
 }
 
+export function deleteEntity(entity) {
+	return _client.delete({
+		id: entity.bbid,
+		index: _index,
+		type: entity.type.toLowerCase()
+	});
+}
+
 export function refreshIndex() {
 	return _client.indices.refresh({index: _index});
 }
