@@ -20,7 +20,9 @@
 // @flow
 
 import * as utils from './utils';
-import Handlebars from 'handlebars';
+
+import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
+import _ from 'lodash';
 
 
 type EntityInRelationship = {
@@ -61,10 +63,25 @@ type Relationship = {
  * @returns {string} - Rendered HTML string.
  */
 function renderRelationship(relationship: Relationship) {
-	const template = Handlebars.compile(
-		relationship.type.displayTemplate,
-		{noEscape: true}
-	);
+	const inputsInvalid =
+		!relationship.source || !relationship.target ||
+		!_.isString(_.get(relationship, 'type.linkPhrase'));
+	if (inputsInvalid) {
+		/* eslint-disable prefer-template */
+		throw new TypeError(
+			'Invalid inputs to renderRelationship:\n' +
+			JSON.stringify(relationship)
+		);
+		/* eslint-enable prefer-template */
+	}
+
+	function template(data) {
+		return (
+			`${data.entities[0]} ` +
+			`${relationship.type.linkPhrase} ` +
+			`${data.entities[1]}`
+		);
+	}
 
 	const data = {
 		entities: [
@@ -72,9 +89,10 @@ function renderRelationship(relationship: Relationship) {
 			relationship.target
 		].map((entity) => {
 			// Linkify source and target based on default alias
-			const name =
-				entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
-			return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
+			const name = _.get(entity, 'defaultAlias.name', '(unnamed)');
+			const entityIcon = `<i class="fa fa-${ENTITY_TYPE_ICONS[entity.type]} margin-right-0-5"></i>`;
+			// eslint-disable-next-line prefer-template
+			return entityIcon + `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
 		})
 	};
 

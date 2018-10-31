@@ -23,6 +23,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import StatisticsPage from '../../client/components/pages/statistics';
 import express from 'express';
+import target from '../templates/target';
 
 
 const router = express.Router();
@@ -56,12 +57,12 @@ router.get('/', (req, res) => {
 				/>
 			</Layout>
 		);
-		res.render('target', {
+		res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/statistics.js',
 			title: 'Statistics'
-		});
+		}));
 	});
 });
 

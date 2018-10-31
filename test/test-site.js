@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import app from '../lib/server/app';
+import app from '../src/server/app';
 import request from 'supertest';
 import status from 'http-status';
 

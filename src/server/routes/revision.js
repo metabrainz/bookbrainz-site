@@ -33,6 +33,7 @@ import ReactDOMServer from 'react-dom/server';
 import RevisionPage from '../../client/components/pages/revision';
 import _ from 'lodash';
 import express from 'express';
+import target from '../templates/target';
 
 
 const router = express.Router();
@@ -252,11 +253,11 @@ router.get('/:id', (req, res, next) => {
 				</Layout>
 			);
 			const script = '/js/revision.js';
-			res.render('target', {
+			res.send(target({
 				markup,
 				props: escapeProps(props),
 				script
-			});
+			}));
 		}
 	)
 		.catch(next);

@@ -121,9 +121,10 @@ This command will also compile the site LESS and JavaScript source files.
 ## Configuration
 
 Create a copy of `config.json.example` and rename it to `config.json`. Then,
-edit the values so that they are correct for your environment. If the prior
-instructions have been followed, it should only be necessary to change
-the PostgreSQL username and password.
+edit the values so that they are correct for your environment.
+You will need to change the PostgreSQL username and password under `database.connection`.
+
+You will also need to set up authentication under `musicbrainz`. Set the `callbackURL`to `"http://localhost:9099/cb"`. To get the `clientID`and `clientSecret` tokens, head to [the MusicBrainz website](https://musicbrainz.org/account/applications) and register a new developer application. You can then copy and paste the tokens for that developer application. 
 
 ## Building and running
 A number of subcommands exist to manage the installation and run the server.
@@ -135,3 +136,15 @@ These are described here; any commands not listed should not be called directly:
 * test - perform linting and attempt to compile the code
 * jsdoc - build the documentation for JSDoc annotated functions within the
   code
+
+## Testing
+The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:
+
+  1. Clone the [bookbrainz-sql](https://github.com/bookbrainz/bookbrainz-sql.git) repository. We will refer below to the directory simply as `bookbrainz-sql/`
+  2. Run the following postgres commands to create and set up the bookbrainz_test database:
+  - `psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres`
+  - `psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres`
+  - `psql -f bookbrainz-sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres`
+  - `psql -f bookbrainz-sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres`
+  - `psql -f bookbrainz-sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres`
+  3. Profit.

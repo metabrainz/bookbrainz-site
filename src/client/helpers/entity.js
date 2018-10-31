@@ -18,6 +18,7 @@
 /* eslint-disable react/display-name */
 
 import * as bootstrap from 'react-bootstrap';
+
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 import _ from 'lodash';
@@ -172,4 +173,18 @@ export function getEntityUrl(entity) {
 	const entityId = entity.bbid;
 
 	return `/${entityType}/${entityId}`;
+}
+
+export const ENTITY_TYPE_ICONS = {
+	Area: 'globe',
+	Creator: 'user',
+	Edition: 'book',
+	Publication: 'window-restore',
+	Publisher: 'university',
+	Work: 'pen-nib'
+};
+
+export function genEntityIconHTMLElement(entityType) {
+	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
+	return <FontAwesome ariaLabel={entityType} className="margin-right-0-5" name={ENTITY_TYPE_ICONS[entityType]}/>;
 }

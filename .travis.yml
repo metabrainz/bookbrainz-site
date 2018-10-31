@@ -28,6 +28,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
+  postgresql: "9.5"
 
 before_script:
   - git clone https://github.com/bookbrainz/bookbrainz-sql.git

@@ -19,10 +19,22 @@
 // @flow
 
 import * as Immutable from 'immutable';
+
 import {
-	type Action, SHOW_PHYSICAL, UPDATE_DEPTH, UPDATE_FORMAT, UPDATE_HEIGHT,
-	UPDATE_LANGUAGES, UPDATE_PAGES, UPDATE_PUBLICATION, UPDATE_PUBLISHER,
-	UPDATE_RELEASE_DATE, UPDATE_STATUS, UPDATE_WEIGHT, UPDATE_WIDTH
+	type Action,
+	SHOW_PHYSICAL,
+	SHOW_PUBLICATION,
+	UPDATE_DEPTH,
+	UPDATE_FORMAT,
+	UPDATE_HEIGHT,
+	UPDATE_LANGUAGES,
+	UPDATE_PAGES,
+	UPDATE_PUBLICATION,
+	UPDATE_PUBLISHER,
+	UPDATE_RELEASE_DATE,
+	UPDATE_STATUS,
+	UPDATE_WEIGHT,
+	UPDATE_WIDTH
 } from './actions';
 
 
@@ -41,6 +53,8 @@ function reducer(
 	switch (type) {
 		case SHOW_PHYSICAL:
 			return state.set('physicalVisible', true);
+		case SHOW_PUBLICATION:
+			return state.set('publicationVisible', true);
 		case UPDATE_LANGUAGES:
 			return state.set('languages', Immutable.fromJS(payload));
 		case UPDATE_FORMAT:
