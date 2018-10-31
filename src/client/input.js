@@ -72,12 +72,12 @@ export default class Input extends Component {
 
 	renderButtons(buttons) {
 		if (Array.isArray(buttons)){
-			return buttons.map(button => this.renderButton(button));
+			return buttons.map((button, index) => this.renderButton(button, index));
 		}
 		return this.renderButton(buttons);
 	}
-	renderButton(button) {
-		return button && <InputGroup.Button>{ button }</InputGroup.Button>;
+	renderButton(button, index=0) {
+		return button && <InputGroup.Button key={`btn${index}`}>{ button }</InputGroup.Button>;
 	}
 
 	renderInputGroup({
