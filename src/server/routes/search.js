@@ -35,6 +35,7 @@ import {keys as _keys} from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
+
 const router = express.Router();
 
 /**
@@ -52,9 +53,9 @@ router.get('/', (req, res, next) => {
 			query
 		}))
 		.then((searchResults) => {
-			const entityModels = _keys(utils.getEntityModels(orm));
+			const entityTypes = _keys(utils.getEntityModels(orm));
 			const props = generateProps(req, res, {
-				entityTypes: entityModels,
+				entityTypes,
 				hideSearch: true,
 				...searchResults
 			});
