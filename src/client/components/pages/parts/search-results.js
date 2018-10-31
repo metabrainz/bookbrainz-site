@@ -18,8 +18,11 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
 import PropTypes from 'prop-types';
 import React from 'react';
+import {differenceBy as _differenceBy} from 'lodash';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
 const {Table} = bootstrap;
@@ -35,9 +38,14 @@ function SearchResults(props) {
 	}
 
 	const results = props.results.map((result) => {
-		// No redirect link for Area entity results
 		const name = result.defaultAlias ? result.defaultAlias.name :
 			'(unnamed)';
+		const aliases = Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
+		const secondaryAliases = aliases &&
+			_differenceBy(aliases, [result.defaultAlias], 'id').map(alias => alias.name).join(', ') ||
+			'';
+		const disambiguation = result.disambiguation ? <small>({result.disambiguation.comment})</small> : '';
+		// No redirect link for Area entity results
 		const link = result.type === 'Area' ?
 			`//musicbrainz.org/area/${result.bbid}` :
 			`/${result.type.toLowerCase()}/${result.bbid}`;
@@ -45,12 +53,15 @@ function SearchResults(props) {
 		return (
 			<tr key={result.bbid}>
 				<td>
+					{genEntityIconHTMLElement(result.type)}{result.type}
+				</td>
+				<td>
 					<a href={link}>
-						{name}
+						{name} {disambiguation}
 					</a>
 				</td>
 				<td>
-					{result.type}
+					{secondaryAliases}
 				</td>
 			</tr>
 		);
@@ -71,8 +82,9 @@ function SearchResults(props) {
 			>
 				<thead>
 					<tr>
-						<th>Alias</th>
-						<th>Type</th>
+						<th style={{width: '150px'}}>Type</th>
+						<th>Name</th>
+						<th>Aliases</th>
 					</tr>
 				</thead>
 				<tbody>

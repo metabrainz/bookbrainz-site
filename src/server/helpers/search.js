@@ -17,6 +17,7 @@
  */
 
 import * as utils from '../helpers/utils';
+
 import ElasticSearch from 'elasticsearch';
 import Promise from 'bluebird';
 import _ from 'lodash';
@@ -56,7 +57,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 		}
 		const model = utils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
-			.fetch({withRelated: ['defaultAlias']})
+			.fetch({withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
 			.then((entity) => entity.toJSON());
 	});
 }
