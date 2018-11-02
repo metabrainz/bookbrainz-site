@@ -47,7 +47,9 @@ class SearchField extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {collection: ''};
+		this.state = {
+			collection: ''
+		};
 		// React does not autobind non-React class methods
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.change = this.change.bind(this);

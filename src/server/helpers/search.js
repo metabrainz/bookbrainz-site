@@ -348,9 +348,10 @@ export async function generateIndex(orm) {
 	await refreshIndex();
 }
 
-export function searchByName(orm, name, collection) {
+export function searchByName(orm, name, collection, size = 20, from = 0) {
 	const dslQuery = {
 		body: {
+			from,
 			query: {
 				bool: {
 					must: {
@@ -370,7 +371,8 @@ export function searchByName(orm, name, collection) {
 						}
 					}
 				}
-			}
+			},
+			size
 		},
 		index: _index
 	};

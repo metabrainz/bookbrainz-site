@@ -46,8 +46,9 @@ router.get('/', (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
+	const {size, from} = req.query;
 
-	search.searchByName(orm, query, collection)
+	search.searchByName(orm, query, collection, size, from)
 		.then((entities) => ({
 			initialResults: entities,
 			query
@@ -83,8 +84,9 @@ router.get('/search', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
+	const {size, from} = req.query;
 
-	const searchPromise = search.searchByName(orm, query, collection);
+	const searchPromise = search.searchByName(orm, query, collection, size, from);
 
 	handler.sendPromiseResult(res, searchPromise);
 });

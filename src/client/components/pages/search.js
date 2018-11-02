@@ -17,12 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
+
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 import request from 'superagent-bluebird-promise';
 
+
+const {Pager, Pagination} = bootstrap;
 
 class SearchPage extends React.Component {
 	/**
@@ -36,11 +40,17 @@ class SearchPage extends React.Component {
 		super(props);
 
 		this.state = {
-			results: this.props.initialResults
+			from: 0,
+			nextEnabled: true,
+			query: this.props.query,
+			results: this.props.initialResults,
+			size: 20
 		};
 
 		// React does not autobind non-React class methods
 		this.handleSearch = this.handleSearch.bind(this);
+		this.handleClickPrevious = this.handleClickPrevious.bind(this);
+		this.handleClickNext = this.handleClickNext.bind(this);
 	}
 
 	/**
@@ -48,15 +58,34 @@ class SearchPage extends React.Component {
 	 * autocomplete search results.
 	 *
 	 * @param {string} query - Query string entered by user.
-	 * @param {string} collection - Entity type
+	 * @param {string} collection - Entity type selected from dropdown
+	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
 	handleSearch(query, collection) {
-		const collectionString = collection ? `&collection=${collection}` : '';
-		request.get(`./search/search?q=${query}${collectionString}`)
+		if (typeof query === 'string' && query !== this.state.query) {
+			this.setState({from: 0, query});
+		}
+		if (typeof collection === 'string') {
+			this.setState({collection});
+		}
+		const collectionString = this.state.collection ? `&collection=${this.state.collection}` : '';
+		const pagination = `&size=${this.state.size}&from=${this.state.from}`;
+		request.get(`./search/search?q=${this.state.query}${collectionString}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
-				this.setState({results: data});
+				this.setState(prevState => ({
+					nextEnabled: data.length >= prevState.size,
+					results: data
+				}));
 			});
+	}
+
+	handleClickPrevious(event) {
+		this.setState(prevState => ({from: Math.max(prevState.from - prevState.size, 0)}), this.handleSearch);
+	}
+
+	handleClickNext(event) {
+		this.setState(prevState => ({from: prevState.from + prevState.size}), this.handleSearch);
 	}
 
 	/**
@@ -74,6 +103,20 @@ class SearchPage extends React.Component {
 					onSearch={this.handleSearch}
 				/>
 				<SearchResults results={this.state.results}/>
+				<Pager>
+					<Pager.Item
+						previous disabled={this.state.from <= 0}
+						href="#" onClick={this.handleClickPrevious}
+					>
+						&larr; Previous Page
+					</Pager.Item>
+					<Pager.Item
+						next disabled={!this.state.nextEnabled}
+						href="#" onClick={this.handleClickNext}
+					>
+						Next Page &rarr;
+					</Pager.Item>
+				</Pager>
 			</div>
 		);
 	}
