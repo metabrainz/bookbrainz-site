@@ -46,9 +46,10 @@ router.get('/', (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
+	const resultsPerPage = 20;
 	const {size, from} = req.query;
 
-	search.searchByName(orm, query, collection, size, from)
+	search.searchByName(orm, query, collection, size || resultsPerPage, from)
 		.then((entities) => ({
 			initialResults: entities,
 			query
@@ -58,6 +59,7 @@ router.get('/', (req, res, next) => {
 			const props = generateProps(req, res, {
 				entityTypes,
 				hideSearch: true,
+				resultsPerPage,
 				...searchResults
 			});
 			const markup = ReactDOMServer.renderToString(
@@ -66,6 +68,7 @@ router.get('/', (req, res, next) => {
 						entityTypes={props.entityTypes}
 						initialResults={props.initialResults}
 						query={query}
+						resultsPerPage={props.resultsPerPage}
 					/>
 				</Layout>
 			);

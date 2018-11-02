@@ -348,7 +348,7 @@ export async function generateIndex(orm) {
 	await refreshIndex();
 }
 
-export function searchByName(orm, name, collection, size = 20, from = 0) {
+export function searchByName(orm, name, collection, size, from) {
 	const dslQuery = {
 		body: {
 			from,

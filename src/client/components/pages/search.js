@@ -41,14 +41,15 @@ class SearchPage extends React.Component {
 
 		this.state = {
 			from: 0,
-			nextEnabled: true,
+			nextEnabled: this.props.initialResults.length === this.props.resultsPerPage,
 			query: this.props.query,
 			results: this.props.initialResults,
-			size: 20
+			size: this.props.resultsPerPage
 		};
 
 		// React does not autobind non-React class methods
 		this.handleSearch = this.handleSearch.bind(this);
+		this.triggerSearch = this.triggerSearch.bind(this);
 		this.handleClickPrevious = this.handleClickPrevious.bind(this);
 		this.handleClickNext = this.handleClickNext.bind(this);
 	}
@@ -62,12 +63,17 @@ class SearchPage extends React.Component {
 	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
 	handleSearch(query, collection) {
-		if (typeof query === 'string' && query !== this.state.query) {
-			this.setState({from: 0, query});
+		if (query === this.state.query && collection === this.state.collection) {
+			return;
 		}
-		if (typeof collection === 'string') {
-			this.setState({collection});
+		if (typeof query !== 'string' || typeof collection !== 'string') {
+			return;
 		}
+
+		this.setState({collection, from: 0, query}, this.triggerSearch);
+	}
+
+	triggerSearch() {
 		const collectionString = this.state.collection ? `&collection=${this.state.collection}` : '';
 		const pagination = `&size=${this.state.size}&from=${this.state.from}`;
 		request.get(`./search/search?q=${this.state.query}${collectionString}${pagination}`)
@@ -81,11 +87,11 @@ class SearchPage extends React.Component {
 	}
 
 	handleClickPrevious(event) {
-		this.setState(prevState => ({from: Math.max(prevState.from - prevState.size, 0)}), this.handleSearch);
+		this.setState(prevState => ({from: Math.max(prevState.from - prevState.size, 0)}), this.triggerSearch);
 	}
 
 	handleClickNext(event) {
-		this.setState(prevState => ({from: prevState.from + prevState.size}), this.handleSearch);
+		this.setState(prevState => ({from: prevState.from + prevState.size}), this.triggerSearch);
 	}
 
 	/**
@@ -126,11 +132,13 @@ SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	initialResults: PropTypes.array,
-	query: PropTypes.string
+	query: PropTypes.string,
+	resultsPerPage: PropTypes.number
 };
 SearchPage.defaultProps = {
 	initialResults: [],
-	query: ''
+	query: '',
+	resultsPerPage: 20
 };
 
 export default SearchPage;
