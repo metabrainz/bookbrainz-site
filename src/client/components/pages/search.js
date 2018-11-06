@@ -116,6 +116,11 @@ class SearchPage extends React.Component {
 					>
 						&larr; Previous Page
 					</Pager.Item>
+					<li>
+						<a className="btn-link">
+							Results {this.state.from} — {this.state.from + this.state.size}
+						</a>
+					</li>
 					<Pager.Item
 						next disabled={!this.state.nextEnabled}
 						href="#" onClick={this.handleClickNext}
