@@ -41,6 +41,9 @@ function SearchResults(props) {
 	}
 
 	const results = props.results.map((result) => {
+		if (!result) {
+			return null;
+		}
 		const name = result.defaultAlias ? result.defaultAlias.name :
 			'(unnamed)';
 		const aliases = result.aliasSet && Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
