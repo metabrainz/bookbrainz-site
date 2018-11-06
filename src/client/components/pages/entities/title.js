@@ -29,12 +29,12 @@ const {
 
 function EntityTitle({entity}) {
 	const aliases = getEntityAlias(entity);
-	const disambiguation = getEntityDisambiguation(entity);	
+	const disambiguation = getEntityDisambiguation(entity);
 	const label = getEntityLabel(entity);
 	return (
 		<div>
 			<h1>{label}{disambiguation}</h1>
-				{aliases}
+			{aliases}
 			<hr/>
 		</div>
 	);
