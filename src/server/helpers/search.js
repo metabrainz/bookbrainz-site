@@ -23,7 +23,6 @@ import Promise from 'bluebird';
 import _ from 'lodash';
 import httpStatus from 'http-status';
 
-
 const _index = 'bookbrainz';
 const _bulkIndexSize = 128;
 
@@ -58,7 +57,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 		const model = utils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
 			.fetch({withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
-			.then((entity) => entity.toJSON());
+			.then((entity) => entity && entity.toJSON());
 	});
 }
 

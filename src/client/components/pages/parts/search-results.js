@@ -43,7 +43,7 @@ function SearchResults(props) {
 	const results = props.results.map((result) => {
 		const name = result.defaultAlias ? result.defaultAlias.name :
 			'(unnamed)';
-		const aliases = Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
+		const aliases = result.aliasSet && Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
 		const secondaryAliases = aliases &&
 			_differenceBy(aliases, [result.defaultAlias], 'id').map(alias => alias.name).join(', ') ||
 			'';
