@@ -31,8 +31,11 @@ function SearchResults(props) {
 	const noResults = !props.results || props.results.length === 0;
 	if (noResults) {
 		return (
-			<div className="col-md-6 col-md-offset-3">
-				{'No results found'}
+			<div>
+				<hr className="thin"/>
+				<h2 className="text-center" style={{color: '#754e37'}}>
+					No results found
+				</h2>
 			</div>
 		);
 	}
@@ -69,13 +72,10 @@ function SearchResults(props) {
 
 	return (
 		<div>
-			<div style={{color: '#754e37',
-				fontSize: 16,
-				fontWeight: 'Bold',
-				paddingLeft: 8}}
-			>
+			<h3 style={{color: '#754e37'}}>
 				Search Results
-			</div>
+			</h3>
+			<hr className="thin"/>
 			<Table
 				responsive
 				className="table table-striped"
