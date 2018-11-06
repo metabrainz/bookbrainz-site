@@ -109,25 +109,34 @@ class SearchPage extends React.Component {
 					onSearch={this.handleSearch}
 				/>
 				<SearchResults results={this.state.results}/>
-				<Pager>
-					<Pager.Item
-						previous disabled={this.state.from <= 0}
-						href="#" onClick={this.handleClickPrevious}
-					>
-						&larr; Previous Page
-					</Pager.Item>
-					<li>
-						<a className="btn-link">
-							Results {this.state.from} — {this.state.from + this.state.size}
-						</a>
-					</li>
-					<Pager.Item
-						next disabled={!this.state.nextEnabled}
-						href="#" onClick={this.handleClickNext}
-					>
-						Next Page &rarr;
-					</Pager.Item>
-				</Pager>
+				{this.state.results && this.state.results.length ?
+					<div>
+						<hr className="thin"/>
+						<Pager>
+							<Pager.Item
+								previous disabled={this.state.from <= 0}
+								href="#" onClick={this.handleClickPrevious}
+							>
+								&larr; Previous Page
+							</Pager.Item>
+							<li>
+								<a className="btn-link">
+									Results {this.state.from} —&nbsp;
+									{this.state.results.length < this.state.size ?
+										this.state.results.length :
+										this.state.from + this.state.size
+									}
+								</a>
+							</li>
+							<Pager.Item
+								next disabled={!this.state.nextEnabled}
+								href="#" onClick={this.handleClickNext}
+							>
+								Next Page &rarr;
+							</Pager.Item>
+						</Pager>
+					</div> : null
+				}
 			</div>
 		);
 	}
