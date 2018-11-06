@@ -176,7 +176,7 @@ export function getEntityAlias(entity) {
 	if (entity.aliasSet.aliases.length > 1) {
 		return <h5>{aliases}</h5>;
 	}
-	
+
 	return null;
 }
 
