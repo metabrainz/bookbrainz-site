@@ -39,6 +39,21 @@ function CreatorAttributes({creator}) {
 	const beginDate = extractAttribute(creator.beginDate);
 	const endDate = extractAttribute(creator.endDate);
 
+	const aliases = extractAttribute(creator.aliasSet.aliases).map(item => {
+		if (item.name !== extractAttribute(creator.defaultAlias.name)) {
+			return <dd key={item.id}> {item.name} </dd>
+		} else {
+			return null;
+		}
+	});
+
+	const genderCol = (
+		<React.Fragment>
+			<dt>Gender</dt>
+			<dd>{gender}</dd>
+		</React.Fragment>
+	)
+
 	return (
 		<div>
 			<Row>
@@ -46,14 +61,16 @@ function CreatorAttributes({creator}) {
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
+						{aliases.length > 1 ? genderCol : null}
 					</dl>
 				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Gender</dt>
-						<dd>{gender}</dd>
-					</dl>
-				</Col>
+				{aliases.length === 1 ? (
+					<Col md={3}>
+						<dl>
+							{genderCol}
+						</dl>
+					</Col>
+				) : null}
 				<Col md={3}>
 					<dl>
 						<dt>Begin Date</dt>
@@ -73,6 +90,14 @@ function CreatorAttributes({creator}) {
 						</dl>
 					</Col>
 				}
+				{aliases.length > 1 &&
+				<Col md={3}>
+					<dl>
+						<dt>Aliases</dt>
+						{aliases}
+					</dl>
+				</Col>
+			}
 			</Row>
 		</div>
 	);
