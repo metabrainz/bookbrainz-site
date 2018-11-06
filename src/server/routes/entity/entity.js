@@ -288,7 +288,8 @@ export function handleDelete(
 
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
-			newEntityRevisionPromise, entityHeaderPromise
+			newEntityRevisionPromise, entityHeaderPromise,
+			search.deleteEntity(entity)
 		);
 	});
 
