@@ -168,7 +168,7 @@ export function getEntityDisambiguation(entity) {
 	return null;
 }
 
-export function getEntityAliases(entity) {
+export function getEntitySecondaryAliases(entity) {
 	const aliases = entity.aliasSet.aliases
 		.filter(item => item.id !== entity.defaultAlias.id)
 		.map(item => item.name)
