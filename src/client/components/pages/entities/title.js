@@ -23,12 +23,12 @@ import React from 'react';
 
 
 const {
-	getEntityAlias, getEntityDisambiguation, getEntityLabel
+	getEntityAliases, getEntityDisambiguation, getEntityLabel
 } = entityHelper;
 
 
 function EntityTitle({entity}) {
-	const aliases = getEntityAlias(entity);
+	const aliases = getEntityAliases(entity);
 	const disambiguation = getEntityDisambiguation(entity);
 	const label = getEntityLabel(entity);
 	return (
