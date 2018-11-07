@@ -28,6 +28,7 @@ import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {addAliasRow} from '../alias-editor/actions';
 import {addIdentifierRow} from '../identifier-editor/actions';
 import {connect} from 'react-redux';
 
@@ -124,7 +125,10 @@ function mapStateToProps(rootState, {identifierTypes}) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onAliasButtonClick: () => dispatch(showAliasEditor()),
+		onAliasButtonClick: () => {
+			dispatch(showAliasEditor());
+			dispatch(addAliasRow());
+		},
 		onDisambiguationButtonClick: () => dispatch(showDisambiguation()),
 		onIdentifierButtonClick: () => {
 			dispatch(showIdentifierEditor());
