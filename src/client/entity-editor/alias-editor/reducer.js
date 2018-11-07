@@ -17,7 +17,7 @@
  */
 
 import {
-	ADD_ALIAS_ROW, REMOVE_ALIAS_ROW, UPDATE_ALIAS_LANGUAGE,
+	ADD_ALIAS_ROW, REMOVE_ALIAS_ROW, REMOVE_EMPTY_ALIASES, UPDATE_ALIAS_LANGUAGE,
 	UPDATE_ALIAS_NAME, UPDATE_ALIAS_PRIMARY, UPDATE_ALIAS_SORT_NAME
 } from './actions';
 import Immutable from 'immutable';
@@ -48,6 +48,10 @@ function reducer(
 			return state.setIn([payload.rowId, 'primary'], payload.value);
 		case REMOVE_ALIAS_ROW:
 			return state.delete(payload);
+		case REMOVE_EMPTY_ALIASES:
+			return state.filterNot(alias =>
+				alias.get('name') === '' && alias.get('language') === null && alias.get('sortName') === ""
+			);
 		// no default
 	}
 	return state;
