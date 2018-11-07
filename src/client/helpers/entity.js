@@ -168,13 +168,13 @@ export function getEntityDisambiguation(entity) {
 	return null;
 }
 
-export function getEntityAlias(entity) {
+export function getEntityAliases(entity) {
 	const aliases = entity.aliasSet.aliases
+		.filter(item => item.id !== entity.defaultAlias.id)
 		.map(item => item.name)
-		.filter(item => item !== entity.defaultAlias.name)
 		.join(', ');
 	if (entity.aliasSet.aliases.length > 1) {
-		return <h5>{aliases}</h5>;
+		return <h4>{aliases}</h4>;
 	}
 
 	return null;
