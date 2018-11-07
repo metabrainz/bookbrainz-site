@@ -23,16 +23,18 @@ import React from 'react';
 
 
 const {
-	getEntityDisambiguation, getEntityLabel
+	getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel
 } = entityHelper;
 
 
 function EntityTitle({entity}) {
-	const label = getEntityLabel(entity);
+	const aliases = getEntitySecondaryAliases(entity);
 	const disambiguation = getEntityDisambiguation(entity);
+	const label = getEntityLabel(entity);
 	return (
 		<div>
 			<h1>{label}{disambiguation}</h1>
+			{aliases}
 			<hr/>
 		</div>
 	);

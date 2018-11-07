@@ -168,6 +168,18 @@ export function getEntityDisambiguation(entity) {
 	return null;
 }
 
+export function getEntitySecondaryAliases(entity) {
+	const aliases = entity.aliasSet.aliases
+		.filter(item => item.id !== entity.defaultAlias.id)
+		.map(item => item.name)
+		.join(', ');
+	if (entity.aliasSet.aliases.length > 1) {
+		return <h4>{aliases}</h4>;
+	}
+
+	return null;
+}
+
 export function getEntityUrl(entity) {
 	const entityType = entity.type.toLowerCase();
 	const entityId = entity.bbid;
