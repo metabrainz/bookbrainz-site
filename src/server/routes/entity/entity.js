@@ -61,9 +61,86 @@ const entityComponents = {
 	work: WorkPage
 };
 
+/**
+ * Creates a new database record whenever an editor visits an entity, to allow
+ * tracking of popular entities and handling of the page visit achievement.
+ *
+ * @param {Object} orm An initialized bookbrainz-data ORM
+ * @param {string} bbid The BBID of the entity that was visited
+ * @param {?number} editorID The ID of the editor, if logged in, otherwise null
+ *
+ * @returns {Promise<Object|boolean>} An object containing achievement data, or
+ *          false if an error occured
+ */
+function logEntityVisit(orm: Object, bbid: string, editorID: ?number) {
+	const {EditorEntityVisits} = orm;
+
+	if (!editorID) {
+		return Promise.resolve(false);
+	}
+
+	return new EditorEntityVisits({bbid, editorId: editorID})
+		.save(null, {method: 'insert'})
+		.then(() => achievement.processPageVisit(orm, editorID))
+		.catch(
+			// error caused by duplicates we do not want in database
+			() => Promise.resolve(false)
+		);
+}
+
+/**
+ * Takes a list of achievement unlock IDs and fetches achievement information
+ * for each. Then builds a list of achievement information represented by these
+ * unlock IDs to be used in the unlock alert displayed to the editor.
+ *
+ * @param {Object} orm An initialized bookbrainz-data ORM
+ * @param {number[]} alertIDs A list of achievement unlock IDs to process
+ * @param {?number} editorID The ID of the editor, if logged in, otherwise null
+ *
+ * @returns {Promise<Object[]|boolean>} A list containing achievement
+ *          information, or false if an error occured
+ */
+function processAlertIDs(orm: Object, alertIDs: number[], editorID: ?number) {
+	const {AchievementUnlock} = orm;
+	if (_.isEmpty(alertIDs)) {
+		return Promise.resolve(false);
+	}
+
+	if (!editorID) {
+		return Promise.resolve(false);
+	}
+
+	const promiseList = alertIDs.map(
+		(achievementAlert) =>
+			new AchievementUnlock(
+				{id: achievementAlert}
+			)
+				.fetch({
+					require: 'true',
+					withRelated: 'achievement'
+				})
+				.then((unlock) => unlock.toJSON())
+				.then((unlock) => {
+					if (editorID === unlock.editorId) {
+						return {
+							name: unlock.achievement.name
+						};
+					}
+
+					/* TODO: This undefined return is required to match previous
+					   functionality - but should be changed ASAP. */
+					/* eslint-disable-next-line no-undefined */
+					return undefined;
+				})
+				.catch((error) => {
+					log.debug(error);
+				})
+	);
+	return Promise.all(promiseList);
+}
+
 export function displayEntity(req: PassportRequest, res: $Response) {
 	const {orm}: {orm: any} = req.app.locals;
-	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const {locals: resLocals}: {locals: any} = res;
 	const {entity}: {entity: any} = resLocals;
 	// Get unique identifier types for display
@@ -74,66 +151,21 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 			(type) => type.id
 		);
 
-	let editorEntityVisitPromise;
-	if (resLocals.user) {
-		editorEntityVisitPromise = new EditorEntityVisits({
-			bbid: resLocals.entity.bbid,
-			editorId: resLocals.user.id
-		})
-			.save(null, {method: 'insert'})
-			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
-			.catch(
-				// error caused by duplicates we do not want in database
-				() => Promise.resolve(false)
-			);
-	}
-	else {
-		editorEntityVisitPromise = Promise.resolve(false);
-	}
+	const editorID = _.get(resLocals, 'user.id', null);
+	const editorEntityVisitPromise =
+		logEntityVisit(orm, resLocals.entity.bbid, editorID);
 
-	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
-		let alertIds = [];
-		if (visitAlert.alert) {
-			alertIds = alertIds.concat(visitAlert.alert.split(',').map(
-				(id) => parseInt(id, 10)
-			));
-		}
-		if (_.isString(req.query.alert)) {
-			// $FlowFixMe
-			alertIds = alertIds.concat(req.query.alert.split(',').map(
-				(id) =>	parseInt(id, 10)
-			));
-		}
-		if (alertIds.length > 0) {
-			const promiseList = alertIds.map(
-				(achievementAlert) =>
-					new AchievementUnlock(
-						{id: achievementAlert}
-					)
-						.fetch({
-							require: 'true',
-							withRelated: 'achievement'
-						})
-						.then((unlock) => unlock.toJSON())
-						.then((unlock) => {
-							let unlockName;
-							if (req.user.id === unlock.editorId) {
-								unlockName = {
-									name: unlock.achievement.name
-								};
-							}
-							return unlockName;
-						})
-						.catch((error) => {
-							log.debug(error);
-						})
-			);
-			alertPromise = Promise.all(promiseList);
-		}
-		else {
-			alertPromise = Promise.resolve(false);
-		}
-		return alertPromise;
+	const alertPromise = editorEntityVisitPromise.then((visitAlert) => {
+		const queryAlertIDs = _.isString(req.query.alert) ? req.query.alert : '';
+		const visitAlertIDs = _.get(visitAlert, 'alert', '');
+		const textAlertIDs = [
+			...visitAlertIDs.split(','),
+			...queryAlertIDs.split(',')
+		];
+
+		const alertIDs = textAlertIDs.map((id) => parseInt(id, 10));
+
+		return processAlertIDs(orm, alertIDs, editorID);
 	});
 
 	return alertPromise.then((alert) => {
