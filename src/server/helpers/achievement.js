@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Max Prettyjohns
+ *               2018  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 /**
  * Achievement Module
  * @module Achievement
@@ -24,7 +27,6 @@
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from './error';
 import Log from 'log';
-import Promise from 'bluebird';
 import _ from 'lodash';
 import config from './config';
 
@@ -37,97 +39,96 @@ const log = new Log(config.site.log);
  * @param {object} awardAttribs - Values that are supplied to Unlock constructor
  * @returns {object} - 'already unlocked' or JSON of new unlock
  */
-function awardUnlock(UnlockType, awardAttribs) {
-	return new UnlockType(awardAttribs)
-		.fetch()
-		.then((award) => {
-			if (award === null) {
-				return new UnlockType(awardAttribs)
-					.save(null, {method: 'insert'})
-					.then((unlock) => unlock.toJSON());
-			}
+async function awardUnlock(UnlockType, awardAttribs) {
+	try {
+		const award = await new UnlockType(awardAttribs).fetch();
+		if (award === null) {
+			const unlock = await new UnlockType(awardAttribs)
+				.save(null, {method: 'insert'});
 
-			return Promise.resolve('already unlocked');
-		})
-		.catch((err) => Promise.reject(err));
+			return unlock.toJSON();
+		}
+
+		return 'already unlocked';
+	}
+	catch (err) {
+		throw err;
+	}
 }
 
 /**
  * Awards an Achievement
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @param {int} editorId - The editor the achievement will be awarded to
+ * @param {int} editorID - The editor the achievement will be awarded to
  * @param {string} achievementName - Name of achievement in database
  * @returns {object} - {achievementName: unlock} where unlock is JSON returned
  * from awardUnlock
  * @memberof module:Achievement
  */
-function awardAchievement(orm, editorId, achievementName) {
+async function awardAchievement(orm, editorID, achievementName) {
 	const {AchievementType, AchievementUnlock} = orm;
-	return new AchievementType({name: achievementName})
-		.fetch()
-		.then((achievementTier) => {
-			if (achievementTier === null) {
-				return Promise.reject(new error.AwardNotUnlockedError(
-					`Achievement ${achievementName} not found in database`
-				));
-			}
+	const achievementTier = await new AchievementType({name: achievementName})
+		.fetch();
 
-			const achievementAttribs = {
-				achievementId: achievementTier.id,
-				editorId
-			};
-			return awardUnlock(AchievementUnlock, achievementAttribs)
-				.then((unlock) => {
-					const out = {};
-					out[achievementName] = unlock;
-					return out;
-				})
-				.catch((err) => Promise.reject(
-					new error.AwardNotUnlockedError(err.message)
-				));
-		});
+	if (achievementTier === null) {
+		throw new error.AwardNotUnlockedError(
+			`Achievement ${achievementName} not found in database`
+		);
+	}
+
+	const achievementAttribs = {
+		achievementId: achievementTier.id,
+		editorId: editorID
+	};
+	try {
+		const unlock = await awardUnlock(AchievementUnlock, achievementAttribs);
+
+		const out = {};
+		out[achievementName] = unlock;
+		return out;
+	}
+	catch (err) {
+		throw new error.AwardNotUnlockedError(err.message);
+	}
 }
 
 /**
  * Awards a Title
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @param {int} editorId - The editor the title will be assigned to
+ * @param {int} editorID - The editor the title will be assigned to
  * @param {object} tier - Achievement Tier the Title (if it exists) belongs to
  * @returns {object} - {tier.titleName: unlock} where unlock comes from
  * awardUnlock or false if the title is not in the tier
  * @memberof module:Achievement
  */
-function awardTitle(orm, editorId, tier) {
+async function awardTitle(orm, editorID, tier) {
 	const {TitleType, TitleUnlock} = orm;
 	if (tier.titleName) {
-		return new TitleType({title: tier.titleName})
-			.fetch()
-			.then((title) => {
-				if (title === null) {
-					return Promise.reject(
-						new error.AwardNotUnlockedError(
-							`Title ${tier.titleName} not found in database`
-						)
-					);
-				}
+		const title = await new TitleType({title: tier.titleName})
+			.fetch();
 
-				const titleAttribs = {
-					editorId,
-					titleId: title.id
-				};
-				return awardUnlock(TitleUnlock, titleAttribs)
-					.then((unlock) => {
-						const out = {};
-						out[tier.titleName] = unlock;
-						return out;
-					})
-					.catch((err) => Promise.reject(
-						new error.AwardNotUnlockedError(err.message)
-					));
-			});
+		if (title === null) {
+			throw new error.AwardNotUnlockedError(
+				`Title ${tier.titleName} not found in database`
+			);
+		}
+
+		const titleAttribs = {
+			editorId: editorID,
+			titleId: title.id
+		};
+		try {
+			const unlock = await awardUnlock(TitleUnlock, titleAttribs);
+			const out = {};
+			out[tier.titleName] = unlock;
+			return out;
+		}
+		catch (err) {
+			throw new error.AwardNotUnlockedError(err.message);
+		}
 	}
 
-	return Promise.resolve(false);
+	return false;
 }
 
 /**
@@ -158,7 +159,7 @@ function awardListToAwardObject(awardList) {
  * title if the signal is greater than or equal to the threshold
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} signal - Value tier threshold will be compared against
- * @param {int} editorId - Editor to award achievements/titles to
+ * @param {int} editorID - Editor to award achievements/titles to
  * @param {object} tiers - Object with threshold and relatedachievement/title
  * names
  * @example
@@ -169,22 +170,25 @@ function awardListToAwardObject(awardList) {
  * @returns {object} - Returns a track of achievements keyed by achievement
  * name/title containing their respective unlockJSON each tier
  */
-function testTiers(orm, signal, editorId, tiers) {
-	const tierPromise = tiers.map((tier) => {
+async function testTiers(orm, signal, editorID, tiers) {
+	async function tierToAward(tier) {
 		if (signal >= tier.threshold) {
-			return Promise.join(
-				awardAchievement(orm, editorId, tier.name),
-				awardTitle(orm, editorId, tier),
-				(achievementUnlock, title) => {
-					const out = [];
-					if (title) {
-						out.push(title);
-					}
-					out.push(achievementUnlock);
-					return out;
+			try {
+				const [achievementUnlock, title] = await Promise.all([
+					awardAchievement(orm, editorID, tier.name),
+					awardTitle(orm, editorID, tier)
+				]);
+
+				const out = [];
+				if (title) {
+					out.push(title);
 				}
-			)
-				.catch((err) => log.debug(err));
+				out.push(achievementUnlock);
+				return out;
+			}
+			catch (err) {
+				return log.debug(err);
+			}
 		}
 
 		const out = {};
@@ -193,9 +197,11 @@ function testTiers(orm, signal, editorId, tiers) {
 			out[tier.titleName] = false;
 		}
 		return [out];
-	});
-	return Promise.all(tierPromise)
-		.then((awardList) => awardListToAwardObject(awardList));
+	}
+
+	const awardList = await Promise.all(tiers.map(tierToAward));
+
+	return awardListToAwardObject(awardList);
 }
 
 /**
@@ -206,8 +212,9 @@ function testTiers(orm, signal, editorId, tiers) {
  * @param {int} editor - Editor id being queried
  * @returns {int} - Number of revisions of type (type)
  */
-function getTypeCreation(revisionType, revisionString, editor) {
-	return revisionType
+async function getTypeCreation(revisionType, revisionString, editor) {
+	// TODO: Use database count(*) rather than JavaScript Array.length
+	const out = await revisionType
 		.query((qb) => {
 			qb.innerJoin('bookbrainz.revision',
 				'bookbrainz.revision.id',
@@ -221,218 +228,168 @@ function getTypeCreation(revisionType, revisionString, editor) {
 				`bookbrainz.${revisionString}.id`);
 			qb.whereNull('bookbrainz.revision_parent.parent_id');
 		})
-		.fetchAll()
-		.then((out) => out.length);
+		.fetchAll();
+
+	return out.length;
 }
 
-function processRevisionist(orm, editorId) {
+async function processRevisionist(orm, editorID: number) {
 	const {Editor} = orm;
-	return new Editor({id: editorId})
-		.fetch()
-		.then((editor) => {
-			const revisions = editor.get('revisionsApplied');
-			const tiers = [
-				{
-					name: 'Revisionist III',
-					threshold: 250,
-					titleName: 'Revisionist'
-				},
-				{
-					name: 'Revisionist II',
-					threshold: 50
-				},
-				{
-					name: 'Revisionist I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, revisions, editorId, tiers);
-		});
+	const editor = await new Editor({id: editorID}).fetch();
+
+	const revisions = editor.get('revisionsApplied');
+	const tiers = [
+		{name: 'Revisionist III', threshold: 250, titleName: 'Revisionist'},
+		{name: 'Revisionist II', threshold: 50},
+		{name: 'Revisionist I', threshold: 1}
+	];
+	return testTiers(orm, revisions, editorID, tiers);
 }
 
-function processCreatorCreator(orm, editorId) {
+async function processCreatorCreator(orm, editorID: number) {
 	const {CreatorRevision} = orm;
-	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Creator Creator III',
-					threshold: 100,
-					titleName: 'Creator Creator'
-				},
-				{
-					name: 'Creator Creator II',
-					threshold: 10
-				},
-				{
-					name: 'Creator Creator I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(
+		new CreatorRevision(), 'creator_revision', editorID
+	);
+
+	const tiers = [
+		{
+			name: 'Creator Creator III',
+			threshold: 100,
+			titleName: 'Creator Creator'
+		},
+		{name: 'Creator Creator II', threshold: 10},
+		{name: 'Creator Creator I', threshold: 1}
+	];
+	return testTiers(orm, rowCount, editorID, tiers);
 }
 
-function processLimitedEdition(orm, editorId) {
+async function processLimitedEdition(orm, editorID: number) {
 	const {EditionRevision} = orm;
-	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Limited Edition III',
-					threshold: 100,
-					titleName: 'Limited Edition'
-				},
-				{
-					name: 'Limited Edition II',
-					threshold: 10
-				},
-				{
-					name: 'Limited Edition I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(
+		new EditionRevision(), 'edition_revision', editorID
+	);
+
+	const tiers = [
+		{
+			name: 'Limited Edition III',
+			threshold: 100,
+			titleName: 'Limited Edition'
+		},
+		{name: 'Limited Edition II', threshold: 10},
+		{name: 'Limited Edition I', threshold: 1}
+	];
+	return testTiers(orm, rowCount, editorID, tiers);
 }
 
-function processPublisher(orm, editorId) {
+async function processPublisher(orm, editorID: number) {
 	const {PublicationRevision} = orm;
-	return getTypeCreation(new PublicationRevision(),
-		'publication_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Publisher III',
-					threshold: 100,
-					titleName: 'Publisher'
-				},
-				{
-					name: 'Publisher II',
-					threshold: 10
-				},
-				{
-					name: 'Publisher I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(
+		new PublicationRevision(), 'publication_revision', editorID
+	);
+
+	const tiers = [
+		{name: 'Publisher III', threshold: 100, titleName: 'Publisher'},
+		{name: 'Publisher II', threshold: 10},
+		{name: 'Publisher I', threshold: 1}
+	];
+	return testTiers(orm, rowCount, editorID, tiers);
 }
 
-function processPublisherCreator(orm, editorId) {
+async function processPublisherCreator(orm, editorID: number) {
 	const {PublisherRevision} = orm;
-	return getTypeCreation(new PublisherRevision(),
-		'publisher_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Publisher Creator III',
-					threshold: 100,
-					titleName: 'Publisher Creator'
-				},
-				{
-					name: 'Publisher Creator II',
-					threshold: 10
-				},
-				{
-					name: 'Publisher Creator I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(
+		new PublisherRevision(), 'publisher_revision', editorID
+	);
+
+	const tiers = [
+		{
+			name: 'Publisher Creator III',
+			threshold: 100,
+			titleName: 'Publisher Creator'
+		},
+		{name: 'Publisher Creator II', threshold: 10},
+		{name: 'Publisher Creator I', threshold: 1}
+	];
+	return testTiers(orm, rowCount, editorID, tiers);
 }
 
-function processWorkerBee(orm, editorId) {
+async function processWorkerBee(orm, editorID: number) {
 	const {WorkRevision} = orm;
-	return getTypeCreation(new WorkRevision(),
-		'work_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Worker Bee III',
-					threshold: 100,
-					titleName: 'Worker Bee'
-				},
-				{
-					name: 'Worker Bee II',
-					threshold: 10
-				},
-				{
-					name: 'Worker Bee I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(
+		new WorkRevision(), 'work_revision', editorID
+	);
+
+	const tiers = [
+		{
+			name: 'Worker Bee III',
+			threshold: 100,
+			titleName: 'Worker Bee'
+		},
+		{
+			name: 'Worker Bee II',
+			threshold: 10
+		},
+		{
+			name: 'Worker Bee I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorID, tiers);
 }
 
-function processSprinter(orm, editorId) {
+async function processSprinter(orm, editorID: number) {
 	const {bookshelf} = orm;
 	const rawSql =
-		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
+		`SELECT * from bookbrainz.revision WHERE author_id=${editorID} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
 
-	return bookshelf.knex.raw(rawSql)
-		.then((out) => {
-			const tiers = [
-				{
-					name: 'Sprinter',
-					threshold: 10,
-					titleName: 'Sprinter'
-				}
-			];
-			return testTiers(orm, out.rowCount, editorId, tiers);
-		});
+	const out = await bookshelf.knex.raw(rawSql);
+	const tiers = [
+		{
+			name: 'Sprinter',
+			threshold: 10,
+			titleName: 'Sprinter'
+		}
+	];
+	return testTiers(orm, out.rowCount, editorID, tiers);
 }
 
 /**
  * Gets number of distinct days the editor created revisions within specified
  * time limit
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @param {int} editorId - Editor to query on
+ * @param {int} editorID - Editor to query on
  * @param {int} days - Number of days before today to collect edits from
  * @returns {int} - Number of days edits were performed on
  */
-function getEditsInDays(orm, editorId, days) {
+async function getEditsInDays(orm, editorID: number, days) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
-		WHERE author_id=${editorId} \
+		WHERE author_id=${editorID} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
 
-	return bookshelf.knex.raw(rawSql)
-		.then((out) => out.rowCount);
+	const out = await bookshelf.knex.raw(rawSql);
+	return out.rowCount;
 }
 
-function processFunRunner(orm, editorId) {
-	return getEditsInDays(orm, editorId, 6)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Fun Runner',
-					threshold: 7,
-					titleName: 'Fun Runner'
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+async function processFunRunner(orm, editorID: number) {
+	const rowCount = await getEditsInDays(orm, editorID, 6);
+
+	const tiers = [
+		{name: 'Fun Runner', threshold: 7, titleName: 'Fun Runner'}
+	];
+	return testTiers(orm, rowCount, editorID, tiers);
 }
 
-function processMarathoner(orm, editorId) {
-	return getEditsInDays(orm, editorId, 29)
-		.then((rowCount) => {
-			const tiers = [{
-				name: 'Marathoner',
-				threshold: 30,
-				titleName: 'Marathoner'
-			}];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+async function processMarathoner(orm, editorID: number) {
+	const rowCount = await getEditsInDays(orm, editorID, 29);
+
+	const tiers = [
+		{name: 'Marathoner', threshold: 30, titleName: 'Marathoner'}
+	];
+	return testTiers(orm, rowCount, editorID, tiers);
 }
 
 /**
@@ -442,196 +399,173 @@ function processMarathoner(orm, editorId) {
  * unlock JSON for each
  * @returns {list} - A list of achievementUnlock id's
  */
-function achievementToUnlockId(achievementUnlock) {
-	const unlockIds = [];
+function achievementToUnlockID(achievementUnlock) {
+	const unlockIDs = [];
 	Object.keys(achievementUnlock).forEach((key) => {
 		if (achievementUnlock[key].id) {
-			unlockIds.push(String(achievementUnlock[key].id));
+			unlockIDs.push(String(achievementUnlock[key].id));
 		}
 	});
-	return unlockIds;
+	return unlockIDs;
 }
 
 /**
  * Gets days since edition release date, positive implies released in future
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @param {int} revisionId - Revision to get release date of
+ * @param {int} revisionID - Revision to get release date of
  * @returns {int} - Days since edition was released
  */
-function getEditionDateDifference(orm, revisionId) {
+async function getEditionDateDifference(orm, revisionID) {
 	const {EditionRevision} = orm;
-	return new EditionRevision({id: revisionId}).fetch()
-		.then((edition) => edition.related('data').fetch())
-		.then((data) => data.related('releaseEventSet').fetch())
-		.then(
-			(releaseEventSet) =>
-				releaseEventSet.related('releaseEvents').fetch()
-		)
-		.then((releaseEvents) => {
-			if (releaseEvents.length > 0) {
-				const msInOneDay = 86400000;
-				const attribs = releaseEvents.models[0].attributes;
-				const date = new Date(
-					attribs.year,
-					attribs.month - 1,
-					attribs.day
-				);
-				const now = new Date(Date.now());
-				return Math.round((date.getTime() - now.getTime()) / msInOneDay);
-			}
 
-			return Promise.reject(new Error('no date attribute'));
-		})
-		.catch(() => Promise.reject(new Error('no date attribute')));
-}
+	try {
+		const edition = await new EditionRevision({id: revisionID}).fetch();
+		const data = await edition.related('data').fetch();
+		const releaseEventSet = await data.related('releaseEventSet').fetch();
+		const releaseEvents = await releaseEventSet.related('releaseEvents').fetch();
 
-function processTimeTraveller(orm, editorId, revisionId) {
-	return getEditionDateDifference(orm, revisionId)
-		.then((diff) => {
-			const tiers = [{
-				name: 'Time Traveller',
-				threshold: 0,
-				titleName: 'Time Traveller'
-			}];
-			return testTiers(orm, diff, editorId, tiers);
-		})
-		.catch((err) => ({'Time Traveller': err}));
-}
-
-function processHotOffThePress(orm, editorId, revisionId) {
-	return getEditionDateDifference(orm, revisionId)
-		.then((diff) => {
-			if (diff < 0) {
-				const tiers = [{
-					name: 'Hot Off the Press',
-					threshold: -7,
-					titleName: 'Hot Off the Press'
-				}];
-				return testTiers(orm, diff, editorId, tiers);
-			}
-
-			return Promise.resolve(
-				{'Hot Off the Press': false}
+		if (releaseEvents.length > 0) {
+			const msInOneDay = 86400000;
+			const attribs = releaseEvents.models[0].attributes;
+			const date = new Date(
+				attribs.year,
+				attribs.month - 1,
+				attribs.day
 			);
-		})
-		.catch((err) => ({'Hot Off the Press': err}));
+			const now = new Date(Date.now());
+			return Math.round((date.getTime() - now.getTime()) / msInOneDay);
+		}
+
+		throw new Error('no date attribute');
+	}
+	catch (err) {
+		throw new Error('no date attribute');
+	}
+}
+
+async function processTimeTraveller(orm, editorID, revisionID) {
+	try {
+		const diff = await getEditionDateDifference(orm, revisionID);
+
+		const tiers = [{
+			name: 'Time Traveller',
+			threshold: 0,
+			titleName: 'Time Traveller'
+		}];
+		return testTiers(orm, diff, editorID, tiers);
+	}
+	catch (err) {
+		return {'Time Traveller': err};
+	}
+}
+
+async function processHotOffThePress(orm, editorID, revisionID) {
+	try {
+		const diff = await getEditionDateDifference(orm, revisionID);
+
+		if (diff < 0) {
+			const tiers = [{
+				name: 'Hot Off the Press',
+				threshold: -7,
+				titleName: 'Hot Off the Press'
+			}];
+			return testTiers(orm, diff, editorID, tiers);
+		}
+
+		return {'Hot Off the Press': false};
+	}
+	catch (err) {
+		return {'Hot Off the Press': err};
+	}
 }
 
 /**
  * Returns number of distinct entities viewed by an editor
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @param {int} editorId - Editor to get views for
+ * @param {int} editorID - Editor to get views for
  * @returns {int} - Number of views user has
  */
-function getEntityVisits(orm, editorId) {
+async function getEntityVisits(orm, editorID) {
 	const {EditorEntityVisits} = orm;
-	return new EditorEntityVisits()
-		.where('editor_id', editorId)
-		.fetchAll({require: true})
-		.then((visits) => visits.length);
+	const visits = await new EditorEntityVisits().where('editor_id', editorID)
+		.fetchAll({require: true});
+
+	return visits.length;
 }
 
-function processExplorer(orm, editorId) {
-	return getEntityVisits(editorId)
-		.then((visits) => {
-			const tiers = [
-				{
-					name: 'Explorer I',
-					threshold: 10
-				},
-				{
-					name: 'Explorer II',
-					threshold: 100
-				},
-				{
-					name: 'Explorer III',
-					threshold: 1000,
-					titleName: 'Explorer'
-				}
-			];
-			return testTiers(orm, visits, editorId, tiers);
-		})
-		.catch((err) => ({Explorer: err}));
+async function processExplorer(orm, editorID) {
+	try {
+		const visits = await getEntityVisits(editorID);
+
+		const tiers = [
+			{name: 'Explorer I', threshold: 10},
+			{name: 'Explorer II', threshold: 100},
+			{name: 'Explorer III', threshold: 1000, titleName: 'Explorer'}
+		];
+		return testTiers(orm, visits, editorID, tiers);
+	}
+	catch (err) {
+		return {Explorer: err};
+	}
 }
 
 
-export async function processPageVisit(orm, userId) {
-	const explorer = await processExplorer(orm, userId);
+export async function processPageVisit(orm, editorID) {
+	const explorer = await processExplorer(orm, editorID);
 
-	const unlockIds = achievementToUnlockId(explorer);
-	const alert = unlockIds.join(',');
+	const unlockIDs = achievementToUnlockID(explorer);
+	const alert = unlockIDs.join(',');
 
-	return {
-		alert,
-		explorer
-	};
+	return {alert, explorer};
 }
 
 /**
  * Run each time an edit occurs on the site, will test for each achievement
  * type
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @param {int} userId - Id of the user to query
- * @param {int} revisionId - Id of latest revision
+ * @param {int} editorID - ID of the user to query
+ * @param {int} revisionID - ID of latest revision
  * @returns {object} - Output of each achievement test as well as an alert
  * containing id's for each unlocked achievement in .alert
  */
-export function processEdit(orm, userId, revisionId) {
-	return Promise.join(
-		processRevisionist(orm, userId),
-		processCreatorCreator(orm, userId),
-		processLimitedEdition(orm, userId),
-		processPublisher(orm, userId),
-		processPublisherCreator(orm, userId),
-		processWorkerBee(orm, userId),
-		processSprinter(orm, userId),
-		processFunRunner(orm, userId),
-		processMarathoner(orm, userId),
-		processTimeTraveller(orm, userId, revisionId),
-		processHotOffThePress(orm, userId, revisionId),
-		(
-			revisionist,
-			creatorCreator,
-			limitedEdition,
-			publisher,
-			publisherCreator,
-			workerBee,
-			sprinter,
-			funRunner,
-			marathoner,
-			timeTraveller,
-			hotOffThePress
-		) => {
-			const alertList = _.flatten([
-				achievementToUnlockId(revisionist),
-				achievementToUnlockId(creatorCreator),
-				achievementToUnlockId(limitedEdition),
-				achievementToUnlockId(publisher),
-				achievementToUnlockId(publisherCreator),
-				achievementToUnlockId(workerBee),
-				achievementToUnlockId(sprinter),
-				achievementToUnlockId(funRunner),
-				achievementToUnlockId(marathoner),
-				achievementToUnlockId(timeTraveller),
-				achievementToUnlockId(hotOffThePress)
-			]);
-			const alert = alertList.join(',');
-			return {
-				alert,
-				creatorCreator,
-				funRunner,
-				hotOffThePress,
-				limitedEdition,
-				marathoner,
-				publisher,
-				publisherCreator,
-				revisionist,
-				sprinter,
-				timeTraveller,
-				workerBee
-			};
-		}
-	);
+export async function processEdit(orm, editorID, revisionID) {
+	const results = await Promise.all([
+		processRevisionist(orm, editorID),
+		processCreatorCreator(orm, editorID),
+		processLimitedEdition(orm, editorID),
+		processPublisher(orm, editorID),
+		processPublisherCreator(orm, editorID),
+		processWorkerBee(orm, editorID),
+		processSprinter(orm, editorID),
+		processFunRunner(orm, editorID),
+		processMarathoner(orm, editorID),
+		processTimeTraveller(orm, editorID, revisionID),
+		processHotOffThePress(orm, editorID, revisionID)
+	]);
+
+	const [
+		revisionist, creatorCreator, limitedEdition, publisher,
+		publisherCreator, workerBee, sprinter, funRunner, marathoner,
+		timeTraveller, hotOffThePress
+	] = results;
+
+	const alertList = _.flatten(results.map(achievementToUnlockID));
+	const alert = alertList.join(',');
+
+	return {
+		alert,
+		creatorCreator,
+		funRunner,
+		hotOffThePress,
+		limitedEdition,
+		marathoner,
+		publisher,
+		publisherCreator,
+		revisionist,
+		sprinter,
+		timeTraveller,
+		workerBee
+	};
 }
 
 export function processComment() {
