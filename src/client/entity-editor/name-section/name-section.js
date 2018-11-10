@@ -128,14 +128,14 @@ function NameSection({
 								{_.capitalize(entityType)}{exactMatches.length > 0 ? 's' : ''} with
 								exactly the same name:
 								<ListGroup className="margin-top-1 margin-bottom-1">
-									{exactMatches.map((bbid) =>
+									{exactMatches.map((match) =>
 										(
 											<ListGroupItem
 												bsStyle="warning"
-												href={`/${entityType}/${bbid}`}
-												key={`${bbid}`}
+												href={`/${entityType}/${match.bbid}`}
+												key={`${match.bbid}`}
 											>
-												{nameValue}
+												{match.defaultAlias.name}
 											</ListGroupItem>
 										))}
 								</ListGroup>

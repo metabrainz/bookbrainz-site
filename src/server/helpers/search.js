@@ -339,18 +339,32 @@ export async function generateIndex(orm) {
 	await refreshIndex();
 }
 
-export function checkIfExists(orm, name, collection) {
+export async function checkIfExists(orm, name, collection) {
 	const {bookshelf} = orm;
-	return new Promise((resolve) => {
+	const bbids = await new Promise((resolve) => {
 		bookshelf.transaction(async (transacting) => {
-			resolve(await orm.func.alias.getEntitiesWithMatchingAlias(
+			resolve(await orm.func.alias.getBBIDsWithMatchingAlias(
 				transacting, _.lowerCase(collection), name
 			));
 		});
 	});
-}
 
-// return bookshelf.knex.raw(rawSql).then(res => res.rows);
+	// Follow-up: Fetch all entities in a single transaction from the postgres server
+	const baseRelations = [
+		'aliasSet.aliases.language',
+		'annotation.lastRevision',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type',
+		'relationshipSet.relationships.type',
+		'revision.revision'
+	];
+	return Promise.all(
+		bbids.map(
+			bbid => orm.func.entity.getEntity(orm, _.capitalize(collection), bbid, baseRelations)
+		)
+	);
+}
 
 export function searchByName(orm, name, collection) {
 	const dslQuery = {
