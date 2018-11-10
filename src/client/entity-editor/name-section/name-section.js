@@ -124,10 +124,10 @@ function NameSection({
 							disambiguationDefaultValue
 						) ?
 							<Alert bsStyle="warning">
-								We found the
-								following {_.capitalize(entityType)} with
+								We found the following
+								{_.capitalize(entityType)}{exactMatches.length > 0 ? 's' : ''} with
 								exactly the same name:
-								<ListGroup>
+								<ListGroup className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((bbid) =>
 										(
 											<ListGroupItem
@@ -139,11 +139,8 @@ function NameSection({
 											</ListGroupItem>
 										))}
 								</ListGroup>
-								If you are sure your entry is different,
-								please add disambiguation below to help us
-								differentiate between them. Once the
-								disambiguation has been entered, this warning
-								will disappear.
+								If you are sure your entry is different, please fill the
+								disambiguation field below to help us differentiate between them.
 							</Alert> : null
 						}
 					</Col>
@@ -151,10 +148,8 @@ function NameSection({
 				<Row>
 					{!(searchResults || null) ? null :
 						<Col md={6} mdOffset={3}>
-							The {_.capitalize(entityType)} you are adding may
-							already exist in our database. If it appears below,
-							please use that {_.capitalize(entityType)} by
-							clicking on it instead of adding a new one.
+							If the {_.capitalize(entityType)} you want to add appears in the results
+							below, click on it to inspect it before adding a possible duplicate.
 							<SearchResults results={searchResults}/>
 						</Col>
 					}
