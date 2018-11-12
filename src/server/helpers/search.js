@@ -17,6 +17,7 @@
  */
 
 import * as utils from '../helpers/utils';
+
 import ElasticSearch from 'elasticsearch';
 import Promise from 'bluebird';
 import _ from 'lodash';
@@ -341,11 +342,17 @@ export async function generateIndex(orm) {
 
 export async function checkIfExists(orm, name, collection) {
 	const {bookshelf} = orm;
-	const bbids = await new Promise((resolve) => {
+	const bbids = await new Promise((resolve, reject) => {
 		bookshelf.transaction(async (transacting) => {
-			resolve(await orm.func.alias.getBBIDsWithMatchingAlias(
-				transacting, _.lowerCase(collection), name
-			));
+			try {
+				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
+					transacting, _.lowerCase(collection), name
+				);
+				resolve(result);
+			}
+			catch (error) {
+				reject(error);
+			}
 		});
 	});
 
