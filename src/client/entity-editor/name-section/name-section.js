@@ -130,7 +130,7 @@ function NameSection({
 							<Alert bsStyle="warning">
 								We found the following&nbsp;
 								{_.capitalize(entityType)}{exactMatches.length > 0 ? 's' : ''} with
-								exactly the same name:
+								exactly the same name or alias:
 								<ListGroup className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((match) =>
 										(
