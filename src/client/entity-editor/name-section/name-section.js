@@ -18,14 +18,19 @@
 
 import {Alert, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
 import {
-	checkIfNameExists, debouncedUpdateDisambiguationField,
-	debouncedUpdateNameField, debouncedUpdateSortNameField, searchName,
+	checkIfNameExists,
+	debouncedUpdateDisambiguationField,
+	debouncedUpdateNameField,
+	debouncedUpdateSortNameField,
+	searchName,
 	updateLanguageField
 } from './actions';
 import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
 import {
-	validateNameSectionDisambiguation, validateNameSectionLanguage,
-	validateNameSectionName, validateNameSectionSortName
+	validateNameSectionDisambiguation,
+	validateNameSectionLanguage,
+	validateNameSectionName,
+	validateNameSectionSortName
 } from '../validators/common';
 
 import DisambiguationField from './disambiguation-field';
@@ -95,8 +100,7 @@ function NameSection({
 		onNameChangeSearchName(event.target.value);
 	}
 
-	const warnIfExists = exactMatches || null ?
-		exactMatches.length !== 0 : false;
+	const warnIfExists = Array.isArray(exactMatches) && exactMatches.length !== 0;
 
 	return (
 		<div>
@@ -124,7 +128,7 @@ function NameSection({
 							disambiguationDefaultValue
 						) ?
 							<Alert bsStyle="warning">
-								We found the following
+								We found the following&nbsp;
 								{_.capitalize(entityType)}{exactMatches.length > 0 ? 's' : ''} with
 								exactly the same name:
 								<ListGroup className="margin-top-1 margin-bottom-1">
@@ -146,7 +150,7 @@ function NameSection({
 					</Col>
 				</Row>
 				<Row>
-					{!(searchResults || null) ? null :
+					{!warnIfExists && Array.isArray(searchResults) && searchResults.length > 0 &&
 						<Col md={6} mdOffset={3}>
 							If the {_.capitalize(entityType)} you want to add appears in the results
 							below, click on it to inspect it before adding a possible duplicate.
