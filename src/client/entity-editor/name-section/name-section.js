@@ -100,7 +100,7 @@ function NameSection({
 		onNameChangeSearchName(event.target.value);
 	}
 
-	const warnIfExists = Array.isArray(exactMatches) && exactMatches.length !== 0;
+	const warnIfExists = !_.isEmpty(exactMatches);
 
 	return (
 		<div>
@@ -129,7 +129,7 @@ function NameSection({
 						) ?
 							<Alert bsStyle="warning">
 								We found the following&nbsp;
-								{_.capitalize(entityType)}{exactMatches.length > 0 ? 's' : ''} with
+								{_.capitalize(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 								exactly the same name or alias:
 								<br/><small className="help-block">Click on a name to open in a new tab</small>
 								<ListGroup className="margin-top-1 margin-bottom-1">
@@ -151,15 +151,17 @@ function NameSection({
 						}
 					</Col>
 				</Row>
-				<Row>
-					{!warnIfExists && Array.isArray(searchResults) && searchResults.length > 0 &&
+				{
+					!warnIfExists &&
+					!_.isEmpty(searchResults) &&
+					<Row>
 						<Col md={6} mdOffset={3}>
 							If the {_.capitalize(entityType)} you want to add appears in the results
 							below, click on it to inspect it in a new tab before adding a possible duplicate.
 							<SearchResults results={searchResults}/>
 						</Col>
-					}
-				</Row>
+					</Row>
+				}
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<SortNameField
@@ -188,10 +190,10 @@ function NameSection({
 						/>
 					</Col>
 				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						{
-							(warnIfExists || disambiguationVisible) &&
+				{
+					(warnIfExists || disambiguationVisible) &&
+					<Row>
+						<Col md={6} mdOffset={3}>
 							<DisambiguationField
 								defaultValue={disambiguationDefaultValue}
 								error={isRequiredDisambiguationEmpty(
@@ -204,9 +206,9 @@ function NameSection({
 								required={warnIfExists}
 								onChange={onDisambiguationChange}
 							/>
-						}
-					</Col>
-				</Row>
+						</Col>
+					</Row>
+				}
 			</form>
 		</div>
 	);
