@@ -131,6 +131,7 @@ function NameSection({
 								We found the following&nbsp;
 								{_.capitalize(entityType)}{exactMatches.length > 0 ? 's' : ''} with
 								exactly the same name or alias:
+								<br/><small className="help-block">Click on a name to open in a new tab</small>
 								<ListGroup className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((match) =>
 										(
@@ -154,7 +155,7 @@ function NameSection({
 					{!warnIfExists && Array.isArray(searchResults) && searchResults.length > 0 &&
 						<Col md={6} mdOffset={3}>
 							If the {_.capitalize(entityType)} you want to add appears in the results
-							below, click on it to inspect it before adding a possible duplicate.
+							below, click on it to inspect it in a new tab before adding a possible duplicate.
 							<SearchResults results={searchResults}/>
 						</Col>
 					}
