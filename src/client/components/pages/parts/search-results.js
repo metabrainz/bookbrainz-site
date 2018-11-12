@@ -18,6 +18,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -45,7 +46,7 @@ function SearchResults(props) {
 		return (
 			<tr key={result.bbid}>
 				<td>
-					<a href={link}>
+					<a href={link} rel="noopener noreferrer" target="_blank">
 						{name}
 					</a>
 				</td>

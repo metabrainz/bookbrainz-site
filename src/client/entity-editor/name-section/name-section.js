@@ -138,6 +138,7 @@ function NameSection({
 												bsStyle="warning"
 												href={`/${entityType}/${match.bbid}`}
 												key={`${match.bbid}`}
+												rel="noopener noreferrer" target="_blank"
 											>
 												{match.defaultAlias.name}
 											</ListGroupItem>
