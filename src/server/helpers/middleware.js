@@ -138,16 +138,12 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 	].concat(additionalRels);
 
 	return (req, res, next, bbid) => {
-		const model = req.app.locals.orm[modelName];
+		const {orm} = req.app.locals;
+		const model = orm.func.entity.getEntityModelByType(orm, modelName);
 		if (utils.isValidBBID(bbid)) {
-			return model.forge({bbid})
-				.fetch({
-					require: true,
-					withRelated: relations
-				})
+			return orm.func.entity.getEntity(orm, modelName, bbid, relations)
 				.then((entity) => {
-					res.locals.entity = entity.toJSON();
-
+					res.locals.entity = entity;
 					next();
 				})
 				.catch(model.NotFoundError, () => {

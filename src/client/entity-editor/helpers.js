@@ -50,6 +50,12 @@ export function isAliasEmpty(
 	return !(nameValue.length || sortNameValue.length || languageValue);
 }
 
+export function isRequiredDisambiguationEmpty(
+	required: boolean, disambiguation: string
+): boolean {
+	return required ? !disambiguation : false;
+}
+
 export function getEntitySection(entityType: string) {
 	const SECTION_MAP = {
 		creator: CreatorSection,

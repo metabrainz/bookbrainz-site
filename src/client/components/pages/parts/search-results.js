@@ -62,7 +62,7 @@ function SearchResults(props) {
 					{genEntityIconHTMLElement(result.type)}{result.type}
 				</td>
 				<td>
-					<a href={link}>
+					<a href={link} rel="noopener noreferrer" target="_blank">
 						{name} {disambiguation}
 					</a>
 				</td>

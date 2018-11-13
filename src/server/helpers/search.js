@@ -23,6 +23,7 @@ import Promise from 'bluebird';
 import _ from 'lodash';
 import httpStatus from 'http-status';
 
+
 const _index = 'bookbrainz';
 const _bulkIndexSize = 128;
 
@@ -345,6 +346,39 @@ export async function generateIndex(orm) {
 	await _processEntityListForBulk(processedAreas);
 
 	await refreshIndex();
+}
+
+export async function checkIfExists(orm, name, collection) {
+	const {bookshelf} = orm;
+	const bbids = await new Promise((resolve, reject) => {
+		bookshelf.transaction(async (transacting) => {
+			try {
+				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
+					transacting, _.lowerCase(collection), name
+				);
+				resolve(result);
+			}
+			catch (error) {
+				reject(error);
+			}
+		});
+	});
+
+	// Follow-up: Fetch all entities in a single transaction from the postgres server
+	const baseRelations = [
+		'aliasSet.aliases.language',
+		'annotation.lastRevision',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type',
+		'relationshipSet.relationships.type',
+		'revision.revision'
+	];
+	return Promise.all(
+		bbids.map(
+			bbid => orm.func.entity.getEntity(orm, _.capitalize(collection), bbid, baseRelations)
+		)
+	);
 }
 
 export function searchByName(orm, name, collection, size, from) {
