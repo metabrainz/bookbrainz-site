@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ohm Patel
  *               2016  Sean Burke
+ *               2018  Nicolas Pelleiter
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@ import SearchResults from './parts/search-results';
 import request from 'superagent-bluebird-promise';
 
 
-const {Pager, Pagination} = bootstrap;
+const {Button, ButtonGroup, DropdownButton, MenuItem, Pager} = bootstrap;
 
 class SearchPage extends React.Component {
 	/**
@@ -52,6 +53,7 @@ class SearchPage extends React.Component {
 		this.triggerSearch = this.triggerSearch.bind(this);
 		this.handleClickPrevious = this.handleClickPrevious.bind(this);
 		this.handleClickNext = this.handleClickNext.bind(this);
+		this.handleResultsPerPageChange = this.handleResultsPerPageChange.bind(this);
 	}
 
 	/**
@@ -94,6 +96,10 @@ class SearchPage extends React.Component {
 		this.setState(prevState => ({from: prevState.from + prevState.size}), this.triggerSearch);
 	}
 
+	handleResultsPerPageChange(value) {
+		this.setState({size: value}, this.triggerSearch);
+	}
+
 	/**
 	 * Renders the component: Search bar with results table located vertically
 	 * below it.
@@ -119,15 +125,25 @@ class SearchPage extends React.Component {
 							>
 								&larr; Previous Page
 							</Pager.Item>
-							<li>
-								<a className="btn-link">
-									Results {this.state.from} —&nbsp;
+							<ButtonGroup>
+								<Button disabled link>Results {this.state.from}—
 									{this.state.results.length < this.state.size ?
 										this.state.results.length :
 										this.state.from + this.state.size
 									}
-								</a>
-							</li>
+								</Button>
+								<DropdownButton
+									dropup bsStyle="info" id="bg-nested-dropdown"
+									title={`${this.state.size} per page`}
+									onSelect={this.handleResultsPerPageChange}
+								>
+									<MenuItem eventKey="10">10 per page</MenuItem>
+									<MenuItem eventKey="20">20 per page</MenuItem>
+									<MenuItem eventKey="35">35 per page</MenuItem>
+									<MenuItem eventKey="50">50 per page</MenuItem>
+									<MenuItem eventKey="100">100 per page</MenuItem>
+								</DropdownButton>
+							</ButtonGroup>
 							<Pager.Item
 								next disabled={!this.state.nextEnabled}
 								href="#" onClick={this.handleClickNext}
