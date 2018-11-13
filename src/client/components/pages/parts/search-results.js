@@ -46,10 +46,13 @@ function SearchResults(props) {
 		}
 		const name = result.defaultAlias ? result.defaultAlias.name :
 			'(unnamed)';
-		const aliases = result.aliasSet && Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
-		const secondaryAliases = aliases &&
-			_differenceBy(aliases, [result.defaultAlias], 'id').map(alias => alias.name).join(', ') ||
-			'';
+
+		const aliases = !props.condensed && result.aliasSet &&
+		Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
+
+		const secondaryAliases = !props.condensed && aliases &&
+			_differenceBy(aliases, [result.defaultAlias], 'id').map(alias => alias.name).join(', ');
+
 		const disambiguation = result.disambiguation ? <small>({result.disambiguation.comment})</small> : '';
 		// No redirect link for Area entity results
 		const link = result.type === 'Area' ?
@@ -58,38 +61,53 @@ function SearchResults(props) {
 
 		return (
 			<tr key={result.bbid}>
-				<td>
-					{genEntityIconHTMLElement(result.type)}{result.type}
-				</td>
+				{
+					!props.condensed &&
+					<td>
+						{genEntityIconHTMLElement(result.type)}{result.type}
+					</td>
+				}
 				<td>
 					<a href={link} rel="noopener noreferrer" target="_blank">
 						{name} {disambiguation}
 					</a>
 				</td>
-				<td>
-					{secondaryAliases}
-				</td>
+				{
+					!props.condensed &&
+					<td>
+						{secondaryAliases}
+					</td>
+				}
 			</tr>
 		);
 	});
-
+	let tableCssClasses = 'table table-striped';
+	if (props.condensed) {
+		tableCssClasses += ' table-condensed';
+	}
 	return (
 		<div>
-			<h3 style={{color: '#754e37'}}>
-				Search Results
-			</h3>
+			{
+				!props.condensed &&
+				<h3 style={{color: '#754e37'}}>
+					Search Results
+				</h3>
+			}
 			<hr className="thin"/>
 			<Table
 				responsive
-				className="table table-striped"
+				className={tableCssClasses}
 			>
-				<thead>
-					<tr>
-						<th style={{width: '150px'}}>Type</th>
-						<th>Name</th>
-						<th>Aliases</th>
-					</tr>
-				</thead>
+				{
+					!props.condensed &&
+					<thead>
+						<tr>
+							<th style={{width: '150px'}}>Type</th>
+							<th>Name</th>
+							<th>Aliases</th>
+						</tr>
+					</thead>
+				}
 				<tbody>
 					{results}
 				</tbody>
@@ -100,9 +118,11 @@ function SearchResults(props) {
 
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
+	condensed: PropTypes.bool,
 	results: PropTypes.array
 };
 SearchResults.defaultProps = {
+	condensed: false,
 	results: null
 };
 

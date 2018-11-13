@@ -160,7 +160,7 @@ function NameSection({
 						<Col md={6} mdOffset={3}>
 							If the {_.capitalize(entityType)} you want to add appears in the results
 							below, click on it to inspect it in a new tab before adding a possible duplicate.
-							<SearchResults results={searchResults}/>
+							<SearchResults condensed results={searchResults}/>
 						</Col>
 					</Row>
 				}
