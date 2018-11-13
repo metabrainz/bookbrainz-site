@@ -97,7 +97,7 @@ class SearchPage extends React.Component {
 	}
 
 	handleResultsPerPageChange(value) {
-		this.setState({size: value}, this.triggerSearch);
+		this.setState({size: parseInt(value, 10)}, this.triggerSearch);
 	}
 
 	/**
