@@ -21,6 +21,8 @@ import * as bootstrap from 'react-bootstrap';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import {differenceBy as _differenceBy} from 'lodash';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
 const {Table} = bootstrap;
@@ -29,53 +31,83 @@ function SearchResults(props) {
 	const noResults = !props.results || props.results.length === 0;
 	if (noResults) {
 		return (
-			<div className="col-md-6 col-md-offset-3">
-				{'No results found'}
+			<div>
+				<hr className="thin"/>
+				<h2 className="text-center" style={{color: '#754e37'}}>
+					No results found
+				</h2>
 			</div>
 		);
 	}
 
 	const results = props.results.map((result) => {
-		// No redirect link for Area entity results
+		if (!result) {
+			return null;
+		}
 		const name = result.defaultAlias ? result.defaultAlias.name :
 			'(unnamed)';
+
+		const aliases = !props.condensed && result.aliasSet &&
+		Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
+
+		const secondaryAliases = !props.condensed && aliases &&
+			_differenceBy(aliases, [result.defaultAlias], 'id').map(alias => alias.name).join(', ');
+
+		const disambiguation = result.disambiguation ? <small>({result.disambiguation.comment})</small> : '';
+		// No redirect link for Area entity results
 		const link = result.type === 'Area' ?
 			`//musicbrainz.org/area/${result.bbid}` :
 			`/${result.type.toLowerCase()}/${result.bbid}`;
 
 		return (
 			<tr key={result.bbid}>
+				{
+					!props.condensed &&
+					<td>
+						{genEntityIconHTMLElement(result.type)}{result.type}
+					</td>
+				}
 				<td>
 					<a href={link} rel="noopener noreferrer" target="_blank">
-						{name}
+						{name} {disambiguation}
 					</a>
 				</td>
-				<td>
-					{result.type}
-				</td>
+				{
+					!props.condensed &&
+					<td>
+						{secondaryAliases}
+					</td>
+				}
 			</tr>
 		);
 	});
-
+	let tableCssClasses = 'table table-striped';
+	if (props.condensed) {
+		tableCssClasses += ' table-condensed';
+	}
 	return (
 		<div>
-			<div style={{color: '#754e37',
-				fontSize: 16,
-				fontWeight: 'Bold',
-				paddingLeft: 8}}
-			>
-				Search Results
-			</div>
+			{
+				!props.condensed &&
+				<h3 style={{color: '#754e37'}}>
+					Search Results
+				</h3>
+			}
+			<hr className="thin"/>
 			<Table
 				responsive
-				className="table table-striped"
+				className={tableCssClasses}
 			>
-				<thead>
-					<tr>
-						<th>Alias</th>
-						<th>Type</th>
-					</tr>
-				</thead>
+				{
+					!props.condensed &&
+					<thead>
+						<tr>
+							<th style={{width: '150px'}}>Type</th>
+							<th>Name</th>
+							<th>Aliases</th>
+						</tr>
+					</thead>
+				}
 				<tbody>
 					{results}
 				</tbody>
@@ -86,9 +118,11 @@ function SearchResults(props) {
 
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
+	condensed: PropTypes.bool,
 	results: PropTypes.array
 };
 SearchResults.defaultProps = {
+	condensed: false,
 	results: null
 };
 

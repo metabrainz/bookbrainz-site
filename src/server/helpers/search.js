@@ -57,8 +57,8 @@ function _fetchEntityModelsForESResults(orm, results) {
 		}
 		const model = utils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
-			.fetch({withRelated: ['defaultAlias']})
-			.then((entity) => entity.toJSON());
+			.fetch({withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
+			.then((entity) => entity && entity.toJSON());
 	});
 }
 
@@ -381,9 +381,10 @@ export async function checkIfExists(orm, name, collection) {
 	);
 }
 
-export function searchByName(orm, name, collection) {
+export function searchByName(orm, name, collection, size, from) {
 	const dslQuery = {
 		body: {
+			from,
 			query: {
 				bool: {
 					must: {
@@ -403,7 +404,8 @@ export function searchByName(orm, name, collection) {
 						}
 					}
 				}
-			}
+			},
+			size
 		},
 		index: _index
 	};

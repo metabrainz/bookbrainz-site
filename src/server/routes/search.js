@@ -22,12 +22,16 @@ import * as error from '../helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../helpers/search';
+import * as utils from '../helpers/utils';
+
 import {escapeProps, generateProps} from '../helpers/props';
+
 import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
+import {keys as _keys} from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
@@ -42,23 +46,29 @@ router.get('/', (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
+	const resultsPerPage = 20;
+	const {size, from} = req.query;
 
-	search.searchByName(orm, query, collection)
+	search.searchByName(orm, query, collection, size || resultsPerPage, from)
 		.then((entities) => ({
 			initialResults: entities,
 			query
 		}))
 		.then((searchResults) => {
+			const entityTypes = _keys(utils.getEntityModels(orm));
 			const props = generateProps(req, res, {
+				entityTypes,
 				hideSearch: true,
+				resultsPerPage,
 				...searchResults
 			});
-
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<SearchPage
+						entityTypes={props.entityTypes}
 						initialResults={props.initialResults}
 						query={query}
+						resultsPerPage={props.resultsPerPage}
 					/>
 				</Layout>
 			);
@@ -77,8 +87,9 @@ router.get('/search', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
+	const {size, from} = req.query;
 
-	const searchPromise = search.searchByName(orm, query, collection);
+	const searchPromise = search.searchByName(orm, query, collection, size, from);
 
 	handler.sendPromiseResult(res, searchPromise);
 });
