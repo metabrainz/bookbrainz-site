@@ -43,6 +43,7 @@ import SortNameField from '../common/sort-name-field';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {entityTypeProperty} from '../../helpers/react-validators';
+import {getEntityDisambiguation} from '../../helpers/entity';
 
 /**
  * Container component. The NameSection component contains input fields for
@@ -132,6 +133,7 @@ function NameSection({
 								{_.capitalize(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 								exactly the same name or alias:
 								<br/><small className="help-block">Click on a name to open in a new tab</small>
+
 								<ListGroup className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((match) =>
 										(
@@ -141,7 +143,7 @@ function NameSection({
 												key={`${match.bbid}`}
 												rel="noopener noreferrer" target="_blank"
 											>
-												{match.defaultAlias.name}
+												{match.defaultAlias.name} {getEntityDisambiguation(match)}
 											</ListGroupItem>
 										))}
 								</ListGroup>
