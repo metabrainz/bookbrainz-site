@@ -51,7 +51,7 @@ router.get('/', (req, res, next) => {
 
 	search.searchByName(orm, query, collection, size || resultsPerPage, from)
 		.then((entities) => ({
-			initialResults: entities,
+			initialResults: entities.filter(Boolean),
 			query
 		}))
 		.then((searchResults) => {

@@ -83,7 +83,7 @@ class SearchPage extends React.Component {
 			.then((data) => {
 				this.setState(prevState => ({
 					nextEnabled: data.length >= prevState.size,
-					results: data
+					results: data.filter(Boolean)
 				}));
 			});
 	}
@@ -115,7 +115,8 @@ class SearchPage extends React.Component {
 					onSearch={this.handleSearch}
 				/>
 				<SearchResults results={this.state.results}/>
-				{this.state.results && this.state.results.length ?
+				{
+					this.state.results && this.state.results.length &&
 					<div>
 						<hr className="thin"/>
 						<Pager>
@@ -151,7 +152,7 @@ class SearchPage extends React.Component {
 								Next Page &rarr;
 							</Pager.Item>
 						</Pager>
-					</div> : null
+					</div>
 				}
 			</div>
 		);
