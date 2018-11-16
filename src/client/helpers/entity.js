@@ -196,7 +196,13 @@ export const ENTITY_TYPE_ICONS = {
 	Work: 'pen-nib'
 };
 
-export function genEntityIconHTMLElement(entityType) {
+export function genEntityIconHTMLElement(entityType, size = '', margin = true) {
 	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
-	return <FontAwesome ariaLabel={entityType} className="margin-right-0-5" name={ENTITY_TYPE_ICONS[entityType]}/>;
+	return (
+		<FontAwesome
+			ariaLabel={entityType}
+			className={margin ? 'margin-right-0-5' : ''}
+			name={ENTITY_TYPE_ICONS[entityType]}
+			size={size}
+		/>);
 }

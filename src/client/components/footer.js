@@ -19,6 +19,7 @@
  */
 /* eslint max-len: "warn" */
 import * as bootstrap from 'react-bootstrap';
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -32,7 +33,7 @@ function Footer(props) {
 		<footer className="footer">
 			<Grid fluid>
 				<Row>
-					<Col sm={4}>
+					<Col xs={4}>
 						<small>{'Tested with '}
 							<a
 								href="https://www.browserstack.com/"
@@ -47,13 +48,13 @@ function Footer(props) {
 							</a>
 						</small>
 					</Col>
-					<Col className="text-center" sm={4}>
+					<Col className="text-center" xs={4}>
 						<small>Cover image by{' '}
 							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
 							{' ('}<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)
 						</small>
 					</Col>
-					<Col className="text-right" sm={4}>
+					<Col className="text-right" xs={4}>
 						<a href="/privacy">
 							<small>Privacy & Terms</small>
 						</a>
