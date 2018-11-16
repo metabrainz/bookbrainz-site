@@ -17,6 +17,7 @@
  */
 
 import * as utils from '../helpers/utils';
+
 import ElasticSearch from 'elasticsearch';
 import Promise from 'bluebird';
 import _ from 'lodash';
@@ -56,8 +57,8 @@ function _fetchEntityModelsForESResults(orm, results) {
 		}
 		const model = utils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
-			.fetch({withRelated: ['defaultAlias']})
-			.then((entity) => entity.toJSON());
+			.fetch({withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
+			.then((entity) => entity && entity.toJSON());
 	});
 }
 
@@ -184,6 +185,14 @@ export function autocomplete(orm, query, collection) {
 export function indexEntity(entity) {
 	return _client.index({
 		body: entity,
+		id: entity.bbid,
+		index: _index,
+		type: entity.type.toLowerCase()
+	});
+}
+
+export function deleteEntity(entity) {
+	return _client.delete({
 		id: entity.bbid,
 		index: _index,
 		type: entity.type.toLowerCase()
@@ -339,9 +348,43 @@ export async function generateIndex(orm) {
 	await refreshIndex();
 }
 
-export function searchByName(orm, name, collection) {
+export async function checkIfExists(orm, name, collection) {
+	const {bookshelf} = orm;
+	const bbids = await new Promise((resolve, reject) => {
+		bookshelf.transaction(async (transacting) => {
+			try {
+				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
+					transacting, _.lowerCase(collection), name
+				);
+				resolve(result);
+			}
+			catch (error) {
+				reject(error);
+			}
+		});
+	});
+
+	// Follow-up: Fetch all entities in a single transaction from the postgres server
+	const baseRelations = [
+		'aliasSet.aliases.language',
+		'annotation.lastRevision',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type',
+		'relationshipSet.relationships.type',
+		'revision.revision'
+	];
+	return Promise.all(
+		bbids.map(
+			bbid => orm.func.entity.getEntity(orm, _.capitalize(collection), bbid, baseRelations)
+		)
+	);
+}
+
+export function searchByName(orm, name, collection, size, from) {
 	const dslQuery = {
 		body: {
+			from,
 			query: {
 				bool: {
 					must: {
@@ -361,7 +404,8 @@ export function searchByName(orm, name, collection) {
 						}
 					}
 				}
-			}
+			},
+			size
 		},
 		index: _index
 	};

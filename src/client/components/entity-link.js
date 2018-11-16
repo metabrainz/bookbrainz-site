@@ -18,11 +18,13 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
 function EntityLink({bbid, text, type}) {
 	return (
 		<a href={`/${type.toLowerCase()}/${bbid}`}>
+			{genEntityIconHTMLElement(type)}
 			{text}
 		</a>
 	);

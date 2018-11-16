@@ -35,8 +35,8 @@ const relationshipTests = {
 			type: {linkPhrase: ''}
 		},
 		renderedRel: [
-			'<a href="/test-type/1">test</a>  ',
-			'<a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a>  ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
 		].join('')
 	},
 	fullySpecified: {
@@ -54,8 +54,8 @@ const relationshipTests = {
 			type: {linkPhrase: 'a test link phrase'}
 		},
 		renderedRel: [
-			'<a href="/test-type/1">test</a> a test link phrase ',
-			'<a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a> a test link phrase ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
 		].join('')
 	},
 	fullySpecifiedWithNumericBbids: {
@@ -73,8 +73,8 @@ const relationshipTests = {
 			type: {linkPhrase: 'a test link phrase'}
 		},
 		renderedRel: [
-			'<a href="/test-type/1">test</a> a test link phrase ',
-			'<a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a> a test link phrase ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
 		].join('')
 	},
 	nullEntities: {
@@ -115,8 +115,8 @@ const relationshipTests = {
 			type: {linkPhrase: 'a test link phrase'}
 		},
 		renderedRel: [
-			'<a href="/test-type/1">(unnamed)</a> a test link phrase ',
-			'<a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">(unnamed)</a> a test link phrase ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
 		].join('')
 	}
 };

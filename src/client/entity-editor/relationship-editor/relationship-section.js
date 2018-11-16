@@ -19,15 +19,25 @@
 // @flow
 
 import * as Immutable from 'immutable';
+
 import {
-	type Action, addRelationship, editRelationship, hideRelationshipEditor,
-	removeRelationship, showRelationshipEditor, undoLastSave
+	type Action,
+	addRelationship,
+	editRelationship,
+	hideRelationshipEditor,
+	removeRelationship,
+	showRelationshipEditor,
+	undoLastSave
 } from './actions';
 import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
 import type {
-	Entity, EntityType, RelationshipForDisplay, RelationshipType,
+	Entity,
+	EntityType,
+	RelationshipForDisplay,
+	RelationshipType,
 	Relationship as _Relationship
 } from './types';
+
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import React from 'react';
 import Relationship from './relationship';
@@ -121,12 +131,13 @@ function RelationshipSection({
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
 	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
+	const entityTypeForDisplay = _.upperFirst(entityType);
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
 		defaultAlias: {
 			name: entityName
 		},
-		type: _.upperFirst(entityType)
+		type: entityTypeForDisplay
 	};
 
 	const editor = (
@@ -145,7 +156,7 @@ function RelationshipSection({
 	return (
 		<div>
 			{showEditor && editor}
-			<h2>How are other entities related to this entity?</h2>
+			<h2>How are other entities related to this {entityTypeForDisplay}?</h2>
 			<Row>
 				<Col md={10} mdOffset={1}>
 					<RelationshipList

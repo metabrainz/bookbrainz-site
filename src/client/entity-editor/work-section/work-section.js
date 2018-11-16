@@ -19,10 +19,13 @@
 // @flow
 
 import {
-	type Action, updateLanguages, updateType
+	type Action,
+	updateLanguages,
+	updateType
 } from './actions';
 import {Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
+
 import CustomInput from '../../input';
 import LanguageField from '../common/language-field';
 import React from 'react';
@@ -108,7 +111,10 @@ function WorkSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<CustomInput label="Type">
+					<CustomInput
+						label="Type"
+						tooltipText="Literary form or structure of the work"
+					>
 						<Select
 							instanceId="workType"
 							options={workTypesForDisplay}
@@ -125,6 +131,7 @@ function WorkSection({
 						multi
 						instanceId="language"
 						options={languageOptionsForDisplay}
+						tooltipText="Main language used for the content of the work"
 						value={languageValues}
 						onChange={onLanguagesChange}
 					/>

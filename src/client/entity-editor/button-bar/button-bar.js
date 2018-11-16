@@ -18,15 +18,18 @@
 
 import {Button, Col, Row} from 'react-bootstrap';
 import {
-	showAliasEditor, showDisambiguation, showIdentifierEditor
+	showAliasEditor,
+	showDisambiguation,
+	showIdentifierEditor
 } from './actions';
 import {validateAliases, validateIdentifiers} from '../validators/common';
+
 import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {addIdentifierRow} from '../identifier-editor/actions';
 import {connect} from 'react-redux';
-
 
 /**
  * Container component. This component renders three buttons in a horizontal
@@ -72,21 +75,23 @@ function ButtonBar({
 						/>
 					</Col>
 					<Col className="text-center" md={4}>
-						<Button
-							bsStyle="link"
-							disabled={disambiguationVisible}
-							onClick={onDisambiguationButtonClick}
-						>
-							Add disambiguation…
-						</Button>
-					</Col>
-					<Col className="text-center" md={4}>
 						<IdentifierButton
 							identifiersInvalid={identifiersInvalid}
 							numIdentifiers={numIdentifiers}
 							onClick={onIdentifierButtonClick}
 						/>
 					</Col>
+					{
+						!disambiguationVisible &&
+						<Col className="text-center" md={4}>
+							<Button
+								bsStyle="link"
+								onClick={onDisambiguationButtonClick}
+							>
+								Add disambiguation…
+							</Button>
+						</Col>
+					}
 				</Row>
 			</form>
 		</div>
@@ -121,7 +126,10 @@ function mapDispatchToProps(dispatch) {
 	return {
 		onAliasButtonClick: () => dispatch(showAliasEditor()),
 		onDisambiguationButtonClick: () => dispatch(showDisambiguation()),
-		onIdentifierButtonClick: () => dispatch(showIdentifierEditor())
+		onIdentifierButtonClick: () => {
+			dispatch(showIdentifierEditor());
+			dispatch(addIdentifierRow());
+		}
 	};
 }
 

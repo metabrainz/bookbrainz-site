@@ -19,8 +19,12 @@
 // @flow
 
 import {
-	get, validateOptionalString, validatePositiveInteger, validateRequiredString
+	get,
+	validateOptionalString,
+	validatePositiveInteger,
+	validateRequiredString
 } from './base';
+
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 
@@ -158,7 +162,7 @@ export function validateNameSection(
 }
 
 export function validateSubmissionSectionNote(value: any): boolean {
-	return validateRequiredString(value);
+	return validateOptionalString(value);
 }
 
 export function validateSubmissionSection(

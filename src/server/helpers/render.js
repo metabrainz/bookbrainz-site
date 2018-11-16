@@ -20,6 +20,8 @@
 // @flow
 
 import * as utils from './utils';
+
+import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
 import _ from 'lodash';
 
 
@@ -88,7 +90,9 @@ function renderRelationship(relationship: Relationship) {
 		].map((entity) => {
 			// Linkify source and target based on default alias
 			const name = _.get(entity, 'defaultAlias.name', '(unnamed)');
-			return `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
+			const entityIcon = `<i class="fa fa-${ENTITY_TYPE_ICONS[entity.type]} margin-right-0-5"></i>`;
+			// eslint-disable-next-line prefer-template
+			return entityIcon + `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
 		})
 	};
 

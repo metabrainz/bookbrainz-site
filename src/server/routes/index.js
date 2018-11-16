@@ -20,10 +20,13 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
+
 import {escapeProps, generateProps} from '../helpers/props';
+
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
+import HelpPage from '../../client/components/pages/help';
 import Index from '../../client/components/pages/index';
 import Layout from '../../client/containers/layout';
 import LicensingPage from '../../client/components/pages/licensing';
@@ -139,6 +142,7 @@ function _createStaticRoute(route, title, PageComponent) {
 _createStaticRoute('/about', 'About', AboutPage);
 _createStaticRoute('/contribute', 'Contribute', ContributePage);
 _createStaticRoute('/develop', 'Develop', DevelopPage);
+_createStaticRoute('/help', 'Help', HelpPage);
 _createStaticRoute('/licensing', 'Licensing', LicensingPage);
 _createStaticRoute('/privacy', 'Privacy', PrivacyPage);
 

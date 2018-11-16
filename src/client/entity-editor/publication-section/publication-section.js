@@ -20,6 +20,7 @@
 
 import {type Action, updateType} from './actions';
 import {Col, Row} from 'react-bootstrap';
+
 import CustomInput from '../../input';
 import type {Map} from 'immutable';
 import React from 'react';
@@ -82,7 +83,10 @@ function PublicationSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<CustomInput label="Type">
+					<CustomInput
+						label="Type"
+						tooltipText="Physical format of the Publication"
+					>
 						<Select
 							instanceId="publicationType"
 							options={publicationTypesForDisplay}

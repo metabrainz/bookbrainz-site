@@ -17,21 +17,23 @@
  */
 
 import * as Immutable from 'immutable';
-import {INVALID_SUBMISSION_SECTION, VALID_SUBMISSION_SECTION} from './data';
+
+import {EMPTY_SUBMISSION_SECTION, VALID_SUBMISSION_SECTION} from './data';
 import {
-	validateSubmissionSection, validateSubmissionSectionNote
+	validateSubmissionSection,
+	validateSubmissionSectionNote
 } from '../../../../../src/client/entity-editor/validators/common';
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {testValidateStringFunc} from './helpers';
-
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
 
 function describeValidateSubmissionSectionNote() {
-	testValidateStringFunc(validateSubmissionSectionNote);
+	testValidateStringFunc(validateSubmissionSectionNote, false);
 }
 
 
@@ -48,28 +50,30 @@ function describeValidateSubmissionSection() {
 		expect(result).to.be.true;
 	});
 
-	it('should reject an Object with an invalid note', () => {
+	it('should pass an Object with an empty note', () => {
 		const result = validateSubmissionSection(
 			{...VALID_SUBMISSION_SECTION, note: null}
 		);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 
-	it('should reject an invalid name Immutable.Map', () => {
+	it('should pass an empty note Immutable.Map', () => {
 		const result = validateSubmissionSection(
-			Immutable.fromJS(INVALID_SUBMISSION_SECTION)
+			Immutable.fromJS(EMPTY_SUBMISSION_SECTION)
+		);
+		expect(result).to.be.true;
+	});
+
+	it('should reject any other non-null data type', () => {
+		const result = validateSubmissionSection(
+			{...VALID_SUBMISSION_SECTION, note: 1}
 		);
 		expect(result).to.be.false;
 	});
 
-	it('should reject any other non-null data type', () => {
-		const result = validateSubmissionSection(1);
-		expect(result).to.be.false;
-	});
-
-	it('should reject a null value', () => {
+	it('should pass a null value', () => {
 		const result = validateSubmissionSection(null);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 }
 

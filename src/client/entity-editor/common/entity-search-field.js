@@ -72,7 +72,8 @@ type EntitySearchFieldProps = {
 	label: string,
 	type: string | Array<string>,
 	empty?: boolean,
-	error?: boolean
+	error?: boolean,
+	tooltipText?: string
 };
 
 /**
@@ -96,6 +97,7 @@ function EntitySearchField(
 		empty,
 		error,
 		type,
+		tooltipText,
 		...rest
 	}: EntitySearchFieldProps
 ) {
@@ -115,7 +117,7 @@ function EntitySearchField(
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
 	return (
-		<CustomInput label={labelElement}>
+		<CustomInput label={labelElement} tooltipText={tooltipText}>
 			<ImmutableAsyncSelect
 				labelKey="text"
 				loadOptions={fetchOptions}
@@ -129,7 +131,8 @@ function EntitySearchField(
 EntitySearchField.displayName = 'EntitySearchField';
 EntitySearchField.defaultProps = {
 	empty: true,
-	error: false
+	error: false,
+	tooltipText: null
 };
 
 export default EntitySearchField;

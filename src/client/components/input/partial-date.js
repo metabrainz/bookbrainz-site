@@ -99,8 +99,7 @@ class PartialDate extends React.Component {
 
 		this.setState({
 			valid: PartialDate.validate(input,
-				this.props.customValidator
-			),
+				this.props.customValidator),
 			value: input
 		});
 
@@ -116,8 +115,7 @@ class PartialDate extends React.Component {
 	 */
 	valid() {
 		return PartialDate.validate(this.input.getValue().trim(),
-			this.props.customValidator
-		);
+			this.props.customValidator);
 	}
 
 	/**

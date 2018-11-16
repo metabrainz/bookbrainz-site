@@ -23,6 +23,7 @@ export const REMOVE_IDENTIFIER_ROW = 'REMOVE_IDENTIFIER_ROW';
 export const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
 export const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
 export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
+export const REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
 
 export type Action = {
 	type: string,
@@ -122,5 +123,16 @@ export function updateIdentifierType(rowId: number, value: number): Action {
 			value
 		},
 		type: UPDATE_IDENTIFIER_TYPE
+	};
+}
+
+/**
+ * Produces an action indicating that the empty rows should be deleted.
+ *
+ * @returns {Action} The resulting REMOVE_EMPTY_IDENTIFIERS action.
+ */
+export function removeEmptyIdentifiers(): Action {
+	return {
+		type: REMOVE_EMPTY_IDENTIFIERS
 	};
 }

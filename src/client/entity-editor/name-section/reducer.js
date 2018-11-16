@@ -18,7 +18,7 @@
 
 import {
 	UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD, UPDATE_NAME_FIELD,
-	UPDATE_SORT_NAME_FIELD
+	UPDATE_SEARCH_RESULTS, UPDATE_SORT_NAME_FIELD, UPDATE_WARN_IF_EXISTS
 } from './actions';
 import Immutable from 'immutable';
 
@@ -26,8 +26,10 @@ import Immutable from 'immutable';
 function reducer(
 	state = Immutable.Map({
 		disambiguation: '',
+		exactMatches: null,
 		language: null,
 		name: '',
+		searchResults: null,
 		sortName: ''
 	}),
 	action
@@ -42,6 +44,10 @@ function reducer(
 			return state.set('language', payload);
 		case UPDATE_DISAMBIGUATION_FIELD:
 			return state.set('disambiguation', payload);
+		case UPDATE_SEARCH_RESULTS:
+			return state.set('searchResults', payload);
+		case UPDATE_WARN_IF_EXISTS:
+			return state.set('exactMatches', payload);
 		// no default
 	}
 	return state;

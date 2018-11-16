@@ -24,12 +24,13 @@
 /* eslint import/no-commonjs: "warn" */
 /* eslint global-require: "warn" */
 
-
 import * as bootstrap from 'react-bootstrap';
+
 import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
 if (!process.env.SSR) {
@@ -81,13 +82,13 @@ class Layout extends React.Component {
 		 */
 		const createDropdownTitle = (
 			<span>
-				<FontAwesome name="plus"/>{'  Create'}
+				<FontAwesome name="plus"/>{'  Add'}
 			</span>
 		);
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesome name="user"/>
+				<FontAwesome name="user-circle"/>
 				{`  ${user.name}`}
 			</span>
 		);
@@ -101,21 +102,26 @@ class Layout extends React.Component {
 							id="create-dropdown"
 							title={createDropdownTitle}
 						>
-							<MenuItem href="/publication/create">
-								Create Publication
+							<MenuItem href="/work/create">
+								{genEntityIconHTMLElement('Work')}
+								Work
 							</MenuItem>
 							<MenuItem href="/edition/create">
-								Create Edition
+								{genEntityIconHTMLElement('Edition')}
+								Edition
 							</MenuItem>
-							<MenuItem href="/work/create">
-								Create Work
+							<MenuItem href="/publication/create">
+								{genEntityIconHTMLElement('Publication')}
+								Edition Group
 							</MenuItem>
 							<MenuItem divider/>
 							<MenuItem href="/creator/create">
-								Create Creator
+								{genEntityIconHTMLElement('Creator')}
+								Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">
-								Create Publisher
+								{genEntityIconHTMLElement('Publisher')}
+								Publisher
 							</MenuItem>
 						</NavDropdown>
 						<NavDropdown
@@ -132,20 +138,26 @@ class Layout extends React.Component {
 							<MenuItem href="/logout">
 								<FontAwesome
 									fixedWidth
-									name="sign-out"
+									name="sign-out-alt"
 								/>{' Sign Out'}
 							</MenuItem>
 						</NavDropdown>
 					</Nav> :
 					<Nav pullRight>
 						<NavItem href="/auth">
-							<FontAwesome name="sign-in"/>{' Sign In / Register'}
+							<FontAwesome name="sign-in-alt"/>{' Sign In / Register'}
 						</NavItem>
 					</Nav>
 				}
 				<Nav pullRight>
+					<NavItem href="/help">
+						<FontAwesome name="question-circle"/>
+						{' Help '}
+					</NavItem>
+				</Nav>
+				<Nav pullRight>
 					<NavItem href="/statistics">
-						<FontAwesome name="statistics"/>
+						<FontAwesome name="chart-line"/>
 						{' Statistics '}
 					</NavItem>
 				</Nav>
