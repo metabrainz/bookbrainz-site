@@ -36,10 +36,29 @@ contributing guide can be found [here](CONTRIBUTING.md).
 
 ## Setting up a local BookBrainz server
 
-### Installing Dependencies
-
-BookBrainz depends on having PostgreSQL, Redis and Elasticsearch and NodeJS set
+BookBrainz depends on having PostgreSQL, Redis, Elasticsearch and NodeJS set
 up and running.
+
+
+
+### Running dependencies using Docker
+
+The easiest way to get a local developement server running is to run the NodeJS webserver directly on your machine while the database and search dependencies are run [using Docker](https://docs.docker.com/get-started/part2/).
+This will save you a fair amount of set up.
+
+1. You'll need to install on your development machine:
+  - [Docker](https://docs.docker.com/install/)
+  - [docker-compose](https://docs.docker.com/compose/install/)
+  - [NodeJS](https://nodejs.org/en/download/)
+2. Clone the [bookbrainz-site](https://github.com/bookbrainz/bookbrainz-site) repository
+3. In a terminal window, from the `bookbrainz-site` folder run this command: `npm install`. This will install the Node dependencies.
+4. Once the `npm install` command has returned, run `docker-compose -f docker/docker-compose.dependencies.yml up -d`. This will download the images for the dependencies (the first time only), then run each dependency in a container.
+5. Follow the "Configuration" instructions below.
+6. Once all the containers are running, run `npm start` and wait for compilation to be finished (around 10-30 seconds), then visit localhost:9099 in your browser.
+6. You should see the BookBrainz web page, congratulations ! If you are running into issues, try having a look at our troubleshooting guide
+
+
+### Installing Dependencies manually
 
 To get PostgreSQL, use one of the following commands:
 
@@ -62,8 +81,8 @@ manager:
 
     sudo yum install redis
 
-To install Elasticsearch, follow the instructions at
-https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html
+To install Elasticsearch, follow [this helpful guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-16-04) for Linux-based systems or the [official instructions](
+https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html).
 
 And finally, for NodeJS, choose the correct installation file, or view the
 instructions for package managers at https://nodejs.org/en/download/current/
