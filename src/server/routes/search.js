@@ -24,6 +24,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../helpers/search';
 import * as utils from '../helpers/utils';
 
+import {keys as _keys, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 
 import Layout from '../../client/containers/layout';
@@ -31,9 +32,9 @@ import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
-import {keys as _keys} from 'lodash';
 import express from 'express';
 import target from '../templates/target';
+
 
 const router = express.Router();
 
@@ -50,7 +51,7 @@ router.get('/', (req, res, next) => {
 
 	search.searchByName(orm, query, collection, size || resultsPerPage, from)
 		.then((entities) => ({
-			initialResults: entities.filter(Boolean),
+			initialResults: entities.filter(entity => !isNil(entity)),
 			query
 		}))
 		.then((searchResults) => {

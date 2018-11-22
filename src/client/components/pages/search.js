@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
+import {isNil} from 'lodash';
 import request from 'superagent-bluebird-promise';
 
 
@@ -83,7 +84,7 @@ class SearchPage extends React.Component {
 			.then((data) => {
 				this.setState(prevState => ({
 					nextEnabled: data.length >= prevState.size,
-					results: data.filter(Boolean)
+					results: data.filter(result => !isNil(result))
 				}));
 			});
 	}
