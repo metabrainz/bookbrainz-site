@@ -101,6 +101,18 @@ function NameSection({
 		onNameChangeSearchName(event.target.value);
 	}
 
+	/*
+		Quick fix of issue with user typing in input before js is loaded,
+		not triggering the name search. When first loaded, if the input value is
+		different from the props value, manually trigger "onChange" mechanism.
+		inputRef is a React input component prop.
+	*/
+	function updateNameFieldInputRef(inputRef) {
+		if (!_.isNil(inputRef) && inputRef.value !== nameValue) {
+			handleNameChange({target: {value: inputRef.value}});
+		}
+	}
+
 	const warnIfExists = !_.isEmpty(exactMatches);
 
 	return (
@@ -115,6 +127,7 @@ function NameSection({
 								nameValue, sortNameValue, languageValue
 							)}
 							error={!validateNameSectionName(nameValue)}
+							inputRef={updateNameFieldInputRef}
 							tooltipText={`Official name of the ${_.capitalize(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
 							warn={(isRequiredDisambiguationEmpty(
 								warnIfExists,
