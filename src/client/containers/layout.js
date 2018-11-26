@@ -52,7 +52,7 @@ class Layout extends React.Component {
 	handleDropdownToggle(newValue) {
 		if (this.state.keepMenuOpen) {
 			this.setState({menuOpen: true});
-			this.keepMenuOpen = false;
+			this.setState({keepMenuOpen: false});
 		}
 		else {
 			this.setState({menuOpen: newValue});
