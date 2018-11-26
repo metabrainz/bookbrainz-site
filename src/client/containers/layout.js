@@ -47,6 +47,20 @@ class Layout extends React.Component {
 		this.renderNavHeader = this.renderNavHeader.bind(this);
 	}
 
+	handleDropdownToggle(newValue) {
+		if (this._forceOpen) {
+			this.setState({menuOpen: true});
+			this._forceOpen = false;
+		}
+		else {
+			this.setState({menuOpen: newValue});
+		}
+	}
+
+	handleDropdownClick() {
+		this._forceOpen = true;
+	}
+
 	renderNavHeader() {
 		const {homepage} = this.props;
 
@@ -100,26 +114,28 @@ class Layout extends React.Component {
 						<NavDropdown
 							eventKey={1}
 							id="create-dropdown"
+							open={this.state.menuOpen}
 							title={createDropdownTitle}
+							onToggle={this.handleDropdownToggle}
 						>
-							<MenuItem href="/work/create">
+							<MenuItem href="/work/create" onSelect={this.handleDropdownClick}>
 								{genEntityIconHTMLElement('Work')}
 								Work
 							</MenuItem>
-							<MenuItem href="/edition/create">
+							<MenuItem href="/edition/create" onSelect={this.handleDropdownClick}>
 								{genEntityIconHTMLElement('Edition')}
 								Edition
 							</MenuItem>
-							<MenuItem href="/publication/create">
+							<MenuItem href="/publication/create" onSelect={this.handleDropdownClick}>
 								{genEntityIconHTMLElement('Publication')}
 								Edition Group
 							</MenuItem>
 							<MenuItem divider/>
-							<MenuItem href="/creator/create">
+							<MenuItem href="/creator/create" onSelect={this.handleDropdownClick}>
 								{genEntityIconHTMLElement('Creator')}
 								Author
 							</MenuItem>
-							<MenuItem href="/publisher/create">
+							<MenuItem href="/publisher/create" onSelect={this.handleDropdownClick}>
 								{genEntityIconHTMLElement('Publisher')}
 								Publisher
 							</MenuItem>
