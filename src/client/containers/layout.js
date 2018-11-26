@@ -42,15 +42,17 @@ const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
+		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 	}
 
 	handleDropdownToggle(newValue) {
-		if (this._forceOpen) {
+		if (this.state.keepMenuOpen) {
 			this.setState({menuOpen: true});
-			this._forceOpen = false;
+			this.keepMenuOpen = false;
 		}
 		else {
 			this.setState({menuOpen: newValue});
@@ -58,7 +60,7 @@ class Layout extends React.Component {
 	}
 
 	handleDropdownClick() {
-		this._forceOpen = true;
+		this.setState({keepMenuOpen: true});
 	}
 
 	renderNavHeader() {
@@ -116,26 +118,27 @@ class Layout extends React.Component {
 							id="create-dropdown"
 							open={this.state.menuOpen}
 							title={createDropdownTitle}
+							onSelect={this.handleDropdownClick}
 							onToggle={this.handleDropdownToggle}
 						>
-							<MenuItem href="/work/create" onSelect={this.handleDropdownClick}>
+							<MenuItem href="/work/create">
 								{genEntityIconHTMLElement('Work')}
 								Work
 							</MenuItem>
-							<MenuItem href="/edition/create" onSelect={this.handleDropdownClick}>
+							<MenuItem href="/edition/create">
 								{genEntityIconHTMLElement('Edition')}
 								Edition
 							</MenuItem>
-							<MenuItem href="/publication/create" onSelect={this.handleDropdownClick}>
+							<MenuItem href="/publication/create">
 								{genEntityIconHTMLElement('Publication')}
 								Edition Group
 							</MenuItem>
 							<MenuItem divider/>
-							<MenuItem href="/creator/create" onSelect={this.handleDropdownClick}>
+							<MenuItem href="/creator/create">
 								{genEntityIconHTMLElement('Creator')}
 								Author
 							</MenuItem>
-							<MenuItem href="/publisher/create" onSelect={this.handleDropdownClick}>
+							<MenuItem href="/publisher/create">
 								{genEntityIconHTMLElement('Publisher')}
 								Publisher
 							</MenuItem>
