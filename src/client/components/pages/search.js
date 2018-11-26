@@ -128,9 +128,9 @@ class SearchPage extends React.Component {
 									&larr; Previous Page
 								</Pager.Item>
 								<ButtonGroup>
-									<Button disabled>Results {this.state.from}—
+									<Button disabled>Results {this.state.from + 1} —
 										{this.state.results.length < this.state.size ?
-											this.state.results.length :
+											this.state.from + this.state.results.length :
 											this.state.from + this.state.size
 										}
 									</Button>
