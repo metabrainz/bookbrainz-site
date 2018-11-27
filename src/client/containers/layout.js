@@ -42,9 +42,25 @@ const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
+		this.handleDropdownClick = this.handleDropdownClick.bind(this);
+	}
+
+	handleDropdownToggle(newValue) {
+		if (this.state.keepMenuOpen) {
+			this.setState({keepMenuOpen: false, menuOpen: true});
+		}
+		else {
+			this.setState({menuOpen: newValue});
+		}
+	}
+
+	handleDropdownClick(eventKey, event) {
+		event.stopPropagation();
+		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
 	}
 
 	renderNavHeader() {
@@ -100,7 +116,10 @@ class Layout extends React.Component {
 						<NavDropdown
 							eventKey={1}
 							id="create-dropdown"
+							open={this.state.menuOpen}
 							title={createDropdownTitle}
+							onSelect={this.handleDropdownClick}
+							onToggle={this.handleDropdownToggle}
 						>
 							<MenuItem href="/work/create">
 								{genEntityIconHTMLElement('Work')}
