@@ -51,16 +51,16 @@ class Layout extends React.Component {
 
 	handleDropdownToggle(newValue) {
 		if (this.state.keepMenuOpen) {
-			this.setState({menuOpen: true});
-			this.setState({keepMenuOpen: false});
+			this.setState({keepMenuOpen: false, menuOpen: true});
 		}
 		else {
 			this.setState({menuOpen: newValue});
 		}
 	}
 
-	handleDropdownClick() {
-		this.setState({keepMenuOpen: true});
+	handleDropdownClick(eventKey, event) {
+		event.stopPropagation();
+		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
 	}
 
 	renderNavHeader() {
