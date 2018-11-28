@@ -1,6 +1,7 @@
 .git/
 .github/
 config/*
+!config/config.json
 data/
 flow-typed/
 lib/

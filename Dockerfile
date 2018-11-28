@@ -1,16 +1,13 @@
-FROM metabrainz/consul-template-base:v0.18.5-1
+FROM node:10
 
 ARG BUILD_DEPS=" \
-    build-essential \
-    git \
-    python \
-    libpq-dev"
+    build-essential"
 
 ARG RUN_DEPS=" \
     nodejs"
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
-    apt-get update && \
+# nodeJS setup script also runs apt-get update
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         $BUILD_DEPS \
         $RUN_DEPS && \
@@ -29,8 +26,9 @@ COPY static/ static/
 COPY .babelrc ./
 COPY package.json ./
 COPY package-lock.json ./
+COPY webpack.client.js ./
 
-RUN npm install
+RUN npm install --no-audit
 RUN npm run mkdirs && \
     npm run prestart
 

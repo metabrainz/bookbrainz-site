@@ -3,7 +3,7 @@ version: '3'
 services:
 
   postgres:
-    container-name: postgres
+    container_name: postgres
     image: postgres:9.5
     user: postgres
     ports:
@@ -17,7 +17,7 @@ services:
       - ./backups/latest.tar:/var/bookbrainz-db-backups/latest.tar
 
   elasticsearch:
-    container-name: elasticsearch
+    container_name: elasticsearch
     environment:
       SERVICE_9200_NAME: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:5.6.5
@@ -25,7 +25,7 @@ services:
       - "9200:9200"
 
   redis:
-    container-name: redis
+    container_name: redis
     image: redis:3.2-alpine
     network_mode: "bridge"
     command: "redis-server --appendonly yes"
