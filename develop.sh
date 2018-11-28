@@ -5,4 +5,4 @@ if [[ ! -d "docker" ]]; then
     exit -1
 fi
 
-docker-compose -f docker/docker-compose.yml -p bookbrainz build && docker-compose -f docker/docker-compose.yml -p bookbrainz up
+docker-compose -f docker/docker-compose.yml build && docker-compose -f docker/docker-compose.yml up
