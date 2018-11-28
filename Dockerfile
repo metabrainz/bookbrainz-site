@@ -13,6 +13,14 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
         $RUN_DEPS && \
     rm -rf /var/lib/apt/lists/*
 
+# PostgreSQL client
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+ENV PG_MAJOR 9.5
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN useradd --create-home --shell /bin/bash bookbrainz
 
 ARG BB_ROOT=/home/bookbrainz/bookbrainz-site

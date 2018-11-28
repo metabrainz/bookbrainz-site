@@ -20,8 +20,6 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=bookbrainz
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
