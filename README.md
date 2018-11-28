@@ -112,6 +112,16 @@ earlier):
 
     sudo -u postgres psql bookbrainz -c "SELECT name FROM bookbrainz.editor"
 
+You are also required to set the password of your local PostgreSQL instance.
+You can do this by
+
+
+    sudo -u postgres psql
+
+    postgres=# \password
+
+This will set the password to your PostgreSQL, which will be used for the database config.
+
 ### Cloning
 
 Since this project makes use of
