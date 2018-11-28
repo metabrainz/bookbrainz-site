@@ -25,6 +25,7 @@ COPY .babelrc ./
 COPY package.json ./
 COPY package-lock.json ./
 COPY webpack.client.js ./
+RUN npm run mkdirs
 RUN npm install --no-audit
 
 # Clean up files that aren't needed for production
@@ -35,5 +36,4 @@ COPY static/ static/
 COPY config/ config/
 COPY src/ src/
 
-RUN npm run mkdirs && \
-    npm run prestart
+CMD ["npm", "start"]
