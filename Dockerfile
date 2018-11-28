@@ -21,21 +21,19 @@ RUN chown bookbrainz:bookbrainz $BB_ROOT
 
 # Files necessary to complete the JavaScript build
 COPY scripts/ scripts/
-COPY src/ src/
-COPY static/ static/
 COPY .babelrc ./
 COPY package.json ./
 COPY package-lock.json ./
 COPY webpack.client.js ./
-
+RUN npm run mkdirs
 RUN npm install --no-audit
-RUN npm run mkdirs && \
-    npm run prestart
 
 # Clean up files that aren't needed for production
 RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y
 
-COPY config/config.json ./
+COPY static/ static/
+COPY config/ config/
+COPY src/ src/
 
-RUN chown -R bookbrainz:bookbrainz $BB_ROOT
+CMD ["npm", "start"]
