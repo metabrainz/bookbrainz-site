@@ -40,10 +40,6 @@ RUN apt-get remove -y $BUILD_DEPS && \
     npm prune --production && \
     rm -rf scripts/ src/ .babelrc package.json
 
-COPY docker/config.json.ctmpl ./
+COPY config/config.json ./
 
 RUN chown -R bookbrainz:bookbrainz $BB_ROOT
-
-COPY docker/bookbrainz.service /etc/service/bookbrainz/run
-COPY docker/consul-template-bookbrainz.conf /etc/
-COPY docker/bookbrainz /usr/local/bin/
