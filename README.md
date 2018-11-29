@@ -7,7 +7,7 @@
 <a href="https://www.browserstack.com/">
 <img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
 </a>
-
+<hr>
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:
 
@@ -34,95 +34,30 @@ Auto-generated developer documentation can be found at our corresponding
 [doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our
 contributing guide can be found [here](CONTRIBUTING.md).
 
-## Setting up a local BookBrainz server
+
+<br/>
+<br/>
+
+# Setting up a local BookBrainz server
 
 BookBrainz depends on having PostgreSQL, Redis, Elasticsearch and NodeJS set
 up and running.
 
 
+## Running dependencies using Docker
 
-### Running dependencies using Docker
-
-The easiest way to get a local developement server running is to run the NodeJS webserver directly on your machine while the database and search dependencies are run [using Docker](https://docs.docker.com/get-started/part2/).
+The easiest way to get a local developement server running is [using Docker](https://docs.docker.com/get-started/part2/).
 This will save you a fair amount of set up.
 
-1. You'll need to install on your development machine:
+You'll need to install Docker and Docker-compose on your development machine:
   - [Docker](https://docs.docker.com/install/)
   - [docker-compose](https://docs.docker.com/compose/install/)
-  - [NodeJS](https://nodejs.org/en/download/)
-2. Clone the [bookbrainz-site](https://github.com/bookbrainz/bookbrainz-site) repository
-3. In a terminal window, from the `bookbrainz-site` folder run this command: `npm install`. This will install the Node dependencies.
-4. Once the `npm install` command has returned, run `docker-compose -f docker/docker-compose.dependencies.yml up -d`. This will download the images for the dependencies (the first time only), then run each dependency in a container.
-5. Follow the "Configuration" instructions below.
-6. Once all the containers are running, run `npm start` and wait for compilation to be finished (around 10-30 seconds), then visit localhost:9099 in your browser.
-6. You should see the BookBrainz web page, congratulations ! If you are running into issues, try having a look at our troubleshooting guide
 
+When that is installed, clone the repository and follow the instructions below step by step.
 
-### Installing Dependencies manually
+If you wish, you can instead [install the database and search dependencies on your machine](./MANUAL_INSTALL.md), and/or [run the NodeJS server locally](./NODEJS_SETUP.md) while using dockerized dependencies.
 
-To get PostgreSQL, use one of the following commands:
-
-**Debian-based OS**
-
-    sudo apt-get install postgresql
-
-**Red Hat-based OS**
-
-    sudo yum install postgresql-server
-
-To install Redis, run similar commands to get the dependency from your package
-manager:
-
-**Debian-based OS**
-
-    sudo apt-get install redis-server
-
-**Red Hat-based OS**
-
-    sudo yum install redis
-
-To install Elasticsearch, follow [this helpful guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-16-04) for Linux-based systems or the [official instructions](
-https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html).
-
-And finally, for NodeJS, choose the correct installation file, or view the
-instructions for package managers at https://nodejs.org/en/download/current/
-
-### Setting up Dependencies
-
-No setup is required for Redis or Elasticsearch. However, it is necessary to
-perform some initialization for PostgreSQL and import the latest BookBrainz
-database dump.
-
-Firstly, begin downloading the latest BookBrainz dump from
-https://bookbrainz.org/dumps/latest.tar.bz2.
-
-Then, uncompress the `latest.tar.bz2` file, using the bzip2 command:
-
-    bzip2 -d latest.tar.bz2
-
-This will give you a file that you can *restore* into PostgreSQL, which will
-set up data identical to the data we have on the bookbrainz.org website. To do
-this, run:
-
-    sudo -u postgres pg_restore -e -C -O latest.tar -d postgres
-
-At this point, the database is set up, and the following command should give
-you a list of usernames of BookBrainz editors (after entering the password from
-earlier):
-
-    sudo -u postgres psql bookbrainz -c "SELECT name FROM bookbrainz.editor"
-
-You are also required to set the password of your local PostgreSQL instance.
-You can do this by
-
-
-    sudo -u postgres psql
-
-    postgres=# \password
-
-This will set the password to your PostgreSQL, which will be used for the database config.
-
-### Cloning
+## Cloning
 
 Since this project makes use of
 [git submodules](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules), you
@@ -139,32 +74,49 @@ To clone the repository and point the local HEAD to the latest commit in the
 
     git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
 
-### Installing Packages
-The site depends on a number of node packages which can be installed using npm:
-
-    cd bookbrainz-site/
-    npm install
-
-This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
 
-Create a copy of `config.json.example` and rename it to `config.json`. Then,
-edit the values so that they are correct for your environment.
-You will need to change the PostgreSQL username and password under `database.connection`.
+Create a copy of `config/config.json.example` and rename it to `config.json`.
+// Then,
+// edit the values so that they are correct for your environment.
+// You will need to change the PostgreSQL username and password under `database.connection`.
 
-You will also need to set up authentication under `musicbrainz`. Set the `callbackURL`to `"http://localhost:9099/cb"`. To get the `clientID`and `clientSecret` tokens, head to [the MusicBrainz website](https://musicbrainz.org/account/applications) and register a new developer application. You can then copy and paste the tokens for that developer application. 
+You will need to set up authentication under `musicbrainz`. To get the `clientID` and `clientSecret` tokens, head to [the MusicBrainz website](https://musicbrainz.org/account/applications) and register a new developer application. You can then copy the tokens for that developer application and paste as strings. 
 
-## Building and running
-A number of subcommands exist to manage the installation and run the server.
-These are described here; any commands not listed should not be called directly:
+## Database set-up
 
-* start - start the server in production mode, with code built once
-* debug - start the server in debug mode, with code watched for changes
-* lint - check the code for syntax and style issues
-* test - perform linting and attempt to compile the code
-* jsdoc - build the documentation for JSDoc annotated functions within the
-  code
+When you first start working with BookBrainz, you will need to perform some initialization for PostgreSQL and import the latest BookBrainz
+database dump.
+
+Luckily, we have a script that does just that: from the command line, in the `bookbrainz-site` folder, type and run `./scripts/database-init-docker.sh`.
+Let that run until the command returns.
+
+
+## Running the server
+
+If all went well, you will only need to run `./develop.sh` in the command line from the `bookbrainz-site` folder.
+Press `ctrl+c` to stop the server. The dependencies will continue running in the background.
+
+Wait between 30 and 60 seconds for the server to compile, and point your browser to `localhost:9099`.
+
+Make changes to the code in the `src` folder and run `./develop.sh` again to rebuild and run the server.
+
+Once you are done developing, you can stop the dependencies running in docker in the background by typing `docker-compose down`.
+
+### Advanced users
+Advanced users may want to set the bookbrainz-site service's [command](https://docs.docker.com/compose/compose-file/#command) (in `docker-compose.yml`) to `npm debug`, which uses Webpack to build, monitor and inject rebuilt pages without having to refresh the page, keeping the application state intact.
+
+The compilation of the website with Webpack can be a bit slower.
+
+If you want to make changes to files in the `src/server` folder, you will need to either:
+
+- change the bookbrainz-site service command to `npm run debug-watch-server`
+- stop the container and run `./develop.sh` again
+
+<br/>
+<hr>
+<br/>
 
 ## Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:
