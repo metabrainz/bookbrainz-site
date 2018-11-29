@@ -22,6 +22,7 @@
 import * as auth from './helpers/auth';
 import * as error from './helpers/error';
 import * as search from './helpers/search';
+
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
@@ -99,8 +100,8 @@ app.use(session({
 	saveUninitialized: false,
 	secret: config.session.secret,
 	store: new RedisStore({
-		host: config.session.redis.host,
-		port: config.session.redis.port
+		host: config.session.redis.host || 'localhost',
+		port: config.session.redis.port || 6379
 	})
 }));
 

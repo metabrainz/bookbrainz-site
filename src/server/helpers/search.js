@@ -418,27 +418,22 @@ export function searchByName(orm, name, collection, size, from) {
 }
 
 export async function init(orm, options) {
-	const config = _.extend({
-		defer() {
-			const defer = {};
-
-			defer.promise = new Promise((resolve, reject) => {
-				defer.resolve = resolve;
-				defer.reject = reject;
-			});
-
-			return defer;
-		}
-	}, options);
-
-	_client = ElasticSearch.Client(config);
-
-	// Automatically index on app startup if we haven't already
-	const mainIndexExists = await _client.indices.exists({index: _index});
-
-	if (mainIndexExists) {
-		return null;
+	if (!_.isString(options.host)) {
+		options.host = 'localhost:9200';
 	}
 
-	return generateIndex(orm);
+	_client = new ElasticSearch.Client(options);
+
+	// Automatically index on app startup if we haven't already
+	try {
+		const mainIndexExists = await _client.indices.exists({index: _index});
+		if (mainIndexExists) {
+			return null;
+		}
+
+		return generateIndex(orm);
+	}
+	catch (error) {
+		return null;
+	}
 }
