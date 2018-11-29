@@ -5,8 +5,7 @@ services:
   bookbrainz-site:
     container_name: bookbrainz-site
     command: npm start
-    build:
-      context: .
+    build: ./
     restart: unless-stopped
     ports:
       - "9099:9099"

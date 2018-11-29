@@ -105,7 +105,14 @@ Make changes to the code in the `src` folder and run `./develop.sh` again to reb
 Once you are done developing, you can stop the dependencies running in docker in the background by typing `docker-compose down`.
 
 ### Advanced users
-Advanced users may want to set the bookbrainz-site service's [command](https://docs.docker.com/compose/compose-file/#command) (in `docker-compose.yml`) to `npm debug`, which uses Webpack to build, monitor and inject rebuilt pages without having to refresh the page, keeping the application state intact.
+Advanced users may want to change the bookbrainz-site service's [command](https://docs.docker.com/compose/compose-file/#command) (in `docker-compose.yml`) to `npm run debug`, which uses Webpack to build, monitor and inject rebuilt pages without having to refresh the page, keeping the application state intact.
+
+You will also need to mount the `src` folder like such:
+```
+    command: npm run debug
+    volumes:
+      - "./src:/home/bookbrainz/bookbrainz-site/src"
+```
 
 The compilation of the website with Webpack can be a bit slower.
 

@@ -11,8 +11,6 @@ static/stylesheets/
 test/
 .doclets.yml
 .editorconfig
-.eslintignore
-.eslintrc.js
 .flowconfig
 .gitignore
 .gitmodules

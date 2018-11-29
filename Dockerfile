@@ -30,9 +30,11 @@ RUN chown bookbrainz:bookbrainz $BB_ROOT
 # Files necessary to complete the JavaScript build
 COPY scripts/ scripts/
 COPY .babelrc ./
+COPY .eslintrc.js ./
+COPY .eslintignore ./
+COPY webpack.client.js ./
 COPY package.json ./
 COPY package-lock.json ./
-COPY webpack.client.js ./
 RUN npm run mkdirs
 RUN npm install --no-audit
 
