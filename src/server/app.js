@@ -110,7 +110,7 @@ if (config.influx) {
 }
 
 // Authentication code depends on session, so init session first
-auth.init(app);
+const authInitiated = auth.init(app);
 search.init(app.locals.orm, config.search);
 
 // Set up constants that will remain valid for the life of the app
@@ -127,7 +127,7 @@ app.use((req, res, next) => {
 	res.locals.repositoryUrl = repositoryUrl;
 	res.locals.alerts = [];
 
-	if (!req.session) {
+	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({
 			level: 'danger',
 			message: 'We are currently experiencing technical difficulties; ' +
