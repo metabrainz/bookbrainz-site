@@ -55,7 +55,8 @@ You'll need to install Docker and Docker-compose on your development machine:
 
 When that is installed, clone the repository and follow the instructions below step by step.
 
-If you wish, you can instead [install the database and search dependencies on your machine](./MANUAL_INSTALL.md), and/or [run the NodeJS server locally](./NODEJS_SETUP.md) while using dockerized dependencies.
+If you wish, you can instead [install the database and search dependencies on your machine](./MANUAL_INSTALL.md),
+and/or [run the NodeJS server locally](./NODEJS_SETUP.md) while using dockerized dependencies.
 
 ## Cloning
 
@@ -78,11 +79,14 @@ To clone the repository and point the local HEAD to the latest commit in the
 ## Configuration
 
 Create a copy of `config/config.json.example` and rename it to `config.json`.
-// Then,
-// edit the values so that they are correct for your environment.
-// You will need to change the PostgreSQL username and password under `database.connection`.
+You can do this by running this command from the bookbrainz-site directory:
 
-You will need to set up authentication under `musicbrainz`. To get the `clientID` and `clientSecret` tokens, head to [the MusicBrainz website](https://musicbrainz.org/account/applications) and register a new developer application. You can then copy the tokens for that developer application and paste as strings. 
+`cp config/config.json.example config/config.json`
+
+
+If you want to be able to sing-up and edit, you will need to set up authentication under `musicbrainz`.
+To get the `clientID` and `clientSecret` tokens, head to [the MusicBrainz website](https://musicbrainz.org/account/applications)
+and register a new developer application. You can then copy the tokens for that developer application and paste as strings. 
 
 ## Database set-up
 
@@ -90,7 +94,7 @@ When you first start working with BookBrainz, you will need to perform some init
 database dump.
 
 Luckily, we have a script that does just that: from the command line, in the `bookbrainz-site` folder, type and run `./scripts/database-init-docker.sh`.
-Let that run until the command returns.
+The process may take a while as Docker downloads and builds the images. Let that run until the command returns.
 
 
 ## Running the server
@@ -106,21 +110,21 @@ Make changes to the code in the `src` folder and run `./develop.sh` again to reb
 Once you are done developing, you can stop the dependencies running in docker in the background by typing `docker-compose down`.
 
 ### Advanced users
-Advanced users may want to change the bookbrainz-site service's [command](https://docs.docker.com/compose/compose-file/#command) (in `docker-compose.yml`) to `npm run debug`, which uses Webpack to build, monitor and inject rebuilt pages without having to refresh the page, keeping the application state intact.
+Advanced users may want to use Webpack to build, watch files and inject rebuilt pages without having to refresh the page,
+keeping the application state intact, for the prie of a longer compilation time.
 
-You will also need to mount the `src` folder like such:
+For that, you will need to modify the `docker-compose.yml` file to mount the `src` folder and change the command to
+- `npm run debug` if you only want to change client files (in `src/client`)
+- `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
+
+For example:
 ```
+service:
+  bookbrainz-site:
     command: npm run debug
     volumes:
       - "./src:/home/bookbrainz/bookbrainz-site/src"
 ```
-
-The compilation of the website with Webpack can be a bit slower.
-
-If you want to make changes to files in the `src/server` folder, you will need to either:
-
-- change the bookbrainz-site service command to `npm run debug-watch-server`
-- stop the container and run `./develop.sh` again
 
 <br/>
 <hr>
@@ -129,11 +133,9 @@ If you want to make changes to files in the `src/server` folder, you will need t
 ## Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:
 
-  1. Clone the [bookbrainz-sql](https://github.com/bookbrainz/bookbrainz-sql.git) repository. We will refer below to the directory simply as `bookbrainz-sql/`
-  2. Run the following postgres commands to create and set up the bookbrainz_test database:
+Run the following postgres commands to create and set up the bookbrainz_test database:
   - `psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres`
   - `psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres`
-  - `psql -f bookbrainz-sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres`
-  - `psql -f bookbrainz-sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres`
-  - `psql -f bookbrainz-sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres`
-  3. Profit.
+  - `psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres`
+  - `psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres`
+  - `psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres`
