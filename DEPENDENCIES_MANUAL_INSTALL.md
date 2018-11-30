@@ -34,8 +34,7 @@ manager:
 To install Elasticsearch, follow [this helpful guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-16-04) for Linux-based systems or the [official instructions](
 https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html).
 
-And finally, for NodeJS, choose the correct installation file, or view the
-instructions for package managers at https://nodejs.org/en/download/current/
+The BookBrainz server has been tested with ElasticSearch version 6.3.2.
 
 ## Setting up Dependencies
 

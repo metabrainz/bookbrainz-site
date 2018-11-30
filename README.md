@@ -98,7 +98,8 @@ Let that run until the command returns.
 If all went well, you will only need to run `./develop.sh` in the command line from the `bookbrainz-site` folder.
 Press `ctrl+c` to stop the server. The dependencies will continue running in the background.
 
-Wait between 30 and 60 seconds for the server to compile, and point your browser to `localhost:9099`.
+Wait until the console output gets quiet and this line appears: `> cross-env SSR=true node ./lib/server/app.js`.
+After a few seconds, you can then point your browser to `localhost:9099`.
 
 Make changes to the code in the `src` folder and run `./develop.sh` again to rebuild and run the server.
 

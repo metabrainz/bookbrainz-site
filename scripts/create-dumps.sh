@@ -2,7 +2,7 @@
 
 # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE 
 # This is a saved script that is running in production. We don't know where
-this might be kept in repo, so we'e checking a version in here for safe keeping.
+# this might be kept in repo, so we'e checking a version in here for safe keeping.
 # This script will NOT work outside the gcloud hosted bookbrainz.org site. 
 # It will need to be adapted for the Hetzner production setup.
 # NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE 
