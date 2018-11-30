@@ -9,6 +9,10 @@ services:
     restart: unless-stopped
     ports:
       - "9099:9099"
+    depends_on:
+      - elasticsearch
+      - redis
+      - postgres
   
   postgres:
     container_name: postgres

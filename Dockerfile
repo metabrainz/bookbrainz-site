@@ -35,7 +35,7 @@ COPY .eslintignore ./
 COPY webpack.client.js ./
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm run mkdirs
+
 RUN npm install --no-audit
 
 # Clean up files that aren't needed for production
@@ -43,7 +43,11 @@ RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y
 
 COPY static/ static/
+RUN npm run mkdirs
 COPY config/ config/
 COPY src/ src/
+
+# Copy css/less dependencies from node_modules to src/client/stylesheets
+RUN npm run copy-client-scripts
 
 CMD ["npm", "start"]
