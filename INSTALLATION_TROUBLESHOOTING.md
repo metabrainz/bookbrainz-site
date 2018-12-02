@@ -7,6 +7,17 @@
 	Ubuntu
 	
     `sudo apt update`
+	
+	2. Error: `Can't open input file latest.tar.bz2: No such file or directory` 
+	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `bzip2 -d  	latest.tar.bz2` doesn’t work and gives the above error. 
+	
+	It can be solved by giving the actual path of the latest.tar.bz2 file in place of the file name such as:
+	
+  `/ home/user/Desktop/latest.tar.bz2`
+  
+  3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command. 
+  
+  At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
 
 * ElasticSearch
 
