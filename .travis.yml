@@ -31,12 +31,11 @@ addons:
   postgresql: "9.5"
 
 before_script:
-  - git clone https://github.com/bookbrainz/bookbrainz-sql.git
   - psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres
   - psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres
-  - psql -f bookbrainz-sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres
-  - psql -f bookbrainz-sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
-  - psql -f bookbrainz-sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
+  - psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres
+  - psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
+  - psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
   - ./node_modules/.bin/eslint -v
 
 script:
