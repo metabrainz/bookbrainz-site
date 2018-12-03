@@ -1,18 +1,25 @@
-FROM metabrainz/consul-template-base:v0.18.5-1
+FROM node:10
 
 ARG BUILD_DEPS=" \
-    build-essential \
-    git"
+    build-essential"
 
 ARG RUN_DEPS=" \
     nodejs"
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
-    apt-get update && \
+# nodeJS setup script also runs apt-get update
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get install --no-install-suggests --no-install-recommends -y \
         $BUILD_DEPS \
         $RUN_DEPS && \
     rm -rf /var/lib/apt/lists/*
+
+# PostgreSQL client
+RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+ENV PG_MAJOR 9.5
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --shell /bin/bash bookbrainz
 
@@ -22,29 +29,25 @@ RUN chown bookbrainz:bookbrainz $BB_ROOT
 
 # Files necessary to complete the JavaScript build
 COPY scripts/ scripts/
-COPY src/ src/
-COPY static/ static/
 COPY .babelrc ./
+COPY .eslintrc.js ./
+COPY .eslintignore ./
+COPY webpack.client.js ./
 COPY package.json ./
 COPY package-lock.json ./
 
-RUN npm install
-RUN npm run mkdirs && \
-    npm run prestart
+RUN npm install --no-audit
 
 # Clean up files that aren't needed for production
 RUN apt-get remove -y $BUILD_DEPS && \
-    apt-get autoremove -y && \
-    npm prune --production && \
-    rm -rf scripts/ src/ .babelrc package.json
+    apt-get autoremove -y
 
-COPY docker/config.json.ctmpl ./
+COPY static/ static/
+RUN npm run mkdirs
+COPY config/ config/
+COPY src/ src/
 
-# Remove once we're converted away from jade
-COPY templates/ templates/
+# Copy css/less dependencies from node_modules to src/client/stylesheets
+RUN npm run copy-client-scripts
 
-RUN chown -R bookbrainz:bookbrainz $BB_ROOT
-
-COPY docker/bookbrainz.service /etc/service/bookbrainz/run
-COPY docker/consul-template-bookbrainz.conf /etc/
-COPY docker/bookbrainz /usr/local/bin/
+CMD ["npm", "start"]

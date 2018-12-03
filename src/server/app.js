@@ -22,6 +22,7 @@
 import * as auth from './helpers/auth';
 import * as error from './helpers/error';
 import * as search from './helpers/search';
+
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
@@ -99,8 +100,8 @@ app.use(session({
 	saveUninitialized: false,
 	secret: config.session.secret,
 	store: new RedisStore({
-		host: config.session.redis.host,
-		port: config.session.redis.port
+		host: config.session.redis.host || 'localhost',
+		port: config.session.redis.port || 6379
 	})
 }));
 
@@ -109,7 +110,7 @@ if (config.influx) {
 }
 
 // Authentication code depends on session, so init session first
-auth.init(app);
+const authInitiated = auth.init(app);
 search.init(app.locals.orm, config.search);
 
 // Set up constants that will remain valid for the life of the app
@@ -126,7 +127,7 @@ app.use((req, res, next) => {
 	res.locals.repositoryUrl = repositoryUrl;
 	res.locals.alerts = [];
 
-	if (!req.session) {
+	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({
 			level: 'danger',
 			message: 'We are currently experiencing technical difficulties; ' +
