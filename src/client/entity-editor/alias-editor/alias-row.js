@@ -77,6 +77,7 @@ const AliasRow = ({
 		<Row>
 			<Col md={4}>
 				<NameField
+					autoFocus
 					defaultValue={nameValue}
 					empty={
 						isAliasEmpty(nameValue, sortNameValue, languageValue)

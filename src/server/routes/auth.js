@@ -28,6 +28,10 @@ router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
 router.get('/cb', (req, res, next) => {
 	passport.authenticate('musicbrainz-oauth2', (authErr, user, info) => {
 		if (authErr) {
+			res.locals.alerts.push({
+				level: 'danger',
+				message: `We encountered an error while trying to sign in: ${authErr}`
+			});
 			return next(authErr);
 		}
 

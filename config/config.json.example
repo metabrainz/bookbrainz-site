@@ -4,30 +4,30 @@
 		"log": "debug"
 	},
 	"musicbrainz": {
-		"clientID": "",
-		"clientSecret": "",
-		"callbackURL": ""
+		"clientID": null,
+		"clientSecret": null,
+		"callbackURL": "http://localhost:9099/cb"
 	},
 	"session": {
 		"maxAge": 2592000000,
 		"secret": "Something here!",
 		"secure": false,
 		"redis": {
-			"host": "localhost",
+			"host": "redis",
 			"port": 6379
 		}
 	},
 	"database": {
 		"client": "pg",
 		"connection": {
-			"host": "127.0.0.1",
+			"host": "postgres",
 			"database": "bookbrainz",
-			"user": "bookbrainz",
-			"password": "bookbrainz"
+			"user": "postgres",
+			"password": ""
 		}
 	},
 	"search": {
-		"host": "localhost:9200",
+		"host": "elasticsearch:9200",
 		"apiVersion": "5.5",
 		"maxRetries": -1,
 		"deadTimeout": 2000

@@ -169,11 +169,11 @@ export function getEntityDisambiguation(entity) {
 }
 
 export function getEntitySecondaryAliases(entity) {
-	const aliases = entity.aliasSet.aliases
-		.filter(item => item.id !== entity.defaultAlias.id)
-		.map(item => item.name)
-		.join(', ');
-	if (entity.aliasSet.aliases.length > 1) {
+	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
+		const aliases = entity.aliasSet.aliases
+			.filter(item => item.id !== entity.defaultAlias.id)
+			.map(item => item.name)
+			.join(', ');
 		return <h4>{aliases}</h4>;
 	}
 
@@ -196,7 +196,13 @@ export const ENTITY_TYPE_ICONS = {
 	Work: 'pen-nib'
 };
 
-export function genEntityIconHTMLElement(entityType) {
+export function genEntityIconHTMLElement(entityType, size = '', margin = true) {
 	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
-	return <FontAwesome ariaLabel={entityType} className="margin-right-0-5" name={ENTITY_TYPE_ICONS[entityType]}/>;
+	return (
+		<FontAwesome
+			ariaLabel={entityType}
+			className={margin ? 'margin-right-0-5' : ''}
+			name={ENTITY_TYPE_ICONS[entityType]}
+			size={size}
+		/>);
 }

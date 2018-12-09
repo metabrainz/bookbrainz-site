@@ -17,7 +17,7 @@
  */
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {addAliasRow, hideAliasEditor} from './actions';
+import {addAliasRow, hideAliasEditor, removeEmptyAliases} from './actions';
 
 import AliasRow from './alias-row';
 import Icon from 'react-fontawesome';
@@ -119,7 +119,10 @@ AliasEditor.defaultProps = {
 function mapDispatchToProps(dispatch) {
 	return {
 		onAddAlias: () => dispatch(addAliasRow()),
-		onClose: () => dispatch(hideAliasEditor())
+		onClose: () => {
+			dispatch(hideAliasEditor());
+			dispatch(removeEmptyAliases());
+		}
 	};
 }
 
