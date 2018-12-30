@@ -55,7 +55,7 @@ You'll need to install Docker and Docker-compose on your development machine:
 
 When that is installed, clone the repository and follow the instructions below step by step.
 
-If you wish, you can instead [install the database and search dependencies on your machine](./MANUAL_INSTALL.md),
+If you wish, you can instead [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md),
 and/or [run the NodeJS server locally](./NODEJS_SETUP.md) while using dockerized dependencies.
 Running the NodeJS server locally would be easier if you want to use a debugger, for instance.
 
