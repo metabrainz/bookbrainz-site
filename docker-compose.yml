@@ -42,5 +42,10 @@ services:
       - "6379:6379"
       - "3600:3600"
 
+  wait:
+    image: waisbrot/wait
+    environment:
+      - TARGETS=elasticsearch:9200
+
 volumes:
   postgres-data:

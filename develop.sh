@@ -6,4 +6,5 @@ if [[ ! -d "src" ]]; then
 fi
 
 docker-compose up -d elasticsearch postgres redis &&
+docker-compose run wait &&
 docker-compose up --build bookbrainz-site
