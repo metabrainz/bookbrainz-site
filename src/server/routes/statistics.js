@@ -66,6 +66,9 @@ router.get('/', async (req, res) => {
 		);
 	}
 	const allEntities = await Promise.all(queryPromises1);
+	allEntities.sort((a, b) =>
+		b.Count - a.Count
+	);
 
 	/*
 	 *	Here We are fetching count of master revision
@@ -92,7 +95,11 @@ router.get('/', async (req, res) => {
 					 ({Count, modelName}))
 		);
 	}
-	const last30DaysEntities = await Promise.all(queryPromises2);
+	const last30DaysEntitiesHelper = await Promise.all(queryPromises2);
+	const last30DaysEntities = {};
+	for (const model of last30DaysEntitiesHelper) {
+		last30DaysEntities[model.modelName] = model.Count;
+	}
 
 	/*
 	 *	Here We are fetching top 10 Edirors

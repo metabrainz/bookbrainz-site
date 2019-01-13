@@ -20,7 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 const {PageHeader, Table} = bootstrap;
 const {formatDate} = utilsHelper;
@@ -109,9 +109,12 @@ function EntityCountTable(props) {
 						allEntities.map((entity, i) => (
 							<tr key={i}>
 								<td>{i + 1}</td>
-								<td>{entity.modelName}</td>
+								<td>
+									{genEntityIconHTMLElement(entity.modelName)}
+									{entity.modelName}
+								</td>
 								<td>{entity.Count}</td>
-								<td>{last30DaysEntities[i].Count}</td>
+								<td>{last30DaysEntities[entity.modelName]}</td>
 							</tr>
 						))
 					}
