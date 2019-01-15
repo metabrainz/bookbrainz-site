@@ -42,10 +42,15 @@ services:
       - "6379:6379"
       - "3600:3600"
 
-  wait:
+  startup:
     image: waisbrot/wait
+    container_name: startup
     environment:
-      - TARGETS=elasticsearch:9200
+      - TARGETS=redis:6379,postgres:5432,elasticsearch:9200
+    depends_on:
+      - elasticsearch
+      - redis
+      - postgres
 
 volumes:
   postgres-data:

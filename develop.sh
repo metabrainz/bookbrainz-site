@@ -5,6 +5,5 @@ if [[ ! -d "src" ]]; then
     exit -1
 fi
 
-docker-compose up -d elasticsearch postgres redis &&
-docker-compose run wait &&
+docker-compose run startup &&
 docker-compose up --build bookbrainz-site
