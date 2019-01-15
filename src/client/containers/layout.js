@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2016  Daniel Hsing
+ * Copyright (C) 2018  Theodore Fabian Rudy
+ * 				 2016  Daniel Hsing
  * 				 2016  Ben Ockmore
  * 				 2016  Sean Burke
  * 				 2016  Ohm Patel
- *				 2015  Leo Verto
+ * 				 2015  Leo Verto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
