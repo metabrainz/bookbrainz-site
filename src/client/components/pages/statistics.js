@@ -126,7 +126,7 @@ function EntityCountTable(props) {
 
 EntityCountTable.propTypes = {
 	allEntities: PropTypes.array.isRequired,
-	last30DaysEntities: PropTypes.array.isRequired
+	last30DaysEntities: PropTypes.object.isRequired
 };
 
 /**
@@ -152,7 +152,7 @@ function StatisticsPage(props) {
 StatisticsPage.displayName = 'StatisticsPage';
 StatisticsPage.propTypes = {
 	allEntities: PropTypes.array.isRequired,
-	last30DaysEntities: PropTypes.array.isRequired,
+	last30DaysEntities: PropTypes.object.isRequired,
 	topEditors: PropTypes.array.isRequired
 };
 
