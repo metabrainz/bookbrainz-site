@@ -48,6 +48,12 @@ export function getEntityModels(orm: Object): Object {
 	};
 }
 
+export function getDateBeforeDays(days) {
+	 const date = new Date();
+	 date.setDate(date.getDate() - days);
+	 return date;
+}
+
 export function filterIdentifierTypesByEntityType(
 	identifierTypes: Array<Object>,
 	entityType: string
