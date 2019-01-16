@@ -43,9 +43,10 @@ function Entity(
 			}
 			{' '}
 			{nameComponent}
+			{' '}
 			{
 				disambiguation &&
-				<span className="disambig">{disambiguation}</span>
+				<span className="disambig"><small>({disambiguation})</small></span>
 			}
 		</span>
 	);
