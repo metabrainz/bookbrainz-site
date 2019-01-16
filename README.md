@@ -59,6 +59,8 @@ If you wish, you can instead [install the database and search dependencies on yo
 and/or [run the NodeJS server locally](./NODEJS_SETUP.md) while using dockerized dependencies.
 Running the NodeJS server locally would be easier if you want to use a debugger, for instance.
 
+Note: If you are using docker-toolbox you need to replace [elasticsearch:9200](/config.json.example#L30) with Ip address of your docker-machine(192.168.99.100) in `config.json`.
+
 ## Cloning
 
 Since this project makes use of
