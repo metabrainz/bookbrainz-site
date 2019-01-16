@@ -28,6 +28,7 @@
 	},
 	"search": {
 		"host": "elasticsearch:9200",
+		"httpAuth": "elastic:changeme",
 		"apiVersion": "5.5",
 		"maxRetries": -1,
 		"deadTimeout": 2000
