@@ -43,12 +43,10 @@ class EditorProfileTab extends React.Component {
 			cachedMetabrainzName,
 			metabrainzUserId,
 			name,
-			gender,
-			birthDate
+			gender
 		} = editor;
 		const createdAtDate = formatDate(editor.createdAt, true);
 		const lastActiveDate = formatDate(editor.activeAt, true);
-		const birthday = formatDate(birthDate, false);
 
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {
@@ -90,8 +88,6 @@ class EditorProfileTab extends React.Component {
 					</dd>
 					<dt>Display Name</dt>
 					<dd>{name}</dd>
-					<dt>Birth Date</dt>
-					<dd>{birthday || '?'}</dd>
 					<dt>Area</dt>
 					<dd>{editor.area ? editor.area.name : '?'}</dd>
 					<dt>Gender</dt>

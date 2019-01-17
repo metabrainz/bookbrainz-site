@@ -119,7 +119,6 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			(editor) => editor.set('bio', req.body.bio)
 				.set('areaId', req.body.areaId)
 				.set('genderId', req.body.genderId)
-				.set('birthDate', req.body.birthDate)
 				.set('name', req.body.name)
 				.save()
 		)

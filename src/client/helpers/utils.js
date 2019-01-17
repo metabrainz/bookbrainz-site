@@ -52,14 +52,3 @@ const MILLISECONDS_PER_DAY = 86400000;
 export function isWithinDayFromNow(date) {
 	return Boolean(Date.now() - date.getTime() < MILLISECONDS_PER_DAY);
 }
-
-/**
- * Adds extra validation for form fields recording user's birthdays.
- * Specifically checks that a given date value is in the past.
- *
- * @param {string} value - Date that is going to be validated.
- * @returns {boolean} - True if value is a date in the past. False otherwise.
- */
-export function isValidUserBirthday(value) {
-	return Date.parse(value) < Date.now();
-}
