@@ -29,9 +29,15 @@ services:
   elasticsearch:
     container_name: elasticsearch
     restart: unless-stopped
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+    environment:
+      # Skip bootstrap checks (see https://github.com/docker-library/elasticsearch/issues/98)
+      - transport.host=127.0.0.1
+      - discovery.zen.minimum_master_nodes=1
     ports:
       - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
 
   redis:
     container_name: redis
@@ -42,10 +48,16 @@ services:
       - "6379:6379"
       - "3600:3600"
 
-  wait:
+  startup:
     image: waisbrot/wait
+    container_name: startup
     environment:
-      - TARGETS=elasticsearch:9200
+      - TARGETS=redis:6379,postgres:5432,elasticsearch:9200
+    depends_on:
+      - elasticsearch
+      - redis
+      - postgres
 
 volumes:
   postgres-data:
+  elasticsearch-data:

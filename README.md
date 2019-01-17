@@ -63,20 +63,20 @@ Note: If you are using docker-toolbox you need to replace [elasticsearch:9200](/
 
 ## Cloning
 
+To clone the repository and point the local HEAD to the latest commit in the
+`stable` branch, something like the following command should work:
+
+    git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
+
 Since this project makes use of
-[git submodules](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules), you
+git submodules, you
 need to use `git clone --recursive` to clone it. Alternatively you can follow
-the directions in the documentation linked here to manually initialize
+the directions in the documentation [linked here](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules) to manually initialize
 submodules.
 
 Currently used submodules:
 * [MonkeyDo/lobes](https://github.com/MonkeyDo/lobes) in
   `src/client/stylesheets/lobes`
-
-To clone the repository and point the local HEAD to the latest commit in the
-`stable` branch, something like the following command should work:
-
-    git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
 
 
 ## Configuration

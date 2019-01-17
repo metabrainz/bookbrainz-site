@@ -20,7 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 const {PageHeader, Table} = bootstrap;
 const {formatDate} = utilsHelper;
@@ -35,7 +35,9 @@ function TopEditorsTable(props) {
 	const {editors} = props;
 	return (
 		<div>
-			<div> <h2 className="text-center">Top 10 Editors</h2> </div>
+			<div>
+				<h2>Top 10 Editors</h2>
+			</div>
 			<Table
 				bordered
 				condensed
@@ -43,10 +45,10 @@ function TopEditorsTable(props) {
 			>
 				<thead>
 					<tr>
-						<th >#</th>
-						<th>Editor&apos;s Name</th>
-						<th>Total Revisions</th>
-						<th>Registration Date</th>
+						<th className="col-sm-1" >#</th>
+						<th className="col-sm-5" >Editor&apos;s Name</th>
+						<th className="col-sm-3" >Total Revisions</th>
+						<th className="col-sm-3" >Registration Date</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -77,23 +79,80 @@ TopEditorsTable.propTypes = {
 };
 
 /**
+ * Renders the document and displays the EntityCountTable table.
+ * @returns {ReactElement} a HTML document which displays the
+ * EntityCountTable table in the statistics page
+ */
+
+function EntityCountTable(props) {
+	const {allEntities, last30DaysEntities} = props;
+	return (
+		<div>
+			<div>
+				<h2>Total Entities</h2>
+			</div>
+			<Table
+				bordered
+				condensed
+				striped
+			>
+				<thead>
+					<tr>
+						<th className="col-sm-1" >#</th>
+						<th className="col-sm-5" >Entity Type</th>
+						<th className="col-sm-3" >Total</th>
+						<th className="col-sm-3" >Added in Last 30 days</th>
+					</tr>
+				</thead>
+				<tbody>
+					{
+						allEntities.map((entity, i) => (
+							<tr key={i}>
+								<td>{i + 1}</td>
+								<td>
+									{genEntityIconHTMLElement(entity.modelName)}
+									{entity.modelName}
+								</td>
+								<td>{entity.Count}</td>
+								<td>{last30DaysEntities[entity.modelName]}</td>
+							</tr>
+						))
+					}
+				</tbody>
+			</Table>
+		</div>
+	);
+}
+
+EntityCountTable.propTypes = {
+	allEntities: PropTypes.array.isRequired,
+	last30DaysEntities: PropTypes.object.isRequired
+};
+
+/**
  * Renders the document and displays the 'Statistics' page.
  * @returns {ReactElement} a HTML document which displays the statistics
  * page
  */
 
 function StatisticsPage(props) {
-	const {topEditors} = props;
+	const {allEntities, last30DaysEntities, topEditors} = props;
 	return (
 		<div>
 			<PageHeader>Statistics of BookBrainz</PageHeader>
 			<TopEditorsTable editors={topEditors}/>
+			<EntityCountTable
+				allEntities={allEntities}
+				last30DaysEntities={last30DaysEntities}
+			/>
 		</div>
 	);
 }
 
 StatisticsPage.displayName = 'StatisticsPage';
 StatisticsPage.propTypes = {
+	allEntities: PropTypes.array.isRequired,
+	last30DaysEntities: PropTypes.object.isRequired,
 	topEditors: PropTypes.array.isRequired
 };
 

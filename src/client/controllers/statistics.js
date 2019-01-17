@@ -29,7 +29,11 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<StatisticsPage topEditors={props.topEditors}/>
+			<StatisticsPage
+				allEntities={props.allEntities}
+				last30DaysEntities={props.last30DaysEntities}
+				topEditors={props.topEditors}
+			/>
 		</Layout>
 	</AppContainer>
 );
@@ -45,4 +49,3 @@ ReactDOM.hydrate(markup, document.getElementById('target'));
 if (module.hot) {
 	module.hot.accept();
 }
-

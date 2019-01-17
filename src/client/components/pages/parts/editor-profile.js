@@ -100,7 +100,7 @@ class EditorProfileTab extends React.Component {
 					<dd>0</dd>
 					<dt>Joined</dt>
 					<dd>{createdAtDate}</dd>
-					<dt>Last Active</dt>
+					<dt>Last login</dt>
 					<dd>{lastActiveDate}</dd>
 					<dt>Bio</dt>
 					<dd>{editor.bio ? editor.bio : '-'}</dd>
