@@ -46,6 +46,13 @@ router.get('/cb', (req, res, next) => {
 				return next(loginErr);
 			}
 
+			const {Editor} = req.app.locals.orm;
+			const lastLoginDate = new Date().toISOString();
+			(() => {
+			  Editor
+			    .where({id: req.user.id})
+			    .save({activeAt: lastLoginDate}, {patch: true});
+			})();
 			const redirectTo =
 				req.session.redirectTo ? req.session.redirectTo : '/';
 			req.session.redirectTo = null;
