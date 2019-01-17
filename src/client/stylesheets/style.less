@@ -54,7 +54,15 @@ The production configuration for webpack needs to be finalized before using this
 
 body {
 	margin-top: 64px;
+    margin-bottom: 64px;
 }
+
+@media (max-width: 600px) {
+    body {
+        margin-bottom: 128px;
+    }
+}
+
 
 /* Site-wide styling */
 /* ================= */
@@ -185,6 +193,7 @@ html {
 	position: absolute;
 	width: 100%;
 	background-color: #f5f5f5;
+    bottom: 0;
 }
 .contact-text {
 	color: rgb(180, 180, 180);
