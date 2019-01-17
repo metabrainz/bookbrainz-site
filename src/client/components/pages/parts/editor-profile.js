@@ -90,8 +90,6 @@ class EditorProfileTab extends React.Component {
 					</dd>
 					<dt>Display Name</dt>
 					<dd>{name}</dd>
-					<dt>Birth Date</dt>
-					<dd>{birthday || '?'}</dd>
 					<dt>Area</dt>
 					<dd>{editor.area ? editor.area.name : '?'}</dd>
 					<dt>Gender</dt>
