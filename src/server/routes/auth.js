@@ -50,7 +50,12 @@ router.get('/cb', (req, res, next) => {
 			//  lastLoginDate is current login date with time in ISO foramt
 			const lastLoginDate = new Date().toISOString();
 			//  Query for update activeAt with current login timestamp
-			await Editor.where({id: req.user.id}).save({activeAt: lastLoginDate}, {patch: true});
+			try {
+				await Editor.where({id: req.user.id}).save({activeAt: lastLoginDate}, {patch: true});
+			}
+			catch (error) {
+				return next(error);
+			}
 
 			const redirectTo =
 				req.session.redirectTo ? req.session.redirectTo : '/';
