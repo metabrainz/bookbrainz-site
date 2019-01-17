@@ -43,8 +43,7 @@ class EditorProfileTab extends React.Component {
 			cachedMetabrainzName,
 			metabrainzUserId,
 			name,
-			gender,
-			birthDate
+			gender
 		} = editor;
 		const createdAtDate = formatDate(editor.createdAt, true);
 		const lastActiveDate = formatDate(editor.activeAt, true);
