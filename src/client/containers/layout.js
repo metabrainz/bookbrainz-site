@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2016  Daniel Hsing
+ * Copyright (C) 2018  Theodore Fabian Rudy
+ * 				 2016  Daniel Hsing
  * 				 2016  Ben Ockmore
  * 				 2016  Sean Burke
  * 				 2016  Ohm Patel
- *				 2015  Leo Verto
+ * 				 2015  Leo Verto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,21 +21,47 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint max-len: "warn" */
+/* eslint import/no-unassigned-import: "warn" */
+/* eslint import/no-commonjs: "warn" */
+/* eslint global-require: "warn" */
+
 import * as bootstrap from 'react-bootstrap';
+
 import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {genEntityIconHTMLElement} from '../helpers/entity';
 
+
+if (!process.env.SSR) {
+	require('../../client/stylesheets/style.less');
+}
 
 const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
+		this.handleDropdownClick = this.handleDropdownClick.bind(this);
+	}
+
+	handleDropdownToggle(newValue) {
+		if (this.state.keepMenuOpen) {
+			this.setState({keepMenuOpen: false, menuOpen: true});
+		}
+		else {
+			this.setState({menuOpen: newValue});
+		}
+	}
+
+	handleDropdownClick(eventKey, event) {
+		event.stopPropagation();
+		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
 	}
 
 	renderNavHeader() {
@@ -72,13 +99,13 @@ class Layout extends React.Component {
 		 */
 		const createDropdownTitle = (
 			<span>
-				<FontAwesome name="plus"/>{'  Create'}
+				<FontAwesome name="plus"/>{'  Add'}
 			</span>
 		);
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesome name="user"/>
+				<FontAwesome name="user-circle"/>
 				{`  ${user.name}`}
 			</span>
 		);
@@ -90,23 +117,31 @@ class Layout extends React.Component {
 						<NavDropdown
 							eventKey={1}
 							id="create-dropdown"
+							open={this.state.menuOpen}
 							title={createDropdownTitle}
+							onSelect={this.handleDropdownClick}
+							onToggle={this.handleDropdownToggle}
 						>
-							<MenuItem href="/publication/create">
-								Create Publication
+							<MenuItem href="/work/create">
+								{genEntityIconHTMLElement('Work')}
+								Work
 							</MenuItem>
 							<MenuItem href="/edition/create">
-								Create Edition
+								{genEntityIconHTMLElement('Edition')}
+								Edition
 							</MenuItem>
-							<MenuItem href="/work/create">
-								Create Work
+							<MenuItem href="/publication/create">
+								{genEntityIconHTMLElement('Publication')}
+								Edition Group
 							</MenuItem>
 							<MenuItem divider/>
 							<MenuItem href="/creator/create">
-								Create Creator
+								{genEntityIconHTMLElement('Creator')}
+								Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">
-								Create Publisher
+								{genEntityIconHTMLElement('Publisher')}
+								Publisher
 							</MenuItem>
 						</NavDropdown>
 						<NavDropdown
@@ -123,20 +158,26 @@ class Layout extends React.Component {
 							<MenuItem href="/logout">
 								<FontAwesome
 									fixedWidth
-									name="sign-out"
+									name="sign-out-alt"
 								/>{' Sign Out'}
 							</MenuItem>
 						</NavDropdown>
 					</Nav> :
 					<Nav pullRight>
 						<NavItem href="/auth">
-							<FontAwesome name="sign-in"/>{' Sign In / Register'}
+							<FontAwesome name="sign-in-alt"/>{' Sign In / Register'}
 						</NavItem>
 					</Nav>
 				}
 				<Nav pullRight>
+					<NavItem href="/help">
+						<FontAwesome name="question-circle"/>
+						{' Help '}
+					</NavItem>
+				</Nav>
+				<Nav pullRight>
 					<NavItem href="/statistics">
-						<FontAwesome name="statistics"/>
+						<FontAwesome name="chart-line"/>
 						{' Statistics '}
 					</NavItem>
 				</Nav>
@@ -253,3 +294,4 @@ Layout.defaultProps = {
 };
 
 export default Layout;
+

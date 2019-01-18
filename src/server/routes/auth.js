@@ -28,6 +28,10 @@ router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
 router.get('/cb', (req, res, next) => {
 	passport.authenticate('musicbrainz-oauth2', (authErr, user, info) => {
 		if (authErr) {
+			res.locals.alerts.push({
+				level: 'danger',
+				message: `We encountered an error while trying to sign in: ${authErr}`
+			});
 			return next(authErr);
 		}
 
@@ -37,9 +41,20 @@ router.get('/cb', (req, res, next) => {
 			return res.redirect('/register/details');
 		}
 
-		return req.logIn(user, (loginErr) => {
+		return req.logIn(user, async (loginErr) => {
 			if (loginErr) {
 				return next(loginErr);
+			}
+
+			const {Editor} = req.app.locals.orm;
+			//  lastLoginDate is current login date with time in ISO foramt
+			const lastLoginDate = new Date().toISOString();
+			//  Query for update activeAt with current login timestamp
+			try {
+				await Editor.where({id: req.user.id}).save({activeAt: lastLoginDate}, {patch: true});
+			}
+			catch (error) {
+				return next(error);
 			}
 
 			const redirectTo =

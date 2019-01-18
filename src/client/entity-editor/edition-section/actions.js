@@ -53,6 +53,7 @@ export const UPDATE_WIDTH = 'UPDATE_WIDTH';
 export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_DEPTH = 'UPDATE_DEPTH';
 export const SHOW_PHYSICAL = 'SHOW_PHYSICAL';
+export const SHOW_PUBLICATION = 'SHOW_PUBLICATION';
 
 /**
  * Produces an action indicating that the edition status for the edition being
@@ -125,6 +126,18 @@ export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 export function showPhysical(): Action {
 	return {
 		type: SHOW_PHYSICAL
+	};
+}
+
+/**
+ * Produces an action indicating that the publication (edition group) section of the edition
+ * form should be shown.
+ *
+ * @returns {Action} The resulting SHOW_PUBLICATION action.
+ */
+export function showPublication(): Action {
+	return {
+		type: SHOW_PUBLICATION
 	};
 }
 

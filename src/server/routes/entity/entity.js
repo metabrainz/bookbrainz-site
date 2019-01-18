@@ -17,11 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import * as achievement from '../../helpers/achievement';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+import type {$Request, $Response, NextFunction} from 'express';
+import type {
+	EntityTypeString, FormLanguageT as Language,
+	FormPublisherT as Publisher, FormReleaseEventT as ReleaseEvent,
+	Transaction
+} from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
 import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
@@ -38,7 +46,10 @@ import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../helpers/config';
+import target from '../../templates/target';
 
+
+type PassportRequest = $Request & {user: any, session: any};
 
 const log = new Log(config.site.log);
 
@@ -50,11 +61,13 @@ const entityComponents = {
 	work: WorkPage
 };
 
-export function displayEntity(req, res) {
-	const {orm} = req.app.locals;
+export function displayEntity(req: PassportRequest, res: $Response) {
+	const {orm}: {orm: any} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
-	const {entity} = res.locals;
+	const {locals: resLocals}: {locals: any} = res;
+	const {entity}: {entity: any} = resLocals;
 	// Get unique identifier types for display
+	// $FlowFixMe
 	const identifierTypes = entity.identifierSet &&
 		_.uniqBy(
 			_.map(entity.identifierSet.identifiers, 'type'),
@@ -62,13 +75,13 @@ export function displayEntity(req, res) {
 		);
 
 	let editorEntityVisitPromise;
-	if (res.locals.user) {
+	if (resLocals.user) {
 		editorEntityVisitPromise = new EditorEntityVisits({
-			bbid: res.locals.entity.bbid,
-			editorId: res.locals.user.id
+			bbid: resLocals.entity.bbid,
+			editorId: resLocals.user.id
 		})
 			.save(null, {method: 'insert'})
-			.then(() => achievement.processPageVisit(orm, res.locals.user.id))
+			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
 			.catch(
 				// error caused by duplicates we do not want in database
 				() => Promise.resolve(false)
@@ -85,7 +98,8 @@ export function displayEntity(req, res) {
 				(id) => parseInt(id, 10)
 			));
 		}
-		if (req.query.alert) {
+		if (_.isString(req.query.alert)) {
+			// $FlowFixMe
 			alertIds = alertIds.concat(req.query.alert.split(',').map(
 				(id) =>	parseInt(id, 10)
 			));
@@ -137,12 +151,12 @@ export function displayEntity(req, res) {
 					/>
 				</Layout>
 			);
-			res.render('target', {
+			res.send(target({
 				markup,
 				page: entityName,
 				props: escapeProps(props),
 				script: '/js/entity/entity.js'
-			});
+			}));
 		}
 		else {
 			throw new Error(
@@ -152,7 +166,7 @@ export function displayEntity(req, res) {
 	});
 }
 
-export function displayDeleteEntity(req, res) {
+export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	const props = generateProps(req, res);
 
 	const markup = ReactDOMServer.renderToString(
@@ -161,14 +175,16 @@ export function displayDeleteEntity(req, res) {
 		</Layout>
 	);
 
-	res.render('target', {
+	res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/deletion.js'
-	});
+	}));
 }
 
-export function displayRevisions(req, res, next, RevisionModel) {
+export function displayRevisions(
+	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
+) {
 	const {bbid} = req.params;
 
 	return new RevisionModel()
@@ -189,22 +205,22 @@ export function displayRevisions(req, res, next, RevisionModel) {
 					/>
 				</Layout>
 			);
-			return res.render('target', {
+			return res.send(target({
 				markup,
 				page: 'revisions',
 				props: escapeProps(props),
 				script: '/js/entity/entity.js'
-			});
+			}));
 		})
 		.catch(next);
 }
 
-function _createNote(orm, content, editor, revision, transacting) {
+function _createNote(orm, content, editorID, revision, transacting) {
 	const {Note} = orm;
 	if (content) {
 		const revisionId = revision.get('id');
 		return new Note({
-			authorId: editor.id,
+			authorId: editorID,
 			content,
 			revisionId
 		})
@@ -214,24 +230,28 @@ function _createNote(orm, content, editor, revision, transacting) {
 	return null;
 }
 
-export function addNoteToRevision(req, res) {
-	const {orm} = req.app.locals;
+export function addNoteToRevision(req: PassportRequest, res: $Response) {
+	const {orm}: {orm: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const revision = Revision.forge({id: req.params.id});
+	const {body}: {body: any} = req;
 	const revisionNotePromise = bookshelf.transaction(
 		(transacting) => _createNote(
-			orm, req.body.note, editorJSON, revision, transacting
+			orm, body.note, editorJSON.id, revision, transacting
 		)
 	);
 	return handler.sendPromiseResult(res, revisionNotePromise);
 }
 
-export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
-	const {entity} = res.locals;
+export function handleDelete(
+	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
+	RevisionModel: any
+) {
+	const {entity}: {entity: any} = res.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
-	const currentEntity = res.locals.entity;
+	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction((transacting) => {
 		const editorUpdatePromise =
@@ -251,13 +271,13 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 		const parentAddedPromise =
 			revisionParentsPromise.then(
 				(parents) => parents.attach(
-					currentEntity.revisionId, {transacting}
+					entity.revisionId, {transacting}
 				)
 			);
 
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
-				orm, req.body.note, editorJSON, revision, transacting
+				orm, body.note, editorJSON.id, revision, transacting
 			));
 
 		/*
@@ -282,439 +302,445 @@ export function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
 
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
-			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise
+			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise,
+			search.deleteEntity(entity)
 		);
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise);
 }
 
-function setHasChanged(oldSet, newSet, idField, compareFields) {
-	const oldSetIds = _.map(oldSet, idField);
-	const newSetIds = _.map(newSet, idField);
+type ProcessEditionSetsBody = {
+	languages: Array<Language>,
+	publishers: Array<Publisher>,
+	releaseEvents: Array<ReleaseEvent>
+};
 
-	const oldSetHash = {};
-	oldSet.forEach((item) => {
-		oldSetHash[item[idField]] = item;
-	});
-
-	/*
-	 * First, determine whether any items have been deleted or added, by
-	 * excluding all new IDs from the old IDs and checking whether any IDs
-	 * remain, and vice versa
-	 */
-	const itemsHaveBeenDeletedOrAdded =
-		_.difference(oldSetIds, newSetIds).length > 0 ||
-		_.difference(newSetIds, oldSetIds).length > 0;
-
-	if (itemsHaveBeenDeletedOrAdded) {
-		return true;
-	}
-
-	/*
-	 * If no list of fields for comparison is provided and no items have been
-	 * deleted or added, consider the set unchanged
-	 */
-	if (_.isEmpty(compareFields)) {
-		return false;
-	}
-
-	// If not, return true if any items have changed (are not equal)
-	return _.some(newSet, (newItem) => {
-		const oldRepresentation =
-			_.pick(oldSetHash[newItem[idField]], compareFields);
-		const newRepresentation = _.pick(newItem, compareFields);
-		return !_.isEqual(oldRepresentation, newRepresentation);
-	});
-}
-
-function unchangedSetItems(oldSet, newSet, compareFields) {
-	return _.intersectionBy(
-		newSet,
-		oldSet,
-		(item) => _.pick(item, compareFields)
-	);
-}
-
-function updatedOrNewSetItems(oldSet, newSet, compareFields) {
-	return _.differenceBy(
-		newSet, oldSet, (item) => _.pick(item, compareFields)
-	);
-}
-
-function processFormSet(transacting, oldSet, formItems, setMetadata) {
-	const oldItems =
-		oldSet ? oldSet.related(setMetadata.propName).toJSON() : [];
-
-	// If there's no change, return the old set
-	const noChangeToSet = !setHasChanged(
-		oldItems, formItems, setMetadata.idField, setMetadata.mutableFields
-	);
-
-	if (noChangeToSet) {
-		return oldSet;
-	}
-
-	// If we have no items for the set, the set should be null
-	if (_.isEmpty(formItems)) {
-		return null;
-	}
-
-	const newSetPromise = setMetadata.model.forge()
-		.save(null, {transacting});
-
-	const fetchCollectionPromise = newSetPromise
-		.then(
-			(newSet) => newSet.related(setMetadata.propName)
-				.fetch({transacting})
-		);
-
-	let createPropertiesPromise = null;
-	let idsToAttach;
-
-	if (setMetadata.mutableFields) {
-		// If there are items in the set which haven't changed, get their IDs
-		const unchangedItems = unchangedSetItems(
-			oldItems,
-			formItems,
-			setMetadata.mutableFields
-		);
-		idsToAttach = _.map(unchangedItems, setMetadata.idField);
-
-		/*
-		 * If there are new items in the set or items in the set have otherwise
-		 * changed, add rows to the database and connect them to the set
-		 */
-		const updatedOrNewItems = updatedOrNewSetItems(
-			oldItems,
-			formItems,
-			setMetadata.mutableFields
-		);
-
-		createPropertiesPromise = fetchCollectionPromise
-			.then((collection) => Promise.map(
-				updatedOrNewItems, (item) =>
-					collection.create(
-						_.omit(item, setMetadata.idField),
-						{transacting}
-					)
-			));
-	}
-	else {
-		// If the set's elements aren't mutable, it should just be a list of IDs
-		idsToAttach = formItems;
-	}
-
-	// Link any IDs for unchanged items (including immutable) to the set
-	const attachPropertiesPromise = fetchCollectionPromise
-		.then((collection) => collection.attach(idsToAttach, {transacting}));
-
-	/*
-	 * Ensure that any linking that needs to happen to the set is completed
-	 * and return the new set's object
-	 */
-	return Promise.join(
-		newSetPromise,
-		Promise.resolve(createPropertiesPromise),
-		attachPropertiesPromise,
-		(newSet) => newSet
-	);
-}
-
-function processFormAliases(
-	orm, transacting, oldAliasSet, oldDefaultAliasId, newAliases
+async function processEditionSets(
+	orm: any,
+	currentEntity: ?{},
+	body: ProcessEditionSetsBody,
+	transacting: Transaction
 ) {
+	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
+
+	const oldLanguageSet = await (
+		languageSetID &&
+		orm.LanguageSet.forge({id: languageSetID})
+			.fetch({transacting, withRelated: ['languages']})
+	);
+
+	const languages = _.get(body, 'languages') || [];
+	const newLanguageSetIDPromise = orm.func.language.updateLanguageSet(
+		orm, transacting, oldLanguageSet,
+		languages.map((languageID) => ({id: languageID}))
+	)
+		.then((set) => set && set.get('id'));
+
+	const publisherSetID = _.get(currentEntity, ['publisherSet', 'id']);
+
+	const oldPublisherSet = await (
+		publisherSetID &&
+		orm.PublisherSet.forge({id: publisherSetID})
+			.fetch({transacting, withRelated: ['publishers']})
+	);
+
+	const publishers = _.get(body, 'publishers') || [];
+	const newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(
+		orm, transacting, oldPublisherSet,
+		publishers.map((publisherBBID) => ({bbid: publisherBBID}))
+	)
+		.then((set) => set && set.get('id'));
+
+	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
+
+	const oldReleaseEventSet = await (
+		releaseEventSetID &&
+		orm.ReleaseEventSet.forge({id: releaseEventSetID})
+			.fetch({transacting, withRelated: ['releaseEvents']})
+	);
+
+	const releaseEvents = _.get(body, 'releaseEvents') || [];
+	const newReleaseEventSetIDPromise =
+		orm.func.releaseEvent.updateReleaseEventSet(
+			orm, transacting, oldReleaseEventSet, releaseEvents
+		)
+			.then((set) => set && set.get('id'));
+
+	return Promise.props({
+		languageSetId: newLanguageSetIDPromise,
+		publisherSetId: newPublisherSetIDPromise,
+		releaseEventSetId: newReleaseEventSetIDPromise
+	});
+}
+
+async function processWorkSets(
+	orm, currentEntity: ?{}, body: {languages: Array<Language>},
+	transacting: Transaction
+) {
+	const id = _.get(currentEntity, ['languageSet', 'id']);
+
+	const oldSet = await (
+		id &&
+		orm.LanguageSet.forge({id})
+			.fetch({transacting, withRelated: ['languages']})
+	);
+
+	const languages = _.get(body, 'languages') || [];
+	return Promise.props({
+		languageSetId: orm.func.language.updateLanguageSet(
+			orm, transacting, oldSet,
+			languages.map((languageID) => ({id: languageID}))
+		).then((set) => set && set.get('id'))
+	});
+}
+
+function processEntitySets(
+	orm: any,
+	currentEntity: ?{},
+	entityType: EntityTypeString,
+	body: any,
+	transacting: Transaction
+) {
+	if (entityType === 'Edition') {
+		return processEditionSets(orm, currentEntity, body, transacting);
+	}
+
+	if (entityType === 'Work') {
+		return processWorkSets(orm, currentEntity, body, transacting);
+	}
+
+	return Promise.resolve(null);
+}
+
+async function getNextAliasSet(orm, transacting, currentEntity, body) {
 	const {AliasSet} = orm;
-	const oldAliases =
-		oldAliasSet ? oldAliasSet.related('aliases').toJSON() : [];
-	const aliasCompareFields =
-		['name', 'sortName', 'languageId', 'primary'];
-	const aliasesHaveChanged = setHasChanged(
-		oldAliases, newAliases, 'id', aliasCompareFields
+
+	const id = _.get(currentEntity, ['aliasSet', 'id']);
+
+	const oldAliasSet = await (
+		id &&
+		new AliasSet({id}).fetch({transacting, withRelated: ['aliases']})
 	);
 
-	/*
-	 * If there is no change to the set of aliases, and the default alias is
-	 * the same, skip alias processing
-	 */
-	const newDefaultAlias = _.find(newAliases, 'default');
-	if (!aliasesHaveChanged && newDefaultAlias.id === oldDefaultAliasId) {
-		return oldAliasSet;
-	}
-
-	// Make a new alias set
-	const newAliasSetPromise = new AliasSet().save(null, {transacting});
-	const newAliasesPromise = newAliasSetPromise.then(
-		(newAliasSet) => newAliasSet.related('aliases').fetch({transacting})
-	);
-
-	// Copy across any old aliases that are exactly the same in the new set
-	const unchangedAliases =
-		unchangedSetItems(oldAliases, newAliases, aliasCompareFields);
-	const oldAliasesAttachedPromise = newAliasesPromise.then(
-		(collection) => collection.attach(
-			_.map(unchangedAliases, 'id'), {transacting}
-		)
-	);
-
-	/*
-	 * Create new aliases for any new or updated aliases, and attach them to
-	 * the set
-	 */
-	const newOrUpdatedAliases =
-		updatedOrNewSetItems(oldAliases, newAliases, aliasCompareFields);
-	const allAliasesAttachedPromise = oldAliasesAttachedPromise
-		.then(
-			(collection) =>
-				Promise.all(
-					_.map(newOrUpdatedAliases, (alias) => collection.create(
-						_.omit(alias, 'id', 'default'),
-						{transacting}
-					))
-				)
-					.then(() => collection)
-		);
-
-	// Set the default alias
-	return Promise.join(
-		newAliasSetPromise, allAliasesAttachedPromise,
-		(newAliasSet, collection) => {
-			const defaultAlias = collection.find(
-				(alias) =>
-					alias.get('name') === newDefaultAlias.name &&
-					alias.get('sortName') === newDefaultAlias.sortName &&
-					alias.get('languageId') === newDefaultAlias.languageId
-			);
-			newAliasSet.set('defaultAliasId', defaultAlias.get('id'));
-			return newAliasSet.save(null, {transacting});
-		}
+	return orm.func.alias.updateAliasSet(
+		orm, transacting, oldAliasSet,
+		oldAliasSet && oldAliasSet.get('defaultAliasId'),
+		body.aliases || []
 	);
 }
 
-function processFormIdentifiers(orm, transacting, oldIdentSet, newIdents) {
+async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 	const {IdentifierSet} = orm;
-	const oldIdents =
-		oldIdentSet ? oldIdentSet.related('identifiers').toJSON() : [];
-	const identCompareFields =
-		['value', 'typeId'];
-	const identsHaveChanged = setHasChanged(
-		oldIdents, newIdents, 'id', identCompareFields
+
+	const id = _.get(currentEntity, ['identifierSet', 'id']);
+
+	const oldIdentifierSet = await (
+		id &&
+		new IdentifierSet({id}).fetch({
+			transacting, withRelated: ['identifiers']
+		})
 	);
 
-	// If there is no change to the set of identifiers
-	if (!identsHaveChanged) {
-		return oldIdentSet;
-	}
-
-	// Make a new identifier set
-	const newIdentSetPromise =
-		new IdentifierSet().save(null, {transacting});
-	const newIdentsPromise = newIdentSetPromise.then(
-		(newIdentSet) => newIdentSet.related('identifiers').fetch({transacting})
-	);
-
-	// Copy across any old aliases that are exactly the same in the new set
-	const unchangedIdents =
-		unchangedSetItems(oldIdents, newIdents, identCompareFields);
-	const oldIdentsAttachedPromise = newIdentsPromise.then(
-		(collection) => collection.attach(
-			_.map(unchangedIdents, 'id'), {transacting}
-		)
-	);
-
-	/*
-	 * Create new aliases for any new or updated aliases, and attach them to
-	 * the set
-	 */
-	const newOrUpdatedIdents =
-		updatedOrNewSetItems(oldIdents, newIdents, identCompareFields);
-	const allIdentsAttachedPromise = oldIdentsAttachedPromise
-		.then(
-			(collection) =>
-				Promise.all(
-					_.map(newOrUpdatedIdents, (ident) => collection.create(
-						_.omit(ident, 'id'), {transacting}
-					))
-				)
-					.then(() => collection)
-		);
-
-	return Promise.join(
-		newIdentSetPromise, allIdentsAttachedPromise,
-		(newIdentSet) => newIdentSet
+	return orm.func.identifier.updateIdentifierSet(
+		orm, transacting, oldIdentifierSet, body.identifiers || []
 	);
 }
 
-function processFormAnnotation(
-	orm, transacting, oldAnnotation, newContent, revision
+async function getNextRelationshipSets(
+	orm, transacting, currentEntity, body
+) {
+	const {RelationshipSet} = orm;
+
+	const id = _.get(currentEntity, ['relationshipSet', 'id']);
+
+	const oldRelationshipSet = await (
+		id &&
+		new RelationshipSet({id}).fetch({
+			transacting, withRelated: ['relationships']
+		})
+	);
+
+	const updatedRelationships = orm.func.relationship.updateRelationshipSets(
+		orm, transacting, oldRelationshipSet, body.relationships || []
+	);
+
+	return updatedRelationships;
+}
+
+async function getNextAnnotation(
+	orm, transacting, currentEntity, body, revision
 ) {
 	const {Annotation} = orm;
-	const oldContent = oldAnnotation && oldAnnotation.get('content');
 
-	if (newContent === oldContent) {
-		return oldAnnotation;
-	}
+	const id = _.get(currentEntity, ['annotation', 'id']);
 
-	return newContent ? new Annotation({
-		content: newContent,
-		lastRevisionId: revision.get('id')
-	}).save(null, {transacting}) : null;
+	const oldAnnotation = await (
+		id && new Annotation({id}).fetch({transacting})
+	);
+
+	return orm.func.annotation.updateAnnotation(
+		orm, transacting, oldAnnotation, body.annotation, revision
+	);
 }
 
-function processFormDisambiguation(
-	orm, transacting, oldDisambiguation, newComment
-) {
+async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 	const {Disambiguation} = orm;
-	const oldComment = oldDisambiguation && oldDisambiguation.get('comment');
 
-	if (newComment === oldComment) {
-		return oldDisambiguation;
-	}
+	const id = _.get(currentEntity, ['disambiguation', 'id']);
 
-	return newComment ? new Disambiguation({
-		comment: newComment
-	}).save(null, {transacting}) : null;
+	const oldDisambiguation = await (
+		id && new Disambiguation({id}).fetch({transacting})
+	);
+
+	return orm.func.disambiguation.updateDisambiguation(
+		orm, transacting, oldDisambiguation, body.disambiguation
+	);
 }
 
-function processEntitySets(derivedSets, currentEntity, body, transacting) {
-	if (!derivedSets) {
-		return null;
+async function getChangedProps(
+	orm, transacting, isNew, currentEntity, body, entityType,
+	newRevisionPromise, derivedProps
+) {
+	const aliasSetPromise =
+		getNextAliasSet(orm, transacting, currentEntity, body);
+
+	const identSetPromise =
+		getNextIdentifierSet(orm, transacting, currentEntity, body);
+
+	const annotationPromise = newRevisionPromise.then(
+		(revision) => getNextAnnotation(
+			orm, transacting, currentEntity, body, revision
+		)
+	);
+
+	const disambiguationPromise =
+		getNextDisambiguation(orm, transacting, currentEntity, body);
+
+	const entitySetIdsPromise =
+		processEntitySets(orm, currentEntity, entityType, body, transacting);
+
+	const [
+		aliasSet, identSet, annotation, disambiguation, entitySetIds
+	] = await Promise.all([
+		aliasSetPromise, identSetPromise, annotationPromise,
+		disambiguationPromise, entitySetIdsPromise
+	]);
+
+	const propsToSet = {
+		aliasSetId: aliasSet && aliasSet.get('id'),
+		annotationId: annotation && annotation.get('id'),
+		disambiguationId:
+			disambiguation && disambiguation.get('id'),
+		identifierSetId: identSet && identSet.get('id'),
+		...derivedProps,
+		...entitySetIds
+	};
+
+	if (isNew) {
+		return propsToSet;
 	}
 
-	return Promise.map(derivedSets, (derivedSet) => {
-		const newItems = body[derivedSet.propName];
-
-		let oldSetPromise = null;
-
-		if (currentEntity && currentEntity[derivedSet.name]) {
-			oldSetPromise = derivedSet.model.forge({
-				id: currentEntity[derivedSet.name].id
-			})
-				.fetch({
-					transacting,
-					withRelated: [derivedSet.propName]
-				});
+	// Construct a set of differences between the new values and old
+	return _.reduce(propsToSet, (result, value, key) => {
+		if (!_.isEqual(value, currentEntity[key])) {
+			result[key] = value;
 		}
 
-		return Promise.resolve(oldSetPromise)
-			.then(
-				(oldSet) =>
-					processFormSet(
-						transacting,
-						oldSet,
-						newItems,
-						derivedSet
-					)
-			)
-			.then((newSet) => {
-				const newProp = {};
-				newProp[derivedSet.entityIdField] =
-					newSet ? newSet.get('id') : null;
-
-				return newProp;
-			});
-	})
-		.then(
-			(newProps) => _.reduce(
-				newProps, (result, value) => _.assign(result, value), {}
-			)
-		);
+		return result;
+	}, {});
 }
 
-export function createEntity(
-	req,
-	res,
-	entityType,
-	derivedProps,
-	derivedSets
+function fetchOrCreateMainEntity(
+	orm, transacting, isNew, currentEntity, entityType
 ) {
-	const {orm} = req.app.locals;
-	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
-	const entityCreationPromise = bookshelf.transaction((transacting) => {
-		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
+	const model = utils.getEntityModelByType(orm, entityType);
 
+	const entity = model.forge({bbid: currentEntity.bbid});
+
+	if (isNew) {
+		return Promise.resolve(entity);
+	}
+
+	return entity.fetch({transacting});
+}
+
+async function getEntityByBBID(orm, transacting, bbid) {
+	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+
+	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
+	return model.forge({bbid}).fetch({transacting});
+}
+
+function fetchEntitiesForRelationships(
+	orm, transacting, currentEntity, relationshipSets
+) {
+	const bbidsToFetch = _.without(
+		_.keys(relationshipSets), _.get(currentEntity, 'bbid')
+	);
+
+	return Promise.all(bbidsToFetch.map(
+		(bbid) =>
+			getEntityByBBID(orm, transacting, bbid)
+	));
+}
+
+async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
+	if (_.isEmpty(parentRevisionIDs)) {
+		return Promise.resolve(null);
+	}
+
+	// Get the parents of the new revision
+	const parents =
+		await newRevision.related('parents').fetch({transacting});
+
+	// Add the previous revision as a parent of this revision.
+	return parents.attach(parentRevisionIDs, {transacting});
+}
+
+async function saveEntitiesAndFinishRevision(
+	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
+	updatedEntities: [], editorID: number, note: string
+) {
+	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
+		(entityModel) => entityModel.get('revisionId')
+	)));
+
+	const entitiesSavedPromise = Promise.all(
+		_.map(updatedEntities, (entityModel) => {
+			entityModel.set('revisionId', newRevision.get('id'));
+
+			const shouldInsert =
+				entityModel.get('bbid') === mainEntity.get('bbid') && isNew;
+			const method = shouldInsert ? 'insert' : 'update';
+			return entityModel.save(null, {method, transacting});
+		})
+	);
+
+	const editorUpdatePromise =
+		utils.incrementEditorEditCountById(orm, editorID, transacting);
+
+	const notePromise = _createNote(
+		orm, note, editorID, newRevision, transacting
+	);
+
+	const parentsAddedPromise =
+		setParentRevisions(transacting, newRevision, parentRevisionIDs);
+
+	await Promise.all([
+		entitiesSavedPromise,
+		editorUpdatePromise,
+		parentsAddedPromise,
+		notePromise
+	]);
+
+	return mainEntity;
+}
+
+export function handleCreateOrEditEntity(
+	req: PassportRequest,
+	res: $Response,
+	entityType: EntityTypeString,
+	derivedProps: {}
+) {
+	const {orm}: {orm: any} = req.app.locals;
+	const {Revision, bookshelf} = orm;
+	const editorJSON = req.user;
+
+	const {body}: {body: any} = req;
+	const {locals: resLocals}: {locals: any} = res;
+
+	let currentEntity: ?{
+		aliasSet: ?{id: number},
+		annotation: ?{id: number},
+		bbid: string,
+		disambiguation: ?{id: number},
+		identifierSet: ?{id: number},
+		type: EntityTypeString
+	} = resLocals.entity;
+
+	const entityEditPromise = bookshelf.transaction(async (transacting) => {
+		// Determine if a new entity is being created
+		const isNew = !currentEntity;
+
+		if (isNew) {
+			const newEntity = await new orm.Entity({type: entityType})
+				.save(null, {transacting});
+			const newEntityBBID = newEntity.get('bbid');
+			body.relationships = _.map(
+				body.relationships,
+				({sourceBbid, targetBbid, ...others}) => ({
+					sourceBbid: sourceBbid || newEntityBBID,
+					targetBbid: targetBbid || newEntityBBID,
+					...others
+				})
+			);
+
+			currentEntity = newEntity.toJSON();
+		}
+
+		// Then, edit the entity
 		const newRevisionPromise = new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
-		const notePromise = newRevisionPromise
-			.then((revision) => _createNote(
-				orm, req.body.note, editorJSON, revision, transacting
-			));
-
-		const aliasSetPromise = processFormAliases(
-			orm, transacting, null, null, req.body.aliases || []
+		const relationshipSetsPromise = getNextRelationshipSets(
+			orm, transacting, currentEntity, body
 		);
 
-		const identSetPromise = processFormIdentifiers(
-			orm, transacting, null, req.body.identifiers || []
+		const changedPropsPromise = getChangedProps(
+			orm, transacting, isNew, currentEntity, body, entityType,
+			newRevisionPromise, derivedProps
 		);
 
-		const annotationPromise = newRevisionPromise.then(
-			(revision) => processFormAnnotation(
-				orm, transacting, null, req.body.annotation, revision
-			)
+		const [newRevision, changedProps, relationshipSets] =
+			await Promise.all([
+				newRevisionPromise, changedPropsPromise, relationshipSetsPromise
+			]);
+
+		// If there are no differences, bail
+		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
+			throw new Error('Entity did not change');
+		}
+
+		// Fetch or create main entity
+		const mainEntity = await fetchOrCreateMainEntity(
+			orm, transacting, isNew, currentEntity, entityType
 		);
 
-		const disambiguationPromise = processFormDisambiguation(
-			orm, transacting, null, req.body.disambiguation
+		// Fetch all entities that definitely exist
+		const otherEntities = await fetchEntitiesForRelationships(
+			orm, transacting, currentEntity, relationshipSets
 		);
 
-		const derivedPropsPromise = Promise.resolve(
-			processEntitySets(
-				derivedSets,
-				null,
-				req.body,
-				transacting
-			)
-		)
-			.then(
-				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)
-			);
+		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
-		return Promise.join(
-			newRevisionPromise, aliasSetPromise, identSetPromise,
-			annotationPromise, disambiguationPromise, derivedPropsPromise,
-			editorUpdatePromise, notePromise,
-			(
-				newRevision,
-				aliasSet,
-				identSet,
-				annotation,
-				disambiguation,
-				allProps
-			) => {
-				const propsToSet = _.extend({
-					aliasSetId: aliasSet && aliasSet.get('id'),
-					annotationId: annotation && annotation.get('id'),
-					disambiguationId:
-						disambiguation && disambiguation.get('id'),
-					identifierSetId: identSet && identSet.get('id'),
-					revisionId: newRevision.get('id')
-				}, allProps);
+		const allEntities = [...otherEntities, mainEntity];
 
-				const model = utils.getEntityModelByType(orm, entityType);
-
-				return model.forge(propsToSet)
-					.save(null, {
-						method: 'insert',
-						transacting
-					});
+		_.forEach(allEntities, (entityModel) => {
+			const bbid: string = entityModel.get('bbid');
+			if (_.has(relationshipSets, bbid)) {
+				entityModel.set(
+					'relationshipSetId',
+					relationshipSets[bbid] && relationshipSets[bbid].get('id')
+				);
 			}
-		)
-			.then(
-				(entityModel) =>
-					entityModel.refresh({
-						transacting,
-						withRelated: ['defaultAlias']
-					})
-			)
-			.then((entity) => entity.toJSON());
+		});
+
+		const savedMainEntity = await saveEntitiesAndFinishRevision(
+			orm, transacting, isNew, newRevision, mainEntity, allEntities,
+			editorJSON.id, body.note
+		);
+
+		const refreshedEntity = await savedMainEntity.refresh({
+			transacting,
+			withRelated: ['defaultAlias']
+		});
+
+		return refreshedEntity.toJSON();
 	});
 
-	const achievementPromise = entityCreationPromise.then(
+	const achievementPromise = entityEditPromise.then(
 		(entityJSON) => achievement.processEdit(
 			orm, editorJSON.id, entityJSON.revisionId
 		)
@@ -722,8 +748,8 @@ export function createEntity(
 				if (unlock.alert) {
 					entityJSON.alert = unlock.alert;
 				}
+				return entityJSON;
 			})
-			.then(() => entityJSON)
 	);
 
 	return handler.sendPromiseResult(
@@ -733,210 +759,32 @@ export function createEntity(
 	);
 }
 
-export function editEntity(
-	req,
-	res,
-	entityType,
-	derivedProps,
-	derivedSets
+type AliasEditorT = {
+	language: ?number,
+	name: string,
+	primary: boolean,
+	sortName: string
+};
+
+type NameSectionT = {
+	disambiguation: string,
+	language: ?number,
+	name: string,
+	sortName: string
+};
+
+export function constructAliases(
+	aliasEditor: {[string]: AliasEditorT}, nameSection: NameSectionT
 ) {
-	const {orm} = req.app.locals;
-	const {
-		AliasSet, Annotation, Disambiguation, IdentifierSet, Revision,
-		bookshelf
-	} = orm;
-	const editorJSON = req.session.passport.user;
-	const model = utils.getEntityModelByType(orm, entityType);
-
-	const entityEditPromise = bookshelf.transaction((transacting) => {
-		const currentEntity = res.locals.entity;
-
-		const newRevisionPromise = new Revision({
-			authorId: editorJSON.id
-		}).save(null, {transacting});
-
-		const oldAliasSetPromise = currentEntity.aliasSet &&
-			new AliasSet({id: currentEntity.aliasSet.id})
-				.fetch({
-					transacting,
-					withRelated: ['aliases']
-				});
-
-		const aliasSetPromise = Promise.resolve(oldAliasSetPromise)
-			.then(
-				(oldAliasSet) => processFormAliases(
-					orm, transacting, oldAliasSet,
-					oldAliasSet.get('defaultAliasId'),
-					req.body.aliases || []
-				)
-			);
-
-		const oldIdentSetPromise = currentEntity.identifierSet &&
-			new IdentifierSet({id: currentEntity.identifierSet.id})
-				.fetch({
-					transacting,
-					withRelated: ['identifiers']
-				});
-
-		const identSetPromise = Promise.resolve(oldIdentSetPromise)
-			.then(
-				(oldIdentifierSet) => processFormIdentifiers(
-					orm, transacting, oldIdentifierSet,
-					req.body.identifiers || []
-				)
-			);
-
-		const oldAnnotationPromise = currentEntity.annotation &&
-			new Annotation({id: currentEntity.annotation.id})
-				.fetch({transacting});
-
-		const annotationPromise = Promise.join(
-			newRevisionPromise, Promise.resolve(oldAnnotationPromise),
-			(revision, oldAnnotation) =>
-				processFormAnnotation(
-					orm, transacting, oldAnnotation, req.body.annotation,
-					revision
-				)
-		);
-
-		const oldDisambiguationPromise = currentEntity.disambiguation &&
-			new Disambiguation({id: currentEntity.disambiguation.id})
-				.fetch({transacting});
-
-		const disambiguationPromise = Promise.resolve(oldDisambiguationPromise)
-			.then(
-				(oldDisambiguation) => processFormDisambiguation(
-					orm, transacting, oldDisambiguation, req.body.disambiguation
-				)
-			);
-
-		const derivedPropsPromise = Promise.resolve(
-			processEntitySets(
-				derivedSets,
-				currentEntity,
-				req.body,
-				transacting
-			)
-		)
-			.then(
-				(derivedSetProps) => _.merge({}, derivedProps, derivedSetProps)
-			);
-
-		return Promise.join(
-			newRevisionPromise,
-			aliasSetPromise,
-			identSetPromise,
-			annotationPromise,
-			disambiguationPromise,
-			derivedPropsPromise,
-			(
-				newRevision, aliasSet, identSet,
-				annotation, disambiguation, allProps
-			) => {
-				const propsToSet = _.extend({
-					aliasSetId: aliasSet && aliasSet.get('id'),
-					annotationId: annotation && annotation.get('id'),
-					disambiguationId:
-						disambiguation && disambiguation.get('id'),
-					identifierSetId: identSet && identSet.get('id')
-				}, allProps);
-
-				// Construct a set of differences between the new values and old
-				const changedProps =
-					_.reduce(propsToSet, (result, value, key) => {
-						if (!_.isEqual(value, currentEntity[key])) {
-							result[key] = value;
-						}
-
-						return result;
-					}, {});
-
-				// If there are no differences, bail
-				if (_.isEmpty(changedProps)) {
-					throw new Error('Entity did not change');
-				}
-
-				const entityPromise = model.forge({bbid: currentEntity.bbid})
-					.fetch();
-
-				return Promise.join(
-					newRevisionPromise, entityPromise, annotation, changedProps
-				);
-			}
-		)
-			.spread((newRevision, entity, annotation, changedProps) => {
-				_.forOwn(changedProps, (value, key) => entity.set(key, value));
-
-				entity.set('revisionId', newRevision.get('id'));
-
-				const editorUpdatePromise =
-					utils.incrementEditorEditCountById(
-						orm,
-						editorJSON.id,
-						transacting
-					);
-
-				// Get the parents of the new revision
-				const revisionParentsPromise =
-					newRevision.related('parents').fetch({transacting});
-
-				// Add the previous revision as a parent of this revision.
-				const parentAddedPromise =
-					revisionParentsPromise.then(
-						(parents) => parents.attach(
-							currentEntity.revisionId, {transacting}
-						)
-					);
-
-				const notePromise = _createNote(
-					orm, req.body.note, editorJSON, newRevision, transacting
-				);
-
-				return Promise.join(
-					entity.save(null, {
-						method: 'update',
-						transacting
-					}),
-					editorUpdatePromise,
-					parentAddedPromise,
-					notePromise
-				);
-			})
-			.spread(
-				() => model.forge({bbid: currentEntity.bbid})
-					.fetch({
-						transacting,
-						withRelated: ['defaultAlias']
-					})
-			)
-			.then((entity) => entity.toJSON())
-			.then(
-				(entityJSON) => achievement.processEdit(
-					orm, req.user.id, entityJSON.revisionId
-				)
-					.then((unlock) => {
-						if (unlock.alert) {
-							entityJSON.alert = unlock.alert;
-						}
-						return entityJSON;
-					})
-			);
-	});
-
-	return handler.sendPromiseResult(
-		res,
-		entityEditPromise,
-		search.indexEntity
-	);
-}
-
-export function constructAliases(aliasEditor, nameSection) {
 	const aliases = _.map(
 		aliasEditor,
-		({id, language, name, primary, sortName}) => ({
+		(
+			{language: languageId, name, primary, sortName}: AliasEditorT,
+			id
+		) => ({
 			default: false,
 			id,
-			languageId: language,
+			languageId,
 			name,
 			primary,
 			sortName
@@ -945,6 +793,7 @@ export function constructAliases(aliasEditor, nameSection) {
 
 	return [{
 		default: true,
+		id: nameSection.id,
 		languageId: nameSection.language,
 		name: nameSection.name,
 		primary: true,
@@ -952,12 +801,31 @@ export function constructAliases(aliasEditor, nameSection) {
 	}, ...aliases];
 }
 
-export function constructIdentifiers(identifierEditor) {
-	return _.map(identifierEditor, ({id, type, value}) => ({
-		id,
-		typeId: type,
-		value
-	}));
+type IdentifierEditorT = {
+	type: number,
+	value: string
+};
+
+export function constructIdentifiers(
+	identifierEditor: {[string]: IdentifierEditorT}
+) {
+	return _.map(
+		identifierEditor,
+		({type: typeId, value}: IdentifierEditorT, id: string) =>
+			({id, typeId, value})
+	);
+}
+
+export function constructRelationships(relationshipSection) {
+	return _.map(
+		relationshipSection.relationships,
+		({rowID, relationshipType, sourceEntity, targetEntity}) => ({
+			id: rowID,
+			sourceBbid: _.get(sourceEntity, 'bbid'),
+			targetBbid: _.get(targetEntity, 'bbid'),
+			typeId: relationshipType.id
+		})
+	);
 }
 
 export function getDefaultAliasIndex(aliases) {
@@ -965,17 +833,39 @@ export function getDefaultAliasIndex(aliases) {
 	return index > 0 ? index : 0;
 }
 
-export function areaToOption(area) {
+export function areaToOption(
+	area: {comment: string, id: number, name: string}
+) {
 	if (!area) {
 		return null;
 	}
-
 	const {id} = area;
-
 	return {
 		disambiguation: area.comment,
 		id,
 		text: area.name,
 		type: 'area'
 	};
+}
+
+export function compareEntitiesByDate(a, b) {
+	const aDate = _.get(a, 'releaseEventSet.releaseEvents[0].date', null);
+	const bDate = _.get(b, 'releaseEventSet.releaseEvents[0].date', null);
+	if (_.isNull(aDate)) {
+		/*
+		 * return a positive value,
+		 * so that non-null dates always come before null dates.
+		 */
+		return 1;
+	}
+
+	if (_.isNull(bDate)) {
+		/*
+		 * return a negative value,
+		 * so that non-null dates always come before null dates.
+		 */
+		return -1;
+	}
+
+	return new Date(aDate).getTime() - new Date(bDate).getTime();
 }

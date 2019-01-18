@@ -5,9 +5,11 @@ import Log from 'log';
 function init(app, config) {
 	const log = new Log(config.site.log);
 
+	const influxConfig = config.influx;
+
 	const influx = new Influx.InfluxDB({
-		database: config.database || 'bookbrainz',
-		host: config.host || 'localhost',
+		database: influxConfig.database || 'bookbrainz',
+		host: influxConfig.host || 'localhost',
 		password: 'grafana',
 		schema: [
 			{
@@ -36,7 +38,7 @@ function init(app, config) {
 				fields: {duration},
 				measurement: 'response_times',
 				tags: {
-					domain: config.domain || 'localhost',
+					domain: influxConfig.domain || 'localhost',
 					path: req.path,
 					status: res.statusCode,
 					verb: req.method

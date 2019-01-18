@@ -18,6 +18,7 @@
 /* eslint-disable react/display-name */
 
 import * as bootstrap from 'react-bootstrap';
+
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 import _ from 'lodash';
@@ -167,9 +168,41 @@ export function getEntityDisambiguation(entity) {
 	return null;
 }
 
+export function getEntitySecondaryAliases(entity) {
+	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
+		const aliases = entity.aliasSet.aliases
+			.filter(item => item.id !== entity.defaultAlias.id)
+			.map(item => item.name)
+			.join(', ');
+		return <h4>{aliases}</h4>;
+	}
+
+	return null;
+}
+
 export function getEntityUrl(entity) {
 	const entityType = entity.type.toLowerCase();
 	const entityId = entity.bbid;
 
 	return `/${entityType}/${entityId}`;
+}
+
+export const ENTITY_TYPE_ICONS = {
+	Area: 'globe',
+	Creator: 'user',
+	Edition: 'book',
+	Publication: 'window-restore',
+	Publisher: 'university',
+	Work: 'pen-nib'
+};
+
+export function genEntityIconHTMLElement(entityType, size = '', margin = true) {
+	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
+	return (
+		<FontAwesome
+			ariaLabel={entityType}
+			className={margin ? 'margin-right-0-5' : ''}
+			name={ENTITY_TYPE_ICONS[entityType]}
+			size={size}
+		/>);
 }

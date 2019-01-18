@@ -36,11 +36,10 @@ export function injectDefaultAliasName(instance) {
 }
 
 export function formatDate(date, includeTime) {
-	// second condition checks if object is a Date -- avoids cross-frame issues
-	if (!date || !(Object.prototype.toString.call(date) === '[object Date]') ||
-		isNaN(date.getTime())) {
+	if (!date) {
 		return null;
 	}
+
 	const formatter = moment(date);
 	if (includeTime) {
 		return formatter.format('YYYY-MM-DD HH:mm:ss');

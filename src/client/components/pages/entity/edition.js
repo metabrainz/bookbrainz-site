@@ -19,13 +19,13 @@
  */
 
 import * as entityHelper from '../../../helpers/entity';
+
 import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {extractEntityProps} from '../../../helpers/props';
-
 
 const {extractAttribute, getLanguageAttribute} = entityHelper;
 
@@ -46,10 +46,10 @@ function EditionPage(props) {
 				{entity.publication ?
 					<a href={`/publication/${entity.publication.bbid}`}>
 						<FontAwesome name="external-link"/>
-						{' See all other editions'}
+						{' See all similar editions'}
 					</a> :
 					<span className="bg-danger">
-						Publication unset - please add one if you see this!
+						Edition Group unset - please add one if you see this!
 					</span>
 				}
 			</p>

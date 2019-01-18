@@ -19,9 +19,23 @@
  */
 
 @import "lobes/less/theme.less";
-@import "font-awesome/font-awesome.less";
+@import "font-awesome/fontawesome.less";
+@import "font-awesome/solid.less";
 @import "react-select/select.less";
 
+
+/*
+With Webpack and less-loader,
+we should be able to import directly from node_modules directory with '~'.
+The production configuration for webpack needs to be finalized before using this.
+*/
+/* @import "~@fortawesome/fontawesome-free/less/fontawesome.less";
+/* @import "~@fortawesome/fontawesome-free/less/solid.less";
+@import "~react-select/less/select.less";
+@import "~react-virtualized/styles.css";
+@import "~react-virtualized-select/styles.css";
+ */
+ 
 /* Modifications to Lobes */
 /* ====================== */
 @brand-secondary: @bookbrainz;
@@ -40,8 +54,15 @@
 
 body {
 	margin-top: 64px;
-	margin-bottom: 64px;
+    margin-bottom: 64px;
 }
+
+@media (max-width: 600px) {
+    body {
+        margin-bottom: 128px;
+    }
+}
+
 
 /* Site-wide styling */
 /* ================= */
@@ -170,9 +191,9 @@ html {
 }
 .footer {
 	position: absolute;
-	bottom: 0;
 	width: 100%;
 	background-color: #f5f5f5;
+    bottom: 0;
 }
 .contact-text {
 	color: rgb(180, 180, 180);
@@ -221,15 +242,37 @@ html {
 
 /* react-select styling */
 .Select-control {
-       height: @input-height-base;
-       border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
-       .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
-       .form-control-focus();
-
+	height: @input-height-base;
+	border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+	.transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+	.form-control-focus();
+	
 }
 
 .Select-placeholder {
-       color: @input-color-placeholder;
+	color: @input-color-placeholder;
+}
+
+/* react-datepicker styling */
+.form-group {
+	.react-datepicker-wrapper, .react-datepicker__input-container {
+		width: 100%;
+	}
+	.react-datepicker {
+		font-family: inherit;
+		font-size: inherit;
+		.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+			width: 2.3rem;
+			line-height: 2.3rem;
+			margin: 0.2rem;
+		}
+		.react-datepicker__current-month, .react-datepicker-time__header {
+			font-size: inherit;
+		}
+		.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
+			font-size: 0.9rem;
+		}
+	}
 }
 
 /* entities/*.js */
@@ -249,4 +292,44 @@ html {
 
 .Select-menu-outer {
 	z-index: 5;
+}
+.progress {
+	height: 10px;
+}
+
+
+/* Text wrapping in list-group-items (for long revision notes, for example) */
+/* ============= */
+.list-group-item {
+	word-wrap: break-word;
+}
+
+/* Search Page */
+
+hr.thin {
+	margin-top: 10px;
+    margin-bottom: 10px;
+}
+hr.wide {
+	margin-top: 40px;
+    margin-bottom: 40px;
+}
+#searchPage .pager .dropdown-menu {
+	li {
+	  display: initial;
+	  > a,
+	  > span {
+		display: block;
+		padding: 5px 14px;
+		background-color: @dropdown-bg;
+		border: none;
+		border-radius: 0;
+	  }
+  
+	  > a:hover,
+	  > a:focus {
+		text-decoration: none;
+		background-color:@dropdown-link-hover-bg;
+	  }
+	}
 }

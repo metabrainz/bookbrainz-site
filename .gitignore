@@ -10,6 +10,9 @@
 /reports
 /config/config.json
 
+# react-hot-loader files
+/static/**/*.hot-update.js
+
 ### Node ###
 # Logs
 logs
@@ -72,3 +75,6 @@ typings/
 
 # Tern analysis server config
 .tern-project
+
+# Visual Studio Code config files
+.vscode

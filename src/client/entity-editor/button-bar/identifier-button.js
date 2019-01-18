@@ -21,7 +21,6 @@ import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 /**
  * Presentational component. The IdentifierButton component renders a button
  * component in the style of a link. The link text indicates the number of
@@ -39,12 +38,12 @@ function IdentifierButton({
 	numIdentifiers,
 	...props
 }) {
-	let text = 'Add identifiers (eg. MBID, Wikidata ID)…';
+	let text = 'Add identifiers (eg. ISBN, Wikidata ID)…';
 	if (numIdentifiers === 1) {
-		text = 'Edit 1 identifier (eg. MBID, Wikidata ID)…';
+		text = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
 	}
 	else if (numIdentifiers > 1) {
-		text = `Edit ${numIdentifiers} identifiers (eg. MBID, Wikidata ID)…`;
+		text = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
 	}
 
 	const iconElement = identifiersInvalid &&

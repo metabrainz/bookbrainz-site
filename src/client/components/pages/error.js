@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {hot} from 'react-hot-loader';
 
 
 const {Button, Grid, Row} = bootstrap;
@@ -81,4 +82,5 @@ ErrorPage.propTypes = {
 	}).isRequired
 };
 
-export default ErrorPage;
+// Export as hot module (see https://github.com/gaearon/react-hot-loader)
+export default hot(module)(ErrorPage);

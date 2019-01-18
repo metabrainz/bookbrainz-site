@@ -21,22 +21,15 @@
 /* eslint-disable max-len */
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
+
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
-
-const PICTURE_CLASSES = {
-	Creator: 'user',
-	Edition: 'book',
-	Publication: 'th-list',
-	Publisher: 'university',
-	Work: 'file-text-o'
-};
-
 
 class IndexPage extends React.Component {
 	constructor(props) {
@@ -232,7 +225,7 @@ class IndexPage extends React.Component {
 												<Row>
 													<Col md={2}>{`r${entity.revisionId}`}</Col>
 													<Col md={6}>
-														<FontAwesome name={PICTURE_CLASSES[entity.type]}/>
+														{genEntityIconHTMLElement(entity.type)}
 														<span className="margin-left-1">{name}</span>
 													</Col>
 													<Col md={4}>

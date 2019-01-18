@@ -27,6 +27,7 @@ import {
 	extractChildProps,
 	extractLayoutProps
 } from '../helpers/props';
+import {AppContainer} from 'react-hot-loader';
 import EntityEditor from './entity-editor';
 import Immutable from 'immutable';
 import Layout from '../containers/layout';
@@ -62,16 +63,28 @@ const store = createStore(
 );
 
 const markup = (
-	<Layout {...extractLayoutProps(rest)}>
-		<Provider store={store}>
-			<EntityEditor
-				validate={getValidator(props.entityType)}
-				{...extractChildProps(rest)}
-			>
-				<EntitySection/>
-			</EntityEditor>
-		</Provider>
-	</Layout>
+	<AppContainer>
+		<Layout {...extractLayoutProps(rest)}>
+			<Provider store={store}>
+				<EntityEditor
+					validate={getValidator(props.entityType)}
+					{...extractChildProps(rest)}
+				>
+					<EntitySection/>
+				</EntityEditor>
+			</Provider>
+		</Layout>
+	</AppContainer>
 );
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}
