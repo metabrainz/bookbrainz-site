@@ -24,13 +24,17 @@ import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+
 import type {$Request, $Response, NextFunction} from 'express';
 import type {
-	EntityTypeString, FormLanguageT as Language,
-	FormPublisherT as Publisher, FormReleaseEventT as ReleaseEvent,
+	EntityTypeString,
+	FormLanguageT as Language,
+	FormPublisherT as Publisher,
+	FormReleaseEventT as ReleaseEvent,
 	Transaction
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
+
 import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionPage from '../../../client/components/pages/entities/edition';
@@ -47,7 +51,6 @@ import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../helpers/config';
 import target from '../../templates/target';
-
 
 type PassportRequest = $Request & {user: any, session: any};
 
@@ -261,6 +264,20 @@ export function handleDelete(
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
+		// Get the parents of the new revision
+		const revisionParentsPromise = newRevisionPromise
+			.then((revision) =>
+				revision.related('parents').fetch({transacting})
+			);
+
+		// Add the previous revision as a parent of this revision.
+		const parentAddedPromise =
+			revisionParentsPromise.then(
+				(parents) => parents.attach(
+					entity.revisionId, {transacting}
+				)
+			);
+
 		const notePromise = newRevisionPromise
 			.then((revision) => _createNote(
 				orm, body.note, editorJSON.id, revision, transacting
@@ -288,7 +305,7 @@ export function handleDelete(
 
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
-			newEntityRevisionPromise, entityHeaderPromise,
+			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise,
 			search.deleteEntity(entity)
 		);
 	});
