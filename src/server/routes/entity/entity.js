@@ -24,13 +24,17 @@ import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+
 import type {$Request, $Response, NextFunction} from 'express';
 import type {
-	EntityTypeString, FormLanguageT as Language,
-	FormPublisherT as Publisher, FormReleaseEventT as ReleaseEvent,
+	EntityTypeString,
+	FormLanguageT as Language,
+	FormPublisherT as Publisher,
+	FormReleaseEventT as ReleaseEvent,
 	Transaction
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
+
 import CreatorPage from '../../../client/components/pages/entities/creator';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionPage from '../../../client/components/pages/entities/edition';
@@ -47,7 +51,6 @@ import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../helpers/config';
 import target from '../../templates/target';
-
 
 type PassportRequest = $Request & {user: any, session: any};
 
