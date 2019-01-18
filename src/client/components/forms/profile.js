@@ -22,7 +22,6 @@ import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
 import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
-import PartialDate from '../input/partial-date';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
@@ -32,7 +31,7 @@ import request from 'superagent-bluebird-promise';
 
 
 const {Button, Col, Grid, Row} = bootstrap;
-const {formatDate, injectDefaultAliasName, isValidUserBirthday} = utilsHelper;
+const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
 	constructor(props) {
@@ -42,8 +41,6 @@ class ProfileForm extends React.Component {
 			area: props.editor.area ?
 				props.editor.area : null,
 			bio: props.editor.bio,
-			birthDate: props.editor.birthDate ?
-				formatDate(new Date(props.editor.birthDate)) : null,
 			gender: props.editor.gender ?
 				props.editor.gender : null,
 			genders: props.genders,
@@ -68,12 +65,10 @@ class ProfileForm extends React.Component {
 		const title = this.title && this.title.getValue();
 		const name = this.name.getValue().trim();
 		const bio = this.bio.getValue().trim();
-		const birthDate = this.birthDate.getValue();
 
 		const data = {
 			areaId: area ? parseInt(area, 10) : null,
 			bio,
-			birthDate,
 			genderId: gender ? parseInt(gender, 10) : null,
 			id: this.props.editor.id,
 			name,
@@ -89,7 +84,7 @@ class ProfileForm extends React.Component {
 	}
 
 	valid() {
-		return this.birthDate.valid() && this.name.getValue();
+		return this.name.getValue();
 	}
 
 	render() {
@@ -109,7 +104,6 @@ class ProfileForm extends React.Component {
 		const initialGender = this.state.gender ? this.state.gender.id : null;
 		const initialBio = this.state.bio;
 		const initialArea = injectDefaultAliasName(this.state.area);
-		const initialBirthDate = this.state.birthDate;
 
 		return (
 			<Grid>
@@ -172,13 +166,6 @@ class ProfileForm extends React.Component {
 								placeholder="Select Gender"
 								ref={(ref) => this.gender = ref}
 							/>
-							<PartialDate
-								customValidator={isValidUserBirthday}
-								defaultValue={initialBirthDate}
-								label="Birth Date"
-								placeholder="YYYY-MM-DD"
-								ref={(ref) => this.birthDate = ref}
-							/>
 							<div className="form-group text-center">
 								<Button
 									bsSize="large"
@@ -201,7 +188,6 @@ ProfileForm.propTypes = {
 	editor: PropTypes.shape({
 		area: validators.labeledProperty,
 		bio: PropTypes.string,
-		birthDate: PropTypes.object,
 		gender: PropTypes.shape({
 			id: PropTypes.number
 		}),

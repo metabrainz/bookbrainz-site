@@ -113,7 +113,6 @@ router.post('/handler', (req, res) => {
 			// Create a new Editor and add to the database
 			(editorType) =>
 				new Editor({
-					birthDate: req.body.birthday,
 					cachedMetabrainzName: req.session.mbProfile.sub,
 					genderId: req.body.gender,
 					metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
