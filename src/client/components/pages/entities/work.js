@@ -29,17 +29,24 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getLanguageAttribute, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS} = entityHelper;
+const {getLanguageAttribute, getTypeAttribute, getEntityUrl,
+	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
 function WorkAttributes({work}) {
 	const type = getTypeAttribute(work.workType).data;
 	const languages = getLanguageAttribute(work).data;
-
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(work);
 	return (
 		<div>
 			<Row>
+				<Col md={3}>
+					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
+					</dl>
+				</Col>
 				<Col md={3}>
 					<dl>
 						<dt>Type</dt>

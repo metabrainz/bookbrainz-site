@@ -30,7 +30,7 @@ import React from 'react';
 
 const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute, ENTITY_TYPE_ICONS
+	getLanguageAttribute, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
@@ -43,21 +43,31 @@ function EditionAttributes({edition}) {
 	const height = extractAttribute(edition.height);
 	const depth = extractAttribute(edition.depth);
 
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(edition);
 	const releaseDate = getEditionReleaseDate(edition);
 	const publishers = getEditionPublishers(edition);
 	const languages = getLanguageAttribute(edition).data;
 
 	return (
 		<div>
+
 			<Row>
 				<Col md={3}>
 					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
 						<dt>Release Date</dt>
 						<dd>{releaseDate}</dd>
 						<dt>Format</dt>
 						<dd>{format}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dl>
 						<dt>Status</dt>
 						<dd>{status}</dd>
+						<dt>Languages</dt>
+						<dd>{languages}</dd>
 					</dl>
 				</Col>
 				<Col md={3}>
@@ -72,16 +82,8 @@ function EditionAttributes({edition}) {
 				</Col>
 				<Col md={3}>
 					<dl>
-						<dt>Languages</dt>
-						<dd>{languages}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
 						<dt>Publishers</dt>
-						<dd>
-							{publishers}
-						</dd>
+						<dd>{publishers}</dd>
 					</dl>
 				</Col>
 			</Row>

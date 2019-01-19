@@ -27,7 +27,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {extractAttribute, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS} = entityHelper;
+const {extractAttribute, getTypeAttribute, getEntityUrl,
+	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
@@ -38,18 +39,20 @@ function CreatorAttributes({creator}) {
 	const endArea = extractAttribute(creator.endArea, 'name');
 	const beginDate = extractAttribute(creator.beginDate);
 	const endDate = extractAttribute(creator.endDate);
-
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(creator);
 	return (
 		<div>
 			<Row>
 				<Col md={3}>
 					<dl>
-						<dt>Type</dt>
-						<dd>{type}</dd>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
 				<Col md={3}>
 					<dl>
+						<dt>Type</dt>
+						<dd>{type}</dd>
 						<dt>Gender</dt>
 						<dd>{gender}</dd>
 					</dl>
@@ -62,17 +65,14 @@ function CreatorAttributes({creator}) {
 						<dd>{beginArea}</dd>
 					</dl>
 				</Col>
-				{
-					creator.ended &&
-					<Col md={3}>
-						<dl>
-							<dt>End Date</dt>
-							<dd>{endDate}</dd>
-							<dt>End Area</dt>
-							<dd>{endArea}</dd>
-						</dl>
-					</Col>
-				}
+				<Col md={3}>
+					<dl>
+						<dt>End Date</dt>
+						<dd>{endDate}</dd>
+						<dt>End Area</dt>
+						<dd>{endArea}</dd>
+					</dl>
+				</Col>
 			</Row>
 		</div>
 	);

@@ -30,7 +30,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {extractAttribute, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS} = entityHelper;
+const {extractAttribute, getTypeAttribute, getEntityUrl,
+	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function PublisherAttributes({publisher}) {
@@ -38,10 +39,16 @@ function PublisherAttributes({publisher}) {
 	const area = extractAttribute(publisher.area, 'name');
 	const beginDate = extractAttribute(publisher.beginDate);
 	const endDate = extractAttribute(publisher.endDate);
-
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(publisher);
 	return (
 		<div>
 			<Row>
+				<Col md={3}>
+					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
+					</dl>
+				</Col>
 				<Col md={3}>
 					<dl>
 						<dt>Type</dt>
@@ -58,17 +65,10 @@ function PublisherAttributes({publisher}) {
 					<dl>
 						<dt>Date Founded</dt>
 						<dd>{beginDate}</dd>
+						<dt>Date Dissolved</dt>
+						<dd>{endDate}</dd>
 					</dl>
 				</Col>
-				{
-					publisher.ended &&
-					<Col md={3}>
-						<dl>
-							<dt>Date Dissolved</dt>
-							<dd>{endDate}</dd>
-						</dl>
-					</Col>
-				}
 			</Row>
 		</div>
 	);
