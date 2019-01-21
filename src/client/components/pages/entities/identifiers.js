@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function IdentifireLink({type, value}) {
+function IdentifierLink({type, value}) {
 	let link;
 	if (type === 'ISBN-10') {
 		link = `https://isbnsearch.org/isbn/${value}`;
@@ -78,7 +78,7 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 							.map(
 								(identifier) => (
 									<dd key={identifier.id}>
-										<IdentifireLink
+										<IdentifierLink
 											type={type.label}
 											value={identifier.value}
 										/>
@@ -96,7 +96,7 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 	);
 }
 
-IdentifireLink.propTypes = {
+IdentifierLink.propTypes = {
 	type: PropTypes.string.isRequired,
 	value: PropTypes.string.isRequired
 };
