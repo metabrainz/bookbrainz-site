@@ -20,6 +20,49 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
+function IdentifireLink({type, value}) {
+	let link;
+	if (type === 'ISBN-10') {
+		link = `https://isbnsearch.org/isbn/${value}`;
+	}
+	else if (type === 'ISBN-13') {
+		link = `https://isbnsearch.org/isbn/${value}`;
+	}
+	else if (type === 'Wikidata ID') {
+		link = `https://www.wikidata.org/wiki/${value}`;
+	}
+	else if (type === 'VIAF') {
+		link = `https://viaf.org/viaf/${value}`;
+	}
+	else if (type === 'ISNI') {
+		link = `http://www.isni.org/${value}`;
+	}
+	else if (type === 'MusicBrainz Artist ID') {
+		link = `https://musicbrainz.org/artist/${value}`;
+	}
+	else if (type === 'LibraryThing Author') {
+		link = `https://www.librarything.com/author/${value}`;
+	}
+	else if (type === 'Amazon ASIN') {
+		link = `http://www.amazon-asin.com/asincheck/?product_id=${value}`;
+	}
+	else if (type === 'Barcode') {
+		link = `https://www.barcodelookup.com/${value}`;
+	}
+	else if (type === 'OpenLibrary Work ID') {
+		link = `https://openlibrary.org/works/${value}`;
+	}
+	else if (type === 'LibraryThing Work') {
+		link = `https://www.librarything.com/work/${value}`;
+	}
+	else {
+		return value;
+	}
+	return (
+		<a href={link} rel="noopener noreferrer" target="_blank"> {value} </a>
+	);
+}
+
 function EntityIdentifiers({identifierSet, identifierTypes}) {
 	return (
 		<div>
@@ -35,7 +78,10 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 							.map(
 								(identifier) => (
 									<dd key={identifier.id}>
-										{identifier.value}
+										<IdentifireLink
+											type={type.label}
+											value={identifier.value}
+										/>
 									</dd>
 								)
 							);
@@ -49,6 +95,12 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 		</div>
 	);
 }
+
+IdentifireLink.propTypes = {
+	type: PropTypes.string.isRequired,
+	value: PropTypes.string.isRequired
+};
+
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
 	identifierSet: PropTypes.object.isRequired,
