@@ -206,3 +206,7 @@ export function genEntityIconHTMLElement(entityType, size = '', margin = true) {
 			size={size}
 		/>);
 }
+
+export function getSortNameOfDefaultAlias(entity) {
+	return entity.defaultAlias.sortName;
+}

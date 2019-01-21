@@ -28,15 +28,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS} = entityHelper;
+const {getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function PublicationAttributes({publication}) {
 	const type = getTypeAttribute(publication.publicationType).data;
-
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(publication);
 	return (
 		<div>
 			<Row>
+				<Col md={3}>
+					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
+					</dl>
+				</Col>
 				<Col md={3}>
 					<dl>
 						<dt>Type</dt>
