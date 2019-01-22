@@ -25,6 +25,7 @@ import EntityLinks from './links';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {labelsForCreator} from '../../../helpers/utils';
 
 
 const {extractAttribute, getTypeAttribute, getEntityUrl,
@@ -40,6 +41,15 @@ function CreatorAttributes({creator}) {
 	const beginDate = extractAttribute(creator.beginDate);
 	const endDate = extractAttribute(creator.endDate);
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(creator);
+
+	const isGroup = type === 'Group';
+	const {
+		beginDateLabel,
+		beginAreaLabel,
+		endDateLabel,
+		endAreaLabel
+	} = labelsForCreator(isGroup);
+	const showGender = !isGroup;
 	return (
 		<div>
 			<Row>
@@ -53,23 +63,27 @@ function CreatorAttributes({creator}) {
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
-						<dt>Gender</dt>
-						<dd>{gender}</dd>
+						{showGender ?
+							<React.Fragment>
+								<dt>Gender</dt>
+								<dd>{gender}</dd>
+							</React.Fragment> : null
+						}
 					</dl>
 				</Col>
 				<Col md={3}>
 					<dl>
-						<dt>Begin Date</dt>
+						<dt>{beginDateLabel}</dt>
 						<dd>{beginDate}</dd>
-						<dt>Begin Area</dt>
+						<dt>{beginAreaLabel}</dt>
 						<dd>{beginArea}</dd>
 					</dl>
 				</Col>
 				<Col md={3}>
 					<dl>
-						<dt>End Date</dt>
+						<dt>{endDateLabel}</dt>
 						<dd>{endDate}</dd>
-						<dt>End Area</dt>
+						<dt>{endAreaLabel}</dt>
 						<dd>{endArea}</dd>
 					</dl>
 				</Col>

@@ -42,7 +42,7 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-
+import {labelsForCreator} from '../../helpers/utils';
 
 type CreatorType = {
 	label: string,
@@ -284,11 +284,13 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 	}
 	const group = typeValue === groupType.id;
 
-	const beginDateLabel = group ? 'Date founded' : 'Date of birth';
-	const beginAreaLabel = group ? 'Place founded' : 'Place of birth';
-	const endedLabel = group ? 'Dissolved?' : 'Died?';
-	const endDateLabel = group ? 'Date of dissolution' : 'Date of death';
-	const endAreaLabel = group ? 'Place of dissolution' : 'Place of death';
+	const {
+		beginDateLabel,
+		beginAreaLabel,
+		endedLabel,
+		endDateLabel,
+		endAreaLabel
+	} = labelsForCreator(group);
 
 	return {
 		beginAreaLabel,
