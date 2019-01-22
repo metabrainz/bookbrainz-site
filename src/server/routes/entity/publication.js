@@ -43,7 +43,9 @@ router.param(
 			'publicationType',
 			'editions.defaultAlias',
 			'editions.disambiguation',
-			'editions.releaseEventSet.releaseEvents'
+			'editions.releaseEventSet.releaseEvents',
+			'editions.identifierSet.identifiers.type',
+			'editions.editionFormat'
 		],
 		'Publication not found'
 	)

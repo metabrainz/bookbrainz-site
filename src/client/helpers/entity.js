@@ -210,3 +210,23 @@ export function genEntityIconHTMLElement(entityType, size = '', margin = true) {
 export function getSortNameOfDefaultAlias(entity) {
 	return entity.defaultAlias.sortName;
 }
+
+export function getISBNOfEdition(entity) {
+	if (entity.identifierSetId) {
+		const {identifiers} = entity.identifierSet;
+		let isbn = null;
+		isbn = identifiers.find(identifier => identifier.type.label === 'ISBN-13');
+		if (!isbn) {
+			isbn = identifiers.find(identifier => identifier.type.label === 'ISBN-10');
+		}
+		return isbn;
+	}
+	return null;
+}
+
+export function getEditionFormat(entity) {
+	if (entity.formatId) {
+		return entity.editionFormat.label;
+	}
+	return '?';
+}

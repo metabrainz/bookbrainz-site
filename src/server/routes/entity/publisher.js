@@ -57,7 +57,11 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 	// Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
-		'defaultAlias', 'disambiguation', 'releaseEventSet.releaseEvents'
+		'defaultAlias',
+		'disambiguation',
+		'releaseEventSet.releaseEvents',
+		'identifierSet.identifiers.type',
+		'editionFormat'
 	];
 	const editionsPromise =
 		Publisher.forge({bbid: res.locals.entity.bbid})
