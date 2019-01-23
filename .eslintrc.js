@@ -74,7 +74,7 @@ const bestPracticesRules = {
 	'array-callback-return': ERROR,
 	'block-scoped-var': ERROR,
 	'class-methods-use-this': TRANSITION_IGNORE,
-	complexity: ERROR,
+	complexity: ['error', {max: 50}],
 	'consistent-return': ERROR,
 	curly: ERROR,
 	'default-case': ERROR,
@@ -278,7 +278,7 @@ const stylisticIssuesRules = {
 	'max-len': [
 		WARNING,
 		{
-			code: 100,
+			code: 150,
 			ignoreUrls: true,
 			tabWidth: 4
 		}
@@ -300,7 +300,6 @@ const stylisticIssuesRules = {
 	'no-array-constructor': ERROR,
 	'no-bitwise': ERROR,
 	'no-continue': ERROR,
-	'no-inline-comments': ERROR,
 	'no-lonely-if': ERROR,
 	'no-mixed-spaces-and-tabs': [
 		ERROR,
