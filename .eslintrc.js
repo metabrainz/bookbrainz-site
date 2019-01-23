@@ -74,7 +74,7 @@ const bestPracticesRules = {
 	'array-callback-return': ERROR,
 	'block-scoped-var': ERROR,
 	'class-methods-use-this': TRANSITION_IGNORE,
-	complexity: ['error', {max: 50}],
+	complexity: [ERROR, {max: 50}],
 	'consistent-return': ERROR,
 	curly: ERROR,
 	'default-case': ERROR,
@@ -300,6 +300,7 @@ const stylisticIssuesRules = {
 	'no-array-constructor': ERROR,
 	'no-bitwise': ERROR,
 	'no-continue': ERROR,
+	'no-inline-comments': WARNING,
 	'no-lonely-if': ERROR,
 	'no-mixed-spaces-and-tabs': [
 		ERROR,
