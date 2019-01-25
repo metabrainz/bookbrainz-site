@@ -17,12 +17,13 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
 import CustomInput from '../../input';
+import FontAwesome from 'react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
-
 
 const {Alert, Button, Col, Row, Panel} = bootstrap;
 
@@ -82,13 +83,13 @@ class EntityDeletionForm extends React.Component {
 					className="pull-right"
 					type="submit"
 				>
-					Delete
+					<FontAwesome name="trash-alt"/> Delete
 				</Button>
 				<Button
 					className="pull-right"
 					href={this.entityUrl}
 				>
-					Cancel
+					<FontAwesome name="times-circle"/> Cancel
 				</Button>
 			</span>
 		);
@@ -111,9 +112,26 @@ class EntityDeletionForm extends React.Component {
 								footer={footerComponent}
 								header={headerComponent}
 							>
-								If you’re sure that {entity.type} {entityName}
-								should be deleted, please enter a revision note
-								below and confirm deletion.
+								<Alert bsStyle="warning">
+									<h4>
+										<FontAwesome name="exclamation-triangle"/>&nbsp;
+										You’re about to delete the {entity.type} {entityName}.
+									</h4>
+									<p style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</p>
+								</Alert>
+								<p>
+								As a general principle, if you can solve an issue with non-destructive edits,
+								that&apos;s preferable to a removal. That way the unique identifier of the entity is preserved.
+									<br/>
+								In case of merged entities, the old identifier will forward to the entity it is merged into.
+								</p>
+								<p>If you are certain it should be deleted, please enter a
+								revision note below to explain why and confirm the deletion.
+								</p>
+								<p className="text-muted">
+								We are currently working on the merging tool. If this {entity.type} is a duplicate,
+								please edit it to add &quot;duplicate&quot; as a disambiguation to mark it to be merged.
+								</p>
 
 								<CustomInput
 									ref={(ref) => this.note = ref}
