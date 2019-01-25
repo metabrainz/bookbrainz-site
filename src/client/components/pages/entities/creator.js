@@ -63,11 +63,11 @@ function CreatorAttributes({creator}) {
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
-						{showGender ?
+						{showGender &&
 							<React.Fragment>
 								<dt>Gender</dt>
 								<dd>{gender}</dd>
-							</React.Fragment> : null
+							</React.Fragment>
 						}
 					</dl>
 				</Col>
@@ -79,14 +79,17 @@ function CreatorAttributes({creator}) {
 						<dd>{beginArea}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>{endDateLabel}</dt>
-						<dd>{endDate}</dd>
-						<dt>{endAreaLabel}</dt>
-						<dd>{endArea}</dd>
-					</dl>
-				</Col>
+				{
+					creator.ended &&
+					<Col md={3}>
+						<dl>
+							<dt>{endDateLabel}</dt>
+							<dd>{endDate}</dd>
+							<dt>{endAreaLabel}</dt>
+							<dd>{endArea}</dd>
+						</dl>
+					</Col>
+				}
 			</Row>
 		</div>
 	);

@@ -282,7 +282,7 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 	if (!groupType) {
 		throw new Error('there should be a creator type with label "Group"');
 	}
-	const group = typeValue === groupType.id;
+	const isGroup = typeValue === groupType.id;
 
 	const {
 		beginDateLabel,
@@ -290,7 +290,7 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 		endedLabel,
 		endDateLabel,
 		endAreaLabel
-	} = labelsForCreator(group);
+	} = labelsForCreator(isGroup);
 
 	return {
 		beginAreaLabel,
@@ -303,7 +303,7 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
 		endedLabel,
-		genderShow: !group,
+		genderShow: !isGroup,
 		genderValue: state.get('gender'),
 		typeValue
 	};
