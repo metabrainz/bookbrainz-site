@@ -20,10 +20,13 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
+
 import {escapeProps, generateProps} from '../helpers/props';
+
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
+import HelpPage from '../../client/components/pages/help';
 import Index from '../../client/components/pages/index';
 import Layout from '../../client/containers/layout';
 import LicensingPage from '../../client/components/pages/licensing';
@@ -63,6 +66,7 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
+			dev: process.env.NODE_ENV === 'development',
 			markup,
 			page: 'Index',
 			props: escapeProps(props),
@@ -125,19 +129,20 @@ function _createStaticRoute(route, title, PageComponent) {
 			</Layout>
 		);
 
-		res.render('target', {
+		res.send(target({
 			markup,
 			page: title,
 			props: escapeProps(props),
 			script: '/js/index.js',
 			title
-		});
+		}));
 	});
 }
 
 _createStaticRoute('/about', 'About', AboutPage);
 _createStaticRoute('/contribute', 'Contribute', ContributePage);
 _createStaticRoute('/develop', 'Develop', DevelopPage);
+_createStaticRoute('/help', 'Help', HelpPage);
 _createStaticRoute('/licensing', 'Licensing', LicensingPage);
 _createStaticRoute('/privacy', 'Privacy', PrivacyPage);
 

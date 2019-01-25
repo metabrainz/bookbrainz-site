@@ -18,6 +18,7 @@
 
 import {Alert, Button, Col, Row} from 'react-bootstrap';
 import {debounceUpdateRevisionNote, submit} from './actions';
+
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -49,21 +50,31 @@ function SubmissionSection({
 	const errorAlertClass =
 		classNames('text-center', 'margin-top-1', {hidden: !errorText});
 
+	const editNoteLabel = (
+		<span>
+			Edit Note
+			<span className="text-muted"> (optional)</span>
+		</span>
+	);
+
 	return (
 		<div>
 			<h2>
-				Submit Your Revision
+				Submit Your Edit
 			</h2>
 			<p className="text-muted">
-				Enter a note describing what you&rsquo;ve done and what sources
-				you used, and hit the submit button to finish editing
+				{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
+				- Where did you get your info from? A link is worth a thousand words.
+				- What kind of information did you provide? If you made any changes, what are they and why?
+ 				- Do you have any questions concerning the editing process you want to ask?`}
 			</p>
 			<form>
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<CustomInput
-							label="Revision Note"
+							label={editNoteLabel}
 							rows="6"
+							tooltipText="Cite your sources or an explanation of your edit"
 							type="textarea"
 							onChange={onNoteChange}
 						/>

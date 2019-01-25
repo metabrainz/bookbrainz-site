@@ -19,10 +19,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
 import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
-import PartialDate from '../input/partial-date';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
@@ -50,9 +50,7 @@ class RegistrationForm extends React.Component {
 		event.preventDefault();
 
 		const gender = this.gender.getValue();
-		const birthday = this.birthday.getValue();
 		const data = {
-			birthday: birthday || null,
 			displayName: this.displayName.getValue(),
 			gender: gender ? parseInt(gender, 10) : null
 		};
@@ -79,9 +77,8 @@ class RegistrationForm extends React.Component {
 	isValid() {
 		const displayNameValid =
 			!this.displayName || this.displayName.getValue().length > 0;
-		const birthdayValid = !this.birthday || this.birthday.valid();
 
-		return displayNameValid && birthdayValid;
+		return displayNameValid;
 	}
 
 	handleChange() {
@@ -136,7 +133,7 @@ class RegistrationForm extends React.Component {
 								onChange={this.handleChange}
 							/>
 							<p>
-								And, optionally, set a gender and birthday
+								And, optionally, set a gender
 								that will be displayed on your profile
 								page.
 							</p>
@@ -152,14 +149,6 @@ class RegistrationForm extends React.Component {
 								placeholder="Select gender…"
 								ref={(ref) => this.gender = ref}
 								wrapperClassName="col-md-4"
-							/>
-							<PartialDate
-								label="Birthday"
-								labelClassName="col-md-4"
-								placeholder="YYYY-MM-DD"
-								ref={(ref) => this.birthday = ref}
-								wrapperClassName="col-md-4"
-								onChange={this.handleChange}
 							/>
 							<hr/>
 							{errorComponent}

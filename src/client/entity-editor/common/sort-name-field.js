@@ -153,6 +153,8 @@ function SortNameField({
 			buttonAfter={guessButton}
 			label={label}
 			ref={(node) => { input = node; }}
+			tooltipText="Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'.
+			<br>You can try to fill it automatically with the guess button"
 			type="text"
 			onChange={onChange}
 			{...rest}

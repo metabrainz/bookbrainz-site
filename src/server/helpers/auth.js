@@ -19,11 +19,15 @@
 
 import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
 import * as error from '../helpers/error';
+
+import Log from 'log';
 import _ from 'lodash';
 import config from './config';
 import passport from 'passport';
 import status from 'http-status';
 
+
+const log = new Log(config.site.log);
 
 const MusicBrainzOAuth2Strategy = MusicBrainzOAuth.Strategy;
 
@@ -50,46 +54,55 @@ function _updateCachedMBName(bbUserModel, mbUserJSON) {
 
 export function init(app) {
 	const {orm} = app.locals;
-	passport.use(new MusicBrainzOAuth2Strategy(
-		_.assign(
-			{
-				passReqToCallback: true,
-				scope: 'profile'
-			}, config.musicbrainz
-		),
-		async (req, accessToken, refreshToken, profile, done) => {
-			try {
-				if (req.user) {
-					const linkedUser =
-						await _linkMBAccount(orm, req.user, profile);
+	try {
+		const strategy = new MusicBrainzOAuth2Strategy(
+			_.assign(
+				{
+					passReqToCallback: true,
+					scope: 'profile'
+				}, config.musicbrainz
+			),
+			async (req, accessToken, refreshToken, profile, done) => {
+				try {
+					if (req.user) {
+						const linkedUser =
+							await _linkMBAccount(orm, req.user, profile);
 
-					// Logged in, associate
-					return done(null, linkedUser.toJSON());
+						// Logged in, associate
+						return done(null, linkedUser.toJSON());
+					}
+
+					// Not logged in, authenticate
+					const fetchedUser = await _getAccountByMBUserId(orm, profile);
+
+					await _updateCachedMBName(fetchedUser, profile);
+
+					return done(null, fetchedUser.toJSON());
 				}
-
-				// Not logged in, authenticate
-				const fetchedUser = await _getAccountByMBUserId(orm, profile);
-
-				await _updateCachedMBName(fetchedUser, profile);
-
-				return done(null, fetchedUser.toJSON());
+				catch (err) {
+					return done(null, false, profile);
+				}
 			}
-			catch (err) {
-				return done(null, false, profile);
-			}
-		}
-	));
+		);
+		passport.use(strategy);
 
-	passport.serializeUser((user, done) => {
-		done(null, user);
-	});
+		passport.serializeUser((user, done) => {
+			done(null, user);
+		});
 
-	passport.deserializeUser((user, done) => {
-		done(null, user);
-	});
+		passport.deserializeUser((user, done) => {
+			done(null, user);
+		});
 
-	app.use(passport.initialize());
-	app.use(passport.session());
+		app.use(passport.initialize());
+		app.use(passport.session());
+		return true;
+	}
+	catch (strategyError) {
+		log.error('Error setting up OAuth strategy: ', strategyError.message);
+		log.error('You will not be able to log in');
+		return null;
+	}
 }
 
 export function isAuthenticated(req, res, next) {

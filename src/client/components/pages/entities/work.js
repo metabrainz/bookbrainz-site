@@ -29,17 +29,24 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getLanguageAttribute, getTypeAttribute, getEntityUrl} = entityHelper;
+const {getLanguageAttribute, getTypeAttribute, getEntityUrl,
+	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
 function WorkAttributes({work}) {
 	const type = getTypeAttribute(work.workType).data;
 	const languages = getLanguageAttribute(work).data;
-
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(work);
 	return (
 		<div>
 			<Row>
+				<Col md={3}>
+					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
+					</dl>
+				</Col>
 				<Col md={3}>
 					<dl>
 						<dt>Type</dt>
@@ -69,7 +76,7 @@ function WorkDisplayPage({entity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon="file-text-o"
+						backupIcon={ENTITY_TYPE_ICONS.Work}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>

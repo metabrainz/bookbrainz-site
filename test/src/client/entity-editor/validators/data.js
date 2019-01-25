@@ -70,7 +70,7 @@ export const VALID_SUBMISSION_SECTION = {
 	note: 'blah'
 };
 
-export const INVALID_SUBMISSION_SECTION = {
+export const EMPTY_SUBMISSION_SECTION = {
 	...VALID_SUBMISSION_SECTION, note: null
 };
 

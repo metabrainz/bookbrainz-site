@@ -28,15 +28,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getTypeAttribute, getEntityUrl} = entityHelper;
+const {getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function PublicationAttributes({publication}) {
 	const type = getTypeAttribute(publication.publicationType).data;
-
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(publication);
 	return (
 		<div>
 			<Row>
+				<Col md={3}>
+					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
+					</dl>
+				</Col>
 				<Col md={3}>
 					<dl>
 						<dt>Type</dt>
@@ -60,7 +66,7 @@ function PublicationDisplayPage({entity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon="th-list"
+						backupIcon={ENTITY_TYPE_ICONS.Publication}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>

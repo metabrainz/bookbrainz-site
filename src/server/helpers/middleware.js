@@ -49,6 +49,8 @@ export const loadPublicationTypes =
 	makeLoader('PublicationType', 'publicationTypes');
 export const loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
 export const loadWorkTypes = makeLoader('WorkType', 'workTypes');
+export const loadRelationshipTypes =
+	makeLoader('RelationshipType', 'relationshipTypes');
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
@@ -136,16 +138,12 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 	].concat(additionalRels);
 
 	return (req, res, next, bbid) => {
-		const model = req.app.locals.orm[modelName];
+		const {orm} = req.app.locals;
+		const model = orm.func.entity.getEntityModelByType(orm, modelName);
 		if (utils.isValidBBID(bbid)) {
-			return model.forge({bbid})
-				.fetch({
-					require: true,
-					withRelated: relations
-				})
+			return orm.func.entity.getEntity(orm, modelName, bbid, relations)
 				.then((entity) => {
-					res.locals.entity = entity.toJSON();
-
+					res.locals.entity = entity;
 					next();
 				})
 				.catch(model.NotFoundError, () => {

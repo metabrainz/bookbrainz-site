@@ -20,7 +20,7 @@ import renderRelationship from '../src/server/helpers/render.js';
 
 
 const relationshipTests = {
-	emptyTemplate: {
+	emptyLinkPhrase: {
 		rel: {
 			source: {
 				bbid: '1',
@@ -32,9 +32,12 @@ const relationshipTests = {
 				defaultAlias: {name: 'test2'},
 				type: 'test-type2'
 			},
-			type: {displayTemplate: ''}
+			type: {linkPhrase: ''}
 		},
-		renderedRel: ''
+		renderedRel: [
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a>  ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
+		].join('')
 	},
 	fullySpecified: {
 		rel: {
@@ -48,11 +51,11 @@ const relationshipTests = {
 				defaultAlias: {name: 'test2'},
 				type: 'test-type2'
 			},
-			type: {displayTemplate: '{{entities.[0]}}{{entities.[1]}}'}
+			type: {linkPhrase: 'a test link phrase'}
 		},
 		renderedRel: [
-			'<a href="/test-type/1">test</a>',
-			'<a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a> a test link phrase ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
 		].join('')
 	},
 	fullySpecifiedWithNumericBbids: {
@@ -67,11 +70,11 @@ const relationshipTests = {
 				defaultAlias: {name: 'test2'},
 				type: 'test-type2'
 			},
-			type: {displayTemplate: '{{entities.[0]}}{{entities.[1]}}'}
+			type: {linkPhrase: 'a test link phrase'}
 		},
 		renderedRel: [
-			'<a href="/test-type/1">test</a>',
-			'<a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a> a test link phrase ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
 		].join('')
 	},
 	nullEntities: {
@@ -79,11 +82,11 @@ const relationshipTests = {
 		rel: {
 			source: null,
 			target: null,
-			type: {displayTemplate: '{{entities.[0]}}{{entitites.[1]}}'}
+			type: {linkPhrase: 'a test link phrase'}
 		}
 	},
-	nullTemplate: {
-		error: 'null',
+	nullLinkPhrase: {
+		error: TypeError,
 		rel: {
 			source: {
 				bbid: '1',
@@ -95,7 +98,7 @@ const relationshipTests = {
 				defaultAlias: {name: 'test2'},
 				type: 'test-type2'
 			},
-			type: {displayTemplate: null}
+			type: {linkPhrase: null}
 		}
 	},
 	unnamedSource: {
@@ -109,11 +112,11 @@ const relationshipTests = {
 				defaultAlias: {name: 'test2'},
 				type: 'test-type2'
 			},
-			type: {displayTemplate: '{{entities.[0]}}{{entities.[1]}}'}
+			type: {linkPhrase: 'a test link phrase'}
 		},
 		renderedRel: [
-			'<a href="/test-type/1">(unnamed)</a>',
-			'<a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">(unnamed)</a> a test link phrase ',
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
 		].join('')
 	}
 };
@@ -137,10 +140,10 @@ describe('renderRelationship', () => {
 	   makeRelationshipTest(relationshipTests.fullySpecifiedWithNumericBbids));
 	it('renders a relationship where the source entity is unnamed',
 	   makeRelationshipTest(relationshipTests.unnamedSource));
-	it('works with an empty template',
-	   makeRelationshipTest(relationshipTests.emptyTemplate));
+	it('works with an empty link phrase',
+	   makeRelationshipTest(relationshipTests.emptyLinkPhrase));
 	it('throws on null entities',
 	   makeRelationshipTest(relationshipTests.nullEntities));
-	it('throws on a null template',
-	   makeRelationshipTest(relationshipTests.nullTemplate));
+	it('throws on a null link phrase',
+	   makeRelationshipTest(relationshipTests.nullLinkPhrase));
 });

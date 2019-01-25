@@ -34,6 +34,12 @@
             "polyfill": false,
             "regenerator": true
           }
+        ],
+        [
+          "babel-plugin-transform-require-ignore",
+          {
+            "extensions": [".less"]
+          }
         ]
       ],
       "presets": [

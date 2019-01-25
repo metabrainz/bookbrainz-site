@@ -17,10 +17,13 @@
  */
 
 import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {addAliasRow, hideAliasEditor} from './actions';
+import {addAliasRow, hideAliasEditor, removeEmptyAliases} from './actions';
+
 import AliasRow from './alias-row';
+import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
@@ -56,12 +59,19 @@ const AliasEditor = ({
 
 	const noAliasesTextClass =
 		classNames('text-center', {hidden: aliases.size});
+
+	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
+		Refer to the help page for more details and examples.`;
+	const helpIconElement = <Icon className="fa-sm" data-tip={helpText} name="question-circle"/>;
+	const helpTooltipElement = <ReactTooltip multiline delayShow={50} effect="solid" place="right" type="dark"/>;
+
 	return (
 		<Modal bsSize="large" show={show} onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
-					Alias Editor
+					Alias Editor {helpIconElement}
 				</Modal.Title>
+				{helpTooltipElement}
 			</Modal.Header>
 
 			<Modal.Body>
@@ -109,7 +119,10 @@ AliasEditor.defaultProps = {
 function mapDispatchToProps(dispatch) {
 	return {
 		onAddAlias: () => dispatch(addAliasRow()),
-		onClose: () => dispatch(hideAliasEditor())
+		onClose: () => {
+			dispatch(hideAliasEditor());
+			dispatch(removeEmptyAliases());
+		}
 	};
 }
 

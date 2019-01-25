@@ -30,7 +30,7 @@ import React from 'react';
 
 const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute
+	getLanguageAttribute, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
@@ -43,21 +43,31 @@ function EditionAttributes({edition}) {
 	const height = extractAttribute(edition.height);
 	const depth = extractAttribute(edition.depth);
 
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(edition);
 	const releaseDate = getEditionReleaseDate(edition);
 	const publishers = getEditionPublishers(edition);
 	const languages = getLanguageAttribute(edition).data;
 
 	return (
 		<div>
+
 			<Row>
 				<Col md={3}>
 					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
 						<dt>Release Date</dt>
 						<dd>{releaseDate}</dd>
 						<dt>Format</dt>
 						<dd>{format}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dl>
 						<dt>Status</dt>
 						<dd>{status}</dd>
+						<dt>Languages</dt>
+						<dd>{languages}</dd>
 					</dl>
 				</Col>
 				<Col md={3}>
@@ -72,16 +82,8 @@ function EditionAttributes({edition}) {
 				</Col>
 				<Col md={3}>
 					<dl>
-						<dt>Languages</dt>
-						<dd>{languages}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
 						<dt>Publishers</dt>
-						<dd>
-							{publishers}
-						</dd>
+						<dd>{publishers}</dd>
 					</dl>
 				</Col>
 			</Row>
@@ -100,7 +102,10 @@ function EditionDisplayPage({entity, identifierTypes}) {
 		<div>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
-					<EntityImage backupIcon="book" imageUrl={entity.imageUrl}/>
+					<EntityImage
+						backupIcon={ENTITY_TYPE_ICONS.Edition}
+						imageUrl={entity.imageUrl}
+					/>
 				</Col>
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
@@ -108,7 +113,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					<div className="margin-bottom-d15">
 						<a href={`/publication/${entity.publication.bbid}`}>
 							<Icon name="external-link"/>
-							<span>&nbsp;See all other editions</span>
+							<span>&nbsp;See all similar editions</span>
 						</a>
 					</div>
 				</Col>

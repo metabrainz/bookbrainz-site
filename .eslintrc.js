@@ -74,7 +74,7 @@ const bestPracticesRules = {
 	'array-callback-return': ERROR,
 	'block-scoped-var': ERROR,
 	'class-methods-use-this': TRANSITION_IGNORE,
-	complexity: ERROR,
+	complexity: [ERROR, {max: 50}],
 	'consistent-return': ERROR,
 	curly: ERROR,
 	'default-case': ERROR,
@@ -276,9 +276,9 @@ const stylisticIssuesRules = {
 		6
 	],
 	'max-len': [
-		ERROR,
+		WARNING,
 		{
-			code: 80,
+			code: 150,
 			ignoreUrls: true,
 			tabWidth: 4
 		}
@@ -296,12 +296,11 @@ const stylisticIssuesRules = {
 		TRANSITION_IGNORE,
 		15
 	],
-	'multiline-comment-style': ERROR,
 	'new-parens': ERROR,
 	'no-array-constructor': ERROR,
 	'no-bitwise': ERROR,
 	'no-continue': ERROR,
-	'no-inline-comments': ERROR,
+	'no-inline-comments': WARNING,
 	'no-lonely-if': ERROR,
 	'no-mixed-spaces-and-tabs': [
 		ERROR,
@@ -516,7 +515,7 @@ const reactRules = {
 const es6ImportRules = {
 	'import/first': ERROR,
 	'import/newline-after-import': [
-		ERROR,
+		WARNING,
 		{
 			count: 2
 		}

@@ -25,6 +25,7 @@ export const UPDATE_ALIAS_LANGUAGE = 'UPDATE_ALIAS_LANGUAGE';
 export const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
 export const REMOVE_ALIAS_ROW = 'REMOVE_ALIAS_ROW';
 export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
+export const REMOVE_EMPTY_ALIASES = 'REMOVE_EMPTY_ALIASES';
 
 export type Action = {
 	type: string,
@@ -159,5 +160,16 @@ export function removeAliasRow(rowId: number): Action {
 export function hideAliasEditor(): Action {
 	return {
 		type: HIDE_ALIAS_EDITOR
+	};
+}
+
+/**
+ * Produces an action indicating that the empty rows should be deleted.
+ *
+ * @returns {Action} The resulting REMOVE_EMPTY_ALIASES action.
+ */
+export function removeEmptyAliases(): Action {
+	return {
+		type: REMOVE_EMPTY_ALIASES
 	};
 }

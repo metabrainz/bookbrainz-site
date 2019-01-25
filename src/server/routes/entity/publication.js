@@ -18,9 +18,7 @@
  */
 
 import * as auth from '../../helpers/auth';
-import * as entityEditorHelpers from '../../../client/entity-editor/helpers';
 import * as entityRoutes from './entity';
-import * as error from '../../helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
@@ -31,9 +29,8 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import target from '../../templates/target';
 
-
-const {getValidator} = entityEditorHelpers;
 
 const router = express.Router();
 
@@ -46,7 +43,9 @@ router.param(
 			'publicationType',
 			'editions.defaultAlias',
 			'editions.disambiguation',
-			'editions.releaseEventSet.releaseEvents'
+			'editions.releaseEventSet.releaseEvents',
+			'editions.identifierSet.identifiers.type',
+			'editions.editionFormat'
 		],
 		'Publication not found'
 	)
@@ -62,6 +61,7 @@ function _setPublicationTitle(res) {
 
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setPublicationTitle(res);
+	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 	entityRoutes.displayEntity(req, res);
 });
 
@@ -91,17 +91,18 @@ router.get('/:bbid/revisions', (req, res, next) => {
 
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadPublicationTypes, (req, res) => {
+	middleware.loadLanguages, middleware.loadPublicationTypes,
+	middleware.loadRelationshipTypes, (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publication', req, res, {}
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Add Publication'
-		});
+		}));
 	}
 );
 
@@ -153,29 +154,47 @@ function publicationToFormState(publication) {
 		type: publication.publicationType && publication.publicationType.id
 	};
 
+	const relationshipSection = {
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
+		relationships: {}
+	};
+
+	publication.relationships.forEach((relationship) => (
+		relationshipSection.relationships[relationship.id] = {
+			relationshipType: relationship.type,
+			rowID: relationship.id,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		}
+	));
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
-		publicationSection
+		publicationSection,
+		relationshipSection
 	};
 }
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadPublicationTypes, middleware.loadLanguages,
+	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publication', req, res, {}, publicationToFormState
 		));
 
-		return res.render('target', {
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
 			title: 'Edit Publication'
-		});
+		}));
 	}
 );
 
@@ -188,22 +207,28 @@ function transformNewForm(data) {
 		data.identifierEditor
 	);
 
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+
 	return {
 		aliases,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
+		relationships,
 		typeId: data.publicationSection.type
 	};
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'publication', transformNewForm, 'typeId');
+	'publication', transformNewForm, 'typeId'
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
-	_.partial(createOrEditHandler, 'create'));
+	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
-	_.partial(createOrEditHandler, 'edit'));
+	createOrEditHandler);
 
 export default router;

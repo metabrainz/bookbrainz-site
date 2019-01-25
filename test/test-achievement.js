@@ -17,6 +17,7 @@
  */
 
 import * as testData from '../data/test-data.js';
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
@@ -34,11 +35,10 @@ import testSprinter from './test-sprinter.js';
 import testTimeTraveller from './test-time-traveller.js';
 import testWorkerBee from './test-worker-bee.js';
 
-
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-const Achievement =	rewire('../lib/server/helpers/achievement.js');
+const Achievement =	rewire('../src/server/helpers/achievement.js');
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
 
@@ -70,14 +70,16 @@ function tests() {
 		});
 
 		// suppress warnings from rejections
-		Achievement.__set__('console', {
-			error() {
-				// empty
-			},
-			warn() {
-				// empty
-			}
-		});
+		// Somehow modifies the global console object in Nove v10+ and causes a failure in Mocha
+
+		// Achievement.__set__('console', {
+		// 	error() {
+		// 		// empty
+		// 	},
+		// 	warn() {
+		// 		// empty
+		// 	}
+		// });
 
 		it('should reject invalid editors', () => {
 			const unlockPromise = testData.createRevisionist()

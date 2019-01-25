@@ -22,7 +22,7 @@ import * as React from 'react';
 import Icon from 'react-fontawesome';
 
 
-function icon(empty: ?boolean, error: ?boolean): string | null {
+function icon(empty: ?boolean, error: ?boolean, warn: ?boolean): string | null {
 	if (empty) {
 		return null;
 	}
@@ -31,11 +31,18 @@ function icon(empty: ?boolean, error: ?boolean): string | null {
 		return 'times';
 	}
 
+	if (warn) {
+		return 'exclamation-triangle';
+	}
+
 	return 'check';
 }
 
-
-function contextualColor(empty: ?boolean, error: ?boolean): string | null {
+function contextualColor(
+	empty: ?boolean,
+	error: ?boolean,
+	warn: ?boolean
+): string | null {
 	if (empty) {
 		return null;
 	}
@@ -44,13 +51,18 @@ function contextualColor(empty: ?boolean, error: ?boolean): string | null {
 		return 'text-danger';
 	}
 
+	if (warn) {
+		return 'text-warning';
+	}
+
 	return 'text-success';
 }
 
 type Props = {
 	children?: React.Node,
 	empty?: boolean,
-	error?: boolean
+	error?: boolean,
+	warn?: boolean
 };
 
 /**
@@ -70,13 +82,14 @@ type Props = {
 function ValidationLabel({
 	children,
 	empty,
-	error
+	error,
+	warn
 }: Props) {
-	const iconElement = icon(empty, error) &&
-		<Icon className="margin-left-0-5" name={icon(empty, error)}/>;
+	const iconElement = icon(empty, error, warn) &&
+		<Icon className="margin-left-0-5" name={icon(empty, error, warn)}/>;
 
 	return (
-		<span className={contextualColor(empty, error)}>
+		<span className={contextualColor(empty, error, warn)}>
 			{children}
 			{iconElement}
 		</span>
@@ -86,7 +99,8 @@ ValidationLabel.displayName = 'ValidationLabel';
 ValidationLabel.defaultProps = {
 	children: null,
 	empty: false,
-	error: false
+	error: false,
+	warn: false
 };
 
 export default ValidationLabel;

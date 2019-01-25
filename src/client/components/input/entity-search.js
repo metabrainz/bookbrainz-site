@@ -22,6 +22,7 @@ import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 import request from 'superagent-bluebird-promise';
 
 /**
@@ -87,18 +88,9 @@ class EntitySearch extends React.Component {
 	}
 
 	renderOption(option) {
-		const ENTITY_TYPE_ICONS = {
-			Area: 'globe',
-			Creator: 'user',
-			Edition: 'book',
-			Publication: 'th-list',
-			Publisher: 'university',
-			Work: 'file-text-o'
-		};
-
 		return (
 			<div>
-				{option.type && <Icon name={ENTITY_TYPE_ICONS[option.type]}/>}
+				{option.type && genEntityIconHTMLElement(option.type)}
 				{' '}
 				{option.text}
 				{

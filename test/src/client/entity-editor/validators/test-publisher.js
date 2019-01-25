@@ -17,23 +17,37 @@
  */
 
 import * as Immutable from 'immutable';
+
 import {
-	IDENTIFIER_TYPES, INVALID_ALIASES, INVALID_IDENTIFIERS,
-	INVALID_NAME_SECTION, INVALID_SUBMISSION_SECTION, VALID_ALIASES,
-	VALID_IDENTIFIERS, VALID_NAME_SECTION, VALID_SUBMISSION_SECTION
+	EMPTY_SUBMISSION_SECTION,
+	IDENTIFIER_TYPES,
+	INVALID_ALIASES,
+	INVALID_IDENTIFIERS,
+	INVALID_NAME_SECTION,
+	VALID_ALIASES,
+	VALID_IDENTIFIERS,
+	VALID_NAME_SECTION,
+	VALID_SUBMISSION_SECTION
 } from './data';
 import {
-	testValidateAreaFunc, testValidateBooleanFunc, testValidateDateFunc,
-	testValidateEndDateFunc, testValidatePositiveIntegerFunc
+	testValidateAreaFunc,
+	testValidateBooleanFunc,
+	testValidateDateFunc,
+	testValidateEndDateFunc,
+	testValidatePositiveIntegerFunc
 } from './helpers';
 import {
-	validateForm, validatePublisherSection, validatePublisherSectionArea,
-	validatePublisherSectionBeginDate, validatePublisherSectionEndDate,
-	validatePublisherSectionEnded, validatePublisherSectionType
-} from '../../../../../lib/client/entity-editor/validators/publisher';
+	validateForm,
+	validatePublisherSection,
+	validatePublisherSectionArea,
+	validatePublisherSectionBeginDate,
+	validatePublisherSectionEndDate,
+	validatePublisherSectionEnded,
+	validatePublisherSectionType
+} from '../../../../../src/client/entity-editor/validators/publisher';
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-
 
 chai.use(chaiAsPromised);
 const {expect} = chai;
@@ -205,20 +219,20 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid submission section', () => {
+	it('should pass an Object with an empty submission section', () => {
 		const result = validateForm(
 			{
 				...validForm,
-				submissionSection: INVALID_SUBMISSION_SECTION
+				submissionSection: EMPTY_SUBMISSION_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 
 	const invalidForm = {
 		...validForm,
-		submissionSection: INVALID_SUBMISSION_SECTION
+		nameSection: INVALID_NAME_SECTION
 	};
 
 	it('should reject an invalid Immutable.Map', () => {

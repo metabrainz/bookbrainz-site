@@ -25,7 +25,8 @@ import React from 'react';
 
 
 const {
-	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation
+	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,
+	getISBNOfEdition, getEditionFormat
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
@@ -33,12 +34,27 @@ function EditionTableRow({edition}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
 	const releaseDate = getEditionReleaseDate(edition);
+	const isbn = getISBNOfEdition(edition);
+	const editionFormat = getEditionFormat(edition);
 
 	return (
 		<tr>
 			<td>
 				<a href={`/edition/${edition.bbid}`}>{name}</a>
 				{disambiguation}
+			</td>
+			<td>{editionFormat}</td>
+			<td>
+				{
+					isbn ?
+						<a
+							href={`https://isbnsearch.org/isbn/${isbn.value}`}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							{isbn.value}
+						</a> : '?'
+				}
 			</td>
 			<td>
 				{releaseDate}
@@ -59,6 +75,8 @@ function EditionTable({entity}) {
 				<thead>
 					<tr>
 						<th>Name</th>
+						<th>Format</th>
+						<th>ISBN</th>
 						<th>Release Date</th>
 					</tr>
 				</thead>

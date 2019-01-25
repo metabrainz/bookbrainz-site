@@ -22,7 +22,7 @@ import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
 
-const Achievement = rewire('../lib/server/helpers/achievement.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const hotOffThePressThreshold = -7;
 
@@ -44,8 +44,9 @@ function expectIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() => testData.createHotOffThePress())
+	beforeEach(
+		() => testData.createEditor()
+			.then(() => testData.createHotOffThePress())
 	);
 	afterEach(testData.truncate);
 

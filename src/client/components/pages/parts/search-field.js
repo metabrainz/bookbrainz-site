@@ -17,15 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import * as bootstrap from 'react-bootstrap';
+
 import CustomInput from '../../../input';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button} = bootstrap;
+const {Button, DropdownButton, InputGroup, MenuItem} = bootstrap;
 
 const SearchButton = (
 	<Button
@@ -43,27 +47,65 @@ class SearchField extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			collection: ''
+		};
 		// React does not autobind non-React class methods
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.change = this.change.bind(this);
+		this.handleEntitySelect = this.handleEntitySelect.bind(this);
+	}
+
+	triggerOnSearch() {
+		const inputValue = this.queryInput.getValue();
+		const {collection} = this.state;
+		this.props.onSearch(inputValue, _.toLower(collection));
 	}
 
 	handleSubmit(event) {
 		event.preventDefault();
 		event.stopPropagation();
-
-		this.props.onSearch(this.query.getValue());
+		this.triggerOnSearch();
 	}
 
 	change() {
-		const inputValue = this.query.getValue();
-
+		const inputValue = this.queryInput.getValue();
 		if (!inputValue.match(/^ *$/)) {
-			this.props.onSearch(inputValue);
+			this.triggerOnSearch();
 		}
 	}
 
+	handleEntitySelect(eventKey: any) {
+		this.setState({collection: eventKey}, this.triggerOnSearch);
+	}
+
 	render() {
+		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
+			<DropdownButton
+				componentClass={InputGroup.Button}
+				id="entity-type-select"
+				title={this.state.collection || 'All types'}
+				onSelect={this.handleEntitySelect}
+			>
+				{this.props.entityTypes.map((entityType: string) => (
+					<MenuItem
+						eventKey={entityType}
+						key={entityType}
+					>
+						{genEntityIconHTMLElement(entityType)}
+						{entityType}
+					</MenuItem>
+				))}
+				<MenuItem divider/>
+				<MenuItem
+					eventKey=""
+					key="all"
+				>
+					All types
+				</MenuItem>
+			</DropdownButton>
+		) : '';
+
 		return (
 			<div className="row">
 				<div className="col-md-6 col-md-offset-3">
@@ -73,9 +115,10 @@ class SearchField extends React.Component {
 						onSubmit={this.handleSubmit}
 					>
 						<CustomInput
-							buttonAfter={SearchButton}
+							buttonAfter={[entityTypeSelect, SearchButton]}
+							defaultValue={this.props.query}
 							name="q"
-							ref={(ref) => this.query = ref}
+							ref={(ref) => this.queryInput = ref}
 							type="text"
 							onChange={_.debounce(this.change, updateDelay)}
 						/>
@@ -88,7 +131,13 @@ class SearchField extends React.Component {
 
 SearchField.displayName = 'SearchField';
 SearchField.propTypes = {
-	onSearch: PropTypes.func.isRequired
+	entityTypes: PropTypes.array.isRequired,
+	onSearch: PropTypes.func.isRequired,
+	query: PropTypes.string
+};
+
+SearchField.defaultProps = {
+	query: ''
 };
 
 export default SearchField;
