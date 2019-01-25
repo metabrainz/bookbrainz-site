@@ -243,7 +243,7 @@ function CreatorSection({
 								empty={!endDateValue}
 								error={
 									!validateCreatorSectionEndDate(
-										endDateValue
+										beginDateValue, endDateValue
 									)
 								}
 								label={endDateLabel}

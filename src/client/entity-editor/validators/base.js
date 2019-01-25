@@ -20,8 +20,11 @@
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
+import moment from 'moment';
 import validator from 'validator';
 
+
+const VALID_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM', 'YYYY'];
 
 export function get(
 	object: any,
@@ -104,7 +107,30 @@ export function validateDate(
 		return false;
 	}
 
-	return !value || validator.isISO8601(value);
+	return !value || moment(value, VALID_DATE_FORMATS, true).isValid();
+}
+
+export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
+	if (!nilOrString(beginValue) || !nilOrString(endValue)) {
+		return false;
+	}
+
+	if (!beginValue || !endValue || !validateDate(beginValue) ||
+		!validateDate(endValue)) {
+		return true;
+	}
+
+	const dateFormat = (value) => VALID_DATE_FORMATS.find(
+		(format) => moment(value, format, true).isValid()
+	);
+
+	const baseFormat = [dateFormat(beginValue), dateFormat(endValue)].reduce(
+		(prev, cur) => (prev.length < cur.length ? prev : cur)
+	);
+
+	return moment(beginValue, baseFormat).isSameOrBefore(
+		moment(endValue, baseFormat)
+	);
 }
 
 export function validateUUID(

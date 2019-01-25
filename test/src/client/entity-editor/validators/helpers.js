@@ -17,7 +17,10 @@
  */
 
 import * as Immutable from 'immutable';
-import {INVALID_AREA, VALID_AREA} from './data';
+import {
+	INVALID_AREA, INVALID_BEGIN_DATE_PAIR, INVALID_DATES, INVALID_DATE_PAIR,
+	INVALID_END_DATE_PAIR, VALID_AREA, VALID_DATE_PAIR
+} from './data';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -127,10 +130,57 @@ export function testValidateDateFunc(validationFunc, required = true) {
 		expect(result).to.be.false;
 	});
 
+	it('should reject all other forms of invalid dates', () => {
+		expect(INVALID_DATES.reduce((res, date) =>
+			res || validationFunc(date), false
+		)).to.be.false;
+	});
+
 	it(`should ${required ? 'reject' : 'pass'} a null value`, () => {
 		const result = validationFunc(null);
 		expect(result).to.equal(!required);
 	});
+}
+
+export function testValidateEndDateFunc(
+	endDateValidationfunc,
+	required = true
+) {
+	it('should pass if the begin date occurs before the end one',
+		() => {
+			const result = VALID_DATE_PAIR.reduce((res, datePair) =>
+				res && endDateValidationfunc(datePair.first, datePair.second),
+			true);
+			expect(result).to.be.true;
+		}
+	);
+
+	it('should reject if the begin date occurs after the end one',
+		() => {
+			const result = INVALID_DATE_PAIR.reduce((res, datePair) =>
+				res || endDateValidationfunc(datePair.first, datePair.second),
+			false);
+			expect(result).to.be.false;
+		}
+	);
+
+	it('should pass if the begin date is empty/undefined/invalid',
+		() => {
+			const result = INVALID_BEGIN_DATE_PAIR.reduce((res, datePair) =>
+				res && endDateValidationfunc(datePair.first, datePair.second),
+			true);
+			expect(result).to.be.true;
+		}
+	);
+
+	it('should reject if the end date is invalid',
+		() => {
+			const result = INVALID_END_DATE_PAIR.reduce((res, datePair) =>
+				res || endDateValidationfunc(datePair.first, datePair.second),
+			false);
+			expect(result).to.be.false;
+		}
+	);
 }
 
 

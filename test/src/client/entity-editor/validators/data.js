@@ -76,3 +76,88 @@ export const EMPTY_SUBMISSION_SECTION = {
 
 export const VALID_AREA = {id: 1};
 export const INVALID_AREA = {id: null};
+
+export const INVALID_DATES = [
+	// Incomplete dates
+	'-1', '1', '1-',
+	'-19', '19', '19-', '1-9',
+	'-192', '1-92', '19-2', '192', '192-',
+	'-1923', '1-923', '19-23', '192-3', '19-23', '192-3', '1923-',
+	'2014-2', '2014-02-2', '2014-02-',
+
+	/* Invalid formats */
+
+	 // MM-YYYY or DD-YYYY
+	'12-1912',
+	// DD-MM-YYYY or MM-DD-YYYY
+	'01-01-1912',
+	// DD-YYYY-MM or MM-YYYY-DD
+	'02-1992-12',
+	 // MM-DD or DD-MM
+	'12-02',
+	// ISO week
+	'2018-W14',
+	// ISO Date with week number
+	'2018-W14-1',
+	// ISO Date without year
+	'--04-02',
+	// ISO Ordinal date
+	'2018-092',
+	// Other ISO formats
+	'2018-04-02T13:03:26+00:00', '2018-04-02T13:03:26Z', '20180402T130326Z',
+
+	/* Invalid dates */
+
+	// Invalid MM value
+	'1912-13',
+	// Invalid MM value
+	'1912-13-01',
+	// Invalid DD value
+	'1912-11-31',
+	// Invalid DD value (not a leap year)
+	'2014-02-29'
+];
+
+export const VALID_DATE_PAIR = [
+	{first: '', second: ''},
+	{first: '', second: '1998'},
+	{first: '', second: '1998-01'},
+	{first: '', second: '1998-01-01'},
+	{first: '1997', second: ''},
+	{first: '1997', second: '1998'},
+	{first: '1997', second: '1998-01'},
+	{first: '1997', second: '1998-01-01'},
+	{first: '1997-12', second: ''},
+	{first: '1997-12', second: '1998'},
+	{first: '1997-12', second: '1998-01'},
+	{first: '1997-12', second: '1998-01-01'},
+	{first: '1997-12-31', second: ''},
+	{first: '1997-12-31', second: '1998'},
+	{first: '1997-12-31', second: '1998-01'},
+	{first: '1997-12-31', second: '1998-01-01'}
+];
+export const INVALID_DATE_PAIR = [
+	{first: '1998', second: '1997'},
+	{first: '1998-01', second: '1997'},
+	{first: '1998-01-01', second: '1997'},
+	{first: '1998', second: '1997-12'},
+	{first: '1998-01', second: '1997-12'},
+	{first: '1998-01-01', second: '1997-12'},
+	{first: '1998', second: '1997-12-31'},
+	{first: '1998-01', second: '1997-12-31'},
+	{first: '1998-01-01', second: '1997-12-31'}
+];
+export const INVALID_BEGIN_DATE_PAIR = [
+	{first: null, second: '1997'},
+	{first: '', second: '1997'},
+	// Begin date is invalid
+	{first: '1997-13', second: '1992'},
+	{first: '1992-12-41', second: ''},
+	// Begin date is an invalid leap year
+	{first: '2014-02-29', second: '1997-12'}
+];
+export const INVALID_END_DATE_PAIR = [
+	{first: '1997-12', second: '1923-'},
+	// End date is an invalid leap year
+	{first: '1997-12', second: '2014-02-29'}
+];

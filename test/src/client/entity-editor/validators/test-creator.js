@@ -33,6 +33,7 @@ import {
 	testValidateAreaFunc,
 	testValidateBooleanFunc,
 	testValidateDateFunc,
+	testValidateEndDateFunc,
 	testValidatePositiveIntegerFunc
 } from './helpers';
 import {
@@ -67,7 +68,7 @@ function describeValidateCreatorSectionBeginDate() {
 }
 
 function describeValidateCreatorSectionEndDate() {
-	testValidateDateFunc(validateCreatorSectionEndDate, false);
+	testValidateEndDateFunc(validateCreatorSectionEndDate, false);
 }
 
 function describeValidateCreatorSectionEnded() {
