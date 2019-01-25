@@ -47,7 +47,10 @@ function EntityImage({backupIcon, imageUrl}) {
 EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
 	backupIcon: PropTypes.string.isRequired,
-	imageUrl: PropTypes.string.isRequired
+	imageUrl: PropTypes.string
 };
 
+EntityImage.defaultProps = {
+	imageUrl: ''
+};
 export default EntityImage;
