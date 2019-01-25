@@ -52,3 +52,13 @@ const MILLISECONDS_PER_DAY = 86400000;
 export function isWithinDayFromNow(date) {
 	return Boolean(Date.now() - date.getTime() < MILLISECONDS_PER_DAY);
 }
+
+export function labelsForCreator(isGroup) {
+	return {
+		beginAreaLabel: isGroup ? 'Place founded' : 'Place of birth',
+		beginDateLabel: isGroup ? 'Date founded' : 'Date of birth',
+		endAreaLabel: isGroup ? 'Place of dissolution' : 'Place of death',
+		endDateLabel: isGroup ? 'Date of dissolution' : 'Date of death',
+		endedLabel: isGroup ? 'Dissolved?' : 'Died?'
+	};
+}
