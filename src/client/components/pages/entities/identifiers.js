@@ -56,8 +56,13 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
-	identifierSet: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array.isRequired
+	identifierSet: PropTypes.object,
+	identifierTypes: PropTypes.array
+};
+
+EntityIdentifiers.defaultProps = {
+	identifierSet: {},
+	identifierTypes: []
 };
 
 export default EntityIdentifiers;
