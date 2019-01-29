@@ -185,3 +185,44 @@ export function makeEntityCreateOrEditHandler(
 		);
 	};
 }
+
+/**
+ * add an initial relationship to entity from another enitty
+ * when one entity created from other.
+ * @param {object} props - props related to new entity
+ * @param {number} relationshipTypeId - relationshipId number for initaial relationship
+ * @param {object} targetEntity - details about target entitiy like publication, publisher and creator
+ */
+
+export function addInitialRalationship(props, relationshipTypeId, targetEntity) {
+	const relationship = props.relationshipTypes.find(
+		relationshipType => relationshipType.id === relationshipTypeId
+	);
+
+	const targetEntityDetail = {
+		bbid: targetEntity.id,
+		defaultAlias: {name: targetEntity.text},
+		type: targetEntity.type
+	};
+
+	const sourceEntityDetail = {
+		bbid: null,
+		defaultAlias: {name: ''},
+		type: _.upperFirst(props.entityType)
+	};
+
+	const initialRelationship = {
+		label: relationship.linkPhrase,
+		relationshipType: relationship,
+		rowID: 'n0',
+		sourceEntity: targetEntity.type === 'Publication' ? sourceEntityDetail : targetEntityDetail,
+		targetEntity: targetEntity.type === 'Publication' ? targetEntityDetail : sourceEntityDetail
+	};
+
+	props.initialState.relationshipSection = {};
+	props.initialState.relationshipSection.lastRelationships = null;
+	props.initialState.relationshipSection.relationshipEditorProps = null;
+	props.initialState.relationshipSection.relationshipEditorVisible = false;
+	props.initialState.relationshipSection.relationships = {n0: initialRelationship};
+	return props;
+}

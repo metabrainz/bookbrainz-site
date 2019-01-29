@@ -48,7 +48,7 @@ export function hideRelationshipEditor(): Action {
 	};
 }
 
-let nextRowID = 0;
+let nextRowID = 1;
 export function addRelationship(data: Relationship): Action {
 	return {
 		payload: {data, rowID: `n${nextRowID++}`},

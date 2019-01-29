@@ -23,6 +23,7 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityTitle from './title';
+import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {labelsForCreator} from '../../../helpers/utils';
@@ -30,8 +31,7 @@ import {labelsForCreator} from '../../../helpers/utils';
 
 const {extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
-const {Col, Row} = bootstrap;
-
+const {Button, Col, Row} = bootstrap;
 
 function CreatorAttributes({creator}) {
 	const type = getTypeAttribute(creator.creatorType).data;
@@ -121,6 +121,15 @@ function CreatorDisplayPage({entity, identifierTypes}) {
 				identifierTypes={identifierTypes}
 				urlPrefix={urlPrefix}
 			/>
+			<Button
+				bsStyle="success"
+				className="margin-top-d15"
+				href={`/work/create?${
+					entity.type.toLowerCase()}=${entity.bbid}`}
+			>
+				<Icon name="plus"/>
+				{'  Add Work'}
+			</Button>
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				entityUrl={urlPrefix}
