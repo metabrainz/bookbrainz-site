@@ -22,7 +22,7 @@ import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
-	addInitialRalationship,
+	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -101,6 +101,8 @@ router.get(
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
 		const {Creator} = req.app.locals.orm;
+		let relationshipTypeId;
+		let initialRelationshipIndex;
 		const propsPromise = generateEntityProps(
 			'work', req, res, {}
 		);
@@ -114,8 +116,10 @@ router.get(
 
 		function render(props) {
 			if (props.creator) {
-				// add initial raltionship with relationshipTypeId = 8 (<Author> wrote <Work>)
-				addInitialRalationship(props, 8, props.creator);
+				// add initial ralationship with relationshipTypeId = 8 (<Author> wrote <Work>)
+				relationshipTypeId = 8;
+				initialRelationshipIndex = 0;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.creator);
 			}
 
 			const editorMarkup = entityEditorMarkup(props);

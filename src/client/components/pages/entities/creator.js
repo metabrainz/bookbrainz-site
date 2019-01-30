@@ -127,8 +127,7 @@ function CreatorDisplayPage({entity, identifierTypes}) {
 				href={`/work/create?${
 					entity.type.toLowerCase()}=${entity.bbid}`}
 			>
-				<Icon name="plus"/>
-				{'  Add Work'}
+				<Icon className="margin-right-0-5" name="plus"/>Add Work
 			</Button>
 			<hr className="margin-top-d40"/>
 			<EntityFooter

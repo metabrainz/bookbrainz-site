@@ -23,7 +23,7 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	addInitialRalationship,
+	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -130,22 +130,25 @@ router.get(
 		function render(props) {
 			const {initialState} = props;
 			let relationshipTypeId;
+			let initialRelationshipIndex;
 			if (props.publisher || props.publication) {
 				initialState.editionSection = {};
 			}
 
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;
-				// add initial raltionship with relationshipTypeId = 4 (<Publisher> published < New Edition>)
+				// add initial relationship with relationshipTypeId = 4 (<Publisher> published < New Edition>)
 				relationshipTypeId = 4;
-				addInitialRalationship(props, relationshipTypeId, props.publisher);
+				initialRelationshipIndex = 0;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.publisher);
 			}
 
 			if (props.publication) {
 				initialState.editionSection.publication = props.publication;
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <Publication>)
 				relationshipTypeId = 3;
-				addInitialRalationship(props, relationshipTypeId, props.publication);
+				initialRelationshipIndex = 1;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.publication);
 			}
 
 			const editorMarkup = entityEditorMarkup(props);

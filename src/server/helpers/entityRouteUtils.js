@@ -192,13 +192,15 @@ export function makeEntityCreateOrEditHandler(
  * @param {object} props - props related to new entity
  * @param {number} relationshipTypeId - relationshipId number for initaial relationship
  * @param {object} targetEntity - details about target entitiy like publication, publisher and creator
+ * @param {number} relationshipIndex - initial relationship index number
  */
 
-export function addInitialRalationship(props, relationshipTypeId, targetEntity) {
+export function addInitialRelationship(props, relationshipTypeId, relationshipIndex, targetEntity) {
+	// Prepend 'i' here to indicate initail relationship row identifier
+	const rowId = `i${relationshipIndex || 0}`;
 	const relationship = props.relationshipTypes.find(
 		relationshipType => relationshipType.id === relationshipTypeId
 	);
-
 	const targetEntityDetail = {
 		bbid: targetEntity.id,
 		defaultAlias: {name: targetEntity.text},
@@ -206,7 +208,6 @@ export function addInitialRalationship(props, relationshipTypeId, targetEntity) 
 	};
 
 	const sourceEntityDetail = {
-		bbid: null,
 		defaultAlias: {name: ''},
 		type: _.upperFirst(props.entityType)
 	};
@@ -214,15 +215,19 @@ export function addInitialRalationship(props, relationshipTypeId, targetEntity) 
 	const initialRelationship = {
 		label: relationship.linkPhrase,
 		relationshipType: relationship,
-		rowID: 'n0',
+		rowID: rowId,
 		sourceEntity: targetEntity.type === 'Publication' ? sourceEntityDetail : targetEntityDetail,
 		targetEntity: targetEntity.type === 'Publication' ? targetEntityDetail : sourceEntityDetail
 	};
 
-	props.initialState.relationshipSection = {};
-	props.initialState.relationshipSection.lastRelationships = null;
-	props.initialState.relationshipSection.relationshipEditorProps = null;
-	props.initialState.relationshipSection.relationshipEditorVisible = false;
-	props.initialState.relationshipSection.relationships = {n0: initialRelationship};
+	if (!props.initialState.relationshipSection) {
+		props.initialState.relationshipSection = {};
+		props.initialState.relationshipSection.lastRelationships = null;
+		props.initialState.relationshipSection.relationshipEditorProps = null;
+		props.initialState.relationshipSection.relationshipEditorVisible = false;
+	}
+	props.initialState.relationshipSection.relationships =
+		{...props.initialState.relationshipSection.relationships, [rowId]: initialRelationship};
+
 	return props;
 }
