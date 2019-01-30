@@ -114,7 +114,7 @@ router.get(
 
 		function render(props) {
 			if (props.creator) {
-				// add initial raltionship with relationshipTypeId = 8
+				// add initial raltionship with relationshipTypeId = 8 (<Author> wrote <Work>)
 				addInitialRalationship(props, 8, props.creator);
 			}
 
