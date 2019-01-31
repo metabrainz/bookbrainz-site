@@ -22,10 +22,13 @@ import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
+	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
+
+import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -79,23 +82,60 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, WorkRevision);
 });
 
+function entityToOption(entity) {
+	return {
+		disambiguation: entity.disambiguation ?
+			entity.disambiguation.comment : null,
+		id: entity.bbid,
+		text: entity.defaultAlias ?
+			entity.defaultAlias.name : '(unnamed)',
+		type: entity.type
+	};
+}
+
 // Creation
 
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
-	(req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
+	(req, res, next) => {
+		const {Creator} = req.app.locals.orm;
+		let relationshipTypeId;
+		let initialRelationshipIndex;
+		const propsPromise = generateEntityProps(
 			'work', req, res, {}
-		));
+		);
 
-		return res.send(target({
-			markup,
-			props: escapeProps(props),
-			script: '/js/entity-editor.js',
-			title: 'Add Work'
-		}));
+		if (req.query.creator) {
+			propsPromise.creator =
+				Creator.forge({bbid: req.query.creator})
+					.fetch({withRelated: 'defaultAlias'})
+					.then((data) => entityToOption(data.toJSON()));
+		}
+
+		function render(props) {
+			if (props.creator) {
+				// add initial ralationship with relationshipTypeId = 8 (<Author> wrote <Work>)
+				relationshipTypeId = 8;
+				initialRelationshipIndex = 0;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.creator);
+			}
+
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
+
+			return res.send(target({
+				markup,
+				props: escapeProps(updatedProps),
+				script: '/js/entity-editor.js',
+				title: 'Add Work'
+			}));
+		}
+		Promise.props(propsPromise)
+			.then(render)
+			.catch(next);
 	}
 );
 
