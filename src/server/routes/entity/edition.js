@@ -108,7 +108,7 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	(req, res, next) => {
-		const {Publication, Publisher} = req.app.locals.orm;
+		const {Publication, Publisher, Work} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
 			'edition', req, res, {}
 		);
@@ -127,11 +127,20 @@ router.get(
 					.then((data) => entityToOption(data.toJSON()));
 		}
 
+		if (req.query.work) {
+			propsPromise.work =
+				Work.forge({bbid: req.query.work})
+					.fetch({withRelated: 'defaultAlias'})
+					.then((data) => entityToOption(data.toJSON()));
+		}
+
 		function render(props) {
 			const {initialState} = props;
+
 			let relationshipTypeId;
 			let initialRelationshipIndex;
-			if (props.publisher || props.publication) {
+
+			if (props.publisher || props.publication || props.work) {
 				initialState.editionSection = {};
 			}
 
@@ -149,6 +158,14 @@ router.get(
 				relationshipTypeId = 3;
 				initialRelationshipIndex = 1;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.publication);
+			}
+
+			if (props.work) {
+				initialState.editionSection.work = props.work;
+				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
+				relationshipTypeId = 10;
+				initialRelationshipIndex = 2;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.work);
 			}
 
 			const editorMarkup = entityEditorMarkup(props);

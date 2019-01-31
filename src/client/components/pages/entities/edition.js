@@ -32,7 +32,7 @@ const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
 	getLanguageAttribute, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
-const {Col, Row} = bootstrap;
+const {Button, Col, Row} = bootstrap;
 
 function EditionAttributes({edition}) {
 	const status = extractAttribute(edition.editionStatus, 'label');
@@ -118,6 +118,14 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					</div>
 				</Col>
 			</Row>
+			<Button
+				bsStyle="success"
+				className="margin-top-d15"
+				href={`/work/create?${
+					entity.type.toLowerCase()}=${entity.bbid}`}
+			>
+				<Icon className="margin-right-0-5" name="plus"/>Add Work
+			</Button>
 			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}

@@ -216,8 +216,8 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 		label: relationship.linkPhrase,
 		relationshipType: relationship,
 		rowID: rowId,
-		sourceEntity: targetEntity.type === 'Publication' ? sourceEntityDetail : targetEntityDetail,
-		targetEntity: targetEntity.type === 'Publication' ? targetEntityDetail : sourceEntityDetail
+		sourceEntity: targetEntity.type === 'Publication' || targetEntity.type === 'Work' ? sourceEntityDetail : targetEntityDetail,
+		targetEntity: targetEntity.type === 'Publication' || targetEntity.type === 'Work' ? targetEntityDetail : sourceEntityDetail
 	};
 
 	if (!props.initialState.relationshipSection) {
