@@ -47,7 +47,8 @@ function reducer(
 		case UPDATE_END_DATE:
 			return state.set('endDate', payload);
 		case UPDATE_ENDED:
-			return state.set('ended', payload);
+			return state.set('ended', payload)
+				.set('endDate', '');
 		// no default
 	}
 	return state;
