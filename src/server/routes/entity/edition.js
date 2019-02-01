@@ -91,6 +91,7 @@ router.post(
 
 function entityToOption(entity) {
 	return {
+		defaultAlias: entity.defaultAlias,
 		disambiguation: entity.disambiguation ?
 			entity.disambiguation.comment : null,
 		id: entity.bbid,
@@ -100,6 +101,17 @@ function entityToOption(entity) {
 	};
 }
 
+function getInitialNameSection(entity) {
+	const initialNameSection = {
+		disambiguation: entity.disambiguation,
+		language: entity.defaultAlias.languageId,
+		languageId: entity.defaultAlias.languageId,
+		name: entity.defaultAlias.name,
+		primary: entity.defaultAlias.primary,
+		sortName: entity.defaultAlias.sortName
+	};
+	return initialNameSection;
+}
 
 // Creation
 
@@ -161,6 +173,7 @@ router.get(
 			}
 
 			if (props.work) {
+				initialState.nameSection = getInitialNameSection(props.work);
 				initialState.editionSection.work = props.work;
 				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
 				relationshipTypeId = 10;
