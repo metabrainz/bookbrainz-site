@@ -150,7 +150,7 @@ router.get(
 			const {initialState} = props;
 
 			let relationshipTypeId;
-			let initialRelationshipIndex;
+			let initialRelationshipIndex = 0;
 
 			if (props.publisher || props.publication || props.work) {
 				initialState.editionSection = {};
@@ -160,25 +160,21 @@ router.get(
 				initialState.editionSection.publisher = props.publisher;
 				// add initial relationship with relationshipTypeId = 4 (<Publisher> published < New Edition>)
 				relationshipTypeId = 4;
-				initialRelationshipIndex = 0;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.publisher);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publisher);
 			}
 
 			if (props.publication) {
 				initialState.editionSection.publication = props.publication;
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <Publication>)
 				relationshipTypeId = 3;
-				initialRelationshipIndex = 1;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.publication);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publication);
 			}
 
 			if (props.work) {
 				initialState.nameSection = getInitialNameSection(props.work);
-				initialState.editionSection.work = props.work;
 				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
 				relationshipTypeId = 10;
-				initialRelationshipIndex = 2;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.work);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
 
 			const editorMarkup = entityEditorMarkup(props);
