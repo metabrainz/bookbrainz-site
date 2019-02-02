@@ -27,7 +27,6 @@ CREATE TABLE bookbrainz.editor (
 	cached_metabrainz_name VARCHAR(64),
 	reputation INT NOT NULL DEFAULT 0,
 	bio TEXT NOT NULL DEFAULT '',
-	birth_date DATE,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	type_id INT NOT NULL,

@@ -1,0 +1,5 @@
+BEGIN;
+  -- DROP COLUMN BIRTH DATE FROM EDITOR SCHEMA
+  ALTER TABLE bookbrainz.editor
+    DROP COLUMN birth_date;
+  COMMIT;
