@@ -73,160 +73,171 @@ import {getEntityDisambiguation} from '../../helpers/entity';
  *        the disambiguation is changed.
  * @returns {ReactElement} React element containing the rendered NameSection.
  */
-function NameSection({
-	disambiguationDefaultValue,
-	disambiguationVisible,
-	entityType,
-	exactMatches,
-	languageOptions,
-	languageValue,
-	nameValue,
-	sortNameValue,
-	onLanguageChange,
-	onNameChange,
-	onNameChangeCheckIfExists,
-	onNameChangeSearchName,
-	onSortNameChange,
-	onDisambiguationChange,
-	searchResults
-}) {
-	const languageOptionsForDisplay = languageOptions.map((language) => ({
-		label: language.name,
-		value: language.id
-	}));
-
-	function handleNameChange(event) {
-		onNameChange(event.target.value);
-		onNameChangeCheckIfExists(event.target.value);
-		onNameChangeSearchName(event.target.value);
+class NameSection extends React.Component {
+	constructor(props) {
+		super(props);
+		this.updateNameFieldInputRef = this.updateNameFieldInputRef.bind(this);
+		this.handleNameChange = this.handleNameChange.bind(this);
 	}
 
 	/*
-		Quick fix of issue with user typing in input before js is loaded,
-		not triggering the name search. When first loaded, if the input value is
-		different from the props value, manually trigger "onChange" mechanism.
-		inputRef is a React input component prop.
+		Fix issue with user typing in input before js is fully loaded,
+		not triggering the name search.
+		Also an issue if passing a nameSection with a name that might be a duplicate
+		(e.g. creating an Edition from a Work, the Work's nameSection will be pre-filled)
+		When Component is first loaded, manually trigger "handleNameChange" mechanism.
 	*/
-	function updateNameFieldInputRef(inputRef) {
-		if (!_.isNil(inputRef) && inputRef.value !== nameValue) {
-			handleNameChange({target: {value: inputRef.value}});
+	componentDidMount() {
+		if (!_.isNil(this.nameInputRef)) {
+			this.handleNameChange({target: {value: this.nameInputRef.value}});
 		}
 	}
 
-	const warnIfExists = !_.isEmpty(exactMatches);
+	handleNameChange(event) {
+		this.props.onNameChange(event.target.value);
+		this.props.onNameChangeCheckIfExists(event.target.value);
+		this.props.onNameChangeSearchName(event.target.value);
+	}
 
-	return (
-		<div>
-			<h2>{`What is the ${_.capitalize(entityType)} called?`}</h2>
-			<form>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<NameField
-							defaultValue={nameValue}
-							empty={isAliasEmpty(
-								nameValue, sortNameValue, languageValue
-							)}
-							error={!validateNameSectionName(nameValue)}
-							inputRef={updateNameFieldInputRef}
-							tooltipText={`Official name of the ${_.capitalize(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
-							warn={(isRequiredDisambiguationEmpty(
-								warnIfExists,
-								disambiguationDefaultValue
-							))}
-							onChange={handleNameChange}
-						/>
-					</Col>
-					<Col md={6} mdOffset={3}>
-						{isRequiredDisambiguationEmpty(
-							warnIfExists,
-							disambiguationDefaultValue
-						) ?
-							<Alert bsStyle="warning">
-								We found the following&nbsp;
-								{_.capitalize(entityType)}{exactMatches.length > 1 ? 's' : ''} with
-								exactly the same name or alias:
-								<br/><small className="help-block">Click on a name to open in a new tab</small>
+	updateNameFieldInputRef(inputRef) {
+		this.nameInputRef = inputRef;
+	}
 
-								<ListGroup className="margin-top-1 margin-bottom-1">
-									{exactMatches.map((match) =>
-										(
-											<ListGroupItem
-												bsStyle="warning"
-												href={`/${entityType}/${match.bbid}`}
-												key={`${match.bbid}`}
-												rel="noopener noreferrer" target="_blank"
-											>
-												{match.defaultAlias.name} {getEntityDisambiguation(match)}
-											</ListGroupItem>
-										))}
-								</ListGroup>
-								If you are sure your entry is different, please fill the
-								disambiguation field below to help us differentiate between them.
-							</Alert> : null
-						}
-					</Col>
-				</Row>
-				{
-					!warnIfExists &&
-					!_.isEmpty(searchResults) &&
+	render() {
+		const {
+			disambiguationDefaultValue,
+			disambiguationVisible,
+			entityType,
+			exactMatches,
+			languageOptions,
+			languageValue,
+			nameValue,
+			sortNameValue,
+			onLanguageChange,
+			onSortNameChange,
+			onDisambiguationChange,
+			searchResults
+		} = this.props;
+
+		const languageOptionsForDisplay = languageOptions.map((language) => ({
+			label: language.name,
+			value: language.id
+		}));
+
+		const warnIfExists = !_.isEmpty(exactMatches);
+
+		return (
+			<div>
+				<h2>{`What is the ${_.capitalize(entityType)} called?`}</h2>
+				<form>
 					<Row>
 						<Col md={6} mdOffset={3}>
-							If the {_.capitalize(entityType)} you want to add appears in the results
-							below, click on it to inspect it in a new tab before adding a possible duplicate.
-							<SearchResults condensed results={searchResults}/>
-						</Col>
-					</Row>
-				}
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<SortNameField
-							defaultValue={sortNameValue}
-							empty={isAliasEmpty(
-								nameValue, sortNameValue, languageValue
-							)}
-							error={!validateNameSectionSortName(sortNameValue)}
-							storedNameValue={nameValue}
-							onChange={onSortNameChange}
-						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<LanguageField
-							empty={isAliasEmpty(
-								nameValue, sortNameValue, languageValue
-							)}
-							error={!validateNameSectionLanguage(languageValue)}
-							instanceId="language"
-							options={languageOptionsForDisplay}
-							tooltipText="Language used for the above name"
-							value={languageValue}
-							onChange={onLanguageChange}
-						/>
-					</Col>
-				</Row>
-				{
-					(warnIfExists || disambiguationVisible) &&
-					<Row>
-						<Col md={6} mdOffset={3}>
-							<DisambiguationField
-								defaultValue={disambiguationDefaultValue}
-								error={isRequiredDisambiguationEmpty(
+							<NameField
+								defaultValue={nameValue}
+								empty={isAliasEmpty(
+									nameValue, sortNameValue, languageValue
+								)}
+								error={!validateNameSectionName(nameValue)}
+								inputRef={this.updateNameFieldInputRef}
+								tooltipText={`Official name of the ${_.capitalize(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
+								warn={(isRequiredDisambiguationEmpty(
 									warnIfExists,
 									disambiguationDefaultValue
-								) ||
-								!validateNameSectionDisambiguation(
-									disambiguationDefaultValue
+								))}
+								onChange={this.handleNameChange}
+							/>
+						</Col>
+						<Col md={6} mdOffset={3}>
+							{isRequiredDisambiguationEmpty(
+								warnIfExists,
+								disambiguationDefaultValue
+							) ?
+								<Alert bsStyle="warning">
+									We found the following&nbsp;
+									{_.capitalize(entityType)}{exactMatches.length > 1 ? 's' : ''} with
+									exactly the same name or alias:
+									<br/><small className="help-block">Click on a name to open in a new tab</small>
+									<ListGroup className="margin-top-1 margin-bottom-1">
+										{exactMatches.map((match) =>
+											(
+												<ListGroupItem
+													bsStyle="warning"
+													href={`/${entityType}/${match.bbid}`}
+													key={`${match.bbid}`}
+													rel="noopener noreferrer" target="_blank"
+												>
+													{match.defaultAlias.name} {getEntityDisambiguation(match)}
+												</ListGroupItem>
+											))}
+									</ListGroup>
+									If you are sure your entry is different, please fill the
+									disambiguation field below to help us differentiate between them.
+								</Alert> : null
+							}
+						</Col>
+					</Row>
+					{
+						!warnIfExists &&
+						!_.isEmpty(searchResults) &&
+						<Row>
+							<Col md={6} mdOffset={3}>
+								If the {_.capitalize(entityType)} you want to add appears in the results
+								below, click on it to inspect it in a new tab before adding a possible duplicate.
+								<SearchResults condensed results={searchResults}/>
+							</Col>
+						</Row>
+					}
+					<Row>
+						<Col md={6} mdOffset={3}>
+							<SortNameField
+								defaultValue={sortNameValue}
+								empty={isAliasEmpty(
+									nameValue, sortNameValue, languageValue
 								)}
-								required={warnIfExists}
-								onChange={onDisambiguationChange}
+								error={!validateNameSectionSortName(sortNameValue)}
+								storedNameValue={nameValue}
+								onChange={onSortNameChange}
 							/>
 						</Col>
 					</Row>
-				}
-			</form>
-		</div>
-	);
+					<Row>
+						<Col md={6} mdOffset={3}>
+							<LanguageField
+								empty={isAliasEmpty(
+									nameValue, sortNameValue, languageValue
+								)}
+								error={!validateNameSectionLanguage(languageValue)}
+								instanceId="language"
+								options={languageOptionsForDisplay}
+								tooltipText="Language used for the above name"
+								value={languageValue}
+								onChange={onLanguageChange}
+							/>
+						</Col>
+					</Row>
+					{
+						(warnIfExists || disambiguationVisible) &&
+						<Row>
+							<Col md={6} mdOffset={3}>
+								<DisambiguationField
+									defaultValue={disambiguationDefaultValue}
+									error={isRequiredDisambiguationEmpty(
+										warnIfExists,
+										disambiguationDefaultValue
+									) ||
+									!validateNameSectionDisambiguation(
+										disambiguationDefaultValue
+									)}
+									required={warnIfExists}
+									onChange={onDisambiguationChange}
+								/>
+							</Col>
+						</Row>
+					}
+				</form>
+			</div>
+		);
+	}
 }
 NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
