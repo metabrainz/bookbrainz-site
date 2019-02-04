@@ -100,9 +100,9 @@ router.get(
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
-		const {Creator} = req.app.locals.orm;
+		const {Creator, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
-		let initialRelationshipIndex;
+		let initialRelationshipIndex = 0;
 		const propsPromise = generateEntityProps(
 			'work', req, res, {}
 		);
@@ -114,12 +114,24 @@ router.get(
 					.then((data) => entityToOption(data.toJSON()));
 		}
 
+		if (req.query.edition) {
+			propsPromise.edition =
+				Edition.forge({bbid: req.query.edition})
+					.fetch({withRelated: 'defaultAlias'})
+					.then((data) => entityToOption(data.toJSON()));
+		}
+
 		function render(props) {
 			if (props.creator) {
-				// add initial ralationship with relationshipTypeId = 8 (<Author> wrote <Work>)
+				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
 				relationshipTypeId = 8;
-				initialRelationshipIndex = 0;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.creator);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.creator);
+			}
+
+			if (props.edition) {
+				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
+				relationshipTypeId = 10;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
 			}
 
 			const editorMarkup = entityEditorMarkup(props);

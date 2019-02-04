@@ -91,6 +91,7 @@ router.post(
 
 function entityToOption(entity) {
 	return {
+		defaultAlias: entity.defaultAlias,
 		disambiguation: entity.disambiguation ?
 			entity.disambiguation.comment : null,
 		id: entity.bbid,
@@ -100,6 +101,17 @@ function entityToOption(entity) {
 	};
 }
 
+function getInitialNameSection(entity) {
+	const initialNameSection = {
+		disambiguation: entity.disambiguation,
+		language: entity.defaultAlias.languageId,
+		languageId: entity.defaultAlias.languageId,
+		name: entity.defaultAlias.name,
+		primary: entity.defaultAlias.primary,
+		sortName: entity.defaultAlias.sortName
+	};
+	return initialNameSection;
+}
 
 // Creation
 
@@ -108,7 +120,7 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	(req, res, next) => {
-		const {Publication, Publisher} = req.app.locals.orm;
+		const {Publication, Publisher, Work} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
 			'edition', req, res, {}
 		);
@@ -127,11 +139,20 @@ router.get(
 					.then((data) => entityToOption(data.toJSON()));
 		}
 
+		if (req.query.work) {
+			propsPromise.work =
+				Work.forge({bbid: req.query.work})
+					.fetch({withRelated: 'defaultAlias'})
+					.then((data) => entityToOption(data.toJSON()));
+		}
+
 		function render(props) {
 			const {initialState} = props;
+
 			let relationshipTypeId;
-			let initialRelationshipIndex;
-			if (props.publisher || props.publication) {
+			let initialRelationshipIndex = 0;
+
+			if (props.publisher || props.publication || props.work) {
 				initialState.editionSection = {};
 			}
 
@@ -139,16 +160,21 @@ router.get(
 				initialState.editionSection.publisher = props.publisher;
 				// add initial relationship with relationshipTypeId = 4 (<Publisher> published < New Edition>)
 				relationshipTypeId = 4;
-				initialRelationshipIndex = 0;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.publisher);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publisher);
 			}
 
 			if (props.publication) {
 				initialState.editionSection.publication = props.publication;
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <Publication>)
 				relationshipTypeId = 3;
-				initialRelationshipIndex = 1;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex, props.publication);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publication);
+			}
+
+			if (props.work) {
+				initialState.nameSection = getInitialNameSection(props.work);
+				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
+				relationshipTypeId = 10;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
 
 			const editorMarkup = entityEditorMarkup(props);

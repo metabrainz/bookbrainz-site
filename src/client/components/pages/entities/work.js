@@ -25,13 +25,14 @@ import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelationships from './relationships';
 import EntityTitle from './title';
+import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
 const {getLanguageAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
-const {Col, Row} = bootstrap;
+const {Button, Col, Row} = bootstrap;
 
 
 function WorkAttributes({work}) {
@@ -85,6 +86,14 @@ function WorkDisplayPage({entity, identifierTypes}) {
 					<WorkAttributes work={entity}/>
 				</Col>
 			</Row>
+			<Button
+				bsStyle="success"
+				className="margin-top-d15"
+				href={`/edition/create?${
+					entity.type.toLowerCase()}=${entity.bbid}`}
+			>
+				<Icon className="margin-right-0-5" name="plus"/>Add Edition
+			</Button>
 			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}
