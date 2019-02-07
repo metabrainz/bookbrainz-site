@@ -93,7 +93,7 @@ export function loadEntityRelationships(req, res, next) {
 				const model = utils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
-					.fetch({withRelated: 'defaultAlias'});
+					.fetch({withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
 			}
 
 			/**

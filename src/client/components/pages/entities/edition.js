@@ -26,12 +26,13 @@ import EntityTitle from './title';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import WorksTable from './work-table';
 
 const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
+	getLanguageAttribute, getWorksContainedByEdition, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
-const {Button, Col, Row} = bootstrap;
+const {Col, Row} = bootstrap;
 
 function EditionAttributes({edition}) {
 	const status = extractAttribute(edition.editionStatus, 'label');
@@ -96,6 +97,7 @@ EditionAttributes.propTypes = {
 
 
 function EditionDisplayPage({entity, identifierTypes}) {
+	const worksContainedByEdition = getWorksContainedByEdition(entity);
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -119,14 +121,9 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					}
 				</Col>
 			</Row>
-			<Button
-				bsStyle="success"
-				className="margin-top-d15"
-				href={`/work/create?${
-					entity.type.toLowerCase()}=${entity.bbid}`}
-			>
-				<Icon className="margin-right-0-5" name="plus"/>Add Work
-			</Button>
+			<WorksTable
+				entity={worksContainedByEdition}
+			/>
 			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}

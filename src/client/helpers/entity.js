@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Daniel Hsing
+ * 				 2019  Akhilesh Kumar (@akhilesh26)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,7 +162,7 @@ export function getEditionPublishers(edition) {
 
 export function getEntityDisambiguation(entity) {
 	if (entity.disambiguation) {
-		return <small>{`(${entity.disambiguation.comment})`}</small>;
+		return <small>{` (${entity.disambiguation.comment})`}</small>;
 	}
 
 	return null;
@@ -223,4 +224,60 @@ export function getISBNOfEdition(entity) {
 
 export function getEditionFormat(entity) {
 	return (entity.editionFormat && entity.editionFormat.label) || '?';
+}
+
+// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+const relationshipTypeId = 10;
+
+/**
+ * Filter the relationship according to relationshipTypeId
+ *
+ * @param {object} entity - Entity with all relationships
+ * @returns {object} retrun the all relationshiops after removing the relatioship with relationshipTypeId = 10
+ */
+export function getFilteredRelationship(entity) {
+	return entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId);
+}
+
+
+/**
+ * Get all works constained by entity according to relationshipTypeId
+ *
+ * @param {object} entity - Edition with all relationships
+ * @returns {object} Return all the works of Edition with relationshipTypeId = 10
+ */
+export function getWorksContainedByEdition(entity) {
+	let works = null;
+	if (entity.relationships) {
+		works = entity.relationships
+			.filter(
+				(relation) => relation.typeId === relationshipTypeId
+			)
+			.map((relation) => {
+				const {target} = relation;
+				return target;
+			});
+	}
+	return {bbid: entity.bbid, type: entity.type, works};
+}
+
+/**
+ * Get all editions who contains the work according to relationshipTypeId
+ *
+ * @param {object} entity - Work with all relationships
+ * @returns {object} Return all the editions related to woork with relationshipTypeId = 10
+ */
+export function getEditionsContainsWork(entity) {
+	let editions = null;
+	if (entity.relationships) {
+		editions = entity.relationships
+			.filter(
+				(relation) => relation.typeId === relationshipTypeId
+			)
+			.map((relation) => {
+				const {source} = relation;
+				return source;
+			});
+	}
+	return {bbid: entity.bbid, editions, type: entity.type};
 }
