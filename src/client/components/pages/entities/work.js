@@ -19,20 +19,18 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
+import EditionTable from './edition-table';
 import EntityFooter from './footer';
-import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
 import EntityLinks from './links';
-import EntityRelationships from './relationships';
 import EntityTitle from './title';
-import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getLanguageAttribute, getTypeAttribute, getEntityUrl,
+const {getEditionsContainsWork, getLanguageAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
-const {Button, Col, Row} = bootstrap;
+const {Col, Row} = bootstrap;
 
 
 function WorkAttributes({work}) {
@@ -71,6 +69,7 @@ WorkAttributes.propTypes = {
 
 
 function WorkDisplayPage({entity, identifierTypes}) {
+	const editionsContainsWork = getEditionsContainsWork(entity);
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -86,14 +85,7 @@ function WorkDisplayPage({entity, identifierTypes}) {
 					<WorkAttributes work={entity}/>
 				</Col>
 			</Row>
-			<Button
-				bsStyle="success"
-				className="margin-top-d15"
-				href={`/edition/create?${
-					entity.type.toLowerCase()}=${entity.bbid}`}
-			>
-				<Icon className="margin-right-0-5" name="plus"/>Add Edition
-			</Button>
+			<EditionTable entity={editionsContainsWork}/>
 			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}

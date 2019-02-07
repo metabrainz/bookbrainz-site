@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as entityHelper from '../../../helpers/entity';
 
 import EntityIdentifiers from './identifiers';
 import EntityRelationships from './relationships';
@@ -24,15 +25,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
+const {getFilteredRelationship} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function EntityLinks({entity, identifierTypes, urlPrefix}) {
+	const relationships = getFilteredRelationship(entity);
 	return (
 		<Row>
 			<Col md={8}>
 				<EntityRelationships
 					entityUrl={urlPrefix}
-					relationships={entity.relationships}
+					relationships={relationships}
 				/>
 			</Col>
 			<Col md={4}>
