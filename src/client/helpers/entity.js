@@ -23,7 +23,6 @@ import FontAwesome from 'react-fontawesome';
 import React from 'react';
 import _ from 'lodash';
 
-
 const {Button, Table} = bootstrap;
 
 export function extractAttribute(attr, path) {
@@ -208,7 +207,7 @@ export function genEntityIconHTMLElement(entityType, size = '', margin = true) {
 }
 
 export function getSortNameOfDefaultAlias(entity) {
-	return entity.defaultAlias.sortName;
+	return entity.defaultAlias ? entity.defaultAlias.sortName : '?';
 }
 
 export function getISBNOfEdition(entity) {

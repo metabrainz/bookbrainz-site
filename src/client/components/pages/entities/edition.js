@@ -27,7 +27,6 @@ import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
 	getLanguageAttribute, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
@@ -110,12 +109,14 @@ function EditionDisplayPage({entity, identifierTypes}) {
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
 					<EditionAttributes edition={entity}/>
+					{entity.publication &&
 					<div className="margin-bottom-d15">
 						<a href={`/publication/${entity.publication.bbid}`}>
 							<Icon name="external-link"/>
 							<span>&nbsp;See all similar editions</span>
 						</a>
 					</div>
+					}
 				</Col>
 			</Row>
 			<Button
