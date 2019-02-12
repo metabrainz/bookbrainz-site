@@ -88,7 +88,7 @@ class NameSection extends React.Component {
 		When Component is first loaded, manually trigger "handleNameChange" mechanism.
 	*/
 	componentDidMount() {
-		if (!_.isNil(this.nameInputRef)) {
+		if (this.props.action !== 'edit' && !_.isNil(this.nameInputRef)) {
 			this.handleNameChange({target: {value: this.nameInputRef.value}});
 		}
 	}
@@ -241,6 +241,7 @@ class NameSection extends React.Component {
 }
 NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
+	action: PropTypes.string,
 	disambiguationDefaultValue: PropTypes.string,
 	disambiguationVisible: PropTypes.bool.isRequired,
 	entityType: entityTypeProperty.isRequired, // eslint-disable-line react/no-typos, max-len
@@ -258,6 +259,7 @@ NameSection.propTypes = {
 	sortNameValue: PropTypes.string.isRequired
 };
 NameSection.defaultProps = {
+	action: 'create',
 	disambiguationDefaultValue: null,
 	exactMatches: null,
 	languageValue: null,

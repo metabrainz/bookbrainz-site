@@ -24,6 +24,7 @@ import * as entityRoutes from '../routes/entity/entity';
 import * as error from './error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from './utils';
+
 import EntityEditor from '../../client/entity-editor/entity-editor';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
@@ -33,7 +34,6 @@ import _ from 'lodash';
 import {createStore} from 'redux';
 import express from 'express';
 import {generateProps} from './props';
-
 
 const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
 
@@ -60,7 +60,8 @@ export function generateEntityProps(
 	req: express.request, res: express.response,
 	additionalProps: Object,
 	initialStateCallback: (entity: ?Object) => Object =
-	(entity) => new Object()): Object {
+	(entity) => new Object()
+): Object {
 	const entityName = _.capitalize(entityType);
 	const {entity} = res.locals;
 	const isEdit = Boolean(entity);
@@ -76,7 +77,10 @@ export function generateEntityProps(
 		`/${entityType}/${entity.bbid}/edit/handler` :
 		`/${entityType}/create/handler`;
 
+	const action: EntityAction = isEdit ? 'edit' : 'create';
+
 	const props = Object.assign({
+		action,
 		entityType,
 		heading: isEdit ?
 			`Edit ${entityName}` :
@@ -103,7 +107,8 @@ export function generateEntityProps(
  */
 export function entityEditorMarkup(
 	props: { initialState: Object,
-			 entityType: string }) {
+			 entityType: string }
+) {
 	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType);
 	const store = createStore(rootReducer, Immutable.fromJS(initialState));
