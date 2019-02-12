@@ -69,7 +69,9 @@ WorkAttributes.propTypes = {
 
 
 function WorkDisplayPage({entity, identifierTypes}) {
-	const editionsContainsWork = getEditionsContainsWork(entity);
+	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+	const relationshipTypeId = 10;
+	const editionsContainsWork = getEditionsContainsWork(entity, relationshipTypeId);
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
