@@ -226,16 +226,15 @@ export function getEditionFormat(entity) {
 	return (entity.editionFormat && entity.editionFormat.label) || '?';
 }
 
-// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
-const relationshipTypeId = 10;
 
 /**
  * Filter the relationship according to relationshipTypeId
  *
  * @param {object} entity - Entity with all relationships
+ * @param {number} relationshipTypeId - filter the relationship according to this typeId
  * @returns {object} retrun the all relationshiops after removing the relatioship with relationshipTypeId = 10
  */
-export function getFilteredRelationship(entity) {
+export function getFilteredRelationship(entity, relationshipTypeId) {
 	return entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId);
 }
 
@@ -244,9 +243,10 @@ export function getFilteredRelationship(entity) {
  * Get all works constained by entity according to relationshipTypeId
  *
  * @param {object} entity - Edition with all relationships
+ * @param {number} relationshipTypeId - filter the relationship according to this typeId
  * @returns {object} Return all the works of Edition with relationshipTypeId = 10
  */
-export function getWorksContainedByEdition(entity) {
+export function getWorksContainedByEdition(entity, relationshipTypeId) {
 	let works = null;
 	if (entity.relationships) {
 		works = entity.relationships
@@ -265,9 +265,10 @@ export function getWorksContainedByEdition(entity) {
  * Get all editions who contains the work according to relationshipTypeId
  *
  * @param {object} entity - Work with all relationships
+ * @param {number} relationshipTypeId - filter the relationship according to this typeId
  * @returns {object} Return all the editions related to woork with relationshipTypeId = 10
  */
-export function getEditionsContainsWork(entity) {
+export function getEditionsContainsWork(entity, relationshipTypeId) {
 	let editions = null;
 	if (entity.relationships) {
 		editions = entity.relationships

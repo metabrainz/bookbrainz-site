@@ -97,7 +97,9 @@ EditionAttributes.propTypes = {
 
 
 function EditionDisplayPage({entity, identifierTypes}) {
-	const worksContainedByEdition = getWorksContainedByEdition(entity);
+	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+	const relationshipTypeId = 10;
+	const worksContainedByEdition = getWorksContainedByEdition(entity, relationshipTypeId);
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>

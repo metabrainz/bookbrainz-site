@@ -29,7 +29,9 @@ const {getFilteredRelationship} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function EntityLinks({entity, identifierTypes, urlPrefix}) {
-	const relationships = getFilteredRelationship(entity);
+	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+	const relationshipTypeId = 10;
+	const relationships = getFilteredRelationship(entity, relationshipTypeId);
 	return (
 		<Row>
 			<Col md={8}>
