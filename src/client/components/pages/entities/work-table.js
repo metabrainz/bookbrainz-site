@@ -52,32 +52,59 @@ function WorkTable({entity}) {
 	return (
 		<div>
 			<h2>Works</h2>
-			<Table striped>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Type</th>
-					</tr>
-				</thead>
-				<tbody>
-					{
-						entity.works.map((work) => (
-							<WorkTableRow
-								key={work.bbid}
-								work={work}
-							/>
-						))
-					}
-				</tbody>
-			</Table>
-			<Button
-				bsStyle="success"
-				className="margin-top-d15"
-				href={`/work/create?${
-					entity.type.toLowerCase()}=${entity.bbid}`}
-			>
-				<Icon className="margin-right-0-5" name="plus"/>Add Work
-			</Button>
+			{
+				entity.works.length ?
+					<React.Fragment>
+						<Table striped>
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Type</th>
+								</tr>
+							</thead>
+							<tbody>
+								{
+									entity.works.map((work) => (
+										<WorkTableRow
+											key={work.bbid}
+											work={work}
+										/>
+									))}
+							</tbody>
+						</Table>
+						<Button
+							bsStyle="success"
+							className="margin-top-d15"
+							href={`/work/create?${
+								entity.type.toLowerCase()}=${entity.bbid}`}
+						>
+							<Icon className="margin-right-0-5" name="plus"/>Add Work
+						</Button>
+						<hr className="margin-bottom-d0"/>
+					</React.Fragment> :
+					<React.Fragment>
+						<span className="margin-right-2 pull-left">
+							<Button
+								bsStyle="success"
+								href={`/work/create?${
+									entity.type.toLowerCase()}=${entity.bbid}`}
+							>
+								<Icon name="pen-nib" size="2x"/>
+								<br/>
+								Add Work
+							</Button>
+						</span>
+						<span>
+							<h4>There are no Works yet!</h4>
+							<p>
+								Help us complete BookBrainz
+								<br/>
+							</p>
+							<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+						</span>
+						<hr className="margin-bottom-d0"/>
+					</React.Fragment>
+			}
 		</div>
 	);
 }
