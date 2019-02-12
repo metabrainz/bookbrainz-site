@@ -236,7 +236,8 @@ export function getEditionFormat(entity) {
  * @returns {object} retrun the all relationshiops after removing the relatioship with relationshipTypeId = 10
  */
 export function getFilteredRelationship(entity, relationshipTypeId) {
-	return entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId);
+	return (Array.isArray(entity.relationships) &&
+				entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId)) || [];
 }
 
 
@@ -249,7 +250,7 @@ export function getFilteredRelationship(entity, relationshipTypeId) {
  */
 export function getWorksContainedByEdition(entity, relationshipTypeId) {
 	let works = null;
-	if (entity.relationships) {
+	if (Array.isArray(entity.relationships)) {
 		works = entity.relationships
 			.filter(
 				(relation) => relation.typeId === relationshipTypeId
@@ -271,7 +272,7 @@ export function getWorksContainedByEdition(entity, relationshipTypeId) {
  */
 export function getEditionsContainsWork(entity, relationshipTypeId) {
 	let editions = null;
-	if (entity.relationships) {
+	if (Array.isArray(entity.relationships)) {
 		editions = entity.relationships
 			.filter(
 				(relation) => relation.typeId === relationshipTypeId
