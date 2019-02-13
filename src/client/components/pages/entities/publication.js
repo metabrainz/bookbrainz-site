@@ -75,7 +75,7 @@ function PublicationDisplayPage({entity, identifierTypes}) {
 					<PublicationAttributes publication={entity}/>
 				</Col>
 			</Row>
-			<EditionTable entity={entity}/>
+			<EditionTable editions={entity.editions} entity={entity}/>
 			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}

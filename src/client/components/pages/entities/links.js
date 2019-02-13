@@ -25,13 +25,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getFilteredRelationship} = entityHelper;
+const {filterOutRelationshipTypeById} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
-	const relationships = getFilteredRelationship(entity, relationshipTypeId);
+	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);
 	return (
 		<Row>
 			<Col md={8}>

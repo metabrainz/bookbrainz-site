@@ -229,29 +229,29 @@ export function getEditionFormat(entity) {
 
 
 /**
- * Filter the relationship according to relationshipTypeId
+ * Remove the all relationships which are belongs to given relationshipTypeId.
  *
  * @param {object} entity - Entity with all relationships
- * @param {number} relationshipTypeId - filter the relationship according to this typeId
- * @returns {object} retrun the all relationshiops after removing the relatioship with relationshipTypeId = 10
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} retrun the all relationships after removing the relatioships for given relationshipTypeId
  */
-export function getFilteredRelationship(entity, relationshipTypeId) {
+export function filterOutRelationshipTypeById(entity, relationshipTypeId) {
 	return (Array.isArray(entity.relationships) &&
 				entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId)) || [];
 }
 
 
 /**
- * Get all works constained by entity according to relationshipTypeId
+ * Get an array of all targets from relationships of an entity belongs to given relationshipTypeId
  *
- * @param {object} entity - Edition with all relationships
- * @param {number} relationshipTypeId - filter the relationship according to this typeId
- * @returns {object} Return all the works of Edition with relationshipTypeId = 10
+ * @param {object} entity - an entity with all relationships
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} Return array of all the targets belongs to entity relationships for given relationshipTypeId
  */
-export function getWorksContainedByEdition(entity, relationshipTypeId) {
-	let works = null;
+export function getRelationshipTargetByTypeId(entity, relationshipTypeId) {
+	let targets = [];
 	if (Array.isArray(entity.relationships)) {
-		works = entity.relationships
+		targets = entity.relationships
 			.filter(
 				(relation) => relation.typeId === relationshipTypeId
 			)
@@ -260,20 +260,20 @@ export function getWorksContainedByEdition(entity, relationshipTypeId) {
 				return target;
 			});
 	}
-	return {bbid: entity.bbid, type: entity.type, works};
+	return targets;
 }
 
 /**
- * Get all editions who contains the work according to relationshipTypeId
+ * Get an array of all sources from relationships of an entity belongs to given relationshipTypeId
  *
- * @param {object} entity - Work with all relationships
- * @param {number} relationshipTypeId - filter the relationship according to this typeId
- * @returns {object} Return all the editions related to woork with relationshipTypeId = 10
+ * @param {object} entity - main entity
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} Return array of all the sources belongs to entity relationships for given relationshipTypeId
  */
-export function getEditionsContainsWork(entity, relationshipTypeId) {
-	let editions = null;
+export function getRelationshipSourceByTypeId(entity, relationshipTypeId) {
+	let sources = [];
 	if (Array.isArray(entity.relationships)) {
-		editions = entity.relationships
+		sources = entity.relationships
 			.filter(
 				(relation) => relation.typeId === relationshipTypeId
 			)
@@ -282,5 +282,5 @@ export function getEditionsContainsWork(entity, relationshipTypeId) {
 				return source;
 			});
 	}
-	return {bbid: entity.bbid, editions, type: entity.type};
+	return sources;
 }
