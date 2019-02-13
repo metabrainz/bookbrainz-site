@@ -67,12 +67,12 @@ EditionTableRow.propTypes = {
 	edition: PropTypes.object.isRequired
 };
 
-function EditionTable({entity}) {
+function EditionTable({editions, entity}) {
 	return (
 		<div>
 			<h2>Editions</h2>
 			{
-				entity.editions.length ?
+				editions.length ?
 					<React.Fragment>
 						<Table striped>
 							<thead>
@@ -85,7 +85,7 @@ function EditionTable({entity}) {
 							</thead>
 							<tbody>
 								{
-									entity.editions.map((edition) => (
+									editions.map((edition) => (
 										<EditionTableRow
 											edition={edition}
 											key={edition.bbid}
@@ -133,6 +133,7 @@ function EditionTable({entity}) {
 }
 EditionTable.displayName = 'EditionTable';
 EditionTable.propTypes = {
+	editions: PropTypes.array.isRequired,
 	entity: PropTypes.object.isRequired
 };
 

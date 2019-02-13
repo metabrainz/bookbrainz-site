@@ -226,14 +226,15 @@ export function truncateTables(Bookshelf: Object, tables: Array<string>) {
  * Return additional relations to withRelated array according to modelType
  *
  * @param {string} modelType - type of the model or entity
- * @returns {array} array of addition relations
+ * @returns {array} array of additional relations
  */
 export function getAdditionalRelations(modelType) {
+	const additionalRelations = [];
 	if (modelType === 'Work') {
-		return ['disambiguation', 'workType'];
+		return additionalRelations.concat(['disambiguation', 'workType']);
 	}
 	else if (modelType === 'Edition') {
-		return ['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat'];
+		return additionalRelations.concat(['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat']);
 	}
-	return null;
+	return additionalRelations;
 }

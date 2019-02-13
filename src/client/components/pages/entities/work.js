@@ -28,7 +28,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getEditionsContainsWork, getLanguageAttribute, getTypeAttribute, getEntityUrl,
+const {getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
@@ -71,7 +71,7 @@ WorkAttributes.propTypes = {
 function WorkDisplayPage({entity, identifierTypes}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
-	const editionsContainsWork = getEditionsContainsWork(entity, relationshipTypeId);
+	const editionsContainWork = getRelationshipSourceByTypeId(entity, relationshipTypeId);
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -87,7 +87,10 @@ function WorkDisplayPage({entity, identifierTypes}) {
 					<WorkAttributes work={entity}/>
 				</Col>
 			</Row>
-			<EditionTable entity={editionsContainsWork}/>
+			<EditionTable
+				editions={editionsContainWork}
+				entity={entity}
+			/>
 			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}

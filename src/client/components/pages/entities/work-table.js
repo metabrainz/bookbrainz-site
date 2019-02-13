@@ -48,12 +48,12 @@ WorkTableRow.propTypes = {
 	work: PropTypes.object.isRequired
 };
 
-function WorkTable({entity}) {
+function WorkTable({entity, works}) {
 	return (
 		<div>
 			<h2>Works</h2>
 			{
-				entity.works.length ?
+				works.length ?
 					<React.Fragment>
 						<Table striped>
 							<thead>
@@ -64,7 +64,7 @@ function WorkTable({entity}) {
 							</thead>
 							<tbody>
 								{
-									entity.works.map((work) => (
+									works.map((work) => (
 										<WorkTableRow
 											key={work.bbid}
 											work={work}
@@ -110,7 +110,8 @@ function WorkTable({entity}) {
 }
 WorkTable.displayName = 'WorkTable';
 WorkTable.propTypes = {
-	entity: PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired,
+	works: PropTypes.array.isRequired
 };
 
 export default WorkTable;

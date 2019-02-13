@@ -30,7 +30,7 @@ import WorksTable from './work-table';
 
 const {
 	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute, getWorksContainedByEdition, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
+	getLanguageAttribute, getRelationshipTargetByTypeId, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
@@ -99,7 +99,7 @@ EditionAttributes.propTypes = {
 function EditionDisplayPage({entity, identifierTypes}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
-	const worksContainedByEdition = getWorksContainedByEdition(entity, relationshipTypeId);
+	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -124,7 +124,8 @@ function EditionDisplayPage({entity, identifierTypes}) {
 				</Col>
 			</Row>
 			<WorksTable
-				entity={worksContainedByEdition}
+				entity={entity}
+				works={worksContainedByEdition}
 			/>
 			<EntityLinks
 				entity={entity}
