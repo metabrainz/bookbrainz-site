@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Ben Ockmore
+ * Copyright (C) 2019  Akhilesh Kumar (@akhilesh26)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,84 +24,61 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {
-	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,
-	getISBNOfEdition, getEditionFormat
-} = entityHelper;
 const {Button, Table} = bootstrap;
 
-function EditionTableRow({edition}) {
-	const name = getEntityLabel(edition);
-	const disambiguation = getEntityDisambiguation(edition);
-	const releaseDate = getEditionReleaseDate(edition);
-	const isbn = getISBNOfEdition(edition);
-	const editionFormat = getEditionFormat(edition);
+const {getEntityDisambiguation} = entityHelper;
 
+function WorkTableRow({work}) {
+	const name = work.defaultAlias ? work.defaultAlias.name : '(unnamed)';
+	const disambiguation = getEntityDisambiguation(work);
+	const workType = work.workType ? work.workType.label : '?';
+	const workBBID = work.bbid;
 	return (
 		<tr>
 			<td>
-				<a href={`/edition/${edition.bbid}`}>{name}</a>
+				<a href={`/Work/${workBBID}`}>{name}</a>
 				{disambiguation}
 			</td>
-			<td>{editionFormat}</td>
-			<td>
-				{
-					isbn ?
-						<a
-							href={`https://isbnsearch.org/isbn/${isbn.value}`}
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							{isbn.value}
-						</a> : '?'
-				}
-			</td>
-			<td>
-				{releaseDate}
-			</td>
+			<td>{workType}</td>
 		</tr>
 	);
 }
-EditionTableRow.displayName = 'EditionTableRow';
-EditionTableRow.propTypes = {
-	edition: PropTypes.object.isRequired
+WorkTableRow.displayName = 'WorkTableRow';
+WorkTableRow.propTypes = {
+	work: PropTypes.object.isRequired
 };
 
-function EditionTable({editions, entity}) {
+function WorkTable({entity, works}) {
 	return (
 		<div>
-			<h2>Editions</h2>
+			<h2>Works</h2>
 			{
-				editions.length ?
+				works.length ?
 					<React.Fragment>
 						<Table striped>
 							<thead>
 								<tr>
 									<th>Name</th>
-									<th>Format</th>
-									<th>ISBN</th>
-									<th>Release Date</th>
+									<th>Type</th>
 								</tr>
 							</thead>
 							<tbody>
 								{
-									editions.map((edition) => (
-										<EditionTableRow
-											edition={edition}
-											key={edition.bbid}
+									works.map((work) => (
+										<WorkTableRow
+											key={work.bbid}
+											work={work}
 										/>
-									))
-								}
+									))}
 							</tbody>
 						</Table>
 						<Button
 							bsStyle="success"
 							className="margin-top-d15"
-							href={`/edition/create?${
+							href={`/work/create?${
 								entity.type.toLowerCase()}=${entity.bbid}`}
 						>
-							<Icon name="plus"/>
-							{'  Add Edition'}
+							<Icon className="margin-right-0-5" name="plus"/>Add Work
 						</Button>
 						<hr className="margin-bottom-d0"/>
 					</React.Fragment> :
@@ -109,16 +86,16 @@ function EditionTable({editions, entity}) {
 						<span className="margin-right-2 pull-left">
 							<Button
 								bsStyle="success"
-								href={`/edition/create?${
+								href={`/work/create?${
 									entity.type.toLowerCase()}=${entity.bbid}`}
 							>
-								<Icon name="book" size="2x"/>
+								<Icon name="pen-nib" size="2x"/>
 								<br/>
-								Add Edition
+								Add Work
 							</Button>
 						</span>
 						<span>
-							<h4>There are no Editions yet!</h4>
+							<h4>There are no Works yet!</h4>
 							<p>
 								Help us complete BookBrainz
 								<br/>
@@ -131,10 +108,10 @@ function EditionTable({editions, entity}) {
 		</div>
 	);
 }
-EditionTable.displayName = 'EditionTable';
-EditionTable.propTypes = {
-	editions: PropTypes.array.isRequired,
-	entity: PropTypes.object.isRequired
+WorkTable.displayName = 'WorkTable';
+WorkTable.propTypes = {
+	entity: PropTypes.object.isRequired,
+	works: PropTypes.array.isRequired
 };
 
-export default EditionTable;
+export default WorkTable;

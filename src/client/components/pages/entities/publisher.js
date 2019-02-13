@@ -95,7 +95,7 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 					<PublisherAttributes publisher={entity}/>
 				</Col>
 			</Row>
-			<EditionTable entity={entity}/>
+			<EditionTable editions={entity.editions} entity={entity}/>
 			<EntityLinks
 				entity={entity}
 				identifierTypes={identifierTypes}

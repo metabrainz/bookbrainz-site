@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2017  Sean Burke
+ 				 2019       Akhilesh Kumar (@akhilesh26)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,4 +220,20 @@ export function truncateTables(Bookshelf: Object, tables: Array<string>) {
 	return Promise.each(
 		tables, (table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
 	);
+}
+
+/**
+ * Return additional relations to withRelated array according to modelType
+ *
+ * @param {string} modelType - type of the model or entity
+ * @returns {array} array of additional relations
+ */
+export function getAdditionalRelations(modelType) {
+	if (modelType === 'Work') {
+		return ['disambiguation', 'workType'];
+	}
+	else if (modelType === 'Edition') {
+		return ['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat'];
+	}
+	return [];
 }

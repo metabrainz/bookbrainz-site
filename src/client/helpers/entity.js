@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Daniel Hsing
+ * 				 2019  Akhilesh Kumar (@akhilesh26)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,7 +162,7 @@ export function getEditionPublishers(edition) {
 
 export function getEntityDisambiguation(entity) {
 	if (entity.disambiguation) {
-		return <small>{`(${entity.disambiguation.comment})`}</small>;
+		return <small>{` (${entity.disambiguation.comment})`}</small>;
 	}
 
 	return null;
@@ -223,4 +224,62 @@ export function getISBNOfEdition(entity) {
 
 export function getEditionFormat(entity) {
 	return (entity.editionFormat && entity.editionFormat.label) || '?';
+}
+
+
+/**
+ * Remove the all relationships which are belongs to given relationshipTypeId.
+ *
+ * @param {object} entity - Entity with all relationships
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} retrun the all relationships after removing the relatioships for given relationshipTypeId
+ */
+export function filterOutRelationshipTypeById(entity, relationshipTypeId) {
+	return (Array.isArray(entity.relationships) &&
+				entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId)) || [];
+}
+
+
+/**
+ * Get an array of all targets from relationships of an entity belongs to given relationshipTypeId
+ *
+ * @param {object} entity - an entity with all relationships
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} Return array of all the targets belongs to entity relationships for given relationshipTypeId
+ */
+export function getRelationshipTargetByTypeId(entity, relationshipTypeId) {
+	let targets = [];
+	if (Array.isArray(entity.relationships)) {
+		targets = entity.relationships
+			.filter(
+				(relation) => relation.typeId === relationshipTypeId
+			)
+			.map((relation) => {
+				const {target} = relation;
+				return target;
+			});
+	}
+	return targets;
+}
+
+/**
+ * Get an array of all sources from relationships of an entity belongs to given relationshipTypeId
+ *
+ * @param {object} entity - main entity
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} Return array of all the sources belongs to entity relationships for given relationshipTypeId
+ */
+export function getRelationshipSourceByTypeId(entity, relationshipTypeId) {
+	let sources = [];
+	if (Array.isArray(entity.relationships)) {
+		sources = entity.relationships
+			.filter(
+				(relation) => relation.typeId === relationshipTypeId
+			)
+			.map((relation) => {
+				const {source} = relation;
+				return source;
+			});
+	}
+	return sources;
 }
