@@ -36,8 +36,8 @@ contributing guide can be found [here](CONTRIBUTING.md).
 <br/>
 ## Testing subdomain
 
-A separate subdomain for the whole purpose of testing can be found [here](https://test.bookbrainz.org). 
-You'll have to use a separate account for this subdomain. All changes made to this subdomain are not in sync with the original website and vise versa (each has its own database). 
+A separate subdomain for the purpose of testing and rolling out beta features can be found [here](https://test.bookbrainz.org). 
+You can sign in with the same account as the one you use on the main website. All changes made to this subdomain are not in sync with the original website and vise versa (each has its own database). 
 The purpose of this project is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
 This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.
 <br/>
