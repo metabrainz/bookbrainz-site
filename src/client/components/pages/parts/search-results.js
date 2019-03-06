@@ -47,7 +47,7 @@ function SearchResults(props) {
 							<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
 						</p>
 						<Col lg={6} lgOffset={3} md={8} mdOffset={2}>
-							<ButtonGroup justified>
+							<ButtonGroup justified id="searchpage-button-group">
 								<Button
 									className="padding-bottom-1 padding-sides-2 padding-top-1"
 									href="/creator/create"
