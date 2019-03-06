@@ -4,8 +4,6 @@
 /lib
 /src/client/stylesheets/bootstrap
 /src/client/stylesheets/font-awesome
-/src/client/stylesheets/bootstrap
-/src/client/stylesheets/font-awesome
 /src/client/stylesheets/react-select
 /reports
 /config/config.json
