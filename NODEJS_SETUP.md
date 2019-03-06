@@ -1,7 +1,9 @@
 # Running the NodeJS server outside of Docker
 
-If for some reason you do not want to use Docker, you can run the server code locally,
-whether you are using Docker for the database and search dependencies or you [installed them manually](./MANUAL_INSTALL.md)
+### These instruction are only valid for specific cases when you do not want to use Docker (`./develop.sh`) to run the server on your machine.
+
+If for some reason you do not want to use our standard development environment (Docker), you can run the server code manually (
+regardless of whether you are running dependencies with Docker for the database and search  or you [installed them manually](./MANUAL_INSTALL.md))
 
 ## Installing NodeJS
 
@@ -18,8 +20,9 @@ This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
 
-You will need to modify the `config/config.json` file* to point to the dependencies.
-For example, if you are running the dependencies using Docker or locally, set `session.redis.host`, `database.connection.host` and `search.search` to point to `localhost` and adjust the ports accordingly.
+Our `config.example.json` is set up to work out of the box running everything in Docker. Adresses for the dependencies refer to docker container names, so that containers can communicate between each other.
+You will need to modify the `config/config.json` file* to point to the dependencies from outside the Docker network.
+For example, set `session.redis.host`, `database.connection.host` and `search.search` to point to `localhost` (or wherevrer your dependencies are running) and adjust the ports accordingly.
 
 *If it doesn't exist, make a copy of `config.example.json` and rename it) 
 
