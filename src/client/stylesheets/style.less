@@ -35,7 +35,7 @@ The production configuration for webpack needs to be finalized before using this
 @import "~react-virtualized/styles.css";
 @import "~react-virtualized-select/styles.css";
  */
- 
+
 /* Modifications to Lobes */
 /* ====================== */
 @brand-secondary: @bookbrainz;
@@ -246,7 +246,7 @@ html {
 	border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
 	.transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
 	.form-control-focus();
-	
+
 }
 
 .Select-placeholder {
@@ -325,11 +325,21 @@ hr.wide {
 		border: none;
 		border-radius: 0;
 	  }
-  
+
 	  > a:hover,
 	  > a:focus {
 		text-decoration: none;
 		background-color:@dropdown-link-hover-bg;
 	  }
 	}
+}
+
+@media only screen and (max-width: 600px) {
+	#searchpage-button-group > * {
+		width: 100%;
+	}
+}
+
+.input-group {
+	padding:10px;
 }

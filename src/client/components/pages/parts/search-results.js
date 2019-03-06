@@ -46,8 +46,8 @@ function SearchResults(props) {
 							Help us and click on the right entity below to create a new entry.
 							<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
 						</p>
-						<Col lg={6} lgOffset={3} md={8} mdOffset={2}>
-							<ButtonGroup justified>
+						<Col md={8} mdOffset={2}>
+							<ButtonGroup id="searchpage-button-group">
 								<Button
 									className="padding-bottom-1 padding-sides-2 padding-top-1"
 									href="/creator/create"
@@ -72,7 +72,6 @@ function SearchResults(props) {
 								<Button
 									className="padding-bottom-1 padding-sides-2 padding-top-1"
 									href="/publication/create"
-									style={{lineHeight: '1em', whiteSpace: 'normal'}}
 								>
 									{genEntityIconHTMLElement('Publication', '3x', false)}
 									<div className="margin-top-d4">Edition Group</div>
