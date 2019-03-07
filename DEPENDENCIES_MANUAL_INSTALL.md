@@ -43,11 +43,11 @@ perform some initialization for PostgreSQL and import the latest BookBrainz
 database dump.
 
 Firstly, begin downloading the latest BookBrainz dump from
-https://bookbrainz.org/dumps/latest.tar.bz2.
+https://bookbrainz.org/dumps/latest.sql.bz2.
 
-Then, uncompress the `latest.tar.bz2` file, using the bzip2 command:
+Then, uncompress the `latest.sql.bz2` file, using the bzip2 command:
 
-    bzip2 -d latest.tar.bz2
+    bzip2 -d latest.sql.bz2
 
 This will give you a file that you can *restore* into PostgreSQL, which will
 set up data identical to the data we have on the bookbrainz.org website. To do
