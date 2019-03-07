@@ -101,7 +101,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.24.1",
     "babelify": "^8.0.0",
-    "bootstrap": "^3.3.2",
+    "bootstrap": "^3.4.1",
     "chai": "^4.0.2",
     "chai-as-promised": "^7.0.0",
     "clean-webpack-plugin": "^0.1.19",
