@@ -8,12 +8,12 @@
 	
     `sudo apt update`
 	
-	2. Error: `Can't open input file latest.tar.bz2: No such file or directory` 
-	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `bzip2 -d  	latest.tar.bz2` doesn’t work and gives the above error. 
+	2. Error: `Can't open input file latest.sql.bz2: No such file or directory` 
+	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `bzip2 -d  	latest.sql.bz2` doesn’t work and gives the above error. 
 	
-	It can be solved by giving the actual path of the latest.tar.bz2 file in place of the file name such as:
+	It can be solved by giving the actual path of the latest.sql.bz2 file in place of the file name such as:
 	
-  `/ home/user/Desktop/latest.tar.bz2`
+  `/ home/user/Desktop/latest.sql.bz2`
   
   3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command. 
   
