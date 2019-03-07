@@ -36,6 +36,42 @@
 	To proceed the process, just let ElasticSearch to run
     on its own terminal, and proceed the building process by making another window of terminal
 
+	3. If you run into an error on Docker Toolbox with Elastic Search stating an error message along the lines of:  
+	
+		`Waiting for elasticsearch:9200  .elasticsearch: forward host lookup failed: Unknown host`  
+		
+	   The cause could be the docker-machine's memory limits. you can inspect this with the command:  
+	   
+	   `docker-machine inspect machine-name`  
+	   
+	   To diagnose this problem, try taking a look at the logs with the command: 
+	   
+	   `docker-compose logs elasticsearch`  
+	     
+	   And if you see an error within the logs along the lines of:   
+	   
+	   ```
+	   # There is insufficient memory for the Java Runtime Environment to continue. 
+	   # Native memory allocation (mmap) failed to map 2060255232 bytes for committing reserved memory.
+	   ```
+	     
+	   Please try recreating the default docker machine by:
+	   
+	   		i. Remove default docker-machine with the command:  
+			
+				`docker-machine rm default`  
+				
+			ii. Create a new default machine with the command:   
+			
+				```
+				docker-machine create -d virtualbox --virtualbox-cpu-count=2 --virtualbox-memory=4096 --virtualbox-disk-size=50000 default
+				```  
+			iii. Restart your docker environment with the commands: 
+			
+				```
+				docker-machine stop
+				exit
+				```  
 
 * Redis
 
