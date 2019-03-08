@@ -87,9 +87,9 @@ You can do this by running this command from the bookbrainz-site directory:
 `cp config/config.json.example config/config.json`
 
 
-If you want to be able to sing-up and edit, you will need to set up authentication under `musicbrainz`.
+If you want to be able to sign-up and edit, you will need to set up authentication under `musicbrainz`.
 To get the `clientID` and `clientSecret` tokens, head to [the MusicBrainz website](https://musicbrainz.org/account/applications)
-and register a new developer application. You can then copy the tokens for that developer application and paste as strings. 
+and register a new developer application. Make sure to enter the callback URL as `http://localhost:<port>/cb`(port: 9099 by default). You can then copy the tokens for that developer application and paste as strings in your `config/config.json`. The tokens and callback URL in your `config/config.json` needs to match exactly the one for the developer application.
 
 ## Database set-up
 
