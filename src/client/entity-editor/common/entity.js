@@ -19,31 +19,35 @@
 
 // @flow
 
-import Icon from 'react-fontawesome';
+// import Icon from 'react-fontawesome';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
 type EntityProps = {
 	disambiguation?: ?string,
-	link?: string | false,
 	text: string,
 	type: string,
 	unnamedText?: string
 };
 
 function Entity(
-	{disambiguation, link, text, type, unnamedText}: EntityProps
+	{disambiguation, id, text, type, unnamedText}: EntityProps
 ) {
-	const nameComponent = text || <i>{unnamedText}</i>;
+	const url = type === 'Area' ?
+		`//musicbrainz.org/area/${id}` :
+		`/${type.toLowerCase()}/${id}`;
+	// const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
 		<span>
 			{
 				type && genEntityIconHTMLElement(type)
 			}
 			{' '}
-			{nameComponent}
-			{' '}
+			<a href={url} rel="noopener noreferrer" target="_blank">
+				{text} &nbsp; ( {type} )
+			</a>
+
 			{
 				disambiguation &&
 				<span className="disambig"><small>({disambiguation})</small></span>
@@ -51,9 +55,9 @@ function Entity(
 		</span>
 	);
 
-	if (link) {
-		return <a href={link}>{contents}</a>;
-	}
+	// if (link) {
+	// 	return <a href={link}>{contents}</a>;
+	// }
 
 	return contents;
 }
@@ -61,7 +65,6 @@ function Entity(
 // Entity.displayName = 'Entity';
 Entity.defaultProps = {
 	disambiguation: null,
-	link: false,
 	unnamedText: '(unnamed)'
 };
 
