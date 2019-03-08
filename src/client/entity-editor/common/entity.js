@@ -26,6 +26,7 @@ import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 type EntityProps = {
 	disambiguation?: ?string,
+	id?: string | false,
 	text: string,
 	type: string,
 	unnamedText?: string
@@ -34,30 +35,29 @@ type EntityProps = {
 function Entity(
 	{disambiguation, id, text, type, unnamedText}: EntityProps
 ) {
+	function eventHandlerk(event, url) {
+		event.preventDefault();
+		window.open(url, '_blank');
+	}
 	const url = type === 'Area' ?
 		`//musicbrainz.org/area/${id}` :
 		`/${type.toLowerCase()}/${id}`;
-	// const nameComponent = text || <i>{unnamedText}</i>;
+	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
 		<span>
 			{
 				type && genEntityIconHTMLElement(type)
 			}
 			{' '}
-			<a href={url} rel="noopener noreferrer" target="_blank">
-				{text} &nbsp; ( {type} )
-			</a>
-
+			<section onClick={eventHandlerk(event, url)}>
+				{nameComponent}
+			</section>
 			{
 				disambiguation &&
 				<span className="disambig"><small>({disambiguation})</small></span>
 			}
 		</span>
 	);
-
-	// if (link) {
-	// 	return <a href={link}>{contents}</a>;
-	// }
 
 	return contents;
 }
