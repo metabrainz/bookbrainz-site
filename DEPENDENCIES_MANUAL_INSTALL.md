@@ -32,7 +32,7 @@ manager:
 ## Elasticsearch
 
 To install Elasticsearch, follow [this helpful guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-16-04) for Linux-based systems or the [official instructions](
-https://www.elastic.co/guide/en/elastic-stack/current/installing-elastic-stack.html).
+https://www.elastic.co/guide/en/elasticsearch/reference/6.3/install-elasticsearch.html).
 
 The BookBrainz server has been tested with ElasticSearch version 6.3.2.
 
