@@ -196,7 +196,11 @@ function EditionSection({
 				What else do you know about the Edition?
 			</h2>
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank. <a href="/publication/create" target="_blank">Click here</a> to create one if you did not find an existing one.
+				Edition Group is required — this cannot be blank.
+				<a href="/publication/create" target="_blank">
+				    Click here
+				</a>
+				to create one if you did not find an existing one.
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>

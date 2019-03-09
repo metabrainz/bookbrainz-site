@@ -24,58 +24,81 @@ function IdentifierLink({typeId, value}) {
 	let link;
 	// All identifiers type IDs have been taken from database.
 	switch (typeId) {
-		case 1: // @MusicBrainz Release ID: The ID for the MusicBrainz Release corresponding to a BookBrainz Edition.
+		// @MusicBrainz Release ID: The ID for the MusicBrainz Release corresponding to a BookBrainz Edition.
+		case 1:
 			link = `https://musicbrainz.org/release/${value}`;
 			break;
-		case 2: // @MusicBrainz Artist ID: The ID for the MusicBrainz Artist corresponding to a BookBrainz Creator.
+		// @MusicBrainz Artist ID: The ID for the MusicBrainz Artist corresponding to a BookBrainz Creator.
+		case 2:
 			link = `https://musicbrainz.org/artist/${value}`;
 			break;
-		case 3: // @MusicBrainz Work ID: The ID for the MusicBrainz Work corresponding to a BookBrainz Work.
+		// @MusicBrainz Work ID: The ID for the MusicBrainz Work corresponding to a BookBrainz Work.
+		case 3:
 			link = `https://musicbrainz.org/work/${value}`;
 			break;
-		case 4: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Edition.
+		// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Edition.
+		case 4:
 			link = `https://www.wikidata.org/wiki/${value}`;
 			break;
-		case 5: // @Amazon ASIN: The Amazon ASIN corresponding to a BookBrainz Edition.
+		// @Amazon ASIN: The Amazon ASIN corresponding to a BookBrainz Edition.
+		case 5:
 			link = `https://www.amazon.com/dp/${value}`;
 			break;
-		case 6: // @OpenLibrary Book ID: The ID for an OpenLibrary Book corresponding to a BookBrainz Edition.
+		// @OpenLibrary Book ID: The ID for an OpenLibrary Book corresponding to a BookBrainz Edition.
+		case 6:
 			link = `https://openlibrary.org/books/${value}`;
 			break;
-		case 8: // @OpenLibrary Work ID: The ID for an OpenLibrary Work corresponding to a BookBrainz Work.
+		// @OpenLibrary Work ID: The ID for an OpenLibrary Work corresponding to a BookBrainz Work.
+		case 8:
 			link = `https://openlibrary.org/works/${value}`;
 			break;
-		case 9: // @ISBN-13: The ISBN-13 for a BookBrainz Edition.
+		// @ISBN-13: The ISBN-13 for a BookBrainz Edition.
+		case 9:
 			link = `https://isbnsearch.org/isbn/${value}`;
 			break;
-		case 10: // @ISBN-10: The ISBN-10 for a BookBrainz Edition.
+		// @ISBN-10: The ISBN-10 for a BookBrainz Edition.
+		case 10:
 			link = `https://isbnsearch.org/isbn/${value}`;
 			break;
-		case 11: // @Barcode: The barcode for a BookBrainz Edition.
+		// @Barcode: The barcode for a BookBrainz Edition.
+		case 11:
 			link = `https://www.barcodelookup.com/${value}`;
 			break;
-		case 12: // @VIAF: The VIAF ID corresponding to a BookBrainz creator.
+		// @VIAF: The VIAF ID corresponding to a BookBrainz creator.
+		case 12:
 			link = `https://viaf.org/viaf/${value}`;
 			break;
-		case 13: // @ISNI: The ISNI ID corresponding to a BookBrainz creator.
+		 // @ISNI: The ISNI ID corresponding to a BookBrainz creator.
+		case 13:
 			link = `http://www.isni.org/${value}`;
 			break;
-		case 14: // @LibraryThing Work: The LibraryThing ID for a BookBrainz work.
+		// @LibraryThing Work: The LibraryThing ID for a BookBrainz work.
+		case 14:
 			link = `https://www.librarything.com/work/${value}`;
 			break;
-		case 15: // @LibraryThing Author: The LibraryThing author ID corresponding to a BookBrainz creator.
+		// @LibraryThing Author: The LibraryThing author ID corresponding to a BookBrainz creator.
+		case 15:
 			link = `https://www.librarything.com/author/${value}`;
 			break;
-		case 16: // @IMDb Title ID: The ID for a title from IMDb
+		// @IMDb Title ID: The ID for a title from IMDb
+		case 16:
 			link = `https://www.imdb.com/title/${value}`;
 			break;
-		case 17: // @MusicBrainz Label ID: The ID for the MusicBrainz Label corresponding to a BookBrainz Publisher.
+		// @MusicBrainz Label ID: The ID for the MusicBrainz Label corresponding to a BookBrainz Publisher.
+		case 17:
 			link = `https://musicbrainz.org/label/${value}`;
 			break;
-		case 18: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Creator.
-		case 19: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publication.
-		case 20: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
-		case 21: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
+		// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Creator.
+		case 18:
+			break;
+		// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publication.
+		case 19:
+			break;
+			// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
+		case 20:
+			break;
+		// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
+		case 21:
 			link = `https://www.wikidata.org/wiki/${value}`;
 			break;
 		default:

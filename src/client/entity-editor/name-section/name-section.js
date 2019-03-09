@@ -139,7 +139,10 @@ class NameSection extends React.Component {
 								)}
 								error={!validateNameSectionName(nameValue)}
 								inputRef={this.updateNameFieldInputRef}
-								tooltipText={`Official name of the ${_.capitalize(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
+								tooltipText={
+								    `Official name of the ${_.capitalize(entityType)}
+									in its original language. Names in other languages should be added as 'aliases'.`
+								}
 								warn={(isRequiredDisambiguationEmpty(
 									warnIfExists,
 									disambiguationDefaultValue

@@ -18,7 +18,7 @@
  */
 
 import {Async} from 'react-select';
-import Icon from 'react-fontawesome';
+// import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';

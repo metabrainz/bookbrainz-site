@@ -89,11 +89,11 @@ class SearchPage extends React.Component {
 			});
 	}
 
-	handleClickPrevious(event) {
+	handleClickPrevious() {
 		this.setState(prevState => ({from: Math.max(prevState.from - prevState.size, 0)}), this.triggerSearch);
 	}
 
-	handleClickNext(event) {
+	handleClickNext() {
 		this.setState(prevState => ({from: prevState.from + prevState.size}), this.triggerSearch);
 	}
 
