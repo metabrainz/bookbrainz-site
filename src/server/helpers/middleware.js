@@ -34,6 +34,7 @@ function makeLoader(modelName, propName, sortFunc) {
 					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
 
 				next();
+				return null;
 			})
 			.catch(next);
 	};
