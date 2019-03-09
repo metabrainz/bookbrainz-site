@@ -4,33 +4,31 @@
 
     1. It's better for you if you do some package catalog update by 
 
-	Ubuntu
-	
-    `sudo apt update`
+        `sudo apt update`
 	
 	2. Error: `Can't open input file latest.sql.bz2: No such file or directory` 
 	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `bzip2 -d  	latest.sql.bz2` doesn’t work and gives the above error. 
 	
-	It can be solved by giving the actual path of the latest.sql.bz2 file in place of the file name such as:
+	    It can be solved by giving the actual path of the latest.sql.bz2 file in place of the file name such as:
 	
-  `/ home/user/Desktop/latest.sql.bz2`
+        `/ home/user/Desktop/latest.sql.bz2`
   
   3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command. 
   
-  At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
+    At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
 
 * ElasticSearch
 
     1. ElasticSearch requires runtime Java installed on your local machine, 
 	so you have to install it by
 	
-	Ubuntu
+	    For ubuntu users
 	
-    `sudo apt install default-jre`
+        `sudo apt install default-jre`
 
-    And then check it if it have installed already
+        And then check it if it have installed already
 
-    `java -version`
+        `java -version`
 
     2. When you run ElasticSearch, it seems that the process takes a very long time. 
 	To proceed the process, just let ElasticSearch to run
@@ -73,50 +71,60 @@
 				exit
 				```  
 
+    4. To check if port is already is in use or not run
+    `netstat -anp tcp | grep <port-number>`
+
 * Redis
 
-    -
+    1. You may get an error of port 6379 being used when you run ./develop.sh. This is because redis server is already on and you need to stop it first so that it can restart. So to get rid of this issue simply run the below command
+
+        `/etc/init.d/redis-server stop`
+
+    2. Sometimes the port 6379 on which redis server runs is used by TCP. So to terminate this process run
+        `sudo kill sudo 'lsof -t -i:5432'` 
 
 * PostgreSQL
 
     1. After instaling, the username will be made by the machine.
     - To set the password of SQL (You'll need this later), run
 
-    `sudo -u postgres psql`
+        `sudo -u postgres psql`
 
-    then 
-    ```
-    psql (9.6.9)
-    Type "help" for help.
+        then 
+        ```
+        psql (9.6.9)
+        Type "help" for help.
 
-    postgres=# \password
-    Enter new password:
-    ```
+        postgres=# \password
+        Enter new password:
+        ```
 
     - To figure out the username, do
 
-    `sudo psql -U postgres -W -h localhost`
+        `sudo psql -U postgres -W -h localhost`
 
-    then
+        then
 
-    `Password for user <username>: ` 
+        `Password for user <username>: ` 
 	
-	will appear.
-    Use the username for the config later on config.json.
+	    will appear.
+        Use the username for the config later on config.json.
+
+    2. Sometimes you may get an error of port 5432 being used when you run ./develop.sh. This is because postgres is already on and you need to stop it first so that it can restart. So to get rid of this issue simply run the below command
+
+        `sudo service postgresql stop`
 
 * NodeJS/NPM
 
     1. If you got no idea about installing NodeJS, install them by:
 	Ubuntu
 	
-    `curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
+        `curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
      sudo apt install nodejs`
 
     2. When filling out the requirements of BookBrainz, you'll encounter an error that says you'll need to install postgresql-server-dev-X.Y for building a server-side extension or libpq-dev for building a client-side application
     To solve this problem, please install libpq-dev and node-gpy
 	
-	Ubuntu
+	    For ubuntu users
 	
-    `sudo apt install -y node-gyp libpq-dev`
-
-
+            `sudo apt install -y node-gyp libpq-dev`

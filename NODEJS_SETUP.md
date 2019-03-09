@@ -20,9 +20,9 @@ This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
 
-Our `config.example.json` is set up to work out of the box running everything in Docker. Adresses for the dependencies refer to docker container names, so that containers can communicate between each other.
+Our `config.example.json` is set up to work out of the box running everything in Docker. Adresses for the dependencies refer to docker container names, so that containers can communicate with each other.
 You will need to modify the `config/config.json` file* to point to the dependencies from outside the Docker network.
-For example, set `session.redis.host`, `database.connection.host` and `search.search` to point to `localhost` (or wherevrer your dependencies are running) and adjust the ports accordingly.
+For example, set `session.redis.host`, `database.connection.host` and `search.search` to point to `localhost` (or wherever your dependencies are running) and adjust the ports accordingly.
 
 *If it doesn't exist, make a copy of `config.example.json` and rename it) 
 
