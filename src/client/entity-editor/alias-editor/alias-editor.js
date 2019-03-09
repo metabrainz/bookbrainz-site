@@ -80,10 +80,10 @@ const AliasEditor = ({
 				</div>
 				<div>
 					{
-						aliases.map((alias, rowId) => (
+						aliases.map((alias) => (
 							<AliasRow
-								index={rowId}
-								key={rowId}
+								index={alias.id}
+								key={alias.id}
 								languageOptions={languageOptionsForDisplay}
 							/>
 						)).toArray()

@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
+
 const {PageHeader, Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
@@ -106,9 +107,9 @@ function EntityCountTable(props) {
 				</thead>
 				<tbody>
 					{
-						allEntities.map((entity, i) => (
-							<tr key={i}>
-								<td>{i + 1}</td>
+						allEntities.map((entity) => (
+							<tr key={entity.id}>
+								<td>{entity.id + 1}</td>
 								<td>
 									{genEntityIconHTMLElement(entity.modelName)}
 									{entity.modelName}

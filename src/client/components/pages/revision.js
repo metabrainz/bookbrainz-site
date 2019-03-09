@@ -37,7 +37,7 @@ class RevisionPage extends React.Component {
 			return null;
 		}
 		return list.map(
-			(val, idx) => <div key={`${idx}${val}`}>{val.toString()}</div>
+			(val) => <div key={val.id}>{val.toString()}</div>
 		);
 	}
 
@@ -120,7 +120,6 @@ class RevisionPage extends React.Component {
 				location.reload();
 			})
 			.catch((res) => {
-				// TODO: Add proper error handling.
 				const {error} = res.body;
 				return error;
 			});

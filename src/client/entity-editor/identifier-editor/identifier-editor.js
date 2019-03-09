@@ -77,10 +77,10 @@ const IdentifierEditor = ({
 				</div>
 				<div>
 					{
-						identifiers.map((identifier, rowId) => (
+						identifiers.map((identifier) => (
 							<IdentifierRow
-								index={rowId}
-								key={rowId}
+								index={identifier.id}
+								key={identifier.id}
 								typeOptions={identifierTypes}
 							/>
 						)).toArray()

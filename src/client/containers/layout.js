@@ -165,7 +165,8 @@ class Layout extends React.Component {
 					</Nav> :
 					<Nav pullRight>
 						<NavItem href="/auth">
-							<FontAwesome name="sign-in-alt"/>{' Sign In / Register'}
+							<FontAwesome name="sign-in-alt"/>
+							{' Sign In / Register'}
 						</NavItem>
 					</Nav>
 				}
@@ -239,11 +240,11 @@ class Layout extends React.Component {
 		);
 
 		const alerts = this.props.alerts.map(
-			(alert, idx) => (
+			(alert) => (
 				<Alert
 					bsStyle={alert.level}
 					className="text-center"
-					key={idx}
+					key={alert.id}
 				>
 					<p>{alert.message}</p>
 				</Alert>
