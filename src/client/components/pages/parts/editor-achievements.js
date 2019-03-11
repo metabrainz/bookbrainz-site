@@ -55,7 +55,10 @@ class EditorAchievementTab extends React.Component {
 			})
 			.catch((res) => {
 				const {error} = res.body;
-				return error;
+				this.setState({
+					error,
+					waiting: false
+				});
 			});
 	}
 

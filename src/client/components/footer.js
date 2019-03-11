@@ -67,10 +67,10 @@ function Footer(props) {
 				</Row>
 				<Row className="text-center">
 					<small>
-						Alpha Software —{' '}
+						Alpha Software —&nbsp;
 						<a href={`${repositoryUrl}commit/${siteRevision}`}>
 						    {siteRevision}
-						</a> —
+						</a> &nbsp;—&nbsp;
 						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
 						    Report a Bug
 						</a>

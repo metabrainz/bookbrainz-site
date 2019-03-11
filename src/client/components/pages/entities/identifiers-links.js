@@ -90,15 +90,9 @@ function IdentifierLink({typeId, value}) {
 			break;
 		// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Creator.
 		case 18:
-			break;
-		// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publication.
-		case 19:
-			break;
-			// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
-		case 20:
-			break;
-		// @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
-		case 21:
+		case 19: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publication.
+		case 20: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
+		case 21: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
 			link = `https://www.wikidata.org/wiki/${value}`;
 			break;
 		default:

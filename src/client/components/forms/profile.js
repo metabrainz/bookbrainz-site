@@ -45,7 +45,7 @@ class ProfileForm extends React.Component {
 				props.editor.gender : null,
 			genders: props.genders,
 			name: props.editor.name,
-			// title: toString(props.editor.titleUnlockId),
+			title: toString(props.editor.titleUnlockId),
 			titles: props.titles,
 			waiting: false
 		};

@@ -141,7 +141,7 @@ class NameSection extends React.Component {
 								inputRef={this.updateNameFieldInputRef}
 								tooltipText={
 								    `Official name of the ${_.capitalize(entityType)}
-									in its original language. Names in other languages should be added as 'aliases'.`
+									&nbsp; in its original language. Names in other languages should be added as 'aliases'.`
 								}
 								warn={(isRequiredDisambiguationEmpty(
 									warnIfExists,

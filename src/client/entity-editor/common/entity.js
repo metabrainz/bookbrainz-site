@@ -19,7 +19,6 @@
 
 // @flow
 
-// import Icon from 'react-fontawesome';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
