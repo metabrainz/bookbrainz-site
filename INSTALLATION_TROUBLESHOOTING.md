@@ -13,9 +13,11 @@
 	
         `/ home/user/Desktop/latest.sql.bz2`
   
-  3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command. 
-  
-    At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
+	3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command. 
+At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
+
+	4. There are no css styles! My local page does not look like bookbrainz.org at all !
+	Check if you have a folder located at `src/client/stylesheets/bootstrap`. If you don't, in a terminal window at the root of the repository run this command `./scripts/copy-client-scripts.sh` and try again.
 
 * ElasticSearch
 
@@ -123,7 +125,7 @@
      sudo apt install nodejs`
 
     2. When filling out the requirements of BookBrainz, you'll encounter an error that says you'll need to install postgresql-server-dev-X.Y for building a server-side extension or libpq-dev for building a client-side application
-    To solve this problem, please install libpq-dev and node-gpy
+    To solve this problem, please install libpq-dev and node-gyp
 	
 	    For ubuntu users
 	
