@@ -19,21 +19,36 @@
 
 // @flow
 
+// import Icon from 'react-fontawesome';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-type EntityProps = {
+type LinkedEntityProps = {
 	disambiguation?: ?string,
-	link?: string | false,
+	id?: string | false,
 	text: string,
 	type: string,
 	unnamedText?: string
 };
 
-function Entity(
-	{disambiguation, link, text, type, unnamedText}: EntityProps
+function LinkedEntity(
+	{disambiguation, id, text, type, unnamedText}: LinkedEntityProps
 ) {
+	let url = null;
+	if (type) {
+		url = type === 'Area' ?
+			`//musicbrainz.org/area/${id}` :
+			`/${type.toLowerCase()}/${id}`;
+	}
+	function eventHandler(event) {
+		// event.preventDefault();
+		// console.log(url, 'url', text);
+		if (url) {
+			window.open(url, '_blank');
+		}
+	}
+
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
 		<span>
@@ -41,8 +56,9 @@ function Entity(
 				type && genEntityIconHTMLElement(type)
 			}
 			{' '}
-			{nameComponent}
-			{' '}
+			<a className="hello" onClick={eventHandler}>
+				{nameComponent}
+			</a>
 			{
 				disambiguation &&
 				<span className="disambig"><small>({disambiguation})</small></span>
@@ -50,18 +66,13 @@ function Entity(
 		</span>
 	);
 
-	if (link) {
-		return <a href={link}>{contents}</a>;
-	}
-
 	return contents;
 }
 
-// Entity.displayName = 'Entity';
-Entity.defaultProps = {
+// LinkedEntity.displayName = 'LinkedEntity';
+LinkedEntity.defaultProps = {
 	disambiguation: null,
-	link: false,
 	unnamedText: '(unnamed)'
 };
 
-export default Entity;
+export default LinkedEntity;
