@@ -123,6 +123,7 @@ export function loadEntityRelationships(req, res, next) {
 			});
 
 			next();
+			return null;
 		})
 		.catch(next);
 }
@@ -146,6 +147,7 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 				.then((entity) => {
 					res.locals.entity = entity;
 					next();
+					return null;
 				})
 				.catch(model.NotFoundError, () => {
 					throw new error.NotFoundError(errMessage, req);
