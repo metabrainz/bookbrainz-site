@@ -20,6 +20,7 @@
 // @flow
 
 import CustomInput from '../../input';
+import Entity from './entity';
 import LinkedEntity from './linked-entity';
 import React from 'react';
 import {Async as SelectAsync} from 'react-select';
@@ -62,6 +63,7 @@ function entityToOption(entity) {
 	return {
 		disambiguation: _.get(entity, ['disambiguation', 'comment']),
 		id,
+		language: _.get(entity, ['defaultAlias', 'languageId']),
 		text: _.get(entity, ['defaultAlias', 'name']),
 		type: entity.type,
 		value: id
@@ -118,15 +120,13 @@ function EntityLinkedSearchField(
 
 	return (
 		<CustomInput label={labelElement} tooltipText={tooltipText}>
-			<ImmutableAsyncSelect
-				innerProps={fetchOptions}
+			 <ImmutableAsyncSelect
 				labelKey="text"
 				loadOptions={fetchOptions}
-				// optionRenderer={LinkedEntity}
 				optionComponent={LinkedEntity}
-				valueRenderer={LinkedEntity}
+				valueRenderer={Entity}
 				{...rest}
-			/>
+			 />
 		</CustomInput>
 	);
 }

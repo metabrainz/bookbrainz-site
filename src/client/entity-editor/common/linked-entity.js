@@ -20,29 +20,40 @@
 // @flow
 
 // import Icon from 'react-fontawesome';
+import FontAwesome from 'react-fontawesome';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
 type LinkedEntityProps = {
-	disambiguation?: ?string,
-	id?: string | false,
-	text: string,
-	type: string,
-	unnamedText?: string
+	children: PropTypes.node,
+	className: PropTypes.string,
+	isDisabled: PropTypes.bool,
+	isFocused: PropTypes.bool,
+	innerProps: any,
+	isSelected: PropTypes.bool,
+	onFocus: PropTypes.func,
+	onSelect: PropTypes.func,
+	option: PropTypes.object.isRequired,
 };
 
 function LinkedEntity(
-	{disambiguation, id, text, type, unnamedText}: LinkedEntityProps
+	{onSelect, option}: LinkedEntityProps
 ) {
+	const {disambiguation, id, text, type, unnamedText, language} = option;
+	console.log(option);
 	let url = null;
 	if (type) {
 		url = type === 'Area' ?
 			`//musicbrainz.org/area/${id}` :
 			`/${type.toLowerCase()}/${id}`;
 	}
-	function eventHandler(event) {
-		// event.preventDefault();
+	function parentEventHandler(event) {
+		onSelect(option, event);
+	}
+	function childEventHandler(event) {
+		event.stopPropagation();
+		event.preventDefault();
 		// console.log(url, 'url', text);
 		if (url) {
 			window.open(url, '_blank');
@@ -51,19 +62,22 @@ function LinkedEntity(
 
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
-		<span>
+		<div className="react-select__value-container" style={{cursor: 'pointer', fontSize: '15px', padding: '8px'}} onClick={parentEventHandler}>
 			{
 				type && genEntityIconHTMLElement(type)
 			}
-			{' '}
-			<a className="hello" onClick={eventHandler}>
-				{nameComponent}
-			</a>
+			&nbsp;
+			{nameComponent}{language}
+			&nbsp;&nbsp;
 			{
 				disambiguation &&
 				<span className="disambig"><small>({disambiguation})</small></span>
 			}
-		</span>
+			{' '}
+			<a onClick={childEventHandler}>
+				<FontAwesome name="external-link-alt"/>
+			</a>
+		</div>
 	);
 
 	return contents;
