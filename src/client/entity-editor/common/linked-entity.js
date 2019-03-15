@@ -41,7 +41,6 @@ function LinkedEntity(
 	{onSelect, option}: LinkedEntityProps
 ) {
 	const {disambiguation, id, text, type, unnamedText, language} = option;
-	console.log(option);
 	let url = null;
 	if (type) {
 		url = type === 'Area' ?
@@ -54,7 +53,6 @@ function LinkedEntity(
 	function childEventHandler(event) {
 		event.stopPropagation();
 		event.preventDefault();
-		// console.log(url, 'url', text);
 		if (url) {
 			window.open(url, '_blank');
 		}
@@ -67,7 +65,7 @@ function LinkedEntity(
 				type && genEntityIconHTMLElement(type)
 			}
 			&nbsp;
-			{nameComponent}{language}
+			{nameComponent}
 			&nbsp;&nbsp;
 			{
 				disambiguation &&
@@ -77,6 +75,7 @@ function LinkedEntity(
 			<a onClick={childEventHandler}>
 				<FontAwesome name="external-link-alt"/>
 			</a>
+			<span style={{float: 'right'}}>{language}</span>
 		</div>
 	);
 

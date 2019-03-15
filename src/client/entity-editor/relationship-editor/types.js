@@ -60,3 +60,8 @@ export type RelationshipForDisplay = {
 	targetEntity: Entity,
 	rowID: number
 };
+
+export type LanguageOption = {
+	name: string,
+	id: number
+};

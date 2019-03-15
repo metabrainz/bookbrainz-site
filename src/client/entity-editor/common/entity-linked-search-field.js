@@ -51,26 +51,13 @@ function isArea(entity) {
 	return false;
 }
 
-/**
- * Takes an entity and converts it to a format acceptable to react-select.
- *
- * @param {Object} entity the entity to convert
- * @returns {Object} the formatted data
- */
-function entityToOption(entity) {
-	const id = isArea(entity) ? entity.id : entity.bbid;
-
-	return {
-		disambiguation: _.get(entity, ['disambiguation', 'comment']),
-		id,
-		language: _.get(entity, ['defaultAlias', 'languageId']),
-		text: _.get(entity, ['defaultAlias', 'name']),
-		type: entity.type,
-		value: id
-	};
-}
+type LanguageOption = {
+	name: string,
+	id: number
+};
 
 type EntityLinkedSearchFieldProps = {
+	languageOptions: Array<LanguageOption>,
 	label: string,
 	type: string | Array<string>,
 	empty?: boolean,
@@ -88,6 +75,8 @@ type EntityLinkedSearchFieldProps = {
  *        component to indicate a validation error.
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
+ * @param {Array<LanguageOption>} props.languageOptions - The list of possible languages for an
+ *        entity.
  * @param {string | Array<string>} props.type - Determines the types of entity
  *        to search for.
  * @param {string} props.label - The text to be used for the input label.
@@ -95,6 +84,7 @@ type EntityLinkedSearchFieldProps = {
  */
 function EntityLinkedSearchField(
 	{
+		languageOptions,
 		label,
 		empty,
 		error,
@@ -103,6 +93,30 @@ function EntityLinkedSearchField(
 		...rest
 	}: EntityLinkedSearchFieldProps
 ) {
+	/**
+	 * Takes an entity and converts it to a format acceptable to react-select.
+	 *
+	 * @param {Object} entity the entity to convert
+	 * @returns {Object} the formatted data
+	 * @param {Array<LanguageOption>} languageOptions - The list of possible languages for an
+	 * entity.
+	 */
+
+	function entityToOption(entity) {
+		const id = isArea(entity) ? entity.id : entity.bbid;
+		const languageId = _.get(entity, ['defaultAlias', 'languageId']);
+		const languageIndex = languageOptions.find(index => index.value === languageId);
+		const language = languageOptions[languageIndex.value].label;
+		return {
+			disambiguation: _.get(entity, ['disambiguation', 'comment']),
+			id,
+			language,
+			text: _.get(entity, ['defaultAlias', 'name']),
+			type: entity.type,
+			value: id
+		};
+	}
+
 	function fetchOptions(query) {
 		return request
 			.get('/search/autocomplete')
