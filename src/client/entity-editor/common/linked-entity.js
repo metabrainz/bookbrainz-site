@@ -38,7 +38,7 @@ type LinkedEntityProps = {
 };
 
 function LinkedEntity(
-	{onSelect, option}: LinkedEntityProps
+	{onSelect, option, className}: LinkedEntityProps
 ) {
 	const {disambiguation, id, text, type, unnamedText, language} = option;
 	let url = null;
@@ -57,10 +57,10 @@ function LinkedEntity(
 			window.open(url, '_blank');
 		}
 	}
-
+	// className="react-select__value-container" style={{cursor: 'pointer', fontSize: '15px', padding: '8px'}}
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
-		<div className="react-select__value-container" style={{cursor: 'pointer', fontSize: '15px', padding: '8px'}} onClick={parentEventHandler}>
+		<div className={className} onClick={parentEventHandler}>
 			{
 				type && genEntityIconHTMLElement(type)
 			}
@@ -75,7 +75,7 @@ function LinkedEntity(
 			<a onClick={childEventHandler}>
 				<FontAwesome name="external-link-alt"/>
 			</a>
-			<span style={{float: 'right'}}>{language}</span>
+			<span className="text-muted small">{language}</span>
 		</div>
 	);
 

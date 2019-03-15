@@ -48,7 +48,7 @@ function Entity(
 				disambiguation &&
 				<span className="disambig"><small>({disambiguation})</small></span>
 			}
-			<span style={{float: 'right'}}>{language}</span>
+			<span className="text-muted small">{language}</span>
 		</span>
 	);
 

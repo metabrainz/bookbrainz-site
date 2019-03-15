@@ -25,7 +25,7 @@ import type {
 	Entity, EntityType, LanguageOption, RelationshipType,
 	RelationshipWithLabel, Relationship as _Relationship
 } from './types';
-import EntityLinkedSearchField from '../common/entity-linked-search-field';
+import EntitySearchFieldOption from '../common/entity-search-field-option';
 import React from 'react';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
@@ -240,7 +240,7 @@ class RelationshipModal
 			` or ${_.last(types)})`;
 
 		return (
-			<EntityLinkedSearchField
+			<EntitySearchFieldOption
 				cache={false}
 				instanceId="publication"
 				label={label}
