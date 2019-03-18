@@ -36,7 +36,7 @@ import {
 } from '../validators/creator';
 
 import CustomInput from '../../input';
-import DateField from '../common/date-field';
+import DateField from '../common/new-date-field';
 import EntitySearchField from '../common/entity-search-field';
 import type {Map} from 'immutable';
 import React from 'react';
@@ -207,11 +207,7 @@ function CreatorSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={!beginDateValue}
-						error={!validateCreatorSectionBeginDate(beginDateValue)}
 						label={beginDateLabel}
-						placeholder="YYYY-MM-DD"
-						onChange={onBeginDateChange}
 					/>
 				</Col>
 			</Row>
@@ -239,16 +235,9 @@ function CreatorSection({
 					<Row>
 						<Col md={6} mdOffset={3}>
 							<DateField
+								show
 								defaultValue={endDateValue}
-								empty={!endDateValue}
-								error={
-									!validateCreatorSectionEndDate(
-										beginDateValue, endDateValue
-									)
-								}
 								label={endDateLabel}
-								placeholder="YYYY-MM-DD"
-								onChange={onEndDateChange}
 							/>
 						</Col>
 					</Row>
