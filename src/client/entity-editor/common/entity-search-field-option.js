@@ -71,11 +71,11 @@ class EntitySearchFieldOption extends React.Component {
 	entityToOption(entity) {
 		const id = this.isArea(entity) ? entity.id : entity.bbid;
 		const languageId = _.get(entity, ['defaultAlias', 'languageId']);
-		const language = this.props.languageOptions.find(index => index.value === languageId).label;
+		const language = this.props.languageOptions.find(index => index.value === languageId);
 		return {
 			disambiguation: _.get(entity, ['disambiguation', 'comment']),
 			id,
-			language,
+			language: language && language.label,
 			text: _.get(entity, ['defaultAlias', 'name']),
 			type: entity.type,
 			value: id

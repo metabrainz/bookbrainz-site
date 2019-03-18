@@ -19,71 +19,79 @@
 
 // @flow
 
-// import Icon from 'react-fontawesome';
 import FontAwesome from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-type LinkedEntityProps = {
-	children: PropTypes.node,
-	className: PropTypes.string,
-	isDisabled: PropTypes.bool,
-	isFocused: PropTypes.bool,
-	innerProps: any,
-	isSelected: PropTypes.bool,
-	onFocus: PropTypes.func,
-	onSelect: PropTypes.func,
-	option: PropTypes.object.isRequired,
-};
+class LinkedEntity extends React.Component {
+	constructor(props) {
+		super(props);
 
-function LinkedEntity(
-	{onSelect, option, className}: LinkedEntityProps
-) {
-	const {disambiguation, id, text, type, unnamedText, language} = option;
-	let url = null;
-	if (type) {
-		url = type === 'Area' ?
-			`//musicbrainz.org/area/${id}` :
-			`/${type.toLowerCase()}/${id}`;
+		this.handleParentEvent = this.handleParentEvent.bind(this);
+		this.handleChildEvent = this.handleChildEvent.bind(this);
 	}
-	function parentEventHandler(event) {
-		onSelect(option, event);
+
+	handleParentEvent(event) {
+		this.props.onSelect(this.props.option, event);
 	}
-	function childEventHandler(event) {
+
+	handleChildEvent(event) {
 		event.stopPropagation();
 		event.preventDefault();
+		let url = null;
+		const type = this.props.option && this.props.option.type;
+		const id = this.props.option && this.props.option.id;
+		if (type && id) {
+			url = type === 'Area' ?
+				`//musicbrainz.org/area/${id}` :
+				`/${type.toLowerCase()}/${id}`;
+		}
 		if (url) {
 			window.open(url, '_blank');
 		}
 	}
-	// className="react-select__value-container" style={{cursor: 'pointer', fontSize: '15px', padding: '8px'}}
-	const nameComponent = text || <i>{unnamedText}</i>;
-	const contents = (
-		<div className={className} onClick={parentEventHandler}>
-			{
-				type && genEntityIconHTMLElement(type)
-			}
-			&nbsp;
-			{nameComponent}
-			&nbsp;&nbsp;
-			{
-				disambiguation &&
-				<span className="disambig"><small>({disambiguation})</small></span>
-			}
-			{' '}
-			<a onClick={childEventHandler}>
-				<FontAwesome name="external-link-alt"/>
-			</a>
-			<span className="text-muted small">{language}</span>
-		</div>
-	);
 
-	return contents;
+	render() {
+		const {disambiguation, text, type, unnamedText, language} = this.props.option;
+
+		const nameComponent = text || <i>{unnamedText}</i>;
+
+		return (
+			<div className={this.props.className} onClick={this.handleParentEvent}>
+				{
+					type && genEntityIconHTMLElement(type)
+				}
+				&nbsp;
+				{nameComponent}
+				&nbsp;&nbsp;
+				{
+					disambiguation &&
+					<span className="disambig"><small>({disambiguation})</small></span>
+				}
+				{' '}
+				<a onClick={this.handleChildEvent}>
+					<FontAwesome name="external-link-alt"/>
+				</a>
+				<span className="text-muted small" style={{float: 'right'}}>{language}</span>
+			</div>
+		);
+	}
 }
 
-// LinkedEntity.displayName = 'LinkedEntity';
+LinkedEntity.displayName = 'LinkedEntity';
+
+LinkedEntity.propTypes = {
+	className: PropTypes.string,
+	disambiguation: PropTypes.string,
+	onSelect: PropTypes.func.isRequired,
+	option: PropTypes.object.isRequired,
+	unnamedText: PropTypes.string
+};
+
 LinkedEntity.defaultProps = {
+	className: null,
 	disambiguation: null,
 	unnamedText: '(unnamed)'
 };
