@@ -146,10 +146,11 @@ class DateField extends React.Component {
 	};
 
 	render() {
-		let finalDate = `${this.state.year}${this.state.month ? -this.state.month : ''}${this.state.day ? -this.state.day : ''} `;
+		let finalDate = `${this.state.year}${this.state.month?-this.state.month :''}${this.state.day?-this.state.day :''}`;
+		this.props.lastDate(finalDate);
 		const labelElement =
 			<ValidationLabel
-				empty={finalDate.length == 1}
+				empty={!finalDate}
 				error={this.state.validDate ? '' : 'true'}
 			>
 				{this.props.label}

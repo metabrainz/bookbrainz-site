@@ -208,6 +208,7 @@ function CreatorSection({
 						show
 						defaultValue={beginDateValue}
 						label={beginDateLabel}
+						lastDate={onBeginDateChange}
 					/>
 				</Col>
 			</Row>
@@ -238,6 +239,7 @@ function CreatorSection({
 								show
 								defaultValue={endDateValue}
 								label={endDateLabel}
+								lastDate={onBeginDateChange}
 							/>
 						</Col>
 					</Row>
@@ -301,8 +303,8 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
-		onBeginDateChange: (momentDate: moment) =>
-			dispatch(debouncedUpdateBeginDate(momentDate.format('YYYY-MM-DD'))),
+		onBeginDateChange: (momentDate) =>
+			dispatch(debouncedUpdateBeginDate(momentDate)),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
 		onEndDateChange: (momentDate: moment) =>
 			dispatch(debouncedUpdateEndDate(momentDate.format('YYYY-MM-DD'))),
