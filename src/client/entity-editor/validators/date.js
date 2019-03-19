@@ -37,7 +37,7 @@ export function validateYear (day, month, year) {
 export function validateMonth (day, month, year) {
 	console.log('validate month called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
 	const isPositiveInt = /^\+?([0-9]\d*)$/.test(month) && month > 0;
-	//console.log('month isPositiveInt ' + isPositiveInt);
+	console.log('month isPositiveInt ' + isPositiveInt);
 
 	if (month === '') {
 		//console.log('empty month input');
