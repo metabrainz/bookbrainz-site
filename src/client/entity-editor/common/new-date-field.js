@@ -21,7 +21,7 @@ class DateField extends React.Component {
 
 	updateDate = (day, month, year) => {
 		console.log('validate month called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
-		const enteredDate = `${year}${!month ? '' : '-' + month}${!day ? '': '-' + day }`;
+		const enteredDate = `${year}-${!month ? '' : month}-${!day ? '':  day }`;
 		console.log('@@@@@@@@@@  entered date ' + enteredDate);
 		this.props.onChangeDate(enteredDate);
 	};
