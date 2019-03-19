@@ -149,9 +149,9 @@ function creatorToFormState(creator) {
 		gender: creator.gender && creator.gender.id,
 		type: creator.creatorType && creator.creatorType.id
 	};
-	console.log('*********************************************');
-	console.log(creatorSection);
-	console.log('**********************************************');
+	// console.log('*********************************************');
+	// console.log(creatorSection);
+	// console.log('**********************************************');
 	const relationshipSection = {
 		lastRelationships: null,
 		relationshipEditorProps: null,

@@ -165,9 +165,9 @@ function CreatorSection({
 		label: type.label,
 		value: type.id
 	}));
-	console.log('+++++++++++++++++');
-	console.log(beginDateValue);
-	console.log('++++++++++++++');
+	// console.log('+++++++++++++++++');
+	// console.log(beginDateValue);
+	// console.log('++++++++++++++');
 	return (
 		<form>
 			<h2>
@@ -269,7 +269,7 @@ CreatorSection.displayName = 'CreatorSection';
 
 function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 	const state = rootState.get('creatorSection');
-	console.log(state);
+	// console.log(state);
 	const typeValue = state.get('type');
 	const personType = creatorTypes.find((type) => type.label === 'Person');
 	const groupType = creatorTypes.find((type) => type.label === 'Group');
