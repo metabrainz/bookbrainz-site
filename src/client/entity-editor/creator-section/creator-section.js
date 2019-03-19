@@ -207,8 +207,10 @@ function CreatorSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
+						empty={!beginDateValue}
+						error={!validateCreatorSectionBeginDate(beginDateValue)}
 						label={beginDateLabel}
-						lastDate={onBeginDateChange}
+						onChangeDate={onBeginDateChange}
 					/>
 				</Col>
 			</Row>
@@ -238,8 +240,10 @@ function CreatorSection({
 							<DateField
 								show
 								defaultValue={endDateValue}
+								empty={!endDateValue}
+								error={!validateCreatorSectionEndDate(beginDateValue, endDateValue)}
 								label={endDateLabel}
-								lastDate={onBeginDateChange}
+								onChangeDate={onEndDateChange}
 							/>
 						</Col>
 					</Row>
@@ -306,8 +310,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onBeginDateChange: (momentDate) =>
 			dispatch(debouncedUpdateBeginDate(momentDate)),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
-		onEndDateChange: (momentDate: moment) =>
-			dispatch(debouncedUpdateEndDate(momentDate.format('YYYY-MM-DD'))),
+		onEndDateChange: (momentDate) =>
+			dispatch(debouncedUpdateEndDate(momentDate)),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onGenderChange: (value) =>

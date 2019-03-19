@@ -17,7 +17,7 @@
  */
 
 // @flow
-
+import {getSeparatedDate, validateDay, validateMonth, validateYear} from './date';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import moment from 'moment';
@@ -99,6 +99,9 @@ export function validateBoolean(
 export function validateDate(
 	value: mixed, required: boolean = false
 ): boolean {
+	if (!value) {
+		return true;
+	}
 	if (absentAndRequired(value, required)) {
 		return false;
 	}
@@ -107,7 +110,11 @@ export function validateDate(
 		return false;
 	}
 
-	return !value || moment(value, VALID_DATE_FORMATS, true).isValid();
+	const date = getSeparatedDate(value);
+	const {year, month, day} = date;
+
+	const isDateValid = validateYear(day, month, year) && validateMonth(day, month, year) && validateDay(day, month, year);
+	return isDateValid;
 }
 
 export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
@@ -120,17 +127,29 @@ export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
 		return true;
 	}
 
-	const dateFormat = (value) => VALID_DATE_FORMATS.find(
-		(format) => moment(value, format, true).isValid()
-	);
+	const beginDate = getSeparatedDate(beginValue);
+	const endDate = getSeparatedDate(endValue);
 
-	const baseFormat = [dateFormat(beginValue), dateFormat(endValue)].reduce(
-		(prev, cur) => (prev.length < cur.length ? prev : cur)
-	);
 
-	return moment(beginValue, baseFormat).isSameOrBefore(
-		moment(endValue, baseFormat)
-	);
+	const beginYear = _.toInteger(beginDate.year);
+	const beginMonth = _.toInteger(beginDate.month);
+	const beginDay = _.toInteger(beginDate.day);
+
+	const endYear = _.toInteger(endDate.year);
+	const endMonth = _.toInteger(endDate.month);
+	const endDay = _.toInteger(endDate.day);
+
+	if (beginYear > endYear) {
+		return false;
+	}
+	else if (beginYear === endYear && beginMonth > endMonth) {
+		return false;
+	}
+	else if (beginMonth === endMonth && beginDay > endDay) {
+		return false;
+	}
+
+	return true;
 }
 
 export function validateUUID(
