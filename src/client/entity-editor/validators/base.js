@@ -17,10 +17,11 @@
  */
 
 // @flow
-import {getSeparatedDate, validateDay, validateMonth, validateYear} from './date';
+
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import moment from 'moment';
+import {validateInputDate} from './date';
 import validator from 'validator';
 
 
@@ -99,45 +100,37 @@ export function validateBoolean(
 export function validateDate(
 	value: mixed, required: boolean = false
 ): boolean {
-	if (!value) {
-		return true;
-	}
-	if (absentAndRequired(value, required)) {
-		return false;
-	}
-
-	if (!nilOrString(value)) {
-		return false;
-	}
-
-	const date = getSeparatedDate(value);
-	const {year, month, day} = date;
-
-	const isDateValid = validateYear(day, month, year) && validateMonth(day, month, year) && validateDay(day, month, year);
+	// console.log(' validateDate  with value');
+	// console.log(value);
+	const {year, month, day} = value;
+	const isDateValid = validateInputDate(day, month, year);
 	return isDateValid;
 }
 
-export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
-	if (!nilOrString(beginValue) || !nilOrString(endValue)) {
-		return false;
-	}
+export function isNullValue(date) {
+	return !date.day && !date.month && !date.year;
+}
 
-	if (!beginValue || !endValue || !validateDate(beginValue) ||
+export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
+	// console.log('@@@@@@@ dateIsBefore caled @@@@@');
+	// console.log(beginValue);
+	// console.log(endValue);
+	// console.log(isNullValue(beginValue), isNullValue(endValue), !validateDate(beginValue), !validateDate(endValue));
+	//
+	// console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+	if (isNullValue(beginValue) || isNullValue(endValue) || !validateDate(beginValue) ||
 		!validateDate(endValue)) {
 		return true;
 	}
 
-	const beginDate = getSeparatedDate(beginValue);
-	const endDate = getSeparatedDate(endValue);
+	const beginYear = _.toInteger(beginValue.year);
+	const beginMonth = _.toInteger(beginValue.month);
+	const beginDay = _.toInteger(beginValue.day);
 
-
-	const beginYear = _.toInteger(beginDate.year);
-	const beginMonth = _.toInteger(beginDate.month);
-	const beginDay = _.toInteger(beginDate.day);
-
-	const endYear = _.toInteger(endDate.year);
-	const endMonth = _.toInteger(endDate.month);
-	const endDay = _.toInteger(endDate.day);
+	const endYear = _.toInteger(endValue.year);
+	const endMonth = _.toInteger(endValue.month);
+	const endDay = _.toInteger(endValue.day);
 
 	if (beginYear > endYear) {
 		return false;

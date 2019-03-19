@@ -22,9 +22,11 @@ import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
+	dateObjectToString,
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler
+	makeEntityCreateOrEditHandler,
+	separateDateInObject
 } from '../../helpers/entityRouteUtils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
@@ -140,14 +142,16 @@ function creatorToFormState(creator) {
 
 	const creatorSection = {
 		beginArea: entityRoutes.areaToOption(creator.beginArea),
-		beginDate: creator.beginDate,
+		beginDate: separateDateInObject(creator.beginDate),
 		endArea: entityRoutes.areaToOption(creator.endArea),
-		endDate: creator.endDate,
+		endDate: separateDateInObject(creator.endDate),
 		ended: creator.ended,
 		gender: creator.gender && creator.gender.id,
 		type: creator.creatorType && creator.creatorType.id
 	};
-
+	console.log('*********************************************');
+	console.log(creatorSection);
+	console.log('**********************************************');
 	const relationshipSection = {
 		lastRelationships: null,
 		relationshipEditorProps: null,
@@ -219,11 +223,11 @@ function transformNewForm(data) {
 		aliases,
 		beginAreaId: data.creatorSection.beginArea &&
 			data.creatorSection.beginArea.id,
-		beginDate: data.creatorSection.beginDate,
+		beginDate: dateObjectToString(data.creatorSection.beginDate),
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.creatorSection.endArea &&
 			data.creatorSection.endArea.id,
-		endDate: data.creatorSection.ended ? data.creatorSection.endDate : '',
+		endDate: data.creatorSection.ended ? dateObjectToString(data.creatorSection.endDate) : '',
 		ended: data.creatorSection.ended,
 		genderId: data.creatorSection.gender,
 		identifiers,

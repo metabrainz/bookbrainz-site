@@ -11,19 +11,34 @@ import {getSeparatedDate} from '../validators/date';
 class DateField extends React.Component {
 	constructor(props) {
 		super(props);
-		const initialDate = getSeparatedDate(this.props.defaultValue);
+		//const initialDate = getSeparatedDate(this.props.defaultValue);
+		const day = this.props.defaultValue ? this.props.defaultValue.get('day') : null;
+		const month = this.props.defaultValue ? this.props.defaultValue.get('month') : null;
+		const year = this.props.defaultValue ? this.props.defaultValue.get('year') : null;
+		console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+		console.log(day, month, year);
+		console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 		this.state = {
-			day: initialDate.day,
-			month: initialDate.month,
-			year: initialDate.year
+			day: !day?null:day,
+			month: !month?null:month,
+			year: !year?null:year
 		};
 	}
-
+	// componentWillMount() {
+	// 	this.updateDate(this.state.day, this.state.month, this.state.year);
+	// }
 	updateDate = (day, month, year) => {
 		console.log('validate month called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
-		const enteredDate = `${year}${!month ? '' : '-' + month}${!day ? '': '-' + day }`;
+		let enteredDate = year;
+		if(month){
+		  enteredDate += `-${month}`;
+		  if(day){
+		    enteredDate += `-${day}`;
+		  }
+		}
 		console.log('@@@@@@@@@@  entered date ' + enteredDate);
-		this.props.onChangeDate(enteredDate);
+
+		this.props.onChangeDate({year: !year?null:year, month: !month?null:month, day: !day?null:day});
 	};
 
 	handleYearChange = (event) => {
@@ -103,7 +118,7 @@ class DateField extends React.Component {
 }
 
 DateField.propTypes = {
-	defaultValue: PropTypes.string.isRequired,
+	defaultValue: PropTypes.object.isRequired,
 	empty: PropTypes.bool.isRequired,
 	error: PropTypes.bool.isRequired,
 	label: PropTypes.string.isRequired,

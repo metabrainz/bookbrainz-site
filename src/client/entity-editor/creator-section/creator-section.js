@@ -66,11 +66,11 @@ type StateProps = {
 	beginAreaLabel: string,
 	beginAreaValue: Map<string, any>,
 	beginDateLabel: string,
-	beginDateValue: string,
+	beginDateValue: object,
 	endAreaLabel: string,
 	endAreaValue: Map<string, any>,
 	endDateLabel: string,
-	endDateValue: string,
+	endDateValue: object,
 	endedChecked: boolean,
 	endedLabel: string,
 	genderShow: boolean,
@@ -165,7 +165,9 @@ function CreatorSection({
 		label: type.label,
 		value: type.id
 	}));
-
+	console.log('+++++++++++++++++');
+	console.log(beginDateValue);
+	console.log('++++++++++++++');
 	return (
 		<form>
 			<h2>
@@ -207,7 +209,7 @@ function CreatorSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={!beginDateValue}
+						empty={!beginDateValue.day && !beginDateValue.month && !beginDateValue.year}
 						error={!validateCreatorSectionBeginDate(beginDateValue)}
 						label={beginDateLabel}
 						onChangeDate={onBeginDateChange}
@@ -240,7 +242,7 @@ function CreatorSection({
 							<DateField
 								show
 								defaultValue={endDateValue}
-								empty={!endDateValue}
+								empty={!endDateValue.day && !endDateValue.month && !endDateValue.year}
 								error={!validateCreatorSectionEndDate(beginDateValue, endDateValue)}
 								label={endDateLabel}
 								onChangeDate={onEndDateChange}
@@ -267,7 +269,7 @@ CreatorSection.displayName = 'CreatorSection';
 
 function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 	const state = rootState.get('creatorSection');
-
+	console.log(state);
 	const typeValue = state.get('type');
 	const personType = creatorTypes.find((type) => type.label === 'Person');
 	const groupType = creatorTypes.find((type) => type.label === 'Group');
@@ -307,11 +309,11 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
-		onBeginDateChange: (momentDate) =>
-			dispatch(debouncedUpdateBeginDate(momentDate)),
+		onBeginDateChange: (beginDate) =>
+			dispatch(debouncedUpdateBeginDate(beginDate)),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
-		onEndDateChange: (momentDate) =>
-			dispatch(debouncedUpdateEndDate(momentDate)),
+		onEndDateChange: (endDate) =>
+			dispatch(debouncedUpdateEndDate(endDate)),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onGenderChange: (value) =>

@@ -11,8 +11,8 @@ export function getSeparatedDate (value : string) {
 
 export function validateYear (day, month, year) {
 	console.log('validate year called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
-	if (year === '') {
-		if (month === '' && day === '') {
+	if (!year) {
+		if (!month && !day) {
 			return true;
 		}
 		//console.log('year empty and month or day not');
@@ -39,9 +39,9 @@ export function validateMonth (day, month, year) {
 	const isPositiveInt = /^\+?([0-9]\d*)$/.test(month) && month > 0;
 	console.log('month isPositiveInt ' + isPositiveInt);
 
-	if (month === '') {
+	if (!month) {
 		//console.log('empty month input');
-		if (day === '') {
+		if (!day) {
 			return true;
 		}
 		//this.setState({errorMessage: 'Month must be entered'});
@@ -56,7 +56,7 @@ export function validateMonth (day, month, year) {
 	if (!isValidDate) {
 		return false;
 	}
-	else if (year === '') {
+	else if (!year) {
 		//this.setState({errorMessage: 'Year must be entered'});
 		return false;
 	}
@@ -71,18 +71,18 @@ export function validateMonth (day, month, year) {
 export function validateDay (day, month, year) {
 	console.log('validate day called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
 	let isPositiveInt = /^\+?([0-9]\d*)$/.test(day) && day > 0;
-	if (day === '') {
+	if (!day) {
 		return true;
 	}
 	else if (!isPositiveInt) {
 		//this.setState({errorMessage: 'Day is not valid entry'});
 		return false;
 	}
-	else if (year === '' ) {
+	else if (!year) {
 		//this.setState({errorMessage: 'Year must be entered'});
 		return false;
 	}
-	else if (month === '') {
+	else if (!month) {
 		//this.setState({errorMessage: 'Month must be entered'});
 		return false;
 	}
@@ -110,4 +110,8 @@ export function validateDay (day, month, year) {
 		return true;
 	}
 	return true;
+}
+
+export function validateInputDate (day, month, year) {
+	return validateYear(day, month, year) && validateMonth(day, month, year) && validateDay(day, month, year)
 }
