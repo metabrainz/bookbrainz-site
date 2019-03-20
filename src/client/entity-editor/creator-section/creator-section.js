@@ -30,6 +30,7 @@ import {
 	updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
+import {convertMapToObject, labelsForCreator} from '../../helpers/utils';
 import {
 	validateCreatorSectionBeginDate,
 	validateCreatorSectionEndDate
@@ -42,7 +43,7 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-import {labelsForCreator} from '../../helpers/utils';
+
 
 type CreatorType = {
 	label: string,
@@ -165,9 +166,7 @@ function CreatorSection({
 		label: type.label,
 		value: type.id
 	}));
-	// console.log('+++++++++++++++++');
-	// console.log(beginDateValue);
-	// console.log('++++++++++++++');
+
 	return (
 		<form>
 			<h2>
@@ -293,11 +292,11 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 		beginAreaLabel,
 		beginAreaValue: state.get('beginArea'),
 		beginDateLabel,
-		beginDateValue: state.get('beginDate'),
+		beginDateValue: convertMapToObject(state.get('beginDate')),
 		endAreaLabel,
 		endAreaValue: state.get('endArea'),
 		endDateLabel,
-		endDateValue: state.get('endDate'),
+		endDateValue: convertMapToObject(state.get('endDate')),
 		endedChecked: state.get('ended'),
 		endedLabel,
 		genderShow: !isGroup,

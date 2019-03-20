@@ -25,7 +25,7 @@ import {
 } from './common';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
-
+import {convertMapToObject} from '../../helpers/utils';
 
 export function validateCreatorSectionBeginArea(value: any): boolean {
 	if (!value) {
@@ -68,10 +68,10 @@ export function validateCreatorSectionGender(value: any): boolean {
 export function validateCreatorSection(data: any): boolean {
 	return (
 		validateCreatorSectionBeginArea(get(data, 'beginArea', null)) &&
-		validateCreatorSectionBeginDate(get(data, 'beginDate', null)) &&
+		validateCreatorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))) &&
 		validateCreatorSectionEndArea(get(data, 'endArea', null)) &&
 		validateCreatorSectionEndDate(
-			get(data, 'beginDate', null), get(data, 'endDate', null)
+			convertMapToObject(get(data, 'beginDate', null)), convertMapToObject(get(data, 'endDate', null))
 		) &&
 		validateCreatorSectionEnded(get(data, 'ended', null)) &&
 		validateCreatorSectionType(get(data, 'gender', null)) &&

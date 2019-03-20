@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+import {Iterable} from 'immutable';
 import moment from 'moment';
 
 /**
@@ -61,4 +61,8 @@ export function labelsForCreator(isGroup) {
 		endDateLabel: isGroup ? 'Date of dissolution' : 'Date of death',
 		endedLabel: isGroup ? 'Dissolved?' : 'Died?'
 	};
+}
+
+export function convertMapToObject(value) {
+	return Iterable.isIterable(value) ? value.toJS() : value;
 }
