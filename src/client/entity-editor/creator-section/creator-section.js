@@ -167,6 +167,10 @@ function CreatorSection({
 		value: type.id
 	}));
 
+	const {isValidDob, dobError} = validateCreatorSectionBeginDate(beginDateValue);
+	const {isValidDod, dodError} = validateCreatorSectionEndDate(beginDateValue, endDateValue);
+
+
 	return (
 		<form>
 			<h2>
@@ -209,7 +213,8 @@ function CreatorSection({
 						show
 						defaultValue={beginDateValue}
 						empty={!beginDateValue.day && !beginDateValue.month && !beginDateValue.year}
-						error={!validateCreatorSectionBeginDate(beginDateValue)}
+						error={!isValidDob}
+						errorMessage={dobError}
 						label={beginDateLabel}
 						onChangeDate={onBeginDateChange}
 					/>
@@ -242,7 +247,8 @@ function CreatorSection({
 								show
 								defaultValue={endDateValue}
 								empty={!endDateValue.day && !endDateValue.month && !endDateValue.year}
-								error={!validateCreatorSectionEndDate(beginDateValue, endDateValue)}
+								error={!isValidDod}
+								errorMessage={dodError}
 								label={endDateLabel}
 								onChangeDate={onEndDateChange}
 							/>

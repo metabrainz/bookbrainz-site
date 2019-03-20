@@ -225,7 +225,7 @@ function transformNewForm(data) {
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.creatorSection.endArea &&
 			data.creatorSection.endArea.id,
-		endDate: data.creatorSection.ended ? dateObjectToString(data.creatorSection.endDate) : '',
+		endDate: data.creatorSection.ended ? dateObjectToString(data.creatorSection.endDate) : {},
 		ended: data.creatorSection.ended,
 		genderId: data.creatorSection.gender,
 		identifiers,

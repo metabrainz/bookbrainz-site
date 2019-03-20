@@ -1,5 +1,5 @@
 /* eslint-disable */
-
+import { ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup } from 'react-bootstrap';
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -11,53 +11,35 @@ import {getSeparatedDate} from '../validators/date';
 class DateField extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log('==================');
-		console.log(this.props.defaultValue);
-		console.log('===================');
+
 		const {day, month, year} = this.props.defaultValue;
 		this.state = {
-			day: !day?null:day,
-			month: !month?null:month,
-			year: !year?null:year
+			day: !day ? '' : day,
+			month: !month ? '': month,
+			year: !year ? '' : year
 		};
 	}
-	// componentWillMount() {
-	// 	this.updateDate(this.state.day, this.state.month, this.state.year);
-	// }
+
 	updateDate = (day, month, year) => {
 		console.log('update date  called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
-		let enteredDate = year;
-		if(month){
-		  enteredDate += `-${month}`;
-		  if(day){
-		    enteredDate += `-${day}`;
-		  }
-		}
-		console.log('@@@@@@@@@@  entered date ' + enteredDate);
-		console.log({year: !year?null:year, month: !month?null:month, day: !day?null:day});
+		//console.log({year: !year?null:year, month: !month?null:month, day: !day?null:day});
 		this.props.onChangeDate({year: !year?null:year, month: !month?null:month, day: !day?null:day});
 	};
 
 	handleYearChange = (event) => {
 		let year = event.target.value;
-		//let validYear = validateYear(this.state.day, this.state.month, year);
 		this.setState({year});
 		this.updateDate(this.state.day, this.state.month, year);
 	};
 
 	handleMonthChange = (event) => {
 		let month = event.target.value;
-		// let validMonth = validateMonth(this.state.day, month, this.state.year);
-		// console.log(validMonth);
 		this.setState({month});
 		this.updateDate(this.state.day, month, this.state.year);
 	};
 
 	handleDayChange = (event) => {
 		let day = event.target.value;
-		console.log('date is ' + day);
-		// let validDay = validateDay(day, this.state.month, this.state.year);
-		// console.log(validDay);
 		this.setState({day})
 		this.updateDate(day, this.state.month, this.state.year);
 	};
@@ -69,6 +51,7 @@ class DateField extends React.Component {
 			<ValidationLabel
 				empty={this.props.empty}
 				error={this.props.error}
+				errorMessage={this.props.errorMessage}
 			>
 				{this.props.label}
 			</ValidationLabel>

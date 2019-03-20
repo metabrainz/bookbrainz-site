@@ -35,8 +35,9 @@ export function validateCreatorSectionBeginArea(value: any): boolean {
 	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
-export function validateCreatorSectionBeginDate(value: any): boolean {
-	return validateDate(value);
+export function validateCreatorSectionBeginDate(value: any): object {
+	const {isValid, errorMessage} = validateDate(value);
+	return {dobError: errorMessage, isValidDob: isValid};
 }
 
 export function validateCreatorSectionEndArea(value: any): boolean {
@@ -49,8 +50,15 @@ export function validateCreatorSectionEndArea(value: any): boolean {
 
 export function validateCreatorSectionEndDate(
 	beginValue: any, endValue: any
-): boolean {
-	return validateDate(endValue) && dateIsBefore(beginValue, endValue);
+): object {
+	const {isValid, errorMessage} = validateDate(endValue);
+	if (isValid) {
+		if (dateIsBefore(beginValue, endValue)) {
+			return {dodError: '', isValidDod: true};
+		}
+		return {dodError: 'Date of death must be greated than DOB', isValidDod: false};
+	}
+	return {dodError: errorMessage, isValidDod: isValid};
 }
 
 export function validateCreatorSectionEnded(value: any): boolean {
@@ -68,11 +76,11 @@ export function validateCreatorSectionGender(value: any): boolean {
 export function validateCreatorSection(data: any): boolean {
 	return (
 		validateCreatorSectionBeginArea(get(data, 'beginArea', null)) &&
-		validateCreatorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))) &&
+		validateCreatorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValidDob &&
 		validateCreatorSectionEndArea(get(data, 'endArea', null)) &&
 		validateCreatorSectionEndDate(
 			convertMapToObject(get(data, 'beginDate', null)), convertMapToObject(get(data, 'endDate', null))
-		) &&
+		).isValidDod &&
 		validateCreatorSectionEnded(get(data, 'ended', null)) &&
 		validateCreatorSectionType(get(data, 'gender', null)) &&
 		validateCreatorSectionType(get(data, 'type', null))

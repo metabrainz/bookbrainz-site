@@ -20,12 +20,9 @@
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
-import moment from 'moment';
-import {validateInputDate} from './date';
+import {dateValidator} from './date';
 import validator from 'validator';
 
-
-const VALID_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM', 'YYYY'];
 
 export function get(
 	object: any,
@@ -97,14 +94,10 @@ export function validateBoolean(
 	return _.isBoolean(value);
 }
 
-export function validateDate(
-	value: mixed, required: boolean = false
-): boolean {
-	// console.log(' validateDate  with value');
-	// console.log(value);
+export function validateDate(value: mixed) {
 	const {year, month, day} = value;
-	const isDateValid = validateInputDate(day, month, year);
-	return isDateValid;
+	const {isValid, errorMessage} = dateValidator(day, month, year);
+	return {errorMessage, isValid};
 }
 
 export function isNullValue(date) {
@@ -112,15 +105,8 @@ export function isNullValue(date) {
 }
 
 export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
-	// console.log('@@@@@@@ dateIsBefore caled @@@@@');
-	// console.log(beginValue);
-	// console.log(endValue);
-	// console.log(isNullValue(beginValue), isNullValue(endValue), !validateDate(beginValue), !validateDate(endValue));
-	//
-	// console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-
-	if (isNullValue(beginValue) || isNullValue(endValue) || !validateDate(beginValue) ||
-		!validateDate(endValue)) {
+	if (isNullValue(beginValue) || isNullValue(endValue) || !validateDate(beginValue).isValid ||
+		!validateDate(endValue).isValid) {
 		return true;
 	}
 

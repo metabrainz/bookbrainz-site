@@ -62,7 +62,9 @@ type Props = {
 	children?: React.Node,
 	empty?: boolean,
 	error?: boolean,
-	warn?: boolean
+	errorMessage?: '',
+	wanrMessage?: '',
+	warn?: boolean,
 };
 
 /**
@@ -83,8 +85,14 @@ function ValidationLabel({
 	children,
 	empty,
 	error,
+	errorMessage,
+	wanrMessage,
 	warn
 }: Props) {
+	const warnElement = wanrMessage &&
+		<span className={contextualColor(empty, error, warn)}> Warning Message here </span>;
+	const errorElement = errorMessage &&
+		<span className={contextualColor(empty, error, warn)}> {errorMessage} </span>;
 	const iconElement = icon(empty, error, warn) &&
 		<Icon className="margin-left-0-5" name={icon(empty, error, warn)}/>;
 
@@ -92,6 +100,8 @@ function ValidationLabel({
 		<span className={contextualColor(empty, error, warn)}>
 			{children}
 			{iconElement}
+			{errorElement}
+			{warnElement}
 		</span>
 	);
 }
@@ -100,6 +110,8 @@ ValidationLabel.defaultProps = {
 	children: null,
 	empty: false,
 	error: false,
+	errorMessage: '',
+	wanrMessage: '',
 	warn: false
 };
 
