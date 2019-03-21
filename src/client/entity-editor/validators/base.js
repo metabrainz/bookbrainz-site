@@ -118,7 +118,10 @@ export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
 	const endMonth = _.toInteger(endValue.month);
 	const endDay = _.toInteger(endValue.day);
 
-	if (beginYear > endYear) {
+	if (beginYear < endYear) {
+		return true;
+	}
+	else if (beginYear > endYear) {
 		return false;
 	}
 	else if (beginYear === endYear && beginMonth > endMonth) {

@@ -1,12 +1,14 @@
 /* eslint-disable */
-import { ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup } from 'react-bootstrap';
+import {Button, FormControl, InputGroup} from 'react-bootstrap';
 import CustomInput from '../../input';
+import DatePicker from 'react-datepicker'
+import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from './validation-label';
 import classNames from 'classnames';
 import {getSeparatedDate} from '../validators/date';
-
+import moment from 'moment';
 
 class DateField extends React.Component {
 	constructor(props) {
@@ -44,6 +46,18 @@ class DateField extends React.Component {
 		this.updateDate(day, this.state.month, this.state.year);
 	};
 
+	handleChangeOfDatePicker = (value) => {
+		const date = new Date(value);
+		const year = date.getFullYear();
+		const month = date.getMonth()+1;
+		const day = date.getDate();
+		this.setState({year});
+		this.setState({month});
+		this.setState({day})
+		console.log('date by date picker '+ value + date.getFullYear() + ' '+ date.getMonth() + ' '+ date.getDate());
+		this.updateDate(day, month, year);
+	}
+
 	render() {
 		console.log('error got ' + this.props.error);
 		console.log('empty got ' + this.props.empty);
@@ -64,33 +78,54 @@ class DateField extends React.Component {
 					groupClassName={groupClassName}
 					label={labelElement}
 				>
-					<div>
-						<input
+					<InputGroup style={{width: '16em'}}>
+						<FormControl
 							maxLength="4"
 							placeholder="YYYY"
-							style={{width: '50px'}}
+
 							type="text"
 							value={this.state.year}
 							onChange={this.handleYearChange}
-						/>-
-						<input
+						/>
+						<InputGroup.Addon style={{padding: "0 0.5em"}}>/</InputGroup.Addon>
+						<FormControl
 							maxLength="2"
 							placeholder="MM"
-							style={{width: '40px'}}
+							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.month}
 							onChange={this.handleMonthChange}
-						/>-
-						<input
+						/>
+						<InputGroup.Addon style={{padding: "0 0.5em"}}>/</InputGroup.Addon>
+						<FormControl
 							maxLength="2"
 							placeholder="DD"
-							style={{width: '40px'}}
+							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.day}
 							onChange={this.handleDayChange}
 						/>
-					</div>
+						<InputGroup.Button>
+						<DatePicker
+							peekNextMonth
+							showMonthDropdown
+							showYearDropdown
+							dateFormat="YYYY-MM-DD"
+							dropdownMode="select"
+							timeFormat="false"
+							viewMode="years"
+							onChange={this.handleChangeOfDatePicker}
+							customInput={
+								<InputGroup.Button>
+								<Button bsStyle="info" title="Date picker"><FontAwesome name="calendar-alt"/> </Button>
+								</InputGroup.Button>
+							}
+
+						/>
+						</InputGroup.Button>
+					</InputGroup>
 				</CustomInput>
+
 			</div>
 
 		);
