@@ -256,7 +256,7 @@ function editionToFormState(edition) {
 			null : entityToOption(edition.publisherSet.publishers[0])
 	);
 
-	const publication = entityToOption(edition.publication);
+	const publication = !edition.publicationBbid ? null : entityToOption(edition.publication);
 
 	const editionSection = {
 		depth: edition.depth,
