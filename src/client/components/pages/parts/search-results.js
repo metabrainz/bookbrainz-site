@@ -49,9 +49,9 @@ function SearchResults(props) {
 							<ButtonGroup id="searchpage-button-group">
 								<Button
 									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/creator/create"
+									href="/author/create"
 								>
-									{genEntityIconHTMLElement('Creator', '3x', false)}
+									{genEntityIconHTMLElement('Author', '3x', false)}
 									<div className="margin-top-d4">Author</div>
 								</Button>
 								<Button

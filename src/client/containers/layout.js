@@ -135,7 +135,7 @@ class Layout extends React.Component {
 							</MenuItem>
 							<MenuItem divider/>
 							<MenuItem href="/author/create">
-								{genEntityIconHTMLElement('Creator')}
+								{genEntityIconHTMLElement('Author')}
 								Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">

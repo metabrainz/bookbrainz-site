@@ -106,7 +106,7 @@ function AuthorDisplayPage({entity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon={ENTITY_TYPE_ICONS.Creator}
+						backupIcon={ENTITY_TYPE_ICONS.Author}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
