@@ -83,14 +83,15 @@ router.get('/:bbid/revisions', (req, res, next) => {
 });
 
 function entityToOption(entity) {
-	return {
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
-		id: entity.bbid,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
-	};
+	return _.isNil(entity) ? null :
+		{
+			disambiguation: entity.disambiguation ?
+				entity.disambiguation.comment : null,
+			id: entity.bbid,
+			text: entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)',
+			type: entity.type
+		};
 }
 
 // Creation

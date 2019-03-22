@@ -22,6 +22,7 @@ import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
+import _ from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 import request from 'superagent-bluebird-promise';
 
@@ -51,6 +52,9 @@ function isArea(entity) {
  * @returns {Object} the formatted data
  */
 function entityToOption(entity) {
+	if (_.isNil(entity)) {
+		return null;
+	}
 	const id = isArea(entity) ? entity.id : entity.bbid;
 
 	return {
