@@ -57,6 +57,9 @@ function isArea(entity) {
  * @returns {Object} the formatted data
  */
 function entityToOption(entity) {
+	if (_.isNil(entity)) {
+		return null;
+	}
 	const id = isArea(entity) ? entity.id : entity.bbid;
 
 	return {
