@@ -35,6 +35,7 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
+
 const router = express.Router();
 
 /* If the route specifies a BBID, load the Edition for it. */
@@ -90,15 +91,16 @@ router.post(
 );
 
 function entityToOption(entity) {
-	return {
-		defaultAlias: entity.defaultAlias,
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
-		id: entity.bbid,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
-	};
+	return _.isNil(entity) ? null :
+		{
+			defaultAlias: entity.defaultAlias,
+			disambiguation: entity.disambiguation ?
+				entity.disambiguation.comment : null,
+			id: entity.bbid,
+			text: entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)',
+			type: entity.type
+		};
 }
 
 function getInitialNameSection(entity) {
@@ -256,7 +258,7 @@ function editionToFormState(edition) {
 			null : entityToOption(edition.publisherSet.publishers[0])
 	);
 
-	const publication = !edition.publicationBbid ? null : entityToOption(edition.publication);
+	const publication = entityToOption(edition.publication);
 
 	const editionSection = {
 		depth: edition.depth,
