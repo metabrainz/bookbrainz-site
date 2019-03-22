@@ -78,16 +78,15 @@ class DateField extends React.Component {
 					groupClassName={groupClassName}
 					label={labelElement}
 				>
-					<InputGroup style={{width: '16em'}}>
+					<InputGroup style={{width: '17em'}}>
 						<FormControl
 							maxLength="4"
 							placeholder="YYYY"
-
 							type="text"
 							value={this.state.year}
 							onChange={this.handleYearChange}
 						/>
-						<InputGroup.Addon style={{padding: "0 0.5em"}}>/</InputGroup.Addon>
+					<InputGroup.Addon style={{padding: "0 0.5em"}}>-</InputGroup.Addon>
 						<FormControl
 							maxLength="2"
 							placeholder="MM"
@@ -96,7 +95,7 @@ class DateField extends React.Component {
 							value={this.state.month}
 							onChange={this.handleMonthChange}
 						/>
-						<InputGroup.Addon style={{padding: "0 0.5em"}}>/</InputGroup.Addon>
+					<InputGroup.Addon style={{padding: "0 0.5em"}}>-</InputGroup.Addon>
 						<FormControl
 							maxLength="2"
 							placeholder="DD"
@@ -105,23 +104,20 @@ class DateField extends React.Component {
 							value={this.state.day}
 							onChange={this.handleDayChange}
 						/>
-						<InputGroup.Button>
-						<DatePicker
-							peekNextMonth
-							showMonthDropdown
-							showYearDropdown
-							dateFormat="YYYY-MM-DD"
-							dropdownMode="select"
-							timeFormat="false"
-							viewMode="years"
-							onChange={this.handleChangeOfDatePicker}
-							customInput={
-								<InputGroup.Button>
-								<Button bsStyle="info" title="Date picker"><FontAwesome name="calendar-alt"/> </Button>
-								</InputGroup.Button>
-							}
-
-						/>
+					<InputGroup.Button style={{ fontSize: "inherit"}}>
+							<DatePicker
+								peekNextMonth
+								showMonthDropdown
+								showYearDropdown
+								dateFormat="YYYY-MM-DD"
+								dropdownMode="select"
+								timeFormat="false"
+								viewMode="years"
+								onChange={this.handleChangeOfDatePicker}
+								customInput={
+									<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} bsStyle="info" title="Date picker"><FontAwesome name="calendar-alt"/></Button>
+								}
+							/>
 						</InputGroup.Button>
 					</InputGroup>
 				</CustomInput>
