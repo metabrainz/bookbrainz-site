@@ -1,12 +1,12 @@
 -- Provides functionality for create, update and delete operations on composite
 -- entity views
-CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
-	AS $process_creator$
+CREATE OR REPLACE FUNCTION bookbrainz.process_author() RETURNS TRIGGER
+	AS $process_author$
 	DECLARE
-		creator_data_id INT;
+		author_data_id INT;
 	BEGIN
 		IF (TG_OP = 'INSERT') THEN
-			INSERT INTO bookbrainz.creator_header(bbid) VALUES(NEW.bbid);
+			INSERT INTO bookbrainz.author_header(bbid) VALUES(NEW.bbid);
 		END IF;
 
 		IF (NEW.ended IS NULL) THEN
@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
 
 		-- If we're not deleting, create new entity data rows as necessary
 		IF (TG_OP <> 'DELETE') THEN
-			INSERT INTO bookbrainz.creator_data(
+			INSERT INTO bookbrainz.author_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
 				disambiguation_id, begin_year, begin_month, begin_day, begin_area_id,
 				end_year, end_month, end_day, end_area_id, ended, area_id, gender_id,
@@ -26,14 +26,14 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
 				NEW.begin_month, NEW.begin_day, NEW.begin_area_id, NEW.end_year,
 				NEW.end_month, NEW.end_day, NEW.end_area_id, NEW.ended, NEW.area_id, NEW.gender_id,
 				NEW.type_id
-			) RETURNING bookbrainz.creator_data.id INTO creator_data_id;
+			) RETURNING bookbrainz.author_data.id INTO author_data_id;
 
-			INSERT INTO bookbrainz.creator_revision VALUES(NEW.revision_id, NEW.bbid, creator_data_id);
+			INSERT INTO bookbrainz.author_revision VALUES(NEW.revision_id, NEW.bbid, author_data_id);
 		ELSE
-			INSERT INTO bookbrainz.creator_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+			INSERT INTO bookbrainz.author_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
 		END IF;
 
-		UPDATE bookbrainz.creator_header
+		UPDATE bookbrainz.author_header
 			SET master_revision_id = NEW.revision_id
 			WHERE bbid = NEW.bbid;
 
@@ -43,7 +43,7 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_creator() RETURNS TRIGGER
 			RETURN NEW;
 		END IF;
 	END;
-$process_creator$ LANGUAGE plpgsql;
+$process_author$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION bookbrainz.process_edition() RETURNS TRIGGER
 	AS $process_edition$
@@ -58,13 +58,13 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_edition() RETURNS TRIGGER
 		IF (TG_OP <> 'DELETE') THEN
 			INSERT INTO bookbrainz.edition_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
-				disambiguation_id, publication_bbid, creator_credit_id,
+				disambiguation_id, edition_group_bbid, author_credit_id,
 				publisher_set_id, release_event_set_id, language_set_id, width,
 				height, depth, weight, pages, format_id, status_id
 			) VALUES (
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
-				NEW.annotation_id, NEW.disambiguation_id, NEW.publication_bbid,
-				NEW.creator_credit_id, NEW.publisher_set_id,
+				NEW.annotation_id, NEW.disambiguation_id, NEW.edition_group_bbid,
+				NEW.author_credit_id, NEW.publisher_set_id,
 				NEW.release_event_set_id, NEW.language_set_id, NEW.width,
 				NEW.height, NEW.depth, NEW.weight, NEW.pages, NEW.format_id,
 				NEW.status_id
@@ -168,31 +168,31 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_publisher() RETURNS TRIGGER
 $process_publisher$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE FUNCTION bookbrainz.process_publication() RETURNS TRIGGER
-	AS $process_publication$
+CREATE OR REPLACE FUNCTION bookbrainz.process_edition_group() RETURNS TRIGGER
+	AS $process_edition_group$
 	DECLARE
-		publication_data_id INT;
+		edition_group_data_id INT;
 	BEGIN
 		IF (TG_OP = 'INSERT') THEN
-			INSERT INTO bookbrainz.publication_header(bbid) VALUES(NEW.bbid);
+			INSERT INTO bookbrainz.edition_group_header(bbid) VALUES(NEW.bbid);
 		END IF;
 
 		-- If we're not deleting, create new entity data rows as necessary
 		IF (TG_OP <> 'DELETE') THEN
-			INSERT INTO bookbrainz.publication_data(
+			INSERT INTO bookbrainz.edition_group_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
 				disambiguation_id, type_id
 			) VALUES (
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
 				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id
-			) RETURNING bookbrainz.publication_data.id INTO publication_data_id;
+			) RETURNING bookbrainz.edition_group_data.id INTO edition_group_data_id;
 
-			INSERT INTO bookbrainz.publication_revision VALUES(NEW.revision_id, NEW.bbid, publication_data_id);
+			INSERT INTO bookbrainz.edition_group_revision VALUES(NEW.revision_id, NEW.bbid, edition_group_data_id);
 		ELSE
-			INSERT INTO bookbrainz.publication_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+			INSERT INTO bookbrainz.edition_group_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
 		END IF;
 
-		UPDATE bookbrainz.publication_header
+		UPDATE bookbrainz.edition_group_header
 			SET master_revision_id = NEW.revision_id
 			WHERE bbid = NEW.bbid;
 
@@ -202,14 +202,14 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_publication() RETURNS TRIGGER
 			RETURN NEW;
 		END IF;
 	END;
-$process_publication$ LANGUAGE plpgsql;
+$process_edition_group$ LANGUAGE plpgsql;
 
 
 BEGIN;
 
-CREATE TRIGGER process_creator
-	INSTEAD OF INSERT OR UPDATE OR DELETE ON bookbrainz.creator
-	FOR EACH ROW EXECUTE PROCEDURE bookbrainz.process_creator();
+CREATE TRIGGER process_author
+	INSTEAD OF INSERT OR UPDATE OR DELETE ON bookbrainz.author
+	FOR EACH ROW EXECUTE PROCEDURE bookbrainz.process_author();
 
 COMMIT;
 
@@ -239,8 +239,8 @@ COMMIT;
 
 BEGIN;
 
-CREATE TRIGGER process_publication
-	INSTEAD OF INSERT OR UPDATE OR DELETE ON bookbrainz.publication
-	FOR EACH ROW EXECUTE PROCEDURE bookbrainz.process_publication();
+CREATE TRIGGER process_edition_group
+	INSTEAD OF INSERT OR UPDATE OR DELETE ON bookbrainz.edition_group
+	FOR EACH ROW EXECUTE PROCEDURE bookbrainz.process_edition_group();
 
 COMMIT;
