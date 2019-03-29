@@ -268,7 +268,7 @@ function processRevisionist(orm, editorId) {
 
 function processAuthorCreator(orm, editorId) {
 	const {AuthorRevision} = orm;
-	return getTypeCreation(new AuthorRevision(), 'creator_revision', editorId)
+	return getTypeCreation(new AuthorRevision(), 'author_revision', editorId)
 		.then((rowCount) => {
 			const tiers = [
 				{

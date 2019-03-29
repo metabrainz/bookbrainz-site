@@ -30,7 +30,7 @@ const thresholdII = 10;
 const thresholdIII = 100;
 
 function rewireTypeCreation(threshold) {
-	return common.rewireTypeCreation(Achievement, 'creator', threshold);
+	return common.rewireTypeCreation(Achievement, 'author', threshold);
 }
 
 function getAttrPromise() {
