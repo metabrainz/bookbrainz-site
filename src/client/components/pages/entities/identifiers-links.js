@@ -72,7 +72,7 @@ function IdentifierLink({typeId, value}) {
 			link = `https://musicbrainz.org/label/${value}`;
 			break;
 		case 18: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Author.
-		case 19: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publication.
+		case 19: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz EditionGroup.
 		case 20: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
 		case 21: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
 			link = `https://www.wikidata.org/wiki/${value}`;

@@ -20,6 +20,7 @@
  */
 
 import * as entityHelper from '../../../helpers/entity';
+
 import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
 import PropTypes from 'prop-types';
@@ -29,11 +30,11 @@ import {extractEntityProps} from '../../../helpers/props';
 
 const {getTypeAttribute, showEntityEditions} = entityHelper;
 
-function PublicationPage(props) {
+function EditionGroupPage(props) {
 	const {entity} = props;
 	const attributes = (
 		<AttributeList
-			attributes={PublicationPage.getAttributes(entity)}
+			attributes={EditionGroupPage.getAttributes(entity)}
 		/>
 	);
 	return (
@@ -46,12 +47,12 @@ function PublicationPage(props) {
 		</EntityPage>
 	);
 }
-PublicationPage.getAttributes = (entity) => [getTypeAttribute(
-	entity.publicationType
+EditionGroupPage.getAttributes = (entity) => [getTypeAttribute(
+	entity.editionGroupType
 )];
-PublicationPage.displayName = 'PublicationPage';
-PublicationPage.propTypes = {
+EditionGroupPage.displayName = 'EditionGroupPage';
+EditionGroupPage.propTypes = {
 	entity: PropTypes.object.isRequired
 };
 
-export default PublicationPage;
+export default EditionGroupPage;

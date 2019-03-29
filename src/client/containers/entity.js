@@ -22,10 +22,11 @@
 /* eslint indent: 0,  react/no-danger: 0 */
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../helpers/utils';
+
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import {kebabCase as _kebabCase} from 'lodash';
 
 const {Alert, Button, Col, Row, Panel} = bootstrap;
 const {formatDate} = utilsHelper;
@@ -64,9 +65,9 @@ class EntityContainer extends React.Component {
 
 	renderHeader() {
 		const {entity, iconName} = this.props;
-		const entityType = entity.type.toLowerCase();
+		const entityType = _kebabCase(entity.type);
 		const entityId = entity.bbid;
-		const urlPrefix = `/${entityType}/${entityId}`;
+		const urlPrefix = `/${_kebabCase(entityType)}/${entityId}`;
 		let entityLabel = null;
 		if (entity.revision.dataId) {
 			entityLabel = entity.defaultAlias ?
@@ -146,7 +147,7 @@ class EntityContainer extends React.Component {
 			children
 		} = this.props;
 		const editUrl =
-			`/${entity.type.toLowerCase()}/${entity.bbid}/relationships`;
+			`/${_kebabCase(entity.type)}/${entity.bbid}/relationships`;
 		const identifiers = entity.identifierSet &&
 			identifierTypes.map((type) => {
 				const identifierValues =

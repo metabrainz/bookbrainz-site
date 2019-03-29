@@ -313,9 +313,9 @@ function processLimitedEdition(orm, editorId) {
 }
 
 function processPublisher(orm, editorId) {
-	const {PublicationRevision} = orm;
-	return getTypeCreation(new PublicationRevision(),
-		'publication_revision',
+	const {EditionGroupRevision} = orm;
+	return getTypeCreation(new EditionGroupRevision(),
+		'edition_group_revision',
 		editorId)
 		.then((rowCount) => {
 			const tiers = [

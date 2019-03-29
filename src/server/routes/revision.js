@@ -37,7 +37,6 @@ import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
-
 const router = express.Router();
 
 function formatAuthorChange(change) {
@@ -75,8 +74,8 @@ function formatAuthorChange(change) {
 }
 
 function formatEditionChange(change) {
-	if (_.isEqual(change.path, ['publicationBbid'])) {
-		return baseFormatter.formatScalarChange(change, 'Publication');
+	if (_.isEqual(change.path, ['editionGroupBbid'])) {
+		return baseFormatter.formatScalarChange(change, 'EditionGroup');
 	}
 
 	if (publisherSetFormatter.changed(change)) {
@@ -152,9 +151,9 @@ function formatWorkChange(change) {
 	return null;
 }
 
-function formatPublicationChange(change) {
+function formatEditionGroupChange(change) {
 	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Publication Type');
+		return baseFormatter.formatTypeChange(change, 'Edition Group Type');
 	}
 
 	return [];
@@ -176,7 +175,7 @@ function diffRevisionsWithParents(revisions) {
 
 router.get('/:id', (req, res, next) => {
 	const {
-		AuthorRevision, EditionRevision, PublicationRevision,
+		AuthorRevision, EditionRevision, EditionGroupRevision,
 		PublisherRevision, Revision, WorkRevision
 	} = req.app.locals.orm;
 
@@ -202,16 +201,16 @@ router.get('/:id', (req, res, next) => {
 
 	const authorDiffsPromise = _createRevision(AuthorRevision);
 	const editionDiffsPromise = _createRevision(EditionRevision);
-	const publicationDiffsPromise = _createRevision(PublicationRevision);
+	const editionGroupDiffsPromise = _createRevision(EditionGroupRevision);
 	const publisherDiffsPromise = _createRevision(PublisherRevision);
 	const workDiffsPromise = _createRevision(WorkRevision);
 
 	Promise.join(
 		revisionPromise, authorDiffsPromise, editionDiffsPromise,
-		workDiffsPromise, publisherDiffsPromise, publicationDiffsPromise,
+		workDiffsPromise, publisherDiffsPromise, editionGroupDiffsPromise,
 		(
 			revision, authorDiffs, editionDiffs, workDiffs, publisherDiffs,
-			publicationDiffs
+			editionGroupDiffs
 		) => {
 			const diffs = _.concat(
 				entityFormatter.formatEntityDiffs(
@@ -225,9 +224,9 @@ router.get('/:id', (req, res, next) => {
 					formatEditionChange
 				),
 				entityFormatter.formatEntityDiffs(
-					publicationDiffs,
-					'Publication',
-					formatPublicationChange
+					editionGroupDiffs,
+					'EditionGroup',
+					formatEditionGroupChange
 				),
 				entityFormatter.formatEntityDiffs(
 					publisherDiffs,

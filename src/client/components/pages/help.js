@@ -79,7 +79,7 @@ function HelpPage() {
 							</ul>
 						</ListGroupItem>
 						<ListGroupItem>
-							<b>{genEntityIconHTMLElement('Publication')}Edition Group</b> – a logical grouping of similar Editions.
+							<b>{genEntityIconHTMLElement('EditionGroup')}Edition Group</b> – a logical grouping of similar Editions.
 							<ul><li>Example: paperback, hardcover and e-book editions</li></ul>
 						</ListGroupItem>
 						<ListGroupItem><b>{genEntityIconHTMLElement('Publisher')}Publisher</b> – publishing company or imprint</ListGroupItem>
@@ -93,7 +93,7 @@ function HelpPage() {
 						<br/>
 						The relationship between <a href="/author/ac59097e-7f86-436d-9308-f6e63871ceff">H.P Lovecraft</a> , his short story <a href="/work/97eafaf5-377a-4703-a12e-d66a30fcfda1">At the Mountains of Madness</a> and an Edition <a href="/edition/b3ed75ea-9f74-44fa-833e-fa2c895c6b12">The Classic Horror Stories</a> which contain it and several more works.
 						<br/>
-						<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">Paperback</a> and <a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f">E-book</a> editions of the novel Ancillary Mercy by the publisher <a href="publisher/b065b24d-136f-45e3-badc-48aea4728c73">Orbit Books</a>  making them part of the same <a href="/publication/540e9c4a-f9fa-427b-a41f-bb12c48f902b">Edition Group</a>
+						<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">Paperback</a> and <a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f">E-book</a> editions of the novel Ancillary Mercy by the publisher <a href="publisher/b065b24d-136f-45e3-badc-48aea4728c73">Orbit Books</a>  making them part of the same <a href="/edition-group/540e9c4a-f9fa-427b-a41f-bb12c48f902b">Edition Group</a>
 					</p>
 					<hr/>
 				</Col>
@@ -113,7 +113,7 @@ function HelpPage() {
 						<li>Find or add a new {genEntityIconHTMLElement('Author')}Author</li>
 						<li>Find or add a new {genEntityIconHTMLElement('Work')}Work with an &#x27;Author wrote Work&#x27; relationship</li>
 						<li>Find or add a new {genEntityIconHTMLElement('Publisher')}Publisher</li>
-						<li>Find or add a new {genEntityIconHTMLElement('Publication')}Edition Group</li>
+						<li>Find or add a new {genEntityIconHTMLElement('EditionGroup')}Edition Group</li>
 						<li>Find or add a new {genEntityIconHTMLElement('Edition')}Edition with a &#x27;contains Work&#x27; relationship and fill in the Publisher</li>
 						<li>If another format of the edition from the same publisher exists (see below), go to the Edition Group and click the &#x27;Add Edition&#x27; button. Repeat step 5.</li>
 					</ol>

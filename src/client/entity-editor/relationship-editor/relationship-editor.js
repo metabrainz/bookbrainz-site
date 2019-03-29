@@ -253,7 +253,7 @@ class RelationshipModal
 		return (
 			<EntitySearchFieldOption
 				cache={false}
-				instanceId="publication"
+				instanceId="editionGroup"
 				label={label}
 				languageOptions={this.props.languageOptions}
 				name="entity"

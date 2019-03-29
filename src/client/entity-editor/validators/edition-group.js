@@ -20,19 +20,21 @@
 
 import {get, validatePositiveInteger} from './base';
 import {
-	validateAliases, validateIdentifiers, validateNameSection,
+	validateAliases,
+	validateIdentifiers,
+	validateNameSection,
 	validateSubmissionSection
 } from './common';
+
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
-
-export function validatePublicationSectionType(value: any): boolean {
+export function validateEditionGroupSectionType(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validatePublicationSection(data: any): boolean {
-	return validatePublicationSectionType(get(data, 'type', null));
+export function validateEditionGroupSection(data: any): boolean {
+	return validateEditionGroupSectionType(get(data, 'type', null));
 }
 
 export function validateForm(
@@ -44,7 +46,7 @@ export function validateForm(
 			get(formData, 'identifierEditor', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
-		validatePublicationSection(get(formData, 'publicationSection', {})),
+		validateEditionGroupSection(get(formData, 'editionGroupSection', {})),
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 

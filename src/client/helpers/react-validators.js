@@ -11,7 +11,7 @@ export const entityProperty = PropTypes.shape({
 export const entityTypeProperty = PropTypes.oneOf([
 	'author',
 	'edition',
-	'publication',
+	'editionGroup',
 	'publisher',
 	'work'
 ]);

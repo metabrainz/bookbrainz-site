@@ -18,9 +18,9 @@
 
 import * as common from './common';
 import * as testData from '../data/test-data.js';
+
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
-
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
@@ -29,7 +29,7 @@ const thresholdII = 10;
 const thresholdIII = 100;
 
 function rewireTypeCreation(threshold) {
-	return common.rewireTypeCreation(Achievement, 'publication', threshold);
+	return common.rewireTypeCreation(Achievement, 'edition_group', threshold);
 }
 
 function getAttrPromise() {
@@ -59,26 +59,26 @@ export default function tests() {
 		getRevAttrPromise('I'),
 		expectIds('I')
 	);
-	it('I should be given to someone with a publication creation', test1);
+	it('I should be given to someone with an edition group creation', test1);
 
 	const test2 = common.testAchievement(
 		rewireTypeCreation(thresholdII),
 		getRevAttrPromise('II'),
 		expectIds('II')
 	);
-	it('II should be given to someone with 10 publication creations', test2);
+	it('II should be given to someone with 10 edition groups creations', test2);
 
 	const test3 = common.testAchievement(
 		rewireTypeCreation(thresholdIII),
 		getAttrPromise(),
 		expectAllNamedIds('III')
 	);
-	it('III should be given to someone with 100 publication creations', test3);
+	it('III should be given to someone with 100 edition groups creations', test3);
 
 	const test4 = common.testAchievement(
 		rewireTypeCreation(0),
 		getRevAttrPromise('I'),
 		common.expectFalse()
 	);
-	it('should not be given to someone with 0 publication creations', test4);
+	it('should not be given to someone with 0 edition group creation', test4);
 }

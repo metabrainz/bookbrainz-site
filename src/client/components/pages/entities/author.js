@@ -26,6 +26,7 @@ import EntityTitle from './title';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {kebabCase as _kebabCase} from 'lodash';
 import {labelsForAuthor} from '../../../helpers/utils';
 
 const {extractAttribute, getTypeAttribute, getEntityUrl,
@@ -123,8 +124,7 @@ function AuthorDisplayPage({entity, identifierTypes}) {
 			<Button
 				bsStyle="success"
 				className="margin-top-d15"
-				href={`/work/create?${
-					entity.type.toLowerCase()}=${entity.bbid}`}
+				href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 			>
 				<Icon className="margin-right-0-5" name="plus"/>Add Work
 			</Button>

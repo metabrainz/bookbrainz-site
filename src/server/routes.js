@@ -19,17 +19,16 @@
 
 import authRouter from './routes/auth';
 import authorRouter from './routes/entity/author';
+import editionGroupRouter from './routes/entity/edition-group';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
 import indexRouter from './routes/index';
-import publicationRouter from './routes/entity/publication';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
 import searchRouter from './routes/search';
 import statisticsRouter from './routes/statistics';
 import workRouter from './routes/entity/work';
-
 
 function initRootRoutes(app) {
 	app.use('/', indexRouter);
@@ -39,8 +38,9 @@ function initRootRoutes(app) {
 	app.use('/statistics', statisticsRouter);
 }
 
-function initPublicationRoutes(app) {
-	app.use('/publication', publicationRouter);
+function initEditionGroupRoutes(app) {
+	/* Retro-compatibility for /publication links */
+	app.use(['/edition-group', '/publication'], editionGroupRouter);
 }
 
 function initAuthorRoutes(app) {
@@ -71,7 +71,7 @@ function initEditorRoutes(app) {
 function initRoutes(app) {
 	initRootRoutes(app);
 
-	initPublicationRoutes(app);
+	initEditionGroupRoutes(app);
 	initAuthorRoutes(app);
 	initEditionRoutes(app);
 	initWorkRoutes(app);

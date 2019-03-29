@@ -59,7 +59,7 @@ class SearchField extends React.Component {
 	triggerOnSearch() {
 		const inputValue = this.queryInput.getValue();
 		const {collection} = this.state;
-		this.props.onSearch(inputValue, _.toLower(collection));
+		this.props.onSearch(inputValue, _.snakeCase(collection));
 	}
 
 	handleSubmit(event) {

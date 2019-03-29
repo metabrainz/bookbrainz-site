@@ -20,9 +20,12 @@
 
 import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
-	validateAliases, validateIdentifiers, validateNameSection,
+	validateAliases,
+	validateIdentifiers,
+	validateNameSection,
 	validateSubmissionSection
 } from './common';
+
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
@@ -64,7 +67,7 @@ export function validateEditionSectionPages(value: ?any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateEditionSectionPublication(value: ?any): boolean {
+export function validateEditionSectionEditionGroup(value: ?any): boolean {
 	return validateUUID(get(value, 'id', null), true);
 }
 
@@ -99,7 +102,7 @@ export function validateEditionSection(data: any): boolean {
 		validateEditionSectionHeight(get(data, 'height', null)) &&
 		validateEditionSectionLanguages(get(data, 'languages', null)) &&
 		validateEditionSectionPages(get(data, 'pages', null)) &&
-		validateEditionSectionPublication(get(data, 'publication', null)) &&
+		validateEditionSectionEditionGroup(get(data, 'editionGroup', null)) &&
 		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
 		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)) &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&

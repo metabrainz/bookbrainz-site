@@ -23,10 +23,10 @@ import {
 
 import {AppContainer} from 'react-hot-loader';
 import AuthorPage from '../../components/pages/entities/author';
+import EditionGroupPage from '../../components/pages/entities/edition-group';
 import EditionPage from '../../components/pages/entities/edition';
 import EntityRevisions from '../../components/pages/entity-revisions';
 import Layout from '../../containers/layout';
-import PublicationPage from '../../components/pages/entities/publication';
 import PublisherPage from '../../components/pages/entities/publisher';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -36,7 +36,7 @@ import WorkPage from '../../components/pages/entities/work';
 const entityComponents = {
 	author: AuthorPage,
 	edition: EditionPage,
-	publication: PublicationPage,
+	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
 	work: WorkPage
 };

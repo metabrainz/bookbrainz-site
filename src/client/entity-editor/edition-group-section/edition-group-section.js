@@ -27,8 +27,7 @@ import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
-
-type PublicationType = {
+type EditionGroupType = {
 	label: string,
 	id: number
 };
@@ -42,32 +41,32 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-	publicationTypes: Array<PublicationType>
+	editionGroupTypes: Array<EditionGroupType>
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 /**
- * Container component. The PublicationSection component contains input fields
- * specific to the publication entity. The intention is that this component is
+ * Container component. The EditionGroupSection component contains input fields
+ * specific to the editionGroup entity. The intention is that this component is
  * rendered as a modular section within the entity editor.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {Array} props.publicationTypes - The list of possible types for a
- *        publication.
+ * @param {Array} props.editionGroupTypes - The list of possible types for a
+ *        editionGroup.
  * @param {number} props.typeValue - The type currently selected for the
- *        publication.
+ *        editionGroup.
  * @param {Function} props.onTypeChange - A function to be called when
  *        a different publisher type is selected.
  * @returns {ReactElement} React element containing the rendered
- *          PublicationSection.
+ *          EditionGroupSection.
  */
-function PublicationSection({
-	publicationTypes,
+function EditionGroupSection({
+	editionGroupTypes,
 	typeValue,
 	onTypeChange
 }: Props) {
-	const publicationTypesForDisplay = publicationTypes.map((type) => ({
+	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
@@ -75,7 +74,7 @@ function PublicationSection({
 	return (
 		<form>
 			<h2>
-				What else do you know about the Publication?
+				What else do you know about the Edition Group?
 			</h2>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
@@ -85,11 +84,11 @@ function PublicationSection({
 				<Col md={6} mdOffset={3}>
 					<CustomInput
 						label="Type"
-						tooltipText="Physical format of the Publication"
+						tooltipText="Physical format of the Edition Group"
 					>
 						<Select
-							instanceId="publicationType"
-							options={publicationTypesForDisplay}
+							instanceId="editionGroupType"
+							options={editionGroupTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
@@ -99,10 +98,10 @@ function PublicationSection({
 		</form>
 	);
 }
-PublicationSection.displayName = 'PublicationSection';
+EditionGroupSection.displayName = 'EditionGroupSection';
 
 function mapStateToProps(rootState): StateProps {
-	const state = rootState.get('publicationSection');
+	const state = rootState.get('editionGroupSection');
 
 	return {
 		typeValue: state.get('type')
@@ -115,4 +114,4 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublicationSection);
+export default connect(mapStateToProps, mapDispatchToProps)(EditionGroupSection);

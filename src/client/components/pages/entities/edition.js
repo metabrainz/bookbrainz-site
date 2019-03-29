@@ -114,9 +114,9 @@ function EditionDisplayPage({entity, identifierTypes}) {
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
 					<EditionAttributes edition={entity}/>
-					{entity.publication &&
+					{entity.editionGroup &&
 					<div className="margin-bottom-d15">
-						<a href={`/publication/${entity.publication.bbid}`}>
+						<a href={`/edition-group/${entity.editionGroup.bbid}`}>
 							<Icon name="external-link"/>
 							<span>&nbsp;See all similar editions</span>
 						</a>
