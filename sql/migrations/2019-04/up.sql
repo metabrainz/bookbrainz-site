@@ -30,7 +30,9 @@ BEGIN TRANSACTION;
 	ALTER TABLE IF EXISTS bookbrainz.edition_data RENAME COLUMN publication_bbid TO edition_group_bbid;
 	ALTER TABLE IF EXISTS bookbrainz.edition_data RENAME COLUMN creator_credit_id TO author_credit_id;
 
+	ALTER TABLE IF EXISTS bookbrainz.author_credit RENAME COLUMN creator_count TO author_count;
 	ALTER TABLE IF EXISTS bookbrainz.author_credit_name RENAME COLUMN creator_credit_id TO author_credit_id;
+	ALTER TABLE IF EXISTS bookbrainz.author_credit_name RENAME COLUMN creator_bbid TO author_bbid;
 
     -- rename awards and description
     UPDATE bookbrainz.achievement_type SET name = replace(name,'Creator Creator','Author Creator');
