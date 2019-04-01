@@ -63,6 +63,10 @@ function initRevisionRoutes(app) {
 	app.use('/revision', revisionRouter);
 }
 
+function initEditorRoutes(app) {
+	app.use('/editor', editorRouter);
+}
+
 function initRoutes(app) {
 	initRootRoutes(app);
 
@@ -72,8 +76,7 @@ function initRoutes(app) {
 	initWorkRoutes(app);
 	initPublisherRoutes(app);
 	initRevisionRoutes(app);
-
-	app.use('/editor', editorRouter);
+	initEditorRoutes(app);
 }
 
 export default initRoutes;
