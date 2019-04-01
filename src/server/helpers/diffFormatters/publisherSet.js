@@ -18,7 +18,6 @@
 
 import * as set from './set';
 
-
 function formatNewPublisherSet(change) {
 	function transformer(rhs) {
 		return rhs.publishers.map((publisher) => publisher.bbid);

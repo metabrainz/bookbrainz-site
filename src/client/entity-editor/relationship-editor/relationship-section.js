@@ -45,7 +45,6 @@ import RelationshipEditor from './relationship-editor';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 
-
 type RelationshipListProps = {
 	contextEntity: Entity,
 	relationships: Array<RelationshipForDisplay>,

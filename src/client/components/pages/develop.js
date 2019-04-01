@@ -17,7 +17,6 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
 import React from 'react';
 
 const {PageHeader} = bootstrap;

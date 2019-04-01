@@ -20,10 +20,8 @@
 // @flow
 
 import * as utils from './utils';
-
 import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
 import _ from 'lodash';
-
 
 type EntityInRelationship = {
 	bbid: string,

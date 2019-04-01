@@ -28,7 +28,6 @@ import _ from 'lodash';
 import makeImmutable from './make-immutable';
 import request from 'superagent-bluebird-promise';
 
-
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
 
 /**

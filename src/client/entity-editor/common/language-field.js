@@ -19,11 +19,9 @@
 // @flow
 
 import * as React from 'react';
-
 import CustomInput from '../../input';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
-
 
 type Props = {
 	empty?: boolean,

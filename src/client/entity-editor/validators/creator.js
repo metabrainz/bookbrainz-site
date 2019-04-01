@@ -26,7 +26,6 @@ import {
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
-
 export function validateCreatorSectionBeginArea(value: any): boolean {
 	if (!value) {
 		return true;

@@ -24,7 +24,6 @@ import {
 	UPDATE_TYPE
 } from './actions';
 
-
 type State = Immutable.Map<string, any>;
 
 function reducer(

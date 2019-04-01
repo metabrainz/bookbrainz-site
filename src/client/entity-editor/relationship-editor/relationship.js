@@ -24,7 +24,6 @@ import React from 'react';
 import _ from 'lodash';
 import {getEntityLink} from '../../../server/helpers/utils';
 
-
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 	const link = makeLink && entity.bbid &&
 		getEntityLink({bbid: entity.bbid, type: entity.type});

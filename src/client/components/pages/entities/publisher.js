@@ -29,7 +29,6 @@ import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const {extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;

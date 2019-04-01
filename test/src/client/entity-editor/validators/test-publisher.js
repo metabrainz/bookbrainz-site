@@ -52,7 +52,6 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-
 function describeValidatePublisherSectionArea() {
 	testValidateAreaFunc(validatePublisherSectionArea, false);
 }

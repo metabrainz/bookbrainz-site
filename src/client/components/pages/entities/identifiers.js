@@ -20,7 +20,6 @@ import IdentifierLink from './identifiers-links';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 function EntityIdentifiers({identifierSet, identifierTypes}) {
 	return (
 		<div>

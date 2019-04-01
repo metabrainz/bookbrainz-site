@@ -28,7 +28,6 @@ import {
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 
-
 export function validateMultiple(
 	values: any[],
 	validationFunction: (value: any, ...rest: any[]) => boolean,

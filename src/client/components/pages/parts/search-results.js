@@ -18,12 +18,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
 import PropTypes from 'prop-types';
 import React from 'react';
 import {differenceBy as _differenceBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
-
 
 const {Button, ButtonGroup, Col, Row, Table} = bootstrap;
 

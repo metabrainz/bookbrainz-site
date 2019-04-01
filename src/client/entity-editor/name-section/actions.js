@@ -20,7 +20,6 @@
 
 import request from 'superagent-bluebird-promise';
 
-
 export const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
 export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';

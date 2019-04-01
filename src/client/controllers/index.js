@@ -33,7 +33,6 @@ import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 

@@ -23,7 +23,6 @@ import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const {Button, Table} = bootstrap;
 
 const {getEntityDisambiguation} = entityHelper;

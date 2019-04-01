@@ -18,7 +18,6 @@
 
 import {Alert, Button, Col, Row} from 'react-bootstrap';
 import {debounceUpdateRevisionNote, submit} from './actions';
-
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';

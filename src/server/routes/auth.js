@@ -20,7 +20,6 @@ import express from 'express';
 import passport from 'passport';
 import status from 'http-status';
 
-
 const router = express.Router();
 
 router.get('/auth', passport.authenticate('musicbrainz-oauth2'));

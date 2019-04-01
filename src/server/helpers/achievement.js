@@ -27,7 +27,6 @@ import Log from 'log';
 import Promise from 'bluebird';
 import config from './config';
 
-
 const log = new Log(config.site.log);
 
 /**

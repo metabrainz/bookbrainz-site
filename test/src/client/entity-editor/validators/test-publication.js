@@ -42,7 +42,6 @@ import {testValidatePositiveIntegerFunc} from './helpers';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-
 function describeValidatePublicationSectionType() {
 	testValidatePositiveIntegerFunc(validatePublicationSectionType, false);
 }

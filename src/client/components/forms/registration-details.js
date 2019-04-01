@@ -29,7 +29,6 @@ import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent-bluebird-promise';
 
-
 const {Alert, Button, PageHeader} = bootstrap;
 
 class RegistrationForm extends React.Component {

@@ -25,7 +25,6 @@ import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const {Button, Col, Image, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 

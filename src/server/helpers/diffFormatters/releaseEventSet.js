@@ -18,7 +18,6 @@
 
 import * as set from './set';
 
-
 function formatNewReleaseEventSet(change) {
 	function transformer(rhs) {
 		return rhs.releaseEvents.map((releaseEvent) => releaseEvent.date);

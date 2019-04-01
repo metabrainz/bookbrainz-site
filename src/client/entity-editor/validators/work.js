@@ -26,7 +26,6 @@ import {
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
-
 export function validateWorkSectionType(value: ?any): boolean {
 	return validatePositiveInteger(value);
 }

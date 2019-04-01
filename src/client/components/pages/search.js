@@ -19,14 +19,12 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 import {isNil} from 'lodash';
 import request from 'superagent-bluebird-promise';
-
 
 const {Button, ButtonGroup, DropdownButton, MenuItem, Pager} = bootstrap;
 

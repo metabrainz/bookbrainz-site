@@ -23,7 +23,6 @@ import Icon from 'react-fontawesome';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
-
 type EntityProps = {
 	disambiguation?: ?string,
 	link?: string | false,

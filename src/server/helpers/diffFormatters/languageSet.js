@@ -16,9 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as set from './set';
-
 
 function formatNewLanguageSet(change) {
 	function transformer(rhs) {

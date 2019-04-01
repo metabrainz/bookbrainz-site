@@ -20,7 +20,6 @@
 
 import type {Relationship} from './types';
 
-
 export const SHOW_RELATIONSHIP_EDITOR = 'SHOW_RELATIONSHIP_EDITOR';
 export const HIDE_RELATIONSHIP_EDITOR = 'HIDE_RELATIONSHIP_EDITOR';
 export const ADD_RELATIONSHIP = 'ADD_RELATIONSHIP';

@@ -22,7 +22,6 @@ import * as utilsHelper from '../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const {Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate, isWithinDayFromNow} = utilsHelper;
 

@@ -20,7 +20,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 
-
 function AttributeList({attributes}) {
 	return (
 		<div>

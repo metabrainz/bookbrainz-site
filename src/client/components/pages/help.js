@@ -17,10 +17,8 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-
 
 const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
 

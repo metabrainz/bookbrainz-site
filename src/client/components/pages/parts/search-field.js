@@ -28,7 +28,6 @@ import React from 'react';
 import _ from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
-
 const {Button, DropdownButton, InputGroup, MenuItem} = bootstrap;
 
 const SearchButton = (

@@ -19,7 +19,6 @@
 import * as base from './base';
 import _ from 'lodash';
 
-
 function formatNewAnnotation(change) {
 	return base.formatChange(
 		change, 'Annotation', (side) => [side && side.content]

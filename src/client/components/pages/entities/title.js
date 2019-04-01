@@ -21,11 +21,9 @@ import * as entityHelper from '../../../helpers/entity';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const {
 	getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel
 } = entityHelper;
-
 
 function EntityTitle({entity}) {
 	const aliases = getEntitySecondaryAliases(entity);

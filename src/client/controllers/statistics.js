@@ -23,7 +23,6 @@ import ReactDOM from 'react-dom';
 import StatisticsPage from '../components/pages/statistics';
 import {extractLayoutProps} from '../helpers/props';
 
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (

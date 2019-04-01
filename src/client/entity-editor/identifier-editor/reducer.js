@@ -22,7 +22,6 @@ import {
 } from './actions';
 import Immutable from 'immutable';
 
-
 const EMPTY_IDENTIFIER = Immutable.Map({
 	type: null,
 	value: ''

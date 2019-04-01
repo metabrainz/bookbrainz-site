@@ -1,7 +1,6 @@
 
 import PropTypes from 'prop-types';
 
-
 export const entityProperty = PropTypes.shape({
 	bbid: PropTypes.string,
 	defaultAlias: PropTypes.shape({

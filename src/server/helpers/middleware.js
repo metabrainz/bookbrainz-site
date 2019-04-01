@@ -22,7 +22,6 @@ import * as utils from '../helpers/utils';
 import Promise from 'bluebird';
 import renderRelationship from '../helpers/render';
 
-
 function makeLoader(modelName, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
 		const model = req.app.locals.orm[modelName];

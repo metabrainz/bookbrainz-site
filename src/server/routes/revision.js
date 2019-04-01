@@ -35,7 +35,6 @@ import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
-
 const router = express.Router();
 
 function formatCreatorChange(change) {

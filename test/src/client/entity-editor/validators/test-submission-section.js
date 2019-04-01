@@ -31,11 +31,9 @@ import {testValidateStringFunc} from './helpers';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-
 function describeValidateSubmissionSectionNote() {
 	testValidateStringFunc(validateSubmissionSectionNote, false);
 }
-
 
 function describeValidateSubmissionSection() {
 	it('should pass a valid Object', () => {
@@ -76,7 +74,6 @@ function describeValidateSubmissionSection() {
 		expect(result).to.be.true;
 	});
 }
-
 
 function tests() {
 	describe(

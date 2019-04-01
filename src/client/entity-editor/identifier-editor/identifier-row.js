@@ -34,7 +34,6 @@ import Select from 'react-select';
 import ValueField from './value-field';
 import {connect} from 'react-redux';
 
-
 type OwnProps = {
 	index: number,
 	typeOptions: Array<IdentifierType>
@@ -128,7 +127,6 @@ function IdentifierRow({
 }
 IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 
-
 function handleValueChange(
 	dispatch: Dispatch<Action>,
 	event: SyntheticInputEvent<>,
@@ -147,7 +145,6 @@ function handleValueChange(
 	);
 }
 
-
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('identifierEditor');
 	return {
@@ -155,7 +152,6 @@ function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 		valueValue: state.getIn([index, 'value'])
 	};
 }
-
 
 function mapDispatchToProps(
 	dispatch: Dispatch<Action>,

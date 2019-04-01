@@ -17,12 +17,10 @@
  */
 
 import * as utils from '../helpers/utils';
-
 import ElasticSearch from 'elasticsearch';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import httpStatus from 'http-status';
-
 
 const _index = 'bookbrainz';
 const _bulkIndexSize = 128;

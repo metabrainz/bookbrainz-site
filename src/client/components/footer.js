@@ -19,10 +19,8 @@
  */
 /* eslint max-len: "warn" */
 import * as bootstrap from 'react-bootstrap';
-
 import PropTypes from 'prop-types';
 import React from 'react';
-
 
 const {Col, Grid, Row} = bootstrap;
 

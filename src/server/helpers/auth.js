@@ -19,13 +19,11 @@
 
 import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
 import * as error from '../helpers/error';
-
 import Log from 'log';
 import _ from 'lodash';
 import config from './config';
 import passport from 'passport';
 import status from 'http-status';
-
 
 const log = new Log(config.site.log);
 

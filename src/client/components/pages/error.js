@@ -21,7 +21,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {hot} from 'react-hot-loader';
 
-
 const {Button, Grid, Row} = bootstrap;
 
 /**

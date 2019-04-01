@@ -19,7 +19,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 function IdentifierLink({typeId, value}) {
 	let link;
 	// All identifiers type IDs have been taken from database.

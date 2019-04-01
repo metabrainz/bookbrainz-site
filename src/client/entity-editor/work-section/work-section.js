@@ -25,7 +25,6 @@ import {
 } from './actions';
 import {Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
-
 import CustomInput from '../../input';
 import LanguageField from '../common/language-field';
 import React from 'react';
@@ -33,9 +32,7 @@ import Select from 'react-select';
 import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
 
-
 const ImmutableLanguageField = makeImmutable(LanguageField);
-
 
 type WorkType = {
 	label: string,

@@ -30,7 +30,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import RevisionsTab from '../../components/pages/parts/editor-revisions';
 
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 

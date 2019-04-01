@@ -21,12 +21,10 @@
 /* eslint-disable max-len */
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
-
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-
 
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;

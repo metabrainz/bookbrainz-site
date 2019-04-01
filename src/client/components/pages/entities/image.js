@@ -17,11 +17,9 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-
 
 const {Image} = bootstrap;
 

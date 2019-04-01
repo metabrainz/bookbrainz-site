@@ -27,7 +27,6 @@ import {Iterable} from 'immutable';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
-
 export function validateEditionSectionDepth(value: ?any): boolean {
 	return validatePositiveInteger(value);
 }

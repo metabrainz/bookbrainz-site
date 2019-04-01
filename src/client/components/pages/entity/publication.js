@@ -26,7 +26,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {extractEntityProps} from '../../../helpers/props';
 
-
 const {getTypeAttribute, showEntityEditions} = entityHelper;
 
 function PublicationPage(props) {

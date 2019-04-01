@@ -24,7 +24,6 @@ import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-
 function wangleID(value, idAttribute) {
 	if (_.isArray(value)) {
 		return value.map(
@@ -36,7 +35,6 @@ function wangleID(value, idAttribute) {
 
 	return _.isObject(value) ? value[idAttribute] : value;
 }
-
 
 class SelectWrapper extends React.Component {
 	constructor(props) {

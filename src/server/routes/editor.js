@@ -36,7 +36,6 @@ import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
-
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, (req, res, next) => {

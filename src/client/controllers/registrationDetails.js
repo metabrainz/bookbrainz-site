@@ -24,7 +24,6 @@ import ReactDOM from 'react-dom';
 import RegistrationForm from '../components/forms/registration-details';
 import {extractLayoutProps} from '../helpers/props';
 
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 

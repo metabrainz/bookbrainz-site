@@ -23,7 +23,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import validator from 'validator';
 
-
 const VALID_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM', 'YYYY'];
 
 export function get(

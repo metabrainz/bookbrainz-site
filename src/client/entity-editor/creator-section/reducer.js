@@ -24,7 +24,6 @@ import {
 	UPDATE_END_AREA, UPDATE_END_DATE, UPDATE_GENDER, UPDATE_TYPE
 } from './actions';
 
-
 type State = Immutable.Map<string, any>;
 
 function reducer(

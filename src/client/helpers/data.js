@@ -18,7 +18,6 @@
 
 import _ from 'lodash';
 
-
 export function entityHasChanged(initial, current) {
 	return (initial && initial.bbid) !== (current && current.bbid);
 }

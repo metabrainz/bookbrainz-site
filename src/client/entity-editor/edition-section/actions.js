@@ -18,7 +18,6 @@
 
 // @flow
 
-
 type LanguageOption = {
 	name: string,
 	id: number
@@ -39,7 +38,6 @@ export type Action = {
 	type: string,
 	metadata?: {}
 };
-
 
 export const UPDATE_PUBLICATION = 'UPDATE_PUBLICATION';
 export const UPDATE_PUBLISHER = 'UPDATE_PUBLISHER';

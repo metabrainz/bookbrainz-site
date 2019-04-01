@@ -31,7 +31,6 @@ import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
 
-
 function isValidRelationship(relationship: _Relationship) {
 	const {relationshipType, sourceEntity, targetEntity} = relationship;
 

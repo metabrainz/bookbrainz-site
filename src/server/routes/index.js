@@ -20,9 +20,7 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-
 import {escapeProps, generateProps} from '../helpers/props';
-
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
@@ -36,7 +34,6 @@ import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
-
 
 const router = express.Router();
 

@@ -26,7 +26,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {extractEntityProps} from '../../../helpers/props';
 
-
 const {
 	extractAttribute, getTypeAttribute, getDateAttributes, showEntityEditions
 } = entityHelper;

@@ -21,7 +21,6 @@ import * as testData from '../data/test-data.js';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-
 const {Editor} = orm;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');

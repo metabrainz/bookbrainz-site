@@ -29,7 +29,6 @@ import SearchSelect from '../input/entity-search';
 import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent-bluebird-promise';
 
-
 const {Button, Col, Grid, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 

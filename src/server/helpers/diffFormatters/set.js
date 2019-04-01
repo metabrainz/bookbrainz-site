@@ -19,7 +19,6 @@
 import * as base from './base';
 import _ from 'lodash';
 
-
 export function formatNewSet(change, label, itemProp, transformerFunc) {
 	const {rhs} = change;
 	if (rhs[itemProp] && rhs[itemProp].length > 0) {

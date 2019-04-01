@@ -20,13 +20,11 @@
 
 import {type Action, updateType} from './actions';
 import {Col, Row} from 'react-bootstrap';
-
 import CustomInput from '../../input';
 import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-
 
 type PublicationType = {
 	label: string,

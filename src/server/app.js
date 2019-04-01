@@ -40,7 +40,6 @@ import routes from './routes';
 import serveStatic from 'serve-static';
 import session from 'express-session';
 
-
 Promise.config({
 	longStackTraces: true,
 	warnings: true

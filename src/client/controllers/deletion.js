@@ -23,7 +23,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {extractLayoutProps} from '../helpers/props';
 
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 

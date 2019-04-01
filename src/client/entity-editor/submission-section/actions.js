@@ -23,7 +23,6 @@ import type {Promise} from 'bluebird';
 import _ from 'lodash';
 import request from 'superagent-bluebird-promise';
 
-
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
 

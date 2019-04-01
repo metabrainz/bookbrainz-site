@@ -19,7 +19,6 @@
 /* eslint-disable react/display-name */
 
 import * as bootstrap from 'react-bootstrap';
-
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 import _ from 'lodash';

@@ -35,7 +35,6 @@ import config from '../helpers/config';
 import express from 'express';
 import target from '../templates/target';
 
-
 const router = express.Router();
 const log = new Log(config.site.log);
 

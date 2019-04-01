@@ -21,7 +21,6 @@ import {
 } from './actions';
 import Immutable from 'immutable';
 
-
 function reducer(
 	state = Immutable.Map({
 		note: '',

@@ -26,7 +26,6 @@ import ValidationLabel from '../common/validation-label';
 import classNames from 'classnames';
 import moment from 'moment';
 
-
 type Props = {
 	show?: boolean,
 	label: string,

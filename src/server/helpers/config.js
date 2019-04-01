@@ -18,7 +18,6 @@
 
 import {readFileSync} from 'fs';
 
-
 /* Pull in environment-specific configuration. */
 const env = process.env.NODE_ENV || 'development'; // eslint-disable-line no-process-env,max-len
 

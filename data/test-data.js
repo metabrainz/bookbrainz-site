@@ -18,7 +18,6 @@
 
 import orm from '../test/bookbrainz-data';
 
-
 const {
 	bookshelf, util, Editor, EditorType, AchievementType, TitleType, Revision
 } = orm;

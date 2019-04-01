@@ -43,7 +43,6 @@ import {validateForm as validatePublisherForm} from './validators/publisher.js';
 import {validateForm as validateWorkForm} from './validators/work.js';
 import workSectionReducer from './work-section/reducer';
 
-
 export function isAliasEmpty(
 	nameValue: string, sortNameValue: string, languageValue: ?number
 ): boolean {
@@ -117,7 +116,6 @@ export function shouldDevToolsBeInjected(): boolean {
 		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
 }
-
 
 export function isPartialDateValid(value: ?string): boolean {
 	const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;

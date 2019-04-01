@@ -27,7 +27,6 @@ import {generateProps} from './props';
 import status from 'http-status';
 import target from '../templates/target';
 
-
 const log = new Log(config.site.log);
 
 export class SiteError extends Error {

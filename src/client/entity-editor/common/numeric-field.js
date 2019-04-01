@@ -23,7 +23,6 @@ import React from 'react';
 import ValidationLabel from '../common/validation-label';
 import classNames from 'classnames';
 
-
 type Props = {
 	show?: boolean,
 	label: string,

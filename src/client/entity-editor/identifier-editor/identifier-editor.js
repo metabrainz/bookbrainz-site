@@ -27,7 +27,6 @@ import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
-
 /**
  * Container component. The IdentifierEditor component contains a number of
  * IdentifierRow elements, and renders these inside a modal, which appears when

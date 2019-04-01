@@ -23,7 +23,6 @@ import ReactDOM from 'react-dom';
 import RevisionPage from '../components/pages/revision';
 import {extractLayoutProps} from '../helpers/props';
 
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 

@@ -18,11 +18,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-
 
 const {
 	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,

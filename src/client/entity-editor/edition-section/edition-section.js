@@ -56,7 +56,6 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
 
-
 const ImmutableLanguageField = makeImmutable(LanguageField);
 
 type EditionFormat = {

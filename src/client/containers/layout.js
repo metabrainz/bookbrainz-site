@@ -26,13 +26,11 @@
 /* eslint global-require: "warn" */
 
 import * as bootstrap from 'react-bootstrap';
-
 import FontAwesome from 'react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
-
 
 if (!process.env.SSR) {
 	require('../../client/stylesheets/style.less');

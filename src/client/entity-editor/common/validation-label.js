@@ -21,7 +21,6 @@
 import * as React from 'react';
 import Icon from 'react-fontawesome';
 
-
 function icon(empty: ?boolean, error: ?boolean, warn: ?boolean): string | null {
 	if (empty) {
 		return null;

@@ -29,10 +29,8 @@ import {
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-
 chai.use(chaiAsPromised);
 const {expect} = chai;
-
 
 function describeValidateNameSectionName() {
 	testValidateStringFunc(validateNameSectionName);
@@ -49,7 +47,6 @@ function describeValidateNameSectionLanguage() {
 function describeValidateNameSectionDisambiguation() {
 	testValidateStringFunc(validateNameSectionDisambiguation, false);
 }
-
 
 function describeValidateNameSection() {
 	it('should pass a valid Object', () => {

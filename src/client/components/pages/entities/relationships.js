@@ -19,7 +19,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 function EntityRelationships({relationships}) {
 	return (
 		<div>

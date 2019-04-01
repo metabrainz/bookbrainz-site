@@ -23,7 +23,6 @@ import ReactDOM from 'react-dom';
 import SearchPage from '../components/pages/search';
 import {extractLayoutProps} from '../helpers/props';
 
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 

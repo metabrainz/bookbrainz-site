@@ -43,7 +43,6 @@ import {testValidatePositiveIntegerFunc} from './helpers';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-
 function describeValidateWorkSectionLanguage() {
 	const validLanguage = {value: 1};
 

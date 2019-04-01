@@ -37,7 +37,6 @@ import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
 import createDebounce from 'redux-debounce';
 
-
 const {
 	createRootReducer, getValidator, getEntitySection, shouldDevToolsBeInjected
 } = helpers;

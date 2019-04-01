@@ -31,7 +31,6 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
-
 const router = express.Router();
 
 /* If the route specifies a BBID, load the Publisher for it. */

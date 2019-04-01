@@ -21,7 +21,6 @@ import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const ymdRegex = /^\d{4}-\d{2}-\d{2}$/;
 const ymRegex = /^\d{4}-\d{2}$/;
 const yRegex = /^\d{4}$/;

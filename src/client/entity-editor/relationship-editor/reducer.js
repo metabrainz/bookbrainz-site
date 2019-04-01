@@ -22,7 +22,6 @@ import {
 	REMOVE_RELATIONSHIP, SHOW_RELATIONSHIP_EDITOR, UNDO_LAST_SAVE
 } from './actions';
 
-
 function reducer(
 	state = Immutable.Map({
 		lastRelationships: null,

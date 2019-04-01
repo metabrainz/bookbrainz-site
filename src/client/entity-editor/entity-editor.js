@@ -28,7 +28,6 @@ import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
 
-
 type OwnProps = {
 	children: React.Element<any>
 };

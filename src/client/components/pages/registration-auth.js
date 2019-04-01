@@ -22,7 +22,6 @@ import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 import {hot} from 'react-hot-loader';
 
-
 const {Alert, Button, PageHeader} = bootstrap;
 
 /**
