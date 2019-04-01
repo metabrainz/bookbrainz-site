@@ -611,8 +611,8 @@ ALTER TABLE bookbrainz._editor_entity_visits ADD FOREIGN KEY (editor_id) REFEREN
 ALTER TABLE bookbrainz._editor_entity_visits ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.import (
-    id SERIAL PRIMARY KEY,
-    type bookbrainz.entity_type NOT NULL
+	id SERIAL PRIMARY KEY,
+	type bookbrainz.entity_type NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS bookbrainz.author_import_header (
@@ -651,34 +651,34 @@ ALTER TABLE bookbrainz.work_import_header ADD FOREIGN KEY (import_id) REFERENCES
 ALTER TABLE bookbrainz.work_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.discard_votes (
-    import_id INT NOT NULL,
-    editor_id INT NOT NULL,
-    voted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-    PRIMARY KEY (
-        import_id,
-        editor_id
-    )
+	import_id INT NOT NULL,
+	editor_id INT NOT NULL,
+	voted_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	PRIMARY KEY (
+		import_id,
+		editor_id
+	)
 );
 ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.origin_source (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL CHECK (name <> '')
+	id SERIAL PRIMARY KEY,
+	name TEXT NOT NULL CHECK (name <> '')
 );
 
 CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
-    import_id INT,
-    origin_source_id INT NOT NULL,
-    origin_id TEXT NOT NULL CHECK (origin_id <> ''),
-    imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-    last_edited TIMESTAMP WITHOUT TIME ZONE,
-    entity_id UUID DEFAULT NULL,
-    import_metadata jsonb,
-    PRIMARY KEY (
-        origin_source_id,
-        origin_id
-    )
+	import_id INT,
+	origin_source_id INT NOT NULL,
+	origin_id TEXT NOT NULL CHECK (origin_id <> ''),
+	imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	last_edited TIMESTAMP WITHOUT TIME ZONE,
+	entity_id UUID DEFAULT NULL,
+	import_metadata jsonb,
+	PRIMARY KEY (
+		origin_source_id,
+		origin_id
+	)
 );
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (entity_id) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
@@ -751,115 +751,115 @@ CREATE VIEW bookbrainz.edition_group AS
 	WHERE e.type = 'EditionGroup';
 
 CREATE VIEW bookbrainz.author_import AS
-    SELECT
-        import.id AS import_id,
-        author_data.id as data_id,
-        author_data.annotation_id,
-        author_data.disambiguation_id,
-        alias_set.default_alias_id,
-        author_data.begin_year,
-        author_data.begin_month,
-        author_data.begin_day,
-        author_data.end_year,
-        author_data.end_month,
-        author_data.end_day,
-        author_data.begin_area_id,
-        author_data.end_area_id,
-        author_data.ended,
-        author_data.area_id,
-        author_data.gender_id,
-        author_data.type_id,
-        author_data.alias_set_id,
-        author_data.identifier_set_id,
-        import.type
-    FROM bookbrainz.import import
-    LEFT JOIN bookbrainz.author_import_header author_import_header ON import.id = author_import_header.import_id
-    LEFT JOIN bookbrainz.author_data author_data ON author_import_header.data_id = author_data.id
-    LEFT JOIN bookbrainz.alias_set alias_set ON author_data.alias_set_id = alias_set.id
-    WHERE import.type = 'Author';
+	SELECT
+		import.id AS import_id,
+		author_data.id as data_id,
+		author_data.annotation_id,
+		author_data.disambiguation_id,
+		alias_set.default_alias_id,
+		author_data.begin_year,
+		author_data.begin_month,
+		author_data.begin_day,
+		author_data.end_year,
+		author_data.end_month,
+		author_data.end_day,
+		author_data.begin_area_id,
+		author_data.end_area_id,
+		author_data.ended,
+		author_data.area_id,
+		author_data.gender_id,
+		author_data.type_id,
+		author_data.alias_set_id,
+		author_data.identifier_set_id,
+		import.type
+	FROM bookbrainz.import import
+	LEFT JOIN bookbrainz.author_import_header author_import_header ON import.id = author_import_header.import_id
+	LEFT JOIN bookbrainz.author_data author_data ON author_import_header.data_id = author_data.id
+	LEFT JOIN bookbrainz.alias_set alias_set ON author_data.alias_set_id = alias_set.id
+	WHERE import.type = 'Author';
 
 
 CREATE VIEW bookbrainz.edition_import AS
-    SELECT
-        import.id AS import_id,
-        edition_data.id as data_id,
-        edition_data.disambiguation_id,
-        alias_set.default_alias_id,
-        edition_data.width,
-        edition_data.height,
-        edition_data.depth,
-        edition_data.weight,
-        edition_data.pages,
-        edition_data.format_id,
-        edition_data.status_id,
-        edition_data.alias_set_id,
-        edition_data.identifier_set_id,
-        import.type,
-        edition_data.language_set_id,
-        edition_data.release_event_set_id
-    FROM bookbrainz.import import
-    LEFT JOIN bookbrainz.edition_import_header edition_import_header ON import.id = edition_import_header.import_id
-    LEFT JOIN bookbrainz.edition_data edition_data ON edition_import_header.data_id = edition_data.id
-    LEFT JOIN bookbrainz.alias_set alias_set ON edition_data.alias_set_id = alias_set.id
-    WHERE import.type = 'Edition';
+	SELECT
+		import.id AS import_id,
+		edition_data.id as data_id,
+		edition_data.disambiguation_id,
+		alias_set.default_alias_id,
+		edition_data.width,
+		edition_data.height,
+		edition_data.depth,
+		edition_data.weight,
+		edition_data.pages,
+		edition_data.format_id,
+		edition_data.status_id,
+		edition_data.alias_set_id,
+		edition_data.identifier_set_id,
+		import.type,
+		edition_data.language_set_id,
+		edition_data.release_event_set_id
+	FROM bookbrainz.import import
+	LEFT JOIN bookbrainz.edition_import_header edition_import_header ON import.id = edition_import_header.import_id
+	LEFT JOIN bookbrainz.edition_data edition_data ON edition_import_header.data_id = edition_data.id
+	LEFT JOIN bookbrainz.alias_set alias_set ON edition_data.alias_set_id = alias_set.id
+	WHERE import.type = 'Edition';
 
 CREATE VIEW bookbrainz.publisher_import AS
-    SELECT
-        import.id AS import_id,
-        publisher_data.id as data_id,
-        publisher_data.disambiguation_id,
-        alias_set.default_alias_id,
-        publisher_data.begin_year,
-        publisher_data.begin_month,
-        publisher_data.begin_day,
-        publisher_data.end_year,
-        publisher_data.end_month,
-        publisher_data.end_day,
-        publisher_data.ended,
-        publisher_data.area_id,
-        publisher_data.type_id,
-        publisher_data.alias_set_id,
-        publisher_data.identifier_set_id,
-        import.type
-    FROM
-        bookbrainz.import import
-        LEFT JOIN bookbrainz.publisher_import_header publisher_import_header ON import.id = publisher_import_header.import_id
-        LEFT JOIN bookbrainz.publisher_data publisher_data ON publisher_import_header.data_id = publisher_data.id
-        LEFT JOIN bookbrainz.alias_set alias_set ON publisher_data.alias_set_id = alias_set.id
-        WHERE import.type = 'Publisher';
+	SELECT
+		import.id AS import_id,
+		publisher_data.id as data_id,
+		publisher_data.disambiguation_id,
+		alias_set.default_alias_id,
+		publisher_data.begin_year,
+		publisher_data.begin_month,
+		publisher_data.begin_day,
+		publisher_data.end_year,
+		publisher_data.end_month,
+		publisher_data.end_day,
+		publisher_data.ended,
+		publisher_data.area_id,
+		publisher_data.type_id,
+		publisher_data.alias_set_id,
+		publisher_data.identifier_set_id,
+		import.type
+	FROM
+		bookbrainz.import import
+		LEFT JOIN bookbrainz.publisher_import_header publisher_import_header ON import.id = publisher_import_header.import_id
+		LEFT JOIN bookbrainz.publisher_data publisher_data ON publisher_import_header.data_id = publisher_data.id
+		LEFT JOIN bookbrainz.alias_set alias_set ON publisher_data.alias_set_id = alias_set.id
+		WHERE import.type = 'Publisher';
 
 CREATE VIEW bookbrainz.edition_group_import AS
-    SELECT
-        import.id AS import_id,
-        edition_group_data.id as data_id,
-        edition_group_data.disambiguation_id,
-        alias_set.default_alias_id,
-        edition_group_data.type_id,
-        edition_group_data.alias_set_id,
-        edition_group_data.identifier_set_id,
-        import.type
-    FROM bookbrainz.import import
-    LEFT JOIN bookbrainz.edition_group_import_header edition_group_import_header ON import.id = edition_group_import_header.import_id
-    LEFT JOIN bookbrainz.edition_group_data edition_group_data ON edition_group_import_header.data_id = edition_group_data.id
-    LEFT JOIN bookbrainz.alias_set alias_set ON edition_group_data.alias_set_id = alias_set.id
-    WHERE import.type = 'EditionGroup';
+	SELECT
+		import.id AS import_id,
+		edition_group_data.id as data_id,
+		edition_group_data.disambiguation_id,
+		alias_set.default_alias_id,
+		edition_group_data.type_id,
+		edition_group_data.alias_set_id,
+		edition_group_data.identifier_set_id,
+		import.type
+	FROM bookbrainz.import import
+	LEFT JOIN bookbrainz.edition_group_import_header edition_group_import_header ON import.id = edition_group_import_header.import_id
+	LEFT JOIN bookbrainz.edition_group_data edition_group_data ON edition_group_import_header.data_id = edition_group_data.id
+	LEFT JOIN bookbrainz.alias_set alias_set ON edition_group_data.alias_set_id = alias_set.id
+	WHERE import.type = 'EditionGroup';
 
 CREATE VIEW bookbrainz.work_import AS
-    SELECT
-        import.id as import_id,
-        work_data.id AS data_id,
-        work_data.annotation_id,
-        work_data.disambiguation_id,
-        alias_set.default_alias_id,
-        work_data.type_id,
-        work_data.alias_set_id,
-        work_data.identifier_set_id,
-        import.type,
-        work_data.language_set_id
-    FROM bookbrainz.import import
-    LEFT JOIN bookbrainz.work_import_header work_import_header ON import.id = work_import_header.import_id
-    LEFT JOIN bookbrainz.work_data work_data ON work_import_header.data_id = work_data.id
-    LEFT JOIN bookbrainz.alias_set alias_set ON work_data.alias_set_id = alias_set.id
-    WHERE import.type = 'Work';
+	SELECT
+		import.id as import_id,
+		work_data.id AS data_id,
+		work_data.annotation_id,
+		work_data.disambiguation_id,
+		alias_set.default_alias_id,
+		work_data.type_id,
+		work_data.alias_set_id,
+		work_data.identifier_set_id,
+		import.type,
+		work_data.language_set_id
+	FROM bookbrainz.import import
+	LEFT JOIN bookbrainz.work_import_header work_import_header ON import.id = work_import_header.import_id
+	LEFT JOIN bookbrainz.work_data work_data ON work_import_header.data_id = work_data.id
+	LEFT JOIN bookbrainz.alias_set alias_set ON work_data.alias_set_id = alias_set.id
+	WHERE import.type = 'Work';
 
 COMMIT;
