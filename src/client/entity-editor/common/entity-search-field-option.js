@@ -99,11 +99,12 @@ class EntitySearchFieldOption extends React.Component {
 		return (
 			<CustomInput label={labelElement} tooltipText={this.props.tooltipText}>
 				<ImmutableAsyncSelect
-					className="react-select__option"
 					labelKey="text"
 					loadOptions={this.fetchOptions}
 					optionComponent={LinkedEntity}
 					valueRenderer={Entity}
+					onBlurResetsInput={false}
+					{...this.props}
 				/>
 			</CustomInput>
 		);
