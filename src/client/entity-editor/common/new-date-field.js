@@ -9,6 +9,8 @@ import ValidationLabel from './validation-label';
 import classNames from 'classnames';
 import {getSeparatedDate} from '../validators/date';
 import moment from 'moment';
+import {getTodayDate} from '../../helpers/utils';
+import {dateIsBefore} from '../validators/base';
 
 class DateField extends React.Component {
 	constructor(props) {
@@ -18,7 +20,8 @@ class DateField extends React.Component {
 		this.state = {
 			day: !day ? '' : day,
 			month: !month ? '': month,
-			year: !year ? '' : year
+			year: !year ? '' : year,
+			warn: dateIsBefore(getTodayDate(),{day, month, year})
 		};
 	}
 
@@ -26,6 +29,7 @@ class DateField extends React.Component {
 		console.log('update date  called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
 		//console.log({year: !year?null:year, month: !month?null:month, day: !day?null:day});
 		this.props.onChangeDate({year: !year?null:year, month: !month?null:month, day: !day?null:day});
+		this.setState({warn: dateIsBefore(getTodayDate(),{day, month, year})});
 	};
 
 	handleYearChange = (event) => {
@@ -48,23 +52,25 @@ class DateField extends React.Component {
 
 	handleChangeOfDatePicker = (value) => {
 		const date = new Date(value);
-		const year = date.getFullYear();
-		const month = date.getMonth()+1;
-		const day = date.getDate();
+		const year = (date.getFullYear()).toString();
+		const month = (date.getMonth()+1).toString();
+		const day = (date.getDate()).toString();
 		this.setState({year});
 		this.setState({month});
 		this.setState({day})
-		console.log('date by date picker '+ value + date.getFullYear() + ' '+ date.getMonth() + ' '+ date.getDate());
+		//console.log('date by date picker '+ value + date.getFullYear() + ' '+ date.getMonth() + ' '+ date.getDate());
 		this.updateDate(day, month, year);
 	}
 
 	render() {
-		console.log('error got ' + this.props.error);
-		console.log('empty got ' + this.props.empty);
+		// console.log('error got ' + this.props.error);
+		// console.log('empty got ' + this.props.empty);
+		// console.log('###########' + this.state.warn);
 		const labelElement = (
 			<ValidationLabel
 				empty={this.props.empty}
 				error={this.props.error}
+				warn={this.state.warn}
 				errorMessage={this.props.errorMessage}
 			>
 				{this.props.label}

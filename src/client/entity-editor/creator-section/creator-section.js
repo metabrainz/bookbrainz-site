@@ -167,8 +167,8 @@ function CreatorSection({
 		value: type.id
 	}));
 
-	const {isValidDob, dobError} = validateCreatorSectionBeginDate(beginDateValue);
-	const {isValidDod, dodError} = validateCreatorSectionEndDate(beginDateValue, endDateValue);
+	const {isValid: isValidDob, errorMessage: dobError} = validateCreatorSectionBeginDate(beginDateValue);
+	const {isValid: isValidDod, errorMessage: dodError} = validateCreatorSectionEndDate(beginDateValue, endDateValue);
 
 
 	return (

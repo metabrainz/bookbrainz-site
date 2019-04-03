@@ -37,7 +37,7 @@ export function validateCreatorSectionBeginArea(value: any): boolean {
 
 export function validateCreatorSectionBeginDate(value: any): object {
 	const {isValid, errorMessage} = validateDate(value);
-	return {dobError: errorMessage, isValidDob: isValid};
+	return {errorMessage, isValid};
 }
 
 export function validateCreatorSectionEndArea(value: any): boolean {
@@ -52,13 +52,14 @@ export function validateCreatorSectionEndDate(
 	beginValue: any, endValue: any
 ): object {
 	const {isValid, errorMessage} = validateDate(endValue);
+
 	if (isValid) {
 		if (dateIsBefore(beginValue, endValue)) {
-			return {dodError: '', isValidDod: true};
+			return {errorMessage: '', isValid: true};
 		}
-		return {dodError: 'Date of death must be greated than DOB', isValidDod: false};
+		return {errorMessage: 'Date of death must be greated than Date of birth', isValid: false};
 	}
-	return {dodError: errorMessage, isValidDod: isValid};
+	return {errorMessage, isValid};
 }
 
 export function validateCreatorSectionEnded(value: any): boolean {
@@ -76,11 +77,11 @@ export function validateCreatorSectionGender(value: any): boolean {
 export function validateCreatorSection(data: any): boolean {
 	return (
 		validateCreatorSectionBeginArea(get(data, 'beginArea', null)) &&
-		validateCreatorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValidDob &&
+		validateCreatorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValid &&
 		validateCreatorSectionEndArea(get(data, 'endArea', null)) &&
 		validateCreatorSectionEndDate(
 			convertMapToObject(get(data, 'beginDate', null)), convertMapToObject(get(data, 'endDate', null))
-		).isValidDod &&
+		).isValid &&
 		validateCreatorSectionEnded(get(data, 'ended', null)) &&
 		validateCreatorSectionType(get(data, 'gender', null)) &&
 		validateCreatorSectionType(get(data, 'type', null))

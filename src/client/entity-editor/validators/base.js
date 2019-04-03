@@ -130,6 +130,9 @@ export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
 	else if (beginMonth === endMonth && beginDay > endDay) {
 		return false;
 	}
+	else if (beginDay === endDay) {
+		return false;
+	}
 
 	return true;
 }

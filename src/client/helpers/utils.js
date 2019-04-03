@@ -66,3 +66,11 @@ export function labelsForCreator(isGroup) {
 export function convertMapToObject(value) {
 	return Iterable.isIterable(value) ? value.toJS() : value;
 }
+
+export function getTodayDate() {
+	const date = new Date();
+	const year = date.getFullYear().toString();
+	const month = (date.getMonth() + 1).toString();
+	const day = date.getDate().toString();
+	return {day, month, year};
+}

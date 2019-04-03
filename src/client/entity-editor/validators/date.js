@@ -16,7 +16,7 @@ export function dateValidator ( day, month, year) {
 	}
 	else {
 		if (!isYearPosInt) {
-			return {isValid: false, errorMessage: 'Year is not valid entry'};
+			return {isValid: false, errorMessage: 'Year is not valid'};
 		}
 		if (!month) {
 			if (!day) {
@@ -26,27 +26,27 @@ export function dateValidator ( day, month, year) {
 		}
 		else {
 			if (!isMonthPosInt) {
-				return {isValid: false, errorMessage: 'Month is not valid entry'};
+				return {isValid: false, errorMessage: 'Month is not valid'};
 			}
 			else if (month < 1 || month > 12) {
-				return {isValid: false, errorMessage: 'Month is not valid entry'};
+				return {isValid: false, errorMessage: 'Month is not valid'};
 			}
 			if (!day) {
 				return {isValid: true, errorMessage: ''};
 			}
 			else if (!isDayPosInt) {
-				return {isValid: false, errorMessage: 'Day is not valid entry'};
+				return {isValid: false, errorMessage: 'Day is not valid'};
 			}
 			else if (day < 1 || day > 31) {
-				return {isValid: false, errorMessage: 'Day is not valid entry'};
+				return {isValid: false, errorMessage: 'Day is not valid'};
 			}
 			else if ((month == 4 || month == 6 || month == 9 || month == 11) && day == 31) {
-				return {isValid: false, errorMessage: 'Day is not valid for entered month'};
+				return {isValid: false, errorMessage: 'Day is not valid for this month'};
 			}
 			else if (month == 2) {
 				let isleap = (year % 100 == 0) ? (year % 400 == 0) : (year % 4 == 0);
 				if (day < 1 || day > 29) {
-					return {isValid: false, errorMessage: 'Day is not valid entry for entered month'}
+					return {isValid: false, errorMessage: 'Day is not valid for this month'}
 				}
 				else if (day > 29 || (day==29 && !isleap)) {
 					return {isValid: false, errorMessage: 'Year is not leap, invalid day'}
