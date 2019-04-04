@@ -1,4 +1,4 @@
-{{{- define "KEY" -}}
+{{- define "KEY" -}}
     {{ key (printf "docker-server-configs/BB/config.%s.json/%s" (env "DEPLOY_ENV") .) }}
 {{- end -}}
 
@@ -14,7 +14,7 @@
 	},
 	"session": {
 		"maxAge": 2592000000,
-		"secret": "{{template "KEY" "secret_key"}},
+		"secret": "{{template "KEY" "secret_key"}}",
 		"secure": false,
         {{if service "bookbrainz-redis"}}
         {{with index (service "bookbrainz-redis") 0}}

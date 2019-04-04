@@ -65,4 +65,3 @@ ARG DEPLOY_ENV
 
 COPY ./docker/consul-template.conf /etc/consul-template.conf
 COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
-RUN touch /etc/service/uwsgi/down
