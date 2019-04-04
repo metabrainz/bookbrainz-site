@@ -65,3 +65,4 @@ ARG DEPLOY_ENV
 
 COPY ./docker/consul-template.conf /etc/consul-template.conf
 COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
+RUN ./node_modules/less/bin/lessc --include-path=./node_modules/bootstrap/less ./src/client/stylesheets/style.less > ./static/stylesheets/style.css

@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /home/bookbrainz/bookbrainz-site
-exec npm start
+exec npm run start-prod
