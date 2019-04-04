@@ -30,7 +30,8 @@
         {{if service "pgbouncer-master"}}
         {{with index (service "pgbouncer-master") 0}}
 		"connection": {
-			"host": "{{.Address}}:{{.Port}}",
+			"host": "{{.Address}}",
+			"port": {{.Port}},
 			"database": "bookbrainz",
 			"user": "bookbrainz",
 			"password": ""
