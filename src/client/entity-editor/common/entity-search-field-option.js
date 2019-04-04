@@ -69,6 +69,9 @@ class EntitySearchFieldOption extends React.Component {
 	 * entity.
 	 */
 	entityToOption(entity) {
+		if (_.isNil(entity)) {
+			return null;
+		}
 		const id = this.isArea(entity) ? entity.id : entity.bbid;
 		const languageId = _.get(entity, ['defaultAlias', 'languageId']);
 		const language = this.props.languageOptions.find(index => index.value === languageId);
