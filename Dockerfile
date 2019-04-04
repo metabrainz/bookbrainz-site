@@ -1,7 +1,10 @@
-FROM node:10
+FROM metabrainz/node:10
 
 ARG BUILD_DEPS=" \
-    build-essential"
+    build-essential \
+    git \
+    python-dev \
+    libpq-dev"
 
 ARG RUN_DEPS=" \
     nodejs"
