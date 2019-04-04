@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /home/bookbrainz/bookbrainz-site
-exec run-consul-template -config /etc/consul-template-webserver.conf
+exec npm start
