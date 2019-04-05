@@ -8,9 +8,13 @@ ARG BUILD_DEPS=" \
     python-dev \
     libpq-dev"
 
+ARG RUN_DEPS=" \
+    bzip2"
+
+
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS && \
+        $BUILD_DEPS $RUN_DEPS && \
     rm -rf /var/lib/apt/lists/*
 
 # PostgreSQL client
