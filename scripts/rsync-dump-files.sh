@@ -23,8 +23,8 @@ unset SSH_AUTH_SOCK
 CB_SERVER_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)
 cd "$CB_SERVER_ROOT"
 
-source admin/config.sh
-source admin/functions.sh
+source scripts/config.sh
+source scripts/functions.sh
 
 retry rsync \
     --archive \

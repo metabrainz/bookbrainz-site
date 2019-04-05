@@ -79,5 +79,4 @@ RUN touch /etc/service/cron/down
 
 ADD ./docker/crontab /etc/cron.d/bookbrainz
 RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
-RUN touch /var/log/dump.log && chown bookbrainz:bookbrainz /var/log/dump.log
 
