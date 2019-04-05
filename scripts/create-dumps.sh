@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
+source /home/bookbrainz/bookbrainz-site/scripts/config.sh
+
 # Switch directory
 pushd /home/bookbrainz/data/dumps
+
 
 DUMP_FILE=bookbrainz-dump-`date -I`.sql
 
@@ -9,8 +12,9 @@ echo "Creating data dump..."
 export PGPASSWORD="bookbrainz"
 # Dump new backup to /tmp
 pg_dump\
-	-h pgbouncer-master.service.consul \
-	-U bookbrainz\
+	-h $POSTGRES_HOST \
+	-p $POSTGRES_PORT \
+	-U bookbrainz \
 	-T _editor_entity_visits\
 	 --serializable-deferrable\
 	 bookbrainz > /tmp/$DUMP_FILE
