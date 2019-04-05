@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# critiquebrainz - Repository for Creative Commons licensed reviews
-#
 # Copyright (C) 2018 MetaBrainz Foundation Inc.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,8 +18,8 @@
 
 unset SSH_AUTH_SOCK
 
-CB_SERVER_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)
-cd "$CB_SERVER_ROOT"
+BB_SERVER_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)
+cd "$BB_SERVER_ROOT"
 
 source scripts/config.sh
 source scripts/functions.sh
