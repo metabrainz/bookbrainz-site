@@ -50,11 +50,13 @@ COPY src/ src/
 # Copy css/less dependencies from node_modules to src/client/stylesheets
 RUN npm run copy-client-scripts
 
-
+# Development target
 FROM bookbrainz-base as bookbrainz-dev
 ARG DEPLOY_ENV
 
+CMD ["npm", "start"]
 
+# Production target
 FROM bookbrainz-base as bookbrainz-prod
 ARG DEPLOY_ENV
 
