@@ -8,14 +8,9 @@ ARG BUILD_DEPS=" \
     python-dev \
     libpq-dev"
 
-ARG RUN_DEPS=" \
-    nodejs"
-
-# nodeJS setup script also runs apt-get update
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS \
-        $RUN_DEPS && \
+        $BUILD_DEPS && \
     rm -rf /var/lib/apt/lists/*
 
 # PostgreSQL client
