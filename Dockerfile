@@ -60,8 +60,19 @@ CMD ["npm", "start"]
 FROM bookbrainz-base as bookbrainz-prod
 ARG DEPLOY_ENV
 
+COPY ./docker/consul-template.conf /etc/consul-template.conf
 COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
-COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
 COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
 RUN chmod +x /etc/service/webserver/exec-command
 RUN ["npm", "run", "build"]
+
+RUN touch /etc/service/webserver/down
+
+RUN mkdir /home/bookbrainz/dumps
+
+ADD .docker/crontab /etc/cron.d/bookbrainz
+RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
+RUN touch /etc/service/cron/down
+RUN touch /var/log/dump.log && chown bookbrainz:bookbrainz /var/log/dump.log
+
+COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local

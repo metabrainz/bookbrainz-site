@@ -1,0 +1,4 @@
+# m h d m w y
+
+# Database backup creation
+* * * * * /home/bookbrainz/bookbrainz-site/scripts/create-dumps.sh >> /var/log/dump.log 2>&1
