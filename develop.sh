@@ -5,5 +5,5 @@ if [[ ! -d "src" ]]; then
     exit -1
 fi
 
-docker-compose -f ./docker/docker-compose.dev.yml run --rm startup &&
-docker-compose -f ./docker/docker-compose.dev.yml up --build bookbrainz-site
+docker-compose run --rm startup &&
+docker-compose up --build bookbrainz-site
