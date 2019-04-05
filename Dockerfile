@@ -59,6 +59,8 @@ RUN npm run copy-client-scripts
 FROM bookbrainz-base as bookbrainz-dev
 ARG DEPLOY_ENV
 
+CMD ["npm", "start"]
+
 # Production target
 FROM bookbrainz-base as bookbrainz-prod
 ARG DEPLOY_ENV
