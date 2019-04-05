@@ -34,7 +34,7 @@
 			"port": {{.Port}},
 			"database": "bookbrainz",
 			"user": "bookbrainz",
-			"password": ""
+			"password": "bookbrainz"
 		}
         {{end}}
         {{end}}
