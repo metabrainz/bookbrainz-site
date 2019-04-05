@@ -9,7 +9,8 @@ ARG BUILD_DEPS=" \
     libpq-dev"
 
 ARG RUN_DEPS=" \
-    bzip2"
+    bzip2 \
+    rsync"
 
 
 RUN apt-get update && \
