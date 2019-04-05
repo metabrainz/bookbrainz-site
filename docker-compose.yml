@@ -1,11 +1,14 @@
-version: '3'
+version: '3.4'
 
 services:
 
   bookbrainz-site:
     container_name: bookbrainz-site
     command: npm start
-    build: ./
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: bookbrainz-dev
     restart: unless-stopped
     ports:
       - "9099:9099"
@@ -51,8 +54,10 @@ services:
   startup:
     image: waisbrot/wait
     container_name: startup
+    restart: "no"
     environment:
       - TARGETS=redis:6379,postgres:5432,elasticsearch:9200
+      - TIMEOUT=60
     depends_on:
       - elasticsearch
       - redis

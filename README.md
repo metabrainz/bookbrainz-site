@@ -110,7 +110,7 @@ After a few seconds, you can then point your browser to `localhost:9099`.
 
 Make changes to the code in the `src` folder and run `./develop.sh` again to rebuild and run the server.
 
-Once you are done developing, you can stop the dependencies running in docker in the background by typing `docker-compose down`.
+Once you are done developing, you can stop the dependencies running in docker in the background by running `./stop.sh`.
 
 ### Advanced users
 

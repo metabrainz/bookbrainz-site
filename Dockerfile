@@ -1,16 +1,16 @@
-FROM node:10
+FROM metabrainz/node:10 as bookbrainz-base
+
+ARG DEPLOY_ENV
 
 ARG BUILD_DEPS=" \
-    build-essential"
+    build-essential \
+    git \
+    python-dev \
+    libpq-dev"
 
-ARG RUN_DEPS=" \
-    nodejs"
-
-# nodeJS setup script also runs apt-get update
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS \
-        $RUN_DEPS && \
+        $BUILD_DEPS && \
     rm -rf /var/lib/apt/lists/*
 
 # PostgreSQL client
@@ -50,4 +50,15 @@ COPY src/ src/
 # Copy css/less dependencies from node_modules to src/client/stylesheets
 RUN npm run copy-client-scripts
 
+# Development target
+FROM bookbrainz-base as bookbrainz-dev
+ARG DEPLOY_ENV
+
 CMD ["npm", "start"]
+
+# Production target
+FROM bookbrainz-base as bookbrainz-prod
+ARG DEPLOY_ENV
+
+COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
+COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
