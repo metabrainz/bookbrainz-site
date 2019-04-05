@@ -32,7 +32,7 @@
 		"connection": {
 			"host": "{{.Address}}",
 			"port": {{.Port}},
-			"database": "bookbrainz",
+			"database": "{{template "KEY" "database_name"}}",
 			"user": "bookbrainz",
 			"password": "bookbrainz"
 		}
