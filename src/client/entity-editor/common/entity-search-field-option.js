@@ -119,13 +119,17 @@ EntitySearchFieldOption.propTypes = {
 	empty: PropTypes.bool,
 	error: PropTypes.bool,
 	label: PropTypes.string.isRequired,
-	languageOptions: PropTypes.array.isRequired,
+	languageOptions: PropTypes.array,
 	tooltipText: PropTypes.string,
-	type: PropTypes.array.isRequired
+	type: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.arrayOf(PropTypes.string)
+	]).isRequired
 };
 EntitySearchFieldOption.defaultProps = {
 	empty: true,
 	error: false,
+	languageOptions: [],
 	tooltipText: null
 };
 
