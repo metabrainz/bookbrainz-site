@@ -36,7 +36,7 @@ import {
 
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
-import EntitySearchField from '../common/entity-search-field';
+import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
@@ -150,7 +150,7 @@ function PublisherSection({
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<EntitySearchField
+					<EntitySearchFieldOption
 						instanceId="area"
 						label="Area"
 						tooltipText="Country or place the publisher is registered in"

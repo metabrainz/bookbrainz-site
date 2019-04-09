@@ -47,7 +47,7 @@ import {
 
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
-import EntitySearchField from '../common/entity-search-field';
+import EntitySearchFieldOption from '../common/entity-search-field-option';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
 import React from 'react';
@@ -200,7 +200,7 @@ function EditionSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<EntitySearchField
+					<EntitySearchFieldOption
 						help="Group with other Editions by the same publisher"
 						instanceId="publication"
 						label="Edition Group"
@@ -218,7 +218,7 @@ function EditionSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<EntitySearchField
+					<EntitySearchFieldOption
 						instanceId="publisher"
 						label="Publisher"
 						type="publisher"

@@ -22,6 +22,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
+
 const {PageHeader, Table} = bootstrap;
 const {formatDate} = utilsHelper;
 

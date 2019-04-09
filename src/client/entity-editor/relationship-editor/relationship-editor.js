@@ -22,10 +22,10 @@ import {
 	Button, Col, ControlLabel, FormGroup, Modal, ProgressBar, Row
 } from 'react-bootstrap';
 import type {
-	Entity, EntityType, RelationshipType,
+	Entity, EntityType, LanguageOption, RelationshipType,
 	RelationshipWithLabel, Relationship as _Relationship
 } from './types';
-import EntitySearchField from '../common/entity-search-field';
+import EntitySearchFieldOption from '../common/entity-search-field-option';
 import React from 'react';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
@@ -99,6 +99,7 @@ type RelationshipModalProps = {
 	relationshipTypes: Array<RelationshipType>,
 	baseEntity: Entity,
 	initRelationship: ?_Relationship,
+	languageOptions: Array<LanguageOption>,
 	onCancel?: () => mixed,
 	onClose?: () => mixed,
 	onAdd?: (_Relationship) => mixed
@@ -159,6 +160,8 @@ function getInitState(
  *        entity editor
  * @param {?_Relationship} props.initRelationship - The relationship being
  *        edited, if not creating a new relationship.
+ * @param {Array} props.languageOptions - The list of possible languages for an
+ *        entity.
  * @param {Array<RelationshipType>} props.relationshipTypes - All the possible
  *        relationship types for any pair of entities.
  * @param {Function} props.onCancel - A function to be called when the cancel
@@ -237,10 +240,11 @@ class RelationshipModal
 			` or ${_.last(types)})`;
 
 		return (
-			<EntitySearchField
+			<EntitySearchFieldOption
 				cache={false}
 				instanceId="publication"
 				label={label}
+				languageOptions={this.props.languageOptions}
 				name="entity"
 				type={types.map(_.toLower)}
 				value={this.state.targetEntity}

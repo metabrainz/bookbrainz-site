@@ -25,6 +25,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
 
+
 const {Alert, Button, Col, Row, Panel} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
