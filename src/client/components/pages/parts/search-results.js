@@ -19,7 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import {differenceBy as _differenceBy, kebabCase as _kebabCase} from 'lodash';
+import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -115,7 +115,7 @@ function SearchResults(props) {
 				{
 					!props.condensed &&
 					<td>
-						{genEntityIconHTMLElement(result.type)}{result.type}
+						{genEntityIconHTMLElement(result.type)}{_startCase(result.type)}
 					</td>
 				}
 				<td>

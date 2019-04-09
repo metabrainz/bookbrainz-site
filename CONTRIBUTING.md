@@ -65,8 +65,8 @@ Finally, if you need to give more detail about the change or give any background
 
 Here's an example of a complete commit message following these guidelines:
 
-    feat(editor): introduce new input field for creator birth date
+    feat(editor): introduce new input field for author birth date
 
     Everybody has a birth date, and this field allows editors to record the birth
-    dates of creators they add to BookBrainz. Dates in ISO 8601 format
+    dates of authors they add to BookBrainz. Dates in ISO 8601 format
     (https://en.wikipedia.org/wiki/ISO_8601) are accepted by the field.

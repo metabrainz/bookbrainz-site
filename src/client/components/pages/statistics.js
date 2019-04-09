@@ -18,8 +18,10 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
+
 import PropTypes from 'prop-types';
 import React from 'react';
+import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
@@ -112,7 +114,7 @@ function EntityCountTable(props) {
 								<td>{i + 1}</td>
 								<td>
 									{genEntityIconHTMLElement(entity.modelName)}
-									{entity.modelName}
+									{_startCase(entity.modelName)}
 								</td>
 								<td>{entity.Count}</td>
 								<td>{last30DaysEntities[entity.modelName]}</td>

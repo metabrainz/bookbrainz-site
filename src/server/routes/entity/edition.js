@@ -127,6 +127,7 @@ router.get(
 			'edition', req, res, {}
 		);
 
+		// Access edition-group property: can't write req.query.edition-group as the dash makes it invalid Javascript
 		if (req.query['edition-group']) {
 			propsPromise.editionGroup =
 				EditionGroup.forge({bbid: req.query['edition-group']})

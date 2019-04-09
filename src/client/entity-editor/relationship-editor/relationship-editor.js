@@ -245,15 +245,16 @@ class RelationshipModal
 	renderEntitySelect() {
 		const {baseEntity, relationshipTypes} = this.props;
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
-
+		const typesForDisplay = types.map(_.startCase);
+		const lastType = _.last(typesForDisplay);
+		const otherTypes = _.join(typesForDisplay.slice(0, -1), ', ');
 		const label =
-			`Other Entity (${_.join(types.slice(0, -1), ', ')}` +
-			` or ${_.last(types)})`;
+			`Other Entity (${otherTypes.length ? `${otherTypes} or ` : ''}${lastType})`;
 
 		return (
 			<EntitySearchFieldOption
 				cache={false}
-				instanceId="editionGroup"
+				instanceId="relationshipEntitySearchField"
 				label={label}
 				languageOptions={this.props.languageOptions}
 				name="entity"
