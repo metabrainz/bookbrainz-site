@@ -23,11 +23,14 @@ BEGIN TRANSACTION;
 	ALTER TABLE IF EXISTS bookbrainz.edition_group_revision RENAME TO publication_revision;
 	ALTER TABLE IF EXISTS bookbrainz.edition_group_type RENAME TO publication_type;
 
+	ALTER TABLE IF EXISTS bookbrainz.author_import_header RENAME TO creator_import_header;
+	ALTER TABLE IF EXISTS bookbrainz.edition_group_import_header RENAME TO publication_import_header;
+
 	-- rename columns
 	ALTER TABLE IF EXISTS bookbrainz.edition_data RENAME COLUMN edition_group_bbid TO publication_bbid;
 	ALTER TABLE IF EXISTS bookbrainz.edition_data RENAME COLUMN author_credit_id TO creator_credit_id;
 
-	ALTER TABLE IF EXISTS bookbrainz.creator_credit_name RENAME COLUMN author_credit_id TO creator_credit_id;
+	ALTER TABLE IF EXISTS bookbrainz.creator_credit RENAME COLUMN author_count TO creator_count;
 	ALTER TABLE IF EXISTS bookbrainz.creator_credit_name RENAME COLUMN author_credit_id TO creator_credit_id;
 	ALTER TABLE IF EXISTS bookbrainz.creator_credit_name RENAME COLUMN author_bbid TO creator_bbid;
 
@@ -75,7 +78,7 @@ BEGIN TRANSACTION;
 		bookbrainz.edition_group,
 		bookbrainz.edition,
 		bookbrainz.publisher,
-		bookbrainz.work
+		bookbrainz.work,
 		bookbrainz.author_import,
 		bookbrainz.edition_group_import,
 		bookbrainz.edition_import,
@@ -130,7 +133,7 @@ BEGIN TRANSACTION;
 	CREATE OR REPLACE VIEW bookbrainz.edition AS
 		SELECT
 			e.bbid, edd.id AS data_id, edr.id AS revision_id, (edr.id = ed.master_revision_id) AS master, edd.annotation_id, edd.disambiguation_id,
-			als.default_alias_id, edd.publication_bbid, edd.author_credit_id, edd.width, edd.height,
+			als.default_alias_id, edd.publication_bbid, edd.creator_credit_id, edd.width, edd.height,
 			edd.depth, edd.weight, edd.pages, edd.format_id, edd.status_id,
 			edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id, e.type,
 			edd.language_set_id, edd.release_event_set_id, edd.publisher_set_id
