@@ -38,11 +38,21 @@ function cleanupOnExit(cleanupPromise) {
 	}
 
 	function removeAllListeners() {
-		process.off('exit', cleanupHandler);
-		process.off('SIGHUP', cleanupHandler);
-		process.off('SIGQUIT', cleanupHandler);
-		process.off('SIGTERM', terminateHandler);
-		process.off('SIGINT', terminateHandler);
+		// Node <10 does not have process.off
+		if (typeof process.off !== 'function') {
+			process.removeListener('exit', cleanupHandler);
+			process.removeListener('SIGHUP', cleanupHandler);
+			process.removeListener('SIGQUIT', cleanupHandler);
+			process.removeListener('SIGTERM', terminateHandler);
+			process.removeListener('SIGINT', terminateHandler);
+		}
+		else {
+			process.off('exit', cleanupHandler);
+			process.off('SIGHUP', cleanupHandler);
+			process.off('SIGQUIT', cleanupHandler);
+			process.off('SIGTERM', terminateHandler);
+			process.off('SIGINT', terminateHandler);
+		}
 	}
 
 	process.on('exit', cleanupHandler);
