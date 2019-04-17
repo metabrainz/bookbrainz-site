@@ -26,6 +26,7 @@ import * as search from './helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
+import appCleanup from './helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from './helpers/config';
@@ -162,5 +163,32 @@ app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-pro
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);
 });
+
+/* eslint-disable no-console */
+function cleanupFunction() {
+	return new Promise((resolve, reject) => {
+		console.log('Cleaning up before closing');
+		server.close((err) => {
+			if (err) {
+				console.log('Error while closing server connections');
+				reject(err);
+			}
+			else {
+				console.log('Closed all server connections. Bye bye!');
+				resolve();
+			}
+		});
+		// force-kill after X milliseconds.
+		if (config.site.forceExitAfterMs) {
+			setTimeout(() => {
+				reject(new Error(`Cleanup function timed out after ${config.site.forceExitAfterMs} ms`));
+			}, config.site.forceExitAfterMs);
+		}
+	});
+}
+/* eslint-enable no-console */
+
+// Run cleanup function
+appCleanup(cleanupFunction);
 
 export default server;

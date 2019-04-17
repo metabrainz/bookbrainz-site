@@ -5,7 +5,8 @@
 {
 	"site": {
 		"proxyTrust": true,
-		"log": "error"
+		"log": "error",
+		"forceExitAfterMs": 5000
 	},
 	"musicbrainz": {
 		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",

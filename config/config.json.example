@@ -1,7 +1,8 @@
 {
 	"site": {
 		"proxyTrust": true,
-		"log": "debug"
+		"log": "debug",
+		"forceExitAfterMs": 5000
 	},
 	"musicbrainz": {
 		"clientID": null,
