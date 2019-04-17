@@ -62,3 +62,6 @@ ARG DEPLOY_ENV
 
 COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
 COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
+COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
+RUN chmod +x /etc/service/webserver/exec-command
+RUN ["npm", "run", "build"]
