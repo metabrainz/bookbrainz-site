@@ -26,6 +26,7 @@ import * as search from './helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
+import {get as _get} from 'lodash';
 import appCleanup from './helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
@@ -94,15 +95,15 @@ app.use(express.static(path.join(rootDir, 'static')));
 const RedisStore = redis(session);
 app.use(session({
 	cookie: {
-		maxAge: config.session.maxAge,
-		secure: config.session.secure
+		maxAge: _get(config, 'session.maxAge', 2592000000),
+		secure: _get(config, 'session.secure', false)
 	},
 	resave: false,
 	saveUninitialized: false,
 	secret: config.session.secret,
 	store: new RedisStore({
-		host: config.session.redis.host || 'localhost',
-		port: config.session.redis.port || 6379
+		host: _get(config, 'session.redis.host', 'localhost'),
+		port: _get(config, 'session.redis.port', 6379)
 	})
 }));
 
