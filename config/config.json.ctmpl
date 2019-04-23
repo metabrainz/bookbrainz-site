@@ -5,7 +5,8 @@
 {
 	"site": {
 		"proxyTrust": true,
-		"log": "error"
+		"log": "error",
+		"forceExitAfterMs": 5000
 	},
 	"musicbrainz": {
 		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",
@@ -13,31 +14,31 @@
 		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}"
 	},
 	"session": {
-		"maxAge": 2592000000,
-		"secret": "{{template "KEY" "secret_key"}}",
-		"secure": false,
         {{if service "bookbrainz-redis"}}
         {{with index (service "bookbrainz-redis") 0}}
 		"redis": {
 			"host": "{{.Address}}",
 			"port": {{.Port}}
-		}
+		},
         {{end}}
         {{end}}
+		"maxAge": 2592000000,
+		"secret": "{{template "KEY" "secret_key"}}",
+		"secure": false
 	},
 	"database": {
-		"client": "pg",
         {{if service "pgbouncer-master"}}
         {{with index (service "pgbouncer-master") 0}}
 		"connection": {
 			"host": "{{.Address}}",
 			"port": {{.Port}},
-			"database": "bookbrainz",
+			"database": "{{template "KEY" "database_name"}}",
 			"user": "bookbrainz",
 			"password": "bookbrainz"
-		}
+		},
         {{end}}
         {{end}}
+		"client": "pg"
 	},
 	"search": {
         {{if service "bookbrainz-elasticsearch"}}

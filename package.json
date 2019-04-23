@@ -11,6 +11,7 @@
     "build-server-js": "babel src --out-dir lib",
     "build-client-js": "./scripts/build-client-js.sh",
     "build-less": "./scripts/build-less.sh",
+    "build": "npm run build-less && npm run build-client-js && npm run build-server-js",
     "WIP-build-client-webpack": "cross-env NODE_ENV=production SSR=true webpack --progress --config webpack.client.js",
     "prestart": "npm run build-less & npm run build-client-js & npm run build-server-js",
     "start": "cross-env SSR=true node ./lib/server/app.js",
