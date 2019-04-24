@@ -25,7 +25,9 @@ import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
 import * as releaseEventSetFormatter from
 	'../helpers/diffFormatters/releaseEventSet';
+
 import {escapeProps, generateProps} from '../helpers/props';
+
 import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
@@ -35,10 +37,9 @@ import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
-
 const router = express.Router();
 
-function formatCreatorChange(change) {
+function formatAuthorChange(change) {
 	if (_.isEqual(change.path, ['beginDate'])) {
 		return baseFormatter.formatScalarChange(change, 'Begin Date');
 	}
@@ -56,7 +57,7 @@ function formatCreatorChange(change) {
 	}
 
 	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Creator Type');
+		return baseFormatter.formatTypeChange(change, 'Author Type');
 	}
 
 	if (_.isEqual(change.path, ['beginArea']) ||
@@ -73,8 +74,8 @@ function formatCreatorChange(change) {
 }
 
 function formatEditionChange(change) {
-	if (_.isEqual(change.path, ['publicationBbid'])) {
-		return baseFormatter.formatScalarChange(change, 'Publication');
+	if (_.isEqual(change.path, ['editionGroupBbid'])) {
+		return baseFormatter.formatScalarChange(change, 'EditionGroup');
 	}
 
 	if (publisherSetFormatter.changed(change)) {
@@ -150,9 +151,9 @@ function formatWorkChange(change) {
 	return null;
 }
 
-function formatPublicationChange(change) {
+function formatEditionGroupChange(change) {
 	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Publication Type');
+		return baseFormatter.formatTypeChange(change, 'Edition Group Type');
 	}
 
 	return [];
@@ -174,7 +175,7 @@ function diffRevisionsWithParents(revisions) {
 
 router.get('/:id', (req, res, next) => {
 	const {
-		CreatorRevision, EditionRevision, PublicationRevision,
+		AuthorRevision, EditionRevision, EditionGroupRevision,
 		PublisherRevision, Revision, WorkRevision
 	} = req.app.locals.orm;
 
@@ -198,24 +199,24 @@ router.get('/:id', (req, res, next) => {
 			.then(diffRevisionsWithParents);
 	}
 
-	const creatorDiffsPromise = _createRevision(CreatorRevision);
+	const authorDiffsPromise = _createRevision(AuthorRevision);
 	const editionDiffsPromise = _createRevision(EditionRevision);
-	const publicationDiffsPromise = _createRevision(PublicationRevision);
+	const editionGroupDiffsPromise = _createRevision(EditionGroupRevision);
 	const publisherDiffsPromise = _createRevision(PublisherRevision);
 	const workDiffsPromise = _createRevision(WorkRevision);
 
 	Promise.join(
-		revisionPromise, creatorDiffsPromise, editionDiffsPromise,
-		workDiffsPromise, publisherDiffsPromise, publicationDiffsPromise,
+		revisionPromise, authorDiffsPromise, editionDiffsPromise,
+		workDiffsPromise, publisherDiffsPromise, editionGroupDiffsPromise,
 		(
-			revision, creatorDiffs, editionDiffs, workDiffs, publisherDiffs,
-			publicationDiffs
+			revision, authorDiffs, editionDiffs, workDiffs, publisherDiffs,
+			editionGroupDiffs
 		) => {
 			const diffs = _.concat(
 				entityFormatter.formatEntityDiffs(
-					creatorDiffs,
-					'Creator',
-					formatCreatorChange
+					authorDiffs,
+					'Author',
+					formatAuthorChange
 				),
 				entityFormatter.formatEntityDiffs(
 					editionDiffs,
@@ -223,9 +224,9 @@ router.get('/:id', (req, res, next) => {
 					formatEditionChange
 				),
 				entityFormatter.formatEntityDiffs(
-					publicationDiffs,
-					'Publication',
-					formatPublicationChange
+					editionGroupDiffs,
+					'EditionGroup',
+					formatEditionGroupChange
 				),
 				entityFormatter.formatEntityDiffs(
 					publisherDiffs,

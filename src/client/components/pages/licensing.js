@@ -44,7 +44,7 @@ function LicensingPage() {
 
 			<ul>
 				<li>
-					<b>Creator</b>&nbsp;
+					<b>Author</b>&nbsp;
 					BBID, aliases, type, begin and end dates, gender and
 					disambiguation comment
 				</li>

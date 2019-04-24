@@ -43,8 +43,8 @@ function EditionPage(props) {
 			{...extractEntityProps(props)}
 		>
 			<p>
-				{entity.publication ?
-					<a href={`/publication/${entity.publication.bbid}`}>
+				{entity.editionGroup ?
+					<a href={`/edition-group/${entity.editionGroup.bbid}`}>
 						<FontAwesome name="external-link"/>
 						{' See all similar editions'}
 					</a> :

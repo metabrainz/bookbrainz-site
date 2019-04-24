@@ -18,6 +18,7 @@
 
 // @flow
 
+import {snakeCase as _snakeCase} from 'lodash';
 import request from 'superagent-bluebird-promise';
 
 
@@ -120,7 +121,7 @@ export function checkIfNameExists(
 	return (dispatch) => {
 		request.get('/search/exists')
 			.query({
-				collection: entityType,
+				collection: _snakeCase(entityType),
 				q: name
 			})
 			.then(res => dispatch({

@@ -26,21 +26,21 @@ import EntityTitle from './title';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {labelsForCreator} from '../../../helpers/utils';
-
+import {kebabCase as _kebabCase} from 'lodash';
+import {labelsForAuthor} from '../../../helpers/utils';
 
 const {extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Button, Col, Row} = bootstrap;
 
-function CreatorAttributes({creator}) {
-	const type = getTypeAttribute(creator.creatorType).data;
-	const gender = extractAttribute(creator.gender, 'name');
-	const beginArea = extractAttribute(creator.beginArea, 'name');
-	const endArea = extractAttribute(creator.endArea, 'name');
-	const beginDate = extractAttribute(creator.beginDate);
-	const endDate = extractAttribute(creator.endDate);
-	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(creator);
+function AuthorAttributes({author}) {
+	const type = getTypeAttribute(author.authorType).data;
+	const gender = extractAttribute(author.gender, 'name');
+	const beginArea = extractAttribute(author.beginArea, 'name');
+	const endArea = extractAttribute(author.endArea, 'name');
+	const beginDate = extractAttribute(author.beginDate);
+	const endDate = extractAttribute(author.endDate);
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(author);
 
 	const isGroup = type === 'Group';
 	const {
@@ -48,7 +48,7 @@ function CreatorAttributes({creator}) {
 		beginAreaLabel,
 		endDateLabel,
 		endAreaLabel
-	} = labelsForCreator(isGroup);
+	} = labelsForAuthor(isGroup);
 	const showGender = !isGroup;
 	return (
 		<div>
@@ -80,7 +80,7 @@ function CreatorAttributes({creator}) {
 					</dl>
 				</Col>
 				{
-					creator.ended &&
+					author.ended &&
 					<Col md={3}>
 						<dl>
 							<dt>{endDateLabel}</dt>
@@ -94,26 +94,26 @@ function CreatorAttributes({creator}) {
 		</div>
 	);
 }
-CreatorAttributes.displayName = 'CreatorAttributes';
-CreatorAttributes.propTypes = {
-	creator: PropTypes.object.isRequired
+AuthorAttributes.displayName = 'AuthorAttributes';
+AuthorAttributes.propTypes = {
+	author: PropTypes.object.isRequired
 };
 
 
-function CreatorDisplayPage({entity, identifierTypes}) {
+function AuthorDisplayPage({entity, identifierTypes}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon={ENTITY_TYPE_ICONS.Creator}
+						backupIcon={ENTITY_TYPE_ICONS.Author}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
-					<CreatorAttributes creator={entity}/>
+					<AuthorAttributes author={entity}/>
 				</Col>
 			</Row>
 			<EntityLinks
@@ -124,8 +124,7 @@ function CreatorDisplayPage({entity, identifierTypes}) {
 			<Button
 				bsStyle="success"
 				className="margin-top-d15"
-				href={`/work/create?${
-					entity.type.toLowerCase()}=${entity.bbid}`}
+				href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 			>
 				<Icon className="margin-right-0-5" name="plus"/>Add Work
 			</Button>
@@ -137,13 +136,13 @@ function CreatorDisplayPage({entity, identifierTypes}) {
 		</div>
 	);
 }
-CreatorDisplayPage.displayName = 'CreatorDisplayPage';
-CreatorDisplayPage.propTypes = {
+AuthorDisplayPage.displayName = 'AuthorDisplayPage';
+AuthorDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array
 };
-CreatorDisplayPage.defaultProps = {
+AuthorDisplayPage.defaultProps = {
 	identifierTypes: []
 };
 
-export default CreatorDisplayPage;
+export default AuthorDisplayPage;

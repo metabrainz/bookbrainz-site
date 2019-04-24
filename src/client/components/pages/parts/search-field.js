@@ -59,7 +59,7 @@ class SearchField extends React.Component {
 	triggerOnSearch() {
 		const inputValue = this.queryInput.getValue();
 		const {collection} = this.state;
-		this.props.onSearch(inputValue, _.toLower(collection));
+		this.props.onSearch(inputValue, _.snakeCase(collection));
 	}
 
 	handleSubmit(event) {
@@ -84,7 +84,7 @@ class SearchField extends React.Component {
 			<DropdownButton
 				componentClass={InputGroup.Button}
 				id="entity-type-select"
-				title={this.state.collection || 'All types'}
+				title={_.startCase(this.state.collection) || 'All types'}
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType: string) => (
@@ -93,7 +93,7 @@ class SearchField extends React.Component {
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
-						{entityType}
+						{_.startCase(entityType)}
 					</MenuItem>
 				))}
 				<MenuItem divider/>

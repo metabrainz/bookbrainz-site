@@ -64,31 +64,31 @@ export const revisionistAttribs = {
 	title: 'Revisionist'
 };
 
-export const creatorCreatorIAttribs = {
+export const authorCreatorIAttribs = {
 	badgeUrl: 'http://test.com',
-	description: 'create one creator',
+	description: 'create one author',
 	id: 1,
-	name: 'Creator Creator I'
+	name: 'Author Creator I'
 };
 
-export const creatorCreatorIIAttribs = {
+export const authorCreatorIIAttribs = {
 	badgeUrl: 'http://test.com',
-	description: 'create 10 creators',
+	description: 'create 10 authors',
 	id: 2,
-	name: 'Creator Creator II'
+	name: 'Author Creator II'
 };
 
-export const creatorCreatorIIIAttribs = {
+export const authorCreatorIIIAttribs = {
 	badgeUrl: 'http://test.com',
-	description: 'create 100 creators',
+	description: 'create 100 authors',
 	id: 3,
-	name: 'Creator Creator III'
+	name: 'Author Creator III'
 };
 
-export const creatorCreatorAttribs = {
-	description: 'Complete Creator Creator track',
+export const authorCreatorAttribs = {
+	description: 'Complete Author Creator track',
 	id: 1,
-	title: 'Creator Creator'
+	title: 'Author Creator'
 };
 
 export const limitedEditionIAttribs = {
@@ -148,7 +148,7 @@ export const publisherAttribs = {
 
 export const sprinterAttribs = {
 	badgeUrl: 'http://test.com',
-	description: 'create 100 creators',
+	description: 'Create 10 revisions in an hour',
 	id: 1,
 	name: 'Sprinter'
 };
@@ -235,7 +235,7 @@ export const publisherCreatorAttribs = {
 };
 
 export const sprinterTitleAttribs = {
-	description: 'Complete Creator Creator track',
+	description: 'Complete Sprinter track',
 	id: 1,
 	title: 'Sprinter'
 };
@@ -318,19 +318,19 @@ export function createRevisionist() {
 		);
 }
 
-export function createCreatorCreator() {
-	return new AchievementType(creatorCreatorIAttribs)
+export function createAuthorCreator() {
+	return new AchievementType(authorCreatorIAttribs)
 		.save(null, {method: 'insert'})
 		.then(
-			() => new AchievementType(creatorCreatorIIAttribs)
+			() => new AchievementType(authorCreatorIIAttribs)
 				.save(null, {method: 'insert'})
 		)
 		.then(
-			() => new AchievementType(creatorCreatorIIIAttribs)
+			() => new AchievementType(authorCreatorIIIAttribs)
 				.save(null, {method: 'insert'})
 		)
 		.then(
-			() => new TitleType(creatorCreatorAttribs)
+			() => new TitleType(authorCreatorAttribs)
 				.save(null, {method: 'insert'})
 		);
 }

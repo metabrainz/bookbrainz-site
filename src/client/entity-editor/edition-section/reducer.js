@@ -22,14 +22,14 @@ import * as Immutable from 'immutable';
 
 import {
 	type Action,
+	SHOW_EDITION_GROUP,
 	SHOW_PHYSICAL,
-	SHOW_PUBLICATION,
 	UPDATE_DEPTH,
+	UPDATE_EDITION_GROUP,
 	UPDATE_FORMAT,
 	UPDATE_HEIGHT,
 	UPDATE_LANGUAGES,
 	UPDATE_PAGES,
-	UPDATE_PUBLICATION,
 	UPDATE_PUBLISHER,
 	UPDATE_RELEASE_DATE,
 	UPDATE_STATUS,
@@ -53,16 +53,16 @@ function reducer(
 	switch (type) {
 		case SHOW_PHYSICAL:
 			return state.set('physicalVisible', true);
-		case SHOW_PUBLICATION:
-			return state.set('publicationVisible', true);
+		case SHOW_EDITION_GROUP:
+			return state.set('editionGroupVisible', true);
 		case UPDATE_LANGUAGES:
 			return state.set('languages', Immutable.fromJS(payload));
 		case UPDATE_FORMAT:
 			return state.set('format', payload);
 		case UPDATE_PUBLISHER:
 			return state.set('publisher', Immutable.fromJS(payload));
-		case UPDATE_PUBLICATION:
-			return state.set('publication', Immutable.fromJS(payload));
+		case UPDATE_EDITION_GROUP:
+			return state.set('editionGroup', Immutable.fromJS(payload));
 		case UPDATE_RELEASE_DATE:
 			return state.set('releaseDate', payload);
 		case UPDATE_STATUS:

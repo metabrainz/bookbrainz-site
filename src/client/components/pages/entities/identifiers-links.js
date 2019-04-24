@@ -19,7 +19,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 function IdentifierLink({typeId, value}) {
 	let link;
 	// All identifiers type IDs have been taken from database.
@@ -27,7 +26,7 @@ function IdentifierLink({typeId, value}) {
 		case 1: // @MusicBrainz Release ID: The ID for the MusicBrainz Release corresponding to a BookBrainz Edition.
 			link = `https://musicbrainz.org/release/${value}`;
 			break;
-		case 2: // @MusicBrainz Artist ID: The ID for the MusicBrainz Artist corresponding to a BookBrainz Creator.
+		case 2: // @MusicBrainz Artist ID: The ID for the MusicBrainz Artist corresponding to a BookBrainz Author.
 			link = `https://musicbrainz.org/artist/${value}`;
 			break;
 		case 3: // @MusicBrainz Work ID: The ID for the MusicBrainz Work corresponding to a BookBrainz Work.
@@ -54,16 +53,16 @@ function IdentifierLink({typeId, value}) {
 		case 11: // @Barcode: The barcode for a BookBrainz Edition.
 			link = `https://www.barcodelookup.com/${value}`;
 			break;
-		case 12: // @VIAF: The VIAF ID corresponding to a BookBrainz creator.
+		case 12: // @VIAF: The VIAF ID corresponding to a BookBrainz Author.
 			link = `https://viaf.org/viaf/${value}`;
 			break;
-		case 13: // @ISNI: The ISNI ID corresponding to a BookBrainz creator.
+		case 13: // @ISNI: The ISNI ID corresponding to a BookBrainz Author.
 			link = `http://www.isni.org/${value}`;
 			break;
 		case 14: // @LibraryThing Work: The LibraryThing ID for a BookBrainz work.
 			link = `https://www.librarything.com/work/${value}`;
 			break;
-		case 15: // @LibraryThing Author: The LibraryThing author ID corresponding to a BookBrainz creator.
+		case 15: // @LibraryThing Author: The LibraryThing author ID corresponding to a BookBrainz Author.
 			link = `https://www.librarything.com/author/${value}`;
 			break;
 		case 16: // @IMDb Title ID: The ID for a title from IMDb
@@ -72,8 +71,8 @@ function IdentifierLink({typeId, value}) {
 		case 17: // @MusicBrainz Label ID: The ID for the MusicBrainz Label corresponding to a BookBrainz Publisher.
 			link = `https://musicbrainz.org/label/${value}`;
 			break;
-		case 18: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Creator.
-		case 19: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publication.
+		case 18: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Author.
+		case 19: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz EditionGroup.
 		case 20: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
 		case 21: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
 			link = `https://www.wikidata.org/wiki/${value}`;

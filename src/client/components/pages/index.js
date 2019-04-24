@@ -27,7 +27,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
-
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 

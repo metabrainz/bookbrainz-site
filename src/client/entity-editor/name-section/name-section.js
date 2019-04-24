@@ -128,7 +128,7 @@ class NameSection extends React.Component {
 
 		return (
 			<div>
-				<h2>{`What is the ${_.capitalize(entityType)} called?`}</h2>
+				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
 				<form>
 					<Row>
 						<Col md={6} mdOffset={3}>
@@ -139,7 +139,7 @@ class NameSection extends React.Component {
 								)}
 								error={!validateNameSectionName(nameValue)}
 								inputRef={this.updateNameFieldInputRef}
-								tooltipText={`Official name of the ${_.capitalize(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
+								tooltipText={`Official name of the ${_.startCase(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
 								warn={(isRequiredDisambiguationEmpty(
 									warnIfExists,
 									disambiguationDefaultValue
@@ -154,7 +154,7 @@ class NameSection extends React.Component {
 							) ?
 								<Alert bsStyle="warning">
 									We found the following&nbsp;
-									{_.capitalize(entityType)}{exactMatches.length > 1 ? 's' : ''} with
+									{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 									exactly the same name or alias:
 									<br/><small className="help-block">Click on a name to open in a new tab</small>
 									<ListGroup className="margin-top-1 margin-bottom-1">
@@ -181,7 +181,7 @@ class NameSection extends React.Component {
 						!_.isEmpty(searchResults) &&
 						<Row>
 							<Col md={6} mdOffset={3}>
-								If the {_.capitalize(entityType)} you want to add appears in the results
+								If the {_.startCase(entityType)} you want to add appears in the results
 								below, click on it to inspect it in a new tab before adding a possible duplicate.
 								<SearchResults condensed results={searchResults}/>
 							</Col>

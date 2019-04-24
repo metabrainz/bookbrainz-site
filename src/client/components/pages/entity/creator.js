@@ -20,6 +20,7 @@
  */
 
 import * as entityHelper from '../../../helpers/entity';
+
 import AttributeList from '../parts/attribute-list';
 import EntityPage from '../../../containers/entity';
 import PropTypes from 'prop-types';
@@ -29,11 +30,11 @@ import {extractEntityProps} from '../../../helpers/props';
 
 const {extractAttribute, getDateAttributes, getTypeAttribute} = entityHelper;
 
-function CreatorPage(props) {
+function AuthorPage(props) {
 	const {entity} = props;
 	const attributes = (
 		<AttributeList
-			attributes={CreatorPage.getAttributes(entity)}
+			attributes={AuthorPage.getAttributes(entity)}
 		/>
 	);
 	return (
@@ -44,12 +45,12 @@ function CreatorPage(props) {
 		/>
 	);
 }
-CreatorPage.displayName = 'CreatorPage';
-CreatorPage.propTypes = {
+AuthorPage.displayName = 'AuthorPage';
+AuthorPage.propTypes = {
 	entity: PropTypes.object.isRequired
 };
-CreatorPage.getAttributes = (entity) => [
-	getTypeAttribute(entity.creatorType),
+AuthorPage.getAttributes = (entity) => [
+	getTypeAttribute(entity.authorType),
 	{data: extractAttribute(entity.gender, 'name'), title: 'Gender'},
 	{
 		data: extractAttribute(entity.beginArea, 'name'),
@@ -59,4 +60,4 @@ CreatorPage.getAttributes = (entity) => [
 	getDateAttributes(entity)
 ];
 
-export default CreatorPage;
+export default AuthorPage;

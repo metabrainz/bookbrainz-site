@@ -19,12 +19,23 @@
 // @flow
 
 import {
-	Button, Col, ControlLabel, FormGroup, Modal, ProgressBar, Row
+	Button,
+	Col,
+	ControlLabel,
+	FormGroup,
+	Modal,
+	ProgressBar,
+	Row
 } from 'react-bootstrap';
 import type {
-	Entity, EntityType, LanguageOption, RelationshipType,
-	RelationshipWithLabel, Relationship as _Relationship
+	Entity,
+	EntityType,
+	LanguageOption,
+	RelationshipType,
+	RelationshipWithLabel,
+	Relationship as _Relationship
 } from './types';
+
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import React from 'react';
 import ReactSelect from 'react-select';
@@ -234,15 +245,16 @@ class RelationshipModal
 	renderEntitySelect() {
 		const {baseEntity, relationshipTypes} = this.props;
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
-
+		const typesForDisplay = types.map(_.startCase);
+		const lastType = _.last(typesForDisplay);
+		const otherTypes = _.join(typesForDisplay.slice(0, -1), ', ');
 		const label =
-			`Other Entity (${_.join(types.slice(0, -1), ', ')}` +
-			` or ${_.last(types)})`;
+			`Other Entity (${otherTypes.length ? `${otherTypes} or ` : ''}${lastType})`;
 
 		return (
 			<EntitySearchFieldOption
 				cache={false}
-				instanceId="publication"
+				instanceId="relationshipEntitySearchField"
 				label={label}
 				languageOptions={this.props.languageOptions}
 				name="entity"
@@ -302,8 +314,8 @@ class RelationshipModal
 							{baseEntity.type}
 							{' '}and other entities.
 						</strong>
-						{' '}For example, you can link a creator
-						to a work as an author, or a work to another work
+						{' '}For example, you can link an author
+						to a work, or a work to another work
 						to show translation or derivation.
 					</p>
 					<hr/>

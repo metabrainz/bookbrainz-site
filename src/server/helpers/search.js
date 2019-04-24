@@ -23,7 +23,6 @@ import Promise from 'bluebird';
 import _ from 'lodash';
 import httpStatus from 'http-status';
 
-
 const _index = 'bookbrainz';
 const _bulkIndexSize = 128;
 
@@ -84,7 +83,7 @@ async function _bulkIndexEntities(entities) {
 				index: {
 					_id: entity.bbid,
 					_index,
-					_type: entity.type.toLowerCase()
+					_type: _.snakeCase(entity.type)
 				}
 			});
 			accumulator.push(entity);
@@ -176,7 +175,7 @@ export function autocomplete(orm, query, collection) {
 	};
 
 	if (collection) {
-		dslQuery.type = collection;
+		dslQuery.type = _.snakeCase(collection);
 	}
 
 	return _searchForEntities(orm, dslQuery);
@@ -187,7 +186,7 @@ export function indexEntity(entity) {
 		body: entity,
 		id: entity.bbid,
 		index: _index,
-		type: entity.type.toLowerCase()
+		type: _.snakeCase(entity.type)
 	});
 }
 
@@ -195,7 +194,7 @@ export function deleteEntity(entity) {
 	return _client.delete({
 		id: entity.bbid,
 		index: _index,
-		type: entity.type.toLowerCase()
+		type: _.snakeCase(entity.type)
 	});
 }
 
@@ -205,7 +204,7 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Creator, Edition, Publication, Publisher, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Publisher, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -289,10 +288,10 @@ export async function generateIndex(orm) {
 
 	const entityBehaviors = [
 		{
-			model: Creator,
+			model: Author,
 			relations: [
 				'gender',
-				'creatorType',
+				'authorType',
 				'beginArea',
 				'endArea'
 			]
@@ -300,12 +299,12 @@ export async function generateIndex(orm) {
 		{
 			model: Edition,
 			relations: [
-				'publication',
+				'editionGroup',
 				'editionFormat',
 				'editionStatus'
 			]
 		},
-		{model: Publication, relations: ['publicationType']},
+		{model: EditionGroup, relations: ['editionGroupType']},
 		{model: Publisher, relations: ['publisherType', 'area']},
 		{model: Work, relations: ['workType']}
 	];
@@ -354,7 +353,7 @@ export async function checkIfExists(orm, name, collection) {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
-					transacting, _.lowerCase(collection), name
+					transacting, _.snakeCase(collection), name
 				);
 				resolve(result);
 			}
@@ -376,7 +375,7 @@ export async function checkIfExists(orm, name, collection) {
 	];
 	return Promise.all(
 		bbids.map(
-			bbid => orm.func.entity.getEntity(orm, _.capitalize(collection), bbid, baseRelations)
+			bbid => orm.func.entity.getEntity(orm, _.upperFirst(collection), bbid, baseRelations)
 		)
 	);
 }
@@ -411,7 +410,7 @@ export function searchByName(orm, name, collection, size, from) {
 	};
 
 	if (collection) {
-		dslQuery.type = collection;
+		dslQuery.type = _.snakeCase(collection);
 	}
 
 	return _searchForEntities(orm, dslQuery);

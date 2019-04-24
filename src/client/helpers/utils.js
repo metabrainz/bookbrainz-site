@@ -53,7 +53,7 @@ export function isWithinDayFromNow(date) {
 	return Boolean(Date.now() - date.getTime() < MILLISECONDS_PER_DAY);
 }
 
-export function labelsForCreator(isGroup) {
+export function labelsForAuthor(isGroup) {
 	return {
 		beginAreaLabel: isGroup ? 'Place founded' : 'Place of birth',
 		beginDateLabel: isGroup ? 'Date founded' : 'Date of birth',
