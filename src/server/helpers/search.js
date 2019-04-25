@@ -175,7 +175,12 @@ export function autocomplete(orm, query, collection) {
 	};
 
 	if (collection) {
-		dslQuery.type = _.snakeCase(collection);
+		if (Array.isArray(collection)) {
+			dslQuery.type = collection.map(_.snakeCase);
+		}
+		else {
+			dslQuery.type = _.snakeCase(collection);
+		}
 	}
 
 	return _searchForEntities(orm, dslQuery);
@@ -410,7 +415,12 @@ export function searchByName(orm, name, collection, size, from) {
 	};
 
 	if (collection) {
-		dslQuery.type = _.snakeCase(collection);
+		if (Array.isArray(collection)) {
+			dslQuery.type = collection.map(_.snakeCase);
+		}
+		else {
+			dslQuery.type = _.snakeCase(collection);
+		}
 	}
 
 	return _searchForEntities(orm, dslQuery);
