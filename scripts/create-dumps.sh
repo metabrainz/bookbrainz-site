@@ -9,7 +9,7 @@ pushd /home/bookbrainz/data/dumps
 DUMP_FILE=bookbrainz-dump-`date -I`.sql
 
 echo "Creating data dump..."
-export PGPASSWORD="bookbrainz"
+
 # Dump new backup to /tmp
 pg_dump\
 	-h $POSTGRES_HOST \
