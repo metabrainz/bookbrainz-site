@@ -102,7 +102,7 @@ router.get('/autocomplete', (req, res) => {
 	const query = req.query.q;
 	const collection = req.query.collection || null;
 
-	const searchPromise = search.autocomplete(orm, query, _snakeCase(collection));
+	const searchPromise = search.autocomplete(orm, query, collection);
 
 	handler.sendPromiseResult(res, searchPromise);
 });

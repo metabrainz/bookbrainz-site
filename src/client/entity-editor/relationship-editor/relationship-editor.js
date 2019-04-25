@@ -42,7 +42,6 @@ import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
 
-
 function isValidRelationship(relationship: _Relationship) {
 	const {relationshipType, sourceEntity, targetEntity} = relationship;
 
@@ -258,7 +257,7 @@ class RelationshipModal
 				label={label}
 				languageOptions={this.props.languageOptions}
 				name="entity"
-				type={types.map(_.toLower)}
+				type={types}
 				value={this.state.targetEntity}
 				onChange={this.handleEntityChange}
 			/>

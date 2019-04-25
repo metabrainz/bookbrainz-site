@@ -22,6 +22,7 @@
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {kebabCase as _kebabCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
@@ -46,7 +47,7 @@ class LinkedEntity extends React.Component {
 		if (type && id) {
 			url = type === 'Area' ?
 				`//musicbrainz.org/area/${id}` :
-				`/${type.toLowerCase()}/${id}`;
+				`/${_kebabCase(type)}/${id}`;
 		}
 		if (url) {
 			window.open(url, '_blank');
