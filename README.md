@@ -102,6 +102,8 @@ The process may take a while as Docker downloads and builds the images. Let that
 
 ## Running the server
 
+> We have recently updated our schema and are in the process of migrating the production database to the new schema. As a result, the database set up earlier will not run with the `master` branch. Until the dumps with the new schema come in, please switch over to the `stable` branch instead of `master` before running the server. You can do this by running `git fetch <remote>/stable && git checkout <remote>/stable`, where remote is the name assigned by you to this git repository's address (which is `origin` by default).
+
 If all went well, you will only need to run `./develop.sh` in the command line from the `bookbrainz-site` folder.
 Press `ctrl+c` to stop the server. The dependencies will continue running in the background.
 
