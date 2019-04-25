@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 source /home/bookbrainz/bookbrainz-site/scripts/config.sh
 
 # Switch directory
