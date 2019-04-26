@@ -48,3 +48,5 @@ chown bookbrainz:bookbrainz ./*
 chmod 644 ./*
 
 popd
+
+exit 0
