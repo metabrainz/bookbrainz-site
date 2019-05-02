@@ -139,20 +139,23 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 		'revision.revision'
 	].concat(additionalRels);
 
-	return (req, res, next, bbid) => {
+	return async (req, res, next, bbid) => {
 		const {orm} = req.app.locals;
-		const model = orm.func.entity.getEntityModelByType(orm, modelName);
 		if (utils.isValidBBID(bbid)) {
-			return orm.func.entity.getEntity(orm, modelName, bbid, relations)
-				.then((entity) => {
-					res.locals.entity = entity;
-					next();
-					return null;
-				})
-				.catch(model.NotFoundError, () => {
-					throw new error.NotFoundError(errMessage, req);
-				})
-				.catch(next);
+			try {
+				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
+				if (!entity.dataId) {
+					const parentAlias = await orm.func.entity.getEntityParentAlias(
+						orm, modelName, bbid
+					);
+					entity.parentAlias = parentAlias;
+				}
+				res.locals.entity = entity;
+				return next();
+			}
+			catch (err) {
+				return next(new error.NotFoundError(errMessage, req));
+			}
 		}
 
 		return next('route');

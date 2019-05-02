@@ -121,8 +121,11 @@ export function showEntityEditions(entity) {
 }
 
 export function getEntityLabel(entity) {
-	if (entity.revision && !entity.revision.dataId) {
-		return `${entity.type} ${entity.bbid}`;
+	if (!_get(entity, 'revision.dataId')) {
+		if (entity.parentAlias) {
+			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{entity.parentAlias.name}</span>;
+		}
+		return `Deleted ${entity.type} ${entity.bbid}`;
 	}
 
 	if (entity.defaultAlias) {
