@@ -218,6 +218,10 @@ html {
 	padding-top:4em;
 }
 
+.deleted {
+	text-decoration-line: line-through;
+	text-decoration-color: @brand-danger;
+}
 
 /* getStarted.jade */
 /* =============== */
@@ -284,6 +288,17 @@ html {
 
 .entity-display-image-box {
 	padding-right: 0px;
+}
+
+.entity-display-icon {
+	position: relative;
+	min-height: 5em;
+	line-height: initial;
+	margin-top: 5em;
+	margin-bottom: 5em;
+	>:last-child:not(:only-child) {
+		color: @brand-danger;
+	}
 }
 
 .VirtualizedSelectOption {

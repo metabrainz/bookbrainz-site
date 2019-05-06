@@ -27,10 +27,13 @@ import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const {getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
+const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function EditionGroupAttributes({editionGroup}) {
+	if (editionGroup.deleted) {
+		return deletedEntityMessage;
+	}
 	const type = getTypeAttribute(editionGroup.editionGroupType).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(editionGroup);
 	return (
@@ -66,6 +69,7 @@ function EditionGroupDisplayPage({entity, identifierTypes}) {
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.EditionGroup}
+						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
@@ -74,14 +78,18 @@ function EditionGroupDisplayPage({entity, identifierTypes}) {
 					<EditionGroupAttributes editionGroup={entity}/>
 				</Col>
 			</Row>
-			<EditionTable editions={entity.editions} entity={entity}/>
-			<EntityLinks
-				entity={entity}
-				identifierTypes={identifierTypes}
-				urlPrefix={urlPrefix}
-			/>
+			{!entity.deleted &&
+			<React.Fragment>
+				<EditionTable editions={entity.editions} entity={entity}/>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				deleted={entity.deleted}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
 			/>

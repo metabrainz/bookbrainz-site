@@ -28,12 +28,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
+const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 
 function WorkAttributes({work}) {
+	if (work.deleted) {
+		return deletedEntityMessage;
+	}
 	const type = getTypeAttribute(work.workType).data;
 	const languages = getLanguageAttribute(work).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(work);
@@ -79,6 +82,7 @@ function WorkDisplayPage({entity, identifierTypes}) {
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Work}
+						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
@@ -87,17 +91,21 @@ function WorkDisplayPage({entity, identifierTypes}) {
 					<WorkAttributes work={entity}/>
 				</Col>
 			</Row>
-			<EditionTable
-				editions={editionsContainWork}
-				entity={entity}
-			/>
-			<EntityLinks
-				entity={entity}
-				identifierTypes={identifierTypes}
-				urlPrefix={urlPrefix}
-			/>
+			{!entity.deleted &&
+			<React.Fragment>
+				<EditionTable
+					editions={editionsContainWork}
+					entity={entity}
+				/>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				deleted={entity.deleted}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
 			/>
