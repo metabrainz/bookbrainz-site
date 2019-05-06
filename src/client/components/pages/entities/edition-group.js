@@ -83,6 +83,7 @@ function EditionGroupDisplayPage({entity, identifierTypes}) {
 			/>
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				deleted={entity.deleted}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
 			/>
