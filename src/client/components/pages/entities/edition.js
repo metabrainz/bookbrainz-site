@@ -108,6 +108,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Edition}
+						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>

@@ -145,6 +145,7 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 			try {
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				if (!entity.dataId) {
+					entity.deleted = true;
 					const parentAlias = await orm.func.entity.getEntityParentAlias(
 						orm, modelName, bbid
 					);

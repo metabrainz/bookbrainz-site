@@ -108,6 +108,7 @@ function AuthorDisplayPage({entity, identifierTypes}) {
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Author}
+						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
