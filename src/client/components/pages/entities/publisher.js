@@ -29,11 +29,14 @@ import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const {extractAttribute, getTypeAttribute, getEntityUrl,
+const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function PublisherAttributes({publisher}) {
+	if (publisher.deleted) {
+		return deletedEntityMessage;
+	}
 	const type = getTypeAttribute(publisher.publisherType).data;
 	const area = extractAttribute(publisher.area, 'name');
 	const beginDate = extractAttribute(publisher.beginDate);
@@ -95,12 +98,15 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 					<PublisherAttributes publisher={entity}/>
 				</Col>
 			</Row>
-			<EditionTable editions={entity.editions} entity={entity}/>
-			<EntityLinks
-				entity={entity}
-				identifierTypes={identifierTypes}
-				urlPrefix={urlPrefix}
-			/>
+			{!entity.deleted &&
+			<React.Fragment>
+				<EditionTable editions={entity.editions} entity={entity}/>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				deleted={entity.deleted}

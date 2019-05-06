@@ -29,11 +29,14 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 import {labelsForAuthor} from '../../../helpers/utils';
 
-const {extractAttribute, getTypeAttribute, getEntityUrl,
+const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Button, Col, Row} = bootstrap;
 
 function AuthorAttributes({author}) {
+	if (author.deleted) {
+		return deletedEntityMessage;
+	}
 	const type = getTypeAttribute(author.authorType).data;
 	const gender = extractAttribute(author.gender, 'name');
 	const beginArea = extractAttribute(author.beginArea, 'name');
@@ -117,18 +120,21 @@ function AuthorDisplayPage({entity, identifierTypes}) {
 					<AuthorAttributes author={entity}/>
 				</Col>
 			</Row>
-			<EntityLinks
-				entity={entity}
-				identifierTypes={identifierTypes}
-				urlPrefix={urlPrefix}
-			/>
-			<Button
-				bsStyle="success"
-				className="margin-top-d15"
-				href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-			>
-				<Icon className="margin-right-0-5" name="plus"/>Add Work
-			</Button>
+			{!entity.deleted &&
+			<React.Fragment>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+				<Button
+					bsStyle="success"
+					className="margin-top-d15"
+					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+				>
+					<Icon className="margin-right-0-5" name="plus"/>Add Work
+				</Button>
+			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				deleted={entity.deleted}

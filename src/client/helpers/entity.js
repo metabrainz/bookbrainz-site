@@ -287,3 +287,13 @@ export function getRelationshipSourceByTypeId(entity, relationshipTypeId) {
 	}
 	return sources;
 }
+
+export const deletedEntityMessage = (
+	<p>
+		This entity has been deleted by an editor.
+		This is most likely because it was added accidentally or incorrectly.
+		<br/>The edit history has been preserved, and you can see the revisions by clicking the history button below.
+		<br/>If you’re sure this entity should still exist, you will be able to
+		restore it to a previous revision in a future version of BookBrainz, but that’s not quite ready yet.
+	</p>
+);
