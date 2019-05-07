@@ -50,6 +50,7 @@ RUN apt-get remove -y $BUILD_DEPS && \
 COPY static/ static/
 RUN npm run mkdirs
 COPY config/ config/
+COPY sql/ sql/
 COPY src/ src/
 
 # Copy css/less dependencies from node_modules to src/client/stylesheets
