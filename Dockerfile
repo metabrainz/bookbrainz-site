@@ -24,7 +24,6 @@ ENV PG_MAJOR 9.5
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
-    && apt-get install bzip2 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --shell /bin/bash bookbrainz
