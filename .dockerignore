@@ -1,7 +1,6 @@
 .git/
 .github/
 config/*
-!config/config.json
 !config/config.json.ctmpl
 data/
 flow-typed/
