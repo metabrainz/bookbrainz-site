@@ -63,7 +63,7 @@ ARG DEPLOY_ENV
 CMD ["npm", "start"]
 
 # Production target
-FROM bookbrainz-base as bookbrainz-prod
+FROM bookbrainz-base as bookbrainz-test
 ARG DEPLOY_ENV
 
 COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
@@ -75,6 +75,7 @@ RUN ["npm", "run", "build"]
 
 RUN touch /etc/service/webserver/down
 
+FROM bookbrainz-prod-base as bookbrainz-prod
 RUN mkdir -p /home/bookbrainz/data/dumps
 
 COPY ./docker/consul-template-cron.conf /etc/consul-template-cron.conf

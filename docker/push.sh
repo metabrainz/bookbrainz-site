@@ -16,10 +16,15 @@ git describe --tags --dirty --always > .git-version
 
 ENV=${1:-beta}
 TAG=${2:-beta}
+TARGET=bookbrainz-prod
+if [ $ENV == "test" ]
+  then
+    TARGET=bookbrainz-test
+fi
 
-echo "Building BookBrainz image with env $ENV tag $TAG..."
+echo "Building BookBrainz image with env $ENV tag $TAG and docker build target $TARGET"
 docker build -t metabrainz/bookbrainz:$TAG \
-        --target bookbrainz-prod \
+        --target $TARGET \
         --build-arg GIT_COMMIT_SHA=$(git rev-parse HEAD) \
         --build-arg DEPLOY_ENV=$ENV .
 echo "Done!"
