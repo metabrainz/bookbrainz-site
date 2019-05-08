@@ -20,16 +20,18 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {get as _get, kebabCase as _kebabCase} from 'lodash';
+
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
-import _ from 'lodash';
+
 
 const {Button, Table} = bootstrap;
 
 export function extractAttribute(attr, path) {
 	if (attr) {
 		if (path) {
-			return _.get(attr, path, '?');
+			return _get(attr, path, '?');
 		}
 		return attr;
 	}
@@ -70,8 +72,7 @@ export function showEntityEditions(entity) {
 				<Button
 					bsStyle="success"
 					className="pull-right"
-					href={`/edition/create?${
-						entity.type.toLowerCase()}=${entity.bbid}`}
+					href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 				>
 					<FontAwesome name="plus"/>
 					{'  Add Edition'}
@@ -120,8 +121,11 @@ export function showEntityEditions(entity) {
 }
 
 export function getEntityLabel(entity) {
-	if (entity.revision && !entity.revision.dataId) {
-		return `${entity.type} ${entity.bbid}`;
+	if (!_get(entity, 'revision.dataId')) {
+		if (entity.parentAlias) {
+			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{entity.parentAlias.name}</span>;
+		}
+		return `Deleted ${entity.type} ${entity.bbid}`;
 	}
 
 	if (entity.defaultAlias) {
@@ -181,7 +185,7 @@ export function getEntitySecondaryAliases(entity) {
 }
 
 export function getEntityUrl(entity) {
-	const entityType = entity.type.toLowerCase();
+	const entityType = _kebabCase(entity.type);
 	const entityId = entity.bbid;
 
 	return `/${entityType}/${entityId}`;
@@ -189,9 +193,9 @@ export function getEntityUrl(entity) {
 
 export const ENTITY_TYPE_ICONS = {
 	Area: 'globe',
-	Creator: 'user',
+	Author: 'user',
 	Edition: 'book',
-	Publication: 'window-restore',
+	EditionGroup: 'window-restore',
 	Publisher: 'university',
 	Work: 'pen-nib'
 };
@@ -283,3 +287,13 @@ export function getRelationshipSourceByTypeId(entity, relationshipTypeId) {
 	}
 	return sources;
 }
+
+export const deletedEntityMessage = (
+	<p>
+		This entity has been deleted by an editor.
+		This is most likely because it was added accidentally or incorrectly.
+		<br/>The edit history has been preserved, and you can see the revisions by clicking the history button below.
+		<br/>If you’re sure this entity should still exist, you will be able to
+		restore it to a previous revision in a future version of BookBrainz, but that’s not quite ready yet.
+	</p>
+);

@@ -20,14 +20,18 @@
 
 import {dateIsBefore, get, validateDate, validatePositiveInteger} from './base';
 import {
-	validateAliases, validateIdentifiers, validateNameSection,
+	validateAliases,
+	validateIdentifiers,
+	validateNameSection,
 	validateSubmissionSection
 } from './common';
+
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 import {convertMapToObject} from '../../helpers/utils';
 
-export function validateCreatorSectionBeginArea(value: any): boolean {
+
+export function validateAuthorSectionBeginArea(value: any): boolean {
 	if (!value) {
 		return true;
 	}
@@ -35,12 +39,12 @@ export function validateCreatorSectionBeginArea(value: any): boolean {
 	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
-export function validateCreatorSectionBeginDate(value: any): object {
+export function validateAuthorSectionBeginDate(value: any): object {
 	const {isValid, errorMessage} = validateDate(value);
 	return {errorMessage, isValid};
 }
 
-export function validateCreatorSectionEndArea(value: any): boolean {
+export function validateAuthorSectionEndArea(value: any): boolean {
 	if (!value) {
 		return true;
 	}
@@ -48,7 +52,7 @@ export function validateCreatorSectionEndArea(value: any): boolean {
 	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
-export function validateCreatorSectionEndDate(
+export function validateAuthorSectionEndDate(
 	beginValue: any, endValue: any
 ): object {
 	const {isValid, errorMessage} = validateDate(endValue);
@@ -62,29 +66,29 @@ export function validateCreatorSectionEndDate(
 	return {errorMessage, isValid};
 }
 
-export function validateCreatorSectionEnded(value: any): boolean {
+export function validateAuthorSectionEnded(value: any): boolean {
 	return _.isNull(value) || _.isBoolean(value);
 }
 
-export function validateCreatorSectionType(value: any): boolean {
+export function validateAuthorSectionType(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateCreatorSectionGender(value: any): boolean {
+export function validateAuthorSectionGender(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateCreatorSection(data: any): boolean {
+export function validateAuthorSection(data: any): boolean {
 	return (
-		validateCreatorSectionBeginArea(get(data, 'beginArea', null)) &&
-		validateCreatorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValid &&
-		validateCreatorSectionEndArea(get(data, 'endArea', null)) &&
-		validateCreatorSectionEndDate(
+		validateAuthorSectionBeginArea(get(data, 'beginArea', null)) &&
+		validateAuthorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValid &&
+		validateAuthorSectionEndArea(get(data, 'endArea', null)) &&
+		validateAuthorSectionEndDate(
 			convertMapToObject(get(data, 'beginDate', null)), convertMapToObject(get(data, 'endDate', null))
 		).isValid &&
-		validateCreatorSectionEnded(get(data, 'ended', null)) &&
-		validateCreatorSectionType(get(data, 'gender', null)) &&
-		validateCreatorSectionType(get(data, 'type', null))
+		validateAuthorSectionEnded(get(data, 'ended', null)) &&
+		validateAuthorSectionType(get(data, 'gender', null)) &&
+		validateAuthorSectionType(get(data, 'type', null))
 	);
 }
 
@@ -97,7 +101,7 @@ export function validateForm(
 			get(formData, 'identifierEditor', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
-		validateCreatorSection(get(formData, 'creatorSection', {})),
+		validateAuthorSection(get(formData, 'authorSection', {})),
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 

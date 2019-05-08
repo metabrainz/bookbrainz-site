@@ -23,7 +23,9 @@ import FontAwesome from 'react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent-bluebird-promise';
+
 
 const {Alert, Button, Col, Row, Panel} = bootstrap;
 
@@ -65,7 +67,7 @@ class EntityDeletionForm extends React.Component {
 	render() {
 		const {entity} = this.props;
 
-		this.entityUrl = `/${entity.type.toLowerCase()}/${entity.bbid}`;
+		this.entityUrl = `/${_kebabCase(entity.type)}/${entity.bbid}`;
 		this.deleteUrl = `${this.entityUrl}/delete/handler`;
 
 		let errorComponent = null;

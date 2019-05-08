@@ -37,8 +37,8 @@ import type {
 	RelationshipType,
 	Relationship as _Relationship
 } from './types';
-
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
+import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from './relationship';
 import RelationshipEditor from './relationship-editor';
@@ -103,7 +103,7 @@ function RelationshipList(
 type OwnProps = {
 	entity: Entity,
 	entityType: EntityType,
-	relationshipTypes: Array<RelationshipType>
+	relationshipTypes: Array<RelationshipType>,
 };
 
 type StateProps = {
@@ -127,18 +127,22 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 
 function RelationshipSection({
-	entity, entityType, entityName, showEditor, relationships,
+	entity, entityType, entityName, languageOptions, showEditor, relationships,
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
 	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
-	const entityTypeForDisplay = _.upperFirst(entityType);
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
 		defaultAlias: {
 			name: entityName
 		},
-		type: entityTypeForDisplay
+		type: _.upperFirst(entityType)
 	};
+
+	const languageOptionsForDisplay = languageOptions.map((language) => ({
+		label: language.name,
+		value: language.id
+	}));
 
 	const editor = (
 		<RelationshipEditor
@@ -146,6 +150,7 @@ function RelationshipSection({
 			initRelationship={
 				relationshipEditorProps && relationshipEditorProps.toJS()
 			}
+			languageOptions={languageOptionsForDisplay}
 			relationshipTypes={relationshipTypes}
 			onAdd={onEditorAdd}
 			onCancel={onEditorClose}
@@ -156,7 +161,7 @@ function RelationshipSection({
 	return (
 		<div>
 			{showEditor && editor}
-			<h2>How are other entities related to this {entityTypeForDisplay}?</h2>
+			<h2>How are other entities related to this {_.startCase(entityType)}?</h2>
 			<Row>
 				<Col md={10} mdOffset={1}>
 					<RelationshipList
@@ -199,6 +204,11 @@ function RelationshipSection({
 		</div>
 	);
 }
+
+RelationshipSection.displayName = 'RelationshipSection';
+RelationshipSection.propTypes = {
+	languageOptions: PropTypes.array.isRequired
+};
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('relationshipSection');

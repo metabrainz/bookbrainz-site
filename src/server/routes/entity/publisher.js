@@ -72,7 +72,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 			res.locals.entity.editions = editions.toJSON();
 			_setPublisherTitle(res);
 			res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
-			entityRoutes.displayEntity(req, res);
+			return entityRoutes.displayEntity(req, res);
 		})
 		.catch(next);
 });

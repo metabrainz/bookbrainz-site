@@ -22,7 +22,7 @@ import * as entityHelper from '../../../helpers/entity';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import {kebabCase as _kebabCase} from 'lodash';
 
 const {Button, Table} = bootstrap;
 
@@ -75,8 +75,7 @@ function WorkTable({entity, works}) {
 						<Button
 							bsStyle="success"
 							className="margin-top-d15"
-							href={`/work/create?${
-								entity.type.toLowerCase()}=${entity.bbid}`}
+							href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						>
 							<Icon className="margin-right-0-5" name="plus"/>Add Work
 						</Button>
@@ -86,8 +85,7 @@ function WorkTable({entity, works}) {
 						<span className="margin-right-2 pull-left">
 							<Button
 								bsStyle="success"
-								href={`/work/create?${
-									entity.type.toLowerCase()}=${entity.bbid}`}
+								href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 							>
 								<Icon name="pen-nib" size="2x"/>
 								<br/>

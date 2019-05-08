@@ -36,7 +36,7 @@ import {
 
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
-import EntitySearchField from '../common/entity-search-field';
+import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
@@ -79,7 +79,7 @@ type OwnProps = {
 type Props = StateProps & DispatchProps & OwnProps;
 
 /**
- * Container component. The CreatorSection component contains input fields
+ * Container component. The PublisherSection component contains input fields
  * specific to the publisher entity. The intention is that this component is
  * rendered as a modular section within the entity editor.
  *
@@ -150,7 +150,7 @@ function PublisherSection({
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<EntitySearchField
+					<EntitySearchFieldOption
 						instanceId="area"
 						label="Area"
 						tooltipText="Country or place the publisher is registered in"

@@ -19,11 +19,11 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
+
 import PropTypes from 'prop-types';
 import React from 'react';
-import {differenceBy as _differenceBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
-
 
 const {Button, ButtonGroup, Col, Row, Table} = bootstrap;
 
@@ -50,9 +50,9 @@ function SearchResults(props) {
 							<ButtonGroup id="searchpage-button-group">
 								<Button
 									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/creator/create"
+									href="/author/create"
 								>
-									{genEntityIconHTMLElement('Creator', '3x', false)}
+									{genEntityIconHTMLElement('Author', '3x', false)}
 									<div className="margin-top-d4">Author</div>
 								</Button>
 								<Button
@@ -71,9 +71,9 @@ function SearchResults(props) {
 								</Button>
 								<Button
 									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/publication/create"
+									href="/edition-group/create"
 								>
-									{genEntityIconHTMLElement('Publication', '3x', false)}
+									{genEntityIconHTMLElement('EditionGroup', '3x', false)}
 									<div className="margin-top-d4">Edition Group</div>
 								</Button>
 								<Button
@@ -108,14 +108,14 @@ function SearchResults(props) {
 		// No redirect link for Area entity results
 		const link = result.type === 'Area' ?
 			`//musicbrainz.org/area/${result.bbid}` :
-			`/${result.type.toLowerCase()}/${result.bbid}`;
+			`/${_kebabCase(result.type)}/${result.bbid}`;
 
 		return (
 			<tr key={result.bbid}>
 				{
 					!props.condensed &&
 					<td>
-						{genEntityIconHTMLElement(result.type)}{result.type}
+						{genEntityIconHTMLElement(result.type)}{_startCase(result.type)}
 					</td>
 				}
 				<td>

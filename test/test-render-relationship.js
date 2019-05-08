@@ -18,7 +18,6 @@
 import {expect} from 'chai';
 import renderRelationship from '../src/server/helpers/render.js';
 
-
 const relationshipTests = {
 	emptyLinkPhrase: {
 		rel: {
@@ -36,7 +35,7 @@ const relationshipTests = {
 		},
 		renderedRel: [
 			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a>  ',
-			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type-2/2">test2</a>'
 		].join('')
 	},
 	fullySpecified: {
@@ -55,7 +54,7 @@ const relationshipTests = {
 		},
 		renderedRel: [
 			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a> a test link phrase ',
-			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type-2/2">test2</a>'
 		].join('')
 	},
 	fullySpecifiedWithNumericBbids: {
@@ -74,7 +73,7 @@ const relationshipTests = {
 		},
 		renderedRel: [
 			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">test</a> a test link phrase ',
-			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type-2/2">test2</a>'
 		].join('')
 	},
 	nullEntities: {
@@ -116,7 +115,7 @@ const relationshipTests = {
 		},
 		renderedRel: [
 			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type/1">(unnamed)</a> a test link phrase ',
-			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type2/2">test2</a>'
+			'<i class="fa fa-undefined margin-right-0-5"></i><a href="/test-type-2/2">test2</a>'
 		].join('')
 	}
 };

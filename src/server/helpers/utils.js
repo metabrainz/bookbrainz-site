@@ -21,6 +21,7 @@
 // @flow
 
 import Promise from 'bluebird';
+import {kebabCase as _kebabCase} from 'lodash';
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -29,7 +30,7 @@ import Promise from 'bluebird';
  * @returns {string} - URL path to interact with entity
  */
 export function getEntityLink(entity: Object): string {
-	return `/${entity.type.toLowerCase()}/${entity.bbid}`;
+	return `/${_kebabCase(entity.type)}/${entity.bbid}`;
 }
 
 /**
@@ -39,11 +40,11 @@ export function getEntityLink(entity: Object): string {
  * @returns {object} - Object mapping model name to the entity model
  */
 export function getEntityModels(orm: Object): Object {
-	const {Creator, Edition, Publication, Publisher, Work} = orm;
+	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
 	return {
-		Creator,
+		Author,
 		Edition,
-		Publication,
+		EditionGroup,
 		Publisher,
 		Work
 	};

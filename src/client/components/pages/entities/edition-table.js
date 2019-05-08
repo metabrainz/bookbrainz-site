@@ -22,7 +22,7 @@ import * as entityHelper from '../../../helpers/entity';
 import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import {kebabCase as _kebabCase} from 'lodash';
 
 const {
 	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,
@@ -97,8 +97,7 @@ function EditionTable({editions, entity}) {
 						<Button
 							bsStyle="success"
 							className="margin-top-d15"
-							href={`/edition/create?${
-								entity.type.toLowerCase()}=${entity.bbid}`}
+							href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						>
 							<Icon name="plus"/>
 							{'  Add Edition'}
@@ -109,8 +108,7 @@ function EditionTable({editions, entity}) {
 						<span className="margin-right-2 pull-left">
 							<Button
 								bsStyle="success"
-								href={`/edition/create?${
-									entity.type.toLowerCase()}=${entity.bbid}`}
+								href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 							>
 								<Icon name="book" size="2x"/>
 								<br/>

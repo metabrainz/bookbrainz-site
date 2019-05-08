@@ -26,11 +26,11 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
+	showEditionGroup,
 	showPhysical,
-	showPublication,
+	updateEditionGroup,
 	updateFormat,
 	updateLanguages,
-	updatePublication,
 	updatePublisher,
 	updateStatus
 } from './actions';
@@ -47,7 +47,7 @@ import {
 
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
-import EntitySearchField from '../common/entity-search-field';
+import EntitySearchFieldOption from '../common/entity-search-field-option';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
 import React from 'react';
@@ -79,7 +79,7 @@ type Publisher = {
 	id: number
 };
 
-type Publication = {
+type EditionGroup = {
 	value: string,
 	id: number
 };
@@ -98,8 +98,8 @@ type StateProps = {
 	pagesValue: ?number,
 	physicalVisible: ?boolean,
 	publisherValue: Map<string, any>,
-	publicationVisible: ?boolean,
-	publicationValue: Map<string, any>,
+	editionGroupVisible: ?boolean,
+	editionGroupValue: Map<string, any>,
 	releaseDateValue: ?string,
 	statusValue: ?number,
 	weightValue: ?number,
@@ -114,8 +114,8 @@ type DispatchProps = {
 	onPagesChange: (SyntheticInputEvent<>) => mixed,
 	onPhysicalButtonClick: () => mixed,
 	onPublisherChange: (Publisher) => mixed,
-	onPublicationButtonClick: () => mixed,
-	onPublicationChange: (Publication) => mixed,
+	onEditionGroupButtonClick: () => mixed,
+	onEditionGroupChange: (EditionGroup) => mixed,
 	onReleaseDateChange: (SyntheticInputEvent<>) => mixed,
 	onStatusChange: (?{value: number}) => mixed,
 	onWeightChange: (SyntheticInputEvent<>) => mixed,
@@ -159,16 +159,16 @@ function EditionSection({
 	onPhysicalButtonClick,
 	onReleaseDateChange,
 	onPagesChange,
-	onPublicationButtonClick,
-	onPublicationChange,
+	onEditionGroupButtonClick,
+	onEditionGroupChange,
 	onPublisherChange,
 	onStatusChange,
 	onWeightChange,
 	onWidthChange,
 	pagesValue,
 	physicalVisible,
-	publicationValue,
-	publicationVisible,
+	editionGroupValue,
+	editionGroupVisible,
 	publisherValue,
 	releaseDateValue,
 	statusValue,
@@ -196,19 +196,19 @@ function EditionSection({
 				What else do you know about the Edition?
 			</h2>
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank. <a href="/publication/create" target="_blank">Click here</a> to create one if you did not find an existing one.
+				Edition Group is required — this cannot be blank. <a href="/edition-group/create" target="_blank">Click here</a> to create one if you did not find an existing one.
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<EntitySearchField
+					<EntitySearchFieldOption
 						help="Group with other Editions by the same publisher"
-						instanceId="publication"
+						instanceId="edition-group"
 						label="Edition Group"
 						tooltipText="Group together Editions with no substantial textual or editorial changes.
 						<br>For example, identical paperback, hardcover and e-book editions."
-						type="publication"
-						value={publicationValue}
-						onChange={onPublicationChange}
+						type="edition-group"
+						value={editionGroupValue}
+						onChange={onEditionGroupChange}
 					/>
 				</Col>
 			</Row>
@@ -218,7 +218,7 @@ function EditionSection({
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<EntitySearchField
+					<EntitySearchFieldOption
 						instanceId="publisher"
 						label="Publisher"
 						type="publisher"
@@ -279,13 +279,13 @@ function EditionSection({
 			</Row>
 
 			{
-				!publicationVisible &&
+				!editionGroupVisible &&
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<Button
 							bsStyle="link"
 							className="text-center"
-							onClick={onPublicationButtonClick}
+							onClick={onEditionGroupButtonClick}
 						>
 							Group with other existing formats…
 						</Button>
@@ -366,13 +366,13 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 	return {
 		depthValue: state.get('depth'),
+		editionGroupValue: state.get('editionGroup'),
+		editionGroupVisible: state.get('editionGroupVisible'),
 		formatValue: state.get('format'),
 		heightValue: state.get('height'),
 		languageValues: state.get('languages'),
 		pagesValue: state.get('pages'),
 		physicalVisible: state.get('physicalVisible'),
-		publicationValue: state.get('publication'),
-		publicationVisible: state.get('publicationVisible'),
 		publisherValue: state.get('publisher'),
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
@@ -386,6 +386,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
+		onEditionGroupButtonClick: () => dispatch(showEditionGroup()),
+		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
 		onFormatChange: (value: ?{value: number}) =>
 			dispatch(updateFormat(value && value.value)),
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
@@ -397,8 +399,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onPhysicalButtonClick: () => dispatch(showPhysical()),
-		onPublicationButtonClick: () => dispatch(showPublication()),
-		onPublicationChange: (value) => dispatch(updatePublication(value)),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
 		onReleaseDateChange: (momentDate) =>
 			dispatch(debouncedUpdateReleaseDate(momentDate.format('YYYY-MM-DD'))),

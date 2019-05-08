@@ -30,10 +30,10 @@ import {
 	VALID_SUBMISSION_SECTION
 } from './data';
 import {
-	validateForm,
-	validatePublicationSection,
-	validatePublicationSectionType
-} from '../../../../../src/client/entity-editor/validators/publication';
+	validateEditionGroupSection,
+	validateEditionGroupSectionType,
+	validateForm
+} from '../../../../../src/client/entity-editor/validators/edition-group';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -43,50 +43,50 @@ chai.use(chaiAsPromised);
 const {expect} = chai;
 
 
-function describeValidatePublicationSectionType() {
-	testValidatePositiveIntegerFunc(validatePublicationSectionType, false);
+function describeValidateEditionGroupSectionType() {
+	testValidatePositiveIntegerFunc(validateEditionGroupSectionType, false);
 }
 
-const VALID_PUBLICATION_SECTION = {
+const VALID_EDITION_GROUP_SECTION = {
 	type: 1
 };
-const INVALID_PUBLICATION_SECTION = {...VALID_PUBLICATION_SECTION, type: {}};
+const INVALID_EDITION_GROUP_SECTION = {...VALID_EDITION_GROUP_SECTION, type: {}};
 
-function describeValidatePublicationSection() {
+function describeValidateEditionGroupSection() {
 	it('should pass a valid Object', () => {
-		const result = validatePublicationSection(VALID_PUBLICATION_SECTION);
+		const result = validateEditionGroupSection(VALID_EDITION_GROUP_SECTION);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validatePublicationSection(
-			Immutable.fromJS(VALID_PUBLICATION_SECTION)
+		const result = validateEditionGroupSection(
+			Immutable.fromJS(VALID_EDITION_GROUP_SECTION)
 		);
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid type', () => {
-		const result = validatePublicationSection({
-			...VALID_PUBLICATION_SECTION,
+		const result = validateEditionGroupSection({
+			...VALID_EDITION_GROUP_SECTION,
 			type: {}
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validatePublicationSection(
-			Immutable.fromJS(INVALID_PUBLICATION_SECTION)
+		const result = validateEditionGroupSection(
+			Immutable.fromJS(INVALID_EDITION_GROUP_SECTION)
 		);
 		expect(result).to.be.false;
 	});
 
 	it('should pass any other non-null data type', () => {
-		const result = validatePublicationSection(1);
+		const result = validateEditionGroupSection(1);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a null value', () => {
-		const result = validatePublicationSection(null);
+		const result = validateEditionGroupSection(null);
 		expect(result).to.be.true;
 	});
 }
@@ -95,9 +95,9 @@ function describeValidatePublicationSection() {
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
+		editionGroupSection: VALID_EDITION_GROUP_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
-		publicationSection: VALID_PUBLICATION_SECTION,
 		submissionSection: VALID_SUBMISSION_SECTION
 	};
 
@@ -146,11 +146,11 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid publication section', () => {
+	it('should reject an Object with an invalid Edition Group section', () => {
 		const result = validateForm(
 			{
 				...validForm,
-				publicationSection: INVALID_PUBLICATION_SECTION
+				editionGroupSection: INVALID_EDITION_GROUP_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
@@ -195,12 +195,12 @@ function describeValidateForm() {
 
 function tests() {
 	describe(
-		'validatePublicationSectionType',
-		describeValidatePublicationSectionType
+		'validateEditionGroupSectionType',
+		describeValidateEditionGroupSectionType
 	);
 	describe(
-		'validatePublicationSection',
-		describeValidatePublicationSection
+		'validateEditionGroupSection',
+		describeValidateEditionGroupSection
 	);
 	describe(
 		'validateForm',
@@ -208,4 +208,4 @@ function tests() {
 	);
 }
 
-describe('validatePublicationSection* functions', tests);
+describe('validateEditionGroupSection* functions', tests);

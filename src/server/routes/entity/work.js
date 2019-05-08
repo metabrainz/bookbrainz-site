@@ -21,6 +21,7 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
+
 import {
 	addInitialRelationship,
 	entityEditorMarkup,
@@ -33,7 +34,6 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
-
 
 const router = express.Router();
 
@@ -83,14 +83,15 @@ router.get('/:bbid/revisions', (req, res, next) => {
 });
 
 function entityToOption(entity) {
-	return {
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
-		id: entity.bbid,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
-	};
+	return _.isNil(entity) ? null :
+		{
+			disambiguation: entity.disambiguation ?
+				entity.disambiguation.comment : null,
+			id: entity.bbid,
+			text: entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)',
+			type: entity.type
+		};
 }
 
 // Creation
@@ -100,16 +101,16 @@ router.get(
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
-		const {Creator, Edition} = req.app.locals.orm;
+		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
 		let initialRelationshipIndex = 0;
 		const propsPromise = generateEntityProps(
 			'work', req, res, {}
 		);
 
-		if (req.query.creator) {
-			propsPromise.creator =
-				Creator.forge({bbid: req.query.creator})
+		if (req.query.author) {
+			propsPromise.author =
+				Author.forge({bbid: req.query.author})
 					.fetch({withRelated: 'defaultAlias'})
 					.then((data) => entityToOption(data.toJSON()));
 		}
@@ -122,10 +123,10 @@ router.get(
 		}
 
 		function render(props) {
-			if (props.creator) {
+			if (props.author) {
 				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
 				relationshipTypeId = 8;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.creator);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
 			}
 
 			if (props.edition) {

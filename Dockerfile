@@ -1,16 +1,21 @@
-FROM node:10
+FROM metabrainz/node:10 as bookbrainz-base
+
+ARG DEPLOY_ENV
 
 ARG BUILD_DEPS=" \
-    build-essential"
+    build-essential \
+    git \
+    python-dev \
+    libpq-dev"
 
 ARG RUN_DEPS=" \
-    nodejs"
+    bzip2 \
+    rsync"
 
-# nodeJS setup script also runs apt-get update
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+
+RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS \
-        $RUN_DEPS && \
+        $BUILD_DEPS $RUN_DEPS && \
     rm -rf /var/lib/apt/lists/*
 
 # PostgreSQL client
@@ -19,6 +24,7 @@ ENV PG_MAJOR 9.5
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
+    && apt-get install bzip2 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN useradd --create-home --shell /bin/bash bookbrainz
@@ -50,4 +56,31 @@ COPY src/ src/
 # Copy css/less dependencies from node_modules to src/client/stylesheets
 RUN npm run copy-client-scripts
 
+# Development target
+FROM bookbrainz-base as bookbrainz-dev
+ARG DEPLOY_ENV
+
 CMD ["npm", "start"]
+
+# Production target
+FROM bookbrainz-base as bookbrainz-prod
+ARG DEPLOY_ENV
+
+COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
+
+COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
+COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
+RUN chmod +x /etc/service/webserver/exec-command
+RUN ["npm", "run", "build"]
+
+RUN touch /etc/service/webserver/down
+
+RUN mkdir -p /home/bookbrainz/data/dumps
+
+COPY ./docker/consul-template-cron.conf /etc/consul-template-cron.conf
+COPY ./docker/$DEPLOY_ENV/cron.service /etc/service/cron/run
+RUN touch /etc/service/cron/down
+
+ADD ./docker/crontab /etc/cron.d/bookbrainz
+RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
+

@@ -42,7 +42,7 @@ type Area = {
 };
 
 /**
- * Produces an action indicating that the gender for the creator being edited
+ * Produces an action indicating that the gender for the author being edited
  * should be updated with the provided value.
  *
  * @param {number} newGenderId - The new value to be used for the gender ID.
@@ -56,10 +56,10 @@ export function updateGender(newGenderId: ?number): Action {
 }
 
 /**
- * Produces an action indicating that the creator type for the creator being
+ * Produces an action indicating that the author type for the author being
  * edited should be updated with the provided value.
  *
- * @param {number} newTypeId - The new value to be used for the creator type ID.
+ * @param {number} newTypeId - The new value to be used for the author type ID.
  * @returns {Action} The resulting UPDATE_TYPE action.
  */
 export function updateType(newTypeId: ?number): Action {
@@ -70,7 +70,7 @@ export function updateType(newTypeId: ?number): Action {
 }
 
 /**
- * Produces an action indicating that the begin date for the creator being
+ * Produces an action indicating that the begin date for the author being
  * edited should be updated with the provided value. The action is marked to be
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
@@ -86,7 +86,7 @@ export function debouncedUpdateBeginDate(newBeginDate: string): Action {
 }
 
 /**
- * Produces an action indicating that the begin area for the creator being
+ * Produces an action indicating that the begin area for the author being
  * edited should be updated with the provided value.
  *
  * @param {Area} newBeginArea - The new value to be used for the begin area.
@@ -100,7 +100,7 @@ export function updateBeginArea(newBeginArea: ?Area): Action {
 }
 
 /**
- * Produces an action indicating that the end date for the creator being
+ * Produces an action indicating that the end date for the author being
  * edited should be updated with the provided value. The action is marked to be
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
@@ -116,7 +116,7 @@ export function debouncedUpdateEndDate(newEndDate: string): Action {
 }
 
 /**
- * Produces an action indicating that the end area for the creator being
+ * Produces an action indicating that the end area for the author being
  * edited should be updated with the provided value.
  *
  * @param {Area} newEndArea - The new value to be used for the end area.
@@ -130,7 +130,7 @@ export function updateEndArea(newEndArea: ?Area): Action {
 }
 
 /**
- * Produces an action indicating that the ended flag for the creator being
+ * Produces an action indicating that the ended flag for the author being
  * edited should be updated with the provided value.
  *
  * @param {boolean} newEnded - The new value to be used for the ended flag.

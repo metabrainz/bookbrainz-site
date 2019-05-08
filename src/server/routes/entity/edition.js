@@ -35,6 +35,7 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
+
 const router = express.Router();
 
 /* If the route specifies a BBID, load the Edition for it. */
@@ -43,7 +44,7 @@ router.param(
 	middleware.makeEntityLoader(
 		'Edition',
 		[
-			'publication.defaultAlias',
+			'editionGroup.defaultAlias',
 			'languageSet.languages',
 			'editionFormat',
 			'editionStatus',
@@ -90,15 +91,16 @@ router.post(
 );
 
 function entityToOption(entity) {
-	return {
-		defaultAlias: entity.defaultAlias,
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
-		id: entity.bbid,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
-	};
+	return _.isNil(entity) ? null :
+		{
+			defaultAlias: entity.defaultAlias,
+			disambiguation: entity.disambiguation ?
+				entity.disambiguation.comment : null,
+			id: entity.bbid,
+			text: entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)',
+			type: entity.type
+		};
 }
 
 function getInitialNameSection(entity) {
@@ -120,14 +122,15 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	(req, res, next) => {
-		const {Publication, Publisher, Work} = req.app.locals.orm;
+		const {EditionGroup, Publisher, Work} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
 			'edition', req, res, {}
 		);
 
-		if (req.query.publication) {
-			propsPromise.publication =
-				Publication.forge({bbid: req.query.publication})
+		// Access edition-group property: can't write req.query.edition-group as the dash makes it invalid Javascript
+		if (req.query['edition-group']) {
+			propsPromise.editionGroup =
+				EditionGroup.forge({bbid: req.query['edition-group']})
 					.fetch({withRelated: 'defaultAlias'})
 					.then((data) => entityToOption(data.toJSON()));
 		}
@@ -152,7 +155,7 @@ router.get(
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
-			if (props.publisher || props.publication || props.work) {
+			if (props.publisher || props.editionGroup || props.work) {
 				initialState.editionSection = {};
 			}
 
@@ -163,11 +166,11 @@ router.get(
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publisher);
 			}
 
-			if (props.publication) {
-				initialState.editionSection.publication = props.publication;
-				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <Publication>)
+			if (props.editionGroup) {
+				initialState.editionSection.editionGroup = props.editionGroup;
+				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <EditionGroup>)
 				relationshipTypeId = 3;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publication);
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.editionGroup);
 			}
 
 			if (props.work) {
@@ -244,7 +247,7 @@ function editionToFormState(edition) {
 		_.isNull(edition.width)
 	);
 
-	const publicationVisible = !_.isNull(edition.publication);
+	const editionGroupVisible = !_.isNull(edition.editionGroup);
 
 	const releaseDate = edition.releaseEventSet && (
 		_.isEmpty(edition.releaseEventSet.releaseEvents) ?
@@ -256,10 +259,12 @@ function editionToFormState(edition) {
 			null : entityToOption(edition.publisherSet.publishers[0])
 	);
 
-	const publication = entityToOption(edition.publication);
+	const editionGroup = entityToOption(edition.editionGroup);
 
 	const editionSection = {
 		depth: edition.depth,
+		editionGroup,
+		editionGroupVisible,
 		format: edition.editionFormat && edition.editionFormat.id,
 		height: edition.height,
 		languages: edition.languageSet ? edition.languageSet.languages.map(
@@ -267,8 +272,6 @@ function editionToFormState(edition) {
 		) : [],
 		pages: edition.pages,
 		physicalVisible,
-		publication,
-		publicationVisible,
 		publisher,
 		releaseDate,
 		status: edition.editionStatus && edition.editionStatus.id,
@@ -348,6 +351,8 @@ function transformNewForm(data) {
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
+		editionGroupBbid: data.editionSection.editionGroup &&
+			data.editionSection.editionGroup.id,
 		formatId: data.editionSection.format &&
 			parseInt(data.editionSection.format, 10),
 		height: data.editionSection.height &&
@@ -357,8 +362,6 @@ function transformNewForm(data) {
 		note: data.submissionSection.note,
 		pages: data.editionSection.pages &&
 			parseInt(data.editionSection.pages, 10),
-		publicationBbid: data.editionSection.publication &&
-			data.editionSection.publication.id,
 		publishers: data.editionSection.publisher &&
 			[data.editionSection.publisher.id],
 		relationships,
@@ -373,7 +376,7 @@ function transformNewForm(data) {
 }
 
 const additionalEditionProps = [
-	'publicationBbid', 'width', 'height', 'depth', 'weight', 'pages',
+	'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
 	'formatId', 'statusId'
 ];
 
