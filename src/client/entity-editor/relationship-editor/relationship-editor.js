@@ -46,6 +46,7 @@ function isValidRelationship(relationship: _Relationship) {
 	const {relationshipType, sourceEntity, targetEntity} = relationship;
 
 	return (
+		relationshipType.deprecated !== false &&
 		(relationshipType.sourceEntityType === sourceEntity.type) &&
 		(relationshipType.targetEntityType === targetEntity.type)
 	);
@@ -86,6 +87,9 @@ function getValidOtherEntityTypes(
 	baseEntity: Entity
 ) {
 	const validEntityTypes = relationshipTypes.map((relationshipType) => {
+		if (relationshipType.deprecated === true) {
+			return null;
+		}
 		if (relationshipType.sourceEntityType === baseEntity.type) {
 			return relationshipType.targetEntityType;
 		}
