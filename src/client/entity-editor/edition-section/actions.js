@@ -94,7 +94,7 @@ export function updateFormat(newFormatId: ?number): Action {
  *                 date.
  * @returns {Action} The resulting UPDATE_RELEASE_DATE action.
  */
-export function debouncedUpdateReleaseDate(newReleaseDate: ?string): Action {
+export function debouncedUpdateReleaseDate(newReleaseDate: ?object): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newReleaseDate,
