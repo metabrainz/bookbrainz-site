@@ -70,11 +70,12 @@ function EntityImage({backupIcon, deleted, imageUrl}) {
 EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
 	backupIcon: PropTypes.string.isRequired,
-	deleted: PropTypes.bool.isRequired,
+	deleted: PropTypes.bool,
 	imageUrl: PropTypes.string
 };
 
 EntityImage.defaultProps = {
+	deleted: false,
 	imageUrl: ''
 };
 export default EntityImage;

@@ -72,9 +72,12 @@ function EntityFooter({deleted, entityUrl, lastModified}) {
 }
 EntityFooter.displayName = 'EntityFooter';
 EntityFooter.propTypes = {
-	deleted: PropTypes.bool.isRequired,
+	deleted: PropTypes.bool,
 	entityUrl: PropTypes.string.isRequired,
 	lastModified: PropTypes.string.isRequired
+};
+EntityFooter.defaultProps = {
+	deleted: false
 };
 
 export default EntityFooter;
