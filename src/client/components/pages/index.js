@@ -22,11 +22,12 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 
+import {genEntityIconHTMLElement, getEntityLabel} from '../../helpers/entity';
+
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {isNil as _isNil} from 'lodash';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
@@ -215,27 +216,23 @@ class IndexPage extends React.Component {
 							<Col md={12}>
 								<h2 className="text-center">Recent Activity</h2>
 								<ListGroup>
-									{recent.map((entity, index) => {
-										const name = entity.defaultAliasName || entity.parentAliasName || '(unnamed)';
-										const isDeleted = _isNil(entity.dataId);
-										return (
-											<ListGroupItem
-												href={`/revision/${entity.revisionId}`}
-												key={entity.revisionId}
-											>
-												<Row>
-													<Col md={2}>{`r${entity.revisionId}`}</Col>
-													<Col className={isDeleted ? 'text-muted deleted' : null} md={6}>
-														{genEntityIconHTMLElement(entity.type)}
-														<span className="margin-left-1">{name}</span>
-													</Col>
-													<Col md={4}>
-														{formatDate(new Date(entity.createdAt))}
-													</Col>
-												</Row>
-											</ListGroupItem>
-										);
-									})}
+									{recent.map((entity) => (
+										<ListGroupItem
+											href={`/revision/${entity.revisionId}`}
+											key={entity.revisionId}
+										>
+											<Row>
+												<Col md={2}>{`r${entity.revisionId}`}</Col>
+												<Col md={6}>
+													{genEntityIconHTMLElement(entity.type)}
+													{getEntityLabel(entity)}
+												</Col>
+												<Col md={4}>
+													{formatDate(new Date(entity.createdAt))}
+												</Col>
+											</Row>
+										</ListGroupItem>
+									))}
 								</ListGroup>
 							</Col>
 						</Row>

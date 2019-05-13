@@ -105,9 +105,23 @@ router.get('/', async (req, res, next) => {
 
 		const entitiesCollections = await Promise.all(queryPromises).catch(error => next(error));
 		const latestEntities = entitiesCollections.reduce(
-			(accumulator, value) => accumulator.concat(value.rows.map(entity =>
-				_.mapKeys(entity, (val, key) => _.camelCase(key))
-			)),
+			(accumulator, value) => accumulator.concat(value.rows.map(entity => {
+				// Massage returned values to fit the format of entities in the ORM
+				// Step 1: Use camelCase instead of snake_case
+				const correctedEntity = _.mapKeys(entity, (val, key) => _.camelCase(key));
+				// Step 2: Restructure aliases
+				if (correctedEntity.defaultAliasName) {
+					correctedEntity.defaultAlias = {name: correctedEntity.defaultAliasName};
+					correctedEntity.defaultAliasName = null;
+					delete correctedEntity.defaultAliasName;
+				}
+				if (correctedEntity.parentAliasName) {
+					correctedEntity.parentAlias = {name: correctedEntity.parentAliasName};
+					correctedEntity.parentAliasName = null;
+					delete correctedEntity.parentAliasName;
+				}
+				return correctedEntity;
+			})),
 			[]
 		);
 
