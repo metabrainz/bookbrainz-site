@@ -125,15 +125,16 @@ export function getEntityLabel(entity) {
 		return `${entity.defaultAlias.name} `;
 	}
 
-	if (entity.parentAlias) {
-		return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{entity.parentAlias.name}</span>;
+	// Deleted entities
+	if (!entity.dataId) {
+		let deletedEntityName = `Deleted ${entity.type} ${entity.bbid}`;
+		if (entity.parentAlias) {
+			deletedEntityName = entity.parentAlias.name;
+		}
+		return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
 	}
 
-	if (entity.type && entity.bbid) {
-		return `Deleted ${entity.type} ${entity.bbid}`;
-	}
-
-	return '(unnamed)';
+	return <span title={`Unnamed ${entity.type} ${entity.bbid}`}>(unnamed)</span>;
 }
 
 export function getEditionReleaseDate(edition) {
