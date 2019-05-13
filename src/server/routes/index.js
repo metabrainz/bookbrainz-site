@@ -87,8 +87,9 @@ router.get('/', async (req, res, next) => {
 				orm.bookshelf.knex.raw(`
 					SELECT
 						entity.type,
+						entity.data_id,
 						alias.name AS default_alias_name,
-						parent_alias.name AS parent_default_alias_name,
+						parent_alias.name AS parent_alias_name,
 						revision.id AS revision_id,
 						revision.created_at AS created_at
 					FROM bookbrainz.${SQLViewName} AS entity
@@ -104,12 +105,14 @@ router.get('/', async (req, res, next) => {
 
 		const entitiesCollections = await Promise.all(queryPromises).catch(error => next(error));
 		const latestEntities = entitiesCollections.reduce(
-			(accumulator, value) => accumulator.concat(value.rows),
+			(accumulator, value) => accumulator.concat(value.rows.map(entity =>
+				_.mapKeys(entity, (val, key) => _.camelCase(key))
+			)),
 			[]
 		);
 
 		const orderedEntities = _.orderBy(
-			latestEntities, 'created_at',
+			latestEntities, 'createdAt',
 			['desc']
 		);
 		return render(orderedEntities);

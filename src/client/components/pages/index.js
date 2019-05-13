@@ -216,21 +216,21 @@ class IndexPage extends React.Component {
 								<h2 className="text-center">Recent Activity</h2>
 								<ListGroup>
 									{recent.map((entity, index) => {
-										const name = entity.default_alias_name || entity.parent_default_alias_name || '(unnamed)';
-										const isDeleted = _isNil(entity.default_alias_name);
+										const name = entity.defaultAliasName || entity.parentAliasName || '(unnamed)';
+										const isDeleted = _isNil(entity.dataId);
 										return (
 											<ListGroupItem
-												href={`/revision/${entity.revision_id}`}
-												key={entity.revision_id}
+												href={`/revision/${entity.revisionId}`}
+												key={entity.revisionId}
 											>
 												<Row>
-													<Col md={2}>{`r${entity.revision_id}`}</Col>
+													<Col md={2}>{`r${entity.revisionId}`}</Col>
 													<Col className={isDeleted ? 'text-muted deleted' : null} md={6}>
 														{genEntityIconHTMLElement(entity.type)}
 														<span className="margin-left-1">{name}</span>
 													</Col>
 													<Col md={4}>
-														{formatDate(new Date(entity.created_at))}
+														{formatDate(new Date(entity.createdAt))}
 													</Col>
 												</Row>
 											</ListGroupItem>
