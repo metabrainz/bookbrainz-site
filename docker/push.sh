@@ -17,12 +17,18 @@ git describe --tags --dirty --always > .git-version
 ENV=${1:-beta}
 TAG=${2:-beta}
 
-echo "Building BookBrainz image with env $ENV tag $TAG..."
+echo "Building BookBrainz image with env $ENV tag $TAG and docker build target bookbrainz-prod"
 docker build -t metabrainz/bookbrainz:$TAG \
         --target bookbrainz-prod \
         --build-arg GIT_COMMIT_SHA=$(git rev-parse HEAD) \
         --build-arg DEPLOY_ENV=$ENV .
-echo "Done!"
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+  echo "Done!"
+else
+  echo "Docker build command failed with error code $RESULT, exiting."
+  exit 1;
+fi
 
 echo "Pushing image to docker hub metabrainz/bookbrainz:$TAG..."
 docker push metabrainz/bookbrainz:$TAG
