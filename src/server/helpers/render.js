@@ -24,7 +24,6 @@ import * as utils from './utils';
 import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
 import _ from 'lodash';
 
-
 type EntityInRelationship = {
 	bbid: string,
 	defaultAlias?: {name: string},
@@ -70,7 +69,7 @@ function renderRelationship(relationship: Relationship) {
 		/* eslint-disable prefer-template */
 		throw new TypeError(
 			'Invalid inputs to renderRelationship:\n' +
-			JSON.stringify(relationship)
+			JSON.stringify(relationship, null, 2)
 		);
 		/* eslint-enable prefer-template */
 	}

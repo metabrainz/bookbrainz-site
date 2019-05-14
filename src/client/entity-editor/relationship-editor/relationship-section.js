@@ -131,13 +131,12 @@ function RelationshipSection({
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
 	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
-	const entityTypeForDisplay = _.upperFirst(entityType);
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
 		defaultAlias: {
 			name: entityName
 		},
-		type: entityTypeForDisplay
+		type: _.upperFirst(entityType)
 	};
 
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -162,7 +161,7 @@ function RelationshipSection({
 	return (
 		<div>
 			{showEditor && editor}
-			<h2>How are other entities related to this {entityTypeForDisplay}?</h2>
+			<h2>How are other entities related to this {_.startCase(entityType)}?</h2>
 			<Row>
 				<Col md={10} mdOffset={1}>
 					<RelationshipList

@@ -18,7 +18,6 @@
  */
 
 import {Async} from 'react-select';
-import Icon from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
@@ -83,7 +82,7 @@ class EntitySearch extends React.Component {
 		return request
 			.get('/search/autocomplete')
 			.query({
-				collection: this.props.collection,
+				collection: _.snakeCase(this.props.collection),
 				q: query
 			})
 			.then((response) => ({

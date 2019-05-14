@@ -35,15 +35,15 @@ import type {
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
 
-import CreatorPage from '../../../client/components/pages/entities/creator';
+import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
+import EditionGroupPage from
+	'../../../client/components/pages/entities/edition-group';
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
 import Log from 'log';
 import Promise from 'bluebird';
-import PublicationPage from
-	'../../../client/components/pages/entities/publication';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -57,9 +57,9 @@ type PassportRequest = $Request & {user: any, session: any};
 const log = new Log(config.site.log);
 
 const entityComponents = {
-	creator: CreatorPage,
+	author: AuthorPage,
 	edition: EditionPage,
-	publication: PublicationPage,
+	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
 	work: WorkPage
 };
@@ -140,7 +140,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 	});
 
 	return alertPromise.then((alert) => {
-		const entityName = entity.type.toLowerCase();
+		const entityName = _.camelCase(entity.type);
 		const EntityComponent = entityComponents[entityName];
 		if (EntityComponent) {
 			const props = generateProps(req, res, {

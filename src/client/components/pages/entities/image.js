@@ -25,32 +25,57 @@ import React from 'react';
 
 const {Image} = bootstrap;
 
-function EntityImage({backupIcon, imageUrl}) {
+function EntityImage({backupIcon, deleted, imageUrl}) {
 	if (imageUrl) {
 		return (
 			<Image
 				responsive
-				className="margin-top-d10 margin-bottom-d10"
 				src={imageUrl}
 			/>
 		);
 	}
 
+	let icons;
+	if (deleted) {
+		icons = [
+			<Icon
+				key="entityIcon"
+				name={backupIcon}
+				size="5x"
+				stack="1x"
+			/>,
+			<Icon
+				key="deletedIcon"
+				name="slash"
+				size="5x"
+				stack="1x"
+			/>
+		];
+	}
+	else {
+		icons = (
+			<Icon
+				name={backupIcon}
+				size="5x"
+			/>
+		);
+	}
+
 	return (
-		<Icon
-			className="margin-top-d10 margin-bottom-d10"
-			name={backupIcon}
-			size="5x"
-		/>
+		<div className="entity-display-icon">
+			{icons}
+		</div>
 	);
 }
 EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
 	backupIcon: PropTypes.string.isRequired,
+	deleted: PropTypes.bool,
 	imageUrl: PropTypes.string
 };
 
 EntityImage.defaultProps = {
+	deleted: false,
 	imageUrl: ''
 };
 export default EntityImage;

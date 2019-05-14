@@ -29,7 +29,7 @@ const {
 	Button, ButtonGroup, Col, Row
 } = bootstrap;
 
-function EntityFooter({entityUrl, lastModified}) {
+function EntityFooter({deleted, entityUrl, lastModified}) {
 	return (
 		<div>
 			<Row>
@@ -37,6 +37,7 @@ function EntityFooter({entityUrl, lastModified}) {
 					<ButtonGroup justified>
 						<Button
 							bsStyle="warning"
+							disabled={deleted}
 							href={`${entityUrl}/edit`}
 							title="Edit Entity"
 						>
@@ -51,6 +52,7 @@ function EntityFooter({entityUrl, lastModified}) {
 						</Button>
 						<Button
 							bsStyle="danger"
+							disabled={deleted}
 							href={`${entityUrl}/delete`}
 							title="Delete Entity"
 						>
@@ -70,8 +72,12 @@ function EntityFooter({entityUrl, lastModified}) {
 }
 EntityFooter.displayName = 'EntityFooter';
 EntityFooter.propTypes = {
+	deleted: PropTypes.bool,
 	entityUrl: PropTypes.string.isRequired,
 	lastModified: PropTypes.string.isRequired
+};
+EntityFooter.defaultProps = {
+	deleted: false
 };
 
 export default EntityFooter;

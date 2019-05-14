@@ -33,7 +33,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
-
 if (!process.env.SSR) {
 	require('../../client/stylesheets/style.less');
 }
@@ -130,13 +129,13 @@ class Layout extends React.Component {
 								{genEntityIconHTMLElement('Edition')}
 								Edition
 							</MenuItem>
-							<MenuItem href="/publication/create">
-								{genEntityIconHTMLElement('Publication')}
+							<MenuItem href="/edition-group/create">
+								{genEntityIconHTMLElement('EditionGroup')}
 								Edition Group
 							</MenuItem>
 							<MenuItem divider/>
-							<MenuItem href="/creator/create">
-								{genEntityIconHTMLElement('Creator')}
+							<MenuItem href="/author/create">
+								{genEntityIconHTMLElement('Author')}
 								Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">

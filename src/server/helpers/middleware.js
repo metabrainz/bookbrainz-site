@@ -19,9 +19,9 @@
 
 import * as error from '../helpers/error';
 import * as utils from '../helpers/utils';
+
 import Promise from 'bluebird';
 import renderRelationship from '../helpers/render';
-
 
 function makeLoader(modelName, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
@@ -40,14 +40,14 @@ function makeLoader(modelName, propName, sortFunc) {
 	};
 }
 
-export const loadCreatorTypes = makeLoader('CreatorType', 'creatorTypes');
+export const loadAuthorTypes = makeLoader('AuthorType', 'authorTypes');
 export const loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
 export const loadEditionStatuses =
 	makeLoader('EditionStatus', 'editionStatuses');
 export const loadIdentifierTypes =
 	makeLoader('IdentifierType', 'identifierTypes');
-export const loadPublicationTypes =
-	makeLoader('PublicationType', 'publicationTypes');
+export const loadEditionGroupTypes =
+	makeLoader('EditionGroupType', 'editionGroupTypes');
 export const loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
 export const loadWorkTypes = makeLoader('WorkType', 'workTypes');
 export const loadRelationshipTypes =
@@ -139,20 +139,24 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 		'revision.revision'
 	].concat(additionalRels);
 
-	return (req, res, next, bbid) => {
+	return async (req, res, next, bbid) => {
 		const {orm} = req.app.locals;
-		const model = orm.func.entity.getEntityModelByType(orm, modelName);
 		if (utils.isValidBBID(bbid)) {
-			return orm.func.entity.getEntity(orm, modelName, bbid, relations)
-				.then((entity) => {
-					res.locals.entity = entity;
-					next();
-					return null;
-				})
-				.catch(model.NotFoundError, () => {
-					throw new error.NotFoundError(errMessage, req);
-				})
-				.catch(next);
+			try {
+				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
+				if (!entity.dataId) {
+					entity.deleted = true;
+					const parentAlias = await orm.func.entity.getEntityParentAlias(
+						orm, modelName, bbid
+					);
+					entity.parentAlias = parentAlias;
+				}
+				res.locals.entity = entity;
+				return next();
+			}
+			catch (err) {
+				return next(new error.NotFoundError(errMessage, req));
+			}
 		}
 
 		return next('route');

@@ -62,7 +62,7 @@ export function generateEntityProps(
 	initialStateCallback: (entity: ?Object) => Object =
 	(entity) => new Object()
 ): Object {
-	const entityName = _.capitalize(entityType);
+	const entityName = _.upperFirst(entityType);
 	const {entity} = res.locals;
 	const isEdit = Boolean(entity);
 
@@ -72,10 +72,10 @@ export function generateEntityProps(
 	const filteredIdentifierTypes = getFilteredIdentifierTypes(
 		res.locals.identifierTypes
 	);
-
+	const entityNameForRoute = _.kebabCase(entityType);
 	const submissionUrl = isEdit ?
-		`/${entityType}/${entity.bbid}/edit/handler` :
-		`/${entityType}/create/handler`;
+		`/${entityNameForRoute}/${entity.bbid}/edit/handler` :
+		`/${entityNameForRoute}/create/handler`;
 
 	const action: EntityAction = isEdit ? 'edit' : 'create';
 
@@ -171,7 +171,7 @@ export function makeEntityCreateOrEditHandler(
 	transformNewForm: Function,
 	propertiesToPick: string | string[],
 ) {
-	const entityName = _.capitalize(entityType);
+	const entityName = _.upperFirst(entityType);
 	const validate = getValidator(entityType);
 
 	return function createOrEditHandler(
@@ -196,7 +196,7 @@ export function makeEntityCreateOrEditHandler(
  * when one entity created from other.
  * @param {object} props - props related to new entity
  * @param {number} relationshipTypeId - relationshipId number for initaial relationship
- * @param {object} targetEntity - details about target entitiy like publication, publisher and creator
+ * @param {object} targetEntity - details about target entitiy like edition group, publisher and author
  * @param {number} relationshipIndex - initial relationship index number
  */
 
@@ -221,8 +221,8 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 		label: relationship.linkPhrase,
 		relationshipType: relationship,
 		rowID: rowId,
-		sourceEntity: targetEntity.type === 'Publication' || targetEntity.type === 'Work' ? sourceEntityDetail : targetEntityDetail,
-		targetEntity: targetEntity.type === 'Publication' || targetEntity.type === 'Work' ? targetEntityDetail : sourceEntityDetail
+		sourceEntity: targetEntity.type === 'EditionGroup' || targetEntity.type === 'Work' ? sourceEntityDetail : targetEntityDetail,
+		targetEntity: targetEntity.type === 'EditionGroup' || targetEntity.type === 'Work' ? targetEntityDetail : sourceEntityDetail
 	};
 
 	if (!props.initialState.relationshipSection) {

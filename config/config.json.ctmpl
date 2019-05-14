@@ -5,7 +5,8 @@
 {
 	"site": {
 		"proxyTrust": true,
-		"log": "error"
+		"log": "error",
+		"forceExitAfterMs": 5000
 	},
 	"musicbrainz": {
 		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",
@@ -13,41 +14,53 @@
 		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}"
 	},
 	"session": {
-		"maxAge": 2592000000,
-		"secret": "{{template "KEY" "secret_key"}}",
-		"secure": false,
         {{if service "bookbrainz-redis"}}
         {{with index (service "bookbrainz-redis") 0}}
 		"redis": {
 			"host": "{{.Address}}",
 			"port": {{.Port}}
-		}
+		},
         {{end}}
         {{end}}
+		"maxAge": 2592000000,
+		"secret": "{{template "KEY" "secret_key"}}",
+		"secure": false
 	},
 	"database": {
-		"client": "pg",
         {{if service "pgbouncer-master"}}
         {{with index (service "pgbouncer-master") 0}}
 		"connection": {
 			"host": "{{.Address}}",
 			"port": {{.Port}},
-			"database": "bookbrainz",
+			"database": "{{template "KEY" "database_name"}}",
 			"user": "bookbrainz",
 			"password": "bookbrainz"
-		}
+		},
         {{end}}
         {{end}}
+		"client": "pg"
 	},
 	"search": {
-        {{if service "bookbrainz-elasticsearch"}}
-        {{with index (service "bookbrainz-elasticsearch") 0}}
+	{{if eq (env "DEPLOY_ENV") "test"}}
+		{{if service "bookbrainz-elasticsearch-test"}}
+		{{with index (service "bookbrainz-elasticsearch-test") 0}}
 		"host": "{{.Address}}:{{.Port}}",
 		"httpAuth": "elastic:changeme",
 		"apiVersion": "5.5",
 		"maxRetries": -1,
 		"deadTimeout": 2000
-        {{end}}
-        {{end}}
+		{{end}}
+		{{end}}
+	{{ else }}
+		{{if service "bookbrainz-elasticsearch"}}
+		{{with index (service "bookbrainz-elasticsearch") 0}}
+		"host": "{{.Address}}:{{.Port}}",
+		"httpAuth": "elastic:changeme",
+		"apiVersion": "5.5",
+		"maxRetries": -1,
+		"deadTimeout": 2000
+		{{end}}
+		{{end}}
+	{{ end }}
 	}
 }

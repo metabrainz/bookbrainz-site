@@ -24,7 +24,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../helpers/search';
 import * as utils from '../helpers/utils';
 
-import {keys as _keys, isNil} from 'lodash';
+import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 
 import Layout from '../../client/containers/layout';
@@ -34,7 +34,6 @@ import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
 import express from 'express';
 import target from '../templates/target';
-
 
 const router = express.Router();
 
@@ -49,7 +48,7 @@ router.get('/', (req, res, next) => {
 	const resultsPerPage = 20;
 	const {size, from} = req.query;
 
-	search.searchByName(orm, query, collection, size || resultsPerPage, from)
+	search.searchByName(orm, query, _snakeCase(collection), size || resultsPerPage, from)
 		.then((entities) => ({
 			initialResults: entities.filter(entity => !isNil(entity)),
 			query
@@ -89,7 +88,7 @@ router.get('/search', (req, res) => {
 	const collection = req.query.collection || null;
 	const {size, from} = req.query;
 
-	const searchPromise = search.searchByName(orm, query, collection, size, from);
+	const searchPromise = search.searchByName(orm, query, _snakeCase(collection), size, from);
 
 	handler.sendPromiseResult(res, searchPromise);
 });
@@ -116,7 +115,7 @@ router.get('/exists', (req, res) => {
 	const {orm} = req.app.locals;
 	const {q, collection} = req.query;
 
-	const searchPromise = search.checkIfExists(orm, q, collection);
+	const searchPromise = search.checkIfExists(orm, q, _snakeCase(collection));
 
 	handler.sendPromiseResult(res, searchPromise);
 });

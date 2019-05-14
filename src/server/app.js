@@ -26,6 +26,8 @@ import * as search from './helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
+import {get as _get} from 'lodash';
+import appCleanup from './helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from './helpers/config';
@@ -93,15 +95,15 @@ app.use(express.static(path.join(rootDir, 'static')));
 const RedisStore = redis(session);
 app.use(session({
 	cookie: {
-		maxAge: config.session.maxAge,
-		secure: config.session.secure
+		maxAge: _get(config, 'session.maxAge', 2592000000),
+		secure: _get(config, 'session.secure', false)
 	},
 	resave: false,
 	saveUninitialized: false,
 	secret: config.session.secret,
 	store: new RedisStore({
-		host: config.session.redis.host || 'localhost',
-		port: config.session.redis.port || 6379
+		host: _get(config, 'session.redis.host', 'localhost'),
+		port: _get(config, 'session.redis.port', 6379)
 	})
 }));
 
@@ -162,5 +164,32 @@ app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-pro
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);
 });
+
+/* eslint-disable no-console */
+function cleanupFunction() {
+	return new Promise((resolve, reject) => {
+		console.log('Cleaning up before closing');
+		server.close((err) => {
+			if (err) {
+				console.log('Error while closing server connections');
+				reject(err);
+			}
+			else {
+				console.log('Closed all server connections. Bye bye!');
+				resolve();
+			}
+		});
+		// force-kill after X milliseconds.
+		if (config.site.forceExitAfterMs) {
+			setTimeout(() => {
+				reject(new Error(`Cleanup function timed out after ${config.site.forceExitAfterMs} ms`));
+			}, config.site.forceExitAfterMs);
+		}
+	});
+}
+/* eslint-enable no-console */
+
+// Run cleanup function
+appCleanup(cleanupFunction);
 
 export default server;

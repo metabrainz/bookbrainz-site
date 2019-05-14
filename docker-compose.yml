@@ -16,6 +16,8 @@ services:
       - elasticsearch
       - redis
       - postgres
+    volumes:
+      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
   
   postgres:
     container_name: postgres

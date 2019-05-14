@@ -31,9 +31,9 @@ import {
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
 import {
-	validateCreatorSectionBeginDate,
-	validateCreatorSectionEndDate
-} from '../validators/creator';
+	validateAuthorSectionBeginDate,
+	validateAuthorSectionEndDate
+} from '../validators/author';
 
 import CustomInput from '../../input';
 import DateField from '../common/date-field';
@@ -42,10 +42,9 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-import {labelsForCreator} from '../../helpers/utils';
+import {labelsForAuthor} from '../../helpers/utils';
 
-
-type CreatorType = {
+type AuthorType = {
 	label: string,
 	id: number
 };
@@ -90,37 +89,37 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-	creatorTypes: Array<CreatorType>,
+	authorTypes: Array<AuthorType>,
 	genderOptions: Array<GenderOptions>
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 /**
- * Container component. The CreatorSection component contains input fields
- * specific to the creator entity. The intention is that this component is
+ * Container component. The AuthorSection component contains input fields
+ * specific to the author entity. The intention is that this component is
  * rendered as a modular section within the entity editor.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.beginDateLabel - The label to be used for the begin
  *        date input.
  * @param {string} props.beginDateValue - The begin date currently set for
- *        this creator.
- * @param {Array} props.creatorTypes - The list of possible types for a creator.
+ *        this author.
+ * @param {Array} props.authorTypes - The list of possible types for a author.
  * @param {string} props.endDateLabel - The label to be used for the end date
  *        input.
  * @param {string} props.endDateValue - The end date currently set for this
- *        creator.
+ *        author.
  * @param {boolean} props.endedChecked - Whether or not the ended checkbox
  *        is checked.
  * @param {string} props.endedLabel - The label to be used for the ended
  *        checkbox input.
  * @param {Array} props.genderOptions - The list of possible genders.
  * @param {boolean} props.genderShow - Whether or not the gender field should
- *        be shown (only for creators which represent people).
+ *        be shown (only for authors which represent people).
  * @param {number} props.genderValue - The ID of the gender currently selected.
  * @param {number} props.typeValue - The ID of the type currently selected for
- *        the creator.
+ *        the author.
  * @param {Function} props.onBeginDateChange - A function to be called when
  *        the begin date is changed.
  * @param {Function} props.onEndDateChange - A function to be called when
@@ -130,15 +129,15 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @param {Function} props.onGenderChange - A function to be called when
  *        a different gender is selected.
  * @param {Function} props.onTypeChange - A function to be called when
- *        a different creator type is selected.
- * @returns {ReactElement} React element containing the rendered CreatorSection.
+ *        a different author type is selected.
+ * @returns {ReactElement} React element containing the rendered AuthorSection.
  */
-function CreatorSection({
+function AuthorSection({
 	beginAreaLabel,
 	beginDateLabel,
 	beginDateValue,
 	beginAreaValue,
-	creatorTypes,
+	authorTypes,
 	endAreaLabel,
 	endAreaValue,
 	endDateLabel,
@@ -162,7 +161,7 @@ function CreatorSection({
 		value: gender.id
 	}));
 
-	const creatorTypesForDisplay = creatorTypes.map((type) => ({
+	const authorTypesForDisplay = authorTypes.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
@@ -170,7 +169,7 @@ function CreatorSection({
 	return (
 		<form>
 			<h2>
-				What else do you know about the Creator?
+				What else do you know about the Author?
 			</h2>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
@@ -180,8 +179,8 @@ function CreatorSection({
 				<Col md={6} mdOffset={3}>
 					<CustomInput label="Type">
 						<Select
-							instanceId="creatorType"
-							options={creatorTypesForDisplay}
+							instanceId="authorType"
+							options={authorTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
@@ -209,7 +208,7 @@ function CreatorSection({
 						show
 						defaultValue={beginDateValue}
 						empty={!beginDateValue}
-						error={!validateCreatorSectionBeginDate(beginDateValue)}
+						error={!validateAuthorSectionBeginDate(beginDateValue)}
 						label={beginDateLabel}
 						placeholder="YYYY-MM-DD"
 						onChange={onBeginDateChange}
@@ -243,7 +242,7 @@ function CreatorSection({
 								defaultValue={endDateValue}
 								empty={!endDateValue}
 								error={
-									!validateCreatorSectionEndDate(
+									!validateAuthorSectionEndDate(
 										beginDateValue, endDateValue
 									)
 								}
@@ -269,19 +268,19 @@ function CreatorSection({
 		</form>
 	);
 }
-CreatorSection.displayName = 'CreatorSection';
+AuthorSection.displayName = 'AuthorSection';
 
-function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
-	const state = rootState.get('creatorSection');
+function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
+	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');
-	const personType = creatorTypes.find((type) => type.label === 'Person');
-	const groupType = creatorTypes.find((type) => type.label === 'Group');
+	const personType = authorTypes.find((type) => type.label === 'Person');
+	const groupType = authorTypes.find((type) => type.label === 'Group');
 	if (!personType) {
-		throw new Error('there should be a creator type with label "Person"');
+		throw new Error('there should be an author type with label "Person"');
 	}
 	if (!groupType) {
-		throw new Error('there should be a creator type with label "Group"');
+		throw new Error('there should be an author type with label "Group"');
 	}
 	const isGroup = typeValue === groupType.id;
 
@@ -291,7 +290,7 @@ function mapStateToProps(rootState, {creatorTypes}: OwnProps): StateProps {
 		endedLabel,
 		endDateLabel,
 		endAreaLabel
-	} = labelsForCreator(isGroup);
+	} = labelsForAuthor(isGroup);
 
 	return {
 		beginAreaLabel,
@@ -327,4 +326,4 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreatorSection);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorSection);

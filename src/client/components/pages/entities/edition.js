@@ -28,14 +28,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
 
-
 const {
-	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
+	deletedEntityMessage, extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
 	getLanguageAttribute, getRelationshipTargetByTypeId, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
 function EditionAttributes({edition}) {
+	if (edition.deleted) {
+		return deletedEntityMessage;
+	}
 	const status = extractAttribute(edition.editionStatus, 'label');
 	const format = extractAttribute(edition.editionFormat, 'label');
 	const pageCount = extractAttribute(edition.pages);
@@ -102,39 +104,55 @@ function EditionDisplayPage({entity, identifierTypes}) {
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
 	const urlPrefix = getEntityUrl(entity);
+	let editionGroupSection;
+	if (entity.editionGroup) {
+		editionGroupSection = (
+			<div className="margin-bottom-d15">
+				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
+					<Icon name="external-link"/>
+					<span>&nbsp;See all similar editions</span>
+				</a>
+			</div>
+		);
+	}
+	else if (!entity.deleted) {
+		editionGroupSection = (
+			<span className="bg-danger">
+				Edition Group unset - please edit this Edition and add one if you see this!
+			</span>
+		);
+	}
 	return (
 		<div>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Edition}
+						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
 					<EditionAttributes edition={entity}/>
-					{entity.publication &&
-					<div className="margin-bottom-d15">
-						<a href={`/publication/${entity.publication.bbid}`}>
-							<Icon name="external-link"/>
-							<span>&nbsp;See all similar editions</span>
-						</a>
-					</div>
-					}
+					{editionGroupSection}
 				</Col>
 			</Row>
-			<WorksTable
-				entity={entity}
-				works={worksContainedByEdition}
-			/>
-			<EntityLinks
-				entity={entity}
-				identifierTypes={identifierTypes}
-				urlPrefix={urlPrefix}
-			/>
+			{!entity.deleted &&
+			<React.Fragment>
+				<WorksTable
+					entity={entity}
+					works={worksContainedByEdition}
+				/>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				deleted={entity.deleted}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
 			/>

@@ -36,12 +36,12 @@ import {
 import {
 	validateEditionSection,
 	validateEditionSectionDepth,
+	validateEditionSectionEditionGroup,
 	validateEditionSectionFormat,
 	validateEditionSectionHeight,
 	validateEditionSectionLanguage,
 	validateEditionSectionLanguages,
 	validateEditionSectionPages,
-	validateEditionSectionPublication,
 	validateEditionSectionPublisher,
 	validateEditionSectionReleaseDate,
 	validateEditionSectionStatus,
@@ -191,40 +191,40 @@ const INVALID_ENTITY = {
 	id: '2'
 };
 
-function describeValidateEditionSectionPublication() {
+function describevalidateEditionSectionEditionGroup() {
 	it('should pass a valid Object', () => {
-		const result = validateEditionSectionPublication(VALID_ENTITY);
+		const result = validateEditionSectionEditionGroup(VALID_ENTITY);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateEditionSectionPublication(
+		const result = validateEditionSectionEditionGroup(
 			Immutable.fromJS(VALID_ENTITY)
 		);
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid ID', () => {
-		const result = validateEditionSectionPublication(
+		const result = validateEditionSectionEditionGroup(
 			{...VALID_ENTITY, id: '2'}
 		);
 		expect(result).to.be.false;
 	});
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateEditionSectionPublication(
+		const result = validateEditionSectionEditionGroup(
 			Immutable.fromJS(INVALID_ENTITY)
 		);
 		expect(result).to.be.false;
 	});
 
 	it('should reject any other non-null data type', () => {
-		const result = validateEditionSectionPublication(1);
+		const result = validateEditionSectionEditionGroup(1);
 		expect(result).to.be.false;
 	});
 
 	it('should reject a null value', () => {
-		const result = validateEditionSectionPublication(null);
+		const result = validateEditionSectionEditionGroup(null);
 		expect(result).to.be.false;
 	});
 }
@@ -269,11 +269,11 @@ function describeValidateEditionSectionPublisher() {
 
 const VALID_EDITION_SECTION = {
 	depth: 26,
+	editionGroup: VALID_ENTITY,
 	format: 2,
 	height: 24,
 	languages: VALID_LANGUAGES,
 	pages: 25,
-	publication: VALID_ENTITY,
 	publisher: VALID_ENTITY,
 	releaseDate: '2017',
 	status: 2,
@@ -335,10 +335,10 @@ function describeValidateEditionSection() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid publication', () => {
+	it('should reject an Object with an invalid edition group', () => {
 		const result = validateEditionSection({
 			...VALID_EDITION_SECTION,
-			publication: INVALID_ENTITY
+			editionGroup: INVALID_ENTITY
 		});
 		expect(result).to.be.false;
 	});
@@ -544,8 +544,8 @@ function tests() {
 		describeValidateEditionSectionLanguages
 	);
 	describe(
-		'validateEditionSectionPublication',
-		describeValidateEditionSectionPublication
+		'validateEditionSectionEditionGroup',
+		describevalidateEditionSectionEditionGroup
 	);
 	describe(
 		'validateEditionSectionPublisher',

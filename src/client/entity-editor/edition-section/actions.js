@@ -29,7 +29,7 @@ type Publisher = {
 	id: number
 };
 
-type Publication = {
+type EditionGroup = {
 	value: string,
 	id: number
 };
@@ -41,7 +41,7 @@ export type Action = {
 };
 
 
-export const UPDATE_PUBLICATION = 'UPDATE_PUBLICATION';
+export const UPDATE_EDITION_GROUP = 'UPDATE_EDITION_GROUP';
 export const UPDATE_PUBLISHER = 'UPDATE_PUBLISHER';
 export const UPDATE_RELEASE_DATE = 'UPDATE_RELEASE_DATE';
 export const UPDATE_FORMAT = 'UPDATE_FORMAT';
@@ -53,7 +53,7 @@ export const UPDATE_WIDTH = 'UPDATE_WIDTH';
 export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_DEPTH = 'UPDATE_DEPTH';
 export const SHOW_PHYSICAL = 'SHOW_PHYSICAL';
-export const SHOW_PUBLICATION = 'SHOW_PUBLICATION';
+export const SHOW_EDITION_GROUP = 'SHOW_EDITION_GROUP';
 
 /**
  * Produces an action indicating that the edition status for the edition being
@@ -130,14 +130,14 @@ export function showPhysical(): Action {
 }
 
 /**
- * Produces an action indicating that the publication (edition group) section of the edition
+ * Produces an action indicating that the Edition Group section of the edition
  * form should be shown.
  *
- * @returns {Action} The resulting SHOW_PUBLICATION action.
+ * @returns {Action} The resulting SHOW_EDITION_GROUP action.
  */
-export function showPublication(): Action {
+export function showEditionGroup(): Action {
 	return {
-		type: SHOW_PUBLICATION
+		type: SHOW_EDITION_GROUP
 	};
 }
 
@@ -157,17 +157,17 @@ export function updatePublisher(newPublisher: Publisher): Action {
 }
 
 /**
- * Produces an action indicating that the publication for the edition
+ * Produces an action indicating that the Edition Group for the edition
  * being edited should be updated with the provided value.
  *
- * @param {Publication} newPublication - The new publication object to be set
+ * @param {EditionGroup} newEditionGroup - The new EditionGroup object to be set
  *                      for the edition.
- * @returns {Action} The resulting UPDATE_PUBLICATION action.
+ * @returns {Action} The resulting UPDATE_EDITION_GROUP action.
  */
-export function updatePublication(newPublication: Publication): Action {
+export function updateEditionGroup(newEditionGroup: EditionGroup): Action {
 	return {
-		payload: newPublication,
-		type: UPDATE_PUBLICATION
+		payload: newEditionGroup,
+		type: UPDATE_EDITION_GROUP
 	};
 }
 
