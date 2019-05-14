@@ -98,6 +98,7 @@ router.get('/', async (req, res, next) => {
 					LEFT JOIN bookbrainz.revision_parent ON revision_parent.child_id = entity.revision_id AND entity.default_alias_id IS NULL
 					LEFT JOIN bookbrainz.${SQLViewName} AS parent ON parent.revision_id = revision_parent.parent_id AND entity.default_alias_id IS NULL
 					LEFT JOIN bookbrainz.alias as parent_alias ON parent_alias.id = parent.default_alias_id AND entity.default_alias_id IS NULL
+					WHERE entity.master = true
 					ORDER BY revision.created_at DESC
 					LIMIT ${numRevisionsOnHomepage};`)
 			);
