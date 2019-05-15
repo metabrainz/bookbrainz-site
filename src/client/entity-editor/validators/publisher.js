@@ -25,6 +25,7 @@ import {
 } from './common';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 export function validatePublisherSectionArea(value: any): boolean {
@@ -36,13 +37,22 @@ export function validatePublisherSectionArea(value: any): boolean {
 }
 
 export function validatePublisherSectionBeginDate(value: any): boolean {
-	return validateDate(value);
+	const {isValid, errorMessage} = validateDate(value);
+	return {errorMessage, isValid};
 }
 
 export function validatePublisherSectionEndDate(
 	beginValue: any, endValue: any
 ): boolean {
-	return validateDate(endValue) && dateIsBefore(beginValue, endValue);
+	const {isValid, errorMessage} = validateDate(endValue);
+
+	if (isValid) {
+		if (dateIsBefore(beginValue, endValue)) {
+			return {errorMessage: '', isValid: true};
+		}
+		return {errorMessage: 'Dissolved Date must be greated than Founded Date', isValid: false};
+	}
+	return {errorMessage, isValid};
 }
 
 export function validatePublisherSectionEnded(value: any): boolean {
@@ -57,10 +67,10 @@ export function validatePublisherSectionType(value: any): boolean {
 export function validatePublisherSection(data: any): boolean {
 	return (
 		validatePublisherSectionArea(get(data, 'area', null)) &&
-		validatePublisherSectionBeginDate(get(data, 'beginDate', null)) &&
+		validatePublisherSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValid &&
 		validatePublisherSectionEndDate(
-			get(data, 'beginDate', null), get(data, 'endDate', null)
-		) &&
+			convertMapToObject(get(data, 'beginDate', null)), convertMapToObject(get(data, 'endDate', null))
+		).isValid &&
 		validatePublisherSectionEnded(get(data, 'ended', null)) &&
 		validatePublisherSectionType(get(data, 'type', null))
 	);

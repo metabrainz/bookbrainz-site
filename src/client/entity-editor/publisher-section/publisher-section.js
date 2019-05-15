@@ -35,12 +35,13 @@ import {
 } from '../validators/publisher';
 
 import CustomInput from '../../input';
-import DateField from '../common/date-field';
+import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 type PublisherType = {
@@ -58,8 +59,8 @@ type Area = {
 
 type StateProps = {
 	areaValue: Map<string, any>,
-	beginDateValue: string,
-	endDateValue: string,
+	beginDateValue: object,
+	endDateValue: object,
 	endedChecked: boolean,
 	typeValue: number
 };
@@ -127,6 +128,8 @@ function PublisherSection({
 		value: type.id
 	}));
 
+	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
+	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue);
 	return (
 		<form>
 			<h2>
@@ -165,13 +168,12 @@ function PublisherSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={!beginDateValue}
-						error={
-							!validatePublisherSectionBeginDate(beginDateValue)
-						}
+						empty={!beginDateValue.day && !beginDateValue.month && !beginDateValue.year}
+						error={!isValidBeginDate}
+						errorMessage={errorMessageBeginDate}
 						label="Date Founded"
 						placeholder="YYYY-MM-DD"
-						onChange={onBeginDateChange}
+						onChangeDate={onBeginDateChange}
 					/>
 				</Col>
 			</Row>
@@ -188,14 +190,14 @@ function PublisherSection({
 					<Row>
 						<Col md={6} mdOffset={3}>
 							<DateField
+								show
 								defaultValue={endDateValue}
-								empty={!endDateValue}
-								error={!validatePublisherSectionEndDate(
-									beginDateValue, endDateValue
-								)}
+								empty={!endDateValue.day && !endDateValue.month && !endDateValue.year}
+								error={!isValidEndDate}
+								errorMessage={errorMessageEndDate}
 								label="Date Dissolved"
 								placeholder="YYYY-MM-DD"
-								onChange={onEndDateChange}
+								onChangeDate={onEndDateChange}
 							/>
 						</Col>
 					</Row>
@@ -211,8 +213,8 @@ function mapStateToProps(rootState): StateProps {
 
 	return {
 		areaValue: state.get('area'),
-		beginDateValue: state.get('beginDate'),
-		endDateValue: state.get('endDate'),
+		beginDateValue: convertMapToObject(state.get('beginDate')),
+		endDateValue: convertMapToObject(state.get('endDate')),
 		endedChecked: state.get('ended'),
 		typeValue: state.get('type')
 	};
@@ -221,11 +223,11 @@ function mapStateToProps(rootState): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAreaChange: (value) => dispatch(updateArea(value)),
-		onBeginDateChange: (momentDate: moment) => {
-			dispatch(debouncedUpdateBeginDate(momentDate.format('YYYY-MM-DD')));
+		onBeginDateChange: (beginDate) => {
+			dispatch(debouncedUpdateBeginDate(beginDate));
 		},
-		onEndDateChange: (momentDate: moment) =>
-			dispatch(debouncedUpdateEndDate(momentDate.format('YYYY-MM-DD'))),
+		onEndDateChange: (endDate) =>
+			dispatch(debouncedUpdateEndDate(endDate)),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onTypeChange: (value) =>
