@@ -34,11 +34,15 @@ Auto-generated developer documentation can be found at our corresponding
 [doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our
 contributing guide can be found [here](CONTRIBUTING.md).
 <br/>
-## Testing subdomain
+## Beta and test subdomains
 
-A separate subdomain for the purpose of testing and rolling out beta features can be found [here](https://test.bookbrainz.org). 
-You can sign in with the same account as the one you use on the main website. All changes made to this subdomain are not in sync with the original website and vise versa (each has its own database). 
-The purpose of this project is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
+We have two separate subdomains for the purpose of testing and rolling out beta features. 
+You can sign in with the same account as the one you use on the main website.
+
+__[beta.bookbrainz.org](https://beta.bookbrainz.org)__ uses the main database but with a newer version of the code that hasn't been released yet. It is used to test new features.
+
+__[test.bookbrainz.org](https://test.bookbrainz.org)__: all changes made to this subdomain are not in sync with the main database and vice versa. 
+This domain is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
 This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.
 <br/>
 </br>
@@ -99,10 +103,9 @@ database dump.
 Luckily, we have a script that does just that: from the command line, in the `bookbrainz-site` folder, type and run `./scripts/database-init-docker.sh`.
 The process may take a while as Docker downloads and builds the images. Let that run until the command returns.
 
+The latest dump can be found at ftp://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2
 
 ## Running the server
-
-> We have recently updated our schema and are in the process of migrating the production database to the new schema. As a result, the database set up earlier will not run with the `master` branch. Until the dumps with the new schema come in, please switch over to the `stable` branch instead of `master` before running the server. You can do this by running `git fetch <remote>/stable && git checkout <remote>/stable`, where remote is the name assigned by you to this git repository's address (which is `origin` by default).
 
 If all went well, you will only need to run `./develop.sh` in the command line from the `bookbrainz-site` folder.
 Press `ctrl+c` to stop the server. The dependencies will continue running in the background.
