@@ -67,9 +67,9 @@ export function validatePublisherSectionType(value: any): boolean {
 export function validatePublisherSection(data: any): boolean {
 	return (
 		validatePublisherSectionArea(get(data, 'area', null)) &&
-		validatePublisherSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValid &&
+		validatePublisherSectionBeginDate(convertMapToObject(get(data, 'beginDate', {}))).isValid &&
 		validatePublisherSectionEndDate(
-			convertMapToObject(get(data, 'beginDate', null)), convertMapToObject(get(data, 'endDate', null))
+			convertMapToObject(get(data, 'beginDate', {})), convertMapToObject(get(data, 'endDate', {}))
 		).isValid &&
 		validatePublisherSectionEnded(get(data, 'ended', null)) &&
 		validatePublisherSectionType(get(data, 'type', null))

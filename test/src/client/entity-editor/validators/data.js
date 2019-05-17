@@ -124,27 +124,25 @@ export const VALID_DATE_PAIR = [
 	{first: {day: '31', month: '12', year: '1997'}, second: {day: '01', month: '02', year: '1998'}}
 ];
 export const INVALID_DATE_PAIR = [
-	{first: '1998', second: '1997'},
-	{first: '1998-01', second: '1997'},
-	{first: '1998-01-01', second: '1997'},
-	{first: '1998', second: '1997-12'},
-	{first: '1998-01', second: '1997-12'},
-	{first: '1998-01-01', second: '1997-12'},
-	{first: '1998', second: '1997-12-31'},
-	{first: '1998-01', second: '1997-12-31'},
-	{first: '1998-01-01', second: '1997-12-31'}
+	{first: {day: '', month: '', year: '1998'}, second: {day: '', month: '', year: '1997'}},
+	{first: {day: '', month: '01', year: '1998'}, second: {day: '', month: '', year: '1997'}},
+	{first: {day: '01', month: '01', year: '1998'}, second: {day: '', month: '', year: '1997'}},
+	{first: {day: '', month: '', year: '1998'}, second: {day: '', month: '12', year: '1997'}},
+	{first: {day: '', month: '01', year: '1998'}, second: {day: '', month: '12', year: '1997'}},
+	{first: {day: '01', month: '01', year: '1998'}, second: {day: '', month: '12', year: '1997'}},
+	{first: {day: '', month: '', year: '1998'}, second: {day: '31', month: '12', year: '1997'}},
+	{first: {day: '', month: '01', year: '1998'}, second: {day: '31', month: '12', year: '1997'}},
+	{first: {day: '01', month: '01', year: '1998'}, second: {day: '31', month: '12', year: '1997'}}
 ];
 export const INVALID_BEGIN_DATE_PAIR = [
-	{first: null, second: '1997'},
-	{first: '', second: '1997'},
 	// Begin date is invalid
-	{first: '1997-13', second: '1992'},
-	{first: '1992-12-41', second: ''},
+	{first: {day: '', month: '13', year: '1997'}, second: {day: '', month: '', year: '1992'}},
+	{first: {day: '41', month: '12', year: '1992'}, second: {day: '', month: '', year: ''}},
 	// Begin date is an invalid leap year
-	{first: '2014-02-29', second: '1997-12'}
+	{first: {day: '29', month: '02', year: '2014'}, second: {day: '', month: '12', year: '1997'}}
 ];
 export const INVALID_END_DATE_PAIR = [
-	{first: '1997-12', second: '1923-'},
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '', month: '0', year: '1923'}},
 	// End date is an invalid leap year
-	{first: '1997-12', second: '2014-02-29'}
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '29', month: '02', year: '2014'}}
 ];

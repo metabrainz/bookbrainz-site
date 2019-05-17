@@ -118,9 +118,9 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid begin date', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			beginDate: {day: '100', month: '', year: ''}
+			beginDate: {day: '100', month: '21', year: '2012'}
 		});
-		expect(result.isValid).to.be.false;
+		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid area', () => {
@@ -134,9 +134,9 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid end date', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			endDate: {day: '50', month: '', year: ''}
+			endDate: {day: '', month: '', year: 'aaaa'}
 		});
-		expect(result.isValid).to.be.false;
+		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid ended flag', () => {
@@ -175,8 +175,8 @@ function describeValidateAuthorSection() {
 		expect(result).to.be.true;
 	});
 
-	it('should pass a null value', () => {
-		const result = validateAuthorSection(null);
+	it('should pass a empty value  object', () => {
+		const result = validateAuthorSection({day: '', month: '', year: ''});
 		expect(result).to.be.true;
 	});
 }

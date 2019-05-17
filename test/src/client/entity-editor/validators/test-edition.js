@@ -275,7 +275,7 @@ const VALID_EDITION_SECTION = {
 	languages: VALID_LANGUAGES,
 	pages: 25,
 	publisher: VALID_ENTITY,
-	releaseDate: '2017',
+	releaseDate: {day: '22', month: '12', year: '2017'},
 	status: 2,
 	weight: 23,
 	width: 22
@@ -354,7 +354,7 @@ function describeValidateEditionSection() {
 	it('should reject an Object with an invalid release date', () => {
 		const result = validateEditionSection({
 			...VALID_EDITION_SECTION,
-			releaseDate: 'there'
+			releaseDate: {day: '', month: '', year: 'abcd'}
 		});
 		expect(result).to.be.false;
 	});

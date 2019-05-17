@@ -81,10 +81,10 @@ export function validateAuthorSectionGender(value: any): boolean {
 export function validateAuthorSection(data: any): boolean {
 	return (
 		validateAuthorSectionBeginArea(get(data, 'beginArea', null)) &&
-		validateAuthorSectionBeginDate(convertMapToObject(get(data, 'beginDate', null))).isValid &&
+		validateAuthorSectionBeginDate(convertMapToObject(get(data, 'beginDate', {}))).isValid &&
 		validateAuthorSectionEndArea(get(data, 'endArea', null)) &&
 		validateAuthorSectionEndDate(
-			convertMapToObject(get(data, 'beginDate', null)), convertMapToObject(get(data, 'endDate', null))
+			convertMapToObject(get(data, 'beginDate', {})), convertMapToObject(get(data, 'endDate', {}))
 		).isValid &&
 		validateAuthorSectionEnded(get(data, 'ended', null)) &&
 		validateAuthorSectionType(get(data, 'gender', null)) &&

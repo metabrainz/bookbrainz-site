@@ -126,9 +126,9 @@ export function testValidateDateFunc(validationFunc, required = true) {
 		).isValid).to.be.false;
 	});
 
-	it(`should ${required ? 'reject' : 'pass'} a null value`, () => {
-		const result = validationFunc(null);
-		expect(result).to.equal(!required);
+	it(`should ${required ? 'reject' : 'pass'} a empty value object`, () => {
+		const result = validationFunc({});
+		expect(result.isValid).to.equal(!required);
 	});
 }
 
@@ -150,7 +150,7 @@ export function testValidateEndDateFunc(
 			const result = INVALID_DATE_PAIR.reduce((res, datePair) =>
 				res || endDateValidationfunc(datePair.first, datePair.second),
 			false);
-			expect(result).to.be.false;
+			expect(result.isValid).to.be.false;
 		}
 	);
 
@@ -159,7 +159,7 @@ export function testValidateEndDateFunc(
 			const result = INVALID_BEGIN_DATE_PAIR.reduce((res, datePair) =>
 				res && endDateValidationfunc(datePair.first, datePair.second),
 			true);
-			expect(result).to.be.true;
+			expect(result.isValid).to.be.true;
 		}
 	);
 
@@ -168,7 +168,7 @@ export function testValidateEndDateFunc(
 			const result = INVALID_END_DATE_PAIR.reduce((res, datePair) =>
 				res || endDateValidationfunc(datePair.first, datePair.second),
 			false);
-			expect(result).to.be.false;
+			expect(result.isValid).to.be.false;
 		}
 	);
 }
