@@ -106,7 +106,7 @@ export function validateEditionSection(data: any): boolean {
 		validateEditionSectionPages(get(data, 'pages', null)) &&
 		validateEditionSectionEditionGroup(get(data, 'editionGroup', null)) &&
 		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
-		validateEditionSectionReleaseDate(convertMapToObject(get(data, 'releaseDate', {}))).isValid &&
+		validateEditionSectionReleaseDate(convertMapToObject(get(data, 'releaseDate', null))).isValid &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&
 		validateEditionSectionWeight(get(data, 'weight', null)) &&
 		validateEditionSectionWidth(get(data, 'width', null))

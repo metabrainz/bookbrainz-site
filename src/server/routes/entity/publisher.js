@@ -231,7 +231,7 @@ function transformNewForm(data) {
 		beginDate: dateObjectToString(data.publisherSection.beginDate),
 		disambiguation: data.nameSection.disambiguation,
 		endDate: data.publisherSection.ended ?
-			dateObjectToString(data.publisherSection.endDate) : {},
+			dateObjectToString(data.publisherSection.endDate) : '',
 		ended: data.publisherSection.ended,
 		identifiers,
 		note: data.submissionSection.note,

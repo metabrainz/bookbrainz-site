@@ -251,10 +251,9 @@ function editionToFormState(edition) {
 
 	const editionGroupVisible = !_.isNull(edition.editionGroup);
 
-	const releaseDate = edition.releaseEventSet && (
-		_.isEmpty(edition.releaseEventSet.releaseEvents) ?
-			{} : separateDateInObject(edition.releaseEventSet.releaseEvents[0].date)
-	);
+	const releaseDate = edition.releaseEventSetId ?
+		separateDateInObject(edition.releaseEventSet.releaseEvents[0].date) :
+		{day: '', month: '', year: ''};
 
 	const publisher = edition.publisherSet && (
 		_.isEmpty(edition.publisherSet.publishers) ?
@@ -340,7 +339,7 @@ function transformNewForm(data) {
 	);
 
 	let releaseEvents = [];
-	if (data.editionSection.releaseDate) {
+	if (data.editionSection.releaseDate.year) {
 		releaseEvents = [{date: dateObjectToString(data.editionSection.releaseDate)}];
 	}
 

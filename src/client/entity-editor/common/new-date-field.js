@@ -28,7 +28,12 @@ class DateField extends React.Component {
 	updateDate = (day, month, year) => {
 		console.log('update date  called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
 		//console.log({year: !year?null:year, month: !month?null:month, day: !day?null:day});
-		this.props.onChangeDate({year: !year?null:year, month: !month?null:month, day: !day?null:day});
+		this.props.onChangeDate({
+			year: !year ? '' : year,
+			month: !month ? '' : month,
+			day: !day ? '' : day
+		});
+
 		this.setState({warn: dateIsBefore(getTodayDate(),{day, month, year})});
 	};
 

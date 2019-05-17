@@ -240,9 +240,9 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 export function separateDateInObject(value: string) {
 	const date = value ? value.split('-') : [];
 	return {
-		day: date.length > 2 ? date[2] : null,
-		month: date.length > 1 ? date[1] : null,
-		year: date.length > 0 ? date[0] : null
+		day: date.length > 2 ? date[2] : '',
+		month: date.length > 1 ? date[1] : '',
+		year: date.length > 0 ? date[0] : ''
 	};
 }
 

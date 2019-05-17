@@ -45,7 +45,7 @@ function reducer(
 		format: null,
 		languages: Immutable.List([]),
 		publisher: null,
-		releaseDate: {},
+		releaseDate: {day: '', month: '', year: ''},
 		status: null
 	}),
 	action: Action
