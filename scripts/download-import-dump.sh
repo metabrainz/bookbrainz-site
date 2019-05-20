@@ -8,7 +8,7 @@ if [ -f $DUMP_FILE ]; then
     echo "To force a re-download of the data, please remove $DUMP_FILE"
 else
     mkdir -p $DUMP_DIR
-    curl -o $DUMP_FILE https://bookbrainz.org/dumps/latest.sql.bz2
+    curl -o $DUMP_FILE ftp://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2
     if [ $? -ne 0 ]
     then
         echo "Downloading the bookbrainz data dump failed."
