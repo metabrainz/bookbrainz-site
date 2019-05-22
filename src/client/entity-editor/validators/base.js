@@ -95,13 +95,15 @@ export function validateBoolean(
 }
 
 export function validateDate(value: mixed) {
-	const {year, month, day} = value;
+	const year = _.get(value, 'year');
+	const month = _.get(value, 'month');
+	const day = _.get(value, 'day');
 	const {isValid, errorMessage} = dateValidator(day, month, year);
 	return {errorMessage, isValid};
 }
 
 export function isNullValue(date) {
-	return !date.day && !date.month && !date.year;
+	return !_.get(date, 'day') && !_.get(date, 'month') && !_.get(date, 'year');
 }
 
 export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {

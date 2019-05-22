@@ -106,30 +106,32 @@ export function testValidateBooleanFunc(validationFunc, required = true) {
 
 export function testValidateDateFunc(validationFunc, required = true) {
 	it('should pass a object containing a valid year value', () => {
-		const result = validationFunc({day: '', month: '', year: '2017'});
-		expect(result.isValid).to.be.true;
+		const result = validationFunc({day: '', month: '', year: '2017'}).isValid;
+		expect(result).to.be.true;
 	});
 
 	it('should pass a object containing a valid year and month value', () => {
-		const result = validationFunc({day: '', month: '11', year: '2017'});
-		expect(result.isValid).to.be.true;
+		const result = validationFunc({day: '', month: '11', year: '2017'}).isValid;
+		expect(result).to.be.true;
 	});
 
 	it('should pass a object containing a valid year, month and day value', () => {
-		const result = validationFunc({day: '21', month: '11', year: '2017'});
-		expect(result.isValid).to.be.true;
+		const result = validationFunc({day: '21', month: '11', year: '2017'}).isValid;
+		expect(result).to.be.true;
 	});
 
 	it('should reject all other forms of invalid dates', () => {
-		expect(INVALID_DATES.reduce((res, date) =>
-			res || validationFunc(date), false
-		).isValid).to.be.false;
+		const result = INVALID_DATES.reduce((res, date) =>
+			res || validationFunc(date).isValid, false);
+		expect(result).to.be.false;
 	});
 
-	it(`should ${required ? 'reject' : 'pass'} a empty value object`, () => {
-		const result = validationFunc({});
-		expect(result.isValid).to.equal(!required);
-	});
+	it(`should ${required ? 'reject' : 'pass'} a empty value object`,
+		() => {
+			const result = validationFunc({}).isValid;
+			expect(result).to.equal(!required);
+		}
+	);
 }
 
 export function testValidateEndDateFunc(
@@ -139,36 +141,36 @@ export function testValidateEndDateFunc(
 	it('should pass if the begin date occurs before the end one',
 		() => {
 			const result = VALID_DATE_PAIR.reduce((res, datePair) =>
-				res && endDateValidationfunc(datePair.first, datePair.second),
+				res && endDateValidationfunc(datePair.first, datePair.second).isValid,
 			true);
-			expect(result.isValid).to.be.true;
+			expect(result).to.be.true;
 		}
 	);
 
 	it('should reject if the begin date occurs after the end one',
 		() => {
 			const result = INVALID_DATE_PAIR.reduce((res, datePair) =>
-				res || endDateValidationfunc(datePair.first, datePair.second),
+				res || endDateValidationfunc(datePair.first, datePair.second).isValid,
 			false);
-			expect(result.isValid).to.be.false;
+			expect(result).to.be.false;
 		}
 	);
 
 	it('should pass if the begin date is empty/undefined/invalid',
 		() => {
 			const result = INVALID_BEGIN_DATE_PAIR.reduce((res, datePair) =>
-				res && endDateValidationfunc(datePair.first, datePair.second),
+				res && endDateValidationfunc(datePair.first, datePair.second).isValid,
 			true);
-			expect(result.isValid).to.be.true;
+			expect(result).to.be.true;
 		}
 	);
 
 	it('should reject if the end date is invalid',
 		() => {
 			const result = INVALID_END_DATE_PAIR.reduce((res, datePair) =>
-				res || endDateValidationfunc(datePair.first, datePair.second),
+				res || endDateValidationfunc(datePair.first, datePair.second).isValid,
 			false);
-			expect(result.isValid).to.be.false;
+			expect(result).to.be.false;
 		}
 	);
 }
