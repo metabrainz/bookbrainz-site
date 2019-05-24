@@ -69,7 +69,7 @@ export function validateEditionSectionPages(value: ?any): boolean {
 }
 
 export function validateEditionSectionEditionGroup(value: ?any): boolean {
-	return validateUUID(get(value, 'id', null), true);
+	return validateUUID(get(value, 'id', null), false);
 }
 
 export function validateEditionSectionPublisher(value: ?any): boolean {

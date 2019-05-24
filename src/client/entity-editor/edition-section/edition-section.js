@@ -34,7 +34,7 @@ import {
 	updatePublisher,
 	updateStatus
 } from './actions';
-import {Button, Col, Row} from 'react-bootstrap';
+import {Alert, Button, Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import {
 	validateEditionSectionDepth,
@@ -200,23 +200,6 @@ function EditionSection({
 				What else do you know about the Edition?
 			</h2>
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank. <a href="/edition-group/create" target="_blank">Click here</a> to create one if you did not find an existing one.
-			</p>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<EntitySearchFieldOption
-						help="Group with other Editions by the same publisher"
-						instanceId="edition-group"
-						label="Edition Group"
-						tooltipText="Group together Editions with no substantial textual or editorial changes.
-						<br>For example, identical paperback, hardcover and e-book editions."
-						type="edition-group"
-						value={editionGroupValue}
-						onChange={onEditionGroupChange}
-					/>
-				</Col>
-			</Row>
-			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
 			</p>
@@ -285,17 +268,37 @@ function EditionSection({
 				!editionGroupVisible &&
 				<Row>
 					<Col md={6} mdOffset={3}>
-						<Button
-							bsStyle="link"
-							className="text-center"
-							onClick={onEditionGroupButtonClick}
-						>
-							Group with other existing formats…
-						</Button>
+						<Alert>
+							An Edition Group will be created automatically
+							<br/>
+							<Button
+								bsStyle="link"
+								className="text-center"
+								onClick={onEditionGroupButtonClick}
+							>
+								Click here to select an existing one
+							</Button>
+						</Alert>
 					</Col>
 				</Row>
 			}
-
+			{
+				editionGroupVisible &&
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<EntitySearchFieldOption
+							help="Group with other Editions of the same book"
+							instanceId="edition-group"
+							label="Edition Group"
+							tooltipText="Group together different Editions of the same book.
+							<br>For example paperback, hardcover and e-book editions."
+							type="edition-group"
+							value={editionGroupValue}
+							onChange={onEditionGroupChange}
+						/>
+					</Col>
+				</Row>
+			}
 			{
 				physicalVisible &&
 				<Row>
