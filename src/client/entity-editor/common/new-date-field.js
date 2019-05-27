@@ -9,8 +9,9 @@ import ValidationLabel from './validation-label';
 import classNames from 'classnames';
 import {getSeparatedDate} from '../validators/date';
 import moment from 'moment';
-import {getTodayDate} from '../../helpers/utils';
+import {getTodayDate, dateObjectToString} from '../../helpers/utils';
 import {dateIsBefore} from '../validators/base';
+
 
 class DateField extends React.Component {
 	constructor(props) {
@@ -26,8 +27,6 @@ class DateField extends React.Component {
 	}
 
 	updateDate = (day, month, year) => {
-		console.log('update date  called with ' + 'day-' + day + '-month-' + month + '-year-' + year);
-		//console.log({year: !year?null:year, month: !month?null:month, day: !day?null:day});
 		this.props.onChangeDate({
 			year: !year ? '' : year,
 			month: !month ? '' : month,
@@ -63,14 +62,11 @@ class DateField extends React.Component {
 		this.setState({year});
 		this.setState({month});
 		this.setState({day})
-		//console.log('date by date picker '+ value + date.getFullYear() + ' '+ date.getMonth() + ' '+ date.getDate());
 		this.updateDate(day, month, year);
 	}
 
 	render() {
-		// console.log('error got ' + this.props.error);
-		// console.log('empty got ' + this.props.empty);
-		// console.log('###########' + this.state.warn);
+		
 		const labelElement = (
 			<ValidationLabel
 				empty={this.props.empty}
@@ -82,6 +78,12 @@ class DateField extends React.Component {
 			</ValidationLabel>
 		);
 
+		const selectedDate = dateObjectToString({
+			year: this.state.year,
+			month: this.state.month,
+			day: this.state.day
+		});
+		const momentDate = moment(selectedDate);
 		const groupClassName = classNames({hidden: !this.props.show});
 		return (
 			<div>
@@ -120,6 +122,7 @@ class DateField extends React.Component {
 								peekNextMonth
 								showMonthDropdown
 								showYearDropdown
+								selected={momentDate.isValid() ? momentDate : null}
 								dateFormat="YYYY-MM-DD"
 								dropdownMode="select"
 								timeFormat="false"
