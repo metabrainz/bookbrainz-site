@@ -126,17 +126,20 @@ export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
 	else if (beginYear > endYear) {
 		return false;
 	}
-	else if (beginYear === endYear && beginMonth > endMonth) {
+	else if (beginMonth > endMonth) {
 		return false;
 	}
-	else if (beginMonth === endMonth && beginDay > endDay) {
+	else if (beginMonth < endMonth) {
+		return true;
+	}
+	else if (beginDay > endDay) {
 		return false;
 	}
-	else if (beginDay === endDay) {
-		return false;
+	else if (beginDay < endDay) {
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 export function validateUUID(

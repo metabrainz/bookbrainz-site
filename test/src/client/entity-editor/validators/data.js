@@ -121,7 +121,8 @@ export const VALID_DATE_PAIR = [
 	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '', year: ''}},
 	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '', year: '1998'}},
 	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '02', year: '1998'}},
-	{first: {day: '31', month: '12', year: '1997'}, second: {day: '01', month: '02', year: '1998'}}
+	{first: {day: '31', month: '12', year: '1997'}, second: {day: '01', month: '02', year: '1998'}},
+	{first: {day: '', month: '1', year: '2019'}, second: {day: '', month: '02', year: '2019'}}
 ];
 export const INVALID_DATE_PAIR = [
 	{first: {day: '', month: '', year: '1998'}, second: {day: '', month: '', year: '1997'}},
