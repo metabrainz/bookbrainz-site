@@ -43,6 +43,7 @@
     "body-parser": "^1.14.1",
     "bookbrainz-data": "^2.1.1",
     "browserify": "^14.5.0",
+    "chai-http": "^4.3.0",
     "classnames": "^2.2.5",
     "compression": "^1.7.1",
     "connect-redis": "^3.0.1",
