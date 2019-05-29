@@ -4,7 +4,6 @@ import _ from 'lodash';
 
 
 function filterData(entity) {
-
 	return _.isNil(entity) ? null :
 		{
 			bbid: entity.bbid,
