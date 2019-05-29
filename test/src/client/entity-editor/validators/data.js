@@ -99,8 +99,6 @@ export const INVALID_DATES = [
 	{day: '18', month: '21', year: '2014'},
 
 	/* Invalid year values */
-	{day: '18', month: '10', year: '0'},
-	{day: '18', month: '11', year: '-1'},
 	{day: '18', month: '11', year: 'asd'}
 
 ];
@@ -122,7 +120,10 @@ export const VALID_DATE_PAIR = [
 	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '', year: '1998'}},
 	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '02', year: '1998'}},
 	{first: {day: '31', month: '12', year: '1997'}, second: {day: '01', month: '02', year: '1998'}},
-	{first: {day: '', month: '1', year: '2019'}, second: {day: '', month: '02', year: '2019'}}
+	{first: {day: '', month: '1', year: '2019'}, second: {day: '', month: '02', year: '2019'}},
+	{first: {day: '', month: '', year: '-900'}, second: {day: '', month: '', year: '-800'}},
+	{first: {day: '', month: '1', year: '-900'}, second: {day: '', month: '02', year: '-900'}},
+	{first: {day: '1', month: '1', year: '-900'}, second: {day: '02', month: '01', year: '-800'}}
 ];
 export const INVALID_DATE_PAIR = [
 	{first: {day: '', month: '', year: '1998'}, second: {day: '', month: '', year: '1997'}},
@@ -133,7 +134,8 @@ export const INVALID_DATE_PAIR = [
 	{first: {day: '01', month: '01', year: '1998'}, second: {day: '', month: '12', year: '1997'}},
 	{first: {day: '', month: '', year: '1998'}, second: {day: '31', month: '12', year: '1997'}},
 	{first: {day: '', month: '01', year: '1998'}, second: {day: '31', month: '12', year: '1997'}},
-	{first: {day: '01', month: '01', year: '1998'}, second: {day: '31', month: '12', year: '1997'}}
+	{first: {day: '01', month: '01', year: '1998'}, second: {day: '31', month: '12', year: '1997'}},
+	{first: {day: '', month: '', year: '-800'}, second: {day: '', month: '', year: '-801'}}
 ];
 export const INVALID_BEGIN_DATE_PAIR = [
 	// Begin date is invalid
