@@ -1,19 +1,28 @@
 /* eslint-disable */
 
-// Stastic data is temporary
-const work = {
-	"bbid": "ba446064-90a5-447b-abe5-139be547da2e",
-	"default-alias": {
-		"name": "Harry Potter",
-		"sort-name": "Harry Potter",
-		"alias-language": "English"
-	},
-	"languages": ["English"],
-	"disambiguation": "Harry Potter",
-	"type": "Epic"
-};
+import _ from 'lodash';
 
-export function getEntityBasicInfo(entityTpye, bbid) {
-	// write query here to fetch entity detail
-	return work;
+
+function filterData(entity) {
+
+	return _.isNil(entity) ? null :
+		{
+			bbid: entity.bbid,
+			defaultAlias: entity.defaultAlias,
+			disambiguation: entity.disambiguation ?
+				entity.disambiguation.comment : null,
+			languages: entity.languageSet ? entity.languageSet : null,
+			entityType: entity.type ? entity.type : null
+		};
+}
+
+export async function getEntityBasicInfo(req) {
+	const {orm} = req.app.locals;
+	const {Work} = orm;
+	const workPromise =  Work.forge({bbid: req.params.bbid})
+		.fetch({withRelated: ['defaultAlias', 'languageSet']})
+		.then((data) => filterData(data.toJSON()));
+
+	const workData = await Promise.resolve(workPromise)
+	return workData;
 }
