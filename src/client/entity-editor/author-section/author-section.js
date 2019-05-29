@@ -17,7 +17,6 @@
  */
 
 // @flow
-import * as moment from 'moment';
 
 import {
 	type Action,
@@ -167,9 +166,9 @@ function AuthorSection({
 		label: type.label,
 		value: type.id
 	}));
-
+	const currentAuthorType = authorTypes.find(type => type.id === typeValue);
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
-	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue);
+	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
 
 
 	return (

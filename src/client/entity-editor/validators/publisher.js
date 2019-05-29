@@ -50,7 +50,7 @@ export function validatePublisherSectionEndDate(
 		if (dateIsBefore(beginValue, endValue)) {
 			return {errorMessage: '', isValid: true};
 		}
-		return {errorMessage: 'Dissolved Date must be greated than Founded Date', isValid: false};
+		return {errorMessage: 'Dissolved Date must be greater than Founded Date', isValid: false};
 	}
 	return {errorMessage, isValid};
 }

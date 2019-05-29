@@ -18,6 +18,7 @@
 
 // @flow
 
+import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
 import {dateIsBefore, get, validateDate, validatePositiveInteger} from './base';
 import {
 	validateAliases,
@@ -28,7 +29,6 @@ import {
 
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
-import {convertMapToObject} from '../../helpers/utils';
 
 
 export function validateAuthorSectionBeginArea(value: any): boolean {
@@ -53,15 +53,18 @@ export function validateAuthorSectionEndArea(value: any): boolean {
 }
 
 export function validateAuthorSectionEndDate(
-	beginValue: any, endValue: any
+	beginValue: any, endValue: any, authorType: string
 ): object {
 	const {isValid, errorMessage} = validateDate(endValue);
+	const isGroup = authorType === 'Group';
+	const {beginDateLabel, endDateLabel} = labelsForAuthor(isGroup);
 
 	if (isValid) {
 		if (dateIsBefore(beginValue, endValue)) {
 			return {errorMessage: '', isValid: true};
 		}
-		return {errorMessage: 'Date of death must be greated than Date of birth', isValid: false};
+
+		return {errorMessage: `${endDateLabel} must be greater than ${beginDateLabel}`, isValid: false};
 	}
 	return {errorMessage, isValid};
 }
