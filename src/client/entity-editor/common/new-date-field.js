@@ -11,7 +11,6 @@ import classNames from 'classnames';
 import {dateIsBefore} from '../validators/base';
 import moment from 'moment';
 
-
 class DateField extends React.Component {
 	constructor(props) {
 		super(props);
@@ -83,15 +82,16 @@ class DateField extends React.Component {
 		});
 		const momentDate = moment(selectedDate);
 		const groupClassName = classNames({hidden: !this.props.show});
+		const isCommonEraDate = Math.sign(this.state.year) === 1;
 		return (
 			<div>
 				<CustomInput
 					groupClassName={groupClassName}
 					label={labelElement}
 				>
-					<InputGroup style={{width: '17em'}}>
+					<InputGroup style={{width: '18em'}}>
 						<FormControl
-							maxLength="4"
+							maxLength={isCommonEraDate ? 4 : 5}
 							placeholder="YYYY"
 							type="text"
 							value={this.state.year}
@@ -126,6 +126,7 @@ class DateField extends React.Component {
 									</Button>
 								}
 								dateFormat="YYYY-MM-DD"
+								disabled={!isCommonEraDate}
 								dropdownMode="select"
 								selected={momentDate.isValid() ? momentDate : null}
 								timeFormat="false"

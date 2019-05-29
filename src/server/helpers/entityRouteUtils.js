@@ -239,6 +239,13 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 
 export function separateDateInObject(value: string) {
 	const date = value ? value.split('-') : [];
+	// A leading minus sign denotes a BC date
+	// This creates an empty first array item that needs to be removed,
+	// and requires us to add the negative sign back for the year
+	if (date.length && date[0] === '') {
+		date.shift();
+		date[0] = -date[0];
+	}
 	return {
 		day: date.length > 2 ? date[2] : '',
 		month: date.length > 1 ? date[1] : '',
