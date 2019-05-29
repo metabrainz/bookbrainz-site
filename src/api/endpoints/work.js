@@ -15,7 +15,7 @@ function middleware(req, res, next) {
 
 router.get('/:bbid', middleware, async (req, res) => {
 	//console.log(req.params.bbid);
-	const work = await getEntityBasicInfo('entityTpye', 'bbid'); // example params
+	const work = await getEntityBasicInfo(req); // example params
 	return res.send(work);
 });
 
