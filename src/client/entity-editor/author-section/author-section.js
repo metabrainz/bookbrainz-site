@@ -166,7 +166,9 @@ function AuthorSection({
 		label: type.label,
 		value: type.id
 	}));
-	const currentAuthorType = authorTypes.find(type => type.id === typeValue);
+
+	const currentAuthorType = typeValue ? authorTypes.find(type => type.id === typeValue) : {id: 1, label: 'Person'};
+
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
 	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
 
