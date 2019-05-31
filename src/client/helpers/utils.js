@@ -73,14 +73,3 @@ export function getTodayDate() {
 	const day = date.getDate().toString();
 	return {day, month, year};
 }
-
-export function dateObjectToString(value) {
-	let date = value.year;
-	if (value.month) {
-		date += `-${value.month}`;
-		if (value.day) {
-			date += `-${value.day}`;
-	  }
-	}
-	return date;
-}

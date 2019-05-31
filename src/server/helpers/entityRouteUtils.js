@@ -253,8 +253,10 @@ export function separateDateInObject(value: string) {
 	};
 }
 
-export function dateObjectToString(value: object) {
-	let date = value.year;
+export function dateObjectToString(value) {
+	const isCommonEraDate = Math.sign(value.year) > -1;
+	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
+	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;
 	if (value.month) {
 		date += `-${value.month}`;
 		if (value.day) {

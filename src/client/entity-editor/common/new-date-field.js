@@ -1,5 +1,4 @@
 import {Button, FormControl, InputGroup} from 'react-bootstrap';
-import {dateObjectToString, getTodayDate} from '../../helpers/utils';
 
 import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
@@ -10,6 +9,8 @@ import ValidationLabel from './validation-label';
 import classNames from 'classnames';
 import {dateIsBefore} from '../validators/base';
 import moment from 'moment';
+import {dateObjectToString} from '../../../server/helpers/entityRouteUtils';
+import {getTodayDate} from '../../helpers/utils';
 
 class DateField extends React.Component {
 	constructor(props) {
