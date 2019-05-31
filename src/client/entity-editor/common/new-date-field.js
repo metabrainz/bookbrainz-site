@@ -38,20 +38,26 @@ class DateField extends React.Component {
 
 	handleYearChange = (event) => {
 		const year = event.target.value;
-		this.setState({year});
-		this.updateDate(this.state.day, this.state.month, year);
+		this.setState(
+			{year},
+			this.updateDate(this.state.day, this.state.month, this.state.year)
+		);
 	};
 
 	handleMonthChange = (event) => {
 		const month = event.target.value;
-		this.setState({month});
-		this.updateDate(this.state.day, month, this.state.year);
+		this.setState(
+			{month},
+			this.updateDate(this.state.day, this.state.month, this.state.year)
+		);
 	};
 
 	handleDayChange = (event) => {
 		const day = event.target.value;
-		this.setState({day});
-		this.updateDate(day, this.state.month, this.state.year);
+		this.setState(
+			{day},
+			this.updateDate(this.state.day, this.state.month, this.state.year)
+		);
 	};
 
 	handleChangeOfDatePicker = (value) => {
@@ -59,10 +65,10 @@ class DateField extends React.Component {
 		const year = date.getFullYear().toString();
 		const month = (date.getMonth() + 1).toString();
 		const day = date.getDate().toString();
-		this.setState({year});
-		this.setState({month});
-		this.setState({day});
-		this.updateDate(day, month, year);
+		this.setState(
+			{day, month, year},
+			this.updateDate(this.state.day, this.state.month, this.state.year)
+		);
 	};
 
 	render() {
