@@ -1,8 +1,8 @@
 /* eslint-disable */
 
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = 'testing';
 
-import app from '../../../../src/server/app';
+import app from '../../../../src/api/app';
 /// Import the dependencies for testing
 import chai from 'chai';
 import chaiHttp from 'chai-http';
