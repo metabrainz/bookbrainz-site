@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Iterable} from 'immutable';
-import moment from 'moment';
+import {format} from 'date-fns';
 
 /**
  * Injects entity model object with a default alias name property.
@@ -40,11 +40,10 @@ export function formatDate(date, includeTime) {
 		return null;
 	}
 
-	const formatter = moment(date);
 	if (includeTime) {
-		return formatter.format('YYYY-MM-DD HH:mm:ss');
+		return format(date, 'yyyy-MM-dd HH:mm:ss');
 	}
-	return formatter.format('YYYY-MM-DD');
+	return format(date, 'yyyy-MM-dd');
 }
 
 const MILLISECONDS_PER_DAY = 86400000;

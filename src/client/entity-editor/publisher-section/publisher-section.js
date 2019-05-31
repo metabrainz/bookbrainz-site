@@ -18,8 +18,6 @@
 
 // @flow
 
-import * as moment from 'moment';
-
 import {
 	type Action,
 	debouncedUpdateBeginDate,
