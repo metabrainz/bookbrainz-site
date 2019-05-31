@@ -28,7 +28,6 @@ import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
 import searchRouter from './routes/search';
 import statisticsRouter from './routes/statistics';
-import workEndpoints from '../api/endpoints/work';
 import workRouter from './routes/entity/work';
 
 
@@ -38,10 +37,6 @@ function initRootRoutes(app) {
 	app.use('/search', searchRouter);
 	app.use('/register', registerRouter);
 	app.use('/statistics', statisticsRouter);
-}
-
-function apiEndpoints(app) {
-	app.use('/v1/work', workEndpoints);
 }
 
 function initEditionGroupRoutes(app) {
@@ -76,7 +71,6 @@ function initEditorRoutes(app) {
 
 function initRoutes(app) {
 	initRootRoutes(app);
-	apiEndpoints(app);
 	initEditionGroupRoutes(app);
 	initAuthorRoutes(app);
 	initEditionRoutes(app);

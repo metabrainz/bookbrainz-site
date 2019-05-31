@@ -8,7 +8,7 @@
     "clean": "./scripts/clean.sh",
     "prepublishOnly": "npm run clean && npm run mkdirs && npm run copy-client-scripts",
     "postinstall": "npm run prepublishOnly",
-    "build-server-js": "babel src --out-dir lib",
+    "build-server-js": "babel src --ignore src/api --out-dir lib",
     "build-api-js": "babel src/api --out-dir lib",
     "build-client-js": "./scripts/build-client-js.sh",
     "build-less": "./scripts/build-less.sh",
