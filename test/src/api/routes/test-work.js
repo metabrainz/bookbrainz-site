@@ -1,12 +1,11 @@
 /* eslint-disable */
 
-process.env.NODE_ENV = 'testing';
-
 import app from '../../../../src/api/app';
+import orm from '../../../bookbrainz-data';
 /// Import the dependencies for testing
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import orm from '../../../bookbrainz-data';
+import faker from 'faker';
 // Configure chai
 chai.use(chaiHttp);
 chai.should();
@@ -42,7 +41,7 @@ const revisionAttribs = {
 	authorId: 1,
 	id: 1
 };
-const aBBID = '13ab71b4-908f-4c72-88a9-4b94a56c7d3e';
+const aBBID = faker.random.uuid();
 const workAttribs = {
 	aliasSetId: 1,
 	annotationId: 1,
@@ -113,7 +112,7 @@ describe("GET /work", () => {
 	// Test to get basic information of a work
 	it("should get basic information of work", (done) => {
 		 chai.request(app)
-			 .get('/work/13ab71b4-908f-4c72-88a9-4b94a56c7d3e')
+			 .get(`/work/${aBBID}`)
 			 .end((err, res) => {
 				 res.should.have.status(200);
 				 res.body.should.be.a('object');

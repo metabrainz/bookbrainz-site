@@ -53,6 +53,7 @@
     "elasticsearch": "^15.2.0",
     "express": "^4.16.2",
     "express-session": "^1.10.1",
+    "faker": "^4.1.0",
     "git-rev": "^0.2.1",
     "http-status": "^1.0.0",
     "immutable": "^3.8.2",
