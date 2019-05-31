@@ -65,7 +65,7 @@ describe("GET /work", () => {
 				.save(null, {method: 'insert'})
 			await new Alias(aliasData)
 				.save(null, {method: 'insert'})
-			await new AliasSet({...setData, default_alias_id: 1})
+			await new AliasSet({...setData, defaultAliasId: 1})
 					.save(null, {method: 'insert'});
 			await new IdentifierSet(setData)
 					.save(null, {method: 'insert'});
@@ -80,11 +80,10 @@ describe("GET /work", () => {
 					.save(null, {method: 'insert'});
 			await new Revision(revisionAttribs)
 				.save(null, {method: 'insert'});
-			new Annotation({
+			await new Annotation({
 					content: 'Test Annotation',
 					id: 1,
-					lastRevisionId: 1
-			})
+					lastRevisionId: 1})
 				.save(null, {method: 'insert'});
 			await new Work(workAttribs)
 				.save(null, {method: 'insert'});
@@ -116,11 +115,13 @@ describe("GET /work", () => {
 			 .end((err, res) => {
 				 res.should.have.status(200);
 				 res.body.should.be.a('object');
-				 res.body.should.have.property('bbid');
-				 res.body.should.have.property('defaultAlias');
-				 res.body.should.have.property('languages');
-				 res.body.should.have.property('disambiguation');
-				 res.body.should.have.property('entityType');
+				 res.body.should.all.keys(
+					'bbid',
+					'defaultAlias',
+					'languages',
+					'disambiguation',
+					'entityType'
+				);
 				 done();
 			  });
 	 });
