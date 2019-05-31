@@ -75,8 +75,8 @@ function describeValidatePublisherSectionType() {
 
 const VALID_PUBLISHER_SECTION = {
 	area: null,
-	beginDate: null,
-	endDate: null,
+	beginDate: {day: '', month: '', year: ''},
+	endDate: {day: '', month: '', year: ''},
 	ended: true,
 	type: 1
 };
@@ -106,7 +106,7 @@ function describeValidatePublisherSection() {
 	it('should reject an Object with an invalid begin date', () => {
 		const result = validatePublisherSection({
 			...VALID_PUBLISHER_SECTION,
-			beginDate: '201'
+			beginDate: {day: '', month: '19', year: '2019'}
 		});
 		expect(result).to.be.false;
 	});
@@ -114,7 +114,7 @@ function describeValidatePublisherSection() {
 	it('should reject an Object with an invalid end date', () => {
 		const result = validatePublisherSection({
 			...VALID_PUBLISHER_SECTION,
-			endDate: '201'
+			endDate: {day: '', month: '19', year: '2019'}
 		});
 		expect(result).to.be.false;
 	});
@@ -148,7 +148,7 @@ function describeValidatePublisherSection() {
 	});
 
 	it('should pass a null value', () => {
-		const result = validatePublisherSection(null);
+		const result = validatePublisherSection({});
 		expect(result).to.be.true;
 	});
 }

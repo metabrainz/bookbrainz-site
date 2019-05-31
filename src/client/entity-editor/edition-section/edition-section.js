@@ -45,8 +45,9 @@ import {
 	validateEditionSectionWidth
 } from '../validators/edition';
 
+
 import CustomInput from '../../input';
-import DateField from '../common/date-field';
+import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
@@ -54,6 +55,7 @@ import React from 'react';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -100,7 +102,7 @@ type StateProps = {
 	publisherValue: Map<string, any>,
 	editionGroupVisible: ?boolean,
 	editionGroupValue: Map<string, any>,
-	releaseDateValue: ?string,
+	releaseDateValue: ?object,
 	statusValue: ?number,
 	weightValue: ?number,
 	widthValue: ?number
@@ -190,6 +192,8 @@ function EditionSection({
 		value: status.id
 	}));
 
+	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
+
 	return (
 		<form>
 			<h2>
@@ -232,13 +236,12 @@ function EditionSection({
 					<DateField
 						show
 						defaultValue={releaseDateValue}
-						empty={!releaseDateValue}
-						error={
-							!validateEditionSectionReleaseDate(releaseDateValue)
-						}
+						empty={!releaseDateValue.day && !releaseDateValue.month && !releaseDateValue.year}
+						error={!isValidReleaseDate}
+						errorMessage={dateErrorMessage}
 						label="Release Date"
 						placeholder="YYYY-MM-DD"
-						onChange={onReleaseDateChange}
+						onChangeDate={onReleaseDateChange}
 					/>
 				</Col>
 			</Row>
@@ -374,7 +377,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		pagesValue: state.get('pages'),
 		physicalVisible: state.get('physicalVisible'),
 		publisherValue: state.get('publisher'),
-		releaseDateValue: state.get('releaseDate'),
+		releaseDateValue: convertMapToObject(state.get('releaseDate')),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
 		widthValue: state.get('width')
@@ -400,8 +403,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		)),
 		onPhysicalButtonClick: () => dispatch(showPhysical()),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
-		onReleaseDateChange: (momentDate) =>
-			dispatch(debouncedUpdateReleaseDate(momentDate.format('YYYY-MM-DD'))),
+		onReleaseDateChange: (releaseDate) =>
+			dispatch(debouncedUpdateReleaseDate(releaseDate)),
 		onStatusChange: (value: ?{value: number}) =>
 			dispatch(updateStatus(value && value.value)),
 		onWeightChange: (event) => dispatch(debouncedUpdateWeight(

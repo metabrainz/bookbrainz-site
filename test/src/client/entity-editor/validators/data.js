@@ -79,85 +79,71 @@ export const INVALID_AREA = {id: null};
 
 export const INVALID_DATES = [
 	// Incomplete dates
-	'-1', '1', '1-',
-	'-19', '19', '19-', '1-9',
-	'-192', '1-92', '19-2', '192', '192-',
-	'-1923', '1-923', '19-23', '192-3', '19-23', '192-3', '1923-',
-	'2014-2', '2014-02-2', '2014-02-',
+	{day: '10', month: '', year: '2014'},
+	{day: '10', month: '02', year: ''},
+	{day: '10', month: '', year: ''},
 
-	/* Invalid formats */
+	/* Invalid day values */
+	{day: '0', month: '05', year: '2014'},
+	{day: '-1', month: '10', year: '2014'},
+	{day: 'a', month: '11', year: '2014'},
+	{day: '50', month: '08', year: '2014'},
+	{day: '31', month: '11', year: '2014'},
+	// Invalid day value (not a leap year)
+	{day: '29', month: '02', year: '2014'},
 
-	 // MM-YYYY or DD-YYYY
-	'12-1912',
-	// DD-MM-YYYY or MM-DD-YYYY
-	'01-01-1912',
-	// DD-YYYY-MM or MM-YYYY-DD
-	'02-1992-12',
-	 // MM-DD or DD-MM
-	'12-02',
-	// ISO week
-	'2018-W14',
-	// ISO Date with week number
-	'2018-W14-1',
-	// ISO Date without year
-	'--04-02',
-	// ISO Ordinal date
-	'2018-092',
-	// Other ISO formats
-	'2018-04-02T13:03:26+00:00', '2018-04-02T13:03:26Z', '20180402T130326Z',
+	/* Invalid month values */
+	{day: '18', month: '0', year: '2014'},
+	{day: '18', month: '-1', year: '2014'},
+	{day: '18', month: 'a', year: '2014'},
+	{day: '18', month: '21', year: '2014'},
 
-	/* Invalid dates */
+	/* Invalid year values */
+	{day: '18', month: '10', year: '0'},
+	{day: '18', month: '11', year: '-1'},
+	{day: '18', month: '11', year: 'asd'}
 
-	// Invalid MM value
-	'1912-13',
-	// Invalid MM value
-	'1912-13-01',
-	// Invalid DD value
-	'1912-11-31',
-	// Invalid DD value (not a leap year)
-	'2014-02-29'
 ];
 
 export const VALID_DATE_PAIR = [
-	{first: '', second: ''},
-	{first: '', second: '1998'},
-	{first: '', second: '1998-01'},
-	{first: '', second: '1998-01-01'},
-	{first: '1997', second: ''},
-	{first: '1997', second: '1998'},
-	{first: '1997', second: '1998-01'},
-	{first: '1997', second: '1998-01-01'},
-	{first: '1997-12', second: ''},
-	{first: '1997-12', second: '1998'},
-	{first: '1997-12', second: '1998-01'},
-	{first: '1997-12', second: '1998-01-01'},
-	{first: '1997-12-31', second: ''},
-	{first: '1997-12-31', second: '1998'},
-	{first: '1997-12-31', second: '1998-01'},
-	{first: '1997-12-31', second: '1998-01-01'}
+	{first: {day: '', month: '', year: ''}, second: {day: '', month: '', year: ''}},
+	{first: {day: '', month: '', year: ''}, second: {day: '', month: '', year: '1998'}},
+	{first: {day: '', month: '', year: ''}, second: {day: '', month: '10', year: '1998'}},
+	{first: {day: '', month: '', year: ''}, second: {day: '01', month: '01', year: '1998'}},
+	{first: {day: '', month: '', year: '1997'}, second: {day: '', month: '', year: ''}},
+	{first: {day: '', month: '', year: '1997'}, second: {day: '', month: '', year: '1998'}},
+	{first: {day: '', month: '', year: '1997'}, second: {day: '', month: '02', year: '1998'}},
+	{first: {day: '', month: '', year: '1997'}, second: {day: '01', month: '01', year: '1998'}},
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '', month: '', year: ''}},
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '', month: '', year: '1998'}},
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '', month: '01', year: '1998'}},
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '01', month: '01', year: '1998'}},
+	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '', year: ''}},
+	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '', year: '1998'}},
+	{first: {day: '31', month: '12', year: '1997'}, second: {day: '', month: '02', year: '1998'}},
+	{first: {day: '31', month: '12', year: '1997'}, second: {day: '01', month: '02', year: '1998'}},
+	{first: {day: '', month: '1', year: '2019'}, second: {day: '', month: '02', year: '2019'}}
 ];
 export const INVALID_DATE_PAIR = [
-	{first: '1998', second: '1997'},
-	{first: '1998-01', second: '1997'},
-	{first: '1998-01-01', second: '1997'},
-	{first: '1998', second: '1997-12'},
-	{first: '1998-01', second: '1997-12'},
-	{first: '1998-01-01', second: '1997-12'},
-	{first: '1998', second: '1997-12-31'},
-	{first: '1998-01', second: '1997-12-31'},
-	{first: '1998-01-01', second: '1997-12-31'}
+	{first: {day: '', month: '', year: '1998'}, second: {day: '', month: '', year: '1997'}},
+	{first: {day: '', month: '01', year: '1998'}, second: {day: '', month: '', year: '1997'}},
+	{first: {day: '01', month: '01', year: '1998'}, second: {day: '', month: '', year: '1997'}},
+	{first: {day: '', month: '', year: '1998'}, second: {day: '', month: '12', year: '1997'}},
+	{first: {day: '', month: '01', year: '1998'}, second: {day: '', month: '12', year: '1997'}},
+	{first: {day: '01', month: '01', year: '1998'}, second: {day: '', month: '12', year: '1997'}},
+	{first: {day: '', month: '', year: '1998'}, second: {day: '31', month: '12', year: '1997'}},
+	{first: {day: '', month: '01', year: '1998'}, second: {day: '31', month: '12', year: '1997'}},
+	{first: {day: '01', month: '01', year: '1998'}, second: {day: '31', month: '12', year: '1997'}}
 ];
 export const INVALID_BEGIN_DATE_PAIR = [
-	{first: null, second: '1997'},
-	{first: '', second: '1997'},
 	// Begin date is invalid
-	{first: '1997-13', second: '1992'},
-	{first: '1992-12-41', second: ''},
+	{first: {day: '', month: '13', year: '1997'}, second: {day: '', month: '', year: '1992'}},
+	{first: {day: '41', month: '12', year: '1992'}, second: {day: '', month: '', year: ''}},
 	// Begin date is an invalid leap year
-	{first: '2014-02-29', second: '1997-12'}
+	{first: {day: '29', month: '02', year: '2014'}, second: {day: '', month: '12', year: '1997'}}
 ];
 export const INVALID_END_DATE_PAIR = [
-	{first: '1997-12', second: '1923-'},
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '', month: '0', year: '1923'}},
 	// End date is an invalid leap year
-	{first: '1997-12', second: '2014-02-29'}
+	{first: {day: '', month: '12', year: '1997'}, second: {day: '29', month: '02', year: '2014'}}
 ];

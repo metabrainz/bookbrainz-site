@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+import {Iterable} from 'immutable';
 import moment from 'moment';
 
 /**
@@ -61,4 +61,27 @@ export function labelsForAuthor(isGroup) {
 		endDateLabel: isGroup ? 'Date of dissolution' : 'Date of death',
 		endedLabel: isGroup ? 'Dissolved?' : 'Died?'
 	};
+}
+
+export function convertMapToObject(value) {
+	return Iterable.isIterable(value) ? value.toJS() : value;
+}
+
+export function getTodayDate() {
+	const date = new Date();
+	const year = date.getFullYear().toString();
+	const month = (date.getMonth() + 1).toString();
+	const day = date.getDate().toString();
+	return {day, month, year};
+}
+
+export function dateObjectToString(value) {
+	let date = value.year;
+	if (value.month) {
+		date += `-${value.month}`;
+		if (value.day) {
+			date += `-${value.day}`;
+	  }
+	}
+	return date;
 }

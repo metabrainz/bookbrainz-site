@@ -24,9 +24,11 @@ import * as utils from '../../helpers/utils';
 
 import {
 	addInitialRelationship,
+	dateObjectToString,
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler
+	makeEntityCreateOrEditHandler,
+	separateDateInObject
 } from '../../helpers/entityRouteUtils';
 
 import Promise from 'bluebird';
@@ -249,10 +251,9 @@ function editionToFormState(edition) {
 
 	const editionGroupVisible = !_.isNull(edition.editionGroup);
 
-	const releaseDate = edition.releaseEventSet && (
-		_.isEmpty(edition.releaseEventSet.releaseEvents) ?
-			null : edition.releaseEventSet.releaseEvents[0].date
-	);
+	const releaseDate = edition.releaseEventSetId ?
+		separateDateInObject(edition.releaseEventSet.releaseEvents[0].date) :
+		{day: '', month: '', year: ''};
 
 	const publisher = edition.publisherSet && (
 		_.isEmpty(edition.publisherSet.publishers) ?
@@ -338,8 +339,8 @@ function transformNewForm(data) {
 	);
 
 	let releaseEvents = [];
-	if (data.editionSection.releaseDate) {
-		releaseEvents = [{date: data.editionSection.releaseDate}];
+	if (data.editionSection.releaseDate.year) {
+		releaseEvents = [{date: dateObjectToString(data.editionSection.releaseDate)}];
 	}
 
 	const languages = _.map(

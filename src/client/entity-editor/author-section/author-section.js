@@ -17,7 +17,6 @@
  */
 
 // @flow
-import * as moment from 'moment';
 
 import {
 	type Action,
@@ -30,19 +29,21 @@ import {
 	updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
+import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
 import {
 	validateAuthorSectionBeginDate,
 	validateAuthorSectionEndDate
 } from '../validators/author';
 
 import CustomInput from '../../input';
-import DateField from '../common/date-field';
+import DateField from '../common/new-date-field';
+
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-import {labelsForAuthor} from '../../helpers/utils';
+
 
 type AuthorType = {
 	label: string,
@@ -66,11 +67,11 @@ type StateProps = {
 	beginAreaLabel: string,
 	beginAreaValue: Map<string, any>,
 	beginDateLabel: string,
-	beginDateValue: string,
+	beginDateValue: object,
 	endAreaLabel: string,
 	endAreaValue: Map<string, any>,
 	endDateLabel: string,
-	endDateValue: string,
+	endDateValue: object,
 	endedChecked: boolean,
 	endedLabel: string,
 	genderShow: boolean,
@@ -166,6 +167,12 @@ function AuthorSection({
 		value: type.id
 	}));
 
+	const currentAuthorType = typeValue ? authorTypes.find(type => type.id === typeValue) : {id: 1, label: 'Person'};
+
+	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
+	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
+
+
 	return (
 		<form>
 			<h2>
@@ -207,11 +214,11 @@ function AuthorSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={!beginDateValue}
-						error={!validateAuthorSectionBeginDate(beginDateValue)}
+						empty={!beginDateValue.day && !beginDateValue.month && !beginDateValue.year}
+						error={!isValidDob}
+						errorMessage={dobError}
 						label={beginDateLabel}
-						placeholder="YYYY-MM-DD"
-						onChange={onBeginDateChange}
+						onChangeDate={onBeginDateChange}
 					/>
 				</Col>
 			</Row>
@@ -239,16 +246,13 @@ function AuthorSection({
 					<Row>
 						<Col md={6} mdOffset={3}>
 							<DateField
+								show
 								defaultValue={endDateValue}
-								empty={!endDateValue}
-								error={
-									!validateAuthorSectionEndDate(
-										beginDateValue, endDateValue
-									)
-								}
+								empty={!endDateValue.day && !endDateValue.month && !endDateValue.year}
+								error={!isValidDod}
+								errorMessage={dodError}
 								label={endDateLabel}
-								placeholder="YYYY-MM-DD"
-								onChange={onEndDateChange}
+								onChangeDate={onEndDateChange}
 							/>
 						</Col>
 					</Row>
@@ -296,11 +300,11 @@ function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 		beginAreaLabel,
 		beginAreaValue: state.get('beginArea'),
 		beginDateLabel,
-		beginDateValue: state.get('beginDate'),
+		beginDateValue: convertMapToObject(state.get('beginDate')),
 		endAreaLabel,
 		endAreaValue: state.get('endArea'),
 		endDateLabel,
-		endDateValue: state.get('endDate'),
+		endDateValue: convertMapToObject(state.get('endDate')),
 		endedChecked: state.get('ended'),
 		endedLabel,
 		genderShow: !isGroup,
@@ -312,11 +316,11 @@ function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
-		onBeginDateChange: (momentDate: moment) =>
-			dispatch(debouncedUpdateBeginDate(momentDate.format('YYYY-MM-DD'))),
+		onBeginDateChange: (beginDate) =>
+			dispatch(debouncedUpdateBeginDate(beginDate)),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
-		onEndDateChange: (momentDate: moment) =>
-			dispatch(debouncedUpdateEndDate(momentDate.format('YYYY-MM-DD'))),
+		onEndDateChange: (endDate) =>
+			dispatch(debouncedUpdateEndDate(endDate)),
 		onEndedChange: (event) =>
 			dispatch(updateEnded(event.target.checked)),
 		onGenderChange: (value) =>

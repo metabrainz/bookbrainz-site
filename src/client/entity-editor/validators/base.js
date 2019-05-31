@@ -20,11 +20,9 @@
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
-import moment from 'moment';
+import {dateValidator} from './date';
 import validator from 'validator';
 
-
-const VALID_DATE_FORMATS = ['YYYY-MM-DD', 'YYYY-MM', 'YYYY'];
 
 export function get(
 	object: any,
@@ -96,41 +94,52 @@ export function validateBoolean(
 	return _.isBoolean(value);
 }
 
-export function validateDate(
-	value: mixed, required: boolean = false
-): boolean {
-	if (absentAndRequired(value, required)) {
-		return false;
-	}
+export function validateDate(value: mixed) {
+	const year = _.get(value, 'year');
+	const month = _.get(value, 'month');
+	const day = _.get(value, 'day');
+	const {isValid, errorMessage} = dateValidator(day, month, year);
+	return {errorMessage, isValid};
+}
 
-	if (!nilOrString(value)) {
-		return false;
-	}
-
-	return !value || moment(value, VALID_DATE_FORMATS, true).isValid();
+export function isNullValue(date) {
+	return !_.get(date, 'day') && !_.get(date, 'month') && !_.get(date, 'year');
 }
 
 export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
-	if (!nilOrString(beginValue) || !nilOrString(endValue)) {
-		return false;
-	}
-
-	if (!beginValue || !endValue || !validateDate(beginValue) ||
-		!validateDate(endValue)) {
+	if (isNullValue(beginValue) || isNullValue(endValue) || !validateDate(beginValue).isValid ||
+		!validateDate(endValue).isValid) {
 		return true;
 	}
 
-	const dateFormat = (value) => VALID_DATE_FORMATS.find(
-		(format) => moment(value, format, true).isValid()
-	);
+	const beginYear = _.toInteger(beginValue.year);
+	const beginMonth = _.toInteger(beginValue.month);
+	const beginDay = _.toInteger(beginValue.day);
 
-	const baseFormat = [dateFormat(beginValue), dateFormat(endValue)].reduce(
-		(prev, cur) => (prev.length < cur.length ? prev : cur)
-	);
+	const endYear = _.toInteger(endValue.year);
+	const endMonth = _.toInteger(endValue.month);
+	const endDay = _.toInteger(endValue.day);
 
-	return moment(beginValue, baseFormat).isSameOrBefore(
-		moment(endValue, baseFormat)
-	);
+	if (beginYear < endYear) {
+		return true;
+	}
+	else if (beginYear > endYear) {
+		return false;
+	}
+	else if (beginMonth > endMonth) {
+		return false;
+	}
+	else if (beginMonth < endMonth) {
+		return true;
+	}
+	else if (beginDay > endDay) {
+		return false;
+	}
+	else if (beginDay < endDay) {
+		return true;
+	}
+
+	return false;
 }
 
 export function validateUUID(
