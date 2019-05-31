@@ -1,4 +1,5 @@
 import {Button, FormControl, InputGroup} from 'react-bootstrap';
+import {isValid, parseISO} from 'date-fns';
 
 import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
@@ -8,9 +9,9 @@ import React from 'react';
 import ValidationLabel from './validation-label';
 import classNames from 'classnames';
 import {dateIsBefore} from '../validators/base';
-import moment from 'moment';
 import {dateObjectToString} from '../../../server/helpers/entityRouteUtils';
 import {getTodayDate} from '../../helpers/utils';
+
 
 class DateField extends React.Component {
 	constructor(props) {
@@ -75,13 +76,12 @@ class DateField extends React.Component {
 				{this.props.label}
 			</ValidationLabel>
 		);
-
-		const selectedDate = dateObjectToString({
+		const dateString = dateObjectToString({
 			day: this.state.day,
 			month: this.state.month,
 			year: this.state.year
 		});
-		const momentDate = moment(selectedDate);
+		const selectedDate = parseISO(dateString);
 		const groupClassName = classNames({hidden: !this.props.show});
 		const isCommonEraDate = Math.sign(this.state.year) === 1;
 		return (
@@ -126,12 +126,11 @@ class DateField extends React.Component {
 										<FontAwesome name="calendar-alt"/>
 									</Button>
 								}
-								dateFormat="YYYY-MM-DD"
+								dateFormat="uuuuuu-MM-dd"
 								disabled={!isCommonEraDate}
 								dropdownMode="select"
-								selected={momentDate.isValid() ? momentDate : null}
+								selected={isValid(selectedDate) ? selectedDate : null}
 								timeFormat="false"
-								viewMode="years"
 								onChange={this.handleChangeOfDatePicker}
 							/>
 						</InputGroup.Button>
