@@ -149,8 +149,8 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 
 const debug = Debug('bbsite');
 
-const DEFAULT_PORT = 9099;
-app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-process-env,max-len
+const DEFAULT_API_PORT = 9098;
+app.set('port', process.env.PORT || DEFAULT_API_PORT); // eslint-disable-line no-process-env,max-len
 
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);
