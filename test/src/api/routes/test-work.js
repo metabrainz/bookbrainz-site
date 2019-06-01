@@ -42,6 +42,7 @@ const revisionAttribs = {
 	id: 1
 };
 const aBBID = faker.random.uuid();
+const bBBID = faker.random.uuid();
 const workAttribs = {
 	aliasSetId: 1,
 	annotationId: 1,
@@ -121,6 +122,19 @@ describe("GET /work", () => {
 					'languages',
 					'disambiguation',
 					'entityType'
+				);
+				 done();
+			  });
+	 });
+
+	 it("should return status 404, if work is not founded", (done) => {
+		 chai.request(app)
+			 .get(`/work/${bBBID}`)
+			 .end((err, res) => {
+				 res.should.have.status(404);
+				 res.body.should.be.a('object');
+				 res.body.message.should.equal(
+					'This Work is not founded'
 				);
 				 done();
 			  });
