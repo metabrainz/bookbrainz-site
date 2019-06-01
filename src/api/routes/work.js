@@ -2,19 +2,21 @@
 
 
 import express from 'express';
-import {getEntityBasicInfo} from '../../common/queries/work';
-
+import {getWorkFromDB} from '../../common/queries/work';
+import {getWorkBasicInfo} from '../helpers/formatWorkData';
+import _ from 'lodash';
 
 const router = express.Router();
 
 
-function middleware(req, res, next) {
-	next();
-}
-
-router.get('/:bbid', middleware, async (req, res) => {
-	const work = await getEntityBasicInfo(req); // example params
-	return res.send(work);
+router.get('/:bbid', async (req, res, next) => {
+	const work = await getWorkFromDB(req); // example params
+	if(_.isNil(work)) {
+		return res.status(404).send({message: 'This Work is not founded'});
+	} else {
+		const workBasicInfo = getWorkBasicInfo(work.toJSON());
+		return res.status(200).send(workBasicInfo);
+	}
 });
 
 export default router;
