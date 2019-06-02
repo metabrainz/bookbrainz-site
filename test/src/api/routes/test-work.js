@@ -12,7 +12,7 @@ chai.should();
 
 const {
 	Alias, AliasSet, Annotation, Disambiguation, Editor, EditorType, Entity, Gender,
-	IdentifierSet, RelationshipSet, Revision, Work, bookshelf, util
+	IdentifierSet, Identifier, RelationshipSet, Revision, Work, bookshelf, util
 } = orm;
 
 const genderData = {
@@ -36,6 +36,12 @@ const aliasData = {
 	name: 'work name',
 	sortName: 'Work sort name'
 };
+
+const identifierData = {
+	id: 1,
+	typeId: 1,
+	value: 'Q123456'
+}
 
 const revisionAttribs = {
 	authorId: 1,
@@ -70,6 +76,8 @@ describe("GET /work", () => {
 					.save(null, {method: 'insert'});
 			await new IdentifierSet(setData)
 					.save(null, {method: 'insert'});
+			await new Identifier(identifierData)
+					.save(null, {method: 'insert'});
 			await new RelationshipSet(setData)
 					.save(null, {method: 'insert'});
 			await new Disambiguation({
@@ -97,6 +105,7 @@ describe("GET /work", () => {
 			'bookbrainz.entity',
 			'bookbrainz.revision',
 			'bookbrainz.relationship_set',
+			'bookbrainz.identifier',
 			'bookbrainz.identifier_set',
 			'bookbrainz.alias',
 			'bookbrainz.alias_set',
@@ -121,6 +130,7 @@ describe("GET /work", () => {
 					'defaultAlias',
 					'languages',
 					'disambiguation',
+					'workType',
 					'entityType'
 				);
 				 done();
@@ -135,6 +145,34 @@ describe("GET /work", () => {
 				 res.body.should.be.a('object');
 				 res.body.message.should.equal(
 					'This Work is not founded'
+				);
+				 done();
+			  });
+	 });
+
+	 it("should return list of aliases of work", (done) => {
+		 chai.request(app)
+			 .get(`/work/${aBBID}/aliases`)
+			 .end((err, res) => {
+				 res.should.have.status(200);
+				 res.body.should.be.a('object');
+				 res.body.should.all.keys(
+					'bbid',
+					'aliases'
+				);
+				 done();
+			  });
+	 });
+
+	 it("should return list of identifiers of work", (done) => {
+		 chai.request(app)
+			 .get(`/work/${aBBID}/identifiers`)
+			 .end((err, res) => {
+				 res.should.have.status(200);
+				 res.body.should.be.a('object');
+				 res.body.should.all.keys(
+					'bbid',
+					'identifiers'
 				);
 				 done();
 			  });
