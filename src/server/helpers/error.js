@@ -22,7 +22,7 @@ import Layout from '../../client/containers/layout';
 import Log from 'log';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import config from './config';
+import config from '../../common/helpers/config';
 import {generateProps} from './props';
 import status from 'http-status';
 import target from '../templates/target';
