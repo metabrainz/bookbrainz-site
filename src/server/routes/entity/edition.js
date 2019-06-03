@@ -249,8 +249,6 @@ function editionToFormState(edition) {
 		_.isNull(edition.width)
 	);
 
-	const editionGroupVisible = !_.isNull(edition.editionGroup);
-
 	const releaseDate = edition.releaseEventSetId ?
 		separateDateInObject(edition.releaseEventSet.releaseEvents[0].date) :
 		{day: '', month: '', year: ''};
@@ -265,7 +263,8 @@ function editionToFormState(edition) {
 	const editionSection = {
 		depth: edition.depth,
 		editionGroup,
-		editionGroupVisible,
+		editionGroupRequired: true,
+		editionGroupVisible: true,
 		format: edition.editionFormat && edition.editionFormat.id,
 		height: edition.height,
 		languages: edition.languageSet ? edition.languageSet.languages.map(

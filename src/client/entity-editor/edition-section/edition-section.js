@@ -38,6 +38,7 @@ import {Alert, Button, Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import {
 	validateEditionSectionDepth,
+	validateEditionSectionEditionGroup,
 	validateEditionSectionHeight,
 	validateEditionSectionPages,
 	validateEditionSectionReleaseDate,
@@ -100,6 +101,7 @@ type StateProps = {
 	pagesValue: ?number,
 	physicalVisible: ?boolean,
 	publisherValue: Map<string, any>,
+	editionGroupRequired: ?boolean,
 	editionGroupVisible: ?boolean,
 	editionGroupValue: Map<string, any>,
 	releaseDateValue: ?object,
@@ -169,6 +171,7 @@ function EditionSection({
 	onWidthChange,
 	pagesValue,
 	physicalVisible,
+	editionGroupRequired,
 	editionGroupValue,
 	editionGroupVisible,
 	publisherValue,
@@ -194,11 +197,39 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
+	const getEditionGroupSearchSelect = () => (
+		<EntitySearchFieldOption
+			error={!validateEditionSectionEditionGroup(editionGroupValue, editionGroupRequired)}
+			help="Group with other Editions of the same book"
+			instanceId="edition-group"
+			label="Edition Group"
+			tooltipText="Group together different Editions of the same book.
+			<br>For example paperback, hardcover and e-book editions."
+			type="edition-group"
+			value={editionGroupValue}
+			onChange={onEditionGroupChange}
+		/>
+	);
+
 	return (
 		<form>
 			<h2>
 				What else do you know about the Edition?
 			</h2>
+			{
+				editionGroupRequired &&
+				<React.Fragment>
+					<p className="text-muted">
+						Edition Group is required — this cannot be blank.
+						&nbsp;<a href="/edition-group/create" target="_blank">Click here</a> to create one if you did not find an existing one.
+					</p>
+					<Row>
+						<Col md={6} mdOffset={3}>
+							{getEditionGroupSearchSelect()}
+						</Col>
+					</Row>
+				</React.Fragment>
+			}
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
@@ -265,7 +296,7 @@ function EditionSection({
 			</Row>
 
 			{
-				!editionGroupVisible &&
+				!editionGroupVisible && !editionGroupRequired &&
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<Alert>
@@ -276,26 +307,17 @@ function EditionSection({
 								className="text-center"
 								onClick={onEditionGroupButtonClick}
 							>
-								Click here to select an existing one
+								Click here to search for an existing one instead
 							</Button>
 						</Alert>
 					</Col>
 				</Row>
 			}
 			{
-				editionGroupVisible &&
+				editionGroupVisible && !editionGroupRequired &&
 				<Row>
 					<Col md={6} mdOffset={3}>
-						<EntitySearchFieldOption
-							help="Group with other Editions of the same book"
-							instanceId="edition-group"
-							label="Edition Group"
-							tooltipText="Group together different Editions of the same book.
-							<br>For example paperback, hardcover and e-book editions."
-							type="edition-group"
-							value={editionGroupValue}
-							onChange={onEditionGroupChange}
-						/>
+						{getEditionGroupSearchSelect()}
 					</Col>
 				</Row>
 			}
@@ -372,6 +394,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 	return {
 		depthValue: state.get('depth'),
+		editionGroupRequired: state.get('editionGroupRequired'),
 		editionGroupValue: state.get('editionGroup'),
 		editionGroupVisible: state.get('editionGroupVisible'),
 		formatValue: state.get('format'),
