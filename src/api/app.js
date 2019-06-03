@@ -31,13 +31,10 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
-import favicon from 'serve-favicon';
-import git from 'git-rev';
 import logger from 'morgan';
 import path from 'path';
 import redis from 'connect-redis';
 import routes from './routes';
-import serveStatic from 'serve-static';
 import session from 'express-session';
 
 
@@ -50,11 +47,8 @@ Promise.config({
 const app = express();
 app.locals.orm = BookBrainzData(config.database);
 
-const rootDir = path.join(__dirname, '../../');
 
 app.set('trust proxy', config.site.proxyTrust);
-
-app.use(favicon(path.join(rootDir, 'static/images/icons/favicon.ico')));
 
 if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
@@ -66,29 +60,6 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(compression());
 
-// Set up serving of static assets
-if (process.env.NODE_ENV === 'development') {
-	const webpack = require('webpack');
-	const webpackDevMiddleware = require('webpack-dev-middleware');
-	const webpackHotMiddleware = require('webpack-hot-middleware');
-
-	const webpackConfig = require(path.resolve(rootDir, './webpack.client'));
-	const compiler = webpack(webpackConfig);
-
-	app.use(webpackDevMiddleware(compiler, {
-		// lazy: false,
-		logTime: true,
-		noInfo: false,
-		publicPath: webpackConfig.output.publicPath
-		// serverSideRender: false
-	}));
-
-	app.use(webpackHotMiddleware(compiler));
-}
-else {
-	app.use(serveStatic(path.join(rootDir, 'static/js')));
-}
-app.use(express.static(path.join(rootDir, 'static')));
 
 const RedisStore = redis(session);
 app.use(session({
@@ -105,34 +76,6 @@ app.use(session({
 	})
 }));
 
-
-// Set up constants that will remain valid for the life of the app
-let siteRevision = 'unknown';
-git.short((revision) => {
-	siteRevision = revision;
-});
-
-const repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
-
-app.use((req, res, next) => {
-	// Set up globally-used properties
-	res.locals.siteRevision = siteRevision;
-	res.locals.repositoryUrl = repositoryUrl;
-	res.locals.alerts = [];
-
-	if (!req.session) {
-		res.locals.alerts.push({
-			level: 'danger',
-			message: 'We are currently experiencing technical difficulties; ' +
-				'signing in will not work until this is resolved.'
-		});
-	}
-
-	// Add user data to every rendered route
-	res.locals.user = req.user;
-
-	next();
-});
 
 // Set up routes
 routes(app);
