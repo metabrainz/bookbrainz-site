@@ -30,7 +30,7 @@ import {get as _get} from 'lodash';
 import appCleanup from './helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
-import config from './helpers/config';
+import config from '../common/helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
 import git from 'git-rev';

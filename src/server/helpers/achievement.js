@@ -26,7 +26,7 @@ import * as error from './error';
 
 import Log from 'log';
 import Promise from 'bluebird';
-import config from './config';
+import config from '../../common/helpers/config';
 
 
 const log = new Log(config.site.log);
