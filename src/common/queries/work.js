@@ -5,12 +5,12 @@ import _ from 'lodash';
 
 
 
-export async function getWorkFromDB(req, params) {	
+export async function getWorkFromDB(req, relations) {	
 	const {orm} = req.app.locals;
 	const {Work} = orm;
 
 	const workPromise =  Work.forge({bbid: req.params.bbid})
-		.fetch({withRelated: params})
+		.fetch({withRelated: relations})
 
 	const workData = await Promise.resolve(workPromise)
 
