@@ -1,137 +1,42 @@
-/* eslint-disable */
+/*
+ * Copyright (C) 2019  Akhilesh Kumar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+import {createWork, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
-import orm from '../../../bookbrainz-data';
-/// Import the dependencies for testing
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import faker from 'faker';
-// Configure chai
+
+
 chai.use(chaiHttp);
 chai.should();
 
-const {
-	Alias, AliasSet, Annotation, Disambiguation, Editor, EditorType, Entity, Gender,
-	IdentifierSet, Identifier, IdentifierType, RelationshipSet, Revision, Work, bookshelf, util
-} = orm;
-
-const genderData = {
-	id: 1,
-	name: 'test'
-};
-const editorTypeData = {
-	id: 1,
-	label: 'test_type'
-};
-const editorData = {
-	genderId: 1,
-	id: 1,
-	name: 'bob',
-	typeId: 1
-};
-const setData = {id: 1};
-
-const aliasData = {
-	id: 1,
-	name: 'work name',
-	sortName: 'Work sort name'
-};
-
-const identifierTypeData = {
-	id: 1,
-	label: 'test label',
-	description: 'test description',
-	validationRegex: 'test regex',
-	displayTemplate: 'test template',
-	entityType: 'Work'
-}
-
-const identifierData = {
-	id: 1,
-	typeId: 1,
-	value: 'Q123456'
-}
-
-const revisionAttribs = {
-	authorId: 1,
-	id: 1
-};
-const aBBID = faker.random.uuid();
-const bBBID = faker.random.uuid();
-const workAttribs = {
-	aliasSetId: 1,
-	annotationId: 1,
-	bbid: aBBID,
-	disambiguationId: 1,
-	identifierSetId: 1,
-	relationshipSetId: 1,
-	revisionId: 1
-};
+/* eslint-disable */
 
 
+const aBBID = getRandomUUID();
+const bBBID = getRandomUUID();
 
-describe("GET /work", () => {
-	before(
-		async () =>{
-			await new Gender(genderData)
-				.save(null, {method: 'insert'});
-			await new EditorType(editorTypeData)
-				.save(null, {method: 'insert'})
-			await new Editor(editorData)
-				.save(null, {method: 'insert'})
-			await new Alias(aliasData)
-				.save(null, {method: 'insert'})
-			await new AliasSet({...setData, defaultAliasId: 1})
-					.save(null, {method: 'insert'});
-			await new IdentifierSet(setData)
-					.save(null, {method: 'insert'});
-			await new IdentifierType(identifierTypeData)
-					.save(null, {method: 'insert'});
-			await new Identifier(identifierData)
-					.save(null, {method: 'insert'});
-			await new RelationshipSet(setData)
-					.save(null, {method: 'insert'});
-			await new Disambiguation({
-					comment: 'Test Disambiguation',
-					id: 1
-				})
-				.save(null, {method: 'insert'});
-			await new Entity({bbid: aBBID, type: 'Work'})
-					.save(null, {method: 'insert'});
-			await new Revision(revisionAttribs)
-				.save(null, {method: 'insert'});
-			await new Annotation({
-					content: 'Test Annotation',
-					id: 1,
-					lastRevisionId: 1})
-				.save(null, {method: 'insert'});
-			await new Work(workAttribs)
-				.save(null, {method: 'insert'});
-		});
-
-	after(function truncate() {
-		this.timeout(0); // eslint-disable-line babel/no-invalid-this
-
-		return util.truncateTables(bookshelf, [
-			'bookbrainz.entity',
-			'bookbrainz.revision',
-			'bookbrainz.relationship_set',
-			'bookbrainz.identifier_type',
-			'bookbrainz.identifier',
-			'bookbrainz.identifier_set',
-			'bookbrainz.alias',
-			'bookbrainz.alias_set',
-			'bookbrainz.annotation',
-			'bookbrainz.disambiguation',
-			'bookbrainz.editor',
-			'bookbrainz.editor_type',
-			'bookbrainz.work_header',
-			'musicbrainz.gender'
-		]);
-	});
-
+describe('GET /work', () => {
+	beforeEach(() => createWork(aBBID));
+	afterEach(truncateEntities);
 	// Test to get basic information of a work
-	it("should get basic information of work", (done) => {
+	it('should get basic information of work', (done) => {
 		 chai.request(app)
 			 .get(`/work/${aBBID}`)
 			 .end((err, res) => {
