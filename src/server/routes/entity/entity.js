@@ -640,20 +640,6 @@ async function saveEntitiesAndFinishRevision(
 	return mainEntity;
 }
 
-async function createEditionGroupForNewEdition(orm, transacting, aliasSetId, revisionId) {
-	const {Entity, EditionGroup} = orm;
-	const newEditionGroupEntity = await new Entity({type: 'EditionGroup'})
-		.save(null, {transacting});
-	const bbid = newEditionGroupEntity.get('bbid');
-	await new EditionGroup({
-		aliasSetId,
-		bbid,
-		revisionId
-	})
-		.save(null, {method: 'insert', transacting});
-	return bbid;
-}
-
 export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
@@ -729,12 +715,6 @@ export function handleCreateOrEditEntity(
 		const otherEntities = await fetchEntitiesForRelationships(
 			orm, transacting, currentEntity, relationshipSets
 		);
-
-		// If there is no Edition Group set for a new Edition,
-		// create a new one in the ongoing transaction
-		if (isNew && entityType === 'Edition' && !changedProps.editionGroupBbid) {
-			changedProps.editionGroupBbid = await createEditionGroupForNewEdition(orm, transacting, changedProps.aliasSetId, newRevision.id);
-		}
 
 		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
