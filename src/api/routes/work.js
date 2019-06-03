@@ -25,8 +25,8 @@ import {getWorkFromDB} from '../../common/queries/work';
 const router = express.Router();
 
 router.get('/:bbid', async (req, res, next) => {
-	const params = ['defaultAlias', 'languageSet.languages', 'disambiguation'];
-	const work = await getWorkFromDB(req, params);
+	const relations = ['defaultAlias.language', 'languageSet.languages', 'disambiguation', 'workType'];
+	const work = await getWorkFromDB(req, relations);
 	if (_.isNil(work)) {
 		return res.status(404).send({message: 'This Work is not founded'});
 	}
@@ -35,8 +35,8 @@ router.get('/:bbid', async (req, res, next) => {
 });
 
 router.get('/:bbid/aliases', async (req, res, next) => {
-	const params = ['aliasSet.aliases'];
-	const workWithAliases = await getWorkFromDB(req, params);
+	const relations = ['aliasSet.aliases.language'];
+	const workWithAliases = await getWorkFromDB(req, relations);
 	if (_.isNil(workWithAliases.aliasSet)) {
 		return res.status(404).send({message: 'This Work is not founded'});
 	}
@@ -45,8 +45,8 @@ router.get('/:bbid/aliases', async (req, res, next) => {
 });
 
 router.get('/:bbid/identifiers', async (req, res, next) => {
-	const params = ['identifierSet.identifiers'];
-	const workWithIdentifiers = await getWorkFromDB(req, params);
+	const relations = ['identifierSet.identifiers.type'];
+	const workWithIdentifiers = await getWorkFromDB(req, relations);
 	if (_.isNil(workWithIdentifiers.identifierSet)) {
 		return res.status(404).send({message: 'No identifiers are founded for this work'});
 	}
