@@ -26,8 +26,6 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 chai.should();
 
-/* eslint-disable */
-
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
@@ -40,6 +38,9 @@ describe('GET /work', () => {
 		 chai.request(app)
 			 .get(`/work/${aBBID}`)
 			 .end((err, res) => {
+				 if (err) {
+					 throw err;
+				 }
 				 res.should.have.status(200);
 				 res.body.should.be.a('object');
 				 res.body.should.all.keys(
@@ -54,10 +55,13 @@ describe('GET /work', () => {
 			  });
 	 });
 
-	 it("should return status 404, if work is not founded", (done) => {
+	 it('should return status 404, if work is not founded', (done) => {
 		 chai.request(app)
 			 .get(`/work/${bBBID}`)
 			 .end((err, res) => {
+				 if (err) {
+					 throw err;
+				 }
 				 res.should.have.status(404);
 				 res.body.should.be.a('object');
 				 res.body.message.should.equal(
@@ -67,10 +71,13 @@ describe('GET /work', () => {
 			  });
 	 });
 
-	 it("should return list of aliases of work", (done) => {
+	 it('should return list of aliases of work', (done) => {
 		 chai.request(app)
 			 .get(`/work/${aBBID}/aliases`)
 			 .end((err, res) => {
+				 if (err) {
+					 throw err;
+				 }
 				 res.should.have.status(200);
 				 res.body.should.be.a('object');
 				 res.body.should.all.keys(
@@ -81,10 +88,13 @@ describe('GET /work', () => {
 			  });
 	 });
 
-	 it("should return list of identifiers of work", (done) => {
+	 it('should return list of identifiers of work', (done) => {
 		 chai.request(app)
 			 .get(`/work/${aBBID}/identifiers`)
 			 .end((err, res) => {
+				 if (err) {
+					 throw err;
+				 }
 				 res.should.have.status(200);
 				 res.body.should.be.a('object');
 				 res.body.should.all.keys(
@@ -94,5 +104,4 @@ describe('GET /work', () => {
 				 done();
 			  });
 	 });
-
 });
