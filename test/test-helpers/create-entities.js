@@ -173,11 +173,6 @@ export function truncateEntities() {
 		'bookbrainz.entity',
 		'bookbrainz.revision',
 		'bookbrainz.annotation',
-		'bookbrainz.author',
-		'bookbrainz.edition',
-		'bookbrainz.edition_group',
-		'bookbrainz.publisher',
-		'bookbrainz.work',
 		'musicbrainz.gender'
 	]);
 }
