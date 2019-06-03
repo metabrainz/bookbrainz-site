@@ -12,7 +12,7 @@ chai.should();
 
 const {
 	Alias, AliasSet, Annotation, Disambiguation, Editor, EditorType, Entity, Gender,
-	IdentifierSet, Identifier, RelationshipSet, Revision, Work, bookshelf, util
+	IdentifierSet, Identifier, IdentifierType, RelationshipSet, Revision, Work, bookshelf, util
 } = orm;
 
 const genderData = {
@@ -36,6 +36,15 @@ const aliasData = {
 	name: 'work name',
 	sortName: 'Work sort name'
 };
+
+const identifierTypeData = {
+	id: 1,
+	label: 'test label',
+	description: 'test description',
+	validationRegex: 'test regex',
+	displayTemplate: 'test template',
+	entityType: 'Work'
+}
 
 const identifierData = {
 	id: 1,
@@ -76,6 +85,8 @@ describe("GET /work", () => {
 					.save(null, {method: 'insert'});
 			await new IdentifierSet(setData)
 					.save(null, {method: 'insert'});
+			await new IdentifierType(identifierTypeData)
+					.save(null, {method: 'insert'});
 			await new Identifier(identifierData)
 					.save(null, {method: 'insert'});
 			await new RelationshipSet(setData)
@@ -105,6 +116,7 @@ describe("GET /work", () => {
 			'bookbrainz.entity',
 			'bookbrainz.revision',
 			'bookbrainz.relationship_set',
+			'bookbrainz.identifier_type',
 			'bookbrainz.identifier',
 			'bookbrainz.identifier_set',
 			'bookbrainz.alias',

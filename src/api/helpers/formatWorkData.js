@@ -36,7 +36,7 @@ export function getWorkIdentifiers(work: object) {
     return _.isNil(work) ? null :
         {
             bbid: work.bbid,
-            identifires: work.identifierSet.identifiers.map( (identifier) => {
+            identifiers: work.identifierSet.identifiers.map( (identifier) => {
                 return {
                     type: identifier.typeId,
                     value: identifier.value
