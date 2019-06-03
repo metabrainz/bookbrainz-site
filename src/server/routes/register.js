@@ -31,7 +31,7 @@ import RegisterAuthPage from '../../client/components/pages/registration-auth';
 import RegisterDetailPage from
 	'../../client/components/forms/registration-details';
 import _ from 'lodash';
-import config from '../helpers/config';
+import config from '../../common/helpers/config';
 import express from 'express';
 import target from '../templates/target';
 
