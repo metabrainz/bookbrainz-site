@@ -132,8 +132,8 @@ app.use((req, res, next) => {
 	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({
 			level: 'danger',
-			message: 'We are currently experiencing technical difficulties; ' +
-				'signing in will not work until this is resolved.'
+			message: `We are currently experiencing technical difficulties;
+				signing in and signing up are disabled until this is resolved.`
 		});
 	}
 

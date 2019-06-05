@@ -52,15 +52,25 @@ router.get('/', async (req, res, next) => {
 			requireJS: Boolean(res.locals.user)
 		});
 
+		const disableSignUp = props.alerts.some(
+			alert => alert.message.includes(
+				'signing in and signing up are disabled'
+			)
+		);
+
 		/*
 		 * Renders react components server side and injects markup into target
 		 * file object spread injects the app.locals variables into React as
 		 * props
 		 */
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
+			<Layout
+				{...propHelpers.extractLayoutProps(props)}
+				disableSignUp={disableSignUp}
+			>
 				<Index
 					recent={props.recent}
+					disableSignUp={disableSignUp}
 				/>
 			</Layout>
 		);
