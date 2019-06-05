@@ -25,8 +25,11 @@ const {
 	bookshelf, util, Editor, EditorType, Revision, RelationshipSet,
 	Alias, AliasSet, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
-	Author, Edition, EditionGroup, Publisher, Work
+	Author, Edition, EditionGroup, Publisher, Work,
+	Language, WorkType
 } = orm;
+const {updateLanguageSet} = orm.func.language;
+
 
 const setData = {id: 1};
 
@@ -110,6 +113,30 @@ async function createRelationshipSet() {
 	await new RelationshipSet(setData)
 		.save(null, {method: 'insert'});
 }
+const languageAttribs = {
+	frequency: 1,
+	id: 1,
+	isoCode1: 'en',
+	isoCode2b: 'eng',
+	isoCode2t: 'eng',
+	isoCode3: 'eng',
+	name: 'English'
+};
+
+async function createLanguageSet() {
+	// Create relationships here if you need them
+	await new Language(languageAttribs)
+		.save(null, {method: 'insert'});
+	await new Language({...languageAttribs, id: 2})
+		.save(null, {method: 'insert'});
+	const languageSet = await updateLanguageSet(
+		orm,
+		null,
+		null,
+		[{id: 1}, {id: 2}]
+	);
+	return languageSet.get('id');
+}
 
 export function getRandomUUID() {
 	return uuidv4();
@@ -151,10 +178,18 @@ export async function createWork(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
 
 	await createEntityPrerequisites();
+	const languageSetId = await createLanguageSet();
 
+	const workAttribs = {
+		bbid,
+		languageSetId,
+		typeId: setData.id
+	};
+	await new WorkType({...setData, label: 'Work Type 1'})
+		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
-	await new Work({...entityAttribs, bbid})
+	await new Work({...entityAttribs, ...workAttribs})
 		.save(null, {method: 'insert'});
 }
 
@@ -173,6 +208,8 @@ export function truncateEntities() {
 		'bookbrainz.entity',
 		'bookbrainz.revision',
 		'bookbrainz.annotation',
+		'bookbrainz.work_type',
+		'musicbrainz.language',
 		'musicbrainz.gender'
 	]);
 }
