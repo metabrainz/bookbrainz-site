@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback,func-names */
 /*
  * Copyright (C) 2019  Akhilesh Kumar
  *
@@ -34,74 +35,48 @@ describe('GET /work', () => {
 	beforeEach(() => createWork(aBBID));
 	afterEach(truncateEntities);
 	// Test to get basic information of a work
-	it('should get basic information of work', (done) => {
-		 chai.request(app)
-			 .get(`/work/${aBBID}`)
-			 .end((err, res) => {
-				 if (err) {
-					 throw err;
-				 }
-				 res.should.have.status(200);
-				 res.body.should.be.a('object');
-				 res.body.should.all.keys(
-					'bbid',
-					'defaultAlias',
-					'languages',
-					'disambiguation',
-					'workType',
-					'entityType'
-				);
-				 done();
-			  });
+	it('should get basic information of work', async function () {
+		const res = await chai.request(app).get(`/work/${aBBID}`);
+
+		res.should.have.status(200);
+		res.body.should.be.a('object');
+		res.body.should.have.all.keys(
+			'bbid',
+			'defaultAlias',
+			'languages',
+			'disambiguation',
+			'workType',
+			'entityType'
+		);
 	 });
 
-	 it('should return status 404, if work is not founded', (done) => {
-		 chai.request(app)
-			 .get(`/work/${bBBID}`)
-			 .end((err, res) => {
-				 if (err) {
-					 throw err;
-				 }
-				 res.should.have.status(404);
-				 res.body.should.be.a('object');
-				 res.body.message.should.equal(
-					'This Work is not founded'
-				);
-				 done();
-			  });
+	 it('should return status 404, if work is not founded', async function () {
+		const res = await chai.request(app).get(`/work/${bBBID}`);
+
+		res.should.have.status(404);
+		res.body.should.be.a('object');
+		res.body.message.should.equal('This Work is not founded');
 	 });
 
-	 it('should return list of aliases of work', (done) => {
-		 chai.request(app)
-			 .get(`/work/${aBBID}/aliases`)
-			 .end((err, res) => {
-				 if (err) {
-					 throw err;
-				 }
-				 res.should.have.status(200);
-				 res.body.should.be.a('object');
-				 res.body.should.all.keys(
-					'bbid',
-					'aliases'
-				);
-				 done();
-			  });
+	 it('should return list of aliases of work', async function () {
+		const res = await chai.request(app).get(`/work/${aBBID}/aliases`);
+
+		res.should.have.status(200);
+		res.body.should.be.a('object');
+		res.body.should.all.keys(
+			'bbid',
+			'aliases'
+		);
 	 });
 
-	 it('should return list of identifiers of work', (done) => {
-		 chai.request(app)
-			 .get(`/work/${aBBID}/identifiers`)
-			 .end((err, res) => {
-				 if (err) {
-					 throw err;
-				 }
-				 res.should.have.status(200);
-				 res.body.should.be.a('object');
-				 res.body.should.all.keys(
-					'bbid',
-					'identifiers'
-				);
-				 done();
-			  });
+	 it('should return list of identifiers of work', async function () {
+		const res = await chai.request(app).get(`/work/${aBBID}/identifiers`);
+
+		res.should.have.status(200);
+		res.body.should.be.a('object');
+		res.body.should.all.keys(
+			'bbid',
+			'identifiers'
+		);
 	 });
 });
