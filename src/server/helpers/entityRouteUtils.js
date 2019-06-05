@@ -21,7 +21,7 @@
 import * as Immutable from 'immutable';
 import * as entityEditorHelpers from '../../client/entity-editor/helpers';
 import * as entityRoutes from '../routes/entity/entity';
-import * as error from './error';
+import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from './utils';
 

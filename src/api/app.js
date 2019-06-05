@@ -20,13 +20,13 @@
 /* eslint global-require: 'warn' */
 
 
-import * as error from '../server/helpers/error';
+import * as error from '../common/helpers/error';
 
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
 import {get as _get} from 'lodash';
-import appCleanup from '../server/helpers/appCleanup';
+import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from '../common/helpers/config';
