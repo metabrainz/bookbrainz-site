@@ -20,14 +20,14 @@
 /* eslint global-require: 'warn' */
 
 import * as auth from './helpers/auth';
-import * as error from './helpers/error';
+import * as error from '../common/helpers/error';
 import * as search from './helpers/search';
-
+import * as serverErrorHelper from './helpers/error';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
 import {get as _get} from 'lodash';
-import appCleanup from './helpers/appCleanup';
+import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from '../common/helpers/config';
@@ -155,7 +155,7 @@ app.use((req, res, next) => {
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-	error.renderError(req, res, err);
+	serverErrorHelper.renderError(req, res, err);
 });
 
 const debug = Debug('bbsite');
