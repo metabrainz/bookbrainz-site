@@ -9,7 +9,7 @@
     "prepublishOnly": "npm run clean && npm run mkdirs && npm run copy-client-scripts",
     "postinstall": "npm run prepublishOnly",
     "build-server-js": "babel src --out-dir lib --ignore src/api",
-    "build-api-js": "babel src --out-dir lib --ignore src/client",
+    "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client'",
     "build-client-js": "./scripts/build-client-js.sh",
     "build-less": "./scripts/build-less.sh",
     "build": "npm run build-less && npm run build-client-js && npm run build-server-js",
