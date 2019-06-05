@@ -85,12 +85,8 @@ app.use((req, res, next) => {
 	next(new error.NotFoundError(null, req));
 });
 
-// Error handler; arity MUST be 4 or express doesn't treat it as such
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-	error.renderError(req, res, err);
-});
 
-const debug = Debug('bbsite');
+const debug = Debug('bbapi');
 
 const DEFAULT_API_PORT = 9098;
 app.set('port', process.env.PORT || DEFAULT_API_PORT); // eslint-disable-line no-process-env,max-len
