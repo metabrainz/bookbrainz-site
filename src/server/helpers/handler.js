@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as error from './error';
+import * as error from '../../common/helpers/error';
 
 
 export function sendPromiseResult(res, promise, processingCallback) {

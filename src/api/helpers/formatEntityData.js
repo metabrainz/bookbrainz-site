@@ -22,26 +22,24 @@ import _ from 'lodash';
 export function getWorkBasicInfo(work: object) {
 	return _.isNil(work) ? null :
 		{
-			bbid: work.bbid,
+			bbid: _.get(work, 'bbid', null),
 			defaultAlias: {
-				name: work.defaultAlias.name,
-				sortName: work.defaultAlias.sortName,
-				aliasLanguage: work.defaultAlias.language.name
+				name: _.get(work, 'defaultAlias.name', null),
+				sortName: _.get(work, 'defaultAlias.sortName', null),
+				aliasLanguage: _.get(work, 'defaultAlias.language.name', null)
 			},
-			disambiguation: work.disambiguation ?
-				work.disambiguation.comment : null,
-			languages: work.languageSet ?
-				work.languageSet.languages.map((language) => language.name) : null,
-			workType: work.workType.label,
-			entityType: work.type ? work.type : null
+			disambiguation: _.get(work, 'disambiguation.comment', null),
+			languages: _.get(work, 'languageSet.languages', []).map((language) => language.name),
+			workType: _.get(work, 'workType.label', null),
+			entityType: _.get(work, 'type', null)
 		};
 }
 
-export function getWorkAliases(work: object) { 
+export function getEntityAliases(work: object) { 
 	return _.isNil(work) ? null :
 		{
-			bbid: work.bbid,
-			aliases: work.aliasSet.aliases.map((alias) => {
+			bbid: _.get(work, 'bbid', null),
+			aliases: _.get(work, 'aliasSet.aliases', []).map((alias) => {
 				return {
 					name: alias.name,
 					sortName: alias.sortName,
@@ -52,11 +50,11 @@ export function getWorkAliases(work: object) {
 		};
 }
 
-export function getWorkIdentifiers(work: object) {
+export function getEntityIdentifiers(work: object) {
 	return _.isNil(work) ? null :
 		{
-			bbid: work.bbid,
-			identifiers: work.identifierSet.identifiers.map((identifier) => {
+			bbid: _.get(work, 'bbid', null),
+			identifiers: _.get(work, 'identifierSet.identifiers', []).map((identifier) => {
 				return {
 					type: identifier.type.label,
 					value: identifier.value
