@@ -17,11 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as error from '../helpers/error';
+import * as commonUtils from '../../common/helpers/utils';
+import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 
 import Promise from 'bluebird';
 import renderRelationship from '../helpers/render';
+
 
 function makeLoader(modelName, propName, sortFunc) {
 	return function loaderFunc(req, res, next) {
@@ -141,7 +143,7 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 
 	return async (req, res, next, bbid) => {
 		const {orm} = req.app.locals;
-		if (utils.isValidBBID(bbid)) {
+		if (commonUtils.isValidBBID(bbid)) {
 			try {
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				if (!entity.dataId) {

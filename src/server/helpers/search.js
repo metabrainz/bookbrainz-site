@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as commonUtils from '../../common/helpers/utils';
 import * as utils from '../helpers/utils';
 
 import ElasticSearch from 'elasticsearch';
@@ -149,7 +150,7 @@ async function _processEntityListForBulk(entityList) {
 export function autocomplete(orm, query, collection) {
 	let queryBody = null;
 
-	if (utils.isValidBBID(query)) {
+	if (commonUtils.isValidBBID(query)) {
 		queryBody = {
 			ids: {
 				values: [query]

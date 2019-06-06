@@ -16,42 +16,46 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {getWorkAliases, getWorkBasicInfo, getWorkIdentifiers} from '../helpers/formatWorkData';
+import {getEntityAliases, getEntityIdentifiers, getWorkBasicInfo} from '../helpers/formatEntityData';
 import _ from 'lodash';
 import express from 'express';
-import {getWorkFromDB} from '../../common/queries/work';
+import {makeEntityLoader} from '../helpers/entityLoader';
 
 
 const router = express.Router();
 
-router.get('/:bbid', async (req, res, next) => {
-	const relations = ['defaultAlias.language', 'languageSet.languages', 'disambiguation', 'workType'];
-	const work = await getWorkFromDB(req, relations);
-	if (_.isNil(work)) {
-		return res.status(404).send({message: 'This Work is not founded'});
-	}
-	const workBasicInfo = getWorkBasicInfo(work.toJSON());
-	return res.status(200).send(workBasicInfo);
-});
+const workBasicRelations = [
+	'defaultAlias.language',
+	'languageSet.languages',
+	'disambiguation',
+	'workType'
+];
 
-router.get('/:bbid/aliases', async (req, res, next) => {
-	const relations = ['aliasSet.aliases.language'];
-	const workWithAliases = await getWorkFromDB(req, relations);
-	if (_.isNil(workWithAliases.aliasSet)) {
-		return res.status(404).send({message: 'This Work is not founded'});
-	}
-	const workAliasesList = getWorkAliases(workWithAliases.toJSON());
-	return res.status(200).send(workAliasesList);
-});
+const workError = 'Work not found';
 
-router.get('/:bbid/identifiers', async (req, res, next) => {
-	const relations = ['identifierSet.identifiers.type'];
-	const workWithIdentifiers = await getWorkFromDB(req, relations);
-	if (_.isNil(workWithIdentifiers.identifierSet)) {
-		return res.status(404).send({message: 'No identifiers are founded for this work'});
-	}
-	const workIdentifiersList = getWorkIdentifiers(workWithIdentifiers.toJSON());
-	return res.status(200).send(workIdentifiersList);
-});
+router.get('/:bbid',
+	makeEntityLoader('Work', workBasicRelations, workError),
+	async (req, res, next) => {
+		const workBasicInfo = await getWorkBasicInfo(res.locals.entity);
+		return res.status(200).send(workBasicInfo);
+	});
+
+const workAliasRelation = ['aliasSet.aliases.language'];
+
+router.get('/:bbid/aliases',
+	makeEntityLoader('Work', workAliasRelation, workError),
+	async (req, res, next) => {
+		const workAliasesList = await getEntityAliases(res.locals.entity);
+		return res.status(200).send(workAliasesList);
+	});
+
+const workIdentifierRelation = ['identifierSet.identifiers.type'];
+
+router.get('/:bbid/identifiers',
+	makeEntityLoader('Work', workIdentifierRelation, workError),
+	async (req, res, next) => {
+		const workIdentifiersList = await getEntityIdentifiers(res.locals.entity);
+		return res.status(200).send(workIdentifiersList);
+	});
 
 export default router;
