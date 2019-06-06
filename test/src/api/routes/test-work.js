@@ -30,10 +30,11 @@ chai.should();
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
+const inValidBBID = 'akjd-adjjk-23123';
 
 describe('GET /work', () => {
-	beforeEach(() => createWork(aBBID));
-	afterEach(truncateEntities);
+	before(() => createWork(aBBID));
+	after(truncateEntities);
 	// Test to get basic information of a work
 	it('should get basic information of work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}`);
@@ -50,19 +51,12 @@ describe('GET /work', () => {
 		);
 	 });
 
-	 it('should return status 404, if work is not founded', async function () {
-		const res = await chai.request(app).get(`/work/${bBBID}`);
-
-		res.should.have.status(404);
-		res.body.should.be.a('object');
-		res.body.message.should.equal('This Work is not founded');
-	 });
-
 	 it('should return list of aliases of work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/aliases`);
 
 		res.should.have.status(200);
 		res.body.should.be.a('object');
+		res.body.aliases.should.be.a('array');
 		res.body.should.all.keys(
 			'bbid',
 			'aliases'
@@ -74,9 +68,44 @@ describe('GET /work', () => {
 
 		res.should.have.status(200);
 		res.body.should.be.a('object');
+		res.body.identifiers.should.be.a('array');
 		res.body.should.all.keys(
 			'bbid',
 			'identifiers'
 		);
 	 });
+
+	 it('should throw a 404 error if trying to access a work that does not exist', async function () {
+		const res = await chai.request(app).get(`/work/${bBBID}`);
+
+		res.should.have.status(404);
+		res.body.should.be.a('object');
+		res.body.message.should.equal('Work not found');
+	 });
+
+	it('should throw a 406 error if trying to access a work with ivalid BBID', async function () {
+		const res = await chai.request(app).get(`/work/${inValidBBID}`);
+
+		res.should.have.status(406);
+		res.body.should.be.a('object');
+		res.body.message.should.equal('BBID is not valid uuid');
+	 });
+
+	 it('should throw a 404 error if trying to identifiers aliases of a work that does not exist', async function () {
+		const res = await chai.request(app).get(`/work/${bBBID}/identifiers`);
+
+		res.should.have.status(404);
+		res.body.should.be.a('object');
+		res.body.message.should.equal('Work not found');
+	 });
+
+
+	it('should throw a 404 error if trying to access aliases of a work that does not exist', async function () {
+		const res = await chai.request(app).get(`/work/${bBBID}/aliases`);
+
+		res.should.have.status(404);
+		res.body.should.be.a('object');
+		res.body.message.should.equal('Work not found');
+	 });
 });
+

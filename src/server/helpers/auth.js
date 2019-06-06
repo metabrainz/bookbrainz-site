@@ -18,7 +18,7 @@
  */
 
 import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
-import * as error from '../helpers/error';
+import * as error from '../../common/helpers/error';
 
 import Log from 'log';
 import _ from 'lodash';
