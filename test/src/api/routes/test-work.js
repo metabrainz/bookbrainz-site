@@ -73,10 +73,19 @@ describe('GET /work', () => {
 	 });
 
 	 it('should throw a 404 error if trying to access a work that does not exist', async function () {
-		const res = await chai.request(app).get(`/work/${bBBID}`);
-		expect(res.status).to.equal(404);
-		expect(res.body).to.be.an('object');
-		expect(res.body.message).to.equal('Work not found');
+		try {
+			const res = await chai.request(app).get(`/work/${bBBID}`);
+			expect(res).to.have.status(404);
+			expect(res.body).to.be.an('object');
+			expect(res.body.message).to.equal('Work not found');
+		}
+		catch ({response}) {
+			// Chai-http promise throws in CI, so we catch it here and test for it.
+			expect(response).to.have.status(404);
+			expect(response.body).to.be.an('object');
+			expect(response.body.success).to.equal(false);
+			expect(response.body.errors[0]).to.equal('Work not found');
+		}
 	 });
 
 	it('should throw a 406 error if trying to access a work with invalid BBID', async function () {
