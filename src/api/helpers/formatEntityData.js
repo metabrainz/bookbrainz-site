@@ -19,20 +19,47 @@
 /* eslint-disable */
 import _ from 'lodash';
 
+function getDefaultAlias(entity: object){
+	return {
+		name: _.get(entity, 'defaultAlias.name', null),
+		sortName: _.get(entity, 'defaultAlias.sortName', null),
+		aliasLanguage: _.get(entity, 'defaultAlias.language.name', null)
+	}
+}
+
+function getLanguages(entity: object) {
+	return _.get(entity, 'languageSet.languages', []).map((language) => language.name)
+}
+
 export function getWorkBasicInfo(work: object) {
 	return _.isNil(work) ? null :
 		{
 			bbid: _.get(work, 'bbid', null),
-			defaultAlias: {
-				name: _.get(work, 'defaultAlias.name', null),
-				sortName: _.get(work, 'defaultAlias.sortName', null),
-				aliasLanguage: _.get(work, 'defaultAlias.language.name', null)
-			},
+			defaultAlias: getDefaultAlias(work),
 			disambiguation: _.get(work, 'disambiguation.comment', null),
-			languages: _.get(work, 'languageSet.languages', []).map((language) => language.name),
+			languages: getLanguages(work),
 			workType: _.get(work, 'workType.label', null),
 			entityType: _.get(work, 'type', null)
 		};
+}
+
+export function getEditionBasicInfo(edition: object) {
+	
+	return _.isNil(edition) ? null :
+	{
+		bbid: _.get(edition, 'bbid', null),
+		defaultAlias: getDefaultAlias(edition),
+		languages: getLanguages(edition),
+		disambiguation: _.get(edition, 'disambiguation.comment', null),
+		hight: _.get(edition, 'hight', null),
+		width: _.get(edition, 'width', null),
+		depth: _.get(edition, 'depth', null),
+		pages: _.get(edition, 'pages', null),
+		releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),
+		editionFormat: _.get(edition, 'editioFormat.label', null),
+		weight: _.get(edition, 'waight', null),
+		status: _.get(edition, 'editionStatus.label', null)
+	}
 }
 
 export function getEntityAliases(work: object) { 
