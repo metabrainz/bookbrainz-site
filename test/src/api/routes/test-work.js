@@ -85,25 +85,44 @@ describe('GET /work', () => {
 			});
 	 });
 
-	it('should throw a 406 error if trying to access a work with invalid BBID', async function () {
-		const res = await chai.request(app).get(`/work/${inValidBBID}`);
-		expect(res.status).to.equal(406);
-		expect(res.body.message).to.equal('BBID is not valid uuid');
+	it('should throw a 406 error if trying to access a work with invalid BBID', function (done) {
+		chai.request(app)
+			.get(`/work/${inValidBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('BBID is not valid uuid');
+				return done();
+			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of a work that does not exist', async function () {
-		const res = await chai.request(app).get(`/work/${bBBID}/identifiers`);
-		expect(res.status).to.equal(404);
-		expect(res.body).to.be.an('object');
-		expect(res.body.message).to.equal('Work not found');
+	 it('should throw a 404 error if trying to identifiers aliases of a work that does not exist', function (done) {
+		chai.request(app)
+			.get(`/work/${bBBID}/identifiers`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Work not found');
+				return done();
+			});
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of a work that does not exist', async function () {
-		const res = await chai.request(app).get(`/work/${bBBID}/aliases`);
-		expect(res.status).to.equal(404);
-		expect(res.body).to.be.an('object');
-		expect(res.body.message).to.equal('Work not found');
+	it('should throw a 404 error if trying to access aliases of a work that does not exist', function (done) {
+		chai.request(app)
+			.get(`/work/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Work not found');
+				return done();
+			});
 	 });
 });
 
