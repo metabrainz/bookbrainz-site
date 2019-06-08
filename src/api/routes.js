@@ -17,6 +17,7 @@
  */
 
 
+import editionRouter from './routes/edition';
 import workRouter from './routes/work';
 
 
@@ -24,9 +25,14 @@ function initWorkRoute(app) {
 	app.use('/work', workRouter);
 }
 
+function initEditionRoute(app) {
+	app.use('/edition', editionRouter);
+}
+
 
 function initRoutes(app) {
 	initWorkRoute(app);
+	initEditionRoute(app);
 }
 
 export default initRoutes;
