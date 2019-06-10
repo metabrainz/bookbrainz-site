@@ -104,7 +104,10 @@ export function validateEditionSection(data: any): boolean {
 		validateEditionSectionHeight(get(data, 'height', null)) &&
 		validateEditionSectionLanguages(get(data, 'languages', null)) &&
 		validateEditionSectionPages(get(data, 'pages', null)) &&
-		validateEditionSectionEditionGroup(get(data, 'editionGroup', null), get(data, 'editionGroupRequired', null)) &&
+		validateEditionSectionEditionGroup(
+			get(data, 'editionGroup', null),
+			get(data, 'editionGroupRequired', null) || get(data, 'existingEditionGroups', []).length
+		) &&
 		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
 		validateEditionSectionReleaseDate(convertMapToObject(get(data, 'releaseDate', null))).isValid &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&
