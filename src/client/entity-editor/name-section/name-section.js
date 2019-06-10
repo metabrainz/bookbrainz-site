@@ -18,6 +18,7 @@
 
 import {Alert, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
 import {
+	UPDATE_WARN_IF_EDITION_GROUP_EXISTS,
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
 	debouncedUpdateNameField,
@@ -97,6 +98,12 @@ class NameSection extends React.Component {
 		this.props.onNameChange(event.target.value);
 		this.props.onNameChangeCheckIfExists(event.target.value);
 		this.props.onNameChangeSearchName(event.target.value);
+		if (
+			_.toLower(this.props.entityType) === 'edition' &&
+			this.props.searchForExistingEditionGroup
+		) {
+			this.props.onNameChangeCheckIfEditionGroupExists(event.target.value);
+		}
 	}
 
 	updateNameFieldInputRef(inputRef) {
@@ -252,9 +259,11 @@ NameSection.propTypes = {
 	onDisambiguationChange: PropTypes.func.isRequired,
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
+	onNameChangeCheckIfEditionGroupExists: PropTypes.func.isRequired,
 	onNameChangeCheckIfExists: PropTypes.func.isRequired,
 	onNameChangeSearchName: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
+	searchForExistingEditionGroup: PropTypes.bool,
 	searchResults: PropTypes.array,
 	sortNameValue: PropTypes.string.isRequired
 };
@@ -263,12 +272,19 @@ NameSection.defaultProps = {
 	disambiguationDefaultValue: null,
 	exactMatches: null,
 	languageValue: null,
+	searchForExistingEditionGroup: true,
 	searchResults: null
 };
 
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('nameSection');
+	const editionSectionState = rootState.get('editionSection');
+	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
+	(
+		!editionSectionState.get('editionGroup') ||
+		editionSectionState.get('editionGroupRequired')
+	);
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
 		disambiguationVisible:
@@ -276,6 +292,7 @@ function mapStateToProps(rootState) {
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
+		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
 	};
@@ -289,6 +306,9 @@ function mapDispatchToProps(dispatch, {entityType}) {
 			dispatch(updateLanguageField(value && value.value)),
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value, entityType)),
+		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
+			dispatch(checkIfNameExists(value, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
+		}, 1000),
 		onNameChangeCheckIfExists: _.debounce((value) => {
 			dispatch(checkIfNameExists(value, entityType));
 		}, 500),

@@ -27,6 +27,7 @@ export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 export const UPDATE_WARN_IF_EXISTS = 'UPDATE_WARN_IF_EXISTS';
+export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP_EXISTS';
 export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS';
 
 export type Action = {
@@ -109,11 +110,13 @@ export function debouncedUpdateDisambiguationField(
  *
  * @param  {string} name - The value to be checked if it already exists.
  * @param  {string} entityType - The entity type of the value to be checked.
+ * @param  {string} action - An optional redux action to dispatch. Defaults to UPDATE_WARN_IF_EXISTS
  * @returns {many_prompts~inner} The returned function.
  */
 export function checkIfNameExists(
 	name: string,
-	entityType: string
+	entityType: string,
+	action: ?string
 ): ((Action) => mixed) => mixed {
 	/**
 	 * @param  {function} dispatch - The redux dispatch function.
@@ -126,7 +129,7 @@ export function checkIfNameExists(
 			})
 			.then(res => dispatch({
 				payload: JSON.parse(res.text) || null,
-				type: UPDATE_WARN_IF_EXISTS
+				type: action || UPDATE_WARN_IF_EXISTS
 			}))
 			.catch((error: {message: string}) => error);
 	};

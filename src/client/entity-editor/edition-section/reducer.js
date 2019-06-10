@@ -19,6 +19,7 @@
 // @flow
 
 import * as Immutable from 'immutable';
+import * as _ from 'lodash';
 
 import {
 	type Action,
@@ -36,6 +37,9 @@ import {
 	UPDATE_WEIGHT,
 	UPDATE_WIDTH
 } from './actions';
+
+
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../name-section/actions';
 
 
 type State = Immutable.Map<string, any>;
@@ -78,6 +82,18 @@ function reducer(
 			return state.set('height', payload);
 		case UPDATE_DEPTH:
 			return state.set('depth', payload);
+		case UPDATE_WARN_IF_EDITION_GROUP_EXISTS:
+			if (!Array.isArray(payload) || !payload.length) {
+				return state.set('existingEditionGroups', []);
+			}
+			return state.set('existingEditionGroups', payload)
+				.set('editionGroup', Immutable.fromJS({
+					disambiguation: _.get(payload[0], ['disambiguation', 'comment']),
+					id: payload[0].bbid,
+					text: _.get(payload[0], ['defaultAlias', 'name']),
+					type: payload[0].type,
+					value: payload[0].bbid
+				}));
 		// no default
 	}
 	return state;
