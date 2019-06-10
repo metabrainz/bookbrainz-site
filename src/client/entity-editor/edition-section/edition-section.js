@@ -34,6 +34,7 @@ import {
 	updatePublisher,
 	updateStatus
 } from './actions';
+
 import {Alert, Button, Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import {
@@ -46,13 +47,13 @@ import {
 	validateEditionSectionWidth
 } from '../validators/edition';
 
-
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
 import React from 'react';
+import SearchResults from '../../components/pages/parts/search-results';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
@@ -104,6 +105,7 @@ type StateProps = {
 	editionGroupRequired: ?boolean,
 	editionGroupVisible: ?boolean,
 	editionGroupValue: Map<string, any>,
+	existingEditionGroups: ?array,
 	releaseDateValue: ?object,
 	statusValue: ?number,
 	weightValue: ?number,
@@ -174,6 +176,7 @@ function EditionSection({
 	editionGroupRequired,
 	editionGroupValue,
 	editionGroupVisible,
+	existingEditionGroups,
 	publisherValue,
 	releaseDateValue,
 	statusValue,
@@ -197,18 +200,42 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
+	const hasExistingEditionGroups = Array.isArray(existingEditionGroups) && existingEditionGroups.length > 0;
 	const getEditionGroupSearchSelect = () => (
-		<EntitySearchFieldOption
-			error={!validateEditionSectionEditionGroup(editionGroupValue, editionGroupRequired)}
-			help="Group with other Editions of the same book"
-			instanceId="edition-group"
-			label="Edition Group"
-			tooltipText="Group together different Editions of the same book.
-			<br>For example paperback, hardcover and e-book editions."
-			type="edition-group"
-			value={editionGroupValue}
-			onChange={onEditionGroupChange}
-		/>
+		<React.Fragment>
+			<Row style={{marginBottom: '2em'}}>
+				<Col md={6} mdOffset={3}>
+					<EntitySearchFieldOption
+						error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
+						help="Group with other Editions of the same book"
+						instanceId="edition-group"
+						label="Edition Group"
+						tooltipText="Group together different Editions of the same book.
+						<br>For example paperback, hardcover and e-book editions."
+						type="edition-group"
+						value={editionGroupValue}
+						onChange={onEditionGroupChange}
+					/>
+					{hasExistingEditionGroups &&
+						<Alert bsStyle="warning">
+							{existingEditionGroups.length > 1 ?
+								'Edition Groups with the same name already exist; the first match has been selected automatically' :
+								'An existing Edition Group with the same name has been selected automatically'
+							}:
+							<br/>
+							<small>Click on an item to review it in a new tab</small>
+							<SearchResults condensed results={existingEditionGroups}/>
+						</Alert>
+					}
+					<Button
+						block
+						bsStyle="success"
+					>
+						Create a new Edition Group
+					</Button>
+				</Col>
+			</Row>
+		</React.Fragment>
 	);
 
 	return (
@@ -217,17 +244,12 @@ function EditionSection({
 				What else do you know about the Edition?
 			</h2>
 			{
-				editionGroupRequired &&
+				(editionGroupRequired || hasExistingEditionGroups) &&
 				<React.Fragment>
 					<p className="text-muted">
-						Edition Group is required — this cannot be blank.
-						&nbsp;<a href="/edition-group/create" target="_blank">Click here</a> to create one if you did not find an existing one.
+						Edition Group is required — this cannot be blank
 					</p>
-					<Row>
-						<Col md={6} mdOffset={3}>
-							{getEditionGroupSearchSelect()}
-						</Col>
-					</Row>
+					{getEditionGroupSearchSelect()}
 				</React.Fragment>
 			}
 			<p className="text-muted">
@@ -295,31 +317,29 @@ function EditionSection({
 				</Col>
 			</Row>
 
-			{
-				!editionGroupVisible && !editionGroupRequired &&
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<Alert>
-							An Edition Group will be created automatically
-							<br/>
-							<Button
-								bsStyle="link"
-								className="text-center"
-								onClick={onEditionGroupButtonClick}
-							>
-								Click here to search for an existing one instead
-							</Button>
-						</Alert>
-					</Col>
-				</Row>
-			}
+			<Row>
+				<Col md={6} mdOffset={3}>
+					{
+						!editionGroupVisible &&
+						!editionGroupRequired &&
+						!hasExistingEditionGroups &&
+							<Alert>
+								An Edition Group will be created automatically
+								<br/>
+								<Button
+									block
+									bsStyle="primary"
+									onClick={onEditionGroupButtonClick}
+								>
+									Click here to search for an existing one instead
+								</Button>
+							</Alert>
+					}
+				</Col>
+			</Row>
 			{
 				editionGroupVisible && !editionGroupRequired &&
-				<Row>
-					<Col md={6} mdOffset={3}>
-						{getEditionGroupSearchSelect()}
-					</Col>
-				</Row>
+				getEditionGroupSearchSelect()
 			}
 			{
 				physicalVisible &&
@@ -391,12 +411,14 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
+	const existingEditionGroups = state.get('existingEditionGroups');
 
 	return {
 		depthValue: state.get('depth'),
 		editionGroupRequired: state.get('editionGroupRequired'),
 		editionGroupValue: state.get('editionGroup'),
 		editionGroupVisible: state.get('editionGroupVisible'),
+		existingEditionGroups,
 		formatValue: state.get('format'),
 		heightValue: state.get('height'),
 		languageValues: state.get('languages'),
