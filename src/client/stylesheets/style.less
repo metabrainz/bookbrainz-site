@@ -39,9 +39,16 @@ The production configuration for webpack needs to be finalized before using this
 /* Modifications to Lobes */
 /* ====================== */
 @brand-secondary: @bookbrainz;
+@disabled-bg: lighten(desaturate(@bookbrainz,10%),42%);
+@disabled-color: lighten(@disabled-bg,15%);
+
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 0.9);
 	margin-bottom: 0px;
+	.nav.navbar-nav > .disabled > a {
+		color: @disabled-color;
+		background: @disabled-bg;
+	}
 }
 
 .navbar-collapse {
