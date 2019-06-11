@@ -18,7 +18,6 @@
 
 import {Alert, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
 import {
-	UPDATE_WARN_IF_EDITION_GROUP_EXISTS,
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
 	debouncedUpdateNameField,
@@ -41,6 +40,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {entityTypeProperty} from '../../helpers/react-validators';
@@ -146,7 +146,8 @@ class NameSection extends React.Component {
 								)}
 								error={!validateNameSectionName(nameValue)}
 								inputRef={this.updateNameFieldInputRef}
-								tooltipText={`Official name of the ${_.startCase(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
+								tooltipText={`Official name of the ${_.startCase(entityType)} in its original language.
+								Names in other languages should be added as aliases.`}
 								warn={(isRequiredDisambiguationEmpty(
 									warnIfExists,
 									disambiguationDefaultValue

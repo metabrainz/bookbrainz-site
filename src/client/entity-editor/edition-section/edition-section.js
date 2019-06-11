@@ -105,7 +105,7 @@ type StateProps = {
 	editionGroupRequired: ?boolean,
 	editionGroupVisible: ?boolean,
 	editionGroupValue: Map<string, any>,
-	existingEditionGroups: ?array,
+	matchingNameEditionGroups: ?array,
 	releaseDateValue: ?object,
 	statusValue: ?number,
 	weightValue: ?number,
@@ -176,7 +176,7 @@ function EditionSection({
 	editionGroupRequired,
 	editionGroupValue,
 	editionGroupVisible,
-	existingEditionGroups,
+	matchingNameEditionGroups,
 	publisherValue,
 	releaseDateValue,
 	statusValue,
@@ -200,7 +200,7 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
-	const hasExistingEditionGroups = Array.isArray(existingEditionGroups) && existingEditionGroups.length > 0;
+	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
 			<Row style={{marginBottom: '2em'}}>
@@ -216,15 +216,17 @@ function EditionSection({
 						value={editionGroupValue}
 						onChange={onEditionGroupChange}
 					/>
-					{hasExistingEditionGroups &&
+					{hasmatchingNameEditionGroups &&
 						<Alert bsStyle="warning">
-							{existingEditionGroups.length > 1 ?
-								'Edition Groups with the same name already exist; the first match has been selected automatically' :
-								'An existing Edition Group with the same name has been selected automatically'
+							{matchingNameEditionGroups.length > 1 ?
+								'Edition Groups with the same name already exist' :
+								'An existing Edition Group with the same name already exists'
 							}:
 							<br/>
-							<small>Click on an item to review it in a new tab</small>
-							<SearchResults condensed results={existingEditionGroups}/>
+							<small>The first match has been selected automatically.
+							Please review the choice: click on an item to open it in a new tab:
+							</small>
+							<SearchResults condensed results={matchingNameEditionGroups}/>
 						</Alert>
 					}
 					<Button
@@ -238,13 +240,17 @@ function EditionSection({
 		</React.Fragment>
 	);
 
+	const alertAutoCreateEditionGroup = !editionGroupVisible &&
+		!editionGroupRequired &&
+		!hasmatchingNameEditionGroups;
+
 	return (
 		<form>
 			<h2>
 				What else do you know about the Edition?
 			</h2>
 			{
-				(editionGroupRequired || hasExistingEditionGroups) &&
+				(editionGroupRequired || hasmatchingNameEditionGroups) &&
 				<React.Fragment>
 					<p className="text-muted">
 						Edition Group is required — this cannot be blank
@@ -317,26 +323,24 @@ function EditionSection({
 				</Col>
 			</Row>
 
-			<Row>
-				<Col md={6} mdOffset={3}>
-					{
-						!editionGroupVisible &&
-						!editionGroupRequired &&
-						!hasExistingEditionGroups &&
-							<Alert>
-								An Edition Group will be created automatically
-								<br/>
-								<Button
-									block
-									bsStyle="primary"
-									onClick={onEditionGroupButtonClick}
-								>
-									Click here to search for an existing one instead
-								</Button>
-							</Alert>
-					}
-				</Col>
-			</Row>
+			{
+				alertAutoCreateEditionGroup &&
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<Alert>
+							A new Edition Group with the same name will be created automatically.
+							<br/>
+							<Button
+								block
+								bsStyle="primary"
+								onClick={onEditionGroupButtonClick}
+							>
+								Click here to search for an existing one instead
+							</Button>
+						</Alert>
+					</Col>
+				</Row>
+			}
 			{
 				editionGroupVisible && !editionGroupRequired &&
 				getEditionGroupSearchSelect()
@@ -411,17 +415,17 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
-	const existingEditionGroups = state.get('existingEditionGroups');
+	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
 
 	return {
 		depthValue: state.get('depth'),
 		editionGroupRequired: state.get('editionGroupRequired'),
 		editionGroupValue: state.get('editionGroup'),
 		editionGroupVisible: state.get('editionGroupVisible'),
-		existingEditionGroups,
 		formatValue: state.get('format'),
 		heightValue: state.get('height'),
 		languageValues: state.get('languages'),
+		matchingNameEditionGroups,
 		pagesValue: state.get('pages'),
 		physicalVisible: state.get('physicalVisible'),
 		publisherValue: state.get('publisher'),

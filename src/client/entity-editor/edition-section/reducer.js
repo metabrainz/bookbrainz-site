@@ -34,12 +34,10 @@ import {
 	UPDATE_PUBLISHER,
 	UPDATE_RELEASE_DATE,
 	UPDATE_STATUS,
+	UPDATE_WARN_IF_EDITION_GROUP_EXISTS,
 	UPDATE_WEIGHT,
 	UPDATE_WIDTH
 } from './actions';
-
-
-import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../name-section/actions';
 
 
 type State = Immutable.Map<string, any>;
@@ -84,9 +82,9 @@ function reducer(
 			return state.set('depth', payload);
 		case UPDATE_WARN_IF_EDITION_GROUP_EXISTS:
 			if (!Array.isArray(payload) || !payload.length) {
-				return state.set('existingEditionGroups', []);
+				return state.set('matchingNameEditionGroups', []);
 			}
-			return state.set('existingEditionGroups', payload)
+			return state.set('matchingNameEditionGroups', payload)
 				.set('editionGroup', Immutable.fromJS({
 					disambiguation: _.get(payload[0], ['disambiguation', 'comment']),
 					id: payload[0].bbid,
