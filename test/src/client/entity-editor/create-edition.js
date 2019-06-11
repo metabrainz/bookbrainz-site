@@ -18,6 +18,6 @@ describe('Creating an Edition', () => {
 		const edition = await Edition.forge({bbid}).fetch({withRelated: ['editionGroup']});
 		const editionJson = edition.toJSON();
 		expect(editionJson.bbid).to.equal(bbid);
-		expect(editionJson.editionGroupBbid).not.to.be.null;
+		expect(editionJson.editionGroupBbid).to.be.a('string');
 	});
 });
