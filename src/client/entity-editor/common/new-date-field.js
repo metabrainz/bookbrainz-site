@@ -143,7 +143,7 @@ class DateField extends React.Component {
 }
 
 DateField.propTypes = {
-	defaultValue: PropTypes.object.isRequired,
+	defaultValue: PropTypes.object,
 	empty: PropTypes.bool.isRequired,
 	error: PropTypes.bool.isRequired,
 	errorMessage: PropTypes.string,
@@ -152,6 +152,7 @@ DateField.propTypes = {
 	show: PropTypes.bool.isRequired
 };
 DateField.defaultProps = {
+	defaultValue: {day: '', month: '', year: ''},
 	errorMessage: null
 };
 
