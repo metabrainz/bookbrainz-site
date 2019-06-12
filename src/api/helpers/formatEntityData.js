@@ -62,6 +62,32 @@ export function getEditionBasicInfo(edition: object) {
 	}
 }
 
+export function getEditionGroupBasicInfo(editionGroup: object) {
+	return _.isNil(editionGroup) ? null :
+	{
+		bbid: _.get(editionGroup, 'bbid', null),
+		defaultAlias: getDefaultAlias(editionGroup),
+		disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
+		type: _.get(editionGroup, 'editionGroupType.label')
+	}
+}
+
+export function getAuthorBasicInfo(author: object) {
+	return _.isNil(author) ? null : 
+	{
+		bbid: _.get(author, 'bbid', null),
+		defaultAlias: getDefaultAlias(author),
+		disambiguation: _.get(author, 'disambiguation.comment', null),
+		type: _.get(author, 'authorType.label', null),
+		gender: _.get(author, 'gender.name', null),
+		beginArea: _.get(author, 'beginArea.name', null),
+		beginDate: _.get(author, 'beginDate', null),
+		ended: _.get(author, 'ended', null),
+		endArea: _.get(author, 'endArea.name', null),
+		endDate: _.get(author, 'endDate', null)
+	}
+}
+
 export function getEntityAliases(work: object) { 
 	return _.isNil(work) ? null :
 		{

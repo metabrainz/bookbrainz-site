@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createEdition, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+import {createAuthor, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
 import chai from 'chai';
@@ -32,32 +32,30 @@ const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
 const inValidBBID = 'akjd-adjjk-23123';
 
-describe('GET /Edition', () => {
-	before(() => createEdition(aBBID));
+describe('GET /Author', () => {
+	before(() => createAuthor(aBBID));
 	after(truncateEntities);
-	// Test to get basic information of an Edition
-	it('should get basic information of edition', async function () {
-		const res = await chai.request(app).get(`/edition/${aBBID}`);
+	// Test to get basic information of an author
+	it('should get basic information of an author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
 		expect(res.body).to.have.all.keys(
 			'bbid',
 			'defaultAlias',
-			'languages',
 			'disambiguation',
-			'editionFormat',
-			'hight',
-			'width',
-			'depth',
-			'pages',
-			'status',
-			'releaseEventDates',
-			'weight'
+			'type',
+			'gender',
+			'beginArea',
+			'beginDate',
+			'endArea',
+			'endDate',
+			'ended'
 		);
 	 });
 
-	 it('should return list of aliases of Edition', async function () {
-		const res = await chai.request(app).get(`/edition/${aBBID}/aliases`);
+	 it('should return list of aliases of an author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
 		expect(res.body.aliases).to.be.an('array');
@@ -67,8 +65,8 @@ describe('GET /Edition', () => {
 		);
 	 });
 
-	 it('should return list of identifiers of edition', async function () {
-		const res = await chai.request(app).get(`/edition/${aBBID}/identifiers`);
+	 it('should return list of identifiers of an author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
 		expect(res.body.identifiers).to.be.an('array');
