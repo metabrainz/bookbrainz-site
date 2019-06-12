@@ -50,6 +50,7 @@ import {
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
+import Icon from 'react-fontawesome';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
 import React from 'react';
@@ -229,22 +230,27 @@ function EditionSection({
 							<SearchResults condensed results={matchingNameEditionGroups}/>
 						</Alert>
 					}
+				</Col>
+				<Col md={3}>
 					<Button
 						block
 						bsStyle="success"
 						href="/edition-group/create"
+						style={{marginTop: '1.8em'}}
 						target="_blank"
 					>
-						Create a new Edition Group
+						<Icon name="plus"/>
+						&nbsp;New Edition Group
 					</Button>
 				</Col>
 			</Row>
 		</React.Fragment>
 	);
 
-	const alertAutoCreateEditionGroup = !editionGroupVisible &&
-		!editionGroupRequired &&
+	const alertAutoCreateEditionGroup =
 		!editionGroupValue &&
+		!editionGroupVisible &&
+		!editionGroupRequired &&
 		!hasmatchingNameEditionGroups;
 
 	return (
@@ -252,14 +258,27 @@ function EditionSection({
 			<h2>
 				What else do you know about the Edition?
 			</h2>
+			<p className="text-muted">
+				Edition Group is required — this cannot be blank
+			</p>
 			{
-				(editionGroupRequired || hasmatchingNameEditionGroups) &&
-				<React.Fragment>
-					<p className="text-muted">
-						Edition Group is required — this cannot be blank
-					</p>
-					{getEditionGroupSearchSelect()}
-				</React.Fragment>
+				alertAutoCreateEditionGroup ?
+					<Row>
+						<Col md={6} mdOffset={3}>
+							<Alert>
+								A new Edition Group with the same name will be created automatically.
+								<br/>
+								<Button
+									block
+									bsStyle="primary"
+									onClick={onEditionGroupButtonClick}
+								>
+									Click here to search for an existing one instead
+								</Button>
+							</Alert>
+						</Col>
+					</Row> :
+					getEditionGroupSearchSelect()
 			}
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
@@ -325,29 +344,6 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 			</Row>
-
-			{
-				alertAutoCreateEditionGroup &&
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<Alert>
-							A new Edition Group with the same name will be created automatically.
-							<br/>
-							<Button
-								block
-								bsStyle="primary"
-								onClick={onEditionGroupButtonClick}
-							>
-								Click here to search for an existing one instead
-							</Button>
-						</Alert>
-					</Col>
-				</Row>
-			}
-			{
-				(editionGroupVisible || editionGroupValue) && !editionGroupRequired &&
-				getEditionGroupSearchSelect()
-			}
 			{
 				physicalVisible &&
 				<Row>
