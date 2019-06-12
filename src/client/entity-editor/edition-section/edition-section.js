@@ -219,11 +219,11 @@ function EditionSection({
 					{hasmatchingNameEditionGroups &&
 						<Alert bsStyle="warning">
 							{matchingNameEditionGroups.length > 1 ?
-								'Edition Groups with the same name already exist' :
-								'An existing Edition Group with the same name already exists'
+								'Edition Groups with the same name as this Edition already exist' :
+								'An existing Edition Group with the same name as this Edition already exists'
 							}:
 							<br/>
-							<small>The first match has been selected automatically.
+							<small>The first match has been selected automatically.<br/>
 							Please review the choice: click on an item to open it in a new tab:
 							</small>
 							<SearchResults condensed results={matchingNameEditionGroups}/>
@@ -244,6 +244,7 @@ function EditionSection({
 
 	const alertAutoCreateEditionGroup = !editionGroupVisible &&
 		!editionGroupRequired &&
+		!editionGroupValue &&
 		!hasmatchingNameEditionGroups;
 
 	return (
@@ -344,7 +345,7 @@ function EditionSection({
 				</Row>
 			}
 			{
-				editionGroupVisible && !editionGroupRequired &&
+				(editionGroupVisible || editionGroupValue) && !editionGroupRequired &&
 				getEditionGroupSearchSelect()
 			}
 			{
