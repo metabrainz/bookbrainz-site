@@ -309,7 +309,7 @@ function mapDispatchToProps(dispatch, {entityType}) {
 			dispatch(debouncedUpdateNameField(value, entityType)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
 			dispatch(checkIfNameExists(value, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
-		}, 1000),
+		}, 1500),
 		onNameChangeCheckIfExists: _.debounce((value) => {
 			dispatch(checkIfNameExists(value, entityType));
 		}, 500),
