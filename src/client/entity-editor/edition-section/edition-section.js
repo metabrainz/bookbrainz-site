@@ -236,7 +236,7 @@ function EditionSection({
 					<DateField
 						show
 						defaultValue={releaseDateValue}
-						empty={!releaseDateValue.day && !releaseDateValue.month && !releaseDateValue.year}
+						empty={!releaseDateValue || !releaseDateValue.day && !releaseDateValue.month && !releaseDateValue.year}
 						error={!isValidReleaseDate}
 						errorMessage={dateErrorMessage}
 						label="Release Date"
