@@ -26,7 +26,7 @@ const {
 	Alias, AliasSet, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
 	Author, Edition, EditionGroup, Publisher, Work,
-	Language, WorkType
+	Language, WorkType, EditionGroupType, AuthorType
 } = orm;
 const {updateLanguageSet} = orm.func.language;
 
@@ -193,6 +193,46 @@ export async function createWork(optionalBBID) {
 		.save(null, {method: 'insert'});
 }
 
+export async function createEditionGroup(optionalBBID) {
+	const bbid = optionalBBID || uuidv4();
+	await createEntityPrerequisites();
+	const editionGroupAttribs = {
+		bbid,
+		typeId: setData.id
+	};
+	await new EditionGroupType({...setData, label: 'Edition Group Type 1'})
+		.save(null, {method: 'insert'});
+	await new Entity({bbid, type: 'EditionGroup'})
+		.save(null, {method: 'insert'});
+	await new EditionGroup({...entityAttribs, ...editionGroupAttribs})
+		.save(null, {method: 'insert'});
+}
+
+export async function createAuthor(optionalBBID) {
+	const bbid = optionalBBID || uuidv4();
+	await createEntityPrerequisites();
+	const authorAttribs = {
+		bbid,
+		beginAreaId: setData.id,
+		beginDay: 25,
+		beginMonth: 12,
+		beginYear: 2000,
+		endAreaId: setData.id,
+		endDay: 10,
+		endMonth: 5,
+		endYear: 2012,
+		ended: true,
+		genderId: setData.id,
+		typeId: setData.id
+	};
+	await new AuthorType({...setData, label: 'Author Type 1'})
+		.save(null, {method: 'insert'});
+	await new Entity({bbid, type: 'Author'})
+		.save(null, {method: 'insert'});
+	await new Author({...entityAttribs, ...authorAttribs})
+		.save(null, {method: 'insert'});
+}
+
 export function truncateEntities() {
 	return util.truncateTables(bookshelf, [
 		'bookbrainz.editor',
@@ -209,6 +249,8 @@ export function truncateEntities() {
 		'bookbrainz.revision',
 		'bookbrainz.annotation',
 		'bookbrainz.work_type',
+		'bookbrainz.edition_group_type',
+		'bookbrainz.author_type',
 		'musicbrainz.language',
 		'musicbrainz.gender'
 	]);

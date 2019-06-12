@@ -16,7 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
+import authorRouter from './routes/author';
+import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
 import workRouter from './routes/work';
 
@@ -29,10 +30,20 @@ function initEditionRoute(app) {
 	app.use('/edition', editionRouter);
 }
 
+function initEditionGroupRoute(app) {
+	app.use('/edition-group', editionGroupRouter);
+}
+
+function initAuthorRoute(app) {
+	app.use('/author', authorRouter);
+}
+
 
 function initRoutes(app) {
 	initWorkRoute(app);
 	initEditionRoute(app);
+	initEditionGroupRoute(app);
+	initAuthorRoute(app);
 }
 
 export default initRoutes;
