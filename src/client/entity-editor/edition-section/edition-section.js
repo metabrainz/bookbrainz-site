@@ -232,6 +232,8 @@ function EditionSection({
 					<Button
 						block
 						bsStyle="success"
+						href="/edition-group/create"
+						target="_blank"
 					>
 						Create a new Edition Group
 					</Button>
