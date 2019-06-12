@@ -85,16 +85,21 @@ class EntitySearchFieldOption extends React.Component {
 		};
 	}
 
-	fetchOptions(query) {
-		return request
+	async fetchOptions(query) {
+		if (!query) {
+			return {
+				options: []
+			};
+		}
+		const response = await request
 			.get('/search/autocomplete')
 			.query({
 				collection: this.props.type,
 				q: query
-			})
-			.then((response) => ({
-				options: response.body.map(this.entityToOption)
-			}));
+			});
+		return {
+			options: response.body.map(this.entityToOption)
+		};
 	}
 
 	render() {
