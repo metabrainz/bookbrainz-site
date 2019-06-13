@@ -23,7 +23,7 @@ import uuidv4 from 'uuid/v4';
 
 const {
 	bookshelf, util, Editor, EditorType, Revision, RelationshipSet,
-	Alias, AliasSet, Identifier, IdentifierType, IdentifierSet,
+	Alias, AliasSet, Area, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
 	Author, Edition, EditionGroup, Publisher, Work,
 	Language, WorkType, EditionGroupType, AuthorType
@@ -225,6 +225,8 @@ export async function createAuthor(optionalBBID) {
 		genderId: setData.id,
 		typeId: setData.id
 	};
+	await new Area({...setData, gid: uuidv4(), name: 'Rlyeh'})
+		.save(null, {method: 'insert'});
 	await new AuthorType({...setData, label: 'Author Type 1'})
 		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'Author'})
