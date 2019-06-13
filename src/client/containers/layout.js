@@ -109,7 +109,7 @@ class Layout extends React.Component {
 			</span>
 		);
 
-		const disableSignUp = this.props.disableSignUp ? {'disabled' : true} : {};
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
@@ -280,15 +280,16 @@ Layout.displayName = 'Layout';
 Layout.propTypes = {
 	alerts: PropTypes.array.isRequired,
 	children: PropTypes.node.isRequired,
+	disableSignUp: PropTypes.bool,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
 	siteRevision: PropTypes.string.isRequired,
-	user: PropTypes.object,
-	disableSignUp: PropTypes.bool
+	user: PropTypes.object
 };
 Layout.defaultProps = {
+	disableSignUp: false,
 	hideSearch: false,
 	homepage: false,
 	requiresJS: false,

@@ -166,7 +166,7 @@ class IndexPage extends React.Component {
 
 	renderContent() {
 		const {recent} = this.props;
-		const disableSignUp = this.props.disableSignUp ? {'disabled' : true} : {};
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 
 		return (
 			<Grid>
@@ -260,8 +260,11 @@ class IndexPage extends React.Component {
 
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
-	recent: PropTypes.array.isRequired,
-	disableSignUp: PropTypes.bool
+	disableSignUp: PropTypes.bool,
+	recent: PropTypes.array.isRequired
+};
+IndexPage.defaultProps = {
+	disableSignUp: false
 };
 
 export default IndexPage;
