@@ -82,7 +82,7 @@ routes(app);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	next(new error.NotFoundError(null, req));
+	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
 });
 
 
