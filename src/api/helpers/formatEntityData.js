@@ -56,8 +56,8 @@ export function getEditionBasicInfo(edition: object) {
 		depth: _.get(edition, 'depth', null),
 		pages: _.get(edition, 'pages', null),
 		releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),
-		editionFormat: _.get(edition, 'editioFormat.label', null),
-		weight: _.get(edition, 'waight', null),
+		editionFormat: _.get(edition, 'editionFormat.label', null),
+		weight: _.get(edition, 'weight', null),
 		status: _.get(edition, 'editionStatus.label', null)
 	}
 }
@@ -102,11 +102,11 @@ export function getPublisherBasicInfo(publisher: object) {
 	}
 }
 
-export function getEntityAliases(work: object) { 
-	return _.isNil(work) ? null :
+export function getEntityAliases(entity: object) {
+	return _.isNil(entity) ? null :
 		{
-			bbid: _.get(work, 'bbid', null),
-			aliases: _.get(work, 'aliasSet.aliases', []).map((alias) => {
+			bbid: _.get(entity, 'bbid', null),
+			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => {
 				return {
 					name: alias.name,
 					sortName: alias.sortName,
@@ -117,11 +117,11 @@ export function getEntityAliases(work: object) {
 		};
 }
 
-export function getEntityIdentifiers(work: object) {
-	return _.isNil(work) ? null :
+export function getEntityIdentifiers(entity: object) {
+	return _.isNil(entity) ? null :
 		{
-			bbid: _.get(work, 'bbid', null),
-			identifiers: _.get(work, 'identifierSet.identifiers', []).map((identifier) => {
+			bbid: _.get(entity, 'bbid', null),
+			identifiers: _.get(entity, 'identifierSet.identifiers', []).map((identifier) => {
 				return {
 					type: identifier.type.label,
 					value: identifier.value
