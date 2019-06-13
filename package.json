@@ -16,7 +16,7 @@
     "WIP-build-client-webpack": "cross-env NODE_ENV=production SSR=true webpack --progress --config webpack.client.js",
     "prestart": "npm run build-less & npm run build-client-js & npm run build-server-js",
     "start": "cross-env SSR=true node ./lib/server/app.js",
-    "start-api": "npm run build-api-js && cross-env SSR=true node ./lib/api/app.js",
+    "start-api": "npm run build-api-js && node ./lib/api/app.js",
     "debug": "cross-env DEBUG=bbsite NODE_ENV=development SSR=true babel-node src/server/app.js",
     "debug-watch-server": "cross-env DEBUG=bbsite NODE_ENV=development SSR=true nodemon src/server/app.js --watch src/server --exec babel-node",
     "lint": "eslint .",
