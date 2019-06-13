@@ -88,6 +88,20 @@ export function getAuthorBasicInfo(author: object) {
 	}
 }
 
+export function getPublisherBasicInfo(publisher: object) {
+	return _.isNil(publisher) ? null : 
+	{
+		bbid: _.get(publisher, 'bbid', null),
+		defaultAlias: getDefaultAlias(publisher),
+		disambiguation: _.get(publisher, 'disambiguation.comment', null),
+		type: _.get(publisher, 'publisherType.label', null),
+		area: _.get(publisher, 'area.name', null),
+		beginDate: _.get(publisher, 'beginDate', null),
+		ended: _.get(publisher, 'ended', null),
+		endDate: _.get(publisher, 'endDate', null)
+	}
+}
+
 export function getEntityAliases(work: object) { 
 	return _.isNil(work) ? null :
 		{

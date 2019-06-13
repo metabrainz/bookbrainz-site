@@ -19,6 +19,7 @@
 import authorRouter from './routes/author';
 import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
+import publisherRouter from './routes/publisher';
 import workRouter from './routes/work';
 
 
@@ -38,12 +39,17 @@ function initAuthorRoute(app) {
 	app.use('/author', authorRouter);
 }
 
+function initPublishetRouter(app) {
+	app.use('/publisher', publisherRouter);
+}
+
 
 function initRoutes(app) {
 	initWorkRoute(app);
 	initEditionRoute(app);
 	initEditionGroupRoute(app);
 	initAuthorRoute(app);
+	initPublishetRouter(app);
 }
 
 export default initRoutes;
