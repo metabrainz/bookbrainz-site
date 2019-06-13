@@ -128,13 +128,15 @@ app.use((req, res, next) => {
 	res.locals.siteRevision = siteRevision;
 	res.locals.repositoryUrl = repositoryUrl;
 	res.locals.alerts = [];
+	req.signUpDisabled = false;
 
 	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({
 			level: 'danger',
-			message: 'We are currently experiencing technical difficulties; ' +
-				'signing in will not work until this is resolved.'
+			message: `We are currently experiencing technical difficulties;
+				signing in and signing up are disabled until this is resolved.`
 		});
+		req.signUpDisabled = true;
 	}
 
 	// Add user data to every rendered route

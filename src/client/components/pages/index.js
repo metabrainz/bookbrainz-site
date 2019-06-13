@@ -166,6 +166,7 @@ class IndexPage extends React.Component {
 
 	renderContent() {
 		const {recent} = this.props;
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 
 		return (
 			<Grid>
@@ -205,7 +206,12 @@ class IndexPage extends React.Component {
 					</Col>
 				</Row>
 				<div className="text-center margin-top-1 margin-bottom-3">
-					<Button bsSize="large" bsStyle="success" href="/register">
+					<Button
+						{...disableSignUp}
+						bsSize="large"
+						bsStyle="success"
+						href="/register"
+					>
 						Register!
 					</Button>
 				</div>
@@ -254,7 +260,11 @@ class IndexPage extends React.Component {
 
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
+	disableSignUp: PropTypes.bool,
 	recent: PropTypes.array.isRequired
+};
+IndexPage.defaultProps = {
+	disableSignUp: false
 };
 
 export default IndexPage;

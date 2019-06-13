@@ -109,6 +109,8 @@ class Layout extends React.Component {
 			</span>
 		);
 
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
+
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{user && user.id ?
@@ -154,7 +156,7 @@ class Layout extends React.Component {
 									name="info"
 								/>{' Profile'}
 							</MenuItem>
-							<MenuItem href="/logout">
+							<MenuItem {...disableSignUp} href="/logout">
 								<FontAwesome
 									fixedWidth
 									name="sign-out-alt"
@@ -163,7 +165,7 @@ class Layout extends React.Component {
 						</NavDropdown>
 					</Nav> :
 					<Nav pullRight>
-						<NavItem href="/auth">
+						<NavItem {...disableSignUp} href="/auth">
 							<FontAwesome name="sign-in-alt"/>{' Sign In / Register'}
 						</NavItem>
 					</Nav>
@@ -278,6 +280,7 @@ Layout.displayName = 'Layout';
 Layout.propTypes = {
 	alerts: PropTypes.array.isRequired,
 	children: PropTypes.node.isRequired,
+	disableSignUp: PropTypes.bool,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,
 	repositoryUrl: PropTypes.string.isRequired,
@@ -286,6 +289,7 @@ Layout.propTypes = {
 	user: PropTypes.object
 };
 Layout.defaultProps = {
+	disableSignUp: false,
 	hideSearch: false,
 	homepage: false,
 	requiresJS: false,
