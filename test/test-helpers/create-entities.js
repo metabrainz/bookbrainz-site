@@ -26,7 +26,7 @@ const {
 	Alias, AliasSet, Area, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
 	Author, Edition, EditionGroup, Publisher, Work,
-	Language, WorkType, EditionGroupType, AuthorType
+	Language, WorkType, EditionGroupType, AuthorType, PublisherType
 } = orm;
 const {updateLanguageSet} = orm.func.language;
 
@@ -235,6 +235,31 @@ export async function createAuthor(optionalBBID) {
 		.save(null, {method: 'insert'});
 }
 
+export async function createPublisher(optionalBBID) {
+	const bbid = optionalBBID || uuidv4();
+	await createEntityPrerequisites();
+	const publisherAttribs = {
+		areaId: setData.id,
+		bbid,
+		beginDay: 25,
+		beginMonth: 12,
+		beginYear: 2000,
+		endDay: 10,
+		endMonth: 5,
+		endYear: 2012,
+		ended: true,
+		typeId: setData.id
+	};
+	await new Area({...setData, gid: uuidv4(), name: 'Rlyeh'})
+		.save(null, {method: 'insert'});
+	await new PublisherType({...setData, label: 'Publisher Type 1'})
+		.save(null, {method: 'insert'});
+	await new Entity({bbid, type: 'Publisher'})
+		.save(null, {method: 'insert'});
+	await new Publisher({...entityAttribs, ...publisherAttribs})
+		.save(null, {method: 'insert'});
+}
+
 export function truncateEntities() {
 	return util.truncateTables(bookshelf, [
 		'bookbrainz.editor',
@@ -253,6 +278,8 @@ export function truncateEntities() {
 		'bookbrainz.work_type',
 		'bookbrainz.edition_group_type',
 		'bookbrainz.author_type',
+		'bookbrainz.publisher_type',
+		'musicbrainz.area',
 		'musicbrainz.language',
 		'musicbrainz.gender'
 	]);
