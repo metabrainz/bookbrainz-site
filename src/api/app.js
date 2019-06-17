@@ -20,12 +20,11 @@
 /* eslint global-require: 'warn' */
 
 
-import * as error from '../common/helpers/error';
-
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
 import {get as _get} from 'lodash';
+import {allowOnlyGetMethod} from './helpers/utils';
 import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
@@ -79,6 +78,9 @@ app.use(session({
 
 // Set up routes
 routes(app);
+
+// Allow only get requests for now throw error for any other type of requests
+app.all('/*', allowOnlyGetMethod);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
