@@ -108,10 +108,10 @@ export function getEntityAliases(entity: object) {
 			bbid: _.get(entity, 'bbid', null),
 			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => {
 				return {
-					name: alias.name,
-					sortName: alias.sortName,
-					aliasLanguage: alias.language.name,
-					primary: alias.primary
+					name: _.get(alias, 'name', null),
+					sortName: _.get(alias, 'sortName', null),
+					aliasLanguage: _.get(alias, 'language.name', null),
+					primary: _.get(alias, 'primary', null)
 				};
 			})
 		};
@@ -123,8 +123,8 @@ export function getEntityIdentifiers(entity: object) {
 			bbid: _.get(entity, 'bbid', null),
 			identifiers: _.get(entity, 'identifierSet.identifiers', []).map((identifier) => {
 				return {
-					type: identifier.type.label,
-					value: identifier.value
+					type: _.get(identifier, 'type.label', null),
+					value: _.get(identifier, 'value', null)
 				};
 			})
 		};
