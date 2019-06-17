@@ -18,3 +18,12 @@
 
 export const aliasesRelation = ['aliasSet.aliases.language'];
 export const identifiersRelation = ['identifierSet.identifiers.type'];
+
+export function allowOnlyGetMethod(req, res, next) {
+	if (req.method === 'GET') {
+		return next();
+	}
+	return res.set('Allow', 'GET')
+		.status(405)
+		.send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`});
+}
