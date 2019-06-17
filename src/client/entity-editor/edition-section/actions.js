@@ -54,6 +54,7 @@ export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_DEPTH = 'UPDATE_DEPTH';
 export const SHOW_PHYSICAL = 'SHOW_PHYSICAL';
 export const SHOW_EDITION_GROUP = 'SHOW_EDITION_GROUP';
+export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP_EXISTS';
 
 /**
  * Produces an action indicating that the edition status for the edition being

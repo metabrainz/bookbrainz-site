@@ -109,16 +109,25 @@ export function debouncedUpdateDisambiguationField(
  *
  * @param  {string} name - The value to be checked if it already exists.
  * @param  {string} entityType - The entity type of the value to be checked.
+ * @param  {string} action - An optional redux action to dispatch. Defaults to UPDATE_WARN_IF_EXISTS
  * @returns {many_prompts~inner} The returned function.
  */
 export function checkIfNameExists(
 	name: string,
-	entityType: string
+	entityType: string,
+	action: ?string
 ): ((Action) => mixed) => mixed {
 	/**
 	 * @param  {function} dispatch - The redux dispatch function.
 	 */
 	return (dispatch) => {
+		if (!name) {
+			dispatch({
+				payload: null,
+				type: action || UPDATE_WARN_IF_EXISTS
+			});
+			return;
+		}
 		request.get('/search/exists')
 			.query({
 				collection: _snakeCase(entityType),
@@ -126,7 +135,7 @@ export function checkIfNameExists(
 			})
 			.then(res => dispatch({
 				payload: JSON.parse(res.text) || null,
-				type: UPDATE_WARN_IF_EXISTS
+				type: action || UPDATE_WARN_IF_EXISTS
 			}))
 			.catch((error: {message: string}) => error);
 	};
@@ -148,6 +157,13 @@ export function searchName(
 	 * @param  {function} dispatch - The redux dispatch function.
 	 */
 	return (dispatch) => {
+		if (!name) {
+			dispatch({
+				payload: null,
+				type: UPDATE_SEARCH_RESULTS
+			});
+			return;
+		}
 		request.get('/search/autocomplete')
 			.query({
 				collection: type,

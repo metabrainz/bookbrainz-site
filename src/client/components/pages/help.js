@@ -79,8 +79,8 @@ function HelpPage() {
 							</ul>
 						</ListGroupItem>
 						<ListGroupItem>
-							<b>{genEntityIconHTMLElement('EditionGroup')}Edition Group</b> – a logical grouping of similar Editions.
-							<ul><li>Example: paperback, hardcover and e-book editions</li></ul>
+							<b>{genEntityIconHTMLElement('EditionGroup')}Edition Group</b> – a logical grouping of different Editions of the same book.
+							<ul><li>Example: paperback, hardcover and e-book editions of a novel</li></ul>
 						</ListGroupItem>
 						<ListGroupItem><b>{genEntityIconHTMLElement('Publisher')}Publisher</b> – publishing company or imprint</ListGroupItem>
 					</ListGroup>
@@ -111,11 +111,15 @@ function HelpPage() {
 					<br/>
 					<ol>
 						<li>Find or add a new {genEntityIconHTMLElement('Author')}Author</li>
-						<li>Find or add a new {genEntityIconHTMLElement('Work')}Work with an &#x27;Author wrote Work&#x27; relationship</li>
-						<li>Find or add a new {genEntityIconHTMLElement('Publisher')}Publisher</li>
-						<li>Find or add a new {genEntityIconHTMLElement('EditionGroup')}Edition Group</li>
-						<li>Find or add a new {genEntityIconHTMLElement('Edition')}Edition with a &#x27;contains Work&#x27; relationship and fill in the Publisher</li>
-						<li>If another format of the edition from the same publisher exists (see below), go to the Edition Group and click the &#x27;Add Edition&#x27; button. Repeat step 5.</li>
+						<li>On the Author page, click on &#39;Add Work&#39; to create a {genEntityIconHTMLElement('Work')}Work with a relationship to the Author</li>
+						<li>On the Work page, click &#39;Add Edition&#39; to create an {genEntityIconHTMLElement('Edition')}Edition with a relationship to the Work</li>
+						<li style={{listStyleType: 'none'}}>
+							<ul>
+								<li>A new {genEntityIconHTMLElement('EditionGroup')}Edition Group will be created automatically, but you can select an existing one</li>
+								<li>Create a new {genEntityIconHTMLElement('Publisher')}Publisher if you cannot find an existing one</li>
+							</ul>
+						</li>
+						<li>To enter another format of the same book (see explanations below), go to the Edition Group and click the &#x27;Add Edition&#x27; button. Repeat step 4.</li>
 					</ol>
 					<br/>
 					<h4>When should I create a new Edition of a Work?</h4>
@@ -137,12 +141,15 @@ function HelpPage() {
 					</ul>
 					<br/>
 					<h4>When should two Editions be part of the same Edition Group?</h4>
-					Generally, when a publisher releases multiple different formats of the same content, meaning:
+					Edition Groups exist to group together all the variations of an edition (an identifiable set of works) in a given language.
+					Here are examples of Editions that should be part of the same Edition Group:
+					<br/>
 					<ul>
-						<li>No substantial textual changes to the Work (corrections aside)</li>
-						<li>Same editorial content (intro, foreword, etc.)</li>
-						<li>Same publisher</li>
-						<li>Same title and cover</li>
+						<li>Different formats of the same edition (paperback, hardcover and e-book by the same publisher)</li>
+						<li>Revised and updated editions</li>
+						<li>Reprints</li>
+						<li>Editions with different forewords/intros</li>
+						<li>Co-editions (same book published in different countries by different publishers)</li>
 					</ul>
 				</Col>
 

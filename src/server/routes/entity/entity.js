@@ -647,7 +647,7 @@ export function handleCreateOrEditEntity(
 	derivedProps: {}
 ) {
 	const {orm}: {orm: any} = req.app.locals;
-	const {Revision, bookshelf} = orm;
+	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
 	const {body}: {body: any} = req;
@@ -667,7 +667,7 @@ export function handleCreateOrEditEntity(
 		const isNew = !currentEntity;
 
 		if (isNew) {
-			const newEntity = await new orm.Entity({type: entityType})
+			const newEntity = await new Entity({type: entityType})
 				.save(null, {transacting});
 			const newEntityBBID = newEntity.get('bbid');
 			body.relationships = _.map(

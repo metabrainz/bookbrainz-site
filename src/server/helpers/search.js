@@ -380,7 +380,7 @@ export async function checkIfExists(orm, name, collection) {
 	];
 	return Promise.all(
 		bbids.map(
-			bbid => orm.func.entity.getEntity(orm, _.upperFirst(collection), bbid, baseRelations)
+			bbid => orm.func.entity.getEntity(orm, _.upperFirst(_.camelCase(collection)), bbid, baseRelations)
 		)
 	);
 }

@@ -204,6 +204,16 @@ function describevalidateEditionSectionEditionGroup() {
 		expect(result).to.be.true;
 	});
 
+	it('should pass a null value', () => {
+		const result = validateEditionSectionEditionGroup(null);
+		expect(result).to.be.true;
+	});
+
+	it('should pass any other non-null data type with no ID', () => {
+		const result = validateEditionSectionEditionGroup(1);
+		expect(result).to.be.true;
+	});
+
 	it('should reject an Object with an invalid ID', () => {
 		const result = validateEditionSectionEditionGroup(
 			{...VALID_ENTITY, id: '2'}
@@ -215,16 +225,6 @@ function describevalidateEditionSectionEditionGroup() {
 		const result = validateEditionSectionEditionGroup(
 			Immutable.fromJS(INVALID_ENTITY)
 		);
-		expect(result).to.be.false;
-	});
-
-	it('should reject any other non-null data type', () => {
-		const result = validateEditionSectionEditionGroup(1);
-		expect(result).to.be.false;
-	});
-
-	it('should reject a null value', () => {
-		const result = validateEditionSectionEditionGroup(null);
 		expect(result).to.be.false;
 	});
 }
@@ -292,6 +292,16 @@ function describeValidateEditionSection() {
 		const result = validateEditionSection(
 			Immutable.fromJS(VALID_EDITION_SECTION)
 		);
+		expect(result).to.be.true;
+	});
+
+	it('should pass a null value', () => {
+		const result = validateEditionSection(null);
+		expect(result).to.be.true;
+	});
+
+	it('should ignore any other non-null data type', () => {
+		const result = validateEditionSection(1);
 		expect(result).to.be.true;
 	});
 
@@ -387,16 +397,6 @@ function describeValidateEditionSection() {
 		const result = validateEditionSection(
 			Immutable.fromJS(INVALID_EDITION_SECTION)
 		);
-		expect(result).to.be.false;
-	});
-
-	it('should reject any other non-null data type', () => {
-		const result = validateEditionSection(1);
-		expect(result).to.be.false;
-	});
-
-	it('should reject a null value', () => {
-		const result = validateEditionSection(null);
 		expect(result).to.be.false;
 	});
 }

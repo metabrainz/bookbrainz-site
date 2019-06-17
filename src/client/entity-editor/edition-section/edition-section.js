@@ -34,10 +34,12 @@ import {
 	updatePublisher,
 	updateStatus
 } from './actions';
-import {Button, Col, Row} from 'react-bootstrap';
+
+import {Alert, Button, Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import {
 	validateEditionSectionDepth,
+	validateEditionSectionEditionGroup,
 	validateEditionSectionHeight,
 	validateEditionSectionPages,
 	validateEditionSectionReleaseDate,
@@ -45,13 +47,14 @@ import {
 	validateEditionSectionWidth
 } from '../validators/edition';
 
-
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
+import Icon from 'react-fontawesome';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
 import React from 'react';
+import SearchResults from '../../components/pages/parts/search-results';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
@@ -100,8 +103,10 @@ type StateProps = {
 	pagesValue: ?number,
 	physicalVisible: ?boolean,
 	publisherValue: Map<string, any>,
+	editionGroupRequired: ?boolean,
 	editionGroupVisible: ?boolean,
 	editionGroupValue: Map<string, any>,
+	matchingNameEditionGroups: ?array,
 	releaseDateValue: ?object,
 	statusValue: ?number,
 	weightValue: ?number,
@@ -169,8 +174,10 @@ function EditionSection({
 	onWidthChange,
 	pagesValue,
 	physicalVisible,
+	editionGroupRequired,
 	editionGroupValue,
 	editionGroupVisible,
+	matchingNameEditionGroups,
 	publisherValue,
 	releaseDateValue,
 	statusValue,
@@ -194,28 +201,85 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
+	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
+	const getEditionGroupSearchSelect = () => (
+		<React.Fragment>
+			<Row style={{marginBottom: '2em'}}>
+				<Col md={6} mdOffset={3}>
+					<EntitySearchFieldOption
+						error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
+						help="Group with other Editions of the same book"
+						instanceId="edition-group"
+						label="Edition Group"
+						tooltipText="Group together different Editions of the same book.
+						<br>For example paperback, hardcover and e-book editions."
+						type="edition-group"
+						value={editionGroupValue}
+						onChange={onEditionGroupChange}
+					/>
+					{hasmatchingNameEditionGroups &&
+						<Alert bsStyle="warning">
+							{matchingNameEditionGroups.length > 1 ?
+								'Edition Groups with the same name as this Edition already exist' :
+								'An existing Edition Group with the same name as this Edition already exists'
+							}:
+							<br/>
+							<small>The first match has been selected automatically.<br/>
+							Please review the choice: click on an item to open it in a new tab:
+							</small>
+							<SearchResults condensed results={matchingNameEditionGroups}/>
+						</Alert>
+					}
+				</Col>
+				<Col md={3}>
+					<Button
+						block
+						bsStyle="success"
+						href="/edition-group/create"
+						style={{marginTop: '1.8em'}}
+						target="_blank"
+					>
+						<Icon name="plus"/>
+						&nbsp;New Edition Group
+					</Button>
+				</Col>
+			</Row>
+		</React.Fragment>
+	);
+
+	const alertAutoCreateEditionGroup =
+		!editionGroupValue &&
+		!editionGroupVisible &&
+		!editionGroupRequired &&
+		!hasmatchingNameEditionGroups;
+
 	return (
 		<form>
 			<h2>
 				What else do you know about the Edition?
 			</h2>
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank. <a href="/edition-group/create" target="_blank">Click here</a> to create one if you did not find an existing one.
+				Edition Group is required — this cannot be blank
 			</p>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<EntitySearchFieldOption
-						help="Group with other Editions by the same publisher"
-						instanceId="edition-group"
-						label="Edition Group"
-						tooltipText="Group together Editions with no substantial textual or editorial changes.
-						<br>For example, identical paperback, hardcover and e-book editions."
-						type="edition-group"
-						value={editionGroupValue}
-						onChange={onEditionGroupChange}
-					/>
-				</Col>
-			</Row>
+			{
+				alertAutoCreateEditionGroup ?
+					<Row>
+						<Col md={6} mdOffset={3}>
+							<Alert>
+								A new Edition Group with the same name will be created automatically.
+								<br/>
+								<Button
+									block
+									bsStyle="primary"
+									onClick={onEditionGroupButtonClick}
+								>
+									Click here to search for an existing one instead
+								</Button>
+							</Alert>
+						</Col>
+					</Row> :
+					getEditionGroupSearchSelect()
+			}
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
@@ -280,22 +344,6 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 			</Row>
-
-			{
-				!editionGroupVisible &&
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<Button
-							bsStyle="link"
-							className="text-center"
-							onClick={onEditionGroupButtonClick}
-						>
-							Group with other existing formats…
-						</Button>
-					</Col>
-				</Row>
-			}
-
 			{
 				physicalVisible &&
 				<Row>
@@ -366,14 +414,17 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
+	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
 
 	return {
 		depthValue: state.get('depth'),
+		editionGroupRequired: state.get('editionGroupRequired'),
 		editionGroupValue: state.get('editionGroup'),
 		editionGroupVisible: state.get('editionGroupVisible'),
 		formatValue: state.get('format'),
 		heightValue: state.get('height'),
 		languageValues: state.get('languages'),
+		matchingNameEditionGroups,
 		pagesValue: state.get('pages'),
 		physicalVisible: state.get('physicalVisible'),
 		publisherValue: state.get('publisher'),

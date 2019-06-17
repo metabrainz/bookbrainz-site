@@ -40,6 +40,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {entityTypeProperty} from '../../helpers/react-validators';
@@ -97,6 +98,12 @@ class NameSection extends React.Component {
 		this.props.onNameChange(event.target.value);
 		this.props.onNameChangeCheckIfExists(event.target.value);
 		this.props.onNameChangeSearchName(event.target.value);
+		if (
+			_.toLower(this.props.entityType) === 'edition' &&
+			this.props.searchForExistingEditionGroup
+		) {
+			this.props.onNameChangeCheckIfEditionGroupExists(event.target.value);
+		}
 	}
 
 	updateNameFieldInputRef(inputRef) {
@@ -139,7 +146,8 @@ class NameSection extends React.Component {
 								)}
 								error={!validateNameSectionName(nameValue)}
 								inputRef={this.updateNameFieldInputRef}
-								tooltipText={`Official name of the ${_.startCase(entityType)} in its original language. Names in other languages should be added as 'aliases'.`}
+								tooltipText={`Official name of the ${_.startCase(entityType)} in its original language.
+								Names in other languages should be added as aliases.`}
 								warn={(isRequiredDisambiguationEmpty(
 									warnIfExists,
 									disambiguationDefaultValue
@@ -252,9 +260,11 @@ NameSection.propTypes = {
 	onDisambiguationChange: PropTypes.func.isRequired,
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
+	onNameChangeCheckIfEditionGroupExists: PropTypes.func.isRequired,
 	onNameChangeCheckIfExists: PropTypes.func.isRequired,
 	onNameChangeSearchName: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
+	searchForExistingEditionGroup: PropTypes.bool,
 	searchResults: PropTypes.array,
 	sortNameValue: PropTypes.string.isRequired
 };
@@ -263,12 +273,19 @@ NameSection.defaultProps = {
 	disambiguationDefaultValue: null,
 	exactMatches: null,
 	languageValue: null,
+	searchForExistingEditionGroup: true,
 	searchResults: null
 };
 
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('nameSection');
+	const editionSectionState = rootState.get('editionSection');
+	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
+	(
+		!editionSectionState.get('editionGroup') ||
+		editionSectionState.get('editionGroupRequired')
+	);
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
 		disambiguationVisible:
@@ -276,6 +293,7 @@ function mapStateToProps(rootState) {
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
+		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
 	};
@@ -289,6 +307,9 @@ function mapDispatchToProps(dispatch, {entityType}) {
 			dispatch(updateLanguageField(value && value.value)),
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value, entityType)),
+		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
+			dispatch(checkIfNameExists(value, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
+		}, 1500),
 		onNameChangeCheckIfExists: _.debounce((value) => {
 			dispatch(checkIfNameExists(value, entityType));
 		}, 500),
