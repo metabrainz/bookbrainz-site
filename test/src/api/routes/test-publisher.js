@@ -73,5 +73,57 @@ describe('GET /Publisher', () => {
 			'identifiers'
 		);
 	 });
+	 it('should throw a 404 error if trying to access a publisher that does not exist', function (done) {
+		chai.request(app)
+			.get(`/publisher/${bBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Publisher not found');
+				return done();
+			});
+	 });
+
+	it('should throw a 406 error if trying to access a publisher with invalid BBID', function (done) {
+		chai.request(app)
+			.get(`/publisher/${inValidBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('BBID is not valid uuid');
+				return done();
+			});
+	 });
+
+	 it('should throw a 404 error if trying to identifiers aliases of a publisher that does not exist', function (done) {
+		chai.request(app)
+			.get(`/publisher/${bBBID}/identifiers`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Publisher not found');
+				return done();
+			});
+	 });
+
+
+	it('should throw a 404 error if trying to access aliases of a publisher that does not exist', function (done) {
+		chai.request(app)
+			.get(`/publisher/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Publisher not found');
+				return done();
+			});
+	 });
 });
 

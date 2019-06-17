@@ -36,7 +36,7 @@ describe('GET /EditionGroup', () => {
 	before(() => createEditionGroup(aBBID));
 	after(truncateEntities);
 	// Test to get basic information of an Edition Group
-	it('should get basic information of edition group', async function () {
+	it('should get basic information of an edition group', async function () {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -48,7 +48,7 @@ describe('GET /EditionGroup', () => {
 		);
 	 });
 
-	 it('should return list of aliases of Edition Group', async function () {
+	 it('should return list of aliases of an edition group', async function () {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -59,7 +59,7 @@ describe('GET /EditionGroup', () => {
 		);
 	 });
 
-	 it('should return list of identifiers of edition group', async function () {
+	 it('should return list of identifiers of an edition group', async function () {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -68,6 +68,59 @@ describe('GET /EditionGroup', () => {
 			'bbid',
 			'identifiers'
 		);
+	 });
+
+	 it('should throw a 404 error if trying to access an edition group that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition-group/${bBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition-Group not found');
+				return done();
+			});
+	 });
+
+	it('should throw a 406 error if trying to access an edition with invalid BBID', function (done) {
+		chai.request(app)
+			.get(`/edition-group/${inValidBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('BBID is not valid uuid');
+				return done();
+			});
+	 });
+
+	 it('should throw a 404 error if trying to identifiers aliases of an edition group that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition-group/${bBBID}/identifiers`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition-Group not found');
+				return done();
+			});
+	 });
+
+
+	it('should throw a 404 error if trying to access aliases of an edition group that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition-group/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition-Group not found');
+				return done();
+			});
 	 });
 });
 

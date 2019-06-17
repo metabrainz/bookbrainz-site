@@ -77,5 +77,58 @@ describe('GET /Edition', () => {
 			'identifiers'
 		);
 	 });
+
+	 it('should throw a 404 error if trying to access an edition that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition/${bBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition not found');
+				return done();
+			});
+	 });
+
+	it('should throw a 406 error if trying to access an edition with invalid BBID', function (done) {
+		chai.request(app)
+			.get(`/edition/${inValidBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('BBID is not valid uuid');
+				return done();
+			});
+	 });
+
+	 it('should throw a 404 error if trying to identifiers aliases of an edition that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition/${bBBID}/identifiers`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition not found');
+				return done();
+			});
+	 });
+
+
+	it('should throw a 404 error if trying to access aliases of an edition that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition not found');
+				return done();
+			});
+	 });
 });
 

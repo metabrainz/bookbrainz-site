@@ -44,8 +44,8 @@ router.get('/:bbid',
 router.get('/:bbid/aliases',
 	makeEntityLoader('EditionGroup', aliasesRelation, editionGroupError),
 	async (req, res, next) => {
-		const editionAliasesList = await getEntityAliases(res.locals.entity);
-		return res.status(200).send(editionAliasesList);
+		const editionGroupAliasesList = await getEntityAliases(res.locals.entity);
+		return res.status(200).send(editionGroupAliasesList);
 	});
 
 
