@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Iterable} from 'immutable';
+import _ from 'lodash';
 import {format} from 'date-fns';
 
 /**
@@ -72,4 +73,17 @@ export function getTodayDate() {
 	const month = (date.getMonth() + 1).toString();
 	const day = date.getDate().toString();
 	return {day, month, year};
+}
+
+export function dateObjectToString(value) {
+	const isCommonEraDate = Math.sign(value.year) > -1;
+	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
+	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;
+	if (value.month) {
+		date += `-${value.month}`;
+		if (value.day) {
+			date += `-${value.day}`;
+	  }
+	}
+	return date;
 }
