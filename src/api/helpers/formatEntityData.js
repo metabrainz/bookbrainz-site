@@ -129,3 +129,11 @@ export function getEntityIdentifiers(entity: object) {
 			})
 		};
 }
+
+export function getEntityRelationships (entity: object) {
+	return _.isNil(entity) ? null :
+		{
+			bbid: _.get(entity, 'bbid', null),
+			relationships: _.get(entity, 'relationshipSet.relationships', null)
+		}
+}

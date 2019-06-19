@@ -18,6 +18,7 @@
 
 export const aliasesRelation = ['aliasSet.aliases.language'];
 export const identifiersRelation = ['identifierSet.identifiers.type'];
+export const relationshipsRelation = ['relationshipSet.relationships.type'];
 
 export function allowOnlyGetMethod(req, res, next) {
 	if (req.method === 'GET') {
