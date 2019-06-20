@@ -130,10 +130,30 @@ export function getEntityIdentifiers(entity: object) {
 		};
 }
 
+
 export function getEntityRelationships (entity: object) {
 	return _.isNil(entity) ? null :
 		{
 			bbid: _.get(entity, 'bbid', null),
-			relationships: _.get(entity, 'relationshipSet.relationships', null)
+			relationships: _.get(entity, 'relationshipSet.relationships', []).map((relationship) => {
+				return {
+					id: relationship.id,
+					targetBbid: entity.bbid === relationship.sourceBbid ?
+								_.get(relationship, 'targetBbid', null) :
+								_.get(relationship, 'sourceBbid', null),
+					targetEntityType: entity.bbid === relationship.sourceBbid ?
+								_.get(relationship, 'type.targetEntityType', null) :
+								_.get(relationship, 'type.sourceEntityType', null),
+					linkPhrase: entity.bbid === relationship.sourceBbid ?
+								_.get(relationship, 'type.linkPhrase', null) :
+								_.get(relationship, 'type.reverseLinkPhrase', null),
+					direction: entity.bbid === relationship.sourceBbid ?
+								'farword': 'backword',
+					relationshipType: {
+						name: _.get(relationship, 'type.label', null),
+						id: _.get(relationship, 'type.id', null)
+					}
+				}
+			})
 		}
 }
