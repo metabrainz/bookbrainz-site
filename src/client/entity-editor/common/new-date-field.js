@@ -1,7 +1,7 @@
+import * as _ from 'lodash';
 import {Button, FormControl, InputGroup} from 'react-bootstrap';
 import {dateObjectToString, getTodayDate} from '../../helpers/utils';
 import {isValid, parseISO} from 'date-fns';
-
 import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
 import FontAwesome from 'react-fontawesome';
@@ -18,10 +18,10 @@ class DateField extends React.Component {
 
 		const {day, month, year} = this.props.defaultValue;
 		this.state = {
-			day: !day ? '' : day,
-			month: !month ? '' : month,
+			day: !day ? '' : this.padMonthOrDay(day),
+			month: !month ? '' : this.padMonthOrDay(month),
 			warn: dateIsBefore(getTodayDate(), {day, month, year}),
-			year: !year ? '' : year
+			year: !year ? '' : this.padYear(year)
 		};
 	}
 
@@ -35,11 +35,15 @@ class DateField extends React.Component {
 		this.setState({warn: dateIsBefore(getTodayDate(), {day, month, year})});
 	};
 
+	setStateCallback = () => {
+		this.updateDate(this.state.day, this.state.month, this.state.year);
+	};
+
 	handleYearChange = (event) => {
 		const year = event.target.value;
 		this.setState(
 			{year},
-			this.updateDate(this.state.day, this.state.month, this.state.year)
+			this.setStateCallback
 		);
 	};
 
@@ -47,7 +51,7 @@ class DateField extends React.Component {
 		const month = event.target.value;
 		this.setState(
 			{month},
-			this.updateDate(this.state.day, this.state.month, this.state.year)
+			this.setStateCallback
 		);
 	};
 
@@ -55,8 +59,41 @@ class DateField extends React.Component {
 		const day = event.target.value;
 		this.setState(
 			{day},
-			this.updateDate(this.state.day, this.state.month, this.state.year)
+			this.setStateCallback
 		);
+	};
+
+	padYear = (year) => {
+		// If year is a number, pad it for clarity ('84' -> '0084' to clarify it isn't '1984')
+		if (isNaN(Number(year)) || year === '') {
+			return year;
+		}
+		const isCommonEraDate = Math.sign(year) === 1;
+		return isCommonEraDate ? _.padStart(year, 4, 0) :
+			`-${_.padStart(Math.abs(year), 4, 0)}`;
+	};
+
+	padMonthOrDay = (num) => {
+		// If month/day is a number, pad it, mostly to match the year padding mechanism
+		if (isNaN(Number(num)) || num === '') {
+			return num;
+		}
+		return _.padStart(num, 2, 0);
+	};
+
+	handleYearInputBlur = (event) => {
+		const year = event.target.value;
+		this.setState({year: this.padYear(year)});
+	};
+
+	handleMonthInputBlur = (event) => {
+		const month = event.target.value;
+		this.setState({month: this.padMonthOrDay(month)});
+	};
+
+	handleDayInputBlur = (event) => {
+		const day = event.target.value;
+		this.setState({day: this.padMonthOrDay(day)});
 	};
 
 	handleChangeOfDatePicker = (value) => {
@@ -65,8 +102,8 @@ class DateField extends React.Component {
 		const month = (date.getMonth() + 1).toString();
 		const day = date.getDate().toString();
 		this.setState(
-			{day, month, year},
-			this.updateDate(this.state.day, this.state.month, this.state.year)
+			{day: this.padMonthOrDay(day), month: this.padMonthOrDay(month), year: this.padYear(year)},
+			this.setStateCallback
 		);
 	};
 
@@ -101,6 +138,7 @@ class DateField extends React.Component {
 							placeholder="YYYY"
 							type="text"
 							value={this.state.year}
+							onBlur={this.handleYearInputBlur}
 							onChange={this.handleYearChange}
 						/>
 						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
@@ -110,6 +148,7 @@ class DateField extends React.Component {
 							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.month}
+							onBlur={this.handleMonthInputBlur}
 							onChange={this.handleMonthChange}
 						/>
 						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
@@ -119,6 +158,7 @@ class DateField extends React.Component {
 							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.day}
+							onBlur={this.handleDayInputBlur}
 							onChange={this.handleDayChange}
 						/>
 						<InputGroup.Button style={{fontSize: 'inherit'}}>
