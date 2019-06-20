@@ -136,22 +136,22 @@ export function getEntityRelationships (entity: object) {
 		{
 			bbid: _.get(entity, 'bbid', null),
 			relationships: _.get(entity, 'relationshipSet.relationships', []).map((relationship) => {
+				const isItSourceEntity = entity.bbid === relationship.sourceBbid;
 				return {
 					id: relationship.id,
-					targetBbid: entity.bbid === relationship.sourceBbid ?
+					targetBbid: isItSourceEntity ?
 								_.get(relationship, 'targetBbid', null) :
 								_.get(relationship, 'sourceBbid', null),
-					targetEntityType: entity.bbid === relationship.sourceBbid ?
+					targetEntityType: isItSourceEntity ?
 								_.get(relationship, 'type.targetEntityType', null) :
 								_.get(relationship, 'type.sourceEntityType', null),
-					linkPhrase: entity.bbid === relationship.sourceBbid ?
+					linkPhrase: isItSourceEntity ?
 								_.get(relationship, 'type.linkPhrase', null) :
 								_.get(relationship, 'type.reverseLinkPhrase', null),
-					direction: entity.bbid === relationship.sourceBbid ?
-								'farword': 'backword',
+					direction: isItSourceEntity ? 'forward': 'backward',
 					relationshipType: {
-						name: _.get(relationship, 'type.label', null),
-						id: _.get(relationship, 'type.id', null)
+						relationshipTypeName: _.get(relationship, 'type.label', null),
+						relationshipTypeId: _.get(relationship, 'type.id', null)
 					}
 				}
 			})
