@@ -78,6 +78,17 @@ describe('GET /Edition', () => {
 		);
 	 });
 
+	 it('should return list of relationships of an edition', async function () {
+		const res = await chai.request(app).get(`/edition/${aBBID}/relationships`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body).to.have.all.keys(
+			'bbid',
+			'relationships'
+		);
+	 });
+
 	 it('should throw a 404 error if trying to access an edition that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition/${bBBID}`)
@@ -104,9 +115,22 @@ describe('GET /Edition', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of an edition that does not exist', function (done) {
+	 it('should throw a 404 error if trying to identifiers  of an edition that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition/${bBBID}/identifiers`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition not found');
+				return done();
+			});
+	 });
+
+	 it('should throw a 404 error if trying to relationships of an edition that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition/${bBBID}/relationships`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);

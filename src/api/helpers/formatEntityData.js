@@ -149,10 +149,8 @@ export function getEntityRelationships (entity: object) {
 								_.get(relationship, 'type.linkPhrase', null) :
 								_.get(relationship, 'type.reverseLinkPhrase', null),
 					direction: isItSourceEntity ? 'forward': 'backward',
-					relationshipType: {
-						relationshipTypeName: _.get(relationship, 'type.label', null),
-						relationshipTypeId: _.get(relationship, 'type.id', null)
-					}
+					relationshipTypeName: _.get(relationship, 'type.label', null),
+					relationshipTypeId: _.get(relationship, 'type.id', null)
 				}
 			})
 		}

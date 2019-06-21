@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelation, identifiersRelation} from '../helpers/utils';
-import {getEditionBasicInfo, getEntityAliases, getEntityIdentifiers} from '../helpers/formatEntityData';
+import {aliasesRelation, identifiersRelation, relationshipsRelation} from '../helpers/utils';
+import {getEditionBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
 import _ from 'lodash';
 import express from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
@@ -57,6 +57,13 @@ router.get('/:bbid/identifiers',
 	async (req, res, next) => {
 		const editionIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionIdentifiersList);
+	});
+
+router.get('/:bbid/relationships',
+	makeEntityLoader('Edition', relationshipsRelation, editionError),
+	async (req, res, next) => {
+		const editionRelationshipList = await getEntityRelationships(res.locals.entity);
+		return res.status(200).send(editionRelationshipList);
 	});
 
 export default router;

@@ -70,6 +70,17 @@ describe('GET /EditionGroup', () => {
 		);
 	 });
 
+	it('should return list of relationships of an edition group', async function () {
+		const res = await chai.request(app).get(`/edition-group/${aBBID}/relationships`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body).to.have.all.keys(
+			'bbid',
+			'relationships'
+		);
+	 });
+
 	 it('should throw a 404 error if trying to access an edition group that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition-group/${bBBID}`)
@@ -113,6 +124,19 @@ describe('GET /EditionGroup', () => {
 	it('should throw a 404 error if trying to access aliases of an edition group that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition-group/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Edition-Group not found');
+				return done();
+			});
+	 });
+
+	it('should throw a 404 error if trying to access relationships of an edition group that does not exist', function (done) {
+		chai.request(app)
+			.get(`/edition-group/${bBBID}/relationships`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);

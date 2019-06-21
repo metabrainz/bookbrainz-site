@@ -72,6 +72,17 @@ describe('GET /work', () => {
 		);
 	 });
 
+	 it('should return list of relationships of a work', async function () {
+		const res = await chai.request(app).get(`/work/${aBBID}/relationships`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body).to.have.all.keys(
+			'bbid',
+			'relationships'
+		);
+	 });
+
 	 it('should throw a 404 error if trying to access a work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}`)
@@ -115,6 +126,19 @@ describe('GET /work', () => {
 	it('should throw a 404 error if trying to access aliases of a work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Work not found');
+				return done();
+			});
+	 });
+
+	 it('should throw a 404 error if trying to access relationships of a work that does not exist', function (done) {
+		chai.request(app)
+			.get(`/work/${bBBID}/relationships`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);

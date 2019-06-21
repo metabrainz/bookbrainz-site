@@ -75,6 +75,18 @@ describe('GET /Author', () => {
 			'identifiers'
 		);
 	 });
+
+	 it('should return list of relationships of an author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/relationships`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body).to.have.all.keys(
+			'bbid',
+			'relationships'
+		);
+	 });
+
 	 it('should throw a 404 error if trying to access an author that does not exist', function (done) {
 		chai.request(app)
 			.get(`/author/${bBBID}`)
@@ -118,6 +130,19 @@ describe('GET /Author', () => {
 	it('should throw a 404 error if trying to access aliases of an author that does not exist', function (done) {
 		chai.request(app)
 			.get(`/author/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Author not found');
+				return done();
+			});
+	 });
+
+	it('should throw a 404 error if trying to access relationships of an author that does not exist', function (done) {
+		chai.request(app)
+			.get(`/author/${bBBID}/relationships`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
