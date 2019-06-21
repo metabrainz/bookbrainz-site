@@ -23,11 +23,11 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	dateObjectToString,
+	ISODateStringToObject,
+	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
-	separateDateInObject
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import _ from 'lodash';
@@ -144,9 +144,9 @@ function authorToFormState(author) {
 
 	const authorSection = {
 		beginArea: entityRoutes.areaToOption(author.beginArea),
-		beginDate: separateDateInObject(author.beginDate),
+		beginDate: ISODateStringToObject(author.beginDate),
 		endArea: entityRoutes.areaToOption(author.endArea),
-		endDate: separateDateInObject(author.endDate),
+		endDate: ISODateStringToObject(author.endDate),
 		ended: author.ended,
 		gender: author.gender && author.gender.id,
 		type: author.authorType && author.authorType.id
@@ -223,11 +223,11 @@ function transformNewForm(data) {
 		aliases,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
-		beginDate: dateObjectToString(data.authorSection.beginDate),
+		beginDate: dateObjectToISOString(data.authorSection.beginDate),
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.authorSection.endArea &&
 			data.authorSection.endArea.id,
-		endDate: data.authorSection.ended ? dateObjectToString(data.authorSection.endDate) : '',
+		endDate: data.authorSection.ended ? dateObjectToISOString(data.authorSection.endDate) : '',
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,

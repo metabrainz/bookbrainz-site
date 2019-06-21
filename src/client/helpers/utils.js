@@ -75,7 +75,14 @@ export function getTodayDate() {
 	return {day, month, year};
 }
 
-export function dateObjectToString(value) {
+/**
+ * Format a {day, month, year} object into an ISO 8601-2004 string (±YYYYYY-MM-DD)
+ * This is a duplicate of a util that cannot be direcly imported from src/server/helpers/entityRouteUtils.js
+ * @function dateObjectToISOString
+ * @param {string} value - a {day, month, year} object
+ * @returns {string} ISO 8601-2004 string (±YYYYYY-MM-DD)
+ */
+export function dateObjectToISOString(value) {
 	const isCommonEraDate = Math.sign(value.year) > -1;
 	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
 	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;

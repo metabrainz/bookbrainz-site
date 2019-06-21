@@ -237,7 +237,14 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 	return props;
 }
 
-export function separateDateInObject(value: string) {
+/**
+ * Parse an ISO 8601-2004 string and return an object with separate day, month and year, if they exist.
+ * If any of the values don't exist, the default is an empty string.
+ * @function ISODateStringToObject
+ * @param {string} value - relationshipId number for initaial relationship
+ * @returns {object} a {day, month, year} object
+ */
+export function ISODateStringToObject(value: string) {
 	const date = value ? value.split('-') : [];
 	// A leading minus sign denotes a BC date
 	// This creates an empty first array item that needs to be removed,
@@ -253,7 +260,13 @@ export function separateDateInObject(value: string) {
 	};
 }
 
-export function dateObjectToString(value) {
+/**
+ * Format a {day, month, year} object into an ISO 8601-2004 string (±YYYYYY-MM-DD)
+ * @function dateObjectToISOString
+ * @param {string} value - a {day, month, year} object
+ * @returns {string} ISO 8601-2004 string (±YYYYYY-MM-DD)
+ */
+export function dateObjectToISOString(value) {
 	const isCommonEraDate = Math.sign(value.year) > -1;
 	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
 	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;

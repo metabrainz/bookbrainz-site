@@ -29,8 +29,9 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 import {labelsForAuthor} from '../../../helpers/utils';
 
+
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
-	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
+	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
 const {Button, Col, Row} = bootstrap;
 
 function AuthorAttributes({author}) {
@@ -41,8 +42,8 @@ function AuthorAttributes({author}) {
 	const gender = extractAttribute(author.gender, 'name');
 	const beginArea = extractAttribute(author.beginArea, 'name');
 	const endArea = extractAttribute(author.endArea, 'name');
-	const beginDate = extractAttribute(author.beginDate);
-	const endDate = extractAttribute(author.endDate);
+	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
+	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(author);
 
 	const isGroup = type === 'Group';

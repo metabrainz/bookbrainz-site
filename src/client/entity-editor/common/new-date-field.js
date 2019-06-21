@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import {Button, FormControl, InputGroup} from 'react-bootstrap';
-import {dateObjectToString, getTodayDate} from '../../helpers/utils';
+import {dateObjectToISOString, getTodayDate} from '../../helpers/utils';
 import {isValid, parseISO} from 'date-fns';
 import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
@@ -10,6 +10,7 @@ import React from 'react';
 import ValidationLabel from './validation-label';
 import classNames from 'classnames';
 import {dateIsBefore} from '../validators/base';
+import {transformISODateForDisplay} from '../../helpers/entity';
 
 
 class DateField extends React.Component {
@@ -21,7 +22,7 @@ class DateField extends React.Component {
 			day: !day ? '' : this.padMonthOrDay(day),
 			month: !month ? '' : this.padMonthOrDay(month),
 			warn: dateIsBefore(getTodayDate(), {day, month, year}),
-			year: !year ? '' : this.padYear(year)
+			year: !year ? '' : this.formatYearForDisplay(year)
 		};
 	}
 
@@ -63,14 +64,20 @@ class DateField extends React.Component {
 		);
 	};
 
-	padYear = (year) => {
-		// If year is a number, pad it for clarity ('84' -> '0084' to clarify it isn't '1984')
+	/**
+	 * If year is a number, pad it for clarity ('84' -> '0084' to clarify it isn't '1984')
+	 * If it is too long (eg. extended ISO format ±YYYYYY), trim it
+	 * @function formatYearForDisplay
+	 * @param  {string|number} year - The year string or number to format
+	 * @returns {string} a short ISO date string (YYYY-MM-DD)
+	 */
+	formatYearForDisplay = (year) => {
 		if (isNaN(Number(year)) || year === '') {
 			return year;
 		}
 		const isCommonEraDate = Math.sign(year) === 1;
-		return isCommonEraDate ? _.padStart(year, 4, 0) :
-			`-${_.padStart(Math.abs(year), 4, 0)}`;
+		const ISOyear = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(year), 6, 0)}`;
+		return transformISODateForDisplay(ISOyear);
 	};
 
 	padMonthOrDay = (num) => {
@@ -83,7 +90,7 @@ class DateField extends React.Component {
 
 	handleYearInputBlur = (event) => {
 		const year = event.target.value;
-		this.setState({year: this.padYear(year)});
+		this.setState({year: this.formatYearForDisplay(year)});
 	};
 
 	handleMonthInputBlur = (event) => {
@@ -102,7 +109,7 @@ class DateField extends React.Component {
 		const month = (date.getMonth() + 1).toString();
 		const day = date.getDate().toString();
 		this.setState(
-			{day: this.padMonthOrDay(day), month: this.padMonthOrDay(month), year: this.padYear(year)},
+			{day: this.padMonthOrDay(day), month: this.padMonthOrDay(month), year: this.formatYearForDisplay(year)},
 			this.setStateCallback
 		);
 	};
@@ -118,7 +125,7 @@ class DateField extends React.Component {
 				{this.props.label}
 			</ValidationLabel>
 		);
-		const dateString = dateObjectToString({
+		const dateString = dateObjectToISOString({
 			day: this.state.day,
 			month: this.state.month,
 			year: this.state.year

@@ -22,11 +22,11 @@ import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
-	dateObjectToString,
+	ISODateStringToObject,
+	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
-	separateDateInObject
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
@@ -161,8 +161,8 @@ function publisherToFormState(publisher) {
 
 	const publisherSection = {
 		area: entityRoutes.areaToOption(publisher.area),
-		beginDate: separateDateInObject(publisher.beginDate),
-		endDate: separateDateInObject(publisher.endDate),
+		beginDate: ISODateStringToObject(publisher.beginDate),
+		endDate: ISODateStringToObject(publisher.endDate),
 		ended: publisher.ended,
 		type: publisher.publisherType && publisher.publisherType.id
 	};
@@ -228,10 +228,10 @@ function transformNewForm(data) {
 	return {
 		aliases,
 		areaId: data.publisherSection.area && data.publisherSection.area.id,
-		beginDate: dateObjectToString(data.publisherSection.beginDate),
+		beginDate: dateObjectToISOString(data.publisherSection.beginDate),
 		disambiguation: data.nameSection.disambiguation,
 		endDate: data.publisherSection.ended ?
-			dateObjectToString(data.publisherSection.endDate) : '',
+			dateObjectToISOString(data.publisherSection.endDate) : '',
 		ended: data.publisherSection.ended,
 		identifiers,
 		note: data.submissionSection.note,

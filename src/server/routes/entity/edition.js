@@ -23,12 +23,12 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
+	ISODateStringToObject,
 	addInitialRelationship,
-	dateObjectToString,
+	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
-	separateDateInObject
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import Promise from 'bluebird';
@@ -250,7 +250,7 @@ function editionToFormState(edition) {
 	);
 
 	const releaseDate = edition.releaseEventSetId ?
-		separateDateInObject(edition.releaseEventSet.releaseEvents[0].date) :
+		ISODateStringToObject(edition.releaseEventSet.releaseEvents[0].date) :
 		{day: '', month: '', year: ''};
 
 	const publisher = edition.publisherSet && (
@@ -339,7 +339,7 @@ function transformNewForm(data) {
 
 	let releaseEvents = [];
 	if (data.editionSection.releaseDate.year) {
-		releaseEvents = [{date: dateObjectToString(data.editionSection.releaseDate)}];
+		releaseEvents = [{date: dateObjectToISOString(data.editionSection.releaseDate)}];
 	}
 
 	const languages = _.map(
