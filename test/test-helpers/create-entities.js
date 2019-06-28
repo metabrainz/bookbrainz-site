@@ -22,7 +22,7 @@ import uuidv4 from 'uuid/v4';
 
 
 const {
-	bookshelf, util, Editor, EditorType, Revision, RelationshipSet,
+	bookshelf, util, Editor, EditorType, Revision, Relationship, RelationshipType, RelationshipSet,
 	Alias, AliasSet, Area, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
 	Author, Edition, EditionGroup, Publisher, Work,
@@ -74,6 +74,23 @@ const identifierTypeData = {
 	validationRegex: 'test'
 };
 
+const relationshipTypeData = {
+	description: 'test descryption',
+	id: 1,
+	label: 'test label',
+	linkPhrase: 'test phrase',
+	reverseLinkPhrase: 'test reverse link phrase',
+	sourceEntityType: 'Author',
+	targetEntityType: 'Work'
+};
+
+const relationshipData = {
+	id: 1,
+	sourceBbid: uuidv4(),
+	targetBbid: uuidv4(),
+	typeId: 1
+};
+
 const entityAttribs = {
 	aliasSetId: 1,
 	annotationId: 1,
@@ -110,7 +127,11 @@ async function createIdentifierAndIdentifierSet() {
 }
 async function createRelationshipSet() {
 	// Create relationships here if you need them
+	await new RelationshipType(relationshipTypeData)
+		.save(null, {method: 'insert'});
 	await new RelationshipSet(setData)
+		.save(null, {method: 'insert'});
+	await new Relationship(relationshipData)
 		.save(null, {method: 'insert'});
 }
 const languageAttribs = {
@@ -270,6 +291,7 @@ export function truncateEntities() {
 		'bookbrainz.identifier_set',
 		'bookbrainz.identifier_type',
 		'bookbrainz.relationship',
+		'bookbrainz.relationship_type',
 		'bookbrainz.relationship_set',
 		'bookbrainz.disambiguation',
 		'bookbrainz.entity',
