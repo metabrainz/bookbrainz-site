@@ -16,19 +16,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/* eslint-disable */
+// @flow
+
+
 import _ from 'lodash';
 
-function getDefaultAlias(entity: object){
+
+function getDefaultAlias(entity: object) {
 	return {
+		aliasLanguage: _.get(entity, 'defaultAlias.language.name', null),
 		name: _.get(entity, 'defaultAlias.name', null),
-		sortName: _.get(entity, 'defaultAlias.sortName', null),
-		aliasLanguage: _.get(entity, 'defaultAlias.language.name', null)
-	}
+		sortName: _.get(entity, 'defaultAlias.sortName', null)
+	};
 }
 
 function getLanguages(entity: object) {
-	return _.get(entity, 'languageSet.languages', []).map((language) => language.name)
+	return _.get(entity, 'languageSet.languages', []).map((language) => language.name);
 }
 
 export function getWorkBasicInfo(work: object) {
@@ -37,83 +40,80 @@ export function getWorkBasicInfo(work: object) {
 			bbid: _.get(work, 'bbid', null),
 			defaultAlias: getDefaultAlias(work),
 			disambiguation: _.get(work, 'disambiguation.comment', null),
+			entityType: _.get(work, 'type', null),
 			languages: getLanguages(work),
-			workType: _.get(work, 'workType.label', null),
-			entityType: _.get(work, 'type', null)
+			workType: _.get(work, 'workType.label', null)
 		};
 }
 
 export function getEditionBasicInfo(edition: object) {
-	
 	return _.isNil(edition) ? null :
-	{
-		bbid: _.get(edition, 'bbid', null),
-		defaultAlias: getDefaultAlias(edition),
-		languages: getLanguages(edition),
-		disambiguation: _.get(edition, 'disambiguation.comment', null),
-		hight: _.get(edition, 'hight', null),
-		width: _.get(edition, 'width', null),
-		depth: _.get(edition, 'depth', null),
-		pages: _.get(edition, 'pages', null),
-		releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),
-		editionFormat: _.get(edition, 'editionFormat.label', null),
-		weight: _.get(edition, 'weight', null),
-		status: _.get(edition, 'editionStatus.label', null)
-	}
+		{
+			bbid: _.get(edition, 'bbid', null),
+			defaultAlias: getDefaultAlias(edition),
+			depth: _.get(edition, 'depth', null),
+			disambiguation: _.get(edition, 'disambiguation.comment', null),
+			editionFormat: _.get(edition, 'editionFormat.label', null),
+			hight: _.get(edition, 'hight', null),
+			languages: getLanguages(edition),
+			pages: _.get(edition, 'pages', null),
+			releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),
+			status: _.get(edition, 'editionStatus.label', null),
+			weight: _.get(edition, 'weight', null),
+			width: _.get(edition, 'width', null)
+		};
 }
 
 export function getEditionGroupBasicInfo(editionGroup: object) {
 	return _.isNil(editionGroup) ? null :
-	{
-		bbid: _.get(editionGroup, 'bbid', null),
-		defaultAlias: getDefaultAlias(editionGroup),
-		disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
-		type: _.get(editionGroup, 'editionGroupType.label')
-	}
+		{
+			bbid: _.get(editionGroup, 'bbid', null),
+			defaultAlias: getDefaultAlias(editionGroup),
+			disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
+			type: _.get(editionGroup, 'editionGroupType.label')
+		};
 }
 
 export function getAuthorBasicInfo(author: object) {
-	return _.isNil(author) ? null : 
-	{
-		bbid: _.get(author, 'bbid', null),
-		defaultAlias: getDefaultAlias(author),
-		disambiguation: _.get(author, 'disambiguation.comment', null),
-		type: _.get(author, 'authorType.label', null),
-		gender: _.get(author, 'gender.name', null),
-		beginArea: _.get(author, 'beginArea.name', null),
-		beginDate: _.get(author, 'beginDate', null),
-		ended: _.get(author, 'ended', null),
-		endArea: _.get(author, 'endArea.name', null),
-		endDate: _.get(author, 'endDate', null)
-	}
+	return _.isNil(author) ? null :
+		{
+			bbid: _.get(author, 'bbid', null),
+			beginArea: _.get(author, 'beginArea.name', null),
+			beginDate: _.get(author, 'beginDate', null),
+			defaultAlias: getDefaultAlias(author),
+			disambiguation: _.get(author, 'disambiguation.comment', null),
+			endArea: _.get(author, 'endArea.name', null),
+			endDate: _.get(author, 'endDate', null),
+			ended: _.get(author, 'ended', null),
+			gender: _.get(author, 'gender.name', null),
+			type: _.get(author, 'authorType.label', null)
+		};
 }
 
 export function getPublisherBasicInfo(publisher: object) {
-	return _.isNil(publisher) ? null : 
-	{
-		bbid: _.get(publisher, 'bbid', null),
-		defaultAlias: getDefaultAlias(publisher),
-		disambiguation: _.get(publisher, 'disambiguation.comment', null),
-		type: _.get(publisher, 'publisherType.label', null),
-		area: _.get(publisher, 'area.name', null),
-		beginDate: _.get(publisher, 'beginDate', null),
-		ended: _.get(publisher, 'ended', null),
-		endDate: _.get(publisher, 'endDate', null)
-	}
+	return _.isNil(publisher) ? null :
+		{
+			area: _.get(publisher, 'area.name', null),
+			bbid: _.get(publisher, 'bbid', null),
+			beginDate: _.get(publisher, 'beginDate', null),
+			defaultAlias: getDefaultAlias(publisher),
+			disambiguation: _.get(publisher, 'disambiguation.comment', null),
+			endDate: _.get(publisher, 'endDate', null),
+			ended: _.get(publisher, 'ended', null),
+			type: _.get(publisher, 'publisherType.label', null)
+		};
 }
 
 export function getEntityAliases(entity: object) {
 	return _.isNil(entity) ? null :
 		{
-			bbid: _.get(entity, 'bbid', null),
-			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => {
-				return {
-					name: _.get(alias, 'name', null),
-					sortName: _.get(alias, 'sortName', null),
-					aliasLanguage: _.get(alias, 'language.name', null),
-					primary: _.get(alias, 'primary', null)
-				};
-			})
+			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => ({
+				aliasLanguage: _.get(alias, 'language.name', null),
+				name: _.get(alias, 'name', null),
+				primary: _.get(alias, 'primary', null),
+				sortName: _.get(alias, 'sortName', null)
+			})),
+			bbid: _.get(entity, 'bbid', null)
 		};
 }
 
@@ -121,37 +121,35 @@ export function getEntityIdentifiers(entity: object) {
 	return _.isNil(entity) ? null :
 		{
 			bbid: _.get(entity, 'bbid', null),
-			identifiers: _.get(entity, 'identifierSet.identifiers', []).map((identifier) => {
-				return {
-					type: _.get(identifier, 'type.label', null),
-					value: _.get(identifier, 'value', null)
-				};
-			})
+			identifiers: _.get(entity, 'identifierSet.identifiers', []).map((identifier) => ({
+				type: _.get(identifier, 'type.label', null),
+				value: _.get(identifier, 'value', null)
+			}))
 		};
 }
 
 
-export function getEntityRelationships (entity: object) {
+export function getEntityRelationships(entity: object) {
 	return _.isNil(entity) ? null :
 		{
 			bbid: _.get(entity, 'bbid', null),
 			relationships: _.get(entity, 'relationshipSet.relationships', []).map((relationship) => {
 				const isItSourceEntity = entity.bbid === relationship.sourceBbid;
 				return {
+					direction: isItSourceEntity ? 'forward' : 'backward',
 					id: relationship.id,
-					targetBbid: isItSourceEntity ?
-								_.get(relationship, 'targetBbid', null) :
-								_.get(relationship, 'sourceBbid', null),
-					targetEntityType: isItSourceEntity ?
-								_.get(relationship, 'type.targetEntityType', null) :
-								_.get(relationship, 'type.sourceEntityType', null),
 					linkPhrase: isItSourceEntity ?
-								_.get(relationship, 'type.linkPhrase', null) :
-								_.get(relationship, 'type.reverseLinkPhrase', null),
-					direction: isItSourceEntity ? 'forward': 'backward',
+						_.get(relationship, 'type.linkPhrase', null) :
+						_.get(relationship, 'type.reverseLinkPhrase', null),
+					relationshipTypeId: _.get(relationship, 'type.id', null),
 					relationshipTypeName: _.get(relationship, 'type.label', null),
-					relationshipTypeId: _.get(relationship, 'type.id', null)
-				}
+					targetBbid: isItSourceEntity ?
+						_.get(relationship, 'targetBbid', null) :
+						_.get(relationship, 'sourceBbid', null),
+					targetEntityType: isItSourceEntity ?
+						_.get(relationship, 'type.targetEntityType', null) :
+						_.get(relationship, 'type.sourceEntityType', null)
+				};
 			})
-		}
+		};
 }
