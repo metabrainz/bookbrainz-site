@@ -54,33 +54,36 @@ describe('GET /work', () => {
 		const res = await chai.request(app).get(`/work/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body.aliases).to.be.an('array');
 		expect(res.body).to.have.all.keys(
 			'bbid',
 			'aliases'
 		);
+		expect(res.body.aliases).to.be.an('array');
+		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
 	 it('should return list of identifiers of work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body.identifiers).to.be.an('array');
 		expect(res.body).to.have.all.keys(
 			'bbid',
 			'identifiers'
 		);
+		expect(res.body.identifiers).to.be.an('array');
+		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
 	 it('should return list of relationships of a work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body.relationships).to.be.an('array');
 		expect(res.body).to.have.all.keys(
 			'bbid',
 			'relationships'
 		);
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body.relationships).to.have.lengthOf(1);
 	 });
 
 	 it('should throw a 404 error if trying to access a work that does not exist', function (done) {

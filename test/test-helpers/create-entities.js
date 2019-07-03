@@ -84,13 +84,6 @@ const relationshipTypeData = {
 	targetEntityType: 'Work'
 };
 
-const relationshipData = {
-	id: 1,
-	sourceBbid: uuidv4(),
-	targetBbid: uuidv4(),
-	typeId: 1
-};
-
 const entityAttribs = {
 	aliasSetId: 1,
 	annotationId: 1,
@@ -127,13 +120,25 @@ async function createIdentifierAndIdentifierSet() {
 }
 async function createRelationshipSet() {
 	// Create relationships here if you need them
-	await new RelationshipType(relationshipTypeData)
-		.save(null, {method: 'insert'});
 	await new RelationshipSet(setData)
+		.save(null, {method: 'insert'});
+}
+
+async function createRelationship(sourceBbid, targetBbid, targetEntityType) {
+	const relationshipData = {
+		id: 1,
+		sourceBbid,
+		targetBbid,
+		typeId: 1
+	};
+	await new Entity({bbid: targetBbid, type: targetEntityType})
+		.save(null, {method: 'insert'});
+	await new RelationshipType(relationshipTypeData)
 		.save(null, {method: 'insert'});
 	await new Relationship(relationshipData)
 		.save(null, {method: 'insert'});
 }
+
 const languageAttribs = {
 	frequency: 1,
 	id: 1,
@@ -186,7 +191,6 @@ async function createEntityPrerequisites() {
 
 export async function createEdition(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-
 	await createEntityPrerequisites();
 
 	await new Entity({bbid, type: 'Edition'})
@@ -197,8 +201,10 @@ export async function createEdition(optionalBBID) {
 
 export async function createWork(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-
+	await new Entity({bbid, type: 'Work'})
+		.save(null, {method: 'insert'});
 	await createEntityPrerequisites();
+	await createRelationship(bbid, uuidv4(), 'Author');
 	const languageSetId = await createLanguageSet();
 
 	const workAttribs = {
@@ -207,8 +213,6 @@ export async function createWork(optionalBBID) {
 		typeId: setData.id
 	};
 	await new WorkType({...setData, label: 'Work Type 1'})
-		.save(null, {method: 'insert'});
-	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
 	await new Work({...entityAttribs, ...workAttribs})
 		.save(null, {method: 'insert'});
