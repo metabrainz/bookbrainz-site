@@ -21,6 +21,19 @@
 
 import * as commonUtils from '../../common/helpers/utils';
 
+/**
+ * This is a middleware function to load entity detail according to given relations
+ *
+ * @param {string} modelName - Name of entity model
+ * @param {string[]} relations - List of entity relations for fetching the related detail
+ * @param {string} errMessage - Error message for responce, if any error will occur
+ * @returns {object} responce - return entity datail with status code
+ *
+ * @example
+ *
+ *		makeEntityLoader(modelName: string, relations: array, errMessage: string)
+ */
+
 
 export function makeEntityLoader(modelName, relations, errMessage) {
 	return async (req, res, next) => {

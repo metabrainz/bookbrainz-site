@@ -21,6 +21,16 @@
 
 import _ from 'lodash';
 
+/**
+ * This is function to get alias data from entity data
+ *
+ * @param {object} entity - Entity datail which is fetched from database
+ * @returns {object} aliasData - Data of default alias of entity
+ *
+ * @example
+ *
+ *		getDefaultAlias(entity: onject)
+ */
 
 function getDefaultAlias(entity: object) {
 	return {
@@ -30,9 +40,32 @@ function getDefaultAlias(entity: object) {
 	};
 }
 
+/**
+ * This is function to get language detail from entity data
+ *
+ * @param {object} entity - Entity datail which is fetched from the database
+ * @returns {string[]} languages - List of languages of entity
+ *
+ * @example
+ *
+ *		getLanguages(entity: object)
+ */
+
 function getLanguages(entity: object) {
 	return _.get(entity, 'languageSet.languages', []).map((language) => language.name);
 }
+
+/**
+ * getWorkBasicInfo is function to extract the basic detail of work to
+ * send the response to the api
+ *
+ * @param {object} work - Work data which is fetched from the database
+ * @returns {object} workDetail - Basic data of work entity for api response
+ *
+ * @example
+ *
+ *		getWorkBasicInfo(work: object)
+ */
 
 export function getWorkBasicInfo(work: object) {
 	return _.isNil(work) ? null :
@@ -45,6 +78,18 @@ export function getWorkBasicInfo(work: object) {
 			workType: _.get(work, 'workType.label', null)
 		};
 }
+
+/**
+ * getEditionBasicInfo is function to extract the basic detail of edition to
+ * send the response to the api
+ *
+ * @param {object} editon - Edition data which is fetched from the database
+ * @returns {object} editionDetail - Basic data of edition entity for api response
+ *
+ * @example
+ *
+ *		getEditionBasicInfo(editon: object)
+ */
 
 export function getEditionBasicInfo(edition: object) {
 	return _.isNil(edition) ? null :
@@ -64,6 +109,18 @@ export function getEditionBasicInfo(edition: object) {
 		};
 }
 
+/**
+ * getEditionGroupBasicInfo is function to extract the basic detail of edition-group to
+ * send the response to the api
+ *
+ * @param {object} editionGroup - Edition data which is fetched from the database
+ * @returns {object} editionGroupDetail - Basic data of edition-group entity for api response
+ *
+ * @example
+ *
+ *		getEditionGroupBasicInfo(editionGroup: object)
+ */
+
 export function getEditionGroupBasicInfo(editionGroup: object) {
 	return _.isNil(editionGroup) ? null :
 		{
@@ -73,6 +130,18 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 			type: _.get(editionGroup, 'editionGroupType.label')
 		};
 }
+
+/**
+ * getAuthorBasicInfo is function to extract the basic detail of author to
+ * send the response to the api
+ *
+ * @param {object} author - Author data which is fetched from the database
+ * @returns {object} authorDetail - Basic data of author entity for api response
+ *
+ * @example
+ *
+ *		getAuthorBasicInfo(author: object)
+ */
 
 export function getAuthorBasicInfo(author: object) {
 	return _.isNil(author) ? null :
@@ -90,6 +159,18 @@ export function getAuthorBasicInfo(author: object) {
 		};
 }
 
+/**
+ * getPublisherBasicInfo is function to extract the basic detail of publisher to
+ * send the response to the api
+ *
+ * @param {object} publisher - Publisher data which is fetched from the database
+ * @returns {object} publisher - Basic data of publisher entity for api response
+ *
+ * @example
+ *
+ *		getPublisherBasicInfo(publisher: object)
+ */
+
 export function getPublisherBasicInfo(publisher: object) {
 	return _.isNil(publisher) ? null :
 		{
@@ -104,6 +185,17 @@ export function getPublisherBasicInfo(publisher: object) {
 		};
 }
 
+/**
+ * getEntityAliases is function to extract the list of aliases of an entity
+ *
+ * @param {object} entity - Entity data which is fetched from the database
+ * @returns {object[]} aliases - List of aliases of an entity for api response
+ *
+ * @example
+ *
+ *		getEntityAliases(entity: object)
+ */
+
 export function getEntityAliases(entity: object) {
 	return _.isNil(entity) ? null :
 		{
@@ -117,6 +209,17 @@ export function getEntityAliases(entity: object) {
 		};
 }
 
+/**
+ * getEntityIdentifiers is function to extract the list of indentifiers of an entity
+ *
+ * @param {object} entity - Entity data which is fetched from the database
+ * @returns {object[]} identifiers - List of identifiers of an entity for api response
+ *
+ * @example
+ *
+ *		getEntityIdentifiers(entity: object)
+ */
+
 export function getEntityIdentifiers(entity: object) {
 	return _.isNil(entity) ? null :
 		{
@@ -127,6 +230,17 @@ export function getEntityIdentifiers(entity: object) {
 			}))
 		};
 }
+
+/**
+ * getEntityRelationships is function to extract the list of relationshiops of an entity
+ *
+ * @param {object} entity - Entity data which is fetched from the database
+ * @returns {object[]} relationships - List of relationships of an entity for api response
+ *
+ * @example
+ *
+ *		getEntityRelationships(entity: object)
+ */
 
 
 export function getEntityRelationships(entity: object) {
