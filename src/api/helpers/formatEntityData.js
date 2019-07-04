@@ -22,14 +22,19 @@
 import _ from 'lodash';
 
 /**
- * This is function to get alias data from entity data
- *
- * @param {object} entity - Entity datail which is fetched from database
- * @returns {object} aliasData - Data of default alias of entity
+ * A function to extract the default alias from ORM entity
+ * @function
+ * @param {object} entity - an ORM entity
+ * @returns {object} an object containing default alias of an ORM entity.
+ * Each property defaults to null.
  *
  * @example
- *
- *		getDefaultAlias(entity: onject)
+ *		getDefaultAlias(entity);
+ *		/* => {
+			"aliasLanguage": "English",
+			"name": "H. Beam Piper",
+			"sortName": "Piper, H. Beam"
+		}
  */
 
 function getDefaultAlias(entity: object) {
@@ -41,14 +46,15 @@ function getDefaultAlias(entity: object) {
 }
 
 /**
- * This is function to get language detail from entity data
- *
- * @param {object} entity - Entity datail which is fetched from the database
- * @returns {string[]} languages - List of languages of entity
+ * A function to extract the languages from ORM entity
+ * @function
+ * @param {object} entity - an ORM entity
+ * @returns {string[]} an array containing languages of an ORM entity.
+ * By default it return []
  *
  * @example
- *
- *		getLanguages(entity: object)
+ *		getLanguages(entity);
+ *		/* => ['Hindi', 'English', 'Spanish']
  */
 
 function getLanguages(entity: object) {
@@ -56,15 +62,29 @@ function getLanguages(entity: object) {
 }
 
 /**
- * getWorkBasicInfo is function to extract the basic detail of work to
- * send the response to the api
- *
- * @param {object} work - Work data which is fetched from the database
- * @returns {object} workDetail - Basic data of work entity for api response
+ * A function to extract the basic details of a Work ORM entity
+ * @function
+ * @param {object} work - a work ORM entity
+ * @returns {object} an object containing the basic data of a work entity.
+ * Each property defaults to null. If work is null or undefined, returns null.
  *
  * @example
- *
- *		getWorkBasicInfo(work: object)
+ * 		const work = await orm.func.entity.getEntity(orm, 'Work', bbid, relations);
+ *		getWorkBasicInfo(work);
+ *		/* => {
+			"bbid": "ba446064-90a5-447b-abe5-139be547da2e",
+			"defaultAlias": {
+				"aliasLanguage": "English",
+				"name": "Harry Potter",
+				"sortName": "Harry Potter"
+			},
+			"disambiguation": null,
+			"entityType": "Work",
+			"languages": [
+				"English"
+			],
+			"workType": "Epic"
+		}
  */
 
 export function getWorkBasicInfo(work: object) {
@@ -80,15 +100,37 @@ export function getWorkBasicInfo(work: object) {
 }
 
 /**
- * getEditionBasicInfo is function to extract the basic detail of edition to
- * send the response to the api
- *
- * @param {object} editon - Edition data which is fetched from the database
- * @returns {object} editionDetail - Basic data of edition entity for api response
+ * A function to extract the basic details of an Edition ORM entity
+ * @function
+ * @param {object} edition - an edition ORM entity
+ * @returns {object} an object containing the basic data of an edition entity.
+ * Each property defaults to null. If edition is null or undefined, returns null.
  *
  * @example
- *
- *		getEditionBasicInfo(editon: object)
+ * 		const work = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
+ *		getEditionBasicInfo(work);
+ *		/* => {
+			"bbid": "442ab642-985a-4957-9d61-8a1d9e82de1f",
+			"defaultAlias": {
+				"aliasLanguage": "English",
+				"name": "A Monster Calls",
+				"sortName": "Monster Calls, A"
+			},
+			"depth": null,
+			"disambiguation": null,
+			"editionFormat": "eBook",
+			"hight": null,
+			"languages": [
+				"English"
+			],
+			"pages": 214,
+			"releaseEventDates": [
+				"2011-01-01"
+			],
+			"status": "Official",
+			"weight": null,
+			"width": null
+		}
  */
 
 export function getEditionBasicInfo(edition: object) {
@@ -110,15 +152,25 @@ export function getEditionBasicInfo(edition: object) {
 }
 
 /**
- * getEditionGroupBasicInfo is function to extract the basic detail of edition-group to
- * send the response to the api
- *
- * @param {object} editionGroup - Edition data which is fetched from the database
- * @returns {object} editionGroupDetail - Basic data of edition-group entity for api response
+ * A function to extract the basic details of an editionGroup ORM entity
+ * @function
+ * @param {object} editionGroup - an editionGroup ORM entity
+ * @returns {object} an object containing the basic data of an editionGroup entity.
+ * Each property defaults to null. If author is null or undefined, returns null.
  *
  * @example
- *
- *		getEditionGroupBasicInfo(editionGroup: object)
+ * 		const editionGroup = await orm.func.entity.getEntity(orm, 'EditionGroup', bbid, relations);
+ *		getEditionGroupBasicInfo(editionGroup);
+ *		/* => {
+			"bbid": "3889b695-70d5-4933-9f08-defad217623e",
+			"defaultAlias": {
+				"aliasLanguage": "English",
+				"name": "A Suitable Boy",
+				"sortName": "Suitable Boy, A"
+			},
+			"disambiguation": null,
+			"type": "Book"
+		}
  */
 
 export function getEditionGroupBasicInfo(editionGroup: object) {
@@ -132,15 +184,31 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 }
 
 /**
- * getAuthorBasicInfo is function to extract the basic detail of author to
- * send the response to the api
- *
- * @param {object} author - Author data which is fetched from the database
- * @returns {object} authorDetail - Basic data of author entity for api response
+ * A function to extract the basic details of an Author ORM entity
+ * @function
+ * @param {object} author - an Author ORM entity
+ * @returns {object} an object containing the basic data of an Author entity.
+ * Each property defaults to null. If author is null or undefined, returns null.
  *
  * @example
- *
- *		getAuthorBasicInfo(author: object)
+ * 		const author = await orm.func.entity.getEntity(orm, 'Author', bbid, relations);
+ *		getAuthorBasicInfo(author);
+ *		/* => {
+			"bbid": "86f86a31-7c51-49ed-af71-9523cca30265",
+			"beginArea": null,
+			"beginDate": "1904-03-23",
+			"defaultAlias": {
+				"aliasLanguage": "English",
+				"name": "H. Beam Piper",
+				"sortName": "Piper, H. Beam"
+			},
+			"disambiguation": null,
+			"endArea": null,
+			"endDate": "1964-11-06",
+			"ended": true,
+			"gender": "Male",
+			"type": "Person"
+		}
  */
 
 export function getAuthorBasicInfo(author: object) {
@@ -160,15 +228,29 @@ export function getAuthorBasicInfo(author: object) {
 }
 
 /**
- * getPublisherBasicInfo is function to extract the basic detail of publisher to
- * send the response to the api
- *
- * @param {object} publisher - Publisher data which is fetched from the database
- * @returns {object} publisher - Basic data of publisher entity for api response
+ * A function to extract the basic details of a Publisher ORM entity
+ * @function
+ * @param {object} publisher - a Publisher ORM entity
+ * @returns {object} an object containing the basic data of a publisher entity.
+ * Each property defaults to null. If publisher is null or undefined, returns null.
  *
  * @example
- *
- *		getPublisherBasicInfo(publisher: object)
+ * 		const author = await orm.func.entity.getEntity(orm, 'Publisher', bbid, relations);
+ *		getPublisherBasicInfo(publisher);
+ *		/* => {
+			"area": "India",
+			"bbid": "e418874e-5684-4fe9-9d2d-1b7e5d43fd59",
+			"beginDate": "1943",
+			"defaultAlias": {
+				"aliasLanguage": "[Multiple languages]",
+				"name": "Bharati Bhawan",
+				"sortName": "Bhawan, Bharati"
+			},
+			"disambiguation": null,
+			"endDate": null,
+			"ended": false,
+			"type": "Publisher"
+		}
  */
 
 export function getPublisherBasicInfo(publisher: object) {
@@ -186,14 +268,25 @@ export function getPublisherBasicInfo(publisher: object) {
 }
 
 /**
- * getEntityAliases is function to extract the list of aliases of an entity
+ * getEntityAliases is a function to extract the list of aliases from ORM entity
  *
- * @param {object} entity - Entity data which is fetched from the database
- * @returns {object[]} aliases - List of aliases of an entity for api response
- *
+ * @param {object} entity - An ORM Entity
+ * @returns {object} an object conatining the bbid and list of aliases data of an ORM entity
+ * Each property of object defaults to null. If entity is null or undefined, returns null.
  * @example
- *
- *		getEntityAliases(entity: object)
+ *		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
+ *		getEntityAliases(edition);
+ *		/* => {
+			"aliases": [
+				{
+					"aliasLanguage": "English",
+					"name": "A Monster Calls",
+					"primary": true,
+					"sortName": "Monster Calls, A"
+				}
+			],
+			"bbid": "442ab642-985a-4957-9d61-8a1d9e82de1f"
+		}
  */
 
 export function getEntityAliases(entity: object) {
@@ -210,14 +303,24 @@ export function getEntityAliases(entity: object) {
 }
 
 /**
- * getEntityIdentifiers is function to extract the list of indentifiers of an entity
+ * getEntityIdentifiers is a function to extract the list of indentifiers from an ORM entity
  *
- * @param {object} entity - Entity data which is fetched from the database
- * @returns {object[]} identifiers - List of identifiers of an entity for api response
+ * @param {object} entity - An ORM entity
+ * @returns {object} an object containing the bbid and list of identifier data of an entity
+ * Each property of object defaults to null. If entity object is null or undefined, returns null.
  *
  * @example
- *
- *		getEntityIdentifiers(entity: object)
+ *		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
+ *		getEntityIdentifiers(edition);
+ *		/* => {
+			"bbid": "442ab642-985a-4957-9d61-8a1d9e82de1f",
+			"identifiers": [
+				{
+					"type": "Amazon ASIN",
+					"value": "B00A9U9J6C"
+				}
+			]
+		}
  */
 
 export function getEntityIdentifiers(entity: object) {
@@ -232,16 +335,30 @@ export function getEntityIdentifiers(entity: object) {
 }
 
 /**
- * getEntityRelationships is function to extract the list of relationshiops of an entity
+ * getEntityRelationships is a function to extract the list of relationships from an ORM entity
  *
- * @param {object} entity - Entity data which is fetched from the database
- * @returns {object[]} relationships - List of relationships of an entity for api response
+ * @param {object} entity -  An ORM entity
+ * @returns {object} an object containing the bbid and list of ralationship data of an ORM entity
+ * Each property of object defaults to null. If entity is null or undefined, returns null.
  *
  * @example
- *
- *		getEntityRelationships(entity: object)
+ *		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
+ *		getEntityRelationships(edition);
+ *		/* => {
+			"bbid": "442ab642-985a-4957-9d61-8a1d9e82de1f",
+			"relationships": [
+				{
+					"direction": "backward",
+					"id": 2643,
+					"linkPhrase": "published by",
+					"relationshipTypeId": 4,
+					"relationshipTypeName": "Publisher",
+					"targetBbid": "aeb93857-6d00-4494-9a7e-ee643dc0bf4d",
+					"targetEntityType": "Publisher"
+				}
+			]
+		}
  */
-
 
 export function getEntityRelationships(entity: object) {
 	return _.isNil(entity) ? null :

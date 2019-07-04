@@ -26,12 +26,19 @@ import * as commonUtils from '../../common/helpers/utils';
  *
  * @param {string} modelName - Name of entity model
  * @param {string[]} relations - List of entity relations for fetching the related detail
- * @param {string} errMessage - Error message for responce, if any error will occur
- * @returns {object} responce - return entity datail with status code
- *
+ * @param {string} errMessage - Error message, if any error will occur
+ * @returns {object} an object containing the error message if any error will occur.
+ * If entity is founded succesfully in the database this function set the entity data
+ * at res.locals.entity and return to next function.
  * @example
- *
- *		makeEntityLoader(modelName: string, relations: array, errMessage: string)
+ *		const errorMessage = 'Edition  is not founded';
+ *		makeEntityLoader('Edition', ['defaultAlias.language', 'editionStatus'], errMessage);
+ * First, check the bbid is valid or not.
+ * If bbid is valid then extract the entity data from database by using bbid and relations of
+ * that entity. If entity is founded succesfully then set that entity data to the res.locals.entity
+ * otherwise return an object {message: errMessage} as response with status code 404.
+ * If bbid is not valid then return object {message: 'BBID is not valid uuid'} as response with
+ * status code 406.
  */
 
 
