@@ -86,6 +86,8 @@
     "serve-static": "^1.13.2",
     "superagent": "^3.8.2",
     "superagent-bluebird-promise": "^4.1.0",
+    "swagger-jsdoc": "^3.2.9",
+    "swagger-ui-express": "^4.0.7",
     "uglify-js": "^3.4.9",
     "validator": "^9.1.2",
     "webpack-hot-middleware": "^2.22.3"

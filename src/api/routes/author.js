@@ -36,6 +36,19 @@ const authorBasicRelations = [
 
 const authorError = 'Author not found';
 
+/**
+ @swagger
+ * /author/bbid:
+ *   get:
+ *     description: Retrive the basic information of an author
+ *     tags:
+ *       - author
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ */
+
 router.get('/:bbid',
 	makeEntityLoader('Author', authorBasicRelations, authorError),
 	async (req, res, next) => {

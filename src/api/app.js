@@ -35,6 +35,7 @@ import path from 'path';
 import redis from 'connect-redis';
 import routes from './routes';
 import session from 'express-session';
+import swaggerRoute from './swagger';
 
 
 Promise.config({
@@ -78,6 +79,9 @@ app.use(session({
 
 // Set up routes
 routes(app);
+
+// use swagger-Ui-express for your app documentation endpoint
+app.use('/api-docs', swaggerRoute);
 
 // Allow only get requests for now throw error for any other type of requests
 app.all('/*', allowOnlyGetMethod);
