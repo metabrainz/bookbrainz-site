@@ -48,8 +48,19 @@ export const editorAttribs = {
 	typeId: 1
 };
 
+const languageAttribs = {
+	frequency: 1,
+	id: 1,
+	isoCode1: 'en',
+	isoCode2b: 'eng',
+	isoCode2t: 'eng',
+	isoCode3: 'eng',
+	name: 'English'
+};
+
 const aliasData = {
 	...setData,
+	languageId: 42,
 	name: 'work name',
 	sortName: 'Work sort name'
 };
@@ -105,26 +116,60 @@ export async function createEditor() {
 }
 
 async function createAliasAndAliasSet() {
-	await new Alias(aliasData)
+	await new Language({...languageAttribs, id: aliasData.languageId})
 		.save(null, {method: 'insert'});
-	await new AliasSet({...setData, defaultAliasId: 1})
+	const alias = await new Alias(aliasData)
 		.save(null, {method: 'insert'});
+	await new AliasSet({
+		...setData,
+		defaultAliasId: alias.get('id')
+	})
+		.save(null, {method: 'insert'})
+		.then((model) => model.aliases().attach([alias]));
 }
+
 async function createIdentifierAndIdentifierSet() {
 	await new IdentifierType(identifierTypeData)
 		.save(null, {method: 'insert'});
+	const identifier = await new Identifier(identifierData)
+		.save(null, {method: 'insert'});
 	await new IdentifierSet(setData)
-		.save(null, {method: 'insert'});
-	await new Identifier(identifierData)
-		.save(null, {method: 'insert'});
-}
-async function createRelationshipSet() {
-	// Create relationships here if you need them
-	await new RelationshipSet(setData)
-		.save(null, {method: 'insert'});
+		.save(null, {method: 'insert'})
+		.then((model) => model.identifiers().attach([identifier]));
 }
 
-async function createRelationship(sourceBbid, targetBbid, targetEntityType) {
+async function createRelationshipSet(sourceBbid, targetBbid, entityType, targetEntityType) {
+	const safeTargetBbid = targetBbid || uuidv4();
+	const safeSourceBbid = sourceBbid || uuidv4();
+	const relationshipData = {
+		id: 1,
+		sourceBbid: safeSourceBbid,
+		targetBbid: safeTargetBbid,
+		typeId: 1
+	};
+
+	if (!sourceBbid) {
+		// We're only creating a relationship set for show,
+		// we don't care what type of entity we use
+		await new Entity({bbid: safeSourceBbid, type: entityType || 'Author'})
+			.save(null, {method: 'insert'});
+	}
+	await new RelationshipType(relationshipTypeData)
+		.save(null, {method: 'insert'});
+	await new Entity({bbid: safeTargetBbid, type: targetEntityType || 'Author'})
+		.save(null, {method: 'insert'});
+
+	const relationship = await new Relationship(relationshipData)
+		.save(null, {method: 'insert'});
+	await new RelationshipSet(setData)
+		.save(null, {method: 'insert'})
+		.then(
+			(model) =>
+				model.relationships().attach([relationship]).then(() => model)
+		);
+}
+
+async function createRelationshipAndRelationshipSet(sourceBbid, targetBbid, targetEntityType) {
 	const relationshipData = {
 		id: 1,
 		sourceBbid,
@@ -135,19 +180,12 @@ async function createRelationship(sourceBbid, targetBbid, targetEntityType) {
 		.save(null, {method: 'insert'});
 	await new RelationshipType(relationshipTypeData)
 		.save(null, {method: 'insert'});
-	await new Relationship(relationshipData)
+	const relationship = await new Relationship(relationshipData)
 		.save(null, {method: 'insert'});
+	await new RelationshipSet({id: 42})
+		.save(null, {method: 'insert'})
+		.then((model) => model.relationships().attach([relationship]));
 }
-
-const languageAttribs = {
-	frequency: 1,
-	id: 1,
-	isoCode1: 'en',
-	isoCode2b: 'eng',
-	isoCode2t: 'eng',
-	isoCode3: 'eng',
-	name: 'English'
-};
 
 async function createLanguageSet() {
 	// Create relationships here if you need them
@@ -168,11 +206,11 @@ export function getRandomUUID() {
 	return uuidv4();
 }
 
-async function createEntityPrerequisites() {
+async function createEntityPrerequisites(entityBbid) {
 	await createEditor();
 	await createAliasAndAliasSet();
 	await createIdentifierAndIdentifierSet();
-	await createRelationshipSet();
+	await createRelationshipSet(entityBbid);
 
 	await new Disambiguation({
 		...setData,
@@ -203,8 +241,8 @@ export async function createWork(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
-	await createEntityPrerequisites();
-	await createRelationship(bbid, uuidv4(), 'Author');
+	await createEntityPrerequisites(bbid);
+	// await createRelationshipAndRelationshipSet(bbid, uuidv4(), 'Author');
 	const languageSetId = await createLanguageSet();
 
 	const workAttribs = {
