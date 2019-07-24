@@ -17,12 +17,11 @@ const options = {
     host: 'localhost:9098',
     basePath: '/'
   },
-  explorer: true,
-  apis: ['./routes/author.js']
+  apis: ['src/api/routes/author.js']
 }
 
-const swaggerJSDoc = require('swagger-jsdoc')
-const swaggerUi = require('swagger-ui-express')
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 const swaggerSpec = swaggerJSDoc(options)
 
 router.get('/json', function (req, res) {

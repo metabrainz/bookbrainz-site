@@ -37,8 +37,9 @@ const authorBasicRelations = [
 const authorError = 'Author not found';
 
 /**
- @swagger
- * /author/bbid:
+ * @swagger
+ *
+ * /author:
  *   get:
  *     description: Retrive the basic information of an author
  *     tags:
