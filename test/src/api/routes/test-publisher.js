@@ -61,6 +61,8 @@ describe('GET /Publisher', () => {
 			'bbid',
 			'aliases'
 		);
+		expect(res.body.aliases).to.be.an('array');
+		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
 	 it('should return list of identifiers of a publisher', async function () {
@@ -72,6 +74,8 @@ describe('GET /Publisher', () => {
 			'bbid',
 			'identifiers'
 		);
+		expect(res.body.identifiers).to.be.an('array');
+		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 	 it('should return list of relationships of a publisher', async function () {
 		const res = await chai.request(app).get(`/publisher/${aBBID}/relationships`);
@@ -82,6 +86,8 @@ describe('GET /Publisher', () => {
 			'bbid',
 			'relationships'
 		);
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body.relationships).to.have.lengthOf(1);
 	 });
 	 it('should throw a 404 error if trying to access a publisher that does not exist', function (done) {
 		chai.request(app)

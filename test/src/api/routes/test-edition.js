@@ -65,6 +65,8 @@ describe('GET /Edition', () => {
 			'bbid',
 			'aliases'
 		);
+		expect(res.body.aliases).to.be.an('array');
+		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
 	 it('should return list of identifiers of edition', async function () {
@@ -76,6 +78,8 @@ describe('GET /Edition', () => {
 			'bbid',
 			'identifiers'
 		);
+		expect(res.body.identifiers).to.be.an('array');
+		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
 	 it('should return list of relationships of an edition', async function () {
@@ -87,6 +91,8 @@ describe('GET /Edition', () => {
 			'bbid',
 			'relationships'
 		);
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body.relationships).to.have.lengthOf(1);
 	 });
 
 	 it('should throw a 404 error if trying to access an edition that does not exist', function (done) {
