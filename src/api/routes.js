@@ -23,6 +23,99 @@ import publisherRouter from './routes/publisher';
 import workRouter from './routes/work';
 
 
+/**
+ *@swagger
+ *definitions:
+ *  defaultAlias:
+ *    type: object
+ *    properties:
+ *      name:
+ *        type: string
+ *        example: 'Robert A. Heinlein'
+ *      sortName:
+ *        type: string
+ *        example: 'Heinlein, Robert A.'
+ *      aliasLanguage:
+ *        type: string
+ *        example: 'English'
+ *  aliases:
+ *    type: object
+ *    properties:
+ *      bbid:
+ *        type: string
+ *        format: uuid
+ *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *      aliases:
+ *        type: array
+ *        items:
+ *          type: object
+ *          properties:
+ *            name:
+ *              type: string
+ *              example: 'Robert A. Heinlein'
+ *            sortName:
+ *              type: string
+ *              example: 'Heinlein, Robert A.'
+ *            aliasLanguage:
+ *              type: string
+ *              example: 'English'
+ *            primary:
+ *              type: boolean
+ *              example: true
+ *  identifiers:
+ *    type: object
+ *    properties:
+ *      bbid:
+ *        type: string
+ *        format: uuid
+ *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *      identifiers:
+ *        type: array
+ *        items:
+ *          type: object
+ *          properties:
+ *            type:
+ *              type: string
+ *              example: 'Wikidata ID'
+ *            value:
+ *              type: string
+ *              example: 'Q123078'
+ *  relationships:
+ *    type: object
+ *    properties:
+ *      bbid:
+ *        type: string
+ *        format: uuid
+ *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *      relationships:
+ *        type: array
+ *        items:
+ *          type: object
+ *          properties:
+ *            direction:
+ *              type: string
+ *              example: 'forward'
+ *            id:
+ *              type: number
+ *              example: 804
+ *            linkPhrase:
+ *              type: string
+ *              example: 'wrote'
+ *            relationshipTypeId:
+ *              type: number
+ *              example: 8
+ *            relationshipTypeName:
+ *              type: string
+ *              example: 'Author'
+ *            targetBbid:
+ *              type: string
+ *							format: uuid
+ *							example: '4682cf09-66fb-4542-b457-b889117e0279'
+ *						targetEntityType:
+ *              type: string
+ *              example: 'work'
+ */
+
 function initWorkRoute(app) {
 	app.use('/work', workRouter);
 }

@@ -39,18 +39,6 @@ const authorError = 'Author not found';
 /**
  *@swagger
  *definitions:
- *  defaultAlias:
- *    type: object
- *    properties:
- *      name:
- *        type: string
- *        example: 'Robert A. Heinlein'
- *      sortName:
- *        type: string
- *        example: 'Heinlein, Robert A.'
- *      aliasLanguage:
- *        type: string
- *        example: 'English'
  *  AuthorDetail:
  *   type: object
  *   properties:
@@ -84,83 +72,9 @@ const authorError = 'Author not found';
  *     type:
  *       type: string
  *       example: 'Person'
- *  AuthorAliases:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      aliases:
- *        type: array
- *        items:
- *          type: object
- *          properties:
- *            name:
- *              type: string
- *              example: 'Robert A. Heinlein'
- *            sortName:
- *              type: string
- *              example: 'Heinlein, Robert A.'
- *            aliasLanguage:
- *              type: string
- *              example: 'English'
- *            primary:
- *              type: boolean
- *              example: true
- *  AuthorIdentifiers:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      identifiers:
- *        type: array
- *        items:
- *          type: object
- *          properties:
- *            type:
- *              type: string
- *              example: 'Wikidata ID'
- *            value:
- *              type: string
- *              example: 'Q123078'
- *  AuthorRelationships:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      relationships:
- *        type: array
- *        items:
- *          type: object
- *          properties:
- *            direction:
- *              type: string
- *              example: 'forward'
- *            id:
- *              type: number
- *              example: 804
- *            linkPhrase:
- *              type: string
- *              example: 'wrote'
- *            relationshipTypeId:
- *              type: number
- *              example: 8
- *            relationshipTypeName:
- *              type: string
- *              example: 'Author'
- *            targetBbid:
- *              type: string
- *							format: uuid
- *							example: '4682cf09-66fb-4542-b457-b889117e0279'
- *						targetEntityType:
- *              type: string
- *              example: 'work'
+ *
  */
+
 
 /**
  *@swagger
@@ -217,7 +131,7 @@ router.get('/:bbid',
  *       200:
  *         description: List of aliases with BBID of an author entity
  *         schema:
- *             $ref: '#/definitions/AuthorAliases'
+ *             $ref: '#/definitions/aliases'
  *       404:
  *         description: Author not found
  */
@@ -250,7 +164,7 @@ router.get('/:bbid/aliases',
  *       200:
  *         description: List of identifiers with BBID of an author entity
  *         schema:
- *             $ref: '#/definitions/AuthorIdentifiers'
+ *             $ref: '#/definitions/identifiers'
  *       404:
  *         description: Author not found
  */
@@ -282,7 +196,7 @@ router.get('/:bbid/identifiers',
  *       200:
  *         description: List of relationships with BBID of an author entity
  *         schema:
- *             $ref: '#/definitions/AuthorRelationships'
+ *             $ref: '#/definitions/relationships'
  *       404:
  *         description: Author not found
  */

@@ -17,7 +17,7 @@ const options = {
     host: 'localhost:9098',
     basePath: '/'
   },
-  apis: ['src/api/routes/author.js']
+  apis: ['src/api/routes/*.js', 'src/api/*.js']
 }
 
 import swaggerJSDoc from 'swagger-jsdoc';
