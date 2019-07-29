@@ -176,7 +176,7 @@ const authorError = 'Author not found';
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of Author to get the data
+ *         description: BBID of the Author to get the data
  *         required: true
  *         type: string
  *     responses:
@@ -210,12 +210,12 @@ router.get('/:bbid',
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of author to return that data
+ *         description: BBID of the author to return that data
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of aliases with BBID of an author entiity
+ *         description: List of aliases with BBID of an author entity
  *         schema:
  *             $ref: '#/definitions/AuthorAliases'
  *       404:
@@ -248,7 +248,7 @@ router.get('/:bbid/aliases',
  *         type: string
  *     responses:
  *       200:
- *         description: List of identifiers with BBID of an author entiity
+ *         description: List of identifiers with BBID of an author entity
  *         schema:
  *             $ref: '#/definitions/AuthorIdentifiers'
  *       404:
@@ -275,12 +275,12 @@ router.get('/:bbid/identifiers',
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of author to return that data
+ *         description: BBID of the author to return that data
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of relationships with BBID of an author entiity
+ *         description: List of relationships with BBID of an author entity
  *         schema:
  *             $ref: '#/definitions/AuthorRelationships'
  *       404:

@@ -271,8 +271,9 @@ export function getPublisherBasicInfo(publisher: object) {
  * getEntityAliases is a function to extract the list of aliases from ORM entity
  *
  * @param {object} entity - An ORM Entity
- * @returns {object} an object conatining the bbid and list of aliases data of an ORM entity
- * Each property of object defaults to null. If entity is null or undefined, returns null.
+ * @returns {object} an object conatining the bbid and list of aliases data of an ORM entity.
+ * Returns an empty array if no aliases were found
+ * If entity is null or undefined, returns null.
  * @example
  *		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
  *		getEntityAliases(edition);
@@ -306,8 +307,9 @@ export function getEntityAliases(entity: object) {
  * getEntityIdentifiers is a function to extract the list of indentifiers from an ORM entity
  *
  * @param {object} entity - An ORM entity
- * @returns {object} an object containing the bbid and list of identifier data of an entity
- * Each property of object defaults to null. If entity object is null or undefined, returns null.
+ * @returns {object} an object containing the bbid and list of identifier data of an entity.
+ * Returns an empty array if no identifiers were found.
+ * If entity object is null or undefined, returns null.
  *
  * @example
  *		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
@@ -339,7 +341,8 @@ export function getEntityIdentifiers(entity: object) {
  *
  * @param {object} entity -  An ORM entity
  * @returns {object} an object containing the bbid and list of ralationship data of an ORM entity
- * Each property of object defaults to null. If entity is null or undefined, returns null.
+ * The relationships property defaults to an empty array.
+ * If entity is null or undefined, returns null.
  *
  * @example
  *		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
