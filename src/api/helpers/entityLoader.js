@@ -30,9 +30,11 @@ import * as commonUtils from '../../common/helpers/utils';
  * @returns {object} an object containing the error message if any error will occur.
  * If entity is found succesfully in the database this function set the entity data
  * at res.locals.entity and return to next function.
- * @description
+ * @example
  *		const errorMessage = 'Edition not found'';
  *		makeEntityLoader('Edition', ['defaultAlias.language', 'editionStatus'], errMessage);
+ *
+ * @description
  * First, check the bbid is valid or not.
  * If bbid is valid then extract the entity data from database by using bbid and relations of
  * that entity. If entity is found succesfully then set that entity data to the res.locals.entity
