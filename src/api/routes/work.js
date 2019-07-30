@@ -34,12 +34,94 @@ const workBasicRelations = [
 
 const workError = 'Work not found';
 
+/**
+ *@swagger
+ *definitions:
+ *  workDetail:
+ *    type: object
+ *    properties:
+ *      bbid:
+ *        type: string
+ *        format: uuid
+ *        example: ba446064-90a5-447b-abe5-139be547da2e
+ *      defaultAlias:
+ *        $ref: '#/definitions/defaultAlias'
+ *      disambiguation:
+ *        type: string
+ *        example: 'Harry Porter 1'
+ *      entityType:
+ *        type: string
+ *        example: 'Work'
+ *      languages:
+ *        type: array
+ *        items:
+ *          type: string
+ *          example: English
+ *      workType:
+ *        type: string
+ *        example: 'Epic'
+ *
+ */
+
+/**
+ *@swagger
+ *'/work/{bbid}':
+ *  get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Lookup Work by BBID
+ *     description: Returns the basic details of the owrk
+ *     operationId: getWorkByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the Work to get the data
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Basic information of the work entity
+ *         schema:
+ *             $ref: '#/definitions/workDetail'
+ *       404:
+ *         description: Work not found
+ */
+
 router.get('/:bbid',
 	makeEntityLoader('Work', workBasicRelations, workError),
 	async (req, res, next) => {
 		const workBasicInfo = await getWorkBasicInfo(res.locals.entity);
 		return res.status(200).send(workBasicInfo);
 	});
+
+
+/**
+ *@swagger
+ *  '/work/{bbid}/aliases':
+ *    get:
+ *      tags:
+ *        - Lookup Requests
+ *      summary: Get list of aliases of work by bbid
+ *      description: Returns the list of aliases of a work
+ *      operationId: getAliasesOfWorkByBbid
+ *      produces:
+ *        - application/json
+ *      parameters:
+ *        - name: bbid
+ *          in: path
+ *          description: BBID of work to return the data
+ *          required: true
+ *          type: string
+ *      responses:
+ *        200:
+ *          description: List of aliases with bbid of a work entiity
+ *          schema:
+ *              $ref: '#/definitions/aliases'
+ *        404:
+ *          description: Work not found
+ */
 
 
 router.get('/:bbid/aliases',
@@ -49,6 +131,31 @@ router.get('/:bbid/aliases',
 		return res.status(200).send(workAliasesList);
 	});
 
+/**
+ *	@swagger
+ * '/work/{bbid}/identifiers':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of identifiers of the work by BBID
+ *     description: Returns the list of identifiers of the work
+ *     operationId: getIdentifiersOfWorkByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the work to return that data
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of identifiers with BBID of the work entity
+ *         schema:
+ *             $ref: '#/definitions/identifiers'
+ *       404:
+ *         description: Work not found
+ */
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Work', identifiersRelation, workError),
@@ -56,6 +163,33 @@ router.get('/:bbid/identifiers',
 		const workIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(workIdentifiersList);
 	});
+
+
+/**
+ *	@swagger
+ * '/work/{bbid}/relationships':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of relationships of the work by BBID
+ *     description: Returns the list of relationships of the work
+ *     operationId: getRelationshipsOfWorkByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the work to return that data
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of relationships with BBID of the work entity
+ *         schema:
+ *             $ref: '#/definitions/relationships'
+ *       404:
+ *         description: Work not found
+ */
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Work', relationshipsRelation, workError),
