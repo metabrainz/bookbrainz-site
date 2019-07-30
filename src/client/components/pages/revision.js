@@ -183,7 +183,7 @@ class RevisionPage extends React.Component {
 			revisionNotes = <p> No revision notes present </p>;
 		}
 
-		const dateRevisionCreated = formatDate(new Date(revision.createdAt));
+		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
 
 		return (
 			<Row>
