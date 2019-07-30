@@ -26,29 +26,34 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import request from 'superagent-bluebird-promise';
+import {transformISODateForDisplay} from '../../helpers/entity';
 
 
 const {Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
-	static formatValueList(list) {
+	static formatValueList(list, isChangeADate) {
 		if (!list) {
 			return null;
 		}
 		return list.map(
-			(val, idx) => <div key={`${idx}${val}`}>{val.toString()}</div>
+			(val, idx) => {
+				const formattedValue = isChangeADate ? transformISODateForDisplay(val) : val.toString();
+				return <div key={`${idx}${val}`}>{formattedValue}</div>;
+			}
 		);
 	}
 
 	static formatChange(change) {
+		const isChangeADate = change.key.toLowerCase().match(/\bdate\b/);
 		if (change.kind === 'N') {
 			return (
 				<tr className="success" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td> — </td>
 					<td>
-						{RevisionPage.formatValueList(change.rhs)}
+						{RevisionPage.formatValueList(change.rhs, isChangeADate)}
 					</td>
 				</tr>
 			);
@@ -59,10 +64,10 @@ class RevisionPage extends React.Component {
 				<tr className="warning" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
-						{RevisionPage.formatValueList(change.lhs)}
+						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
 					</td>
 					<td>
-						{RevisionPage.formatValueList(change.rhs)}
+						{RevisionPage.formatValueList(change.rhs, isChangeADate)}
 					</td>
 				</tr>
 			);
@@ -73,7 +78,7 @@ class RevisionPage extends React.Component {
 				<tr className="danger" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
-						{RevisionPage.formatValueList(change.lhs)}
+						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
 					</td>
 					<td> — </td>
 				</tr>
@@ -178,7 +183,7 @@ class RevisionPage extends React.Component {
 			revisionNotes = <p> No revision notes present </p>;
 		}
 
-		const dateRevisionCreated = formatDate(new Date(revision.createdAt));
+		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
 
 		return (
 			<Row>

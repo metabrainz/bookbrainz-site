@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-parens,eqeqeq,sort-keys */
 export function dateValidator(day, month, year) {
 	const isPosIntRegx = /^\+?([0-9]\d*)$/;
-	const isYearPosInt = isPosIntRegx.test(year) && year > 0;
+	const isYearInt = Number.isInteger(Number(year));
 	const isMonthPosInt = isPosIntRegx.test(month) && month > 0;
 	const isDayPosInt = isPosIntRegx.test(day) && day > 0;
 
@@ -12,7 +12,7 @@ export function dateValidator(day, month, year) {
 		return {isValid: false, errorMessage: 'Year must be entered'};
 	}
 
-	if (!isYearPosInt) {
+	if (!isYearInt) {
 		return {isValid: false, errorMessage: 'Year is not valid'};
 	}
 	if (!month) {

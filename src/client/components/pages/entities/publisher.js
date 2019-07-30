@@ -30,7 +30,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
-	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
+	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function PublisherAttributes({publisher}) {
@@ -39,8 +39,8 @@ function PublisherAttributes({publisher}) {
 	}
 	const type = getTypeAttribute(publisher.publisherType).data;
 	const area = extractAttribute(publisher.area, 'name');
-	const beginDate = extractAttribute(publisher.beginDate);
-	const endDate = extractAttribute(publisher.endDate);
+	const beginDate = transformISODateForDisplay(extractAttribute(publisher.beginDate));
+	const endDate = transformISODateForDisplay(extractAttribute(publisher.endDate));
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(publisher);
 	return (
 		<div>
