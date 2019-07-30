@@ -77,7 +77,7 @@ const workError = 'Work not found';
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the Work to get the data
+ *         description: BBID of the Work
  *         required: true
  *         type: string
  *     responses:
@@ -111,12 +111,12 @@ router.get('/:bbid',
  *      parameters:
  *        - name: bbid
  *          in: path
- *          description: BBID of work to return the data
+ *          description: BBID of the work
  *          required: true
  *          type: string
  *      responses:
  *        200:
- *          description: List of aliases with bbid of a work entiity
+ *          description: List of aliases with bbid of a work entity
  *          schema:
  *              $ref: '#/definitions/aliases'
  *        404:
@@ -145,7 +145,7 @@ router.get('/:bbid/aliases',
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the work to return that data
+ *         description: BBID of the work
  *         required: true
  *         type: string
  *     responses:
@@ -179,7 +179,7 @@ router.get('/:bbid/identifiers',
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the work to return that data
+ *         description: BBID of the work
  *         required: true
  *         type: string
  *     responses:

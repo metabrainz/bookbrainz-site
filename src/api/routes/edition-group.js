@@ -33,6 +33,54 @@ const editionGroupBasicRelations = [
 
 const editionGroupError = 'Edition-Group not found';
 
+/**
+ *@swagger
+ *definitions:
+ *  editionGroupDetail:
+ *    type: object
+ *    properties:
+ *      bbid:
+ *        type: string
+ *        format: uuid
+ *        example: 'ba446064-90a5-447b-abe5-139be547da2e'
+ *      defaultAlias:
+ *        $ref: '#/definitions/defaultAlias'
+ *      disambiguation:
+ *        type: string
+ *        example: 'Harry Porter'
+ *      type:
+ *        type: string
+ *        example: 'Book'
+ *
+ */
+
+/**
+ *@swagger
+ *  '/edition-group/{bbid}':
+ *    get:
+ *      tags:
+ *        - Lookup Requests
+ *      summary: Lookup Edtiotn Group by bbid
+ *      description: Returns the basic details an Edition Group
+ *      operationId: getEditionGroupByBbid
+ *      produces:
+ *        - application/json
+ *      parameters:
+ *        - name: bbid
+ *          in: path
+ *          description: BBID of Edition Group
+ *          required: true
+ *          type: string
+ *      responses:
+ *        200:
+ *          description: Basic information of an Edition Group entity
+ *          schema:
+ *              $ref: '#/definitions/editionGroupDetail'
+ *        404:
+ *          description: Edition Group not found
+ *
+ */
+
 router.get('/:bbid',
 	makeEntityLoader('EditionGroup', editionGroupBasicRelations, editionGroupError),
 	async (req, res, next) => {
@@ -40,6 +88,31 @@ router.get('/:bbid',
 		return res.status(200).send(editionGroupBasicInfo);
 	});
 
+/**
+ *	@swagger
+ * '/edition-group/{bbid}/aliases':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of aliases of the Edition Group by BBID
+ *     description: Returns the list of aliases of the Edition Group
+ *     operationId: getAliasesOfEditionGroupByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the Edition Group
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of aliases with BBID of the Edition Group entity
+ *         schema:
+ *             $ref: '#/definitions/aliases'
+ *       404:
+ *         description: Edition Group not found
+ */
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('EditionGroup', aliasesRelation, editionGroupError),
@@ -48,6 +121,31 @@ router.get('/:bbid/aliases',
 		return res.status(200).send(editionGroupAliasesList);
 	});
 
+/**
+ *	@swagger
+ * '/edition-group/{bbid}/identifiers':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of identifiers of an edition group by BBID
+ *     description: Returns the list of identifiers of an edition group
+ *     operationId: getIdentifiersOfEditionGroupByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the edition group
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of identifiers with BBID of an edition group entity
+ *         schema:
+ *             $ref: '#/definitions/identifiers'
+ *       404:
+ *         description: Edition Group not found
+ */
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('EditionGroup', identifiersRelation, editionGroupError),
@@ -55,6 +153,33 @@ router.get('/:bbid/identifiers',
 		const editionGroupIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionGroupIdentifiersList);
 	});
+
+
+/**
+ *	@swagger
+ * '/edition-group/{bbid}/relationships':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of relationships of an edition group by BBID
+ *     description: Returns the list of relationships of an edition group
+ *     operationId: getRelationshipsOfEditionGroupByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the edition group
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of relationships with BBID of an edition group entity
+ *         schema:
+ *             $ref: '#/definitions/relationships'
+ *       404:
+ *         description: Edition Group not found
+ */
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('EditionGroup', relationshipsRelation, editionGroupError),

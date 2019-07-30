@@ -90,7 +90,7 @@ const authorError = 'Author not found';
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the Author to get the data
+ *         description: BBID of the Author
  *         required: true
  *         type: string
  *     responses:
@@ -124,7 +124,7 @@ router.get('/:bbid',
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the author to return that data
+ *         description: BBID of the author
  *         required: true
  *         type: string
  *     responses:
@@ -157,7 +157,7 @@ router.get('/:bbid/aliases',
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of author to return that data
+ *         description: BBID of author
  *         required: true
  *         type: string
  *     responses:
@@ -189,7 +189,7 @@ router.get('/:bbid/identifiers',
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the author to return that data
+ *         description: BBID of the author
  *         required: true
  *         type: string
  *     responses:

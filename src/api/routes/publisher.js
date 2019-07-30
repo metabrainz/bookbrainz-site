@@ -34,6 +34,69 @@ const publisherBasicRelations = [
 
 const publisherError = 'Publisher not found';
 
+/**
+ *@swagger
+ *definitions:
+ *  publisherDetail:
+ *    type: object
+ *    properties:
+ *      bbid:
+ *        type: string
+ *        format: uuid
+ *        example: 'e418874e-5684-4fe9-9d2d-1b7e5d43fd59'
+ *      area:
+ *        type: string
+ *        example: 'India'
+ *      beginDate:
+ *        type: string
+ *        example: '1943'
+ *      defaultAlias:
+ *        $ref: '#/definitions/defaultAlias'
+ *      disambiguation:
+ *        type: string
+ *        example: 'Bharati Bhawan'
+ *      endDate:
+ *        type: string
+ *        example:
+ *      ended:
+ *        type: boolean
+ *        example: false
+ *      gender:
+ *        type: string
+ *        example: 'Male'
+ *      type:
+ *        type: string
+ *        example: 'Publisher'
+ */
+
+
+/**
+ *
+ *@swagger
+ * '/publisher/{bbid}':
+ *    get:
+ *      tags:
+ *        - Lookup Requests
+ *      summary: Lookup Publisher by BBID
+ *      description: Returns the basic details the Publisher
+ *      operationId: getPublisherByBbid
+ *      produces:
+ *        - application/json
+ *      parameters:
+ *        - name: bbid
+ *          in: path
+ *          description: BBID of the Publisher
+ *          required: true
+ *          type: string
+ *      responses:
+ *        200:
+ *          description: Basic information of the Publisher entity
+ *          schema:
+ *              $ref: '#/definitions/publisherDetail'
+ *        404:
+ *          description: Publisher not found
+ */
+
 router.get('/:bbid',
 	makeEntityLoader('Publisher', publisherBasicRelations, publisherError),
 	async (req, res, next) => {
@@ -41,7 +104,31 @@ router.get('/:bbid',
 		return res.status(200).send(publisherBasicInfo);
 	});
 
-
+/**
+ *@swagger
+ *  '/publisher/{bbid}/aliases':
+ *    get:
+ *      tags:
+ *        - Lookup Requests
+ *      summary: Get list of aliases of the publisher by BBID
+ *      description: Returns the list of aliases of the publisher
+ *      operationId: getAliasesOfPublisherByBbid
+ *      produces:
+ *        - application/json
+ *      parameters:
+ *        - name: bbid
+ *          in: path
+ *          description: BBID of the Publisher
+ *          required: true
+ *          type: string
+ *      responses:
+ *        200:
+ *          description: List of aliases with BBID of the publisher
+ *          schema:
+ *              $ref: '#/definitions/aliases'
+ *        404:
+ *          description: Publisher not found
+ */
 router.get('/:bbid/aliases',
 	makeEntityLoader('Publisher', aliasesRelation, publisherError),
 	async (req, res, next) => {
@@ -49,6 +136,31 @@ router.get('/:bbid/aliases',
 		return res.status(200).send(publisherAliasesList);
 	});
 
+/**
+ *	@swagger
+ * '/publisher/{bbid}/identifiers':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of identifiers of the publisher by BBID
+ *     description: Returns the list of identifiers of the publisher
+ *     operationId: getIdentifiersOfPublisherByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the Publisher
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of identifiers with BBID of the Publisher entity
+ *         schema:
+ *             $ref: '#/definitions/identifiers'
+ *       404:
+ *         description: Publisher not found
+ */
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Publisher', identifiersRelation, publisherError),
@@ -56,6 +168,32 @@ router.get('/:bbid/identifiers',
 		const publisherIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(publisherIdentifiersList);
 	});
+
+/**
+ *	@swagger
+ * '/publisher/{bbid}/relationships':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of relationships of the publisher by BBID
+ *     description: Returns the list of relationships of the publisher
+ *     operationId: getRelationshipsOfPublisherByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the Publisher
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of relationships with BBID of the publisher entity
+ *         schema:
+ *             $ref: '#/definitions/relationships'
+ *       404:
+ *         description: Publisher not found
+ */
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Publisher', relationshipsRelation, publisherError),
