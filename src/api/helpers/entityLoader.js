@@ -35,12 +35,11 @@ import * as commonUtils from '../../common/helpers/utils';
  *		makeEntityLoader('Edition', ['defaultAlias.language', 'editionStatus'], errMessage);
  *
  * @description
- * First, check the bbid is valid or not.
- * If bbid is valid then extract the entity data from database by using bbid and relations of
+ * First, check the BBID is valid or not.
+ * If BBID is valid then extract the entity data from database by using BBID and relations of
  * that entity. If entity is found succesfully then set that entity data to the res.locals.entity
  * otherwise return an object {message: errMessage} as response with status code 404.
- * If bbid is not valid then return object {message: 'BBID is not valid uuid'} as response with
- * status code 406.
+ * If the BBID is not valid then return a status code 406 and an object {message: 'BBID is not valid uuid'}.
  */
 
 

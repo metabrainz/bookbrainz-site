@@ -35,7 +35,7 @@ const inValidBBID = 'akjd-adjjk-23123';
 describe('GET /work', () => {
 	before(() => createWork(aBBID));
 	after(truncateEntities);
-	// Test to get basic information of a work
+	// Test to get basic information of a Work
 	it('should get basic information of work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}`);
 		expect(res.status).to.equal(200);
@@ -50,7 +50,7 @@ describe('GET /work', () => {
 		);
 	 });
 
-	 it('should return list of aliases of work', async function () {
+	 it('should return list of aliases of a Work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -74,7 +74,7 @@ describe('GET /work', () => {
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of relationships of a work', async function () {
+	 it('should return list of relationships of a Work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -112,7 +112,7 @@ describe('GET /work', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of a work that does not exist', function (done) {
+	 it('should throw a 404 error if trying to identifiers aliases of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/identifiers`)
 			.end(function (err, res) {
@@ -126,7 +126,7 @@ describe('GET /work', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of a work that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/aliases`)
 			.end(function (err, res) {
@@ -139,7 +139,7 @@ describe('GET /work', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to access relationships of a work that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access relationships of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/relationships`)
 			.end(function (err, res) {

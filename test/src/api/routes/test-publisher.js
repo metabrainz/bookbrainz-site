@@ -35,8 +35,8 @@ const inValidBBID = 'akjd-adjjk-23123';
 describe('GET /Publisher', () => {
 	before(() => createPublisher(aBBID));
 	after(truncateEntities);
-	// Test to get basic information of a publisher
-	it('should get basic information of a publisher', async function () {
+	// Test to get basic information of a Publisher
+	it('should get basic information of a Publisher', async function () {
 		const res = await chai.request(app).get(`/publisher/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -52,7 +52,7 @@ describe('GET /Publisher', () => {
 		);
 	 });
 
-	 it('should return list of aliases of a publisher', async function () {
+	 it('should return list of aliases of a Publisher', async function () {
 		const res = await chai.request(app).get(`/publisher/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -65,7 +65,7 @@ describe('GET /Publisher', () => {
 		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of identifiers of a publisher', async function () {
+	 it('should return list of identifiers of a Publisher', async function () {
 		const res = await chai.request(app).get(`/publisher/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -77,7 +77,7 @@ describe('GET /Publisher', () => {
 		expect(res.body.identifiers).to.be.an('array');
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
-	 it('should return list of relationships of a publisher', async function () {
+	 it('should return list of relationships of a Publisher', async function () {
 		const res = await chai.request(app).get(`/publisher/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -115,7 +115,7 @@ describe('GET /Publisher', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of a publisher that does not exist', function (done) {
+	 it('should throw a 404 error if trying to identifiers aliases of a Publisher that does not exist', function (done) {
 		chai.request(app)
 			.get(`/publisher/${bBBID}/identifiers`)
 			.end(function (err, res) {
@@ -129,7 +129,7 @@ describe('GET /Publisher', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of a publisher that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of a Publisher that does not exist', function (done) {
 		chai.request(app)
 			.get(`/publisher/${bBBID}/aliases`)
 			.end(function (err, res) {
@@ -142,7 +142,7 @@ describe('GET /Publisher', () => {
 			});
 	 });
 
-	it('should throw a 404 error if trying to access relationships of a publisher that does not exist', function (done) {
+	it('should throw a 404 error if trying to access relationships of a Publisher that does not exist', function (done) {
 		chai.request(app)
 			.get(`/publisher/${bBBID}/relationships`)
 			.end(function (err, res) {

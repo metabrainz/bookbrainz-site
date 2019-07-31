@@ -47,20 +47,20 @@ const editionError = 'Edition not found';
  *        format: uuid
  *        example: '96a23368-85a1-4559-b3df-16833893d861'
  *      defaultAlias:
- *        $ref: '#/definitions/defaultAlias'
+ *        $ref: '#/definitions/DefaultAlias'
  *      depth:
  *        type: integer
  *        description: 'depth in mm'
  *        example: 40
  *      disambiguation:
  *        type: string
- *        example: 'Harry Porter'
+ *        example: 'Limited edition boxed set'
  *      editionFormat:
  *        type: string
  *        example: 'eBook'
- *      hight:
+ *      height:
  *        type: integer
- *        description: 'hight in mm'
+ *        description: 'height in mm'
  *        example: 250
  *      languages:
  *        type: array
@@ -95,15 +95,15 @@ const editionError = 'Edition not found';
  *    get:
  *      tags:
  *        - Lookup Requests
- *      summary: Lookup Edition by bbid
- *      description: Returns the basic details an Edition
+ *      summary: Lookup Edition by BBID
+ *      description: Returns the basic details of an Edition
  *      operationId: getEditionByBbid
  *      produces:
  *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
- *          description: BBID of Edition to return
+ *          description: BBID of the Edition
  *          required: true
  *          type: string
  *      responses:
@@ -129,22 +129,22 @@ router.get('/:bbid',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of aliases of the edition by BBID
- *     description: Returns the list of aliases of the edition
+ *     summary: Get list of aliases of the Edition by BBID
+ *     description: Returns the list of aliases of the Edition
  *     operationId: getAliasesOfEditionByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the edition
+ *         description: BBID of the Edition
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of aliases with BBID of the edition entity
+ *         description: List of aliases with BBID of the Edition entity
  *         schema:
- *             $ref: '#/definitions/aliases'
+ *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Edition not found
  */
@@ -162,22 +162,22 @@ router.get('/:bbid/aliases',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of identifiers of an edition by BBID
- *     description: Returns the list of identifiers of an edition
+ *     summary: Get list of identifiers of an Edition by BBID
+ *     description: Returns the list of identifiers of an Edition
  *     operationId: getIdentifiersOfEditionByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the edition
+ *         description: BBID of the Edition
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of identifiers with BBID of an edition entity
+ *         description: List of identifiers with BBID of an Edition entity
  *         schema:
- *             $ref: '#/definitions/identifiers'
+ *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Edition not found
  */
@@ -195,22 +195,22 @@ router.get('/:bbid/identifiers',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of relationships of an edition by BBID
- *     description: Returns the list of relationships of an edition
+ *     summary: Get list of relationships of an Edition by BBID
+ *     description: Returns the list of relationships of an Edition
  *     operationId: getRelationshipsOfEditionByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the edition
+ *         description: BBID of the Edition
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of relationships with BBID of an edition entity
+ *         description: List of relationships with BBID of an Edition entity
  *         schema:
- *             $ref: '#/definitions/relationships'
+ *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Edition not found
  */

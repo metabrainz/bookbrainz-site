@@ -53,7 +53,7 @@ const authorError = 'Author not found';
  *       type: string
  *       example: '1907-07-07'
  *     defaultAlias:
- *         $ref: '#/definitions/defaultAlias'
+ *         $ref: '#/definitions/DefaultAlias'
  *     disambiguation:
  *       type: string
  *       example: 'Robert A. Heinlein'
@@ -116,22 +116,22 @@ router.get('/:bbid',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of aliases of an author by BBID
- *     description: Returns the list of aliases of an author
+ *     summary: Get list of aliases of an Author by BBID
+ *     description: Returns the list of aliases of an Author
  *     operationId: getAliasesOfAuthorByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the author
+ *         description: BBID of the Author
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of aliases with BBID of an author entity
+ *         description: List of aliases with BBID of an Author entity
  *         schema:
- *             $ref: '#/definitions/aliases'
+ *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Author not found
  */
@@ -149,22 +149,22 @@ router.get('/:bbid/aliases',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of identifiers of an author by BBID
- *     description: Returns the list of identifiers of an author
+ *     summary: Get list of identifiers of an Author by BBID
+ *     description: Returns the list of identifiers of an Author
  *     operationId: getIdentifiersOfAuthorByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of author
+ *         description: BBID of the Author
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of identifiers with BBID of an author entity
+ *         description: List of identifiers with BBID of an Author entity
  *         schema:
- *             $ref: '#/definitions/identifiers'
+ *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Author not found
  */
@@ -181,22 +181,22 @@ router.get('/:bbid/identifiers',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of relationships of an author by BBID
- *     description: Returns the list of relationships of an author
+ *     summary: Get list of relationships of an Author by BBID
+ *     description: Returns the list of relationships of an Author
  *     operationId: getRelationshipsOfAuthorByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the author
+ *         description: BBID of the Author
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of relationships with BBID of an author entity
+ *         description: List of relationships with BBID of an Author entity
  *         schema:
- *             $ref: '#/definitions/relationships'
+ *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Author not found
  */

@@ -37,7 +37,7 @@ const workError = 'Work not found';
 /**
  *@swagger
  *definitions:
- *  workDetail:
+ *  WorkDetail:
  *    type: object
  *    properties:
  *      bbid:
@@ -45,7 +45,7 @@ const workError = 'Work not found';
  *        format: uuid
  *        example: ba446064-90a5-447b-abe5-139be547da2e
  *      defaultAlias:
- *        $ref: '#/definitions/defaultAlias'
+ *        $ref: '#/definitions/DefaultAlias'
  *      disambiguation:
  *        type: string
  *        example: 'Harry Porter 1'
@@ -70,7 +70,7 @@ const workError = 'Work not found';
  *     tags:
  *       - Lookup Requests
  *     summary: Lookup Work by BBID
- *     description: Returns the basic details of the owrk
+ *     description: Returns the basic details of the Work
  *     operationId: getWorkByBbid
  *     produces:
  *       - application/json
@@ -82,9 +82,9 @@ const workError = 'Work not found';
  *         type: string
  *     responses:
  *       200:
- *         description: Basic information of the work entity
+ *         description: Basic information of the Work entity
  *         schema:
- *             $ref: '#/definitions/workDetail'
+ *             $ref: '#/definitions/WorkDetail'
  *       404:
  *         description: Work not found
  */
@@ -103,22 +103,22 @@ router.get('/:bbid',
  *    get:
  *      tags:
  *        - Lookup Requests
- *      summary: Get list of aliases of work by bbid
- *      description: Returns the list of aliases of a work
+ *      summary: Get list of aliases of a Work by BBID
+ *      description: Returns the list of aliases of a Work
  *      operationId: getAliasesOfWorkByBbid
  *      produces:
  *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
- *          description: BBID of the work
+ *          description: BBID of the Work
  *          required: true
  *          type: string
  *      responses:
  *        200:
- *          description: List of aliases with bbid of a work entity
+ *          description: List of aliases with BBID of a Work entity
  *          schema:
- *              $ref: '#/definitions/aliases'
+ *              $ref: '#/definitions/Aliases'
  *        404:
  *          description: Work not found
  */
@@ -137,22 +137,22 @@ router.get('/:bbid/aliases',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of identifiers of the work by BBID
- *     description: Returns the list of identifiers of the work
+ *     summary: Get list of identifiers of the Work by BBID
+ *     description: Returns the list of identifiers of the Work
  *     operationId: getIdentifiersOfWorkByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the work
+ *         description: BBID of the Work
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of identifiers with BBID of the work entity
+ *         description: List of identifiers with BBID of the Work entity
  *         schema:
- *             $ref: '#/definitions/identifiers'
+ *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Work not found
  */
@@ -171,22 +171,22 @@ router.get('/:bbid/identifiers',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of relationships of the work by BBID
- *     description: Returns the list of relationships of the work
+ *     summary: Get list of relationships of the Work by BBID
+ *     description: Returns the list of relationships of the Work
  *     operationId: getRelationshipsOfWorkByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the work
+ *         description: BBID of the Work
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of relationships with BBID of the work entity
+ *         description: List of relationships with BBID of the Work entity
  *         schema:
- *             $ref: '#/definitions/relationships'
+ *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Work not found
  */

@@ -35,8 +35,8 @@ const inValidBBID = 'akjd-adjjk-23123';
 describe('GET /Author', () => {
 	before(() => createAuthor(aBBID));
 	after(truncateEntities);
-	// Test to get basic information of an author
-	it('should get basic information of an author', async function () {
+	// Test to get basic information of an Author
+	it('should get basic information of an Author', async function () {
 		const res = await chai.request(app).get(`/author/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -54,7 +54,7 @@ describe('GET /Author', () => {
 		);
 	 });
 
-	 it('should return list of aliases of an author', async function () {
+	 it('should return list of aliases of an Author', async function () {
 		const res = await chai.request(app).get(`/author/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -67,7 +67,7 @@ describe('GET /Author', () => {
 		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of identifiers of an author', async function () {
+	 it('should return list of identifiers of an Author', async function () {
 		const res = await chai.request(app).get(`/author/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -80,7 +80,7 @@ describe('GET /Author', () => {
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of relationships of an author', async function () {
+	 it('should return list of relationships of an Author', async function () {
 		const res = await chai.request(app).get(`/author/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -119,7 +119,7 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of an author that does not exist', function (done) {
+	 it('should throw a 404 error if trying to identifiers aliases of an Author that does not exist', function (done) {
 		chai.request(app)
 			.get(`/author/${bBBID}/identifiers`)
 			.end(function (err, res) {
@@ -133,7 +133,7 @@ describe('GET /Author', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of an author that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of an Author that does not exist', function (done) {
 		chai.request(app)
 			.get(`/author/${bBBID}/aliases`)
 			.end(function (err, res) {
@@ -146,7 +146,7 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	it('should throw a 404 error if trying to access relationships of an author that does not exist', function (done) {
+	it('should throw a 404 error if trying to access relationships of an Author that does not exist', function (done) {
 		chai.request(app)
 			.get(`/author/${bBBID}/relationships`)
 			.end(function (err, res) {

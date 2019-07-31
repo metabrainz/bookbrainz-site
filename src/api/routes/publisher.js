@@ -37,7 +37,7 @@ const publisherError = 'Publisher not found';
 /**
  *@swagger
  *definitions:
- *  publisherDetail:
+ *  PublisherDetail:
  *    type: object
  *    properties:
  *      bbid:
@@ -51,7 +51,7 @@ const publisherError = 'Publisher not found';
  *        type: string
  *        example: '1943'
  *      defaultAlias:
- *        $ref: '#/definitions/defaultAlias'
+ *        $ref: '#/definitions/DefaultAlias'
  *      disambiguation:
  *        type: string
  *        example: 'Bharati Bhawan'
@@ -78,7 +78,7 @@ const publisherError = 'Publisher not found';
  *      tags:
  *        - Lookup Requests
  *      summary: Lookup Publisher by BBID
- *      description: Returns the basic details the Publisher
+ *      description: Returns the basic details of the Publisher
  *      operationId: getPublisherByBbid
  *      produces:
  *        - application/json
@@ -92,7 +92,7 @@ const publisherError = 'Publisher not found';
  *        200:
  *          description: Basic information of the Publisher entity
  *          schema:
- *              $ref: '#/definitions/publisherDetail'
+ *              $ref: '#/definitions/PublisherDetail'
  *        404:
  *          description: Publisher not found
  */
@@ -110,8 +110,8 @@ router.get('/:bbid',
  *    get:
  *      tags:
  *        - Lookup Requests
- *      summary: Get list of aliases of the publisher by BBID
- *      description: Returns the list of aliases of the publisher
+ *      summary: Get list of aliases of the Publisher by BBID
+ *      description: Returns the list of aliases of the Publisher
  *      operationId: getAliasesOfPublisherByBbid
  *      produces:
  *        - application/json
@@ -123,9 +123,9 @@ router.get('/:bbid',
  *          type: string
  *      responses:
  *        200:
- *          description: List of aliases with BBID of the publisher
+ *          description: List of aliases with BBID of the Publisher
  *          schema:
- *              $ref: '#/definitions/aliases'
+ *              $ref: '#/definitions/Aliases'
  *        404:
  *          description: Publisher not found
  */
@@ -142,8 +142,8 @@ router.get('/:bbid/aliases',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of identifiers of the publisher by BBID
- *     description: Returns the list of identifiers of the publisher
+ *     summary: Get list of identifiers of the Publisher by BBID
+ *     description: Returns the list of identifiers of the Publisher
  *     operationId: getIdentifiersOfPublisherByBbid
  *     produces:
  *       - application/json
@@ -157,7 +157,7 @@ router.get('/:bbid/aliases',
  *       200:
  *         description: List of identifiers with BBID of the Publisher entity
  *         schema:
- *             $ref: '#/definitions/identifiers'
+ *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Publisher not found
  */
@@ -175,8 +175,8 @@ router.get('/:bbid/identifiers',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of relationships of the publisher by BBID
- *     description: Returns the list of relationships of the publisher
+ *     summary: Get list of relationships of the Publisher by BBID
+ *     description: Returns the list of relationships of the Publisher
  *     operationId: getRelationshipsOfPublisherByBbid
  *     produces:
  *       - application/json
@@ -188,9 +188,9 @@ router.get('/:bbid/identifiers',
  *         type: string
  *     responses:
  *       200:
- *         description: List of relationships with BBID of the publisher entity
+ *         description: List of relationships with BBID of the Publisher entity
  *         schema:
- *             $ref: '#/definitions/relationships'
+ *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Publisher not found
  */

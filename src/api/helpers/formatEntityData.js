@@ -65,7 +65,7 @@ function getLanguages(entity: object) {
  * A function to extract the basic details of a Work ORM entity
  * @function
  * @param {object} work - a work ORM entity
- * @returns {object} an object containing the basic data of a work entity.
+ * @returns {object} an object containing the basic data of a Work entity.
  * Each property defaults to null. If work is null or undefined, returns null.
  *
  * @example
@@ -103,7 +103,7 @@ export function getWorkBasicInfo(work: object) {
  * A function to extract the basic details of an Edition ORM entity
  * @function
  * @param {object} edition - an edition ORM entity
- * @returns {object} an object containing the basic data of an edition entity.
+ * @returns {object} an object containing the basic data of an Edition entity.
  * Each property defaults to null. If edition is null or undefined, returns null.
  *
  * @example
@@ -152,10 +152,10 @@ export function getEditionBasicInfo(edition: object) {
 }
 
 /**
- * A function to extract the basic details of an editionGroup ORM entity
+ * A function to extract the basic details of an EditionGroup ORM entity
  * @function
  * @param {object} editionGroup - an editionGroup ORM entity
- * @returns {object} an object containing the basic data of an editionGroup entity.
+ * @returns {object} an object containing the basic data of an EditionGroup entity.
  * Each property defaults to null. If author is null or undefined, returns null.
  *
  * @example
@@ -231,7 +231,7 @@ export function getAuthorBasicInfo(author: object) {
  * A function to extract the basic details of a Publisher ORM entity
  * @function
  * @param {object} publisher - a Publisher ORM entity
- * @returns {object} an object containing the basic data of a publisher entity.
+ * @returns {object} an object containing the basic data of a Publisher entity.
  * Each property defaults to null. If publisher is null or undefined, returns null.
  *
  * @example

@@ -56,7 +56,7 @@ describe('GET /Edition', () => {
 		);
 	 });
 
-	 it('should return list of aliases of Edition', async function () {
+	 it('should return list of aliases of an Edition', async function () {
 		const res = await chai.request(app).get(`/edition/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -69,7 +69,7 @@ describe('GET /Edition', () => {
 		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of identifiers of edition', async function () {
+	 it('should return list of identifiers of an Edition', async function () {
 		const res = await chai.request(app).get(`/edition/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -82,7 +82,7 @@ describe('GET /Edition', () => {
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of relationships of an edition', async function () {
+	 it('should return list of relationships of an Edition', async function () {
 		const res = await chai.request(app).get(`/edition/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -121,7 +121,7 @@ describe('GET /Edition', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers  of an edition that does not exist', function (done) {
+	 it('should throw a 404 error if trying to identifiers  of an Edition that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition/${bBBID}/identifiers`)
 			.end(function (err, res) {
@@ -134,7 +134,7 @@ describe('GET /Edition', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to relationships of an edition that does not exist', function (done) {
+	 it('should throw a 404 error if trying to relationships of an Edition that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition/${bBBID}/relationships`)
 			.end(function (err, res) {
@@ -148,7 +148,7 @@ describe('GET /Edition', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of an edition that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of an Edition that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition/${bBBID}/aliases`)
 			.end(function (err, res) {

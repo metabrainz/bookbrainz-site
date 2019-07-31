@@ -31,12 +31,12 @@ const editionGroupBasicRelations = [
 	'editionGroupType'
 ];
 
-const editionGroupError = 'Edition-Group not found';
+const editionGroupError = 'Edition Group not found';
 
 /**
  *@swagger
  *definitions:
- *  editionGroupDetail:
+ *  EditionGroupDetail:
  *    type: object
  *    properties:
  *      bbid:
@@ -44,7 +44,7 @@ const editionGroupError = 'Edition-Group not found';
  *        format: uuid
  *        example: 'ba446064-90a5-447b-abe5-139be547da2e'
  *      defaultAlias:
- *        $ref: '#/definitions/defaultAlias'
+ *        $ref: '#/definitions/DefaultAlias'
  *      disambiguation:
  *        type: string
  *        example: 'Harry Porter'
@@ -60,22 +60,22 @@ const editionGroupError = 'Edition-Group not found';
  *    get:
  *      tags:
  *        - Lookup Requests
- *      summary: Lookup Edtiotn Group by bbid
- *      description: Returns the basic details an Edition Group
+ *      summary: Lookup Edition Group by bbid
+ *      description: Returns the basic details of an Edition Group
  *      operationId: getEditionGroupByBbid
  *      produces:
  *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
- *          description: BBID of Edition Group
+ *          description: BBID of the Edition Group
  *          required: true
  *          type: string
  *      responses:
  *        200:
  *          description: Basic information of an Edition Group entity
  *          schema:
- *              $ref: '#/definitions/editionGroupDetail'
+ *              $ref: '#/definitions/EditionGroupDetail'
  *        404:
  *          description: Edition Group not found
  *
@@ -109,7 +109,7 @@ router.get('/:bbid',
  *       200:
  *         description: List of aliases with BBID of the Edition Group entity
  *         schema:
- *             $ref: '#/definitions/aliases'
+ *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Edition Group not found
  */
@@ -127,22 +127,22 @@ router.get('/:bbid/aliases',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of identifiers of an edition group by BBID
- *     description: Returns the list of identifiers of an edition group
+ *     summary: Get list of identifiers of an Edition Group by BBID
+ *     description: Returns the list of identifiers of an Edition Group
  *     operationId: getIdentifiersOfEditionGroupByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the edition group
+ *         description: BBID of the Edition Group
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of identifiers with BBID of an edition group entity
+ *         description: List of identifiers with BBID of an Edition Group entity
  *         schema:
- *             $ref: '#/definitions/identifiers'
+ *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Edition Group not found
  */
@@ -161,22 +161,22 @@ router.get('/:bbid/identifiers',
  *   get:
  *     tags:
  *       - Lookup Requests
- *     summary: Get list of relationships of an edition group by BBID
- *     description: Returns the list of relationships of an edition group
+ *     summary: Get list of relationships of an Edition Group by BBID
+ *     description: Returns the list of relationships of an Edition Group
  *     operationId: getRelationshipsOfEditionGroupByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
- *         description: BBID of the edition group
+ *         description: BBID of the Edition Group
  *         required: true
  *         type: string
  *     responses:
  *       200:
- *         description: List of relationships with BBID of an edition group entity
+ *         description: List of relationships with BBID of an Edition Group entity
  *         schema:
- *             $ref: '#/definitions/relationships'
+ *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Edition Group not found
  */

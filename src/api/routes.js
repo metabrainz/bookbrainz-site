@@ -26,7 +26,7 @@ import workRouter from './routes/work';
 /**
  *@swagger
  *definitions:
- *  defaultAlias:
+ *  DefaultAlias:
  *    type: object
  *    properties:
  *      name:
@@ -38,7 +38,7 @@ import workRouter from './routes/work';
  *      aliasLanguage:
  *        type: string
  *        example: 'English'
- *  aliases:
+ *  Aliases:
  *    type: object
  *    properties:
  *      bbid:
@@ -62,7 +62,7 @@ import workRouter from './routes/work';
  *            primary:
  *              type: boolean
  *              example: true
- *  identifiers:
+ *  Identifiers:
  *    type: object
  *    properties:
  *      bbid:
@@ -80,7 +80,7 @@ import workRouter from './routes/work';
  *            value:
  *              type: string
  *              example: 'Q123078'
- *  relationships:
+ *  Relationships:
  *    type: object
  *    properties:
  *      bbid:
@@ -109,9 +109,9 @@ import workRouter from './routes/work';
  *              example: 'Author'
  *            targetBbid:
  *              type: string
- *							format: uuid
- *							example: '4682cf09-66fb-4542-b457-b889117e0279'
- *						targetEntityType:
+ *              format: uuid
+ *              example: '4682cf09-66fb-4542-b457-b889117e0279'
+ *            targetEntityType:
  *              type: string
  *              example: 'work'
  */
