@@ -381,8 +381,8 @@ export function getEntityRelationships(entity: object) {
 						_.get(relationship, 'targetBbid', null) :
 						_.get(relationship, 'sourceBbid', null),
 					targetEntityType: isItSourceEntity ?
-						_.get(relationship, 'type.targetEntityType', null) :
-						_.get(relationship, 'type.sourceEntityType', null)
+						_.kebabCase(_.get(relationship, 'type.targetEntityType', null)) :
+						_.kebabCase(_.get(relationship, 'type.sourceEntityType', null))
 				};
 			})
 		};
