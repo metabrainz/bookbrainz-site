@@ -113,6 +113,8 @@ const editionError = 'Edition not found';
  *              $ref: '#/definitions/EditionDetail'
  *        404:
  *          description: Edition not found
+ *        406:
+ *          description: Invalid BBID
  */
 
 
@@ -147,6 +149,8 @@ router.get('/:bbid',
  *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Edition not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/aliases',
@@ -180,6 +184,8 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Edition not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/identifiers',
@@ -213,6 +219,8 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Edition not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/relationships',

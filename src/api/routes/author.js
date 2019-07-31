@@ -100,6 +100,8 @@ const authorError = 'Author not found';
  *             $ref: '#/definitions/AuthorDetail'
  *       404:
  *         description: Author not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid',
@@ -134,6 +136,8 @@ router.get('/:bbid',
  *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Author not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/aliases',
@@ -167,6 +171,8 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Author not found
+ *       406:
+ *         description: Invalid BBID
  */
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Author', identifiersRelation, authorError),
@@ -199,6 +205,8 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Author not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/relationships',

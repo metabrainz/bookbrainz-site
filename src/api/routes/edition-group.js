@@ -78,7 +78,8 @@ const editionGroupError = 'Edition Group not found';
  *              $ref: '#/definitions/EditionGroupDetail'
  *        404:
  *          description: Edition Group not found
- *
+ *        406:
+ *          description: Invalid BBID
  */
 
 router.get('/:bbid',
@@ -112,6 +113,8 @@ router.get('/:bbid',
  *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Edition Group not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/aliases',
@@ -145,6 +148,8 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Edition Group not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/identifiers',
@@ -179,6 +184,8 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Edition Group not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/relationships',

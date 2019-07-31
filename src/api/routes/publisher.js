@@ -95,6 +95,8 @@ const publisherError = 'Publisher not found';
  *              $ref: '#/definitions/PublisherDetail'
  *        404:
  *          description: Publisher not found
+ *        406:
+ *          description: Invalid BBID
  */
 
 router.get('/:bbid',
@@ -128,6 +130,8 @@ router.get('/:bbid',
  *              $ref: '#/definitions/Aliases'
  *        404:
  *          description: Publisher not found
+ *        406:
+ *          description: Invalid BBID
  */
 router.get('/:bbid/aliases',
 	makeEntityLoader('Publisher', aliasesRelation, publisherError),
@@ -160,6 +164,8 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Publisher not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/identifiers',
@@ -193,6 +199,8 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Publisher not found
+ *       406:
+ *         description: Invalid BBID
  */
 
 router.get('/:bbid/relationships',
