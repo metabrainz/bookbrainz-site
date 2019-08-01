@@ -26,7 +26,7 @@ import workRouter from './routes/work';
 /**
  *@swagger
  *definitions:
- *  DefaultAlias:
+ *  Alias:
  *    type: object
  *    properties:
  *      name:
@@ -38,6 +38,9 @@ import workRouter from './routes/work';
  *      aliasLanguage:
  *        type: string
  *        example: 'English'
+ *      primary:
+ *        type: boolean
+ *        example: true
  *  Aliases:
  *    type: object
  *    properties:
@@ -48,20 +51,7 @@ import workRouter from './routes/work';
  *      aliases:
  *        type: array
  *        items:
- *          type: object
- *          properties:
- *            name:
- *              type: string
- *              example: 'Robert A. Heinlein'
- *            sortName:
- *              type: string
- *              example: 'Heinlein, Robert A.'
- *            aliasLanguage:
- *              type: string
- *              example: 'English'
- *            primary:
- *              type: boolean
- *              example: true
+ *          $ref: '#/definitions/Alias'
  *  Identifiers:
  *    type: object
  *    properties:

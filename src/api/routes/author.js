@@ -53,7 +53,7 @@ const authorError = 'Author not found';
  *       type: string
  *       example: '1907-07-07'
  *     defaultAlias:
- *         $ref: '#/definitions/DefaultAlias'
+ *         $ref: '#/definitions/Alias'
  *     disambiguation:
  *       type: string
  *       example: 'Robert A. Heinlein'

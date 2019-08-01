@@ -51,7 +51,7 @@ const publisherError = 'Publisher not found';
  *        type: string
  *        example: '1943'
  *      defaultAlias:
- *        $ref: '#/definitions/DefaultAlias'
+ *        $ref: '#/definitions/Alias'
  *      disambiguation:
  *        type: string
  *        example: 'Bharati Bhawan'

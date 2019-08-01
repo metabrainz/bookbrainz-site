@@ -45,7 +45,7 @@ const workError = 'Work not found';
  *        format: uuid
  *        example: ba446064-90a5-447b-abe5-139be547da2e
  *      defaultAlias:
- *        $ref: '#/definitions/DefaultAlias'
+ *        $ref: '#/definitions/Alias'
  *      disambiguation:
  *        type: string
  *        example: 'Harry Porter 1'

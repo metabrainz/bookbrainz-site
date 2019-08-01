@@ -41,6 +41,7 @@ function getDefaultAlias(entity: object) {
 	return {
 		aliasLanguage: _.get(entity, 'defaultAlias.language.name', null),
 		name: _.get(entity, 'defaultAlias.name', null),
+		primary: _.get(entity, 'defaultAlias.primary', null),
 		sortName: _.get(entity, 'defaultAlias.sortName', null)
 	};
 }
@@ -76,6 +77,7 @@ function getLanguages(entity: object) {
 			"defaultAlias": {
 				"aliasLanguage": "English",
 				"name": "Harry Potter",
+				"primary": true,
 				"sortName": "Harry Potter"
 			},
 			"disambiguation": null,
@@ -114,6 +116,7 @@ export function getWorkBasicInfo(work: object) {
 			"defaultAlias": {
 				"aliasLanguage": "English",
 				"name": "A Monster Calls",
+				"primary": true,
 				"sortName": "Monster Calls, A"
 			},
 			"depth": null,
@@ -166,6 +169,7 @@ export function getEditionBasicInfo(edition: object) {
 			"defaultAlias": {
 				"aliasLanguage": "English",
 				"name": "A Suitable Boy",
+				"primary": true,
 				"sortName": "Suitable Boy, A"
 			},
 			"disambiguation": null,
@@ -200,6 +204,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 			"defaultAlias": {
 				"aliasLanguage": "English",
 				"name": "H. Beam Piper",
+				"primary": true,
 				"sortName": "Piper, H. Beam"
 			},
 			"disambiguation": null,
@@ -244,6 +249,7 @@ export function getAuthorBasicInfo(author: object) {
 			"defaultAlias": {
 				"aliasLanguage": "[Multiple languages]",
 				"name": "Bharati Bhawan",
+				"primary": true,
 				"sortName": "Bhawan, Bharati"
 			},
 			"disambiguation": null,

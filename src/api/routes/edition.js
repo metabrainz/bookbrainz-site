@@ -47,7 +47,7 @@ const editionError = 'Edition not found';
  *        format: uuid
  *        example: '96a23368-85a1-4559-b3df-16833893d861'
  *      defaultAlias:
- *        $ref: '#/definitions/DefaultAlias'
+ *        $ref: '#/definitions/Alias'
  *      depth:
  *        type: integer
  *        description: 'depth in mm'
