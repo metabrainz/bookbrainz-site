@@ -18,7 +18,7 @@
  */
 
 import * as auth from '../helpers/auth';
-import * as error from '../helpers/error';
+import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';

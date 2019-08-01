@@ -49,7 +49,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
-import config from '../../helpers/config';
+import config from '../../../common/helpers/config';
 import target from '../../templates/target';
 
 type PassportRequest = $Request & {user: any, session: any};

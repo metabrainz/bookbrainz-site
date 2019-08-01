@@ -22,11 +22,14 @@ import uuidv4 from 'uuid/v4';
 
 
 const {
-	bookshelf, util, Editor, EditorType, Revision, RelationshipSet,
-	Alias, AliasSet, Identifier, IdentifierType, IdentifierSet,
+	bookshelf, util, Editor, EditorType, Revision, Relationship, RelationshipType, RelationshipSet,
+	Alias, AliasSet, Area, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
-	Author, Edition, EditionGroup, Publisher, Work
+	Author, Edition, EditionGroup, Publisher, Work,
+	Language, WorkType, EditionGroupType, AuthorType, PublisherType
 } = orm;
+const {updateLanguageSet} = orm.func.language;
+
 
 const setData = {id: 1};
 
@@ -45,8 +48,19 @@ export const editorAttribs = {
 	typeId: 1
 };
 
+const languageAttribs = {
+	frequency: 1,
+	id: 1,
+	isoCode1: 'en',
+	isoCode2b: 'eng',
+	isoCode2t: 'eng',
+	isoCode3: 'eng',
+	name: 'English'
+};
+
 const aliasData = {
 	...setData,
+	languageId: 42,
 	name: 'work name',
 	sortName: 'Work sort name'
 };
@@ -71,6 +85,16 @@ const identifierTypeData = {
 	validationRegex: 'test'
 };
 
+const relationshipTypeData = {
+	description: 'test descryption',
+	id: 1,
+	label: 'test label',
+	linkPhrase: 'test phrase',
+	reverseLinkPhrase: 'test reverse link phrase',
+	sourceEntityType: 'Author',
+	targetEntityType: 'Work'
+};
+
 const entityAttribs = {
 	aliasSetId: 1,
 	annotationId: 1,
@@ -92,34 +116,101 @@ export async function createEditor() {
 }
 
 async function createAliasAndAliasSet() {
-	await new Alias(aliasData)
+	await new Language({...languageAttribs, id: aliasData.languageId})
 		.save(null, {method: 'insert'});
-	await new AliasSet({...setData, defaultAliasId: 1})
+	const alias = await new Alias(aliasData)
 		.save(null, {method: 'insert'});
+	await new AliasSet({
+		...setData,
+		defaultAliasId: alias.get('id')
+	})
+		.save(null, {method: 'insert'})
+		.then((model) => model.aliases().attach([alias]));
 }
+
 async function createIdentifierAndIdentifierSet() {
 	await new IdentifierType(identifierTypeData)
 		.save(null, {method: 'insert'});
+	const identifier = await new Identifier(identifierData)
+		.save(null, {method: 'insert'});
 	await new IdentifierSet(setData)
-		.save(null, {method: 'insert'});
-	await new Identifier(identifierData)
-		.save(null, {method: 'insert'});
+		.save(null, {method: 'insert'})
+		.then((model) => model.identifiers().attach([identifier]));
 }
-async function createRelationshipSet() {
-	// Create relationships here if you need them
-	await new RelationshipSet(setData)
+
+async function createRelationshipSet(sourceBbid, targetBbid, entityType, targetEntityType) {
+	const safeTargetBbid = targetBbid || uuidv4();
+	const safeSourceBbid = sourceBbid || uuidv4();
+	const relationshipData = {
+		id: 1,
+		sourceBbid: safeSourceBbid,
+		targetBbid: safeTargetBbid,
+		typeId: 1
+	};
+
+	if (!sourceBbid) {
+		// We're only creating a relationship set for show,
+		// we don't care what type of entity we use
+		await new Entity({bbid: safeSourceBbid, type: entityType || 'Author'})
+			.save(null, {method: 'insert'});
+	}
+	await new RelationshipType(relationshipTypeData)
 		.save(null, {method: 'insert'});
+	await new Entity({bbid: safeTargetBbid, type: targetEntityType || 'Author'})
+		.save(null, {method: 'insert'});
+
+	const relationship = await new Relationship(relationshipData)
+		.save(null, {method: 'insert'});
+	await new RelationshipSet(setData)
+		.save(null, {method: 'insert'})
+		.then(
+			(model) =>
+				model.relationships().attach([relationship]).then(() => model)
+		);
+}
+
+async function createRelationshipAndRelationshipSet(sourceBbid, targetBbid, targetEntityType) {
+	const relationshipData = {
+		id: 1,
+		sourceBbid,
+		targetBbid,
+		typeId: 1
+	};
+	await new Entity({bbid: targetBbid, type: targetEntityType})
+		.save(null, {method: 'insert'});
+	await new RelationshipType(relationshipTypeData)
+		.save(null, {method: 'insert'});
+	const relationship = await new Relationship(relationshipData)
+		.save(null, {method: 'insert'});
+	await new RelationshipSet({id: 42})
+		.save(null, {method: 'insert'})
+		.then((model) => model.relationships().attach([relationship]));
+}
+
+async function createLanguageSet() {
+	// Create relationships here if you need them
+	await new Language(languageAttribs)
+		.save(null, {method: 'insert'});
+	await new Language({...languageAttribs, id: 2})
+		.save(null, {method: 'insert'});
+	const languageSet = await updateLanguageSet(
+		orm,
+		null,
+		null,
+		[{id: 1}, {id: 2}]
+	);
+	return languageSet.get('id');
 }
 
 export function getRandomUUID() {
 	return uuidv4();
 }
 
-async function createEntityPrerequisites() {
+async function createEntityPrerequisites(entityBbid) {
 	await createEditor();
 	await createAliasAndAliasSet();
 	await createIdentifierAndIdentifierSet();
-	await createRelationshipSet();
+	await createRelationshipSet(entityBbid);
 
 	await new Disambiguation({
 		...setData,
@@ -138,7 +229,6 @@ async function createEntityPrerequisites() {
 
 export async function createEdition(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-
 	await createEntityPrerequisites();
 
 	await new Entity({bbid, type: 'Edition'})
@@ -149,12 +239,87 @@ export async function createEdition(optionalBBID) {
 
 export async function createWork(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-
-	await createEntityPrerequisites();
-
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
-	await new Work({...entityAttribs, bbid})
+	await createEntityPrerequisites(bbid);
+	// await createRelationshipAndRelationshipSet(bbid, uuidv4(), 'Author');
+	const languageSetId = await createLanguageSet();
+
+	const workAttribs = {
+		bbid,
+		languageSetId,
+		typeId: setData.id
+	};
+	await new WorkType({...setData, label: 'Work Type 1'})
+		.save(null, {method: 'insert'});
+	await new Work({...entityAttribs, ...workAttribs})
+		.save(null, {method: 'insert'});
+}
+
+export async function createEditionGroup(optionalBBID) {
+	const bbid = optionalBBID || uuidv4();
+	await createEntityPrerequisites();
+	const editionGroupAttribs = {
+		bbid,
+		typeId: setData.id
+	};
+	await new EditionGroupType({...setData, label: 'Edition Group Type 1'})
+		.save(null, {method: 'insert'});
+	await new Entity({bbid, type: 'EditionGroup'})
+		.save(null, {method: 'insert'});
+	await new EditionGroup({...entityAttribs, ...editionGroupAttribs})
+		.save(null, {method: 'insert'});
+}
+
+export async function createAuthor(optionalBBID) {
+	const bbid = optionalBBID || uuidv4();
+	await createEntityPrerequisites();
+	const authorAttribs = {
+		bbid,
+		beginAreaId: setData.id,
+		beginDay: 25,
+		beginMonth: 12,
+		beginYear: 2000,
+		endAreaId: setData.id,
+		endDay: 10,
+		endMonth: 5,
+		endYear: 2012,
+		ended: true,
+		genderId: setData.id,
+		typeId: setData.id
+	};
+	await new Area({...setData, gid: uuidv4(), name: 'Rlyeh'})
+		.save(null, {method: 'insert'});
+	await new AuthorType({...setData, label: 'Author Type 1'})
+		.save(null, {method: 'insert'});
+	await new Entity({bbid, type: 'Author'})
+		.save(null, {method: 'insert'});
+	await new Author({...entityAttribs, ...authorAttribs})
+		.save(null, {method: 'insert'});
+}
+
+export async function createPublisher(optionalBBID) {
+	const bbid = optionalBBID || uuidv4();
+	await createEntityPrerequisites();
+	const publisherAttribs = {
+		areaId: setData.id,
+		bbid,
+		beginDay: 25,
+		beginMonth: 12,
+		beginYear: 2000,
+		endDay: 10,
+		endMonth: 5,
+		endYear: 2012,
+		ended: true,
+		typeId: setData.id
+	};
+	await new Area({...setData, gid: uuidv4(), name: 'Rlyeh'})
+		.save(null, {method: 'insert'});
+	await new PublisherType({...setData, label: 'Publisher Type 1'})
+		.save(null, {method: 'insert'});
+	await new Entity({bbid, type: 'Publisher'})
+		.save(null, {method: 'insert'});
+	await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});
 }
 
@@ -168,11 +333,18 @@ export function truncateEntities() {
 		'bookbrainz.identifier_set',
 		'bookbrainz.identifier_type',
 		'bookbrainz.relationship',
+		'bookbrainz.relationship_type',
 		'bookbrainz.relationship_set',
 		'bookbrainz.disambiguation',
 		'bookbrainz.entity',
 		'bookbrainz.revision',
 		'bookbrainz.annotation',
+		'bookbrainz.work_type',
+		'bookbrainz.edition_group_type',
+		'bookbrainz.author_type',
+		'bookbrainz.publisher_type',
+		'musicbrainz.area',
+		'musicbrainz.language',
 		'musicbrainz.gender'
 	]);
 }

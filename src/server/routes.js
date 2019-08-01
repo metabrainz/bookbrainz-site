@@ -30,6 +30,7 @@ import searchRouter from './routes/search';
 import statisticsRouter from './routes/statistics';
 import workRouter from './routes/entity/work';
 
+
 function initRootRoutes(app) {
 	app.use('/', indexRouter);
 	app.use('/', authRouter);
@@ -70,7 +71,6 @@ function initEditorRoutes(app) {
 
 function initRoutes(app) {
 	initRootRoutes(app);
-
 	initEditionGroupRoutes(app);
 	initAuthorRoutes(app);
 	initEditionRoutes(app);
