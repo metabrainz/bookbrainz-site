@@ -65,6 +65,17 @@ describe('GET /Author', () => {
 		);
 		expect(res.body.aliases).to.be.an('array');
 		expect(res.body.aliases).to.have.lengthOf(1);
+		expect(res.body.aliases[0]).to.be.an('object');
+		expect(res.body.aliases[0]).to.have.all.keys(
+			'aliasLanguage',
+			'name',
+			'sortName',
+			'primary'
+		);
+		expect(res.body.aliases[0].aliasLanguage).to.be.a('string');
+		expect(res.body.aliases[0].name).to.be.a('string');
+		expect(res.body.aliases[0].sortName).to.be.a('string');
+		expect(res.body.aliases[0].primary).to.be.a('boolean');
 	 });
 
 	 it('should return list of identifiers of an Author', async function () {
@@ -78,6 +89,13 @@ describe('GET /Author', () => {
 		);
 		expect(res.body.identifiers).to.be.an('array');
 		expect(res.body.identifiers).to.have.lengthOf(1);
+		expect(res.body.identifiers[0]).to.be.an('object');
+		expect(res.body.identifiers[0]).to.have.all.keys(
+			'type',
+			'value',
+		);
+		expect(res.body.identifiers[0].type).to.be.a('string');
+		expect(res.body.identifiers[0].value).to.be.a('string');
 	 });
 
 	 it('should return list of relationships of an Author', async function () {
@@ -91,6 +109,21 @@ describe('GET /Author', () => {
 		);
 		expect(res.body.relationships).to.be.an('array');
 		expect(res.body.relationships).to.have.lengthOf(1);
+		expect(res.body.relationships[0]).to.have.all.keys(
+			'direction',
+			'id',
+			'linkPhrase',
+			'relationshipTypeId',
+			'relationshipTypeName',
+			'targetBbid',
+			'targetEntityType'
+		);
+		expect(res.body.relationships[0].direction).to.be.a('string');
+		expect(res.body.relationships[0].id).to.be.a('number');
+		expect(res.body.relationships[0].linkPhrase).to.be.a('string');
+		expect(res.body.relationships[0].relationshipTypeId).to.be.a('number');
+		expect(res.body.relationships[0].targetBbid).to.be.a('string');
+		expect(res.body.relationships[0].targetEntityType).to.be.a('string');
 	 });
 
 	 it('should throw a 404 error if trying to access an author that does not exist', function (done) {
