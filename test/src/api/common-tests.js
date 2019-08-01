@@ -17,11 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {createAuthor, getRandomUUID, truncateEntities} from '../../test-helpers/create-entities';
 import app from '../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import {getRandomUUID} from '../../test-helpers/create-entities';
-
 
 chai.use(chaiHttp);
 const {expect} = chai;
@@ -29,7 +28,6 @@ const {expect} = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
-const inValidBBID = 'akjd-adjjk-23123';
 
 describe('Common test of API', () => {
 	// Test API for envalid requests
@@ -84,3 +82,54 @@ describe('Common test of API', () => {
 	 });
 });
 
+describe('Lookup endpoints', () => {
+	before(() => createAuthor(aBBID));
+	after(truncateEntities);
+	it('GET {entity}/{BBID}/aliases should return aliases with a specific structure', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/aliases`);
+		expect(res.body.aliases).to.be.an('array');
+		expect(res.body.aliases[0]).to.be.an('object');
+		expect(res.body.aliases[0]).to.have.all.keys(
+			'aliasLanguage',
+			'name',
+			'sortName',
+			'primary'
+		);
+		expect(res.body.aliases[0].aliasLanguage).to.be.a('string');
+		expect(res.body.aliases[0].name).to.be.a('string');
+		expect(res.body.aliases[0].sortName).to.be.a('string');
+		expect(res.body.aliases[0].primary).to.be.a('boolean');
+	 });
+
+	 it('GET {entity}/{BBID}/identifiers should return identifiers with a specific structure', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/identifiers`);
+		expect(res.body.identifiers).to.be.an('array');
+		expect(res.body.identifiers[0]).to.be.an('object');
+		expect(res.body.identifiers[0]).to.have.all.keys(
+			'type',
+			'value',
+		);
+		expect(res.body.identifiers[0].type).to.be.a('string');
+		expect(res.body.identifiers[0].value).to.be.a('string');
+	 });
+
+	 it('GET {entity}/{BBID}/relationships should return relationships with a specific structure', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/relationships`);
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body.relationships[0]).to.have.all.keys(
+			'direction',
+			'id',
+			'linkPhrase',
+			'relationshipTypeId',
+			'relationshipTypeName',
+			'targetBbid',
+			'targetEntityType'
+		);
+		expect(res.body.relationships[0].direction).to.be.a('string');
+		expect(res.body.relationships[0].id).to.be.a('number');
+		expect(res.body.relationships[0].linkPhrase).to.be.a('string');
+		expect(res.body.relationships[0].relationshipTypeId).to.be.a('number');
+		expect(res.body.relationships[0].targetBbid).to.be.a('string');
+		expect(res.body.relationships[0].targetEntityType).to.be.a('string');
+	 });
+});

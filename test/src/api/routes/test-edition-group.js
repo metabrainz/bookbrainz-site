@@ -52,7 +52,6 @@ describe('GET /EditionGroup', () => {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body.aliases).to.be.an('array');
 		expect(res.body).to.have.all.keys(
 			'bbid',
 			'aliases'
@@ -65,7 +64,6 @@ describe('GET /EditionGroup', () => {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body.identifiers).to.be.an('array');
 		expect(res.body).to.have.all.keys(
 			'bbid',
 			'identifiers'
@@ -78,7 +76,6 @@ describe('GET /EditionGroup', () => {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body.relationships).to.be.an('array');
 		expect(res.body).to.have.all.keys(
 			'bbid',
 			'relationships'
