@@ -110,7 +110,7 @@ describe('GET /EditionGroup', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of an Edition Group that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access identifiers of an Edition Group that does not exist', function (done) {
 		chai.request(app)
 			.get(`/edition-group/${bBBID}/identifiers`)
 			.end(function (err, res) {

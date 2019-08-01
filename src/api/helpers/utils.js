@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-export const aliasesRelation = ['aliasSet.aliases.language'];
-export const identifiersRelation = ['identifierSet.identifiers.type'];
-export const relationshipsRelation = ['relationshipSet.relationships.type'];
+export const aliasesRelations = ['aliasSet.aliases.language'];
+export const identifiersRelations = ['identifierSet.identifiers.type'];
+export const relationshipsRelations = ['relationshipSet.relationships.type'];
 
 /**
  * allowOnlyGetMethod is function to allow api to send response only for get requests

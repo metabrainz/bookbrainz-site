@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelation, identifiersRelation, relationshipsRelation} from '../helpers/utils';
+import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
 import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getPublisherBasicInfo} from '../helpers/formatEntityData';
 import _ from 'lodash';
 import express from 'express';
@@ -134,7 +134,7 @@ router.get('/:bbid',
  *          description: Invalid BBID
  */
 router.get('/:bbid/aliases',
-	makeEntityLoader('Publisher', aliasesRelation, publisherError),
+	makeEntityLoader('Publisher', aliasesRelations, publisherError),
 	async (req, res, next) => {
 		const publisherAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(publisherAliasesList);
@@ -169,7 +169,7 @@ router.get('/:bbid/aliases',
  */
 
 router.get('/:bbid/identifiers',
-	makeEntityLoader('Publisher', identifiersRelation, publisherError),
+	makeEntityLoader('Publisher', identifiersRelations, publisherError),
 	async (req, res, next) => {
 		const publisherIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(publisherIdentifiersList);
@@ -204,7 +204,7 @@ router.get('/:bbid/identifiers',
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('Publisher', relationshipsRelation, publisherError),
+	makeEntityLoader('Publisher', relationshipsRelations, publisherError),
 	async (req, res, next) => {
 		const publisherRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(publisherRelationshipList);

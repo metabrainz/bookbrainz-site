@@ -112,7 +112,7 @@ describe('GET /work', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of a Work that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access identifiers of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/identifiers`)
 			.end(function (err, res) {

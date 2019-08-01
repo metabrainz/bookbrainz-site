@@ -122,7 +122,7 @@ export function getWorkBasicInfo(work: object) {
 			"depth": null,
 			"disambiguation": null,
 			"editionFormat": "eBook",
-			"hight": null,
+			"height": null,
 			"languages": [
 				"English"
 			],
@@ -144,7 +144,7 @@ export function getEditionBasicInfo(edition: object) {
 			depth: _.get(edition, 'depth', null),
 			disambiguation: _.get(edition, 'disambiguation.comment', null),
 			editionFormat: _.get(edition, 'editionFormat.label', null),
-			hight: _.get(edition, 'hight', null),
+			height: _.get(edition, 'height', null),
 			languages: getLanguages(edition),
 			pages: _.get(edition, 'pages', null),
 			releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),

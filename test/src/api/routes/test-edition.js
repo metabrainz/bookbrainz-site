@@ -46,7 +46,7 @@ describe('GET /Edition', () => {
 			'languages',
 			'disambiguation',
 			'editionFormat',
-			'hight',
+			'height',
 			'width',
 			'depth',
 			'pages',

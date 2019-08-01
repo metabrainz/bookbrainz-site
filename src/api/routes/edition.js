@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelation, identifiersRelation, relationshipsRelation} from '../helpers/utils';
+import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
 import {getEditionBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
 import _ from 'lodash';
 import express from 'express';
@@ -154,7 +154,7 @@ router.get('/:bbid',
  */
 
 router.get('/:bbid/aliases',
-	makeEntityLoader('Edition', aliasesRelation, editionError),
+	makeEntityLoader('Edition', aliasesRelations, editionError),
 	async (req, res, next) => {
 		const editionAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionAliasesList);
@@ -189,7 +189,7 @@ router.get('/:bbid/aliases',
  */
 
 router.get('/:bbid/identifiers',
-	makeEntityLoader('Edition', identifiersRelation, editionError),
+	makeEntityLoader('Edition', identifiersRelations, editionError),
 	async (req, res, next) => {
 		const editionIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionIdentifiersList);
@@ -224,7 +224,7 @@ router.get('/:bbid/identifiers',
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('Edition', relationshipsRelation, editionError),
+	makeEntityLoader('Edition', relationshipsRelations, editionError),
 	async (req, res, next) => {
 		const editionRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionRelationshipList);

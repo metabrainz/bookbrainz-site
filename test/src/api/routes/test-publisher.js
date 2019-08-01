@@ -112,7 +112,7 @@ describe('GET /Publisher', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of a Publisher that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access identifiers of a Publisher that does not exist', function (done) {
 		chai.request(app)
 			.get(`/publisher/${bBBID}/identifiers`)
 			.end(function (err, res) {

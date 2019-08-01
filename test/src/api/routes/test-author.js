@@ -116,7 +116,7 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers aliases of an Author that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access identifiers of an Author that does not exist', function (done) {
 		chai.request(app)
 			.get(`/author/${bBBID}/identifiers`)
 			.end(function (err, res) {
