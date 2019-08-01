@@ -13,9 +13,7 @@ const swaggerOptions = {
         email: 'akhileshithcse@gmail.com'
       }
     },
-    schemes: ['http'],
-    host: 'localhost:9098',
-    basePath: '/'
+    schemes: ['http']
   },
   apis: ['src/api/routes/*.js', 'src/api/*.js']
 }
