@@ -151,3 +151,36 @@ describe('GET /EditionGroup', () => {
 	 });
 });
 
+
+describe('Browse EditionGroup', () => {
+	// edtionGroups is array of bbid of EditionGroup
+	it('should return list of EditionGroups written by an Author', async function () {
+		const res = await chai.request(app).get(`/edition-group?author=${aBBID}`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'totalCount',
+			'count',
+			'offset',
+			'edtionGroups'
+		);
+		expect(res.body.edtionGroups).to.be.an('array');
+		expect(res.body.edtionGroups).to.have.lengthOf(1);
+		expect(res.body.edtionGroups[0]).to.be.a('string');
+	 });
+
+	 it('should return list of EditionGroup, Which is published by an Publisher', async function () {
+		const res = await chai.request(app).get(`/edition?edition-group=${aBBID}`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'totalCount',
+			'count',
+			'offset',
+			'edtionGroups'
+		);
+		expect(res.body.edtionGroups).to.be.an('array');
+		expect(res.body.edtionGroups).to.have.lengthOf(1);
+		expect(res.body.edtionGroups[0]).to.be.a('string');
+	 });
+});

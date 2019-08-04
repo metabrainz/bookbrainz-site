@@ -153,3 +153,51 @@ describe('GET /work', () => {
 	 });
 });
 
+
+describe('Browse Works', () => {
+	// works is array of bbid of Work
+	it('should return list of Works written by an Author', async function () {
+		const res = await chai.request(app).get(`/work?author=${aBBID}`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'totalCount',
+			'count',
+			'offset',
+			'works'
+		);
+		expect(res.body.works).to.be.an('array');
+		expect(res.body.works).to.have.lengthOf(1);
+		expect(res.body.works[0]).to.be.a('string');
+	 });
+
+	 it('should return list of Works contained by an Edition', async function () {
+		const res = await chai.request(app).get(`/work?edition=${aBBID}`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'totalCount',
+			'count',
+			'offset',
+			'works'
+		);
+		expect(res.body.works).to.be.an('array');
+		expect(res.body.works).to.have.lengthOf(1);
+		expect(res.body.works[0]).to.be.a('string');
+	 });
+	 it('should return list of Works contained by an EditionGroup', async function () {
+		const res = await chai.request(app).get(`/work?edition-group=${aBBID}`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'totalCount',
+			'count',
+			'offset',
+			'works'
+		);
+		expect(res.body.works).to.be.an('array');
+		expect(res.body.works).to.have.lengthOf(1);
+		expect(res.body.works[0]).to.be.a('string');
+	 });
+});
+
