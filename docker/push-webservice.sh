@@ -30,6 +30,6 @@ else
   exit 1;
 fi
 
-# echo "Pushing image to docker hub metabrainz/bookbrainz-webservice:$TAG..."
-# docker push metabrainz/bookbrainz-webservice:$TAG
-# echo "Done!"
+echo "Pushing image to docker hub metabrainz/bookbrainz-webservice:$TAG..."
+docker push metabrainz/bookbrainz-webservice:$TAG
+echo "Done!"
