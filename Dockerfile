@@ -67,6 +67,7 @@ FROM bookbrainz-base as bookbrainz-prod
 ARG DEPLOY_ENV
 
 COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
+RUN chmod 755 /etc/rc.local
 
 COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
 COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
@@ -93,6 +94,7 @@ FROM bookbrainz-base as bookbrainz-webservice
 ARG DEPLOY_ENV
 
 COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
+RUN chmod 755 /etc/rc.local
 
 COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
 COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
