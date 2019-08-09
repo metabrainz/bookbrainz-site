@@ -24,7 +24,6 @@ import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
 import {get as _get} from 'lodash';
-import {allowOnlyGetMethod} from './helpers/utils';
 import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
@@ -79,15 +78,14 @@ app.use(session({
 const mainRouter = initRoutes();
 const API_VERSION = process.env.API_VERSION || '1';
 app.use(`/${API_VERSION}`, mainRouter);
-
-// Allow only get requests for now throw error for any other type of requests
-mainRouter.all('/*', allowOnlyGetMethod);
-
+// Redirect all requests to /${API_VERSION}/...
+app.use('/*', (req, res) => {
+	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
+});
 // Catch 404 and forward to error handler
-app.use((req, res, next) => {
+mainRouter.use((req, res, next) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
 });
-
 
 const debug = Debug('bbapi');
 
