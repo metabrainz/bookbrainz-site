@@ -30,12 +30,10 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
+import initRoutes from './routes';
 import logger from 'morgan';
-import path from 'path';
 import redis from 'connect-redis';
-import routes from './routes';
 import session from 'express-session';
-import swaggerRoute from './swagger';
 
 
 Promise.config({
@@ -78,13 +76,12 @@ app.use(session({
 
 
 // Set up routes
-routes(app);
-
-// use swagger-Ui-express for your app documentation endpoint
-app.use('/api-docs', swaggerRoute);
+const mainRouter = initRoutes();
+const API_VERSION = process.env.API_VERSION || '1';
+app.use(`/${API_VERSION}`, mainRouter);
 
 // Allow only get requests for now throw error for any other type of requests
-app.all('/*', allowOnlyGetMethod);
+mainRouter.all('/*', allowOnlyGetMethod);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
