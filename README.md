@@ -121,7 +121,7 @@ Once you are done developing, you can stop the dependencies running in docker in
 
 As described above for running the web server, you can easily start the API with Docker by running  `./develop-api.sh`.
 
-Point you browser to `localhost:9099/api-docs` to pull up the documentation and try out the api endpoints.
+Point you browser to `localhost:9099/1/api-docs` to pull up the documentation and try out the api endpoints.
 
 Don't forget to run `./stop.sh` once you are done developing to stop the dependencies that are running in the background.
 
