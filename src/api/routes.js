@@ -16,12 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Router} from 'express';
+import {allowOnlyGetMethod} from './helpers/utils';
 import authorRouter from './routes/author';
 import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
 import publisherRouter from './routes/publisher';
+import swaggerRoute from './swagger';
 import workRouter from './routes/work';
-
 
 /**
  *@swagger
@@ -122,17 +124,28 @@ function initAuthorRoute(app) {
 	app.use('/author', authorRouter);
 }
 
-function initPublishetRouter(app) {
+function initPublisherRoute(app) {
 	app.use('/publisher', publisherRouter);
 }
 
+function initDocsRoute(app) {
+	app.use('/api-docs', swaggerRoute);
+}
 
-function initRoutes(app) {
-	initWorkRoute(app);
-	initEditionRoute(app);
-	initEditionGroupRoute(app);
-	initAuthorRoute(app);
-	initPublishetRouter(app);
+function initRoutes() {
+	const router = Router();
+
+	// Allow only get requests for now and throw error for any other type of requests
+	router.all('/*', allowOnlyGetMethod);
+
+	initWorkRoute(router);
+	initEditionRoute(router);
+	initEditionGroupRoute(router);
+	initAuthorRoute(router);
+	initPublisherRoute(router);
+	initDocsRoute(router);
+
+	return router;
 }
 
 export default initRoutes;

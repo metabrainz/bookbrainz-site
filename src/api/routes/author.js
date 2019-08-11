@@ -18,12 +18,11 @@
 
 import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
 import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
-import _ from 'lodash';
-import express from 'express';
+import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
 
-const router = express.Router();
+const router = Router();
 
 const authorBasicRelations = [
 	'defaultAlias.language',

@@ -24,18 +24,15 @@ import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import Promise from 'bluebird';
 import {get as _get} from 'lodash';
-import {allowOnlyGetMethod} from './helpers/utils';
 import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
+import initRoutes from './routes';
 import logger from 'morgan';
-import path from 'path';
 import redis from 'connect-redis';
-import routes from './routes';
 import session from 'express-session';
-import swaggerRoute from './swagger';
 
 
 Promise.config({
@@ -78,19 +75,17 @@ app.use(session({
 
 
 // Set up routes
-routes(app);
-
-// use swagger-Ui-express for your app documentation endpoint
-app.use('/api-docs', swaggerRoute);
-
-// Allow only get requests for now throw error for any other type of requests
-app.all('/*', allowOnlyGetMethod);
-
+const mainRouter = initRoutes();
+const API_VERSION = process.env.API_VERSION || '1';
+app.use(`/${API_VERSION}`, mainRouter);
+// Redirect all requests to /${API_VERSION}/...
+app.use('/*', (req, res) => {
+	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
+});
 // Catch 404 and forward to error handler
-app.use((req, res, next) => {
+mainRouter.use((req, res, next) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
 });
-
 
 const debug = Debug('bbapi');
 
