@@ -22,6 +22,7 @@ import {createPublisher, getRandomUUID, truncateEntities} from '../../../test-he
 import app from '../../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import {testPublisherBrowseRequest} from '../helpers';
 
 
 chai.use(chaiHttp);
@@ -154,48 +155,13 @@ describe('GET /Publisher', () => {
 });
 
 describe('Browse Publishers', () => {
-	// publishers is array of bbid of Publusher
-	it('should return list of Publisher, associated with the Author', async function () {
-		const res = await chai.request(app).get(`/publisher?author=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'publishers'
-		);
-		expect(res.body.works).to.be.an('array');
-		expect(res.body.works).to.have.lengthOf(1);
-		expect(res.body.works[0]).to.be.a('string');
-	 });
+	// Test browse requests of Publisher
+	it('should return list of Publisher, associated with the Author',
+		() => testPublisherBrowseRequest(`/publisher?author=${aBBID}`));
 
-	 it('should return list of Publisher, Whose are  related to the Edition', async function () {
-		const res = await chai.request(app).get(`/publisher?edition=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'publishers'
-		);
-		expect(res.body.publishers).to.be.an('array');
-		expect(res.body.publishers).to.have.lengthOf(1);
-		expect(res.body.publishers[0]).to.be.a('string');
-	 });
-	 it('should return list of Publisher, Whose are  related to the EditionGroup', async function () {
-		const res = await chai.request(app).get(`/publisher?edition-group=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'publishers'
-		);
-		expect(res.body.publishers).to.be.an('array');
-		expect(res.body.publishers).to.have.lengthOf(1);
-		expect(res.body.publishers[0]).to.be.a('string');
-	 });
+	it('should return list of Publisher, Whose are  related to the Edition',
+		() => testPublisherBrowseRequest(`/publisher?edition=${aBBID}`));
+
+	it('should return list of Publisher, Whose are  related to the EditionGroup',
+		() => testPublisherBrowseRequest(`/publisher?edition-group=${aBBID}`));
 });

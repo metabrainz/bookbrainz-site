@@ -18,10 +18,10 @@
  */
 
 import {createEdition, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
-
 import app from '../../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import {testEditionBrowseRequest} from '../helpers';
 
 
 chai.use(chaiHttp);
@@ -161,34 +161,10 @@ describe('GET /Edition', () => {
 
 
 describe('Browse Edition', () => {
-	// editions is array of bbid of Edition
-	it('should return list of Editions contains the Work', async function () {
-		const res = await chai.request(app).get(`/edition?work=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'edtions'
-		);
-		expect(res.body.works).to.be.an('array');
-		expect(res.body.works).to.have.lengthOf(1);
-		expect(res.body.works[0]).to.be.a('string');
-	 });
+	// Test browse requests of Edition
+	it('should return list of Editions contains the Work',
+		() => testEditionBrowseRequest(`/edtion?work=${aBBID}`));
 
-	 it('should return list of Edition contained by an EditionGroup', async function () {
-		const res = await chai.request(app).get(`/edition?edition-group=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'edition'
-		);
-		expect(res.body.editions).to.be.an('array');
-		expect(res.body.editions).to.have.lengthOf(1);
-		expect(res.body.editions[0]).to.be.a('string');
-	 });
+	it('should return list of Edition contained by an EditionGroup',
+		() => testEditionBrowseRequest(`/edition?edition-group=${aBBID}`));
 });

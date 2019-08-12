@@ -22,6 +22,7 @@ import {createAuthor, getRandomUUID, truncateEntities} from '../../../test-helpe
 import app from '../../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import {testAuthorBrowseRequest} from '../helpers';
 
 
 chai.use(chaiHttp);
@@ -31,6 +32,7 @@ const {expect} = chai;
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
 const inValidBBID = 'akjd-adjjk-23123';
+
 
 describe('GET /Author', () => {
 	before(() => createAuthor(aBBID));
@@ -157,65 +159,18 @@ describe('GET /Author', () => {
 	 });
 });
 
+
 describe('Browse Author', () => {
-	// authors is list of bbid of Author
-	it('should return list of Authors of the Work', async function () {
-		const res = await chai.request(app).get(`/author?work=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'authors'
-		);
-		expect(res.body.authors).to.be.an('array');
-		expect(res.body.authors).to.have.lengthOf(1);
-		expect(res.body.authors[0]).to.be.a('string');
-	});
+	// Test browse requests of Author
+	it('should return list of Authors of the Work',
+		() => testAuthorBrowseRequest(`/author?work=${aBBID}`));
 
-	 it('should return list of Authors, whose works are in the Edition', async function () {
-		const res = await chai.request(app).get(`/author?edition=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'authors'
-		);
-		expect(res.body.authors).to.be.an('array');
-		expect(res.body.authors).to.have.lengthOf(1);
-		expect(res.body.authors[0]).to.be.a('string');
-	 });
+	it('should return list of Authors, whose works are in the Edition',
+		() => testAuthorBrowseRequest(`/author?edition=${aBBID}`));
 
-	 it('should return list of Authors, whose works are in the EditionGroup', async function () {
-		const res = await chai.request(app).get(`/author?edition-group=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'authors'
-		);
-		expect(res.body.authors).to.be.an('array');
-		expect(res.body.authors).to.have.lengthOf(1);
-		expect(res.body.authors[0]).to.be.a('string');
-	 });
+	it('should return list of Authors, whose works are in the EditionGroup',
+		() => testAuthorBrowseRequest(`/author?edition-group=${aBBID}`));
 
-	 it('should return list of Authors, who are associated with a Publisher', async function () {
-		const res = await chai.request(app).get(`/author?publisher=${aBBID}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'totalCount',
-			'count',
-			'offset',
-			'authors'
-		);
-		expect(res.body.authors).to.be.an('array');
-		expect(res.body.authors).to.have.lengthOf(1);
-		expect(res.body.authors[0]).to.be.a('string');
-	 });
+	it('should return list of Authors, who are associated with a Publisher',
+		() => testAuthorBrowseRequest(`/author?publisher=${aBBID}`));
 });
