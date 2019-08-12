@@ -159,5 +159,5 @@ describe('Browse EditionGroup', () => {
 		() => testEditionGroupBrowseRequest(`/edition-group?author=${aBBID}`));
 
 	it('should return list of EditionGroup, Which is published by an Publisher',
-		() => testEditionGroupBrowseRequest(`/edition-group?edition=${aBBID}`));
+		() => testEditionGroupBrowseRequest(`/edition-group?publisher=${aBBID}`));
 });
