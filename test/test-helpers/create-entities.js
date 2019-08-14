@@ -162,46 +162,56 @@ async function createIdentifierAndIdentifierSet() {
 		.then((model) => model.identifiers().attach([identifier]));
 }
 
-async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 'Author') {
-	const safeTargetBbid = targetBbid || uuidv4();
+
+export async function createRelationship(sourceBbid, targetBbid, entityType, targetEntityType) {
 	const safeSourceBbid = sourceBbid || uuidv4();
-
-	/* Create the relationship target entity */
-	await new Entity({bbid: safeTargetBbid, type: targetEntityType})
-		.save(null, {method: 'insert'});
-	const EntityModel = orm[`${targetEntityType}`];
-	const revisionId = random.number();
-	await new Revision({authorId: editorAttribs.id, id: revisionId})
-		.save(null, {method: 'insert'});
-	await new EntityModel({
-		aliasSetId: entityAttribs.aliasSetId, bbid: safeTargetBbid, revisionId
-	}).save(null, {method: 'insert'});
-
+	const safeTargetBbid = targetBbid || uuidv4();
+	const safeSourceEntityType = entityType || 'Author';
+	const safeTargetEntityType = targetEntityType || 'Work';
 	const relationshipData = {
-		id: 1,
+		id: random.number(),
 		sourceBbid: safeSourceBbid,
 		targetBbid: safeTargetBbid,
 		typeId: 1
 	};
-	relationshipTypeData.id = random.number();
-	await new RelationshipType(relationshipTypeData)
-		.save(null, {method: 'insert'})
-		.catch(console.log);
+	if (!sourceBbid) {
+		// We're only creating a relationship set for show,
+		// we don't care what type of entity we use
+		await new Entity({bbid: safeSourceBbid, type: safeSourceEntityType})
+			.save(null, {method: 'insert'});
+	}
+	relationshipTypeData.sourceEntityType = safeSourceEntityType;
+	relationshipTypeData.targetEntityType = safeTargetEntityType;
+	try {
+		await new RelationshipType(relationshipTypeData)
+			.save(null, {method: 'insert'});
+	}
+	catch (error) {
+	}
+	await new Entity({bbid: safeTargetBbid, type: safeTargetEntityType})
+		.save(null, {method: 'insert'});
 
 	relationshipData.typeId = relationshipTypeData.id;
 	relationshipData.id = random.number();
 	const relationship = await new Relationship(relationshipData)
 		.save(null, {method: 'insert'});
 
-	entityAttribs.relationshipSetId = random.number();
-	await new RelationshipSet({id: entityAttribs.relationshipSetId})
-		.save(null, {method: 'insert'})
-		.then(
-			(model) =>
-				model.relationships().attach([relationship]).then(() => model)
-		);
-}
+	const existingRelationshipSet = await RelationshipSet
+		.forge({...setData})
+		.fetch();
 
+	if (existingRelationshipSet) {
+		existingRelationshipSet.relationships().attach([relationship]);
+	}
+	else {
+		await new RelationshipSet({...setData})
+			.save(null, {method: 'insert'})
+			.then(
+				(model) =>
+					model.relationships().attach([relationship])
+			);
+	}
+}
 
 async function createLanguageSet() {
 	// Create relationships here if you need them
@@ -228,7 +238,7 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 	await createEditor();
 	await createAliasAndAliasSet();
 	await createIdentifierAndIdentifierSet();
-	await createRelationshipSet(entityBbid, null, entityType);
+	await createRelationship(entityBbid);
 
 	const disambiguation = await new Disambiguation({
 		comment: 'Test Disambiguation',
@@ -267,7 +277,7 @@ export async function createWork(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
-	await createEntityPrerequisites(bbid, 'Work');
+	await createEntityPrerequisites(bbid);
 	const languageSetId = await createLanguageSet();
 
 	const workAttribs = {

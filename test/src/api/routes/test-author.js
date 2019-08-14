@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createAuthor, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+import {createAuthor, createRelationship, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
 import chai from 'chai';
@@ -162,6 +162,15 @@ describe('GET /Author', () => {
 
 describe('Browse Author', () => {
 	// Test browse requests of Author
+	before(async () => {
+		await createAuthor(aBBID);
+		await createRelationship(aBBID, null, 'Author', 'Work');
+		await createRelationship(aBBID, null, 'Author', 'Edition');
+		await createRelationship(aBBID, null, 'Author', 'EditionGroup');
+		await createRelationship(aBBID, null, 'Author', 'Publisher');
+	});
+	after(truncateEntities);
+
 	it('should return list of Authors of the Work',
 		() => testAuthorBrowseRequest(`/author?work=${aBBID}`));
 
