@@ -20,7 +20,7 @@
  */
 /* eslint global-require: 'warn' */
 
-
+import * as search from '../common/helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import {get as _get} from 'lodash';
@@ -81,6 +81,10 @@ app.use('/*', (req, res) => {
 mainRouter.use((req, res) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
 });
+
+// initialize elasticsearch
+search.init(app.locals.orm, config.search);
+
 
 const debug = Debug('bbapi');
 

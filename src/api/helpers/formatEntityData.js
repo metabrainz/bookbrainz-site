@@ -393,3 +393,15 @@ export function getEntityRelationships(entity: object) {
 			})
 		};
 }
+
+export function formatSearchRespose(searchResult: array) {
+	return _.isNil(searchResult) ? null :
+		{
+			resultCount: searchResult.length,
+			searchResult: searchResult.map((entity) => ({
+				bbid: _.get(entity, 'bbid', null),
+				defaultAlias: getDefaultAlias(entity),
+				entityType: _.get(entity, 'type', null)
+			}))
+		};
+}

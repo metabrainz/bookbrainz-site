@@ -38,3 +38,24 @@ export function makePromiseFromObject(obj: Object): Promise<Object> {
 			return res;
 	  });
 }
+
+export function getEntityModels(orm: Object): Object {
+	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
+	return {
+		Author,
+		Edition,
+		EditionGroup,
+		Publisher,
+		Work
+	};
+}
+
+export function getEntityModelByType(orm: Object, type: string): Object {
+	const entityModels = getEntityModels(orm);
+
+	if (!entityModels[type]) {
+		throw new Error(`Unrecognized entity type: '${type}'`);
+	}
+
+	return entityModels[type];
+}
