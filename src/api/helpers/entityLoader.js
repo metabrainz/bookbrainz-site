@@ -46,9 +46,10 @@ import * as commonUtils from '../../common/helpers/utils';
 export function makeEntityLoader(modelName, relations, errMessage) {
 	return async (req, res, next) => {
 		const {orm} = req.app.locals;
-		if (commonUtils.isValidBBID(req.params.bbid)) {
+		const bbid = req.query.work;
+		if (commonUtils.isValidBBID(bbid)) {
 			try {
-				const entityData = await orm.func.entity.getEntity(orm, modelName, req.params.bbid, relations);
+				const entityData = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				res.locals.entity = entityData;
 				return next();
 			}

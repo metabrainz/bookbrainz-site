@@ -18,6 +18,7 @@
 
 import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
 import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
+import {getBrowsedRelationships, loadEntityRelationshipsForBrowse} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -214,5 +215,19 @@ router.get('/:bbid/relationships',
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
 	});
+
+// router.get('/', loadBrowseData(), (req, res) => {
+// 	console.log(req.query);
+// 	return res.send(res.locals.entity);
+// });
+
+router.get('/',
+	makeEntityLoader('Work', relationshipsRelations, 'workError'),
+	loadEntityRelationshipsForBrowse(),
+	async (req, res, next) => {
+		const authorRelationshipList = await getBrowsedRelationships(res.locals, 'Author', getAuthorBasicInfo);
+		return res.status(200).send(authorRelationshipList);
+	}
+);
 
 export default router;
