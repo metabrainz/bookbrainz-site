@@ -16,6 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import _ from 'lodash';
+
+
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type'];
@@ -39,4 +42,63 @@ export function allowOnlyGetMethod(req, res, next) {
 	return res.set('Allow', 'GET')
 		.status(405)
 		.send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`});
+}
+
+/* eslint-disable*/
+
+export async function getBrowsedRelationships(locals, browsedEntityType, getEntityInfoMethod) {
+	const entity = locals.entity;
+	const {orm} = locals;
+ 	const relationships = locals.relationships;
+	
+	if(! relationships.length > 0) {
+		return [];
+	}
+
+	const filteredRelationships = await relationships
+		.map(relationship => {
+			// Current entity is the source of the relationship
+			if (entity.bbid === relationship.sourceBbid) {				
+				// The other entity is of the browsed type we are looking for
+				// We need a good way to compare entity type strings here and same thing below
+				// Allow for capitalization mistakes? (.toLowercase() on both?)
+				if (relationship.targetEntityType === browsedEntityType) {
+					return {
+						entity: relationship.target,
+						relationships: [{
+							relationshipTypeID: _.get(relationship, 'type.id', null),
+							relationshipType: _.get(relationship, 'type.label', null)
+						}]
+					};
+				}
+			}
+			// Current entity is the target of the relationship
+			// and the other entity is of the browsed type we are looking for
+			else if (relationship.source.type === browsedEntityType) {
+				return {
+					entity: relationship.source,
+					relationships: [{
+						relationshipTypeID: _.get(relationship, 'type.id', null),
+						relationshipType: _.get(relationship, 'type.label', null)
+					}]
+				};
+			}
+			return null;
+		})
+		// Remove falsy values (nulls returned above)
+		.filter(Boolean);
+
+	const flattenedRelationships = await filteredRelationships
+		.reduce((accumulator, relationship, index, array) => {
+			const entityAlreadyExists = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
+			if (entityAlreadyExists) {
+				entityAlreadyExists.relationships.push(...relationship.relationships);
+			}
+			else {
+				accumulator.push(relationship);
+			}
+			return accumulator;
+		}, []);
+
+	return flattenedRelationships;
 }

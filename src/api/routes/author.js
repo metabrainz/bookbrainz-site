@@ -16,12 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
-import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
-import {getBrowsedRelationships, loadEntityRelationshipsForBrowse} from '../helpers/middleware';
-import {Router} from 'express';
-import {makeEntityLoader} from '../helpers/entityLoader';
 
+import * as utils from '../helpers/utils';
+
+import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
+import {loadEntityRelationshipsForBrowse, validateAuthorBrowseRequest} from '../helpers/middleware';
+import {Router} from 'express';
+
+import {makeEntityLoader} from '../helpers/entityLoader';
 
 const router = Router();
 
@@ -141,8 +143,8 @@ router.get('/:bbid',
  */
 
 router.get('/:bbid/aliases',
-	makeEntityLoader('Author', aliasesRelations, authorError),
-	async (req, res) => {
+	makeEntityLoader('Author', utils.aliasesRelations, authorError),
+	async (req, res, next) => {
 		const authorAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(authorAliasesList);
 	});
@@ -175,8 +177,8 @@ router.get('/:bbid/aliases',
  *         description: Invalid BBID
  */
 router.get('/:bbid/identifiers',
-	makeEntityLoader('Author', identifiersRelations, authorError),
-	async (req, res) => {
+	makeEntityLoader('Author', utils.identifiersRelations, authorError),
+	async (req, res, next) => {
 		const authorIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(authorIdentifiersList);
 	});
@@ -210,23 +212,23 @@ router.get('/:bbid/identifiers',
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('Author', relationshipsRelations, authorError),
-	async (req, res) => {
+	makeEntityLoader('Author', utils.relationshipsRelations, authorError),
+	async (req, res, next) => {
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
 	});
 
-// router.get('/', loadBrowseData(), (req, res) => {
-// 	console.log(req.query);
-// 	return res.send(res.locals.entity);
-// });
 
 router.get('/',
-	makeEntityLoader('Work', relationshipsRelations, 'workError'),
+	validateAuthorBrowseRequest,
+	makeEntityLoader('Work', utils.relationshipsRelations, 'Entity not foud', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
-		const authorRelationshipList = await getBrowsedRelationships(res.locals, 'Author', getAuthorBasicInfo);
-		return res.status(200).send(authorRelationshipList);
+		const authorRelationshipList = await utils.getBrowsedRelationships(res.locals, 'Author', getAuthorBasicInfo);
+		return res.status(200).send({
+			bbid: req.query.bbid,
+			relatedAuthors: authorRelationshipList
+		});
 	}
 );
 
