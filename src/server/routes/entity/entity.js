@@ -22,7 +22,7 @@ import * as achievement from '../../helpers/achievement';
 import * as error from '../../../common/helpers/error';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
-import * as search from '../../helpers/search';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 
