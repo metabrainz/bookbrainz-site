@@ -56,7 +56,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 		}
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
-			.fetch({withRelated: ['defaultAlias.language', 'disambiguation']})
+			.fetch({require: false, withRelated: ['defaultAlias', 'defaultAlias.language', 'disambiguation', 'aliasSet.aliases']})
 			.then((entity) => entity && entity.toJSON());
 	});
 }
@@ -69,7 +69,7 @@ function _searchForEntities(orm, dslQuery) {
 }
 
 async function _bulkIndexEntities(entities) {
-	if (entities.length === 0) {
+	if (!entities.length) {
 		return;
 	}
 
@@ -118,7 +118,7 @@ async function _bulkIndexEntities(entities) {
 			}, []);
 
 
-			if (entitiesToIndex.length > 0) {
+			if (entitiesToIndex.length) {
 				operationSucceeded = false;
 
 				const jitter = Math.random() * _maxJitter;
@@ -159,7 +159,7 @@ export function autocomplete(orm, query, collection) {
 	else {
 		queryBody = {
 			match: {
-				'defaultAlias.name.autocomplete': {
+				'aliasSet.aliases.name.autocomplete': {
 					minimum_should_match: '80%',
 					query
 				}
@@ -214,7 +214,7 @@ export async function generateIndex(orm) {
 		mappings: {
 			_default_: {
 				properties: {
-					defaultAlias: {
+					'aliasSet.aliases': {
 						properties: {
 							name: {
 								fields: {
@@ -288,7 +288,8 @@ export async function generateIndex(orm) {
 	const baseRelations = [
 		'annotation',
 		'disambiguation',
-		'defaultAlias'
+		'defaultAlias',
+		'aliasSet.aliases'
 	];
 
 	const entityBehaviors = [
@@ -340,11 +341,17 @@ export async function generateIndex(orm) {
 		.fetchAll();
 
 	const areas = areaCollection.toJSON();
+
+	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
+	 * We massage the area to return a similar format as BB entities
+	 */
 	const processedAreas = areas.map((area) => new Object({
-		bbid: area.gid,
-		defaultAlias: {
-			name: area.name
+		aliasSet: {
+			aliases: [
+				{name: area.name}
+			]
 		},
+		bbid: area.gid,
 		type: 'Area'
 	}));
 	await _processEntityListForBulk(processedAreas);
@@ -393,7 +400,7 @@ export function searchByName(orm, name, collection, size, from) {
 				bool: {
 					must: {
 						match: {
-							'defaultAlias.name.search': {
+							'aliasSet.aliases.name.search': {
 								minimum_should_match: '75%',
 								query: name
 							}
@@ -401,7 +408,7 @@ export function searchByName(orm, name, collection, size, from) {
 					},
 					should: {
 						match: {
-							'defaultAlias.name': {
+							'aliasSet.aliases.name': {
 								boost: 1.3, // eslint-disable-line max-len,no-magic-numbers
 								query: name
 							}
@@ -422,6 +429,7 @@ export function searchByName(orm, name, collection, size, from) {
 			dslQuery.type = _.snakeCase(collection);
 		}
 	}
+
 	return _searchForEntities(orm, dslQuery);
 }
 

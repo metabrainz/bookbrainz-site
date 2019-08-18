@@ -21,7 +21,7 @@
 
 import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
-import * as search from './helpers/search';
+import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
