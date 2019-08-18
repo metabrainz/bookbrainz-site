@@ -58,11 +58,11 @@ export async function getBrowsedRelationships(locals, browsedEntityType, getEnti
 	const filteredRelationships = await relationships
 		.map(relationship => {
 			// Current entity is the source of the relationship
-			if (entity.bbid === relationship.sourceBbid) {				
+			if (entity.bbid === relationship.sourceBbid) {
 				// The other entity is of the browsed type we are looking for
 				// We need a good way to compare entity type strings here and same thing below
 				// Allow for capitalization mistakes? (.toLowercase() on both?)
-				if (relationship.targetEntityType === browsedEntityType) {
+				if (relationship.target.type === browsedEntityType) {
 					return {
 						entity: relationship.target,
 						relationships: [{

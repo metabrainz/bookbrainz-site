@@ -40,6 +40,20 @@ export function validateAuthorBrowseRequest (req, res, next) {
 	next();
 }
 
+export function validateWorkBrowseRequest (req, res, next) {
+	const authorBbid = req.query['author'];
+	const editionBbid = req.query['edition'];	
+	if (authorBbid) {
+		req.query.bbid = authorBbid;
+		req.query.modelType = 'Author';
+	} 
+	else if (editionBbid) {
+		req.query.bbid = editionBbid;
+		req.query.modelType = 'Edition';
+	}
+	next();
+}
+
 async function loadEntitty (orm, relEntity) {	
 	const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 	const entity = await  model.forge({bbid: relEntity.bbid})
@@ -53,8 +67,7 @@ export function loadEntityRelationshipsForBrowse() {
 		const {orm} = req.app.locals;
 		const {RelationshipSet} = orm;
 		const bbid = req.query.bbid;
-
-		const entityData = res.locals.entity;
+		const entityData = res.locals.entity;		
 		try {
 			const relationshipSet = await RelationshipSet.forge({id: entityData.relationshipSetId})
 				.fetch({

@@ -74,7 +74,31 @@ const authorError = 'Author not found';
  *     type:
  *       type: string
  *       example: 'Person'
- *
+ *  BrowsedAuthors:
+ *   type: object
+ *   properties:
+ *     bbid:
+ *       type: string
+ *       format: uuid
+ *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *     relatedAuthors:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           entity:
+ *             $ref: '#/definitions/AuthorDetail'
+ *           relationships:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                  relationshipTypeID:
+ *                    type: number
+ *                    example: 8
+ *                  relationshipType:
+ *                    type: string
+ *                    example: 'Author'
  */
 
 
@@ -218,6 +242,38 @@ router.get('/:bbid/relationships',
 		return res.status(200).send(authorRelationshipList);
 	});
 
+/**
+ *	@swagger
+ * '/author':
+ *   get:
+ *     tags:
+ *       - Browse Requests
+ *     summary: Get list of Authors which are related to an Edition or Work
+ *     description: Returns the list of Author, When one of the bbid of Work or Edition is passed as query parameter
+ *     operationId: getRelatedAuthorByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: work
+ *         in: query
+ *         description: BBID of the Work
+ *         required: false
+ *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the Edition
+ *         required: false
+ *         type: bbid
+ *     responses:
+ *       200:
+ *         description: List of Authors which are related to either Work or Edition
+ *         schema:
+ *             $ref: '#/definitions/BrowsedAuthors'
+ *       404:
+ *         description: Work not found or Edition not found
+ *       406:
+ *         description: Invalid BBID paased in query params
+ */
 
 router.get('/',
 	validateAuthorBrowseRequest,
@@ -229,7 +285,6 @@ router.get('/',
 			bbid: req.query.bbid,
 			relatedAuthors: authorRelationshipList
 		});
-	}
-);
+	});
 
 export default router;

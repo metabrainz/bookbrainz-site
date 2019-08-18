@@ -16,8 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
+import * as utils from '../helpers/utils';
 import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getWorkBasicInfo} from '../helpers/formatEntityData';
+import {loadEntityRelationshipsForBrowse, validateWorkBrowseRequest} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -59,6 +60,31 @@ const workError = 'Work not found';
  *      workType:
  *        type: string
  *        example: 'Epic'
+ *  BrowsedWorks:
+ *   type: object
+ *   properties:
+ *     bbid:
+ *       type: string
+ *       format: uuid
+ *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *     relatedWorks:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           entity:
+ *             $ref: '#/definitions/WorkDetail'
+ *           relationships:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                  relationshipTypeID:
+ *                    type: number
+ *                    example: 8
+ *                  relationshipType:
+ *                    type: string
+ *                    example: 'Author'
  *
  */
 
@@ -128,8 +154,8 @@ router.get('/:bbid',
 
 
 router.get('/:bbid/aliases',
-	makeEntityLoader('Work', aliasesRelations, workError),
-	async (req, res) => {
+	makeEntityLoader('Work', utils.aliasesRelations, workError),
+	async (req, res, next) => {
 		const workAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(workAliasesList);
 	});
@@ -163,8 +189,8 @@ router.get('/:bbid/aliases',
  */
 
 router.get('/:bbid/identifiers',
-	makeEntityLoader('Work', identifiersRelations, workError),
-	async (req, res) => {
+	makeEntityLoader('Work', utils.identifiersRelations, workError),
+	async (req, res, next) => {
 		const workIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(workIdentifiersList);
 	});
@@ -199,10 +225,55 @@ router.get('/:bbid/identifiers',
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('Work', relationshipsRelations, workError),
-	async (req, res) => {
+	makeEntityLoader('Work', utils.relationshipsRelations, workError),
+	async (req, res, next) => {
 		const workRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(workRelationshipList);
+	});
+
+/**
+ *	@swagger
+ * '/work':
+ *   get:
+ *     tags:
+ *       - Browse Requests
+ *     summary: Get list of Works which are related to an Edition or Author
+ *     description: Returns the list of Author, When one of the bbid of Edition or Author is passed as query parameter
+ *     operationId: getRelatedWorkByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: author
+ *         in: query
+ *         description: BBID of the Author
+ *         required: false
+ *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the Edition
+ *         required: false
+ *         type: bbid
+ *     responses:
+ *       200:
+ *         description: List of Works which are related to either Author or Edition
+ *         schema:
+ *             $ref: '#/definitions/BrowsedAuthors'
+ *       404:
+ *         description: Author not found or Edition not found
+ *       406:
+ *         description: Invalid BBID paased in query params
+ */
+
+router.get('/',
+	validateWorkBrowseRequest,
+	makeEntityLoader('modelNmae', utils.relationshipsRelations, 'Entity not foud', true),
+	loadEntityRelationshipsForBrowse(),
+	async (req, res, next) => {
+		const workRelationshipList = await utils.getBrowsedRelationships(res.locals, 'Work', getWorkBasicInfo);
+		return res.status(200).send({
+			bbid: req.query.bbid,
+			relatedWorks: workRelationshipList
+		});
 	});
 
 export default router;
