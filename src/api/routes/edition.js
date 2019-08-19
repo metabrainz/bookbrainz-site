@@ -16,8 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
+import * as utils from '../helpers/utils';
 import {getEditionBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
+import {loadEntityRelationshipsForBrowse, validateEditionBrowseRequest} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -83,6 +84,31 @@ const editionError = 'Edition not found';
  *        type: integer
  *        description: 'width in mm'
  *        example: 80
+ *  BrowsedEditions:
+ *   type: object
+ *   properties:
+ *     bbid:
+ *       type: string
+ *       format: uuid
+ *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *     relatedWorks:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           entity:
+ *             $ref: '#/definitions/EditionDetail'
+ *           relationships:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                  relationshipTypeID:
+ *                    type: number
+ *                    example: 4
+ *                  relationshipType:
+ *                    type: string
+ *                    example: 'Publisher'
  *
  */
 
@@ -153,8 +179,8 @@ router.get('/:bbid',
  */
 
 router.get('/:bbid/aliases',
-	makeEntityLoader('Edition', aliasesRelations, editionError),
-	async (req, res) => {
+	makeEntityLoader('Edition', utils.aliasesRelations, editionError),
+	async (req, res, next) => {
 		const editionAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionAliasesList);
 	});
@@ -188,8 +214,8 @@ router.get('/:bbid/aliases',
  */
 
 router.get('/:bbid/identifiers',
-	makeEntityLoader('Edition', identifiersRelations, editionError),
-	async (req, res) => {
+	makeEntityLoader('Edition', utils.identifiersRelations, editionError),
+	async (req, res, next) => {
 		const editionIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionIdentifiersList);
 	});
@@ -223,10 +249,65 @@ router.get('/:bbid/identifiers',
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('Edition', relationshipsRelations, editionError),
-	async (req, res) => {
+	makeEntityLoader('Edition', utils.relationshipsRelations, editionError),
+	async (req, res, next) => {
 		const editionRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionRelationshipList);
+	});
+
+/**
+ *	@swagger
+ * '/edition':
+ *   get:
+ *     tags:
+ *       - Browse Requests
+ *     summary: Get list of Edition which are related to the other entity
+ *     description: Returns the list of Edition, When one of the bbid of Work or Author or Publisher or EditionGroup is passed as query parameter
+ *     operationId: getRelatedEditionByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: author
+ *         in: query
+ *         description: BBID of the Author
+ *         required: false
+ *         type: bbid
+ *       - name: work
+ *         in: query
+ *         description: BBID of the Work
+ *         required: false
+ *         type: bbid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the Publisher
+ *         required: false
+ *         type: bbid
+ *       - name: edition-group
+ *         in: query
+ *         description: BBID of the EditionGroup
+ *         required: false
+ *         type: bbid
+ *     responses:
+ *       200:
+ *         description: List of Editions which are related any of one other entity
+ *         schema:
+ *             $ref: '#/definitions/BrowsedEditions'
+ *       404:
+ *         description: Related entity not found
+ *       406:
+ *         description: Invalid BBID paased in query params
+ */
+
+router.get('/',
+	validateEditionBrowseRequest,
+	makeEntityLoader('modelNmae', utils.relationshipsRelations, 'Entity not found', true),
+	loadEntityRelationshipsForBrowse(),
+	async (req, res, next) => {
+		const editionRelationshipList = await utils.getBrowsedRelationships(res.locals, 'Edition', getEditionBasicInfo);
+		return res.status(200).send({
+			bbid: req.query.bbid,
+			relatedEditions: editionRelationshipList
+		});
 	});
 
 export default router;

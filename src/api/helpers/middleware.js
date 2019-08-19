@@ -24,6 +24,30 @@ import log from 'log';
 
 /* eslint-disable*/
 
+export function validateEditionBrowseRequest (req, res, next) {
+	const workBbid = req.query['work'];
+	const authorBbid = req.query['author'];
+	const publisherBbid = req.query['publisher'];
+	const editionGroupBbid = req.query['edition-group'];
+	if (workBbid) {
+		req.query.bbid = workBbid;
+		req.query.modelType = 'Work';
+	}
+	else if (authorBbid) {
+		req.query.bbid = authorBbid;
+		req.query.modelType = 'Author';
+	}
+	else if (publisherBbid) {
+		req.query.bbid = publisherBbid;
+		req.query.modelType = 'Publisher';
+	}
+	else if (editionGroupBbid) {
+		req.query.bbid = editionGroupBbid;
+		req.query.modelType = 'EditionGroup';
+	}
+	next();
+}
+
 export function validateEditionGroupBrowseRequest (req, res, next) {
 	const editionBbid = req.query['edition'];
 	if (editionBbid) {
