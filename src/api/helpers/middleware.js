@@ -24,11 +24,23 @@ import log from 'log';
 
 /* eslint-disable*/
 
+export function validatePublisherBrowseRequest (req, res, next) {
+	const workBbid = req.query['work'];
+	const editionBbid = req.query['edition'];
+	if (workBbid) {
+		req.query.bbid = workBbid;
+		req.query.modelType = 'Work';
+	}
+	else if (editionBbid) {
+		req.query.bbid = editionBbid;
+		req.query.modelType = 'Edition';
+	}
+	next();
+}
+
 export function validateAuthorBrowseRequest (req, res, next) {
 	const workBbid = req.query['work'];
 	const editionBbid = req.query['edition'];
-	console.log(req.query);
-	
 	if (workBbid) {
 		req.query.bbid = workBbid;
 		req.query.modelType = 'Work';

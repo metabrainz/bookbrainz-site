@@ -33,13 +33,13 @@ import workRouter from './routes/work';
  *    properties:
  *      name:
  *        type: string
- *        example: 'Robert A. Heinlein'
+ *        example: '<Name of entity>'
  *      sortName:
  *        type: string
- *        example: 'Heinlein, Robert A.'
+ *        example: '<Sort name of enity>'
  *      aliasLanguage:
  *        type: string
- *        example: 'English'
+ *        example: '<Alias language>'
  *      primary:
  *        type: boolean
  *        example: true
