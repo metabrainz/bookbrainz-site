@@ -24,6 +24,15 @@ import log from 'log';
 
 /* eslint-disable*/
 
+export function validateEditionGroupBrowseRequest (req, res, next) {
+	const editionBbid = req.query['edition'];
+	if (editionBbid) {
+		req.query.bbid = editionBbid;
+		req.query.modelType = 'Edition';
+	}
+	next();
+}
+
 export function validatePublisherBrowseRequest (req, res, next) {
 	const workBbid = req.query['work'];
 	const editionBbid = req.query['edition'];

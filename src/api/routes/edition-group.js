@@ -16,8 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
+import * as utils from '../helpers/utils';
 import {getEditionGroupBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
+import {loadEntityRelationshipsForBrowse, validateEditionGroupBrowseRequest} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -117,8 +118,8 @@ router.get('/:bbid',
  */
 
 router.get('/:bbid/aliases',
-	makeEntityLoader('EditionGroup', aliasesRelations, editionGroupError),
-	async (req, res) => {
+	makeEntityLoader('EditionGroup', utils.aliasesRelations, editionGroupError),
+	async (req, res, next) => {
 		const editionGroupAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionGroupAliasesList);
 	});
@@ -152,8 +153,8 @@ router.get('/:bbid/aliases',
  */
 
 router.get('/:bbid/identifiers',
-	makeEntityLoader('EditionGroup', identifiersRelations, editionGroupError),
-	async (req, res) => {
+	makeEntityLoader('EditionGroup', utils.identifiersRelations, editionGroupError),
+	async (req, res, next) => {
 		const editionGroupIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionGroupIdentifiersList);
 	});
@@ -188,10 +189,24 @@ router.get('/:bbid/identifiers',
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('EditionGroup', relationshipsRelations, editionGroupError),
-	async (req, res) => {
+	makeEntityLoader('EditionGroup', utils.relationshipsRelations, editionGroupError),
+	async (req, res, next) => {
 		const editionGroupRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionGroupRelationshipList);
+	});
+
+// TODO: jsdoc comment will be here
+
+router.get('/',
+	validateEditionGroupBrowseRequest,
+	makeEntityLoader('modelName', utils.relationshipsRelations, 'Entity not found', true),
+	loadEntityRelationshipsForBrowse(),
+	async (req, res, next) => {
+		const editionGroupRelationshipList = await utils.getBrowsedRelationships(res.locals, 'EditionGroup', getEditionGroupBasicInfo);
+		return res.status(200).send({
+			bbid: req.query.bbid,
+			relatedEditionGroups: editionGroupRelationshipList
+		});
 	});
 
 export default router;
