@@ -21,6 +21,7 @@ import {allowOnlyGetMethod} from './helpers/utils';
 import authorRouter from './routes/author';
 import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
+import {lookupAndBrowseRequestSlowDown} from './helpers/rateLimiter';
 import publisherRouter from './routes/publisher';
 import searchRouter from './routes/search';
 import swaggerRoute from './swagger';
@@ -148,23 +149,23 @@ import workRouter from './routes/work';
  */
 
 function initWorkRoute(app) {
-	app.use('/work', workRouter);
+	app.use('/work', lookupAndBrowseRequestSlowDown, workRouter);
 }
 
 function initEditionRoute(app) {
-	app.use('/edition', editionRouter);
+	app.use('/edition', lookupAndBrowseRequestSlowDown, editionRouter);
 }
 
 function initEditionGroupRoute(app) {
-	app.use('/edition-group', editionGroupRouter);
+	app.use('/edition-group', lookupAndBrowseRequestSlowDown, editionGroupRouter);
 }
 
 function initAuthorRoute(app) {
-	app.use('/author', authorRouter);
+	app.use('/author', lookupAndBrowseRequestSlowDown, authorRouter);
 }
 
 function initPublisherRoute(app) {
-	app.use('/publisher', publisherRouter);
+	app.use('/publisher', lookupAndBrowseRequestSlowDown, publisherRouter);
 }
 
 function initSearchRouter(app) {
