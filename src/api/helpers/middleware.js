@@ -77,7 +77,7 @@ export function validateAuthorBrowseRequest (req, res, next) {
 	if (workBbid) {
 		req.query.bbid = workBbid;
 		req.query.modelType = 'Work';
-	} 
+	}
 	else if (editionBbid) {
 		req.query.bbid = editionBbid;
 		req.query.modelType = 'Edition';
@@ -87,11 +87,11 @@ export function validateAuthorBrowseRequest (req, res, next) {
 
 export function validateWorkBrowseRequest (req, res, next) {
 	const authorBbid = req.query['author'];
-	const editionBbid = req.query['edition'];	
+	const editionBbid = req.query['edition'];
 	if (authorBbid) {
 		req.query.bbid = authorBbid;
 		req.query.modelType = 'Author';
-	} 
+	}
 	else if (editionBbid) {
 		req.query.bbid = editionBbid;
 		req.query.modelType = 'Edition';
@@ -99,10 +99,10 @@ export function validateWorkBrowseRequest (req, res, next) {
 	next();
 }
 
-async function loadEntitty (orm, relEntity) {	
+export async function loadEntity(orm, relEntity) {
 	const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 	const entity = await  model.forge({bbid: relEntity.bbid})
-					.fetch({withRelated: ['defaultAlias']});
+		.fetch({withRelated: ['defaultAlias','disambiguation']});
 	return entity.toJSON();
 }
 
@@ -112,7 +112,7 @@ export function loadEntityRelationshipsForBrowse() {
 		const {orm} = req.app.locals;
 		const {RelationshipSet} = orm;
 		const bbid = req.query.bbid;
-		const entityData = res.locals.entity;		
+		const entityData = res.locals.entity;
 		try {
 			const relationshipSet = await RelationshipSet.forge({id: entityData.relationshipSetId})
 				.fetch({

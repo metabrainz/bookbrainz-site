@@ -25,6 +25,7 @@ import {Router} from 'express';
 
 import {makeEntityLoader} from '../helpers/entityLoader';
 
+
 const router = Router();
 
 const authorBasicRelations = [
@@ -280,7 +281,7 @@ router.get('/',
 	makeEntityLoader('Work', utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
-		const authorRelationshipList = await utils.getBrowsedRelationships(res.locals, 'Author', getAuthorBasicInfo);
+		const authorRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Author', getAuthorBasicInfo);
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			relatedAuthors: authorRelationshipList

@@ -17,6 +17,7 @@
  */
 
 import _ from 'lodash';
+import {loadEntity} from './middleware';
 
 
 export const aliasesRelations = ['aliasSet.aliases.language'];
@@ -46,25 +47,22 @@ export function allowOnlyGetMethod(req, res, next) {
 
 /* eslint-disable*/
 
-export async function getBrowsedRelationships(locals, browsedEntityType, getEntityInfoMethod) {
-	const entity = locals.entity;
-	const {orm} = locals;
- 	const relationships = locals.relationships;
+export async function getBrowsedRelationships(orm, locals, browsedEntityType, getEntityInfoMethod) {
+	const {entity, relationships} = locals;
 	
 	if(! relationships.length > 0) {
 		return [];
 	}
-
-	const filteredRelationships = await relationships
-		.map(relationship => {
-			// Current entity is the source of the relationship
+	const relationshipsPromises = relationships
+		.map(async relationship => {
 			if (entity.bbid === relationship.sourceBbid) {
-				// The other entity is of the browsed type we are looking for
 				// We need a good way to compare entity type strings here and same thing below
 				// Allow for capitalization mistakes? (.toLowercase() on both?)
 				if (relationship.target.type === browsedEntityType) {
+					//Manage try/catch around await here?
+					const loadedTarget = await loadEntity(orm,relationship.target);
 					return {
-						entity: relationship.target,
+						entity: getEntityInfoMethod(loadedTarget),
 						relationships: [{
 							relationshipTypeID: _.get(relationship, 'type.id', null),
 							relationshipType: _.get(relationship, 'type.label', null)
@@ -72,11 +70,11 @@ export async function getBrowsedRelationships(locals, browsedEntityType, getEnti
 					};
 				}
 			}
-			// Current entity is the target of the relationship
-			// and the other entity is of the browsed type we are looking for
 			else if (relationship.source.type === browsedEntityType) {
+				//Manage try/catch around await here?
+				const loadedSource = await loadEntity(orm,relationship.target);
 				return {
-					entity: relationship.source,
+					entity: getEntityInfoMethod(loadedSource),
 					relationships: [{
 						relationshipTypeID: _.get(relationship, 'type.id', null),
 						relationshipType: _.get(relationship, 'type.label', null)
@@ -85,10 +83,11 @@ export async function getBrowsedRelationships(locals, browsedEntityType, getEnti
 			}
 			return null;
 		})
+	const fetchedRelationshipsPromises = await Promise.all(relationshipsPromises);
 		// Remove falsy values (nulls returned above)
-		.filter(Boolean);
+	const filteredRelationships = fetchedRelationshipsPromises.filter(Boolean);
 
-	const flattenedRelationships = await filteredRelationships
+	const flattenedRelationships =  filteredRelationships
 		.reduce((accumulator, relationship, index, array) => {
 			const entityAlreadyExists = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
 			if (entityAlreadyExists) {

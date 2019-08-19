@@ -269,7 +269,7 @@ router.get('/',
 	makeEntityLoader('modelNmae', utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
-		const workRelationshipList = await utils.getBrowsedRelationships(res.locals, 'Work', getWorkBasicInfo);
+		const workRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Work', getWorkBasicInfo);
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			relatedWorks: workRelationshipList

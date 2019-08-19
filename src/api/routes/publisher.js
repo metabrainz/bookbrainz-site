@@ -271,7 +271,7 @@ router.get('/',
 	makeEntityLoader('modelName', utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
-		const publisherRelationshipList = await utils.getBrowsedRelationships(res.locals, 'Publisher', getPublisherBasicInfo);
+		const publisherRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Publisher', getPublisherBasicInfo);
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			relatedPublishers: publisherRelationshipList
