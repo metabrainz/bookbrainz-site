@@ -188,6 +188,8 @@ export async function createRelationship(sourceBbid, targetBbid, entityType, tar
 	}
 	// eslint-disable-next-line no-empty
 	catch (error) {
+		// eslint-disable-next-line no-console
+		console.log('RelationshipType already created', error);
 	}
 	await new Entity({bbid: safeTargetBbid, type: safeTargetEntityType})
 		.save(null, {method: 'insert'});
