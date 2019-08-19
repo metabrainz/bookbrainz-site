@@ -266,7 +266,7 @@ router.get('/:bbid/relationships',
 
 router.get('/',
 	validateWorkBrowseRequest,
-	makeEntityLoader('modelNmae', utils.relationshipsRelations, 'Entity not foud', true),
+	makeEntityLoader('modelNmae', utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		const workRelationshipList = await utils.getBrowsedRelationships(res.locals, 'Work', getWorkBasicInfo);
