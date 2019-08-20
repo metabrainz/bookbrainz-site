@@ -72,7 +72,7 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType, ge
 			}
 			else if (relationship.source.type === browsedEntityType) {
 				//Manage try/catch around await here?
-				const loadedSource = await loadEntity(orm,relationship.target);
+				const loadedSource = await loadEntity(orm,relationship.source);
 				return {
 					entity: getEntityInfoMethod(loadedSource),
 					relationships: [{
