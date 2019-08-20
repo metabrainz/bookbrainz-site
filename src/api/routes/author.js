@@ -17,6 +17,7 @@
  */
 
 
+import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
 
 import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
@@ -280,8 +281,17 @@ router.get('/',
 	validateBrowseRequestQueryParameters(['edition', 'edition-group', 'work']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
-	async (req, res, next) => {
-		const authorRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Author', getAuthorBasicInfo);
+	async (req, res) => {
+		function relationshipsFilterMethod(relatedEntity) {
+			if (req.query.type) {
+				return _.toLower(_.get(relatedEntity, 'authorType.label')) === req.query.type;
+			}
+			return true;
+		}
+		const authorRelationshipList = await utils.getBrowsedRelationships(
+			req.app.locals.orm, res.locals, 'Author',
+			getAuthorBasicInfo, authorBasicRelations, relationshipsFilterMethod
+		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			relatedAuthors: authorRelationshipList

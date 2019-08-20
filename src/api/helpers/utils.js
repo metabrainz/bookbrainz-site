@@ -47,7 +47,7 @@ export function allowOnlyGetMethod(req, res, next) {
 
 /* eslint-disable*/
 
-export async function getBrowsedRelationships(orm, locals, browsedEntityType, getEntityInfoMethod) {
+export async function getBrowsedRelationships(orm, locals, browsedEntityType, getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
 	const {entity, relationships} = locals;
 	
 	if(! relationships.length > 0) {
@@ -60,7 +60,10 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType, ge
 				// Allow for capitalization mistakes? (.toLowercase() on both?)
 				if (relationship.target.type === browsedEntityType) {
 					//Manage try/catch around await here?
-					const loadedTarget = await loadEntity(orm,relationship.target);
+					const loadedTarget = await loadEntity(orm,relationship.target, fetchRelated);
+					if(!filterRelationshipMethod(loadedTarget)){
+						return null
+					}
 					return {
 						entity: getEntityInfoMethod(loadedTarget),
 						relationships: [{
@@ -72,7 +75,10 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType, ge
 			}
 			else if (relationship.source.type === browsedEntityType) {
 				//Manage try/catch around await here?
-				const loadedSource = await loadEntity(orm,relationship.source);
+				const loadedSource = await loadEntity(orm,relationship.source, fetchRelated);
+				if(!filterRelationshipMethod(loadedSource)){
+					return null
+				}
 				return {
 					entity: getEntityInfoMethod(loadedSource),
 					relationships: [{

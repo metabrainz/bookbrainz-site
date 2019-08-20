@@ -40,10 +40,10 @@ export function validateBrowseRequestQueryParameters (validLinkedEntities) {
 	};
 }
 
-export async function loadEntity(orm, relEntity) {
+export async function loadEntity(orm, relEntity, fetchRelated) {
 	const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 	const entity = await  model.forge({bbid: relEntity.bbid})
-		.fetch({withRelated: ['defaultAlias','disambiguation']});
+		.fetch({withRelated: ['defaultAlias','disambiguation'].concat(fetchRelated || [])});
 	return entity.toJSON();
 }
 
