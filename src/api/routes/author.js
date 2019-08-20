@@ -20,7 +20,7 @@
 import * as utils from '../helpers/utils';
 
 import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateAuthorBrowseRequest} from '../helpers/middleware';
+import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {Router} from 'express';
 
 import {makeEntityLoader} from '../helpers/entityLoader';
@@ -277,8 +277,8 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
-	validateAuthorBrowseRequest,
-	makeEntityLoader('Work', utils.relationshipsRelations, 'Entity not found', true),
+	validateBrowseRequestQueryParameters(['edition', 'edition-group', 'work']),
+	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		const authorRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Author', getAuthorBasicInfo);

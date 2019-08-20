@@ -18,7 +18,7 @@
 
 import * as utils from '../helpers/utils';
 import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getWorkBasicInfo} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateWorkBrowseRequest} from '../helpers/middleware';
+import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -265,8 +265,8 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
-	validateWorkBrowseRequest,
-	makeEntityLoader('modelNmae', utils.relationshipsRelations, 'Entity not found', true),
+	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
+	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		const workRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Work', getWorkBasicInfo);

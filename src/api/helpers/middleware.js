@@ -24,79 +24,20 @@ import log from 'log';
 
 /* eslint-disable*/
 
-export function validateEditionBrowseRequest (req, res, next) {
-	const workBbid = req.query['work'];
-	const authorBbid = req.query['author'];
-	const publisherBbid = req.query['publisher'];
-	const editionGroupBbid = req.query['edition-group'];
-	if (workBbid) {
-		req.query.bbid = workBbid;
-		req.query.modelType = 'Work';
-	}
-	else if (authorBbid) {
-		req.query.bbid = authorBbid;
-		req.query.modelType = 'Author';
-	}
-	else if (publisherBbid) {
-		req.query.bbid = publisherBbid;
-		req.query.modelType = 'Publisher';
-	}
-	else if (editionGroupBbid) {
-		req.query.bbid = editionGroupBbid;
-		req.query.modelType = 'EditionGroup';
-	}
-	next();
-}
-
-export function validateEditionGroupBrowseRequest (req, res, next) {
-	const editionBbid = req.query['edition'];
-	if (editionBbid) {
-		req.query.bbid = editionBbid;
-		req.query.modelType = 'Edition';
-	}
-	next();
-}
-
-export function validatePublisherBrowseRequest (req, res, next) {
-	const workBbid = req.query['work'];
-	const editionBbid = req.query['edition'];
-	if (workBbid) {
-		req.query.bbid = workBbid;
-		req.query.modelType = 'Work';
-	}
-	else if (editionBbid) {
-		req.query.bbid = editionBbid;
-		req.query.modelType = 'Edition';
-	}
-	next();
-}
-
-export function validateAuthorBrowseRequest (req, res, next) {
-	const workBbid = req.query['work'];
-	const editionBbid = req.query['edition'];
-	if (workBbid) {
-		req.query.bbid = workBbid;
-		req.query.modelType = 'Work';
-	}
-	else if (editionBbid) {
-		req.query.bbid = editionBbid;
-		req.query.modelType = 'Edition';
-	}
-	next();
-}
-
-export function validateWorkBrowseRequest (req, res, next) {
-	const authorBbid = req.query['author'];
-	const editionBbid = req.query['edition'];
-	if (authorBbid) {
-		req.query.bbid = authorBbid;
-		req.query.modelType = 'Author';
-	}
-	else if (editionBbid) {
-		req.query.bbid = editionBbid;
-		req.query.modelType = 'Edition';
-	}
-	next();
+export function validateBrowseRequestQueryParameters (validLinkedEntities) {
+	return async (req, res, next) => {
+		const queriedEntities = validLinkedEntities.filter(keyName=>{
+			return _.has(req.query, keyName);
+		})
+		if(queriedEntities.length < 1 || queriedEntities.length > 1){
+			const errorMessage = `Browse requests require exactly 1 linked entity in query parameters; you passed ${queriedEntities.length}: ${queriedEntities}`;
+			return res.status(400).send({message: errorMessage});
+		}
+		const queriedEntityType = queriedEntities[0];
+		req.query.bbid = req.query[queriedEntityType];
+		req.query.modelType = _.upperFirst(_.camelCase(queriedEntityType));
+		next();
+	};
 }
 
 export async function loadEntity(orm, relEntity) {

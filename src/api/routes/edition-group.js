@@ -18,7 +18,7 @@
 
 import * as utils from '../helpers/utils';
 import {getEditionGroupBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateEditionGroupBrowseRequest} from '../helpers/middleware';
+import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -198,8 +198,8 @@ router.get('/:bbid/relationships',
 // TODO: jsdoc comment will be here
 
 router.get('/',
-	validateEditionGroupBrowseRequest,
-	makeEntityLoader('modelName', utils.relationshipsRelations, 'Entity not found', true),
+	validateBrowseRequestQueryParameters(['author', 'edition']),
+	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		const editionGroupRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'EditionGroup', getEditionGroupBasicInfo);

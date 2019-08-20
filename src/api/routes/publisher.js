@@ -18,7 +18,7 @@
 
 import * as utils from '../helpers/utils';
 import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getPublisherBasicInfo} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validatePublisherBrowseRequest} from '../helpers/middleware';
+import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -267,8 +267,8 @@ router.get('/:bbid/relationships',
 /* eslint-disable */
 
 router.get('/',
-	validatePublisherBrowseRequest,
-	makeEntityLoader('modelName', utils.relationshipsRelations, 'Entity not found', true),
+	validateBrowseRequestQueryParameters((['author', 'edition', 'work', 'publisher'])),
+	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		const publisherRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Publisher', getPublisherBasicInfo);
