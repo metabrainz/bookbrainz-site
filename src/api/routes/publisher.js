@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
 import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getPublisherBasicInfo} from '../helpers/formatEntityData';
 import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
@@ -264,14 +265,22 @@ router.get('/:bbid/relationships',
  *       406:
  *         description: Invalid BBID paased in query params
  */
-/* eslint-disable */
 
 router.get('/',
-	validateBrowseRequestQueryParameters((['author', 'edition', 'work', 'publisher'])),
+	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
-		const publisherRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Publisher', getPublisherBasicInfo);
+		function relationshipsFilterMethod(relatedEntity) {
+			if (req.query.type) {
+				return _.toLower(_.get(relatedEntity, 'publisherType.label')) === req.query.type;
+			}
+			return true;
+		}
+		const publisherRelationshipList = await utils.getBrowsedRelationships(
+			req.app.locals.orm, res.locals, 'Publisher',
+			getPublisherBasicInfo, publisherBasicRelations, relationshipsFilterMethod
+		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			relatedPublishers: publisherRelationshipList

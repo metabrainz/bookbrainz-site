@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
 import {getEditionBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
 import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
@@ -303,7 +304,16 @@ router.get('/',
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
-		const editionRelationshipList = await utils.getBrowsedRelationships(req.app.locals.orm, res.locals, 'Edition', getEditionBasicInfo);
+		function relationshipsFilterMethod(relatedEntity) {
+			if (req.query.type) {
+				return _.toLower(_.get(relatedEntity, 'editionType.label')) === req.query.type;
+			}
+			return true;
+		}
+		const editionRelationshipList = await utils.getBrowsedRelationships(
+			req.app.locals.orm, res.locals, 'Edition',
+			getEditionBasicInfo, editionBasicRelations, relationshipsFilterMethod
+		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			relatedEditions: editionRelationshipList
