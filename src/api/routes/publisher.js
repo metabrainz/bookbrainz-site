@@ -272,8 +272,16 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
-			if (req.query.type) {
-				return _.toLower(_.get(relatedEntity, 'publisherType.label')) === req.query.type;
+			const publisherTypeMacthed = _.toLower(relatedEntity.type) === req.query.type;
+			const publisherAreaMatched = _.toLower(relatedEntity.area) === req.query.area;
+			if (req.query.type && req.query.area) {
+				return publisherTypeMacthed && publisherAreaMatched;
+			}
+			else if (req.query.type) {
+				return publisherTypeMacthed;
+			}
+			else if (req.query.area) {
+				return publisherAreaMatched;
 			}
 			return true;
 		}

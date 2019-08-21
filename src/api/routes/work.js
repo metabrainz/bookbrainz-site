@@ -271,8 +271,16 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
-			if (req.query.type) {
-				return _.toLower(_.get(relatedEntity, 'workType.label')) === req.query.type;
+			const workTypeMatched = _.toLower(relatedEntity.workType) === req.query.type;
+			const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(req.query.language));
+			if (req.query.type && req.query.language) {
+				return workTypeMatched && workLanguageMatched;
+			}
+			else if (req.query.type) {
+				return workTypeMatched;
+			}
+			else if (req.query.language) {
+				return workLanguageMatched;
 			}
 			return true;
 		}

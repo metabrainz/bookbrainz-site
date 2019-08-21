@@ -278,13 +278,13 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
-	validateBrowseRequestQueryParameters(['edition', 'edition-group', 'work']),
+	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				return _.toLower(_.get(relatedEntity, 'authorType.label')) === req.query.type;
+				return _.toLower(relatedEntity.authorType) === req.query.type;
 			}
 			return true;
 		}

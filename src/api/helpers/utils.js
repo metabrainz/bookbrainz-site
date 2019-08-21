@@ -45,12 +45,12 @@ export function allowOnlyGetMethod(req, res, next) {
 		.send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`});
 }
 
-/* eslint-disable*/
 
-export async function getBrowsedRelationships(orm, locals, browsedEntityType, getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
+export async function getBrowsedRelationships(orm, locals, browsedEntityType,
+	getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
 	const {entity, relationships} = locals;
-	
-	if(! relationships.length > 0) {
+
+	if (!relationships.length > 0) {
 		return [];
 	}
 	const relationshipsPromises = relationships
@@ -59,41 +59,43 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType, ge
 				// We need a good way to compare entity type strings here and same thing below
 				// Allow for capitalization mistakes? (.toLowercase() on both?)
 				if (relationship.target.type === browsedEntityType) {
-					//Manage try/catch around await here?
-					const loadedTarget = await loadEntity(orm,relationship.target, fetchRelated);
-					if(!filterRelationshipMethod(loadedTarget)){
-						return null
+					// Manage try/catch around await here?
+					const loadedTarget = await loadEntity(orm, relationship.target, fetchRelated);
+					const formattedTarget = getEntityInfoMethod(loadedTarget);
+					if (!filterRelationshipMethod(formattedTarget)) {
+						return null;
 					}
 					return {
-						entity: getEntityInfoMethod(loadedTarget),
+						entity: formattedTarget,
 						relationships: [{
-							relationshipTypeID: _.get(relationship, 'type.id', null),
-							relationshipType: _.get(relationship, 'type.label', null)
+							relationshipType: _.get(relationship, 'type.label', null),
+							relationshipTypeID: _.get(relationship, 'type.id', null)
 						}]
 					};
 				}
 			}
 			else if (relationship.source.type === browsedEntityType) {
-				//Manage try/catch around await here?
-				const loadedSource = await loadEntity(orm,relationship.source, fetchRelated);
-				if(!filterRelationshipMethod(loadedSource)){
-					return null
+				// Manage try/catch around await here?
+				const loadedSource = await loadEntity(orm, relationship.source, fetchRelated);
+				const formattedSource = getEntityInfoMethod(loadedSource);
+				if (!filterRelationshipMethod(formattedSource)) {
+					return null;
 				}
 				return {
-					entity: getEntityInfoMethod(loadedSource),
+					entity: formattedSource,
 					relationships: [{
-						relationshipTypeID: _.get(relationship, 'type.id', null),
-						relationshipType: _.get(relationship, 'type.label', null)
+						relationshipType: _.get(relationship, 'type.label', null),
+						relationshipTypeID: _.get(relationship, 'type.id', null)
 					}]
 				};
 			}
 			return null;
-		})
+		});
 	const fetchedRelationshipsPromises = await Promise.all(relationshipsPromises);
-		// Remove falsy values (nulls returned above)
+	// Remove falsy values (nulls returned above)
 	const filteredRelationships = fetchedRelationshipsPromises.filter(Boolean);
 
-	const flattenedRelationships =  filteredRelationships
+	const flattenedRelationships = filteredRelationships
 		.reduce((accumulator, relationship, index, array) => {
 			const entityAlreadyExists = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
 			if (entityAlreadyExists) {
