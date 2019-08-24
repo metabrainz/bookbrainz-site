@@ -163,32 +163,32 @@ describe('GET /Author', () => {
 
 
 describe('Browse Author', () => {
+	const cBBID = getRandomUUID();
+	const dBBID = getRandomUUID();
+	const eBBID = getRandomUUID();
 	// Test browse requests of Author
 	before(async () => {
 		await createAuthor(aBBID);
 		await createWork(bBBID);
 		await createRelationship(aBBID, bBBID, 'Author', 'Work');
-		const cBBID = getRandomUUID();
 		await createEdition(cBBID);
 		await createRelationship(aBBID, cBBID, 'Author', 'Edition');
-		const dBBID = getRandomUUID();
 		await createEditionGroup(dBBID);
 		await createRelationship(aBBID, dBBID, 'Author', 'EditionGroup');
-		const eBBID = getRandomUUID();
 		await createPublisher(eBBID);
 		await createRelationship(aBBID, eBBID, 'Author', 'Publisher');
 	});
 	after(truncateEntities);
 
 	it('should return list of Authors of the Work',
-		() => testAuthorBrowseRequest(`/author?work=${aBBID}`));
+		() => testAuthorBrowseRequest(`/author?work=${bBBID}`));
 
 	it('should return list of Authors, whose works are in the Edition',
-		() => testAuthorBrowseRequest(`/author?edition=${aBBID}`));
+		() => testAuthorBrowseRequest(`/author?edition=${cBBID}`));
 
 	it('should return list of Authors, whose works are in the EditionGroup',
-		() => testAuthorBrowseRequest(`/author?edition-group=${aBBID}`));
+		() => testAuthorBrowseRequest(`/author?edition-group=${dBBID}`));
 
 	it('should return list of Authors, who are associated with a Publisher',
-		() => testAuthorBrowseRequest(`/author?publisher=${aBBID}`));
+		() => testAuthorBrowseRequest(`/author?publisher=${eBBID}`));
 });

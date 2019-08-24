@@ -30,8 +30,9 @@ export async function testAuthorBrowseRequest(url) {
 		'endDate',
 		'ended'
 	);
-	expect(res.body.authors[0].entity.relationshipType).to.be.a('string');
-	expect(res.body.authors[0].entity.relationshipTypeID).to.be.a('interger');
+	expect(res.body.authors[0].relationships).to.be.an('array');
+	expect(res.body.authors[0].relationships[0].relationshipType).to.be.a('string');
+	expect(res.body.authors[0].relationships[0].relationshipTypeID).to.be.a('number');
 }
 
 export async function testWorkBrowseRequest(url) {
@@ -53,8 +54,9 @@ export async function testWorkBrowseRequest(url) {
 		'disambiguation',
 		'workType'
 	);
-	expect(res.body.works[0].entity.relationshipType).to.be.a('string');
-	expect(res.body.works[0].entity.relationshipTypeID).to.be.a('interger');
+	expect(res.body.works[0].relationships).to.be.an('array');
+	expect(res.body.works[0].relationships[0].relationshipType).to.be.a('string');
+	expect(res.body.works[0].relationships[0].relationshipTypeID).to.be.a('number');
 }
 
 
@@ -84,8 +86,9 @@ export async function testEditionBrowseRequest(url) {
 		'releaseEventDates',
 		'weight'
 	);
-	expect(res.body.editions[0].entity.relationshipType).to.be.a('string');
-	expect(res.body.editions[0].entity.relationshipTypeID).to.be.a('interger');
+	expect(res.body.editions[0].relationships).to.be.an('array');
+	expect(res.body.editions[0].relationships[0].relationshipType).to.be.a('string');
+	expect(res.body.editions[0].relationships[0].relationshipTypeID).to.be.a('number');
 }
 
 export async function testEditionGroupBrowseRequest(url) {
@@ -106,8 +109,9 @@ export async function testEditionGroupBrowseRequest(url) {
 		'disambiguation',
 		'type'
 	);
-	expect(res.body.edtitionGroups[0].entity.relationshipType).to.be.a('string');
-	expect(res.body.edtitionGroups[0].entity.relationshipTypeID).to.be.a('interger');
+	expect(res.body.edtitionGroups[0].relationships).to.be.an('array');
+	expect(res.body.edtitionGroups[0].relationships[0].relationshipType).to.be.a('string');
+	expect(res.body.edtitionGroups[0].relationships[0].relationshipTypeID).to.be.a('number');
 }
 
 export async function testPublisherBrowseRequest(url) {
@@ -132,7 +136,8 @@ export async function testPublisherBrowseRequest(url) {
 		'endDate',
 		'ended'
 	);
-	expect(res.body.publishers[0].entity.relationshipType).to.be.a('string');
-	expect(res.body.publishers[0].entity.relationshipTypeID).to.be.a('interger');
+	expect(res.body.publishers[0].relationships).to.be.an('array');
+	expect(res.body.publishers[0].relationships[0].relationshipType).to.be.a('string');
+	expect(res.body.publishers[0].relationships[0].relationshipTypeID).to.be.a('number');
 }
 
