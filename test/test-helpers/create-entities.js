@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /* eslint-disable no-console */
+=======
+/* eslint-disable no-empty */
+>>>>>>> test: Catch errors when creating test entities that already exist
 /*
  * Copyright (C) 2019  Nicolas Pelletier
  *
@@ -172,7 +176,7 @@ export async function createRelationship(sourceBbid, targetBbid, entityType, tar
 		id: random.number(),
 		sourceBbid: safeSourceBbid,
 		targetBbid: safeTargetBbid,
-		typeId: 1
+		typeId: relationshipTypeData.id
 	};
 	if (!sourceBbid) {
 		// We're only creating a relationship set for show,
@@ -185,14 +189,17 @@ export async function createRelationship(sourceBbid, targetBbid, entityType, tar
 	try {
 		await new RelationshipType(relationshipTypeData)
 			.save(null, {method: 'insert'});
+		relationshipTypeData.id++;
+	}
+	catch (error) {
+	}
+	try {
+		await new Entity({bbid: safeTargetBbid, type: safeTargetEntityType})
+			.save(null, {method: 'insert'});
 	}
 	// eslint-disable-next-line no-empty
 	catch (error) {
-		// eslint-disable-next-line no-console
-		console.log('RelationshipType already created', error);
 	}
-	await new Entity({bbid: safeTargetBbid, type: safeTargetEntityType})
-		.save(null, {method: 'insert'});
 
 	relationshipData.typeId = relationshipTypeData.id;
 	relationshipData.id = random.number();
@@ -263,6 +270,7 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 		lastRevisionId: revisionAttribs.id
 	})
 		.save(null, {method: 'insert'});
+
 }
 
 export async function createEdition(optionalBBID) {
