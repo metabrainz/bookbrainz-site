@@ -175,20 +175,36 @@ describe('Browse Author', () => {
 		await createRelationship(aBBID, cBBID, 'Author', 'Edition');
 		await createEditionGroup(dBBID);
 		await createRelationship(aBBID, dBBID, 'Author', 'EditionGroup');
-		await createPublisher(eBBID);
-		await createRelationship(aBBID, eBBID, 'Author', 'Publisher');
+		await createAuthor(eBBID);
+		await createRelationship(aBBID, eBBID, 'Author', 'Author');
 	});
 	after(truncateEntities);
 
-	it('should return list of Authors of the Work',
-		() => testAuthorBrowseRequest(`/author?work=${bBBID}`));
+	const authorType = 'Author Type 1';
+	let filters = {};
 
-	it('should return list of Authors, whose works are in the Edition',
-		() => testAuthorBrowseRequest(`/author?edition=${cBBID}`));
+	it('should return list of Authors related to the Work',
+		() => testAuthorBrowseRequest(`/author?work=${bBBID}`, filters));
 
-	it('should return list of Authors, whose works are in the EditionGroup',
-		() => testAuthorBrowseRequest(`/author?edition-group=${dBBID}`));
+	it('should return list of Authors, those works are in the Edition',
+		() => testAuthorBrowseRequest(`/author?edition=${cBBID}`, filters));
 
-	it('should return list of Authors, who are associated with a Publisher',
-		() => testAuthorBrowseRequest(`/author?publisher=${eBBID}`));
+	it('should return list of Authors, those works are in the EditionGroup',
+		() => testAuthorBrowseRequest(`/author?edition-group=${dBBID}`, filters));
+
+	it('should return list of Authors, those are related to an Another Author',
+		() => testAuthorBrowseRequest(`/author?author=${eBBID}`, filters));
+
+	filters = {type: authorType};
+	it('should return list of Authors of given type, those are related to the Work',
+		() => testAuthorBrowseRequest(`/author?work=${bBBID}&type=${authorType}`, filters));
+
+	it('should return list of Authors of given type, those are related to the Edition',
+		() => testAuthorBrowseRequest(`/author?edition=${cBBID}&type=${authorType}`, filters));
+
+	it('should return list of Authors of given type, those are in the EditionGroup',
+		() => testAuthorBrowseRequest(`/author?edition-group=${dBBID}&type=${authorType}`, filters));
+
+	it('should return list of Authors of given type, those are associated with an Another Author',
+		() => testAuthorBrowseRequest(`/author?author=${eBBID}&type=${authorType}`, filters));
 });
