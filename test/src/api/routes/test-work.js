@@ -17,7 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createWork, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+
+import {createAuthor, createEdition, createEditionGroup,
+	createPublisher, createRelationship, createWork,
+	getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
 import chai from 'chai';
@@ -157,14 +160,71 @@ describe('GET /work', () => {
 
 
 describe('Browse Works', () => {
+	const cBBID = getRandomUUID();
+	const dBBID = getRandomUUID();
+	const eBBID = getRandomUUID();
+	const fBBID = getRandomUUID();
+
+	// Test browse requests of Author
+	before(async () => {
+		await createWork(aBBID);
+		await createWork(bBBID);
+		await createRelationship(aBBID, bBBID, 'Work', 'Work');
+		await createEdition(cBBID);
+		await createRelationship(aBBID, cBBID, 'Work', 'Edition');
+		await createAuthor(eBBID);
+		await createRelationship(aBBID, eBBID, 'Work', 'Author');
+		await createPublisher(dBBID);
+		await createRelationship(aBBID, dBBID, 'Work', 'Publisher');
+	});
+	after(truncateEntities);
+
 	// Test browse requests of Works
-	it('should return list of Works written by an Author',
-		() => testWorkBrowseRequest(`/work?author=${aBBID}`));
+	const workType = 'Work Type 1';
+	const language = 'English';
 
+	let filters = {};
+	it('should return list of Works related to another Work',
+		() => testWorkBrowseRequest(`/work?work=${bBBID}`, filters));
 	it('should return list of Works contained by an Edition',
-		() => testWorkBrowseRequest(`/work?edition=${aBBID}`));
-
-	it('should return list of Works contained by an EditionGroup',
-		() => testWorkBrowseRequest(`/work?edition-group=${aBBID}`));
+		() => testWorkBrowseRequest(`/work?edition=${cBBID}`, filters));
+	it('should return list of Works written by an Author',
+		() => testWorkBrowseRequest(`/work?author=${dBBID}`, filters));
+	it('should return list of Works related the Publisher',
+		() => testWorkBrowseRequest(`/work?publisher=${eBBID}`, filters));
+	filters = {
+		type: workType
+	};
+	it('should return list of Works of given type related to another Work',
+		() => testWorkBrowseRequest(`/work?work=${bBBID}&type=${workType}`, filters));
+	it('should return list of Works  given type contained by an Edition',
+		() => testWorkBrowseRequest(`/work?edition=${cBBID}&type=${workType}`, filters));
+	it('should return list of Works  given type written by an Author',
+		() => testWorkBrowseRequest(`/work?author=${dBBID}&type=${workType}`, filters));
+	it('should return list of Works   given type related to the Publisher',
+		() => testWorkBrowseRequest(`/work?publisher=${eBBID}&type=${workType}`, filters));
+	filters = {
+		language
+	};
+	it('should return list of Works of given language and related to another Work',
+		() => testWorkBrowseRequest(`/work?work=${bBBID}&language=${language}`, filters));
+	it('should return list of Works of  given language and contained by an Edition',
+		() => testWorkBrowseRequest(`/work?edition=${cBBID}&language=${language}`, filters));
+	it('should return list of Works of given language and  written by an Author',
+		() => testWorkBrowseRequest(`/work?author=${dBBID}&language=${language}`, filters));
+	it('should return list of Works of given type related to the Publisher',
+		() => testWorkBrowseRequest(`/work?publisher=${eBBID}&language=${language}`, filters));
+	filters = {
+		language,
+		type: workType
+	};
+	it('should return list of Works of given language and related to another Work',
+		() => testWorkBrowseRequest(`/work?work=${bBBID}&language=${language}&type=${workType}`, filters));
+	it('should return list of Works of  given language and contained by an Edition',
+		() => testWorkBrowseRequest(`/work?edition=${cBBID}&language=${language}&type=${workType}`, filters));
+	it('should return list of Works of given language and  written by an Author',
+		() => testWorkBrowseRequest(`/work?author=${dBBID}&language=${language}&type=${workType}`, filters));
+	it('should return list of Works of given type related to the Publisher',
+		() => testWorkBrowseRequest(`/work?publisher=${eBBID}&language=${language}&type=${workType}`, filters));
 });
 
