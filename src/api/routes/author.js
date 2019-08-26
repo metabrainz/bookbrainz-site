@@ -278,7 +278,7 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
-	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work']),
+	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {

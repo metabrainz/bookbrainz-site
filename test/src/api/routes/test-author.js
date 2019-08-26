@@ -166,6 +166,8 @@ describe('Browse Author', () => {
 	const cBBID = getRandomUUID();
 	const dBBID = getRandomUUID();
 	const eBBID = getRandomUUID();
+	const fBBID = getRandomUUID();
+
 	// Test browse requests of Author
 	before(async () => {
 		await createAuthor(aBBID);
@@ -177,6 +179,8 @@ describe('Browse Author', () => {
 		await createRelationship(aBBID, dBBID, 'Author', 'EditionGroup');
 		await createAuthor(eBBID);
 		await createRelationship(aBBID, eBBID, 'Author', 'Author');
+		await createPublisher(fBBID);
+		await createRelationship(aBBID, fBBID, 'Author', 'Publisher');
 	});
 	after(truncateEntities);
 
@@ -195,6 +199,9 @@ describe('Browse Author', () => {
 	it('should return list of Authors, those are related to an Another Author',
 		() => testAuthorBrowseRequest(`/author?author=${eBBID}`, filters));
 
+	it('should return list of Authors, those are related to an Another Author',
+		() => testAuthorBrowseRequest(`/author?author=${eBBID}`, filters));
+
 	filters = {type: authorType};
 	it('should return list of Authors of given type, those are related to the Work',
 		() => testAuthorBrowseRequest(`/author?work=${bBBID}&type=${authorType}`, filters));
@@ -207,4 +214,7 @@ describe('Browse Author', () => {
 
 	it('should return list of Authors of given type, those are associated with an Another Author',
 		() => testAuthorBrowseRequest(`/author?author=${eBBID}&type=${authorType}`, filters));
+
+	it('should return list of Authors, those are related to the Publisher',
+		() => testAuthorBrowseRequest(`/author?publisher=${fBBID}`, filters));
 });
