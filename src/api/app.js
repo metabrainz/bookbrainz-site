@@ -83,7 +83,9 @@ mainRouter.use((req, res) => {
 });
 
 // initialize elasticsearch
-search.init(app.locals.orm, config.search);
+// Clone object to prevent error if starting webserver and api
+// https://github.com/elastic/elasticsearch-js/issues/33
+search.init(app.locals.orm, Object.assign({}, config.search));
 
 
 const debug = Debug('bbapi');
