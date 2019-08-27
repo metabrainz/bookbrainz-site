@@ -44,9 +44,6 @@ before_install:
   - sudo chown postgres postgresql.conf
   - sudo mv postgresql.conf /etc/postgresql/12/main
   - sudo service postgresql start 12
-  - curl -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.8.deb
-  - sudo dpkg -i --force-confnew elasticsearch-5.6.8.deb
-  - sudo service elasticsearch restart
 
 before_script:
   - psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres
@@ -55,7 +52,7 @@ before_script:
   - psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
   - psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
   - ./node_modules/.bin/eslint -v
-  - sleep 10
+  - sleep 5
 
 script:
   - npm run-script test-ci
