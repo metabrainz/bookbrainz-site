@@ -60,11 +60,11 @@ const languageAttribs = {
 	name: 'English'
 };
 
-const aliasData = {
-	...setData,
+export const aliasData = {
+	id: 1,
 	languageId: 42,
-	name: 'work name',
-	sortName: 'Work sort name'
+	name: 'Entity name',
+	sortName: 'Entity sort name'
 };
 
 const identifierData = {
@@ -181,11 +181,12 @@ async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 
 	}).save(null, {method: 'insert'});
 
 	const relationshipData = {
-		id: 1,
+		id: random.number(),
 		sourceBbid: safeSourceBbid,
 		targetBbid: safeTargetBbid,
-		typeId: 1
+		typeId: relationshipTypeData.id
 	};
+
 	relationshipTypeData.id = random.number();
 	await new RelationshipType(relationshipTypeData)
 		.save(null, {method: 'insert'})
