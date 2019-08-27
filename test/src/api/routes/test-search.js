@@ -18,18 +18,35 @@
  */
 
 
+import * as search from '../../../../src/common/helpers/search';
+import {aliasData, createEditionGroup, createWork, truncateEntities} from '../../../test-helpers/create-entities';
 import app from '../../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import orm from '../../../bookbrainz-data';
 
 
 chai.use(chaiHttp);
 const {expect} = chai;
 
-const searchString = 'Harry';
+const searchString = 'name';
 /* eslint-disable */
 
 describe('GET /search', () => {
+	before(async ()=>{
+		//We create two entities of different types to test the collection query parameter
+		await createWork();
+		await createEditionGroup();
+		// We also create another entity with a different name to make sure it is not returned
+		aliasData.id += 1;
+		aliasData.name = "Fnord"
+		aliasData.sortName = "Fnord"
+		await createEditionGroup();
+		// reindex elasticsearch
+		await search.generateIndex(orm);
+	})
+	after(truncateEntities);
+
 	// Test search endpoint
 	it('should get search result for given search query parameter only searchString', async function () {
 		const res = await chai.request(app).get(`/search?q=${searchString}`);
@@ -41,6 +58,7 @@ describe('GET /search', () => {
 		);
 		expect(res.body.resultCount).to.be.a('number');
 		expect(res.body.searchResult).to.be.an('array');
+		expect(res.body.searchResult).to.be.of.length(2);
 		expect(res.body.searchResult[0]).to.be.an('object');
 		expect(res.body.searchResult[0]).to.have.all.keys(
 			'bbid',
@@ -59,13 +77,13 @@ describe('GET /search', () => {
 		);
 		expect(res.body.resultCount).to.be.a('number');
 		expect(res.body.searchResult).to.be.an('array');
+		expect(res.body.searchResult).to.be.of.length(1);
 		expect(res.body.searchResult[0]).to.be.an('object');
 		expect(res.body.searchResult[0]).to.have.all.keys(
 			'bbid',
 			'defaultAlias',
 			'entityType'
-		);		
+		);
 		expect(res.body.searchResult[0].entityType).to.equal('Work');
 	 });
 });
-
