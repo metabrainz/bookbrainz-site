@@ -41,7 +41,7 @@ const router = express.Router();
  *         description: Search string for entity search
  *         required: true
  *         type: string
- *       - name: collection
+ *       - name: entityType
  *         in: query
  *         description: Entity type for search
  *         required: false
@@ -69,7 +69,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const collection = req.query.collection || null;
+	const collection = req.query.entityType || null;
 	const {limit, offset} = req.query;
 	const searchResult = await search.searchByName(orm, query, _snakeCase(collection), limit, offset);
 	const formattedSearchResult = await formatSearchRespose(searchResult);
