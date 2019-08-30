@@ -68,7 +68,7 @@ describe('GET /search', () => {
 
 	 });
 	 it('should get search result for given search query parameters including collection type', async function () {
-		const res = await chai.request(app).get(`/search?q=${searchString}&collection=work`);
+		const res = await chai.request(app).get(`/search?q=${searchString}&entityType=work`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
 		expect(res.body).to.have.all.keys(
