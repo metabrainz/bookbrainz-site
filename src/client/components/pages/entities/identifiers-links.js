@@ -19,6 +19,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+
 function IdentifierLink({typeId, value}) {
 	let link;
 	// All identifiers type IDs have been taken from database.
@@ -76,6 +77,27 @@ function IdentifierLink({typeId, value}) {
 		case 20: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
 		case 21: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
 			link = `https://www.wikidata.org/wiki/${value}`;
+			break;
+		case 22:
+			link = `https://www.archive.org/details/${value}`;
+			break;
+		case 23:
+			link = `https://www.openlibrary.org/authors/${value}`;
+			break;
+		case 24:
+			link = `https://www.lccn.loc.gov/${value}`;
+			break;
+		case 25:
+			link = `https://www.orcid.org/${value}`;
+			break;
+		case 26:
+			link = `https://www.worldcat.org/oclc/${value}`;
+			break;
+		case 27:
+			link = `https://www.goodreads.com/author/show/${value}`;
+			break;
+		case 28:
+			link = `https://www.goodreads.com/book/show/${value}`;
 			break;
 		default:
 			return value;
