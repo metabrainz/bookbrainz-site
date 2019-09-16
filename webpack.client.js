@@ -15,7 +15,6 @@ const clientConfig = {
 		deletion: ['./controllers/deletion.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
-		merge: ['./controllers/merge.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		revision: ['./controllers/revision.js'],
 		revisions: ['./controllers/revisions.js'],
@@ -26,6 +25,7 @@ const clientConfig = {
 		'editor/editor': ['./controllers/editor/editor.js'],
 		'entity/entity': ['./controllers/entity/entity.js'],
 		'entity-editor': ['./entity-editor/controller.js'],
+		'entity-merge': ['./entity-editor/controller-merge.js'],
 		style: './stylesheets/style.less'
 	},
 	output: {

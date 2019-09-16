@@ -27,6 +27,7 @@ import * as utils from './utils';
 
 import type {$Request, $Response} from 'express';
 import EntityEditor from '../../client/entity-editor/entity-editor';
+import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
 import React from 'react';
@@ -36,7 +37,7 @@ import {createStore} from 'redux';
 import {generateProps} from './props';
 
 
-const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
+const {createRootReducer, getEntitySection, getEntitySectionMerge, getValidator} = entityEditorHelpers;
 
 type EntityAction = 'create' | 'edit';
 type PassportRequest = $Request & {user: any, session: any};
@@ -102,6 +103,54 @@ export function generateEntityProps(
 }
 
 /**
+ * Callback to get the initial state
+ * @callback initialState
+ * @param {object} entity - entity
+ */
+
+/**
+ * Returns a props object with reasonable defaults for entity creation/editing.
+ * @param {string} entityType - entity type
+ * @param {request} req - request object
+ * @param {response} res - response object
+ * @param {object} additionalProps - additional props
+ * @param {initialStateCallback} initialStateCallback - callback
+ * to get the initial state
+ * @returns {object} - props
+ */
+export function generateEntityMergeProps(
+	entityType: string,
+	req: express.request, res: express.response,
+	additionalProps: Object,
+	initialStateCallback: (entity: ?Object) => Object =
+	(entity) => new Object()
+): Object {
+	const entityName = _.capitalize(entityType);
+	const {entities} = additionalProps;
+	const entity = entities[0];
+
+	const getFilteredIdentifierTypes = _.partialRight(utils.filterIdentifierTypesByEntity, entity);
+	const filteredIdentifierTypes = getFilteredIdentifierTypes(
+		res.locals.identifierTypes
+	);
+
+	const submissionUrl = `/${entityType}/${entity.bbid}/edit/handler`;
+
+	const props = Object.assign({
+		entityType,
+		heading: `Merge ${entityName}s`,
+		identifierTypes: filteredIdentifierTypes,
+		initialState: initialStateCallback(entities),
+		languageOptions: res.locals.languages,
+		requiresJS: true,
+		subheading: `You are merging ${entities.length} existing ${entityName}s:`,
+		submissionUrl
+	}, additionalProps);
+
+	return generateProps(req, res, props);
+}
+
+/**
  * Return markup for the entity editor.
  * This also modifies the props value with a new initialState!
  * @param {object} props - react props
@@ -125,6 +174,42 @@ export function entityEditorMarkup(
 				>
 					<EntitySection/>
 				</EntityEditor>
+			</Provider>
+		</Layout>
+	);
+
+	return {
+		markup,
+		props: Object.assign({}, props, {
+			intitialState: store.getState()
+		})
+	};
+}
+
+/**
+ * Return markup for the entity merging tool.
+ * This also modifies the props value with a new initialState!
+ * @param {object} props - react props
+ * @param {function} rootReducer - redux root reducer
+ * @returns {object} - Updated props and HTML string with markup
+ */
+export function entityMergeMarkup(
+	props: { initialState: Object,
+			 entityType: string }
+) {
+	const {initialState, ...rest} = props;
+	const rootReducer = createRootReducer(props.entityType);
+	const store = createStore(rootReducer, Immutable.fromJS(initialState));
+	const EntitySection = getEntitySectionMerge(props.entityType);
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(rest)}>
+			<Provider store={store}>
+				<EntityMerge
+					validate={getValidator(props.entityType)}
+					{...propHelpers.extractChildProps(rest)}
+				>
+					<EntitySection/>
+				</EntityMerge>
 			</Provider>
 		</Layout>
 	);

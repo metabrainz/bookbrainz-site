@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable no-console */
 /*
  * Copyright (C) 2015-2016  Ben Ockmore
  *               2016       Sean Burke
@@ -19,257 +21,329 @@
 
 // @flow
 
-import * as baseFormatter from '../helpers/diffFormatters/base';
-import * as entityFormatter from '../helpers/diffFormatters/entity';
+import * as auth from '../helpers/auth';
 import * as entityRoutes from './entity/entity';
-import * as languageSetFormatter from '../helpers/diffFormatters/languageSet';
+import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
-import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
-import * as releaseEventSetFormatter from
-	'../helpers/diffFormatters/releaseEventSet';
 import * as utils from '../helpers/utils';
 
+import {
+	entityMergeMarkup,
+	generateEntityMergeProps
+} from '../helpers/entityRouteUtils';
 import {escapeProps, generateProps} from '../helpers/props';
 
-import Layout from '../../client/containers/layout';
-import MergePage from '../../client/components/pages/merge';
 import Promise from 'bluebird';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
+import renderRelationship from '../helpers/render';
 import target from '../templates/target';
-
 
 const router = express.Router();
 
-function formatCreatorChange(change) {
-	if (_.isEqual(change.path, ['beginDate'])) {
-		return baseFormatter.formatScalarChange(change, 'Begin Date');
-	}
+const relations = [
+	'aliasSet.aliases.language',
+	'annotation.lastRevision',
+	'defaultAlias',
+	'disambiguation',
+	'identifierSet.identifiers.type',
+	'relationshipSet',
+	'revision.revision'
+];
 
-	if (_.isEqual(change.path, ['endDate'])) {
-		return baseFormatter.formatScalarChange(change, 'End Date');
+function getEntityFetchPropertiesByType(entityType) {
+	switch (entityType) {
+		case 'Creator':
+			return ['creatorType', 'beginArea', 'endArea', 'gender'];
+		default:
+			return [];
 	}
-
-	if (_.isEqual(change.path, ['gender'])) {
-		return baseFormatter.formatGenderChange(change);
-	}
-
-	if (_.isEqual(change.path, ['ended'])) {
-		return baseFormatter.formatEndedChange(change);
-	}
-
-	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Creator Type');
-	}
-
-	if (_.isEqual(change.path, ['beginArea']) ||
-			_.isEqual(change.path, ['beginArea', 'name'])) {
-		return baseFormatter.formatAreaChange(change, 'Begin Area');
-	}
-
-	if (_.isEqual(change.path, ['endArea']) ||
-			_.isEqual(change.path, ['endArea', 'name'])) {
-		return baseFormatter.formatAreaChange(change, 'End Area');
-	}
-
-	return null;
 }
 
-function formatEditionChange(change) {
-	if (_.isEqual(change.path, ['publicationBbid'])) {
-		return baseFormatter.formatScalarChange(change, 'Publication');
-	}
-
-	if (publisherSetFormatter.changed(change)) {
-		return publisherSetFormatter.format(change);
-	}
-
-	if (releaseEventSetFormatter.changed(change)) {
-		return releaseEventSetFormatter.format(change);
-	}
-
-	if (languageSetFormatter.changed(change)) {
-		return languageSetFormatter.format(change);
-	}
-
-	if (_.isEqual(change.path, ['width']) ||
-			_.isEqual(change.path, ['height']) ||
-			_.isEqual(change.path, ['depth']) ||
-			_.isEqual(change.path, ['weight'])) {
-		return baseFormatter.formatScalarChange(
-			change, _.startCase(change.path[0])
-		);
-	}
-
-	if (_.isEqual(change.path, ['pages'])) {
-		return baseFormatter.formatScalarChange(change, 'Page Count');
-	}
-
-	if (_.isEqual(change.path, ['editionFormat'])) {
-		return baseFormatter.formatTypeChange(change, 'Edition Format');
-	}
-
-	if (_.isEqual(change.path, ['editionStatus'])) {
-		return baseFormatter.formatTypeChange(change, 'Edition Status');
-	}
-
-	return null;
+function getEntitySectionByType(entity) {
+	// switch(entity.type)
+	return {
+		beginArea: entityRoutes.areaToOption(entity.beginArea),
+		beginDate: entity.beginDate,
+		endArea: entityRoutes.areaToOption(entity.endArea),
+		endDate: entity.endDate,
+		ended: entity.ended,
+		gender: entity.gender && entity.gender.id,
+		type: entity.creatorType && entity.creatorType.id
+	};
 }
 
-function formatPublisherChange(change) {
-	if (_.isEqual(change.path, ['beginDate'])) {
-		return baseFormatter.formatScalarChange(change, 'Begin Date');
-	}
 
-	if (_.isEqual(change.path, ['endDate'])) {
-		return baseFormatter.formatScalarChange(change, 'End Date');
-	}
+function entitiesToFormState(entities) {
+	const aliases = entities.reduce((returnValue, entity) => {
+		if (!_.isNil(entity.aliasSet) && Array.isArray(entity.aliasSet.aliases)) {
+			return returnValue.concat(
+				entity.aliasSet.aliases.map(({language, ...rest}) => ({
+					language: language.id,
+					...rest
+				}))
+			);
+		}
+		return returnValue;
+	}, []);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
+	const defaultAlias = aliases.splice(defaultAliasIndex, 1)[0];
 
-	if (_.isEqual(change.path, ['ended'])) {
-		return baseFormatter.formatEndedChange(change);
-	}
+	const aliasEditor = {};
+	const aliasPropsComparator = ['name', 'sortName', 'language', 'primary'];
+	aliases.forEach((alias) => {
+		// Filter out aliases that are the same as defaultAlias
+		if (defaultAlias &&
+			!_.isEqual(
+				_.pick(alias, aliasPropsComparator),
+				_.pick(defaultAlias, aliasPropsComparator)
+			)
+		) {
+			aliasEditor[alias.id] = alias;
+		}
+	});
 
-	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Publisher Type');
-	}
+	const nameSection = _.isNil(defaultAlias) ? {
+		disambiguation: null,
+		language: null,
+		name: '',
+		sortName: ''
+	} : defaultAlias;
+	const hasDisambiguation = _.find(entities, 'disambiguation');
+	nameSection.disambiguation = hasDisambiguation &&
+		hasDisambiguation.disambiguation &&
+		hasDisambiguation.disambiguation.comment;
 
-	if (_.isEqual(change.path, ['area']) ||
-			_.isEqual(change.path, ['area', 'name'])) {
-		return baseFormatter.formatAreaChange(change);
-	}
+	const identifiers = entities.reduce((returnValue, entity) => {
+		if (entity.identifierSet) {
+			const mappedIdentifiers = entity.identifierSet.identifiers.map(
+				({type, ...rest}) => ({
+					type: type.id,
+					...rest
+				})
+			);
+			return returnValue.concat(mappedIdentifiers);
+		}
+		return returnValue;
+	}, []);
 
-	return null;
+	const identifierEditor = {};
+	const uniqueIdentifiers = _.uniqWith(identifiers, (identifierA, identifierB) =>
+		identifierA.type === identifierB.type && identifierA.value === identifierB.value);
+	uniqueIdentifiers.forEach((identifier) => {
+		identifierEditor[identifier.id] = identifier;
+	});
+	const entityTypeSection = getEntitySectionByType(entities[0]);
+
+	const relationshipSection = {
+		canEdit: false,
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
+		relationships: {}
+	};
+	const type = entities[0].type.toLowerCase();
+
+	const relationships = entities.reduce((returnValue, entity) => {
+		if (entity.relationships) {
+			return returnValue.concat(entity.relationships);
+		}
+		return returnValue;
+	}, []);
+	relationships.forEach((relationship) => (
+		relationshipSection.relationships[relationship.id] = {
+			relationshipType: relationship.type,
+			rendered: relationship.rendered,
+			rowID: relationship.id,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		}
+	));
+	const props = {
+		aliasEditor,
+		identifierEditor,
+		nameSection,
+		relationshipSection
+	};
+	props[`${type}Section`] = entityTypeSection;
+	return props;
 }
 
-function formatWorkChange(change) {
-	if (languageSetFormatter.changed(change)) {
-		return languageSetFormatter.format(change);
+function loadEntityRelationships(entity, orm, transacting): Promise {
+	const {RelationshipSet} = orm;
+
+	if (!entity.relationshipSetId) {
+		return null;
 	}
 
-	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Work Type');
-	}
+	return RelationshipSet.forge({id: entity.relationshipSetId})
+		.fetch({
+			transacting,
+			withRelated: [
+				'relationships.source',
+				'relationships.target',
+				'relationships.type'
+			]
+		})
+		.then((relationshipSet) => {
+			entity.relationships = relationshipSet ?
+				relationshipSet.related('relationships').toJSON() : [];
 
-	return null;
-}
+			function getEntityWithAlias(relEntity) {
+				const model = utils.getEntityModelByType(orm, relEntity.type);
 
-function formatPublicationChange(change) {
-	if (_.isEqual(change.path, ['type'])) {
-		return baseFormatter.formatTypeChange(change, 'Publication Type');
-	}
+				return model.forge({bbid: relEntity.bbid})
+					.fetch({withRelated: 'defaultAlias'});
+			}
 
-	return [];
-}
+			/**
+			 * Source and target are generic Entity objects, so until we have
+			 * a good way of polymorphically fetching the right specific entity,
+			 * we need to fetch default alias in a somewhat sketchier way.
+			 */
+			return Promise.map(
+				entity.relationships,
+				(relationship) => Promise.join(
+					getEntityWithAlias(relationship.source),
+					getEntityWithAlias(relationship.target),
+					(relationshipSource, relationshipTarget) => {
+						relationship.source = relationshipSource.toJSON();
+						relationship.target = relationshipTarget.toJSON();
 
-function diffEntities(entities) {
-	// entities - collection of entities matching id
-	const rev0 = entities[0].related('revision');
-	return Promise.all(entities
-		.map(entity => {
-			const rev = entity.related('revision');
-			return Promise.props({
-				changes: rev0.diff(rev),
-				entity
+						return relationship;
+					}
+				)
+			);
+		})
+		.then((relationships) => {
+			// Set rendered relationships on relationship objects
+			relationships.forEach((relationship) => {
+				relationship.rendered = renderRelationship(relationship);
 			});
-		}));
+
+			return entity;
+		});
 }
 
 async function getEntityByBBID(orm, transacting, bbid) {
-	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+	if (utils.isValidBBID(bbid)) {
+		const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+		const entityType = entityHeader.get('type');
+		const model = utils.getEntityModelByType(orm, entityType);
+		// .concat(additionalRels);
 
-	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
-	return model.forge({bbid}).fetch({transacting, withRelated: 'revision'});
+		return model.forge({bbid})
+			.fetch({
+				require: true,
+				transacting,
+				withRelated: relations.concat(getEntityFetchPropertiesByType(entityType))
+			})
+			.then(async (entity) => {
+				const entityJSON = entity.toJSON();
+				try {
+					await loadEntityRelationships(entityJSON, orm, transacting);
+				}
+				catch (error) {
+					// eslint-disable-next-line no-console
+					console.error(error);
+				}
+				return entityJSON;
+			})
+			.catch(error => {
+				throw error;
+			});
+	}
+	return null;
 }
 
-router.get('/*', async (req, res, next) => {
-	const {orm}: {orm: any} = req.app.locals;
-	const {
-		Creator, Edition, Publication,
-		Publisher, Revision, Work,
-		bookshelf, Entity
-	} = orm;
+// function mergeOptions(targetObject, sourceEntity, level = 0) {
+// 	Object.keys(sourceEntity).forEach(key => {
+// 		if (_.isNil(sourceEntity[key])) {
+// 			return null;
+// 		}
+// 		// if (key === 'nameSection' && !_.isEqual(targetObject[key], sourceEntity[key])) {
+// 		if (key === 'nameSection') {
+// 			targetObject[key] = (targetObject[key] || []).concat(sourceEntity[key]);
+// 			// targetObject[key][sourceEntity[key].id] = sourceEntity[key];
+// 			return null;
+// 		}
+// 		if (_.isPlainObject(sourceEntity[key]) && level === 0) {
+// 			targetObject[key] = mergeOptions(targetObject[key] || {}, sourceEntity[key], level + 1);
+// 			return null;
+// 		}
+// 		if (_.isNil(targetObject[key])) {
+// 			targetObject[key] = sourceEntity[key];
+// 			return null;
+// 		}
+// 		if (_.isArray(targetObject[key])) {
+// 			if (_.findIndex(targetObject[key], sourceEntity[key]) === -1 && targetObject[key].indexOf(sourceEntity[key]) === -1) {
+// 				targetObject[key] = targetObject[key].concat(sourceEntity[key]);
+// 			}
+// 		}
+// 		else if (!_.isEqual(targetObject[key], sourceEntity[key])) {
+// 			targetObject[key] = [targetObject[key], sourceEntity[key]];
+// 		}
+// 		return null;
+// 	});
+// 	return targetObject;
+// }
 
-	const bbids = req.params[0].split('/');
+router.get('/*', auth.isAuthenticated,
+	middleware.loadIdentifierTypes, middleware.loadGenders,
+	middleware.loadLanguages, middleware.loadCreatorTypes,
+	middleware.loadRelationshipTypes, async (req, res, next) => {
+		const {orm}: {orm: any} = req.app.locals;
+		const {
+			Creator, Edition, Publication,
+			Publisher, Revision, Work,
+			bookshelf, Entity
+		} = orm;
 
-	if (bbids.length < 2) {
-		return next('Merging requires to have more than one bbid passed, separated by a "/"');
-	}
-	// function _createRevision(model) {
-	// 	// return model.forge()
-	// 	// 	.where('bbid', bbids[0])
-	// 	// 	.fetchAll({withRelated: ['entity']})
-	// 	// 	.then(diffRevisionsWithParents);
-	// 	const promises = bbids.map(bbid => model.forge({bbid})
-	// 		// .where('bbid', 'IN', bbids)
-	// 		.where('master', true)
-	// 		.fetchAll({withRelated: ['revision']}));
-	// /* eslint no-console:0 */
-	// 	console.log('createrevision promises', promises);
-	// 	return Promise.all(promises).then(diffEntities).catch(next);
-	// }
-	// const entities = await Promise.all(bbids.map(
-	// 	(bbid) => Entity.forge({bbid}).fetchAll({withRelated: ['entity']})
-	// 	));
-	// let entities;
-	// await bookshelf.transaction(async (transacting) => {
-	// 	entities = await Promise.all(bbids.map(
-	// 		(bbid) =>
-	// 			getEntityByBBID(orm, transacting, bbid)
-	// 	));
-	// });
+		const bbids = req.params[0].split('/');
 
-	// const uniqueEntityTypes = _.uniqBy(entities, 'type');
-	// const areEntitiesSameModel = uniqueEntityTypes.length === 1;
-	// if (!areEntitiesSameModel) {
-	// 	console.log("/merge areEntitiesSameModel false! uniqueEntityTypes:", uniqueEntityTypes);//eslint-disable-line
-	// 	return next('You can only merge entities of the same type');
-	// }
+		if (bbids.length < 2) {
+			return next('Merging requires to have more than one bbid passed, separated by a "/"');
+		}
+		const invalidBBIDs = bbids.filter(bbid => !utils.isValidBBID(bbid));
+		if (invalidBBIDs.length) {
+			return next(`Invalid bbids: ${invalidBBIDs}`);
+		}
 
+		let entities;
 
-	// const creatorDiffsPromise = _createRevision(Creator);
-	// const editionDiffsPromise = _createRevision(Edition);
-	// const publicationDiffsPromise = _createRevision(Publication);
-	// const publisherDiffsPromise = _createRevision(Publisher);
-	// const workDiffsPromise = _createRevision(Work);
-	let entityDiffs;
-	await bookshelf.transaction(async (transacting) => {
-		entityDiffs = await Promise.all(bbids.map(
-			(bbid) =>
-				getEntityByBBID(orm, transacting, bbid)
-		))
-			.then(diffEntities);
+		await bookshelf.transaction(async (transacting) => {
+			entities = await Promise.all(bbids.map(
+				(bbid) =>
+					getEntityByBBID(orm, transacting, bbid)
+			));
+		});
+
+		if (!_.uniqBy(entities, 'type').length === 1) {
+			return next('You can only merge entities of the same type');
+		}
+
+		const entityType = entities[0].type.toLowerCase();
+		res.locals.entity = entities[0];
+		req.app.locals.mergingEntities = entities;
+
+		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
+			entityType, req, res, {
+				bbids,
+				creatorTypes: res.locals.creatorTypes,
+				entities,
+				genderOptions: res.locals.genders,
+				identifierTypes: res.locals.identifierTypes,
+				title: 'Merge Page'
+			}
+			, entitiesToFormState
+		));
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-merge.js',
+			title: `Merge ${entityType}s`
+		}));
 	});
-
-	console.log('entityDiffs',entityDiffs); //eslint-disable-line
-
-	const diffs = entityFormatter.formatEntityDiffs(
-		entityDiffs,
-		'Creator',
-		formatCreatorChange
-	);
-
-	console.log('diffs', diffs); //eslint-disable-line
-
-	const props = generateProps(req, res, {
-		diffs,
-		title: 'MergePage'
-	});
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<MergePage
-				diffs={props.diffs}
-				user={props.user}
-			/>
-		</Layout>
-	);
-	const script = '/js/merge.js';
-	return res.send(target({
-		markup,
-		props: escapeProps(props),
-		script
-	}));
-});
 
 export default router;
