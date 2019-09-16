@@ -17,14 +17,20 @@
  */
 
 import * as Immutable from 'immutable';
+
 import {
-	ADD_RELATIONSHIP, EDIT_RELATIONSHIP, HIDE_RELATIONSHIP_EDITOR,
-	REMOVE_RELATIONSHIP, SHOW_RELATIONSHIP_EDITOR, UNDO_LAST_SAVE
+	ADD_RELATIONSHIP,
+	EDIT_RELATIONSHIP,
+	HIDE_RELATIONSHIP_EDITOR,
+	REMOVE_RELATIONSHIP,
+	SHOW_RELATIONSHIP_EDITOR,
+	UNDO_LAST_SAVE
 } from './actions';
 
 
 function reducer(
 	state = Immutable.Map({
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,

@@ -735,7 +735,7 @@ export function handleCreateOrEditEntity(
 	entityType: EntityTypeString,
 	derivedProps: {}
 ) {
-	const {orm}: {orm: any} = req.app.locals;
+	const {orm, mergingEntities}: {orm: any} = req.app.locals;
 	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
@@ -798,7 +798,7 @@ export function handleCreateOrEditEntity(
 
 		// Fetch or create main entity
 		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, isNew, currentEntity, entityType
+			orm, transacting, isNew, currentEntity.bbid, entityType
 		);
 
 		// Fetch all entities that definitely exist
@@ -809,6 +809,19 @@ export function handleCreateOrEditEntity(
 		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
 		const allEntities = [...otherEntities, mainEntity];
+
+		if (mergingEntities && mergingEntities.length) {
+			// fetch merged entities and add to allEntities
+			const entitiesToMerge = mergingEntities.filter(entity =>
+				entity.bbid !== currentEntity.bbid);
+			const mergedEntities = await Promise.all(
+				entitiesToMerge.map(entity => fetchOrCreateMainEntity(
+					orm, transacting, false, entity.bbid, entityType
+				))
+			);
+			allEntities.push(...mergedEntities);
+			// redirect other bbids to currentEntity.bbid
+		}
 
 		_.forEach(allEntities, (entityModel) => {
 			const bbid: string = entityModel.get('bbid');
@@ -821,7 +834,7 @@ export function handleCreateOrEditEntity(
 		});
 
 		const savedMainEntity = await saveEntitiesAndFinishRevision(
-			orm, transacting, isNew, newRevision, mainEntity, allEntities,
+			orm, transacting, isNew, newRevision, mainEntity, _.uniqWith(allEntities, 'id'),
 			editorJSON.id, body.note
 		);
 

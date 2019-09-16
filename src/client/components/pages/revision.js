@@ -20,6 +20,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
+
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
 import PropTypes from 'prop-types';
@@ -133,10 +134,10 @@ class RevisionPage extends React.Component {
 	}
 
 	render() {
-		const {revision, diffs, user} = this.props;
+		const {revision, revisionParents, diffs, user} = this.props;
 
-		const diffDivs = diffs.map((diff) => (
-			<div key={diff.entity.bbid}>
+		const diffDivs = diffs.map((diff, index) => (
+			<div key={`${diff.entity.bbid}${index}`}>
 				<h3>
 					<EntityLink
 						bbid={diff.entity.bbid}
@@ -185,11 +186,30 @@ class RevisionPage extends React.Component {
 		}
 
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
-
+		const parentEntitiesLinks = revisionParents.map(parentEntity =>
+			 _.get(parentEntity, ['data.aliasSet.defaultAlias.name'], null)
+			// (<EntityLink
+			// 	bbid={entity.bbid}
+			// 	key={`parent-${entity.bbid}`}
+			// 	text={entity.data.aliasSet.defaultAlias.name}
+			// 	type={entity.type}
+			// />);
+		);
+		const parentRevLinks = revision.parents && revision.parents.map(parentRev =>
+			<a href={`/revision/${parentRev.id}`} key={parentRev.id}>#{parentRev.id}</a>);
 		return (
 			<Row>
 				<Col md={12}>
 					<h1>Revision #{revision.id}</h1>
+					{parentEntitiesLinks.length > 1 &&
+						// .join will return objects so use reduce instead
+						<h3>
+							Merge between {parentEntitiesLinks.reduce((prev, curr) => [prev, ', ', curr])}
+						</h3>
+					}
+					{parentRevLinks && parentRevLinks.length > 1 &&
+						<h5>Merge between revisions {parentRevLinks.reduce((prev, curr) => [prev, ', ', curr])}</h5>
+					}
 					{diffDivs}
 					<p className="text-right">
 						Created by&nbsp;
@@ -237,9 +257,11 @@ RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: PropTypes.any.isRequired,
 	revision: PropTypes.any.isRequired,
+	revisionParents: PropTypes.array,
 	user: PropTypes.object
 };
 RevisionPage.defaultProps = {
+	revisionParents: [],
 	user: null
 };
 

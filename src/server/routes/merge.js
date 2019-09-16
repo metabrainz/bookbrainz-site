@@ -39,6 +39,7 @@ import express from 'express';
 import renderRelationship from '../helpers/render';
 import target from '../templates/target';
 
+
 const router = express.Router();
 
 const relations = [

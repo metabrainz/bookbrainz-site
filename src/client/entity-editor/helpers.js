@@ -19,6 +19,7 @@
 // @flow
 
 import AuthorSection from './author-section/author-section';
+import AuthorSectionMerge from './author-section/author-section-merge';
 import EditionGroupSection from './edition-group-section/edition-group-section';
 import EditionSection from './edition-section/edition-section';
 import PublisherSection from './publisher-section/publisher-section';
@@ -63,6 +64,19 @@ export function getEntitySection(entityType: string) {
 		editionGroup: EditionGroupSection,
 		publisher: PublisherSection,
 		work: WorkSection
+	};
+
+	return SECTION_MAP[entityType];
+}
+
+export function getEntitySectionMerge(entityType: string) {
+	const SECTION_MAP = {
+		author: AuthorSectionMerge
+		// ,
+		// edition: EditionSection,
+		// publication: PublicationSection,
+		// publisher: PublisherSection,
+		// work: WorkSection
 	};
 
 	return SECTION_MAP[entityType];
