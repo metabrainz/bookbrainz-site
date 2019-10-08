@@ -29,8 +29,8 @@ type State = Immutable.Map<string, any>;
 
 function reducer(
 	state: State = Immutable.Map({
-		beginDate: {day: '', month: '', year: ''},
-		endDate: {day: '', month: '', year: ''},
+		beginDate: '',
+		endDate: '',
 		ended: false,
 		gender: null,
 		type: null
@@ -46,15 +46,15 @@ function reducer(
 		case UPDATE_BEGIN_AREA:
 			return state.set('beginArea', Immutable.fromJS(payload));
 		case UPDATE_BEGIN_DATE:
-			return state.set('beginDate', Immutable.fromJS(payload));
+			return state.set('beginDate', payload);
 		case UPDATE_END_AREA:
 			return state.set('endArea', Immutable.fromJS(payload));
 		case UPDATE_END_DATE:
-			return state.set('endDate', Immutable.fromJS(payload));
+			return state.set('endDate', payload);
 		case UPDATE_ENDED:
 			return state.set('ended', payload)
 				.set('endArea', null)
-				.set('endDate', Immutable.fromJS(payload));
+				.set('endDate', payload);
 		// no default
 	}
 	return state;

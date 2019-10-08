@@ -29,7 +29,6 @@ import {
 	updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
-import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
 import {
 	validateAuthorSectionBeginDate,
 	validateAuthorSectionEndDate
@@ -43,6 +42,8 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {isNullValue} from '../validators/base';
+import {labelsForAuthor} from '../../helpers/utils';
 
 
 type AuthorType = {
@@ -67,11 +68,11 @@ type StateProps = {
 	beginAreaLabel: string,
 	beginAreaValue: Map<string, any>,
 	beginDateLabel: string,
-	beginDateValue: object,
+	beginDateValue: string,
 	endAreaLabel: string,
 	endAreaValue: Map<string, any>,
 	endDateLabel: string,
-	endDateValue: object,
+	endDateValue: string,
 	endedChecked: boolean,
 	endedLabel: string,
 	genderShow: boolean,
@@ -94,7 +95,7 @@ type OwnProps = {
 	genderOptions: Array<GenderOptions>
 };
 
-type Props = StateProps & DispatchProps & OwnProps;
+export type Props = StateProps & DispatchProps & OwnProps;
 
 /**
  * Container component. The AuthorSection component contains input fields
@@ -214,7 +215,7 @@ function AuthorSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={!beginDateValue.day && !beginDateValue.month && !beginDateValue.year}
+						empty={isNullValue(beginDateValue)}
 						error={!isValidDob}
 						errorMessage={dobError}
 						label={beginDateLabel}
@@ -248,7 +249,7 @@ function AuthorSection({
 							<DateField
 								show
 								defaultValue={endDateValue}
-								empty={!endDateValue.day && !endDateValue.month && !endDateValue.year}
+								empty={isNullValue(endDateValue)}
 								error={!isValidDod}
 								errorMessage={dodError}
 								label={endDateLabel}
@@ -274,7 +275,7 @@ function AuthorSection({
 }
 AuthorSection.displayName = 'AuthorSection';
 
-function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
+export function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');
@@ -300,11 +301,11 @@ function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 		beginAreaLabel,
 		beginAreaValue: state.get('beginArea'),
 		beginDateLabel,
-		beginDateValue: convertMapToObject(state.get('beginDate')),
+		beginDateValue: state.get('beginDate'),
 		endAreaLabel,
 		endAreaValue: state.get('endArea'),
 		endDateLabel,
-		endDateValue: convertMapToObject(state.get('endDate')),
+		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
 		endedLabel,
 		genderShow: !isGroup,

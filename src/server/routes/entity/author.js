@@ -23,7 +23,6 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	ISODateStringToObject,
 	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
@@ -154,9 +153,9 @@ function authorToFormState(author) {
 
 	const authorSection = {
 		beginArea: entityRoutes.areaToOption(author.beginArea),
-		beginDate: ISODateStringToObject(author.beginDate),
+		beginDate: author.beginDate,
 		endArea: entityRoutes.areaToOption(author.endArea),
-		endDate: ISODateStringToObject(author.endDate),
+		endDate: author.endDate,
 		ended: author.ended,
 		gender: author.gender && author.gender.id,
 		type: author.authorType && author.authorType.id
@@ -234,13 +233,11 @@ function transformNewForm(data) {
 		aliases,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
-		beginDate: data.authorSection.beginDate ?
-			dateObjectToISOString(data.authorSection.beginDate) : '',
+		beginDate: data.authorSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.authorSection.endArea &&
 			data.authorSection.endArea.id,
-		endDate: data.authorSection.endDate ?
-			dateObjectToISOString(data.authorSection.endDate) : '',
+		endDate: data.authorSection.endDate ? data.authorSection.endDate : '',
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,
