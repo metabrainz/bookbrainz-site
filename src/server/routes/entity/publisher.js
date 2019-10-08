@@ -173,6 +173,7 @@ function publisherToFormState(publisher) {
 		type: publisher.publisherType && publisher.publisherType.id
 	};
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,

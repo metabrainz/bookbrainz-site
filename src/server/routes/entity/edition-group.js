@@ -157,6 +157,7 @@ function editionGroupToFormState(editionGroup) {
 	};
 
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
