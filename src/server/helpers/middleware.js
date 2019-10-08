@@ -124,6 +124,20 @@ export function loadEntityRelationships(req, res, next) {
 		})
 		.catch(next);
 }
+export async function redirectedBbid(req, res, next, bbid) {
+	const {orm} = req.app.locals;
+	try {
+		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
+		if (redirectBbid !== bbid) {
+			// res.location(`${req.baseUrl}/${redirectBbid}`);
+			return res.redirect(301, `${req.baseUrl}/${redirectBbid}`);
+		}
+	}
+	catch (err) {
+		return next(err);
+	}
+	return next();
+}
 
 export function makeEntityLoader(modelName, additionalRels, errMessage) {
 	const relations = [

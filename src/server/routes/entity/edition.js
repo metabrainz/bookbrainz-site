@@ -40,7 +40,11 @@ import target from '../../templates/target';
 
 const router = express.Router();
 
-/* If the route specifies a BBID, load the Edition for it. */
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
