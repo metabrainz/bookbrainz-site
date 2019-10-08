@@ -62,6 +62,9 @@ function MergeField({
 			/>
 		);
 	}
+	const onChangeReturnValue = function onChangeReturnValue(selectObject) {
+		return onChange(selectObject.value);
+	};
 	return (
 		<CustomInput label={label} {...rest}>
 			<Select
@@ -69,7 +72,8 @@ function MergeField({
 				instanceId={label}
 				options={options}
 				value={currentValue}
-				onChange={onChange}
+				// eslint-disable-next-line react/jsx-no-bind
+				onChange={onChangeReturnValue}
 			/>
 		</CustomInput>
 	);

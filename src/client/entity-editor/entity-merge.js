@@ -20,13 +20,12 @@
 
 import * as React from 'react';
 
-import {Col, Row} from 'react-bootstrap';
+import {Col, Panel, Row} from 'react-bootstrap';
 
 import AliasEditorMerge from './alias-editor/alias-editor-merge';
 import Entity from './common/entity';
 import EntityIdentifiers from '../components/pages/entities/identifiers';
 import NameSectionMerge from './name-section/name-section-merge';
-import Panel from 'react-bootstrap/lib/Panel';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import _ from 'lodash';
@@ -67,10 +66,10 @@ const EntityMerge = (props: Props) => {
 	} = props;
 	const identifiers = Object.values(identifierSet.toJS());
 	return (
-		<Panel>
-			<Panel.Heading>
+		<div>
+			<div>
 				{subheading}
-				<Panel.Title>
+				<div>
 					<div className="small margin-bottom-1">
 						{entities.map((entity, index) => {
 							const entityForDisplay = {
@@ -83,16 +82,16 @@ const EntityMerge = (props: Props) => {
 							return (
 								<span className={isNotLast ? 'margin-right-d5' : ''} key={entity.bbid}>
 									<Entity {...entityForDisplay}/>
-									{isNotLast && ','}
+									{isNotLast && '⟸'}
 								</span>
 							);
 						})}
 					</div>
 					Select and review the data to merge.
-					For modifications, edit the resulting merged entity.
-				</Panel.Title>
-			</Panel.Heading>
-			<Panel.Body>
+					For further modifications, edit the resulting merged entity.
+				</div>
+			</div>
+			<div>
 				<Row>
 					<Col md={5} mdOffset={1}>
 						<NameSectionMerge {...props}/>
@@ -122,11 +121,11 @@ const EntityMerge = (props: Props) => {
 						/>
 					</Col>
 				</Row>
-			</Panel.Body>
-			<Panel.Footer>
+			</div>
+			<div>
 				<SubmissionSection {...props}/>
-			</Panel.Footer>
-		</Panel>
+			</div>
+		</div>
 	);
 };
 EntityMerge.displayName = 'EntityMerge';

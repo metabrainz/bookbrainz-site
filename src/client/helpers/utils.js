@@ -83,6 +83,9 @@ export function getTodayDate() {
  * @returns {string} ISO 8601-2004 string (±YYYYYY-MM-DD)
  */
 export function dateObjectToISOString(value) {
+	if (_.isNil(value)) {
+		return null;
+	}
 	const isCommonEraDate = Math.sign(value.year) > -1;
 	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
 	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;
@@ -93,4 +96,30 @@ export function dateObjectToISOString(value) {
 	  }
 	}
 	return date;
+}
+
+/**
+ * Parse an ISO 8601-2004 string and return an object with separate day, month and year, if they exist.
+ * If any of the values don't exist, the default is an empty string.
+ * @function ISODateStringToObject
+ * @param {string} value - relationshipId number for initaial relationship
+ * @returns {object} a {day, month, year} object
+ */
+export function ISODateStringToObject(value) {
+	if (!_.isString(value) && _.has(value, 'year')) {
+		return value;
+	}
+	const date = value ? value.split('-') : [];
+	// A leading minus sign denotes a BC date
+	// This creates an empty first array item that needs to be removed,
+	// and requires us to add the negative sign back for the year
+	if (date.length && date[0] === '') {
+		date.shift();
+		date[0] = -date[0];
+	}
+	return {
+		day: date.length > 2 ? date[2] : '',
+		month: date.length > 1 ? date[1] : '',
+		year: date.length > 0 ? date[0] : ''
+	};
 }

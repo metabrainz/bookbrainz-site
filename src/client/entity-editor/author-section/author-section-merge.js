@@ -18,7 +18,6 @@
  */
 
 // @flow
-// import * as moment from 'moment';
 import * as _ from 'lodash';
 
 import {
@@ -31,68 +30,27 @@ import {
 	updateGender,
 	updateType
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
-import {
-	validateAuthorSectionBeginDate,
-	validateAuthorSectionEndDate
-} from '../validators/author';
 
-import CustomInput from '../../input';
-import DateField from '../common/new-date-field';
-import Entity from '../common/entity';
+import {Props, mapStateToProps} from './author-section';
+
 import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
 import React from 'react';
-import Select from 'react-select';
 import {connect} from 'react-redux';
+import {dateObjectToISOString} from '../../helpers/utils';
+import {transformISODateForDisplay} from '../../helpers/entity';
 
 
-type AuthorType = {
-	label: string,
-	id: number
+const transformISODateForSelect = (dateValue) => {
+	let dateString = dateValue;
+	if (typeof dateValue !== 'string') {
+		dateString = dateObjectToISOString(dateValue);
+	}
+	return {
+		label: transformISODateForDisplay(dateString),
+		value: dateString
+	};
 };
-
-type Area = {
-	disambiguation: ?string,
-	id: string | number,
-	text: string,
-	type: string
-};
-
-
-type StateProps = {
-	beginAreaLabel: string,
-	beginAreaValue: Map<string, any>,
-	beginDateLabel: string,
-	beginDateValue: string,
-	endAreaLabel: string,
-	endAreaValue: Map<string, any>,
-	endDateLabel: string,
-	endDateValue: string,
-	endedChecked: boolean,
-	endedLabel: string,
-	entities: Array<Object>,
-	genderShow: boolean,
-	genderValue: number,
-	typeValue: number
-};
-
-type DispatchProps = {
-	onBeginAreaChange: (?Area) => mixed,
-	onBeginDateChange: (SyntheticInputEvent<>) => mixed,
-	onEndAreaChange: (?Area) => mixed,
-	onEndDateChange: (SyntheticInputEvent<>) => mixed,
-	onEndedChange: (SyntheticInputEvent<>) => mixed,
-	onGenderChange: ({value: number} | null) => mixed,
-	onTypeChange: ({value: number} | null) => mixed
-};
-
-type OwnProps = {
-	authorTypes: Array<AuthorType>
-};
-
-type Props = StateProps & DispatchProps & OwnProps;
-
 
 /**
  * Container component. The AuthorSectionMerge component contains input fields
@@ -155,18 +113,13 @@ function AuthorSectionMerge({
 	onGenderChange,
 	onTypeChange
 }: Props) {
-	const authorTypesForDisplay = authorTypes.map((type) => ({
-		label: type.label,
-		value: type.id
-	}));
-
-	const typeOptions = [];
-	const genderOptions = [];
-	const beginDateOptions = [];
 	const beginAreaOptions = [];
-	const endDateOptions = [];
+	const beginDateOptions = [];
 	const endAreaOptions = [];
+	const endDateOptions = [];
 	const endedOptions = [];
+	const genderOptions = [];
+	const typeOptions = [];
 
 	entities.forEach(entity => {
 		const matchingType = authorTypes
@@ -179,15 +132,11 @@ function AuthorSectionMerge({
 		if (gender && !_.find(genderOptions, ['value', gender.value])) {
 			genderOptions.push(gender);
 		}
-		const beginDate = !_.isNil(entity.beginDate) && {label: entity.beginDate, value: entity.beginDate};
+		const beginDate = !_.isNil(entity.beginDate) && transformISODateForSelect(entity.beginDate);
 		if (beginDate && !_.find(beginDateOptions, ['value', beginDate.value])) {
 			beginDateOptions.push(beginDate);
 		}
-		// const beginArea = !_.isNil(entity.beginArea) && {label: entity.beginArea.name,
-		// value: Object.assign({}, entity.beginArea, {value: entity.beginArea.id})};
-		// if (beginArea && !_.find(beginAreaOptions, ['value', beginArea.value])) {
-		// 	beginAreaOptions.push(beginArea);
-		// }
+
 		if (entity.beginArea && !_.find(beginAreaOptions, ['id', entity.beginArea.id])) {
 			beginAreaOptions.push(entity.beginArea);
 		}
@@ -196,7 +145,7 @@ function AuthorSectionMerge({
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
 			endedOptions.push(ended);
 		}
-		const endDate = !_.isNil(entity.endDate) && {label: entity.endDate, value: entity.endDate};
+		const endDate = !_.isNil(entity.endDate) && transformISODateForSelect(entity.endDate);
 		if (endDate && !_.find(endDateOptions, ['value', endDate.value])) {
 			endDateOptions.push(endDate);
 		}
@@ -205,6 +154,9 @@ function AuthorSectionMerge({
 			endAreaOptions.push(endArea);
 		}
 	});
+
+	const formattedBeginDateValue = transformISODateForSelect(beginDateValue);
+	const formattedEndDateValue = transformISODateForSelect(endDateValue);
 
 	return (
 		<form>
@@ -221,7 +173,7 @@ function AuthorSectionMerge({
 				onChange={onGenderChange}
 			/>
 			<MergeField
-				currentValue={beginDateValue}
+				currentValue={formattedBeginDateValue}
 				label={beginDateLabel}
 				options={beginDateOptions}
 				onChange={onBeginDateChange}
@@ -242,7 +194,7 @@ function AuthorSectionMerge({
 			{endedChecked &&
 				<React.Fragment>
 					<MergeField
-						currentValue={endDateValue}
+						currentValue={formattedEndDateValue}
 						label={endDateLabel}
 						options={endDateOptions}
 						onChange={onEndDateChange}
@@ -260,53 +212,20 @@ function AuthorSectionMerge({
 }
 AuthorSectionMerge.displayName = 'AuthorSectionMerge';
 
-function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
-	const state = rootState.get('authorSection');
-
-	const typeValue = state.get('type');
-	const personType = authorTypes.find((type) => type.label === 'Person');
-	if (!personType) {
-		throw new Error('there should be a person with label "Person"');
-	}
-	const singular = typeValue === personType.id;
-
-	const beginDateLabel = !singular ? 'Date founded' : 'Date of birth';
-	const beginAreaLabel = !singular ? 'Place founded' : 'Place of birth';
-	const endedLabel = !singular ? 'Dissolved?' : 'Died?';
-	const endDateLabel = !singular ? 'Date of dissolution' : 'Date of death';
-	const endAreaLabel = !singular ? 'Place of dissolution' : 'Place of death';
-
-	return {
-		beginAreaLabel,
-		beginAreaValue: state.get('beginArea'),
-		beginDateLabel,
-		beginDateValue: state.get('beginDate'),
-		endAreaLabel,
-		endAreaValue: state.get('endArea'),
-		endDateLabel,
-		endDateValue: state.get('endDate'),
-		endedChecked: state.get('ended'),
-		endedLabel,
-		genderShow: singular,
-		genderValue: state.get('gender'),
-		typeValue
-	};
-}
-
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
 		onBeginDateChange: (dateString) =>
 			dispatch(debouncedUpdateBeginDate(dateString)),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
-		onEndDateChange: (dateString: moment) =>
+		onEndDateChange: (dateString) =>
 			dispatch(debouncedUpdateEndDate(dateString)),
-		onEndedChange: (event) =>
-			dispatch(updateEnded(event.value)),
+		onEndedChange: (value) =>
+			dispatch(updateEnded(value)),
 		onGenderChange: (value) =>
-			dispatch(updateGender(value && value.value)),
+			dispatch(updateGender(value)),
 		onTypeChange: (value) =>
-			dispatch(updateType(value && value.value))
+			dispatch(updateType(value))
 	};
 }
 

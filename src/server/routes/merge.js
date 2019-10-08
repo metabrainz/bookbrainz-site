@@ -22,17 +22,19 @@
 // @flow
 
 import * as auth from '../helpers/auth';
+import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-
 import {
+	ISODateStringToObject,
 	entityMergeMarkup,
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
 import {escapeProps, generateProps} from '../helpers/props';
 
+import {ConflictError} from '../../common/helpers/error';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import express from 'express';
@@ -54,8 +56,8 @@ const relations = [
 
 function getEntityFetchPropertiesByType(entityType) {
 	switch (entityType) {
-		case 'Creator':
-			return ['creatorType', 'beginArea', 'endArea', 'gender'];
+		case 'Author':
+			return ['authorType', 'beginArea', 'endArea', 'gender'];
 		default:
 			return [];
 	}
@@ -70,7 +72,7 @@ function getEntitySectionByType(entity) {
 		endDate: entity.endDate,
 		ended: entity.ended,
 		gender: entity.gender && entity.gender.id,
-		type: entity.creatorType && entity.creatorType.id
+		type: entity.authorType && entity.authorType.id
 	};
 }
 
@@ -91,7 +93,7 @@ function entitiesToFormState(entities) {
 	const defaultAlias = aliases.splice(defaultAliasIndex, 1)[0];
 
 	const aliasEditor = {};
-	const aliasPropsComparator = ['name', 'sortName', 'language', 'primary'];
+	const aliasPropsComparator = ['name', 'sortName', 'language'];
 	aliases.forEach((alias) => {
 		// Filter out aliases that are the same as defaultAlias
 		if (defaultAlias &&
@@ -100,6 +102,7 @@ function entitiesToFormState(entities) {
 				_.pick(defaultAlias, aliasPropsComparator)
 			)
 		) {
+			alias.primary = false;
 			aliasEditor[alias.id] = alias;
 		}
 	});
@@ -227,75 +230,40 @@ function loadEntityRelationships(entity, orm, transacting): Promise {
 }
 
 async function getEntityByBBID(orm, transacting, bbid) {
-	if (utils.isValidBBID(bbid)) {
-		const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
-		const entityType = entityHeader.get('type');
-		const model = utils.getEntityModelByType(orm, entityType);
-		// .concat(additionalRels);
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
+	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
+	const entityType = entityHeader.get('type');
+	const model = utils.getEntityModelByType(orm, entityType);
 
-		return model.forge({bbid})
-			.fetch({
-				require: true,
-				transacting,
-				withRelated: relations.concat(getEntityFetchPropertiesByType(entityType))
-			})
-			.then(async (entity) => {
-				const entityJSON = entity.toJSON();
-				try {
-					await loadEntityRelationships(entityJSON, orm, transacting);
-				}
-				catch (error) {
-					// eslint-disable-next-line no-console
-					console.error(error);
-				}
-				return entityJSON;
-			})
-			.catch(error => {
-				throw error;
-			});
-	}
-	return null;
+	return model.forge({bbid: redirectBbid})
+		.fetch({
+			require: true,
+			transacting,
+			withRelated: relations.concat(getEntityFetchPropertiesByType(entityType))
+		})
+		.then(async (entity) => {
+			const entityJSON = entity.toJSON();
+			try {
+				await loadEntityRelationships(entityJSON, orm, transacting);
+			}
+			catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
+			return entityJSON;
+		})
+		.catch(error => {
+			throw error;
+		});
 }
-
-// function mergeOptions(targetObject, sourceEntity, level = 0) {
-// 	Object.keys(sourceEntity).forEach(key => {
-// 		if (_.isNil(sourceEntity[key])) {
-// 			return null;
-// 		}
-// 		// if (key === 'nameSection' && !_.isEqual(targetObject[key], sourceEntity[key])) {
-// 		if (key === 'nameSection') {
-// 			targetObject[key] = (targetObject[key] || []).concat(sourceEntity[key]);
-// 			// targetObject[key][sourceEntity[key].id] = sourceEntity[key];
-// 			return null;
-// 		}
-// 		if (_.isPlainObject(sourceEntity[key]) && level === 0) {
-// 			targetObject[key] = mergeOptions(targetObject[key] || {}, sourceEntity[key], level + 1);
-// 			return null;
-// 		}
-// 		if (_.isNil(targetObject[key])) {
-// 			targetObject[key] = sourceEntity[key];
-// 			return null;
-// 		}
-// 		if (_.isArray(targetObject[key])) {
-// 			if (_.findIndex(targetObject[key], sourceEntity[key]) === -1 && targetObject[key].indexOf(sourceEntity[key]) === -1) {
-// 				targetObject[key] = targetObject[key].concat(sourceEntity[key]);
-// 			}
-// 		}
-// 		else if (!_.isEqual(targetObject[key], sourceEntity[key])) {
-// 			targetObject[key] = [targetObject[key], sourceEntity[key]];
-// 		}
-// 		return null;
-// 	});
-// 	return targetObject;
-// }
 
 router.get('/*', auth.isAuthenticated,
 	middleware.loadIdentifierTypes, middleware.loadGenders,
-	middleware.loadLanguages, middleware.loadCreatorTypes,
+	middleware.loadLanguages, middleware.loadAuthorTypes,
 	middleware.loadRelationshipTypes, async (req, res, next) => {
 		const {orm}: {orm: any} = req.app.locals;
 		const {
-			Creator, Edition, Publication,
+			Author, Edition, EditionGroup,
 			Publisher, Revision, Work,
 			bookshelf, Entity
 		} = orm;
@@ -305,32 +273,46 @@ router.get('/*', auth.isAuthenticated,
 		if (bbids.length < 2) {
 			return next('Merging requires to have more than one bbid passed, separated by a "/"');
 		}
-		const invalidBBIDs = bbids.filter(bbid => !utils.isValidBBID(bbid));
+		const invalidBBIDs = bbids.filter(bbid => !commonUtils.isValidBBID(bbid));
 		if (invalidBBIDs.length) {
 			return next(`Invalid bbids: ${invalidBBIDs}`);
 		}
 
 		let entities;
 
-		await bookshelf.transaction(async (transacting) => {
-			entities = await Promise.all(bbids.map(
-				(bbid) =>
-					getEntityByBBID(orm, transacting, bbid)
-			));
-		});
+		try {
+			await bookshelf.transaction(async (transacting) => {
+				entities = await Promise.all(bbids.map(
+					(bbid) =>
+						getEntityByBBID(orm, transacting, bbid)
+				));
+			});
+		}
+		catch (error) {
+			return next(error);
+		}
 
 		if (!_.uniqBy(entities, 'type').length === 1) {
-			return next('You can only merge entities of the same type');
+			const conflictError = new ConflictError('You can only merge entities of the same type');
+			return next(conflictError);
+		}
+		if (_.uniqBy(entities, 'bbid').length !== bbids.length) {
+			const conflictError = new ConflictError('You cannot merge an entity that has already been merged');
+			return next(conflictError);
+		}
+		if (_.some(entities, entity => entity.dateId === null)) {
+			const conflictError = new ConflictError('You cannot merge an entity that has been deleted');
+			return next(conflictError);
 		}
 
 		const entityType = entities[0].type.toLowerCase();
 		res.locals.entity = entities[0];
-		req.app.locals.mergingEntities = entities;
+		res.locals.mergingEntities = entities;
 
 		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
 			entityType, req, res, {
+				authorTypes: res.locals.authorTypes,
 				bbids,
-				creatorTypes: res.locals.creatorTypes,
 				entities,
 				genderOptions: res.locals.genders,
 				identifierTypes: res.locals.identifierTypes,

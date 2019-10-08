@@ -83,20 +83,24 @@ function NameSectionMerge({
 	const disambiguationOptions = [];
 
 	entities.forEach(entity => {
-		nameOptions.push({label: entity.defaultAlias.name, value: entity.defaultAlias.name});
-		sortNameOptions.push({label: entity.defaultAlias.sortName, value: entity.defaultAlias.sortName});
+		if (_.findIndex(nameOptions, ['label', entity.defaultAlias.name]) === -1) {
+			nameOptions.push({label: entity.defaultAlias.name, value: entity.defaultAlias.name});
+		}
+		if (_.findIndex(sortNameOptions, ['label', entity.defaultAlias.sortName]) === -1) {
+			sortNameOptions.push({label: entity.defaultAlias.sortName, value: entity.defaultAlias.sortName});
+		}
 		const matchingLanguage = languageOptions
 			.filter(language => language.id === entity.defaultAlias.languageId)
 			.map((language) => ({
 				label: language.name,
 				value: language.id
 			}));
-		if (languageSelectOptions.indexOf(matchingLanguage[0]) === -1) {
+		if (_.findIndex(languageSelectOptions, ['value', matchingLanguage[0].value]) === -1) {
 			languageSelectOptions.push(matchingLanguage[0]);
 		}
 		if (!_.isNil(entity.disambiguation) &&
 			disambiguationOptions.indexOf(entity.disambiguation) === -1) {
-			disambiguationOptions.push({label: entity.disambiguation, value: entity.disambiguation});
+			disambiguationOptions.push({label: entity.disambiguation.comment, value: entity.disambiguation});
 		}
 	});
 
