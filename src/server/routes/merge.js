@@ -25,18 +25,16 @@ import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
-import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
 import {
-	ISODateStringToObject,
 	entityMergeMarkup,
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
-import {escapeProps, generateProps} from '../helpers/props';
 
 import {ConflictError} from '../../common/helpers/error';
 import Promise from 'bluebird';
 import _ from 'lodash';
+import {escapeProps} from '../helpers/props';
 import express from 'express';
 import renderRelationship from '../helpers/render';
 import target from '../templates/target';
@@ -166,6 +164,7 @@ function entitiesToFormState(entities) {
 	const props = {
 		aliasEditor,
 		identifierEditor,
+		mergingEntities: entities,
 		nameSection,
 		relationshipSection
 	};
@@ -278,11 +277,11 @@ router.get('/*', auth.isAuthenticated,
 			return next(`Invalid bbids: ${invalidBBIDs}`);
 		}
 
-		let entities;
+		let mergingEntities;
 
 		try {
 			await bookshelf.transaction(async (transacting) => {
-				entities = await Promise.all(bbids.map(
+				mergingEntities = await Promise.all(bbids.map(
 					(bbid) =>
 						getEntityByBBID(orm, transacting, bbid)
 				));
@@ -292,30 +291,29 @@ router.get('/*', auth.isAuthenticated,
 			return next(error);
 		}
 
-		if (!_.uniqBy(entities, 'type').length === 1) {
+		if (!_.uniqBy(mergingEntities, 'type').length === 1) {
 			const conflictError = new ConflictError('You can only merge entities of the same type');
 			return next(conflictError);
 		}
-		if (_.uniqBy(entities, 'bbid').length !== bbids.length) {
+		if (_.uniqBy(mergingEntities, 'bbid').length !== bbids.length) {
 			const conflictError = new ConflictError('You cannot merge an entity that has already been merged');
 			return next(conflictError);
 		}
-		if (_.some(entities, entity => entity.dateId === null)) {
+		if (_.some(mergingEntities, entity => entity.dateId === null)) {
 			const conflictError = new ConflictError('You cannot merge an entity that has been deleted');
 			return next(conflictError);
 		}
 
-		const entityType = entities[0].type.toLowerCase();
-		res.locals.entity = entities[0];
-		res.locals.mergingEntities = entities;
+		const entityType = mergingEntities[0].type.toLowerCase();
+		res.locals.entity = mergingEntities[0];
 
 		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
 			entityType, req, res, {
 				authorTypes: res.locals.authorTypes,
 				bbids,
-				entities,
 				genderOptions: res.locals.genders,
 				identifierTypes: res.locals.identifierTypes,
+				mergingEntities,
 				title: 'Merge Page'
 			}
 			, entitiesToFormState

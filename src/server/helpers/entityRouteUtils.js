@@ -126,8 +126,8 @@ export function generateEntityMergeProps(
 	(entity) => new Object()
 ): Object {
 	const entityName = _.capitalize(entityType);
-	const {entities} = additionalProps;
-	const entity = entities[0];
+	const {mergingEntities} = additionalProps;
+	const entity = mergingEntities[0];
 
 	const getFilteredIdentifierTypes = _.partialRight(utils.filterIdentifierTypesByEntity, entity);
 	const filteredIdentifierTypes = getFilteredIdentifierTypes(
@@ -138,12 +138,12 @@ export function generateEntityMergeProps(
 
 	const props = Object.assign({
 		entityType,
-		heading: `Merge ${entityName}s`,
+		heading: `Merge ${mergingEntities.length} ${entityName}s`,
 		identifierTypes: filteredIdentifierTypes,
-		initialState: initialStateCallback(entities),
+		initialState: initialStateCallback(mergingEntities),
 		languageOptions: res.locals.languages,
 		requiresJS: true,
-		subheading: `You are merging ${entities.length} existing ${entityName}s:`,
+		subheading: `You are merging ${mergingEntities.length} existing ${entityName}s:`,
 		submissionUrl
 	}, additionalProps);
 
@@ -333,6 +333,12 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
  * @returns {object} a {day, month, year} object
  */
 export function ISODateStringToObject(value: string) {
+	if (!_.isString(value)) {
+		if (_.isPlainObject(value) && _.has(value, 'year')) {
+			return value;
+		}
+		return {day: '', month: '', year: ''};
+	}
 	const date = value ? value.split('-') : [];
 	// A leading minus sign denotes a BC date
 	// This creates an empty first array item that needs to be removed,

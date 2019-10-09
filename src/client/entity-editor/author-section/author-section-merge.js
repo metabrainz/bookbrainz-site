@@ -101,7 +101,7 @@ function AuthorSectionMerge({
 	endDateValue,
 	endedChecked,
 	endedLabel,
-	entities,
+	mergingEntities,
 	genderShow,
 	genderValue,
 	typeValue,
@@ -121,7 +121,7 @@ function AuthorSectionMerge({
 	const genderOptions = [];
 	const typeOptions = [];
 
-	entities.forEach(entity => {
+	mergingEntities.forEach(entity => {
 		const matchingType = authorTypes
 			.filter(type => type.id === entity.typeId);
 		const typeOption = matchingType[0] && {label: matchingType[0].label, value: matchingType[0].id};

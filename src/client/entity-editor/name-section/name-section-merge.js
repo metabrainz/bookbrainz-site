@@ -66,7 +66,7 @@ import {entityTypeProperty} from '../../helpers/react-validators';
 
 function NameSectionMerge({
 	disambiguationDefaultValue,
-	entities,
+	mergingEntities,
 	entityType,
 	languageOptions,
 	languageValue,
@@ -82,7 +82,7 @@ function NameSectionMerge({
 	const languageSelectOptions = [];
 	const disambiguationOptions = [];
 
-	entities.forEach(entity => {
+	mergingEntities.forEach(entity => {
 		if (_.findIndex(nameOptions, ['label', entity.defaultAlias.name]) === -1) {
 			nameOptions.push({label: entity.defaultAlias.name, value: entity.defaultAlias.name});
 		}
@@ -142,10 +142,10 @@ function NameSectionMerge({
 NameSectionMerge.displayName = 'NameSectionMerge';
 NameSectionMerge.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
-	entities: PropTypes.array.isRequired,
-	entityType: entityTypeProperty.isRequired, // eslint-disable-line react/no-typos, max-len
-	languageOptions: PropTypes.array.isRequired,
+	entityType: entityTypeProperty.isRequired,
+	languageOptions: PropTypes.array.isRequired, // eslint-disable-line react/no-typos, max-len
 	languageValue: PropTypes.number,
+	mergingEntities: PropTypes.array.isRequired,
 	nameValue: PropTypes.string.isRequired,
 	onDisambiguationChange: PropTypes.func.isRequired,
 	onLanguageChange: PropTypes.func.isRequired,
@@ -172,7 +172,6 @@ function mapStateToProps(rootState) {
 function mapDispatchToProps(dispatch) {
 	return {
 		onDisambiguationChange: (option) => {
-			console.log('onDisambiguationChange', option);
 			dispatch(debouncedUpdateDisambiguationField(option.value));
 		},
 		onLanguageChange: (option) =>

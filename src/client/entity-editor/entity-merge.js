@@ -60,7 +60,7 @@ type Props = StateProps & OwnProps;
 const EntityMerge = (props: Props) => {
 	const {
 		children,
-		entities,
+		mergingEntities,
 		identifierSet,
 		subheading
 	} = props;
@@ -71,14 +71,14 @@ const EntityMerge = (props: Props) => {
 				{subheading}
 				<div>
 					<div className="small margin-bottom-1">
-						{entities.map((entity, index) => {
+						{mergingEntities.map((entity, index) => {
 							const entityForDisplay = {
 								link: getEntityLink({bbid: entity.bbid, type: entity.type}),
 								text: _.get(entity, ['defaultAlias', 'name']),
 								type: entity.type,
 								unnamedText: '(unnamed)'
 							};
-							const isNotLast = index < entities.length - 1;
+							const isNotLast = index < mergingEntities.length - 1;
 							return (
 								<span className={isNotLast ? 'margin-right-d5' : ''} key={entity.bbid}>
 									<Entity {...entityForDisplay}/>
