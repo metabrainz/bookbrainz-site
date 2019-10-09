@@ -20,7 +20,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import {get as _get, kebabCase as _kebabCase} from 'lodash';
+import {get as _get, isNil as _isNil, kebabCase as _kebabCase} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -72,6 +72,9 @@ export function getDateAttributes(entity) {
  * @returns {string} A date string with less padding zeros
  */
 export function transformISODateForDisplay(ISODateString) {
+	if (_isNil(ISODateString)) {
+		return ISODateString;
+	}
 	const dateStringWithoutSign = ISODateString.slice(1);
 	const parts = dateStringWithoutSign.split('-');
 	let formatting;

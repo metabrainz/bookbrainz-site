@@ -106,8 +106,11 @@ export function dateObjectToISOString(value) {
  * @returns {object} a {day, month, year} object
  */
 export function ISODateStringToObject(value) {
-	if (!_.isString(value) && _.has(value, 'year')) {
-		return value;
+	if (!_.isString(value)) {
+		if (_.isPlainObject(value) && _.has(value, 'year')) {
+			return value;
+		}
+		return {day: '', month: '', year: ''};
 	}
 	const date = value ? value.split('-') : [];
 	// A leading minus sign denotes a BC date
