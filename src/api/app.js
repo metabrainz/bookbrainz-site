@@ -100,14 +100,14 @@ const server = app.listen(app.get('port'), () => {
 /* eslint-disable no-console */
 function cleanupFunction() {
 	return new Promise((resolve, reject) => {
-		console.log('Cleaning up before closing');
+		debug('Cleaning up before closing');
 		server.close((err) => {
 			if (err) {
-				console.log('Error while closing server connections');
+				debug('Error while closing server connections');
 				reject(err);
 			}
 			else {
-				console.log('Closed all server connections. Bye bye!');
+				debug('Closed all server connections. Bye bye!');
 				resolve();
 			}
 		});

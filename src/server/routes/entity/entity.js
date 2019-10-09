@@ -41,22 +41,20 @@ import EditionGroupPage from '../../../client/components/pages/entities/edition-
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
-import Log from 'log';
 import Promise from 'bluebird';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
-import config from '../../../common/helpers/config';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
+import log from 'log';
 import target from '../../templates/target';
 
 
 type PassportRequest = $Request & {user: any, session: any};
 
-const log = new Log(config.site.log);
 
 const entityComponents = {
 	author: AuthorPage,
@@ -815,8 +813,7 @@ export function handleCreateOrEditEntity(
 			const {mergingEntities} = body;
 			const isMergeOperation = Array.isArray(mergingEntities) && mergingEntities.length;
 			if (isMergeOperation) {
-				// eslint-disable-next-line no-console
-				console.log('Merge operation detected; Entities:', mergingEntities.map(entity => entity.bbid));
+				log.debug('Merge operation detected; Entities:', mergingEntities.map(entity => entity.bbid));
 				// fetch merged entities and add to allEntities
 				const entitiesToMerge = mergingEntities.filter(entity =>
 					entity.bbid !== currentEntity.bbid);
@@ -860,7 +857,7 @@ export function handleCreateOrEditEntity(
 			return savedEntityWithRelationships.toJSON();
 		}
 		catch (err) {
-			log(err);
+			log.error(err);
 			return transacting.rollback();
 		}
 	});
@@ -875,7 +872,7 @@ export function handleCreateOrEditEntity(
 				}
 				return entityJSON;
 			})
-	).catch(log);
+	).catch(log.error);
 
 	return handler.sendPromiseResult(
 		res,

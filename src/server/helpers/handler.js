@@ -18,6 +18,7 @@
  */
 
 import * as error from '../../common/helpers/error';
+import log from 'log';
 
 
 export function sendPromiseResult(res, promise, processingCallback) {
@@ -31,5 +32,5 @@ export function sendPromiseResult(res, promise, processingCallback) {
 
 			return result;
 		})
-		.catch((err) => error.sendErrorAsJSON(res, err));
+		.catch((err) => { log.error(err); return error.sendErrorAsJSON(res, err); });
 }

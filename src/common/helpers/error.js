@@ -16,12 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Log from 'log';
-import config from '../../common/helpers/config';
+import log from 'log';
 import status from 'http-status';
 
-
-const log = new Log(config.site.log);
 
 export class SiteError extends Error {
 	constructor(message) {

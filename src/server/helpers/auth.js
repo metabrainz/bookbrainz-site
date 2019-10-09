@@ -20,14 +20,12 @@
 import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
 import * as error from '../../common/helpers/error';
 
-import Log from 'log';
 import _ from 'lodash';
 import config from '../../common/helpers/config';
+import log from 'log';
 import passport from 'passport';
 import status from 'http-status';
 
-
-const log = new Log(config.site.log);
 
 const MusicBrainzOAuth2Strategy = MusicBrainzOAuth.Strategy;
 
@@ -99,8 +97,7 @@ export function init(app) {
 		return true;
 	}
 	catch (strategyError) {
-		log.error('Error setting up OAuth strategy: ', strategyError.message);
-		log.error('You will not be able to log in');
+		log.error('Error setting up OAuth strategy %s. You will not be able to log in', strategyError.message);
 		return null;
 	}
 }
