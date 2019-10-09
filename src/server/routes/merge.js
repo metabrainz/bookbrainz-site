@@ -322,7 +322,7 @@ router.get('/*', auth.isAuthenticated,
 		return res.send(target({
 			markup,
 			props: escapeProps(props),
-			script: '/js/entity-merge.js',
+			script: '/js/entity-editor.js',
 			title: `Merge ${entityType}s`
 		}));
 	});
