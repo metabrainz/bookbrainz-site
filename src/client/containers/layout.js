@@ -25,24 +25,24 @@
 /* eslint import/no-commonjs: "warn" */
 /* eslint global-require: "warn" */
 
-import * as bootstrap from 'react-bootstrap';
+import * as bootstrap from "react-bootstrap";
 
-import FontAwesome from 'react-fontawesome';
-import Footer from './../components/footer';
-import PropTypes from 'prop-types';
-import React from 'react';
-import {genEntityIconHTMLElement} from '../helpers/entity';
+import FontAwesome from "react-fontawesome";
+import Footer from "./../components/footer";
+import PropTypes from "prop-types";
+import React from "react";
+import { genEntityIconHTMLElement } from "../helpers/entity";
 
 if (!process.env.SSR) {
-	require('../../client/stylesheets/style.less');
+	require("../../client/stylesheets/style.less");
 }
 
-const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
+const { Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown } = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {keepMenuOpen: false, menuOpen: false};
+		this.state = { keepMenuOpen: false, menuOpen: false };
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
@@ -51,46 +51,46 @@ class Layout extends React.Component {
 
 	handleDropdownToggle(newValue) {
 		if (this.state.keepMenuOpen) {
-			this.setState({keepMenuOpen: false, menuOpen: true});
-		}
-		else {
-			this.setState({menuOpen: newValue});
+			this.setState({ keepMenuOpen: false, menuOpen: true });
+		} else {
+			this.setState({ menuOpen: newValue });
 		}
 	}
 
 	handleDropdownClick(eventKey, event) {
 		event.stopPropagation();
-		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
+		this.setState({ keepMenuOpen: true }, this.handleDropdownToggle);
 	}
 
 	renderNavHeader() {
-		const {homepage} = this.props;
+		const { homepage } = this.props;
 
 		return (
 			<Navbar.Header>
 				<Navbar.Brand className="logo">
 					<a href="/">
-						{homepage ?
+						{homepage ? (
 							<img
 								alt="BookBrainz icon"
 								src="/images/BookBrainz_logo_icon.svg"
 								title="BookBrainz"
-							/> :
+							/>
+						) : (
 							<img
 								alt="BookBrainz icon"
 								src="/images/BookBrainz_logo_mini.svg"
 								title="BookBrainz"
 							/>
-						}
+						)}
 					</a>
 				</Navbar.Brand>
-				<Navbar.Toggle/>
+				<Navbar.Toggle />
 			</Navbar.Header>
 		);
 	}
 
 	renderNavContent() {
-		const {user, homepage, hideSearch} = this.props;
+		const { user, homepage, hideSearch } = this.props;
 
 		/*
 		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
@@ -98,22 +98,25 @@ class Layout extends React.Component {
 		 */
 		const createDropdownTitle = (
 			<span>
-				<FontAwesome name="plus"/>{'  Add'}
+				<FontAwesome name="plus" />
+				{"  Add"}
 			</span>
 		);
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesome name="user-circle"/>
+				<FontAwesome name="user-circle" />
 				{`  ${user.name}`}
 			</span>
 		);
 
-		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
+		const disableSignUp = this.props.disableSignUp
+			? { disabled: true }
+			: {};
 
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
-				{user && user.id ?
+				{user && user.id ? (
 					<Nav pullRight>
 						<NavDropdown
 							eventKey={1}
@@ -122,26 +125,27 @@ class Layout extends React.Component {
 							title={createDropdownTitle}
 							onSelect={this.handleDropdownClick}
 							onToggle={this.handleDropdownToggle}
+							onMouseDown={e => e.preventDefault()}
 						>
 							<MenuItem href="/work/create">
-								{genEntityIconHTMLElement('Work')}
+								{genEntityIconHTMLElement("Work")}
 								Work
 							</MenuItem>
 							<MenuItem href="/edition/create">
-								{genEntityIconHTMLElement('Edition')}
+								{genEntityIconHTMLElement("Edition")}
 								Edition
 							</MenuItem>
 							<MenuItem href="/edition-group/create">
-								{genEntityIconHTMLElement('EditionGroup')}
+								{genEntityIconHTMLElement("EditionGroup")}
 								Edition Group
 							</MenuItem>
-							<MenuItem divider/>
+							<MenuItem divider />
 							<MenuItem href="/author/create">
-								{genEntityIconHTMLElement('Author')}
+								{genEntityIconHTMLElement("Author")}
 								Author
 							</MenuItem>
 							<MenuItem href="/publisher/create">
-								{genEntityIconHTMLElement('Publisher')}
+								{genEntityIconHTMLElement("Publisher")}
 								Publisher
 							</MenuItem>
 						</NavDropdown>
@@ -149,65 +153,64 @@ class Layout extends React.Component {
 							eventKey={2}
 							id="user-dropdown"
 							title={userDropdownTitle}
+							onMouseDown={e => e.preventDefault()}
 						>
 							<MenuItem href={`/editor/${user.id}`}>
-								<FontAwesome
-									fixedWidth
-									name="info"
-								/>{' Profile'}
+								<FontAwesome fixedWidth name="info" />
+								{" Profile"}
 							</MenuItem>
 							<MenuItem {...disableSignUp} href="/logout">
-								<FontAwesome
-									fixedWidth
-									name="sign-out-alt"
-								/>{' Sign Out'}
+								<FontAwesome fixedWidth name="sign-out-alt" />
+								{" Sign Out"}
 							</MenuItem>
 						</NavDropdown>
-					</Nav> :
+					</Nav>
+				) : (
 					<Nav pullRight>
 						<NavItem {...disableSignUp} href="/auth">
-							<FontAwesome name="sign-in-alt"/>{' Sign In / Register'}
+							<FontAwesome name="sign-in-alt" />
+							{" Sign In / Register"}
 						</NavItem>
 					</Nav>
-				}
+				)}
 				<Nav pullRight>
 					<NavItem href="/help">
-						<FontAwesome name="question-circle"/>
-						{' Help '}
+						<FontAwesome name="question-circle" />
+						{" Help "}
 					</NavItem>
 				</Nav>
 				<Nav pullRight>
 					<NavItem href="/statistics">
-						<FontAwesome name="chart-line"/>
-						{' Statistics '}
+						<FontAwesome name="chart-line" />
+						{" Statistics "}
 					</NavItem>
 				</Nav>
-				{!(homepage || hideSearch) &&
-				<form
-					action="/search"
-					className="navbar-form navbar-right"
-					role="search"
-				>
-					<div className="form-group">
-						<div className="input-group">
-							<input
-								className="form-control"
-								name="q"
-								placeholder="Search for..."
-								type="text"
-							/>
-							<span className="input-group-btn">
-								<button
-									className="btn btn-success"
-									type="submit"
-								>
-									<FontAwesome name="search"/>
-								</button>
-							</span>
+				{!(homepage || hideSearch) && (
+					<form
+						action="/search"
+						className="navbar-form navbar-right"
+						role="search"
+					>
+						<div className="form-group">
+							<div className="input-group">
+								<input
+									className="form-control"
+									name="q"
+									placeholder="Search for..."
+									type="text"
+								/>
+								<span className="input-group-btn">
+									<button
+										className="btn btn-success"
+										type="submit"
+									>
+										<FontAwesome name="search" />
+									</button>
+								</span>
+							</div>
 						</div>
-					</div>
-				</form>
-				}
+					</form>
+				)}
 			</Navbar.Collapse>
 		);
 	}
@@ -222,46 +225,37 @@ class Layout extends React.Component {
 		} = this.props;
 
 		// Shallow merges parents props into child components
-		const childNode = homepage ? children : (
+		const childNode = homepage ? (
+			children
+		) : (
 			<div className="container" id="content">
-				{requiresJS &&
+				{requiresJS && (
 					<div>
 						<noscript>
 							<div className="alert alert-danger" role="alert">
 								This page will not function correctly without
-								JavaScript! Please enable JavaScript to use
-								this page.
+								JavaScript! Please enable JavaScript to use this
+								page.
 							</div>
 						</noscript>
 					</div>
-				}
+				)}
 				{children}
 			</div>
 		);
 
-		const alerts = this.props.alerts.map(
-			(alert, idx) => (
-				<Alert
-					bsStyle={alert.level}
-					className="text-center"
-					key={idx}
-				>
-					<p>{alert.message}</p>
-				</Alert>
-			)
-		);
+		const alerts = this.props.alerts.map((alert, idx) => (
+			<Alert bsStyle={alert.level} className="text-center" key={idx}>
+				<p>{alert.message}</p>
+			</Alert>
+		));
 
 		return (
 			<div>
 				<a className="sr-only sr-only-focusable" href="#content">
 					Skip to main content
 				</a>
-				<Navbar
-					fixedTop
-					fluid
-					className="BookBrainz"
-					role="navigation"
-				>
+				<Navbar fixedTop fluid className="BookBrainz" role="navigation">
 					{this.renderNavHeader()}
 					{this.renderNavContent()}
 				</Navbar>
@@ -276,7 +270,7 @@ class Layout extends React.Component {
 	}
 }
 
-Layout.displayName = 'Layout';
+Layout.displayName = "Layout";
 Layout.propTypes = {
 	alerts: PropTypes.array.isRequired,
 	children: PropTypes.node.isRequired,
@@ -297,4 +291,3 @@ Layout.defaultProps = {
 };
 
 export default Layout;
-
