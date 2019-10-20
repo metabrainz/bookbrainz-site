@@ -86,7 +86,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadGenders,	middleware.loadLanguages,
+	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
@@ -106,8 +106,8 @@ router.get(
 
 function authorToFormState(author) {
 	const aliases = author.aliasSet ?
-		author.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
+		author.aliasSet.aliases.map(({languageId, ...rest}) => ({
+			language: languageId,
 			...rest
 		})) : [];
 
