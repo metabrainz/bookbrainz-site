@@ -63,8 +63,8 @@ type Props = {
 	empty?: boolean,
 	error?: boolean,
 	errorMessage?: '',
-	warnMessage?: '',
 	warn?: boolean,
+	warnMessage?: ''
 };
 
 /**
@@ -86,8 +86,8 @@ function ValidationLabel({
 	empty,
 	error,
 	errorMessage,
-	warnMessage,
-	warn
+	warn,
+	warnMessage
 }: Props) {
 	const warnElement = (warn && !empty && !error) &&
 		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>;
@@ -111,8 +111,8 @@ ValidationLabel.defaultProps = {
 	empty: false,
 	error: false,
 	errorMessage: '',
-	warnMessage: '',
-	warn: false
+	warn: false,
+	warnMessage: ''
 };
 
 export default ValidationLabel;
