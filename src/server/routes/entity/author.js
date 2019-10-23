@@ -31,7 +31,7 @@ import {
 } from '../../helpers/entityRouteUtils';
 
 import _ from 'lodash';
-import { escapeProps } from '../../helpers/props';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
@@ -69,8 +69,8 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
 	(req, res) => {
-		const { orm } = req.app.locals;
-		const { AuthorHeader, AuthorRevision } = orm;
+		const {orm} = req.app.locals;
+		const {AuthorHeader, AuthorRevision} = orm;
 		return entityRoutes.handleDelete(
 			orm, req, res, AuthorHeader, AuthorRevision
 		);
@@ -78,7 +78,7 @@ router.post(
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const { AuthorRevision } = req.app.locals.orm;
+	const {AuthorRevision} = req.app.locals.orm;
 	_setAuthorTitle(res);
 	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
 });
@@ -89,10 +89,10 @@ router.get(
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'author', req, res, {
-			genderOptions: res.locals.genders
-		}
+				genderOptions: res.locals.genders
+			}
 		));
 
 		return res.send(target({
@@ -106,7 +106,7 @@ router.get(
 
 function authorToFormState(author) {
 	const aliases = author.aliasSet ?
-		author.aliasSet.aliases.map(({ languageId, ...rest }) => ({
+		author.aliasSet.aliases.map(({languageId, ...rest}) => ({
 			language: languageId,
 			...rest
 		})) : [];
@@ -132,7 +132,7 @@ function authorToFormState(author) {
 		author.disambiguation && author.disambiguation.comment;
 
 	const identifiers = author.identifierSet ?
-		author.identifierSet.identifiers.map(({ type, ...rest }) => ({
+		author.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
 			...rest
 		})) : [];
@@ -185,10 +185,10 @@ router.get(
 	middleware.loadAuthorTypes, middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(generateEntityProps(
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'author', req, res, {
-			genderOptions: res.locals.genders
-		}, authorToFormState
+				genderOptions: res.locals.genders
+			}, authorToFormState
 		));
 
 		return res.send(target({
