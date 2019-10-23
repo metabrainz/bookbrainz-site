@@ -33,6 +33,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
+
 if (!process.env.SSR) {
 	require('../../client/stylesheets/style.less');
 }
@@ -47,6 +48,11 @@ class Layout extends React.Component {
 		this.renderNavHeader = this.renderNavHeader.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
+	}
+
+	handleMouseDown(event) {
+		event.preventDefault();
 	}
 
 	handleDropdownToggle(newValue) {
@@ -70,18 +76,19 @@ class Layout extends React.Component {
 			<Navbar.Header>
 				<Navbar.Brand className="logo">
 					<a href="/">
-						{homepage ?
+						{homepage ? (
 							<img
 								alt="BookBrainz icon"
 								src="/images/BookBrainz_logo_icon.svg"
 								title="BookBrainz"
-							/> :
+							/>
+						) : (
 							<img
 								alt="BookBrainz icon"
 								src="/images/BookBrainz_logo_mini.svg"
 								title="BookBrainz"
 							/>
-						}
+						)}
 					</a>
 				</Navbar.Brand>
 				<Navbar.Toggle/>
@@ -98,7 +105,8 @@ class Layout extends React.Component {
 		 */
 		const createDropdownTitle = (
 			<span>
-				<FontAwesome name="plus"/>{'  Add'}
+				<FontAwesome name="plus"/>
+				{'  Add'}
 			</span>
 		);
 
@@ -109,17 +117,20 @@ class Layout extends React.Component {
 			</span>
 		);
 
-		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
+		const disableSignUp = this.props.disableSignUp ?
+			{disabled: true} :
+			{};
 
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
-				{user && user.id ?
+				{user && user.id ? (
 					<Nav pullRight>
 						<NavDropdown
 							eventKey={1}
 							id="create-dropdown"
 							open={this.state.menuOpen}
 							title={createDropdownTitle}
+							onMouseDown={this.handleMouseDown}
 							onSelect={this.handleDropdownClick}
 							onToggle={this.handleDropdownToggle}
 						>
@@ -149,27 +160,26 @@ class Layout extends React.Component {
 							eventKey={2}
 							id="user-dropdown"
 							title={userDropdownTitle}
+							onMouseDown={this.handleMouseDown}
 						>
 							<MenuItem href={`/editor/${user.id}`}>
-								<FontAwesome
-									fixedWidth
-									name="info"
-								/>{' Profile'}
+								<FontAwesome fixedWidth name="info"/>
+								{' Profile'}
 							</MenuItem>
 							<MenuItem {...disableSignUp} href="/logout">
-								<FontAwesome
-									fixedWidth
-									name="sign-out-alt"
-								/>{' Sign Out'}
+								<FontAwesome fixedWidth name="sign-out-alt"/>
+								{' Sign Out'}
 							</MenuItem>
 						</NavDropdown>
-					</Nav> :
+					</Nav>
+				) : (
 					<Nav pullRight>
 						<NavItem {...disableSignUp} href="/auth">
-							<FontAwesome name="sign-in-alt"/>{' Sign In / Register'}
+							<FontAwesome name="sign-in-alt"/>
+							{' Sign In / Register'}
 						</NavItem>
 					</Nav>
-				}
+				)}
 				<Nav pullRight>
 					<NavItem href="/help">
 						<FontAwesome name="question-circle"/>
@@ -182,32 +192,32 @@ class Layout extends React.Component {
 						{' Statistics '}
 					</NavItem>
 				</Nav>
-				{!(homepage || hideSearch) &&
-				<form
-					action="/search"
-					className="navbar-form navbar-right"
-					role="search"
-				>
-					<div className="form-group">
-						<div className="input-group">
-							<input
-								className="form-control"
-								name="q"
-								placeholder="Search for..."
-								type="text"
-							/>
-							<span className="input-group-btn">
-								<button
-									className="btn btn-success"
-									type="submit"
-								>
-									<FontAwesome name="search"/>
-								</button>
-							</span>
+				{!(homepage || hideSearch) && (
+					<form
+						action="/search"
+						className="navbar-form navbar-right"
+						role="search"
+					>
+						<div className="form-group">
+							<div className="input-group">
+								<input
+									className="form-control"
+									name="q"
+									placeholder="Search for..."
+									type="text"
+								/>
+								<span className="input-group-btn">
+									<button
+										className="btn btn-success"
+										type="submit"
+									>
+										<FontAwesome name="search"/>
+									</button>
+								</span>
+							</div>
 						</div>
-					</div>
-				</form>
-				}
+					</form>
+				)}
 			</Navbar.Collapse>
 		);
 	}
@@ -222,46 +232,37 @@ class Layout extends React.Component {
 		} = this.props;
 
 		// Shallow merges parents props into child components
-		const childNode = homepage ? children : (
-			<div className="container" id="content">
-				{requiresJS &&
-					<div>
-						<noscript>
-							<div className="alert alert-danger" role="alert">
-								This page will not function correctly without
-								JavaScript! Please enable JavaScript to use
-								this page.
-							</div>
-						</noscript>
-					</div>
-				}
-				{children}
-			</div>
-		);
+		const childNode = homepage ?
+			children :
+			(
+				<div className="container" id="content">
+					{requiresJS && (
+						<div>
+							<noscript>
+								<div className="alert alert-danger" role="alert">
+									This page will not function correctly without
+									JavaScript! Please enable JavaScript to use this
+									page.
+								</div>
+							</noscript>
+						</div>
+					)}
+					{children}
+				</div>
+			);
 
-		const alerts = this.props.alerts.map(
-			(alert, idx) => (
-				<Alert
-					bsStyle={alert.level}
-					className="text-center"
-					key={idx}
-				>
-					<p>{alert.message}</p>
-				</Alert>
-			)
-		);
+		const alerts = this.props.alerts.map((alert, idx) => (
+			<Alert bsStyle={alert.level} className="text-center" key={idx}>
+				<p>{alert.message}</p>
+			</Alert>
+		));
 
 		return (
 			<div>
 				<a className="sr-only sr-only-focusable" href="#content">
 					Skip to main content
 				</a>
-				<Navbar
-					fixedTop
-					fluid
-					className="BookBrainz"
-					role="navigation"
-				>
+				<Navbar fixedTop fluid className="BookBrainz" role="navigation">
 					{this.renderNavHeader()}
 					{this.renderNavContent()}
 				</Navbar>
@@ -297,4 +298,3 @@ Layout.defaultProps = {
 };
 
 export default Layout;
-
