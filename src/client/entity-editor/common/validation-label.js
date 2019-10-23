@@ -85,10 +85,11 @@ function ValidationLabel({
 	empty,
 	error,
 	errorMessage,
+	warnMessage,
 	warn
 }: Props) {
-	const warnElement = (warn && !empty && !error) &&
-		<span className={contextualColor(empty, error, warn)}> Are you sure? You entered a date in the future!</span>;
+	const warnElement = (warn && warnMessage && !empty && !error) &&
+		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>;
 	const errorElement = errorMessage &&
 		<span className={contextualColor(empty, error, warn)}> {errorMessage} </span>;
 	const iconElement = icon(empty, error, warn) &&
