@@ -115,12 +115,14 @@ class DateField extends React.Component {
 	};
 
 	render() {
+		const warnMessage = 'Are you sure? You entered a date in the future!';
 		const labelElement = (
 			<ValidationLabel
 				empty={this.props.empty}
 				error={this.props.error}
 				errorMessage={this.props.errorMessage}
 				warn={this.state.warn}
+				warnMessage={warnMessage}
 			>
 				{this.props.label}
 			</ValidationLabel>
