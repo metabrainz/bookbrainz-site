@@ -40,19 +40,17 @@ const log = new Log(config.site.log);
 function awardUnlock(UnlockType, awardAttribs) {
 	return new UnlockType(awardAttribs)
 		.fetch()
-		.then((award) => {
-			let unlockPromise;
-			if (award === null) {
-				unlockPromise = new UnlockType(awardAttribs)
+		.then((award) => Promise.resolve('already unlocked'))
+		.catch(err => {
+			// Model.fetch() throws NotFoundError  if not result
+			// (see https://github.com/bookshelf/bookshelf/wiki/Migrating-from-0.15.1-to-1.0.0)
+			if (err instanceof UnlockType.NotFoundError) {
+				return new UnlockType(awardAttribs)
 					.save(null, {method: 'insert'})
 					.then((unlock) => unlock.toJSON());
 			}
-			else {
-				unlockPromise = Promise.resolve('already unlocked');
-			}
-			return unlockPromise;
-		})
-		.catch((err) => Promise.reject(err));
+			return Promise.reject(err);
+		});
 }
 
 /**
