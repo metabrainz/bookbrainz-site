@@ -252,7 +252,7 @@ export function getSortNameOfDefaultAlias(entity) {
 }
 
 export function getISBNOfEdition(entity) {
-	if (entity.identifierSetId) {
+	if (entity.identifierSet && entity.identifierSet.identifiers) {
 		const {identifiers} = entity.identifierSet;
 		return identifiers.find(
 			identifier =>
