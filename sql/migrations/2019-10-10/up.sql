@@ -1,0 +1,2 @@
+ALTER TABLE bookbrainz.revision
+	ADD is_merge BOOLEAN NOT NULL DEFAULT FALSE;
