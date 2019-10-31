@@ -134,7 +134,7 @@ class RevisionPage extends React.Component {
 	}
 
 	render() {
-		const {revision, revisionParents, diffs, user} = this.props;
+		const {revision, diffs, user} = this.props;
 
 		const diffDivs = diffs.map((diff, index) => (
 			<div key={`${diff.entity.bbid}${index}`}>
@@ -186,29 +186,14 @@ class RevisionPage extends React.Component {
 		}
 
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
-		const parentEntitiesLinks = revisionParents.map(parentEntity =>
-			 _.get(parentEntity, ['data.aliasSet.defaultAlias.name'], null)
-			// (<EntityLink
-			// 	bbid={entity.bbid}
-			// 	key={`parent-${entity.bbid}`}
-			// 	text={entity.data.aliasSet.defaultAlias.name}
-			// 	type={entity.type}
-			// />);
-		);
-		const parentRevLinks = revision.parents && revision.parents.map(parentRev =>
-			<a href={`/revision/${parentRev.id}`} key={parentRev.id}>#{parentRev.id}</a>);
 		return (
 			<Row>
 				<Col md={12}>
 					<h1>Revision #{revision.id}</h1>
-					{parentEntitiesLinks.length > 1 &&
-						// .join will return objects so use reduce instead
+					{revision.isMerge &&
 						<h3>
-							Merge between {parentEntitiesLinks.reduce((prev, curr) => [prev, ', ', curr])}
+							⇚ Merge between entities
 						</h3>
-					}
-					{parentRevLinks && parentRevLinks.length > 1 &&
-						<h5>Merge between revisions {parentRevLinks.reduce((prev, curr) => [prev, ', ', curr])}</h5>
 					}
 					{diffDivs}
 					<p className="text-right">
@@ -257,11 +242,9 @@ RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: PropTypes.any.isRequired,
 	revision: PropTypes.any.isRequired,
-	revisionParents: PropTypes.array,
 	user: PropTypes.object
 };
 RevisionPage.defaultProps = {
-	revisionParents: [],
 	user: null
 };
 
