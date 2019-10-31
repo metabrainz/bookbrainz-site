@@ -161,9 +161,9 @@ function formatEditionGroupChange(change) {
 	return [];
 }
 
-function diffRevisionsWithParents(revisions) {
-	// revisions - collection of revisions matching id
-	return Promise.all(revisions.map(
+function diffRevisionsWithParents(entityRevisions) {
+	// entityRevisions - collection of *entityType*_revisions matching id
+	return Promise.all(entityRevisions.map(
 		(revision) =>
 			revision.parent()
 				.then(
@@ -180,112 +180,104 @@ function diffRevisionsWithParents(revisions) {
 	));
 }
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	const {
 		AuthorRevision, EditionRevision, EditionGroupRevision,
 		PublisherRevision, Revision, WorkRevision
 	} = req.app.locals.orm;
 
-	/*
-	 * Here, we need to get the Revision, then get all <Entity>Revision
-	 * objects with the same ID, formatting each revision individually, then
-	 * concatenating the diffs
-	 */
-	const revisionPromise = new Revision({id: req.params.id})
-		.fetch({
-			withRelated: [
-				'author',
-				'author.titleUnlock.title',
-				{
-					'notes'(q) {
-						q.orderBy('note.posted_at');
-					}
-				},
-				'notes.author',
-				'notes.author.titleUnlock.title'
-			]
-		})
-		.catch(Revision.NotFoundError, () => next(new error.NotFoundError('Revision not found', req)));
-
-	function _createRevision(model) {
-		return model.forge()
+	let revision;
+	function _createRevision(EntityRevisionModel) {
+		return EntityRevisionModel.forge()
 			.where('id', req.params.id)
-			.fetchAll({
-				merge: false,
-				remove: false,
-				require: false,
-				withRelated: ['entity']
-			}).then(diffRevisionsWithParents);
+			// EntityRevisions can have duplicate ids
+			// the 'merge' and 'remove' options instructs the ORM to consider that normal instead of merging
+			// see https://github.com/bookshelf/bookshelf/pull/1846
+			.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'})
+			.then(diffRevisionsWithParents);
 	}
+	try {
+		/*
+		* Here, we need to get the Revision, then get all <Entity>Revision
+		* objects with the same ID, formatting each revision individually, then
+		* concatenating the diffs
+		*/
+		revision = await new Revision({id: req.params.id})
+			.fetch({
+				withRelated: [
+					'author',
+					'author.titleUnlock.title',
+					{
+						'notes'(q) {
+							q.orderBy('note.posted_at');
+						}
+					},
+					'notes.author',
+					'notes.author.titleUnlock.title'
+				]
+			})
+			.catch(Revision.NotFoundError, () => { throw new error.NotFoundError('Revision not found', req); });
 
-	const authorDiffsPromise = _createRevision(AuthorRevision);
-	const editionDiffsPromise = _createRevision(EditionRevision);
-	const editionGroupDiffsPromise = _createRevision(EditionGroupRevision);
-	const publisherDiffsPromise = _createRevision(PublisherRevision);
-	const workDiffsPromise = _createRevision(WorkRevision);
+		const authorDiffs = await _createRevision(AuthorRevision);
+		const editionDiffs = await _createRevision(EditionRevision);
+		const editionGroupDiffs = await _createRevision(EditionGroupRevision);
+		const publisherDiffs = await _createRevision(PublisherRevision);
+		const workDiffs = await _createRevision(WorkRevision);
+		const diffs = _.concat(
+			entityFormatter.formatEntityDiffs(
+				authorDiffs,
+				'Author',
+				formatAuthorChange
+			),
+			entityFormatter.formatEntityDiffs(
+				editionDiffs,
+				'Edition',
+				formatEditionChange
+			),
+			entityFormatter.formatEntityDiffs(
+				editionGroupDiffs,
+				'EditionGroup',
+				formatEditionGroupChange
+			),
+			entityFormatter.formatEntityDiffs(
+				publisherDiffs,
+				'Publisher',
+				formatPublisherChange
+			),
+			entityFormatter.formatEntityDiffs(
+				workDiffs,
+				'Work',
+				formatWorkChange
+			)
+		);
 
-	Promise.join(
-		revisionPromise, authorDiffsPromise, editionDiffsPromise,
-		workDiffsPromise, publisherDiffsPromise, editionGroupDiffsPromise,
-		(
-			revision, authorDiffs, editionDiffs, workDiffs, publisherDiffs,
-			editionGroupDiffs
-		) => {
-			// revision not found
-			if (!revision) {
-				throw new error.NotFoundError(null, req);
-			}
+		const props = generateProps(req, res, {
+			diffs,
+			revision: revision.toJSON(),
+			title: 'RevisionPage'
+		});
 
-			const diffs = _.concat(
-				entityFormatter.formatEntityDiffs(
-					authorDiffs,
-					'Author',
-					formatAuthorChange
-				),
-				entityFormatter.formatEntityDiffs(
-					editionDiffs,
-					'Edition',
-					formatEditionChange
-				),
-				entityFormatter.formatEntityDiffs(
-					editionGroupDiffs,
-					'EditionGroup',
-					formatEditionGroupChange
-				),
-				entityFormatter.formatEntityDiffs(
-					publisherDiffs,
-					'Publisher',
-					formatPublisherChange
-				),
-				entityFormatter.formatEntityDiffs(
-					workDiffs,
-					'Work',
-					formatWorkChange
-				)
-			);
-			const props = generateProps(req, res, {
-				diffs,
-				revision: revision.toJSON(),
-				title: 'RevisionPage'
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<RevisionPage
-						diffs={props.diffs}
-						revision={props.revision}
-						user={props.user}
-					/>
-				</Layout>
-			);
-			const script = '/js/revision.js';
-			res.send(target({
-				markup,
-				props: escapeProps(props),
-				script
-			}));
-		}
-	)
-		.catch(next);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<RevisionPage
+					diffs={props.diffs}
+					revision={props.revision}
+					user={props.user}
+				/>
+			</Layout>
+		);
+
+		const script = '/js/revision.js';
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script
+		}));
+	 }
+	catch (error) {
+		return next(error);
+	 }
 });
 
 router.post('/:id/note', (req, res) => {
