@@ -23,6 +23,7 @@ import * as utilsHelper from '../../helpers/utils';
 
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
+import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
@@ -145,11 +146,13 @@ class RevisionPage extends React.Component {
 						type={diff.entity.type}
 					/>
 				</h3>
-				<table className="table table-bordered text-center">
-					<tbody>
-						{RevisionPage.formatDiff(diff)}
-					</tbody>
-				</table>
+				{diff.changes.length ?
+					(<table className="table table-bordered text-center">
+						<tbody>
+							{RevisionPage.formatDiff(diff)}
+						</tbody>
+					 </table>) : null
+				}
 			</div>
 		));
 
@@ -192,7 +195,7 @@ class RevisionPage extends React.Component {
 					<h1>Revision #{revision.id}</h1>
 					{revision.isMerge &&
 						<h3>
-							⇚ Merge between entities
+							<FontAwesome flip="vertical" name="code-branch"/> Merge between entities
 						</h3>
 					}
 					{diffDivs}
