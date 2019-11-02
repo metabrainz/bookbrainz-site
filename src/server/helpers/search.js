@@ -24,6 +24,7 @@ import Promise from 'bluebird';
 import _ from 'lodash';
 import httpStatus from 'http-status';
 
+
 const _index = 'bookbrainz';
 const _bulkIndexSize = 128;
 
@@ -160,7 +161,7 @@ export function autocomplete(orm, query, collection) {
 	else {
 		queryBody = {
 			match: {
-				'defaultAlias.name.autocomplete': {
+				'aliasSet.aliases.name.autocomplete': {
 					minimum_should_match: '80%',
 					query
 				}
@@ -215,7 +216,7 @@ export async function generateIndex(orm) {
 		mappings: {
 			_default_: {
 				properties: {
-					defaultAlias: {
+					'aliasSet.aliases': {
 						properties: {
 							name: {
 								fields: {
@@ -289,7 +290,8 @@ export async function generateIndex(orm) {
 	const baseRelations = [
 		'annotation',
 		'disambiguation',
-		'defaultAlias'
+		'defaultAlias',
+		'aliasSet.aliases'
 	];
 
 	const entityBehaviors = [
@@ -394,7 +396,7 @@ export function searchByName(orm, name, collection, size, from) {
 				bool: {
 					must: {
 						match: {
-							'defaultAlias.name.search': {
+							'aliasSet.aliases.name.search': {
 								minimum_should_match: '75%',
 								query: name
 							}
@@ -402,7 +404,7 @@ export function searchByName(orm, name, collection, size, from) {
 					},
 					should: {
 						match: {
-							'defaultAlias.name': {
+							'aliasSet.aliases.name': {
 								boost: 1.3, // eslint-disable-line max-len,no-magic-numbers
 								query: name
 							}
