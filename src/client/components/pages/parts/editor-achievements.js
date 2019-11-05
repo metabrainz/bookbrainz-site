@@ -62,25 +62,29 @@ class EditorAchievementTab extends React.Component {
 			});
 	}
 
-	renderAchievements(unlocked) {
-		return this.state.achievement.model.map((achievement) => {
-			let achievementHTML;
-			if (achievement.unlocked === unlocked) {
-				achievementHTML = (
-					<Achievement
-						achievement={achievement}
-						key={`${this.state.editor.id}${achievement.id}`}
-						unlocked={unlocked}
-					/>
-				);
+	renderAchievements() {
+		const achievements = [];
+		const locked = [];
+		this.state.achievement.model.forEach(achievement => {
+			const achievementHTML = (
+				<Achievement
+					achievement={achievement}
+					key={`${this.state.editor.id}${achievement.id}`}
+					unlocked={achievement.unlocked}
+				/>
+			);
+			if (achievement.unlocked) {
+				achievements.push(achievementHTML);
 			}
-			return achievementHTML;
+			else {
+				locked.push(achievementHTML);
+			}
 		});
+		return [achievements, locked];
 	}
 
 	render() {
-		const achievements = this.renderAchievements(true);
-		const locked = this.renderAchievements(false);
+		const [achievements, locked] = this.renderAchievements();
 
 		let rankUpdate;
 		if (this.state.editor.authenticated) {
