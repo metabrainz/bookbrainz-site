@@ -299,7 +299,7 @@ router.get('/:id/achievements', (req, res, next) => {
 		AchievementType, AchievementUnlock
 	} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
-	const isOwner = userId === req.user.id;
+	const isOwner = userId === (req.user && req.user.id);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
 		  .catch(next);
