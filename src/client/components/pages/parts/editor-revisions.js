@@ -21,6 +21,8 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+
+import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -32,34 +34,44 @@ function EditorRevisionsTab(props) {
 	const {editor} = props;
 	const {revisions} = editor;
 
+	function renderRevision(revision) {
+		const createdDate = new Date(revision.createdAt);
+		const dateLabel =
+			formatDate(createdDate,
+				isWithinDayFromNow(createdDate));
+		const header = (
+			<h4 className="list-group-item-heading">
+				<small className="pull-right">
+					{`${editor.name} - ${dateLabel}`}
+				</small>
+				{`r${revision.id}`}
+			</h4>
+		);
+
+		return (
+			<ListGroupItem
+				href={`/revision/${revision.id}`}
+				key={`${editor.id}${revision.id}`}
+			>
+				{header}
+				{revision.note}
+			</ListGroupItem>
+		);
+	}
+
 	return (
 		<div>
 			<h2>Revision History</h2>
-			<ListGroup>
-				{revisions.map((revision) => {
-					const createdDate = new Date(revision.createdAt);
-					const dateLabel =
-						formatDate(createdDate,
-							isWithinDayFromNow(createdDate));
-					const header = (
-						<h4 className="list-group-item-heading">
-							<small className="pull-right">
-								{`${editor.name} - ${dateLabel}`}
-							</small>
-							{`r${revision.id}`}
-						</h4>
-					);
-					return (
-						<ListGroupItem
-							href={`/revision/${revision.id}`}
-							key={`${editor.id}${revision.id}`}
-						>
-							{header}
-							{revision.note}
-						</ListGroupItem>
-					);
-				})}
-			</ListGroup>
+			{revisions.length > 0 ?
+				<ListGroup>
+					{revisions.map(renderRevision)}
+				</ListGroup> :
+				<div>
+					<h4> No revisions to show</h4>
+					<hr className="wide"/>
+					<CallToAction/>
+				</div>
+			}
 		</div>
 	);
 }

@@ -21,11 +21,13 @@ import * as bootstrap from 'react-bootstrap';
 
 import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
 
+import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
-const {Button, ButtonGroup, Col, Row, Table} = bootstrap;
+
+const {Row, Table} = bootstrap;
 
 function SearchResults(props) {
 	const noResults = !props.results || props.results.length === 0;
@@ -42,49 +44,7 @@ function SearchResults(props) {
 						<small>Make sure the spelling is correct, and that you have selected the correct type in the search bar.</small>
 						<hr className="wide"/>
 						<h3>Are we missing an entry?</h3>
-						<p>
-							Help us and click on the right entity below to create a new entry.
-							<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
-						</p>
-						<Col md={8} mdOffset={2}>
-							<ButtonGroup id="searchpage-button-group">
-								<Button
-									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/author/create"
-								>
-									{genEntityIconHTMLElement('Author', '3x', false)}
-									<div className="margin-top-d4">Author</div>
-								</Button>
-								<Button
-									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/work/create"
-								>
-									{genEntityIconHTMLElement('Work', '3x', false)}
-									<div className="margin-top-d4">Work</div>
-								</Button>
-								<Button
-									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/edition/create"
-								>
-									{genEntityIconHTMLElement('Edition', '3x', false)}
-									<div className="margin-top-d4">Edition</div>
-								</Button>
-								<Button
-									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/edition-group/create"
-								>
-									{genEntityIconHTMLElement('EditionGroup', '3x', false)}
-									<div className="margin-top-d4">Edition Group</div>
-								</Button>
-								<Button
-									className="padding-bottom-1 padding-sides-2 padding-top-1"
-									href="/publisher/create"
-								>
-									{genEntityIconHTMLElement('Publisher', '3x', false)}
-									<div className="margin-top-d4">Publisher</div>
-								</Button>
-							</ButtonGroup>
-						</Col>
+						<CallToAction/>
 					</Row>
 				}
 			</div>
