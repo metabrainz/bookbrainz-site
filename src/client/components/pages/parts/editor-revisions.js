@@ -21,6 +21,8 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+
+import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -28,38 +30,62 @@ import React from 'react';
 const {ListGroup, ListGroupItem} = bootstrap;
 const {formatDate, isWithinDayFromNow} = utilsHelper;
 
+/**
+ * Renders the document and displays the 'EditorRevisionsTab' component.
+ * @returns {ReactElement} a HTML document which displays the 'EditorRevisionTab'.
+ * @param {object} props - Properties passed to the component.
+ */
 function EditorRevisionsTab(props) {
 	const {editor} = props;
 	const {revisions} = editor;
 
+	/**
+	 * Renders the data related to Revision such as 'author' and 'date'.
+	 * It also displays the revison note which is a summary of the changes
+	 * made in the revision.
+	 * @param {object} revision - The revision to be represented by the
+	 * rendered component.
+	 * @returns {ReactElement} a HTML document which is a part of the Revision
+	 * history.
+	 */
+	function renderRevision(revision) {
+		const createdDate = new Date(revision.createdAt);
+		const dateLabel =
+			formatDate(createdDate,
+				isWithinDayFromNow(createdDate));
+		const header = (
+			<h4 className="list-group-item-heading">
+				<small className="pull-right">
+					{`${editor.name} - ${dateLabel}`}
+				</small>
+				{`r${revision.id}`}
+			</h4>
+		);
+
+		return (
+			<ListGroupItem
+				href={`/revision/${revision.id}`}
+				key={`${editor.id}${revision.id}`}
+			>
+				{header}
+				{revision.note}
+			</ListGroupItem>
+		);
+	}
+
 	return (
 		<div>
 			<h2>Revision History</h2>
-			<ListGroup>
-				{revisions.map((revision) => {
-					const createdDate = new Date(revision.createdAt);
-					const dateLabel =
-						formatDate(createdDate,
-							isWithinDayFromNow(createdDate));
-					const header = (
-						<h4 className="list-group-item-heading">
-							<small className="pull-right">
-								{`${editor.name} - ${dateLabel}`}
-							</small>
-							{`r${revision.id}`}
-						</h4>
-					);
-					return (
-						<ListGroupItem
-							href={`/revision/${revision.id}`}
-							key={`${editor.id}${revision.id}`}
-						>
-							{header}
-							{revision.note}
-						</ListGroupItem>
-					);
-				})}
-			</ListGroup>
+			{revisions.length > 0 ?
+				<ListGroup>
+					{revisions.map(renderRevision)}
+				</ListGroup> :
+				<div>
+					<h4> No revisions to show</h4>
+					<hr className="wide"/>
+					<CallToAction/>
+				</div>
+			}
 		</div>
 	);
 }
