@@ -83,7 +83,7 @@ class EditorAchievementTab extends React.Component {
 		const locked = this.renderAchievements(false);
 
 		let rankUpdate;
-		if (this.state.editor.authenticated) {
+		if (this.props.isOwner) {
 			rankUpdate = (
 				<form
 					className="form-horizontal"
@@ -101,7 +101,7 @@ class EditorAchievementTab extends React.Component {
 								className="btn btn-default"
 								type="submit"
 							>
-								update
+								Update
 							</button>
 							<p
 								style={{
@@ -163,7 +163,8 @@ EditorAchievementTab.propTypes = {
 	editor: PropTypes.shape({
 		authenticated: PropTypes.bool,
 		id: PropTypes.number
-	}).isRequired
+	}).isRequired,
+	isOwner: PropTypes.bool.isRequired
 };
 
 export default EditorAchievementTab;
