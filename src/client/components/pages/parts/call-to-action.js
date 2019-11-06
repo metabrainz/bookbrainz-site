@@ -25,6 +25,11 @@ import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 const {Button, ButtonGroup, Col} = bootstrap;
 
+/**
+ * Renders the document and displays 'CallToAction' component.
+ * @returns {ReactElement} a HTML document which displays
+ * the 'CallToAction' component.
+ */
 function CallToAction() {
 	return (
 		<div className="text-center">
@@ -76,4 +81,5 @@ function CallToAction() {
 }
 
 CallToAction.displayName = 'CallToAction';
+
 export default CallToAction;

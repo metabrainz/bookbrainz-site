@@ -29,6 +29,12 @@ import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 const {Row, Table} = bootstrap;
 
+/**
+ * Renders the document and displays the 'SearchResults' page.
+ * @returns {ReactElement} a HTML document which displays the SearchResults.
+ * @param {object} props - Properties passed to the component.
+ */
+
 function SearchResults(props) {
 	const noResults = !props.results || props.results.length === 0;
 	if (noResults) {

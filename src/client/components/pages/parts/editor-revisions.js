@@ -30,10 +30,24 @@ import React from 'react';
 const {ListGroup, ListGroupItem} = bootstrap;
 const {formatDate, isWithinDayFromNow} = utilsHelper;
 
+/**
+ * Renders the document and displays the 'EditorRevisionsTab' component.
+ * @returns {ReactElement} a HTML document which displays the 'EditorRevisionTab'.
+ * @param {object} props - Properties passed to the component.
+ */
 function EditorRevisionsTab(props) {
 	const {editor} = props;
 	const {revisions} = editor;
 
+	/**
+	 * Renders the data related to Revision such as 'author' and 'date'.
+	 * It also displays the revison note which is a summary of the changes
+	 * made in the revision.
+	 * @param {object} revision - The revision to be represented by the
+	 * rendered component.
+	 * @returns {ReactElement} a HTML document which is a part of the Revision
+	 * history.
+	 */
 	function renderRevision(revision) {
 		const createdDate = new Date(revision.createdAt);
 		const dateLabel =
