@@ -76,6 +76,7 @@ function getEntitySectionByType(entity) {
 
 
 function entitiesToFormState(entities) {
+	const [targetEntity, ...otherEntities] = entities;
 	const aliases = entities.reduce((returnValue, entity) => {
 		if (!_.isNil(entity.aliasSet) && Array.isArray(entity.aliasSet.aliases)) {
 			return returnValue.concat(
@@ -135,7 +136,7 @@ function entitiesToFormState(entities) {
 	uniqueIdentifiers.forEach((identifier) => {
 		identifierEditor[identifier.id] = identifier;
 	});
-	const entityTypeSection = getEntitySectionByType(entities[0]);
+	const entityTypeSection = getEntitySectionByType(targetEntity);
 
 	const relationshipSection = {
 		canEdit: false,
@@ -144,7 +145,7 @@ function entitiesToFormState(entities) {
 		relationshipEditorVisible: false,
 		relationships: {}
 	};
-	const type = entities[0].type.toLowerCase();
+	const type = targetEntity.type.toLowerCase();
 
 	const relationships = entities.reduce((returnValue, entity) => {
 		if (entity.relationships) {
@@ -152,15 +153,19 @@ function entitiesToFormState(entities) {
 		}
 		return returnValue;
 	}, []);
-	relationships.forEach((relationship) => (
+	const otherEntitiesBBIDs = otherEntities.map(entity => entity.bbid);
+	relationships.forEach((relationship) => {
 		relationshipSection.relationships[relationship.id] = {
 			relationshipType: relationship.type,
 			rendered: relationship.rendered,
 			rowID: relationship.id,
-			sourceEntity: relationship.source,
-			targetEntity: relationship.target
-		}
-	));
+			// Change the source and/or target BBIDs of the relationship accordingly
+			// to the bbid of the entity we're merging into
+			sourceEntity: otherEntitiesBBIDs.includes(relationship.sourceBbid) ? targetEntity : relationship.source,
+			targetEntity: otherEntitiesBBIDs.includes(relationship.targetBbid) ? targetEntity : relationship.target
+		};
+	});
+
 	const props = {
 		aliasEditor,
 		identifierEditor,
