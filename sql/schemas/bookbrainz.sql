@@ -133,6 +133,7 @@ CREATE TABLE bookbrainz.edition_group_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
@@ -145,6 +146,7 @@ CREATE TABLE bookbrainz.edition_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
@@ -157,6 +159,7 @@ CREATE TABLE bookbrainz.publisher_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
@@ -169,6 +172,7 @@ CREATE TABLE bookbrainz.work_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
