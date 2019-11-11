@@ -28,7 +28,6 @@ import * as releaseEventSetFormatter from
 	'../helpers/diffFormatters/releaseEventSet';
 
 import {escapeProps, generateProps} from '../helpers/props';
-
 import Layout from '../../client/containers/layout';
 import Promise from 'bluebird';
 import React from 'react';
@@ -36,6 +35,7 @@ import ReactDOMServer from 'react-dom/server';
 import RevisionPage from '../../client/components/pages/revision';
 import _ from 'lodash';
 import express from 'express';
+import log from 'log';
 import target from '../templates/target';
 
 
@@ -188,13 +188,16 @@ router.get('/:id', async (req, res, next) => {
 
 	let revision;
 	function _createRevision(EntityRevisionModel) {
+		/**
+		 * EntityRevisions can have duplicate ids
+		 * the 'merge' and 'remove' options instructs the ORM to consider that normal instead of merging
+		 * see https://github.com/bookshelf/bookshelf/pull/1846
+		 */
 		return EntityRevisionModel.forge()
 			.where('id', req.params.id)
-			// EntityRevisions can have duplicate ids
-			// the 'merge' and 'remove' options instructs the ORM to consider that normal instead of merging
-			// see https://github.com/bookshelf/bookshelf/pull/1846
 			.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'})
-			.then(diffRevisionsWithParents);
+			.then(diffRevisionsWithParents)
+			.catch(err => { log.error(err); throw err; });
 	}
 	try {
 		/*
