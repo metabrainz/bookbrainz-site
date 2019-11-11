@@ -740,6 +740,9 @@ export function handleCreateOrEditEntity(
 	const {body}: {body: any} = req;
 	const {locals: resLocals}: {locals: any} = res;
 
+	const {mergingEntities} = body;
+	const isMergeOperation = Boolean(Array.isArray(mergingEntities) && mergingEntities.length);
+
 	let currentEntity: ?{
 		aliasSet: ?{id: number},
 		annotation: ?{id: number},
@@ -772,7 +775,8 @@ export function handleCreateOrEditEntity(
 
 			// Then, edit the entity
 			const newRevisionPromise = new Revision({
-				authorId: editorJSON.id
+				authorId: editorJSON.id,
+				isMerge: isMergeOperation
 			}).save(null, {transacting});
 
 			const relationshipSetsPromise = getNextRelationshipSets(
@@ -804,33 +808,52 @@ export function handleCreateOrEditEntity(
 				orm, transacting, currentEntity, relationshipSets
 			);
 			otherEntities.forEach(entity => { entity.shouldInsert = false; });
-			mainEntity.shouldInsert = false;
+			mainEntity.shouldInsert = isNew;
 
 			_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
-			const allEntities = [...otherEntities, mainEntity];
-
-			const {mergingEntities} = body;
-			const isMergeOperation = Array.isArray(mergingEntities) && mergingEntities.length;
+			let allEntities = [...otherEntities, mainEntity];
+			let entitiesModelsToMerge;
 			if (isMergeOperation) {
-				log.debug('Merge operation detected; Entities:', mergingEntities.map(entity => entity.bbid));
-				// fetch merged entities and add to allEntities
+				const mergingEntititesBBIDs = mergingEntities.map(entity => entity.bbid);
+				log.debug('Merge operation detected; Entities:', mergingEntititesBBIDs);
+
+				// fetch entities we're merging and add them to allEntities to be updated
 				const entitiesToMerge = mergingEntities.filter(entity =>
 					entity.bbid !== currentEntity.bbid);
-				const mergedEntities = await Promise.all(
-					entitiesToMerge.map(entity => fetchOrCreateMainEntity(
-						orm, transacting, false, entity.bbid, entityType
-					))
+
+				entitiesModelsToMerge = await Promise.all(
+					entitiesToMerge.map(entity =>
+						fetchOrCreateMainEntity(
+							orm, transacting, isNew, entity.bbid, entityType
+						))
 				);
-				mergedEntities.forEach(entity => { entity.shouldInsert = false; });
-				allEntities.push(...mergedEntities);
-				// redirect other bbids to currentEntity.bbid
+
+				allEntities = _.unionBy(allEntities, entitiesModelsToMerge, 'id');
+
+				/** Update the redirection table to edirect merged entities' bbids
+				 *  to currentEntity.bbid (the entity we're merging into)
+				*/
 				await bookshelf.knex('bookbrainz.entity_redirect')
 					.transacting(transacting)
 					.insert(entitiesToMerge.map(entity => (
 					// eslint-disable-next-line camelcase
 						{source_bbid: entity.bbid, target_bbid: currentEntity.bbid}
 					)));
+
+				/**
+				 * Set isMerge to true on the *entity*_revision models
+				 * The *entity*_revision are created by a postgres trigger rather than here in code,
+				 * so we need to wait until the entity is saved.
+				*/
+				mainEntity.once('saved', async (model) => {
+					const newEntityRevision = await model.revision()
+						.fetch({transacting});
+					// We only want to set isMerge to true on the entities we're merging
+					newEntityRevision
+						.query(qb => qb.whereIn('bbid', mergingEntititesBBIDs))
+						.save({isMerge: true}, {debug: true, patch: true, transacting});
+				});
 			}
 
 			_.forEach(allEntities, (entityModel) => {
@@ -844,7 +867,7 @@ export function handleCreateOrEditEntity(
 			});
 
 			const savedMainEntity = await saveEntitiesAndFinishRevision(
-				orm, transacting, isNew, newRevision, mainEntity, _.uniqWith(allEntities, 'id'),
+				orm, transacting, isNew, newRevision, mainEntity, allEntities,
 				editorJSON.id, body.note
 			);
 
@@ -858,7 +881,7 @@ export function handleCreateOrEditEntity(
 		}
 		catch (err) {
 			log.error(err);
-			return transacting.rollback();
+			throw err;
 		}
 	});
 
@@ -872,7 +895,8 @@ export function handleCreateOrEditEntity(
 				}
 				return entityJSON;
 			})
-	).catch(log.error);
+			.catch(error => { throw error; })
+	);
 
 	return handler.sendPromiseResult(
 		res,
