@@ -330,6 +330,7 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		};
 
 		formattedDiff.entity.type = entityType;
+		formattedDiff.entityRevision = diff.revision && diff.revision.toJSON();
 
 		if (!diff.changes) {
 			formattedDiff.changes = [];

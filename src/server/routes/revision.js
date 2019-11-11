@@ -169,12 +169,14 @@ function diffRevisionsWithParents(entityRevisions) {
 				.then(
 					(parent) => Promise.props({
 						changes: revision.diff(parent),
-						entity: revision.related('entity')
+						entity: revision.related('entity'),
+						revision
 					}),
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => Promise.props({
 						changes: revision.diff(null),
-						entity: revision.related('entity')
+						entity: revision.related('entity'),
+						revision
 					})
 				)
 	));

@@ -428,3 +428,29 @@ hr.wide {
 .btn.wrap {
 	white-space: normal;
 }
+
+#mergePage {
+	.mergedEntities {
+		position: relative;
+		padding: 0.1em 1.5em;
+		margin: 0 -1.5em;
+		background-color: fade(@disabled-bg,15%);
+		&:after,
+		&:before {
+			border: .15em solid @disabled-bg;
+			bottom: 0;
+			content: '';
+			position: absolute;
+			top: 0;
+			width: 4em;
+		}
+		&:after {
+			border-left: none;
+			right: 0;
+		}
+		&:before {
+			border-right: none;
+			left: 0;
+		}
+	}
+}

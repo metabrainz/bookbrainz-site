@@ -100,6 +100,22 @@ class RevisionPage extends React.Component {
 		return _.compact(result);
 	}
 
+	static getEntityDiff(diff, index) {
+		return (
+			<div key={`${diff.entity.bbid}${index}`}>
+				<h3>
+					<EntityLink bbid={diff.entity.bbid} text={`${diff.entity.type} ${diff.entity.bbid}`} type={diff.entity.type}/>
+				</h3>
+				{diff.changes.length ? (
+					<table className="table table-bordered text-center">
+						<tbody>
+							{RevisionPage.formatDiff(diff)}
+						</tbody>
+					</table>) : null}
+			</div>
+		);
+	}
+
 	static formatTitle(author) {
 		let title;
 		if (_.get(author, ['titleUnlock', 'title'], null)) {
@@ -134,27 +150,37 @@ class RevisionPage extends React.Component {
 			});
 	}
 
+
 	render() {
 		const {revision, diffs, user} = this.props;
+		let regularDiffs = diffs;
+		let mergeDiffDivs;
 
-		const diffDivs = diffs.map((diff, index) => (
-			<div key={`${diff.entity.bbid}${index}`}>
-				<h3>
-					<EntityLink
-						bbid={diff.entity.bbid}
-						text={`${diff.entity.type} ${diff.entity.bbid}`}
-						type={diff.entity.type}
-					/>
-				</h3>
-				{diff.changes.length ?
-					(<table className="table table-bordered text-center">
-						<tbody>
-							{RevisionPage.formatDiff(diff)}
-						</tbody>
-					 </table>) : null
+		if (revision.isMerge) {
+			/**
+			 * Separate entities between merged and not merged
+			 */
+			const mergeDiffs = [];
+			regularDiffs = [];
+			diffs.forEach(diff => {
+				if (diff.entityRevision.isMerge) {
+					mergeDiffs.push(diff);
+					return;
 				}
-			</div>
-		));
+				regularDiffs.push(diff);
+			});
+
+			/**
+			 * We sort the merged entities diffs by number of changes.
+			 * In theory, only the entity we merge into will have changes,
+			 * which allows us to display it at the bottom ('merges entity X and Y into Z')
+			 */
+			mergeDiffDivs = mergeDiffs
+				.sort((diff1, diff2) => diff1.changes.length - diff2.changes.length)
+				.map(RevisionPage.getEntityDiff);
+		}
+
+		const diffDivs = regularDiffs.map(RevisionPage.getEntityDiff);
 
 		const editorTitle =
 			RevisionPage.formatTitle(revision.author);
@@ -190,14 +216,20 @@ class RevisionPage extends React.Component {
 
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
 		return (
-			<Row>
+			<Row id="mergePage">
 				<Col md={12}>
 					<h1>Revision #{revision.id}</h1>
-					{revision.isMerge &&
-						<h3>
-							<FontAwesome flip="vertical" name="code-branch"/> Merge between entities
-						</h3>
-					}
+					{revision.isMerge && (
+						<div className="mergedEntities">
+							<h3>
+								<FontAwesome flip="vertical" name="code-branch"/>
+								&nbsp;Merges {mergeDiffDivs.length > 2 ? 'entities' : 'entity'}:
+							</h3>
+							{mergeDiffDivs.slice(0, -1)}
+							<h4>Into:</h4>
+							{mergeDiffDivs.slice(-1)}
+						</div>
+					)}
 					{diffDivs}
 					<p className="text-right">
 						Created by&nbsp;
