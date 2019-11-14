@@ -172,14 +172,14 @@ function mapStateToProps(rootState) {
 function mapDispatchToProps(dispatch) {
 	return {
 		onDisambiguationChange: (option) => {
-			dispatch(debouncedUpdateDisambiguationField(option.value));
+			dispatch(debouncedUpdateDisambiguationField(option));
 		},
 		onLanguageChange: (option) =>
-			dispatch(updateLanguageField(option.value)),
+			dispatch(updateLanguageField(option)),
 		onNameChange: (option) =>
-			dispatch(debouncedUpdateNameField(option.value)),
+			dispatch(debouncedUpdateNameField(option)),
 		onSortNameChange: (option) =>
-			dispatch(debouncedUpdateSortNameField(option.value))
+			dispatch(debouncedUpdateSortNameField(option))
 	};
 }
 
