@@ -61,17 +61,65 @@ function getEntityFetchPropertiesByType(entityType) {
 	}
 }
 
-function getEntitySectionByType(entity) {
-	// switch(entity.type)
-	return {
-		beginArea: entityRoutes.areaToOption(entity.beginArea),
-		beginDate: entity.beginDate,
-		endArea: entityRoutes.areaToOption(entity.endArea),
-		endDate: entity.endDate,
-		ended: entity.ended,
-		gender: entity.gender && entity.gender.id,
-		type: entity.authorType && entity.authorType.id
-	};
+/**
+ * @param {object} targetObject - Object to modify
+ * @param {string} propName - Property name to set on the targetObject
+ * @param {object} sourceObject - Source object to copy from
+ * @param {string|string[]} [sourcePath=propName] - Path of the property to check on the sourceObject.
+ * @description Mutates the targetObject, setting the value at propName if it isn't already set.
+ * Accepts an optional path string or array of strings to allow get the source value at another path
+ */
+function assignIfNotSet(targetObject, propName, sourceObject, sourcePath = propName) {
+	const sourceValue = _.get(sourceObject, sourcePath);
+	if (_.isNil(targetObject[propName]) && !_.isNil(sourceValue)) {
+	  targetObject[propName] = sourceValue;
+	}
+}
+
+/**
+ * @name getAuthorEntityMergeSection
+ * @description Returns the initial form state for the Author merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer
+ * @param {object[]} entities - The array of entities to merge the properties of
+ * @returns {object} - The Author merge section for the initialState
+ */
+function getAuthorEntityMergeSection(entities) {
+	const authorSection = {};
+	entities.forEach(entity => {
+		assignIfNotSet(authorSection, 'type', entity, 'authorType.id');
+		assignIfNotSet(authorSection, 'gender', entity, 'gender.id');
+		assignIfNotSet(authorSection, 'beginDate', entity);
+		assignIfNotSet(authorSection, 'endDate', entity);
+		assignIfNotSet(authorSection, 'beginArea', entity);
+		assignIfNotSet(authorSection, 'endArea', entity);
+		assignIfNotSet(authorSection, 'ended', entity);
+	});
+	return Object.assign(authorSection,
+		{
+			beginArea: entityRoutes.areaToOption(authorSection.beginArea),
+			endArea: entityRoutes.areaToOption(authorSection.endArea),
+
+			/** If one of the entities has an end date or area and another doesn't,
+			 * those endDate/Area properties will be automatically selected as the only option on the merge display page
+			 * We want to emulate this for the initialState to match, so if there's any endDate/Are, set ended to true
+			 */
+			ended: (!_.isNil(authorSection.endArea) || !_.isNil(authorSection.endDate)) || authorSection.ended
+		});
+}
+
+/**
+ * @description Returns the initial form state for the $entity$ section depending on the entity type
+ * @param {string} entityType - Entity type string (lowercased)
+ * @param {object[]} entities - Array of entities to merge
+ * @returns {object} - The entity section initial form state
+ * @throws Will throw an error if the entityType is not one of the know entity types, lowercased.
+ */
+function getEntitySectionByType(entityType, entities) {
+	switch (entityType) {
+		case 'author':
+		default:
+			return getAuthorEntityMergeSection(entities);
+	}
 }
 
 
@@ -136,7 +184,9 @@ function entitiesToFormState(entities) {
 	uniqueIdentifiers.forEach((identifier) => {
 		identifierEditor[identifier.id] = identifier;
 	});
-	const entityTypeSection = getEntitySectionByType(targetEntity);
+	const type = targetEntity.type.toLowerCase();
+
+	const entityTypeSection = getEntitySectionByType(type, entities);
 
 	const relationshipSection = {
 		canEdit: false,
@@ -145,7 +195,6 @@ function entitiesToFormState(entities) {
 		relationshipEditorVisible: false,
 		relationships: {}
 	};
-	const type = targetEntity.type.toLowerCase();
 
 	const relationships = entities.reduce((returnValue, entity) => {
 		if (entity.relationships) {
