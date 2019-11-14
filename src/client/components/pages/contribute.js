@@ -38,7 +38,7 @@ function ContributePage() {
 			<PageHeader>Contributing to BookBrainz</PageHeader>
 			<p className="lead">
 				There are many ways that you can contribute to the
-				BookBrainz online encyclopaedia, depending on where your
+				BookBrainz online encyclopedia, depending on where your
 				particular skills lie.
 			</p>
 
@@ -67,7 +67,7 @@ function ContributePage() {
 			<h2>Programming</h2>
 			<p>
 				If you&rsquo;re someone who&rsquo;s good at using
-				JavaScript, Python, SQL or LESS/SASS, we&rsquo;d love to
+				JavaScript, NodeJS, SQL or LESS/SASS, we&rsquo;d love to
 				have your help developing BookBrainz. Take a look at our
 				GitHub page at&nbsp;
 				<a href="https://github.com/BookBrainz">
