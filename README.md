@@ -142,12 +142,14 @@ For that, you will need to modify the `docker-compose.yml` file to mount the `sr
 
 For example:
 ```
-service:
+services:
   bookbrainz-site:
     command: npm run debug
     volumes:
+      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
       - "./src:/home/bookbrainz/bookbrainz-site/src"
 ```
+**Note**: Using Webpack watch results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](#running-the-web-server).
 <br/>
 <br/>
 
