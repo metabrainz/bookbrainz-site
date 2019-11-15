@@ -126,32 +126,14 @@ Point you browser to `localhost:9099/1/api-docs` to pull up the documentation an
 Don't forget to run `./stop.sh` once you are done developing to stop the dependencies that are running in the background.
 
 
-## Advanced users
+## Advanced users and debugging
 
-If you do not want to use Docker, you can instead [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md),
-and/or [run the NodeJS server locally](./NODEJS_SETUP.md) while using dockerized dependencies.
-Running the NodeJS server locally would be easier if you want to use a debugger, for instance.
+Once you get into serious work on the project, we recommend you use a debugger and [run the NodeJS server locally](./NODEJS_SETUP.md) (while still running dependencies in Docker for simplicity).
+Using a debugger will allow you to pause and inspect the server code as it is being executed.
 
------------
-Advanced users may want to use Webpack to build, watch files and inject rebuilt pages without having to refresh the page,
-keeping the application state intact, for the prie of a longer compilation time.
+If you do not want to use Docker at all, you can also [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md)
 
-For that, you will need to modify the `docker-compose.yml` file to mount the `src` folder and change the command to
-- `npm run debug` if you only want to change client files (in `src/client`)
-- `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
 
-For example:
-```
-services:
-  bookbrainz-site:
-    command: npm run debug
-    volumes:
-      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
-      - "./src:/home/bookbrainz/bookbrainz-site/src"
-```
-**Note**: Using Webpack watch results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](#running-the-web-server).
-<br/>
-<br/>
 
 # Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:
