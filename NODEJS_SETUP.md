@@ -80,4 +80,4 @@ services:
   # 2. Mount the src directory
       - "./src:/home/bookbrainz/bookbrainz-site/src"
 ```
-**Note**: Using Webpack watch mode (`npm run debug`) results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](#running-the-web-server).
+**Note**: Using Webpack watch mode (`npm run debug`) results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](/README.md#running-the-web-server).
