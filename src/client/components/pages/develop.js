@@ -56,7 +56,7 @@ function DevelopPage() {
 				The database dumps will be useful if you need to process a
 				lot of data quickly &mdash; in cases where the web service
 				is not able to respond quickly enough.
-				The latest database dump can be found <a href="/dumps/latest.sql.bz2">at this address</a>.
+				The latest database dump can be found <a href="ftp://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2">at this address</a>.
 				A dump is made every week.
 			</p>
 			<h2>Source Code</h2>

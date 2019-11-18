@@ -16,12 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as commonUtils from '../../common/helpers/utils';
 import * as utils from '../helpers/utils';
 
 import ElasticSearch from 'elasticsearch';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import httpStatus from 'http-status';
+
 
 const _index = 'bookbrainz';
 const _bulkIndexSize = 128;
@@ -149,7 +151,7 @@ async function _processEntityListForBulk(entityList) {
 export function autocomplete(orm, query, collection) {
 	let queryBody = null;
 
-	if (utils.isValidBBID(query)) {
+	if (commonUtils.isValidBBID(query)) {
 		queryBody = {
 			ids: {
 				values: [query]
@@ -159,7 +161,7 @@ export function autocomplete(orm, query, collection) {
 	else {
 		queryBody = {
 			match: {
-				'defaultAlias.name.autocomplete': {
+				'aliasSet.aliases.name.autocomplete': {
 					minimum_should_match: '80%',
 					query
 				}
@@ -214,7 +216,7 @@ export async function generateIndex(orm) {
 		mappings: {
 			_default_: {
 				properties: {
-					defaultAlias: {
+					'aliasSet.aliases': {
 						properties: {
 							name: {
 								fields: {
@@ -288,7 +290,8 @@ export async function generateIndex(orm) {
 	const baseRelations = [
 		'annotation',
 		'disambiguation',
-		'defaultAlias'
+		'defaultAlias',
+		'aliasSet.aliases'
 	];
 
 	const entityBehaviors = [
@@ -380,7 +383,7 @@ export async function checkIfExists(orm, name, collection) {
 	];
 	return Promise.all(
 		bbids.map(
-			bbid => orm.func.entity.getEntity(orm, _.upperFirst(collection), bbid, baseRelations)
+			bbid => orm.func.entity.getEntity(orm, _.upperFirst(_.camelCase(collection)), bbid, baseRelations)
 		)
 	);
 }
@@ -393,7 +396,7 @@ export function searchByName(orm, name, collection, size, from) {
 				bool: {
 					must: {
 						match: {
-							'defaultAlias.name.search': {
+							'aliasSet.aliases.name.search': {
 								minimum_should_match: '75%',
 								query: name
 							}
@@ -401,7 +404,7 @@ export function searchByName(orm, name, collection, size, from) {
 					},
 					should: {
 						match: {
-							'defaultAlias.name': {
+							'aliasSet.aliases.name': {
 								boost: 1.3, // eslint-disable-line max-len,no-magic-numbers
 								query: name
 							}

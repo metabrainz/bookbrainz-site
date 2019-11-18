@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as error from '../helpers/error';
+import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
@@ -31,7 +31,7 @@ import RegisterAuthPage from '../../client/components/pages/registration-auth';
 import RegisterDetailPage from
 	'../../client/components/forms/registration-details';
 import _ from 'lodash';
-import config from '../helpers/config';
+import config from '../../common/helpers/config';
 import express from 'express';
 import target from '../templates/target';
 

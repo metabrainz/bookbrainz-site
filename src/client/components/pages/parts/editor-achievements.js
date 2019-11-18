@@ -29,7 +29,15 @@ import request from 'superagent-bluebird-promise';
 const {Row} = bootstrap;
 const {Sticky, StickyContainer} = ReactSticky;
 
+/**
+ * Renders the document and displays the 'Editor Achievements Tab'.
+ */
 class EditorAchievementTab extends React.Component {
+	/**
+	 * Initializes the component state.
+	 * @constructor
+	 * @param {object} props - Properties passed to the component.
+	 */
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -38,6 +46,11 @@ class EditorAchievementTab extends React.Component {
 		};
 	}
 
+	/**
+	 * Handles the 'Update Ranks' form submission, by making
+	 * a POST request with updated ranks to the server.
+	 * @param {object} event - The Form submit event.
+	 */
 	handleSubmit(event) {
 		event.preventDefault();
 
@@ -62,28 +75,44 @@ class EditorAchievementTab extends React.Component {
 			});
 	}
 
-	renderAchievements(unlocked) {
-		return this.state.achievement.model.map((achievement) => {
-			let achievementHTML;
-			if (achievement.unlocked === unlocked) {
-				achievementHTML = (
-					<Achievement
-						achievement={achievement}
-						key={`${this.state.editor.id}${achievement.id}`}
-						unlocked={unlocked}
-					/>
-				);
+	/**
+	 * Renders the Editor Achievements list. Also splits the
+	 * achievements into Unlocked and Locked achievements.
+	 * @returns {Array} - An array containing rendered achievements
+	 * list split into Unlocked and Locked.
+	 */
+	renderAchievements() {
+		const achievements = [];
+		const locked = [];
+		this.state.achievement.model.forEach(achievement => {
+			const achievementHTML = (
+				<Achievement
+					achievement={achievement}
+					key={`${this.state.editor.id}${achievement.id}`}
+					unlocked={achievement.unlocked}
+				/>
+			);
+			if (achievement.unlocked) {
+				achievements.push(achievementHTML);
 			}
-			return achievementHTML;
+			else {
+				locked.push(achievementHTML);
+			}
 		});
+		return [achievements, locked];
 	}
 
+	/**
+	 * Renders the EditorAchievements page, which displays all the achievements
+	 * (both unlocked and locked) of the editor, along with a RankUpdate form.
+	 * @returns {ReactElement} a HTML document which displays the
+	 * EditorAchievements page.
+	 */
 	render() {
-		const achievements = this.renderAchievements(true);
-		const locked = this.renderAchievements(false);
+		const [achievements, locked] = this.renderAchievements();
 
 		let rankUpdate;
-		if (this.state.editor.authenticated) {
+		if (this.props.isOwner) {
 			rankUpdate = (
 				<form
 					className="form-horizontal"
@@ -101,7 +130,7 @@ class EditorAchievementTab extends React.Component {
 								className="btn btn-default"
 								type="submit"
 							>
-								update
+								Update
 							</button>
 							<p
 								style={{
@@ -163,7 +192,8 @@ EditorAchievementTab.propTypes = {
 	editor: PropTypes.shape({
 		authenticated: PropTypes.bool,
 		id: PropTypes.number
-	}).isRequired
+	}).isRequired,
+	isOwner: PropTypes.bool.isRequired
 };
 
 export default EditorAchievementTab;

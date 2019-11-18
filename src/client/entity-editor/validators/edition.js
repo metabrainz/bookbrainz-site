@@ -29,6 +29,7 @@ import {
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 export function validateEditionSectionDepth(value: ?any): boolean {
@@ -67,8 +68,8 @@ export function validateEditionSectionPages(value: ?any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateEditionSectionEditionGroup(value: ?any): boolean {
-	return validateUUID(get(value, 'id', null), true);
+export function validateEditionSectionEditionGroup(value: ?any, editionGroupRequired: ?boolean): boolean {
+	return validateUUID(get(value, 'id', null), editionGroupRequired);
 }
 
 export function validateEditionSectionPublisher(value: ?any): boolean {
@@ -80,7 +81,8 @@ export function validateEditionSectionPublisher(value: ?any): boolean {
 }
 
 export function validateEditionSectionReleaseDate(value: ?any): boolean {
-	return validateDate(value);
+	const {isValid, errorMessage} = validateDate(value);
+	return {errorMessage, isValid};
 }
 
 export function validateEditionSectionStatus(value: ?any): boolean {
@@ -102,9 +104,12 @@ export function validateEditionSection(data: any): boolean {
 		validateEditionSectionHeight(get(data, 'height', null)) &&
 		validateEditionSectionLanguages(get(data, 'languages', null)) &&
 		validateEditionSectionPages(get(data, 'pages', null)) &&
-		validateEditionSectionEditionGroup(get(data, 'editionGroup', null)) &&
+		validateEditionSectionEditionGroup(
+			get(data, 'editionGroup', null),
+			get(data, 'editionGroupRequired', null) || get(data, 'matchingNameEditionGroups', []).length
+		) &&
 		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
-		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)) &&
+		validateEditionSectionReleaseDate(convertMapToObject(get(data, 'releaseDate', null))).isValid &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&
 		validateEditionSectionWeight(get(data, 'weight', null)) &&
 		validateEditionSectionWidth(get(data, 'width', null))

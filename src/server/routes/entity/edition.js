@@ -23,7 +23,9 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
+	ISODateStringToObject,
 	addInitialRelationship,
+	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -247,12 +249,9 @@ function editionToFormState(edition) {
 		_.isNull(edition.width)
 	);
 
-	const editionGroupVisible = !_.isNull(edition.editionGroup);
-
-	const releaseDate = edition.releaseEventSet && (
-		_.isEmpty(edition.releaseEventSet.releaseEvents) ?
-			null : edition.releaseEventSet.releaseEvents[0].date
-	);
+	const releaseDate = edition.releaseEventSetId ?
+		ISODateStringToObject(edition.releaseEventSet.releaseEvents[0].date) :
+		{day: '', month: '', year: ''};
 
 	const publisher = edition.publisherSet && (
 		_.isEmpty(edition.publisherSet.publishers) ?
@@ -264,7 +263,8 @@ function editionToFormState(edition) {
 	const editionSection = {
 		depth: edition.depth,
 		editionGroup,
-		editionGroupVisible,
+		editionGroupRequired: true,
+		editionGroupVisible: true,
 		format: edition.editionFormat && edition.editionFormat.id,
 		height: edition.height,
 		languages: edition.languageSet ? edition.languageSet.languages.map(
@@ -338,8 +338,8 @@ function transformNewForm(data) {
 	);
 
 	let releaseEvents = [];
-	if (data.editionSection.releaseDate) {
-		releaseEvents = [{date: data.editionSection.releaseDate}];
+	if (data.editionSection.releaseDate.year) {
+		releaseEvents = [{date: dateObjectToISOString(data.editionSection.releaseDate)}];
 	}
 
 	const languages = _.map(

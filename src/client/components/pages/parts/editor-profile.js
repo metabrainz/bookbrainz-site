@@ -45,8 +45,8 @@ class EditorProfileTab extends React.Component {
 			name,
 			gender
 		} = editor;
-		const createdAtDate = formatDate(editor.createdAt, true);
-		const lastActiveDate = formatDate(editor.activeAt, true);
+		const createdAtDate = formatDate(new Date(editor.createdAt), true);
+		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
 
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {

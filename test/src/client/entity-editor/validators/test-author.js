@@ -85,9 +85,9 @@ function describeValidateAuthorSectionGender() {
 
 const VALID_AUTHOR_SECTION = {
 	beginArea: null,
-	beginDate: null,
+	beginDate: {day: '', month: '', year: ''},
 	endArea: null,
-	endDate: null,
+	endDate: {day: '', month: '', year: ''},
 	ended: true,
 	gender: 1,
 	type: 1
@@ -118,7 +118,7 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid begin date', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			beginDate: '201'
+			beginDate: {day: '100', month: '21', year: '2012'}
 		});
 		expect(result).to.be.false;
 	});
@@ -134,7 +134,7 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid end date', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			endDate: '201'
+			endDate: {day: '', month: '', year: 'aaaa'}
 		});
 		expect(result).to.be.false;
 	});
@@ -175,8 +175,8 @@ function describeValidateAuthorSection() {
 		expect(result).to.be.true;
 	});
 
-	it('should pass a null value', () => {
-		const result = validateAuthorSection(null);
+	it('should pass a empty value  object', () => {
+		const result = validateAuthorSection({day: '', month: '', year: ''});
 		expect(result).to.be.true;
 	});
 }

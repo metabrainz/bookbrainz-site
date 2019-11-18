@@ -19,6 +19,7 @@
 // @flow
 
 import * as Immutable from 'immutable';
+import * as _ from 'lodash';
 
 import {
 	type Action,
@@ -33,6 +34,7 @@ import {
 	UPDATE_PUBLISHER,
 	UPDATE_RELEASE_DATE,
 	UPDATE_STATUS,
+	UPDATE_WARN_IF_EDITION_GROUP_EXISTS,
 	UPDATE_WEIGHT,
 	UPDATE_WIDTH
 } from './actions';
@@ -45,6 +47,7 @@ function reducer(
 		format: null,
 		languages: Immutable.List([]),
 		publisher: null,
+		releaseDate: {day: '', month: '', year: ''},
 		status: null
 	}),
 	action: Action
@@ -64,7 +67,7 @@ function reducer(
 		case UPDATE_EDITION_GROUP:
 			return state.set('editionGroup', Immutable.fromJS(payload));
 		case UPDATE_RELEASE_DATE:
-			return state.set('releaseDate', payload);
+			return state.set('releaseDate', Immutable.fromJS(payload));
 		case UPDATE_STATUS:
 			return state.set('status', payload);
 		case UPDATE_WEIGHT:
@@ -77,6 +80,18 @@ function reducer(
 			return state.set('height', payload);
 		case UPDATE_DEPTH:
 			return state.set('depth', payload);
+		case UPDATE_WARN_IF_EDITION_GROUP_EXISTS:
+			if (!Array.isArray(payload) || !payload.length) {
+				return state.set('matchingNameEditionGroups', []);
+			}
+			return state.set('matchingNameEditionGroups', payload)
+				.set('editionGroup', Immutable.fromJS({
+					disambiguation: _.get(payload[0], ['disambiguation', 'comment']),
+					id: payload[0].bbid,
+					text: _.get(payload[0], ['defaultAlias', 'name']),
+					type: payload[0].type,
+					value: payload[0].bbid
+				}));
 		// no default
 	}
 	return state;

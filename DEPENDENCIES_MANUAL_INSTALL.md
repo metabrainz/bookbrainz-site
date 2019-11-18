@@ -42,30 +42,29 @@ No setup is required for Redis or Elasticsearch. However, it is necessary to
 perform some initialization for PostgreSQL and import the latest BookBrainz
 database dump.
 
-Firstly, begin downloading the latest BookBrainz dump from
-https://bookbrainz.org/dumps/latest.sql.bz2.
+Firstly, begin downloading the [latest BookBrainz dump](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2).
 
 Then, uncompress the `latest.sql.bz2` file, using the bzip2 command:
 
     bzip2 -d latest.sql.bz2
 
-This will give you a file that you can *restore* into PostgreSQL, which will
+This will give you a file that you can restore into PostgreSQL, which will
 set up data identical to the data we have on the bookbrainz.org website. To do
 this, run:
 
-    sudo -u postgres pg_restore -e -C -O latest.tar -d postgres
+    psql -h localhost -U postgres < latest.sql
 
 At this point, the database is set up, and the following command should give
 you a list of usernames of BookBrainz editors (after entering the password from
 earlier):
 
-    sudo -u postgres psql bookbrainz -c "SELECT name FROM bookbrainz.editor"
+    psql -h localhost -U postgres bookbrainz -c "SELECT name FROM bookbrainz.editor"
 
 You are also required to set the password of your local PostgreSQL instance.
 You can do this by
 
 
-    sudo -u postgres psql
+    psql -h localhost -U postgres
 
     postgres=# \password
 

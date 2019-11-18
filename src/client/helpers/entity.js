@@ -21,7 +21,7 @@
 import * as bootstrap from 'react-bootstrap';
 
 import {get as _get, kebabCase as _kebabCase} from 'lodash';
-
+import {format, isValid, parseISO} from 'date-fns';
 import FontAwesome from 'react-fontawesome';
 import React from 'react';
 
@@ -62,6 +62,40 @@ export function getDateAttributes(entity) {
 		});
 	}
 	return attributes;
+}
+
+
+/**
+ * Transforms an extended ISO 8601-2004 string to a more human-firendly result
+ * @function transformISODateForDisplay
+ * @param {string} ISODateString - an extended ISO date string (±YYYYYY-MM-DD)
+ * @returns {string} A date string with less padding zeros
+ */
+export function transformISODateForDisplay(ISODateString) {
+	const dateStringWithoutSign = ISODateString.slice(1);
+	const parts = dateStringWithoutSign.split('-');
+	let formatting;
+	switch (parts.length) {
+		case 1:
+			formatting = 'uuuu';
+			break;
+		case 2:
+			formatting = 'uuuu-MM';
+			break;
+		case 3:
+			formatting = 'uuuu-MM-dd';
+			break;
+		default:
+			return ISODateString;
+	}
+	const parsedDate = parseISO(ISODateString, {additionalDigits: 2});
+	if (!isValid(parsedDate)) {
+		return ISODateString;
+	}
+	return format(
+		parsedDate,
+		formatting
+	);
 }
 
 export function showEntityEditions(entity) {
@@ -143,7 +177,7 @@ export function getEditionReleaseDate(edition) {
 		edition.releaseEventSet.releaseEvents.length;
 
 	if (hasReleaseEvents) {
-		return edition.releaseEventSet.releaseEvents[0].date;
+		return transformISODateForDisplay(edition.releaseEventSet.releaseEvents[0].date);
 	}
 
 	return '?';
@@ -218,7 +252,7 @@ export function getSortNameOfDefaultAlias(entity) {
 }
 
 export function getISBNOfEdition(entity) {
-	if (entity.identifierSetId) {
+	if (entity.identifierSet && entity.identifierSet.identifiers) {
 		const {identifiers} = entity.identifierSet;
 		return identifiers.find(
 			identifier =>

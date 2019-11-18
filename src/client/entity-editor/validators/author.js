@@ -18,6 +18,7 @@
 
 // @flow
 
+import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
 import {dateIsBefore, get, validateDate, validatePositiveInteger} from './base';
 import {
 	validateAliases,
@@ -29,6 +30,7 @@ import {
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
+
 export function validateAuthorSectionBeginArea(value: any): boolean {
 	if (!value) {
 		return true;
@@ -37,8 +39,9 @@ export function validateAuthorSectionBeginArea(value: any): boolean {
 	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
-export function validateAuthorSectionBeginDate(value: any): boolean {
-	return validateDate(value);
+export function validateAuthorSectionBeginDate(value: any): object {
+	const {isValid, errorMessage} = validateDate(value);
+	return {errorMessage, isValid};
 }
 
 export function validateAuthorSectionEndArea(value: any): boolean {
@@ -50,9 +53,20 @@ export function validateAuthorSectionEndArea(value: any): boolean {
 }
 
 export function validateAuthorSectionEndDate(
-	beginValue: any, endValue: any
-): boolean {
-	return validateDate(endValue) && dateIsBefore(beginValue, endValue);
+	beginValue: any, endValue: any, authorType: string
+): object {
+	const {isValid, errorMessage} = validateDate(endValue);
+	const isGroup = authorType === 'Group';
+	const {beginDateLabel, endDateLabel} = labelsForAuthor(isGroup);
+
+	if (isValid) {
+		if (dateIsBefore(beginValue, endValue)) {
+			return {errorMessage: '', isValid: true};
+		}
+
+		return {errorMessage: `${endDateLabel} must be greater than ${beginDateLabel}`, isValid: false};
+	}
+	return {errorMessage, isValid};
 }
 
 export function validateAuthorSectionEnded(value: any): boolean {
@@ -70,11 +84,11 @@ export function validateAuthorSectionGender(value: any): boolean {
 export function validateAuthorSection(data: any): boolean {
 	return (
 		validateAuthorSectionBeginArea(get(data, 'beginArea', null)) &&
-		validateAuthorSectionBeginDate(get(data, 'beginDate', null)) &&
+		validateAuthorSectionBeginDate(convertMapToObject(get(data, 'beginDate', {}))).isValid &&
 		validateAuthorSectionEndArea(get(data, 'endArea', null)) &&
 		validateAuthorSectionEndDate(
-			get(data, 'beginDate', null), get(data, 'endDate', null)
-		) &&
+			convertMapToObject(get(data, 'beginDate', {})), convertMapToObject(get(data, 'endDate', {}))
+		).isValid &&
 		validateAuthorSectionEnded(get(data, 'ended', null)) &&
 		validateAuthorSectionType(get(data, 'gender', null)) &&
 		validateAuthorSectionType(get(data, 'type', null))

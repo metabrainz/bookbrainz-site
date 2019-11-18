@@ -18,7 +18,7 @@
  */
 
 import * as auth from '../helpers/auth';
-import * as error from '../helpers/error';
+import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -299,6 +299,7 @@ router.get('/:id/achievements', (req, res, next) => {
 		AchievementType, AchievementUnlock
 	} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
+	const isOwner = userId === (req.user && req.user.id);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
 		  .catch(next);
@@ -322,6 +323,7 @@ router.get('/:id/achievements', (req, res, next) => {
 			const props = generateProps(req, res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
+				isOwner,
 				tabActive: 2
 			});
 			const markup = ReactDOMServer.renderToString(
@@ -332,6 +334,7 @@ router.get('/:id/achievements', (req, res, next) => {
 						<AchievementsTab
 							achievement={props.achievement}
 							editor={props.editor}
+							isOwner={props.isOwner}
 						/>
 					</EditorContainer>
 				</Layout>

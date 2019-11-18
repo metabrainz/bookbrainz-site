@@ -20,6 +20,7 @@
 import * as baseFormatter from '../helpers/diffFormatters/base';
 import * as entityFormatter from '../helpers/diffFormatters/entity';
 import * as entityRoutes from './entity/entity';
+import * as error from '../../common/helpers/error';
 import * as languageSetFormatter from '../helpers/diffFormatters/languageSet';
 import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
@@ -36,6 +37,7 @@ import RevisionPage from '../../client/components/pages/revision';
 import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
+
 
 const router = express.Router();
 
@@ -212,6 +214,11 @@ router.get('/:id', (req, res, next) => {
 			revision, authorDiffs, editionDiffs, workDiffs, publisherDiffs,
 			editionGroupDiffs
 		) => {
+			// revision not found
+			if (!revision) {
+				throw new error.NotFoundError(null, req);
+			}
+
 			const diffs = _.concat(
 				entityFormatter.formatEntityDiffs(
 					authorDiffs,

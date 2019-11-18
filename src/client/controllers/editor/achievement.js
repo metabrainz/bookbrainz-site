@@ -42,6 +42,7 @@ ReactDOM.hydrate(
 				<AchievementsTab
 					achievement={props.achievement}
 					editor={props.editor}
+					isOwner={props.isOwner}
 				/>
 			</EditorContainer>
 		</Layout>

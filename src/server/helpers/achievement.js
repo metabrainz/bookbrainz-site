@@ -22,11 +22,11 @@
  */
 
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
-import * as error from './error';
+import * as error from '../../common/helpers/error';
 
 import Log from 'log';
 import Promise from 'bluebird';
-import config from './config';
+import config from '../../common/helpers/config';
 
 
 const log = new Log(config.site.log);

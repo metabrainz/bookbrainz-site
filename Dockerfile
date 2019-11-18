@@ -67,6 +67,7 @@ FROM bookbrainz-base as bookbrainz-prod
 ARG DEPLOY_ENV
 
 COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
+RUN chmod 755 /etc/rc.local
 
 COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
 COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
@@ -87,3 +88,19 @@ RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookb
 
 # Build JS project and assets
 RUN ["npm", "run", "build"]
+
+# API target
+FROM bookbrainz-base as bookbrainz-webservice
+ARG DEPLOY_ENV
+
+COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
+RUN chmod 755 /etc/rc.local
+
+COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
+COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
+RUN chmod +x /etc/service/webserver/exec-command
+COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
+RUN chmod 755 /etc/service/webserver/run
+RUN touch /etc/service/webserver/down
+# Build API JS
+RUN ["npm", "run", "build-api-js"]

@@ -23,6 +23,8 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
+	ISODateStringToObject,
+	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -84,7 +86,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadGenders,	middleware.loadLanguages,
+	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
@@ -104,8 +106,8 @@ router.get(
 
 function authorToFormState(author) {
 	const aliases = author.aliasSet ?
-		author.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
+		author.aliasSet.aliases.map(({languageId, ...rest}) => ({
+			language: languageId,
 			...rest
 		})) : [];
 
@@ -142,9 +144,9 @@ function authorToFormState(author) {
 
 	const authorSection = {
 		beginArea: entityRoutes.areaToOption(author.beginArea),
-		beginDate: author.beginDate,
+		beginDate: ISODateStringToObject(author.beginDate),
 		endArea: entityRoutes.areaToOption(author.endArea),
-		endDate: author.endDate,
+		endDate: ISODateStringToObject(author.endDate),
 		ended: author.ended,
 		gender: author.gender && author.gender.id,
 		type: author.authorType && author.authorType.id
@@ -221,11 +223,11 @@ function transformNewForm(data) {
 		aliases,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
-		beginDate: data.authorSection.beginDate,
+		beginDate: dateObjectToISOString(data.authorSection.beginDate),
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.authorSection.endArea &&
 			data.authorSection.endArea.id,
-		endDate: data.authorSection.ended ? data.authorSection.endDate : '',
+		endDate: data.authorSection.ended ? dateObjectToISOString(data.authorSection.endDate) : '',
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,

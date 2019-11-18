@@ -34,14 +34,18 @@ Auto-generated developer documentation can be found at our corresponding
 [doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our
 contributing guide can be found [here](CONTRIBUTING.md).
 <br/>
-## Testing subdomain
+## Beta and test subdomains
 
-A separate subdomain for the purpose of testing and rolling out beta features can be found [here](https://test.bookbrainz.org). 
-You can sign in with the same account as the one you use on the main website. All changes made to this subdomain are not in sync with the original website and vise versa (each has its own database). 
-The purpose of this project is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
+We have two separate subdomains for the purpose of testing and rolling out beta features.
+You can sign in with the same account as the one you use on the main website.
+
+__[beta.bookbrainz.org](https://beta.bookbrainz.org)__ uses the main database but with a newer version of the code that hasn't been released yet. It is used to test new features.
+
+__[test.bookbrainz.org](https://test.bookbrainz.org)__: all changes made to this subdomain are not in sync with the main database and vice versa.
+This domain is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
 This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.
 <br/>
-</br>
+<br/>
 # Setting up a local BookBrainz server
 
 BookBrainz depends on having PostgreSQL, Redis, Elasticsearch and NodeJS set
@@ -99,10 +103,9 @@ database dump.
 Luckily, we have a script that does just that: from the command line, in the `bookbrainz-site` folder, type and run `./scripts/database-init-docker.sh`.
 The process may take a while as Docker downloads and builds the images. Let that run until the command returns.
 
+The latest database dump can be found [at this address](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2)
 
-## Running the server
-
-> We have recently updated our schema and are in the process of migrating the production database to the new schema. As a result, the database set up earlier will not run with the `master` branch. Until the dumps with the new schema come in, please switch over to the `stable` branch instead of `master` before running the server. You can do this by running `git fetch <remote>/stable && git checkout <remote>/stable`, where remote is the name assigned by you to this git repository's address (which is `origin` by default).
+## Running the web server
 
 If all went well, you will only need to run `./develop.sh` in the command line from the `bookbrainz-site` folder.
 Press `ctrl+c` to stop the server. The dependencies will continue running in the background.
@@ -114,7 +117,16 @@ Make changes to the code in the `src` folder and run `./develop.sh` again to reb
 
 Once you are done developing, you can stop the dependencies running in docker in the background by running `./stop.sh`.
 
-### Advanced users
+## Running the API
+
+As described above for running the web server, you can easily start the API with Docker by running  `./develop-api.sh`.
+
+Point you browser to `localhost:9099/1/api-docs` to pull up the documentation and try out the api endpoints.
+
+Don't forget to run `./stop.sh` once you are done developing to stop the dependencies that are running in the background.
+
+
+## Advanced users
 
 If you do not want to use Docker, you can instead [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md),
 and/or [run the NodeJS server locally](./NODEJS_SETUP.md) while using dockerized dependencies.
@@ -130,23 +142,25 @@ For that, you will need to modify the `docker-compose.yml` file to mount the `sr
 
 For example:
 ```
-service:
+services:
   bookbrainz-site:
     command: npm run debug
     volumes:
+      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
       - "./src:/home/bookbrainz/bookbrainz-site/src"
 ```
-
+**Note**: Using Webpack watch results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](#running-the-web-server).
 <br/>
-<hr>
 <br/>
 
-## Testing
+# Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:
 
 Run the following postgres commands to create and set up the bookbrainz_test database:
-  - `psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres`
-  - `psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres`
-  - `psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres`
-  - `psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres`
-  - `psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres`
+  - `psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres -h localhost`
+  - `psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres -h localhost`
+  - `psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres -h localhost`
+  - `psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres -h localhost`
+  - `psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres -h localhost`
+
+If you are running these commands from inside the `bookbrainz-site` docker container, replace `-h localhost` with `-h postgres`.
