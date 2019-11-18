@@ -35,6 +35,7 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
+
 const router = express.Router();
 
 /* If the route specifies a BBID, load the Work for it. */
@@ -158,10 +159,11 @@ function getDefaultAliasIndex(aliases) {
 }
 
 function workToFormState(work) {
+	/** The front-end expects a language id rather than the language object. */
 	const aliases = work.aliasSet ?
-		work.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
-			...rest
+		work.aliasSet.aliases.map(({languageId, ...rest}) => ({
+			...rest,
+			language: languageId
 		})) : [];
 
 	const defaultAliasIndex = getDefaultAliasIndex(aliases);

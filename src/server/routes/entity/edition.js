@@ -206,10 +206,11 @@ function getDefaultAliasIndex(aliases) {
 }
 
 function editionToFormState(edition) {
+	/** The front-end expects a language id rather than the language object. */
 	const aliases = edition.aliasSet ?
-		edition.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
-			...rest
+		edition.aliasSet.aliases.map(({languageId, ...rest}) => ({
+			...rest,
+			language: languageId
 		})) : [];
 
 	const defaultAliasIndex = getDefaultAliasIndex(aliases);
