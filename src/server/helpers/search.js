@@ -343,11 +343,17 @@ export async function generateIndex(orm) {
 		.fetchAll();
 
 	const areas = areaCollection.toJSON();
+
+	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
+	 * We massage the area to return a similar format as BB entities
+	 */
 	const processedAreas = areas.map((area) => new Object({
-		bbid: area.gid,
-		defaultAlias: {
-			name: area.name
+		aliasSet: {
+			aliases: [
+				{name: area.name}
+			]
 		},
+		bbid: area.gid,
 		type: 'Area'
 	}));
 	await _processEntityListForBulk(processedAreas);
