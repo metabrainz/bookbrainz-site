@@ -27,6 +27,12 @@ directories will exist:
   (`src/client/stylesheets`).
 * `static/js` - minified JavaScript files which are referred to by the site
   pages.
+  
+## Contributing
+We welcome any and all contributions ! Whether you want to add or improve entries on [bookbrainz.org](https://bookbrainz.org), fix an issue on the website or provide new functionnality, we'll be happy to have your help and count you part of our ranks !
+If you are new to open source contribution workflows, have a look at [this beginner's guide](https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/) and our [contribution guidelines](CONTRIBUTING.md).
+Looking for existing issues, or to report a new bug you found? Head to our ticket tracker at https://tickets.metabrainz.org/projects/BB !
+Still not sure what to start with? Have a look at [tickets tagged **good-first-bug**](https://tickets.metabrainz.org/issues/?jql=project%20%3D%20BB%20AND%20status%20in%20(Open%2C%20Reopened)%20AND%20resolution%20%3D%20Unresolved%20AND%20labels%20%3D%20good-first-bug%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC)
 
 ## Documentation
 
