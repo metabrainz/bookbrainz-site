@@ -85,7 +85,7 @@ function IdentifierLink({typeId, value}) {
 			link = `https://www.openlibrary.org/authors/${value}`;
 			break;
 		case 24:
-			link = `https://www.lccn.loc.gov/${value}`;
+			link = `https://lccn.loc.gov/${value}`;
 			break;
 		case 25:
 			link = `https://www.orcid.org/${value}`;
