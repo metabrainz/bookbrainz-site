@@ -33,6 +33,7 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
+
 const router = express.Router();
 
 /* If the route specifies a BBID, load the EditionGroup for it. */
@@ -114,10 +115,11 @@ function getDefaultAliasIndex(aliases) {
 }
 
 function editionGroupToFormState(editionGroup) {
+	/** The front-end expects a language id rather than the language object. */
 	const aliases = editionGroup.aliasSet ?
-		editionGroup.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
-			...rest
+		editionGroup.aliasSet.aliases.map(({languageId, ...rest}) => ({
+			...rest,
+			language: languageId
 		})) : [];
 
 	const defaultAliasIndex = getDefaultAliasIndex(aliases);

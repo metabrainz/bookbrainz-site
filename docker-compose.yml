@@ -39,6 +39,7 @@ services:
       # Skip bootstrap checks (see https://github.com/docker-library/elasticsearch/issues/98)
       - transport.host=127.0.0.1
       - discovery.zen.minimum_master_nodes=1
+      - xpack.security.enabled=false
     ports:
       - "9200:9200"
     volumes:

@@ -122,10 +122,11 @@ router.get(
 );
 
 function publisherToFormState(publisher) {
+	/** The front-end expects a language id rather than the language object. */
 	const aliases = publisher.aliasSet ?
-		publisher.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
-			...rest
+		publisher.aliasSet.aliases.map(({languageId, ...rest}) => ({
+			...rest,
+			language: languageId
 		})) : [];
 
 	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
