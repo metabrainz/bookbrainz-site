@@ -107,6 +107,7 @@ class EntitySearchFieldOption extends React.Component {
 		return (
 			<CustomInput label={labelElement} tooltipText={this.props.tooltipText}>
 				<ImmutableAsyncSelect
+					filterOptions={false}
 					labelKey="text"
 					loadOptions={this.fetchOptions}
 					optionComponent={LinkedEntity}
