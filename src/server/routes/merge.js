@@ -126,7 +126,7 @@ function getEntitySectionByType(entityType, entities) {
 function entitiesToFormState(entities) {
 	const [targetEntity, ...otherEntities] = entities;
 	const aliases = entities.reduce((returnValue, entity) => {
-		if (!_.isNil(entity.aliasSet) && Array.isArray(entity.aliasSet.aliases)) {
+		if (Array.isArray(_.get(entity, 'aliasSet.aliases'))) {
 			return returnValue.concat(
 				entity.aliasSet.aliases.map(({language, ...rest}) => ({
 					language: language.id,
@@ -136,30 +136,26 @@ function entitiesToFormState(entities) {
 		}
 		return returnValue;
 	}, []);
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
-	const defaultAlias = aliases.splice(defaultAliasIndex, 1)[0];
+	let defaultAliasIndex;
+	if (_.get(targetEntity, 'aliasSet.defaultAliasId')) {
+		defaultAliasIndex = _.findIndex(aliases, alias => alias.id === targetEntity.aliasSet.defaultAliasId);
+	}
+	else {
+		defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
+	}
 
 	const aliasEditor = {};
-	const aliasPropsComparator = ['name', 'sortName', 'language'];
 	aliases.forEach((alias) => {
-		// Filter out aliases that are the same as defaultAlias
-		if (defaultAlias &&
-			!_.isEqual(
-				_.pick(alias, aliasPropsComparator),
-				_.pick(defaultAlias, aliasPropsComparator)
-			)
-		) {
-			alias.primary = false;
-			aliasEditor[alias.id] = alias;
-		}
+		aliasEditor[alias.id] = alias;
 	});
 
-	const nameSection = _.isNil(defaultAlias) ? {
+	const nameSection = aliases[defaultAliasIndex] ||
+	{
 		disambiguation: null,
 		language: null,
 		name: '',
 		sortName: ''
-	} : defaultAlias;
+	};
 	const hasDisambiguation = _.find(entities, 'disambiguation');
 	nameSection.disambiguation = hasDisambiguation &&
 		hasDisambiguation.disambiguation &&

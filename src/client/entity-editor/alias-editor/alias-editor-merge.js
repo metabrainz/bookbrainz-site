@@ -74,8 +74,18 @@ AliasEditorMerge.propTypes = {
 };
 
 function mapStateToProps(rootState) {
+	const nameSection = rootState.get('nameSection');
+	const aliases = rootState.get('aliasEditor');
+
+	/** Dynamically filter out aliases that are different
+	 * from the attributes selected in the nameSection
+	 * */
+	const filteredAliases = aliases.filter(alias =>
+		alias.get('name') !== nameSection.get('name') ||
+		alias.get('language') !== nameSection.get('language') ||
+		alias.get('sortName') !== nameSection.get('sortName'));
 	return {
-		aliases: rootState.get('aliasEditor')
+		aliases: filteredAliases
 	};
 }
 
