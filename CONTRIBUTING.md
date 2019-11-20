@@ -25,6 +25,17 @@ to BookBrainz:
  * Use [JSDoc](http://usejsdoc.org/) for commenting code
  * Use [Flow](https://flow.org/) annotations everywhere - static type checking is useful
 
+## Forking
+
+Before begining to contribute to the repository, it is mandatory to fork the repository to your github account and work on that fork.
+To fork the repository,  press the fork  button on the top left corner of the repository.
+
+## CLoning
+After forking the repository, the next step is to clone the repository to your local environment. To do this , press the clone option in the repository page and copy the link to the forked repository. 
+Then open up a terminal or command prompt and type:
+    git clone <link>
+    
+
 ## Commits
 
 We try to keep our commit messages readable and concise, this is especially important as they can't be rewritten—unlike
