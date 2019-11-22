@@ -24,10 +24,11 @@ import * as utilsHelper from '../../helpers/utils';
 
 import {genEntityIconHTMLElement, getEntityLabel} from '../../helpers/entity';
 
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {isNil as _isNil} from 'lodash';
+
 
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
@@ -79,7 +80,7 @@ class IndexPage extends React.Component {
 													bsStyle="success"
 													type="submit"
 												>
-													<FontAwesome name="search"/>
+													<FontAwesomeIcon icon="search"/>
 												</Button>
 											</span>
 										</div>
@@ -117,42 +118,42 @@ class IndexPage extends React.Component {
 										<h4 className="contact-text">
 											Contact Us
 										</h4>
-										<FontAwesome
+										<FontAwesomeIcon
 											className="margin-sides-1 contact-text"
-											name="circle"
+											icon="circle"
 										/>
 										<a href="//webchat.freenode.net/?channels=#metabrainz">
-											<FontAwesome
+											<FontAwesomeIcon
 												className="contact-text"
-												name="comment"
+												icon="comment"
 												size="2x"
 											/>
 										</a>
-										<FontAwesome
+										<FontAwesomeIcon
 											className="margin-sides-1 contact-text"
-											name="circle"
+											icon="circle"
 										/>
 										<a href="//twitter.com/intent/tweet?screen_name=BookBrainz">
-											<FontAwesome
+											<FontAwesomeIcon
 												className="contact-text"
-												name="twitter"
+												icon={['fab', 'twitter']}
 												size="2x"
 											/>
 										</a>
-										<FontAwesome
+										<FontAwesomeIcon
 											className="margin-sides-1 contact-text"
-											name="circle"
+											icon="circle"
 										/>
 										<a href="mailto:bookbrainz-users@groups.io">
-											<FontAwesome
+											<FontAwesomeIcon
 												className="contact-text"
-												name="envelope"
+												icon="envelope"
 												size="2x"
 											/>
 										</a>
-										<FontAwesome
+										<FontAwesomeIcon
 											className="margin-sides-1 contact-text"
-											name="circle"
+											icon="circle"
 										/>
 									</div>
 								</Col>
@@ -188,7 +189,7 @@ class IndexPage extends React.Component {
 				<hr/>
 				<Row>
 					<Col className="text-center margin-top-4" md={2}>
-						<FontAwesome name="user" size="5x"/>
+						<FontAwesomeIcon icon="user" size="5x"/>
 					</Col>
 					<Col md={10}>
 						<h2>Join Us!</h2>
