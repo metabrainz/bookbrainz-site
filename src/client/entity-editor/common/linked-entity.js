@@ -42,8 +42,9 @@ class LinkedEntity extends React.Component {
 		event.stopPropagation();
 		event.preventDefault();
 		let url = null;
-		const type = this.props.option && this.props.option.type;
-		const id = this.props.option && this.props.option.id;
+		const option = this.props.option.value || this.props.option;
+		const type = option && option.type;
+		const id = option && option.id;
 		if (type && id) {
 			url = type === 'Area' ?
 				`//musicbrainz.org/area/${id}` :
@@ -55,7 +56,7 @@ class LinkedEntity extends React.Component {
 	}
 
 	render() {
-		const {disambiguation, text, type, unnamedText, language} = this.props.option;
+		const {disambiguation, text, type, unnamedText, language} = this.props.option.value || this.props.option;
 
 		const nameComponent = text || <i>{unnamedText}</i>;
 
@@ -85,16 +86,12 @@ LinkedEntity.displayName = 'LinkedEntity';
 
 LinkedEntity.propTypes = {
 	className: PropTypes.string,
-	disambiguation: PropTypes.string,
 	onSelect: PropTypes.func.isRequired,
-	option: PropTypes.object.isRequired,
-	unnamedText: PropTypes.string
+	option: PropTypes.object.isRequired
 };
 
 LinkedEntity.defaultProps = {
-	className: null,
-	disambiguation: null,
-	unnamedText: '(unnamed)'
+	className: ''
 };
 
 export default LinkedEntity;

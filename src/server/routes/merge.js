@@ -27,6 +27,7 @@ import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
 import * as utils from '../helpers/utils';
 import {
+	ISODateStringToObject,
 	entityMergeMarkup,
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
@@ -56,6 +57,15 @@ function getEntityFetchPropertiesByType(entityType) {
 	switch (entityType) {
 		case 'Author':
 			return ['authorType', 'beginArea', 'endArea', 'gender'];
+		case 'Edition':
+			return [
+				'editionGroup.defaultAlias',
+				'languageSet.languages',
+				'editionFormat',
+				'editionStatus',
+				'releaseEventSet.releaseEvents',
+				'publisherSet.publishers.defaultAlias'
+			];
 		default:
 			return [];
 	}
@@ -108,6 +118,42 @@ function getAuthorEntityMergeSection(entities) {
 }
 
 /**
+ * @name getEditionEntityMergeSection
+ * @description Returns the initial form state for the Author merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer
+ * @param {object[]} entities - The array of entities to merge the properties of
+ * @returns {object} - The Author merge section for the initialState
+ */
+function getEditionEntityMergeSection(entities) {
+	const editionSection = {};
+	entities.forEach(entity => {
+		assignIfNotSet(editionSection, 'depth', entity);
+		assignIfNotSet(editionSection, 'editionGroup', entity);
+		assignIfNotSet(editionSection, 'format', entity, 'editionFormat.id');
+		assignIfNotSet(editionSection, 'height', entity);
+		assignIfNotSet(editionSection, 'pages', entity);
+		assignIfNotSet(editionSection, 'publisher', entity, 'publisherSet.publishers[0]');
+		assignIfNotSet(editionSection, 'releaseDate', entity, 'releaseEventSet.releaseEvents[0].date');
+		assignIfNotSet(editionSection, 'status', entity, 'editionStatus.id');
+		assignIfNotSet(editionSection, 'weight', entity);
+		assignIfNotSet(editionSection, 'width', entity);
+	});
+	const releaseDate = editionSection.releaseDate ?
+		ISODateStringToObject(editionSection.releaseDate) :
+		{day: '', month: '', year: ''};
+	const languages = _.flatMap(entities, entity => _.get(entity, 'languageSet.languages', []).map(
+		({id, name}) => ({label: name, value: id})
+	));
+	return Object.assign(editionSection,
+		{
+			editionGroup: utils.entityToOption(editionSection.editionGroup),
+			languages: _.uniqBy(languages, 'value'),
+			publisher: utils.entityToOption(editionSection.publisher),
+			releaseDate
+		});
+}
+
+/**
  * @description Returns the initial form state for the $entity$ section depending on the entity type
  * @param {string} entityType - Entity type string (lowercased)
  * @param {object[]} entities - Array of entities to merge
@@ -117,8 +163,11 @@ function getAuthorEntityMergeSection(entities) {
 function getEntitySectionByType(entityType, entities) {
 	switch (entityType) {
 		case 'author':
-		default:
 			return getAuthorEntityMergeSection(entities);
+		case 'edition':
+			return getEditionEntityMergeSection(entities);
+		default:
+			throw new Error(`Invalid entity type: '${entityType}'`);
 	}
 }
 
@@ -309,6 +358,7 @@ async function getEntityByBBID(orm, transacting, bbid) {
 router.get('/*', auth.isAuthenticated,
 	middleware.loadIdentifierTypes, middleware.loadGenders,
 	middleware.loadLanguages, middleware.loadAuthorTypes,
+	middleware.loadEditionFormats, middleware.loadEditionStatuses,
 	middleware.loadRelationshipTypes, async (req, res, next) => {
 		const {orm}: {orm: any} = req.app.locals;
 		const {

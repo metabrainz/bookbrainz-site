@@ -353,6 +353,7 @@ function transformNewForm(data) {
 			parseInt(data.editionSection.height, 10),
 		identifiers,
 		languages,
+		mergingEntities: data.mergingEntities,
 		note: data.submissionSection.note,
 		pages: data.editionSection.pages &&
 			parseInt(data.editionSection.pages, 10),
