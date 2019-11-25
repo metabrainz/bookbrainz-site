@@ -37,20 +37,7 @@ import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
 import React from 'react';
 import {connect} from 'react-redux';
-import {dateObjectToISOString} from '../../helpers/utils';
-import {transformISODateForDisplay} from '../../helpers/entity';
-
-
-const transformISODateForSelect = (dateValue) => {
-	let dateString = dateValue;
-	if (typeof dateValue !== 'string') {
-		dateString = dateObjectToISOString(dateValue);
-	}
-	return {
-		label: transformISODateForDisplay(dateString),
-		value: dateString
-	};
-};
+import {transformISODateForSelect} from '../../helpers/entity';
 
 /**
  * Container component. The AuthorSectionMerge component contains input fields

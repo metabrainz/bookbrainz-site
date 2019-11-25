@@ -123,14 +123,14 @@ router.get(
 			propsPromise.author =
 				Author.forge({bbid: req.query.author})
 					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
+					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		if (req.query.edition) {
 			propsPromise.edition =
 				Edition.forge({bbid: req.query.edition})
 					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
+					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		function render(props) {
