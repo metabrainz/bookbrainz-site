@@ -3,7 +3,7 @@
 ### These instruction are only valid for specific cases when you do not want to use Docker (`./develop.sh`) to run the server on your machine.
 
 If for some reason you do not want to use our standard development environment (Docker), you can run the server code manually (
-regardless of whether you are running dependencies with Docker for the database and search  or you [installed them manually](./MANUAL_INSTALL.md))
+regardless of whether you are running dependencies (database, search,…) with Docker or you [are running them manually](./MANUAL_INSTALL.md))
 
 ## Installing NodeJS
 
@@ -25,88 +25,58 @@ Our `config.example.json` is set up to work out of the box running everything in
 For local development (run outside of Docker), make a copy of `config/config.local.json.example` and [fill up the musicbrainz tokens](README.md#configuration). You can then pass this configuration file when running the server locally using `--config` flag.
 For example, `npm start -- --config ./config/config.local.json` will use `./config/config.local.json` config instead of the Default config (`config.json` for Docker).
 
+
 ## Building and running
 A number of subcommands exist to manage the installation and run the server.
 These are described here; any commands not listed should not be called directly:
 
 * start - start the server in production mode, with code built once
-* debug - start the server in debug mode, with code watched for changes
+* [debug - start the server in debug mode, with code watched for changes](#watch-files-and-live-reload-with-webpack)
 * lint - check the code for syntax and style issues
 * test - perform linting and attempt to compile the code
 * jsdoc - build the documentation for JSDoc annotated functions within the
   code
 
-# VSCode users
-If you want to use VSCode to run and debug the server or API, here is a VSCode launch configuration for running both the server and the tests, useful in both cases to debug into the code.
-Here is [a good introduction](https://www.youtube.com/watch?v=yFtU6_UaOtA) to debugging javascript in VSCode
-1. At the root fo the repository, create a .vscode/launch.json file containing:
-  ```
-  {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "env": {"SSR":true},
-            "program": "${workspaceFolder}/lib/server/app.js",
-            "sourceMaps": true,
-            "preLaunchTask": "build-server-with-sourcemaps"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Mocha Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--timeout", "999999",
-                "--colors",
-                "${workspaceFolder}/test/" // You can point to a specific file or folder to run only those tests
-            ],
-            "env": {"NODE_ENV":"test","SSR":true},
-            "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "build-server-with-sourcemaps"
-        }
-    ]
-}
-  ```
-2. Create a .vscode/tasks.json file containing:
-  ```
-{
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build-server-with-sourcemaps",
-            "command": "${workspaceFolder}/node_modules/.bin/babel",
-            "args": [
-                "src",
-                "--out-dir",
-                "lib",
-                "--source-maps"
-            ],
-            "isBackground": false
-		},
-		{
-			"label": "build-client",
-            "type": "npm",
-            "script": "build-client-js",
-            "problemMatcher": [],
-			"isBackground": false,
-		},
-		{
-			"label": "build-client-and server",
-            "type": "npm",
-            "script": "build",
-            "problemMatcher": [],
-			"isBackground": false,
-        }
-    ]
-}	
- ```
+<br/>
+
+# Debugging with VSCode
+You can use VSCode to run the server or API and take advantage of its debugger, an invaluable tool I highly recommend you learn to use.
+
+This will allow you to put breakpoints to stop and inspect the code and variables during its execution, advance code execution line by line and step into function calls, instead of putting `console.log` calls everywhere.
+
+Here is [a good introduction](https://www.youtube.com/watch?v=yFtU6_UaOtA) to debugging javascript in VSCode.
+
+There are VSCode configuration files (in the `.vscode` folder) for running both the server and the tests, useful in both cases to debug into the code and see what is happening as the code executes.
+Make sure the dependencies (postgres, redis, elasticsearch) are running, and you can just open the debugger tray in VSCode, select 'Launch Program' and click the button!
 
 BookBrainz uses [Flow](https://flow.org) as a javascript typechecking library. VSCode is partial to Typescript, and needs to be configured to avoid confusion.
 We recommend you install the flow-for-vscode extension and [follow this setup step](https://github.com/flowtype/flow-for-vscode#setup):
 `Set [VSCode configuration] javascript.validate.enable option to false or completely disable the built-in TypeScript extension for your project`
+
+<br/>
+
+# Watch files and live reload with Webpack
+
+Advanced users may want to use Webpack to build, watch files and inject rebuilt pages without having to refresh the page,
+keeping the application state intact, for the price of increased compilation time and resource usage (see note below).
+
+If you are running the server manually, you can simply run `npm run debug` in the command line.
+
+If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file to:
+1. change the `command` to:
+    - `npm run debug` if you only want to change client files (in `src/client`)
+    - `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
+2. mount the `src` folder
+
+For example:
+```
+services:
+  bookbrainz-site:
+  # 1. Change the command to run
+    command: npm run debug
+    volumes:
+      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
+  # 2. Mount the src directory
+      - "./src:/home/bookbrainz/bookbrainz-site/src"
+```
+**Note**: Using Webpack watch mode (`npm run debug`) results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](/README.md#running-the-web-server).

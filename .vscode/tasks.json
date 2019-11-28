@@ -1,0 +1,52 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-website",
+            "dependsOn": [
+                "build-server-with-sourcemaps",
+                "build-client-js"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build-server-with-sourcemaps",
+            "command": "${workspaceFolder}/node_modules/.bin/babel",
+            "args": [
+                "src",
+                "--out-dir",
+                "lib",
+                "--source-maps",
+                "--ignore src/api"
+            ],
+            "isBackground": false
+        },
+        {
+            "label": "build-client-js",
+            "type": "npm",
+            "script": "build-client-js",
+            "problemMatcher": [],
+        },
+        {
+            "label": "build-api-with-sourcemaps",
+            "command": "${workspaceFolder}/node_modules/.bin/babel",
+            "args": [
+                "src",
+                "--ignore 'src/server','src/client'",
+                "--source-maps",
+                "--out-dir",
+                "lib"
+            ],
+            "isBackground": false
+        },
+        {
+            "label": "lint-code",
+            "type": "npm",
+            "script": "lint",
+            "problemMatcher": []
+        }
+    ]
+}
