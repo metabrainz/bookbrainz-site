@@ -7,7 +7,7 @@ please follow the steps below.
 
 ## Bug Tracker
 
-We use the bug tracker at https://tickets.metabrainz.org to track issues with
+We use the bug tracker at https://tickets.metabrainz.org/projects/BB to track issues with
 the site or supporting BookBrainz libraries. If you find a problem, or are
 looking for something to fix, please head there. We do not use GitHub issues.
 
