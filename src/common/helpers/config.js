@@ -16,19 +16,54 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {readFileSync} from 'fs';
+import {existsSync, readFileSync} from 'fs';
+import {normalize} from 'path';
 
 
-/* Pull in environment-specific configuration. */
-const env = process.env.NODE_ENV || 'development'; // eslint-disable-line no-process-env,max-len
+let configContents;
 
-let configFileBasename = 'config';
-if (env === 'test') {
-	configFileBasename = 'test';
+// Use Default configuration (for Docker)
+function useDefaultConfig() {
+	/* Pull in environment-specific configuration. */
+	const env = process.env.NODE_ENV || 'development'; // eslint-disable-line no-process-env,max-len
+
+	let configFileBasename = 'config';
+	if (env === 'test') {
+		configFileBasename = 'test';
+	}
+	configContents =
+			readFileSync(`config/${configFileBasename}.json`);
 }
 
-const configContents =
-	readFileSync(`config/${configFileBasename}.json`);
+function checkConfigOverwrite() {
+	const args = process.argv;
+	const configIndex = args.indexOf('--config');
+
+	// Check for '--config' followed by 'configPathFile'
+	if (configIndex !== -1) {
+		let configFilePath = args[configIndex + 1];
+		if (!configFilePath) { throw Error('Missing configuration file path'); }
+
+		configFilePath = normalize(configFilePath);
+		if (existsSync(configFilePath)) {
+			configContents = readFileSync(configFilePath);
+		}
+		else {
+			throw Error(`${configFilePath} does not exist`);
+		}
+	}
+	else { useDefaultConfig(); }
+}
+
+try {
+	checkConfigOverwrite();
+}
+catch (exception) {
+	// eslint-disable-next-line no-console
+	console.log(`${exception.toString()}. Using Default configuration instead.`);
+	useDefaultConfig();
+}
+
 const config = JSON.parse(configContents);
 
 export default config;

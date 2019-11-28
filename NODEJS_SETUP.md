@@ -20,12 +20,11 @@ This command will also compile the site LESS and JavaScript source files.
 
 ## Configuration
 
-Our `config.example.json` is set up to work out of the box running everything in Docker. Adresses for the dependencies refer to docker container names, so that containers can communicate with each other.
+Our `config.example.json` is set up to work out of the box running everything in Docker. Addresses for the dependencies refer to docker container names, so that containers can communicate with each other.
 
-You will need to modify the `config/config.json` file* to point to the dependencies from outside the Docker network.
-Typically, you'll want to set `session.redis.host` and `database.connection.host` to `localhost` and `search.host` to `localhost:9200`  and adjust the ports according to your setup.
+For local development (run outside of Docker), make a copy of `config/config.local.json.example` and [fill up the musicbrainz tokens](README.md#configuration). You can then pass this configuration file when running the server locally using `--config` flag.
+For example, `npm start -- --config ./config/config.local.json` will use `./config/config.local.json` config instead of the Default config (`config.json` for Docker).
 
-*If it doesn't exist, make a copy of `config.example.json` and rename it)
 
 ## Building and running
 A number of subcommands exist to manage the installation and run the server.
