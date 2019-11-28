@@ -734,7 +734,7 @@ export function handleCreateOrEditEntity(
 	derivedProps: {}
 ) {
 	const {orm}: {orm: any} = req.app.locals;
-	const {Entity, Revision, bookshelf} = orm;
+	const {Edition, Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
 	const {body}: {body: any} = req;
@@ -840,6 +840,20 @@ export function handleCreateOrEditEntity(
 					// eslint-disable-next-line camelcase
 						{source_bbid: entity.bbid, target_bbid: currentEntity.bbid}
 					)));
+
+				/**
+				 * For EditionGroup entities, each merged EG may have editions associated to it.
+				 * We need to set each Edition's edition_group_bbid to the target entity BBID
+				 */
+				if (entityType === 'EditionGroup') {
+					const editionsToSet = await Edition.query(qb =>
+						qb.whereIn('edition_group_bbid', entitiesToMerge.map(entity => entity.bbid)))
+						.fetchAll({transacting});
+					editionsToSet.forEach(editionModel =>
+						editionModel.set({editionGroupBbid: currentEntity.bbid}));
+					// Add the modified Editions to the revision
+					allEntities = _.unionBy(allEntities, editionsToSet.toArray(), 'id');
+				}
 
 				/**
 				 * Set isMerge to true on the *entity*_revision models

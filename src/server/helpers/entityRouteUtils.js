@@ -125,7 +125,7 @@ export function generateEntityMergeProps(
 	initialStateCallback: (entity: ?Object) => Object =
 	(entity) => new Object()
 ): Object {
-	const entityName = _.capitalize(entityType);
+	const entityName = _.startCase(entityType);
 	const {mergingEntities} = additionalProps;
 	const entity = mergingEntities[0];
 
@@ -134,7 +134,7 @@ export function generateEntityMergeProps(
 		res.locals.identifierTypes
 	);
 
-	const submissionUrl = `/${entityType}/${entity.bbid}/edit/handler`;
+	const submissionUrl = `/${_.kebabCase(entityType)}/${entity.bbid}/edit/handler`;
 
 	const props = Object.assign({
 		entityType,

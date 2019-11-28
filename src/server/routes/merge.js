@@ -66,6 +66,15 @@ function getEntityFetchPropertiesByType(entityType) {
 				'releaseEventSet.releaseEvents',
 				'publisherSet.publishers.defaultAlias'
 			];
+		case 'EditionGroup':
+			return [
+				'editionGroupType',
+				'editions.defaultAlias',
+				'editions.disambiguation',
+				'editions.releaseEventSet.releaseEvents',
+				'editions.identifierSet.identifiers.type',
+				'editions.editionFormat'
+			];
 		default:
 			return [];
 	}
@@ -89,7 +98,7 @@ function assignIfNotSet(targetObject, propName, sourceObject, sourcePath = propN
 /**
  * @name getAuthorEntityMergeSection
  * @description Returns the initial form state for the Author merging page, based on the multiple entities.
- * The returned section has some properties transformed to a state acceptable by the reducer
+ * The returned section has some properties transformed to a state acceptable by the reducer.
  * @param {object[]} entities - The array of entities to merge the properties of
  * @returns {object} - The Author merge section for the initialState
  */
@@ -119,10 +128,10 @@ function getAuthorEntityMergeSection(entities) {
 
 /**
  * @name getEditionEntityMergeSection
- * @description Returns the initial form state for the Author merging page, based on the multiple entities.
- * The returned section has some properties transformed to a state acceptable by the reducer
+ * @description Returns the initial form state for the Edition merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer.
  * @param {object[]} entities - The array of entities to merge the properties of
- * @returns {object} - The Author merge section for the initialState
+ * @returns {object} - The Edition merge section for the initialState
  */
 function getEditionEntityMergeSection(entities) {
 	const editionSection = {};
@@ -154,6 +163,23 @@ function getEditionEntityMergeSection(entities) {
 }
 
 /**
+ * @name getEditionGroupEntityMergeSection
+ * @description Returns the initial form state for the Edition Group merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer.
+ * @param {object[]} entities - The array of entities to merge the properties of
+ * @returns {object} - The Edition Group merge section for the initialState
+ */
+function getEditionGroupEntityMergeSection(entities) {
+	const editionGroupSection = {editions: []};
+	entities.forEach(entity => {
+		assignIfNotSet(editionGroupSection, 'type', entity, 'typeId');
+		editionGroupSection.editions.push(...entity.editions);
+	});
+
+	return editionGroupSection;
+}
+
+/**
  * @description Returns the initial form state for the $entity$ section depending on the entity type
  * @param {string} entityType - Entity type string (lowercased)
  * @param {object[]} entities - Array of entities to merge
@@ -166,6 +192,8 @@ function getEntitySectionByType(entityType, entities) {
 			return getAuthorEntityMergeSection(entities);
 		case 'edition':
 			return getEditionEntityMergeSection(entities);
+		case 'editionGroup':
+			return getEditionGroupEntityMergeSection(entities);
 		default:
 			throw new Error(`Invalid entity type: '${entityType}'`);
 	}
@@ -229,7 +257,7 @@ function entitiesToFormState(entities) {
 	uniqueIdentifiers.forEach((identifier) => {
 		identifierEditor[identifier.id] = identifier;
 	});
-	const type = targetEntity.type.toLowerCase();
+	const type = _.camelCase(targetEntity.type);
 
 	const entityTypeSection = getEntitySectionByType(type, entities);
 
@@ -355,11 +383,14 @@ async function getEntityByBBID(orm, transacting, bbid) {
 		});
 }
 
+// TO DO: Load the various entity specfic enums (gender, authorTypes, editionGroupTypes…)
+// according to the entity type, and attach them appropriately in entityMergeMarkup
 router.get('/*', auth.isAuthenticated,
 	middleware.loadIdentifierTypes, middleware.loadGenders,
 	middleware.loadLanguages, middleware.loadAuthorTypes,
-	middleware.loadEditionFormats, middleware.loadEditionStatuses,
-	middleware.loadRelationshipTypes, async (req, res, next) => {
+	middleware.loadEditionFormats, middleware.loadEditionGroupTypes,
+	middleware.loadEditionStatuses, middleware.loadRelationshipTypes,
+	async (req, res, next) => {
 		const {orm}: {orm: any} = req.app.locals;
 		const {
 			Author, Edition, EditionGroup,
@@ -404,13 +435,14 @@ router.get('/*', auth.isAuthenticated,
 			return next(conflictError);
 		}
 
-		const entityType = mergingEntities[0].type.toLowerCase();
+		const entityType = _.camelCase(mergingEntities[0].type);
 		res.locals.entity = mergingEntities[0];
 
 		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
 			entityType, req, res, {
 				authorTypes: res.locals.authorTypes,
 				bbids,
+				editionGroupTypes: res.locals.editionGroupTypes,
 				genderOptions: res.locals.genders,
 				identifierTypes: res.locals.identifierTypes,
 				mergingEntities,
@@ -423,7 +455,7 @@ router.get('/*', auth.isAuthenticated,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: `Merge ${entityType}s`
+			title: `Merge ${mergingEntities.length} ${_.startCase(entityType)}s`
 		}));
 	});
 
