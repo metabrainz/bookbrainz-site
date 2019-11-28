@@ -19,14 +19,10 @@
 // @flow
 
 import {type Action, updateType} from './actions';
-import {Col, Row} from 'react-bootstrap';
-
-import CustomInput from '../../input';
 import EditionTable from '../../components/pages/entities/edition-table';
 import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
 import React from 'react';
-import Select from 'react-select';
 import {find as _find} from 'lodash';
 import {connect} from 'react-redux';
 
