@@ -10,6 +10,7 @@
             "name": "Launch Program",
             "env": {"SSR":true},
             "program": "${workspaceFolder}/lib/server/app.js",
+            "args": ["--config", "./config/config.local.json"],
             "sourceMaps": true,
             "preLaunchTask": "build-website"
         },
@@ -33,6 +34,7 @@
             "request": "launch",
             "name": "Launch API",
             "program": "${workspaceFolder}/lib/api/app.js",
+            "args": ["--config", "./config/config.local.json"],
             "preLaunchTask": "build-api-with-sourcemaps"
         },
         {
