@@ -65,7 +65,7 @@ function awardUnlock(UnlockType, awardAttribs) {
 function awardAchievement(orm, editorId, achievementName) {
 	const {AchievementType, AchievementUnlock} = orm;
 	return new AchievementType({name: achievementName})
-		.fetch()
+		.fetch({require: false})
 		.then((achievementTier) => {
 			let awardPromise;
 			if (achievementTier === null) {
@@ -107,7 +107,7 @@ function awardTitle(orm, editorId, tier) {
 	let titlePromise;
 	if (tier.titleName) {
 		titlePromise = new TitleType({title: tier.titleName})
-			.fetch()
+			.fetch({require: false})
 			.then((title) => {
 				let awardPromise;
 				if (title === null) {
