@@ -70,3 +70,33 @@ Here's an example of a complete commit message following these guidelines:
     Everybody has a birth date, and this field allows editors to record the birth
     dates of authors they add to BookBrainz. Dates in ISO 8601 format
     (https://en.wikipedia.org/wiki/ISO_8601) are accepted by the field.
+
+
+## For Beginners
+We welcome all contributors of all ranks to contribute towards Metabrainz foundation. If you are new to contributing towards open source software and not familiar with the workflow of github please refer to [this guide](https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/). For any clarification, visit our [Readme](README.md) .
+
+#### Forking
+  Before beginning to contribute to the repository, it is mandatory to fork the repository to your github account and work on that fork.
+  To fork the repository, press the fork  button on the top left corner of the repository.
+
+#### Cloning
+  To setup a local clone of the repository, press the clone option in the repository page and copy the link to the forked repository. 
+  Then open up a terminal or command prompt and type:
+  `git clone <link>`
+
+#### Branch
+  Create and checkout to a branch using this command: 
+  `git checkout -b BranchName`
+
+#### Commiting 
+ After adding files or making changes to an existing file,commit the changes by following the above Commiting guidelines using this command:
+  `git commit -m "Message to be typed according to the above schema"`
+
+#### Pushing branch to Fork
+  Pushing can be done by using :
+  ` git push origin BranchName`
+
+#### Pull Request
+  After pushing your changes to the remote, you can create a pull request by going to the [repository](https://github.com/bookbrainz/bookbrainz-site) page on github.
+
+
