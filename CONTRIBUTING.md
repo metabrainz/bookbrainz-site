@@ -97,4 +97,5 @@ We welcome all contributors of all ranks to contribute towards Metabrainz founda
   ` git push origin BranchName`
 
 #### Pull Request
-  After pushing your changes to the remote, you can create a pull request by going to the [repository](https://github.com/bookbrainz/bookbrainz-site) page on github.do
+  After pushing your changes to the remote, you can create a pull request by going to the [repository](https://github.com/bookbrainz/bookbrainz-site) page on github.
+o
