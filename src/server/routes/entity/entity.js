@@ -52,6 +52,7 @@ import _ from 'lodash';
 import config from '../../../common/helpers/config';
 import target from '../../templates/target';
 
+
 type PassportRequest = $Request & {user: any, session: any};
 
 const log = new Log(config.site.log);
@@ -267,8 +268,7 @@ export function handleDelete(
 		// Get the parents of the new revision
 		const revisionParentsPromise = newRevisionPromise
 			.then((revision) =>
-				revision.related('parents').fetch({transacting})
-			);
+				revision.related('parents').fetch({transacting}));
 
 		// Add the previous revision as a parent of this revision.
 		const parentAddedPromise =
@@ -423,7 +423,7 @@ async function getNextAliasSet(orm, transacting, currentEntity, body) {
 
 	const oldAliasSet = await (
 		id &&
-		new AliasSet({id}).fetch({transacting, withRelated: ['aliases']})
+		new AliasSet({id}).fetch({require: false, transacting, withRelated: ['aliases']})
 	);
 
 	return orm.func.alias.updateAliasSet(
@@ -441,6 +441,7 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 	const oldIdentifierSet = await (
 		id &&
 		new IdentifierSet({id}).fetch({
+			require: false,
 			transacting, withRelated: ['identifiers']
 		})
 	);
@@ -460,6 +461,7 @@ async function getNextRelationshipSets(
 	const oldRelationshipSet = await (
 		id &&
 		new RelationshipSet({id}).fetch({
+			require: false,
 			transacting, withRelated: ['relationships']
 		})
 	);
@@ -479,7 +481,7 @@ async function getNextAnnotation(
 	const id = _.get(currentEntity, ['annotation', 'id']);
 
 	const oldAnnotation = await (
-		id && new Annotation({id}).fetch({transacting})
+		id && new Annotation({id}).fetch({require: false, transacting})
 	);
 
 	return orm.func.annotation.updateAnnotation(
@@ -493,7 +495,7 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 	const id = _.get(currentEntity, ['disambiguation', 'id']);
 
 	const oldDisambiguation = await (
-		id && new Disambiguation({id}).fetch({transacting})
+		id && new Disambiguation({id}).fetch({require: false, transacting})
 	);
 
 	return orm.func.disambiguation.updateDisambiguation(
