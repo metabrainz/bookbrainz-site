@@ -25,9 +25,10 @@
 /* eslint import/no-commonjs: "warn" */
 /* eslint global-require: "warn" */
 
+import '../helpers/setupIconLibrary';
 import * as bootstrap from 'react-bootstrap';
 
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -105,14 +106,14 @@ class Layout extends React.Component {
 		 */
 		const createDropdownTitle = (
 			<span>
-				<FontAwesome name="plus"/>
+				<FontAwesomeIcon icon="plus"/>
 				{'  Add'}
 			</span>
 		);
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesome name="user-circle"/>
+				<FontAwesomeIcon icon="user-circle"/>
 				{`  ${user.name}`}
 			</span>
 		);
@@ -163,11 +164,11 @@ class Layout extends React.Component {
 							onMouseDown={this.handleMouseDown}
 						>
 							<MenuItem href={`/editor/${user.id}`}>
-								<FontAwesome fixedWidth name="info"/>
+								<FontAwesomeIcon fixedWidth icon="info"/>
 								{' Profile'}
 							</MenuItem>
 							<MenuItem {...disableSignUp} href="/logout">
-								<FontAwesome fixedWidth name="sign-out-alt"/>
+								<FontAwesomeIcon fixedWidth icon="sign-out-alt"/>
 								{' Sign Out'}
 							</MenuItem>
 						</NavDropdown>
@@ -175,20 +176,20 @@ class Layout extends React.Component {
 				) : (
 					<Nav pullRight>
 						<NavItem {...disableSignUp} href="/auth">
-							<FontAwesome name="sign-in-alt"/>
+							<FontAwesomeIcon icon="sign-in-alt"/>
 							{' Sign In / Register'}
 						</NavItem>
 					</Nav>
 				)}
 				<Nav pullRight>
 					<NavItem href="/help">
-						<FontAwesome name="question-circle"/>
+						<FontAwesomeIcon icon="question-circle"/>
 						{' Help '}
 					</NavItem>
 				</Nav>
 				<Nav pullRight>
 					<NavItem href="/statistics">
-						<FontAwesome name="chart-line"/>
+						<FontAwesomeIcon icon="chart-line"/>
 						{' Statistics '}
 					</NavItem>
 				</Nav>
@@ -211,7 +212,7 @@ class Layout extends React.Component {
 										className="btn btn-success"
 										type="submit"
 									>
-										<FontAwesome name="search"/>
+										<FontAwesomeIcon icon="search"/>
 									</button>
 								</span>
 							</div>

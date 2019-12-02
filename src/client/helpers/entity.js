@@ -22,7 +22,7 @@ import * as bootstrap from 'react-bootstrap';
 
 import {get as _get, kebabCase as _kebabCase} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 
@@ -108,7 +108,7 @@ export function showEntityEditions(entity) {
 					className="pull-right"
 					href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 				>
-					<FontAwesome name="plus"/>
+					<FontAwesomeIcon icon="plus"/>
 					{'  Add Edition'}
 				</Button>
 			</h2>
@@ -236,14 +236,14 @@ export const ENTITY_TYPE_ICONS = {
 	Work: 'pen-nib'
 };
 
-export function genEntityIconHTMLElement(entityType, size = '', margin = true) {
+export function genEntityIconHTMLElement(entityType, size = '1x', margin = true) {
 	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
 	return (
-		<FontAwesome
-			ariaLabel={entityType}
+		<FontAwesomeIcon
 			className={margin ? 'margin-right-0-5' : ''}
-			name={ENTITY_TYPE_ICONS[entityType]}
+			icon={ENTITY_TYPE_ICONS[entityType]}
 			size={size}
+			title={entityType}
 		/>);
 }
 

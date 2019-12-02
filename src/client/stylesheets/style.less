@@ -191,6 +191,14 @@ body {
 	.picture-fallback-icon(800%);
 }
 
+/**
+ * Styling for FontAwesome icons, to fix random-sized
+ * icons appear while the page is loading (FOUC).
+ */
+.svg-inline--fa{
+	height: 1em;
+}
+
 /* Sticky footer styling */
 html {
 	position: relative;
