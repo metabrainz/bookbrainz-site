@@ -268,12 +268,12 @@ export function handleDelete(
 		// Get the parents of the new revision
 		const revisionParentsPromise = newRevisionPromise
 			.then((revision) =>
-				revision.related('parents').fetch({transacting}));
+				revision.related('parents').fetch({require: false, transacting}));
 
 		// Add the previous revision as a parent of this revision.
 		const parentAddedPromise =
 			revisionParentsPromise.then(
-				(parents) => parents.attach(
+				(parents) => parents && parents.attach(
 					entity.revisionId, {transacting}
 				)
 			);
