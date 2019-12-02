@@ -107,7 +107,6 @@ class EntityDeletionForm extends React.Component {
 				<Row className="margin-top-2">
 					{loadingComponent}
 					<Col md={6} mdOffset={3}>
-						{errorComponent}
 						<form onSubmit={this.handleSubmit}>
 							<Panel
 								bsStyle="danger"
@@ -141,6 +140,7 @@ class EntityDeletionForm extends React.Component {
 									type="textarea"
 									wrapperClassName="margin-top-1"
 								/>
+								{errorComponent}
 							</Panel>
 						</form>
 					</Col>
