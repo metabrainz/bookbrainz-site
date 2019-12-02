@@ -192,12 +192,15 @@ router.get('/:id', (req, res, next) => {
 				'author', 'author.titleUnlock.title', 'notes', 'notes.author',
 				'notes.author.titleUnlock.title'
 			]
+		})
+		.catch(Revision.NotFoundError, (err) => {
+			throw new error.NotFoundError(err, req);
 		});
 
 	function _createRevision(model) {
 		return model.forge()
 			.where('id', req.params.id)
-			.fetchAll({withRelated: ['entity']})
+			.fetchAll({require: false, withRelated: ['entity']})
 			.then(diffRevisionsWithParents);
 	}
 
