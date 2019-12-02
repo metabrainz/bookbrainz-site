@@ -45,10 +45,14 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		.fetch({
 			withRelated: ['area', 'gender']
 		})
-		.then((editor) => editor.toJSON());
+		.then((editor) => editor.toJSON())
+		.catch(Editor.NotFoundError, () => {
+			throw new error.NotFoundError('Editor not found', req);
+		});
 	const titleJSONPromise = new TitleUnlock()
 		.where('editor_id', parseInt(req.user.id, 10))
 		.fetchAll({
+			require: false,
 			withRelated: ['title']
 		})
 		.then((unlock) => {
@@ -62,7 +66,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			return titleJSON;
 		});
 	const genderJSONPromise = new Gender()
-		.fetchAll()
+		.fetchAll({require: false})
 		.then((gender) => {
 			if (gender) {
 				return gender.toJSON();
@@ -114,6 +118,9 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			// Fetch the current user from the database
 			() => Editor.forge({id: parseInt(req.user.id, 10)}).fetch()
 		)
+		.catch(Editor.NotFoundError, () => {
+			throw new error.NotFoundError('Editor not found', req);
+		})
 		.then(
 			// Modify the user to match the updates from the form
 			(editor) => editor.set('bio', req.body.bio)
@@ -147,6 +154,7 @@ function getEditorTitleJSON(editorJSON, TitleUnlock) {
 			id: editorJSON.titleUnlockId
 		})
 			.fetch({
+				require: false,
 				withRelated: ['title']
 			})
 			.then((unlock) => {
@@ -196,6 +204,7 @@ router.get('/:id', (req, res, next) => {
 		.query((qb) => qb.limit(3))
 		.orderBy('profile_rank', 'ASC')
 		.fetchAll({
+			require: false,
 			withRelated: ['achievement']
 		})
 		.then((achievements) => {
@@ -306,7 +315,7 @@ router.get('/:id/achievements', (req, res, next) => {
 
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
-		.fetchAll()
+		.fetchAll({require: false})
 		.then((unlocks) => unlocks.map('attributes.achievementId'))
 		.then(
 			(unlocks) => new AchievementType()
@@ -355,7 +364,7 @@ function rankUpdate(orm, editorId, bodyRank, rank) {
 		editorId,
 		profileRank: rank
 	})
-		.fetch()
+		.fetch({require: false})
 		.then((unlock) => {
 			if (unlock !== null) {
 				unlock.set('profileRank', null)
