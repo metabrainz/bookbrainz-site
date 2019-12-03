@@ -134,7 +134,7 @@ class DateField extends React.Component {
 		});
 		const selectedDate = parseISO(dateString);
 		const groupClassName = classNames({hidden: !this.props.show});
-		const isCommonEraDate = Math.sign(this.state.year) === 1;
+		const isCommonEraDate = Math.sign(this.state.year) === 1 || Math.sign(this.state.year) === 0;
 		return (
 			<div>
 				<CustomInput
