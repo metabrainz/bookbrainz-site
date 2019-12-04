@@ -76,7 +76,7 @@ Note: If you are using docker-toolbox you need to replace [elasticsearch:9200](/
 To clone the repository and point the local HEAD to the latest commit in the
 `stable` branch, something like the following command should work:
 
-    git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
+    git clone --recurse-submodules https://github.com/bookbrainz/bookbrainz-site.git
 
 Since this project makes use of
 git submodules, you
