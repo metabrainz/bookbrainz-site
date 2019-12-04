@@ -7,6 +7,7 @@
 /src/client/stylesheets/react-select
 /reports
 /config/config.json
+/config/config.local.json
 
 # react-hot-loader files
 /static/**/*.hot-update.js

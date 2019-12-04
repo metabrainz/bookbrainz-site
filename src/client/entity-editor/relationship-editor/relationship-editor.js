@@ -46,6 +46,7 @@ function isValidRelationship(relationship: _Relationship) {
 	const {relationshipType, sourceEntity, targetEntity} = relationship;
 
 	return (
+		relationshipType.deprecated !== false &&
 		(relationshipType.sourceEntityType === sourceEntity.type) &&
 		(relationshipType.targetEntityType === targetEntity.type)
 	);
@@ -86,6 +87,9 @@ function getValidOtherEntityTypes(
 	baseEntity: Entity
 ) {
 	const validEntityTypes = relationshipTypes.map((relationshipType) => {
+		if (relationshipType.deprecated === true) {
+			return null;
+		}
 		if (relationshipType.sourceEntityType === baseEntity.type) {
 			return relationshipType.targetEntityType;
 		}
@@ -244,6 +248,9 @@ class RelationshipModal
 	renderEntitySelect() {
 		const {baseEntity, relationshipTypes} = this.props;
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
+		if (!types.length) {
+			return null;
+		}
 		const typesForDisplay = types.map(_.startCase);
 		const lastType = _.last(typesForDisplay);
 		const otherTypes = _.join(typesForDisplay.slice(0, -1), ', ');
@@ -298,8 +305,31 @@ class RelationshipModal
 
 	render() {
 		const {onCancel, onClose, baseEntity} = this.props;
-
+		const baseEntityTypeForDisplay = _.startCase(baseEntity.type);
 		const submitDisabled = this.calculateProgressAmount() < 100;
+		const entitySelect = this.renderEntitySelect();
+
+		// If there are no possible relationships for this entity type,
+		// display a helpful message instead of empty selects
+		if (entitySelect === null) {
+			return (
+				<Modal show bsSize="large" onHide={onClose}>
+					<Modal.Header>
+						<Modal.Title>Add a relationship</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<p>
+							<strong>
+								{baseEntityTypeForDisplay}s have no possible relationships with other entities at the moment.
+							</strong>
+						</p>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button bsStyle="danger" onClick={onCancel}>Cancel</Button>
+					</Modal.Footer>
+				</Modal>
+			);
+		}
 
 		return (
 			<Modal show bsSize="large" onHide={onClose} onKeyUp={this.handleKeyPress}>
@@ -310,7 +340,7 @@ class RelationshipModal
 					<p>
 						<strong>
 							Use this form to add links between this{' '}
-							{baseEntity.type}
+							{baseEntityTypeForDisplay}
 							{' '}and other entities.
 						</strong>
 						{' '}For example, you can link an author
@@ -322,7 +352,7 @@ class RelationshipModal
 						<Col md={10} mdOffset={1}>
 							<form>
 								<div>
-									{this.renderEntitySelect()}
+									{entitySelect}
 								</div>
 								<div>
 									{this.renderRelationshipSelect()}

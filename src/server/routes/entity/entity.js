@@ -737,7 +737,7 @@ export function handleCreateOrEditEntity(
 
 		const refreshedEntity = await savedMainEntity.refresh({
 			transacting,
-			withRelated: ['defaultAlias']
+			withRelated: ['defaultAlias', 'aliasSet.aliases']
 		});
 
 		return refreshedEntity.toJSON();
