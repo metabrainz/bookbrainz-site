@@ -48,19 +48,19 @@ export default ({
 }) => {
 	const pageScript =
 		`<script id='page' type='application/json'>${page}</script>`;
-	var scriptTags = null;
-	if (props !== null && typeof props !== "undefined" && script !== null && typeof script !== "undefined"){
+	let scriptTags = null;
+	if (props !== null && typeof props !== 'undefined' && script !== null && typeof script !== 'undefined') {
 		scriptTags = `<script id='props' type='application/json'> ${props}</script>
-		<script src='${script}'></script>`
+		<script src='${script}'></script>`;
 	}
-	return (`
+	return `
 	<!DOCTYPE html>
 	<html>
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
-		'BookBrainz – The Open Book Database'}</title>
-		${!dev ?
-		`<link rel='stylesheet' href='/stylesheets/style.css' />
+			'BookBrainz – The Open Book Database'}</title>
+			${!dev ?
+			`<link rel='stylesheet' href='/stylesheets/style.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized-select.css' />
 			<link rel='stylesheet' href='/stylesheets/react-datepicker.css' />
@@ -77,5 +77,5 @@ export default ({
 			${scriptTags}
 		</body>
 	  </html>
-	`)
+	`;
 };
