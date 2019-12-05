@@ -69,7 +69,7 @@ export default ({
 			<div id='target'>${markup}</div>
 			<script src='/js/bundle.js'></script>
 			${page ? pageScript : ''}
-			${props !== null && script !== null ?
+			${props !== null && script !== null ? /** checking if the variables are undefined or null */
 				`<script id='props' type='application/json'> ${props}</script>
 				<script src='${script}'></script>`}
 		</body>
