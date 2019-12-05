@@ -77,5 +77,5 @@ export default ({
 			${scriptTags}
 		</body>
 	  </html>
-	`;
+	`;)
 };
