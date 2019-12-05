@@ -58,9 +58,9 @@ export default ({
 	<html>
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
-			'BookBrainz – The Open Book Database'}</title>
+		'BookBrainz – The Open Book Database'}</title>
 			${!dev ?
-			`<link rel='stylesheet' href='/stylesheets/style.css' />
+		`<link rel='stylesheet' href='/stylesheets/style.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized-select.css' />
 			<link rel='stylesheet' href='/stylesheets/react-datepicker.css' />
