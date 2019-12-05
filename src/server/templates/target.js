@@ -70,7 +70,7 @@ export default ({
 			<script src='/js/bundle.js'></script>
 			${page ? pageScript : ''}
 			${props && script ?
-				`<script id='props' type='application/json'> ${props}</script>
+		`<script id='props' type='application/json'> ${props}</script>
 				<script src='${script}'></script>` : ''}
 		</body>
 	  </html>
