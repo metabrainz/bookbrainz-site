@@ -48,7 +48,12 @@ export default ({
 }) => {
 	const pageScript =
 		`<script id='page' type='application/json'>${page}</script>`;
-	return `
+	var scriptTags = null;
+	if (props !== null && typeof props !== "undefined" && script !== null && typeof script !== "undefined"){
+		scriptTags = `<script id='props' type='application/json'> ${props}</script>
+		<script src='${script}'></script>`
+	}
+	return (`
 	<!DOCTYPE html>
 	<html>
 		<head>
@@ -69,9 +74,7 @@ export default ({
 			<div id='target'>${markup}</div>
 			<script src='/js/bundle.js'></script>
 			${page ? pageScript : ''}
-			${props !== null && script !== null ? /** checking if the variables are undefined or null */
-				`<script id='props' type='application/json'> ${props}</script>
-				<script src='${script}'></script>`}
+			${scriptTags}
 		</body>
 	  </html>
 	`;
