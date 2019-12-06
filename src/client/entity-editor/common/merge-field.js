@@ -21,9 +21,12 @@
 import CustomInput from '../../input';
 import React from 'react';
 import Select from 'react-select';
+import ValidationLabel from '../common/validation-label';
+import {get as _get} from 'lodash';
 
 
 type Props = {
+	error: string,
 	options: array,
 	label: string,
 	currentValue: any,
@@ -38,13 +41,15 @@ type Props = {
  * @param {Object} props - The properties passed to the component.
  * @param {boolean} props.error - Passed to the ValidationLabel within the
  *        component to indicate a validation error.
- * @param {boolean} props.empty - Passed to the ValidationLabel within the
- *        component to indicate that the field is empty.
+ * @param {Array} props.options - Options to select from for this field
+ * @param {string} props.label - The text for the ValidationLabel component
+ * @param {any} props.currentValue - The currently selected value bubbled up from the state
  * @param {Function} props.onChange - Function to be called when the value in
  *        the wrapped input changes.
  * @returns {Object} a React component containing the rendered input
  */
 function MergeField({
+	error,
 	options,
 	label,
 	currentValue,
@@ -52,12 +57,14 @@ function MergeField({
 	valueProperty,
 	...rest
 }: Props) {
+	const labelComponent = <ValidationLabel error={error} >{label}</ValidationLabel>;
 	if (options.length <= 1) {
+		const value = _get(options, `[0][${valueProperty}]`, '');
 		return (
 			<CustomInput
 				readOnly
-				label={label}
-				value={options[0] ? options[0][valueProperty] : ''}
+				label={labelComponent}
+				value={value}
 				{...rest}
 			/>
 		);
@@ -66,7 +73,7 @@ function MergeField({
 		return onChange(selectObject.value);
 	};
 	return (
-		<CustomInput label={label} {...rest}>
+		<CustomInput label={labelComponent} {...rest}>
 			<Select
 				clearable={false}
 				instanceId={label}
