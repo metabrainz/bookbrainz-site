@@ -280,8 +280,8 @@ router.get('/:id', async (req, res, next) => {
 			script
 		}));
 	 }
-	catch (error) {
-		return next(error);
+	catch (err) {
+		return next(err);
 	 }
 });
 

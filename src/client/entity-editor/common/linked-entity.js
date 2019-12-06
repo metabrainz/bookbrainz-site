@@ -46,7 +46,7 @@ class LinkedEntity extends React.Component {
 		const type = option && option.type;
 		const id = option && option.id;
 		if (type && id) {
-			url = type === 'Area' ?
+			url = type.toLowerCase() === 'area' ?
 				`//musicbrainz.org/area/${id}` :
 				`/${_kebabCase(type)}/${id}`;
 		}
