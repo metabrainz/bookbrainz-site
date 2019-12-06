@@ -19,10 +19,10 @@
 import * as bootstrap from 'react-bootstrap';
 
 import CustomInput from '../../input';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent-bluebird-promise';
 
