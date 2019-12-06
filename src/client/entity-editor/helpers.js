@@ -26,6 +26,7 @@ import EditionSection from './edition-section/edition-section';
 import EditionSectionMerge from './edition-section/edition-section-merge';
 import MergingEntitiesReducer from './common/merging-entities-reducer';
 import PublisherSection from './publisher-section/publisher-section';
+import PublisherSectionMerge from './publisher-section/publisher-section-merge';
 import WorkSection from './work-section/work-section';
 import aliasEditorReducer from './alias-editor/reducer';
 import authorSectionReducer from './author-section/reducer';
@@ -76,9 +77,8 @@ export function getEntitySectionMerge(entityType: string) {
 	const SECTION_MAP = {
 		author: AuthorSectionMerge,
 		edition: EditionSectionMerge,
-		editionGroup: EditionGroupSectionMerge
-		// publication: PublicationSection,
-		// publisher: PublisherSection,
+		editionGroup: EditionGroupSectionMerge,
+		publisher: PublisherSectionMerge
 		// work: WorkSection
 	};
 

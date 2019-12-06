@@ -75,6 +75,11 @@ function getEntityFetchPropertiesByType(entityType) {
 				'editions.identifierSet.identifiers.type',
 				'editions.editionFormat'
 			];
+		case 'Publisher':
+			return [
+				'publisherType',
+				'area'
+			];
 		default:
 			return [];
 	}
@@ -180,6 +185,34 @@ function getEditionGroupEntityMergeSection(entities) {
 }
 
 /**
+ * @name getPublisherEntityMergeSection
+ * @description Returns the initial form state for the Publisher merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer.
+ * @param {object[]} entities - The array of entities to merge the properties of
+ * @returns {object} - The Publisher merge section for the initialState
+ */
+function getPublisherEntityMergeSection(entities) {
+	const publisherSection = {};
+	entities.forEach(entity => {
+		assignIfNotSet(publisherSection, 'area', entity);
+		assignIfNotSet(publisherSection, 'beginDate', entity);
+		assignIfNotSet(publisherSection, 'endDate', entity);
+		assignIfNotSet(publisherSection, 'ended', entity);
+		assignIfNotSet(publisherSection, 'type', entity, 'typeId');
+	});
+	return Object.assign(publisherSection,
+		{
+			area: entityRoutes.areaToOption(publisherSection.area),
+
+			/** If one of the entities has an end date and another doesn't,
+			 * that endDate property will be automatically selected as the only option on the merge display page
+			 * We want to emulate this for the initialState to match, so if there's any endDate, set ended to true
+			 */
+			ended: !_.isNil(publisherSection.endDate) || publisherSection.ended
+		});
+}
+
+/**
  * @description Returns the initial form state for the $entity$ section depending on the entity type
  * @param {string} entityType - Entity type string (lowercased)
  * @param {object[]} entities - Array of entities to merge
@@ -194,6 +227,8 @@ function getEntitySectionByType(entityType, entities) {
 			return getEditionEntityMergeSection(entities);
 		case 'editionGroup':
 			return getEditionGroupEntityMergeSection(entities);
+		case 'publisher':
+			return getPublisherEntityMergeSection(entities);
 		default:
 			throw new Error(`Invalid entity type: '${entityType}'`);
 	}
@@ -389,7 +424,8 @@ router.get('/*', auth.isAuthenticated,
 	middleware.loadIdentifierTypes, middleware.loadGenders,
 	middleware.loadLanguages, middleware.loadAuthorTypes,
 	middleware.loadEditionFormats, middleware.loadEditionGroupTypes,
-	middleware.loadEditionStatuses, middleware.loadRelationshipTypes,
+	middleware.loadEditionStatuses, middleware.loadPublisherTypes,
+	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {orm}: {orm: any} = req.app.locals;
 		const {
@@ -446,6 +482,7 @@ router.get('/*', auth.isAuthenticated,
 				genderOptions: res.locals.genders,
 				identifierTypes: res.locals.identifierTypes,
 				mergingEntities,
+				publisherTypes: res.locals.publisherTypes,
 				title: 'Merge Page'
 			}
 			, entitiesToFormState

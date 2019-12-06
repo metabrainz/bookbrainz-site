@@ -18,6 +18,8 @@
  */
 /* eslint-disable react/display-name */
 
+// @flow
+
 import * as bootstrap from 'react-bootstrap';
 
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase} from 'lodash';
@@ -139,6 +141,27 @@ function isArea(entity) {
 }
 
 /**
+ * Transforms an Area entity to a react-select component option
+ * @param {object} area - The Area entity to transfrom
+ * @returns {object} option - A react-select option
+ */
+export function areaToOption(
+	area: {comment: string, id: number, name: string}
+) {
+	if (!area) {
+		return null;
+	}
+	const {id} = area;
+	return {
+		disambiguation: area.comment,
+		id,
+		text: area.name,
+		type: 'area'
+		// value: id
+	};
+}
+
+/**
  * Transforms an entity to a react-select component option
  * @param {object} entity - The entity to transfrom
  * @returns {object} option - A react-select option
@@ -147,12 +170,14 @@ export function entityToOption(entity) {
 	if (_isNil(entity)) {
 		return null;
 	}
-	const id = isArea(entity) ? entity.id : entity.bbid;
+	if (isArea(entity)) {
+		return areaToOption(entity);
+	}
 
 	return {
 		disambiguation: entity.disambiguation ?
 			entity.disambiguation.comment : null,
-		id,
+		id: entity.bbid,
 		text: entity.defaultAlias ?
 			entity.defaultAlias.name : '(unnamed)',
 		type: entity.type
