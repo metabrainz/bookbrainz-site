@@ -28,6 +28,7 @@ import MergingEntitiesReducer from './common/merging-entities-reducer';
 import PublisherSection from './publisher-section/publisher-section';
 import PublisherSectionMerge from './publisher-section/publisher-section-merge';
 import WorkSection from './work-section/work-section';
+import WorkSectionMerge from './work-section/work-section-merge';
 import aliasEditorReducer from './alias-editor/reducer';
 import authorSectionReducer from './author-section/reducer';
 import buttonBarReducer from './button-bar/reducer';
@@ -78,8 +79,8 @@ export function getEntitySectionMerge(entityType: string) {
 		author: AuthorSectionMerge,
 		edition: EditionSectionMerge,
 		editionGroup: EditionGroupSectionMerge,
-		publisher: PublisherSectionMerge
-		// work: WorkSection
+		publisher: PublisherSectionMerge,
+		work: WorkSectionMerge
 	};
 
 	return SECTION_MAP[entityType];

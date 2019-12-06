@@ -80,6 +80,11 @@ function getEntityFetchPropertiesByType(entityType) {
 				'publisherType',
 				'area'
 			];
+		case 'Work':
+			return [
+				'languageSet.languages',
+				'workType'
+			];
 		default:
 			return [];
 	}
@@ -213,6 +218,27 @@ function getPublisherEntityMergeSection(entities) {
 }
 
 /**
+ * @name getWorkEntityMergeSection
+ * @description Returns the initial form state for the Work merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer.
+ * @param {object[]} entities - The array of entities to merge the properties of
+ * @returns {object} - The Work merge section for the initialState
+ */
+function getWorkEntityMergeSection(entities) {
+	const workSection = {};
+	entities.forEach(entity => {
+		assignIfNotSet(workSection, 'type', entity, 'typeId');
+	});
+	const languages = _.flatMap(entities, entity => _.get(entity, 'languageSet.languages', []).map(
+		({id, name}) => ({label: name, value: id})
+	));
+	return Object.assign(workSection,
+		{
+			languages: _.uniqBy(languages, 'value')
+		});
+}
+
+/**
  * @description Returns the initial form state for the $entity$ section depending on the entity type
  * @param {string} entityType - Entity type string (lowercased)
  * @param {object[]} entities - Array of entities to merge
@@ -229,6 +255,8 @@ function getEntitySectionByType(entityType, entities) {
 			return getEditionGroupEntityMergeSection(entities);
 		case 'publisher':
 			return getPublisherEntityMergeSection(entities);
+		case 'work':
+			return getWorkEntityMergeSection(entities);
 		default:
 			throw new Error(`Invalid entity type: '${entityType}'`);
 	}
