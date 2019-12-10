@@ -275,7 +275,7 @@ function AuthorSection({
 }
 AuthorSection.displayName = 'AuthorSection';
 
-export function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
+function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');

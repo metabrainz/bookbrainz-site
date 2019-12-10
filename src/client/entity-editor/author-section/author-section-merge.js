@@ -31,12 +31,12 @@ import {
 	updateType
 } from './actions';
 
-import {Props, mapStateToProps} from './author-section';
 
-import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
+import {Props} from './author-section';
 import React from 'react';
 import {connect} from 'react-redux';
+import {labelsForAuthor} from '../../helpers/utils';
 import {transformISODateForSelect} from '../../helpers/entity';
 
 /**
@@ -45,11 +45,18 @@ import {transformISODateForSelect} from '../../helpers/entity';
  * rendered as a modular section within the entity editor.
  *
  * @param {Object} props - The properties passed to the component.
+ * @param {string} props.beginAreaLabel - The label to be used for the begin
+ *        area input.
  * @param {string} props.beginDateLabel - The label to be used for the begin
  *        date input.
  * @param {string} props.beginDateValue - The begin date currently set for
  *        this author.
- * @param {Array} props.authorTypes - The list of possible types for a author.
+ * @param {string} props.beginAreaValue - The begin area currently set for
+ *        this author.
+ * @param {string} props.endAreaLabel - The label to be used for the end area
+ *        input.
+ * @param {string} props.endAreaValue - The end area currently set for this
+ *        author.
  * @param {string} props.endDateLabel - The label to be used for the end date
  *        input.
  * @param {string} props.endDateValue - The end date currently set for this
@@ -58,14 +65,16 @@ import {transformISODateForSelect} from '../../helpers/entity';
  *        is checked.
  * @param {string} props.endedLabel - The label to be used for the ended
  *        checkbox input.
- * @param {Array} props.genderOptions - The list of possible genders.
- * @param {boolean} props.genderShow - Whether or not the gender field should
- *        be shown (only for authors which represent people).
+ * @param {Array} props.mergingEntities - The list of entities being merged
  * @param {number} props.genderValue - The ID of the gender currently selected.
  * @param {number} props.typeValue - The ID of the type currently selected for
  *        the author.
+ * @param {Function} props.onBeginAreaChange - A function to be called when
+ *        the begin area is changed.
  * @param {Function} props.onBeginDateChange - A function to be called when
  *        the begin date is changed.
+ * @param {Function} props.onEndAreaChange - A function to be called when
+ *        the end area is changed.
  * @param {Function} props.onEndDateChange - A function to be called when
  *        the end date is changed.
  * @param {Function} props.onEndedChange - A function to be called when
@@ -81,7 +90,6 @@ function AuthorSectionMerge({
 	beginDateLabel,
 	beginDateValue,
 	beginAreaValue,
-	authorTypes,
 	endAreaLabel,
 	endAreaValue,
 	endDateLabel,
@@ -89,7 +97,6 @@ function AuthorSectionMerge({
 	endedChecked,
 	endedLabel,
 	mergingEntities,
-	genderShow,
 	genderValue,
 	typeValue,
 	onBeginAreaChange,
@@ -109,9 +116,7 @@ function AuthorSectionMerge({
 	const typeOptions = [];
 
 	mergingEntities.forEach(entity => {
-		const matchingType = authorTypes
-			.filter(type => type.id === entity.typeId);
-		const typeOption = matchingType[0] && {label: matchingType[0].label, value: matchingType[0].id};
+		const typeOption = !_.isNil(entity.authorType) && {label: entity.authorType.label, value: entity.authorType.id};
 		if (typeOption && !_.find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
@@ -198,6 +203,40 @@ function AuthorSectionMerge({
 	);
 }
 AuthorSectionMerge.displayName = 'AuthorSectionMerge';
+
+export function mapStateToProps(rootState): StateProps {
+	const state = rootState.get('authorSection');
+
+	const typeValue = state.get('type');
+	const mergingEntities = rootState.get('mergingEntities').toJSON();
+
+	const authorTypes = mergingEntities.map(entity => entity.authorType);
+
+	const isGroup = _.uniqBy(authorTypes, 'id').find((type) => type && type.label === 'Group');
+
+	const {
+		beginDateLabel,
+		beginAreaLabel,
+		endedLabel,
+		endDateLabel,
+		endAreaLabel
+	} = labelsForAuthor(Boolean(isGroup));
+
+	return {
+		beginAreaLabel,
+		beginAreaValue: state.get('beginArea'),
+		beginDateLabel,
+		beginDateValue: state.get('beginDate'),
+		endAreaLabel,
+		endAreaValue: state.get('endArea'),
+		endDateLabel,
+		endDateValue: state.get('endDate'),
+		endedChecked: state.get('ended'),
+		endedLabel,
+		genderValue: state.get('gender'),
+		typeValue
+	};
+}
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {

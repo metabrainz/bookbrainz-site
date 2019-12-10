@@ -27,11 +27,6 @@ import {find as _find} from 'lodash';
 import {connect} from 'react-redux';
 
 
-type EditionGroupType = {
-	label: string,
-	id: number
-};
-
 type StateProps = {
 	typeValue: Map<string, any>
 };
@@ -41,7 +36,6 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-	editionGroupTypes: Array<EditionGroupType>,
 	mergingEntities: Array
 };
 
@@ -53,17 +47,15 @@ type Props = StateProps & DispatchProps & OwnProps;
  * rendered as a modular section within the entity editor.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {Array} props.editionGroupTypes - The list of possible types for a
- *        editionGroup.
  * @param {number} props.typeValue - The type currently selected for the
  *        editionGroup.
+ * @param {Array} props.mergingEntities - The list of entities being merged
  * @param {Function} props.onTypeChange - A function to be called when
  *        a different publisher type is selected.
  * @returns {ReactElement} React element containing the rendered
  *          EditionGroupSectionMerge.
  */
 function EditionGroupSectionMerge({
-	editionGroupTypes,
 	typeValue,
 	mergingEntities,
 	onTypeChange
@@ -72,9 +64,7 @@ function EditionGroupSectionMerge({
 	const editions = [];
 
 	mergingEntities.forEach(entity => {
-		const matchingType = editionGroupTypes
-			.filter(type => type.id === entity.typeId);
-		const typeOption = matchingType[0] && {label: matchingType[0].label, value: matchingType[0].id};
+		const typeOption = entity.editionGroupType && {label: entity.editionGroupType.label, value: entity.editionGroupType.id};
 		if (typeOption && !_find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
@@ -109,7 +99,7 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onTypeChange: (value) => dispatch(updateType(value && value.value))
+		onTypeChange: (value) => dispatch(updateType(value))
 	};
 }
 

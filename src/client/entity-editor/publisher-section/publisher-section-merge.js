@@ -41,11 +41,6 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 
 
-type PublisherType = {
-	label: string,
-	id: number
-};
-
 type Area = {
 	disambiguation: ?string,
 	id: string | number,
@@ -72,7 +67,6 @@ type DispatchProps = {
 
 type OwnProps = {
 	mergingEntities: Array,
-	publisherTypes: Array<PublisherType>,
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -92,8 +86,6 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @param {boolean} props.endedChecked - Whether or not the ended checkbox
  *        is checked.
  * @param {Array} props.mergingEntities - The list of entities being merged
- * @param {Array} props.publisherTypes - The list of possible types for a
- *        publisher.
  * @param {number} props.typeValue - The ID of the type currently selected for
  *        the publisher.
  * @param {Function} props.onAreaChange - A function to be called when a
@@ -115,7 +107,6 @@ function PublisherSectionMerge({
 	endDateValue,
 	endedChecked,
 	mergingEntities,
-	publisherTypes,
 	typeValue,
 	onAreaChange,
 	onBeginDateChange,
@@ -130,22 +121,14 @@ function PublisherSectionMerge({
 	const endedOptions = [];
 
 	mergingEntities.forEach(entity => {
-		const matchingType = publisherTypes
-			.filter(type => type.id === entity.typeId);
-		const typeOption = matchingType[0] && {label: matchingType[0].label, value: matchingType[0].id};
+		const typeOption = entity.publisherType && {label: entity.publisherType.label, value: entity.publisherType.id};
 		if (typeOption && !_.find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
-		// const area = !_.isNil(entity.area) && {label: entity.area.name, value: entity.area};
 		const area = !_.isNil(entity.area) && {label: entity.area.name, value: entityToOption(entity.area)};
-		// const area = !_.isNil(entity.area) && entityToOption(entity.area);
 		if (area && !_.find(areaOptions, ['value.id', area.value.id])) {
 			areaOptions.push(area);
 		}
-		// if (entity.area && !_.find(areaOptions, ['id', entity.area.id])) {
-		// 	areaOptions.push(entityToOption(entity.area));
-		// }
-
 		const beginDate = !_.isNil(entity.beginDate) && transformISODateForSelect(entity.beginDate);
 		if (beginDate && !_.find(beginDateOptions, ['value', beginDate.value])) {
 			beginDateOptions.push(beginDate);

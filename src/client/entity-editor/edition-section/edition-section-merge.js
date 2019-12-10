@@ -28,40 +28,23 @@ import {
 	debouncedUpdateWidth,
 	updateEditionGroup,
 	updateFormat,
-	updateLanguages,
 	updatePublisher,
 	updateStatus
 } from './actions';
 
-// import {Alert, Button, Col, Row} from 'react-bootstrap';
+import {ISODateStringToObject, convertMapToObject, dateObjectToISOString} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
 import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
 import CustomInput from '../../input';
 import Entity from '../common/entity';
-import LanguageField from '../common/language-field';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
-// import NumericField from '../common/numeric-field';
 import React from 'react';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {convertMapToObject} from '../../helpers/utils';
-import makeImmutable from '../common/make-immutable';
 
-
-const ImmutableLanguageField = makeImmutable(LanguageField);
-
-type EditionFormat = {
-	label: string,
-	id: number
-};
-
-type EditionStatus = {
-	label: string,
-	id: number
-};
 
 type LanguageOption = {
 	name: string,
@@ -79,10 +62,7 @@ type EditionGroup = {
 };
 
 type OwnProps = {
-	languageOptions: Array<LanguageOption>,
-	mergingEntities: Array<object>,
-	editionFormats: Array<EditionFormat>,
-	editionStatuses: Array<EditionStatus>
+	mergingEntities: Array<object>
 };
 
 type StateProps = {
@@ -92,9 +72,7 @@ type StateProps = {
 	languageValues: List<LanguageOption>,
 	pagesValue: ?number,
 	publisherValue: Map<string, any>,
-	editionGroupRequired: ?boolean,
 	editionGroupValue: Map<string, any>,
-	matchingNameEditionGroups: ?array,
 	releaseDateValue: ?object,
 	statusValue: ?number,
 	weightValue: ?number,
@@ -105,11 +83,8 @@ type DispatchProps = {
 	onDepthChange: (SyntheticInputEvent<>) => mixed,
 	onFormatChange: (?{value: number}) => mixed,
 	onHeightChange: (SyntheticInputEvent<>) => mixed,
-	onLanguagesChange: (Array<LanguageOption>) => mixed,
 	onPagesChange: (SyntheticInputEvent<>) => mixed,
-	onPhysicalButtonClick: () => mixed,
 	onPublisherChange: (Publisher) => mixed,
-	onEditionGroupButtonClick: () => mixed,
 	onEditionGroupChange: (EditionGroup) => mixed,
 	onReleaseDateChange: (SyntheticInputEvent<>) => mixed,
 	onStatusChange: (?{value: number}) => mixed,
@@ -125,46 +100,52 @@ type Props = OwnProps & StateProps & DispatchProps;
  * rendered as a modular section within the entity editor.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {Array} props.editionFormats - The list of possible formats for a
- *                edition.
- * @param {Array} props.editionStatuses - The list of possible statuses for a
- *                edition.
+ * depthValue
  * @param {number} props.formatValue - The ID of the format currently selected
  *        for the edition.
- * @param {number} props.statusValue - The ID of the status currently selected
- *        for the edition.
+ * heightValue
+ * languageValues
+ * mergingEntities
+ * onDepthChange
  * @param {Function} props.onFormatChange - A function to be called when
  *        a different edition format is selected.
+ * onHeightChange,
+	onReleaseDateChange,
+	onPagesChange,
+	onEditionGroupChange,
+	onPublisherChange,
  * @param {Function} props.onStatusChange - A function to be called when
  *        a different edition status is selected.
+ * onWeightChange,
+	onWidthChange,
+	pagesValue,
+	editionGroupValue,
+	publisherValue,
+	releaseDateValue,
+ * @param {number} props.statusValue - The ID of the status currently selected
+ *        for the edition.
+	weightValue,
+	widthValue
  * @returns {ReactElement} React element containing the rendered EditionSectionMerge.
  */
 function EditionSectionMerge({
 	depthValue,
-	editionFormats,
-	editionStatuses,
 	formatValue,
 	heightValue,
-	languageOptions,
 	languageValues,
 	mergingEntities,
-	onLanguagesChange,
 	onDepthChange,
 	onFormatChange,
 	onHeightChange,
-	onPhysicalButtonClick,
 	onReleaseDateChange,
 	onPagesChange,
-	onEditionGroupButtonClick,
 	onEditionGroupChange,
 	onPublisherChange,
 	onStatusChange,
 	onWeightChange,
 	onWidthChange,
 	pagesValue,
-	editionGroupRequired,
 	editionGroupValue,
-	matchingNameEditionGroups,
 	publisherValue,
 	releaseDateValue,
 	statusValue,
@@ -181,7 +162,6 @@ function EditionSectionMerge({
 	const statusOptions = [];
 	const weightOptions = [];
 	const widthOptions = [];
-	// let languages = [];
 
 	mergingEntities.forEach(entity => {
 		const depth = !_.isNil(entity.depth) && {label: entity.depth, value: entity.depth};
@@ -193,9 +173,7 @@ function EditionSectionMerge({
 		if (editionGroupOption && !_.find(editionGroupOptions, ['value.id', editionGroupOption.value.id])) {
 			editionGroupOptions.push(editionGroupOption);
 		}
-		const matchingFormat = editionFormats
-			.filter(({id}) => id === entity.formatId);
-		const format = matchingFormat[0] && {label: matchingFormat[0].label, value: matchingFormat[0].id};
+		const format = entity.editionFormat && {label: entity.editionFormat.label, value: entity.editionFormat.id};
 		if (format && !_.find(formatOptions, ['value', format.value])) {
 			formatOptions.push(format);
 		}
@@ -203,10 +181,6 @@ function EditionSectionMerge({
 		if (height && !_.find(heightOptions, ['value', height.value])) {
 			heightOptions.push(height);
 		}
-		// const editionLanguages = _.get(entity, 'languageSet.languages');
-		// if (Array.isArray(editionLanguages)) {
-		// 	languages = _.unionBy(languages, editionLanguages.map(({id, name}) => ({label: name, value: id})), 'value');
-		// }
 		const pages = !_.isNil(entity.pages) && {label: entity.pages, value: entity.pages};
 		if (pages && !_.find(pagesOptions, ['value', pages.value])) {
 			pagesOptions.push(pages);
@@ -221,9 +195,7 @@ function EditionSectionMerge({
 		if (releaseDate && !_.find(releaseDateOptions, ['value', releaseDate.value])) {
 			releaseDateOptions.push(releaseDate);
 		}
-		const matchingStatus = editionStatuses
-			.filter(({id}) => id === entity.statusId);
-		const statusOption = matchingStatus[0] && {label: matchingStatus[0].label, value: matchingStatus[0].id};
+		const statusOption = entity.editionStatus && {label: entity.editionStatus.label, value: entity.editionStatus.id};
 		if (statusOption && !_.find(statusOptions, ['value', statusOption.value])) {
 			statusOptions.push(statusOption);
 		}
@@ -327,7 +299,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		languageValues: convertMapToObject(state.get('languages')),
 		pagesValue: state.get('pages'),
 		publisherValue: convertMapToObject(state.get('publisher')),
-		releaseDateValue: convertMapToObject(state.get('releaseDate')),
+		releaseDateValue: dateObjectToISOString(convertMapToObject(state.get('releaseDate'))),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
 		widthValue: state.get('width')
@@ -340,21 +312,19 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: ?{value: number}) =>
-			dispatch(updateFormat(value && value.value)),
+		onFormatChange: (value: number) =>
+			dispatch(updateFormat(value)),
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onLanguagesChange: (values: Array<LanguageOption>) =>
-			dispatch(updateLanguages(values)),
 		onPagesChange: (event) => dispatch(debouncedUpdatePages(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
 		onReleaseDateChange: (releaseDate) =>
-			dispatch(debouncedUpdateReleaseDate(releaseDate)),
-		onStatusChange: (value: ?{value: number}) =>
-			dispatch(updateStatus(value && value.value)),
+			dispatch(debouncedUpdateReleaseDate(ISODateStringToObject(releaseDate))),
+		onStatusChange: (value: number) =>
+			dispatch(updateStatus(value)),
 		onWeightChange: (event) => dispatch(debouncedUpdateWeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),

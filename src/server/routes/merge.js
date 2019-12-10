@@ -446,21 +446,13 @@ async function getEntityByBBID(orm, transacting, bbid) {
 		});
 }
 
-// TO DO: Load the various entity specfic enums (gender, authorTypes, editionGroupTypes…)
-// according to the entity type, and attach them appropriately in entityMergeMarkup
+
 router.get('/*', auth.isAuthenticated,
-	middleware.loadIdentifierTypes, middleware.loadGenders,
-	middleware.loadLanguages, middleware.loadAuthorTypes,
-	middleware.loadEditionFormats, middleware.loadEditionGroupTypes,
-	middleware.loadEditionStatuses, middleware.loadPublisherTypes,
+	middleware.loadIdentifierTypes, middleware.loadLanguages,
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {orm}: {orm: any} = req.app.locals;
-		const {
-			Author, Edition, EditionGroup,
-			Publisher, Revision, Work,
-			bookshelf, Entity
-		} = orm;
+		const {bookshelf} = orm;
 
 		const bbids = req.params[0].split('/');
 

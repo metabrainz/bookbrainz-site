@@ -33,11 +33,6 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 
 
-type WorkType = {
-	label: string,
-	id: number
-};
-
 type LanguageOption = {
 	name: string,
 	id: number
