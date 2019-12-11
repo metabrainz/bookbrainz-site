@@ -731,7 +731,8 @@ export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
 	entityType: EntityTypeString,
-	derivedProps: {}
+	derivedProps: {},
+	isMergeOperation: boolean
 ) {
 	const {orm}: {orm: any} = req.app.locals;
 	const {Edition, Entity, Revision, bookshelf} = orm;
@@ -739,9 +740,6 @@ export function handleCreateOrEditEntity(
 
 	const {body}: {body: any} = req;
 	const {locals: resLocals}: {locals: any} = res;
-
-	const {mergingEntities} = body;
-	const isMergeOperation = Boolean(Array.isArray(mergingEntities) && mergingEntities.length);
 
 	let currentEntity: ?{
 		aliasSet: ?{id: number},
@@ -815,17 +813,24 @@ export function handleCreateOrEditEntity(
 			let allEntities = [...otherEntities, mainEntity];
 			let entitiesModelsToMerge;
 			if (isMergeOperation) {
-				const mergingEntititesBBIDs = mergingEntities.map(entity => entity.bbid);
-				log.debug('Merge operation detected; Entities:', mergingEntititesBBIDs);
+				const {mergingEntities} = req.session.mergeQueue;
+				if (!mergingEntities) {
+					throw new Error('Merge handler called with no merge queue, aborting');
+				}
+				const mergingEntitiesBBIDs = Object.keys(mergingEntities);
+				if (!_.includes(mergingEntitiesBBIDs, currentEntity.bbid)) {
+					throw new Error('Entity being merged into does not appear in merge queue, aborting');
+				}
+				log.debug('Merge operation detected; Entities:', mergingEntitiesBBIDs);
 
 				// fetch entities we're merging and add them to allEntities to be updated
-				const entitiesToMerge = mergingEntities.filter(entity =>
-					entity.bbid !== currentEntity.bbid);
+				const entitiesToMergeBBIDs = mergingEntitiesBBIDs.filter(bbid =>
+					bbid !== currentEntity.bbid);
 
 				entitiesModelsToMerge = await Promise.all(
-					entitiesToMerge.map(entity =>
+					entitiesToMergeBBIDs.map(bbid =>
 						fetchOrCreateMainEntity(
-							orm, transacting, isNew, entity.bbid, entityType
+							orm, transacting, isNew, bbid, entityType
 						))
 				);
 
@@ -836,9 +841,9 @@ export function handleCreateOrEditEntity(
 				*/
 				await bookshelf.knex('bookbrainz.entity_redirect')
 					.transacting(transacting)
-					.insert(entitiesToMerge.map(entity => (
+					.insert(entitiesToMergeBBIDs.map(bbid => (
 					// eslint-disable-next-line camelcase
-						{source_bbid: entity.bbid, target_bbid: currentEntity.bbid}
+						{source_bbid: bbid, target_bbid: currentEntity.bbid}
 					)));
 
 				/**
@@ -847,7 +852,7 @@ export function handleCreateOrEditEntity(
 				 */
 				if (entityType === 'EditionGroup') {
 					const editionsToSet = await Edition.query(qb =>
-						qb.whereIn('edition_group_bbid', entitiesToMerge.map(entity => entity.bbid)))
+						qb.whereIn('edition_group_bbid', entitiesToMergeBBIDs))
 						.fetchAll({transacting});
 					editionsToSet.forEach(editionModel =>
 						editionModel.set({editionGroupBbid: currentEntity.bbid}));
@@ -864,9 +869,10 @@ export function handleCreateOrEditEntity(
 					const newEntityRevision = await model.revision()
 						.fetch({transacting});
 					// We only want to set isMerge to true on the entities we're merging
-					newEntityRevision
-						.query(qb => qb.whereIn('bbid', mergingEntititesBBIDs))
+					await newEntityRevision
+						.query(qb => qb.whereIn('bbid', mergingEntitiesBBIDs))
 						.save({isMerge: true}, {patch: true, transacting});
+					req.session.mergeQueue = null;
 				});
 			}
 
@@ -891,10 +897,17 @@ export function handleCreateOrEditEntity(
 				withRelated: ['aliasSet.aliases']
 			});
 
+			if (req.session.mergeQueue) {
+				req.session.mergeQueue.submitted = false;
+			}
+
 			return savedEntityWithRelationships.toJSON();
 		}
 		catch (err) {
 			log.error(err);
+			if (req.session.mergeQueue) {
+				req.session.mergeQueue.submitted = false;
+			}
 			throw err;
 		}
 	});

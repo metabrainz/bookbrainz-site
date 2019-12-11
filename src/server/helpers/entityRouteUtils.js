@@ -110,7 +110,6 @@ export function generateEntityProps(
 
 /**
  * Returns a props object with reasonable defaults for entity creation/editing.
- * @param {string} entityType - entity type
  * @param {request} req - request object
  * @param {response} res - response object
  * @param {object} additionalProps - additional props
@@ -119,14 +118,13 @@ export function generateEntityProps(
  * @returns {object} - props
  */
 export function generateEntityMergeProps(
-	entityType: string,
 	req: express.request, res: express.response,
 	additionalProps: Object,
 	initialStateCallback: (entity: ?Object) => Object =
 	(entity) => new Object()
 ): Object {
+	const {entityType, mergingEntities} = additionalProps;
 	const entityName = _.startCase(entityType);
-	const {mergingEntities} = additionalProps;
 	const entity = mergingEntities[0];
 
 	const getFilteredIdentifierTypes = _.partialRight(utils.filterIdentifierTypesByEntity, entity);
@@ -134,7 +132,7 @@ export function generateEntityMergeProps(
 		res.locals.identifierTypes
 	);
 
-	const submissionUrl = `/${_.kebabCase(entityType)}/${entity.bbid}/edit/handler`;
+	const submissionUrl = `/${_.kebabCase(entityType)}/${entity.bbid}/merge/handler`;
 
 	const props = Object.assign({
 		entityType,
@@ -250,14 +248,14 @@ export function entityMergeMarkup(
  * @param {transformCallback} transformNewForm - callback for transformations
  * @param {(string|string[])} propertiesToPick - props from transformed
  * request body to pick.
- * @param {additionalCallback} additionalCallback - a callback that returns any
- * additional data for the entity creation/editing.
+ * @param {boolean} isMergeHandler - Wether the submission was from a /merge/handler route
  * @returns {createOrEditHandler} createOrEditHandler - middleware handler
  */
 export function makeEntityCreateOrEditHandler(
 	entityType: string,
 	transformNewForm: Function,
 	propertiesToPick: string | string[],
+	isMergeHandler?: boolean = false
 ) {
 	const entityName = _.upperFirst(entityType);
 	const validate = getValidator(entityType);
@@ -270,11 +268,13 @@ export function makeEntityCreateOrEditHandler(
 			const err = new error.FormSubmissionError();
 			error.sendErrorAsJSON(res, err);
 		}
+		const {mergeQueue} = req.session;
+		const isMergeOperation = isMergeHandler && mergeQueue.submitted && _.size(mergeQueue.mergingEntities) >= 2;
 
 		req.body = transformNewForm(req.body);
 
 		return entityRoutes.handleCreateOrEditEntity(
-			req, res, entityName, _.pick(req.body, propertiesToPick)
+			req, res, entityName, _.pick(req.body, propertiesToPick), isMergeOperation
 		);
 	};
 }

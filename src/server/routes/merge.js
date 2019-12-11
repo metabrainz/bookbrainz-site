@@ -227,62 +227,134 @@ async function getEntityByBBID(orm, transacting, bbid) {
 }
 
 
-router.get('/*', auth.isAuthenticated,
-	middleware.loadIdentifierTypes, middleware.loadLanguages,
-	middleware.loadRelationshipTypes,
+router.get('/add/:bbid', auth.isAuthenticated,
 	async (req, res, next) => {
 		const {orm}: {orm: any} = req.app.locals;
-		const {bookshelf} = orm;
-
-		const bbids = req.params[0].split('/');
-
-		if (bbids.length < 2) {
-			return next('Merging requires to have more than one bbid passed, separated by a "/"');
+		let {mergeQueue} = req.session;
+		if (!mergeQueue) {
+			mergeQueue = {
+				entityType: '',
+				mergingEntities: {},
+				submitted: false
+			};
+			req.session.mergeQueue = mergeQueue;
 		}
-		const invalidBBIDs = bbids.filter(bbid => !commonUtils.isValidBBID(bbid));
-		if (invalidBBIDs.length) {
-			return next(`Invalid bbids: ${invalidBBIDs}`);
+		if (_.isNil(req.params.bbid) ||
+			!commonUtils.isValidBBID(req.params.bbid)) {
+			return next(`Invalid bbid: ${req.params.bbid}`);
 		}
-
-		let mergingEntities;
-
+		if (_.has(mergeQueue.mergingEntities, req.params.bbid)) {
+			// Do we just return here? do we have to do something like next('route');
+			return next();
+		}
+		let fetchedEntity;
 		try {
-			await bookshelf.transaction(async (transacting) => {
-				mergingEntities = await Promise.all(bbids.map(
-					(bbid) =>
-						getEntityByBBID(orm, transacting, bbid)
-				));
+			await orm.bookshelf.transaction(async (transacting) => {
+				fetchedEntity = await getEntityByBBID(orm, transacting, req.params.bbid);
 			});
 		}
 		catch (error) {
 			return next(error);
 		}
 
-		if (!_.uniqBy(mergingEntities, 'type').length === 1) {
-			const conflictError = new ConflictError('You can only merge entities of the same type');
-			return next(conflictError);
-		}
-		if (_.uniqBy(mergingEntities, 'bbid').length !== bbids.length) {
-			const conflictError = new ConflictError('You cannot merge an entity that has already been merged');
-			return next(conflictError);
-		}
-		if (_.some(mergingEntities, entity => entity.dateId === null)) {
+		/* If there is no fetchedEntity or no dataId, the entity has been deleted */
+		if (!_.get(fetchedEntity, 'dataId')) {
 			const conflictError = new ConflictError('You cannot merge an entity that has been deleted');
 			return next(conflictError);
 		}
+		const {bbid, type} = fetchedEntity;
+		if (type !== mergeQueue.entityType) {
+			mergeQueue.mergingEntities = {};
+			mergeQueue.entityType = _.upperFirst(type);
+		}
 
-		const entityType = _.camelCase(mergingEntities[0].type);
-		res.locals.entity = mergingEntities[0];
+		mergeQueue.mergingEntities[bbid] = fetchedEntity;
+
+		/* Always set submitted to false when we change the queue*/
+		mergeQueue.submitted = false;
+		console.log(mergeQueue); // eslint-disable-line no-console
+		return next();
+	});
+
+router.get('/remove/:bbid', auth.isAuthenticated,
+	(req, res, next) => {
+		const {mergeQueue} = req.session;
+		if (!mergeQueue || _.isNil(req.params.bbid)) {
+			return;
+		}
+		const {mergingEntities} = mergeQueue;
+
+		delete mergingEntities[req.params.bbid];
+
+		/* Always set submitted to false when we change the queue*/
+		mergeQueue.submitted = false;
+
+		/* If there's only one item in the queu, delete the queue entirely */
+		if (Object.keys(mergingEntities).length === 0) {
+			req.session.mergeQueue = null;
+		}
+
+		next();
+	});
+
+router.get('/cancel', auth.isAuthenticated,
+	(req, res, next) => {
+		req.session.mergeQueue = null;
+		next();
+	});
+
+router.get('/submit', auth.isAuthenticated,
+	middleware.loadIdentifierTypes, middleware.loadLanguages,
+	middleware.loadRelationshipTypes,
+	async (req, res, next) => {
+		const {orm}: {orm: any} = req.app.locals;
+		const {bookshelf} = orm;
+		const {mergeQueue} = req.session;
+		if (!mergeQueue) {
+			return next(new ConflictError('No entities selected for merge'));
+		}
+		const {mergingEntities} = mergeQueue;
+		const bbids = Object.keys(mergingEntities);
+		if (bbids.length < 2) {
+			return next(new ConflictError('You must have at least 2 entities selected to merge'));
+		}
+		const invalidBBIDs = bbids.filter(bbid => !commonUtils.isValidBBID(bbid));
+		if (invalidBBIDs.length) {
+			return next(new ConflictError(`Invalid bbids: ${invalidBBIDs.join(', ')}`));
+		}
+
+		let mergingFetchedEntities = Object.values(mergingEntities);
+
+		if (!_.uniqBy(mergingFetchedEntities, 'type').length === 1) {
+			const conflictError = new ConflictError('You can only merge entities of the same type');
+			return next(conflictError);
+		}
+
+		try {
+			await bookshelf.transaction(async (transacting) => {
+				const refreshedMergingEntities = await Promise.all(bbids.map(
+					(bbid) =>
+						getEntityByBBID(orm, transacting, bbid)
+				));
+				refreshedMergingEntities.forEach(entity => {
+					mergeQueue.mergingEntities[entity.bbid] = entity;
+				});
+				mergingFetchedEntities = refreshedMergingEntities;
+			});
+		}
+		catch (error) {
+			return next(error);
+		}
+
+		/* Set submitted to true to signify that the next entity edit is a merge */
+		mergeQueue.submitted = true;
+		const {entityType} = mergeQueue;
+		res.locals.entity = mergingFetchedEntities[0];
 
 		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
-			entityType, req, res, {
-				authorTypes: res.locals.authorTypes,
-				bbids,
-				editionGroupTypes: res.locals.editionGroupTypes,
-				genderOptions: res.locals.genders,
-				identifierTypes: res.locals.identifierTypes,
-				mergingEntities,
-				publisherTypes: res.locals.publisherTypes,
+			req, res, {
+				entityType: _.camelCase(entityType),
+				mergingEntities: mergingFetchedEntities,
 				title: 'Merge Page'
 			}
 			, entitiesToFormState
@@ -292,7 +364,7 @@ router.get('/*', auth.isAuthenticated,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: `Merge ${mergingEntities.length} ${_.startCase(entityType)}s`
+			title: `Merge ${mergingFetchedEntities.length} ${_.startCase(entityType)}s`
 		}));
 	});
 

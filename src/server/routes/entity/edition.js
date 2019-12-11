@@ -378,11 +378,17 @@ const additionalEditionProps = [
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'edition', transformNewForm, additionalEditionProps
 );
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'edition', transformNewForm, additionalEditionProps, true
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;
