@@ -24,6 +24,7 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
 import * as utils from '../helpers/utils';
+import {ConflictError, NotFoundError} from '../../common/helpers/error';
 import {basicRelations,
 	getEntityFetchPropertiesByType,
 	getEntitySectionByType} from '../helpers/merge';
@@ -32,7 +33,6 @@ import {
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
 
-import {ConflictError} from '../../common/helpers/error';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
@@ -254,7 +254,7 @@ router.get('/add/:bbid', auth.isAuthenticated,
 			});
 		}
 		catch (error) {
-			return next(error);
+			return next(new NotFoundError(error));
 		}
 
 		/* If there is no fetchedEntity or no dataId, the entity has been deleted */
@@ -273,7 +273,7 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		/* Always set submitted to false when we change the queue*/
 		mergeQueue.submitted = false;
 		console.log(mergeQueue); // eslint-disable-line no-console
-		return next();
+		return res.redirect(req.headers.referer);
 	});
 
 router.get('/remove/:bbid', auth.isAuthenticated,
@@ -294,13 +294,13 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 			req.session.mergeQueue = null;
 		}
 
-		next();
+		res.redirect(req.headers.referer);
 	});
 
 router.get('/cancel', auth.isAuthenticated,
 	(req, res, next) => {
 		req.session.mergeQueue = null;
-		next();
+		res.redirect(req.headers.referer);
 	});
 
 router.get('/submit', auth.isAuthenticated,

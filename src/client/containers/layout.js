@@ -28,7 +28,8 @@
 import '../helpers/setupIconLibrary';
 import * as bootstrap from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import Footer from '../components/footer';
+import Footer from './../components/footer';
+import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
@@ -230,6 +231,7 @@ class Layout extends React.Component {
 			siteRevision,
 			repositoryUrl,
 			children,
+			mergeQueue,
 			requiresJS
 		} = this.props;
 
@@ -250,6 +252,9 @@ class Layout extends React.Component {
 						</div>
 					)}
 					{children}
+					<MergeQueue
+						mergeQueue={mergeQueue}
+					/>
 				</div>
 			);
 
@@ -287,6 +292,7 @@ Layout.propTypes = {
 	disableSignUp: PropTypes.bool,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,
+	mergeQueue: PropTypes.object.isRequired,
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
 	siteRevision: PropTypes.string.isRequired,

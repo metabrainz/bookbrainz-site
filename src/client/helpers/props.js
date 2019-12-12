@@ -23,6 +23,7 @@ const LAYOUT_PROPS = [
 	'alerts',
 	'hideSearch',
 	'homepage',
+	'mergeQueue',
 	'repositoryUrl',
 	'requiresJS',
 	'siteRevision',
