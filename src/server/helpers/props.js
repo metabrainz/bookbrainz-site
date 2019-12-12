@@ -28,7 +28,7 @@ export function escapeProps(props) {
 
 export function generateProps(req, res, props) {
 	const baseObject = {};
-	if (req.session.mergeQueue) {
+	if (req.session && req.session.mergeQueue) {
 		baseObject.mergeQueue = req.session.mergeQueue;
 	}
 	return Object.assign(baseObject, res.locals, props);
