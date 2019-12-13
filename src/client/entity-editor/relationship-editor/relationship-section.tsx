@@ -63,7 +63,6 @@ export function RelationshipList(
 	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
 ) {
 	/* eslint-disable react/jsx-no-bind */
-
 	const renderedRelationships = _.map(
 		relationships,
 		({relationshipType, sourceEntity, targetEntity}, rowID) => (
@@ -155,6 +154,22 @@ function RelationshipSection({
 		disambiguation: _.get(entity, ['disambiguation', 'comment']),
 		type: _.upperFirst(entityType)
 	};
+	const relationshipsObject = relationships.toJS();
+
+	/* If one of the relationships is to a new entity (in creation),
+	update that new entity's name to replace "New Entity" */
+	if (typeof baseEntity.bbid === 'undefined') {
+		_.forEach(relationshipsObject, relationship => {
+			const {sourceEntity, targetEntity} = relationship;
+			const defaultAliasPath = ['defaultAlias', 'name'];
+			const newEntity = [sourceEntity, targetEntity].find(({bbid}) => bbid === baseEntity.bbid);
+			const newRelationshipName = newEntity && _.get(newEntity, defaultAliasPath);
+			const baseEntityName = _.get(baseEntity, defaultAliasPath);
+			if (newRelationshipName !== baseEntityName) {
+				_.set(newEntity, defaultAliasPath, baseEntityName);
+			}
+		});
+	}
 
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
@@ -183,7 +198,7 @@ function RelationshipSection({
 				<Col sm={12}>
 					<RelationshipList
 						contextEntity={baseEntity}
-						relationships={relationships.toJS()}
+						relationships={relationshipsObject}
 						onEdit={canEdit ? onEdit : null}
 						onRemove={canEdit ? onRemove : null}
 					/>
