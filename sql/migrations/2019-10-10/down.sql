@@ -15,9 +15,3 @@ ALTER TABLE bookbrainz.publisher_revision
 	
 ALTER TABLE bookbrainz.work_revision
 	DROP is_merge;
-
-DROP TRIGGER IF EXISTS process_author ON bookbrainz.author;
-DROP TRIGGER IF EXISTS process_edition ON bookbrainz.edition;
-DROP TRIGGER IF EXISTS process_edition_group ON bookbrainz.edition_group;
-DROP TRIGGER IF EXISTS process_publisher ON bookbrainz.publisher;
-DROP TRIGGER IF EXISTS process_work ON bookbrainz.work;
