@@ -315,6 +315,7 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 
 	if (!props.initialState.relationshipSection) {
 		props.initialState.relationshipSection = {};
+		props.initialState.relationshipSection.canEdit = true;
 		props.initialState.relationshipSection.lastRelationships = null;
 		props.initialState.relationshipSection.relationshipEditorProps = null;
 		props.initialState.relationshipSection.relationshipEditorVisible = false;
