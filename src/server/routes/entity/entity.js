@@ -818,14 +818,16 @@ export function handleCreateOrEditEntity(
 					throw new Error('Merge handler called with no merge queue, aborting');
 				}
 				const mergingEntitiesBBIDs = Object.keys(mergingEntities);
+				const mergingEntitiesValues = Object.values(mergingEntities);
 				if (!_.includes(mergingEntitiesBBIDs, currentEntity.bbid)) {
 					throw new Error('Entity being merged into does not appear in merge queue, aborting');
 				}
 				log.debug('Merge operation detected; Entities:', mergingEntitiesBBIDs);
 
 				// fetch entities we're merging and add them to allEntities to be updated
-				const entitiesToMergeBBIDs = mergingEntitiesBBIDs.filter(bbid =>
+				const entitiesToMerge = mergingEntitiesValues.filter(({bbid}) =>
 					bbid !== currentEntity.bbid);
+				const entitiesToMergeBBIDs = _.without(mergingEntitiesBBIDs, currentEntity.bbid);
 
 				entitiesModelsToMerge = await Promise.all(
 					entitiesToMergeBBIDs.map(bbid =>
@@ -873,6 +875,12 @@ export function handleCreateOrEditEntity(
 						.query(qb => qb.whereIn('bbid', mergingEntitiesBBIDs))
 						.save({isMerge: true}, {patch: true, transacting});
 					req.session.mergeQueue = null;
+					try {
+						/* Remove merged entities from search results */
+						await Promise.all(entitiesToMerge.map(search.deleteEntity));
+					}
+					catch (err) {
+						log.debug(err);
 				});
 			}
 
