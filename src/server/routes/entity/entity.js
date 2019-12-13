@@ -863,6 +863,41 @@ export function handleCreateOrEditEntity(
 				}
 
 				/**
+				 * For Publisher entities, each merged item may have editions associated to it.
+				 * We need to set each Edition's publisher set to the target entity BBID
+				 */
+				if (entityType === 'Publisher') {
+					try {
+						const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(
+							entitiesModel => entitiesModel.editions()
+						));
+
+						// eslint-disable-next-line consistent-return
+						const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
+							if (edition.models && edition.models.length) {
+								return edition.models;
+							}
+						});
+						await Promise.all(editionsToSet.map(async edition => {
+							// Fetch current PublisherSet
+							const oldPublisherSet = await edition.publisherSet();
+							// Create a new PublisherSet pointing to the main entity
+							const newPublisherSet = await orm.func.publisher.updatePublisherSet(
+								orm, transacting, oldPublisherSet,
+								[{bbid: currentEntity.bbid}]
+							);
+							// Set the new PublisherSet on the Edition
+							edition.set('publisherSetId', newPublisherSet.get('id'));
+							// Add the modified Edition to the revision
+							allEntities.push(edition);
+						}));
+					}
+					catch (err) {
+						log.error(err);
+					}
+				}
+
+				/**
 				 * Set isMerge to true on the *entity*_revision models
 				 * The *entity*_revision are created by a postgres trigger rather than here in code,
 				 * so we need to wait until the entity is saved.
@@ -881,6 +916,7 @@ export function handleCreateOrEditEntity(
 					}
 					catch (err) {
 						log.debug(err);
+					}
 				});
 			}
 
