@@ -272,7 +272,6 @@ router.get('/add/:bbid', auth.isAuthenticated,
 
 		/* Always set submitted to false when we change the queue*/
 		mergeQueue.submitted = false;
-		console.log(mergeQueue); // eslint-disable-line no-console
 		return res.redirect(req.headers.referer);
 	});
 
