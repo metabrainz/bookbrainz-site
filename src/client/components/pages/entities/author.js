@@ -23,7 +23,7 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityTitle from './title';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
@@ -133,7 +133,7 @@ function AuthorDisplayPage({entity, identifierTypes}) {
 					className="margin-top-d15"
 					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 				>
-					<Icon className="margin-right-0-5" name="plus"/>Add Work
+					<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
 				</Button>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
