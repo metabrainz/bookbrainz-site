@@ -133,7 +133,7 @@ function AuthorDisplayPage({entity, identifierTypes}) {
 					className="margin-top-d15"
 					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 				>
-					<FontAwesomeIcon className="margin-right-0-5" name="plus"/>Add Work
+					<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
 				</Button>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
