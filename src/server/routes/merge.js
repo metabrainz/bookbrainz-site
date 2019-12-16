@@ -234,8 +234,7 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		if (!mergeQueue) {
 			mergeQueue = {
 				entityType: '',
-				mergingEntities: {},
-				submitted: false
+				mergingEntities: {}
 			};
 			req.session.mergeQueue = mergeQueue;
 		}
@@ -270,8 +269,6 @@ router.get('/add/:bbid', auth.isAuthenticated,
 
 		mergeQueue.mergingEntities[bbid] = fetchedEntity;
 
-		/* Always set submitted to false when we change the queue*/
-		mergeQueue.submitted = false;
 		return res.redirect(req.headers.referer);
 	});
 
@@ -285,10 +282,7 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 
 		delete mergingEntities[req.params.bbid];
 
-		/* Always set submitted to false when we change the queue*/
-		mergeQueue.submitted = false;
-
-		/* If there's only one item in the queu, delete the queue entirely */
+		/* If there's only one item in the queue, delete the queue entirely */
 		if (Object.keys(mergingEntities).length === 0) {
 			req.session.mergeQueue = null;
 		}
@@ -345,8 +339,6 @@ router.get('/submit', auth.isAuthenticated,
 			return next(error);
 		}
 
-		/* Set submitted to true to signify that the next entity edit is a merge */
-		mergeQueue.submitted = true;
 		const {entityType} = mergeQueue;
 		res.locals.entity = mergingFetchedEntities[0];
 

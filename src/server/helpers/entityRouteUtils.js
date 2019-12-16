@@ -269,7 +269,7 @@ export function makeEntityCreateOrEditHandler(
 			error.sendErrorAsJSON(res, err);
 		}
 		const {mergeQueue} = req.session;
-		const isMergeOperation = isMergeHandler && mergeQueue && mergeQueue.submitted && _.size(mergeQueue.mergingEntities) >= 2;
+		const isMergeOperation = isMergeHandler && mergeQueue && _.size(mergeQueue.mergingEntities) >= 2;
 
 		req.body = transformNewForm(req.body);
 
