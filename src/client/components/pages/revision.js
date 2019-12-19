@@ -176,7 +176,16 @@ class RevisionPage extends React.Component {
 			 * which allows us to display it at the bottom ('merges entity X and Y into Z')
 			 */
 			mergeDiffDivs = mergeDiffs
-				.sort((diff1, diff2) => diff1.changes.length - diff2.changes.length)
+				.sort((a, b) => {
+					if (!a.entityRevision.dataId) {
+						return -1;
+					}
+					if (!b.entityRevision.dataId) {
+						return 1;
+					}
+					return 0;
+				})
+				// .sort((diff1, diff2) => diff1.changes.length - diff2.changes.length)
 				.map(RevisionPage.getEntityDiff);
 		}
 
