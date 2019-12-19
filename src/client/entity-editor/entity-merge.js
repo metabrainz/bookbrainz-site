@@ -20,7 +20,7 @@
 
 import * as React from 'react';
 
-import {Col, Panel, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 
 import AliasEditorMerge from './alias-editor/alias-editor-merge';
 import Entity from './common/entity';
@@ -64,7 +64,7 @@ const EntityMerge = (props: Props) => {
 		identifierSet,
 		subheading
 	} = props;
-	const identifiers = Object.values(identifierSet.toJS());
+	const identifiers = Object.values(identifierSet.toJS()) || [];
 	return (
 		<div>
 			<div>

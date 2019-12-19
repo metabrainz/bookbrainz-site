@@ -18,7 +18,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateDisambiguationField,
 	debouncedUpdateNameField,
@@ -110,7 +109,8 @@ function NameSectionMerge({
 				currentValue={nameValue}
 				label="Name"
 				options={nameOptions}
-				tooltipText={`Prefered name of the ${_.capitalize(entityType)} in their original language. Other names (full name, name in another language) are added as 'aliases'.`}
+				tooltipText={`Prefered name of the ${_.capitalize(entityType)} in their original language.
+				Other names (full name, name in another language) are added as 'aliases'.`}
 				valueProperty="value"
 				onChange={onNameChange}
 			/>

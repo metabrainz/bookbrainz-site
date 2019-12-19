@@ -41,6 +41,11 @@ import {Props} from './author-section';
 import React from 'react';
 import {connect} from 'react-redux';
 
+
+type OwnProps = {
+	mergingEntities: Array
+};
+
 /**
  * Container component. The AuthorSectionMerge component contains input fields
  * specific to the author entity. The intention is that this component is
@@ -209,11 +214,10 @@ function AuthorSectionMerge({
 }
 AuthorSectionMerge.displayName = 'AuthorSectionMerge';
 
-export function mapStateToProps(rootState): StateProps {
+export function mapStateToProps(rootState, {mergingEntities}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');
-	const mergingEntities = rootState.get('mergingEntities').toJSON();
 
 	const authorTypes = mergingEntities.map(entity => entity.authorType);
 

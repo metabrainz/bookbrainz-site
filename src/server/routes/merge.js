@@ -134,7 +134,6 @@ function entitiesToFormState(entities) {
 	const props = {
 		aliasEditor,
 		identifierEditor,
-		mergingEntities: entities,
 		nameSection,
 		relationshipSection
 	};
@@ -273,9 +272,10 @@ router.get('/add/:bbid', auth.isAuthenticated,
 	});
 
 router.get('/remove/:bbid', auth.isAuthenticated,
-	(req, res, next) => {
+	(req, res) => {
 		const {mergeQueue} = req.session;
 		if (!mergeQueue || _.isNil(req.params.bbid)) {
+			res.redirect(req.headers.referer);
 			return;
 		}
 		const {mergingEntities} = mergeQueue;
@@ -291,7 +291,7 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 	});
 
 router.get('/cancel', auth.isAuthenticated,
-	(req, res, next) => {
+	(req, res) => {
 		req.session.mergeQueue = null;
 		res.redirect(req.headers.referer);
 	});

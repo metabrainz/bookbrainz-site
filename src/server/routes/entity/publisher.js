@@ -241,7 +241,6 @@ function transformNewForm(data) {
 			data.publisherSection.endDate : '',
 		ended: data.publisherSection.ended,
 		identifiers,
-		mergingEntities: data.mergingEntities,
 		note: data.submissionSection.note,
 		relationships,
 		typeId: data.publisherSection.type

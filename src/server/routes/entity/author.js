@@ -23,7 +23,6 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -241,7 +240,6 @@ function transformNewForm(data) {
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,
-		mergingEntities: data.mergingEntities,
 		note: data.submissionSection.note,
 		relationships,
 		typeId: data.authorSection.type

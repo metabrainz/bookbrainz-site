@@ -279,6 +279,7 @@ function EditionSectionMerge({
 					disabled
 					multi
 					instanceId="languages"
+					placeholder="No languages"
 					value={languageValues}
 				/>
 			</CustomInput>

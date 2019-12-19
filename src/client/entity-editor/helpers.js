@@ -24,7 +24,6 @@ import EditionGroupSection from './edition-group-section/edition-group-section';
 import EditionGroupSectionMerge from './edition-group-section/edition-group-section-merge';
 import EditionSection from './edition-section/edition-section';
 import EditionSectionMerge from './edition-section/edition-section-merge';
-import MergingEntitiesReducer from './common/merging-entities-reducer';
 import PublisherSection from './publisher-section/publisher-section';
 import PublisherSectionMerge from './publisher-section/publisher-section-merge';
 import WorkSection from './work-section/work-section';
@@ -123,7 +122,6 @@ export function createRootReducer(entityType: string) {
 		buttonBar: buttonBarReducer,
 		[entityReducerKey]: entityReducer,
 		identifierEditor: identifierEditorReducer,
-		mergingEntities: MergingEntitiesReducer,
 		nameSection: nameSectionReducer,
 		relationshipSection: relationshipSectionReducer,
 		submissionSection: submissionSectionReducer
