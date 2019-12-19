@@ -18,7 +18,7 @@
 
 // @flow
 
-import {snakeCase as _snakeCase} from 'lodash';
+import {snakeCase as _snakeCase, uniqBy} from 'lodash';
 import request from 'superagent-bluebird-promise';
 
 
@@ -133,10 +133,16 @@ export function checkIfNameExists(
 				collection: _snakeCase(entityType),
 				q: name
 			})
-			.then(res => dispatch({
-				payload: JSON.parse(res.text) || null,
-				type: action || UPDATE_WARN_IF_EXISTS
-			}))
+			.then(res => {
+				let payload = JSON.parse(res.text) || null;
+				if (Array.isArray(payload)) {
+					payload = uniqBy(payload, 'bbid');
+				}
+				return dispatch({
+					payload,
+					type: action || UPDATE_WARN_IF_EXISTS
+				});
+			})
 			.catch((error: {message: string}) => error);
 	};
 }
