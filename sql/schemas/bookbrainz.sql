@@ -121,6 +121,7 @@ CREATE TABLE bookbrainz.author_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
