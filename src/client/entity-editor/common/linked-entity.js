@@ -19,10 +19,10 @@
 
 // @flow
 
+import {kebabCase as _kebabCase, has} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {kebabCase as _kebabCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
@@ -56,7 +56,14 @@ class LinkedEntity extends React.Component {
 	}
 
 	render() {
-		const {disambiguation, text, type, unnamedText, language} = this.props.option.value || this.props.option;
+		let option;
+		if (has(this.props.option, 'value') && has(this.props.option, 'label')) {
+			option = this.props.option.value;
+		}
+		else {
+			({option} = this.props);
+		}
+		const {disambiguation, text, type, unnamedText, language} = option;
 
 		const nameComponent = text || <i>{unnamedText}</i>;
 
