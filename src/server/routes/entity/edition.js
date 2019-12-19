@@ -25,7 +25,6 @@ import * as utils from '../../helpers/utils';
 import {
 	ISODateStringToObject,
 	addInitialRelationship,
-	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -332,8 +331,8 @@ function transformNewForm(data) {
 	);
 
 	let releaseEvents = [];
-	if (data.editionSection.releaseDate && data.editionSection.releaseDate.year) {
-		releaseEvents = [{date: dateObjectToISOString(data.editionSection.releaseDate)}];
+	if (data.editionSection.releaseDate) {
+		releaseEvents = [{date: data.editionSection.releaseDate}];
 	}
 
 	const languages = _.map(

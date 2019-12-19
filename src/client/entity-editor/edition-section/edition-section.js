@@ -429,7 +429,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		pagesValue: state.get('pages'),
 		physicalVisible: state.get('physicalVisible'),
 		publisherValue: state.get('publisher'),
-		releaseDateValue: convertMapToObject(state.get('releaseDate')),
+		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
 		widthValue: state.get('width')

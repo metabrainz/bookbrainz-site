@@ -1,6 +1,5 @@
 import * as entityRoutes from '../routes/entity/entity';
 import * as utils from './utils';
-import {ISODateStringToObject} from './entityRouteUtils';
 import _ from 'lodash';
 
 
@@ -118,9 +117,6 @@ function getEditionEntityMergeSection(entities) {
 		assignIfNotSet(editionSection, 'weight', entity);
 		assignIfNotSet(editionSection, 'width', entity);
 	});
-	const releaseDate = editionSection.releaseDate ?
-		ISODateStringToObject(editionSection.releaseDate) :
-		{day: '', month: '', year: ''};
 	const languages = _.flatMap(entities, entity => _.get(entity, 'languageSet.languages', []).map(
 		({id, name}) => ({label: name, value: id})
 	));
@@ -128,8 +124,7 @@ function getEditionEntityMergeSection(entities) {
 		{
 			editionGroup: utils.entityToOption(editionSection.editionGroup),
 			languages: _.uniqBy(languages, 'value'),
-			publisher: utils.entityToOption(editionSection.publisher),
-			releaseDate
+			publisher: utils.entityToOption(editionSection.publisher)
 		});
 }
 

@@ -32,7 +32,6 @@ import {
 	updateStatus
 } from './actions';
 
-import {ISODateStringToObject, convertMapToObject, dateObjectToISOString} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
 import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
@@ -44,6 +43,7 @@ import React from 'react';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 type LanguageOption = {
@@ -300,7 +300,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		languageValues: convertMapToObject(state.get('languages')),
 		pagesValue: state.get('pages'),
 		publisherValue: convertMapToObject(state.get('publisher')),
-		releaseDateValue: dateObjectToISOString(convertMapToObject(state.get('releaseDate'))),
+		releaseDateValue: convertMapToObject(state.get('releaseDate')),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
 		widthValue: state.get('width')
@@ -322,8 +322,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
-		onReleaseDateChange: (releaseDate) =>
-			dispatch(debouncedUpdateReleaseDate(ISODateStringToObject(releaseDate))),
+		onReleaseDateChange: (dateString) =>
+			dispatch(debouncedUpdateReleaseDate(dateString)),
 		onStatusChange: (value: number) =>
 			dispatch(updateStatus(value)),
 		onWeightChange: (event) => dispatch(debouncedUpdateWeight(
