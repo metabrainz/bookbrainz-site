@@ -338,6 +338,10 @@ router.get('/submit', auth.isAuthenticated,
 		catch (error) {
 			return next(error);
 		}
+		if (_.uniqBy(mergingFetchedEntities, 'bbid').length !== mergingFetchedEntities.length) {
+			const conflictError = new ConflictError('You cannot merge an entity that has already been merged');
+			return next(conflictError);
+		}
 
 		const {entityType} = mergeQueue;
 		res.locals.entity = mergingFetchedEntities[0];
