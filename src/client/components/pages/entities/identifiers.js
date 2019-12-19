@@ -59,7 +59,10 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
-	identifiers: PropTypes.array.isRequired
+	identifiers: PropTypes.array
+};
+EntityIdentifiers.defaultProps = {
+	identifiers: []
 };
 
 export default EntityIdentifiers;

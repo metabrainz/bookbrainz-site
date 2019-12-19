@@ -71,11 +71,13 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 	const {entity}: {entity: any} = resLocals;
 	// Get unique identifier types for display
 	// $FlowFixMe
-	const identifierTypes = entity.identifierSet &&
-		_.uniqBy(
+	let identifierTypes = [];
+	if (entity.identifierSet) {
+		identifierTypes = _.uniqBy(
 			_.map(entity.identifierSet.identifiers, 'type'),
-			(type) => type.id
+			'id'
 		);
+	}
 
 	let editorEntityVisitPromise;
 	if (resLocals.user) {
