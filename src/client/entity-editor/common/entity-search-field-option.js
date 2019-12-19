@@ -80,8 +80,7 @@ class EntitySearchFieldOption extends React.Component {
 			id,
 			language: language && language.label,
 			text: _.get(entity, ['defaultAlias', 'name']),
-			type: entity.type,
-			value: id
+			type: entity.type
 		};
 	}
 

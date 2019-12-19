@@ -22,7 +22,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import {get as _get, isNil as _isNil, kebabCase as _kebabCase} from 'lodash';
+import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -328,13 +328,14 @@ export const ENTITY_TYPE_ICONS = {
 };
 
 export function genEntityIconHTMLElement(entityType, size = '1x', margin = true) {
-	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
+	const correctCaseEntityType = upperFirst(entityType);
+	if (!ENTITY_TYPE_ICONS[correctCaseEntityType]) { return null; }
 	return (
 		<FontAwesomeIcon
 			className={margin ? 'margin-right-0-3' : ''}
-			icon={ENTITY_TYPE_ICONS[entityType]}
+			icon={ENTITY_TYPE_ICONS[correctCaseEntityType]}
 			size={size}
-			title={entityType}
+			title={correctCaseEntityType}
 		/>);
 }
 

@@ -100,7 +100,7 @@ function NameSectionMerge({
 		}
 		if (!_.isNil(entity.disambiguation) &&
 			disambiguationOptions.indexOf(entity.disambiguation) === -1) {
-			disambiguationOptions.push({label: entity.disambiguation.comment, value: entity.disambiguation});
+			disambiguationOptions.push({label: entity.disambiguation.comment, value: entity.disambiguation.comment});
 		}
 	});
 

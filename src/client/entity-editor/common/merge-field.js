@@ -18,11 +18,11 @@
 
 // @flow
 
+import {get as _get, has} from 'lodash';
 import CustomInput from '../../input';
 import React from 'react';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
-import {get as _get} from 'lodash';
 
 
 type Props = {
@@ -70,7 +70,14 @@ function MergeField({
 		);
 	}
 	const onChangeReturnValue = function onChangeReturnValue(selectObject) {
-		return onChange(selectObject.value);
+		let value;
+		if (has(selectObject, 'value') && has(selectObject, 'label')) {
+			({value} = selectObject);
+		}
+		else {
+			value = selectObject;
+		}
+		return onChange(value);
 	};
 	return (
 		<CustomInput label={labelComponent} {...rest}>

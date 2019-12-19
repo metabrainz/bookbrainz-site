@@ -35,14 +35,15 @@ class LinkedEntity extends React.Component {
 	}
 
 	handleParentEvent(event) {
-		this.props.onSelect(this.props.option, event);
+		const option = this.getSafeOptionValue(this.props.option);
+		this.props.onSelect(option, event);
 	}
 
 	handleChildEvent(event) {
 		event.stopPropagation();
 		event.preventDefault();
 		let url = null;
-		const option = this.props.option.value || this.props.option;
+		const option = this.getSafeOptionValue(this.props.option);
 		const type = option && option.type;
 		const id = option && option.id;
 		if (type && id) {
@@ -55,14 +56,15 @@ class LinkedEntity extends React.Component {
 		}
 	}
 
+	getSafeOptionValue(optionToCheck) {
+		if (has(optionToCheck, 'value') && has(optionToCheck, 'label')) {
+			return optionToCheck.value;
+		}
+		return optionToCheck;
+	}
+
 	render() {
-		let option;
-		if (has(this.props.option, 'value') && has(this.props.option, 'label')) {
-			option = this.props.option.value;
-		}
-		else {
-			({option} = this.props);
-		}
+		const option = this.getSafeOptionValue(this.props.option);
 		const {disambiguation, text, type, unnamedText, language} = option;
 
 		const nameComponent = text || <i>{unnamedText}</i>;
