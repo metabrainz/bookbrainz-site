@@ -342,11 +342,17 @@ async function processMergeOperation(orm, transacting, mergeQueue, mainEntity, a
 	 * We need to set each Edition's edition_group_bbid to the target entity BBID
 	 */
 	if (entityType === 'EditionGroup') {
-		const editionsToSet = await Edition.query(qb => qb.whereIn('edition_group_bbid', entitiesToMergeBBIDs))
-			.fetchAll({transacting});
-		editionsToSet.forEach(editionModel => editionModel.set({editionGroupBbid: currentEntityBBID}));
-		// Add the modified Editions to the revision
-		allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, editionsToSet.toArray(), 'id');
+		const editionsToSet = await Edition.query(
+			qb => qb
+				.whereIn('edition_group_bbid', entitiesToMergeBBIDs)
+				.andWhere('master', true)
+		)
+			.fetchAll({require: false, transacting});
+		if (editionsToSet.length) {
+			editionsToSet.forEach(editionModel => editionModel.set({editionGroupBbid: currentEntityBBID}));
+			// Add the modified Editions to the revision
+			allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, editionsToSet.toArray(), 'id');
+		}
 	}
 
 	/**
