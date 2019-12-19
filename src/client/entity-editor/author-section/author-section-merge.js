@@ -32,12 +32,14 @@ import {
 } from './actions';
 
 
+import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
+import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
+import Entity from '../common/entity';
+import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
 import {Props} from './author-section';
 import React from 'react';
 import {connect} from 'react-redux';
-import {labelsForAuthor} from '../../helpers/utils';
-import {transformISODateForSelect} from '../../helpers/entity';
 
 /**
  * Container component. The AuthorSectionMerge component contains input fields
@@ -128,9 +130,9 @@ function AuthorSectionMerge({
 		if (beginDate && !_.find(beginDateOptions, ['value', beginDate.value])) {
 			beginDateOptions.push(beginDate);
 		}
-
-		if (entity.beginArea && !_.find(beginAreaOptions, ['id', entity.beginArea.id])) {
-			beginAreaOptions.push(entity.beginArea);
+		const beginArea = !_.isNil(entity.beginArea) && {label: entity.beginArea.name, value: entityToOption(entity.beginArea)};
+		if (beginArea && !_.find(beginAreaOptions, ['value.id', beginArea.value.id])) {
+			beginAreaOptions.push(beginArea);
 		}
 
 		const ended = !_.isNil(entity.ended) && {label: entity.ended ? 'Yes' : 'No', value: entity.ended};
@@ -141,8 +143,8 @@ function AuthorSectionMerge({
 		if (endDate && !_.find(endDateOptions, ['value', endDate.value])) {
 			endDateOptions.push(endDate);
 		}
-		const endArea = !_.isNil(entity.endArea) && {label: entity.endArea.name, value: entity.endArea};
-		if (endArea && !_.find(endAreaOptions, ['value', endArea.value])) {
+		const endArea = !_.isNil(entity.endArea) && {label: entity.endArea.name, value: entityToOption(entity.endArea)};
+		if (endArea && !_.find(endAreaOptions, ['value.id', endArea.value.id])) {
 			endAreaOptions.push(endArea);
 		}
 	});
@@ -173,8 +175,9 @@ function AuthorSectionMerge({
 			<MergeField
 				currentValue={beginAreaValue}
 				label={beginAreaLabel}
+				optionComponent={LinkedEntity}
 				options={beginAreaOptions}
-				valueProperty="name"
+				valueRenderer={Entity}
 				onChange={onBeginAreaChange}
 			/>
 			<MergeField
@@ -194,7 +197,9 @@ function AuthorSectionMerge({
 					<MergeField
 						currentValue={endAreaValue}
 						label={endAreaLabel}
+						optionComponent={LinkedEntity}
 						options={endAreaOptions}
+						valueRenderer={Entity}
 						onChange={onEndAreaChange}
 					/>
 				</React.Fragment>
@@ -224,11 +229,11 @@ export function mapStateToProps(rootState): StateProps {
 
 	return {
 		beginAreaLabel,
-		beginAreaValue: state.get('beginArea'),
+		beginAreaValue: convertMapToObject(state.get('beginArea')),
 		beginDateLabel,
 		beginDateValue: state.get('beginDate'),
 		endAreaLabel,
-		endAreaValue: state.get('endArea'),
+		endAreaValue: convertMapToObject(state.get('endArea')),
 		endDateLabel,
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
