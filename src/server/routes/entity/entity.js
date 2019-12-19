@@ -291,9 +291,9 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	return parents.attach(parentRevisionIDs, {transacting});
 }
 
-async function processMergeOperation(orm, transacting, mergeQueue, mainEntity, allEntities, relationshipSets) {
+async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
 	const {Edition, bookshelf} = orm;
-	const {mergingEntities} = mergeQueue;
+	const {mergingEntities} = session.mergeQueue;
 	const entityType = mainEntity.get('type');
 	const currentEntityBBID = mainEntity.get('bbid');
 	const mergingEntitiesBBIDs = Object.keys(mergingEntities);
@@ -407,6 +407,8 @@ async function processMergeOperation(orm, transacting, mergeQueue, mainEntity, a
 			.query(qb => qb.whereIn('bbid', entitiesToMergeBBIDs))
 			.save({dataId: null, isMerge: true}, {patch: true, transacting});
 
+		/** Clear the merge queue */
+		session.mergeQueue = null;
 		try {
 			/* Remove merged entities from search results */
 			await Promise.all(entitiesToMerge.map(search.deleteEntity));
@@ -944,7 +946,7 @@ export function handleCreateOrEditEntity(
 			let allEntities = [...otherEntities, mainEntity];
 
 			if (isMergeOperation) {
-				allEntities = await processMergeOperation(orm, transacting, req.session.mergeQueue,
+				allEntities = await processMergeOperation(orm, transacting, req.session,
 					mainEntity, allEntities, relationshipSets);
 			}
 
