@@ -291,6 +291,137 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	return parents.attach(parentRevisionIDs, {transacting});
 }
 
+async function processMergeOperation(orm, transacting, mergeQueue, mainEntity, allEntities, relationshipSets) {
+	const {Edition, bookshelf} = orm;
+	const {mergingEntities} = mergeQueue;
+	const entityType = mainEntity.get('type');
+	const currentEntityBBID = mainEntity.get('bbid');
+	const mergingEntitiesBBIDs = Object.keys(mergingEntities);
+	const entitiesToMergeBBIDs = _.without(Object.keys(mergingEntities), currentEntityBBID);
+	let allEntitiesReturnArray = allEntities;
+	// fetch entities we're merging and add them to allEntities to be updated
+	const entitiesToMerge = Object.values(mergingEntities).filter(({bbid}) => bbid !== currentEntityBBID);
+	if (!mergingEntities) {
+		throw new Error('Merge handler called with no merge queue, aborting');
+	}
+	if (!_.includes(mergingEntitiesBBIDs, currentEntityBBID)) {
+		throw new Error('Entity being merged into does not appear in merge queue, aborting');
+	}
+	log.debug('Merge operation detected; Entities:', mergingEntitiesBBIDs);
+
+	const entitiesModelsToMerge = await Promise.all(entitiesToMergeBBIDs
+		.map(bbid => fetchOrCreateMainEntity(orm, transacting, false, bbid, entityType)));
+	allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, entitiesModelsToMerge, 'id');
+
+	/** Remove relationships that concern entities being merged */
+	await Promise.all(_.map(relationshipSets, async (relationshipSet) => {
+		/** Some items in this object may be null */
+		if (relationshipSet) {
+			/** Refresh RelationshipSet to fetch both existing and new relationships */
+			const refreshedrelationshipSet = await relationshipSet
+				.refresh({transacting, withRelated: 'relationships'});
+
+			/** Find relationships with entities being merge and remove them from set */
+			const relationshipsToRemove = refreshedrelationshipSet
+				.related('relationships').toJSON()
+				.filter(({sourceBbid, targetBbid}) => _.includes(entitiesToMergeBBIDs, sourceBbid) ||
+					_.includes(entitiesToMergeBBIDs, targetBbid))
+				.map(({id}) => id);
+			if (relationshipsToRemove.length) {
+				await refreshedrelationshipSet
+					.related('relationships')
+					.detach(relationshipsToRemove, {transacting});
+			}
+		}
+	}));
+
+	/** Special cases per entity type*/
+
+	/**
+	 * For EditionGroup entities, each merged EG may have editions associated to it.
+	 * We need to set each Edition's edition_group_bbid to the target entity BBID
+	 */
+	if (entityType === 'EditionGroup') {
+		const editionsToSet = await Edition.query(qb => qb.whereIn('edition_group_bbid', entitiesToMergeBBIDs))
+			.fetchAll({transacting});
+		editionsToSet.forEach(editionModel => editionModel.set({editionGroupBbid: currentEntityBBID}));
+		// Add the modified Editions to the revision
+		allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, editionsToSet.toArray(), 'id');
+	}
+
+	/**
+	 * For Publisher entities, each merged item may have editions associated to it.
+	 * We need to set each Edition's publisher set to the target entity BBID
+	 */
+	if (entityType === 'Publisher') {
+		try {
+			const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(entitiesModel => entitiesModel.editions()));
+			// eslint-disable-next-line consistent-return
+			const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
+				if (edition.models && edition.models.length) {
+					return edition.models;
+				}
+			});
+			await Promise.all(editionsToSet.map(async (edition) => {
+				// Fetch current PublisherSet
+				const oldPublisherSet = await edition.publisherSet();
+				// Create a new PublisherSet pointing to the main entity
+				const newPublisherSet = await orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, [{bbid: currentEntityBBID}]);
+				// Set the new PublisherSet on the Edition
+				edition.set('publisherSetId', newPublisherSet.get('id'));
+				// Add the modified Edition to the revision (if it doesn't exist yet)
+				allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, [edition], 'id');
+			}));
+		}
+		catch (err) {
+			log.error(err);
+		}
+	}
+
+	/**
+	 * Some actions we only want to take once the main entity has been saved
+	*/
+	mainEntity.once('saved', async (model) => {
+		/**
+		 * Set isMerge to true on the *entity*_revision models
+		 * The *entity*_revision items  are created by a postgres trigger instead of server code,
+		 * so we need to wait until the entity is saved on the database.
+		 * We only want to set isMerge to true on the entities we're merging,
+		 * not the other entities potentially affected by the merge -> .where(…
+		 */
+		const newEntityRevision = await model.revision()
+			.fetch({transacting});
+
+		await newEntityRevision
+			.where('bbid', currentEntityBBID)
+			.save({isMerge: true}, {patch: true, transacting});
+
+		/* Also set dataID to null for slave entities to 'delete' them */
+		await newEntityRevision
+			.query(qb => qb.whereIn('bbid', entitiesToMergeBBIDs))
+			.save({dataId: null, isMerge: true}, {patch: true, transacting});
+
+		try {
+			/* Remove merged entities from search results */
+			await Promise.all(entitiesToMerge.map(search.deleteEntity));
+		}
+		catch (err) {
+			log.debug(err);
+		}
+	});
+
+	/** Update the redirection table to redirect merged entities' bbids
+	 *  to currentEntityBBID (the entity we're merging into)
+	*/
+	await bookshelf.knex('bookbrainz.entity_redirect')
+		.transacting(transacting)
+		.insert(entitiesToMergeBBIDs.map(bbid => (
+			// eslint-disable-next-line camelcase
+			{source_bbid: bbid, target_bbid: currentEntityBBID})));
+
+	return allEntitiesReturnArray;
+}
+
 async function saveEntitiesAndFinishRevision(
 	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
 	updatedEntities: [], editorID: number, note: string
@@ -734,7 +865,7 @@ export function handleCreateOrEditEntity(
 	isMergeOperation: boolean
 ) {
 	const {orm}: {orm: any} = req.app.locals;
-	const {Edition, Entity, Revision, bookshelf} = orm;
+	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
 	const {body}: {body: any} = req;
@@ -805,112 +936,10 @@ export function handleCreateOrEditEntity(
 			_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
 			let allEntities = [...otherEntities, mainEntity];
-			let entitiesModelsToMerge;
+
 			if (isMergeOperation) {
-				const {mergingEntities} = req.session.mergeQueue;
-				if (!mergingEntities) {
-					throw new Error('Merge handler called with no merge queue, aborting');
-				}
-				const mergingEntitiesBBIDs = Object.keys(mergingEntities);
-				const mergingEntitiesValues = Object.values(mergingEntities);
-				if (!_.includes(mergingEntitiesBBIDs, currentEntity.bbid)) {
-					throw new Error('Entity being merged into does not appear in merge queue, aborting');
-				}
-				log.debug('Merge operation detected; Entities:', mergingEntitiesBBIDs);
-
-				// fetch entities we're merging and add them to allEntities to be updated
-				const entitiesToMerge = mergingEntitiesValues.filter(({bbid}) =>
-					bbid !== currentEntity.bbid);
-				const entitiesToMergeBBIDs = _.without(mergingEntitiesBBIDs, currentEntity.bbid);
-
-				entitiesModelsToMerge = await Promise.all(
-					entitiesToMergeBBIDs.map(bbid =>
-						fetchOrCreateMainEntity(
-							orm, transacting, isNew, bbid, entityType
-						))
-				);
-
-				allEntities = _.unionBy(allEntities, entitiesModelsToMerge, 'id');
-
-				/** Update the redirection table to edirect merged entities' bbids
-				 *  to currentEntity.bbid (the entity we're merging into)
-				*/
-				await bookshelf.knex('bookbrainz.entity_redirect')
-					.transacting(transacting)
-					.insert(entitiesToMergeBBIDs.map(bbid => (
-					// eslint-disable-next-line camelcase
-						{source_bbid: bbid, target_bbid: currentEntity.bbid}
-					)));
-
-				/**
-				 * For EditionGroup entities, each merged EG may have editions associated to it.
-				 * We need to set each Edition's edition_group_bbid to the target entity BBID
-				 */
-				if (entityType === 'EditionGroup') {
-					const editionsToSet = await Edition.query(qb =>
-						qb.whereIn('edition_group_bbid', entitiesToMergeBBIDs))
-						.fetchAll({transacting});
-					editionsToSet.forEach(editionModel =>
-						editionModel.set({editionGroupBbid: currentEntity.bbid}));
-					// Add the modified Editions to the revision
-					allEntities = _.unionBy(allEntities, editionsToSet.toArray(), 'id');
-				}
-
-				/**
-				 * For Publisher entities, each merged item may have editions associated to it.
-				 * We need to set each Edition's publisher set to the target entity BBID
-				 */
-				if (entityType === 'Publisher') {
-					try {
-						const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(
-							entitiesModel => entitiesModel.editions()
-						));
-
-						// eslint-disable-next-line consistent-return
-						const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
-							if (edition.models && edition.models.length) {
-								return edition.models;
-							}
-						});
-						await Promise.all(editionsToSet.map(async edition => {
-							// Fetch current PublisherSet
-							const oldPublisherSet = await edition.publisherSet();
-							// Create a new PublisherSet pointing to the main entity
-							const newPublisherSet = await orm.func.publisher.updatePublisherSet(
-								orm, transacting, oldPublisherSet,
-								[{bbid: currentEntity.bbid}]
-							);
-							// Set the new PublisherSet on the Edition
-							edition.set('publisherSetId', newPublisherSet.get('id'));
-							// Add the modified Edition to the revision
-							allEntities.push(edition);
-						}));
-					}
-					catch (err) {
-						log.error(err);
-					}
-				}
-
-				/**
-				 * Set isMerge to true on the *entity*_revision models
-				 * The *entity*_revision are created by a postgres trigger rather than here in code,
-				 * so we need to wait until the entity is saved.
-				*/
-				mainEntity.once('saved', async (model) => {
-					const newEntityRevision = await model.revision()
-						.fetch({transacting});
-					// We only want to set isMerge to true on the entities we're merging
-					await newEntityRevision
-						.query(qb => qb.whereIn('bbid', mergingEntitiesBBIDs))
-						.save({isMerge: true}, {patch: true, transacting});
-					try {
-						/* Remove merged entities from search results */
-						await Promise.all(entitiesToMerge.map(search.deleteEntity));
-					}
-					catch (err) {
-						log.debug(err);
-					}
-				});
+				allEntities = await processMergeOperation(orm, transacting, req.session.mergeQueue,
+					mainEntity, allEntities, relationshipSets);
 			}
 
 			_.forEach(allEntities, (entityModel) => {
