@@ -19,7 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 
 import CustomInput from '../../input';
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -85,13 +85,13 @@ class EntityDeletionForm extends React.Component {
 					className="pull-right"
 					type="submit"
 				>
-					<FontAwesome name="trash-alt"/> Delete
+					<FontAwesomeIcon icon="trash-alt"/> Delete
 				</Button>
 				<Button
 					className="pull-right"
 					href={this.entityUrl}
 				>
-					<FontAwesome name="times-circle"/> Cancel
+					<FontAwesomeIcon icon="times-circle"/> Cancel
 				</Button>
 			</span>
 		);
@@ -116,7 +116,7 @@ class EntityDeletionForm extends React.Component {
 							>
 								<Alert bsStyle="warning">
 									<h4>
-										<FontAwesome name="exclamation-triangle"/>&nbsp;
+										<FontAwesomeIcon icon="exclamation-triangle"/>&nbsp;
 										You’re about to delete the {entity.type} {entityName}.
 									</h4>
 									<p style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</p>
