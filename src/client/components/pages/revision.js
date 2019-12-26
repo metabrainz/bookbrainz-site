@@ -23,7 +23,7 @@ import * as utilsHelper from '../../helpers/utils';
 
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
@@ -231,7 +231,10 @@ class RevisionPage extends React.Component {
 					{revision.isMerge && (
 						<div className="mergedEntities">
 							<h3>
-								<FontAwesome flip="vertical" name="code-branch"/>
+								<FontAwesomeIcon
+									flip="vertical" icon="code-branch"
+									style={{margin: '0 0.5em'}} title="Merge revision"
+								/>
 								&nbsp;Merges {mergeDiffDivs.length > 2 ? 'entities' : 'entity'}:
 							</h3>
 							{mergeDiffDivs.slice(0, -1)}
