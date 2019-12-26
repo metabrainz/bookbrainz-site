@@ -248,8 +248,8 @@ export function getEntityLabel(entity, returnHTML = true) {
 	// Deleted entities
 	if (!entity.dataId) {
 		let deletedEntityName = `Deleted ${entity.type} ${entity.bbid}`;
-		if (entity.parentAlias) {
-			deletedEntityName = entity.parentAlias.name;
+		if (entity.defaultAlias) {
+			deletedEntityName = entity.defaultAlias.name;
 		}
 		if (returnHTML) {
 			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
