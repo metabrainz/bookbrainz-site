@@ -19,7 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
@@ -99,7 +99,7 @@ function EditionTable({editions, entity}) {
 							className="margin-top-d15"
 							href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						>
-							<Icon name="plus"/>
+							<FontAwesomeIcon  icon="plus"/>
 							{'  Add Edition'}
 						</Button>
 						<hr className="margin-bottom-d0"/>
@@ -110,7 +110,7 @@ function EditionTable({editions, entity}) {
 								bsStyle="success"
 								href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 							>
-								<Icon name="book" size="2x"/>
+								<FontAwesomeIcon icon="book" size="2x"/>	
 								<br/>
 								Add Edition
 							</Button>
