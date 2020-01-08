@@ -39,18 +39,16 @@ const log = new Log(config.site.log);
  */
 function awardUnlock(UnlockType, awardAttribs) {
 	return new UnlockType(awardAttribs)
-		.fetch()
-		.then((award) => Promise.resolve('already unlocked'))
-		.catch(err => {
-			// Model.fetch() throws NotFoundError  if not result
-			// (see https://github.com/bookshelf/bookshelf/wiki/Migrating-from-0.15.1-to-1.0.0)
-			if (err instanceof UnlockType.NotFoundError) {
+		.fetch({require: false})
+		.then((award) => {
+			if (award === null || typeof award === 'undefined') {
 				return new UnlockType(awardAttribs)
 					.save(null, {method: 'insert'})
 					.then((unlock) => unlock.toJSON());
 			}
-			return Promise.reject(err);
-		});
+			return Promise.resolve('Already unlocked');
+		})
+		.catch(err => Promise.reject(err));
 }
 
 /**
@@ -154,13 +152,15 @@ function awardTitle(orm, editorId, tier) {
  */
 function awardListToAwardObject(awardList) {
 	const track = {};
-	awardList.forEach((awardSet) => {
-		awardSet.forEach((award) => {
-			Object.keys(award).forEach((key) => {
-				track[key] = award[key];
+	if (awardList) {
+		awardList.forEach((awardSet) => {
+			awardSet.forEach((award) => {
+				Object.keys(award).forEach((key) => {
+					track[key] = award[key];
+				});
 			});
 		});
-	});
+	}
 	return track;
 }
 
@@ -242,7 +242,7 @@ function getTypeCreation(revisionType, revisionString, editor) {
 function processRevisionist(orm, editorId) {
 	const {Editor} = orm;
 	return new Editor({id: editorId})
-		.fetch()
+		.fetch({require: false})
 		.then((editor) => {
 			const revisions = editor.get('revisionsApplied');
 			const tiers = [
