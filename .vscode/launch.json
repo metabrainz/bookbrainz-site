@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "env": {"SSR":true},
+            "env": {"SSR":true, "DEBUG": true},
             "program": "${workspaceFolder}/lib/server/app.js",
             "args": ["--config", "./config/config.local.json"],
             "sourceMaps": true,
