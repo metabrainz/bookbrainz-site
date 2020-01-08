@@ -454,3 +454,24 @@ hr.wide {
 		}
 	}
 }
+
+.round-color-icon {
+	border-radius: 50%;
+    display: inline-block;
+	width: 1em;
+	position: relative;
+    margin-right: 0.5em;
+	vertical-align: middle;
+    background-color: @brand-secondary;
+	color: @white;
+	& > * {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+	&:after {
+		content: "";
+		display: block;
+		padding-bottom: 100%;
+	}
+}

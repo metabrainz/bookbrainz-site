@@ -231,11 +231,16 @@ class RevisionPage extends React.Component {
 					{revision.isMerge && (
 						<div className="mergedEntities">
 							<h3>
-								<FontAwesomeIcon
-									flip="vertical" icon="code-branch"
-									style={{margin: '0 0.5em'}} title="Merge revision"
-								/>
-								&nbsp;Merges {mergeDiffDivs.length > 2 ? 'entities' : 'entity'}:
+								<span
+									className="round-color-icon"
+									title="Merge revision"
+								>
+									<FontAwesomeIcon
+										flip="vertical" icon="code-branch"
+										transform="shrink-4"
+									/>
+								</span>
+								Merges {mergeDiffDivs.length > 2 ? 'entities' : 'entity'}:
 							</h3>
 							{mergeDiffDivs.slice(0, -1)}
 							<h4>Into:</h4>

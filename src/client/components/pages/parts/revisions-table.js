@@ -70,13 +70,19 @@ function RevisionsTable(props) {
 									<tr key={revision.revisionId}>
 										<td>
 											<a href={`/revision/${revision.revisionId}`} title={`Revision ${revision.revisionId}`}>
-												{revision.isMerge &&
-													<FontAwesomeIcon
-														flip="vertical" icon="code-branch"
-														style={{margin: '0 0.5em'}} title="Merge revision"
-													/>
-												}
 												#{revision.revisionId}
+												{revision.isMerge &&
+													<span
+														className="round-color-icon"
+														style={{marginLeft: '0.5em'}}
+														title="Merge revision"
+													>
+														<FontAwesomeIcon
+															flip="vertical" icon="code-branch"
+															transform="shrink-4"
+														/>
+													</span>
+												}
 											</a>
 										</td>
 										{
