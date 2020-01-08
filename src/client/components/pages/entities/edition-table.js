@@ -99,7 +99,7 @@ function EditionTable({editions, entity}) {
 							className="margin-top-d15"
 							href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						>
-                            <FontAwesomeIcon icon="plus"/>
+							<FontAwesomeIcon icon="plus"/>
 							{'  Add Edition'}
 						</Button>
 						<hr className="margin-bottom-d0"/>
@@ -110,7 +110,7 @@ function EditionTable({editions, entity}) {
 								bsStyle="success"
 								href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 							>
-                                <FontAwesomeIcon icon="book" size="2x"/>
+								<FontAwesomeIcon icon="book" size="2x"/>
 								<br/>
 								Add Edition
 							</Button>
