@@ -26,6 +26,7 @@ import indexRouter from './routes/index';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
+import revisionsListRouter from './routes/revisionsList';
 import searchRouter from './routes/search';
 import statisticsRouter from './routes/statistics';
 import workRouter from './routes/entity/work';
@@ -37,6 +38,7 @@ function initRootRoutes(app) {
 	app.use('/search', searchRouter);
 	app.use('/register', registerRouter);
 	app.use('/statistics', statisticsRouter);
+	app.use('/revisions', revisionsListRouter);
 }
 
 function initEditionGroupRoutes(app) {
