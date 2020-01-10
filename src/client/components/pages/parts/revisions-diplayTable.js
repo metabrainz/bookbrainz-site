@@ -18,29 +18,19 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
-import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
-
-import CallToAction from './call-to-action';
+import * as utilsHelper from '../../../helpers/utils';
+import {genEntityIconHTMLElement, getEntityLabel} from '../../../helpers/entity';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {genEntityIconHTMLElement, getEntityLabel} from '../../../helpers/entity';
-import * as utilsHelper from "../../../helpers/utils";
 
 
-const {PageHeader, Table, Pager, Button, ButtonGroup, DropdownButton, MenuItem} = bootstrap;
+const {Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
 
-/**
- * Renders the document and displays the 'SearchResults' page.
- * @returns {ReactElement} a HTML document which displays the SearchResults.
- * @param {object} props - Properties passed to the component.
- */
-
 function RevisionsTable(props) {
 	const {results} = props;
-	let tableCssClasses = 'table table-striped';
+	const tableCssClasses = 'table table-striped';
 
 	return (
 
@@ -54,27 +44,27 @@ function RevisionsTable(props) {
 				className={tableCssClasses}
 			>
 				<thead>
-				<tr>
-					<th className="col-sm-2">Revision ID</th>
-					<th className="col-sm-6">Entity Type</th>
-					<th className="col-sm-4">Date</th>
-				</tr>
+					<tr>
+						<th className="col-sm-2">Revision ID</th>
+						<th className="col-sm-6">Entity Type</th>
+						<th className="col-sm-4">Date</th>
+					</tr>
 				</thead>
 				<tbody>
-				{
-					results.map((entity, i) => (
-						<tr key={i}>
-							<td>{entity.revisionId}</td>
-							<td>
-								<a style={{color: '#4e7ec2'}} href={`/revision/${entity.revisionId}`} >
-									{genEntityIconHTMLElement(entity.type)}
-									{getEntityLabel(entity)}
-								</a>
-							</td>
-							<td>{formatDate(new Date(entity.createdAt))}</td>
-						</tr>
-					))
-				}
+					{
+						results.map((entity, i) => (
+							<tr key={i}>
+								<td>{entity.revisionId}</td>
+								<td>
+									<a href={`/revision/${entity.revisionId}`} style={{color: '#4e7ec2'}} >
+										{genEntityIconHTMLElement(entity.type)}
+										{getEntityLabel(entity)}
+									</a>
+								</td>
+								<td>{formatDate(new Date(entity.createdAt))}</td>
+							</tr>
+						))
+					}
 				</tbody>
 			</Table>
 		</div>
@@ -88,8 +78,5 @@ RevisionsTable.propTypes = {
 
 RevisionsTable.displayName = 'RevisionsTable';
 
-RevisionsTable.defaultProps = {
-	results: null
-};
 
 export default RevisionsTable;

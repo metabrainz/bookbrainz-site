@@ -17,46 +17,19 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../helpers/utils';
-
 import PropTypes from 'prop-types';
 import React from 'react';
-import {isNil, startCase as _startCase} from 'lodash';
-import {genEntityIconHTMLElement, getEntityLabel} from '../../helpers/entity';
-import RevisionsTable from "./parts/revisions-diplayTable";
-import request from "superagent-bluebird-promise";
+import RevisionsTable from './parts/revisions-diplayTable';
+import request from 'superagent-bluebird-promise';
 
 
-const {PageHeader, Table, Pager, Button, ButtonGroup, DropdownButton, MenuItem} = bootstrap;
-const {formatDate} = utilsHelper;
+const {Pager, Button, ButtonGroup, DropdownButton, MenuItem} = bootstrap;
 
-/**
- * Renders the document and displays the topEditors table.
- * @returns {ReactElement} a HTML document which displays the topEditors table
- * in the statistics page
- */
-
-
-/**
- * Renders the document and displays the EntityCountTable table.
- * @returns {ReactElement} a HTML document which displays the
- * EntityCountTable table in the statistics page
- */
-
-
-/**
- * Renders the document and displays the 'Statistics' page.
- * @returns {ReactElement} a HTML document which displays the statistics
- * page
- */
-
-
-
-class RevisionsListPage extends React.Component{
+class RevisionsListPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			from: 0,
+			from: this.props.from,
 			nextEnabled: this.props.results.length === this.props.size,
 			results: this.props.results,
 			size: this.props.size
@@ -80,11 +53,11 @@ class RevisionsListPage extends React.Component{
 			});
 	}
 
-	handleClickPrevious(event) {
+	handleClickPrevious() {
 		this.setState(prevState => ({from: Math.max(prevState.from - prevState.size, 0)}), this.triggerSearch);
 	}
 
-	handleClickNext(event) {
+	handleClickNext() {
 		this.setState(prevState => ({from: prevState.from + prevState.size}), this.triggerSearch);
 	}
 
@@ -148,7 +121,6 @@ class RevisionsListPage extends React.Component{
 
 RevisionsListPage.displayName = 'RevisionsList';
 RevisionsListPage.propTypes = {
-	entityTypes: PropTypes.array.isRequired,
 	from: PropTypes.number,
 	results: PropTypes.array,
 	size: PropTypes.number

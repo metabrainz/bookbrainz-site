@@ -33,7 +33,7 @@ import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RevisionsListPage from '../../client/components/pages/revisionsListPage';
-import _, {_snakeCase} from 'lodash';
+import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
@@ -43,8 +43,8 @@ const router = express.Router();
 /* GET home page. */
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
-	let size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	let from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	function render(entities) {
 		const props = generateProps(req, res, {
@@ -83,9 +83,10 @@ router.get('/', async (req, res, next) => {
 	const entityModels = utils.getEntityModels(orm);
 
 	try {
-		let orderedEntities = await utils.getOrderedEntities(from, size, entityModels, orm);
+		const orderedEntities = await utils.getOrderedEntities(from, size, entityModels, orm);
 		return render(orderedEntities);
-	} catch (err) {
+	}
+	catch (err) {
 		return next(err);
 	}
 });
@@ -93,8 +94,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/revisions', async (req, res, next) => {
 	const {orm} = req.app.locals;
-	let size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	let from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	function render(entities) {
 		const props = generateProps(req, res, {
@@ -110,12 +111,12 @@ router.get('/revisions', async (req, res, next) => {
 	const entityModels = utils.getEntityModels(orm);
 
 	try {
-		let orderedEntities = await utils.getOrderedEntities(from, size, entityModels, orm);
+		const orderedEntities = await utils.getOrderedEntities(from, size, entityModels, orm);
 		return render(orderedEntities);
-	} catch (err) {
+	}
+	catch (err) {
 		return next(err);
 	}
-
 });
 
 

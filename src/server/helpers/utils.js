@@ -20,8 +20,8 @@
 
 // @flow
 
-import Promise from 'bluebird';
 import _, {kebabCase as _kebabCase} from 'lodash';
+import Promise from 'bluebird';
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -51,9 +51,7 @@ export function getEntityModels(orm: Object): Object {
 }
 
 export async function getOrderedEntities(from, size, entityModels, orm) {
-
 	const queryPromises = [];
-	// eslint-disable-next-line guard-for-in
 	for (const modelName in entityModels) {
 		const SQLViewName = _.snakeCase(modelName);
 		// Hand-crafted artisanal SQL query to get parent revision's default alias for deleted entities
@@ -78,7 +76,8 @@ export async function getOrderedEntities(from, size, entityModels, orm) {
 		);
 	}
 
-	const entitiesCollections = await Promise.all(queryPromises).catch(error => next(error));
+	// eslint-disable-next-line no-undef
+	const entitiesCollections = await Promise.all(queryPromises).catch();
 	const latestEntities = entitiesCollections.reduce(
 		(accumulator, value) => accumulator.concat(value.rows.map(entity => {
 			// Massage returned values to fit the format of entities in the ORM
@@ -99,19 +98,18 @@ export async function getOrderedEntities(from, size, entityModels, orm) {
 		})),
 		[]
 	);
-	let orderedEntities = _.orderBy(
+	const orderedEntities = _.orderBy(
 		latestEntities, 'createdAt',
 		['desc']
 	).slice(from, from + size);
 
 	return orderedEntities;
-
 }
 
 export function getDateBeforeDays(days) {
-	 const date = new Date();
-	 date.setDate(date.getDate() - days);
-	 return date;
+	const date = new Date();
+	date.setDate(date.getDate() - days);
+	return date;
 }
 
 export function filterIdentifierTypesByEntityType(
