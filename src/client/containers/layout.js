@@ -92,7 +92,7 @@ class Layout extends React.Component {
 						)}
 					</a>
 				</Navbar.Brand>
-				<Navbar.Toggle/>
+				<Navbar.Toggle style={{backgroundColor: '#754e37'}}/>
 			</Navbar.Header>
 		);
 	}
