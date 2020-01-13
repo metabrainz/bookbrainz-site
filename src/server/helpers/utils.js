@@ -53,10 +53,11 @@ export function getEntityModels(orm: Object): Object {
 export async function getOrderedEntities(from, size, entityModels, orm) {
 	const queryPromises = [];
 	for (const modelName in entityModels) {
-		const SQLViewName = _.snakeCase(modelName);
-		// Hand-crafted artisanal SQL query to get parent revision's default alias for deleted entities
-		queryPromises.push(
-			orm.bookshelf.knex.raw(`
+		if (modelName) {
+			const SQLViewName = _.snakeCase(modelName);
+			// Hand-crafted artisanal SQL query to get parent revision's default alias for deleted entities
+			queryPromises.push(
+				orm.bookshelf.knex.raw(`
 					SELECT
 						entity.type,
 						entity.data_id,
@@ -73,7 +74,8 @@ export async function getOrderedEntities(from, size, entityModels, orm) {
 					WHERE entity.master = true
 					ORDER BY revision.created_at DESC
 					LIMIT ${size + from};`)
-		);
+			);
+		}
 	}
 
 	// eslint-disable-next-line no-undef
