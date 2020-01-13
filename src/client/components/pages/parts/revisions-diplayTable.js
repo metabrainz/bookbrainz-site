@@ -36,7 +36,7 @@ function RevisionsTable(props) {
 
 		<div>
 			<div>
-				<h1 style={{color: '#754e37'}} >Recent Activites</h1>
+				<h1>Recent Activities</h1>
 			</div>
 			<hr className="thin"/>
 			<Table
@@ -46,7 +46,7 @@ function RevisionsTable(props) {
 				<thead>
 					<tr>
 						<th className="col-sm-2">Revision ID</th>
-						<th className="col-sm-6">Entity Type</th>
+						<th className="col-sm-6">Revision</th>
 						<th className="col-sm-4">Date</th>
 					</tr>
 				</thead>
@@ -56,7 +56,7 @@ function RevisionsTable(props) {
 							<tr key={i}>
 								<td>{entity.revisionId}</td>
 								<td>
-									<a href={`/revision/${entity.revisionId}`} style={{color: '#4e7ec2'}} >
+									<a href={`/revision/${entity.revisionId}`} >
 										{genEntityIconHTMLElement(entity.type)}
 										{getEntityLabel(entity)}
 									</a>

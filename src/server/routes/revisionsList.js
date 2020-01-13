@@ -49,9 +49,7 @@ router.get('/', async (req, res, next) => {
 	function render(entities) {
 		const props = generateProps(req, res, {
 			from,
-			homepage: true,
 			recent: _.take(entities, size),
-			requireJS: Boolean(res.locals.user),
 			size
 		});
 
@@ -100,9 +98,7 @@ router.get('/revisions', async (req, res, next) => {
 	function render(entities) {
 		const props = generateProps(req, res, {
 			from,
-			homepage: true,
 			recent: _.take(entities, size),
-			requireJS: Boolean(res.locals.user),
 			size
 		});
 		res.send(props.recent);
