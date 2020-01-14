@@ -104,11 +104,11 @@ SubmissionSection.propTypes = {
 	onSubmit: PropTypes.func.isRequired
 };
 
-function mapStateToProps(rootState, {validate}) {
+function mapStateToProps(rootState, {validate, identifierTypes}) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
-		formValid: validate(rootState)
+		formValid: validate(rootState, identifierTypes)
 	};
 }
 
