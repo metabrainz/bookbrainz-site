@@ -35,6 +35,7 @@ import {createStore} from 'redux';
 import express from 'express';
 import {generateProps} from './props';
 
+
 const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
 
 type EntityAction = 'create' | 'edit';
@@ -275,6 +276,9 @@ export function dateObjectToISOString(value) {
 		if (value.day) {
 			date += `-${value.day}`;
 	  }
+	}
+	if (value.month === '' && value.day === '' && value.year === '') {
+		return null;
 	}
 	return date;
 }

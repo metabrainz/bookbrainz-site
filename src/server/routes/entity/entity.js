@@ -20,10 +20,12 @@
 // @flow
 
 import * as achievement from '../../helpers/achievement';
+import * as error from '../../../common/helpers/error';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+
 
 import type {$Request, $Response, NextFunction} from 'express';
 import type {
@@ -51,6 +53,7 @@ import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../../common/helpers/config';
 import target from '../../templates/target';
+
 
 type PassportRequest = $Request & {user: any, session: any};
 
@@ -127,6 +130,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 							}
 							return unlockName;
 						})
+						// eslint-disable-next-line no-shadow
 						.catch((error) => {
 							log.debug(error);
 						})
@@ -267,8 +271,7 @@ export function handleDelete(
 		// Get the parents of the new revision
 		const revisionParentsPromise = newRevisionPromise
 			.then((revision) =>
-				revision.related('parents').fetch({transacting})
-			);
+				revision.related('parents').fetch({transacting}));
 
 		// Add the previous revision as a parent of this revision.
 		const parentAddedPromise =
@@ -482,9 +485,9 @@ async function getNextAnnotation(
 		id && new Annotation({id}).fetch({transacting})
 	);
 
-	return orm.func.annotation.updateAnnotation(
+	return body.annotation ? orm.func.annotation.updateAnnotation(
 		orm, transacting, oldAnnotation, body.annotation, revision
-	);
+	) : Promise.resolve(null);
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {
@@ -703,7 +706,7 @@ export function handleCreateOrEditEntity(
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
-			throw new Error('Entity did not change');
+			throw new error.NoUpdatedFieldError();
 		}
 
 		// Fetch or create main entity

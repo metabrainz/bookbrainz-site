@@ -167,7 +167,6 @@ function publisherToFormState(publisher) {
 		ended: publisher.ended,
 		type: publisher.publisherType && publisher.publisherType.id
 	};
-
 	const relationshipSection = {
 		lastRelationships: null,
 		relationshipEditorProps: null,
@@ -225,13 +224,13 @@ function transformNewForm(data) {
 	const relationships = entityRoutes.constructRelationships(
 		data.relationshipSection
 	);
-
 	return {
 		aliases,
 		areaId: data.publisherSection.area && data.publisherSection.area.id,
-		beginDate: dateObjectToISOString(data.publisherSection.beginDate),
+		beginDate: data.publisherSection.beginDate ?
+			dateObjectToISOString(data.publisherSection.beginDate) : '',
 		disambiguation: data.nameSection.disambiguation,
-		endDate: data.publisherSection.ended ?
+		endDate: data.publisherSection.endDate ?
 			dateObjectToISOString(data.publisherSection.endDate) : '',
 		ended: data.publisherSection.ended,
 		identifiers,
