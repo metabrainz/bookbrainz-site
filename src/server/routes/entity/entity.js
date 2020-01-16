@@ -366,7 +366,7 @@ async function processEditionSets(
 	);
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
-	if (!releaseEvents[0].areaId) {
+	if (_.isNil(_.get(releaseEvents, '[0].areaId'))) {
 		releaseEvents[0].areaId = null;
 	}
 
