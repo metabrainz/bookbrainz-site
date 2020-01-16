@@ -82,6 +82,7 @@ router.get('/', async (req, res, next) => {
 });
 
 
+// eslint-disable-next-line consistent-return
 router.get('/revisions', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
