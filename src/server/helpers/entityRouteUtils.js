@@ -268,6 +268,9 @@ export function ISODateStringToObject(value: string) {
  * @returns {string} ISO 8601-2004 string (±YYYYYY-MM-DD)
  */
 export function dateObjectToISOString(value) {
+	if (value.month === '' && value.day === '' && value.year === '') {
+		return null;
+	}
 	const isCommonEraDate = Math.sign(value.year) > -1;
 	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
 	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;
@@ -277,8 +280,6 @@ export function dateObjectToISOString(value) {
 			date += `-${value.day}`;
 	  }
 	}
-	if (value.month === '' && value.day === '' && value.year === '') {
-		return null;
-	}
+
 	return date;
 }

@@ -130,9 +130,8 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 							}
 							return unlockName;
 						})
-						// eslint-disable-next-line no-shadow
-						.catch((error) => {
-							log.debug(error);
+						.catch((err) => {
+							log.debug(err);
 						})
 			);
 			alertPromise = Promise.all(promiseList);
@@ -367,6 +366,10 @@ async function processEditionSets(
 	);
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
+	if (!releaseEvents[0].areaId) {
+		releaseEvents[0].areaId = null;
+	}
+
 	const newReleaseEventSetIDPromise =
 		orm.func.releaseEvent.updateReleaseEventSet(
 			orm, transacting, oldReleaseEventSet, releaseEvents
@@ -708,6 +711,7 @@ export function handleCreateOrEditEntity(
 		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
 			throw new error.NoUpdatedFieldError();
 		}
+
 
 		// Fetch or create main entity
 		const mainEntity = await fetchOrCreateMainEntity(
