@@ -20,8 +20,8 @@
 
 // @flow
 
-import _, {kebabCase as _kebabCase} from 'lodash';
 import Promise from 'bluebird';
+import _ from 'lodash';
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -30,7 +30,7 @@ import Promise from 'bluebird';
  * @returns {string} - URL path to interact with entity
  */
 export function getEntityLink(entity: Object): string {
-	return `/${_kebabCase(entity.type)}/${entity.bbid}`;
+	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
 }
 
 /**
@@ -50,7 +50,7 @@ export function getEntityModels(orm: Object): Object {
 	};
 }
 
-export async function getOrderedEntities(from, size, entityModels, orm) {
+export async function getOrderedRevisions(from, size, entityModels, orm) {
 	const queryPromises = [];
 	for (const modelName in entityModels) {
 		if (modelName) {
@@ -79,7 +79,7 @@ export async function getOrderedEntities(from, size, entityModels, orm) {
 	}
 
 	// eslint-disable-next-line no-undef
-	const entitiesCollections = await Promise.all(queryPromises).catch();
+	const entitiesCollections = await Promise.all(queryPromises).catch(error => next(error));
 	const latestEntities = entitiesCollections.reduce(
 		(accumulator, value) => accumulator.concat(value.rows.map(entity => {
 			// Massage returned values to fit the format of entities in the ORM
@@ -100,12 +100,12 @@ export async function getOrderedEntities(from, size, entityModels, orm) {
 		})),
 		[]
 	);
-	const orderedEntities = _.orderBy(
+	const orderedRevisions = _.orderBy(
 		latestEntities, 'createdAt',
 		['desc']
 	).slice(from, from + size);
 
-	return orderedEntities;
+	return orderedRevisions;
 }
 
 export function getDateBeforeDays(days) {

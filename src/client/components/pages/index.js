@@ -166,7 +166,7 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
-		const {recent} = this.props;
+		const {results} = this.props;
 		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 
 		return (
@@ -216,14 +216,14 @@ class IndexPage extends React.Component {
 						Register!
 					</Button>
 				</div>
-				{recent &&
+				{results &&
 					<div>
 						<hr/>
 						<Row>
 							<Col md={12}>
 								<h2 className="text-center">Recent Activity</h2>
 								<ListGroup>
-									{recent.map((entity) => (
+									{results.map((entity) => (
 										<ListGroupItem
 											href={`/revision/${entity.revisionId}`}
 											key={entity.revisionId}
@@ -262,7 +262,7 @@ class IndexPage extends React.Component {
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
 	disableSignUp: PropTypes.bool,
-	recent: PropTypes.array.isRequired
+	results: PropTypes.array.isRequired
 };
 IndexPage.defaultProps = {
 	disableSignUp: false

@@ -23,16 +23,10 @@ import * as utils from '../helpers/utils';
 
 import {escapeProps, generateProps} from '../helpers/props';
 
-import AboutPage from '../../client/components/pages/about';
-import ContributePage from '../../client/components/pages/contribute';
-import DevelopPage from '../../client/components/pages/develop';
-import HelpPage from '../../client/components/pages/help';
 import Layout from '../../client/containers/layout';
-import LicensingPage from '../../client/components/pages/licensing';
-import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import RevisionsListPage from '../../client/components/pages/revisionsListPage';
+import RevisionsPage from '../../client/components/pages/revisions';
 import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
@@ -40,16 +34,16 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-/* GET home page. */
+/* GET revisions page. */
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	function render(entities) {
+	function render(results) {
 		const props = generateProps(req, res, {
 			from,
-			recent: _.take(entities, size),
+			results: _.take(results, size),
 			size
 		});
 
@@ -60,10 +54,9 @@ router.get('/', async (req, res, next) => {
 		 */
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<RevisionsListPage
-					// disableSignUp={req.signUpDisabled}
+				<RevisionsPage
 					from={props.from}
-					results={props.recent}
+					results={props.results}
 					size={props.size}
 				/>
 			</Layout>
@@ -73,16 +66,15 @@ router.get('/', async (req, res, next) => {
 			dev: process.env.NODE_ENV === 'development',
 			markup,
 			props: escapeProps(props),
-			script: '/js/revisionsListPage.js',
-			title: 'Revisions Page'
+			script: '/js/revisions.js',
+			title: 'RevisionsPage'
 		}));
 	}
 
-	const entityModels = utils.getEntityModels(orm);
-
 	try {
-		const orderedEntities = await utils.getOrderedEntities(from, size, entityModels, orm);
-		return render(orderedEntities);
+		const entityModels = utils.getEntityModels(orm);
+		const orderedRevisions = await utils.getOrderedRevisions(from, size, entityModels, orm);
+		return render(orderedRevisions);
 	}
 	catch (err) {
 		return next(err);
@@ -95,51 +87,14 @@ router.get('/revisions', async (req, res, next) => {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	function render(entities) {
-		const props = generateProps(req, res, {
-			from,
-			recent: _.take(entities, size),
-			size
-		});
-		res.send(props.recent);
-	}
-
-	const entityModels = utils.getEntityModels(orm);
-
 	try {
-		const orderedEntities = await utils.getOrderedEntities(from, size, entityModels, orm);
-		return render(orderedEntities);
+		const entityModels = utils.getEntityModels(orm);
+		const orderedRevisions = await utils.getOrderedRevisions(from, size, entityModels, orm);
+		res.send(_.take(orderedRevisions, size));
 	}
 	catch (err) {
 		return next(err);
 	}
 });
-
-
-// Helper function to create pages that don't require custom logic
-function _createStaticRoute(route, title, PageComponent) {
-	router.get(route, (req, res) => {
-		const props = generateProps(req, res);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<PageComponent/>
-			</Layout>
-		);
-
-		res.send(target({
-			markup,
-			props: escapeProps(props),
-			title: 'Revisions Page'
-		}));
-	});
-}
-
-_createStaticRoute('/about', 'About', AboutPage);
-_createStaticRoute('/contribute', 'Contribute', ContributePage);
-_createStaticRoute('/develop', 'Develop', DevelopPage);
-_createStaticRoute('/help', 'Help', HelpPage);
-_createStaticRoute('/licensing', 'Licensing', LicensingPage);
-_createStaticRoute('/privacy', 'Privacy', PrivacyPage);
 
 export default router;

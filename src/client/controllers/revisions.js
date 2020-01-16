@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Akhilesh Kumar <akhilesh5991@gmail.com>
+ * Copyright (C) 2019 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ import {AppContainer} from 'react-hot-loader';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RevisionsListPage from '../components/pages/revisionsListPage';
+import RevisionsPage from '../components/pages/revisions';
 import {extractLayoutProps} from '../helpers/props';
 
 
@@ -29,9 +29,9 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<RevisionsListPage
+			<RevisionsPage
 				from={props.from}
-				results={props.recent}
+				results={props.results}
 				size={props.size}
 			/>
 		</Layout>

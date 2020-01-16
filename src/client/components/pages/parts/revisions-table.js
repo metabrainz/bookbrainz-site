@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2015  Ohm Patel
- *               2016  Sean Burke
+ * Copyright (C) 2019 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +35,7 @@ function RevisionsTable(props) {
 
 		<div>
 			<div>
-				<h1>Recent Activities</h1>
+				<h1>Recent Activity</h1>
 			</div>
 			<hr className="thin"/>
 			<Table

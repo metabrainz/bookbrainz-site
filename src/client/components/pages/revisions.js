@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Akhilesh Kumar <akhilesh5991@gmail.com>
+ * Copyright (C) 2019 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
-import RevisionsTable from './parts/revisions-diplayTable';
+import RevisionsTable from './parts/revisions-table';
 import request from 'superagent-bluebird-promise';
 
 
 const {Pager, Button, ButtonGroup, DropdownButton, MenuItem} = bootstrap;
 
-class RevisionsListPage extends React.Component {
+class RevisionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -119,16 +119,16 @@ class RevisionsListPage extends React.Component {
 }
 
 
-RevisionsListPage.displayName = 'RevisionsList';
-RevisionsListPage.propTypes = {
+RevisionsPage.displayName = 'RevisionsPage';
+RevisionsPage.propTypes = {
 	from: PropTypes.number,
 	results: PropTypes.array,
 	size: PropTypes.number
 };
-RevisionsListPage.defaultProps = {
+RevisionsPage.defaultProps = {
 	from: 0,
 	results: [],
 	size: 20
 };
 
-export default RevisionsListPage;
+export default RevisionsPage;
