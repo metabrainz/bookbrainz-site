@@ -366,7 +366,11 @@ async function processEditionSets(
 	);
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
-	if (_.isNil(_.get(releaseEvents, '[0].areaId'))) {
+
+	// if areaId is not present, set it to null.
+	// otherwise it shows error while comparing old and new releaseEvent;
+
+	if (releaseEvents[0] && _.isNil(releaseEvents[0].areaId)) {
 		releaseEvents[0].areaId = null;
 	}
 
