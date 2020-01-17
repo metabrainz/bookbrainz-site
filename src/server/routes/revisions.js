@@ -1,7 +1,5 @@
 /*
- * Copyright (C) 2015       Ben Ockmore
- *               2015-2016  Sean Burke
- *               2015       Leo Verto
+ * Copyright (C) 2019 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
