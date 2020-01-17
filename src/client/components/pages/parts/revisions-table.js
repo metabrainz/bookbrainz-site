@@ -45,8 +45,10 @@ function RevisionsTable(props) {
 				<thead>
 					<tr>
 						<th className="col-sm-2">Revision ID</th>
-						<th className="col-sm-6">Revision</th>
-						<th className="col-sm-4">Date</th>
+						<th className="col-sm-5">Revision</th>
+						<th className="col-sm-3">Edited By</th>
+						<th className="col-sm-2">Date</th>
+
 					</tr>
 				</thead>
 				<tbody>
@@ -58,6 +60,11 @@ function RevisionsTable(props) {
 									<a href={`/revision/${entity.revisionId}`} >
 										{genEntityIconHTMLElement(entity.type)}
 										{getEntityLabel(entity)}
+									</a>
+								</td>
+								<td>
+									<a href={`/editor/${entity.editor.id}`} >
+										{entity.editor.name}
 									</a>
 								</td>
 								<td>{formatDate(new Date(entity.createdAt))}</td>

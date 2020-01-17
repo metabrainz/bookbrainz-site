@@ -27,7 +27,6 @@ import {genEntityIconHTMLElement, getEntityLabel} from '../../helpers/entity';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {isNil as _isNil} from 'lodash';
 
 
 const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
@@ -230,11 +229,14 @@ class IndexPage extends React.Component {
 										>
 											<Row>
 												<Col md={2}>{`r${entity.revisionId}`}</Col>
-												<Col md={6}>
+												<Col md={5} >
 													{genEntityIconHTMLElement(entity.type)}
 													{getEntityLabel(entity)}
 												</Col>
-												<Col md={4}>
+												<Col md={3}>
+													{entity.editor.name}
+												</Col>
+												<Col md={2}>
 													{formatDate(new Date(entity.createdAt))}
 												</Col>
 											</Row>

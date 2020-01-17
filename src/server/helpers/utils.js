@@ -50,6 +50,18 @@ export function getEntityModels(orm: Object): Object {
 	};
 }
 
+async function addEditorToOrderedRevisions(result, Revision) {
+
+	const revisionPromise = new Revision({id: result.revisionId})
+		.fetch({
+			withRelated: [
+				'author'
+			]
+		});
+	const [revision] = await Promise.all([revisionPromise]);
+	result.editor = revision.toJSON().author;
+}
+
 export async function getOrderedRevisions(from, size, entityModels, orm) {
 	const queryPromises = [];
 	for (const modelName in entityModels) {
@@ -104,7 +116,10 @@ export async function getOrderedRevisions(from, size, entityModels, orm) {
 		latestEntities, 'createdAt',
 		['desc']
 	).slice(from, from + size);
-
+	for (let i = 0; i < orderedRevisions.length; i++) {
+		// eslint-disable-next-line no-await-in-loop
+		await addEditorToOrderedRevisions(orderedRevisions[i], orm.Revision);
+	}
 	return orderedRevisions;
 }
 
