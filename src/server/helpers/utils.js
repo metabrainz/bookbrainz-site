@@ -51,7 +51,6 @@ export function getEntityModels(orm: Object): Object {
 }
 
 async function addEditorToOrderedRevisions(result, Revision) {
-
 	const revisionPromise = new Revision({id: result.revisionId})
 		.fetch({
 			withRelated: [
