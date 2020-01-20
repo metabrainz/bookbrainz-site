@@ -49,75 +49,75 @@ export function getEntityModels(orm: Object): Object {
 		Work
 	};
 }
+export function getRevisionModels(orm) {
+	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
+	return [
+		AuthorRevision,
+		EditionGroupRevision,
+		EditionRevision,
+		PublisherRevision,
+		WorkRevision
+	];
+}
+async function getCompleteRevision(revision, orm) {
+	const {Entity, AliasSet} = orm;
+	const RevisionModels = getRevisionModels(orm);
+	for (let i = 0; i < RevisionModels.length; i++) {
+		const Model = RevisionModels[i];
+		const modelPromise = new Model({id: revision.id})
+			.fetch({
+				withRelated: [
+					'data', 'entity'
+				]
+			});
+		// eslint-disable-next-line no-await-in-loop
+		const modelAchievement = await modelPromise;
+		if (modelAchievement) {
+			const bbid = modelAchievement.toJSON().bbid ? modelAchievement.toJSON().bbid : null;
+			const aliasSetId = modelAchievement.toJSON().data ? modelAchievement.toJSON().data.aliasSetId : null;
+			const aliasPromise = new AliasSet({id: aliasSetId})
+				.fetch({
+					withRelated: [
+						'defaultAlias'
+					]
+				});
+			const entityPromise = new Entity({bbid}).fetch();
+			// eslint-disable-next-line no-await-in-loop
+			const [alias, entity] = await Promise.all([aliasPromise, entityPromise]);
+			const aliasDict = alias ? alias.toJSON() : {};
+			const entityDict = entity ? entity.toJSON() : {};
 
-async function addEditorToOrderedRevisions(result, Revision) {
-	const revisionPromise = new Revision({id: result.revisionId})
-		.fetch({
+			const revisionId = revision.id;
+			revision.editor = revision.author;
+			delete revision.author;
+
+			return {
+				revisionId,
+				...revision,
+				...aliasDict,
+				...entityDict
+			};
+		}
+	}
+	return {};
+}
+
+export async function getOrderedRevisions(from, size, entityModels, orm) {
+	const {Revision} = orm;
+	const revisionPromise = new Revision().orderBy('created_at', 'DESC')
+		.fetchPage({
+			limit: size,
+			offset: from,
 			withRelated: [
 				'author'
 			]
 		});
-	const [revision] = await Promise.all([revisionPromise]);
-	result.editor = revision.toJSON().author;
-}
-
-export async function getOrderedRevisions(from, size, entityModels, orm) {
-	const queryPromises = [];
-	for (const modelName in entityModels) {
-		if (modelName) {
-			const SQLViewName = _.snakeCase(modelName);
-			// Hand-crafted artisanal SQL query to get parent revision's default alias for deleted entities
-			queryPromises.push(
-				orm.bookshelf.knex.raw(`
-					SELECT
-						entity.type,
-						entity.data_id,
-						alias.name AS default_alias_name,
-						parent_alias.name AS parent_alias_name,
-						revision.id AS revision_id,
-						revision.created_at AS created_at
-					FROM bookbrainz.${SQLViewName} AS entity
-					JOIN bookbrainz.revision ON revision.id = entity.revision_id
-					LEFT JOIN bookbrainz.alias ON alias.id = entity.default_alias_id
-					LEFT JOIN bookbrainz.revision_parent ON revision_parent.child_id = entity.revision_id AND entity.default_alias_id IS NULL
-					LEFT JOIN bookbrainz.${SQLViewName} AS parent ON parent.revision_id = revision_parent.parent_id AND entity.default_alias_id IS NULL
-					LEFT JOIN bookbrainz.alias as parent_alias ON parent_alias.id = parent.default_alias_id AND entity.default_alias_id IS NULL
-					WHERE entity.master = true
-					ORDER BY revision.created_at DESC
-					LIMIT ${size + from};`)
-			);
-		}
-	}
-
-	// eslint-disable-next-line no-undef
-	const entitiesCollections = await Promise.all(queryPromises).catch(error => next(error));
-	const latestEntities = entitiesCollections.reduce(
-		(accumulator, value) => accumulator.concat(value.rows.map(entity => {
-			// Massage returned values to fit the format of entities in the ORM
-			// Step 1: Use camelCase instead of snake_case
-			const correctedEntity = _.mapKeys(entity, (val, key) => _.camelCase(key));
-			// Step 2: Restructure aliases
-			if (correctedEntity.defaultAliasName) {
-				correctedEntity.defaultAlias = {name: correctedEntity.defaultAliasName};
-				correctedEntity.defaultAliasName = null;
-				delete correctedEntity.defaultAliasName;
-			}
-			if (correctedEntity.parentAliasName) {
-				correctedEntity.parentAlias = {name: correctedEntity.parentAliasName};
-				correctedEntity.parentAliasName = null;
-				delete correctedEntity.parentAliasName;
-			}
-			return correctedEntity;
-		})),
-		[]
-	);
-	const orderedRevisions = _.orderBy(
-		latestEntities, 'createdAt',
-		['desc']
-	).slice(from, from + size);
-	for (let i = 0; i < orderedRevisions.length; i++) {
+	const revisions = await revisionPromise;
+	const orderedRevisions = [];
+	for (let i = 0; i < revisions.toJSON().length; i++) {
 		// eslint-disable-next-line no-await-in-loop
-		await addEditorToOrderedRevisions(orderedRevisions[i], orm.Revision);
+		const temp = await getCompleteRevision(revisions.toJSON()[i], orm);
+		orderedRevisions.push(temp);
 	}
 	return orderedRevisions;
 }
