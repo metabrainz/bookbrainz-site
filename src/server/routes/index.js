@@ -48,7 +48,6 @@ router.get('/', async (req, res, next) => {
 	function render(results) {
 		const props = generateProps(req, res, {
 			homepage: true,
-			requireJS: Boolean(res.locals.user),
 			results: _.take(results, numRevisionsOnHomepage)
 		});
 
@@ -80,8 +79,7 @@ router.get('/', async (req, res, next) => {
 
 
 	try {
-		const entityModels = utils.getEntityModels(orm);
-		const orderedRevisions = await utils.getOrderedRevisions(0, numRevisionsOnHomepage, entityModels, orm);
+		const orderedRevisions = await utils.getOrderedRevisions(0, numRevisionsOnHomepage, orm);
 		return render(orderedRevisions);
 	}
 	catch (err) {

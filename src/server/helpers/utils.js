@@ -2,6 +2,7 @@
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2017  Sean Burke
  				 2019       Akhilesh Kumar (@akhilesh26)
+ 				 2020		Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,37 +50,6 @@ export function getEntityModels(orm: Object): Object {
 		Work
 	};
 }
-async function getParentAlias(orm, entityType, bbid) {
-	const rawSql = `
-		SELECT alias.name,
-			alias.sort_name,
-			alias.id,
-			alias.language_id,
-			alias.primary
-		FROM bookbrainz.${_.snakeCase(entityType)}
-		LEFT JOIN bookbrainz.alias ON alias.id = default_alias_id
-		WHERE bbid = '${bbid}' AND master = FALSE
-		ORDER BY revision_id DESC
-		LIMIT 1;
-	`;
-
-	// Query the database to get the parent revision default alias
-	const queryResult = await orm.bookshelf.knex.raw(rawSql);
-	if (!Array.isArray(queryResult.rows)) {
-		return null;
-	}
-	const rows = queryResult.rows.map((rawQueryResult) => {
-		// Convert query keys to camelCase
-		const queriedResult = _.mapKeys(
-			rawQueryResult,
-			(value, key) => _.camelCase(key)
-		);
-		return queriedResult;
-	});
-	return {
-		parentAlias: rows[0]
-	};
-}
 function getRevisionModels(orm) {
 	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
 	return [
@@ -90,57 +60,50 @@ function getRevisionModels(orm) {
 		WorkRevision
 	];
 }
-async function getCompleteRevision(revision, orm) {
-	const {Entity, AliasSet} = orm;
+async function 	getCompleteRevision(revision, orm) {
+	const {Entity} = orm;
 	const RevisionModels = getRevisionModels(orm);
 	for (let i = 0; i < RevisionModels.length; i++) {
 		const Model = RevisionModels[i];
-		const modelPromise = new Model({id: revision.id})
+		// eslint-disable-next-line no-await-in-loop
+		const model = await new Model({id: revision.id})
 			.fetch({
 				withRelated: [
-					'data', 'entity'
+					'data.aliasSet.defaultAlias'
 				]
 			});
-		// eslint-disable-next-line no-await-in-loop
-		const modelAchievement = await modelPromise;
-		if (modelAchievement) {
-			const bbid = modelAchievement.toJSON().bbid ? modelAchievement.toJSON().bbid : null;
-			const aliasSetId = modelAchievement.toJSON().data ? modelAchievement.toJSON().data.aliasSetId : null;
-			const aliasPromise = new AliasSet({id: aliasSetId})
-				.fetch({
-					withRelated: [
-						'defaultAlias'
-					]
-				});
-			const entityPromise = new Entity({bbid}).fetch();
-
+		if (model) {
+			const modelJSON = model.toJSON();
 			// eslint-disable-next-line no-await-in-loop
-			const [alias, entity] = await Promise.all([aliasPromise, entityPromise]);
+			const entity = await new Entity({bbid: modelJSON.bbid}).fetch();
+			const entityJSON = entity ? entity.toJSON() : {};
 
-			const defaultAliasDict = alias ? alias.toJSON() : {};
-			const entityDict = entity ? entity.toJSON() : {};
-			// eslint-disable-next-line no-await-in-loop
-			const parentAliasDict = await getParentAlias(orm, entityDict.type, entityDict.bbid);
-			const revisionId = revision.id;
+			// we need parent alias only if defaultAlias is not present, i.e. it is deleted
+			if (modelJSON.data) {
+				modelJSON.defaultAlias = modelJSON.data.aliasSet.defaultAlias;
+				delete modelJSON.data;
+			}
+			else {
+				// eslint-disable-next-line no-await-in-loop
+				modelJSON.parentAlias = await orm.func.entity.getEntityParentAlias(orm, entityJSON.type, entityJSON.bbid);
+			}
 
-			revision.editor = revision.author;
-			delete revision.author;
+			modelJSON.revisionId = revision.id;
+			modelJSON.editor = revision.author;
+			modelJSON.createdAt = revision.createdAt;
 
 			return {
-				revisionId,
-				...revision,
-				...defaultAliasDict,
-				...entityDict,
-				...parentAliasDict
+				...modelJSON,
+				...entityJSON
 			};
 		}
 	}
 	return {};
 }
 
-export async function getOrderedRevisions(from, size, entityModels, orm) {
+export async function getOrderedRevisions(from, size, orm) {
 	const {Revision} = orm;
-	const revisionPromise = new Revision().orderBy('created_at', 'DESC')
+	const revisions = await new Revision().orderBy('created_at', 'DESC')
 		.fetchPage({
 			limit: size,
 			offset: from,
@@ -148,13 +111,12 @@ export async function getOrderedRevisions(from, size, entityModels, orm) {
 				'author'
 			]
 		});
-	const revisions = await revisionPromise;
-	const orderedRevisions = [];
-	for (let i = 0; i < revisions.toJSON().length; i++) {
-		// eslint-disable-next-line no-await-in-loop
-		const revision = await getCompleteRevision(revisions.toJSON()[i], orm);
-		orderedRevisions.push(revision);
+	const revisionsJSON = revisions.toJSON();
+	const orderedRevisionsPromises = [];
+	for (let i = 0; i < revisionsJSON.length; i++) {
+		orderedRevisionsPromises.push(getCompleteRevision(revisionsJSON[i], orm));
 	}
+	const orderedRevisions = await Promise.all(orderedRevisionsPromises);
 	return orderedRevisions;
 }
 

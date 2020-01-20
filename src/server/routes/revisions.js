@@ -70,8 +70,7 @@ router.get('/', async (req, res, next) => {
 	}
 
 	try {
-		const entityModels = utils.getEntityModels(orm);
-		const orderedRevisions = await utils.getOrderedRevisions(from, size, entityModels, orm);
+		const orderedRevisions = await utils.getOrderedRevisions(from, size, orm);
 		return render(orderedRevisions);
 	}
 	catch (err) {
@@ -87,8 +86,7 @@ router.get('/revisions', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const entityModels = utils.getEntityModels(orm);
-		const orderedRevisions = await utils.getOrderedRevisions(from, size, entityModels, orm);
+		const orderedRevisions = await utils.getOrderedRevisions(from, size, orm);
 		res.send(_.take(orderedRevisions, size));
 	}
 	catch (err) {
