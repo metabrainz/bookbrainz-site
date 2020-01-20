@@ -49,7 +49,38 @@ export function getEntityModels(orm: Object): Object {
 		Work
 	};
 }
-export function getRevisionModels(orm) {
+async function getParentAlias(orm, entityType, bbid) {
+	const rawSql = `
+		SELECT alias.name,
+			alias.sort_name,
+			alias.id,
+			alias.language_id,
+			alias.primary
+		FROM bookbrainz.${_.snakeCase(entityType)}
+		LEFT JOIN bookbrainz.alias ON alias.id = default_alias_id
+		WHERE bbid = '${bbid}' AND master = FALSE
+		ORDER BY revision_id DESC
+		LIMIT 1;
+	`;
+
+	// Query the database to get the parent revision default alias
+	const queryResult = await orm.bookshelf.knex.raw(rawSql);
+	if (!Array.isArray(queryResult.rows)) {
+		return null;
+	}
+	const rows = queryResult.rows.map((rawQueryResult) => {
+		// Convert query keys to camelCase
+		const queriedResult = _.mapKeys(
+			rawQueryResult,
+			(value, key) => _.camelCase(key)
+		);
+		return queriedResult;
+	});
+	return {
+		parentAlias: rows[0]
+	};
+}
+function getRevisionModels(orm) {
 	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
 	return [
 		AuthorRevision,
@@ -82,20 +113,25 @@ async function getCompleteRevision(revision, orm) {
 					]
 				});
 			const entityPromise = new Entity({bbid}).fetch();
+
 			// eslint-disable-next-line no-await-in-loop
 			const [alias, entity] = await Promise.all([aliasPromise, entityPromise]);
-			const aliasDict = alias ? alias.toJSON() : {};
-			const entityDict = entity ? entity.toJSON() : {};
 
+			const defaultAliasDict = alias ? alias.toJSON() : {};
+			const entityDict = entity ? entity.toJSON() : {};
+			// eslint-disable-next-line no-await-in-loop
+			const parentAliasDict = await getParentAlias(orm, entityDict.type, entityDict.bbid);
 			const revisionId = revision.id;
+
 			revision.editor = revision.author;
 			delete revision.author;
 
 			return {
 				revisionId,
 				...revision,
-				...aliasDict,
-				...entityDict
+				...defaultAliasDict,
+				...entityDict,
+				...parentAliasDict
 			};
 		}
 	}
@@ -116,8 +152,8 @@ export async function getOrderedRevisions(from, size, entityModels, orm) {
 	const orderedRevisions = [];
 	for (let i = 0; i < revisions.toJSON().length; i++) {
 		// eslint-disable-next-line no-await-in-loop
-		const temp = await getCompleteRevision(revisions.toJSON()[i], orm);
-		orderedRevisions.push(temp);
+		const revision = await getCompleteRevision(revisions.toJSON()[i], orm);
+		orderedRevisions.push(revision);
 	}
 	return orderedRevisions;
 }
