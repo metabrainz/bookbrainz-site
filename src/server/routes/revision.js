@@ -197,8 +197,11 @@ router.get('/:id', (req, res, next) => {
 	function _createRevision(model) {
 		return model.forge()
 			.where('id', req.params.id)
-			.fetchAll({withRelated: ['entity']})
-			.then(diffRevisionsWithParents);
+			.fetchAll({
+				merge: false,
+				remove: false,
+				withRelated: ['entity']
+			}).then(diffRevisionsWithParents);
 	}
 
 	const authorDiffsPromise = _createRevision(AuthorRevision);
