@@ -115,7 +115,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 						{id: achievementAlert}
 					)
 						.fetch({
-							require: 'true',
+							require: true,
 							withRelated: 'achievement'
 						})
 						.then((unlock) => unlock.toJSON())
@@ -194,10 +194,11 @@ export function displayRevisions(
 	return new RevisionModel()
 		.where({bbid})
 		.fetchAll({
+			require: false,
 			withRelated: ['revision', 'revision.author', 'revision.notes']
 		})
 		.then((collection) => {
-			const revisions = collection.toJSON();
+			const revisions = collection ? collection.toJSON() : [];
 			const props = generateProps(req, res, {
 				revisions
 			});

@@ -43,6 +43,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	const {Editor, Gender, TitleUnlock} = req.app.locals.orm;
 	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch({
+			require: true,
 			withRelated: ['area', 'gender']
 		})
 		.then((editor) => editor.toJSON())
@@ -116,7 +117,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	})
 		.then(
 			// Fetch the current user from the database
-			() => Editor.forge({id: parseInt(req.user.id, 10)}).fetch()
+			() => Editor.forge({id: parseInt(req.user.id, 10)}).fetch({require: true})
 		)
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
@@ -208,6 +209,9 @@ router.get('/:id', (req, res, next) => {
 			withRelated: ['achievement']
 		})
 		.then((achievements) => {
+			if (!achievements) {
+				return {length: 0, model: null};
+			}
 			const achievementJSON = {
 				length: achievements.length,
 				model: achievements.toJSON()
@@ -316,9 +320,9 @@ router.get('/:id/achievements', (req, res, next) => {
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.fetchAll({require: false})
-		.then((unlocks) => unlocks.map('attributes.achievementId'))
+		.then((unlocks) => unlocks && unlocks.map('attributes.achievementId'))
 		.then(
-			(unlocks) => new AchievementType()
+			(unlocks) => unlocks && new AchievementType()
 				.orderBy('id', 'ASC')
 				.fetchAll()
 				.then((achievements) => setAchievementUnlockedField(

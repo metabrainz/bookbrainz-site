@@ -133,22 +133,22 @@ router.get(
 		if (req.query['edition-group']) {
 			propsPromise.editionGroup =
 				EditionGroup.forge({bbid: req.query['edition-group']})
-					.fetch({withRelated: 'defaultAlias'})
-					.then((data) => entityToOption(data.toJSON()));
+					.fetch({require: false, withRelated: 'defaultAlias'})
+					.then((data) => data && entityToOption(data.toJSON()));
 		}
 
 		if (req.query.publisher) {
 			propsPromise.publisher =
 				Publisher.forge({bbid: req.query.publisher})
-					.fetch({withRelated: 'defaultAlias'})
-					.then((data) => entityToOption(data.toJSON()));
+					.fetch({require: false, withRelated: 'defaultAlias'})
+					.then((data) => data && entityToOption(data.toJSON()));
 		}
 
 		if (req.query.work) {
 			propsPromise.work =
 				Work.forge({bbid: req.query.work})
-					.fetch({withRelated: 'defaultAlias'})
-					.then((data) => entityToOption(data.toJSON()));
+					.fetch({require: false, withRelated: 'defaultAlias'})
+					.then((data) => data && entityToOption(data.toJSON()));
 		}
 
 		function render(props) {

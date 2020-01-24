@@ -235,7 +235,7 @@ function getTypeCreation(revisionType, revisionString, editor) {
 				`bookbrainz.${revisionString}.id`);
 			qb.whereNull('bookbrainz.revision_parent.parent_id');
 		})
-		.fetchAll()
+		.fetchAll({require: false})
 		.then((out) => out.length);
 }
 
