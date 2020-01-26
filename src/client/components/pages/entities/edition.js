@@ -23,7 +23,7 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityTitle from './title';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
@@ -109,7 +109,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 		editionGroupSection = (
 			<div className="margin-bottom-d15">
 				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
-					<Icon name="external-link"/>
+					<FontAwesomeIcon icon="external-link"/>
 					<span>&nbsp;See all similar editions</span>
 				</a>
 			</div>

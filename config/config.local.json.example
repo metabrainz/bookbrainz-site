@@ -5,8 +5,8 @@
 		"forceExitAfterMs": 5000
 	},
 	"musicbrainz": {
-		"clientID": null,
-		"clientSecret": null,
+		"clientID": "McHCSeRUQtf6GJhdvANo7g",
+		"clientSecret": "-ds4BVm5nj9YfoVY0r6Lag",
 		"callbackURL": "http://localhost:9099/cb"
 	},
 	"session": {
