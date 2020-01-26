@@ -19,7 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -41,14 +41,14 @@ function EntityFooter({deleted, entityUrl, lastModified}) {
 							href={`${entityUrl}/edit`}
 							title="Edit Entity"
 						>
-							<Icon name="pencil"/>&nbsp;Edit
+							<FontAwesomeIcon icon="pencil"/>&nbsp;Edit
 						</Button>
 						<Button
 							bsStyle="primary"
 							href={`${entityUrl}/revisions`}
 							title="Revision History"
 						>
-							<Icon name="history"/>&nbsp;History
+							<FontAwesomeIcon icon="history"/>&nbsp;History
 						</Button>
 						<Button
 							bsStyle="danger"
@@ -56,7 +56,7 @@ function EntityFooter({deleted, entityUrl, lastModified}) {
 							href={`${entityUrl}/delete`}
 							title="Delete Entity"
 						>
-							<Icon name="remove"/>&nbsp;Delete
+							<FontAwesomeIcon icon="remove"/>&nbsp;Delete
 						</Button>
 					</ButtonGroup>
 				</Col>
