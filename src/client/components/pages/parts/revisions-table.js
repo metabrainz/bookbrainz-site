@@ -35,7 +35,7 @@ function RevisionsTable(props) {
 
 		<div>
 			<div>
-				<h1>Recent Activity</h1>
+				<h1 className="text-center">Recent Activity</h1>
 			</div>
 			<hr className="thin"/>
 			<Table
@@ -53,21 +53,27 @@ function RevisionsTable(props) {
 				</thead>
 				<tbody>
 					{
-						results.map((entity, i) => (
+						results.map((revision, i) => (
 							<tr key={i}>
-								<td>{entity.revisionId}</td>
 								<td>
-									<a href={`/revision/${entity.revisionId}`} >
-										{genEntityIconHTMLElement(entity.type)}
-										{getEntityLabel(entity)}
+									<a href={`/revision/${revision.revisionId}`} >
+										{revision.revisionId}
 									</a>
 								</td>
 								<td>
-									<a href={`/editor/${entity.editor.id}`} >
-										{entity.editor.name}
+									{revision.entities.map(entity => (
+										<a href={`/${entity.type}/${entity.bbid}`} key={entity.bbid}>
+											{genEntityIconHTMLElement(entity.type)}
+											{getEntityLabel(entity)}
+										</a>
+									))}
+								</td>
+								<td>
+									<a href={`/editor/${revision.editor.id}`} >
+										{revision.editor.name}
 									</a>
 								</td>
-								<td>{formatDate(new Date(entity.createdAt))}</td>
+								<td>{formatDate(new Date(revision.createdAt))}</td>
 							</tr>
 						))
 					}

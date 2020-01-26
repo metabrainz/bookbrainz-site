@@ -20,22 +20,20 @@
  */
 /* eslint-disable max-len */
 import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../helpers/utils';
 
-import {genEntityIconHTMLElement, getEntityLabel} from '../../helpers/entity';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import RevisionsTable from './parts/revisions-table';
 
 
-const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
-const {formatDate} = utilsHelper;
+const {Alert, Button, Col, Grid, Row} = bootstrap;
+
 
 class IndexPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
 		this.renderHeader = this.renderHeader.bind(this);
 		this.renderContent = this.renderContent.bind(this);
 	}
@@ -165,7 +163,6 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
-		const {results} = this.props;
 		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 
 		return (
@@ -215,38 +212,12 @@ class IndexPage extends React.Component {
 						Register!
 					</Button>
 				</div>
-				{results &&
-					<div>
-						<hr/>
-						<Row>
-							<Col md={12}>
-								<h2 className="text-center">Recent Activity</h2>
-								<ListGroup>
-									{results.map((entity) => (
-										<ListGroupItem
-											href={`/revision/${entity.revisionId}`}
-											key={entity.revisionId}
-										>
-											<Row>
-												<Col md={2}>{`r${entity.revisionId}`}</Col>
-												<Col md={5} >
-													{genEntityIconHTMLElement(entity.type)}
-													{getEntityLabel(entity)}
-												</Col>
-												<Col md={3}>
-													{entity.editor.name}
-												</Col>
-												<Col md={2}>
-													{formatDate(new Date(entity.createdAt))}
-												</Col>
-											</Row>
-										</ListGroupItem>
-									))}
-								</ListGroup>
-							</Col>
-						</Row>
-					</div>
-				}
+				<RevisionsTable
+					results={this.props.results}
+				/>
+				<div>
+					<a className="text-right col-xs-12" href="/revisions">See all revisions</a>
+				</div>
 			</Grid>
 		);
 	}
