@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
+
 const {Button, Table} = bootstrap;
 
 const {getEntityDisambiguation} = entityHelper;
@@ -63,13 +64,11 @@ function WorkTable({entity, works}) {
 								</tr>
 							</thead>
 							<tbody>
-								{
-									works.map((work) => (
-										<WorkTableRow
-											key={work.bbid}
-											work={work}
-										/>
-									))}
+								{works.map((work) => (work.typeId ?
+									<WorkTableRow
+										key={work.bbid}
+										work={work}
+									/> : null))}
 							</tbody>
 						</Table>
 						<Button
