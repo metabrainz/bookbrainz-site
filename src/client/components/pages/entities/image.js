@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -38,15 +38,15 @@ function EntityImage({backupIcon, deleted, imageUrl}) {
 	let icons;
 	if (deleted) {
 		icons = [
-			<Icon
+			<FontAwesomeIcon
+				icon={backupIcon}
 				key="entityIcon"
-				name={backupIcon}
 				size="5x"
 				stack="1x"
 			/>,
-			<Icon
+			<FontAwesomeIcon
+				icon="slash"
 				key="deletedIcon"
-				name="slash"
 				size="5x"
 				stack="1x"
 			/>
@@ -54,8 +54,8 @@ function EntityImage({backupIcon, deleted, imageUrl}) {
 	}
 	else {
 		icons = (
-			<Icon
-				name={backupIcon}
+			<FontAwesomeIcon
+				icon={backupIcon}
 				size="5x"
 			/>
 		);
