@@ -21,6 +21,7 @@ import * as utilsHelper from '../../../helpers/utils';
 import {genEntityIconHTMLElement, getEntityLabel} from '../../../helpers/entity';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {kebabCase as _kebabCase} from 'lodash';
 
 
 const {Table} = bootstrap;
@@ -30,7 +31,6 @@ const {formatDate} = utilsHelper;
 function RevisionsTable(props) {
 	const {results} = props;
 	const tableCssClasses = 'table table-striped';
-
 	return (
 
 		<div>
@@ -62,10 +62,12 @@ function RevisionsTable(props) {
 								</td>
 								<td>
 									{revision.entities.map(entity => (
-										<a href={`/${entity.type}/${entity.bbid}`} key={entity.bbid}>
-											{genEntityIconHTMLElement(entity.type)}
-											{getEntityLabel(entity)}
-										</a>
+										<div key={`${revision.revisionId}-${entity.bbid}`}>
+											<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`} >
+												{genEntityIconHTMLElement(entity.type)}
+												{getEntityLabel(entity)}
+											</a>
+										</div>
 									))}
 								</td>
 								<td>
@@ -73,7 +75,7 @@ function RevisionsTable(props) {
 										{revision.editor.name}
 									</a>
 								</td>
-								<td>{formatDate(new Date(revision.createdAt))}</td>
+								<td>{formatDate(new Date(revision.createdAt),true)}</td>
 							</tr>
 						))
 					}
