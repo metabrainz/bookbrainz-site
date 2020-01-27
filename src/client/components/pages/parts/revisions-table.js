@@ -75,7 +75,7 @@ function RevisionsTable(props) {
 										{revision.editor.name}
 									</a>
 								</td>
-								<td>{formatDate(new Date(revision.createdAt),true)}</td>
+								<td>{formatDate(new Date(revision.createdAt), true)}</td>
 							</tr>
 						))
 					}
