@@ -62,7 +62,7 @@ const AliasEditor = ({
 
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
-	const helpIconElement = <FontAwesome className="fa-sm" data-tip={helpText} icon="question-circle"/>;
+	const helpIconElement = <FontAwesomeIcon className="fa-sm" data-tip={helpText} icon="question-circle"/>;
 	const helpTooltipElement = <ReactTooltip multiline delayShow={50} effect="solid" place="right" type="dark"/>;
 
 	return (
