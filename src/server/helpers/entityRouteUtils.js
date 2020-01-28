@@ -84,8 +84,8 @@ export function generateEntityProps(
 		action,
 		entityType,
 		heading: isEdit ?
-			`Edit ${entityName}` :
-			`Create ${entityName}`,
+			`Edit ${entityName} : ${entity.defaultAlias.name}` :
+			`Add ${entityName}`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(entity),
 		languageOptions: res.locals.languages,
