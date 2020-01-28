@@ -45,10 +45,11 @@ router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const numRevisionsOnHomepage = 9;
 
-	function render(results) {
+	function render(recent) {
 		const props = generateProps(req, res, {
 			homepage: true,
-			results: _.take(results, numRevisionsOnHomepage)
+			recent,
+			requireJS: Boolean(res.locals.user)
 		});
 
 		/*
@@ -63,7 +64,7 @@ router.get('/', async (req, res, next) => {
 			>
 				<Index
 					disableSignUp={req.signUpDisabled}
-					results={props.results}
+					recent={props.recent}
 				/>
 			</Layout>
 		);

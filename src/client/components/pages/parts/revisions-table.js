@@ -18,10 +18,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import {genEntityIconHTMLElement, getEntityLabel} from '../../../helpers/entity';
+import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {kebabCase as _kebabCase} from 'lodash';
 
 
 const {Table} = bootstrap;
@@ -63,7 +62,7 @@ function RevisionsTable(props) {
 								<td>
 									{revision.entities.map(entity => (
 										<div key={`${revision.revisionId}-${entity.bbid}`}>
-											<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`} >
+											<a href={getEntityUrl(entity)} >
 												{genEntityIconHTMLElement(entity.type)}
 												{getEntityLabel(entity)}
 											</a>

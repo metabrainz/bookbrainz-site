@@ -213,10 +213,19 @@ class IndexPage extends React.Component {
 					</Button>
 				</div>
 				<RevisionsTable
-					results={this.props.results}
+					results={this.props.recent}
 				/>
 				<div>
-					<a className="text-right col-xs-12" href="/revisions">See all revisions</a>
+					<Row>
+						<Col mdOffset={10}>
+							<Button
+								bsStyle="primary"
+								href="/revisions"
+							>
+								See all revisions
+							</Button>
+						</Col>
+					</Row>
 				</div>
 			</Grid>
 		);
@@ -235,7 +244,7 @@ class IndexPage extends React.Component {
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
 	disableSignUp: PropTypes.bool,
-	results: PropTypes.array.isRequired
+	recent: PropTypes.array.isRequired
 };
 IndexPage.defaultProps = {
 	disableSignUp: false
