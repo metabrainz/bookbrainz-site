@@ -183,11 +183,12 @@ export function incrementEditorEditCountById(
 ): Promise<Object> {
 	const {Editor} = orm;
 	return new Editor({id})
-		.fetch({transacting})
+		.fetch({require: true, transacting})
 		.then((editor) => {
 			editor.incrementEditCount();
 			return editor.save(null, {transacting});
-		});
+		})
+		.catch(Editor.NotFoundError, err => Promise.reject(err));
 }
 
 /**
