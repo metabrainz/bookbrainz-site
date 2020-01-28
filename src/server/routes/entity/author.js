@@ -224,11 +224,13 @@ function transformNewForm(data) {
 		aliases,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
-		beginDate: dateObjectToISOString(data.authorSection.beginDate),
+		beginDate: data.authorSection.beginDate ?
+			dateObjectToISOString(data.authorSection.beginDate) : '',
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.authorSection.endArea &&
 			data.authorSection.endArea.id,
-		endDate: data.authorSection.ended ? dateObjectToISOString(data.authorSection.endDate) : '',
+		endDate: data.authorSection.endDate ?
+			dateObjectToISOString(data.authorSection.endDate) : '',
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,

@@ -54,7 +54,7 @@ export default ({
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>
-		${!dev ?
+			${!dev ?
 		`<link rel='stylesheet' href='/stylesheets/style.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
 			<link rel='stylesheet' href='/stylesheets/react-virtualized-select.css' />
@@ -69,9 +69,9 @@ export default ({
 			<div id='target'>${markup}</div>
 			<script src='/js/bundle.js'></script>
 			${page ? pageScript : ''}
-			${props && script &&
-				`<script id='props' type='application/json'> ${props}</script>
-				<script src='${script}'></script>`}
+			${props && script ?
+		`<script id='props' type='application/json'> ${props}</script>
+				<script src='${script}'></script>` : ''}
 		</body>
 	  </html>
 	`;

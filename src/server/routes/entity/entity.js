@@ -20,10 +20,12 @@
 // @flow
 
 import * as achievement from '../../helpers/achievement';
+import * as error from '../../../common/helpers/error';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+
 
 import type {$Request, $Response, NextFunction} from 'express';
 import type {
@@ -128,8 +130,8 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 							}
 							return unlockName;
 						})
-						.catch((error) => {
-							log.debug(error);
+						.catch((err) => {
+							log.debug(err);
 						})
 			);
 			alertPromise = Promise.all(promiseList);
@@ -365,6 +367,14 @@ async function processEditionSets(
 	);
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
+
+	// if areaId is not present, set it to null.
+	// otherwise it shows error while comparing old and new releaseEvent;
+
+	if (releaseEvents[0] && _.isNil(releaseEvents[0].areaId)) {
+		releaseEvents[0].areaId = null;
+	}
+
 	const newReleaseEventSetIDPromise =
 		orm.func.releaseEvent.updateReleaseEventSet(
 			orm, transacting, oldReleaseEventSet, releaseEvents
@@ -485,9 +495,9 @@ async function getNextAnnotation(
 		id && new Annotation({id}).fetch({require: false, transacting})
 	);
 
-	return orm.func.annotation.updateAnnotation(
+	return body.annotation ? orm.func.annotation.updateAnnotation(
 		orm, transacting, oldAnnotation, body.annotation, revision
-	);
+	) : Promise.resolve(null);
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {
@@ -706,8 +716,9 @@ export function handleCreateOrEditEntity(
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
-			throw new Error('Entity did not change');
+			throw new error.NoUpdatedFieldError();
 		}
+
 
 		// Fetch or create main entity
 		const mainEntity = await fetchOrCreateMainEntity(
@@ -740,7 +751,7 @@ export function handleCreateOrEditEntity(
 
 		const refreshedEntity = await savedMainEntity.refresh({
 			transacting,
-			withRelated: ['defaultAlias']
+			withRelated: ['defaultAlias', 'aliasSet.aliases']
 		});
 
 		return refreshedEntity.toJSON();

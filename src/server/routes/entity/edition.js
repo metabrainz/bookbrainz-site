@@ -339,7 +339,7 @@ function transformNewForm(data) {
 	);
 
 	let releaseEvents = [];
-	if (data.editionSection.releaseDate.year) {
+	if (data.editionSection.releaseDate && data.editionSection.releaseDate.year) {
 		releaseEvents = [{date: dateObjectToISOString(data.editionSection.releaseDate)}];
 	}
 
