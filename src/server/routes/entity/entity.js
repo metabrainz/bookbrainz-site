@@ -20,10 +20,12 @@
 // @flow
 
 import * as achievement from '../../helpers/achievement';
+import * as error from '../../../common/helpers/error';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+
 
 import type {$Request, $Response, NextFunction} from 'express';
 import type {
@@ -51,6 +53,7 @@ import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../../common/helpers/config';
 import target from '../../templates/target';
+
 
 type PassportRequest = $Request & {user: any, session: any};
 
@@ -114,7 +117,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 						{id: achievementAlert}
 					)
 						.fetch({
-							require: 'true',
+							require: true,
 							withRelated: 'achievement'
 						})
 						.then((unlock) => unlock.toJSON())
@@ -127,8 +130,8 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 							}
 							return unlockName;
 						})
-						.catch((error) => {
-							log.debug(error);
+						.catch((err) => {
+							log.debug(err);
 						})
 			);
 			alertPromise = Promise.all(promiseList);
@@ -193,10 +196,11 @@ export function displayRevisions(
 	return new RevisionModel()
 		.where({bbid})
 		.fetchAll({
+			require: false,
 			withRelated: ['revision', 'revision.author', 'revision.notes']
 		})
 		.then((collection) => {
-			const revisions = collection.toJSON();
+			const revisions = collection ? collection.toJSON() : [];
 			const props = generateProps(req, res, {
 				revisions
 			});
@@ -267,13 +271,12 @@ export function handleDelete(
 		// Get the parents of the new revision
 		const revisionParentsPromise = newRevisionPromise
 			.then((revision) =>
-				revision.related('parents').fetch({transacting})
-			);
+				revision.related('parents').fetch({require: false, transacting}));
 
 		// Add the previous revision as a parent of this revision.
 		const parentAddedPromise =
 			revisionParentsPromise.then(
-				(parents) => parents.attach(
+				(parents) => parents && parents.attach(
 					entity.revisionId, {transacting}
 				)
 			);
@@ -303,10 +306,12 @@ export function handleDelete(
 				masterRevisionId: entityRevision.get('id')
 			}).save(null, {transacting}));
 
+		const searchDeleteEntityPromise = search.deleteEntity(entity)
+			.catch(err => { log.error(err); });
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
 			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise,
-			search.deleteEntity(entity)
+			searchDeleteEntityPromise
 		);
 	});
 
@@ -364,6 +369,14 @@ async function processEditionSets(
 	);
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
+
+	// if areaId is not present, set it to null.
+	// otherwise it shows error while comparing old and new releaseEvent;
+
+	if (releaseEvents[0] && _.isNil(releaseEvents[0].areaId)) {
+		releaseEvents[0].areaId = null;
+	}
+
 	const newReleaseEventSetIDPromise =
 		orm.func.releaseEvent.updateReleaseEventSet(
 			orm, transacting, oldReleaseEventSet, releaseEvents
@@ -423,7 +436,7 @@ async function getNextAliasSet(orm, transacting, currentEntity, body) {
 
 	const oldAliasSet = await (
 		id &&
-		new AliasSet({id}).fetch({transacting, withRelated: ['aliases']})
+		new AliasSet({id}).fetch({require: false, transacting, withRelated: ['aliases']})
 	);
 
 	return orm.func.alias.updateAliasSet(
@@ -441,6 +454,7 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 	const oldIdentifierSet = await (
 		id &&
 		new IdentifierSet({id}).fetch({
+			require: false,
 			transacting, withRelated: ['identifiers']
 		})
 	);
@@ -460,6 +474,7 @@ async function getNextRelationshipSets(
 	const oldRelationshipSet = await (
 		id &&
 		new RelationshipSet({id}).fetch({
+			require: false,
 			transacting, withRelated: ['relationships']
 		})
 	);
@@ -479,12 +494,12 @@ async function getNextAnnotation(
 	const id = _.get(currentEntity, ['annotation', 'id']);
 
 	const oldAnnotation = await (
-		id && new Annotation({id}).fetch({transacting})
+		id && new Annotation({id}).fetch({require: false, transacting})
 	);
 
-	return orm.func.annotation.updateAnnotation(
+	return body.annotation ? orm.func.annotation.updateAnnotation(
 		orm, transacting, oldAnnotation, body.annotation, revision
-	);
+	) : Promise.resolve(null);
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {
@@ -493,7 +508,7 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 	const id = _.get(currentEntity, ['disambiguation', 'id']);
 
 	const oldDisambiguation = await (
-		id && new Disambiguation({id}).fetch({transacting})
+		id && new Disambiguation({id}).fetch({require: false, transacting})
 	);
 
 	return orm.func.disambiguation.updateDisambiguation(
@@ -703,8 +718,9 @@ export function handleCreateOrEditEntity(
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
-			throw new Error('Entity did not change');
+			throw new error.NoUpdatedFieldError();
 		}
+
 
 		// Fetch or create main entity
 		const mainEntity = await fetchOrCreateMainEntity(
