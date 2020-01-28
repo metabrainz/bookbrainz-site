@@ -170,6 +170,11 @@ function diffRevisionsWithParents(revisions) {
 					(parent) => Promise.props({
 						changes: revision.diff(parent),
 						entity: revision.related('entity')
+					}),
+					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
+					() => Promise.props({
+						changes: revision.diff(null),
+						entity: revision.related('entity')
 					})
 				)
 	));
@@ -193,9 +198,7 @@ router.get('/:id', (req, res, next) => {
 				'notes.author.titleUnlock.title'
 			]
 		})
-		.catch(Revision.NotFoundError, (err) => {
-			throw new error.NotFoundError(err, req);
-		});
+		.catch(Revision.NotFoundError, () => next(new error.NotFoundError('Revision not found', req)));
 
 	function _createRevision(model) {
 		return model.forge()
