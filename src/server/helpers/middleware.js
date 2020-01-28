@@ -81,6 +81,7 @@ export function loadEntityRelationships(req, res, next) {
 		.then(
 			() => RelationshipSet.forge({id: entity.relationshipSetId})
 				.fetch({
+					require: false,
 					withRelated: [
 						'relationships.source',
 						'relationships.target',
@@ -96,7 +97,7 @@ export function loadEntityRelationships(req, res, next) {
 				const model = utils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
-					.fetch({withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
+					.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
 			}
 
 			/**
