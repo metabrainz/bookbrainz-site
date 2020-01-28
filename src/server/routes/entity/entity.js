@@ -306,10 +306,12 @@ export function handleDelete(
 				masterRevisionId: entityRevision.get('id')
 			}).save(null, {transacting}));
 
+		const searchDeleteEntityPromise = search.deleteEntity(entity)
+			.catch(err => { log.error(err); });
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
 			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise,
-			search.deleteEntity(entity)
+			searchDeleteEntityPromise
 		);
 	});
 
