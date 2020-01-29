@@ -44,8 +44,8 @@ function RevisionsTable(props) {
 				<thead>
 					<tr>
 						<th className="col-sm-2">Revision ID</th>
-						<th className="col-sm-5">Revision</th>
-						<th className="col-sm-3">Edited By</th>
+						<th className="col-sm-5">Modified entities</th>
+						<th className="col-sm-3">User</th>
 						<th className="col-sm-2">Date</th>
 
 					</tr>
