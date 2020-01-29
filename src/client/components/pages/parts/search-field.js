@@ -22,7 +22,7 @@
 import * as bootstrap from 'react-bootstrap';
 
 import CustomInput from '../../../input';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
@@ -37,7 +37,7 @@ const SearchButton = (
 		bsStyle="success"
 		type="submit"
 	>
-		<Icon name="search"/>&nbsp;Search
+		<FontAwesomeIcon icon="search"/>&nbsp;Search
 	</Button>
 );
 
