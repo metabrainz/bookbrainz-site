@@ -144,7 +144,7 @@ router.get(
 				markup,
 				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
-				title: 'Add Work'
+				title: props.heading
 			}));
 		}
 		Promise.props(propsPromise)
@@ -243,7 +243,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Work'
+			title: props.heading
 		}));
 	}
 );
