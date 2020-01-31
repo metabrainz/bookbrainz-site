@@ -47,7 +47,7 @@ function EntityRelationships({contextEntity, relationships}) {
 }
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
-	contextEntity: PropTypes.string.isRequired,
+	contextEntity: PropTypes.object.isRequired,
 	relationships: PropTypes.array.isRequired
 };
 
