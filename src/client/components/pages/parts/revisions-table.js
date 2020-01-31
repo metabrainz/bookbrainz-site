@@ -45,7 +45,11 @@ function RevisionsTable(props) {
 					<tr>
 						<th className="col-sm-2">Revision ID</th>
 						<th className="col-sm-5">Modified entities</th>
-						<th className="col-sm-3">User</th>
+						{
+							results[0].noteContent ?
+								<th className="col-sm-3">Note</th> :
+								<th className="col-sm-3">User</th>
+						}
 						<th className="col-sm-2">Date</th>
 
 					</tr>
@@ -70,11 +74,18 @@ function RevisionsTable(props) {
 											</div>
 										))}
 									</td>
-									<td>
-										<a href={`/editor/${revision.editor.id}`} >
-											{revision.editor.name}
-										</a>
-									</td>
+									{
+										revision.noteContent ?
+											<td>
+												{revision.noteContent}
+											</td> :
+											<td>
+												<a href={`/editor/${revision.editor.id}`} >
+													{revision.editor.name}
+												</a>
+											</td>
+
+									}
 									<td>{formatDate(new Date(revision.createdAt), true)}</td>
 								</tr>
 							)) :

@@ -251,13 +251,12 @@ router.get('/:id', (req, res, next) => {
 	);
 });
 
-router.get('/:id/revisions', async (req, res, next) => {
-	const {Editor, TitleUnlock, Revision} = req.app.locals.orm;
+async function getOrderedRevisionForEditorPage(from, size, req) {
+	const {Note, Revision} = req.app.locals.orm;
 
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	const revisions = await new Revision()
-		.query('where', 'author_id', '=', parseInt(req.params.id, 10)).orderBy('created_at', 'DESC')
+		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
+		.orderBy('created_at', 'DESC')
 		.fetchPage({
 			limit: size,
 			offset: from,
@@ -265,24 +264,44 @@ router.get('/:id/revisions', async (req, res, next) => {
 				'author'
 			]
 		});
-
 	const revisionsJSON = revisions.toJSON();
 
-	/* Massage the revisions to match the expected format */
-	const formattedRevisions = revisionsJSON.map(rev => {
-		const {author: editor, id: revisionId, ...otherProps} = rev;
-		return {editor, entities: [], revisionId, ...otherProps};
-	});
+	const formattedRevisions = await Promise.all(
+		revisionsJSON.map(async rev => {
+			const note = await new Note()
+				.query('where', 'revision_id', '=', parseInt(rev.id, 10))
+				.fetch({require: false});
+			const noteContent = note ? note.toJSON().content : ' ';
 
-	/* Fetch associated ${entity}_revisions and last know alias for deleted entities */
+			const {author: editor, id: revisionId, ...otherProps} = rev;
+			return {editor, entities: [], noteContent, revisionId, ...otherProps};
+		}));
+
+
 	const orderedRevisions = await utilis.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
+
+	return orderedRevisions;
+}
+
+router.get('/:id/revisions', async (req, res, next) => {
+	const {Editor, TitleUnlock} = req.app.locals.orm;
+
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
+
+	const editor = await new Editor({id: req.params.id}).fetch();
+	const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
+
 	const props = generateProps(req, res, {
+		editor: editorJSON,
 		from,
 		results: orderedRevisions,
 		size,
 		tabActive: 1
 	});
-	props.editor = orderedRevisions[0].editor; // TODO change this
+
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
 			<EditorContainer
@@ -306,34 +325,19 @@ router.get('/:id/revisions', async (req, res, next) => {
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions/revisions', async (req, res, next) => {
-	const {Editor, TitleUnlock, Revision} = req.app.locals.orm;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	const revisions = await new Revision()
-		.query('where', 'author_id', '=', parseInt(req.params.id, 10)).orderBy('created_at', 'DESC')
-		.fetchPage({
-			limit: size,
-			offset: from,
-			withRelated: [
-				'author'
-			]
-		});
-	const revisionsJSON = revisions.toJSON();
 	try {
-		const formattedRevisions = revisionsJSON.map(rev => {
-			const {author: editor, id: revisionId, ...otherProps} = rev;
-			return {editor, entities: [], revisionId, ...otherProps};
-		});
-
-		/* Fetch associated ${entity}_revisions and last know alias for deleted entities */
-		const orderedRevisions = await utilis.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
 		res.send(orderedRevisions);
 	}
 	catch (err) {
 		return next(err);
 	}
 });
+
+
 function setAchievementUnlockedField(achievements, unlockIds) {
 	const model = achievements.map((achievementType) => {
 		const achievementJSON = achievementType.toJSON();
