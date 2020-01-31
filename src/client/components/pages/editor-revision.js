@@ -32,8 +32,12 @@ class EditorRevisionPage extends React.Component {
 			from: this.props.from,
 			nextEnabled: this.props.results.length === this.props.size,
 			results: this.props.results,
-			size: this.props.size
+			showRevisionEditor: this.props.showRevisionEditor,
+			showRevisionNote: this.props.showRevisionNote,
+			size: this.props.size,
+			tableHeading: this.props.tableHeading
 		};
+
 		// React does not autobind non-React class methods
 		this.triggerSearch = this.triggerSearch.bind(this);
 		this.handleClickPrevious = this.handleClickPrevious.bind(this);
@@ -70,7 +74,13 @@ class EditorRevisionPage extends React.Component {
 			<div className="container">
 				<div id="EditorRevisionPage">
 
-					<RevisionsTable results={this.state.results}/>
+					<RevisionsTable
+						results={this.state.results}
+						showRevisionEditor={this.props.showRevisionEditor}
+						showRevisionNote={this.props.showRevisionNote}
+						tableHeading={this.props.tableHeading}
+					/>
+
 					{
 						this.state.results && this.state.results.length ?
 							<div>
@@ -123,12 +133,18 @@ EditorRevisionPage.displayName = 'EditorRevisionPage';
 EditorRevisionPage.propTypes = {
 	from: PropTypes.number,
 	results: PropTypes.array,
-	size: PropTypes.number
+	showRevisionEditor: PropTypes.bool,
+	showRevisionNote: PropTypes.bool,
+	size: PropTypes.number,
+	tableHeading: PropTypes.string
 };
 EditorRevisionPage.defaultProps = {
 	from: 0,
 	results: [],
-	size: 20
+	showRevisionEditor: false,
+	showRevisionNote: false,
+	size: 20,
+	tableHeading: 'Recent Activity'
 };
 
 export default EditorRevisionPage;

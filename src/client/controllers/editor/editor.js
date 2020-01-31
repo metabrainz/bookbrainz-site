@@ -40,11 +40,10 @@ const page = pageTarget ? pageTarget.innerHTML : '';
 let tab = null;
 
 if (page === 'revisions') {
-	tab = (<EditorRevisionPage
-		from={props.from}
-		results={props.results}
-		size={props.size}
-	       />);
+	tab = (
+		<EditorRevisionPage
+			{...extractChildProps(props)}
+		/>);
 }
 else {
 	tab = (

@@ -259,10 +259,7 @@ async function getOrderedRevisionForEditorPage(from, size, req) {
 		.orderBy('created_at', 'DESC')
 		.fetchPage({
 			limit: size,
-			offset: from,
-			withRelated: [
-				'author'
-			]
+			offset: from
 		});
 	const revisionsJSON = revisions.toJSON();
 
@@ -273,8 +270,8 @@ async function getOrderedRevisionForEditorPage(from, size, req) {
 				.fetch({require: false});
 			const noteContent = note ? note.toJSON().content : ' ';
 
-			const {author: editor, id: revisionId, ...otherProps} = rev;
-			return {editor, entities: [], noteContent, revisionId, ...otherProps};
+			const {id: revisionId, ...otherProps} = rev;
+			return {entities: [], noteContent, revisionId, ...otherProps};
 		}));
 
 
@@ -298,8 +295,10 @@ router.get('/:id/revisions', async (req, res, next) => {
 		editor: editorJSON,
 		from,
 		results: orderedRevisions,
+		showRevisionNote: true,
 		size,
-		tabActive: 1
+		tabActive: 1,
+		tableHeading: 'Revision History'
 	});
 
 	const markup = ReactDOMServer.renderToString(
@@ -308,13 +307,12 @@ router.get('/:id/revisions', async (req, res, next) => {
 				{...propHelpers.extractEditorProps(props)}
 			>
 				<EditorRevisionPage
-					from={props.from}
-					results={props.results}
-					size={props.size}
+					{...propHelpers.extractChildProps(props)}
 				/>
 			</EditorContainer>
 		</Layout>
 	);
+
 	res.send(target({
 		markup,
 		page: 'revisions',
