@@ -22,6 +22,7 @@
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
+
 type EntityProps = {
 	disambiguation?: ?string,
 	language: string,
@@ -40,14 +41,15 @@ function Entity(
 			{
 				type && genEntityIconHTMLElement(type)
 			}
-			{' '}
 			{nameComponent}
-			{' '}
 			{
 				disambiguation &&
 				<span className="disambig"><small>({disambiguation})</small></span>
 			}
-			<span className="text-muted small">{language}</span>
+			{
+				language &&
+				<span className="text-muted small">{language}</span>
+			}
 		</span>
 	);
 
