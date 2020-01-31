@@ -28,7 +28,9 @@ import {getEntityLink} from '../../../server/helpers/utils';
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 	const link = makeLink && entity.bbid &&
 		getEntityLink({bbid: entity.bbid, type: entity.type});
+	const disambiguation = _.get(entity, ['disambiguation', 'comment']);
 	return {
+		disambiguation,
 		link,
 		text: _.get(entity, ['defaultAlias', 'name']),
 		type: entity.type,

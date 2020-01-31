@@ -44,11 +44,11 @@ function Entity(
 			{nameComponent}
 			{
 				disambiguation &&
-				<span className="disambig"><small>({disambiguation})</small></span>
+				<span className="disambig margin-left-0-3"><small>({disambiguation})</small></span>
 			}
 			{
 				language &&
-				<span className="text-muted small">{language}</span>
+				<span className="text-muted small margin-left-0-3">{language}</span>
 			}
 		</span>
 	);
@@ -60,7 +60,7 @@ function Entity(
 	return contents;
 }
 
-// Entity.displayName = 'Entity';
+Entity.displayName = 'Entity';
 Entity.defaultProps = {
 	disambiguation: null,
 	link: false,
