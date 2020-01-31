@@ -42,18 +42,21 @@ function RevisionsTable(props) {
 				className={tableCssClasses}
 			>
 				<thead>
-					<tr>
-						<th className="col-sm-2">Revision ID</th>
-						<th className="col-sm-5">Modified entities</th>
-						{
-							results[0].noteContent ?
-								<th className="col-sm-3">Note</th> :
-								<th className="col-sm-3">User</th>
-						}
-						<th className="col-sm-2">Date</th>
-
-					</tr>
+					{
+						results.length > 0 ?
+							<tr>
+								<th className="col-sm-2">Revision ID</th>
+								<th className="col-sm-5">Modified entities</th>
+								{
+									results[0].noteContent ?
+										<th className="col-sm-3">Note</th> :
+										<th className="col-sm-3">User</th>
+								}
+								<th className="col-sm-2">Date</th>
+							</tr> : ''
+					}
 				</thead>
+
 				<tbody>
 					{
 						results.length > 0 ?
