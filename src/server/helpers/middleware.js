@@ -120,11 +120,6 @@ export function loadEntityRelationships(req, res, next) {
 			);
 		})
 		.then((relationships) => {
-			// Set rendered relationships on relationship objects
-			relationships.forEach((relationship) => {
-				relationship.rendered = renderRelationship(relationship);
-			});
-
 			next();
 			return null;
 		})
