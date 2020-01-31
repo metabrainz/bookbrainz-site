@@ -214,6 +214,7 @@ class IndexPage extends React.Component {
 				</div>
 				<RevisionsTable
 					results={this.props.recent}
+					showRevisionEditor={this.props.showRevisionEditor}
 				/>
 				<div>
 					<Row>
@@ -244,10 +245,13 @@ class IndexPage extends React.Component {
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
 	disableSignUp: PropTypes.bool,
-	recent: PropTypes.array.isRequired
+	recent: PropTypes.array.isRequired,
+	showRevisionEditor: PropTypes.bool
 };
 IndexPage.defaultProps = {
-	disableSignUp: false
+	disableSignUp: false,
+	showRevisionEditor: true
+
 };
 
 export default IndexPage;

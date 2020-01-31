@@ -32,6 +32,7 @@ class RevisionsPage extends React.Component {
 			from: this.props.from,
 			nextEnabled: this.props.results.length === this.props.size,
 			results: this.props.results,
+			showRevisionEditor: this.props.showRevisionEditor,
 			size: this.props.size
 		};
 		// React does not autobind non-React class methods
@@ -70,7 +71,10 @@ class RevisionsPage extends React.Component {
 			<div className="container">
 				<div id="RevisionsPage">
 
-					<RevisionsTable results={this.state.results}/>
+					<RevisionsTable
+						results={this.state.results}
+						showRevisionEditor={this.state.showRevisionEditor}
+					/>
 					{
 						this.state.results && this.state.results.length ?
 							<div>
@@ -123,11 +127,13 @@ RevisionsPage.displayName = 'RevisionsPage';
 RevisionsPage.propTypes = {
 	from: PropTypes.number,
 	results: PropTypes.array,
+	showRevisionEditor: PropTypes.bool,
 	size: PropTypes.number
 };
 RevisionsPage.defaultProps = {
 	from: 0,
 	results: [],
+	showRevisionEditor: true,
 	size: 20
 };
 
