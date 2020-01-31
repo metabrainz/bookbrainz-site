@@ -52,31 +52,38 @@ function RevisionsTable(props) {
 				</thead>
 				<tbody>
 					{
-						results.map((revision, i) => (
-							<tr key={i}>
-								<td>
-									<a href={`/revision/${revision.revisionId}`} >
-										{revision.revisionId}
-									</a>
-								</td>
-								<td>
-									{revision.entities.map(entity => (
-										<div key={`${revision.revisionId}-${entity.bbid}`}>
-											<a href={getEntityUrl(entity)} >
-												{genEntityIconHTMLElement(entity.type)}
-												{getEntityLabel(entity)}
-											</a>
-										</div>
-									))}
-								</td>
-								<td>
-									<a href={`/editor/${revision.editor.id}`} >
-										{revision.editor.name}
-									</a>
-								</td>
-								<td>{formatDate(new Date(revision.createdAt), true)}</td>
-							</tr>
-						))
+						results.length > 0 ?
+							results.map((revision, i) => (
+								<tr key={i}>
+									<td>
+										<a href={`/revision/${revision.revisionId}`} >
+											{revision.revisionId}
+										</a>
+									</td>
+									<td>
+										{revision.entities.map(entity => (
+											<div key={`${revision.revisionId}-${entity.bbid}`}>
+												<a href={getEntityUrl(entity)} >
+													{genEntityIconHTMLElement(entity.type)}
+													{getEntityLabel(entity)}
+												</a>
+											</div>
+										))}
+									</td>
+									<td>
+										<a href={`/editor/${revision.editor.id}`} >
+											{revision.editor.name}
+										</a>
+									</td>
+									<td>{formatDate(new Date(revision.createdAt), true)}</td>
+								</tr>
+							)) :
+							<div>
+								<h4> No revisions to show</h4>
+								<hr className="wide"/>
+							</div>
+
+
 					}
 				</tbody>
 			</Table>
