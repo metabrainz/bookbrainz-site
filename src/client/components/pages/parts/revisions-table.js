@@ -90,7 +90,12 @@ function RevisionsTable(props) {
 										{
 											showRevisionNote ?
 												<td>
-													{revision.noteContent}
+													{revision.noteContent.map(note => (
+														// eslint-disable-next-line react/jsx-key
+														<div>
+															{note}
+														</div>
+													))}
 												</td> : null
 										}
 										<td>{formatDate(new Date(revision.createdAt), true)}</td>

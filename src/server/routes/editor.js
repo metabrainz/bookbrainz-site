@@ -267,8 +267,9 @@ async function getOrderedRevisionForEditorPage(from, size, req) {
 		revisionsJSON.map(async rev => {
 			const note = await new Note()
 				.query('where', 'revision_id', '=', parseInt(rev.id, 10))
-				.fetch({require: false});
-			const noteContent = note ? note.toJSON().content : ' ';
+				.fetchAll({require: false});
+			const noteJSON = note.toJSON();
+			const noteContent = noteJSON.map(currentNote => currentNote.content);
 
 			const {id: revisionId, ...otherProps} = rev;
 			return {entities: [], noteContent, revisionId, ...otherProps};
