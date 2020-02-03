@@ -32,7 +32,7 @@ class RevisionsPage extends React.Component {
 		};
 
 		// React does not autobind non-React class methods
-		this.sendDataBack = this.sendDataBack.bind(this);
+		this.changeDataInTable = this.changeDataInTable.bind(this);
 		this.paginationUrl = './revisions/revisions?q=';
 	}
 
