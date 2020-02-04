@@ -1057,7 +1057,7 @@ export function handleCreateOrEditEntity(
 				}
 				return entityJSON;
 			})
-			.catch(error => { throw error; })
+			.catch(err => { throw err; })
 	);
 
 	return handler.sendPromiseResult(
