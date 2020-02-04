@@ -904,7 +904,10 @@ async function getChangedProps(
 
 	// Construct a set of differences between the new values and old
 	return _.reduce(propsToSet, (result, value, key) => {
-		if (!_.isEqual(value, currentEntity[key])) {
+		if (!_.isEqual(value, currentEntity[key]) &&
+			// If both items are null or undefined, consider them equal (null !=== undefined)
+			!(_.isNil(value) && _.isNil(currentEntity[key]))
+		) {
 			result[key] = value;
 		}
 

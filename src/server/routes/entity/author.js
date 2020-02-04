@@ -236,7 +236,7 @@ function transformNewForm(data) {
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.authorSection.endArea &&
 			data.authorSection.endArea.id,
-		endDate: data.authorSection.endDate ? data.authorSection.endDate : '',
+		endDate: data.authorSection.endDate ? data.authorSection.endDate : null,
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,
