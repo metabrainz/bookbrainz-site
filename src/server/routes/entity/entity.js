@@ -301,7 +301,7 @@ async function processMergeOperation(orm, transacting, session, mainEntity, allE
 	const mergingEntitiesBBIDs = Object.keys(mergingEntities);
 	const entitiesToMergeBBIDs = _.without(Object.keys(mergingEntities), currentEntityBBID);
 	let allEntitiesReturnArray = allEntities;
-	// fetch entities we're merging and add them to allEntities to be updated
+	// fetch entities we're merging to add them to to the array of modified entities
 	const entitiesToMerge = Object.values(mergingEntities).filter(({bbid}) => bbid !== currentEntityBBID);
 	if (!mergingEntities) {
 		throw new Error('Merge handler called with no merge queue, aborting');
@@ -309,13 +309,14 @@ async function processMergeOperation(orm, transacting, session, mainEntity, allE
 	if (!_.includes(mergingEntitiesBBIDs, currentEntityBBID)) {
 		throw new Error('Entity being merged into does not appear in merge queue, aborting');
 	}
-	log.debug('Merge operation detected; Entities:', mergingEntitiesBBIDs);
 
 	const entitiesModelsToMerge = await Promise.all(entitiesToMergeBBIDs
 		.map(bbid => fetchOrCreateMainEntity(orm, transacting, false, bbid, entityType)));
+
+	/** Add entities to be merged to the array of modified entities */
 	allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, entitiesModelsToMerge, 'id');
 
-	/** Remove relationships that concern entities being merged */
+	/** Remove relationships that concern entities being merged from already modified relationshipSets */
 	await Promise.all(_.map(relationshipSets, async (relationshipSet) => {
 		/** Some items in this object may be null */
 		if (relationshipSet) {
@@ -336,6 +337,64 @@ async function processMergeOperation(orm, transacting, session, mainEntity, allE
 			}
 		}
 	}));
+
+	/**
+	 * Fetch each merged entity, get its relationships, then fetch the related entity for each relationship.
+	 * Then on the related entity's side, remove any relationship with merged entities from its relationship set
+	 */
+	await Promise.all(entitiesModelsToMerge.map(
+		async entity => {
+			const entityBBID = entity.get('bbid');
+			const relationshipSet = await entity.relationshipSet()
+				.fetch({require: false, transacting, withRelated: 'relationships'});
+			if (!relationshipSet) {
+				return;
+			}
+			const relationships = relationshipSet.related('relationships').toJSON();
+
+			const otherEntitiesToFetch = relationships
+				.reduce((accumulator, relationship) => {
+					if (relationship.sourceBbid === entityBBID) {
+						accumulator.push(relationship.targetBbid);
+					}
+					else if (relationship.targetBbid === entityBBID) {
+						accumulator.push(relationship.sourceBbid);
+					}
+					return accumulator;
+				}, [])
+				// Ignore entities that already have a modified relationshipSet (dealed with above)
+				.filter(bbid => !_.includes(_.keys(relationshipSets), bbid));
+
+			await Promise.all(otherEntitiesToFetch.map(
+				async (bbid) => {
+					const otherEntity = await getEntityByBBID(orm, transacting, bbid);
+
+					const otherEntityRelationshipSet = await entity.relationshipSet()
+						.fetch({require: false, transacting, withRelated: 'relationships'});
+					if (!otherEntityRelationshipSet) {
+						return;
+					}
+					const otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+
+					// Remove relationships with entity being merged
+					const cleanedUpRelationships = otherEntityRelationships
+						.filter(({sourceBbid, targetBbid}) =>
+							entityBBID !== sourceBbid &&
+							entityBBID !== targetBbid);
+
+					// If there's a difference, apply the new relationships array without rels to merged entity
+					if (cleanedUpRelationships.length !== otherEntityRelationships.length) {
+						const updatedRelationshipSets = await orm.func.relationship.updateRelationshipSets(
+							orm, transacting, otherEntityRelationshipSet, cleanedUpRelationships
+						);
+						// Make sure the entity is later updated with its new relationshipSet id
+						allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, [otherEntity], 'id');
+						_.assign(relationshipSets, _.pick(updatedRelationshipSets, bbid));
+					}
+				}
+			));
+		}
+	));
 
 	/** Special cases per entity type*/
 
@@ -945,7 +1004,9 @@ export function handleCreateOrEditEntity(
 
 			_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 
-			let allEntities = [...otherEntities, mainEntity];
+			// Don't try to modify 'deleted' entities (those with no dataId)
+			let allEntities = [...otherEntities, mainEntity]
+				.filter(entity => entity.get('dataId') !== null);
 
 			if (isMergeOperation) {
 				allEntities = await processMergeOperation(orm, transacting, req.session,
@@ -954,10 +1015,10 @@ export function handleCreateOrEditEntity(
 
 			_.forEach(allEntities, (entityModel) => {
 				const bbid: string = entityModel.get('bbid');
-				if (_.has(relationshipSets, bbid)) {
+				if (_.has(relationshipSets, bbid) && !_.isNil(relationshipSets[bbid])) {
 					entityModel.set(
 						'relationshipSetId',
-						relationshipSets[bbid] && relationshipSets[bbid].get('id')
+						relationshipSets[bbid].get('id')
 					);
 				}
 			});
