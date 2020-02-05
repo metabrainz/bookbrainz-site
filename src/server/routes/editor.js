@@ -252,7 +252,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 async function getOrderedRevisionForEditorPage(from, size, req) {
-	const {Note, Editor, Revision} = req.app.locals.orm;
+	const {Editor, Revision} = req.app.locals.orm;
 
 	// If editor isn't present, throw an error
 	await new Editor({id: req.params.id})
@@ -266,19 +266,14 @@ async function getOrderedRevisionForEditorPage(from, size, req) {
 		.orderBy('created_at', 'DESC')
 		.fetchPage({
 			limit: size,
-			offset: from
+			offset: from,
+			withRelated: ['notes', 'notes.author']
 		});
 	const revisionsJSON = revisions.toJSON();
-
-	const formattedRevisions = await Promise.all(
-		revisionsJSON.map(async rev => {
-			const notes = await new Note()
-				.query('where', 'revision_id', '=', parseInt(rev.id, 10))
-				.fetchAll({require: false});
-			const notesJSON = notes.toJSON();
-			const {id: revisionId, ...otherProps} = rev;
-			return {entities: [], notes: notesJSON, revisionId, ...otherProps};
-		}));
+	const formattedRevisions = revisionsJSON.map(rev => {
+		const {author: editor, id: revisionId, ...otherProps} = rev;
+		return {editor, entities: [], revisionId, ...otherProps};
+	});
 
 	const orderedRevisions = await utilis.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
 
