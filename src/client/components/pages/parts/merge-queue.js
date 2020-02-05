@@ -17,7 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {get, isNil, size} from 'lodash';
+import {get, isNil, size, values} from 'lodash';
 import Entity from '../../../entity-editor/common/entity';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -42,7 +42,7 @@ function MergeQueue({mergeQueue}) {
 	else {
 		entityList = (
 			<ListGroup>
-				{Object.values(mergingEntities).map(entity => {
+				{values(mergingEntities).map(entity => {
 					const entityForDisplay = {
 						link: getEntityLink({bbid: entity.bbid, type: entity.type}),
 						text: get(entity, ['defaultAlias', 'name']),

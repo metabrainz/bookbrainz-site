@@ -316,7 +316,7 @@ router.get('/submit', auth.isAuthenticated,
 			return next(new ConflictError(`Invalid bbids: ${invalidBBIDs.join(', ')}`));
 		}
 
-		let mergingFetchedEntities = Object.values(mergingEntities);
+		let mergingFetchedEntities = _.values(mergingEntities);
 
 		if (!_.uniqBy(mergingFetchedEntities, 'type').length === 1) {
 			const conflictError = new ConflictError('You can only merge entities of the same type');

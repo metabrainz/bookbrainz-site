@@ -64,7 +64,7 @@ const EntityMerge = (props: Props) => {
 		identifierSet,
 		subheading
 	} = props;
-	const identifiers = Object.values(identifierSet.toJS()) || [];
+	const identifiers = _.values(identifierSet.toJS()) || [];
 	return (
 		<div>
 			<div>

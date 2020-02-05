@@ -302,7 +302,7 @@ async function processMergeOperation(orm, transacting, session, mainEntity, allE
 	const entitiesToMergeBBIDs = _.without(Object.keys(mergingEntities), currentEntityBBID);
 	let allEntitiesReturnArray = allEntities;
 	// fetch entities we're merging to add them to to the array of modified entities
-	const entitiesToMerge = Object.values(mergingEntities).filter(({bbid}) => bbid !== currentEntityBBID);
+	const entitiesToMerge = _.values(mergingEntities).filter(({bbid}) => bbid !== currentEntityBBID);
 	if (!mergingEntities) {
 		throw new Error('Merge handler called with no merge queue, aborting');
 	}
