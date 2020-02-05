@@ -92,17 +92,15 @@ function RevisionsTable(props) {
 												<td>
 													{revision.notes.map(note => (
 														<div key={note.id}>
-															{/* eslint-disable-next-line react/no-unescaped-entities */}
-															"{note.content}"
-															<br/>
-															<div align="right">
-																<a href={`/editor/${note.author.id}`}>
-																	<i>
+															<p>
+																{/* eslint-disable-next-line react/no-unescaped-entities */}
+																"{note.content}"
+																<i >
+																	<a className="pull-right" href={`/editor/${note.author.id}`}>
 																		—{note.author.name}
-																	</i>
-																</a>
-															</div>
-
+																	</a>
+																</i>
+															</p>
 														</div>
 
 													))}
