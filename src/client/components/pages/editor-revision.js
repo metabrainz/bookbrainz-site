@@ -142,7 +142,7 @@ EditorRevisionPage.defaultProps = {
 	from: 0,
 	results: [],
 	showRevisionEditor: false,
-	showRevisionNote: false,
+	showRevisionNote: true,
 	size: 20,
 	tableHeading: 'Recent Activity'
 };

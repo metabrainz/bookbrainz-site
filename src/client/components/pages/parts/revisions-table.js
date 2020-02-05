@@ -90,10 +90,9 @@ function RevisionsTable(props) {
 										{
 											showRevisionNote ?
 												<td>
-													{revision.noteContent.map(note => (
-														// eslint-disable-next-line react/jsx-key
-														<div>
-															{note}
+													{revision.notes.map(note => (
+														<div key={note.id}>
+															{note.content}
 														</div>
 													))}
 												</td> : null

@@ -252,7 +252,14 @@ router.get('/:id', (req, res, next) => {
 });
 
 async function getOrderedRevisionForEditorPage(from, size, req) {
-	const {Note, Revision} = req.app.locals.orm;
+	const {Note, Editor, Revision} = req.app.locals.orm;
+
+	// If editor isn't present, throw an error
+	await new Editor({id: req.params.id})
+		.fetch()
+		.catch(Editor.NotFoundError, () => {
+			throw new error.NotFoundError('Editor not found', req);
+		});
 
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
@@ -265,61 +272,64 @@ async function getOrderedRevisionForEditorPage(from, size, req) {
 
 	const formattedRevisions = await Promise.all(
 		revisionsJSON.map(async rev => {
-			const note = await new Note()
+			const notes = await new Note()
 				.query('where', 'revision_id', '=', parseInt(rev.id, 10))
 				.fetchAll({require: false});
-			const noteJSON = note.toJSON();
-			const noteContent = noteJSON.map(currentNote => currentNote.content);
-
+			const notesJSON = notes.toJSON();
 			const {id: revisionId, ...otherProps} = rev;
-			return {entities: [], noteContent, revisionId, ...otherProps};
+			return {entities: [], notes: notesJSON, revisionId, ...otherProps};
 		}));
-
 
 	const orderedRevisions = await utilis.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
 
 	return orderedRevisions;
 }
 
+// eslint-disable-next-line consistent-return
 router.get('/:id/revisions', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
 
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
+	try {
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
 
-	const editor = await new Editor({id: req.params.id}).fetch();
-	const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
+		const editor = await new Editor({id: req.params.id}).fetch();
+		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
-	const props = generateProps(req, res, {
-		editor: editorJSON,
-		from,
-		results: orderedRevisions,
-		showRevisionNote: true,
-		size,
-		tabActive: 1,
-		tableHeading: 'Revision History'
-	});
+		const props = generateProps(req, res, {
+			editor: editorJSON,
+			from,
+			results: orderedRevisions,
+			showRevisionNote: true,
+			size,
+			tabActive: 1,
+			tableHeading: 'Revision History'
+		});
 
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<EditorContainer
-				{...propHelpers.extractEditorProps(props)}
-			>
-				<EditorRevisionPage
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</EditorContainer>
-		</Layout>
-	);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<EditorRevisionPage
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
 
-	res.send(target({
-		markup,
-		page: 'revisions',
-		props: escapeProps(props),
-		script: '/js/editor/editor.js'
-	}));
+		res.send(target({
+			markup,
+			page: 'revisions',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js'
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 // eslint-disable-next-line consistent-return
