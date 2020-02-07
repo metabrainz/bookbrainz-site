@@ -46,8 +46,7 @@ class SearchPage extends React.Component {
 
 		// React does not autobind non-React class methods
 		this.handleSearch = this.handleSearch.bind(this);
-		this.redirectUrl = this.redirectUrl.bind(this);
-		this.changeDataInTable = this.changeDataInTable.bind(this);
+		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './search/search?q=';
 	}
 
@@ -66,19 +65,14 @@ class SearchPage extends React.Component {
 		if (typeof query !== 'string' || typeof collection !== 'string') {
 			return;
 		}
+		const collectionString = collection ? `&collection=${collection}` : '';
+		const fullQuery = `${query}${collectionString}`;
 
-		this.setState({collection, from: 0, query}, this.redirectUrl);
+		this.pagerElement.setState({from: 0, query: fullQuery});
+		this.setState({collection, from: 0, query}, this.pagerElement.triggerSearch);
 	}
 
-	redirectUrl() {
-		const collectionString = this.state.collection ? `&collection=${this.state.collection}` : '';
-		const pagination = `&size=${this.state.size}&from=${this.state.from}`;
-
-		const url = `./search/search?q=${this.state.query}${collectionString}${pagination}`;
-		// TODO redirect to url;
-	}
-
-	changeDataInTable(newResults) {
+	searchResultsCallback(newResults) {
 		this.setState({results: newResults});
 	}
 
@@ -98,11 +92,12 @@ class SearchPage extends React.Component {
 				/>
 				<SearchResults results={this.state.results}/>
 				<PagerElement
-					changeDataInTable={this.changeDataInTable}
 					from={this.state.from}
 					paginationUrl={this.paginationUrl}
 					query={this.state.query}
+					ref={ref => this.pagerElement = ref}
 					results={this.state.results}
+					searchResultsCallback={this.searchResultsCallback}
 					size={this.state.size}
 				/>
 			</div>

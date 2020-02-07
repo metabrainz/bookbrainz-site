@@ -41,16 +41,15 @@ class PagerElement extends React.Component {
 
 	triggerSearch() {
 		const pagination = `&size=${this.state.size}&from=${this.state.from}`;
-		const collectionString = this.state.collection ? `&collection=${this.state.collection}` : '';
 
-		request.get(`${this.props.paginationUrl}${this.props.query}${collectionString}${pagination}`)
+		request.get(`${this.props.paginationUrl}${this.props.query}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
 				this.setState(prevState => ({
 					nextEnabled: data.length >= prevState.size,
 					results: data
 				}));
-				this.props.changeDataInTable(data);
+				this.props.searchResultsCallback(data);
 			});
 	}
 
@@ -117,11 +116,11 @@ class PagerElement extends React.Component {
 
 
 PagerElement.propTypes = {
-	changeDataInTable: PropTypes.func.isRequired,
 	from: PropTypes.number,
 	paginationUrl: PropTypes.string.isRequired,
 	query: PropTypes.string,
 	results: PropTypes.array,
+	searchResultsCallback: PropTypes.func.isRequired,
 	size: PropTypes.number
 };
 PagerElement.defaultProps = {
