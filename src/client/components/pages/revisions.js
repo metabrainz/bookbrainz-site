@@ -32,25 +32,25 @@ class RevisionsPage extends React.Component {
 		};
 
 		// React does not autobind non-React class methods
-		this.changeDataInTable = this.changeDataInTable.bind(this);
+		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './revisions/revisions?q=';
 	}
 
-	changeDataInTable(newResults) {
+	searchResultsCallback(newResults) {
 		this.setState({results: newResults});
 	}
 
 	render() {
 		return (
 			<div className="container">
-				<div id="RevisionsPage">
+				<div id="pageWithPagination">
 
 					<RevisionsTable results={this.state.results}/>
 					<PagerElement
-						changeDataInTable={this.changeDataInTable}
 						from={this.state.from}
 						paginationUrl={this.paginationUrl}
 						results={this.state.results}
+						searchResultsCallback={this.searchResultsCallback}
 						size={this.state.size}
 					/>
 				</div>

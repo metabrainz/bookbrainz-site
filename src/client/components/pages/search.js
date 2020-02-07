@@ -84,7 +84,7 @@ class SearchPage extends React.Component {
 	 */
 	render() {
 		return (
-			<div id="searchPage">
+			<div id="pageWithPagination">
 				<SearchField
 					entityTypes={this.props.entityTypes}
 					query={this.props.query}
