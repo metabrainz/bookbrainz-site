@@ -30,6 +30,7 @@ class PagerElement extends React.Component {
 		this.state = {
 			from: this.props.from,
 			nextEnabled: this.props.results.length === this.props.size,
+			query: this.props.query,
 			results: this.props.results,
 			size: this.props.size
 		};
@@ -39,10 +40,16 @@ class PagerElement extends React.Component {
 		this.triggerSearch = this.triggerSearch.bind(this);
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.query !== this.props.query) {
+			// eslint-disable-next-line react/no-did-update-set-state
+			this.setState(this.props, this.triggerSearch);
+		}
+	}
+
 	triggerSearch() {
 		const pagination = `&size=${this.state.size}&from=${this.state.from}`;
-
-		request.get(`${this.props.paginationUrl}${this.props.query}${pagination}`)
+		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
 				this.setState(prevState => ({

@@ -59,17 +59,17 @@ class SearchPage extends React.Component {
 	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
 	handleSearch(query, collection) {
-		if (query === this.state.query && collection === this.state.collection) {
-			return;
-		}
 		if (typeof query !== 'string' || typeof collection !== 'string') {
 			return;
 		}
+
 		const collectionString = collection ? `&collection=${collection}` : '';
 		const fullQuery = `${query}${collectionString}`;
 
-		this.pagerElement.setState({from: 0, query: fullQuery});
-		this.setState({collection, from: 0, query}, this.pagerElement.triggerSearch);
+		if (this.state.query === fullQuery) {
+			return;
+		}
+		this.setState({from: 0, query: fullQuery});
 	}
 
 	searchResultsCallback(newResults) {
@@ -95,7 +95,6 @@ class SearchPage extends React.Component {
 					from={this.state.from}
 					paginationUrl={this.paginationUrl}
 					query={this.state.query}
-					ref={ref => this.pagerElement = ref}
 					results={this.state.results}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.state.size}
