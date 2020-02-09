@@ -41,7 +41,7 @@ function EntityFooter({deleted, entityUrl, lastModified}) {
 							href={`${entityUrl}/edit`}
 							title="Edit Entity"
 						>
-							<FontAwesomeIcon icon="pencil"/>&nbsp;Edit
+							<FontAwesomeIcon icon="pencil-alt"/>&nbsp;Edit
 						</Button>
 						<Button
 							bsStyle="primary"
@@ -56,7 +56,7 @@ function EntityFooter({deleted, entityUrl, lastModified}) {
 							href={`${entityUrl}/delete`}
 							title="Delete Entity"
 						>
-							<FontAwesomeIcon icon="remove"/>&nbsp;Delete
+							<FontAwesomeIcon icon="times"/>&nbsp;Delete
 						</Button>
 					</ButtonGroup>
 				</Col>
