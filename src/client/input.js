@@ -3,7 +3,7 @@
 import { ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup } from 'react-bootstrap';
 import React, { Component } from 'react';
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import ReactTooltip from 'react-tooltip';
@@ -110,7 +110,7 @@ export default class Input extends Component {
 				) :
 				formControl
 				);
-				
+
 		if (!addonBefore && !addonAfter && !buttonBefore && !buttonAfter) {
 			return getFormControlWrapped(wrapperClassName);
 		}
@@ -141,14 +141,14 @@ export default class Input extends Component {
 		} = this.props;
 
 		const helpIconElement = tooltipText && (
-			<Icon
+			<FontAwesomeIcon
 				className="margin-left-0-5" data-for={id} data-tip={tooltipText}
-				name="question-circle"
+				icon="question-circle"
 			/>
 		);
 		const helpTooltipElement = tooltipText &&
 		<ReactTooltip delayShow={50} effect="solid" id={id} place="right" type="dark" multiline={true} />
-		
+
 		return (
 			<FormGroup
 				controlId={ id }
