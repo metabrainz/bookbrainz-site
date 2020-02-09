@@ -212,20 +212,17 @@ class IndexPage extends React.Component {
 						Register!
 					</Button>
 				</div>
-				<RevisionsTable
-					results={this.props.recent}
-				/>
 				<div>
-					<Row>
-						<Col mdOffset={10}>
-							<Button
-								bsStyle="primary"
-								href="/revisions"
-							>
-								See all revisions
-							</Button>
-						</Col>
-					</Row>
+					<RevisionsTable
+						results={this.props.recent}
+					/>
+					<Button
+						bsStyle="primary"
+						className="pull-right"
+						href="/revisions"
+					>
+						See all revisions
+					</Button>
 				</div>
 			</Grid>
 		);
