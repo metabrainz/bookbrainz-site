@@ -55,9 +55,11 @@ The production configuration for webpack needs to be finalized before using this
 	border: none !important;
 }
 
-
-.navbar-toggle {
-	background-color: #754e37 !important;
+.BookBrainz .navbar-toggle {
+	background-color: @bookbrainz;
+	&:focus {
+		background-color: @bookbrainz;
+	}
 }
 
 /* Overwrite button primary colour to retain default bootstrap meaning */
