@@ -109,7 +109,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 		editionGroupSection = (
 			<div className="margin-bottom-d15">
 				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
-					<FontAwesomeIcon icon="external-link"/>
+					<FontAwesomeIcon icon="external-link-alt"/>
 					<span>&nbsp;See all similar editions</span>
 				</a>
 			</div>
