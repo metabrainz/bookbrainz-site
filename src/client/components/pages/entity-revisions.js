@@ -28,7 +28,7 @@ const {formatDate, isWithinDayFromNow} = utilsHelper;
 
 /**
  * The class is derived from the React Component base class and
- * renders the 'Entity Revisions' page.
+ * renders the 'Entity RevisionsPage' page.
  */
 class EntityRevisions extends React.Component {
 	/**

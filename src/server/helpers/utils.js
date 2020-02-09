@@ -2,6 +2,7 @@
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2017  Sean Burke
  				 2019       Akhilesh Kumar (@akhilesh26)
+ 				 2020		Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +22,7 @@
 // @flow
 
 import Promise from 'bluebird';
-import {kebabCase as _kebabCase} from 'lodash';
+import _ from 'lodash';
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -30,7 +31,7 @@ import {kebabCase as _kebabCase} from 'lodash';
  * @returns {string} - URL path to interact with entity
  */
 export function getEntityLink(entity: Object): string {
-	return `/${_kebabCase(entity.type)}/${entity.bbid}`;
+	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
 }
 
 /**
@@ -49,11 +50,98 @@ export function getEntityModels(orm: Object): Object {
 		Work
 	};
 }
+function getRevisionModels(orm) {
+	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
+	return [
+		AuthorRevision,
+		EditionGroupRevision,
+		EditionRevision,
+		PublisherRevision,
+		WorkRevision
+	];
+}
+/* eslint-disable no-await-in-loop */
+/**
+ * Fetches the entities affected by a revision, their alias
+ * or in case of deleted entities their last know alias.
+ * It then attaches the necessary information to each revisions's entities array
+ *
+ * @param {array} revisions - the array of revisions
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @returns {array} - The modified revisions array
+ */
+async function getAssociatedEntityRevisions(revisions, orm) {
+	const revisionIDs = revisions.map(({revisionId}) => revisionId);
+	const RevisionModels = getRevisionModels(orm);
+	const {Entity} = orm;
+	for (let i = 0; i < RevisionModels.length; i++) {
+		const EntityRevision = RevisionModels[i];
+		const entityRevisions = await new EntityRevision()
+			.query((qb) => {
+				qb.whereIn('id', revisionIDs);
+			})
+			.fetchAll({
+				require: false,
+				withRelated: [
+					'data.aliasSet.defaultAlias'
+				]
+			})
+			.catch(EntityRevision.NotFoundError, (err) => {
+				// eslint-disable-next-line no-console
+				console.log(err);
+			});
+		if (entityRevisions && entityRevisions.length) {
+			const entityRevisionsJSON = entityRevisions.toJSON();
+			for (let index = 0; index < entityRevisionsJSON.length; index++) {
+				const entityRevision = entityRevisionsJSON[index];
+				const entity = await new Entity({bbid: entityRevision.bbid}).fetch();
+				const type = entity.get('type');
+				const bbid = entity.get('bbid');
+				const entityProps = {bbid, type};
+				if (entityRevision.data) {
+					entityProps.defaultAlias = entityRevision.data.aliasSet.defaultAlias;
+				}
+				// Fetch the parent alias only if data property is nullish, i.e. it is deleted
+				else {
+					entityProps.parentAlias = await orm.func.entity.getEntityParentAlias(orm, type, bbid);
+				}
+				// Find the revision by id and attach the current entity to it
+				const revisionIndex = revisions.findIndex(rev => rev.revisionId === entityRevision.id);
+				revisions[revisionIndex].entities.push(entityProps);
+			}
+		}
+	}
+	return revisions;
+}
+/* eslint-enable no-await-in-loop */
+
+export async function getOrderedRevisions(from, size, orm) {
+	const {Revision} = orm;
+	const revisions = await new Revision().orderBy('created_at', 'DESC')
+		.fetchPage({
+			limit: size,
+			offset: from,
+			withRelated: [
+				'author'
+			]
+		});
+	const revisionsJSON = revisions.toJSON();
+
+	/* Massage the revisions to match the expected format */
+	const formattedRevisions = revisionsJSON.map(rev => {
+		const {author: editor, id: revisionId, ...otherProps} = rev;
+		return {editor, entities: [], revisionId, ...otherProps};
+	});
+
+	/* Fetch associated ${entity}_revisions and last know alias for deleted entities */
+	const orderedRevisions = getAssociatedEntityRevisions(formattedRevisions, orm);
+	return orderedRevisions;
+}
 
 export function getDateBeforeDays(days) {
-	 const date = new Date();
-	 date.setDate(date.getDate() - days);
-	 return date;
+	const date = new Date();
+	date.setDate(date.getDate() - days);
+	return date;
 }
 
 export function filterIdentifierTypesByEntityType(
@@ -183,11 +271,12 @@ export function incrementEditorEditCountById(
 ): Promise<Object> {
 	const {Editor} = orm;
 	return new Editor({id})
-		.fetch({transacting})
+		.fetch({require: true, transacting})
 		.then((editor) => {
 			editor.incrementEditCount();
 			return editor.save(null, {transacting});
-		});
+		})
+		.catch(Editor.NotFoundError, err => Promise.reject(err));
 }
 
 /**
