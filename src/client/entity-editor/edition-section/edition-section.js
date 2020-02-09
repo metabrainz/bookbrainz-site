@@ -50,7 +50,7 @@ import {
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import NumericField from '../common/numeric-field';
 import React from 'react';
@@ -239,7 +239,7 @@ function EditionSection({
 						style={{marginTop: '1.8em'}}
 						target="_blank"
 					>
-						<Icon name="plus"/>
+						<FontAwesomeIcon icon="plus"/>
 						&nbsp;New Edition Group
 					</Button>
 				</Col>
