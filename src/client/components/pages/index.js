@@ -20,23 +20,20 @@
  */
 /* eslint-disable max-len */
 import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../helpers/utils';
 
-import {genEntityIconHTMLElement, getEntityLabel} from '../../helpers/entity';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {isNil as _isNil} from 'lodash';
+import RevisionsTable from './parts/revisions-table';
 
 
-const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
-const {formatDate} = utilsHelper;
+const {Alert, Button, Col, Grid, Row} = bootstrap;
+
 
 class IndexPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
 		this.renderHeader = this.renderHeader.bind(this);
 		this.renderContent = this.renderContent.bind(this);
 	}
@@ -166,7 +163,6 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
-		const {recent} = this.props;
 		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 
 		return (
@@ -216,35 +212,21 @@ class IndexPage extends React.Component {
 						Register!
 					</Button>
 				</div>
-				{recent &&
-					<div>
-						<hr/>
-						<Row>
-							<Col md={12}>
-								<h2 className="text-center">Recent Activity</h2>
-								<ListGroup>
-									{recent.map((entity) => (
-										<ListGroupItem
-											href={`/revision/${entity.revisionId}`}
-											key={entity.revisionId}
-										>
-											<Row>
-												<Col md={2}>{`r${entity.revisionId}`}</Col>
-												<Col md={6}>
-													{genEntityIconHTMLElement(entity.type)}
-													{getEntityLabel(entity)}
-												</Col>
-												<Col md={4}>
-													{formatDate(new Date(entity.createdAt))}
-												</Col>
-											</Row>
-										</ListGroupItem>
-									))}
-								</ListGroup>
-							</Col>
-						</Row>
-					</div>
-				}
+				<RevisionsTable
+					results={this.props.recent}
+				/>
+				<div>
+					<Row>
+						<Col mdOffset={10}>
+							<Button
+								bsStyle="primary"
+								href="/revisions"
+							>
+								See all revisions
+							</Button>
+						</Col>
+					</Row>
+				</div>
 			</Grid>
 		);
 	}
