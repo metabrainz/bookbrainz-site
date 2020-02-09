@@ -4,7 +4,7 @@ import {dateObjectToISOString, getTodayDate} from '../../helpers/utils';
 import {isValid, parseISO} from 'date-fns';
 import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from './validation-label';
@@ -177,7 +177,7 @@ class DateField extends React.Component {
 								showYearDropdown
 								customInput={
 									<Button bsStyle="info" style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker">
-										<FontAwesome name="calendar-alt"/>
+										<FontAwesomeIcon icon="calendar-alt"/>
 									</Button>
 								}
 								dateFormat="uuuuuu-MM-dd"
