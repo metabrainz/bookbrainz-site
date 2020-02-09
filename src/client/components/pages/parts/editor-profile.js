@@ -76,7 +76,7 @@ class EditorProfileTab extends React.Component {
 								href="/editor/edit"
 								title="Edit basic editor info"
 							>
-								<FontAwesomeIcon icon="pencil"/>{' '}Edit Profile
+								<FontAwesomeIcon icon="pencil-alt"/>{' '}Edit Profile
 							</Button>
 						</small>
 					}
