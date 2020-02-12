@@ -43,7 +43,7 @@ class PagerElement extends React.Component {
 	componentDidUpdate(prevProps, prevState) {
 		if (prevProps.query !== this.props.query) {
 			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState(this.props, this.triggerSearch);
+			this.setState({from: 0, query: this.props.query}, this.triggerSearch);
 		}
 	}
 

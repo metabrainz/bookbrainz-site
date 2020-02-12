@@ -26,9 +26,7 @@ class RevisionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			from: this.props.from,
-			results: this.props.results,
-			size: this.props.size
+			results: this.props.results
 		};
 
 		// React does not autobind non-React class methods
@@ -47,11 +45,11 @@ class RevisionsPage extends React.Component {
 
 					<RevisionsTable results={this.state.results}/>
 					<PagerElement
-						from={this.state.from}
+						from={this.props.from}
 						paginationUrl={this.paginationUrl}
 						results={this.state.results}
 						searchResultsCallback={this.searchResultsCallback}
-						size={this.state.size}
+						size={this.props.size}
 					/>
 				</div>
 			</div>

@@ -38,10 +38,8 @@ class SearchPage extends React.Component {
 		super(props);
 
 		this.state = {
-			from: 0,
 			query: this.props.query,
-			results: this.props.initialResults,
-			size: this.props.resultsPerPage
+			results: this.props.initialResults
 		};
 
 		// React does not autobind non-React class methods
@@ -92,12 +90,12 @@ class SearchPage extends React.Component {
 				/>
 				<SearchResults results={this.state.results}/>
 				<PagerElement
-					from={this.state.from}
+					from={this.props.from}
 					paginationUrl={this.paginationUrl}
 					query={this.state.query}
 					results={this.state.results}
 					searchResultsCallback={this.searchResultsCallback}
-					size={this.state.size}
+					size={this.props.resultsPerPage}
 				/>
 			</div>
 		);
@@ -107,11 +105,13 @@ class SearchPage extends React.Component {
 SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
+	from: PropTypes.number,
 	initialResults: PropTypes.array,
 	query: PropTypes.string,
 	resultsPerPage: PropTypes.number
 };
 SearchPage.defaultProps = {
+	from: 0,
 	initialResults: [],
 	query: '',
 	resultsPerPage: 20
