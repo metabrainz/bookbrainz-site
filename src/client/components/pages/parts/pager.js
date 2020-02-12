@@ -47,29 +47,31 @@ class PagerElement extends React.Component {
 		}
 	}
 
-	triggerSearch() {
-		const pagination = `&size=${this.state.size}&from=${this.state.from}`;
+	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
+		const pagination = `&size=${newSize}&from=${newFrom}`;
 		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
-				this.setState(prevState => ({
-					nextEnabled: data.length >= prevState.size,
-					results: data
-				}));
+				this.setState({
+					from: newFrom,
+					nextEnabled: data.length >= newSize,
+					results: data,
+					size: newSize
+				});
 				this.props.searchResultsCallback(data);
 			});
 	}
 
 	handleClickPrevious() {
-		this.setState(prevState => ({from: Math.max(prevState.from - prevState.size, 0)}), this.triggerSearch);
+		this.triggerSearch(Math.max(this.state.from - this.state.size, 0));
 	}
 
 	handleClickNext() {
-		this.setState(prevState => ({from: prevState.from + prevState.size}), this.triggerSearch);
+		this.triggerSearch(this.state.from + this.state.size);
 	}
 
-	handleResultsPerPageChange(value) {
-		this.setState({size: parseInt(value, 10)}, this.triggerSearch);
+	handleResultsPerPageChange(newSize) {
+		this.triggerSearch(this.state.from, parseInt(newSize, 10));
 	}
 
 	render() {
