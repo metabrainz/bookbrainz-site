@@ -67,52 +67,49 @@ class RevisionsPage extends React.Component {
 
 	render() {
 		return (
-			<div className="container">
-				<div id="RevisionsPage">
-
-					<RevisionsTable results={this.state.results}/>
-					{
-						this.state.results && this.state.results.length ?
-							<div>
-								<hr className="thin"/>
-								<Pager>
-									<Pager.Item
-										previous disabled={this.state.from <= 0}
-										href="#" onClick={this.handleClickPrevious}
+			<div id="RevisionsPage">
+				<RevisionsTable results={this.state.results}/>
+				{
+					this.state.results && this.state.results.length ?
+						<div>
+							<hr className="thin"/>
+							<Pager>
+								<Pager.Item
+									previous disabled={this.state.from <= 0}
+									href="#" onClick={this.handleClickPrevious}
+								>
+									&larr; Previous Page
+								</Pager.Item>
+								<ButtonGroup>
+									<Button disabled>Results {this.state.from + 1} —
+										{this.state.results.length < this.state.size ?
+											this.state.from + this.state.results.length :
+											this.state.from + this.state.size
+										}
+									</Button>
+									<DropdownButton
+										dropup bsStyle="info" id="bg-nested-dropdown"
+										title={`${this.state.size} per page`}
+										onSelect={this.handleResultsPerPageChange}
 									>
-										&larr; Previous Page
-									</Pager.Item>
-									<ButtonGroup>
-										<Button disabled>Results {this.state.from + 1} —
-											{this.state.results.length < this.state.size ?
-												this.state.from + this.state.results.length :
-												this.state.from + this.state.size
-											}
-										</Button>
-										<DropdownButton
-											dropup bsStyle="info" id="bg-nested-dropdown"
-											title={`${this.state.size} per page`}
-											onSelect={this.handleResultsPerPageChange}
-										>
-											<MenuItem eventKey="10">10 per page</MenuItem>
-											<MenuItem eventKey="20">20 per page</MenuItem>
-											<MenuItem eventKey="35">35 per page</MenuItem>
-											<MenuItem eventKey="50">50 per page</MenuItem>
-											<MenuItem eventKey="100">100 per page</MenuItem>
-										</DropdownButton>
-									</ButtonGroup>
-									<Pager.Item
-										next disabled={!this.state.nextEnabled}
-										href="#" onClick={this.handleClickNext}
-									>
-										Next Page &rarr;
-									</Pager.Item>
-								</Pager>
+										<MenuItem eventKey="10">10 per page</MenuItem>
+										<MenuItem eventKey="20">20 per page</MenuItem>
+										<MenuItem eventKey="35">35 per page</MenuItem>
+										<MenuItem eventKey="50">50 per page</MenuItem>
+										<MenuItem eventKey="100">100 per page</MenuItem>
+									</DropdownButton>
+								</ButtonGroup>
+								<Pager.Item
+									next disabled={!this.state.nextEnabled}
+									href="#" onClick={this.handleClickNext}
+								>
+									Next Page &rarr;
+								</Pager.Item>
+							</Pager>
 
-							</div> :
-							null
-					}
-				</div>
+						</div> :
+						null
+				}
 			</div>
 		);
 	}

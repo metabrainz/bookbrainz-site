@@ -116,7 +116,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Publisher'
+			title: props.heading
 		}));
 	}
 );
@@ -206,7 +206,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Publisher'
+			title: props.heading
 		}));
 	}
 );
