@@ -55,6 +55,13 @@ The production configuration for webpack needs to be finalized before using this
 	border: none !important;
 }
 
+.BookBrainz .navbar-toggle {
+	background-color: @bookbrainz;
+	&:focus {
+		background-color: @bookbrainz;
+	}
+}
+
 /* Overwrite button primary colour to retain default bootstrap meaning */
 @btn-primary-bg:                 darken(#428bca, 6.5%);
 @btn-primary-border:             darken(#428bca, 6.5%);
