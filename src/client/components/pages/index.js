@@ -216,13 +216,14 @@ class IndexPage extends React.Component {
 					<RevisionsTable
 						results={this.props.recent}
 					/>
-					<Button
-						bsStyle="primary"
-						className="pull-right"
-						href="/revisions"
-					>
-						See all revisions
-					</Button>
+					<div className="text-center">
+						<Button
+							bsStyle="primary"
+							href="/revisions"
+						>
+							See all revisions
+						</Button>
+					</div>
 				</div>
 			</Grid>
 		);
