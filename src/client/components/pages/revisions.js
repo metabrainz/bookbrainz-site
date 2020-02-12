@@ -40,18 +40,15 @@ class RevisionsPage extends React.Component {
 
 	render() {
 		return (
-			<div className="container">
-				<div id="pageWithPagination">
-
-					<RevisionsTable results={this.state.results}/>
-					<PagerElement
-						from={this.props.from}
-						paginationUrl={this.paginationUrl}
-						results={this.state.results}
-						searchResultsCallback={this.searchResultsCallback}
-						size={this.props.size}
-					/>
-				</div>
+			<div id="pageWithPagination">
+				<RevisionsTable results={this.state.results}/>
+				<PagerElement
+					from={this.props.from}
+					paginationUrl={this.paginationUrl}
+					results={this.state.results}
+					searchResultsCallback={this.searchResultsCallback}
+					size={this.props.size}
+				/>
 			</div>
 		);
 	}

@@ -103,7 +103,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Edition Group'
+			title: props.heading
 		}));
 	}
 );
@@ -196,7 +196,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Edit Edition Group'
+			title: props.heading
 		}));
 	}
 );

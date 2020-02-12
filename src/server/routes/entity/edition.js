@@ -189,7 +189,7 @@ router.get(
 				markup,
 				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
-				title: 'Add Edition'
+				title: props.heading
 			}));
 		}
 
@@ -320,7 +320,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Edit Edition'
+			title: props.heading
 		}));
 	}
 );

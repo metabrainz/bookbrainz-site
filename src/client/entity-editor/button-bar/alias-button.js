@@ -17,7 +17,7 @@
  */
 
 import {Button} from 'react-bootstrap';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -47,7 +47,7 @@ function AliasButton({
 	}
 
 	const iconElement = aliasesInvalid &&
-		<Icon className="margin-right-0-5 text-danger" name="times"/>;
+		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon="times"/>;
 
 	return (
 		<Button bsStyle="link" {...props}>

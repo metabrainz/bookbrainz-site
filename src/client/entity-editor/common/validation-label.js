@@ -19,7 +19,7 @@
 // @flow
 
 import * as React from 'react';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 
 function icon(empty: ?boolean, error: ?boolean, warn: ?boolean): string | null {
@@ -94,7 +94,7 @@ function ValidationLabel({
 	const errorElement = errorMessage &&
 		<span className={contextualColor(empty, error, warn)}> {errorMessage} </span>;
 	const iconElement = icon(empty, error, warn) &&
-		<Icon className="margin-left-0-5" name={icon(empty, error, warn)}/>;
+		<FontAwesomeIcon className="margin-left-0-5" icon={icon(empty, error, warn)}/>;
 
 	return (
 		<span className={contextualColor(empty, error, warn)}>
