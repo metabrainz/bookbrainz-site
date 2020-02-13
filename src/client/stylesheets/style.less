@@ -353,7 +353,7 @@ hr.wide {
 	margin-top: 40px;
     margin-bottom: 40px;
 }
-#searchPage .pager .dropdown-menu {
+#pageWithPagination .pager .dropdown-menu {
 	li {
 	  display: initial;
 	  > a,
@@ -376,5 +376,36 @@ hr.wide {
 @media only screen and (max-width: 600px) {
 	#searchpage-button-group > * {
 		width: 100%;
+	}
+}
+
+.BookBrainz > .container-fluid > .navbar-header{
+	margin-left: 0px;
+	margin-right: 0px;
+	>.navbar-toggle{
+		margin-right: 0px;
+	}
+
+}
+.revision-note {
+	&:not(:last-child) {
+		border-bottom: 1px solid @disabled-color;
+		margin-bottom: 0.3em;
+		padding-bottom: 0.3em;
+	}
+	.note-content {
+		quotes: "\201C" "\201D";
+		&::before {
+			content: open-quote;
+		}
+		&::after {
+			content: close-quote;
+		}
+	}
+	.note-author {
+		&:extend(.small);
+		font-style: italic;
+		white-space: nowrap;
+		margin-left: 0.2em;
 	}
 }

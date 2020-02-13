@@ -24,11 +24,11 @@ import {
 } from '../../helpers/props';
 import {AppContainer} from 'react-hot-loader';
 import EditorContainer from '../../containers/editor';
+import EditorRevisionPage from '../../components/pages/editor-revision';
 import Layout from '../../containers/layout';
 import ProfileTab from '../../components/pages/parts/editor-profile';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RevisionsTab from '../../components/pages/parts/editor-revisions';
 
 
 const propsTarget = document.getElementById('props');
@@ -40,7 +40,10 @@ const page = pageTarget ? pageTarget.innerHTML : '';
 let tab = null;
 
 if (page === 'revisions') {
-	tab = <RevisionsTab editor={props.editor}/>;
+	tab = (
+		<EditorRevisionPage
+			{...extractChildProps(props)}
+		/>);
 }
 else {
 	tab = (

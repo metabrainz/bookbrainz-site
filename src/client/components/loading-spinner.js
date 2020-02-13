@@ -17,17 +17,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 
 function LoadingSpinner() {
 	return (
 		<div className="loading-background">
-			<Icon
+			<FontAwesomeIcon
 				spin
 				className="loading-spinner"
-				name="circle-o-notch"
+				icon="circle-notch"
 				size="2x"
 			/>
 		</div>
