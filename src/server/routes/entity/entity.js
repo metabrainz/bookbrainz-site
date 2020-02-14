@@ -711,10 +711,7 @@ export function handleCreateOrEditEntity(
 
 async function deleteEntityRelationships(orm, transacting, entity) {
 	const entityBBID = entity.get('bbid');
-	
-	// Adding the entity to be deleted to allEntities
 	let allEntities = [entity];
-
 	const relationshipSet = await entity.relationshipSet()
 		.fetch({require: false, transacting, withRelated: 'relationships'});
 	if (!relationshipSet) {
@@ -764,7 +761,6 @@ async function deleteEntityRelationships(orm, transacting, entity) {
 	return allEntities;
 }
 
-
 export function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
@@ -777,80 +773,63 @@ export function handleDelete(
 	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
-		const entityPromise = getEntityByBBID(orm, transacting, entityJSON.bbid);
+		const entity = await getEntityByBBID(orm, transacting, entityJSON.bbid);
 
-		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
+		await utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
 
-		const newRevisionPromise = new Revision({
-			authorId: editorJSON.id
-		}).save(null, {transacting});
+		const newRevision = new Revision({authorId: editorJSON.id});
 
-		const notePromise = newRevisionPromise
-			.then((revision) => _createNote(
-				orm, body.note, editorJSON.id, revision, transacting
-			));
+		await newRevision.save(null, {transacting});
 
+		const notePromise = _createNote(orm, body.note, editorJSON.id, newRevision, transacting);
 
-		const searchDeleteEntityPromise = search.deleteEntity(entityJSON)
-			.catch(err => { log.error(err); });
+		entity.set('dataId', null);
 
 		// Update related Entities
-		const updatedEntitiesPromise = entityPromise
-			.then((entity) => deleteEntityRelationships(
-				orm, transacting, entity
-			));
+		const updatedEntities = await deleteEntityRelationships(orm, transacting, entity);
 
-		const parentRevisionIDsPromise = updatedEntitiesPromise
-			.then((updatedEntities) => _.compact(updatedEntities.map(
-				(entityModel) => entityModel.get('revisionId')
-			)));
+		const parentRevisionIDs = _.compact(updatedEntities.map((entityModel) => entityModel.get('revisionId')));
 
-		const [newRevision, parentRevisionIDs] = await Promise.all([newRevisionPromise, parentRevisionIDsPromise]);
-
-		const parentsAddedPromise = setParentRevisions(transacting, newRevision, _.uniq(parentRevisionIDs));
+		await setParentRevisions(transacting, newRevision, _.uniq(parentRevisionIDs));
 
 		/*
 		 * No trigger for deletions, so manually create the <Entity>Revision
 		 * and update the entity header
 		 */
 
-		const entitiesRevisionPromise = updatedEntitiesPromise
-			.then((updatedEntities) => Promise.all(
-				_.map(updatedEntities, (entityModel) => new RevisionModel({
-					bbid: entityModel.get('bbid'),
-					dataId: null,
-					id: newRevision.get('id')
-				}).save(null, {
-					method: 'insert',
-					transacting
-				}))
-			));
+		const entitiesRevisions = await Promise.all(
+			_.map(updatedEntities, (entityModel) => new RevisionModel({
+				bbid: entityModel.get('bbid'),
+				dataId: entityModel.get('dataId'),
+				id: newRevision.get('id')
+			}).save(null, {
+				method: 'insert',
+				transacting
+			}))
+		);
 
-		const entitiesHeaderPromise = updatedEntitiesPromise
-			.then((updatedEntities) => Promise.all(
-				_.map(updatedEntities, (entityModel) => new HeaderModel({
-					bbid: entityModel.get('bbid'),
-					masterRevisionId: newRevision.get('id')
-				}).save(null, {transacting}))
-			));
 
-		const entitiesSavedPromise = updatedEntitiesPromise
-			.then((updatedEntities) => Promise.all(
-				_.map(updatedEntities, (entityModel) => {
-					entityModel.set('revisionId', newRevision.get('id'));
-					return entityModel.save(null, {method: 'update', transacting});
-				})
-			));
+		// Creating Entity Headers
+		const entitiesHeadersPromise = Promise.all(
+			_.map(entitiesRevisions, (entityRevision) => new HeaderModel({
+				bbid: entityRevision.get('bbid'),
+				masterRevisionId: entityRevision.get('id')
+			}).save(null, {transacting}))
+		);
+
+		const entitiesSavedPromise = Promise.all(
+			_.map(updatedEntities, (entityModel) => {
+				entityModel.set('revisionId', newRevision.get('id'));
+				return entityModel.save(null, {method: 'update', transacting});
+			})
+		);
+
+		await search.deleteEntity(entityJSON).catch(err => { log.error(err); });
 
 		return Promise.join(
-			editorUpdatePromise, newRevisionPromise, notePromise,
-			entitiesRevisionPromise, entitiesHeaderPromise, parentsAddedPromise,
-			updatedEntitiesPromise, parentRevisionIDsPromise,
-			entitiesSavedPromise, searchDeleteEntityPromise
-		).catch(err => {
-			log.debug(err);
-		});
+			entitiesHeadersPromise,
+			entitiesSavedPromise, notePromise
+		);
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise);
