@@ -21,7 +21,7 @@ import * as auth from '../helpers/auth';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
-import * as utilis from '../helpers/utils';
+import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from
 	'../../client/components/pages/parts/editor-achievements';
@@ -275,7 +275,7 @@ async function getOrderedRevisionForEditorPage(from, size, req) {
 		return {editor, entities: [], revisionId, ...otherProps};
 	});
 
-	const orderedRevisions = await utilis.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
+	const orderedRevisions = await utils.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
 
 	return orderedRevisions;
 }
