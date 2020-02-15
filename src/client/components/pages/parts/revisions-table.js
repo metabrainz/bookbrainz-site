@@ -90,20 +90,20 @@ function RevisionsTable(props) {
 										{
 											showRevisionNote ?
 												<td>
-													{revision.notes.map(note => (
-														<div key={note.id}>
-															{/* eslint-disable-next-line react/no-unescaped-entities */}
-															"{note.content}"
-															<a className="pull-right" href={`/editor/${note.author.id}`}>
-																<i>
-																	—{note.author.name}
-																</i>
-															</a>
-															<br/>
-															<br/>
-														</div>
-
-													))}
+													{
+														revision.notes.map(note => (
+															<div className="revision-note clearfix" key={note.id}>
+																<span className="note-content">
+																	{note.content}
+																	<a
+																		className="note-author pull-right" href={`/editor/${note.author.id}`}
+																	>
+																		—{note.author.name}
+																	</a>
+																</span>
+															</div>
+														))
+													}
 												</td> : null
 										}
 										<td>{formatDate(new Date(revision.createdAt), true)}</td>
