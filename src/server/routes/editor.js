@@ -21,17 +21,18 @@ import * as auth from '../helpers/auth';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
+import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from
 	'../../client/components/pages/parts/editor-achievements';
 import EditorContainer from '../../client/containers/editor';
+import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
 import ProfileForm from '../../client/components/forms/profile';
 import ProfileTab from '../../client/components/pages/parts/editor-profile';
 import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import RevisionsTab from '../../client/components/pages/parts/editor-revisions';
 import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
@@ -250,46 +251,96 @@ router.get('/:id', (req, res, next) => {
 	);
 });
 
-router.get('/:id/revisions', (req, res, next) => {
-	const {Editor, TitleUnlock} = req.app.locals.orm;
-	new Editor({id: parseInt(req.params.id, 10)})
-		.fetch({
-			require: true,
-			withRelated: {
-				revisions(query) {
-					query.orderBy('id');
-				}
-			}
-		})
-		.then((editor) => getEditorTitleJSON(editor.toJSON(), TitleUnlock))
-		.then((editorJSON) => {
-			const props = generateProps(req, res, {
-				editor: editorJSON,
-				tabActive: 1
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EditorContainer
-						{...propHelpers.extractEditorProps(props)}
-					>
-						<RevisionsTab
-							editor={props.editor}
-						/>
-					</EditorContainer>
-				</Layout>
-			);
-			res.send(target({
-				markup,
-				page: 'revisions',
-				props: escapeProps(props),
-				script: '/js/editor/editor.js'
-			}));
-		})
+async function getOrderedRevisionForEditorPage(from, size, req) {
+	const {Editor, Revision} = req.app.locals.orm;
+
+	// If editor isn't present, throw an error
+	await new Editor({id: req.params.id})
+		.fetch()
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
-		})
-		.catch(next);
+		});
+
+	const revisions = await new Revision()
+		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
+		.orderBy('created_at', 'DESC')
+		.fetchPage({
+			limit: size,
+			offset: from,
+			withRelated: ['notes', 'notes.author']
+		});
+	const revisionsJSON = revisions.toJSON();
+	const formattedRevisions = revisionsJSON.map(rev => {
+		const {author: editor, id: revisionId, ...otherProps} = rev;
+		return {editor, entities: [], revisionId, ...otherProps};
+	});
+
+	const orderedRevisions = await utils.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
+
+	return orderedRevisions;
+}
+
+// eslint-disable-next-line consistent-return
+router.get('/:id/revisions', async (req, res, next) => {
+	const {Editor, TitleUnlock} = req.app.locals.orm;
+
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	try {
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
+
+		const editor = await new Editor({id: req.params.id}).fetch();
+		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
+
+		const props = generateProps(req, res, {
+			editor: editorJSON,
+			from,
+			results: orderedRevisions,
+			showRevisionNote: true,
+			size,
+			tabActive: 1,
+			tableHeading: 'Revision History'
+		});
+
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<EditorRevisionPage
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
+
+		res.send(target({
+			markup,
+			page: 'revisions',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js'
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
+
+// eslint-disable-next-line consistent-return
+router.get('/:id/revisions/revisions', async (req, res, next) => {
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	try {
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
+		res.send(orderedRevisions);
+	}
+	catch (err) {
+		return next(err);
+	}
+});
+
 
 function setAchievementUnlockedField(achievements, unlockIds) {
 	const model = achievements.map((achievementType) => {

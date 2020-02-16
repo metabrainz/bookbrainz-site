@@ -41,7 +41,8 @@ router.get('/', async (req, res, next) => {
 	function render(results) {
 		const props = generateProps(req, res, {
 			from,
-			results: _.take(results, size),
+			results,
+			showRevisionEditor: true,
 			size
 		});
 
@@ -52,11 +53,7 @@ router.get('/', async (req, res, next) => {
 		 */
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<RevisionsPage
-					from={props.from}
-					results={props.results}
-					size={props.size}
-				/>
+				<RevisionsPage {...propHelpers.extractChildProps(props)}/>
 			</Layout>
 		);
 
@@ -87,7 +84,7 @@ router.get('/revisions', async (req, res, next) => {
 
 	try {
 		const orderedRevisions = await utils.getOrderedRevisions(from, size, orm);
-		res.send(_.take(orderedRevisions, size));
+		res.send(orderedRevisions);
 	}
 	catch (err) {
 		return next(err);

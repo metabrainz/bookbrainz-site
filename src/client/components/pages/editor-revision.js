@@ -22,14 +22,13 @@ import React from 'react';
 import RevisionsTable from './parts/revisions-table';
 
 
-class RevisionsPage extends React.Component {
+class EditorRevisionPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			results: this.props.results
 		};
 
-		// React does not autobind non-React class methods
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './revisions/revisions?q=';
 	}
@@ -44,6 +43,8 @@ class RevisionsPage extends React.Component {
 				<RevisionsTable
 					results={this.state.results}
 					showRevisionEditor={this.props.showRevisionEditor}
+					showRevisionNote={this.props.showRevisionNote}
+					tableHeading={this.props.tableHeading}
 				/>
 				<PagerElement
 					from={this.props.from}
@@ -58,18 +59,22 @@ class RevisionsPage extends React.Component {
 }
 
 
-RevisionsPage.displayName = 'RevisionsPage';
-RevisionsPage.propTypes = {
+EditorRevisionPage.displayName = 'EditorRevisionPage';
+EditorRevisionPage.propTypes = {
 	from: PropTypes.number,
 	results: PropTypes.array,
 	showRevisionEditor: PropTypes.bool,
-	size: PropTypes.number
+	showRevisionNote: PropTypes.bool,
+	size: PropTypes.number,
+	tableHeading: PropTypes.string
 };
-RevisionsPage.defaultProps = {
+EditorRevisionPage.defaultProps = {
 	from: 0,
 	results: [],
-	showRevisionEditor: true,
-	size: 20
+	showRevisionEditor: false,
+	showRevisionNote: true,
+	size: 20,
+	tableHeading: 'Recent Activity'
 };
 
-export default RevisionsPage;
+export default EditorRevisionPage;

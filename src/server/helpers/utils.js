@@ -70,7 +70,7 @@ function getRevisionModels(orm) {
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @returns {array} - The modified revisions array
  */
-async function getAssociatedEntityRevisions(revisions, orm) {
+export async function getAssociatedEntityRevisions(revisions, orm) {
 	const revisionIDs = revisions.map(({revisionId}) => revisionId);
 	const RevisionModels = getRevisionModels(orm);
 	const {Entity} = orm;

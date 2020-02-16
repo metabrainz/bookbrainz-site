@@ -28,66 +28,114 @@ const {formatDate} = utilsHelper;
 
 
 function RevisionsTable(props) {
-	const {results} = props;
+	const {results, showRevisionNote, showRevisionEditor, tableHeading} = props;
+
 	const tableCssClasses = 'table table-striped';
 	return (
 
 		<div>
 			<div>
-				<h1 className="text-center">Recent Activity</h1>
+				<h1 className="text-center">{tableHeading}</h1>
 			</div>
 			<hr className="thin"/>
-			<Table
-				responsive
-				className={tableCssClasses}
-			>
-				<thead>
-					<tr>
-						<th className="col-sm-2">Revision ID</th>
-						<th className="col-sm-5">Modified entities</th>
-						<th className="col-sm-3">User</th>
-						<th className="col-sm-2">Date</th>
-
-					</tr>
-				</thead>
-				<tbody>
-					{
-						results.map((revision, i) => (
-							<tr key={i}>
-								<td>
-									<a href={`/revision/${revision.revisionId}`} >
-										{revision.revisionId}
-									</a>
-								</td>
-								<td>
-									{revision.entities.map(entity => (
-										<div key={`${revision.revisionId}-${entity.bbid}`}>
-											<a href={getEntityUrl(entity)} >
-												{genEntityIconHTMLElement(entity.type)}
-												{getEntityLabel(entity)}
-											</a>
-										</div>
-									))}
-								</td>
-								<td>
-									<a href={`/editor/${revision.editor.id}`} >
-										{revision.editor.name}
-									</a>
-								</td>
-								<td>{formatDate(new Date(revision.createdAt), true)}</td>
+			{
+				results.length > 0 ?
+					<Table
+						responsive
+						className={tableCssClasses}
+					>
+						<thead>
+							<tr>
+								<th className="col-sm-2">Revision ID</th>
+								<th className="col-sm-5">Modified entities</th>
+								{
+									showRevisionEditor ?
+										<th className="col-sm-3">User</th> : null
+								}
+								{
+									showRevisionNote ?
+										<th className="col-sm-3">Note</th> : null
+								}
+								<th className="col-sm-2">Date</th>
 							</tr>
-						))
-					}
-				</tbody>
-			</Table>
+						</thead>
+
+						<tbody>
+							{
+								results.map((revision, i) => (
+									<tr key={i}>
+										<td>
+											<a href={`/revision/${revision.revisionId}`} >
+												{revision.revisionId}
+											</a>
+										</td>
+										<td>
+											{revision.entities.map(entity => (
+												<div key={`${revision.revisionId}-${entity.bbid}`}>
+													<a href={getEntityUrl(entity)} >
+														{genEntityIconHTMLElement(entity.type)}
+														{getEntityLabel(entity)}
+													</a>
+												</div>
+											))}
+										</td>
+										{
+											showRevisionEditor ?
+												<td>
+													<a href={`/editor/${revision.editor.id}`} >
+														{revision.editor.name}
+													</a>
+												</td> : null
+										}
+										{
+											showRevisionNote ?
+												<td>
+													{
+														revision.notes.map(note => (
+															<div className="revision-note clearfix" key={note.id}>
+																<span className="note-content">
+																	{note.content}
+																	<a
+																		className="note-author pull-right" href={`/editor/${note.author.id}`}
+																	>
+																		—{note.author.name}
+																	</a>
+																</span>
+															</div>
+														))
+													}
+												</td> : null
+										}
+										<td>{formatDate(new Date(revision.createdAt), true)}</td>
+									</tr>
+								))
+							}
+						</tbody>
+					</Table> :
+
+					<div>
+						<h4> No revisions to show</h4>
+						<hr className="wide"/>
+					</div>
+			}
 		</div>
 
 	);
 }
 
 RevisionsTable.propTypes = {
-	results: PropTypes.array.isRequired
+	results: PropTypes.array.isRequired,
+	showRevisionEditor: PropTypes.bool,
+	showRevisionNote: PropTypes.bool,
+	tableHeading: PropTypes.string
 };
+RevisionsTable.defaultProps = {
+	showRevisionEditor: false,
+	showRevisionNote: false,
+	tableHeading: 'Recent Activity'
+
+};
+
 
 RevisionsTable.displayName = 'RevisionsTable';
 
