@@ -41,7 +41,10 @@ class RevisionsPage extends React.Component {
 	render() {
 		return (
 			<div id="pageWithPagination">
-				<RevisionsTable results={this.state.results}/>
+				<RevisionsTable
+					results={this.state.results}
+					showRevisionEditor={this.props.showRevisionEditor}
+				/>
 				<PagerElement
 					from={this.props.from}
 					paginationUrl={this.paginationUrl}
@@ -59,11 +62,13 @@ RevisionsPage.displayName = 'RevisionsPage';
 RevisionsPage.propTypes = {
 	from: PropTypes.number,
 	results: PropTypes.array,
+	showRevisionEditor: PropTypes.bool,
 	size: PropTypes.number
 };
 RevisionsPage.defaultProps = {
 	from: 0,
 	results: [],
+	showRevisionEditor: true,
 	size: 20
 };
 
