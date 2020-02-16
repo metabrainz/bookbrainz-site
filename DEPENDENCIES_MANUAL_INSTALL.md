@@ -49,10 +49,15 @@ Then, uncompress the `latest.sql.bz2` file, using the bzip2 command:
     bzip2 -d latest.sql.bz2
 
 This will give you a file that you can restore into PostgreSQL, which will
-set up data identical to the data we have on the bookbrainz.org website. To do
+set up data identical to the data we have on the bookbrainz.org website. First, you must create the necessary role and database with these two commands:
+
+	psql -h localhost -U postgres --command="CREATE ROLE bookbrainz"	
+	psql -h localhost -U postgres --command="CREATE DATABASE bookbrainz"
+
+Then you can restore the database from the lates dump you dowloaded. To do
 this, run:
 
-    psql -h localhost -U postgres < latest.sql
+    psql -h localhost -U postgres -f latest.sql
 
 At this point, the database is set up, and the following command should give
 you a list of usernames of BookBrainz editors (after entering the password from
