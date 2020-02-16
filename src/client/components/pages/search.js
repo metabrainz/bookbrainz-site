@@ -18,17 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
 
+import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
-import {isNil} from 'lodash';
-import request from 'superagent-bluebird-promise';
 
-
-const {Button, ButtonGroup, DropdownButton, MenuItem, Pager} = bootstrap;
 
 class SearchPage extends React.Component {
 	/**
@@ -42,19 +38,14 @@ class SearchPage extends React.Component {
 		super(props);
 
 		this.state = {
-			from: 0,
-			nextEnabled: this.props.initialResults.length === this.props.resultsPerPage,
 			query: this.props.query,
-			results: this.props.initialResults,
-			size: this.props.resultsPerPage
+			results: this.props.initialResults
 		};
 
 		// React does not autobind non-React class methods
 		this.handleSearch = this.handleSearch.bind(this);
-		this.triggerSearch = this.triggerSearch.bind(this);
-		this.handleClickPrevious = this.handleClickPrevious.bind(this);
-		this.handleClickNext = this.handleClickNext.bind(this);
-		this.handleResultsPerPageChange = this.handleResultsPerPageChange.bind(this);
+		this.searchResultsCallback = this.searchResultsCallback.bind(this);
+		this.paginationUrl = './search/search?q=';
 	}
 
 	/**
@@ -66,39 +57,21 @@ class SearchPage extends React.Component {
 	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
 	handleSearch(query, collection) {
-		if (query === this.state.query && collection === this.state.collection) {
-			return;
-		}
 		if (typeof query !== 'string' || typeof collection !== 'string') {
 			return;
 		}
 
-		this.setState({collection, from: 0, query}, this.triggerSearch);
+		const collectionString = collection ? `&collection=${collection}` : '';
+		const fullQuery = `${query}${collectionString}`;
+
+		if (this.state.query === fullQuery) {
+			return;
+		}
+		this.setState({from: 0, query: fullQuery});
 	}
 
-	triggerSearch() {
-		const collectionString = this.state.collection ? `&collection=${this.state.collection}` : '';
-		const pagination = `&size=${this.state.size}&from=${this.state.from}`;
-		request.get(`./search/search?q=${this.state.query}${collectionString}${pagination}`)
-			.then((res) => JSON.parse(res.text))
-			.then((data) => {
-				this.setState(prevState => ({
-					nextEnabled: data.length >= prevState.size,
-					results: data.filter(result => !isNil(result))
-				}));
-			});
-	}
-
-	handleClickPrevious(event) {
-		this.setState(prevState => ({from: Math.max(prevState.from - prevState.size, 0)}), this.triggerSearch);
-	}
-
-	handleClickNext(event) {
-		this.setState(prevState => ({from: prevState.from + prevState.size}), this.triggerSearch);
-	}
-
-	handleResultsPerPageChange(value) {
-		this.setState({size: parseInt(value, 10)}, this.triggerSearch);
+	searchResultsCallback(newResults) {
+		this.setState({results: newResults});
 	}
 
 	/**
@@ -109,53 +82,21 @@ class SearchPage extends React.Component {
 	 */
 	render() {
 		return (
-			<div id="searchPage">
+			<div id="pageWithPagination">
 				<SearchField
 					entityTypes={this.props.entityTypes}
 					query={this.props.query}
 					onSearch={this.handleSearch}
 				/>
 				<SearchResults results={this.state.results}/>
-				{
-					this.state.results && this.state.results.length ?
-						<div>
-							<hr className="thin"/>
-							<Pager>
-								<Pager.Item
-									previous disabled={this.state.from <= 0}
-									href="#" onClick={this.handleClickPrevious}
-								>
-									&larr; Previous Page
-								</Pager.Item>
-								<ButtonGroup>
-									<Button disabled>Results {this.state.from + 1} —
-										{this.state.results.length < this.state.size ?
-											this.state.from + this.state.results.length :
-											this.state.from + this.state.size
-										}
-									</Button>
-									<DropdownButton
-										dropup bsStyle="info" id="bg-nested-dropdown"
-										title={`${this.state.size} per page`}
-										onSelect={this.handleResultsPerPageChange}
-									>
-										<MenuItem eventKey="10">10 per page</MenuItem>
-										<MenuItem eventKey="20">20 per page</MenuItem>
-										<MenuItem eventKey="35">35 per page</MenuItem>
-										<MenuItem eventKey="50">50 per page</MenuItem>
-										<MenuItem eventKey="100">100 per page</MenuItem>
-									</DropdownButton>
-								</ButtonGroup>
-								<Pager.Item
-									next disabled={!this.state.nextEnabled}
-									href="#" onClick={this.handleClickNext}
-								>
-									Next Page &rarr;
-								</Pager.Item>
-							</Pager>
-						</div> :
-						null
-				}
+				<PagerElement
+					from={this.props.from}
+					paginationUrl={this.paginationUrl}
+					query={this.state.query}
+					results={this.state.results}
+					searchResultsCallback={this.searchResultsCallback}
+					size={this.props.resultsPerPage}
+				/>
 			</div>
 		);
 	}
@@ -164,11 +105,13 @@ class SearchPage extends React.Component {
 SearchPage.displayName = 'SearchPage';
 SearchPage.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
+	from: PropTypes.number,
 	initialResults: PropTypes.array,
 	query: PropTypes.string,
 	resultsPerPage: PropTypes.number
 };
 SearchPage.defaultProps = {
+	from: 0,
 	initialResults: [],
 	query: '',
 	resultsPerPage: 20
