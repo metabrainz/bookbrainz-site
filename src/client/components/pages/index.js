@@ -212,21 +212,19 @@ class IndexPage extends React.Component {
 						Register!
 					</Button>
 				</div>
-				<RevisionsTable
-					results={this.props.recent}
-					showRevisionEditor={this.props.showRevisionEditor}
-				/>
 				<div>
-					<Row>
-						<Col mdOffset={10}>
-							<Button
-								bsStyle="primary"
-								href="/revisions"
-							>
-								See all revisions
-							</Button>
-						</Col>
-					</Row>
+					<RevisionsTable
+						results={this.props.recent}
+						showRevisionEditor={this.props.showRevisionEditor}
+					/>
+					<div className="text-center">
+						<Button
+							bsStyle="primary"
+							href="/revisions"
+						>
+							See all revisions
+						</Button>
+					</div>
 				</div>
 			</Grid>
 		);
@@ -251,7 +249,6 @@ IndexPage.propTypes = {
 IndexPage.defaultProps = {
 	disableSignUp: false,
 	showRevisionEditor: true
-
 };
 
 export default IndexPage;
