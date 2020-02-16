@@ -36,6 +36,7 @@ function EntityLinks({entity, identifierTypes, urlPrefix}) {
 		<Row>
 			<Col md={8}>
 				<EntityRelationships
+					contextEntity={entity}
 					entityUrl={urlPrefix}
 					relationships={relationships}
 				/>

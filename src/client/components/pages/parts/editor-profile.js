@@ -21,7 +21,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -76,7 +76,7 @@ class EditorProfileTab extends React.Component {
 								href="/editor/edit"
 								title="Edit basic editor info"
 							>
-								<FontAwesome name="pencil"/>{' '}Edit Profile
+								<FontAwesomeIcon icon="pencil-alt"/>{' '}Edit Profile
 							</Button>
 						</small>
 					}

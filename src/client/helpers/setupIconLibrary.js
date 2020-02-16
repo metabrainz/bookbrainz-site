@@ -18,7 +18,7 @@
 
 import {config, library} from '@fortawesome/fontawesome-svg-core';
 import {
-	faBook, faCalendarAlt, faChartLine, faCircle, faCircleNotch,
+	faBook, faCalendarAlt, faChartLine, faCheck, faCircle, faCircleNotch,
 	faComment, faEnvelope, faExclamationTriangle, faExternalLinkAlt,
 	faGlobe, faHistory, faInfo, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
@@ -33,7 +33,7 @@ config.autoAddCss = false;
 
 // Add Icons to FontAwesome library
 library.add(
-	fab, faBook, faCalendarAlt, faChartLine, faCircle, faCircleNotch,
+	fab, faBook, faCalendarAlt, faChartLine, faCheck, faCircle, faCircleNotch,
 	faComment, faEnvelope, faExclamationTriangle, faExternalLinkAlt,
 	faGlobe, faHistory, faInfo, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
