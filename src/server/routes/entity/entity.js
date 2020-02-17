@@ -188,38 +188,81 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	}));
 }
 
-export function displayRevisions(
+async function getOrderedRevisionForEntityPage(
+	from, next: NextFunction, RevisionModel: any, req: PassportRequest, size
+) {
+	try {
+		const revisions = await new RevisionModel()
+			.query('where', 'bbid', '=', req.params.bbid)
+			.fetchPage({
+				limit: size,
+				offset: from,
+				withRelated: ['revision', 'revision.author', 'revision.notes', 'revision.notes.author']
+			});
+
+		const revisionsJSON = revisions ? revisions.toJSON() : [];
+		const orderedRevisions = revisionsJSON.map(rev => {
+			const {revision} = rev;
+			return {editor: revision.author, revisionId: revision.id, ...revision};
+		});
+		return orderedRevisions;
+	}
+	catch (err) {
+		return next(err);
+	}
+}
+
+export async function displayRevisions(
 	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
 ) {
-	const {bbid} = req.params;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	return new RevisionModel()
-		.where({bbid})
-		.fetchAll({
-			require: false,
-			withRelated: ['revision', 'revision.author', 'revision.notes']
-		})
-		.then((collection) => {
-			const revisions = collection ? collection.toJSON() : [];
-			const props = generateProps(req, res, {
-				revisions
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EntityRevisions
-						entity={props.entity}
-						revisions={props.revisions}
-					/>
-				</Layout>
-			);
-			return res.send(target({
-				markup,
-				page: 'revisions',
-				props: escapeProps(props),
-				script: '/js/entity/entity.js'
-			}));
-		})
-		.catch(next);
+	try {
+		const orderedRevisions = await getOrderedRevisionForEntityPage(from, next, RevisionModel, req, size);
+		const props = generateProps(req, res, {
+			from,
+			revisions: orderedRevisions,
+			showRevisionEditor: true,
+			showRevisionNote: true,
+			size,
+			tableHeading: 'Revision History'
+		});
+
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EntityRevisions
+					{...{entity: props.entity}}
+					{...propHelpers.extractChildProps(props)}
+				/>
+			</Layout>
+		);
+		return res.send(target({
+			markup,
+			page: 'revisions',
+			props: escapeProps(props),
+			script: '/js/entity/entity.js'
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
+}
+
+// eslint-disable-next-line consistent-return
+export async function displayRevisions2(
+	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
+) {
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	try {
+		const orderedRevisions = await getOrderedRevisionForEntityPage(from, next, RevisionModel, req, size);
+		res.send(orderedRevisions);
+	}
+	catch (err) {
+		return next(err);
+	}
 }
 
 function _createNote(orm, content, editorID, revision, transacting) {

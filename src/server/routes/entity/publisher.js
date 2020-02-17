@@ -101,6 +101,12 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {PublisherRevision} = req.app.locals.orm;
+	_setPublisherTitle(res);
+	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
+});
+
 // Creation
 
 router.get(

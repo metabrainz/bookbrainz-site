@@ -42,6 +42,7 @@ class EditorRevisionPage extends React.Component {
 			<div id="pageWithPagination">
 				<RevisionsTable
 					results={this.state.results}
+					showEntities={this.props.showEntities}
 					showRevisionEditor={this.props.showRevisionEditor}
 					showRevisionNote={this.props.showRevisionNote}
 					tableHeading={this.props.tableHeading}
@@ -63,6 +64,7 @@ EditorRevisionPage.displayName = 'EditorRevisionPage';
 EditorRevisionPage.propTypes = {
 	from: PropTypes.number,
 	results: PropTypes.array,
+	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
 	size: PropTypes.number,
@@ -71,6 +73,7 @@ EditorRevisionPage.propTypes = {
 EditorRevisionPage.defaultProps = {
 	from: 0,
 	results: [],
+	showEntities: true,
 	showRevisionEditor: false,
 	showRevisionNote: true,
 	size: 20,

@@ -89,6 +89,12 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, EditionGroupRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {EditionGroupRevision} = req.app.locals.orm;
+	_setEditionGroupTitle(res);
+	entityRoutes.displayRevisions2(req, res, next, EditionGroupRevision);
+});
+
 // Creation
 
 router.get(

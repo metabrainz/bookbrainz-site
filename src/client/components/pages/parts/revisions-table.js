@@ -28,7 +28,7 @@ const {formatDate} = utilsHelper;
 
 
 function RevisionsTable(props) {
-	const {results, showRevisionNote, showRevisionEditor, tableHeading} = props;
+	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
 
 	const tableCssClasses = 'table table-striped';
 	return (
@@ -47,7 +47,10 @@ function RevisionsTable(props) {
 						<thead>
 							<tr>
 								<th className="col-sm-2">Revision ID</th>
-								<th className="col-sm-5">Modified entities</th>
+								{
+									showEntities ?
+										<th className="col-sm-5">Modified entities</th> : null
+								}
 								{
 									showRevisionEditor ?
 										<th className="col-sm-3">User</th> : null
@@ -69,16 +72,19 @@ function RevisionsTable(props) {
 												{revision.revisionId}
 											</a>
 										</td>
-										<td>
-											{revision.entities.map(entity => (
-												<div key={`${revision.revisionId}-${entity.bbid}`}>
-													<a href={getEntityUrl(entity)} >
-														{genEntityIconHTMLElement(entity.type)}
-														{getEntityLabel(entity)}
-													</a>
-												</div>
-											))}
-										</td>
+										{
+											showEntities ?
+												<td>
+													{revision.entities.map(entity => (
+														<div key={`${revision.revisionId}-${entity.bbid}`}>
+															<a href={getEntityUrl(entity)} >
+																{genEntityIconHTMLElement(entity.type)}
+																{getEntityLabel(entity)}
+															</a>
+														</div>
+													))}
+												</td> : null
+										}
 										{
 											showRevisionEditor ?
 												<td>
@@ -125,11 +131,13 @@ function RevisionsTable(props) {
 
 RevisionsTable.propTypes = {
 	results: PropTypes.array.isRequired,
+	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
 	tableHeading: PropTypes.string
 };
 RevisionsTable.defaultProps = {
+	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
 	tableHeading: 'Recent Activity'

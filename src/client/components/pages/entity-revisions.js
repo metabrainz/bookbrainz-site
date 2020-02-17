@@ -18,28 +18,38 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../helpers/utils';
+import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
+import RevisionsTable from './parts/revisions-table';
 
 
-const {Col, ListGroup, ListGroupItem, Row} = bootstrap;
-const {formatDate, isWithinDayFromNow} = utilsHelper;
+const {Col, Row} = bootstrap;
 
 /**
  * The class is derived from the React Component base class and
  * renders the 'Entity RevisionsPage' page.
  */
 class EntityRevisions extends React.Component {
-	/**
-	 * Binds the class methods to their respective data.
-	 * @constructor
-	 * @param {object} props - Properties passed to the component
-	 */
 	constructor(props) {
 		super(props);
+		this.state = {
+			results: this.props.revisions
+		};
+
+		// React does not autobind non-React class methods
+		/**
+		 * Binds the class methods to their respective data.
+		 * @constructor
+		 * @param {object} props - Properties passed to the component
+		 */
 		this.renderHeader = this.renderHeader.bind(this);
-		this.renderRevision = this.renderRevision.bind(this);
+		this.searchResultsCallback = this.searchResultsCallback.bind(this);
+		this.paginationUrl = './revisions/revisions?q=';
+	}
+
+	searchResultsCallback(newResults) {
+		this.setState({results: newResults});
 	}
 
 	/**
@@ -69,42 +79,6 @@ class EntityRevisions extends React.Component {
 		);
 	}
 
-	/**
-	 * Renders the data related to Revision such as 'author' and 'date'.
-	 * It also displays the first revison note which is a summary of the changes
-	 * made in the revision.
-	 * @param {object} revision - The revision to be represented by the
-	 * rendered component.
-	 * @returns {ReactElement} a HTML document which is a part of the Revision
-	 * page
-	 */
-	renderRevision(revision) {
-		const createdDate = new Date(revision.revision.createdAt);
-		const dateLabel =
-			formatDate(createdDate, isWithinDayFromNow(createdDate));
-		const header = (
-			<h4 className="list-group-item-heading">
-				<small className="pull-right">
-					{`${revision.revision.author.name}, ${dateLabel}`}
-				</small>
-				{`r${revision.id}`}
-			</h4>
-		);
-
-		return (
-			<ListGroupItem
-				href={`/revision/${revision.id}`}
-				key={`${revision.revision.author.id}${revision.id}`}
-			>
-				{header}
-				{revision.revision.notes.length > 0 &&
-					<p className="list-group-item-text">
-						{revision.revision.notes[0].content}
-					</p>
-				}
-			</ListGroupItem>
-		);
-	}
 
 	/**
 	 * Renders the EntityRevisions page, which is a list of all the revisions
@@ -113,15 +87,23 @@ class EntityRevisions extends React.Component {
 	 * @returns {ReactElement} a HTML document which displays the Revision page
 	 */
 	render() {
-		const {revisions} = this.props;
-
 		return (
-			<div>
+			<div className="pageWithPagination">
 				{this.renderHeader()}
-				<h2>Revision History</h2>
-				<ListGroup>
-					{revisions.map(this.renderRevision)}
-				</ListGroup>
+				<RevisionsTable
+					results={this.state.results}
+					showEntities={this.props.showEntities}
+					showRevisionEditor={this.props.showRevisionEditor}
+					showRevisionNote={this.props.showRevisionNote}
+					tableHeading={this.props.tableHeading}
+				/>
+				<PagerElement
+					from={this.props.from}
+					paginationUrl={this.paginationUrl}
+					results={this.state.results}
+					searchResultsCallback={this.searchResultsCallback}
+					size={this.props.size}
+				/>
 			</div>
 		);
 	}
@@ -132,7 +114,21 @@ EntityRevisions.propTypes = {
 		defaultAlias: PropTypes.object,
 		disambiguation: PropTypes.object
 	}).isRequired,
-	revisions: PropTypes.array.isRequired
+	from: PropTypes.number,
+	revisions: PropTypes.array.isRequired,
+	showEntities: PropTypes.bool,
+	showRevisionEditor: PropTypes.bool,
+	showRevisionNote: PropTypes.bool,
+	size: PropTypes.number,
+	tableHeading: PropTypes.string
+};
+EntityRevisions.defaultProps = {
+	from: 0,
+	showEntities: false,
+	showRevisionEditor: false,
+	showRevisionNote: false,
+	size: 20,
+	tableHeading: 'Recent Activity'
 };
 
 export default EntityRevisions;
