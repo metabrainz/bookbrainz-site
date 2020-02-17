@@ -86,7 +86,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	const {WorkRevision} = req.app.locals.orm;
 	_setWorkTitle(res);
-	entityRoutes.displayRevisions2(req, res, next, WorkRevision);
+	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
 
 function entityToOption(entity) {

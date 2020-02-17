@@ -55,7 +55,7 @@ if (page === 'revisions') {
 		<AppContainer>
 			<Layout {...extractLayoutProps(props)}>
 				<EntityRevisions
-					{...{entity: props.entity}}
+					entity={props.entity}
 					{...extractChildProps(props)}
 				/>
 			</Layout>

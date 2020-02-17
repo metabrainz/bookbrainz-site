@@ -86,7 +86,7 @@ router.get('/:bbid/revisions', (req, res, next) => {
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	const {AuthorRevision} = req.app.locals.orm;
 	_setAuthorTitle(res);
-	entityRoutes.displayRevisions2(req, res, next, AuthorRevision);
+	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
 });
 
 // Creation

@@ -31,6 +31,11 @@ const {Col, Row} = bootstrap;
  * renders the 'Entity RevisionsPage' page.
  */
 class EntityRevisions extends React.Component {
+	/**
+	 * Binds the class methods to their respective data.
+	 * @constructor
+	 * @param {object} props - Properties passed to the component
+	 */
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -38,14 +43,9 @@ class EntityRevisions extends React.Component {
 		};
 
 		// React does not autobind non-React class methods
-		/**
-		 * Binds the class methods to their respective data.
-		 * @constructor
-		 * @param {object} props - Properties passed to the component
-		 */
 		this.renderHeader = this.renderHeader.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './revisions/revisions?q=';
+		this.paginationUrl = './revisions/revisions?';
 	}
 
 	searchResultsCallback(newResults) {

@@ -232,7 +232,7 @@ export async function displayRevisions(
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<EntityRevisions
-					{...{entity: props.entity}}
+					entity={props.entity}
 					{...propHelpers.extractChildProps(props)}
 				/>
 			</Layout>
@@ -250,7 +250,7 @@ export async function displayRevisions(
 }
 
 // eslint-disable-next-line consistent-return
-export async function displayRevisions2(
+export async function updateDisplayedRevisions(
 	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
 ) {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
