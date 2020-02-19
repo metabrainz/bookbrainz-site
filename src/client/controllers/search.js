@@ -16,12 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {extractChildProps, extractLayoutProps} from '../helpers/props';
 import {AppContainer} from 'react-hot-loader';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SearchPage from '../components/pages/search';
-import {extractLayoutProps} from '../helpers/props';
 
 
 const propsTarget = document.getElementById('props');
@@ -31,8 +31,8 @@ const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<SearchPage
-				entityTypes={props.entityTypes}
-				initialResults={props.initialResults} query={props.query}
+				query={props.query}
+				{...extractChildProps(props)}
 			/>
 		</Layout>
 	</AppContainer>

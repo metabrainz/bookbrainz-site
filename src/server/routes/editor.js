@@ -288,15 +288,17 @@ router.get('/:id/revisions', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
-
+		// get 1 more result to check nextEnabled
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size + 1, req);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
 			from,
-			results: orderedRevisions,
+			nextEnabled,
+			results: newResultsArray,
 			showRevisionNote: true,
 			size,
 			tabActive: 1,

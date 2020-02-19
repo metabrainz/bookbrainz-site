@@ -45,29 +45,31 @@ router.get('/', (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const collection = req.query.collection || null;
-	const resultsPerPage = 20;
-	const {size, from} = req.query;
-
-	search.searchByName(orm, query, _snakeCase(collection), size || resultsPerPage, from)
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	// get 1 more results to check nextEnabled
+	search.searchByName(orm, query, _snakeCase(collection), size + 1, from)
 		.then((entities) => ({
 			initialResults: entities.filter(entity => !isNil(entity)),
 			query
 		}))
 		.then((searchResults) => {
 			const entityTypes = _keys(utils.getEntityModels(orm));
+			const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
+			searchResults.initialResults = newResultsArray;
+
 			const props = generateProps(req, res, {
 				entityTypes,
 				hideSearch: true,
-				resultsPerPage,
+				nextEnabled,
+				resultsPerPage: size,
 				...searchResults
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<SearchPage
-						entityTypes={props.entityTypes}
-						initialResults={props.initialResults}
 						query={query}
-						resultsPerPage={props.resultsPerPage}
+						{...propHelpers.extractChildProps(props)}
 					/>
 				</Layout>
 			);
