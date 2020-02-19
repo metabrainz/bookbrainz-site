@@ -31,7 +31,6 @@ const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<SearchPage
-				query={props.query}
 				{...extractChildProps(props)}
 			/>
 		</Layout>
