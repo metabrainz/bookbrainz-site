@@ -35,7 +35,6 @@ import type {
 	RelationshipWithLabel,
 	Relationship as _Relationship
 } from './types';
-
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import React from 'react';
 import ReactSelect from 'react-select';

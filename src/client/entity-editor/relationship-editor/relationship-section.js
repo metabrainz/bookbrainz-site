@@ -38,6 +38,7 @@ import type {
 	Relationship as _Relationship
 } from './types';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from './relationship';
@@ -182,7 +183,8 @@ function RelationshipSection({
 						bsStyle="success"
 						onClick={onAddRelationship}
 					>
-						Add relationship
+						<FontAwesomeIcon icon="plus"/>
+						<span>&nbsp; Add relationship</span>
 					</Button>
 				</Col>
 			</Row>

@@ -398,10 +398,11 @@ function EditionSection({
 				<Row>
 					<Col className="text-center" md={4} mdOffset={4}>
 						<Button
-							bsStyle="link"
+							bsStyle="success"
 							onClick={onPhysicalButtonClick}
 						>
-							Add physical data…
+							<FontAwesomeIcon icon="plus"/>
+							<span>&nbsp;Add physical data…</span>
 						</Button>
 					</Col>
 				</Row>

@@ -50,9 +50,10 @@ function AliasButton({
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon="times"/>;
 
 	return (
-		<Button bsStyle="link" {...props}>
+		<Button bsStyle="success" {...props}>
 			{iconElement}
-			{text}
+			<FontAwesomeIcon icon="plus"/>
+			<span>&nbsp; {text} </span>
 		</Button>
 	);
 }

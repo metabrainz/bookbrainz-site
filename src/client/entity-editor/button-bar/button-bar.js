@@ -25,6 +25,7 @@ import {
 import {validateAliases, validateIdentifiers} from '../validators/common';
 
 import AliasButton from './alias-button';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierButton from './identifier-button';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -67,15 +68,15 @@ function ButtonBar({
 	return (
 		<div>
 			<form>
-				<Row className="margin-top-1">
-					<Col className="text-center" md={4}>
+				<Row >
+					<Col className="text-center margin-top-1" md={4} >
 						<AliasButton
 							aliasesInvalid={aliasesInvalid}
 							numAliases={numAliases}
 							onClick={onAliasButtonClick}
 						/>
 					</Col>
-					<Col className="text-center" md={4}>
+					<Col className="text-center margin-top-1" md={4}>
 						<IdentifierButton
 							identifiersInvalid={identifiersInvalid}
 							numIdentifiers={numIdentifiers}
@@ -84,12 +85,13 @@ function ButtonBar({
 					</Col>
 					{
 						!disambiguationVisible &&
-						<Col className="text-center" md={4}>
+						<Col className="text-center margin-top-1" md={4}>
 							<Button
-								bsStyle="link"
+								bsStyle="success"
 								onClick={onDisambiguationButtonClick}
 							>
-								Add disambiguation…
+								<FontAwesomeIcon icon="plus"/>
+								<span>&nbsp; Add disambiguation… </span>
 							</Button>
 						</Col>
 					}
