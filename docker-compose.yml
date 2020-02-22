@@ -18,7 +18,7 @@ services:
       - postgres
     volumes:
       - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
-  
+
   postgres:
     container_name: postgres
     restart: unless-stopped
@@ -28,6 +28,7 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
