@@ -271,6 +271,7 @@ function EditionSection({
 								<Button
 									block
 									bsStyle="primary"
+									id="existing-edition-group-search-button"
 									onClick={onEditionGroupButtonClick}
 								>
 									Click here to search for an existing one instead
