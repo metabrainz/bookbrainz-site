@@ -28,7 +28,7 @@ directories will exist:
   (`src/client/stylesheets`).
 * `static/js` - minified JavaScript files which are referred to by the site
   pages.
-  
+
 ## Contributing
 We welcome any and all contributions ! Whether you want to add or improve entries on [bookbrainz.org](https://bookbrainz.org), fix an issue on the website or provide new functionnality, we'll be happy to have your help and count you part of our ranks !
 If you are new to open source contribution workflows, have a look at [this beginner's guide](https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/) and our [contribution guidelines](CONTRIBUTING.md).
@@ -141,6 +141,32 @@ Once you get into serious work on the project, we recommend you use a debugger a
 Using a debugger will allow you to pause and inspect the server code as it is being executed.
 
 If you do not want to use Docker at all, you can also [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md)
+
+# Watch files and live reload with Webpack
+
+Advanced users may want to use Webpack to build, watch files and inject rebuilt pages without having to refresh the page,
+keeping the application state intact, for the price of increased compilation time and resource usage (see note below).
+
+If you are running the server manually, you can simply run `npm run debug` in the command line.
+
+If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file to:
+1. change the `command` to:
+    - `npm run debug` if you only want to change client files (in `src/client`)
+    - `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
+2. mount the `src` folder
+
+For example:
+```
+services:
+  bookbrainz-site:
+  # 1. Change the command to run
+    command: npm run debug
+    volumes:
+      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
+  # 2. Mount the src directory
+      - "./src:/home/bookbrainz/bookbrainz-site/src"
+```
+**Note**: Using Webpack watch mode (`npm run debug`) results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](/README.md#running-the-web-server).
 
 
 
