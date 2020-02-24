@@ -1,3 +1,4 @@
+// @flow
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
@@ -22,6 +23,7 @@ import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
+import type {RelationshipType, RelationshipTypes} from '../../../types';
 import {
 	addInitialRelationship,
 	entityEditorMarkup,
@@ -103,7 +105,7 @@ router.get(
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
-		let relationshipTypeId;
+		let relationshipTypeId: RelationshipType;
 		let initialRelationshipIndex = 0;
 		const propsPromise = generateEntityProps(
 			'work', req, res, {}
@@ -126,13 +128,13 @@ router.get(
 		function render(props) {
 			if (props.author) {
 				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
-				relationshipTypeId = 8;
+				relationshipTypeId = RelationshipTypes.WrittenByAuthor;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
 			}
 
 			if (props.edition) {
 				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
-				relationshipTypeId = 10;
+				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
 			}
 

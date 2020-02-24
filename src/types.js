@@ -21,3 +21,14 @@ export type _IdentifierType = {
 export type _Language = {
 
 };
+
+// Relationship Type Enum values
+export const RelationshipTypes = Object.freeze({
+	EditionContainsWork: 10,
+	NewEditionInEditionGroup: 3,
+	PublisherPublishedNewEdition: 4,
+	WrittenByAuthor: 8
+});
+
+// Relationship Type Enum
+export type RelationshipType = $Values<typeof RelationshipTypes>;
