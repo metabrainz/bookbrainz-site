@@ -19,7 +19,6 @@
 // @flow
 
 export const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
-export const SHOW_DISAMBIGUATION = 'SHOW_DISAMBIGUATION';
 export const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 
 export type Action = {
@@ -40,18 +39,6 @@ export type Action = {
 export function showAliasEditor(): Action {
 	return {
 		type: SHOW_ALIAS_EDITOR
-	};
-}
-
-/**
- * Produces an action indicating that the disambiguation field should be
- * made visible.
- *
- * @returns {Action} The resulting SHOW_DISAMBIGUATION action.
- */
-export function showDisambiguation(): Action {
-	return {
-		type: SHOW_DISAMBIGUATION
 	};
 }
 

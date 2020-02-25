@@ -16,10 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 import {
 	showAliasEditor,
-	showDisambiguation,
 	showIdentifierEditor
 } from './actions';
 import {validateAliases, validateIdentifiers} from '../validators/common';
@@ -56,43 +55,30 @@ import {connect} from 'react-redux';
  */
 function ButtonBar({
 	aliasesInvalid,
-	disambiguationVisible,
 	identifiersInvalid,
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
-	onDisambiguationButtonClick,
 	onIdentifierButtonClick
 }) {
 	return (
 		<div>
 			<form>
 				<Row className="margin-top-1">
-					<Col className="text-center" md={4}>
+					<Col className="text-center" md={6}>
 						<AliasButton
 							aliasesInvalid={aliasesInvalid}
 							numAliases={numAliases}
 							onClick={onAliasButtonClick}
 						/>
 					</Col>
-					<Col className="text-center" md={4}>
+					<Col className="text-center" md={6}>
 						<IdentifierButton
 							identifiersInvalid={identifiersInvalid}
 							numIdentifiers={numIdentifiers}
 							onClick={onIdentifierButtonClick}
 						/>
 					</Col>
-					{
-						!disambiguationVisible &&
-						<Col className="text-center" md={4}>
-							<Button
-								bsStyle="link"
-								onClick={onDisambiguationButtonClick}
-							>
-								Add disambiguation…
-							</Button>
-						</Col>
-					}
 				</Row>
 			</form>
 		</div>
@@ -101,20 +87,16 @@ function ButtonBar({
 ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
 	aliasesInvalid: PropTypes.bool.isRequired,
-	disambiguationVisible: PropTypes.bool.isRequired,
 	identifiersInvalid: PropTypes.bool.isRequired,
 	numAliases: PropTypes.number.isRequired,
 	numIdentifiers: PropTypes.number.isRequired,
 	onAliasButtonClick: PropTypes.func.isRequired,
-	onDisambiguationButtonClick: PropTypes.func.isRequired,
 	onIdentifierButtonClick: PropTypes.func.isRequired
 };
 
 function mapStateToProps(rootState, {identifierTypes}) {
-	const state = rootState.get('buttonBar');
 	return {
 		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
-		disambiguationVisible: state.get('disambiguationVisible'),
 		identifiersInvalid: !validateIdentifiers(
 			rootState.get('identifierEditor'), identifierTypes
 		),
@@ -129,7 +111,6 @@ function mapDispatchToProps(dispatch) {
 			dispatch(showAliasEditor());
 			dispatch(addAliasRow());
 		},
-		onDisambiguationButtonClick: () => dispatch(showDisambiguation()),
 		onIdentifierButtonClick: () => {
 			dispatch(showIdentifierEditor());
 			dispatch(addIdentifierRow());

@@ -113,7 +113,6 @@ class NameSection extends React.Component {
 	render() {
 		const {
 			disambiguationDefaultValue,
-			disambiguationVisible,
 			entityType,
 			exactMatches,
 			languageOptions,
@@ -224,7 +223,6 @@ class NameSection extends React.Component {
 						</Col>
 					</Row>
 					{
-						(warnIfExists || disambiguationVisible) &&
 						<Row>
 							<Col md={6} mdOffset={3}>
 								<DisambiguationField
@@ -251,7 +249,6 @@ NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
 	action: PropTypes.string,
 	disambiguationDefaultValue: PropTypes.string,
-	disambiguationVisible: PropTypes.bool.isRequired,
 	entityType: entityTypeProperty.isRequired, // eslint-disable-line react/no-typos, max-len
 	exactMatches: PropTypes.array,
 	languageOptions: PropTypes.array.isRequired,
@@ -288,8 +285,6 @@ function mapStateToProps(rootState) {
 	);
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		disambiguationVisible:
-			rootState.getIn(['buttonBar', 'disambiguationVisible']),
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),

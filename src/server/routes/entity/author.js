@@ -120,7 +120,6 @@ function authorToFormState(author) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(author.disambiguation),
 		identifierEditorVisible: false
 	};
 
