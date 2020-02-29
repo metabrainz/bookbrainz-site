@@ -2,6 +2,7 @@ BEGIN;
 
 UPDATE bookbrainz.relationship_type
 	SET
+		label='NewEditionInEditionGroup'
 		deprecated=true,
 		link_phrase='is an edition of',
 		reverse_link_phrase='has an edition',
@@ -318,7 +319,7 @@ INSERT INTO bookbrainz.relationship_type (
 
 UPDATE bookbrainz.relationship_type
 	SET
-		label='Author',
+		label='WrittenByAuthor',
 		link_phrase='wrote',
 		reverse_link_phrase='was written by',
 		description='This relationship is used to link a work to its author.',
@@ -588,6 +589,7 @@ INSERT INTO bookbrainz.relationship_type (
 
 UPDATE bookbrainz.relationship_type
 	SET
+		label='PublisherPublishedNewEdition'
 		link_phrase='published',
 		reverse_link_phrase='published by',
 		description='Represents the relationship between a publisher, and an edition published by that publisher.',
@@ -742,6 +744,7 @@ INSERT INTO bookbrainz.relationship_type (
 
 UPDATE bookbrainz.relationship_type
 	SET
+		label='EditionContainsWork'
 		link_phrase='contains',
 		reverse_link_phrase='is contained in',
 		description='Represents the relationship between an edition, and a work which is contained in that edition.',
