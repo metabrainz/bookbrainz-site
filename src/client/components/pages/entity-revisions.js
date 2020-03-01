@@ -17,14 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../helpers/entity';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
 
-
-const {Col, Row} = bootstrap;
 
 /**
  * The class is derived from the React Component base class and
@@ -59,23 +57,17 @@ class EntityRevisions extends React.Component {
 	 */
 	renderHeader() {
 		const {entity} = this.props;
-
 		return (
-			<Row>
-				<Col md={12}>
-					<h1>
-						{entity.defaultAlias &&
-							`${entity.defaultAlias.name} `
-						}
-						{entity.disambiguation &&
-							<small>
-								{`(${entity.disambiguation.comment})`}
-							</small>
-						}
-					</h1>
-					<hr/>
-				</Col>
-			</Row>
+			<div>
+				Revision History
+				<h3>
+					for&nbsp;
+					<a href={getEntityUrl(entity)} >
+						{genEntityIconHTMLElement(entity.type)}
+						{getEntityLabel(entity)}
+					</a>
+				</h3>
+			</div>
 		);
 	}
 
@@ -88,14 +80,13 @@ class EntityRevisions extends React.Component {
 	 */
 	render() {
 		return (
-			<div className="pageWithPagination">
-				{this.renderHeader()}
+			<div id="pageWithPagination">
 				<RevisionsTable
 					results={this.state.results}
 					showEntities={this.props.showEntities}
 					showRevisionEditor={this.props.showRevisionEditor}
 					showRevisionNote={this.props.showRevisionNote}
-					tableHeading={this.props.tableHeading}
+					tableHeading={this.renderHeader()}
 				/>
 				<PagerElement
 					from={this.props.from}
@@ -119,16 +110,14 @@ EntityRevisions.propTypes = {
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	size: PropTypes.number,
-	tableHeading: PropTypes.string
+	size: PropTypes.number
 };
 EntityRevisions.defaultProps = {
 	from: 0,
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
-	size: 20,
-	tableHeading: 'Recent Activity'
+	size: 20
 };
 
 export default EntityRevisions;

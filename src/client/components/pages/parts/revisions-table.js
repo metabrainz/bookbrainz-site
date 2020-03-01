@@ -134,7 +134,7 @@ RevisionsTable.propTypes = {
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	tableHeading: PropTypes.string
+	tableHeading: PropTypes.any
 };
 RevisionsTable.defaultProps = {
 	showEntities: false,

@@ -193,11 +193,14 @@ async function getOrderedRevisionForEntityPage(
 ) {
 	try {
 		const revisions = await new RevisionModel()
-			.query('where', 'bbid', '=', req.params.bbid)
-			.fetchPage({
+			.query((qb) => {
+				qb.where('bbid', req.params.bbid);
+				qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
+				qb.orderBy('revision.created_at', 'DESC');
+			}).fetchPage({
 				limit: size,
 				offset: from,
-				withRelated: ['revision', 'revision.author', 'revision.notes', 'revision.notes.author']
+				withRelated: ['revision.author', 'revision.notes', 'revision.notes.author']
 			});
 
 		const revisionsJSON = revisions ? revisions.toJSON() : [];
@@ -225,8 +228,7 @@ export async function displayRevisions(
 			revisions: orderedRevisions,
 			showRevisionEditor: true,
 			showRevisionNote: true,
-			size,
-			tableHeading: 'Revision History'
+			size
 		});
 
 		const markup = ReactDOMServer.renderToString(
