@@ -200,7 +200,8 @@ function RelationshipSection({
 						<Button
 							onClick={onUndo}
 						>
-							Undo last action
+							<FontAwesomeIcon icon="undo"/>
+							<span>&nbsp;Undo last action</span>
 						</Button>
 					</Col>
 				</Row>
