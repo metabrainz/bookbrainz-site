@@ -25,6 +25,7 @@ import {
 import {
 	validateAliasLanguage, validateAliasName, validateAliasSortName
 } from '../validators/common';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
@@ -126,7 +127,8 @@ const AliasRow = ({
 					className="margin-top-d5"
 					onClick={onRemoveButtonClick}
 				>
-					Remove
+					<FontAwesomeIcon icon="times"/>
+					<span>&nbsp;Remove</span>
 				</Button>
 			</Col>
 		</Row>

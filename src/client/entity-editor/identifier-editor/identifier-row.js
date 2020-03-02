@@ -29,6 +29,7 @@ import {
 	validateIdentifierValue
 } from '../validators/common';
 import CustomInput from '../../input';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import Select from 'react-select';
 import ValueField from './value-field';
@@ -118,7 +119,8 @@ function IdentifierRow({
 						className="margin-top-d15"
 						onClick={onRemoveButtonClick}
 					>
-						Remove
+						<FontAwesomeIcon icon="times"/>
+						<span>&nbsp;Remove</span>
 					</Button>
 				</Col>
 			</Row>
