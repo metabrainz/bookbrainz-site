@@ -153,11 +153,6 @@ router.get(
 	}
 );
 
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
 function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = work.aliasSet ?
@@ -166,7 +161,7 @@ function workToFormState(work) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(work.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
