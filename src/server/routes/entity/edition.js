@@ -23,7 +23,6 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	ISODateStringToObject,
 	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
@@ -242,8 +241,7 @@ function editionToFormState(edition) {
 	);
 
 	const releaseDate = edition.releaseEventSetId ?
-		ISODateStringToObject(edition.releaseEventSet.releaseEvents[0].date) :
-		{day: '', month: '', year: ''};
+		edition.releaseEventSet.releaseEvents[0].date : null;
 
 	const publisher = edition.publisherSet && (
 		_.isEmpty(edition.publisherSet.publishers) ?
