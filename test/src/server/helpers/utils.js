@@ -33,11 +33,11 @@ describe('Testing getNextEnabledAndResultsArray', () => {
 	});
 
 	it('newResultsArray size should be 0 and nextEnabled false when arrayLength=0 and size=10', () => {
-		const array = Array(1).fill(0);
+		const array = Array(0).fill(0);
 		const size = 10;
 		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(array, size);
 
-		expect(newResultsArray.length).to.equal(1);
+		expect(newResultsArray.length).to.equal(0);
 		expect(nextEnabled).to.equal(false);
 	});
 
