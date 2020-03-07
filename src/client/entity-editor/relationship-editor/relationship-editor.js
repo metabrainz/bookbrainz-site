@@ -36,6 +36,7 @@ import type {
 	Relationship as _Relationship
 } from './types';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
@@ -370,13 +371,17 @@ class RelationshipModal
 							/>
 						</Col>
 					</Row>
-					<Button bsStyle="danger" onClick={onCancel}>Cancel</Button>
+					<Button bsStyle="danger" onClick={onCancel}>
+						<FontAwesomeIcon icon="times"/>
+						<span>&nbsp;Cancel</span>
+					</Button>
 					<Button
 						bsStyle="success"
 						disabled={submitDisabled}
 						onClick={this.handleAdd}
 					>
-						Add
+						<FontAwesomeIcon icon="plus"/>
+						<span>&nbsp;Add</span>
 					</Button>
 				</Modal.Footer>
 			</Modal>
