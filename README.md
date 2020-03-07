@@ -13,16 +13,17 @@ are arranged as follows:
 
 * `config` - the config to be used when running the site; copy the example files
   and edit, dropping the `.example` suffix.
+* `docker` - deployment files and configurations
 * `scripts` - scripts used during the development and deployment of BookBrainz.
+* `sql` - PostgreSQL database schemas and migration files—formerly separated in https://github.com/bookbrainz/bookbrainz-sql
 * `src` - node.js source files defining the site logic and user interface.
 * `static` - static files which are served by node as part of the site.
-* `templates` - Jade templates defining how the site looks - we're slowly
-  replacing these with React.
 * `test` - unit tests and functional tests for the site.
 
 Additionally, after building the client JavaScript (see below), the following
 directories will exist:
 
+* `lib` - compiled and minified server files
 * `static/stylesheets` - the CSS generated from compiling the project LESS files
   (`src/client/stylesheets`).
 * `static/js` - minified JavaScript files which are referred to by the site
