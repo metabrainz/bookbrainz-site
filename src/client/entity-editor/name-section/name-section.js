@@ -55,8 +55,6 @@ import {getEntityDisambiguation} from '../../helpers/entity';
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.disambiguationDefaultValue - The default value for the
  *        disambiguation field.
- * @param {boolean} props.disambiguationVisible - Whether or not the
- *        disambiguation field should be visible.
  * @param {Array} props.languageOptions - The list of possible languages for the
  *        entity name.
  * @param {string} props.languageValue - The ID of the language currently
@@ -222,24 +220,22 @@ class NameSection extends React.Component {
 							/>
 						</Col>
 					</Row>
-					{
-						<Row>
-							<Col md={6} mdOffset={3}>
-								<DisambiguationField
-									defaultValue={disambiguationDefaultValue}
-									error={isRequiredDisambiguationEmpty(
-										warnIfExists,
-										disambiguationDefaultValue
-									) ||
-									!validateNameSectionDisambiguation(
-										disambiguationDefaultValue
-									)}
-									required={warnIfExists}
-									onChange={onDisambiguationChange}
-								/>
-							</Col>
-						</Row>
-					}
+					<Row>
+						<Col md={6} mdOffset={3}>
+							<DisambiguationField
+								defaultValue={disambiguationDefaultValue}
+								error={isRequiredDisambiguationEmpty(
+									warnIfExists,
+									disambiguationDefaultValue
+								) ||
+								!validateNameSectionDisambiguation(
+									disambiguationDefaultValue
+								)}
+								required={warnIfExists}
+								onChange={onDisambiguationChange}
+							/>
+						</Col>
+					</Row>
 				</form>
 			</div>
 		);
