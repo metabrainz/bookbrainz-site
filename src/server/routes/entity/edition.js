@@ -221,7 +221,6 @@ function editionToFormState(edition) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(edition.disambiguation),
 		identifierEditorVisible: false
 	};
 
