@@ -709,10 +709,10 @@ export function handleCreateOrEditEntity(
 }
 
 
-async function deleteEntityRelationships(orm, transacting, entity) {
-	const entityBBID = entity.get('bbid');
-	let allEntities = [entity];
-	const relationshipSet = await entity.relationshipSet()
+async function deleteEntityRelationships(orm, transacting, mainEntity) {
+	const mainEntityBBID = mainEntity.get('bbid');
+	let allEntities = [];
+	const relationshipSet = await mainEntity.relationshipSet()
 		.fetch({require: false, transacting, withRelated: 'relationships'});
 	if (!relationshipSet) {
 		return allEntities;
@@ -721,10 +721,10 @@ async function deleteEntityRelationships(orm, transacting, entity) {
 
 	const otherEntitiesToFetch = relationships
 		.reduce((accumulator, relationship) => {
-			if (relationship.sourceBbid === entityBBID) {
+			if (relationship.sourceBbid === mainEntityBBID) {
 				accumulator.push(relationship.targetBbid);
 			}
-			else if (relationship.targetBbid === entityBBID) {
+			else if (relationship.targetBbid === mainEntityBBID) {
 				accumulator.push(relationship.sourceBbid);
 			}
 			return accumulator;
@@ -734,7 +734,7 @@ async function deleteEntityRelationships(orm, transacting, entity) {
 		async (bbid) => {
 			const otherEntity = await getEntityByBBID(orm, transacting, bbid);
 
-			const otherEntityRelationshipSet = await entity.relationshipSet()
+			const otherEntityRelationshipSet = await otherEntity.relationshipSet()
 				.fetch({require: false, transacting, withRelated: 'relationships'});
 			if (!otherEntityRelationshipSet) {
 				return;
@@ -744,13 +744,27 @@ async function deleteEntityRelationships(orm, transacting, entity) {
 			// Remove relationships with entity being deleted
 			const cleanedUpRelationships = otherEntityRelationships
 				.filter(({sourceBbid, targetBbid}) =>
-					entityBBID !== sourceBbid &&
-					entityBBID !== targetBbid);
+					mainEntityBBID !== sourceBbid &&
+					mainEntityBBID !== targetBbid);
 
 			// If there's a difference, apply the new relationships array.
 			if (cleanedUpRelationships.length !== otherEntityRelationships.length) {
+				const {RelationshipSet} = orm;
+
+				// This is what I came up with, there is no sample code I can find that
+				// creates a new Relationship set without a new ID. Is it also working
+				// through a trigger?
+				const newRelationshipSet = new RelationshipSet();
+
+				await newRelationshipSet.save(null, {transacting});
+
 				await orm.func.relationship.updateRelationshipSets(
-					orm, transacting, otherEntityRelationshipSet, cleanedUpRelationships
+					orm, transacting, newRelationshipSet, cleanedUpRelationships
+				);
+
+				otherEntity.set(
+					'relationshipSetId',
+					newRelationshipSet.get('id')
 				);
 				// List of BBID of all the affected entities
 				allEntities = _.unionBy(allEntities, [otherEntity], 'id');
@@ -765,71 +779,45 @@ export function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
 ) {
-	// Destructuring entity from localsas entityJSON
-	const {entity: entityJSON}: {entity: any} = res.locals;
-	// const {entity}: {entity: any} = res.locals;
+	const {entity: mainEntityJSON}: {entity: any} = res.locals;
+	const {entity}: {entity: any} = res.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
-		const entity = await getEntityByBBID(orm, transacting, entityJSON.bbid);
-
-		await utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
+		const mainEntity = await getEntityByBBID(orm, transacting, mainEntityJSON.bbid);
 
 		const newRevision = new Revision({authorId: editorJSON.id});
 
 		await newRevision.save(null, {transacting});
 
-		const notePromise = _createNote(orm, body.note, editorJSON.id, newRevision, transacting);
+		const newEntityRevision = new RevisionModel({
+			bbid: mainEntity.get('bbid'),
+			dataId: null,
+			id: newRevision.get('id')
+		});
 
-		entity.set('dataId', null);
+		await newEntityRevision.save(null, {
+			method: 'insert',
+			transacting
+		});
 
-		// Update related Entities
-		const updatedEntities = await deleteEntityRelationships(orm, transacting, entity);
+		const entityHeaderModel = new HeaderModel({
+			bbid: mainEntity.get('bbid'),
+			masterRevisionId: newEntityRevision.get('id')
+		});
 
-		const parentRevisionIDs = _.compact(updatedEntities.map((entityModel) => entityModel.get('revisionId')));
+		await entityHeaderModel.save(null, {transacting});
 
-		await setParentRevisions(transacting, newRevision, _.uniq(parentRevisionIDs));
+		const allEntities = await deleteEntityRelationships(orm, transacting, mainEntity);
 
-		/*
-		 * No trigger for deletions, so manually create the <Entity>Revision
-		 * and update the entity header
-		 */
-
-		const entitiesRevisions = await Promise.all(
-			_.map(updatedEntities, (entityModel) => new RevisionModel({
-				bbid: entityModel.get('bbid'),
-				dataId: entityModel.get('dataId'),
-				id: newRevision.get('id')
-			}).save(null, {
-				method: 'insert',
-				transacting
-			}))
+		await saveEntitiesAndFinishRevision(
+			orm, transacting, false, newRevision, mainEntity, allEntities,
+			editorJSON.id, body.note
 		);
 
-
-		// Creating Entity Headers
-		const entitiesHeadersPromise = Promise.all(
-			_.map(entitiesRevisions, (entityRevision) => new HeaderModel({
-				bbid: entityRevision.get('bbid'),
-				masterRevisionId: entityRevision.get('id')
-			}).save(null, {transacting}))
-		);
-
-		const entitiesSavedPromise = Promise.all(
-			_.map(updatedEntities, (entityModel) => {
-				entityModel.set('revisionId', newRevision.get('id'));
-				return entityModel.save(null, {method: 'update', transacting});
-			})
-		);
-
-		await search.deleteEntity(entityJSON).catch(err => { log.error(err); });
-
-		return Promise.join(
-			entitiesHeadersPromise,
-			entitiesSavedPromise, notePromise
-		);
+		return search.deleteEntity(entity).catch(err => { log.error(err); });
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise);
