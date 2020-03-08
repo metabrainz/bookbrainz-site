@@ -92,7 +92,8 @@ const AliasEditor = ({
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
 						<Button bsStyle="success" onClick={onAddAlias}>
-							Add alias
+							<FontAwesomeIcon icon="plus"/>
+							<span>&nbsp;Add alias</span>
 						</Button>
 					</Col>
 				</Row>

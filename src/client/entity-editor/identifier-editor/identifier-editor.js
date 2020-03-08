@@ -89,7 +89,8 @@ const IdentifierEditor = ({
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
 						<Button bsStyle="success" onClick={onAddIdentifier}>
-							Add identifier
+							<FontAwesomeIcon icon="plus"/>
+							<span>&nbsp;Add identifier</span>
 						</Button>
 					</Col>
 				</Row>
