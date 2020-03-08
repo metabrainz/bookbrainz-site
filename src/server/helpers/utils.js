@@ -50,7 +50,8 @@ export function getEntityModels(orm: Object): Object {
 		Work
 	};
 }
-function getRevisionModels(orm) {
+
+export function getRevisionModels(orm) {
 	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
 	return [
 		AuthorRevision,
@@ -59,83 +60,6 @@ function getRevisionModels(orm) {
 		PublisherRevision,
 		WorkRevision
 	];
-}
-/* eslint-disable no-await-in-loop */
-/**
- * Fetches the entities affected by a revision, their alias
- * or in case of deleted entities their last know alias.
- * It then attaches the necessary information to each revisions's entities array
- *
- * @param {array} revisions - the array of revisions
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @returns {array} - The modified revisions array
- */
-export async function getAssociatedEntityRevisions(revisions, orm) {
-	const revisionIDs = revisions.map(({revisionId}) => revisionId);
-	const RevisionModels = getRevisionModels(orm);
-	const {Entity} = orm;
-	for (let i = 0; i < RevisionModels.length; i++) {
-		const EntityRevision = RevisionModels[i];
-		const entityRevisions = await new EntityRevision()
-			.query((qb) => {
-				qb.whereIn('id', revisionIDs);
-			})
-			.fetchAll({
-				require: false,
-				withRelated: [
-					'data.aliasSet.defaultAlias'
-				]
-			})
-			.catch(EntityRevision.NotFoundError, (err) => {
-				// eslint-disable-next-line no-console
-				console.log(err);
-			});
-		if (entityRevisions && entityRevisions.length) {
-			const entityRevisionsJSON = entityRevisions.toJSON();
-			for (let index = 0; index < entityRevisionsJSON.length; index++) {
-				const entityRevision = entityRevisionsJSON[index];
-				const entity = await new Entity({bbid: entityRevision.bbid}).fetch();
-				const type = entity.get('type');
-				const bbid = entity.get('bbid');
-				const entityProps = {bbid, type};
-				if (entityRevision.data) {
-					entityProps.defaultAlias = entityRevision.data.aliasSet.defaultAlias;
-				}
-				// Fetch the parent alias only if data property is nullish, i.e. it is deleted
-				else {
-					entityProps.parentAlias = await orm.func.entity.getEntityParentAlias(orm, type, bbid);
-				}
-				// Find the revision by id and attach the current entity to it
-				const revisionIndex = revisions.findIndex(rev => rev.revisionId === entityRevision.id);
-				revisions[revisionIndex].entities.push(entityProps);
-			}
-		}
-	}
-	return revisions;
-}
-/* eslint-enable no-await-in-loop */
-
-export async function getOrderedRevisions(from, size, orm) {
-	const {Revision} = orm;
-	const revisions = await new Revision().orderBy('created_at', 'DESC')
-		.fetchPage({
-			limit: size,
-			offset: from,
-			withRelated: [
-				'author'
-			]
-		});
-	const revisionsJSON = revisions.toJSON();
-
-	/* Massage the revisions to match the expected format */
-	const formattedRevisions = revisionsJSON.map(rev => {
-		const {author: editor, id: revisionId, ...otherProps} = rev;
-		return {editor, entities: [], revisionId, ...otherProps};
-	});
-
-	/* Fetch associated ${entity}_revisions and last know alias for deleted entities */
-	const orderedRevisions = getAssociatedEntityRevisions(formattedRevisions, orm);
-	return orderedRevisions;
 }
 
 export function getDateBeforeDays(days) {

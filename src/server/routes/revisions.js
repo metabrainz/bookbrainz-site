@@ -17,16 +17,13 @@
  */
 
 import * as propHelpers from '../../client/helpers/props';
-import * as utils from '../helpers/utils';
-
 import {escapeProps, generateProps} from '../helpers/props';
-
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RevisionsPage from '../../client/components/pages/revisions';
-import _ from 'lodash';
 import express from 'express';
+import {getOrderedRevisions} from '../helpers/revisions';
 import target from '../templates/target';
 
 
@@ -67,7 +64,7 @@ router.get('/', async (req, res, next) => {
 	}
 
 	try {
-		const orderedRevisions = await utils.getOrderedRevisions(from, size, orm);
+		const orderedRevisions = await getOrderedRevisions(from, size, orm);
 		return render(orderedRevisions);
 	}
 	catch (err) {
@@ -83,7 +80,7 @@ router.get('/revisions', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await utils.getOrderedRevisions(from, size, orm);
+		const orderedRevisions = await getOrderedRevisions(from, size, orm);
 		res.send(orderedRevisions);
 	}
 	catch (err) {

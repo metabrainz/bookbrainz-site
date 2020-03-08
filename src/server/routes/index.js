@@ -19,10 +19,7 @@
  */
 
 import * as propHelpers from '../../client/helpers/props';
-import * as utils from '../helpers/utils';
-
 import {escapeProps, generateProps} from '../helpers/props';
-
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
@@ -33,8 +30,8 @@ import LicensingPage from '../../client/components/pages/licensing';
 import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import _ from 'lodash';
 import express from 'express';
+import {getOrderedRevisions} from '../helpers/revisions';
 import target from '../templates/target';
 
 
@@ -80,7 +77,7 @@ router.get('/', async (req, res, next) => {
 
 
 	try {
-		const orderedRevisions = await utils.getOrderedRevisions(0, numRevisionsOnHomepage, orm);
+		const orderedRevisions = await getOrderedRevisions(0, numRevisionsOnHomepage, orm);
 		return render(orderedRevisions);
 	}
 	catch (err) {
