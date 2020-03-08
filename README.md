@@ -142,7 +142,8 @@ Using a debugger will allow you to pause and inspect the server code as it is be
 
 If you do not want to use Docker at all, you can also [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md)
 
-
+## Watch files and live reload with Webpack
+[Watch files and live reload with Webpack](./NODEJS_SETUP.md)
 
 # Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:
