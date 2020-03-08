@@ -52,3 +52,31 @@ Make sure the dependencies (postgres, redis, elasticsearch) are running, and you
 BookBrainz uses [Flow](https://flow.org) as a javascript typechecking library. VSCode is partial to Typescript, and needs to be configured to avoid confusion.
 We recommend you install the flow-for-vscode extension and [follow this setup step](https://github.com/flowtype/flow-for-vscode#setup):
 `Set [VSCode configuration] javascript.validate.enable option to false or completely disable the built-in TypeScript extension for your project`
+
+<br/>
+
+# Watch files and live reload with Webpack
+
+Advanced users may want to use Webpack to build, watch files and inject rebuilt pages without having to refresh the page,
+keeping the application state intact, for the price of increased compilation time and resource usage (see note below).
+
+If you are running the server manually, you can simply run `npm run debug` in the command line.
+
+If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file to:
+1. change the `command` to:
+    - `npm run debug` if you only want to change client files (in `src/client`)
+    - `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
+2. mount the `src` folder
+
+For example:
+```
+services:
+  bookbrainz-site:
+  # 1. Change the command to run
+    command: npm run debug
+    volumes:
+      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
+  # 2. Mount the src directory
+      - "./src:/home/bookbrainz/bookbrainz-site/src"
+```
+**Note**: Using Webpack watch mode (`npm run debug`) results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](/README.md#running-the-web-server).
