@@ -323,6 +323,19 @@ export async function createPublisher(optionalBBID) {
 		.save(null, {method: 'insert'});
 }
 
+export async function createMultipleRevisions(numberOfRevisions) {
+	await createWork();
+	const promiseArray = [];
+	// create 1 less revisions because one revision is created while creatingWork;
+	for (let id = 2; id <= numberOfRevisions; id++) {
+		revisionAttribs.id = id;
+		promiseArray.push(
+			new Revision(revisionAttribs).save(null, {method: 'insert'})
+		);
+	}
+	await Promise.all(promiseArray);
+}
+
 export function truncateEntities() {
 	return util.truncateTables(bookshelf, [
 		'bookbrainz.editor',
