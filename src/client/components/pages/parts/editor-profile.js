@@ -21,6 +21,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+import {Bar} from 'react-chartjs-2';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -32,6 +33,7 @@ const {formatDate} = utilsHelper;
 class EditorProfileTab extends React.Component {
 	constructor(props) {
 		super(props);
+		this.renderActivityGraph = this.renderActivityGraph.bind(this);
 		this.renderBasicInfo = this.renderBasicInfo.bind(this);
 		this.renderStats = this.renderStats.bind(this);
 		this.renderBadges = this.renderBadges.bind(this);
@@ -188,12 +190,52 @@ class EditorProfileTab extends React.Component {
 		);
 	}
 
+	renderActivityGraph() {
+		const {activityData} = this.props.editor;
+		const months = activityData.map((value) => value.month);
+		const numberOfRevisions = activityData.map((value) => value.revisions);
+		const data = {
+			datasets: [
+				{
+					backgroundColor: 'rgba(235,116,59,0.2)',
+					borderColor: 'rgba(235,116,59,1)',
+					borderWidth: 1,
+					data: numberOfRevisions,
+					hoverBackgroundColor: 'rgba(235,116,59,0.4)',
+					hoverBorderColor: 'rgba(235,116,59,1)',
+					label: 'Revisions'
+				}
+			],
+			labels: months
+		};
+
+		return (
+			<div className="chart">
+				<div>
+					{/* eslint-disable-next-line react/no-unescaped-entities */}
+					<h2>{this.props.editor.name}'s Activity</h2>
+					<Bar
+						data={data}
+						options={{
+							maintainAspectRatio: true
+						}}
+					/>
+				</div>
+			</div>
+		);
+	}
+
 	render() {
+		const {editor} = this.props;
 		return (
 			<Row>
 				<Col md={12}>
 					{this.renderBasicInfo()}
+
 					{this.renderStats()}
+					{
+						editor.totalRevisions ? this.renderActivityGraph() : null
+					}
 					{this.renderBadges()}
 				</Col>
 			</Row>
