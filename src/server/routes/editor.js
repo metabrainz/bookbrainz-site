@@ -193,13 +193,47 @@ function getIdEditorJSONPromise(userId, req) {
 		});
 }
 
+async function getEditorActivity(editorId, startDate, Revision) {
+	const revisions = await new Revision()
+		.query('where', 'author_id', '=', editorId)
+		.orderBy('created_at', 'ASC')
+		.fetchAll();
+
+	const revisionJSON = revisions.toJSON();
+	const revisionDates = revisionJSON.map((revision) => revision.createdAt);
+
+	const editorActivity = [];
+
+	const currentDate = Date.now();
+	const thisMonth = new Date(startDate.getTime());
+
+	// eslint-disable-next-line no-unmodified-loop-condition
+	while (thisMonth <= currentDate) {
+		const nextMonth = new Date(thisMonth.getTime());
+		nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+		const revisionsThisMonth = utils.numbersBetweenToAndFrom(revisionDates, thisMonth, nextMonth);
+		const monthName = `${thisMonth.toLocaleString('en-us', {month: 'short'})}-${thisMonth.getFullYear() - 2000}`;
+
+		editorActivity.push({month: monthName, revisions: revisionsThisMonth});
+
+		thisMonth.setMonth(thisMonth.getMonth() + 1);
+	}
+	return editorActivity;
+}
+
 router.get('/:id', (req, res, next) => {
-	const {AchievementUnlock} = req.app.locals.orm;
+	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
-		  .catch(next);
-
+		.then(async (editor) => {
+			const startDate = editor.createdAt;
+			startDate.setDate(1);
+			editor.activityData = await getEditorActivity(editor.id, startDate, Revision);
+			return editor;
+		})
+		.catch(next);
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')

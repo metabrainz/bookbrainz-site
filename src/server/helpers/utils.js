@@ -23,6 +23,8 @@
 
 import Promise from 'bluebird';
 import _ from 'lodash';
+import bounds from 'binary-search-bounds';
+
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -307,4 +309,21 @@ export function getAdditionalRelations(modelType) {
 		return ['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat'];
 	}
 	return [];
+}
+
+/**
+ * Uses Binary Search to get the number of numbers between
+ * two numbers in a sorted array
+ * bounds.gt(array, y) : Returns the index of the first item in the array > y
+ * bounds.ge(array, y) : Returns the index of the first item in the array >= y
+ * Time Complexity - O(logN)
+ *
+ * @param {array} array - array
+ * @param {number} from - lower bound for search
+ * @param {number} to - upper bound for search
+ * @returns {number} number of values between 'to' and 'from'
+ */
+export function numbersBetweenToAndFrom(array, from, to) {
+	const answer = bounds.gt(array, to) - bounds.ge(array, from);
+	return answer;
 }
