@@ -81,6 +81,8 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 				qb.whereIn('id', revisionIDs);
 			})
 			.fetchAll({
+				merge: false,
+				remove: false,
 				require: false,
 				withRelated: [
 					'data.aliasSet.defaultAlias'
