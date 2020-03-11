@@ -116,7 +116,7 @@ router.get('/', async (req, res) => {
 
 	const topEditors = await getTopEditors;
 
-	const props = generateProps(req, res, {
+	const props = generateProps(res, {
 		allEntities,
 		last30DaysEntities,
 		topEditors

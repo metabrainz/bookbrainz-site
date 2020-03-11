@@ -39,7 +39,7 @@ router.get('/', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	function render(results) {
-		const props = generateProps(req, res, {
+		const props = generateProps(res, {
 			from,
 			results,
 			showRevisionEditor: true,

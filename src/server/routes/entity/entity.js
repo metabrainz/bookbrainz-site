@@ -146,7 +146,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 		const entityName = _.camelCase(entity.type);
 		const EntityComponent = entityComponents[entityName];
 		if (EntityComponent) {
-			const props = generateProps(req, res, {
+			const props = generateProps(res, {
 				alert,
 				identifierTypes
 			});
@@ -173,7 +173,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 }
 
 export function displayDeleteEntity(req: PassportRequest, res: $Response) {
-	const props = generateProps(req, res);
+	const props = generateProps(res);
 
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -201,7 +201,7 @@ export function displayRevisions(
 		})
 		.then((collection) => {
 			const revisions = collection ? collection.toJSON() : [];
-			const props = generateProps(req, res, {
+			const props = generateProps(res, {
 				revisions
 			});
 			const markup = ReactDOMServer.renderToString(

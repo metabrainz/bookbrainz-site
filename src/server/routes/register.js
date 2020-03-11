@@ -45,7 +45,7 @@ router.get('/', (req, res) => {
 		return res.redirect(`/editor/${req.user.id}`);
 	}
 
-	const props = generateProps(req, res);
+	const props = generateProps(res);
 
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -70,7 +70,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 		name: _.capitalize(req.session.mbProfile.gender)
 	});
 
-	const props = generateProps(req, res, {
+	const props = generateProps(res, {
 		gender,
 		genders: res.locals.genders,
 		name: req.session.mbProfile.sub

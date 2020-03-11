@@ -96,7 +96,7 @@ export function generateEntityProps(
 		submissionUrl
 	}, additionalProps);
 
-	return generateProps(req, res, props);
+	return generateProps(res, props);
 }
 
 /**

@@ -79,7 +79,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 	Promise.join(
 		editorJSONPromise, titleJSONPromise, genderJSONPromise,
 		(editorJSON, titleJSON, genderJSON) => {
-			const props = generateProps(req, res, {
+			const props = generateProps(res, {
 				editor: editorJSON,
 				genders: genderJSON,
 				titles: titleJSON
@@ -224,7 +224,7 @@ router.get('/:id', (req, res, next) => {
 	Promise.join(
 		achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = generateProps(req, res, {
+			const props = generateProps(res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
 				tabActive: 0
@@ -293,7 +293,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
-		const props = generateProps(req, res, {
+		const props = generateProps(res, {
 			editor: editorJSON,
 			from,
 			results: orderedRevisions,
@@ -384,7 +384,7 @@ router.get('/:id/achievements', (req, res, next) => {
 	Promise.join(
 		achievementJSONPromise, editorJSONPromise,
 		(achievementJSON, editorJSON) => {
-			const props = generateProps(req, res, {
+			const props = generateProps(res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
 				isOwner,

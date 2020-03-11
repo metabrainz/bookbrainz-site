@@ -55,7 +55,7 @@ router.get('/', (req, res, next) => {
 		}))
 		.then((searchResults) => {
 			const entityTypes = _keys(utils.getEntityModels(orm));
-			const props = generateProps(req, res, {
+			const props = generateProps(res, {
 				entityTypes,
 				hideSearch: true,
 				resultsPerPage,

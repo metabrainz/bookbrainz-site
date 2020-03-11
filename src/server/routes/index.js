@@ -46,7 +46,7 @@ router.get('/', async (req, res, next) => {
 	const numRevisionsOnHomepage = 9;
 
 	function render(recent) {
-		const props = generateProps(req, res, {
+		const props = generateProps(res, {
 			homepage: true,
 			recent,
 			requireJS: Boolean(res.locals.user)
@@ -91,7 +91,7 @@ router.get('/', async (req, res, next) => {
 // Helper function to create pages that don't require custom logic
 function _createStaticRoute(route, title, PageComponent) {
 	router.get(route, (req, res) => {
-		const props = generateProps(req, res);
+		const props = generateProps(res);
 
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>

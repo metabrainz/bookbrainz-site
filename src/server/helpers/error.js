@@ -28,7 +28,7 @@ import target from '../templates/target';
 
 export function renderError(req, res, err) {
 	const errorToSend = error.getErrorToSend(err);
-	const props = generateProps(req, res, {
+	const props = generateProps(res, {
 		error: errorToSend
 	});
 	const markup = ReactDOMServer.renderToString(

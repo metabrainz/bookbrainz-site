@@ -26,6 +26,6 @@ export function escapeProps(props) {
 	});
 }
 
-export function generateProps(req, res, props) {
+export function generateProps(res, props) {
 	return Object.assign({}, res.locals, props);
 }

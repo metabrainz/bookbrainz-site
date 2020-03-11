@@ -256,7 +256,7 @@ router.get('/:id', (req, res, next) => {
 					formatWorkChange
 				)
 			);
-			const props = generateProps(req, res, {
+			const props = generateProps(res, {
 				diffs,
 				revision: revision.toJSON(),
 				title: 'RevisionPage'
