@@ -137,7 +137,6 @@ function publisherToFormState(publisher) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(publisher.disambiguation),
 		identifierEditorVisible: false
 	};
 
