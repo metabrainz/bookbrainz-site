@@ -144,10 +144,13 @@ If you do not want to use Docker at all, you can also [install the database and 
 
 ## Watch files and live reload 
 
-While doing changes in the codebase , you need to see the corresponding change in live the application that imply you have to rebuild after every change you make to codebase ! , and that is not at all a good developer practise .  
-So here is the solution ,
-Operate the project in development mode , this will ensure that you don't have to build the project after every single  change you make in codebase , after every change when you hit the save button , project will be  automaticaly build and changes will be reflected in the live project or simply you can say "watch files and live reload" .
-for doing the same refer here [Watch files and live reload ](./NODEJS_SETUP.md/#Watch-files-and-live-reload-with-Webpack)
+When doing local development on your computer, you would have to stop and rebuild the application after every change you make to the codebase, then refresh the page to see the changes.
+
+There is a more convenient development option set up for the project called "live reloading".
+Saving a file will trigger a rebuild of the project (the "watch" part), and changes will automatically be reflected in the web page without the need to reload (the "live reload" part).
+The current state of your page will also be preserved that way.
+
+You will find the documentation for [watching files and live reloading here](./NODEJS_SETUP.md/#Watch-files-and-live-reload-with-Webpack)
  
 
 # Testing
