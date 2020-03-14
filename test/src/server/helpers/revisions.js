@@ -14,7 +14,7 @@ describe('getOrderedRevisions', () => {
 	});
 	after(truncateEntities);
 
-	it('ordered revisions should be sorted and have the required keys', async () => {
+	it('should return sorted revisions with the expected keys', async () => {
 		const from = 0;
 		const size = 1000;
 		const orderedRevisions = await revisions.getOrderedRevisions(from, size, orm);
@@ -30,26 +30,17 @@ describe('getOrderedRevisions', () => {
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 	});
 
-	it('offset, when having higher value, should be working properly ', async () => {
+	it('should return the expected subset of revisions when passed an offset (from)', async () => {
 		const from = 900;
 		const size = 10;
 		const allRevisions = await revisions.getOrderedRevisions(0, 1000, orm);
 		const orderedRevisions = await revisions.getOrderedRevisions(from, size, orm);
-		for (let i = 0; i < size; i++) {
-			// revisions are same if their revisionId are equal
-			expect(orderedRevisions[i].revisionId).to.be.equal(allRevisions[i + from].revisionId);
-			expect(orderedRevisions[i]).to.have.keys(
-				'authorId',
-				'createdAt',
-				'editor',
-				'entities',
-				'revisionId'
-			);
-		}
+		const allRevisionsSubset = allRevisions.slice(from, from + size);
+		expect(orderedRevisions).to.deep.equal(allRevisionsSubset);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 	});
 
-	it('ordredRevisions should be empty if offset is higher than total revisions', async () => {
+	it('should return no results if offset is higher than total revisions', async () => {
 		// only 1000 revisions were created
 		const orderedRevisions = await revisions.getOrderedRevisions(1001, 10, orm);
 		expect(orderedRevisions.length).to.be.equal(0);
