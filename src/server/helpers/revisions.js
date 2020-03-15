@@ -17,8 +17,18 @@
  */
 
 import * as error from '../../common/helpers/error';
-import * as utils from './utils';
 
+
+function getRevisionModels(orm) {
+	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
+	return [
+		AuthorRevision,
+		EditionGroupRevision,
+		EditionRevision,
+		PublisherRevision,
+		WorkRevision
+	];
+}
 
 /* eslint-disable no-await-in-loop */
 /**
@@ -32,7 +42,7 @@ import * as utils from './utils';
  */
 export async function getAssociatedEntityRevisions(revisions, orm) {
 	const revisionIDs = revisions.map(({revisionId}) => revisionId);
-	const RevisionModels = utils.getRevisionModels(orm);
+	const RevisionModels = getRevisionModels(orm);
 	const {Entity} = orm;
 	for (let i = 0; i < RevisionModels.length; i++) {
 		const EntityRevision = RevisionModels[i];

@@ -51,17 +51,6 @@ export function getEntityModels(orm: Object): Object {
 	};
 }
 
-export function getRevisionModels(orm) {
-	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
-	return [
-		AuthorRevision,
-		EditionGroupRevision,
-		EditionRevision,
-		PublisherRevision,
-		WorkRevision
-	];
-}
-
 export function getDateBeforeDays(days) {
 	const date = new Date();
 	date.setDate(date.getDate() - days);
