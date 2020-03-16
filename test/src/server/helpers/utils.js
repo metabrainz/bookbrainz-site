@@ -4,8 +4,8 @@ import {getNextEnabledAndResultsArray} from '../../../../src/server/helpers/util
 
 const {expect} = chai;
 
-describe('Testing getNextEnabledAndResultsArray', () => {
-	it('newResultsArray size should be 9 and nextEnabled true when arrayLength=10 and size=9', () => {
+describe('getNextEnabledAndResultsArray', () => {
+	it('should return an array of required length and nextEnabled:true when results.length > size', () => {
 		const array = Array(10).fill(0);
 		const size = 9;
 		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(array, size);
@@ -14,7 +14,7 @@ describe('Testing getNextEnabledAndResultsArray', () => {
 		expect(nextEnabled).to.equal(true);
 	});
 
-	it('newResultsArray size should be 10 and nextEnabled false when arrayLength=10 and size=10', () => {
+	it('should return an array of required length and nextEnabled:false when results.length = size', () => {
 		const array = Array(10).fill(0);
 		const size = 10;
 		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(array, size);
@@ -23,7 +23,7 @@ describe('Testing getNextEnabledAndResultsArray', () => {
 		expect(nextEnabled).to.equal(false);
 	});
 
-	it('newResultsArray size should be 9 and nextEnabled false when arrayLength=9 and size=10', () => {
+	it('should return an array of required length and nextEnabled:false when results.length < size', () => {
 		const array = Array(9).fill(0);
 		const size = 10;
 		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(array, size);
@@ -32,7 +32,7 @@ describe('Testing getNextEnabledAndResultsArray', () => {
 		expect(nextEnabled).to.equal(false);
 	});
 
-	it('newResultsArray size should be 0 and nextEnabled false when arrayLength=0 and size=10', () => {
+	it('should return an array of required length and nextEnabled:false when results.length = 0', () => {
 		const array = Array(0).fill(0);
 		const size = 10;
 		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(array, size);
@@ -41,7 +41,7 @@ describe('Testing getNextEnabledAndResultsArray', () => {
 		expect(nextEnabled).to.equal(false);
 	});
 
-	it('newResultsArray size should be 10 and nextEnabled true when arrayLength=20 and size=10', () => {
+	it('should return an array of required length and nextEnabled:true when results.length > size and results.length - size > 1', () => {
 		const array = Array(20).fill(0);
 		const size = 10;
 		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(array, size);
