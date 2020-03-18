@@ -79,7 +79,8 @@ function RelationshipList(
 								bsStyle="warning"
 								onClick={onEdit.bind(this, rowID)}
 							>
-								Edit
+								<FontAwesomeIcon icon="pencil-alt"/>
+								<span>&nbsp;Edit</span>
 							</Button>
 						</ButtonGroup>
 						<ButtonGroup>
@@ -87,7 +88,8 @@ function RelationshipList(
 								bsStyle="danger"
 								onClick={onRemove.bind(this, rowID)}
 							>
-								Remove
+								<FontAwesomeIcon icon="times"/>
+								<span>&nbsp;Remove</span>
 							</Button>
 						</ButtonGroup>
 					</ButtonGroup>
@@ -184,7 +186,7 @@ function RelationshipSection({
 						onClick={onAddRelationship}
 					>
 						<FontAwesomeIcon icon="plus"/>
-						<span>&nbsp; Add relationship</span>
+						<span>&nbsp;Add relationship</span>
 					</Button>
 				</Col>
 			</Row>
@@ -198,7 +200,8 @@ function RelationshipSection({
 						<Button
 							onClick={onUndo}
 						>
-							Undo last action
+							<FontAwesomeIcon icon="undo"/>
+							<span>&nbsp;Undo last action</span>
 						</Button>
 					</Col>
 				</Row>

@@ -847,8 +847,34 @@ export function constructRelationships(relationshipSection) {
 	);
 }
 
-export function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
+/**
+ * Returns the index of the default alias if defined in the aliasSet.
+ * If there is no defaultAliasId, return the first alias where default = true.
+ * Returns null if there are no aliases in the set.
+ * @param {Object} aliasSet - The entity's aliasSet returned by the ORM
+ * @param {Object[]} aliasSet.aliases - The array of aliases contained in the set
+ * @param {string} aliasSet.defaultAliasId - The id of the set's default alias
+ * @returns {?number} The index of the default alias, or 0; returns null if 0 aliases in set
+ */
+export function getDefaultAliasIndex(aliasSet) {
+	if (_.isNil(aliasSet)) {
+		return null;
+	}
+	const {aliases, defaultAliasId} = aliasSet;
+	if (!aliases || !aliases.length) {
+		return null;
+	}
+	let index;
+	if (!_.isNil(defaultAliasId) && isFinite(defaultAliasId)) {
+		let defaultAliasIdNumber = defaultAliasId;
+		if (_.isString(defaultAliasId)) {
+			defaultAliasIdNumber = Number(defaultAliasId);
+		}
+		index = aliases.findIndex((alias) => alias.id === defaultAliasIdNumber);
+	}
+	else {
+		index = aliases.findIndex((alias) => alias.default);
+	}
 	return index > 0 ? index : 0;
 }
 

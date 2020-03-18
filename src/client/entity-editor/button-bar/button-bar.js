@@ -16,10 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 import {
 	showAliasEditor,
-	showDisambiguation,
 	showIdentifierEditor
 } from './actions';
 import {validateAliases, validateIdentifiers} from '../validators/common';
@@ -40,61 +39,42 @@ import {connect} from 'react-redux';
  * (IdentifierButton).
  *
  * @param {Object} props - The properties passed to the component.
- * @param {boolean} props.disambiguationVisible - Whether or not the
- *        disambiguation is currently shown in the editor - used to disable the
- *       "Add disambiguation" button.
  * @param {number} props.numAliases - The number of aliases present in
  *        the AliasEditor - passed to the AliasButton component.
  * @param {number} props.numIdentifiers - The number of identifiers present in
  *        the IdentifierEditor - passed to the IdentiferButton component.
  * @param {Function} props.onAliasButtonClick - A function to be called when the
  *        AliasButton is clicked.
- * @param {Function} props.onDisambiguationButtonClick - A function to be
- *        called when the disambiguation button is clicked.
  * @param {Function} props.onIdentifierButtonClick - A function to be called
  *        when the IdentifierButton is clicked.
  * @returns {ReactElement} React element containing the rendered ButtonBar.
  */
 function ButtonBar({
 	aliasesInvalid,
-	disambiguationVisible,
 	identifiersInvalid,
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
-	onDisambiguationButtonClick,
 	onIdentifierButtonClick
 }) {
 	return (
 		<div>
 			<form>
-				<Row >
-					<Col className="text-center margin-top-1" md={4} >
+				<Row className="margin-top-1">
+					<Col className="text-center" md={6}>
 						<AliasButton
 							aliasesInvalid={aliasesInvalid}
 							numAliases={numAliases}
 							onClick={onAliasButtonClick}
 						/>
 					</Col>
-					<Col className="text-center margin-top-1" md={4}>
+					<Col className="text-center" md={6}>
 						<IdentifierButton
 							identifiersInvalid={identifiersInvalid}
 							numIdentifiers={numIdentifiers}
 							onClick={onIdentifierButtonClick}
 						/>
 					</Col>
-					{
-						!disambiguationVisible &&
-						<Col className="text-center margin-top-1" md={4}>
-							<Button
-								bsStyle="success"
-								onClick={onDisambiguationButtonClick}
-							>
-								<FontAwesomeIcon icon="plus"/>
-								<span>&nbsp; Add disambiguation… </span>
-							</Button>
-						</Col>
-					}
 				</Row>
 			</form>
 		</div>
@@ -103,20 +83,16 @@ function ButtonBar({
 ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
 	aliasesInvalid: PropTypes.bool.isRequired,
-	disambiguationVisible: PropTypes.bool.isRequired,
 	identifiersInvalid: PropTypes.bool.isRequired,
 	numAliases: PropTypes.number.isRequired,
 	numIdentifiers: PropTypes.number.isRequired,
 	onAliasButtonClick: PropTypes.func.isRequired,
-	onDisambiguationButtonClick: PropTypes.func.isRequired,
 	onIdentifierButtonClick: PropTypes.func.isRequired
 };
 
 function mapStateToProps(rootState, {identifierTypes}) {
-	const state = rootState.get('buttonBar');
 	return {
 		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
-		disambiguationVisible: state.get('disambiguationVisible'),
 		identifiersInvalid: !validateIdentifiers(
 			rootState.get('identifierEditor'), identifierTypes
 		),
@@ -131,7 +107,6 @@ function mapDispatchToProps(dispatch) {
 			dispatch(showAliasEditor());
 			dispatch(addAliasRow());
 		},
-		onDisambiguationButtonClick: () => dispatch(showDisambiguation()),
 		onIdentifierButtonClick: () => {
 			dispatch(showIdentifierEditor());
 			dispatch(addIdentifierRow());
