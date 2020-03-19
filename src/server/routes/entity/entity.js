@@ -162,7 +162,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				page: entityName,
 				props: escapeProps(props),
 				script: '/js/entity/entity.js',
-				title: `${getEntityLabel(props.entity)}: ${_.upperFirst(entityName)}`
+				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
 			}));
 		}
 		else {

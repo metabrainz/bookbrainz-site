@@ -154,7 +154,7 @@ export function showEntityEditions(entity) {
 	);
 }
 
-export function getEntityLabel(entity) {
+export function getEntityLabel(entity, returnHTML = true) {
 	if (entity.defaultAlias) {
 		return `${entity.defaultAlias.name} `;
 	}
@@ -165,7 +165,12 @@ export function getEntityLabel(entity) {
 		if (entity.parentAlias) {
 			deletedEntityName = entity.parentAlias.name;
 		}
-		return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
+		if (returnHTML) {
+			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
+		}
+		if (!returnHTML) {
+			return `Deleted ${deletedEntityName}`;
+		}
 	}
 
 	return <span title={`Unnamed ${entity.type} ${entity.bbid}`}>(unnamed)</span>;
