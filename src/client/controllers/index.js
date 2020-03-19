@@ -51,11 +51,28 @@ const pageMap = {
 };
 
 const Child = pageMap[page] || Index;
+let extraIndexProp;
+
+if (Child === Index) {
+	if (props.user !== null) {
+		extraIndexProp = {
+			isLoggedIn: true
+		};
+	}
+	else {
+		extraIndexProp = {
+			isLoggedIn: false
+		};
+	}
+}
+else {
+	extraIndexProp = ' ';
+}
 
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<Child {...extractChildProps(props)}/>
+			<Child {...extractChildProps(props)} {...extraIndexProp}/>
 		</Layout>
 	</AppContainer>
 );

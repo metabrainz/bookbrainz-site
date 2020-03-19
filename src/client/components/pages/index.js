@@ -38,6 +38,7 @@ class IndexPage extends React.Component {
 		this.renderContent = this.renderContent.bind(this);
 	}
 
+
 	renderHeader() {
 		return (
 			<div>
@@ -179,39 +180,46 @@ class IndexPage extends React.Component {
 							contribute to BookBrainz, whether through editing
 							our information, helping out with development, or
 							just spreading the word about our project.
+
 						</p>
 					</Col>
 				</Row>
 				<hr/>
-				<Row>
-					<Col className="text-center margin-top-4" md={2}>
-						<FontAwesomeIcon icon="user" size="5x"/>
-					</Col>
-					<Col md={10}>
-						<h2>Join Us!</h2>
-						<p className="lead">
-							First off,{' '}
-							<a href="/about" target="blank">
-								read about us
-							</a>{' and '}
-							<a href="/contribute" target="blank">
-								how you can help
-							</a>. Then, if you think you want
-							to stick around, hit the button below to sign up
-							for a free BookBrainz account!
-						</p>
-					</Col>
-				</Row>
-				<div className="text-center margin-top-1 margin-bottom-3">
-					<Button
-						{...disableSignUp}
-						bsSize="large"
-						bsStyle="success"
-						href="/register"
-					>
-						Register!
-					</Button>
-				</div>
+				{!this.props.isLoggedIn ?
+					(
+						<div>
+							<Row>
+								<Col className="text-center margin-top-4" md={2}>
+									<FontAwesomeIcon icon="user" size="5x"/>
+								</Col>
+								<Col md={10}>
+									<h2>Join Us!</h2>
+									<p className="lead">
+								First off,{' '}
+										<a href="/about" target="blank">
+									read about us
+										</a>{' and '}
+										<a href="/contribute" target="blank">
+									how you can help
+										</a>. Then, if you think you want
+								to stick around, hit the button below to sign up
+								for a free BookBrainz account!
+									</p>
+								</Col>
+							</Row>
+							<div className="text-center margin-top-1 margin-bottom-3">
+								<Button
+									{...disableSignUp}
+									bsSize="large"
+									bsStyle="success"
+									href="/register"
+								>
+							Register!
+								</Button>
+							</div>
+						</div>
+					) : ' '
+				}
 				<div>
 					<RevisionsTable
 						results={this.props.recent}
@@ -243,6 +251,7 @@ class IndexPage extends React.Component {
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
 	disableSignUp: PropTypes.bool,
+	isLoggedIn: PropTypes.bool.isRequired,
 	recent: PropTypes.array.isRequired,
 	showRevisionEditor: PropTypes.bool
 };
