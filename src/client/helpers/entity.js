@@ -154,7 +154,7 @@ export function showEntityEditions(entity) {
 	);
 }
 
-export function getEntityLabel(entity, returnHTML = true, unNamedHTML = true) {
+export function getEntityLabel(entity, returnHTML = true) {
 	if (entity.defaultAlias) {
 		return `${entity.defaultAlias.name} `;
 	}
@@ -168,12 +168,12 @@ export function getEntityLabel(entity, returnHTML = true, unNamedHTML = true) {
 		if (returnHTML) {
 			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
 		}
-		return `Deleted ${deletedEntityName}`;
+		return `${deletedEntityName}`;
 	}
-	if (unNamedHTML) {
+	if (returnHTML) {
 		return <span title={`Unnamed ${entity.type} ${entity.bbid}`}>(unnamed)</span>;
 	}
-	return 'unNamed';
+	return 'Unnamed';
 }
 
 export function getEditionReleaseDate(edition) {
