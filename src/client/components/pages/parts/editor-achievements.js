@@ -125,21 +125,11 @@ class EditorAchievementTab extends React.Component {
 						<DragAndDrop name="rank3"/>
 					</div>
 					<div className="form-group">
-						<span style={{
-							marginLeft: '30px'
-						}}>
-							<button
-								className="btn btn-default"
-								type="submit"
-							>
+						<span style={{ marginLeft: '30px'}}>
+							<button className="btn btn-default" type="submit" >
 								Update
 							</button>
-							<p
-								style={{
-									display: 'inline-block',
-									marginLeft: '10px'
-								}}
-							>
+							<p style={{ display: 'inline-block', marginLeft: '10px'}} >
 								click badge to unset
 							</p>
 						</span>
