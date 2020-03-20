@@ -173,7 +173,7 @@ class EditorAchievementTab extends React.Component {
 									}
 								}
 							</Sticky>
-							<div style={{zIndex: 1, marginLeft: '21px', marginRight: '21px'}}>
+							<div style={{marginLeft: '21px', marginRight: '21px', zIndex: 1}}>
 								<div className="h1">Unlocked Achievements</div>
 								{achievements}
 								<div className="h1">Locked Achievements</div>
