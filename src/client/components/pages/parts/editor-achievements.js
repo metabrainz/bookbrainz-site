@@ -125,7 +125,9 @@ class EditorAchievementTab extends React.Component {
 						<DragAndDrop name="rank3"/>
 					</div>
 					<div className="form-group">
-						<span>
+						<span style={{
+							marginLeft: '30px'
+						}}>
 							<button
 								className="btn btn-default"
 								type="submit"
@@ -158,6 +160,7 @@ class EditorAchievementTab extends React.Component {
 										const updatedStyle = {
 											...style,
 											background: 'white',
+											borderBottom: '1px solid',
 											flex: '1',
 											marginTop: STICKY_TOP_MARGIN,
 											zIndex: 10
@@ -170,7 +173,7 @@ class EditorAchievementTab extends React.Component {
 									}
 								}
 							</Sticky>
-							<div style={{zIndex: 1}}>
+							<div style={{zIndex: 1, marginLeft: '21px', marginRight: '21px'}}>
 								<div className="h1">Unlocked Achievements</div>
 								{achievements}
 								<div className="h1">Locked Achievements</div>
@@ -197,3 +200,4 @@ EditorAchievementTab.propTypes = {
 };
 
 export default EditorAchievementTab;
+
