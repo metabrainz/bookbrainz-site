@@ -26,7 +26,8 @@ const LAYOUT_PROPS = [
 	'repositoryUrl',
 	'requiresJS',
 	'siteRevision',
-	'user'
+	'user',
+	'disableSignUp'
 ];
 
 const EDITOR_PROPS = [
