@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable no-empty */
 /*
  * Copyright (C) 2019  Nicolas Pelletier
  *
@@ -197,23 +196,6 @@ async function createRelationshipSet(sourceBbid, targetBbid, entityType, targetE
 		);
 }
 
-async function createRelationshipAndRelationshipSet(sourceBbid, targetBbid, targetEntityType) {
-	const relationshipData = {
-		id: 1,
-		sourceBbid,
-		targetBbid,
-		typeId: 1
-	};
-	await new Entity({bbid: targetBbid, type: targetEntityType})
-		.save(null, {method: 'insert'});
-	await new RelationshipType(relationshipTypeData)
-		.save(null, {method: 'insert'});
-	const relationship = await new Relationship(relationshipData)
-		.save(null, {method: 'insert'});
-	await new RelationshipSet({id: 42})
-		.save(null, {method: 'insert'})
-		.then((model) => model.relationships().attach([relationship]));
-}
 
 async function createLanguageSet() {
 	// Create relationships here if you need them
@@ -279,7 +261,6 @@ export async function createWork(optionalBBID) {
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid);
-	// await createRelationshipAndRelationshipSet(bbid, uuidv4(), 'Author');
 	const languageSetId = await createLanguageSet();
 
 	const workAttribs = {
