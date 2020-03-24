@@ -268,7 +268,7 @@ export async function createWork(optionalBBID) {
 		languageSetId,
 		typeId: random.number()
 	};
-	await new WorkType({id: workAttribs.typeId, label: 'Work Type 1'})
+	await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
 		.save(null, {method: 'insert'});
 	await new Work({...entityAttribs, ...workAttribs})
 		.save(null, {method: 'insert'});
@@ -281,7 +281,7 @@ export async function createEditionGroup(optionalBBID) {
 		bbid,
 		typeId: random.number()
 	};
-	await new EditionGroupType({id: editionGroupAttribs.typeId, label: 'Edition Group Type 1'})
+	await new EditionGroupType({id: editionGroupAttribs.typeId, label: `Edition Group Type ${editionGroupAttribs.typeId}`})
 		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'EditionGroup'})
 		.save(null, {method: 'insert'});
@@ -309,7 +309,7 @@ export async function createAuthor(optionalBBID) {
 	};
 	await new Area({gid: uuidv4(), id: areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
-	await new AuthorType({id: authorAttribs.typeId, label: 'Author Type 1'})
+	await new AuthorType({id: authorAttribs.typeId, label: `Author Type ${authorAttribs.typeId}`})
 		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'Author'})
 		.save(null, {method: 'insert'});
@@ -334,7 +334,7 @@ export async function createPublisher(optionalBBID) {
 	};
 	await new Area({gid: uuidv4(), id: publisherAttribs.areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
-	await new PublisherType({id: publisherAttribs.typeId, label: 'Publisher Type 1'})
+	await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
 		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
