@@ -47,7 +47,9 @@ router.get('/', async (req, res, next) => {
 
 	function render(recent) {
 		const props = generateProps(req, res, {
+			disableSignUp: req.signUpDisabled,
 			homepage: true,
+			isLoggedIn: Boolean(req.user),
 			recent,
 			requireJS: Boolean(res.locals.user)
 		});
@@ -58,14 +60,8 @@ router.get('/', async (req, res, next) => {
 		 * props
 		 */
 		const markup = ReactDOMServer.renderToString(
-			<Layout
-				{...propHelpers.extractLayoutProps(props)}
-				disableSignUp={req.signUpDisabled}
-			>
-				<Index
-					disableSignUp={req.signUpDisabled}
-					recent={props.recent}
-				/>
+			<Layout	{...propHelpers.extractLayoutProps(props)}>
+				<Index {...propHelpers.extractChildProps(props)}/>
 			</Layout>
 		);
 

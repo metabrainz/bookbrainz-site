@@ -163,8 +163,6 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
-		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
-
 		return (
 			<Grid>
 				<Row>
@@ -183,35 +181,7 @@ class IndexPage extends React.Component {
 					</Col>
 				</Row>
 				<hr/>
-				<Row>
-					<Col className="text-center margin-top-4" md={2}>
-						<FontAwesomeIcon icon="user" size="5x"/>
-					</Col>
-					<Col md={10}>
-						<h2>Join Us!</h2>
-						<p className="lead">
-							First off,{' '}
-							<a href="/about" target="blank">
-								read about us
-							</a>{' and '}
-							<a href="/contribute" target="blank">
-								how you can help
-							</a>. Then, if you think you want
-							to stick around, hit the button below to sign up
-							for a free BookBrainz account!
-						</p>
-					</Col>
-				</Row>
-				<div className="text-center margin-top-1 margin-bottom-3">
-					<Button
-						{...disableSignUp}
-						bsSize="large"
-						bsStyle="success"
-						href="/register"
-					>
-						Register!
-					</Button>
-				</div>
+				{!this.props.isLoggedIn && this.renderAboutUs()}
 				<div>
 					<RevisionsTable
 						results={this.props.recent}
@@ -222,11 +192,48 @@ class IndexPage extends React.Component {
 							bsStyle="primary"
 							href="/revisions"
 						>
-							See all revisions
+					See all revisions
 						</Button>
 					</div>
 				</div>
 			</Grid>
+		);
+	}
+
+	renderAboutUs() {
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
+		return (
+			<React.Fragment>
+				<Row>
+					<Col className="text-center margin-top-4" md={2}>
+						<FontAwesomeIcon icon="user" size="5x"/>
+					</Col>
+					<Col md={10}>
+						<h2>Join Us!</h2>
+						<p className="lead">
+					First off,{' '}
+							<a href="/about" target="blank">
+						read about us
+							</a>{' and '}
+							<a href="/contribute" target="blank">
+						how you can help
+							</a>. Then, if you think you want
+					to stick around, hit the button below to sign up
+					for a free BookBrainz account!
+						</p>
+					</Col>
+				</Row>
+				<div className="text-center margin-top-1 margin-bottom-3">
+					<Button
+						{...disableSignUp}
+						bsSize="large"
+						bsStyle="success"
+						href="/register"
+					>
+				Register!
+					</Button>
+				</div>
+		 </React.Fragment>
 		);
 	}
 
@@ -243,8 +250,10 @@ class IndexPage extends React.Component {
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
 	disableSignUp: PropTypes.bool,
+	isLoggedIn: PropTypes.bool.isRequired,
 	recent: PropTypes.array.isRequired,
 	showRevisionEditor: PropTypes.bool
+
 };
 IndexPage.defaultProps = {
 	disableSignUp: false,
