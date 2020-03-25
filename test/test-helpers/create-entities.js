@@ -252,8 +252,9 @@ export async function createEdition(optionalBBID) {
 
 	await new Entity({bbid, type: 'Edition'})
 		.save(null, {method: 'insert'});
-	await new Edition({...entityAttribs, bbid})
+	const edition = await new Edition({...entityAttribs, bbid})
 		.save(null, {method: 'insert'});
+	return edition;
 }
 
 export async function createWork(optionalBBID) {
@@ -270,8 +271,9 @@ export async function createWork(optionalBBID) {
 	};
 	await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
 		.save(null, {method: 'insert'});
-	await new Work({...entityAttribs, ...workAttribs})
+	const work = await new Work({...entityAttribs, ...workAttribs})
 		.save(null, {method: 'insert'});
+	return work;
 }
 
 export async function createEditionGroup(optionalBBID) {
@@ -285,8 +287,9 @@ export async function createEditionGroup(optionalBBID) {
 		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'EditionGroup'})
 		.save(null, {method: 'insert'});
-	await new EditionGroup({...entityAttribs, ...editionGroupAttribs})
+	const editionGroup = await new EditionGroup({...entityAttribs, ...editionGroupAttribs})
 		.save(null, {method: 'insert'});
+	return editionGroup;
 }
 
 export async function createAuthor(optionalBBID) {
@@ -313,8 +316,9 @@ export async function createAuthor(optionalBBID) {
 		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'Author'})
 		.save(null, {method: 'insert'});
-	await new Author({...entityAttribs, ...authorAttribs})
+	const author = await new Author({...entityAttribs, ...authorAttribs})
 		.save(null, {method: 'insert'});
+	return author;
 }
 
 export async function createPublisher(optionalBBID) {
@@ -338,8 +342,9 @@ export async function createPublisher(optionalBBID) {
 		.save(null, {method: 'insert'});
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
-	await new Publisher({...entityAttribs, ...publisherAttribs})
+	const publisher = await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});
+	return publisher;
 }
 
 export function truncateEntities() {
