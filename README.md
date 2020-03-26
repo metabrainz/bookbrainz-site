@@ -142,7 +142,16 @@ Using a debugger will allow you to pause and inspect the server code as it is be
 
 If you do not want to use Docker at all, you can also [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md)
 
+## Watch files and live reload 
 
+When doing local development on your computer, you would have to stop and rebuild the application after every change you make to the codebase, then refresh the page to see the changes.
+
+There is a more convenient development option set up for the project called "live reloading".
+Saving a file will trigger a rebuild of the project (the "watch" part), and changes will automatically be reflected in the web page without the need to reload (the "live reload" part).
+The current state of your page will also be preserved that way.
+
+You will find the documentation for [watching files and live reloading here](./NODEJS_SETUP.md/#Watch-files-and-live-reload-with-Webpack)
+ 
 
 # Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:

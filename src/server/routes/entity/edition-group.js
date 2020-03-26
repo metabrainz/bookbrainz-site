@@ -124,7 +124,6 @@ function editionGroupToFormState(editionGroup) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(editionGroup.disambiguation),
 		identifierEditorVisible: false
 	};
 

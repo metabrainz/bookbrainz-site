@@ -23,8 +23,7 @@ import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
-import AchievementsTab from
-	'../../client/components/pages/parts/editor-achievements';
+import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
@@ -199,7 +198,7 @@ router.get('/:id', (req, res, next) => {
 	const userId = parseInt(req.params.id, 10);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
-		  .catch(next);
+		.catch(next);
 
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
@@ -246,7 +245,8 @@ router.get('/:id', (req, res, next) => {
 				markup,
 				page: 'profile',
 				props: escapeProps(props),
-				script: '/js/editor/editor.js'
+				script: '/js/editor/editor.js',
+				title: `${props.editor.name}'s Profile`
 			}));
 		}
 	);
@@ -261,15 +261,17 @@ router.get('/:id/revisions', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
-
+		// get 1 more result to check nextEnabled
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size + 1, req);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
 			from,
-			results: orderedRevisions,
+			nextEnabled,
+			results: newResultsArray,
 			showRevisionNote: true,
 			size,
 			tabActive: 1,
@@ -292,7 +294,8 @@ router.get('/:id/revisions', async (req, res, next) => {
 			markup,
 			page: 'revisions',
 			props: escapeProps(props),
-			script: '/js/editor/editor.js'
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Revisions`
 		}));
 	}
 	catch (err) {
@@ -339,7 +342,7 @@ router.get('/:id/achievements', (req, res, next) => {
 	const isOwner = userId === (req.user && req.user.id);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
-		  .catch(next);
+		.catch(next);
 
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
@@ -380,7 +383,8 @@ router.get('/:id/achievements', (req, res, next) => {
 			res.send(target({
 				markup,
 				props: escapeProps(props),
-				script
+				script,
+				title: `${props.editor.name}'s Achievements`
 			}));
 		}
 	);

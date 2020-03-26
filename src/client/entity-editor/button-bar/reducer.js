@@ -17,7 +17,7 @@
  */
 
 import {
-	SHOW_ALIAS_EDITOR, SHOW_DISAMBIGUATION, SHOW_IDENTIFIER_EDITOR
+	SHOW_ALIAS_EDITOR, SHOW_IDENTIFIER_EDITOR
 } from './actions';
 import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
 import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
@@ -27,14 +27,11 @@ import Immutable from 'immutable';
 function reducer(
 	state = Immutable.Map({
 		aliasEditorVisible: false,
-		disambiguationVisible: false,
 		identifierEditorVisible: false
 	}),
 	action
 ) {
 	switch (action.type) {
-		case SHOW_DISAMBIGUATION:
-			return state.set('disambiguationVisible', true);
 		case SHOW_ALIAS_EDITOR:
 			return state.set('aliasEditorVisible', true);
 		case HIDE_ALIAS_EDITOR:

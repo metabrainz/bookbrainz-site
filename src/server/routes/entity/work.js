@@ -169,7 +169,6 @@ function workToFormState(work) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(work.disambiguation),
 		identifierEditorVisible: false
 	};
 
