@@ -53,6 +53,7 @@ describe('getOrderedRevisions', () => {
 				'revisionId'
 			);
 		});
+		expect(orderedRevisions.length).to.equal(size);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 	});
 
@@ -62,6 +63,7 @@ describe('getOrderedRevisions', () => {
 		const allRevisions = await getOrderedRevisions(0, 1000, orm);
 		const orderedRevisions = await getOrderedRevisions(from, size, orm);
 		const allRevisionsSubset = allRevisions.slice(from, from + size);
+		expect(orderedRevisions.length).to.equal(size);
 		expect(orderedRevisions).to.deep.equal(allRevisionsSubset);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 	});
