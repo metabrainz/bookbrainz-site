@@ -122,8 +122,9 @@ export async function createEditor() {
 	editorAttribs.metabrainzUserId = random.number();
 	editorAttribs.cachedMetabrainzName = editorAttribs.name;
 
-	await new Editor(editorAttribs)
+	const editor = await new Editor(editorAttribs)
 		.save(null, {method: 'insert'});
+	return editor;
 }
 
 async function createAliasAndAliasSet() {
@@ -345,19 +346,6 @@ export async function createPublisher(optionalBBID) {
 	const publisher = await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});
 	return publisher;
-}
-
-export async function createMultipleRevisions(numberOfRevisions) {
-	await createWork();
-	const promiseArray = [];
-	// create 1 less revisions because one revision is created while creatingWork;
-	for (let id = 2; id <= numberOfRevisions; id++) {
-		revisionAttribs.id = id;
-		promiseArray.push(
-			new Revision(revisionAttribs).save(null, {method: 'insert'})
-		);
-	}
-	await Promise.all(promiseArray);
 }
 
 export function truncateEntities() {
