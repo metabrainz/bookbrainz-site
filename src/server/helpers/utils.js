@@ -81,6 +81,8 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 				qb.whereIn('id', revisionIDs);
 			})
 			.fetchAll({
+				merge: false,
+				remove: false,
 				require: false,
 				withRelated: [
 					'data.aliasSet.defaultAlias'
@@ -307,4 +309,20 @@ export function getAdditionalRelations(modelType) {
 		return ['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat'];
 	}
 	return [];
+}
+
+export function getNextEnabledAndResultsArray(array, size) {
+	if (array.length > size) {
+		while (array.length > size) {
+			array.pop();
+		}
+		return {
+			newResultsArray: array,
+			nextEnabled: true
+		};
+	}
+	return {
+		newResultsArray: array,
+		nextEnabled: false
+	};
 }
