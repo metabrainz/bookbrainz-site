@@ -118,22 +118,25 @@ class EditorAchievementTab extends React.Component {
 					className="form-horizontal"
 					id="rankSelectForm"
 					method="post"
+					className="padding-bottom-1"
 				>
-					<div className="row dnd-container form-group">
+					<div className="dnd-container">
 						<DragAndDrop name="rank1"/>
 						<DragAndDrop name="rank2"/>
 						<DragAndDrop name="rank3"/>
 					</div>
-					<div className="form-group">
-						<span style={{marginLeft: '30px'}}>
-							<button className="btn btn-default" type="submit">
+					
+						<span className="margin-left-1">
+							<button className="btn btn-success" type="submit">
 								Update
 							</button>
-							<p style={{display: 'inline-block', marginLeft: '10px'}}>
+							<span className="margin-left-1">
 								click badge to unset
-							</p>
+							</span>
+
+
 						</span>
-					</div>
+					
 				</form>
 			);
 		}
@@ -150,7 +153,7 @@ class EditorAchievementTab extends React.Component {
 										const updatedStyle = {
 											...style,
 											background: 'white',
-											borderBottom: '1px solid',
+											borderBottom: '1px solid #ebe2df',
 											flex: '1',
 											marginTop: STICKY_TOP_MARGIN,
 											zIndex: 10
@@ -163,7 +166,7 @@ class EditorAchievementTab extends React.Component {
 									}
 								}
 							</Sticky>
-							<div style={{marginLeft: '21px', marginRight: '21px', zIndex: 1}}>
+							<div className="margin-left-2 margin-right-2"  style={{zIndex: 1}}>
 								<div className="h1">Unlocked Achievements</div>
 								{achievements}
 								<div className="h1">Locked Achievements</div>
@@ -190,4 +193,3 @@ EditorAchievementTab.propTypes = {
 };
 
 export default EditorAchievementTab;
-
