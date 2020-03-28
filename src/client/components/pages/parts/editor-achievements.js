@@ -115,28 +115,23 @@ class EditorAchievementTab extends React.Component {
 		if (this.props.isOwner) {
 			rankUpdate = (
 				<form
-					className="form-horizontal"
+					className="form-horizontal padding-bottom-1"
 					id="rankSelectForm"
 					method="post"
-					className="padding-bottom-1"
 				>
 					<div className="dnd-container">
 						<DragAndDrop name="rank1"/>
 						<DragAndDrop name="rank2"/>
 						<DragAndDrop name="rank3"/>
 					</div>
-					
+					<span className="margin-left-1">
+						<button className="btn btn-success" type="submit">
+							Update
+						</button>
 						<span className="margin-left-1">
-							<button className="btn btn-success" type="submit">
-								Update
-							</button>
-							<span className="margin-left-1">
-								click badge to unset
-							</span>
-
-
+							click badge to unset
 						</span>
-					
+					</span>
 				</form>
 			);
 		}
@@ -166,7 +161,7 @@ class EditorAchievementTab extends React.Component {
 									}
 								}
 							</Sticky>
-							<div className="margin-left-2 margin-right-2"  style={{zIndex: 1}}>
+							<div className="margin-left-2 margin-right-2" style={{zIndex: 1}}>
 								<div className="h1">Unlocked Achievements</div>
 								{achievements}
 								<div className="h1">Locked Achievements</div>
