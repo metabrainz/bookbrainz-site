@@ -215,14 +215,15 @@ export function getEntitySecondaryAliases(entity) {
 		const legal = '(Legal)';
 		const pseudo = '(Pseudonym)';
 		const aliases = entity.aliasSet.aliases
-			.filter(item => (item.id !== entity.defaultAlias.id))
-			.map(item => item.primary ? item.name + `${legal}`:item.name + `${pseudo}`)
+			.filter(item => item.id !== entity.defaultAlias.id)
+			.map(item => {return item.primary ? item.name `${legal}`:item.name `${pseudo}`})
 			.join(', ');
 		return <h4>{aliases}</h4>;
 	}
 
 	return null;
 }
+
 
 export function getEntityUrl(entity) {
 	const entityType = _kebabCase(entity.type);
