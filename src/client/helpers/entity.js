@@ -18,6 +18,7 @@
  */
 /* eslint-disable react/display-name */
 
+
 import * as bootstrap from 'react-bootstrap';
 
 import {get as _get, kebabCase as _kebabCase} from 'lodash';
@@ -45,6 +46,7 @@ export function getLanguageAttribute(entity) {
 		).join(', ') : '?';
 	return {data: languages, title: 'Languages'};
 }
+
 
 export function getTypeAttribute(entityType) {
 	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
@@ -212,7 +214,7 @@ export function getEntitySecondaryAliases(entity) {
 	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
 		const aliases = entity.aliasSet.aliases
 			.filter(item => item.id !== entity.defaultAlias.id)
-			.map(item => item.name)
+			.map(item => item.primary ? item.name + "(Legal)":item.name + "(Pseudonym)")
 			.join(', ');
 		return <h4>{aliases}</h4>;
 	}
