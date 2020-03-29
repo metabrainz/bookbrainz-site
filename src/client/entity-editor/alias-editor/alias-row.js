@@ -25,6 +25,7 @@ import {
 import {
 	validateAliasLanguage, validateAliasName, validateAliasSortName
 } from '../validators/common';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
@@ -47,7 +48,7 @@ import {isAliasEmpty} from '../helpers';
  * @param {string} props.nameValue - The name currently set for this alias.
  * @param {string} props.sortNameValue - The sort name currently set for this
  *        alias.
- * @param {string} props.primaryChecked - Whether or not the primary checkbox
+ * @param {boolean} props.primaryChecked - Whether or not the primary checkbox
  *        is checked.
  * @param {Function} props.onLanguageChange - A function to be called when a
  *        new alias language is selected.
@@ -58,7 +59,7 @@ import {isAliasEmpty} from '../helpers';
  * @param {Function} props.onRemoveButtonClick - A function to be called when
  *        the button to remove the alias is clicked.
  * @param {Function} props.onPrimaryClick - A function to be called when
- *        the primary checkbox is clicked.
+ *        the Primary checkbox is clicked.
  * @returns {ReactElement} React element containing the rendered AliasRow.
  */
 const AliasRow = ({
@@ -111,22 +112,23 @@ const AliasRow = ({
 			</Col>
 		</Row>
 		<Row>
-			<Col md={2} mdOffset={5}>
+			<Col md={2} mdOffset={2}>
 				<Checkbox
 					defaultChecked={primaryChecked}
 					onChange={onPrimaryClick}
 				>
-					Primary
+					Legal
 				</Checkbox>
 			</Col>
-			<Col className="text-right" md={3} mdOffset={2}>
+			<Col className="text-right" md={2} mdOffset={6}>
 				<Button
 					block
 					bsStyle="danger"
 					className="margin-top-d5"
 					onClick={onRemoveButtonClick}
 				>
-					Remove
+					<FontAwesomeIcon icon="times"/>
+					<span>&nbsp;Remove</span>
 				</Button>
 			</Col>
 		</Row>
