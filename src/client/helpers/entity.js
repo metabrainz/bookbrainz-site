@@ -212,9 +212,11 @@ export function getEntityDisambiguation(entity) {
 
 export function getEntitySecondaryAliases(entity) {
 	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
+		const legal = '(Legal)';
+		const pseudo = '(Pseudonym)';
 		const aliases = entity.aliasSet.aliases
-			.filter(item => item.id !== entity.defaultAlias.id)
-			.map(item => item.primary ? item.name + "(Legal)":item.name + "(Pseudonym)")
+			.filter(item => (item.id !== entity.defaultAlias.id))
+			.map(item => item.primary ? item.name + `${legal}`:item.name + `${pseudo}`)
 			.join(', ');
 		return <h4>{aliases}</h4>;
 	}
