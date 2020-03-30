@@ -51,20 +51,25 @@ class Achievement extends React.Component {
 					style={{zIndex: 2}}
 				/>
 			);
-		}
-		return (
-			<div className="row well">
-				<div className="col-sm-2">
-					{imgElement}
-				</div>
-				<div className="col-sm-8">
-					<div className="h2">
-						{this.state.achievement.name}
+		} 
+
+		if (this.state.achievement.id !== 27){
+			return (
+				<div className="row well">
+					<div className="col-sm-2">
+						{imgElement}
 					</div>
-					<p>{this.state.achievement.description}</p>
+					<div className="col-sm-8">
+						<div className="h2">
+							{this.state.achievement.name}
+							{/* {this.state.achievement.id == 27? "bcd": `${this.state.achievement.name}`} */}
+						</div>
+						<p>{this.state.achievement.description}</p>
+					</div>
 				</div>
-			</div>
-		);
+			);
+		}
+		return null;
 	}
 }
 
