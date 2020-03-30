@@ -129,7 +129,7 @@ function publisherToFormState(publisher) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(publisher.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -137,7 +137,6 @@ function publisherToFormState(publisher) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(publisher.disambiguation),
 		identifierEditorVisible: false
 	};
 

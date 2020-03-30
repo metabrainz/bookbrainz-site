@@ -200,11 +200,6 @@ router.get(
 );
 
 
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
 function editionToFormState(edition) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = edition.aliasSet ?
@@ -213,7 +208,7 @@ function editionToFormState(edition) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(edition.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -221,7 +216,6 @@ function editionToFormState(edition) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(edition.disambiguation),
 		identifierEditorVisible: false
 	};
 

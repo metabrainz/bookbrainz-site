@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as utils from '../../../../server/helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent-bluebird-promise';
@@ -29,7 +30,7 @@ class PagerElement extends React.Component {
 		super(props);
 		this.state = {
 			from: this.props.from,
-			nextEnabled: this.props.results.length === this.props.size,
+			nextEnabled: this.props.nextEnabled,
 			query: this.props.query,
 			results: this.props.results,
 			size: this.props.size
@@ -48,17 +49,19 @@ class PagerElement extends React.Component {
 	}
 
 	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
-		const pagination = `&size=${newSize}&from=${newFrom}`;
+		// get 1 more result than size to check nextEnabled
+		const pagination = `&size=${newSize + 1}&from=${newFrom}`;
 		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
+				const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(data, newSize);
 				this.setState({
 					from: newFrom,
-					nextEnabled: data.length >= newSize,
-					results: data,
+					nextEnabled,
+					results: newResultsArray,
 					size: newSize
 				});
-				this.props.searchResultsCallback(data);
+				this.props.searchResultsCallback(newResultsArray);
 			});
 	}
 
@@ -126,6 +129,7 @@ class PagerElement extends React.Component {
 
 PagerElement.propTypes = {
 	from: PropTypes.number,
+	nextEnabled: PropTypes.bool.isRequired,
 	paginationUrl: PropTypes.string.isRequired,
 	query: PropTypes.string,
 	results: PropTypes.array,
