@@ -84,7 +84,7 @@ describe('getAssociatedEntityRevisions', () => {
 	// eslint-disable-next-line one-var
 	let aliasSetId, authorJSON, editionGroupJSON, editionJSON,
 		editorJSON, expectedDefaultAliasId, publisherJSON, workJSON;
-	before(async () => {
+	beforeEach(async () => {
 		const author = await createAuthor();
 		const edition = await createEdition();
 		const editionGroup = await createEditionGroup();
@@ -105,7 +105,7 @@ describe('getAssociatedEntityRevisions', () => {
 		aliasSetId = aliasSetJSON.id;
 		expectedDefaultAliasId = aliasSetJSON.defaultAliasId;
 	});
-	after(truncateEntities);
+	afterEach(truncateEntities);
 
 	it('should return formatted revisions array after adding entity (1 revision with 1 entity revised)', async () => {
 		// here author is revised

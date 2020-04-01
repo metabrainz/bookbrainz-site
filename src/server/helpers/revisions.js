@@ -140,14 +140,20 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
 		});
-
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
 		.orderBy('created_at', 'DESC')
 		.fetchPage({
 			limit: size,
 			offset: from,
-			withRelated: ['notes', 'notes.author']
+			withRelated: [
+				{
+					'notes'(q) {
+						q.orderBy('note.posted_at');
+					}
+				},
+				'notes.author'
+			]
 		});
 	const revisionsJSON = revisions.toJSON();
 	const formattedRevisions = revisionsJSON.map(rev => {
