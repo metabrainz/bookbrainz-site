@@ -267,7 +267,14 @@ async function getOrderedRevisionForEditorPage(from, size, req) {
 		.fetchPage({
 			limit: size,
 			offset: from,
-			withRelated: ['notes', 'notes.author']
+			withRelated: [
+				{
+					'notes'(q) {
+						q.orderBy('note.posted_at');
+					}
+				},
+				'notes.author'
+			]
 		});
 	const revisionsJSON = revisions.toJSON();
 	const formattedRevisions = revisionsJSON.map(rev => {
