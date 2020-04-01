@@ -1,10 +1,15 @@
+import * as error from '../../../../src/common/helpers/error';
 import {
 	createAuthor, createEdition,
 	createEditionGroup,
 	createEditor, createPublisher, createWork,
 	truncateEntities
 } from '../../../test-helpers/create-entities';
-import {getAssociatedEntityRevisions, getOrderedRevisions} from '../../../../src/server/helpers/revisions';
+import {
+	getAssociatedEntityRevisions,
+	getOrderedRevisionForEditorPage,
+	getOrderedRevisions
+} from '../../../../src/server/helpers/revisions';
 import chai from 'chai';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
@@ -17,7 +22,7 @@ chai.use(require('chai-sorted'));
 const {
 	AuthorData, AuthorRevision, Revision, AliasSet,
 	EditionData, EditionRevision, EditionGroupData, EditionGroupRevision,
-	PublisherData, PublisherRevision, WorkData, WorkRevision
+	Note, PublisherData, PublisherRevision, WorkData, WorkRevision
 } = orm;
 
 
@@ -284,5 +289,127 @@ describe('getAssociatedEntityRevisions', () => {
 				expect(entity.defaultAlias.id).to.be.equal(expectedDefaultAliasId);
 			});
 		});
+	});
+});
+
+describe('getOrderedRevisionForEditorPage', () => {
+	// eslint-disable-next-line one-var
+	let editorJSON, req;
+	beforeEach(async () => {
+		const editor = await createEditor();
+		editorJSON = editor.toJSON();
+		const revisionAttribs = {
+			authorId: editorJSON.id,
+			id: 1
+		};
+		const promiseArray = [];
+		for (let id = 1; id <= 1000; id++) {
+			revisionAttribs.id = id;
+			promiseArray.push(
+				new Revision(revisionAttribs).save(null, {method: 'insert'})
+			);
+		}
+		await Promise.all(promiseArray);
+		req = {
+			app: {
+				locals: {
+					orm
+				}
+			},
+			params: {
+				id: editorJSON.id
+			}
+		};
+	});
+	afterEach(truncateEntities);
+
+	it('should throw an error for an invalid editor', async () => {
+		req.params.id = random.number();
+		try {
+			await getOrderedRevisionForEditorPage(0, 10, req);
+		}
+		catch (err) {
+			const expectedError = new error.NotFoundError('Editor not found', req);
+			expect(err.message).to.equal(expectedError.message);
+		}
+	});
+
+	it('should return sorted revisions with the expected keys', async () => {
+		const from = 0;
+		const size = 1000;
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
+		orderedRevisions.forEach(revision => {
+			expect(revision).to.have.keys(
+				'authorId',
+				'createdAt',
+				'editor',
+				'entities',
+				'notes',
+				'revisionId'
+			);
+		});
+		expect(orderedRevisions.length).to.equal(size);
+		expect(orderedRevisions).to.be.descendingBy('createdAt');
+	});
+
+	it('should return sorted revisions with notes sorted according to "postedAt"', async () => {
+		const revisionID = 1001; // there are 1000 revisions already created
+		const editor = await createEditor();
+		const editorJSON2 = editor.toJSON();
+		await new Revision({
+			authorId: editorJSON2.id,
+			id: revisionID
+		}).save(null, {method: 'insert'});
+
+		const noteAttrib = {
+			authorId: editorJSON2.id,
+			content: 'note content',
+			id: 1,
+			revisionID
+		};
+
+		// Creating 100 notes for revision#1001
+		const promiseArray = [];
+		for (let id = 1; id <= 100; id++) {
+			noteAttrib.id = id;
+			promiseArray.push(
+				new Note(noteAttrib).save(null, {method: 'insert'})
+			);
+		}
+		await Promise.all(promiseArray);
+
+		req.params.id = editorJSON2.id;
+
+		const orderedRevisions = await getOrderedRevisionForEditorPage(0, 10, req);
+		orderedRevisions.forEach(revision => {
+			expect(revision).to.have.keys(
+				'authorId',
+				'createdAt',
+				'editor',
+				'entities',
+				'notes',
+				'revisionId'
+			);
+			expect(revision.notes.length).to.be.equal(100);
+			expect(revision.notes).to.be.sortedBy('postedAt');
+		});
+		expect(orderedRevisions.length).to.equal(1);
+	});
+
+	it('should return the expected subset of revisions when passed an offset (from)', async () => {
+		const from = 900;
+		const size = 10;
+		const allRevisions = await getOrderedRevisionForEditorPage(0, 1000, req);
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
+		const allRevisionsSubset = allRevisions.slice(from, from + size);
+		expect(orderedRevisions.length).to.equal(size);
+		expect(orderedRevisions).to.deep.equal(allRevisionsSubset);
+		expect(orderedRevisions).to.be.descendingBy('createdAt');
+	});
+
+	it('should return no results if offset is higher than total revisions', async () => {
+		// only 1000 revisions were created
+		const orderedRevisions = await getOrderedRevisionForEditorPage(1001, 10, req);
+		expect(orderedRevisions.length).to.be.equal(0);
 	});
 });
