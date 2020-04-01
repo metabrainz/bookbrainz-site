@@ -57,13 +57,13 @@ set up data identical to the data we have on the bookbrainz.org website. First, 
 Then you can restore the database from the lates dump you dowloaded. To do
 this, run:
 
-    psql -h localhost -U postgres -f latest.sql
+    psql -h localhost -U postgres -d bookbrainz -f latest.sql
 
 At this point, the database is set up, and the following command should give
 you a list of usernames of BookBrainz editors (after entering the password from
 earlier):
 
-    psql -h localhost -U postgres bookbrainz -c "SELECT name FROM bookbrainz.editor"
+    psql -h localhost -U postgres bookbrainz --command="SELECT name FROM bookbrainz.editor"
 
 You are also required to set the password of your local PostgreSQL instance.
 You can do this by

@@ -114,12 +114,6 @@ router.get(
 	}
 );
 
-
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
 function editionGroupToFormState(editionGroup) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = editionGroup.aliasSet ?
@@ -128,7 +122,7 @@ function editionGroupToFormState(editionGroup) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(editionGroup.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -136,7 +130,6 @@ function editionGroupToFormState(editionGroup) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(editionGroup.disambiguation),
 		identifierEditorVisible: false
 	};
 

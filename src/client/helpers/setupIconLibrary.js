@@ -22,7 +22,7 @@ import {
 	faComment, faEnvelope, faExclamationTriangle, faExternalLinkAlt,
 	faGlobe, faHistory, faInfo, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
-	faSignOutAlt, faSlash, faTimes, faTimesCircle, faTrashAlt,
+	faSignOutAlt, faSlash, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {fab} from '@fortawesome/free-brands-svg-icons';
@@ -37,6 +37,6 @@ library.add(
 	faComment, faEnvelope, faExclamationTriangle, faExternalLinkAlt,
 	faGlobe, faHistory, faInfo, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
-	faSignOutAlt, faSlash, faTimes, faTimesCircle, faTrashAlt,
+	faSignOutAlt, faSlash, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 );

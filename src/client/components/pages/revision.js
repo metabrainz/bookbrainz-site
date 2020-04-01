@@ -162,8 +162,8 @@ class RevisionPage extends React.Component {
 				<ListGroupItem
 					key={note.id}
 				>
-					<div>
-						<p>{note.content}</p>
+					<div className="revision-note">
+						<p className="note-content">{note.content}</p>
 						<p className="text-right">
 							—&nbsp;
 							<a

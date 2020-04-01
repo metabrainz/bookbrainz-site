@@ -49,6 +49,7 @@ class EditorRevisionPage extends React.Component {
 				/>
 				<PagerElement
 					from={this.props.from}
+					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
 					results={this.state.results}
 					searchResultsCallback={this.searchResultsCallback}
@@ -63,6 +64,7 @@ class EditorRevisionPage extends React.Component {
 EditorRevisionPage.displayName = 'EditorRevisionPage';
 EditorRevisionPage.propTypes = {
 	from: PropTypes.number,
+	nextEnabled: PropTypes.bool.isRequired,
 	results: PropTypes.array,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
