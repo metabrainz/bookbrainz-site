@@ -5,6 +5,7 @@ import {
 	createEditor, createPublisher, createWork,
 	truncateEntities
 } from '../../../test-helpers/create-entities';
+import {date, random} from 'faker';
 import {
 	getAssociatedEntityRevisions,
 	getOrderedRevisionForEditorPage,
@@ -12,7 +13,6 @@ import {
 } from '../../../../src/server/helpers/revisions';
 import chai from 'chai';
 import orm from '../../../bookbrainz-data';
-import {random} from 'faker';
 
 
 const {expect} = chai;
@@ -32,11 +32,13 @@ describe('getOrderedRevisions', () => {
 		const editorJSON = editor.toJSON();
 		const revisionAttribs = {
 			authorId: editorJSON.id,
+			createdAt: date.recent(),
 			id: 1
 		};
 		const promiseArray = [];
-		for (let id = 1; id <= 1000; id++) {
+		for (let id = 1; id <= 50; id++) {
 			revisionAttribs.id = id;
+			revisionAttribs.createdAt = date.recent();
 			promiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
 			);
@@ -47,7 +49,7 @@ describe('getOrderedRevisions', () => {
 
 	it('should return sorted revisions with the expected keys', async () => {
 		const from = 0;
-		const size = 1000;
+		const size = 50;
 		const orderedRevisions = await getOrderedRevisions(from, size, orm);
 		orderedRevisions.forEach(revision => {
 			expect(revision).to.have.keys(
@@ -63,9 +65,9 @@ describe('getOrderedRevisions', () => {
 	});
 
 	it('should return the expected subset of revisions when passed an offset (from)', async () => {
-		const from = 900;
+		const from = 40;
 		const size = 10;
-		const allRevisions = await getOrderedRevisions(0, 1000, orm);
+		const allRevisions = await getOrderedRevisions(0, 50, orm);
 		const orderedRevisions = await getOrderedRevisions(from, size, orm);
 		const allRevisionsSubset = allRevisions.slice(from, from + size);
 		expect(orderedRevisions.length).to.equal(size);
@@ -74,8 +76,8 @@ describe('getOrderedRevisions', () => {
 	});
 
 	it('should return no results if offset is higher than total revisions', async () => {
-		// only 1000 revisions were created
-		const orderedRevisions = await getOrderedRevisions(1001, 10, orm);
+		// 50 revisions were created
+		const orderedRevisions = await getOrderedRevisions(51, 10, orm);
 		expect(orderedRevisions.length).to.be.equal(0);
 	});
 });
@@ -128,9 +130,7 @@ describe('getAssociatedEntityRevisions', () => {
 
 		expect(revisionsWithEntities.length).to.be.equal(1);
 		expect(revisionsWithEntities[0].entities.length).to.be.equal(1);
-		revisionsWithEntities[0].entities.forEach((entity) => {
-			expect(entity.defaultAlias.id).to.be.equal(expectedDefaultAliasId);
-		});
+		expect(revisionsWithEntities[0].entities[0].defaultAlias.id).to.be.equal(expectedDefaultAliasId);
 	});
 
 	it('should return formatted revisions array after adding entities (1 revision with multiple (different type) entities revised)', async () => {
@@ -300,11 +300,13 @@ describe('getOrderedRevisionForEditorPage', () => {
 		editorJSON = editor.toJSON();
 		const revisionAttribs = {
 			authorId: editorJSON.id,
+			createdAt: date.recent(),
 			id: 1
 		};
 		const promiseArray = [];
-		for (let id = 1; id <= 1000; id++) {
+		for (let id = 1; id <= 50; id++) {
 			revisionAttribs.id = id;
+			revisionAttribs.createdAt = date.recent();
 			promiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
 			);
@@ -336,7 +338,7 @@ describe('getOrderedRevisionForEditorPage', () => {
 
 	it('should return sorted revisions with the expected keys', async () => {
 		const from = 0;
-		const size = 1000;
+		const size = 50;
 		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
 		orderedRevisions.forEach(revision => {
 			expect(revision).to.have.keys(
@@ -353,11 +355,12 @@ describe('getOrderedRevisionForEditorPage', () => {
 	});
 
 	it('should return sorted revisions with notes sorted according to "postedAt"', async () => {
-		const revisionID = 1001; // there are 1000 revisions already created
+		const revisionID = 51; // there are 50 revisions already created
 		const editor = await createEditor();
 		const editorJSON2 = editor.toJSON();
 		await new Revision({
 			authorId: editorJSON2.id,
+			createdAt: date.recent(),
 			id: revisionID
 		}).save(null, {method: 'insert'});
 
@@ -365,13 +368,15 @@ describe('getOrderedRevisionForEditorPage', () => {
 			authorId: editorJSON2.id,
 			content: 'note content',
 			id: 1,
+			postedAt: date.recent(),
 			revisionID
 		};
 
-		// Creating 100 notes for revision#1001
+		// Creating 10 notes for revision#51
 		const promiseArray = [];
-		for (let id = 1; id <= 100; id++) {
+		for (let id = 1; id <= 10; id++) {
 			noteAttrib.id = id;
+			noteAttrib.postedAt = date.recent();
 			promiseArray.push(
 				new Note(noteAttrib).save(null, {method: 'insert'})
 			);
@@ -381,25 +386,23 @@ describe('getOrderedRevisionForEditorPage', () => {
 		req.params.id = editorJSON2.id;
 
 		const orderedRevisions = await getOrderedRevisionForEditorPage(0, 10, req);
-		orderedRevisions.forEach(revision => {
-			expect(revision).to.have.keys(
-				'authorId',
-				'createdAt',
-				'editor',
-				'entities',
-				'notes',
-				'revisionId'
-			);
-			expect(revision.notes.length).to.be.equal(100);
-			expect(revision.notes).to.be.sortedBy('postedAt');
-		});
 		expect(orderedRevisions.length).to.equal(1);
+		expect(orderedRevisions[0]).to.have.keys(
+			'authorId',
+			'createdAt',
+			'editor',
+			'entities',
+			'notes',
+			'revisionId'
+		);
+		expect(orderedRevisions[0].notes.length).to.be.equal(10);
+		expect(orderedRevisions[0].notes).to.be.sortedBy('postedAt');
 	});
 
 	it('should return the expected subset of revisions when passed an offset (from)', async () => {
-		const from = 900;
+		const from = 40;
 		const size = 10;
-		const allRevisions = await getOrderedRevisionForEditorPage(0, 1000, req);
+		const allRevisions = await getOrderedRevisionForEditorPage(0, 50, req);
 		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
 		const allRevisionsSubset = allRevisions.slice(from, from + size);
 		expect(orderedRevisions.length).to.equal(size);
@@ -408,8 +411,8 @@ describe('getOrderedRevisionForEditorPage', () => {
 	});
 
 	it('should return no results if offset is higher than total revisions', async () => {
-		// only 1000 revisions were created
-		const orderedRevisions = await getOrderedRevisionForEditorPage(1001, 10, req);
+		// only 50 revisions were created
+		const orderedRevisions = await getOrderedRevisionForEditorPage(51, 10, req);
 		expect(orderedRevisions.length).to.be.equal(0);
 	});
 });
