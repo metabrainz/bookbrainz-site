@@ -321,17 +321,6 @@ describe('getOrderedRevisionForEditorPage', () => {
 	});
 	after(truncateEntities);
 
-	it('should throw an error for an invalid editor', async () => {
-		req.params.id = random.number();
-		try {
-			await getOrderedRevisionForEditorPage(0, 10, req);
-		}
-		catch (err) {
-			const expectedError = new error.NotFoundError('Editor not found', req);
-			expect(err.message).to.equal(expectedError.message);
-		}
-	});
-
 	it('should return sorted revisions with the expected keys', async () => {
 		const from = 0;
 		const size = 50;
@@ -348,6 +337,34 @@ describe('getOrderedRevisionForEditorPage', () => {
 		});
 		expect(orderedRevisions.length).to.equal(size);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
+	});
+
+	it('should return the expected subset of revisions when passed an offset (from)', async () => {
+		const from = 40;
+		const size = 10;
+		const allRevisions = await getOrderedRevisionForEditorPage(0, 50, req);
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
+		const allRevisionsSubset = allRevisions.slice(from, from + size);
+		expect(orderedRevisions.length).to.equal(size);
+		expect(orderedRevisions).to.deep.equal(allRevisionsSubset);
+		expect(orderedRevisions).to.be.descendingBy('createdAt');
+	});
+
+	it('should return no results if offset is higher than total revisions', async () => {
+		// only 50 revisions were created
+		const orderedRevisions = await getOrderedRevisionForEditorPage(60, 10, req);
+		expect(orderedRevisions.length).to.be.equal(0);
+	});
+
+	it('should throw an error for an invalid editor', async () => {
+		req.params.id = random.number();
+		try {
+			await getOrderedRevisionForEditorPage(0, 10, req);
+		}
+		catch (err) {
+			const expectedError = new error.NotFoundError('Editor not found', req);
+			expect(err.message).to.equal(expectedError.message);
+		}
 	});
 
 	it('should return sorted revisions with notes sorted according to "postedAt"', async () => {
@@ -391,22 +408,5 @@ describe('getOrderedRevisionForEditorPage', () => {
 		);
 		expect(orderedRevisions[0].notes.length).to.be.equal(10);
 		expect(orderedRevisions[0].notes).to.be.sortedBy('postedAt');
-	});
-
-	it('should return the expected subset of revisions when passed an offset (from)', async () => {
-		const from = 40;
-		const size = 10;
-		const allRevisions = await getOrderedRevisionForEditorPage(0, 50, req);
-		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
-		const allRevisionsSubset = allRevisions.slice(from, from + size);
-		expect(orderedRevisions.length).to.equal(size);
-		expect(orderedRevisions).to.deep.equal(allRevisionsSubset);
-		expect(orderedRevisions).to.be.descendingBy('createdAt');
-	});
-
-	it('should return no results if offset is higher than total revisions', async () => {
-		// only 50 revisions were created
-		const orderedRevisions = await getOrderedRevisionForEditorPage(60, 10, req);
-		expect(orderedRevisions.length).to.be.equal(0);
 	});
 });
