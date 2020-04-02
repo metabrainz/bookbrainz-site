@@ -31,13 +31,11 @@ describe('getOrderedRevisions', () => {
 		const editor = await createEditor();
 		const editorJSON = editor.toJSON();
 		const revisionAttribs = {
-			authorId: editorJSON.id,
-			createdAt: date.recent(),
-			id: 1
+			authorId: editorJSON.id
 		};
 		const promiseArray = [];
 		for (let id = 1; id <= 50; id++) {
-			revisionAttribs.id = id;
+			revisionAttribs.id = random.number();
 			revisionAttribs.createdAt = date.recent();
 			promiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
@@ -295,17 +293,15 @@ describe('getAssociatedEntityRevisions', () => {
 describe('getOrderedRevisionForEditorPage', () => {
 	// eslint-disable-next-line one-var
 	let editorJSON, req;
-	beforeEach(async () => {
+	before(async () => {
 		const editor = await createEditor();
 		editorJSON = editor.toJSON();
 		const revisionAttribs = {
-			authorId: editorJSON.id,
-			createdAt: date.recent(),
-			id: 1
+			authorId: editorJSON.id
 		};
 		const promiseArray = [];
-		for (let id = 1; id <= 50; id++) {
-			revisionAttribs.id = id;
+		for (let i = 1; i <= 50; i++) {
+			revisionAttribs.id = random.number();
 			revisionAttribs.createdAt = date.recent();
 			promiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
@@ -323,7 +319,7 @@ describe('getOrderedRevisionForEditorPage', () => {
 			}
 		};
 	});
-	afterEach(truncateEntities);
+	after(truncateEntities);
 
 	it('should throw an error for an invalid editor', async () => {
 		req.params.id = random.number();
@@ -355,7 +351,7 @@ describe('getOrderedRevisionForEditorPage', () => {
 	});
 
 	it('should return sorted revisions with notes sorted according to "postedAt"', async () => {
-		const revisionID = 51; // there are 50 revisions already created
+		const revisionID = random.number();
 		const editor = await createEditor();
 		const editorJSON2 = editor.toJSON();
 		await new Revision({
@@ -367,15 +363,13 @@ describe('getOrderedRevisionForEditorPage', () => {
 		const noteAttrib = {
 			authorId: editorJSON2.id,
 			content: 'note content',
-			id: 1,
-			postedAt: date.recent(),
 			revisionID
 		};
 
-		// Creating 10 notes for revision#51
+		// Creating 10 notes for this new revision
 		const promiseArray = [];
-		for (let id = 1; id <= 10; id++) {
-			noteAttrib.id = id;
+		for (let i = 1; i <= 10; i++) {
+			noteAttrib.id = random.number();
 			noteAttrib.postedAt = date.recent();
 			promiseArray.push(
 				new Note(noteAttrib).save(null, {method: 'insert'})
@@ -412,7 +406,7 @@ describe('getOrderedRevisionForEditorPage', () => {
 
 	it('should return no results if offset is higher than total revisions', async () => {
 		// only 50 revisions were created
-		const orderedRevisions = await getOrderedRevisionForEditorPage(51, 10, req);
+		const orderedRevisions = await getOrderedRevisionForEditorPage(60, 10, req);
 		expect(orderedRevisions.length).to.be.equal(0);
 	});
 });
