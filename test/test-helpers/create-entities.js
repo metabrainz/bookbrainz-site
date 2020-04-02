@@ -122,8 +122,9 @@ export async function createEditor() {
 	editorAttribs.metabrainzUserId = random.number();
 	editorAttribs.cachedMetabrainzName = editorAttribs.name;
 
-	await new Editor(editorAttribs)
+	const editor = await new Editor(editorAttribs)
 		.save(null, {method: 'insert'});
+	return editor;
 }
 
 async function createAliasAndAliasSet() {

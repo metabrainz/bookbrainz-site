@@ -21,6 +21,7 @@ import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
+
 const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
 
 /* eslint max-len: 0 */
@@ -112,8 +113,7 @@ function HelpPage() {
 					<ol>
 						<li>Find or add a new {genEntityIconHTMLElement('Author')}Author</li>
 						<li>On the Author page, click on &#39;Add Work&#39; to create a {genEntityIconHTMLElement('Work')}Work with a relationship to the Author</li>
-						<li>On the Work page, click &#39;Add Edition&#39; to create an {genEntityIconHTMLElement('Edition')}Edition with a relationship to the Work</li>
-						<li style={{listStyleType: 'none'}}>
+						<li>On the Work page, click &#39;Add Edition&#39; to create an {genEntityIconHTMLElement('Edition')}Edition with a relationship to the Work.
 							<ul>
 								<li>A new {genEntityIconHTMLElement('EditionGroup')}Edition Group will be created automatically, but you can select an existing one</li>
 								<li>Create a new {genEntityIconHTMLElement('Publisher')}Publisher if you cannot find an existing one</li>
