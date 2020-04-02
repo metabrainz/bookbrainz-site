@@ -49,6 +49,7 @@
     "body-parser": "^1.14.1",
     "bookbrainz-data": "^2.5.0",
     "browserify": "^16.2.3",
+    "chai-sorted": "^0.2.0",
     "classnames": "^2.2.5",
     "compression": "^1.7.1",
     "connect-redis": "^3.0.1",
