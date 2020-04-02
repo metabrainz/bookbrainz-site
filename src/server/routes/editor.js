@@ -34,6 +34,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
+import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
 
@@ -250,42 +251,6 @@ router.get('/:id', (req, res, next) => {
 		}
 	);
 });
-
-async function getOrderedRevisionForEditorPage(from, size, req) {
-	const {Editor, Revision} = req.app.locals.orm;
-
-	// If editor isn't present, throw an error
-	await new Editor({id: req.params.id})
-		.fetch()
-		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found', req);
-		});
-
-	const revisions = await new Revision()
-		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
-		.orderBy('created_at', 'DESC')
-		.fetchPage({
-			limit: size,
-			offset: from,
-			withRelated: [
-				{
-					'notes'(q) {
-						q.orderBy('note.posted_at');
-					}
-				},
-				'notes.author'
-			]
-		});
-	const revisionsJSON = revisions.toJSON();
-	const formattedRevisions = revisionsJSON.map(rev => {
-		const {author: editor, id: revisionId, ...otherProps} = rev;
-		return {editor, entities: [], revisionId, ...otherProps};
-	});
-
-	const orderedRevisions = await utils.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
-
-	return orderedRevisions;
-}
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions', async (req, res, next) => {
