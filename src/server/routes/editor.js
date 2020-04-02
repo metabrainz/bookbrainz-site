@@ -252,7 +252,6 @@ router.get('/:id', (req, res, next) => {
 	);
 });
 
-
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;

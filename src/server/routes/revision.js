@@ -194,7 +194,14 @@ router.get('/:id', (req, res, next) => {
 	const revisionPromise = new Revision({id: req.params.id})
 		.fetch({
 			withRelated: [
-				'author', 'author.titleUnlock.title', 'notes', 'notes.author',
+				'author',
+				'author.titleUnlock.title',
+				{
+					'notes'(q) {
+						q.orderBy('note.posted_at');
+					}
+				},
+				'notes.author',
 				'notes.author.titleUnlock.title'
 			]
 		})
