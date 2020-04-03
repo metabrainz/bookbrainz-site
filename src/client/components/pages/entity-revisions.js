@@ -90,6 +90,7 @@ class EntityRevisions extends React.Component {
 				/>
 				<PagerElement
 					from={this.props.from}
+					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
 					results={this.state.results}
 					searchResultsCallback={this.searchResultsCallback}
@@ -106,6 +107,7 @@ EntityRevisions.propTypes = {
 		disambiguation: PropTypes.object
 	}).isRequired,
 	from: PropTypes.number,
+	nextEnabled: PropTypes.bool.isRequired,
 	revisions: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,

@@ -164,3 +164,36 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
 	const orderedRevisions = await getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
 	return orderedRevisions;
 }
+
+export async function getOrderedRevisionsForEntityPage(from, size, RevisionModel, req, next) {
+	try {
+		const revisions = await new RevisionModel()
+			.query((qb) => {
+				qb.where('bbid', req.params.bbid);
+				qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
+				qb.orderBy('revision.created_at', 'DESC');
+			}).fetchPage({
+				limit: size,
+				offset: from,
+				withRelated: [
+					'revision.author',
+					{
+						'revision.notes'(q) {
+							q.orderBy('note.posted_at');
+						}
+					},
+					'revision.notes.author'
+				]
+			});
+
+		const revisionsJSON = revisions ? revisions.toJSON() : [];
+		const orderedRevisions = revisionsJSON.map(rev => {
+			const {revision} = rev;
+			return {editor: revision.author, revisionId: revision.id, ...revision};
+		});
+		return orderedRevisions;
+	}
+	catch (err) {
+		return next(err);
+	}
+}

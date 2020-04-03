@@ -51,6 +51,7 @@ import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../../common/helpers/config';
 import {getEntityLabel} from '../../../client/helpers/entity';
+import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 
@@ -189,33 +190,6 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	}));
 }
 
-async function getOrderedRevisionForEntityPage(
-	from, next: NextFunction, RevisionModel: any, req: PassportRequest, size
-) {
-	try {
-		const revisions = await new RevisionModel()
-			.query((qb) => {
-				qb.where('bbid', req.params.bbid);
-				qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
-				qb.orderBy('revision.created_at', 'DESC');
-			}).fetchPage({
-				limit: size,
-				offset: from,
-				withRelated: ['revision.author', 'revision.notes', 'revision.notes.author']
-			});
-
-		const revisionsJSON = revisions ? revisions.toJSON() : [];
-		const orderedRevisions = revisionsJSON.map(rev => {
-			const {revision} = rev;
-			return {editor: revision.author, revisionId: revision.id, ...revision};
-		});
-		return orderedRevisions;
-	}
-	catch (err) {
-		return next(err);
-	}
-}
-
 export async function displayRevisions(
 	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
 ) {
@@ -223,10 +197,13 @@ export async function displayRevisions(
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await getOrderedRevisionForEntityPage(from, next, RevisionModel, req, size);
+		// get 1 more revision than required to check nextEnabled
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size + 1, RevisionModel, req, next);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
-			revisions: orderedRevisions,
+			nextEnabled,
+			revisions: newResultsArray,
 			showRevisionEditor: true,
 			showRevisionNote: true,
 			size
@@ -260,7 +237,7 @@ export async function updateDisplayedRevisions(
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await getOrderedRevisionForEntityPage(from, next, RevisionModel, req, size);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size, RevisionModel, req, next);
 		res.send(orderedRevisions);
 	}
 	catch (err) {
