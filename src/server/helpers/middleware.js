@@ -157,7 +157,7 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 			}
 		}
 		else {
-			return next(new error.NotFoundError(errMessage, req));
+			return next(new error.BadRequestError('Invalid BBID', req));
 		}
 	};
 }
