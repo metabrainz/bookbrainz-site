@@ -208,6 +208,22 @@ body {
 	height: 1em;
 	vertical-align: -.125em;
 }
+.fa-layers {
+	display: inline-block;
+	height: 1em;
+	position: relative;
+	text-align: center;
+	vertical-align: -0.125em;
+	min-width: 1em;
+	svg.svg-inline--fa {
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+}
 
 /* Sticky footer styling */
 html {
@@ -321,6 +337,7 @@ html {
 	line-height: initial;
 	margin-top: 5em;
 	margin-bottom: 5em;
+	width: 100%;
 	>:last-child:not(:only-child) {
 		color: @brand-danger;
 	}
