@@ -35,38 +35,34 @@ function EntityImage({backupIcon, deleted, imageUrl}) {
 		);
 	}
 
-	let icons;
 	if (deleted) {
-		icons = [
-			<FontAwesomeIcon
-				icon={backupIcon}
-				key="entityIcon"
-				size="5x"
-				stack="1x"
-			/>,
-			<FontAwesomeIcon
-				icon="slash"
-				key="deletedIcon"
-				size="5x"
-				stack="1x"
-			/>
-		];
-	}
-	else {
-		icons = (
-			<FontAwesomeIcon
-				icon={backupIcon}
-				size="5x"
-			/>
-		);
+		return (
+			<div className="entity-display-icon fa-layers fa-fw">
+				<FontAwesomeIcon
+					icon={backupIcon}
+					key="entityIcon"
+					size="5x"
+					stack="1x"
+				/>,
+				<FontAwesomeIcon
+					icon="slash"
+					key="deletedIcon"
+					size="5x"
+					stack="1x"
+				/>
+			</div>);
 	}
 
 	return (
 		<div className="entity-display-icon">
-			{icons}
+			<FontAwesomeIcon
+				icon={backupIcon}
+				size="5x"
+			/>
 		</div>
 	);
 }
+
 EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
 	backupIcon: PropTypes.string.isRequired,
