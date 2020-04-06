@@ -720,7 +720,7 @@ export function handleCreateOrEditEntity(
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
-			throw new error.NoUpdatedFieldError();
+			throw new error.FormSubmissionError('No Updated Field');
 		}
 
 
