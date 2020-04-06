@@ -17,6 +17,7 @@
  */
 
 import {
+	extractChildProps,
 	extractEntityProps,
 	extractLayoutProps
 } from '../../helpers/props';
@@ -55,7 +56,7 @@ if (page === 'revisions') {
 			<Layout {...extractLayoutProps(props)}>
 				<EntityRevisions
 					entity={props.entity}
-					revisions={props.revisions}
+					{...extractChildProps(props)}
 				/>
 			</Layout>
 		</AppContainer>
