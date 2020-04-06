@@ -198,7 +198,7 @@ export async function displayRevisions(
 
 	try {
 		// get 1 more revision than required to check nextEnabled
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size + 1, RevisionModel, req, next);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size + 1, RevisionModel, req);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
@@ -237,7 +237,7 @@ export async function updateDisplayedRevisions(
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size, RevisionModel, req, next);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size, RevisionModel, req);
 		res.send(orderedRevisions);
 	}
 	catch (err) {
