@@ -83,6 +83,12 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {AuthorRevision} = req.app.locals.orm;
+	_setAuthorTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
+});
+
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,

@@ -185,6 +185,7 @@ class IndexPage extends React.Component {
 				<div>
 					<RevisionsTable
 						results={this.props.recent}
+						showEntities={this.props.showEntities}
 						showRevisionEditor={this.props.showRevisionEditor}
 					/>
 					<div className="text-center">
@@ -192,7 +193,7 @@ class IndexPage extends React.Component {
 							bsStyle="primary"
 							href="/revisions"
 						>
-					See all revisions
+							See all revisions
 						</Button>
 					</div>
 				</div>
@@ -233,7 +234,7 @@ class IndexPage extends React.Component {
 				Register!
 					</Button>
 				</div>
-		 </React.Fragment>
+			</React.Fragment>
 		);
 	}
 
@@ -252,11 +253,13 @@ IndexPage.propTypes = {
 	disableSignUp: PropTypes.bool,
 	isLoggedIn: PropTypes.bool.isRequired,
 	recent: PropTypes.array.isRequired,
+	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool
 
 };
 IndexPage.defaultProps = {
 	disableSignUp: false,
+	showEntities: true,
 	showRevisionEditor: true
 };
 

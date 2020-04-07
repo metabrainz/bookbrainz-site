@@ -66,7 +66,8 @@ router.get('/', async (req, res, next) => {
 	}
 
 	try {
-		const orderedRevisions = await getOrderedRevisions(from, size, orm);
+		// fetch 1 more revision than required to check nextEnabled
+		const orderedRevisions = await getOrderedRevisions(from, size + 1, orm);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		return render(newResultsArray, nextEnabled);
 	}
