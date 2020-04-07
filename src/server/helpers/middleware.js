@@ -139,7 +139,7 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 
 	return async (req, res, next, bbid) => {
 		const {orm} = req.app.locals;
-		if (req.path === '/create') {
+		if (req.path.toLowerCase() === '/create') {
 			return next('route');
 		}
 		else if (commonUtils.isValidBBID(bbid)) {
