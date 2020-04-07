@@ -139,7 +139,10 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 
 	return async (req, res, next, bbid) => {
 		const {orm} = req.app.locals;
-		if (commonUtils.isValidBBID(bbid)) {
+		if (req.path === '/create') {
+			return next('route');
+		}
+		else if (commonUtils.isValidBBID(bbid)) {
 			try {
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				if (!entity.dataId) {
