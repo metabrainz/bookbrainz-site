@@ -192,6 +192,8 @@ function cleanupFunction() {
 /* eslint-enable no-console */
 
 // Run cleanup function
-appCleanup(cleanupFunction);
+if (process.env.NODE_ENV !== 'test') {
+	appCleanup(cleanupFunction);
+}
 
 export default server;
