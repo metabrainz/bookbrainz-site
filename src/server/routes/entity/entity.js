@@ -36,11 +36,9 @@ import type {
 	Transaction
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
-
 import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
-import EditionGroupPage from
-	'../../../client/components/pages/entities/edition-group';
+import EditionGroupPage from '../../../client/components/pages/entities/edition-group';
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
@@ -52,6 +50,8 @@ import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../../common/helpers/config';
+import {getEntityLabel} from '../../../client/helpers/entity';
+import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 
@@ -150,6 +150,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				alert,
 				identifierTypes
 			});
+
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<EntityComponent
@@ -161,7 +162,8 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				markup,
 				page: entityName,
 				props: escapeProps(props),
-				script: '/js/entity/entity.js'
+				script: '/js/entity/entity.js',
+				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
 			}));
 		}
 		else {
@@ -188,38 +190,59 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	}));
 }
 
-export function displayRevisions(
+export async function displayRevisions(
 	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
 ) {
-	const {bbid} = req.params;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	return new RevisionModel()
-		.where({bbid})
-		.fetchAll({
-			require: false,
-			withRelated: ['revision', 'revision.author', 'revision.notes']
-		})
-		.then((collection) => {
-			const revisions = collection ? collection.toJSON() : [];
-			const props = generateProps(req, res, {
-				revisions
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EntityRevisions
-						entity={props.entity}
-						revisions={props.revisions}
-					/>
-				</Layout>
-			);
-			return res.send(target({
-				markup,
-				page: 'revisions',
-				props: escapeProps(props),
-				script: '/js/entity/entity.js'
-			}));
-		})
-		.catch(next);
+	try {
+		// get 1 more revision than required to check nextEnabled
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size + 1, RevisionModel, req);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const props = generateProps(req, res, {
+			from,
+			nextEnabled,
+			revisions: newResultsArray,
+			showRevisionEditor: true,
+			showRevisionNote: true,
+			size
+		});
+
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EntityRevisions
+					entity={props.entity}
+					{...propHelpers.extractChildProps(props)}
+				/>
+			</Layout>
+		);
+		return res.send(target({
+			markup,
+			page: 'revisions',
+			props: escapeProps(props),
+			script: '/js/entity/entity.js'
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
+}
+
+// eslint-disable-next-line consistent-return
+export async function updateDisplayedRevisions(
+	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
+) {
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	try {
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size, RevisionModel, req);
+		res.send(orderedRevisions);
+	}
+	catch (err) {
+		return next(err);
+	}
 }
 
 function _createNote(orm, content, editorID, revision, transacting) {
@@ -719,7 +742,7 @@ export function handleCreateOrEditEntity(
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
-			throw new error.NoUpdatedFieldError();
+			throw new error.FormSubmissionError('No Updated Field');
 		}
 
 
@@ -847,8 +870,34 @@ export function constructRelationships(relationshipSection) {
 	);
 }
 
-export function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
+/**
+ * Returns the index of the default alias if defined in the aliasSet.
+ * If there is no defaultAliasId, return the first alias where default = true.
+ * Returns null if there are no aliases in the set.
+ * @param {Object} aliasSet - The entity's aliasSet returned by the ORM
+ * @param {Object[]} aliasSet.aliases - The array of aliases contained in the set
+ * @param {string} aliasSet.defaultAliasId - The id of the set's default alias
+ * @returns {?number} The index of the default alias, or 0; returns null if 0 aliases in set
+ */
+export function getDefaultAliasIndex(aliasSet) {
+	if (_.isNil(aliasSet)) {
+		return null;
+	}
+	const {aliases, defaultAliasId} = aliasSet;
+	if (!aliases || !aliases.length) {
+		return null;
+	}
+	let index;
+	if (!_.isNil(defaultAliasId) && isFinite(defaultAliasId)) {
+		let defaultAliasIdNumber = defaultAliasId;
+		if (_.isString(defaultAliasId)) {
+			defaultAliasIdNumber = Number(defaultAliasId);
+		}
+		index = aliases.findIndex((alias) => alias.id === defaultAliasIdNumber);
+	}
+	else {
+		index = aliases.findIndex((alias) => alias.default);
+	}
 	return index > 0 ? index : 0;
 }
 

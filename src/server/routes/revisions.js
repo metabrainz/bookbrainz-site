@@ -18,15 +18,13 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-
 import {escapeProps, generateProps} from '../helpers/props';
-
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RevisionsPage from '../../client/components/pages/revisions';
-import _ from 'lodash';
 import express from 'express';
+import {getOrderedRevisions} from '../helpers/revisions';
 import target from '../templates/target';
 
 
@@ -38,9 +36,10 @@ router.get('/', async (req, res, next) => {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	function render(results) {
+	function render(results, nextEnabled) {
 		const props = generateProps(req, res, {
 			from,
+			nextEnabled,
 			results,
 			showRevisionEditor: true,
 			size
@@ -62,13 +61,15 @@ router.get('/', async (req, res, next) => {
 			markup,
 			props: escapeProps(props),
 			script: '/js/revisions.js',
-			title: 'RevisionsPage'
+			title: 'Revisions'
 		}));
 	}
 
 	try {
-		const orderedRevisions = await utils.getOrderedRevisions(from, size, orm);
-		return render(orderedRevisions);
+		// fetch 1 more revision than required to check nextEnabled
+		const orderedRevisions = await getOrderedRevisions(from, size + 1, orm);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		return render(newResultsArray, nextEnabled);
 	}
 	catch (err) {
 		return next(err);
@@ -83,7 +84,7 @@ router.get('/revisions', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await utils.getOrderedRevisions(from, size, orm);
+		const orderedRevisions = await getOrderedRevisions(from, size, orm);
 		res.send(orderedRevisions);
 	}
 	catch (err) {

@@ -77,9 +77,9 @@ export class FormSubmissionError extends SiteError {
 	}
 }
 
-export class NoUpdatedFieldError extends SiteError {
+export class BadRequestError extends SiteError {
 	static get defaultMessage() {
-		return 'No Updated Field';
+		return 'Bad Request';
 	}
 
 	static get status() {

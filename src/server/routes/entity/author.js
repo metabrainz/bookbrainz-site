@@ -83,6 +83,12 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {AuthorRevision} = req.app.locals.orm;
+	_setAuthorTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
+});
+
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
@@ -112,7 +118,7 @@ function authorToFormState(author) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(author.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -120,7 +126,6 @@ function authorToFormState(author) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(author.disambiguation),
 		identifierEditorVisible: false
 	};
 

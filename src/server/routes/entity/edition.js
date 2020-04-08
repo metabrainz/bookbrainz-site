@@ -76,6 +76,13 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, EditionRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {EditionRevision} = req.app.locals.orm;
+	_setEditionTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, EditionRevision);
+});
+
+
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayDeleteEntity(req, res);
@@ -200,11 +207,6 @@ router.get(
 );
 
 
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
-
 function editionToFormState(edition) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = edition.aliasSet ?
@@ -213,7 +215,7 @@ function editionToFormState(edition) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(edition.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -221,7 +223,6 @@ function editionToFormState(edition) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(edition.disambiguation),
 		identifierEditorVisible: false
 	};
 

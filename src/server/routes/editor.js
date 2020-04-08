@@ -24,8 +24,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
-import AchievementsTab from
-	'../../client/components/pages/parts/editor-achievements';
+import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
@@ -36,6 +35,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
+import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
 
@@ -275,40 +275,12 @@ router.get('/:id', (req, res, next) => {
 				markup,
 				page: 'profile',
 				props: escapeProps(props),
-				script: '/js/editor/editor.js'
+				script: '/js/editor/editor.js',
+				title: `${props.editor.name}'s Profile`
 			}));
 		}
 	);
 });
-
-async function getOrderedRevisionForEditorPage(from, size, req) {
-	const {Editor, Revision} = req.app.locals.orm;
-
-	// If editor isn't present, throw an error
-	await new Editor({id: req.params.id})
-		.fetch()
-		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found', req);
-		});
-
-	const revisions = await new Revision()
-		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
-		.orderBy('created_at', 'DESC')
-		.fetchPage({
-			limit: size,
-			offset: from,
-			withRelated: ['notes', 'notes.author']
-		});
-	const revisionsJSON = revisions.toJSON();
-	const formattedRevisions = revisionsJSON.map(rev => {
-		const {author: editor, id: revisionId, ...otherProps} = rev;
-		return {editor, entities: [], revisionId, ...otherProps};
-	});
-
-	const orderedRevisions = await utils.getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
-
-	return orderedRevisions;
-}
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions', async (req, res, next) => {
@@ -318,15 +290,17 @@ router.get('/:id/revisions', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
 	try {
-		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
-
+		// get 1 more result to check nextEnabled
+		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size + 1, req);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
 			from,
-			results: orderedRevisions,
+			nextEnabled,
+			results: newResultsArray,
 			showRevisionNote: true,
 			size,
 			tabActive: 1,
@@ -349,7 +323,8 @@ router.get('/:id/revisions', async (req, res, next) => {
 			markup,
 			page: 'revisions',
 			props: escapeProps(props),
-			script: '/js/editor/editor.js'
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Revisions`
 		}));
 	}
 	catch (err) {
@@ -396,7 +371,7 @@ router.get('/:id/achievements', (req, res, next) => {
 	const isOwner = userId === (req.user && req.user.id);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
-		  .catch(next);
+		.catch(next);
 
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
@@ -437,7 +412,8 @@ router.get('/:id/achievements', (req, res, next) => {
 			res.send(target({
 				markup,
 				props: escapeProps(props),
-				script
+				script,
+				title: `${props.editor.name}'s Achievements`
 			}));
 		}
 	);
