@@ -27,9 +27,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 
-
 // Disable FontAwesome's CSS (to prevent FOUC)
-config.autoAddCss = false;
+// For this, th build system needs to be able to import the css file below. Currently the build errors.
+// import '@fortawesome/fontawesome-svg-core/styles.css';
+// config.autoAddCss = false;
+
+config.autoAddCss = true;
 
 // Add Icons to FontAwesome library
 library.add(

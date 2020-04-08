@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -35,38 +35,34 @@ function EntityImage({backupIcon, deleted, imageUrl}) {
 		);
 	}
 
-	let icons;
 	if (deleted) {
-		icons = [
-			<Icon
-				key="entityIcon"
-				name={backupIcon}
-				size="5x"
-				stack="1x"
-			/>,
-			<Icon
-				key="deletedIcon"
-				name="slash"
-				size="5x"
-				stack="1x"
-			/>
-		];
-	}
-	else {
-		icons = (
-			<Icon
-				name={backupIcon}
-				size="5x"
-			/>
-		);
+		return (
+			<div className="entity-display-icon fa-layers fa-fw">
+				<FontAwesomeIcon
+					icon={backupIcon}
+					key="entityIcon"
+					size="5x"
+					stack="1x"
+				/>,
+				<FontAwesomeIcon
+					icon="slash"
+					key="deletedIcon"
+					size="5x"
+					stack="1x"
+				/>
+			</div>);
 	}
 
 	return (
 		<div className="entity-display-icon">
-			{icons}
+			<FontAwesomeIcon
+				icon={backupIcon}
+				size="5x"
+			/>
 		</div>
 	);
 }
+
 EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
 	backupIcon: PropTypes.string.isRequired,

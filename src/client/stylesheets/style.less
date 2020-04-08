@@ -19,8 +19,6 @@
  */
 
 @import "lobes/less/theme.less";
-@import "font-awesome/fontawesome.less";
-@import "font-awesome/solid.less";
 @import "react-select/select.less";
 
 
@@ -29,8 +27,7 @@ With Webpack and less-loader,
 we should be able to import directly from node_modules directory with '~'.
 The production configuration for webpack needs to be finalized before using this.
 */
-/* @import "~@fortawesome/fontawesome-free/less/fontawesome.less";
-/* @import "~@fortawesome/fontawesome-free/less/solid.less";
+/*
 @import "~react-select/less/select.less";
 @import "~react-virtualized/styles.css";
 @import "~react-virtualized-select/styles.css";
@@ -208,6 +205,22 @@ body {
 	height: 1em;
 	vertical-align: -.125em;
 }
+.fa-layers {
+	display: inline-block;
+	height: 1em;
+	position: relative;
+	text-align: center;
+	vertical-align: -0.125em;
+	min-width: 1em;
+	svg.svg-inline--fa {
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+}
 
 /* Sticky footer styling */
 html {
@@ -321,6 +334,7 @@ html {
 	line-height: initial;
 	margin-top: 5em;
 	margin-bottom: 5em;
+	width: 100%;
 	>:last-child:not(:only-child) {
 		color: @brand-danger;
 	}
