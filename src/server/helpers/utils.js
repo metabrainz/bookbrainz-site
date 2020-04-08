@@ -24,6 +24,7 @@
 import Promise from 'bluebird';
 import _ from 'lodash';
 
+
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
  *

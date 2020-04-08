@@ -22,6 +22,7 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
+import {eachMonthOfInterval, format} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import EditorContainer from '../../client/containers/editor';
@@ -193,13 +194,42 @@ function getIdEditorJSONPromise(userId, req) {
 		});
 }
 
+async function getEditorActivity(editorId, startDate, Revision) {
+	const revisions = await new Revision()
+		.query('where', 'author_id', '=', editorId)
+		.orderBy('created_at', 'ASC')
+		.fetchAll({
+			require: false
+		});
+
+	const revisionJSON = revisions ? revisions.toJSON() : [];
+	const revisionDates = revisionJSON.map((revision) => format(new Date(revision.createdAt), 'LLL-yy'));
+	const revisionsCount = _.countBy(revisionDates);
+
+	const allMonthsInInterval = eachMonthOfInterval({
+		end: Date.now(),
+		start: startDate
+	})
+		.map(month => format(new Date(month), 'LLL-yy'))
+		.reduce((accumulator, month) => {
+			accumulator[month] = 0;
+			return accumulator;
+		}, {});
+
+	return {...allMonthsInInterval, ...revisionsCount};
+}
+
 router.get('/:id', (req, res, next) => {
-	const {AchievementUnlock} = req.app.locals.orm;
+	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
+		.then(async (editor) => {
+			const startDate = editor.createdAt;
+			editor.activityData = await getEditorActivity(editor.id, startDate, Revision);
+			return editor;
+		})
 		.catch(next);
-
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')

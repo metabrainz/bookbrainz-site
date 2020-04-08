@@ -92,20 +92,25 @@ else {
 }
 app.use(express.static(path.join(rootDir, 'static')));
 
-const RedisStore = redis(session);
-app.use(session({
+/* Set up sessions, using Redis in production and default in-memory for testing environment*/
+const sessionOptions = {
 	cookie: {
 		maxAge: _get(config, 'session.maxAge', 2592000000),
 		secure: _get(config, 'session.secure', false)
 	},
 	resave: false,
 	saveUninitialized: false,
-	secret: config.session.secret,
-	store: new RedisStore({
+	secret: config.session.secret
+};
+if (process.env.NODE_ENV !== 'test') {
+	const RedisStore = redis(session);
+	sessionOptions.store = new RedisStore({
 		host: _get(config, 'session.redis.host', 'localhost'),
 		port: _get(config, 'session.redis.port', 6379)
-	})
-}));
+	});
+}
+app.use(session(sessionOptions));
+
 
 if (config.influx) {
 	initInflux(app, config);
@@ -192,6 +197,8 @@ function cleanupFunction() {
 /* eslint-enable no-console */
 
 // Run cleanup function
-appCleanup(cleanupFunction);
+if (process.env.NODE_ENV !== 'test') {
+	appCleanup(cleanupFunction);
+}
 
 export default server;
