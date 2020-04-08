@@ -85,7 +85,7 @@ function SearchResults(props) {
 					</td>
 				}
 				<td>
-					<a href={link} rel="noopener noreferrer" target="_blank">
+					<a href={link}>
 						{name} {disambiguation}
 					</a>
 				</td>

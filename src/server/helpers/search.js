@@ -58,7 +58,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 		}
 		const model = utils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
-			.fetch({withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
+			.fetch({require: false, withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
 			.then((entity) => entity && entity.toJSON());
 	});
 }

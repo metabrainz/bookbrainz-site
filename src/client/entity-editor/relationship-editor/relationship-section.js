@@ -38,6 +38,7 @@ import type {
 	Relationship as _Relationship
 } from './types';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from './relationship';
@@ -78,7 +79,8 @@ function RelationshipList(
 								bsStyle="warning"
 								onClick={onEdit.bind(this, rowID)}
 							>
-								Edit
+								<FontAwesomeIcon icon="pencil-alt"/>
+								<span>&nbsp;Edit</span>
 							</Button>
 						</ButtonGroup>
 						<ButtonGroup>
@@ -86,7 +88,8 @@ function RelationshipList(
 								bsStyle="danger"
 								onClick={onRemove.bind(this, rowID)}
 							>
-								Remove
+								<FontAwesomeIcon icon="times"/>
+								<span>&nbsp;Remove</span>
 							</Button>
 						</ButtonGroup>
 					</ButtonGroup>
@@ -182,7 +185,8 @@ function RelationshipSection({
 						bsStyle="success"
 						onClick={onAddRelationship}
 					>
-						Add relationship
+						<FontAwesomeIcon icon="plus"/>
+						<span>&nbsp;Add relationship</span>
 					</Button>
 				</Col>
 			</Row>
@@ -196,7 +200,8 @@ function RelationshipSection({
 						<Button
 							onClick={onUndo}
 						>
-							Undo last action
+							<FontAwesomeIcon icon="undo"/>
+							<span>&nbsp;Undo last action</span>
 						</Button>
 					</Col>
 				</Row>

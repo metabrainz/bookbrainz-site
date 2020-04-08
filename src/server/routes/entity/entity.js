@@ -20,10 +20,12 @@
 // @flow
 
 import * as achievement from '../../helpers/achievement';
+import * as error from '../../../common/helpers/error';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../helpers/search';
 import * as utils from '../../helpers/utils';
+
 
 import type {$Request, $Response, NextFunction} from 'express';
 import type {
@@ -34,11 +36,9 @@ import type {
 	Transaction
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
-
 import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
-import EditionGroupPage from
-	'../../../client/components/pages/entities/edition-group';
+import EditionGroupPage from '../../../client/components/pages/entities/edition-group';
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
@@ -50,7 +50,10 @@ import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import config from '../../../common/helpers/config';
+import {getEntityLabel} from '../../../client/helpers/entity';
+import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import target from '../../templates/target';
+
 
 type PassportRequest = $Request & {user: any, session: any};
 
@@ -114,7 +117,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 						{id: achievementAlert}
 					)
 						.fetch({
-							require: 'true',
+							require: true,
 							withRelated: 'achievement'
 						})
 						.then((unlock) => unlock.toJSON())
@@ -127,8 +130,8 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 							}
 							return unlockName;
 						})
-						.catch((error) => {
-							log.debug(error);
+						.catch((err) => {
+							log.debug(err);
 						})
 			);
 			alertPromise = Promise.all(promiseList);
@@ -147,6 +150,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				alert,
 				identifierTypes
 			});
+
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<EntityComponent
@@ -158,7 +162,8 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				markup,
 				page: entityName,
 				props: escapeProps(props),
-				script: '/js/entity/entity.js'
+				script: '/js/entity/entity.js',
+				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
 			}));
 		}
 		else {
@@ -185,37 +190,59 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	}));
 }
 
-export function displayRevisions(
+export async function displayRevisions(
 	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
 ) {
-	const {bbid} = req.params;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
-	return new RevisionModel()
-		.where({bbid})
-		.fetchAll({
-			withRelated: ['revision', 'revision.author', 'revision.notes']
-		})
-		.then((collection) => {
-			const revisions = collection.toJSON();
-			const props = generateProps(req, res, {
-				revisions
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EntityRevisions
-						entity={props.entity}
-						revisions={props.revisions}
-					/>
-				</Layout>
-			);
-			return res.send(target({
-				markup,
-				page: 'revisions',
-				props: escapeProps(props),
-				script: '/js/entity/entity.js'
-			}));
-		})
-		.catch(next);
+	try {
+		// get 1 more revision than required to check nextEnabled
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size + 1, RevisionModel, req);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const props = generateProps(req, res, {
+			from,
+			nextEnabled,
+			revisions: newResultsArray,
+			showRevisionEditor: true,
+			showRevisionNote: true,
+			size
+		});
+
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EntityRevisions
+					entity={props.entity}
+					{...propHelpers.extractChildProps(props)}
+				/>
+			</Layout>
+		);
+		return res.send(target({
+			markup,
+			page: 'revisions',
+			props: escapeProps(props),
+			script: '/js/entity/entity.js'
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
+}
+
+// eslint-disable-next-line consistent-return
+export async function updateDisplayedRevisions(
+	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
+) {
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	try {
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size, RevisionModel, req);
+		res.send(orderedRevisions);
+	}
+	catch (err) {
+		return next(err);
+	}
 }
 
 function _createNote(orm, content, editorID, revision, transacting) {
@@ -267,13 +294,12 @@ export function handleDelete(
 		// Get the parents of the new revision
 		const revisionParentsPromise = newRevisionPromise
 			.then((revision) =>
-				revision.related('parents').fetch({transacting})
-			);
+				revision.related('parents').fetch({require: false, transacting}));
 
 		// Add the previous revision as a parent of this revision.
 		const parentAddedPromise =
 			revisionParentsPromise.then(
-				(parents) => parents.attach(
+				(parents) => parents && parents.attach(
 					entity.revisionId, {transacting}
 				)
 			);
@@ -303,10 +329,12 @@ export function handleDelete(
 				masterRevisionId: entityRevision.get('id')
 			}).save(null, {transacting}));
 
+		const searchDeleteEntityPromise = search.deleteEntity(entity)
+			.catch(err => { log.error(err); });
 		return Promise.join(
 			editorUpdatePromise, newRevisionPromise, notePromise,
 			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise,
-			search.deleteEntity(entity)
+			searchDeleteEntityPromise
 		);
 	});
 
@@ -364,6 +392,14 @@ async function processEditionSets(
 	);
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
+
+	// if areaId is not present, set it to null.
+	// otherwise it shows error while comparing old and new releaseEvent;
+
+	if (releaseEvents[0] && _.isNil(releaseEvents[0].areaId)) {
+		releaseEvents[0].areaId = null;
+	}
+
 	const newReleaseEventSetIDPromise =
 		orm.func.releaseEvent.updateReleaseEventSet(
 			orm, transacting, oldReleaseEventSet, releaseEvents
@@ -423,7 +459,7 @@ async function getNextAliasSet(orm, transacting, currentEntity, body) {
 
 	const oldAliasSet = await (
 		id &&
-		new AliasSet({id}).fetch({transacting, withRelated: ['aliases']})
+		new AliasSet({id}).fetch({require: false, transacting, withRelated: ['aliases']})
 	);
 
 	return orm.func.alias.updateAliasSet(
@@ -441,6 +477,7 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 	const oldIdentifierSet = await (
 		id &&
 		new IdentifierSet({id}).fetch({
+			require: false,
 			transacting, withRelated: ['identifiers']
 		})
 	);
@@ -460,6 +497,7 @@ async function getNextRelationshipSets(
 	const oldRelationshipSet = await (
 		id &&
 		new RelationshipSet({id}).fetch({
+			require: false,
 			transacting, withRelated: ['relationships']
 		})
 	);
@@ -479,12 +517,12 @@ async function getNextAnnotation(
 	const id = _.get(currentEntity, ['annotation', 'id']);
 
 	const oldAnnotation = await (
-		id && new Annotation({id}).fetch({transacting})
+		id && new Annotation({id}).fetch({require: false, transacting})
 	);
 
-	return orm.func.annotation.updateAnnotation(
+	return body.annotation ? orm.func.annotation.updateAnnotation(
 		orm, transacting, oldAnnotation, body.annotation, revision
-	);
+	) : Promise.resolve(null);
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {
@@ -493,7 +531,7 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 	const id = _.get(currentEntity, ['disambiguation', 'id']);
 
 	const oldDisambiguation = await (
-		id && new Disambiguation({id}).fetch({transacting})
+		id && new Disambiguation({id}).fetch({require: false, transacting})
 	);
 
 	return orm.func.disambiguation.updateDisambiguation(
@@ -630,14 +668,15 @@ async function saveEntitiesAndFinishRevision(
 	const parentsAddedPromise =
 		setParentRevisions(transacting, newRevision, parentRevisionIDs);
 
-	await Promise.all([
+	/** model.save returns a refreshed model */
+	const [savedEntities, ...others] = await Promise.all([
 		entitiesSavedPromise,
 		editorUpdatePromise,
 		parentsAddedPromise,
 		notePromise
 	]);
 
-	return mainEntity;
+	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
 }
 
 export function handleCreateOrEditEntity(
@@ -703,8 +742,9 @@ export function handleCreateOrEditEntity(
 
 		// If there are no differences, bail
 		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
-			throw new Error('Entity did not change');
+			throw new error.FormSubmissionError('No Updated Field');
 		}
+
 
 		// Fetch or create main entity
 		const mainEntity = await fetchOrCreateMainEntity(
@@ -735,12 +775,11 @@ export function handleCreateOrEditEntity(
 			editorJSON.id, body.note
 		);
 
-		const refreshedEntity = await savedMainEntity.refresh({
-			transacting,
-			withRelated: ['defaultAlias', 'aliasSet.aliases']
-		});
+		/** savedMainEntity is already updated, but without relations (we need the aliases for search reindexing) */
+		const savedEntityWithRelationships = await savedMainEntity.load(['aliasSet.aliases'],
+			{transacting});
 
-		return refreshedEntity.toJSON();
+		return savedEntityWithRelationships.toJSON();
 	});
 
 	const achievementPromise = entityEditPromise.then(
@@ -831,8 +870,34 @@ export function constructRelationships(relationshipSection) {
 	);
 }
 
-export function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
+/**
+ * Returns the index of the default alias if defined in the aliasSet.
+ * If there is no defaultAliasId, return the first alias where default = true.
+ * Returns null if there are no aliases in the set.
+ * @param {Object} aliasSet - The entity's aliasSet returned by the ORM
+ * @param {Object[]} aliasSet.aliases - The array of aliases contained in the set
+ * @param {string} aliasSet.defaultAliasId - The id of the set's default alias
+ * @returns {?number} The index of the default alias, or 0; returns null if 0 aliases in set
+ */
+export function getDefaultAliasIndex(aliasSet) {
+	if (_.isNil(aliasSet)) {
+		return null;
+	}
+	const {aliases, defaultAliasId} = aliasSet;
+	if (!aliases || !aliases.length) {
+		return null;
+	}
+	let index;
+	if (!_.isNil(defaultAliasId) && isFinite(defaultAliasId)) {
+		let defaultAliasIdNumber = defaultAliasId;
+		if (_.isString(defaultAliasId)) {
+			defaultAliasIdNumber = Number(defaultAliasId);
+		}
+		index = aliases.findIndex((alias) => alias.id === defaultAliasIdNumber);
+	}
+	else {
+		index = aliases.findIndex((alias) => alias.default);
+	}
 	return index > 0 ? index : 0;
 }
 

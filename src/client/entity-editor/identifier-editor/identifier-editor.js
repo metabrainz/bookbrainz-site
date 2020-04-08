@@ -19,7 +19,7 @@
 import {Button, Col, Modal, Row} from 'react-bootstrap';
 import {addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierRow from './identifier-row';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -59,7 +59,7 @@ const IdentifierEditor = ({
 
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
-	const helpIconElement = <Icon className="fa-sm" data-tip={helpText} name="question-circle"/>;
+	const helpIconElement = <FontAwesomeIcon className="fa-sm" data-tip={helpText} icon="question-circle"/>;
 	const helpTooltipElement = <ReactTooltip multiline delayShow={50} effect="solid" place="right" type="dark"/>;
 
 	return (
@@ -89,7 +89,8 @@ const IdentifierEditor = ({
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
 						<Button bsStyle="success" onClick={onAddIdentifier}>
-							Add identifier
+							<FontAwesomeIcon icon="plus"/>
+							<span>&nbsp;Add identifier</span>
 						</Button>
 					</Col>
 				</Row>

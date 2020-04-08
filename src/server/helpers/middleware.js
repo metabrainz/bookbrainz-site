@@ -81,6 +81,7 @@ export function loadEntityRelationships(req, res, next) {
 		.then(
 			() => RelationshipSet.forge({id: entity.relationshipSetId})
 				.fetch({
+					require: false,
 					withRelated: [
 						'relationships.source',
 						'relationships.target',
@@ -96,7 +97,7 @@ export function loadEntityRelationships(req, res, next) {
 				const model = utils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
-					.fetch({withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
+					.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
 			}
 
 			/**
@@ -119,11 +120,6 @@ export function loadEntityRelationships(req, res, next) {
 			);
 		})
 		.then((relationships) => {
-			// Set rendered relationships on relationship objects
-			relationships.forEach((relationship) => {
-				relationship.rendered = renderRelationship(relationship);
-			});
-
 			next();
 			return null;
 		})
@@ -143,7 +139,10 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 
 	return async (req, res, next, bbid) => {
 		const {orm} = req.app.locals;
-		if (commonUtils.isValidBBID(bbid)) {
+		if (req.path.toLowerCase() === '/create') {
+			return next('route');
+		}
+		else if (commonUtils.isValidBBID(bbid)) {
 			try {
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				if (!entity.dataId) {
@@ -160,7 +159,8 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 				return next(new error.NotFoundError(errMessage, req));
 			}
 		}
-
-		return next('route');
+		else {
+			return next(new error.BadRequestError('Invalid BBID', req));
+		}
 	};
 }

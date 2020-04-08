@@ -154,7 +154,7 @@ export function showEntityEditions(entity) {
 	);
 }
 
-export function getEntityLabel(entity) {
+export function getEntityLabel(entity, returnHTML = true) {
 	if (entity.defaultAlias) {
 		return `${entity.defaultAlias.name} `;
 	}
@@ -165,10 +165,15 @@ export function getEntityLabel(entity) {
 		if (entity.parentAlias) {
 			deletedEntityName = entity.parentAlias.name;
 		}
-		return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
+		if (returnHTML) {
+			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
+		}
+		return `${deletedEntityName}`;
 	}
-
-	return <span title={`Unnamed ${entity.type} ${entity.bbid}`}>(unnamed)</span>;
+	if (returnHTML) {
+		return <span title={`Unnamed ${entity.type} ${entity.bbid}`}>(unnamed)</span>;
+	}
+	return 'Unnamed';
 }
 
 export function getEditionReleaseDate(edition) {
@@ -240,7 +245,7 @@ export function genEntityIconHTMLElement(entityType, size = '1x', margin = true)
 	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
 	return (
 		<FontAwesomeIcon
-			className={margin ? 'margin-right-0-5' : ''}
+			className={margin ? 'margin-right-0-3' : ''}
 			icon={ENTITY_TYPE_ICONS[entityType]}
 			size={size}
 			title={entityType}

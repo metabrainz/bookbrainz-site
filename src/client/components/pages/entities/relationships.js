@@ -18,9 +18,10 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import Relationship from '../../../entity-editor/relationship-editor/relationship';
 
 
-function EntityRelationships({relationships}) {
+function EntityRelationships({contextEntity, relationships}) {
 	return (
 		<div>
 			<h2>Relationships</h2>
@@ -28,11 +29,16 @@ function EntityRelationships({relationships}) {
 			<ul className="list-unstyled">
 				{relationships.map((relationship) => (
 					<li
-						dangerouslySetInnerHTML={{
-							__html: relationship.rendered
-						}}
 						key={relationship.id}
-					/>
+					>
+						<Relationship
+							link
+							contextEntity={contextEntity}
+							relationshipType={relationship.type}
+							sourceEntity={relationship.source}
+							targetEntity={relationship.target}
+						/>
+					</li>
 				))}
 			</ul>
 			}
@@ -41,6 +47,7 @@ function EntityRelationships({relationships}) {
 }
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
+	contextEntity: PropTypes.object.isRequired,
 	relationships: PropTypes.array.isRequired
 };
 

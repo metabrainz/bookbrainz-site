@@ -170,6 +170,11 @@ function diffRevisionsWithParents(revisions) {
 					(parent) => Promise.props({
 						changes: revision.diff(parent),
 						entity: revision.related('entity')
+					}),
+					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
+					() => Promise.props({
+						changes: revision.diff(null),
+						entity: revision.related('entity')
 					})
 				)
 	));
@@ -189,16 +194,28 @@ router.get('/:id', (req, res, next) => {
 	const revisionPromise = new Revision({id: req.params.id})
 		.fetch({
 			withRelated: [
-				'author', 'author.titleUnlock.title', 'notes', 'notes.author',
+				'author',
+				'author.titleUnlock.title',
+				{
+					'notes'(q) {
+						q.orderBy('note.posted_at');
+					}
+				},
+				'notes.author',
 				'notes.author.titleUnlock.title'
 			]
-		});
+		})
+		.catch(Revision.NotFoundError, () => next(new error.NotFoundError('Revision not found', req)));
 
 	function _createRevision(model) {
 		return model.forge()
 			.where('id', req.params.id)
-			.fetchAll({withRelated: ['entity']})
-			.then(diffRevisionsWithParents);
+			.fetchAll({
+				merge: false,
+				remove: false,
+				require: false,
+				withRelated: ['entity']
+			}).then(diffRevisionsWithParents);
 	}
 
 	const authorDiffsPromise = _createRevision(AuthorRevision);

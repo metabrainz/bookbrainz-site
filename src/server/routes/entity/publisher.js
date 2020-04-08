@@ -101,6 +101,12 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {PublisherRevision} = req.app.locals.orm;
+	_setPublisherTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, PublisherRevision);
+});
+
 // Creation
 
 router.get(
@@ -116,7 +122,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Publisher'
+			title: props.heading
 		}));
 	}
 );
@@ -129,7 +135,7 @@ function publisherToFormState(publisher) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(publisher.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -137,7 +143,6 @@ function publisherToFormState(publisher) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(publisher.disambiguation),
 		identifierEditorVisible: false
 	};
 
@@ -167,7 +172,6 @@ function publisherToFormState(publisher) {
 		ended: publisher.ended,
 		type: publisher.publisherType && publisher.publisherType.id
 	};
-
 	const relationshipSection = {
 		lastRelationships: null,
 		relationshipEditorProps: null,
@@ -207,7 +211,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Publisher'
+			title: props.heading
 		}));
 	}
 );
@@ -225,13 +229,13 @@ function transformNewForm(data) {
 	const relationships = entityRoutes.constructRelationships(
 		data.relationshipSection
 	);
-
 	return {
 		aliases,
 		areaId: data.publisherSection.area && data.publisherSection.area.id,
-		beginDate: dateObjectToISOString(data.publisherSection.beginDate),
+		beginDate: data.publisherSection.beginDate ?
+			dateObjectToISOString(data.publisherSection.beginDate) : '',
 		disambiguation: data.nameSection.disambiguation,
-		endDate: data.publisherSection.ended ?
+		endDate: data.publisherSection.endDate ?
 			dateObjectToISOString(data.publisherSection.endDate) : '',
 		ended: data.publisherSection.ended,
 		identifiers,

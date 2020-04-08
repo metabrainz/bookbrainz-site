@@ -20,23 +20,20 @@
  */
 /* eslint-disable max-len */
 import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../helpers/utils';
 
-import {genEntityIconHTMLElement, getEntityLabel} from '../../helpers/entity';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {isNil as _isNil} from 'lodash';
+import RevisionsTable from './parts/revisions-table';
 
 
-const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
-const {formatDate} = utilsHelper;
+const {Alert, Button, Col, Grid, Row} = bootstrap;
+
 
 class IndexPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
 		this.renderHeader = this.renderHeader.bind(this);
 		this.renderContent = this.renderContent.bind(this);
 	}
@@ -166,9 +163,6 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
-		const {recent} = this.props;
-		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
-
 		return (
 			<Grid>
 				<Row>
@@ -187,6 +181,31 @@ class IndexPage extends React.Component {
 					</Col>
 				</Row>
 				<hr/>
+				{!this.props.isLoggedIn && this.renderAboutUs()}
+				<div>
+					<RevisionsTable
+						results={this.props.recent}
+						showEntities={this.props.showEntities}
+						showRevisionEditor={this.props.showRevisionEditor}
+					/>
+					<div className="text-center">
+						<Button
+							bsStyle="primary"
+							href="/revisions"
+						>
+							<FontAwesomeIcon className="margin-right-0-5" icon="list-ul"/>
+							See all revisions
+						</Button>
+					</div>
+				</div>
+			</Grid>
+		);
+	}
+
+	renderAboutUs() {
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
+		return (
+			<React.Fragment>
 				<Row>
 					<Col className="text-center margin-top-4" md={2}>
 						<FontAwesomeIcon icon="user" size="5x"/>
@@ -194,15 +213,15 @@ class IndexPage extends React.Component {
 					<Col md={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
-							First off,{' '}
+					First off,{' '}
 							<a href="/about" target="blank">
-								read about us
+						read about us
 							</a>{' and '}
 							<a href="/contribute" target="blank">
-								how you can help
+						how you can help
 							</a>. Then, if you think you want
-							to stick around, hit the button below to sign up
-							for a free BookBrainz account!
+					to stick around, hit the button below to sign up
+					for a free BookBrainz account!
 						</p>
 					</Col>
 				</Row>
@@ -213,39 +232,10 @@ class IndexPage extends React.Component {
 						bsStyle="success"
 						href="/register"
 					>
-						Register!
+				Register!
 					</Button>
 				</div>
-				{recent &&
-					<div>
-						<hr/>
-						<Row>
-							<Col md={12}>
-								<h2 className="text-center">Recent Activity</h2>
-								<ListGroup>
-									{recent.map((entity) => (
-										<ListGroupItem
-											href={`/revision/${entity.revisionId}`}
-											key={entity.revisionId}
-										>
-											<Row>
-												<Col md={2}>{`r${entity.revisionId}`}</Col>
-												<Col md={6}>
-													{genEntityIconHTMLElement(entity.type)}
-													{getEntityLabel(entity)}
-												</Col>
-												<Col md={4}>
-													{formatDate(new Date(entity.createdAt))}
-												</Col>
-											</Row>
-										</ListGroupItem>
-									))}
-								</ListGroup>
-							</Col>
-						</Row>
-					</div>
-				}
-			</Grid>
+			</React.Fragment>
 		);
 	}
 
@@ -262,10 +252,16 @@ class IndexPage extends React.Component {
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
 	disableSignUp: PropTypes.bool,
-	recent: PropTypes.array.isRequired
+	isLoggedIn: PropTypes.bool.isRequired,
+	recent: PropTypes.array.isRequired,
+	showEntities: PropTypes.bool,
+	showRevisionEditor: PropTypes.bool
+
 };
 IndexPage.defaultProps = {
-	disableSignUp: false
+	disableSignUp: false,
+	showEntities: true,
+	showRevisionEditor: true
 };
 
 export default IndexPage;

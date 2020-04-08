@@ -83,6 +83,12 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, WorkRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {WorkRevision} = req.app.locals.orm;
+	_setWorkTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
+});
+
 function entityToOption(entity) {
 	return _.isNil(entity) ? null :
 		{
@@ -112,15 +118,15 @@ router.get(
 		if (req.query.author) {
 			propsPromise.author =
 				Author.forge({bbid: req.query.author})
-					.fetch({withRelated: 'defaultAlias'})
-					.then((data) => entityToOption(data.toJSON()));
+					.fetch({require: false, withRelated: 'defaultAlias'})
+					.then((data) => data && entityToOption(data.toJSON()));
 		}
 
 		if (req.query.edition) {
 			propsPromise.edition =
 				Edition.forge({bbid: req.query.edition})
-					.fetch({withRelated: 'defaultAlias'})
-					.then((data) => entityToOption(data.toJSON()));
+					.fetch({require: false, withRelated: 'defaultAlias'})
+					.then((data) => data && entityToOption(data.toJSON()));
 		}
 
 		function render(props) {
@@ -144,7 +150,7 @@ router.get(
 				markup,
 				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
-				title: 'Add Work'
+				title: props.heading
 			}));
 		}
 		Promise.props(propsPromise)
@@ -152,11 +158,6 @@ router.get(
 			.catch(next);
 	}
 );
-
-function getDefaultAliasIndex(aliases) {
-	const index = aliases.findIndex((alias) => alias.default);
-	return index > 0 ? index : 0;
-}
 
 function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */
@@ -166,7 +167,7 @@ function workToFormState(work) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(work.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -174,7 +175,6 @@ function workToFormState(work) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(work.disambiguation),
 		identifierEditorVisible: false
 	};
 
@@ -243,7 +243,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Work'
+			title: props.heading
 		}));
 	}
 );

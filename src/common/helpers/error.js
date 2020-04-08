@@ -77,6 +77,16 @@ export class FormSubmissionError extends SiteError {
 	}
 }
 
+export class BadRequestError extends SiteError {
+	static get defaultMessage() {
+		return 'Bad Request';
+	}
+
+	static get status() {
+		return status.BAD_REQUEST;
+	}
+}
+
 export class NotAuthenticatedError extends _AuthenticationError {
 	static get defaultMessage() {
 		return 'You are not currently authenticated';

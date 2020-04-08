@@ -13,16 +13,17 @@ are arranged as follows:
 
 * `config` - the config to be used when running the site; copy the example files
   and edit, dropping the `.example` suffix.
+* `docker` - deployment files and configurations
 * `scripts` - scripts used during the development and deployment of BookBrainz.
+* `sql` - PostgreSQL database schemas and migration files—formerly separated in https://github.com/bookbrainz/bookbrainz-sql
 * `src` - node.js source files defining the site logic and user interface.
 * `static` - static files which are served by node as part of the site.
-* `templates` - Jade templates defining how the site looks - we're slowly
-  replacing these with React.
 * `test` - unit tests and functional tests for the site.
 
 Additionally, after building the client JavaScript (see below), the following
 directories will exist:
 
+* `lib` - compiled and minified server files
 * `static/stylesheets` - the CSS generated from compiling the project LESS files
   (`src/client/stylesheets`).
 * `static/js` - minified JavaScript files which are referred to by the site
@@ -76,15 +77,17 @@ Note: If you are using docker-toolbox you need to replace [elasticsearch:9200](/
 To clone the repository and point the local HEAD to the latest commit in the
 `stable` branch, something like the following command should work:
 
-    git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git
+    git clone --recurse-submodules https://github.com/bookbrainz/bookbrainz-site.git
 
 Since this project makes use of
 git submodules, you
-need to use `git clone --recursive` to clone it. Alternatively you can follow
-the directions in the documentation [linked here](https://www.git-scm.com/book/en/v2/Git-Tools-Submodules) to manually initialize
-submodules.
+need to use `git clone --recurse-submodules` to clone it. Alternatively, to manually initialize
+submodules, run these two commands:
 
-Currently used submodules:
+	git submodule init
+	git submodule update
+
+Currently used submodule:
 * [MonkeyDo/lobes](https://github.com/MonkeyDo/lobes) in
   `src/client/stylesheets/lobes`
 
@@ -139,7 +142,16 @@ Using a debugger will allow you to pause and inspect the server code as it is be
 
 If you do not want to use Docker at all, you can also [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md)
 
+## Watch files and live reload 
 
+When doing local development on your computer, you would have to stop and rebuild the application after every change you make to the codebase, then refresh the page to see the changes.
+
+There is a more convenient development option set up for the project called "live reloading".
+Saving a file will trigger a rebuild of the project (the "watch" part), and changes will automatically be reflected in the web page without the need to reload (the "live reload" part).
+The current state of your page will also be preserved that way.
+
+You will find the documentation for [watching files and live reloading here](./NODEJS_SETUP.md/#Watch-files-and-live-reload-with-Webpack)
+ 
 
 # Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:

@@ -193,6 +193,12 @@ class Layout extends React.Component {
 						{' Statistics '}
 					</NavItem>
 				</Nav>
+				<Nav pullRight>
+					<NavItem href="/revisions">
+						<FontAwesomeIcon icon="list-ul"/>
+						{' Revisions '}
+					</NavItem>
+				</Nav>
 				{!(homepage || hideSearch) && (
 					<form
 						action="/search"

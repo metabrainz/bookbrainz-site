@@ -83,6 +83,12 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {AuthorRevision} = req.app.locals.orm;
+	_setAuthorTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
+});
+
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
@@ -99,7 +105,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Add Author'
+			title: props.heading
 		}));
 	}
 );
@@ -112,7 +118,7 @@ function authorToFormState(author) {
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(author.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -120,7 +126,6 @@ function authorToFormState(author) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		disambiguationVisible: Boolean(author.disambiguation),
 		identifierEditorVisible: false
 	};
 
@@ -196,7 +201,7 @@ router.get(
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: 'Edit Author'
+			title: props.heading
 		}));
 	}
 );
@@ -224,11 +229,13 @@ function transformNewForm(data) {
 		aliases,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
-		beginDate: dateObjectToISOString(data.authorSection.beginDate),
+		beginDate: data.authorSection.beginDate ?
+			dateObjectToISOString(data.authorSection.beginDate) : '',
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.authorSection.endArea &&
 			data.authorSection.endArea.id,
-		endDate: data.authorSection.ended ? dateObjectToISOString(data.authorSection.endDate) : '',
+		endDate: data.authorSection.endDate ?
+			dateObjectToISOString(data.authorSection.endDate) : '',
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,

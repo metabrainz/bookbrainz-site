@@ -21,7 +21,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import FontAwesome from 'react-fontawesome';
+import {keys, values} from 'lodash';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Line} from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -32,6 +34,7 @@ const {formatDate} = utilsHelper;
 class EditorProfileTab extends React.Component {
 	constructor(props) {
 		super(props);
+		this.renderActivityGraph = this.renderActivityGraph.bind(this);
 		this.renderBasicInfo = this.renderBasicInfo.bind(this);
 		this.renderStats = this.renderStats.bind(this);
 		this.renderBadges = this.renderBadges.bind(this);
@@ -76,7 +79,7 @@ class EditorProfileTab extends React.Component {
 								href="/editor/edit"
 								title="Edit basic editor info"
 							>
-								<FontAwesome name="pencil"/>{' '}Edit Profile
+								<FontAwesomeIcon icon="pencil-alt"/>{' '}Edit Profile
 							</Button>
 						</small>
 					}
@@ -188,12 +191,55 @@ class EditorProfileTab extends React.Component {
 		);
 	}
 
+	renderActivityGraph() {
+		const {activityData, totalRevisions} = this.props.editor;
+		const months = keys(activityData);
+		const numberOfRevisions = values(activityData);
+
+		if (!totalRevisions) {
+			return null;
+		}
+
+		const data = {
+			datasets: [
+				{
+					backgroundColor: 'rgba(235,116,59,0.2)',
+					borderColor: 'rgba(235,116,59,1)',
+					borderWidth: 1,
+					data: numberOfRevisions,
+					hoverBackgroundColor: 'rgba(235,116,59,0.4)',
+					hoverBorderColor: 'rgba(235,116,59,1)',
+					label: 'Revisions'
+				}
+			],
+			labels: months
+		};
+
+		return (
+			<div>
+				<Line
+					data={data}
+					options={{
+						responsive: true
+					}}
+				/>
+			</div>
+		);
+	}
+
 	render() {
 		return (
 			<Row>
 				<Col md={12}>
 					{this.renderBasicInfo()}
+				</Col>
+				<Col md={3}>
 					{this.renderStats()}
+				</Col>
+				<Col md={9}>
+					{this.renderActivityGraph()}
+				</Col>
+				<Col md={12}>
 					{this.renderBadges()}
 				</Col>
 			</Row>

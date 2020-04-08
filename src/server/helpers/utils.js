@@ -2,6 +2,7 @@
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2017  Sean Burke
  				 2019       Akhilesh Kumar (@akhilesh26)
+ 				 2020		Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +22,8 @@
 // @flow
 
 import Promise from 'bluebird';
-import {kebabCase as _kebabCase} from 'lodash';
+import _ from 'lodash';
+
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
@@ -30,7 +32,7 @@ import {kebabCase as _kebabCase} from 'lodash';
  * @returns {string} - URL path to interact with entity
  */
 export function getEntityLink(entity: Object): string {
-	return `/${_kebabCase(entity.type)}/${entity.bbid}`;
+	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
 }
 
 /**
@@ -51,9 +53,9 @@ export function getEntityModels(orm: Object): Object {
 }
 
 export function getDateBeforeDays(days) {
-	 const date = new Date();
-	 date.setDate(date.getDate() - days);
-	 return date;
+	const date = new Date();
+	date.setDate(date.getDate() - days);
+	return date;
 }
 
 export function filterIdentifierTypesByEntityType(
@@ -183,11 +185,12 @@ export function incrementEditorEditCountById(
 ): Promise<Object> {
 	const {Editor} = orm;
 	return new Editor({id})
-		.fetch({transacting})
+		.fetch({require: true, transacting})
 		.then((editor) => {
 			editor.incrementEditCount();
 			return editor.save(null, {transacting});
-		});
+		})
+		.catch(Editor.NotFoundError, err => Promise.reject(err));
 }
 
 /**
@@ -218,4 +221,20 @@ export function getAdditionalRelations(modelType) {
 		return ['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat'];
 	}
 	return [];
+}
+
+export function getNextEnabledAndResultsArray(array, size) {
+	if (array.length > size) {
+		while (array.length > size) {
+			array.pop();
+		}
+		return {
+			newResultsArray: array,
+			nextEnabled: true
+		};
+	}
+	return {
+		newResultsArray: array,
+		nextEnabled: false
+	};
 }

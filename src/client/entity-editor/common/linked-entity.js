@@ -19,7 +19,7 @@
 
 // @flow
 
-import FontAwesome from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
@@ -73,7 +73,7 @@ class LinkedEntity extends React.Component {
 				}
 				{' '}
 				<a onClick={this.handleChildEvent}>
-					<FontAwesome name="external-link-alt"/>
+					<FontAwesomeIcon icon="external-link-alt"/>
 				</a>
 				<span className="text-muted small" style={{float: 'right'}}>{language}</span>
 			</div>

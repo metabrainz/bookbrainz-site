@@ -19,8 +19,6 @@
  */
 
 @import "lobes/less/theme.less";
-@import "font-awesome/fontawesome.less";
-@import "font-awesome/solid.less";
 @import "react-select/select.less";
 
 
@@ -29,8 +27,7 @@ With Webpack and less-loader,
 we should be able to import directly from node_modules directory with '~'.
 The production configuration for webpack needs to be finalized before using this.
 */
-/* @import "~@fortawesome/fontawesome-free/less/fontawesome.less";
-/* @import "~@fortawesome/fontawesome-free/less/solid.less";
+/*
 @import "~react-select/less/select.less";
 @import "~react-virtualized/styles.css";
 @import "~react-virtualized-select/styles.css";
@@ -43,7 +40,7 @@ The production configuration for webpack needs to be finalized before using this
 @disabled-color: lighten(@disabled-bg,15%);
 
 .navbar.BookBrainz {
-	background: rgba(255, 255, 255, 0.9);
+	background: rgba(255, 255, 255, 1);
 	margin-bottom: 0px;
 	.nav.navbar-nav > .disabled > a {
 		color: @disabled-color;
@@ -53,6 +50,13 @@ The production configuration for webpack needs to be finalized before using this
 
 .navbar-collapse {
 	border: none !important;
+}
+
+.BookBrainz .navbar-toggle {
+	background-color: @bookbrainz;
+	&:focus {
+		background-color: @bookbrainz;
+	}
 }
 
 /* Overwrite button primary colour to retain default bootstrap meaning */
@@ -135,6 +139,8 @@ body {
 .generate-margins(6);
 .margin-right-0-5 {margin-right: unit(0.5, em) !important};
 .margin-left-0-5 {margin-left: unit(0.5, em) !important};
+.margin-right-0-3 {margin-right: unit(0.3, em) !important};
+.margin-left-0-3 {margin-left: unit(0.3, em) !important};
 
 .generate-margins-d(@n, @i: 0) when (@i =< @n) {
 	.margin-top-d@{i} {
@@ -197,6 +203,23 @@ body {
  */
 .svg-inline--fa{
 	height: 1em;
+	vertical-align: -.125em;
+}
+.fa-layers {
+	display: inline-block;
+	height: 1em;
+	position: relative;
+	text-align: center;
+	vertical-align: -0.125em;
+	min-width: 1em;
+	svg.svg-inline--fa {
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
 }
 
 /* Sticky footer styling */
@@ -311,6 +334,7 @@ html {
 	line-height: initial;
 	margin-top: 5em;
 	margin-bottom: 5em;
+	width: 100%;
 	>:last-child:not(:only-child) {
 		color: @brand-danger;
 	}
@@ -344,7 +368,7 @@ hr.wide {
 	margin-top: 40px;
     margin-bottom: 40px;
 }
-#searchPage .pager .dropdown-menu {
+#pageWithPagination .pager .dropdown-menu {
 	li {
 	  display: initial;
 	  > a,
@@ -368,4 +392,40 @@ hr.wide {
 	#searchpage-button-group > * {
 		width: 100%;
 	}
+}
+
+.BookBrainz > .container-fluid > .navbar-header{
+	margin-left: 0px;
+	margin-right: 0px;
+	>.navbar-toggle{
+		margin-right: 0px;
+	}
+
+}
+.revision-note {
+	&:not(:last-child) {
+		border-bottom: 1px solid @disabled-color;
+		margin-bottom: 0.3em;
+		padding-bottom: 0.3em;
+	}
+	.note-content {
+		quotes: "\201C" "\201D";
+		&::before {
+			content: open-quote;
+		}
+		&::after {
+			content: close-quote;
+		}
+		white-space: pre-wrap;
+	}
+	.note-author {
+		&:extend(.small);
+		font-style: italic;
+		white-space: nowrap;
+		margin-left: 0.2em;
+	}
+}
+
+.btn.wrap {
+	white-space: normal;
 }

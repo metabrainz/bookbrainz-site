@@ -19,7 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
@@ -77,7 +77,7 @@ function WorkTable({entity, works}) {
 							className="margin-top-d15"
 							href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						>
-							<Icon className="margin-right-0-5" name="plus"/>Add Work
+							<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
 						</Button>
 						<hr className="margin-bottom-d0"/>
 					</React.Fragment> :
@@ -87,7 +87,7 @@ function WorkTable({entity, works}) {
 								bsStyle="success"
 								href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 							>
-								<Icon name="pen-nib" size="2x"/>
+								<FontAwesomeIcon icon="pen-nib" size="2x"/>
 								<br/>
 								Add Work
 							</Button>
