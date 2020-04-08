@@ -76,6 +76,13 @@ router.get('/:bbid/revisions', (req, res, next) => {
 	entityRoutes.displayRevisions(req, res, next, EditionRevision);
 });
 
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {EditionRevision} = req.app.locals.orm;
+	_setEditionTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, EditionRevision);
+});
+
+
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayDeleteEntity(req, res);

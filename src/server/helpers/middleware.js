@@ -156,7 +156,8 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 				return next(new error.NotFoundError(errMessage, req));
 			}
 		}
-
-		return next('route');
+		else {
+			return next(new error.BadRequestError('Invalid BBID', req));
+		}
 	};
 }
