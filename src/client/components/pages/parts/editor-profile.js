@@ -21,8 +21,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import {Bar} from 'react-chartjs-2';
+import {keys, values} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Line} from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -191,9 +192,14 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderActivityGraph() {
-		const {activityData} = this.props.editor;
-		const months = activityData.map((value) => value.month);
-		const numberOfRevisions = activityData.map((value) => value.revisions);
+		const {activityData, totalRevisions} = this.props.editor;
+		const months = keys(activityData);
+		const numberOfRevisions = values(activityData);
+
+		if (!totalRevisions) {
+			return null;
+		}
+
 		const data = {
 			datasets: [
 				{
@@ -210,14 +216,13 @@ class EditorProfileTab extends React.Component {
 		};
 
 		return (
-			<div className="chart">
+			<div className="editor-activity-graph">
 				<div>
-					{/* eslint-disable-next-line react/no-unescaped-entities */}
-					<h2>{this.props.editor.name}'s Activity</h2>
-					<Bar
+					<h2>{this.props.editor.name}&apos;s Activity</h2>
+					<Line
 						data={data}
 						options={{
-							maintainAspectRatio: true
+							responsive: true
 						}}
 					/>
 				</div>
@@ -226,16 +231,12 @@ class EditorProfileTab extends React.Component {
 	}
 
 	render() {
-		const {editor} = this.props;
 		return (
 			<Row>
 				<Col md={12}>
 					{this.renderBasicInfo()}
-
 					{this.renderStats()}
-					{
-						editor.totalRevisions ? this.renderActivityGraph() : null
-					}
+					{this.renderActivityGraph()}
 					{this.renderBadges()}
 				</Col>
 			</Row>

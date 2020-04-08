@@ -22,6 +22,7 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
+import {eachMonthOfInterval, format} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from
 	'../../client/components/pages/parts/editor-achievements';
@@ -197,29 +198,25 @@ async function getEditorActivity(editorId, startDate, Revision) {
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', editorId)
 		.orderBy('created_at', 'ASC')
-		.fetchAll();
+		.fetchAll({
+			require: false
+		});
 
-	const revisionJSON = revisions.toJSON();
-	const revisionDates = revisionJSON.map((revision) => revision.createdAt);
+	const revisionJSON = revisions ? revisions.toJSON() : [];
+	const revisionDates = revisionJSON.map((revision) => format(new Date(revision.createdAt), 'LLL-yy'));
+	const revisionsCount = _.countBy(revisionDates);
 
-	const editorActivity = [];
+	const allMonthsInInterval = eachMonthOfInterval({
+		end: Date.now(),
+		start: startDate
+	})
+		.map(month => format(new Date(month), 'LLL-yy'))
+		.reduce((accumulator, month) => {
+			accumulator[month] = 0;
+			return accumulator;
+		}, {});
 
-	const currentDate = Date.now();
-	const thisMonth = new Date(startDate.getTime());
-
-	// eslint-disable-next-line no-unmodified-loop-condition
-	while (thisMonth <= currentDate) {
-		const nextMonth = new Date(thisMonth.getTime());
-		nextMonth.setMonth(nextMonth.getMonth() + 1);
-
-		const revisionsThisMonth = utils.numbersBetweenToAndFrom(revisionDates, thisMonth, nextMonth);
-		const monthName = `${thisMonth.toLocaleString('en-us', {month: 'short'})}-${thisMonth.getFullYear() - 2000}`;
-
-		editorActivity.push({month: monthName, revisions: revisionsThisMonth});
-
-		thisMonth.setMonth(thisMonth.getMonth() + 1);
-	}
-	return editorActivity;
+	return {...allMonthsInInterval, ...revisionsCount};
 }
 
 router.get('/:id', (req, res, next) => {
@@ -229,7 +226,6 @@ router.get('/:id', (req, res, next) => {
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
 		.then(async (editor) => {
 			const startDate = editor.createdAt;
-			startDate.setDate(1);
 			editor.activityData = await getEditorActivity(editor.id, startDate, Revision);
 			return editor;
 		})
