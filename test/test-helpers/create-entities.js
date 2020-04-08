@@ -108,23 +108,25 @@ const entityAttribs = {
 	revisionId: 1
 };
 
-export async function createEditor() {
-	editorTypeAttribs.id = random.number();
-	await new EditorType(editorTypeAttribs)
-		.save(null, {method: 'insert'});
-	const gender = await new Gender({...setData, id: random.number(), name: 'test'})
-		.save(null, {method: 'insert'});
+export function createEditor() {
+	return orm.bookshelf.knex.transaction(async (transacting) => {
+		editorTypeAttribs.id = random.number();
+		await new EditorType(editorTypeAttribs)
+			.save(null, {method: 'insert', transacting});
+		const gender = await new Gender({...setData, id: random.number(), name: 'test'})
+			.save(null, {method: 'insert', transacting});
 
-	editorAttribs.id = random.number();
-	editorAttribs.genderId = gender.get('id');
-	editorAttribs.typeId = editorTypeAttribs.id;
-	editorAttribs.name = internet.userName();
-	editorAttribs.metabrainzUserId = random.number();
-	editorAttribs.cachedMetabrainzName = editorAttribs.name;
+		editorAttribs.id = random.number();
+		editorAttribs.genderId = gender.get('id');
+		editorAttribs.typeId = editorTypeAttribs.id;
+		editorAttribs.name = internet.userName();
+		editorAttribs.metabrainzUserId = random.number();
+		editorAttribs.cachedMetabrainzName = editorAttribs.name;
 
-	const editor = await new Editor(editorAttribs)
-		.save(null, {method: 'insert'});
-	return editor;
+		const editor = await new Editor(editorAttribs)
+			.save(null, {method: 'insert', transacting});
+		return editor;
+	});
 }
 
 async function createAliasAndAliasSet() {
@@ -160,28 +162,31 @@ async function createIdentifierAndIdentifierSet() {
 		.then((model) => model.identifiers().attach([identifier]));
 }
 
-async function createRelationshipSet(sourceBbid, targetBbid, entityType, targetEntityType) {
+async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 'Author') {
 	const safeTargetBbid = targetBbid || uuidv4();
 	const safeSourceBbid = sourceBbid || uuidv4();
+
+	/* Create the relationship target entity */
+	await new Entity({bbid: safeTargetBbid, type: targetEntityType})
+		.save(null, {method: 'insert'});
+	const EntityModel = orm[`${targetEntityType}`];
+	const revisionId = random.number();
+	await new Revision({authorId: editorAttribs.id, id: revisionId})
+		.save(null, {method: 'insert'});
+	await new EntityModel({
+		aliasSetId: entityAttribs.aliasSetId, bbid: safeTargetBbid, revisionId
+	}).save(null, {method: 'insert'});
+
 	const relationshipData = {
 		id: 1,
 		sourceBbid: safeSourceBbid,
 		targetBbid: safeTargetBbid,
 		typeId: 1
 	};
-
-	if (!sourceBbid) {
-		// We're only creating a relationship set for show,
-		// we don't care what type of entity we use
-		await new Entity({bbid: safeSourceBbid, type: entityType || 'Author'})
-			.save(null, {method: 'insert'});
-	}
 	relationshipTypeData.id = random.number();
 	await new RelationshipType(relationshipTypeData)
 		.save(null, {method: 'insert'})
 		.catch(console.log);
-	await new Entity({bbid: safeTargetBbid, type: targetEntityType || 'Author'})
-		.save(null, {method: 'insert'});
 
 	relationshipData.typeId = relationshipTypeData.id;
 	relationshipData.id = random.number();
@@ -219,11 +224,11 @@ export function getRandomUUID() {
 	return uuidv4();
 }
 
-async function createEntityPrerequisites(entityBbid) {
+async function createEntityPrerequisites(entityBbid, entityType) {
 	await createEditor();
 	await createAliasAndAliasSet();
 	await createIdentifierAndIdentifierSet();
-	await createRelationshipSet(entityBbid);
+	await createRelationshipSet(entityBbid, null, entityType);
 
 	const disambiguation = await new Disambiguation({
 		comment: 'Test Disambiguation',
@@ -249,10 +254,10 @@ async function createEntityPrerequisites(entityBbid) {
 
 export async function createEdition(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-	await createEntityPrerequisites();
-
 	await new Entity({bbid, type: 'Edition'})
 		.save(null, {method: 'insert'});
+	await createEntityPrerequisites(bbid, 'Edition');
+
 	const edition = await new Edition({...entityAttribs, bbid})
 		.save(null, {method: 'insert'});
 	return edition;
@@ -262,7 +267,7 @@ export async function createWork(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
-	await createEntityPrerequisites(bbid);
+	await createEntityPrerequisites(bbid, 'Work');
 	const languageSetId = await createLanguageSet();
 
 	const workAttribs = {
@@ -279,14 +284,14 @@ export async function createWork(optionalBBID) {
 
 export async function createEditionGroup(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-	await createEntityPrerequisites();
+	await new Entity({bbid, type: 'EditionGroup'})
+		.save(null, {method: 'insert'});
+	await createEntityPrerequisites(bbid, 'EditionGroup');
 	const editionGroupAttribs = {
 		bbid,
 		typeId: random.number()
 	};
 	await new EditionGroupType({id: editionGroupAttribs.typeId, label: `Edition Group Type ${editionGroupAttribs.typeId}`})
-		.save(null, {method: 'insert'});
-	await new Entity({bbid, type: 'EditionGroup'})
 		.save(null, {method: 'insert'});
 	const editionGroup = await new EditionGroup({...entityAttribs, ...editionGroupAttribs})
 		.save(null, {method: 'insert'});
@@ -295,7 +300,9 @@ export async function createEditionGroup(optionalBBID) {
 
 export async function createAuthor(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-	await createEntityPrerequisites();
+	await new Entity({bbid, type: 'Author'})
+		.save(null, {method: 'insert'});
+	await createEntityPrerequisites(bbid, 'Author');
 	const areaId = random.number();
 	const authorAttribs = {
 		bbid,
@@ -315,8 +322,6 @@ export async function createAuthor(optionalBBID) {
 		.save(null, {method: 'insert'});
 	await new AuthorType({id: authorAttribs.typeId, label: `Author Type ${authorAttribs.typeId}`})
 		.save(null, {method: 'insert'});
-	await new Entity({bbid, type: 'Author'})
-		.save(null, {method: 'insert'});
 	const author = await new Author({...entityAttribs, ...authorAttribs})
 		.save(null, {method: 'insert'});
 	return author;
@@ -324,7 +329,9 @@ export async function createAuthor(optionalBBID) {
 
 export async function createPublisher(optionalBBID) {
 	const bbid = optionalBBID || uuidv4();
-	await createEntityPrerequisites();
+	await new Entity({bbid, type: 'Publisher'})
+		.save(null, {method: 'insert'});
+	await createEntityPrerequisites(bbid, 'Publisher');
 	const publisherAttribs = {
 		areaId: random.number(),
 		bbid,
@@ -340,8 +347,6 @@ export async function createPublisher(optionalBBID) {
 	await new Area({gid: uuidv4(), id: publisherAttribs.areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
 	await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
-		.save(null, {method: 'insert'});
-	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
 	const publisher = await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});
