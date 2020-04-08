@@ -193,6 +193,7 @@ class IndexPage extends React.Component {
 							bsStyle="primary"
 							href="/revisions"
 						>
+							<FontAwesomeIcon className="margin-right-0-5" icon="list-ul"/>
 							See all revisions
 						</Button>
 					</div>
