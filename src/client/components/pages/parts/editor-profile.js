@@ -235,8 +235,14 @@ class EditorProfileTab extends React.Component {
 			<Row>
 				<Col md={12}>
 					{this.renderBasicInfo()}
+				</Col>
+				<Col md={12}>
 					{this.renderStats()}
+				</Col>
+				<Col md={9}>
 					{this.renderActivityGraph()}
+				</Col>
+				<Col md={12}>
 					{this.renderBadges()}
 				</Col>
 			</Row>
