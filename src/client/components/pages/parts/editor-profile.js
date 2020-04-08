@@ -216,16 +216,13 @@ class EditorProfileTab extends React.Component {
 		};
 
 		return (
-			<div className="editor-activity-graph">
-				<div>
-					<h2>{this.props.editor.name}&apos;s Activity</h2>
-					<Line
-						data={data}
-						options={{
-							responsive: true
-						}}
-					/>
-				</div>
+			<div>
+				<Line
+					data={data}
+					options={{
+						responsive: true
+					}}
+				/>
 			</div>
 		);
 	}
@@ -236,7 +233,7 @@ class EditorProfileTab extends React.Component {
 				<Col md={12}>
 					{this.renderBasicInfo()}
 				</Col>
-				<Col md={12}>
+				<Col md={3}>
 					{this.renderStats()}
 				</Col>
 				<Col md={9}>
