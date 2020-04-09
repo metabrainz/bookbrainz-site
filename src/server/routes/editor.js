@@ -194,7 +194,7 @@ function getIdEditorJSONPromise(userId, req) {
 		});
 }
 
-async function getEditorActivity(editorId, startDate, Revision) {
+export async function getEditorActivity(editorId, startDate, Revision) {
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', editorId)
 		.orderBy('created_at', 'ASC')
