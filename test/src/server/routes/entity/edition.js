@@ -4,7 +4,6 @@ import app from '../../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
-
 chai.use(chaiHttp);
 const {expect} = chai;
 
@@ -41,6 +40,24 @@ describe('Edition routes', () => {
 	it('should not throw an error trying to edit an existing edition', async () => {
 		const res = await chai.request(app)
 			.get(`/edition/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error deleting an edition', async () => {
+		const res = await chai.request(app)
+			.get(`/edition/${aBBID}/delete`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error for edition revisions', async () => {
+		const res = await chai.request(app)
+			.get(`/edition/${aBBID}/revisions`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error for revision JSON page', async () => {
+		const res = await chai.request(app)
+			.get(`/edition/${aBBID}/revisions/revisions`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

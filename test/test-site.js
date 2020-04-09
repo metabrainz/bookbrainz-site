@@ -17,9 +17,9 @@
  */
 
 import app from '../src/server/app';
+
 import request from 'supertest';
 import status from 'http-status';
-
 
 process.env.NODE_ENV = 'testing';
 
@@ -58,3 +58,41 @@ describe('GET /develop', () => {
 			.expect(status.OK, done);
 	});
 });
+
+describe('GET /help', () => {
+	it('should return 200', (done) => {
+		request(app)
+			.get('/help')
+			.expect('Content-Type', 'text/html; charset=utf-8')
+			.expect(status.OK, done);
+	});
+});
+
+
+describe('GET /privacy', () => {
+	it('should return 200', (done) => {
+		request(app)
+			.get('/privacy')
+			.expect('Content-Type', 'text/html; charset=utf-8')
+			.expect(status.OK, done);
+	});
+});
+
+describe('GET /licensing', () => {
+	it('should return 200', (done) => {
+		request(app)
+			.get('/licensing')
+			.expect('Content-Type', 'text/html; charset=utf-8')
+			.expect(status.OK, done);
+	});
+});
+
+describe('GET /statistics', () => {
+	it('should return 200', (done) => {
+		request(app)
+			.get('/statistics')
+			.expect('Content-Type', 'text/html; charset=utf-8')
+			.expect(status.OK, done);
+	});
+});
+
