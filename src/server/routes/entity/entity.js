@@ -775,9 +775,11 @@ export function handleCreateOrEditEntity(
 			editorJSON.id, body.note
 		);
 
-		/** savedMainEntity is already updated, but without relations (we need the aliases for search reindexing) */
-		const savedEntityWithRelationships = await savedMainEntity.load(['aliasSet.aliases'],
-			{transacting});
+		/** savedMainEntity should already be updated, but we need to refresh the aliases for search reindexing */
+		const savedEntityWithRelationships = await savedMainEntity.refresh({
+			transacting,
+			withRelated: ['aliasSet.aliases']
+		});
 
 		return savedEntityWithRelationships.toJSON();
 	});
