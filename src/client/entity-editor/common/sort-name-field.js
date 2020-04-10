@@ -139,6 +139,16 @@ function SortNameField({
 		}
 	}
 
+	function handleCopyClick() {
+		if (input) {
+			input.getDOMNode().value = storedNameValue;
+		}
+
+		if (onChange) {
+			onChange({target: {value: storedNameValue}});
+		}
+	}
+
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
 			Sort Name
@@ -148,9 +158,12 @@ function SortNameField({
 	const guessButton =
 		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;
 
+	const copyButton =
+		<Button bsStyle="success" onClick={handleCopyClick}>Copy</Button>;
+
 	return (
 		<CustomInput
-			buttonAfter={guessButton}
+			buttonAfter={[guessButton, copyButton]}
 			label={label}
 			ref={(node) => { input = node; }}
 			tooltipText="Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'.
