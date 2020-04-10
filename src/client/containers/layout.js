@@ -27,17 +27,12 @@
 
 import '../helpers/setupIconLibrary';
 import * as bootstrap from 'react-bootstrap';
-
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import Footer from './../components/footer';
+import Footer from '../components/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
-
-if (!process.env.SSR) {
-	require('../../client/stylesheets/style.less');
-}
 
 const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 

@@ -1,7 +1,3 @@
-/* eslint import/no-commonjs: 0, 
-	import/unambiguous: 0,
-	import/no-commonjs: 0
-*/
 const path = require('path');
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -20,19 +16,23 @@ let config = {
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		revision: ['./controllers/revision.js'],
+		revisions: ['./controllers/revisions.js'],
 		search: ['./controllers/search.js'],
 		statistics: ['./controllers/statistics.js'],
 		'editor/achievement': ['./controllers/editor/achievement.js'],
 		'editor/edit': ['./controllers/editor/edit.js'],
 		'editor/editor': ['./controllers/editor/editor.js'],
 		'entity/entity': ['./controllers/entity/entity.js'],
-		'entity-editor': ['./entity-editor/controller.js']
+		'entity-editor': ['./entity-editor/controller.js'],
+		style: './stylesheets/style.less'
 	},
 	output: {
-		chunkFilename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
-		filename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
+		/** Figure out how to use manifest to load the right chunkNamed file in src/server/templates/target.js */
+		// chunkFilename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
+		// filename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
+		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'static'),
-		publicPath: '/static'
+		publicPath: '/static/'
 	},
 	mode: production ? 'production' : 'development',
 	module: {
@@ -41,43 +41,27 @@ let config = {
 				enforce: 'pre',
 				exclude: /node_modules/,
 				test: /\.(js|jsx)$/,
-				use: {
+				use: [{
 					loader: 'eslint-loader',
 					options: {
 						cache: !production,
 						fix: !production
 					}
-				}
+				}]
 			},
 			{
 				exclude: /node_modules/,
 				test: /\.(js|jsx)$/,
-				use: {
-					loader: 'babel-loader',
-					options: {
-						presets: [
-							'flow',
-							'react',
-							['env', {
-								targets: {
-									node: 'current'
-								}
-							}]
-						],
-						plugins: ['react-hot-loader/babel']
-					}
-				}
+				use: ['babel-loader']
 			},
 			{
 				test: /\.(le|c)ss$/,
 				use: [
-					{
-						loader: !production ? 'style-loader' : MiniCssExtractPlugin.loader
-					},
+					MiniCssExtractPlugin.loader,
 					{
 						loader: 'css-loader',
 						options: {
-							importLoaders: 1,
+							importLoaders: 2,
 							sourceMap: !production
 						}
 					},
@@ -96,11 +80,9 @@ let config = {
 				use: [{
 					loader: 'file-loader',
 					options: {
+						emitFile: false,
 						name: '[name].[ext]',
 						outputPath: 'webfonts/',
-						paths: [
-							path.resolve(__dirname, 'node_modules', '@fontwasome', 'fontwasome-free')
-						]
 					}
 				}]
 			},
@@ -109,11 +91,9 @@ let config = {
 				use: [{
 					loader: 'file-loader',
 					options: {
+						emitFile: false,
 						name: '[name].[ext]',
 						outputPath: 'images/',
-						paths: [
-							path.resolve(__dirname, 'src', 'stylesheets')
-						]
 					}
 				}]
 			}
@@ -128,55 +108,35 @@ let config = {
 					name: 'bundle',
 					test: /[\\/]node_modules[\\/]/
 				}
-				// Haven't figured out production less compilation yet
-				// ,
-				// styles: {
-				// 	chunks: 'all',
-				// 	enforce: true,
-				// 	name: 'style',
-				// 	test: /\.(le|c)ss$/
-				// }
 			}
 		}
 	},
 	plugins:[
 		new MiniCssExtractPlugin({
 			// chunkFilename: 'stylesheets/[id].css',
-			// filename: 'stylesheets/style.css'
-			filename: 'stylesheets/[name].css'
+			filename: 'stylesheets/style.css'
 		}),
 		new CleanWebpackPlugin(
 			[
 				'static/js',
+				'static/stylesheets',
 				// Clean up hot-update files that are created by react-hot-loader and written to disk by WriteAssetsWebpackPlugin
 				// Working on a way for WriteAssetsWebpackPlugin to ignore .hot-update.js files but no luck so far.
-				'static/**/*.hot-update.js',
-				'static/editor',
-				'static/entity'
-				/* , 'static/stylesheets' */
+				'static/**/*.hot-update.js'
 			],
 			{exclude:[".keep"]}
 		),
 		// Because of server-side rendering and the absence of a static html file we could modify with HtmlWebpackPlugin,
 		// we need the js files to exist on disk
 		new WriteAssetsWebpackPlugin({
-			extension: ['js', 'css'],
+			extension: ['js', 'css', 'less'],
 			force: true
 		})
 	]
 }
 
 
-if (production) {
-	// Haven't figured out production less compilation yet
-	/* config.optimization.splitChunks.cacheGroups.styles = {
-		chunks: 'all',
-		enforce: true,
-		name: 'style',
-		test: /\.(le|c)ss$/
-	}; */
-}
-else {
+if (!production) {
 	config.plugins = [
 		...config.plugins,
 		new webpack.NamedModulesPlugin(),
@@ -186,10 +146,13 @@ else {
 	if (process.env.BUNDLE_ANALYZER) {
 		config.plugins.push(new BundleAnalyzerPlugin());
 	}
-
+	
+	/* Add webpack HMR middleware to all entry files except for styles */
 	for (const entry in config.entry) {
 		if (Object.prototype.hasOwnProperty.call(config.entry, entry)) {
-			config.entry[entry].push('webpack-hot-middleware/client');
+			if(entry !== "style"){
+				config.entry[entry].push('webpack-hot-middleware/client');
+			}
 		}
 	}
 	config.devtool = 'inline-source-map';
