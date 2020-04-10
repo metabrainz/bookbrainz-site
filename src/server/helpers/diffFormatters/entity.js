@@ -267,13 +267,46 @@ function formatRelationshipAdd(entity, change) {
 	return changes;
 }
 
+function formatNewRelationshipSet(entity, change) {
+	const changes = [];
+	const allRelationships = change.rhs.relationships;
+	if (!allRelationships) {
+		return changes;
+	}
+	allRelationships.forEach((rhs) => {
+		if (rhs.sourceBbid === entity.get('bbid')) {
+			changes.push(
+				base.formatRow(
+					'N', 'Relationship Source Entity', null, [rhs.sourceBbid]
+				)
+			);
+		}
+		else {
+			changes.push(
+				base.formatRow(
+					'N', 'Relationship Target Entity', null, [rhs.targetBbid]
+				)
+			);
+		}
+
+		if (rhs.type && rhs.type.label) {
+			changes.push(
+				base.formatRow('N', 'Relationship Type', null, [rhs.type.label])
+			);
+		}
+	});
+	return changes;
+}
+
 function formatRelationship(entity, change) {
+	if (change.kind === 'N') {
+		return formatNewRelationshipSet(entity, change);
+	}
 	if (change.kind === 'A') {
 		if (change.item.kind === 'N') {
 			return formatRelationshipAdd(entity, change);
 		}
 	}
-
 	return null;
 }
 
@@ -294,7 +327,8 @@ function formatEntityChange(entity, change) {
 	}
 
 	const relationshipChanged =
-		_.isEqual(change.path, ['relationshipSet', 'relationships']);
+		_.isEqual(change.path, ['relationshipSet']) ||
+		_.isEqual(change.path.slice(0, 2), ['relationshipSet', 'relationships']);
 	if (relationshipChanged) {
 		return formatRelationship(entity, change);
 	}
