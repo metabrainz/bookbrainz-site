@@ -329,6 +329,10 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		};
 
 		formattedDiff.entity.type = entityType;
+		if (diff.entityAlias) {
+			const aliasJSON = diff.entityAlias.toJSON();
+			formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+		}
 
 		if (!diff.changes) {
 			formattedDiff.changes = [];

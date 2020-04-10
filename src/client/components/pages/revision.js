@@ -139,9 +139,7 @@ class RevisionPage extends React.Component {
 			<div key={diff.entity.bbid}>
 				<h3>
 					<EntityLink
-						bbid={diff.entity.bbid}
-						text={`${diff.entity.type} ${diff.entity.bbid}`}
-						type={diff.entity.type}
+						entity={diff.entity}
 					/>
 				</h3>
 				<table className="table table-bordered text-center">
