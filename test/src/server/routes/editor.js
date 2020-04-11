@@ -68,7 +68,7 @@ describe('getEditorActivity', () => {
 		expect(activityData).to.deep.equal(expectedResultObject);
 	});
 
-	it('should give count months with multiple or zero revisions', async () => {
+	it('should give count months with zero or multi revisions', async () => {
 		const revisionAttribs = {
 			authorId: editorJSON.id
 		};
