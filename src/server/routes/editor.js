@@ -194,7 +194,7 @@ function getIdEditorJSONPromise(userId, req) {
 		});
 }
 
-export async function getEditorActivity(editorId, startDate, Revision) {
+export async function getEditorActivity(editorId, startDate, Revision, endDate = Date.now()) {
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', editorId)
 		.orderBy('created_at', 'ASC')
@@ -207,7 +207,7 @@ export async function getEditorActivity(editorId, startDate, Revision) {
 	const revisionsCount = _.countBy(revisionDates);
 
 	const allMonthsInInterval = eachMonthOfInterval({
-		end: Date.now(),
+		end: endDate,
 		start: startDate
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))
