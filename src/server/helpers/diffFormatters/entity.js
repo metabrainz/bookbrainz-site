@@ -242,70 +242,95 @@ function formatRelationshipAdd(entity, change) {
 	if (!rhs) {
 		return changes;
 	}
-
+	const key = rhs.type && rhs.type.label ? `Relationship : ${rhs.type.label}` : 'Relationship';
 	if (rhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
 			base.formatRow(
-				'N', 'Relationship Source Entity', null, [rhs.sourceBbid]
+				'N', key, null, [rhs.targetBbid]
 			)
 		);
 	}
 	else {
 		changes.push(
 			base.formatRow(
-				'N', 'Relationship Target Entity', null, [rhs.targetBbid]
+				'N', key, null, [rhs.sourceBbid]
 			)
 		);
 	}
-
-	if (rhs.type && rhs.type.label) {
-		changes.push(
-			base.formatRow('N', 'Relationship Type', null, [rhs.type.label])
-		);
-	}
-
 	return changes;
 }
 
-function formatNewRelationshipSet(entity, change) {
+function formatAddOrDeleteRelationshipSet(entity, change) {
 	const changes = [];
-	const allRelationships = change.rhs.relationships;
+	let allRelationships;
+	if (change.kind === 'N') {
+		allRelationships = change.rhs.relationships;
+	}
+	if (change.kind === 'D') {
+		allRelationships = change.lhs.relationships;
+	}
 	if (!allRelationships) {
 		return changes;
 	}
-	allRelationships.forEach((rhs) => {
-		if (rhs.sourceBbid === entity.get('bbid')) {
+
+	allRelationships.forEach((relationship) => {
+		const key = relationship.type && relationship.type.label ? `Relationship Type: ${relationship.type.label}` : 'Relationship';
+		if (relationship.sourceBbid === entity.get('bbid')) {
 			changes.push(
 				base.formatRow(
-					'N', 'Relationship Source Entity', null, [rhs.sourceBbid]
+					change.kind, key, [relationship.targetBbid], [relationship.targetBbid]
 				)
 			);
 		}
 		else {
 			changes.push(
 				base.formatRow(
-					'N', 'Relationship Target Entity', null, [rhs.targetBbid]
+					change.kind, key, [relationship.sourceBbid], [relationship.sourceBbid]
 				)
-			);
-		}
-
-		if (rhs.type && rhs.type.label) {
-			changes.push(
-				base.formatRow('N', 'Relationship Type', null, [rhs.type.label])
 			);
 		}
 	});
 	return changes;
 }
 
+function formatRelationshipRemove(entity, change) {
+	const changes = [];
+	const {lhs} = change.item;
+
+	if (!lhs) {
+		return changes;
+	}
+	const key = lhs.type && lhs.type.label ? `Relationship : ${lhs.type.label}` : 'Relationship';
+	if (lhs.sourceBbid === entity.get('bbid')) {
+		changes.push(
+			base.formatRow(
+				'D', key, [lhs.targetBbid], null
+			)
+		);
+	}
+	else {
+		changes.push(
+			base.formatRow(
+				'D', key, [lhs.sourceBbid], null
+			)
+		);
+	}
+	return changes;
+}
 function formatRelationship(entity, change) {
 	if (change.kind === 'N') {
-		return formatNewRelationshipSet(entity, change);
+		return formatAddOrDeleteRelationshipSet(entity, change);
 	}
 	if (change.kind === 'A') {
 		if (change.item.kind === 'N') {
 			return formatRelationshipAdd(entity, change);
 		}
+		if (change.item.kind === 'D') {
+			return formatRelationshipRemove(entity, change);
+		}
+	}
+	if (change.kind === 'D') {
+		return formatAddOrDeleteRelationshipSet(entity, change);
 	}
 	return null;
 }
@@ -328,7 +353,7 @@ function formatEntityChange(entity, change) {
 
 	const relationshipChanged =
 		_.isEqual(change.path, ['relationshipSet']) ||
-		_.isEqual(change.path.slice(0, 2), ['relationshipSet', 'relationships']);
+		_.isEqual(change.path, ['relationshipSet', 'relationships']);
 	if (relationshipChanged) {
 		return formatRelationship(entity, change);
 	}
