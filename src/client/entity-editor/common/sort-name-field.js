@@ -159,11 +159,11 @@ function SortNameField({
 		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	const copyButton =
-		<Button bsStyle="success" onClick={handleCopyClick}>Copy</Button>;
+		<Button bsStyle="primary" onClick={handleCopyClick}>Copy</Button>;
 
 	return (
 		<CustomInput
-			buttonAfter={[guessButton, copyButton]}
+			buttonAfter={[guessButton, ' ', copyButton]}
 			label={label}
 			ref={(node) => { input = node; }}
 			tooltipText="Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'.
