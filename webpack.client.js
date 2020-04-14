@@ -4,15 +4,16 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
-
+const CompressionPlugin = require('compression-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
 
-let config = {
+const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
 		deletion: ['./controllers/deletion.js'],
+		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		revision: ['./controllers/revision.js'],
@@ -50,6 +51,7 @@ let config = {
 				}]
 			},
 			{
+				// babel configuration in .babelrc file
 				exclude: /node_modules/,
 				test: /\.(js|jsx)$/,
 				use: ['babel-loader']
@@ -129,34 +131,38 @@ let config = {
 		// Because of server-side rendering and the absence of a static html file we could modify with HtmlWebpackPlugin,
 		// we need the js files to exist on disk
 		new WriteAssetsWebpackPlugin({
-			extension: ['js', 'css', 'less'],
+			extension: ['js', 'css'],
 			force: true
 		})
-	]
+	],
+	target: 'web'
 }
 
 
+if (production) {
+	clientConfig.plugins.push(new CompressionPlugin());
+}
 if (!production) {
-	config.plugins = [
-		...config.plugins,
+	clientConfig.plugins = [
+		...clientConfig.plugins,
 		new webpack.NamedModulesPlugin(),
 		new webpack.HotModuleReplacementPlugin()
 	]
 
 	if (process.env.BUNDLE_ANALYZER) {
-		config.plugins.push(new BundleAnalyzerPlugin());
+		clientConfig.plugins.push(new BundleAnalyzerPlugin());
 	}
 	
 	/* Add webpack HMR middleware to all entry files except for styles */
-	for (const entry in config.entry) {
-		if (Object.prototype.hasOwnProperty.call(config.entry, entry)) {
+	for (const entry in clientConfig.entry) {
+		if (Object.prototype.hasOwnProperty.call(clientConfig.entry, entry)) {
 			if(entry !== "style"){
-				config.entry[entry].push('webpack-hot-middleware/client');
+				clientConfig.entry[entry].push('webpack-hot-middleware/client');
 			}
 		}
 	}
-	config.devtool = 'inline-source-map';
+	clientConfig.devtool = 'inline-source-map';
 }
 
 
-module.exports = config;
+module.exports = clientConfig;

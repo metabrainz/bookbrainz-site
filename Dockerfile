@@ -48,7 +48,6 @@ RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y
 
 COPY static/ static/
-RUN npm run mkdirs
 COPY config/ config/
 COPY sql/ sql/
 COPY src/ src/
