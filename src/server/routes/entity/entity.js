@@ -347,7 +347,7 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 				otherBBID.push(relationship.targetBbid);
 			}
 			else if (relationship.targetBbid === mainBBID) {
-				otherBBID.push(relationshipSet.sourceBbid);
+				otherBBID.push(relationship.sourceBbid);
 			}
 			return null;
 		});
@@ -393,6 +393,7 @@ export function handleDelete(
 	RevisionModel: any
 ) {
 	const {entity}: {entity: any} = res.locals;
+	console.log(entity);
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
@@ -409,7 +410,7 @@ export function handleDelete(
 
 		// Get the parents of the new revision
 		const RevisionPromiseRevision = await newRevisionPromise;
-		const revisionParentsPromise = RevisionPromiseRevision.related('parents').fetch({require: false, transacting});
+		const revisionParentsPromise = await RevisionPromiseRevision.related('parents').fetch({require: false, transacting});
 		// const revisionParentsPromise = newRevisionPromise
 		// 	.then((revision) =>
 		// 		revision.related('parents').fetch({require: false, transacting}));
@@ -473,7 +474,11 @@ export function handleDelete(
 
 		const newRevision = await newRevisionPromise;
 
-		await saveEntitiesAndFinishRevision(orm, transacting, false, newRevision, entity, otherEntities, editorJSON.id, body.note);
+		const mainEntity = await fetchOrCreateMainEntity(
+			orm, transacting, false, entity, entity.type
+		);
+
+		await saveEntitiesAndFinishRevision(orm, transacting, false, newRevision, mainEntity, otherEntities, editorJSON.id, body.note);
 
 		const searchDeleteEntityPromise = search.deleteEntity(entity)
 			.catch(err => { log.error(err); });
