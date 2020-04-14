@@ -22,7 +22,7 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-import {eachMonthOfInterval, format} from 'date-fns';
+import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import EditorContainer from '../../client/containers/editor';
@@ -195,6 +195,16 @@ function getIdEditorJSONPromise(userId, req) {
 }
 
 export async function getEditorActivity(editorId, startDate, Revision, endDate = Date.now()) {
+	if (!isValid(startDate)) {
+		throw new Error('Start date is invalid');
+	}
+	if (!isValid(endDate)) {
+		throw new Error('End date is invalid');
+	}
+	if (!isAfter(endDate, startDate)) {
+		throw new Error('Start date is greater than end date');
+	}
+
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', editorId)
 		.orderBy('created_at', 'ASC')
