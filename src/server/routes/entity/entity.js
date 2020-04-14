@@ -373,7 +373,7 @@ export function handleDelete(
 		const newEntityRevisionPromise = newRevisionPromise
 			.then((revision) => new RevisionModel({
 				bbid: entity.bbid,
-				dataId: entity.dataId,
+				dataId: null,
 				id: revision.get('id')
 			},
 			otherEntities.map((otherEntity) => ({
