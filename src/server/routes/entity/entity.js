@@ -409,16 +409,16 @@ export function handleDelete(
 
 		// Get the parents of the new revision
 		const RevisionPromiseRevision = await newRevisionPromise;
-		const revisionParentsPromise = await RevisionPromiseRevision.related('parents').fetch({require: false, transacting});
+		const revisionParentsPromise = RevisionPromiseRevision.related('parents').fetch({require: false, transacting});
 		// const revisionParentsPromise = newRevisionPromise
 		// 	.then((revision) =>
 		// 		revision.related('parents').fetch({require: false, transacting}));
 
 		// Add the previous revision as a parent of this revision.
 
-		const parents = await revisionParentsPromise;
+		const parents = revisionParentsPromise;
 
-		const parentAddedPromise = await parents && parents.attach(
+		const parentAddedPromise = parents && parents.attach(
 			entity.revisionId, {transacting}
 		);
 
@@ -442,7 +442,7 @@ export function handleDelete(
 		const newEntityRevisionPromise = await new RevisionModel({
 			bbid: entity.bbid,
 			dataId: null,
-			id: await newRevisionPromiseRevision.get('id')
+			id: newRevisionPromiseRevision.get('id')
 		}).save(null, {
 			method: 'insert',
 			transacting
@@ -458,11 +458,11 @@ export function handleDelete(
 		// 		transacting
 		// 	}));
 
-		const entityRevision = await newEntityRevisionPromise;
+		const entityRevision = newEntityRevisionPromise;
 
 		const entityHeaderPromise = await new HeaderModel({
 			bbid: entity.bbid,
-			masterRevisionId: await entityRevision.get('id')
+			masterRevisionId: entityRevision.get('id')
 		}).save(null, {transacting});
 
 		// const entityHeaderPromise = newEntityRevisionPromise
@@ -471,17 +471,15 @@ export function handleDelete(
 		// 		masterRevisionId: entityRevision.get('id')
 		// 	}).save(null, {transacting}));
 
-		const newRevision = await Promise.all(newRevisionPromise);
+		const newRevision = await newRevisionPromise;
 
 		await saveEntitiesAndFinishRevision(orm, transacting, false, newRevision, entity, otherEntities, editorJSON.id, body.note);
 
 		const searchDeleteEntityPromise = search.deleteEntity(entity)
 			.catch(err => { log.error(err); });
-		return Promise.join(
-			editorUpdatePromise, newRevisionPromise, notePromise,
+		return [editorUpdatePromise, newRevisionPromise, notePromise,
 			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise,
-			searchDeleteEntityPromise
-		);
+			searchDeleteEntityPromise];
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise);
