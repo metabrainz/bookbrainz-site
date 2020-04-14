@@ -274,6 +274,60 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	return handler.sendPromiseResult(res, revisionNotePromise);
 }
 
+async function deleteRelationships(orm, transacting, mainEntity) {
+	const mainBBID = mainEntity.bbid;
+	const {RelationshipSet} = orm;
+	const {relationshipSet} = mainEntity;
+	const otherBBID = [];
+	const otherEntities = [];
+
+	if (relationshipSet) {
+		// Create a list of BBID's that is related to the deleted entity
+		relationshipSet.relationships.map((relationship) => {
+			if (relationship.sourceBbid === mainBBID) {
+				otherBBID.push(relationship.targetBbid);
+			}
+			else if (relationship.targetBbid === mainBBID) {
+				otherBBID.push(relationshipSet.sourceBbid);
+			}
+		});
+
+		// Loop over the BBID's of other entites related to deleted entity
+		if (otherBBID.length) {
+			await Promise.all(otherBBID.map(async (entityBbid) => {
+				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
+
+				await otherEntities.push(otherEntity);
+
+				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
+					.fetch({require: false, transacting, withRelated: 'relationships'});
+
+				// Fetch other entity relationships to remove relation with the deleted entity
+				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+
+				// Filter out entites related to deleted entity
+				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
+					mainBBID !== sourceBbid && mainBBID !== targetBbid);
+
+				const newRelationshipSet = new RelationshipSet();
+
+				await newRelationshipSet.save(null, {transacting});
+
+				await orm.func.relationship.updateRelationshipSets(
+					orm, transacting, newRelationshipSet, otherEntityRelationships
+				);
+
+				otherEntity.set(
+					'relationshipSetId',
+					newRelationshipSet.get('id')
+				);
+			}));
+		}
+	}
+
+	return otherEntities;
+}
+
 export function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
@@ -283,7 +337,9 @@ export function handleDelete(
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
 
-	const entityDeletePromise = bookshelf.transaction((transacting) => {
+	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+		const otherEntities = await deleteRelationships(orm, transacting, entity);
+
 		const editorUpdatePromise =
 			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
 
@@ -313,12 +369,18 @@ export function handleDelete(
 		 * No trigger for deletions, so manually create the <Entity>Revision
 		 * and update the entity header
 		 */
+		
 		const newEntityRevisionPromise = newRevisionPromise
 			.then((revision) => new RevisionModel({
 				bbid: entity.bbid,
-				dataId: null,
+				dataId: entity.dataId,
 				id: revision.get('id')
-			}).save(null, {
+			},
+			otherEntities.map((otherEntity) => ({
+				bbid: otherEntity.bbid,
+				dataId: otherEntity.dataId,
+				id: revision.get('id')
+			}))).save(null, {
 				method: 'insert',
 				transacting
 			}));
@@ -327,7 +389,10 @@ export function handleDelete(
 			.then((entityRevision) => new HeaderModel({
 				bbid: entity.bbid,
 				masterRevisionId: entityRevision.get('id')
-			}).save(null, {transacting}));
+			}, otherEntities.map((otherEntity) => ({
+				bbid: otherEntity.bbid,
+				masterRevisionId: entityRevision.get('id')
+			}))).save(null, {transacting}));
 
 		const searchDeleteEntityPromise = search.deleteEntity(entity)
 			.catch(err => { log.error(err); });
