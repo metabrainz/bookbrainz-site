@@ -102,7 +102,6 @@ const clientConfig = {
 		]
 	},
 	optimization: {
-		minimize: production,
 		splitChunks: {
 			cacheGroups: {
 				commons: {
