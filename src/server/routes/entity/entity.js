@@ -1,4 +1,5 @@
 /*
+ * @flow
  * Copyright (C) 2016  Ben Ockmore
  *               2016  Sean Burke
  *
@@ -16,8 +17,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-// @flow
 
 import * as achievement from '../../helpers/achievement';
 import * as error from '../../../common/helpers/error';
@@ -274,6 +273,13 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	return handler.sendPromiseResult(res, revisionNotePromise);
 }
 
+async function getEntityByBBID(orm, transacting, bbid) {
+	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+
+	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
+	return model.forge({bbid}).fetch({transacting});
+}
+
 async function deleteRelationships(orm, transacting, mainEntity) {
 	const mainBBID = mainEntity.bbid;
 	const {RelationshipSet} = orm;
@@ -290,6 +296,7 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 			else if (relationship.targetBbid === mainBBID) {
 				otherBBID.push(relationshipSet.sourceBbid);
 			}
+			return null;
 		});
 
 		// Loop over the BBID's of other entites related to deleted entity
@@ -369,7 +376,7 @@ export function handleDelete(
 		 * No trigger for deletions, so manually create the <Entity>Revision
 		 * and update the entity header
 		 */
-		
+
 		const newEntityRevisionPromise = newRevisionPromise
 			.then((revision) => new RevisionModel({
 				bbid: entity.bbid,
@@ -671,12 +678,6 @@ function fetchOrCreateMainEntity(
 	return entity.fetch({transacting});
 }
 
-async function getEntityByBBID(orm, transacting, bbid) {
-	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
-
-	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
-	return model.forge({bbid}).fetch({transacting});
-}
 
 function fetchEntitiesForRelationships(
 	orm, transacting, currentEntity, relationshipSets
