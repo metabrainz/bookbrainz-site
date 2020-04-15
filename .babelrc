@@ -4,6 +4,7 @@
     "@babel/plugin-transform-modules-commonjs",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-classes",
     "@babel/plugin-transform-runtime",
     [
       "babel-plugin-transform-require-ignore",
@@ -17,8 +18,17 @@
     "@babel/preset-react",
     ["@babel/preset-env", {
       "targets": {
-        "node": "current"
-      }
+        "node": "current",
+        "browsers": [
+          "chrome >= 44",
+          "edge >= 14",
+          "firefox >= 40",
+          "ie >= 11",
+          "opera >= 43",
+          "safari >= 9"
+        ]
+      },
+      "useBuiltIns": "usage"
     }]
   ]
 }
