@@ -1,16 +1,10 @@
 {
   "plugins": [
     "lodash",
-    "transform-es2015-modules-commonjs",
-    "transform-object-rest-spread",
-    "transform-class-properties",
-    "array-includes",
-    [
-      "transform-runtime", {
-        "polyfill": false,
-        "regenerator": true
-      }
-    ],
+    "@babel/plugin-transform-modules-commonjs",
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-runtime",
     [
       "babel-plugin-transform-require-ignore",
       {
@@ -19,51 +13,12 @@
     ]
   ],
   "presets": [
-    "flow",
-    "react",
-    ["env", {
+    "@babel/preset-flow",
+    "@babel/preset-react",
+    ["@babel/preset-env", {
       "targets": {
         "node": "current"
       }
     }]
-  ],
-  "env": {
-    "browser": {
-      "plugins": [
-        "lodash",
-        "transform-es2015-modules-commonjs",
-        "transform-object-rest-spread",
-        "transform-class-properties",
-        "array-includes",
-        [
-          "transform-runtime", {
-            "polyfill": false,
-            "regenerator": true
-          }
-        ],
-        [
-          "babel-plugin-transform-require-ignore",
-          {
-            "extensions": [".less"]
-          }
-        ]
-      ],
-      "presets": [
-        "flow",
-        "react",
-        ["env", {
-          "targets": {
-            "browsers": [
-              "chrome >= 44",
-              "edge >= 14",
-              "firefox >= 40",
-              "ie >= 11",
-              "opera >= 43",
-              "safari >= 9"
-            ]
-          }
-        }]
-      ]
-    }
-  }
+  ]
 }
