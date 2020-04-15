@@ -1,5 +1,4 @@
 import {createEditor, truncateEntities} from '../../../test-helpers/create-entities';
-
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import {getEditorActivity} from '../../../../src/server/routes/editor.js';
@@ -7,7 +6,7 @@ import orm from '../../../bookbrainz-data';
 import {parseISO} from 'date-fns';
 import {random} from 'faker';
 
-
+/* eslint sort-keys: 0 */
 chai.use(chaiHttp);
 const {expect} = chai;
 
@@ -19,7 +18,7 @@ describe('getEditorActivity', () => {
 		const editor = await createEditor();
 		editorJSON = editor.toJSON();
 	});
-	after(truncateEntities);
+	afterEach(truncateEntities);
 
 	it('should not throw error when editor has zero revisions', async () => {
 		const startDate = new Date();
@@ -29,7 +28,6 @@ describe('getEditorActivity', () => {
 		const activity = await getEditorActivity(editorJSON.id, startDate, Revision, endDate);
 
 		const expectedResult = {
-			// eslint-disable-next-line sort-keys
 			'Jan-20': 0, 'Feb-20': 0, 'Mar-20': 0, 'Apr-20': 0
 		};
 		expect(activity).to.deep.equal(expectedResult);
@@ -58,9 +56,7 @@ describe('getEditorActivity', () => {
 		const activity = await getEditorActivity(editorJSON.id, startDate, Revision, endDate);
 
 		const expectedResult = {
-			// eslint-disable-next-line sort-keys
 			'Jan-20': 1, 'Feb-20': 1, 'Mar-20': 1, 'Apr-20': 1, 'May-20': 1, 'Jun-20': 1, 'Jul-20': 1,
-			// eslint-disable-next-line sort-keys
 			'Aug-20': 1, 'Sep-20': 1, 'Oct-20': 1, 'Nov-20': 1, 'Dec-20': 1
 		};
 
@@ -90,9 +86,7 @@ describe('getEditorActivity', () => {
 		const activity = await getEditorActivity(editorJSON.id, startDate, Revision, endDate);
 
 		const expectedResult = {
-			// eslint-disable-next-line sort-keys
 			'Jan-20': 1, 'Feb-20': 0, 'Mar-20': 1, 'Apr-20': 0, 'May-20': 1, 'Jun-20': 0, 'Jul-20': 1,
-			// eslint-disable-next-line sort-keys
 			'Aug-20': 0, 'Sep-20': 1, 'Oct-20': 0, 'Nov-20': 1, 'Dec-20': 0
 		};
 
@@ -100,7 +94,7 @@ describe('getEditorActivity', () => {
 	});
 
 	it('should throw an error for an invalid startDate', async () => {
-		const startDate = parseISO('bob');
+		const startDate = 'bob';
 		const endDate = new Date();
 		endDate.setFullYear(2020, 0, 1);
 		try {
@@ -115,7 +109,7 @@ describe('getEditorActivity', () => {
 	it('should throw an error for an invalid endDate', async () => {
 		const startDate = new Date();
 		startDate.setFullYear(2020, 0, 1);
-		const endDate = parseISO('bob');
+		const endDate = 'bob';
 		try {
 			await getEditorActivity(editorJSON.id, startDate, Revision, endDate);
 		}
