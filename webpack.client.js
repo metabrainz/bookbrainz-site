@@ -33,7 +33,9 @@ const clientConfig = {
 		// filename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
 		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'static'),
-		publicPath: '/static/'
+		publicPath: '/static/',
+		hotUpdateChunkFilename: 'hot/[id].[hash].hot-update.js',
+    	hotUpdateMainFilename: 'hot/[hash].hot-update.json'
 	},
 	mode: production ? 'production' : 'development',
 	module: {
@@ -123,7 +125,7 @@ const clientConfig = {
 				'static/stylesheets',
 				// Clean up hot-update files that are created by react-hot-loader and written to disk by WriteAssetsWebpackPlugin
 				// Working on a way for WriteAssetsWebpackPlugin to ignore .hot-update.js files but no luck so far.
-				'static/**/*.hot-update.js'
+				'static/hot'
 			],
 			{exclude:[".keep"]}
 		),
