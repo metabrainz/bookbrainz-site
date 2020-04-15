@@ -48,13 +48,10 @@ RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y
 
 COPY static/ static/
-RUN npm run mkdirs
 COPY config/ config/
 COPY sql/ sql/
 COPY src/ src/
 
-# Copy css/less dependencies from node_modules to src/client/stylesheets
-RUN npm run copy-client-scripts
 
 # Development target
 FROM bookbrainz-base as bookbrainz-dev

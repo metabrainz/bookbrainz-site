@@ -17,7 +17,7 @@
 At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
 
 	4. There are no css styles! My local page does not look like bookbrainz.org at all !
-	Check if you have a folder located at `src/client/stylesheets/bootstrap`. If you don't, in a terminal window at the root of the repository run this command `./scripts/copy-client-scripts.sh` and try again.
+	Try running the command `npm run build-less` from the project directory.
 
 * ElasticSearch
 

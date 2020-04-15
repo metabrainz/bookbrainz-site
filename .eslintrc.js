@@ -29,7 +29,13 @@ const options = {
 		'import',
 		'flowtype',
 		'babel'
-	]
+	],
+	settings: {
+		react: {
+			flowVersion: '0.69',
+			version: 'detect'
+		}
+	}
 };
 
 

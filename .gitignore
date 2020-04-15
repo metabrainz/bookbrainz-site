@@ -10,6 +10,7 @@
 /config/config.local.json
 
 # react-hot-loader files
+/static/hot
 /static/**/*.hot-update.js
 
 ### Node ###
