@@ -388,12 +388,25 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 	return otherEntities;
 }
 
+function fetchOrCreateMainEntity(
+	orm, transacting, isNew, currentEntity, entityType
+) {
+	const model = utils.getEntityModelByType(orm, entityType);
+
+	const entity = model.forge({bbid: currentEntity.bbid});
+
+	if (isNew) {
+		return Promise.resolve(entity);
+	}
+
+	return entity.fetch({transacting});
+}
+
 export function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
 ) {
 	const {entity}: {entity: any} = res.locals;
-	console.log(entity);
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
@@ -739,20 +752,6 @@ async function getChangedProps(
 
 		return result;
 	}, {});
-}
-
-function fetchOrCreateMainEntity(
-	orm, transacting, isNew, currentEntity, entityType
-) {
-	const model = utils.getEntityModelByType(orm, entityType);
-
-	const entity = model.forge({bbid: currentEntity.bbid});
-
-	if (isNew) {
-		return Promise.resolve(entity);
-	}
-
-	return entity.fetch({transacting});
 }
 
 
