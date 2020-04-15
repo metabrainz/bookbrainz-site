@@ -421,32 +421,7 @@ export function handleDelete(
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
-		// Get the parents of the new revision
-		// const RevisionPromiseRevision = await newRevisionPromise;
-		// const revisionParentsPromise = await RevisionPromiseRevision.related('parents').fetch({require: false, transacting});
-		// const revisionParentsPromise = newRevisionPromise
-		// 	.then((revision) =>
-		// 		revision.related('parents').fetch({require: false, transacting}));
-
-		// Add the previous revision as a parent of this revision.
-
-		// const parents = revisionParentsPromise;
-
-		// const parentAddedPromise = parents && parents.attach(
-		// 	entity.revisionId, {transacting}
-		// );
-
 		const newRevisionPromiseRevision = await newRevisionPromise;
-
-		// const notePromise = _createNote(
-		// 	orm, body.note, editorJSON.id, newRevisionPromiseRevision, transacting
-		// );
-
-
-		// const notePromise = newRevisionPromise
-		// 	.then((revision) => _createNote(
-		// 		orm, body.note, editorJSON.id, revision, transacting
-		// 	));
 
 		/*
 		 * No trigger for deletions, so manually create the <Entity>Revision
@@ -462,28 +437,12 @@ export function handleDelete(
 			transacting
 		});
 
-		// const newEntityRevisionPromise = newRevisionPromise
-		// 	.then((revision) => new RevisionModel({
-		// 		bbid: entity.bbid,
-		// 		dataId: null,
-		// 		id: revision.get('id')
-		// 	}).save(null, {
-		// 		method: 'insert',
-		// 		transacting
-		// 	}));
-
 		const entityRevision = newEntityRevisionPromise;
 
 		const entityHeaderPromise = await new HeaderModel({
 			bbid: entity.bbid,
 			masterRevisionId: entityRevision.get('id')
 		}).save(null, {transacting});
-
-		// const entityHeaderPromise = newEntityRevisionPromise
-		// 	.then((entityRevision) => new HeaderModel({
-		// 		bbid: entity.bbid,
-		// 		masterRevisionId: entityRevision.get('id')
-		// 	}).save(null, {transacting}));
 
 		const newRevision = await newRevisionPromise;
 
