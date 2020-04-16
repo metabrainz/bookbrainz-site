@@ -337,27 +337,29 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 	const mainBBID = mainEntity.bbid;
 	const {RelationshipSet} = orm;
 	const {relationshipSet} = mainEntity;
-	const otherBBID = [];
+	const otherBBIDs = [];
 	const otherEntities = [];
 
 	if (relationshipSet) {
 		// Create a list of BBID's that is related to the deleted entity
-		relationshipSet.relationships.map((relationship) => {
+		relationshipSet.relationships.foreach((relationship) => {
 			if (relationship.sourceBbid === mainBBID) {
-				otherBBID.push(relationship.targetBbid);
+				otherBBIDs.push(relationship.targetBbid);
 			}
 			else if (relationship.targetBbid === mainBBID) {
-				otherBBID.push(relationship.sourceBbid);
+				otherBBIDs.push(relationship.sourceBbid);
 			}
-			return null;
 		});
 
 		// Loop over the BBID's of other entites related to deleted entity
-		if (otherBBID.length) {
-			await Promise.all(otherBBID.map(async (entityBbid) => {
+		if (otherBBIDs.length) {
+			if (otherBBIDs.length == 0) {
+				return null;
+			}
+			await otherBBIDs.map(async (entityBbid) => {
 				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
 
-				await otherEntities.push(otherEntity);
+				otherEntities.push(otherEntity);
 
 				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
 					.fetch({require: false, transacting, withRelated: 'relationships'});
@@ -369,19 +371,17 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
 					mainBBID !== sourceBbid && mainBBID !== targetBbid);
 
-				const newRelationshipSet = new RelationshipSet();
+				
 
-				await newRelationshipSet.save(null, {transacting});
-
-				await orm.func.relationship.updateRelationshipSets(
-					orm, transacting, newRelationshipSet, otherEntityRelationships
+				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
+					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
 				);
 
 				otherEntity.set(
 					'relationshipSetId',
 					newRelationshipSet.get('id')
 				);
-			}));
+			});
 		}
 	}
 
@@ -414,52 +414,49 @@ export function handleDelete(
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		const otherEntities = await deleteRelationships(orm, transacting, entity);
 
-		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
-
-		const newRevisionPromise = new Revision({
+		const newRevision = new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
-
-		const newRevisionPromiseRevision = await newRevisionPromise;
 
 		/*
 		 * No trigger for deletions, so manually create the <Entity>Revision
 		 * and update the entity header
 		 */
 
-		const newEntityRevisionPromise = await new RevisionModel({
+		const entityRevision = await new RevisionModel({
 			bbid: entity.bbid,
 			dataId: null,
-			id: newRevisionPromiseRevision.get('id')
+			id: newRevision.get('id')
 		}).save(null, {
 			method: 'insert',
 			transacting
 		});
 
-		const entityRevision = newEntityRevisionPromise;
-
-		const entityHeaderPromise = await new HeaderModel({
+		const entityHeader = await new HeaderModel({
 			bbid: entity.bbid,
 			masterRevisionId: entityRevision.get('id')
 		}).save(null, {transacting});
-
-		const newRevision = await newRevisionPromise;
 
 		const mainEntity = await fetchOrCreateMainEntity(
 			orm, transacting, false, entity, entity.type
 		);
 
-		await saveEntitiesAndFinishRevision(orm, transacting, false, newRevision, mainEntity, otherEntities, editorJSON.id, body.note);
+		const savedMainEntity =
+			await saveEntitiesAndFinishRevision(
+				orm,
+				transacting,
+				false,
+				newRevision,
+				mainEntity,
+				otherEntities ?? [],
+				editorJSON.id,
+				body.note
+			);
 
-		const searchDeleteEntityPromise = search.deleteEntity(entity)
-			.catch(err => { log.error(err); });
-		return [editorUpdatePromise, newRevisionPromise,
-			newEntityRevisionPromise, entityHeaderPromise,
-			searchDeleteEntityPromise];
+		return savedMainEntity;
 	});
 
-	return handler.sendPromiseResult(res, entityDeletePromise);
+	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
 }
 
 type ProcessEditionSetsBody = {
