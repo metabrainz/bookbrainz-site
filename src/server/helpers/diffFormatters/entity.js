@@ -274,7 +274,7 @@ function formatAddOrDeleteRelationshipSet(entity, change) {
 	}
 
 	allRelationships.forEach((relationship) => {
-		const key = relationship.type && relationship.type.label ? `Relationship Type: ${relationship.type.label}` : 'Relationship';
+		const key = relationship.type && relationship.type.label ? `Relationship: ${relationship.type.label}` : 'Relationship';
 		if (relationship.sourceBbid === entity.get('bbid')) {
 			changes.push(
 				base.formatRow(

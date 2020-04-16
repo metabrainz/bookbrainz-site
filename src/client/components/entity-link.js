@@ -25,7 +25,8 @@ function EntityLink({entity}) {
 	return (
 		<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`}>
 			{genEntityIconHTMLElement(entity.type)}
-			{getEntityLabel(entity)} ({entity.bbid})
+			{getEntityLabel(entity)}
+			<div className="small">({entity.bbid})</div>
 		</a>
 	);
 }
