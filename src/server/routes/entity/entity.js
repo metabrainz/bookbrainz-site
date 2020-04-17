@@ -362,7 +362,7 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 					.fetch({require: false, transacting, withRelated: 'relationships'});
 
 				if (_.isNull(otherEntityRelationshipSet)) {
-					return
+					return;
 				}
 
 				// Fetch other entity relationships to remove relation with the deleted entity
@@ -375,8 +375,6 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
 					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
 				);
-
-				console.log(newRelationshipSet);
 
 				otherEntity.set(
 					'relationshipSetId',
