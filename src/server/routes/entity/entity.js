@@ -358,32 +358,19 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 			await Promise.all(otherBBIDs.map(async (entityBbid) => {
 				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
 
-				if (_.isNil(otherEntity)) {
-					return ;
-				}
-
 				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
 					.fetch({require: false, transacting, withRelated: 'relationships'});
+
+				if (_.isNull(otherEntityRelationshipSet)) {
+					return
+				}
 
 				// Fetch other entity relationships to remove relation with the deleted entity
 				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
 
 				// Filter out entites related to deleted entity
-				otherEntityRelationships = otherEntityRelationships.filter(async ({sourceBbid, targetBbid}) => {
-					let deletedNullEntity = false
-					if (entityBbid == sourceBbid) {
-						const entityRelatedToOtherEntity = await getEntityByBBID(orm, transacting, targetBbid);
-						if (entityRelatedToOtherEntity.get('dataId') == null) {
-							deletedNullEntity = true
-						}
-					} else if (entityBbid == targetBbid) {
-						const entityRelatedToOtherEntity = await getEntityByBBID(orm, transacting, sourceBbid);
-						if (entityRelatedToOtherEntity.get('dataId') == null) {
-							deletedNullEntity = true
-						}
-					}
-					return (mainBBID !== sourceBbid && mainBBID !== targetBbid) || deletedNullEntity;
-				})
+				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
+					mainBBID !== sourceBbid && mainBBID !== targetBbid);
 
 				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
 					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
