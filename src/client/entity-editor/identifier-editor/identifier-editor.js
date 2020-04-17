@@ -80,6 +80,7 @@ const IdentifierEditor = ({
 						identifiers.map((identifier, rowId) => (
 							<IdentifierRow
 								index={rowId}
+								// eslint-disable-next-line react/no-array-index-key
 								key={rowId}
 								typeOptions={identifierTypes}
 							/>

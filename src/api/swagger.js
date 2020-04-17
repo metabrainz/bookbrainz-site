@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 
 import {Router} from 'express';
 

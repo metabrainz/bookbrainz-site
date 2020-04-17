@@ -4,9 +4,7 @@ import orm from '../../../bookbrainz-data';
 
 
 const {expect} = chai;
-const {
-	bookshelf, util, Edition
-} = orm;
+const {Edition} = orm;
 
 describe('Creating an Edition', () => {
 	const bbid = getRandomUUID();

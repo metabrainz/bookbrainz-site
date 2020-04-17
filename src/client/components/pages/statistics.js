@@ -110,7 +110,7 @@ function EntityCountTable(props) {
 				<tbody>
 					{
 						allEntities.map((entity, i) => (
-							<tr key={i}>
+							<tr key={entity.modelName}>
 								<td>{i + 1}</td>
 								<td>
 									{genEntityIconHTMLElement(entity.modelName)}

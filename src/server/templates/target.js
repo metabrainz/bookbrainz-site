@@ -42,7 +42,6 @@ export default ({
 	title,
 	markup,
 	page,
-	dev,
 	props,
 	script
 }) => {

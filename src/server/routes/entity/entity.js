@@ -323,6 +323,7 @@ async function saveEntitiesAndFinishRevision(
 		setParentRevisions(transacting, newRevision, parentRevisionIDs);
 
 	/** model.save returns a refreshed model */
+	// eslint-disable-next-line no-unused-vars
 	const [savedEntities, ...others] = await Promise.all([
 		entitiesSavedPromise,
 		editorUpdatePromise,

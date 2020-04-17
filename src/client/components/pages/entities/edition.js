@@ -28,6 +28,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
 
+
 const {
 	deletedEntityMessage, extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
 	getLanguageAttribute, getRelationshipTargetByTypeId, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias

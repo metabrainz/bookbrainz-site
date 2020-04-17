@@ -92,7 +92,7 @@ const workError = 'Work not found';
 
 router.get('/:bbid',
 	makeEntityLoader('Work', workBasicRelations, workError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const workBasicInfo = await getWorkBasicInfo(res.locals.entity);
 		return res.status(200).send(workBasicInfo);
 	});
@@ -129,7 +129,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Work', aliasesRelations, workError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const workAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(workAliasesList);
 	});
@@ -164,7 +164,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Work', identifiersRelations, workError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const workIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(workIdentifiersList);
 	});
@@ -200,7 +200,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Work', relationshipsRelations, workError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const workRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(workRelationshipList);
 	});

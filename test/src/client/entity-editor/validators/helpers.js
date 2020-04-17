@@ -130,13 +130,11 @@ export function testValidateDateFunc(validationFunc, required = true) {
 		() => {
 			const result = validationFunc({}).isValid;
 			expect(result).to.equal(!required);
-		}
-	);
+		});
 }
 
 export function testValidateEndDateFunc(
-	endDateValidationfunc,
-	required = true
+	endDateValidationfunc
 ) {
 	it('should pass if the begin date occurs before the end one',
 		() => {
@@ -144,8 +142,7 @@ export function testValidateEndDateFunc(
 				res && endDateValidationfunc(datePair.first, datePair.second).isValid,
 			true);
 			expect(result).to.be.true;
-		}
-	);
+		});
 
 	it('should reject if the begin date occurs after the end one',
 		() => {
@@ -153,8 +150,7 @@ export function testValidateEndDateFunc(
 				res || endDateValidationfunc(datePair.first, datePair.second).isValid,
 			false);
 			expect(result).to.be.false;
-		}
-	);
+		});
 
 	it('should pass if the begin date is empty/undefined/invalid',
 		() => {
@@ -162,8 +158,7 @@ export function testValidateEndDateFunc(
 				res && endDateValidationfunc(datePair.first, datePair.second).isValid,
 			true);
 			expect(result).to.be.true;
-		}
-	);
+		});
 
 	it('should reject if the end date is invalid',
 		() => {
@@ -171,8 +166,7 @@ export function testValidateEndDateFunc(
 				res || endDateValidationfunc(datePair.first, datePair.second).isValid,
 			false);
 			expect(result).to.be.false;
-		}
-	);
+		});
 }
 
 

@@ -25,6 +25,7 @@ import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from './utils';
 
+import type {$Request, $Response} from 'express';
 import EntityEditor from '../../client/entity-editor/entity-editor';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
@@ -32,13 +33,13 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
-import express from 'express';
 import {generateProps} from './props';
 
 
 const {createRootReducer, getEntitySection, getValidator} = entityEditorHelpers;
 
 type EntityAction = 'create' | 'edit';
+type PassportRequest = $Request & {user: any, session: any};
 
 /**
  * Callback to get the initial state
@@ -58,9 +59,10 @@ type EntityAction = 'create' | 'edit';
  */
 export function generateEntityProps(
 	entityType: string,
-	req: express.request, res: express.response,
+	req: $Request, res: $Response,
 	additionalProps: Object,
 	initialStateCallback: (entity: ?Object) => Object =
+	// eslint-disable-next-line no-unused-vars
 	(entity) => new Object()
 ): Object {
 	const entityName = _.upperFirst(entityType);
@@ -176,8 +178,8 @@ export function makeEntityCreateOrEditHandler(
 	const validate = getValidator(entityType);
 
 	return function createOrEditHandler(
-		req: express.request,
-		res: express.response
+		req: PassportRequest,
+		res: $Response
 	) {
 		if (!validate(req.body)) {
 			const err = new error.FormSubmissionError();

@@ -18,6 +18,7 @@
 import {expect} from 'chai';
 import renderRelationship from '../src/server/helpers/render.js';
 
+
 const relationshipTests = {
 	emptyLinkPhrase: {
 		rel: {

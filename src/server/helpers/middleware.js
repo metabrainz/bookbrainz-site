@@ -22,7 +22,6 @@ import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 
 import Promise from 'bluebird';
-import renderRelationship from '../helpers/render';
 
 
 function makeLoader(modelName, propName, sortFunc) {
@@ -119,7 +118,7 @@ export function loadEntityRelationships(req, res, next) {
 				)
 			);
 		})
-		.then((relationships) => {
+		.then(() => {
 			next();
 			return null;
 		})

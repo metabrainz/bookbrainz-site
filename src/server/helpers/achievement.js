@@ -27,6 +27,7 @@ import * as error from '../../common/helpers/error';
 import Log from 'log';
 import Promise from 'bluebird';
 import config from '../../common/helpers/config';
+import {flattenDeep} from 'lodash';
 
 
 const log = new Log(config.site.log);
@@ -638,7 +639,7 @@ export function processEdit(orm, userId, revisionId) {
 				achievementToUnlockId(timeTraveller),
 				achievementToUnlockId(hotOffThePress)
 			);
-			alert = [].concat.apply([], alert);
+			alert = flattenDeep(alert);
 			alert = alert.join(',');
 			return {
 				alert,

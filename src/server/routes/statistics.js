@@ -67,8 +67,7 @@ router.get('/', async (req, res) => {
 	}
 	const allEntities = await Promise.all(queryPromises1);
 	allEntities.sort((a, b) =>
-		b.Count - a.Count
-	);
+		b.Count - a.Count);
 
 	/*
 	 *	Here We are fetching count of master revision

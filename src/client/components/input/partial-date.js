@@ -142,22 +142,16 @@ class PartialDate extends React.Component {
 		return (
 			<CustomInput
 				bsStyle={this.validationState()}
-				groupClassName={this.props.groupClassName}
-				help={this.props.help}
-				label={this.props.label}
-				labelClassName={this.props.labelClassName}
-				placeholder={this.props.placeholder}
 				ref={(ref) => this.input = ref}
 				type="text"
 				value={this.state.value}
-				wrapperClassName={this.props.wrapperClassName}
 				onChange={this.handleChange}
+				{...this.props}
 			/>
 		);
 	}
 }
 
-// TODO: pass props to underlying Input using spread syntax
 PartialDate.displayName = 'PartialDate';
 PartialDate.propTypes = {
 	customValidator: PropTypes.func,

@@ -71,7 +71,7 @@ function _searchForEntities(orm, dslQuery) {
 }
 
 async function _bulkIndexEntities(entities) {
-	if (entities.length === 0) {
+	if (!entities.length) {
 		return;
 	}
 
@@ -120,7 +120,7 @@ async function _bulkIndexEntities(entities) {
 			}, []);
 
 
-			if (entitiesToIndex.length > 0) {
+			if (entitiesToIndex.length) {
 				operationSucceeded = false;
 
 				const jitter = Math.random() * _maxJitter;
