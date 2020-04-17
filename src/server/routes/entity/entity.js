@@ -335,14 +335,13 @@ async function saveEntitiesAndFinishRevision(
 
 async function deleteRelationships(orm, transacting, mainEntity) {
 	const mainBBID = mainEntity.bbid;
-	const {RelationshipSet} = orm;
 	const {relationshipSet} = mainEntity;
 	const otherBBIDs = [];
 	const otherEntities = [];
 
 	if (relationshipSet) {
 		// Create a list of BBID's that is related to the deleted entity
-		relationshipSet.relationships.foreach((relationship) => {
+		relationshipSet.relationships.forEach((relationship) => {
 			if (relationship.sourceBbid === mainBBID) {
 				otherBBIDs.push(relationship.targetBbid);
 			}
@@ -353,11 +352,15 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 
 		// Loop over the BBID's of other entites related to deleted entity
 		if (otherBBIDs.length) {
-			if (otherBBIDs.length == 0) {
-				return null;
+			if (otherBBIDs.length === 0) {
+				return [];
 			}
-			await otherBBIDs.map(async (entityBbid) => {
+			await Promise.all(otherBBIDs.map(async (entityBbid) => {
 				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
+
+				if (_.isNil(otherEntity)) {
+					return ;
+				}
 
 				otherEntities.push(otherEntity);
 
@@ -371,17 +374,15 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
 					mainBBID !== sourceBbid && mainBBID !== targetBbid);
 
-				
-
 				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
 					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
 				);
 
 				otherEntity.set(
 					'relationshipSetId',
-					newRelationshipSet.get('id')
+					newRelationshipSet[entityBbid].get('id')
 				);
-			});
+			}));
 		}
 	}
 
@@ -414,7 +415,7 @@ export function handleDelete(
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		const otherEntities = await deleteRelationships(orm, transacting, entity);
 
-		const newRevision = new Revision({
+		const newRevision = await new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
 
@@ -448,7 +449,7 @@ export function handleDelete(
 				false,
 				newRevision,
 				mainEntity,
-				otherEntities ?? [],
+				otherEntities,
 				editorJSON.id,
 				body.note
 			);
