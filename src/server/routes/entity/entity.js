@@ -361,7 +361,7 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
 					.fetch({require: false, transacting, withRelated: 'relationships'});
 
-				if (_.isNull(otherEntityRelationshipSet)) {
+				if (_.isNil(otherEntityRelationshipSet)) {
 					return;
 				}
 
