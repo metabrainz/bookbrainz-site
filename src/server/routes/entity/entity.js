@@ -1,4 +1,5 @@
 /*
+ * @flow
  * Copyright (C) 2016  Ben Ockmore
  *               2016  Sean Burke
  *
@@ -16,8 +17,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-// @flow
 
 import * as achievement from '../../helpers/achievement';
 import * as error from '../../../common/helpers/error';
@@ -274,6 +273,136 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	return handler.sendPromiseResult(res, revisionNotePromise);
 }
 
+async function getEntityByBBID(orm, transacting, bbid) {
+	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+
+	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
+	return model.forge({bbid}).fetch({transacting});
+}
+
+async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
+	if (_.isEmpty(parentRevisionIDs)) {
+		return Promise.resolve(null);
+	}
+
+	// Get the parents of the new revision
+	const parents =
+		await newRevision.related('parents').fetch({transacting});
+
+	// Add the previous revision as a parent of this revision.
+	return parents.attach(parentRevisionIDs, {transacting});
+}
+
+async function saveEntitiesAndFinishRevision(
+	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
+	updatedEntities: [], editorID: number, note: string
+) {
+	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
+		(entityModel) => entityModel.get('revisionId')
+	)));
+
+	const entitiesSavedPromise = Promise.all(
+		_.map(updatedEntities, (entityModel) => {
+			entityModel.set('revisionId', newRevision.get('id'));
+
+			const shouldInsert =
+				entityModel.get('bbid') === mainEntity.get('bbid') && isNew;
+			const method = shouldInsert ? 'insert' : 'update';
+			return entityModel.save(null, {method, transacting});
+		})
+	);
+
+	const editorUpdatePromise =
+		utils.incrementEditorEditCountById(orm, editorID, transacting);
+
+	const notePromise = _createNote(
+		orm, note, editorID, newRevision, transacting
+	);
+
+	const parentsAddedPromise =
+		setParentRevisions(transacting, newRevision, parentRevisionIDs);
+
+	/** model.save returns a refreshed model */
+	const [savedEntities, ...others] = await Promise.all([
+		entitiesSavedPromise,
+		editorUpdatePromise,
+		parentsAddedPromise,
+		notePromise
+	]);
+
+	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
+}
+
+async function deleteRelationships(orm, transacting, mainEntity) {
+	const mainBBID = mainEntity.bbid;
+	const {relationshipSet} = mainEntity;
+	const otherBBIDs = [];
+	const otherEntities = [];
+
+	if (relationshipSet) {
+		// Create a list of BBID's that is related to the deleted entity
+		relationshipSet.relationships.forEach((relationship) => {
+			if (relationship.sourceBbid === mainBBID) {
+				otherBBIDs.push(relationship.targetBbid);
+			}
+			else if (relationship.targetBbid === mainBBID) {
+				otherBBIDs.push(relationship.sourceBbid);
+			}
+		});
+
+		// Loop over the BBID's of other entites related to deleted entity
+		if (otherBBIDs.length) {
+			if (otherBBIDs.length === 0) {
+				return [];
+			}
+			await Promise.all(otherBBIDs.map(async (entityBbid) => {
+				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
+
+				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
+					.fetch({require: false, transacting, withRelated: 'relationships'});
+
+				if (_.isNil(otherEntityRelationshipSet)) {
+					return;
+				}
+
+				// Fetch other entity relationships to remove relation with the deleted entity
+				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+
+				// Filter out entites related to deleted entity
+				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
+					mainBBID !== sourceBbid && mainBBID !== targetBbid);
+
+				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
+					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
+				);
+
+				otherEntity.set(
+					'relationshipSetId',
+					newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null
+				);
+
+				otherEntities.push(otherEntity);
+			}));
+		}
+	}
+
+	return otherEntities;
+}
+
+function fetchOrCreateMainEntity(
+	orm, transacting, isNew, currentEntity, entityType
+) {
+	const model = utils.getEntityModelByType(orm, entityType);
+
+	const entity = model.forge({bbid: currentEntity.bbid});
+
+	if (isNew) {
+		return Promise.resolve(entity);
+	}
+
+	return entity.fetch({transacting});
+}
+
 export function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
@@ -283,62 +412,52 @@ export function handleDelete(
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
 
-	const entityDeletePromise = bookshelf.transaction((transacting) => {
-		const editorUpdatePromise =
-			utils.incrementEditorEditCountById(orm, editorJSON.id, transacting);
+	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+		const otherEntities = await deleteRelationships(orm, transacting, entity);
 
-		const newRevisionPromise = new Revision({
+		const newRevision = await new Revision({
 			authorId: editorJSON.id
 		}).save(null, {transacting});
-
-		// Get the parents of the new revision
-		const revisionParentsPromise = newRevisionPromise
-			.then((revision) =>
-				revision.related('parents').fetch({require: false, transacting}));
-
-		// Add the previous revision as a parent of this revision.
-		const parentAddedPromise =
-			revisionParentsPromise.then(
-				(parents) => parents && parents.attach(
-					entity.revisionId, {transacting}
-				)
-			);
-
-		const notePromise = newRevisionPromise
-			.then((revision) => _createNote(
-				orm, body.note, editorJSON.id, revision, transacting
-			));
 
 		/*
 		 * No trigger for deletions, so manually create the <Entity>Revision
 		 * and update the entity header
 		 */
-		const newEntityRevisionPromise = newRevisionPromise
-			.then((revision) => new RevisionModel({
-				bbid: entity.bbid,
-				dataId: null,
-				id: revision.get('id')
-			}).save(null, {
-				method: 'insert',
-				transacting
-			}));
 
-		const entityHeaderPromise = newEntityRevisionPromise
-			.then((entityRevision) => new HeaderModel({
-				bbid: entity.bbid,
-				masterRevisionId: entityRevision.get('id')
-			}).save(null, {transacting}));
+		const entityRevision = await new RevisionModel({
+			bbid: entity.bbid,
+			dataId: null,
+			id: newRevision.get('id')
+		}).save(null, {
+			method: 'insert',
+			transacting
+		});
 
-		const searchDeleteEntityPromise = search.deleteEntity(entity)
-			.catch(err => { log.error(err); });
-		return Promise.join(
-			editorUpdatePromise, newRevisionPromise, notePromise,
-			newEntityRevisionPromise, entityHeaderPromise, parentAddedPromise,
-			searchDeleteEntityPromise
+		const entityHeader = await new HeaderModel({
+			bbid: entity.bbid,
+			masterRevisionId: entityRevision.get('id')
+		}).save(null, {transacting});
+
+		const mainEntity = await fetchOrCreateMainEntity(
+			orm, transacting, false, entity, entity.type
 		);
+
+		const savedMainEntity =
+			await saveEntitiesAndFinishRevision(
+				orm,
+				transacting,
+				false,
+				newRevision,
+				mainEntity,
+				otherEntities,
+				editorJSON.id,
+				body.note
+			);
+
+		return savedMainEntity;
 	});
 
-	return handler.sendPromiseResult(res, entityDeletePromise);
+	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
 }
 
 type ProcessEditionSetsBody = {
@@ -592,26 +711,6 @@ async function getChangedProps(
 	}, {});
 }
 
-function fetchOrCreateMainEntity(
-	orm, transacting, isNew, currentEntity, entityType
-) {
-	const model = utils.getEntityModelByType(orm, entityType);
-
-	const entity = model.forge({bbid: currentEntity.bbid});
-
-	if (isNew) {
-		return Promise.resolve(entity);
-	}
-
-	return entity.fetch({transacting});
-}
-
-async function getEntityByBBID(orm, transacting, bbid) {
-	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
-
-	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
-	return model.forge({bbid}).fetch({transacting});
-}
 
 function fetchEntitiesForRelationships(
 	orm, transacting, currentEntity, relationshipSets
@@ -624,59 +723,6 @@ function fetchEntitiesForRelationships(
 		(bbid) =>
 			getEntityByBBID(orm, transacting, bbid)
 	));
-}
-
-async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
-	if (_.isEmpty(parentRevisionIDs)) {
-		return Promise.resolve(null);
-	}
-
-	// Get the parents of the new revision
-	const parents =
-		await newRevision.related('parents').fetch({transacting});
-
-	// Add the previous revision as a parent of this revision.
-	return parents.attach(parentRevisionIDs, {transacting});
-}
-
-async function saveEntitiesAndFinishRevision(
-	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
-	updatedEntities: [], editorID: number, note: string
-) {
-	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
-		(entityModel) => entityModel.get('revisionId')
-	)));
-
-	const entitiesSavedPromise = Promise.all(
-		_.map(updatedEntities, (entityModel) => {
-			entityModel.set('revisionId', newRevision.get('id'));
-
-			const shouldInsert =
-				entityModel.get('bbid') === mainEntity.get('bbid') && isNew;
-			const method = shouldInsert ? 'insert' : 'update';
-			return entityModel.save(null, {method, transacting});
-		})
-	);
-
-	const editorUpdatePromise =
-		utils.incrementEditorEditCountById(orm, editorID, transacting);
-
-	const notePromise = _createNote(
-		orm, note, editorID, newRevision, transacting
-	);
-
-	const parentsAddedPromise =
-		setParentRevisions(transacting, newRevision, parentRevisionIDs);
-
-	/** model.save returns a refreshed model */
-	const [savedEntities, ...others] = await Promise.all([
-		entitiesSavedPromise,
-		editorUpdatePromise,
-		parentsAddedPromise,
-		notePromise
-	]);
-
-	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
 }
 
 export function handleCreateOrEditEntity(
