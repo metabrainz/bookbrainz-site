@@ -31,8 +31,18 @@ function useDefaultConfig() {
 	if (env === 'test') {
 		configFileBasename = 'test';
 	}
-	configContents =
+	try {
+		configContents =
 			readFileSync(`config/${configFileBasename}.json`);
+	}
+	catch (err) {
+		throw Error(`Could not find required configuration file \
+config/${configFileBasename}.json If you don't have a \
+config/${configFileBasename}.json file, you should copy, \
+rename and modify config/config.json.example. For more \
+information refer to: \
+https://github.com/bookbrainz/bookbrainz-site#configuration\n`);
+	}
 }
 
 function checkConfigOverwrite() {
