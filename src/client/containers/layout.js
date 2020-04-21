@@ -20,11 +20,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint max-len: "warn" */
-/* eslint import/no-unassigned-import: "warn" */
+
 /* eslint import/no-commonjs: "warn" */
 /* eslint global-require: "warn" */
 
+// eslint-disable-next-line import/no-unassigned-import
 import '../helpers/setupIconLibrary';
 import * as bootstrap from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -254,6 +254,7 @@ class Layout extends React.Component {
 			);
 
 		const alerts = this.props.alerts.map((alert, idx) => (
+			// eslint-disable-next-line react/no-array-index-key
 			<Alert bsStyle={alert.level} className="text-center" key={idx}>
 				<p>{alert.message}</p>
 			</Alert>

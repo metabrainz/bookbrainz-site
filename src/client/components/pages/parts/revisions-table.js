@@ -65,8 +65,8 @@ function RevisionsTable(props) {
 
 						<tbody>
 							{
-								results.map((revision, i) => (
-									<tr key={i}>
+								results.map((revision) => (
+									<tr key={revision.revisionId}>
 										<td>
 											<a href={`/revision/${revision.revisionId}`} >
 												{revision.revisionId}

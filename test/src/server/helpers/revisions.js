@@ -431,7 +431,7 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		// starting from 2 because one revision is created while creating the author
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new AuthorData({aliasSetId: authorJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new AuthorRevision({bbid: authorJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
@@ -459,7 +459,7 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new WorkData({aliasSetId: workJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new WorkRevision({bbid: workJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
@@ -488,7 +488,7 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new EditionData({aliasSetId: editionJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new EditionRevision({bbid: editionJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
@@ -517,7 +517,7 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		// starting from 2 because one revision is created while creating the publisher
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new PublisherData({aliasSetId: publisherJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new PublisherRevision({bbid: publisherJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
@@ -546,7 +546,7 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		// starting from 2 because one revision is created while creating the editionGroup
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new EditionGroupData({aliasSetId: editionGroupJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
@@ -570,7 +570,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const author = await createAuthor();
 		const authorJSON = await author.toJSON();
 		req.params.bbid = authorJSON.bbid;
-		const revisionID = authorJSON.revisionId; // revision created while create author
+		// revision created while create author
+		const revisionID = authorJSON.revisionId;
 
 		const noteAttrib = {
 			authorId: editorJSON.id,

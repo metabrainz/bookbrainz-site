@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 /*
  * Copyright (C) 2014-2015  Ben Ockmore
  *               2015-2017  Sean Burke
@@ -83,7 +84,7 @@ app.use('/*', (req, res) => {
 	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
 });
 // Catch 404 and forward to error handler
-mainRouter.use((req, res, next) => {
+mainRouter.use((req, res) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
 });
 

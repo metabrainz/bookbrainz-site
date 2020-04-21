@@ -3,7 +3,6 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import {getEditorActivity} from '../../../../src/server/routes/editor.js';
 import orm from '../../../bookbrainz-data';
-import {parseISO} from 'date-fns';
 import {random} from 'faker';
 
 /* eslint sort-keys: 0 */

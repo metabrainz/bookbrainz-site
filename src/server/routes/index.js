@@ -63,7 +63,6 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
-			dev: process.env.NODE_ENV === 'development',
 			markup,
 			page: 'Index',
 			props: escapeProps(props),

@@ -83,7 +83,7 @@ const editionGroupError = 'Edition Group not found';
 
 router.get('/:bbid',
 	makeEntityLoader('EditionGroup', editionGroupBasicRelations, editionGroupError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionGroupBasicInfo = await getEditionGroupBasicInfo(res.locals.entity);
 		return res.status(200).send(editionGroupBasicInfo);
 	});
@@ -118,7 +118,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('EditionGroup', aliasesRelations, editionGroupError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionGroupAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionGroupAliasesList);
 	});
@@ -153,7 +153,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('EditionGroup', identifiersRelations, editionGroupError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionGroupIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionGroupIdentifiersList);
 	});
@@ -189,7 +189,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('EditionGroup', relationshipsRelations, editionGroupError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionGroupRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionGroupRelationshipList);
 	});

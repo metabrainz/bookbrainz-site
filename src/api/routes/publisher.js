@@ -100,7 +100,7 @@ const publisherError = 'Publisher not found';
 
 router.get('/:bbid',
 	makeEntityLoader('Publisher', publisherBasicRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherBasicInfo = await getPublisherBasicInfo(res.locals.entity);
 		return res.status(200).send(publisherBasicInfo);
 	});
@@ -134,7 +134,7 @@ router.get('/:bbid',
  */
 router.get('/:bbid/aliases',
 	makeEntityLoader('Publisher', aliasesRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(publisherAliasesList);
 	});
@@ -169,7 +169,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Publisher', identifiersRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(publisherIdentifiersList);
 	});
@@ -204,7 +204,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Publisher', relationshipsRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(publisherRelationshipList);
 	});

@@ -285,6 +285,7 @@ const stylisticIssuesRules = {
 		WARNING,
 		{
 			code: 150,
+			ignoreComments: true,
 			ignoreUrls: true,
 			tabWidth: 4
 		}

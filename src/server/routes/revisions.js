@@ -57,7 +57,6 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
-			dev: process.env.NODE_ENV === 'development',
 			markup,
 			props: escapeProps(props),
 			script: '/js/revisions.js',

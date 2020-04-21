@@ -19,7 +19,6 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
 import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
