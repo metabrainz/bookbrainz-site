@@ -5,7 +5,7 @@
             "label": "build-website",
             "dependsOn": [
                 "build-server-with-sourcemaps",
-                "build-client-js"
+                "build-client"
             ],
             "group": {
                 "kind": "build",
@@ -20,14 +20,14 @@
                 "--out-dir",
                 "lib",
                 "--source-maps",
-                "--ignore src/api"
+                "--ignore", "src/api/"
             ],
             "isBackground": false
         },
         {
-            "label": "build-client-js",
+            "label": "build-client",
             "type": "npm",
-            "script": "build-client-js",
+            "script": "build-client",
             "problemMatcher": [],
         },
         {
