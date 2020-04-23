@@ -1,5 +1,13 @@
 BEGIN;
 
+-- Delete achievement where GSoC was unlocked
+DELETE FROM "bookbrainz"."achievement_unlock"
+WHERE id = 13;
+
+-- Delete GSoC as an achievement
+DELETE FROM "bookbrainz"."achievement_type"
+WHERE id = 27;
+
 -- Inserting GSoC 2016 as an achievement
 INSERT INTO "bookbrainz"."achievement_type" ("id", "name", "description", "badge_url")
 VALUES
