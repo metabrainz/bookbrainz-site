@@ -18,7 +18,12 @@
 
 import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
-import {getEditionGroupBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
+import {
+	getEditionGroupBasicInfo,
+	getEntityAliases,
+	getEntityIdentifiers,
+	getEntityRelationships
+} from '../helpers/formatEntityData';
 import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
@@ -210,10 +215,23 @@ router.get('/',
 			}
 			return true;
 		}
+		// editionGroupRelationsList will always be empty. Because edition is the only validLinkedEnitity
 		const editionGroupRelationshipList = await utils.getBrowsedRelationships(
 			req.app.locals.orm, res.locals, 'EditionGroup',
 			getEditionGroupBasicInfo, editionGroupBasicRelations, relationshipsFilterMethod
 		);
+
+		if (req.query.modelType === 'Edition') {
+			// If we're loading an Edition, also load the related Edition Group from the ORM model
+			const relationships = editionGroupBasicRelations.map(rel => `editionGroup.${rel}`);
+			await makeEntityLoader(null, relationships, 'Entity not found', true, false)(req, res, next);
+			const {editionGroup} = res.locals.entity;
+			// edition will belong to only one edition-group
+			const mappedEditions = [];
+			mappedEditions.push(getEditionGroupBasicInfo(editionGroup));
+			mappedEditions.filter(relationshipsFilterMethod);
+			editionGroupRelationshipList.push(...mappedEditions);
+		}
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			editionGroups: editionGroupRelationshipList

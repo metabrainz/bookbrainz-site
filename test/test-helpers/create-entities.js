@@ -335,27 +335,11 @@ export async function createAuthor(optionalBBID) {
 		genderId: editorAttribs.genderId,
 		typeId: random.number()
 	};
-<<<<<<< HEAD
 	await new Area({gid: uuidv4(), id: areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
 	await new AuthorType({id: authorAttribs.typeId, label: `Author Type ${authorAttribs.typeId}`})
 		.save(null, {method: 'insert'});
 	const author = await new Author({...entityAttribs, ...authorAttribs})
-=======
-	try {
-		await new Area({...setData, gid: uuidv4(), name: 'Rlyeh'})
-			.save(null, {method: 'insert'});
-	}
-	catch (error) {
-	}
-	try {
-		await new AuthorType({...setData, label: 'Author Type 1'})
-			.save(null, {method: 'insert'});
-	}
-	catch (error) {
-	}
-	await new Author({...entityAttribs, ...authorAttribs})
->>>>>>> test: Catch duplicate authorType creation
 		.save(null, {method: 'insert'});
 	return author;
 }

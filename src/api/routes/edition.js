@@ -323,6 +323,18 @@ router.get('/',
 			req.app.locals.orm, res.locals, 'Edition',
 			getEditionBasicInfo, editionBasicRelations, relationshipsFilterMethod
 		);
+
+		if (req.query.modelType === 'EditionGroup') {
+			// If we're loading an Edition Group, also load the related Editions from the ORM model
+			const relationships = editionBasicRelations.map(rel => `editions.${rel}`);
+			await makeEntityLoader(null, relationships, 'Entity not found', true, false)(req, res, next);
+			const {editions} = res.locals.entity;
+			const mappedEditions = editions
+				.map(edition => getEditionBasicInfo(edition))
+				.filter(relationshipsFilterMethod);
+			editionRelationshipList.push(...mappedEditions);
+		}
+
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			editions: editionRelationshipList
