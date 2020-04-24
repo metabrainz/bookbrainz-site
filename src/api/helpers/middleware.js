@@ -48,7 +48,7 @@ export async function loadEntity(orm, relEntity, fetchRelated) {
 }
 
 export function loadEntityRelationshipsForBrowse() {
-	
+
 	return async (req, res, next) => {
 		const {orm} = req.app.locals;
 		const {RelationshipSet} = orm;

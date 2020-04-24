@@ -272,15 +272,16 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
-			const publisherTypeMacthed = _.toLower(relatedEntity.type) === req.query.type;
-			const publisherAreaMatched = _.toLower(relatedEntity.area) === req.query.area;
-			if (req.query.type && req.query.area) {
-				return publisherTypeMacthed && publisherAreaMatched;
-			}
-			else if (req.query.type) {
-				return publisherTypeMacthed;
+			if (req.query.type) {
+				const publisherTypeMatched = _.toLower(relatedEntity.type) === req.query.type;
+				if (req.query.area) {
+					const publisherAreaMatched = _.toLower(relatedEntity.area) === req.query.area;
+					return publisherTypeMatched && publisherAreaMatched;
+				}
+				return publisherTypeMatched;
 			}
 			else if (req.query.area) {
+				const publisherAreaMatched = _.toLower(relatedEntity.area) === req.query.area;
 				return publisherAreaMatched;
 			}
 			return true;
@@ -291,7 +292,7 @@ router.get('/',
 		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			relatedPublishers: publisherRelationshipList
+			publishers: publisherRelationshipList
 		});
 	});
 

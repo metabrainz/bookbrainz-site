@@ -284,7 +284,8 @@ router.get('/',
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				return _.toLower(relatedEntity.authorType) === req.query.type;
+				const authorTypeMatched = _.toLower(relatedEntity.authorType) === req.query.type;
+				return authorTypeMatched;
 			}
 			return true;
 		}
@@ -293,8 +294,8 @@ router.get('/',
 			getAuthorBasicInfo, authorBasicRelations, relationshipsFilterMethod
 		);
 		return res.status(200).send({
-			bbid: req.query.bbid,
-			relatedAuthors: authorRelationshipList
+			authors: authorRelationshipList,
+			bbid: req.query.bbid
 		});
 	});
 

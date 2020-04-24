@@ -271,15 +271,16 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
-			const workTypeMatched = _.toLower(relatedEntity.workType) === req.query.type;
-			const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(req.query.language));
-			if (req.query.type && req.query.language) {
-				return workTypeMatched && workLanguageMatched;
-			}
-			else if (req.query.type) {
+			if (req.query.type) {
+				const workTypeMatched = _.toLower(relatedEntity.workType) === req.query.type;
+				if (req.query.language) {
+					const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(req.query.language));
+					return workTypeMatched && workLanguageMatched;
+				}
 				return workTypeMatched;
 			}
-			else if (req.query.language) {
+			if (req.query.language) {
+				const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(req.query.language));
 				return workLanguageMatched;
 			}
 			return true;
@@ -290,7 +291,7 @@ router.get('/',
 		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			relatedWorks: workRelationshipList
+			works: workRelationshipList
 		});
 	});
 

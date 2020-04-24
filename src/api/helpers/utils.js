@@ -47,7 +47,7 @@ export function allowOnlyGetMethod(req, res, next) {
 
 
 export async function getBrowsedRelationships(orm, locals, browsedEntityType,
-	getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
+											  getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
 	const {entity, relationships} = locals;
 
 	if (!relationships.length > 0) {
@@ -55,35 +55,24 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 	}
 	const relationshipsPromises = relationships
 		.map(async relationship => {
-			if (entity.bbid === relationship.sourceBbid) {
-				// We need a good way to compare entity type strings here and same thing below
-				// Allow for capitalization mistakes? (.toLowercase() on both?)
-				if (relationship.target.type === browsedEntityType) {
-					// Manage try/catch around await here?
-					const loadedTarget = await loadEntity(orm, relationship.target, fetchRelated);
-					const formattedTarget = getEntityInfoMethod(loadedTarget);
-					if (!filterRelationshipMethod(formattedTarget)) {
-						return null;
-					}
-					return {
-						entity: formattedTarget,
-						relationships: [{
-							relationshipType: _.get(relationship, 'type.label', null),
-							relationshipTypeID: _.get(relationship, 'type.id', null)
-						}]
-					};
-				}
+			let relEntity;
+			if (entity.bbid === relationship.sourceBbid &&
+				relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()) {
+				relEntity = relationship.target;
 			}
-			else if (relationship.source.type === browsedEntityType) {
-				// Manage try/catch around await here?
-				const loadedSource = await loadEntity(orm, relationship.source, fetchRelated);
-				const formattedSource = getEntityInfoMethod(loadedSource);
-				if (!filterRelationshipMethod(formattedSource)) {
+			else if (relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()) {
+				relEntity = relationship.source;
+			}
+
+			if (relEntity) {
+				const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
+				const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
+				if (!filterRelationshipMethod(formattedRelEntity)) {
 					return null;
 				}
 				return {
-					entity: formattedSource,
-					relationships: [{
+					entity: formattedRelEntity,
+					relationship: [{
 						relationshipType: _.get(relationship, 'type.label', null),
 						relationshipTypeID: _.get(relationship, 'type.id', null)
 					}]

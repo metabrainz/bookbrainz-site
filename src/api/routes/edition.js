@@ -305,15 +305,16 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
-			const edtionFormatMatched = _.toLower(relatedEntity.editionFormat) === req.query.format;
-			const editionLanguageMatched = relatedEntity.includes(_.upperFirst(req.query.language));
-			if (req.query.format && req.query.language) {
-				return edtionFormatMatched && editionLanguageMatched;
-			}
-			else if (req.query.format) {
-				return edtionFormatMatched;
+			if (req.query.format) {
+				const editionFormatMatched = _.toLower(relatedEntity.editionFormat) === req.query.format;
+				if (req.query.language) {
+					const editionLanguageMatched = relatedEntity.includes(_.upperFirst(req.query.language));
+					return editionFormatMatched && editionLanguageMatched;
+				}
+				return editionFormatMatched;
 			}
 			else if (req.query.language) {
+				const editionLanguageMatched = relatedEntity.includes(_.upperFirst(req.query.language));
 				return editionLanguageMatched;
 			}
 			return true;
@@ -324,7 +325,7 @@ router.get('/',
 		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			relatedEditions: editionRelationshipList
+			editions: editionRelationshipList
 		});
 	});
 

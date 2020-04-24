@@ -102,7 +102,7 @@ export async function testEditionGroupBrowseRequest(url) {
 	expect(res.body).to.be.an('object');
 	expect(res.body).to.have.all.keys(
 		'bbid',
-		'edtitionGroups'
+		'editionGroups'
 	);
 	expect(res.body.bbid).to.be.a('string');
 	expect(res.body.edtitionGroups).to.be.an('array');

@@ -205,7 +205,8 @@ router.get('/',
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				return _.toLower(relatedEntity.type) === req.query.type;
+				const editionGroupTypeMatched = _.toLower(relatedEntity.type) === req.query.type;
+				return editionGroupTypeMatched;
 			}
 			return true;
 		}
@@ -215,7 +216,7 @@ router.get('/',
 		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			relatedEditionGroups: editionGroupRelationshipList
+			editionGroups: editionGroupRelationshipList
 		});
 	});
 
