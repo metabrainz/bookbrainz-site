@@ -273,7 +273,7 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	return handler.sendPromiseResult(res, revisionNotePromise);
 }
 
-async function getEntityByBBID(orm, transacting, bbid) {
+export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: string) {
 	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
 
 	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
@@ -333,7 +333,7 @@ async function saveEntitiesAndFinishRevision(
 	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
 }
 
-async function deleteRelationships(orm, transacting, mainEntity) {
+export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
 	const mainBBID = mainEntity.bbid;
 	const {relationshipSet} = mainEntity;
 	const otherBBIDs = [];
@@ -341,6 +341,9 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 
 	if (relationshipSet) {
 		// Create a list of BBID's that is related to the deleted entity
+		if (!relationshipSet.relationships) {
+			return [];
+		}
 		relationshipSet.relationships.forEach((relationship) => {
 			if (relationship.sourceBbid === mainBBID) {
 				otherBBIDs.push(relationship.targetBbid);
