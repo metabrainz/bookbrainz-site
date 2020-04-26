@@ -324,13 +324,18 @@ describe('Browse Works', () => {
 		});
 	});
 
-	it('should 406 proper error for invalid bbid', async () => {
+	it('should throw 406 error for invalid bbid', async () => {
 		const res = await chai.request(app).get('/work?author=1212121');
 		expect(res.status).to.equal(406);
 	});
 
-	it('should 404 proper error for incorrect bbid', async () => {
+	it('should throw 404 error for incorrect bbid', async () => {
 		const res = await chai.request(app).get(`/work?author=${aBBID}`);
 		expect(res.status).to.equal(404);
+	});
+
+	it('should throw 400 error for incorrect linked entity', async () => {
+		const res = await chai.request(app).get(`/work?edition-group=${aBBID}`);
+		expect(res.status).to.equal(400);
 	});
 });

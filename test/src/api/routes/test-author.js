@@ -17,17 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createAuthor, createEdition, createEditionGroup,
-	createPublisher, createWork,
-	getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+import {
+	createAuthor, createEditor, createWork,
+	getRandomUUID, truncateEntities
+} from '../../../test-helpers/create-entities';
 
+import _ from 'lodash';
 import app from '../../../../src/api/app';
+import {browseAuthorBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
-import {testAuthorBrowseRequest} from '../helpers';
-const {Language} = orm;
+const {Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
 chai.use(chaiHttp);
@@ -39,219 +41,218 @@ const bBBID = getRandomUUID();
 const inValidBBID = 'akjd-adjjk-23123';
 
 
-// describe('GET /Author', () => {
-// 	before(() => createAuthor(aBBID));
-// 	after(truncateEntities);
-// 	// Test to get basic information of an Author
-// 	it('should get basic information of an Author', async function () {
-// 		const res = await chai.request(app).get(`/author/${aBBID}`);
-// 		expect(res.status).to.equal(200);
-// 		expect(res.body).to.be.an('object');
-// 		expect(res.body).to.have.all.keys(
-// 			'bbid',
-// 			'defaultAlias',
-// 			'disambiguation',
-// 			'type',
-// 			'gender',
-// 			'beginArea',
-// 			'beginDate',
-// 			'endArea',
-// 			'endDate',
-// 			'ended'
-// 		);
-// 	 });
-//
-// 	 it('should return list of aliases of an Author', async function () {
-// 		const res = await chai.request(app).get(`/author/${aBBID}/aliases`);
-// 		expect(res.status).to.equal(200);
-// 		expect(res.body).to.be.an('object');
-// 		expect(res.body).to.have.all.keys(
-// 			'bbid',
-// 			'aliases'
-// 		);
-// 		expect(res.body.aliases).to.be.an('array');
-// 		expect(res.body.aliases).to.have.lengthOf(1);
-// 	 });
-//
-// 	 it('should return list of identifiers of an Author', async function () {
-// 		const res = await chai.request(app).get(`/author/${aBBID}/identifiers`);
-// 		expect(res.status).to.equal(200);
-// 		expect(res.body).to.be.an('object');
-// 		expect(res.body).to.have.all.keys(
-// 			'bbid',
-// 			'identifiers'
-// 		);
-// 		expect(res.body.identifiers).to.be.an('array');
-// 		expect(res.body.identifiers).to.have.lengthOf(1);
-// 	 });
-//
-// 	 it('should return list of relationships of an Author', async function () {
-// 		const res = await chai.request(app).get(`/author/${aBBID}/relationships`);
-// 		expect(res.status).to.equal(200);
-// 		expect(res.body).to.be.an('object');
-// 		expect(res.body).to.have.all.keys(
-// 			'bbid',
-// 			'relationships'
-// 		);
-// 		expect(res.body.relationships).to.be.an('array');
-// 		expect(res.body.relationships).to.have.lengthOf(1);
-// 	 });
-//
-// 	 it('should throw a 404 error if trying to access an author that does not exist', function (done) {
-// 		chai.request(app)
-// 			.get(`/author/${bBBID}`)
-// 			.end(function (err, res) {
-// 				if (err) { return done(err); }
-// 				expect(res).to.have.status(404);
-// 				expect(res.ok).to.be.false;
-// 				expect(res.body).to.be.an('object');
-// 				expect(res.body.message).to.equal('Author not found');
-// 				return done();
-// 			});
-// 	 });
-//
-// 	it('should throw a 406 error if trying to access an author with invalid BBID', function (done) {
-// 		chai.request(app)
-// 			.get(`/author/${inValidBBID}`)
-// 			.end(function (err, res) {
-// 				if (err) { return done(err); }
-// 				expect(res).to.have.status(406);
-// 				expect(res.ok).to.be.false;
-// 				expect(res.body).to.be.an('object');
-// 				expect(res.body.message).to.equal('BBID is not valid uuid');
-// 				return done();
-// 			});
-// 	 });
-//
-// 	 it('should throw a 404 error if trying to access identifiers of an Author that does not exist', function (done) {
-// 		chai.request(app)
-// 			.get(`/author/${bBBID}/identifiers`)
-// 			.end(function (err, res) {
-// 				if (err) { return done(err); }
-// 				expect(res).to.have.status(404);
-// 				expect(res.ok).to.be.false;
-// 				expect(res.body).to.be.an('object');
-// 				expect(res.body.message).to.equal('Author not found');
-// 				return done();
-// 			});
-// 	 });
-//
-//
-// 	it('should throw a 404 error if trying to access aliases of an Author that does not exist', function (done) {
-// 		chai.request(app)
-// 			.get(`/author/${bBBID}/aliases`)
-// 			.end(function (err, res) {
-// 				if (err) { return done(err); }
-// 				expect(res).to.have.status(404);
-// 				expect(res.ok).to.be.false;
-// 				expect(res.body).to.be.an('object');
-// 				expect(res.body.message).to.equal('Author not found');
-// 				return done();
-// 			});
-// 	 });
-//
-// 	it('should throw a 404 error if trying to access relationships of an Author that does not exist', function (done) {
-// 		chai.request(app)
-// 			.get(`/author/${bBBID}/relationships`)
-// 			.end(function (err, res) {
-// 				if (err) { return done(err); }
-// 				expect(res).to.have.status(404);
-// 				expect(res.ok).to.be.false;
-// 				expect(res.body).to.be.an('object');
-// 				expect(res.body.message).to.equal('Author not found');
-// 				return done();
-// 			});
-// 	 });
-// });
-//
-
-describe('Browse Author', () => {
-	const cBBID = getRandomUUID();
-	const dBBID = getRandomUUID();
-	const eBBID = getRandomUUID();
-	const fBBID = getRandomUUID();
-
-	// Test browse requests of Author
-	before(async () => {
-		const englishAttrib = {
-			frequency: 1,
-			isoCode1: 'en',
-			isoCode2b: 'eng',
-			isoCode2t: 'eng',
-			isoCode3: 'eng',
-			name: 'English'
-		};
-		const englishId = random.number();
-		await new Language({...englishAttrib, id: englishId})
-			.save(null, {method: 'insert'});
-		const frenchAttrib = {
-			frequency: 2,
-			isoCode1: 'fr',
-			isoCode2b: 'fre',
-			isoCode2t: 'fra',
-			isoCode3: 'fra',
-			name: 'French'
-		};
-		const frenchId = random.number();
-		await new Language({...frenchAttrib, id: frenchId})
-			.save(null, {method: 'insert'});
-		const languageSet = await orm.func.language.updateLanguageSet(
-			orm,
-			null,
-			null,
-			[{id: englishId}, {id: frenchId}]
+describe('GET /Author', () => {
+	before(() => createAuthor(aBBID));
+	after(truncateEntities);
+	// Test to get basic information of an Author
+	it('should get basic information of an Author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'authorType',
+			'bbid',
+			'defaultAlias',
+			'disambiguation',
+			'gender',
+			'beginArea',
+			'beginDate',
+			'endArea',
+			'endDate',
+			'ended'
 		);
+	 });
 
-		// await createAuthor(aBBID);
-		// await createWork(bBBID);
-		// await createRelationship(aBBID, bBBID, 'Author', 'Work');
-		// await createEdition(cBBID);
-		// await createRelationship(aBBID, cBBID, 'Author', 'Edition');
-		// await createEditionGroup(dBBID);
-		// await createRelationship(aBBID, dBBID, 'Author', 'EditionGroup');
-		// await createAuthor(eBBID);
-		// await createRelationship(aBBID, eBBID, 'Author', 'Author');
-		// await createPublisher(fBBID);
-		// await createRelationship(aBBID, fBBID, 'Author', 'Publisher');
+	 it('should return list of aliases of an Author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/aliases`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'bbid',
+			'aliases'
+		);
+		expect(res.body.aliases).to.be.an('array');
+		expect(res.body.aliases).to.have.lengthOf(1);
+	 });
+
+	 it('should return list of identifiers of an Author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/identifiers`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'bbid',
+			'identifiers'
+		);
+		expect(res.body.identifiers).to.be.an('array');
+		expect(res.body.identifiers).to.have.lengthOf(1);
+	 });
+
+	 it('should return list of relationships of an Author', async function () {
+		const res = await chai.request(app).get(`/author/${aBBID}/relationships`);
+		expect(res.status).to.equal(200);
+		expect(res.body).to.be.an('object');
+		expect(res.body).to.have.all.keys(
+			'bbid',
+			'relationships'
+		);
+		expect(res.body.relationships).to.be.an('array');
+		expect(res.body.relationships).to.have.lengthOf(1);
+	 });
+
+	 it('should throw a 404 error if trying to access an author that does not exist', function (done) {
+		chai.request(app)
+			.get(`/author/${bBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Author not found');
+				return done();
+			});
+	 });
+
+	it('should throw a 406 error if trying to access an author with invalid BBID', function (done) {
+		chai.request(app)
+			.get(`/author/${inValidBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('BBID is not valid uuid');
+				return done();
+			});
+	 });
+
+	 it('should throw a 404 error if trying to access identifiers of an Author that does not exist', function (done) {
+		chai.request(app)
+			.get(`/author/${bBBID}/identifiers`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Author not found');
+				return done();
+			});
+	 });
+
+
+	it('should throw a 404 error if trying to access aliases of an Author that does not exist', function (done) {
+		chai.request(app)
+			.get(`/author/${bBBID}/aliases`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Author not found');
+				return done();
+			});
+	 });
+
+	it('should throw a 404 error if trying to access relationships of an Author that does not exist', function (done) {
+		chai.request(app)
+			.get(`/author/${bBBID}/relationships`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				expect(res.ok).to.be.false;
+				expect(res.body).to.be.an('object');
+				expect(res.body.message).to.equal('Author not found');
+				return done();
+			});
+	 });
+});
+
+/* eslint-disable no-await-in-loop */
+describe('Browse Author', () => {
+	let work;
+	before(async () => {
+		// create a work which is related to 3 authors
+		const authorBBIDs = [];
+		for (let i = 1; i <= 3; i++) {
+			const authorBBID = getRandomUUID();
+			const authorAttribs = {
+				bbid: authorBBID,
+				typeId: i
+			};
+			await createAuthor(authorBBID, authorAttribs);
+			authorBBIDs.push(authorBBID);
+		}
+		work = await createWork();
+
+		// Now create a revision which forms the relationship b/w work and authors
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		const relationshipTypeData = {
+			description: 'test descryption',
+			id: 1,
+			label: 'test label',
+			linkPhrase: 'test phrase',
+			reverseLinkPhrase: 'test reverse link phrase',
+			sourceEntityType: 'Author',
+			targetEntityType: 'Work'
+		};
+		await new RelationshipType(relationshipTypeData)
+			.save(null, {method: 'insert'});
+
+		const relationshipsPromise = [];
+		for (const authorBBID of authorBBIDs) {
+			const relationshipData = {
+				id: random.number(),
+				sourceBbid: authorBBID,
+				targetBbid: work.get('bbid'),
+				typeId: relationshipTypeData.id
+			};
+			relationshipsPromise.push(
+				new Relationship(relationshipData)
+					.save(null, {method: 'insert'})
+			);
+		}
+		const relationships = await Promise.all(relationshipsPromise);
+
+		const workRelationshipSet = await new RelationshipSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.relationships().attach(relationships).then(() => model));
+
+		work.set('relationshipSetId', workRelationshipSet.get('id'));
+		work.set('revisionId', revision.get('id'));
+		await work.save(null, {method: 'update'});
 	});
-	// after(truncateEntities);
+	after(truncateEntities);
 
-	const authorType = 'Author Type 1';
-	let filters = {};
 
-	it('should print my name', () => {
-		// eslint-disable-next-line no-console
-		console.log('hello');
+	it('should return list of authors associated with the work (without any filter)', async () => {
+		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(3);
 	});
 
-	// it('should return list of Authors related to the Work',
-	// 	() => testAuthorBrowseRequest(`/author?work=${bBBID}`, filters));
-	//
-	// it('should return list of Authors, those works are in the Edition',
-	// 	() => testAuthorBrowseRequest(`/author?edition=${cBBID}`, filters));
-	//
-	// it('should return list of Authors, those works are in the EditionGroup',
-	// 	() => testAuthorBrowseRequest(`/author?edition-group=${dBBID}`, filters));
-	//
-	// it('should return list of Authors, those are related to an Another Author',
-	// 	() => testAuthorBrowseRequest(`/author?author=${eBBID}`, filters));
-	//
-	// it('should return list of Authors, those are related to an Another Author',
-	// 	() => testAuthorBrowseRequest(`/author?author=${eBBID}`, filters));
-	//
-	// filters = {type: authorType};
-	// it('should return list of Authors of given type, those are related to the Work',
-	// 	() => testAuthorBrowseRequest(`/author?work=${bBBID}&type=${authorType}`, filters));
-	//
-	// it('should return list of Authors of given type, those are related to the Edition',
-	// 	() => testAuthorBrowseRequest(`/author?edition=${cBBID}&type=${authorType}`, filters));
-	//
-	// it('should return list of Authors of given type, those are in the EditionGroup',
-	// 	() => testAuthorBrowseRequest(`/author?edition-group=${dBBID}&type=${authorType}`, filters));
-	//
-	// it('should return list of Authors of given type, those are associated with an Another Author',
-	// 	() => testAuthorBrowseRequest(`/author?author=${eBBID}&type=${authorType}`, filters));
-	//
-	// it('should return list of Authors, those are related to the Publisher',
-	// 	() => testAuthorBrowseRequest(`/author?publisher=${fBBID}`, filters));
+	it('should return list of authors associated with the work (with Type filter)', async () => {
+		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}&type=Author+Type+1`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(1);
+		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
+	});
+
+	it('should allow params to be case insensitive', async () => {
+		const res = await chai.request(app).get(`/aUThor?wOrk=${work.get('bbid')}&tYPe=AuTHor+TyPe+1`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(1);
+		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
+	});
+
+	it('should throw 406 error for invalid bbid', async () => {
+		const res = await chai.request(app).get('/author?work=1212121');
+		expect(res.status).to.equal(406);
+	});
+
+	it('should throw 404 error for incorrect bbid', async () => {
+		const res = await chai.request(app).get(`/author?work=${aBBID}`);
+		expect(res.status).to.equal(404);
+	});
 });

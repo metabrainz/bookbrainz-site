@@ -310,13 +310,13 @@ export async function createEditionGroup(optionalBBID) {
 	return editionGroup;
 }
 
-export async function createAuthor(optionalBBID) {
+export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Author'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Author');
 	const areaId = random.number();
-	const authorAttribs = {
+	let	authorAttribs = {
 		bbid,
 		beginAreaId: areaId,
 		beginDay: 25,
@@ -330,6 +330,7 @@ export async function createAuthor(optionalBBID) {
 		genderId: editorAttribs.genderId,
 		typeId: random.number()
 	};
+	authorAttribs = {...authorAttribs, ...optionalAuthorAttribs};
 	await new Area({gid: uuidv4(), id: areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
 	await new AuthorType({id: authorAttribs.typeId, label: `Author Type ${authorAttribs.typeId}`})

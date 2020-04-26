@@ -219,6 +219,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 export function getAuthorBasicInfo(author: object) {
 	return _.isNil(author) ? null :
 		{
+			authorType: _.get(author, 'authorType.label', null),
 			bbid: _.get(author, 'bbid', null),
 			beginArea: _.get(author, 'beginArea.name', null),
 			beginDate: _.get(author, 'beginDate', null),
@@ -227,8 +228,7 @@ export function getAuthorBasicInfo(author: object) {
 			endArea: _.get(author, 'endArea.name', null),
 			endDate: _.get(author, 'endDate', null),
 			ended: _.get(author, 'ended', null),
-			gender: _.get(author, 'gender.name', null),
-			type: _.get(author, 'authorType.label', null)
+			gender: _.get(author, 'gender.name', null)
 		};
 }
 
