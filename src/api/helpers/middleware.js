@@ -28,7 +28,7 @@ export function validateBrowseRequestQueryParameters (validLinkedEntities) {
 	return async (req, res, next) => {
 		const queriedEntities = validLinkedEntities.filter(keyName=>{
 			return _.has(req.query, keyName);
-		})
+		});
 		if(queriedEntities.length < 1 || queriedEntities.length > 1){
 			const errorMessage = `Browse requests require exactly 1 linked entity in query parameters; you passed ${queriedEntities.length}: ${queriedEntities}`;
 			return res.status(400).send({message: errorMessage});
@@ -57,6 +57,7 @@ export function loadEntityRelationshipsForBrowse() {
 		try {
 			const relationshipSet = await RelationshipSet.forge({id: entityData.relationshipSetId})
 				.fetch({
+					require: false,
 					withRelated: [
 						'relationships.source',
 						'relationships.target',
@@ -71,6 +72,16 @@ export function loadEntityRelationshipsForBrowse() {
 			// What do we do with the error here?
 			return next(error);
 		}
+	}
+}
+
+export function formatQueryParameters() {
+
+	return async (req, res, next) => {
+		req.query = _.transform(req.query, (result, value, key) => {
+			result[key.toLowerCase()] = value;
+		});
+		return next();
 	}
 }
 

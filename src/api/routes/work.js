@@ -18,8 +18,17 @@
 
 import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
-import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getWorkBasicInfo} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
+import {
+	formatQueryParameters,
+	loadEntityRelationshipsForBrowse,
+	validateBrowseRequestQueryParameters
+} from '../helpers/middleware';
+import {
+	getEntityAliases,
+	getEntityIdentifiers,
+	getEntityRelationships,
+	getWorkBasicInfo
+} from '../helpers/formatEntityData';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -266,15 +275,16 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
+	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const workTypeMatched = _.toLower(relatedEntity.workType) === req.query.type;
+				const workTypeMatched = _.toLower(relatedEntity.workType) === _.toLower(req.query.type);
 				if (req.query.language) {
-					const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(req.query.language));
+					const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(_.toLower(req.query.language)));
 					return workTypeMatched && workLanguageMatched;
 				}
 				return workTypeMatched;
@@ -285,6 +295,7 @@ router.get('/',
 			}
 			return true;
 		}
+
 		const workRelationshipList = await utils.getBrowsedRelationships(
 			req.app.locals.orm, res.locals, 'Work',
 			getWorkBasicInfo, workBasicRelations, relationshipsFilterMethod

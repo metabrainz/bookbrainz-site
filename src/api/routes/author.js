@@ -20,8 +20,8 @@
 import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
 
+import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {Router} from 'express';
 
 import {makeEntityLoader} from '../helpers/entityLoader';
@@ -278,13 +278,14 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
+	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const authorTypeMatched = _.toLower(relatedEntity.authorType) === req.query.type;
+				const authorTypeMatched = _.toLower(relatedEntity.authorType) === _.toLower(req.query.type);
 				return authorTypeMatched;
 			}
 			return true;

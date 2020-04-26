@@ -18,8 +18,17 @@
 
 import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
-import {getEditionBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
+import {
+	formatQueryParameters,
+	loadEntityRelationshipsForBrowse,
+	validateBrowseRequestQueryParameters
+} from '../helpers/middleware';
+import {
+	getEditionBasicInfo,
+	getEntityAliases,
+	getEntityIdentifiers,
+	getEntityRelationships
+} from '../helpers/formatEntityData';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -300,13 +309,14 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
+	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['author', 'edition', 'edition-group', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.format) {
-				const editionFormatMatched = _.toLower(relatedEntity.editionFormat) === req.query.format;
+				const editionFormatMatched = _.toLower(relatedEntity.editionFormat) === _.toLower(req.query.format);
 				if (req.query.language) {
 					const editionLanguageMatched = relatedEntity.includes(_.upperFirst(req.query.language));
 					return editionFormatMatched && editionLanguageMatched;
@@ -319,6 +329,7 @@ router.get('/',
 			}
 			return true;
 		}
+
 		const editionRelationshipList = await utils.getBrowsedRelationships(
 			req.app.locals.orm, res.locals, 'Edition',
 			getEditionBasicInfo, editionBasicRelations, relationshipsFilterMethod

@@ -18,8 +18,17 @@
 
 import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
-import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getPublisherBasicInfo} from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
+import {
+	formatQueryParameters,
+	loadEntityRelationshipsForBrowse,
+	validateBrowseRequestQueryParameters
+} from '../helpers/middleware';
+import {
+	getEntityAliases,
+	getEntityIdentifiers,
+	getEntityRelationships,
+	getPublisherBasicInfo
+} from '../helpers/formatEntityData';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -267,13 +276,14 @@ router.get('/:bbid/relationships',
  */
 
 router.get('/',
+	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const publisherTypeMatched = _.toLower(relatedEntity.type) === req.query.type;
+				const publisherTypeMatched = _.toLower(relatedEntity.type) === _.toLower(req.query.type);
 				if (req.query.area) {
 					const publisherAreaMatched = _.toLower(relatedEntity.area) === req.query.area;
 					return publisherTypeMatched && publisherAreaMatched;
@@ -286,6 +296,7 @@ router.get('/',
 			}
 			return true;
 		}
+
 		const publisherRelationshipList = await utils.getBrowsedRelationships(
 			req.app.locals.orm, res.locals, 'Publisher',
 			getPublisherBasicInfo, publisherBasicRelations, relationshipsFilterMethod

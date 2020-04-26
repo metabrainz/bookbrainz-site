@@ -19,12 +19,16 @@
 import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
 import {
+	formatQueryParameters,
+	loadEntityRelationshipsForBrowse,
+	validateBrowseRequestQueryParameters
+} from '../helpers/middleware';
+import {
 	getEditionGroupBasicInfo,
 	getEntityAliases,
 	getEntityIdentifiers,
 	getEntityRelationships
 } from '../helpers/formatEntityData';
-import {loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
 
@@ -204,13 +208,14 @@ router.get('/:bbid/relationships',
 // TODO: jsdoc comment will be here
 
 router.get('/',
+	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['edition']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const editionGroupTypeMatched = _.toLower(relatedEntity.type) === req.query.type;
+				const editionGroupTypeMatched = _.toLower(relatedEntity.type) === _.toLower(req.query.type);
 				return editionGroupTypeMatched;
 			}
 			return true;
