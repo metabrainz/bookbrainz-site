@@ -162,62 +162,46 @@ async function createIdentifierAndIdentifierSet() {
 		.then((model) => model.identifiers().attach([identifier]));
 }
 
-
-export async function createRelationship(sourceBbid, targetBbid, entityType, targetEntityType) {
-	const safeSourceBbid = sourceBbid || uuidv4();
+async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 'Author') {
 	const safeTargetBbid = targetBbid || uuidv4();
-	const safeSourceEntityType = entityType || 'Author';
-	const safeTargetEntityType = targetEntityType || 'Work';
+	const safeSourceBbid = sourceBbid || uuidv4();
+
+	/* Create the relationship target entity */
+	await new Entity({bbid: safeTargetBbid, type: targetEntityType})
+		.save(null, {method: 'insert'});
+	const EntityModel = orm[`${targetEntityType}`];
+	const revisionId = random.number();
+	await new Revision({authorId: editorAttribs.id, id: revisionId})
+		.save(null, {method: 'insert'});
+	await new EntityModel({
+		aliasSetId: entityAttribs.aliasSetId, bbid: safeTargetBbid, revisionId
+	}).save(null, {method: 'insert'});
+
 	const relationshipData = {
-		id: random.number(),
+		id: 1,
 		sourceBbid: safeSourceBbid,
 		targetBbid: safeTargetBbid,
-		typeId: relationshipTypeData.id
+		typeId: 1
 	};
-	if (!sourceBbid) {
-		// We're only creating a relationship set for show,
-		// we don't care what type of entity we use
-		await new Entity({bbid: safeSourceBbid, type: safeSourceEntityType})
-			.save(null, {method: 'insert'});
-	}
-	relationshipTypeData.sourceEntityType = safeSourceEntityType;
-	relationshipTypeData.targetEntityType = safeTargetEntityType;
-	try {
-		await new RelationshipType(relationshipTypeData)
-			.save(null, {method: 'insert'});
-		relationshipTypeData.id++;
-	}
-	catch (error) {
-	}
-	try {
-		await new Entity({bbid: safeTargetBbid, type: safeTargetEntityType})
-			.save(null, {method: 'insert'});
-	}
-	// eslint-disable-next-line no-empty
-	catch (error) {
-	}
+	relationshipTypeData.id = random.number();
+	await new RelationshipType(relationshipTypeData)
+		.save(null, {method: 'insert'})
+		.catch(console.log);
 
 	relationshipData.typeId = relationshipTypeData.id;
 	relationshipData.id = random.number();
 	const relationship = await new Relationship(relationshipData)
 		.save(null, {method: 'insert'});
 
-	const existingRelationshipSet = await RelationshipSet
-		.forge({...setData})
-		.fetch();
-
-	if (existingRelationshipSet) {
-		existingRelationshipSet.relationships().attach([relationship]);
-	}
-	else {
-		await new RelationshipSet({...setData})
-			.save(null, {method: 'insert'})
-			.then(
-				(model) =>
-					model.relationships().attach([relationship])
-			);
-	}
+	entityAttribs.relationshipSetId = random.number();
+	await new RelationshipSet({id: entityAttribs.relationshipSetId})
+		.save(null, {method: 'insert'})
+		.then(
+			(model) =>
+				model.relationships().attach([relationship]).then(() => model)
+		);
 }
+
 
 async function createLanguageSet() {
 	// Create relationships here if you need them
@@ -244,7 +228,7 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 	await createEditor();
 	await createAliasAndAliasSet();
 	await createIdentifierAndIdentifierSet();
-	await createRelationship(entityBbid);
+	await createRelationshipSet(entityBbid, null, entityType);
 
 	const disambiguation = await new Disambiguation({
 		comment: 'Test Disambiguation',
@@ -266,7 +250,6 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 		lastRevisionId: revisionAttribs.id
 	})
 		.save(null, {method: 'insert'});
-
 }
 
 export async function createEdition(optionalBBID) {
@@ -280,20 +263,32 @@ export async function createEdition(optionalBBID) {
 	return edition;
 }
 
-export async function createWork(optionalBBID) {
+export async function createWork(optionalBBID, optionalWorkAttribs) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
-	await createEntityPrerequisites(bbid);
-	const languageSetId = await createLanguageSet();
+	await createEntityPrerequisites(bbid, 'Work');
 
-	const workAttribs = {
-		bbid,
-		languageSetId,
-		typeId: random.number()
-	};
-	await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
-		.save(null, {method: 'insert'});
+	let workAttribs;
+	if (optionalWorkAttribs) {
+		workAttribs = optionalWorkAttribs;
+	}
+	else {
+		const languageSetId = await createLanguageSet();
+		workAttribs = {
+			bbid,
+			languageSetId,
+			typeId: random.number()
+		};
+	}
+	const workType = await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
+		.fetch({
+			require: false
+		});
+	if (!workType) {
+		await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
+			.save(null, {method: 'insert'});
+	}
 	const work = await new Work({...entityAttribs, ...workAttribs})
 		.save(null, {method: 'insert'});
 	return work;

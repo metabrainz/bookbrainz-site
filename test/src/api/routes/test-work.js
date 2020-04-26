@@ -17,17 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
-import {createAuthor, createEdition, createEditionGroup,
-	createPublisher, createRelationship, createWork,
-	getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+import * as _ from 'lodash';
+import {
+	createAuthor, createEditor,
+	createWork, getRandomUUID, truncateEntities
+} from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
+import {browseWorkBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import {testWorkBrowseRequest} from '../helpers';
+import orm from '../../../bookbrainz-data';
+import {random} from 'faker';
 
 
+const {Language, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 chai.use(chaiHttp);
 const {expect} = chai;
 
@@ -53,9 +57,9 @@ describe('GET /work', () => {
 			'workType',
 			'entityType'
 		);
-	 });
+	});
 
-	 it('should return list of aliases of a Work', async function () {
+	it('should return list of aliases of a Work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -65,9 +69,9 @@ describe('GET /work', () => {
 		);
 		expect(res.body.aliases).to.be.an('array');
 		expect(res.body.aliases).to.have.lengthOf(1);
-	 });
+	});
 
-	 it('should return list of identifiers of work', async function () {
+	it('should return list of identifiers of work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -77,9 +81,9 @@ describe('GET /work', () => {
 		);
 		expect(res.body.identifiers).to.be.an('array');
 		expect(res.body.identifiers).to.have.lengthOf(1);
-	 });
+	});
 
-	 it('should return list of relationships of a Work', async function () {
+	it('should return list of relationships of a Work', async function () {
 		const res = await chai.request(app).get(`/work/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -89,142 +93,244 @@ describe('GET /work', () => {
 		);
 		expect(res.body.relationships).to.be.an('array');
 		expect(res.body.relationships).to.have.lengthOf(1);
-	 });
+	});
 
-	 it('should throw a 404 error if trying to access a work that does not exist', function (done) {
+	it('should throw a 404 error if trying to access a work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('Work not found');
 				return done();
 			});
-	 });
+	});
 
 	it('should throw a 406 error if trying to access a work with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/work/${inValidBBID}`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(406);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
 				return done();
 			});
-	 });
+	});
 
-	 it('should throw a 404 error if trying to access identifiers of a Work that does not exist', function (done) {
+	it('should throw a 404 error if trying to access identifiers of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/identifiers`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('Work not found');
 				return done();
 			});
-	 });
+	});
 
 
 	it('should throw a 404 error if trying to access aliases of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/aliases`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('Work not found');
 				return done();
 			});
-	 });
+	});
 
-	 it('should throw a 404 error if trying to access relationships of a Work that does not exist', function (done) {
+	it('should throw a 404 error if trying to access relationships of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/relationships`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('Work not found');
 				return done();
 			});
-	 });
+	});
 });
 
-
+/* eslint-disable no-await-in-loop */
 describe('Browse Works', () => {
-	const cBBID = getRandomUUID();
-	const dBBID = getRandomUUID();
-	const eBBID = getRandomUUID();
-	const fBBID = getRandomUUID();
-
-	// Test browse requests of Author
+	let author;
 	before(async () => {
-		await createWork(aBBID);
-		await createWork(bBBID);
-		await createRelationship(aBBID, bBBID, 'Work', 'Work');
-		await createEdition(cBBID);
-		await createRelationship(aBBID, cBBID, 'Work', 'Edition');
-		await createAuthor(eBBID);
-		await createRelationship(aBBID, eBBID, 'Work', 'Author');
-		await createPublisher(dBBID);
-		await createRelationship(aBBID, dBBID, 'Work', 'Publisher');
+		// first create English and French language set for works
+		const englishAttrib = {
+			frequency: 1,
+			isoCode1: 'en',
+			isoCode2b: 'eng',
+			isoCode2t: 'eng',
+			isoCode3: 'eng',
+			name: 'English'
+		};
+		const englishId = random.number();
+		await new Language({...englishAttrib, id: englishId})
+			.save(null, {method: 'insert'});
+		const englishLanguageSet = await orm.func.language.updateLanguageSet(
+			orm,
+			null,
+			null,
+			[{id: englishId}]
+		);
+		const frenchAttrib = {
+			frequency: 2,
+			isoCode1: 'fr',
+			isoCode2b: 'fre',
+			isoCode2t: 'fra',
+			isoCode3: 'fra',
+			name: 'French'
+		};
+		const frenchId = random.number();
+		await new Language({...frenchAttrib, id: frenchId})
+			.save(null, {method: 'insert'});
+		const frenchLanguageSet = await orm.func.language.updateLanguageSet(
+			orm,
+			null,
+			null,
+			[{id: frenchId}]
+		);
+
+		// create 10 works. 5 of French Language and 5 of English Language
+		// with 2 works of each workType ( one of french and one english)
+		const workBBIDs = [];
+		const workAttrib = {};
+		for (let workTypeId = 1; workTypeId <= 5; workTypeId++) {
+			const workBBID = getRandomUUID();
+			workAttrib.bbid = workBBID;
+			workAttrib.typeId = workTypeId;
+			workAttrib.languageSetId = englishLanguageSet.get('id');
+			await createWork(workBBID, workAttrib);
+
+			const workBBID2 = getRandomUUID();
+			workAttrib.bbid = workBBID2;
+			workAttrib.languageSetId = frenchLanguageSet.get('id');
+			await createWork(workBBID2, workAttrib);
+
+			workBBIDs.push(workBBID, workBBID2);
+		}
+
+		author = await createAuthor();
+
+		// Now create a revision which forms the relationship b/w author and works
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		const relationshipTypeData = {
+			description: 'test descryption',
+			id: 1,
+			label: 'test label',
+			linkPhrase: 'test phrase',
+			reverseLinkPhrase: 'test reverse link phrase',
+			sourceEntityType: 'Author',
+			targetEntityType: 'Work'
+		};
+		await new RelationshipType(relationshipTypeData)
+			.save(null, {method: 'insert'});
+
+		const relationshipsPromise = [];
+		for (const workBBID of workBBIDs) {
+			const relationshipData = {
+				id: random.number(),
+				sourceBbid: author.get('bbid'),
+				targetBbid: workBBID,
+				typeId: relationshipTypeData.id
+			};
+			relationshipsPromise.push(
+				new Relationship(relationshipData)
+					.save(null, {method: 'insert'})
+			);
+		}
+		const relationships = await Promise.all(relationshipsPromise);
+
+		const authorRelationshipSet = await new RelationshipSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.relationships().attach(relationships).then(() => model));
+
+		author.set('relationshipSetId', authorRelationshipSet.get('id'));
+		author.set('revisionId', revision.get('id'));
+		await author.save(null, {method: 'update'});
 	});
 	after(truncateEntities);
 
-	// Test browse requests of Works
-	const workType = 'Work Type 1';
-	const language = 'English';
 
-	let filters = {};
-	it('should return list of Works related to another Work',
-		() => testWorkBrowseRequest(`/work?work=${bBBID}`, filters));
-	it('should return list of Works contained by an Edition',
-		() => testWorkBrowseRequest(`/work?edition=${cBBID}`, filters));
-	it('should return list of Works written by an Author',
-		() => testWorkBrowseRequest(`/work?author=${dBBID}`, filters));
-	it('should return list of Works related the Publisher',
-		() => testWorkBrowseRequest(`/work?publisher=${eBBID}`, filters));
-	filters = {
-		type: workType
-	};
-	it('should return list of Works of given type related to another Work',
-		() => testWorkBrowseRequest(`/work?work=${bBBID}&type=${workType}`, filters));
-	it('should return list of Works  given type contained by an Edition',
-		() => testWorkBrowseRequest(`/work?edition=${cBBID}&type=${workType}`, filters));
-	it('should return list of Works  given type written by an Author',
-		() => testWorkBrowseRequest(`/work?author=${dBBID}&type=${workType}`, filters));
-	it('should return list of Works   given type related to the Publisher',
-		() => testWorkBrowseRequest(`/work?publisher=${eBBID}&type=${workType}`, filters));
-	filters = {
-		language
-	};
-	it('should return list of Works of given language and related to another Work',
-		() => testWorkBrowseRequest(`/work?work=${bBBID}&language=${language}`, filters));
-	it('should return list of Works of  given language and contained by an Edition',
-		() => testWorkBrowseRequest(`/work?edition=${cBBID}&language=${language}`, filters));
-	it('should return list of Works of given language and  written by an Author',
-		() => testWorkBrowseRequest(`/work?author=${dBBID}&language=${language}`, filters));
-	it('should return list of Works of given type related to the Publisher',
-		() => testWorkBrowseRequest(`/work?publisher=${eBBID}&language=${language}`, filters));
-	filters = {
-		language,
-		type: workType
-	};
-	it('should return list of Works of given language and related to another Work',
-		() => testWorkBrowseRequest(`/work?work=${bBBID}&language=${language}&type=${workType}`, filters));
-	it('should return list of Works of  given language and contained by an Edition',
-		() => testWorkBrowseRequest(`/work?edition=${cBBID}&language=${language}&type=${workType}`, filters));
-	it('should return list of Works of given language and  written by an Author',
-		() => testWorkBrowseRequest(`/work?author=${dBBID}&language=${language}&type=${workType}`, filters));
-	it('should return list of Works of given type related to the Publisher',
-		() => testWorkBrowseRequest(`/work?publisher=${eBBID}&language=${language}&type=${workType}`, filters));
+	it('should return list of works associated with the author (without any filter)', async () => {
+		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}`);
+		await browseWorkBasicTests(res);
+		expect(res.body.works.length).to.equal(10);
+	});
+
+	it('should return list of works associated with the author (with Language Filter)', async () => {
+		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&language=French`);
+		await browseWorkBasicTests(res);
+		// 5 work of French Language was created
+		expect(res.body.works.length).to.equal(5);
+		res.body.works.forEach((work) => {
+			expect(work.entity.languages).to.contain('French');
+		});
+	});
+
+	it('should return list of works associated with the author (with Type Filter)', async () => {
+		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=Work+Type+1`);
+		await browseWorkBasicTests(res);
+		// 2 work of Work Type 1 was created
+		expect(res.body.works.length).to.equal(2);
+		res.body.works.forEach((work) => {
+			expect(_.toLower(work.entity.workType)).to.equal('work type 1');
+		});
+	});
+
+	it('should return list of works associated with the author (with Type Filter and Language Filter)', async () => {
+		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=Work+Type+1&language=French`);
+		await browseWorkBasicTests(res);
+		// 1 work of Work Type 1 and French Language was created
+		expect(res.body.works.length).to.equal(1);
+		res.body.works.forEach((work) => {
+			expect(_.toLower(work.entity.workType)).to.equal('work type 1');
+			expect(work.entity.languages).to.contain('French');
+		});
+	});
+
+	it('should allow params to be case insensitive', async () => {
+		const res = await chai.request(app).get(`/WoRK?aUThOr=${author.get('bbid')}&tYPe=WoRK+TyPe+1&LAnguage=fReNCh`);
+		await browseWorkBasicTests(res);
+		// 1 work of Work Type 1 and French Language was created
+		expect(res.body.works.length).to.equal(1);
+		res.body.works.forEach((work) => {
+			expect(_.toLower(work.entity.workType)).to.equal('work type 1');
+			expect(work.entity.languages).to.contain('French');
+		});
+	});
+
+	it('should 406 proper error for invalid bbid', async () => {
+		const res = await chai.request(app).get('/work?author=1212121');
+		expect(res.status).to.equal(406);
+	});
+
+	it('should 404 proper error for incorrect bbid', async () => {
+		const res = await chai.request(app).get(`/work?author=${aBBID}`);
+		expect(res.status).to.equal(404);
+	});
 });
-

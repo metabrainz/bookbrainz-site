@@ -38,30 +38,27 @@ export async function testAuthorBrowseRequest(url, filters) {
 	expect(res.body.relatedAuthors[0].relationships[0].relationshipTypeID).to.be.a('number');
 }
 
-export async function testWorkBrowseRequest(url, filters) {
-	const res = await chai.request(app).get(url);
+export function browseWorkBasicTests(res) {
 	expect(res.status).to.equal(200);
 	expect(res.body).to.be.an('object');
 	expect(res.body).to.have.all.keys(
 		'bbid',
-		'relatedWorks'
+		'works'
 	);
-	expect(res.body.bbid).to.be.a('string');
-	expect(res.body.relatedWorks).to.be.an('array');
-	expect(res.body.relatedWorks[0]).to.be.an('object');
-	expect(res.body.relatedWorks[0].entity).to.be.an('object');
-	expect(res.body.relatedWorks[0].entity).to.have.all.keys(
-		'bbid',
-		'defaultAlias',
-		'languages',
-		'disambiguation',
-		'workType'
-	);
-	filters.type && expect(res.body.relatedWorks[0].entity.workType).to.equal(filters.type);
-	filters.language && expect(res.body.relatedWorks[0].entity.languages).to.be.an('array').that.includes(filters.language);
-	expect(res.body.works[0].relationships).to.be.an('array');
-	expect(res.body.works[0].relationships[0].relationshipType).to.be.a('string');
-	expect(res.body.works[0].relationships[0].relationshipTypeID).to.be.a('number');
+	res.body.works.forEach((work) => {
+		expect(work).to.have.all.keys(
+			'entity',
+			'relationship'
+		);
+		expect(work.entity).to.have.all.keys(
+			'bbid',
+			'defaultAlias',
+			'languages',
+			'entityType',
+			'disambiguation',
+			'workType'
+		);
+	});
 }
 
 
