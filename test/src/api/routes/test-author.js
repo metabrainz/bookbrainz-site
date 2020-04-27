@@ -172,11 +172,11 @@ describe('Browse Author', () => {
 	before(async () => {
 		// create a work which is related to 3 authors
 		const authorBBIDs = [];
-		for (let i = 1; i <= 3; i++) {
+		for (let typeId = 1; typeId <= 3; typeId++) {
 			const authorBBID = getRandomUUID();
 			const authorAttribs = {
 				bbid: authorBBID,
-				typeId: i
+				typeId
 			};
 			await createAuthor(authorBBID, authorAttribs);
 			authorBBIDs.push(authorBBID);

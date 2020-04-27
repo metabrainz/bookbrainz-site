@@ -57,35 +57,33 @@ export function browseWorkBasicTests(res) {
 }
 
 
-export async function testEditionBrowseRequest(url) {
-	const res = await chai.request(app).get(url);
+export function browseEditionBasicTests(res) {
 	expect(res.status).to.equal(200);
 	expect(res.body).to.be.an('object');
 	expect(res.body).to.have.all.keys(
 		'bbid',
 		'editions'
 	);
-	expect(res.body.bbid).to.be.a('string');
-	expect(res.body.editions).to.be.an('array');
-	expect(res.body.editions[0]).to.be.an('object');
-	expect(res.body.editions[0].entity).to.be.an('object');
-	expect(res.body.editions[0].entity).to.have.all.keys(
-		'bbid',
-		'defaultAlias',
-		'languages',
-		'disambiguation',
-		'editionFormat',
-		'height',
-		'width',
-		'depth',
-		'pages',
-		'status',
-		'releaseEventDates',
-		'weight'
-	);
-	expect(res.body.editions[0].relationships).to.be.an('array');
-	expect(res.body.editions[0].relationships[0].relationshipType).to.be.a('string');
-	expect(res.body.editions[0].relationships[0].relationshipTypeID).to.be.a('number');
+	res.body.editions.forEach((work) => {
+		expect(work).to.have.all.keys(
+			'entity',
+			'relationship'
+		);
+		expect(work.entity).to.have.all.keys(
+			'bbid',
+			'defaultAlias',
+			'depth',
+			'disambiguation',
+			'editionFormat',
+			'height',
+			'languages',
+			'pages',
+			'releaseEventDates',
+			'status',
+			'weight',
+			'width'
+		);
+	});
 }
 
 export async function testEditionGroupBrowseRequest(url) {

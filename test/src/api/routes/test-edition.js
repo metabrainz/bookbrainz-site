@@ -17,11 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createEdition, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+import {
+	createAuthor,
+	createEdition, createEditionGroup,
+	createEditor,
+	getRandomUUID,
+	truncateEntities
+} from '../../../test-helpers/create-entities';
+import _ from 'lodash';
 import app from '../../../../src/api/app';
+import {browseEditionBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import {testEditionBrowseRequest} from '../helpers';
+import orm from '../../../bookbrainz-data';
+import {random} from 'faker';
+const {EditionFormat, Language, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
 chai.use(chaiHttp);
@@ -159,12 +169,191 @@ describe('GET /Edition', () => {
 	 });
 });
 
-
+/* eslint-disable no-await-in-loop */
 describe('Browse Edition', () => {
 	// Test browse requests of Edition
-	it('should return list of Editions contains the Work',
-		() => testEditionBrowseRequest(`/edtion?work=${aBBID}`));
+	let author;
+	before(async () => {
+		await truncateEntities();
+		// first create English and French language set for editions
+		const englishAttrib = {
+			frequency: 1,
+			isoCode1: 'en',
+			isoCode2b: 'eng',
+			isoCode2t: 'eng',
+			isoCode3: 'eng',
+			name: 'English'
+		};
+		const englishId = random.number();
+		await new Language({...englishAttrib, id: englishId})
+			.save(null, {method: 'insert'});
+		const englishLanguageSet = await orm.func.language.updateLanguageSet(
+			orm,
+			null,
+			null,
+			[{id: englishId}]
+		);
+		const frenchAttrib = {
+			frequency: 2,
+			isoCode1: 'fr',
+			isoCode2b: 'fre',
+			isoCode2t: 'fra',
+			isoCode3: 'fra',
+			name: 'French'
+		};
+		const frenchId = random.number();
+		await new Language({...frenchAttrib, id: frenchId})
+			.save(null, {method: 'insert'});
+		const frenchLanguageSet = await orm.func.language.updateLanguageSet(
+			orm,
+			null,
+			null,
+			[{id: frenchId}]
+		);
 
-	it('should return list of Edition contained by an EditionGroup',
-		() => testEditionBrowseRequest(`/edition?edition-group=${aBBID}`));
+		// create 10 editions. 5 of French Language and 5 of English Language
+		// with 2 works of each format ( one of french and one english)
+		const editionBBIDs = [];
+		for (let formatId = 1; formatId <= 5; formatId++) {
+			await new EditionFormat({id: formatId, label: `Edition Format ${formatId}`})
+				.save(null, {method: 'insert'});
+
+			const editionAttrib = {};
+
+			const editionBBID = getRandomUUID();
+			editionAttrib.bbid = editionBBID;
+			editionAttrib.formatId = formatId;
+			editionAttrib.languageSetId = englishLanguageSet.get('id');
+			await createEdition(editionBBID, editionAttrib);
+
+			const workBBID2 = getRandomUUID();
+			editionAttrib.bbid = workBBID2;
+			editionAttrib.languageSetId = frenchLanguageSet.get('id');
+			await createEdition(workBBID2, editionAttrib);
+
+			editionBBIDs.push(editionBBID, workBBID2);
+		}
+
+		author = await createAuthor();
+
+		// Now create a revision which forms the relationship b/w author and editions
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		const relationshipTypeData = {
+			description: 'test descryption',
+			id: 1,
+			label: 'test label',
+			linkPhrase: 'test phrase',
+			reverseLinkPhrase: 'test reverse link phrase',
+			sourceEntityType: 'Author',
+			targetEntityType: 'Edition'
+		};
+		await new RelationshipType(relationshipTypeData)
+			.save(null, {method: 'insert'});
+
+		const relationshipsPromise = [];
+		for (const workBBID of editionBBIDs) {
+			const relationshipData = {
+				id: random.number(),
+				sourceBbid: author.get('bbid'),
+				targetBbid: workBBID,
+				typeId: relationshipTypeData.id
+			};
+			relationshipsPromise.push(
+				new Relationship(relationshipData)
+					.save(null, {method: 'insert'})
+			);
+		}
+		const relationships = await Promise.all(relationshipsPromise);
+
+		const authorRelationshipSet = await new RelationshipSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.relationships().attach(relationships).then(() => model));
+
+		author.set('relationshipSetId', authorRelationshipSet.get('id'));
+		author.set('revisionId', revision.get('id'));
+		await author.save(null, {method: 'update'});
+	});
+
+	it('should return list of editions associated with the author (without any filter)', async () => {
+		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(10);
+	});
+
+	it('should return list of editions associated with the author (with Language Filter)', async () => {
+		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&language=French`);
+		await browseEditionBasicTests(res);
+		// 5 work of French Language was created
+		expect(res.body.editions.length).to.equal(5);
+		res.body.editions.forEach((work) => {
+			expect(work.entity.languages).to.contain('French');
+		});
+	});
+
+	it('should return list of editions associated with the author (with Format Filter)', async () => {
+		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&format=Edition+Format+1`);
+		await browseEditionBasicTests(res);
+		// 2 work of Work Type 1 was created
+		expect(res.body.editions.length).to.equal(2);
+		res.body.editions.forEach((edition) => {
+			expect(_.toLower(edition.entity.editionFormat)).to.equal('edition format 1');
+		});
+	});
+
+	it('should return list of editions associated with the author (with Format Filter and Language Filter)', async () => {
+		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&format=edition+format+1&language=French`);
+		await browseEditionBasicTests(res);
+		// 1 work of Work Type 1 and French Language was created
+		expect(res.body.editions.length).to.equal(1);
+		res.body.editions.forEach((work) => {
+			expect(_.toLower(work.entity.editionFormat)).to.equal('edition format 1');
+			expect(work.entity.languages).to.contain('French');
+		});
+	});
+
+	it('should allow params to be case insensitive', async () => {
+		const res = await chai.request(app).get(`/edITion?aUThOr=${author.get('bbid')}&format=edItIOn+FoRmAT+1&LAnguage=fReNCh`);
+		await browseEditionBasicTests(res);
+		// 1 work of Work Type 1 and French Language was created
+		expect(res.body.editions.length).to.equal(1);
+		res.body.editions.forEach((work) => {
+			expect(_.toLower(work.entity.editionFormat)).to.equal('edition format 1');
+			expect(work.entity.languages).to.contain('French');
+		});
+	});
+
+	it('should throw 406 error for invalid bbid', async () => {
+		const res = await chai.request(app).get('/edition?author=1212121');
+		expect(res.status).to.equal(406);
+	});
+
+	it('should throw 404 error for incorrect bbid', async () => {
+		const res = await chai.request(app).get(`/edition?author=${aBBID}`);
+		expect(res.status).to.equal(404);
+	});
+
+	it('should return list of editions associated with edition-group', async () => {
+		const editionA = await createEdition();
+		const editionB = await createEdition();
+		const editionGroup = await createEditionGroup();
+
+		// create a revision which adds these two edition in the editionGroup
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		editionA.set('revisionId', revision.get('id'));
+		editionA.set('editionGroupBbid', editionGroup.get('bbid'));
+		editionB.set('revisionId', revision.get('id'));
+		editionB.set('editionGroupBbid', editionGroup.get('bbid'));
+		await editionA.save(null, {method: 'update'});
+		await editionB.save(null, {method: 'update'});
+
+		const res = await chai.request(app).get(`/edition?edition-group=${editionGroup.get('bbid')}`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(2);
+	});
 });

@@ -252,13 +252,13 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 		.save(null, {method: 'insert'});
 }
 
-export async function createEdition(optionalBBID) {
+export async function createEdition(optionalBBID, optionalEditionAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Edition'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Edition');
 
-	const edition = await new Edition({...entityAttribs, bbid})
+	const edition = await new Edition({...entityAttribs, bbid, ...optionalEditionAttribs})
 		.save(null, {method: 'insert'});
 	return edition;
 }
@@ -384,6 +384,7 @@ export function truncateEntities() {
 		'bookbrainz.annotation',
 		'bookbrainz.work_type',
 		'bookbrainz.edition_group_type',
+		'bookbrainz.edition_format',
 		'bookbrainz.author_type',
 		'bookbrainz.publisher_type',
 		'musicbrainz.area',

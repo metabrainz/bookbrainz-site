@@ -318,13 +318,13 @@ router.get('/',
 			if (req.query.format) {
 				const editionFormatMatched = _.toLower(relatedEntity.editionFormat) === _.toLower(req.query.format);
 				if (req.query.language) {
-					const editionLanguageMatched = relatedEntity.includes(_.upperFirst(req.query.language));
+					const editionLanguageMatched = relatedEntity.languages.includes(_.upperFirst(_.toLower(req.query.language)));
 					return editionFormatMatched && editionLanguageMatched;
 				}
 				return editionFormatMatched;
 			}
 			else if (req.query.language) {
-				const editionLanguageMatched = relatedEntity.includes(_.upperFirst(req.query.language));
+				const editionLanguageMatched = relatedEntity.languages.includes(_.upperFirst(_.toLower(req.query.language)));
 				return editionLanguageMatched;
 			}
 			return true;
@@ -340,10 +340,12 @@ router.get('/',
 			const relationships = editionBasicRelations.map(rel => `editions.${rel}`);
 			await makeEntityLoader(null, relationships, 'Entity not found', true, false)(req, res, next);
 			const {editions} = res.locals.entity;
-			const mappedEditions = editions
-				.map(edition => getEditionBasicInfo(edition))
-				.filter(relationshipsFilterMethod);
-			editionRelationshipList.push(...mappedEditions);
+			editions.map(edition => getEditionBasicInfo(edition))
+				.filter(relationshipsFilterMethod)
+				.forEach((filteredEdition) => {
+					// added relationship to make the output consistent
+					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
+				});
 		}
 
 		return res.status(200).send({
