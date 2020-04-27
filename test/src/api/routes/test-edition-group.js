@@ -211,18 +211,33 @@ describe('Browse EditionGroup', () => {
 		expect(_.toLower(res.body.editionGroups[0].entity.editionGroupType)).to.equal('edition group type 1');
 	});
 
-	it('should throw 406 error for invalid bbid', async () => {
-		const res = await chai.request(app).get('/edition-group?edition=1212121');
-		expect(res.status).to.equal(406);
+	it('should throw 406 error for invalid bbid', (done) => {
+		chai.request(app)
+			.get('/edition-group?edition=1212121')
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				return done();
+			});
 	});
 
-	it('should throw 404 error for incorrect bbid', async () => {
-		const res = await chai.request(app).get(`/edition-group?edition=${aBBID}`);
-		expect(res.status).to.equal(404);
+	it('should throw 404 error for incorrect bbid', (done) => {
+		chai.request(app)
+			.get(`/edition-group?edition=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				return done();
+			});
 	});
 
-	it('should throw 400 error for incorrect linked entity', async () => {
-		const res = await chai.request(app).get(`/edition-group?author=${aBBID}`);
-		expect(res.status).to.equal(400);
+	it('should throw 400 error for incorrect linked entity', (done) => {
+		chai.request(app)
+			.get(`/edition-group?author=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
 	});
 });

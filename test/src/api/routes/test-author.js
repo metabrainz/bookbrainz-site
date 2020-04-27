@@ -246,13 +246,23 @@ describe('Browse Author', () => {
 		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
 	});
 
-	it('should throw 406 error for invalid bbid', async () => {
-		const res = await chai.request(app).get('/author?work=1212121');
-		expect(res.status).to.equal(406);
+	it('should throw 406 error for invalid bbid', (done) => {
+		chai.request(app)
+			.get('/author?work=1212121')
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				return done();
+			});
 	});
 
-	it('should throw 404 error for incorrect bbid', async () => {
-		const res = await chai.request(app).get(`/author?work=${aBBID}`);
-		expect(res.status).to.equal(404);
+	it('should throw 404 error for incorrect bbid', (done) => {
+		chai.request(app)
+			.get(`/author?work=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				return done();
+			});
 	});
 });
