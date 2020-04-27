@@ -283,15 +283,15 @@ router.get('/',
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const publisherTypeMatched = _.toLower(relatedEntity.type) === _.toLower(req.query.type);
+				const publisherTypeMatched = _.toLower(relatedEntity.publisherType) === _.toLower(req.query.type);
 				if (req.query.area) {
-					const publisherAreaMatched = _.toLower(relatedEntity.area) === req.query.area;
+					const publisherAreaMatched = _.toLower(relatedEntity.area) === _.toLower(req.query.area);
 					return publisherTypeMatched && publisherAreaMatched;
 				}
 				return publisherTypeMatched;
 			}
 			else if (req.query.area) {
-				const publisherAreaMatched = _.toLower(relatedEntity.area) === req.query.area;
+				const publisherAreaMatched = _.toLower(relatedEntity.area) === _.toLower(req.query.area);
 				return publisherAreaMatched;
 			}
 			return true;

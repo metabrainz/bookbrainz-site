@@ -269,7 +269,7 @@ export function getPublisherBasicInfo(publisher: object) {
 			disambiguation: _.get(publisher, 'disambiguation.comment', null),
 			endDate: _.get(publisher, 'endDate', null),
 			ended: _.get(publisher, 'ended', null),
-			type: _.get(publisher, 'publisherType.label', null)
+			publisherType: _.get(publisher, 'publisherType.label', null)
 		};
 }
 

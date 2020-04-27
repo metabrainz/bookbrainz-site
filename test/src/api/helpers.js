@@ -1,4 +1,3 @@
-import app from '../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
@@ -107,30 +106,27 @@ export function browseEditionGroupBasicTests(res) {
 	});
 }
 
-export async function testPublisherBrowseRequest(url) {
-	const res = await chai.request(app).get(url);
+export function browsePublisherBasicTests(res) {
 	expect(res.status).to.equal(200);
 	expect(res.body).to.be.an('object');
 	expect(res.body).to.have.all.keys(
 		'bbid',
 		'publishers'
 	);
-	expect(res.body.bbid).to.be.a('string');
-	expect(res.body.publishers).to.be.an('array');
-	expect(res.body.publishers[0]).to.be.an('object');
-	expect(res.body.publishers[0].entity).to.be.an('object');
-	expect(res.body.publishers[0].entity).to.have.all.keys(
-		'bbid',
-		'defaultAlias',
-		'disambiguation',
-		'type',
-		'area',
-		'beginDate',
-		'endDate',
-		'ended'
-	);
-	expect(res.body.publishers[0].relationships).to.be.an('array');
-	expect(res.body.publishers[0].relationships[0].relationshipType).to.be.a('string');
-	expect(res.body.publishers[0].relationships[0].relationshipTypeID).to.be.a('number');
+	res.body.publishers.forEach((work) => {
+		expect(work).to.have.all.keys(
+			'entity',
+			'relationship'
+		);
+		expect(work.entity).to.have.all.keys(
+			'area',
+			'bbid',
+			'beginDate',
+			'defaultAlias',
+			'disambiguation',
+			'endDate',
+			'ended',
+			'publisherType'
+		);
+	});
 }
-

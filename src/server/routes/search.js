@@ -131,7 +131,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	const {orm} = req.app.locals;
 	const indexPromise = new Promise((resolve) => {
 		// TODO: This is hacky, and we should replace it once we switch to SOLR.
-		const trustedUsers = ['Leftmost Cat', 'LordSputnik', 'Monkey', 'iliekcomputers', 'mastcoder'];
+		const trustedUsers = ['Leftmost Cat', 'LordSputnik', 'Monkey', 'iliekcomputers'];
 
 		const NO_MATCH = -1;
 		if (trustedUsers.indexOf(req.user.name) === NO_MATCH) {

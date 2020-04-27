@@ -254,11 +254,11 @@ describe('Browse Edition', () => {
 			.save(null, {method: 'insert'});
 
 		const relationshipsPromise = [];
-		for (const workBBID of editionBBIDs) {
+		for (const editionBBID of editionBBIDs) {
 			const relationshipData = {
 				id: random.number(),
 				sourceBbid: author.get('bbid'),
-				targetBbid: workBBID,
+				targetBbid: editionBBID,
 				typeId: relationshipTypeData.id
 			};
 			relationshipsPromise.push(

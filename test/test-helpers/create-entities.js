@@ -317,7 +317,7 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Author');
 	const areaId = random.number();
-	let	authorAttribs = {
+	const authorAttribs = {
 		bbid,
 		beginAreaId: areaId,
 		beginDay: 25,
@@ -329,9 +329,9 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 		endYear: 2012,
 		ended: true,
 		genderId: editorAttribs.genderId,
-		typeId: random.number()
+		typeId: random.number(),
+		...optionalAuthorAttribs
 	};
-	authorAttribs = {...authorAttribs, ...optionalAuthorAttribs};
 	await new Area({gid: uuidv4(), id: areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
 	await new AuthorType({id: authorAttribs.typeId, label: `Author Type ${authorAttribs.typeId}`})
@@ -341,7 +341,7 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 	return author;
 }
 
-export async function createPublisher(optionalBBID) {
+export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
@@ -356,12 +356,22 @@ export async function createPublisher(optionalBBID) {
 		endMonth: 5,
 		endYear: 2012,
 		ended: true,
-		typeId: random.number()
+		typeId: random.number(),
+		...optionalPublisherAttribs
 	};
-	await new Area({gid: uuidv4(), id: publisherAttribs.areaId, name: 'Rlyeh'})
-		.save(null, {method: 'insert'});
-	await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
-		.save(null, {method: 'insert'});
+	const area = await new Area({id: publisherAttribs.areaId, name: `Area ${publisherAttribs.areaId}`})
+		.fetch({require: false});
+	if (!area) {
+		await new Area({gid: uuidv4(), id: publisherAttribs.areaId, name: `Area ${publisherAttribs.areaId}`})
+			.save(null, {method: 'insert'});
+	}
+
+	const publisherType = await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
+		.fetch({require: false});
+	if (!publisherType) {
+		await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
+			.save(null, {method: 'insert'});
+	}
 	const publisher = await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});
 	return publisher;

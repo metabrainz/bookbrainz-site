@@ -17,12 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createPublisher, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
-
+import {
+	createEditor,
+	createPublisher,
+	createWork,
+	getRandomUUID,
+	truncateEntities
+} from '../../../test-helpers/create-entities';
+import _ from 'lodash';
 import app from '../../../../src/api/app';
+import {browsePublisherBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import {testPublisherBrowseRequest} from '../helpers';
+import orm from '../../../bookbrainz-data';
+import {random} from 'faker';
+const {Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
 chai.use(chaiHttp);
@@ -45,7 +54,7 @@ describe('GET /Publisher', () => {
 			'bbid',
 			'defaultAlias',
 			'disambiguation',
-			'type',
+			'publisherType',
 			'area',
 			'beginDate',
 			'endDate',
@@ -154,14 +163,139 @@ describe('GET /Publisher', () => {
 	 });
 });
 
+/* eslint-disable no-await-in-loop */
 describe('Browse Publishers', () => {
-	// Test browse requests of Publisher
-	it('should return list of Publisher, associated with the Author',
-		() => testPublisherBrowseRequest(`/publisher?author=${aBBID}`));
+	let work;
+	before(async () => {
+		await truncateEntities();
+		// create 10 publishers 5 each of type 1 and type 2
+		const publisherBBIDs = [];
+		for (let areaId = 1; areaId <= 5; areaId++) {
+			let publisherAttrib = {};
+			const publisherBBID = getRandomUUID();
+			publisherAttrib.bbid = publisherBBID;
+			publisherAttrib.areaId = areaId;
+			publisherAttrib.typeId = 1;
+			await createPublisher(publisherBBID, publisherAttrib);
 
-	it('should return list of Publisher, Whose are  related to the Edition',
-		() => testPublisherBrowseRequest(`/publisher?edition=${aBBID}`));
+			const publisherBBID2 = getRandomUUID();
+			publisherAttrib.bbid = publisherBBID2;
+			publisherAttrib.typeId = 2;
+			await createPublisher(publisherBBID2, publisherAttrib);
 
-	it('should return list of Publisher, Whose are  related to the EditionGroup',
-		() => testPublisherBrowseRequest(`/publisher?edition-group=${aBBID}`));
+			publisherBBIDs.push(publisherBBID, publisherBBID2);
+		}
+
+		work = await createWork();
+
+		// Now create a revision which forms the relationship b/w work and publishers
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		const relationshipTypeData = {
+			description: 'test descryption',
+			id: 1,
+			label: 'test label',
+			linkPhrase: 'test phrase',
+			reverseLinkPhrase: 'test reverse link phrase',
+			sourceEntityType: 'Author',
+			targetEntityType: 'Edition'
+		};
+		await new RelationshipType(relationshipTypeData)
+			.save(null, {method: 'insert'});
+		const relationshipsPromise = [];
+		for (const publisherBBID of publisherBBIDs) {
+			const relationshipData = {
+				id: random.number(),
+				sourceBbid: work.get('bbid'),
+				targetBbid: publisherBBID,
+				typeId: relationshipTypeData.id
+			};
+			relationshipsPromise.push(
+				new Relationship(relationshipData)
+					.save(null, {method: 'insert'})
+			);
+		}
+		const relationships = await Promise.all(relationshipsPromise);
+
+		const workRelationshipSet = await new RelationshipSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.relationships().attach(relationships).then(() => model));
+
+		work.set('relationshipSetId', workRelationshipSet.get('id'));
+		work.set('revisionId', revision.get('id'));
+		await work.save(null, {method: 'update'});
+	});
+	after(truncateEntities);
+
+	it('should return list of Publisher, associated with the Work', async () => {
+		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(10);
+	});
+
+	it('should return list of Publisher, associated with the Work (with Area Filter)', async () => {
+		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}&area=Area+1`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(2);
+		res.body.publishers.forEach((publisher) => {
+			expect(_.toLower(publisher.entity.area)).to.equal('area 1');
+		});
+	});
+
+	it('should return list of Publisher, associated with the Work (with Type Filter)', async () => {
+		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}&type=Publisher+Type+1`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(5);
+		res.body.publishers.forEach((publisher) => {
+			expect(_.toLower(publisher.entity.publisherType)).to.equal('publisher type 1');
+		});
+	});
+
+	it('should return list of Publisher, associated with the Work (with Type Filter and Area filter)', async () => {
+		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}&type=Publisher+Type+1&area=Area+1`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(1);
+		expect(_.toLower(res.body.publishers[0].entity.publisherType)).to.equal('publisher type 1');
+		expect(_.toLower(res.body.publishers[0].entity.area)).to.equal('area 1');
+	});
+
+	it('should allow params to be case insensitive', async () => {
+		const res = await chai.request(app).get(`/pubLIshEr?wORk=${work.get('bbid')}&TYPe=PuBLIsher+TYpE+1&area=Area+1`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(1);
+		expect(_.toLower(res.body.publishers[0].entity.publisherType)).to.equal('publisher type 1');
+		expect(_.toLower(res.body.publishers[0].entity.area)).to.equal('area 1');
+	});
+
+	it('should throw 406 error for invalid bbid', (done) => {
+		chai.request(app)
+			.get('/publisher?work=121212')
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(406);
+				return done();
+			});
+	});
+
+	it('should throw 404 error for incorrect bbid', (done) => {
+		chai.request(app)
+			.get(`/publisher?work=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				return done();
+			});
+	});
+
+	it('should throw 400 error for incorrect linked entity', (done) => {
+		chai.request(app)
+			.get(`/publisher?edition-group=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
 });
