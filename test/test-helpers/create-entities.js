@@ -294,14 +294,15 @@ export async function createWork(optionalBBID, optionalWorkAttribs) {
 	return work;
 }
 
-export async function createEditionGroup(optionalBBID) {
+export async function createEditionGroup(optionalBBID, optionalEditionGroupAttrib = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'EditionGroup'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'EditionGroup');
 	const editionGroupAttribs = {
 		bbid,
-		typeId: random.number()
+		typeId: random.number(),
+		...optionalEditionGroupAttrib
 	};
 	await new EditionGroupType({id: editionGroupAttribs.typeId, label: `Edition Group Type ${editionGroupAttribs.typeId}`})
 		.save(null, {method: 'insert'});

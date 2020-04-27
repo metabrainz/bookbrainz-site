@@ -215,7 +215,7 @@ router.get('/',
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const editionGroupTypeMatched = _.toLower(relatedEntity.type) === _.toLower(req.query.type);
+				const editionGroupTypeMatched = _.toLower(relatedEntity.editionGroupType) === _.toLower(req.query.type);
 				return editionGroupTypeMatched;
 			}
 			return true;
@@ -232,10 +232,12 @@ router.get('/',
 			await makeEntityLoader(null, relationships, 'Entity not found', true, false)(req, res, next);
 			const {editionGroup} = res.locals.entity;
 			// edition will belong to only one edition-group
-			const mappedEditions = [];
-			mappedEditions.push(getEditionGroupBasicInfo(editionGroup));
-			mappedEditions.filter(relationshipsFilterMethod);
-			editionGroupRelationshipList.push(...mappedEditions);
+			const editionGroupArray = [getEditionGroupBasicInfo(editionGroup)];
+			editionGroupArray
+				.filter(relationshipsFilterMethod)
+				.forEach((filteredEditionGroup) => {
+					editionGroupRelationshipList.push({entity: filteredEditionGroup, relationship: {}});
+				});
 		}
 		return res.status(200).send({
 			bbid: req.query.bbid,

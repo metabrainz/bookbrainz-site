@@ -183,7 +183,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 			bbid: _.get(editionGroup, 'bbid', null),
 			defaultAlias: getDefaultAlias(editionGroup),
 			disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
-			type: _.get(editionGroup, 'editionGroupType.label')
+			editionGroupType: _.get(editionGroup, 'editionGroupType.label')
 		};
 }
 

@@ -86,27 +86,25 @@ export function browseEditionBasicTests(res) {
 	});
 }
 
-export async function testEditionGroupBrowseRequest(url) {
-	const res = await chai.request(app).get(url);
+export function browseEditionGroupBasicTests(res) {
 	expect(res.status).to.equal(200);
 	expect(res.body).to.be.an('object');
 	expect(res.body).to.have.all.keys(
 		'bbid',
 		'editionGroups'
 	);
-	expect(res.body.bbid).to.be.a('string');
-	expect(res.body.edtitionGroups).to.be.an('array');
-	expect(res.body.edtitionGroups[0]).to.be.an('object');
-	expect(res.body.edtitionGroups[0].entity).to.be.an('object');
-	expect(res.body.edtitionGroups[0].entity).to.have.all.keys(
-		'bbid',
-		'defaultAlias',
-		'disambiguation',
-		'type'
-	);
-	expect(res.body.edtitionGroups[0].relationships).to.be.an('array');
-	expect(res.body.edtitionGroups[0].relationships[0].relationshipType).to.be.a('string');
-	expect(res.body.edtitionGroups[0].relationships[0].relationshipTypeID).to.be.a('number');
+	res.body.editionGroups.forEach((work) => {
+		expect(work).to.have.all.keys(
+			'entity',
+			'relationship'
+		);
+		expect(work.entity).to.have.all.keys(
+			'bbid',
+			'defaultAlias',
+			'disambiguation',
+			'editionGroupType'
+		);
+	});
 }
 
 export async function testPublisherBrowseRequest(url) {
