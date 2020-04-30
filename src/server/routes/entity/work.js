@@ -93,17 +93,6 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
 
-function entityToOption(entity) {
-	return _.isNil(entity) ? null :
-		{
-			disambiguation: entity.disambiguation ?
-				entity.disambiguation.comment : null,
-			id: entity.bbid,
-			text: entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)',
-			type: entity.type
-		};
-}
 
 // Creation
 

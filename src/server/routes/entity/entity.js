@@ -293,6 +293,178 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	return parents.attach(parentRevisionIDs, {transacting});
 }
 
+
+async function saveEntitiesAndFinishRevision(
+	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
+	updatedEntities: [], editorID: number, note: string
+) {
+	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
+		(entityModel) => entityModel.get('revisionId')
+	)));
+
+	const entitiesSavedPromise = Promise.all(
+		_.map(updatedEntities, (entityModel) => {
+			entityModel.set('revisionId', newRevision.get('id'));
+
+			const shouldInsert =
+				entityModel.get('bbid') === mainEntity.get('bbid') && isNew;
+			const method = shouldInsert ? 'insert' : 'update';
+			return entityModel.save(null, {method, transacting});
+		})
+	);
+
+	const editorUpdatePromise =
+		utils.incrementEditorEditCountById(orm, editorID, transacting);
+
+	const notePromise = _createNote(
+		orm, note, editorID, newRevision, transacting
+	);
+
+	const parentsAddedPromise =
+		setParentRevisions(transacting, newRevision, parentRevisionIDs);
+
+	/** model.save returns a refreshed model */
+	// eslint-disable-next-line no-unused-vars
+	const [savedEntities, ...others] = await Promise.all([
+		entitiesSavedPromise,
+		editorUpdatePromise,
+		parentsAddedPromise,
+		notePromise
+	]);
+
+	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
+}
+
+export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
+	const mainBBID = mainEntity.bbid;
+	const {relationshipSet} = mainEntity;
+	const otherBBIDs = [];
+	const otherEntities = [];
+
+	if (relationshipSet) {
+		// Create a list of BBID's that is related to the deleted entity
+		if (!relationshipSet.relationships) {
+			return [];
+		}
+		relationshipSet.relationships.forEach((relationship) => {
+			if (relationship.sourceBbid === mainBBID) {
+				otherBBIDs.push(relationship.targetBbid);
+			}
+			else if (relationship.targetBbid === mainBBID) {
+				otherBBIDs.push(relationship.sourceBbid);
+			}
+		});
+
+		// Loop over the BBID's of other entites related to deleted entity
+		if (otherBBIDs.length) {
+			if (otherBBIDs.length === 0) {
+				return [];
+			}
+			await Promise.all(otherBBIDs.map(async (entityBbid) => {
+				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
+
+				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
+					.fetch({require: false, transacting, withRelated: 'relationships'});
+
+				if (_.isNil(otherEntityRelationshipSet)) {
+					return;
+				}
+
+				// Fetch other entity relationships to remove relation with the deleted entity
+				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+
+				// Filter out entites related to deleted entity
+				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
+					mainBBID !== sourceBbid && mainBBID !== targetBbid);
+
+				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
+					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
+				);
+
+				otherEntity.set(
+					'relationshipSetId',
+					newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null
+				);
+
+				otherEntities.push(otherEntity);
+			}));
+		}
+	}
+
+	return otherEntities;
+}
+
+function fetchOrCreateMainEntity(
+	orm, transacting, isNew, currentEntity, entityType
+) {
+	const model = utils.getEntityModelByType(orm, entityType);
+
+	const entity = model.forge({bbid: currentEntity.bbid});
+
+	if (isNew) {
+		return Promise.resolve(entity);
+	}
+
+	return entity.fetch({transacting});
+}
+
+export function handleDelete(
+	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
+	RevisionModel: any
+) {
+	const {entity}: {entity: any} = res.locals;
+	const {Revision, bookshelf} = orm;
+	const editorJSON = req.session.passport.user;
+	const {body}: {body: any} = req;
+
+	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+		const otherEntities = await deleteRelationships(orm, transacting, entity);
+
+		const newRevision = await new Revision({
+			authorId: editorJSON.id
+		}).save(null, {transacting});
+
+		/*
+		 * No trigger for deletions, so manually create the <Entity>Revision
+		 * and update the entity header
+		 */
+
+		const entityRevision = await new RevisionModel({
+			bbid: entity.bbid,
+			dataId: null,
+			id: newRevision.get('id')
+		}).save(null, {
+			method: 'insert',
+			transacting
+		});
+
+		const entityHeader = await new HeaderModel({
+			bbid: entity.bbid,
+			masterRevisionId: entityRevision.get('id')
+		}).save(null, {transacting});
+
+		const mainEntity = await fetchOrCreateMainEntity(
+			orm, transacting, false, entity, entity.type
+		);
+
+		const savedMainEntity =
+			await saveEntitiesAndFinishRevision(
+				orm,
+				transacting,
+				false,
+				newRevision,
+				mainEntity,
+				otherEntities,
+				editorJSON.id,
+				body.note
+			);
+
+		return savedMainEntity;
+	});
+
+	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
+}
+
 async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
 	const {Edition, bookshelf} = orm;
 	const {mergingEntities} = session.mergeQueue;
@@ -489,177 +661,6 @@ async function processMergeOperation(orm, transacting, session, mainEntity, allE
 			{source_bbid: bbid, target_bbid: currentEntityBBID})));
 
 	return allEntitiesReturnArray;
-}
-
-async function saveEntitiesAndFinishRevision(
-	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
-	updatedEntities: [], editorID: number, note: string
-) {
-	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
-		(entityModel) => entityModel.get('revisionId')
-	)));
-
-	const entitiesSavedPromise = Promise.all(
-		_.map(updatedEntities, (entityModel) => {
-			entityModel.set('revisionId', newRevision.get('id'));
-
-			const shouldInsert =
-				entityModel.get('bbid') === mainEntity.get('bbid') && isNew;
-			const method = shouldInsert ? 'insert' : 'update';
-			return entityModel.save(null, {method, transacting});
-		})
-	);
-
-	const editorUpdatePromise =
-		utils.incrementEditorEditCountById(orm, editorID, transacting);
-
-	const notePromise = _createNote(
-		orm, note, editorID, newRevision, transacting
-	);
-
-	const parentsAddedPromise =
-		setParentRevisions(transacting, newRevision, parentRevisionIDs);
-
-	/** model.save returns a refreshed model */
-	// eslint-disable-next-line no-unused-vars
-	const [savedEntities, ...others] = await Promise.all([
-		entitiesSavedPromise,
-		editorUpdatePromise,
-		parentsAddedPromise,
-		notePromise
-	]);
-
-	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
-}
-
-export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
-	const mainBBID = mainEntity.bbid;
-	const {relationshipSet} = mainEntity;
-	const otherBBIDs = [];
-	const otherEntities = [];
-
-	if (relationshipSet) {
-		// Create a list of BBID's that is related to the deleted entity
-		if (!relationshipSet.relationships) {
-			return [];
-		}
-		relationshipSet.relationships.forEach((relationship) => {
-			if (relationship.sourceBbid === mainBBID) {
-				otherBBIDs.push(relationship.targetBbid);
-			}
-			else if (relationship.targetBbid === mainBBID) {
-				otherBBIDs.push(relationship.sourceBbid);
-			}
-		});
-
-		// Loop over the BBID's of other entites related to deleted entity
-		if (otherBBIDs.length) {
-			if (otherBBIDs.length === 0) {
-				return [];
-			}
-			await Promise.all(otherBBIDs.map(async (entityBbid) => {
-				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
-
-				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
-					.fetch({require: false, transacting, withRelated: 'relationships'});
-
-				if (_.isNil(otherEntityRelationshipSet)) {
-					return;
-				}
-
-				// Fetch other entity relationships to remove relation with the deleted entity
-				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
-
-				// Filter out entites related to deleted entity
-				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
-					mainBBID !== sourceBbid && mainBBID !== targetBbid);
-
-				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
-					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
-				);
-
-				otherEntity.set(
-					'relationshipSetId',
-					newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null
-				);
-
-				otherEntities.push(otherEntity);
-			}));
-		}
-	}
-
-	return otherEntities;
-}
-
-function fetchOrCreateMainEntity(
-	orm, transacting, isNew, currentEntity, entityType
-) {
-	const model = utils.getEntityModelByType(orm, entityType);
-
-	const entity = model.forge({bbid: currentEntity.bbid});
-
-	if (isNew) {
-		return Promise.resolve(entity);
-	}
-
-	return entity.fetch({transacting});
-}
-
-export function handleDelete(
-	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
-	RevisionModel: any
-) {
-	const {entity}: {entity: any} = res.locals;
-	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
-	const {body}: {body: any} = req;
-
-	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
-		const otherEntities = await deleteRelationships(orm, transacting, entity);
-
-		const newRevision = await new Revision({
-			authorId: editorJSON.id
-		}).save(null, {transacting});
-
-		/*
-		 * No trigger for deletions, so manually create the <Entity>Revision
-		 * and update the entity header
-		 */
-
-		const entityRevision = await new RevisionModel({
-			bbid: entity.bbid,
-			dataId: null,
-			id: newRevision.get('id')
-		}).save(null, {
-			method: 'insert',
-			transacting
-		});
-
-		const entityHeader = await new HeaderModel({
-			bbid: entity.bbid,
-			masterRevisionId: entityRevision.get('id')
-		}).save(null, {transacting});
-
-		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, false, entity, entity.type
-		);
-
-		const savedMainEntity =
-			await saveEntitiesAndFinishRevision(
-				orm,
-				transacting,
-				false,
-				newRevision,
-				mainEntity,
-				otherEntities,
-				editorJSON.id,
-				body.note
-			);
-
-		return savedMainEntity;
-	});
-
-	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
 }
 
 type ProcessEditionSetsBody = {

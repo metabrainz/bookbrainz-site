@@ -91,8 +91,10 @@ const EntityMerge = (props: Props) => {
 				</Panel.Title>
 			</Panel.Heading>
 			<Panel.Body>
-				<p className="text-muted"/>Select and review the data to merge.
+				<p className="text-muted">
+				Select and review the data to merge.
 				For further modifications, edit the resulting merged entity.
+				</p>
 				<div>
 					<Row>
 						<Col md={5} mdOffset={1}>
