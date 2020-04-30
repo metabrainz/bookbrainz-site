@@ -20,11 +20,12 @@
 
 import * as React from 'react';
 
-import {Col, Row} from 'react-bootstrap';
+import {Col, Panel, Row} from 'react-bootstrap';
 
 import AliasEditorMerge from './alias-editor/alias-editor-merge';
 import Entity from './common/entity';
 import EntityIdentifiers from '../components/pages/entities/identifiers';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import NameSectionMerge from './name-section/name-section-merge';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
@@ -66,11 +67,11 @@ const EntityMerge = (props: Props) => {
 	} = props;
 	const identifiers = _.values(identifierSet.toJS()) || [];
 	return (
-		<div>
-			<div>
-				{subheading}
-				<div>
-					<div className="small margin-bottom-1">
+		<Panel>
+			<Panel.Heading>
+				<Panel.Title componentClass="h2">
+					<p>{subheading}</p>
+					<div>
 						{mergingEntities.map((entity, index) => {
 							const entityForDisplay = {
 								link: getEntityLink({bbid: entity.bbid, type: entity.type}),
@@ -80,52 +81,56 @@ const EntityMerge = (props: Props) => {
 							};
 							const isNotLast = index < mergingEntities.length - 1;
 							return (
-								<span className={isNotLast ? 'margin-right-d5' : ''} key={entity.bbid}>
+								<span key={entity.bbid}>
 									<Entity {...entityForDisplay}/>
-									{isNotLast && '⟸'}
+									{isNotLast && <FontAwesomeIcon className="margin-sides-d5" icon="angle-double-left"/>}
 								</span>
 							);
 						})}
 					</div>
-					Select and review the data to merge.
-					For further modifications, edit the resulting merged entity.
+				</Panel.Title>
+			</Panel.Heading>
+			<Panel.Body>
+				<p className="text-muted"/>Select and review the data to merge.
+				For further modifications, edit the resulting merged entity.
+				<div>
+					<Row>
+						<Col md={5} mdOffset={1}>
+							<NameSectionMerge {...props}/>
+						</Col>
+						<Col md={5} mdOffset={1}>
+							<AliasEditorMerge {...props}/>
+						</Col>
+					</Row>
+					<Row>
+						<Col md={5} mdOffset={1}>
+							{
+								React.cloneElement(
+									React.Children.only(children),
+									{...props}
+								)
+							}
+						</Col>
+					</Row>
+					<Row>
+						<Col md={8}>
+							<RelationshipSection {...props}/>
+						</Col>
+						<Col md={4}>
+							<EntityIdentifiers
+								identifierTypes={props.identifierTypes}
+								identifiers={identifiers}
+							/>
+						</Col>
+					</Row>
 				</div>
-			</div>
-			<div>
-				<Row>
-					<Col md={5} mdOffset={1}>
-						<NameSectionMerge {...props}/>
-					</Col>
-					<Col md={5} mdOffset={1}>
-						<AliasEditorMerge {...props}/>
-					</Col>
-				</Row>
-				<Row>
-					<Col md={5} mdOffset={1}>
-						{
-							React.cloneElement(
-								React.Children.only(children),
-								{...props}
-							)
-						}
-					</Col>
-				</Row>
-				<Row>
-					<Col md={8}>
-						<RelationshipSection {...props}/>
-					</Col>
-					<Col md={4}>
-						<EntityIdentifiers
-							identifierTypes={props.identifierTypes}
-							identifiers={identifiers}
-						/>
-					</Col>
-				</Row>
-			</div>
-			<div>
-				<SubmissionSection {...props}/>
-			</div>
-		</div>
+			</Panel.Body>
+			<Panel.Footer>
+				<div>
+					<SubmissionSection {...props}/>
+				</div>
+			</Panel.Footer>
+		</Panel>
 	);
 };
 EntityMerge.displayName = 'EntityMerge';

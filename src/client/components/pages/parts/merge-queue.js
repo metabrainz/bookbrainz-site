@@ -69,8 +69,8 @@ function MergeQueue({mergeQueue}) {
 	}
 
 	return (
-		<Well>
-			<h3>
+		<Well className="margin-top-2">
+			<h3 className="margin-top-0">
 				Selected {entityCount} entit{entityCount > 1 ? 'ies' : 'y'} for merging
 			</h3>
 			{entityList}
