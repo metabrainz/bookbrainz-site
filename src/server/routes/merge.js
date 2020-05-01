@@ -24,7 +24,7 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
 import * as utils from '../helpers/utils';
-import {ConflictError, NotFoundError} from '../../common/helpers/error';
+import {BadRequestError, ConflictError, NotFoundError} from '../../common/helpers/error';
 import {basicRelations,
 	getEntityFetchPropertiesByType,
 	getEntitySectionByType} from '../helpers/merge';
@@ -239,7 +239,7 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		}
 		if (_.isNil(req.params.bbid) ||
 			!commonUtils.isValidBBID(req.params.bbid)) {
-			return next(`Invalid bbid: ${req.params.bbid}`);
+			return next(new BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
 		}
 		if (_.has(mergeQueue.mergingEntities, req.params.bbid)) {
 			// Do we just return here? do we have to do something like next('route');
