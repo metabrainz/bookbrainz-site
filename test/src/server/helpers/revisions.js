@@ -55,7 +55,8 @@ describe('getOrderedRevisions', () => {
 				'createdAt',
 				'editor',
 				'entities',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 		expect(orderedRevisions.length).to.equal(size);
@@ -445,7 +446,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -474,7 +476,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -503,7 +506,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -532,7 +536,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -561,7 +566,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});

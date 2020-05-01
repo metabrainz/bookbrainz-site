@@ -125,10 +125,13 @@ export function loadEntityRelationships(req, res, next) {
 		.catch(next);
 }
 export async function redirectedBbid(req, res, next, bbid) {
-	const {orm} = req.app.locals;
-	if (!commonUtils.isValidBBID(bbid)) {
+	if (req.path.toLowerCase() === '/create') {
 		return next('route');
 	}
+	if (!commonUtils.isValidBBID(bbid)) {
+		return next(new error.BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
+	}
+	const {orm} = req.app.locals;
 
 	try {
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
