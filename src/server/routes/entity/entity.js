@@ -274,10 +274,11 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 }
 
 export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: string) {
-	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
+	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 
 	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
-	return model.forge({bbid}).fetch({transacting});
+	return model.forge({bbid: redirectBbid}).fetch({transacting});
 }
 
 async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
