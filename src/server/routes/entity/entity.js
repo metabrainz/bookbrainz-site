@@ -396,11 +396,11 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 }
 
 function fetchOrCreateMainEntity(
-	orm, transacting, isNew, currentEntity, entityType
+	orm, transacting, isNew, bbid, entityType
 ) {
 	const model = utils.getEntityModelByType(orm, entityType);
 
-	const entity = model.forge({bbid: currentEntity.bbid});
+	const entity = model.forge({bbid});
 
 	if (isNew) {
 		return Promise.resolve(entity);
@@ -445,7 +445,7 @@ export function handleDelete(
 		}).save(null, {transacting});
 
 		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, false, entity, entity.type
+			orm, transacting, false, entity.bbid, entity.type
 		);
 
 		const savedMainEntity =
@@ -466,22 +466,22 @@ export function handleDelete(
 	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
 }
 
-async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
+export async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
 	const {Edition, bookshelf} = orm;
 	const {mergingEntities} = session.mergeQueue;
+	if (!mergingEntities) {
+		throw new Error('Merge handler called with no merge queue, aborting');
+	}
 	const entityType = mainEntity.get('type');
 	const currentEntityBBID = mainEntity.get('bbid');
 	const mergingEntitiesBBIDs = Object.keys(mergingEntities);
+	if (!_.includes(mergingEntitiesBBIDs, currentEntityBBID)) {
+		throw new Error('Entity being merged into does not appear in merge queue, aborting');
+	}
 	const entitiesToMergeBBIDs = _.without(Object.keys(mergingEntities), currentEntityBBID);
 	let allEntitiesReturnArray = allEntities;
 	// fetch entities we're merging to add them to to the array of modified entities
 	const entitiesToMerge = _.values(mergingEntities).filter(({bbid}) => bbid !== currentEntityBBID);
-	if (!mergingEntities) {
-		throw new Error('Merge handler called with no merge queue, aborting');
-	}
-	if (!_.includes(mergingEntitiesBBIDs, currentEntityBBID)) {
-		throw new Error('Entity being merged into does not appear in merge queue, aborting');
-	}
 
 	const entitiesModelsToMerge = await Promise.all(entitiesToMergeBBIDs
 		.map(bbid => fetchOrCreateMainEntity(orm, transacting, false, bbid, entityType)));
@@ -719,8 +719,13 @@ async function processEditionSets(
 	// if areaId is not present, set it to null.
 	// otherwise it shows error while comparing old and new releaseEvent;
 
-	if (releaseEvents[0] && _.isNil(releaseEvents[0].areaId)) {
-		releaseEvents[0].areaId = null;
+	if (releaseEvents[0]) {
+		if (_.isNil(releaseEvents[0].areaId)) {
+			releaseEvents[0].areaId = null;
+		}
+		if (releaseEvents[0].date === '') {
+			releaseEvents[0].date = null;
+		}
 	}
 
 	const newReleaseEventSetIDPromise =
