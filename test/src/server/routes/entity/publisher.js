@@ -41,15 +41,15 @@ describe('Publisher routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested publisher BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/publisher/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw an error trying to edit an existing publisher', async () => {
 		const res = await agent
 			.get(`/publisher/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested publisher BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/publisher/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

@@ -42,15 +42,15 @@ describe('Work routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested work BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/work/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw an error trying to edit an existing work', async () => {
 		const res = await agent
 			.get(`/work/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested work BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/work/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

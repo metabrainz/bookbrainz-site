@@ -41,15 +41,15 @@ describe('Edition routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested edition BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/edition/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw an error trying to edit an existing edition', async () => {
 		const res = await agent
 			.get(`/edition/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested edition BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/edition/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

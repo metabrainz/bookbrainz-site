@@ -41,15 +41,15 @@ describe('Author routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested author BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/author/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw an error trying to edit an existing author', async () => {
 		const res = await agent
 			.get(`/author/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested author BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/author/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
