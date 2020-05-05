@@ -63,7 +63,7 @@ function EntityFooter({bbid, deleted, entityUrl, lastModified}) {
 							href={`/merge/add/${bbid}`}
 							title="Select entity for merging"
 						>
-							<FontAwesomeIcon flip="vertical" name="code-branch"/>
+							<FontAwesomeIcon flip="vertical" icon="code-branch"/>
 							&nbsp;Merge
 						</Button>
 					</ButtonGroup>
