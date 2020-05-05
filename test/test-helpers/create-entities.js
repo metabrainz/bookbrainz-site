@@ -108,7 +108,7 @@ const entityAttribs = {
 	revisionId: 1
 };
 
-export function createEditor() {
+export function createEditor(editorId) {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
 		editorTypeAttribs.id = random.number();
 		await new EditorType(editorTypeAttribs)
@@ -116,7 +116,7 @@ export function createEditor() {
 		const gender = await new Gender({...setData, id: random.number(), name: 'test'})
 			.save(null, {method: 'insert', transacting});
 
-		editorAttribs.id = random.number();
+		editorAttribs.id = editorId || random.number();
 		editorAttribs.genderId = gender.get('id');
 		editorAttribs.typeId = editorTypeAttribs.id;
 		editorAttribs.name = internet.userName();

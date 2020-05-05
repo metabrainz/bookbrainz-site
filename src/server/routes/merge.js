@@ -230,6 +230,10 @@ router.get('/add/:bbid', auth.isAuthenticated,
 	async (req, res, next) => {
 		const {orm}: {orm: any} = req.app.locals;
 		let {mergeQueue} = req.session;
+		if (_.isNil(req.params.bbid) ||
+		!commonUtils.isValidBBID(req.params.bbid)) {
+			return next(new BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
+		}
 		if (!mergeQueue) {
 			mergeQueue = {
 				entityType: '',
@@ -237,13 +241,9 @@ router.get('/add/:bbid', auth.isAuthenticated,
 			};
 			req.session.mergeQueue = mergeQueue;
 		}
-		if (_.isNil(req.params.bbid) ||
-			!commonUtils.isValidBBID(req.params.bbid)) {
-			return next(new BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
-		}
 		if (_.has(mergeQueue.mergingEntities, req.params.bbid)) {
-			// Do we just return here? do we have to do something like next('route');
-			return next();
+			// Do nothing, redirect to referer.
+			return res.redirect(req.headers.referer);
 		}
 		let fetchedEntity;
 		try {
@@ -252,7 +252,7 @@ router.get('/add/:bbid', auth.isAuthenticated,
 			});
 		}
 		catch (error) {
-			return next(new NotFoundError(error));
+			return next(new NotFoundError('Entity not found', req));
 		}
 
 		/* If there is no fetchedEntity or no dataId, the entity has been deleted */

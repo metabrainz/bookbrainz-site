@@ -83,7 +83,7 @@ EntityFooter.propTypes = {
 	bbid: PropTypes.string.isRequired,
 	deleted: PropTypes.bool,
 	entityUrl: PropTypes.string.isRequired,
-	lastModified: PropTypes.string.isRequired
+	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired
 };
 EntityFooter.defaultProps = {
 	deleted: false

@@ -39,6 +39,9 @@ export function renderError(req, res, err) {
 			/>
 		</Layout>
 	);
+	if (errorToSend.message) {
+		res.statusMessage = errorToSend.message;
+	}
 	res.status(
 		errorToSend.status || status.INTERNAL_SERVER_ERROR
 	).send(target({
