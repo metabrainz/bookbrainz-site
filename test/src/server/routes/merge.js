@@ -71,41 +71,38 @@ describe('Merge routes', () => {
 		it('should add an entity to the merge queue', (done) => {
 			agent.get(`/merge/add/${aBBID}`)
 				.set('referer', `/author/${aBBID}`)
-				.end((err, res) => {
-					expect(err).to.be.null;
+				.then((res) => {
 					expect(res).to.have.status(200);
 					expect(res).to.redirectTo(`${urlBase}/author/${aBBID}`);
 					// Not sure how to check the private user session here
 					// Instead, try submitting, and we should get an error message
 					// complaining about only one entity in the merge queue
 					agent.get('/merge/submit')
-						.end((err2, response) => {
-							expect(err2).to.be.null;
+						.end((err, response) => {
+							expect(err).to.be.null;
 							expect(response).to.have.status(409);
 							expect(response.res.statusMessage).to.equal('You must have at least 2 entities selected to merge');
 							done();
 						});
-				});
+				}).catch(done);
 		});
 		it('should do nothing and redirect when adding the same entity BBID', (done) => {
 			agent.get(`/merge/add/${aBBID}`)
 				.set('referer', `/author/${aBBID}`)
-				.end((err, res) => {
-					expect(err).to.be.null;
+				.then((res) => {
 					expect(res).to.have.status(200);
 					expect(res).to.redirectTo(`${urlBase}/author/${aBBID}`);
 					done();
-				});
+				}).catch(done);
 		});
 		it('should allow adding another entity of same type to the merge queue', (done) => {
 			agent.get(`/merge/add/${bBBID}`)
 				.set('referer', `/author/${bBBID}`)
-				.end((err, res) => {
-					expect(err).to.be.null;
+				.then((res) => {
 					expect(res).to.have.status(200);
 					expect(res).to.redirectTo(`${urlBase}/author/${bBBID}`);
 					done();
-				});
+				}).catch(done);
 		});
 
 		it('should recreate the merge queue if adding another entity type', (done) => {
@@ -122,7 +119,7 @@ describe('Merge routes', () => {
 							expect(response.res.statusMessage).to.equal('You must have at least 2 entities selected to merge');
 							done();
 						});
-				});
+				}).catch(done);
 		});
 	});
 
@@ -162,6 +159,7 @@ describe('Merge routes', () => {
 					return agent.get('/merge/cancel')
 						.set('referer', `/author/${bBBID}`);
 				})
+				.catch(done)
 				.then(() => {
 					agent.get('/merge/submit')
 						.set('referer', `/author/${bBBID}`)
@@ -171,7 +169,7 @@ describe('Merge routes', () => {
 							expect(response.res.statusMessage).to.equal('No entities selected for merge');
 							done();
 						});
-				}).catch(done);
+				});
 		});
 	});
 });
