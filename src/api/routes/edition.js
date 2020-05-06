@@ -336,11 +336,30 @@ router.get('/',
 		);
 
 		if (req.query.modelType === 'EditionGroup') {
-			// If we're loading an Edition Group, also load the related Editions from the ORM model
+			// Relationship between Edition and EditionGroup is defined differently than your normal relationship
+			const {EditionGroup} = req.app.locals.orm;
+			const {bbid} = req.query;
 			const relationships = editionBasicRelations.map(rel => `editions.${rel}`);
-			await makeEntityLoader(null, relationships, 'Entity not found', true, false)(req, res, next);
-			const {editions} = res.locals.entity;
+			const editionGroup = await new EditionGroup({bbid}).fetch({
+				withRelated: relationships
+			});
+			const editionGroupJSON = editionGroup.toJSON();
+			const {editions} = editionGroupJSON;
 			editions.map(edition => getEditionBasicInfo(edition))
+				.filter(relationshipsFilterMethod)
+				.forEach((filteredEdition) => {
+					// added relationship to make the output consistent
+					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
+				});
+		}
+
+		if (req.query.modelType === 'Publisher') {
+			// Relationship between Edition and Publisher is defined differently than your normal relationship
+			const {Publisher} = req.app.locals.orm;
+			const {bbid} = req.query;
+			const editions = await new Publisher({bbid}).editions({withRelated: editionBasicRelations});
+			const editionsJSON = editions.toJSON();
+			editionsJSON.map(edition => getEditionBasicInfo(edition))
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent

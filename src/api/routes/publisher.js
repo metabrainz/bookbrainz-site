@@ -301,6 +301,23 @@ router.get('/',
 			req.app.locals.orm, res.locals, 'Publisher',
 			getPublisherBasicInfo, publisherBasicRelations, relationshipsFilterMethod
 		);
+
+		if (req.query.modelType === 'Edition') {
+			const {Edition} = req.app.locals.orm;
+			const {bbid} = req.query;
+			const relationships = publisherBasicRelations.map(rel => `publisherSet.publishers.${rel}`);
+			const edition = await new Edition({bbid}).fetch({
+				withRelated: relationships
+			});
+			const editionJSON = edition.toJSON();
+			const {publishers} = editionJSON.publisherSet;
+			publishers.map(publisher => getPublisherBasicInfo(publisher))
+				.filter(relationshipsFilterMethod)
+				.forEach((filteredEdition) => {
+					// added relationship to make the output consistent
+					publisherRelationshipList.push({entity: filteredEdition, relationship: {}});
+				});
+		}
 		return res.status(200).send({
 			bbid: req.query.bbid,
 			publishers: publisherRelationshipList

@@ -228,10 +228,15 @@ router.get('/',
 
 		if (req.query.modelType === 'Edition') {
 			// If we're loading an Edition, also load the related Edition Group from the ORM model
+			const {Edition} = req.app.locals.orm;
+			const {bbid} = req.query;
 			const relationships = editionGroupBasicRelations.map(rel => `editionGroup.${rel}`);
-			await makeEntityLoader(null, relationships, 'Entity not found', true, false)(req, res, next);
-			const {editionGroup} = res.locals.entity;
-			// edition will belong to only one edition-group
+			const edition = await new Edition({bbid}).fetch({
+				withRelated: relationships
+			});
+			const editionJSON = edition.toJSON();
+			const {editionGroup} = editionJSON;
+			// an edition will belong to only one edition-group
 			const editionGroupArray = [getEditionGroupBasicInfo(editionGroup)];
 			editionGroupArray
 				.filter(relationshipsFilterMethod)

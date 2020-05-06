@@ -43,7 +43,7 @@ import * as commonUtils from '../../common/helpers/utils';
  */
 
 
-export function makeEntityLoader(modelName, relations, errMessage, isBrowse, returnNext = true) {
+export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 	return async (req, res, next) => {
 		const {orm} = req.app.locals;
 		const bbid = isBrowse ? req.query.bbid : req.params.bbid;
@@ -52,10 +52,7 @@ export function makeEntityLoader(modelName, relations, errMessage, isBrowse, ret
 			try {
 				const entityData = await orm.func.entity.getEntity(orm, model, bbid, relations);
 				res.locals.entity = entityData;
-				if (returnNext) {
-					return next();
-				}
-				return null;
+				return next();
 			}
 			catch (err) {
 				return res.status(404).send({message: errMessage});
