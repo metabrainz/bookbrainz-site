@@ -56,23 +56,33 @@ const EntityEditor = (props: Props) => {
 	const {
 		aliasEditorVisible,
 		children,
+		heading,
 		identifierEditorVisible
 	} = props;
 
 	return (
 		<Panel>
-			<AliasEditor show={aliasEditorVisible} {...props}/>
-			<NameSection {...props}/>
-			<ButtonBar {...props}/>
-			<RelationshipSection {...props}/>
-			{
-				React.cloneElement(
-					React.Children.only(children),
-					{...props}
-				)
-			}
-			<SubmissionSection {...props}/>
-			<IdentifierEditor show={identifierEditorVisible} {...props}/>
+			<Panel.Heading>
+				<Panel.Title componentClass="h3">
+					{heading}
+				</Panel.Title>
+			</Panel.Heading>
+			<Panel.Body>
+				<AliasEditor show={aliasEditorVisible} {...props}/>
+				<NameSection {...props}/>
+				<ButtonBar {...props}/>
+				<RelationshipSection {...props}/>
+				{
+					React.cloneElement(
+						React.Children.only(children),
+						{...props}
+					)
+				}
+				<IdentifierEditor show={identifierEditorVisible} {...props}/>
+			</Panel.Body>
+			<Panel.Footer>
+				<SubmissionSection {...props}/>
+			</Panel.Footer>
 		</Panel>
 	);
 };

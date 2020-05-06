@@ -54,6 +54,11 @@ type RelationshipListProps = {
 	onRemove: (number) => mixed
 };
 
+/* In the ButtonGroup below we are forced to use an 'href' attribute to turn them into <a> elements
+   or wrap the children <button> elements in another ButtonGroup
+   https://getbootstrap.com/docs/3.4/components/#with-%3Cbutton%3E-elements
+*/
+
 export function RelationshipList(
 	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
 ) {
@@ -78,6 +83,8 @@ export function RelationshipList(
 							{onEdit &&
 								<Button
 									bsStyle="warning"
+									href="#"
+									role="button"
 									onClick={onEdit.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon="pencil-alt"/>
@@ -87,6 +94,8 @@ export function RelationshipList(
 							{onRemove &&
 								<Button
 									bsStyle="danger"
+									href="#"
+									role="button"
 									onClick={onRemove.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon="times"/>
