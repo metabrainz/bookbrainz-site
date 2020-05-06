@@ -21,6 +21,7 @@ import {
 	createAuthor,
 	createEdition, createEditionGroup,
 	createEditor,
+	createPublisher, createWork,
 	getRandomUUID,
 	truncateEntities
 } from '../../../test-helpers/create-entities';
@@ -31,7 +32,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
-const {EditionFormat, Language, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
+const {EditionFormat, Language, PublisherSet, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
 chai.use(chaiHttp);
@@ -174,7 +175,6 @@ describe('Browse Edition', () => {
 	// Test browse requests of Edition
 	let author;
 	before(async () => {
-		await truncateEntities();
 		// first create English and French language set for editions
 		const englishAttrib = {
 			frequency: 1,
@@ -276,6 +276,7 @@ describe('Browse Edition', () => {
 		author.set('revisionId', revision.get('id'));
 		await author.save(null, {method: 'update'});
 	});
+	after(truncateEntities);
 
 	it('should return list of editions associated with the author (without any filter)', async () => {
 		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}`);
@@ -314,6 +315,88 @@ describe('Browse Edition', () => {
 		});
 	});
 
+	it('should return no editions (with WRONG Format Filter and WRONG Language Filter)', async () => {
+		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&format=incorrectFormat&language=IncorrectLan`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(0);
+	});
+
+	it('should return list of editions associated with edition-group', async () => {
+		const editionA = await createEdition();
+		const editionB = await createEdition();
+		const editionGroup = await createEditionGroup();
+
+		// create a revision which adds these two edition in the editionGroup
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		editionA.set('revisionId', revision.get('id'));
+		editionA.set('editionGroupBbid', editionGroup.get('bbid'));
+		editionB.set('revisionId', revision.get('id'));
+		editionB.set('editionGroupBbid', editionGroup.get('bbid'));
+		await editionA.save(null, {method: 'update'});
+		await editionB.save(null, {method: 'update'});
+
+		const res = await chai.request(app).get(`/edition?edition-group=${editionGroup.get('bbid')}`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(2);
+	});
+
+	it('should return editions associated with a publisher', async () => {
+		const edition = await createEdition();
+		const edition2 = await createEdition();
+		const publisher = await createPublisher();
+
+		// Now create a revision which forms the relationship b/w publisher and editions
+		const editor = await createEditor();
+
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+		const publisherSet = await new PublisherSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.publishers().attach([publisher]).then(() => model));
+
+		const revision2 = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+		const publisherSet2 = await new PublisherSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.publishers().attach([publisher]).then(() => model));
+
+		edition.set('publisherSetId', publisherSet.get('id'));
+		edition.set('revisionId', revision.get('id'));
+		edition2.set('publisherSetId', publisherSet2.get('id'));
+		edition2.set('revisionId', revision2.get('id'));
+
+		await edition.save(null, {method: 'update'});
+		await edition2.save(null, {method: 'update'});
+
+		const res = await chai.request(app).get(`/edition?publisher=${publisher.get('bbid')}`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(2);
+	});
+
+	it('should NOT throw an error if there is no related publisher', async () => {
+		const publisher = await createPublisher();
+		const res = await chai.request(app).get(`/edition?publisher=${publisher.get('bbid')}`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(0);
+	});
+
+	it('should NOT throw an error if there is no related edition-group', async () => {
+		const editionGroup = await createEditionGroup();
+		const res = await chai.request(app).get(`/edition?edition-group=${editionGroup.get('bbid')}`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(0);
+	});
+
+	it('should NOT throw an error if there is no related work', async () => {
+		const work = await createWork();
+		const res = await chai.request(app).get(`/edition?work=${work.get('bbid')}`);
+		await browseEditionBasicTests(res);
+		expect(res.body.editions.length).to.equal(0);
+	});
+
 	it('should allow params to be case insensitive', async () => {
 		const res = await chai.request(app).get(`/edITion?aUThOr=${author.get('bbid')}&format=edItIOn+FoRmAT+1&LAnguage=fReNCh`);
 		await browseEditionBasicTests(res);
@@ -343,27 +426,5 @@ describe('Browse Edition', () => {
 				expect(res).to.have.status(404);
 				return done();
 			});
-	});
-
-	it('should return list of editions associated with edition-group', async () => {
-		const editionA = await createEdition();
-		const editionB = await createEdition();
-		const editionGroup = await createEditionGroup();
-
-		// create a revision which adds these two edition in the editionGroup
-		const editor = await createEditor();
-		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
-			.save(null, {method: 'insert'});
-
-		editionA.set('revisionId', revision.get('id'));
-		editionA.set('editionGroupBbid', editionGroup.get('bbid'));
-		editionB.set('revisionId', revision.get('id'));
-		editionB.set('editionGroupBbid', editionGroup.get('bbid'));
-		await editionA.save(null, {method: 'update'});
-		await editionB.save(null, {method: 'update'});
-
-		const res = await chai.request(app).get(`/edition?edition-group=${editionGroup.get('bbid')}`);
-		await browseEditionBasicTests(res);
-		expect(res.body.editions.length).to.equal(2);
 	});
 });

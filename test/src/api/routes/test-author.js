@@ -239,6 +239,12 @@ describe('Browse Author', () => {
 		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
 	});
 
+	it('should return 0 authors (with Incorrect Type filter)', async () => {
+		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}&type=wrongFilter`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(0);
+	});
+
 	it('should allow params to be case insensitive', async () => {
 		const res = await chai.request(app).get(`/aUThor?wOrk=${work.get('bbid')}&tYPe=AuTHor+TyPe+1`);
 		await browseAuthorBasicTests(res);

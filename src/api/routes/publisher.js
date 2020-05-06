@@ -307,10 +307,11 @@ router.get('/',
 			const {bbid} = req.query;
 			const relationships = publisherBasicRelations.map(rel => `publisherSet.publishers.${rel}`);
 			const edition = await new Edition({bbid}).fetch({
+				require: false,
 				withRelated: relationships
 			});
-			const editionJSON = edition.toJSON();
-			const {publishers} = editionJSON.publisherSet;
+			const editionJSON = edition ? edition.toJSON() : {};
+			const publishers = editionJSON.publisherSet ? editionJSON.publisherSet.publishers : [];
 			publishers.map(publisher => getPublisherBasicInfo(publisher))
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {

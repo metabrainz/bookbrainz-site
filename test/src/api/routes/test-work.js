@@ -313,6 +313,12 @@ describe('Browse Works', () => {
 		});
 	});
 
+	it('should return 0 works (with Incorrect Type Filter and  Incorrect Language Filter)', async () => {
+		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=incorrectType&language=incorrectLan`);
+		await browseWorkBasicTests(res);
+		expect(res.body.works.length).to.equal(0);
+	});
+
 	it('should allow params to be case insensitive', async () => {
 		const res = await chai.request(app).get(`/WoRK?aUThOr=${author.get('bbid')}&tYPe=WoRK+TyPe+1&LAnguage=fReNCh`);
 		await browseWorkBasicTests(res);

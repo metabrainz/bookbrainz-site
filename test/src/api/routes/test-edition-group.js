@@ -198,7 +198,7 @@ describe('Browse EditionGroup', () => {
 		expect(_.toLower(res.body.editionGroups[0].entity.editionGroupType)).to.equal('edition group type 1');
 	});
 
-	it('should return list of EditionGroups associated with the edition (with Type Filter)', async () => {
+	it('should return 0 EditionGroups (with Incorrect Type Filter)', async () => {
 		const res = await chai.request(app).get(`/edition-group?edition=${edition.get('bbid')}&type=wrongEditionGroup`);
 		await browseEditionGroupBasicTests(res);
 		expect(res.body.editionGroups.length).to.equal(0);

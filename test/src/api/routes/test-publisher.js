@@ -18,6 +18,7 @@
  */
 
 import {
+	createEdition,
 	createEditor,
 	createPublisher,
 	createWork,
@@ -31,7 +32,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
-const {Relationship, RelationshipSet, RelationshipType, Revision} = orm;
+const {PublisherSet, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
 chai.use(chaiHttp);
@@ -259,6 +260,46 @@ describe('Browse Publishers', () => {
 		expect(res.body.publishers.length).to.equal(1);
 		expect(_.toLower(res.body.publishers[0].entity.publisherType)).to.equal('publisher type 1');
 		expect(_.toLower(res.body.publishers[0].entity.area)).to.equal('area 1');
+	});
+
+	it('should return publishers associated with an edition', async () => {
+		const edition = await createEdition();
+		const publishers = [];
+		// though UI allows one edition to have only one publisher; creating 2 for testing only
+		for (let i = 1; i <= 2; i++) {
+			publishers.push(
+				await createPublisher()
+			);
+		}
+
+		// Now create a revision which forms the relationship b/w publisher and editions
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+		const publisherSet = await new PublisherSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.publishers().attach(publishers).then(() => model));
+
+		edition.set('publisherSetId', publisherSet.get('id'));
+		edition.set('revisionId', revision.get('id'));
+		await edition.save(null, {method: 'update'});
+
+		const res = await chai.request(app).get(`/publisher?edition=${edition.get('bbid')}`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(2);
+	});
+
+	it('should return no publisher (Incorrect Filters)', async () => {
+		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}&type=incorrectType`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(0);
+	});
+
+	it('should NOT throw error with no related edition', async () => {
+		const edition = await createEdition();
+		const res = await chai.request(app).get(`/publisher?edition=${edition.get('bbid')}`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(0);
 	});
 
 	it('should allow params to be case insensitive', async () => {
