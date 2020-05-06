@@ -36,7 +36,7 @@ import workRouter from './routes/work';
  *        example: '<Name of entity>'
  *      sortName:
  *        type: string
- *        example: '<Sort name of enity>'
+ *        example: '<Sort name of entity>'
  *      aliasLanguage:
  *        type: string
  *        example: '<Alias language>'

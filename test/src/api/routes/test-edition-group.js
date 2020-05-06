@@ -107,12 +107,12 @@ describe('GET /EditionGroup', () => {
 			});
 	 });
 
-	it('should throw a 406 error if trying to access an edition with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an edition with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/edition-group/${inValidBBID}`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
@@ -211,12 +211,12 @@ describe('Browse EditionGroup', () => {
 		expect(_.toLower(res.body.editionGroups[0].entity.editionGroupType)).to.equal('edition group type 1');
 	});
 
-	it('should throw 406 error for invalid bbid', (done) => {
+	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/edition-group?edition=1212121')
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				return done();
 			});
 	});

@@ -110,14 +110,14 @@ describe('GET /work', () => {
 			});
 	});
 
-	it('should throw a 406 error if trying to access a work with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access a work with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/work/${inValidBBID}`)
 			.end(function (err, res) {
 				if (err) {
 					return done(err);
 				}
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
@@ -212,11 +212,12 @@ describe('Browse Works', () => {
 			[{id: frenchId}]
 		);
 
-		// create 10 works. 5 of French Language and 5 of English Language
-		// with 2 works of each workType ( one of french and one english)
+		// create 4 works
+		// 2 of French Language (of 2 different workType)
+		// 2 of English Language (of 2 different workType)
 		const workBBIDs = [];
 		const workAttrib = {};
-		for (let workTypeId = 1; workTypeId <= 5; workTypeId++) {
+		for (let workTypeId = 1; workTypeId <= 2; workTypeId++) {
 			const workBBID = getRandomUUID();
 			workAttrib.bbid = workBBID;
 			workAttrib.typeId = workTypeId;
@@ -279,14 +280,14 @@ describe('Browse Works', () => {
 	it('should return list of works associated with the author (without any filter)', async () => {
 		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}`);
 		await browseWorkBasicTests(res);
-		expect(res.body.works.length).to.equal(10);
+		expect(res.body.works.length).to.equal(4);
 	});
 
 	it('should return list of works associated with the author (with Language Filter)', async () => {
 		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&language=French`);
 		await browseWorkBasicTests(res);
 		// 5 work of French Language was created
-		expect(res.body.works.length).to.equal(5);
+		expect(res.body.works.length).to.equal(2);
 		res.body.works.forEach((work) => {
 			expect(work.entity.languages).to.contain('French');
 		});
@@ -330,12 +331,12 @@ describe('Browse Works', () => {
 		});
 	});
 
-	it('should throw 406 error for invalid bbid', (done) => {
+	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/work?author=1212121')
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				return done();
 			});
 	});

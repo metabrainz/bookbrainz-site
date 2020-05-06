@@ -112,12 +112,12 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	it('should throw a 406 error if trying to access an author with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an author with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/author/${inValidBBID}`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
@@ -252,12 +252,12 @@ describe('Browse Author', () => {
 		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
 	});
 
-	it('should throw 406 error for invalid bbid', (done) => {
+	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/author?work=1212121')
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				return done();
 			});
 	});

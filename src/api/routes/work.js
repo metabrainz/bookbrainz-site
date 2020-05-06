@@ -122,7 +122,7 @@ const workError = 'Work not found';
  *             $ref: '#/definitions/WorkDetail'
  *       404:
  *         description: Work not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
@@ -158,7 +158,7 @@ router.get('/:bbid',
  *              $ref: '#/definitions/Aliases'
  *        404:
  *          description: Work not found
- *        406:
+ *        400:
  *          description: Invalid BBID
  */
 
@@ -194,7 +194,7 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Work not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
@@ -230,7 +230,7 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Work not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
@@ -270,7 +270,7 @@ router.get('/:bbid/relationships',
  *             $ref: '#/definitions/BrowsedAuthors'
  *       404:
  *         description: Author not found or Edition not found
- *       406:
+ *       400:
  *         description: Invalid BBID paased in query params
  */
 

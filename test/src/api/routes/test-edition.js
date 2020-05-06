@@ -116,12 +116,12 @@ describe('GET /Edition', () => {
 			});
 	 });
 
-	it('should throw a 406 error if trying to access an edition with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an edition with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/edition/${inValidBBID}`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
@@ -211,10 +211,10 @@ describe('Browse Edition', () => {
 			[{id: frenchId}]
 		);
 
-		// create 10 editions. 5 of French Language and 5 of English Language
+		// create 4 editions. 2 of French Language and 2 of English Language
 		// with 2 works of each format ( one of french and one english)
 		const editionBBIDs = [];
-		for (let formatId = 1; formatId <= 5; formatId++) {
+		for (let formatId = 1; formatId <= 2; formatId++) {
 			await new EditionFormat({id: formatId, label: `Edition Format ${formatId}`})
 				.save(null, {method: 'insert'});
 
@@ -281,14 +281,14 @@ describe('Browse Edition', () => {
 	it('should return list of editions associated with the author (without any filter)', async () => {
 		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}`);
 		await browseEditionBasicTests(res);
-		expect(res.body.editions.length).to.equal(10);
+		expect(res.body.editions.length).to.equal(4);
 	});
 
 	it('should return list of editions associated with the author (with Language Filter)', async () => {
 		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&language=French`);
 		await browseEditionBasicTests(res);
 		// 5 work of French Language was created
-		expect(res.body.editions.length).to.equal(5);
+		expect(res.body.editions.length).to.equal(2);
 		res.body.editions.forEach((work) => {
 			expect(work.entity.languages).to.contain('French');
 		});
@@ -408,12 +408,12 @@ describe('Browse Edition', () => {
 		});
 	});
 
-	it('should throw 406 error for invalid bbid', (done) => {
+	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/edition?author=1212121')
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				return done();
 			});
 	});

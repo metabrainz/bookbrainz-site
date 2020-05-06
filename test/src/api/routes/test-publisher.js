@@ -110,12 +110,12 @@ describe('GET /Publisher', () => {
 			});
 	 });
 
-	it('should throw a 406 error if trying to access a publisher with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access a publisher with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/publisher/${inValidBBID}`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
@@ -169,9 +169,9 @@ describe('Browse Publishers', () => {
 	let work;
 	before(async () => {
 		await truncateEntities();
-		// create 10 publishers 5 each of type 1 and type 2
+		// create 4 publishers 2 each of type 1 and type 2
 		const publisherBBIDs = [];
-		for (let areaId = 1; areaId <= 5; areaId++) {
+		for (let areaId = 1; areaId <= 2; areaId++) {
 			let publisherAttrib = {};
 			const publisherBBID = getRandomUUID();
 			publisherAttrib.bbid = publisherBBID;
@@ -233,7 +233,7 @@ describe('Browse Publishers', () => {
 	it('should return list of Publisher, associated with the Work', async () => {
 		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}`);
 		await browsePublisherBasicTests(res);
-		expect(res.body.publishers.length).to.equal(10);
+		expect(res.body.publishers.length).to.equal(4);
 	});
 
 	it('should return list of Publisher, associated with the Work (with Area Filter)', async () => {
@@ -248,7 +248,7 @@ describe('Browse Publishers', () => {
 	it('should return list of Publisher, associated with the Work (with Type Filter)', async () => {
 		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}&type=Publisher+Type+1`);
 		await browsePublisherBasicTests(res);
-		expect(res.body.publishers.length).to.equal(5);
+		expect(res.body.publishers.length).to.equal(2);
 		res.body.publishers.forEach((publisher) => {
 			expect(_.toLower(publisher.entity.publisherType)).to.equal('publisher type 1');
 		});
@@ -310,12 +310,12 @@ describe('Browse Publishers', () => {
 		expect(_.toLower(res.body.publishers[0].entity.area)).to.equal('area 1');
 	});
 
-	it('should throw 406 error for invalid bbid', (done) => {
+	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/publisher?work=121212')
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				return done();
 			});
 	});

@@ -19,18 +19,16 @@
 
 import * as commonUtils from '../../common/helpers/utils';
 import _ from 'lodash';
-import log from 'log';
 
 
-/* eslint-disable*/
+export function validateBrowseRequestQueryParameters(validLinkedEntities) {
+	// eslint-disable-next-line consistent-return
+	return (req, res, next) => {
+		const queriedEntities = validLinkedEntities.filter(keyName => _.has(req.query, keyName));
 
-export function validateBrowseRequestQueryParameters (validLinkedEntities) {
-	return async (req, res, next) => {
-		const queriedEntities = validLinkedEntities.filter(keyName=>{
-			return _.has(req.query, keyName);
-		});
-		if(queriedEntities.length < 1 || queriedEntities.length > 1){
-			const errorMessage = `Browse requests require exactly 1 linked entity in query parameters; you passed ${queriedEntities.length}: ${queriedEntities}`;
+		if (queriedEntities.length < 1 || queriedEntities.length > 1) {
+			const errorMessage =
+				`Browse requests require exactly 1 linked entity in query parameters; you passed ${queriedEntities.length}: ${queriedEntities}`;
 			return res.status(400).send({message: errorMessage});
 		}
 		const queriedEntityType = queriedEntities[0];
@@ -42,17 +40,15 @@ export function validateBrowseRequestQueryParameters (validLinkedEntities) {
 
 export async function loadEntity(orm, relEntity, fetchRelated) {
 	const model = commonUtils.getEntityModelByType(orm, relEntity.type);
-	const entity = await  model.forge({bbid: relEntity.bbid})
-		.fetch({withRelated: ['defaultAlias','disambiguation'].concat(fetchRelated || [])});
+	const entity = await model.forge({bbid: relEntity.bbid})
+		.fetch({withRelated: ['defaultAlias', 'disambiguation'].concat(fetchRelated || [])});
 	return entity.toJSON();
 }
 
 export function loadEntityRelationshipsForBrowse() {
-
 	return async (req, res, next) => {
 		const {orm} = req.app.locals;
 		const {RelationshipSet} = orm;
-		const bbid = req.query.bbid;
 		const entityData = res.locals.entity;
 		try {
 			const relationshipSet = await RelationshipSet.forge({id: entityData.relationshipSetId})
@@ -72,17 +68,12 @@ export function loadEntityRelationshipsForBrowse() {
 			// What do we do with the error here?
 			return next(error);
 		}
-	}
+	};
 }
 
 export function formatQueryParameters() {
-
-	return async (req, res, next) => {
-		req.query = _.transform(req.query, (result, value, key) => {
-			result[key.toLowerCase()] = value;
-		});
+	return (req, res, next) => {
+		req.query = _.mapKeys(req.query, (value, key) => _.toLower(key));
 		return next();
-	}
+	};
 }
-
-
