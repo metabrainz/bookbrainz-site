@@ -1,9 +1,11 @@
 # BookBrainz Site
 
-[![Build Status](https://img.shields.io/travis/bookbrainz/bookbrainz-site.svg)](https://travis-ci.org/bookbrainz/bookbrainz-site)
+[![Build Status](https://travis-ci.org/bookbrainz/bookbrainz-site.svg?branch=master)](https://travis-ci.org/bookbrainz/bookbrainz-site)
 [![Dependency Status](https://img.shields.io/david/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site)
 [![devDependency Status](https://img.shields.io/david/dev/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site#info=devDependencies)
-[![Code Climate](https://img.shields.io/codeclimate/github/BookBrainz/bookbrainz-site.svg)](https://codeclimate.com/github/BookBrainz/bookbrainz-site)
+[![Known Vulnerabilities](https://snyk.io/test/github/bookbrainz/bookbrainz-site/badge.svg)](https://snyk.io/test/github/bookbrainz/bookbrainz-site)
+[![Coverage Status](https://coveralls.io/repos/github/bookbrainz/bookbrainz-site/badge.svg?branch=master)](https://coveralls.io/github/bookbrainz/bookbrainz-site?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/76f87309d52d75ff4a18/maintainability)](https://codeclimate.com/github/BookBrainz/bookbrainz-site/maintainability)
 <a href="https://www.browserstack.com/">
 <img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
 </a>
