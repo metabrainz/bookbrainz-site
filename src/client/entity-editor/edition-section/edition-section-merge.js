@@ -300,7 +300,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		languageValues: convertMapToObject(state.get('languages')),
 		pagesValue: state.get('pages'),
 		publisherValue: convertMapToObject(state.get('publisher')),
-		releaseDateValue: convertMapToObject(state.get('releaseDate')),
+		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
 		widthValue: state.get('width')

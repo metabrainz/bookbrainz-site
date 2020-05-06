@@ -18,7 +18,7 @@
 
 // @flow
 
-import {ISODateStringToObject} from '../../helpers/utils';
+import {ISODateStringToObject, isNullDate} from '../../helpers/utils';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {dateValidator} from './date';
@@ -104,22 +104,18 @@ export function validateDate(value: string) {
 	else {
 		dateObject = value;
 	}
-	const year = _.get(dateObject, 'year');
-	const month = _.get(dateObject, 'month');
-	const day = _.get(dateObject, 'day');
+	const year = _.get(dateObject, 'year', null);
+	const month = _.get(dateObject, 'month', null);
+	const day = _.get(dateObject, 'day', null);
 	const {isValid, errorMessage} = dateValidator(day, month, year);
 	return {errorMessage, isValid};
 }
 
-export function isNullValue(date) {
-	const dateObject = ISODateStringToObject(date);
-	return !_.get(dateObject, 'day') && !_.get(dateObject, 'month') && !_.get(dateObject, 'year');
-}
 
 export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
 	const beginDateObject = ISODateStringToObject(beginValue);
 	const endDateObject = ISODateStringToObject(endValue);
-	if (isNullValue(beginDateObject) || isNullValue(endDateObject) || !validateDate(beginDateObject).isValid ||
+	if (isNullDate(beginDateObject) || isNullDate(endDateObject) || !validateDate(beginDateObject).isValid ||
 		!validateDate(endDateObject).isValid) {
 		return true;
 	}

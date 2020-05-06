@@ -15,6 +15,9 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+
+// @flow
+
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {format} from 'date-fns';
@@ -67,34 +70,18 @@ export function convertMapToObject(value) {
 	return Iterable.isIterable(value) ? value.toJS() : value;
 }
 
+/**
+ * Returns today's date as a {day, month, year} object
+ * Used to check if a date is in the future
+ * @function getTodayDate
+ * @returns {object} today's date as a {day, month, year} object
+ */
 export function getTodayDate() {
 	const date = new Date();
 	const year = date.getFullYear().toString();
 	const month = (date.getMonth() + 1).toString();
 	const day = date.getDate().toString();
 	return {day, month, year};
-}
-
-/**
- * Format a {day, month, year} object into an ISO 8601-2004 string (±YYYYYY-MM-DD)
- * @function dateObjectToISOString
- * @param {string} value - a {day, month, year} object
- * @returns {string} ISO 8601-2004 string (±YYYYYY-MM-DD)
- */
-export function dateObjectToISOString(value) {
-	if (_.isNil(value) || value.year === '') {
-		return null;
-	}
-	const isCommonEraDate = Math.sign(value.year) > -1;
-	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
-	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;
-	if (value.month) {
-		date += `-${value.month}`;
-		if (value.day) {
-			date += `-${value.day}`;
-	  }
-	}
-	return date;
 }
 
 /**
@@ -124,4 +111,50 @@ export function ISODateStringToObject(value) {
 		month: date.length > 1 ? date[1] : '',
 		year: date.length > 0 ? date[0] : ''
 	};
+}
+
+/**
+ * Determines wether a given date is empty or null, meaning no year month or day has been specified.
+ * Accepts a {day, month, year} object or an ISO 8601-2004 string (±YYYYYY-MM-DD)
+ * @function isNullDate
+ * @param {object|string} date - a {day, month, year} object or ISO 8601-2004 string (±YYYYYY-MM-DD)
+ * @returns {boolean} true if the date is empty/null
+ */
+export function isNullDate(date: Object | string) {
+	const dateObject = ISODateStringToObject(date);
+	const isNullYear = _.isNil(dateObject.year) || dateObject.year === '';
+	const isNullMonth = _.isNil(dateObject.month) || dateObject.month === '';
+	const isNullDay = _.isNil(dateObject.day) || dateObject.day === '';
+	return isNullYear && isNullMonth && isNullDay;
+}
+
+
+/**
+ * Format a {day, month, year} object into an ISO 8601-2004 string (±YYYYYY-MM-DD)
+ * @function dateObjectToISOString
+ * @param {string} value - a {day, month, year} object
+ * @returns {string} ISO 8601-2004 string (±YYYYYY-MM-DD)
+ */
+export function dateObjectToISOString(value) {
+	if (_.isNil(value) || isNullDate(value)) {
+		return null;
+	}
+	// if year is missing or not a number, return invalid date
+	if ((!isNullDate(value) && (_.isNil(value.year) || value.year === '')) || !Number.isInteger(Number(value.year))) {
+		return '+XXXXXX';
+	}
+
+	const isCommonEraDate = Math.sign(value.year) > -1;
+	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
+	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;
+	if (value.month) {
+		date += `-${value.month}`;
+		if (value.day) {
+			date += `-${value.day}`;
+		}
+	}
+	else if (value.day) {
+		date += `-XX-${value.day}`;
+	}
+	return date;
 }

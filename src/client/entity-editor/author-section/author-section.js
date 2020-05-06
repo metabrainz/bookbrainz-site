@@ -29,6 +29,7 @@ import {
 	updateType
 } from './actions';
 import {Checkbox, Col, Row} from 'react-bootstrap';
+import {isNullDate, labelsForAuthor} from '../../helpers/utils';
 import {
 	validateAuthorSectionBeginDate,
 	validateAuthorSectionEndDate
@@ -42,8 +43,6 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-import {isNullValue} from '../validators/base';
-import {labelsForAuthor} from '../../helpers/utils';
 
 
 type AuthorType = {
@@ -215,7 +214,7 @@ function AuthorSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={isNullValue(beginDateValue)}
+						empty={isNullDate(beginDateValue)}
 						error={!isValidDob}
 						errorMessage={dobError}
 						label={beginDateLabel}
@@ -249,7 +248,7 @@ function AuthorSection({
 							<DateField
 								show
 								defaultValue={endDateValue}
-								empty={isNullValue(endDateValue)}
+								empty={isNullDate(endDateValue)}
 								error={!isValidDod}
 								errorMessage={dodError}
 								label={endDateLabel}

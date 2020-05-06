@@ -39,7 +39,7 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-import {isNullValue} from '../validators/base';
+import {isNullDate} from '../../helpers/utils';
 
 
 type PublisherType = {
@@ -166,7 +166,7 @@ function PublisherSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={isNullValue(beginDateValue)}
+						empty={isNullDate(beginDateValue)}
 						error={!isValidBeginDate}
 						errorMessage={errorMessageBeginDate}
 						label="Date Founded"
@@ -190,7 +190,7 @@ function PublisherSection({
 							<DateField
 								show
 								defaultValue={endDateValue}
-								empty={isNullValue(endDateValue)}
+								empty={isNullDate(endDateValue)}
 								error={!isValidEndDate}
 								errorMessage={errorMessageEndDate}
 								label="Date Dissolved"
