@@ -1044,11 +1044,6 @@ export function handleCreateOrEditEntity(
 				withRelated: ['aliasSet.aliases']
 			});
 
-			// Clear the merge queue
-			if (_.get(req, 'session.mergeQueue')) {
-				req.session.mergeQueue = null;
-			}
-
 			return savedEntityWithRelationships.toJSON();
 		}
 		catch (err) {
