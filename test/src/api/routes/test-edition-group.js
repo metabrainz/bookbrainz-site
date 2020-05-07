@@ -32,6 +32,8 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
+
+
 const {Revision} = orm;
 
 chai.use(chaiHttp);

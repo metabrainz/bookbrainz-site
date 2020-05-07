@@ -18,6 +18,7 @@
  */
 
 import {
+	createAuthor,
 	createEdition,
 	createEditor,
 	createPublisher,
@@ -32,6 +33,8 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
+
+
 const {PublisherSet, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
@@ -298,6 +301,13 @@ describe('Browse Publishers', () => {
 	it('should NOT throw error with no related edition', async () => {
 		const edition = await createEdition();
 		const res = await chai.request(app).get(`/publisher?edition=${edition.get('bbid')}`);
+		await browsePublisherBasicTests(res);
+		expect(res.body.publishers.length).to.equal(0);
+	});
+
+	it('should NOT throw error with no related entity', async () => {
+		const author = await createAuthor();
+		const res = await chai.request(app).get(`/publisher?author=${author.get('bbid')}`);
 		await browsePublisherBasicTests(res);
 		expect(res.body.publishers.length).to.equal(0);
 	});

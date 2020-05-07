@@ -341,9 +341,10 @@ router.get('/',
 			const {bbid} = req.query;
 			const relationships = editionBasicRelations.map(rel => `editions.${rel}`);
 			const editionGroup = await new EditionGroup({bbid}).fetch({
+				require: false,
 				withRelated: relationships
 			});
-			const editionGroupJSON = editionGroup.toJSON();
+			const editionGroupJSON = editionGroup ? editionGroup.toJSON() : {};
 			const {editions} = editionGroupJSON;
 			editions.map(edition => getEditionBasicInfo(edition))
 				.filter(relationshipsFilterMethod)

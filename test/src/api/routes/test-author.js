@@ -252,6 +252,13 @@ describe('Browse Author', () => {
 		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
 	});
 
+	it('should NOT throw an error if there is no related entity', async () => {
+		const work2 = await createWork();
+		const res = await chai.request(app).get(`/author?work=${work2.get('bbid')}`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(0);
+	});
+
 	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/author?work=1212121')

@@ -320,6 +320,13 @@ describe('Browse Works', () => {
 		expect(res.body.works.length).to.equal(0);
 	});
 
+	it('should NOT throw an error when there is no related entity', async () => {
+		const author2 = await createAuthor();
+		const res = await chai.request(app).get(`/work?author=${author2.get('bbid')}`);
+		await browseWorkBasicTests(res);
+		expect(res.body.works.length).to.equal(0);
+	});
+
 	it('should allow params to be case insensitive', async () => {
 		const res = await chai.request(app).get(`/WoRK?aUThOr=${author.get('bbid')}&tYPe=WoRK+TyPe+1&LAnguage=fReNCh`);
 		await browseWorkBasicTests(res);

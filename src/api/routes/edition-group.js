@@ -232,9 +232,10 @@ router.get('/',
 			const {bbid} = req.query;
 			const relationships = editionGroupBasicRelations.map(rel => `editionGroup.${rel}`);
 			const edition = await new Edition({bbid}).fetch({
+				require: false,
 				withRelated: relationships
 			});
-			const editionJSON = edition.toJSON();
+			const editionJSON = edition ? edition.toJSON() : {};
 			const {editionGroup} = editionJSON;
 			// an edition will belong to only one edition-group
 			const editionGroupArray = [getEditionGroupBasicInfo(editionGroup)];
