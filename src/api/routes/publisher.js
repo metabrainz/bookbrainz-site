@@ -248,31 +248,26 @@ router.get('/:bbid/relationships',
  *   get:
  *     tags:
  *       - Browse Requests
- *     summary: Get list of Publishers which are related to an Edition or Work
- *     description: Returns the list of Publishers, When one of the bbid of Work or Edition is passed as query parameter
+ *     summary: Gets a list of Publishers which are related to the other entity
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher is passed as a query parameter, and it's related Publishers are fetched
  *     operationId: getRelatedPublisherByBbid
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: work
+ *       - name: author/edition/work/publisher
  *         in: query
- *         description: BBID of the Work
- *         required: false
- *         type: bbid
- *       - name: edition
- *         in: query
- *         description: BBID of the Edition
- *         required: false
+ *         description: BBID of the corresponding entity
+ *         required: true
  *         type: bbid
  *     responses:
  *       200:
- *         description: List of Publisher with relationships which are related to either Work or Edition
+ *         description: List of Publisher related to the other entity
  *         schema:
  *             $ref: '#/definitions/BrowsedPublishers'
  *       404:
- *         description: Work not found or Edition not found
+ *         description: Author/Edition/Work/Publisher (other entity) not found
  *       400:
- *         description: Invalid BBID paased in query params
+ *         description: Invalid BBID passed in the query params
  */
 
 router.get('/',
