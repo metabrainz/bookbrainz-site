@@ -16,21 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as search from '../../common/helpers/search';
-import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
+import 	* as search from '../../common/helpers/search';
+import {snakeCase as _snakeCase} from 'lodash';
 import express from 'express';
-import {formatSearchRespose} from '../helpers/formatEntityData';
+import {formatSearchResponse} from '../helpers/formatEntityData';
 
 
 const router = express.Router();
 
 /**
  *	@swagger
- * '/search?q=Harry&colloction=work&limit=5&offset=0':
+ * '/search?q=Harry&type=work&size=5&from=0':
  *   get:
  *     tags:
  *       - Search Requests
- *     summary: Get the list of entity accourding to query and query params
+ *     summary: Get a list of entities according to search query and params
  *     description: query parameter is used to match in the default alias and other parameters are optional
  *     operationId: getSearchResult
  *     produces:
@@ -41,39 +41,48 @@ const router = express.Router();
  *         description: Search string for entity search
  *         required: true
  *         type: string
- *       - name: entityType
+ *       - name: type
  *         in: query
  *         description: Entity type for search
  *         required: false
  *         type: string
  *         default: null
- *       - name: limit
+ *       - name: size
  *         in: query
- *         description: maximum number of output in one request
+ *         description: maximum number of entities in response
  *         required: false
  *         type: number
- *         default: 10
- *       - name: offset
+ *         default: 20
+ *       - name: from
  *         in: query
- *         description: Result start from the number
+ *         description: offset for search result
  *         required: false
  *         type: number
  *         default: 0
  *     responses:
  *       200:
- *         description: List of relationships with BBID of the Publisher entity
+ *         description: List of entities matching the search query
  *         schema:
  *             $ref: '#/definitions/SearchResultModel'
+ *       400:
+ *         description: Invalid BBID
  */
 
 router.get('/', async (req, res) => {
 	const {orm} = req.app.locals;
-	const query = req.query.q;
-	const collection = req.query.entityType || null;
-	const {limit, offset} = req.query;
-	const searchResult = await search.searchByName(orm, query, _snakeCase(collection), limit, offset);
-	const formattedSearchResult = await formatSearchRespose(searchResult);
-	res.status(200).send(formattedSearchResult);
+	if (req.query.q) {
+		const query = req.query.q;
+		const type = req.query.type || null;
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		const searchResult = await search.searchByName(orm, query, _snakeCase(type), size, from);
+		const formattedSearchResult = await formatSearchResponse(searchResult);
+		res.status(200).send(formattedSearchResult);
+	}
+	else {
+		const errMsg = 'Invalid Query';
+		res.status(400).send({message: errMsg});
+	}
 });
 
 

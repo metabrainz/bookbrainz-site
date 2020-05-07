@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow-callback,func-names */
 /*
  * Copyright (C) 2019  Akhilesh Kumar
  *
@@ -24,66 +23,78 @@ import app from '../../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
+import {searchBasicTests} from '../helpers';
 
 
 chai.use(chaiHttp);
 const {expect} = chai;
 
 const searchString = 'name';
-/* eslint-disable */
 
 describe('GET /search', () => {
-	before(async ()=>{
-		//We create two entities of different types to test the collection query parameter
+	before(async () => {
+		// We create two entities of different types to test the collection query parameter
+		// note: create*Entity* function creates 2 entities
+		// an extra entity of same type is created while creating a relationship (createEntityRequisites)
 		await createWork();
 		await createEditionGroup();
+
 		// We also create another entity with a different name to make sure it is not returned
-		aliasData.id += 1;
-		aliasData.name = "Fnord"
-		aliasData.sortName = "Fnord"
+		aliasData.name = 'Fnord';
+		aliasData.sortName = 'Fnord';
 		await createEditionGroup();
-		// reindex elasticsearch
+		// reindex elasticSearch
 		await search.generateIndex(orm);
-	})
+	});
 	after(truncateEntities);
 
 	// Test search endpoint
-	it('should get search result for given search query parameter only searchString', async function () {
+	it('should return search result for given query', async () => {
 		const res = await chai.request(app).get(`/search?q=${searchString}`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'resultCount',
-			'searchResult'
-		);
-		expect(res.body.resultCount).to.be.a('number');
-		expect(res.body.searchResult).to.be.an('array');
-		expect(res.body.searchResult).to.be.of.length(2);
-		expect(res.body.searchResult[0]).to.be.an('object');
-		expect(res.body.searchResult[0]).to.have.all.keys(
-			'bbid',
-			'defaultAlias',
-			'entityType'
-		);
-
+		await searchBasicTests(res);
+		expect(res.body.searchResult).to.be.of.length(4);
 	 });
-	 it('should get search result for given search query parameters including collection type', async function () {
-		const res = await chai.request(app).get(`/search?q=${searchString}&entityType=work`);
-		expect(res.status).to.equal(200);
-		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'resultCount',
-			'searchResult'
-		);
-		expect(res.body.resultCount).to.be.a('number');
-		expect(res.body.searchResult).to.be.an('array');
-		expect(res.body.searchResult).to.be.of.length(1);
-		expect(res.body.searchResult[0]).to.be.an('object');
-		expect(res.body.searchResult[0]).to.have.all.keys(
-			'bbid',
-			'defaultAlias',
-			'entityType'
-		);
-		expect(res.body.searchResult[0].entityType).to.equal('Work');
+	 it('should return search result for given query (with type query)', async () => {
+		const res = await chai.request(app).get(`/search?q=${searchString}&type=work`);
+		 await searchBasicTests(res);
+		 expect(res.body.searchResult).to.be.of.length(2);
+	 });
+
+	 it('should return search result for given query (with an offset)', async () => {
+		 const res = await chai.request(app).get(`/search?q=${searchString}`);
+		 const res2 = await chai.request(app).get(`/search?q=${searchString}&from=2`);
+		 const allResult = res.body.searchResult;
+		 const actualResult = res2.body.searchResult;
+		 const expectedResult = allResult.slice(2, 4);
+		 await searchBasicTests(res2);
+		 expect(actualResult.length).to.equal(2);
+		 expect(actualResult).to.deep.equal(expectedResult);
+	 });
+
+	 it('should return search result for given query (with both offset and size)', async () => {
+		 const res = await chai.request(app).get(`/search?q=${searchString}`);
+		 const res2 = await chai.request(app).get(`/search?q=${searchString}&from=2&size=1`);
+		 const allResult = res.body.searchResult;
+		 const actualResult = res2.body.searchResult;
+		 const expectedResult = allResult.slice(2, 3);
+		 await searchBasicTests(res2);
+		 expect(actualResult.length).to.equal(1);
+		 expect(actualResult).to.deep.equal(expectedResult);
+	 });
+
+	 it('should return no result for a type whose entity do not exist', async () => {
+		 const res = await chai.request(app).get(`/search?q=${searchString}&type=publisher`);
+		 await searchBasicTests(res);
+		 expect(res.body.searchResult).to.be.of.length(0);
+	 });
+
+	 it('should throw 400 error if no search query is passed', (done) => {
+		 chai.request(app)
+			 .get('/search?q=')
+			 .end((err, res) => {
+				 if (err) { return done(err); }
+				 expect(res).to.have.status(400);
+				 return done();
+			 });
 	 });
 });

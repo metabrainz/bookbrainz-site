@@ -394,7 +394,7 @@ export function getEntityRelationships(entity: object) {
 		};
 }
 
-export function formatSearchRespose(searchResult: array) {
+export function formatSearchResponse(searchResult: array) {
 	return _.isNil(searchResult) ? null :
 		{
 			resultCount: searchResult.length,
