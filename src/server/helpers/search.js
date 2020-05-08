@@ -35,7 +35,7 @@ const _maxJitter = 75;
 let _client = null;
 
 function _fetchEntityModelsForESResults(orm, results) {
-	const {Area} = orm;
+	const {Area, Editor} = orm;
 
 	if (!results.hits) {
 		return null;
@@ -54,6 +54,19 @@ function _fetchEntityModelsForESResults(orm, results) {
 					};
 					areaJSON.type = 'Area';
 					return areaJSON;
+				});
+		}
+		if (entityStub.type === 'Editor') {
+			return Editor.forge({id: entityStub.bbid})
+				.fetch()
+				.then((editor) => {
+					const editorJSON = editor.toJSON();
+					editorJSON.defaultAlias = {
+						name: editorJSON.name
+					};
+					editorJSON.type = 'Editor';
+					editorJSON.bbid = entityStub.bbid;
+					return editorJSON;
 				});
 		}
 		const model = utils.getEntityModelByType(orm, entityStub.type);
@@ -211,7 +224,7 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Publisher, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -358,6 +371,26 @@ export async function generateIndex(orm) {
 	}));
 	await _processEntityListForBulk(processedAreas);
 
+	const editorCollection = await Editor.forge()
+		// no bots
+		.where('type_id', 1)
+		.fetchAll();
+	const editors = editorCollection.toJSON();
+
+	/** To index names, we use aliasSet.aliases.name and bbid, which Editors don't have.
+	 * We massage the editor to return a similar format as BB entities
+	 */
+	const processedEditors = editors.map((editor) => new Object({
+		aliasSet: {
+			aliases: [
+				{name: editor.name}
+			]
+		},
+		bbid: editor.id,
+		type: 'Editor'
+	}));
+	await _processEntityListForBulk(processedEditors);
+
 	await refreshIndex();
 }
 
@@ -423,12 +456,20 @@ export function searchByName(orm, name, collection, size, from) {
 		index: _index
 	};
 
-	if (collection) {
-		if (Array.isArray(collection)) {
-			dslQuery.type = collection.map(_.snakeCase);
+	let modifiedCollection;
+	if (collection === 'all_entity') {
+		modifiedCollection = ['author', 'edition', 'edition_group', 'work', 'publisher'];
+	}
+	else {
+		modifiedCollection = collection;
+	}
+
+	if (modifiedCollection) {
+		if (Array.isArray(modifiedCollection)) {
+			dslQuery.type = modifiedCollection.map(_.snakeCase);
 		}
 		else {
-			dslQuery.type = _.snakeCase(collection);
+			dslQuery.type = _.snakeCase(modifiedCollection);
 		}
 	}
 
