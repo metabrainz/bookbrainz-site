@@ -95,7 +95,7 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 				relationshipSet.related('relationships').toJSON() : [];
 
 			function getEntityWithAlias(relEntity) {
-				const model = utils.getEntityModelByType(orm, relEntity.type);
+				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
 					.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});

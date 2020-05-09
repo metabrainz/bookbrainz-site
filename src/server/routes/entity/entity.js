@@ -19,6 +19,7 @@
  */
 
 import * as achievement from '../../helpers/achievement';
+import * as commonUtils from '../../../common/helpers/utils';
 import * as error from '../../../common/helpers/error';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
@@ -279,7 +280,7 @@ export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: 
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
 	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 
-	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
+	const model = commonUtils.getEntityModelByType(orm, entityHeader.get('type'));
 	return model.forge({bbid: redirectBbid}).fetch({transacting});
 }
 
@@ -400,7 +401,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 function fetchOrCreateMainEntity(
 	orm, transacting, isNew, bbid, entityType
 ) {
-	const model = utils.getEntityModelByType(orm, entityType);
+	const model = commonUtils.getEntityModelByType(orm, entityType);
 
 	const entity = model.forge({bbid});
 

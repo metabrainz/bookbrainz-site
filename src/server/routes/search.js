@@ -18,6 +18,7 @@
  */
 
 import * as auth from '../helpers/auth';
+import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
@@ -54,7 +55,7 @@ router.get('/', (req, res, next) => {
 			query
 		}))
 		.then((searchResults) => {
-			const entityTypes = _keys(utils.getEntityModels(orm));
+			const entityTypes = _keys(commonUtils.getEntityModels(orm));
 			const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
 			searchResults.initialResults = newResultsArray;
 

@@ -47,6 +47,7 @@ const router = express.Router();
  *         required: false
  *         type: string
  *         default: null
+ *         enum: [author, edition, edition-group, publisher, work]
  *       - name: size
  *         in: query
  *         description: maximum number of entities in response
