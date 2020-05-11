@@ -31,7 +31,7 @@ import request from 'superagent-bluebird-promise';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
-const {Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
+const {Badge, Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
@@ -100,11 +100,15 @@ class RevisionPage extends React.Component {
 		return _.compact(result);
 	}
 
-	static getEntityDiff(diff, index) {
+	static getEntityDiff(diff) {
 		return (
-			<div key={`${diff.entity.bbid}${index}`}>
+			<div key={diff.entity.bbid}>
 				<h3>
-					<EntityLink bbid={diff.entity.bbid} text={`${diff.entity.type} ${diff.entity.bbid}`} type={diff.entity.type}/>
+					{diff.isNew &&
+					<Badge className="new margin-right-0-5">+ New</Badge>}
+					<EntityLink
+						entity={diff.entity}
+					/>
 				</h3>
 				{diff.changes.length ? (
 					<table className="table table-bordered text-center">
@@ -153,27 +157,18 @@ class RevisionPage extends React.Component {
 
 	render() {
 		const {revision, diffs, user} = this.props;
-		let regularDiffs = diffs;
+		const regularDiffs = diffs;
 		let mergeDiffDivs;
 
 		if (revision.isMerge) {
 			/**
 			 * Separate entities between merged and not merged
 			 */
-			const mergeDiffs = [];
-			regularDiffs = [];
-			diffs.forEach(diff => {
-				if (diff.entityRevision.isMerge) {
-					mergeDiffs.push(diff);
-					return;
-				}
-				regularDiffs.push(diff);
-			});
+			const mergeDiffs = _.remove(regularDiffs, diff => diff.entityRevision.isMerge);
 
 			/**
 			 * We sort the merged entities diffs by number of changes.
-			 * In theory, only the entity we merge into will have changes,
-			 * which allows us to display it at the bottom ('merges entity X and Y into Z')
+			 * Display the entity we merge into at the bottom ('merges entity X and Y into Z')
 			 */
 			mergeDiffDivs = mergeDiffs
 				.sort((a, b) => {
@@ -185,7 +180,6 @@ class RevisionPage extends React.Component {
 					}
 					return 0;
 				})
-				// .sort((diff1, diff2) => diff1.changes.length - diff2.changes.length)
 				.map(RevisionPage.getEntityDiff);
 		}
 
