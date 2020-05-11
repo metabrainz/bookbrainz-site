@@ -29,7 +29,7 @@ import request from 'superagent-bluebird-promise';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
-const {Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
+const {Badge, Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
@@ -138,10 +138,10 @@ class RevisionPage extends React.Component {
 		const diffDivs = diffs.map((diff) => (
 			<div key={diff.entity.bbid}>
 				<h3>
+					{diff.isNew &&
+					<Badge className="new margin-right-0-5">+ New</Badge>}
 					<EntityLink
-						bbid={diff.entity.bbid}
-						text={`${diff.entity.type} ${diff.entity.bbid}`}
-						type={diff.entity.type}
+						entity={diff.entity}
 					/>
 				</h3>
 				<table className="table table-bordered text-center">

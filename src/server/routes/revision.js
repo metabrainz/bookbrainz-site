@@ -169,12 +169,16 @@ function diffRevisionsWithParents(revisions) {
 				.then(
 					(parent) => Promise.props({
 						changes: revision.diff(parent),
-						entity: revision.related('entity')
+						entity: revision.related('entity'),
+						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}),
+						isNew: !parent
 					}),
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => Promise.props({
 						changes: revision.diff(null),
-						entity: revision.related('entity')
+						entity: revision.related('entity'),
+						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}),
+						isNew: true
 					})
 				)
 	));
@@ -223,7 +227,6 @@ router.get('/:id', (req, res, next) => {
 	const editionGroupDiffsPromise = _createRevision(EditionGroupRevision);
 	const publisherDiffsPromise = _createRevision(PublisherRevision);
 	const workDiffsPromise = _createRevision(WorkRevision);
-
 	Promise.join(
 		revisionPromise, authorDiffsPromise, editionDiffsPromise,
 		workDiffsPromise, publisherDiffsPromise, editionGroupDiffsPromise,
