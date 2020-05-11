@@ -16,7 +16,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import * as auth from '../helpers/auth';
+
 import * as baseFormatter from '../helpers/diffFormatters/base';
 import * as entityFormatter from '../helpers/diffFormatters/entity';
 import * as entityRoutes from './entity/entity';
@@ -170,13 +170,15 @@ function diffRevisionsWithParents(revisions) {
 					(parent) => Promise.props({
 						changes: revision.diff(parent),
 						entity: revision.related('entity'),
-						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']})
+						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}),
+						isNew: !parent
 					}),
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => Promise.props({
 						changes: revision.diff(null),
 						entity: revision.related('entity'),
-						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']})
+						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}),
+						isNew: true
 					})
 				)
 	));
