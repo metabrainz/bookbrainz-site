@@ -27,6 +27,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import express from 'express';
+import {makeCollectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import target from '../templates/target';
 
 
@@ -53,46 +54,7 @@ router.get('/create', auth.isAuthenticated, (req, res) => {
 	}));
 });
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, async (req, res) => {
-	const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
-	const collection = await new UserCollection({
-		description: req.body.description,
-		editorId: req.user.id,
-		name: req.body.name,
-		public: req.body.privacy === 'Public',
-		type: req.body.type
-	}).save(null, {method: 'insert'});
-
-	const collaboratorPromises = [];
-	const collaborators = req.body.collaborators ? req.body.collaborators : [];
-
-	collaborators.forEach((collaborator) => {
-		collaboratorPromises.push(
-			new UserCollectionCollaborator({
-				collectionId: collection.get('id'),
-				editorId: collaborator.id
-			}).save(null, {method: 'insert'})
-		);
-	});
-	await Promise.all(collaboratorPromises);
-
-	// we need to add this collection in ElasticSearch index
-	const collectionPromiseForES = new Promise((resolve) => {
-		const collectionForES = {
-			aliasSet: {
-				aliases: [
-					{name: collection.get('name')}
-				]
-			},
-			bbid: collection.get('id'),
-			id: collection.get('id'),
-			type: 'Collection'
-		};
-		resolve(collectionForES);
-	});
-
-	handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity);
-});
+router.post('/create/handler', auth.isAuthenticatedForHandler, makeCollectionCreateOrEditHandler);
 
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
@@ -116,45 +78,12 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 	}));
 });
 
-router.post('/:collectionId/edit/handler', auth.isAuthenticated, auth.isCollectionOwner, async (req, res) => {
-	const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
-	const newCollection = await new UserCollection({id: req.params.collectionId}).fetch({
-		require: true,
-		withRelated: ['collaborators.collaboratorDetail']
-	});
-
-	newCollection.set('description', req.body.description);
-	newCollection.set('name', req.body.name);
-	newCollection.set('public', req.body.privacy === 'Public');
-	newCollection.set('type', req.body.type);
-	await newCollection.save();
-
-	const oldCollection = res.locals.collection;
-
-	// find difference in collaborator in oldCollection and newCollection
-	// we need to add this collection in ElasticSearch index
-	const collectionPromiseForES = new Promise((resolve) => {
-		const collectionForES = {
-			aliasSet: {
-				aliases: [
-					{name: newCollection.get('name')}
-				]
-			},
-			bbid: newCollection.get('id'),
-			id: newCollection.get('id'),
-			type: 'Collection'
-		};
-		resolve(collectionForES);
-	});
-
-	handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity);
-});
+router.post('/:collectionId/edit/handler', auth.isAuthenticated, auth.isCollectionOwner, makeCollectionCreateOrEditHandler);
 
 router.get('/:collectionId', (req, res) => {
 	const {collection} = res.locals;
 	// eslint-disable-next-line no-console
 	res.status(200).send(collection);
 });
-
 
 export default router;

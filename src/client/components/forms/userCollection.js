@@ -116,9 +116,19 @@ class UserCollectionForm extends React.Component {
 		}));
 	}
 
-	handleChangeCollaborator(id, index) {
+	handleChangeCollaborator(newCollab, index) {
+		let newCollaborator;
+		if (!newCollab) {
+			newCollaborator = {
+				id: null,
+				name: ''
+			};
+		}
+		else {
+			newCollaborator = newCollab;
+		}
 		const newCollaborators = this.state.collection.collaborators;
-		newCollaborators[index] = id;
+		newCollaborators[index] = newCollaborator;
 		this.setState(prevState => ({
 			collection: {
 				...prevState.collection,
@@ -203,7 +213,7 @@ class UserCollectionForm extends React.Component {
 											name="editor"
 											type="editor"
 											value={collaborator}
-											onChange={(newId) => this.handleChangeCollaborator(newId, index)}
+											onChange={(newCollaborator) => this.handleChangeCollaborator(newCollaborator, index)}
 										/>
 										<Button
 											bsSize="small"
