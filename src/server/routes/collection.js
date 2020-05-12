@@ -17,8 +17,10 @@
  */
 
 import * as auth from '../helpers/auth';
+import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
+import * as search from '../helpers/search';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -61,19 +63,35 @@ router.post('/create/handler', auth.isAuthenticatedForHandler, async (req, res) 
 		type: req.body.type
 	}).save(null, {method: 'insert'});
 
-	const collaboratorPromise = [];
+	const collaboratorPromises = [];
 	const collaborators = req.body.collaborators ? req.body.collaborators : [];
 
 	collaborators.forEach((collaborator) => {
-		collaboratorPromise.push(
+		collaboratorPromises.push(
 			new UserCollectionCollaborator({
 				collectionId: collection.get('id'),
 				editorId: collaborator.id
 			}).save(null, {method: 'insert'})
 		);
 	});
-	await Promise.all(collaboratorPromise);
-	res.send(collection);
+	await Promise.all(collaboratorPromises);
+
+	// we need to add this collection in ElasticSearch index
+	const collectionPromiseForES = new Promise((resolve) => {
+		const collectionForES = {
+			aliasSet: {
+				aliases: [
+					{name: collection.get('name')}
+				]
+			},
+			bbid: collection.get('id'),
+			id: collection.get('id'),
+			type: 'Collection'
+		};
+		resolve(collectionForES);
+	});
+
+	handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity);
 });
 
 
@@ -112,9 +130,24 @@ router.post('/:collectionId/edit/handler', auth.isAuthenticated, auth.isCollecti
 	await newCollection.save();
 
 	const oldCollection = res.locals.collection;
-	// find difference in collaborator in oldCollection and newCollection
 
-	res.send(newCollection);
+	// find difference in collaborator in oldCollection and newCollection
+	// we need to add this collection in ElasticSearch index
+	const collectionPromiseForES = new Promise((resolve) => {
+		const collectionForES = {
+			aliasSet: {
+				aliases: [
+					{name: newCollection.get('name')}
+				]
+			},
+			bbid: newCollection.get('id'),
+			id: newCollection.get('id'),
+			type: 'Collection'
+		};
+		resolve(collectionForES);
+	});
+
+	handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity);
 });
 
 router.get('/:collectionId', (req, res) => {
