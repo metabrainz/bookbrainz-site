@@ -35,7 +35,7 @@ const _maxJitter = 75;
 let _client = null;
 
 function _fetchEntityModelsForESResults(orm, results) {
-	const {Area, Editor} = orm;
+	const {Area, Editor, UserCollection} = orm;
 
 	if (!results.hits) {
 		return null;
@@ -67,6 +67,19 @@ function _fetchEntityModelsForESResults(orm, results) {
 					editorJSON.type = 'Editor';
 					editorJSON.bbid = entityStub.bbid;
 					return editorJSON;
+				});
+		}
+		if (entityStub.type === 'Collection') {
+			return UserCollection.forge({id: entityStub.bbid})
+				.fetch()
+				.then((collection) => {
+					const collectionJSON = collection.toJSON();
+					collectionJSON.defaultAlias = {
+						name: collectionJSON.name
+					};
+					collectionJSON.type = 'Collection';
+					collectionJSON.bbid = entityStub.bbid;
+					return collectionJSON;
 				});
 		}
 		const model = utils.getEntityModelByType(orm, entityStub.type);
