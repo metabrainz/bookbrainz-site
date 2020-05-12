@@ -1,10 +1,10 @@
 BEGIN;
 
-CREATE TABLE bookbrainz.user_collection (
+CREATE TABLE IF NOT EXISTS bookbrainz.user_collection (
 	id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
 	editor_id INT,
 	name VARCHAR(80) NOT NULL CHECK (name <> ''),
-	description TEXT NOT NULL CHECK (description <> ''),
+	description TEXT NOT NULL DEFAULT '',
 	type bookbrainz.entity_type NOT NULL,
 	public BOOLEAN NOT NULL DEFAULT FALSE,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
@@ -12,7 +12,7 @@ CREATE TABLE bookbrainz.user_collection (
 );
 ALTER TABLE bookbrainz.user_collection ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 
-CREATE TABLE bookbrainz.user_collection_item (
+CREATE TABLE IF NOT EXISTS bookbrainz.user_collection_item (
 	collection_id UUID,
 	bbid UUID,
     added_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
@@ -20,7 +20,7 @@ CREATE TABLE bookbrainz.user_collection_item (
 ALTER TABLE bookbrainz.user_collection_item ADD FOREIGN KEY (collection_id) REFERENCES bookbrainz.user_collection (id);
 ALTER TABLE bookbrainz.user_collection_item ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
-CREATE TABLE bookbrainz.user_collection_collaborator (
+CREATE TABLE IF NOT EXISTS bookbrainz.user_collection_collaborator (
 	collection_id UUID ,
 	editor_id INT
 );
