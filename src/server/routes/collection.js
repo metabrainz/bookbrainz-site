@@ -17,10 +17,8 @@
  */
 
 import * as auth from '../helpers/auth';
-import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
-import * as search from '../helpers/search';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -54,9 +52,6 @@ router.get('/create', auth.isAuthenticated, (req, res) => {
 	}));
 });
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, makeCollectionCreateOrEditHandler);
-
-
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
 	const {collection} = res.locals;
 
@@ -78,11 +73,11 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 	}));
 });
 
-router.post('/:collectionId/edit/handler', auth.isAuthenticated, auth.isCollectionOwner, makeCollectionCreateOrEditHandler);
+router.post('/create/handler', auth.isAuthenticatedForHandler, makeCollectionCreateOrEditHandler);
+router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, makeCollectionCreateOrEditHandler);
 
 router.get('/:collectionId', (req, res) => {
 	const {collection} = res.locals;
-	// eslint-disable-next-line no-console
 	res.status(200).send(collection);
 });
 
