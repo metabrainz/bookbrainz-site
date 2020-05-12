@@ -237,7 +237,7 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Editor, Publisher, UserCollection, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -403,6 +403,25 @@ export async function generateIndex(orm) {
 		type: 'Editor'
 	}));
 	await _processEntityListForBulk(processedEditors);
+
+	const userCollections = await UserCollection.forge()
+		.fetchAll();
+	const userCollectionsJSON = userCollections.toJSON();
+
+	/** To index names, we use aliasSet.aliases.name and bbid, which UserCollections don't have.
+	 * We massage the editor to return a similar format as BB entities
+	 */
+	const processedCollections = userCollectionsJSON.map((collection) => new Object({
+		aliasSet: {
+			aliases: [
+				{name: collection.name}
+			]
+		},
+		bbid: collection.id,
+		id: collection.id,
+		type: 'Collection'
+	}));
+	await _processEntityListForBulk(processedCollections);
 
 	await refreshIndex();
 }
