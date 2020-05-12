@@ -19,6 +19,7 @@
 
 import authRouter from './routes/auth';
 import authorRouter from './routes/entity/author';
+import collectionRouter from './routes/collection';
 import editionGroupRouter from './routes/entity/edition-group';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
@@ -76,10 +77,15 @@ function initEditorRoutes(app) {
 	app.use('/editor', editorRouter);
 }
 
+function initCollectionRoutes(app) {
+	app.use('/collection', collectionRouter);
+}
+
 function initRoutes(app) {
 	initRootRoutes(app);
 	initEditionGroupRoutes(app);
 	initAuthorRoutes(app);
+	initCollectionRoutes(app);
 	initEditionRoutes(app);
 	initMergeRoutes(app);
 	initWorkRoutes(app);
