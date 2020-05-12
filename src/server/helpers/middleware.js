@@ -190,15 +190,14 @@ export function makeCollectionLoader() {
 		if (commonUtils.isValidBBID(collectionId)) {
 			try {
 				const collection = await new UserCollection({id: collectionId}).fetch({
-					require: false,
-					withRelated: ['collaborators.collaboratorDetail']
+					require: true,
+					withRelated: ['collaborators.collaboratorDetails']
 				});
 				const collectionJSON = collection.toJSON();
-				const collaborators = collectionJSON.collaborators.map((collaborator) => ({
-					id: collaborator.collaboratorDetail.id,
-					text: collaborator.collaboratorDetail.name
+				collectionJSON.collaborators = collectionJSON.collaborators.map((collaborator) => ({
+					id: collaborator.collaboratorDetails.id,
+					text: collaborator.collaboratorDetails.name
 				}));
-				collectionJSON.collaborators = collaborators;
 				res.locals.collection = collectionJSON;
 				return next();
 			}

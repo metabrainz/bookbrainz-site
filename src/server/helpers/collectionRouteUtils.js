@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2020 Prabal Singh
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 import * as handler from '../helpers/handler';
 import * as search from './search';
 import _ from 'lodash';
@@ -53,7 +71,8 @@ export async function makeCollectionCreateOrEditHandler(req, res) {
 
 	await Promise.all(collaboratorPromises);
 
-	// if the name is changed, we need to update this collection in ElasticSearch index
+	// if it's new or the name is changed,
+	// we need to update this collection in ElasticSearch index
 	if (isNew || res.locals.collection.name !== newCollection.get('name')) {
 		const collectionPromiseForES = new Promise((resolve) => {
 			const collectionForES = {
@@ -68,7 +87,7 @@ export async function makeCollectionCreateOrEditHandler(req, res) {
 			};
 			resolve(collectionForES);
 		});
-		return 	handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity);
+		return handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity);
 	}
 	return res.send(newCollection.toJSON());
 }
