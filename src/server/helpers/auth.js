@@ -137,3 +137,13 @@ export function isAuthenticatedForHandler(req, res, next) {
 
 	return error.sendErrorAsJSON(res, new error.NotAuthenticatedError());
 }
+
+export function isCollectionOwner(req, res, next) {
+	if (req.user.id === res.locals.collection.editorId) {
+		return next();
+	}
+
+	throw new error.PermissionDeniedError(
+		'You do not have permission to edit this collection', req
+	);
+}

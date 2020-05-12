@@ -175,3 +175,32 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 		}
 	};
 }
+
+export function makeCollectionLoader() {
+	return async (req, res, next, collectionId) => {
+		const {UserCollection} = req.app.locals.orm;
+
+		if (commonUtils.isValidBBID(collectionId)) {
+			try {
+				const collection = await new UserCollection({id: collectionId}).fetch({
+					require: false,
+					withRelated: ['collaborators.collaboratorDetail']
+				});
+				const collectionJSON = collection.toJSON();
+				const collaborators = collectionJSON.collaborators.map((collaborator) => ({
+					id: collaborator.collaboratorDetail.id,
+					text: collaborator.collaboratorDetail.name
+				}));
+				collectionJSON.collaborators = collaborators;
+				res.locals.collection = collectionJSON;
+				return next();
+			}
+			catch (err) {
+				return next(new error.NotFoundError('Collection Not Found', req));
+			}
+		}
+		else {
+			return next(new error.BadRequestError('Invalid Collection ID', req));
+		}
+	};
+}
