@@ -695,7 +695,7 @@ CREATE TABLE bookbrainz.user_collection (
 	owner_id INT NOT NULL,
 	name VARCHAR(80) NOT NULL CHECK (name <> ''),
 	description TEXT NOT NULL DEFAULT '',
-	type bookbrainz.entity_type NOT NULL,
+	entity_type bookbrainz.entity_type NOT NULL,
 	public BOOLEAN NOT NULL DEFAULT FALSE,
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	last_modified TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
