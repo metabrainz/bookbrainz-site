@@ -161,7 +161,7 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export function autocomplete(orm, query, collection) {
+export function autocomplete(orm, query, type) {
 	let queryBody = null;
 
 	if (commonUtils.isValidBBID(query)) {
@@ -189,12 +189,12 @@ export function autocomplete(orm, query, collection) {
 		index: _index
 	};
 
-	if (collection) {
-		if (Array.isArray(collection)) {
-			dslQuery.type = collection.map(_.snakeCase);
+	if (type) {
+		if (Array.isArray(type)) {
+			dslQuery.type = type.map(_.snakeCase);
 		}
 		else {
-			dslQuery.type = _.snakeCase(collection);
+			dslQuery.type = _.snakeCase(type);
 		}
 	}
 
@@ -394,13 +394,13 @@ export async function generateIndex(orm) {
 	await refreshIndex();
 }
 
-export async function checkIfExists(orm, name, collection) {
+export async function checkIfExists(orm, name, type) {
 	const {bookshelf} = orm;
 	const bbids = await new Promise((resolve, reject) => {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
-					transacting, _.snakeCase(collection), name
+					transacting, _.snakeCase(type), name
 				);
 				resolve(result);
 			}
@@ -422,12 +422,12 @@ export async function checkIfExists(orm, name, collection) {
 	];
 	return Promise.all(
 		bbids.map(
-			bbid => orm.func.entity.getEntity(orm, _.upperFirst(_.camelCase(collection)), bbid, baseRelations)
+			bbid => orm.func.entity.getEntity(orm, _.upperFirst(_.camelCase(type)), bbid, baseRelations)
 		)
 	);
 }
 
-export function searchByName(orm, name, collection, size, from) {
+export function searchByName(orm, name, type, size, from) {
 	const dslQuery = {
 		body: {
 			from,
@@ -456,20 +456,20 @@ export function searchByName(orm, name, collection, size, from) {
 		index: _index
 	};
 
-	let modifiedCollection;
-	if (collection === 'all_entities') {
-		modifiedCollection = ['author', 'edition', 'edition_group', 'work', 'publisher'];
+	let modifiedType;
+	if (type === 'all_entities') {
+		modifiedType = ['author', 'edition', 'edition_group', 'work', 'publisher'];
 	}
 	else {
-		modifiedCollection = collection;
+		modifiedType = type;
 	}
 
-	if (modifiedCollection) {
-		if (Array.isArray(modifiedCollection)) {
-			dslQuery.type = modifiedCollection.map(_.snakeCase);
+	if (modifiedType) {
+		if (Array.isArray(modifiedType)) {
+			dslQuery.type = modifiedType.map(_.snakeCase);
 		}
 		else {
-			dslQuery.type = _.snakeCase(modifiedCollection);
+			dslQuery.type = _.snakeCase(modifiedType);
 		}
 	}
 
