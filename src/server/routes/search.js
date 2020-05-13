@@ -45,7 +45,7 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const collection = req.query.collection || 'allEntity';
+	const collection = req.query.collection || 'allEntities';
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	// get 1 more results to check nextEnabled
@@ -87,7 +87,7 @@ router.get('/', (req, res, next) => {
 router.get('/search', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const collection = req.query.collection || 'allEntity';
+	const collection = req.query.collection || 'allEntities';
 
 	const {size, from} = req.query;
 
@@ -103,7 +103,7 @@ router.get('/search', (req, res) => {
 router.get('/autocomplete', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const collection = req.query.collection || 'allEntity';
+	const collection = req.query.collection || 'allEntities';
 
 	const searchPromise = search.autocomplete(orm, query, collection);
 

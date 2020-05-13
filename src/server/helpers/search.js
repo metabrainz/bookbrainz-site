@@ -457,7 +457,7 @@ export function searchByName(orm, name, collection, size, from) {
 	};
 
 	let modifiedCollection;
-	if (collection === 'all_entity') {
+	if (collection === 'all_entities') {
 		modifiedCollection = ['author', 'edition', 'edition_group', 'work', 'publisher'];
 	}
 	else {

@@ -84,7 +84,7 @@ class SearchField extends React.Component {
 			<DropdownButton
 				componentClass={InputGroup.Button}
 				id="entity-type-select"
-				title={_.startCase(this.state.collection) || 'All Entity'}
+				title={_.startCase(this.state.collection) || 'All Entities'}
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType: string) => (
@@ -98,8 +98,8 @@ class SearchField extends React.Component {
 				))}
 				<MenuItem divider/>
 				<MenuItem
-					eventKey="all entity"
-					key="entity"
+					eventKey="all_entities"
+					key="allEntities"
 				>
 					All Entity
 				</MenuItem>
