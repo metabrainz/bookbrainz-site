@@ -21,6 +21,7 @@ import * as auth from '../helpers/auth';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
+import * as search from '../helpers/search';
 import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -142,9 +143,20 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			}
 			return editorTitleUnlock.save();
 		})
-		.then((editor) => editor.toJSON());
+		.then((editor) => {
+			const editorJSON = editor.toJSON();
+			const editorForES = {};
+			editorForES.bbid = editorJSON.id;
+			editorForES.aliasSet = {
+				aliases: [
+					{name: editorJSON.name}
+				]
+			};
+			editorForES.type = 'Editor';
+			return editorForES;
+		});
 
-	handler.sendPromiseResult(res, editorJSONPromise);
+	handler.sendPromiseResult(res, editorJSONPromise, search.indexEntity);
 });
 
 function getEditorTitleJSON(editorJSON, TitleUnlock) {
