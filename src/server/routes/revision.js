@@ -161,7 +161,7 @@ function formatEditionGroupChange(change) {
 	return [];
 }
 
-function diffRevisionsWithParents(entityRevisions) {
+function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
 		(revision) =>
@@ -170,7 +170,11 @@ function diffRevisionsWithParents(entityRevisions) {
 					(parent) => Promise.props({
 						changes: revision.diff(parent),
 						entity: revision.related('entity'),
-						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}),
+						entityAlias: revision.get('dataId') ?
+							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}) :
+							orm.func.entity.getEntityParentAlias(
+								orm, entityType, revision.get('bbid')
+							),
 						isNew: !parent,
 						revision
 					}),
@@ -178,7 +182,11 @@ function diffRevisionsWithParents(entityRevisions) {
 					() => Promise.props({
 						changes: revision.diff(null),
 						entity: revision.related('entity'),
-						entityAlias: revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}),
+						entityAlias: revision.get('dataId') ?
+							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}) :
+							orm.func.entity.getEntityParentAlias(
+								orm, entityType, revision.get('bbid')
+							),
 						isNew: true,
 						revision
 					})
@@ -193,7 +201,7 @@ router.get('/:id', async (req, res, next) => {
 	} = req.app.locals.orm;
 
 	let revision;
-	function _createRevision(EntityRevisionModel) {
+	function _createRevision(EntityRevisionModel, entityType) {
 		/**
 		 * EntityRevisions can have duplicate ids
 		 * the 'merge' and 'remove' options instructs the ORM to consider that normal instead of merging
@@ -202,7 +210,7 @@ router.get('/:id', async (req, res, next) => {
 		return EntityRevisionModel.forge()
 			.where('id', req.params.id)
 			.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'})
-			.then(diffRevisionsWithParents)
+			.then((entityRevisions) => diffRevisionsWithParents(req.app.locals.orm, entityRevisions, entityType))
 			.catch(err => { log.error(err); throw err; });
 	}
 	try {
@@ -229,11 +237,11 @@ router.get('/:id', async (req, res, next) => {
 				throw new error.NotFoundError(`Revision #${req.params.id} not found`, req);
 			});
 
-		const authorDiffs = await _createRevision(AuthorRevision);
-		const editionDiffs = await _createRevision(EditionRevision);
-		const editionGroupDiffs = await _createRevision(EditionGroupRevision);
-		const publisherDiffs = await _createRevision(PublisherRevision);
-		const workDiffs = await _createRevision(WorkRevision);
+		const authorDiffs = await _createRevision(AuthorRevision, 'Author');
+		const editionDiffs = await _createRevision(EditionRevision, 'Edition');
+		const editionGroupDiffs = await _createRevision(EditionGroupRevision, 'EditionGroup');
+		const publisherDiffs = await _createRevision(PublisherRevision, 'Publisher');
+		const workDiffs = await _createRevision(WorkRevision, 'Work');
 		const diffs = _.concat(
 			entityFormatter.formatEntityDiffs(
 				authorDiffs,

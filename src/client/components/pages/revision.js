@@ -157,14 +157,15 @@ class RevisionPage extends React.Component {
 
 	render() {
 		const {revision, diffs, user} = this.props;
-		const regularDiffs = diffs;
+		let regularDiffs = diffs;
 		let mergeDiffDivs;
 
 		if (revision.isMerge) {
 			/**
 			 * Separate entities between merged and not merged
 			 */
-			const mergeDiffs = _.remove(regularDiffs, diff => diff.entityRevision.isMerge);
+			const mergeDiffs = _.filter(diffs, diff => diff.entityRevision.isMerge);
+			regularDiffs = _.filter(diffs, diff => !diff.entityRevision.isMerge);
 
 			/**
 			 * We sort the merged entities diffs by number of changes.
