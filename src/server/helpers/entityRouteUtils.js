@@ -44,7 +44,7 @@ type PassportRequest = $Request & {user: any, session: any};
 
 /**
  * Callback to get the initial state
- * @callback initialState
+ * @callback initialStateCallback
  * @param {object} entity - entity
  */
 
@@ -104,7 +104,7 @@ export function generateEntityProps(
 
 /**
  * Callback to get the initial state
- * @callback initialState
+ * @callback initialStateCallback
  * @param {object} entity - entity
  */
 

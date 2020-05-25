@@ -52,7 +52,7 @@ function _setPublisherTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
 		'Publisher',
-		utils.template`${'name'}`
+		utils.template`Publisher “${'name'}”`
 	);
 }
 

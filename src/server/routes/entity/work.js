@@ -56,7 +56,7 @@ function _setWorkTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
 		'Work',
-		utils.template`${'name'}`
+		utils.template`Work “${'name'}”`
 	);
 }
 

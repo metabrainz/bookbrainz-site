@@ -54,7 +54,7 @@ function _setAuthorTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
 		'Author',
-		utils.template`${'name'}`
+		utils.template`Author “${'name'}”`
 	);
 }
 

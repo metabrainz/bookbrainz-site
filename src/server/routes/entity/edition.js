@@ -63,7 +63,7 @@ function _setEditionTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
 		'Edition',
-		utils.template`${'name'}`
+		utils.template`Edition “${'name'}”`
 	);
 }
 

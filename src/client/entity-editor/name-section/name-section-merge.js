@@ -1,7 +1,5 @@
-/* eslint-disable no-inline-comments */
-/* eslint-disable no-console */
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2019  Nicolas Pelletier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,8 +58,6 @@ import {entityTypeProperty} from '../../helpers/react-validators';
  *        the disambiguation is changed.
  * @returns {ReactElement} React element containing the rendered NameSectionMerge.
  */
-
-// const valueFromId = (opts, id, path = 'value') => opts.find(opt => _.get(opt, path) === id);
 
 function NameSectionMerge({
 	disambiguationDefaultValue,

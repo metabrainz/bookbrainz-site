@@ -133,8 +133,7 @@ class EntityDeletionForm extends React.Component {
 									revision note below to explain why and confirm the deletion.
 									</p>
 									<p className="text-muted">
-									We are currently working on the merging tool. If this {entity.type} is a duplicate,
-									please edit it to add &quot;duplicate&quot; as a disambiguation to mark it to be merged.
+									If this {entity.type} is a duplicate, click <a href={`/merge/add/${entity.bbid}`}>this link</a> to select it to be merged instead.
 									</p>
 
 									<CustomInput

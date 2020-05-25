@@ -61,7 +61,7 @@ function _setEditionGroupTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
 		'EditionGroup',
-		utils.template`${'name'}`
+		utils.template`Edition Group “${'name'}”`
 	);
 }
 
