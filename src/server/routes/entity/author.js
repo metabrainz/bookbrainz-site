@@ -23,8 +23,6 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	ISODateStringToObject,
-	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -38,7 +36,11 @@ import target from '../../templates/target';
 
 const router = express.Router();
 
-/* If the route specifies a BBID, load the Author for it. */
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
@@ -150,15 +152,16 @@ function authorToFormState(author) {
 
 	const authorSection = {
 		beginArea: entityRoutes.areaToOption(author.beginArea),
-		beginDate: ISODateStringToObject(author.beginDate),
+		beginDate: author.beginDate,
 		endArea: entityRoutes.areaToOption(author.endArea),
-		endDate: ISODateStringToObject(author.endDate),
+		endDate: author.endDate,
 		ended: author.ended,
 		gender: author.gender && author.gender.id,
 		type: author.authorType && author.authorType.id
 	};
 
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
@@ -229,13 +232,11 @@ function transformNewForm(data) {
 		aliases,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
-		beginDate: data.authorSection.beginDate ?
-			dateObjectToISOString(data.authorSection.beginDate) : '',
+		beginDate: data.authorSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
 		endAreaId: data.authorSection.endArea &&
 			data.authorSection.endArea.id,
-		endDate: data.authorSection.endDate ?
-			dateObjectToISOString(data.authorSection.endDate) : '',
+		endDate: data.authorSection.endDate ? data.authorSection.endDate : null,
 		ended: data.authorSection.ended,
 		genderId: data.authorSection.gender,
 		identifiers,
@@ -248,11 +249,17 @@ function transformNewForm(data) {
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'author', transformNewForm, additionalAuthorProps
 );
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'author', transformNewForm, additionalAuthorProps, true
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;

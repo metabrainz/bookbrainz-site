@@ -76,8 +76,8 @@ function describeValidatePublisherSectionType() {
 
 const VALID_PUBLISHER_SECTION = {
 	area: null,
-	beginDate: {day: '', month: '', year: ''},
-	endDate: {day: '', month: '', year: ''},
+	beginDate: '',
+	endDate: '',
 	ended: true,
 	type: 1
 };

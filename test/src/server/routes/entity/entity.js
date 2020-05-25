@@ -1,12 +1,18 @@
 import {createAuthor, createEditor, createWork, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
-import {deleteRelationships, getDefaultAliasIndex} from '../../../../../src/server/routes/entity/entity';
+import {deleteRelationships, getDefaultAliasIndex, processMergeOperation} from '../../../../../src/server/routes/entity/entity';
 
 import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
 import orm from '../../../../bookbrainz-data';
 import {random} from 'faker';
 
 
+chai.use(chaiAsPromised);
 const {expect} = chai;
+
+const {Author, Work, Revision, WorkRevision, WorkHeader,
+	Relationship, RelationshipSet, RelationshipType,
+	bookshelf, util} = orm;
 
 describe('getDefaultAliasIndex', () => {
 	const defaultAlias = {
@@ -86,7 +92,6 @@ describe('getDefaultAliasIndex', () => {
 });
 
 describe('deleteRelationships', () => {
-	const {Author, Work, Revision, WorkRevision, WorkHeader, Relationship, RelationshipSet, RelationshipType, bookshelf} = orm;
 	let author;
 	let editor;
 	let relationshipTypeData;
@@ -451,5 +456,95 @@ describe('deleteRelationships', () => {
 		const affectedEntities = await deleteRelationships(orm, null, author.toJSON());
 
 		expect(affectedEntities).to.have.length(3);
+	});
+});
+describe('processMergeOperation', () => {
+	let author1BBID;
+	let author2BBID;
+	let author1;
+	let author2;
+
+	before(async () => {
+		author1BBID = getRandomUUID();
+		author2BBID = getRandomUUID();
+		author1 = await createAuthor(author1BBID);
+		author2 = await createAuthor(author2BBID);
+	});
+	after(truncateEntities);
+	afterEach(async () => {
+		await util.truncateTables(bookshelf, ['bookbrainz.entity_redirect']);
+	});
+
+	it('should throw an error if there is no mergingEntities in the mergeQueue', () => {
+		const mergeQueue = {mergingEntities: null};
+		expect(
+			processMergeOperation(orm, null, {mergeQueue}, author1, [author1], {})
+		).to.be.rejectedWith('Merge handler called with no merge queue, aborting');
+	});
+	it('should throw an error if trying to merge into an entity not in the mergeQueue', () => {
+		const anotherBBIB = getRandomUUID();
+		const mergeQueue = {
+			mergingEntities: {
+				[anotherBBIB]: {},
+				[author2BBID]: author2.toJSON()
+			}
+		};
+		expect(
+			processMergeOperation(orm, null, {mergeQueue}, author1, [author1], {})
+		).to.be.rejectedWith('Entity being merged into does not appear in merge queue, aborting');
+	});
+	it('should add the entity to be merged to the returned entities', async () => {
+		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
+		const mergeQueue = {
+			entityType: 'Author',
+			mergingEntities: {
+				[author1BBID]: author1Fetched.toJSON(),
+				[author2BBID]: author2.toJSON()
+			}
+		};
+		const trx = await bookshelf.knex.transaction();
+		const returnedEntities = await processMergeOperation(orm, trx, {mergeQueue}, author1Fetched, [author1Fetched], {});
+		await trx.commit();
+		const returnedEntitiesBBIDs = returnedEntities.map(entity => entity.get('bbid'));
+		expect(returnedEntitiesBBIDs).to.include.members([author1BBID, author2BBID]);
+	});
+	it('should add the bbid of the merged entity to the entity_redirect table', async () => {
+		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
+		const mergeQueue = {
+			entityType: 'Author',
+			mergingEntities: {
+				[author1BBID]: author1Fetched.toJSON(),
+				[author2BBID]: author2.toJSON()
+			}
+		};
+		const trx = await bookshelf.knex.transaction();
+		const returnedEntities = await processMergeOperation(orm, trx, {mergeQueue}, author1Fetched, [author1Fetched], {});
+		await trx.commit();
+		const redirects = await bookshelf.knex('bookbrainz.entity_redirect').select('source_bbid');
+		expect(redirects[0].source_bbid).to.equal(author2BBID);
+	});
+	it('should modify the relationshipSet of any entity related to an entity being merged', async () => {
+		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
+		const mergeQueue = {
+			entityType: 'Author',
+			mergingEntities: {
+				[author1BBID]: author1Fetched.toJSON(),
+				[author2BBID]: author2.toJSON()
+			}
+		};
+		const author2Relationships = await new RelationshipSet({
+			id: author2.get('relationshipSetId')
+		}).fetch({withRelated: 'relationships'});
+		const relatedEntityBBID = author2Relationships.related('relationships').toJSON()[0].targetBbid;
+
+		const trx = await bookshelf.knex.transaction();
+		const modifiedRelationshipSets = {};
+		const returnedEntities = await processMergeOperation(orm, trx, {mergeQueue}, author1Fetched, [author1Fetched], modifiedRelationshipSets);
+		await trx.commit();
+		const relatedEntityNotMerged = returnedEntities.find(entity => entity.get('bbid') === relatedEntityBBID);
+		expect(relatedEntityNotMerged).to.exist;
+		expect(modifiedRelationshipSets).to.haveOwnProperty(relatedEntityBBID);
+		// Removing the only relationship of an entity should set the relationshipSetId to 'null'
+		expect(modifiedRelationshipSets[relatedEntityBBID]).to.be.null;
 	});
 });

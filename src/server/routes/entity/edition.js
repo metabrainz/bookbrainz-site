@@ -23,9 +23,7 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	ISODateStringToObject,
 	addInitialRelationship,
-	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -40,7 +38,11 @@ import target from '../../templates/target';
 
 const router = express.Router();
 
-/* If the route specifies a BBID, load the Edition for it. */
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
@@ -99,19 +101,6 @@ router.post(
 	}
 );
 
-function entityToOption(entity) {
-	return _.isNil(entity) ? null :
-		{
-			defaultAlias: entity.defaultAlias,
-			disambiguation: entity.disambiguation ?
-				entity.disambiguation.comment : null,
-			id: entity.bbid,
-			text: entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)',
-			type: entity.type
-		};
-}
-
 function getInitialNameSection(entity) {
 	const initialNameSection = {
 		disambiguation: entity.disambiguation,
@@ -141,21 +130,21 @@ router.get(
 			propsPromise.editionGroup =
 				EditionGroup.forge({bbid: req.query['edition-group']})
 					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
+					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		if (req.query.publisher) {
 			propsPromise.publisher =
 				Publisher.forge({bbid: req.query.publisher})
 					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
+					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		if (req.query.work) {
 			propsPromise.work =
 				Work.forge({bbid: req.query.work})
 					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
+					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		function render(props) {
@@ -252,15 +241,14 @@ function editionToFormState(edition) {
 	);
 
 	const releaseDate = edition.releaseEventSetId ?
-		ISODateStringToObject(edition.releaseEventSet.releaseEvents[0].date) :
-		{day: '', month: '', year: ''};
+		edition.releaseEventSet.releaseEvents[0].date : null;
 
 	const publisher = edition.publisherSet && (
 		_.isEmpty(edition.publisherSet.publishers) ?
-			null : entityToOption(edition.publisherSet.publishers[0])
+			null : utils.entityToOption(edition.publisherSet.publishers[0])
 	);
 
-	const editionGroup = entityToOption(edition.editionGroup);
+	const editionGroup = utils.entityToOption(edition.editionGroup);
 
 	const editionSection = {
 		depth: edition.depth,
@@ -282,6 +270,7 @@ function editionToFormState(edition) {
 	};
 
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
@@ -340,8 +329,8 @@ function transformNewForm(data) {
 	);
 
 	let releaseEvents = [];
-	if (data.editionSection.releaseDate && data.editionSection.releaseDate.year) {
-		releaseEvents = [{date: dateObjectToISOString(data.editionSection.releaseDate)}];
+	if (data.editionSection.releaseDate) {
+		releaseEvents = [{date: data.editionSection.releaseDate}];
 	}
 
 	const languages = _.map(
@@ -385,11 +374,17 @@ const additionalEditionProps = [
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'edition', transformNewForm, additionalEditionProps
 );
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'edition', transformNewForm, additionalEditionProps, true
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;

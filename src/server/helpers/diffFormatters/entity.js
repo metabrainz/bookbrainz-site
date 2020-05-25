@@ -17,6 +17,7 @@
  */
 
 import * as base from './base';
+
 import _ from 'lodash';
 
 
@@ -166,7 +167,7 @@ function formatNewIdentifierSet(change) {
 	if (rhs.identifiers && rhs.identifiers.length > 0) {
 		return [base.formatRow(
 			'N', 'Identifiers', null, rhs.identifiers.map(
-				(identifier) => `${identifier.type.label}: ${identifier.value}`
+				(identifier) => `${identifier.type && identifier.type.label}: ${identifier.value}`
 			)
 		)];
 	}
@@ -382,16 +383,25 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		return [];
 	}
 
-	return diffs.map((diff) => {
+	return _.flatten(diffs).map((diff) => {
 		const formattedDiff = {
 			entity: diff.entity.toJSON(),
 			isNew: diff.isNew
 		};
 
 		formattedDiff.entity.type = entityType;
+		formattedDiff.entityRevision = diff.revision && diff.revision.toJSON();
+
 		if (diff.entityAlias) {
-			const aliasJSON = diff.entityAlias.toJSON();
-			formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+			// In the revision route, we fetch an entity's data to show its alias; an ORM model is returned.
+			// For entities without data (deleted or merged), we use getEntityParentAlias instead which returns a JSON object
+			if (typeof diff.entityAlias.toJSON === 'function') {
+				const aliasJSON = diff.entityAlias.toJSON();
+				formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+			}
+			else {
+				formattedDiff.entity.defaultAlias = diff.entityAlias;
+			}
 		}
 
 		if (!diff.changes) {

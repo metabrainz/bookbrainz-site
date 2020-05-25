@@ -43,8 +43,8 @@ function EntityLinks({entity, identifierTypes, urlPrefix}) {
 			</Col>
 			<Col md={4}>
 				<EntityIdentifiers
-					identifierSet={entity.identifierSet}
 					identifierTypes={identifierTypes}
+					identifiers={entity.identifierSet && entity.identifierSet.identifiers}
 				/>
 			</Col>
 		</Row>

@@ -298,7 +298,7 @@ function mapDispatchToProps(dispatch, {entityType}) {
 		onLanguageChange: (value) =>
 			dispatch(updateLanguageField(value && value.value)),
 		onNameChange: (value) =>
-			dispatch(debouncedUpdateNameField(value, entityType)),
+			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
 			dispatch(checkIfNameExists(value, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
 		}, 1500),

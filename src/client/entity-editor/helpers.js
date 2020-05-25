@@ -19,10 +19,15 @@
 // @flow
 
 import AuthorSection from './author-section/author-section';
+import AuthorSectionMerge from './author-section/author-section-merge';
 import EditionGroupSection from './edition-group-section/edition-group-section';
+import EditionGroupSectionMerge from './edition-group-section/edition-group-section-merge';
 import EditionSection from './edition-section/edition-section';
+import EditionSectionMerge from './edition-section/edition-section-merge';
 import PublisherSection from './publisher-section/publisher-section';
+import PublisherSectionMerge from './publisher-section/publisher-section-merge';
 import WorkSection from './work-section/work-section';
+import WorkSectionMerge from './work-section/work-section-merge';
 import aliasEditorReducer from './alias-editor/reducer';
 import authorSectionReducer from './author-section/reducer';
 import buttonBarReducer from './button-bar/reducer';
@@ -63,6 +68,18 @@ export function getEntitySection(entityType: string) {
 		editionGroup: EditionGroupSection,
 		publisher: PublisherSection,
 		work: WorkSection
+	};
+
+	return SECTION_MAP[entityType];
+}
+
+export function getEntitySectionMerge(entityType: string) {
+	const SECTION_MAP = {
+		author: AuthorSectionMerge,
+		edition: EditionSectionMerge,
+		editionGroup: EditionGroupSectionMerge,
+		publisher: PublisherSectionMerge,
+		work: WorkSectionMerge
 	};
 
 	return SECTION_MAP[entityType];

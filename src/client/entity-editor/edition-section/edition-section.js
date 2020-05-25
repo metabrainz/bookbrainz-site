@@ -46,7 +46,6 @@ import {
 	validateEditionSectionWeight,
 	validateEditionSectionWidth
 } from '../validators/edition';
-
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -58,7 +57,7 @@ import SearchResults from '../../components/pages/parts/search-results';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {convertMapToObject} from '../../helpers/utils';
+import {isNullDate} from '../../helpers/utils';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -301,7 +300,7 @@ function EditionSection({
 					<DateField
 						show
 						defaultValue={releaseDateValue}
-						empty={!releaseDateValue || !releaseDateValue.day && !releaseDateValue.month && !releaseDateValue.year}
+						empty={isNullDate(releaseDateValue)}
 						error={!isValidReleaseDate}
 						errorMessage={dateErrorMessage}
 						label="Release Date"
@@ -429,7 +428,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		pagesValue: state.get('pages'),
 		physicalVisible: state.get('physicalVisible'),
 		publisherValue: state.get('publisher'),
-		releaseDateValue: convertMapToObject(state.get('releaseDate')),
+		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
 		widthValue: state.get('width')

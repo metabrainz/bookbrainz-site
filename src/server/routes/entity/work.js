@@ -38,7 +38,11 @@ import target from '../../templates/target';
 
 const router = express.Router();
 
-/* If the route specifies a BBID, load the Work for it. */
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
@@ -89,17 +93,6 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
 
-function entityToOption(entity) {
-	return _.isNil(entity) ? null :
-		{
-			disambiguation: entity.disambiguation ?
-				entity.disambiguation.comment : null,
-			id: entity.bbid,
-			text: entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)',
-			type: entity.type
-		};
-}
 
 // Creation
 
@@ -119,14 +112,14 @@ router.get(
 			propsPromise.author =
 				Author.forge({bbid: req.query.author})
 					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
+					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		if (req.query.edition) {
 			propsPromise.edition =
 				Edition.forge({bbid: req.query.edition})
 					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
+					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		function render(props) {
@@ -205,6 +198,7 @@ function workToFormState(work) {
 	};
 
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
@@ -279,11 +273,17 @@ function transformNewForm(data) {
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'work', transformNewForm, 'typeId'
 );
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'work', transformNewForm, 'typeId', true
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;

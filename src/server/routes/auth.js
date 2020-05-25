@@ -23,10 +23,13 @@ import status from 'http-status';
 
 const router = express.Router();
 
-router.get('/auth', passport.authenticate('musicbrainz-oauth2'));
+// eslint-disable-next-line no-process-env
+const authenticationStrategy = process.env.NODE_ENV === 'test' ? 'mock' : 'musicbrainz-oauth2';
+
+router.get('/auth', passport.authenticate(authenticationStrategy));
 
 router.get('/cb', (req, res, next) => {
-	passport.authenticate('musicbrainz-oauth2', (authErr, user, info) => {
+	passport.authenticate(authenticationStrategy, (authErr, user, info) => {
 		if (authErr) {
 			res.locals.alerts.push({
 				level: 'danger',

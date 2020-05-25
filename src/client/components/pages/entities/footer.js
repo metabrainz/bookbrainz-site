@@ -29,7 +29,7 @@ const {
 	Button, ButtonGroup, Col, Row
 } = bootstrap;
 
-function EntityFooter({deleted, entityUrl, lastModified}) {
+function EntityFooter({bbid, deleted, entityUrl, lastModified}) {
 	return (
 		<div>
 			<Row>
@@ -58,6 +58,14 @@ function EntityFooter({deleted, entityUrl, lastModified}) {
 						>
 							<FontAwesomeIcon icon="times"/>&nbsp;Delete
 						</Button>
+						<Button
+							bsStyle="default"
+							href={`/merge/add/${bbid}`}
+							title="Select entity for merging"
+						>
+							<FontAwesomeIcon flip="vertical" icon="code-branch"/>
+							&nbsp;Merge
+						</Button>
 					</ButtonGroup>
 				</Col>
 			</Row>
@@ -72,9 +80,10 @@ function EntityFooter({deleted, entityUrl, lastModified}) {
 }
 EntityFooter.displayName = 'EntityFooter';
 EntityFooter.propTypes = {
+	bbid: PropTypes.string.isRequired,
 	deleted: PropTypes.bool,
 	entityUrl: PropTypes.string.isRequired,
-	lastModified: PropTypes.string.isRequired
+	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired
 };
 EntityFooter.defaultProps = {
 	deleted: false

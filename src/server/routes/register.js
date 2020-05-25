@@ -25,20 +25,18 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../helpers/search';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
-import Log from 'log';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RegisterAuthPage from '../../client/components/pages/registration-auth';
 import RegisterDetailPage from
 	'../../client/components/forms/registration-details';
 import _ from 'lodash';
-import config from '../../common/helpers/config';
 import express from 'express';
+import log from 'log';
 import target from '../templates/target';
 
 
 const router = express.Router();
-const log = new Log(config.site.log);
 
 router.get('/', (req, res) => {
 	// Check whether the user is logged in - if so, redirect to profile page

@@ -429,6 +429,52 @@ hr.wide {
 	white-space: normal;
 }
 
+#mergePage {
+	.mergedEntities {
+		position: relative;
+		padding: 0.1em 1.5em 1em;
+		margin: 0 -1.5em;
+		background-color: fade(@disabled-bg,15%);
+		&:after,
+		&:before {
+			border: .15em solid @disabled-bg;
+			bottom: 0;
+			content: '';
+			position: absolute;
+			top: 0;
+			width: 4em;
+		}
+		&:after {
+			border-left: none;
+			right: 0;
+		}
+		&:before {
+			border-right: none;
+			left: 0;
+		}
+	}
+}
+
+.round-color-icon {
+	border-radius: 50%;
+    display: inline-block;
+	width: 1em;
+	position: relative;
+    margin-right: 0.5em;
+	vertical-align: middle;
+    background-color: @brand-secondary;
+	color: @white;
+	& > * {
+		position: absolute;
+		min-width: 110%;
+		height: 100%;
+	}
+	&:after {
+		content: "";
+		display: block;
+		padding-bottom: 100%;
+	}
+}
 .badge.new {
 	background-color: @green;
 }

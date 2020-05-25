@@ -29,7 +29,6 @@ import {
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
-import {convertMapToObject} from '../../helpers/utils';
 
 
 export function validateEditionSectionDepth(value: ?any): boolean {
@@ -109,7 +108,7 @@ export function validateEditionSection(data: any): boolean {
 			get(data, 'editionGroupRequired', null) || get(data, 'matchingNameEditionGroups', []).length
 		) &&
 		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
-		validateEditionSectionReleaseDate(convertMapToObject(get(data, 'releaseDate', null))).isValid &&
+		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)).isValid &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&
 		validateEditionSectionWeight(get(data, 'weight', null)) &&
 		validateEditionSectionWidth(get(data, 'width', null))

@@ -36,7 +36,11 @@ import target from '../../templates/target';
 
 const router = express.Router();
 
-/* If the route specifies a BBID, load the EditionGroup for it. */
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
@@ -157,6 +161,7 @@ function editionGroupToFormState(editionGroup) {
 	};
 
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
@@ -226,11 +231,17 @@ function transformNewForm(data) {
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'editionGroup', transformNewForm, 'typeId'
 );
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'editionGroup', transformNewForm, 'typeId', true
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;
