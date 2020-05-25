@@ -235,14 +235,6 @@ export function entityMergeMarkup(
  */
 
 /**
- * Additional callback to pass data to the entity
- * create/edit function
- * @callback additionalCallback
- * @param {object} req - request object
- * @param {object} res - response object
- */
-
-/**
  * Makes a middleware handler for create or edit actions on entities.
  * @param {string} entityType - entity type
  * @param {transformCallback} transformNewForm - callback for transformations
