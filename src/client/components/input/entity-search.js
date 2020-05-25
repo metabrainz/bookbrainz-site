@@ -42,8 +42,8 @@ class EntitySearch extends React.Component {
 		return request
 			.get('/search/autocomplete')
 			.query({
-				collection: _.snakeCase(this.props.collection),
-				q: query
+				q: query,
+				type: _.snakeCase(this.props.type)
 			})
 			.then((response) => ({
 				options: response.body.map(entityToOption)
@@ -86,15 +86,14 @@ class EntitySearch extends React.Component {
 
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
-	collection: PropTypes.string,
 	defaultValue: PropTypes.shape({
 		bbid: PropTypes.string
-	})
+	}),
+	type: PropTypes.string
 };
 EntitySearch.defaultProps = {
-	collection: null,
-	defaultValue: null
-
+	defaultValue: null,
+	type: null
 };
 
 export default EntitySearch;

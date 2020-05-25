@@ -53,16 +53,16 @@ class SearchPage extends React.Component {
 	 * autocomplete search results.
 	 *
 	 * @param {string} query - Query string entered by user.
-	 * @param {string} collection - Entity type selected from dropdown
+	 * @param {string} type - Entity type selected from dropdown
 	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
-	handleSearch(query, collection) {
-		if (typeof query !== 'string' || typeof collection !== 'string') {
+	handleSearch(query, type) {
+		if (typeof query !== 'string' || typeof type !== 'string') {
 			return;
 		}
 
-		const collectionString = collection ? `&collection=${collection}` : '';
-		const fullQuery = `${query}${collectionString}`;
+		const typeString = type ? `&type=${type}` : '';
+		const fullQuery = `${query}${typeString}`;
 
 		if (this.state.query === fullQuery) {
 			return;

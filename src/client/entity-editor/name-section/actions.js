@@ -130,8 +130,8 @@ export function checkIfNameExists(
 		}
 		request.get('/search/exists')
 			.query({
-				collection: _snakeCase(entityType),
-				q: name
+				q: name,
+				type: _snakeCase(entityType)
 			})
 			.then(res => {
 				let payload = JSON.parse(res.text) || null;
@@ -172,8 +172,8 @@ export function searchName(
 		}
 		request.get('/search/autocomplete')
 			.query({
-				collection: type,
-				q: name
+				q: name,
+				type
 			})
 			.then(res => dispatch({
 				payload: JSON.parse(res.text),

@@ -7,6 +7,8 @@ For setting up and running the NodeJS server outside of Docker, read the instruc
 
 
 ## PostgreSQL
+BookBrainz uses version 12.3.
+
 To get PostgreSQL, use one of the following commands:
 
 **Debian-based OS**

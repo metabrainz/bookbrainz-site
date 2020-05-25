@@ -149,11 +149,11 @@ class ProfileForm extends React.Component {
 								/>
 							}
 							<SearchSelect
-								collection="area"
 								defaultValue={initialArea}
 								label="Area"
 								placeholder="Select area..."
 								ref={(ref) => this.area = ref}
+								type="area"
 							/>
 							<SelectWrapper
 								base={ReactSelect}

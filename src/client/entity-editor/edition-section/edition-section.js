@@ -223,8 +223,8 @@ function EditionSection({
 								'An existing Edition Group with the same name as this Edition already exists'
 							}:
 							<br/>
-							<small>The first match has been selected automatically.<br/>
-							Please review the choice: click on an item to open it in a new tab:
+							<small>The first match has been selected automatically. Please review the choice:
+								<br/>Click on an item to open it (Ctrl/Cmd + click to open in a new tab)
 							</small>
 							<SearchResults condensed results={matchingNameEditionGroups}/>
 						</Alert>

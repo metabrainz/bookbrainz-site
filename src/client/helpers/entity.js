@@ -323,6 +323,7 @@ export const ENTITY_TYPE_ICONS = {
 	Author: 'user',
 	Edition: 'book',
 	EditionGroup: 'window-restore',
+	Editor: 'user-circle',
 	Publisher: 'university',
 	Work: 'pen-nib'
 };
