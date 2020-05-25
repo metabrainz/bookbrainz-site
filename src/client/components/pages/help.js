@@ -32,7 +32,7 @@ const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
 function HelpPage() {
 	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
 	const styleLink =
-		'https://bb-user-guide.readthedocs.org/en/latest/' +
+		'https://bookbrainz-user-guide.readthedocs.io/' +
 		'style/introduction/';
 
 	return (
