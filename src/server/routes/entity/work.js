@@ -35,64 +35,51 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
+/** ****************************
+*********** Helpers ************
+*******************************/
 
-const router = express.Router();
-
-/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
-router.param(
-	'bbid',
-	middleware.redirectedBbid
-);
-router.param(
-	'bbid',
-	middleware.makeEntityLoader(
-		'Work',
-		['workType', 'languageSet.languages'],
-		'Work not found'
-	)
-);
-
-function _setWorkTitle(res) {
-	res.locals.title = utils.createEntityPageTitle(
-		res.locals.entity,
-		'Work',
-		utils.template`Work “${'name'}”`
+function transformNewForm(data) {
+	const aliases = entityRoutes.constructAliases(
+		data.aliasEditor, data.nameSection
 	);
+
+	const identifiers = entityRoutes.constructIdentifiers(
+		data.identifierEditor
+	);
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+
+	const languages = _.map(
+		data.workSection.languages, (language) => language.value
+	);
+
+	return {
+		aliases,
+		disambiguation: data.nameSection.disambiguation,
+		identifiers,
+		languages,
+		note: data.submissionSection.note,
+		relationships,
+		typeId: data.workSection.type
+	};
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
-	_setWorkTitle(res);
-	entityRoutes.displayEntity(req, res);
-});
-
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
-	_setWorkTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
-});
-
-router.post(
-	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const {orm} = req.app.locals;
-		const {WorkHeader, WorkRevision} = orm;
-		return entityRoutes.handleDelete(
-			orm, req, res, WorkHeader, WorkRevision
-		);
-	}
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'work', transformNewForm, 'typeId'
 );
 
-router.get('/:bbid/revisions', (req, res, next) => {
-	const {WorkRevision} = req.app.locals.orm;
-	_setWorkTitle(res);
-	entityRoutes.displayRevisions(req, res, next, WorkRevision);
-});
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'work', transformNewForm, 'typeId', true
+);
 
-router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const {WorkRevision} = req.app.locals.orm;
-	_setWorkTitle(res);
-	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
-});
+/** ****************************
+*********** Routes *************
+*******************************/
 
+const router = express.Router();
 
 // Creation
 
@@ -151,6 +138,66 @@ router.get(
 			.catch(next);
 	}
 );
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
+
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
+router.param(
+	'bbid',
+	middleware.makeEntityLoader(
+		'Work',
+		['workType', 'languageSet.languages'],
+		'Work not found'
+	)
+);
+
+function _setWorkTitle(res) {
+	res.locals.title = utils.createEntityPageTitle(
+		res.locals.entity,
+		'Work',
+		utils.template`Work “${'name'}”`
+	);
+}
+
+router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+	_setWorkTitle(res);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+	_setWorkTitle(res);
+	entityRoutes.displayDeleteEntity(req, res);
+});
+
+router.post(
+	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {WorkHeader, WorkRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, WorkHeader, WorkRevision
+		);
+	}
+);
+
+router.get('/:bbid/revisions', (req, res, next) => {
+	const {WorkRevision} = req.app.locals.orm;
+	_setWorkTitle(res);
+	entityRoutes.displayRevisions(req, res, next, WorkRevision);
+});
+
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {WorkRevision} = req.app.locals.orm;
+	_setWorkTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
+});
+
 
 function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */
@@ -241,44 +288,6 @@ router.get(
 		}));
 	}
 );
-
-function transformNewForm(data) {
-	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
-	);
-
-	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
-	);
-
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
-	);
-
-	const languages = _.map(
-		data.workSection.languages, (language) => language.value
-	);
-
-	return {
-		aliases,
-		disambiguation: data.nameSection.disambiguation,
-		identifiers,
-		languages,
-		note: data.submissionSection.note,
-		relationships,
-		typeId: data.workSection.type
-	};
-}
-
-const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'work', transformNewForm, 'typeId'
-);
-const mergeHandler = makeEntityCreateOrEditHandler(
-	'work', transformNewForm, 'typeId', true
-);
-
-router.post('/create/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);

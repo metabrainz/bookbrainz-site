@@ -36,70 +36,65 @@ import express from 'express';
 import target from '../../templates/target';
 
 
-const router = express.Router();
+/** ****************************
+*********** Helpers ************
+*******************************/
 
-/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
-router.param(
-	'bbid',
-	middleware.redirectedBbid
-);
-router.param(
-	'bbid',
-	middleware.makeEntityLoader(
-		'Edition',
-		[
-			'editionGroup.defaultAlias',
-			'languageSet.languages',
-			'editionFormat',
-			'editionStatus',
-			'releaseEventSet.releaseEvents',
-			'publisherSet.publishers.defaultAlias'
-		],
-		'Edition not found'
-	)
-);
+const additionalEditionProps = [
+	'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
+	'formatId', 'statusId'
+];
 
-function _setEditionTitle(res) {
-	res.locals.title = utils.createEntityPageTitle(
-		res.locals.entity,
-		'Edition',
-		utils.template`Edition “${'name'}”`
+function transformNewForm(data) {
+	const aliases = entityRoutes.constructAliases(
+		data.aliasEditor, data.nameSection
 	);
-}
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
-	_setEditionTitle(res);
-	entityRoutes.displayEntity(req, res);
-});
+	const identifiers = entityRoutes.constructIdentifiers(
+		data.identifierEditor
+	);
 
-router.get('/:bbid/revisions', (req, res, next) => {
-	const {EditionRevision} = req.app.locals.orm;
-	_setEditionTitle(res);
-	entityRoutes.displayRevisions(req, res, next, EditionRevision);
-});
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
 
-router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const {EditionRevision} = req.app.locals.orm;
-	_setEditionTitle(res);
-	entityRoutes.updateDisplayedRevisions(req, res, next, EditionRevision);
-});
-
-
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
-	_setEditionTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
-});
-
-router.post(
-	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const {orm} = req.app.locals;
-		const {EditionHeader, EditionRevision} = orm;
-		return entityRoutes.handleDelete(
-			orm, req, res, EditionHeader, EditionRevision
-		);
+	let releaseEvents = [];
+	if (data.editionSection.releaseDate) {
+		releaseEvents = [{date: data.editionSection.releaseDate}];
 	}
-);
+
+	const languages = _.map(
+		data.editionSection.languages, (language) => language.value
+	);
+
+	return {
+		aliases,
+		depth: data.editionSection.depth &&
+			parseInt(data.editionSection.depth, 10),
+		disambiguation: data.nameSection.disambiguation,
+		editionGroupBbid: data.editionSection.editionGroup &&
+			data.editionSection.editionGroup.id,
+		formatId: data.editionSection.format &&
+			parseInt(data.editionSection.format, 10),
+		height: data.editionSection.height &&
+			parseInt(data.editionSection.height, 10),
+		identifiers,
+		languages,
+		note: data.submissionSection.note,
+		pages: data.editionSection.pages &&
+			parseInt(data.editionSection.pages, 10),
+		publishers: data.editionSection.publisher &&
+			[data.editionSection.publisher.id],
+		relationships,
+		releaseEvents,
+		statusId: data.editionSection.status &&
+			parseInt(data.editionSection.status, 10),
+		weight: data.editionSection.weight &&
+			parseInt(data.editionSection.weight, 10),
+		width: data.editionSection.width &&
+			parseInt(data.editionSection.width, 10)
+	};
+}
 
 function getInitialNameSection(entity) {
 	const initialNameSection = {
@@ -112,6 +107,19 @@ function getInitialNameSection(entity) {
 	};
 	return initialNameSection;
 }
+
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'edition', transformNewForm, additionalEditionProps
+);
+
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'edition', transformNewForm, additionalEditionProps, true
+);
+
+/** ****************************
+*********** Routes *************
+*******************************/
+const router = express.Router();
 
 // Creation
 
@@ -192,6 +200,72 @@ router.get(
 		Promise.props(propsPromise)
 			.then(render)
 			.catch(next);
+	}
+);
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
+router.param(
+	'bbid',
+	middleware.makeEntityLoader(
+		'Edition',
+		[
+			'editionGroup.defaultAlias',
+			'languageSet.languages',
+			'editionFormat',
+			'editionStatus',
+			'releaseEventSet.releaseEvents',
+			'publisherSet.publishers.defaultAlias'
+		],
+		'Edition not found'
+	)
+);
+
+function _setEditionTitle(res) {
+	res.locals.title = utils.createEntityPageTitle(
+		res.locals.entity,
+		'Edition',
+		utils.template`Edition “${'name'}”`
+	);
+}
+
+router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+	_setEditionTitle(res);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/revisions', (req, res, next) => {
+	const {EditionRevision} = req.app.locals.orm;
+	_setEditionTitle(res);
+	entityRoutes.displayRevisions(req, res, next, EditionRevision);
+});
+
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {EditionRevision} = req.app.locals.orm;
+	_setEditionTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, EditionRevision);
+});
+
+
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+	_setEditionTitle(res);
+	entityRoutes.displayDeleteEntity(req, res);
+});
+
+router.post(
+	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {EditionHeader, EditionRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, EditionHeader, EditionRevision
+		);
 	}
 );
 
@@ -314,72 +388,6 @@ router.get(
 		}));
 	}
 );
-
-function transformNewForm(data) {
-	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
-	);
-
-	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
-	);
-
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
-	);
-
-	let releaseEvents = [];
-	if (data.editionSection.releaseDate) {
-		releaseEvents = [{date: data.editionSection.releaseDate}];
-	}
-
-	const languages = _.map(
-		data.editionSection.languages, (language) => language.value
-	);
-
-	return {
-		aliases,
-		depth: data.editionSection.depth &&
-			parseInt(data.editionSection.depth, 10),
-		disambiguation: data.nameSection.disambiguation,
-		editionGroupBbid: data.editionSection.editionGroup &&
-			data.editionSection.editionGroup.id,
-		formatId: data.editionSection.format &&
-			parseInt(data.editionSection.format, 10),
-		height: data.editionSection.height &&
-			parseInt(data.editionSection.height, 10),
-		identifiers,
-		languages,
-		note: data.submissionSection.note,
-		pages: data.editionSection.pages &&
-			parseInt(data.editionSection.pages, 10),
-		publishers: data.editionSection.publisher &&
-			[data.editionSection.publisher.id],
-		relationships,
-		releaseEvents,
-		statusId: data.editionSection.status &&
-			parseInt(data.editionSection.status, 10),
-		weight: data.editionSection.weight &&
-			parseInt(data.editionSection.weight, 10),
-		width: data.editionSection.width &&
-			parseInt(data.editionSection.width, 10)
-	};
-}
-
-const additionalEditionProps = [
-	'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
-	'formatId', 'statusId'
-];
-
-const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'edition', transformNewForm, additionalEditionProps
-);
-const mergeHandler = makeEntityCreateOrEditHandler(
-	'edition', transformNewForm, additionalEditionProps, true
-);
-
-router.post('/create/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
