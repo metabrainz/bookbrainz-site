@@ -43,13 +43,13 @@ class UserCollectionForm extends React.Component {
 		this.handleRemoveCollaborator = this.handleRemoveCollaborator.bind(this);
 		this.handleChangeCollaborator = this.handleChangeCollaborator.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.valid = this.valid.bind(this);
+		this.isValid = this.isValid.bind(this);
 	}
 
 	handleSubmit(evt) {
 		evt.preventDefault();
 
-		if (!this.valid()) {
+		if (!this.isValid()) {
 			return;
 		}
 
@@ -78,11 +78,16 @@ class UserCollectionForm extends React.Component {
 			.send(data)
 			.promise()
 			.then((response) => {
-				window.location.href = `/collection/${response.body.id}`;
+				if (response.status === 200) {
+					window.location.href = `/collection/${response.body.id}`;
+				}
+				else {
+					// show error pagee
+				}
 			});
 	}
 
-	valid() {
+	isValid() {
 		return this.name.getValue() && this.type.getValue();
 	}
 
