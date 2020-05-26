@@ -194,10 +194,11 @@ export async function displayRevisions(
 ) {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-
+	const {orm}: any = req.app.locals;
+	const {bbid} = req.params;
 	try {
 		// get 1 more revision than required to check nextEnabled
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size + 1, RevisionModel, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size + 1, RevisionModel, bbid);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
@@ -234,9 +235,10 @@ export async function updateDisplayedRevisions(
 ) {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-
+	const {orm}: any = req.app.locals;
+	const {bbid} = req.params;
 	try {
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size, RevisionModel, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size, RevisionModel, bbid);
 		res.send(orderedRevisions);
 	}
 	catch (err) {
