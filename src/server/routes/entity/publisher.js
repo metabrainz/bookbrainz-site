@@ -32,7 +32,79 @@ import express from 'express';
 import target from '../../templates/target';
 
 
+/** ****************************
+*********** Helpers ************
+*******************************/
+
+
+const additionalPublisherProps = [
+	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
+];
+
+function transformNewForm(data) {
+	const aliases = entityRoutes.constructAliases(
+		data.aliasEditor, data.nameSection
+	);
+
+	const identifiers = entityRoutes.constructIdentifiers(
+		data.identifierEditor
+	);
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+	return {
+		aliases,
+		areaId: data.publisherSection.area && data.publisherSection.area.id,
+		beginDate: data.publisherSection.beginDate,
+		disambiguation: data.nameSection.disambiguation,
+		endDate: data.publisherSection.endDate ?
+			data.publisherSection.endDate : null,
+		ended: data.publisherSection.ended,
+		identifiers,
+		note: data.submissionSection.note,
+		relationships,
+		typeId: data.publisherSection.type
+	};
+}
+
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'publisher', transformNewForm, additionalPublisherProps
+);
+
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'publisher', transformNewForm, additionalPublisherProps, true
+);
+
+/** ****************************
+*********** Routes *************
+*******************************/
+
 const router = express.Router();
+
+// Creation
+
+router.get(
+	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
+	middleware.loadRelationshipTypes,
+	(req, res) => {
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
+			'publisher', req, res, {}
+		));
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
 
 /* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
 router.param(
@@ -109,25 +181,6 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, PublisherRevision);
 });
 
-// Creation
-
-router.get(
-	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadPublisherTypes,
-	middleware.loadRelationshipTypes,
-	(req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'publisher', req, res, {}
-		));
-
-		return res.send(target({
-			markup,
-			props: escapeProps(props),
-			script: '/js/entity-editor.js',
-			title: props.heading
-		}));
-	}
-);
 
 function publisherToFormState(publisher) {
 	/** The front-end expects a language id rather than the language object. */
@@ -219,47 +272,6 @@ router.get(
 	}
 );
 
-
-function transformNewForm(data) {
-	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
-	);
-
-	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
-	);
-
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
-	);
-	return {
-		aliases,
-		areaId: data.publisherSection.area && data.publisherSection.area.id,
-		beginDate: data.publisherSection.beginDate,
-		disambiguation: data.nameSection.disambiguation,
-		endDate: data.publisherSection.endDate ?
-			data.publisherSection.endDate : null,
-		ended: data.publisherSection.ended,
-		identifiers,
-		note: data.submissionSection.note,
-		relationships,
-		typeId: data.publisherSection.type
-	};
-}
-
-const additionalPublisherProps = [
-	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
-];
-
-const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'publisher', transformNewForm, additionalPublisherProps
-);
-const mergeHandler = makeEntityCreateOrEditHandler(
-	'publisher', transformNewForm, additionalPublisherProps, true
-);
-
-router.post('/create/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
