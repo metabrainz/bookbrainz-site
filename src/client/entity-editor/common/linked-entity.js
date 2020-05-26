@@ -19,10 +19,10 @@
 
 // @flow
 
+import {kebabCase as _kebabCase, has} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {kebabCase as _kebabCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
@@ -35,17 +35,19 @@ class LinkedEntity extends React.Component {
 	}
 
 	handleParentEvent(event) {
-		this.props.onSelect(this.props.option, event);
+		const option = this.getSafeOptionValue(this.props.option);
+		this.props.onSelect(option, event);
 	}
 
 	handleChildEvent(event) {
 		event.stopPropagation();
 		event.preventDefault();
 		let url = null;
-		const type = this.props.option && this.props.option.type;
-		const id = this.props.option && this.props.option.id;
+		const option = this.getSafeOptionValue(this.props.option);
+		const type = option && option.type;
+		const id = option && option.id;
 		if (type && id) {
-			url = type === 'Area' ?
+			url = type.toLowerCase() === 'area' ?
 				`//musicbrainz.org/area/${id}` :
 				`/${_kebabCase(type)}/${id}`;
 		}
@@ -54,8 +56,16 @@ class LinkedEntity extends React.Component {
 		}
 	}
 
+	getSafeOptionValue(optionToCheck) {
+		if (has(optionToCheck, 'value') && has(optionToCheck, 'label')) {
+			return optionToCheck.value;
+		}
+		return optionToCheck;
+	}
+
 	render() {
-		const {disambiguation, text, type, unnamedText, language} = this.props.option;
+		const option = this.getSafeOptionValue(this.props.option);
+		const {disambiguation, text, type, unnamedText, language} = option;
 
 		const nameComponent = text || <i>{unnamedText}</i>;
 
@@ -85,16 +95,12 @@ LinkedEntity.displayName = 'LinkedEntity';
 
 LinkedEntity.propTypes = {
 	className: PropTypes.string,
-	disambiguation: PropTypes.string,
 	onSelect: PropTypes.func.isRequired,
-	option: PropTypes.object.isRequired,
-	unnamedText: PropTypes.string
+	option: PropTypes.object.isRequired
 };
 
 LinkedEntity.defaultProps = {
-	className: null,
-	disambiguation: null,
-	unnamedText: '(unnamed)'
+	className: ''
 };
 
 export default LinkedEntity;

@@ -25,6 +25,7 @@ const clientConfig = {
 		'editor/editor': ['./controllers/editor/editor.js'],
 		'entity/entity': ['./controllers/entity/entity.js'],
 		'entity-editor': ['./entity-editor/controller.js'],
+		'entity-merge': ['./entity-editor/entity-merge.js'],
 		style: './stylesheets/style.less'
 	},
 	output: {

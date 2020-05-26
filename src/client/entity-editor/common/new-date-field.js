@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import {Button, FormControl, InputGroup} from 'react-bootstrap';
-import {dateObjectToISOString, getTodayDate} from '../../helpers/utils';
+import {ISODateStringToObject, dateObjectToISOString, getTodayDate} from '../../helpers/utils';
 import {isValid, parseISO} from 'date-fns';
 import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
@@ -17,7 +17,7 @@ class DateField extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const {day, month, year} = this.props.defaultValue;
+		const {day, month, year} = ISODateStringToObject(this.props.defaultValue);
 		this.state = {
 			day: !day ? '' : this.padMonthOrDay(day),
 			month: !month ? '' : this.padMonthOrDay(month),
@@ -27,11 +27,9 @@ class DateField extends React.Component {
 	}
 
 	updateDate = (day, month, year) => {
-		this.props.onChangeDate({
-			day: !day ? '' : day,
-			month: !month ? '' : month,
-			year: !year ? '' : year
-		});
+		this.props.onChangeDate(
+			dateObjectToISOString({day, month, year})
+		);
 
 		this.setState({warn: dateIsBefore(getTodayDate(), {day, month, year})});
 	};
@@ -198,7 +196,7 @@ class DateField extends React.Component {
 }
 
 DateField.propTypes = {
-	defaultValue: PropTypes.object,
+	defaultValue: PropTypes.string,
 	empty: PropTypes.bool.isRequired,
 	error: PropTypes.bool.isRequired,
 	errorMessage: PropTypes.string,
@@ -207,7 +205,7 @@ DateField.propTypes = {
 	show: PropTypes.bool.isRequired
 };
 DateField.defaultProps = {
-	defaultValue: {day: '', month: '', year: ''},
+	defaultValue: '',
 	errorMessage: null
 };
 

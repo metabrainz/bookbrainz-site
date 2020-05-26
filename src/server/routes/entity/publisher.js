@@ -22,8 +22,6 @@ import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 import {
-	ISODateStringToObject,
-	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -34,9 +32,85 @@ import express from 'express';
 import target from '../../templates/target';
 
 
+/** ****************************
+*********** Helpers ************
+*******************************/
+
+
+const additionalPublisherProps = [
+	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
+];
+
+function transformNewForm(data) {
+	const aliases = entityRoutes.constructAliases(
+		data.aliasEditor, data.nameSection
+	);
+
+	const identifiers = entityRoutes.constructIdentifiers(
+		data.identifierEditor
+	);
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+	return {
+		aliases,
+		areaId: data.publisherSection.area && data.publisherSection.area.id,
+		beginDate: data.publisherSection.beginDate,
+		disambiguation: data.nameSection.disambiguation,
+		endDate: data.publisherSection.endDate ?
+			data.publisherSection.endDate : null,
+		ended: data.publisherSection.ended,
+		identifiers,
+		note: data.submissionSection.note,
+		relationships,
+		typeId: data.publisherSection.type
+	};
+}
+
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'publisher', transformNewForm, additionalPublisherProps
+);
+
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'publisher', transformNewForm, additionalPublisherProps, true
+);
+
+/** ****************************
+*********** Routes *************
+*******************************/
+
 const router = express.Router();
 
-/* If the route specifies a BBID, load the Publisher for it. */
+// Creation
+
+router.get(
+	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
+	middleware.loadRelationshipTypes,
+	(req, res) => {
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
+			'publisher', req, res, {}
+		));
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
+
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
@@ -107,25 +181,6 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, PublisherRevision);
 });
 
-// Creation
-
-router.get(
-	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadPublisherTypes,
-	middleware.loadRelationshipTypes,
-	(req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'publisher', req, res, {}
-		));
-
-		return res.send(target({
-			markup,
-			props: escapeProps(props),
-			script: '/js/entity-editor.js',
-			title: props.heading
-		}));
-	}
-);
 
 function publisherToFormState(publisher) {
 	/** The front-end expects a language id rather than the language object. */
@@ -167,12 +222,13 @@ function publisherToFormState(publisher) {
 
 	const publisherSection = {
 		area: entityRoutes.areaToOption(publisher.area),
-		beginDate: ISODateStringToObject(publisher.beginDate),
-		endDate: ISODateStringToObject(publisher.endDate),
+		beginDate: publisher.beginDate,
+		endDate: publisher.endDate,
 		ended: publisher.ended,
 		type: publisher.publisherType && publisher.publisherType.id
 	};
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
@@ -217,46 +273,10 @@ router.get(
 );
 
 
-function transformNewForm(data) {
-	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
-	);
-
-	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
-	);
-
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
-	);
-	return {
-		aliases,
-		areaId: data.publisherSection.area && data.publisherSection.area.id,
-		beginDate: data.publisherSection.beginDate ?
-			dateObjectToISOString(data.publisherSection.beginDate) : '',
-		disambiguation: data.nameSection.disambiguation,
-		endDate: data.publisherSection.endDate ?
-			dateObjectToISOString(data.publisherSection.endDate) : '',
-		ended: data.publisherSection.ended,
-		identifiers,
-		note: data.submissionSection.note,
-		relationships,
-		typeId: data.publisherSection.type
-	};
-}
-
-const additionalPublisherProps = [
-	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
-];
-
-const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'publisher', transformNewForm, additionalPublisherProps
-);
-
-router.post('/create/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
-
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;

@@ -39,7 +39,7 @@ import type {Map} from 'immutable';
 import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
-import {convertMapToObject} from '../../helpers/utils';
+import {isNullDate} from '../../helpers/utils';
 
 
 type PublisherType = {
@@ -57,8 +57,8 @@ type Area = {
 
 type StateProps = {
 	areaValue: Map<string, any>,
-	beginDateValue: object,
-	endDateValue: object,
+	beginDateValue: string,
+	endDateValue: string,
 	endedChecked: boolean,
 	typeValue: number
 };
@@ -127,7 +127,7 @@ function PublisherSection({
 	}));
 
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
-	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue);
+	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 	return (
 		<form>
 			<h2>
@@ -166,7 +166,7 @@ function PublisherSection({
 					<DateField
 						show
 						defaultValue={beginDateValue}
-						empty={!beginDateValue.day && !beginDateValue.month && !beginDateValue.year}
+						empty={isNullDate(beginDateValue)}
 						error={!isValidBeginDate}
 						errorMessage={errorMessageBeginDate}
 						label="Date Founded"
@@ -190,7 +190,7 @@ function PublisherSection({
 							<DateField
 								show
 								defaultValue={endDateValue}
-								empty={!endDateValue.day && !endDateValue.month && !endDateValue.year}
+								empty={isNullDate(endDateValue)}
 								error={!isValidEndDate}
 								errorMessage={errorMessageEndDate}
 								label="Date Dissolved"
@@ -211,8 +211,8 @@ function mapStateToProps(rootState): StateProps {
 
 	return {
 		areaValue: state.get('area'),
-		beginDateValue: convertMapToObject(state.get('beginDate')),
-		endDateValue: convertMapToObject(state.get('endDate')),
+		beginDateValue: state.get('beginDate'),
+		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
 		typeValue: state.get('type')
 	};

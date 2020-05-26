@@ -47,8 +47,7 @@ function reducer(
 		case UPDATE_END_DATE:
 			return state.set('endDate', Immutable.fromJS(payload));
 		case UPDATE_ENDED:
-			return state.set('ended', payload)
-				.set('endDate', Immutable.fromJS(payload));
+			return state.set('ended', payload);
 		// no default
 	}
 	return state;
