@@ -168,19 +168,18 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
 	return orderedRevisions;
 }
 
-export async function getOrderedRevisionsForEntityPage(from, size, RevisionModel, req) {
-	const {orm} = req.app.locals;
+export async function getOrderedRevisionsForEntityPage(orm, from, size, RevisionModel, bbid) {
 	let otherMergedBBIDs = await orm.bookshelf.knex
 		.select('source_bbid')
 		.from('bookbrainz.entity_redirect')
-		.where('target_bbid', req.params.bbid);
+		.where('target_bbid', bbid);
 
 	// Flatten the returned array of objects
 	otherMergedBBIDs = flatMap(otherMergedBBIDs, 'source_bbid');
 
 	const revisions = await new RevisionModel()
 		.query((qb) => {
-			qb.whereIn('bbid', [req.params.bbid, ...otherMergedBBIDs]);
+			qb.whereIn('bbid', [bbid, ...otherMergedBBIDs]);
 			qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
 			qb.orderBy('revision.created_at', 'DESC');
 		}).fetchPage({
