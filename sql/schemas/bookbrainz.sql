@@ -705,14 +705,22 @@ ALTER TABLE bookbrainz.user_collection ADD FOREIGN KEY (owner_id) REFERENCES boo
 CREATE TABLE bookbrainz.user_collection_item (
 	collection_id UUID,
 	bbid UUID,
-	added_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	added_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	PRIMARY KEY (
+		bbid,
+		collection_id
+	)
 );
 ALTER TABLE bookbrainz.user_collection_item ADD FOREIGN KEY (collection_id) REFERENCES bookbrainz.user_collection (id);
 ALTER TABLE bookbrainz.user_collection_item ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.user_collection_collaborator (
 	collection_id UUID,
-	editor_id INT
+	editor_id INT,
+	PRIMARY KEY (
+		collection_id,
+    	editor_id
+	)
 );
 ALTER TABLE bookbrainz.user_collection_collaborator ADD FOREIGN KEY (collection_id) REFERENCES bookbrainz.user_collection (id);
 ALTER TABLE bookbrainz.user_collection_collaborator ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
