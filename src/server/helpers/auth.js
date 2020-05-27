@@ -139,7 +139,7 @@ export function isAuthenticatedForHandler(req, res, next) {
 }
 
 export function isCollectionOwner(req, res, next) {
-	if (req.user.id === res.locals.collection.editorId) {
+	if (req.user.id === res.locals.collection.ownerId) {
 		return next();
 	}
 

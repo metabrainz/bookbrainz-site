@@ -28,7 +28,7 @@ export async function makeCollectionCreateOrEditHandler(req, res) {
 	let method;
 	if (isNew) {
 		newCollection = await new UserCollection({
-			editorId: req.user.id
+			ownerId: req.user.id
 		});
 		method = 'insert';
 	}
@@ -41,7 +41,7 @@ export async function makeCollectionCreateOrEditHandler(req, res) {
 	newCollection.set('description', req.body.description);
 	newCollection.set('name', req.body.name);
 	newCollection.set('public', req.body.privacy === 'Public');
-	newCollection.set('type', req.body.type);
+	newCollection.set('entity_type', _.upperFirst(_.camelCase(req.body.entityType)));
 	await newCollection.save(null, {method});
 
 	const oldCollaborators = res.locals.collection ? res.locals.collection.collaborators : [];
@@ -51,7 +51,6 @@ export async function makeCollectionCreateOrEditHandler(req, res) {
 	const removedCollaborators = _.differenceWith(oldCollaborators, newCollaborators, _.isEqual);
 
 	const collaboratorPromises = [];
-
 	newlyAddedCollaborators.forEach((collaborator) => {
 		collaboratorPromises.push(
 			new UserCollectionCollaborator({
