@@ -33,7 +33,7 @@ function MergeQueue({mergeQueue}) {
 	if (isNil(mergeQueue)) {
 		return null;
 	}
-	const {mergingEntities} = mergeQueue;
+	const {mergingEntities, target} = mergeQueue;
 	const entityCount = size(mergingEntities);
 	let entityList;
 	if (entityCount === 0) {
@@ -42,28 +42,40 @@ function MergeQueue({mergeQueue}) {
 	else {
 		entityList = (
 			<ListGroup>
-				{values(mergingEntities).map(entity => {
-					const entityForDisplay = {
-						link: getEntityLink({bbid: entity.bbid, type: entity.type}),
-						text: get(entity, ['defaultAlias', 'name']),
-						type: entity.type,
-						unnamedText: '(unnamed)'
-					};
-					return (
-						<ListGroupItem key={`merge-queue-${entity.bbid}`}>
-							<Button
-								bsSize="sm"
-								bsStyle="link"
-								className="margin-right-1"
-								href={`/merge/remove/${entity.bbid}`}
-								title="Remove from merge"
-							>
-								<FontAwesomeIcon icon="trash-alt"/>
-							</Button>
-							<Entity {...entityForDisplay}/>
-						</ListGroupItem>
-					);
-				})}
+				{values(mergingEntities)
+					.sort((first, second) => {
+						if (first.bbid === target) { return -1; }
+						else if (second.bbid === target) { return 1; }
+						return 0;
+					})
+					.map(entity => {
+						const entityForDisplay = {
+							link: getEntityLink({bbid: entity.bbid, type: entity.type}),
+							text: get(entity, ['defaultAlias', 'name']),
+							type: entity.type,
+							unnamedText: '(unnamed)'
+						};
+						return (
+							<ListGroupItem key={`merge-queue-${entity.bbid}`}>
+								<Button
+									bsSize="sm" bsStyle="link"
+									disabled={entity.bbid === target}
+									href={`/merge/into/${entity.bbid}`}
+									title="Select as target"
+								>
+									<FontAwesomeIcon icon="angle-double-up"/>
+								</Button>
+								<Entity key={`merge-queue-entity-${entity.bbid}`} {...entityForDisplay}/>
+								<Button
+									bsSize="sm" bsStyle="link"
+									href={`/merge/remove/${entity.bbid}`}
+									title="Remove from merge"
+								>
+									<FontAwesomeIcon icon="trash-alt"/>
+								</Button>
+							</ListGroupItem>
+						);
+					})}
 			</ListGroup>
 		);
 	}
