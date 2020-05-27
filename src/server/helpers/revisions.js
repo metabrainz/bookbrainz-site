@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
 import * as error from '../../common/helpers/error';
 import {flatMap} from 'lodash';
 
@@ -168,14 +169,37 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
 	return orderedRevisions;
 }
 
-export async function getOrderedRevisionsForEntityPage(orm, from, size, RevisionModel, bbid) {
-	let otherMergedBBIDs = await orm.bookshelf.knex
-		.select('source_bbid')
-		.from('bookbrainz.entity_redirect')
-		.where('target_bbid', bbid);
 
-	// Flatten the returned array of objects
-	otherMergedBBIDs = flatMap(otherMergedBBIDs, 'source_bbid');
+/**
+ * @name recursivelyGetMergedEntitiesBBIDs
+ * @async
+ * @param {*} orm - The BookshelfJS ORM object
+ * @param {array} bbids - Array of target BBIDs we want to get the source BBID of (if they exist)
+ * @returns {Promise<Array<string>>} - Returns a promise resolving to an recursed array of BBIDs containing all descendants
+ * @description This recursive function fetches all the merged BBIDs that are pointing to an array of BBIDs
+ * An example; if entity A was merged into entity B, BBID A will point to BBID B.
+ * Now if entity B is merged in entity C, BBID B will point to BBID C.
+ * To allow for reverting merges cleanly, BBID A still points to B and not C (trust me on this).
+ * In order to fetch the complete history tree containing all three entities, we need to recursively check
+ * if a source_bbid appears as a target_bbid in other rows.
+ */
+async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
+	const returnValue: string[] = [];
+	await Promise.all(bbids.map(async (bbid) => {
+		let thisLevelBBIDs = await orm.bookshelf.knex
+			.select('source_bbid')
+			.from('bookbrainz.entity_redirect')
+			.where('target_bbid', bbid);
+			// Flatten the returned array of objects
+		thisLevelBBIDs = flatMap(thisLevelBBIDs, 'source_bbid');
+		const nextLevelBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, thisLevelBBIDs);
+		returnValue.push(...thisLevelBBIDs, ...nextLevelBBIDs);
+	}));
+	return returnValue;
+}
+
+export async function getOrderedRevisionsForEntityPage(orm: any, from: number, size: number, RevisionModel, bbid: string) {
+	const otherMergedBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, [bbid]);
 
 	const revisions = await new RevisionModel()
 		.query((qb) => {
@@ -208,3 +232,4 @@ export async function getOrderedRevisionsForEntityPage(orm, from, size, Revision
 	});
 	return orderedRevisions;
 }
+

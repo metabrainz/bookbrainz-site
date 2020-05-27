@@ -599,6 +599,7 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		});
 	});
 
+	/* eslint-disable camelcase */
 	it('should return revisions of merged entities', async () => {
 		const author1 = await createAuthor();
 		const author2 = await createAuthor();
@@ -608,9 +609,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const revisionID1 = author1JSON.revisionId;
 		const revisionID2 = author2JSON.revisionId;
 
-		// Let's pretend author2 was merged into author1 it was merged
+		// Let's pretend author2 was merged into author1
 		await orm.bookshelf.knex('bookbrainz.entity_redirect')
-			// eslint-disable-next-line camelcase
 			.insert({source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid});
 
 		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, author1JSON.bbid);
@@ -618,5 +618,32 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		expect(orderedRevision.length).to.be.equal(2);
 		expect(orderedRevision[0].revisionId).to.be.equal(revisionID2);
 		expect(orderedRevision[1].revisionId).to.be.equal(revisionID1);
+	});
+
+	it('should return revisions of previously merged entities recursively', async () => {
+		const author1 = await createAuthor();
+		const author2 = await createAuthor();
+		const author3 = await createAuthor();
+		const author1JSON = await author1.toJSON();
+		const author2JSON = await author2.toJSON();
+		const author3JSON = await author3.toJSON();
+		// revision created while create author
+		const revisionID1 = author1JSON.revisionId;
+		const revisionID2 = author2JSON.revisionId;
+		const revisionID3 = author3JSON.revisionId;
+
+		// Let's pretend author3 was merged into author2 and author2 was merged into author1
+		await orm.bookshelf.knex('bookbrainz.entity_redirect')
+			.insert([
+				{source_bbid: author3JSON.bbid, target_bbid: author2JSON.bbid},
+				{source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid}
+			]);
+
+		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, author1JSON.bbid);
+
+		expect(orderedRevision.length).to.be.equal(3);
+		expect(orderedRevision[0].revisionId).to.be.equal(revisionID3);
+		expect(orderedRevision[1].revisionId).to.be.equal(revisionID2);
+		expect(orderedRevision[2].revisionId).to.be.equal(revisionID1);
 	});
 });
