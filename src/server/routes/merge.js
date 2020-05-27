@@ -37,7 +37,7 @@ import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
 import renderRelationship from '../helpers/render';
-import target from '../templates/target';
+import targetTemplate from '../templates/target';
 
 
 const router = express.Router();
@@ -236,7 +236,8 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		if (!mergeQueue) {
 			mergeQueue = {
 				entityType: '',
-				mergingEntities: {}
+				mergingEntities: {},
+				target: req.params.bbid
 			};
 			req.session.mergeQueue = mergeQueue;
 		}
@@ -277,14 +278,45 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 			res.redirect(req.headers.referer);
 			return;
 		}
-		const {mergingEntities} = mergeQueue;
+		const {mergingEntities, target} = mergeQueue;
 
 		delete mergingEntities[req.params.bbid];
 
 		/* If there's only one item in the queue, delete the queue entirely */
-		if (Object.keys(mergingEntities).length === 0) {
+		const mergingBBIDs = Object.keys(mergingEntities);
+		if (mergingBBIDs.length === 0) {
 			req.session.mergeQueue = null;
 		}
+		else if (target === req.params.bbid) {
+			/* If we just deleted the merge target, select another one */
+			mergeQueue.target = mergingBBIDs[0];
+		}
+		res.redirect(req.headers.referer);
+	});
+
+/**
+ * Select the entity to merge into by BBID
+ */
+router.get('/into/:bbid', auth.isAuthenticated,
+	(req, res, next) => {
+		if (_.isNil(req.params.bbid) ||
+		!commonUtils.isValidBBID(req.params.bbid)) {
+			next(new BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
+			return;
+		}
+		const {mergeQueue} = req.session;
+		if (!mergeQueue) {
+			res.redirect(req.headers.referer);
+			return;
+		}
+		const {mergingEntities} = mergeQueue;
+
+		if (!_.has(mergingEntities, req.params.bbid)) {
+			next(new BadRequestError(`Merge queue does not contain bbid: ${req.params.bbid}`, req));
+			return;
+		}
+
+		mergeQueue.target = req.params.bbid;
 
 		res.redirect(req.headers.referer);
 	});
@@ -305,7 +337,8 @@ router.get('/submit', auth.isAuthenticated,
 		if (!mergeQueue) {
 			return next(new ConflictError('No entities selected for merge'));
 		}
-		const {mergingEntities} = mergeQueue;
+		const {mergingEntities, entityType} = mergeQueue;
+		let {target} = mergeQueue;
 		const bbids = Object.keys(mergingEntities);
 		if (bbids.length < 2) {
 			return next(new ConflictError('You must have at least 2 entities selected to merge'));
@@ -316,6 +349,9 @@ router.get('/submit', auth.isAuthenticated,
 		}
 
 		let mergingFetchedEntities = _.values(mergingEntities);
+		if (_.isNil(target)) {
+			target = bbids[0];
+		}
 
 		if (!_.uniqBy(mergingFetchedEntities, 'type').length === 1) {
 			const conflictError = new ConflictError('You can only merge entities of the same type');
@@ -342,7 +378,11 @@ router.get('/submit', auth.isAuthenticated,
 			return next(conflictError);
 		}
 
-		const {entityType} = mergeQueue;
+		mergingFetchedEntities.sort((first, second) => {
+			if (first.bbid === target) { return -1; }
+			else if (second.bbid === target) { return 1; }
+			return 0;
+		});
 		res.locals.entity = mergingFetchedEntities[0];
 
 		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
@@ -354,7 +394,7 @@ router.get('/submit', auth.isAuthenticated,
 			, entitiesToFormState
 		));
 
-		return res.send(target({
+		return res.send(targetTemplate({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
