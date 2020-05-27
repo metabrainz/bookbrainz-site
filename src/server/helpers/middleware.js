@@ -184,12 +184,12 @@ export function makeCollectionLoader() {
 			try {
 				const collection = await new UserCollection({id: collectionId}).fetch({
 					require: true,
-					withRelated: ['collaborators.collaboratorDetails']
+					withRelated: ['collaborators.collaborator', 'items']
 				});
 				const collectionJSON = collection.toJSON();
 				collectionJSON.collaborators = collectionJSON.collaborators.map((collaborator) => ({
-					id: collaborator.collaboratorDetails.id,
-					text: collaborator.collaboratorDetails.name
+					id: collaborator.collaborator.id,
+					text: collaborator.collaborator.name
 				}));
 				res.locals.collection = collectionJSON;
 				return next();

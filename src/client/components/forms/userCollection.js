@@ -57,14 +57,14 @@ class UserCollectionForm extends React.Component {
 		const description = this.description.getValue();
 		const name = this.name.getValue();
 		const privacy = this.privacy.getValue();
-		const type = this.type.getValue();
+		const entityType = this.entityType.getValue();
 
 		const data = {
 			collaborators,
 			description,
+			entityType,
 			name,
-			privacy,
-			type
+			privacy
 		};
 
 		let submissionURL;
@@ -83,12 +83,13 @@ class UserCollectionForm extends React.Component {
 				}
 				else {
 					// show error pagee
+					window.location.href = '/wronlsjgl';
 				}
 			});
 	}
 
 	isValid() {
-		return this.name.getValue() && this.type.getValue();
+		return this.name.getValue() && this.entityType.getValue();
 	}
 
 	getCleanedCollaborators() {
@@ -150,18 +151,19 @@ class UserCollectionForm extends React.Component {
 		const privacyOptions = ['Private', 'Public'].map((option) => ({
 			name: option
 		}));
-		const typeOptions = ['Author', 'Work', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
+		const entityTypeOptions = ['Author', 'Work', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
 			name: entity
 		}));
 		const initialName = this.state.collection.name;
 		const initialDescription = this.state.collection.description;
 		const initialPrivacy = this.state.collection.public ? 'Public' : 'Private';
-		const initialType = this.state.collection.type;
+		const initialType = this.state.collection.entityType;
+		const canEdit = this.props.canEditType;
 
 		/* eslint-disable react/jsx-no-bind */
 		return (
 			<Grid>
-				<h1>Create a collection</h1>
+				<h1>Create a collection {canEdit}</h1>
 				<Row>
 					<Col md={12}>
 						<p className="lead">Create Your Collection</p>
@@ -190,14 +192,15 @@ class UserCollectionForm extends React.Component {
 								type="textarea"
 							/>
 							<SelectWrapper
+								isDisabled
 								base={ReactSelect}
 								defaultValue={initialType}
 								idAttribute="name"
-								label="Type"
+								label="Entity Type"
 								labelAttribute="name"
-								options={typeOptions}
-								placeholder="Select Type"
-								ref={(ref) => this.type = ref}
+								options={entityTypeOptions}
+								placeholder="Select Entity Type"
+								ref={(ref) => this.entityType = ref}
 							/>
 							<SelectWrapper
 								base={ReactSelect}
@@ -256,25 +259,27 @@ class UserCollectionForm extends React.Component {
 
 UserCollectionForm.displayName = 'UserCollectionForm';
 UserCollectionForm.propTypes = {
+	canEditType: PropTypes.bool,
 	collection: PropTypes.shape({
 		collaborators: PropTypes.array,
 		description: PropTypes.string,
+		entityType: PropTypes.string,
 		id: PropTypes.string,
 		isEdit: PropTypes.bool,
 		name: PropTypes.string,
-		public: PropTypes.bool,
-		type: PropTypes.string
+		public: PropTypes.bool
 	})
 };
 UserCollectionForm.defaultProps = {
+	canEditType: true,
 	collection: {
 		collaborators: [],
 		description: '',
+		entityType: null,
 		id: null,
 		isEdit: false,
 		name: null,
-		public: false,
-		type: null
+		public: false
 	}
 };
 

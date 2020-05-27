@@ -59,9 +59,11 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 		collection
 	});
 	const script = '/js/collection/create.js';
+	const canEditType = collection.items.length === 0;
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
 			<UserCollectionForm
+				canEditType={canEditType}
 				collection={props.collection}
 			/>
 		</Layout>
