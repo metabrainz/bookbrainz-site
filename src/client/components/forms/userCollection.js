@@ -24,17 +24,19 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
+import classNames from 'classnames';
 import request from 'superagent-bluebird-promise';
 
 
-const {Button, Col, Grid, Row} = bootstrap;
+const {Alert, Button, Col, Grid, Row} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			collection: props.collection
+			collection: props.collection,
+			errorText: null
 		};
 
 		// React does not autobind non-React class methods
@@ -50,6 +52,10 @@ class UserCollectionForm extends React.Component {
 		evt.preventDefault();
 
 		if (!this.isValid()) {
+			this.setState(prevState => ({
+				collection: prevState.collection,
+				errorText: 'Incomplete Form'
+			}));
 			return;
 		}
 
@@ -77,13 +83,15 @@ class UserCollectionForm extends React.Component {
 		request.post(submissionURL)
 			.send(data)
 			.promise()
-			.then((response) => {
-				if (response.status === 200) {
-					window.location.href = `/collection/${response.body.id}`;
+			.then((res) => {
+				if (res.status === 200) {
+					window.location.href = `/collection/${res.body.id}`;
 				}
 				else {
-					// show error pagee
-					window.location.href = '/wronlsjgl';
+					this.setState(prevState => ({
+						collection: prevState.collection,
+						errorText: `Internal Error: ${res.body.error}`
+					}));
 				}
 			});
 	}
@@ -107,7 +115,8 @@ class UserCollectionForm extends React.Component {
 			collection: {
 				...prevState.collection,
 				collaborators: newCollaborators
-			}
+			},
+			errorText: prevState.errorText
 		}));
 	}
 
@@ -118,7 +127,8 @@ class UserCollectionForm extends React.Component {
 			collection: {
 				...prevState.collection,
 				collaborators: newCollaborators
-			}
+			},
+			errorText: prevState.errorText
 		}));
 	}
 
@@ -139,7 +149,8 @@ class UserCollectionForm extends React.Component {
 			collection: {
 				...prevState.collection,
 				collaborators: newCollaborators
-			}
+			},
+			errorText: prevState.errorText
 		}));
 	}
 
@@ -159,6 +170,10 @@ class UserCollectionForm extends React.Component {
 		const initialPrivacy = this.state.collection.public ? 'Public' : 'Private';
 		const initialType = this.state.collection.entityType;
 		const canEdit = this.props.canEditType;
+		const {errorText} = this.state;
+		const errorAlertClass =
+			classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		const submitLabel = this.props.collection.name ? 'UPDATE' : 'CREATE';
 
 		/* eslint-disable react/jsx-no-bind */
 		return (
@@ -246,13 +261,17 @@ class UserCollectionForm extends React.Component {
 									bsStyle="primary"
 									type="submit"
 								>
-									Create
+									{submitLabel}
 								</Button>
 							</div>
 						</form>
 					</Col>
 				</Row>
+				<div className={errorAlertClass}>
+					<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
+				</div>
 			</Grid>
+
 		);
 	}
 }
