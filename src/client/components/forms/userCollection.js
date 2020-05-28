@@ -169,7 +169,6 @@ class UserCollectionForm extends React.Component {
 		const initialDescription = this.state.collection.description;
 		const initialPrivacy = this.state.collection.public ? 'Public' : 'Private';
 		const initialType = this.state.collection.entityType;
-		const canEdit = this.props.canEditType;
 		const {errorText} = this.state;
 		const errorAlertClass =
 			classNames('text-center', 'margin-top-1', {hidden: !errorText});
@@ -178,7 +177,7 @@ class UserCollectionForm extends React.Component {
 		/* eslint-disable react/jsx-no-bind */
 		return (
 			<Grid>
-				<h1>Create a collection {canEdit}</h1>
+				<h1>Create a collection</h1>
 				<Row>
 					<Col md={12}>
 						<p className="lead">Create Your Collection</p>
@@ -187,8 +186,8 @@ class UserCollectionForm extends React.Component {
 				<Row>
 					<Col
 						id="collectionForm"
-						md={6}
-						mdOffset={3}
+						md={8}
+						mdOffset={2}
 					>
 						<form
 							className="form-horizontal"
@@ -207,9 +206,9 @@ class UserCollectionForm extends React.Component {
 								type="textarea"
 							/>
 							<SelectWrapper
-								isDisabled
 								base={ReactSelect}
 								defaultValue={initialType}
+								disabled={!this.props.canEditType}
 								idAttribute="name"
 								label="Entity Type"
 								labelAttribute="name"
@@ -249,13 +248,15 @@ class UserCollectionForm extends React.Component {
 									</div>
 								))
 							}
-							<Button
-								type="button"
-								onClick={this.handleAddCollaborator}
-							>
-								Add Collaborator
-							</Button>
-							<div className="form-group text-center">
+							<div className="text-center">
+								<Button
+									type="button"
+									onClick={this.handleAddCollaborator}
+								>
+									Add Collaborator
+								</Button>
+							</div>
+							<div className="form-group text-center margin-top-1">
 								<Button
 									bsSize="large"
 									bsStyle="primary"
