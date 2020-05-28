@@ -76,5 +76,8 @@ typings/
 # Tern analysis server config
 .tern-project
 
+# IntelliJ project files
+.idea/
+
 # Visual Studio Code config files
 .vscode
