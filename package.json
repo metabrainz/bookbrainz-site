@@ -85,8 +85,7 @@
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.3",
     "serve-static": "^1.13.2",
-    "superagent": "^3.8.2",
-    "superagent-bluebird-promise": "^4.1.0",
+    "superagent": "^5.2.2",
     "validator": "^9.1.2"
   },
   "devDependencies": {

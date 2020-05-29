@@ -24,7 +24,7 @@ import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Alert, Button, Col, Row, Panel} = bootstrap;

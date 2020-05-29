@@ -23,7 +23,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
 import _ from 'lodash';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 class EntitySearch extends React.Component {

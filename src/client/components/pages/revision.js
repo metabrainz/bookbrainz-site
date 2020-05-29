@@ -27,7 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
@@ -143,7 +143,7 @@ class RevisionPage extends React.Component {
 			note: this.noteInput.getValue()
 		};
 		request.post(`/revision/${this.props.revision.id}/note`)
-			.send(data).promise()
+			.send(data)
 			.then(() => {
 				location.reload();
 			})
@@ -153,7 +153,6 @@ class RevisionPage extends React.Component {
 				return error;
 			});
 	}
-
 
 	render() {
 		const {revision, diffs, user} = this.props;

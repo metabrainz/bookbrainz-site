@@ -19,7 +19,7 @@
 // @flow
 
 import {snakeCase as _snakeCase, uniqBy} from 'lodash';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 export const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
