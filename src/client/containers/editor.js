@@ -71,6 +71,12 @@ function EditorContainer(props) {
 						>
 							Achievements
 						</NavItem>
+						<NavItem
+							active={tabActive === 3}
+							href={`/editor/${editor.id}/collections`}
+						>
+							Collections
+						</NavItem>
 					</Nav>
 				</Col>
 			</Row>
