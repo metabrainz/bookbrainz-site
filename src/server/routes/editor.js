@@ -26,6 +26,7 @@ import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
+import EditorCollectionsPage from '../../client/components/pages/editor-collections';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
@@ -368,6 +369,93 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	}
 });
 
+async function getOrderedCollections(from, size, req) {
+	const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
+
+	const otherCollections = await new UserCollectionCollaborator({editorId: req.params.id}).fetchAll();
+	const otherCollectionsJSON = otherCollections ? otherCollections.toJSON() : [];
+	const collectionIds = otherCollectionsJSON.map((collection) => collection.collectionId);
+
+	const isThisCurrentUser = req.user && parseInt(req.params.id, 10) === parseInt(req.user.id, 10);
+
+	const allCollections = await new UserCollection()
+		.query((qb) => {
+			if (!isThisCurrentUser) {
+				qb.where('public', true);
+			}
+			qb.whereIn('id', collectionIds)
+				.orWhere('owner_id', req.params.id);
+			qb.orderBy('name');
+		}).fetchPage({
+			limit: size,
+			offset: from,
+			withRelated: [
+				'items'
+			]
+		});
+
+	const collectionsJSON = allCollections ? allCollections.toJSON() : [];
+	return collectionsJSON;
+}
+
+// eslint-disable-next-line consistent-return
+router.get('/:id/collections', async (req, res, next) => {
+	const {Editor, TitleUnlock} = req.app.locals.orm;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	try {
+		const orderedCollections = await getOrderedCollections(from, size + 1, req);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
+		const editor = await new Editor({id: req.params.id}).fetch();
+		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
+
+		const props = generateProps(req, res, {
+			editor: editorJSON,
+			from,
+			nextEnabled,
+			results: newResultsArray,
+			size,
+			tabActive: 3,
+			tableHeading: 'Collections'
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<EditorCollectionsPage
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
+
+		res.send(target({
+			markup,
+			page: 'collections',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Collections`
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
+});
+
+// eslint-disable-next-line consistent-return
+router.get('/:id/collections/collections', async (req, res, next) => {
+	try {
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		const orderedCollections = await getOrderedCollections(from, size, req);
+		res.send(orderedCollections);
+	}
+	catch (err) {
+		return next(err);
+	}
+});
 
 function setAchievementUnlockedField(achievements, unlockIds) {
 	const model = achievements.map((achievementType) => {
