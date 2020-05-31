@@ -16,13 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import EditorCollectionsTable from './parts/editor-collections-table';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
-import RevisionsTable from './parts/revisions-table';
 
 
-class EditorRevisionPage extends React.Component {
+class EditorCollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -30,7 +30,7 @@ class EditorRevisionPage extends React.Component {
 		};
 
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './revisions/revisions?q=';
+		this.paginationUrl = './collections/collections?q=';
 	}
 
 	searchResultsCallback(newResults) {
@@ -40,11 +40,8 @@ class EditorRevisionPage extends React.Component {
 	render() {
 		return (
 			<div id="pageWithPagination">
-				<RevisionsTable
+				<EditorCollectionsTable
 					results={this.state.results}
-					showEntities={this.props.showEntities}
-					showRevisionEditor={this.props.showRevisionEditor}
-					showRevisionNote={this.props.showRevisionNote}
 					tableHeading={this.props.tableHeading}
 				/>
 				<PagerElement
@@ -61,25 +58,19 @@ class EditorRevisionPage extends React.Component {
 }
 
 
-EditorRevisionPage.displayName = 'EditorRevisionPage';
-EditorRevisionPage.propTypes = {
+EditorCollectionsPage.displayName = 'EditorCollectionsPage';
+EditorCollectionsPage.propTypes = {
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
 	results: PropTypes.array,
-	showEntities: PropTypes.bool,
-	showRevisionEditor: PropTypes.bool,
-	showRevisionNote: PropTypes.bool,
 	size: PropTypes.number,
 	tableHeading: PropTypes.string
 };
-EditorRevisionPage.defaultProps = {
+EditorCollectionsPage.defaultProps = {
 	from: 0,
 	results: [],
-	showEntities: true,
-	showRevisionEditor: false,
-	showRevisionNote: true,
 	size: 20,
-	tableHeading: 'Recent Activity'
+	tableHeading: 'Collections'
 };
 
-export default EditorRevisionPage;
+export default EditorCollectionsPage;
