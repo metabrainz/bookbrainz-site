@@ -21,19 +21,29 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
-function EntityLink({entity}) {
+function EntityLink({entity, inline}) {
+	let bbidElement = <div className="small">({entity.bbid})</div>;
+	if (inline) {
+		bbidElement = <span className="small">({entity.bbid})</span>;
+	}
 	return (
-		<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`}>
-			{genEntityIconHTMLElement(entity.type)}
-			{getEntityLabel(entity)}
-			<div className="small">({entity.bbid})</div>
-		</a>
+		<span>
+			<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`}>
+				{genEntityIconHTMLElement(entity.type)}
+				{getEntityLabel(entity)}
+			</a>
+			{bbidElement}
+		</span>
 	);
 }
 
 EntityLink.displayName = 'EntityLink';
 EntityLink.propTypes = {
-	entity: PropTypes.string.isRequired
+	entity: PropTypes.string.isRequired,
+	inline: PropTypes.bool
+};
+EntityLink.defaultProps = {
+	inline: false
 };
 
 export default EntityLink;
