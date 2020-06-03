@@ -236,8 +236,7 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		if (!mergeQueue) {
 			mergeQueue = {
 				entityType: '',
-				mergingEntities: {},
-				target: req.params.bbid
+				mergingEntities: {}
 			};
 			req.session.mergeQueue = mergeQueue;
 		}
@@ -278,7 +277,7 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 			res.redirect(req.headers.referer);
 			return;
 		}
-		const {mergingEntities, target} = mergeQueue;
+		const {mergingEntities} = mergeQueue;
 
 		delete mergingEntities[req.params.bbid];
 
@@ -287,37 +286,6 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 		if (mergingBBIDs.length === 0) {
 			req.session.mergeQueue = null;
 		}
-		else if (target === req.params.bbid) {
-			/* If we just deleted the merge target, select another one */
-			mergeQueue.target = mergingBBIDs[0];
-		}
-		res.redirect(req.headers.referer);
-	});
-
-/**
- * Select the entity to merge into by BBID
- */
-router.get('/into/:bbid', auth.isAuthenticated,
-	(req, res, next) => {
-		if (_.isNil(req.params.bbid) ||
-		!commonUtils.isValidBBID(req.params.bbid)) {
-			next(new BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
-			return;
-		}
-		const {mergeQueue} = req.session;
-		if (!mergeQueue) {
-			res.redirect(req.headers.referer);
-			return;
-		}
-		const {mergingEntities} = mergeQueue;
-
-		if (!_.has(mergingEntities, req.params.bbid)) {
-			next(new BadRequestError(`Merge queue does not contain bbid: ${req.params.bbid}`, req));
-			return;
-		}
-
-		mergeQueue.target = req.params.bbid;
-
 		res.redirect(req.headers.referer);
 	});
 
@@ -327,7 +295,7 @@ router.get('/cancel', auth.isAuthenticated,
 		res.redirect(req.headers.referer);
 	});
 
-router.get('/submit', auth.isAuthenticated,
+router.get('/submit/:targetBBID?', auth.isAuthenticated,
 	middleware.loadIdentifierTypes, middleware.loadLanguages,
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
@@ -338,7 +306,7 @@ router.get('/submit', auth.isAuthenticated,
 			return next(new ConflictError('No entities selected for merge'));
 		}
 		const {mergingEntities, entityType} = mergeQueue;
-		let {target} = mergeQueue;
+
 		const bbids = Object.keys(mergingEntities);
 		if (bbids.length < 2) {
 			return next(new ConflictError('You must have at least 2 entities selected to merge'));
@@ -349,8 +317,9 @@ router.get('/submit', auth.isAuthenticated,
 		}
 
 		let mergingFetchedEntities = _.values(mergingEntities);
-		if (_.isNil(target)) {
-			target = bbids[0];
+		let {targetBBID} = req.params;
+		if (_.isNil(targetBBID)) {
+			targetBBID = bbids[0];
 		}
 
 		if (!_.uniqBy(mergingFetchedEntities, 'type').length === 1) {
@@ -379,8 +348,8 @@ router.get('/submit', auth.isAuthenticated,
 		}
 
 		mergingFetchedEntities.sort((first, second) => {
-			if (first.bbid === target) { return -1; }
-			else if (second.bbid === target) { return 1; }
+			if (first.bbid === targetBBID) { return -1; }
+			else if (second.bbid === targetBBID) { return 1; }
 			return 0;
 		});
 		res.locals.entity = mergingFetchedEntities[0];
