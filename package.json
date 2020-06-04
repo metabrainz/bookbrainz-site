@@ -44,7 +44,7 @@
     "babel-plugin-transform-require-ignore": "^0.1.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.14.1",
-    "bookbrainz-data": "^2.5.0",
+    "bookbrainz-data": "^2.5.1",
     "chai-sorted": "^0.2.0",
     "chart.js": "^2.9.3",
     "classnames": "^2.2.5",
