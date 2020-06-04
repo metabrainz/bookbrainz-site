@@ -20,22 +20,25 @@
 import * as bootstrap from 'react-bootstrap';
 import CustomInput from '../../input';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
 import classNames from 'classnames';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
-const {Alert, Button, Col, Grid, Row} = bootstrap;
+const {Alert, Button, Col} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
 		super(props);
 
+		const {collaborators, ...collection} = props.collection;
 		this.state = {
-			collection: props.collection,
+			collaborators,
+			collection,
 			errorText: null
 		};
 
@@ -52,10 +55,9 @@ class UserCollectionForm extends React.Component {
 		evt.preventDefault();
 
 		if (!this.isValid()) {
-			this.setState(prevState => ({
-				collection: prevState.collection,
+			this.setState({
 				errorText: 'Incomplete Form'
-			}));
+			});
 			return;
 		}
 
@@ -82,7 +84,6 @@ class UserCollectionForm extends React.Component {
 		}
 		request.post(submissionURL)
 			.send(data)
-			.promise()
 			.then((res) => {
 				if (res.status === 200) {
 					window.location.href = `/collection/${res.body.id}`;
@@ -101,35 +102,23 @@ class UserCollectionForm extends React.Component {
 	}
 
 	getCleanedCollaborators() {
-		const cleanedCollaborators = this.state.collection.collaborators.filter(collaborator => collaborator && collaborator.id !== null);
+		const cleanedCollaborators = this.state.collaborators.filter(collaborator => collaborator && collaborator.id !== null);
 		return cleanedCollaborators;
 	}
 
 	handleAddCollaborator() {
-		const newCollaborators = this.state.collection.collaborators;
-		newCollaborators.push({
-			id: null,
-			name: ''
-		});
 		this.setState(prevState => ({
-			collection: {
-				...prevState.collection,
-				collaborators: newCollaborators
-			},
-			errorText: prevState.errorText
+			collaborators: [...prevState.collaborators, {id: null, name: ''}]
 		}));
 	}
 
 	handleRemoveCollaborator(index) {
-		const newCollaborators = this.state.collection.collaborators;
+		// eslint-disable-next-line react/no-access-state-in-setstate
+		const newCollaborators = this.state.collaborators;
 		newCollaborators.splice(index, 1);
-		this.setState(prevState => ({
-			collection: {
-				...prevState.collection,
-				collaborators: newCollaborators
-			},
-			errorText: prevState.errorText
-		}));
+		this.setState({
+			collaborators: newCollaborators
+		});
 	}
 
 	handleChangeCollaborator(newCollab, index) {
@@ -143,19 +132,16 @@ class UserCollectionForm extends React.Component {
 		else {
 			newCollaborator = newCollab;
 		}
-		const newCollaborators = this.state.collection.collaborators;
+		// eslint-disable-next-line react/no-access-state-in-setstate
+		const newCollaborators = this.state.collaborators;
 		newCollaborators[index] = newCollaborator;
-		this.setState(prevState => ({
-			collection: {
-				...prevState.collection,
-				collaborators: newCollaborators
-			},
-			errorText: prevState.errorText
-		}));
+		this.setState({
+			collaborators: newCollaborators
+		});
 	}
 
 	render() {
-		if (this.state.collection.collaborators.length === 0) {
+		if (this.state.collaborators.length === 0) {
 			this.handleAddCollaborator();
 		}
 
@@ -172,18 +158,13 @@ class UserCollectionForm extends React.Component {
 		const {errorText} = this.state;
 		const errorAlertClass =
 			classNames('text-center', 'margin-top-1', {hidden: !errorText});
-		const submitLabel = this.props.collection.name ? 'UPDATE' : 'CREATE';
+		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
 
 		/* eslint-disable react/jsx-no-bind */
 		return (
-			<Grid>
-				<h1>Create a collection</h1>
-				<Row>
-					<Col md={12}>
-						<p className="lead">Create Your Collection</p>
-					</Col>
-				</Row>
-				<Row>
+			<div>
+				<h1>Create your collection</h1>
+				<div>
 					<Col
 						id="collectionForm"
 						md={8}
@@ -227,51 +208,58 @@ class UserCollectionForm extends React.Component {
 								ref={(ref) => this.privacy = ref}
 							/>
 							{
-								this.state.collection.collaborators.map((collaborator, index) => (
-									<div key={collaborator.id}>
-										<EntitySearchFieldOption
-											instanceId="collaboratorSearchField"
-											label="Select Collaborator"
-											name="editor"
-											type="editor"
-											value={collaborator}
-											onChange={(newCollaborator) => this.handleChangeCollaborator(newCollaborator, index)}
-										/>
+								this.state.collaborators.map((collaborator, index) => {
+									const buttonAfter = (
 										<Button
 											bsSize="small"
-											bsStyle="primary"
+											bsStyle="danger"
 											type="button"
 											onClick={() => this.handleRemoveCollaborator(index)}
 										>
 											Remove
 										</Button>
-									</div>
-								))
+									);
+									return (
+										<div key={collaborator.id}>
+											<EntitySearchFieldOption
+												buttonAfter={buttonAfter}
+												instanceId="collaboratorSearchField"
+												label="Select Collaborator"
+												name="editor"
+												type="editor"
+												value={collaborator}
+												onChange={(newCollaborator) => this.handleChangeCollaborator(newCollaborator, index)}
+											/>
+										</div>
+									);
+								})
 							}
 							<div className="text-center">
 								<Button
+									bsStyle="primary"
 									type="button"
 									onClick={this.handleAddCollaborator}
 								>
-									Add Collaborator
+									<FontAwesomeIcon icon="plus"/>
+									&nbsp;Add another collaborator
 								</Button>
 							</div>
 							<div className="form-group text-center margin-top-1">
 								<Button
 									bsSize="large"
-									bsStyle="primary"
+									bsStyle="success"
 									type="submit"
 								>
 									{submitLabel}
 								</Button>
 							</div>
+							<div className={errorAlertClass}>
+								<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
+							</div>
 						</form>
 					</Col>
-				</Row>
-				<div className={errorAlertClass}>
-					<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
 				</div>
-			</Grid>
+			</div>
 
 		);
 	}
