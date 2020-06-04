@@ -187,6 +187,7 @@ export function makeCollectionLoader() {
 					withRelated: ['collaborators.collaborator', 'items']
 				});
 				const collectionJSON = collection.toJSON();
+				// reshaping collaborators such that it can be used in EntitySearchFieldOption
 				collectionJSON.collaborators = collectionJSON.collaborators.map((collaborator) => ({
 					id: collaborator.collaborator.id,
 					text: collaborator.collaborator.name

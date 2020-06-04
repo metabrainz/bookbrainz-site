@@ -18,10 +18,10 @@
 
 import * as handler from '../helpers/handler';
 import * as search from './search';
-import _ from 'lodash';
+import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
 
 
-export async function makeCollectionCreateOrEditHandler(req, res) {
+export async function collectionCreateOrEditHandler(req, res) {
 	try {
 		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
 		const isNew = !res.locals.collection;
@@ -38,18 +38,19 @@ export async function makeCollectionCreateOrEditHandler(req, res) {
 				require: true
 			});
 			method = 'update';
+			// newCollection.set('last_modified', Date.now());
 		}
 		newCollection.set('description', req.body.description);
 		newCollection.set('name', req.body.name);
-		newCollection.set('public', req.body.privacy === 'Public');
-		newCollection.set('entity_type', _.upperFirst(_.camelCase(req.body.entityType)));
+		newCollection.set('public', toLower(req.body.privacy) === 'public');
+		newCollection.set('entity_type', upperFirst(camelCase(req.body.entityType)));
 		await newCollection.save(null, {method});
 
 		const oldCollaborators = res.locals.collection ? res.locals.collection.collaborators : [];
 		const newCollaborators = req.body.collaborators ? req.body.collaborators : [];
 
-		const newlyAddedCollaborators = _.differenceWith(newCollaborators, oldCollaborators, _.isEqual);
-		const removedCollaborators = _.differenceWith(oldCollaborators, newCollaborators, _.isEqual);
+		const newlyAddedCollaborators = differenceWith(newCollaborators, oldCollaborators, isEqual);
+		const removedCollaborators = differenceWith(oldCollaborators, newCollaborators, isEqual);
 
 		const collaboratorPromises = [];
 		newlyAddedCollaborators.forEach((collaborator) => {
@@ -92,6 +93,6 @@ export async function makeCollectionCreateOrEditHandler(req, res) {
 		return res.send(newCollection.toJSON());
 	}
 	catch (err) {
-		return res.status(404).send({error: 'some error'});
+		return res.status(500).send();
 	}
 }

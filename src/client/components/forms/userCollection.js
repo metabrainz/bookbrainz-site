@@ -27,6 +27,7 @@ import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
 import classNames from 'classnames';
 import request from 'superagent';
+import {uniqBy} from 'lodash';
 
 
 const {Alert, Button, Col} = bootstrap;
@@ -85,15 +86,11 @@ class UserCollectionForm extends React.Component {
 		request.post(submissionURL)
 			.send(data)
 			.then((res) => {
-				if (res.status === 200) {
-					window.location.href = `/collection/${res.body.id}`;
-				}
-				else {
-					this.setState(prevState => ({
-						collection: prevState.collection,
-						errorText: `Internal Error: ${res.body.error}`
-					}));
-				}
+				window.location.href = `/collection/${res.body.id}`;
+			}, (error) => {
+				this.setState({
+					errorText: 'Internal Error'
+				});
 			});
 	}
 
@@ -102,7 +99,7 @@ class UserCollectionForm extends React.Component {
 	}
 
 	getCleanedCollaborators() {
-		const cleanedCollaborators = this.state.collaborators.filter(collaborator => collaborator && collaborator.id !== null);
+		const cleanedCollaborators = uniqBy(this.state.collaborators.filter(collaborator => collaborator && collaborator.id !== null), 'id');
 		return cleanedCollaborators;
 	}
 
@@ -171,7 +168,7 @@ class UserCollectionForm extends React.Component {
 						mdOffset={2}
 					>
 						<form
-							className="form-horizontal"
+							className="padding-sides-0"
 							onSubmit={this.handleSubmit}
 						>
 							<CustomInput
@@ -216,7 +213,7 @@ class UserCollectionForm extends React.Component {
 											type="button"
 											onClick={() => this.handleRemoveCollaborator(index)}
 										>
-											Remove
+											<FontAwesomeIcon icon="times"/>&nbsp;Remove
 										</Button>
 									);
 									return (
@@ -254,7 +251,7 @@ class UserCollectionForm extends React.Component {
 								</Button>
 							</div>
 							<div className={errorAlertClass}>
-								<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
+								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
 						</form>
 					</Col>
