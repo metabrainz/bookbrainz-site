@@ -110,12 +110,9 @@ class UserCollectionForm extends React.Component {
 	}
 
 	handleRemoveCollaborator(index) {
-		// eslint-disable-next-line react/no-access-state-in-setstate
-		const newCollaborators = this.state.collaborators;
-		newCollaborators.splice(index, 1);
-		this.setState({
-			collaborators: newCollaborators
-		});
+		this.setState(prevState => ({
+			collaborators: prevState.collaborators.splice(index, 1) && prevState.collaborators
+		}));
 	}
 
 	handleChangeCollaborator(newCollab, index) {
@@ -129,11 +126,13 @@ class UserCollectionForm extends React.Component {
 		else {
 			newCollaborator = newCollab;
 		}
-		// eslint-disable-next-line react/no-access-state-in-setstate
-		const newCollaborators = this.state.collaborators;
-		newCollaborators[index] = newCollaborator;
-		this.setState({
-			collaborators: newCollaborators
+
+		this.setState((prevState) => {
+			const newCollaborators = prevState.collaborators;
+			newCollaborators[index] = newCollaborator;
+			return {
+				collaborators: newCollaborators
+			};
 		});
 	}
 
