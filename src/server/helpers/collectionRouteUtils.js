@@ -23,7 +23,7 @@ import _ from 'lodash';
 
 export async function makeCollectionCreateOrEditHandler(req, res) {
 	try {
-		const {UserCollection, UserCollectionCollaborator} = req.app.local.orm;
+		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
 		const isNew = !res.locals.collection;
 		let newCollection;
 		let method;
