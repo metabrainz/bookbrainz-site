@@ -24,18 +24,13 @@ import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
+import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
-import {makeCollectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import target from '../templates/target';
 
 
 const router = express.Router();
 
-/* If the route specifies a CollectionId, load the Collection for it. */
-router.param(
-	'collectionId',
-	middleware.makeCollectionLoader()
-);
 
 router.get('/create', auth.isAuthenticated, (req, res) => {
 	const props = generateProps(req, res, {});
@@ -51,6 +46,14 @@ router.get('/create', auth.isAuthenticated, (req, res) => {
 		script
 	}));
 });
+router.post('/create/handler', auth.isAuthenticatedForHandler, collectionCreateOrEditHandler);
+
+
+/* If the route specifies a CollectionId, load the Collection for it. */
+router.param(
+	'collectionId',
+	middleware.makeCollectionLoader()
+);
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
 	const {collection} = res.locals;
@@ -75,8 +78,7 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 	}));
 });
 
-router.post('/create/handler', auth.isAuthenticatedForHandler, makeCollectionCreateOrEditHandler);
-router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, makeCollectionCreateOrEditHandler);
+router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, collectionCreateOrEditHandler);
 
 router.get('/:collectionId', (req, res) => {
 	const {collection} = res.locals;
