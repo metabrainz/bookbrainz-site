@@ -18,6 +18,7 @@
 
 import {find as _find, kebabCase as _kebabCase} from 'lodash';
 
+
 export function entityHasChanged(initial, current) {
 	return (initial && initial.bbid) !== (current && current.bbid);
 }

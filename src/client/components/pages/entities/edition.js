@@ -28,6 +28,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
 
+
 const {
 	deletedEntityMessage, extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
 	getLanguageAttribute, getRelationshipTargetByTypeId, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
@@ -152,6 +153,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				bbid={entity.bbid}
 				deleted={entity.deleted}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}

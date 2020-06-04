@@ -83,6 +83,7 @@ const AliasEditor = ({
 						aliases.map((alias, rowId) => (
 							<AliasRow
 								index={rowId}
+								// eslint-disable-next-line react/no-array-index-key
 								key={rowId}
 								languageOptions={languageOptionsForDisplay}
 							/>

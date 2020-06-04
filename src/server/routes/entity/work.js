@@ -35,10 +35,119 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
+/** ****************************
+*********** Helpers ************
+*******************************/
+
+function transformNewForm(data) {
+	const aliases = entityRoutes.constructAliases(
+		data.aliasEditor, data.nameSection
+	);
+
+	const identifiers = entityRoutes.constructIdentifiers(
+		data.identifierEditor
+	);
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+
+	const languages = _.map(
+		data.workSection.languages, (language) => language.value
+	);
+
+	return {
+		aliases,
+		disambiguation: data.nameSection.disambiguation,
+		identifiers,
+		languages,
+		note: data.submissionSection.note,
+		relationships,
+		typeId: data.workSection.type
+	};
+}
+
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'work', transformNewForm, 'typeId'
+);
+
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'work', transformNewForm, 'typeId', true
+);
+
+/** ****************************
+*********** Routes *************
+*******************************/
 
 const router = express.Router();
 
-/* If the route specifies a BBID, load the Work for it. */
+// Creation
+
+router.get(
+	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadRelationshipTypes,
+	(req, res, next) => {
+		const {Author, Edition} = req.app.locals.orm;
+		let relationshipTypeId;
+		let initialRelationshipIndex = 0;
+		const propsPromise = generateEntityProps(
+			'work', req, res, {}
+		);
+
+		if (req.query.author) {
+			propsPromise.author =
+				Author.forge({bbid: req.query.author})
+					.fetch({require: false, withRelated: 'defaultAlias'})
+					.then((data) => data && utils.entityToOption(data.toJSON()));
+		}
+
+		if (req.query.edition) {
+			propsPromise.edition =
+				Edition.forge({bbid: req.query.edition})
+					.fetch({require: false, withRelated: 'defaultAlias'})
+					.then((data) => data && utils.entityToOption(data.toJSON()));
+		}
+
+		function render(props) {
+			if (props.author) {
+				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
+				relationshipTypeId = 8;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
+			}
+
+			if (props.edition) {
+				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
+				relationshipTypeId = 10;
+				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
+			}
+
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
+
+			return res.send(target({
+				markup,
+				props: escapeProps(updatedProps),
+				script: '/js/entity-editor.js',
+				title: props.heading
+			}));
+		}
+		Promise.props(propsPromise)
+			.then(render)
+			.catch(next);
+	}
+);
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
+
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
@@ -89,75 +198,6 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
 
-function entityToOption(entity) {
-	return _.isNil(entity) ? null :
-		{
-			disambiguation: entity.disambiguation ?
-				entity.disambiguation.comment : null,
-			id: entity.bbid,
-			text: entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)',
-			type: entity.type
-		};
-}
-
-// Creation
-
-router.get(
-	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadWorkTypes,
-	middleware.loadRelationshipTypes,
-	(req, res, next) => {
-		const {Author, Edition} = req.app.locals.orm;
-		let relationshipTypeId;
-		let initialRelationshipIndex = 0;
-		const propsPromise = generateEntityProps(
-			'work', req, res, {}
-		);
-
-		if (req.query.author) {
-			propsPromise.author =
-				Author.forge({bbid: req.query.author})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
-		}
-
-		if (req.query.edition) {
-			propsPromise.edition =
-				Edition.forge({bbid: req.query.edition})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && entityToOption(data.toJSON()));
-		}
-
-		function render(props) {
-			if (props.author) {
-				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
-				relationshipTypeId = 8;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
-			}
-
-			if (props.edition) {
-				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
-				relationshipTypeId = 10;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
-			}
-
-			const editorMarkup = entityEditorMarkup(props);
-			const {markup} = editorMarkup;
-			const updatedProps = editorMarkup.props;
-
-			return res.send(target({
-				markup,
-				props: escapeProps(updatedProps),
-				script: '/js/entity-editor.js',
-				title: props.heading
-			}));
-		}
-		Promise.props(propsPromise)
-			.then(render)
-			.catch(next);
-	}
-);
 
 function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */
@@ -205,6 +245,7 @@ function workToFormState(work) {
 	};
 
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
@@ -248,42 +289,10 @@ router.get(
 	}
 );
 
-function transformNewForm(data) {
-	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
-	);
-
-	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
-	);
-
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
-	);
-
-	const languages = _.map(
-		data.workSection.languages, (language) => language.value
-	);
-
-	return {
-		aliases,
-		disambiguation: data.nameSection.disambiguation,
-		identifiers,
-		languages,
-		note: data.submissionSection.note,
-		relationships,
-		typeId: data.workSection.type
-	};
-}
-
-const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'work', transformNewForm, 'typeId'
-);
-
-router.post('/create/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
-
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;

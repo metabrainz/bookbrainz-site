@@ -20,16 +20,18 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
+
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
-const {Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
+const {Badge, Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
@@ -40,6 +42,7 @@ class RevisionPage extends React.Component {
 		return list.map(
 			(val, idx) => {
 				const formattedValue = isChangeADate ? transformISODateForDisplay(val) : val.toString();
+				// eslint-disable-next-line react/no-array-index-key
 				return <div key={`${idx}${val}`}>{formattedValue}</div>;
 			}
 		);
@@ -97,6 +100,26 @@ class RevisionPage extends React.Component {
 		return _.compact(result);
 	}
 
+	static getEntityDiff(diff) {
+		return (
+			<div key={diff.entity.bbid}>
+				<h3>
+					{diff.isNew &&
+					<Badge className="new margin-right-0-5">+ New</Badge>}
+					<EntityLink
+						entity={diff.entity}
+					/>
+				</h3>
+				{diff.changes.length ? (
+					<table className="table table-bordered text-center">
+						<tbody>
+							{RevisionPage.formatDiff(diff)}
+						</tbody>
+					</table>) : null}
+			</div>
+		);
+	}
+
 	static formatTitle(author) {
 		let title;
 		if (_.get(author, ['titleUnlock', 'title'], null)) {
@@ -120,7 +143,7 @@ class RevisionPage extends React.Component {
 			note: this.noteInput.getValue()
 		};
 		request.post(`/revision/${this.props.revision.id}/note`)
-			.send(data).promise()
+			.send(data)
 			.then(() => {
 				location.reload();
 			})
@@ -133,23 +156,34 @@ class RevisionPage extends React.Component {
 
 	render() {
 		const {revision, diffs, user} = this.props;
+		let regularDiffs = diffs;
+		let mergeDiffDivs;
 
-		const diffDivs = diffs.map((diff) => (
-			<div key={diff.entity.bbid}>
-				<h3>
-					<EntityLink
-						bbid={diff.entity.bbid}
-						text={`${diff.entity.type} ${diff.entity.bbid}`}
-						type={diff.entity.type}
-					/>
-				</h3>
-				<table className="table table-bordered text-center">
-					<tbody>
-						{RevisionPage.formatDiff(diff)}
-					</tbody>
-				</table>
-			</div>
-		));
+		if (revision.isMerge) {
+			/**
+			 * Separate entities between merged and not merged
+			 */
+			const mergeDiffs = _.filter(diffs, diff => diff.entityRevision.isMerge);
+			regularDiffs = _.filter(diffs, diff => !diff.entityRevision.isMerge);
+
+			/**
+			 * We sort the merged entities diffs by number of changes.
+			 * Display the entity we merge into at the bottom ('merges entity X and Y into Z')
+			 */
+			mergeDiffDivs = mergeDiffs
+				.sort((a, b) => {
+					if (!a.entityRevision.dataId) {
+						return -1;
+					}
+					if (!b.entityRevision.dataId) {
+						return 1;
+					}
+					return 0;
+				})
+				.map(RevisionPage.getEntityDiff);
+		}
+
+		const diffDivs = regularDiffs.map(RevisionPage.getEntityDiff);
 
 		const editorTitle =
 			RevisionPage.formatTitle(revision.author);
@@ -184,11 +218,29 @@ class RevisionPage extends React.Component {
 		}
 
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
-
 		return (
-			<Row>
+			<Row id="mergePage">
 				<Col md={12}>
 					<h1>Revision #{revision.id}</h1>
+					{revision.isMerge && (
+						<div className="mergedEntities">
+							<h3>
+								<span
+									className="round-color-icon"
+									title="Merge revision"
+								>
+									<FontAwesomeIcon
+										flip="vertical" icon="code-branch"
+										transform="shrink-4"
+									/>
+								</span>
+								Merges {mergeDiffDivs.length > 2 ? 'entities' : 'entity'}:
+							</h3>
+							{mergeDiffDivs.slice(0, -1)}
+							<h4>Into:</h4>
+							{mergeDiffDivs.slice(-1)}
+						</div>
+					)}
 					{diffDivs}
 					<p className="text-right">
 						Created by&nbsp;

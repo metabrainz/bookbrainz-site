@@ -29,7 +29,13 @@ const options = {
 		'import',
 		'flowtype',
 		'babel'
-	]
+	],
+	settings: {
+		react: {
+			flowVersion: '0.69',
+			version: 'detect'
+		}
+	}
 };
 
 
@@ -279,6 +285,7 @@ const stylisticIssuesRules = {
 		WARNING,
 		{
 			code: 150,
+			ignoreComments: true,
 			ignoreUrls: true,
 			tabWidth: 4
 		}

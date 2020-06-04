@@ -20,7 +20,7 @@ RUN apt-get update && \
 
 # PostgreSQL client
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-ENV PG_MAJOR 9.5
+ENV PG_MAJOR 12
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
@@ -48,13 +48,10 @@ RUN apt-get remove -y $BUILD_DEPS && \
     apt-get autoremove -y
 
 COPY static/ static/
-RUN npm run mkdirs
 COPY config/ config/
 COPY sql/ sql/
 COPY src/ src/
 
-# Copy css/less dependencies from node_modules to src/client/stylesheets
-RUN npm run copy-client-scripts
 
 # Development target
 FROM bookbrainz-base as bookbrainz-dev

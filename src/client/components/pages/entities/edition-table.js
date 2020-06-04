@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
+
 const {
 	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,
 	getISBNOfEdition, getEditionFormat
@@ -67,72 +68,88 @@ EditionTableRow.propTypes = {
 	edition: PropTypes.object.isRequired
 };
 
-function EditionTable({editions, entity}) {
+function EditionTable({editions, entity, showAdd}) {
+	let tableContent;
+	if (editions.length) {
+		tableContent = (
+			<React.Fragment>
+				<Table striped>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Format</th>
+							<th>ISBN</th>
+							<th>Release Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						{
+							editions.map((edition) => (
+								<EditionTableRow
+									edition={edition}
+									key={edition.bbid}
+								/>
+							))
+						}
+					</tbody>
+				</Table>
+				{showAdd &&
+					<Button
+						bsStyle="success"
+						className="margin-top-d15"
+						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+					>
+						<FontAwesomeIcon icon="plus"/>
+						{'  Add Edition'}
+					</Button>
+				}
+				<hr className="margin-bottom-d0"/>
+			</React.Fragment>
+		);
+	}
+	else if (showAdd) {
+		tableContent = (
+			<React.Fragment>
+				<span className="margin-right-2 pull-left">
+					<Button
+						bsStyle="success"
+						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+					>
+						<FontAwesomeIcon icon="book" size="2x"/>
+						<br/>
+						Add Edition
+					</Button>
+				</span>
+				<span>
+					<h4>There are no Editions yet!</h4>
+					<p>
+						Help us complete BookBrainz
+						<br/>
+					</p>
+					<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+				</span>
+				<hr className="margin-bottom-d0"/>
+			</React.Fragment>
+		);
+	}
+	else {
+		tableContent = <span>No editions</span>;
+	}
 	return (
 		<div>
 			<h2>Editions</h2>
-			{
-				editions.length ?
-					<React.Fragment>
-						<Table striped>
-							<thead>
-								<tr>
-									<th>Name</th>
-									<th>Format</th>
-									<th>ISBN</th>
-									<th>Release Date</th>
-								</tr>
-							</thead>
-							<tbody>
-								{
-									editions.map((edition) => (
-										<EditionTableRow
-											edition={edition}
-											key={edition.bbid}
-										/>
-									))
-								}
-							</tbody>
-						</Table>
-						<Button
-							bsStyle="success"
-							className="margin-top-d15"
-							href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-						>
-							<FontAwesomeIcon icon="plus"/>
-							{'  Add Edition'}
-						</Button>
-						<hr className="margin-bottom-d0"/>
-					</React.Fragment> :
-					<React.Fragment>
-						<span className="margin-right-2 pull-left">
-							<Button
-								bsStyle="success"
-								href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-							>
-								<FontAwesomeIcon icon="book" size="2x"/>
-								<br/>
-								Add Edition
-							</Button>
-						</span>
-						<span>
-							<h4>There are no Editions yet!</h4>
-							<p>
-								Help us complete BookBrainz
-								<br/>
-							</p>
-							<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
-						</span>
-						<hr className="margin-bottom-d0"/>
-					</React.Fragment>
-			}
+			{tableContent}
 		</div>
 	);
 }
 EditionTable.displayName = 'EditionTable';
 EditionTable.propTypes = {
 	editions: PropTypes.array.isRequired,
-	entity: PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired,
+	showAdd: PropTypes.bool
+};
+EditionTable.defaultProps = {
+	showAdd: true
 };
 
 export default EditionTable;

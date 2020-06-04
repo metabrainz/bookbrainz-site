@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
+
 const {Button, Table} = bootstrap;
 
 const {getEntityDisambiguation} = entityHelper;

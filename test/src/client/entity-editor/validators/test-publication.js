@@ -39,6 +39,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import {testValidatePositiveIntegerFunc} from './helpers';
 
+
 chai.use(chaiAsPromised);
 const {expect} = chai;
 

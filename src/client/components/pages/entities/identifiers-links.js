@@ -15,6 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable no-inline-comments */
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -55,6 +56,7 @@ function IdentifierLink({typeId, value}) {
 			link = `https://www.barcodelookup.com/${value}`;
 			break;
 		case 12: // @VIAF: The VIAF ID corresponding to a BookBrainz Author.
+		case 29: // @VIAF: The VIAF ID corresponding to a BookBrainz Publisher.
 			link = `https://viaf.org/viaf/${value}`;
 			break;
 		case 13: // @ISNI: The ISNI ID corresponding to a BookBrainz Author.

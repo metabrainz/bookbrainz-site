@@ -26,6 +26,7 @@ import ReactDOMServer from 'react-dom/server';
 import status from 'http-status';
 import target from '../templates/target';
 
+
 export function renderError(req, res, err) {
 	const errorToSend = error.getErrorToSend(err);
 	const props = generateProps(req, res, {
@@ -38,6 +39,9 @@ export function renderError(req, res, err) {
 			/>
 		</Layout>
 	);
+	if (errorToSend.message) {
+		res.statusMessage = errorToSend.message;
+	}
 	res.status(
 		errorToSend.status || status.INTERNAL_SERVER_ERROR
 	).send(target({

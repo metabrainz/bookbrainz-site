@@ -67,8 +67,7 @@ router.get('/', async (req, res) => {
 	}
 	const allEntities = await Promise.all(queryPromises1);
 	allEntities.sort((a, b) =>
-		b.Count - a.Count
-	);
+		b.Count - a.Count);
 
 	/*
 	 *	Here We are fetching count of master revision
@@ -102,8 +101,7 @@ router.get('/', async (req, res) => {
 	}
 
 	/*
-	 *	Here We are fetching top 10 Edirors
-	 *  from database on Basis of  totalRevisions
+	 *	Fetch the top 10 Editors on the basis of total revisions
 	 */
 	const getTopEditors = new Editor()
 		.query((q) =>

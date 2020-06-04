@@ -1,9 +1,11 @@
 # BookBrainz Site
 
-[![Build Status](https://img.shields.io/travis/bookbrainz/bookbrainz-site.svg)](https://travis-ci.org/bookbrainz/bookbrainz-site)
+[![Build Status](https://travis-ci.org/bookbrainz/bookbrainz-site.svg?branch=master)](https://travis-ci.org/bookbrainz/bookbrainz-site)
 [![Dependency Status](https://img.shields.io/david/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site)
 [![devDependency Status](https://img.shields.io/david/dev/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site#info=devDependencies)
-[![Code Climate](https://img.shields.io/codeclimate/github/BookBrainz/bookbrainz-site.svg)](https://codeclimate.com/github/BookBrainz/bookbrainz-site)
+[![Known Vulnerabilities](https://snyk.io/test/github/bookbrainz/bookbrainz-site/badge.svg)](https://snyk.io/test/github/bookbrainz/bookbrainz-site)
+[![Coverage Status](https://coveralls.io/repos/github/bookbrainz/bookbrainz-site/badge.svg?branch=master)](https://coveralls.io/github/bookbrainz/bookbrainz-site?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/76f87309d52d75ff4a18/maintainability)](https://codeclimate.com/github/BookBrainz/bookbrainz-site/maintainability)
 <a href="https://www.browserstack.com/">
 <img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
 </a>
@@ -119,7 +121,7 @@ The latest database dump can be found [at this address](http://ftp.musicbrainz.o
 If all went well, you will only need to run `./develop.sh` in the command line from the `bookbrainz-site` folder.
 Press `ctrl+c` to stop the server. The dependencies will continue running in the background.
 
-Wait until the console output gets quiet and this line appears: `> cross-env SSR=true node ./lib/server/app.js`.
+Wait until the console output gets quiet and this line appears: `> cross-env node ./lib/server/app.js`.
 After a few seconds, you can then point your browser to `localhost:9099`.
 
 Make changes to the code in the `src` folder and run `./develop.sh` again to rebuild and run the server.
@@ -142,7 +144,7 @@ Using a debugger will allow you to pause and inspect the server code as it is be
 
 If you do not want to use Docker at all, you can also [install the database and search dependencies on your machine](./DEPENDENCIES_MANUAL_INSTALL.md)
 
-## Watch files and live reload 
+## Watch files and live reload
 
 When doing local development on your computer, you would have to stop and rebuild the application after every change you make to the codebase, then refresh the page to see the changes.
 

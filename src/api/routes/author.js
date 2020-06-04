@@ -105,7 +105,7 @@ const authorError = 'Author not found';
 
 router.get('/:bbid',
 	makeEntityLoader('Author', authorBasicRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorBasicInfo = await getAuthorBasicInfo(res.locals.entity);
 		return res.status(200).send(authorBasicInfo);
 	});
@@ -141,7 +141,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Author', aliasesRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(authorAliasesList);
 	});
@@ -175,7 +175,7 @@ router.get('/:bbid/aliases',
  */
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Author', identifiersRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(authorIdentifiersList);
 	});
@@ -210,7 +210,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Author', relationshipsRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
 	});

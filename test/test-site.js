@@ -21,8 +21,6 @@ import request from 'supertest';
 import status from 'http-status';
 
 
-process.env.NODE_ENV = 'testing';
-
 describe('GET /', () => {
 	it('should return 200', (done) => {
 		request(app)

@@ -29,6 +29,7 @@ import {
 } from '../helpers/props';
 import {AppContainer} from 'react-hot-loader';
 import EntityEditor from './entity-editor';
+import EntityMerge from './entity-merge';
 import Immutable from 'immutable';
 import Layout from '../containers/layout';
 import {Provider} from 'react-redux';
@@ -39,7 +40,8 @@ import createDebounce from 'redux-debounce';
 
 
 const {
-	createRootReducer, getValidator, getEntitySection, shouldDevToolsBeInjected
+	createRootReducer, getValidator, getEntitySection,
+	getEntitySectionMerge, shouldDevToolsBeInjected
 } = helpers;
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
@@ -48,14 +50,32 @@ const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const {initialState, ...rest} = props;
 
-const EntitySection = getEntitySection(props.entityType);
 
 const rootReducer = createRootReducer(props.entityType);
 const debouncer = createDebounce({keystroke: KEYSTROKE_DEBOUNCE_TIME});
 const composeEnhancers = shouldDevToolsBeInjected() ?
 	window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
 
-
+const getEntityEditor = () => {
+	let Editor;
+	let EntitySection;
+	if (props.mergingEntities) {
+		EntitySection = getEntitySectionMerge(props.entityType);
+		Editor = EntityMerge;
+	}
+	else {
+		EntitySection = getEntitySection(props.entityType);
+		Editor = EntityEditor;
+	}
+	return (
+		<Editor
+			validate={getValidator(props.entityType)}
+			{...extractChildProps(rest)}
+		>
+			<EntitySection/>
+		</Editor>
+	);
+};
 const store = createStore(
 	rootReducer,
 	Immutable.fromJS(initialState),
@@ -66,12 +86,7 @@ const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(rest)}>
 			<Provider store={store}>
-				<EntityEditor
-					validate={getValidator(props.entityType)}
-					{...extractChildProps(rest)}
-				>
-					<EntitySection/>
-				</EntityEditor>
+				{getEntityEditor()}
 			</Provider>
 		</Layout>
 	</AppContainer>

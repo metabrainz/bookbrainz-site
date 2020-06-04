@@ -24,12 +24,10 @@
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from '../../common/helpers/error';
 
-import Log from 'log';
 import Promise from 'bluebird';
-import config from '../../common/helpers/config';
+import {flattenDeep} from 'lodash';
+import log from 'log';
 
-
-const log = new Log(config.site.log);
 
 /**
  * Awards an Unlock type with awardAttribs if not already awarded
@@ -638,7 +636,7 @@ export function processEdit(orm, userId, revisionId) {
 				achievementToUnlockId(timeTraveller),
 				achievementToUnlockId(hotOffThePress)
 			);
-			alert = [].concat.apply([], alert);
+			alert = flattenDeep(alert);
 			alert = alert.join(',');
 			return {
 				alert,

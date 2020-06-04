@@ -24,7 +24,7 @@ import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Alert, Button, Col, Row, Panel} = bootstrap;
@@ -96,8 +96,6 @@ class EntityDeletionForm extends React.Component {
 			</span>
 		);
 
-		const headerComponent = <h3>Confirm Deletion</h3>;
-
 		const entityName =
 			entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
 
@@ -110,37 +108,45 @@ class EntityDeletionForm extends React.Component {
 						<form onSubmit={this.handleSubmit}>
 							<Panel
 								bsStyle="danger"
-								footer={footerComponent}
-								header={headerComponent}
 							>
-								<Alert bsStyle="warning">
-									<h4>
-										<FontAwesomeIcon icon="exclamation-triangle"/>&nbsp;
-										You’re about to delete the {entity.type} {entityName}.
-									</h4>
-									<p style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</p>
-								</Alert>
-								<p>
-								As a general principle, if you can solve an issue with non-destructive edits,
-								that&apos;s preferable to a removal. That way the unique identifier of the entity is preserved.
-									<br/>
-								In case of merged entities, the old identifier will forward to the entity it is merged into.
-								</p>
-								<p>If you are certain it should be deleted, please enter a
-								revision note below to explain why and confirm the deletion.
-								</p>
-								<p className="text-muted">
-								We are currently working on the merging tool. If this {entity.type} is a duplicate,
-								please edit it to add &quot;duplicate&quot; as a disambiguation to mark it to be merged.
-								</p>
+								<Panel.Heading>
+									<Panel.Title componentClass="h3">
+										Confirm Deletion
+									</Panel.Title>
+								</Panel.Heading>
+								<Panel.Body>
 
-								<CustomInput
-									ref={(ref) => this.note = ref}
-									rows="5"
-									type="textarea"
-									wrapperClassName="margin-top-1"
-								/>
-								{errorComponent}
+									<Alert bsStyle="warning">
+										<h4>
+											<FontAwesomeIcon icon="exclamation-triangle"/>&nbsp;
+											You’re about to delete the {entity.type} {entityName}.
+										</h4>
+										<p style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</p>
+									</Alert>
+									<p>
+									As a general principle, if you can solve an issue with non-destructive edits,
+									that&apos;s preferable to a removal. That way the unique identifier of the entity is preserved.
+										<br/>
+									In case of merged entities, the old identifier will forward to the entity it is merged into.
+									</p>
+									<p>If you are certain it should be deleted, please enter a
+									revision note below to explain why and confirm the deletion.
+									</p>
+									<p className="text-muted">
+									If this {entity.type} is a duplicate, click <a href={`/merge/add/${entity.bbid}`}>this link</a> to select it to be merged instead.
+									</p>
+
+									<CustomInput
+										ref={(ref) => this.note = ref}
+										rows="5"
+										type="textarea"
+										wrapperClassName="margin-top-1"
+									/>
+									{errorComponent}
+								</Panel.Body>
+								<Panel.Footer>
+									{footerComponent}
+								</Panel.Footer>
 							</Panel>
 						</form>
 					</Col>

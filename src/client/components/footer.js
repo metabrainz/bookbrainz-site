@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint max-len: "warn" */
+
 import * as bootstrap from 'react-bootstrap';
 
 import PropTypes from 'prop-types';
@@ -50,8 +50,12 @@ function Footer(props) {
 					</Col>
 					<Col className="text-center" xs={4}>
 						<small>Cover image by{' '}
-							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
-							{' ('}<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)
+							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
+								Stewart Butterfield
+							</a> (
+							<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
+								CC-BY-2.0
+							</a>)
 						</small>
 					</Col>
 					<Col className="text-right" xs={4}>
@@ -65,7 +69,10 @@ function Footer(props) {
 						Alpha Software —{' '}
 						<a href={`${repositoryUrl}commit/${siteRevision}`}>
 							{siteRevision}
-						</a> — <a href="https://tickets.metabrainz.org/projects/BB/issues/">Report a Bug</a>
+						</a> —&nbsp;
+						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
+							Report a Bug
+						</a>
 					</small>
 				</Row>
 			</Grid>

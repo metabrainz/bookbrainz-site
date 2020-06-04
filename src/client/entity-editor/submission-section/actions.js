@@ -19,9 +19,8 @@
 // @flow
 
 import type {Map} from 'immutable';
-import type {Promise} from 'bluebird';
 import _ from 'lodash';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
@@ -81,8 +80,7 @@ function postSubmission(url: string, data: Map<string, mixed>): Promise {
 	 */
 
 	const [, submissionEntity] = url.split('/');
-	return request.post(url).send(data)
-		.promise()
+	return request.post(url).send(Object.fromEntries(data))
 		.then((response: Response) => {
 			if (!response.body) {
 				window.location.replace('/login');

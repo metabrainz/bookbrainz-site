@@ -54,7 +54,12 @@ type RelationshipListProps = {
 	onRemove: (number) => mixed
 };
 
-function RelationshipList(
+/* In the ButtonGroup below we are forced to use an 'href' attribute to turn them into <a> elements
+   or wrap the children <button> elements in another ButtonGroup
+   https://getbootstrap.com/docs/3.4/components/#with-%3Cbutton%3E-elements
+*/
+
+export function RelationshipList(
 	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
 ) {
 	/* eslint-disable react/jsx-no-bind */
@@ -63,7 +68,7 @@ function RelationshipList(
 		relationships,
 		({relationshipType, sourceEntity, targetEntity}, rowID) => (
 			<Row className="margin-top-d5" key={rowID}>
-				<Col md={8}>
+				<Col md={onEdit || onRemove ? 8 : 12}>
 					<Relationship
 						link
 						contextEntity={contextEntity}
@@ -72,28 +77,34 @@ function RelationshipList(
 						targetEntity={targetEntity}
 					/>
 				</Col>
-				<Col className="text-right" md={4}>
-					<ButtonGroup justified>
-						<ButtonGroup>
-							<Button
-								bsStyle="warning"
-								onClick={onEdit.bind(this, rowID)}
-							>
-								<FontAwesomeIcon icon="pencil-alt"/>
-								<span>&nbsp;Edit</span>
-							</Button>
+				{(onEdit || onRemove) &&
+					<Col className="text-right" md={4}>
+						<ButtonGroup justified>
+							{onEdit &&
+								<Button
+									bsStyle="warning"
+									href="#"
+									role="button"
+									onClick={onEdit.bind(this, rowID)}
+								>
+									<FontAwesomeIcon icon="pencil-alt"/>
+									<span>&nbsp;Edit</span>
+								</Button>
+							}
+							{onRemove &&
+								<Button
+									bsStyle="danger"
+									href="#"
+									role="button"
+									onClick={onRemove.bind(this, rowID)}
+								>
+									<FontAwesomeIcon icon="times"/>
+									<span>&nbsp;Remove</span>
+								</Button>
+							}
 						</ButtonGroup>
-						<ButtonGroup>
-							<Button
-								bsStyle="danger"
-								onClick={onRemove.bind(this, rowID)}
-							>
-								<FontAwesomeIcon icon="times"/>
-								<span>&nbsp;Remove</span>
-							</Button>
-						</ButtonGroup>
-					</ButtonGroup>
-				</Col>
+					</Col>
+				}
 			</Row>
 		)
 	);
@@ -110,6 +121,7 @@ type OwnProps = {
 };
 
 type StateProps = {
+	canEdit: boolean,
 	entityName: string,
 	relationships: Immutable.List<any>,
 	relationshipEditorProps: Immutable.Map<string, any>,
@@ -130,7 +142,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 
 function RelationshipSection({
-	entity, entityType, entityName, languageOptions, showEditor, relationships,
+	canEdit, entity, entityType, entityName, languageOptions, showEditor, relationships,
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
 	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
@@ -163,34 +175,36 @@ function RelationshipSection({
 
 	return (
 		<div>
-			{showEditor && editor}
+			{canEdit && showEditor && editor}
 			<h2>How are other entities related to this {_.startCase(entityType)}?</h2>
 			<Row>
-				<Col md={10} mdOffset={1}>
+				<Col sm={12}>
 					<RelationshipList
 						contextEntity={baseEntity}
 						relationships={relationships.toJS()}
-						onEdit={onEdit}
-						onRemove={onRemove}
+						onEdit={canEdit ? onEdit : null}
+						onRemove={canEdit ? onRemove : null}
 					/>
 				</Col>
 			</Row>
-			<Row className="margin-top-1">
-				<Col
-					className="text-center"
-					md={4}
-					mdOffset={4}
-				>
-					<Button
-						bsStyle="success"
-						onClick={onAddRelationship}
+			{canEdit &&
+				<Row className="margin-top-1">
+					<Col
+						className="text-center"
+						md={4}
+						mdOffset={4}
 					>
-						<FontAwesomeIcon icon="plus"/>
-						<span>&nbsp;Add relationship</span>
-					</Button>
-				</Col>
-			</Row>
-			{undoPossible &&
+						<Button
+							bsStyle="success"
+							onClick={onAddRelationship}
+						>
+							<FontAwesomeIcon icon="plus"/>
+							<span>&nbsp;Add relationship</span>
+						</Button>
+					</Col>
+				</Row>
+			}
+			{undoPossible && canEdit &&
 				<Row className="margin-top-d5">
 					<Col
 						className="text-center"
@@ -218,6 +232,7 @@ RelationshipSection.propTypes = {
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('relationshipSection');
 	return {
+		canEdit: state.get('canEdit'),
 		entityName: rootState.getIn(['nameSection', 'name']),
 		relationshipEditorProps: state.get('relationshipEditorProps'),
 		relationships: state.get('relationships'),

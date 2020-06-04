@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -65,11 +66,25 @@ function RevisionsTable(props) {
 
 						<tbody>
 							{
-								results.map((revision, i) => (
-									<tr key={i}>
+								results.map((revision) => (
+									<tr key={revision.revisionId}>
 										<td>
-											<a href={`/revision/${revision.revisionId}`} >
-												{revision.revisionId}
+											<a
+												href={`/revision/${revision.revisionId}`}
+												title={`${revision.isMerge ? 'Merge revision' : 'Revision'} ${revision.revisionId}`}
+											>
+												#{revision.revisionId}
+												{revision.isMerge &&
+													<span
+														className="round-color-icon"
+														style={{marginLeft: '0.5em'}}
+													>
+														<FontAwesomeIcon
+															flip="vertical" icon="code-branch"
+															transform="shrink-4"
+														/>
+													</span>
+												}
 											</a>
 										</td>
 										{

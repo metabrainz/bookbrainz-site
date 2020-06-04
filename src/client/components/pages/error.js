@@ -53,6 +53,7 @@ function ErrorPage(props) {
 			<div>
 				{detailedMessage &&
 					detailedMessage.map((message, idx) => (
+						// eslint-disable-next-line react/no-array-index-key
 						<Row key={`detailedMsg${idx}`}>
 							<span>
 								{message}
@@ -76,7 +77,7 @@ function ErrorPage(props) {
 ErrorPage.displayName = 'ErrorPage';
 ErrorPage.propTypes = {
 	error: PropTypes.shape({
-		detailedMessage: PropTypes.string,
+		detailedMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
 		message: PropTypes.string,
 		status: PropTypes.number
 	}).isRequired

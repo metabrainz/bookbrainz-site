@@ -23,6 +23,7 @@ import editionGroupRouter from './routes/entity/edition-group';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
 import indexRouter from './routes/index';
+import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
@@ -55,6 +56,10 @@ function initEditionRoutes(app) {
 	app.use('/edition', editionRouter);
 }
 
+function initMergeRoutes(app) {
+	app.use('/merge', mergeRouter);
+}
+
 function initWorkRoutes(app) {
 	app.use('/work', workRouter);
 }
@@ -76,6 +81,7 @@ function initRoutes(app) {
 	initEditionGroupRoutes(app);
 	initAuthorRoutes(app);
 	initEditionRoutes(app);
+	initMergeRoutes(app);
 	initWorkRoutes(app);
 	initPublisherRoutes(app);
 	initRevisionRoutes(app);

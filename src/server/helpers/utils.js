@@ -238,3 +238,22 @@ export function getNextEnabledAndResultsArray(array, size) {
 		nextEnabled: false
 	};
 }
+
+/**
+ * Takes an entity and converts it to a format acceptable to react-select.
+ *
+ * @param {Object} entity the entity to convert
+ * @returns {Object} the formatted data
+ */
+export function entityToOption(entity) {
+	return _.isNil(entity) ? null :
+		{
+			defaultAlias: entity.defaultAlias,
+			disambiguation: entity.disambiguation ?
+				entity.disambiguation.comment : null,
+			id: entity.bbid,
+			text: entity.defaultAlias ?
+				entity.defaultAlias.name : '(unnamed)',
+			type: entity.type
+		};
+}

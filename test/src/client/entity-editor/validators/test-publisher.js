@@ -49,6 +49,7 @@ import {
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
+
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
@@ -75,8 +76,8 @@ function describeValidatePublisherSectionType() {
 
 const VALID_PUBLISHER_SECTION = {
 	area: null,
-	beginDate: {day: '', month: '', year: ''},
-	endDate: {day: '', month: '', year: ''},
+	beginDate: '',
+	endDate: '',
 	ended: true,
 	type: 1
 };

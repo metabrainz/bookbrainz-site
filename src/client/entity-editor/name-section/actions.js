@@ -18,8 +18,8 @@
 
 // @flow
 
-import {snakeCase as _snakeCase} from 'lodash';
-import request from 'superagent-bluebird-promise';
+import {snakeCase as _snakeCase, uniqBy} from 'lodash';
+import request from 'superagent';
 
 
 export const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
@@ -130,13 +130,19 @@ export function checkIfNameExists(
 		}
 		request.get('/search/exists')
 			.query({
-				collection: _snakeCase(entityType),
-				q: name
+				q: name,
+				type: _snakeCase(entityType)
 			})
-			.then(res => dispatch({
-				payload: JSON.parse(res.text) || null,
-				type: action || UPDATE_WARN_IF_EXISTS
-			}))
+			.then(res => {
+				let payload = JSON.parse(res.text) || null;
+				if (Array.isArray(payload)) {
+					payload = uniqBy(payload, 'bbid');
+				}
+				return dispatch({
+					payload,
+					type: action || UPDATE_WARN_IF_EXISTS
+				});
+			})
 			.catch((error: {message: string}) => error);
 	};
 }
@@ -166,8 +172,8 @@ export function searchName(
 		}
 		request.get('/search/autocomplete')
 			.query({
-				collection: type,
-				q: name
+				q: name,
+				type
 			})
 			.then(res => dispatch({
 				payload: JSON.parse(res.text),

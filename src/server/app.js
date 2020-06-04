@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint global-require: 'warn' */
+/* eslint global-require: 0, no-process-env: 0 */
 
 import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
@@ -41,6 +41,10 @@ import redis from 'connect-redis';
 import routes from './routes';
 import serveStatic from 'serve-static';
 import session from 'express-session';
+
+
+// Initialize log-to-stdout  writer
+require('log-node')();
 
 
 Promise.config({
@@ -74,6 +78,7 @@ if (process.env.NODE_ENV === 'development') {
 	const webpackDevMiddleware = require('webpack-dev-middleware');
 	const webpackHotMiddleware = require('webpack-hot-middleware');
 
+	// eslint-disable-next-line import/no-dynamic-require
 	const webpackConfig = require(path.resolve(rootDir, './webpack.client'));
 	const compiler = webpack(webpackConfig);
 
@@ -175,14 +180,14 @@ const server = app.listen(app.get('port'), () => {
 /* eslint-disable no-console */
 function cleanupFunction() {
 	return new Promise((resolve, reject) => {
-		console.log('Cleaning up before closing');
+		debug('Cleaning up before closing');
 		server.close((err) => {
 			if (err) {
-				console.log('Error while closing server connections');
+				debug('Error while closing server connections');
 				reject(err);
 			}
 			else {
-				console.log('Closed all server connections. Bye bye!');
+				debug('Closed all server connections. Bye bye!');
 				resolve();
 			}
 		});

@@ -26,7 +26,7 @@ import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
 import makeImmutable from './make-immutable';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
@@ -80,8 +80,7 @@ class EntitySearchFieldOption extends React.Component {
 			id,
 			language: language && language.label,
 			text: _.get(entity, ['defaultAlias', 'name']),
-			type: entity.type,
-			value: id
+			type: entity.type
 		};
 	}
 
@@ -94,8 +93,8 @@ class EntitySearchFieldOption extends React.Component {
 		const response = await request
 			.get('/search/autocomplete')
 			.query({
-				collection: this.props.type,
-				q: query
+				q: query,
+				type: this.props.type
 			});
 		return {
 			options: response.body.map(this.entityToOption)

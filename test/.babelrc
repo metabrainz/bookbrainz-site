@@ -1,0 +1,5 @@
+{
+	"extends": "../.babelrc",
+	"retainLines": true,
+	"sourceMaps": true
+}

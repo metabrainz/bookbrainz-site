@@ -21,8 +21,9 @@ import * as auth from '../helpers/auth';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
+import * as search from '../helpers/search';
 import * as utils from '../helpers/utils';
-import {eachMonthOfInterval, format} from 'date-fns';
+import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import EditorContainer from '../../client/containers/editor';
@@ -142,9 +143,20 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			}
 			return editorTitleUnlock.save();
 		})
-		.then((editor) => editor.toJSON());
+		.then((editor) => {
+			const editorJSON = editor.toJSON();
+			const editorForES = {};
+			editorForES.bbid = editorJSON.id;
+			editorForES.aliasSet = {
+				aliases: [
+					{name: editorJSON.name}
+				]
+			};
+			editorForES.type = 'Editor';
+			return editorForES;
+		});
 
-	handler.sendPromiseResult(res, editorJSONPromise);
+	handler.sendPromiseResult(res, editorJSONPromise, search.indexEntity);
 });
 
 function getEditorTitleJSON(editorJSON, TitleUnlock) {
@@ -194,7 +206,17 @@ function getIdEditorJSONPromise(userId, req) {
 		});
 }
 
-async function getEditorActivity(editorId, startDate, Revision) {
+export async function getEditorActivity(editorId, startDate, Revision, endDate = Date.now()) {
+	if (!isValid(startDate)) {
+		throw new Error('Start date is invalid');
+	}
+	if (!isValid(endDate)) {
+		throw new Error('End date is invalid');
+	}
+	if (!isAfter(endDate, startDate)) {
+		throw new Error('Start date is greater than end date');
+	}
+
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', editorId)
 		.orderBy('created_at', 'ASC')
@@ -207,7 +229,7 @@ async function getEditorActivity(editorId, startDate, Revision) {
 	const revisionsCount = _.countBy(revisionDates);
 
 	const allMonthsInInterval = eachMonthOfInterval({
-		end: Date.now(),
+		end: endDate,
 		start: startDate
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))

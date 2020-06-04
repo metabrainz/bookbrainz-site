@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 /*
  * Copyright (C) 2014-2015  Ben Ockmore
  *               2015-2017  Sean Burke
@@ -83,7 +84,7 @@ app.use('/*', (req, res) => {
 	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
 });
 // Catch 404 and forward to error handler
-mainRouter.use((req, res, next) => {
+mainRouter.use((req, res) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
 });
 
@@ -99,14 +100,14 @@ const server = app.listen(app.get('port'), () => {
 /* eslint-disable no-console */
 function cleanupFunction() {
 	return new Promise((resolve, reject) => {
-		console.log('Cleaning up before closing');
+		debug('Cleaning up before closing');
 		server.close((err) => {
 			if (err) {
-				console.log('Error while closing server connections');
+				debug('Error while closing server connections');
 				reject(err);
 			}
 			else {
-				console.log('Closed all server connections. Bye bye!');
+				debug('Closed all server connections. Bye bye!');
 				resolve();
 			}
 		});

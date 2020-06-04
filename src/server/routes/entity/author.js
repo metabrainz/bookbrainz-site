@@ -23,8 +23,6 @@ import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
 
 import {
-	ISODateStringToObject,
-	dateObjectToISOString,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
@@ -36,9 +34,90 @@ import express from 'express';
 import target from '../../templates/target';
 
 
+/** ****************************
+*********** Helpers ************
+*******************************/
+
+const additionalAuthorProps = [
+	'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
+	'endAreaId'
+];
+
+
+function transformNewForm(data) {
+	const aliases = entityRoutes.constructAliases(
+		data.aliasEditor, data.nameSection
+	);
+
+	const identifiers = entityRoutes.constructIdentifiers(
+		data.identifierEditor
+	);
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
+	);
+
+	return {
+		aliases,
+		beginAreaId: data.authorSection.beginArea &&
+			data.authorSection.beginArea.id,
+		beginDate: data.authorSection.beginDate,
+		disambiguation: data.nameSection.disambiguation,
+		endAreaId: data.authorSection.endArea &&
+			data.authorSection.endArea.id,
+		endDate: data.authorSection.endDate ? data.authorSection.endDate : null,
+		ended: data.authorSection.ended,
+		genderId: data.authorSection.gender,
+		identifiers,
+		note: data.submissionSection.note,
+		relationships,
+		typeId: data.authorSection.type
+	};
+}
+
+const createOrEditHandler = makeEntityCreateOrEditHandler(
+	'author', transformNewForm, additionalAuthorProps
+);
+
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'author', transformNewForm, additionalAuthorProps, true
+);
+
+/** ****************************
+*********** Routes ************
+*******************************/
+
 const router = express.Router();
 
-/* If the route specifies a BBID, load the Author for it. */
+// Creation
+router.get(
+	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadGenders, middleware.loadLanguages,
+	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
+	(req, res) => {
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
+			'author', req, res, {
+				genderOptions: res.locals.genders
+			}
+		));
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
+router.post('/create/handler', auth.isAuthenticatedForHandler,
+	createOrEditHandler);
+
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+router.param(
+	'bbid',
+	middleware.redirectedBbid
+);
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
@@ -89,26 +168,6 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
 });
 
-// Creation
-router.get(
-	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadGenders, middleware.loadLanguages,
-	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
-	(req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'author', req, res, {
-				genderOptions: res.locals.genders
-			}
-		));
-
-		return res.send(target({
-			markup,
-			props: escapeProps(props),
-			script: '/js/entity-editor.js',
-			title: props.heading
-		}));
-	}
-);
 
 function authorToFormState(author) {
 	/** The front-end expects a language id rather than the language object. */
@@ -150,15 +209,16 @@ function authorToFormState(author) {
 
 	const authorSection = {
 		beginArea: entityRoutes.areaToOption(author.beginArea),
-		beginDate: ISODateStringToObject(author.beginDate),
+		beginDate: author.beginDate,
 		endArea: entityRoutes.areaToOption(author.endArea),
-		endDate: ISODateStringToObject(author.endDate),
+		endDate: author.endDate,
 		ended: author.ended,
 		gender: author.gender && author.gender.id,
 		type: author.authorType && author.authorType.id
 	};
 
 	const relationshipSection = {
+		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
@@ -206,53 +266,11 @@ router.get(
 	}
 );
 
-const additionalAuthorProps = [
-	'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
-	'endAreaId'
-];
-
-
-function transformNewForm(data) {
-	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
-	);
-
-	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
-	);
-
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
-	);
-
-	return {
-		aliases,
-		beginAreaId: data.authorSection.beginArea &&
-			data.authorSection.beginArea.id,
-		beginDate: data.authorSection.beginDate ?
-			dateObjectToISOString(data.authorSection.beginDate) : '',
-		disambiguation: data.nameSection.disambiguation,
-		endAreaId: data.authorSection.endArea &&
-			data.authorSection.endArea.id,
-		endDate: data.authorSection.endDate ?
-			dateObjectToISOString(data.authorSection.endDate) : '',
-		ended: data.authorSection.ended,
-		genderId: data.authorSection.gender,
-		identifiers,
-		note: data.submissionSection.note,
-		relationships,
-		typeId: data.authorSection.type
-	};
-}
-
-const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'author', transformNewForm, additionalAuthorProps
-);
-
-router.post('/create/handler', auth.isAuthenticatedForHandler,
-	createOrEditHandler);
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 export default router;

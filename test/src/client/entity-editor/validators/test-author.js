@@ -51,6 +51,7 @@ import {
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
+
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
@@ -85,9 +86,9 @@ function describeValidateAuthorSectionGender() {
 
 const VALID_AUTHOR_SECTION = {
 	beginArea: null,
-	beginDate: {day: '', month: '', year: ''},
+	beginDate: '',
 	endArea: null,
-	endDate: {day: '', month: '', year: ''},
+	endDate: '',
 	ended: true,
 	gender: 1,
 	type: 1

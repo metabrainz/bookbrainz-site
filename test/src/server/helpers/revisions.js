@@ -55,7 +55,8 @@ describe('getOrderedRevisions', () => {
 				'createdAt',
 				'editor',
 				'entities',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 		expect(orderedRevisions.length).to.equal(size);
@@ -331,7 +332,8 @@ describe('getOrderedRevisionForEditorPage', () => {
 				'editor',
 				'entities',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 		expect(orderedRevisions.length).to.equal(size);
@@ -402,7 +404,8 @@ describe('getOrderedRevisionForEditorPage', () => {
 			'editor',
 			'entities',
 			'notes',
-			'revisionId'
+			'revisionId',
+			'isMerge'
 		);
 		expect(orderedRevisions[0].notes.length).to.be.equal(10);
 		expect(orderedRevisions[0].notes).to.be.sortedBy('postedAt');
@@ -412,13 +415,10 @@ describe('getOrderedRevisionForEditorPage', () => {
 /* eslint-disable no-await-in-loop */
 describe('getOrderedRevisionsForEntityPage', () => {
 	// eslint-disable-next-line one-var
-	let editorJSON, req;
+	let editorJSON;
 	before(async () => {
 		const editor = await createEditor();
 		editorJSON = editor.toJSON();
-		req = {
-			params: {}
-		};
 	});
 	after(truncateEntities);
 
@@ -426,17 +426,16 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const numberOfRevisions = 10;
 		const author = await createAuthor();
 		const authorJSON = author.toJSON();
-		req.params.bbid = authorJSON.bbid;
 
 		// starting from 2 because one revision is created while creating the author
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new AuthorData({aliasSetId: authorJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new AuthorRevision({bbid: authorJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
 		}
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(0, numberOfRevisions, AuthorRevision, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, AuthorRevision, authorJSON.bbid);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
@@ -445,7 +444,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -454,18 +454,17 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const numberOfRevisions = 10;
 		const work = await createWork();
 		const workJSON = work.toJSON();
-		req.params.bbid = workJSON.bbid;
 
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new WorkData({aliasSetId: workJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new WorkRevision({bbid: workJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(0, numberOfRevisions, WorkRevision, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, WorkRevision, workJSON.bbid);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
@@ -474,7 +473,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -483,18 +483,17 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const numberOfRevisions = 10;
 		const edition = await createEdition();
 		const editionJSON = edition.toJSON();
-		req.params.bbid = editionJSON.bbid;
 
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new EditionData({aliasSetId: editionJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new EditionRevision({bbid: editionJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(0, numberOfRevisions, EditionRevision, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, EditionRevision, editionJSON.bbid);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
@@ -503,7 +502,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -512,18 +512,17 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const numberOfRevisions = 10;
 		const publisher = await createPublisher();
 		const publisherJSON = publisher.toJSON();
-		req.params.bbid = publisherJSON.bbid;
 
 		// starting from 2 because one revision is created while creating the publisher
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new PublisherData({aliasSetId: publisherJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new PublisherRevision({bbid: publisherJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(0, numberOfRevisions, PublisherRevision, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, PublisherRevision, publisherJSON.bbid);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
@@ -532,7 +531,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -541,18 +541,17 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const numberOfRevisions = 10;
 		const editionGroup = await createEditionGroup();
 		const editionGroupJSON = editionGroup.toJSON();
-		req.params.bbid = editionGroupJSON.bbid;
 
 		// starting from 2 because one revision is created while creating the editionGroup
 		for (let i = 2; i <= numberOfRevisions; i++) {
 			const revisionId = random.number();
-			let dataId = random.number();
+			const dataId = random.number();
 			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
 			await new EditionGroupData({aliasSetId: editionGroupJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
 			await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(0, numberOfRevisions, EditionGroupRevision, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, EditionGroupRevision, editionGroupJSON.bbid);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
@@ -561,7 +560,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 				'createdAt',
 				'editor',
 				'notes',
-				'revisionId'
+				'revisionId',
+				'isMerge'
 			);
 		});
 	});
@@ -569,8 +569,8 @@ describe('getOrderedRevisionsForEntityPage', () => {
 	it('should return revisions with notes sorted according to "postedAt" and with expected keys', async () => {
 		const author = await createAuthor();
 		const authorJSON = await author.toJSON();
-		req.params.bbid = authorJSON.bbid;
-		const revisionID = authorJSON.revisionId; // revision created while create author
+		// revision created while create author
+		const revisionID = authorJSON.revisionId;
 
 		const noteAttrib = {
 			authorId: editorJSON.id,
@@ -589,7 +589,7 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		}
 		await Promise.all(promiseArray);
 
-		const orderedRevision = await getOrderedRevisionsForEntityPage(0, 10, AuthorRevision, req);
+		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, authorJSON.bbid);
 
 		expect(orderedRevision.length).to.be.equal(1);
 		expect(orderedRevision[0].notes.length).to.be.equal(10);
@@ -597,5 +597,53 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		orderedRevision[0].notes.forEach((note) => {
 			expect(note.author).to.deep.equal(editorJSON);
 		});
+	});
+
+	/* eslint-disable camelcase */
+	it('should return revisions of merged entities', async () => {
+		const author1 = await createAuthor();
+		const author2 = await createAuthor();
+		const author1JSON = await author1.toJSON();
+		const author2JSON = await author2.toJSON();
+		// revision created while create author
+		const revisionID1 = author1JSON.revisionId;
+		const revisionID2 = author2JSON.revisionId;
+
+		// Let's pretend author2 was merged into author1
+		await orm.bookshelf.knex('bookbrainz.entity_redirect')
+			.insert({source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid});
+
+		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, author1JSON.bbid);
+
+		expect(orderedRevision.length).to.be.equal(2);
+		expect(orderedRevision[0].revisionId).to.be.equal(revisionID2);
+		expect(orderedRevision[1].revisionId).to.be.equal(revisionID1);
+	});
+
+	it('should return revisions of previously merged entities recursively', async () => {
+		const author1 = await createAuthor();
+		const author2 = await createAuthor();
+		const author3 = await createAuthor();
+		const author1JSON = await author1.toJSON();
+		const author2JSON = await author2.toJSON();
+		const author3JSON = await author3.toJSON();
+		// revision created while create author
+		const revisionID1 = author1JSON.revisionId;
+		const revisionID2 = author2JSON.revisionId;
+		const revisionID3 = author3JSON.revisionId;
+
+		// Let's pretend author3 was merged into author2 and author2 was merged into author1
+		await orm.bookshelf.knex('bookbrainz.entity_redirect')
+			.insert([
+				{source_bbid: author3JSON.bbid, target_bbid: author2JSON.bbid},
+				{source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid}
+			]);
+
+		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, author1JSON.bbid);
+
+		expect(orderedRevision.length).to.be.equal(3);
+		expect(orderedRevision[0].revisionId).to.be.equal(revisionID3);
+		expect(orderedRevision[1].revisionId).to.be.equal(revisionID2);
+		expect(orderedRevision[2].revisionId).to.be.equal(revisionID1);
 	});
 });

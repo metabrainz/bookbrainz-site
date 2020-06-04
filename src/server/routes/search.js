@@ -35,6 +35,7 @@ import SearchPage from '../../client/components/pages/search';
 import express from 'express';
 import target from '../templates/target';
 
+
 const router = express.Router();
 
 /**
@@ -44,11 +45,11 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const collection = req.query.collection || null;
+	const type = req.query.type || 'allEntities';
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	// get 1 more results to check nextEnabled
-	search.searchByName(orm, query, _snakeCase(collection), size + 1, from)
+	search.searchByName(orm, query, _snakeCase(type), size + 1, from)
 		.then((entities) => ({
 			initialResults: entities.filter(entity => !isNil(entity)),
 			query
@@ -86,10 +87,11 @@ router.get('/', (req, res, next) => {
 router.get('/search', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const collection = req.query.collection || null;
+	const type = req.query.type || 'allEntities';
+
 	const {size, from} = req.query;
 
-	const searchPromise = search.searchByName(orm, query, _snakeCase(collection), size, from);
+	const searchPromise = search.searchByName(orm, query, _snakeCase(type), size, from);
 
 	handler.sendPromiseResult(res, searchPromise);
 });
@@ -101,9 +103,9 @@ router.get('/search', (req, res) => {
 router.get('/autocomplete', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const collection = req.query.collection || null;
+	const type = req.query.type || 'allEntities';
 
-	const searchPromise = search.autocomplete(orm, query, collection);
+	const searchPromise = search.autocomplete(orm, query, type);
 
 	handler.sendPromiseResult(res, searchPromise);
 });
@@ -114,9 +116,9 @@ router.get('/autocomplete', (req, res) => {
  */
 router.get('/exists', (req, res) => {
 	const {orm} = req.app.locals;
-	const {q, collection} = req.query;
+	const {q, type} = req.query;
 
-	const searchPromise = search.checkIfExists(orm, q, _snakeCase(collection));
+	const searchPromise = search.checkIfExists(orm, q, _snakeCase(type));
 
 	handler.sendPromiseResult(res, searchPromise);
 });

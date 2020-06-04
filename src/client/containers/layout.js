@@ -20,24 +20,20 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint max-len: "warn" */
-/* eslint import/no-unassigned-import: "warn" */
+
 /* eslint import/no-commonjs: "warn" */
 /* eslint global-require: "warn" */
 
+// eslint-disable-next-line import/no-unassigned-import
 import '../helpers/setupIconLibrary';
 import * as bootstrap from 'react-bootstrap';
-
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
+import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
-
-if (!process.env.SSR) {
-	require('../../client/stylesheets/style.less');
-}
 
 const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 
@@ -235,6 +231,7 @@ class Layout extends React.Component {
 			siteRevision,
 			repositoryUrl,
 			children,
+			mergeQueue,
 			requiresJS
 		} = this.props;
 
@@ -255,10 +252,16 @@ class Layout extends React.Component {
 						</div>
 					)}
 					{children}
+					{mergeQueue ?
+						<MergeQueue
+							mergeQueue={mergeQueue}
+						/> : null
+					}
 				</div>
 			);
 
 		const alerts = this.props.alerts.map((alert, idx) => (
+			// eslint-disable-next-line react/no-array-index-key
 			<Alert bsStyle={alert.level} className="text-center" key={idx}>
 				<p>{alert.message}</p>
 			</Alert>
@@ -291,6 +294,7 @@ Layout.propTypes = {
 	disableSignUp: PropTypes.bool,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,
+	mergeQueue: PropTypes.object,
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
 	siteRevision: PropTypes.string.isRequired,
@@ -300,6 +304,7 @@ Layout.defaultProps = {
 	disableSignUp: false,
 	hideSearch: false,
 	homepage: false,
+	mergeQueue: null,
 	requiresJS: false,
 	user: null
 };

@@ -17,17 +17,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
+import type {$Request, $Response, NextFunction} from 'express';
 
 import Promise from 'bluebird';
-import renderRelationship from '../helpers/render';
 
 
 function makeLoader(modelName, propName, sortFunc) {
-	return function loaderFunc(req, res, next) {
-		const model = req.app.locals.orm[modelName];
+	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
+		const {orm}: any = req.app.locals;
+		const model = orm[modelName];
 		return model.fetchAll()
 			.then((results) => {
 				const resultsSerial = results.toJSON();
@@ -66,8 +69,8 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
-export function loadEntityRelationships(req, res, next) {
-	const {orm} = req.app.locals;
+export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
+	const {orm}: any = req.app.locals;
 	const {RelationshipSet} = orm;
 	const {entity} = res.locals;
 
@@ -119,14 +122,32 @@ export function loadEntityRelationships(req, res, next) {
 				)
 			);
 		})
-		.then((relationships) => {
+		.then(() => {
 			next();
 			return null;
 		})
 		.catch(next);
 }
+export async function redirectedBbid(req: $Request, res: $Response, next: NextFunction, bbid: string) {
+	if (!commonUtils.isValidBBID(bbid)) {
+		return next(new error.BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
+	}
+	const {orm}: any = req.app.locals;
 
-export function makeEntityLoader(modelName, additionalRels, errMessage) {
+	try {
+		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
+		if (redirectBbid !== bbid) {
+			// res.location(`${req.baseUrl}/${redirectBbid}`);
+			return res.redirect(301, `${req.baseUrl}${req.path.replace(bbid, redirectBbid)}`);
+		}
+	}
+	catch (err) {
+		return next(err);
+	}
+	return next();
+}
+
+export function makeEntityLoader(modelName: string, additionalRels: Array<string>, errMessage: string) {
 	const relations = [
 		'aliasSet.aliases.language',
 		'annotation.lastRevision',
@@ -137,12 +158,9 @@ export function makeEntityLoader(modelName, additionalRels, errMessage) {
 		'revision.revision'
 	].concat(additionalRels);
 
-	return async (req, res, next, bbid) => {
-		const {orm} = req.app.locals;
-		if (req.path.toLowerCase() === '/create') {
-			return next('route');
-		}
-		else if (commonUtils.isValidBBID(bbid)) {
+	return async (req: $Request, res: $Response, next: NextFunction, bbid: string) => {
+		const {orm}: any = req.app.locals;
+		if (commonUtils.isValidBBID(bbid)) {
 			try {
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				if (!entity.dataId) {

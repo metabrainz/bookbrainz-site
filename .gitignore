@@ -10,6 +10,7 @@
 /config/config.local.json
 
 # react-hot-loader files
+/static/hot
 /static/**/*.hot-update.js
 
 ### Node ###
@@ -74,6 +75,9 @@ typings/
 
 # Tern analysis server config
 .tern-project
+
+# IntelliJ project files
+.idea/
 
 # Visual Studio Code config files
 .vscode

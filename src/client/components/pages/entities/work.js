@@ -105,6 +105,7 @@ function WorkDisplayPage({entity, identifierTypes}) {
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				bbid={entity.bbid}
 				deleted={entity.deleted}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
