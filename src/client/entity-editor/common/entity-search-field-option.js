@@ -26,7 +26,7 @@ import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
 import makeImmutable from './make-immutable';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);

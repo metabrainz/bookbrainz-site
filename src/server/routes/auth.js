@@ -50,9 +50,9 @@ router.get('/cb', (req, res, next) => {
 			}
 
 			const {Editor} = req.app.locals.orm;
-			//  lastLoginDate is current login date with time in ISO foramt
+			// lastLoginDate is current login date with time in ISO format
 			const lastLoginDate = new Date().toISOString();
-			//  Query for update activeAt with current login timestamp
+			// Query for update activeAt with current login timestamp
 			try {
 				await Editor.where({id: req.user.id}).save({activeAt: lastLoginDate}, {patch: true});
 			}

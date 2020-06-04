@@ -61,11 +61,11 @@ type PassportRequest = $Request & {user: any, session: any};
 export function generateEntityProps(
 	entityType: string,
 	req: $Request, res: $Response,
-	additionalProps: Object,
-	initialStateCallback: (entity: ?Object) => Object =
+	additionalProps: any,
+	initialStateCallback: (entity: ?any) => any =
 	// eslint-disable-next-line no-unused-vars
 	(entity) => new Object()
-): Object {
+): any {
 	const entityName = _.upperFirst(entityType);
 	const {entity} = res.locals;
 	const isEdit = Boolean(entity);
@@ -118,9 +118,9 @@ export function generateEntityProps(
  * @returns {object} - props
  */
 export function generateEntityMergeProps(
-	req: express.request, res: express.response,
-	additionalProps: Object,
-	initialStateCallback: (entity: ?Object) => Object =
+	req: $Request, res: $Response,
+	additionalProps: any,
+	initialStateCallback: (entity: ?any) => any =
 	(entity) => new Object()
 ): Object {
 	const {entityType, mergingEntities} = additionalProps;
@@ -156,7 +156,7 @@ export function generateEntityMergeProps(
  * @returns {object} - Updated props and HTML string with markup
  */
 export function entityEditorMarkup(
-	props: { initialState: Object,
+	props: { initialState: any,
 			 entityType: string }
 ) {
 	const {initialState, ...rest} = props;
@@ -192,7 +192,7 @@ export function entityEditorMarkup(
  * @returns {object} - Updated props and HTML string with markup
  */
 export function entityMergeMarkup(
-	props: { initialState: Object,
+	props: { initialState: any,
 			 entityType: string }
 ) {
 	const {initialState, ...rest} = props;
@@ -247,7 +247,7 @@ export function makeEntityCreateOrEditHandler(
 	entityType: string,
 	transformNewForm: Function,
 	propertiesToPick: string | string[],
-	isMergeHandler?: boolean = false
+	isMergeHandler: boolean = false
 ) {
 	const entityName = _.upperFirst(entityType);
 	const validate = getValidator(entityType);

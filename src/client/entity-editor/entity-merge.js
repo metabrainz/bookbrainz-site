@@ -35,13 +35,14 @@ import {getEntityLink} from '../../server/helpers/utils';
 
 
 type OwnProps = {
-	children: React.Element<any>
+	children: React.Element<any>,
+	mergingEntities: Object,
+	identifierTypes: Array<any>,
+	subheading: string
 };
 
 type StateProps = {
-	aliasEditorVisible: boolean,
-	identifierEditorVisible: boolean,
-	relationshipsArray: object
+	identifierSet: any
 };
 
 type Props = StateProps & OwnProps;
@@ -50,10 +51,9 @@ type Props = StateProps & OwnProps;
  * Container component. Renders all of the sections of the entity editing form.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {boolean} props.aliasEditorVisible - Whether the alias editor modal
- *        should be made visible.
- * @param {boolean} props.identifierEditorVisible - Whether the identifier
- *        editor modal should be made visible.
+ * @param {boolean} props.identifierSet - Concatenated identifiers from entities in merging
+ * @param {boolean} props.identifierTypes - possible identifier types for this entity type
+ * @param {string} props.subheading - Subheading at the top of the html page
  * @param {React.Node} props.children - The child content to wrap with this
  *        entity editor form.
  * @returns {ReactElement} React element containing the rendered EntityMerge.
@@ -63,6 +63,7 @@ const EntityMerge = (props: Props) => {
 		children,
 		mergingEntities,
 		identifierSet,
+		identifierTypes,
 		subheading
 	} = props;
 	const identifiers = _.values(identifierSet.toJS()) || [];
@@ -91,6 +92,12 @@ const EntityMerge = (props: Props) => {
 				</Panel.Title>
 			</Panel.Heading>
 			<Panel.Body>
+				<p className="alert alert-info">
+					You are merging into entity {mergingEntities[0].bbid}. If you want to merge into another entity instead,
+					you can select the correct entity in the merge queue at the bottom of the page and click
+					the <i>Merge into selected entity</i> button again.
+					This will reload the page with the new merge target selected.
+				</p>
 				<p className="text-muted">
 				Select and review the data to merge.
 				For further modifications, edit the resulting merged entity.
@@ -120,7 +127,7 @@ const EntityMerge = (props: Props) => {
 						</Col>
 						<Col md={4}>
 							<EntityIdentifiers
-								identifierTypes={props.identifierTypes}
+								identifierTypes={identifierTypes}
 								identifiers={identifiers}
 							/>
 						</Col>

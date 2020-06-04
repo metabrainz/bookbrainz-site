@@ -37,7 +37,7 @@ import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
 import renderRelationship from '../helpers/render';
-import target from '../templates/target';
+import targetTemplate from '../templates/target';
 
 
 const router = express.Router();
@@ -282,10 +282,10 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 		delete mergingEntities[req.params.bbid];
 
 		/* If there's only one item in the queue, delete the queue entirely */
-		if (Object.keys(mergingEntities).length === 0) {
+		const mergingBBIDs = Object.keys(mergingEntities);
+		if (mergingBBIDs.length === 0) {
 			req.session.mergeQueue = null;
 		}
-
 		res.redirect(req.headers.referer);
 	});
 
@@ -295,7 +295,7 @@ router.get('/cancel', auth.isAuthenticated,
 		res.redirect(req.headers.referer);
 	});
 
-router.get('/submit', auth.isAuthenticated,
+router.get('/submit/:targetBBID?', auth.isAuthenticated,
 	middleware.loadIdentifierTypes, middleware.loadLanguages,
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
@@ -305,7 +305,8 @@ router.get('/submit', auth.isAuthenticated,
 		if (!mergeQueue) {
 			return next(new ConflictError('No entities selected for merge'));
 		}
-		const {mergingEntities} = mergeQueue;
+		const {mergingEntities, entityType} = mergeQueue;
+
 		const bbids = Object.keys(mergingEntities);
 		if (bbids.length < 2) {
 			return next(new ConflictError('You must have at least 2 entities selected to merge'));
@@ -316,6 +317,10 @@ router.get('/submit', auth.isAuthenticated,
 		}
 
 		let mergingFetchedEntities = _.values(mergingEntities);
+		let {targetBBID} = req.params;
+		if (_.isNil(targetBBID)) {
+			targetBBID = bbids[0];
+		}
 
 		if (!_.uniqBy(mergingFetchedEntities, 'type').length === 1) {
 			const conflictError = new ConflictError('You can only merge entities of the same type');
@@ -342,7 +347,11 @@ router.get('/submit', auth.isAuthenticated,
 			return next(conflictError);
 		}
 
-		const {entityType} = mergeQueue;
+		mergingFetchedEntities.sort((first, second) => {
+			if (first.bbid === targetBBID) { return -1; }
+			else if (second.bbid === targetBBID) { return 1; }
+			return 0;
+		});
 		res.locals.entity = mergingFetchedEntities[0];
 
 		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
@@ -354,7 +363,7 @@ router.get('/submit', auth.isAuthenticated,
 			, entitiesToFormState
 		));
 
-		return res.send(target({
+		return res.send(targetTemplate({
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',

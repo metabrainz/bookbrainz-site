@@ -23,7 +23,7 @@ import Achievement from '../../forms/parts/achievement';
 import DragAndDrop from '../../input/drag-and-drop';
 import PropTypes from 'prop-types';
 import React from 'react';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Row} = bootstrap;

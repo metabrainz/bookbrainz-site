@@ -20,7 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utils from '../../../../server/helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Pager, Button, ButtonGroup, DropdownButton, MenuItem} = bootstrap;
