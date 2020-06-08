@@ -87,7 +87,7 @@ type Response = {
 	}
 };
 
-function postSubmission(url: string, data: Map<string, mixed>): Promise {
+function postSubmission(url: string, data: Map<string, mixed>): Promise<void> {
 	/*
 	 * TODO: Not the best way to do this, but once we unify the
 	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
@@ -126,7 +126,7 @@ export function submit(
 					 * superagent message
 					 */
 					const message =
-						_.get(error, ['res', 'body', 'error'], null) ||
+						_.get(error, ['response', 'body', 'error'], null) ||
 						error.message;
 					// If there was an error submitting the form, make the submit button clickable again
 					dispatch(setSubmitted(false));
