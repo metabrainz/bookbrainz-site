@@ -34,10 +34,14 @@ import {connect} from 'react-redux';
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.errorText - A message to be displayed within the
  *        component in the case of an error.
+ * @param {boolean} props.formValid - Boolean indicating if the form has been
+ *        validated successfully or if it contains errors
  * @param {Function} props.onNoteChange - A function to be called when the
  *        revision note is changed.
- * @param {Function} props.onSubmitClick - A function to be called when the
+ * @param {Function} props.onSubmit - A function to be called when the
  *        submit button is clicked.
+ * @param {boolean} props.submitted - Boolean indicating if the form has been submitted
+ *        (i.e. submit button clicked) to prevent submitting again
  * @returns {ReactElement} React element containing the rendered
  *          SubmissionSection.
  */
@@ -45,7 +49,8 @@ function SubmissionSection({
 	errorText,
 	formValid,
 	onNoteChange,
-	onSubmit
+	onSubmit,
+	submitted
 }) {
 	const errorAlertClass =
 		classNames('text-center', 'margin-top-1', {hidden: !errorText});
@@ -84,7 +89,7 @@ function SubmissionSection({
 			<div className="text-center margin-top-1">
 				<Button
 					bsStyle="success"
-					disabled={!formValid}
+					disabled={!formValid || submitted}
 					onClick={onSubmit}
 				>
 					Submit
@@ -101,14 +106,16 @@ SubmissionSection.propTypes = {
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
-	onSubmit: PropTypes.func.isRequired
+	onSubmit: PropTypes.func.isRequired,
+	submitted: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(rootState, {validate, identifierTypes}) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
-		formValid: validate(rootState, identifierTypes)
+		formValid: validate(rootState, identifierTypes),
+		submitted: state.get('submitted')
 	};
 }
 
