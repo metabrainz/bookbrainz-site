@@ -29,6 +29,7 @@ class EditorCollectionsPage extends React.Component {
 			results: this.props.results
 		};
 
+		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './collections/collections?q=';
 	}
@@ -37,17 +38,29 @@ class EditorCollectionsPage extends React.Component {
 		this.setState({results: newResults});
 	}
 
+	handleTypeChange(type) {
+		if (typeof type !== 'string') {
+			return;
+		}
+
+		const query = type ? `&type=${type}` : '';
+
+		this.setState({from: 0, query});
+	}
+
 	render() {
 		return (
 			<div id="pageWithPagination">
 				<EditorCollectionsTable
 					results={this.state.results}
 					tableHeading={this.props.tableHeading}
+					onTypeChange={this.handleTypeChange}
 				/>
 				<PagerElement
 					from={this.props.from}
 					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
+					query={this.state.query}
 					results={this.state.results}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.size}
@@ -64,13 +77,16 @@ EditorCollectionsPage.propTypes = {
 	nextEnabled: PropTypes.bool.isRequired,
 	results: PropTypes.array,
 	size: PropTypes.number,
-	tableHeading: PropTypes.string
+	tableHeading: PropTypes.string,
+	// eslint-disable-next-line react/no-unused-prop-types
+	type: PropTypes.string
 };
 EditorCollectionsPage.defaultProps = {
 	from: 0,
 	results: [],
 	size: 20,
-	tableHeading: 'Collections'
+	tableHeading: 'Collections',
+	type: null
 };
 
 export default EditorCollectionsPage;
