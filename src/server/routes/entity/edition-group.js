@@ -52,6 +52,7 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
+		annotation: data.submissionSection.annotation.content,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
@@ -220,13 +221,24 @@ function editionGroupToFormState(editionGroup) {
 		}
 	));
 
+	const optionalSections = {};
+	if (editionGroup.annotation) {
+		optionalSections.submissionSection = {
+			annotation: editionGroup.annotation,
+			note: '',
+			submitError: '',
+			submitted: false
+		};
+	}
+
 	return {
 		aliasEditor,
 		buttonBar,
 		editionGroupSection,
 		identifierEditor,
 		nameSection,
-		relationshipSection
+		relationshipSection,
+		...optionalSections
 	};
 }
 

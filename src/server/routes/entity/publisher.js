@@ -55,6 +55,7 @@ function transformNewForm(data) {
 	);
 	return {
 		aliases,
+		annotation: data.submissionSection.annotation.content,
 		areaId: data.publisherSection.area && data.publisherSection.area.id,
 		beginDate: data.publisherSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
@@ -244,13 +245,24 @@ function publisherToFormState(publisher) {
 		}
 	));
 
+	const optionalSections = {};
+	if (publisher.annotation) {
+		optionalSections.submissionSection = {
+			annotation: publisher.annotation,
+			note: '',
+			submitError: '',
+			submitted: false
+		};
+	}
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
 		publisherSection,
-		relationshipSection
+		relationshipSection,
+		...optionalSections
 	};
 }
 

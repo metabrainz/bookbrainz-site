@@ -58,6 +58,7 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
+		annotation: data.submissionSection.annotation.content,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		languages,
@@ -261,13 +262,24 @@ function workToFormState(work) {
 		}
 	));
 
+	const optionalSections = {};
+	if (work.annotation) {
+		optionalSections.submissionSection = {
+			annotation: work.annotation,
+			note: '',
+			submitError: '',
+			submitted: false
+		};
+	}
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
 		relationshipSection,
-		workSection
+		workSection,
+		...optionalSections
 	};
 }
 

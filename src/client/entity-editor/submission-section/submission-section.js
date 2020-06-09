@@ -17,8 +17,8 @@
  */
 
 import {Alert, Button, Col, Row} from 'react-bootstrap';
-import {debounceUpdateRevisionNote, submit} from './actions';
-
+import {convertMapToObject, formatDate} from '../../helpers/utils';
+import {debounceUpdateAnnotation, debounceUpdateRevisionNote, submit} from './actions';
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -36,6 +36,8 @@ import {connect} from 'react-redux';
  *        component in the case of an error.
  * @param {boolean} props.formValid - Boolean indicating if the form has been
  *        validated successfully or if it contains errors
+ * @param {Function} props.onAnnotationChange - A function to be called when the
+ *        annotation is changed.
  * @param {Function} props.onNoteChange - A function to be called when the
  *        revision note is changed.
  * @param {Function} props.onSubmit - A function to be called when the
@@ -46,8 +48,10 @@ import {connect} from 'react-redux';
  *          SubmissionSection.
  */
 function SubmissionSection({
+	annotation,
 	errorText,
 	formValid,
+	onAnnotationChange,
 	onNoteChange,
 	onSubmit,
 	submitted
@@ -61,31 +65,53 @@ function SubmissionSection({
 			<span className="text-muted"> (optional)</span>
 		</span>
 	);
+	const annotationLabel = (
+		<span>
+			Annotation
+			<span className="text-muted"> (optional)</span>
+		</span>
+	);
 
 	return (
 		<div>
 			<h2>
 				Submit Your Edit
 			</h2>
-			<p className="text-muted">
-				{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
-				- Where did you get your info from? A link is worth a thousand words.
-				- What kind of information did you provide? If you made any changes, what are they and why?
- 				- Do you have any questions concerning the editing process you want to ask?`}
-			</p>
-			<form>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<CustomInput
-							label={editNoteLabel}
-							rows="6"
-							tooltipText="Cite your sources or an explanation of your edit"
-							type="textarea"
-							onChange={onNoteChange}
-						/>
-					</Col>
-				</Row>
-			</form>
+			<Row>
+				<Col md={6}>
+					<CustomInput
+						label={annotationLabel}
+						rows="6"
+						tooltipText="Additional freeform data that does not fit in the above form"
+						type="textarea"
+						value={annotation.content}
+						onChange={onAnnotationChange}
+					/>
+					{
+						annotation && annotation.lastRevision &&
+						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>
+					}
+					<p className="help-block">
+						Annotations allow you to enter freeform data that does not otherwise fit in the above form.
+						<b> Do not submit any copyrighted text here.</b> The contents will be made available to the public under <a href="https://musicbrainz.org/doc/About/Data_License">open licenses</a>.
+					</p>
+				</Col>
+				<Col md={6}>
+					<CustomInput
+						label={editNoteLabel}
+						rows="6"
+						tooltipText="Cite your sources or an explanation of your edit"
+						type="textarea"
+						onChange={onNoteChange}
+					/>
+					<p className="text-muted">
+						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
+						- Where did you get your info from? A link is worth a thousand words.
+						- What kind of information did you provide? If you made any changes, what are they and why?
+						- Do you have any questions concerning the editing process you want to ask?`}
+					</p>
+				</Col>
+			</Row>
 			<div className="text-center margin-top-1">
 				<Button
 					bsStyle="success"
@@ -103,8 +129,10 @@ function SubmissionSection({
 }
 SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
+	annotation: PropTypes.object.isRequired,
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
+	onAnnotationChange: PropTypes.func.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
 	onSubmit: PropTypes.func.isRequired,
 	submitted: PropTypes.bool.isRequired
@@ -113,6 +141,7 @@ SubmissionSection.propTypes = {
 function mapStateToProps(rootState, {validate, identifierTypes}) {
 	const state = rootState.get('submissionSection');
 	return {
+		annotation: convertMapToObject(state.get('annotation')),
 		errorText: state.get('submitError'),
 		formValid: validate(rootState, identifierTypes),
 		submitted: state.get('submitted')
@@ -122,6 +151,8 @@ function mapStateToProps(rootState, {validate, identifierTypes}) {
 
 function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
+		onAnnotationChange: (event) =>
+			dispatch(debounceUpdateAnnotation(event.target.value)),
 		onNoteChange: (event) =>
 			dispatch(debounceUpdateRevisionNote(event.target.value)),
 		onSubmit: () => dispatch(submit(submissionUrl))
