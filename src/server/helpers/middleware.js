@@ -182,3 +182,32 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 		}
 	};
 }
+
+export function makeCollectionLoader() {
+	return async (req, res, next, collectionId) => {
+		const {UserCollection} = req.app.locals.orm;
+
+		if (commonUtils.isValidBBID(collectionId)) {
+			try {
+				const collection = await new UserCollection({id: collectionId}).fetch({
+					require: true,
+					withRelated: ['collaborators.collaborator', 'items']
+				});
+				const collectionJSON = collection.toJSON();
+				// reshaping collaborators such that it can be used in EntitySearchFieldOption
+				collectionJSON.collaborators = collectionJSON.collaborators.map((collaborator) => ({
+					id: collaborator.collaborator.id,
+					text: collaborator.collaborator.name
+				}));
+				res.locals.collection = collectionJSON;
+				return next();
+			}
+			catch (err) {
+				return next(new error.NotFoundError('Collection Not Found', req));
+			}
+		}
+		else {
+			return next(new error.BadRequestError('Invalid Collection ID', req));
+		}
+	};
+}

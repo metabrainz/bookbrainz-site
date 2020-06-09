@@ -104,7 +104,7 @@ class EntitySearchFieldOption extends React.Component {
 	render() {
 		const labelElement = <ValidationLabel empty={this.props.empty} error={this.props.error}>{this.props.label}</ValidationLabel>;
 		return (
-			<CustomInput label={labelElement} tooltipText={this.props.tooltipText}>
+			<CustomInput label={labelElement} tooltipText={this.props.tooltipText} {...this.props}>
 				<ImmutableAsyncSelect
 					filterOptions={false}
 					labelKey="text"
