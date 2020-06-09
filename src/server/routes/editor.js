@@ -369,7 +369,7 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	}
 });
 
-async function getOrderedCollections(from, size, req) {
+async function getOrderedCollections(from, size, entityType, req) {
 	const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
 
 	const otherCollections = await new UserCollectionCollaborator({editorId: req.params.id}).fetchAll();
@@ -385,6 +385,9 @@ async function getOrderedCollections(from, size, req) {
 			}
 			qb.whereIn('id', collectionIds)
 				.orWhere('owner_id', req.params.id);
+			if (entityType) {
+				qb.where('entity_type', entityType);
+			}
 			qb.orderBy('name');
 		}).fetchPage({
 			limit: size,
@@ -403,15 +406,17 @@ router.get('/:id/collections', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const entityType = req.query.entityType ? req.query.entityType : null;
 
 	try {
-		const orderedCollections = await getOrderedCollections(from, size + 1, req);
+		const orderedCollections = await getOrderedCollections(from, size + 1, entityType, req);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
+			entityType,
 			from,
 			nextEnabled,
 			results: newResultsArray,
@@ -449,7 +454,8 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 	try {
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-		const orderedCollections = await getOrderedCollections(from, size, req);
+		const entityType = req.query.entityType ? req.query.entityType : null;
+		const orderedCollections = await getOrderedCollections(from, size, entityType, req);
 		res.send(orderedCollections);
 	}
 	catch (err) {

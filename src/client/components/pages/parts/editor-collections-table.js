@@ -23,66 +23,77 @@ import React from 'react';
 
 const {Table} = bootstrap;
 
+class CollectionsTable extends React.Component {
+	constructor(props) {
+		super(props);
+		this.handleEntitySelect = this.handleEntitySelect.bind(this);
+	}
 
-function CollectionsTable(props) {
-	const {results, tableHeading} = props;
+	handleEntitySelect(type) {
+		this.props.onTypeChange(type);
+	}
 
-	const tableCssClasses = 'table table-striped';
-	return (
+	render() {
+		const {results, tableHeading} = this.props;
 
-		<div>
+		const tableCssClasses = 'table table-striped';
+		return (
+
 			<div>
-				<h1 className="text-center">{tableHeading}</h1>
+				<div>
+					<h1 className="text-center">{tableHeading}</h1>
+				</div>
+				<hr className="thin"/>
+				{
+					results.length > 0 ?
+						<Table
+							responsive
+							className={tableCssClasses}
+						>
+							<thead>
+								<tr>
+									<th className="col-sm-2">Name</th>
+									<th className="col-sm-5">Description</th>
+									<th className="col-sm-3">Entity Type</th>
+									<th className="col-sm-3">Privacy</th>
+									<th className="col-sm-2">Last Modified</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								{
+									results.map((collection) => (
+										<tr key={collection.id}>
+											<td>
+												<a
+													href={`/collection/${collection.id}`}
+												>
+													{collection.name}
+												</a>
+											</td>
+											<td>{collection.description}</td>
+											<td>{collection.entityType}</td>
+											<td>{collection.public ? 'Public' : 'Private'}</td>
+											<td>{collection.lastModified.toString()}</td>
+										</tr>
+									))
+								}
+							</tbody>
+						</Table> :
+
+						<div>
+							<h4> No collections to show</h4>
+							<hr className="wide"/>
+						</div>
+				}
 			</div>
-			<hr className="thin"/>
-			{
-				results.length > 0 ?
-					<Table
-						responsive
-						className={tableCssClasses}
-					>
-						<thead>
-							<tr>
-								<th className="col-sm-2">Collection Name</th>
-								<th className="col-sm-5">Description</th>
-								<th className="col-sm-3">EntityType</th>
-								<th className="col-sm-3">Privacy</th>
-								<th className="col-sm-2">Last Modified</th>
-							</tr>
-						</thead>
 
-						<tbody>
-							{
-								results.map((collection) => (
-									<tr key={collection.id}>
-										<td>
-											<a
-												href={`/collection/${collection.id}`}
-											>
-												{collection.name}
-											</a>
-										</td>
-										<td>{collection.description}</td>
-										<td>{collection.entityType}</td>
-										<td>{collection.public ? 'Public' : 'Private'}</td>
-										<td>{collection.lastModified.toString()}</td>
-									</tr>
-								))
-							}
-						</tbody>
-					</Table> :
-
-					<div>
-						<h4> No collections to show</h4>
-						<hr className="wide"/>
-					</div>
-			}
-		</div>
-
-	);
+		);
+	}
 }
 
 CollectionsTable.propTypes = {
+	onTypeChange: PropTypes.func.isRequired,
 	results: PropTypes.array.isRequired,
 	tableHeading: PropTypes.node
 };
