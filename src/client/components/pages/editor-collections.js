@@ -52,6 +52,7 @@ class EditorCollectionsPage extends React.Component {
 		return (
 			<div id="pageWithPagination">
 				<EditorCollectionsTable
+					entityTypes={this.props.entityTypes}
 					results={this.state.results}
 					tableHeading={this.props.tableHeading}
 					onTypeChange={this.handleTypeChange}
@@ -73,20 +74,18 @@ class EditorCollectionsPage extends React.Component {
 
 EditorCollectionsPage.displayName = 'EditorCollectionsPage';
 EditorCollectionsPage.propTypes = {
+	entityTypes: PropTypes.array.isRequired,
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
 	results: PropTypes.array,
 	size: PropTypes.number,
-	tableHeading: PropTypes.string,
-	// eslint-disable-next-line react/no-unused-prop-types
-	type: PropTypes.string
+	tableHeading: PropTypes.string
 };
 EditorCollectionsPage.defaultProps = {
 	from: 0,
 	results: [],
 	size: 20,
-	tableHeading: 'Collections',
-	type: null
+	tableHeading: 'Collections'
 };
 
 export default EditorCollectionsPage;

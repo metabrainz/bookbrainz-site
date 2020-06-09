@@ -553,17 +553,21 @@ router.get('/:id/collections', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-	const entityType = req.query.entityType ? req.query.entityType : null;
+	let type = req.query.type ? req.query.type : null;
+	const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
+	if (!entityTypes.includes(type)) {
+		type = null;
+	}
 
 	try {
-		const orderedCollections = await getOrderedCollections(from, size + 1, entityType, req);
+		const orderedCollections = await getOrderedCollections(from, size + 1, type, req);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
-			entityType,
+			entityTypes,
 			from,
 			nextEnabled,
 			results: newResultsArray,
@@ -601,8 +605,13 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 	try {
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-		const entityType = req.query.entityType ? req.query.entityType : null;
-		const orderedCollections = await getOrderedCollections(from, size, entityType, req);
+		let type = req.query.type ? req.query.type : null;
+		const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
+		if (!entityTypes.includes(type)) {
+			type = null;
+		}
+
+		const orderedCollections = await getOrderedCollections(from, size, type, req);
 		res.send(orderedCollections);
 	}
 	catch (err) {

@@ -19,36 +19,68 @@
 import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
+import _ from 'lodash';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Table} = bootstrap;
+const {DropdownButton, MenuItem, Table} = bootstrap;
+
 
 class CollectionsTable extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			type: ''
+		};
+
+		// React does not autobind non-React class methods
 		this.handleEntitySelect = this.handleEntitySelect.bind(this);
 	}
 
 	handleEntitySelect(type) {
+		this.setState({type});
 		this.props.onTypeChange(type);
 	}
 
 	render() {
 		const {results, tableHeading} = this.props;
-
-		const tableCssClasses = 'table table-striped';
+		const entityTypeSelect = (
+			<DropdownButton
+				bsStyle="primary"
+				id="entity-type-select"
+				title={_.startCase(this.state.type) || 'All Types'}
+				onSelect={this.handleEntitySelect}
+			>
+				{this.props.entityTypes.map((entityType) => (
+					<MenuItem
+						eventKey={entityType}
+						key={entityType}
+					>
+						{genEntityIconHTMLElement(entityType)}
+						{_.startCase(entityType)}
+					</MenuItem>
+				))}
+				<MenuItem divider/>
+				<MenuItem
+					eventKey="all_types"
+					key="allTypes"
+				>
+					All Types
+				</MenuItem>
+			</DropdownButton>
+		);
 		return (
-
 			<div>
 				<div>
-					<h1 className="text-center">{tableHeading}</h1>
+					<h1 className="text-center ">{tableHeading}</h1>
+					{entityTypeSelect}
 				</div>
 				<hr className="thin"/>
 				{
 					results.length > 0 ?
 						<Table
 							responsive
-							className={tableCssClasses}
+							className="table table-striped"
 						>
 							<thead>
 								<tr>
@@ -93,6 +125,7 @@ class CollectionsTable extends React.Component {
 }
 
 CollectionsTable.propTypes = {
+	entityTypes: PropTypes.array.isRequired,
 	onTypeChange: PropTypes.func.isRequired,
 	results: PropTypes.array.isRequired,
 	tableHeading: PropTypes.node
