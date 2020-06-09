@@ -25,6 +25,7 @@ import request from 'superagent';
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
+export const UPDATE_ANNOTATION = 'UPDATE_ANNOTATION';
 export const SET_SUBMITTED = 'SET_SUBMITTED';
 
 export type Action = {
@@ -76,6 +77,22 @@ export function debounceUpdateRevisionNote(value: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		type: UPDATE_REVISION_NOTE,
+		value
+	};
+}
+
+/**
+ * Produces an action indicating that the annotation for the editing form
+ * should be updated with the provided value. The action is marked to be
+ * debounced by the keystroke debouncer defined for redux-debounce.
+ *
+ * @param {string} value - The new value to be used for the revision note.
+ * @returns {Action} The resulting UPDATE_ANNOTATION action.
+ */
+export function debounceUpdateAnnotation(value: string): Action {
+	return {
+		meta: {debounce: 'keystroke'},
+		type: UPDATE_ANNOTATION,
 		value
 	};
 }

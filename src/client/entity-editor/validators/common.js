@@ -165,10 +165,15 @@ export function validateSubmissionSectionNote(value: any): boolean {
 	return validateOptionalString(value);
 }
 
+export function validateSubmissionSectionAnnotation(value: any): boolean {
+	return validateOptionalString(value);
+}
+
 export function validateSubmissionSection(
 	data: any
 ): boolean {
 	return (
-		validateSubmissionSectionNote(get(data, 'note', null))
+		validateSubmissionSectionNote(get(data, 'note', null)) &&
+		validateSubmissionSectionAnnotation(get(data, 'annotation.content', null))
 	);
 }
