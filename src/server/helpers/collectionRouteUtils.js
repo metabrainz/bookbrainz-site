@@ -38,7 +38,7 @@ export async function collectionCreateOrEditHandler(req, res) {
 				require: true
 			});
 			method = 'update';
-			// newCollection.set('last_modified', Date.now());
+			newCollection.set('last_modified', new Date());
 		}
 		newCollection.set('description', req.body.description);
 		newCollection.set('name', req.body.name);

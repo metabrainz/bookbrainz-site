@@ -203,6 +203,10 @@ class UserCollectionForm extends React.Component {
 								placeholder="Select Privacy"
 								ref={(ref) => this.privacy = ref}
 							/>
+							<h3><b>Collaborators</b></h3>
+							<p className="help-block">
+								Collaborators can add/remove entities from your collection
+							</p>
 							{
 								this.state.collaborators.map((collaborator, index) => {
 									const buttonAfter = (
