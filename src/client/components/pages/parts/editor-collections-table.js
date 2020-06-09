@@ -53,10 +53,10 @@ class CollectionsTable extends React.Component {
 							<thead>
 								<tr>
 									<th className="col-sm-2">Name</th>
-									<th className="col-sm-5">Description</th>
-									<th className="col-sm-3">Entity Type</th>
-									<th className="col-sm-3">Privacy</th>
-									<th className="col-sm-2">Last Modified</th>
+									<th className="col-sm-4">Description</th>
+									<th className="col-sm-2">Entity Type</th>
+									<th className="col-sm-2">Privacy</th>
+									<th className="col-sm-2">Collaborator/Owner</th>
 								</tr>
 							</thead>
 
@@ -74,7 +74,7 @@ class CollectionsTable extends React.Component {
 											<td>{collection.description}</td>
 											<td>{collection.entityType}</td>
 											<td>{collection.public ? 'Public' : 'Private'}</td>
-											<td>{collection.lastModified.toString()}</td>
+											<td>{collection.isOwner ? 'Owner' : 'Collaborator'}</td>
 										</tr>
 									))
 								}
