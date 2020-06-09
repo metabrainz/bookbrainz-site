@@ -507,7 +507,7 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 });
 
 
-async function getOrderedCollections(from, size, entityType, req) {
+async function getOrderedCollectionsForEditorPage(from, size, entityType, req) {
 	const {UserCollection} = req.app.locals.orm;
 	const isThisCurrentUser = req.user && parseInt(req.params.id, 10) === parseInt(req.user.id, 10);
 
@@ -554,7 +554,7 @@ router.get('/:id/collections', async (req, res, next) => {
 	}
 
 	try {
-		const orderedCollections = await getOrderedCollections(from, size + 1, type, req);
+		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
@@ -605,7 +605,7 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 			type = null;
 		}
 
-		const orderedCollections = await getOrderedCollections(from, size, type, req);
+		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size, type, req);
 		res.send(orderedCollections);
 	}
 	catch (err) {

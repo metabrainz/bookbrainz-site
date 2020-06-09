@@ -72,7 +72,7 @@ class CollectionsTable extends React.Component {
 		return (
 			<div>
 				<div>
-					<h1 className="text-center ">{tableHeading}</h1>
+					<h1 className="text-center">{tableHeading}</h1>
 					{entityTypeSelect}
 				</div>
 				<hr className="thin"/>
