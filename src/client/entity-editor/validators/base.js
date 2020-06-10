@@ -38,7 +38,7 @@ export function get(
 
 export function getIn(
 	object: any,
-	path: string,
+	path: string | string[],
 	defaultValue: ?mixed = null
 ): mixed {
 	if (Iterable.isIterable(object)) {

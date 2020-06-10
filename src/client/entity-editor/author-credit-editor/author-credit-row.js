@@ -19,10 +19,15 @@
 // @flow
 
 import {
-	type Action, type Author, removeAuthorCreditRow, updateCreditAuthorValue, updateCreditDisplayValue,
+	type Action,
+	type Author,
+	removeAuthorCreditRow,
+	updateCreditAuthorValue,
+	updateCreditDisplayValue,
 	updateCreditJoinPhraseValue
 } from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
+
 import CustomInput from '../../input';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -89,6 +94,7 @@ function AuthorCreditRow({
 						instanceId={`author${index}`}
 						label="Author"
 						type="author"
+						validationState={!author ? 'error' : null}
 						value={author}
 						onChange={onAuthorChange}
 					/>
@@ -98,6 +104,7 @@ function AuthorCreditRow({
 						id={`authorDisplayName${index}`}
 						label="Author as credited"
 						type="text"
+						validationState={!name.length ? 'error' : null}
 						value={name}
 						onChange={onNameChange}
 					/>

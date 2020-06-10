@@ -33,8 +33,10 @@ import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ValidationLabel from '../common/validation-label';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {validateAuthorCreditSection} from '../validators/common';
 
 
 type OwnProps = {
@@ -66,12 +68,19 @@ function AuthorCreditSection({
 	}
 	const authorCreditPreview = _map(authorCredit, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const noAuthorCredit = _keys(authorCredit).length <= 0;
+	const isValid = validateAuthorCreditSection(authorCredit);
 
 	const editButton = (
 		<Button bsStyle="success" onClick={onEditAuthorCredit}>
 			<FontAwesomeIcon icon="pencil-alt"/>
-			&nbsp;Edit Author Credit
+			&nbsp;Edit
 		</Button>);
+
+	const label = (
+		<ValidationLabel error={!isValid}>
+			Author Credit
+		</ValidationLabel>
+	);
 
 	return (
 		<Row className="margin-bottom-2">
@@ -80,10 +89,10 @@ function AuthorCreditSection({
 				<CustomInput
 					readOnly
 					buttonAfter={editButton}
-					label="Author Credit"
+					label={label}
 					placeholder="No Author Credit yet, click edit to add one"
 					tooltipText="Names of the Authors as they appear on the book cover"
-					validationState={noAuthorCredit ? 'error' : null}
+					validationState={noAuthorCredit || !isValid ? 'error' : null}
 					value={authorCreditPreview}
 				/>
 			</Col>

@@ -21,6 +21,7 @@
 import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
 	validateAliases,
+	validateAuthorCreditSection,
 	validateIdentifiers,
 	validateNameSection,
 	validateSubmissionSection
@@ -125,6 +126,7 @@ export function validateForm(
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionSection(get(formData, 'editionSection', {})),
+		validateAuthorCreditSection(get(formData, 'authorCreditEditor', {})),
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 
