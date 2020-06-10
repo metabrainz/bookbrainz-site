@@ -84,7 +84,7 @@ function AuthorCreditRow({
 	return (
 		<div>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col md={3}>
 					<EntitySearchFieldOption
 						instanceId={`author${index}`}
 						label="Author"
@@ -93,33 +93,33 @@ function AuthorCreditRow({
 						onChange={onAuthorChange}
 					/>
 				</Col>
-				<Col md={6} mdOffset={3}>
+				<Col md={3}>
 					<CustomInput
 						id={`authorDisplayName${index}`}
-						label="Display Name"
+						label="Author as credited"
 						type="text"
 						value={name}
 						onChange={onNameChange}
 					/>
 				</Col>
-				<Col md={6} mdOffset={3}>
+				<Col md={3}>
 					<CustomInput
 						id={`identifierType${index}`}
-						label="Join Phrase"
+						label="Join phrase"
 						type="text"
 						value={joinPhrase}
 						onChange={onJoinPhraseChange}
 					/>
 				</Col>
-				<Col className="text-right" md={3} mdOffset={1}>
+				<Col md={3}>
 					<Button
 						block
 						bsStyle="danger"
-						className="margin-top-d15"
+						className="margin-top-d18"
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon="times"/>
-						<span>&nbsp;Remove</span>
+						&nbsp;Remove
 					</Button>
 				</Col>
 			</Row>

@@ -17,10 +17,14 @@
  */
 
 import {
-	ADD_AUTHOR_CREDIT_ROW, REMOVE_AUTHOR_CREDIT_ROW,
-	UPDATE_CREDIT_AUTHOR_VALUE, UPDATE_CREDIT_DISPLAY_VALUE,
+	ADD_AUTHOR_CREDIT_ROW,
+	REMOVE_AUTHOR_CREDIT_ROW,
+	REMOVE_EMPTY_CREDIT_ROWS,
+	UPDATE_CREDIT_AUTHOR_VALUE,
+	UPDATE_CREDIT_DISPLAY_VALUE,
 	UPDATE_CREDIT_JOIN_PHRASE_VALUE
 } from './actions';
+
 import Immutable from 'immutable';
 
 
@@ -89,6 +93,9 @@ function reducer(
 			return state.setIn([payload.rowId, 'joinPhrase'], payload.value);
 		case REMOVE_AUTHOR_CREDIT_ROW:
 			return deleteAuthorCreditRow(state, payload);
+		case REMOVE_EMPTY_CREDIT_ROWS:
+			return state.filterNot(row =>
+				row.get('author') === null && row.get('joinPhrase') === '' && row.get('name') === '');
 		// no default
 	}
 	return state;

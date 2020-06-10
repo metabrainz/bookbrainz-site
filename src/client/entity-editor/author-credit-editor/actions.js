@@ -24,6 +24,9 @@ export const REMOVE_AUTHOR_CREDIT_ROW = 'REMOVE_AUTHOR_CREDIT_ROW';
 export const UPDATE_CREDIT_AUTHOR_VALUE = 'UPDATE_CREDIT_AUTHOR_VALUE';
 export const UPDATE_CREDIT_DISPLAY_VALUE = 'UPDATE_CREDIT_DISPLAY_VALUE';
 export const UPDATE_CREDIT_JOIN_PHRASE_VALUE = 'UPDATE_CREDIT_JOIN_PHRASE_VALUE';
+export const SHOW_AUTHOR_CREDIT_EDITOR = 'SHOW_AUTHOR_CREDIT_EDITOR';
+export const HIDE_AUTHOR_CREDIT_EDITOR = 'HIDE_AUTHOR_CREDIT_EDITOR';
+export const REMOVE_EMPTY_CREDIT_ROWS = 'REMOVE_EMPTY_CREDIT_ROWS';
 
 export type Action = {
 	type: string,
@@ -124,5 +127,39 @@ export function updateCreditJoinPhraseValue(
 			value
 		},
 		type: UPDATE_CREDIT_JOIN_PHRASE_VALUE
+	};
+}
+
+/**
+ * Produces an action indicating that the Author Credit editor popup should be shown
+ *
+ * @returns {Action} The resulting SHOW_AUTHOR_CREDIT_EDITOR action.
+ */
+export function showAuthorCreditEditor(): Action {
+	return {
+		type: SHOW_AUTHOR_CREDIT_EDITOR
+	};
+}
+
+/**
+ * Produces an action indicating that the Author Credit editor popup should be hidden
+ *
+ * @returns {Action} The resulting HIDE_AUTHOR_CREDIT_EDITOR action.
+ */
+export function hideAuthorCreditEditor(): Action {
+	return {
+		type: HIDE_AUTHOR_CREDIT_EDITOR
+	};
+}
+
+
+/**
+ * Produces an action indicating that triggers the removal of empty items in the Author Credit
+ *
+ * @returns {Action} The resulting REMOVE_EMPTY_CREDIT_ROWS action.
+ */
+export function removeEmptyCreditRows(): Action {
+	return {
+		type: REMOVE_EMPTY_CREDIT_ROWS
 	};
 }

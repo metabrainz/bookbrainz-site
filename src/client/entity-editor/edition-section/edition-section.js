@@ -46,7 +46,8 @@ import {
 	validateEditionSectionWeight,
 	validateEditionSectionWidth
 } from '../validators/edition';
-import AuthorCreditEditor from '../author-credit-editor/author-credit-editor';
+
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -258,7 +259,7 @@ function EditionSection({
 			<h2>
 				What else do you know about the Edition?
 			</h2>
-			<AuthorCreditEditor/>
+			<AuthorCreditSection/>
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank
 			</p>
