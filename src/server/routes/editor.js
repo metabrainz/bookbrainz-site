@@ -36,6 +36,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
+import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
@@ -506,41 +507,6 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 	handler.sendPromiseResult(res, rankPromise);
 });
 
-
-async function getOrderedCollectionsForEditorPage(from, size, entityType, req) {
-	const {UserCollection} = req.app.locals.orm;
-	const isThisCurrentUser = req.user && parseInt(req.params.id, 10) === parseInt(req.user.id, 10);
-
-	const allCollections = await new UserCollection()
-		.query((qb) => {
-			qb.leftJoin('bookbrainz.user_collection_collaborator',
-				'bookbrainz.user_collection.id', '=',
-				'bookbrainz.user_collection_collaborator.collection_id');
-		})
-		.where((builder) => {
-			if (!isThisCurrentUser) {
-				builder.where('public', true);
-			}
-			if (entityType) {
-				builder.where('entity_type', entityType);
-			}
-		})
-		.where((builder) => {
-			builder.where('editor_id', '=', req.params.id).orWhere('owner_id', '=', req.params.id);
-		})
-		.fetchPage({
-			limit: size,
-			offset: from
-		});
-
-	const collectionsJSON = allCollections ? allCollections.toJSON() : [];
-
-	collectionsJSON.forEach((collection) => {
-		collection.isOwner = parseInt(req.params.id, 10) === collection.ownerId;
-	});
-
-	return collectionsJSON;
-}
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections', async (req, res, next) => {
