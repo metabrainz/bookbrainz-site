@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2020 Nicolas Pelletier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	SET_SUBMITTED, SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
-} from './actions';
 import Immutable from 'immutable';
+import {UPDATE_ANNOTATION} from './actions';
 
 
 function reducer(
-	state = Immutable.Map({
-		note: '',
-		submitError: '',
-		submitted: false
-	}),
+	state = Immutable.Map({content: ''}),
 	action
 ) {
 	switch (action.type) {
-		case UPDATE_REVISION_NOTE:
-			return state.set('note', action.value);
-		case SET_SUBMIT_ERROR:
-			return state.set('submitError', action.error);
-		case SET_SUBMITTED:
-			return state.set('submitted', action.submitted);
+		case UPDATE_ANNOTATION:
+			return state.set('content', action.value);
 		// no default
 	}
 	return state;

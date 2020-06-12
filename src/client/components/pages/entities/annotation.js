@@ -16,29 +16,48 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
+import {Button, Col, Collapse, Row} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {formatDate} from '../../../helpers/utils';
 
 
-function EntityAnnotation({entity}) {
-	const {annotation} = entity;
-	if (!annotation || !annotation.content) {
-		return null;
+class EntityAnnotation extends React.Component {
+	constructor(props) {
+	  super(props);
+
+	  this.state = {
+			open: false
+	  };
 	}
-	const lastModifiedDate = new Date(annotation.lastRevision.createdAt);
-	return (
-		<Row>
-			<Col md={12}>
-				<h2>Annotation</h2>
-				<p>{annotation.content}</p>
-				<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>
-					<span className="small"> (revision <a href={`/revision/${annotation.lastRevisionId}`}>#{annotation.lastRevisionId}</a>)</span>
-				</p>
-			</Col>
-		</Row>
-	);
+
+	handleToggleCollapse = () => {
+		this.setState(prevState => ({open: !prevState.open}));
+	};
+
+	render() {
+		const {annotation} = this.props.entity;
+		if (!annotation || !annotation.content) {
+			return null;
+		}
+		const lastModifiedDate = new Date(annotation.lastRevision.createdAt);
+		return (
+			<Row>
+				<Col md={12}>
+					<h2>Annotation</h2>
+					<Collapse in={this.state.open}>
+						<p className="annotation-content">{annotation.content}</p>
+					</Collapse>
+					<Button bsStyle="link" onClick={this.handleToggleCollapse}>
+						Show {this.state.open ? 'less' : 'more…'}
+					</Button>
+					<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>
+						<span className="small"> (revision <a href={`/revision/${annotation.lastRevisionId}`}>#{annotation.lastRevisionId}</a>)</span>
+					</p>
+				</Col>
+			</Row>
+		);
+	}
 }
 EntityAnnotation.displayName = 'EntityAnnotation';
 EntityAnnotation.propTypes = {

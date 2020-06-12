@@ -69,7 +69,7 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
-		annotation: data.submissionSection.annotation.content,
+		annotation: data.annotationSection.content,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
@@ -363,12 +363,7 @@ function editionToFormState(edition) {
 
 	const optionalSections = {};
 	if (edition.annotation) {
-		optionalSections.submissionSection = {
-			annotation: edition.annotation,
-			note: '',
-			submitError: '',
-			submitted: false
-		};
+		optionalSections.annotationSection = edition.annotation;
 	}
 
 	return {
