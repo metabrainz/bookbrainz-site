@@ -413,7 +413,6 @@ export async function checkIfExists(orm, name, type) {
 	// Follow-up: Fetch all entities in a single transaction from the postgres server
 	const baseRelations = [
 		'aliasSet.aliases.language',
-		'annotation.lastRevision',
 		'defaultAlias',
 		'disambiguation',
 		'identifierSet.identifiers.type',
