@@ -32,7 +32,7 @@ function EntityAnnotation({entity}) {
 		<Row>
 			<Col md={12}>
 				<h2>Annotation</h2>
-				<p>{annotation.content}</p>
+				<p className="annotation-content">{annotation.content}</p>
 				<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>
 					<span className="small"> (revision <a href={`/revision/${annotation.lastRevisionId}`}>#{annotation.lastRevisionId}</a>)</span>
 				</p>
