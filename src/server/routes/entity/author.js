@@ -59,7 +59,7 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
-		annotation: data.submissionSection.annotation.content,
+		annotation: data.annotationSection.content,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
 		beginDate: data.authorSection.beginDate,
@@ -237,12 +237,7 @@ function authorToFormState(author) {
 
 	const optionalSections = {};
 	if (author.annotation) {
-		optionalSections.submissionSection = {
-			annotation: author.annotation,
-			note: '',
-			submitError: '',
-			submitted: false
-		};
+		optionalSections.annotationSection = author.annotation;
 	}
 
 	return {

@@ -29,6 +29,7 @@ import PublisherSectionMerge from './publisher-section/publisher-section-merge';
 import WorkSection from './work-section/work-section';
 import WorkSectionMerge from './work-section/work-section-merge';
 import aliasEditorReducer from './alias-editor/reducer';
+import annotationSectionReducer from './annotation-section/reducer';
 import authorSectionReducer from './author-section/reducer';
 import buttonBarReducer from './button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
@@ -119,6 +120,7 @@ export function createRootReducer(entityType: string) {
 
 	return combineReducers({
 		aliasEditor: aliasEditorReducer,
+		annotationSection: annotationSectionReducer,
 		buttonBar: buttonBarReducer,
 		[entityReducerKey]: entityReducer,
 		identifierEditor: identifierEditorReducer,
