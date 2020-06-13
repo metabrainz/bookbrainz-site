@@ -19,12 +19,13 @@
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
+import CollectionsPage from '../../client/components/pages/collections';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import RevisionsPage from '../../client/components/pages/revisions';
+import _ from 'lodash';
 import express from 'express';
-import {getOrderedRevisions} from '../helpers/revisions';
+import {getOrderedPublicCollections} from '../helpers/collections';
 import target from '../templates/target';
 
 
@@ -35,13 +36,19 @@ router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	let type = req.query.type ? req.query.type : null;
+	const entityTypes = _.keys(utils.getEntityModels(orm));
+	if (!entityTypes.includes(type)) {
+		type = null;
+	}
 
 	function render(results, nextEnabled) {
 		const props = generateProps(req, res, {
+			entityTypes,
 			from,
 			nextEnabled,
 			results,
-			showRevisionEditor: true,
+			showOwner: true,
 			size
 		});
 
@@ -52,21 +59,21 @@ router.get('/', async (req, res, next) => {
 		 */
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<RevisionsPage {...propHelpers.extractChildProps(props)}/>
+				<CollectionsPage {...propHelpers.extractChildProps(props)}/>
 			</Layout>
 		);
 
 		res.send(target({
 			markup,
 			props: escapeProps(props),
-			script: '/js/revisions.js',
-			title: 'Revisions'
+			script: '/js/collections.js',
+			title: 'All Collections'
 		}));
 	}
 
 	try {
 		// fetch 1 more revision than required to check nextEnabled
-		const orderedRevisions = await getOrderedRevisions(from, size + 1, orm);
+		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		return render(newResultsArray, nextEnabled);
 	}
@@ -77,13 +84,18 @@ router.get('/', async (req, res, next) => {
 
 
 // eslint-disable-next-line consistent-return
-router.get('/revisions', async (req, res, next) => {
+router.get('/collections', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	let type = req.query.type ? req.query.type : null;
+	const entityTypes = _.keys(utils.getEntityModels(orm));
+	if (!entityTypes.includes(type)) {
+		type = null;
+	}
 
 	try {
-		const orderedRevisions = await getOrderedRevisions(from, size, orm);
+		const orderedRevisions = await getOrderedPublicCollections(from, size, type, orm);
 		res.send(orderedRevisions);
 	}
 	catch (err) {
