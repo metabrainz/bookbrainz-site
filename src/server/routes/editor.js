@@ -26,7 +26,7 @@ import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
-import EditorCollectionsPage from '../../client/components/pages/editor-collections';
+import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
@@ -531,6 +531,8 @@ router.get('/:id/collections', async (req, res, next) => {
 			from,
 			nextEnabled,
 			results: newResultsArray,
+			showOwnerCollaborator: true,
+			showPrivacy: true,
 			size,
 			tabActive: 3,
 			tableHeading: 'Collections'
@@ -540,7 +542,7 @@ router.get('/:id/collections', async (req, res, next) => {
 				<EditorContainer
 					{...propHelpers.extractEditorProps(props)}
 				>
-					<EditorCollectionsPage
+					<CollectionsPage
 						{...propHelpers.extractChildProps(props)}
 					/>
 				</EditorContainer>

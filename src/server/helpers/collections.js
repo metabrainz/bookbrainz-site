@@ -23,7 +23,7 @@ import * as error from '../../common/helpers/error';
  * Fetches the last 'size' collections with offset 'from'
  *
  * @param {number} from - the offset value
- * @param {number} size - no. of last revisions required
+ * @param {number} size - no. of last collections required
  * @param {string} entityType - entityType filter
  * @param {object} req - req is an object containing information about the HTTP request
  * @returns {array} - orderedCollections for particular Editor
@@ -70,6 +70,38 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
 	collectionsJSON.forEach((collection) => {
 		collection.isOwner = parseInt(req.params.id, 10) === collection.ownerId;
 	});
+
+	return collectionsJSON;
+}
+
+/**
+ * Fetches public collections for Show All Collections/Index Page
+ * Fetches the last 'size' number of collections with offset 'from'
+ *
+ * @param {number} from - the offset value
+ * @param {number} size - no. of last collections required
+ * @param {string} entityType - entityType filter
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @returns {array} - orderedCollections
+ */
+export async function getOrderedPublicCollections(from, size, entityType, orm) {
+	const {UserCollection} = orm;
+
+	const allCollections = await new UserCollection()
+		.where((builder) => {
+			builder.where('public', true);
+			if (entityType) {
+				builder.where('entity_type', entityType);
+			}
+		})
+		.orderBy('last_modified', 'DESC')
+		.fetchPage({
+			limit: size,
+			offset: from,
+			withRelated: ['owner']
+		});
+
+	const collectionsJSON = allCollections ? allCollections.toJSON() : [];
 
 	return collectionsJSON;
 }
