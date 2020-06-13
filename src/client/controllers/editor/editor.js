@@ -23,7 +23,7 @@ import {
 	extractLayoutProps
 } from '../../helpers/props';
 import {AppContainer} from 'react-hot-loader';
-import EditorCollectionsPage from '../../components/pages/editor-collections';
+import CollectionsPage from '../../components/pages/collections';
 import EditorContainer from '../../containers/editor';
 import EditorRevisionPage from '../../components/pages/editor-revision';
 import Layout from '../../containers/layout';
@@ -47,7 +47,7 @@ if (page === 'revisions') {
 }
 else if (page === 'collections') {
 	tab = (
-		<EditorCollectionsPage
+		<CollectionsPage
 			{...extractChildProps(props)}
 		/>);
 }

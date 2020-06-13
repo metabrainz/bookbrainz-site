@@ -18,10 +18,10 @@
 
 import {extractChildProps, extractLayoutProps} from '../helpers/props';
 import {AppContainer} from 'react-hot-loader';
+import CollectionsPage from '../components/pages/collections';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RevisionsPage from '../components/pages/revisions';
 
 
 const propsTarget = document.getElementById('props');
@@ -29,7 +29,7 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<RevisionsPage {...extractChildProps(props)}/>
+			<CollectionsPage {...extractChildProps(props)}/>
 		</Layout>
 	</AppContainer>
 );

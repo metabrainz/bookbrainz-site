@@ -16,13 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import EditorCollectionsTable from './parts/editor-collections-table';
+import EditorCollectionsTable from './parts/collections-table';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-class EditorCollectionsPage extends React.Component {
+class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -54,6 +54,9 @@ class EditorCollectionsPage extends React.Component {
 				<EditorCollectionsTable
 					entityTypes={this.props.entityTypes}
 					results={this.state.results}
+					showOwner={this.props.showOwner}
+					showOwnerCollaborator={this.props.showOwnerCollaborator}
+					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
 					onTypeChange={this.handleTypeChange}
 				/>
@@ -72,20 +75,26 @@ class EditorCollectionsPage extends React.Component {
 }
 
 
-EditorCollectionsPage.displayName = 'EditorCollectionsPage';
-EditorCollectionsPage.propTypes = {
+CollectionsPage.displayName = 'CollectionsPage';
+CollectionsPage.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
 	results: PropTypes.array,
+	showOwner: PropTypes.bool,
+	showOwnerCollaborator: PropTypes.bool,
+	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
 	tableHeading: PropTypes.string
 };
-EditorCollectionsPage.defaultProps = {
+CollectionsPage.defaultProps = {
 	from: 0,
 	results: [],
+	showOwner: false,
+	showOwnerCollaborator: false,
+	showPrivacy: false,
 	size: 20,
 	tableHeading: 'Collections'
 };
 
-export default EditorCollectionsPage;
+export default CollectionsPage;
