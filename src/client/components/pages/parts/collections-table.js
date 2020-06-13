@@ -43,12 +43,12 @@ class CollectionsTable extends React.Component {
 	}
 
 	render() {
-		const {results, tableHeading} = this.props;
+		const {showOwner, showOwnerCollaborator, showPrivacy, results, tableHeading} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
 				id="entity-type-select"
-				title={_.startCase(this.state.type) || 'All Types'}
+				title={_.startCase(this.state.type) || 'Entity Type'}
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType) => (
@@ -72,8 +72,12 @@ class CollectionsTable extends React.Component {
 		return (
 			<div>
 				<div>
-					<h1 className="text-center">{tableHeading}</h1>
-					{entityTypeSelect}
+					<h1 className="text-center">
+						{tableHeading}
+					</h1>
+					<div className="text-right">
+						{entityTypeSelect}
+					</div>
 				</div>
 				<hr className="thin"/>
 				{
@@ -87,8 +91,19 @@ class CollectionsTable extends React.Component {
 									<th className="col-sm-2">Name</th>
 									<th className="col-sm-4">Description</th>
 									<th className="col-sm-2">Entity Type</th>
-									<th className="col-sm-2">Privacy</th>
-									<th className="col-sm-2">Collaborator/Owner</th>
+									{
+										showPrivacy ?
+											<th className="col-sm-2">Privacy</th> : null
+									}
+									{
+										showOwnerCollaborator ?
+											<th className="col-sm-2">Collaborator/Owner</th> : null
+									}
+									{
+										showOwner ?
+											<th className="col-sm-2">Owner</th> : null
+
+									}
 								</tr>
 							</thead>
 
@@ -105,8 +120,19 @@ class CollectionsTable extends React.Component {
 											</td>
 											<td>{collection.description}</td>
 											<td>{collection.entityType}</td>
-											<td>{collection.public ? 'Public' : 'Private'}</td>
-											<td>{collection.isOwner ? 'Owner' : 'Collaborator'}</td>
+											{
+												showPrivacy ?
+													<td>{collection.public ? 'Public' : 'Private'}</td> : null
+											}
+											{
+												showOwnerCollaborator ?
+													<td>{collection.isOwner ? 'Owner' : 'Collaborator'}</td> : null
+											}
+											{
+												showOwner ?
+													<td>{collection.owner.name}</td> : null
+
+											}
 										</tr>
 									))
 								}
@@ -128,9 +154,15 @@ CollectionsTable.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	onTypeChange: PropTypes.func.isRequired,
 	results: PropTypes.array.isRequired,
+	showOwner: PropTypes.bool,
+	showOwnerCollaborator: PropTypes.bool,
+	showPrivacy: PropTypes.bool,
 	tableHeading: PropTypes.node
 };
 CollectionsTable.defaultProps = {
+	showOwner: false,
+	showOwnerCollaborator: false,
+	showPrivacy: false,
 	tableHeading: 'Collections'
 };
 
