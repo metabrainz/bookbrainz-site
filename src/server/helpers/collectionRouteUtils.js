@@ -56,8 +56,8 @@ export async function collectionCreateOrEditHandler(req, res) {
 		newlyAddedCollaborators.forEach((collaborator) => {
 			collaboratorPromises.push(
 				new UserCollectionCollaborator({
-					collectionId: newCollection.get('id'),
-					editorId: collaborator.id
+					collaboratorId: collaborator.id,
+					collectionId: newCollection.get('id')
 				}).save(null, {method: 'insert'})
 			);
 		});
@@ -65,7 +65,7 @@ export async function collectionCreateOrEditHandler(req, res) {
 			collaboratorPromises.push(
 				new UserCollectionCollaborator({})
 					.where('collection_id', newCollection.get('id'))
-					.where('editor_id', collaborator.id)
+					.where('collaborator_id', collaborator.id)
 					.destroy()
 			);
 		});
