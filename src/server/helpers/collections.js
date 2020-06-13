@@ -60,6 +60,7 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
 		.where((builder) => {
 			builder.where('editor_id', '=', req.params.id).orWhere('owner_id', '=', req.params.id);
 		})
+		.orderBy('created_at')
 		.fetchPage({
 			limit: size,
 			offset: from
