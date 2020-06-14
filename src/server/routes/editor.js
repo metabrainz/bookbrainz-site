@@ -526,6 +526,7 @@ router.get('/:id/collections', async (req, res, next) => {
 	}
 
 	try {
+		// fetch 1 more collections than required to check nextEnabled
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
