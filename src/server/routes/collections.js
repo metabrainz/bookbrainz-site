@@ -31,7 +31,7 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-/* GET revisions page. */
+/* GET collections page. */
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
@@ -72,7 +72,7 @@ router.get('/', async (req, res, next) => {
 	}
 
 	try {
-		// fetch 1 more revision than required to check nextEnabled
+		// fetch 1 more collections than required to check nextEnabled
 		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		return render(newResultsArray, nextEnabled);
