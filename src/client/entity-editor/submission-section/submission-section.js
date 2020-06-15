@@ -17,8 +17,8 @@
  */
 
 import {Alert, Button, Col, Row} from 'react-bootstrap';
+import {convertMapToObject, formatDate} from '../../helpers/utils';
 import {debounceUpdateRevisionNote, submit} from './actions';
-
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -67,25 +67,23 @@ function SubmissionSection({
 			<h2>
 				Submit Your Edit
 			</h2>
-			<p className="text-muted">
-				{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
-				- Where did you get your info from? A link is worth a thousand words.
-				- What kind of information did you provide? If you made any changes, what are they and why?
- 				- Do you have any questions concerning the editing process you want to ask?`}
-			</p>
-			<form>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<CustomInput
-							label={editNoteLabel}
-							rows="6"
-							tooltipText="Cite your sources or an explanation of your edit"
-							type="textarea"
-							onChange={onNoteChange}
-						/>
-					</Col>
-				</Row>
-			</form>
+			<Row>
+				<Col md={6} mdOffset={3}>
+					<CustomInput
+						label={editNoteLabel}
+						rows="6"
+						tooltipText="Cite your sources or an explanation of your edit"
+						type="textarea"
+						onChange={onNoteChange}
+					/>
+					<p className="text-muted">
+						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
+						- Where did you get your info from? A link is worth a thousand words.
+						- What kind of information did you provide? If you made any changes, what are they and why?
+						- Do you have any questions concerning the editing process you want to ask?`}
+					</p>
+				</Col>
+			</Row>
 			<div className="text-center margin-top-1">
 				<Button
 					bsStyle="success"

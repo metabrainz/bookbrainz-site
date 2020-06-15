@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-
+import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
@@ -139,6 +139,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 					{editionGroupSection}
 				</Col>
 			</Row>
+			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
 				<WorksTable

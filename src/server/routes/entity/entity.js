@@ -1035,16 +1035,20 @@ export function handleCreateOrEditEntity(
 				}
 			});
 
-			/* mainEntity.save will return an up-to-date entity… */
-			await saveEntitiesAndFinishRevision(
+			const savedMainEntity = await saveEntitiesAndFinishRevision(
 				orm, transacting, isNew, newRevision, mainEntity, allEntities,
 				editorJSON.id, body.note
 			);
 
-			/* …but we still need to load the aliases for search reindexing */
-			await mainEntity.load('aliasSet.aliases', {transacting});
+			/* We need to load the aliases for search reindexing and refresh it*/
+			await savedMainEntity.load('aliasSet.aliases', {transacting});
 
-			return mainEntity.toJSON();
+			/* New entities will lack some attributes like 'type' required for search indexing */
+			if (isNew) {
+				await savedMainEntity.refresh({transacting});
+			}
+
+			return savedMainEntity.toJSON();
 		}
 		catch (err) {
 			log.error(err);
