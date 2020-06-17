@@ -25,6 +25,7 @@ import request from 'superagent';
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
+export const SET_SUBMITTED = 'SET_SUBMITTED';
 
 export type Action = {
 	type: string,
@@ -46,6 +47,20 @@ export function setSubmitError(error: string): Action {
 	return {
 		error,
 		type: SET_SUBMIT_ERROR
+	};
+}
+
+/**
+ * Produces an action indicating whether the form  has been submitted or not.
+ * This consequently enables or disables the submit button to prevent double submissions
+ *
+ * @param {boolean} submitted - Boolean indicating if the form has been submitted
+ * @returns {Action} The resulting SET_SUBMITTED action.
+ */
+export function setSubmitted(submitted: boolean): Action {
+	return {
+		submitted,
+		type: SET_SUBMITTED
 	};
 }
 
@@ -72,7 +87,7 @@ type Response = {
 	}
 };
 
-function postSubmission(url: string, data: Map<string, mixed>): Promise {
+function postSubmission(url: string, data: Map<string, mixed>): Promise<void> {
 	/*
 	 * TODO: Not the best way to do this, but once we unify the
 	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
@@ -102,6 +117,7 @@ export function submit(
 ): ((Action) => mixed, () => Map<string, mixed>) => mixed {
 	return (dispatch, getState) => {
 		const rootState = getState();
+		dispatch(setSubmitted(true));
 		return postSubmission(submissionUrl, rootState)
 			.catch(
 				(error: {message: string}) => {
@@ -110,8 +126,10 @@ export function submit(
 					 * superagent message
 					 */
 					const message =
-						_.get(error, ['res', 'body', 'error'], null) ||
+						_.get(error, ['response', 'body', 'error'], null) ||
 						error.message;
+					// If there was an error submitting the form, make the submit button clickable again
+					dispatch(setSubmitted(false));
 					return dispatch(setSubmitError(message));
 				}
 			);

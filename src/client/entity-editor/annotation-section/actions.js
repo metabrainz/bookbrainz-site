@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2020  Nicolas Pelletier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	SET_SUBMITTED, SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
-} from './actions';
-import Immutable from 'immutable';
+// @flow
 
+export const UPDATE_ANNOTATION = 'UPDATE_ANNOTATION';
 
-function reducer(
-	state = Immutable.Map({
-		note: '',
-		submitError: '',
-		submitted: false
-	}),
-	action
-) {
-	switch (action.type) {
-		case UPDATE_REVISION_NOTE:
-			return state.set('note', action.value);
-		case SET_SUBMIT_ERROR:
-			return state.set('submitError', action.error);
-		case SET_SUBMITTED:
-			return state.set('submitted', action.submitted);
-		// no default
+export type Action = {
+	type: string,
+	payload?: mixed,
+	metadata?: {
+		debounce?: string
 	}
-	return state;
-}
+};
 
-export default reducer;
+/**
+ * Produces an action indicating that the annotation for the editing form
+ * should be updated with the provided value. The action is marked to be
+ * debounced by the keystroke debouncer defined for redux-debounce.
+ *
+ * @param {string} value - The new value to be used for the revision note.
+ * @returns {Action} The resulting UPDATE_ANNOTATION action.
+ */
+export function debounceUpdateAnnotation(value: string): Action {
+	return {
+		meta: {debounce: 'keystroke'},
+		type: UPDATE_ANNOTATION,
+		value
+	};
+}

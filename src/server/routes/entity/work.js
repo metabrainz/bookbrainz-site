@@ -58,6 +58,7 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
+		annotation: data.annotationSection.content,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		languages,
@@ -261,13 +262,19 @@ function workToFormState(work) {
 		}
 	));
 
+	const optionalSections = {};
+	if (work.annotation) {
+		optionalSections.annotationSection = work.annotation;
+	}
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
 		relationshipSection,
-		workSection
+		workSection,
+		...optionalSections
 	};
 }
 
