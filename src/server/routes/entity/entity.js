@@ -41,7 +41,6 @@ import EditionGroupPage from '../../../client/components/pages/entities/edition-
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
-import Promise from 'bluebird';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -50,6 +49,7 @@ import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 
@@ -89,11 +89,11 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
 			.catch(
 				// error caused by duplicates we do not want in database
-				() => Promise.resolve(false)
+				() => new Promise(resolve => resolve(false))
 			);
 	}
 	else {
-		editorEntityVisitPromise = Promise.resolve(false);
+		editorEntityVisitPromise = new Promise(resolve => resolve(false));
 	}
 
 	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
@@ -136,7 +136,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 			alertPromise = Promise.all(promiseList);
 		}
 		else {
-			alertPromise = Promise.resolve(false);
+			alertPromise = new Promise(resolve => resolve(false));
 		}
 		return alertPromise;
 	});
@@ -285,7 +285,7 @@ export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: 
 
 async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	if (_.isEmpty(parentRevisionIDs)) {
-		return Promise.resolve(null);
+		return new Promise(resolve => resolve(null));
 	}
 
 	// Get the parents of the new revision
@@ -405,7 +405,7 @@ function fetchOrCreateMainEntity(
 	const entity = model.forge({bbid});
 
 	if (isNew) {
-		return Promise.resolve(entity);
+		return new Promise(resolve => resolve(entity));
 	}
 
 	return entity.fetch({transacting});
@@ -736,7 +736,7 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
-	return Promise.props({
+	return makePromiseFromObject({
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
@@ -756,7 +756,7 @@ async function processWorkSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	return Promise.props({
+	return makePromiseFromObject({
 		languageSetId: orm.func.language.updateLanguageSet(
 			orm, transacting, oldSet,
 			languages.map((languageID) => ({id: languageID}))
@@ -779,7 +779,7 @@ function processEntitySets(
 		return processWorkSets(orm, currentEntity, body, transacting);
 	}
 
-	return Promise.resolve(null);
+	return new Promise(resolve => resolve(null));
 }
 
 
@@ -853,7 +853,7 @@ async function getNextAnnotation(
 
 	return body.annotation ? orm.func.annotation.updateAnnotation(
 		orm, transacting, oldAnnotation, body.annotation, revision
-	) : Promise.resolve(null);
+	) : new Promise(resolve => resolve(null));
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {

@@ -24,8 +24,6 @@ import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {$Request, $Response, NextFunction} from 'express';
 
-import Promise from 'bluebird';
-
 
 function makeLoader(modelName, propName, sortFunc) {
 	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
@@ -108,19 +106,14 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 			 * a good way of polymorphically fetching the right specific entity,
 			 * we need to fetch default alias in a somewhat sketchier way.
 			 */
-			return Promise.map(
-				entity.relationships,
-				(relationship) => Promise.join(
-					getEntityWithAlias(relationship.source),
-					getEntityWithAlias(relationship.target),
-					(source, target) => {
+			return Promise.all(entity.relationships.map((relationship) =>
+				Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
+					.then(([source, target]) => {
 						relationship.source = source.toJSON();
 						relationship.target = target.toJSON();
 
 						return relationship;
-					}
-				)
-			);
+					})));
 		})
 		.then(() => {
 			next();

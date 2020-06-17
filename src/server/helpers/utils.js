@@ -21,7 +21,6 @@
 
 // @flow
 
-import Promise from 'bluebird';
 import _ from 'lodash';
 
 
@@ -190,7 +189,7 @@ export function incrementEditorEditCountById(
 			editor.incrementEditCount();
 			return editor.save(null, {transacting});
 		})
-		.catch(Editor.NotFoundError, err => Promise.reject(err));
+		.catch(Editor.NotFoundError, err => new Promise((resolve, reject) => reject(err)));
 }
 
 /**
@@ -202,9 +201,7 @@ export function incrementEditorEditCountById(
  *                    truncate tables completes
  */
 export function truncateTables(Bookshelf: Object, tables: Array<string>) {
-	return Promise.each(
-		tables, (table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
-	);
+	return Promise.all(tables.map(table => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)));
 }
 
 /**

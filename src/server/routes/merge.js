@@ -32,7 +32,6 @@ import {
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
 
-import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
@@ -140,7 +139,7 @@ function entitiesToFormState(entities) {
 	return props;
 }
 
-function loadEntityRelationships(entity, orm, transacting): Promise {
+function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	const {RelationshipSet} = orm;
 
 	if (!entity.relationshipSetId) {
@@ -172,19 +171,18 @@ function loadEntityRelationships(entity, orm, transacting): Promise {
 			 * a good way of polymorphically fetching the right specific entity,
 			 * we need to fetch default alias in a somewhat sketchier way.
 			 */
-			return Promise.map(
-				entity.relationships,
-				(relationship) => Promise.join(
-					getEntityWithAlias(relationship.source),
-					getEntityWithAlias(relationship.target),
-					(relationshipSource, relationshipTarget) => {
+			return Promise.all(entity.relationships.map(
+				(relationship) => Promise.all(
+					[getEntityWithAlias(relationship.source),
+						getEntityWithAlias(relationship.target)]
+				)
+					.then(([relationshipSource, relationshipTarget]) => {
 						relationship.source = relationshipSource.toJSON();
 						relationship.target = relationshipTarget.toJSON();
 
 						return relationship;
-					}
-				)
-			);
+					})
+			));
 		})
 		.then((relationships) => {
 			// Set rendered relationships on relationship objects

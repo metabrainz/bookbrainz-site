@@ -31,7 +31,6 @@ import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
 import ProfileForm from '../../client/components/forms/profile';
 import ProfileTab from '../../client/components/pages/parts/editor-profile';
-import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
@@ -78,9 +77,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			return [];
 		});
 
-	Promise.join(
-		editorJSONPromise, titleJSONPromise, genderJSONPromise,
-		(editorJSON, titleJSON, genderJSON) => {
+	Promise.all([editorJSONPromise, titleJSONPromise, genderJSONPromise])
+		.then(([editorJSON, titleJSON, genderJSON]) => {
 			const props = generateProps(req, res, {
 				editor: editorJSON,
 				genders: genderJSON,
@@ -101,8 +99,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 				props: escapeProps(props),
 				script
 			}));
-		}
-	)
+		})
 		.catch(next);
 });
 
@@ -162,7 +159,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 function getEditorTitleJSON(editorJSON, TitleUnlock) {
 	let editorTitleJSON;
 	if (editorJSON.titleUnlockId === null) {
-		editorTitleJSON = Promise.resolve(editorJSON);
+		editorTitleJSON = new Promise(resolve => resolve(editorJSON));
 	}
 	else {
 		editorTitleJSON = new TitleUnlock({
@@ -273,9 +270,10 @@ router.get('/:id', (req, res, next) => {
 		});
 
 
-	Promise.join(
-		achievementJSONPromise, editorJSONPromise,
-		(achievementJSON, editorJSON) => {
+	Promise.all(
+		[achievementJSONPromise, editorJSONPromise]
+	)
+		.then(([achievementJSON, editorJSON]) => {
 			const props = generateProps(req, res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
@@ -300,8 +298,7 @@ router.get('/:id', (req, res, next) => {
 				script: '/js/editor/editor.js',
 				title: `${props.editor.name}'s Profile`
 			}));
-		}
-	);
+		});
 });
 
 // eslint-disable-next-line consistent-return
@@ -408,9 +405,8 @@ router.get('/:id/achievements', (req, res, next) => {
 				))
 		);
 
-	Promise.join(
-		achievementJSONPromise, editorJSONPromise,
-		(achievementJSON, editorJSON) => {
+	Promise.all([achievementJSONPromise, editorJSONPromise])
+		.then(([achievementJSON, editorJSON]) => {
 			const props = generateProps(req, res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
@@ -437,8 +433,7 @@ router.get('/:id/achievements', (req, res, next) => {
 				script,
 				title: `${props.editor.name}'s Achievements`
 			}));
-		}
-	);
+		});
 });
 
 function rankUpdate(orm, editorId, bodyRank, rank) {
@@ -457,7 +452,7 @@ function rankUpdate(orm, editorId, bodyRank, rank) {
 		.then(() => {
 			let updatePromise;
 			if (bodyRank === '') {
-				updatePromise = Promise.resolve(false);
+				updatePromise = new Promise(resolve => resolve(false));
 			}
 			else {
 				updatePromise = new AchievementUnlock({
@@ -485,10 +480,10 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 			let editorJSON;
 
 			if (!req.user || userId !== req.user.id) {
-				editorJSON = Promise.reject(new Error('Not authenticated'));
+				editorJSON = new Promise((resolve, reject) => reject(new Error('Not authenticated')));
 			}
 			else {
-				editorJSON = Promise.resolve(editordata.toJSON());
+				editorJSON = new Promise(resolve => resolve(editordata.toJSON()));
 			}
 			return editorJSON;
 		});
