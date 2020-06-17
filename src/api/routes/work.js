@@ -292,9 +292,7 @@ router.get('/:bbid/relationships',
  *       404:
  *         description: author/edition/work/publisher (other entity) not found
  *       400:
- *         description: Invalid BBID passed in the query param
- *       400:
- *         description: Multiple browsed entities passed in parameters
+ *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
 router.get('/',
