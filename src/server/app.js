@@ -25,7 +25,6 @@ import * as search from './helpers/search';
 import * as serverErrorHelper from './helpers/error';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import Promise from 'bluebird';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
@@ -46,11 +45,6 @@ import session from 'express-session';
 // Initialize log-to-stdout  writer
 require('log-node')();
 
-
-Promise.config({
-	longStackTraces: true,
-	warnings: true
-});
 
 // Initialize application
 const app = express();

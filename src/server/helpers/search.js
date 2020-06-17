@@ -20,7 +20,6 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as utils from '../helpers/utils';
 
 import ElasticSearch from 'elasticsearch';
-import Promise from 'bluebird';
 import _ from 'lodash';
 import httpStatus from 'http-status';
 
@@ -41,7 +40,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 		return null;
 	}
 
-	return Promise.map(results.hits, (hit) => {
+	return Promise.all(results.hits.map((hit) => {
 		const entityStub = hit._source;
 
 		if (entityStub.type === 'Area') {
@@ -73,7 +72,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 		return model.forge({bbid: entityStub.bbid})
 			.fetch({require: false, withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
 			.then((entity) => entity && entity.toJSON());
-	});
+	}));
 }
 
 // Returns the results of a search translated to entity objects
@@ -138,7 +137,7 @@ async function _bulkIndexEntities(entities) {
 
 				const jitter = Math.random() * _maxJitter;
 				// eslint-disable-next-line no-await-in-loop
-				await Promise.delay(_retryDelay + jitter);
+				await new Promise(resolve => setTimeout(resolve, _retryDelay + jitter));
 			}
 		}
 	}

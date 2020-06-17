@@ -29,10 +29,10 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 
@@ -198,7 +198,7 @@ router.get(
 			}));
 		}
 
-		Promise.props(propsPromise)
+		makePromiseFromObject(propsPromise)
 			.then(render)
 			.catch(next);
 	}

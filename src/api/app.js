@@ -23,7 +23,6 @@
 
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import Promise from 'bluebird';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
@@ -35,11 +34,6 @@ import logger from 'morgan';
 import redis from 'connect-redis';
 import session from 'express-session';
 
-
-Promise.config({
-	longStackTraces: true,
-	warnings: true
-});
 
 // Initialize application
 const app = express();

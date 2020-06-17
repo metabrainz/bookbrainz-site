@@ -41,7 +41,6 @@
     "@fortawesome/free-brands-svg-icons": "^5.11.2",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
-    "bluebird": "^3.7.2",
     "body-parser": "^1.14.1",
     "bookbrainz-data": "^2.5.1",
     "chai-sorted": "^0.2.0",
