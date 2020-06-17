@@ -242,7 +242,7 @@ router.get('/:bbid/relationships',
 router.get('/',
 	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['edition']),
-	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
+	makeEntityLoader(null, utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)), 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
@@ -260,15 +260,8 @@ router.get('/',
 
 		if (req.query.modelType === 'Edition') {
 			// If we're loading an Edition, also load the related Edition Group from the ORM model
-			const {Edition} = req.app.locals.orm;
-			const {bbid} = req.query;
-			const relationships = editionGroupBasicRelations.map(rel => `editionGroup.${rel}`);
-			const edition = await new Edition({bbid}).fetch({
-				require: false,
-				withRelated: relationships
-			});
-			const editionJSON = edition ? edition.toJSON() : {};
-			const {editionGroup} = editionJSON;
+			const {entity: edition} = res.locals;
+			const {editionGroup} = edition;
 			// an edition will belong to only one edition-group
 			const editionGroupArray = [getEditionGroupBasicInfo(editionGroup)];
 			editionGroupArray

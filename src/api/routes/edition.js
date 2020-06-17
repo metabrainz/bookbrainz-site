@@ -356,6 +356,9 @@ router.get('/',
 			const {EditionGroup} = req.app.locals.orm;
 			const {bbid} = req.query;
 			const relationships = editionBasicRelations.map(rel => `editions.${rel}`);
+
+			// editionGroup is loaded previously in makeEntityLoader (res.locals.entity)
+			// See if we can load withRelated relations created above in makeEntityLoader (see edition group browse request route)
 			const editionGroup = await new EditionGroup({bbid}).fetch({
 				require: false,
 				withRelated: relationships
