@@ -40,9 +40,14 @@ export function validateBrowseRequestQueryParameters(validLinkedEntities) {
 
 export async function loadEntity(orm, relEntity, fetchRelated) {
 	const model = commonUtils.getEntityModelByType(orm, relEntity.type);
-	const entity = await model.forge({bbid: relEntity.bbid})
-		.fetch({withRelated: ['defaultAlias', 'disambiguation'].concat(fetchRelated || [])});
-	return entity.toJSON();
+	try {
+		const entity = await model.forge({bbid: relEntity.bbid})
+			.fetch({require: true, withRelated: ['defaultAlias', 'disambiguation'].concat(fetchRelated || [])});
+		return entity.toJSON();
+	}
+	catch (error) {
+		return null;
+	}
 }
 
 export function loadEntityRelationshipsForBrowse() {
