@@ -1,0 +1,24 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.15.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - bookbrainz-data > lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - elasticsearch > lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - react-chartjs-2 > lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - react-redux > lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - redux > lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - bookbrainz-data > bookshelf > lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - bookbrainz-data > bookshelf-virtuals-plugin > lodash:
+        patched: '2020-06-17T11:53:52.842Z'
+    - bookbrainz-data > knex > lodash:
+        patched: '2020-06-17T11:53:52.842Z'

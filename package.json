@@ -24,7 +24,9 @@
     "jsdoc": "node_modules/.bin/jsdoc -r src",
     "flow": "flow",
     "dupreport": "jsinspect src/ || true",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "lint-staged": {
     "*.js": [
@@ -85,7 +87,8 @@
     "serve-favicon": "^2.4.3",
     "serve-static": "^1.13.2",
     "superagent": "^5.2.2",
-    "validator": "^9.1.2"
+    "validator": "^9.1.2",
+    "snyk": "^1.342.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
@@ -148,5 +151,6 @@
     "webpack-hot-middleware": "^2.22.3",
     "webpack-node-externals": "^1.7.2",
     "write-assets-webpack-plugin": "^1.0.5"
-  }
+  },
+  "snyk": true
 }
