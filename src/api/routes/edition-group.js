@@ -211,26 +211,34 @@ router.get('/:bbid/relationships',
  *   get:
  *     tags:
  *       - Browse Requests
- *     summary: Gets a list of Edition-Group which are related to the other entity
- *     description: BBID of an Edition is passed as a query parameter, and it's related EditionGroups are fetched
- *     operationId: getRelatedPublisherByBbid
+ *     summary: Gets a list of Edition Groups which are related to another Entity
+ *     description: BBID of an Edition is passed as a query parameter, and its related EditionGroups are fetched
+ *     operationId: getRelatedEditionGroupByBbid
  *     produces:
  *       - application/json
  *     parameters:
  *       - name: edition
  *         in: query
- *         description: BBID of the edition
+ *         description: BBID of the Edition
  *         required: true
  *         type: bbid
+ *       - name: type
+ *         in: query
+ *         description: filter by Edition Group type
+ *         required: false
+ *         type: string
+ *         enum: [book, leaflet, newspaper, magazine, journal]
  *     responses:
  *       200:
- *         description: List of EditionGroups related to the other entity
+ *         description: List of EditionGroups related to another Entity
  *         schema:
  *             $ref: '#/definitions/BrowsedEditionGroups'
  *       404:
  *         description: Edition not found
  *       400:
  *         description: Invalid BBID passed in the query param
+ *       400:
+ *         description: Multiple browsed entities passed in parameters
  */
 
 router.get('/',

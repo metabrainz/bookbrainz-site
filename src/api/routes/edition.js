@@ -271,26 +271,59 @@ router.get('/:bbid/relationships',
  *   get:
  *     tags:
  *       - Browse Requests
- *     summary: Gets a list of Editions related to the other entity
- *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and it's related Editions are fetched
+ *     summary: Gets a list of Editions related to another Entity
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and its related Editions are fetched
  *     operationId: getRelatedEditionByBbid
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: author/edition/edition-group/publisher/work
+ *       - name: author
  *         in: query
- *         description: BBID of the corresponding entity
- *         required: true
+ *         description: BBID of the corresponding Author
+ *         required: false
  *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the corresponding Edition
+ *         required: false
+ *         type: bbid
+ *       - name: edition-group
+ *         in: query
+ *         description: BBID of the corresponding Edition Group
+ *         required: false
+ *         type: bbid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         type: bbid
+ *       - name: work
+ *         in: query
+ *         description: BBID of the corresponding Work
+ *         required: false
+ *         type: bbid
+ *       - name: format
+ *         in: query
+ *         description: filter by Edition format
+ *         required: false
+ *         type: string
+ *         enum: [paperback, hardcover, ebook, library binding, audiobook]
+ *       - name: language
+ *         in: query
+ *         description: filter by Edition language
+ *         required: false
+ *         type: string
  *     responses:
  *       200:
- *         description: List of Editions related to the other entity
+ *         description: List of Editions related to another Entity
  *         schema:
  *             $ref: '#/definitions/BrowsedEditions'
  *       404:
  *         description: author/edition/edition-group/publisher/work (other entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params
+ *       400:
+ *         description: Multiple browsed entities passed in parameters
  */
 
 router.get('/',

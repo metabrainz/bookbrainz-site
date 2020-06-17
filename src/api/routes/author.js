@@ -250,26 +250,49 @@ router.get('/:bbid/relationships',
  *   get:
  *     tags:
  *       - Browse Requests
- *     summary: Gets a list of Authors related to the other entity
+ *     summary: Gets a list of Authors related to another Entity
  *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and it's Authors are fetched
  *     operationId: getRelatedAuthorByBbid
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: author/edition/edition-group/publisher
+ *       - name: author
  *         in: query
- *         description: BBID of the corresponding entity
- *         required: true
+ *         description: BBID of the corresponding Author
+ *         required: false
  *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the corresponding Edition
+ *         required: false
+ *         type: bbid
+ *       - name: edition-group
+ *         in: query
+ *         description: BBID of the corresponding Edition Group
+ *         required: false
+ *         type: bbid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         type: bbid
+ *       - name: type
+ *         in: query
+ *         description: filter by Author type
+ *         required: false
+ *         type: string
+ *         enum: [person, group]
  *     responses:
  *       200:
- *         description: List of Authors related to the other entity
+ *         description: List of Authors related to another Entity
  *         schema:
  *             $ref: '#/definitions/BrowsedAuthors'
  *       404:
  *         description: author/edition/edition-group/publisher (entity entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params
+ *       400:
+ *         description: Multiple browsed entities passed in parameters
  */
 
 router.get('/',

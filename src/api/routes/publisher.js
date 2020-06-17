@@ -248,26 +248,54 @@ router.get('/:bbid/relationships',
  *   get:
  *     tags:
  *       - Browse Requests
- *     summary: Gets a list of Publishers which are related to the other entity
- *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher is passed as a query parameter, and it's related Publishers are fetched
+ *     summary: Gets a list of Publishers which are related to another Entity
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher is passed as a query parameter, and its related Publishers are fetched
  *     operationId: getRelatedPublisherByBbid
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: author/edition/work/publisher
+ *       - name: author
  *         in: query
- *         description: BBID of the corresponding entity
- *         required: true
+ *         description: BBID of the corresponding Author
+ *         required: false
  *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the corresponding Edition
+ *         required: false
+ *         type: bbid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         type: bbid
+ *       - name: work
+ *         in: query
+ *         description: BBID of the corresponding Work
+ *         required: false
+ *         type: bbid
+ *       - name: type
+ *         in: query
+ *         description: filter by Publisher type
+ *         required: false
+ *         type: string
+ *         enum: [publisher, distributor, imprint]
+ *       - name: area
+ *         in: query
+ *         description: filter by Publisher area
+ *         required: false
+ *         type: string
  *     responses:
  *       200:
- *         description: List of Publisher related to the other entity
+ *         description: List of Publisher related to another Entity
  *         schema:
  *             $ref: '#/definitions/BrowsedPublishers'
  *       404:
  *         description: Author/Edition/Work/Publisher (other entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params
+ *       400:
+ *         description: Multiple browsed entities passed in parameters
  */
 
 router.get('/',

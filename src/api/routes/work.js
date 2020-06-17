@@ -247,26 +247,54 @@ router.get('/:bbid/relationships',
  *   get:
  *     tags:
  *       - Browse Requests
- *     summary: Gets a list of Works related to the other Entity
+ *     summary: Gets a list of Works related to another Entity
  *     description: BBID of an Author, or an Edition, or a Work, or a Publisher is passed as query parameter and their related Works are fetched
  *     operationId: getRelatedWorkByBbid
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: author/edition/work/publisher
+ *       - name: author
  *         in: query
- *         description: BBID of the corresponding entity
- *         required: true
+ *         description: BBID of the corresponding Author
+ *         required: false
  *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the corresponding Edition
+ *         required: false
+ *         type: bbid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         type: bbid
+ *       - name: work
+ *         in: query
+ *         description: BBID of the corresponding Work
+ *         required: false
+ *         type: bbid
+ *       - name: type
+ *         in: query
+ *         description: filter by Work type
+ *         required: false
+ *         type: string
+ *         enum: [novel, short story, epic, poem, play, article, scientific paper, non-fiction, anthology, serial, introduction, novella]
+ *       - name: language
+ *         in: query
+ *         description: filter by Work language
+ *         required: false
+ *         type: string
  *     responses:
  *       200:
- *         description: List of Works which are related to the other entity
+ *         description: List of Works which are related to another Entity
  *         schema:
  *             $ref: '#/definitions/BrowsedAuthors'
  *       404:
  *         description: author/edition/work/publisher (other entity) not found
  *       400:
  *         description: Invalid BBID passed in the query param
+ *       400:
+ *         description: Multiple browsed entities passed in parameters
  */
 
 router.get('/',
