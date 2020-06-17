@@ -1,12 +1,11 @@
 /* eslint-disable */
 
-import { ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup } from 'react-bootstrap';
+import { ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import React, { Component } from 'react';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import ReactTooltip from 'react-tooltip';
 import cx from 'classnames';
 
 export default class Input extends Component {
@@ -141,14 +140,17 @@ export default class Input extends Component {
 		} = this.props;
 
 		const helpIconElement = tooltipText && (
-			<FontAwesomeIcon
-				className="margin-left-0-5" data-for={id} data-tip={tooltipText}
-				icon="question-circle"
-			/>
+			<OverlayTrigger
+				overlay={<Tooltip id={`tooptip-${id}`}>{tooltipText}</Tooltip>}
+				delayShow={50}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon="question-circle"
+				/>
+			</OverlayTrigger>
 		);
-		const helpTooltipElement = tooltipText &&
-		<ReactTooltip delayShow={50} effect="solid" id={id} place="right" type="dark" multiline={true} />
-
+			
 		return (
 			<FormGroup
 				controlId={ id }
@@ -162,7 +164,6 @@ export default class Input extends Component {
 						{ helpIconElement }
 					</ControlLabel>
 				) }
-				{ helpTooltipElement }
 				{ this.renderInputGroup(props) }
 			</FormGroup>
 		);

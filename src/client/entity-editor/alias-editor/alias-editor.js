@@ -16,14 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Modal, Row} from 'react-bootstrap';
+import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {addAliasRow, hideAliasEditor, removeEmptyAliases} from './actions';
 
 import AliasRow from './alias-row';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
@@ -62,8 +61,17 @@ const AliasEditor = ({
 
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
-	const helpIconElement = <FontAwesomeIcon className="fa-sm" data-tip={helpText} icon="question-circle"/>;
-	const helpTooltipElement = <ReactTooltip multiline delayShow={50} effect="solid" place="right" type="dark"/>;
+	const helpIconElement = (
+		<OverlayTrigger
+			delayShow={50}
+			overlay={<Tooltip id="alias-editor-tooltip">{helpText}</Tooltip>}
+		>
+			<FontAwesomeIcon
+				className="fa-sm"
+				icon="question-circle"
+			/>
+		</OverlayTrigger>
+	);
 
 	return (
 		<Modal bsSize="large" show={show} onHide={onClose}>
@@ -71,7 +79,6 @@ const AliasEditor = ({
 				<Modal.Title>
 					Alias Editor {helpIconElement}
 				</Modal.Title>
-				{helpTooltipElement}
 			</Modal.Header>
 
 			<Modal.Body>

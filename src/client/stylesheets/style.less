@@ -196,6 +196,14 @@ body {
 	.picture-fallback-icon(800%);
 }
 
+// Fix to put react-bootstrap tooltips in front of modals
+.tooltip {
+	z-index: 1050;
+}
+.tooltip-inner {
+	max-width: 300px;
+}
+
 /**
  * Styling for FontAwesome icons, to fix random-sized
  * icons appear while the page is loading (FOUC).
