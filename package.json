@@ -54,7 +54,7 @@
     "express": "^4.16.2",
     "express-session": "^1.10.1",
     "git-rev": "^0.2.1",
-    "http-status": "^1.0.0",
+    "http-status": "^1.4.2",
     "immutable": "^3.8.2",
     "influx": "^5.5.1",
     "jsesc": "^2.5.1",
