@@ -18,8 +18,8 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-
 import EditionTable from './edition-table';
+import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
@@ -97,6 +97,7 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 					<PublisherAttributes publisher={entity}/>
 				</Col>
 			</Row>
+			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
 				<EditionTable editions={entity.editions} entity={entity}/>
@@ -108,6 +109,7 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				bbid={entity.bbid}
 				deleted={entity.deleted}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}

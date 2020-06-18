@@ -25,7 +25,6 @@ import * as search from './helpers/search';
 import * as serverErrorHelper from './helpers/error';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import Promise from 'bluebird';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import bodyParser from 'body-parser';
@@ -43,10 +42,9 @@ import serveStatic from 'serve-static';
 import session from 'express-session';
 
 
-Promise.config({
-	longStackTraces: true,
-	warnings: true
-});
+// Initialize log-to-stdout  writer
+require('log-node')();
+
 
 // Initialize application
 const app = express();
@@ -176,14 +174,14 @@ const server = app.listen(app.get('port'), () => {
 /* eslint-disable no-console */
 function cleanupFunction() {
 	return new Promise((resolve, reject) => {
-		console.log('Cleaning up before closing');
+		debug('Cleaning up before closing');
 		server.close((err) => {
 			if (err) {
-				console.log('Error while closing server connections');
+				debug('Error while closing server connections');
 				reject(err);
 			}
 			else {
-				console.log('Closed all server connections. Bye bye!');
+				debug('Closed all server connections. Bye bye!');
 				resolve();
 			}
 		});

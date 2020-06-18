@@ -18,6 +18,7 @@
 
 // @flow
 
+import {ISODateStringToObject, isNullDate} from '../../helpers/utils';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {dateValidator} from './date';
@@ -94,31 +95,38 @@ export function validateBoolean(
 	return _.isBoolean(value);
 }
 
-export function validateDate(value: mixed) {
-	const year = _.get(value, 'year');
-	const month = _.get(value, 'month');
-	const day = _.get(value, 'day');
+export function validateDate(value: string) {
+	let dateObject;
+	// We expect a string but accept both ISO date strings and {year,month,date} objects
+	if (_.isString(value)) {
+		dateObject = ISODateStringToObject(value);
+	}
+	else {
+		dateObject = value;
+	}
+	const year = _.get(dateObject, 'year', null);
+	const month = _.get(dateObject, 'month', null);
+	const day = _.get(dateObject, 'day', null);
 	const {isValid, errorMessage} = dateValidator(day, month, year);
 	return {errorMessage, isValid};
 }
 
-export function isNullValue(date) {
-	return !_.get(date, 'day') && !_.get(date, 'month') && !_.get(date, 'year');
-}
 
 export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
-	if (isNullValue(beginValue) || isNullValue(endValue) || !validateDate(beginValue).isValid ||
-		!validateDate(endValue).isValid) {
+	const beginDateObject = ISODateStringToObject(beginValue);
+	const endDateObject = ISODateStringToObject(endValue);
+	if (isNullDate(beginDateObject) || isNullDate(endDateObject) || !validateDate(beginDateObject).isValid ||
+		!validateDate(endDateObject).isValid) {
 		return true;
 	}
 
-	const beginYear = _.toInteger(beginValue.year);
-	const beginMonth = _.toInteger(beginValue.month);
-	const beginDay = _.toInteger(beginValue.day);
+	const beginYear = _.toInteger(beginDateObject.year);
+	const beginMonth = _.toInteger(beginDateObject.month);
+	const beginDay = _.toInteger(beginDateObject.day);
 
-	const endYear = _.toInteger(endValue.year);
-	const endMonth = _.toInteger(endValue.month);
-	const endDay = _.toInteger(endValue.day);
+	const endYear = _.toInteger(endDateObject.year);
+	const endMonth = _.toInteger(endDateObject.month);
+	const endDay = _.toInteger(endDateObject.day);
 
 	if (beginYear < endYear) {
 		return true;

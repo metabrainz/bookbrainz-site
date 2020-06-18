@@ -110,7 +110,8 @@ CREATE TABLE bookbrainz.revision_parent (
 CREATE TABLE bookbrainz.revision (
 	id SERIAL PRIMARY KEY,
 	author_id INT NOT NULL,
-	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE
 );
 ALTER TABLE bookbrainz.revision ADD FOREIGN KEY (author_id) REFERENCES bookbrainz.editor (id);
 ALTER TABLE bookbrainz.revision_parent ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.revision (id);
@@ -120,6 +121,7 @@ CREATE TABLE bookbrainz.author_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
@@ -132,6 +134,7 @@ CREATE TABLE bookbrainz.edition_group_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
@@ -144,6 +147,7 @@ CREATE TABLE bookbrainz.edition_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
@@ -156,6 +160,7 @@ CREATE TABLE bookbrainz.publisher_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)
@@ -168,6 +173,7 @@ CREATE TABLE bookbrainz.work_revision (
 	id INT,
 	bbid UUID,
 	data_id INT,
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (
 		id, bbid
 	)

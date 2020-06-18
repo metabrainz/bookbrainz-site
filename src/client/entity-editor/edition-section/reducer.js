@@ -47,7 +47,7 @@ function reducer(
 		format: null,
 		languages: Immutable.List([]),
 		publisher: null,
-		releaseDate: {day: '', month: '', year: ''},
+		releaseDate: '',
 		status: null
 	}),
 	action: Action
@@ -67,7 +67,7 @@ function reducer(
 		case UPDATE_EDITION_GROUP:
 			return state.set('editionGroup', Immutable.fromJS(payload));
 		case UPDATE_RELEASE_DATE:
-			return state.set('releaseDate', Immutable.fromJS(payload));
+			return state.set('releaseDate', payload);
 		case UPDATE_STATUS:
 			return state.set('status', payload);
 		case UPDATE_WEIGHT:

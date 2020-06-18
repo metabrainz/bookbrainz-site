@@ -48,7 +48,7 @@ class SearchField extends React.Component {
 		super(props);
 
 		this.state = {
-			collection: ''
+			type: ''
 		};
 		// React does not autobind non-React class methods
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -58,8 +58,8 @@ class SearchField extends React.Component {
 
 	triggerOnSearch() {
 		const inputValue = this.queryInput.getValue();
-		const {collection} = this.state;
-		this.props.onSearch(inputValue, _.snakeCase(collection));
+		const {type} = this.state;
+		this.props.onSearch(inputValue, _.snakeCase(type));
 	}
 
 	handleSubmit(event) {
@@ -76,7 +76,7 @@ class SearchField extends React.Component {
 	}
 
 	handleEntitySelect(eventKey: any) {
-		this.setState({collection: eventKey}, this.triggerOnSearch);
+		this.setState({type: eventKey}, this.triggerOnSearch);
 	}
 
 	render() {
@@ -84,7 +84,7 @@ class SearchField extends React.Component {
 			<DropdownButton
 				componentClass={InputGroup.Button}
 				id="entity-type-select"
-				title={_.startCase(this.state.collection) || 'All types'}
+				title={_.startCase(this.state.type) || 'All Entities'}
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType: string) => (
@@ -98,10 +98,19 @@ class SearchField extends React.Component {
 				))}
 				<MenuItem divider/>
 				<MenuItem
-					eventKey=""
-					key="all"
+					eventKey="all_entities"
+					key="allEntities"
 				>
-					All types
+					All Entities
+				</MenuItem>
+
+				<MenuItem divider/>
+				<MenuItem
+					eventKey="editor"
+					key="editor"
+				>
+					{genEntityIconHTMLElement('Editor')}
+					Editor
 				</MenuItem>
 			</DropdownButton>
 		) : '';

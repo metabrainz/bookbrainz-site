@@ -161,7 +161,7 @@ class NameSection extends React.Component {
 									We found the following&nbsp;
 									{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 									exactly the same name or alias:
-									<br/><small className="help-block">Click on a name to open in a new tab</small>
+									<br/><small className="help-block">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
 									<ListGroup className="margin-top-1 margin-bottom-1">
 										{exactMatches.map((match) =>
 											(
@@ -187,7 +187,8 @@ class NameSection extends React.Component {
 						<Row>
 							<Col md={6} mdOffset={3}>
 								If the {_.startCase(entityType)} you want to add appears in the results
-								below, click on it to inspect it in a new tab before adding a possible duplicate.
+								below, click on it to inspect it before adding a possible duplicate.<br/>
+								<small>Ctrl/Cmd + click to open in a new tab</small>
 								<SearchResults condensed results={searchResults}/>
 							</Col>
 						</Row>
@@ -297,7 +298,7 @@ function mapDispatchToProps(dispatch, {entityType}) {
 		onLanguageChange: (value) =>
 			dispatch(updateLanguageField(value && value.value)),
 		onNameChange: (value) =>
-			dispatch(debouncedUpdateNameField(value, entityType)),
+			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
 			dispatch(checkIfNameExists(value, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
 		}, 1500),

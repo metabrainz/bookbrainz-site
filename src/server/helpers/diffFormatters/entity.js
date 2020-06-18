@@ -17,6 +17,7 @@
  */
 
 import * as base from './base';
+
 import _ from 'lodash';
 
 
@@ -166,7 +167,7 @@ function formatNewIdentifierSet(change) {
 	if (rhs.identifiers && rhs.identifiers.length > 0) {
 		return [base.formatRow(
 			'N', 'Identifiers', null, rhs.identifiers.map(
-				(identifier) => `${identifier.type.label}: ${identifier.value}`
+				(identifier) => `${identifier.type && identifier.type.label}: ${identifier.value}`
 			)
 		)];
 	}
@@ -242,38 +243,96 @@ function formatRelationshipAdd(entity, change) {
 	if (!rhs) {
 		return changes;
 	}
-
+	const key = rhs.type && rhs.type.label ? `Relationship : ${rhs.type.label}` : 'Relationship';
 	if (rhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
 			base.formatRow(
-				'N', 'Relationship Source Entity', null, [rhs.sourceBbid]
+				'N', key, null, [rhs.targetBbid]
 			)
 		);
 	}
 	else {
 		changes.push(
 			base.formatRow(
-				'N', 'Relationship Target Entity', null, [rhs.targetBbid]
+				'N', key, null, [rhs.sourceBbid]
 			)
 		);
 	}
-
-	if (rhs.type && rhs.type.label) {
-		changes.push(
-			base.formatRow('N', 'Relationship Type', null, [rhs.type.label])
-		);
-	}
-
 	return changes;
 }
 
+function formatAddOrDeleteRelationshipSet(entity, change) {
+	const changes = [];
+	let allRelationships;
+	if (change.kind === 'N') {
+		allRelationships = change.rhs.relationships;
+	}
+	if (change.kind === 'D') {
+		allRelationships = change.lhs.relationships;
+	}
+	if (!allRelationships) {
+		return changes;
+	}
+
+	allRelationships.forEach((relationship) => {
+		const key = relationship.type && relationship.type.label ? `Relationship: ${relationship.type.label}` : 'Relationship';
+		if (relationship.sourceBbid === entity.get('bbid')) {
+			changes.push(
+				base.formatRow(
+					change.kind, key, [relationship.targetBbid], [relationship.targetBbid]
+				)
+			);
+		}
+		else {
+			changes.push(
+				base.formatRow(
+					change.kind, key, [relationship.sourceBbid], [relationship.sourceBbid]
+				)
+			);
+		}
+	});
+	return changes;
+}
+
+function formatRelationshipRemove(entity, change) {
+	const changes = [];
+	const {lhs} = change.item;
+
+	if (!lhs) {
+		return changes;
+	}
+	const key = lhs.type && lhs.type.label ? `Relationship : ${lhs.type.label}` : 'Relationship';
+	if (lhs.sourceBbid === entity.get('bbid')) {
+		changes.push(
+			base.formatRow(
+				'D', key, [lhs.targetBbid], null
+			)
+		);
+	}
+	else {
+		changes.push(
+			base.formatRow(
+				'D', key, [lhs.sourceBbid], null
+			)
+		);
+	}
+	return changes;
+}
 function formatRelationship(entity, change) {
+	if (change.kind === 'N') {
+		return formatAddOrDeleteRelationshipSet(entity, change);
+	}
 	if (change.kind === 'A') {
 		if (change.item.kind === 'N') {
 			return formatRelationshipAdd(entity, change);
 		}
+		if (change.item.kind === 'D') {
+			return formatRelationshipRemove(entity, change);
+		}
 	}
-
+	if (change.kind === 'D') {
+		return formatAddOrDeleteRelationshipSet(entity, change);
+	}
 	return null;
 }
 
@@ -294,6 +353,7 @@ function formatEntityChange(entity, change) {
 	}
 
 	const relationshipChanged =
+		_.isEqual(change.path, ['relationshipSet']) ||
 		_.isEqual(change.path, ['relationshipSet', 'relationships']);
 	if (relationshipChanged) {
 		return formatRelationship(entity, change);
@@ -323,12 +383,26 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		return [];
 	}
 
-	return diffs.map((diff) => {
+	return _.flatten(diffs).map((diff) => {
 		const formattedDiff = {
-			entity: diff.entity.toJSON()
+			entity: diff.entity.toJSON(),
+			isNew: diff.isNew
 		};
 
 		formattedDiff.entity.type = entityType;
+		formattedDiff.entityRevision = diff.revision && diff.revision.toJSON();
+
+		if (diff.entityAlias) {
+			// In the revision route, we fetch an entity's data to show its alias; an ORM model is returned.
+			// For entities without data (deleted or merged), we use getEntityParentAlias instead which returns a JSON object
+			if (typeof diff.entityAlias.toJSON === 'function') {
+				const aliasJSON = diff.entityAlias.toJSON();
+				formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+			}
+			else {
+				formattedDiff.entity.defaultAlias = diff.entityAlias;
+			}
+		}
 
 		if (!diff.changes) {
 			formattedDiff.changes = [];

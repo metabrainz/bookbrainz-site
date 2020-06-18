@@ -18,12 +18,15 @@
  */
 /* eslint-disable react/display-name */
 
+// @flow
+
 import * as bootstrap from 'react-bootstrap';
 
-import {get as _get, kebabCase as _kebabCase} from 'lodash';
+import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
+import {dateObjectToISOString} from './utils';
 
 
 const {Button, Table} = bootstrap;
@@ -72,6 +75,9 @@ export function getDateAttributes(entity) {
  * @returns {string} A date string with less padding zeros
  */
 export function transformISODateForDisplay(ISODateString) {
+	if (_isNil(ISODateString)) {
+		return ISODateString;
+	}
 	const dateStringWithoutSign = ISODateString.slice(1);
 	const parts = dateStringWithoutSign.split('-');
 	let formatting;
@@ -96,6 +102,86 @@ export function transformISODateForDisplay(ISODateString) {
 		parsedDate,
 		formatting
 	);
+}
+
+/**
+ * Transforms an extended ISO 8601-2004 date string to an option fit for react-select
+ * @function transformISODateForSelect
+ * @param {string|object} dateValue - an extended ISO date string (±YYYYYY-MM-DD) or date object {day,month,year}
+ * @returns {object} - A {label,value} object for react-select option
+ */
+export function transformISODateForSelect(dateValue) {
+	let dateString = dateValue;
+	if (typeof dateValue !== 'string') {
+		dateString = dateObjectToISOString(dateValue);
+	}
+	return {
+		label: transformISODateForDisplay(dateString),
+		value: dateString
+	};
+}
+
+/**
+ * Determines whether an entity provided to the EntitySearch component is an
+ * Area, using the present attributes.
+ *
+ * @param {Object} entity the entity to test
+ * @returns {boolean} true if the entity looks like an Area
+ */
+function isArea(entity) {
+	if (entity.type === 'Area') {
+		return true;
+	}
+
+	if (entity.gid) {
+		return true;
+	}
+
+	return false;
+}
+
+/**
+ * Transforms an Area entity to a react-select component option
+ * @param {object} area - The Area entity to transfrom
+ * @returns {object} option - A react-select option
+ */
+export function areaToOption(
+	area: {comment: string, id: number, name: string}
+) {
+	if (!area) {
+		return null;
+	}
+	const {id} = area;
+	return {
+		disambiguation: area.comment,
+		id,
+		text: area.name,
+		type: 'area'
+		// value: id
+	};
+}
+
+/**
+ * Transforms an entity to a react-select component option
+ * @param {object} entity - The entity to transfrom
+ * @returns {object} option - A react-select option
+ */
+export function entityToOption(entity) {
+	if (_isNil(entity)) {
+		return null;
+	}
+	if (isArea(entity)) {
+		return areaToOption(entity);
+	}
+
+	return {
+		disambiguation: entity.disambiguation ?
+			entity.disambiguation.comment : null,
+		id: entity.bbid,
+		text: entity.defaultAlias ?
+			entity.defaultAlias.name : '(unnamed)',
+		type: entity.type
+	};
 }
 
 export function showEntityEditions(entity) {
@@ -237,18 +323,20 @@ export const ENTITY_TYPE_ICONS = {
 	Author: 'user',
 	Edition: 'book',
 	EditionGroup: 'window-restore',
+	Editor: 'user-circle',
 	Publisher: 'university',
 	Work: 'pen-nib'
 };
 
 export function genEntityIconHTMLElement(entityType, size = '1x', margin = true) {
-	if (!ENTITY_TYPE_ICONS[entityType]) { return null; }
+	const correctCaseEntityType = upperFirst(entityType);
+	if (!ENTITY_TYPE_ICONS[correctCaseEntityType]) { return null; }
 	return (
 		<FontAwesomeIcon
 			className={margin ? 'margin-right-0-3' : ''}
-			icon={ENTITY_TYPE_ICONS[entityType]}
+			icon={ENTITY_TYPE_ICONS[correctCaseEntityType]}
 			size={size}
-			title={entityType}
+			title={correctCaseEntityType}
 		/>);
 }
 

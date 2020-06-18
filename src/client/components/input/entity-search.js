@@ -17,54 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {entityToOption, genEntityIconHTMLElement} from '../../helpers/entity';
 import {Async} from 'react-select';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
 import _ from 'lodash';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
-/**
- * Determines whether an entity provided to the EntitySearch component is an
- * Area, using the present attributes.
- *
- * @param {Object} entity the entity to test
- * @returns {boolean} true if the entity looks like an Area
- */
-function isArea(entity) {
-	if (entity.type === 'Area') {
-		return true;
-	}
-
-	if (entity.gid) {
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * Takes an entity and converts it to a format acceptable to react-select.
- *
- * @param {Object} entity the entity to convert
- * @returns {Object} the formatted data
- */
-function entityToOption(entity) {
-	if (_.isNil(entity)) {
-		return null;
-	}
-	const id = isArea(entity) ? entity.id : entity.bbid;
-
-	return {
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
-		id,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
-	};
-}
 
 class EntitySearch extends React.Component {
 	constructor(props) {
@@ -82,8 +42,8 @@ class EntitySearch extends React.Component {
 		return request
 			.get('/search/autocomplete')
 			.query({
-				collection: _.snakeCase(this.props.collection),
-				q: query
+				q: query,
+				type: _.snakeCase(this.props.type)
 			})
 			.then((response) => ({
 				options: response.body.map(entityToOption)
@@ -126,15 +86,14 @@ class EntitySearch extends React.Component {
 
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
-	collection: PropTypes.string,
 	defaultValue: PropTypes.shape({
 		bbid: PropTypes.string
-	})
+	}),
+	type: PropTypes.string
 };
 EntitySearch.defaultProps = {
-	collection: null,
-	defaultValue: null
-
+	defaultValue: null,
+	type: null
 };
 
 export default EntitySearch;

@@ -41,22 +41,20 @@ import EditionGroupPage from '../../../client/components/pages/entities/edition-
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
-import Log from 'log';
-import Promise from 'bluebird';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
-import config from '../../../common/helpers/config';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
+import log from 'log';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 
 type PassportRequest = $Request & {user: any, session: any};
 
-const log = new Log(config.site.log);
 
 const entityComponents = {
 	author: AuthorPage,
@@ -73,11 +71,13 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 	const {entity}: {entity: any} = resLocals;
 	// Get unique identifier types for display
 	// $FlowFixMe
-	const identifierTypes = entity.identifierSet &&
-		_.uniqBy(
+	let identifierTypes = [];
+	if (entity.identifierSet) {
+		identifierTypes = _.uniqBy(
 			_.map(entity.identifierSet.identifiers, 'type'),
-			(type) => type.id
+			'id'
 		);
+	}
 
 	let editorEntityVisitPromise;
 	if (resLocals.user) {
@@ -89,11 +89,11 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
 			.catch(
 				// error caused by duplicates we do not want in database
-				() => Promise.resolve(false)
+				() => new Promise(resolve => resolve(false))
 			);
 	}
 	else {
-		editorEntityVisitPromise = Promise.resolve(false);
+		editorEntityVisitPromise = new Promise(resolve => resolve(false));
 	}
 
 	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
@@ -136,7 +136,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 			alertPromise = Promise.all(promiseList);
 		}
 		else {
-			alertPromise = Promise.resolve(false);
+			alertPromise = new Promise(resolve => resolve(false));
 		}
 		return alertPromise;
 	});
@@ -194,10 +194,11 @@ export async function displayRevisions(
 ) {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-
+	const {orm}: any = req.app.locals;
+	const {bbid} = req.params;
 	try {
 		// get 1 more revision than required to check nextEnabled
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size + 1, RevisionModel, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size + 1, RevisionModel, bbid);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
@@ -234,9 +235,10 @@ export async function updateDisplayedRevisions(
 ) {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-
+	const {orm}: any = req.app.locals;
+	const {bbid} = req.params;
 	try {
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(from, size, RevisionModel, req);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size, RevisionModel, bbid);
 		res.send(orderedRevisions);
 	}
 	catch (err) {
@@ -273,16 +275,17 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	return handler.sendPromiseResult(res, revisionNotePromise);
 }
 
-async function getEntityByBBID(orm, transacting, bbid) {
-	const entityHeader = await orm.Entity.forge({bbid}).fetch({transacting});
+export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: string) {
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
+	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 
 	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
-	return model.forge({bbid}).fetch({transacting});
+	return model.forge({bbid: redirectBbid}).fetch({transacting});
 }
 
 async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	if (_.isEmpty(parentRevisionIDs)) {
-		return Promise.resolve(null);
+		return new Promise(resolve => resolve(null));
 	}
 
 	// Get the parents of the new revision
@@ -292,6 +295,7 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	// Add the previous revision as a parent of this revision.
 	return parents.attach(parentRevisionIDs, {transacting});
 }
+
 
 async function saveEntitiesAndFinishRevision(
 	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
@@ -334,7 +338,7 @@ async function saveEntitiesAndFinishRevision(
 	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
 }
 
-async function deleteRelationships(orm, transacting, mainEntity) {
+export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
 	const mainBBID = mainEntity.bbid;
 	const {relationshipSet} = mainEntity;
 	const otherBBIDs = [];
@@ -342,6 +346,9 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 
 	if (relationshipSet) {
 		// Create a list of BBID's that is related to the deleted entity
+		if (!relationshipSet.relationships) {
+			return [];
+		}
 		relationshipSet.relationships.forEach((relationship) => {
 			if (relationship.sourceBbid === mainBBID) {
 				otherBBIDs.push(relationship.targetBbid);
@@ -391,14 +398,14 @@ async function deleteRelationships(orm, transacting, mainEntity) {
 }
 
 function fetchOrCreateMainEntity(
-	orm, transacting, isNew, currentEntity, entityType
+	orm, transacting, isNew, bbid, entityType
 ) {
 	const model = utils.getEntityModelByType(orm, entityType);
 
-	const entity = model.forge({bbid: currentEntity.bbid});
+	const entity = model.forge({bbid});
 
 	if (isNew) {
-		return Promise.resolve(entity);
+		return new Promise(resolve => resolve(entity));
 	}
 
 	return entity.fetch({transacting});
@@ -440,7 +447,7 @@ export function handleDelete(
 		}).save(null, {transacting});
 
 		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, false, entity, entity.type
+			orm, transacting, false, entity.bbid, entity.type
 		);
 
 		const savedMainEntity =
@@ -459,6 +466,204 @@ export function handleDelete(
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
+}
+
+export async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
+	const {Edition, bookshelf} = orm;
+	const {mergingEntities} = session.mergeQueue;
+	if (!mergingEntities) {
+		throw new Error('Merge handler called with no merge queue, aborting');
+	}
+	const entityType = mainEntity.get('type');
+	const currentEntityBBID = mainEntity.get('bbid');
+	const mergingEntitiesBBIDs = Object.keys(mergingEntities);
+	if (!_.includes(mergingEntitiesBBIDs, currentEntityBBID)) {
+		throw new Error('Entity being merged into does not appear in merge queue, aborting');
+	}
+	const entitiesToMergeBBIDs = _.without(Object.keys(mergingEntities), currentEntityBBID);
+	let allEntitiesReturnArray = allEntities;
+	// fetch entities we're merging to add them to to the array of modified entities
+	const entitiesToMerge = _.values(mergingEntities).filter(({bbid}) => bbid !== currentEntityBBID);
+
+	const entitiesModelsToMerge = await Promise.all(entitiesToMergeBBIDs
+		.map(bbid => fetchOrCreateMainEntity(orm, transacting, false, bbid, entityType)));
+
+	/** Add entities to be merged to the array of modified entities */
+	allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, entitiesModelsToMerge, 'id');
+
+	/** Remove relationships that concern entities being merged from already modified relationshipSets */
+	await Promise.all(_.map(relationshipSets, async (relationshipSet) => {
+		/** Some items in this object may be null */
+		if (relationshipSet) {
+			/** Refresh RelationshipSet to fetch both existing and new relationships */
+			const refreshedrelationshipSet = await relationshipSet
+				.refresh({transacting, withRelated: 'relationships'});
+
+			/** Find relationships with entities being merge and remove them from set */
+			const relationshipsToRemove = refreshedrelationshipSet
+				.related('relationships').toJSON()
+				.filter(({sourceBbid, targetBbid}) => _.includes(entitiesToMergeBBIDs, sourceBbid) ||
+					_.includes(entitiesToMergeBBIDs, targetBbid))
+				.map(({id}) => id);
+			if (relationshipsToRemove.length) {
+				await refreshedrelationshipSet
+					.related('relationships')
+					.detach(relationshipsToRemove, {transacting});
+			}
+		}
+	}));
+
+	/**
+	 * Fetch each merged entity, get its relationships, then fetch the related entity for each relationship.
+	 * Then on the related entity's side, remove any relationship with merged entities from its relationship set
+	 */
+	await Promise.all(entitiesModelsToMerge.map(
+		async entity => {
+			const entityBBID = entity.get('bbid');
+			const relationshipSet = await entity.relationshipSet()
+				.fetch({require: false, transacting, withRelated: 'relationships'});
+			if (!relationshipSet) {
+				return;
+			}
+			const relationships = relationshipSet.related('relationships').toJSON();
+
+			const otherEntitiesToFetch = relationships
+				.reduce((accumulator, relationship) => {
+					if (relationship.sourceBbid === entityBBID) {
+						accumulator.push(relationship.targetBbid);
+					}
+					else if (relationship.targetBbid === entityBBID) {
+						accumulator.push(relationship.sourceBbid);
+					}
+					return accumulator;
+				}, [])
+				// Ignore entities that already have a modified relationshipSet (dealed with above)
+				.filter(bbid => !_.includes(_.keys(relationshipSets), bbid));
+
+			await Promise.all(otherEntitiesToFetch.map(
+				async (bbid) => {
+					const otherEntity = await getEntityByBBID(orm, transacting, bbid);
+
+					const otherEntityRelationshipSet = await entity.relationshipSet()
+						.fetch({require: false, transacting, withRelated: 'relationships'});
+					if (!otherEntityRelationshipSet) {
+						return;
+					}
+					const otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+
+					// Remove relationships with entity being merged
+					const cleanedUpRelationships = otherEntityRelationships
+						.filter(({sourceBbid, targetBbid}) =>
+							entityBBID !== sourceBbid &&
+							entityBBID !== targetBbid);
+
+					// If there's a difference, apply the new relationships array without rels to merged entity
+					if (cleanedUpRelationships.length !== otherEntityRelationships.length) {
+						const updatedRelationshipSets = await orm.func.relationship.updateRelationshipSets(
+							orm, transacting, otherEntityRelationshipSet, cleanedUpRelationships
+						);
+						// Make sure the entity is later updated with its new relationshipSet id
+						allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, [otherEntity], 'id');
+						_.assign(relationshipSets, _.pick(updatedRelationshipSets, bbid));
+					}
+				}
+			));
+		}
+	));
+
+	/** Special cases per entity type*/
+
+	/**
+	 * For EditionGroup entities, each merged EG may have editions associated to it.
+	 * We need to set each Edition's edition_group_bbid to the target entity BBID
+	 */
+	if (entityType === 'EditionGroup') {
+		const editionsToSet = await Edition.query(
+			qb => qb
+				.whereIn('edition_group_bbid', entitiesToMergeBBIDs)
+				.andWhere('master', true)
+		)
+			.fetchAll({require: false, transacting});
+		if (editionsToSet.length) {
+			editionsToSet.forEach(editionModel => editionModel.set({editionGroupBbid: currentEntityBBID}));
+			// Add the modified Editions to the revision
+			allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, editionsToSet.toArray(), 'id');
+		}
+	}
+
+	/**
+	 * For Publisher entities, each merged item may have editions associated to it.
+	 * We need to set each Edition's publisher set to the target entity BBID
+	 */
+	if (entityType === 'Publisher') {
+		try {
+			const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(entitiesModel => entitiesModel.editions()));
+			// eslint-disable-next-line consistent-return
+			const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
+				if (edition.models && edition.models.length) {
+					return edition.models;
+				}
+			});
+			await Promise.all(editionsToSet.map(async (edition) => {
+				// Fetch current PublisherSet
+				const oldPublisherSet = await edition.publisherSet();
+				// Create a new PublisherSet pointing to the main entity
+				const newPublisherSet = await orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, [{bbid: currentEntityBBID}]);
+				// Set the new PublisherSet on the Edition
+				edition.set('publisherSetId', newPublisherSet.get('id'));
+				// Add the modified Edition to the revision (if it doesn't exist yet)
+				allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, [edition], 'id');
+			}));
+		}
+		catch (err) {
+			log.error(err);
+		}
+	}
+
+	/**
+	 * Some actions we only want to take once the main entity has been saved
+	*/
+	mainEntity.once('saved', async (model) => {
+		/**
+		 * Set isMerge to true on the *entity*_revision models
+		 * The *entity*_revision items  are created by a postgres trigger instead of server code,
+		 * so we need to wait until the entity is saved on the database.
+		 * We only want to set isMerge to true on the entities we're merging,
+		 * not the other entities potentially affected by the merge -> .where(…
+		 */
+		const newEntityRevision = await model.revision()
+			.fetch({transacting});
+
+		await newEntityRevision
+			.where('bbid', currentEntityBBID)
+			.save({isMerge: true}, {patch: true, transacting});
+
+		/* Also set dataID to null for slave entities to 'delete' them */
+		await newEntityRevision
+			.query(qb => qb.whereIn('bbid', entitiesToMergeBBIDs))
+			.save({dataId: null, isMerge: true}, {patch: true, transacting});
+
+		/** Clear the merge queue */
+		session.mergeQueue = null;
+		try {
+			/* Remove merged entities from search results */
+			await Promise.all(entitiesToMerge.map(search.deleteEntity));
+		}
+		catch (err) {
+			log.debug(err);
+		}
+	});
+
+	/** Update the redirection table to redirect merged entities' bbids
+	 *  to currentEntityBBID (the entity we're merging into)
+	*/
+	await bookshelf.knex('bookbrainz.entity_redirect')
+		.transacting(transacting)
+		.insert(entitiesToMergeBBIDs.map(bbid => (
+			// eslint-disable-next-line camelcase
+			{source_bbid: bbid, target_bbid: currentEntityBBID})));
+
+	return allEntitiesReturnArray;
 }
 
 type ProcessEditionSetsBody = {
@@ -516,8 +721,13 @@ async function processEditionSets(
 	// if areaId is not present, set it to null.
 	// otherwise it shows error while comparing old and new releaseEvent;
 
-	if (releaseEvents[0] && _.isNil(releaseEvents[0].areaId)) {
-		releaseEvents[0].areaId = null;
+	if (releaseEvents[0]) {
+		if (_.isNil(releaseEvents[0].areaId)) {
+			releaseEvents[0].areaId = null;
+		}
+		if (releaseEvents[0].date === '') {
+			releaseEvents[0].date = null;
+		}
 	}
 
 	const newReleaseEventSetIDPromise =
@@ -526,7 +736,7 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
-	return Promise.props({
+	return makePromiseFromObject({
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
@@ -546,7 +756,7 @@ async function processWorkSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	return Promise.props({
+	return makePromiseFromObject({
 		languageSetId: orm.func.language.updateLanguageSet(
 			orm, transacting, oldSet,
 			languages.map((languageID) => ({id: languageID}))
@@ -569,8 +779,9 @@ function processEntitySets(
 		return processWorkSets(orm, currentEntity, body, transacting);
 	}
 
-	return Promise.resolve(null);
+	return new Promise(resolve => resolve(null));
 }
+
 
 async function getNextAliasSet(orm, transacting, currentEntity, body) {
 	const {AliasSet} = orm;
@@ -642,7 +853,7 @@ async function getNextAnnotation(
 
 	return body.annotation ? orm.func.annotation.updateAnnotation(
 		orm, transacting, oldAnnotation, body.annotation, revision
-	) : Promise.resolve(null);
+	) : new Promise(resolve => resolve(null));
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {
@@ -661,7 +872,7 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 
 async function getChangedProps(
 	orm, transacting, isNew, currentEntity, body, entityType,
-	newRevisionPromise, derivedProps
+	newRevision, derivedProps
 ) {
 	const aliasSetPromise =
 		getNextAliasSet(orm, transacting, currentEntity, body);
@@ -669,10 +880,8 @@ async function getChangedProps(
 	const identSetPromise =
 		getNextIdentifierSet(orm, transacting, currentEntity, body);
 
-	const annotationPromise = newRevisionPromise.then(
-		(revision) => getNextAnnotation(
-			orm, transacting, currentEntity, body, revision
-		)
+	const annotationPromise = getNextAnnotation(
+		orm, transacting, currentEntity, body, newRevision
 	);
 
 	const disambiguationPromise =
@@ -704,7 +913,10 @@ async function getChangedProps(
 
 	// Construct a set of differences between the new values and old
 	return _.reduce(propsToSet, (result, value, key) => {
-		if (!_.isEqual(value, currentEntity[key])) {
+		if (!_.isEqual(value, currentEntity[key]) &&
+			// If both items are null or undefined, consider them equal (null !=== undefined)
+			!(_.isNil(value) && _.isNil(currentEntity[key]))
+		) {
 			result[key] = value;
 		}
 
@@ -730,7 +942,8 @@ export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
 	entityType: EntityTypeString,
-	derivedProps: {}
+	derivedProps: {},
+	isMergeOperation: boolean
 ) {
 	const {orm}: {orm: any} = req.app.locals;
 	const {Entity, Revision, bookshelf} = orm;
@@ -749,86 +962,98 @@ export function handleCreateOrEditEntity(
 	} = resLocals.entity;
 
 	const entityEditPromise = bookshelf.transaction(async (transacting) => {
-		// Determine if a new entity is being created
-		const isNew = !currentEntity;
+		try {
+			// Determine if a new entity is being created
+			const isNew = !currentEntity;
 
-		if (isNew) {
-			const newEntity = await new Entity({type: entityType})
-				.save(null, {transacting});
-			const newEntityBBID = newEntity.get('bbid');
-			body.relationships = _.map(
-				body.relationships,
-				({sourceBbid, targetBbid, ...others}) => ({
-					sourceBbid: sourceBbid || newEntityBBID,
-					targetBbid: targetBbid || newEntityBBID,
-					...others
-				})
+			if (isNew) {
+				const newEntity = await new Entity({type: entityType})
+					.save(null, {transacting});
+				const newEntityBBID = newEntity.get('bbid');
+				body.relationships = _.map(
+					body.relationships,
+					({sourceBbid, targetBbid, ...others}) => ({
+						sourceBbid: sourceBbid || newEntityBBID,
+						targetBbid: targetBbid || newEntityBBID,
+						...others
+					})
+				);
+
+				currentEntity = newEntity.toJSON();
+			}
+
+			// Then, edit the entity
+			const newRevision = await new Revision({
+				authorId: editorJSON.id,
+				isMerge: isMergeOperation
+			}).save(null, {transacting});
+
+			const relationshipSets = await getNextRelationshipSets(
+				orm, transacting, currentEntity, body
 			);
 
-			currentEntity = newEntity.toJSON();
-		}
+			const changedProps = await getChangedProps(
+				orm, transacting, isNew, currentEntity, body, entityType,
+				newRevision, derivedProps
+			);
 
-		// Then, edit the entity
-		const newRevisionPromise = new Revision({
-			authorId: editorJSON.id
-		}).save(null, {transacting});
-
-		const relationshipSetsPromise = getNextRelationshipSets(
-			orm, transacting, currentEntity, body
-		);
-
-		const changedPropsPromise = getChangedProps(
-			orm, transacting, isNew, currentEntity, body, entityType,
-			newRevisionPromise, derivedProps
-		);
-
-		const [newRevision, changedProps, relationshipSets] =
-			await Promise.all([
-				newRevisionPromise, changedPropsPromise, relationshipSetsPromise
-			]);
-
-		// If there are no differences, bail
-		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets)) {
-			throw new error.FormSubmissionError('No Updated Field');
-		}
-
-
-		// Fetch or create main entity
-		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, isNew, currentEntity, entityType
-		);
-
-		// Fetch all entities that definitely exist
-		const otherEntities = await fetchEntitiesForRelationships(
-			orm, transacting, currentEntity, relationshipSets
-		);
-
-		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
-
-		const allEntities = [...otherEntities, mainEntity];
-
-		_.forEach(allEntities, (entityModel) => {
-			const bbid: string = entityModel.get('bbid');
-			if (_.has(relationshipSets, bbid)) {
-				entityModel.set(
-					'relationshipSetId',
-					relationshipSets[bbid] && relationshipSets[bbid].get('id')
-				);
+			// If there are no differences, bail
+			if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets) && !isMergeOperation) {
+				throw new error.FormSubmissionError('No Updated Field');
 			}
-		});
 
-		const savedMainEntity = await saveEntitiesAndFinishRevision(
-			orm, transacting, isNew, newRevision, mainEntity, allEntities,
-			editorJSON.id, body.note
-		);
+			// Fetch or create main entity
+			const mainEntity = await fetchOrCreateMainEntity(
+				orm, transacting, isNew, currentEntity.bbid, entityType
+			);
 
-		/** savedMainEntity should already be updated, but we need to refresh the aliases for search reindexing */
-		const savedEntityWithRelationships = await savedMainEntity.refresh({
-			transacting,
-			withRelated: ['aliasSet.aliases']
-		});
+			// Fetch all entities that definitely exist
+			const otherEntities = await fetchEntitiesForRelationships(
+				orm, transacting, currentEntity, relationshipSets
+			);
+			otherEntities.forEach(entity => { entity.shouldInsert = false; });
+			mainEntity.shouldInsert = isNew;
 
-		return savedEntityWithRelationships.toJSON();
+			_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
+
+			// Don't try to modify 'deleted' entities (those with no dataId)
+			let allEntities = [...otherEntities, mainEntity]
+				.filter(entity => entity.get('dataId') !== null);
+
+			if (isMergeOperation) {
+				allEntities = await processMergeOperation(orm, transacting, req.session,
+					mainEntity, allEntities, relationshipSets);
+			}
+
+			_.forEach(allEntities, (entityModel) => {
+				const bbid: string = entityModel.get('bbid');
+				if (_.has(relationshipSets, bbid) && !_.isNil(relationshipSets[bbid])) {
+					entityModel.set(
+						'relationshipSetId',
+						relationshipSets[bbid].get('id')
+					);
+				}
+			});
+
+			const savedMainEntity = await saveEntitiesAndFinishRevision(
+				orm, transacting, isNew, newRevision, mainEntity, allEntities,
+				editorJSON.id, body.note
+			);
+
+			/* We need to load the aliases for search reindexing and refresh it*/
+			await savedMainEntity.load('aliasSet.aliases', {transacting});
+
+			/* New entities will lack some attributes like 'type' required for search indexing */
+			if (isNew) {
+				await savedMainEntity.refresh({transacting});
+			}
+
+			return savedMainEntity.toJSON();
+		}
+		catch (err) {
+			log.error(err);
+			throw err;
+		}
 	});
 
 	const achievementPromise = entityEditPromise.then(
@@ -841,6 +1066,7 @@ export function handleCreateOrEditEntity(
 				}
 				return entityJSON;
 			})
+			.catch(err => { throw err; })
 	);
 
 	return handler.sendPromiseResult(

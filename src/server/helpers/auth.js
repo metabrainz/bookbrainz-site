@@ -20,16 +20,13 @@
 import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
 import * as error from '../../common/helpers/error';
 
-import Log from 'log';
+import StrategyMock from './mock-passport-strategy';
 import _ from 'lodash';
 import config from '../../common/helpers/config';
+import log from 'log';
 import passport from 'passport';
 import status from 'http-status';
 
-
-const log = new Log(config.site.log);
-
-const MusicBrainzOAuth2Strategy = MusicBrainzOAuth.Strategy;
 
 async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
 	const {Editor} = orm;
@@ -55,35 +52,54 @@ function _updateCachedMBName(bbUserModel, mbUserJSON) {
 export function init(app) {
 	const {orm} = app.locals;
 	try {
-		const strategy = new MusicBrainzOAuth2Strategy(
-			_.assign(
-				{
-					passReqToCallback: true,
-					scope: 'profile'
-				}, config.musicbrainz
-			),
-			async (req, accessToken, refreshToken, profile, done) => {
-				try {
-					if (req.user) {
-						const linkedUser =
-							await _linkMBAccount(orm, req.user, profile);
+		let strategy;
+		// eslint-disable-next-line no-process-env
+		if (process.env.NODE_ENV === 'test') {
+			strategy = new StrategyMock({userId: 123456},
+				async (user, done) => {
+					try {
+						const linkedUser = await new orm.Editor({id: user.id})
+							.fetch({require: true});
 
 						// Logged in, associate
 						return done(null, linkedUser.toJSON());
 					}
+					catch (err) {
+						return done(err, false);
+					}
+				});
+		}
+		else {
+			strategy = new MusicBrainzOAuth.Strategy(
+				_.assign(
+					{
+						passReqToCallback: true,
+						scope: 'profile'
+					}, config.musicbrainz
+				),
+				async (req, accessToken, refreshToken, profile, done) => {
+					try {
+						if (req.user) {
+							const linkedUser =
+								await _linkMBAccount(orm, req.user, profile);
 
-					// Not logged in, authenticate
-					const fetchedUser = await _getAccountByMBUserId(orm, profile);
+							// Logged in, associate
+							return done(null, linkedUser.toJSON());
+						}
 
-					await _updateCachedMBName(fetchedUser, profile);
+						// Not logged in, authenticate
+						const fetchedUser = await _getAccountByMBUserId(orm, profile);
 
-					return done(null, fetchedUser.toJSON());
+						await _updateCachedMBName(fetchedUser, profile);
+
+						return done(null, fetchedUser.toJSON());
+					}
+					catch (err) {
+						return done(null, false, profile);
+					}
 				}
-				catch (err) {
-					return done(null, false, profile);
-				}
-			}
-		);
+			);
+		}
 		passport.use(strategy);
 
 		passport.serializeUser((user, done) => {
@@ -99,8 +115,7 @@ export function init(app) {
 		return true;
 	}
 	catch (strategyError) {
-		log.error('Error setting up OAuth strategy: ', strategyError.message);
-		log.error('You will not be able to log in');
+		log.error('Error setting up OAuth strategy %s. You will not be able to log in', strategyError.message);
 		return null;
 	}
 }

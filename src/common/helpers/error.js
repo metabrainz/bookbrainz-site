@@ -16,12 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Log from 'log';
-import config from '../../common/helpers/config';
+import log from 'log';
 import status from 'http-status';
 
-
-const log = new Log(config.site.log);
 
 export class SiteError extends Error {
 	constructor(message) {
@@ -171,3 +168,26 @@ export class AwardNotUnlockedError extends Error {
 		return 'An award was not unlocked';
 	}
 }
+
+export class ConflictError extends SiteError {
+	constructor(message) {
+		super();
+
+		/*
+		 * We can't access the subclass's default message before calling super,
+		 * so we set it manually here
+		 */
+		this.message = message || this.constructor.defaultMessage;
+
+		this.name = this.constructor.name;
+	}
+
+	static get defaultMessage() {
+		return 'Resource conflict';
+	}
+
+	static get status() {
+		return status.CONFLICT;
+	}
+}
+

@@ -94,7 +94,7 @@ At this point, you should check your internet connection. If it persists, make s
 
         then 
         ```
-        psql (9.6.9)
+        psql (12.3)
         Type "help" for help.
 
         postgres=# \password

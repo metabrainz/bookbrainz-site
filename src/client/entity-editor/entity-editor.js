@@ -20,6 +20,7 @@
 
 import * as React from 'react';
 import AliasEditor from './alias-editor/alias-editor';
+import AnnotationSection from './annotation-section/annotation-section';
 import ButtonBar from './button-bar/button-bar';
 import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
@@ -30,12 +31,13 @@ import {connect} from 'react-redux';
 
 
 type OwnProps = {
-	children: React.Element<any>
+	children: React.Element<any>,
+	heading: string
 };
 
 type StateProps = {
 	aliasEditorVisible: boolean,
-	identifierEditorVisible: boolean
+	identifierEditorVisible: boolean,
 };
 
 type Props = StateProps & OwnProps;
@@ -56,23 +58,34 @@ const EntityEditor = (props: Props) => {
 	const {
 		aliasEditorVisible,
 		children,
+		heading,
 		identifierEditorVisible
 	} = props;
 
 	return (
 		<Panel>
-			<AliasEditor show={aliasEditorVisible} {...props}/>
-			<NameSection {...props}/>
-			<ButtonBar {...props}/>
-			<RelationshipSection {...props}/>
-			{
-				React.cloneElement(
-					React.Children.only(children),
-					{...props}
-				)
-			}
-			<SubmissionSection {...props}/>
-			<IdentifierEditor show={identifierEditorVisible} {...props}/>
+			<Panel.Heading>
+				<Panel.Title componentClass="h3">
+					{heading}
+				</Panel.Title>
+			</Panel.Heading>
+			<Panel.Body>
+				<AliasEditor show={aliasEditorVisible} {...props}/>
+				<NameSection {...props}/>
+				<ButtonBar {...props}/>
+				<RelationshipSection {...props}/>
+				{
+					React.cloneElement(
+						React.Children.only(children),
+						{...props}
+					)
+				}
+				<IdentifierEditor show={identifierEditorVisible} {...props}/>
+				<AnnotationSection {...props}/>
+			</Panel.Body>
+			<Panel.Footer>
+				<SubmissionSection {...props}/>
+			</Panel.Footer>
 		</Panel>
 	);
 };

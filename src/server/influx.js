@@ -1,10 +1,8 @@
 import * as Influx from 'influx';
-import Log from 'log';
+import log from 'log';
 
 // Adapted from https://node-influx.github.io/manual/tutorial.html
 function init(app, config) {
-	const log = new Log(config.site.log);
-
 	const influxConfig = config.influx;
 
 	const influx = new Influx.InfluxDB({

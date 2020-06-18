@@ -26,7 +26,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Alert, Button, PageHeader} = bootstrap;

@@ -27,7 +27,7 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
 import SelectWrapper from '../input/select-wrapper';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Button, Col, Grid, Row} = bootstrap;
@@ -77,7 +77,6 @@ class ProfileForm extends React.Component {
 
 		request.post('/editor/edit/handler')
 			.send(data)
-			.promise()
 			.then(() => {
 				window.location.href = `/editor/${this.props.editor.id}`;
 			});
@@ -149,11 +148,11 @@ class ProfileForm extends React.Component {
 								/>
 							}
 							<SearchSelect
-								collection="area"
 								defaultValue={initialArea}
 								label="Area"
 								placeholder="Select area..."
 								ref={(ref) => this.area = ref}
+								type="area"
 							/>
 							<SelectWrapper
 								base={ReactSelect}

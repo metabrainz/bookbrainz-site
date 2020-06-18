@@ -21,17 +21,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function EntityIdentifiers({identifierSet, identifierTypes}) {
+function EntityIdentifiers({identifiers, identifierTypes}) {
 	return (
 		<div>
 			<h2>Identifiers</h2>
 			{
-				identifierSet && identifierSet.identifiers &&
+				identifiers &&
 				identifierTypes.map((type) => {
 					const identifierValues =
-						identifierSet.identifiers
+						identifiers
 							.filter(
-								(identifier) => identifier.type.id === type.id
+								(identifier) => identifier.type.id === type.id || identifier.typeId === type.id
 							)
 							.map(
 								(identifier) => (
@@ -43,7 +43,9 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 									</dd>
 								)
 							);
-
+					if (!identifierValues.length) {
+						return null;
+					}
 					return [
 						<dt key={type.id}>{type.label}</dt>,
 						identifierValues
@@ -56,13 +58,11 @@ function EntityIdentifiers({identifierSet, identifierTypes}) {
 
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
-	identifierSet: PropTypes.object,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array.isRequired,
+	identifiers: PropTypes.array
 };
-
 EntityIdentifiers.defaultProps = {
-	identifierSet: {},
-	identifierTypes: []
+	identifiers: []
 };
 
 export default EntityIdentifiers;
