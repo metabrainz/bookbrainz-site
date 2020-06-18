@@ -66,7 +66,8 @@ const workError = 'Work not found';
  *        type: array
  *        items:
  *          type: string
- *          example: English
+ *          description: Three letter ISO 639-3 language code
+ *          example: eng
  *      workType:
  *        type: string
  *        example: 'Epic'
@@ -281,7 +282,7 @@ router.get('/:bbid/relationships',
  *         enum: [novel, short story, epic, poem, play, article, scientific paper, non-fiction, anthology, serial, introduction, novella]
  *       - name: language
  *         in: query
- *         description: filter by Work language
+ *         description: filter by Work language (ISO 639-3 three letter code)
  *         required: false
  *         type: string
  *     responses:
@@ -302,19 +303,15 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
+			let workTypeMatched = true;
+			let workLanguageMatched = true;
 			if (req.query.type) {
-				const workTypeMatched = _.toLower(relatedEntity.workType) === _.toLower(req.query.type);
-				if (req.query.language) {
-					const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(_.toLower(req.query.language)));
-					return workTypeMatched && workLanguageMatched;
-				}
-				return workTypeMatched;
+				workTypeMatched = _.toLower(relatedEntity.workType) === _.toLower(req.query.type);
 			}
 			if (req.query.language) {
-				const workLanguageMatched = relatedEntity.languages.includes(_.upperFirst(req.query.language));
-				return workLanguageMatched;
+				workLanguageMatched = relatedEntity.languages.includes(_.toLower(req.query.language));
 			}
-			return true;
+			return workTypeMatched && workLanguageMatched;
 		}
 
 		const workRelationshipList = await utils.getBrowsedRelationships(

@@ -32,6 +32,8 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
+
+
 const {EditionFormat, Language, PublisherSet, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
@@ -285,19 +287,19 @@ describe('Browse Edition', () => {
 	});
 
 	it('should return list of editions associated with the author (with Language Filter)', async () => {
-		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&language=French`);
+		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&language=fra`);
 		await browseEditionBasicTests(res);
-		// 5 work of French Language was created
+		// 2 works of French Language were created
 		expect(res.body.editions.length).to.equal(2);
 		res.body.editions.forEach((work) => {
-			expect(work.entity.languages).to.contain('French');
+			expect(work.entity.languages).to.contain('fra');
 		});
 	});
 
 	it('should return list of editions associated with the author (with Format Filter)', async () => {
 		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&format=Edition+Format+1`);
 		await browseEditionBasicTests(res);
-		// 2 work of Work Type 1 was created
+		// 2 works of Work Type 1 were created
 		expect(res.body.editions.length).to.equal(2);
 		res.body.editions.forEach((edition) => {
 			expect(_.toLower(edition.entity.editionFormat)).to.equal('edition format 1');
@@ -305,13 +307,13 @@ describe('Browse Edition', () => {
 	});
 
 	it('should return list of editions associated with the author (with Format Filter and Language Filter)', async () => {
-		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&format=edition+format+1&language=French`);
+		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}&format=edition+format+1&language=fra`);
 		await browseEditionBasicTests(res);
-		// 1 work of Work Type 1 and French Language was created
+		// 1 work of Work Type 1 and French language was created
 		expect(res.body.editions.length).to.equal(1);
 		res.body.editions.forEach((work) => {
 			expect(_.toLower(work.entity.editionFormat)).to.equal('edition format 1');
-			expect(work.entity.languages).to.contain('French');
+			expect(work.entity.languages).to.contain('fra');
 		});
 	});
 
@@ -398,13 +400,13 @@ describe('Browse Edition', () => {
 	});
 
 	it('should allow params to be case insensitive', async () => {
-		const res = await chai.request(app).get(`/edITion?aUThOr=${author.get('bbid')}&format=edItIOn+FoRmAT+1&LAnguage=fReNCh`);
+		const res = await chai.request(app).get(`/edITion?aUThOr=${author.get('bbid')}&format=edItIOn+FoRmAT+1&LAnguage=fRA`);
 		await browseEditionBasicTests(res);
 		// 1 work of Work Type 1 and French Language was created
 		expect(res.body.editions.length).to.equal(1);
 		res.body.editions.forEach((work) => {
 			expect(_.toLower(work.entity.editionFormat)).to.equal('edition format 1');
-			expect(work.entity.languages).to.contain('French');
+			expect(work.entity.languages).to.contain('fra');
 		});
 	});
 

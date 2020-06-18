@@ -76,7 +76,8 @@ const editionError = 'Edition not found';
  *        type: array
  *        items:
  *          type: string
- *          example: 'English'
+ *          description: Three letter ISO 639-3 language code
+ *          example: 'eng'
  *      pages:
  *        type: integer
  *        example: 200
@@ -310,7 +311,7 @@ router.get('/:bbid/relationships',
  *         enum: [paperback, hardcover, ebook, library binding, audiobook]
  *       - name: language
  *         in: query
- *         description: filter by Edition language
+ *         description: filter by Edition language (ISO 639-3 three letter code)
  *         required: false
  *         type: string
  *     responses:
@@ -343,19 +344,15 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
+			let editionFormatMatched = true;
+			let editionLanguageMatched = true;
 			if (req.query.format) {
-				const editionFormatMatched = _.toLower(relatedEntity.editionFormat) === _.toLower(req.query.format);
-				if (req.query.language) {
-					const editionLanguageMatched = relatedEntity.languages.includes(_.upperFirst(_.toLower(req.query.language)));
-					return editionFormatMatched && editionLanguageMatched;
-				}
-				return editionFormatMatched;
+				editionFormatMatched = _.toLower(relatedEntity.editionFormat) === _.toLower(req.query.format);
 			}
-			else if (req.query.language) {
-				const editionLanguageMatched = relatedEntity.languages.includes(_.upperFirst(_.toLower(req.query.language)));
-				return editionLanguageMatched;
+			if (req.query.language) {
+				editionLanguageMatched = relatedEntity.languages.includes(_.toLower(req.query.language));
 			}
-			return true;
+			return editionFormatMatched && editionLanguageMatched;
 		}
 
 		const editionRelationshipList = await utils.getBrowsedRelationships(

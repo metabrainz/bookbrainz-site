@@ -284,12 +284,12 @@ describe('Browse Works', () => {
 	});
 
 	it('should return list of works associated with the author (with Language Filter)', async () => {
-		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&language=French`);
+		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&language=fra`);
 		await browseWorkBasicTests(res);
 		// 5 work of French Language was created
 		expect(res.body.works.length).to.equal(2);
 		res.body.works.forEach((work) => {
-			expect(work.entity.languages).to.contain('French');
+			expect(work.entity.languages).to.contain('fra');
 		});
 	});
 
@@ -304,13 +304,13 @@ describe('Browse Works', () => {
 	});
 
 	it('should return list of works associated with the author (with Type Filter and Language Filter)', async () => {
-		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=Work+Type+1&language=French`);
+		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=Work+Type+1&language=fra`);
 		await browseWorkBasicTests(res);
 		// 1 work of Work Type 1 and French Language was created
 		expect(res.body.works.length).to.equal(1);
 		res.body.works.forEach((work) => {
 			expect(_.toLower(work.entity.workType)).to.equal('work type 1');
-			expect(work.entity.languages).to.contain('French');
+			expect(work.entity.languages).to.contain('fra');
 		});
 	});
 
@@ -328,13 +328,13 @@ describe('Browse Works', () => {
 	});
 
 	it('should allow params to be case insensitive', async () => {
-		const res = await chai.request(app).get(`/WoRK?aUThOr=${author.get('bbid')}&tYPe=WoRK+TyPe+1&LAnguage=fReNCh`);
+		const res = await chai.request(app).get(`/WoRK?aUThOr=${author.get('bbid')}&tYPe=WoRK+TyPe+1&LAnguage=fRA`);
 		await browseWorkBasicTests(res);
 		// 1 work of Work Type 1 and French Language was created
 		expect(res.body.works.length).to.equal(1);
 		res.body.works.forEach((work) => {
 			expect(_.toLower(work.entity.workType)).to.equal('work type 1');
-			expect(work.entity.languages).to.contain('French');
+			expect(work.entity.languages).to.contain('fra');
 		});
 	});
 

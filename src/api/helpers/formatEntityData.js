@@ -50,16 +50,16 @@ function getDefaultAlias(entity: object) {
  * A function to extract the languages from ORM entity
  * @function
  * @param {object} entity - an ORM entity
- * @returns {string[]} an array containing languages of an ORM entity.
+ * @returns {string[]} an array containing three letter ISO 639-3 language codes of an ORM entity.
  * By default it return []
  *
  * @example
  *		getLanguages(entity);
- *		/* => ['Hindi', 'English', 'Spanish']
+ *		/* => ['hin', 'eng', 'spa']
  */
 
 function getLanguages(entity: object) {
-	return _.get(entity, 'languageSet.languages', []).map((language) => language.name);
+	return _.get(entity, 'languageSet.languages', []).map(({isoCode3}) => isoCode3);
 }
 
 /**
@@ -83,7 +83,7 @@ function getLanguages(entity: object) {
 			"disambiguation": null,
 			"entityType": "Work",
 			"languages": [
-				"English"
+				"eng"
 			],
 			"workType": "Epic"
 		}
@@ -124,7 +124,7 @@ export function getWorkBasicInfo(work: object) {
 			"editionFormat": "eBook",
 			"height": null,
 			"languages": [
-				"English"
+				"eng"
 			],
 			"pages": 214,
 			"releaseEventDates": [
