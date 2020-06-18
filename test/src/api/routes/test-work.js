@@ -276,6 +276,15 @@ describe('Browse Works', () => {
 	});
 	after(truncateEntities);
 
+	it('should throw an error if trying to browse more than one entity', (done) => {
+		chai.request(app)
+			.get(`/work?author=${author.get('bbid')}&edition=${author.get('bbid')}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
 
 	it('should return list of works associated with the author (without any filter)', async () => {
 		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}`);

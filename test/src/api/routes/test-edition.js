@@ -280,6 +280,16 @@ describe('Browse Edition', () => {
 	});
 	after(truncateEntities);
 
+	it('should throw an error if trying to browse more than one entity', (done) => {
+		chai.request(app)
+			.get(`/edition?author=${author.get('bbid')}&work=${author.get('bbid')}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
+
 	it('should return list of editions associated with the author (without any filter)', async () => {
 		const res = await chai.request(app).get(`/edition?author=${author.get('bbid')}`);
 		await browseEditionBasicTests(res);

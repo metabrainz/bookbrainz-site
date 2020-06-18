@@ -175,7 +175,7 @@ describe('Browse Publishers', () => {
 		// create 4 publishers 2 each of type 1 and type 2
 		const publisherBBIDs = [];
 		for (let areaId = 1; areaId <= 2; areaId++) {
-			let publisherAttrib = {};
+			const publisherAttrib = {};
 			const publisherBBID = getRandomUUID();
 			publisherAttrib.bbid = publisherBBID;
 			publisherAttrib.areaId = areaId;
@@ -232,6 +232,16 @@ describe('Browse Publishers', () => {
 		await work.save(null, {method: 'update'});
 	});
 	after(truncateEntities);
+
+	it('should throw an error if trying to browse more than one entity', (done) => {
+		chai.request(app)
+			.get(`/publisher?author=${work.get('bbid')}&work=${work.get('bbid')}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
 
 	it('should return list of Publisher, associated with the Work', async () => {
 		const res = await chai.request(app).get(`/publisher?work=${work.get('bbid')}`);

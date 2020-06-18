@@ -29,6 +29,8 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 import {random} from 'faker';
+
+
 const {Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
@@ -225,6 +227,16 @@ describe('Browse Author', () => {
 	});
 	after(truncateEntities);
 
+
+	it('should throw an error if trying to browse more than one entity', (done) => {
+		chai.request(app)
+			.get(`/author?work=${work.get('bbid')}&edition=${work.get('bbid')}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
 
 	it('should return list of authors associated with the work (without any filter)', async () => {
 		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}`);
