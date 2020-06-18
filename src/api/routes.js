@@ -37,9 +37,10 @@ import workRouter from './routes/work';
  *      sortName:
  *        type: string
  *        example: '<Sort name of entity>'
- *      aliasLanguage:
+ *      language:
  *        type: string
  *        example: '<Alias language>'
+ *        description: Three letter ISO 639-3 language code
  *      primary:
  *        type: boolean
  *        example: true
