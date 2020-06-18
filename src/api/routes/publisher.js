@@ -299,7 +299,14 @@ router.get('/:bbid/relationships',
 router.get('/',
 	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
-	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
+	(req, res, next) => {
+		// As we're loading the browsed entity, also load the related Publishers from the ORM models to avoid fetching it twice
+		let extraRelationships = [];
+		if (req.query.modelType === 'Edition') {
+			extraRelationships = publisherBasicRelations.map(rel => `publisherSet.publishers.${rel}`);
+		}
+		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
+	},
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
@@ -324,17 +331,8 @@ router.get('/',
 		);
 
 		if (req.query.modelType === 'Edition') {
-			const {Edition} = req.app.locals.orm;
-			const {bbid} = req.query;
-			const relationships = publisherBasicRelations.map(rel => `publisherSet.publishers.${rel}`);
-			// edition is loaded previously in makeEntityLoader (res.locals.entity)
-			// See if we can load withRelated relations created above in makeEntityLoader (see edition group browse request route)
-			const edition = await new Edition({bbid}).fetch({
-				require: false,
-				withRelated: relationships
-			});
-			const editionJSON = edition ? edition.toJSON() : {};
-			const publishers = editionJSON.publisherSet ? editionJSON.publisherSet.publishers : [];
+			const {entity: edition} = res.locals;
+			const publishers = edition.publisherSet ? edition.publisherSet.publishers : [];
 			publishers.map(publisher => getPublisherBasicInfo(publisher))
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {

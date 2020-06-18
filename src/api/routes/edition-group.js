@@ -242,6 +242,7 @@ router.get('/:bbid/relationships',
 router.get('/',
 	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['edition']),
+	// As we're loading the browsed entity, also load the related EditionGroups from the ORM models to avoid fetching it twice
 	makeEntityLoader(null, utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)), 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res, next) => {
@@ -259,7 +260,6 @@ router.get('/',
 		);
 
 		if (req.query.modelType === 'Edition') {
-			// If we're loading an Edition, also load the related Edition Group from the ORM model
 			const {entity: edition} = res.locals;
 			const {editionGroup} = edition;
 			// an edition will belong to only one edition-group
