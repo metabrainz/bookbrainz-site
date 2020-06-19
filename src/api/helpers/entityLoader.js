@@ -39,16 +39,18 @@ import * as commonUtils from '../../common/helpers/utils';
  * If BBID is valid then extract the entity data from database by using BBID and relations of
  * that entity. If entity is found succesfully then set that entity data to the res.locals.entity
  * otherwise return an object {message: errMessage} as response with status code 404.
- * If the BBID is not valid then return a status code 406 and an object {message: 'BBID is not valid uuid'}.
+ * If the BBID is not valid then return a status code 400 and an object {message: 'BBID is not valid uuid'}.
  */
 
 
-export function makeEntityLoader(modelName, relations, errMessage) {
+export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 	return async (req, res, next) => {
 		const {orm} = req.app.locals;
-		if (commonUtils.isValidBBID(req.params.bbid)) {
+		const bbid = isBrowse ? req.query.bbid : req.params.bbid;
+		const model = isBrowse ? req.query.modelType : modelName;
+		if (commonUtils.isValidBBID(bbid)) {
 			try {
-				const entityData = await orm.func.entity.getEntity(orm, modelName, req.params.bbid, relations);
+				const entityData = await orm.func.entity.getEntity(orm, model, bbid, relations);
 				res.locals.entity = entityData;
 				return next();
 			}
@@ -56,6 +58,6 @@ export function makeEntityLoader(modelName, relations, errMessage) {
 				return res.status(404).send({message: errMessage});
 			}
 		}
-		return res.status(406).send({message: 'BBID is not valid uuid'});
+		return res.status(400).send({message: 'BBID is not valid uuid'});
 	};
 }

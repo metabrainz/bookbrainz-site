@@ -16,10 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
+
+import * as utils from '../helpers/utils';
+
+import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 
 const router = Router();
@@ -71,7 +75,31 @@ const authorError = 'Author not found';
  *     type:
  *       type: string
  *       example: 'Person'
- *
+ *  BrowsedAuthors:
+ *   type: object
+ *   properties:
+ *     bbid:
+ *       type: string
+ *       format: uuid
+ *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *     relatedAuthors:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           entity:
+ *             $ref: '#/definitions/AuthorDetail'
+ *           relationships:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                  relationshipTypeID:
+ *                    type: number
+ *                    example: 8
+ *                  relationshipType:
+ *                    type: string
+ *                    example: 'Author'
  */
 
 
@@ -99,7 +127,7 @@ const authorError = 'Author not found';
  *             $ref: '#/definitions/AuthorDetail'
  *       404:
  *         description: Author not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
@@ -135,13 +163,13 @@ router.get('/:bbid',
  *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Author not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
 router.get('/:bbid/aliases',
-	makeEntityLoader('Author', aliasesRelations, authorError),
-	async (req, res) => {
+	makeEntityLoader('Author', utils.aliasesRelations, authorError),
+	async (req, res, next) => {
 		const authorAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(authorAliasesList);
 	});
@@ -170,12 +198,12 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Author not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 router.get('/:bbid/identifiers',
-	makeEntityLoader('Author', identifiersRelations, authorError),
-	async (req, res) => {
+	makeEntityLoader('Author', utils.identifiersRelations, authorError),
+	async (req, res, next) => {
 		const authorIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(authorIdentifiersList);
 	});
@@ -204,15 +232,87 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Author not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('Author', relationshipsRelations, authorError),
-	async (req, res) => {
+	makeEntityLoader('Author', utils.relationshipsRelations, authorError),
+	async (req, res, next) => {
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
+	});
+
+/**
+ *	@swagger
+ * '/author':
+ *   get:
+ *     tags:
+ *       - Browse Requests
+ *     summary: Gets a list of Authors related to another Entity
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and it's Authors are fetched
+ *     operationId: getRelatedAuthorByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: author
+ *         in: query
+ *         description: BBID of the corresponding Author
+ *         required: false
+ *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the corresponding Edition
+ *         required: false
+ *         type: bbid
+ *       - name: edition-group
+ *         in: query
+ *         description: BBID of the corresponding Edition Group
+ *         required: false
+ *         type: bbid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         type: bbid
+ *       - name: type
+ *         in: query
+ *         description: filter by Author type
+ *         required: false
+ *         type: string
+ *         enum: [person, group]
+ *     responses:
+ *       200:
+ *         description: List of Authors related to another Entity
+ *         schema:
+ *             $ref: '#/definitions/BrowsedAuthors'
+ *       404:
+ *         description: author/edition/edition-group/publisher (entity entity) not found
+ *       400:
+ *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
+ */
+
+router.get('/',
+	formatQueryParameters(),
+	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work', 'publisher']),
+	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
+	loadEntityRelationshipsForBrowse(),
+	async (req, res) => {
+		function relationshipsFilterMethod(relatedEntity) {
+			if (req.query.type) {
+				const authorTypeMatched = toLower(relatedEntity.authorType) === toLower(req.query.type);
+				return authorTypeMatched;
+			}
+			return true;
+		}
+		const authorRelationshipList = await utils.getBrowsedRelationships(
+			req.app.locals.orm, res.locals, 'Author',
+			getAuthorBasicInfo, authorBasicRelations, relationshipsFilterMethod
+		);
+		return res.status(200).send({
+			authors: authorRelationshipList,
+			bbid: req.query.bbid
+		});
 	});
 
 export default router;

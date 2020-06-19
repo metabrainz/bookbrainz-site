@@ -31,7 +31,7 @@ import _ from 'lodash';
  * @example
  *		getDefaultAlias(entity);
  *		/* => {
-			"language": "English",
+			"language": "eng",
 			"name": "H. Beam Piper",
 			"sortName": "Piper, H. Beam"
 		}
@@ -39,7 +39,7 @@ import _ from 'lodash';
 
 function getDefaultAlias(entity: object) {
 	return {
-		language: _.get(entity, 'defaultAlias.language.name', null),
+		language: _.get(entity, 'defaultAlias.language.isoCode3', null),
 		name: _.get(entity, 'defaultAlias.name', null),
 		primary: _.get(entity, 'defaultAlias.primary', null),
 		sortName: _.get(entity, 'defaultAlias.sortName', null)
@@ -50,16 +50,16 @@ function getDefaultAlias(entity: object) {
  * A function to extract the languages from ORM entity
  * @function
  * @param {object} entity - an ORM entity
- * @returns {string[]} an array containing languages of an ORM entity.
+ * @returns {string[]} an array containing three letter ISO 639-3 language codes of an ORM entity.
  * By default it return []
  *
  * @example
  *		getLanguages(entity);
- *		/* => ['Hindi', 'English', 'Spanish']
+ *		/* => ['hin', 'eng', 'spa']
  */
 
 function getLanguages(entity: object) {
-	return _.get(entity, 'languageSet.languages', []).map((language) => language.name);
+	return _.get(entity, 'languageSet.languages', []).map(({isoCode3}) => isoCode3);
 }
 
 /**
@@ -75,7 +75,7 @@ function getLanguages(entity: object) {
  *		/* => {
 			"bbid": "ba446064-90a5-447b-abe5-139be547da2e",
 			"defaultAlias": {
-				"language": "English",
+				"language": "eng",
 				"name": "Harry Potter",
 				"primary": true,
 				"sortName": "Harry Potter"
@@ -83,7 +83,7 @@ function getLanguages(entity: object) {
 			"disambiguation": null,
 			"entityType": "Work",
 			"languages": [
-				"English"
+				"eng"
 			],
 			"workType": "Epic"
 		}
@@ -114,7 +114,7 @@ export function getWorkBasicInfo(work: object) {
  *		/* => {
 			"bbid": "442ab642-985a-4957-9d61-8a1d9e82de1f",
 			"defaultAlias": {
-				"language": "English",
+				"language": "eng",
 				"name": "A Monster Calls",
 				"primary": true,
 				"sortName": "Monster Calls, A"
@@ -124,7 +124,7 @@ export function getWorkBasicInfo(work: object) {
 			"editionFormat": "eBook",
 			"height": null,
 			"languages": [
-				"English"
+				"eng"
 			],
 			"pages": 214,
 			"releaseEventDates": [
@@ -167,7 +167,7 @@ export function getEditionBasicInfo(edition: object) {
  *		/* => {
 			"bbid": "3889b695-70d5-4933-9f08-defad217623e",
 			"defaultAlias": {
-				"language": "English",
+				"language": "eng",
 				"name": "A Suitable Boy",
 				"primary": true,
 				"sortName": "Suitable Boy, A"
@@ -183,7 +183,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 			bbid: _.get(editionGroup, 'bbid', null),
 			defaultAlias: getDefaultAlias(editionGroup),
 			disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
-			type: _.get(editionGroup, 'editionGroupType.label')
+			editionGroupType: _.get(editionGroup, 'editionGroupType.label')
 		};
 }
 
@@ -202,7 +202,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 			"beginArea": null,
 			"beginDate": "1904-03-23",
 			"defaultAlias": {
-				"language": "English",
+				"language": "eng",
 				"name": "H. Beam Piper",
 				"primary": true,
 				"sortName": "Piper, H. Beam"
@@ -219,6 +219,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 export function getAuthorBasicInfo(author: object) {
 	return _.isNil(author) ? null :
 		{
+			authorType: _.get(author, 'authorType.label', null),
 			bbid: _.get(author, 'bbid', null),
 			beginArea: _.get(author, 'beginArea.name', null),
 			beginDate: _.get(author, 'beginDate', null),
@@ -227,8 +228,7 @@ export function getAuthorBasicInfo(author: object) {
 			endArea: _.get(author, 'endArea.name', null),
 			endDate: _.get(author, 'endDate', null),
 			ended: _.get(author, 'ended', null),
-			gender: _.get(author, 'gender.name', null),
-			type: _.get(author, 'authorType.label', null)
+			gender: _.get(author, 'gender.name', null)
 		};
 }
 
@@ -247,7 +247,7 @@ export function getAuthorBasicInfo(author: object) {
 			"bbid": "e418874e-5684-4fe9-9d2d-1b7e5d43fd59",
 			"beginDate": "1943",
 			"defaultAlias": {
-				"language": "[Multiple languages]",
+				"language": "mul",
 				"name": "Bharati Bhawan",
 				"primary": true,
 				"sortName": "Bhawan, Bharati"
@@ -269,7 +269,7 @@ export function getPublisherBasicInfo(publisher: object) {
 			disambiguation: _.get(publisher, 'disambiguation.comment', null),
 			endDate: _.get(publisher, 'endDate', null),
 			ended: _.get(publisher, 'ended', null),
-			type: _.get(publisher, 'publisherType.label', null)
+			publisherType: _.get(publisher, 'publisherType.label', null)
 		};
 }
 
@@ -286,7 +286,7 @@ export function getPublisherBasicInfo(publisher: object) {
  *		/* => {
 			"aliases": [
 				{
-					"language": "English",
+					"language": "eng",
 					"name": "A Monster Calls",
 					"primary": true,
 					"sortName": "Monster Calls, A"
@@ -300,7 +300,7 @@ export function getEntityAliases(entity: object) {
 	return _.isNil(entity) ? null :
 		{
 			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => ({
-				language: _.get(alias, 'language.name', null),
+				language: _.get(alias, 'language.isoCode3', null),
 				name: _.get(alias, 'name', null),
 				primary: _.get(alias, 'primary', null),
 				sortName: _.get(alias, 'sortName', null)

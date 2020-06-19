@@ -16,10 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
-import {getEditionGroupBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
+import * as utils from '../helpers/utils';
+import {
+	formatQueryParameters,
+	loadEntityRelationshipsForBrowse,
+	validateBrowseRequestQueryParameters
+} from '../helpers/middleware';
+import {
+	getEditionGroupBasicInfo,
+	getEntityAliases,
+	getEntityIdentifiers,
+	getEntityRelationships
+} from '../helpers/formatEntityData';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 
 const router = Router();
@@ -77,7 +88,7 @@ const editionGroupError = 'Edition Group not found';
  *              $ref: '#/definitions/EditionGroupDetail'
  *        404:
  *          description: Edition Group not found
- *        406:
+ *        400:
  *          description: Invalid BBID
  */
 
@@ -112,13 +123,13 @@ router.get('/:bbid',
  *             $ref: '#/definitions/Aliases'
  *       404:
  *         description: Edition Group not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
 router.get('/:bbid/aliases',
-	makeEntityLoader('EditionGroup', aliasesRelations, editionGroupError),
-	async (req, res) => {
+	makeEntityLoader('EditionGroup', utils.aliasesRelations, editionGroupError),
+	async (req, res, next) => {
 		const editionGroupAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionGroupAliasesList);
 	});
@@ -147,13 +158,13 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Edition Group not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
 router.get('/:bbid/identifiers',
-	makeEntityLoader('EditionGroup', identifiersRelations, editionGroupError),
-	async (req, res) => {
+	makeEntityLoader('EditionGroup', utils.identifiersRelations, editionGroupError),
+	async (req, res, next) => {
 		const editionGroupIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionGroupIdentifiersList);
 	});
@@ -183,15 +194,86 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Edition Group not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('EditionGroup', relationshipsRelations, editionGroupError),
-	async (req, res) => {
+	makeEntityLoader('EditionGroup', utils.relationshipsRelations, editionGroupError),
+	async (req, res, next) => {
 		const editionGroupRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionGroupRelationshipList);
+	});
+
+/**
+ *	@swagger
+ * '/edition-group':
+ *   get:
+ *     tags:
+ *       - Browse Requests
+ *     summary: Gets a list of Edition Groups which are related to another Entity
+ *     description: BBID of an Edition is passed as a query parameter, and its related EditionGroups are fetched
+ *     operationId: getRelatedEditionGroupByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the Edition
+ *         required: true
+ *         type: bbid
+ *       - name: type
+ *         in: query
+ *         description: filter by Edition Group type
+ *         required: false
+ *         type: string
+ *         enum: [book, leaflet, newspaper, magazine, journal]
+ *     responses:
+ *       200:
+ *         description: List of EditionGroups related to another Entity
+ *         schema:
+ *             $ref: '#/definitions/BrowsedEditionGroups'
+ *       404:
+ *         description: Edition not found
+ *       400:
+ *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
+ */
+
+router.get('/',
+	formatQueryParameters(),
+	validateBrowseRequestQueryParameters(['edition']),
+	// As we're loading the browsed entity, also load the related EditionGroups from the ORM models to avoid fetching it twice
+	makeEntityLoader(null, utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)), 'Entity not found', true),
+	loadEntityRelationshipsForBrowse(),
+	async (req, res, next) => {
+		function relationshipsFilterMethod(relatedEntity) {
+			if (req.query.type) {
+				const editionGroupTypeMatched = toLower(relatedEntity.editionGroupType) === toLower(req.query.type);
+				return editionGroupTypeMatched;
+			}
+			return true;
+		}
+		// editionGroupRelationsList will always be empty. Because edition is the only validLinkedEnitity
+		const editionGroupRelationshipList = await utils.getBrowsedRelationships(
+			req.app.locals.orm, res.locals, 'EditionGroup',
+			getEditionGroupBasicInfo, editionGroupBasicRelations, relationshipsFilterMethod
+		);
+
+		if (req.query.modelType === 'Edition') {
+			const {entity: edition} = res.locals;
+			const {editionGroup} = edition;
+			// an edition will belong to only one edition-group
+			const editionGroupArray = [getEditionGroupBasicInfo(editionGroup)];
+			editionGroupArray
+				.filter(relationshipsFilterMethod)
+				.forEach((filteredEditionGroup) => {
+					editionGroupRelationshipList.push({entity: filteredEditionGroup, relationship: {}});
+				});
+		}
+		return res.status(200).send({
+			bbid: req.query.bbid,
+			editionGroups: editionGroupRelationshipList
+		});
 	});
 
 export default router;

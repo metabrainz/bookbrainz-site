@@ -34,13 +34,14 @@ import workRouter from './routes/work';
  *    properties:
  *      name:
  *        type: string
- *        example: 'Robert A. Heinlein'
+ *        example: '<Name of entity>'
  *      sortName:
  *        type: string
- *        example: 'Heinlein, Robert A.'
+ *        example: '<Sort name of entity>'
  *      language:
  *        type: string
- *        example: 'English'
+ *        example: '<Alias language>'
+ *        description: Three letter ISO 639-3 language code
  *      primary:
  *        type: boolean
  *        example: true
