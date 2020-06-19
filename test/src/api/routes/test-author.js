@@ -178,7 +178,8 @@ describe('Browse Author', () => {
 			const authorBBID = getRandomUUID();
 			const authorAttribs = {
 				bbid: authorBBID,
-				typeId
+				// Make type id alternate between "person" (1) and "group" (2)
+				typeId: (typeId % 2) + 1
 			};
 			await createAuthor(authorBBID, authorAttribs);
 			authorBBIDs.push(authorBBID);
@@ -245,10 +246,10 @@ describe('Browse Author', () => {
 	});
 
 	it('should return list of authors associated with the work (with Type filter)', async () => {
-		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}&type=Author+Type+1`);
+		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}&type=Person`);
 		await browseAuthorBasicTests(res);
 		expect(res.body.authors.length).to.equal(1);
-		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
+		expect(res.body.authors[0].entity.authorType).to.equal('Person');
 	});
 
 	it('should return 0 authors (with Incorrect Type filter)', async () => {
@@ -258,10 +259,10 @@ describe('Browse Author', () => {
 	});
 
 	it('should allow params to be case insensitive', async () => {
-		const res = await chai.request(app).get(`/aUThor?wOrk=${work.get('bbid')}&tYPe=AuTHor+TyPe+1`);
+		const res = await chai.request(app).get(`/aUThor?wOrk=${work.get('bbid')}&tYPe=pERsOn`);
 		await browseAuthorBasicTests(res);
 		expect(res.body.authors.length).to.equal(1);
-		expect(_.toLower(res.body.authors[0].entity.authorType)).to.equal('author type 1');
+		expect(res.body.authors[0].entity.authorType).to.equal('Person');
 	});
 
 	it('should NOT throw an error if there is no related entity', async () => {

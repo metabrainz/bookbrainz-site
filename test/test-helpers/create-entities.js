@@ -107,9 +107,6 @@ const entityAttribs = {
 	relationshipSetId: 1,
 	revisionId: 1
 };
-const authorTypeAttribs = {
-	id: random.number()
-};
 
 export function createEditor(editorId) {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
@@ -332,21 +329,21 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 		endYear: 2012,
 		ended: true,
 		genderId: editorAttribs.genderId,
-		typeId: authorTypeAttribs.id,
+		typeId: 1,
 		...optionalAuthorAttribs
 	};
 	await new Area({gid: uuidv4(), id: areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
 	// Front-end requires 'Person' and 'Group' types
 	try {
-		await new AuthorType({id: authorTypeAttribs.id, label: 'Person'})
+		await new AuthorType({id: 1, label: 'Person'})
 			.save(null, {method: 'insert'});
 	}
 	catch (error) {
 		// Type already exists
 	}
 	try {
-		await new AuthorType({id: random.number(), label: 'Group'})
+		await new AuthorType({id: 2, label: 'Group'})
 			.save(null, {method: 'insert'});
 	}
 	catch (error) {
