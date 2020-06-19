@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
@@ -31,6 +30,7 @@ import {
 } from '../helpers/formatEntityData';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 
 const router = Router();
@@ -248,7 +248,7 @@ router.get('/',
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const editionGroupTypeMatched = _.toLower(relatedEntity.editionGroupType) === _.toLower(req.query.type);
+				const editionGroupTypeMatched = toLower(relatedEntity.editionGroupType) === toLower(req.query.type);
 				return editionGroupTypeMatched;
 			}
 			return true;

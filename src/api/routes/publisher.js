@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
+
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
@@ -29,8 +29,10 @@ import {
 	getEntityRelationships,
 	getPublisherBasicInfo
 } from '../helpers/formatEntityData';
+
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 
 const router = Router();
@@ -311,15 +313,15 @@ router.get('/',
 	async (req, res, next) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const publisherTypeMatched = _.toLower(relatedEntity.publisherType) === _.toLower(req.query.type);
+				const publisherTypeMatched = toLower(relatedEntity.publisherType) === toLower(req.query.type);
 				if (req.query.area) {
-					const publisherAreaMatched = _.toLower(relatedEntity.area) === _.toLower(req.query.area);
+					const publisherAreaMatched = toLower(relatedEntity.area) === toLower(req.query.area);
 					return publisherTypeMatched && publisherAreaMatched;
 				}
 				return publisherTypeMatched;
 			}
 			else if (req.query.area) {
-				const publisherAreaMatched = _.toLower(relatedEntity.area) === _.toLower(req.query.area);
+				const publisherAreaMatched = toLower(relatedEntity.area) === toLower(req.query.area);
 				return publisherAreaMatched;
 			}
 			return true;

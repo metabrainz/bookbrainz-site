@@ -17,14 +17,13 @@
  */
 
 
-import * as _ from 'lodash';
 import * as utils from '../helpers/utils';
 
 import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
 import {Router} from 'express';
-
 import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 
 const router = Router();
@@ -301,7 +300,7 @@ router.get('/',
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const authorTypeMatched = _.toLower(relatedEntity.authorType) === _.toLower(req.query.type);
+				const authorTypeMatched = toLower(relatedEntity.authorType) === toLower(req.query.type);
 				return authorTypeMatched;
 			}
 			return true;
