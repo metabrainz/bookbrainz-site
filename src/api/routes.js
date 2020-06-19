@@ -38,7 +38,7 @@ import workRouter from './routes/work';
  *      sortName:
  *        type: string
  *        example: 'Heinlein, Robert A.'
- *      aliasLanguage:
+ *      language:
  *        type: string
  *        example: 'English'
  *      primary:
@@ -116,7 +116,7 @@ import workRouter from './routes/work';
  *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
  *      entityType:
  *        type: string
- *        example: 'Authhor'
+ *        example: 'author'
  *      defaultAlias:
  *        type: object
  *        properties:
@@ -126,7 +126,7 @@ import workRouter from './routes/work';
  *          sortName:
  *            type: string
  *            example: 'Heinlein, Robert A.'
- *          aliasLanguage:
+ *          language:
  *            type: string
  *            example: 'English'
  *          primary:

@@ -31,7 +31,7 @@ import _ from 'lodash';
  * @example
  *		getDefaultAlias(entity);
  *		/* => {
-			"aliasLanguage": "English",
+			"language": "English",
 			"name": "H. Beam Piper",
 			"sortName": "Piper, H. Beam"
 		}
@@ -39,7 +39,7 @@ import _ from 'lodash';
 
 function getDefaultAlias(entity: object) {
 	return {
-		aliasLanguage: _.get(entity, 'defaultAlias.language.name', null),
+		language: _.get(entity, 'defaultAlias.language.name', null),
 		name: _.get(entity, 'defaultAlias.name', null),
 		primary: _.get(entity, 'defaultAlias.primary', null),
 		sortName: _.get(entity, 'defaultAlias.sortName', null)
@@ -75,7 +75,7 @@ function getLanguages(entity: object) {
  *		/* => {
 			"bbid": "ba446064-90a5-447b-abe5-139be547da2e",
 			"defaultAlias": {
-				"aliasLanguage": "English",
+				"language": "English",
 				"name": "Harry Potter",
 				"primary": true,
 				"sortName": "Harry Potter"
@@ -114,7 +114,7 @@ export function getWorkBasicInfo(work: object) {
  *		/* => {
 			"bbid": "442ab642-985a-4957-9d61-8a1d9e82de1f",
 			"defaultAlias": {
-				"aliasLanguage": "English",
+				"language": "English",
 				"name": "A Monster Calls",
 				"primary": true,
 				"sortName": "Monster Calls, A"
@@ -167,7 +167,7 @@ export function getEditionBasicInfo(edition: object) {
  *		/* => {
 			"bbid": "3889b695-70d5-4933-9f08-defad217623e",
 			"defaultAlias": {
-				"aliasLanguage": "English",
+				"language": "English",
 				"name": "A Suitable Boy",
 				"primary": true,
 				"sortName": "Suitable Boy, A"
@@ -202,7 +202,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 			"beginArea": null,
 			"beginDate": "1904-03-23",
 			"defaultAlias": {
-				"aliasLanguage": "English",
+				"language": "English",
 				"name": "H. Beam Piper",
 				"primary": true,
 				"sortName": "Piper, H. Beam"
@@ -247,7 +247,7 @@ export function getAuthorBasicInfo(author: object) {
 			"bbid": "e418874e-5684-4fe9-9d2d-1b7e5d43fd59",
 			"beginDate": "1943",
 			"defaultAlias": {
-				"aliasLanguage": "[Multiple languages]",
+				"language": "[Multiple languages]",
 				"name": "Bharati Bhawan",
 				"primary": true,
 				"sortName": "Bhawan, Bharati"
@@ -286,7 +286,7 @@ export function getPublisherBasicInfo(publisher: object) {
  *		/* => {
 			"aliases": [
 				{
-					"aliasLanguage": "English",
+					"language": "English",
 					"name": "A Monster Calls",
 					"primary": true,
 					"sortName": "Monster Calls, A"
@@ -300,7 +300,7 @@ export function getEntityAliases(entity: object) {
 	return _.isNil(entity) ? null :
 		{
 			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => ({
-				aliasLanguage: _.get(alias, 'language.name', null),
+				language: _.get(alias, 'language.name', null),
 				name: _.get(alias, 'name', null),
 				primary: _.get(alias, 'primary', null),
 				sortName: _.get(alias, 'sortName', null)

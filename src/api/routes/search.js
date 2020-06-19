@@ -38,16 +38,16 @@ const router = express.Router();
  *     parameters:
  *       - name: q
  *         in: query
- *         description: Search string for entity search
+ *         description: Search query
  *         required: true
  *         type: string
  *       - name: type
  *         in: query
- *         description: Entity type for search
+ *         description: Entity type to search for
  *         required: false
  *         type: string
  *         default: null
- *         enum: [author, edition, edition-group, publisher, work]
+ *         enum: [author, edition, edition-group, editor, publisher, work]
  *       - name: size
  *         in: query
  *         description: maximum number of entities in response

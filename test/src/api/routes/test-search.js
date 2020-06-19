@@ -34,7 +34,7 @@ const searchString = 'name';
 
 describe('GET /search', () => {
 	before(async () => {
-		// We create two entities of different types to test the collection query parameter
+		// We create two entities of different types to test the entity type query parameter
 		// note: create*Entity* function creates 2 entities
 		// an extra entity of same type is created while creating a relationship (createEntityRequisites)
 		await createWork();
