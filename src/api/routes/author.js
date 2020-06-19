@@ -82,7 +82,7 @@ const authorError = 'Author not found';
  *       type: string
  *       format: uuid
  *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
- *     relatedAuthors:
+ *     authors:
  *       type: array
  *       items:
  *         type: object
@@ -259,22 +259,26 @@ router.get('/:bbid/relationships',
  *         in: query
  *         description: BBID of the corresponding Author
  *         required: false
- *         type: bbid
+ *         type: string
+ *         format: uuid
  *       - name: edition
  *         in: query
  *         description: BBID of the corresponding Edition
  *         required: false
- *         type: bbid
+ *         type: string
+ *         format: uuid
  *       - name: edition-group
  *         in: query
  *         description: BBID of the corresponding Edition Group
  *         required: false
- *         type: bbid
+ *         type: string
+ *         format: uuid
  *       - name: publisher
  *         in: query
  *         description: BBID of the corresponding Publisher
  *         required: false
- *         type: bbid
+ *         type: string
+ *         format: uuid
  *       - name: type
  *         in: query
  *         description: filter by Author type

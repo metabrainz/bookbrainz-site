@@ -18,8 +18,8 @@
 
 // @flow
 
-
 import * as commonUtils from '../../common/helpers/utils';
+import log from 'log';
 
 /**
  * This is a middleware function to load entity detail according to given relations
@@ -55,7 +55,8 @@ export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 				return next();
 			}
 			catch (err) {
-				return res.status(404).send({message: errMessage});
+				log.error(err);
+				return res.status(404).send({context: err, message: errMessage});
 			}
 		}
 		return res.status(400).send({message: 'BBID is not valid uuid'});

@@ -61,6 +61,31 @@ const editionGroupError = 'Edition Group not found';
  *      type:
  *        type: string
  *        example: 'Book'
+*  BrowsedEditionGroups:
+ *   type: object
+ *   properties:
+ *     bbid:
+ *       type: string
+ *       format: uuid
+ *       example: '4fb5ed30-e222-4204-83a3-5f2409c47e41'
+ *     editionGroups:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           entity:
+ *             $ref: '#/definitions/EditionGroupDetail'
+ *           relationships:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                  relationshipTypeID:
+ *                    type: number
+ *                    example: 3
+ *                  relationshipType:
+ *                    type: string
+ *                    example: 'Edition'
  *
  */
 
@@ -221,7 +246,8 @@ router.get('/:bbid/relationships',
  *         in: query
  *         description: BBID of the Edition
  *         required: true
- *         type: bbid
+ *         type: string
+ *         format: uuid
  *       - name: type
  *         in: query
  *         description: filter by Edition Group type

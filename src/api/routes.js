@@ -129,7 +129,8 @@ import workRouter from './routes/work';
  *            example: 'Heinlein, Robert A.'
  *          language:
  *            type: string
- *            example: 'English'
+ *            example: 'eng'
+ *            description: Three letter ISO 639-3 language code
  *          primary:
  *            type: boolean
  *            example: true
@@ -170,7 +171,7 @@ function initSearchRouter(app) {
 }
 
 function initDocsRoute(app) {
-	app.use('/api-docs', swaggerRoute);
+	app.use(['/api-docs', '/docs'], swaggerRoute);
 }
 
 function initRoutes() {
