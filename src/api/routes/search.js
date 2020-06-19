@@ -26,13 +26,14 @@ const router = express.Router();
 
 /**
  *	@swagger
- * '/search?q=Harry&type=work&size=5&from=0':
+ * '/search':
  *   get:
  *     tags:
  *       - Search Requests
  *     summary: Get a list of entities according to search query and params
  *     description: query parameter is used to match in the default alias and other parameters are optional
  *     operationId: getSearchResult
+ *     example: search?q=Harry&type=work&size=10&from=20
  *     produces:
  *       - application/json
  *     parameters:

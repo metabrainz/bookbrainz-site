@@ -18,7 +18,7 @@ const swaggerOptions = {
 			contact: {
 				email: 'akhileshithcse@gmail.com'
 			},
-			description: 'Swagger 2.0 documentation for the BookBrainz REST API.',
+			description: 'Swagger 2.0 documentation for the BookBrainz REST API. https://bookbrainz.org',
 			title: 'BookBrainz API Documentation',
 			version: '0.1.0'
 		},
