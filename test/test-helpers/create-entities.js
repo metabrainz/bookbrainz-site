@@ -269,18 +269,16 @@ export async function createWork(optionalBBID, optionalWorkAttribs) {
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Work');
 
-	let workAttribs;
-	if (optionalWorkAttribs) {
-		workAttribs = optionalWorkAttribs;
+	let languageSetId;
+	if (!optionalWorkAttribs?.languageSetId) {
+		languageSetId = await createLanguageSet();
 	}
-	else {
-		const languageSetId = await createLanguageSet();
-		workAttribs = {
-			bbid,
-			languageSetId,
-			typeId: random.number()
-		};
-	}
+	const workAttribs = {
+		bbid,
+		languageSetId,
+		typeId: random.number(),
+		...optionalWorkAttribs
+	};
 	const workType = await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
 		.fetch({
 			require: false
@@ -411,6 +409,7 @@ export function truncateEntities() {
 		'bookbrainz.edition_format',
 		'bookbrainz.author_type',
 		'bookbrainz.publisher_type',
+		'bookbrainz.language_set',
 		'musicbrainz.area',
 		'musicbrainz.language',
 		'musicbrainz.gender'
