@@ -33,39 +33,42 @@ const router = express.Router();
  *     summary: Get a list of entities according to search query and params
  *     description: query parameter is used to match in the default alias and other parameters are optional
  *     operationId: getSearchResult
- *     example: search?q=Harry&type=work&size=10&from=20
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: q
  *         in: query
  *         description: Search query
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *       - name: type
  *         in: query
  *         description: Entity type to search for
  *         required: false
- *         type: string
- *         default: null
- *         enum: [author, edition, edition-group, editor, publisher, work]
+ *         schema:
+ *           type: string
+ *           default: 'All entities except Editors'
+ *           enum: [author, edition, edition-group, editor, publisher, work]
  *       - name: size
  *         in: query
  *         description: maximum number of entities in response
  *         required: false
- *         type: number
- *         default: 20
+ *         schema:
+ *           type: number
+ *           default: 20
  *       - name: from
  *         in: query
  *         description: offset for search result
  *         required: false
- *         type: number
- *         default: 0
+ *         schema:
+ *           type: number
+ *           default: 0
  *     responses:
  *       200:
  *         description: List of entities matching the search query
- *         schema:
- *             $ref: '#/definitions/SearchResultModel'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SearchResultModel'
  *       400:
  *         description: Invalid BBID
  */

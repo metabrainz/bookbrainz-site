@@ -28,122 +28,123 @@ import workRouter from './routes/work';
 
 /**
  *@swagger
- *definitions:
- *  Alias:
- *    type: object
- *    properties:
- *      name:
- *        type: string
- *        example: '<Name of entity>'
- *      sortName:
- *        type: string
- *        example: '<Sort name of entity>'
- *      language:
- *        type: string
- *        example: '<Alias language>'
- *        description: Three letter ISO 639-3 language code
- *      primary:
- *        type: boolean
- *        example: true
- *  Aliases:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      aliases:
- *        type: array
- *        items:
- *          $ref: '#/definitions/Alias'
- *  Identifiers:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      identifiers:
- *        type: array
- *        items:
- *          type: object
- *          properties:
- *            type:
- *              type: string
- *              example: 'Wikidata ID'
- *            value:
- *              type: string
- *              example: 'Q123078'
- *  Relationships:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      relationships:
- *        type: array
- *        items:
- *          type: object
- *          properties:
- *            direction:
- *              type: string
- *              example: 'forward'
- *            id:
- *              type: number
- *              example: 804
- *            linkPhrase:
- *              type: string
- *              example: 'wrote'
- *            relationshipTypeId:
- *              type: number
- *              example: 8
- *            relationshipTypeName:
- *              type: string
- *              example: 'Author'
- *            targetBbid:
- *              type: string
- *              format: uuid
- *              example: '4682cf09-66fb-4542-b457-b889117e0279'
- *            targetEntityType:
- *              type: string
- *              example: 'work'
- *  SearchEntity:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      entityType:
- *        type: string
- *        example: 'author'
- *      defaultAlias:
- *        type: object
- *        properties:
- *          name:
- *            type: string
- *            example: 'Robert A. Heinlein'
- *          sortName:
- *            type: string
- *            example: 'Heinlein, Robert A.'
- *          language:
- *            type: string
- *            example: 'eng'
- *            description: Three letter ISO 639-3 language code
- *          primary:
- *            type: boolean
- *            example: true
- *  SearchResultModel:
- *    type: object
- *    properties:
- *      searchCount:
- *        type: number
- *        example: 1
- *      searchResult:
- *        type: array
- *        items:
- *          $ref: '#/definitions/SearchEntity'
+ * components:
+ *   schemas:
+ *     Alias:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: 'John Doe'
+ *         sortName:
+ *           type: string
+ *           example: 'Doe, John'
+ *         language:
+ *           type: string
+ *           example: 'eng'
+ *           description: Three letter ISO 639-3 language code
+ *         primary:
+ *           type: boolean
+ *           example: true
+ *     Aliases:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         aliases:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Alias'
+ *     Identifiers:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         identifiers:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 example: 'Wikidata ID'
+ *               value:
+ *                 type: string
+ *                 example: 'Q123078'
+ *     Relationships:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         relationships:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               direction:
+ *                 type: string
+ *                 example: 'forward'
+ *               id:
+ *                 type: number
+ *                 example: 804
+ *               linkPhrase:
+ *                 type: string
+ *                 example: 'wrote'
+ *               relationshipTypeId:
+ *                 type: number
+ *                 example: 8
+ *               relationshipTypeName:
+ *                 type: string
+ *                 example: 'Author'
+ *               targetBbid:
+ *                 type: string
+ *                 format: uuid
+ *                 example: '4682cf09-66fb-4542-b457-b889117e0279'
+ *               targetEntityType:
+ *                 type: string
+ *                 example: 'work'
+ *     SearchEntity:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         entityType:
+ *           type: string
+ *           example: 'author'
+ *         defaultAlias:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               example: 'Robert A. Heinlein'
+ *             sortName:
+ *               type: string
+ *               example: 'Heinlein, Robert A.'
+ *             language:
+ *               type: string
+ *               example: 'eng'
+ *               description: Three letter ISO 639-3 language code
+ *             primary:
+ *               type: boolean
+ *               example: true
+ *     SearchResultModel:
+ *       type: object
+ *       properties:
+ *         searchCount:
+ *           type: number
+ *           example: 1
+ *         searchResult:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/SearchEntity'
  */
 
 function initWorkRoute(app) {

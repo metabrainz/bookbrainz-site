@@ -45,47 +45,48 @@ const editionGroupError = 'Edition Group not found';
 
 /**
  *@swagger
- *definitions:
- *  EditionGroupDetail:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: 'ba446064-90a5-447b-abe5-139be547da2e'
- *      defaultAlias:
- *        $ref: '#/definitions/Alias'
- *      disambiguation:
- *        type: string
- *        example: 'Harry Porter'
- *      type:
- *        type: string
- *        example: 'Book'
-*  BrowsedEditionGroups:
- *   type: object
- *   properties:
- *     bbid:
- *       type: string
- *       format: uuid
- *       example: '4fb5ed30-e222-4204-83a3-5f2409c47e41'
- *     editionGroups:
- *       type: array
- *       items:
- *         type: object
- *         properties:
- *           entity:
- *             $ref: '#/definitions/EditionGroupDetail'
- *           relationships:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                  relationshipTypeID:
- *                    type: number
- *                    example: 3
- *                  relationshipType:
- *                    type: string
- *                    example: 'Edition'
+ *components:
+ *  schemas:
+ *    EditionGroupDetail:
+ *      type: object
+ *      properties:
+ *        bbid:
+ *          type: string
+ *          format: uuid
+ *          example: 'ba446064-90a5-447b-abe5-139be547da2e'
+ *        defaultAlias:
+ *          $ref: '#/components/schemas/Alias'
+ *        disambiguation:
+ *          type: string
+ *          example: 'Harry Porter'
+ *        type:
+ *          type: string
+ *          example: 'Book'
+ *    BrowsedEditionGroups:
+ *      type: object
+ *      properties:
+ *        bbid:
+ *          type: string
+ *          format: uuid
+ *          example: '4fb5ed30-e222-4204-83a3-5f2409c47e41'
+ *        editionGroups:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              entity:
+ *                $ref: '#/components/schemas/EditionGroupDetail'
+ *              relationships:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                     relationshipTypeID:
+ *                       type: number
+ *                       example: 3
+ *                     relationshipType:
+ *                       type: string
+ *                       example: 'Edition'
  *
  */
 
@@ -98,19 +99,21 @@ const editionGroupError = 'Edition Group not found';
  *      summary: Lookup Edition Group by bbid
  *      description: Returns the basic details of an Edition Group
  *      operationId: getEditionGroupByBbid
- *      produces:
- *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
  *          description: BBID of the Edition Group
  *          required: true
- *          type: string
+ *          schema:
+ *            type: string
+ *            format: uuid
  *      responses:
  *        200:
  *          description: Basic information of an Edition Group entity
- *          schema:
- *              $ref: '#/definitions/EditionGroupDetail'
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/EditionGroupDetail'
  *        404:
  *          description: Edition Group not found
  *        400:
@@ -133,19 +136,21 @@ router.get('/:bbid',
  *     summary: Get list of aliases of the Edition Group by BBID
  *     description: Returns the list of aliases of the Edition Group
  *     operationId: getAliasesOfEditionGroupByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Edition Group
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of aliases with BBID of the Edition Group entity
- *         schema:
- *             $ref: '#/definitions/Aliases'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Aliases'
  *       404:
  *         description: Edition Group not found
  *       400:
@@ -168,19 +173,21 @@ router.get('/:bbid/aliases',
  *     summary: Get list of identifiers of an Edition Group by BBID
  *     description: Returns the list of identifiers of an Edition Group
  *     operationId: getIdentifiersOfEditionGroupByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Edition Group
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of identifiers with BBID of an Edition Group entity
- *         schema:
- *             $ref: '#/definitions/Identifiers'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Identifiers'
  *       404:
  *         description: Edition Group not found
  *       400:
@@ -204,19 +211,21 @@ router.get('/:bbid/identifiers',
  *     summary: Get list of relationships of an Edition Group by BBID
  *     description: Returns the list of relationships of an Edition Group
  *     operationId: getRelationshipsOfEditionGroupByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Edition Group
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of relationships with BBID of an Edition Group entity
- *         schema:
- *             $ref: '#/definitions/Relationships'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Relationships'
  *       404:
  *         description: Edition Group not found
  *       400:
@@ -239,26 +248,28 @@ router.get('/:bbid/relationships',
  *     summary: Gets a list of Edition Groups which are related to another Entity
  *     description: BBID of an Edition is passed as a query parameter, and its related EditionGroups are fetched
  *     operationId: getRelatedEditionGroupByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: edition
  *         in: query
  *         description: BBID of the Edition
  *         required: true
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: type
  *         in: query
  *         description: filter by Edition Group type
  *         required: false
- *         type: string
- *         enum: [book, leaflet, newspaper, magazine, journal]
+ *         schema:
+ *           type: string
+ *           enum: [book, leaflet, newspaper, magazine, journal]
  *     responses:
  *       200:
  *         description: List of EditionGroups related to another Entity
- *         schema:
- *             $ref: '#/definitions/BrowsedEditionGroups'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BrowsedEditionGroups'
  *       404:
  *         description: Edition not found
  *       400:
