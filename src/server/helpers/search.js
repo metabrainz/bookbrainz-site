@@ -17,7 +17,6 @@
  */
 
 import * as commonUtils from '../../common/helpers/utils';
-import * as utils from '../helpers/utils';
 
 import ElasticSearch from 'elasticsearch';
 import _ from 'lodash';
@@ -68,7 +67,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 					return editorJSON;
 				});
 		}
-		const model = utils.getEntityModelByType(orm, entityStub.type);
+		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
 			.fetch({require: false, withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
 			.then((entity) => entity && entity.toJSON());

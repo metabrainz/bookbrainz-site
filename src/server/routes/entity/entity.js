@@ -50,7 +50,6 @@ import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
-import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 
@@ -737,7 +736,7 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
-	return makePromiseFromObject({
+	return commonUtils.makePromiseFromObject({
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
@@ -757,7 +756,7 @@ async function processWorkSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	return makePromiseFromObject({
+	return commonUtils.makePromiseFromObject({
 		languageSetId: orm.func.language.updateLanguageSet(
 			orm, transacting, oldSet,
 			languages.map((languageID) => ({id: languageID}))
