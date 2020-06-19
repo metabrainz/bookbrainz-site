@@ -22,7 +22,6 @@ import {
 	getRandomUUID, truncateEntities
 } from '../../../test-helpers/create-entities';
 
-import _ from 'lodash';
 import app from '../../../../src/api/app';
 import {browseAuthorBasicTests} from '../helpers';
 import chai from 'chai';

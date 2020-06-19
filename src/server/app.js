@@ -21,7 +21,7 @@
 
 import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
-import * as search from './helpers/search';
+import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
@@ -117,7 +117,10 @@ if (config.influx) {
 
 // Authentication code depends on session, so init session first
 const authInitiated = auth.init(app);
-search.init(app.locals.orm, config.search);
+
+// Clone search config to prevent error if starting webserver and api
+// https://github.com/elastic/elasticsearch-js/issues/33
+search.init(app.locals.orm, Object.assign({}, config.search));
 
 // Set up constants that will remain valid for the life of the app
 let siteRevision = 'unknown';

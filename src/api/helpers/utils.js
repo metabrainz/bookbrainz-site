@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import _ from 'lodash';
+import {get as _get} from 'lodash';
 import {loadEntity} from './middleware';
 
 
@@ -73,8 +73,8 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 				return {
 					entity: formattedRelEntity,
 					relationship: [{
-						relationshipType: _.get(relationship, 'type.label', null),
-						relationshipTypeID: _.get(relationship, 'type.id', null)
+						relationshipType: _get(relationship, 'type.label', null),
+						relationshipTypeID: _get(relationship, 'type.id', null)
 					}]
 				};
 			}

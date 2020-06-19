@@ -22,7 +22,6 @@ import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
-import * as utils from '../helpers/utils';
 import {BadRequestError, ConflictError, NotFoundError} from '../../common/helpers/error';
 import {basicRelations,
 	getEntityFetchPropertiesByType,
@@ -160,7 +159,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 				relationshipSet.related('relationships').toJSON() : [];
 
 			function getEntityWithAlias(relEntity) {
-				const model = utils.getEntityModelByType(orm, relEntity.type);
+				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
 					.fetch({withRelated: 'defaultAlias'});
@@ -198,7 +197,7 @@ async function getEntityByBBID(orm, transacting, bbid) {
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
 	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 	const entityType = entityHeader.get('type');
-	const model = utils.getEntityModelByType(orm, entityType);
+	const model = commonUtils.getEntityModelByType(orm, entityType);
 
 	return model.forge({bbid: redirectBbid})
 		.fetch({

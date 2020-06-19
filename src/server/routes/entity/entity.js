@@ -19,10 +19,11 @@
  */
 
 import * as achievement from '../../helpers/achievement';
+import * as commonUtils from '../../../common/helpers/utils';
 import * as error from '../../../common/helpers/error';
 import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
-import * as search from '../../helpers/search';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 
@@ -49,7 +50,6 @@ import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
-import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 
@@ -279,7 +279,7 @@ export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: 
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
 	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 
-	const model = utils.getEntityModelByType(orm, entityHeader.get('type'));
+	const model = commonUtils.getEntityModelByType(orm, entityHeader.get('type'));
 	return model.forge({bbid: redirectBbid}).fetch({transacting});
 }
 
@@ -400,7 +400,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 function fetchOrCreateMainEntity(
 	orm, transacting, isNew, bbid, entityType
 ) {
-	const model = utils.getEntityModelByType(orm, entityType);
+	const model = commonUtils.getEntityModelByType(orm, entityType);
 
 	const entity = model.forge({bbid});
 
@@ -736,7 +736,7 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
-	return makePromiseFromObject({
+	return commonUtils.makePromiseFromObject({
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
@@ -756,7 +756,7 @@ async function processWorkSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	return makePromiseFromObject({
+	return commonUtils.makePromiseFromObject({
 		languageSetId: orm.func.language.updateLanguageSet(
 			orm, transacting, oldSet,
 			languages.map((languageID) => ({id: languageID}))

@@ -22,6 +22,7 @@ import authorRouter from './routes/author';
 import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
 import publisherRouter from './routes/publisher';
+import searchRouter from './routes/search';
 import swaggerRoute from './swagger';
 import workRouter from './routes/work';
 
@@ -107,6 +108,41 @@ import workRouter from './routes/work';
  *            targetEntityType:
  *              type: string
  *              example: 'work'
+ *  SearchEntity:
+ *    type: object
+ *    properties:
+ *      bbid:
+ *        type: string
+ *        format: uuid
+ *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *      entityType:
+ *        type: string
+ *        example: 'author'
+ *      defaultAlias:
+ *        type: object
+ *        properties:
+ *          name:
+ *            type: string
+ *            example: 'Robert A. Heinlein'
+ *          sortName:
+ *            type: string
+ *            example: 'Heinlein, Robert A.'
+ *          language:
+ *            type: string
+ *            example: 'English'
+ *          primary:
+ *            type: boolean
+ *            example: true
+ *  SearchResultModel:
+ *    type: object
+ *    properties:
+ *      searchCount:
+ *        type: number
+ *        example: 1
+ *      searchResult:
+ *        type: array
+ *        items:
+ *          $ref: '#/definitions/SearchEntity'
  */
 
 function initWorkRoute(app) {
@@ -129,6 +165,10 @@ function initPublisherRoute(app) {
 	app.use('/publisher', publisherRouter);
 }
 
+function initSearchRouter(app) {
+	app.use('/search', searchRouter);
+}
+
 function initDocsRoute(app) {
 	app.use('/api-docs', swaggerRoute);
 }
@@ -144,6 +184,7 @@ function initRoutes() {
 	initEditionGroupRoute(router);
 	initAuthorRoute(router);
 	initPublisherRoute(router);
+	initSearchRouter(router);
 	initDocsRoute(router);
 
 	return router;
