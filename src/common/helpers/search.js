@@ -69,7 +69,7 @@ function _fetchEntityModelsForESResults(orm, results) {
 		}
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		return model.forge({bbid: entityStub.bbid})
-			.fetch({require: false, withRelated: ['defaultAlias', 'disambiguation', 'aliasSet.aliases']})
+			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases']})
 			.then((entity) => entity && entity.toJSON());
 	}));
 }
