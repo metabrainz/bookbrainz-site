@@ -16,10 +16,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {aliasesRelations, identifiersRelations, relationshipsRelations} from '../helpers/utils';
-import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getPublisherBasicInfo} from '../helpers/formatEntityData';
+import * as utils from '../helpers/utils';
+
+import {
+	formatQueryParameters,
+	loadEntityRelationshipsForBrowse,
+	validateBrowseRequestQueryParameters
+} from '../helpers/middleware';
+import {
+	getEntityAliases,
+	getEntityIdentifiers,
+	getEntityRelationships,
+	getPublisherBasicInfo
+} from '../helpers/formatEntityData';
+
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 
 const router = Router();
@@ -60,12 +73,34 @@ const publisherError = 'Publisher not found';
  *      ended:
  *        type: boolean
  *        example: false
- *      gender:
- *        type: string
- *        example: 'Male'
  *      type:
  *        type: string
  *        example: 'Publisher'
+ *  BrowsedPublishers:
+ *   type: object
+ *   properties:
+ *     bbid:
+ *       type: string
+ *       format: uuid
+ *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *     relatedPublishers:
+ *       type: array
+ *       items:
+ *         type: object
+ *         properties:
+ *           entity:
+ *             $ref: '#/definitions/PublisherDetail'
+ *           relationships:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                  relationshipTypeID:
+ *                    type: number
+ *                    example: 4
+ *                  relationshipType:
+ *                    type: string
+ *                    example: 'Publisher'
  */
 
 
@@ -94,7 +129,7 @@ const publisherError = 'Publisher not found';
  *              $ref: '#/definitions/PublisherDetail'
  *        404:
  *          description: Publisher not found
- *        406:
+ *        400:
  *          description: Invalid BBID
  */
 
@@ -129,12 +164,12 @@ router.get('/:bbid',
  *              $ref: '#/definitions/Aliases'
  *        404:
  *          description: Publisher not found
- *        406:
+ *        400:
  *          description: Invalid BBID
  */
 router.get('/:bbid/aliases',
-	makeEntityLoader('Publisher', aliasesRelations, publisherError),
-	async (req, res) => {
+	makeEntityLoader('Publisher', utils.aliasesRelations, publisherError),
+	async (req, res, next) => {
 		const publisherAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(publisherAliasesList);
 	});
@@ -163,13 +198,13 @@ router.get('/:bbid/aliases',
  *             $ref: '#/definitions/Identifiers'
  *       404:
  *         description: Publisher not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
 router.get('/:bbid/identifiers',
-	makeEntityLoader('Publisher', identifiersRelations, publisherError),
-	async (req, res) => {
+	makeEntityLoader('Publisher', utils.identifiersRelations, publisherError),
+	async (req, res, next) => {
 		const publisherIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(publisherIdentifiersList);
 	});
@@ -198,15 +233,119 @@ router.get('/:bbid/identifiers',
  *             $ref: '#/definitions/Relationships'
  *       404:
  *         description: Publisher not found
- *       406:
+ *       400:
  *         description: Invalid BBID
  */
 
 router.get('/:bbid/relationships',
-	makeEntityLoader('Publisher', relationshipsRelations, publisherError),
-	async (req, res) => {
+	makeEntityLoader('Publisher', utils.relationshipsRelations, publisherError),
+	async (req, res, next) => {
 		const publisherRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(publisherRelationshipList);
+	});
+
+/**
+ *	@swagger
+ * '/publisher':
+ *   get:
+ *     tags:
+ *       - Browse Requests
+ *     summary: Gets a list of Publishers which are related to another Entity
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher is passed as a query parameter, and its related Publishers are fetched
+ *     operationId: getRelatedPublisherByBbid
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: author
+ *         in: query
+ *         description: BBID of the corresponding Author
+ *         required: false
+ *         type: bbid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the corresponding Edition
+ *         required: false
+ *         type: bbid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         type: bbid
+ *       - name: work
+ *         in: query
+ *         description: BBID of the corresponding Work
+ *         required: false
+ *         type: bbid
+ *       - name: type
+ *         in: query
+ *         description: filter by Publisher type
+ *         required: false
+ *         type: string
+ *         enum: [publisher, distributor, imprint]
+ *       - name: area
+ *         in: query
+ *         description: filter by Publisher area
+ *         required: false
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: List of Publisher related to another Entity
+ *         schema:
+ *             $ref: '#/definitions/BrowsedPublishers'
+ *       404:
+ *         description: Author/Edition/Work/Publisher (other entity) not found
+ *       400:
+ *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
+ */
+
+router.get('/',
+	formatQueryParameters(),
+	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
+	(req, res, next) => {
+		// As we're loading the browsed entity, also load the related Publishers from the ORM models to avoid fetching it twice
+		let extraRelationships = [];
+		if (req.query.modelType === 'Edition') {
+			extraRelationships = publisherBasicRelations.map(rel => `publisherSet.publishers.${rel}`);
+		}
+		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
+	},
+	loadEntityRelationshipsForBrowse(),
+	async (req, res, next) => {
+		function relationshipsFilterMethod(relatedEntity) {
+			if (req.query.type) {
+				const publisherTypeMatched = toLower(relatedEntity.publisherType) === toLower(req.query.type);
+				if (req.query.area) {
+					const publisherAreaMatched = toLower(relatedEntity.area) === toLower(req.query.area);
+					return publisherTypeMatched && publisherAreaMatched;
+				}
+				return publisherTypeMatched;
+			}
+			else if (req.query.area) {
+				const publisherAreaMatched = toLower(relatedEntity.area) === toLower(req.query.area);
+				return publisherAreaMatched;
+			}
+			return true;
+		}
+
+		const publisherRelationshipList = await utils.getBrowsedRelationships(
+			req.app.locals.orm, res.locals, 'Publisher',
+			getPublisherBasicInfo, publisherBasicRelations, relationshipsFilterMethod
+		);
+
+		if (req.query.modelType === 'Edition') {
+			const {entity: edition} = res.locals;
+			const publishers = edition.publisherSet ? edition.publisherSet.publishers : [];
+			publishers.map(publisher => getPublisherBasicInfo(publisher))
+				.filter(relationshipsFilterMethod)
+				.forEach((filteredEdition) => {
+					// added relationship to make the output consistent
+					publisherRelationshipList.push({entity: filteredEdition, relationship: {}});
+				});
+		}
+		return res.status(200).send({
+			bbid: req.query.bbid,
+			publishers: publisherRelationshipList
+		});
 	});
 
 export default router;

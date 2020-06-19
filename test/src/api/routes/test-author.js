@@ -17,11 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createAuthor, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+import {
+	createAuthor, createEditor, createWork,
+	getRandomUUID, truncateEntities
+} from '../../../test-helpers/create-entities';
 
+import _ from 'lodash';
 import app from '../../../../src/api/app';
+import {browseAuthorBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import orm from '../../../bookbrainz-data';
+import {random} from 'faker';
+
+
+const {Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 
 chai.use(chaiHttp);
@@ -32,6 +42,7 @@ const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
 const inValidBBID = 'akjd-adjjk-23123';
 
+
 describe('GET /Author', () => {
 	before(() => createAuthor(aBBID));
 	after(truncateEntities);
@@ -41,10 +52,10 @@ describe('GET /Author', () => {
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
 		expect(res.body).to.have.all.keys(
+			'authorType',
 			'bbid',
 			'defaultAlias',
 			'disambiguation',
-			'type',
 			'gender',
 			'beginArea',
 			'beginDate',
@@ -103,12 +114,12 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	it('should throw a 406 error if trying to access an author with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an author with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/author/${inValidBBID}`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
@@ -155,4 +166,129 @@ describe('GET /Author', () => {
 				return done();
 			});
 	 });
+});
+
+/* eslint-disable no-await-in-loop */
+describe('Browse Author', () => {
+	let work;
+	before(async () => {
+		// create a work which is related to 3 authors
+		const authorBBIDs = [];
+		for (let typeId = 1; typeId <= 3; typeId++) {
+			const authorBBID = getRandomUUID();
+			const authorAttribs = {
+				bbid: authorBBID,
+				// Make type id alternate between "person" (1) and "group" (2)
+				typeId: (typeId % 2) + 1
+			};
+			await createAuthor(authorBBID, authorAttribs);
+			authorBBIDs.push(authorBBID);
+		}
+		work = await createWork();
+
+		// Now create a revision which forms the relationship b/w work and authors
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		const relationshipTypeData = {
+			description: 'test descryption',
+			id: 1,
+			label: 'test label',
+			linkPhrase: 'test phrase',
+			reverseLinkPhrase: 'test reverse link phrase',
+			sourceEntityType: 'Author',
+			targetEntityType: 'Work'
+		};
+		await new RelationshipType(relationshipTypeData)
+			.save(null, {method: 'insert'});
+
+		const relationshipsPromise = [];
+		for (const authorBBID of authorBBIDs) {
+			const relationshipData = {
+				id: random.number(),
+				sourceBbid: authorBBID,
+				targetBbid: work.get('bbid'),
+				typeId: relationshipTypeData.id
+			};
+			relationshipsPromise.push(
+				new Relationship(relationshipData)
+					.save(null, {method: 'insert'})
+			);
+		}
+		const relationships = await Promise.all(relationshipsPromise);
+
+		const workRelationshipSet = await new RelationshipSet({id: random.number()})
+			.save(null, {method: 'insert'})
+			.then((model) => model.relationships().attach(relationships).then(() => model));
+
+		work.set('relationshipSetId', workRelationshipSet.get('id'));
+		work.set('revisionId', revision.get('id'));
+		await work.save(null, {method: 'update'});
+	});
+	after(truncateEntities);
+
+
+	it('should throw an error if trying to browse more than one entity', (done) => {
+		chai.request(app)
+			.get(`/author?work=${work.get('bbid')}&edition=${work.get('bbid')}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
+
+	it('should return list of authors associated with the work (without any filter)', async () => {
+		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(3);
+	});
+
+	it('should return list of authors associated with the work (with Type filter)', async () => {
+		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}&type=Person`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(1);
+		expect(res.body.authors[0].entity.authorType).to.equal('Person');
+	});
+
+	it('should return 0 authors (with Incorrect Type filter)', async () => {
+		const res = await chai.request(app).get(`/author?work=${work.get('bbid')}&type=wrongFilter`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(0);
+	});
+
+	it('should allow params to be case insensitive', async () => {
+		const res = await chai.request(app).get(`/aUThor?wOrk=${work.get('bbid')}&tYPe=pERsOn`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(1);
+		expect(res.body.authors[0].entity.authorType).to.equal('Person');
+	});
+
+	it('should NOT throw an error if there is no related entity', async () => {
+		const work2 = await createWork();
+		const res = await chai.request(app).get(`/author?work=${work2.get('bbid')}`);
+		await browseAuthorBasicTests(res);
+		expect(res.body.authors.length).to.equal(0);
+	});
+
+	it('should throw 400 error for invalid bbid', (done) => {
+		chai.request(app)
+			.get('/author?work=1212121')
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
+
+	it('should throw 404 error for incorrect bbid', (done) => {
+		chai.request(app)
+			.get(`/author?work=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				return done();
+			});
+	});
 });

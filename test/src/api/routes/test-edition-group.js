@@ -17,12 +17,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {createEditionGroup, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+import {
+	createEdition,
+	createEditionGroup,
+	createEditor,
+	getRandomUUID,
+	truncateEntities
+} from '../../../test-helpers/create-entities';
 
+import _ from 'lodash';
 import app from '../../../../src/api/app';
+import {browseEditionGroupBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import orm from '../../../bookbrainz-data';
+import {random} from 'faker';
 
+
+const {Revision} = orm;
 
 chai.use(chaiHttp);
 const {expect} = chai;
@@ -44,7 +56,7 @@ describe('GET /EditionGroup', () => {
 			'bbid',
 			'defaultAlias',
 			'disambiguation',
-			'type'
+			'editionGroupType'
 		);
 	 });
 
@@ -97,12 +109,12 @@ describe('GET /EditionGroup', () => {
 			});
 	 });
 
-	it('should throw a 406 error if trying to access an edition with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an edition with invalid BBID', function (done) {
 		chai.request(app)
 			.get(`/edition-group/${inValidBBID}`)
 			.end(function (err, res) {
 				if (err) { return done(err); }
-				expect(res).to.have.status(406);
+				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
 				expect(res.body.message).to.equal('BBID is not valid uuid');
@@ -151,3 +163,83 @@ describe('GET /EditionGroup', () => {
 	 });
 });
 
+
+describe('Browse EditionGroup', () => {
+	// Test browse requests for Edition Group
+	// eslint-disable-next-line one-var
+	let edition;
+	before(async () => {
+		await truncateEntities();
+		edition = await createEdition();
+		const editionGroupBbid = getRandomUUID();
+		const editionGroupAttribs = {
+			bbid: editionGroupBbid,
+			typeId: 1
+		};
+		await createEditionGroup(editionGroupBbid, editionGroupAttribs);
+		// create a revision which adds these two edition in the editionGroup
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+			.save(null, {method: 'insert'});
+
+		edition.set('revisionId', revision.get('id'));
+		edition.set('editionGroupBbid', editionGroupBbid);
+		await edition.save(null, {method: 'update'});
+	});
+
+	it('should return list of EditionGroups associated with the edition', async () => {
+		const res = await chai.request(app).get(`/edition-group?edition=${edition.get('bbid')}`);
+		await browseEditionGroupBasicTests(res);
+		expect(res.body.editionGroups.length).to.equal(1);
+	});
+
+	it('should return list of EditionGroups associated with the edition (with Type Filter)', async () => {
+		const res = await chai.request(app).get(`/edition-group?edition=${edition.get('bbid')}&type=Edition+Group+Type+1`);
+		await browseEditionGroupBasicTests(res);
+		expect(res.body.editionGroups.length).to.equal(1);
+		expect(_.toLower(res.body.editionGroups[0].entity.editionGroupType)).to.equal('edition group type 1');
+	});
+
+	it('should return 0 EditionGroups (with Incorrect Type Filter)', async () => {
+		const res = await chai.request(app).get(`/edition-group?edition=${edition.get('bbid')}&type=wrongEditionGroup`);
+		await browseEditionGroupBasicTests(res);
+		expect(res.body.editionGroups.length).to.equal(0);
+	});
+
+	it('should allow params to be case insensitive', async () => {
+		const res = await chai.request(app).get(`/eDiTIon-gROuP?EDItion=${edition.get('bbid')}&TYpe=EdITIon+Group+TYPe+1`);
+		await browseEditionGroupBasicTests(res);
+		expect(res.body.editionGroups.length).to.equal(1);
+		expect(_.toLower(res.body.editionGroups[0].entity.editionGroupType)).to.equal('edition group type 1');
+	});
+
+	it('should throw 400 error for invalid bbid', (done) => {
+		chai.request(app)
+			.get('/edition-group?edition=1212121')
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
+
+	it('should throw 404 error for incorrect bbid', (done) => {
+		chai.request(app)
+			.get(`/edition-group?edition=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				return done();
+			});
+	});
+
+	it('should throw 400 error for incorrect linked entity', (done) => {
+		chai.request(app)
+			.get(`/edition-group?author=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
+});

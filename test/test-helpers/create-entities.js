@@ -107,9 +107,6 @@ const entityAttribs = {
 	relationshipSetId: 1,
 	revisionId: 1
 };
-const authorTypeAttribs = {
-	id: random.number()
-};
 
 export function createEditor(editorId) {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
@@ -255,44 +252,55 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 		.save(null, {method: 'insert'});
 }
 
-export async function createEdition(optionalBBID) {
+export async function createEdition(optionalBBID, optionalEditionAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Edition'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Edition');
 
-	const edition = await new Edition({...entityAttribs, bbid})
+	const edition = await new Edition({...entityAttribs, bbid, ...optionalEditionAttribs})
 		.save(null, {method: 'insert'});
 	return edition;
 }
 
-export async function createWork(optionalBBID) {
+export async function createWork(optionalBBID, optionalWorkAttribs) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Work');
-	const languageSetId = await createLanguageSet();
 
+	let languageSetId;
+	if (!optionalWorkAttribs?.languageSetId) {
+		languageSetId = await createLanguageSet();
+	}
 	const workAttribs = {
 		bbid,
 		languageSetId,
-		typeId: random.number()
+		typeId: random.number(),
+		...optionalWorkAttribs
 	};
-	await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
-		.save(null, {method: 'insert'});
+	const workType = await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
+		.fetch({
+			require: false
+		});
+	if (!workType) {
+		await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
+			.save(null, {method: 'insert'});
+	}
 	const work = await new Work({...entityAttribs, ...workAttribs})
 		.save(null, {method: 'insert'});
 	return work;
 }
 
-export async function createEditionGroup(optionalBBID) {
+export async function createEditionGroup(optionalBBID, optionalEditionGroupAttrib = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'EditionGroup'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'EditionGroup');
 	const editionGroupAttribs = {
 		bbid,
-		typeId: random.number()
+		typeId: random.number(),
+		...optionalEditionGroupAttrib
 	};
 	await new EditionGroupType({id: editionGroupAttribs.typeId, label: `Edition Group Type ${editionGroupAttribs.typeId}`})
 		.save(null, {method: 'insert'});
@@ -301,7 +309,7 @@ export async function createEditionGroup(optionalBBID) {
 	return editionGroup;
 }
 
-export async function createAuthor(optionalBBID) {
+export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Author'})
 		.save(null, {method: 'insert'});
@@ -319,20 +327,21 @@ export async function createAuthor(optionalBBID) {
 		endYear: 2012,
 		ended: true,
 		genderId: editorAttribs.genderId,
-		typeId: authorTypeAttribs.id
+		typeId: 1,
+		...optionalAuthorAttribs
 	};
 	await new Area({gid: uuidv4(), id: areaId, name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
 	// Front-end requires 'Person' and 'Group' types
 	try {
-		await new AuthorType({id: authorTypeAttribs.id, label: 'Person'})
+		await new AuthorType({id: 1, label: 'Person'})
 			.save(null, {method: 'insert'});
 	}
 	catch (error) {
 		// Type already exists
 	}
 	try {
-		await new AuthorType({id: random.number(), label: 'Group'})
+		await new AuthorType({id: 2, label: 'Group'})
 			.save(null, {method: 'insert'});
 	}
 	catch (error) {
@@ -343,7 +352,7 @@ export async function createAuthor(optionalBBID) {
 	return author;
 }
 
-export async function createPublisher(optionalBBID) {
+export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
@@ -358,12 +367,22 @@ export async function createPublisher(optionalBBID) {
 		endMonth: 5,
 		endYear: 2012,
 		ended: true,
-		typeId: random.number()
+		typeId: random.number(),
+		...optionalPublisherAttribs
 	};
-	await new Area({gid: uuidv4(), id: publisherAttribs.areaId, name: 'Rlyeh'})
-		.save(null, {method: 'insert'});
-	await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
-		.save(null, {method: 'insert'});
+	const area = await new Area({id: publisherAttribs.areaId, name: `Area ${publisherAttribs.areaId}`})
+		.fetch({require: false});
+	if (!area) {
+		await new Area({gid: uuidv4(), id: publisherAttribs.areaId, name: `Area ${publisherAttribs.areaId}`})
+			.save(null, {method: 'insert'});
+	}
+
+	const publisherType = await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
+		.fetch({require: false});
+	if (!publisherType) {
+		await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
+			.save(null, {method: 'insert'});
+	}
 	const publisher = await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});
 	return publisher;
@@ -387,8 +406,10 @@ export function truncateEntities() {
 		'bookbrainz.annotation',
 		'bookbrainz.work_type',
 		'bookbrainz.edition_group_type',
+		'bookbrainz.edition_format',
 		'bookbrainz.author_type',
 		'bookbrainz.publisher_type',
+		'bookbrainz.language_set',
 		'musicbrainz.area',
 		'musicbrainz.language',
 		'musicbrainz.gender'
