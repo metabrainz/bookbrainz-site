@@ -71,7 +71,7 @@
     "react-chartjs-2": "^2.9.0",
     "react-datepicker": "^2.15.0",
     "react-dom": "^16.13.1",
-    "react-redux": "^5.0.2",
+    "react-redux": "^5.1.2",
     "react-select": "^1.1.0",
     "react-sticky": "^6.0.1",
     "react-virtualized-select": "^3.0.1",
