@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import EditorCollectionsTable from './parts/collections-table';
+import CollectionsTable from './parts/collections-table';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -51,11 +51,12 @@ class CollectionsPage extends React.Component {
 	render() {
 		return (
 			<div id="pageWithPagination">
-				<EditorCollectionsTable
+				<CollectionsTable
 					entityTypes={this.props.entityTypes}
 					results={this.state.results}
+					showIfOwnerOrCollaborator={this.props.showIfOwnerOrCollaborator}
+					showLastModified={this.props.showLastModified}
 					showOwner={this.props.showOwner}
-					showOwnerCollaborator={this.props.showOwnerCollaborator}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
 					onTypeChange={this.handleTypeChange}
@@ -81,8 +82,9 @@ CollectionsPage.propTypes = {
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
 	results: PropTypes.array,
+	showIfOwnerOrCollaborator: PropTypes.bool,
+	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
-	showOwnerCollaborator: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
 	tableHeading: PropTypes.string
@@ -90,8 +92,9 @@ CollectionsPage.propTypes = {
 CollectionsPage.defaultProps = {
 	from: 0,
 	results: [],
+	showIfOwnerOrCollaborator: false,
+	showLastModified: false,
 	showOwner: false,
-	showOwnerCollaborator: false,
 	showPrivacy: false,
 	size: 20,
 	tableHeading: 'Collections'
