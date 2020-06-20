@@ -538,7 +538,7 @@ router.get('/:id/collections', async (req, res, next) => {
 			from,
 			nextEnabled,
 			results: newResultsArray,
-			showOwnerCollaborator: true,
+			showIfOwnerOrCollaborator: true,
 			showPrivacy: true,
 			size,
 			tabActive: 3,

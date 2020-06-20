@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -32,24 +33,31 @@ import target from '../templates/target';
 const router = express.Router();
 
 /* GET collections page. */
+// eslint-disable-next-line consistent-return
 router.get('/', async (req, res, next) => {
-	const {orm} = req.app.locals;
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-	let type = req.query.type ? req.query.type : null;
-	const entityTypes = _.keys(utils.getEntityModels(orm));
-	if (!entityTypes.includes(type)) {
-		type = null;
-	}
+	try {
+		const {orm} = req.app.locals;
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		const type = req.query.type ? req.query.type : null;
+		const entityTypes = _.keys(utils.getEntityModels(orm));
+		if (!entityTypes.includes(type) && type !== null) {
+			throw new error.BadRequestError(`Type ${type} do not exist`);
+		}
 
-	function render(results, nextEnabled) {
+		// fetch 1 more collections than required to check nextEnabled
+		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+
 		const props = generateProps(req, res, {
 			entityTypes,
 			from,
 			nextEnabled,
-			results,
+			results: newResultsArray,
+			showLastModified: true,
 			showOwner: true,
-			size
+			size,
+			tableHeading: 'Public Collections'
 		});
 
 		/*
@@ -70,13 +78,6 @@ router.get('/', async (req, res, next) => {
 			title: 'All Collections'
 		}));
 	}
-
-	try {
-		// fetch 1 more collections than required to check nextEnabled
-		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
-		return render(newResultsArray, nextEnabled);
-	}
 	catch (err) {
 		return next(err);
 	}
@@ -85,16 +86,16 @@ router.get('/', async (req, res, next) => {
 
 // eslint-disable-next-line consistent-return
 router.get('/collections', async (req, res, next) => {
-	const {orm} = req.app.locals;
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-	let type = req.query.type ? req.query.type : null;
-	const entityTypes = _.keys(utils.getEntityModels(orm));
-	if (!entityTypes.includes(type)) {
-		type = null;
-	}
-
 	try {
+		const {orm} = req.app.locals;
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		const type = req.query.type ? req.query.type : null;
+		const entityTypes = _.keys(utils.getEntityModels(orm));
+		if (!entityTypes.includes(type) && type !== null) {
+			throw new error.BadRequestError(`Type ${type} do not exist`);
+		}
+
 		const orderedRevisions = await getOrderedPublicCollections(from, size, type, orm);
 		res.send(orderedRevisions);
 	}

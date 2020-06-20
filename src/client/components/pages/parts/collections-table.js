@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as utilsHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
@@ -24,6 +25,7 @@ import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
 const {DropdownButton, MenuItem, Table} = bootstrap;
+const {formatDate} = utilsHelper;
 
 
 class CollectionsTable extends React.Component {
@@ -43,7 +45,7 @@ class CollectionsTable extends React.Component {
 	}
 
 	render() {
-		const {showOwner, showOwnerCollaborator, showPrivacy, results, tableHeading} = this.props;
+		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
@@ -96,13 +98,17 @@ class CollectionsTable extends React.Component {
 											<th className="col-sm-2">Privacy</th> : null
 									}
 									{
-										showOwnerCollaborator ?
+										showIfOwnerOrCollaborator ?
 											<th className="col-sm-2">Collaborator/Owner</th> : null
 									}
 									{
 										showOwner ?
 											<th className="col-sm-2">Owner</th> : null
 
+									}
+									{
+										showLastModified ?
+											<th className="col-sm-2">Last Modified</th> : null
 									}
 								</tr>
 							</thead>
@@ -125,13 +131,17 @@ class CollectionsTable extends React.Component {
 													<td>{collection.public ? 'Public' : 'Private'}</td> : null
 											}
 											{
-												showOwnerCollaborator ?
+												showIfOwnerOrCollaborator ?
 													<td>{collection.isOwner ? 'Owner' : 'Collaborator'}</td> : null
 											}
 											{
 												showOwner ?
 													<td>{collection.owner.name}</td> : null
 
+											}
+											{
+												showLastModified ?
+													<td>{formatDate(new Date(collection.lastModified), true)}</td> : null
 											}
 										</tr>
 									))
@@ -154,14 +164,16 @@ CollectionsTable.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	onTypeChange: PropTypes.func.isRequired,
 	results: PropTypes.array.isRequired,
+	showIfOwnerOrCollaborator: PropTypes.bool,
+	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
-	showOwnerCollaborator: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	tableHeading: PropTypes.node
 };
 CollectionsTable.defaultProps = {
+	showIfOwnerOrCollaborator: false,
+	showLastModified: false,
 	showOwner: false,
-	showOwnerCollaborator: false,
 	showPrivacy: false,
 	tableHeading: 'Collections'
 };

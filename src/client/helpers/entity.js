@@ -321,6 +321,7 @@ export function getEntityUrl(entity) {
 export const ENTITY_TYPE_ICONS = {
 	Area: 'globe',
 	Author: 'user',
+	Collection: 'grip-vertical',
 	Edition: 'book',
 	EditionGroup: 'window-restore',
 	Editor: 'user-circle',
