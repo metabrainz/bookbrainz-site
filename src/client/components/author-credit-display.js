@@ -18,20 +18,18 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import {map as _map} from 'lodash';
 
 
 function AuthorCreditDisplay({names}) {
-	const nameElements = [];
-	for (const name of names) {
-		nameElements.push(
-			<span key={`author-credit-${name.authorCreditID}-${name.position}`}>
-				<a href={`/author/${name.authorBBID}`}>
-					{name.name}
-				</a>
-				{name.joinPhrase}
-			</span>
-		);
-	}
+	const nameElements = _map(names, (name) => (
+		<span key={`author-credit-${name.authorCreditID}-${name.position}`}>
+			<a href={`/author/${name.authorBBID}`}>
+				{name.name}
+			</a>
+			{name.joinPhrase}
+		</span>
+	));
 
 	return (
 		<span>
@@ -42,7 +40,10 @@ function AuthorCreditDisplay({names}) {
 
 AuthorCreditDisplay.displayName = 'AuthorCreditDisplay';
 AuthorCreditDisplay.propTypes = {
-	names: PropTypes.array.isRequired
+	names: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.object
+	]).isRequired
 };
 
 export default AuthorCreditDisplay;

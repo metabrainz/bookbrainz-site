@@ -18,12 +18,13 @@
  */
 
 import {Button, Modal} from 'react-bootstrap';
-import {keys as _keys, map as _map} from 'lodash';
+import AuthorCreditDisplay from '../../components/author-credit-display';
 
 import AuthorCreditRow from './author-credit-row';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {keys as _keys} from 'lodash';
 import {addAuthorCreditRow} from './actions';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
@@ -64,16 +65,8 @@ const AuthorCreditEditor = ({
 			<hr/>
 			<dl>
 				<dt>Preview of the Author credit:</dt>
-				<dd>{
-					_map(authorCredit, (credit) => (
-						<span key={`author-credit-${credit.authorCreditID}-${credit.position}`}>
-							<a href={`/author/${credit.authorBBID}`}>
-								{credit.name}
-							</a>
-							{credit.joinPhrase}
-						</span>
-					))
-				}
+				<dd>
+					<AuthorCreditDisplay names={authorCredit}/>
 				</dd>
 			</dl>
 			<hr className="thin"/>
