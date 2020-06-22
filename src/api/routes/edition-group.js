@@ -154,7 +154,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('EditionGroup', utils.aliasesRelations, editionGroupError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionGroupAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionGroupAliasesList);
 	});
@@ -189,7 +189,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('EditionGroup', utils.identifiersRelations, editionGroupError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionGroupIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionGroupIdentifiersList);
 	});
@@ -225,7 +225,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('EditionGroup', utils.relationshipsRelations, editionGroupError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionGroupRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionGroupRelationshipList);
 	});
@@ -271,7 +271,7 @@ router.get('/',
 	// As we're loading the browsed entity, also load the related EditionGroups from the ORM models to avoid fetching it twice
 	makeEntityLoader(null, utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)), 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
-	async (req, res, next) => {
+	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
 				const editionGroupTypeMatched = toLower(relatedEntity.editionGroupType) === toLower(req.query.type);

@@ -518,7 +518,7 @@ describe('processMergeOperation', () => {
 			}
 		};
 		const trx = await bookshelf.knex.transaction();
-		const returnedEntities = await processMergeOperation(orm, trx, {mergeQueue}, author1Fetched, [author1Fetched], {});
+		await processMergeOperation(orm, trx, {mergeQueue}, author1Fetched, [author1Fetched], {});
 		await trx.commit();
 		const redirects = await bookshelf.knex('bookbrainz.entity_redirect').select('source_bbid');
 		expect(redirects[0].source_bbid).to.equal(author2BBID);

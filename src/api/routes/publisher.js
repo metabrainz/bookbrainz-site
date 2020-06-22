@@ -169,7 +169,7 @@ router.get('/:bbid',
  */
 router.get('/:bbid/aliases',
 	makeEntityLoader('Publisher', utils.aliasesRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(publisherAliasesList);
 	});
@@ -204,7 +204,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Publisher', utils.identifiersRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(publisherIdentifiersList);
 	});
@@ -239,7 +239,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Publisher', utils.relationshipsRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(publisherRelationshipList);
 	});
@@ -314,7 +314,7 @@ router.get('/',
 		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
 	},
 	loadEntityRelationshipsForBrowse(),
-	async (req, res, next) => {
+	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
 				const publisherTypeMatched = toLower(relatedEntity.publisherType) === toLower(req.query.type);

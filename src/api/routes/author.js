@@ -169,7 +169,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Author', utils.aliasesRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(authorAliasesList);
 	});
@@ -203,7 +203,7 @@ router.get('/:bbid/aliases',
  */
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Author', utils.identifiersRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(authorIdentifiersList);
 	});
@@ -238,7 +238,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Author', utils.relationshipsRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
 	});

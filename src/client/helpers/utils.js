@@ -50,12 +50,6 @@ export function formatDate(date, includeTime) {
 	return format(date, 'yyyy-MM-dd');
 }
 
-const MILLISECONDS_PER_DAY = 86400000;
-
-export function isWithinDayFromNow(date) {
-	return Boolean(Date.now() - date.getTime() < MILLISECONDS_PER_DAY);
-}
-
 export function labelsForAuthor(isGroup) {
 	return {
 		beginAreaLabel: isGroup ? 'Place founded' : 'Place of birth',

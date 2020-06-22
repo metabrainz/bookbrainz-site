@@ -63,8 +63,7 @@ export function generateEntityProps(
 	req: $Request, res: $Response,
 	additionalProps: any,
 	initialStateCallback: (entity: ?any) => any =
-	// eslint-disable-next-line no-unused-vars
-	(entity) => new Object()
+	() => new Object()
 ): any {
 	const entityName = _.upperFirst(entityType);
 	const {entity} = res.locals;
@@ -121,7 +120,7 @@ export function generateEntityMergeProps(
 	req: $Request, res: $Response,
 	additionalProps: any,
 	initialStateCallback: (entity: ?any) => any =
-	(entity) => new Object()
+	() => new Object()
 ): Object {
 	const {entityType, mergingEntities} = additionalProps;
 	const entityName = _.startCase(entityType);

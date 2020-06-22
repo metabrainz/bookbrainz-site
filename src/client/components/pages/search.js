@@ -67,7 +67,7 @@ class SearchPage extends React.Component {
 		if (this.state.query === fullQuery) {
 			return;
 		}
-		this.setState({from: 0, query: fullQuery});
+		this.setState({query: fullQuery});
 	}
 
 	searchResultsCallback(newResults) {

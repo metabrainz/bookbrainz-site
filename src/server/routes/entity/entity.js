@@ -441,7 +441,7 @@ export function handleDelete(
 			transacting
 		});
 
-		const entityHeader = await new HeaderModel({
+		await new HeaderModel({
 			bbid: entity.bbid,
 			masterRevisionId: entityRevision.get('id')
 		}).save(null, {transacting});
