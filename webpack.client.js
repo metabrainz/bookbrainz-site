@@ -13,6 +13,7 @@ const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
 		'collection/create': ['./controllers/collection/userCollectionForm'],
+		'collection/delete': ['./controllers/collection/userCollectionDeletionForm'],
 		deletion: ['./controllers/deletion.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
