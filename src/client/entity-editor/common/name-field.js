@@ -41,8 +41,6 @@ type Props = {
  * 		  component to indicate a validation warning.
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
- * @param {Function} props.onChange - Function to be called when the value in
- *        the wrapped input changes.
  * @returns {Object} a React component containing the rendered input
  */
 function NameField({

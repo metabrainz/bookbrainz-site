@@ -33,12 +33,6 @@ import {connect} from 'react-redux';
  *        editor.
  * @param {Array} props.languageOptions - The list of possible languages for an
  *        alias.
- * @param {Function} props.onAddAlias - A function to be called when the button
- *        to add an alias is clicked.
- * @param {Function} props.onClose - A function to be called when the button to
- *        close the editor is clicked.
- * @param {boolean} props.show - Whether or not the editor modal should be
- *        visible.
  * @returns {ReactElement} React element containing the rendered AliasEditorMerge.
  */
 const AliasEditorMerge = ({

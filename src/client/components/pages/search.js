@@ -53,7 +53,6 @@ class SearchPage extends React.Component {
 	 *
 	 * @param {string} query - Query string entered by user.
 	 * @param {string} type - Entity type selected from dropdown
-	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
 	handleSearch(query, type) {
 		if (typeof query !== 'string' || typeof type !== 'string') {

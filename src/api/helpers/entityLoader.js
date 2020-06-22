@@ -28,6 +28,8 @@ import log from 'log';
  * @param {string} modelName - Name of entity model
  * @param {string[]} relations - List of entity relations for fetching the related detail
  * @param {string} errMessage - Error message, if any error will occur
+ * @param {boolean} isBrowse - Whether this is a browse endpoint (as opposed to
+ *        an endpoint for a specific entity).
  * @returns {object} an object containing the error message if any error will occur.
  * If entity is found successfully in the database this function set the entity data
  * at res.locals.entity and return to next function.

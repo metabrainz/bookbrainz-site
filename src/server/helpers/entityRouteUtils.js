@@ -151,7 +151,6 @@ export function generateEntityMergeProps(
  * Return markup for the entity editor.
  * This also modifies the props value with a new initialState!
  * @param {object} props - react props
- * @param {function} rootReducer - redux root reducer
  * @returns {object} - Updated props and HTML string with markup
  */
 export function entityEditorMarkup(
@@ -187,7 +186,6 @@ export function entityEditorMarkup(
  * Return markup for the entity merging tool.
  * This also modifies the props value with a new initialState!
  * @param {object} props - react props
- * @param {function} rootReducer - redux root reducer
  * @returns {object} - Updated props and HTML string with markup
  */
 export function entityMergeMarkup(
