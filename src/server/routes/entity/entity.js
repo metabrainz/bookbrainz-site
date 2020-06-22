@@ -55,7 +55,6 @@ import target from '../../templates/target';
 
 type PassportRequest = $Request & {user: any, session: any};
 
-
 const entityComponents = {
 	author: AuthorPage,
 	edition: EditionPage,
@@ -678,6 +677,25 @@ async function processEditionSets(
 	body: ProcessEditionSetsBody,
 	transacting: Transaction
 ) {
+	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
+
+	const oldAuthorCredit = await (
+		authorCreditID &&
+		orm.AuthorCredit.forge({id: authorCreditID})
+			.fetch({transacting, withRelated: ['names']})
+	);
+
+	const names = _.get(body, 'authorCredit') || [];
+	const newAuthorCreditIDPromise = orm.func.authorCredit.updateAuthorCredit(
+		orm, transacting, oldAuthorCredit,
+		names.map((name) => ({
+			authorBBID: name.authorBBID,
+			joinPhrase: name.joinPhrase,
+			name: name.name
+		}))
+	)
+		.then((credit) => credit && credit.get('id'));
+
 	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
 
 	const oldLanguageSet = await (
@@ -737,6 +755,7 @@ async function processEditionSets(
 			.then((set) => set && set.get('id'));
 
 	return commonUtils.makePromiseFromObject({
+		authorCreditId: newAuthorCreditIDPromise,
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise

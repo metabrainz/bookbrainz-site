@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Ben Ockmore
+ * Copyright (C) 2020  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as entityHelper from '../../../helpers/entity';
-
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {
-	getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel
-} = entityHelper;
+function AuthorCreditDisplay({names}) {
+	const nameElements = [];
+	for (const name of names) {
+		nameElements.push(
+			<span key={`author-credit-${name.authorCreditID}-${name.position}`}>
+				<a href={`/author/${name.authorBBID}`}>
+					{name.name}
+				</a>
+				{name.joinPhrase}
+			</span>
+		);
+	}
 
-
-function EntityTitle({entity}) {
-	const aliases = getEntitySecondaryAliases(entity);
-	const disambiguation = getEntityDisambiguation(entity);
-	const label = getEntityLabel(entity);
 	return (
-		<div>
-			<h1>{label}{disambiguation}</h1>
-			{aliases}
-		</div>
+		<span>
+			{nameElements}
+		</span>
 	);
 }
-EntityTitle.displayName = 'EntityTitle';
-EntityTitle.propTypes = {
-	entity: PropTypes.object.isRequired
+
+AuthorCreditDisplay.displayName = 'AuthorCreditDisplay';
+AuthorCreditDisplay.propTypes = {
+	names: PropTypes.array.isRequired
 };
 
-export default EntityTitle;
+export default AuthorCreditDisplay;

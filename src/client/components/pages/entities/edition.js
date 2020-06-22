@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import AuthorCreditDisplay from '../../author-credit-display';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -105,6 +106,22 @@ function EditionDisplayPage({entity, identifierTypes}) {
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
 	const urlPrefix = getEntityUrl(entity);
+
+	let authorCreditSection;
+	if (entity.authorCredit) {
+		authorCreditSection = (
+			<AuthorCreditDisplay
+				names={entity.authorCredit.names}
+			/>
+		);
+	}
+	else if (!entity.deleted) {
+		authorCreditSection = (
+			<span className="bg-danger">
+				Author Credit unset; please edit this Edition and add one if you see this!
+			</span>);
+	}
+
 	let editionGroupSection;
 	if (entity.editionGroup) {
 		editionGroupSection = (
@@ -135,6 +152,8 @@ function EditionDisplayPage({entity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<EntityTitle entity={entity}/>
+					{authorCreditSection}
+					<hr/>
 					<EditionAttributes edition={entity}/>
 					{editionGroupSection}
 				</Col>

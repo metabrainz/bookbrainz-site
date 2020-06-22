@@ -46,6 +46,7 @@ import {
 	validateEditionSectionWeight,
 	validateEditionSectionWidth
 } from '../validators/edition';
+import AuthorCreditEditor from '../author-credit-editor/author-credit-editor';
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -257,6 +258,7 @@ function EditionSection({
 			<h2>
 				What else do you know about the Edition?
 			</h2>
+			<AuthorCreditEditor/>
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank
 			</p>
@@ -417,6 +419,8 @@ function mapStateToProps(rootState: RootState): StateProps {
 	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
 
 	return {
+		authorCreditValue: state.get('authorCredit'),
+		authorValue: state.get('author'),
 		depthValue: state.get('depth'),
 		editionGroupRequired: state.get('editionGroupRequired'),
 		editionGroupValue: state.get('editionGroup'),

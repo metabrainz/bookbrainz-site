@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// @flow
+
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
@@ -45,6 +47,22 @@ const additionalEditionProps = [
 	'formatId', 'statusId'
 ];
 
+type AuthorCreditEditorT = {
+	author: object,
+	joinPhrase: string,
+	name: string
+};
+
+function constructAuthorCredit(
+	authorCreditEditor: {[string]: AuthorCreditEditorT}
+) {
+	return _.map(
+		authorCreditEditor,
+		({author, joinPhrase, name}: AuthorCreditEditorT) =>
+			({authorBBID: author.id, joinPhrase, name})
+	);
+}
+
 function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
@@ -67,9 +85,12 @@ function transformNewForm(data) {
 		data.editionSection.languages, (language) => language.value
 	);
 
+	const authorCredit = constructAuthorCredit(data.authorCreditEditor);
+
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
+		authorCredit,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
@@ -217,6 +238,7 @@ router.param(
 	middleware.makeEntityLoader(
 		'Edition',
 		[
+			'authorCredit.names.author.defaultAlias',
 			'editionGroup.defaultAlias',
 			'languageSet.languages',
 			'editionFormat',
@@ -298,6 +320,18 @@ function editionToFormState(edition) {
 	nameSection.disambiguation =
 		edition.disambiguation && edition.disambiguation.comment;
 
+	const credits = edition.authorCredit ? edition.authorCredit.names.map(
+		({author, ...rest}) => ({
+			author: utils.entityToOption(author),
+			...rest
+		})
+	) : [];
+
+	const authorCreditEditor = {};
+	for (const credit of credits) {
+		authorCreditEditor[credit.position] = credit;
+	}
+
 	const identifiers = edition.identifierSet ?
 		edition.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
@@ -368,6 +402,7 @@ function editionToFormState(edition) {
 
 	return {
 		aliasEditor,
+		authorCreditEditor,
 		buttonBar,
 		editionSection,
 		identifierEditor,
