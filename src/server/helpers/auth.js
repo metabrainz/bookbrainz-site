@@ -144,6 +144,6 @@ export function isCollectionOwner(req, res, next) {
 	}
 
 	throw new error.PermissionDeniedError(
-		'You do not have permission to edit this collection', req
+		'You do not have permission to edit/delete this collection', req
 	);
 }
