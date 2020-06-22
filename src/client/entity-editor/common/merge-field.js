@@ -26,7 +26,7 @@ import ValidationLabel from '../common/validation-label';
 
 
 type Props = {
-	error: string,
+	error?: boolean,
 	options: array,
 	label: string,
 	currentValue: any,
@@ -95,6 +95,7 @@ function MergeField({
 MergeField.displayName = 'MergeField';
 
 MergeField.defaultProps = {
+	error: false,
 	valueProperty: 'label'
 };
 

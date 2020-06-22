@@ -46,6 +46,7 @@ class Achievement extends React.Component {
 		else {
 			imgElement = (
 				<img
+					alt={this.state.achievement.name}
 					height="100px"
 					src={this.state.achievement.badgeUrl}
 					style={{zIndex: 2}}
