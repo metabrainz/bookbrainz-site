@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import {Button, Checkbox, Col, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
@@ -33,6 +32,7 @@ import React from 'react';
 import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
 import {isAliasEmpty} from '../helpers';
+
 
 /**
  * Container component. The AliasRow component renders a single Row containing

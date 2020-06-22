@@ -260,13 +260,16 @@ router.get('/:id', (req, res, next) => {
 		})
 		.then((achievements) => {
 			if (!achievements) {
-				return {length: 0, model: null};
+				return {
+					length: 0,
+					model: null
+				};
 			}
-			const achievementJSON = {
+
+			return {
 				length: achievements.length,
 				model: achievements.toJSON()
 			};
-			return achievementJSON;
 		});
 
 
@@ -369,12 +372,8 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 function setAchievementUnlockedField(achievements, unlockIds) {
 	const model = achievements.map((achievementType) => {
 		const achievementJSON = achievementType.toJSON();
-		if (unlockIds.indexOf(achievementJSON.id) >= 0) {
-			achievementJSON.unlocked = true;
-		}
-		else {
-			achievementJSON.unlocked = false;
-		}
+		achievementJSON.unlocked = unlockIds.indexOf(achievementJSON.id) >= 0;
+
 		return achievementJSON;
 	});
 	return {

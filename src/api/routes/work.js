@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,

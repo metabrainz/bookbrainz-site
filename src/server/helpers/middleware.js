@@ -159,10 +159,9 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				if (!entity.dataId) {
 					entity.deleted = true;
-					const parentAlias = await orm.func.entity.getEntityParentAlias(
+					entity.parentAlias = await orm.func.entity.getEntityParentAlias(
 						orm, modelName, bbid
 					);
-					entity.parentAlias = parentAlias;
 				}
 				res.locals.entity = entity;
 				return next();

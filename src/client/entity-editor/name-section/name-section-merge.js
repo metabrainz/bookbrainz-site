@@ -135,6 +135,7 @@ function NameSectionMerge({
 		</form>
 	);
 }
+
 NameSectionMerge.displayName = 'NameSectionMerge';
 NameSectionMerge.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
@@ -153,7 +154,6 @@ NameSectionMerge.defaultProps = {
 	disambiguationDefaultValue: null,
 	languageValue: null
 };
-
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('nameSection');

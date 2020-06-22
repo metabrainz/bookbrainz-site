@@ -23,6 +23,7 @@ import CustomInput from '../../input';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
+
 /**
  * Removes all period characters (dots) from the input string, returning a new
  * string.

@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as utils from '../helpers/utils';
 
 import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
@@ -304,15 +303,17 @@ router.get('/',
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const authorTypeMatched = toLower(relatedEntity.authorType) === toLower(req.query.type);
-				return authorTypeMatched;
+				return toLower(relatedEntity.authorType) === toLower(req.query.type);
 			}
+
 			return true;
 		}
+
 		const authorRelationshipList = await utils.getBrowsedRelationships(
 			req.app.locals.orm, res.locals, 'Author',
 			getAuthorBasicInfo, authorBasicRelations, relationshipsFilterMethod
 		);
+
 		return res.status(200).send({
 			authors: authorRelationshipList,
 			bbid: req.query.bbid

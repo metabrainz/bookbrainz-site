@@ -75,6 +75,7 @@ describe('getDefaultAliasIndex', () => {
 		};
 		expect(getDefaultAliasIndex(aliasSet)).to.equal(2);
 	});
+
 	it("should return the index of the alias matching the set's defaultAliasId", () => {
 		const aliasSet = {
 			aliases: [...randomAliases, defaultAlias],
@@ -82,6 +83,7 @@ describe('getDefaultAliasIndex', () => {
 		};
 		expect(getDefaultAliasIndex(aliasSet)).to.equal(2);
 	});
+
 	it("should return the index of the alias matching the set's defaultAliasId if it is a string", () => {
 		const aliasSet = {
 			aliases: [...randomAliases, defaultAlias],
@@ -112,15 +114,19 @@ describe('deleteRelationships', () => {
 		await new RelationshipType(relationshipTypeData)
 			.save(null, {method: 'insert'});
 	});
+
 	beforeEach(async () => {
 		author = await createAuthor();
 	});
+
 	after(truncateEntities);
+
 	it('it should return an empty array if there are no relationships to delete', async () => {
 		author = await new Author({bbid: author.get('bbid')}).fetch({withRelated: 'relationshipSet.relationships'});
 		const affectedEntities = await deleteRelationships(orm, null, author.toJSON());
 		expect(affectedEntities).to.have.length(0);
 	});
+
 	it('it should return an empty array if the other entity is a deleted entity (no dataId)', async () => {
 		// Create Entities
 		const work = await createWork();
@@ -192,6 +198,7 @@ describe('deleteRelationships', () => {
 
 		expect(affectedEntities).to.have.length(0);
 	});
+
 	it('it should return an array containing the other entity to modify (this should also check that the returned entity model has a changed relationshipSetId)', async () => {
 		// Create Entities
 		const work = await createWork();
@@ -249,6 +256,7 @@ describe('deleteRelationships', () => {
 		expect(workRelationshipSet.get('id')).to.not.equal(affectedEntities[0].get('relationshipSetId'));
 		expect(affectedEntities).to.have.length(1);
 	});
+
 	it('it should delete only the relationships to the entity being deleted (meaning if entity A has rels to B and C and I deleted B, A should still have a rel to C)', async () => {
 		// Create Entities
 		const workABBID = getRandomUUID();
@@ -344,6 +352,7 @@ describe('deleteRelationships', () => {
 		expect(affectedEntityRelationshipSet.related('relationships').toJSON()[0].targetBbid).to.be.equal(workB.get('bbid'));
 		expect(affectedEntities).to.have.length(1);
 	});
+
 	it('it should return an array with multiple other entities to modify if there are relationships to multiple entities', async () => {
 		// Create Entites
 		const workABBID = getRandomUUID();
@@ -458,6 +467,7 @@ describe('deleteRelationships', () => {
 		expect(affectedEntities).to.have.length(3);
 	});
 });
+
 describe('processMergeOperation', () => {
 	let author1BBID;
 	let author2BBID;
@@ -481,6 +491,7 @@ describe('processMergeOperation', () => {
 			processMergeOperation(orm, null, {mergeQueue}, author1, [author1], {})
 		).to.be.rejectedWith('Merge handler called with no merge queue, aborting');
 	});
+
 	it('should throw an error if trying to merge into an entity not in the mergeQueue', () => {
 		const anotherBBIB = getRandomUUID();
 		const mergeQueue = {
@@ -493,6 +504,7 @@ describe('processMergeOperation', () => {
 			processMergeOperation(orm, null, {mergeQueue}, author1, [author1], {})
 		).to.be.rejectedWith('Entity being merged into does not appear in merge queue, aborting');
 	});
+
 	it('should add the entity to be merged to the returned entities', async () => {
 		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
 		const mergeQueue = {
@@ -508,6 +520,7 @@ describe('processMergeOperation', () => {
 		const returnedEntitiesBBIDs = returnedEntities.map(entity => entity.get('bbid'));
 		expect(returnedEntitiesBBIDs).to.include.members([author1BBID, author2BBID]);
 	});
+
 	it('should add the bbid of the merged entity to the entity_redirect table', async () => {
 		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
 		const mergeQueue = {
@@ -523,6 +536,7 @@ describe('processMergeOperation', () => {
 		const redirects = await bookshelf.knex('bookbrainz.entity_redirect').select('source_bbid');
 		expect(redirects[0].source_bbid).to.equal(author2BBID);
 	});
+
 	it('should modify the relationshipSet of any entity related to an entity being merged', async () => {
 		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
 		const mergeQueue = {

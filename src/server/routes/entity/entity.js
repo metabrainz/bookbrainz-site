@@ -833,11 +833,9 @@ async function getNextRelationshipSets(
 		})
 	);
 
-	const updatedRelationships = orm.func.relationship.updateRelationshipSets(
+	return orm.func.relationship.updateRelationshipSets(
 		orm, transacting, oldRelationshipSet, body.relationships || []
 	);
-
-	return updatedRelationships;
 }
 
 async function getNextAnnotation(

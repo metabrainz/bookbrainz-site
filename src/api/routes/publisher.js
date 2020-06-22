@@ -325,9 +325,9 @@ router.get('/',
 				return publisherTypeMatched;
 			}
 			else if (req.query.area) {
-				const publisherAreaMatched = toLower(relatedEntity.area) === toLower(req.query.area);
-				return publisherAreaMatched;
+				return toLower(relatedEntity.area) === toLower(req.query.area);
 			}
+
 			return true;
 		}
 

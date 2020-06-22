@@ -22,6 +22,7 @@ import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {format} from 'date-fns';
 
+
 /**
  * Injects entity model object with a default alias name property.
  *

@@ -269,7 +269,12 @@ router.get('/',
 	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['edition']),
 	// As we're loading the browsed entity, also load the related EditionGroups from the ORM models to avoid fetching it twice
-	makeEntityLoader(null, utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)), 'Entity not found', true),
+	makeEntityLoader(
+		null,
+		utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)),
+		'Entity not found',
+		true
+	),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {

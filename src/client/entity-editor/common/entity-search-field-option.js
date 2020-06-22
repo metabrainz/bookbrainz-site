@@ -53,11 +53,7 @@ class EntitySearchFieldOption extends React.Component {
 			return true;
 		}
 
-		if (entity.gid) {
-			return true;
-		}
-
-		return false;
+		return Boolean(entity.gid);
 	}
 
 	/**
