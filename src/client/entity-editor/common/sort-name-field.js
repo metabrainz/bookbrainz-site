@@ -131,7 +131,7 @@ function SortNameField({
 	function handleGuessClick() {
 		const generatedSortName = makeSortName(storedNameValue);
 		if (input) {
-			input.getDOMNode().value = generatedSortName;
+			input.value = generatedSortName;
 		}
 
 		if (onChange) {
@@ -141,7 +141,7 @@ function SortNameField({
 
 	function handleCopyClick() {
 		if (input) {
-			input.getDOMNode().value = storedNameValue;
+			input.value = storedNameValue;
 		}
 
 		if (onChange) {
