@@ -14,6 +14,7 @@ const clientConfig = {
 	entry: {
 		'collection/create': ['./controllers/collection/userCollectionForm'],
 		collections: ['./controllers/collections'],
+		'collection/delete': ['./controllers/collection/userCollectionDeletionForm'],
 		deletion: ['./controllers/deletion.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
