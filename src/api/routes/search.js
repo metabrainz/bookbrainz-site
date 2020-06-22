@@ -42,11 +42,11 @@ const router = express.Router();
  *           type: string
  *       - name: type
  *         in: query
- *         description: Entity type to search for
+ *         description: Entity type to search for. Defaults to all entities except Editors.
  *         required: false
  *         schema:
  *           type: string
- *           default: 'All entities except Editors'
+ *           default: 'All entities'
  *           enum: [author, edition, edition-group, editor, publisher, work]
  *       - name: size
  *         in: query
