@@ -27,7 +27,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Row, Table} = bootstrap;
+const {Alert, Button, Row, Table} = bootstrap;
 
 /**
  * Renders the document and displays the 'SearchResults' page.
@@ -39,8 +39,10 @@ class SearchResults extends React.Component {
 		super(props);
 
 		this.state = {
+			error: null,
 			selected: []
 		};
+		this.handleAddToCollection = this.handleAddToCollection.bind(this);
 		this.toggleRow = this.toggleRow.bind(this);
 	}
 
@@ -57,6 +59,24 @@ class SearchResults extends React.Component {
 		this.setState({
 			selected: newSelected
 		});
+	}
+
+	handleAddToCollection() {
+		const selectedEntities = this.state.selected;
+		if (selectedEntities.length) {
+			const areAllEntitiesOfSameType = selectedEntities.every(entity => entity.type === selectedEntities[0].type);
+			if (!areAllEntitiesOfSameType) {
+				this.setState({error: 'Selected entities should be of same type'});
+			}
+			else {
+				// eslint-disable-next-line no-console
+				console.log(selectedEntities);
+				this.setState({error: null});
+			}
+		}
+		else {
+			this.setState({error: 'Nothing Selected'});
+		}
 	}
 
 	render() {
@@ -133,6 +153,13 @@ class SearchResults extends React.Component {
 		if (this.props.condensed) {
 			tableCssClasses += ' table-condensed';
 		}
+
+		let errorComponent = null;
+		if (this.state.error) {
+			errorComponent =
+				<Alert bsStyle="danger">{this.state.error}</Alert>;
+		}
+
 		return (
 			<div>
 				{
@@ -141,7 +168,17 @@ class SearchResults extends React.Component {
 						Search Results
 					</h3>
 				}
+				<Button
+					bsSize="small"
+					bsStyle="danger"
+					className="pull-right"
+					type="button"
+					onClick={this.handleAddToCollection}
+				>
+					Add to Collection
+				</Button>
 				<hr className="thin"/>
+				{errorComponent}
 				<Table
 					responsive
 					className={tableCssClasses}
