@@ -64,7 +64,7 @@ class CollectionsTable extends React.Component {
 				))}
 				<MenuItem divider/>
 				<MenuItem
-					eventKey="all_types"
+					eventKey={null}
 					key="allTypes"
 				>
 					All Types

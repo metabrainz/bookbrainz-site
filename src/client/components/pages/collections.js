@@ -39,13 +39,8 @@ class CollectionsPage extends React.Component {
 	}
 
 	handleTypeChange(type) {
-		if (typeof type !== 'string') {
-			return;
-		}
-
 		const query = type ? `&type=${type}` : '';
-
-		this.setState({from: 0, query});
+		this.setState({query});
 	}
 
 	render() {
