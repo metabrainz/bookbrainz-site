@@ -61,6 +61,7 @@ router.get('/', (req, res, next) => {
 
 			const props = generateProps(req, res, {
 				entityTypes,
+				from,
 				hideSearch: true,
 				nextEnabled,
 				resultsPerPage: size,
