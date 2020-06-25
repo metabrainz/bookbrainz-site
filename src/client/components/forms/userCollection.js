@@ -19,6 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import CustomInput from '../../input';
+import DeleteCollectionModal from '../pages/parts/delete-collection-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -40,12 +41,15 @@ class UserCollectionForm extends React.Component {
 		this.state = {
 			collaborators,
 			collection,
-			errorText: null
+			errorText: null,
+			showModal: false
 		};
 
 		// React does not autobind non-React class methods
 		this.getCleanedCollaborators = this.getCleanedCollaborators.bind(this);
 		this.handleAddCollaborator = this.handleAddCollaborator.bind(this);
+		this.handleShowDeleteModal = this.handleShowDeleteModal.bind(this);
+		this.closeDeleteModalCallback = this.closeDeleteModalCallback.bind(this);
 		this.handleRemoveCollaborator = this.handleRemoveCollaborator.bind(this);
 		this.handleChangeCollaborator = this.handleChangeCollaborator.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -136,6 +140,14 @@ class UserCollectionForm extends React.Component {
 		});
 	}
 
+	handleShowDeleteModal() {
+		this.setState({showModal: true});
+	}
+
+	closeDeleteModalCallback() {
+		this.setState({showModal: false});
+	}
+
 	render() {
 		if (this.state.collaborators.length === 0) {
 			this.handleAddCollaborator();
@@ -160,6 +172,24 @@ class UserCollectionForm extends React.Component {
 		return (
 			<div>
 				<h1>Create your collection</h1>
+				<DeleteCollectionModal
+					closeDeleteModalCallback={this.closeDeleteModalCallback}
+					collection={this.props.collection}
+					show={this.state.showModal}
+				/>
+				{
+					this.props.collection.id ?
+						<Button
+							bsSize="small"
+							bsStyle="danger"
+							className="pull-right"
+							type="button"
+							onClick={this.handleShowDeleteModal}
+						>
+							<FontAwesomeIcon icon="times"/>&nbsp;Delete this collection
+						</Button> : null
+				}
+
 				<div>
 					<Col
 						id="collectionForm"
