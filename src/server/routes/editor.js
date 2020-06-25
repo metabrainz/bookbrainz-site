@@ -521,8 +521,8 @@ router.get('/:id/collections', async (req, res, next) => {
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	let type = req.query.type ? req.query.type : null;
 	const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
-	if (!entityTypes.includes(type)) {
-		type = null;
+	if (!entityTypes.includes(type) && type !== null) {
+		throw new error.BadRequestError(`Type ${type} do not exist`);
 	}
 
 	try {
@@ -576,8 +576,8 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 		let type = req.query.type ? req.query.type : null;
 		const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
-		if (!entityTypes.includes(type)) {
-			type = null;
+		if (!entityTypes.includes(type) && type !== null) {
+			throw new error.BadRequestError(`Type ${type} do not exist`);
 		}
 
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size, type, req);
