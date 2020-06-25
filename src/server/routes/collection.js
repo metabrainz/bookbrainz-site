@@ -23,7 +23,6 @@ import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import UserCollectionDeletionForm from '../../client/components/forms/userCollection-delete';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
@@ -55,26 +54,6 @@ router.param(
 	'collectionId',
 	middleware.makeCollectionLoader()
 );
-
-router.get('/:collectionId/delete', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
-	const {collection} = res.locals;
-	const props = generateProps(req, res, {
-		collection
-	});
-	const script = '/js/collection/delete.js';
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<UserCollectionDeletionForm
-				collection={props.collection}
-			/>
-		</Layout>
-	);
-	res.send(target({
-		markup,
-		props: escapeProps(props),
-		script
-	}));
-});
 
 router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res) => {
 	try {
