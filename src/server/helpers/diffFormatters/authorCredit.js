@@ -53,7 +53,7 @@ function formatAuthorCreditAddOrDelete(change) {
 }
 
 function formatAuthorCreditModified(change) {
-	return set.formatItemModified(change, `Author Credit ${change.path[2] + 1}`, ['names', 'name', 'position']);
+	return set.formatItemModified(change, `Author Credit ${change.path[2] + 1}`, ['names', 'name', 'position', 'authorBBID']);
 }
 
 export function format(change) {
