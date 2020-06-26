@@ -53,11 +53,7 @@ class EntitySearchFieldOption extends React.Component {
 			return true;
 		}
 
-		if (entity.gid) {
-			return true;
-		}
-
-		return false;
+		return Boolean(entity.gid);
 	}
 
 	/**
@@ -65,8 +61,6 @@ class EntitySearchFieldOption extends React.Component {
 	 *
 	 * @param {Object} entity the entity to convert
 	 * @returns {Object} the formatted data
-	 * @param {Array<LanguageOption>} languageOptions - The list of possible languages for an
-	 * entity.
 	 */
 	entityToOption(entity) {
 		if (_.isNil(entity)) {

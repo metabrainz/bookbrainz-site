@@ -156,18 +156,6 @@ export function incrementEditorEditCountById(
 }
 
 /**
- * Removes all rows from a selection of database tables
- *
- * @param {object} Bookshelf - Bookshelf instance connected to database
- * @param {string[]} tables - List of tables to truncate
- * @returns {Promise} a promise which will be fulfilled when the operation to
- *                    truncate tables completes
- */
-export function truncateTables(Bookshelf: Object, tables: Array<string>) {
-	return Promise.all(tables.map(table => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)));
-}
-
-/**
  * Return additional relations to withRelated array according to modelType
  *
  * @param {string} modelType - type of the model or entity

@@ -110,7 +110,7 @@ export function debouncedUpdateDisambiguationField(
  * @param  {string} name - The value to be checked if it already exists.
  * @param  {string} entityType - The entity type of the value to be checked.
  * @param  {string} action - An optional redux action to dispatch. Defaults to UPDATE_WARN_IF_EXISTS
- * @returns {many_prompts~inner} The returned function.
+ * @returns {checkIfNameExists~dispatch} The returned function.
  */
 export function checkIfNameExists(
 	name: string,
@@ -118,6 +118,7 @@ export function checkIfNameExists(
 	action: ?string
 ): ((Action) => mixed) => mixed {
 	/**
+	 * @function dispatch
 	 * @param  {function} dispatch - The redux dispatch function.
 	 */
 	return (dispatch) => {
@@ -153,13 +154,14 @@ export function checkIfNameExists(
  *
  * @param  {string} name - The value to be checked if it already exists.
  * @param  {string} type - Entity type of the name.
- * @returns {many_prompts~inner} The returned function.
+ * @returns {searchName~dispatch} The returned function.
  */
 export function searchName(
 	name: string,
 	type: string,
 ): ((Action) => mixed) => mixed {
 	/**
+	 * @function dispatch
 	 * @param  {function} dispatch - The redux dispatch function.
 	 */
 	return (dispatch) => {

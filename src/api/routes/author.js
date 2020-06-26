@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as utils from '../helpers/utils';
 
 import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
@@ -169,7 +168,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Author', utils.aliasesRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(authorAliasesList);
 	});
@@ -203,7 +202,7 @@ router.get('/:bbid/aliases',
  */
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Author', utils.identifiersRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(authorIdentifiersList);
 	});
@@ -238,7 +237,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Author', utils.relationshipsRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
 	});
@@ -304,15 +303,17 @@ router.get('/',
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const authorTypeMatched = toLower(relatedEntity.authorType) === toLower(req.query.type);
-				return authorTypeMatched;
+				return toLower(relatedEntity.authorType) === toLower(req.query.type);
 			}
+
 			return true;
 		}
+
 		const authorRelationshipList = await utils.getBrowsedRelationships(
 			req.app.locals.orm, res.locals, 'Author',
 			getAuthorBasicInfo, authorBasicRelations, relationshipsFilterMethod
 		);
+
 		return res.status(200).send({
 			authors: authorRelationshipList,
 			bbid: req.query.bbid

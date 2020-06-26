@@ -191,7 +191,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Edition', utils.aliasesRelations, editionError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionAliasesList);
 	});
@@ -226,7 +226,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Edition', utils.identifiersRelations, editionError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionIdentifiersList);
 	});
@@ -261,7 +261,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Edition', utils.relationshipsRelations, editionError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionRelationshipList);
 	});
@@ -347,7 +347,7 @@ router.get('/',
 		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
 	},
 	loadEntityRelationshipsForBrowse(),
-	async (req, res, next) => {
+	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			let editionFormatMatched = true;
 			let editionLanguageMatched = true;

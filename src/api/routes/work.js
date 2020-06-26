@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
@@ -167,7 +166,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Work', utils.aliasesRelations, workError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const workAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(workAliasesList);
 	});
@@ -202,7 +201,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Work', utils.identifiersRelations, workError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const workIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(workIdentifiersList);
 	});
@@ -238,7 +237,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Work', utils.relationshipsRelations, workError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const workRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(workRelationshipList);
 	});
@@ -306,7 +305,7 @@ router.get('/',
 	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
-	async (req, res, next) => {
+	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			let workTypeMatched = true;
 			let workLanguageMatched = true;

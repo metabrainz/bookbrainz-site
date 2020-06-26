@@ -37,8 +37,7 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const pageTarget = document.getElementById('page');
 const page = pageTarget ? pageTarget.innerHTML : '';
 
-let tab = null;
-
+let tab;
 if (page === 'revisions') {
 	tab = (
 		<EditorRevisionPage

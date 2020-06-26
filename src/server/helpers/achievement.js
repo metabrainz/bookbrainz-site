@@ -655,7 +655,3 @@ export function processEdit(orm, userId, revisionId) {
 			};
 		});
 }
-
-export function processComment() {
-	// empty
-}

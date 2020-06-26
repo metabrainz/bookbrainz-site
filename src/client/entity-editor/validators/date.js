@@ -1,4 +1,4 @@
-/* eslint-disable no-extra-parens,eqeqeq,sort-keys */
+/* eslint-disable eqeqeq,sort-keys */
 export function dateValidator(day, month, year) {
 	const isPosIntRegx = /^\+?([0-9]\d*)$/;
 	const isYearInt = Number.isInteger(Number(year));
@@ -40,7 +40,7 @@ export function dateValidator(day, month, year) {
 		return {isValid: false, errorMessage: 'Day is not valid for this month'};
 	}
 	else if (month == 2) {
-		const isleap = (year % 100 == 0) ? (year % 400 == 0) : (year % 4 == 0);
+		const isleap = year % 100 == 0 ? year % 400 == 0 : year % 4 == 0;
 		if (day < 1 || day > 29) {
 			return {isValid: false, errorMessage: 'Day is not valid for this month'};
 		}

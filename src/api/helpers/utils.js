@@ -84,8 +84,8 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 	// Remove falsy values (nulls returned above)
 	const filteredRelationships = fetchedRelationshipsPromises.filter(Boolean);
 
-	const flattenedRelationships = filteredRelationships
-		.reduce((accumulator, relationship, index, array) => {
+	return filteredRelationships
+		.reduce((accumulator, relationship) => {
 			const entityAlreadyExists = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
 			if (entityAlreadyExists) {
 				entityAlreadyExists.relationships.push(...relationship.relationships);
@@ -95,6 +95,4 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 			}
 			return accumulator;
 		}, []);
-
-	return flattenedRelationships;
 }

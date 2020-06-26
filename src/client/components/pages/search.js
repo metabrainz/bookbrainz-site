@@ -18,7 +18,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -54,7 +53,6 @@ class SearchPage extends React.Component {
 	 *
 	 * @param {string} query - Query string entered by user.
 	 * @param {string} type - Entity type selected from dropdown
-	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
 	handleSearch(query, type) {
 		if (typeof query !== 'string' || typeof type !== 'string') {
@@ -67,7 +65,7 @@ class SearchPage extends React.Component {
 		if (this.state.query === fullQuery) {
 			return;
 		}
-		this.setState({from: 0, query: fullQuery});
+		this.setState({query: fullQuery});
 	}
 
 	searchResultsCallback(newResults) {

@@ -27,6 +27,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {removeAliasRow} from './actions';
 
+
 /**
  * Container component. The AliasRowMerge component renders a single Row containing
  * several input fields, allowing the user to set the name, sort name, language
