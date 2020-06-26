@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
+import AddToCollectionModal from '../parts/add-to-collection-modal';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
@@ -104,47 +105,76 @@ AuthorAttributes.propTypes = {
 };
 
 
-function AuthorDisplayPage({entity, identifierTypes}) {
-	const urlPrefix = getEntityUrl(entity);
-	return (
-		<div>
-			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
-					<EntityImage
-						backupIcon={ENTITY_TYPE_ICONS.Author}
-						deleted={entity.deleted}
-						imageUrl={entity.imageUrl}
+class AuthorDisplayPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			showModal: false
+		};
+
+		this.onCloseModal = this.onCloseModal.bind(this);
+		this.onShowModal = this.onShowModal.bind(this);
+	}
+
+	onCloseModal() {
+		this.setState({showModal: false});
+	}
+
+	onShowModal() {
+		this.setState({showModal: true});
+	}
+
+	render() {
+		const urlPrefix = getEntityUrl(this.props.entity);
+		return (
+			<div>
+				<div>
+					<AddToCollectionModal
+						closeCallback={this.onCloseModal}
+						entities={[this.props.entity]}
+						entityType="Author"
+						show={this.state.showModal}
 					/>
-				</Col>
-				<Col md={10}>
-					<EntityTitle entity={entity}/>
-					<AuthorAttributes author={entity}/>
-				</Col>
-			</Row>
-			{!entity.deleted &&
-			<React.Fragment>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
+				</div>
+				<Row className="entity-display-background">
+					<Col className="entity-display-image-box text-center" md={2}>
+						<EntityImage
+							backupIcon={ENTITY_TYPE_ICONS.Author}
+							deleted={this.props.entity.deleted}
+							imageUrl={this.props.entity.imageUrl}
+						/>
+					</Col>
+					<Col md={10}>
+						<EntityTitle entity={this.props.entity}/>
+						<AuthorAttributes author={this.props.entity}/>
+					</Col>
+				</Row>
+				{!this.props.entity.deleted &&
+				<React.Fragment>
+					<EntityLinks
+						entity={this.props.entity}
+						identifierTypes={this.props.identifierTypes}
+						urlPrefix={urlPrefix}
+					/>
+					<Button
+						bsStyle="success"
+						className="margin-top-d15"
+						href={`/work/create?${_kebabCase(this.props.entity.type)}=${this.props.entity.bbid}`}
+					>
+						<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
+					</Button>
+				</React.Fragment>}
+				<hr className="margin-top-d40"/>
+				<EntityFooter
+					bbid={this.props.entity.bbid}
+					deleted={this.props.entity.deleted}
+					entityUrl={urlPrefix}
+					handleAddToCollection={this.onShowModal}
+					lastModified={this.props.entity.revision.revision.createdAt}
 				/>
-				<Button
-					bsStyle="success"
-					className="margin-top-d15"
-					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-				>
-					<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
-				</Button>
-			</React.Fragment>}
-			<hr className="margin-top-d40"/>
-			<EntityFooter
-				bbid={entity.bbid}
-				deleted={entity.deleted}
-				entityUrl={urlPrefix}
-				lastModified={entity.revision.revision.createdAt}
-			/>
-		</div>
-	);
+			</div>
+		);
+	}
 }
 AuthorDisplayPage.displayName = 'AuthorDisplayPage';
 AuthorDisplayPage.propTypes = {
