@@ -149,12 +149,9 @@ export function isCollectionOwner(req, res, next) {
 }
 
 export function isCollectionOwnerOrCollaborator(req, res, next) {
-	const user = {
-		id: req.user.id,
-		text: req.user.name
-	};
 	const {collection} = res.locals;
-	if (req.user.id === collection.ownerId || collection.collaborators.includes(user)) {
+	if (req.user.id === collection.ownerId ||
+		collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
 		return next();
 	}
 
@@ -162,4 +159,3 @@ export function isCollectionOwnerOrCollaborator(req, res, next) {
 		'You do not have permission to edit this collection', req
 	);
 }
-
