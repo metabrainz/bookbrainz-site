@@ -49,7 +49,7 @@ class AddToCollectionModal extends React.Component {
 			.then((res) => {
 				this.setState({
 					message: {
-						text: `Added To Collection ${collection.name}`,
+						text: `Added to ${collection.name}`,
 						type: 'success'
 					}
 				});
