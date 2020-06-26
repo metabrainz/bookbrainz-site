@@ -42,7 +42,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@fortawesome/react-fontawesome": "^0.1.7",
     "body-parser": "^1.14.1",
-    "bookbrainz-data": "^2.5.1",
+    "bookbrainz-data": "^2.6.1",
     "chai-sorted": "^0.2.0",
     "chart.js": "^2.9.3",
     "classnames": "^2.2.5",
