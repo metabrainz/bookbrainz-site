@@ -97,7 +97,12 @@ class PublisherDisplayPage extends React.Component {
 	}
 
 	onShowModal() {
-		this.setState({showModal: true});
+		if (this.props.user) {
+			this.setState({showModal: true});
+		}
+		else {
+			window.location.href = '/auth';
+		}
 	}
 
 	render() {
@@ -110,6 +115,7 @@ class PublisherDisplayPage extends React.Component {
 						entities={[this.props.entity]}
 						entityType="Publisher"
 						show={this.state.showModal}
+						user={this.props.user}
 					/>
 				</div>
 				<Row className="entity-display-background">
@@ -149,10 +155,12 @@ class PublisherDisplayPage extends React.Component {
 PublisherDisplayPage.displayName = 'PublisherDisplayPage';
 PublisherDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object
 };
 PublisherDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	user: null
 };
 
 export default PublisherDisplayPage;

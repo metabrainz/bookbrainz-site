@@ -118,7 +118,12 @@ class EditionDisplayPage extends React.Component {
 	}
 
 	onShowModal() {
-		this.setState({showModal: true});
+		if (this.props.user) {
+			this.setState({showModal: true});
+		}
+		else {
+			window.location.href = '/auth';
+		}
 	}
 
 	render() {
@@ -152,6 +157,7 @@ class EditionDisplayPage extends React.Component {
 						entities={[this.props.entity]}
 						entityType="Edition"
 						show={this.state.showModal}
+						user={this.props.user}
 					/>
 				</div>
 				<Row className="entity-display-background">
@@ -195,10 +201,12 @@ class EditionDisplayPage extends React.Component {
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object
 };
 EditionDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	user: null
 };
 
 export default EditionDisplayPage;
