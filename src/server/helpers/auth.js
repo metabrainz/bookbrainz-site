@@ -147,3 +147,19 @@ export function isCollectionOwner(req, res, next) {
 		'You do not have permission to edit this collection', req
 	);
 }
+
+export function isCollectionOwnerOrCollaborator(req, res, next) {
+	const user = {
+		id: req.user.id,
+		text: req.user.name
+	};
+	const {collection} = res.locals;
+	if (req.user.id === collection.ownerId || collection.collaborators.includes(user)) {
+		return next();
+	}
+
+	throw new error.PermissionDeniedError(
+		'You do not have permission to edit this collection', req
+	);
+}
+
