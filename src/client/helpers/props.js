@@ -48,8 +48,6 @@ export function extractChildProps(props) {
 }
 
 export function extractEntityProps(props) {
-	// eslint-disable-next-line no-console
-	console.log(props.user);
 	return {
 		alert: props.alert,
 		entity: props.entity,

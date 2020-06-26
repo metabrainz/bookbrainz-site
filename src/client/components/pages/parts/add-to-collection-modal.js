@@ -20,7 +20,6 @@ class AddToCollectionModal extends React.Component {
 		};
 
 		this.handleClose = this.handleClose.bind(this);
-		this.handleDelete = this.handleDelete.bind(this);
 		this.getCollections = this.getCollections.bind(this);
 	}
 
@@ -43,14 +42,25 @@ class AddToCollectionModal extends React.Component {
 	}
 
 	handleAddToCollection(collection) {
-		// eslint-disable-next-line prefer-destructuring
-		const entities = this.props.entities;
-		this.setState({
-			message: {
-				text: `Added To Collection ${collection.name}`,
-				type: 'success'
-			}
-		});
+		const {entities} = this.props;
+		const submissionURL = `/collection/${collection.id}/add`;
+		request.post(submissionURL)
+			.send({entities})
+			.then((res) => {
+				this.setState({
+					message: {
+						text: `Added To Collection ${collection.name}`,
+						type: 'success'
+					}
+				});
+			}, (error) => {
+				this.setState({
+					message: {
+						text: 'Internal Error',
+						type: 'danger'
+					}
+				});
+			});
 	}
 
 	/* eslint-disable react/jsx-no-bind */
@@ -75,7 +85,7 @@ class AddToCollectionModal extends React.Component {
 						this.state.collectionsAvailable.length ?
 							<div>
 								<h4>
-									Click the collection in which you want ENTITY to be added
+									Click the collection in which you want this to be added
 								</h4>
 								<ol>
 									{
@@ -97,7 +107,7 @@ class AddToCollectionModal extends React.Component {
 					{messageComponent}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button onClick={this.handleClose}>
+					<Button bsStyle="danger" onClick={this.handleClose}>
 						<FontAwesomeIcon icon="times-circle"/> Cancel
 					</Button>
 				</Modal.Footer>

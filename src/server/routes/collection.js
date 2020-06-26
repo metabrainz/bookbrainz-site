@@ -69,7 +69,6 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
 	const {collection} = res.locals;
-
 	const props = generateProps(req, res, {
 		collection
 	});
@@ -95,6 +94,30 @@ router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.
 router.get('/:collectionId', (req, res) => {
 	const {collection} = res.locals;
 	res.status(200).send(collection);
+});
+
+/* eslint-disable no-await-in-loop */
+router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res) => {
+	const {entities} = req.body;
+	const {collection} = res.locals;
+	try {
+		const {UserCollectionItem} = req.app.locals.orm;
+		for (const entity of entities) {
+			try {
+				await new UserCollectionItem({
+					bbid: entity.bbid,
+					collectionId: collection.id
+				}).save(null, {method: 'insert'});
+			}
+			catch (err) {
+				// entity already in the collection
+			}
+		}
+		res.status(200).send();
+	}
+	catch (err) {
+		res.status(500).send();
+	}
 });
 
 export default router;
