@@ -18,8 +18,6 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-
-import AddToCollectionModal from '../parts/add-to-collection-modal';
 import EditionTable from './edition-table';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -81,86 +79,52 @@ PublisherAttributes.propTypes = {
 };
 
 
-class PublisherDisplayPage extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			showModal: false
-		};
-
-		this.onCloseModal = this.onCloseModal.bind(this);
-		this.onShowModal = this.onShowModal.bind(this);
-	}
-
-	onCloseModal() {
-		this.setState({showModal: false});
-	}
-
-	onShowModal() {
-		if (this.props.user) {
-			this.setState({showModal: true});
-		}
-		else {
-			window.location.href = '/auth';
-		}
-	}
-
-	render() {
-		const urlPrefix = getEntityUrl(this.props.entity);
-		return (
-			<div>
-				<div>
-					<AddToCollectionModal
-						closeCallback={this.onCloseModal}
-						entities={[this.props.entity]}
-						entityType="Publisher"
-						show={this.state.showModal}
-						user={this.props.user}
+function PublisherDisplayPage({entity, identifierTypes, user}) {
+	const urlPrefix = getEntityUrl(entity);
+	return (
+		<div>
+			<Row className="entity-display-background">
+				<Col className="entity-display-image-box text-center" md={2}>
+					<EntityImage
+						backupIcon={ENTITY_TYPE_ICONS.Publisher}
+						deleted={entity.deleted}
+						imageUrl={entity.imageUrl}
 					/>
-				</div>
-				<Row className="entity-display-background">
-					<Col className="entity-display-image-box text-center" md={2}>
-						<EntityImage
-							backupIcon={ENTITY_TYPE_ICONS.Publisher}
-							deleted={this.props.entity.deleted}
-							imageUrl={this.props.entity.imageUrl}
-						/>
-					</Col>
-					<Col md={10}>
-						<EntityTitle entity={this.props.entity}/>
-						<PublisherAttributes publisher={this.props.entity}/>
-					</Col>
-				</Row>
-				{!this.props.entity.deleted &&
-				<React.Fragment>
-					<EditionTable editions={this.props.entity.editions} entity={this.props.entity}/>
-					<EntityLinks
-						entity={this.props.entity}
-						identifierTypes={this.props.identifierTypes}
-						urlPrefix={urlPrefix}
-					/>
-				</React.Fragment>}
-				<hr className="margin-top-d40"/>
-				<EntityFooter
-					bbid={this.props.entity.bbid}
-					deleted={this.props.entity.deleted}
-					entityUrl={urlPrefix}
-					handleAddToCollection={this.onShowModal}
-					lastModified={this.props.entity.revision.revision.createdAt}
+				</Col>
+				<Col md={10}>
+					<EntityTitle entity={entity}/>
+					<PublisherAttributes publisher={entity}/>
+				</Col>
+			</Row>
+			{!entity.deleted &&
+			<React.Fragment>
+				<EditionTable editions={entity.editions} entity={entity}/>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
 				/>
-			</div>
-		);
-	}
+			</React.Fragment>}
+			<hr className="margin-top-d40"/>
+			<EntityFooter
+				bbid={entity.bbid}
+				deleted={entity.deleted}
+				entity={entity}
+				entityUrl={urlPrefix}
+				lastModified={entity.revision.revision.createdAt}
+				user={user}
+			/>
+		</div>
+	);
 }
 PublisherDisplayPage.displayName = 'PublisherDisplayPage';
 PublisherDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object
+	user: PropTypes.object.isRequired
 };
 PublisherDisplayPage.defaultProps = {
-	identifierTypes: [],
-	user: null
+	identifierTypes: []
 };
 
 export default PublisherDisplayPage;

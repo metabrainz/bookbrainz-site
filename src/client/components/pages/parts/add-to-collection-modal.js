@@ -91,7 +91,7 @@ class AddToCollectionModal extends React.Component {
 									{
 										this.state.collectionsAvailable.map((collection) => ((
 											<li key={collection.id}>
-												<a onClick={() => this.handleAddToCollection(collection)}>
+												<a href="#" onClick={() => this.handleAddToCollection(collection)}>
 													{collection.name}
 												</a>
 											</li>

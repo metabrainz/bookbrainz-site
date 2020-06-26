@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-
+import AddToCollectionModal from '../parts/add-to-collection-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -29,70 +29,106 @@ const {
 	Button, ButtonGroup, Col, Row
 } = bootstrap;
 
-function EntityFooter({bbid, deleted, entityUrl, lastModified, handleAddToCollection}) {
-	return (
-		<div>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<ButtonGroup justified>
-						<Button
-							bsStyle="warning"
-							disabled={deleted}
-							href={`${entityUrl}/edit`}
-							title="Edit Entity"
-						>
-							<FontAwesomeIcon icon="pencil-alt"/>&nbsp;Edit
-						</Button>
-						<Button
-							bsStyle="primary"
-							href={`${entityUrl}/revisions`}
-							title="Revision History"
-						>
-							<FontAwesomeIcon icon="history"/>&nbsp;History
-						</Button>
-						<Button
-							bsStyle="danger"
-							disabled={deleted}
-							href={`${entityUrl}/delete`}
-							title="Delete Entity"
-						>
-							<FontAwesomeIcon icon="times"/>&nbsp;Delete
-						</Button>
-						<Button
-							bsStyle="default"
-							href={`/merge/add/${bbid}`}
-							title="Select entity for merging"
-						>
-							<FontAwesomeIcon flip="vertical" icon="code-branch"/>
-							&nbsp;Merge
-						</Button>
-						<Button
-							bsStyle="default"
-							title="Add To Collection"
-							onClick={handleAddToCollection}
-						>
-							<FontAwesomeIcon flip="plus" icon="code-branch"/>
-							&nbsp;Collection
-						</Button>
-					</ButtonGroup>
-				</Col>
-			</Row>
-			<div className="text-center margin-top-d10">
-				<dl>
-					<dt>Last Modified</dt>
-					<dd>{formatDate(new Date(lastModified))}</dd>
-				</dl>
+class EntityFooter extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			showModal: false
+		};
+
+		this.onCloseModal = this.onCloseModal.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
+	}
+
+	onCloseModal() {
+		this.setState({showModal: false});
+	}
+
+	handleShowModal() {
+		if (this.props.user) {
+			this.setState({showModal: true});
+		}
+		else {
+			window.location.href = '/auth';
+		}
+	}
+
+	render() {
+		return (
+			<div>
+				<div>
+					<AddToCollectionModal
+						closeCallback={this.onCloseModal}
+						entities={[this.props.entity]}
+						entityType={this.props.entity.type}
+						show={this.state.showModal}
+						user={this.props.user}
+					/>
+				</div>
+				<Row>
+					<Col md={8} mdOffset={2}>
+						<ButtonGroup justified>
+							<Button
+								bsStyle="warning"
+								disabled={this.props.deleted}
+								href={`${this.props.entityUrl}/edit`}
+								title="Edit Entity"
+							>
+								<FontAwesomeIcon icon="pencil-alt"/>&nbsp;Edit
+							</Button>
+							<Button
+								bsStyle="primary"
+								href={`${this.props.entityUrl}/revisions`}
+								title="Revision History"
+							>
+								<FontAwesomeIcon icon="history"/>&nbsp;History
+							</Button>
+							<Button
+								bsStyle="danger"
+								disabled={this.props.deleted}
+								href={`${this.props.entityUrl}/delete`}
+								title="Delete Entity"
+							>
+								<FontAwesomeIcon icon="times"/>&nbsp;Delete
+							</Button>
+							<Button
+								bsStyle="default"
+								href={`/merge/add/${this.props.bbid}`}
+								title="Select entity for merging"
+							>
+								<FontAwesomeIcon flip="vertical" icon="code-branch"/>
+								&nbsp;Merge
+							</Button>
+							<Button
+								bsStyle="primary"
+								href="#"
+								title="Add To Collection"
+								onClick={this.handleShowModal}
+							>
+								<FontAwesomeIcon icon="plus"/>
+								&nbsp;Collection
+							</Button>
+						</ButtonGroup>
+					</Col>
+				</Row>
+				<div className="text-center margin-top-d10">
+					<dl>
+						<dt>Last Modified</dt>
+						<dd>{formatDate(new Date(this.props.lastModified))}</dd>
+					</dl>
+				</div>
 			</div>
-		</div>
-	);
+		);
+	}
 }
 EntityFooter.displayName = 'EntityFooter';
 EntityFooter.propTypes = {
 	bbid: PropTypes.string.isRequired,
 	deleted: PropTypes.bool,
+	entity: PropTypes.object.isRequired,
 	entityUrl: PropTypes.string.isRequired,
-	handleAddToCollection: PropTypes.func.isRequired,
-	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired
+	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
+	user: PropTypes.object.isRequired
 };
 EntityFooter.defaultProps = {
 	deleted: false
