@@ -46,56 +46,57 @@ const workError = 'Work not found';
 
 /**
  *@swagger
- *definitions:
- *  WorkDetail:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: ba446064-90a5-447b-abe5-139be547da2e
- *      defaultAlias:
- *        $ref: '#/definitions/Alias'
- *      disambiguation:
- *        type: string
- *        example: 'Harry Porter 1'
- *      entityType:
- *        type: string
- *        example: 'Work'
- *      languages:
- *        type: array
- *        items:
+ *components:
+ *  schemas:
+ *    WorkDetail:
+ *      type: object
+ *      properties:
+ *        bbid:
  *          type: string
- *          description: Three letter ISO 639-3 language code
- *          example: eng
- *      workType:
- *        type: string
- *        example: 'Epic'
- *  BrowsedWorks:
- *   type: object
- *   properties:
- *     bbid:
- *       type: string
- *       format: uuid
- *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
- *     works:
- *       type: array
- *       items:
- *         type: object
- *         properties:
- *           entity:
- *             $ref: '#/definitions/WorkDetail'
- *           relationships:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                  relationshipTypeID:
- *                    type: number
- *                    example: 8
- *                  relationshipType:
- *                    type: string
- *                    example: 'Author'
+ *          format: uuid
+ *          example: ba446064-90a5-447b-abe5-139be547da2e
+ *        defaultAlias:
+ *          $ref: '#/components/schemas/Alias'
+ *        disambiguation:
+ *          type: string
+ *          example: 'First work in the series'
+ *        entityType:
+ *          type: string
+ *          example: 'Work'
+ *        languages:
+ *          type: array
+ *          items:
+ *            type: string
+ *            description: Three letter ISO 639-3 language code
+ *            example: eng
+ *        workType:
+ *          type: string
+ *          example: 'Novel'
+ *    BrowsedWorks:
+ *     type: object
+ *     properties:
+ *       bbid:
+ *         type: string
+ *         format: uuid
+ *         example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *       works:
+ *         type: array
+ *         items:
+ *           type: object
+ *           properties:
+ *             entity:
+ *               $ref: '#/components/schemas/WorkDetail'
+ *             relationships:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                    relationshipTypeID:
+ *                      type: number
+ *                      example: 8
+ *                    relationshipType:
+ *                      type: string
+ *                      example: 'Author'
  *
  */
 
@@ -108,19 +109,21 @@ const workError = 'Work not found';
  *     summary: Lookup Work by BBID
  *     description: Returns the basic details of the Work
  *     operationId: getWorkByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Work
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: Basic information of the Work entity
- *         schema:
- *             $ref: '#/definitions/WorkDetail'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WorkDetail'
  *       404:
  *         description: Work not found
  *       400:
@@ -144,19 +147,21 @@ router.get('/:bbid',
  *      summary: Get list of aliases of a Work by BBID
  *      description: Returns the list of aliases of a Work
  *      operationId: getAliasesOfWorkByBbid
- *      produces:
- *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
  *          description: BBID of the Work
  *          required: true
- *          type: string
+ *          schema:
+ *            type: string
+ *            format: uuid
  *      responses:
  *        200:
  *          description: List of aliases with BBID of a Work entity
- *          schema:
- *              $ref: '#/definitions/Aliases'
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Aliases'
  *        404:
  *          description: Work not found
  *        400:
@@ -180,19 +185,21 @@ router.get('/:bbid/aliases',
  *     summary: Get list of identifiers of the Work by BBID
  *     description: Returns the list of identifiers of the Work
  *     operationId: getIdentifiersOfWorkByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Work
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of identifiers with BBID of the Work entity
- *         schema:
- *             $ref: '#/definitions/Identifiers'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Identifiers'
  *       404:
  *         description: Work not found
  *       400:
@@ -216,19 +223,21 @@ router.get('/:bbid/identifiers',
  *     summary: Get list of relationships of the Work by BBID
  *     description: Returns the list of relationships of the Work
  *     operationId: getRelationshipsOfWorkByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Work
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of relationships with BBID of the Work entity
- *         schema:
- *             $ref: '#/definitions/Relationships'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Relationships'
  *       404:
  *         description: Work not found
  *       400:
@@ -251,49 +260,55 @@ router.get('/:bbid/relationships',
  *     summary: Gets a list of Works related to another Entity
  *     description: BBID of an Author, or an Edition, or a Work, or a Publisher is passed as query parameter and their related Works are fetched
  *     operationId: getRelatedWorkByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: author
  *         in: query
  *         description: BBID of the corresponding Author
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: edition
  *         in: query
  *         description: BBID of the corresponding Edition
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: publisher
  *         in: query
  *         description: BBID of the corresponding Publisher
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: work
  *         in: query
  *         description: BBID of the corresponding Work
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: type
  *         in: query
  *         description: filter by Work type
  *         required: false
- *         type: string
- *         enum: [novel, short story, epic, poem, play, article, scientific paper, non-fiction, anthology, serial, introduction, novella]
+ *         schema:
+ *           type: string
+ *           enum: [novel, short story, epic, poem, play, article, scientific paper, non-fiction, anthology, serial, introduction, novella]
  *       - name: language
  *         in: query
  *         description: filter by Work language (ISO 639-3 three letter code)
  *         required: false
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of Works which are related to another Entity
- *         schema:
- *             $ref: '#/definitions/BrowsedAuthors'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BrowsedAuthors'
  *       404:
  *         description: author/edition/work/publisher (other entity) not found
  *       400:
