@@ -121,8 +121,14 @@ class AuthorDisplayPage extends React.Component {
 	}
 
 	onShowModal() {
-		this.setState({showModal: true});
+		if (this.props.user) {
+			this.setState({showModal: true});
+		}
+		else {
+			window.location.href = '/auth';
+		}
 	}
+
 
 	render() {
 		const urlPrefix = getEntityUrl(this.props.entity);
@@ -134,6 +140,7 @@ class AuthorDisplayPage extends React.Component {
 						entities={[this.props.entity]}
 						entityType="Author"
 						show={this.state.showModal}
+						user={this.props.user}
 					/>
 				</div>
 				<Row className="entity-display-background">
@@ -179,10 +186,13 @@ class AuthorDisplayPage extends React.Component {
 AuthorDisplayPage.displayName = 'AuthorDisplayPage';
 AuthorDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object
+
 };
 AuthorDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	user: null
 };
 
 export default AuthorDisplayPage;

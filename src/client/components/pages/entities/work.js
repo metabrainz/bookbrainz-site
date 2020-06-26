@@ -89,7 +89,12 @@ class WorkDisplayPage extends React.Component {
 	}
 
 	onShowModal() {
-		this.setState({showModal: true});
+		if (this.props.user) {
+			this.setState({showModal: true});
+		}
+		else {
+			window.location.href = '/auth';
+		}
 	}
 
 	render() {
@@ -105,6 +110,7 @@ class WorkDisplayPage extends React.Component {
 						entities={[this.props.entity]}
 						entityType="Work"
 						show={this.state.showModal}
+						user={this.props.user}
 					/>
 				</div>
 				<Row className="entity-display-background">
@@ -147,10 +153,12 @@ class WorkDisplayPage extends React.Component {
 WorkDisplayPage.displayName = 'WorkDisplayPage';
 WorkDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object
 };
 WorkDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	user: null
 };
 
 export default WorkDisplayPage;
