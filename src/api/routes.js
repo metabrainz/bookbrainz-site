@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {lookupAndBrowseRequestSlowDown, searchRequestSlowDown} from './helpers/rateLimiter';
 import {Router} from 'express';
 import {allowOnlyGetMethod} from './helpers/utils';
 import authorRouter from './routes/author';
@@ -148,27 +149,27 @@ import workRouter from './routes/work';
  */
 
 function initWorkRoute(app) {
-	app.use('/work', workRouter);
+	app.use('/work', lookupAndBrowseRequestSlowDown, workRouter);
 }
 
 function initEditionRoute(app) {
-	app.use('/edition', editionRouter);
+	app.use('/edition', lookupAndBrowseRequestSlowDown, editionRouter);
 }
 
 function initEditionGroupRoute(app) {
-	app.use('/edition-group', editionGroupRouter);
+	app.use('/edition-group', lookupAndBrowseRequestSlowDown, editionGroupRouter);
 }
 
 function initAuthorRoute(app) {
-	app.use('/author', authorRouter);
+	app.use('/author', lookupAndBrowseRequestSlowDown, authorRouter);
 }
 
 function initPublisherRoute(app) {
-	app.use('/publisher', publisherRouter);
+	app.use('/publisher', lookupAndBrowseRequestSlowDown, publisherRouter);
 }
 
 function initSearchRouter(app) {
-	app.use('/search', searchRouter);
+	app.use('/search', searchRequestSlowDown, searchRouter);
 }
 
 function initDocsRoute(app) {
