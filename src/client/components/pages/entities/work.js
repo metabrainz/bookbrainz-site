@@ -19,7 +19,6 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
-import AddToCollectionModal from '../parts/add-to-collection-modal';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -73,92 +72,58 @@ WorkAttributes.propTypes = {
 };
 
 
-class WorkDisplayPage extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			showModal: false
-		};
-
-		this.onCloseModal = this.onCloseModal.bind(this);
-		this.onShowModal = this.onShowModal.bind(this);
-	}
-
-	onCloseModal() {
-		this.setState({showModal: false});
-	}
-
-	onShowModal() {
-		if (this.props.user) {
-			this.setState({showModal: true});
-		}
-		else {
-			window.location.href = '/auth';
-		}
-	}
-
-	render() {
-		// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
-		const relationshipTypeId = 10;
-		const editionsContainWork = getRelationshipSourceByTypeId(this.props.entity, relationshipTypeId);
-		const urlPrefix = getEntityUrl(this.props.entity);
-		return (
-			<div>
-				<div>
-					<AddToCollectionModal
-						closeCallback={this.onCloseModal}
-						entities={[this.props.entity]}
-						entityType="Work"
-						show={this.state.showModal}
-						user={this.props.user}
+function WorkDisplayPage({entity, identifierTypes, user}) {
+	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+	const relationshipTypeId = 10;
+	const editionsContainWork = getRelationshipSourceByTypeId(entity, relationshipTypeId);
+	const urlPrefix = getEntityUrl(entity);
+	return (
+		<div>
+			<Row className="entity-display-background">
+				<Col className="entity-display-image-box text-center" md={2}>
+					<EntityImage
+						backupIcon={ENTITY_TYPE_ICONS.Work}
+						deleted={entity.deleted}
+						imageUrl={entity.imageUrl}
 					/>
-				</div>
-				<Row className="entity-display-background">
-					<Col className="entity-display-image-box text-center" md={2}>
-						<EntityImage
-							backupIcon={ENTITY_TYPE_ICONS.Work}
-							deleted={this.props.entity.deleted}
-							imageUrl={this.props.entity.imageUrl}
-						/>
-					</Col>
-					<Col md={10}>
-						<EntityTitle entity={this.props.entity}/>
-						<WorkAttributes work={this.props.entity}/>
-					</Col>
-				</Row>
-				{!this.props.entity.deleted &&
-				<React.Fragment>
-					<EditionTable
-						editions={editionsContainWork}
-						entity={this.props.entity}
-					/>
-					<EntityLinks
-						entity={this.props.entity}
-						identifierTypes={this.props.identifierTypes}
-						urlPrefix={urlPrefix}
-					/>
-				</React.Fragment>}
-				<hr className="margin-top-d40"/>
-				<EntityFooter
-					bbid={this.props.entity.bbid}
-					deleted={this.props.entity.deleted}
-					entityUrl={urlPrefix}
-					handleAddToCollection={this.onShowModal}
-					lastModified={this.props.entity.revision.revision.createdAt}
+				</Col>
+				<Col md={10}>
+					<EntityTitle entity={entity}/>
+					<WorkAttributes work={entity}/>
+				</Col>
+			</Row>
+			{!entity.deleted &&
+			<React.Fragment>
+				<EditionTable
+					editions={editionsContainWork}
+					entity={entity}
 				/>
-			</div>
-		);
-	}
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+			</React.Fragment>}
+			<hr className="margin-top-d40"/>
+			<EntityFooter
+				bbid={entity.bbid}
+				deleted={entity.deleted}
+				entity={entity}
+				entityUrl={urlPrefix}
+				lastModified={entity.revision.revision.createdAt}
+				user={user}
+			/>
+		</div>
+	);
 }
 WorkDisplayPage.displayName = 'WorkDisplayPage';
 WorkDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object
+	user: PropTypes.object.isRequired
 };
 WorkDisplayPage.defaultProps = {
-	identifierTypes: [],
-	user: null
+	identifierTypes: []
 };
 
 export default WorkDisplayPage;

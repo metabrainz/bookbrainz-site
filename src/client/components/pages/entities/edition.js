@@ -100,113 +100,78 @@ EditionAttributes.propTypes = {
 	edition: PropTypes.object.isRequired
 };
 
-// eslint-disable-next-line react/prefer-stateless-function
-class EditionDisplayPage extends React.Component {
-	// eslint-disable-next-line no-useless-constructor
-	constructor(props) {
-		super(props);
-		this.state = {
-			showModal: false
-		};
 
-		this.onCloseModal = this.onCloseModal.bind(this);
-		this.onShowModal = this.onShowModal.bind(this);
-	}
-
-	onCloseModal() {
-		this.setState({showModal: false});
-	}
-
-	onShowModal() {
-		if (this.props.user) {
-			this.setState({showModal: true});
-		}
-		else {
-			window.location.href = '/auth';
-		}
-	}
-
-	render() {
-		// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
-		const relationshipTypeId = 10;
-		const worksContainedByEdition = getRelationshipTargetByTypeId(this.props.entity, relationshipTypeId);
-		const urlPrefix = getEntityUrl(this.props.entity);
-		let editionGroupSection;
-		if (this.props.entity.editionGroup) {
-			editionGroupSection = (
-				<div className="margin-bottom-d15">
-					<a href={`/edition-group/${this.props.entity.editionGroup.bbid}`}>
-						<FontAwesomeIcon icon="external-link-alt"/>
-						<span>&nbsp;See all similar editions</span>
-					</a>
-				</div>
-			);
-		}
-		else if (!this.props.entity.deleted) {
-			editionGroupSection = (
-				<span className="bg-danger">
-					Edition Group unset - please edit this Edition and add one if you see this!
-				</span>
-			);
-		}
-		return (
-			<div>
-				<div>
-					<AddToCollectionModal
-						closeCallback={this.onCloseModal}
-						entities={[this.props.entity]}
-						entityType="Edition"
-						show={this.state.showModal}
-						user={this.props.user}
-					/>
-				</div>
-				<Row className="entity-display-background">
-					<Col className="entity-display-image-box text-center" md={2}>
-						<EntityImage
-							backupIcon={ENTITY_TYPE_ICONS.Edition}
-							deleted={this.props.entity.deleted}
-							imageUrl={this.props.entity.imageUrl}
-						/>
-					</Col>
-					<Col md={10}>
-						<EntityTitle entity={this.props.entity}/>
-						<EditionAttributes edition={this.props.entity}/>
-						{editionGroupSection}
-					</Col>
-				</Row>
-				{!this.props.entity.deleted &&
-				<React.Fragment>
-					<WorksTable
-						entity={this.props.entity}
-						works={worksContainedByEdition}
-					/>
-					<EntityLinks
-						entity={this.props.entity}
-						identifierTypes={this.props.identifierTypes}
-						urlPrefix={urlPrefix}
-					/>
-				</React.Fragment>}
-				<hr className="margin-top-d40"/>
-				<EntityFooter
-					bbid={this.props.entity.bbid}
-					deleted={this.props.entity.deleted}
-					entityUrl={urlPrefix}
-					handleAddToCollection={this.onShowModal}
-					lastModified={this.props.entity.revision.revision.createdAt}
-				/>
+function EditionDisplayPage({entity, identifierTypes, user}) {
+	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+	const relationshipTypeId = 10;
+	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
+	const urlPrefix = getEntityUrl(entity);
+	let editionGroupSection;
+	if (entity.editionGroup) {
+		editionGroupSection = (
+			<div className="margin-bottom-d15">
+				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
+					<FontAwesomeIcon icon="external-link-alt"/>
+					<span>&nbsp;See all similar editions</span>
+				</a>
 			</div>
 		);
 	}
+	else if (!entity.deleted) {
+		editionGroupSection = (
+			<span className="bg-danger">
+				Edition Group unset - please edit this Edition and add one if you see this!
+			</span>
+		);
+	}
+	return (
+		<div>
+			<Row className="entity-display-background">
+				<Col className="entity-display-image-box text-center" md={2}>
+					<EntityImage
+						backupIcon={ENTITY_TYPE_ICONS.Edition}
+						deleted={entity.deleted}
+						imageUrl={entity.imageUrl}
+					/>
+				</Col>
+				<Col md={10}>
+					<EntityTitle entity={entity}/>
+					<EditionAttributes edition={entity}/>
+					{editionGroupSection}
+				</Col>
+			</Row>
+			{!entity.deleted &&
+			<React.Fragment>
+				<WorksTable
+					entity={entity}
+					works={worksContainedByEdition}
+				/>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+			</React.Fragment>}
+			<hr className="margin-top-d40"/>
+			<EntityFooter
+				bbid={entity.bbid}
+				deleted={entity.deleted}
+				entity={entity}
+				entityUrl={urlPrefix}
+				lastModified={entity.revision.revision.createdAt}
+				user={user}
+			/>
+		</div>
+	);
 }
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object
+	user: PropTypes.object.isRequired
 };
 EditionDisplayPage.defaultProps = {
-	identifierTypes: [],
-	user: null
+	identifierTypes: []
 };
 
 export default EditionDisplayPage;
