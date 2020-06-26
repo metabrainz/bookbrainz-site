@@ -91,7 +91,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
-				entity={entity}
+				entityType={entity.type}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
 				user={user}
