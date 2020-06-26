@@ -98,14 +98,14 @@ router.get('/:collectionId', (req, res) => {
 
 /* eslint-disable no-await-in-loop */
 router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res) => {
-	const {entities} = req.body;
+	const {bbids} = req.body;
 	const {collection} = res.locals;
 	try {
 		const {UserCollectionItem} = req.app.locals.orm;
-		for (const entity of entities) {
+		for (const bbid of bbids) {
 			try {
 				await new UserCollectionItem({
-					bbid: entity.bbid,
+					bbid,
 					collectionId: collection.id
 				}).save(null, {method: 'insert'});
 			}

@@ -58,11 +58,11 @@ class EntityFooter extends React.Component {
 			<div>
 				<div>
 					<AddToCollectionModal
+						bbids={[this.props.bbid]}
 						closeCallback={this.onCloseModal}
-						entities={[this.props.entity]}
-						entityType={this.props.entity.type}
+						entityType={this.props.entityType}
 						show={this.state.showModal}
-						user={this.props.user}
+						userId={this.props.user.id}
 					/>
 				</div>
 				<Row>
@@ -125,7 +125,7 @@ EntityFooter.displayName = 'EntityFooter';
 EntityFooter.propTypes = {
 	bbid: PropTypes.string.isRequired,
 	deleted: PropTypes.bool,
-	entity: PropTypes.object.isRequired,
+	entityType: PropTypes.string.isRequired,
 	entityUrl: PropTypes.string.isRequired,
 	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
 	user: PropTypes.object.isRequired
