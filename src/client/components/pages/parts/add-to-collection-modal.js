@@ -1,11 +1,14 @@
 import * as bootstrap from 'react-bootstrap';
+import CustomInput from '../../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ReactSelect from 'react-select';
+import SelectWrapper from '../../input/select-wrapper';
 import request from 'superagent';
 
 
-const {Alert, Button, Modal} = bootstrap;
+const {Alert, Col, Button, Modal} = bootstrap;
 
 class AddToCollectionModal extends React.Component {
 	constructor(props) {
@@ -17,13 +20,18 @@ class AddToCollectionModal extends React.Component {
 				type: null
 			},
 			selectedCollections: [],
-			show: this.props.show
+			show: this.props.show,
+			showCollectionForm: false
 		};
 
 		this.handleClose = this.handleClose.bind(this);
 		this.getCollections = this.getCollections.bind(this);
 		this.handleAddToCollection = this.handleAddToCollection.bind(this);
 		this.toggleRow = this.toggleRow.bind(this);
+		this.handleShowCollectionForm = this.handleShowCollectionForm.bind(this);
+		this.handleShowAllCollections = this.handleShowAllCollections.bind(this);
+		this.handleAddToNewCollection = this.handleAddToNewCollection.bind(this);
+		this.isValid = this.isValid.bind(this);
 	}
 
 	async componentDidUpdate(prevProps) {
@@ -90,13 +98,144 @@ class AddToCollectionModal extends React.Component {
 		}
 	}
 
+	handleShowCollectionForm() {
+		this.setState({message: {}, showCollectionForm: true});
+	}
+
+	handleShowAllCollections() {
+		this.setState({message: {}, showCollectionForm: false});
+	}
+
+	handleAddToNewCollection(evt) {
+		evt.preventDefault();
+
+		if (!this.isValid()) {
+			this.setState({
+				message: {
+					text: 'Incomplete Form',
+					type: 'danger'
+				}
+			});
+			return;
+		}
+
+		const description = this.description.getValue();
+		const name = this.name.getValue();
+		const privacy = this.privacy.getValue();
+		const {entityType} = this.props;
+
+		const data = {
+			description,
+			entityType,
+			name,
+			privacy
+		};
+		const {bbids} = this.props;
+		request.post('/collection/create/handler')
+			.send(data)
+			.then((res) => {
+				request.post(`/collection/${res.body.id}/add`)
+					.send({bbids}).then(() => {
+						this.setState({
+							message: {
+								text: `Successfully added to your new collection: ${name}`,
+								type: 'success'
+							}
+						});
+					});
+			}, (error) => {
+				this.setState({
+					message: {
+						text: 'Internal Error',
+						type: 'danger'
+					}
+				});
+			});
+	}
+
+	isValid() {
+		return this.name.getValue() && this.privacy.getValue();
+	}
+
 	/* eslint-disable react/jsx-no-bind */
 	render() {
 		let messageComponent = null;
 		if (this.state.message.text) {
-			messageComponent =
-				<Alert bsStyle={this.state.message.type}>{this.state.message.text}</Alert>;
+			messageComponent = (
+				<div>
+					<Alert bsStyle={this.state.message.type}>{this.state.message.text}</Alert>
+				</div>
+			);
 		}
+
+		let existingCollections;
+		if (this.state.collectionsAvailable.length) {
+			existingCollections = (
+				<div>
+					<h4>
+						Select the collection in which you want to add this entity or create a new collection
+					</h4>
+					{
+						this.state.collectionsAvailable.map((collection) => ((
+							<div key={collection.id}>
+								<input
+									checked={this.state.selectedCollections.find(selectedId => selectedId === collection.id)}
+									id={collection.id}
+									type="checkbox"
+									onChange={() => this.toggleRow(collection.id)}
+								/>
+								<label className="label-checkbox" htmlFor={collection.id}>
+									{collection.name}
+								</label>
+							</div>
+						)))
+					}
+				</div>
+			);
+		}
+		else {
+			existingCollections = (
+				<div>
+					Oops, Looks like you do not have any collection of type {this.props.entityType} . <br/>
+					Click <a href="/collection/create">here</a> to create one
+				</div>
+			);
+		}
+
+		const privacyOptions = ['Private', 'Public'].map((option) => ({
+			name: option
+		}));
+		const collectionForm = (
+			<div>
+				<Col
+					id="collectionForm"
+				>
+					<form
+						className="padding-sides-0"
+					>
+						<CustomInput
+							label="Name"
+							ref={(ref) => this.name = ref}
+							type="text"
+						/>
+						<CustomInput
+							label="Description"
+							ref={(ref) => this.description = ref}
+							type="textarea"
+						/>
+						<SelectWrapper
+							base={ReactSelect}
+							idAttribute="name"
+							label="Privacy"
+							labelAttribute="name"
+							options={privacyOptions}
+							placeholder="Select Privacy"
+							ref={(ref) => this.privacy = ref}
+						/>
+					</form>
+				</Col>
+			</div>
+		);
 
 		return (
 			<Modal
@@ -108,43 +247,43 @@ class AddToCollectionModal extends React.Component {
 					<Modal.Title>
 						<h2>
 							<strong>Select Collection</strong>
+							{
+								this.state.showCollectionForm ?
+									<Button
+										bsStyle="primary"
+										className="pull-right"
+										onClick={this.handleShowAllCollections}
+									>
+										Select from existing collections
+									</Button> :
+									<Button
+										bsStyle="warning"
+										className="pull-right"
+										onClick={this.handleShowCollectionForm}
+									>
+										<FontAwesomeIcon icon="plus"/>
+										&nbsp;Create a new collection
+									</Button>
+							}
 						</h2>
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{
-						this.state.collectionsAvailable.length ?
-							<div>
-								<h4>
-									Select the collection in which you want to add this entity or create a new collection
-								</h4>
-								{
-									this.state.collectionsAvailable.map((collection) => ((
-										<div key={collection.id}>
-											<input
-												checked={this.state.selectedCollections.find(selectedId => selectedId === collection.id)}
-												id={collection.id}
-												type="checkbox"
-												onChange={() => this.toggleRow(collection.id)}
-											/>
-											<label className="label-checkbox" htmlFor={collection.id}>
-												{collection.name}
-											</label>
-										</div>
-									)))
-								}
-							</div> :
-							<div>
-								Oops, Looks like you do not have any collection of type {this.props.entityType} . <br/>
-								Click <a href="/collection/create">here</a> to create one
-							</div>
+						this.state.showCollectionForm ? collectionForm : existingCollections
 					}
 					{messageComponent}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button bsStyle="primary" onClick={this.handleAddToCollection}>
-						<FontAwesomeIcon icon="plus"/> Add to selected collections
-					</Button>
+					{
+						this.state.showCollectionForm ?
+							<Button bsStyle="primary" onClick={this.handleAddToNewCollection}>
+								<FontAwesomeIcon icon="plus"/> Add to this new collection
+							</Button> :
+							<Button bsStyle="primary" onClick={this.handleAddToCollection}>
+								<FontAwesomeIcon icon="plus"/> Add to selected collections
+							</Button>
+					}
 					<Button bsStyle="danger" onClick={this.handleClose}>
 						<FontAwesomeIcon icon="times-circle"/> Cancel
 					</Button>
