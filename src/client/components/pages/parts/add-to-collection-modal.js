@@ -175,21 +175,23 @@ class AddToCollectionModal extends React.Component {
 					<h4>
 						Select the collection in which you want to add this entity or create a new collection
 					</h4>
-					{
-						this.state.collectionsAvailable.map((collection) => ((
-							<div key={collection.id}>
-								<input
-									checked={this.state.selectedCollections.find(selectedId => selectedId === collection.id)}
-									id={collection.id}
-									type="checkbox"
-									onChange={() => this.toggleRow(collection.id)}
-								/>
-								<label className="label-checkbox" htmlFor={collection.id}>
-									{collection.name}
-								</label>
-							</div>
-						)))
-					}
+					<div className="addToCollectionModal-body">
+						{
+							this.state.collectionsAvailable.map((collection) => ((
+								<div key={collection.id}>
+									<input
+										checked={this.state.selectedCollections.find(selectedId => selectedId === collection.id)}
+										id={collection.id}
+										type="checkbox"
+										onChange={() => this.toggleRow(collection.id)}
+									/>
+									<label className="label-checkbox" htmlFor={collection.id}>
+										{collection.name}
+									</label>
+								</div>
+							)))
+						}
+					</div>
 				</div>
 			);
 		}
@@ -211,7 +213,7 @@ class AddToCollectionModal extends React.Component {
 					id="collectionForm"
 				>
 					<form
-						className="padding-sides-0"
+						className="padding-sides-0 addToCollectionModal-body"
 					>
 						<CustomInput
 							label="Name"
@@ -240,6 +242,7 @@ class AddToCollectionModal extends React.Component {
 		return (
 			<Modal
 				scrollable
+				bsSize="large"
 				show={this.state.show}
 				onHide={this.handleClose}
 			>
