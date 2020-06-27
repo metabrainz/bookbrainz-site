@@ -26,13 +26,14 @@ import React from 'react';
 
 const {formatDate} = utilsHelper;
 const {
-	Button, ButtonGroup, Col, Row
+	Alert, Button, ButtonGroup, Col, Row
 } = bootstrap;
 
 class EntityFooter extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			error: null,
 			showModal: false
 		};
 
@@ -49,22 +50,30 @@ class EntityFooter extends React.Component {
 			this.setState({showModal: true});
 		}
 		else {
-			window.location.href = '/auth';
+			this.setState({error: 'You need to be logged in for this'});
 		}
 	}
 
 	render() {
 		return (
 			<div>
-				<div>
-					<AddToCollectionModal
-						bbids={[this.props.bbid]}
-						closeCallback={this.onCloseModal}
-						entityType={this.props.entityType}
-						show={this.state.showModal}
-						userId={this.props.user.id}
-					/>
-				</div>
+				{
+					this.props.user ?
+						<div>
+							<AddToCollectionModal
+								bbids={[this.props.bbid]}
+								closeCallback={this.onCloseModal}
+								entityType={this.props.entityType}
+								show={this.state.showModal}
+								userId={this.props.user.id}
+							/>
+						</div> : null
+				}
+				{
+					this.state.error ?
+						<Alert bsStyle="danger">{this.state.error}</Alert> : null
+
+				}
 				<Row>
 					<Col md={8} mdOffset={2}>
 						<ButtonGroup justified>
