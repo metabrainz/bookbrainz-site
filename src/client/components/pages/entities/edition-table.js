@@ -87,8 +87,9 @@ EditionTableRow.defaultProps = {
 	toggleRow: null
 };
 
-function EditionTable({editions, entity, showAdd, showCheckboxes, selectedEntities, toggleRow}) {
+function EditionTable({entities, entity, showAdd, showCheckboxes, selectedEntities, toggleRow}) {
 	let tableContent;
+	const editions = entities;
 	if (editions.length) {
 		tableContent = (
 			<React.Fragment>
@@ -166,7 +167,7 @@ function EditionTable({editions, entity, showAdd, showCheckboxes, selectedEntiti
 }
 EditionTable.displayName = 'EditionTable';
 EditionTable.propTypes = {
-	editions: PropTypes.array.isRequired,
+	entities: PropTypes.array.isRequired,
 	entity: PropTypes.object,
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,

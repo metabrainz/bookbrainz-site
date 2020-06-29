@@ -21,10 +21,19 @@ import EditionTable from './entities/edition-table';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import WorkTable from './entities/work-table';
 import request from 'superagent';
 
 
 const {Alert, Button, ButtonGroup, Row} = bootstrap;
+
+function getEntityTable(entityType) {
+	const tables = {
+		Edition: EditionTable,
+		Work: WorkTable
+	};
+	return tables[entityType];
+}
 
 class CollectionPage extends React.Component {
 	constructor(props) {
@@ -35,7 +44,7 @@ class CollectionPage extends React.Component {
 		};
 
 		this.toggleRow = this.toggleRow.bind(this);
-		this.handleRemoveEditions = this.handleRemoveEditions.bind(this);
+		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 	}
 
 	toggleRow(bbid) {
@@ -53,7 +62,7 @@ class CollectionPage extends React.Component {
 		});
 	}
 
-	handleRemoveEditions() {
+	handleRemoveEntities() {
 		if (this.state.selectedEntities.length) {
 			const bbids = this.state.selectedEntities;
 			const submissionUrl = `/collection/${this.props.collection.id}/remove`;
@@ -73,6 +82,7 @@ class CollectionPage extends React.Component {
 	render() {
 		const errorComponent = this.state.error ?
 			<Alert bsStyle="danger">{this.state.error}</Alert> : null;
+		const EntityTable = getEntityTable(this.props.collection.entityType);
 		return (
 			<div>
 				<Row className="entity-display-background">
@@ -102,8 +112,8 @@ class CollectionPage extends React.Component {
 						}
 					</div>
 				</Row>
-				<EditionTable
-					editions={this.props.entities}
+				<EntityTable
+					entities={this.props.entities}
 					selectedEntities={this.state.selectedEntities}
 					showAdd={false}
 					showCheckboxes={this.props.showCheckboxes}
@@ -115,7 +125,7 @@ class CollectionPage extends React.Component {
 						<Button
 							bsStyle="danger"
 							className="pull-left margin-top-1"
-							onClick={this.handleRemoveEditions}
+							onClick={this.handleRemoveEntities}
 						>
 							<FontAwesomeIcon icon="times"/>
 							&nbsp;Remove Selected Editions
