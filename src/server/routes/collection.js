@@ -15,11 +15,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable consistent-return*/
+
 
 import * as auth from '../helpers/auth';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
+import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -32,6 +35,22 @@ import target from '../templates/target';
 
 const router = express.Router();
 
+
+function getEntityRelations(entityType) {
+	const editionRelations = [
+		'defaultAlias.language',
+		'languageSet.languages',
+		'disambiguation',
+		'editionFormat',
+		'editionStatus',
+		'releaseEventSet.releaseEvents'
+	];
+
+	const relations = {
+		Edition: editionRelations
+	};
+	return relations[entityType];
+}
 
 router.get('/create', auth.isAuthenticated, (req, res) => {
 	const props = generateProps(req, res, {});
@@ -56,17 +75,40 @@ router.param(
 	middleware.makeCollectionLoader()
 );
 
-router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res) => {
-	try {
-		const {UserCollection} = req.app.locals.orm;
-		const {collectionId} = req.params;
-		await new UserCollection({id: collectionId}).destroy();
-		return res.status(200).send({});
+router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res) => {
+	const {collection} = res.locals;
+	if (collection.entityType !== 'Edition') {
+		return res.status(200).send(collection);
 	}
-	catch (err) {
-		log.debug(err);
-		return res.status(500).send({});
+	const {orm} = req.app.locals;
+	const relations = getEntityRelations(collection.entityType);
+
+	const entitiesPromise = collection.items.map(item => orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations));
+	const entities = await Promise.all(entitiesPromise);
+	const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user.id, 10);
+	let showCheckboxes = false;
+	if (req.user && (req.user.id === collection.ownerId ||
+		collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length)) {
+		showCheckboxes = true;
 	}
+	const props = generateProps(req, res, {
+		collection,
+		entities,
+		isOwner,
+		showCheckboxes
+	});
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<CollectionPage {...propHelpers.extractChildProps(props)}/>
+		</Layout>
+	);
+
+	const script = '/js/collection.js';
+	return res.send(target({
+		markup,
+		props: escapeProps(props),
+		script
+	}));
 });
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
@@ -93,9 +135,35 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 
 router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, collectionCreateOrEditHandler);
 
-router.get('/:collectionId', (req, res) => {
+router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res) => {
+	try {
+		const {UserCollection} = req.app.locals.orm;
+		const {collectionId} = req.params;
+		await new UserCollection({id: collectionId}).destroy();
+		return res.status(200).send({});
+	} catch (err) {
+		log.debug(err);
+		return res.status(500).send({});
+	}
+});
+
+router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res) => {
+	const {bbids} = req.body;
 	const {collection} = res.locals;
-	res.status(200).send(collection);
+	try {
+		const {UserCollectionItem} = req.app.locals.orm;
+		const promiseArray = bbids.map((bbid) =>
+			new UserCollectionItem()
+				.where('bbid', bbid)
+				.where('collection_id', collection.id)
+				.destroy()
+		);
+		await Promise.all(promiseArray);
+		res.status(200).send();
+	}
+	catch (err) {
+		res.status(500).send();
+	}
 });
 
 /* eslint-disable no-await-in-loop */
