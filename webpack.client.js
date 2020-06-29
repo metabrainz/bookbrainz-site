@@ -12,6 +12,7 @@ const production = process.env.NODE_ENV === 'production';
 const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
+		collection: ['./controllers/collection/collection'],
 		'collection/create': ['./controllers/collection/userCollectionForm'],
 		collections: ['./controllers/collections'],
 		deletion: ['./controllers/deletion.js'],

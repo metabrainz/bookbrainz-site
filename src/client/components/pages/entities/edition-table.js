@@ -31,16 +31,27 @@ const {
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
-function EditionTableRow({edition}) {
+function EditionTableRow({edition, showCheckboxes, selectedEntities, toggleRow}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
 	const releaseDate = getEditionReleaseDate(edition);
 	const isbn = getISBNOfEdition(edition);
 	const editionFormat = getEditionFormat(edition);
 
+	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
 			<td>
+				{
+					showCheckboxes ?
+						<input
+							checked={selectedEntities.find(bbid => bbid === edition.bbid)}
+							className="margin-right-d5"
+							id={edition.bbid}
+							type="checkbox"
+							onClick={() => toggleRow(edition.bbid)}
+						/> : null
+				}
 				<a href={`/edition/${edition.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
@@ -65,10 +76,18 @@ function EditionTableRow({edition}) {
 }
 EditionTableRow.displayName = 'EditionTableRow';
 EditionTableRow.propTypes = {
-	edition: PropTypes.object.isRequired
+	edition: PropTypes.object.isRequired,
+	selectedEntities: PropTypes.array,
+	showCheckboxes: PropTypes.bool,
+	toggleRow: PropTypes.func
+};
+EditionTableRow.defaultProps = {
+	selectedEntities: [],
+	showCheckboxes: false,
+	toggleRow: null
 };
 
-function EditionTable({editions, entity, showAdd}) {
+function EditionTable({editions, entity, showAdd, showCheckboxes, selectedEntities, toggleRow}) {
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -88,6 +107,9 @@ function EditionTable({editions, entity, showAdd}) {
 								<EditionTableRow
 									edition={edition}
 									key={edition.bbid}
+									selectedEntities={selectedEntities}
+									showCheckboxes={showCheckboxes}
+									toggleRow={toggleRow}
 								/>
 							))
 						}
@@ -145,11 +167,18 @@ function EditionTable({editions, entity, showAdd}) {
 EditionTable.displayName = 'EditionTable';
 EditionTable.propTypes = {
 	editions: PropTypes.array.isRequired,
-	entity: PropTypes.object.isRequired,
-	showAdd: PropTypes.bool
+	entity: PropTypes.object,
+	selectedEntities: PropTypes.array,
+	showAdd: PropTypes.bool,
+	showCheckboxes: PropTypes.bool,
+	toggleRow: PropTypes.func
 };
 EditionTable.defaultProps = {
-	showAdd: true
+	entity: null,
+	selectedEntities: [],
+	showAdd: true,
+	showCheckboxes: false,
+	toggleRow: null
 };
 
 export default EditionTable;
