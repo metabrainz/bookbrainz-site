@@ -35,6 +35,14 @@ function getEntityTable(entityType) {
 	return tables[entityType];
 }
 
+function getEntityKey(entityType) {
+	const keys = {
+		Edition: 'editions',
+		Work: 'works'
+	};
+	return keys[entityType];
+}
+
 class CollectionPage extends React.Component {
 	constructor(props) {
 		super(props);
@@ -46,6 +54,8 @@ class CollectionPage extends React.Component {
 		this.toggleRow = this.toggleRow.bind(this);
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 	}
+
+	entityKey = getEntityKey(this.props.collection.entityType);
 
 	toggleRow(bbid) {
 		// eslint-disable-next-line react/no-access-state-in-setstate
@@ -75,7 +85,7 @@ class CollectionPage extends React.Component {
 				});
 		}
 		else {
-			this.setState({error: 'No Editions Selected'});
+			this.setState({error: `No ${this.entityKey} selected`});
 		}
 	}
 
@@ -83,6 +93,13 @@ class CollectionPage extends React.Component {
 		const errorComponent = this.state.error ?
 			<Alert bsStyle="danger">{this.state.error}</Alert> : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
+		const propsForTable = {
+			[this.entityKey]: this.props.entities,
+			selectedEntities: this.state.selectedEntities,
+			showAdd: false,
+			showCheckboxes: this.props.showCheckboxes,
+			toggleRow: this.toggleRow
+		};
 		return (
 			<div>
 				<Row className="entity-display-background">
@@ -112,13 +129,7 @@ class CollectionPage extends React.Component {
 						}
 					</div>
 				</Row>
-				<EntityTable
-					entities={this.props.entities}
-					selectedEntities={this.state.selectedEntities}
-					showAdd={false}
-					showCheckboxes={this.props.showCheckboxes}
-					toggleRow={this.toggleRow}
-				/>
+				<EntityTable{...propsForTable}/>
 				{errorComponent}
 				{
 					this.props.showCheckboxes ?
@@ -128,7 +139,7 @@ class CollectionPage extends React.Component {
 							onClick={this.handleRemoveEntities}
 						>
 							<FontAwesomeIcon icon="times"/>
-							&nbsp;Remove Selected Editions
+							&nbsp;Remove selected {this.entityKey}
 						</Button> : null
 				}
 			</div>
