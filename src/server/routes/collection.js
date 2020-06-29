@@ -39,15 +39,20 @@ const router = express.Router();
 function getEntityRelations(entityType) {
 	const editionRelations = [
 		'defaultAlias.language',
-		'languageSet.languages',
 		'disambiguation',
 		'editionFormat',
-		'editionStatus',
+		'identifierSet.identifiers.type',
 		'releaseEventSet.releaseEvents'
+	];
+	const workRelations = [
+		'defaultAlias.language',
+		'disambiguation',
+		'workType'
 	];
 
 	const relations = {
-		Edition: editionRelations
+		Edition: editionRelations,
+		Work: workRelations
 	};
 	return relations[entityType];
 }
@@ -77,7 +82,7 @@ router.param(
 
 router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res) => {
 	const {collection} = res.locals;
-	if (collection.entityType !== 'Edition' || collection.entityType !== 'Work') {
+	if (collection.entityType !== 'Edition' && collection.entityType !== 'Work') {
 		return res.status(200).send(collection);
 	}
 	const {orm} = req.app.locals;

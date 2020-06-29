@@ -95,7 +95,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 			{!entity.deleted &&
 			<React.Fragment>
 				<EditionTable
-					editions={editionsContainWork}
+					entities={editionsContainWork}
 					entity={entity}
 				/>
 				<EntityLinks

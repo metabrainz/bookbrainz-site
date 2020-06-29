@@ -46,7 +46,7 @@ function EditionTableRow({edition, showCheckboxes, selectedEntities, toggleRow})
 					showCheckboxes ?
 						<input
 							checked={selectedEntities.find(bbid => bbid === edition.bbid)}
-							className="margin-right-d5"
+							className="checkboxes"
 							id={edition.bbid}
 							type="checkbox"
 							onClick={() => toggleRow(edition.bbid)}
