@@ -43,7 +43,7 @@ function WorkTableRow({work, showCheckboxes, selectedEntities, toggleRow}) {
 					showCheckboxes ?
 						<input
 							checked={selectedEntities.find(bbid => bbid === work.bbid)}
-							className="margin-right-d5"
+							className="checkboxes"
 							id={work.bbid}
 							type="checkbox"
 							onClick={() => toggleRow(work.bbid)}
