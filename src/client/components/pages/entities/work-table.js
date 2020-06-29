@@ -69,8 +69,9 @@ WorkTableRow.defaultProps = {
 	toggleRow: null
 };
 
-function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, toggleRow}) {
+function WorkTable({entity, entities, showAdd, showCheckboxes, selectedEntities, toggleRow}) {
 	let tableContent;
+	const works = entities;
 	if (works.length) {
 		tableContent = (
 			<React.Fragment>
@@ -145,12 +146,12 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, to
 }
 WorkTable.displayName = 'WorkTable';
 WorkTable.propTypes = {
+	entities: PropTypes.array.isRequired,
 	entity: PropTypes.object,
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
 	showCheckboxes: PropTypes.bool,
-	toggleRow: PropTypes.func,
-	works: PropTypes.array.isRequired
+	toggleRow: PropTypes.func
 };
 WorkTable.defaultProps = {
 	entity: null,

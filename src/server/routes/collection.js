@@ -77,7 +77,7 @@ router.param(
 
 router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res) => {
 	const {collection} = res.locals;
-	if (collection.entityType !== 'Edition') {
+	if (collection.entityType !== 'Edition' || collection.entityType !== 'Work') {
 		return res.status(200).send(collection);
 	}
 	const {orm} = req.app.locals;
