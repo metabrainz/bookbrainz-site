@@ -42,6 +42,8 @@ class EntityFooter extends React.Component {
 	}
 
 	onCloseModal() {
+		// eslint-disable-next-line no-console
+		console.log('i am here');
 		this.setState({showModal: false});
 	}
 
@@ -50,10 +52,11 @@ class EntityFooter extends React.Component {
 			this.setState({showModal: true});
 		}
 		else {
-			this.setState({error: 'You need to be logged in for this'});
+			this.setState({error: 'You need to be logged in'});
 		}
 	}
 
+	/* eslint-disable react/jsx-handler-names */
 	render() {
 		return (
 			<div>
@@ -62,10 +65,10 @@ class EntityFooter extends React.Component {
 						<div>
 							<AddToCollectionModal
 								bbids={[this.props.bbid]}
-								closeCallback={this.onCloseModal}
 								entityType={this.props.entityType}
 								show={this.state.showModal}
 								userId={this.props.user.id}
+								onCloseCallback={this.onCloseModal}
 							/>
 						</div> : null
 				}
