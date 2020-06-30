@@ -26,6 +26,7 @@ import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
+import log from 'log';
 import target from '../templates/target';
 
 
@@ -110,12 +111,15 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 				}).save(null, {method: 'insert'});
 			}
 			catch (err) {
-				// entity already in the collection
+				if (err.constraint !== 'user_collection_item_pkey') {
+					log.debug(err);
+				}
 			}
 		}
 		res.status(200).send();
 	}
 	catch (err) {
+		log.debug(err);
 		res.status(500).send();
 	}
 });

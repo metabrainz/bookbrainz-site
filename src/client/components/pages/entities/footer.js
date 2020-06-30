@@ -33,17 +33,20 @@ class EntityFooter extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			error: null,
+			message: {
+				text: null,
+				type: null
+			},
 			showModal: false
 		};
 
 		this.onCloseModal = this.onCloseModal.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
+		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
+		this.closeModalAndShowMessage = this.closeModalAndShowMessage.bind(this);
 	}
 
 	onCloseModal() {
-		// eslint-disable-next-line no-console
-		console.log('i am here');
 		this.setState({showModal: false});
 	}
 
@@ -52,11 +55,26 @@ class EntityFooter extends React.Component {
 			this.setState({showModal: true});
 		}
 		else {
-			this.setState({error: 'You need to be logged in'});
+			this.setState({
+				message: {
+					text: 'You need to be logged in',
+					type: 'danger'
+				}
+			});
 		}
 	}
 
-	/* eslint-disable react/jsx-handler-names */
+	closeModalAndShowMessage(message) {
+		this.setState({
+			message,
+			showModal: false
+		});
+	}
+
+	handleAlertDismiss() {
+		this.setState({message: {}});
+	}
+
 	render() {
 		return (
 			<div>
@@ -65,16 +83,17 @@ class EntityFooter extends React.Component {
 						<div>
 							<AddToCollectionModal
 								bbids={[this.props.bbid]}
+								closeModalAndShowMessage={this.closeModalAndShowMessage}
 								entityType={this.props.entityType}
+								handleCloseModal={this.onCloseModal}
 								show={this.state.showModal}
 								userId={this.props.user.id}
-								onCloseCallback={this.onCloseModal}
 							/>
 						</div> : null
 				}
 				{
-					this.state.error ?
-						<Alert bsStyle="danger">{this.state.error}</Alert> : null
+					this.state.message.text ?
+						<Alert bsStyle={this.state.message.type} onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null
 
 				}
 				<Row>
@@ -117,7 +136,7 @@ class EntityFooter extends React.Component {
 								title="Add To Collection"
 								onClick={this.handleShowModal}
 							>
-								<FontAwesomeIcon icon="plus"/>
+								<FontAwesomeIcon icon="grip-vertical"/>
 								&nbsp;Collection
 							</Button>
 						</ButtonGroup>

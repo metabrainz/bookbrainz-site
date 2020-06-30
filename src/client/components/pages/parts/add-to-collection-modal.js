@@ -54,10 +54,20 @@ class AddToCollectionModal extends React.Component {
 	}
 
 	async getCollections() {
-		// Get all collections of the user (unlikely that a user will have more than 10000 collections
-		const req = await request.get(`/editor/${this.props.userId}/collections/collections?type=${this.props.entityType}&size=10000`);
-		const collections = req.body;
-		return collections;
+		try {
+			// Get all collections of the user (unlikely that a user will have more than 10000 collections
+			const req = await request.get(`/editor/${this.props.userId}/collections/collections?type=${this.props.entityType}&size=10000`);
+			const collections = req.body;
+			return collections;
+		}
+		catch (err) {
+			return this.setState({
+				message: {
+					text: 'Sorry, we could not fetch your collections ',
+					type: 'danger'
+				}
+			});
+		}
 	}
 
 	async handleAddToCollection() {
@@ -73,17 +83,17 @@ class AddToCollectionModal extends React.Component {
 				);
 			});
 			await Promise.all(promiseArray);
-			this.setState({
-				message: {
+			this.setState({selectedCollections: []}, () => {
+				this.props.closeModalAndShowMessage({
 					text: `Successfully added to selected collection${selectedCollections.length > 1 ? 's' : ''}`,
 					type: 'success'
-				}
+				});
 			});
 		}
 		else {
 			this.setState({
 				message: {
-					text: 'No Collection Selected',
+					text: 'No collection selected',
 					type: 'danger'
 				}
 			});
@@ -104,7 +114,7 @@ class AddToCollectionModal extends React.Component {
 		if (!this.isValid()) {
 			this.setState({
 				message: {
-					text: 'Internal Error: Try again later',
+					text: 'The form is incomplete. Please fill in a name and privacy option before continuing.',
 					type: 'danger'
 				}
 			});
@@ -128,17 +138,17 @@ class AddToCollectionModal extends React.Component {
 			.then((res) => {
 				request.post(`/collection/${res.body.id}/add`)
 					.send({bbids}).then(() => {
-						this.setState({
-							message: {
+						this.setState({selectedCollections: []}, () => {
+							this.props.closeModalAndShowMessage({
 								text: `Successfully added to your new collection: ${name}`,
 								type: 'success'
-							}
+							});
 						});
 					});
 			}, (error) => {
 				this.setState({
 					message: {
-						text: 'Internal Error: Try again later',
+						text: 'Something went wrong! Please try again later',
 						type: 'danger'
 					}
 				});
@@ -235,7 +245,7 @@ class AddToCollectionModal extends React.Component {
 			<Modal
 				scrollable
 				show={this.props.show}
-				onHide={this.props.onCloseCallback}
+				onHide={this.props.handleCloseModal}
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
@@ -274,8 +284,8 @@ class AddToCollectionModal extends React.Component {
 								<FontAwesomeIcon icon="plus"/>Add to selected collection{this.state.selectedCollections.length > 1 ? 's' : null}
 							</Button>
 					}
-					<Button bsStyle="danger" onClick={this.props.onCloseCallback}>
-						<FontAwesomeIcon icon="times"/> Cancel
+					<Button bsStyle="danger" onClick={this.props.handleCloseModal}>
+						<FontAwesomeIcon icon="times"/> Close
 					</Button>
 				</Modal.Footer>
 			</Modal>
@@ -284,11 +294,12 @@ class AddToCollectionModal extends React.Component {
 }
 
 
-AddToCollectionModal.displayName = 'DeleteCollectionModal';
+AddToCollectionModal.displayName = 'AddToCollectionModal';
 AddToCollectionModal.propTypes = {
 	bbids: PropTypes.array.isRequired,
+	closeModalAndShowMessage: PropTypes.func.isRequired,
 	entityType: PropTypes.string.isRequired,
-	onCloseCallback: PropTypes.func.isRequired,
+	handleCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
 	userId: PropTypes.number.isRequired
 };
