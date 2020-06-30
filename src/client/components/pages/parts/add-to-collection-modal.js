@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../../input/select-wrapper';
+import _ from 'lodash';
 import request from 'superagent';
 
 
@@ -20,11 +21,9 @@ class AddToCollectionModal extends React.Component {
 				type: null
 			},
 			selectedCollections: [],
-			show: this.props.show,
 			showCollectionForm: false
 		};
 
-		this.handleClose = this.handleClose.bind(this);
 		this.getCollections = this.getCollections.bind(this);
 		this.handleAddToCollection = this.handleAddToCollection.bind(this);
 		this.toggleRow = this.toggleRow.bind(this);
@@ -34,23 +33,20 @@ class AddToCollectionModal extends React.Component {
 		this.isValid = this.isValid.bind(this);
 	}
 
-	async componentDidUpdate(prevProps) {
+	async componentDidMount() {
 		const collections = await this.getCollections();
-		if (prevProps.show !== this.props.show) {
-			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState({collectionsAvailable: collections, show: this.props.show});
-		}
+		// eslint-disable-next-line react/no-did-mount-set-state
+		this.setState({collectionsAvailable: collections});
 	}
 
 	toggleRow(collectionId) {
-		// eslint-disable-next-line react/no-access-state-in-setstate
 		const oldSelected = this.state.selectedCollections;
 		let newSelected;
 		if (oldSelected.find(selectedId => selectedId === collectionId)) {
 			newSelected = oldSelected.filter(selectedId => selectedId !== collectionId);
 		}
 		else {
-			newSelected = oldSelected.push(collectionId) && oldSelected;
+			newSelected = [...oldSelected, collectionId];
 		}
 		this.setState({
 			selectedCollections: newSelected
@@ -62,10 +58,6 @@ class AddToCollectionModal extends React.Component {
 		const req = await request.get(`/editor/${this.props.userId}/collections/collections?type=${this.props.entityType}&size=10000`);
 		const collections = req.body;
 		return collections;
-	}
-
-	handleClose() {
-		this.setState({show: false}, this.props.closeCallback);
 	}
 
 	async handleAddToCollection() {
@@ -83,7 +75,7 @@ class AddToCollectionModal extends React.Component {
 			await Promise.all(promiseArray);
 			this.setState({
 				message: {
-					text: 'Successfully added to selected collections',
+					text: `Successfully added to selected collection${selectedCollections.length > 1 ? 's' : ''}`,
 					type: 'success'
 				}
 			});
@@ -112,7 +104,7 @@ class AddToCollectionModal extends React.Component {
 		if (!this.isValid()) {
 			this.setState({
 				message: {
-					text: 'Incomplete Form',
+					text: 'Internal Error: Try again later',
 					type: 'danger'
 				}
 			});
@@ -146,7 +138,7 @@ class AddToCollectionModal extends React.Component {
 			}, (error) => {
 				this.setState({
 					message: {
-						text: 'Internal Error',
+						text: 'Internal Error: Try again later',
 						type: 'danger'
 					}
 				});
@@ -154,7 +146,7 @@ class AddToCollectionModal extends React.Component {
 	}
 
 	isValid() {
-		return this.name.getValue() && this.privacy.getValue();
+		return _.trim(this.name.getValue()).length && this.privacy.getValue();
 	}
 
 	/* eslint-disable react/jsx-no-bind */
@@ -198,8 +190,8 @@ class AddToCollectionModal extends React.Component {
 		else {
 			existingCollections = (
 				<div>
-					Oops, Looks like you do not have any collection of type {this.props.entityType} . <br/>
-					Click <a href="/collection/create">here</a> to create one
+					Oops, looks like you do not yet have any collection of {this.props.entityType}s .
+					Click on the button below to create a new collection
 				</div>
 			);
 		}
@@ -242,33 +234,12 @@ class AddToCollectionModal extends React.Component {
 		return (
 			<Modal
 				scrollable
-				bsSize="large"
-				show={this.state.show}
-				onHide={this.handleClose}
+				show={this.props.show}
+				onHide={this.props.onCloseCallback}
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						<h2>
-							<strong>Select Collection</strong>
-							{
-								this.state.showCollectionForm ?
-									<Button
-										bsStyle="primary"
-										className="pull-right"
-										onClick={this.handleShowAllCollections}
-									>
-										Select from existing collections
-									</Button> :
-									<Button
-										bsStyle="warning"
-										className="pull-right"
-										onClick={this.handleShowCollectionForm}
-									>
-										<FontAwesomeIcon icon="plus"/>
-										&nbsp;Create a new collection
-									</Button>
-							}
-						</h2>
+						Select Collection
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
@@ -280,15 +251,31 @@ class AddToCollectionModal extends React.Component {
 				<Modal.Footer>
 					{
 						this.state.showCollectionForm ?
-							<Button bsStyle="primary" onClick={this.handleAddToNewCollection}>
-								<FontAwesomeIcon icon="plus"/> Add to this new collection
+							<Button
+								bsStyle="primary"
+								onClick={this.handleShowAllCollections}
+							>
+								Select from collections
 							</Button> :
-							<Button bsStyle="primary" onClick={this.handleAddToCollection}>
-								<FontAwesomeIcon icon="plus"/> Add to selected collections
+							<Button
+								bsStyle="warning"
+								onClick={this.handleShowCollectionForm}
+							>
+								<FontAwesomeIcon icon="plus"/>
+								&nbsp;New collection
 							</Button>
 					}
-					<Button bsStyle="danger" onClick={this.handleClose}>
-						<FontAwesomeIcon icon="times-circle"/> Cancel
+					{
+						this.state.showCollectionForm ?
+							<Button bsStyle="success" onClick={this.handleAddToNewCollection}>
+								<FontAwesomeIcon icon="plus"/> Add to new collection
+							</Button> :
+							<Button bsStyle="success" onClick={this.handleAddToCollection}>
+								<FontAwesomeIcon icon="plus"/>Add to selected collection{this.state.selectedCollections.length > 1 ? 's' : null}
+							</Button>
+					}
+					<Button bsStyle="danger" onClick={this.props.onCloseCallback}>
+						<FontAwesomeIcon icon="times"/> Cancel
 					</Button>
 				</Modal.Footer>
 			</Modal>
@@ -300,8 +287,8 @@ class AddToCollectionModal extends React.Component {
 AddToCollectionModal.displayName = 'DeleteCollectionModal';
 AddToCollectionModal.propTypes = {
 	bbids: PropTypes.array.isRequired,
-	closeCallback: PropTypes.func.isRequired,
 	entityType: PropTypes.string.isRequired,
+	onCloseCallback: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
 	userId: PropTypes.number.isRequired
 };
