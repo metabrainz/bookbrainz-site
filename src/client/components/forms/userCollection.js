@@ -277,7 +277,7 @@ class UserCollectionForm extends React.Component {
 											type="button"
 											onClick={this.handleShowModal}
 										>
-											<FontAwesomeIcon icon="times"/>&nbsp;Delete collection
+											<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
 										</Button> : null
 								}
 							</div>
