@@ -40,6 +40,7 @@ library.add(
 	faCircleNotch, faCodeBranch, faComment, faEnvelope, faExclamationTriangle,
 	faExternalLinkAlt, faGlobe, faGripVertical, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
+
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 );

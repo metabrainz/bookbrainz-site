@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2015  Ben Ockmore
- *               2015  Sean Burke
+ * Copyright (C) 2020 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,58 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	extractChildProps,
-	extractEditorProps,
-	extractLayoutProps
-} from '../../helpers/props';
+import {extractChildProps, extractLayoutProps} from '../helpers/props';
 import {AppContainer} from 'react-hot-loader';
-import CollectionsPage from '../../components/pages/collections';
-import EditorContainer from '../../containers/editor';
-import EditorRevisionPage from '../../components/pages/editor-revision';
-import Layout from '../../containers/layout';
-import ProfileTab from '../../components/pages/parts/editor-profile';
+import CollectionsPage from '../components/pages/collections';
+import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
-
-const pageTarget = document.getElementById('page');
-const page = pageTarget ? pageTarget.innerHTML : '';
-
-let tab = null;
-
-if (page === 'revisions') {
-	tab = (
-		<EditorRevisionPage
-			{...extractChildProps(props)}
-		/>);
-}
-else if (page === 'collections') {
-	tab = (
-		<CollectionsPage
-			{...extractChildProps(props)}
-		/>);
-}
-else {
-	tab = (
-		<ProfileTab
-			user={props.user}
-			{...extractChildProps(props)}
-		/>
-	);
-}
-
 const markup = (
 	<AppContainer>
-		<Layout {...extractLayoutProps(props)} >
-			<EditorContainer
-				{...extractEditorProps(props)}
-			>
-				{tab}
-			</EditorContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<CollectionsPage {...extractChildProps(props)}/>
 		</Layout>
 	</AppContainer>
 );

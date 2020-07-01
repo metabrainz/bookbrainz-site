@@ -190,6 +190,12 @@ class Layout extends React.Component {
 					</NavItem>
 				</Nav>
 				<Nav pullRight>
+					<NavItem href="/collections">
+						<FontAwesomeIcon icon="grip-vertical"/>
+						{' Collections '}
+					</NavItem>
+				</Nav>
+				<Nav pullRight>
 					<NavItem href="/revisions">
 						<FontAwesomeIcon icon="list-ul"/>
 						{' Revisions '}
