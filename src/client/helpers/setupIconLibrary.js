@@ -21,7 +21,7 @@ import {
 	faAngleDoubleLeft, faAngleDoubleUp, faBook, faCalendarAlt, faChartLine, faCheck, faCircle,
 	faCircleNotch, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
 	faExternalLinkAlt, faGlobe, faGripVertical, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
-	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
+	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
@@ -40,7 +40,7 @@ library.add(
 	fab, faAngleDoubleLeft, faAngleDoubleUp, faBook, faCalendarAlt, faChartLine, faCheck, faCircle,
 	faCircleNotch, faCodeBranch, faGripVertical, faCommentDots, faComment, faComments,faEnvelope, faExclamationTriangle,
 	faExternalLinkAlt, faGlobe, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
-	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
+	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 );
