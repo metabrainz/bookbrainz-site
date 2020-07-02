@@ -101,7 +101,7 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 				}).save(null, {method: 'insert'});
 			}
 			catch (err) {
-				// throw error if it's not due to uniquie constraint
+				// throw error if it's not due to unique constraint
 				if (err.constraint !== 'user_collection_item_pkey') {
 					throw err;
 				}
