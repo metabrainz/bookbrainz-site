@@ -105,6 +105,8 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 	try {
 		const {UserCollectionItem} = req.app.locals.orm;
 		for (const bbid of bbids) {
+			// because of the unique constraint, we can't add duplicate entities to a collection
+			// using try catch to make sure code doesn't break if user accidentally adds duplicate entity
 			try {
 				await new UserCollectionItem({
 					bbid,
@@ -112,8 +114,9 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 				}).save(null, {method: 'insert'});
 			}
 			catch (err) {
+				// throw error if it's not due to uniquie constraint
 				if (err.constraint !== 'user_collection_item_pkey') {
-					log.debug(err);
+					throw err;
 				}
 			}
 		}

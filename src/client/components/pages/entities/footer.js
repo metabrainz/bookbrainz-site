@@ -97,7 +97,7 @@ class EntityFooter extends React.Component {
 
 				}
 				<Row>
-					<Col md={8} mdOffset={2}>
+					<Col md={10} mdOffset={1}>
 						<ButtonGroup justified>
 							<Button
 								bsStyle="warning"
@@ -137,7 +137,7 @@ class EntityFooter extends React.Component {
 								onClick={this.handleShowModal}
 							>
 								<FontAwesomeIcon icon="grip-vertical"/>
-								&nbsp;Collection
+								&nbsp;Add to collection
 							</Button>
 						</ButtonGroup>
 					</Col>

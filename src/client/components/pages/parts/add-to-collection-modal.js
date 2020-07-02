@@ -74,21 +74,31 @@ class AddToCollectionModal extends React.Component {
 		const {bbids} = this.props;
 		const {selectedCollections} = this.state;
 		if (selectedCollections.length) {
-			const promiseArray = [];
-			selectedCollections.forEach((collectionId) => {
-				const submissionURL = `/collection/${collectionId}/add`;
-				promiseArray.push(
-					request.post(submissionURL)
-						.send({bbids})
-				);
-			});
-			await Promise.all(promiseArray);
-			this.setState({selectedCollections: []}, () => {
-				this.props.closeModalAndShowMessage({
-					text: `Successfully added to selected collection${selectedCollections.length > 1 ? 's' : ''}`,
-					type: 'success'
+			try {
+				const promiseArray = [];
+				selectedCollections.forEach((collectionId) => {
+					const submissionURL = `/collection/${collectionId}/add`;
+					promiseArray.push(
+						request.post(submissionURL)
+							.send({bbids})
+					);
 				});
-			});
+				await Promise.all(promiseArray);
+				this.setState({selectedCollections: []}, () => {
+					this.props.closeModalAndShowMessage({
+						text: `Successfully added to selected collection${selectedCollections.length > 1 ? 's' : ''}`,
+						type: 'success'
+					});
+				});
+			}
+			catch (err) {
+				this.setState({
+					message: {
+						text: 'Something went wrong! Please try again later',
+						type: 'danger'
+					}
+				});
+			}
 		}
 		else {
 			this.setState({
@@ -249,7 +259,7 @@ class AddToCollectionModal extends React.Component {
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						Select Collection
+						{this.state.showCollectionForm ? 'Create' : 'Select'} Collection
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
@@ -280,7 +290,7 @@ class AddToCollectionModal extends React.Component {
 							<Button bsStyle="success" onClick={this.handleAddToNewCollection}>
 								<FontAwesomeIcon icon="plus"/> Add to new collection
 							</Button> :
-							<Button bsStyle="success" onClick={this.handleAddToCollection}>
+							<Button bsStyle="success" disabled={!this.state.collectionsAvailable.length} onClick={this.handleAddToCollection}>
 								<FontAwesomeIcon icon="plus"/>Add to selected collection{this.state.selectedCollections.length > 1 ? 's' : null}
 							</Button>
 					}
