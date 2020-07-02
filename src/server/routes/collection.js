@@ -71,7 +71,6 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
 	const {collection} = res.locals;
-
 	const props = generateProps(req, res, {
 		collection
 	});
@@ -97,6 +96,36 @@ router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.
 router.get('/:collectionId', (req, res) => {
 	const {collection} = res.locals;
 	res.status(200).send(collection);
+});
+
+/* eslint-disable no-await-in-loop */
+router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res) => {
+	const {bbids} = req.body;
+	const {collection} = res.locals;
+	try {
+		const {UserCollectionItem} = req.app.locals.orm;
+		for (const bbid of bbids) {
+			// because of the unique constraint, we can't add duplicate entities to a collection
+			// using try catch to make sure code doesn't break if user accidentally adds duplicate entity
+			try {
+				await new UserCollectionItem({
+					bbid,
+					collectionId: collection.id
+				}).save(null, {method: 'insert'});
+			}
+			catch (err) {
+				// throw error if it's not due to unique constraint
+				if (err.constraint !== 'user_collection_item_pkey') {
+					throw err;
+				}
+			}
+		}
+		res.status(200).send();
+	}
+	catch (err) {
+		log.debug(err);
+		res.status(500).send();
+	}
 });
 
 export default router;
