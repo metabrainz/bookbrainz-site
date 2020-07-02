@@ -64,6 +64,7 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 		return res.status(200).send({});
 	}
 	catch (err) {
+		log.debug(err);
 		return res.status(500).send({});
 	}
 });

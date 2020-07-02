@@ -49,7 +49,7 @@ class UserCollectionForm extends React.Component {
 		this.getCleanedCollaborators = this.getCleanedCollaborators.bind(this);
 		this.handleAddCollaborator = this.handleAddCollaborator.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
-		this.onCloseModal = this.onCloseModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.handleRemoveCollaborator = this.handleRemoveCollaborator.bind(this);
 		this.handleChangeCollaborator = this.handleChangeCollaborator.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -144,7 +144,7 @@ class UserCollectionForm extends React.Component {
 		this.setState({showModal: true});
 	}
 
-	onCloseModal() {
+	handleCloseModal() {
 		this.setState({showModal: false});
 	}
 
@@ -174,8 +174,8 @@ class UserCollectionForm extends React.Component {
 				<h1>Create your collection</h1>
 				<DeleteCollectionModal
 					collection={this.props.collection}
-					handleCloseModal={this.onCloseModal}
 					show={this.state.showModal}
+					onCloseModal={this.handleCloseModal}
 				/>
 				<div>
 					<Col
