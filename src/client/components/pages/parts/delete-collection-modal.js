@@ -42,7 +42,7 @@ class DeleteCollectionModal extends React.Component {
 		return (
 			<Modal
 				show={this.props.show}
-				onHide={this.props.handleCloseModal}
+				onHide={this.props.onCloseModal}
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>Confirm deletion</Modal.Title>
@@ -61,7 +61,7 @@ class DeleteCollectionModal extends React.Component {
 					{errorComponent}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button bsStyle="info" onClick={this.props.handleCloseModal}>
+					<Button bsStyle="info" onClick={this.props.onCloseModal}>
 						Cancel
 					</Button>
 					<Button bsStyle="danger" onClick={this.handleDelete}>
@@ -77,7 +77,7 @@ class DeleteCollectionModal extends React.Component {
 DeleteCollectionModal.displayName = 'DeleteCollectionModal';
 DeleteCollectionModal.propTypes = {
 	collection: PropTypes.object.isRequired,
-	handleCloseModal: PropTypes.func.isRequired,
+	onCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired
 };
 

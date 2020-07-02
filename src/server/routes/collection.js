@@ -26,6 +26,7 @@ import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
+import log from 'log';
 import target from '../templates/target';
 
 
@@ -63,6 +64,7 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 		return res.status(200).send({});
 	}
 	catch (err) {
+		log.debug(err);
 		return res.status(500).send({});
 	}
 });
