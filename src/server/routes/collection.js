@@ -26,6 +26,7 @@ import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
+import log from 'log';
 import target from '../templates/target';
 
 
@@ -54,6 +55,19 @@ router.param(
 	'collectionId',
 	middleware.makeCollectionLoader()
 );
+
+router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res) => {
+	try {
+		const {UserCollection} = req.app.locals.orm;
+		const {collectionId} = req.params;
+		await new UserCollection({id: collectionId}).destroy();
+		return res.status(200).send({});
+	}
+	catch (err) {
+		log.debug(err);
+		return res.status(500).send({});
+	}
+});
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
 	const {collection} = res.locals;

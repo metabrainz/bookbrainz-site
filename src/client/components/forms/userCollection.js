@@ -19,6 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import CustomInput from '../../input';
+import DeleteCollectionModal from '../pages/parts/delete-collection-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -30,7 +31,7 @@ import request from 'superagent';
 import {uniqBy} from 'lodash';
 
 
-const {Alert, Button, Col} = bootstrap;
+const {Alert, Button, ButtonGroup, Col} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
@@ -40,12 +41,15 @@ class UserCollectionForm extends React.Component {
 		this.state = {
 			collaborators,
 			collection,
-			errorText: null
+			errorText: null,
+			showModal: false
 		};
 
 		// React does not autobind non-React class methods
 		this.getCleanedCollaborators = this.getCleanedCollaborators.bind(this);
 		this.handleAddCollaborator = this.handleAddCollaborator.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.handleRemoveCollaborator = this.handleRemoveCollaborator.bind(this);
 		this.handleChangeCollaborator = this.handleChangeCollaborator.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -136,6 +140,14 @@ class UserCollectionForm extends React.Component {
 		});
 	}
 
+	handleShowModal() {
+		this.setState({showModal: true});
+	}
+
+	handleCloseModal() {
+		this.setState({showModal: false});
+	}
+
 	render() {
 		if (this.state.collaborators.length === 0) {
 			this.handleAddCollaborator();
@@ -160,6 +172,11 @@ class UserCollectionForm extends React.Component {
 		return (
 			<div>
 				<h1>Create your collection</h1>
+				<DeleteCollectionModal
+					collection={this.props.collection}
+					show={this.state.showModal}
+					onCloseModal={this.handleCloseModal}
+				/>
 				<div>
 					<Col
 						id="collectionForm"
@@ -234,6 +251,10 @@ class UserCollectionForm extends React.Component {
 									);
 								})
 							}
+							<hr/>
+							<div className={errorAlertClass}>
+								<Alert bsStyle="danger">Error: {errorText}</Alert>
+							</div>
 							<div className="text-center">
 								<Button
 									bsStyle="primary"
@@ -243,18 +264,22 @@ class UserCollectionForm extends React.Component {
 									<FontAwesomeIcon icon="plus"/>
 									&nbsp;Add another collaborator
 								</Button>
-							</div>
-							<div className="form-group text-center margin-top-1">
 								<Button
-									bsSize="large"
 									bsStyle="success"
 									type="submit"
 								>
-									{submitLabel}
+									<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
 								</Button>
-							</div>
-							<div className={errorAlertClass}>
-								<Alert bsStyle="danger">Error: {errorText}</Alert>
+								{
+									this.props.collection.id ?
+										<Button
+											bsStyle="danger"
+											type="button"
+											onClick={this.handleShowModal}
+										>
+											<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
+										</Button> : null
+								}
 							</div>
 						</form>
 					</Col>
