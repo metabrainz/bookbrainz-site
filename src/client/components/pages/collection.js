@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import AuthorTable from './entities/author-table';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
@@ -24,6 +25,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WorkTable from './entities/work-table';
+import _ from 'lodash';
 import {formatDate} from '../../helpers/utils';
 import request from 'superagent';
 
@@ -32,6 +34,7 @@ const {Alert, Button, Col, Row} = bootstrap;
 
 function getEntityTable(entityType) {
 	const tables = {
+		Author: AuthorTable,
 		Edition: EditionTable,
 		Work: WorkTable
 	};
@@ -40,6 +43,7 @@ function getEntityTable(entityType) {
 
 function getEntityKey(entityType) {
 	const keys = {
+		Author: 'authors',
 		Edition: 'editions',
 		Work: 'works'
 	};
@@ -174,13 +178,14 @@ class CollectionPage extends React.Component {
 				{errorComponent}
 				<div className="margin-top-1 text-center">
 					{
-						this.props.showCheckboxes ?
+						this.state.selectedEntities.length ?
 							<Button
 								bsStyle="danger"
 								onClick={this.handleRemoveEntities}
 							>
 								<FontAwesomeIcon icon="times-circle"/>
-								&nbsp;Remove selected {this.entityKey}
+								&nbsp;Remove selected&nbsp;
+								{_.lowerFirst(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
 							</Button> : null
 					}
 					{

@@ -37,6 +37,13 @@ const router = express.Router();
 
 
 function getEntityRelations(entityType) {
+	const authorBasicRelations = [
+		'defaultAlias.language',
+		'disambiguation',
+		'authorType',
+		'gender'
+	];
+
 	const editionRelations = [
 		'defaultAlias.language',
 		'disambiguation',
@@ -51,6 +58,7 @@ function getEntityRelations(entityType) {
 	];
 
 	const relations = {
+		Author: authorBasicRelations,
 		Edition: editionRelations,
 		Work: workRelations
 	};
@@ -82,7 +90,7 @@ router.param(
 
 router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res) => {
 	const {collection} = res.locals;
-	if (collection.entityType !== 'Edition' && collection.entityType !== 'Work') {
+	if (collection.entityType !== 'Edition' && collection.entityType !== 'Work' && collection.entityType !== 'Author') {
 		return res.status(200).send(collection);
 	}
 	const {orm} = req.app.locals;
