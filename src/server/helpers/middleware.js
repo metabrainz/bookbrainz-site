@@ -191,7 +191,7 @@ export function makeCollectionLoader() {
 			try {
 				const collection = await new UserCollection({id: collectionId}).fetch({
 					require: true,
-					withRelated: ['collaborators.collaborator', 'items']
+					withRelated: ['collaborators.collaborator', 'items', 'owner']
 				});
 				const collectionJSON = collection.toJSON();
 				// reshaping collaborators such that it can be used in EntitySearchFieldOption

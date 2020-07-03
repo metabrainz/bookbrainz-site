@@ -91,7 +91,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 	const entitiesPromise = collection.items.map(item => orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations));
 	const entities = await Promise.all(entitiesPromise);
 	const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user.id, 10);
-	let showCheckboxes = false;
+	let showCheckboxes = isOwner;
 	if (req.user && (req.user.id === collection.ownerId ||
 		collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length)) {
 		showCheckboxes = true;
@@ -146,7 +146,8 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 		const {collectionId} = req.params;
 		await new UserCollection({id: collectionId}).destroy();
 		return res.status(200).send({});
-	} catch (err) {
+	}
+	catch (err) {
 		log.debug(err);
 		return res.status(500).send({});
 	}
@@ -157,16 +158,15 @@ router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwne
 	const {collection} = res.locals;
 	try {
 		const {UserCollectionItem} = req.app.locals.orm;
-		const promiseArray = bbids.map((bbid) =>
-			new UserCollectionItem()
-				.where('bbid', bbid)
-				.where('collection_id', collection.id)
-				.destroy()
-		);
-		await Promise.all(promiseArray);
+		await new UserCollectionItem()
+			.query((qb) => {
+				qb.where('collection_id', collection.id);
+				qb.whereIn('bbid', bbids);
+			}).destroy();
 		res.status(200).send();
 	}
 	catch (err) {
+		log.debug(err);
 		res.status(500).send();
 	}
 });
