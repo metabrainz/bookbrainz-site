@@ -160,18 +160,6 @@ export function isCollectionOwnerOrCollaborator(req, res, next) {
 	);
 }
 
-export function isCollectionOwnerOrCollaborator(req, res, next) {
-	const {collection} = res.locals;
-	if (req.user.id === collection.ownerId ||
-		collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
-		return next();
-	}
-
-	throw new error.PermissionDeniedError(
-		'You do not have permission to view this collection', req
-	);
-}
-
 export function isAuthenticatedForCollectionView(req, res, next) {
 	const {collection} = res.locals;
 	if (collection.public) {
