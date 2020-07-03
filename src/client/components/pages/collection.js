@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import AuthorTable from './entities/author-table';
+import DeleteCollectionModal from './parts/delete-collection-modal';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import EditionGroupTable from './entities/editionGroup-table';
 import EditionTable from './entities/edition-table';
@@ -79,8 +80,13 @@ function CollectionAttributes({collection}) {
 							<dt>Collaborators</dt>
 							<dd>
 								{
-									collection.collaborators.map((collaborator) =>
-										<a href={`/editor/${collaborator.id}`} key={collaborator.id}>{collaborator.text}, </a>)
+									collection.collaborators.map((collaborator, id) =>
+										(
+											<a href={`/editor/${collaborator.id}`} key={collaborator.id}>
+												{collaborator.text}{id === collection.collaborators.length - 1 ? ', ' : null}
+											</a>
+										)
+									)
 								}
 							</dd>
 						</Col> : null
@@ -115,11 +121,15 @@ class CollectionPage extends React.Component {
 		super(props);
 		this.state = {
 			error: null,
-			selectedEntities: []
+			selectedEntities: [],
+			showModal: false
 		};
 
 		this.toggleRow = this.toggleRow.bind(this);
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
+		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
 	}
 
 	entityKey = getEntityKey(this.props.collection.entityType);
@@ -152,13 +162,25 @@ class CollectionPage extends React.Component {
 				});
 		}
 		else {
-			this.setState({error: `No ${this.entityKey} selected`});
+			this.setState({error: `No ${_.kebabCase(this.entityKey)} selected`});
 		}
+	}
+
+	handleShowModal() {
+		this.setState({showModal: true});
+	}
+
+	handleCloseModal() {
+		this.setState({showModal: false});
+	}
+
+	handleAlertDismiss() {
+		this.setState({error: null});
 	}
 
 	render() {
 		const errorComponent = this.state.error ?
-			<Alert bsStyle="danger">{this.state.error}</Alert> : null;
+			<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert> : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
 		const propsForTable = {
 			[this.entityKey]: this.props.entities,
@@ -169,6 +191,11 @@ class CollectionPage extends React.Component {
 		};
 		return (
 			<div>
+				<DeleteCollectionModal
+					collection={this.props.collection}
+					show={this.state.showModal}
+					onCloseModal={this.handleCloseModal}
+				/>
 				<Row className="entity-display-background">
 					<Col className="entity-display-image-box text-center" md={2}>
 						<EntityImage
@@ -210,6 +237,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsStyle="danger"
 								title="Delete Collection"
+								onClick={this.handleShowModal}
 							>
 								<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
 							</Button> : null
