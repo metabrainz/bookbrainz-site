@@ -21,7 +21,7 @@ class DeleteCollectionModal extends React.Component {
 		request.post(this.deleteUrl)
 			.send()
 			.then((res) => {
-				window.location.href = '/';
+				window.location.href = `/editor/${this.props.collection.ownerId}/collections`;
 			}, (error) => {
 				this.setState({
 					error: 'Something went wrong! Please try again later'
