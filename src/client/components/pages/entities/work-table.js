@@ -27,12 +27,13 @@ import {kebabCase as _kebabCase} from 'lodash';
 
 const {Button, Table} = bootstrap;
 
-const {getEntityDisambiguation} = entityHelper;
+const {getEntityDisambiguation, getLanguageAttribute} = entityHelper;
 
 function WorkTableRow({work, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = work.defaultAlias ? work.defaultAlias.name : '(unnamed)';
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
+	const languages = getLanguageAttribute(work).data;
 	const workBBID = work.bbid;
 
 	/* eslint-disable react/jsx-no-bind */
@@ -52,6 +53,7 @@ function WorkTableRow({work, showCheckboxes, selectedEntities, onToggleRow}) {
 				<a href={`/Work/${workBBID}`}>{name}</a>
 				{disambiguation}
 			</td>
+			<td>{languages}</td>
 			<td>{workType}</td>
 		</tr>
 	);
@@ -78,6 +80,7 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, on
 					<thead>
 						<tr>
 							<th>Name</th>
+							<th>Languages</th>
 							<th>Type</th>
 						</tr>
 					</thead>

@@ -68,6 +68,7 @@ function getEntityRelations(entityType) {
 	const workRelations = [
 		'defaultAlias.language',
 		'disambiguation',
+		'languageSet.languages',
 		'workType'
 	];
 
