@@ -174,15 +174,23 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 });
 
 router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res) => {
-	const {bbids} = req.body;
+	const {bbids = []} = req.body;
 	const {collection} = res.locals;
 	try {
-		const {UserCollectionItem} = req.app.locals.orm;
+		if (!bbids.length) {
+			throw new Error('bbids is empty');
+		}
+		const {UserCollection, UserCollectionItem} = req.app.locals.orm;
 		await new UserCollectionItem()
 			.query((qb) => {
 				qb.where('collection_id', collection.id);
 				qb.whereIn('bbid', bbids);
 			}).destroy();
+		const collectionModel = await new UserCollection({id: collection.id}).fetch({
+			require: true
+		});
+		collectionModel.set('last_modified', new Date());
+		await collectionModel.save(null, {method: 'update'});
 		res.status(200).send();
 	}
 	catch (err) {
@@ -196,7 +204,7 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 	const {bbids} = req.body;
 	const {collection} = res.locals;
 	try {
-		const {UserCollectionItem} = req.app.locals.orm;
+		const {UserCollection, UserCollectionItem} = req.app.locals.orm;
 		for (const bbid of bbids) {
 			// because of the unique constraint, we can't add duplicate entities to a collection
 			// using try catch to make sure code doesn't break if user accidentally adds duplicate entity
@@ -205,6 +213,11 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 					bbid,
 					collectionId: collection.id
 				}).save(null, {method: 'insert'});
+				const collectionModel = await new UserCollection({id: collection.id}).fetch({
+					require: true
+				});
+				collectionModel.set('last_modified', new Date());
+				await collectionModel.save(null, {method: 'update'});
 			}
 			catch (err) {
 				// throw error if it's not due to unique constraint
