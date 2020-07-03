@@ -23,6 +23,7 @@ import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+import PublisherTable from './entities/publisher-table';
 import React from 'react';
 import WorkTable from './entities/work-table';
 import _ from 'lodash';
@@ -36,6 +37,7 @@ function getEntityTable(entityType) {
 	const tables = {
 		Author: AuthorTable,
 		Edition: EditionTable,
+		Publisher: PublisherTable,
 		Work: WorkTable
 	};
 	return tables[entityType];
@@ -45,6 +47,7 @@ function getEntityKey(entityType) {
 	const keys = {
 		Author: 'authors',
 		Edition: 'editions',
+		Publisher: 'publishers',
 		Work: 'works'
 	};
 	return keys[entityType];
