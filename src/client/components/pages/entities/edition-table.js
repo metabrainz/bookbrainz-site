@@ -31,7 +31,7 @@ const {
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
-function EditionTableRow({edition, showCheckboxes, selectedEntities, toggleRow}) {
+function EditionTableRow({edition, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
 	const releaseDate = getEditionReleaseDate(edition);
@@ -49,7 +49,7 @@ function EditionTableRow({edition, showCheckboxes, selectedEntities, toggleRow})
 							className="checkboxes"
 							id={edition.bbid}
 							type="checkbox"
-							onClick={() => toggleRow(edition.bbid)}
+							onClick={() => onToggleRow(edition.bbid)}
 						/> : null
 				}
 				<a href={`/edition/${edition.bbid}`}>{name}</a>
@@ -77,17 +77,17 @@ function EditionTableRow({edition, showCheckboxes, selectedEntities, toggleRow})
 EditionTableRow.displayName = 'EditionTableRow';
 EditionTableRow.propTypes = {
 	edition: PropTypes.object.isRequired,
+	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
-	showCheckboxes: PropTypes.bool,
-	toggleRow: PropTypes.func
+	showCheckboxes: PropTypes.bool
 };
 EditionTableRow.defaultProps = {
+	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false,
-	toggleRow: null
+	showCheckboxes: false
 };
 
-function EditionTable({editions, entity, showAdd, showCheckboxes, selectedEntities, toggleRow}) {
+function EditionTable({editions, entity, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -109,7 +109,7 @@ function EditionTable({editions, entity, showAdd, showCheckboxes, selectedEntiti
 									key={edition.bbid}
 									selectedEntities={selectedEntities}
 									showCheckboxes={showCheckboxes}
-									toggleRow={toggleRow}
+									onToggleRow={onToggleRow}
 								/>
 							))
 						}
@@ -168,17 +168,17 @@ EditionTable.displayName = 'EditionTable';
 EditionTable.propTypes = {
 	editions: PropTypes.array.isRequired,
 	entity: PropTypes.object,
+	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
-	showCheckboxes: PropTypes.bool,
-	toggleRow: PropTypes.func
+	showCheckboxes: PropTypes.bool
 };
 EditionTable.defaultProps = {
 	entity: null,
+	onToggleRow: null,
 	selectedEntities: [],
 	showAdd: true,
-	showCheckboxes: false,
-	toggleRow: null
+	showCheckboxes: false
 };
 
 export default EditionTable;

@@ -29,7 +29,7 @@ const {Button, Table} = bootstrap;
 
 const {getEntityDisambiguation} = entityHelper;
 
-function WorkTableRow({work, showCheckboxes, selectedEntities, toggleRow}) {
+function WorkTableRow({work, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = work.defaultAlias ? work.defaultAlias.name : '(unnamed)';
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
@@ -46,7 +46,7 @@ function WorkTableRow({work, showCheckboxes, selectedEntities, toggleRow}) {
 							className="checkboxes"
 							id={work.bbid}
 							type="checkbox"
-							onClick={() => toggleRow(work.bbid)}
+							onClick={() => onToggleRow(work.bbid)}
 						/> : null
 				}
 				<a href={`/Work/${workBBID}`}>{name}</a>
@@ -58,18 +58,18 @@ function WorkTableRow({work, showCheckboxes, selectedEntities, toggleRow}) {
 }
 WorkTableRow.displayName = 'WorkTableRow';
 WorkTableRow.propTypes = {
+	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showCheckboxes: PropTypes.bool,
-	toggleRow: PropTypes.func,
 	work: PropTypes.object.isRequired
 };
 WorkTableRow.defaultProps = {
+	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false,
-	toggleRow: null
+	showCheckboxes: false
 };
 
-function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, toggleRow}) {
+function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (works.length) {
 		tableContent = (
@@ -88,8 +88,8 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, to
 									key={work.bbid}
 									selectedEntities={selectedEntities}
 									showCheckboxes={showCheckboxes}
-									toggleRow={toggleRow}
 									work={work}
+									onToggleRow={onToggleRow}
 								/>
 							))
 						}
@@ -146,18 +146,18 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, to
 WorkTable.displayName = 'WorkTable';
 WorkTable.propTypes = {
 	entity: PropTypes.object,
+	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
 	showCheckboxes: PropTypes.bool,
-	toggleRow: PropTypes.func,
 	works: PropTypes.array.isRequired
 };
 WorkTable.defaultProps = {
 	entity: null,
+	onToggleRow: null,
 	selectedEntities: [],
 	showAdd: true,
-	showCheckboxes: false,
-	toggleRow: null
+	showCheckboxes: false
 };
 
 export default WorkTable;
