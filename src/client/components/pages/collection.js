@@ -83,7 +83,7 @@ function CollectionAttributes({collection}) {
 									collection.collaborators.map((collaborator, id) =>
 										(
 											<a href={`/editor/${collaborator.id}`} key={collaborator.id}>
-												{collaborator.text}{id === collection.collaborators.length - 1 ? ', ' : null}
+												{collaborator.text}{id === collection.collaborators.length - 1 ? null : ', '}
 											</a>
 										)
 									)
