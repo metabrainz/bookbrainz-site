@@ -49,32 +49,47 @@ function getEntityKey(entityType) {
 function CollectionAttributes({collection}) {
 	return (
 		<div>
+			{
+				collection.description.length ?
+					<Row>
+						<Col md={12}>
+							<dt>Description</dt>
+							<dd>{collection.description}</dd>
+						</Col>
+					</Row> : null
+			}
 			<Row>
 				<Col md={3}>
-					<dl>
-						<dt>Description</dt>
-						<dd>{collection.description}</dd>
-					</dl>
+					<dt>Owner</dt>
+					<dd><a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a></dd>
 				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Owner</dt>
-						<dd>{collection.owner.name}</dd>
-						<dt>Collaborators</dt>
-						<dd>{collection.collaborators.map((collaborator) => `${collaborator.text} `)}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Last Modified</dt>
-						<dd>{formatDate(new Date(collection.lastModified), true)}</dd>
-						<dt>Created At</dt>
-						<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
-					</dl>
-				</Col>
+				{
+					collection.collaborators.length ?
+						<Col md={3}>
+							<dt>Collaborators</dt>
+							<dd>
+								{
+									collection.collaborators.map((collaborator) =>
+										<a href={`/editor/${collaborator.id}`} key={collaborator.id}>{collaborator.text}, </a>)
+								}
+							</dd>
+						</Col> : null
+				}
 				<Col md={3}>
 					<dt>Privacy</dt>
 					<dd>{collection.public ? 'Public' : 'Private'}</dd>
+				</Col>
+				<Col md={3}>
+					<dt>Collection type</dt>
+					<dd>{collection.entityType}</dd>
+				</Col>
+				<Col md={3}>
+					<dt>Created At</dt>
+					<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
+				</Col>
+				<Col md={3}>
+					<dt>Last Modified</dt>
+					<dd>{formatDate(new Date(collection.lastModified), true)}</dd>
 				</Col>
 			</Row>
 		</div>
@@ -123,7 +138,7 @@ class CollectionPage extends React.Component {
 				.then((res) => {
 					window.location.href = `/collection/${this.props.collection.id}`;
 				}, (error) => {
-					this.setState({error: 'Internal Error'});
+					this.setState({error: 'Something went wrong! Please try again later'});
 				});
 		}
 		else {
@@ -137,10 +152,10 @@ class CollectionPage extends React.Component {
 		const EntityTable = getEntityTable(this.props.collection.entityType);
 		const propsForTable = {
 			[this.entityKey]: this.props.entities,
+			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
-			showCheckboxes: this.props.showCheckboxes,
-			toggleRow: this.toggleRow
+			showCheckboxes: this.props.showCheckboxes
 		};
 		return (
 			<div>
@@ -151,7 +166,7 @@ class CollectionPage extends React.Component {
 						/>
 					</Col>
 					<Col md={10}>
-						<h1><strong>{this.props.collection.name}</strong></h1>
+						<h1>{this.props.collection.name}</h1>
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>
@@ -164,7 +179,7 @@ class CollectionPage extends React.Component {
 								bsStyle="danger"
 								onClick={this.handleRemoveEntities}
 							>
-								<FontAwesomeIcon icon="times"/>
+								<FontAwesomeIcon icon="times-circle"/>
 								&nbsp;Remove selected {this.entityKey}
 							</Button> : null
 					}
@@ -194,7 +209,7 @@ class CollectionPage extends React.Component {
 }
 
 
-CollectionPage.displayName = 'CollectionsPage';
+CollectionPage.displayName = 'CollectionPage';
 CollectionPage.propTypes = {
 	collection: PropTypes.object.isRequired,
 	entities: PropTypes.array,

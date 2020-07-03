@@ -92,8 +92,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 	const entities = await Promise.all(entitiesPromise);
 	const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user.id, 10);
 	let showCheckboxes = isOwner;
-	if (req.user && (req.user.id === collection.ownerId ||
-		collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length)) {
+	if (req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
 		showCheckboxes = true;
 	}
 	const props = generateProps(req, res, {
