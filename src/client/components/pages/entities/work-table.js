@@ -134,7 +134,7 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, on
 		);
 	}
 	else {
-		tableContent = <span>No Works</span>;
+		tableContent = <span>No works</span>;
 	}
 	return (
 		<div>
