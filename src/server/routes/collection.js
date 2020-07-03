@@ -52,6 +52,12 @@ function getEntityRelations(entityType) {
 		'releaseEventSet.releaseEvents'
 	];
 
+	const editionGroupRelations = [
+		'defaultAlias.language',
+		'disambiguation',
+		'editionGroupType'
+	];
+
 	const publisherRelations = [
 		'defaultAlias.language',
 		'disambiguation',
@@ -68,6 +74,7 @@ function getEntityRelations(entityType) {
 	const relations = {
 		Author: authorRelations,
 		Edition: editionRelations,
+		EditionGroup: editionGroupRelations,
 		Publisher: publisherRelations,
 		Work: workRelations
 	};
@@ -99,9 +106,6 @@ router.param(
 
 router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res) => {
 	const {collection} = res.locals;
-	if (collection.entityType === 'EditionGroup') {
-		return res.status(200).send(collection);
-	}
 	const {orm} = req.app.locals;
 	const relations = getEntityRelations(collection.entityType);
 

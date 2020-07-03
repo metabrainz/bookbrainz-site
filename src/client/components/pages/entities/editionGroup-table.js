@@ -27,12 +27,11 @@ const {Table} = bootstrap;
 
 const {getEntityDisambiguation} = entityHelper;
 
-function PublisherTableRow({publisher, showCheckboxes, selectedEntities, onToggleRow}) {
-	const name = publisher.defaultAlias ? publisher.defaultAlias.name : '(unnamed)';
-	const disambiguation = getEntityDisambiguation(publisher);
-	const publisherType = publisher.publisherType ? publisher.publisherType.label : '?';
-	const area = publisher.area ? publisher.area.name : '?';
-	const publisherBBID = publisher.bbid;
+function EditionGroupTableRow({editionGroup, showCheckboxes, selectedEntities, onToggleRow}) {
+	const name = editionGroup.defaultAlias ? editionGroup.defaultAlias.name : '(unnamed)';
+	const disambiguation = getEntityDisambiguation(editionGroup);
+	const editionGroupType = editionGroup.editionGroupType ? editionGroup.editionGroupType.label : '?';
+	const editionGroupBBID = editionGroup.bbid;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -41,53 +40,51 @@ function PublisherTableRow({publisher, showCheckboxes, selectedEntities, onToggl
 				{
 					showCheckboxes ?
 						<input
-							checked={selectedEntities.find(bbid => bbid === publisher.bbid)}
+							checked={selectedEntities.find(bbid => bbid === editionGroup.bbid)}
 							className="checkboxes"
-							id={publisher.bbid}
+							id={editionGroup.bbid}
 							type="checkbox"
-							onClick={() => onToggleRow(publisher.bbid)}
+							onClick={() => onToggleRow(editionGroup.bbid)}
 						/> : null
 				}
-				<a href={`/publisher/${publisherBBID}`}>{name}</a>
+				<a href={`/edition-group/${editionGroupBBID}`}>{name}</a>
 				{disambiguation}
 			</td>
-			<td>{area}</td>
-			<td>{publisherType}</td>
+			<td>{editionGroupType}</td>
 		</tr>
 	);
 }
-PublisherTableRow.displayName = 'PublisherTableRow';
-PublisherTableRow.propTypes = {
+EditionGroupTableRow.displayName = 'EditionGroupTableRow';
+EditionGroupTableRow.propTypes = {
+	editionGroup: PropTypes.object.isRequired,
 	onToggleRow: PropTypes.func,
-	publisher: PropTypes.object.isRequired,
 	selectedEntities: PropTypes.array,
 	showCheckboxes: PropTypes.bool
 };
-PublisherTableRow.defaultProps = {
+EditionGroupTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
 	showCheckboxes: false
 };
 
-function PublisherTable({publishers, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionGroupTable({editionGroups, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
-	if (publishers.length) {
+	if (editionGroups.length) {
 		tableContent = (
 			<React.Fragment>
 				<Table striped>
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Area</th>
 							<th>Type</th>
 						</tr>
 					</thead>
 					<tbody>
 						{
-							publishers.map((publisher) => (
-								<PublisherTableRow
-									key={publisher.bbid}
-									publisher={publisher}
+							editionGroups.map((editionGroup) => (
+								<EditionGroupTableRow
+									editionGroup={editionGroup}
+									key={editionGroup.bbid}
 									selectedEntities={selectedEntities}
 									showCheckboxes={showCheckboxes}
 									onToggleRow={onToggleRow}
@@ -101,26 +98,26 @@ function PublisherTable({publishers, showCheckboxes, selectedEntities, onToggleR
 		);
 	}
 	else {
-		tableContent = <span>No publishers</span>;
+		tableContent = <span>No edition groups</span>;
 	}
 	return (
 		<div>
-			<h2>Publishers</h2>
+			<h2>Edition Groups</h2>
 			{tableContent}
 		</div>
 	);
 }
-PublisherTable.displayName = 'PublisherTable';
-PublisherTable.propTypes = {
+EditionGroupTable.displayName = 'EditionGroupTable';
+EditionGroupTable.propTypes = {
+	editionGroups: PropTypes.array.isRequired,
 	onToggleRow: PropTypes.func,
-	publishers: PropTypes.array.isRequired,
 	selectedEntities: PropTypes.array,
 	showCheckboxes: PropTypes.bool
 };
-PublisherTable.defaultProps = {
+EditionGroupTable.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
 	showCheckboxes: false
 };
 
-export default PublisherTable;
+export default EditionGroupTable;

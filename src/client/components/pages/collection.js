@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import AuthorTable from './entities/author-table';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
+import EditionGroupTable from './entities/editionGroup-table';
 import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -37,6 +38,7 @@ function getEntityTable(entityType) {
 	const tables = {
 		Author: AuthorTable,
 		Edition: EditionTable,
+		EditionGroup: EditionGroupTable,
 		Publisher: PublisherTable,
 		Work: WorkTable
 	};
@@ -47,6 +49,7 @@ function getEntityKey(entityType) {
 	const keys = {
 		Author: 'authors',
 		Edition: 'editions',
+		EditionGroup: 'editionGroups',
 		Publisher: 'publishers',
 		Work: 'works'
 	};
@@ -184,11 +187,12 @@ class CollectionPage extends React.Component {
 						this.state.selectedEntities.length ?
 							<Button
 								bsStyle="danger"
+								title="Remove selected from "
 								onClick={this.handleRemoveEntities}
 							>
 								<FontAwesomeIcon icon="times-circle"/>
 								&nbsp;Remove selected&nbsp;
-								{_.lowerFirst(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
+								{_.kebabCase(_.lowerFirst(this.props.collection.entityType))}{this.state.selectedEntities.length > 1 ? 's' : null}
 							</Button> : null
 					}
 					{
