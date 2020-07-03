@@ -17,15 +17,18 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import EditionTable from './entities/edition-table';
+import EntityImage from './entities/image';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WorkTable from './entities/work-table';
+import {formatDate} from '../../helpers/utils';
 import request from 'superagent';
 
 
-const {Alert, Button, ButtonGroup, Row} = bootstrap;
+const {Alert, Button, Col, Row} = bootstrap;
 
 function getEntityTable(entityType) {
 	const tables = {
@@ -42,6 +45,45 @@ function getEntityKey(entityType) {
 	};
 	return keys[entityType];
 }
+
+function CollectionAttributes({collection}) {
+	return (
+		<div>
+			<Row>
+				<Col md={3}>
+					<dl>
+						<dt>Description</dt>
+						<dd>{collection.description}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dl>
+						<dt>Owner</dt>
+						<dd>{collection.owner.name}</dd>
+						<dt>Collaborators</dt>
+						<dd>{collection.collaborators.map((collaborator) => `${collaborator.text} `)}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dl>
+						<dt>Last Modified</dt>
+						<dd>{formatDate(new Date(collection.lastModified), true)}</dd>
+						<dt>Created At</dt>
+						<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
+					</dl>
+				</Col>
+				<Col md={3}>
+					<dt>Privacy</dt>
+					<dd>{collection.public ? 'Public' : 'Private'}</dd>
+				</Col>
+			</Row>
+		</div>
+	);
+}
+CollectionAttributes.displayName = 'CollectionAttributes';
+CollectionAttributes.propTypes = {
+	collection: PropTypes.object.isRequired
+};
 
 class CollectionPage extends React.Component {
 	constructor(props) {
@@ -103,45 +145,49 @@ class CollectionPage extends React.Component {
 		return (
 			<div>
 				<Row className="entity-display-background">
-					<div>
+					<Col className="entity-display-image-box text-center" md={2}>
+						<EntityImage
+							backupIcon={ENTITY_TYPE_ICONS[this.props.collection.entityType]}
+						/>
+					</Col>
+					<Col md={10}>
 						<h1><strong>{this.props.collection.name}</strong></h1>
-						<h4>{this.props.collection.description}</h4>
-						<hr/>
-						{
-							this.props.isOwner ?
-								<ButtonGroup className="pull-right margin-bottom-1">
-									<Button
-										bsStyle="warning"
-										className="margin-right-d2"
-										href={`/collection/${this.props.collection.id}/edit`}
-										title="Edit Collection"
-									>
-										<FontAwesomeIcon icon="pencil-alt"/>&nbsp;Edit
-									</Button>
-									<Button
-										bsStyle="danger"
-										className="margin-right-1"
-										title="Delete this Collection"
-									>
-										<FontAwesomeIcon icon="trash-alt"/> Delete
-									</Button>
-								</ButtonGroup> : null
-						}
-					</div>
+						<CollectionAttributes collection={this.props.collection}/>
+					</Col>
 				</Row>
 				<EntityTable{...propsForTable}/>
 				{errorComponent}
-				{
-					this.props.showCheckboxes ?
-						<Button
-							bsStyle="danger"
-							className="pull-left margin-top-1"
-							onClick={this.handleRemoveEntities}
-						>
-							<FontAwesomeIcon icon="times"/>
-							&nbsp;Remove selected {this.entityKey}
-						</Button> : null
-				}
+				<div className="margin-top-1 text-center">
+					{
+						this.props.showCheckboxes ?
+							<Button
+								bsStyle="danger"
+								onClick={this.handleRemoveEntities}
+							>
+								<FontAwesomeIcon icon="times"/>
+								&nbsp;Remove selected {this.entityKey}
+							</Button> : null
+					}
+					{
+						this.props.isOwner ?
+							<Button
+								bsStyle="warning"
+								href={`/collection/${this.props.collection.id}/edit`}
+								title="Edit Collection"
+							>
+								<FontAwesomeIcon icon="pencil-alt"/>&nbsp;Edit collection
+							</Button> : null
+					}
+					{
+						this.props.isOwner ?
+							<Button
+								bsStyle="danger"
+								title="Delete Collection"
+							>
+								<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
+							</Button> : null
+					}
+				</div>
 			</div>
 		);
 	}
