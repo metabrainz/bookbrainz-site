@@ -24,8 +24,7 @@ import React from 'react';
 
 
 const {Table} = bootstrap;
-
-const {getEntityDisambiguation} = entityHelper;
+const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation} = entityHelper;
 
 function PublisherTableRow({publisher, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = publisher.defaultAlias ? publisher.defaultAlias.name : '(unnamed)';
@@ -33,6 +32,9 @@ function PublisherTableRow({publisher, showCheckboxes, selectedEntities, onToggl
 	const publisherType = publisher.publisherType ? publisher.publisherType.label : '?';
 	const area = publisher.area ? publisher.area.name : '?';
 	const publisherBBID = publisher.bbid;
+	const beginDate = transformISODateForDisplay(extractAttribute(publisher.beginDate));
+	const endDate = transformISODateForDisplay(extractAttribute(publisher.endDate));
+
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -53,6 +55,8 @@ function PublisherTableRow({publisher, showCheckboxes, selectedEntities, onToggl
 			</td>
 			<td>{area}</td>
 			<td>{publisherType}</td>
+			<td>{beginDate}</td>
+			<td>{endDate}</td>
 		</tr>
 	);
 }
@@ -77,9 +81,11 @@ function PublisherTable({publishers, showCheckboxes, selectedEntities, onToggleR
 				<Table striped>
 					<thead>
 						<tr>
-							<th>Name</th>
-							<th>Area</th>
-							<th>Type</th>
+							<th className="col-sm-6">Name</th>
+							<th className="col-sm-1">Area</th>
+							<th className="col-sm-1">Type</th>
+							<th className="col-sm-2">Date founded</th>
+							<th className="col-sm-2">Date dissolved</th>
 						</tr>
 					</thead>
 					<tbody>

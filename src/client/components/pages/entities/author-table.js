@@ -24,8 +24,7 @@ import React from 'react';
 
 
 const {Table} = bootstrap;
-
-const {getEntityDisambiguation} = entityHelper;
+const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation} = entityHelper;
 
 function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = author.defaultAlias ? author.defaultAlias.name : '(unnamed)';
@@ -33,6 +32,8 @@ function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow})
 	const authorType = author.authorType ? author.authorType.label : '?';
 	const gender = author.gender ? author.gender.name : '?';
 	const authorBBID = author.bbid;
+	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
+	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -53,6 +54,8 @@ function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow})
 			</td>
 			<td>{gender}</td>
 			<td>{authorType}</td>
+			<td>{beginDate}</td>
+			<td>{endDate}</td>
 		</tr>
 	);
 }
@@ -77,9 +80,11 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 				<Table striped>
 					<thead>
 						<tr>
-							<th>Name</th>
-							<th>Gender</th>
-							<th>Type</th>
+							<th className="col-sm-6">Name</th>
+							<th className="col-sm-1">Gender</th>
+							<th className="col-sm-1">Type</th>
+							<th className="col-sm-2">Date of birth</th>
+							<th className="col-sm-2">Date of death</th>
 						</tr>
 					</thead>
 					<tbody>
