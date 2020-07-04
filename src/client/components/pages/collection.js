@@ -149,7 +149,7 @@ class CollectionPage extends React.Component {
 			newSelected = oldSelected.filter(selectedBBID => selectedBBID !== bbid);
 		}
 		else {
-			newSelected = oldSelected.push(bbid) && oldSelected;
+			newSelected = [...oldSelected, bbid];
 		}
 		this.setState({
 			selectedEntities: newSelected
@@ -222,12 +222,12 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="danger"
-								title="Remove selected from "
+								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
 								onClick={this.handleRemoveEntities}
 							>
 								<FontAwesomeIcon icon="times-circle"/>
 								&nbsp;Remove selected&nbsp;
-								{_.kebabCase(_.lowerFirst(this.props.collection.entityType))}{this.state.selectedEntities.length > 1 ? 's' : null}
+								{_.kebabCase(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
 							</Button> : null
 					}
 					{
