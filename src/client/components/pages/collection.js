@@ -77,7 +77,7 @@ function CollectionAttributes({collection}) {
 				{
 					collection.collaborators.length ?
 						<Col md={3}>
-							<dt>Collaborators</dt>
+							<dt>Collaborator{collection.collaborators.length > 1 ? 's' : null}</dt>
 							<dd>
 								{
 									collection.collaborators.map((collaborator, id) =>
@@ -125,6 +125,7 @@ class CollectionPage extends React.Component {
 			showModal: false
 		};
 
+		this.entityKey = getEntityKey(this.props.collection.entityType);
 		this.toggleRow = this.toggleRow.bind(this);
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
@@ -162,7 +163,7 @@ class CollectionPage extends React.Component {
 				});
 		}
 		else {
-			this.setState({error: `No ${_.kebabCase(this.entityKey)} selected`});
+			this.setState({error: `No ${_.kebabCase(this.props.collection.entityType)} selected`});
 		}
 	}
 
@@ -211,7 +212,7 @@ class CollectionPage extends React.Component {
 				{errorComponent}
 				<div className="margin-top-1 text-center">
 					{
-						this.state.selectedEntities.length ?
+						this.props.showCheckboxes && this.props.entities.length ?
 							<Button
 								bsStyle="danger"
 								title="Remove selected from "
