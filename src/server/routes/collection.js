@@ -21,6 +21,7 @@
 import * as auth from '../helpers/auth';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
+import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
@@ -29,6 +30,7 @@ import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
+import {getCollectionItemBBIDs} from '../helpers/collections';
 import log from 'log';
 import target from '../templates/target';
 
@@ -105,36 +107,73 @@ router.param(
 	middleware.makeCollectionLoader()
 );
 
-router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res) => {
-	const {collection} = res.locals;
-	const {orm} = req.app.locals;
-	const relations = getEntityRelations(collection.entityType);
+router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res, next) => {
+	try {
+		const {collection} = res.locals;
+		const {orm} = req.app.locals;
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		const relations = getEntityRelations(collection.entityType);
 
-	const entitiesPromise = collection.items.map(item => orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations));
-	const entities = await Promise.all(entitiesPromise);
-	const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user.id, 10);
-	let showCheckboxes = isOwner;
-	if (req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
-		showCheckboxes = true;
+		// fetch 1 more bbid to check next enabled for pagination
+		const bbids = await getCollectionItemBBIDs(collection.id, from, size + 1, orm);
+		// get next enabled for pagination
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(bbids, size);
+		// load entities from bbids
+		const entitiesPromise = newResultsArray.map(bbid => orm.func.entity.getEntity(orm, collection.entityType, bbid, relations));
+		const entities = await Promise.all(entitiesPromise);
+		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user.id, 10);
+		let showCheckboxes = isOwner;
+		if (req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
+			showCheckboxes = true;
+		}
+		const props = generateProps(req, res, {
+			collection,
+			entities,
+			from,
+			isOwner,
+			nextEnabled,
+			showCheckboxes,
+			size
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<CollectionPage {...propHelpers.extractChildProps(props)}/>
+			</Layout>
+		);
+
+		const script = '/js/collection.js';
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script
+		}));
 	}
-	const props = generateProps(req, res, {
-		collection,
-		entities,
-		isOwner,
-		showCheckboxes
-	});
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<CollectionPage {...propHelpers.extractChildProps(props)}/>
-		</Layout>
-	);
+	catch (err) {
+		log.debug(err);
+		return next(err);
+	}
+});
 
-	const script = '/js/collection.js';
-	return res.send(target({
-		markup,
-		props: escapeProps(props),
-		script
-	}));
+router.get('/:collectionId/paginate', auth.isAuthenticatedForCollectionView, async (req, res, next) => {
+	try {
+		const {collection} = res.locals;
+		const {orm} = req.app.locals;
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+		const relations = getEntityRelations(collection.entityType);
+
+		const bbids = await getCollectionItemBBIDs(collection.id, from, size, orm);
+		// load entities from bbids
+		const entitiesPromise = bbids.map(bbid => orm.func.entity.getEntity(orm, collection.entityType, bbid, relations));
+		const entities = await Promise.all(entitiesPromise);
+		res.send(entities);
+	}
+	catch (err) {
+		log.debug(err);
+		return next(err);
+	}
 });
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {

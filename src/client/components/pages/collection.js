@@ -24,6 +24,7 @@ import EditionGroupTable from './entities/editionGroup-table';
 import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import PublisherTable from './entities/publisher-table';
 import React from 'react';
@@ -120,20 +121,25 @@ class CollectionPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			entities: this.props.entities,
 			error: null,
 			selectedEntities: [],
 			showModal: false
 		};
 
 		this.entityKey = getEntityKey(this.props.collection.entityType);
+		this.paginationUrl = `/collection/${this.props.collection.id}/paginate?q=`;
 		this.toggleRow = this.toggleRow.bind(this);
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
 		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
+		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 	}
 
-	entityKey = getEntityKey(this.props.collection.entityType);
+	searchResultsCallback(newResults) {
+		this.setState({entities: newResults});
+	}
 
 	toggleRow(bbid) {
 		// eslint-disable-next-line react/no-access-state-in-setstate
@@ -184,7 +190,7 @@ class CollectionPage extends React.Component {
 			<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert> : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
 		const propsForTable = {
-			[this.entityKey]: this.props.entities,
+			[this.entityKey]: this.state.entities,
 			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
@@ -210,10 +216,11 @@ class CollectionPage extends React.Component {
 				</Row>
 				<EntityTable{...propsForTable}/>
 				{errorComponent}
-				<div className="margin-top-1 text-center">
+				<div className="margin-top-1 text-left">
 					{
 						this.props.showCheckboxes && this.props.entities.length ?
 							<Button
+								bsSize="small"
 								bsStyle="danger"
 								title="Remove selected from "
 								onClick={this.handleRemoveEntities}
@@ -226,6 +233,7 @@ class CollectionPage extends React.Component {
 					{
 						this.props.isOwner ?
 							<Button
+								bsSize="small"
 								bsStyle="warning"
 								href={`/collection/${this.props.collection.id}/edit`}
 								title="Edit Collection"
@@ -236,6 +244,7 @@ class CollectionPage extends React.Component {
 					{
 						this.props.isOwner ?
 							<Button
+								bsSize="small"
 								bsStyle="danger"
 								title="Delete Collection"
 								onClick={this.handleShowModal}
@@ -243,6 +252,16 @@ class CollectionPage extends React.Component {
 								<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
 							</Button> : null
 					}
+				</div>
+				<div id="pageWithPagination">
+					<PagerElement
+						from={this.props.from}
+						nextEnabled={this.props.nextEnabled}
+						paginationUrl={this.paginationUrl}
+						results={this.state.entities}
+						searchResultsCallback={this.searchResultsCallback}
+						size={this.props.size}
+					/>
 				</div>
 			</div>
 		);
@@ -254,13 +273,18 @@ CollectionPage.displayName = 'CollectionPage';
 CollectionPage.propTypes = {
 	collection: PropTypes.object.isRequired,
 	entities: PropTypes.array,
+	from: PropTypes.number,
 	isOwner: PropTypes.bool,
-	showCheckboxes: PropTypes.bool
+	nextEnabled: PropTypes.bool.isRequired,
+	showCheckboxes: PropTypes.bool,
+	size: PropTypes.number
 };
 CollectionPage.defaultProps = {
 	entities: [],
+	from: 0,
 	isOwner: false,
-	showCheckboxes: false
+	showCheckboxes: false,
+	size: 20
 };
 
 export default CollectionPage;
