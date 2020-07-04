@@ -96,7 +96,6 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 						}
 					</tbody>
 				</Table>
-				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}

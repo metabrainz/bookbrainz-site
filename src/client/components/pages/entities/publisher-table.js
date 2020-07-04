@@ -96,7 +96,6 @@ function PublisherTable({publishers, showCheckboxes, selectedEntities, onToggleR
 						}
 					</tbody>
 				</Table>
-				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}

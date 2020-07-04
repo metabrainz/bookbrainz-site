@@ -125,7 +125,6 @@ function EditionTable({editions, entity, showAdd, showCheckboxes, selectedEntiti
 						{'  Add Edition'}
 					</Button>
 				}
-				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}

@@ -107,7 +107,6 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, on
 						<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
 					</Button>
 				}
-				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}

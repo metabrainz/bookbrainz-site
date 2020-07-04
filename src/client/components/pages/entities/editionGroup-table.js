@@ -93,7 +93,6 @@ function EditionGroupTable({editionGroups, showCheckboxes, selectedEntities, onT
 						}
 					</tbody>
 				</Table>
-				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}
