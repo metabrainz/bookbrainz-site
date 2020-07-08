@@ -79,11 +79,11 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 				<Table striped>
 					<thead>
 						<tr>
-							<th className="col-sm-6">Name</th>
-							<th className="col-sm-1">Gender</th>
-							<th className="col-sm-1">Type</th>
-							<th className="col-sm-2">Date of birth</th>
-							<th className="col-sm-2">Date of death</th>
+							<th style={{width: '50%'}}>Name</th>
+							<th style={{width: '10%'}}>Gender</th>
+							<th style={{width: '10%'}}>Type</th>
+							<th style={{width: '15%'}}>Date of birth</th>
+							<th style={{width: '15%'}}>Date of death</th>
 						</tr>
 					</thead>
 					<tbody>
