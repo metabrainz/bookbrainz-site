@@ -21,7 +21,7 @@ import * as search from './search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
 
 
-export async function collectionCreateOrEditHandler(req, res) {
+export async function collectionCreateOrEditHandler(req, res, next) {
 	try {
 		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
 		const isNew = !res.locals.collection;
@@ -34,6 +34,9 @@ export async function collectionCreateOrEditHandler(req, res) {
 			method = 'insert';
 		}
 		else {
+			if (upperFirst(camelCase(req.body.entityType)) !== res.locals.collection.entityType) {
+				throw new Error('Trying to change entityType of a non empty collection');
+			}
 			newCollection = await new UserCollection({id: req.params.collectionId}).fetch({
 				require: true
 			});
@@ -93,6 +96,6 @@ export async function collectionCreateOrEditHandler(req, res) {
 		return res.send(newCollection.toJSON());
 	}
 	catch (err) {
-		return res.status(500).send();
+		return next(err);
 	}
 }
