@@ -80,10 +80,10 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 					<thead>
 						<tr>
 							<th style={{width: '50%'}}>Name</th>
-							<th style={{width: '10%'}}>Gender</th>
-							<th style={{width: '10%'}}>Type</th>
-							<th style={{width: '15%'}}>Date of birth</th>
-							<th style={{width: '15%'}}>Date of death</th>
+							<th>Gender</th>
+							<th>Type</th>
+							<th>Date of birth</th>
+							<th>Date of death</th>
 						</tr>
 					</thead>
 					<tbody>
