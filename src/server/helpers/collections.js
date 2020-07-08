@@ -125,13 +125,4 @@ export async function getCollectionItemBBIDs(collectionId, from, size, orm) {
 						LIMIT ${size}
 						OFFSET ${from}`);
 	return result.rows.map(row => row.bbid);
-	// const {UserCollectionItem} = orm;
-	// const items = await new UserCollectionItem()
-	// 	.where('collection_id', collectionId)
-	// 	.orderBy('added_at')
-	// 	.fetchPage({
-	// 		debug: true
-	// 	});
-	// const itemsJSON = items.toJSON();
-	// return itemsJSON.map(item => item.bbid);
 }

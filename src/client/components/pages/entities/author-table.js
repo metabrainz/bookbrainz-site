@@ -24,14 +24,13 @@ import React from 'react';
 
 
 const {Table} = bootstrap;
-const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation} = entityHelper;
+const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow}) {
-	const name = author.defaultAlias ? author.defaultAlias.name : '(unnamed)';
+	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const authorType = author.authorType ? author.authorType.label : '?';
 	const gender = author.gender ? author.gender.name : '?';
-	const authorBBID = author.bbid;
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 
@@ -49,7 +48,7 @@ function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow})
 							onClick={() => onToggleRow(author.bbid)}
 						/> : null
 				}
-				<a href={`/author/${authorBBID}`}>{name}</a>
+				<a href={`/author/${author.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
 			<td>{gender}</td>
