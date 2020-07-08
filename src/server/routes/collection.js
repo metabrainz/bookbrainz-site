@@ -122,7 +122,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		// load entities from bbids
 		const entitiesPromise = newResultsArray.map(bbid => orm.func.entity.getEntity(orm, collection.entityType, bbid, relations));
 		const entities = await Promise.all(entitiesPromise);
-		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user.id, 10);
+		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
 		let showCheckboxes = isOwner;
 		if (req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
 			showCheckboxes = true;
@@ -200,7 +200,7 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 
 router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, collectionCreateOrEditHandler);
 
-router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res) => {
+router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res, next) => {
 	try {
 		const {UserCollection} = req.app.locals.orm;
 		const {collectionId} = req.params;
@@ -209,11 +209,11 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 	}
 	catch (err) {
 		log.debug(err);
-		return res.status(500).send({});
+		return next(err);
 	}
 });
 
-router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res) => {
+router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res, next) => {
 	const {bbids = []} = req.body;
 	const {collection} = res.locals;
 	try {
@@ -235,12 +235,12 @@ router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwne
 	}
 	catch (err) {
 		log.debug(err);
-		res.status(500).send();
+		return next(err);
 	}
 });
 
 /* eslint-disable no-await-in-loop */
-router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res) => {
+router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res, next) => {
 	const {bbids} = req.body;
 	const {collection} = res.locals;
 	try {
@@ -253,11 +253,9 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 					bbid,
 					collectionId: collection.id
 				}).save(null, {method: 'insert'});
-				const collectionModel = await new UserCollection({id: collection.id}).fetch({
-					require: true
-				});
-				collectionModel.set('last_modified', new Date());
-				await collectionModel.save(null, {method: 'update'});
+				await new UserCollection({id: collection.id}).save({
+					lastModified: new Date()
+				}, {patch: true});
 			}
 			catch (err) {
 				// throw error if it's not due to unique constraint
@@ -270,7 +268,7 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 	}
 	catch (err) {
 		log.debug(err);
-		res.status(500).send();
+		return next(err);
 	}
 });
 

@@ -25,13 +25,12 @@ import React from 'react';
 
 const {Table} = bootstrap;
 
-const {getEntityDisambiguation} = entityHelper;
+const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function EditionGroupTableRow({editionGroup, showCheckboxes, selectedEntities, onToggleRow}) {
-	const name = editionGroup.defaultAlias ? editionGroup.defaultAlias.name : '(unnamed)';
+	const name = getEntityLabel(editionGroup);
 	const disambiguation = getEntityDisambiguation(editionGroup);
 	const editionGroupType = editionGroup.editionGroupType ? editionGroup.editionGroupType.label : '?';
-	const editionGroupBBID = editionGroup.bbid;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -47,7 +46,7 @@ function EditionGroupTableRow({editionGroup, showCheckboxes, selectedEntities, o
 							onClick={() => onToggleRow(editionGroup.bbid)}
 						/> : null
 				}
-				<a href={`/edition-group/${editionGroupBBID}`}>{name}</a>
+				<a href={`/edition-group/${editionGroup.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
 			<td>{editionGroupType}</td>

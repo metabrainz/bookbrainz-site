@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2019  Akhilesh Kumar (@akhilesh26)
+ * Copyright (C) 2020  Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,14 +28,13 @@ import {kebabCase as _kebabCase} from 'lodash';
 
 const {Button, Table} = bootstrap;
 
-const {getEntityDisambiguation, getLanguageAttribute} = entityHelper;
+const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
 function WorkTableRow({work, showCheckboxes, selectedEntities, onToggleRow}) {
-	const name = work.defaultAlias ? work.defaultAlias.name : '(unnamed)';
+	const name = getEntityLabel(work);
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
 	const languages = getLanguageAttribute(work).data;
-	const workBBID = work.bbid;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -50,7 +50,7 @@ function WorkTableRow({work, showCheckboxes, selectedEntities, onToggleRow}) {
 							onClick={() => onToggleRow(work.bbid)}
 						/> : null
 				}
-				<a href={`/Work/${workBBID}`}>{name}</a>
+				<a href={`/Work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
 			<td>{languages}</td>

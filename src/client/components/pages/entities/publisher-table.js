@@ -24,14 +24,13 @@ import React from 'react';
 
 
 const {Table} = bootstrap;
-const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation} = entityHelper;
+const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function PublisherTableRow({publisher, showCheckboxes, selectedEntities, onToggleRow}) {
-	const name = publisher.defaultAlias ? publisher.defaultAlias.name : '(unnamed)';
+	const name = getEntityLabel(publisher);
 	const disambiguation = getEntityDisambiguation(publisher);
 	const publisherType = publisher.publisherType ? publisher.publisherType.label : '?';
 	const area = publisher.area ? publisher.area.name : '?';
-	const publisherBBID = publisher.bbid;
 	const beginDate = transformISODateForDisplay(extractAttribute(publisher.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(publisher.endDate));
 
@@ -50,7 +49,7 @@ function PublisherTableRow({publisher, showCheckboxes, selectedEntities, onToggl
 							onClick={() => onToggleRow(publisher.bbid)}
 						/> : null
 				}
-				<a href={`/publisher/${publisherBBID}`}>{name}</a>
+				<a href={`/publisher/${publisher.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
 			<td>{area}</td>
