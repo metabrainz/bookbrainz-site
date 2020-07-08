@@ -164,9 +164,9 @@ class UserCollectionForm extends React.Component {
 		const initialPrivacy = this.state.collection.public ? 'Public' : 'Private';
 		const initialType = this.state.collection.entityType;
 		const {errorText} = this.state;
-		const errorAlertClass =
-			classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		const errorAlertClass = classNames('text-center', 'margin-top-1', {hidden: !errorText});
 		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
+		const canEditType = this.props.collection.items.length === 0;
 
 		/* eslint-disable react/jsx-no-bind */
 		return (
@@ -202,7 +202,7 @@ class UserCollectionForm extends React.Component {
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialType}
-								disabled={!this.props.canEditType}
+								disabled={!canEditType}
 								idAttribute="name"
 								label="Entity Type"
 								labelAttribute="name"
@@ -292,25 +292,23 @@ class UserCollectionForm extends React.Component {
 
 UserCollectionForm.displayName = 'UserCollectionForm';
 UserCollectionForm.propTypes = {
-	canEditType: PropTypes.bool,
 	collection: PropTypes.shape({
 		collaborators: PropTypes.array,
 		description: PropTypes.string,
 		entityType: PropTypes.string,
 		id: PropTypes.string,
-		isEdit: PropTypes.bool,
+		items: PropTypes.array,
 		name: PropTypes.string,
 		public: PropTypes.bool
 	})
 };
 UserCollectionForm.defaultProps = {
-	canEditType: true,
 	collection: {
 		collaborators: [],
 		description: '',
 		entityType: null,
 		id: null,
-		isEdit: false,
+		items: [],
 		name: null,
 		public: false
 	}
