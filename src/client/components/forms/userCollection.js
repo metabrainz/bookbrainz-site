@@ -18,6 +18,7 @@
 
 
 import * as bootstrap from 'react-bootstrap';
+import {trim, uniqBy} from 'lodash';
 import CustomInput from '../../input';
 import DeleteCollectionModal from '../pages/parts/delete-collection-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
@@ -28,7 +29,6 @@ import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
 import classNames from 'classnames';
 import request from 'superagent';
-import {uniqBy} from 'lodash';
 
 
 const {Alert, Button, ButtonGroup, Col} = bootstrap;
@@ -68,7 +68,7 @@ class UserCollectionForm extends React.Component {
 
 		const collaborators = this.getCleanedCollaborators();
 		const description = this.description.getValue();
-		const name = this.name.getValue();
+		const name = trim(this.name.getValue());
 		const privacy = this.privacy.getValue();
 		const entityType = this.entityType.getValue();
 
@@ -99,7 +99,7 @@ class UserCollectionForm extends React.Component {
 	}
 
 	isValid() {
-		return this.name.getValue() && this.entityType.getValue();
+		return trim(this.name.getValue()).length && this.entityType.getValue();
 	}
 
 	getCleanedCollaborators() {
