@@ -19,9 +19,23 @@
 import * as handler from '../helpers/handler';
 import * as search from './search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
+import log from 'log';
 
+<<<<<<< HEAD
 
 export async function collectionCreateOrEditHandler(req, res, next) {
+=======
+/**
+ * A middleware handler for create or edit actions on collections.
+ * @param {object} req - request object
+ * @param {object} res - response object
+ * @returns {promise} res.send promise
+ * @description
+ * Creates a new collection or updates the existing collection
+ * If it's a new collection or it's is changed, ElasticSearch index is updated
+ */
+export async function collectionCreateOrEditHandler(req, res) {
+>>>>>>> chore: add jsoc doc for createOrEditHandler
 	try {
 		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
 		const isNew = !res.locals.collection;
@@ -98,4 +112,4 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 	catch (err) {
 		return next(err);
 	}
-}
+};
