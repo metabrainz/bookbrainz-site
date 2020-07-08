@@ -226,11 +226,9 @@ router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwne
 				qb.where('collection_id', collection.id);
 				qb.whereIn('bbid', bbids);
 			}).destroy();
-		const collectionModel = await new UserCollection({id: collection.id}).fetch({
-			require: true
-		});
-		collectionModel.set('last_modified', new Date());
-		await collectionModel.save(null, {method: 'update'});
+		await new UserCollection({id: collection.id}).save({
+			lastModified: new Date()
+		}, {patch: true});
 		res.status(200).send();
 	}
 	catch (err) {
