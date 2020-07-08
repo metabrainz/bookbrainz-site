@@ -106,3 +106,23 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
 
 	return collectionsJSON;
 }
+
+/**
+ * Fetches bbids of entities in the collection
+ * Fetches the last 'size' number of bbids with offset 'from'
+ * @param {uuid} collectionId - collectionId
+ * @param {number} from - the offset value
+ * @param {number} size - no. of last collections required
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @returns {array} - array of bbids
+ */
+export async function getCollectionItemBBIDs(collectionId, from, size, orm) {
+	const result = await orm.bookshelf.knex.raw(`
+						SELECT bookbrainz.user_collection_item.bbid
+						FROM bookbrainz.user_collection_item
+						WHERE collection_id='${collectionId}'
+						ORDER BY user_collection_item.added_at ASC
+						LIMIT ${size}
+						OFFSET ${from}`);
+	return result.rows.map(row => row.bbid);
+}
