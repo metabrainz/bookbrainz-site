@@ -81,10 +81,10 @@ function PublisherTable({publishers, showCheckboxes, selectedEntities, onToggleR
 					<thead>
 						<tr>
 							<th style={{width: '50%'}}>Name</th>
-							<th style={{width: '10%'}}>Area</th>
-							<th style={{width: '10%'}}>Type</th>
-							<th style={{width: '15%'}}>Date founded</th>
-							<th style={{width: '15%'}}>Date dissolved</th>
+							<th>Area</th>
+							<th>Type</th>
+							<th>Date founded</th>
+							<th>Date dissolved</th>
 						</tr>
 					</thead>
 					<tbody>
