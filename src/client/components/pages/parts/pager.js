@@ -66,23 +66,29 @@ class PagerElement extends React.Component {
 
 	handleURLChange = () => {
 		const url = new URL(window.location.href);
-		const {from, size} = this.state;
+		const {from, size, query} = this.state;
 		let newFrom;
 		let newSize;
-		if (url.searchParams.get('from')) {
+		let newQuery;
+		if (url.searchParams.has('from')) {
 			newFrom = Number(url.searchParams.get('from'));
 		}
-		if (url.searchParams.get('size')) {
+		if (url.searchParams.has('size')) {
 			newSize = Number(url.searchParams.get('size'));
 		}
-		if (newFrom === from && newSize === size) {
+		// For paginationURL '/serach?parameter=', look for 'parameter'
+		const queryParam = this.props.paginationUrl.split('?')?.[1]?.split('=')?.[0];
+		if (queryParam && url.searchParams.has(queryParam)) {
+			newQuery = url.searchParams.get(queryParam);
+		}
+		if (newFrom === from && newSize === size && newQuery === query) {
 			return;
 		}
 
-		this.triggerSearch(newFrom, newSize);
+		this.triggerSearch(newFrom, newSize, newQuery);
 	};
 
-	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
+	triggerSearch(newFrom = this.state.from, newSize = this.state.size, newQuery = this.state.query) {
 		// get 1 more result than size to check nextEnabled
 		const pagination = `&size=${newSize + 1}&from=${newFrom}`;
 
@@ -90,8 +96,8 @@ class PagerElement extends React.Component {
 		// so we grab everything after '?' and slap it in front of the params
 		const urlParts = ['?'];
 		urlParts.push(this.props.paginationUrl.split('?')[1]);
-		if (this.state.query) {
-			urlParts.push(this.state.query);
+		if (newQuery) {
+			urlParts.push(newQuery);
 			urlParts.push('&');
 		}
 		urlParts.push(`size=${newSize}`);
@@ -99,13 +105,14 @@ class PagerElement extends React.Component {
 
 		window.history.pushState(null, '', urlParts.join(''));
 
-		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
+		request.get(`${this.props.paginationUrl}${newQuery}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
 				const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(data, newSize);
 				this.setState({
 					from: newFrom,
 					nextEnabled,
+					query: newQuery,
 					results: newResultsArray,
 					size: newSize
 				});
