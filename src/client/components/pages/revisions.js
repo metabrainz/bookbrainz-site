@@ -31,7 +31,7 @@ class RevisionsPage extends React.Component {
 
 		// React does not autobind non-React class methods
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './revisions/revisions?q=';
+		this.paginationUrl = './revisions/revisions?';
 	}
 
 	searchResultsCallback(newResults) {
