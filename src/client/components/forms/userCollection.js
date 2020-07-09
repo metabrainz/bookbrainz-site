@@ -18,6 +18,7 @@
 
 
 import * as bootstrap from 'react-bootstrap';
+import {trim, uniqBy} from 'lodash';
 import CustomInput from '../../input';
 import DeleteCollectionModal from '../pages/parts/delete-collection-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
@@ -28,7 +29,6 @@ import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
 import classNames from 'classnames';
 import request from 'superagent';
-import {uniqBy} from 'lodash';
 
 
 const {Alert, Button, ButtonGroup, Col} = bootstrap;
@@ -68,7 +68,7 @@ class UserCollectionForm extends React.Component {
 
 		const collaborators = this.getCleanedCollaborators();
 		const description = this.description.getValue();
-		const name = this.name.getValue();
+		const name = trim(this.name.getValue());
 		const privacy = this.privacy.getValue();
 		const entityType = this.entityType.getValue();
 
@@ -99,7 +99,7 @@ class UserCollectionForm extends React.Component {
 	}
 
 	isValid() {
-		return this.name.getValue() && this.entityType.getValue();
+		return trim(this.name.getValue()).length && this.entityType.getValue();
 	}
 
 	getCleanedCollaborators() {
@@ -164,9 +164,9 @@ class UserCollectionForm extends React.Component {
 		const initialPrivacy = this.state.collection.public ? 'Public' : 'Private';
 		const initialType = this.state.collection.entityType;
 		const {errorText} = this.state;
-		const errorAlertClass =
-			classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		const errorAlertClass = classNames('text-center', 'margin-top-1', {hidden: !errorText});
 		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
+		const canEditType = this.props.collection.items.length === 0;
 
 		/* eslint-disable react/jsx-no-bind */
 		return (
@@ -202,7 +202,7 @@ class UserCollectionForm extends React.Component {
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialType}
-								disabled={!this.props.canEditType}
+								disabled={!canEditType}
 								idAttribute="name"
 								label="Entity Type"
 								labelAttribute="name"
@@ -292,25 +292,23 @@ class UserCollectionForm extends React.Component {
 
 UserCollectionForm.displayName = 'UserCollectionForm';
 UserCollectionForm.propTypes = {
-	canEditType: PropTypes.bool,
 	collection: PropTypes.shape({
 		collaborators: PropTypes.array,
 		description: PropTypes.string,
 		entityType: PropTypes.string,
 		id: PropTypes.string,
-		isEdit: PropTypes.bool,
+		items: PropTypes.array,
 		name: PropTypes.string,
 		public: PropTypes.bool
 	})
 };
 UserCollectionForm.defaultProps = {
-	canEditType: true,
 	collection: {
 		collaborators: [],
 		description: '',
 		entityType: null,
 		id: null,
-		isEdit: false,
+		items: [],
 		name: null,
 		public: false
 	}
