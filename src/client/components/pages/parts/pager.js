@@ -41,6 +41,22 @@ class PagerElement extends React.Component {
 		this.triggerSearch = this.triggerSearch.bind(this);
 	}
 
+	componentDidMount() {
+		window.addEventListener('popstate', this.handleURLChange);
+		// reconstruct URL for address bar (paginationUrl could finish with '?' or '?q=' for example)
+		// so we grab everything after '?' and slap it in front of the params
+		const urlParts = ['?'];
+		urlParts.push(this.props.paginationUrl.split('?')[1]);
+		if (this.state.query) {
+			urlParts.push(this.state.query);
+			urlParts.push('&');
+		}
+		urlParts.push(`size=${this.state.size}`);
+		urlParts.push(`&from=${this.state.from}`);
+
+		window.history.pushState(null, '', urlParts.join(''));
+	}
+
 	componentDidUpdate(prevProps) {
 		if (prevProps.query !== this.props.query) {
 			// eslint-disable-next-line react/no-did-update-set-state
@@ -48,9 +64,41 @@ class PagerElement extends React.Component {
 		}
 	}
 
+	handleURLChange = () => {
+		const url = new URL(window.location.href);
+		const {from, size} = this.state;
+		let newFrom;
+		let newSize;
+		if (url.searchParams.get('from')) {
+			newFrom = Number(url.searchParams.get('from'));
+		}
+		if (url.searchParams.get('size')) {
+			newSize = Number(url.searchParams.get('size'));
+		}
+		if (newFrom === from && newSize === size) {
+			return;
+		}
+
+		this.triggerSearch(newFrom, newSize);
+	};
+
 	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
 		// get 1 more result than size to check nextEnabled
 		const pagination = `&size=${newSize + 1}&from=${newFrom}`;
+
+		// reconstruct URL for address bar (paginationUrl could finish with '?' or '?q=' for example)
+		// so we grab everything after '?' and slap it in front of the params
+		const urlParts = ['?'];
+		urlParts.push(this.props.paginationUrl.split('?')[1]);
+		if (this.state.query) {
+			urlParts.push(this.state.query);
+			urlParts.push('&');
+		}
+		urlParts.push(`size=${newSize}`);
+		urlParts.push(`&from=${newFrom}`);
+
+		window.history.pushState(null, '', urlParts.join(''));
+
 		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
