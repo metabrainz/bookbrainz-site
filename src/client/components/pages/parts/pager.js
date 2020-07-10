@@ -43,18 +43,14 @@ class PagerElement extends React.Component {
 
 	componentDidMount() {
 		window.addEventListener('popstate', this.handleURLChange);
-		// reconstruct URL for address bar (paginationUrl could finish with '?' or '?q=' for example)
-		// so we grab everything after '?' and slap it in front of the params
-		const urlParts = ['?'];
-		urlParts.push(this.props.paginationUrl.split('?')[1]);
-		if (this.state.query) {
-			urlParts.push(this.state.query);
-			urlParts.push('&');
-		}
-		urlParts.push(`size=${this.state.size}`);
-		urlParts.push(`&from=${this.state.from}`);
 
-		window.history.pushState(null, '', urlParts.join(''));
+		// Set initial size and from parameter in browser address bar
+		const url = new URL(window.location.href);
+		if (url.searchParams.get('size') !== this.state.size || url.searchParams.get('from') !== this.state.from) {
+			url.searchParams.set('size', this.state.size);
+			url.searchParams.set('from', this.state.from);
+			window.history.replaceState(null, '', `?${url.searchParams}`);
+		}
 	}
 
 	componentDidUpdate(prevProps) {
@@ -66,53 +62,41 @@ class PagerElement extends React.Component {
 
 	handleURLChange = () => {
 		const url = new URL(window.location.href);
-		const {from, size, query} = this.state;
+		const {from, size} = this.state;
 		let newFrom;
 		let newSize;
-		let newQuery;
+
 		if (url.searchParams.has('from')) {
 			newFrom = Number(url.searchParams.get('from'));
 		}
 		if (url.searchParams.has('size')) {
 			newSize = Number(url.searchParams.get('size'));
 		}
-		// For paginationURL '/serach?parameter=', look for 'parameter'
-		const queryParam = this.props.paginationUrl.split('?')?.[1]?.split('=')?.[0];
-		if (queryParam && url.searchParams.has(queryParam)) {
-			newQuery = url.searchParams.get(queryParam);
-		}
-		if (newFrom === from && newSize === size && newQuery === query) {
+		if (newFrom === from && newSize === size) {
 			return;
 		}
 
-		this.triggerSearch(newFrom, newSize, newQuery);
+		this.triggerSearch(newFrom, newSize);
 	};
 
-	triggerSearch(newFrom = this.state.from, newSize = this.state.size, newQuery = this.state.query) {
+	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
 		// get 1 more result than size to check nextEnabled
 		const pagination = `&size=${newSize + 1}&from=${newFrom}`;
 
-		// reconstruct URL for address bar (paginationUrl could finish with '?' or '?q=' for example)
-		// so we grab everything after '?' and slap it in front of the params
-		const urlParts = ['?'];
-		urlParts.push(this.props.paginationUrl.split('?')[1]);
-		if (newQuery) {
-			urlParts.push(newQuery);
-			urlParts.push('&');
+		const url = new URL(window.location.href);
+		if (url.searchParams.get('size') !== newSize || url.searchParams.get('from') !== newFrom) {
+			url.searchParams.set('size', newSize);
+			url.searchParams.set('from', newFrom);
+			window.history.pushState(null, '', `?${url.searchParams}`);
 		}
-		urlParts.push(`size=${newSize}`);
-		urlParts.push(`&from=${newFrom}`);
 
-		window.history.pushState(null, '', urlParts.join(''));
-
-		request.get(`${this.props.paginationUrl}${newQuery}${pagination}`)
+		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
 				const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(data, newSize);
 				this.setState({
 					from: newFrom,
 					nextEnabled,
-					query: newQuery,
 					results: newResultsArray,
 					size: newSize
 				});
