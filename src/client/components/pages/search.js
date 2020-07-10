@@ -37,8 +37,9 @@ class SearchPage extends React.Component {
 		super(props);
 
 		this.state = {
-			query: this.props.query,
-			results: this.props.initialResults
+			query: props.query,
+			results: props.initialResults,
+			type: props.type
 		};
 
 		// React does not autobind non-React class methods
@@ -47,25 +48,36 @@ class SearchPage extends React.Component {
 		this.paginationUrl = './search/search?q=';
 	}
 
+	componentDidMount() {
+		window.addEventListener('popstate', () => {
+			const url = new URL(window.location.href);
+			let query;
+			let type;
+			if (url.searchParams.has('q')) {
+				query = url.searchParams.get('q');
+			}
+			if (url.searchParams.has('type')) {
+				type = url.searchParams.get('type');
+			}
+			this.setState({query, type});
+		});
+	}
+
 	/**
-	 * Gets user text query from the SearchField component and retrieves
-	 * autocomplete search results.
+	 * Gets user text query from the SearchField component/ browser nav and
+	 * sets it in state to be passed down to
 	 *
 	 * @param {string} query - Query string entered by user.
 	 * @param {string} type - Entity type selected from dropdown
 	 */
 	handleSearch(query, type) {
-		if (typeof query !== 'string' || typeof type !== 'string') {
-			return;
+		const url = new URL(window.location.href);
+		if (url.searchParams.get('q') !== query || url.searchParams.get('type') !== type) {
+			url.searchParams.set('q', query);
+			url.searchParams.set('type', type);
+			window.history.pushState(null, '', `?${url.searchParams}`);
 		}
-
-		const typeString = type ? `&type=${type}` : '';
-		const fullQuery = `${query}${typeString}`;
-
-		if (this.state.query === fullQuery) {
-			return;
-		}
-		this.setState({query: fullQuery});
+		this.setState({query, type});
 	}
 
 	searchResultsCallback(newResults) {
@@ -79,20 +91,24 @@ class SearchPage extends React.Component {
 	 * @returns {object} - JSX to render.
 	 */
 	render() {
+		const {type, query, results} = this.state;
+		const typeString = type ? `&type=${type}` : '';
+		const fullQuery = `${query}${typeString}`;
 		return (
 			<div id="pageWithPagination">
 				<SearchField
 					entityTypes={this.props.entityTypes}
-					query={this.props.query}
+					query={query}
+					type={type}
 					onSearch={this.handleSearch}
 				/>
-				<SearchResults results={this.state.results}/>
+				<SearchResults results={results}/>
 				<PagerElement
 					from={this.props.from}
 					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
-					query={this.state.query}
-					results={this.state.results}
+					query={fullQuery}
+					results={results}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.resultsPerPage}
 				/>
@@ -108,13 +124,15 @@ SearchPage.propTypes = {
 	initialResults: PropTypes.array,
 	nextEnabled: PropTypes.bool.isRequired,
 	query: PropTypes.string,
-	resultsPerPage: PropTypes.number
+	resultsPerPage: PropTypes.number,
+	type: PropTypes.string
 };
 SearchPage.defaultProps = {
 	from: 0,
 	initialResults: [],
 	query: '',
-	resultsPerPage: 20
+	resultsPerPage: 20,
+	type: null
 };
 
 export default SearchPage;

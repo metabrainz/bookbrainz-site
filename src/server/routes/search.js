@@ -65,7 +65,8 @@ router.get('/', (req, res, next) => {
 				hideSearch: true,
 				nextEnabled,
 				resultsPerPage: size,
-				...searchResults
+				...searchResults,
+				type: req.query.type
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
