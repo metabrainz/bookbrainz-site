@@ -112,6 +112,13 @@ class SearchField extends React.Component {
 					{genEntityIconHTMLElement('Editor')}
 					Editor
 				</MenuItem>
+				<MenuItem
+					eventKey="collection"
+					key="collection"
+				>
+					{genEntityIconHTMLElement('Collection')}
+					Collection
+				</MenuItem>
 			</DropdownButton>
 		) : '';
 
