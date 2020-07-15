@@ -43,7 +43,7 @@ class EntityRevisions extends React.Component {
 		// React does not autobind non-React class methods
 		this.renderHeader = this.renderHeader.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './revisions/revisions?';
+		this.paginationUrl = './revisions/revisions';
 	}
 
 	searchResultsCallback(newResults) {
