@@ -18,8 +18,10 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utils from '../../../../server/helpers/utils';
+
 import PropTypes from 'prop-types';
 import React from 'react';
+import {isFunction} from 'lodash';
 import request from 'superagent';
 
 
@@ -31,7 +33,6 @@ class PagerElement extends React.Component {
 		this.state = {
 			from: this.props.from,
 			nextEnabled: this.props.nextEnabled,
-			query: this.props.query,
 			results: this.props.results,
 			size: this.props.size
 		};
@@ -45,18 +46,19 @@ class PagerElement extends React.Component {
 		window.addEventListener('popstate', this.handleURLChange);
 
 		// Set initial size and from parameter in browser address bar
-		const url = new URL(window.location.href);
-		if (url.searchParams.get('size') !== this.state.size || url.searchParams.get('from') !== this.state.from) {
-			url.searchParams.set('size', this.state.size);
-			url.searchParams.set('from', this.state.from);
-			window.history.pushState(null, '', `?${url.searchParams}`);
+		const searchParams = new URLSearchParams(window.location.search);
+		searchParams.set('size', this.state.size);
+		searchParams.set('from', this.state.from);
+		const newSearchParamsString = `?${searchParams.toString()}`;
+		if (newSearchParamsString !== window.location.search) {
+			window.history.replaceState(null, '', newSearchParamsString);
 		}
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.query !== this.props.query) {
+		if (prevProps.querySearchParams !== this.props.querySearchParams) {
 			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState({from: 0, query: this.props.query}, this.triggerSearch);
+			this.setState({from: 0}, this.triggerSearch);
 		}
 	}
 
@@ -65,38 +67,43 @@ class PagerElement extends React.Component {
 	}
 
 	handleURLChange = () => {
-		const url = new URL(window.location.href);
+		const searchParams = new URLSearchParams(window.location.search);
 		const {from, size} = this.state;
 		let newFrom;
 		let newSize;
 
-		if (url.searchParams.has('from')) {
-			newFrom = Number(url.searchParams.get('from'));
+		if (searchParams.has('from')) {
+			newFrom = Number(searchParams.get('from'));
 		}
-		if (url.searchParams.has('size')) {
-			newSize = Number(url.searchParams.get('size'));
+		if (searchParams.has('size')) {
+			newSize = Number(searchParams.get('size'));
+		}
+		if (isFunction(this.props.searchParamsChangeCallback)) {
+			this.props.searchParamsChangeCallback(searchParams);
 		}
 		if (newFrom === from && newSize === size) {
 			return;
 		}
 
-		this.triggerSearch(newFrom, newSize, false);
+		this.triggerSearch(newFrom, newSize);
 	};
 
-	triggerSearch(newFrom = this.state.from, newSize = this.state.size, setSearchParams = true) {
-		// get 1 more result than size to check nextEnabled
-		const pagination = `&size=${newSize + 1}&from=${newFrom}`;
-
-		if (setSearchParams) {
-			const url = new URL(window.location.href);
-			if (url.searchParams.get('size') !== newSize || url.searchParams.get('from') !== newFrom) {
-				url.searchParams.set('size', newSize);
-				url.searchParams.set('from', newFrom);
-				window.history.pushState(null, '', `?${url.searchParams}`);
-			}
+	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
+		const searchParams = new URLSearchParams(this.props.querySearchParams);
+		searchParams.set('size', newSize);
+		searchParams.set('from', newFrom);
+		const newSearchParamsString = `?${searchParams.toString()}`;
+		// Don't push a new entry when user navigates with browser prev/next buttons,
+		// which already sets the url search params accordingly.
+		// Otherwise we rewrite history from this point onwards and prevent from going forward again.
+		if (newSearchParamsString !== window.location.search) {
+			window.history.pushState(null, '', newSearchParamsString);
 		}
 
-		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
+		// fetch 1 more result than size to check nextEnabled
+		searchParams.set('size', newSize + 1);
+
+		request.get(`${this.props.paginationUrl}?${searchParams.toString()}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
 				const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(data, newSize);
@@ -176,15 +183,17 @@ PagerElement.propTypes = {
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
 	paginationUrl: PropTypes.string.isRequired,
-	query: PropTypes.string,
+	querySearchParams: PropTypes.string,
 	results: PropTypes.array,
+	searchParamsChangeCallback: PropTypes.func,
 	searchResultsCallback: PropTypes.func.isRequired,
 	size: PropTypes.number
 };
 PagerElement.defaultProps = {
 	from: 0,
-	query: '',
+	querySearchParams: '',
 	results: [],
+	searchParamsChangeCallback: null,
 	size: 20
 };
 

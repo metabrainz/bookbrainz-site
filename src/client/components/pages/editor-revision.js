@@ -30,7 +30,7 @@ class EditorRevisionPage extends React.Component {
 		};
 
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './revisions/revisions?';
+		this.paginationUrl = './revisions/revisions';
 	}
 
 	searchResultsCallback(newResults) {
