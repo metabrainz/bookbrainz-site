@@ -24,6 +24,7 @@ import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 
+// @flow
 
 class SearchPage extends React.Component {
 	/**
@@ -42,32 +43,8 @@ class SearchPage extends React.Component {
 			type: props.type
 		};
 
-		this.paginationUrl = './search/search?q=';
+		this.paginationUrl = './search/search';
 	}
-
-	componentDidMount() {
-		window.addEventListener('popstate', this.handleURLChange);
-	}
-
-	componentWillUnmount() {
-		window.removeEventListener('popstate', this.handleURLChange);
-	}
-
-	handleURLChange = () => {
-		const url = new URL(window.location.href);
-		let query;
-		let type;
-		if (url.searchParams.has('q')) {
-			query = url.searchParams.get('q');
-		}
-		if (url.searchParams.has('type')) {
-			type = url.searchParams.get('type');
-		}
-		if (query === this.state.query && type === this.state.type) {
-			return;
-		}
-		this.setState({query, type});
-	};
 
 	/**
 	 * Gets user text query from the browser's URL search parameters and
@@ -76,21 +53,39 @@ class SearchPage extends React.Component {
 	 * @param {string} query - Query string entered by user.
 	 * @param {string} type - Entity type selected from dropdown
 	 */
-	handleSearch = (query, type) => {
-		const url = new URL(window.location.href);
-		if (url.searchParams.get('q') !== query || url.searchParams.get('type') !== type) {
-			url.searchParams.set('q', query);
-			// Don't set the type if it's empty
-			if (type) {
-				url.searchParams.set('type', type);
-			}
-			window.history.pushState(null, '', `?${url.searchParams}`);
-		}
+	handleSearch = (query: string, type: string) => {
 		this.setState({query, type});
 	};
 
-	searchResultsCallback = (newResults) => {
+	/**
+	 * The Pager component deals with fetching the query from the server.
+	 * We use this callback to set the results on this component's state.
+	 *
+	 * @param {array} newResults - The array of results from the  query
+	 */
+	searchResultsCallback = (newResults: any[]) => {
 		this.setState({results: newResults});
+	};
+
+	/**
+	 * The Pager component is set up to react to browser history navigation (prev/next buttons),
+	 * and we use this callback to set the query and type on this component's state.
+	 *
+	 * @param {URLSearchParams} searchParams - The URL search parameters passed up from the pager component
+	 */
+	searchParamsChangeCallback = (searchParams: URLSearchParams) => {
+		let query;
+		let type;
+		if (searchParams.has('q')) {
+			query = searchParams.get('q');
+		}
+		if (searchParams.has('type')) {
+			type = searchParams.get('type');
+		}
+		if (query === this.state.query && type === this.state.type) {
+			return;
+		}
+		this.handleSearch(query, type);
 	};
 
 	/**
@@ -101,8 +96,7 @@ class SearchPage extends React.Component {
 	 */
 	render() {
 		const {type, query, results} = this.state;
-		const typeString = type ? `&type=${type}` : '';
-		const fullQuery = `${query}${typeString}`;
+		const querySearchParams = `q=${query}${type ? `&type=${type}` : ''}`;
 		return (
 			<div id="pageWithPagination">
 				<SearchField
@@ -116,8 +110,9 @@ class SearchPage extends React.Component {
 					from={this.props.from}
 					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
-					query={fullQuery}
+					querySearchParams={querySearchParams}
 					results={results}
+					searchParamsChangeCallback={this.searchParamsChangeCallback}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.resultsPerPage}
 				/>
