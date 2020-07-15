@@ -42,47 +42,56 @@ class SearchPage extends React.Component {
 			type: props.type
 		};
 
-		// React does not autobind non-React class methods
-		this.handleSearch = this.handleSearch.bind(this);
-		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './search/search?q=';
 	}
 
 	componentDidMount() {
-		window.addEventListener('popstate', () => {
-			const url = new URL(window.location.href);
-			let query;
-			let type;
-			if (url.searchParams.has('q')) {
-				query = url.searchParams.get('q');
-			}
-			if (url.searchParams.has('type')) {
-				type = url.searchParams.get('type');
-			}
-			this.setState({query, type});
-		});
+		window.addEventListener('popstate', this.handleURLChange);
 	}
 
+	componentWillUnmount() {
+		window.removeEventListener('popstate', this.handleURLChange);
+	}
+
+	handleURLChange = () => {
+		const url = new URL(window.location.href);
+		let query;
+		let type;
+		if (url.searchParams.has('q')) {
+			query = url.searchParams.get('q');
+		}
+		if (url.searchParams.has('type')) {
+			type = url.searchParams.get('type');
+		}
+		if (query === this.state.query && type === this.state.type) {
+			return;
+		}
+		this.setState({query, type});
+	};
+
 	/**
-	 * Gets user text query from the SearchField component/ browser nav and
-	 * sets it in state to be passed down to
+	 * Gets user text query from the browser's URL search parameters and
+	 * sets it in the state to be passed down to SearchField and Pager components
 	 *
 	 * @param {string} query - Query string entered by user.
 	 * @param {string} type - Entity type selected from dropdown
 	 */
-	handleSearch(query, type) {
+	handleSearch = (query, type) => {
 		const url = new URL(window.location.href);
 		if (url.searchParams.get('q') !== query || url.searchParams.get('type') !== type) {
 			url.searchParams.set('q', query);
-			url.searchParams.set('type', type);
+			// Don't set the type if it's empty
+			if (type) {
+				url.searchParams.set('type', type);
+			}
 			window.history.pushState(null, '', `?${url.searchParams}`);
 		}
 		this.setState({query, type});
-	}
+	};
 
-	searchResultsCallback(newResults) {
+	searchResultsCallback = (newResults) => {
 		this.setState({results: newResults});
-	}
+	};
 
 	/**
 	 * Renders the component: Search bar with results table located vertically

@@ -49,7 +49,7 @@ class PagerElement extends React.Component {
 		if (url.searchParams.get('size') !== this.state.size || url.searchParams.get('from') !== this.state.from) {
 			url.searchParams.set('size', this.state.size);
 			url.searchParams.set('from', this.state.from);
-			window.history.replaceState(null, '', `?${url.searchParams}`);
+			window.history.pushState(null, '', `?${url.searchParams}`);
 		}
 	}
 
@@ -58,6 +58,10 @@ class PagerElement extends React.Component {
 			// eslint-disable-next-line react/no-did-update-set-state
 			this.setState({from: 0, query: this.props.query}, this.triggerSearch);
 		}
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('popstate', this.handleURLChange);
 	}
 
 	handleURLChange = () => {
@@ -76,18 +80,20 @@ class PagerElement extends React.Component {
 			return;
 		}
 
-		this.triggerSearch(newFrom, newSize);
+		this.triggerSearch(newFrom, newSize, false);
 	};
 
-	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
+	triggerSearch(newFrom = this.state.from, newSize = this.state.size, setSearchParams = true) {
 		// get 1 more result than size to check nextEnabled
 		const pagination = `&size=${newSize + 1}&from=${newFrom}`;
 
-		const url = new URL(window.location.href);
-		if (url.searchParams.get('size') !== newSize || url.searchParams.get('from') !== newFrom) {
-			url.searchParams.set('size', newSize);
-			url.searchParams.set('from', newFrom);
-			window.history.pushState(null, '', `?${url.searchParams}`);
+		if (setSearchParams) {
+			const url = new URL(window.location.href);
+			if (url.searchParams.get('size') !== newSize || url.searchParams.get('from') !== newFrom) {
+				url.searchParams.set('size', newSize);
+				url.searchParams.set('from', newFrom);
+				window.history.pushState(null, '', `?${url.searchParams}`);
+			}
 		}
 
 		request.get(`${this.props.paginationUrl}${this.state.query}${pagination}`)
