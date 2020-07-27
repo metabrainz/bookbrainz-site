@@ -21,6 +21,7 @@ import * as bootstrap from 'react-bootstrap';
 
 import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
 
+import AddToCollectionModal from './add-to-collection-modal';
 import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -39,11 +40,49 @@ class SearchResults extends React.Component {
 		super(props);
 
 		this.state = {
-			error: null,
-			selected: []
+			message: {
+				text: null,
+				type: null
+			},
+			selected: [],
+			showModal: false
 		};
+
 		this.handleAddToCollection = this.handleAddToCollection.bind(this);
 		this.toggleRow = this.toggleRow.bind(this);
+		this.onCloseModal = this.onCloseModal.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
+		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
+		this.closeModalAndShowMessage = this.closeModalAndShowMessage.bind(this);
+	}
+
+	onCloseModal() {
+		this.setState({showModal: false});
+	}
+
+	handleShowModal() {
+		if (this.props.user) {
+			this.setState({showModal: true});
+		}
+		else {
+			this.setState({
+				message: {
+					text: 'You need to be logged in',
+					type: 'danger'
+				}
+			});
+		}
+	}
+
+	closeModalAndShowMessage(message) {
+		this.setState({
+			message,
+			showModal: false
+		});
+	}
+
+	handleAlertDismiss() {
+		this.setState({message: {}});
 	}
 
 	toggleRow(entity) {
@@ -54,7 +93,7 @@ class SearchResults extends React.Component {
 			newSelected = oldSelected.filter(selected => selected.bbid !== entity.bbid);
 		}
 		else {
-			newSelected = oldSelected.push(entity) && oldSelected;
+			newSelected = [...oldSelected, entity];
 		}
 		this.setState({
 			selected: newSelected
@@ -65,17 +104,26 @@ class SearchResults extends React.Component {
 		const selectedEntities = this.state.selected;
 		if (selectedEntities.length) {
 			const areAllEntitiesOfSameType = selectedEntities.every(entity => entity.type === selectedEntities[0].type);
-			if (!areAllEntitiesOfSameType) {
-				this.setState({error: 'Selected entities should be of same type'});
+			if (areAllEntitiesOfSameType) {
+				this.setState({message: {}});
+				this.setState({showModal: true});
 			}
 			else {
-				// eslint-disable-next-line no-console
-				console.log(selectedEntities);
-				this.setState({error: null});
+				this.setState({
+					message: {
+						text: 'Selected entities should be of same type',
+						type: 'danger'
+					}
+				});
 			}
 		}
 		else {
-			this.setState({error: 'Nothing Selected'});
+			this.setState({
+				message: {
+					text: 'Nothing Selected',
+					type: 'danger'
+				}
+			});
 		}
 	}
 
@@ -123,15 +171,18 @@ class SearchResults extends React.Component {
 			/* eslint-disable react/jsx-no-bind */
 			return (
 				<tr key={result.bbid}>
-					<input
-						checked={this.state.selected.find(selected => selected.bbid === result.bbid)}
-						className="checkbox"
-						type="checkbox"
-						onChange={() => this.toggleRow(result)}
-					/>
 					{
 						!this.props.condensed &&
 						<td>
+							{
+								this.props.user ?
+									<input
+										checked={this.state.selected.find(selected => selected.bbid === result.bbid)}
+										className="checkboxes"
+										type="checkbox"
+										onChange={() => this.toggleRow(result)}
+									/> : null
+							}
 							{genEntityIconHTMLElement(result.type)}{_startCase(result.type)}
 						</td>
 					}
@@ -154,31 +205,28 @@ class SearchResults extends React.Component {
 			tableCssClasses += ' table-condensed';
 		}
 
-		let errorComponent = null;
-		if (this.state.error) {
-			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
-		}
-
 		return (
 			<div>
+				{
+					this.props.user ?
+						<div>
+							<AddToCollectionModal
+								bbids={this.state.selected.map(selected => selected.bbid)}
+								closeModalAndShowMessage={this.closeModalAndShowMessage}
+								entityType={this.state.selected[0]?.type}
+								handleCloseModal={this.onCloseModal}
+								show={this.state.showModal}
+								userId={this.props.user.id}
+							/>
+						</div> : null
+				}
 				{
 					!this.props.condensed &&
 					<h3 style={{color: '#754e37'}}>
 						Search Results
 					</h3>
 				}
-				<Button
-					bsSize="small"
-					bsStyle="danger"
-					className="pull-right"
-					type="button"
-					onClick={this.handleAddToCollection}
-				>
-					Add to Collection
-				</Button>
 				<hr className="thin"/>
-				{errorComponent}
 				<Table
 					responsive
 					className={tableCssClasses}
@@ -187,8 +235,7 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th className="col-sm-1">Selcted</th>
-								<th className="col-sm-2">Type</th>
+								<th className="col-sm-3">Type</th>
 								<th className="col-sm-5">Name</th>
 								<th className="col-sm-4">Aliases</th>
 							</tr>
@@ -197,7 +244,24 @@ class SearchResults extends React.Component {
 					<tbody>
 						{results}
 					</tbody>
+					{
+						this.props.user ?
+							<Button
+								bsSize="small"
+								bsStyle="danger"
+								className="pull-left margin-top-d5"
+								type="button"
+								onClick={this.handleAddToCollection}
+							>
+								Add to Collection
+							</Button> : null
+					}
 				</Table>
+				{
+					this.state.message.text ?
+						<Alert bsStyle={this.state.message.type} onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null
+
+				}
 			</div>
 		);
 	}
@@ -206,7 +270,8 @@ class SearchResults extends React.Component {
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
 	condensed: PropTypes.bool,
-	results: PropTypes.array
+	results: PropTypes.array,
+	user: PropTypes.object.isRequired
 };
 SearchResults.defaultProps = {
 	condensed: false,
