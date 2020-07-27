@@ -41,7 +41,7 @@ const SearchButton = (
 	</Button>
 );
 
-const updateDelay = 400;
+const updateDelay = 1000;
 
 type SearchFieldState = {
 	type: string,
