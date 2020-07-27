@@ -92,7 +92,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	};
 
 	handleChange = event => {
-		if (!event.target.value.match(/^ *$/) && event.target.value !== this.state.query) {
+		if (!event.target.value.match(/^ +$/) && event.target.value !== this.state.query) {
 			this.setState({query: event.target.value}, this.debouncedTriggerOnSearch);
 		}
 	};
