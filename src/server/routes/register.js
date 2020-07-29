@@ -62,7 +62,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	}
 
 	if (!req.session.mbProfile) {
-		res.redirect('/auth');
+		return res.redirect('/auth');
 	}
 
 	const gender = _.find(res.locals.genders, {
