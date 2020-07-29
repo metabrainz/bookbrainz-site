@@ -19,6 +19,7 @@ cache:
 
 services:
   - postgresql
+  - elasticsearch
 
 addons:
   postgresql: "12"
@@ -29,6 +30,7 @@ addons:
       - postgresql-12
       - postgresql-client-12
       - g++-4.8
+
 env:
   global:
     - CXX=g++-4.8
@@ -42,7 +44,7 @@ before_install:
   - sudo chown postgres postgresql.conf
   - sudo mv postgresql.conf /etc/postgresql/12/main
   - sudo service postgresql start 12
-  
+
 before_script:
   - psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres
   - psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres
@@ -50,6 +52,7 @@ before_script:
   - psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
   - psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
   - ./node_modules/.bin/eslint -v
+  - sleep 5
 
 script:
   - npm run-script test-ci

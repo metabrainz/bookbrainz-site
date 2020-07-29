@@ -53,6 +53,7 @@ function RegistrationAuth() {
 					type="submit"
 				>
 					<img
+						alt="MusicBrainz"
 						className="margin-right-0-5"
 						src="/images/MusicBrainz_logo_icon.svg"
 					/>

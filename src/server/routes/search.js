@@ -18,10 +18,11 @@
  */
 
 import * as auth from '../helpers/auth';
+import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
-import * as search from '../helpers/search';
+import * as search from '../../common/helpers/search';
 import * as utils from '../helpers/utils';
 
 import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
@@ -54,16 +55,18 @@ router.get('/', (req, res, next) => {
 			query
 		}))
 		.then((searchResults) => {
-			const entityTypes = _keys(utils.getEntityModels(orm));
+			const entityTypes = _keys(commonUtils.getEntityModels(orm));
 			const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
 			searchResults.initialResults = newResultsArray;
 
 			const props = generateProps(req, res, {
 				entityTypes,
+				from,
 				hideSearch: true,
 				nextEnabled,
 				resultsPerPage: size,
-				...searchResults
+				...searchResults,
+				type: req.query.type
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
