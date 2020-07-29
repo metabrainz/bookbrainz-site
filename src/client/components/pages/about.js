@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
 
@@ -54,6 +55,88 @@ function AboutPage() {
 					become a BookBrainz editor!
 				</a>
 			</p>
+
+			<p>
+				BookBrainz relies on contributions from editors to expand
+				the knowledge contained in the database. Editors can add
+				new data to the site, fix any errors in the existing
+				information, and create links between pieces of information.
+			</p>
+
+			<h2>Accessing the data</h2>
+			<p>
+				The BookBrainz data is freely available to everyone, for any use.
+				Please see our <a href="/licensing"> licensing page</a> for more details.
+			</p>
+			<p>
+				Regular database dumps (Postgres) can be found
+				<a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2"> at this address.</a>
+			</p>
+			<p>
+				We also have a webservice (or API) under development with
+				<a href="https://api.test.bookbrainz.org/1/docs/"> live documentation</a>.
+			</p>
+
+			<h2>Contact Us</h2>
+			<div style={{
+				alignItems: 'center',
+				display: 'flex',
+				justifyContent: 'space-evenly'
+			}}
+			>
+				<FontAwesomeIcon
+					className="margin-sides-1 contact-text"
+					icon="circle"
+				/>
+				<a className="contact-text" href="//webchat.freenode.net/?channels=#metabrainz">
+					<FontAwesomeIcon
+						className="contact-text"
+						icon="comment-dots"
+						size="2x"
+					/>
+					IRC
+				</a>
+				<FontAwesomeIcon
+					className="margin-sides-1 contact-text"
+					icon="circle"
+				/>
+				<a className="contact-text" href="//community.metabrainz.org/c/bookbrainz">
+					<FontAwesomeIcon
+						className="contact-text"
+						icon="comments"
+						size="2x"
+					/>
+					Forums
+				</a>
+				<FontAwesomeIcon
+					className="margin-sides-1 contact-text"
+					icon="circle"
+				/>
+				<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
+					<FontAwesomeIcon
+						className="contact-text"
+						icon={['fab', 'twitter']}
+						size="2x"
+					/>
+					Twitter
+				</a>
+				<FontAwesomeIcon
+					className="margin-sides-1 contact-text"
+					icon="circle"
+				/>
+				<a className="contact-text" href="mailto:bookbrainz@metabrainz.org">
+					<FontAwesomeIcon
+						className="contact-text"
+						icon="envelope"
+						size="2x"
+					/>
+					Email
+				</a>
+				<FontAwesomeIcon
+					className="margin-sides-1 contact-text"
+					icon="circle"
+				/>
+			</div>
 
 			<h2>Our Story</h2>
 			<p>
@@ -115,29 +198,6 @@ function AboutPage() {
 				Haskell, and BookBrainz used an adapted version of NES as
 				its edit system. The NES has also been the basis for the
 				edit system in the current iteration of BookBrainz.
-			</p>
-
-			<h2>How We Operate</h2>
-			<p>
-				The core components of BookBrainz are the site, the
-				webservice and the database. All of these components are
-				running on MetaBrainz&rsquo;s Sakura server, which also
-				runs&nbsp;
-				<a href="https://critiquebrainz.org/">
-					CritiqueBrainz
-				</a>.
-			</p>
-
-			<p>
-				BookBrainz relies on contributions from editors to expand
-				the knowledge contained in the database. Editors can add
-				new data to the site, fix any errors in the existing
-				information, and create links between pieces of information.
-				To acknowledge this vital input, we make our data freely
-				available to everyone, for any use. While we don&rsquo;t
-				create regular database dumps at this early stage of the
-				project, you&rsquo;re welcome to browse the site or use the
-				webservice to access data.
 			</p>
 		</div>
 	);

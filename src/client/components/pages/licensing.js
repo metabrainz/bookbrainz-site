@@ -77,8 +77,8 @@ function LicensingPage() {
 				<a href={CCBYSALink}>
 					Creative Commons CC BY-SA
 				</a> license. If you have any queries about licensing of
-				the public data, please ask for clarification. Please see
-				the links below for more details about CC0 and CC BY-SA.
+				the public data, please <a href="mailto:bookbrainz@metabrainz.org">ask for clarification</a>.
+				Please see the links below for more details about CC0 and CC BY-SA.
 			</p>
 
 			<div className="row margin-top-2">

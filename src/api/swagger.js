@@ -15,7 +15,7 @@ const swaggerOptions = {
 		basePath: '/{version}',
 		info: {
 			contact: {
-				email: 'monkey@metabrainz.org',
+				email: 'bookbrainz@metabrainz.org',
 				name: 'BookBrainz',
 				url: 'https://bookbrainz.org/'
 			},

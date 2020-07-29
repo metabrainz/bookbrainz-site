@@ -39,15 +39,15 @@ function DevelopPage() {
 				dumps regularly.
 			</p>
 
-			<h2>Web Service</h2>
+			<h2>Web Service / API</h2>
 			<p>
 				The web service is the primary way of getting BookBrainz
 				data. The key advantage of using the web service over the
 				dumps is that you don&rsquo;t need to install any database
 				engine &mdash; you can access the data through the internet.
-				The web service is documented in&nbsp;
-				<a href="http://bbdocs-dev.readthedocs.org/en/latest/">
-					our Developer Documentation.
+				The web service is currently in alpha version and a&nbsp;
+				<a href="https://api.test.bookbrainz.org/1/docs/">
+					live documentation is served at this address
 				</a>.
 			</p>
 
