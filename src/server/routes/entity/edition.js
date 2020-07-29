@@ -29,10 +29,10 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 
@@ -98,7 +98,7 @@ function transformNewForm(data) {
 }
 
 function getInitialNameSection(entity) {
-	const initialNameSection = {
+	return {
 		disambiguation: entity.disambiguation,
 		language: entity.defaultAlias.languageId,
 		languageId: entity.defaultAlias.languageId,
@@ -106,7 +106,6 @@ function getInitialNameSection(entity) {
 		primary: entity.defaultAlias.primary,
 		sortName: entity.defaultAlias.sortName
 	};
-	return initialNameSection;
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
@@ -198,7 +197,7 @@ router.get(
 			}));
 		}
 
-		Promise.props(propsPromise)
+		makePromiseFromObject(propsPromise)
 			.then(render)
 			.catch(next);
 	}

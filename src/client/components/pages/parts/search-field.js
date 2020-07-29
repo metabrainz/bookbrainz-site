@@ -41,43 +41,65 @@ const SearchButton = (
 	</Button>
 );
 
-const updateDelay = 300;
+const updateDelay = 1000;
 
-class SearchField extends React.Component {
-	constructor(props) {
+type SearchFieldState = {
+	type: string,
+	query: string,
+};
+type SearchFieldProps = {
+	entityTypes: any[],
+	onSearch: Function,
+	query?: string,
+	type?: string
+};
+
+class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
+	constructor(props: SearchFieldProps) {
 		super(props);
 
 		this.state = {
-			type: ''
+			query: props.query || '',
+			type: props.type || ''
 		};
-		// React does not autobind non-React class methods
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.change = this.change.bind(this);
-		this.handleEntitySelect = this.handleEntitySelect.bind(this);
+		this.debouncedTriggerOnSearch = _.debounce(this.triggerOnSearch, updateDelay, {});
 	}
 
-	triggerOnSearch() {
-		const inputValue = this.queryInput.getValue();
-		const {type} = this.state;
-		this.props.onSearch(inputValue, _.snakeCase(type));
-	}
-
-	handleSubmit(event) {
-		event.preventDefault();
-		event.stopPropagation();
-		this.triggerOnSearch();
-	}
-
-	change() {
-		const inputValue = this.queryInput.getValue();
-		if (!inputValue.match(/^ *$/)) {
-			this.triggerOnSearch();
+	// If search term is changed outside this component (for example browser navigation),
+	// reflects those changes
+	componentDidUpdate(prevProps: SearchFieldProps) {
+		if (prevProps.query !== this.props.query) {
+			// eslint-disable-next-line react/no-did-update-set-state
+			this.setState({query: this.props.query});
+		}
+		if (prevProps.type !== this.props.type) {
+			// eslint-disable-next-line react/no-did-update-set-state
+			this.setState({type: this.props.type});
 		}
 	}
 
-	handleEntitySelect(eventKey: any) {
-		this.setState({type: eventKey}, this.triggerOnSearch);
+	debouncedTriggerOnSearch: Function;
+
+	triggerOnSearch() {
+		const {query, type} = this.state;
+		this.props.onSearch(query, _.snakeCase(type));
 	}
+
+	handleSubmit = event => {
+		event.preventDefault();
+		event.stopPropagation();
+		this.triggerOnSearch();
+	};
+
+	handleChange = event => {
+		if (!event.target.value.match(/^ +$/) && event.target.value !== this.state.query) {
+			this.setState({query: event.target.value}, this.debouncedTriggerOnSearch);
+		}
+	};
+
+	handleEntitySelect = (eventKey: any) => {
+		this.setState({type: eventKey}, this.debouncedTriggerOnSearch);
+	};
 
 	render() {
 		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
@@ -125,11 +147,10 @@ class SearchField extends React.Component {
 					>
 						<CustomInput
 							buttonAfter={[entityTypeSelect, SearchButton]}
-							defaultValue={this.props.query}
 							name="q"
-							ref={(ref) => this.queryInput = ref}
 							type="text"
-							onChange={_.debounce(this.change, updateDelay)}
+							value={this.state.query}
+							onChange={this.handleChange}
 						/>
 					</form>
 				</div>
@@ -142,11 +163,13 @@ SearchField.displayName = 'SearchField';
 SearchField.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	onSearch: PropTypes.func.isRequired,
-	query: PropTypes.string
+	query: PropTypes.string,
+	type: PropTypes.string
 };
 
 SearchField.defaultProps = {
-	query: ''
+	query: '',
+	type: ''
 };
 
 export default SearchField;

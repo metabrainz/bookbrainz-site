@@ -1,5 +1,6 @@
+/* eslint-disable */
 /*
- * Copyright (C) 2017  Ben Ockmore
+ * Copyright (C) 2019  Akhilesh Kumar
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as entityHelper from '../../../helpers/entity';
+import slowDown from 'express-slow-down';
 
-import PropTypes from 'prop-types';
-import React from 'react';
+export const lookupAndBrowseRequestSlowDown = slowDown({
+	windowMs: 5 * 60 * 1000, // 5 minutes
+	delayAfter: 100, // allow 100 requests per 5 minutes, then...
+	delayMs: 500 // begin adding 500ms of delay per request above 100:
+	// request # 101 is delayed by 100ms
+	// request # 102 is delayed by 200ms
+	// etc.
+});
+
+export const searchRequestSlowDown = slowDown({
+	windowMs: 5 * 60 * 1000, // 5 minutes
+	delayAfter: 100, // allow 100 requests per 5 minutes, then...
+	delayMs: 500 // begin adding 500ms of delay per request above 100:
+});
 
 
-const {
-	getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel
-} = entityHelper;
-
-function EntityTitle({entity}) {
-	const aliases = getEntitySecondaryAliases(entity);
-	const disambiguation = getEntityDisambiguation(entity);
-	const label = getEntityLabel(entity);
-	return (
-		<div>
-			<h1>{label}{disambiguation}</h1>
-			{aliases}
-			<hr/>
-		</div>
-	);
-}
-EntityTitle.displayName = 'EntityTitle';
-EntityTitle.propTypes = {
-	entity: PropTypes.object.isRequired
-};
-
-export default EntityTitle;

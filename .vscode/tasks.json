@@ -35,7 +35,7 @@
             "command": "${workspaceFolder}/node_modules/.bin/babel",
             "args": [
                 "src",
-                "--ignore 'src/server','src/client'",
+                "--ignore", "src/server","src/client",
                 "--source-maps",
                 "--out-dir",
                 "lib"

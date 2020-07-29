@@ -196,6 +196,14 @@ body {
 	.picture-fallback-icon(800%);
 }
 
+// Fix to put react-bootstrap tooltips in front of modals
+.tooltip {
+	z-index: 1050;
+}
+.tooltip-inner {
+	max-width: 300px;
+}
+
 /**
  * Styling for FontAwesome icons, to fix random-sized
  * icons appear while the page is loading (FOUC).
@@ -234,7 +242,12 @@ html {
 }
 .contact-text {
 	color: rgb(180, 180, 180);
-	vertical-align: middle;
+	flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+a.contact-text:visited {
+	color: rgb(180, 180, 180);
 }
 /* index.jade */
 /* ========== */
