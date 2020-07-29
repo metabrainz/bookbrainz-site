@@ -24,7 +24,7 @@
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from '../../common/helpers/error';
 
-import {flattenDeep} from 'lodash';
+import {flattenDeep, isNil} from 'lodash';
 import log from 'log';
 
 
@@ -152,11 +152,15 @@ function awardListToAwardObject(awardList) {
 	const track = {};
 	if (awardList) {
 		awardList.forEach((awardSet) => {
-			awardSet.forEach((award) => {
-				Object.keys(award).forEach((key) => {
-					track[key] = award[key];
+			if (!isNil(awardSet)) {
+				awardSet.forEach((award) => {
+					if (!isNil(award)) {
+						Object.keys(award).forEach((key) => {
+							track[key] = award[key];
+						});
+					}
 				});
-			});
+			}
 		});
 	}
 	return track;
