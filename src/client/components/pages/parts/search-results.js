@@ -23,12 +23,13 @@ import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _st
 
 import AddToCollectionModal from './add-to-collection-modal';
 import CallToAction from './call-to-action';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Alert, Button, Row, Table} = bootstrap;
+const {Alert, Button, ButtonGroup, Row, Table} = bootstrap;
 
 /**
  * Renders the document and displays the 'SearchResults' page.
@@ -54,6 +55,7 @@ class SearchResults extends React.Component {
 		this.handleShowModal = this.handleShowModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
 		this.closeModalAndShowMessage = this.closeModalAndShowMessage.bind(this);
+		this.handleClearSelected = this.handleClearSelected.bind(this);
 	}
 
 	onCloseModal() {
@@ -100,13 +102,16 @@ class SearchResults extends React.Component {
 		});
 	}
 
+	handleClearSelected() {
+		this.setState({selected: []});
+	}
+
 	handleAddToCollection() {
 		const selectedEntities = this.state.selected;
 		if (selectedEntities.length) {
 			const areAllEntitiesOfSameType = selectedEntities.every(entity => entity.type === selectedEntities[0].type);
 			if (areAllEntitiesOfSameType) {
-				this.setState({message: {}});
-				this.setState({showModal: true});
+				this.setState({message: {}, showModal: true});
 			}
 			else {
 				this.setState({
@@ -244,23 +249,40 @@ class SearchResults extends React.Component {
 					<tbody>
 						{results}
 					</tbody>
-					{
-						this.props.user ?
-							<Button
-								bsSize="small"
-								bsStyle="danger"
-								className="pull-left margin-top-d5"
-								type="button"
-								onClick={this.handleAddToCollection}
-							>
-								Add to Collection
-							</Button> : null
-					}
 				</Table>
 				{
 					this.state.message.text ?
-						<Alert bsStyle={this.state.message.type} onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null
+						<Alert
+							bsStyle={this.state.message.type}
+							className="margin-top-1"
+							onDismiss={this.handleAlertDismiss}
+						>
+							{this.state.message.text}
+						</Alert> : null
 
+				}
+				{
+					this.props.user ?
+						<ButtonGroup>
+							<Button
+								bsStyle="primary"
+								type="button"
+								onClick={this.handleAddToCollection}
+							>
+								<FontAwesomeIcon icon="grip-vertical"/>
+								&nbsp;Add to Collection
+							</Button>
+							{
+								this.state.selected.length ?
+									<Button
+										bsStyle="danger"
+										type="button"
+										onClick={this.handleClearSelected}
+									>
+										Clear <span className="circle-number">{this.state.selected.length}</span> selected
+									</Button> : null
+							}
+						</ButtonGroup> : null
 				}
 			</div>
 		);
