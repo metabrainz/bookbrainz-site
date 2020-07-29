@@ -23,7 +23,6 @@ import Achievement from '../../forms/parts/achievement';
 import DragAndDrop from '../../input/drag-and-drop';
 import PropTypes from 'prop-types';
 import React from 'react';
-import request from 'superagent';
 
 
 const {Row} = bootstrap;
@@ -44,35 +43,6 @@ class EditorAchievementTab extends React.Component {
 			achievement: props.achievement,
 			editor: props.editor
 		};
-	}
-
-	/**
-	 * Handles the 'Update Ranks' form submission, by making
-	 * a POST request with updated ranks to the server.
-	 * @param {object} event - The Form submit event.
-	 */
-	handleSubmit(event) {
-		event.preventDefault();
-
-		const data = {
-			id: this.state.editor.id,
-			rank1: this.rank1,
-			rank2: this.rank2,
-			rank3: this.rank3
-		};
-
-		request.post('/editor/:id/achievements/')
-			.send(data)
-			.then(() => {
-				window.location.href = `/editor/${this.state.editor.id}`;
-			})
-			.catch((res) => {
-				const {error} = res.body;
-				this.setState({
-					error,
-					waiting: false
-				});
-			});
 	}
 
 	/**

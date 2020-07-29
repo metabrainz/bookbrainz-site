@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as utils from '../helpers/utils';
 
 import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
@@ -41,65 +40,66 @@ const authorError = 'Author not found';
 
 /**
  *@swagger
- *definitions:
- *  AuthorDetail:
- *   type: object
- *   properties:
- *     bbid:
- *       type: string
- *       format: uuid
- *       example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *     beginArea:
- *       type: string
- *       example: 'United States'
- *     beginDate:
- *       type: string
- *       example: '1907-07-07'
- *     defaultAlias:
- *         $ref: '#/definitions/Alias'
- *     disambiguation:
- *       type: string
- *       example: 'Robert A. Heinlein'
- *     endArea:
- *       type: string
- *       example: 'United States'
- *     endDate:
- *       type: string
- *       example: '1988-05-08'
- *     ended:
- *       type: boolean
- *       example: true
- *     gender:
- *       type: string
- *       example: 'Male'
- *     type:
- *       type: string
- *       example: 'Person'
- *  BrowsedAuthors:
- *   type: object
- *   properties:
- *     bbid:
- *       type: string
- *       format: uuid
- *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
- *     authors:
- *       type: array
- *       items:
- *         type: object
- *         properties:
- *           entity:
- *             $ref: '#/definitions/AuthorDetail'
- *           relationships:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                  relationshipTypeID:
- *                    type: number
- *                    example: 8
- *                  relationshipType:
- *                    type: string
- *                    example: 'Author'
+ * components:
+ *   schemas:
+ *     AuthorDetail:
+ *      type: object
+ *      properties:
+ *        bbid:
+ *          type: string
+ *          format: uuid
+ *          example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *        beginArea:
+ *          type: string
+ *          example: 'United States'
+ *        beginDate:
+ *          type: string
+ *          example: '1907-07-07'
+ *        defaultAlias:
+ *            $ref: '#/components/schemas/Alias'
+ *        disambiguation:
+ *          type: string
+ *          example: 'Robert A. Heinlein'
+ *        endArea:
+ *          type: string
+ *          example: 'United States'
+ *        endDate:
+ *          type: string
+ *          example: '1988-05-08'
+ *        ended:
+ *          type: boolean
+ *          example: true
+ *        gender:
+ *          type: string
+ *          example: 'Male'
+ *        type:
+ *          type: string
+ *          example: 'Person'
+ *     BrowsedAuthors:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *         authors:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               entity:
+ *                 $ref: '#/components/schemas/AuthorDetail'
+ *               relationships:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                      relationshipTypeID:
+ *                        type: number
+ *                        example: 8
+ *                      relationshipType:
+ *                        type: string
+ *                        example: 'Author'
  */
 
 
@@ -112,19 +112,20 @@ const authorError = 'Author not found';
  *     summary: Lookup Author by BBID
  *     description: Returns the basic details of an Author
  *     operationId: getAuthorByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Author
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Basic information of an Author entity
- *         schema:
- *             $ref: '#/definitions/AuthorDetail'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthorDetail'
  *       404:
  *         description: Author not found
  *       400:
@@ -148,19 +149,20 @@ router.get('/:bbid',
  *     summary: Get list of aliases of an Author by BBID
  *     description: Returns the list of aliases of an Author
  *     operationId: getAliasesOfAuthorByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Author
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of aliases with BBID of an Author entity
- *         schema:
- *             $ref: '#/definitions/Aliases'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Aliases'
  *       404:
  *         description: Author not found
  *       400:
@@ -169,7 +171,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Author', utils.aliasesRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(authorAliasesList);
 	});
@@ -183,19 +185,20 @@ router.get('/:bbid/aliases',
  *     summary: Get list of identifiers of an Author by BBID
  *     description: Returns the list of identifiers of an Author
  *     operationId: getIdentifiersOfAuthorByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Author
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of identifiers with BBID of an Author entity
- *         schema:
- *             $ref: '#/definitions/Identifiers'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Identifiers'
  *       404:
  *         description: Author not found
  *       400:
@@ -203,7 +206,7 @@ router.get('/:bbid/aliases',
  */
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Author', utils.identifiersRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(authorIdentifiersList);
 	});
@@ -217,19 +220,20 @@ router.get('/:bbid/identifiers',
  *     summary: Get list of relationships of an Author by BBID
  *     description: Returns the list of relationships of an Author
  *     operationId: getRelationshipsOfAuthorByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Author
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of relationships with BBID of an Author entity
- *         schema:
- *             $ref: '#/definitions/Relationships'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Relationships'
  *       404:
  *         description: Author not found
  *       400:
@@ -238,7 +242,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Author', utils.relationshipsRelations, authorError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
 	});
@@ -252,44 +256,49 @@ router.get('/:bbid/relationships',
  *     summary: Gets a list of Authors related to another Entity
  *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and it's Authors are fetched
  *     operationId: getRelatedAuthorByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: author
  *         in: query
  *         description: BBID of the corresponding Author
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: edition
  *         in: query
  *         description: BBID of the corresponding Edition
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: edition-group
  *         in: query
  *         description: BBID of the corresponding Edition Group
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: publisher
  *         in: query
  *         description: BBID of the corresponding Publisher
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: type
  *         in: query
  *         description: filter by Author type
  *         required: false
- *         type: string
- *         enum: [person, group]
+ *         schema:
+ *           type: string
+ *           enum: [person, group]
  *     responses:
  *       200:
  *         description: List of Authors related to another Entity
- *         schema:
- *             $ref: '#/definitions/BrowsedAuthors'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BrowsedAuthors'
  *       404:
  *         description: author/edition/edition-group/publisher (entity entity) not found
  *       400:
@@ -304,15 +313,17 @@ router.get('/',
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const authorTypeMatched = toLower(relatedEntity.authorType) === toLower(req.query.type);
-				return authorTypeMatched;
+				return toLower(relatedEntity.authorType) === toLower(req.query.type);
 			}
+
 			return true;
 		}
+
 		const authorRelationshipList = await utils.getBrowsedRelationships(
 			req.app.locals.orm, res.locals, 'Author',
 			getAuthorBasicInfo, authorBasicRelations, relationshipsFilterMethod
 		);
+
 		return res.status(200).send({
 			authors: authorRelationshipList,
 			bbid: req.query.bbid

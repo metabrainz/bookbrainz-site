@@ -74,10 +74,7 @@ class RegistrationForm extends React.Component {
 	}
 
 	isValid() {
-		const displayNameValid =
-			!this.displayName || this.displayName.getValue().length > 0;
-
-		return displayNameValid;
+		return !this.displayName || this.displayName.getValue().length > 0;
 	}
 
 	handleChange() {

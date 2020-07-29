@@ -39,8 +39,6 @@ import {entityTypeProperty} from '../../helpers/react-validators';
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.disambiguationDefaultValue - The default value for the
  *        disambiguation field.
- * @param {boolean} props.disambiguationVisible - Whether or not the
- *        disambiguation field should be visible.
  * @param {Array} props.languageOptions - The list of possible languages for the
  *        entity name.
  * @param {string} props.languageValue - The ID of the language currently
@@ -135,6 +133,7 @@ function NameSectionMerge({
 		</form>
 	);
 }
+
 NameSectionMerge.displayName = 'NameSectionMerge';
 NameSectionMerge.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
@@ -153,7 +152,6 @@ NameSectionMerge.defaultProps = {
 	disambiguationDefaultValue: null,
 	languageValue: null
 };
-
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('nameSection');

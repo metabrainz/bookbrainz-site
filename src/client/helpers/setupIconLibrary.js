@@ -27,6 +27,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 
+
 // Disable FontAwesome's CSS (to prevent FOUC)
 // For this, th build system needs to be able to import the css file below. Currently the build errors.
 // import '@fortawesome/fontawesome-svg-core/styles.css';

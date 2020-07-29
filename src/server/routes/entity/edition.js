@@ -98,7 +98,7 @@ function transformNewForm(data) {
 }
 
 function getInitialNameSection(entity) {
-	const initialNameSection = {
+	return {
 		disambiguation: entity.disambiguation,
 		language: entity.defaultAlias.languageId,
 		languageId: entity.defaultAlias.languageId,
@@ -106,7 +106,6 @@ function getInitialNameSection(entity) {
 		primary: entity.defaultAlias.primary,
 		sortName: entity.defaultAlias.sortName
 	};
-	return initialNameSection;
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(

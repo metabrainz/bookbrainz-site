@@ -26,6 +26,7 @@ import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
+
 /**
  * Container component. The AliasEditor component contains a number of AliasRow
  * elements, and renders these inside a modal, which appears when the show

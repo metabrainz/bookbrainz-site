@@ -21,14 +21,17 @@
 import * as commonUtils from '../../common/helpers/utils';
 import log from 'log';
 
+
 /**
  * This is a middleware function to load entity detail according to given relations
  *
  * @param {string} modelName - Name of entity model
  * @param {string[]} relations - List of entity relations for fetching the related detail
  * @param {string} errMessage - Error message, if any error will occur
+ * @param {boolean} isBrowse - Whether this is a browse endpoint (as opposed to
+ *        an endpoint for a specific entity).
  * @returns {object} an object containing the error message if any error will occur.
- * If entity is found succesfully in the database this function set the entity data
+ * If entity is found successfully in the database this function set the entity data
  * at res.locals.entity and return to next function.
  * @example
  *		const errorMessage = 'Edition not found'';
@@ -37,12 +40,10 @@ import log from 'log';
  * @description
  * First, check the BBID is valid or not.
  * If BBID is valid then extract the entity data from database by using BBID and relations of
- * that entity. If entity is found succesfully then set that entity data to the res.locals.entity
+ * that entity. If entity is found successfully then set that entity data to the res.locals.entity
  * otherwise return an object {message: errMessage} as response with status code 404.
  * If the BBID is not valid then return a status code 400 and an object {message: 'BBID is not valid uuid'}.
  */
-
-
 export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 	return async (req, res, next) => {
 		const {orm} = req.app.locals;
@@ -50,8 +51,7 @@ export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 		const model = isBrowse ? req.query.modelType : modelName;
 		if (commonUtils.isValidBBID(bbid)) {
 			try {
-				const entityData = await orm.func.entity.getEntity(orm, model, bbid, relations);
-				res.locals.entity = entityData;
+				res.locals.entity = await orm.func.entity.getEntity(orm, model, bbid, relations);
 				return next();
 			}
 			catch (err) {

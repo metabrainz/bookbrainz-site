@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable max-len */
+
 import * as bootstrap from 'react-bootstrap';
 
 
@@ -29,7 +29,6 @@ import RevisionsTable from './parts/revisions-table';
 
 
 const {Alert, Button, Col, Grid, Row} = bootstrap;
-
 
 class IndexPage extends React.Component {
 	constructor(props) {

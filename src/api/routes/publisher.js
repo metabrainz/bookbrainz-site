@@ -48,59 +48,60 @@ const publisherError = 'Publisher not found';
 
 /**
  *@swagger
- *definitions:
- *  PublisherDetail:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: 'e418874e-5684-4fe9-9d2d-1b7e5d43fd59'
- *      area:
- *        type: string
- *        example: 'India'
- *      beginDate:
- *        type: string
- *        example: '1943'
- *      defaultAlias:
- *        $ref: '#/definitions/Alias'
- *      disambiguation:
- *        type: string
- *        example: 'Bharati Bhawan'
- *      endDate:
- *        type: string
- *        example:
- *      ended:
- *        type: boolean
- *        example: false
- *      type:
- *        type: string
- *        example: 'Publisher'
- *  BrowsedPublishers:
- *   type: object
- *   properties:
- *     bbid:
- *       type: string
- *       format: uuid
- *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
- *     publishers:
- *       type: array
- *       items:
- *         type: object
- *         properties:
- *           entity:
- *             $ref: '#/definitions/PublisherDetail'
- *           relationships:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                  relationshipTypeID:
- *                    type: number
- *                    example: 4
- *                  relationshipType:
- *                    type: string
- *                    example: 'Publisher'
+ *components:
+ *  schemas:
+ *    PublisherDetail:
+ *      type: object
+ *      properties:
+ *        bbid:
+ *          type: string
+ *          format: uuid
+ *          example: 'e418874e-5684-4fe9-9d2d-1b7e5d43fd59'
+ *        area:
+ *          type: string
+ *          example: 'India'
+ *        beginDate:
+ *          type: string
+ *          example: '1943'
+ *        defaultAlias:
+ *          $ref: '#/components/schemas/Alias'
+ *        disambiguation:
+ *          type: string
+ *          example: 'Bharati Bhawan'
+ *        endDate:
+ *          type: string
+ *          example:
+ *        ended:
+ *          type: boolean
+ *          example: false
+ *        type:
+ *          type: string
+ *          example: 'Publisher'
+ *    BrowsedPublishers:
+ *     type: object
+ *     properties:
+ *       bbid:
+ *         type: string
+ *         format: uuid
+ *         example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *       publishers:
+ *         type: array
+ *         items:
+ *           type: object
+ *           properties:
+ *             entity:
+ *               $ref: '#/components/schemas/PublisherDetail'
+ *             relationships:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                    relationshipTypeID:
+ *                      type: number
+ *                      example: 4
+ *                    relationshipType:
+ *                      type: string
+ *                      example: 'Publisher'
  */
 
 
@@ -114,19 +115,21 @@ const publisherError = 'Publisher not found';
  *      summary: Lookup Publisher by BBID
  *      description: Returns the basic details of the Publisher
  *      operationId: getPublisherByBbid
- *      produces:
- *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
  *          description: BBID of the Publisher
  *          required: true
- *          type: string
+ *          schema:
+ *            type: string
+ *            format: uuid
  *      responses:
  *        200:
  *          description: Basic information of the Publisher entity
- *          schema:
- *              $ref: '#/definitions/PublisherDetail'
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/PublisherDetail'
  *        404:
  *          description: Publisher not found
  *        400:
@@ -149,19 +152,21 @@ router.get('/:bbid',
  *      summary: Get list of aliases of the Publisher by BBID
  *      description: Returns the list of aliases of the Publisher
  *      operationId: getAliasesOfPublisherByBbid
- *      produces:
- *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
  *          description: BBID of the Publisher
  *          required: true
- *          type: string
+ *          schema:
+ *            type: string
+ *            format: uuid
  *      responses:
  *        200:
  *          description: List of aliases with BBID of the Publisher
- *          schema:
- *              $ref: '#/definitions/Aliases'
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Aliases'
  *        404:
  *          description: Publisher not found
  *        400:
@@ -169,7 +174,7 @@ router.get('/:bbid',
  */
 router.get('/:bbid/aliases',
 	makeEntityLoader('Publisher', utils.aliasesRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(publisherAliasesList);
 	});
@@ -183,19 +188,21 @@ router.get('/:bbid/aliases',
  *     summary: Get list of identifiers of the Publisher by BBID
  *     description: Returns the list of identifiers of the Publisher
  *     operationId: getIdentifiersOfPublisherByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Publisher
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of identifiers with BBID of the Publisher entity
- *         schema:
- *             $ref: '#/definitions/Identifiers'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Identifiers'
  *       404:
  *         description: Publisher not found
  *       400:
@@ -204,7 +211,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Publisher', utils.identifiersRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(publisherIdentifiersList);
 	});
@@ -218,19 +225,21 @@ router.get('/:bbid/identifiers',
  *     summary: Get list of relationships of the Publisher by BBID
  *     description: Returns the list of relationships of the Publisher
  *     operationId: getRelationshipsOfPublisherByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Publisher
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of relationships with BBID of the Publisher entity
- *         schema:
- *             $ref: '#/definitions/Relationships'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Relationships'
  *       404:
  *         description: Publisher not found
  *       400:
@@ -239,7 +248,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Publisher', utils.relationshipsRelations, publisherError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const publisherRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(publisherRelationshipList);
 	});
@@ -253,49 +262,55 @@ router.get('/:bbid/relationships',
  *     summary: Gets a list of Publishers which are related to another Entity
  *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher is passed as a query parameter, and its related Publishers are fetched
  *     operationId: getRelatedPublisherByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: author
  *         in: query
  *         description: BBID of the corresponding Author
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: edition
  *         in: query
  *         description: BBID of the corresponding Edition
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: publisher
  *         in: query
  *         description: BBID of the corresponding Publisher
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: work
  *         in: query
  *         description: BBID of the corresponding Work
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: type
  *         in: query
  *         description: filter by Publisher type
  *         required: false
- *         type: string
- *         enum: [publisher, distributor, imprint]
+ *         schema:
+ *           type: string
+ *           enum: [publisher, distributor, imprint]
  *       - name: area
  *         in: query
  *         description: filter by Publisher area
  *         required: false
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of Publisher related to another Entity
- *         schema:
- *             $ref: '#/definitions/BrowsedPublishers'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BrowsedPublishers'
  *       404:
  *         description: Author/Edition/Work/Publisher (other entity) not found
  *       400:
@@ -314,7 +329,7 @@ router.get('/',
 		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
 	},
 	loadEntityRelationshipsForBrowse(),
-	async (req, res, next) => {
+	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
 				const publisherTypeMatched = toLower(relatedEntity.publisherType) === toLower(req.query.type);
@@ -325,9 +340,9 @@ router.get('/',
 				return publisherTypeMatched;
 			}
 			else if (req.query.area) {
-				const publisherAreaMatched = toLower(relatedEntity.area) === toLower(req.query.area);
-				return publisherAreaMatched;
+				return toLower(relatedEntity.area) === toLower(req.query.area);
 			}
+
 			return true;
 		}
 

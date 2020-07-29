@@ -441,7 +441,7 @@ export function handleDelete(
 			transacting
 		});
 
-		const entityHeader = await new HeaderModel({
+		await new HeaderModel({
 			bbid: entity.bbid,
 			masterRevisionId: entityRevision.get('id')
 		}).save(null, {transacting});
@@ -833,11 +833,9 @@ async function getNextRelationshipSets(
 		})
 	);
 
-	const updatedRelationships = orm.func.relationship.updateRelationshipSets(
+	return orm.func.relationship.updateRelationshipSets(
 		orm, transacting, oldRelationshipSet, body.relationships || []
 	);
-
-	return updatedRelationships;
 }
 
 async function getNextAnnotation(

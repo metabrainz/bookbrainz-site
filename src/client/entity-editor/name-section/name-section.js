@@ -46,6 +46,7 @@ import {connect} from 'react-redux';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
 
+
 /**
  * Container component. The NameSection component contains input fields for
  * setting the name of an entity. It also allows setting of the entity's

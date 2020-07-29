@@ -48,78 +48,79 @@ const editionError = 'Edition not found';
 
 /**
  *@swagger
- *definitions:
- *  EditionDetail:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '96a23368-85a1-4559-b3df-16833893d861'
- *      defaultAlias:
- *        $ref: '#/definitions/Alias'
- *      depth:
- *        type: integer
- *        description: 'depth in mm'
- *        example: 40
- *      disambiguation:
- *        type: string
- *        example: 'Limited edition boxed set'
- *      editionFormat:
- *        type: string
- *        example: 'eBook'
- *      height:
- *        type: integer
- *        description: 'height in mm'
- *        example: 250
- *      languages:
- *        type: array
- *        items:
+ *components:
+ *  schemas:
+ *    EditionDetail:
+ *      type: object
+ *      properties:
+ *        bbid:
  *          type: string
- *          description: Three letter ISO 639-3 language code
- *          example: 'eng'
- *      pages:
- *        type: integer
- *        example: 200
- *      releaseEventDates:
- *        type: string
- *        example: '2011-01-01'
- *      status:
- *        type: string
- *        example: 'Official'
- *      weight:
- *        type: integer
- *        description: 'Weight in grams'
- *        example: 300
- *      width:
- *        type: integer
- *        description: 'width in mm'
- *        example: 80
- *  BrowsedEditions:
- *   type: object
- *   properties:
- *     bbid:
- *       type: string
- *       format: uuid
- *       example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
- *     editions:
- *       type: array
- *       items:
- *         type: object
- *         properties:
- *           entity:
- *             $ref: '#/definitions/EditionDetail'
- *           relationships:
- *             type: array
- *             items:
- *               type: object
- *               properties:
- *                  relationshipTypeID:
- *                    type: number
- *                    example: 4
- *                  relationshipType:
- *                    type: string
- *                    example: 'Publisher'
+ *          format: uuid
+ *          example: '96a23368-85a1-4559-b3df-16833893d861'
+ *        defaultAlias:
+ *          $ref: '#/components/schemas/Alias'
+ *        depth:
+ *          type: integer
+ *          description: 'depth in mm'
+ *          example: 40
+ *        disambiguation:
+ *          type: string
+ *          example: 'Limited edition boxed set'
+ *        editionFormat:
+ *          type: string
+ *          example: 'eBook'
+ *        height:
+ *          type: integer
+ *          description: 'height in mm'
+ *          example: 250
+ *        languages:
+ *          type: array
+ *          items:
+ *            type: string
+ *            description: Three letter ISO 639-3 language code
+ *            example: 'eng'
+ *        pages:
+ *          type: integer
+ *          example: 200
+ *        releaseEventDates:
+ *          type: string
+ *          example: '2011-01-01'
+ *        status:
+ *          type: string
+ *          example: 'Official'
+ *        weight:
+ *          type: integer
+ *          description: 'Weight in grams'
+ *          example: 300
+ *        width:
+ *          type: integer
+ *          description: 'width in mm'
+ *          example: 80
+ *    BrowsedEditions:
+ *      type: object
+ *      properties:
+ *        bbid:
+ *          type: string
+ *          format: uuid
+ *          example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
+ *        editions:
+ *          type: array
+ *          items:
+ *            type: object
+ *            properties:
+ *              entity:
+ *                $ref: '#/components/schemas/EditionDetail'
+ *              relationships:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                     relationshipTypeID:
+ *                       type: number
+ *                       example: 4
+ *                     relationshipType:
+ *                       type: string
+ *                       example: 'Publisher'
  *
  */
 
@@ -134,19 +135,20 @@ const editionError = 'Edition not found';
  *      summary: Lookup Edition by BBID
  *      description: Returns the basic details of an Edition
  *      operationId: getEditionByBbid
- *      produces:
- *        - application/json
  *      parameters:
  *        - name: bbid
  *          in: path
  *          description: BBID of the Edition
  *          required: true
- *          type: string
+ *          schema:
+ *            type: string
  *      responses:
  *        200:
  *          description: Basic information of an Edition entity
- *          schema:
- *              $ref: '#/definitions/EditionDetail'
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/EditionDetail'
  *        404:
  *          description: Edition not found
  *        400:
@@ -170,19 +172,20 @@ router.get('/:bbid',
  *     summary: Get list of aliases of the Edition by BBID
  *     description: Returns the list of aliases of the Edition
  *     operationId: getAliasesOfEditionByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Edition
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of aliases with BBID of the Edition entity
- *         schema:
- *             $ref: '#/definitions/Aliases'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Aliases'
  *       404:
  *         description: Edition not found
  *       400:
@@ -191,7 +194,7 @@ router.get('/:bbid',
 
 router.get('/:bbid/aliases',
 	makeEntityLoader('Edition', utils.aliasesRelations, editionError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionAliasesList);
 	});
@@ -205,19 +208,20 @@ router.get('/:bbid/aliases',
  *     summary: Get list of identifiers of an Edition by BBID
  *     description: Returns the list of identifiers of an Edition
  *     operationId: getIdentifiersOfEditionByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Edition
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of identifiers with BBID of an Edition entity
- *         schema:
- *             $ref: '#/definitions/Identifiers'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Identifiers'
  *       404:
  *         description: Edition not found
  *       400:
@@ -226,7 +230,7 @@ router.get('/:bbid/aliases',
 
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Edition', utils.identifiersRelations, editionError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionIdentifiersList);
 	});
@@ -240,19 +244,20 @@ router.get('/:bbid/identifiers',
  *     summary: Get list of relationships of an Edition by BBID
  *     description: Returns the list of relationships of an Edition
  *     operationId: getRelationshipsOfEditionByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: bbid
  *         in: path
  *         description: BBID of the Edition
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of relationships with BBID of an Edition entity
- *         schema:
- *             $ref: '#/definitions/Relationships'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Relationships'
  *       404:
  *         description: Edition not found
  *       400:
@@ -261,7 +266,7 @@ router.get('/:bbid/identifiers',
 
 router.get('/:bbid/relationships',
 	makeEntityLoader('Edition', utils.relationshipsRelations, editionError),
-	async (req, res, next) => {
+	async (req, res) => {
 		const editionRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionRelationshipList);
 	});
@@ -275,55 +280,62 @@ router.get('/:bbid/relationships',
  *     summary: Gets a list of Editions related to another Entity
  *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and its related Editions are fetched
  *     operationId: getRelatedEditionByBbid
- *     produces:
- *       - application/json
  *     parameters:
  *       - name: author
  *         in: query
  *         description: BBID of the corresponding Author
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: edition
  *         in: query
  *         description: BBID of the corresponding Edition
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: edition-group
  *         in: query
  *         description: BBID of the corresponding Edition Group
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: publisher
  *         in: query
  *         description: BBID of the corresponding Publisher
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: work
  *         in: query
  *         description: BBID of the corresponding Work
  *         required: false
- *         type: string
- *         format: uuid
+ *         schema:
+ *           type: string
+ *           format: uuid
  *       - name: format
  *         in: query
  *         description: filter by Edition format
  *         required: false
- *         type: string
- *         enum: [paperback, hardcover, ebook, library binding, audiobook]
+ *         schema:
+ *           type: string
+ *           enum: [paperback, hardcover, ebook, library binding, audiobook]
  *       - name: language
  *         in: query
  *         description: filter by Edition language (ISO 639-3 three letter code)
  *         required: false
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of Editions related to another Entity
- *         schema:
- *             $ref: '#/definitions/BrowsedEditions'
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BrowsedEditions'
  *       404:
  *         description: author/edition/edition-group/publisher/work (other entity) not found
  *       400:
@@ -347,7 +359,7 @@ router.get('/',
 		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
 	},
 	loadEntityRelationshipsForBrowse(),
-	async (req, res, next) => {
+	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			let editionFormatMatched = true;
 			let editionLanguageMatched = true;
