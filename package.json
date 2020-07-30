@@ -65,7 +65,7 @@
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-musicbrainz-oauth2": "github:LordSputnik/passport-musicbrainz-oauth2",
-    "prop-types": "^15.6.0",
+    "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-addons-shallow-compare": "^15.6.0",
     "react-bootstrap": "^0.33.1",
