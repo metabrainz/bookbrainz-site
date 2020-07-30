@@ -47,7 +47,7 @@
     "chart.js": "^2.9.3",
     "classnames": "^2.2.5",
     "compression": "^1.7.1",
-    "connect-redis": "^3.0.1",
+    "connect-redis": "^3.4.2",
     "date-fns": "^2.14.0",
     "debug": "^3.1.0",
     "elasticsearch": "^15.2.0",
