@@ -82,7 +82,7 @@
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.3",
     "serve-static": "^1.13.2",
-    "superagent": "^5.2.2",
+    "superagent": "^5.3.1",
     "validator": "^9.1.2"
   },
   "devDependencies": {
