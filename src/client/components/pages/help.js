@@ -33,7 +33,7 @@ function HelpPage() {
 	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
 	const styleLink =
 		'https://bookbrainz-user-guide.readthedocs.io/' +
-		'style/introduction/';
+		'en/latest/style/introduction/';
 
 	return (
 		<Grid>
