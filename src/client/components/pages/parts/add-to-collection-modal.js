@@ -34,9 +34,17 @@ class AddToCollectionModal extends React.Component {
 	}
 
 	async componentDidMount() {
-		const collections = await this.getCollections();
+		const collections = this.props.entityType ? await this.getCollections() : [];
 		// eslint-disable-next-line react/no-did-mount-set-state
-		this.setState({collectionsAvailable: collections});
+		this.setState({collectionsAvailable: collections || []});
+	}
+
+	async componentDidUpdate(prevProps) {
+		if (prevProps.entityType !== this.props.entityType) {
+			const collections = this.props.entityType ? await this.getCollections() : [];
+			// eslint-disable-next-line react/no-did-update-set-state
+			this.setState({collectionsAvailable: collections || []});
+		}
 	}
 
 	toggleRow(collectionId) {
