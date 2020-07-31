@@ -23,13 +23,12 @@ import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _st
 
 import AddToCollectionModal from './add-to-collection-modal';
 import CallToAction from './call-to-action';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Alert, Button, ButtonGroup, Row, Table} = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Row, Table} = bootstrap;
 
 /**
  * Renders the document and displays the 'SearchResults' page.
@@ -266,22 +265,21 @@ class SearchResults extends React.Component {
 						<ButtonGroup>
 							<Button
 								bsStyle="primary"
+								disabled={!this.state.selected.length}
 								type="button"
 								onClick={this.handleAddToCollection}
 							>
-								<FontAwesomeIcon icon="grip-vertical"/>
-								&nbsp;Add to Collection
+								{genEntityIconHTMLElement('Collection')}
+									Add to Collection
 							</Button>
-							{
-								this.state.selected.length ?
-									<Button
-										bsStyle="danger"
-										type="button"
-										onClick={this.handleClearSelected}
-									>
-										Clear <span className="circle-number">{this.state.selected.length}</span> selected
-									</Button> : null
-							}
+							<Button
+								bsStyle="warning"
+								disabled={!this.state.selected.length}
+								type="button"
+								onClick={this.handleClearSelected}
+							>
+								Clear <Badge>{this.state.selected.length}</Badge> selected
+							</Button>
 						</ButtonGroup> : null
 				}
 			</div>
