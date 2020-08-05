@@ -44,7 +44,7 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 			method = 'insert';
 		}
 		else {
-			if (res.locals.collection.items.length && (upperFirst(camelCase(req.body.entityType)) !== res.locals.collection.entityType)) {
+			if (res.locals.collection?.items?.length && (upperFirst(camelCase(req.body.entityType)) !== res.locals.collection.entityType)) {
 				throw new Error('Trying to change entityType of a non empty collection');
 			}
 			newCollection = await new UserCollection({id: req.params.collectionId}).fetch({
