@@ -31,6 +31,7 @@ const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<SearchPage
+				user={props.user}
 				{...extractChildProps(props)}
 			/>
 		</Layout>
