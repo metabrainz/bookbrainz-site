@@ -16,7 +16,7 @@ const {UserCollection, UserCollectionCollaborator, UserCollectionItem} = orm;
 describe('POST /collection/create', () => {
 	let agent;
 	let collectionOwner;
-	beforeEach(async () => {
+	before(async () => {
 		try {
 			collectionOwner = await createEditor(123456);
 		}
@@ -29,7 +29,7 @@ describe('POST /collection/create', () => {
 		await agent.get('/cb');
 		// await agent.get('/search/reindex');
 	});
-	afterEach((done) => {
+	after((done) => {
 		// Clear DB tables then close superagent server
 		truncateEntities().then(() => {
 			agent.close(done);
@@ -109,7 +109,7 @@ describe('POST /collection/create', () => {
 describe('POST collection/edit', () => {
 	// eslint-disable-next-line one-var
 	let agent, collectionJSON, loggedInUser, oldCollaborator;
-	beforeEach(async () => {
+	before(async () => {
 		try {
 			loggedInUser = await createEditor(123456);
 		}
@@ -132,7 +132,7 @@ describe('POST collection/edit', () => {
 		const collection = await new UserCollection({id: res.body.id}).fetch({withRelated: ['collaborators']});
 		collectionJSON = collection.toJSON();
 	});
-	afterEach((done) => {
+	after((done) => {
 		// Clear DB tables then close superagent server
 		truncateEntities().then(() => {
 			agent.close(done);
@@ -234,7 +234,7 @@ describe('POST collection/edit', () => {
 		expect(res.status).to.equal(500);
 	});
 
-	it('should return status 500 when trying to edit entityType of a non empty collection', async () => {
+	it('should return status 400 when trying to edit entityType of a non empty collection', async () => {
 		const author = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
@@ -248,9 +248,9 @@ describe('POST collection/edit', () => {
 			name: 'collectionName',
 			privacy: 'public'
 		};
-		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
-		expect(res.status).to.equal(500);
-		// expect(res.body.message).to.equal('Trying to change entityType of a non empty collection');
+		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('Trying to change entityType of a non empty collection');
 	});
 
 	it('should throw error when unauthorized user tries to edit the collection', async () => {
@@ -267,8 +267,10 @@ describe('POST collection/edit', () => {
 			...data,
 			name: 'new collection name'
 		};
-		const res = await agent.post(`/collection/${collection.get('id')}/edit/handler`).send(newData);
-		expect(res.status).to.equal(403);
+		const response = await agent.post(`/collection/${collection.get('id')}/edit/handler`).send(newData);
+
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
 	});
 
 	it('should throw error when collaborator tries to edit the collection', async () => {
@@ -291,9 +293,10 @@ describe('POST collection/edit', () => {
 			...data,
 			name: 'new collection name'
 		};
-		const res = await agent.post(`/collection/${collection.get('id')}/edit/handler`).send(newData);
-		expect(res.status).to.equal(403);
-		// expect(res.body.message).to.equal('You do not have permission to edit this collection');
+		const response = await agent.post(`/collection/${collection.get('id')}/edit/handler`).send(newData);
+
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
 	});
 });
 

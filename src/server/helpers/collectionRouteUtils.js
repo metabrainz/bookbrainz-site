@@ -19,6 +19,7 @@
 import * as handler from '../helpers/handler';
 import * as search from './search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
+import {BadRequestError} from '../../common/helpers/error';
 
 
 /**
@@ -45,7 +46,7 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 		}
 		else {
 			if (res.locals.collection?.items?.length && (upperFirst(camelCase(req.body.entityType)) !== res.locals.collection.entityType)) {
-				throw new Error('Trying to change entityType of a non empty collection');
+				throw new BadRequestError('Trying to change entityType of a non empty collection');
 			}
 			newCollection = await new UserCollection({id: req.params.collectionId}).fetch({
 				require: true
