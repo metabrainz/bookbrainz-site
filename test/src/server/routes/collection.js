@@ -17,7 +17,7 @@ const {UserCollection, UserCollectionCollaborator, UserCollectionItem} = orm;
 describe('POST /collection/collectionID/delete', () => {
 	let agent;
 	let loggedInUser;
-	beforeEach(async () => {
+	before(async () => {
 		try {
 			loggedInUser = await createEditor(123456);
 		}
@@ -29,7 +29,7 @@ describe('POST /collection/collectionID/delete', () => {
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
 	});
-	afterEach((done) => {
+	after((done) => {
 		// Clear DB tables then close superagent server
 		truncateEntities().then(() => {
 			agent.close(done);
@@ -115,6 +115,27 @@ describe('POST /collection/collectionID/delete', () => {
 		expect(collaboratorsJSON.length).to.equal(0);
 	});
 
+	it('should not allow unauthorized user to delete the collection', async () => {
+		const owner = await createEditor();
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: owner.get('id'),
+			public: true
+		};
+
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		// here loggedInUser is neither owner nor collaborator
+		const response = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+
+		expect(collectionsJSON.length).to.equal(1);
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
+	});
+
 	it('should not allow collaborator to delete the collection', async () => {
 		const owner = await createEditor();
 		const collectionData = {
@@ -130,31 +151,12 @@ describe('POST /collection/collectionID/delete', () => {
 			collectionId: collection.get('id')
 		});
 
-		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
-		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
+		const response = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 
-		expect(res.status).to.equal(403);
 		expect(collectionsJSON.length).to.equal(1);
-	});
-
-	it('should not allow unauthorized user to delete the collection', async () => {
-		const owner = await createEditor();
-		const collectionData = {
-			description: 'description',
-			entityType: 'Author',
-			name: 'collection name',
-			ownerId: owner.get('id'),
-			public: true
-		};
-
-		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
-		// here loggedInUser is neither owner nor collaborator
-		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
-		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
-		const collectionsJSON = collections.toJSON();
-
-		expect(res.status).to.equal(403);
-		expect(collectionsJSON.length).to.equal(1);
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
 	});
 });
