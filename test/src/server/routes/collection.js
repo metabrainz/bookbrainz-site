@@ -16,7 +16,7 @@ const {UserCollection, UserCollectionCollaborator, UserCollectionItem} = orm;
 describe('POST /collection/:collectionID/add', () => {
 	let agent;
 	let loggedInUser;
-	beforeEach(async () => {
+	before(async () => {
 		try {
 			loggedInUser = await createEditor(123456);
 		}
@@ -28,7 +28,7 @@ describe('POST /collection/:collectionID/add', () => {
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
 	});
-	afterEach((done) => {
+	after((done) => {
 		// Clear DB tables then close superagent server
 		truncateEntities().then(() => {
 			agent.close(done);
@@ -80,9 +80,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -111,9 +109,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -137,9 +133,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid'), author2.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -163,9 +157,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid'), author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -188,13 +180,12 @@ describe('POST /collection/:collectionID/add', () => {
 		const data = {
 			bbids: [author.get('bbid')]
 		};
-		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
-		expect(res.status).to.equal(403);
+		expect(response.status).to.equal(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit this collection');
 		expect(itemJSON.length).to.equal(0);
 	});
 
@@ -212,22 +203,21 @@ describe('POST /collection/:collectionID/add', () => {
 		const data = {
 			bbids: [author.get('bbid')]
 		};
-		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
-		expect(res.status).to.equal(403);
+		expect(response.status).to.equal(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit this collection');
 		expect(itemJSON.length).to.equal(0);
 	});
 });
 
 
-describe('POST /collection/:collectionID/add', () => {
+describe('POST /collection/:collectionID/remove', () => {
 	let agent;
 	let loggedInUser;
-	beforeEach(async () => {
+	before(async () => {
 		try {
 			loggedInUser = await createEditor(123456);
 		}
@@ -239,7 +229,7 @@ describe('POST /collection/:collectionID/add', () => {
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
 	});
-	afterEach((done) => {
+	after((done) => {
 		// Clear DB tables then close superagent server
 		truncateEntities().then(() => {
 			agent.close(done);
@@ -264,9 +254,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -298,9 +286,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 		expect(res.status).to.equal(200);
 		expect(itemJSON.length).to.equal(0);
@@ -331,9 +317,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 		expect(res.status).to.equal(200);
 		expect(itemJSON.length).to.equal(0);
@@ -362,9 +346,7 @@ describe('POST /collection/:collectionID/add', () => {
 			bbids: [author.get('bbid'), author2.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -390,12 +372,11 @@ describe('POST /collection/:collectionID/add', () => {
 		const data = {
 			bbids: [author.get('bbid')]
 		};
-		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
-		expect(res.status).to.equal(403);
+		expect(response.status).to.equal(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit this collection');
 		expect(itemJSON.length).to.equal(1);
 	});
 
@@ -418,12 +399,11 @@ describe('POST /collection/:collectionID/add', () => {
 		const data = {
 			bbids: [author.get('bbid')]
 		};
-		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const itemJSON = item.toJSON();
-		expect(res.status).to.equal(403);
+		expect(response.status).to.equal(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit this collection');
 		expect(itemJSON.length).to.equal(1);
 	});
 });
