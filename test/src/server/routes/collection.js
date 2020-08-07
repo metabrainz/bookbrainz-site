@@ -540,7 +540,7 @@ describe('POST collection/edit', () => {
 		const itemJSON = item.toJSON();
 
 		expect(response).to.have.status(400);
-		expect(response.res.statusMessage).to.equal('Trying to add an entity of type Author from a collection of type Edition');
+		expect(response.res.statusMessage).to.equal('Trying to add an entity of type Author to a collection of type Edition');
 		expect(itemJSON.length).to.equal(0);
 	});
 });
