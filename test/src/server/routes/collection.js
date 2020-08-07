@@ -5,6 +5,8 @@ import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
+// eslint-disable-next-line import/no-internal-modules
+import uuidv4 from 'uuid/v4';
 
 
 chai.use(chaiHttp);
@@ -320,11 +322,8 @@ describe('POST collection/edit', () => {
 			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
-		const item = await new UserCollectionItem({
-			collectionId: collection.get('id')
-		}).fetchAll({});
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
 		const itemJSON = item.toJSON();
-
 		expect(res.status).to.equal(200);
 		expect(itemJSON.length).to.equal(1);
 		expect(itemJSON[0].collectionId).to.equal(collection.get('id'));
@@ -482,6 +481,68 @@ describe('POST collection/edit', () => {
 		expect(response.res.statusMessage).to.equal('You do not have permission to edit this collection');
 		expect(itemJSON.length).to.equal(0);
 	});
+
+	it('should throw an error when trying to add entity with invalid bbid', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const data = {
+			bbids: ['not-a-bbid']
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
+		const itemJSON = item.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('Trying to add an entity having invalid BBID');
+		expect(itemJSON.length).to.equal(0);
+	});
+
+	it('should throw an error when trying to add an entity that does not exist', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const data = {
+			bbids: [uuidv4()]
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
+		const itemJSON = item.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('Trying to add an entity which is not present');
+		expect(itemJSON.length).to.equal(0);
+	});
+
+	it('should throw an error when trying to add wrong entity type', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Edition',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const author = await createAuthor();
+		const data = {
+			bbids: [author.get('bbid')]
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
+		const itemJSON = item.toJSON();
+
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('Trying to add an entity of type Author from a collection of type Edition');
+		expect(itemJSON.length).to.equal(0);
+	});
 });
 
 
@@ -530,6 +591,59 @@ describe('POST /collection/:collectionID/remove', () => {
 
 		expect(res.status).to.equal(200);
 		expect(itemJSON.length).to.equal(0);
+	});
+
+	it('should throw error when trying to remove an entity with invalid bbid', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const author = await createAuthor();
+		await new UserCollectionItem({
+			bbid: author.get('bbid'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+		const data = {
+			bbids: ['not-a-bbid']
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
+		const itemJSON = item.toJSON();
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal('Trying to remove an entity having invalid bbid');
+		expect(itemJSON.length).to.equal(1);
+	});
+
+	it('should throw error when trying to remove an entity that do not exist in the collection', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const author = await createAuthor();
+		await new UserCollectionItem({
+			bbid: author.get('bbid'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+		const author2 = await createAuthor();
+		const data = {
+			bbids: [author2.get('bbid')]
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
+		const itemJSON = item.toJSON();
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal('Trying to remove an entity which is not present in the collection');
+		expect(itemJSON.length).to.equal(1);
 	});
 
 	it('should be able to remove from public collection I"m collaborator of', async () => {
