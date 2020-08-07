@@ -211,7 +211,7 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 	}
 });
 
-router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res, next) => {
+router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsBeforeRemoving, async (req, res, next) => {
 	const {bbids = []} = req.body;
 	const {collection} = res.locals;
 	try {
@@ -236,7 +236,7 @@ router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwne
 });
 
 /* eslint-disable no-await-in-loop */
-router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res, next) => {
+router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsBeforeAdding, async (req, res, next) => {
 	const {bbids} = req.body;
 	const {collection} = res.locals;
 	try {
