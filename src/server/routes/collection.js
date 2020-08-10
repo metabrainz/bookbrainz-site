@@ -123,17 +123,17 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		const entitiesPromise = newResultsArray.map(bbid => orm.func.entity.getEntity(orm, collection.entityType, bbid, relations));
 		const entities = await Promise.all(entitiesPromise);
 		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
-		let showCheckboxes = isOwner;
+		let isCollaborator = false;
 		if (req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
-			showCheckboxes = true;
+			isCollaborator = true;
 		}
 		const props = generateProps(req, res, {
 			collection,
 			entities,
 			from,
+			isCollaborator,
 			isOwner,
 			nextEnabled,
-			showCheckboxes,
 			size
 		});
 		const markup = ReactDOMServer.renderToString(
