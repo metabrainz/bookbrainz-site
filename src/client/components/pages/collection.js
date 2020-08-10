@@ -17,9 +17,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {ENTITY_TYPE_ICONS, genEntityIconHTMLElement} from '../../helpers/entity';
+import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
 import AuthorTable from './entities/author-table';
 import DeleteCollectionModal from './parts/delete-collection-modal';
-import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import EditionGroupTable from './entities/editionGroup-table';
 import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
@@ -34,7 +35,7 @@ import {formatDate} from '../../helpers/utils';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, Row} = bootstrap;
+const {Alert, Badge, Button, Col, Row} = bootstrap;
 
 function getEntityTable(entityType) {
 	const tables = {
@@ -124,6 +125,7 @@ class CollectionPage extends React.Component {
 			entities: this.props.entities,
 			error: null,
 			selectedEntities: [],
+			showAddEntityModal: false,
 			showModal: false
 		};
 
@@ -131,8 +133,10 @@ class CollectionPage extends React.Component {
 		this.paginationUrl = `/collection/${this.props.collection.id}/paginate?q=`;
 		this.toggleRow = this.toggleRow.bind(this);
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
-		this.handleShowModal = this.handleShowModal.bind(this);
-		this.handleCloseModal = this.handleCloseModal.bind(this);
+		this.handleShowDeleteModal = this.handleShowDeleteModal.bind(this);
+		this.handleCloseDeleteModal = this.handleCloseDeleteModal.bind(this);
+		this.handleShowAddEntityModal = this.handleShowAddEntityModal.bind(this);
+		this.handleCloseAddEntityModal = this.handleCloseAddEntityModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 	}
@@ -173,12 +177,20 @@ class CollectionPage extends React.Component {
 		}
 	}
 
-	handleShowModal() {
+	handleShowDeleteModal() {
 		this.setState({showModal: true});
 	}
 
-	handleCloseModal() {
+	handleCloseDeleteModal() {
 		this.setState({showModal: false});
+	}
+
+	handleShowAddEntityModal() {
+		this.setState({showAddEntityModal: true});
+	}
+
+	handleCloseAddEntityModal() {
+		this.setState({showAddEntityModal: false});
 	}
 
 	handleAlertDismiss() {
@@ -194,14 +206,20 @@ class CollectionPage extends React.Component {
 			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
-			showCheckboxes: this.props.showCheckboxes
+			showCheckboxes: this.props.isOwner || this.props.isCollaborator
 		};
 		return (
 			<div>
 				<DeleteCollectionModal
 					collection={this.props.collection}
 					show={this.state.showModal}
-					onCloseModal={this.handleCloseModal}
+					onCloseModal={this.handleCloseDeleteModal}
+				/>
+				<AddEntityToCollectionModal
+					collectionId={this.props.collection.id}
+					collectionType={this.props.collection.entityType}
+					show={this.state.showAddEntityModal}
+					onCloseModal={this.handleCloseAddEntityModal}
 				/>
 				<Row className="entity-display-background">
 					<Col className="entity-display-image-box text-center" md={2}>
@@ -218,15 +236,28 @@ class CollectionPage extends React.Component {
 				{errorComponent}
 				<div className="margin-top-1 text-left">
 					{
-						this.props.showCheckboxes && this.props.entities.length ?
+						this.props.isCollaborator || this.props.isOwner ?
+							<Button
+								bsSize="small"
+								bsStyle="primary"
+								title={`Add ${this.props.collection.entityType}`}
+								onClick={this.handleShowAddEntityModal}
+							>
+								{genEntityIconHTMLElement('collection')}
+								&nbsp;Add {_.lowerCase(this.props.collection.entityType)}
+							</Button> : null
+					}
+					{
+						(this.props.isCollaborator || this.props.isOwner) && this.props.entities.length ?
 							<Button
 								bsSize="small"
 								bsStyle="danger"
+								disabled={!this.state.selectedEntities.length}
 								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
 								onClick={this.handleRemoveEntities}
 							>
 								<FontAwesomeIcon icon="times-circle"/>
-								&nbsp;Remove selected&nbsp;
+								&nbsp;Remove <Badge>{this.state.selectedEntities.length}</Badge> selected&nbsp;
 								{_.kebabCase(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
 							</Button> : null
 					}
@@ -247,7 +278,7 @@ class CollectionPage extends React.Component {
 								bsSize="small"
 								bsStyle="danger"
 								title="Delete Collection"
-								onClick={this.handleShowModal}
+								onClick={this.handleShowDeleteModal}
 							>
 								<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
 							</Button> : null
@@ -274,14 +305,15 @@ CollectionPage.propTypes = {
 	collection: PropTypes.object.isRequired,
 	entities: PropTypes.array,
 	from: PropTypes.number,
+	isCollaborator: PropTypes.bool,
 	isOwner: PropTypes.bool,
 	nextEnabled: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool,
 	size: PropTypes.number
 };
 CollectionPage.defaultProps = {
 	entities: [],
 	from: 0,
+	isCollaborator: false,
 	isOwner: false,
 	showCheckboxes: false,
 	size: 20

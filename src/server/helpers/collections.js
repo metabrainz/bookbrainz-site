@@ -121,7 +121,7 @@ export async function getCollectionItemBBIDs(collectionId, from, size, orm) {
 						SELECT bookbrainz.user_collection_item.bbid
 						FROM bookbrainz.user_collection_item
 						WHERE collection_id='${collectionId}'
-						ORDER BY user_collection_item.added_at ASC
+						ORDER BY user_collection_item.added_at DESC
 						LIMIT ${size}
 						OFFSET ${from}`);
 	return result.rows.map(row => row.bbid);
