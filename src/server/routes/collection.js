@@ -19,6 +19,7 @@
 
 
 import * as auth from '../helpers/auth';
+import * as error from '../../common/helpers/error';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
@@ -123,22 +124,26 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		const entitiesPromise = newResultsArray.map(bbid => orm.func.entity.getEntity(orm, collection.entityType, bbid, relations));
 		const entities = await Promise.all(entitiesPromise);
 		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
-		let showCheckboxes = isOwner;
+		let isCollaborator = false;
 		if (req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
-			showCheckboxes = true;
+			isCollaborator = true;
 		}
+		const userId = parseInt(req.user?.id, 10);
 		const props = generateProps(req, res, {
 			collection,
 			entities,
 			from,
+			isCollaborator,
 			isOwner,
 			nextEnabled,
-			showCheckboxes,
-			size
+			size,
+			userId
 		});
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<CollectionPage {...propHelpers.extractChildProps(props)}/>
+				<CollectionPage
+					{...propHelpers.extractChildProps(props)}
+				/>
 			</Layout>
 		);
 
@@ -260,6 +265,33 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 				}
 			}
 		}
+		res.status(200).send();
+	}
+	catch (err) {
+		log.debug(err);
+		return next(err);
+	}
+});
+
+router.post('/:collectionId/collaborator/remove/:editorId', auth.isAuthenticated, async (req, res, next) => {
+	try {
+		const {collection} = res.locals;
+		const collaboratorId = parseInt(req.params.editorId, 10);
+		if (parseInt(req.user.id, 10) !== collaboratorId ||
+			!collection.collaborators.filter(collaborator => collaborator.id === collaboratorId).length) {
+			throw new error.PermissionDeniedError(
+				'You do not have permission to edit this collection', req
+			);
+		}
+		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
+		await new UserCollectionCollaborator()
+			.query((qb) => {
+				qb.where('collection_id', collection.id);
+				qb.andWhere('collaborator_id', collaboratorId);
+			}).destroy();
+		await new UserCollection({id: collection.id}).save({
+			lastModified: new Date()
+		}, {patch: true});
 		res.status(200).send();
 	}
 	catch (err) {
