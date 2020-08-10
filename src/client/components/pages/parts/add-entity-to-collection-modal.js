@@ -42,6 +42,7 @@ class AddEntityToCollectionModal extends React.Component {
 		this.handleChangeEntity = this.handleChangeEntity.bind(this);
 		this.getCleanedEntities = this.getCleanedEntities.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
 	}
 
 	getCleanedEntities() {
@@ -81,6 +82,10 @@ class AddEntityToCollectionModal extends React.Component {
 		}));
 	}
 
+	handleAlertDismiss() {
+		this.setState({error: null});
+	}
+
 	handleSubmit() {
 		const cleanedEntities = this.getCleanedEntities();
 		const bbids = cleanedEntities.map(entity => entity.id);
@@ -112,7 +117,7 @@ class AddEntityToCollectionModal extends React.Component {
 			errorComponent =
 				(
 					<div className="text-center margin-top-1">
-						<Alert bsStyle="danger">{this.state.error}</Alert>;
+						<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>;
 					</div>
 				);
 		}
