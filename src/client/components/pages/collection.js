@@ -126,7 +126,7 @@ class CollectionPage extends React.Component {
 			error: null,
 			selectedEntities: [],
 			showAddEntityModal: false,
-			showModal: false
+			showDeleteModal: false
 		};
 
 		this.entityKey = getEntityKey(this.props.collection.entityType);
@@ -178,11 +178,11 @@ class CollectionPage extends React.Component {
 	}
 
 	handleShowDeleteModal() {
-		this.setState({showModal: true});
+		this.setState({showDeleteModal: true});
 	}
 
 	handleCloseDeleteModal() {
-		this.setState({showModal: false});
+		this.setState({showDeleteModal: false});
 	}
 
 	handleShowAddEntityModal() {
@@ -212,7 +212,7 @@ class CollectionPage extends React.Component {
 			<div>
 				<DeleteCollectionModal
 					collection={this.props.collection}
-					show={this.state.showModal}
+					show={this.state.showDeleteModal}
 					onCloseModal={this.handleCloseDeleteModal}
 				/>
 				<AddEntityToCollectionModal
