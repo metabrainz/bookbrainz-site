@@ -69,7 +69,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 						You’re about to remove yourself as a collaborator of Collection: {collection.name}.
 					</h4>
 					<p>
-						Are you sure you want to do this ? You wont’t be able to undo this.
+						Are you sure you want to do this ? You won’t be able to undo this.
 					</p>
 				</Alert>
 			);
