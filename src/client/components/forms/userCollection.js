@@ -20,7 +20,7 @@
 import * as bootstrap from 'react-bootstrap';
 import {trim, uniqBy} from 'lodash';
 import CustomInput from '../../input';
-import DeleteCollectionModal from '../pages/parts/delete-collection-modal';
+import DeleteOrRemoveCollaborationModal from '../pages/parts/delete-or-remove-collaboration-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -172,7 +172,7 @@ class UserCollectionForm extends React.Component {
 		return (
 			<div>
 				<h1>Create your collection</h1>
-				<DeleteCollectionModal
+				<DeleteOrRemoveCollaborationModal
 					collection={this.props.collection}
 					show={this.state.showModal}
 					onCloseModal={this.handleCloseModal}

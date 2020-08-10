@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import AuthorTable from './entities/author-table';
-import DeleteCollectionModal from './parts/delete-collection-modal';
+import DeleteOrRemoveCollaborationModal from './parts/delete-or-remove-collaboration-modal';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import EditionGroupTable from './entities/editionGroup-table';
 import EditionTable from './entities/edition-table';
@@ -194,12 +194,14 @@ class CollectionPage extends React.Component {
 			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
-			showCheckboxes: this.props.showCheckboxes
+			showCheckboxes: this.props.isCollaborator || this.props.isOwner
 		};
 		return (
 			<div>
-				<DeleteCollectionModal
+				<DeleteOrRemoveCollaborationModal
+					collaboratorId={this.props.userId}
 					collection={this.props.collection}
+					delete={this.props.isOwner}
 					show={this.state.showModal}
 					onCloseModal={this.handleCloseModal}
 				/>
@@ -218,7 +220,7 @@ class CollectionPage extends React.Component {
 				{errorComponent}
 				<div className="margin-top-1 text-left">
 					{
-						this.props.showCheckboxes && this.props.entities.length ?
+						(this.props.isOwner || this.props.isCollaborator) && this.props.entities.length ?
 							<Button
 								bsSize="small"
 								bsStyle="danger"
@@ -252,6 +254,17 @@ class CollectionPage extends React.Component {
 								<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
 							</Button> : null
 					}
+					{
+						this.props.isCollaborator ?
+							<Button
+								bsSize="small"
+								bsStyle="warning"
+								title="Remove yourself as a collaborator"
+								onClick={this.handleShowModal}
+							>
+								<FontAwesomeIcon icon="times-circle"/>&nbsp;Remove collaboration
+							</Button> : null
+					}
 				</div>
 				<div id="pageWithPagination">
 					<PagerElement
@@ -274,14 +287,17 @@ CollectionPage.propTypes = {
 	collection: PropTypes.object.isRequired,
 	entities: PropTypes.array,
 	from: PropTypes.number,
+	isCollaborator: PropTypes.bool,
 	isOwner: PropTypes.bool,
 	nextEnabled: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool,
-	size: PropTypes.number
+	size: PropTypes.number,
+	userId: PropTypes.number.isRequired
 };
 CollectionPage.defaultProps = {
 	entities: [],
 	from: 0,
+	isCollaborator: false,
 	isOwner: false,
 	showCheckboxes: false,
 	size: 20
