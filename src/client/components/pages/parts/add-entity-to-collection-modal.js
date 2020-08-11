@@ -26,7 +26,7 @@ import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import request from 'superagent';
 
 
-const {Alert, Badge, Button, ButtonGroup, Col, Modal} = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Col, Modal, Row} = bootstrap;
 
 class AddEntityToCollectionModal extends React.Component {
 	constructor(props) {
@@ -93,7 +93,15 @@ class AddEntityToCollectionModal extends React.Component {
 			request.post(`/collection/${this.props.collectionId}/add`)
 				.send({bbids})
 				.then((res) => {
-					window.location.href = `/collection/${this.props.collectionId}`;
+					this.setState({
+						entities: [],
+						error: null
+					}, () => {
+						this.props.closeModalAndShowMessage({
+							text: `Added ${bbids.length} ${lowerCase(this.props.collectionType)}${bbids.length > 1 ? 's' : ''}`,
+							type: 'success'
+						});
+					});
 				}, (error) => {
 					this.setState({
 						error: 'Something went wrong! Please try again later'
@@ -117,7 +125,7 @@ class AddEntityToCollectionModal extends React.Component {
 			errorComponent =
 				(
 					<div className="text-center margin-top-1">
-						<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>;
+						<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>
 					</div>
 				);
 		}
@@ -125,7 +133,7 @@ class AddEntityToCollectionModal extends React.Component {
 
 		/* eslint-disable react/jsx-no-bind */
 		const addEntityToCollectionForm = (
-			<div>
+			<Row>
 				<Col
 					id="addEntityToCollection"
 					md={12}
@@ -149,7 +157,7 @@ class AddEntityToCollectionModal extends React.Component {
 									<div key={entity.id}>
 										<EntitySearchFieldOption
 											buttonAfter={buttonAfter}
-											instanceId="collaboratorSearchField"
+											instanceId="entitySearchField"
 											label={`Select ${this.props.collectionType}`}
 											name={this.props.collectionType}
 											type={this.props.collectionType}
@@ -162,7 +170,7 @@ class AddEntityToCollectionModal extends React.Component {
 						}
 					</form>
 				</Col>
-			</div>
+			</Row>
 		);
 
 		return (
@@ -173,14 +181,14 @@ class AddEntityToCollectionModal extends React.Component {
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						Add {lowerCase(this.props.collectionType)}s in the collection
+						Add {lowerCase(this.props.collectionType)}s to the collection
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					{addEntityToCollectionForm}
+					{errorComponent}
 				</Modal.Body>
 				<Modal.Footer>
-					{errorComponent}
 					<ButtonGroup>
 						<Button
 							bsStyle="primary"
@@ -188,7 +196,7 @@ class AddEntityToCollectionModal extends React.Component {
 							onClick={this.handleAddEntity}
 						>
 							<FontAwesomeIcon icon="plus"/>
-							&nbsp;Add another {lowerCase(this.props.collectionType)} field
+							&nbsp;Add another {lowerCase(this.props.collectionType)}
 						</Button>
 						<Button
 							bsStyle="success"
@@ -197,7 +205,7 @@ class AddEntityToCollectionModal extends React.Component {
 						>
 							{genEntityIconHTMLElement('collection')}
 							&nbsp;Add <Badge>{cleanedEntities.length}</Badge>&nbsp;
-							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} in the collection
+							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} to the collection
 						</Button>
 					</ButtonGroup>
 				</Modal.Footer>
@@ -208,6 +216,7 @@ class AddEntityToCollectionModal extends React.Component {
 
 AddEntityToCollectionModal.displayName = 'AddEntityToCollectionModal';
 AddEntityToCollectionModal.propTypes = {
+	closeModalAndShowMessage: PropTypes.func.isRequired,
 	collectionId: PropTypes.string.isRequired,
 	collectionType: PropTypes.string.isRequired,
 	onCloseModal: PropTypes.func.isRequired,
