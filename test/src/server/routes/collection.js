@@ -395,8 +395,6 @@ describe('POST collection/edit', () => {
 	});
 });
 
-
-
 describe('POST /collection/collectionID/delete', () => {
 	let agent;
 	let loggedInUser;
