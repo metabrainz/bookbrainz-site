@@ -109,8 +109,19 @@ class SearchResults extends React.Component {
 		const selectedEntities = this.state.selected;
 		if (selectedEntities.length) {
 			const areAllEntitiesOfSameType = selectedEntities.every(entity => entity.type === selectedEntities[0].type);
+			const entityTypes = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Work'];
 			if (areAllEntitiesOfSameType) {
-				this.setState({message: {}, showModal: true});
+				if (entityTypes.includes(selectedEntities[0].type)) {
+					this.setState({message: {}, showModal: true});
+				}
+				else {
+					this.setState({
+						message: {
+							text: `${selectedEntities[0].type} cannot be added to a collection`,
+							type: 'danger'
+						}
+					});
+				}
 			}
 			else {
 				this.setState({
