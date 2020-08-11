@@ -123,7 +123,11 @@ class CollectionPage extends React.Component {
 		super(props);
 		this.state = {
 			entities: this.props.entities,
-			error: null,
+			message: {
+				text: null,
+				type: null
+			},
+			refreshTable: false,
 			selectedEntities: [],
 			showAddEntityModal: false,
 			showDeleteModal: false
@@ -139,6 +143,8 @@ class CollectionPage extends React.Component {
 		this.handleCloseAddEntityModal = this.handleCloseAddEntityModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
+		this.closeAddEntityModalShowMessageAndRefreshTable = this.closeAddEntityModalShowMessageAndRefreshTable.bind(this);
+		this.refreshDone = this.refreshDone.bind(this);
 	}
 
 	searchResultsCallback(newResults) {
@@ -167,13 +173,31 @@ class CollectionPage extends React.Component {
 			request.post(submissionUrl)
 				.send({bbids})
 				.then((res) => {
-					window.location.href = `/collection/${this.props.collection.id}`;
+					this.setState({
+						message: {
+							text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}
+							${bbids.length > 1 ? 's' : ''}`,
+							type: 'success'
+						},
+						refreshTable: true,
+						selectedEntities: []
+					});
 				}, (error) => {
-					this.setState({error: 'Something went wrong! Please try again later'});
+					this.setState({
+						message: {
+							text: 'Something went wrong! Please try again later',
+							type: 'danger'
+						}
+					});
 				});
 		}
 		else {
-			this.setState({error: `No ${_.kebabCase(this.props.collection.entityType)} selected`});
+			this.setState({
+				message: {
+					text: `No ${_.kebabCase(this.props.collection.entityType)} selected`,
+					type: 'danger'
+				}
+			});
 		}
 	}
 
@@ -194,12 +218,25 @@ class CollectionPage extends React.Component {
 	}
 
 	handleAlertDismiss() {
-		this.setState({error: null});
+		this.setState({message: {}});
+	}
+
+	closeAddEntityModalShowMessageAndRefreshTable(message) {
+		this.setState({
+			message,
+			refreshTable: true,
+			showAddEntityModal: false
+		});
+	}
+
+	refreshDone() {
+		this.setState({
+			refreshTable: false
+		});
 	}
 
 	render() {
-		const errorComponent = this.state.error ?
-			<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert> : null;
+		const messageComponent = this.state.message.text ? <Alert bsStyle={this.state.message.type} className="margin-top-1" onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
 		const propsForTable = {
 			[this.entityKey]: this.state.entities,
@@ -216,6 +253,7 @@ class CollectionPage extends React.Component {
 					onCloseModal={this.handleCloseDeleteModal}
 				/>
 				<AddEntityToCollectionModal
+					closeModalAndShowMessage={this.closeAddEntityModalShowMessageAndRefreshTable}
 					collectionId={this.props.collection.id}
 					collectionType={this.props.collection.entityType}
 					show={this.state.showAddEntityModal}
@@ -233,7 +271,7 @@ class CollectionPage extends React.Component {
 					</Col>
 				</Row>
 				<EntityTable{...propsForTable}/>
-				{errorComponent}
+				{messageComponent}
 				<div className="margin-top-1 text-left">
 					{
 						this.props.isCollaborator || this.props.isOwner ?
@@ -243,7 +281,7 @@ class CollectionPage extends React.Component {
 								title={`Add ${this.props.collection.entityType}`}
 								onClick={this.handleShowAddEntityModal}
 							>
-								{genEntityIconHTMLElement('collection')}
+								<FontAwesomeIcon icon="plus"/>
 								&nbsp;Add {_.lowerCase(this.props.collection.entityType)}
 							</Button> : null
 					}
@@ -289,6 +327,8 @@ class CollectionPage extends React.Component {
 						from={this.props.from}
 						nextEnabled={this.props.nextEnabled}
 						paginationUrl={this.paginationUrl}
+						refreshDone={this.refreshDone}
+						refreshTable={this.state.refreshTable}
 						results={this.state.entities}
 						searchResultsCallback={this.searchResultsCallback}
 						size={this.props.size}
