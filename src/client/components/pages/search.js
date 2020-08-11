@@ -132,11 +132,8 @@ SearchPage.propTypes = {
 	nextEnabled: PropTypes.bool.isRequired,
 	query: PropTypes.string,
 	resultsPerPage: PropTypes.number,
-<<<<<<< HEAD
-	type: PropTypes.string
-=======
+	type: PropTypes.string,
 	user: PropTypes.object.isRequired
->>>>>>> chore: add addToCollection-Modal in search table
 };
 SearchPage.defaultProps = {
 	from: 0,
