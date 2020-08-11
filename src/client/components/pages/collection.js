@@ -277,7 +277,7 @@ class CollectionPage extends React.Component {
 						this.props.isCollaborator || this.props.isOwner ?
 							<Button
 								bsSize="small"
-								bsStyle="primary"
+								bsStyle="success"
 								title={`Add ${this.props.collection.entityType}`}
 								onClick={this.handleShowAddEntityModal}
 							>

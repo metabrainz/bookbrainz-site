@@ -203,7 +203,7 @@ class AddEntityToCollectionModal extends React.Component {
 							disabled={!cleanedEntities.length}
 							onClick={this.handleSubmit}
 						>
-							{genEntityIconHTMLElement('collection')}
+							<FontAwesomeIcon icon="plus"/>
 							&nbsp;Add <Badge>{cleanedEntities.length}</Badge>&nbsp;
 							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} to the collection
 						</Button>
