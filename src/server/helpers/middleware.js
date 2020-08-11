@@ -23,8 +23,8 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {$Request, $Response, NextFunction} from 'express';
-
 import Promise from 'bluebird';
+import _ from 'lodash';
 
 
 function makeLoader(modelName, propName, sortFunc) {
@@ -210,4 +210,35 @@ export function makeCollectionLoader() {
 			return next(new error.BadRequestError('Invalid Collection ID', req));
 		}
 	};
+}
+
+export async function validateCollectionParams(req, res, next) {
+	const {collaborators = [], name, entityType} = req.body;
+	const {orm} = req.app.locals;
+	const {Editor} = orm;
+
+	if (!_.trim(name).length) {
+		return next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req));
+	}
+	const entityTypes = _.keys(utils.getEntityModels(orm));
+	if (!entityTypes.includes(entityType)) {
+		return next(new error.BadRequestError(`Invalid entity type: ${entityType} does not exist`, req));
+	}
+	const collaboratorIds = collaborators.map(collaborator => collaborator.id);
+	for (let i = 0; i < collaboratorIds.length; i++) {
+		const collaboratorId = collaboratorIds[i];
+		if (!Number.isInteger(collaboratorId) || collaboratorId <= 0) {
+			return next(new error.BadRequestError(`Invalid collaborator id: ${collaboratorId} not valid`));
+		}
+	}
+
+	const editors = await new Editor().where('id', 'in', collaboratorIds).fetchAll({require: false});
+	const editorsJSON = editors.toJSON();
+	for (let i = 0; i < collaboratorIds.length; i++) {
+		const collaboratorId = collaboratorIds[i];
+		if (!editorsJSON.find(editor => editor.id === collaboratorId)) {
+			return next(new error.BadRequestError(`Collaborator ${collaboratorId} does not exist`));
+		}
+	}
+	return next();
 }

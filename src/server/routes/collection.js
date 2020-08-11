@@ -98,7 +98,7 @@ router.get('/create', auth.isAuthenticated, (req, res) => {
 		script
 	}));
 });
-router.post('/create/handler', auth.isAuthenticatedForHandler, collectionCreateOrEditHandler);
+router.post('/create/handler', auth.isAuthenticatedForHandler, middleware.validateCollectionParams, collectionCreateOrEditHandler);
 
 
 /* If the route specifies a CollectionId, load the Collection for it. */
@@ -196,7 +196,7 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 	}));
 });
 
-router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, collectionCreateOrEditHandler);
+router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, middleware.validateCollectionParams, collectionCreateOrEditHandler);
 
 router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res, next) => {
 	try {
