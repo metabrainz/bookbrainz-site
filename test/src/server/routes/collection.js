@@ -45,6 +45,7 @@ describe('POST /collection/create', () => {
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
 		const collection = await new UserCollection({id: res.body.id}).fetch();
+
 		expect(collection.get('id')).to.equal(res.body.id);
 		expect(collection.get('ownerId')).to.equal(collectionOwner.get('id'));
 		expect(collection.get('name')).to.equal(data.name);
@@ -66,26 +67,72 @@ describe('POST /collection/create', () => {
 		expect(res2.body[0].id).to.equal(res.body.id);
 	});
 
-	it('should return status code 500 for incorrect entityType', async () => {
+	it('should throw error for incorrect entityType', async () => {
 		const data = {
 			description: 'some description',
 			entityType: 'incorrect',
 			name: 'collectionName',
 			privacy: 'public'
 		};
-		const res = await agent.post('/collection/create/handler').send(data);
-		expect(res.status).to.equal(500);
+		const response = await agent.post('/collection/create/handler').send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Invalid entity type: ${data.entityType} does not exist`);
 	});
 
-	it('should return status code 500 for empty collection name', async () => {
+	it('should throw error for empty collection name', async () => {
 		const data = {
 			description: 'some description',
 			entityType: 'Author',
 			name: '',
 			privacy: 'public'
 		};
-		const res = await agent.post('/collection/create/handler').send(data);
-		expect(res.status).to.equal(500);
+		const response = await agent.post('/collection/create/handler').send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal('Invalid collection name: Empty string not allowed');
+	});
+
+	it('should throw error for invalid collaborator id (string)', async () => {
+		const data = {
+			collaborators: [{id: 'abc', name: 'name'}],
+			description: 'some description',
+			entityType: 'Author',
+			name: 'collectionName',
+			privacy: 'public'
+		};
+		const response = await agent.post('/collection/create/handler').send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Invalid collaborator id: ${data.collaborators[0].id} not valid`);
+	});
+
+	it('should throw error for invalid collaborator id (negative number)', async () => {
+		const data = {
+			collaborators: [{id: -123, name: 'name'}],
+			description: 'some description',
+			entityType: 'Author',
+			name: 'collectionName',
+			privacy: 'public'
+		};
+		const response = await agent.post('/collection/create/handler').send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Invalid collaborator id: ${data.collaborators[0].id} not valid`);
+	});
+
+	it('should throw error for incorrect collaborator id (collaborator does not exist)', async () => {
+		const data = {
+			collaborators: [{id: 12345, name: 'name'}],
+			description: 'some description',
+			entityType: 'Author',
+			name: 'collectionName',
+			privacy: 'public'
+		};
+		const response = await agent.post('/collection/create/handler').send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Collaborator ${data.collaborators[0].id} does not exist`);
 	});
 
 	it('should correctly add collaborators in the collection', async () => {
@@ -102,6 +149,8 @@ describe('POST /collection/create', () => {
 		const collection = await new UserCollection({id: res.body.id}).fetch({withRelated: ['collaborators']});
 		const collectionJSON = collection.toJSON();
 		const collaboratorIds = collectionJSON.collaborators.map(collaborator => collaborator.collaboratorId);
+
+		expect(res.status).to.equal(200);
 		expect(collaboratorIds).to.be.containingAllOf([collaborator1.get('id'), collaborator2.get('id')]);
 	});
 });
@@ -210,7 +259,7 @@ describe('POST collection/edit', () => {
 		expect(res2.body[0].id).to.equal(res.body.id);
 	});
 
-	it('should return status code 500 for incorrect entityType', async () => {
+	it('should throw error for incorrect entityType', async () => {
 		const data = {
 			collaborators: [oldCollaborator.toJSON()],
 			description: 'some description',
@@ -218,11 +267,13 @@ describe('POST collection/edit', () => {
 			name: 'collectionName',
 			privacy: 'public'
 		};
-		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
-		expect(res.status).to.equal(500);
+		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Invalid entity type: ${data.entityType} does not exist`);
 	});
 
-	it('should return status code 500 for empty collection name', async () => {
+	it('should throw error for empty collection name', async () => {
 		const data = {
 			collaborators: [oldCollaborator.toJSON()],
 			description: 'some description',
@@ -230,11 +281,13 @@ describe('POST collection/edit', () => {
 			name: '',
 			privacy: 'public'
 		};
-		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
-		expect(res.status).to.equal(500);
+		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal('Invalid collection name: Empty string not allowed');
 	});
 
-	it('should return status 400 when trying to edit entityType of a non empty collection', async () => {
+	it('should throw error when trying to edit entityType of a non empty collection', async () => {
 		const author = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
@@ -251,6 +304,48 @@ describe('POST collection/edit', () => {
 		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
 		expect(response).to.have.status(400);
 		expect(response.res.statusMessage).to.equal('Trying to change entityType of a non empty collection');
+	});
+
+	it('should throw error for invalid collaborator id (string)', async () => {
+		const data = {
+			collaborators: [{id: 'abc', name: 'name'}],
+			description: 'some description',
+			entityType: 'Author',
+			name: 'collectionName',
+			privacy: 'public'
+		};
+		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Invalid collaborator id: ${data.collaborators[0].id} not valid`);
+	});
+
+	it('should throw error for invalid collaborator id (negative number)', async () => {
+		const data = {
+			collaborators: [{id: -123, name: 'name'}],
+			description: 'some description',
+			entityType: 'Author',
+			name: 'collection name',
+			privacy: 'public'
+		};
+		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Invalid collaborator id: ${data.collaborators[0].id} not valid`);
+	});
+
+	it('should throw error for incorrect collaborator id (collaborator does not exist)', async () => {
+		const data = {
+			collaborators: [{id: 9999, name: 'name'}],
+			description: 'some description',
+			entityType: 'Author',
+			name: 'collection name',
+			privacy: 'public'
+		};
+		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
+
+		expect(response.status).to.equal(400);
+		expect(response.res.statusMessage).to.equal(`Collaborator ${data.collaborators[0].id} does not exist`);
 	});
 
 	it('should throw error when unauthorized user tries to edit the collection', async () => {
