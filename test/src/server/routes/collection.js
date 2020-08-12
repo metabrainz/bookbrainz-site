@@ -76,7 +76,7 @@ describe('POST /collection/collectionID/delete', () => {
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 
 		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
-		const items = await new UserCollectionItem({collectionId: collection.get('id')}).fetchAll({require: false});
+		const items = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 		const itemsJSON = items.toJSON();
 
@@ -107,7 +107,7 @@ describe('POST /collection/collectionID/delete', () => {
 
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
-		const collaborators = await new UserCollectionCollaborator({collectionId: collection.get('id')}).fetchAll({require: false});
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const collaboratorsJSON = collaborators.toJSON();
 		const collectionsJSON = collections.toJSON();
 
@@ -375,7 +375,7 @@ describe('POST /collection/:collectionID/add', () => {
 		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
 		const itemJSON = item.toJSON();
 		expect(response).to.have.status(400);
-		expect(response.res.statusMessage).to.equal('Trying to add an entity having invalid BBID');
+		expect(response.res.statusMessage).to.equal(`Invalid BBID ${data.bbids[0]}`);
 		expect(itemJSON.length).to.equal(0);
 	});
 
@@ -395,11 +395,11 @@ describe('POST /collection/:collectionID/add', () => {
 		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
 		const itemJSON = item.toJSON();
 		expect(response).to.have.status(400);
-		expect(response.res.statusMessage).to.equal('Trying to add an entity which is not present');
+		expect(response.res.statusMessage).to.equal(`${collectionData.entityType} ${data.bbids[0]} does not exist`);
 		expect(itemJSON.length).to.equal(0);
 	});
 
-	it('should throw an error when trying to add wrong entity type', async () => {
+	it('should throw an error when trying to add an entity of type different than the collection type', async () => {
 		const collectionData = {
 			description: 'description',
 			entityType: 'Edition',
@@ -417,7 +417,27 @@ describe('POST /collection/:collectionID/add', () => {
 		const itemJSON = item.toJSON();
 
 		expect(response).to.have.status(400);
-		expect(response.res.statusMessage).to.equal('Trying to add an entity of type Author to a collection of type Edition');
+		expect(response.res.statusMessage).to.equal(`Cannot add an entity of type Author to a collection of type ${collectionData.entityType}`);
+		expect(itemJSON.length).to.equal(0);
+	});
+
+	it('should throw error for empty bbid array', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Edition',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const data = {
+			bbids: []
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
+		const itemJSON = item.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('BBIDs array is empty');
 		expect(itemJSON.length).to.equal(0);
 	});
 });
@@ -492,7 +512,7 @@ describe('POST /collection/:collectionID/remove', () => {
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(400);
-		expect(response.res.statusMessage).to.equal('Trying to remove an entity having invalid bbid');
+		expect(response.res.statusMessage).to.equal(`Invalid BBID ${data.bbids[0]}`);
 		expect(itemJSON.length).to.equal(1);
 	});
 
@@ -519,7 +539,7 @@ describe('POST /collection/:collectionID/remove', () => {
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(400);
-		expect(response.res.statusMessage).to.equal('Trying to remove an entity which is not present in the collection');
+		expect(response.res.statusMessage).to.equal(`Entity ${data.bbids[0]} is not in collection ${collection.get('id')}`);
 		expect(itemJSON.length).to.equal(1);
 	});
 
@@ -667,5 +687,25 @@ describe('POST /collection/:collectionID/remove', () => {
 		expect(response.status).to.equal(403);
 		expect(response.res.statusMessage).to.equal('You do not have permission to edit this collection');
 		expect(itemJSON.length).to.equal(1);
+	});
+
+	it('should throw error for empty bbid array', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Edition',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const data = {
+			bbids: []
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
+		const itemJSON = item.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('BBIDs array is empty');
+		expect(itemJSON.length).to.equal(0);
 	});
 });

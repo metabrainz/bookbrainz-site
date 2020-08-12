@@ -211,13 +211,10 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 	}
 });
 
-router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsBeforeRemoving, async (req, res, next) => {
+router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionRemove, async (req, res, next) => {
 	const {bbids = []} = req.body;
 	const {collection} = res.locals;
 	try {
-		if (!bbids.length) {
-			throw new Error('bbids is empty');
-		}
 		const {UserCollection, UserCollectionItem} = req.app.locals.orm;
 		await new UserCollectionItem()
 			.query((qb) => {
@@ -236,7 +233,7 @@ router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwne
 });
 
 /* eslint-disable no-await-in-loop */
-router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsBeforeAdding, async (req, res, next) => {
+router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionAdd, async (req, res, next) => {
 	const {bbids} = req.body;
 	const {collection} = res.locals;
 	try {
