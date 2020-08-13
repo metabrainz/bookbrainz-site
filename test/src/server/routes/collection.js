@@ -70,6 +70,7 @@ describe('POST /collection/create', () => {
 		const res = await agent.post('/collection/create/handler').send(data);
 		await refreshIndex();
 		const searchResults = await searchByName(orm, data.name, 'Collection', '10', '0');
+
 		expect(searchResults[0].id).to.equal(res.body.id);
 		expect(searchResults[0].name).to.equal(data.name);
 	});
@@ -265,10 +266,10 @@ describe('POST collection/edit', () => {
 			name: 'updatedNameInES',
 			privacy: 'public'
 		};
-		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
+		await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
 		await refreshIndex();
 		const searchResults = await searchByName(orm, newData.name, 'Collection', '10', '0');
-		expect(searchResults[0].id).to.equal(res.body.id);
+		expect(searchResults[0].id).to.equal(collectionJSON.id);
 		expect(searchResults[0].name).to.equal(newData.name);
 	});
 
