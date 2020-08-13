@@ -23,12 +23,11 @@ import log from 'log';
 
 export function sendPromiseResult(res, promise, processingCallback) {
 	return promise
-		.then((result) => {
-			res.send(result);
-
+		.then(async (result) => {
 			if (typeof processingCallback === 'function') {
-				return processingCallback(result);
+				await processingCallback(result);
 			}
+			res.send(result);
 
 			return result;
 		})
