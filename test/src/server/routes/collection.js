@@ -55,7 +55,7 @@ describe('POST /collection/create', () => {
 		expect(res.status).to.equal(200);
 	});
 
-	xit('should add the collection in the ES index', async () => {
+	it('should add the collection in the ES index', async () => {
 		const data = {
 			description: 'some description1234',
 			entityType: 'Author',
@@ -63,7 +63,7 @@ describe('POST /collection/create', () => {
 			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
-		const res2 = await agent.get(`/search/search?q=${data.name}&type=collection`);
+		const res2 = await agent.get(`/search/search?q=${data.name}&type=Collection`);
 		expect(res2.body[0].id).to.equal(res.body.id);
 	});
 
@@ -247,7 +247,7 @@ describe('POST collection/edit', () => {
 		expect(updatedCollectionJSON.collaborators.length).to.equal(0);
 	});
 
-	xit('should update the collection in the ES index', async () => {
+	it('should update the collection in the ES index', async () => {
 		const newData = {
 			description: 'new description',
 			entityType: 'Author',
