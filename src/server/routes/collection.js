@@ -290,9 +290,9 @@ router.post('/:collectionId/collaborator/remove/:editorId', auth.isAuthenticated
 		const {collection} = res.locals;
 		const collaboratorId = parseInt(req.params.editorId, 10);
 		if (parseInt(req.user.id, 10) !== collaboratorId ||
-			!collection.collaborators.filter(collaborator => collaborator.id === collaboratorId).length) {
+			!collection.collaborators.find(collaborator => collaborator.id === collaboratorId)) {
 			throw new error.PermissionDeniedError(
-				'You do not have permission to edit this collection', req
+				'You do not have permission to edit this collection’s collaborators', req
 			);
 		}
 		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;

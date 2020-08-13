@@ -17,10 +17,8 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {ENTITY_TYPE_ICONS, genEntityIconHTMLElement} from '../../helpers/entity';
 import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
 import AuthorTable from './entities/author-table';
-import DeleteCollectionModal from './parts/delete-collection-modal';
 import DeleteOrRemoveCollaborationModal from './parts/delete-or-remove-collaboration-modal';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import EditionGroupTable from './entities/editionGroup-table';
@@ -320,9 +318,9 @@ class CollectionPage extends React.Component {
 								bsSize="small"
 								bsStyle="warning"
 								title="Remove yourself as a collaborator"
-								onClick={this.handleShowModal}
+								onClick={this.handleShowDeleteModal}
 							>
-								<FontAwesomeIcon icon="times-circle"/>&nbsp;Remove collaboration
+								<FontAwesomeIcon icon="times-circle"/>&nbsp;Stop collaboration
 							</Button> : null
 					}
 				</div>

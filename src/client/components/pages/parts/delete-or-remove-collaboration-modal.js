@@ -61,7 +61,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 		}
 		else {
 			this.postUrl = `/collection/${collection.id}/collaborator/remove/${this.props.collaboratorId}`;
-			modalTitle = 'Remove collaboration';
+			modalTitle = 'Remove yourself as a collaborator';
 			modalBody = (
 				<Alert bsStyle="warning">
 					<h4>
@@ -69,13 +69,13 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 						You’re about to remove yourself as a collaborator of Collection: {collection.name}.
 					</h4>
 					<p>
-						Are you sure you want to do this ? You won’t be able to undo this.
+						Are you sure you want to process ? You won’t be able to undo this.
 					</p>
 				</Alert>
 			);
 			submitButton = (
 				<Button bsStyle="warning" onClick={this.handleSubmit}>
-					<FontAwesomeIcon icon="times-circle"/> Remove collaboration
+					<FontAwesomeIcon icon="times-circle"/> Stop collaboration
 				</Button>
 			);
 		}
