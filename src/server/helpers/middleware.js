@@ -270,7 +270,7 @@ export async function validateCollectionParams(req, res, next) {
 	const collaboratorIds = collaborators.map(collaborator => collaborator.id);
 	for (let i = 0; i < collaboratorIds.length; i++) {
 		const collaboratorId = collaboratorIds[i];
-		if (!Number.isInteger(collaboratorId) || collaboratorId <= 0) {
+		if (!(/^\d+$/).test(collaboratorId)) {
 			return next(new error.BadRequestError(`Invalid collaborator id: ${collaboratorId} not valid`));
 		}
 	}
