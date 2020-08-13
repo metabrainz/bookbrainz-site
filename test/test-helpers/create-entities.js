@@ -389,6 +389,9 @@ export function truncateEntities() {
 		'bookbrainz.edition_group_type',
 		'bookbrainz.author_type',
 		'bookbrainz.publisher_type',
+		'bookbrainz.user_collection',
+		'bookbrainz.user_collection_item',
+		'bookbrainz.user_collection_collaborator',
 		'musicbrainz.area',
 		'musicbrainz.language',
 		'musicbrainz.gender'

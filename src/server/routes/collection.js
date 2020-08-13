@@ -20,8 +20,10 @@
 
 import * as auth from '../helpers/auth';
 import * as error from '../../common/helpers/error';
+import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
+import * as search from '../helpers/search';
 import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import CollectionPage from '../../client/components/pages/collection';
@@ -99,7 +101,7 @@ router.get('/create', auth.isAuthenticated, (req, res) => {
 		script
 	}));
 });
-router.post('/create/handler', auth.isAuthenticatedForHandler, collectionCreateOrEditHandler);
+router.post('/create/handler', auth.isAuthenticatedForHandler, middleware.validateCollectionParams, collectionCreateOrEditHandler);
 
 
 /* If the route specifies a CollectionId, load the Collection for it. */
@@ -201,14 +203,27 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 	}));
 });
 
-router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, collectionCreateOrEditHandler);
+router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, middleware.validateCollectionParams, collectionCreateOrEditHandler);
 
 router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res, next) => {
 	try {
 		const {UserCollection} = req.app.locals.orm;
-		const {collectionId} = req.params;
-		await new UserCollection({id: collectionId}).destroy();
-		return res.status(200).send({});
+		const {collection} = res.locals;
+		await new UserCollection({id: collection.id}).destroy();
+		const collectionPromiseForES = new Promise((resolve) => {
+			const collectionForES = {
+				aliasSet: {
+					aliases: [
+						{name: collection.name}
+					]
+				},
+				bbid: collection.id,
+				id: collection.id,
+				type: 'Collection'
+			};
+			resolve(collectionForES);
+		});
+		return handler.sendPromiseResult(res, collectionPromiseForES, search.deleteEntity);
 	}
 	catch (err) {
 		log.debug(err);
@@ -216,13 +231,10 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 	}
 });
 
-router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res, next) => {
+router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionRemove, async (req, res, next) => {
 	const {bbids = []} = req.body;
 	const {collection} = res.locals;
 	try {
-		if (!bbids.length) {
-			throw new Error('bbids is empty');
-		}
 		const {UserCollection, UserCollectionItem} = req.app.locals.orm;
 		await new UserCollectionItem()
 			.query((qb) => {
@@ -241,7 +253,7 @@ router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwne
 });
 
 /* eslint-disable no-await-in-loop */
-router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, async (req, res, next) => {
+router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionAdd, async (req, res, next) => {
 	const {bbids} = req.body;
 	const {collection} = res.locals;
 	try {
