@@ -23,8 +23,8 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {$Request, $Response, NextFunction} from 'express';
-
 import Promise from 'bluebird';
+import {lowerCase} from 'lodash';
 
 
 function makeLoader(modelName, propName, sortFunc) {
@@ -234,7 +234,7 @@ export async function validateBBIDsForCollectionAdd(req, res, next) {
 		if (!entity) {
 			return next(new error.BadRequestError(`${collectionType} ${bbid} does not exist`, req));
 		}
-		if (entity.type !== collectionType) {
+		if (lowerCase(entity.type) !== lowerCase(collectionType)) {
 			return next(new error.BadRequestError(`Cannot add an entity of type ${entity.type} to a collection of type ${collectionType}`));
 		}
 	}
