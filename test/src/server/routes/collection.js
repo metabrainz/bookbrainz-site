@@ -1,12 +1,11 @@
 
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
-
+import {generateIndex, refreshIndex, searchByName} from '../../../../src/server/helpers/search';
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-
 
 chai.use(chaiHttp);
 chai.use(assertArrays);
@@ -27,6 +26,7 @@ describe('POST /collection/collectionID/delete', () => {
 		// The `agent` now has the sessionid cookie saved, and will send it
 		// back to the server in the next request:
 		agent = await chai.request.agent(app);
+		await generateIndex(orm);
 		await agent.get('/cb');
 	});
 	after((done) => {
@@ -45,8 +45,9 @@ describe('POST /collection/collectionID/delete', () => {
 			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
-		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -62,6 +63,7 @@ describe('POST /collection/collectionID/delete', () => {
 			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
 		const author1 = await createAuthor();
 		const author2 = await createAuthor();
 		await new UserCollectionItem({
@@ -74,8 +76,8 @@ describe('POST /collection/collectionID/delete', () => {
 		});
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 
-		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
-		const items = await new UserCollectionItem({collectionId: collection.get('id')}).fetchAll({require: false});
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const items = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 		const itemsJSON = items.toJSON();
 
@@ -95,6 +97,7 @@ describe('POST /collection/collectionID/delete', () => {
 		const collaborator1 = await createEditor();
 		const collaborator2 = await createEditor();
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator1.get('id'),
 			collectionId: collection.get('id')
@@ -105,8 +108,8 @@ describe('POST /collection/collectionID/delete', () => {
 		});
 
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
-		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
-		const collaborators = await new UserCollectionCollaborator({collectionId: collection.get('id')}).fetchAll({require: false});
+		const collections = await new UserCollection().where('id', res.body.id).fetchAll({require: false});
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({require: false});
 		const collaboratorsJSON = collaborators.toJSON();
 		const collectionsJSON = collections.toJSON();
 
@@ -126,6 +129,7 @@ describe('POST /collection/collectionID/delete', () => {
 		};
 
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
 		// here loggedInUser is neither owner nor collaborator
 		const response = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
@@ -146,6 +150,7 @@ describe('POST /collection/collectionID/delete', () => {
 			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
 			collectionId: collection.get('id')
@@ -158,5 +163,29 @@ describe('POST /collection/collectionID/delete', () => {
 		expect(collectionsJSON.length).to.equal(1);
 		expect(response).to.have.status(403);
 		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
+	});
+
+	it('should remove collection from ES index', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'someUniqueName',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		const oldResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
+		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		await refreshIndex();
+		const newResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+
+		expect(res.status).to.equal(200);
+		expect(oldResult.length).to.equal(1);
+		expect(oldResult[0]?.id).to.equal(collection.get('id'));
+		expect(newResult.length).to.equal(0);
+		expect(collectionsJSON.length).to.equal(0);
 	});
 });
