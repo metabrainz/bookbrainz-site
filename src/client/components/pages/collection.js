@@ -127,7 +127,6 @@ class CollectionPage extends React.Component {
 				text: null,
 				type: null
 			},
-			refreshTable: false,
 			selectedEntities: [],
 			showAddEntityModal: false,
 			showDeleteModal: false
@@ -144,7 +143,6 @@ class CollectionPage extends React.Component {
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.closeAddEntityModalShowMessageAndRefreshTable = this.closeAddEntityModalShowMessageAndRefreshTable.bind(this);
-		this.refreshDone = this.refreshDone.bind(this);
 	}
 
 	searchResultsCallback(newResults) {
@@ -179,9 +177,8 @@ class CollectionPage extends React.Component {
 							${bbids.length > 1 ? 's' : ''}`,
 							type: 'success'
 						},
-						refreshTable: true,
 						selectedEntities: []
-					});
+					}, this.pagerElementRef.triggerSearch);
 				}, (error) => {
 					this.setState({
 						message: {
@@ -224,15 +221,8 @@ class CollectionPage extends React.Component {
 	closeAddEntityModalShowMessageAndRefreshTable(message) {
 		this.setState({
 			message,
-			refreshTable: true,
 			showAddEntityModal: false
-		});
-	}
-
-	refreshDone() {
-		this.setState({
-			refreshTable: false
-		});
+		}, this.pagerElementRef.triggerSearch);
 	}
 
 	render() {
@@ -327,8 +317,7 @@ class CollectionPage extends React.Component {
 						from={this.props.from}
 						nextEnabled={this.props.nextEnabled}
 						paginationUrl={this.paginationUrl}
-						refreshDone={this.refreshDone}
-						refreshTable={this.state.refreshTable}
+						ref={(ref) => this.pagerElementRef = ref}
 						results={this.state.entities}
 						searchResultsCallback={this.searchResultsCallback}
 						size={this.props.size}

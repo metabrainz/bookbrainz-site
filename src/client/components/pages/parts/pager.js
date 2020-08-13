@@ -46,10 +46,6 @@ class PagerElement extends React.Component {
 			// eslint-disable-next-line react/no-did-update-set-state
 			this.setState({from: 0, query: this.props.query}, this.triggerSearch);
 		}
-		if (this.props.refreshTable) {
-			this.triggerSearch();
-			this.props.refreshDone();
-		}
 	}
 
 	triggerSearch(newFrom = this.state.from, newSize = this.state.size) {
@@ -136,8 +132,6 @@ PagerElement.propTypes = {
 	nextEnabled: PropTypes.bool.isRequired,
 	paginationUrl: PropTypes.string.isRequired,
 	query: PropTypes.string,
-	refreshDone: PropTypes.any,
-	refreshTable: PropTypes.bool,
 	results: PropTypes.array,
 	searchResultsCallback: PropTypes.func.isRequired,
 	size: PropTypes.number
@@ -145,8 +139,6 @@ PagerElement.propTypes = {
 PagerElement.defaultProps = {
 	from: 0,
 	query: '',
-	refreshDone: null,
-	refreshTable: false,
 	results: [],
 	size: 20
 };
