@@ -19,8 +19,19 @@
 import * as handler from '../helpers/handler';
 import * as search from './search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
+import {BadRequestError} from '../../common/helpers/error';
 
 
+/**
+ * A handler for create or edit actions on collections.
+ * @param {object} req - request object
+ * @param {object} res - response object
+ * @param {object} next - next object
+ * @returns {promise} res.send promise
+ * @description
+ * Creates a new collection or updates the existing collection
+ * If it's a new collection or it's name is changed, ElasticSearch index is also updated
+ */
 export async function collectionCreateOrEditHandler(req, res, next) {
 	try {
 		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
@@ -34,8 +45,8 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 			method = 'insert';
 		}
 		else {
-			if (upperFirst(camelCase(req.body.entityType)) !== res.locals.collection.entityType) {
-				throw new Error('Trying to change entityType of a non empty collection');
+			if (res.locals.collection?.items?.length && (upperFirst(camelCase(req.body.entityType)) !== res.locals.collection.entityType)) {
+				throw new BadRequestError('Trying to change entityType of a non empty collection');
 			}
 			newCollection = await new UserCollection({id: req.params.collectionId}).fetch({
 				require: true
