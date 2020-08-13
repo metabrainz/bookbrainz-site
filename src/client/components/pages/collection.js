@@ -173,8 +173,7 @@ class CollectionPage extends React.Component {
 				.then((res) => {
 					this.setState({
 						message: {
-							text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}
-							${bbids.length > 1 ? 's' : ''}`,
+							text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}${bbids.length > 1 ? 's' : ''}`,
 							type: 'success'
 						},
 						selectedEntities: []
