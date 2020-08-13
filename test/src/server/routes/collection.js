@@ -139,7 +139,7 @@ describe('POST /collection/create', () => {
 		};
 		const response = await agent.post('/collection/create/handler').send(data);
 
-		expect(response.status).to.equal(400);
+		expect(response.status).to.equal(404);
 		expect(response.res.statusMessage).to.equal(`Collaborator ${data.collaborators[0].id} does not exist`);
 	});
 
@@ -358,7 +358,7 @@ describe('POST collection/edit', () => {
 		};
 		const response = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(data);
 
-		expect(response.status).to.equal(400);
+		expect(response.status).to.equal(404);
 		expect(response.res.statusMessage).to.equal(`Collaborator ${data.collaborators[0].id} does not exist`);
 	});
 
