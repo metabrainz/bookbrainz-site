@@ -271,7 +271,7 @@ export async function validateCollectionParams(req, res, next) {
 	for (let i = 0; i < collaboratorIds.length; i++) {
 		const collaboratorId = collaboratorIds[i];
 		if (!(/^\d+$/).test(collaboratorId)) {
-			return next(new error.BadRequestError(`Invalid collaborator id: ${collaboratorId} not valid`));
+			return next(new error.BadRequestError(`Invalid collaborator id: ${collaboratorId} not valid`, req));
 		}
 	}
 
@@ -280,7 +280,7 @@ export async function validateCollectionParams(req, res, next) {
 	for (let i = 0; i < collaboratorIds.length; i++) {
 		const collaboratorId = collaboratorIds[i];
 		if (!editorsJSON.find(editor => editor.id === collaboratorId)) {
-			return next(new error.NotFoundError(`Collaborator ${collaboratorId} does not exist`));
+			return next(new error.NotFoundError(`Collaborator ${collaboratorId} does not exist`, req));
 		}
 	}
 	return next();
