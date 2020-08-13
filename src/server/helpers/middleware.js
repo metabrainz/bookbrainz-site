@@ -242,3 +242,56 @@ export async function validateCollectionParams(req, res, next) {
 	}
 	return next();
 }
+
+export async function validateBBIDsForCollectionAdd(req, res, next) {
+	const {Entity} = req.app.locals.orm;
+	const {bbids = []} = req.body;
+	if (!bbids.length) {
+		return next(new error.BadRequestError('BBIDs array is empty'));
+	}
+	const {collection} = res.locals;
+	const collectionType = collection.entityType;
+	for (let i = 0; i < bbids.length; i++) {
+		const bbid = bbids[i];
+		if (!commonUtils.isValidBBID(bbid)) {
+			return next(new error.BadRequestError(`Invalid BBID ${bbid}`, req));
+		}
+	}
+	const entities = await new Entity().where('bbid', 'in', bbids).fetchAll({require: false});
+	const entitiesJSON = entities.toJSON();
+	for (let i = 0; i < bbids.length; i++) {
+		const bbid = bbids[i];
+		const entity = entitiesJSON.find(currEntity => currEntity.bbid === bbid);
+		if (!entity) {
+			return next(new error.NotFoundError(`${collectionType} ${bbid} does not exist`, req));
+		}
+		if (_.lowerCase(entity.type) !== _.lowerCase(collectionType)) {
+			return next(new error.BadRequestError(`Cannot add an entity of type ${entity.type} to a collection of type ${collectionType}`));
+		}
+	}
+
+	return next();
+}
+
+export function validateBBIDsForCollectionRemove(req, res, next) {
+	const {bbids = []} = req.body;
+	if (!bbids.length) {
+		return next(new error.BadRequestError('BBIDs array is empty'));
+	}
+	const {collection} = res.locals;
+	for (let i = 0; i < bbids.length; i++) {
+		const bbid = bbids[i];
+		if (!commonUtils.isValidBBID(bbid)) {
+			return next(new error.BadRequestError(`Invalid BBID ${bbid}`, req));
+		}
+	}
+	for (let i = 0; i < bbids.length; i++) {
+		const bbid = bbids[i];
+		const isBbidInCollection = collection.items.find(item => item.bbid === bbid);
+		if (!isBbidInCollection) {
+			return next(new error.BadRequestError(`Entity ${bbid} is not in collection ${collection.id}`, req));
+		}
+	}
+
+	return next();
+}
