@@ -394,7 +394,7 @@ describe('POST /collection/:collectionID/add', () => {
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
 		const itemJSON = item.toJSON();
-		expect(response).to.have.status(400);
+		expect(response).to.have.status(404);
 		expect(response.res.statusMessage).to.equal(`${collectionData.entityType} ${data.bbids[0]} does not exist`);
 		expect(itemJSON.length).to.equal(0);
 	});

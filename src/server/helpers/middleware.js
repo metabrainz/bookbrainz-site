@@ -232,7 +232,7 @@ export async function validateBBIDsForCollectionAdd(req, res, next) {
 		const bbid = bbids[i];
 		const entity = entitiesJSON.find(currEntity => currEntity.bbid === bbid);
 		if (!entity) {
-			return next(new error.BadRequestError(`${collectionType} ${bbid} does not exist`, req));
+			return next(new error.NotFoundError(`${collectionType} ${bbid} does not exist`, req));
 		}
 		if (lowerCase(entity.type) !== lowerCase(collectionType)) {
 			return next(new error.BadRequestError(`Cannot add an entity of type ${entity.type} to a collection of type ${collectionType}`));
