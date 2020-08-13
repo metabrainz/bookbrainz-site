@@ -65,6 +65,7 @@ describe('POST /collection/create', () => {
 			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
+		await new Promise(resolve => setTimeout(resolve, 500));
 		await refreshIndex();
 		const searchResults = await searchByName(orm, data.name, 'Collection', '10', '0');
 
@@ -261,6 +262,7 @@ describe('POST collection/edit', () => {
 			privacy: 'public'
 		};
 		await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
+		await new Promise(resolve => setTimeout(resolve, 500));
 		await refreshIndex();
 		const searchResults = await searchByName(orm, newData.name, 'Collection', '10', '0');
 		expect(searchResults[0].id).to.equal(collectionJSON.id);
