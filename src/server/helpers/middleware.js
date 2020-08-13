@@ -226,8 +226,8 @@ export async function validateBBIDsBeforeAdding(req, res, next) {
 		if (!entity) {
 			return next(new error.BadRequestError('Trying to add an entity which is not present', req));
 		}
-		if (entity.type !== collectionType) {
-			return next(new error.BadRequestError(`Trying to add an entity of type ${entity.type} to a collection of type ${collectionType}`));
+		if (lowerCase(entity.type) !== _.lowerCase(collectionType)) {
+			return next(new error.BadRequestError(`Cannot add an entity of type ${entity.type} to a collection of type ${collectionType}`));
 		}
 	}
 
