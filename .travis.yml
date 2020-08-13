@@ -19,6 +19,7 @@ cache:
 
 services:
   - postgresql
+  - elasticsearch
 
 addons:
   postgresql: "12"
@@ -32,7 +33,7 @@ addons:
 env:
   global:
     - CXX=g++-4.8
-    
+
 before_install:
   - sudo service postgresql stop
   - printf "local all all trust\nhost all all 127.0.0.1 trust" > pg_hba.conf
@@ -42,7 +43,7 @@ before_install:
   - sudo chown postgres postgresql.conf
   - sudo mv postgresql.conf /etc/postgresql/12/main
   - sudo service postgresql start 12
-  
+
 before_script:
   - psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres
   - psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres
