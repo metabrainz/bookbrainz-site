@@ -1,4 +1,5 @@
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
+import {generateIndex, refreshIndex, searchByName} from '../../../../src/server/helpers/search';
 
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
@@ -28,9 +29,9 @@ describe('POST /collection/create', () => {
 		}
 		// The `agent` now has the sessionid cookie saved, and will send it
 		// back to the server in the next request:
+		await generateIndex(orm);
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
-		// await agent.get('/search/reindex');
 	});
 	after((done) => {
 		// Clear DB tables then close superagent server
@@ -63,12 +64,13 @@ describe('POST /collection/create', () => {
 		const data = {
 			description: 'some description1234',
 			entityType: 'Author',
-			name: 'collectionName',
+			name: 'shouldBeInES',
 			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
-		const res2 = await agent.get(`/search/search?q=${data.name}&type=Collection`);
-		expect(res2.body[0].id).to.equal(res.body.id);
+		await refreshIndex();
+		const searchResults = await searchByName(orm, data.name, 'Collection', '10', '0');
+		expect(searchResults[0]?.id).to.equal(res.body.id);
 	});
 
 	it('should throw error for incorrect entityType', async () => {
@@ -187,6 +189,7 @@ describe('POST collection/edit', () => {
 		const res = await agent.post('/collection/create/handler').send(data);
 		const collection = await new UserCollection({id: res.body.id}).fetch({withRelated: ['collaborators']});
 		collectionJSON = collection.toJSON();
+		await generateIndex(orm);
 	});
 	after((done) => {
 		// Clear DB tables then close superagent server
@@ -258,12 +261,13 @@ describe('POST collection/edit', () => {
 		const newData = {
 			description: 'new description',
 			entityType: 'Author',
-			name: 'newName',
+			name: 'updatedNameInES',
 			privacy: 'public'
 		};
-		const res = await agent.post('/collection/create/handler').send(newData);
-		const res2 = await agent.get(`/search/search?q=${newData.name}&type=collection`);
-		expect(res2.body[0].id).to.equal(res.body.id);
+		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
+		await refreshIndex();
+		const searchResults = await searchByName(orm, newData.name, 'Collection', '10', '0');
+		expect(searchResults[0]?.id).to.equal(res.body.id);
 	});
 
 	it('should throw error for incorrect entityType', async () => {
