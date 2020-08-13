@@ -285,10 +285,10 @@ router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOr
 	}
 });
 
-router.post('/:collectionId/collaborator/remove/:editorId', auth.isAuthenticated, async (req, res, next) => {
+router.post('/:collectionId/collaborator/remove/:collaboratorId', auth.isAuthenticated, async (req, res, next) => {
 	try {
 		const {collection} = res.locals;
-		const collaboratorId = parseInt(req.params.editorId, 10);
+		const collaboratorId = parseInt(req.params.collaboratorId, 10);
 		if (parseInt(req.user.id, 10) !== collaboratorId ||
 			!collection.collaborators.find(collaborator => collaborator.id === collaboratorId)) {
 			throw new error.PermissionDeniedError(

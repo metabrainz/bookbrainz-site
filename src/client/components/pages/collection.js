@@ -277,7 +277,7 @@ class CollectionPage extends React.Component {
 							</Button> : null
 					}
 					{
-						(this.props.isCollaborator || this.props.isOwner) && this.props.entities.length ?
+						(this.props.isCollaborator || this.props.isOwner) && this.state.entities.length ?
 							<Button
 								bsSize="small"
 								bsStyle="danger"
