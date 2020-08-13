@@ -1,12 +1,11 @@
 
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
-
+import {generateIndex, refreshIndex, searchByName} from '../../../../src/server/helpers/search';
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-
 
 chai.use(chaiHttp);
 chai.use(assertArrays);
@@ -27,6 +26,7 @@ describe('POST /collection/collectionID/delete', () => {
 		// The `agent` now has the sessionid cookie saved, and will send it
 		// back to the server in the next request:
 		agent = await chai.request.agent(app);
+		await generateIndex(orm);
 		await agent.get('/cb');
 	});
 	after((done) => {
@@ -158,5 +158,29 @@ describe('POST /collection/collectionID/delete', () => {
 		expect(collectionsJSON.length).to.equal(1);
 		expect(response).to.have.status(403);
 		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
+	});
+
+	it('should remove collection from ES index', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'someUniqueName',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		const oldResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
+		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		await refreshIndex();
+		const newResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
+		const collections = await new UserCollection({id: collection.get('id')}).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+
+		expect(res.status).to.equal(200);
+		expect(oldResult.length).to.equal(1);
+		expect(oldResult[0]?.id).to.equal(collection.get('id'));
+		expect(newResult.length).to.equal(0);
+		expect(collectionsJSON.length).to.equal(0);
 	});
 });
