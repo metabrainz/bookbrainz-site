@@ -224,9 +224,9 @@ export async function validateBBIDsBeforeAdding(req, res, next) {
 		const bbid = bbids[i];
 		const entity = entitiesJSON.find(currEntity => currEntity.bbid === bbid);
 		if (!entity) {
-			return next(new error.BadRequestError('Trying to add an entity which is not present', req));
+			return next(new error.NotFoundError(`${collectionType} ${bbid} does not exist`, req));
 		}
-		if (lowerCase(entity.type) !== _.lowerCase(collectionType)) {
+		if (_.lowerCase(entity.type) !== _.lowerCase(collectionType)) {
 			return next(new error.BadRequestError(`Cannot add an entity of type ${entity.type} to a collection of type ${collectionType}`));
 		}
 	}
@@ -263,7 +263,7 @@ export async function validateCollectionParams(req, res, next) {
 	if (!_.trim(name).length) {
 		return next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req));
 	}
-	const entityTypes = _.keys(utils.getEntityModels(orm));
+	const entityTypes = _.keys(commonUtils.getEntityModels(orm));
 	if (!entityTypes.includes(entityType)) {
 		return next(new error.BadRequestError(`Invalid entity type: ${entityType} does not exist`, req));
 	}

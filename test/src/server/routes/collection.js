@@ -619,8 +619,13 @@ describe('POST collection/edit', () => {
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
 		const itemJSON = item.toJSON();
+<<<<<<< HEAD
 		expect(response).to.have.status(400);
 		expect(response.res.statusMessage).to.equal('Trying to add an entity which is not present');
+=======
+		expect(response).to.have.status(404);
+		expect(response.res.statusMessage).to.equal(`${collectionData.entityType} ${data.bbids[0]} does not exist`);
+>>>>>>> test: throw 404 error instead of 400 for entity not found
 		expect(itemJSON.length).to.equal(0);
 	});
 
