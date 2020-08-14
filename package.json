@@ -58,7 +58,7 @@
     "http-status": "^1.0.0",
     "immutable": "^3.8.2",
     "influx": "^5.5.3",
-    "jsesc": "^2.5.1",
+    "jsesc": "^2.5.2",
     "lodash": "^4.17.19",
     "log": "^6.0.0",
     "log-node": "^7.0.0",
