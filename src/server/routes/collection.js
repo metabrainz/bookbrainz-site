@@ -296,9 +296,9 @@ router.post('/:collectionId/collaborator/remove', auth.isAuthenticated, middlewa
 			}
 		}
 		if (!isAllowedToEdit) {
-			throw new error.PermissionDeniedError(
-				'You do not have permission to edit this collection’s collaborators', req
-			);
+			return next(new error.PermissionDeniedError(
+				'You do not have permission to remove collaborators from this collection', req
+			));
 		}
 
 		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
