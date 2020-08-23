@@ -232,15 +232,15 @@ class CollectionPage extends React.Component {
 			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
-			showCheckboxes: this.props.isOwner || this.props.isCollaborator
+			showCheckboxes: Boolean(this.props.isOwner) || Boolean(this.props.isCollaborator)
 		};
 		return (
 			<div>
 				<DeleteOrRemoveCollaborationModal
-					collaboratorId={this.props.userId}
 					collection={this.props.collection}
-					delete={this.props.isOwner}
+					isDelete={this.props.isOwner}
 					show={this.state.showDeleteModal}
+					userId={this.props.userId}
 					onCloseModal={this.handleCloseDeleteModal}
 				/>
 				<AddEntityToCollectionModal
@@ -350,7 +350,7 @@ CollectionPage.propTypes = {
 	isOwner: PropTypes.bool,
 	nextEnabled: PropTypes.bool.isRequired,
 	size: PropTypes.number,
-	userId: PropTypes.number.isRequired
+	userId: PropTypes.node
 };
 CollectionPage.defaultProps = {
 	entities: [],
@@ -358,7 +358,8 @@ CollectionPage.defaultProps = {
 	isCollaborator: false,
 	isOwner: false,
 	showCheckboxes: false,
-	size: 20
+	size: 20,
+	userId: null
 };
 
 export default CollectionPage;

@@ -295,3 +295,20 @@ export function validateBBIDsForCollectionRemove(req, res, next) {
 
 	return next();
 }
+
+export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
+	const {collaboratorIds = []} = req.body;
+	if (!collaboratorIds.length) {
+		return next(new error.BadRequestError('CollaboratorIds array is empty'));
+	}
+	const {collection} = res.locals;
+	for (let i = 0; i < collaboratorIds.length; i++) {
+		const collaboratorId = collaboratorIds[i];
+		const isCollaborator = collection.collaborators.find(collaborator => collaborator.id === collaboratorId);
+		if (!isCollaborator) {
+			return next(new error.BadRequestError(`User ${collaboratorId} is not a collaborator of collection ${collection.id}`, req));
+		}
+	}
+
+	return next();
+}

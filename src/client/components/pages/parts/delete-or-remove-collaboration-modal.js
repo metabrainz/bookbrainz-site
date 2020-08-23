@@ -19,13 +19,13 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 
 	handleSubmit() {
 		request.post(this.postUrl)
-			.send()
+			.send(this.postData)
 			.then((res) => {
-				if (this.props.delete) {
+				if (this.props.isDelete) {
 					window.location.href = `/editor/${this.props.collection.ownerId}/collections`;
 				}
 				else {
-					window.location.href = `/editor/${this.props.collaboratorId}/collections`;
+					window.location.href = `/editor/${this.props.userId}/collections`;
 				}
 			}, (error) => {
 				this.setState({
@@ -38,8 +38,9 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 		const {collection} = this.props;
 		// eslint-disable-next-line one-var
 		let modalBody, modalTitle, submitButton;
-		if (this.props.delete) {
+		if (this.props.isDelete) {
 			this.postUrl = `/collection/${collection.id}/delete/handler`;
+			this.postData = {};
 			modalTitle = 'Confirm deletion';
 			modalBody = (
 				<Alert bsStyle="warning">
@@ -60,7 +61,9 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			);
 		}
 		else {
-			this.postUrl = `/collection/${collection.id}/collaborator/remove/${this.props.collaboratorId}`;
+			// loggedInUser must be collaborator here
+			this.postUrl = `/collection/${collection.id}/collaborator/remove`;
+			this.postData = {collaboratorIds: [this.props.userId]};
 			modalTitle = 'Remove yourself as a collaborator';
 			modalBody = (
 				<Alert bsStyle="warning">
@@ -69,7 +72,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 						You’re about to remove yourself as a collaborator of Collection: {collection.name}.
 					</h4>
 					<p>
-						Are you sure you want to process ? You won’t be able to undo this.
+						Are you sure you want to proceed ? You won’t be able to undo this.
 					</p>
 				</Alert>
 			);
@@ -112,15 +115,14 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 
 DeleteOrRemoveCollaborationModal.displayName = 'DeleteOrRemoveCollaborationModal';
 DeleteOrRemoveCollaborationModal.propTypes = {
-	collaboratorId: PropTypes.number,
 	collection: PropTypes.object.isRequired,
-	delete: PropTypes.bool,
+	isDelete: PropTypes.bool,
 	onCloseModal: PropTypes.func.isRequired,
-	show: PropTypes.bool.isRequired
+	show: PropTypes.bool.isRequired,
+	userId: PropTypes.node.isRequired
 };
 DeleteOrRemoveCollaborationModal.defaultProps = {
-	collaboratorId: -1,
-	delete: true
+	isDelete: true
 };
 
 export default DeleteOrRemoveCollaborationModal;
