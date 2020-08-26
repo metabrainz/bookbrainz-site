@@ -228,6 +228,7 @@ class CollectionPage extends React.Component {
 		const messageComponent = this.state.message.text ? <Alert bsStyle={this.state.message.type} className="margin-top-1" onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
 		const propsForTable = {
+			isCollectionTable: true,
 			[this.entityKey]: this.state.entities,
 			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,

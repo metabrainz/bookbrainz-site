@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import * as utilHelper from '../../../helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -27,10 +28,11 @@ const {Table} = bootstrap;
 
 const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function EditionGroupTableRow({editionGroup, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionGroupTableRow({editionGroup, isCollectionTable, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(editionGroup);
 	const disambiguation = getEntityDisambiguation(editionGroup);
 	const editionGroupType = editionGroup.editionGroupType ? editionGroup.editionGroupType.label : '?';
+	const addedAt = isCollectionTable ? utilHelper.formatDate(new Date(editionGroup.addedAt), true) : null;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -50,12 +52,14 @@ function EditionGroupTableRow({editionGroup, showCheckboxes, selectedEntities, o
 				{disambiguation}
 			</td>
 			<td>{editionGroupType}</td>
+			{isCollectionTable ? <td>{addedAt}</td> : null}
 		</tr>
 	);
 }
 EditionGroupTableRow.displayName = 'EditionGroupTableRow';
 EditionGroupTableRow.propTypes = {
 	editionGroup: PropTypes.object.isRequired,
+	isCollectionTable: PropTypes.bool.isRequired,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showCheckboxes: PropTypes.bool
@@ -66,7 +70,7 @@ EditionGroupTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function EditionGroupTable({editionGroups, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionGroupTable({editionGroups, isCollectionTable, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (editionGroups.length) {
 		tableContent = (
@@ -76,6 +80,9 @@ function EditionGroupTable({editionGroups, showCheckboxes, selectedEntities, onT
 						<tr>
 							<th>Name</th>
 							<th>Type</th>
+							{
+								isCollectionTable ? <th>Added at</th> : null
+							}
 						</tr>
 					</thead>
 					<tbody>
@@ -83,6 +90,7 @@ function EditionGroupTable({editionGroups, showCheckboxes, selectedEntities, onT
 							editionGroups.map((editionGroup) => (
 								<EditionGroupTableRow
 									editionGroup={editionGroup}
+									isCollectionTable={isCollectionTable}
 									key={editionGroup.bbid}
 									selectedEntities={selectedEntities}
 									showCheckboxes={showCheckboxes}
@@ -108,11 +116,13 @@ function EditionGroupTable({editionGroups, showCheckboxes, selectedEntities, onT
 EditionGroupTable.displayName = 'EditionGroupTable';
 EditionGroupTable.propTypes = {
 	editionGroups: PropTypes.array.isRequired,
+	isCollectionTable: PropTypes.bool,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showCheckboxes: PropTypes.bool
 };
 EditionGroupTable.defaultProps = {
+	isCollectionTable: false,
 	onToggleRow: null,
 	selectedEntities: [],
 	showCheckboxes: false

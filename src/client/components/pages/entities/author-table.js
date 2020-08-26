@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-
+import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -26,14 +26,14 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTableRow({author, isCollectionTable, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const authorType = author.authorType ? author.authorType.label : '?';
 	const gender = author.gender ? author.gender.name : '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
-
+	const addedAt = isCollectionTable ? utilHelper.formatDate(new Date(author.addedAt), true) : null;
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
@@ -55,12 +55,16 @@ function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow})
 			<td>{authorType}</td>
 			<td>{beginDate}</td>
 			<td>{endDate}</td>
+			{
+				isCollectionTable ? <td>{addedAt}</td> : null
+			}
 		</tr>
 	);
 }
 AuthorTableRow.displayName = 'AuthorTableRow';
 AuthorTableRow.propTypes = {
 	author: PropTypes.object.isRequired,
+	isCollectionTable: PropTypes.bool.isRequired,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showCheckboxes: PropTypes.bool
@@ -71,7 +75,7 @@ AuthorTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTable({authors, isCollectionTable, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -84,6 +88,9 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 							<th>Type</th>
 							<th>Date of birth</th>
 							<th>Date of death</th>
+							{
+								isCollectionTable ? <th>Added at</th> : null
+							}
 						</tr>
 					</thead>
 					<tbody>
@@ -91,6 +98,7 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 							authors.map((author) => (
 								<AuthorTableRow
 									author={author}
+									isCollectionTable={isCollectionTable}
 									key={author.bbid}
 									selectedEntities={selectedEntities}
 									showCheckboxes={showCheckboxes}
@@ -116,11 +124,13 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 AuthorTable.displayName = 'WorkTable';
 AuthorTable.propTypes = {
 	authors: PropTypes.array.isRequired,
+	isCollectionTable: PropTypes.bool,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showCheckboxes: PropTypes.bool
 };
 AuthorTable.defaultProps = {
+	isCollectionTable: false,
 	onToggleRow: null,
 	selectedEntities: [],
 	showCheckboxes: false
