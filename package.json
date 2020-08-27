@@ -83,7 +83,7 @@
     "redux-immutable": "^4.0.0",
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.3",
-    "serve-static": "^1.13.2",
+    "serve-static": "^1.14.1",
     "superagent": "^5.3.1",
     "validator": "^9.1.2",
     "snyk": "^1.385.0"
