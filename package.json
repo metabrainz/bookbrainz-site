@@ -24,7 +24,9 @@
     "jsdoc": "node_modules/.bin/jsdoc -r src",
     "flow": "flow",
     "dupreport": "jsinspect src/ || true",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "lint-staged": {
     "*.js": [
@@ -37,10 +39,10 @@
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.25",
-    "@fortawesome/free-brands-svg-icons": "^5.11.2",
-    "@fortawesome/free-solid-svg-icons": "^5.11.2",
-    "@fortawesome/react-fontawesome": "^0.1.7",
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-brands-svg-icons": "^5.14.0",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/react-fontawesome": "^0.1.11",
     "body-parser": "^1.14.1",
     "bookbrainz-data": "^2.5.1",
     "chai-sorted": "^0.2.0",
@@ -59,7 +61,7 @@
     "immutable": "^3.8.2",
     "influx": "^5.5.3",
     "jsesc": "^2.5.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "log": "^6.0.0",
     "log-node": "^7.0.0",
     "morgan": "^1.9.1",
@@ -83,7 +85,8 @@
     "serve-favicon": "^2.4.3",
     "serve-static": "^1.13.2",
     "superagent": "^5.3.1",
-    "validator": "^9.1.2"
+    "validator": "^9.1.2",
+    "snyk": "^1.385.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
@@ -146,5 +149,6 @@
     "webpack-hot-middleware": "^2.22.3",
     "webpack-node-externals": "^1.7.2",
     "write-assets-webpack-plugin": "^1.0.5"
-  }
+  },
+  "snyk": true
 }
