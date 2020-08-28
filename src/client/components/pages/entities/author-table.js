@@ -26,14 +26,14 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function AuthorTableRow({author, isCollectionTable, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const authorType = author.authorType ? author.authorType.label : '?';
 	const gender = author.gender ? author.gender.name : '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
-	const addedAt = isCollectionTable ? utilHelper.formatDate(new Date(author.addedAt), true) : null;
+	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(author.addedAt), true) : null;
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
@@ -56,7 +56,7 @@ function AuthorTableRow({author, isCollectionTable, showCheckboxes, selectedEnti
 			<td>{beginDate}</td>
 			<td>{endDate}</td>
 			{
-				isCollectionTable ? <td>{addedAt}</td> : null
+				showAddedAtColumn ? <td>{addedAt}</td> : null
 			}
 		</tr>
 	);
@@ -64,9 +64,9 @@ function AuthorTableRow({author, isCollectionTable, showCheckboxes, selectedEnti
 AuthorTableRow.displayName = 'AuthorTableRow';
 AuthorTableRow.propTypes = {
 	author: PropTypes.object.isRequired,
-	isCollectionTable: PropTypes.bool.isRequired,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
 AuthorTableRow.defaultProps = {
@@ -75,7 +75,7 @@ AuthorTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function AuthorTable({authors, isCollectionTable, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -89,7 +89,7 @@ function AuthorTable({authors, isCollectionTable, showCheckboxes, selectedEntiti
 							<th>Date of birth</th>
 							<th>Date of death</th>
 							{
-								isCollectionTable ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>Added at</th> : null
 							}
 						</tr>
 					</thead>
@@ -98,9 +98,9 @@ function AuthorTable({authors, isCollectionTable, showCheckboxes, selectedEntiti
 							authors.map((author) => (
 								<AuthorTableRow
 									author={author}
-									isCollectionTable={isCollectionTable}
 									key={author.bbid}
 									selectedEntities={selectedEntities}
+									showAddedAtColumn={showAddedAtColumn}
 									showCheckboxes={showCheckboxes}
 									onToggleRow={onToggleRow}
 								/>
@@ -124,15 +124,15 @@ function AuthorTable({authors, isCollectionTable, showCheckboxes, selectedEntiti
 AuthorTable.displayName = 'WorkTable';
 AuthorTable.propTypes = {
 	authors: PropTypes.array.isRequired,
-	isCollectionTable: PropTypes.bool,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
 };
 AuthorTable.defaultProps = {
-	isCollectionTable: false,
 	onToggleRow: null,
 	selectedEntities: [],
+	showAddedAtColumn: false,
 	showCheckboxes: false
 };
 

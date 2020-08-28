@@ -27,14 +27,14 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function PublisherTableRow({isCollectionTable, publisher, showCheckboxes, selectedEntities, onToggleRow}) {
+function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(publisher);
 	const disambiguation = getEntityDisambiguation(publisher);
 	const publisherType = publisher.publisherType ? publisher.publisherType.label : '?';
 	const area = publisher.area ? publisher.area.name : '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(publisher.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(publisher.endDate));
-	const addedAt = isCollectionTable ? utilHelper.formatDate(new Date(publisher.addedAt), true) : null;
+	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(publisher.addedAt), true) : null;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -57,16 +57,16 @@ function PublisherTableRow({isCollectionTable, publisher, showCheckboxes, select
 			<td>{publisherType}</td>
 			<td>{beginDate}</td>
 			<td>{endDate}</td>
-			{isCollectionTable ? <td>{addedAt}</td> : null}
+			{showAddedAtColumn ? <td>{addedAt}</td> : null}
 		</tr>
 	);
 }
 PublisherTableRow.displayName = 'PublisherTableRow';
 PublisherTableRow.propTypes = {
-	isCollectionTable: PropTypes.bool.isRequired,
 	onToggleRow: PropTypes.func,
 	publisher: PropTypes.object.isRequired,
 	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
 PublisherTableRow.defaultProps = {
@@ -75,7 +75,7 @@ PublisherTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function PublisherTable({isCollectionTable, publishers, showCheckboxes, selectedEntities, onToggleRow}) {
+function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (publishers.length) {
 		tableContent = (
@@ -89,7 +89,7 @@ function PublisherTable({isCollectionTable, publishers, showCheckboxes, selected
 							<th>Date founded</th>
 							<th>Date dissolved</th>
 							{
-								isCollectionTable ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>Added at</th> : null
 							}
 						</tr>
 					</thead>
@@ -97,10 +97,10 @@ function PublisherTable({isCollectionTable, publishers, showCheckboxes, selected
 						{
 							publishers.map((publisher) => (
 								<PublisherTableRow
-									isCollectionTable={isCollectionTable}
 									key={publisher.bbid}
 									publisher={publisher}
 									selectedEntities={selectedEntities}
+									showAddedAtColumn={showAddedAtColumn}
 									showCheckboxes={showCheckboxes}
 									onToggleRow={onToggleRow}
 								/>
@@ -123,16 +123,16 @@ function PublisherTable({isCollectionTable, publishers, showCheckboxes, selected
 }
 PublisherTable.displayName = 'PublisherTable';
 PublisherTable.propTypes = {
-	isCollectionTable: PropTypes.bool,
 	onToggleRow: PropTypes.func,
 	publishers: PropTypes.array.isRequired,
 	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
 };
 PublisherTable.defaultProps = {
-	isCollectionTable: false,
 	onToggleRow: null,
 	selectedEntities: [],
+	showAddedAtColumn: false,
 	showCheckboxes: false
 };
 
