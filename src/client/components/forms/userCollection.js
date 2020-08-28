@@ -175,6 +175,7 @@ class UserCollectionForm extends React.Component {
 				<DeleteOrRemoveCollaborationModal
 					collection={this.props.collection}
 					show={this.state.showModal}
+					userId={this.props.collection.ownerId}
 					onCloseModal={this.handleCloseModal}
 				/>
 				<div>
@@ -299,6 +300,7 @@ UserCollectionForm.propTypes = {
 		id: PropTypes.string,
 		items: PropTypes.array,
 		name: PropTypes.string,
+		ownerId: PropTypes.number,
 		public: PropTypes.bool
 	})
 };
@@ -310,6 +312,7 @@ UserCollectionForm.defaultProps = {
 		id: null,
 		items: [],
 		name: null,
+		ownerId: null,
 		public: false
 	}
 };

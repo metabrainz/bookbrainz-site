@@ -21,12 +21,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 		request.post(this.postUrl)
 			.send(this.postData)
 			.then((res) => {
-				if (this.props.isDelete) {
-					window.location.href = `/editor/${this.props.collection.ownerId}/collections`;
-				}
-				else {
-					window.location.href = `/editor/${this.props.userId}/collections`;
-				}
+				window.location.href = `/editor/${this.props.userId}/collections`;
 			}, (error) => {
 				this.setState({
 					error: 'Something went wrong! Please try again later'
@@ -43,7 +38,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			this.postData = {};
 			modalTitle = 'Confirm deletion';
 			modalBody = (
-				<Alert bsStyle="warning">
+				<Alert bsStyle="danger">
 					<h4>
 						<FontAwesomeIcon icon="exclamation-triangle"/>&nbsp;
 						You’re about to delete the Collection: {collection.name}.
@@ -72,7 +67,8 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 						You’re about to remove yourself as a collaborator of Collection: {collection.name}.
 					</h4>
 					<p>
-						Are you sure you want to proceed ? You won’t be able to undo this.
+						Are you sure you want to proceed ? You won’t be able to undo this yourself
+						and will need to ask the collection&apos;s owner to add you again.
 					</p>
 				</Alert>
 			);
@@ -119,7 +115,7 @@ DeleteOrRemoveCollaborationModal.propTypes = {
 	isDelete: PropTypes.bool,
 	onCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
-	userId: PropTypes.node.isRequired
+	userId: PropTypes.number.isRequired
 };
 DeleteOrRemoveCollaborationModal.defaultProps = {
 	isDelete: true

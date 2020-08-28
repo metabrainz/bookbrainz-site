@@ -1235,7 +1235,7 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 		}).save(null, {method: 'insert'});
 
 		const postData = {
-			collaboratorIds: [collaborator2.get('id')]
+			collaboratorIds: [loggedInUser.get('id'), collaborator2.get('id')]
 		};
 
 		// loggedIn user is trying to remove collaborator2

@@ -350,7 +350,7 @@ CollectionPage.propTypes = {
 	isOwner: PropTypes.bool,
 	nextEnabled: PropTypes.bool.isRequired,
 	size: PropTypes.number,
-	userId: PropTypes.node
+	userId: PropTypes.number
 };
 CollectionPage.defaultProps = {
 	entities: [],
