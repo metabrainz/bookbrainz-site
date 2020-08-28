@@ -17,10 +17,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {ENTITY_TYPE_ICONS, genEntityIconHTMLElement} from '../../helpers/entity';
 import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
 import AuthorTable from './entities/author-table';
-import DeleteCollectionModal from './parts/delete-collection-modal';
+import DeleteOrRemoveCollaborationModal from './parts/delete-or-remove-collaboration-modal';
+import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import EditionGroupTable from './entities/editionGroup-table';
 import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
@@ -232,13 +232,15 @@ class CollectionPage extends React.Component {
 			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
-			showCheckboxes: this.props.isOwner || this.props.isCollaborator
+			showCheckboxes: Boolean(this.props.isOwner) || Boolean(this.props.isCollaborator)
 		};
 		return (
 			<div>
-				<DeleteCollectionModal
+				<DeleteOrRemoveCollaborationModal
 					collection={this.props.collection}
+					isDelete={this.props.isOwner}
 					show={this.state.showDeleteModal}
+					userId={this.props.userId}
 					onCloseModal={this.handleCloseDeleteModal}
 				/>
 				<AddEntityToCollectionModal
@@ -275,7 +277,7 @@ class CollectionPage extends React.Component {
 							</Button> : null
 					}
 					{
-						(this.props.isCollaborator || this.props.isOwner) && this.props.entities.length ?
+						(this.props.isCollaborator || this.props.isOwner) && this.state.entities.length ?
 							<Button
 								bsSize="small"
 								bsStyle="danger"
@@ -310,6 +312,17 @@ class CollectionPage extends React.Component {
 								<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
 							</Button> : null
 					}
+					{
+						this.props.isCollaborator ?
+							<Button
+								bsSize="small"
+								bsStyle="warning"
+								title="Remove yourself as a collaborator"
+								onClick={this.handleShowDeleteModal}
+							>
+								<FontAwesomeIcon icon="times-circle"/>&nbsp;Stop collaboration
+							</Button> : null
+					}
 				</div>
 				<div id="pageWithPagination">
 					<PagerElement
@@ -336,7 +349,8 @@ CollectionPage.propTypes = {
 	isCollaborator: PropTypes.bool,
 	isOwner: PropTypes.bool,
 	nextEnabled: PropTypes.bool.isRequired,
-	size: PropTypes.number
+	size: PropTypes.number,
+	userId: PropTypes.number
 };
 CollectionPage.defaultProps = {
 	entities: [],
@@ -344,7 +358,8 @@ CollectionPage.defaultProps = {
 	isCollaborator: false,
 	isOwner: false,
 	showCheckboxes: false,
-	size: 20
+	size: 20,
+	userId: null
 };
 
 export default CollectionPage;
