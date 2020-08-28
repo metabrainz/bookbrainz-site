@@ -116,13 +116,14 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @returns {array} - array of bbids
  */
-export async function getCollectionItemBBIDs(collectionId, from, size, orm) {
+export async function getCollectionItems(collectionId, from, size, orm) {
 	const result = await orm.bookshelf.knex.raw(`
-						SELECT bookbrainz.user_collection_item.bbid
+						SELECT bookbrainz.user_collection_item.bbid,
+						bookbrainz.user_collection_item.added_at
 						FROM bookbrainz.user_collection_item
 						WHERE collection_id='${collectionId}'
 						ORDER BY user_collection_item.added_at ASC
 						LIMIT ${size}
 						OFFSET ${from}`);
-	return result.rows.map(row => row.bbid);
+	return result.rows;
 }

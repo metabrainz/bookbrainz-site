@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-
+import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -26,14 +26,14 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const authorType = author.authorType ? author.authorType.label : '?';
 	const gender = author.gender ? author.gender.name : '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
-
+	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(author.addedAt), true) : null;
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
@@ -55,6 +55,9 @@ function AuthorTableRow({author, showCheckboxes, selectedEntities, onToggleRow})
 			<td>{authorType}</td>
 			<td>{beginDate}</td>
 			<td>{endDate}</td>
+			{
+				showAddedAtColumn ? <td>{addedAt}</td> : null
+			}
 		</tr>
 	);
 }
@@ -63,6 +66,7 @@ AuthorTableRow.propTypes = {
 	author: PropTypes.object.isRequired,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
 AuthorTableRow.defaultProps = {
@@ -71,7 +75,7 @@ AuthorTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -84,6 +88,9 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 							<th>Type</th>
 							<th>Date of birth</th>
 							<th>Date of death</th>
+							{
+								showAddedAtColumn ? <th>Added at</th> : null
+							}
 						</tr>
 					</thead>
 					<tbody>
@@ -93,6 +100,7 @@ function AuthorTable({authors, showCheckboxes, selectedEntities, onToggleRow}) {
 									author={author}
 									key={author.bbid}
 									selectedEntities={selectedEntities}
+									showAddedAtColumn={showAddedAtColumn}
 									showCheckboxes={showCheckboxes}
 									onToggleRow={onToggleRow}
 								/>
@@ -118,11 +126,13 @@ AuthorTable.propTypes = {
 	authors: PropTypes.array.isRequired,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
 };
 AuthorTable.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
+	showAddedAtColumn: false,
 	showCheckboxes: false
 };
 

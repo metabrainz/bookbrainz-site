@@ -232,6 +232,7 @@ class CollectionPage extends React.Component {
 			onToggleRow: this.toggleRow,
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
+			showAddedAtColumn: true,
 			showCheckboxes: Boolean(this.props.isOwner) || Boolean(this.props.isCollaborator)
 		};
 		return (

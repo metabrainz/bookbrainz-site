@@ -18,13 +18,14 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {DropdownButton, MenuItem, Table} = bootstrap;
+const {Button, DropdownButton, MenuItem, Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
 
@@ -71,6 +72,16 @@ class CollectionsTable extends React.Component {
 				</MenuItem>
 			</DropdownButton>
 		);
+		const newCollectionButton = (
+			<Button
+				bsStyle="warning"
+				href="/collection/create"
+				type="button"
+			>
+				<FontAwesomeIcon icon="plus"/>
+				&nbsp;Create Collection
+			</Button>
+		);
 		return (
 			<div>
 				<div>
@@ -78,6 +89,7 @@ class CollectionsTable extends React.Component {
 						{tableHeading}
 					</h1>
 					<div className="text-right">
+						{newCollectionButton}
 						{entityTypeSelect}
 					</div>
 				</div>

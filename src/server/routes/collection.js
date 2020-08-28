@@ -33,7 +33,7 @@ import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
-import {getCollectionItemBBIDs} from '../helpers/collections';
+import {getCollectionItems} from '../helpers/collections';
 import log from 'log';
 import target from '../templates/target';
 
@@ -119,11 +119,14 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		const relations = getEntityRelations(collection.entityType);
 
 		// fetch 1 more bbid to check next enabled for pagination
-		const bbids = await getCollectionItemBBIDs(collection.id, from, size + 1, orm);
+		const items = await getCollectionItems(collection.id, from, size + 1, orm);
 		// get next enabled for pagination
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(bbids, size);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(items, size);
 		// load entities from bbids
-		const entitiesPromise = newResultsArray.map(bbid => orm.func.entity.getEntity(orm, collection.entityType, bbid, relations));
+		const entitiesPromise = newResultsArray.map(async item => ({
+			addedAt: item.added_at,
+			...await orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations)
+		}));
 		const entities = await Promise.all(entitiesPromise);
 		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
 		const isCollaborator = req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length;
@@ -169,9 +172,12 @@ router.get('/:collectionId/paginate', auth.isAuthenticatedForCollectionView, asy
 
 		const relations = getEntityRelations(collection.entityType);
 
-		const bbids = await getCollectionItemBBIDs(collection.id, from, size, orm);
+		const items = await getCollectionItems(collection.id, from, size, orm);
 		// load entities from bbids
-		const entitiesPromise = bbids.map(bbid => orm.func.entity.getEntity(orm, collection.entityType, bbid, relations));
+		const entitiesPromise = items.map(async item => ({
+			addedAt: item.added_at,
+			...await orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations)
+		}));
 		const entities = await Promise.all(entitiesPromise);
 		res.send(entities);
 	}

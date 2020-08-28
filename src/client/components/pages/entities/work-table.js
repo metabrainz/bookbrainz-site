@@ -19,6 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import * as utilHelper from '../../../helpers/utils';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -30,11 +31,12 @@ const {Button, Table} = bootstrap;
 
 const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
-function WorkTableRow({work, showCheckboxes, selectedEntities, onToggleRow}) {
+function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(work);
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
 	const languages = getLanguageAttribute(work).data;
+	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(work.addedAt), true) : null;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
@@ -55,6 +57,7 @@ function WorkTableRow({work, showCheckboxes, selectedEntities, onToggleRow}) {
 			</td>
 			<td>{languages}</td>
 			<td>{workType}</td>
+			{showAddedAtColumn ? <td>{addedAt}</td> : null}
 		</tr>
 	);
 }
@@ -62,6 +65,7 @@ WorkTableRow.displayName = 'WorkTableRow';
 WorkTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool,
 	work: PropTypes.object.isRequired
 };
@@ -71,7 +75,7 @@ WorkTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
+function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (works.length) {
 		tableContent = (
@@ -82,6 +86,9 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, on
 							<th>Name</th>
 							<th>Languages</th>
 							<th>Type</th>
+							{
+								showAddedAtColumn ? <th>Added at</th> : null
+							}
 						</tr>
 					</thead>
 					<tbody>
@@ -90,6 +97,7 @@ function WorkTable({entity, works, showAdd, showCheckboxes, selectedEntities, on
 								<WorkTableRow
 									key={work.bbid}
 									selectedEntities={selectedEntities}
+									showAddedAtColumn={showAddedAtColumn}
 									showCheckboxes={showCheckboxes}
 									work={work}
 									onToggleRow={onToggleRow}
@@ -151,6 +159,7 @@ WorkTable.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
+	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool,
 	works: PropTypes.array.isRequired
 };
@@ -159,6 +168,7 @@ WorkTable.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
 	showAdd: true,
+	showAddedAtColumn: false,
 	showCheckboxes: false
 };
 
