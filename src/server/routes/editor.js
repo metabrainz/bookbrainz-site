@@ -18,6 +18,7 @@
  */
 
 import * as auth from '../helpers/auth';
+import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
@@ -514,7 +515,7 @@ router.get('/:id/collections', async (req, res, next) => {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	let type = req.query.type ? req.query.type : null;
-	const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
+	const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 	if (!entityTypes.includes(type) && type !== null) {
 		throw new error.BadRequestError(`Type ${type} do not exist`);
 	}
@@ -569,7 +570,7 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 		let type = req.query.type ? req.query.type : null;
-		const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
+		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);
 		}

@@ -17,7 +17,7 @@
  */
 
 import * as handler from '../helpers/handler';
-import * as search from './search';
+import * as search from '../../common/helpers/search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
 import {BadRequestError} from '../../common/helpers/error';
 

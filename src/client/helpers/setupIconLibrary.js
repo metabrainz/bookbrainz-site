@@ -38,7 +38,7 @@ config.autoAddCss = true;
 // Add Icons to FontAwesome library
 library.add(
 	fab, faAngleDoubleLeft, faAngleDoubleUp, faBook, faCalendarAlt, faChartLine, faCheck, faCircle,
-	faCircleNotch, faCodeBranch, faGripVertical, faCommentDots, faComment, faComments,faEnvelope, faExclamationTriangle,
+	faCircleNotch, faCodeBranch, faGripVertical, faCommentDots, faComment, faComments, faEnvelope, faExclamationTriangle,
 	faExternalLinkAlt, faGlobe, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,

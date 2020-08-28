@@ -1,5 +1,5 @@
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
-import {generateIndex, refreshIndex, searchByName} from '../../../../src/server/helpers/search';
+import {generateIndex, refreshIndex, searchByName} from '../../../../src/common/helpers/search';
 
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
@@ -9,7 +9,6 @@ import orm from '../../../bookbrainz-data';
 // eslint-disable-next-line import/no-internal-modules
 import uuidv4 from 'uuid/v4';
 
-
 chai.use(chaiHttp);
 chai.use(assertArrays);
 const {expect} = chai;
@@ -18,7 +17,6 @@ const {UserCollection, UserCollectionCollaborator, UserCollectionItem} = orm;
 
 describe('POST /collection/create', () => {
 	let agent;
-<<<<<<< HEAD
 	let collectionOwner;
 	before(async () => {
 		try {
@@ -40,7 +38,6 @@ describe('POST /collection/create', () => {
 		});
 	});
 
-<<<<<<< HEAD
 	it('should correctly create collection and return with status code 200 for correct data', async () => {
 		const data = {
 			description: 'some description',
@@ -167,9 +164,6 @@ describe('POST /collection/create', () => {
 describe('POST collection/edit', () => {
 	// eslint-disable-next-line one-var
 	let agent, collectionJSON, loggedInUser, oldCollaborator;
-=======
-	let loggedInUser;
->>>>>>> chore: check error message in test
 	before(async () => {
 		try {
 			loggedInUser = await createEditor(123456);
@@ -411,7 +405,206 @@ describe('POST collection/edit', () => {
 	});
 });
 
-=======
+describe('POST /collection/collectionID/delete', () => {
+	let agent;
+	let loggedInUser;
+	before(async () => {
+		try {
+			loggedInUser = await createEditor(123456);
+		}
+		catch (error) {
+			// console.log(error);
+		}
+		// The `agent` now has the sessionid cookie saved, and will send it
+		// back to the server in the next request:
+		agent = await chai.request.agent(app);
+		await generateIndex(orm);
+		await agent.get('/cb');
+	});
+	after((done) => {
+		// Clear DB tables then close superagent server
+		truncateEntities().then(() => {
+			agent.close(done);
+		});
+	});
+
+	it('should be able to delete my collection', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+
+		expect(res.status).to.equal(200);
+		expect(collectionsJSON.length).to.equal(0);
+	});
+
+	it('should delete all the items along with the collection', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		const author1 = await createAuthor();
+		const author2 = await createAuthor();
+		await new UserCollectionItem({
+			bbid: author1.get('bbid'),
+			collectionId: collection.get('id')
+		});
+		await new UserCollectionItem({
+			bbid: author2.get('bbid'),
+			collectionId: collection.get('id')
+		});
+		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const items = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+		const itemsJSON = items.toJSON();
+
+		expect(res.status).to.equal(200);
+		expect(collectionsJSON.length).to.equal(0);
+		expect(itemsJSON.length).to.equal(0);
+	});
+
+	it('should delete all the collaborators along with the collection', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collaborator1 = await createEditor();
+		const collaborator2 = await createEditor();
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator1.get('id'),
+			collectionId: collection.get('id')
+		});
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator2.get('id'),
+			collectionId: collection.get('id')
+		});
+
+		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		const collections = await new UserCollection().where('id', res.body.id).fetchAll({require: false});
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({require: false});
+		const collaboratorsJSON = collaborators.toJSON();
+		const collectionsJSON = collections.toJSON();
+
+		expect(res.status).to.equal(200);
+		expect(collectionsJSON.length).to.equal(0);
+		expect(collaboratorsJSON.length).to.equal(0);
+	});
+
+	it('should not allow unauthorized user to delete the collection', async () => {
+		const owner = await createEditor();
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: owner.get('id'),
+			public: true
+		};
+
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		// here loggedInUser is neither owner nor collaborator
+		const response = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+
+		expect(collectionsJSON.length).to.equal(1);
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
+	});
+
+	it('should not allow collaborator to delete the collection', async () => {
+		const owner = await createEditor();
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: owner.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		await new UserCollectionCollaborator({
+			collaboratorId: loggedInUser.get('id'),
+			collectionId: collection.get('id')
+		});
+
+		const response = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+
+		expect(collectionsJSON.length).to.equal(1);
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to edit/delete this collection');
+	});
+
+	it('should remove collection from ES index', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'someUniqueName',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		await generateIndex(orm);
+		const oldResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
+		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		await refreshIndex();
+		const newResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
+		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
+		const collectionsJSON = collections.toJSON();
+
+		expect(res.status).to.equal(200);
+		expect(oldResult.length).to.equal(1);
+		expect(oldResult[0]?.id).to.equal(collection.get('id'));
+		expect(newResult.length).to.equal(0);
+		expect(collectionsJSON.length).to.equal(0);
+	});
+});
+
+
+describe('POST /collection/:collectionID/add', () => {
+	let agent;
+	let loggedInUser;
+	before(async () => {
+		try {
+			loggedInUser = await createEditor(123456);
+		}
+		catch (error) {
+			// console.log(error);
+		}
+		// The `agent` now has the sessionid cookie saved, and will send it
+		// back to the server in the next request:
+		agent = await chai.request.agent(app);
+		await agent.get('/cb');
+	});
+	after((done) => {
+		// Clear DB tables then close superagent server
+		truncateEntities().then(() => {
+			agent.close(done);
+		});
+	});
+
 	it('should be able to add to my own collection', async () => {
 		const collectionData = {
 			description: 'description',
@@ -602,7 +795,7 @@ describe('POST collection/edit', () => {
 		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
 		const itemJSON = item.toJSON();
 		expect(response).to.have.status(400);
-		expect(response.res.statusMessage).to.equal('Trying to add an entity having invalid BBID');
+		expect(response.res.statusMessage).to.equal(`Invalid BBID ${data.bbids[0]}`);
 		expect(itemJSON.length).to.equal(0);
 	});
 
@@ -621,17 +814,12 @@ describe('POST collection/edit', () => {
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
 		const itemJSON = item.toJSON();
-<<<<<<< HEAD
-		expect(response).to.have.status(400);
-		expect(response.res.statusMessage).to.equal('Trying to add an entity which is not present');
-=======
 		expect(response).to.have.status(404);
 		expect(response.res.statusMessage).to.equal(`${collectionData.entityType} ${data.bbids[0]} does not exist`);
->>>>>>> test: throw 404 error instead of 400 for entity not found
 		expect(itemJSON.length).to.equal(0);
 	});
 
-	it('should throw an error when trying to add wrong entity type', async () => {
+	it('should throw an error when trying to add an entity of type different than the collection type', async () => {
 		const collectionData = {
 			description: 'description',
 			entityType: 'Edition',
@@ -649,7 +837,27 @@ describe('POST collection/edit', () => {
 		const itemJSON = item.toJSON();
 
 		expect(response).to.have.status(400);
-		expect(response.res.statusMessage).to.equal('Trying to add an entity of type Author to a collection of type Edition');
+		expect(response.res.statusMessage).to.equal(`Cannot add an entity of type Author to a collection of type ${collectionData.entityType}`);
+		expect(itemJSON.length).to.equal(0);
+	});
+
+	it('should throw error for empty bbid array', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Edition',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const data = {
+			bbids: []
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
+		const itemJSON = item.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('BBIDs array is empty');
 		expect(itemJSON.length).to.equal(0);
 	});
 });
@@ -724,7 +932,7 @@ describe('POST /collection/:collectionID/remove', () => {
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(400);
-		expect(response.res.statusMessage).to.equal('Trying to remove an entity having invalid bbid');
+		expect(response.res.statusMessage).to.equal(`Invalid BBID ${data.bbids[0]}`);
 		expect(itemJSON.length).to.equal(1);
 	});
 
@@ -751,7 +959,7 @@ describe('POST /collection/:collectionID/remove', () => {
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(400);
-		expect(response.res.statusMessage).to.equal('Trying to remove an entity which is not present in the collection');
+		expect(response.res.statusMessage).to.equal(`Entity ${data.bbids[0]} is not in collection ${collection.get('id')}`);
 		expect(itemJSON.length).to.equal(1);
 	});
 
@@ -899,5 +1107,25 @@ describe('POST /collection/:collectionID/remove', () => {
 		expect(response.status).to.equal(403);
 		expect(response.res.statusMessage).to.equal('You do not have permission to edit this collection');
 		expect(itemJSON.length).to.equal(1);
+	});
+
+	it('should throw error for empty bbid array', async () => {
+		const collectionData = {
+			description: 'description',
+			entityType: 'Edition',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: true
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const data = {
+			bbids: []
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
+		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
+		const itemJSON = item.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('BBIDs array is empty');
+		expect(itemJSON.length).to.equal(0);
 	});
 });
