@@ -73,6 +73,19 @@ body {
     }
 }
 
+// We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
+.btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
+	.badge{
+		padding: 2px 6px;
+	}
+}
+
+// Buttons in Lobes overlap for some reason, which if opacity is reduced (disabled) will look quite bad
+.btn {
+    margin-left: 0;
+    margin-right: 0;
+}
+
 
 /* Site-wide styling */
 /* ================= */
