@@ -9,6 +9,7 @@ import orm from '../../../bookbrainz-data';
 // eslint-disable-next-line import/no-internal-modules
 import uuidv4 from 'uuid/v4';
 
+
 chai.use(chaiHttp);
 chai.use(assertArrays);
 const {expect} = chai;
@@ -1127,5 +1128,211 @@ describe('POST /collection/:collectionID/remove', () => {
 		expect(response).to.have.status(400);
 		expect(response.res.statusMessage).to.equal('BBIDs array is empty');
 		expect(itemJSON.length).to.equal(0);
+	});
+});
+
+describe('POST /collection/collectionID/collaborator/remove', () => {
+	let agent;
+	let loggedInUser;
+	before(async () => {
+		try {
+			loggedInUser = await createEditor(123456);
+		}
+		catch (error) {
+			// console.log(error);
+		}
+		// The `agent` now has the sessionid cookie saved, and will send it
+		// back to the server in the next request:
+		agent = await chai.request.agent(app);
+		await generateIndex(orm);
+		await agent.get('/cb');
+	});
+	after((done) => {
+		// Clear DB tables then close superagent server
+		truncateEntities().then(() => {
+			agent.close(done);
+		});
+	});
+
+	it('should allow collaborator to stop collaboration', async () => {
+		const owner = await createEditor();
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: owner.get('id'),
+			public: false
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		// make logged in user collaborator of this collection
+		await new UserCollectionCollaborator({
+			collaboratorId: loggedInUser.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+
+		const postData = {
+			collaboratorIds: [loggedInUser.get('id')]
+		};
+		const response = await agent.post(`/collection/${collection.get('id')}/collaborator/remove`).send(postData);
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({});
+		const collaboratorsJSON = collaborators.toJSON();
+		expect(response).to.have.status(200);
+		expect(collaboratorsJSON.length).to.equal(0);
+	});
+
+	it('should allow the owner to remove collaborators', async () => {
+		// logged in user is the owner
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: false
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const collaborator1 = await createEditor();
+		const collaborator2 = await createEditor();
+		// make logged in user collaborator of this collection
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator1.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator2.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+
+		const postData = {
+			collaboratorIds: [collaborator1.get('id'), collaborator2.get('id')]
+		};
+
+		const response = await agent.post(`/collection/${collection.get('id')}/collaborator/remove`).send(postData);
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({});
+		const collaboratorsJSON = collaborators.toJSON();
+		expect(response).to.have.status(200);
+		expect(collaboratorsJSON.length).to.equal(0);
+	});
+
+	it('should throw error if a collaborator tries to remove another collaborator', async () => {
+		const owner = await createEditor();
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: owner.get('id'),
+			public: false
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		// make logged in user collaborator of this collection
+		await new UserCollectionCollaborator({
+			collaboratorId: loggedInUser.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+		const collaborator2 = await createEditor();
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator2.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+
+		const postData = {
+			collaboratorIds: [loggedInUser.get('id'), collaborator2.get('id')]
+		};
+
+		// loggedIn user is trying to remove collaborator2
+		const response = await agent.post(`/collection/${collection.get('id')}/collaborator/remove`).send(postData);
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({});
+		const collaboratorsJSON = collaborators.toJSON();
+		// eslint-disable-next-line no-console
+		console.log(response.res.statusMessage);
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to remove collaborators from this collection');
+		expect(collaboratorsJSON.length).to.equal(2);
+	});
+
+	it('should throw error if collaboratorIds array is empty', async () => {
+		// logged in user is the owner
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: false
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const collaborator1 = await createEditor();
+		// make logged in user collaborator of this collection
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator1.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+
+		const postData = {
+			collaboratorIds: []
+		};
+
+		const response = await agent.post(`/collection/${collection.get('id')}/collaborator/remove`).send(postData);
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({});
+		const collaboratorsJSON = collaborators.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal('CollaboratorIds array is empty');
+		expect(collaboratorsJSON.length).to.equal(1);
+	});
+
+	it('should throw error when trying to remove incorrect collaborator', async () => {
+		// logged in user is the owner
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: loggedInUser.get('id'),
+			public: false
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const collaborator1 = await createEditor();
+		// make logged in user collaborator of this collection
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator1.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+
+		const postData = {
+			collaboratorIds: [1234]
+		};
+
+		const response = await agent.post(`/collection/${collection.get('id')}/collaborator/remove`).send(postData);
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({});
+		const collaboratorsJSON = collaborators.toJSON();
+		expect(response).to.have.status(400);
+		expect(response.res.statusMessage).to.equal(`User 1234 is not a collaborator of collection ${collection.get('id')}`);
+		expect(collaboratorsJSON.length).to.equal(1);
+	});
+
+	it('should throw error when unauthorized (neither collaborator nor owner) tries to remove collaborators', async () => {
+		const owner = await createEditor();
+		const collectionData = {
+			description: 'description',
+			entityType: 'Author',
+			name: 'collection name',
+			ownerId: owner.get('id'),
+			public: false
+		};
+		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
+		const collaborator1 = await createEditor();
+		// make logged in user collaborator of this collection
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator1.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+
+		const postData = {
+			collaboratorIds: [collaborator1.get('id')]
+		};
+
+		const response = await agent.post(`/collection/${collection.get('id')}/collaborator/remove`).send(postData);
+		const collaborators = await new UserCollectionCollaborator().where('collection_id', collection.get('id')).fetchAll({});
+		const collaboratorsJSON = collaborators.toJSON();
+		expect(response).to.have.status(403);
+		expect(response.res.statusMessage).to.equal('You do not have permission to remove collaborators from this collection');
+		expect(collaboratorsJSON.length).to.equal(1);
 	});
 });
