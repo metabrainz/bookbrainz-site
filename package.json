@@ -59,7 +59,7 @@
     "git-rev": "^0.2.1",
     "http-status": "^1.0.0",
     "immutable": "^3.8.2",
-    "influx": "^5.5.3",
+    "influx": "^5.6.2",
     "jsesc": "^2.5.2",
     "lodash": "^4.17.20",
     "log": "^6.0.0",
