@@ -21,7 +21,6 @@
 
 // @flow
 
-import Promise from 'bluebird';
 import _ from 'lodash';
 
 
@@ -33,23 +32,6 @@ import _ from 'lodash';
  */
 export function getEntityLink(entity: Object): string {
 	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
-}
-
-/**
- * Returns all entity models defined in bookbrainz-data-js
- *
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @returns {object} - Object mapping model name to the entity model
- */
-export function getEntityModels(orm: Object): Object {
-	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
-	return {
-		Author,
-		Edition,
-		EditionGroup,
-		Publisher,
-		Work
-	};
 }
 
 export function getDateBeforeDays(days) {
@@ -88,26 +70,6 @@ export function filterIdentifierTypesByEntity(
 	return identifierTypes.filter(
 		(type) => type.entityType === entity.type || typesOnEntity.has(type.id)
 	);
-}
-
-/**
- * Retrieves the Bookshelf entity model with the given the model name
- *
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @param {string} type - Name or type of model
- * @throws {Error} Throws a custom error if the param 'type' does not
- * map to a model
- * @returns {object} - Bookshelf model object with the type specified in the
- * single param
- */
-export function getEntityModelByType(orm: Object, type: string): Object {
-	const entityModels = getEntityModels(orm);
-
-	if (!entityModels[type]) {
-		throw new Error(`Unrecognized entity type: '${type}'`);
-	}
-
-	return entityModels[type];
 }
 
 /**
@@ -190,21 +152,7 @@ export function incrementEditorEditCountById(
 			editor.incrementEditCount();
 			return editor.save(null, {transacting});
 		})
-		.catch(Editor.NotFoundError, err => Promise.reject(err));
-}
-
-/**
- * Removes all rows from a selection of database tables
- *
- * @param {object} Bookshelf - Bookshelf instance connected to database
- * @param {string[]} tables - List of tables to truncate
- * @returns {Promise} a promise which will be fulfilled when the operation to
- *                    truncate tables completes
- */
-export function truncateTables(Bookshelf: Object, tables: Array<string>) {
-	return Promise.each(
-		tables, (table) => Bookshelf.knex.raw(`TRUNCATE ${table} CASCADE`)
-	);
+		.catch(Editor.NotFoundError, err => new Promise((resolve, reject) => reject(err)));
 }
 
 /**

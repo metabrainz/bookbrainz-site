@@ -17,6 +17,7 @@
  */
 
 // @flow
+
 import * as error from '../../common/helpers/error';
 import {flatMap} from 'lodash';
 
@@ -87,7 +88,7 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 	}
 	return revisions;
 }
-/* eslint-enable no-await-in-loop */
+
 /**
  * Fetches revisions for Show All Revisions/Index Page
  * Fetches the last 'size' number of revisions with offset 'from'
@@ -117,8 +118,7 @@ export async function getOrderedRevisions(from, size, orm) {
 	});
 
 	/* Fetch associated ${entity}_revisions and last know alias for deleted entities */
-	const orderedRevisions = getAssociatedEntityRevisions(formattedRevisions, orm);
-	return orderedRevisions;
+	return getAssociatedEntityRevisions(formattedRevisions, orm);
 }
 
 /**
@@ -222,7 +222,7 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 		});
 
 	const revisionsJSON = revisions ? revisions.toJSON() : [];
-	const orderedRevisions = revisionsJSON.map(rev => {
+	return revisionsJSON.map(rev => {
 		const {revision} = rev;
 		const editor = revision.author;
 		const revisionId = revision.id;
@@ -231,6 +231,5 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 		delete revision.id;
 		return {editor, revisionId, ...revision};
 	});
-	return orderedRevisions;
 }
 

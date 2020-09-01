@@ -36,7 +36,6 @@ import makeImmutable from '../common/make-immutable';
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
 
-
 type WorkType = {
 	label: string,
 	id: number

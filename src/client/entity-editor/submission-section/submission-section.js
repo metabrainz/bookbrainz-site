@@ -18,7 +18,6 @@
 
 import {Alert, Button, Col, Row} from 'react-bootstrap';
 import {debounceUpdateRevisionNote, submit} from './actions';
-
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -34,10 +33,14 @@ import {connect} from 'react-redux';
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.errorText - A message to be displayed within the
  *        component in the case of an error.
+ * @param {boolean} props.formValid - Boolean indicating if the form has been
+ *        validated successfully or if it contains errors
  * @param {Function} props.onNoteChange - A function to be called when the
  *        revision note is changed.
- * @param {Function} props.onSubmitClick - A function to be called when the
+ * @param {Function} props.onSubmit - A function to be called when the
  *        submit button is clicked.
+ * @param {boolean} props.submitted - Boolean indicating if the form has been submitted
+ *        (i.e. submit button clicked) to prevent submitting again
  * @returns {ReactElement} React element containing the rendered
  *          SubmissionSection.
  */
@@ -45,7 +48,8 @@ function SubmissionSection({
 	errorText,
 	formValid,
 	onNoteChange,
-	onSubmit
+	onSubmit,
+	submitted
 }) {
 	const errorAlertClass =
 		classNames('text-center', 'margin-top-1', {hidden: !errorText});
@@ -62,29 +66,27 @@ function SubmissionSection({
 			<h2>
 				Submit Your Edit
 			</h2>
-			<p className="text-muted">
-				{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
-				- Where did you get your info from? A link is worth a thousand words.
-				- What kind of information did you provide? If you made any changes, what are they and why?
- 				- Do you have any questions concerning the editing process you want to ask?`}
-			</p>
-			<form>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<CustomInput
-							label={editNoteLabel}
-							rows="6"
-							tooltipText="Cite your sources or an explanation of your edit"
-							type="textarea"
-							onChange={onNoteChange}
-						/>
-					</Col>
-				</Row>
-			</form>
+			<Row>
+				<Col md={6} mdOffset={3}>
+					<CustomInput
+						label={editNoteLabel}
+						rows="6"
+						tooltipText="Cite your sources or an explanation of your edit"
+						type="textarea"
+						onChange={onNoteChange}
+					/>
+					<p className="text-muted">
+						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
+						- Where did you get your info from? A link is worth a thousand words.
+						- What kind of information did you provide? If you made any changes, what are they and why?
+						- Do you have any questions concerning the editing process you want to ask?`}
+					</p>
+				</Col>
+			</Row>
 			<div className="text-center margin-top-1">
 				<Button
 					bsStyle="success"
-					disabled={!formValid}
+					disabled={!formValid || submitted}
 					onClick={onSubmit}
 				>
 					Submit
@@ -101,14 +103,16 @@ SubmissionSection.propTypes = {
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
-	onSubmit: PropTypes.func.isRequired
+	onSubmit: PropTypes.func.isRequired,
+	submitted: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(rootState, {validate, identifierTypes}) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
-		formValid: validate(rootState, identifierTypes)
+		formValid: validate(rootState, identifierTypes),
+		submitted: state.get('submitted')
 	};
 }
 

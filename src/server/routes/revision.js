@@ -28,14 +28,15 @@ import * as releaseEventSetFormatter from
 	'../helpers/diffFormatters/releaseEventSet';
 
 import {escapeProps, generateProps} from '../helpers/props';
+
 import Layout from '../../client/containers/layout';
-import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RevisionPage from '../../client/components/pages/revision';
 import _ from 'lodash';
 import express from 'express';
 import log from 'log';
+import {makePromiseFromObject} from '../../common/helpers/utils';
 import target from '../templates/target';
 
 
@@ -167,7 +168,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 		(revision) =>
 			revision.parent()
 				.then(
-					(parent) => Promise.props({
+					(parent) => makePromiseFromObject({
 						changes: revision.diff(parent),
 						entity: revision.related('entity'),
 						entityAlias: revision.get('dataId') ?
@@ -179,7 +180,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						revision
 					}),
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
-					() => Promise.props({
+					() => makePromiseFromObject({
 						changes: revision.diff(null),
 						entity: revision.related('entity'),
 						entityAlias: revision.get('dataId') ?

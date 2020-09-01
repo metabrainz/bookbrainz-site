@@ -53,11 +53,7 @@ class EntitySearchFieldOption extends React.Component {
 			return true;
 		}
 
-		if (entity.gid) {
-			return true;
-		}
-
-		return false;
+		return Boolean(entity.gid);
 	}
 
 	/**
@@ -65,8 +61,6 @@ class EntitySearchFieldOption extends React.Component {
 	 *
 	 * @param {Object} entity the entity to convert
 	 * @returns {Object} the formatted data
-	 * @param {Array<LanguageOption>} languageOptions - The list of possible languages for an
-	 * entity.
 	 */
 	entityToOption(entity) {
 		if (_.isNil(entity)) {
@@ -90,10 +84,16 @@ class EntitySearchFieldOption extends React.Component {
 				options: []
 			};
 		}
+		let manipulatedQuery = query;
+		const bookbrainzURLRegex = /bookbrainz\.org\/\w+\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/gi;
+		const regexpResults = bookbrainzURLRegex.exec(query);
+		if (regexpResults && regexpResults.length) {
+			manipulatedQuery = regexpResults[1];
+		}
 		const response = await request
 			.get('/search/autocomplete')
 			.query({
-				q: query,
+				q: manipulatedQuery,
 				type: this.props.type
 			});
 		return {

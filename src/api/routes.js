@@ -16,120 +16,164 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {lookupAndBrowseRequestSlowDown, searchRequestSlowDown} from './helpers/rateLimiter';
 import {Router} from 'express';
 import {allowOnlyGetMethod} from './helpers/utils';
 import authorRouter from './routes/author';
 import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
 import publisherRouter from './routes/publisher';
+import searchRouter from './routes/search';
 import swaggerRoute from './swagger';
 import workRouter from './routes/work';
 
 /**
  *@swagger
- *definitions:
- *  Alias:
- *    type: object
- *    properties:
- *      name:
- *        type: string
- *        example: 'Robert A. Heinlein'
- *      sortName:
- *        type: string
- *        example: 'Heinlein, Robert A.'
- *      aliasLanguage:
- *        type: string
- *        example: 'English'
- *      primary:
- *        type: boolean
- *        example: true
- *  Aliases:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      aliases:
- *        type: array
- *        items:
- *          $ref: '#/definitions/Alias'
- *  Identifiers:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      identifiers:
- *        type: array
- *        items:
- *          type: object
- *          properties:
- *            type:
- *              type: string
- *              example: 'Wikidata ID'
- *            value:
- *              type: string
- *              example: 'Q123078'
- *  Relationships:
- *    type: object
- *    properties:
- *      bbid:
- *        type: string
- *        format: uuid
- *        example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
- *      relationships:
- *        type: array
- *        items:
- *          type: object
- *          properties:
- *            direction:
- *              type: string
- *              example: 'forward'
- *            id:
- *              type: number
- *              example: 804
- *            linkPhrase:
- *              type: string
- *              example: 'wrote'
- *            relationshipTypeId:
- *              type: number
- *              example: 8
- *            relationshipTypeName:
- *              type: string
- *              example: 'Author'
- *            targetBbid:
- *              type: string
- *              format: uuid
- *              example: '4682cf09-66fb-4542-b457-b889117e0279'
- *            targetEntityType:
- *              type: string
- *              example: 'work'
+ * components:
+ *   schemas:
+ *     Alias:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: 'John Doe'
+ *         sortName:
+ *           type: string
+ *           example: 'Doe, John'
+ *         language:
+ *           type: string
+ *           example: 'eng'
+ *           description: Three letter ISO 639-3 language code
+ *         primary:
+ *           type: boolean
+ *           example: true
+ *     Aliases:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         aliases:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Alias'
+ *     Identifiers:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         identifiers:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *                 example: 'Wikidata ID'
+ *               value:
+ *                 type: string
+ *                 example: 'Q123078'
+ *     Relationships:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         relationships:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               direction:
+ *                 type: string
+ *                 example: 'forward'
+ *               id:
+ *                 type: number
+ *                 example: 804
+ *               linkPhrase:
+ *                 type: string
+ *                 example: 'wrote'
+ *               relationshipTypeId:
+ *                 type: number
+ *                 example: 8
+ *               relationshipTypeName:
+ *                 type: string
+ *                 example: 'Author'
+ *               targetBbid:
+ *                 type: string
+ *                 format: uuid
+ *                 example: '4682cf09-66fb-4542-b457-b889117e0279'
+ *               targetEntityType:
+ *                 type: string
+ *                 example: 'work'
+ *     SearchEntity:
+ *       type: object
+ *       properties:
+ *         bbid:
+ *           type: string
+ *           format: uuid
+ *           example: '2e5f49a8-6a38-4cc7-97c7-8e624e1fc2c1'
+ *         entityType:
+ *           type: string
+ *           example: 'author'
+ *         defaultAlias:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               example: 'Robert A. Heinlein'
+ *             sortName:
+ *               type: string
+ *               example: 'Heinlein, Robert A.'
+ *             language:
+ *               type: string
+ *               example: 'eng'
+ *               description: Three letter ISO 639-3 language code
+ *             primary:
+ *               type: boolean
+ *               example: true
+ *     SearchResultModel:
+ *       type: object
+ *       properties:
+ *         searchCount:
+ *           type: number
+ *           example: 1
+ *         searchResult:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/SearchEntity'
  */
 
 function initWorkRoute(app) {
-	app.use('/work', workRouter);
+	app.use('/work', lookupAndBrowseRequestSlowDown, workRouter);
 }
 
 function initEditionRoute(app) {
-	app.use('/edition', editionRouter);
+	app.use('/edition', lookupAndBrowseRequestSlowDown, editionRouter);
 }
 
 function initEditionGroupRoute(app) {
-	app.use('/edition-group', editionGroupRouter);
+	app.use('/edition-group', lookupAndBrowseRequestSlowDown, editionGroupRouter);
 }
 
 function initAuthorRoute(app) {
-	app.use('/author', authorRouter);
+	app.use('/author', lookupAndBrowseRequestSlowDown, authorRouter);
 }
 
 function initPublisherRoute(app) {
-	app.use('/publisher', publisherRouter);
+	app.use('/publisher', lookupAndBrowseRequestSlowDown, publisherRouter);
+}
+
+function initSearchRouter(app) {
+	app.use('/search', searchRequestSlowDown, searchRouter);
 }
 
 function initDocsRoute(app) {
-	app.use('/api-docs', swaggerRoute);
+	app.use(['/api-docs', '/docs'], swaggerRoute);
 }
 
 function initRoutes() {
@@ -143,6 +187,7 @@ function initRoutes() {
 	initEditionGroupRoute(router);
 	initAuthorRoute(router);
 	initPublisherRoute(router);
+	initSearchRouter(router);
 	initDocsRoute(router);
 
 	return router;

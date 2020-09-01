@@ -49,7 +49,7 @@ const page = pageTarget ? pageTarget.innerHTML : '';
 
 const Child = entityComponents[page] || AuthorPage;
 
-let markup = null;
+let markup;
 if (page === 'revisions') {
 	markup = (
 		<AppContainer>

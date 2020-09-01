@@ -24,8 +24,7 @@
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from '../../common/helpers/error';
 
-import Promise from 'bluebird';
-import {flattenDeep} from 'lodash';
+import {flattenDeep, isNil} from 'lodash';
 import log from 'log';
 
 
@@ -44,9 +43,9 @@ function awardUnlock(UnlockType, awardAttribs) {
 					.save(null, {method: 'insert'})
 					.then((unlock) => unlock.toJSON());
 			}
-			return Promise.resolve('Already unlocked');
+			return new Promise((resolve) => resolve('Already unlocked'));
 		})
-		.catch(err => Promise.reject(err));
+		.catch(err => new Promise((resolve, reject) => reject(err)));
 }
 
 /**
@@ -65,9 +64,10 @@ function awardAchievement(orm, editorId, achievementName) {
 		.then((achievementTier) => {
 			let awardPromise;
 			if (achievementTier === null) {
-				awardPromise = Promise.reject(new error.AwardNotUnlockedError(
-					`Achievement ${achievementName} not found in database`
-				));
+				awardPromise = new Promise((resolve, reject) =>
+					reject(new error.AwardNotUnlockedError(
+						`Achievement ${achievementName} not found in database`
+					)));
 			}
 			else {
 				const achievementAttribs = {
@@ -81,9 +81,9 @@ function awardAchievement(orm, editorId, achievementName) {
 							out[achievementName] = unlock;
 							return out;
 						})
-						.catch((err) => Promise.reject(
+						.catch((err) => new Promise((resolve, reject) => reject(
 							new error.AwardNotUnlockedError(err.message)
-						));
+						)));
 			}
 			return awardPromise;
 		});
@@ -107,11 +107,11 @@ function awardTitle(orm, editorId, tier) {
 			.then((title) => {
 				let awardPromise;
 				if (title === null) {
-					awardPromise = Promise.reject(
+					awardPromise = new Promise((resolve, reject) => reject(
 						new error.AwardNotUnlockedError(
 							`Title ${tier.titleName} not found in database`
 						)
-					);
+					));
 				}
 				else {
 					const titleAttribs = {
@@ -124,15 +124,15 @@ function awardTitle(orm, editorId, tier) {
 							out[tier.titleName] = unlock;
 							return out;
 						})
-						.catch((err) => Promise.reject(
+						.catch((err) => new Promise((resolve, reject) => reject(
 							new error.AwardNotUnlockedError(err.message)
-						));
+						)));
 				}
 				return awardPromise;
 			});
 	}
 	else {
-		titlePromise = Promise.resolve(false);
+		titlePromise = new Promise(resolve => resolve(false));
 	}
 	return titlePromise;
 }
@@ -152,11 +152,15 @@ function awardListToAwardObject(awardList) {
 	const track = {};
 	if (awardList) {
 		awardList.forEach((awardSet) => {
-			awardSet.forEach((award) => {
-				Object.keys(award).forEach((key) => {
-					track[key] = award[key];
+			if (!isNil(awardSet)) {
+				awardSet.forEach((award) => {
+					if (!isNil(award)) {
+						Object.keys(award).forEach((key) => {
+							track[key] = award[key];
+						});
+					}
 				});
-			});
+			}
 		});
 	}
 	return track;
@@ -182,18 +186,18 @@ function testTiers(orm, signal, editorId, tiers) {
 	const tierPromise = tiers.map((tier) => {
 		let tierOut;
 		if (signal >= tier.threshold) {
-			tierOut = Promise.join(
+			tierOut = Promise.all([
 				awardAchievement(orm, editorId, tier.name),
-				awardTitle(orm, editorId, tier),
-				(achievementUnlock, title) => {
+				awardTitle(orm, editorId, tier)
+			])
+				.then(([achievementUnlock, title]) => {
 					const out = [];
 					if (title) {
 						out.push(title);
 					}
 					out.push(achievementUnlock);
 					return out;
-				}
-			)
+				})
 				.catch((err) => log.debug(err));
 		}
 		else {
@@ -495,11 +499,11 @@ function getEditionDateDifference(orm, revisionId) {
 			}
 			else {
 				differencePromise =
-					Promise.reject(new Error('no date attribute'));
+				new Promise((resolve, reject) => reject(new Error('no date attribute')));
 			}
 			return differencePromise;
 		})
-		.catch(() => Promise.reject(new Error('no date attribute')));
+		.catch(() => new Promise((resolve, reject) => reject(new Error('no date attribute'))));
 }
 
 function processTimeTraveller(orm, editorId, revisionId) {
@@ -528,9 +532,9 @@ function processHotOffThePress(orm, editorId, revisionId) {
 				achievementPromise = testTiers(orm, diff, editorId, tiers);
 			}
 			else {
-				achievementPromise = Promise.resolve(
+				achievementPromise = new Promise(resolve => resolve(
 					{'Hot Off the Press': false}
-				);
+				));
 			}
 			return achievementPromise;
 		})
@@ -597,7 +601,7 @@ export async function processPageVisit(orm, userId) {
  * containing id's for each unlocked achievement in .alert
  */
 export function processEdit(orm, userId, revisionId) {
-	return Promise.join(
+	return Promise.all([
 		processRevisionist(orm, userId),
 		processAuthorCreator(orm, userId),
 		processLimitedEdition(orm, userId),
@@ -608,8 +612,9 @@ export function processEdit(orm, userId, revisionId) {
 		processFunRunner(orm, userId),
 		processMarathoner(orm, userId),
 		processTimeTraveller(orm, userId, revisionId),
-		processHotOffThePress(orm, userId, revisionId),
-		(
+		processHotOffThePress(orm, userId, revisionId)
+	])
+		.then(([
 			revisionist,
 			authorCreator,
 			limitedEdition,
@@ -621,7 +626,7 @@ export function processEdit(orm, userId, revisionId) {
 			marathoner,
 			timeTraveller,
 			hotOffThePress
-		) => {
+		]) => {
 			let alert = [];
 			alert.push(
 				achievementToUnlockId(revisionist),
@@ -652,10 +657,5 @@ export function processEdit(orm, userId, revisionId) {
 				timeTraveller,
 				workerBee
 			};
-		}
-	);
-}
-
-export function processComment() {
-	// empty
+		});
 }

@@ -29,10 +29,10 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 /** ****************************
@@ -58,6 +58,7 @@ function transformNewForm(data) {
 
 	return {
 		aliases,
+		annotation: data.annotationSection.content,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		languages,
@@ -133,7 +134,7 @@ router.get(
 				title: props.heading
 			}));
 		}
-		Promise.props(propsPromise)
+		makePromiseFromObject(propsPromise)
 			.then(render)
 			.catch(next);
 	}
@@ -261,13 +262,19 @@ function workToFormState(work) {
 		}
 	));
 
+	const optionalSections = {};
+	if (work.annotation) {
+		optionalSections.annotationSection = work.annotation;
+	}
+
 	return {
 		aliasEditor,
 		buttonBar,
 		identifierEditor,
 		nameSection,
 		relationshipSection,
-		workSection
+		workSection,
+		...optionalSections
 	};
 }
 
