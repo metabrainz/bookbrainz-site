@@ -18,10 +18,11 @@
  */
 
 import * as auth from '../helpers/auth';
+import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
-import * as search from '../helpers/search';
+import * as search from '../../common/helpers/search';
 import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -32,7 +33,6 @@ import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
 import ProfileForm from '../../client/components/forms/profile';
 import ProfileTab from '../../client/components/pages/parts/editor-profile';
-import Promise from 'bluebird';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
@@ -80,9 +80,8 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 			return [];
 		});
 
-	Promise.join(
-		editorJSONPromise, titleJSONPromise, genderJSONPromise,
-		(editorJSON, titleJSON, genderJSON) => {
+	Promise.all([editorJSONPromise, titleJSONPromise, genderJSONPromise])
+		.then(([editorJSON, titleJSON, genderJSON]) => {
 			const props = generateProps(req, res, {
 				editor: editorJSON,
 				genders: genderJSON,
@@ -103,8 +102,7 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 				props: escapeProps(props),
 				script
 			}));
-		}
-	)
+		})
 		.catch(next);
 });
 
@@ -164,7 +162,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 function getEditorTitleJSON(editorJSON, TitleUnlock) {
 	let editorTitleJSON;
 	if (editorJSON.titleUnlockId === null) {
-		editorTitleJSON = Promise.resolve(editorJSON);
+		editorTitleJSON = new Promise(resolve => resolve(editorJSON));
 	}
 	else {
 		editorTitleJSON = new TitleUnlock({
@@ -265,19 +263,23 @@ router.get('/:id', (req, res, next) => {
 		})
 		.then((achievements) => {
 			if (!achievements) {
-				return {length: 0, model: null};
+				return {
+					length: 0,
+					model: null
+				};
 			}
-			const achievementJSON = {
+
+			return {
 				length: achievements.length,
 				model: achievements.toJSON()
 			};
-			return achievementJSON;
 		});
 
 
-	Promise.join(
-		achievementJSONPromise, editorJSONPromise,
-		(achievementJSON, editorJSON) => {
+	Promise.all(
+		[achievementJSONPromise, editorJSONPromise]
+	)
+		.then(([achievementJSON, editorJSON]) => {
 			const props = generateProps(req, res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
@@ -302,8 +304,7 @@ router.get('/:id', (req, res, next) => {
 				script: '/js/editor/editor.js',
 				title: `${props.editor.name}'s Profile`
 			}));
-		}
-	);
+		});
 });
 
 // eslint-disable-next-line consistent-return
@@ -373,12 +374,8 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 function setAchievementUnlockedField(achievements, unlockIds) {
 	const model = achievements.map((achievementType) => {
 		const achievementJSON = achievementType.toJSON();
-		if (unlockIds.indexOf(achievementJSON.id) >= 0) {
-			achievementJSON.unlocked = true;
-		}
-		else {
-			achievementJSON.unlocked = false;
-		}
+		achievementJSON.unlocked = unlockIds.indexOf(achievementJSON.id) >= 0;
+
 		return achievementJSON;
 	});
 	return {
@@ -409,9 +406,8 @@ router.get('/:id/achievements', (req, res, next) => {
 				))
 		);
 
-	Promise.join(
-		achievementJSONPromise, editorJSONPromise,
-		(achievementJSON, editorJSON) => {
+	Promise.all([achievementJSONPromise, editorJSONPromise])
+		.then(([achievementJSON, editorJSON]) => {
 			const props = generateProps(req, res, {
 				achievement: achievementJSON,
 				editor: editorJSON,
@@ -438,8 +434,7 @@ router.get('/:id/achievements', (req, res, next) => {
 				script,
 				title: `${props.editor.name}'s Achievements`
 			}));
-		}
-	);
+		});
 });
 
 function rankUpdate(orm, editorId, bodyRank, rank) {
@@ -458,7 +453,7 @@ function rankUpdate(orm, editorId, bodyRank, rank) {
 		.then(() => {
 			let updatePromise;
 			if (bodyRank === '') {
-				updatePromise = Promise.resolve(false);
+				updatePromise = new Promise(resolve => resolve(false));
 			}
 			else {
 				updatePromise = new AchievementUnlock({
@@ -486,10 +481,10 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 			let editorJSON;
 
 			if (!req.user || userId !== req.user.id) {
-				editorJSON = Promise.reject(new Error('Not authenticated'));
+				editorJSON = new Promise((resolve, reject) => reject(new Error('Not authenticated')));
 			}
 			else {
-				editorJSON = Promise.resolve(editordata.toJSON());
+				editorJSON = new Promise(resolve => resolve(editordata.toJSON()));
 			}
 			return editorJSON;
 		});
@@ -520,7 +515,7 @@ router.get('/:id/collections', async (req, res, next) => {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	let type = req.query.type ? req.query.type : null;
-	const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
+	const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 	if (!entityTypes.includes(type) && type !== null) {
 		throw new error.BadRequestError(`Type ${type} do not exist`);
 	}
@@ -575,7 +570,7 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 		let type = req.query.type ? req.query.type : null;
-		const entityTypes = _.keys(utils.getEntityModels(req.app.locals.orm));
+		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);
 		}

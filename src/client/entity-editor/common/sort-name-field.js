@@ -23,6 +23,7 @@ import CustomInput from '../../input';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
+
 /**
  * Removes all period characters (dots) from the input string, returning a new
  * string.
@@ -131,7 +132,7 @@ function SortNameField({
 	function handleGuessClick() {
 		const generatedSortName = makeSortName(storedNameValue);
 		if (input) {
-			input.getDOMNode().value = generatedSortName;
+			input.value = generatedSortName;
 		}
 
 		if (onChange) {
@@ -141,7 +142,7 @@ function SortNameField({
 
 	function handleCopyClick() {
 		if (input) {
-			input.getDOMNode().value = storedNameValue;
+			input.value = storedNameValue;
 		}
 
 		if (onChange) {

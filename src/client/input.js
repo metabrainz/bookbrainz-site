@@ -1,34 +1,54 @@
-/* eslint-disable */
+// @flow
 
-import { ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup } from 'react-bootstrap';
-import React, { Component } from 'react';
+import {ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import React, {Component} from 'react';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
-import ReactTooltip from 'react-tooltip';
 import cx from 'classnames';
 
+
 export default class Input extends Component {
+	static defaultProps = {
+		addonAfter: null,
+		addonBefore: null,
+		bsSize: null,
+		buttonAfter: null,
+		buttonBefore: null,
+		children: null,
+		groupClassName: null,
+		hasFeedback: null,
+		help: null,
+		id: null,
+		label: null,
+		labelClassName: null,
+		name: null,
+		standalone: false,
+		tooltipText: null,
+		type: null,
+		validationState: null,
+		wrapperClassName: null
+	};
+
 	static propTypes = {
-		name: PropTypes.string,
-		id: PropTypes.string,
-		children: PropTypes.any,
-		help: PropTypes.oneOfType([ PropTypes.string, PropTypes.node ]),
-		bsSize: PropTypes.string,
-		wrapperClassName: PropTypes.string,
-		groupClassName: PropTypes.string,
-		labelClassName: PropTypes.string,
-		addonBefore: PropTypes.any,
 		addonAfter: PropTypes.any,
-		buttonBefore: PropTypes.any,
+		addonBefore: PropTypes.any,
+		bsSize: PropTypes.string,
 		buttonAfter: PropTypes.any,
-		standalone: PropTypes.bool,
+		buttonBefore: PropTypes.any,
+		children: PropTypes.any,
+		groupClassName: PropTypes.string,
 		hasFeedback: PropTypes.bool,
-		validationState: PropTypes.string,
-		label: PropTypes.oneOfType([ PropTypes.string, PropTypes.node ]),
+		help: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+		id: PropTypes.string,
+		label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+		labelClassName: PropTypes.string,
+		name: PropTypes.string,
+		standalone: PropTypes.bool,
+		tooltipText: PropTypes.string,
 		type: PropTypes.string,
-		tooltipText: PropTypes.string
+		validationState: PropTypes.string,
+		wrapperClassName: PropTypes.string
 	};
 
 	constructor(props, context) {
@@ -37,23 +57,23 @@ export default class Input extends Component {
 		this.refFormControl = null;
 	}
 
-	getDOMNode = () => (
-		ReactDOM.findDOMNode(this.refFormControl)
-	)
+	set value(newValue) {
+		this.refFormControl.value = newValue;
+	}
 
 	getValue = () => {
-		const inputNode = this.getDOMNode();
+		const inputNode = this.refFormControl;
 
 		if (this.props.type === 'select' && inputNode.multiple) {
 			return this.getMultipleSelectValues(inputNode);
 		}
 
 		return inputNode.value;
-	}
+	};
 
 	getMultipleSelectValues(selectNode) {
 		const values = [];
-		const options = selectNode.options;
+		const {options} = selectNode;
 
 		for (let i = 0; i < options.length; i++) {
 			const opt = options[i];
@@ -67,17 +87,19 @@ export default class Input extends Component {
 	}
 
 	renderAddon(addon) {
-		return addon && <InputGroup.Addon>{ addon }</InputGroup.Addon>;
+		return addon && <InputGroup.Addon>{addon}</InputGroup.Addon>;
 	}
 
 	renderButtons(buttons) {
-		if (Array.isArray(buttons)){
+		if (Array.isArray(buttons)) {
 			return buttons.map((button, index) => this.renderButton(button, index));
 		}
+
 		return this.renderButton(buttons, 0);
 	}
-	renderButton(button, index:number) {
-		return button && <InputGroup.Button key={`btn${index}`}>{ button }</InputGroup.Button>;
+
+	renderButton(button, index: number) {
+		return button && <InputGroup.Button key={`btn${index}`}>{button}</InputGroup.Button>;
 	}
 
 	renderInputGroup({
@@ -95,21 +117,23 @@ export default class Input extends Component {
 		const formControl =
 			(children && React.cloneElement(children, props)) ||
 			<FormControl
-				ref={ (c) => { this.refFormControl = c; } }
-				value={ value }
-				{ ...props } />;
+				/* eslint-disable-next-line react/jsx-no-bind */
+				inputRef={(ref) => { this.refFormControl = ref; }}
+				value={value}
+				{...props}
+			/>;
 
-		const getFormControlWrapped = (className) => (
-			 className || hasFeedback || help ?
+		function getFormControlWrapped(className) {
+			return className || hasFeedback || help ?
 				(
-					<div className={ className }>
-						{ formControl }
-						{ hasFeedback && <FormControl.Feedback /> }
-						{ help && <HelpBlock>{help}</HelpBlock> }
+					<div className={className}>
+						{formControl}
+						{hasFeedback && <FormControl.Feedback/>}
+						{help && <HelpBlock>{help}</HelpBlock>}
 					</div>
 				) :
-				formControl
-				);
+				formControl;
+		}
 
 		if (!addonBefore && !addonAfter && !buttonBefore && !buttonAfter) {
 			return getFormControlWrapped(wrapperClassName);
@@ -117,12 +141,13 @@ export default class Input extends Component {
 
 		return (
 			<InputGroup
-				bsClass={ cx('input-group', wrapperClassName) }>
-				{ this.renderAddon(addonBefore) }
-				{ this.renderButtons(buttonBefore) }
-				{ getFormControlWrapped() }
-				{ this.renderButtons(buttonAfter) }
-				{ this.renderAddon(addonAfter) }
+				bsClass={cx('input-group', wrapperClassName)}
+			>
+				{this.renderAddon(addonBefore)}
+				{this.renderButtons(buttonBefore)}
+				{getFormControlWrapped()}
+				{this.renderButtons(buttonAfter)}
+				{this.renderAddon(addonAfter)}
 			</InputGroup>
 		);
 	}
@@ -141,29 +166,33 @@ export default class Input extends Component {
 		} = this.props;
 
 		const helpIconElement = tooltipText && (
-			<FontAwesomeIcon
-				className="margin-left-0-5" data-for={id} data-tip={tooltipText}
-				icon="question-circle"
-			/>
+			<OverlayTrigger
+				delayShow={50}
+				overlay={<Tooltip id={`tooltip-${id}`}>{tooltipText}</Tooltip>}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon="question-circle"
+				/>
+			</OverlayTrigger>
 		);
-		const helpTooltipElement = tooltipText &&
-		<ReactTooltip delayShow={50} effect="solid" id={id} place="right" type="dark" multiline={true} />
 
 		return (
 			<FormGroup
-				controlId={ id }
-				bsSize={ bsSize }
-				bsClass={ cx({ 'form-group': !standalone }, groupClassName) }
-				validationState={ validationState }>
-				{ label && (
+				bsClass={cx({'form-group': !standalone}, groupClassName)}
+				bsSize={bsSize}
+				controlId={id}
+				validationState={validationState}
+			>
+				{label && (
 					<ControlLabel
-						bsClass={ cx('control-label', labelClassName) }>
-						{ label }
-						{ helpIconElement }
+						bsClass={cx('control-label', labelClassName)}
+					>
+						{label}
+						{helpIconElement}
 					</ControlLabel>
-				) }
-				{ helpTooltipElement }
-				{ this.renderInputGroup(props) }
+				)}
+				{this.renderInputGroup(props)}
 			</FormGroup>
 		);
 	}

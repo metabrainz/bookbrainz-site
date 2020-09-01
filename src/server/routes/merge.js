@@ -22,7 +22,6 @@ import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
-import * as utils from '../helpers/utils';
 import {BadRequestError, ConflictError, NotFoundError} from '../../common/helpers/error';
 import {basicRelations,
 	getEntityFetchPropertiesByType,
@@ -32,7 +31,6 @@ import {
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
 
-import Promise from 'bluebird';
 import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
@@ -140,7 +138,7 @@ function entitiesToFormState(entities) {
 	return props;
 }
 
-function loadEntityRelationships(entity, orm, transacting): Promise {
+function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	const {RelationshipSet} = orm;
 
 	if (!entity.relationshipSetId) {
@@ -161,7 +159,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise {
 				relationshipSet.related('relationships').toJSON() : [];
 
 			function getEntityWithAlias(relEntity) {
-				const model = utils.getEntityModelByType(orm, relEntity.type);
+				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: relEntity.bbid})
 					.fetch({withRelated: 'defaultAlias'});
@@ -172,19 +170,18 @@ function loadEntityRelationships(entity, orm, transacting): Promise {
 			 * a good way of polymorphically fetching the right specific entity,
 			 * we need to fetch default alias in a somewhat sketchier way.
 			 */
-			return Promise.map(
-				entity.relationships,
-				(relationship) => Promise.join(
-					getEntityWithAlias(relationship.source),
-					getEntityWithAlias(relationship.target),
-					(relationshipSource, relationshipTarget) => {
+			return Promise.all(entity.relationships.map(
+				(relationship) => Promise.all(
+					[getEntityWithAlias(relationship.source),
+						getEntityWithAlias(relationship.target)]
+				)
+					.then(([relationshipSource, relationshipTarget]) => {
 						relationship.source = relationshipSource.toJSON();
 						relationship.target = relationshipTarget.toJSON();
 
 						return relationship;
-					}
-				)
-			);
+					})
+			));
 		})
 		.then((relationships) => {
 			// Set rendered relationships on relationship objects
@@ -200,7 +197,7 @@ async function getEntityByBBID(orm, transacting, bbid) {
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
 	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 	const entityType = entityHeader.get('type');
-	const model = utils.getEntityModelByType(orm, entityType);
+	const model = commonUtils.getEntityModelByType(orm, entityType);
 
 	return model.forge({bbid: redirectBbid})
 		.fetch({

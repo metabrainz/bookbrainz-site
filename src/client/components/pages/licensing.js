@@ -36,7 +36,7 @@ function LicensingPage() {
 			<PageHeader>Licensing</PageHeader>
 
 			<p>The BookBrainz core data is licensed under the&nbsp;
-				<a href="http://creativecommons.org/publicdomain/zero/1.0/">
+				<a href={CC0Link}>
 					Creative Commons CC0
 				</a> license. The core data includes the following
 				information:
@@ -74,11 +74,11 @@ function LicensingPage() {
 
 			<p>
 				Other publically available data is licensed under the&nbsp;
-				<a href="http://creativecommons.org/licenses/by-sa/4.0/">
+				<a href={CCBYSALink}>
 					Creative Commons CC BY-SA
 				</a> license. If you have any queries about licensing of
-				the public data, please ask for clarification. Please see
-				the links below for more details about CC0 and CC BY-SA.
+				the public data, please <a href="mailto:bookbrainz@metabrainz.org">ask for clarification</a>.
+				Please see the links below for more details about CC0 and CC BY-SA.
 			</p>
 
 			<div className="row margin-top-2">

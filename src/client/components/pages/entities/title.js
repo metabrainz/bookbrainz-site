@@ -26,7 +26,6 @@ const {
 	getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel
 } = entityHelper;
 
-
 function EntityTitle({entity}) {
 	const aliases = getEntitySecondaryAliases(entity);
 	const disambiguation = getEntityDisambiguation(entity);

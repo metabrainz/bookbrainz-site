@@ -16,14 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Modal, Row} from 'react-bootstrap';
+import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierRow from './identifier-row';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
@@ -59,8 +58,18 @@ const IdentifierEditor = ({
 
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
-	const helpIconElement = <FontAwesomeIcon className="fa-sm" data-tip={helpText} icon="question-circle"/>;
-	const helpTooltipElement = <ReactTooltip multiline delayShow={50} effect="solid" place="right" type="dark"/>;
+
+	const helpIconElement = (
+		<OverlayTrigger
+			delayShow={50}
+			overlay={<Tooltip id="identifier-editor-tooltip">{helpText}</Tooltip>}
+		>
+			<FontAwesomeIcon
+				className="fa-sm"
+				icon="question-circle"
+			/>
+		</OverlayTrigger>
+	);
 
 	return (
 		<Modal bsSize="large" show={show} onHide={onClose}>
@@ -68,7 +77,6 @@ const IdentifierEditor = ({
 				<Modal.Title>
 					Identifier Editor {helpIconElement}
 				</Modal.Title>
-				{helpTooltipElement}
 			</Modal.Header>
 
 			<Modal.Body>

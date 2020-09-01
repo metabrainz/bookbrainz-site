@@ -18,7 +18,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable max-len */
+
 import * as bootstrap from 'react-bootstrap';
 
 
@@ -29,7 +29,6 @@ import RevisionsTable from './parts/revisions-table';
 
 
 const {Alert, Button, Col, Grid, Row} = bootstrap;
-
 
 class IndexPage extends React.Component {
 	constructor(props) {
@@ -115,43 +114,65 @@ class IndexPage extends React.Component {
 										<h4 className="contact-text">
 											Contact Us
 										</h4>
-										<FontAwesomeIcon
-											className="margin-sides-1 contact-text"
-											icon="circle"
-										/>
-										<a href="//webchat.freenode.net/?channels=#metabrainz">
+										<div style={{
+											alignItems: 'center',
+											display: 'flex',
+											justifyContent: 'center'
+										}}
+										>
 											<FontAwesomeIcon
-												className="contact-text"
-												icon="comment"
-												size="2x"
+												className="margin-sides-1 contact-text"
+												icon="circle"
 											/>
-										</a>
-										<FontAwesomeIcon
-											className="margin-sides-1 contact-text"
-											icon="circle"
-										/>
-										<a href="//twitter.com/intent/tweet?screen_name=BookBrainz">
+											<a className="contact-text" href="//webchat.freenode.net/?channels=#metabrainz">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon="comment-dots"
+													size="2x"
+												/>
+												IRC
+											</a>
 											<FontAwesomeIcon
-												className="contact-text"
-												icon={['fab', 'twitter']}
-												size="2x"
+												className="margin-sides-1 contact-text"
+												icon="circle"
 											/>
-										</a>
-										<FontAwesomeIcon
-											className="margin-sides-1 contact-text"
-											icon="circle"
-										/>
-										<a href="mailto:bookbrainz-users@groups.io">
+											<a className="contact-text" href="//community.metabrainz.org/c/bookbrainz">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon="comments"
+													size="2x"
+												/>
+												Forums
+											</a>
 											<FontAwesomeIcon
-												className="contact-text"
-												icon="envelope"
-												size="2x"
+												className="margin-sides-1 contact-text"
+												icon="circle"
 											/>
-										</a>
-										<FontAwesomeIcon
-											className="margin-sides-1 contact-text"
-											icon="circle"
-										/>
+											<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon={['fab', 'twitter']}
+													size="2x"
+												/>
+												Twitter
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon="circle"
+											/>
+											<a className="contact-text" href="mailto:bookbrainz@metabrainz.org">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon="envelope"
+													size="2x"
+												/>
+												Email
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon="circle"
+											/>
+										</div>
 									</div>
 								</Col>
 							</Row>

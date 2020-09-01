@@ -36,21 +36,6 @@ export function get(
 	return _.get(object, path, defaultValue);
 }
 
-export function getIn(
-	object: any,
-	path: string,
-	defaultValue: ?mixed = null
-): mixed {
-	if (Iterable.isIterable(object)) {
-		return object.getIn(path, defaultValue);
-	}
-	return _.get(object, path, defaultValue);
-}
-
-export function isPositiveInt(value: ?string): boolean {
-	return validator.isInt(value, {gt: 0});
-}
-
 export function absentAndRequired(value: any, required: ?boolean): boolean {
 	return Boolean(required && _.isNil(value));
 }
@@ -87,12 +72,6 @@ export function validatePositiveInteger(
 	}
 
 	return _.isNil(value) || (_.isInteger(value) && value > 0);
-}
-
-export function validateBoolean(
-	value: mixed
-): boolean {
-	return _.isBoolean(value);
 }
 
 export function validateDate(value: string) {

@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
+
 /**
  * Presentational component. Renders a text input field for setting the value
  * of an identifier, with an associated ValidationLabel.

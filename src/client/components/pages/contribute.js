@@ -31,7 +31,7 @@ function ContributePage() {
 	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
 	const styleLink =
 		'https://bookbrainz-user-guide.readthedocs.io/' +
-		'style/introduction/';
+		'en/latest/style/introduction/';
 
 	return (
 		<div>
@@ -45,35 +45,47 @@ function ContributePage() {
 			<h2>Editing</h2>
 			<p>
 				If you come to BookBrainz with new information about a
-				particular book, you&rsquo;ll want to edit the database. To
-				do that, you&rsquo;ll first need an account, which you can
-				get by&nbsp;
+				particular book, you&rsquo;ll want to edit the database.<br/>
+				To do that, you&rsquo;ll first need an account, which you
+				can get by&nbsp;
 				<a href="/register">
 					registering
 				</a>. Then, you&rsquo;ll be able to add your new
-				information by editing an entity. Note that in the current
-				version of BookBrainz, only new entities can be edited.
+				information by editing an entity.<br/>
+			</p>
+			<p>
 				Please follow the&nbsp;
 				<a href={styleLink}>
 					BookBrainz style guidelines
-				</a> when adding data.
-				Unfortunately the aforementioned are still work in progress
+				</a> when adding data.<br/> They are still a work in progress
 				and should they not cover some cases, please refer to the&nbsp;
 				<a href="http://musicbrainz.org/doc/Style">
 					MusicBrainz ones
 				</a>, adapting as necessary.
+			</p>
+			<p>
+				If you find duplicates, instead of deleting them, please follow&nbsp;
+				<a href="https://bookbrainz-user-guide.readthedocs.io/en/latest/tutorials/merge/">
+					this tutorial
+				</a>
+				&nbsp;to learn how to merge them, so that any resource pointing
+				to a merged item will be redirected properly.
 			</p>
 
 			<h2>Programming</h2>
 			<p>
 				If you&rsquo;re someone who&rsquo;s good at using
 				JavaScript, NodeJS, SQL or LESS/SASS, we&rsquo;d love to
-				have your help developing BookBrainz. Take a look at our
-				GitHub page at&nbsp;
+				have your help developing BookBrainz. Take a look at our&nbsp;
+				<a href="https://wiki.musicbrainz.org/Development/Priorities#BookBrainz">
+					 roadmap
+				</a>
+				&nbsp;to see if there are any issues
+				or project that interests you.
+				Our code is all open source and hosted&nbsp;
 				<a href="https://github.com/BookBrainz">
-					BookBrainz
-				</a> to check out our code and see if there are any issues
-				that interest you.
+					on GitHub
+				</a>
 			</p>
 			<h2>Community</h2>
 			<p>
@@ -84,6 +96,12 @@ function ContributePage() {
 				<a href={IRCLink}>
 					IRC channel
 				</a>!
+			</p>
+			<p>
+				You can also get in touch and discuss with the community
+				<a href="https://community.metabrainz.org/c/bookbrainz"> on our forums,</a>
+				&nbsp;or send us
+				<a href="mailto:bookbrainz@metabrainz.org"> an email.</a>
 			</p>
 		</div>
 	);

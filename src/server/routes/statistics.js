@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as commonUtils from '../../common/helpers/utils';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -35,7 +36,7 @@ router.get('/', async (req, res) => {
 	const {orm} = req.app.locals;
 	const {Editor} = orm;
 
-	const entityModels = utils.getEntityModels(orm);
+	const entityModels = commonUtils.getEntityModels(orm);
 
 	// queryPromises1 is used to extract total count of all entities
 	const queryPromises1 = [];

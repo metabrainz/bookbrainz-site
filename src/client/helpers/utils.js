@@ -22,6 +22,7 @@ import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {format} from 'date-fns';
 
+
 /**
  * Injects entity model object with a default alias name property.
  *
@@ -48,12 +49,6 @@ export function formatDate(date, includeTime) {
 		return format(date, 'yyyy-MM-dd HH:mm:ss');
 	}
 	return format(date, 'yyyy-MM-dd');
-}
-
-const MILLISECONDS_PER_DAY = 86400000;
-
-export function isWithinDayFromNow(date) {
-	return Boolean(Date.now() - date.getTime() < MILLISECONDS_PER_DAY);
 }
 
 export function labelsForAuthor(isGroup) {

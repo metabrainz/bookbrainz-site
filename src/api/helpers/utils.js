@@ -16,6 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {get as _get} from 'lodash';
+import {loadEntity} from './middleware';
+
+
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type'];
@@ -39,4 +43,56 @@ export function allowOnlyGetMethod(req, res, next) {
 	return res.set('Allow', 'GET')
 		.status(405)
 		.send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`});
+}
+
+
+export async function getBrowsedRelationships(orm, locals, browsedEntityType,
+											  getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
+	const {entity, relationships} = locals;
+
+	if (!relationships.length > 0) {
+		return [];
+	}
+	const relationshipsPromises = relationships
+		.map(async relationship => {
+			let relEntity;
+			if (entity.bbid === relationship.sourceBbid &&
+				relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()) {
+				relEntity = relationship.target;
+			}
+			else if (relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()) {
+				relEntity = relationship.source;
+			}
+
+			if (relEntity) {
+				const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
+				const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
+				if (!filterRelationshipMethod(formattedRelEntity)) {
+					return null;
+				}
+				return {
+					entity: formattedRelEntity,
+					relationship: [{
+						relationshipType: _get(relationship, 'type.label', null),
+						relationshipTypeID: _get(relationship, 'type.id', null)
+					}]
+				};
+			}
+			return null;
+		});
+	const fetchedRelationshipsPromises = await Promise.all(relationshipsPromises);
+	// Remove falsy values (nulls returned above)
+	const filteredRelationships = fetchedRelationshipsPromises.filter(Boolean);
+
+	return filteredRelationships
+		.reduce((accumulator, relationship) => {
+			const entityAlreadyExists = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
+			if (entityAlreadyExists) {
+				entityAlreadyExists.relationships.push(...relationship.relationships);
+			}
+			else {
+				accumulator.push(relationship);
+			}
+			return accumulator;
+		}, []);
 }
