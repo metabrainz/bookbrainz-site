@@ -18,6 +18,8 @@
  */
 
 import {internet, random} from 'faker';
+
+import {isNil} from 'lodash';
 import orm from '../bookbrainz-data';
 // eslint-disable-next-line import/no-internal-modules
 import uuidv4 from 'uuid/v4';
@@ -33,17 +35,13 @@ const {
 const {updateLanguageSet} = orm.func.language;
 
 
-const setData = {id: 1};
-
 export const editorTypeAttribs = {
-	id: 1,
 	label: 'test_type'
 };
 
 export const editorAttribs = {
 	cachedMetabrainzName: 'Bob',
 	genderId: 1,
-	id: 1,
 	metabrainzUserId: 1,
 	name: 'bob',
 	revisionsApplied: 0,
@@ -52,7 +50,6 @@ export const editorAttribs = {
 
 const languageAttribs = {
 	frequency: 1,
-	id: 1,
 	isoCode1: 'en',
 	isoCode2b: 'eng',
 	isoCode2t: 'eng',
@@ -61,35 +58,26 @@ const languageAttribs = {
 };
 
 export const aliasData = {
-	id: 1,
 	languageId: 42,
 	name: 'Entity name',
 	sortName: 'Entity sort name'
 };
 
 const identifierData = {
-	...setData,
-	typeId: 1,
 	value: 'Q123456'
 };
 
-const revisionAttribs = {
-	authorId: 1,
-	id: 1
-};
-
+const revisionAttribs = {authorId: 1};
 const identifierTypeData = {
 	description: 'test',
 	displayTemplate: 'test',
 	entityType: 'Work',
-	...setData,
 	label: 'test',
 	validationRegex: 'test'
 };
 
 const relationshipTypeData = {
 	description: 'test descryption',
-	id: 1,
 	label: 'test label',
 	linkPhrase: 'test phrase',
 	reverseLinkPhrase: 'test reverse link phrase',
@@ -110,15 +98,14 @@ const entityAttribs = {
 
 export function createEditor(editorId) {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
-		editorTypeAttribs.id = random.number();
-		await new EditorType(editorTypeAttribs)
+		const editorType = await new EditorType(editorTypeAttribs)
 			.save(null, {method: 'insert', transacting});
-		const gender = await new Gender({...setData, id: random.number(), name: 'test'})
+		const gender = await new Gender({name: 'test'})
 			.save(null, {method: 'insert', transacting});
 
 		editorAttribs.id = editorId || random.number();
-		editorAttribs.genderId = gender.get('id');
-		editorAttribs.typeId = editorTypeAttribs.id;
+		editorAttribs.genderId = gender.id;
+		editorAttribs.typeId = editorType.id;
 		editorAttribs.name = internet.userName();
 		editorAttribs.metabrainzUserId = random.number();
 		editorAttribs.cachedMetabrainzName = editorAttribs.name;
@@ -130,36 +117,34 @@ export function createEditor(editorId) {
 }
 
 async function createAliasAndAliasSet() {
-	aliasData.languageId = random.number();
-	await new Language({...languageAttribs, id: aliasData.languageId})
+	const language = await new Language({...languageAttribs})
 		.save(null, {method: 'insert'})
 		.catch(console.log);
-	const alias = await new Alias({...aliasData, id: random.number()})
+	aliasData.languageId = language.id;
+	const alias = await new Alias({...aliasData})
 		.save(null, {method: 'insert'});
 
-	entityAttribs.aliasSetId = random.number();
-	await new AliasSet({
-		defaultAliasId: alias.get('id'),
-		id: entityAttribs.aliasSetId
+	const aliasSet = await new AliasSet({
+		defaultAliasId: alias.id
 	})
-		.save(null, {method: 'insert'})
-		.then((model) => model.aliases().attach([alias]));
+		.save(null, {method: 'insert'});
+	entityAttribs.aliasSetId = aliasSet.id;
+	await aliasSet.aliases().attach([alias.id]);
 }
 
 async function createIdentifierAndIdentifierSet() {
-	identifierTypeData.id = random.number();
-	await new IdentifierType(identifierTypeData)
+	const identifierType = await new IdentifierType(identifierTypeData)
 		.save(null, {method: 'insert'})
 		.catch(console.log);
 
-	identifierData.typeId = identifierTypeData.id;
-	const identifier = await new Identifier({...identifierData, id: random.number()})
+	identifierData.typeId = identifierType.id;
+	const identifier = await new Identifier(identifierData)
 		.save(null, {method: 'insert'});
 
-	entityAttribs.identifierSetId = random.number();
-	await new IdentifierSet({id: entityAttribs.identifierSetId})
-		.save(null, {method: 'insert'})
-		.then((model) => model.identifiers().attach([identifier]));
+	const identifierSet = await new IdentifierSet()
+		.save(null, {method: 'insert'});
+	entityAttribs.identifierSetId = identifierSet.id;
+	await identifierSet.identifiers().attach([identifier.id]);
 }
 
 async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 'Author') {
@@ -170,55 +155,45 @@ async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 
 	await new Entity({bbid: safeTargetBbid, type: targetEntityType})
 		.save(null, {method: 'insert'});
 	const EntityModel = orm[`${targetEntityType}`];
-	const revisionId = random.number();
-	await new Revision({authorId: editorAttribs.id, id: revisionId})
+	const revision = await new Revision({authorId: editorAttribs.id})
 		.save(null, {method: 'insert'});
 	await new EntityModel({
-		aliasSetId: entityAttribs.aliasSetId, bbid: safeTargetBbid, revisionId
+		aliasSetId: entityAttribs.aliasSetId, bbid: safeTargetBbid, revisionId: revision.id
 	}).save(null, {method: 'insert'});
 
-	const relationshipData = {
-		id: random.number(),
-		sourceBbid: safeSourceBbid,
-		targetBbid: safeTargetBbid,
-		typeId: relationshipTypeData.id
-	};
 
-	relationshipTypeData.id = random.number();
-	await new RelationshipType(relationshipTypeData)
+	const relationshipType = await new RelationshipType(relationshipTypeData)
 		.save(null, {method: 'insert'})
 		.catch(console.log);
 
-	relationshipData.typeId = relationshipTypeData.id;
-	relationshipData.id = random.number();
+	const relationshipData = {
+		sourceBbid: safeSourceBbid,
+		targetBbid: safeTargetBbid,
+		typeId: relationshipType.id
+	};
 	const relationship = await new Relationship(relationshipData)
 		.save(null, {method: 'insert'});
 
-	entityAttribs.relationshipSetId = random.number();
-	await new RelationshipSet({id: entityAttribs.relationshipSetId})
-		.save(null, {method: 'insert'})
-		.then(
-			(model) =>
-				model.relationships().attach([relationship]).then(() => model)
-		);
+	const relationshipSet = await new RelationshipSet()
+		.save(null, {method: 'insert'});
+	entityAttribs.relationshipSetId = relationshipSet.id;
+	await relationshipSet.relationships().attach([relationship.id]);
 }
 
 
 async function createLanguageSet() {
 	// Create relationships here if you need them
-	const language1Id = random.number();
-	const language2Id = random.number();
-	await new Language({...languageAttribs, id: language1Id})
+	const language1 = await new Language(languageAttribs)
 		.save(null, {method: 'insert'});
-	await new Language({...languageAttribs, id: language2Id})
+	const language2 = await new Language(languageAttribs)
 		.save(null, {method: 'insert'});
 	const languageSet = await updateLanguageSet(
 		orm,
 		null,
 		null,
-		[{id: language1Id}, {id: language2Id}]
+		[{id: language1.id}, {id: language2.id}]
 	);
-	return languageSet.get('id');
+	return languageSet.id;
 }
 
 export function getRandomUUID() {
@@ -232,25 +207,22 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 	await createRelationshipSet(entityBbid, null, entityType);
 
 	const disambiguation = await new Disambiguation({
-		comment: 'Test Disambiguation',
-		id: random.number()
+		comment: 'Test Disambiguation'
 	})
 		.save(null, {method: 'insert'});
-	entityAttribs.disambiguationId = disambiguation.get('id');
+	entityAttribs.disambiguationId = disambiguation.id;
 
-	revisionAttribs.id = random.number();
 	revisionAttribs.authorId = editorAttribs.id;
-	await new Revision(revisionAttribs)
+	const revision = await new Revision(revisionAttribs)
 		.save(null, {method: 'insert'});
-	entityAttribs.revisionId = revisionAttribs.id;
+	entityAttribs.revisionId = revision.id;
 
-	entityAttribs.annotationId = random.number();
-	await new Annotation({
+	const annotation = await new Annotation({
 		content: 'Test Annotation',
-		id: entityAttribs.annotationId,
-		lastRevisionId: revisionAttribs.id
+		lastRevisionId: revision.id
 	})
 		.save(null, {method: 'insert'});
+	entityAttribs.annotationId = annotation.id;
 }
 
 export async function createEdition(optionalBBID, optionalEditionAttribs = {}) {
@@ -264,30 +236,37 @@ export async function createEdition(optionalBBID, optionalEditionAttribs = {}) {
 	return edition;
 }
 
-export async function createWork(optionalBBID, optionalWorkAttribs) {
+export async function createWork(optionalBBID, optionalWorkAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Work');
 
 	let languageSetId;
-	if (!optionalWorkAttribs?.languageSetId) {
+	if (!optionalWorkAttribs.languageSetId) {
 		languageSetId = await createLanguageSet();
 	}
+	let workType;
+	const optionalWorkTypeAttribs = {};
+	if (!isNil(optionalWorkAttribs.typeId)) {
+		optionalWorkTypeAttribs.id = optionalWorkAttribs.typeId;
+		workType = await new WorkType({id: optionalWorkAttribs.typeId})
+			.fetch({
+				require: false
+			});
+	}
+
+	if (!workType) {
+		workType = await new WorkType({label: `Work Type ${optionalWorkAttribs.typeId || random.number()}`, ...optionalWorkTypeAttribs})
+			.save(null, {method: 'insert'});
+	}
+
 	const workAttribs = {
 		bbid,
 		languageSetId,
-		typeId: random.number(),
+		typeId: workType.id,
 		...optionalWorkAttribs
 	};
-	const workType = await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
-		.fetch({
-			require: false
-		});
-	if (!workType) {
-		await new WorkType({id: workAttribs.typeId, label: `Work Type ${workAttribs.typeId}`})
-			.save(null, {method: 'insert'});
-	}
 	const work = await new Work({...entityAttribs, ...workAttribs})
 		.save(null, {method: 'insert'});
 	return work;
@@ -298,13 +277,18 @@ export async function createEditionGroup(optionalBBID, optionalEditionGroupAttri
 	await new Entity({bbid, type: 'EditionGroup'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'EditionGroup');
+	const optionalEditionGroupTypeAttrib = {};
+	if (!isNil(optionalEditionGroupAttrib.typeId)) {
+		optionalEditionGroupTypeAttrib.id = optionalEditionGroupAttrib.typeId;
+	}
+	const editionGroupType = await new EditionGroupType({label: `Edition Group Type ${optionalEditionGroupAttrib.typeId || random.number()}`, ...optionalEditionGroupTypeAttrib})
+		.save(null, {method: 'insert'});
+
 	const editionGroupAttribs = {
 		bbid,
-		typeId: random.number(),
+		typeId: editionGroupType.id,
 		...optionalEditionGroupAttrib
 	};
-	await new EditionGroupType({id: editionGroupAttribs.typeId, label: `Edition Group Type ${editionGroupAttribs.typeId}`})
-		.save(null, {method: 'insert'});
 	const editionGroup = await new EditionGroup({...entityAttribs, ...editionGroupAttribs})
 		.save(null, {method: 'insert'});
 	return editionGroup;
@@ -315,24 +299,10 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 	await new Entity({bbid, type: 'Author'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Author');
-	const areaId = random.number();
-	const authorAttribs = {
-		bbid,
-		beginAreaId: areaId,
-		beginDay: 25,
-		beginMonth: 12,
-		beginYear: 2000,
-		endAreaId: areaId,
-		endDay: 10,
-		endMonth: 5,
-		endYear: 2012,
-		ended: true,
-		genderId: editorAttribs.genderId,
-		typeId: 1,
-		...optionalAuthorAttribs
-	};
-	await new Area({gid: uuidv4(), id: areaId, name: 'Rlyeh'})
+
+	const area = await new Area({gid: uuidv4(), name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
+
 	// Front-end requires 'Person' and 'Group' types
 	try {
 		await new AuthorType({id: 1, label: 'Person'})
@@ -348,6 +318,22 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 	catch (error) {
 		// Type already exists
 	}
+
+	const authorAttribs = {
+		bbid,
+		beginAreaId: area.id,
+		beginDay: 25,
+		beginMonth: 12,
+		beginYear: 2000,
+		endAreaId: area.id,
+		endDay: 10,
+		endMonth: 5,
+		endYear: 2012,
+		ended: true,
+		genderId: editorAttribs.genderId,
+		typeId: 1,
+		...optionalAuthorAttribs
+	};
 	const author = await new Author({...entityAttribs, ...authorAttribs})
 		.save(null, {method: 'insert'});
 	return author;
@@ -358,8 +344,33 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Publisher');
+
+	let area;
+	const optionalAreaAttribs = {};
+	if (!isNil(optionalPublisherAttribs.areaId)) {
+		optionalAreaAttribs.id = optionalPublisherAttribs.areaId;
+		area = await new Area({id: optionalPublisherAttribs.areaId})
+			.fetch({require: false});
+	}
+	if (!area) {
+		area = await new Area({gid: uuidv4(), name: `Area ${optionalPublisherAttribs.areaId || random.number()}`, ...optionalAreaAttribs})
+			.save(null, {method: 'insert'});
+	}
+
+	const optionalPublisherTypeAttribs = {};
+	let publisherType;
+	if (!isNil(optionalPublisherAttribs.typeId)) {
+		optionalPublisherTypeAttribs.id = optionalPublisherAttribs.typeId;
+		publisherType = await new PublisherType({id: optionalPublisherAttribs.typeId})
+			.fetch({require: false});
+	}
+	if (!publisherType) {
+		publisherType = await new PublisherType({label: `Publisher Type ${optionalPublisherAttribs.typeId || random.number()}`, ...optionalPublisherTypeAttribs})
+			.save(null, {method: 'insert'});
+	}
+
 	const publisherAttribs = {
-		areaId: random.number(),
+		areaId: area.id,
 		bbid,
 		beginDay: 25,
 		beginMonth: 12,
@@ -368,22 +379,9 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 		endMonth: 5,
 		endYear: 2012,
 		ended: true,
-		typeId: random.number(),
+		typeId: publisherType.id,
 		...optionalPublisherAttribs
 	};
-	const area = await new Area({id: publisherAttribs.areaId, name: `Area ${publisherAttribs.areaId}`})
-		.fetch({require: false});
-	if (!area) {
-		await new Area({gid: uuidv4(), id: publisherAttribs.areaId, name: `Area ${publisherAttribs.areaId}`})
-			.save(null, {method: 'insert'});
-	}
-
-	const publisherType = await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
-		.fetch({require: false});
-	if (!publisherType) {
-		await new PublisherType({id: publisherAttribs.typeId, label: `Publisher Type ${publisherAttribs.typeId}`})
-			.save(null, {method: 'insert'});
-	}
 	const publisher = await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});
 	return publisher;

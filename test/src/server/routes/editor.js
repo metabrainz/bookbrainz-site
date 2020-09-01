@@ -3,7 +3,6 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import {getEditorActivity} from '../../../../src/server/routes/editor.js';
 import orm from '../../../bookbrainz-data';
-import {random} from 'faker';
 
 /* eslint sort-keys: 0 */
 chai.use(chaiHttp);
@@ -40,7 +39,6 @@ describe('getEditorActivity', () => {
 		for (let i = 0; i < 12; i++) {
 			const tempDate = new Date();
 			tempDate.setFullYear(2020, i, 1);
-			revisionAttribs.id = random.number();
 			revisionAttribs.createdAt = tempDate;
 			revisionsPromiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
@@ -70,7 +68,6 @@ describe('getEditorActivity', () => {
 		for (let i = 0; i < 12; i += 2) {
 			const tempDate = new Date();
 			tempDate.setFullYear(2020, i, 1);
-			revisionAttribs.id = random.number();
 			revisionAttribs.createdAt = tempDate;
 			revisionsPromiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
