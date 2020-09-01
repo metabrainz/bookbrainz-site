@@ -1,5 +1,5 @@
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
-import {generateIndex, refreshIndex, searchByName} from '../../../../src/server/helpers/search';
+import {generateIndex, refreshIndex, searchByName} from '../../../../src/common/helpers/search';
 
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
