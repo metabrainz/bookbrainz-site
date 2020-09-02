@@ -103,7 +103,7 @@ class RegistrationForm extends React.Component {
 					editor. The following form allows you to specify
 					additional information that will let other users know
 					a little bit more about you. When you’re done, just
-					click the green button at the bottom of the page.
+					click the blue button at the bottom of the page.
 				</div>
 				<div className="row">
 					{loadingComponent}
