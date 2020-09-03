@@ -23,6 +23,7 @@ import * as React from 'react';
 import {Col, Panel, Row} from 'react-bootstrap';
 
 import AliasEditorMerge from './alias-editor/alias-editor-merge';
+import AnnotationSection from './annotation-section/annotation-section';
 import Entity from './common/entity';
 import EntityIdentifiers from '../components/pages/entities/identifiers';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -132,6 +133,7 @@ const EntityMerge = (props: Props) => {
 							/>
 						</Col>
 					</Row>
+					<AnnotationSection {...props}/>
 				</div>
 			</Panel.Body>
 			<Panel.Footer>

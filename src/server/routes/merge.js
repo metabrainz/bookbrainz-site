@@ -40,7 +40,7 @@ import targetTemplate from '../templates/target';
 
 const router = express.Router();
 
-function entitiesToFormState(entities) {
+function entitiesToFormState(entities: any[]) {
 	const [targetEntity, ...otherEntities] = entities;
 	const aliases = entities.reduce((returnValue, entity) => {
 		if (Array.isArray(_.get(entity, 'aliasSet.aliases'))) {
@@ -128,8 +128,17 @@ function entitiesToFormState(entities) {
 		};
 	});
 
+	const annotations = entities.reduce((returnValue, entity, index) => {
+		if (entity.annotation && entity.annotation.content) {
+			return `${returnValue}${index > 0 ? '\n——————\n' : ''}${entity.annotation.content}`;
+		}
+		return returnValue;
+	}, '');
+	const annotationSection = {content: annotations};
+
 	const props = {
 		aliasEditor,
+		annotationSection,
 		identifierEditor,
 		nameSection,
 		relationshipSection
