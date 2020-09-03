@@ -441,10 +441,12 @@ hr.wide {
 .annotation-content {
 	white-space: pre-wrap;
 	position: relative;
-	min-height: 7em;
+	min-height: 3em;
+	margin: 0;
 	&.collapse{
+		max-height: max-content;
 		&:not(.in){ //, &.collapsing {
-			height: 7em !important;
+			max-height: 3em;
 			overflow: hidden;
 			display: block;
 			&:after {
