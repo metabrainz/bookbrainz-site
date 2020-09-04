@@ -23,7 +23,6 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {$Request, $Response, NextFunction} from 'express';
-import Promise from 'bluebird';
 import _ from 'lodash';
 
 
