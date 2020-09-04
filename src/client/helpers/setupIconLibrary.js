@@ -41,9 +41,6 @@ library.add(
 	faCircleNotch, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
 	faExternalLinkAlt, faGlobe, faGripVertical, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
-	faCircleNotch, faCodeBranch, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
-	faExternalLinkAlt, faGlobe, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
-	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 );
