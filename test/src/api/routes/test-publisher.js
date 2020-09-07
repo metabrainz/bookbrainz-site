@@ -32,7 +32,6 @@ import {browsePublisherBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-import {random} from 'faker';
 
 
 const {PublisherSet, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
@@ -194,7 +193,7 @@ describe('Browse Publishers', () => {
 
 		// Now create a revision which forms the relationship b/w work and publishers
 		const editor = await createEditor();
-		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+		const revision = await new Revision({authorId: editor.get('id')})
 			.save(null, {method: 'insert'});
 
 		const relationshipTypeData = {
@@ -211,7 +210,6 @@ describe('Browse Publishers', () => {
 		const relationshipsPromise = [];
 		for (const publisherBBID of publisherBBIDs) {
 			const relationshipData = {
-				id: random.number(),
 				sourceBbid: work.get('bbid'),
 				targetBbid: publisherBBID,
 				typeId: relationshipTypeData.id
@@ -223,12 +221,12 @@ describe('Browse Publishers', () => {
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
-		const workRelationshipSet = await new RelationshipSet({id: random.number()})
+		const workRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then((model) => model.relationships().attach(relationships).then(() => model));
 
 		work.set('relationshipSetId', workRelationshipSet.get('id'));
-		work.set('revisionId', revision.get('id'));
+		work.set('revisionId', revision.id);
 		await work.save(null, {method: 'update'});
 	});
 	after(truncateEntities);
@@ -287,14 +285,14 @@ describe('Browse Publishers', () => {
 
 		// Now create a revision which forms the relationship b/w publisher and editions
 		const editor = await createEditor();
-		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+		const revision = await new Revision({authorId: editor.get('id')})
 			.save(null, {method: 'insert'});
-		const publisherSet = await new PublisherSet({id: random.number()})
+		const publisherSet = await new PublisherSet()
 			.save(null, {method: 'insert'})
 			.then((model) => model.publishers().attach(publishers).then(() => model));
 
 		edition.set('publisherSetId', publisherSet.get('id'));
-		edition.set('revisionId', revision.get('id'));
+		edition.set('revisionId', revision.id);
 		await edition.save(null, {method: 'update'});
 
 		const res = await chai.request(app).get(`/publisher?edition=${edition.get('bbid')}`);
