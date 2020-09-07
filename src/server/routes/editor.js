@@ -18,6 +18,7 @@
  */
 
 import * as auth from '../helpers/auth';
+import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
@@ -26,6 +27,7 @@ import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
+import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
@@ -35,6 +37,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
+import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
@@ -368,7 +371,6 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	}
 });
 
-
 function setAchievementUnlockedField(achievements, unlockIds) {
 	const model = achievements.map((achievementType) => {
 		const achievementJSON = achievementType.toJSON();
@@ -504,6 +506,81 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 				return rankJSON;
 			});
 	handler.sendPromiseResult(res, rankPromise);
+});
+
+
+// eslint-disable-next-line consistent-return
+router.get('/:id/collections', async (req, res, next) => {
+	const {Editor, TitleUnlock} = req.app.locals.orm;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	let type = req.query.type ? req.query.type : null;
+	const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
+	if (!entityTypes.includes(type) && type !== null) {
+		throw new error.BadRequestError(`Type ${type} do not exist`);
+	}
+
+	try {
+		// fetch 1 more collections than required to check nextEnabled
+		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
+		const editor = await new Editor({id: req.params.id}).fetch();
+		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
+
+		const props = generateProps(req, res, {
+			editor: editorJSON,
+			entityTypes,
+			from,
+			nextEnabled,
+			results: newResultsArray,
+			showIfOwnerOrCollaborator: true,
+			showPrivacy: true,
+			size,
+			tabActive: 3,
+			tableHeading: 'Collections'
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<CollectionsPage
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
+
+		res.send(target({
+			markup,
+			page: 'collections',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Collections`
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
+});
+
+// eslint-disable-next-line consistent-return
+router.get('/:id/collections/collections', async (req, res, next) => {
+	try {
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		let type = req.query.type ? req.query.type : null;
+		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
+		if (!entityTypes.includes(type) && type !== null) {
+			throw new error.BadRequestError(`Type ${type} do not exist`);
+		}
+
+		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size, type, req);
+		res.send(orderedCollections);
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 export default router;

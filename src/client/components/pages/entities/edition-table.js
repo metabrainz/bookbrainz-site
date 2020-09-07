@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import * as utilHelper from '../../../helpers/utils';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -31,16 +32,28 @@ const {
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
-function EditionTableRow({edition}) {
+function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
 	const releaseDate = getEditionReleaseDate(edition);
 	const isbn = getISBNOfEdition(edition);
 	const editionFormat = getEditionFormat(edition);
+	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(edition.addedAt), true) : null;
 
+	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
 			<td>
+				{
+					showCheckboxes ?
+						<input
+							checked={selectedEntities.find(bbid => bbid === edition.bbid)}
+							className="checkboxes"
+							id={edition.bbid}
+							type="checkbox"
+							onClick={() => onToggleRow(edition.bbid)}
+						/> : null
+				}
 				<a href={`/edition/${edition.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
@@ -60,15 +73,25 @@ function EditionTableRow({edition}) {
 			<td>
 				{releaseDate}
 			</td>
+			{showAddedAtColumn ? <td>{addedAt}</td> : null}
 		</tr>
 	);
 }
 EditionTableRow.displayName = 'EditionTableRow';
 EditionTableRow.propTypes = {
-	edition: PropTypes.object.isRequired
+	edition: PropTypes.object.isRequired,
+	onToggleRow: PropTypes.func,
+	selectedEntities: PropTypes.array,
+	showAddedAtColumn: PropTypes.bool.isRequired,
+	showCheckboxes: PropTypes.bool
+};
+EditionTableRow.defaultProps = {
+	onToggleRow: null,
+	selectedEntities: [],
+	showCheckboxes: false
 };
 
-function EditionTable({editions, entity, showAdd}) {
+function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -80,6 +103,9 @@ function EditionTable({editions, entity, showAdd}) {
 							<th>Format</th>
 							<th>ISBN</th>
 							<th>Release Date</th>
+							{
+								showAddedAtColumn ? <th>Added at</th> : null
+							}
 						</tr>
 					</thead>
 					<tbody>
@@ -88,6 +114,10 @@ function EditionTable({editions, entity, showAdd}) {
 								<EditionTableRow
 									edition={edition}
 									key={edition.bbid}
+									selectedEntities={selectedEntities}
+									showAddedAtColumn={showAddedAtColumn}
+									showCheckboxes={showCheckboxes}
+									onToggleRow={onToggleRow}
 								/>
 							))
 						}
@@ -103,7 +133,6 @@ function EditionTable({editions, entity, showAdd}) {
 						{'  Add Edition'}
 					</Button>
 				}
-				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}
@@ -145,11 +174,20 @@ function EditionTable({editions, entity, showAdd}) {
 EditionTable.displayName = 'EditionTable';
 EditionTable.propTypes = {
 	editions: PropTypes.array.isRequired,
-	entity: PropTypes.object.isRequired,
-	showAdd: PropTypes.bool
+	entity: PropTypes.object,
+	onToggleRow: PropTypes.func,
+	selectedEntities: PropTypes.array,
+	showAdd: PropTypes.bool,
+	showAddedAtColumn: PropTypes.bool,
+	showCheckboxes: PropTypes.bool
 };
 EditionTable.defaultProps = {
-	showAdd: true
+	entity: null,
+	onToggleRow: null,
+	selectedEntities: [],
+	showAdd: true,
+	showAddedAtColumn: false,
+	showCheckboxes: false
 };
 
 export default EditionTable;

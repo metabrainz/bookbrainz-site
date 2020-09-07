@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015  Ohm Patel
+ * Copyright (C) 2020 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +18,18 @@
 
 import {extractChildProps, extractLayoutProps} from '../helpers/props';
 import {AppContainer} from 'react-hot-loader';
+import CollectionsPage from '../components/pages/collections';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import SearchPage from '../components/pages/search';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
-
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<SearchPage
-				user={props.user}
-				{...extractChildProps(props)}
-			/>
+			<CollectionsPage {...extractChildProps(props)}/>
 		</Layout>
 	</AppContainer>
 );
