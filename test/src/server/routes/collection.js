@@ -570,6 +570,7 @@ describe('POST /collection/collectionID/delete', () => {
 		await generateIndex(orm);
 		const oldResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
+		await new Promise(resolve => setTimeout(resolve, 500));
 		await refreshIndex();
 		const newResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
 		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
