@@ -1,7 +1,6 @@
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
 import {generateIndex, refreshIndex, searchByName} from '../../../../src/common/helpers/search';
 
-import _ from 'lodash';
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
@@ -72,7 +71,7 @@ describe('POST /collection/create', () => {
 		expect(collection.get('id')).to.equal(res.body.id);
 		expect(collection.get('ownerId')).to.equal(collectionOwner.get('id'));
 		expect(collection.get('name')).to.equal(data.name);
-		expect(collection.get('entityType')).to.equal(_.upperFirst(_.camelCase(data.entityType)));
+		expect(collection.get('entityType')).to.equal('EditionGroup');
 		expect(collection.get('description')).to.equal(data.description);
 		expect(collection.get('public')).to.equal(true);
 		expect(res.status).to.equal(200);
@@ -254,7 +253,7 @@ describe('POST collection/edit', () => {
 
 		expect(res.status).to.equal(200);
 		expect(updatedCollectionJSON.name).to.equal(newData.name);
-		expect(updatedCollectionJSON.entityType).to.equal(_.upperFirst(_.camelCase(newData.entityType)));
+		expect(updatedCollectionJSON.entityType).to.equal('EditionGroup');
 		expect(updatedCollectionJSON.description).to.equal(newData.description);
 		expect(updatedCollectionJSON.collaborators.length).to.equal(1);
 		expect(updatedCollectionJSON.collaborators[0].collaboratorId).to.equal(newCollaborator.get('id'));
