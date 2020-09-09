@@ -70,7 +70,7 @@ function AboutPage() {
 			</p>
 			<p>
 				Regular database dumps (Postgres) can be found
-				<a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2"> at this address.</a>
+				<a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.tar.gz"> at this address.</a>
 			</p>
 			<p>
 				We also have a webservice (or API) under development with

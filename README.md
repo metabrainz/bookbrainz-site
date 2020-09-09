@@ -123,7 +123,7 @@ database dump.
 Luckily, we have a script that does just that: from the command line, in the `bookbrainz-site` folder, type and run `./scripts/database-init-docker.sh`.
 The process may take a while as Docker downloads and builds the images. Let that run until the command returns.
 
-The latest database dump can be found [at this address](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2)
+The latest database dump can be found [at this address](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.tar.gz) and contains two files: a main database dump file and a separate one for public user collections.
 
 ## Running the web server
 

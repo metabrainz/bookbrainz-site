@@ -6,12 +6,12 @@
 
         `sudo apt update`
 	
-	2. Error: `Can't open input file latest.sql.bz2: No such file or directory` 
-	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `bzip2 -d  	latest.sql.bz2` doesn’t work and gives the above error. 
+	2. Error: `Can't open input file latest.tar.gz: No such file or directory`
+	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `tar -xf  	latest.tar.gz` doesn’t work and gives the above error.
 	
-	    It can be solved by giving the actual path of the latest.sql.bz2 file in place of the file name such as:
+	    It can be solved by giving the actual path of the latest.tar.gz file in place of the file name such as:
 	
-        `/ home/user/Desktop/latest.sql.bz2`
+        `/home/user/Desktop/latest.tar.gz`
   
 	3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command. 
 At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
@@ -21,7 +21,7 @@ At this point, you should check your internet connection. If it persists, make s
 
 * ElasticSearch
 
-    1. ElasticSearch requires runtime Java installed on your local machine, 
+    1. ElasticSearch requires runtime Java installed on your local machine,
 	so you have to install it by
 	
 	    For ubuntu users
@@ -32,11 +32,11 @@ At this point, you should check your internet connection. If it persists, make s
 
         `java -version`
 
-    2. When you run ElasticSearch, it seems that the process takes a very long time. 
+    2. When you run ElasticSearch, it seems that the process takes a very long time.
 	To proceed the process, just let ElasticSearch to run
     on its own terminal, and proceed the building process by making another window of terminal
 
-	3. If you run into an error on Docker Toolbox with Elastic Search stating an error message along the lines of:  
+	3. If you run into an error on Docker Toolbox with Elastic Search stating an error message along the lines of:
 	
 		`Waiting for elasticsearch:9200  .elasticsearch: forward host lookup failed: Unknown host`  
 		
@@ -52,12 +52,13 @@ At this point, you should check your internet connection. If it persists, make s
 	   
 	   ```
 	   # There is insufficient memory for the Java Runtime Environment to continue. 
+	   # There is insufficient memory for the Java Runtime Environment to continue.
 	   # Native memory allocation (mmap) failed to map 2060255232 bytes for committing reserved memory.
 	   ```
 	     
 	   Please try recreating the default docker machine by:
 	   
-	   		i. Remove default docker-machine with the command:  
+	   		i. Remove default docker-machine with the command:
 			
 				`docker-machine rm default`  
 				
@@ -65,13 +66,12 @@ At this point, you should check your internet connection. If it persists, make s
 			
 				```
 				docker-machine create -d virtualbox --virtualbox-cpu-count=2 --virtualbox-memory=4096 --virtualbox-disk-size=50000 default
-				```  
-			iii. Restart your docker environment with the commands: 
+				```
 			
 				```
 				docker-machine stop
 				exit
-				```  
+				```
 
     4. To check if port is already is in use or not run
     `netstat -anp tcp | grep <port-number>`
@@ -85,7 +85,7 @@ At this point, you should check your internet connection. If it persists, make s
         `/etc/init.d/redis-server stop`
 
     2. Sometimes the port 6379 on which redis server runs is used by TCP. So to terminate this process run
-        `sudo kill sudo 'lsof -t -i:5432'` 
+        `sudo kill sudo 'lsof -t -i:5432'`
 
 * PostgreSQL
 
@@ -94,7 +94,7 @@ At this point, you should check your internet connection. If it persists, make s
 
         `sudo -u postgres psql`
 
-        then 
+        then
         ```
         psql (12.3)
         Type "help" for help.
@@ -109,7 +109,7 @@ At this point, you should check your internet connection. If it persists, make s
 
         then
 
-        `Password for user <username>: ` 
+        `Password for user <username>: `
 	
 	    will appear.
         Use the username for the config later on config.json.
