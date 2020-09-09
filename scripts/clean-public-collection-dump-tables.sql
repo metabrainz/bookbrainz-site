@@ -1,0 +1,3 @@
+DROP TABLE public_user_collection;
+DROP TABLE public_user_collection_item;
+DROP TABLE public_user_collection_collaborator;
