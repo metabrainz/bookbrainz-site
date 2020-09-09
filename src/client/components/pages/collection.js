@@ -133,7 +133,7 @@ class CollectionPage extends React.Component {
 		};
 
 		this.entityKey = getEntityKey(this.props.collection.entityType);
-		this.paginationUrl = `/collection/${this.props.collection.id}/paginate?q=`;
+		this.paginationUrl = `/collection/${this.props.collection.id}/paginate`;
 		this.toggleRow = this.toggleRow.bind(this);
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 		this.handleShowDeleteModal = this.handleShowDeleteModal.bind(this);

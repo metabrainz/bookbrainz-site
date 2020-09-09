@@ -26,12 +26,13 @@ class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			querySearchParams: '',
 			results: this.props.results
 		};
 
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './collections/collections?q=';
+		this.paginationUrl = './collections/collections';
 	}
 
 	searchResultsCallback(newResults) {
@@ -39,8 +40,8 @@ class CollectionsPage extends React.Component {
 	}
 
 	handleTypeChange(type) {
-		const query = type ? `&type=${type}` : '';
-		this.setState({query});
+		const querySearchParams = type ? `type=${type}` : '';
+		this.setState({querySearchParams});
 	}
 
 	render() {
@@ -60,7 +61,7 @@ class CollectionsPage extends React.Component {
 					from={this.props.from}
 					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
-					query={this.state.query}
+					querySearchParams={this.state.querySearchParams}
 					results={this.state.results}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.size}
