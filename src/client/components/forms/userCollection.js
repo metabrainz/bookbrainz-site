@@ -161,8 +161,14 @@ class UserCollectionForm extends React.Component {
 		}));
 		const initialName = this.state.collection.name;
 		const initialDescription = this.state.collection.description;
-		const initialPrivacy = this.state.collection.public ? 'Public' : 'Private';
 		const initialType = this.state.collection.entityType;
+		let initialPrivacy;
+		if (this.props.collection.name) {
+			initialPrivacy = this.state.collection.public ? 'Public' : 'Private';
+		}
+		else {
+			initialPrivacy = 'Public';
+		}
 		const {errorText} = this.state;
 		const errorAlertClass = classNames('text-center', 'margin-top-1', {hidden: !errorText});
 		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
