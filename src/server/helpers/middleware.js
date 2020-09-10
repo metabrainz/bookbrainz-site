@@ -215,7 +215,7 @@ export async function validateCollectionParams(req, res, next) {
 		return next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req));
 	}
 	const entityTypes = _.keys(commonUtils.getEntityModels(orm));
-	if (!entityTypes.includes(entityType)) {
+	if (!entityTypes.includes(_.upperFirst(_.camelCase(entityType)))) {
 		return next(new error.BadRequestError(`Invalid entity type: ${entityType} does not exist`, req));
 	}
 	const collaboratorIds = collaborators.map(collaborator => collaborator.id);

@@ -58,6 +58,25 @@ describe('POST /collection/create', () => {
 		expect(res.status).to.equal(200);
 	});
 
+	it('should correctly create Edition-Group collection and return with status code 200 for correct data', async () => {
+		const data = {
+			description: 'some description',
+			entityType: 'Edition-Group',
+			name: 'collectionName',
+			privacy: 'public'
+		};
+		const res = await agent.post('/collection/create/handler').send(data);
+		const collection = await new UserCollection({id: res.body.id}).fetch();
+
+		expect(collection.get('id')).to.equal(res.body.id);
+		expect(collection.get('ownerId')).to.equal(collectionOwner.get('id'));
+		expect(collection.get('name')).to.equal(data.name);
+		expect(collection.get('entityType')).to.equal('EditionGroup');
+		expect(collection.get('description')).to.equal(data.description);
+		expect(collection.get('public')).to.equal(true);
+		expect(res.status).to.equal(200);
+	});
+
 	it('should add the collection in the ES index', async () => {
 		const data = {
 			description: 'some description1234',
@@ -213,6 +232,28 @@ describe('POST collection/edit', () => {
 		expect(res.status).to.equal(200);
 		expect(updatedCollectionJSON.name).to.equal(newData.name);
 		expect(updatedCollectionJSON.entityType).to.equal(newData.entityType);
+		expect(updatedCollectionJSON.description).to.equal(newData.description);
+		expect(updatedCollectionJSON.collaborators.length).to.equal(1);
+		expect(updatedCollectionJSON.collaborators[0].collaboratorId).to.equal(newCollaborator.get('id'));
+	});
+
+	it('should correctly update the collection to Edition-Group type and return 200 status code', async () => {
+		const newCollaborator = await createEditor();
+		const newData = {
+			collaborators: [newCollaborator.toJSON()],
+			description: 'new description',
+			entityType: 'Edition-Group',
+			name: 'new collection name',
+			privacy: 'private'
+		};
+
+		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
+		const updatedCollection = await new UserCollection({id: collectionJSON.id}).fetch({withRelated: ['collaborators']});
+		const updatedCollectionJSON = updatedCollection.toJSON();
+
+		expect(res.status).to.equal(200);
+		expect(updatedCollectionJSON.name).to.equal(newData.name);
+		expect(updatedCollectionJSON.entityType).to.equal('EditionGroup');
 		expect(updatedCollectionJSON.description).to.equal(newData.description);
 		expect(updatedCollectionJSON.collaborators.length).to.equal(1);
 		expect(updatedCollectionJSON.collaborators[0].collaboratorId).to.equal(newCollaborator.get('id'));
