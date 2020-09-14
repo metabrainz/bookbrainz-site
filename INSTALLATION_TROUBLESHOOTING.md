@@ -1,19 +1,19 @@
-# Installation Troubleshooting (along with some tips and tricks) 
+# Installation Troubleshooting (along with some tips and tricks)
 
 * General
 
-    1. It's better for you if you do some package catalog update by 
+    1. It's better for you if you do some package catalog update by
 
         `sudo apt update`
 	
-	2. Error: `Can't open input file latest.tar.gz: No such file or directory`
-	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `tar -xf  	latest.tar.gz` doesn’t work and gives the above error.
+	2. Error: `Can't open input file latest.sql.bz2: No such file or directory`
+	After downloading the data dumps, you may realize that an attempt to uncompress it using the command `bzip2 -d  	latest.sql.bz2` doesn’t work and gives the above error.
 	
-	    It can be solved by giving the actual path of the latest.tar.gz file in place of the file name such as:
+	    It can be solved by giving the actual path of the latest.sql.bz2 file in place of the file name such as:
 	
-        `/home/user/Desktop/latest.tar.gz`
+        `/home/user/Desktop/latest.sql.bz2`
   
-	3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command. 
+	3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command.
 At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
 
 	4. There are no css styles! My local page does not look like bookbrainz.org at all !
@@ -38,20 +38,19 @@ At this point, you should check your internet connection. If it persists, make s
 
 	3. If you run into an error on Docker Toolbox with Elastic Search stating an error message along the lines of:
 	
-		`Waiting for elasticsearch:9200  .elasticsearch: forward host lookup failed: Unknown host`  
+		`Waiting for elasticsearch:9200  .elasticsearch: forward host lookup failed: Unknown host`
 		
-	   The cause could be the docker-machine's memory limits. you can inspect this with the command:  
+	   The cause could be the docker-machine's memory limits. you can inspect this with the command:
 	   
-	   `docker-machine inspect machine-name`  
+	   `docker-machine inspect machine-name`
 	   
-	   To diagnose this problem, try taking a look at the logs with the command: 
+	   To diagnose this problem, try taking a look at the logs with the command:
 	   
-	   `docker-compose logs elasticsearch`  
+	   `docker-compose logs elasticsearch`
 	     
-	   And if you see an error within the logs along the lines of:   
+	   And if you see an error within the logs along the lines of:
 	   
 	   ```
-	   # There is insufficient memory for the Java Runtime Environment to continue. 
 	   # There is insufficient memory for the Java Runtime Environment to continue.
 	   # Native memory allocation (mmap) failed to map 2060255232 bytes for committing reserved memory.
 	   ```
@@ -60,13 +59,14 @@ At this point, you should check your internet connection. If it persists, make s
 	   
 	   		i. Remove default docker-machine with the command:
 			
-				`docker-machine rm default`  
+				`docker-machine rm default`
 				
-			ii. Create a new default machine with the command:   
+			ii. Create a new default machine with the command:
 			
 				```
 				docker-machine create -d virtualbox --virtualbox-cpu-count=2 --virtualbox-memory=4096 --virtualbox-disk-size=50000 default
 				```
+			iii. Restart your docker environment with the commands:
 			
 				```
 				docker-machine stop

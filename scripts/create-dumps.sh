@@ -44,8 +44,11 @@ pg_dump\
 	-t public_user_collection_collaborator\
 	--serializable-deferrable\
 	bookbrainz \
-	| sed 's/public_user_collection/user_collection/' > /tmp/$COLLECTIONS_DUMP_FILE
+	> /tmp/$COLLECTIONS_DUMP_FILE
 echo "Public collections dump created!"
+
+echo "Concatenating dump files"
+sed 's/[pP]ublic_user_collection/user_collection/g' /tmp/$COLLECTIONS_DUMP_FILE >> /tmp/$DUMP_FILE
 
 echo "Cleaning up temporary public collections tables"
 psql\
@@ -53,29 +56,29 @@ psql\
 	-p $POSTGRES_PORT \
 	-U bookbrainz \
 	bookbrainz < /home/bookbrainz/bookbrainz-site/scripts/clean-public-collection-dump-tables.sql
+rm /tmp/$COLLECTIONS_DUMP_FILE
 echo "Temporary public collections tables removed"
 
-
-# Compress new backups and move to dump dir
-echo "Combining and compressing..."
-rm -f /tmp/$DUMP_FILE.tar.gz
-tar -czvf /tmp/$DUMP_FILE.tar.gz /tmp/$DUMP_FILE /tmp/$COLLECTIONS_DUMP_FILE
-mv /tmp/$DUMP_FILE.tar.gz .
+# Compress new backup and move to dump dir
+echo "Compressing..."
+rm -f /tmp/$DUMP_FILE.bz2
+bzip2 /tmp/$DUMP_FILE
+mv /tmp/$DUMP_FILE.bz2 .
 echo "Compressed!"
 
 echo "Removing old dumps..."
 rm -f /tmp/*.sql
 # Remove backups older than 8 days
-find ./ -name '*.tar.gz' -type f -mtime +7 -print | xargs /bin/rm -f
+find ./ -name '*.sql.bz2' -type f -mtime +7 -print | xargs /bin/rm -f
 echo "Done!"
 
-rm -f latest.tar.gz
-ln -s $DUMP_FILE.tar.gz latest.tar.gz
+rm -f latest.sql.bz2
+ln -s $DUMP_FILE.bz2 latest.sql.bz2
 
 # Generate hashes
 echo "Generating hashes..."
-md5sum *.sql.tar.gz > MD5SUMS
-sha256sum *.sql.tar.gz > SHA256SUMS
+md5sum *.sql.bz2 > MD5SUMS
+sha256sum *.sql.bz2 > SHA256SUMS
 echo "Done!"
 
 chown bookbrainz:bookbrainz ./*

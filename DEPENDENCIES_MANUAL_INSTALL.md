@@ -44,26 +44,22 @@ No setup is required for Redis or Elasticsearch. However, it is necessary to
 perform some initialization for PostgreSQL and import the latest BookBrainz
 database dump.
 
-Firstly, begin downloading the [latest BookBrainz dump](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.tar.gz).
+First, begin downloading the [latest BookBrainz dump](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2).
 
-Then, unzip the `latest.tar.gz` file, using the `tar` command (on unix systems):
+Then, uncompress the `latest.sql.bz2` file, using the bzip2 command:
 
-    tar -xf latest.tar.gz
+    bzip2 -d latest.sql.bz2
 
-This will give you two files that you can restore into PostgreSQL, which will
+This will give you a file that you can restore into PostgreSQL, which will
 set up data identical to the data we have on the bookbrainz.org website. First, you must create the necessary role and database with these two commands:
 
-	psql -h localhost -U postgres --command="CREATE ROLE bookbrainz"
+	psql -h localhost -U postgres --command="CREATE ROLE bookbrainz"	
 	psql -h localhost -U postgres --command="CREATE DATABASE bookbrainz"
 
 Then you can restore the database from the lates dump you dowloaded. To do
-this, run (replace [DATE] for the corresponding file name):
+this, run:
 
-    psql -h localhost -U postgres -d bookbrainz -f bookbrainz-dump-[DATE].sql
-
-The user collections are imported separately (to ensure we do'nt export private colelctions). Run this command to import them:
-
-    psql -h localhost -U postgres -d bookbrainz -f bookbrainz-public-collections-dump-[DATE].sql
+    psql -h localhost -U postgres -d bookbrainz -f latest.sql
 
 At this point, the database is set up, and the following command should give
 you a list of usernames of BookBrainz editors (after entering the password from
