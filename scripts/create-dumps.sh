@@ -39,9 +39,9 @@ pg_dump\
 	-h $POSTGRES_HOST \
 	-p $POSTGRES_PORT \
 	-U bookbrainz \
-	-t public_user_collection\
-	-t public_user_collection_item\
-	-t public_user_collection_collaborator\
+	-t tmp_public_user_collection\
+	-t tmp_public_user_collection_item\
+	-t tmp_public_user_collection_collaborator\
 	--serializable-deferrable\
 	bookbrainz \
 	> /tmp/$COLLECTIONS_DUMP_FILE
