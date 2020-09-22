@@ -18,6 +18,7 @@
 
 // @flow
 
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import type {RelationshipType, Entity as _Entity} from './types';
 import Entity from '../common/entity';
 import React from 'react';
@@ -49,7 +50,7 @@ type RelationshipProps = {
 function Relationship({
 	contextEntity, link, relationshipType, sourceEntity, targetEntity
 }: RelationshipProps) {
-	const {linkPhrase, reverseLinkPhrase} = relationshipType;
+	const {description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
 		(_.get(contextEntity, 'bbid') === _.get(targetEntity, 'bbid'));
@@ -64,11 +65,17 @@ function Relationship({
 	const usedLinkPhrase = reversed ? reverseLinkPhrase : linkPhrase;
 
 	return (
-		<div>
-			<Entity {...sourceObject}/>
-			{` ${usedLinkPhrase} `}
-			<Entity {...targetObject}/>
-		</div>
+		<OverlayTrigger
+			delayShow={50}
+			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
+			placement="bottom"
+		>
+			<div aria-label={description}>
+				<Entity {...sourceObject}/>
+				{` ${usedLinkPhrase} `}
+				<Entity {...targetObject}/>
+			</div>
+		</OverlayTrigger>
 	);
 }
 Relationship.displayName = 'Relationship';

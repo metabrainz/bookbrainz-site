@@ -23,6 +23,7 @@ import {
 	Col,
 	ControlLabel,
 	FormGroup,
+	HelpBlock,
 	Modal,
 	ProgressBar,
 	Row
@@ -301,6 +302,9 @@ class RelationshipModal
 					valueRenderer={Relationship}
 					onChange={this.handleRelationshipTypeChange}
 				/>
+				{this.state.relationshipType &&
+					<HelpBlock>{this.state.relationshipType.description}</HelpBlock>
+				}
 			</FormGroup>
 		);
 	}
