@@ -50,7 +50,7 @@ type RelationshipProps = {
 function Relationship({
 	contextEntity, link, relationshipType, sourceEntity, targetEntity
 }: RelationshipProps) {
-	const {description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
+	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
 		(_.get(contextEntity, 'bbid') === _.get(targetEntity, 'bbid'));
@@ -64,13 +64,19 @@ function Relationship({
 
 	const usedLinkPhrase = reversed ? reverseLinkPhrase : linkPhrase;
 
+	// If there is a depth structure, indent accordingly by setting a margin on the left
+	let indentationClass = '';
+	if (typeof depth !== 'undefined') {
+		indentationClass = `margin-left-d${8 * depth}`;
+	}
+
 	return (
 		<OverlayTrigger
 			delayShow={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>
-			<div aria-label={description}>
+			<div aria-label={description} className={indentationClass}>
 				<Entity {...sourceObject}/>
 				{` ${usedLinkPhrase} `}
 				<Entity {...targetObject}/>

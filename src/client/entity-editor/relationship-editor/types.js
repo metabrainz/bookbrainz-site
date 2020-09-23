@@ -32,6 +32,7 @@ export type RelationshipType = {
 	id: number,
 	childOrder: number,
 	deprecated: boolean,
+	depth?: number,
 	description: string,
 	label: string,
 	linkPhrase: string,

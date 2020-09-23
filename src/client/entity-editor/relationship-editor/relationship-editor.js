@@ -82,7 +82,35 @@ function generateRelationshipSelection(
 		...reverseRelationships
 	];
 
-	return candidateRelationships.filter(isValidRelationship);
+	const validRels = candidateRelationships.filter(isValidRelationship);
+	if (!validRels.length) {
+		return validRels;
+	}
+	// Sort by parentId childOrder then group by parentId
+	const groupBy = _.groupBy(
+		_.sortBy(validRels, [
+			'relationshipType.parentId',
+			'relationshipType.childOrder',
+			'relationshipType.id'
+		]),
+		'relationshipType.parentId'
+	);
+
+	// Make level 0 (parentId = null) the base of a new sortedArray
+	const sortedArray = _.get(groupBy, 'null');
+	sortedArray.forEach(rootRel => rootRel.relationshipType.depth = 0);
+	delete groupBy.null;
+
+	// Iterate over the remaining elements to place after their parent and set their depth accordingly
+	_.forEach(groupBy, (group, parentId) => {
+		// Find the parent root in the sortedArray and insert its children after it
+		const parentIndex = _.findIndex(sortedArray, ['relationshipType.id', Number(parentId)]);
+		group.forEach(rel => rel.relationshipType.depth = sortedArray[parentIndex].relationshipType.depth + 1);
+		// Insert the group after its parent
+		sortedArray.splice(parentIndex + 1, 0, ...group);
+	});
+
+	return sortedArray;
 }
 
 function getValidOtherEntityTypes(
