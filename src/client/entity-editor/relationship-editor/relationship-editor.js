@@ -310,6 +310,7 @@ class RelationshipModal
 			defaultAlias: {
 				name: _.get(this.state, ['targetEntity', 'text'])
 			},
+			disambiguation: _.get(this.state, ['targetEntity', 'disambiguation']),
 			type: _.get(this.state, ['targetEntity', 'type'])
 		};
 

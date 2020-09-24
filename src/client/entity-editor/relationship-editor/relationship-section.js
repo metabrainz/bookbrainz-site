@@ -151,6 +151,7 @@ function RelationshipSection({
 		defaultAlias: {
 			name: entityName
 		},
+		disambiguation: _.get(entity, ['disambiguation', 'comment']),
 		type: _.upperFirst(entityType)
 	};
 
