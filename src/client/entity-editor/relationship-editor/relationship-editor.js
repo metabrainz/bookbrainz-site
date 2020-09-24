@@ -43,6 +43,7 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
+import {getEntityLink} from '../../../server/helpers/utils';
 
 
 function isValidRelationship(relationship: _Relationship) {
@@ -97,20 +98,20 @@ function generateRelationshipSelection(
 	);
 
 	// Make level 0 (parentId = null) the base of a new sortedArray
-	const sortedArray = _.get(groupBy, 'null');
-	sortedArray.forEach(rootRel => rootRel.relationshipType.depth = 0);
+	const sortedRelationships = _.get(groupBy, 'null');
+	sortedRelationships.forEach(rootRel => rootRel.relationshipType.depth = 0);
 	delete groupBy.null;
 
 	// Iterate over the remaining elements to place after their parent and set their depth accordingly
 	_.forEach(groupBy, (group, parentId) => {
 		// Find the parent root in the sortedArray and insert its children after it
-		const parentIndex = _.findIndex(sortedArray, ['relationshipType.id', Number(parentId)]);
-		group.forEach(rel => rel.relationshipType.depth = sortedArray[parentIndex].relationshipType.depth + 1);
+		const parentIndex = _.findIndex(sortedRelationships, ['relationshipType.id', Number(parentId)]);
+		group.forEach(rel => rel.relationshipType.depth = sortedRelationships[parentIndex].relationshipType.depth + 1);
 		// Insert the group after its parent
-		sortedArray.splice(parentIndex + 1, 0, ...group);
+		sortedRelationships.splice(parentIndex + 1, 0, ...group);
 	});
 
-	return sortedArray;
+	return sortedRelationships;
 }
 
 function getValidOtherEntityTypes(
@@ -278,6 +279,7 @@ class RelationshipModal
 
 	renderEntitySelect() {
 		const {baseEntity, relationshipTypes} = this.props;
+		const {targetEntity} = this.state;
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
 		if (!types.length) {
 			return null;
@@ -288,8 +290,22 @@ class RelationshipModal
 		const label =
 			`Other Entity (${otherTypes.length ? `${otherTypes} or ` : ''}${lastType})`;
 
+		const link = targetEntity ? getEntityLink({bbid: targetEntity.id, type: targetEntity.type}) : '';
+		const openButton = (
+			<Button
+				bsStyle="info"
+				disabled={!targetEntity}
+				href={link}
+				rel="noreferrer noopener"
+				target="_blank"
+			>
+				<FontAwesomeIcon icon="external-link-alt"/>
+			</Button>
+		);
+
 		return (
 			<EntitySearchFieldOption
+				buttonAfter={openButton}
 				cache={false}
 				instanceId="relationshipEntitySearchField"
 				label={label}
