@@ -29,7 +29,10 @@ import {getEntityLink} from '../../../server/helpers/utils';
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 	const link = makeLink && entity.bbid &&
 		getEntityLink({bbid: entity.bbid, type: entity.type});
-	const disambiguation = _.get(entity, ['disambiguation']);
+	let disambiguation = _.get(entity, ['disambiguation']);
+	if (_.has(disambiguation, 'comment')) {
+		disambiguation = disambiguation.comment;
+	}
 	return {
 		disambiguation,
 		link,
