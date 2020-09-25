@@ -298,6 +298,7 @@ class RelationshipModal
 				href={link}
 				rel="noreferrer noopener"
 				target="_blank"
+				title="Open in a new tab"
 			>
 				<FontAwesomeIcon icon="external-link-alt"/>
 			</Button>
