@@ -130,7 +130,7 @@ function entitiesToFormState(entities: any[]) {
 
 	const annotations = entities.reduce((returnValue, entity, index) => {
 		if (entity.annotation && entity.annotation.content) {
-			return `${returnValue}${index > 0 ? '\n——————\n' : ''}${entity.annotation.content}`;
+			return `${returnValue}${returnValue ? '\n——————\n' : ''}${entity.annotation.content}`;
 		}
 		return returnValue;
 	}, '');
