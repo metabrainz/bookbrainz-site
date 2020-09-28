@@ -257,6 +257,10 @@ export async function generateIndex(orm) {
 							}
 						},
 						type: 'object'
+					},
+					'disambiguation.comment': {
+						analyzer: 'trigrams',
+						type: 'text'
 					}
 				}
 			}
@@ -461,23 +465,15 @@ export function searchByName(orm, name, type, size, from) {
 		body: {
 			from,
 			query: {
-				bool: {
-					must: {
-						match: {
-							'aliasSet.aliases.name.search': {
-								minimum_should_match: '75%',
-								query: name
-							}
-						}
-					},
-					should: {
-						match: {
-							'aliasSet.aliases.name': {
-								boost: 1.3, // eslint-disable-line max-len,no-magic-numbers
-								query: name
-							}
-						}
-					}
+				multi_match: {
+					fields: [
+						'aliasSet.aliases.name^3',
+						'aliasSet.aliases.name.search',
+						'disambiguation.comment'
+					],
+					minimum_should_match: '80%',
+					query: name,
+					type: 'cross_fields'
 				}
 			},
 			size
