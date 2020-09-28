@@ -121,7 +121,7 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 		</div>
 	);
 }
-AuthorTable.displayName = 'WorkTable';
+AuthorTable.displayName = 'AuthorTable';
 AuthorTable.propTypes = {
 	authors: PropTypes.array.isRequired,
 	onToggleRow: PropTypes.func,
