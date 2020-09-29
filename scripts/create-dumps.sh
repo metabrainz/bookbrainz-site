@@ -8,11 +8,22 @@ source /home/bookbrainz/bookbrainz-site/scripts/config.sh
 pushd /home/bookbrainz/data/dumps
 
 
+PRIVATE_DUMP_FILE=bookbrainz-full-dump-`date -I`.sql
 DUMP_FILE=bookbrainz-dump-`date -I`.sql
 COLLECTIONS_DUMP_FILE=bookbrainz-collections-dump-`date -I`.sql
+BACKUP_FOLDER=/home/bookbrainz/backup
 
-echo "Creating data dump..."
+echo "Creating private data dump..."
+# Dump new backup to /tmp
+pg_dump\
+	-h $POSTGRES_HOST \
+	-p $POSTGRES_PORT \
+	-U bookbrainz \
+	 --serializable-deferrable\
+	 bookbrainz > /tmp/$PRIVATE_DUMP_FILE
+echo "Main private dump created!"
 
+echo "Creating public data dump..."
 # Dump new backup to /tmp
 pg_dump\
 	-h $POSTGRES_HOST \
@@ -24,7 +35,7 @@ pg_dump\
 	-T user_collection_item\
 	 --serializable-deferrable\
 	 bookbrainz > /tmp/$DUMP_FILE
-echo "Main dump created!"
+echo "Main public dump created!"
 
 echo "Creating public collections dump..."
 # Create tables with public collections and items
@@ -66,10 +77,15 @@ bzip2 /tmp/$DUMP_FILE
 mv /tmp/$DUMP_FILE.bz2 .
 echo "Compressed!"
 
+echo "Compressing and moving full private dump"
+bzip2 /tmp/$PRIVATE_DUMP_FILE
+mv /tmp/$PRIVATE_DUMP_FILE.bz2 $BACKUP_FOLDER
+echo "Full private dump compressed and moved"
+
 echo "Removing old dumps..."
 rm -f /tmp/*.sql
-# Remove backups older than 8 days
-find ./ -name '*.sql.bz2' -type f -mtime +7 -print | xargs /bin/rm -f
+# Remove backups older than 8 days both in this directory and the full dump backup directory
+find ./ $BACKUP_FOLDER -name '*.sql.bz2' -type f -mtime +7 -print | xargs /bin/rm -f
 echo "Done!"
 
 rm -f latest.sql.bz2
