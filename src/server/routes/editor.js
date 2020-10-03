@@ -106,10 +106,20 @@ router.get('/edit', auth.isAuthenticated, (req, res, next) => {
 		.catch(next);
 });
 
+function isCurrentUser(reqUserID, sessionUser) {
+	// No session user set, so cannot be true.
+	if (!sessionUser) {
+		return false;
+	}
+
+	// Return true if session user is set and matches the given ID.
+	return reqUserID === sessionUser.id;
+}
+
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	const {Editor} = req.app.locals.orm;
 	const editorJSONPromise = new Promise((resolve) => {
-		if (req.user && req.body.id === req.user.id) {
+		if (isCurrentUser(req.body.id, req.user)) {
 			resolve();
 		}
 
@@ -194,7 +204,7 @@ function getIdEditorJSONPromise(userId, req) {
 		.then((editordata) => {
 			let editorJSON = editordata.toJSON();
 
-			if (!req.user || userId !== req.user.id) {
+			if (!isCurrentUser(userId, req.user)) {
 				editorJSON = _.omit(editorJSON, ['password', 'email']);
 			}
 
@@ -241,6 +251,17 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 	return {...allMonthsInInterval, ...revisionsCount};
 }
 
+function achievementColToEditorGetJSON(achievementCol) {
+	if (!achievementCol) {
+		return {length: 0, model: null};
+	}
+
+	return {
+		length: achievementCol.length,
+		model: achievementCol.toJSON()
+	};
+}
+
 router.get('/:id', (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
@@ -261,19 +282,7 @@ router.get('/:id', (req, res, next) => {
 			require: false,
 			withRelated: ['achievement']
 		})
-		.then((achievements) => {
-			if (!achievements) {
-				return {
-					length: 0,
-					model: null
-				};
-			}
-
-			return {
-				length: achievements.length,
-				model: achievements.toJSON()
-			};
-		});
+		.then(achievementColToEditorGetJSON);
 
 
 	Promise.all(
@@ -388,7 +397,7 @@ router.get('/:id/achievements', (req, res, next) => {
 		AchievementType, AchievementUnlock
 	} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
-	const isOwner = userId === (req.user && req.user.id);
+	const isOwner = isCurrentUser(userId, req.user);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
 		.catch(next);
@@ -480,7 +489,7 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 		.then((editordata) => {
 			let editorJSON;
 
-			if (!req.user || userId !== req.user.id) {
+			if (!isCurrentUser(userId, req.user)) {
 				editorJSON = new Promise((resolve, reject) => reject(new Error('Not authenticated')));
 			}
 			else {
