@@ -201,15 +201,7 @@ function getIdEditorJSONPromise(userId, req) {
 			require: true,
 			withRelated: ['type', 'gender', 'area']
 		})
-		.then((editordata) => {
-			let editorJSON = editordata.toJSON();
-
-			if (!isCurrentUser(userId, req.user)) {
-				editorJSON = _.omit(editorJSON, ['password', 'email']);
-			}
-
-			return editorJSON;
-		})
+		.then((editordata) => editordata.toJSON())
 		.then(_.partialRight(getEditorTitleJSON, TitleUnlock))
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
