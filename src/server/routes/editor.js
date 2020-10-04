@@ -169,43 +169,38 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	handler.sendPromiseResult(res, editorJSONPromise, search.indexEntity);
 });
 
-function getEditorTitleJSON(editorJSON, TitleUnlock) {
-	let editorTitleJSON;
-	if (editorJSON.titleUnlockId === null) {
-		editorTitleJSON = new Promise(resolve => resolve(editorJSON));
+async function getEditorTitleJSON(editorJSON, TitleUnlock) {
+	const unlockID = editorJSON.titleUnlockId;
+	if (unlockID === null) {
+		return editorJSON;
 	}
-	else {
-		editorTitleJSON = new TitleUnlock({
-			id: editorJSON.titleUnlockId
-		})
-			.fetch({
-				require: false,
-				withRelated: ['title']
-			})
-			.then((unlock) => {
-				if (unlock !== null) {
-					editorJSON.title =
-						unlock.relations.title.attributes;
-				}
-				return editorJSON;
-			});
+
+	const titleUnlockModel = await new TitleUnlock({id: unlockID})
+		.fetch({
+			require: false,
+			withRelated: ['title']
+		});
+
+	if (titleUnlockModel !== null) {
+		editorJSON.title = titleUnlockModel.relations.title.attributes;
 	}
-	return editorTitleJSON;
+
+	return editorJSON;
 }
 
-function getIdEditorJSONPromise(userId, req) {
+async function getIdEditorJSONPromise(userId, req) {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
 
-	return new Editor({id: userId})
+	const editorData = await new Editor({id: userId})
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender', 'area']
 		})
-		.then((editordata) => editordata.toJSON())
-		.then(_.partialRight(getEditorTitleJSON, TitleUnlock))
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
 		});
+
+	return getEditorTitleJSON(editorData.toJSON(), TitleUnlock);
 }
 
 export async function getEditorActivity(editorId, startDate, Revision, endDate = Date.now()) {
@@ -438,34 +433,37 @@ router.get('/:id/achievements', (req, res, next) => {
 		});
 });
 
-function rankUpdate(orm, editorId, bodyRank, rank) {
+async function rankUpdate(orm, editorId, bodyRank, rank) {
 	const {AchievementUnlock} = orm;
-	return new AchievementUnlock({
+
+	// Get the achievement unlock which is currently in this "rank"/slot
+	const unlockToUnrank = await new AchievementUnlock({
 		editorId,
 		profileRank: rank
 	})
-		.fetch({require: false})
-		.then((unlock) => {
-			if (unlock !== null) {
-				unlock.set('profileRank', null)
-					.save();
-			}
-		})
-		.then(() => {
-			let updatePromise;
-			if (bodyRank === '') {
-				updatePromise = new Promise(resolve => resolve(false));
-			}
-			else {
-				updatePromise = new AchievementUnlock({
-					achievementId: parseInt(bodyRank, 10),
-					editorId: parseInt(editorId, 10)
-				})
-					.fetch({require: true})
-					.then((unlock) => unlock.set('profileRank', rank).save());
-			}
-			return updatePromise;
-		});
+		.fetch({require: false});
+
+
+	// If there's a match, then unset the rank on the unlock, and save
+	if (unlockToUnrank !== null) {
+		await unlockToUnrank.set('profileRank', null).save();
+	}
+
+	if (bodyRank === '') {
+		return false;
+	}
+
+	// Then fetch the achievement to be placed in the specified rank
+	const unlockToRank = await new AchievementUnlock({
+		achievementId: parseInt(bodyRank, 10),
+		editorId
+	})
+		.fetch({require: true});
+
+	// TODO: this can throw, so missing error handling (but so was old code)
+
+	// And set the rank on the achievement and save it
+	return unlockToRank.set('profileRank', rank).save();
 }
 
 
