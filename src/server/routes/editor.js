@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2015       Ben Ockmore
- *               2015-2016  Sean Burke
+ * Copyright (C) 2015, 2020  Ben Ockmore
+ *               2015-2016   Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -367,16 +367,19 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	}
 });
 
-function setAchievementUnlockedField(achievements, unlockIds) {
-	const model = achievements.map((achievementType) => {
-		const achievementJSON = achievementType.toJSON();
-		achievementJSON.unlocked = unlockIds.indexOf(achievementJSON.id) >= 0;
+function setAchievementUnlockedField(achievements, unlocks) {
+	if (!unlocks) {
+		return null;
+	}
 
-		return achievementJSON;
-	});
-	return {
-		model
-	};
+	const unlockIDSet = new Set(unlocks.map('attributes.achievementId'));
+
+	const model = achievements.map((achievementType) => ({
+		...achievementType.toJSON(),
+		unlocked: unlockIDSet.has(achievementType.id)
+	}));
+
+	return {model};
 }
 
 router.get('/:id/achievements', (req, res, next) => {
@@ -392,7 +395,6 @@ router.get('/:id/achievements', (req, res, next) => {
 	const achievementJSONPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.fetchAll({require: false})
-		.then((unlocks) => unlocks && unlocks.map('attributes.achievementId'))
 		.then(
 			(unlocks) => unlocks && new AchievementType()
 				.orderBy('id', 'ASC')
