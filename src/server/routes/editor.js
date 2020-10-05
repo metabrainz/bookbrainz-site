@@ -44,66 +44,67 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-router.get('/edit', auth.isAuthenticated, (req, res, next) => {
+router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 	const {Editor, Gender, TitleUnlock} = req.app.locals.orm;
-	const editorJSONPromise = new Editor({id: parseInt(req.user.id, 10)})
+
+	// Prepare three promises to be resolved in parallel to fetch the required
+	// data.
+	const editorModelPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch({
 			require: true,
 			withRelated: ['area', 'gender']
 		})
-		.then((editor) => editor.toJSON())
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
 		});
-	const titleJSONPromise = new TitleUnlock()
+
+	const titleUnlockModelPromise = new TitleUnlock()
 		.where('editor_id', parseInt(req.user.id, 10))
 		.fetchAll({
 			require: false,
 			withRelated: ['title']
-		})
-		.then((unlock) => {
-			let titleJSON;
-			if (unlock === null) {
-				titleJSON = {};
-			}
-			else {
-				titleJSON = unlock.toJSON();
-			}
-			return titleJSON;
-		});
-	const genderJSONPromise = new Gender()
-		.fetchAll({require: false})
-		.then((gender) => {
-			if (gender) {
-				return gender.toJSON();
-			}
-			return [];
 		});
 
-	Promise.all([editorJSONPromise, titleJSONPromise, genderJSONPromise])
-		.then(([editorJSON, titleJSON, genderJSON]) => {
-			const props = generateProps(req, res, {
-				editor: editorJSON,
-				genders: genderJSON,
-				titles: titleJSON
-			});
-			const script = '/js/editor/edit.js';
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<ProfileForm
-						editor={props.editor}
-						genders={props.genders}
-						titles={props.titles}
-					/>
-				</Layout>
-			);
-			res.send(target({
-				markup,
-				props: escapeProps(props),
-				script
-			}));
-		})
-		.catch(next);
+	const gendersModelPromise = new Gender().fetchAll({require: false});
+
+	// Parallel fetch the three required models. Only "editorModelPromise" has
+	// "require: true", so only that can throw a NotFoundError, which is why the
+	// other two model fetch operations have no error handling.
+	const [editorModel, titleUnlockModel, genderModel] = await Promise.all([
+		editorModelPromise, titleUnlockModelPromise, gendersModelPromise
+	]).catch(next);
+
+	// Convert the requested models to JSON structures.
+	const editorJSON = editorModel.toJSON();
+	const titleJSON =
+		titleUnlockModel === null ? {} : titleUnlockModel.toJSON();
+	const genderJSON = genderModel ? genderModel.toJSON() : [];
+
+	// Populate the props to be passed to React with the fetched and formatted
+	// information.
+	const props = generateProps(req, res, {
+		editor: editorJSON,
+		genders: genderJSON,
+		titles: titleJSON
+	});
+
+	// Render the DOM
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<ProfileForm
+				editor={props.editor}
+				genders={props.genders}
+				titles={props.titles}
+			/>
+		</Layout>
+	);
+
+	// Send the rendered DOM, the props and the script to the client
+	res.send(target({
+		markup,
+		props: escapeProps(props),
+		script: '/js/editor/edit.js'
+	}));
 });
 
 function isCurrentUser(reqUserID, sessionUser) {
@@ -249,18 +250,13 @@ function achievementColToEditorGetJSON(achievementCol) {
 	};
 }
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
-	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
-		.then(async (editor) => {
-			const startDate = editor.createdAt;
-			editor.activityData = await getEditorActivity(editor.id, startDate, Revision);
-			return editor;
-		})
-		.catch(next);
-	const achievementJSONPromise = new AchievementUnlock()
+	const editorJSONPromise = getIdEditorJSONPromise(userId, req);
+
+	const achievementColPromise = new AchievementUnlock()
 		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
@@ -268,39 +264,44 @@ router.get('/:id', (req, res, next) => {
 		.fetchAll({
 			require: false,
 			withRelated: ['achievement']
-		})
-		.then(achievementColToEditorGetJSON);
-
-
-	Promise.all(
-		[achievementJSONPromise, editorJSONPromise]
-	)
-		.then(([achievementJSON, editorJSON]) => {
-			const props = generateProps(req, res, {
-				achievement: achievementJSON,
-				editor: editorJSON,
-				tabActive: 0
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)} >
-					<EditorContainer
-						{...propHelpers.extractEditorProps(props)}
-					>
-						<ProfileTab
-							user={props.user}
-							{...propHelpers.extractChildProps(props)}
-						/>
-					</EditorContainer>
-				</Layout>
-			);
-			res.send(target({
-				markup,
-				page: 'profile',
-				props: escapeProps(props),
-				script: '/js/editor/editor.js',
-				title: `${props.editor.name}'s Profile`
-			}));
 		});
+
+	const [achievementCol, editorJSON] = await Promise.all(
+		[achievementColPromise, editorJSONPromise]
+	).catch(next);
+
+	editorJSON.activityData =
+		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision)
+			.catch(next);
+
+	const achievementJSON = achievementColToEditorGetJSON(achievementCol);
+
+	const props = generateProps(req, res, {
+		achievement: achievementJSON,
+		editor: editorJSON,
+		tabActive: 0
+	});
+
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)} >
+			<EditorContainer
+				{...propHelpers.extractEditorProps(props)}
+			>
+				<ProfileTab
+					user={props.user}
+					{...propHelpers.extractChildProps(props)}
+				/>
+			</EditorContainer>
+		</Layout>
+	);
+
+	res.send(target({
+		markup,
+		page: 'profile',
+		props: escapeProps(props),
+		script: '/js/editor/editor.js',
+		title: `${props.editor.name}'s Profile`
+	}));
 });
 
 // eslint-disable-next-line consistent-return
@@ -382,57 +383,57 @@ function setAchievementUnlockedField(achievements, unlocks) {
 	return {model};
 }
 
-router.get('/:id/achievements', (req, res, next) => {
-	const {
-		AchievementType, AchievementUnlock
-	} = req.app.locals.orm;
+router.get('/:id/achievements', async (req, res, next) => {
+	const {AchievementType, AchievementUnlock} = req.app.locals.orm;
+
 	const userId = parseInt(req.params.id, 10);
 	const isOwner = isCurrentUser(userId, req.user);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
 		.catch(next);
 
-	const achievementJSONPromise = new AchievementUnlock()
+	const unlocksPromise = new AchievementUnlock()
 		.where('editor_id', userId)
-		.fetchAll({require: false})
-		.then(
-			(unlocks) => unlocks && new AchievementType()
-				.orderBy('id', 'ASC')
-				.fetchAll()
-				.then((achievements) => setAchievementUnlockedField(
-					achievements, unlocks
-				))
-		);
+		.fetchAll({require: false});
 
-	Promise.all([achievementJSONPromise, editorJSONPromise])
-		.then(([achievementJSON, editorJSON]) => {
-			const props = generateProps(req, res, {
-				achievement: achievementJSON,
-				editor: editorJSON,
-				isOwner,
-				tabActive: 2
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EditorContainer
-						{...propHelpers.extractEditorProps(props)}
-					>
-						<AchievementsTab
-							achievement={props.achievement}
-							editor={props.editor}
-							isOwner={props.isOwner}
-						/>
-					</EditorContainer>
-				</Layout>
-			);
-			const script = '/js/editor/achievement.js';
-			res.send(target({
-				markup,
-				props: escapeProps(props),
-				script,
-				title: `${props.editor.name}'s Achievements`
-			}));
-		});
+	const achievementTypesPromise = new AchievementType()
+		.orderBy('id', 'ASC')
+		.fetchAll();
+
+	const [unlocks, editorJSON, achievementTypes] = await Promise.all([
+		unlocksPromise, editorJSONPromise, achievementTypesPromise
+	]);
+
+	const achievementJSON =
+		setAchievementUnlockedField(achievementTypes, unlocks);
+
+	const props = generateProps(req, res, {
+		achievement: achievementJSON,
+		editor: editorJSON,
+		isOwner,
+		tabActive: 2
+	});
+
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<EditorContainer
+				{...propHelpers.extractEditorProps(props)}
+			>
+				<AchievementsTab
+					achievement={props.achievement}
+					editor={props.editor}
+					isOwner={props.isOwner}
+				/>
+			</EditorContainer>
+		</Layout>
+	);
+
+	res.send(target({
+		markup,
+		props: escapeProps(props),
+		script: '/js/editor/achievement.js',
+		title: `${props.editor.name}'s Achievements`
+	}));
 });
 
 async function rankUpdate(orm, editorId, bodyRank, rank) {
