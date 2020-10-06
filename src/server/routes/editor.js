@@ -213,7 +213,9 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 		});
 
 	const revisionJSON = revisions ? revisions.toJSON() : [];
-	const revisionDates = revisionJSON.map((revision) => format(new Date(revision.createdAt), 'LLL-yy'));
+	const revisionDates = revisionJSON.map(
+		(revision) => format(new Date(revision.createdAt), 'LLL-yy')
+	);
 	const revisionsCount = _.countBy(revisionDates);
 
 	const allMonthsInInterval = eachMonthOfInterval({
@@ -297,9 +299,13 @@ router.get('/:id', async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
+	const DEFAULT_MAX_REVISIONS = 20;
+	const DEFAULT_REVISION_OFFSET = 0;
 
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const size =
+		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
+	const from =
+		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
 
 	try {
 		// get 1 more result to check nextEnabled
@@ -346,8 +352,13 @@ router.get('/:id/revisions', async (req, res, next) => {
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions/revisions', async (req, res, next) => {
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const DEFAULT_MAX_REVISIONS = 20;
+	const DEFAULT_REVISION_OFFSET = 0;
+
+	const size =
+		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
+	const from =
+		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
 
 	try {
 		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
@@ -499,8 +510,15 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+
+	const DEFAULT_MAX_COLLECTIONS = 20;
+	const DEFAULT_COLLECTION_OFFSET = 0;
+
+	const size =
+		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_COLLECTIONS;
+	const from =
+		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_COLLECTION_OFFSET;
+
 	let type = req.query.type ? req.query.type : null;
 	const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 	if (!entityTypes.includes(type) && type !== null) {
