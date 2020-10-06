@@ -86,7 +86,7 @@ export function generateEntityProps(
 		action,
 		entityType,
 		heading: isEdit ?
-			`Edit ${entity.defaultAlias.name} (${entityName})` :
+			`Edit ${entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)'} (${entityName})` :
 			`Add ${entityName}`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(entity),
