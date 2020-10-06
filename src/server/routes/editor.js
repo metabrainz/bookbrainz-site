@@ -118,56 +118,46 @@ function isCurrentUser(reqUserID, sessionUser) {
 }
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const {Editor} = req.app.locals.orm;
-	const editorJSONPromise = new Promise((resolve) => {
-		if (isCurrentUser(req.body.id, req.user)) {
-			resolve();
+	async function runAsync() {
+		const {Editor} = req.app.locals.orm;
+
+		if (!isCurrentUser(req.body.id, req.user)) {
+			// Edit is for a user other than the current one
+			throw new error.PermissionDeniedError(
+				'You do not have permission to edit that user', req
+			);
 		}
 
-		// Edit is for a user other than the current one
-		throw new error.PermissionDeniedError(
-			'You do not have permission to edit that user', req
-		);
-	})
-		.then(
-			// Fetch the current user from the database
-			() => Editor.forge({id: parseInt(req.user.id, 10)}).fetch({require: true})
-		)
-		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found', req);
-		})
-		.then(
-			// Modify the user to match the updates from the form
-			(editor) => editor.set('bio', req.body.bio)
-				.set('areaId', req.body.areaId)
-				.set('genderId', req.body.genderId)
-				.set('name', req.body.name)
-				.save()
-		)
-		.then((editor) => {
-			let editorTitleUnlock;
-			if (req.body.title) {
-				editorTitleUnlock = editor.set('titleUnlockId', req.body.title);
-			}
-			else {
-				editorTitleUnlock = editor.set('titleUnlockId', null);
-			}
-			return editorTitleUnlock.save();
-		})
-		.then((editor) => {
-			const editorJSON = editor.toJSON();
-			const editorForES = {};
-			editorForES.bbid = editorJSON.id;
-			editorForES.aliasSet = {
+		const editor = await Editor
+			.forge({id: parseInt(req.user.id, 10)})
+			.fetch({require: true})
+			.catch(Editor.NotFoundError, () => {
+				throw new error.NotFoundError('Editor not found', req);
+			});
+
+		// Modify the user to match the updates from the form
+		const titleID = _.get(req.body, 'title', null) || null;
+		const modifiedEditor = await editor
+			.set('bio', req.body.bio)
+			.set('areaId', req.body.areaId)
+			.set('genderId', req.body.genderId)
+			.set('name', req.body.name)
+			.set('titleUnlockId', titleID)
+			.save();
+
+		const editorJSON = modifiedEditor.toJSON();
+		return {
+			aliasSet: {
 				aliases: [
 					{name: editorJSON.name}
 				]
-			};
-			editorForES.type = 'Editor';
-			return editorForES;
-		});
+			},
+			bbid: editorJSON.id,
+			type: 'Editor'
+		};
+	}
 
-	handler.sendPromiseResult(res, editorJSONPromise, search.indexEntity);
+	handler.sendPromiseResult(res, runAsync(), search.indexEntity);
 });
 
 async function getEditorTitleJSON(editorJSON, TitleUnlock) {
@@ -474,40 +464,35 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 	const {orm} = req.app.locals;
 	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
-	const editorPromise = new Editor({id: userId})
-		.fetch({
-			require: true,
-			withRelated: ['type', 'gender', 'area']
-		})
-		.then((editordata) => {
-			let editorJSON;
 
-			if (!isCurrentUser(userId, req.user)) {
-				editorJSON = new Promise((resolve, reject) => reject(new Error('Not authenticated')));
-			}
-			else {
-				editorJSON = new Promise(resolve => resolve(editordata.toJSON()));
-			}
-			return editorJSON;
-		});
+	async function runAsync() {
+		if (!isCurrentUser(userId, req.user)) {
+			throw new Error('Not authenticated');
+		}
 
-	const rankOnePromise = rankUpdate(orm, req.params.id, req.body.rank1, 1);
-	const rankTwoPromise = rankUpdate(orm, req.params.id, req.body.rank2, 2);
-	const rankThreePromise = rankUpdate(orm, req.params.id, req.body.rank3, 3);
+		// Presumably, this is testing that the provided editor ID is valid
+		// prior to attempting to update the ranks. Possibly not needed since
+		// the user must exist if authenticated?
+		await new Editor({id: userId})
+			.fetch({require: true});
 
+		// TODO: missing error handling for possible missing editor - carried
+		// over from old code.
 
-	const rankPromise =
-		editorPromise.then(() =>
-			Promise.all([
-				rankOnePromise,
-				rankTwoPromise,
-				rankThreePromise
-			]))
-			.then((rankJSON) => {
-				res.redirect(`/editor/${req.params.id}`);
-				return rankJSON;
-			});
-	handler.sendPromiseResult(res, rankPromise);
+		const rankOnePromise = rankUpdate(orm, userId, req.body.rank1, 1);
+		const rankTwoPromise = rankUpdate(orm, userId, req.body.rank2, 2);
+		const rankThreePromise = rankUpdate(orm, userId, req.body.rank3, 3);
+
+		const rankJSON = await Promise.all([
+			rankOnePromise, rankTwoPromise, rankThreePromise
+		]);
+
+		res.redirect(`/editor/${req.params.id}`);
+
+		return rankJSON;
+	}
+
+	handler.sendPromiseResult(res, runAsync());
 });
 
 
