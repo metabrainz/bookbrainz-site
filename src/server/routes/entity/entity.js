@@ -1047,10 +1047,11 @@ export function handleCreateOrEditEntity(
 
 			_.forEach(allEntities, (entityModel) => {
 				const bbid: string = entityModel.get('bbid');
-				if (_.has(relationshipSets, bbid) && !_.isNil(relationshipSets[bbid])) {
+				if (_.has(relationshipSets, bbid)) {
 					entityModel.set(
 						'relationshipSetId',
-						relationshipSets[bbid].get('id')
+						// Set to relationshipSet id or null if empty set
+						relationshipSets[bbid] && relationshipSets[bbid].get('id')
 					);
 				}
 			});
