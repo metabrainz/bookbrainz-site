@@ -96,10 +96,11 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
 
-			function getEntityWithAlias(relEntity) {
+			async function getEntityWithAlias(relEntity) {
+				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
-				return model.forge({bbid: relEntity.bbid})
+				return model.forge({bbid: redirectBbid})
 					.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
 			}
 
