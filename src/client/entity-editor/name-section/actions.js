@@ -122,7 +122,10 @@ export function checkIfNameExists(
 	 * @param  {function} dispatch - The redux dispatch function.
 	 */
 	return (dispatch) => {
-		if (!name || _snakeCase(entityType) === 'edition' || _snakeCase(entityType) === 'edition_group') {
+		if (!name ||
+			_snakeCase(entityType) === 'edition' ||
+			(_snakeCase(entityType) === 'edition_group' && action === UPDATE_WARN_IF_EXISTS)
+		) {
 			dispatch({
 				payload: null,
 				type: action || UPDATE_WARN_IF_EXISTS
