@@ -292,7 +292,8 @@ function mapStateToProps(rootState) {
 	};
 }
 
-function mapDispatchToProps(dispatch, {entityType}) {
+function mapDispatchToProps(dispatch, {entity, entityType}) {
+	const entityBBID = entity && entity.bbid;
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
@@ -301,13 +302,13 @@ function mapDispatchToProps(dispatch, {entityType}) {
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
-			dispatch(checkIfNameExists(value, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
+			dispatch(checkIfNameExists(value, entityBBID, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
 		}, 1500),
 		onNameChangeCheckIfExists: _.debounce((value) => {
-			dispatch(checkIfNameExists(value, entityType));
+			dispatch(checkIfNameExists(value, entityBBID, entityType));
 		}, 500),
 		onNameChangeSearchName: _.debounce((value) => {
-			dispatch(searchName(value, entityType));
+			dispatch(searchName(value, entityBBID, entityType));
 		}, 500),
 		onSortNameChange: (event) =>
 			dispatch(debouncedUpdateSortNameField(event.target.value))
