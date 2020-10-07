@@ -19,7 +19,8 @@ const swaggerOptions = {
 				name: 'BookBrainz',
 				url: 'https://bookbrainz.org/'
 			},
-			description: 'OpenAPI 3 documentation for the BookBrainz REST API. https://bookbrainz.org',
+			description: `OpenAPI 3 documentation for the BookBrainz REST API.<br/>
+			Breaking changes to the API will be announced <a href="https://blog.metabrainz.org/category/bookbrainz/" target="_blank">on our blog</a>.`,
 			title: 'BookBrainz API Documentation',
 			version: '0.2.0'
 		},
