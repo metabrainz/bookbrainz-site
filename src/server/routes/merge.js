@@ -167,10 +167,11 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
 
-			function getEntityWithAlias(relEntity) {
+			async function getEntityWithAlias(relEntity) {
+				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
-				return model.forge({bbid: relEntity.bbid})
+				return model.forge({bbid: redirectBbid})
 					.fetch({withRelated: 'defaultAlias'});
 			}
 
