@@ -53,7 +53,7 @@ export const UPDATE_WIDTH = 'UPDATE_WIDTH';
 export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_DEPTH = 'UPDATE_DEPTH';
 export const SHOW_PHYSICAL = 'SHOW_PHYSICAL';
-export const SHOW_EDITION_GROUP = 'SHOW_EDITION_GROUP';
+export const TOGGLE_SHOW_EDITION_GROUP = 'TOGGLE_SHOW_EDITION_GROUP';
 export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP_EXISTS';
 
 /**
@@ -134,11 +134,14 @@ export function showPhysical(): Action {
  * Produces an action indicating that the Edition Group section of the edition
  * form should be shown.
  *
- * @returns {Action} The resulting SHOW_EDITION_GROUP action.
+ * @param {boolean} showEGSection: Whether to show the Edition Group selection section or not
+ *
+ * @returns {Action} The resulting TOGGLE_SHOW_EDITION_GROUP action.
  */
-export function showEditionGroup(): Action {
+export function toggleShowEditionGroup(showEGSection: boolean): Action {
 	return {
-		type: SHOW_EDITION_GROUP
+		payload: showEGSection,
+		type: TOGGLE_SHOW_EDITION_GROUP
 	};
 }
 
@@ -165,7 +168,7 @@ export function updatePublisher(newPublisher: Publisher): Action {
  *                      for the edition.
  * @returns {Action} The resulting UPDATE_EDITION_GROUP action.
  */
-export function updateEditionGroup(newEditionGroup: EditionGroup): Action {
+export function updateEditionGroup(newEditionGroup: EditionGroup | null): Action {
 	return {
 		payload: newEditionGroup,
 		type: UPDATE_EDITION_GROUP
