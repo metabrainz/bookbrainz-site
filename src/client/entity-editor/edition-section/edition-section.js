@@ -276,11 +276,11 @@ function EditionSection({
 							Please review the Edition Groups below and select the one that corresponds to your Edition.
 							<br/>
 							<small>
-								If no Edition Group is selected, an new one will be created automatically.
+								If no Edition Group is selected, a new one will be created automatically.
 								<br/>
 								Click on the <FontAwesomeIcon icon="external-link-alt"/> icon open in a new tab, and click an item to select.
 							</small>
-							<ListGroup>
+							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
 									<ListGroupItem key={eg.bbid}>
 										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
