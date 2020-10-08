@@ -232,7 +232,7 @@ function EditionSection({
 					// eslint-disable-next-line react/jsx-no-bind
 					onClick={onToggleShowEditionGroupSection.bind(this, false)}
 				>
-					Click here to automatically create one instead
+					<FontAwesomeIcon icon="clone"/>&nbsp;Automatically create an Edition Group
 				</Button>
 			</Col>
 		</React.Fragment>
@@ -244,23 +244,24 @@ function EditionSection({
 				What else do you know about the Edition?
 			</h2>
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank
+				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
+				or choose to automatically create one instead.
 			</p>
 			<Row className="margin-bottom-3">
 				{
 					showAutoCreateEditionGroupMessage ?
 						<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
-							<Alert>
-								A new Edition Group with the same name will be created automatically.
+							<Alert bsStyle="success">
+								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
 								<Button
 									block
-									bsStyle="primary"
+									bsStyle="success"
 									className="wrap"
 									// eslint-disable-next-line react/jsx-no-bind
 									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>
-									Click here to search for an existing one instead
+									<FontAwesomeIcon icon="search"/>&nbsp;Search for an existing Edition Group
 								</Button>
 							</Alert>
 						</Col> :

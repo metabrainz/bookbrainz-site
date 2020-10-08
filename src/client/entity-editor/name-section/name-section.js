@@ -126,6 +126,9 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
+
+		// Search for Edition Groups that match the name, if the entity is an Edition
+		// Will react to name changes and searchForExistingEditionGroup (which reacts to editionGroupBBID field)
 		if (_.toLower(entityType) === 'edition' && searchForExistingEditionGroup) {
 			onNameChangeCheckIfEditionGroupExists(nameValue);
 		}
