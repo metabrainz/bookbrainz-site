@@ -212,8 +212,9 @@ function EditionSection({
 
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
-			<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+			<Col className="margin-bottom-2" md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
 				<EntitySearchFieldOption
+					clearable={false}
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
 					help="Group with other Editions of the same book"
 					instanceId="edition-group"

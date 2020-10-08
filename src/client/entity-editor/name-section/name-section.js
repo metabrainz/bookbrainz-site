@@ -97,12 +97,6 @@ class NameSection extends React.Component {
 		this.props.onNameChange(event.target.value);
 		this.props.onNameChangeCheckIfExists(event.target.value);
 		this.props.onNameChangeSearchName(event.target.value);
-		if (
-			_.toLower(this.props.entityType) === 'edition' &&
-			this.props.searchForExistingEditionGroup
-		) {
-			this.props.onNameChangeCheckIfEditionGroupExists(event.target.value);
-		}
 	}
 
 	updateNameFieldInputRef(inputRef) {
@@ -119,8 +113,10 @@ class NameSection extends React.Component {
 			nameValue,
 			sortNameValue,
 			onLanguageChange,
+			onNameChangeCheckIfEditionGroupExists,
 			onSortNameChange,
 			onDisambiguationChange,
+			searchForExistingEditionGroup,
 			searchResults
 		} = this.props;
 
@@ -130,6 +126,9 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
+		if (_.toLower(entityType) === 'edition' && searchForExistingEditionGroup) {
+			onNameChangeCheckIfEditionGroupExists(nameValue);
+		}
 
 		return (
 			<div>
