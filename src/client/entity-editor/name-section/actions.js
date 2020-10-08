@@ -19,6 +19,7 @@
 // @flow
 
 import {snakeCase as _snakeCase, isString, remove, uniqBy} from 'lodash';
+import log from 'log';
 import request from 'superagent';
 
 
@@ -123,7 +124,7 @@ export function checkIfNameExists(
 	 * @function dispatch
 	 * @param  {function} dispatch - The redux dispatch function.
 	 */
-	return (dispatch) => {
+	return async (dispatch) => {
 		if (!name ||
 			_snakeCase(entityType) === 'edition' ||
 			(_snakeCase(entityType) === 'edition_group' && action === UPDATE_WARN_IF_EXISTS)
@@ -134,26 +135,29 @@ export function checkIfNameExists(
 			});
 			return;
 		}
-		request.get('/search/exists')
-			.query({
-				q: name,
-				type: _snakeCase(entityType)
-			})
-			.then(res => {
-				let payload = JSON.parse(res.text) || null;
-				if (Array.isArray(payload)) {
-					payload = uniqBy(payload, 'bbid');
-					// Filter out the current entity (if any)
-					if (isString(entityBBID)) {
-						remove(payload, ({bbid}) => entityBBID === bbid);
-					}
-				}
-				return dispatch({
-					payload,
-					type: action || UPDATE_WARN_IF_EXISTS
+		try {
+			const res = await request.get('/search/exists')
+				.query({
+					q: name,
+					type: _snakeCase(entityType)
 				});
-			})
-			.catch((error: {message: string}) => error);
+
+			let payload = JSON.parse(res.text) || null;
+			if (Array.isArray(payload)) {
+				payload = uniqBy(payload, 'bbid');
+				// Filter out the current entity (if any)
+				if (isString(entityBBID)) {
+					remove(payload, ({bbid}) => entityBBID === bbid);
+				}
+			}
+			dispatch({
+				payload,
+				type: action || UPDATE_WARN_IF_EXISTS
+			});
+		}
+		catch (error) {
+			log.error(error);
+		}
 	};
 }
 

@@ -78,6 +78,7 @@ class NameSection extends React.Component {
 		super(props);
 		this.updateNameFieldInputRef = this.updateNameFieldInputRef.bind(this);
 		this.handleNameChange = this.handleNameChange.bind(this);
+		this.searchForMatchindEditionGroups = this.searchForMatchindEditionGroups.bind(this);
 	}
 
 	/*
@@ -93,10 +94,33 @@ class NameSection extends React.Component {
 		}
 	}
 
+	componentDidUpdate(prevProps) {
+		const {nameValue, searchForExistingEditionGroup} = this.props;
+		if (prevProps.searchForExistingEditionGroup === searchForExistingEditionGroup ||
+			searchForExistingEditionGroup === false) {
+			return;
+		}
+		this.searchForMatchindEditionGroups(nameValue);
+	}
+
 	handleNameChange(event) {
 		this.props.onNameChange(event.target.value);
 		this.props.onNameChangeCheckIfExists(event.target.value);
 		this.props.onNameChangeSearchName(event.target.value);
+		this.searchForMatchindEditionGroups(event.target.value);
+	}
+
+	searchForMatchindEditionGroups(nameValue) {
+		const {
+			entityType,
+			onNameChangeCheckIfEditionGroupExists,
+			searchForExistingEditionGroup
+		} = this.props;
+		// Search for Edition Groups that match the name, if the entity is an Edition
+		// Will react to name changes and searchForExistingEditionGroup (which reacts to editionGroupBBID field)
+		if (_.toLower(entityType) === 'edition' && searchForExistingEditionGroup && !_.isNil(nameValue)) {
+			onNameChangeCheckIfEditionGroupExists(nameValue);
+		}
 	}
 
 	updateNameFieldInputRef(inputRef) {
@@ -113,10 +137,8 @@ class NameSection extends React.Component {
 			nameValue,
 			sortNameValue,
 			onLanguageChange,
-			onNameChangeCheckIfEditionGroupExists,
 			onSortNameChange,
 			onDisambiguationChange,
-			searchForExistingEditionGroup,
 			searchResults
 		} = this.props;
 
@@ -127,11 +149,6 @@ class NameSection extends React.Component {
 
 		const warnIfExists = !_.isEmpty(exactMatches);
 
-		// Search for Edition Groups that match the name, if the entity is an Edition
-		// Will react to name changes and searchForExistingEditionGroup (which reacts to editionGroupBBID field)
-		if (_.toLower(entityType) === 'edition' && searchForExistingEditionGroup) {
-			onNameChangeCheckIfEditionGroupExists(nameValue);
-		}
 
 		return (
 			<div>
