@@ -26,8 +26,8 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
-	showEditionGroup,
 	showPhysical,
+	toggleShowEditionGroup,
 	updateEditionGroup,
 	updateFormat,
 	updateLanguages,
@@ -35,7 +35,7 @@ import {
 	updateStatus
 } from './actions';
 
-import {Alert, Button, Col, Row} from 'react-bootstrap';
+import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import {
 	validateEditionSectionDepth,
@@ -51,12 +51,13 @@ import DateField from '../common/new-date-field';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
+import LinkedEntity from '../common/linked-entity';
 import NumericField from '../common/numeric-field';
 import React from 'react';
-import SearchResults from '../../components/pages/parts/search-results';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {entityToOption} from '../../../server/helpers/utils';
 import {isNullDate} from '../../helpers/utils';
 import makeImmutable from '../common/make-immutable';
 
@@ -120,7 +121,7 @@ type DispatchProps = {
 	onPagesChange: (SyntheticInputEvent<>) => mixed,
 	onPhysicalButtonClick: () => mixed,
 	onPublisherChange: (Publisher) => mixed,
-	onEditionGroupButtonClick: () => mixed,
+	onToggleShowEditionGroupSection: (showEGSection: boolean) => mixed,
 	onEditionGroupChange: (EditionGroup) => mixed,
 	onReleaseDateChange: (SyntheticInputEvent<>) => mixed,
 	onStatusChange: (?{value: number}) => mixed,
@@ -165,7 +166,7 @@ function EditionSection({
 	onPhysicalButtonClick,
 	onReleaseDateChange,
 	onPagesChange,
-	onEditionGroupButtonClick,
+	onToggleShowEditionGroupSection,
 	onEditionGroupChange,
 	onPublisherChange,
 	onStatusChange,
@@ -201,56 +202,41 @@ function EditionSection({
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
 	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
-	const getEditionGroupSearchSelect = () => (
-		<React.Fragment>
-			<Row style={{marginBottom: '2em'}}>
-				<Col md={6} mdOffset={3}>
-					<EntitySearchFieldOption
-						error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
-						help="Group with other Editions of the same book"
-						instanceId="edition-group"
-						label="Edition Group"
-						tooltipText="Group together different Editions of the same book.
-						<br>For example paperback, hardcover and e-book editions."
-						type="edition-group"
-						value={editionGroupValue}
-						onChange={onEditionGroupChange}
-					/>
-					{hasmatchingNameEditionGroups &&
-						<Alert bsStyle="warning">
-							{matchingNameEditionGroups.length > 1 ?
-								'Edition Groups with the same name as this Edition already exist' :
-								'An existing Edition Group with the same name as this Edition already exists'
-							}:
-							<br/>
-							<small>The first match has been selected automatically. Please review the choice:
-								<br/>Click on an item to open it (Ctrl/Cmd + click to open in a new tab)
-							</small>
-							<SearchResults condensed results={matchingNameEditionGroups}/>
-						</Alert>
-					}
-				</Col>
-				<Col md={3}>
-					<Button
-						block
-						bsStyle="success"
-						href="/edition-group/create"
-						style={{marginTop: '1.8em'}}
-						target="_blank"
-					>
-						<FontAwesomeIcon icon="plus"/>
-						&nbsp;New Edition Group
-					</Button>
-				</Col>
-			</Row>
-		</React.Fragment>
-	);
 
-	const alertAutoCreateEditionGroup =
+	const showAutoCreateEditionGroupMessage =
 		!editionGroupValue &&
 		!editionGroupVisible &&
-		!editionGroupRequired &&
-		!hasmatchingNameEditionGroups;
+		!editionGroupRequired;
+
+	const showMatchingEditionGroups = hasmatchingNameEditionGroups && !editionGroupValue;
+
+	const getEditionGroupSearchSelect = () => (
+		<React.Fragment>
+			<Col className="margin-bottom-2" md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+				<EntitySearchFieldOption
+					clearable={false}
+					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
+					help="Group with other Editions of the same book"
+					instanceId="edition-group"
+					label="Edition Group"
+					tooltipText="Group together different Editions of the same book.
+					<br>For example paperback, hardcover and e-book editions."
+					type="edition-group"
+					value={editionGroupValue}
+					onChange={onEditionGroupChange}
+				/>
+				<Button
+					block
+					bsStyle="primary"
+					className="wrap"
+					// eslint-disable-next-line react/jsx-no-bind
+					onClick={onToggleShowEditionGroupSection.bind(this, false)}
+				>
+					<FontAwesomeIcon icon="clone"/>&nbsp;Automatically create an Edition Group
+				</Button>
+			</Col>
+		</React.Fragment>
+	);
 
 	return (
 		<form>
@@ -258,28 +244,55 @@ function EditionSection({
 				What else do you know about the Edition?
 			</h2>
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank
+				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
+				or choose to automatically create one instead.
 			</p>
-			{
-				alertAutoCreateEditionGroup ?
-					<Row>
-						<Col md={6} mdOffset={3}>
-							<Alert>
-								A new Edition Group with the same name will be created automatically.
+			<Row className="margin-bottom-3">
+				{
+					showAutoCreateEditionGroupMessage ?
+						<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+							<Alert bsStyle="success">
+								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
 								<Button
 									block
-									bsStyle="primary"
+									bsStyle="success"
 									className="wrap"
-									onClick={onEditionGroupButtonClick}
+									// eslint-disable-next-line react/jsx-no-bind
+									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>
-									Click here to search for an existing one instead
+									<FontAwesomeIcon icon="search"/>&nbsp;Search for an existing Edition Group
 								</Button>
 							</Alert>
-						</Col>
-					</Row> :
-					getEditionGroupSearchSelect()
-			}
+						</Col> :
+						getEditionGroupSearchSelect()
+				}
+				{showMatchingEditionGroups &&
+					<Col md={6}>
+						<Alert bsStyle="warning">
+							{matchingNameEditionGroups.length > 1 ?
+								'Edition Groups with the same name as this Edition already exist' :
+								'An existing Edition Group with the same name as this Edition already exists'
+							}
+							<br/>
+							Please review the Edition Groups below and select the one that corresponds to your Edition.
+							<br/>
+							<small>
+								If no Edition Group is selected, a new one will be created automatically.
+								<br/>
+								Click on the <FontAwesomeIcon icon="external-link-alt"/> icon open in a new tab, and click an item to select.
+							</small>
+							<ListGroup className="margin-top-1">
+								{matchingNameEditionGroups.map(eg => (
+									<ListGroupItem key={eg.bbid}>
+										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
+									</ListGroupItem>
+								))}
+							</ListGroup>
+						</Alert>
+					</Col>
+				}
+			</Row>
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
@@ -441,7 +454,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onEditionGroupButtonClick: () => dispatch(showEditionGroup()),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
 		onFormatChange: (value: ?{value: number}) =>
 			dispatch(updateFormat(value && value.value)),
@@ -459,6 +471,12 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			dispatch(debouncedUpdateReleaseDate(releaseDate)),
 		onStatusChange: (value: ?{value: number}) =>
 			dispatch(updateStatus(value && value.value)),
+		onToggleShowEditionGroupSection: (showEGSection: boolean) => {
+			if (showEGSection === false) {
+				dispatch(updateEditionGroup(null));
+			}
+			return dispatch(toggleShowEditionGroup(showEGSection));
+		},
 		onWeightChange: (event) => dispatch(debouncedUpdateWeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
