@@ -27,7 +27,6 @@ import {browseAuthorBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-import {random} from 'faker';
 
 
 const {Relationship, RelationshipSet, RelationshipType, Revision} = orm;
@@ -187,7 +186,7 @@ describe('Browse Author', () => {
 
 		// Now create a revision which forms the relationship b/w work and authors
 		const editor = await createEditor();
-		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+		const revision = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
 		const relationshipTypeData = {
@@ -205,7 +204,6 @@ describe('Browse Author', () => {
 		const relationshipsPromise = [];
 		for (const authorBBID of authorBBIDs) {
 			const relationshipData = {
-				id: random.number(),
 				sourceBbid: authorBBID,
 				targetBbid: work.get('bbid'),
 				typeId: relationshipTypeData.id
@@ -217,12 +215,12 @@ describe('Browse Author', () => {
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
-		const workRelationshipSet = await new RelationshipSet({id: random.number()})
+		const workRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then((model) => model.relationships().attach(relationships).then(() => model));
 
-		work.set('relationshipSetId', workRelationshipSet.get('id'));
-		work.set('revisionId', revision.get('id'));
+		work.set('relationshipSetId', workRelationshipSet.id);
+		work.set('revisionId', revision.id);
 		await work.save(null, {method: 'update'});
 	});
 	after(truncateEntities);

@@ -23,8 +23,8 @@ import * as _ from 'lodash';
 
 import {
 	type Action,
-	SHOW_EDITION_GROUP,
 	SHOW_PHYSICAL,
+	TOGGLE_SHOW_EDITION_GROUP,
 	UPDATE_DEPTH,
 	UPDATE_EDITION_GROUP,
 	UPDATE_FORMAT,
@@ -56,8 +56,8 @@ function reducer(
 	switch (type) {
 		case SHOW_PHYSICAL:
 			return state.set('physicalVisible', true);
-		case SHOW_EDITION_GROUP:
-			return state.set('editionGroupVisible', true);
+		case TOGGLE_SHOW_EDITION_GROUP:
+			return state.set('editionGroupVisible', payload);
 		case UPDATE_LANGUAGES:
 			return state.set('languages', Immutable.fromJS(payload));
 		case UPDATE_FORMAT:
@@ -84,14 +84,7 @@ function reducer(
 			if (!Array.isArray(payload) || !payload.length) {
 				return state.set('matchingNameEditionGroups', []);
 			}
-			return state.set('matchingNameEditionGroups', payload)
-				.set('editionGroup', Immutable.fromJS({
-					disambiguation: _.get(payload[0], ['disambiguation', 'comment']),
-					id: payload[0].bbid,
-					text: _.get(payload[0], ['defaultAlias', 'name']),
-					type: payload[0].type,
-					value: payload[0].bbid
-				}));
+			return state.set('matchingNameEditionGroups', payload);
 		// no default
 	}
 	return state;

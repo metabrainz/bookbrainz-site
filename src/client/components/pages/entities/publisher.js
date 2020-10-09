@@ -80,7 +80,7 @@ PublisherAttributes.propTypes = {
 };
 
 
-function PublisherDisplayPage({entity, identifierTypes}) {
+function PublisherDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -111,8 +111,10 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
+				entityType={entity.type}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
+				user={user}
 			/>
 		</div>
 	);
@@ -120,7 +122,8 @@ function PublisherDisplayPage({entity, identifierTypes}) {
 PublisherDisplayPage.displayName = 'PublisherDisplayPage';
 PublisherDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object.isRequired
 };
 PublisherDisplayPage.defaultProps = {
 	identifierTypes: []

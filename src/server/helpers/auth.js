@@ -137,3 +137,38 @@ export function isAuthenticatedForHandler(req, res, next) {
 
 	return error.sendErrorAsJSON(res, new error.NotAuthenticatedError());
 }
+
+export function isCollectionOwner(req, res, next) {
+	if (req.user.id === res.locals.collection.ownerId) {
+		return next();
+	}
+
+	throw new error.PermissionDeniedError(
+		'You do not have permission to edit/delete this collection', req
+	);
+}
+
+export function isCollectionOwnerOrCollaborator(req, res, next) {
+	const {collection} = res.locals;
+	if (req.user.id === collection.ownerId ||
+		collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length) {
+		return next();
+	}
+
+	throw new error.PermissionDeniedError(
+		'You do not have permission to edit this collection', req
+	);
+}
+
+export function isAuthenticatedForCollectionView(req, res, next) {
+	const {collection} = res.locals;
+	if (collection.public) {
+		return next();
+	}
+	if (req.user) {
+		return isCollectionOwnerOrCollaborator(req, res, next);
+	}
+	throw new error.PermissionDeniedError(
+		'You do not have permission to view this collection', req
+	);
+}

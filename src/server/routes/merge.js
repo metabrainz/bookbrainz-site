@@ -40,7 +40,7 @@ import targetTemplate from '../templates/target';
 
 const router = express.Router();
 
-function entitiesToFormState(entities) {
+function entitiesToFormState(entities: any[]) {
 	const [targetEntity, ...otherEntities] = entities;
 	const aliases = entities.reduce((returnValue, entity) => {
 		if (Array.isArray(_.get(entity, 'aliasSet.aliases'))) {
@@ -128,8 +128,17 @@ function entitiesToFormState(entities) {
 		};
 	});
 
+	const annotations = entities.reduce((returnValue, entity, index) => {
+		if (entity.annotation && entity.annotation.content) {
+			return `${returnValue}${returnValue ? '\n——————\n' : ''}${entity.annotation.content}`;
+		}
+		return returnValue;
+	}, '');
+	const annotationSection = {content: annotations};
+
 	const props = {
 		aliasEditor,
+		annotationSection,
 		identifierEditor,
 		nameSection,
 		relationshipSection
@@ -158,10 +167,11 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
 
-			function getEntityWithAlias(relEntity) {
+			async function getEntityWithAlias(relEntity) {
+				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
-				return model.forge({bbid: relEntity.bbid})
+				return model.forge({bbid: redirectBbid})
 					.fetch({withRelated: 'defaultAlias'});
 			}
 

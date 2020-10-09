@@ -163,7 +163,7 @@ export function incrementEditorEditCountById(
  */
 export function getAdditionalRelations(modelType) {
 	if (modelType === 'Work') {
-		return ['disambiguation', 'workType'];
+		return ['disambiguation', 'workType', 'languageSet.languages'];
 	}
 	else if (modelType === 'Edition') {
 		return ['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat'];

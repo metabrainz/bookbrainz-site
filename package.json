@@ -44,7 +44,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "body-parser": "^1.14.1",
-    "bookbrainz-data": "^2.6.1",
+    "bookbrainz-data": "^2.7.0",
+    "chai-arrays": "^2.2.0",
     "chai-sorted": "^0.2.0",
     "chart.js": "^2.9.3",
     "classnames": "^2.2.5",
@@ -72,7 +73,7 @@
     "react-addons-shallow-compare": "^15.6.0",
     "react-bootstrap": "^0.33.1",
     "react-chartjs-2": "^2.9.0",
-    "react-datepicker": "^2.15.0",
+    "react-datepicker": "^2.16.0",
     "react-dom": "^16.13.1",
     "react-redux": "^5.1.2",
     "react-select": "^1.1.0",
@@ -84,9 +85,9 @@
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.3",
     "serve-static": "^1.14.1",
+    "snyk": "^1.385.0",
     "superagent": "^5.3.1",
-    "validator": "^9.1.2",
-    "snyk": "^1.385.0"
+    "validator": "^9.1.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",

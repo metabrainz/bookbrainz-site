@@ -105,7 +105,10 @@ class SearchPage extends React.Component {
 					type={type}
 					onSearch={this.handleSearch}
 				/>
-				<SearchResults results={results}/>
+				<SearchResults
+					results={this.state.results}
+					user={this.props.user}
+				/>
 				<PagerElement
 					from={this.props.from}
 					nextEnabled={this.props.nextEnabled}
@@ -129,7 +132,8 @@ SearchPage.propTypes = {
 	nextEnabled: PropTypes.bool.isRequired,
 	query: PropTypes.string,
 	resultsPerPage: PropTypes.number,
-	type: PropTypes.string
+	type: PropTypes.string,
+	user: PropTypes.object.isRequired
 };
 SearchPage.defaultProps = {
 	from: 0,

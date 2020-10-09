@@ -172,7 +172,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						changes: revision.diff(parent),
 						entity: revision.related('entity'),
 						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}) :
+							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),
@@ -184,7 +184,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						changes: revision.diff(null),
 						entity: revision.related('entity'),
 						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias']}) :
+							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),

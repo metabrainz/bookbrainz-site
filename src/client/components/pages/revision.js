@@ -263,6 +263,7 @@ class RevisionPage extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<CustomInput
+								autocomplete="off"
 								label="Add Note"
 								ref={(ref) => this.noteInput = ref}
 								rows="6"

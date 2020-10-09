@@ -33,7 +33,7 @@ const _maxJitter = 75;
 let _client = null;
 
 function _fetchEntityModelsForESResults(orm, results) {
-	const {Area, Editor} = orm;
+	const {Area, Editor, UserCollection} = orm;
 
 	if (!results.hits) {
 		return null;
@@ -65,6 +65,19 @@ function _fetchEntityModelsForESResults(orm, results) {
 					editorJSON.type = 'Editor';
 					editorJSON.bbid = entityStub.bbid;
 					return editorJSON;
+				});
+		}
+		if (entityStub.type === 'Collection') {
+			return UserCollection.forge({id: entityStub.bbid})
+				.fetch()
+				.then((collection) => {
+					const collectionJSON = collection.toJSON();
+					collectionJSON.defaultAlias = {
+						name: collectionJSON.name
+					};
+					collectionJSON.type = 'Collection';
+					collectionJSON.bbid = entityStub.bbid;
+					return collectionJSON;
 				});
 		}
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
@@ -222,7 +235,7 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Editor, Publisher, UserCollection, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -244,6 +257,10 @@ export async function generateIndex(orm) {
 							}
 						},
 						type: 'object'
+					},
+					'disambiguation.comment': {
+						analyzer: 'trigrams',
+						type: 'text'
 					}
 				}
 			}
@@ -389,6 +406,25 @@ export async function generateIndex(orm) {
 	}));
 	await _processEntityListForBulk(processedEditors);
 
+	const userCollections = await UserCollection.forge()
+		.fetchAll();
+	const userCollectionsJSON = userCollections.toJSON();
+
+	/** To index names, we use aliasSet.aliases.name and bbid, which UserCollections don't have.
+	 * We massage the editor to return a similar format as BB entities
+	 */
+	const processedCollections = userCollectionsJSON.map((collection) => new Object({
+		aliasSet: {
+			aliases: [
+				{name: collection.name}
+			]
+		},
+		bbid: collection.id,
+		id: collection.id,
+		type: 'Collection'
+	}));
+	await _processEntityListForBulk(processedCollections);
+
 	await refreshIndex();
 }
 
@@ -429,23 +465,15 @@ export function searchByName(orm, name, type, size, from) {
 		body: {
 			from,
 			query: {
-				bool: {
-					must: {
-						match: {
-							'aliasSet.aliases.name.search': {
-								minimum_should_match: '75%',
-								query: name
-							}
-						}
-					},
-					should: {
-						match: {
-							'aliasSet.aliases.name': {
-								boost: 1.3, // eslint-disable-line max-len,no-magic-numbers
-								query: name
-							}
-						}
-					}
+				multi_match: {
+					fields: [
+						'aliasSet.aliases.name^3',
+						'aliasSet.aliases.name.search',
+						'disambiguation.comment'
+					],
+					minimum_should_match: '80%',
+					query: name,
+					type: 'cross_fields'
 				}
 			},
 			size
