@@ -514,7 +514,7 @@ router.get('/:id/collections', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-	let type = req.query.type ? req.query.type : null;
+	const type = req.query.type ? req.query.type : null;
 	const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 	if (!entityTypes.includes(type) && type !== null) {
 		throw new error.BadRequestError(`Type ${type} do not exist`);
@@ -569,7 +569,7 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 	try {
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-		let type = req.query.type ? req.query.type : null;
+		const type = req.query.type ? req.query.type : null;
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);
