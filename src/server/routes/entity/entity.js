@@ -939,16 +939,18 @@ function fetchEntitiesForRelationships(
 /**
  * @param  {any} orm -  The BookBrainz ORM
  * @param  {any} newEdition - The ORM model of the newly created Edition
+ * @param  {any} transacting - The ORM transaction object
  * @description Edition Groups will be created automatically by the ORM if no EditionGroup BBID is set on a new Edition.
  * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
  */
-async function indexAutoCreatedEditionGroup(orm, newEdition) {
+async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
 	const {EditionGroup} = orm;
 	const bbid = newEdition.get('editionGroupBbid');
 	try {
 		const editionGroup = await new EditionGroup({bbid})
 			.fetch({
 				require: true,
+				transacting,
 				withRelated: 'aliasSet.aliases'
 			});
 		await search.indexEntity(editionGroup.toJSON());
@@ -1070,7 +1072,7 @@ export function handleCreateOrEditEntity(
 
 				/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
 				if (savedMainEntity.get('type') === 'Edition') {
-					indexAutoCreatedEditionGroup(orm, savedMainEntity);
+					await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 				}
 			}
 
