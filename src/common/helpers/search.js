@@ -17,10 +17,11 @@
  */
 
 import * as commonUtils from '../../common/helpers/utils';
+import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
 
-import ElasticSearch from 'elasticsearch';
-import _ from 'lodash';
+import ElasticSearch from '@elastic/elasticsearch';
 import httpStatus from 'http-status';
+import log from 'log';
 
 
 const _index = 'bookbrainz';
@@ -90,8 +91,9 @@ function _fetchEntityModelsForESResults(orm, results) {
 // Returns the results of a search translated to entity objects
 function _searchForEntities(orm, dslQuery) {
 	return _client.search(dslQuery)
-		.then((searchResponse) => searchResponse.hits)
-		.then((results) => _fetchEntityModelsForESResults(orm, results));
+		.then((searchResponse) => searchResponse.body?.hits)
+		.then((results) => _fetchEntityModelsForESResults(orm, results))
+		.catch(error => log.error(error));
 }
 
 async function _bulkIndexEntities(entities) {
@@ -109,7 +111,7 @@ async function _bulkIndexEntities(entities) {
 				index: {
 					_id: entity.bbid,
 					_index,
-					_type: _.snakeCase(entity.type)
+					_type: snakeCase(entity.type)
 				}
 			});
 			accumulator.push(entity);
@@ -202,10 +204,10 @@ export function autocomplete(orm, query, type) {
 
 	if (type) {
 		if (Array.isArray(type)) {
-			dslQuery.type = type.map(_.snakeCase);
+			dslQuery.type = type.map(snakeCase);
 		}
 		else {
-			dslQuery.type = _.snakeCase(type);
+			dslQuery.type = snakeCase(type);
 		}
 	}
 
@@ -217,7 +219,7 @@ export function indexEntity(entity) {
 		body: entity,
 		id: entity.bbid,
 		index: _index,
-		type: _.snakeCase(entity.type)
+		type: snakeCase(entity.type)
 	});
 }
 
@@ -225,7 +227,7 @@ export function deleteEntity(entity) {
 	return _client.delete({
 		id: entity.bbid,
 		index: _index,
-		type: _.snakeCase(entity.type)
+		type: snakeCase(entity.type)
 	});
 }
 
@@ -305,7 +307,8 @@ export async function generateIndex(orm) {
 	};
 
 	// First, drop index and recreate
-	const mainIndexExists = await _client.indices.exists({index: _index});
+	const mainIndexExistsRequest = await _client.indices.exists({index: _index});
+	const mainIndexExists = mainIndexExistsRequest?.body;
 
 	if (mainIndexExists) {
 		await _client.indices.delete({index: _index});
@@ -434,7 +437,7 @@ export async function checkIfExists(orm, name, type) {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
-					transacting, _.snakeCase(type), name
+					transacting, snakeCase(type), name
 				);
 				resolve(result);
 			}
@@ -455,7 +458,7 @@ export async function checkIfExists(orm, name, type) {
 	];
 	return Promise.all(
 		bbids.map(
-			bbid => orm.func.entity.getEntity(orm, _.upperFirst(_.camelCase(type)), bbid, baseRelations)
+			bbid => orm.func.entity.getEntity(orm, upperFirst(camelCase(type)), bbid, baseRelations)
 		)
 	);
 }
@@ -491,10 +494,10 @@ export function searchByName(orm, name, type, size, from) {
 
 	if (modifiedType) {
 		if (Array.isArray(modifiedType)) {
-			dslQuery.type = modifiedType.map(_.snakeCase);
+			dslQuery.type = modifiedType.map(snakeCase);
 		}
 		else {
-			dslQuery.type = _.snakeCase(modifiedType);
+			dslQuery.type = snakeCase(modifiedType);
 		}
 	}
 
@@ -502,7 +505,7 @@ export function searchByName(orm, name, type, size, from) {
 }
 
 export async function init(orm, options) {
-	if (!_.isString(options.host)) {
+	if (!isString(options.host)) {
 		options.host = 'localhost:9200';
 	}
 
