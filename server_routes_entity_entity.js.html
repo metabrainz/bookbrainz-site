@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>server/routes/entity/entity.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-Achievement.html">Achievement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#.awardAchievement">awardAchievement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#.awardTitle">awardTitle</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processPageVisit">_processPageVisit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~achievementToUnlockId">achievementToUnlockId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~awardListToAwardObject">awardListToAwardObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~awardUnlock">awardUnlock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~getEditionDateDifference">getEditionDateDifference</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~getEditsInDays">getEditsInDays</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~getEntityVisits">getEntityVisits</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~getTypeCreation">getTypeCreation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~testTiers">testTiers</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getAssociatedEntityRevisions">_getAssociatedEntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedCollectionsForEditorPage">_getOrderedCollectionsForEditorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedPublicCollections">_getOrderedPublicCollections</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedRevisions">_getOrderedRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AboutPage">AboutPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAliasRow">addAliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addIdentifierRow">addIdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addInitialRelationship">addInitialRelationship</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#additionalAuthorProps">additionalAuthorProps</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#additionalEditionProps">additionalEditionProps</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#additionalPublisherProps">additionalPublisherProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasButton">AliasButton</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasEditor">AliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasEditorMerge">AliasEditorMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasRow">AliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasRowMerge">AliasRowMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AnnotationSection">AnnotationSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#areaToOption">areaToOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#assignIfNotSet">assignIfNotSet</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorSection">AuthorSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorSectionMerge">AuthorSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ButtonBar">ButtonBar</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#CallToAction">CallToAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkIfNameExists">checkIfNameExists</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#cleanupOnExit">cleanupOnExit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#collectionCreateOrEditHandler">collectionCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ContributePage">ContributePage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createEntityPageTitle">createEntityPageTitle</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dateObjectToISOString">dateObjectToISOString</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateAliasName">debouncedUpdateAliasName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateAliasSortName">debouncedUpdateAliasSortName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateBeginDate">debouncedUpdateBeginDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateDepth">debouncedUpdateDepth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateDisambiguationField">debouncedUpdateDisambiguationField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateEndDate">debouncedUpdateEndDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateHeight">debouncedUpdateHeight</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateIdentifierValue">debouncedUpdateIdentifierValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateNameField">debouncedUpdateNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdatePages">debouncedUpdatePages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateReleaseDate">debouncedUpdateReleaseDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateSortNameField">debouncedUpdateSortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateWeight">debouncedUpdateWeight</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateWidth">debouncedUpdateWidth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounceUpdateAnnotation">debounceUpdateAnnotation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounceUpdateRevisionNote">debounceUpdateRevisionNote</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DevelopPage">DevelopPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DisambiguationField">DisambiguationField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dispatch">dispatch</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#DragAndDropImage">DragAndDropImage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionGroupSection">EditionGroupSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionGroupSectionMerge">EditionGroupSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionSection">EditionSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionSectionMerge">EditionSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#EditorAchievementTab">EditorAchievementTab</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#ended">ended</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityCountTable">EntityCountTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityEditor">EntityEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityEditorMarkup">entityEditorMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityMerge">EntityMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityMergeMarkup">entityMergeMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#EntityRevisions">EntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityToOption">entityToOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ErrorPage">ErrorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterOutRelationshipTypeById">filterOutRelationshipTypeById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateEntityMergeProps">generateEntityMergeProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateEntityProps">generateEntityProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAdditionalRelations">getAdditionalRelations</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAssociatedEntityRevisions">getAssociatedEntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getAuthorEntityMergeSection">getAuthorEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getDefaultAliasIndex">getDefaultAliasIndex</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getEditionEntityMergeSection">getEditionEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getEditionGroupEntityMergeSection">getEditionGroupEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityLink">getEntityLink</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityModelByType">getEntityModelByType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityModels">getEntityModels</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntitySectionByType">getEntitySectionByType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getOrderedCollectionsForEditorPage">getOrderedCollectionsForEditorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getPublisherEntityMergeSection">getPublisherEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipSourceByTypeId">getRelationshipSourceByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipTargetByTypeId">getRelationshipTargetByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTodayDate">getTodayDate</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getWorkEntityMergeSection">getWorkEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#HelpPage">HelpPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideAliasEditor">hideAliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideIdentifierEditor">hideIdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierButton">IdentifierButton</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierEditor">IdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierRow">IdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#incrementEditorEditCountById">incrementEditorEditCountById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#indexAutoCreatedEditionGroup">indexAutoCreatedEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#injectDefaultAliasName">injectDefaultAliasName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isArea">isArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isNullDate">isNullDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ISODateStringToObject">ISODateStringToObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isValidBBID">isValidBBID</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#LanguageField">LanguageField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#makeEntityCreateOrEditHandler">makeEntityCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#makePromiseFromObject">makePromiseFromObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#MergeField">MergeField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NameField">NameField</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#NameSection">NameSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NameSectionMerge">NameSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NumericField">NumericField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PrivacyPage">PrivacyPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PublisherSection">PublisherSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PublisherSectionMerge">PublisherSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#recursivelyGetMergedEntitiesBBIDs">recursivelyGetMergedEntitiesBBIDs</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#RegistrationAuth">RegistrationAuth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeAliasRow">removeAliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyAliases">removeEmptyAliases</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyIdentifiers">removeEmptyIdentifiers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeIdentifierRow">removeIdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#renderRelationship">renderRelationship</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#router">router</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#searchName">searchName</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#SearchResults">SearchResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setSubmitError">setSubmitError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setSubmitted">setSubmitted</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showAliasEditor">showAliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showIdentifierEditor">showIdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showPhysical">showPhysical</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SortNameField">SortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#StatisticsPage">StatisticsPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#StrategyMock">StrategyMock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#stripDot">stripDot</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SubmissionSection">SubmissionSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#template">template</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleShowEditionGroup">toggleShowEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#TopEditorsTable">TopEditorsTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#transformISODateForDisplay">transformISODateForDisplay</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#transformISODateForSelect">transformISODateForSelect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#transformNewForm">transformNewForm</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#UPDATE_WARN_IF_EDITION_GROUP_EXISTS">UPDATE_WARN_IF_EDITION_GROUP_EXISTS</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAliasLanguage">updateAliasLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAliasPrimary">updateAliasPrimary</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateArea">updateArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateBeginArea">updateBeginArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEditionGroup">updateEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEndArea">updateEndArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEnded">updateEnded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateFormat">updateFormat</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateGender">updateGender</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateIdentifierType">updateIdentifierType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateLanguageField">updateLanguageField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateLanguages">updateLanguages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updatePublisher">updatePublisher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateType">updateType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ValidationLabel">ValidationLabel</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#value">value</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ValueField">ValueField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#WorkSection">WorkSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#WorkSectionMerge">WorkSectionMerge</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">server/routes/entity/entity.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+require("core-js/modules/es.symbol");
+
+require("core-js/modules/es.array.concat");
+
+require("core-js/modules/es.array.filter");
+
+require("core-js/modules/es.array.find");
+
+require("core-js/modules/es.array.find-index");
+
+require("core-js/modules/es.array.for-each");
+
+require("core-js/modules/es.array.iterator");
+
+require("core-js/modules/es.array.map");
+
+require("core-js/modules/es.array.reduce");
+
+require("core-js/modules/es.array.slice");
+
+require("core-js/modules/es.date.to-json");
+
+require("core-js/modules/es.function.name");
+
+require("core-js/modules/es.number.constructor");
+
+require("core-js/modules/es.object.get-own-property-descriptor");
+
+require("core-js/modules/es.object.get-own-property-descriptors");
+
+require("core-js/modules/es.object.keys");
+
+require("core-js/modules/es.object.to-string");
+
+require("core-js/modules/es.promise");
+
+require("core-js/modules/es.regexp.exec");
+
+require("core-js/modules/es.string.iterator");
+
+require("core-js/modules/es.string.split");
+
+require("core-js/modules/web.dom-collections.for-each");
+
+require("core-js/modules/web.dom-collections.iterator");
+
+require("core-js/modules/web.url.to-json");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.displayEntity = displayEntity;
+exports.displayDeleteEntity = displayDeleteEntity;
+exports.displayRevisions = displayRevisions;
+exports.updateDisplayedRevisions = updateDisplayedRevisions;
+exports.addNoteToRevision = addNoteToRevision;
+exports.getEntityByBBID = getEntityByBBID;
+exports.deleteRelationships = deleteRelationships;
+exports.handleDelete = handleDelete;
+exports.processMergeOperation = processMergeOperation;
+exports.handleCreateOrEditEntity = handleCreateOrEditEntity;
+exports.constructAliases = constructAliases;
+exports.constructIdentifiers = constructIdentifiers;
+exports.constructRelationships = constructRelationships;
+exports.getDefaultAliasIndex = getDefaultAliasIndex;
+exports.areaToOption = areaToOption;
+exports.compareEntitiesByDate = compareEntitiesByDate;
+
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+
+var _toArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toArray"));
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutProperties"));
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+require("regenerator-runtime/runtime");
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
+var _isNull2 = _interopRequireDefault(require("lodash/isNull"));
+
+var _has2 = _interopRequireDefault(require("lodash/has"));
+
+var _forEach2 = _interopRequireDefault(require("lodash/forEach"));
+
+var _forOwn2 = _interopRequireDefault(require("lodash/forOwn"));
+
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
+
+var _reduce2 = _interopRequireDefault(require("lodash/reduce"));
+
+var _get2 = _interopRequireDefault(require("lodash/get"));
+
+var _flatMap2 = _interopRequireDefault(require("lodash/flatMap"));
+
+var _pick2 = _interopRequireDefault(require("lodash/pick"));
+
+var _assign2 = _interopRequireDefault(require("lodash/assign"));
+
+var _keys2 = _interopRequireDefault(require("lodash/keys"));
+
+var _unionBy2 = _interopRequireDefault(require("lodash/unionBy"));
+
+var _values2 = _interopRequireDefault(require("lodash/values"));
+
+var _without2 = _interopRequireDefault(require("lodash/without"));
+
+var _includes2 = _interopRequireDefault(require("lodash/includes"));
+
+var _isNil2 = _interopRequireDefault(require("lodash/isNil"));
+
+var _uniq2 = _interopRequireDefault(require("lodash/uniq"));
+
+var _compact2 = _interopRequireDefault(require("lodash/compact"));
+
+var _isEmpty2 = _interopRequireDefault(require("lodash/isEmpty"));
+
+var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
+
+var _camelCase2 = _interopRequireDefault(require("lodash/camelCase"));
+
+var _isString2 = _interopRequireDefault(require("lodash/isString"));
+
+var _map2 = _interopRequireDefault(require("lodash/map"));
+
+var _uniqBy2 = _interopRequireDefault(require("lodash/uniqBy"));
+
+var achievement = _interopRequireWildcard(require("../../helpers/achievement"));
+
+var commonUtils = _interopRequireWildcard(require("../../../common/helpers/utils"));
+
+var error = _interopRequireWildcard(require("../../../common/helpers/error"));
+
+var handler = _interopRequireWildcard(require("../../helpers/handler"));
+
+var propHelpers = _interopRequireWildcard(require("../../../client/helpers/props"));
+
+var search = _interopRequireWildcard(require("../../../common/helpers/search"));
+
+var utils = _interopRequireWildcard(require("../../helpers/utils"));
+
+var _props2 = require("../../helpers/props");
+
+var _author = _interopRequireDefault(require("../../../client/components/pages/entities/author"));
+
+var _deletion = _interopRequireDefault(require("../../../client/components/forms/deletion"));
+
+var _editionGroup = _interopRequireDefault(require("../../../client/components/pages/entities/edition-group"));
+
+var _edition = _interopRequireDefault(require("../../../client/components/pages/entities/edition"));
+
+var _entityRevisions = _interopRequireDefault(require("../../../client/components/pages/entity-revisions"));
+
+var _layout = _interopRequireDefault(require("../../../client/containers/layout"));
+
+var _publisher = _interopRequireDefault(require("../../../client/components/pages/entities/publisher"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _server = _interopRequireDefault(require("react-dom/server"));
+
+var _work = _interopRequireDefault(require("../../../client/components/pages/entities/work"));
+
+var _entity = require("../../../client/helpers/entity");
+
+var _revisions = require("../../helpers/revisions");
+
+var _log = _interopRequireDefault(require("log"));
+
+var _target = _interopRequireDefault(require("../../templates/target"));
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i &lt; arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+var entityComponents = {
+  author: _author.default,
+  edition: _edition.default,
+  editionGroup: _editionGroup.default,
+  publisher: _publisher.default,
+  work: _work.default
+};
+
+function displayEntity(req, res) {
+  var orm = req.app.locals.orm;
+  var AchievementUnlock = orm.AchievementUnlock,
+      EditorEntityVisits = orm.EditorEntityVisits;
+  var resLocals = res.locals;
+  var entity = resLocals.entity; // Get unique identifier types for display
+  // $FlowFixMe
+
+  var identifierTypes = [];
+
+  if (entity.identifierSet) {
+    identifierTypes = (0, _uniqBy2.default)((0, _map2.default)(entity.identifierSet.identifiers, 'type'), 'id');
+  }
+
+  var editorEntityVisitPromise;
+
+  if (resLocals.user) {
+    editorEntityVisitPromise = new EditorEntityVisits({
+      bbid: resLocals.entity.bbid,
+      editorId: resLocals.user.id
+    }).save(null, {
+      method: 'insert'
+    }).then(function () {
+      return achievement.processPageVisit(orm, resLocals.user.id);
+    }).catch( // error caused by duplicates we do not want in database
+    function () {
+      return new Promise(function (resolve) {
+        return resolve(false);
+      });
+    });
+  } else {
+    editorEntityVisitPromise = new Promise(function (resolve) {
+      return resolve(false);
+    });
+  }
+
+  var alertPromise = editorEntityVisitPromise.then(function (visitAlert) {
+    var alertIds = [];
+
+    if (visitAlert.alert) {
+      alertIds = alertIds.concat(visitAlert.alert.split(',').map(function (id) {
+        return parseInt(id, 10);
+      }));
+    }
+
+    if ((0, _isString2.default)(req.query.alert)) {
+      // $FlowFixMe
+      alertIds = alertIds.concat(req.query.alert.split(',').map(function (id) {
+        return parseInt(id, 10);
+      }));
+    }
+
+    if (alertIds.length > 0) {
+      var promiseList = alertIds.map(function (achievementAlert) {
+        return new AchievementUnlock({
+          id: achievementAlert
+        }).fetch({
+          require: true,
+          withRelated: 'achievement'
+        }).then(function (unlock) {
+          return unlock.toJSON();
+        }).then(function (unlock) {
+          var unlockName;
+
+          if (req.user.id === unlock.editorId) {
+            unlockName = {
+              name: unlock.achievement.name
+            };
+          }
+
+          return unlockName;
+        }).catch(function (err) {
+          _log.default.debug(err);
+        });
+      });
+      alertPromise = Promise.all(promiseList);
+    } else {
+      alertPromise = new Promise(function (resolve) {
+        return resolve(false);
+      });
+    }
+
+    return alertPromise;
+  });
+  return alertPromise.then(function (alert) {
+    var entityName = (0, _camelCase2.default)(entity.type);
+    var EntityComponent = entityComponents[entityName];
+
+    if (EntityComponent) {
+      var props = (0, _props2.generateProps)(req, res, {
+        alert: alert,
+        identifierTypes: identifierTypes
+      });
+
+      var markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(EntityComponent, propHelpers.extractEntityProps(props))));
+
+      res.send((0, _target.default)({
+        markup: markup,
+        page: entityName,
+        props: (0, _props2.escapeProps)(props),
+        script: '/js/entity/entity.js',
+        title: "".concat((0, _entity.getEntityLabel)(props.entity, false), " (").concat((0, _upperFirst2.default)(entityName), ")")
+      }));
+    } else {
+      throw new Error("Component was not found for the following entity:".concat(entityName));
+    }
+  });
+}
+
+function displayDeleteEntity(req, res) {
+  var props = (0, _props2.generateProps)(req, res);
+
+  var markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_deletion.default, {
+    entity: props.entity
+  })));
+
+  res.send((0, _target.default)({
+    markup: markup,
+    props: (0, _props2.escapeProps)(props),
+    script: '/js/deletion.js'
+  }));
+}
+
+function displayRevisions(_x, _x2, _x3, _x4) {
+  return _displayRevisions.apply(this, arguments);
+} // eslint-disable-next-line consistent-return
+
+
+function _displayRevisions() {
+  _displayRevisions = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next, RevisionModel) {
+    var size, from, orm, bbid, orderedRevisions, _utils$getNextEnabled, newResultsArray, nextEnabled, props, markup;
+
+    return _regenerator.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            size = req.query.size ? parseInt(req.query.size, 10) : 20;
+            from = req.query.from ? parseInt(req.query.from, 10) : 0;
+            orm = req.app.locals.orm;
+            bbid = req.params.bbid;
+            _context3.prev = 4;
+            _context3.next = 7;
+            return (0, _revisions.getOrderedRevisionsForEntityPage)(orm, from, size + 1, RevisionModel, bbid);
+
+          case 7:
+            orderedRevisions = _context3.sent;
+            _utils$getNextEnabled = utils.getNextEnabledAndResultsArray(orderedRevisions, size), newResultsArray = _utils$getNextEnabled.newResultsArray, nextEnabled = _utils$getNextEnabled.nextEnabled;
+            props = (0, _props2.generateProps)(req, res, {
+              from: from,
+              nextEnabled: nextEnabled,
+              revisions: newResultsArray,
+              showRevisionEditor: true,
+              showRevisionNote: true,
+              size: size
+            });
+            markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_entityRevisions.default, (0, _extends2.default)({
+              entity: props.entity
+            }, propHelpers.extractChildProps(props)))));
+            return _context3.abrupt("return", res.send((0, _target.default)({
+              markup: markup,
+              page: 'revisions',
+              props: (0, _props2.escapeProps)(props),
+              script: '/js/entity/entity.js'
+            })));
+
+          case 14:
+            _context3.prev = 14;
+            _context3.t0 = _context3["catch"](4);
+            return _context3.abrupt("return", next(_context3.t0));
+
+          case 17:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[4, 14]]);
+  }));
+  return _displayRevisions.apply(this, arguments);
+}
+
+function updateDisplayedRevisions(_x5, _x6, _x7, _x8) {
+  return _updateDisplayedRevisions.apply(this, arguments);
+}
+
+function _updateDisplayedRevisions() {
+  _updateDisplayedRevisions = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next, RevisionModel) {
+    var size, from, orm, bbid, orderedRevisions;
+    return _regenerator.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            size = req.query.size ? parseInt(req.query.size, 10) : 20;
+            from = req.query.from ? parseInt(req.query.from, 10) : 0;
+            orm = req.app.locals.orm;
+            bbid = req.params.bbid;
+            _context4.prev = 4;
+            _context4.next = 7;
+            return (0, _revisions.getOrderedRevisionsForEntityPage)(orm, from, size, RevisionModel, bbid);
+
+          case 7:
+            orderedRevisions = _context4.sent;
+            res.send(orderedRevisions);
+            _context4.next = 14;
+            break;
+
+          case 11:
+            _context4.prev = 11;
+            _context4.t0 = _context4["catch"](4);
+            return _context4.abrupt("return", next(_context4.t0));
+
+          case 14:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, null, [[4, 11]]);
+  }));
+  return _updateDisplayedRevisions.apply(this, arguments);
+}
+
+function _createNote(orm, content, editorID, revision, transacting) {
+  var Note = orm.Note;
+
+  if (content) {
+    var revisionId = revision.get('id');
+    return new Note({
+      authorId: editorID,
+      content: content,
+      revisionId: revisionId
+    }).save(null, {
+      transacting: transacting
+    });
+  }
+
+  return null;
+}
+
+function addNoteToRevision(req, res) {
+  var orm = req.app.locals.orm;
+  var Revision = orm.Revision,
+      bookshelf = orm.bookshelf;
+  var editorJSON = req.session.passport.user;
+  var revision = Revision.forge({
+    id: req.params.id
+  });
+  var body = req.body;
+  var revisionNotePromise = bookshelf.transaction(function (transacting) {
+    return _createNote(orm, body.note, editorJSON.id, revision, transacting);
+  });
+  return handler.sendPromiseResult(res, revisionNotePromise);
+}
+
+function getEntityByBBID(_x9, _x10, _x11) {
+  return _getEntityByBBID.apply(this, arguments);
+}
+
+function _getEntityByBBID() {
+  _getEntityByBBID = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(orm, transacting, bbid) {
+    var redirectBbid, entityHeader, model;
+    return _regenerator.default.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.next = 2;
+            return orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
+
+          case 2:
+            redirectBbid = _context5.sent;
+            _context5.next = 5;
+            return orm.Entity.forge({
+              bbid: redirectBbid
+            }).fetch({
+              transacting: transacting
+            });
+
+          case 5:
+            entityHeader = _context5.sent;
+            model = commonUtils.getEntityModelByType(orm, entityHeader.get('type'));
+            return _context5.abrupt("return", model.forge({
+              bbid: redirectBbid
+            }).fetch({
+              transacting: transacting
+            }));
+
+          case 8:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  }));
+  return _getEntityByBBID.apply(this, arguments);
+}
+
+function setParentRevisions(_x12, _x13, _x14) {
+  return _setParentRevisions.apply(this, arguments);
+}
+
+function _setParentRevisions() {
+  _setParentRevisions = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(transacting, newRevision, parentRevisionIDs) {
+    var parents;
+    return _regenerator.default.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            if (!(0, _isEmpty2.default)(parentRevisionIDs)) {
+              _context6.next = 2;
+              break;
+            }
+
+            return _context6.abrupt("return", new Promise(function (resolve) {
+              return resolve(null);
+            }));
+
+          case 2:
+            _context6.next = 4;
+            return newRevision.related('parents').fetch({
+              transacting: transacting
+            });
+
+          case 4:
+            parents = _context6.sent;
+            return _context6.abrupt("return", parents.attach(parentRevisionIDs, {
+              transacting: transacting
+            }));
+
+          case 6:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
+  return _setParentRevisions.apply(this, arguments);
+}
+
+function saveEntitiesAndFinishRevision(_x15, _x16, _x17, _x18, _x19, _x20, _x21, _x22) {
+  return _saveEntitiesAndFinishRevision.apply(this, arguments);
+}
+
+function _saveEntitiesAndFinishRevision() {
+  _saveEntitiesAndFinishRevision = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7(orm, transacting, isNew, newRevision, mainEntity, updatedEntities, editorID, note) {
+    var parentRevisionIDs, entitiesSavedPromise, editorUpdatePromise, notePromise, parentsAddedPromise, _yield$Promise$all, _yield$Promise$all2, savedEntities, others;
+
+    return _regenerator.default.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            parentRevisionIDs = (0, _compact2.default)((0, _uniq2.default)(updatedEntities.map(function (entityModel) {
+              return entityModel.get('revisionId');
+            })));
+            entitiesSavedPromise = Promise.all((0, _map2.default)(updatedEntities, function (entityModel) {
+              entityModel.set('revisionId', newRevision.get('id'));
+              var shouldInsert = entityModel.get('bbid') === mainEntity.get('bbid') &amp;&amp; isNew;
+              var method = shouldInsert ? 'insert' : 'update';
+              return entityModel.save(null, {
+                method: method,
+                transacting: transacting
+              });
+            }));
+            editorUpdatePromise = utils.incrementEditorEditCountById(orm, editorID, transacting);
+            notePromise = _createNote(orm, note, editorID, newRevision, transacting);
+            parentsAddedPromise = setParentRevisions(transacting, newRevision, parentRevisionIDs);
+            /** model.save returns a refreshed model */
+            // eslint-disable-next-line no-unused-vars
+
+            _context7.next = 7;
+            return Promise.all([entitiesSavedPromise, editorUpdatePromise, parentsAddedPromise, notePromise]);
+
+          case 7:
+            _yield$Promise$all = _context7.sent;
+            _yield$Promise$all2 = (0, _toArray2.default)(_yield$Promise$all);
+            savedEntities = _yield$Promise$all2[0];
+            others = _yield$Promise$all2.slice(1);
+            return _context7.abrupt("return", savedEntities.find(function (entityModel) {
+              return entityModel.get('bbid') === mainEntity.get('bbid');
+            }) || mainEntity);
+
+          case 12:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7);
+  }));
+  return _saveEntitiesAndFinishRevision.apply(this, arguments);
+}
+
+function deleteRelationships(_x23, _x24, _x25) {
+  return _deleteRelationships.apply(this, arguments);
+}
+
+function _deleteRelationships() {
+  _deleteRelationships = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9(orm, transacting, mainEntity) {
+    var mainBBID, relationshipSet, otherBBIDs, otherEntities;
+    return _regenerator.default.wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            mainBBID = mainEntity.bbid;
+            relationshipSet = mainEntity.relationshipSet;
+            otherBBIDs = [];
+            otherEntities = [];
+
+            if (!relationshipSet) {
+              _context9.next = 13;
+              break;
+            }
+
+            if (relationshipSet.relationships) {
+              _context9.next = 7;
+              break;
+            }
+
+            return _context9.abrupt("return", []);
+
+          case 7:
+            relationshipSet.relationships.forEach(function (relationship) {
+              if (relationship.sourceBbid === mainBBID) {
+                otherBBIDs.push(relationship.targetBbid);
+              } else if (relationship.targetBbid === mainBBID) {
+                otherBBIDs.push(relationship.sourceBbid);
+              }
+            }); // Loop over the BBID's of other entites related to deleted entity
+
+            if (!otherBBIDs.length) {
+              _context9.next = 13;
+              break;
+            }
+
+            if (!(otherBBIDs.length === 0)) {
+              _context9.next = 11;
+              break;
+            }
+
+            return _context9.abrupt("return", []);
+
+          case 11:
+            _context9.next = 13;
+            return Promise.all(otherBBIDs.map( /*#__PURE__*/function () {
+              var _ref7 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8(entityBbid) {
+                var otherEntity, otherEntityRelationshipSet, otherEntityRelationships, newRelationshipSet;
+                return _regenerator.default.wrap(function _callee8$(_context8) {
+                  while (1) {
+                    switch (_context8.prev = _context8.next) {
+                      case 0:
+                        _context8.next = 2;
+                        return getEntityByBBID(orm, transacting, entityBbid);
+
+                      case 2:
+                        otherEntity = _context8.sent;
+                        _context8.next = 5;
+                        return otherEntity.relationshipSet().fetch({
+                          require: false,
+                          transacting: transacting,
+                          withRelated: 'relationships'
+                        });
+
+                      case 5:
+                        otherEntityRelationshipSet = _context8.sent;
+
+                        if (!(0, _isNil2.default)(otherEntityRelationshipSet)) {
+                          _context8.next = 8;
+                          break;
+                        }
+
+                        return _context8.abrupt("return");
+
+                      case 8:
+                        // Fetch other entity relationships to remove relation with the deleted entity
+                        otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON(); // Filter out entites related to deleted entity
+
+                        otherEntityRelationships = otherEntityRelationships.filter(function (_ref8) {
+                          var sourceBbid = _ref8.sourceBbid,
+                              targetBbid = _ref8.targetBbid;
+                          return mainBBID !== sourceBbid &amp;&amp; mainBBID !== targetBbid;
+                        });
+                        _context8.next = 12;
+                        return orm.func.relationship.updateRelationshipSets(orm, transacting, otherEntityRelationshipSet, otherEntityRelationships);
+
+                      case 12:
+                        newRelationshipSet = _context8.sent;
+                        otherEntity.set('relationshipSetId', newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null);
+                        otherEntities.push(otherEntity);
+
+                      case 15:
+                      case "end":
+                        return _context8.stop();
+                    }
+                  }
+                }, _callee8);
+              }));
+
+              return function (_x74) {
+                return _ref7.apply(this, arguments);
+              };
+            }()));
+
+          case 13:
+            return _context9.abrupt("return", otherEntities);
+
+          case 14:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9);
+  }));
+  return _deleteRelationships.apply(this, arguments);
+}
+
+function fetchOrCreateMainEntity(orm, transacting, isNew, bbid, entityType) {
+  var model = commonUtils.getEntityModelByType(orm, entityType);
+  var entity = model.forge({
+    bbid: bbid
+  });
+
+  if (isNew) {
+    return new Promise(function (resolve) {
+      return resolve(entity);
+    });
+  }
+
+  return entity.fetch({
+    transacting: transacting
+  });
+}
+
+function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
+  var entity = res.locals.entity;
+  var Revision = orm.Revision,
+      bookshelf = orm.bookshelf;
+  var editorJSON = req.session.passport.user;
+  var body = req.body;
+  var entityDeletePromise = bookshelf.transaction( /*#__PURE__*/function () {
+    var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(transacting) {
+      var otherEntities, newRevision, entityRevision, mainEntity, savedMainEntity;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return deleteRelationships(orm, transacting, entity);
+
+            case 2:
+              otherEntities = _context.sent;
+              _context.next = 5;
+              return new Revision({
+                authorId: editorJSON.id
+              }).save(null, {
+                transacting: transacting
+              });
+
+            case 5:
+              newRevision = _context.sent;
+              _context.next = 8;
+              return new RevisionModel({
+                bbid: entity.bbid,
+                dataId: null,
+                id: newRevision.get('id')
+              }).save(null, {
+                method: 'insert',
+                transacting: transacting
+              });
+
+            case 8:
+              entityRevision = _context.sent;
+              _context.next = 11;
+              return new HeaderModel({
+                bbid: entity.bbid,
+                masterRevisionId: entityRevision.get('id')
+              }).save(null, {
+                transacting: transacting
+              });
+
+            case 11:
+              _context.next = 13;
+              return fetchOrCreateMainEntity(orm, transacting, false, entity.bbid, entity.type);
+
+            case 13:
+              mainEntity = _context.sent;
+              _context.next = 16;
+              return saveEntitiesAndFinishRevision(orm, transacting, false, newRevision, mainEntity, otherEntities, editorJSON.id, body.note);
+
+            case 16:
+              savedMainEntity = _context.sent;
+              return _context.abrupt("return", savedMainEntity);
+
+            case 18:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function (_x26) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+  return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
+}
+
+function processMergeOperation(_x27, _x28, _x29, _x30, _x31, _x32) {
+  return _processMergeOperation.apply(this, arguments);
+}
+
+function _processMergeOperation() {
+  _processMergeOperation = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee15(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
+    var Edition, bookshelf, mergingEntities, entityType, currentEntityBBID, mergingEntitiesBBIDs, entitiesToMergeBBIDs, allEntitiesReturnArray, entitiesToMerge, entitiesModelsToMerge, editionsToSet, editionsToSetCollections, _editionsToSet;
+
+    return _regenerator.default.wrap(function _callee15$(_context15) {
+      while (1) {
+        switch (_context15.prev = _context15.next) {
+          case 0:
+            Edition = orm.Edition, bookshelf = orm.bookshelf;
+            mergingEntities = session.mergeQueue.mergingEntities;
+
+            if (mergingEntities) {
+              _context15.next = 4;
+              break;
+            }
+
+            throw new Error('Merge handler called with no merge queue, aborting');
+
+          case 4:
+            entityType = mainEntity.get('type');
+            currentEntityBBID = mainEntity.get('bbid');
+            mergingEntitiesBBIDs = Object.keys(mergingEntities);
+
+            if ((0, _includes2.default)(mergingEntitiesBBIDs, currentEntityBBID)) {
+              _context15.next = 9;
+              break;
+            }
+
+            throw new Error('Entity being merged into does not appear in merge queue, aborting');
+
+          case 9:
+            entitiesToMergeBBIDs = (0, _without2.default)(Object.keys(mergingEntities), currentEntityBBID);
+            allEntitiesReturnArray = allEntities; // fetch entities we're merging to add them to to the array of modified entities
+
+            entitiesToMerge = (0, _values2.default)(mergingEntities).filter(function (_ref9) {
+              var bbid = _ref9.bbid;
+              return bbid !== currentEntityBBID;
+            });
+            _context15.next = 14;
+            return Promise.all(entitiesToMergeBBIDs.map(function (bbid) {
+              return fetchOrCreateMainEntity(orm, transacting, false, bbid, entityType);
+            }));
+
+          case 14:
+            entitiesModelsToMerge = _context15.sent;
+
+            /** Add entities to be merged to the array of modified entities */
+            allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, entitiesModelsToMerge, 'id');
+            /** Remove relationships that concern entities being merged from already modified relationshipSets */
+
+            _context15.next = 18;
+            return Promise.all((0, _map2.default)(relationshipSets, /*#__PURE__*/function () {
+              var _ref10 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(relationshipSet) {
+                var refreshedrelationshipSet, relationshipsToRemove;
+                return _regenerator.default.wrap(function _callee10$(_context10) {
+                  while (1) {
+                    switch (_context10.prev = _context10.next) {
+                      case 0:
+                        if (!relationshipSet) {
+                          _context10.next = 8;
+                          break;
+                        }
+
+                        _context10.next = 3;
+                        return relationshipSet.refresh({
+                          transacting: transacting,
+                          withRelated: 'relationships'
+                        });
+
+                      case 3:
+                        refreshedrelationshipSet = _context10.sent;
+
+                        /** Find relationships with entities being merge and remove them from set */
+                        relationshipsToRemove = refreshedrelationshipSet.related('relationships').toJSON().filter(function (_ref11) {
+                          var sourceBbid = _ref11.sourceBbid,
+                              targetBbid = _ref11.targetBbid;
+                          return (0, _includes2.default)(entitiesToMergeBBIDs, sourceBbid) || (0, _includes2.default)(entitiesToMergeBBIDs, targetBbid);
+                        }).map(function (_ref12) {
+                          var id = _ref12.id;
+                          return id;
+                        });
+
+                        if (!relationshipsToRemove.length) {
+                          _context10.next = 8;
+                          break;
+                        }
+
+                        _context10.next = 8;
+                        return refreshedrelationshipSet.related('relationships').detach(relationshipsToRemove, {
+                          transacting: transacting
+                        });
+
+                      case 8:
+                      case "end":
+                        return _context10.stop();
+                    }
+                  }
+                }, _callee10);
+              }));
+
+              return function (_x75) {
+                return _ref10.apply(this, arguments);
+              };
+            }()));
+
+          case 18:
+            _context15.next = 20;
+            return Promise.all(entitiesModelsToMerge.map( /*#__PURE__*/function () {
+              var _ref13 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(entity) {
+                var entityBBID, relationshipSet, relationships, otherEntitiesToFetch;
+                return _regenerator.default.wrap(function _callee12$(_context12) {
+                  while (1) {
+                    switch (_context12.prev = _context12.next) {
+                      case 0:
+                        entityBBID = entity.get('bbid');
+                        _context12.next = 3;
+                        return entity.relationshipSet().fetch({
+                          require: false,
+                          transacting: transacting,
+                          withRelated: 'relationships'
+                        });
+
+                      case 3:
+                        relationshipSet = _context12.sent;
+
+                        if (relationshipSet) {
+                          _context12.next = 6;
+                          break;
+                        }
+
+                        return _context12.abrupt("return");
+
+                      case 6:
+                        relationships = relationshipSet.related('relationships').toJSON();
+                        otherEntitiesToFetch = relationships.reduce(function (accumulator, relationship) {
+                          if (relationship.sourceBbid === entityBBID) {
+                            accumulator.push(relationship.targetBbid);
+                          } else if (relationship.targetBbid === entityBBID) {
+                            accumulator.push(relationship.sourceBbid);
+                          }
+
+                          return accumulator;
+                        }, []) // Ignore entities that already have a modified relationshipSet (dealed with above)
+                        .filter(function (bbid) {
+                          return !(0, _includes2.default)((0, _keys2.default)(relationshipSets), bbid);
+                        });
+                        _context12.next = 10;
+                        return Promise.all(otherEntitiesToFetch.map( /*#__PURE__*/function () {
+                          var _ref14 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(bbid) {
+                            var otherEntity, otherEntityRelationshipSet, otherEntityRelationships, cleanedUpRelationships, updatedRelationshipSets;
+                            return _regenerator.default.wrap(function _callee11$(_context11) {
+                              while (1) {
+                                switch (_context11.prev = _context11.next) {
+                                  case 0:
+                                    _context11.next = 2;
+                                    return getEntityByBBID(orm, transacting, bbid);
+
+                                  case 2:
+                                    otherEntity = _context11.sent;
+                                    _context11.next = 5;
+                                    return entity.relationshipSet().fetch({
+                                      require: false,
+                                      transacting: transacting,
+                                      withRelated: 'relationships'
+                                    });
+
+                                  case 5:
+                                    otherEntityRelationshipSet = _context11.sent;
+
+                                    if (otherEntityRelationshipSet) {
+                                      _context11.next = 8;
+                                      break;
+                                    }
+
+                                    return _context11.abrupt("return");
+
+                                  case 8:
+                                    otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON(); // Remove relationships with entity being merged
+
+                                    cleanedUpRelationships = otherEntityRelationships.filter(function (_ref15) {
+                                      var sourceBbid = _ref15.sourceBbid,
+                                          targetBbid = _ref15.targetBbid;
+                                      return entityBBID !== sourceBbid &amp;&amp; entityBBID !== targetBbid;
+                                    }); // If there's a difference, apply the new relationships array without rels to merged entity
+
+                                    if (!(cleanedUpRelationships.length !== otherEntityRelationships.length)) {
+                                      _context11.next = 16;
+                                      break;
+                                    }
+
+                                    _context11.next = 13;
+                                    return orm.func.relationship.updateRelationshipSets(orm, transacting, otherEntityRelationshipSet, cleanedUpRelationships);
+
+                                  case 13:
+                                    updatedRelationshipSets = _context11.sent;
+                                    // Make sure the entity is later updated with its new relationshipSet id
+                                    allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, [otherEntity], 'id');
+                                    (0, _assign2.default)(relationshipSets, (0, _pick2.default)(updatedRelationshipSets, bbid));
+
+                                  case 16:
+                                  case "end":
+                                    return _context11.stop();
+                                }
+                              }
+                            }, _callee11);
+                          }));
+
+                          return function (_x77) {
+                            return _ref14.apply(this, arguments);
+                          };
+                        }()));
+
+                      case 10:
+                      case "end":
+                        return _context12.stop();
+                    }
+                  }
+                }, _callee12);
+              }));
+
+              return function (_x76) {
+                return _ref13.apply(this, arguments);
+              };
+            }()));
+
+          case 20:
+            if (!(entityType === 'EditionGroup')) {
+              _context15.next = 25;
+              break;
+            }
+
+            _context15.next = 23;
+            return Edition.query(function (qb) {
+              return qb.whereIn('edition_group_bbid', entitiesToMergeBBIDs).andWhere('master', true);
+            }).fetchAll({
+              require: false,
+              transacting: transacting
+            });
+
+          case 23:
+            editionsToSet = _context15.sent;
+
+            if (editionsToSet.length) {
+              editionsToSet.forEach(function (editionModel) {
+                return editionModel.set({
+                  editionGroupBbid: currentEntityBBID
+                });
+              }); // Add the modified Editions to the revision
+
+              allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, editionsToSet.toArray(), 'id');
+            }
+
+          case 25:
+            if (!(entityType === 'Publisher')) {
+              _context15.next = 38;
+              break;
+            }
+
+            _context15.prev = 26;
+            _context15.next = 29;
+            return Promise.all(entitiesModelsToMerge.map(function (entitiesModel) {
+              return entitiesModel.editions();
+            }));
+
+          case 29:
+            editionsToSetCollections = _context15.sent;
+            // eslint-disable-next-line consistent-return
+            _editionsToSet = (0, _flatMap2.default)(editionsToSetCollections, function (edition) {
+              if (edition.models &amp;&amp; edition.models.length) {
+                return edition.models;
+              }
+            });
+            _context15.next = 33;
+            return Promise.all(_editionsToSet.map( /*#__PURE__*/function () {
+              var _ref16 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee13(edition) {
+                var oldPublisherSet, newPublisherSet;
+                return _regenerator.default.wrap(function _callee13$(_context13) {
+                  while (1) {
+                    switch (_context13.prev = _context13.next) {
+                      case 0:
+                        _context13.next = 2;
+                        return edition.publisherSet();
+
+                      case 2:
+                        oldPublisherSet = _context13.sent;
+                        _context13.next = 5;
+                        return orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, [{
+                          bbid: currentEntityBBID
+                        }]);
+
+                      case 5:
+                        newPublisherSet = _context13.sent;
+                        // Set the new PublisherSet on the Edition
+                        edition.set('publisherSetId', newPublisherSet.get('id')); // Add the modified Edition to the revision (if it doesn't exist yet)
+
+                        allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, [edition], 'id');
+
+                      case 8:
+                      case "end":
+                        return _context13.stop();
+                    }
+                  }
+                }, _callee13);
+              }));
+
+              return function (_x78) {
+                return _ref16.apply(this, arguments);
+              };
+            }()));
+
+          case 33:
+            _context15.next = 38;
+            break;
+
+          case 35:
+            _context15.prev = 35;
+            _context15.t0 = _context15["catch"](26);
+
+            _log.default.error(_context15.t0);
+
+          case 38:
+            /**
+             * Some actions we only want to take once the main entity has been saved
+            */
+            mainEntity.once('saved', /*#__PURE__*/function () {
+              var _ref17 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee14(model) {
+                var newEntityRevision;
+                return _regenerator.default.wrap(function _callee14$(_context14) {
+                  while (1) {
+                    switch (_context14.prev = _context14.next) {
+                      case 0:
+                        _context14.next = 2;
+                        return model.revision().fetch({
+                          transacting: transacting
+                        });
+
+                      case 2:
+                        newEntityRevision = _context14.sent;
+                        _context14.next = 5;
+                        return newEntityRevision.where('bbid', currentEntityBBID).save({
+                          isMerge: true
+                        }, {
+                          patch: true,
+                          transacting: transacting
+                        });
+
+                      case 5:
+                        _context14.next = 7;
+                        return newEntityRevision.query(function (qb) {
+                          return qb.whereIn('bbid', entitiesToMergeBBIDs);
+                        }).save({
+                          dataId: null,
+                          isMerge: true
+                        }, {
+                          patch: true,
+                          transacting: transacting
+                        });
+
+                      case 7:
+                        /** Clear the merge queue */
+                        session.mergeQueue = null;
+                        _context14.prev = 8;
+                        _context14.next = 11;
+                        return Promise.all(entitiesToMerge.map(search.deleteEntity));
+
+                      case 11:
+                        _context14.next = 16;
+                        break;
+
+                      case 13:
+                        _context14.prev = 13;
+                        _context14.t0 = _context14["catch"](8);
+
+                        _log.default.debug(_context14.t0);
+
+                      case 16:
+                      case "end":
+                        return _context14.stop();
+                    }
+                  }
+                }, _callee14, null, [[8, 13]]);
+              }));
+
+              return function (_x79) {
+                return _ref17.apply(this, arguments);
+              };
+            }());
+            /** Update the redirection table to redirect merged entities' bbids
+             *  to currentEntityBBID (the entity we're merging into)
+            */
+
+            _context15.next = 41;
+            return bookshelf.knex('bookbrainz.entity_redirect').transacting(transacting).insert(entitiesToMergeBBIDs.map(function (bbid) {
+              return (// eslint-disable-next-line camelcase
+                {
+                  source_bbid: bbid,
+                  target_bbid: currentEntityBBID
+                }
+              );
+            }));
+
+          case 41:
+            return _context15.abrupt("return", allEntitiesReturnArray);
+
+          case 42:
+          case "end":
+            return _context15.stop();
+        }
+      }
+    }, _callee15, null, [[26, 35]]);
+  }));
+  return _processMergeOperation.apply(this, arguments);
+}
+
+function processEditionSets(_x33, _x34, _x35, _x36) {
+  return _processEditionSets.apply(this, arguments);
+}
+
+function _processEditionSets() {
+  _processEditionSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee16(orm, currentEntity, body, transacting) {
+    var languageSetID, oldLanguageSet, languages, newLanguageSetIDPromise, publisherSetID, oldPublisherSet, publishers, newPublisherSetIDPromise, releaseEventSetID, oldReleaseEventSet, releaseEvents, newReleaseEventSetIDPromise;
+    return _regenerator.default.wrap(function _callee16$(_context16) {
+      while (1) {
+        switch (_context16.prev = _context16.next) {
+          case 0:
+            languageSetID = (0, _get2.default)(currentEntity, ['languageSet', 'id']);
+            _context16.next = 3;
+            return languageSetID &amp;&amp; orm.LanguageSet.forge({
+              id: languageSetID
+            }).fetch({
+              transacting: transacting,
+              withRelated: ['languages']
+            });
+
+          case 3:
+            oldLanguageSet = _context16.sent;
+            languages = (0, _get2.default)(body, 'languages') || [];
+            newLanguageSetIDPromise = orm.func.language.updateLanguageSet(orm, transacting, oldLanguageSet, languages.map(function (languageID) {
+              return {
+                id: languageID
+              };
+            })).then(function (set) {
+              return set &amp;&amp; set.get('id');
+            });
+            publisherSetID = (0, _get2.default)(currentEntity, ['publisherSet', 'id']);
+            _context16.next = 9;
+            return publisherSetID &amp;&amp; orm.PublisherSet.forge({
+              id: publisherSetID
+            }).fetch({
+              transacting: transacting,
+              withRelated: ['publishers']
+            });
+
+          case 9:
+            oldPublisherSet = _context16.sent;
+            publishers = (0, _get2.default)(body, 'publishers') || [];
+            newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, publishers.map(function (publisherBBID) {
+              return {
+                bbid: publisherBBID
+              };
+            })).then(function (set) {
+              return set &amp;&amp; set.get('id');
+            });
+            releaseEventSetID = (0, _get2.default)(currentEntity, ['releaseEventSet', 'id']);
+            _context16.next = 15;
+            return releaseEventSetID &amp;&amp; orm.ReleaseEventSet.forge({
+              id: releaseEventSetID
+            }).fetch({
+              transacting: transacting,
+              withRelated: ['releaseEvents']
+            });
+
+          case 15:
+            oldReleaseEventSet = _context16.sent;
+            releaseEvents = (0, _get2.default)(body, 'releaseEvents') || []; // if areaId is not present, set it to null.
+            // otherwise it shows error while comparing old and new releaseEvent;
+
+            if (releaseEvents[0]) {
+              if ((0, _isNil2.default)(releaseEvents[0].areaId)) {
+                releaseEvents[0].areaId = null;
+              }
+
+              if (releaseEvents[0].date === '') {
+                releaseEvents[0].date = null;
+              }
+            }
+
+            newReleaseEventSetIDPromise = orm.func.releaseEvent.updateReleaseEventSet(orm, transacting, oldReleaseEventSet, releaseEvents).then(function (set) {
+              return set &amp;&amp; set.get('id');
+            });
+            return _context16.abrupt("return", commonUtils.makePromiseFromObject({
+              languageSetId: newLanguageSetIDPromise,
+              publisherSetId: newPublisherSetIDPromise,
+              releaseEventSetId: newReleaseEventSetIDPromise
+            }));
+
+          case 20:
+          case "end":
+            return _context16.stop();
+        }
+      }
+    }, _callee16);
+  }));
+  return _processEditionSets.apply(this, arguments);
+}
+
+function processWorkSets(_x37, _x38, _x39, _x40) {
+  return _processWorkSets.apply(this, arguments);
+}
+
+function _processWorkSets() {
+  _processWorkSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee17(orm, currentEntity, body, transacting) {
+    var id, oldSet, languages;
+    return _regenerator.default.wrap(function _callee17$(_context17) {
+      while (1) {
+        switch (_context17.prev = _context17.next) {
+          case 0:
+            id = (0, _get2.default)(currentEntity, ['languageSet', 'id']);
+            _context17.next = 3;
+            return id &amp;&amp; orm.LanguageSet.forge({
+              id: id
+            }).fetch({
+              transacting: transacting,
+              withRelated: ['languages']
+            });
+
+          case 3:
+            oldSet = _context17.sent;
+            languages = (0, _get2.default)(body, 'languages') || [];
+            return _context17.abrupt("return", commonUtils.makePromiseFromObject({
+              languageSetId: orm.func.language.updateLanguageSet(orm, transacting, oldSet, languages.map(function (languageID) {
+                return {
+                  id: languageID
+                };
+              })).then(function (set) {
+                return set &amp;&amp; set.get('id');
+              })
+            }));
+
+          case 6:
+          case "end":
+            return _context17.stop();
+        }
+      }
+    }, _callee17);
+  }));
+  return _processWorkSets.apply(this, arguments);
+}
+
+function processEntitySets(orm, currentEntity, entityType, body, transacting) {
+  if (entityType === 'Edition') {
+    return processEditionSets(orm, currentEntity, body, transacting);
+  }
+
+  if (entityType === 'Work') {
+    return processWorkSets(orm, currentEntity, body, transacting);
+  }
+
+  return new Promise(function (resolve) {
+    return resolve(null);
+  });
+}
+
+function getNextAliasSet(_x41, _x42, _x43, _x44) {
+  return _getNextAliasSet.apply(this, arguments);
+}
+
+function _getNextAliasSet() {
+  _getNextAliasSet = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee18(orm, transacting, currentEntity, body) {
+    var AliasSet, id, oldAliasSet;
+    return _regenerator.default.wrap(function _callee18$(_context18) {
+      while (1) {
+        switch (_context18.prev = _context18.next) {
+          case 0:
+            AliasSet = orm.AliasSet;
+            id = (0, _get2.default)(currentEntity, ['aliasSet', 'id']);
+            _context18.next = 4;
+            return id &amp;&amp; new AliasSet({
+              id: id
+            }).fetch({
+              require: false,
+              transacting: transacting,
+              withRelated: ['aliases']
+            });
+
+          case 4:
+            oldAliasSet = _context18.sent;
+            return _context18.abrupt("return", orm.func.alias.updateAliasSet(orm, transacting, oldAliasSet, oldAliasSet &amp;&amp; oldAliasSet.get('defaultAliasId'), body.aliases || []));
+
+          case 6:
+          case "end":
+            return _context18.stop();
+        }
+      }
+    }, _callee18);
+  }));
+  return _getNextAliasSet.apply(this, arguments);
+}
+
+function getNextIdentifierSet(_x45, _x46, _x47, _x48) {
+  return _getNextIdentifierSet.apply(this, arguments);
+}
+
+function _getNextIdentifierSet() {
+  _getNextIdentifierSet = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee19(orm, transacting, currentEntity, body) {
+    var IdentifierSet, id, oldIdentifierSet;
+    return _regenerator.default.wrap(function _callee19$(_context19) {
+      while (1) {
+        switch (_context19.prev = _context19.next) {
+          case 0:
+            IdentifierSet = orm.IdentifierSet;
+            id = (0, _get2.default)(currentEntity, ['identifierSet', 'id']);
+            _context19.next = 4;
+            return id &amp;&amp; new IdentifierSet({
+              id: id
+            }).fetch({
+              require: false,
+              transacting: transacting,
+              withRelated: ['identifiers']
+            });
+
+          case 4:
+            oldIdentifierSet = _context19.sent;
+            return _context19.abrupt("return", orm.func.identifier.updateIdentifierSet(orm, transacting, oldIdentifierSet, body.identifiers || []));
+
+          case 6:
+          case "end":
+            return _context19.stop();
+        }
+      }
+    }, _callee19);
+  }));
+  return _getNextIdentifierSet.apply(this, arguments);
+}
+
+function getNextRelationshipSets(_x49, _x50, _x51, _x52) {
+  return _getNextRelationshipSets.apply(this, arguments);
+}
+
+function _getNextRelationshipSets() {
+  _getNextRelationshipSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee20(orm, transacting, currentEntity, body) {
+    var RelationshipSet, id, oldRelationshipSet;
+    return _regenerator.default.wrap(function _callee20$(_context20) {
+      while (1) {
+        switch (_context20.prev = _context20.next) {
+          case 0:
+            RelationshipSet = orm.RelationshipSet;
+            id = (0, _get2.default)(currentEntity, ['relationshipSet', 'id']);
+            _context20.next = 4;
+            return id &amp;&amp; new RelationshipSet({
+              id: id
+            }).fetch({
+              require: false,
+              transacting: transacting,
+              withRelated: ['relationships']
+            });
+
+          case 4:
+            oldRelationshipSet = _context20.sent;
+            return _context20.abrupt("return", orm.func.relationship.updateRelationshipSets(orm, transacting, oldRelationshipSet, body.relationships || []));
+
+          case 6:
+          case "end":
+            return _context20.stop();
+        }
+      }
+    }, _callee20);
+  }));
+  return _getNextRelationshipSets.apply(this, arguments);
+}
+
+function getNextAnnotation(_x53, _x54, _x55, _x56, _x57) {
+  return _getNextAnnotation.apply(this, arguments);
+}
+
+function _getNextAnnotation() {
+  _getNextAnnotation = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee21(orm, transacting, currentEntity, body, revision) {
+    var Annotation, id, oldAnnotation;
+    return _regenerator.default.wrap(function _callee21$(_context21) {
+      while (1) {
+        switch (_context21.prev = _context21.next) {
+          case 0:
+            Annotation = orm.Annotation;
+            id = (0, _get2.default)(currentEntity, ['annotation', 'id']);
+            _context21.next = 4;
+            return id &amp;&amp; new Annotation({
+              id: id
+            }).fetch({
+              require: false,
+              transacting: transacting
+            });
+
+          case 4:
+            oldAnnotation = _context21.sent;
+            return _context21.abrupt("return", body.annotation ? orm.func.annotation.updateAnnotation(orm, transacting, oldAnnotation, body.annotation, revision) : new Promise(function (resolve) {
+              return resolve(null);
+            }));
+
+          case 6:
+          case "end":
+            return _context21.stop();
+        }
+      }
+    }, _callee21);
+  }));
+  return _getNextAnnotation.apply(this, arguments);
+}
+
+function getNextDisambiguation(_x58, _x59, _x60, _x61) {
+  return _getNextDisambiguation.apply(this, arguments);
+}
+
+function _getNextDisambiguation() {
+  _getNextDisambiguation = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee22(orm, transacting, currentEntity, body) {
+    var Disambiguation, id, oldDisambiguation;
+    return _regenerator.default.wrap(function _callee22$(_context22) {
+      while (1) {
+        switch (_context22.prev = _context22.next) {
+          case 0:
+            Disambiguation = orm.Disambiguation;
+            id = (0, _get2.default)(currentEntity, ['disambiguation', 'id']);
+            _context22.next = 4;
+            return id &amp;&amp; new Disambiguation({
+              id: id
+            }).fetch({
+              require: false,
+              transacting: transacting
+            });
+
+          case 4:
+            oldDisambiguation = _context22.sent;
+            return _context22.abrupt("return", orm.func.disambiguation.updateDisambiguation(orm, transacting, oldDisambiguation, body.disambiguation));
+
+          case 6:
+          case "end":
+            return _context22.stop();
+        }
+      }
+    }, _callee22);
+  }));
+  return _getNextDisambiguation.apply(this, arguments);
+}
+
+function getChangedProps(_x62, _x63, _x64, _x65, _x66, _x67, _x68, _x69) {
+  return _getChangedProps.apply(this, arguments);
+}
+
+function _getChangedProps() {
+  _getChangedProps = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee23(orm, transacting, isNew, currentEntity, body, entityType, newRevision, derivedProps) {
+    var aliasSetPromise, identSetPromise, annotationPromise, disambiguationPromise, entitySetIdsPromise, _yield$Promise$all3, _yield$Promise$all4, aliasSet, identSet, annotation, disambiguation, entitySetIds, propsToSet;
+
+    return _regenerator.default.wrap(function _callee23$(_context23) {
+      while (1) {
+        switch (_context23.prev = _context23.next) {
+          case 0:
+            aliasSetPromise = getNextAliasSet(orm, transacting, currentEntity, body);
+            identSetPromise = getNextIdentifierSet(orm, transacting, currentEntity, body);
+            annotationPromise = getNextAnnotation(orm, transacting, currentEntity, body, newRevision);
+            disambiguationPromise = getNextDisambiguation(orm, transacting, currentEntity, body);
+            entitySetIdsPromise = processEntitySets(orm, currentEntity, entityType, body, transacting);
+            _context23.next = 7;
+            return Promise.all([aliasSetPromise, identSetPromise, annotationPromise, disambiguationPromise, entitySetIdsPromise]);
+
+          case 7:
+            _yield$Promise$all3 = _context23.sent;
+            _yield$Promise$all4 = (0, _slicedToArray2.default)(_yield$Promise$all3, 5);
+            aliasSet = _yield$Promise$all4[0];
+            identSet = _yield$Promise$all4[1];
+            annotation = _yield$Promise$all4[2];
+            disambiguation = _yield$Promise$all4[3];
+            entitySetIds = _yield$Promise$all4[4];
+            propsToSet = _objectSpread(_objectSpread({
+              aliasSetId: aliasSet &amp;&amp; aliasSet.get('id'),
+              annotationId: annotation &amp;&amp; annotation.get('id'),
+              disambiguationId: disambiguation &amp;&amp; disambiguation.get('id'),
+              identifierSetId: identSet &amp;&amp; identSet.get('id')
+            }, derivedProps), entitySetIds);
+
+            if (!isNew) {
+              _context23.next = 17;
+              break;
+            }
+
+            return _context23.abrupt("return", propsToSet);
+
+          case 17:
+            return _context23.abrupt("return", (0, _reduce2.default)(propsToSet, function (result, value, key) {
+              if (!(0, _isEqual2.default)(value, currentEntity[key]) &amp;&amp; // If both items are null or undefined, consider them equal (null !=== undefined)
+              !((0, _isNil2.default)(value) &amp;&amp; (0, _isNil2.default)(currentEntity[key]))) {
+                result[key] = value;
+              }
+
+              return result;
+            }, {}));
+
+          case 18:
+          case "end":
+            return _context23.stop();
+        }
+      }
+    }, _callee23);
+  }));
+  return _getChangedProps.apply(this, arguments);
+}
+
+function fetchEntitiesForRelationships(orm, transacting, currentEntity, relationshipSets) {
+  var bbidsToFetch = (0, _without2.default)((0, _keys2.default)(relationshipSets), (0, _get2.default)(currentEntity, 'bbid'));
+  return Promise.all(bbidsToFetch.map(function (bbid) {
+    return getEntityByBBID(orm, transacting, bbid);
+  }));
+}
+/**
+ * @param  {any} orm -  The BookBrainz ORM
+ * @param  {any} newEdition - The ORM model of the newly created Edition
+ * @param  {any} transacting - The ORM transaction object
+ * @description Edition Groups will be created automatically by the ORM if no EditionGroup BBID is set on a new Edition.
+ * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
+ */
+
+
+function indexAutoCreatedEditionGroup(_x70, _x71, _x72) {
+  return _indexAutoCreatedEditionGroup.apply(this, arguments);
+}
+
+function _indexAutoCreatedEditionGroup() {
+  _indexAutoCreatedEditionGroup = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee24(orm, newEdition, transacting) {
+    var EditionGroup, bbid, editionGroup;
+    return _regenerator.default.wrap(function _callee24$(_context24) {
+      while (1) {
+        switch (_context24.prev = _context24.next) {
+          case 0:
+            EditionGroup = orm.EditionGroup;
+            bbid = newEdition.get('editionGroupBbid');
+            _context24.prev = 2;
+            _context24.next = 5;
+            return new EditionGroup({
+              bbid: bbid
+            }).fetch({
+              require: true,
+              transacting: transacting,
+              withRelated: 'aliasSet.aliases'
+            });
+
+          case 5:
+            editionGroup = _context24.sent;
+            _context24.next = 8;
+            return search.indexEntity(editionGroup.toJSON());
+
+          case 8:
+            _context24.next = 13;
+            break;
+
+          case 10:
+            _context24.prev = 10;
+            _context24.t0 = _context24["catch"](2);
+
+            _log.default.error('Could not reindex edition group after edition creation:', _context24.t0);
+
+          case 13:
+          case "end":
+            return _context24.stop();
+        }
+      }
+    }, _callee24, null, [[2, 10]]);
+  }));
+  return _indexAutoCreatedEditionGroup.apply(this, arguments);
+}
+
+function handleCreateOrEditEntity(req, res, entityType, derivedProps, isMergeOperation) {
+  var orm = req.app.locals.orm;
+  var Entity = orm.Entity,
+      Revision = orm.Revision,
+      bookshelf = orm.bookshelf;
+  var editorJSON = req.user;
+  var body = req.body;
+  var resLocals = res.locals;
+  var currentEntity = resLocals.entity;
+  var entityEditPromise = bookshelf.transaction( /*#__PURE__*/function () {
+    var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(transacting) {
+      var isNew, newEntity, newEntityBBID, newRevision, relationshipSets, changedProps, mainEntity, otherEntities, allEntities, savedMainEntity;
+      return _regenerator.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              // Determine if a new entity is being created
+              isNew = !currentEntity;
+
+              if (!isNew) {
+                _context2.next = 9;
+                break;
+              }
+
+              _context2.next = 5;
+              return new Entity({
+                type: entityType
+              }).save(null, {
+                transacting: transacting
+              });
+
+            case 5:
+              newEntity = _context2.sent;
+              newEntityBBID = newEntity.get('bbid');
+              body.relationships = (0, _map2.default)(body.relationships, function (_ref3) {
+                var sourceBbid = _ref3.sourceBbid,
+                    targetBbid = _ref3.targetBbid,
+                    others = (0, _objectWithoutProperties2.default)(_ref3, ["sourceBbid", "targetBbid"]);
+                return _objectSpread({
+                  sourceBbid: sourceBbid || newEntityBBID,
+                  targetBbid: targetBbid || newEntityBBID
+                }, others);
+              });
+              currentEntity = newEntity.toJSON();
+
+            case 9:
+              _context2.next = 11;
+              return new Revision({
+                authorId: editorJSON.id,
+                isMerge: isMergeOperation
+              }).save(null, {
+                transacting: transacting
+              });
+
+            case 11:
+              newRevision = _context2.sent;
+              _context2.next = 14;
+              return getNextRelationshipSets(orm, transacting, currentEntity, body);
+
+            case 14:
+              relationshipSets = _context2.sent;
+              _context2.next = 17;
+              return getChangedProps(orm, transacting, isNew, currentEntity, body, entityType, newRevision, derivedProps);
+
+            case 17:
+              changedProps = _context2.sent;
+
+              if (!((0, _isEmpty2.default)(changedProps) &amp;&amp; (0, _isEmpty2.default)(relationshipSets) &amp;&amp; !isMergeOperation)) {
+                _context2.next = 20;
+                break;
+              }
+
+              throw new error.FormSubmissionError('No Updated Field');
+
+            case 20:
+              _context2.next = 22;
+              return fetchOrCreateMainEntity(orm, transacting, isNew, currentEntity.bbid, entityType);
+
+            case 22:
+              mainEntity = _context2.sent;
+              _context2.next = 25;
+              return fetchEntitiesForRelationships(orm, transacting, currentEntity, relationshipSets);
+
+            case 25:
+              otherEntities = _context2.sent;
+              otherEntities.forEach(function (entity) {
+                entity.shouldInsert = false;
+              });
+              mainEntity.shouldInsert = isNew;
+              (0, _forOwn2.default)(changedProps, function (value, key) {
+                return mainEntity.set(key, value);
+              }); // Don't try to modify 'deleted' entities (those with no dataId)
+
+              allEntities = [].concat((0, _toConsumableArray2.default)(otherEntities), [mainEntity]).filter(function (entity) {
+                return entity.get('dataId') !== null;
+              });
+
+              if (!isMergeOperation) {
+                _context2.next = 34;
+                break;
+              }
+
+              _context2.next = 33;
+              return processMergeOperation(orm, transacting, req.session, mainEntity, allEntities, relationshipSets);
+
+            case 33:
+              allEntities = _context2.sent;
+
+            case 34:
+              (0, _forEach2.default)(allEntities, function (entityModel) {
+                var bbid = entityModel.get('bbid');
+
+                if ((0, _has2.default)(relationshipSets, bbid)) {
+                  entityModel.set('relationshipSetId', // Set to relationshipSet id or null if empty set
+                  relationshipSets[bbid] &amp;&amp; relationshipSets[bbid].get('id'));
+                }
+              });
+              _context2.next = 37;
+              return saveEntitiesAndFinishRevision(orm, transacting, isNew, newRevision, mainEntity, allEntities, editorJSON.id, body.note);
+
+            case 37:
+              savedMainEntity = _context2.sent;
+              _context2.next = 40;
+              return savedMainEntity.load('aliasSet.aliases', {
+                transacting: transacting
+              });
+
+            case 40:
+              if (!isNew) {
+                _context2.next = 46;
+                break;
+              }
+
+              _context2.next = 43;
+              return savedMainEntity.refresh({
+                transacting: transacting
+              });
+
+            case 43:
+              if (!(savedMainEntity.get('type') === 'Edition')) {
+                _context2.next = 46;
+                break;
+              }
+
+              _context2.next = 46;
+              return indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
+
+            case 46:
+              return _context2.abrupt("return", savedMainEntity.toJSON());
+
+            case 49:
+              _context2.prev = 49;
+              _context2.t0 = _context2["catch"](0);
+
+              _log.default.error(_context2.t0);
+
+              throw _context2.t0;
+
+            case 53:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[0, 49]]);
+    }));
+
+    return function (_x73) {
+      return _ref2.apply(this, arguments);
+    };
+  }());
+  var achievementPromise = entityEditPromise.then(function (entityJSON) {
+    return achievement.processEdit(orm, editorJSON.id, entityJSON.revisionId).then(function (unlock) {
+      if (unlock.alert) {
+        entityJSON.alert = unlock.alert;
+      }
+
+      return entityJSON;
+    }).catch(function (err) {
+      throw err;
+    });
+  });
+  return handler.sendPromiseResult(res, achievementPromise, search.indexEntity);
+}
+
+function constructAliases(aliasEditor, nameSection) {
+  var aliases = (0, _map2.default)(aliasEditor, function (_ref4, id) {
+    var languageId = _ref4.language,
+        name = _ref4.name,
+        primary = _ref4.primary,
+        sortName = _ref4.sortName;
+    return {
+      default: false,
+      id: id,
+      languageId: languageId,
+      name: name,
+      primary: primary,
+      sortName: sortName
+    };
+  });
+  return [{
+    default: true,
+    id: nameSection.id,
+    languageId: nameSection.language,
+    name: nameSection.name,
+    primary: true,
+    sortName: nameSection.sortName
+  }].concat((0, _toConsumableArray2.default)(aliases));
+}
+
+function constructIdentifiers(identifierEditor) {
+  return (0, _map2.default)(identifierEditor, function (_ref5, id) {
+    var typeId = _ref5.type,
+        value = _ref5.value;
+    return {
+      id: id,
+      typeId: typeId,
+      value: value
+    };
+  });
+}
+
+function constructRelationships(relationshipSection) {
+  return (0, _map2.default)(relationshipSection.relationships, function (_ref6) {
+    var rowID = _ref6.rowID,
+        relationshipType = _ref6.relationshipType,
+        sourceEntity = _ref6.sourceEntity,
+        targetEntity = _ref6.targetEntity;
+    return {
+      id: rowID,
+      sourceBbid: (0, _get2.default)(sourceEntity, 'bbid'),
+      targetBbid: (0, _get2.default)(targetEntity, 'bbid'),
+      typeId: relationshipType.id
+    };
+  });
+}
+/**
+ * Returns the index of the default alias if defined in the aliasSet.
+ * If there is no defaultAliasId, return the first alias where default = true.
+ * Returns null if there are no aliases in the set.
+ * @param {Object} aliasSet - The entity's aliasSet returned by the ORM
+ * @param {Object[]} aliasSet.aliases - The array of aliases contained in the set
+ * @param {string} aliasSet.defaultAliasId - The id of the set's default alias
+ * @returns {?number} The index of the default alias, or 0; returns null if 0 aliases in set
+ */
+
+
+function getDefaultAliasIndex(aliasSet) {
+  if ((0, _isNil2.default)(aliasSet)) {
+    return null;
+  }
+
+  var aliases = aliasSet.aliases,
+      defaultAliasId = aliasSet.defaultAliasId;
+
+  if (!aliases || !aliases.length) {
+    return null;
+  }
+
+  var index;
+
+  if (!(0, _isNil2.default)(defaultAliasId) &amp;&amp; isFinite(defaultAliasId)) {
+    var defaultAliasIdNumber = defaultAliasId;
+
+    if ((0, _isString2.default)(defaultAliasId)) {
+      defaultAliasIdNumber = Number(defaultAliasId);
+    }
+
+    index = aliases.findIndex(function (alias) {
+      return alias.id === defaultAliasIdNumber;
+    });
+  } else {
+    index = aliases.findIndex(function (alias) {
+      return alias.default;
+    });
+  }
+
+  return index > 0 ? index : 0;
+}
+
+function areaToOption(area) {
+  if (!area) {
+    return null;
+  }
+
+  var id = area.id;
+  return {
+    disambiguation: area.comment,
+    id: id,
+    text: area.name,
+    type: 'area'
+  };
+}
+
+function compareEntitiesByDate(a, b) {
+  var aDate = (0, _get2.default)(a, 'releaseEventSet.releaseEvents[0].date', null);
+  var bDate = (0, _get2.default)(b, 'releaseEventSet.releaseEvents[0].date', null);
+
+  if ((0, _isNull2.default)(aDate)) {
+    /*
+     * return a positive value,
+     * so that non-null dates always come before null dates.
+     */
+    return 1;
+  }
+
+  if ((0, _isNull2.default)(bDate)) {
+    /*
+     * return a negative value,
+     * so that non-null dates always come before null dates.
+     */
+    return -1;
+  }
+
+  return new Date(aDate).getTime() - new Date(bDate).getTime();
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Oct 16 2020 11:01:21 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
