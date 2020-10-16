@@ -48,9 +48,9 @@ Still not sure what to start with? Have a look at [tickets tagged **good-first-b
 
 ## Documentation
 
-Auto-generated developer documentation can be found at our corresponding
-[doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our
-contributing guide can be found [here](CONTRIBUTING.md).
+The auto-generated developer documentation is served alongisde this repository on Github Pages: https://bookbrainz.github.io/bookbrainz-site
+
+Our contributing guidelines can be found [here](CONTRIBUTING.md).
 <br/>
 ## Beta and test subdomains
 
