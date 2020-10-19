@@ -25,7 +25,7 @@ import log from 'log';
 
 
 const _index = 'bookbrainz';
-const _bulkIndexSize = 128;
+const _bulkIndexSize = 10000;
 
 // In milliseconds
 const _retryDelay = 10;
@@ -369,8 +369,6 @@ export async function generateIndex(orm) {
 	await Promise.all(listIndexes);
 
 	const areaCollection = await Area.forge()
-		// countries only
-		.where({type: 1})
 		.fetchAll();
 
 	const areas = areaCollection.toJSON();
