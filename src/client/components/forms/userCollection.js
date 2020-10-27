@@ -262,7 +262,7 @@ class UserCollectionForm extends React.Component {
 							<div className={errorAlertClass}>
 								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
-							<div className="text-center">
+							<div className="text-center buttons-container">
 								<Button
 									bsStyle="primary"
 									type="button"
