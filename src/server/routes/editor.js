@@ -298,7 +298,6 @@ router.get('/:id', async (req, res, next) => {
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions', async (req, res, next) => {
-	const {Editor, TitleUnlock} = req.app.locals.orm;
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
 
@@ -355,7 +354,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 	}
 });
 
-// eslint-disable-next-line consistent-return
+
 router.get('/:id/revisions/revisions', async (req, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
@@ -365,13 +364,10 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	const from =
 		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
 
-	try {
-		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
-		res.send(orderedRevisions);
-	}
-	catch (err) {
-		return next(err);
-	}
+	const orderedRevisions =
+		await getOrderedRevisionForEditorPage(from, size, req).catch(next);
+
+	res.send(orderedRevisions);
 });
 
 function setAchievementUnlockedField(achievements, unlocks) {
@@ -524,13 +520,14 @@ router.get('/:id/collections', async (req, res, next) => {
 	const from =
 		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_COLLECTION_OFFSET;
 
-	let type = req.query.type ? req.query.type : null;
-	const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
-	if (!entityTypes.includes(type) && type !== null) {
-		throw new error.BadRequestError(`Type ${type} do not exist`);
-	}
+	const type = req.query.type ? req.query.type : null;
 
 	try {
+		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
+		if (!entityTypes.includes(type) && type !== null) {
+			throw new error.BadRequestError(`Type ${type} do not exist`);
+		}
+
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
