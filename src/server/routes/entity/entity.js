@@ -599,11 +599,13 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		try {
 			const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(entitiesModel => entitiesModel.editions()));
 			// eslint-disable-next-line consistent-return
-			const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
+			let editionsToSet = _.flatMap(editionsToSetCollections, edition => {
 				if (edition.models && edition.models.length) {
 					return edition.models;
 				}
 			});
+			// Remove 'undefined' entries (no editions in those publishers)
+			editionsToSet = _.reject(editionsToSet, _.isNil);
 			await Promise.all(editionsToSet.map(async (edition) => {
 				// Fetch current PublisherSet
 				const oldPublisherSet = await edition.publisherSet();
