@@ -619,6 +619,7 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		}
 		catch (err) {
 			log.error(err);
+			throw err;
 		}
 	}
 
