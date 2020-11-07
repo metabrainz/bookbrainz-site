@@ -313,7 +313,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 		const editorJSONPromise = getIdEditorJSONPromise(req.params.id, req);
 
 		const [orderedRevisions, editorJSON] =
-			await Promise.all(orderedRevisionsPromise, editorJSONPromise);
+			await Promise.all([orderedRevisionsPromise, editorJSONPromise]);
 
 		const {newResultsArray, nextEnabled} =
 			utils.getNextEnabledAndResultsArray(orderedRevisions, size);
