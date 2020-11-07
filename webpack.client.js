@@ -59,7 +59,7 @@ const clientConfig = {
 			{
 				// babel configuration in .babelrc file
 				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
+				test: /\.(js|jsx|ts|tsx)$/,
 				use: ['babel-loader']
 			},
 			{
@@ -140,6 +140,9 @@ const clientConfig = {
 			force: true
 		})
 	],
+	resolve: {
+		extensions: ['.js', '.jsx', '.ts', '.tsx']
+	},
 	target: 'web'
 }
 
