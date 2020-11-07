@@ -136,7 +136,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			});
 
 		// Modify the user to match the updates from the form
-		const titleID = _.get(req.body, 'title', null) || null;
+		const titleID = _.get(req.body, 'title', null);
 		const modifiedEditor = await editor
 			.set('bio', req.body.bio)
 			.set('areaId', req.body.areaId)
@@ -481,15 +481,6 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 		if (!isCurrentUser(userId, req.user)) {
 			throw new Error('Not authenticated');
 		}
-
-		// Presumably, this is testing that the provided editor ID is valid
-		// prior to attempting to update the ranks. Possibly not needed since
-		// the user must exist if authenticated?
-		await new Editor({id: userId})
-			.fetch({require: true});
-
-		// TODO: missing error handling for possible missing editor - carried
-		// over from old code.
 
 		const rankOnePromise = rankUpdate(orm, userId, req.body.rank1, 1);
 		const rankTwoPromise = rankUpdate(orm, userId, req.body.rank2, 2);
