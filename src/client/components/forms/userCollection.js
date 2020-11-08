@@ -262,7 +262,8 @@ class UserCollectionForm extends React.Component {
 							<div className={errorAlertClass}>
 								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
-							<div className="text-center buttons-container">
+							<div className="row">
+								<div className = "col-sm-6">
 								<Button
 									bsStyle="primary"
 									type="button"
@@ -271,12 +272,15 @@ class UserCollectionForm extends React.Component {
 									<FontAwesomeIcon icon="plus"/>
 									&nbsp;Add another collaborator
 								</Button>
+								</div>
+								<div className = "col-sm-6">
 								<Button
 									bsStyle="success"
 									type="submit"
 								>
 									<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
 								</Button>
+								</div>
 								{
 									this.props.collection.id ?
 										<Button
@@ -324,3 +328,4 @@ UserCollectionForm.defaultProps = {
 };
 
 export default UserCollectionForm;
+
