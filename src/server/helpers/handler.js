@@ -21,16 +21,20 @@ import * as error from '../../common/helpers/error';
 import log from 'log';
 
 
-export function sendPromiseResult(res, promise, processingCallback) {
-	return promise
-		.then((result) => {
-			res.send(result);
+export async function sendPromiseResult(response, promise, processingCallback) {
+	const result = await promise;
 
-			if (typeof processingCallback === 'function') {
-				return processingCallback(result);
-			}
+	try {
+		response.send(result);
 
-			return result;
-		})
-		.catch((err) => { log.error(err); return error.sendErrorAsJSON(res, err); });
+		if (typeof processingCallback === 'function') {
+			return processingCallback(result);
+		}
+
+		return result;
+	}
+	catch (err) {
+		log.error(err);
+		return error.sendErrorAsJSON(response, err);
+	}
 }
