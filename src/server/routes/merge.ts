@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
@@ -38,11 +37,16 @@ import renderRelationship from '../helpers/render';
 import targetTemplate from '../templates/target';
 
 
+type PassportRequest = express.Request & {
+	user: any,
+	session: any
+};
+
 const router = express.Router();
 
 function entitiesToFormState(entities: any[]) {
 	const [targetEntity, ...otherEntities] = entities;
-	const aliases = entities.reduce((returnValue, entity) => {
+	const aliases: any[] = entities.reduce((returnValue, entity) => {
 		if (Array.isArray(_.get(entity, 'aliasSet.aliases'))) {
 			return returnValue.concat(
 				entity.aliasSet.aliases.map(({language, ...rest}) => ({
@@ -78,7 +82,7 @@ function entitiesToFormState(entities: any[]) {
 		hasDisambiguation.disambiguation &&
 		hasDisambiguation.disambiguation.comment;
 
-	const identifiers = entities.reduce((returnValue, entity) => {
+	const identifiers: any[] = entities.reduce((returnValue, entity) => {
 		if (entity.identifierSet) {
 			const mappedIdentifiers = entity.identifierSet.identifiers.map(
 				({type, ...rest}) => ({
@@ -233,8 +237,8 @@ async function getEntityByBBID(orm, transacting, bbid) {
 
 
 router.get('/add/:bbid', auth.isAuthenticated,
-	async (req, res, next) => {
-		const {orm}: {orm: any} = req.app.locals;
+	async (req: PassportRequest, res, next) => {
+		const {orm}: {orm?: any} = req.app.locals;
 		let {mergeQueue} = req.session;
 		if (_.isNil(req.params.bbid) ||
 		!commonUtils.isValidBBID(req.params.bbid)) {
@@ -278,7 +282,7 @@ router.get('/add/:bbid', auth.isAuthenticated,
 	});
 
 router.get('/remove/:bbid', auth.isAuthenticated,
-	(req, res) => {
+	(req: PassportRequest, res) => {
 		const {mergeQueue} = req.session;
 		if (!mergeQueue || _.isNil(req.params.bbid)) {
 			res.redirect(req.headers.referer);
@@ -297,7 +301,7 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 	});
 
 router.get('/cancel', auth.isAuthenticated,
-	(req, res) => {
+	(req: PassportRequest, res) => {
 		req.session.mergeQueue = null;
 		res.redirect(req.headers.referer);
 	});
@@ -305,8 +309,8 @@ router.get('/cancel', auth.isAuthenticated,
 router.get('/submit/:targetBBID?', auth.isAuthenticated,
 	middleware.loadIdentifierTypes, middleware.loadLanguages,
 	middleware.loadRelationshipTypes,
-	async (req, res, next) => {
-		const {orm}: {orm: any} = req.app.locals;
+	async (req: PassportRequest, res, next) => {
+		const {orm}: {orm?: any} = req.app.locals;
 		const {bookshelf} = orm;
 		const {mergeQueue} = req.session;
 		if (!mergeQueue) {
@@ -329,7 +333,7 @@ router.get('/submit/:targetBBID?', auth.isAuthenticated,
 			targetBBID = bbids[0];
 		}
 
-		if (!_.uniqBy(mergingFetchedEntities, 'type').length === 1) {
+		if (_.uniqBy(mergingFetchedEntities, 'type').length !== 1) {
 			const conflictError = new ConflictError('You can only merge entities of the same type');
 			return next(conflictError);
 		}

@@ -19,8 +19,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import _ from 'lodash';
 
 
@@ -30,7 +28,7 @@ import _ from 'lodash';
  * @param {object} entity - Entity object
  * @returns {string} - URL path to interact with entity
  */
-export function getEntityLink(entity: Object): string {
+export function getEntityLink(entity: {type: string, bbid: string}): string {
 	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
 }
 
@@ -41,18 +39,18 @@ export function getDateBeforeDays(days) {
 }
 
 export function filterIdentifierTypesByEntityType(
-	identifierTypes: Array<Object>,
+	identifierTypes: Array<{id: number, entityType: string}>,
 	entityType: string
-): Array<Object> {
+): Array<Record<string, unknown>> {
 	return identifierTypes.filter(
 		(type) => type.entityType === entityType
 	);
 }
 
 export function filterIdentifierTypesByEntity(
-	identifierTypes: Array<Object>,
-	entity: Object
-): Array<Object> {
+	identifierTypes: any[],
+	entity: any
+): any[] {
 	const typesOnEntity = new Set();
 
 	if (!entity.identifierSet || entity.identifierSet.identifiers.length < 1) {
@@ -86,7 +84,8 @@ export function filterIdentifierTypesByEntity(
  * the tagged template literal replaced with their corresponding values
  * from the newly passed in object.
  */
-export function template(strings: Array<string>): Function {
+type templateFuncType = (values: {[propName: string]: string}) => string;
+export function template(strings: Array<string>): templateFuncType {
 	// eslint-disable-next-line prefer-reflect, prefer-rest-params
 	const keys = Array.prototype.slice.call(arguments, 1);
 
@@ -111,9 +110,9 @@ export function template(strings: Array<string>): Function {
  * @returns {string} - Title string
  */
 export function createEntityPageTitle(
-	entity: Object,
+	entity: any,
 	titleForUnnamed: string,
-	templateForNamed: Function
+	templateForNamed: templateFuncType
 ): string {
 	/**
 	 * User-visible strings should _never_ be created by concatenation; when we
@@ -141,10 +140,10 @@ export function createEntityPageTitle(
  * @returns {Promise} - Resolves to the updated editor model
  */
 export function incrementEditorEditCountById(
-	orm: Object,
-	id: string,
-	transacting: Object
-): Promise<Object> {
+	orm: any,
+	id: number,
+	transacting: any
+): Promise<Record<string, unknown>> {
 	const {Editor} = orm;
 	return new Editor({id})
 		.fetch({require: true, transacting})

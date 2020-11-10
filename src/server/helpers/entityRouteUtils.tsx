@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as Immutable from 'immutable';
 import * as entityEditorHelpers from '../../client/entity-editor/helpers';
@@ -25,7 +24,7 @@ import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from './utils';
 
-import type {$Request, $Response} from 'express';
+import type {Request as $Request, Response as $Response} from 'express';
 import EntityEditor from '../../client/entity-editor/entity-editor';
 import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
@@ -60,10 +59,9 @@ type PassportRequest = $Request & {user: any, session: any};
  */
 export function generateEntityProps(
 	entityType: string,
-	req: $Request, res: $Response,
+	req: PassportRequest, res: $Response,
 	additionalProps: any,
-	initialStateCallback: (entity: ?any) => any =
-	() => new Object()
+	initialStateCallback: (entity: any) => any = () => new Object()
 ): any {
 	const entityName = _.upperFirst(entityType);
 	const {entity} = res.locals;
@@ -117,11 +115,10 @@ export function generateEntityProps(
  * @returns {object} - props
  */
 export function generateEntityMergeProps(
-	req: $Request, res: $Response,
+	req: PassportRequest, res: $Response,
 	additionalProps: any,
-	initialStateCallback: (entity: ?any) => any =
-	() => new Object()
-): Object {
+	initialStateCallback: (entity: any) => any = () => new Object()
+): any {
 	const {entityType, mergingEntities} = additionalProps;
 	const entityName = _.startCase(entityType);
 	const entity = mergingEntities[0];
@@ -159,7 +156,7 @@ export function entityEditorMarkup(
 ) {
 	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType);
-	const store = createStore(rootReducer, Immutable.fromJS(initialState));
+	const store: any = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySection(props.entityType);
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(rest)}>
@@ -194,7 +191,7 @@ export function entityMergeMarkup(
 ) {
 	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType);
-	const store = createStore(rootReducer, Immutable.fromJS(initialState));
+	const store: any = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySectionMerge(props.entityType);
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(rest)}>
@@ -242,7 +239,7 @@ export function entityMergeMarkup(
  */
 export function makeEntityCreateOrEditHandler(
 	entityType: string,
-	transformNewForm: Function,
+	transformNewForm: (data: Record<string, unknown>) => Record<string, unknown>,
 	propertiesToPick: string | string[],
 	isMergeHandler: boolean = false
 ) {

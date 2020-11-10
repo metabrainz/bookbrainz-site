@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import * as error from '../../common/helpers/error';
 import {flatMap} from 'lodash';
 
@@ -31,6 +29,13 @@ function getRevisionModels(orm) {
 		PublisherRevision,
 		WorkRevision
 	];
+}
+
+interface EntityProps {
+	bbid: string;
+	defaultAlias?: string;
+	parentAlias?: string;
+	type: any;
 }
 
 /* eslint-disable no-await-in-loop */
@@ -72,7 +77,7 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 				const entity = await new Entity({bbid: entityRevision.bbid}).fetch();
 				const type = entity.get('type');
 				const bbid = entity.get('bbid');
-				const entityProps = {bbid, type};
+				const entityProps: EntityProps = {bbid, type};
 				if (entityRevision.data) {
 					entityProps.defaultAlias = entityRevision.data.aliasSet.defaultAlias;
 				}

@@ -17,16 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
-import type {$Request, $Response, NextFunction} from 'express';
+import type {Request as $Request, Response as $Response, NextFunction} from 'express';
 import _ from 'lodash';
 
 
-function makeLoader(modelName, propName, sortFunc) {
+function makeLoader(modelName, propName, sortFunc?) {
 	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
 		const {orm}: any = req.app.locals;
 		const model = orm[modelName];
@@ -74,7 +73,7 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 	const {RelationshipSet} = orm;
 	const {entity} = res.locals;
 
-	new Promise((resolve) => {
+	new Promise<void>((resolve) => {
 		if (!entity) {
 			throw new error.SiteError('Failed to load entity');
 		}

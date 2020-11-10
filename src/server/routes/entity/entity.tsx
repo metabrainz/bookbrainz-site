@@ -1,5 +1,4 @@
 /*
- * @flow
  * Copyright (C) 2016  Ben Ockmore
  *               2016  Sean Burke
  *
@@ -27,7 +26,7 @@ import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 
-import type {$Request, $Response, NextFunction} from 'express';
+import type {Request as $Request, Response as $Response, NextFunction} from 'express';
 import type {
 	EntityTypeString,
 	FormLanguageT as Language,
@@ -65,7 +64,7 @@ const entityComponents = {
 };
 
 export function displayEntity(req: PassportRequest, res: $Response) {
-	const {orm}: {orm: any} = req.app.locals;
+	const {orm}: {orm?: any} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const {locals: resLocals}: {locals: any} = res;
 	const {entity}: {entity: any} = resLocals;
@@ -192,8 +191,8 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 export async function displayRevisions(
 	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
 ) {
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const size = _.isString(req.query.size) ? parseInt(req.query.size, 10) : 20;
+	const from = _.isString(req.query.from) ? parseInt(req.query.from, 10) : 0;
 	const {orm}: any = req.app.locals;
 	const {bbid} = req.params;
 	try {
@@ -233,8 +232,8 @@ export async function displayRevisions(
 export async function updateDisplayedRevisions(
 	req: PassportRequest, res: $Response, next: NextFunction, RevisionModel: any
 ) {
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const size = _.isString(req.query.size) ? parseInt(req.query.size, 10) : 20;
+	const from = _.isString(req.query.from) ? parseInt(req.query.from, 10) : 0;
 	const {orm}: any = req.app.locals;
 	const {bbid} = req.params;
 	try {
@@ -262,7 +261,7 @@ function _createNote(orm, content, editorID, revision, transacting) {
 }
 
 export function addNoteToRevision(req: PassportRequest, res: $Response) {
-	const {orm}: {orm: any} = req.app.locals;
+	const {orm}: {orm?: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const revision = Revision.forge({id: req.params.id});
@@ -299,7 +298,7 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 
 async function saveEntitiesAndFinishRevision(
 	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
-	updatedEntities: [], editorID: number, note: string
+	updatedEntities: any[], editorID: number, note: string
 ) {
 	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
 		(entityModel) => entityModel.get('revisionId')
@@ -415,7 +414,7 @@ export function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
 ) {
-	const {entity}: {entity: any} = res.locals;
+	const {entity}: {entity?: any} = res.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
@@ -679,12 +678,13 @@ type ProcessEditionSetsBody = {
 	releaseEvents: Array<ReleaseEvent>
 };
 
+type ProcessEditionSetsResult = {languageSetId: number[], publisherSetId: number[], releaseEventSetId: number[]};
 async function processEditionSets(
 	orm: any,
-	currentEntity: ?{},
+	currentEntity: Record<string, unknown> | null | undefined,
 	body: ProcessEditionSetsBody,
 	transacting: Transaction
-) {
+): Promise<ProcessEditionSetsResult> {
 	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
 
 	const oldLanguageSet = await (
@@ -743,17 +743,18 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
-	return commonUtils.makePromiseFromObject({
+	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
 	});
 }
 
+type ProcessWorkSetsResult = {languageSetId: number[]};
 async function processWorkSets(
-	orm, currentEntity: ?{}, body: {languages: Array<Language>},
+	orm, currentEntity: Record<string, unknown> | null | undefined, body: {languages: Array<Language>},
 	transacting: Transaction
-) {
+): Promise<ProcessWorkSetsResult> {
 	const id = _.get(currentEntity, ['languageSet', 'id']);
 
 	const oldSet = await (
@@ -763,7 +764,7 @@ async function processWorkSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	return commonUtils.makePromiseFromObject({
+	return commonUtils.makePromiseFromObject<ProcessWorkSetsResult>({
 		languageSetId: orm.func.language.updateLanguageSet(
 			orm, transacting, oldSet,
 			languages.map((languageID) => ({id: languageID}))
@@ -773,11 +774,11 @@ async function processWorkSets(
 
 function processEntitySets(
 	orm: any,
-	currentEntity: ?{},
+	currentEntity: Record<string, unknown> | null | undefined,
 	entityType: EntityTypeString,
 	body: any,
 	transacting: Transaction
-) {
+): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | null> {
 	if (entityType === 'Edition') {
 		return processEditionSets(orm, currentEntity, body, transacting);
 	}
@@ -971,24 +972,24 @@ export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
 	entityType: EntityTypeString,
-	derivedProps: {},
+	derivedProps: Record<string, unknown>,
 	isMergeOperation: boolean
 ) {
-	const {orm}: {orm: any} = req.app.locals;
+	const {orm}: {orm?: any} = req.app.locals;
 	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
 	const {body}: {body: any} = req;
 	const {locals: resLocals}: {locals: any} = res;
 
-	let currentEntity: ?{
-		aliasSet: ?{id: number},
-		annotation: ?{id: number},
+	let currentEntity: {
+		aliasSet: {id: number} | null | undefined,
+		annotation: {id: number} | null | undefined,
 		bbid: string,
-		disambiguation: ?{id: number},
-		identifierSet: ?{id: number},
+		disambiguation: {id: number} | null | undefined,
+		identifierSet: {id: number} | null | undefined,
 		type: EntityTypeString
-	} = resLocals.entity;
+	} | null | undefined = resLocals.entity;
 
 	const entityEditPromise = bookshelf.transaction(async (transacting) => {
 		try {
@@ -1113,7 +1114,7 @@ export function handleCreateOrEditEntity(
 }
 
 type AliasEditorT = {
-	language: ?number,
+	language: number | null | undefined,
 	name: string,
 	primary: boolean,
 	sortName: string
@@ -1121,13 +1122,14 @@ type AliasEditorT = {
 
 type NameSectionT = {
 	disambiguation: string,
-	language: ?number,
+	language: number | null | undefined,
 	name: string,
-	sortName: string
+	sortName: string,
+	id: string
 };
 
 export function constructAliases(
-	aliasEditor: {[string]: AliasEditorT}, nameSection: NameSectionT
+	aliasEditor: {[propName: string]: AliasEditorT}, nameSection: NameSectionT
 ) {
 	const aliases = _.map(
 		aliasEditor,
@@ -1160,7 +1162,7 @@ type IdentifierEditorT = {
 };
 
 export function constructIdentifiers(
-	identifierEditor: {[string]: IdentifierEditorT}
+	identifierEditor: {[propName: string]: IdentifierEditorT}
 ) {
 	return _.map(
 		identifierEditor,
