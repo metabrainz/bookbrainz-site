@@ -263,23 +263,23 @@ class UserCollectionForm extends React.Component {
 								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
 							<div className="row">
-								<div className = "col-sm-6">
-								<Button
-									bsStyle="primary"
-									type="button"
-									onClick={this.handleAddCollaborator}
-								>
-									<FontAwesomeIcon icon="plus"/>
-									&nbsp;Add another collaborator
-								</Button>
+								<div className="col-sm-6 margin-top-d5">
+									<Button
+										bsStyle="primary"
+										type="button"
+										onClick={this.handleAddCollaborator}
+									>
+										<FontAwesomeIcon icon="plus"/>
+										&nbsp;Add another collaborator
+									</Button>
 								</div>
-								<div className = "col-sm-6">
-								<Button
-									bsStyle="success"
-									type="submit"
-								>
-									<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
-								</Button>
+								<div className="col-sm-6 margin-top-d5">
+									<Button
+										bsStyle="success"
+										type="submit"
+									>
+										<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
+									</Button>
 								</div>
 								{
 									this.props.collection.id ?
