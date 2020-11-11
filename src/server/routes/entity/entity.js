@@ -421,6 +421,10 @@ export function handleDelete(
 	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+		if (!body.note || !body.note.length) {
+			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
+		}
+
 		const otherEntities = await deleteRelationships(orm, transacting, entity);
 
 		const newRevision = await new Revision({
