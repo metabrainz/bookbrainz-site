@@ -87,8 +87,7 @@ function CollectionAttributes({collection}) {
 											<a href={`/editor/${collaborator.id}`} key={collaborator.id}>
 												{collaborator.text}{id === collection.collaborators.length - 1 ? null : ', '}
 											</a>
-										)
-									)
+										))
 								}
 							</dd>
 						</Col> : null
