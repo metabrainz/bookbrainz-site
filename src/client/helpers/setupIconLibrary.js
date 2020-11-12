@@ -19,7 +19,7 @@
 import {config, library} from '@fortawesome/fontawesome-svg-core';
 import {
 	faAngleDoubleLeft, faAngleDoubleUp, faBook, faCalendarAlt, faChartLine, faCheck, faCircle,
-	faCircleNotch, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
+	faCircleNotch, faClone, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
 	faExternalLinkAlt, faGlobe, faGripVertical, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,
@@ -38,7 +38,7 @@ config.autoAddCss = true;
 // Add Icons to FontAwesome library
 library.add(
 	fab, faAngleDoubleLeft, faAngleDoubleUp, faBook, faCalendarAlt, faChartLine, faCheck, faCircle,
-	faCircleNotch, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
+	faCircleNotch, faClone, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
 	faExternalLinkAlt, faGlobe, faGripVertical, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
 	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,

@@ -28,10 +28,11 @@
 		}
 	},
 	"search": {
-		"host": "elasticsearch:9200",
-		"httpAuth": "elastic:changeme",
-		"apiVersion": "5.6",
-		"maxRetries": -1,
-		"deadTimeout": 2000
+		"node": "http://elasticsearch:9200",
+		"auth": {
+			"username": "elastic",
+			"password": "changeme"
+		},
+		"requestTimeout": 30000
 	}
 }

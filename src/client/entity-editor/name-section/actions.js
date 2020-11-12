@@ -18,7 +18,8 @@
 
 // @flow
 
-import {snakeCase as _snakeCase, uniqBy} from 'lodash';
+import {snakeCase as _snakeCase, isString, remove, uniqBy} from 'lodash';
+import log from 'log';
 import request from 'superagent';
 
 
@@ -108,12 +109,14 @@ export function debouncedUpdateDisambiguationField(
  * of the entity already exists in the database.
  *
  * @param  {string} name - The value to be checked if it already exists.
+ * @param  {string} entityBBID - The BBID of the current entity, if it already exists
  * @param  {string} entityType - The entity type of the value to be checked.
  * @param  {string} action - An optional redux action to dispatch. Defaults to UPDATE_WARN_IF_EXISTS
  * @returns {checkIfNameExists~dispatch} The returned function.
  */
 export function checkIfNameExists(
 	name: string,
+	entityBBID: string,
 	entityType: string,
 	action: ?string
 ): ((Action) => mixed) => mixed {
@@ -121,30 +124,40 @@ export function checkIfNameExists(
 	 * @function dispatch
 	 * @param  {function} dispatch - The redux dispatch function.
 	 */
-	return (dispatch) => {
-		if (!name) {
+	return async (dispatch) => {
+		if (!name ||
+			_snakeCase(entityType) === 'edition' ||
+			(_snakeCase(entityType) === 'edition_group' && action === UPDATE_WARN_IF_EXISTS)
+		) {
 			dispatch({
 				payload: null,
 				type: action || UPDATE_WARN_IF_EXISTS
 			});
 			return;
 		}
-		request.get('/search/exists')
-			.query({
-				q: name,
-				type: _snakeCase(entityType)
-			})
-			.then(res => {
-				let payload = JSON.parse(res.text) || null;
-				if (Array.isArray(payload)) {
-					payload = uniqBy(payload, 'bbid');
-				}
-				return dispatch({
-					payload,
-					type: action || UPDATE_WARN_IF_EXISTS
+		try {
+			const res = await request.get('/search/exists')
+				.query({
+					q: name,
+					type: _snakeCase(entityType)
 				});
-			})
-			.catch((error: {message: string}) => error);
+
+			let payload = JSON.parse(res.text) || null;
+			if (Array.isArray(payload)) {
+				payload = uniqBy(payload, 'bbid');
+				// Filter out the current entity (if any)
+				if (isString(entityBBID)) {
+					remove(payload, ({bbid}) => entityBBID === bbid);
+				}
+			}
+			dispatch({
+				payload,
+				type: action || UPDATE_WARN_IF_EXISTS
+			});
+		}
+		catch (error) {
+			log.error(error);
+		}
 	};
 }
 
@@ -153,11 +166,13 @@ export function checkIfNameExists(
  *  This is done by asynchronously calling the route /search/autocomplete.
  *
  * @param  {string} name - The value to be checked if it already exists.
+ * @param  {string} entityBBID - The BBID of the current entity, if it already exists
  * @param  {string} type - Entity type of the name.
  * @returns {searchName~dispatch} The returned function.
  */
 export function searchName(
 	name: string,
+	entityBBID: string,
 	type: string,
 ): ((Action) => mixed) => mixed {
 	/**
@@ -177,9 +192,16 @@ export function searchName(
 				q: name,
 				type
 			})
-			.then(res => dispatch({
-				payload: JSON.parse(res.text),
-				type: UPDATE_SEARCH_RESULTS
-			}));
+			.then(res => {
+				const searchResults = JSON.parse(res.text);
+				// Filter out the current entity (if any)
+				if (isString(entityBBID)) {
+					remove(searchResults, ({bbid}) => entityBBID === bbid);
+				}
+				dispatch({
+					payload: searchResults,
+					type: UPDATE_SEARCH_RESULTS
+				});
+			});
 	};
 }

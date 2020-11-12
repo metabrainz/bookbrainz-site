@@ -599,11 +599,13 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		try {
 			const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(entitiesModel => entitiesModel.editions()));
 			// eslint-disable-next-line consistent-return
-			const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
+			let editionsToSet = _.flatMap(editionsToSetCollections, edition => {
 				if (edition.models && edition.models.length) {
 					return edition.models;
 				}
 			});
+			// Remove 'undefined' entries (no editions in those publishers)
+			editionsToSet = _.reject(editionsToSet, _.isNil);
 			await Promise.all(editionsToSet.map(async (edition) => {
 				// Fetch current PublisherSet
 				const oldPublisherSet = await edition.publisherSet();
@@ -617,6 +619,7 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		}
 		catch (err) {
 			log.error(err);
+			throw err;
 		}
 	}
 
@@ -939,16 +942,18 @@ function fetchEntitiesForRelationships(
 /**
  * @param  {any} orm -  The BookBrainz ORM
  * @param  {any} newEdition - The ORM model of the newly created Edition
+ * @param  {any} transacting - The ORM transaction object
  * @description Edition Groups will be created automatically by the ORM if no EditionGroup BBID is set on a new Edition.
  * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
  */
-async function indexAutoCreatedEditionGroup(orm, newEdition) {
+async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
 	const {EditionGroup} = orm;
 	const bbid = newEdition.get('editionGroupBbid');
 	try {
 		const editionGroup = await new EditionGroup({bbid})
 			.fetch({
 				require: true,
+				transacting,
 				withRelated: 'aliasSet.aliases'
 			});
 		await search.indexEntity(editionGroup.toJSON());
@@ -1070,7 +1075,7 @@ export function handleCreateOrEditEntity(
 
 				/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
 				if (savedMainEntity.get('type') === 'Edition') {
-					indexAutoCreatedEditionGroup(orm, savedMainEntity);
+					await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 				}
 			}
 

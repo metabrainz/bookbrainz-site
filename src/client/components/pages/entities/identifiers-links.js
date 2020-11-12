@@ -60,7 +60,8 @@ function IdentifierLink({typeId, value}) {
 			link = `https://viaf.org/viaf/${value}`;
 			break;
 		case 13: // @ISNI: The ISNI ID corresponding to a BookBrainz Author.
-			link = `http://www.isni.org/${value}`;
+			// Remove spaces first (see BB-499)
+			link = `http://www.isni.org/${value.replace(/\s/g, '')}`;
 			break;
 		case 14: // @LibraryThing Work: The LibraryThing ID for a BookBrainz work.
 			link = `https://www.librarything.com/work/${value}`;
