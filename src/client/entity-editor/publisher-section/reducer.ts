@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2017  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as Immutable from 'immutable';
 import {
-	type Action, UPDATE_BEGIN_AREA, UPDATE_BEGIN_DATE, UPDATE_ENDED,
-	UPDATE_END_AREA, UPDATE_END_DATE, UPDATE_GENDER, UPDATE_TYPE
+	Action, UPDATE_AREA, UPDATE_BEGIN_DATE, UPDATE_ENDED, UPDATE_END_DATE,
+	UPDATE_TYPE
 } from './actions';
 
 
@@ -29,32 +28,25 @@ type State = Immutable.Map<string, any>;
 
 function reducer(
 	state: State = Immutable.Map({
-		beginDate: '',
-		endDate: '',
+		beginDate: {day: '', month: '', year: ''},
+		endDate: {day: '', month: '', year: ''},
 		ended: false,
-		gender: null,
 		type: null
 	}),
 	action: Action
 ): State {
 	const {type, payload} = action;
 	switch (type) {
-		case UPDATE_GENDER:
-			return state.set('gender', payload);
+		case UPDATE_AREA:
+			return state.set('area', Immutable.fromJS(payload));
 		case UPDATE_TYPE:
 			return state.set('type', payload);
-		case UPDATE_BEGIN_AREA:
-			return state.set('beginArea', Immutable.fromJS(payload));
 		case UPDATE_BEGIN_DATE:
-			return state.set('beginDate', payload);
-		case UPDATE_END_AREA:
-			return state.set('endArea', Immutable.fromJS(payload));
+			return state.set('beginDate', Immutable.fromJS(payload));
 		case UPDATE_END_DATE:
-			return state.set('endDate', payload);
+			return state.set('endDate', Immutable.fromJS(payload));
 		case UPDATE_ENDED:
-			return state.set('ended', payload)
-				.set('endArea', null)
-				.set('endDate', payload);
+			return state.set('ended', payload);
 		// no default
 	}
 	return state;

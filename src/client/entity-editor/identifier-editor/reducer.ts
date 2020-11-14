@@ -16,11 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as Immutable from 'immutable';
 import {
 	ADD_IDENTIFIER_ROW, REMOVE_EMPTY_IDENTIFIERS, REMOVE_IDENTIFIER_ROW,
 	UPDATE_IDENTIFIER_TYPE, UPDATE_IDENTIFIER_VALUE
 } from './actions';
-import Immutable from 'immutable';
 
 
 const EMPTY_IDENTIFIER = Immutable.Map({
@@ -28,8 +28,10 @@ const EMPTY_IDENTIFIER = Immutable.Map({
 	value: ''
 });
 
+type State = Immutable.OrderedMap<string, any>;
+
 function reducer(
-	state = Immutable.OrderedMap(),
+	state: State = Immutable.OrderedMap(),
 	action
 ) {
 	const {type, payload} = action;

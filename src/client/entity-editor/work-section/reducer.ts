@@ -16,11 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as Immutable from 'immutable';
 import {
-	type Action, UPDATE_LANGUAGES, UPDATE_TYPE
+	Action, UPDATE_LANGUAGES, UPDATE_TYPE
 } from './actions';
 
 

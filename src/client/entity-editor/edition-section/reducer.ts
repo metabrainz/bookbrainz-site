@@ -16,13 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as Immutable from 'immutable';
 import * as _ from 'lodash';
 
 import {
-	type Action,
+	Action,
 	SHOW_PHYSICAL,
 	TOGGLE_SHOW_EDITION_GROUP,
 	UPDATE_DEPTH,
