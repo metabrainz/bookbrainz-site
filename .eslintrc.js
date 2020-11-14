@@ -10,6 +10,7 @@ const options = {
 	extends: [
 		'eslint:recommended',
 		'plugin:flowtype/recommended',
+		'plugin:node/recommended',
 		'plugin:react/recommended',
 		'plugin:import/recommended'
 	],
@@ -37,6 +38,7 @@ const ERROR = 2;
 const TRANSITION_WARNING = 1; // warnings that should be reviewed soon
 const WARNING = 1; // warnings that should stay warnings
 const TRANSITION_IGNORE = 0; // ignores that should be reviewed soon
+const IGNORE = 0;
 
 // These should not be removed at all.
 const possibleErrorsRules = {
@@ -168,7 +170,7 @@ const variablesRules = {
 };
 
 const nodeAndCommonJSRules = {
-	'callback-return': [
+	'node/callback-return': [
 		ERROR,
 		[
 			'callback',
@@ -177,14 +179,21 @@ const nodeAndCommonJSRules = {
 			'done'
 		]
 	],
-	'global-require': ERROR,
-	'handle-callback-err': ERROR,
-	'no-mixed-requires': ERROR,
-	'no-new-require': ERROR,
-	'no-path-concat': ERROR,
-	'no-process-env': TRANSITION_WARNING,
-	'no-process-exit': ERROR,
-	'no-sync': ERROR
+	'node/global-require': ERROR,
+	'node/handle-callback-err': ERROR,
+	'node/no-missing-import': [
+		ERROR,
+		{tryExtensions: ['.js', '.jsx', '.ts', '.tsx']}
+	],
+	'node/no-mixed-requires': ERROR,
+	'node/no-new-require': ERROR,
+	'node/no-path-concat': ERROR,
+	'node/no-process-env': TRANSITION_WARNING,
+	'node/no-process-exit': ERROR,
+	'node/no-sync': ERROR,
+	'node/no-unpublished-import': IGNORE,
+	'node/no-unsupported-features/es-builtins': IGNORE,
+	'node/no-unsupported-features/es-syntax': IGNORE
 };
 
 // Agreement of all project leads needed before changing these.

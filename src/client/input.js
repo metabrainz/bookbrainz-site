@@ -57,6 +57,7 @@ export default class Input extends Component {
 		this.refFormControl = null;
 	}
 
+	// eslint-disable-next-line accessor-pairs
 	set value(newValue) {
 		this.refFormControl.value = newValue;
 	}
