@@ -16,27 +16,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import {ISODateStringToObject, isNullDate} from '../../helpers/utils';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {dateValidator} from './date';
+import {isIterable} from '../../../types';
 import validator from 'validator';
 
 
 export function get(
 	object: any,
 	path: string,
-	defaultValue: ?mixed = null
-): mixed {
-	if (Iterable.isIterable(object)) {
+	defaultValue: unknown | null | undefined = null
+): any {
+	if (isIterable(object)) {
 		return object.get(path, defaultValue);
 	}
 	return _.get(object, path, defaultValue);
 }
 
-export function absentAndRequired(value: any, required: ?boolean): boolean {
+export function absentAndRequired(value: any, required: boolean | null | undefined): boolean {
 	return Boolean(required && _.isNil(value));
 }
 
@@ -91,7 +90,7 @@ export function validateDate(value: string) {
 }
 
 
-export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
+export function dateIsBefore(beginValue: unknown, endValue: unknown): boolean {
 	const beginDateObject = ISODateStringToObject(beginValue);
 	const endDateObject = ISODateStringToObject(endValue);
 	if (isNullDate(beginDateObject) || isNullDate(endDateObject) || !validateDate(beginDateObject).isValid ||
@@ -130,7 +129,7 @@ export function dateIsBefore(beginValue: mixed, endValue: mixed): boolean {
 }
 
 export function validateUUID(
-	value: mixed, required: boolean = false
+	value: unknown, required: boolean = false
 ): boolean {
 	if (absentAndRequired(value, required)) {
 		return false;

@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {dateIsBefore, get, validateDate, validatePositiveInteger} from './base';
 import {
@@ -39,7 +38,7 @@ export function validateAuthorSectionBeginArea(value: any): boolean {
 	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
-export function validateAuthorSectionBeginDate(value: any): object {
+export function validateAuthorSectionBeginDate(value: any) {
 	const {isValid, errorMessage} = validateDate(value);
 	return {errorMessage, isValid};
 }
@@ -53,8 +52,8 @@ export function validateAuthorSectionEndArea(value: any): boolean {
 }
 
 export function validateAuthorSectionEndDate(
-	beginValue: any, endValue: any, authorType: string
-): object {
+	beginValue: any, endValue: any, authorType?: string
+) {
 	const {isValid, errorMessage} = validateDate(endValue);
 	const isGroup = authorType === 'Group';
 	const {beginDateLabel, endDateLabel} = labelsForAuthor(isGroup);
@@ -96,7 +95,7 @@ export function validateAuthorSection(data: any): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: ?Array<_IdentifierType>
+	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
 ): boolean {
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),

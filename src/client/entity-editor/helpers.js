@@ -41,12 +41,12 @@ import publisherSectionReducer from './publisher-section/reducer';
 import relationshipSectionReducer from './relationship-editor/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 import {validateForm as validateAuthorForm} from './validators/author';
-import {validateForm as validateEditionForm} from './validators/edition.js';
+import {validateForm as validateEditionForm} from './validators/edition';
 import {
 	validateForm as validateEditionGroupForm
 } from './validators/edition-group';
-import {validateForm as validatePublisherForm} from './validators/publisher.js';
-import {validateForm as validateWorkForm} from './validators/work.js';
+import {validateForm as validatePublisherForm} from './validators/publisher';
+import {validateForm as validateWorkForm} from './validators/work';
 import workSectionReducer from './work-section/reducer';
 
 

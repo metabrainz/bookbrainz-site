@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {get, validatePositiveInteger} from './base';
 import {
@@ -39,7 +38,7 @@ export function validateEditionGroupSection(data: any): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: ?Array<_IdentifierType>
+	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
 ): boolean {
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),

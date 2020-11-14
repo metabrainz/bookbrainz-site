@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import {
 	get,
 	validateOptionalString,
@@ -82,7 +80,7 @@ export type IdentifierType = {
 };
 
 export function validateIdentifierValue(
-	value: any, typeId: mixed, types?: ?Array<IdentifierType>
+	value: any, typeId: unknown, types?: Array<IdentifierType> | null | undefined
 ): boolean {
 	if (!validateRequiredString(value)) {
 		return false;
@@ -102,7 +100,7 @@ export function validateIdentifierValue(
 }
 
 export function validateIdentifierType(
-	typeId: any, types?: ?Array<IdentifierType>
+	typeId: any, types?: Array<IdentifierType> | null | undefined
 ): boolean {
 	if (!validatePositiveInteger(typeId, true)) {
 		return false;
@@ -118,7 +116,7 @@ export function validateIdentifierType(
 }
 
 export function validateIdentifier(
-	identifier: any, types?: ?Array<IdentifierType>
+	identifier: any, types?: Array<IdentifierType> | null | undefined
 ): boolean {
 	const value = get(identifier, 'value');
 	const type = get(identifier, 'type');
@@ -129,7 +127,8 @@ export function validateIdentifier(
 	);
 }
 
-export const validateIdentifiers = _.partial(
+type ValidateIdentifiersFunc = (identifiers: any[], types?: Array<IdentifierType> | null | undefined) => boolean;
+export const validateIdentifiers: ValidateIdentifiersFunc = _.partial(
 	validateMultiple, _.partial.placeholder,
 	validateIdentifier, _.partial.placeholder
 );

@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import {dateIsBefore, get, validateDate, validatePositiveInteger} from './base';
 import {
 	validateAliases, validateIdentifiers, validateNameSection,
@@ -35,14 +33,14 @@ export function validatePublisherSectionArea(value: any): boolean {
 	return validatePositiveInteger(get(value, 'id', null), true);
 }
 
-export function validatePublisherSectionBeginDate(value: any): boolean {
+export function validatePublisherSectionBeginDate(value: any) {
 	const {isValid, errorMessage} = validateDate(value);
 	return {errorMessage, isValid};
 }
 
 export function validatePublisherSectionEndDate(
 	beginValue: any, endValue: any, ended: boolean
-): boolean {
+) {
 	if (ended === false) {
 		return {errorMessage: 'Dissolved date will be ignored', isValid: true};
 	}
@@ -79,7 +77,7 @@ export function validatePublisherSection(data: any): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: ?Array<_IdentifierType>
+	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
 ): boolean {
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
