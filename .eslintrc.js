@@ -15,13 +15,6 @@ const options = {
 	],
 	parser: 'babel-eslint',
 	parserOptions: {
-		ecmaFeatures: {
-			experimentalObjectRestSpread: true,
-			generators: true,
-			jsx: true,
-			modules: false
-		},
-		ecmaVersion: 8,
 		sourceType: 'module'
 	},
 	plugins: [
