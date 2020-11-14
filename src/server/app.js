@@ -68,14 +68,14 @@ app.use(compression());
 
 // Set up serving of static assets
 if (process.env.NODE_ENV === 'development') {
-	/* eslint-disable node/global-require, node/no-unpublished-require */
+	/* eslint-disable node/global-require, node/no-unpublished-require, @typescript-eslint/no-var-requires */
 	const webpack = require('webpack');
 	const webpackDevMiddleware = require('webpack-dev-middleware');
 	const webpackHotMiddleware = require('webpack-hot-middleware');
 
 	// eslint-disable-next-line import/no-dynamic-require
 	const webpackConfig = require(path.resolve(rootDir, './webpack.client'));
-	/* eslint-enable node/global-require, node/no-unpublished-require */
+	/* eslint-enable node/global-require, node/no-unpublished-require, @typescript-eslint/no-var-requires */
 	const compiler = webpack(webpackConfig);
 
 	app.use(webpackDevMiddleware(compiler, {

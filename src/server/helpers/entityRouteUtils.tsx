@@ -241,7 +241,7 @@ export function makeEntityCreateOrEditHandler(
 	entityType: string,
 	transformNewForm: (data: Record<string, unknown>) => Record<string, unknown>,
 	propertiesToPick: string | string[],
-	isMergeHandler: boolean = false
+	isMergeHandler = false
 ) {
 	const entityName = _.upperFirst(entityType);
 	const validate = getValidator(entityType);

@@ -27,6 +27,7 @@ function cleanupOnExit(cleanupPromise) {
 
 	function terminateHandler(code) {
 		console.log(`${code} signal received, terminating straight away`);
+		// eslint-disable-next-line @typescript-eslint/no-use-before-define -- safe, functions hoisted
 		removeAllListeners();
 		process.kill(process.pid, code);
 	}
@@ -35,6 +36,7 @@ function cleanupOnExit(cleanupPromise) {
 		console.log(`About to exit with code: ${code}`);
 		process.emit('asyncExit', code);
 		// callback();
+		// eslint-disable-next-line @typescript-eslint/no-use-before-define -- safe, functions hoisted
 		removeAllListeners();
 		// process.kill(process.pid, 0);
 	}
