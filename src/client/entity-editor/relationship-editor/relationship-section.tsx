@@ -16,12 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as Immutable from 'immutable';
 
 import {
-	type Action,
+	Action,
 	addRelationship,
 	editRelationship,
 	hideRelationshipEditor,
@@ -33,6 +32,7 @@ import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
 import type {
 	Entity,
 	EntityType,
+	LanguageOption,
 	RelationshipForDisplay,
 	RelationshipType,
 	Relationship as _Relationship
@@ -50,8 +50,8 @@ import {connect} from 'react-redux';
 type RelationshipListProps = {
 	contextEntity: Entity,
 	relationships: Array<RelationshipForDisplay>,
-	onEdit: (number) => mixed,
-	onRemove: (number) => mixed
+	onEdit: (number) => unknown,
+	onRemove: (number) => unknown
 };
 
 /* In the ButtonGroup below we are forced to use an 'href' attribute to turn them into <a> elements
@@ -117,6 +117,7 @@ export function RelationshipList(
 type OwnProps = {
 	entity: Entity,
 	entityType: EntityType,
+	languageOptions: Array<LanguageOption>,
 	relationshipTypes: Array<RelationshipType>,
 };
 
@@ -130,12 +131,12 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onAddRelationship: () => mixed,
-	onEditorClose: () => mixed,
-	onEditorAdd: (_Relationship) => mixed,
-	onEdit: (number) => mixed,
-	onRemove: (number) => mixed,
-	onUndo: () => mixed
+	onAddRelationship: () => unknown,
+	onEditorClose: () => unknown,
+	onEditorAdd: (_Relationship) => unknown,
+	onEdit: (number) => unknown,
+	onRemove: (number) => unknown,
+	onUndo: () => unknown
 };
 
 type Props = OwnProps & StateProps & DispatchProps;

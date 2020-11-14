@@ -16,10 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {
-	type Action,
+	Action,
 	debouncedUpdateDepth,
 	debouncedUpdateHeight,
 	debouncedUpdatePages,
@@ -36,6 +35,7 @@ import type {List, Map} from 'immutable';
 import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
 import CustomInput from '../../input';
+import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
@@ -62,34 +62,35 @@ type EditionGroup = {
 };
 
 type OwnProps = {
-	mergingEntities: Array<object>
+	mergingEntities: any[]
 };
 
+type OptionalNumber = number | null | undefined;
 type StateProps = {
-	depthValue: ?number,
-	formatValue: ?number,
-	heightValue: ?number,
+	depthValue: OptionalNumber,
+	formatValue: OptionalNumber,
+	heightValue: OptionalNumber,
 	languageValues: List<LanguageOption>,
-	pagesValue: ?number,
+	pagesValue: OptionalNumber,
 	publisherValue: Map<string, any>,
 	editionGroupValue: Map<string, any>,
-	releaseDateValue: ?object,
-	statusValue: ?number,
-	weightValue: ?number,
-	widthValue: ?number
+	releaseDateValue: Record<string, unknown> | null | undefined,
+	statusValue: OptionalNumber,
+	weightValue: OptionalNumber,
+	widthValue: OptionalNumber
 };
 
 type DispatchProps = {
-	onDepthChange: (SyntheticInputEvent<>) => mixed,
-	onFormatChange: (?{value: number}) => mixed,
-	onHeightChange: (SyntheticInputEvent<>) => mixed,
-	onPagesChange: (SyntheticInputEvent<>) => mixed,
-	onPublisherChange: (Publisher) => mixed,
-	onEditionGroupChange: (EditionGroup) => mixed,
-	onReleaseDateChange: (SyntheticInputEvent<>) => mixed,
-	onStatusChange: (?{value: number}) => mixed,
-	onWeightChange: (SyntheticInputEvent<>) => mixed,
-	onWidthChange: (SyntheticInputEvent<>) => mixed
+	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onFormatChange: (arg: number | null | undefined) => unknown,
+	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onPublisherChange: (arg: Publisher) => unknown,
+	onEditionGroupChange: (arg: EditionGroup) => unknown,
+	onReleaseDateChange: (arg: number | null | undefined) => unknown,
+	onStatusChange: (arg: number | null | undefined) => unknown,
+	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onWidthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
 };
 
 type Props = OwnProps & StateProps & DispatchProps;

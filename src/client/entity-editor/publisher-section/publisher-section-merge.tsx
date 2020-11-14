@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Ben Ockmore
+ * Copyright (C) 2019  Nicolas Pelletier
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,39 +16,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {
-	type Action,
+	Action,
 	debouncedUpdateBeginDate,
 	debouncedUpdateEndDate,
 	updateArea,
 	updateEnded,
 	updateType
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
+import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 import {
 	validatePublisherSectionBeginDate,
 	validatePublisherSectionEndDate
 } from '../validators/publisher';
 
-import CustomInput from '../../input';
-import DateField from '../common/new-date-field';
-import EntitySearchFieldOption from '../common/entity-search-field-option';
+import type {Dispatch} from 'redux';
+import Entity from '../common/entity';
+import LinkedEntity from '../common/linked-entity';
 import type {Map} from 'immutable';
+import MergeField from '../common/merge-field';
 import React from 'react';
-import Select from 'react-select';
+import _ from 'lodash';
 import {connect} from 'react-redux';
-import {isNullDate} from '../../helpers/utils';
+import {convertMapToObject} from '../../helpers/utils';
 
-
-type PublisherType = {
-	label: string,
-	id: number
-};
 
 type Area = {
-	disambiguation: ?string,
+	disambiguation: string | null | undefined,
 	id: string | number,
 	text: string,
 	type: string
@@ -64,21 +59,21 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onAreaChange: (?Area) => mixed,
-	onBeginDateChange: (SyntheticInputEvent<>) => mixed,
-	onEndDateChange: (SyntheticInputEvent<>) => mixed,
-	onEndedChange: (SyntheticInputEvent<>) => mixed,
-	onTypeChange: ({value: number} | null) => mixed
+	onAreaChange: (arg: Area | null | undefined) => unknown,
+	onBeginDateChange: (arg: string) => unknown,
+	onEndDateChange: (arg: string) => unknown,
+	onEndedChange: (arg: boolean) => unknown,
+	onTypeChange: (value: number | null) => unknown
 };
 
 type OwnProps = {
-	publisherTypes: Array<PublisherType>
+	mergingEntities: any[],
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
 
 /**
- * Container component. The PublisherSection component contains input fields
+ * Container component. The PublisherSectionMerge component contains input fields
  * specific to the publisher entity. The intention is that this component is
  * rendered as a modular section within the entity editor.
  *
@@ -91,8 +86,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  *        publisher.
  * @param {boolean} props.endedChecked - Whether or not the ended checkbox
  *        is checked.
- * @param {Array} props.publisherTypes - The list of possible types for a
- *        publisher.
+ * @param {Array} props.mergingEntities - The list of entities being merged
  * @param {number} props.typeValue - The ID of the type currently selected for
  *        the publisher.
  * @param {Function} props.onAreaChange - A function to be called when a
@@ -106,14 +100,14 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @param {Function} props.onTypeChange - A function to be called when
  *        a different publisher type is selected.
  * @returns {ReactElement} React element containing the rendered
- *          PublisherSection.
+ *          PublisherSectionMerge.
  */
-function PublisherSection({
+function PublisherSectionMerge({
 	areaValue,
 	beginDateValue,
 	endDateValue,
 	endedChecked,
-	publisherTypes,
+	mergingEntities,
 	typeValue,
 	onAreaChange,
 	onBeginDateChange,
@@ -121,100 +115,95 @@ function PublisherSection({
 	onEndedChange,
 	onTypeChange
 }: Props) {
-	const publisherTypesForDisplay = publisherTypes.map((type) => ({
-		label: type.label,
-		value: type.id
-	}));
+	const areaOptions = [];
+	const typeOptions = [];
+	const beginDateOptions = [];
+	const endDateOptions = [];
+	const endedOptions = [];
+
+	mergingEntities.forEach(entity => {
+		const typeOption = entity.publisherType && {label: entity.publisherType.label, value: entity.publisherType.id};
+		if (typeOption && !_.find(typeOptions, ['value', typeOption.value])) {
+			typeOptions.push(typeOption);
+		}
+		const area = !_.isNil(entity.area) && {label: entity.area.name, value: entityToOption(entity.area)};
+		if (area && !_.find(areaOptions, ['value.id', area.value.id])) {
+			areaOptions.push(area);
+		}
+		const beginDate = !_.isNil(entity.beginDate) && transformISODateForSelect(entity.beginDate);
+		if (beginDate && !_.find(beginDateOptions, ['value', beginDate.value])) {
+			beginDateOptions.push(beginDate);
+		}
+		const ended = !_.isNil(entity.ended) && {label: entity.ended ? 'Yes' : 'No', value: entity.ended};
+		if (ended && !_.find(endedOptions, ['value', ended.value])) {
+			endedOptions.push(ended);
+		}
+		const endDate = !_.isNil(entity.endDate) && transformISODateForSelect(entity.endDate);
+		if (endDate && !_.find(endDateOptions, ['value', endDate.value])) {
+			endDateOptions.push(endDate);
+		}
+	});
+
+	const formattedBeginDateValue = transformISODateForSelect(beginDateValue);
+	const formattedEndDateValue = endedChecked ? transformISODateForSelect(endDateValue) : '';
 
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
+
 	return (
 		<form>
-			<h2>
-				What else do you know about the Publisher?
-			</h2>
-			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
-			</p>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput label="Type">
-						<Select
-							instanceId="publisherType"
-							options={publisherTypesForDisplay}
-							value={typeValue}
-							onChange={onTypeChange}
-						/>
-					</CustomInput>
-				</Col>
-			</Row>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<EntitySearchFieldOption
-						instanceId="area"
-						label="Area"
-						tooltipText="Country or place the publisher is registered in"
-						type="area"
-						value={areaValue}
-						onChange={onAreaChange}
-					/>
-				</Col>
-			</Row>
-			<Row>
-				<Col md={6} mdOffset={3}>
-					<DateField
-						show
-						defaultValue={beginDateValue}
-						empty={isNullDate(beginDateValue)}
-						error={!isValidBeginDate}
-						errorMessage={errorMessageBeginDate}
-						label="Date Founded"
-						placeholder="YYYY-MM-DD"
-						onChangeDate={onBeginDateChange}
-					/>
-				</Col>
-			</Row>
-			<div className="text-center">
-				<Checkbox
-					defaultChecked={endedChecked}
-					onChange={onEndedChange}
-				>
-					Dissolved?
-				</Checkbox>
-			</div>
+			<MergeField
+				currentValue={typeValue}
+				label="Type"
+				options={typeOptions}
+				onChange={onTypeChange}
+			/>
+			<MergeField
+				currentValue={areaValue}
+				label="Area"
+				optionComponent={LinkedEntity}
+				options={areaOptions}
+				valueRenderer={Entity}
+				onChange={onAreaChange}
+			/>
+			<MergeField
+				currentValue={formattedBeginDateValue}
+				error={!isValidBeginDate}
+				errorMessage={errorMessageBeginDate}
+				label="Date Founded"
+				options={beginDateOptions}
+				onChange={onBeginDateChange}
+			/>
+			<MergeField
+				currentValue={endedChecked}
+				label="Dissolved?"
+				options={endedOptions}
+				onChange={onEndedChange}
+			/>
 			{endedChecked &&
-				<div>
-					<Row>
-						<Col md={6} mdOffset={3}>
-							<DateField
-								show
-								defaultValue={endDateValue}
-								empty={isNullDate(endDateValue)}
-								error={!isValidEndDate}
-								errorMessage={errorMessageEndDate}
-								label="Date Dissolved"
-								placeholder="YYYY-MM-DD"
-								onChangeDate={onEndDateChange}
-							/>
-						</Col>
-					</Row>
-				</div>
+				<MergeField
+					currentValue={formattedEndDateValue}
+					error={!isValidEndDate}
+					errorMessage={errorMessageEndDate}
+					label="Date Dissolved"
+					options={endDateOptions}
+					onChange={onEndDateChange}
+				/>
 			}
 		</form>
 	);
 }
-PublisherSection.displayName = 'PublisherSection';
+PublisherSectionMerge.displayName = 'PublisherSectionMerge';
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('publisherSection');
 
 	return {
-		areaValue: state.get('area'),
+		areaValue: convertMapToObject(state.get('area')),
 		beginDateValue: state.get('beginDate'),
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
-		typeValue: state.get('type')
+		typeValue: convertMapToObject(state.get('type'))
 	};
 }
 
@@ -226,11 +215,11 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		},
 		onEndDateChange: (endDate) =>
 			dispatch(debouncedUpdateEndDate(endDate)),
-		onEndedChange: (event) =>
-			dispatch(updateEnded(event.target.checked)),
+		onEndedChange: (value) =>
+			dispatch(updateEnded(value)),
 		onTypeChange: (value) =>
-			dispatch(updateType(value && value.value))
+			dispatch(updateType(value))
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PublisherSection);
+export default connect(mapStateToProps, mapDispatchToProps)(PublisherSectionMerge);

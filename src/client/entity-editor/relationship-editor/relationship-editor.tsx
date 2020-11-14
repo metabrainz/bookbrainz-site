@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {
 	Button,
@@ -136,7 +135,7 @@ function getValidOtherEntityTypes(
 
 type EntitySearchResult = {
 	text: string,
-	id: string | number,
+	id: string,
 	value: string | number,
 	type: EntityType
 };
@@ -144,21 +143,21 @@ type EntitySearchResult = {
 type RelationshipModalProps = {
 	relationshipTypes: Array<RelationshipType>,
 	baseEntity: Entity,
-	initRelationship: ?_Relationship,
-	languageOptions: Array<LanguageOption>,
-	onCancel?: () => mixed,
-	onClose?: () => mixed,
-	onAdd?: (_Relationship) => mixed
+	initRelationship: _Relationship | null | undefined,
+	languageOptions: Array<{label: string, value: number}>,
+	onCancel?: () => unknown,
+	onClose?: () => unknown,
+	onAdd?: (_Relationship) => unknown
 };
 
 type RelationshipModalState = {
-	relationshipType?: ?RelationshipType,
-	relationship?: ?_Relationship,
-	targetEntity?: ?EntitySearchResult
+	relationshipType?: RelationshipType | null | undefined,
+	relationship?: _Relationship | null | undefined,
+	targetEntity?: EntitySearchResult | null | undefined
 };
 
 function getInitState(
-	baseEntity: Entity, initRelationship: ?_Relationship
+	baseEntity: Entity, initRelationship: _Relationship | null | undefined
 ): RelationshipModalState {
 	if (_.isNull(initRelationship)) {
 		return {

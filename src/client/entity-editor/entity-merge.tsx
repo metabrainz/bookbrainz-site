@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as React from 'react';
 
@@ -36,8 +35,8 @@ import {getEntityLink} from '../../server/helpers/utils';
 
 
 type OwnProps = {
-	children: React.Element<any>,
-	mergingEntities: Object,
+	children: React.ReactElement<any>,
+	mergingEntities: any[],
 	identifierTypes: Array<any>,
 	subheading: string
 };
@@ -124,7 +123,7 @@ const EntityMerge = (props: Props) => {
 					</Row>
 					<Row>
 						<Col md={8}>
-							<RelationshipSection {...props}/>
+							<RelationshipSection {...(props as any)}/>
 						</Col>
 						<Col md={4}>
 							<EntityIdentifiers

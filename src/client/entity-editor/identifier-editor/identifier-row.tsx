@@ -16,19 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as data from '../../helpers/data';
 import {
-	type Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
+	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
 } from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
 import {
-	type IdentifierType,
+	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
 import CustomInput from '../../input';
+import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import Select from 'react-select';
@@ -47,9 +47,9 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onTypeChange: ({value: number}) => mixed,
-	onRemoveButtonClick: () => mixed,
-	onValueChange: (SyntheticInputEvent<>) => mixed
+	onTypeChange: (obj: {value: number}) => unknown,
+	onRemoveButtonClick: () => unknown,
+	onValueChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -133,7 +133,7 @@ IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 
 function handleValueChange(
 	dispatch: Dispatch<Action>,
-	event: SyntheticInputEvent<>,
+	event: React.ChangeEvent<HTMLInputElement>,
 	index: number,
 	types: Array<IdentifierType>
 ) {
@@ -167,7 +167,7 @@ function mapDispatchToProps(
 		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onTypeChange: (value: {value: number}) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
-		onValueChange: (event: SyntheticInputEvent<>) =>
+		onValueChange: (event: React.ChangeEvent<HTMLInputElement>) =>
 			handleValueChange(dispatch, event, index, typeOptions)
 	};
 }

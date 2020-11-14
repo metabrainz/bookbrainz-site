@@ -16,10 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {
-	type Action,
+	Action,
 	updateLanguages,
 	updateType
 } from './actions';
@@ -27,6 +26,7 @@ import {Col, Row} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 
 import CustomInput from '../../input';
+import type {Dispatch} from 'redux';
 import LanguageField from '../common/language-field';
 import React from 'react';
 import Select from 'react-select';
@@ -62,8 +62,8 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onLanguagesChange: (Array<DisplayLanguageOption>) => mixed,
-	onTypeChange: (?{value: number}) => mixed
+	onLanguagesChange: (arg: Array<DisplayLanguageOption>) => unknown,
+	onTypeChange: (arg: {value: number} | null) => unknown
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -155,7 +155,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onLanguagesChange: (values: Array<DisplayLanguageOption>) =>
 			dispatch(updateLanguages(values)),
-		onTypeChange: (value: ?{value: number}) =>
+		onTypeChange: (value: {value: number} | null) =>
 			dispatch(updateType(value && value.value))
 	};
 }

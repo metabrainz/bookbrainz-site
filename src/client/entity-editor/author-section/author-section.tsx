@@ -16,10 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {
-	type Action,
+	Action,
 	debouncedUpdateBeginDate,
 	debouncedUpdateEndDate,
 	updateBeginArea,
@@ -37,6 +36,7 @@ import {
 
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
+import type {Dispatch} from 'redux';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
@@ -56,7 +56,7 @@ type GenderOptions = {
 };
 
 type Area = {
-	disambiguation: ?string,
+	disambiguation: string | null | undefined,
 	id: string | number,
 	text: string,
 	type: string
@@ -80,13 +80,13 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onBeginAreaChange: (?Area) => mixed,
-	onBeginDateChange: (SyntheticInputEvent<>) => mixed,
-	onEndAreaChange: (?Area) => mixed,
-	onEndDateChange: (SyntheticInputEvent<>) => mixed,
-	onEndedChange: (SyntheticInputEvent<>) => mixed,
-	onGenderChange: ({value: number} | null) => mixed,
-	onTypeChange: ({value: number} | null) => mixed
+	onBeginAreaChange: (arg: Area | null | undefined) => unknown,
+	onBeginDateChange: (arg: string) => unknown,
+	onEndAreaChange: (arg: Area | null | undefined) => unknown,
+	onEndDateChange: (arg: string) => unknown,
+	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
+	onGenderChange: (obj: {value: number} | null) => unknown,
+	onTypeChange: (obj: {value: number} | null) => unknown
 };
 
 type OwnProps = {
@@ -322,7 +322,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEndDateChange: (endDate) =>
 			dispatch(debouncedUpdateEndDate(endDate)),
 		onEndedChange: (event) =>
-			dispatch(updateEnded(event.target.checked)),
+			dispatch(updateEnded((event.target as any).checked)),
 		onGenderChange: (value) =>
 			dispatch(updateGender(value && value.value)),
 		onTypeChange: (value) =>

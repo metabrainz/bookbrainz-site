@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as React from 'react';
 import AliasEditor from './alias-editor/alias-editor';
@@ -31,7 +30,7 @@ import {connect} from 'react-redux';
 
 
 type OwnProps = {
-	children: React.Element<any>,
+	children: React.ReactElement<any>,
 	heading: string
 };
 
@@ -73,7 +72,7 @@ const EntityEditor = (props: Props) => {
 				<AliasEditor show={aliasEditorVisible} {...props}/>
 				<NameSection {...props}/>
 				<ButtonBar {...props}/>
-				<RelationshipSection {...props}/>
+				<RelationshipSection {...props as any}/>
 				{
 					React.cloneElement(
 						React.Children.only(children),

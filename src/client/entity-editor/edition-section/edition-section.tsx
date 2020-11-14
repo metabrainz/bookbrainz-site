@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
+import * as React from 'react';
 import {
-	type Action,
+	Action,
 	debouncedUpdateDepth,
 	debouncedUpdateHeight,
 	debouncedUpdatePages,
@@ -36,6 +36,7 @@ import {
 } from './actions';
 
 import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
+import {DateObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
 import {
 	validateEditionSectionDepth,
@@ -48,17 +49,16 @@ import {
 } from '../validators/edition';
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
+import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import LinkedEntity from '../common/linked-entity';
 import NumericField from '../common/numeric-field';
-import React from 'react';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {entityToOption} from '../../../server/helpers/utils';
-import {isNullDate} from '../../helpers/utils';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -95,38 +95,40 @@ type OwnProps = {
 	editionStatuses: Array<EditionStatus>
 };
 
+type OptionalNumber = number | null | undefined;
+type OptionalBool = boolean| null | undefined;
 type StateProps = {
-	depthValue: ?number,
-	formatValue: ?number,
-	heightValue: ?number,
+	depthValue: OptionalNumber,
+	formatValue: OptionalNumber,
+	heightValue: OptionalNumber,
 	languageValues: List<LanguageOption>,
-	pagesValue: ?number,
-	physicalVisible: ?boolean,
+	pagesValue: OptionalNumber,
+	physicalVisible: OptionalBool,
 	publisherValue: Map<string, any>,
-	editionGroupRequired: ?boolean,
-	editionGroupVisible: ?boolean,
+	editionGroupRequired: OptionalBool,
+	editionGroupVisible: OptionalBool,
 	editionGroupValue: Map<string, any>,
-	matchingNameEditionGroups: ?array,
-	releaseDateValue: ?object,
-	statusValue: ?number,
-	weightValue: ?number,
-	widthValue: ?number
+	matchingNameEditionGroups: any[] | null | undefined,
+	releaseDateValue: DateObject | null | undefined,
+	statusValue: OptionalNumber,
+	weightValue: OptionalNumber,
+	widthValue: OptionalNumber
 };
 
 type DispatchProps = {
-	onDepthChange: (SyntheticInputEvent<>) => mixed,
-	onFormatChange: (?{value: number}) => mixed,
-	onHeightChange: (SyntheticInputEvent<>) => mixed,
-	onLanguagesChange: (Array<LanguageOption>) => mixed,
-	onPagesChange: (SyntheticInputEvent<>) => mixed,
-	onPhysicalButtonClick: () => mixed,
-	onPublisherChange: (Publisher) => mixed,
-	onToggleShowEditionGroupSection: (showEGSection: boolean) => mixed,
-	onEditionGroupChange: (EditionGroup) => mixed,
-	onReleaseDateChange: (SyntheticInputEvent<>) => mixed,
-	onStatusChange: (?{value: number}) => mixed,
-	onWeightChange: (SyntheticInputEvent<>) => mixed,
-	onWidthChange: (SyntheticInputEvent<>) => mixed
+	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onFormatChange: (obj: {value: number} | null | undefined) => unknown,
+	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onLanguagesChange: (arg: Array<LanguageOption>) => unknown,
+	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onPhysicalButtonClick: () => unknown,
+	onPublisherChange: (arg: Publisher) => unknown,
+	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
+	onEditionGroupChange: (arg: EditionGroup) => unknown,
+	onReleaseDateChange: (arg: number) => unknown,
+	onStatusChange: (obj: {value: number} | null | undefined) => unknown,
+	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onWidthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -455,7 +457,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: ?{value: number}) =>
+		onFormatChange: (value: {value: number} | null) =>
 			dispatch(updateFormat(value && value.value)),
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
@@ -469,7 +471,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
 		onReleaseDateChange: (releaseDate) =>
 			dispatch(debouncedUpdateReleaseDate(releaseDate)),
-		onStatusChange: (value: ?{value: number}) =>
+		onStatusChange: (value: {value: number} | null) =>
 			dispatch(updateStatus(value && value.value)),
 		onToggleShowEditionGroupSection: (showEGSection: boolean) => {
 			if (showEGSection === false) {

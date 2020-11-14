@@ -16,13 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
-import {type Action, updateType} from './actions';
+import * as React from 'react';
+import {Action, updateType} from './actions';
+import type {Dispatch} from 'redux';
 import EditionTable from '../../components/pages/entities/edition-table';
 import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
-import React from 'react';
 import {find as _find} from 'lodash';
 import {connect} from 'react-redux';
 
@@ -32,11 +31,11 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onTypeChange: ({value: number} | null) => mixed
+	onTypeChange: (value: number | null) => unknown
 };
 
 type OwnProps = {
-	mergingEntities: Array
+	mergingEntities: any[]
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -99,7 +98,7 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onTypeChange: (value) => dispatch(updateType(value))
+		onTypeChange: (value: number) => dispatch(updateType(value))
 	};
 }
 

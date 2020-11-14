@@ -16,14 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
-import {type Action, updateType} from './actions';
+import * as React from 'react';
+import {Action, updateType} from './actions';
 import {Col, Row} from 'react-bootstrap';
 
 import CustomInput from '../../input';
+import type {Dispatch} from 'redux';
 import type {Map} from 'immutable';
-import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
@@ -38,7 +37,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onTypeChange: ({value: number} | null) => mixed
+	onTypeChange: (obj: {value: number} | null) => unknown
 };
 
 type OwnProps = {

@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import AuthorSection from './author-section/author-section';
 import AuthorSectionMerge from './author-section/author-section-merge';
@@ -51,7 +50,7 @@ import workSectionReducer from './work-section/reducer';
 
 
 export function isAliasEmpty(
-	nameValue: string, sortNameValue: string, languageValue: ?number
+	nameValue: string, sortNameValue: string, languageValue: number | null | undefined
 ): boolean {
 	return !(nameValue.length || sortNameValue.length || languageValue);
 }
@@ -130,9 +129,10 @@ export function createRootReducer(entityType: string) {
 	});
 }
 
+type ReduxWindow = typeof window & {__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any};
 export function shouldDevToolsBeInjected(): boolean {
 	return Boolean(
 		typeof window === 'object' &&
-		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+		(window as ReduxWindow).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
 }

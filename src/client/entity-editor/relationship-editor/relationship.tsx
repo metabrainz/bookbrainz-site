@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import type {RelationshipType, Entity as _Entity} from './types';
@@ -44,7 +43,7 @@ function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 
 type RelationshipProps = {
 	link: boolean, // eslint-disable-line react/require-default-props
-	contextEntity: ?_Entity, // eslint-disable-line react/require-default-props
+	contextEntity: _Entity | null | undefined, // eslint-disable-line react/require-default-props
 	sourceEntity: _Entity,
 	targetEntity: _Entity,
 	relationshipType: RelationshipType

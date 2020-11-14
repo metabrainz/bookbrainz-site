@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
+
 import * as _ from 'lodash';
 
 import {
-	type Action,
+	Action,
 	debouncedUpdateBeginDate,
 	debouncedUpdateEndDate,
 	updateBeginArea,
@@ -34,17 +34,64 @@ import {
 
 import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
 import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
+import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
-import {Props} from './author-section';
 import React from 'react';
 import {connect} from 'react-redux';
 
 
-type OwnProps = {
-	mergingEntities: Array
+type AuthorType = {
+	label: string,
+	id: number
 };
+
+type GenderOptions = {
+	name: string,
+	id: number
+};
+
+type Area = {
+	disambiguation: string | null | undefined,
+	id: string | number,
+	text: string,
+	type: string
+};
+
+
+type StateProps = {
+	beginAreaLabel: string,
+	beginAreaValue: Map<string, any>,
+	beginDateLabel: string,
+	beginDateValue: string,
+	endAreaLabel: string,
+	endAreaValue: Map<string, any>,
+	endDateLabel: string,
+	endDateValue: string,
+	endedChecked: boolean,
+	endedLabel: string,
+	genderValue: number,
+	typeValue: number
+};
+
+
+type DispatchProps = {
+	onBeginAreaChange: (arg: Area | null | undefined) => unknown,
+	onBeginDateChange: (arg: string) => unknown,
+	onEndAreaChange: (arg: Area | null | undefined) => unknown,
+	onEndDateChange: (arg: string) => unknown,
+	onEndedChange: (arg: boolean) => unknown,
+	onGenderChange: (value: number | null) => unknown,
+	onTypeChange: (value: number | null) => unknown
+};
+
+
+type OwnProps = {
+	mergingEntities: any[]
+};
+
+export type Props = StateProps & DispatchProps & OwnProps;
 
 /**
  * Container component. The AuthorSectionMerge component contains input fields
