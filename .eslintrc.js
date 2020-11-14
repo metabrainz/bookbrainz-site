@@ -9,7 +9,6 @@ const options = {
 	},
 	extends: [
 		'eslint:recommended',
-		'plugin:flowtype/recommended',
 		'plugin:node/recommended',
 		'plugin:react/recommended',
 		'plugin:import/recommended'
@@ -21,7 +20,6 @@ const options = {
 	plugins: [
 		'react',
 		'import',
-		'flowtype',
 		'babel'
 	],
 	settings: {
@@ -31,7 +29,6 @@ const options = {
 			}
 		},
 		react: {
-			flowVersion: '0.69',
 			version: 'detect'
 		}
 	}
@@ -415,9 +412,6 @@ const babelRules = {
 	'babel/semi': ERROR
 };
 
-const flowTypeRules = {
-	'flowtype/semi': ERROR
-};
 
 const reactRules = {
 	'react/boolean-prop-naming': ERROR,
@@ -557,7 +551,6 @@ options.rules = Object.assign(
 	stylisticIssuesRules,
 	ecmaScript6Rules,
 	babelRules,
-	flowTypeRules,
 	reactRules,
 	es6ImportRules
 );

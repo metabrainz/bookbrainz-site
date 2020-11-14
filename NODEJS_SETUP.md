@@ -49,10 +49,6 @@ Here is [a good introduction](https://www.youtube.com/watch?v=yFtU6_UaOtA) to de
 There are VSCode configuration files (in the `.vscode` folder) for running both the server and the tests, useful in both cases to debug into the code and see what is happening as the code executes.
 Make sure the dependencies (postgres, redis, elasticsearch) are running, and you can just open the debugger tray in VSCode, select 'Launch Program' and click the button!
 
-BookBrainz uses [Flow](https://flow.org) as a javascript typechecking library. VSCode is partial to Typescript, and needs to be configured to avoid confusion.
-We recommend you install the flow-for-vscode extension and [follow this setup step](https://github.com/flowtype/flow-for-vscode#setup):
-`Set [VSCode configuration] javascript.validate.enable option to false or completely disable the built-in TypeScript extension for your project`
-
 <br/>
 
 # Watch files and live reload with Webpack
