@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Ben Ockmore
+ * Copyright (C) 2016  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,60 +16,53 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
+import * as React from 'react';
 import CustomInput from '../../input';
-import React from 'react';
-import ValidationLabel from '../common/validation-label';
-import classNames from 'classnames';
+import ValidationLabel from './validation-label';
+import VirtualizedSelect from 'react-virtualized-select';
 
 
 type Props = {
-	show?: boolean,
-	label: string,
 	empty?: boolean,
-	error?: boolean
+	error?: boolean,
+	tooltipText?: string,
+	[propName: string]: any
 };
 
 /**
- * Presentational component. This component renders a plain text input which
- * can be hidden, and an associated ValidationLabel.
+ * Presentational component. This component renders a dropdown selection box
+ * allowing the user to select from a list of provided language options. The
+ * input is labelled with a ValidationLabel containing the text 'Language'.
  *
- * @param {Object} props - The properties passed to the component.
+ * @param {Object} props - The properties passed to the component, which are
+ *        then passed to the underlying VirtualizedSelect component.
  * @param {boolean} props.error - Passed to the ValidationLabel within the
  *        component to indicate a validation error.
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
- * @param {boolean} props.show - Determines the visibility of the field - if
- *        falsey, bootstrap's 'hidden' class is applied.
- * @param {string} props.label - The text to be used for the input label.
  * @returns {Object} A React component containing the rendered input.
  */
-function NumericField({
-	show,
-	label,
+function LanguageField({
 	empty,
 	error,
+	tooltipText,
 	...rest
 }: Props) {
-	const labelElement =
-		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
+	const label =
+		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
+	;
 
-	const groupClassName = classNames({hidden: !show});
 	return (
-		<CustomInput
-			groupClassName={groupClassName}
-			label={labelElement}
-			type="number"
-			{...rest}
-		/>
+		<CustomInput label={label} tooltipText={tooltipText}>
+			<VirtualizedSelect {...rest}/>
+		</CustomInput>
 	);
 }
-NumericField.displayName = 'NumericField';
-NumericField.defaultProps = {
+LanguageField.displayName = 'LanguageField';
+LanguageField.defaultProps = {
 	empty: false,
 	error: false,
-	show: true
+	tooltipText: null
 };
 
-export default NumericField;
+export default LanguageField;

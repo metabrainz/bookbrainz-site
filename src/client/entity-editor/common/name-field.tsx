@@ -16,55 +16,55 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as React from 'react';
-
 import CustomInput from '../../input';
-import ValidationLabel from './validation-label';
-import VirtualizedSelect from 'react-virtualized-select';
+import ValidationLabel from '../common/validation-label';
 
 
 type Props = {
 	empty?: boolean,
 	error?: boolean,
-	tooltipText?: string
+	tooltipText?: string,
+	warn?: boolean
 };
 
 /**
- * Presentational component. This component renders a dropdown selection box
- * allowing the user to select from a list of provided language options. The
- * input is labelled with a ValidationLabel containing the text 'Language'.
+ * Presentational component. This component renders a plain text input and a
+ * ValidationLabel for a field labelled 'Name'.
  *
- * @param {Object} props - The properties passed to the component, which are
- *        then passed to the underlying VirtualizedSelect component.
+ * @param {Object} props - The properties passed to the component.
  * @param {boolean} props.error - Passed to the ValidationLabel within the
  *        component to indicate a validation error.
+ * @param {boolean} props.warn - Passed to the ValidationLabel within the
+ * 		  component to indicate a validation warning.
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
- * @returns {Object} A React component containing the rendered input.
+ * @returns {Object} a React component containing the rendered input
  */
-function LanguageField({
+function NameField({
 	empty,
 	error,
 	tooltipText,
+	warn,
 	...rest
-}: Props): React.Node {
-	const label =
-		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
-	;
+}: Props) {
+	const label = (
+		<ValidationLabel empty={empty} error={error} warn={warn}>
+			Name
+		</ValidationLabel>
+	);
 
 	return (
-		<CustomInput label={label} tooltipText={tooltipText}>
-			<VirtualizedSelect {...rest}/>
-		</CustomInput>
+		<CustomInput label={label} tooltipText={tooltipText} type="text" {...rest}/>
 	);
 }
-LanguageField.displayName = 'LanguageField';
-LanguageField.defaultProps = {
+NameField.displayName = 'NameField';
+NameField.defaultProps = {
 	empty: false,
 	error: false,
-	tooltipText: null
+	tooltipText: null,
+	warn: false
 };
 
-export default LanguageField;
+export default NameField;

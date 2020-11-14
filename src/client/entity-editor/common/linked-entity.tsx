@@ -17,16 +17,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
+import * as PropTypes from 'prop-types';
+import * as React from 'react';
 import {kebabCase as _kebabCase, has, isFunction} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
-import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-class LinkedEntity extends React.Component {
+class LinkedEntity extends React.Component<any, any> {
+	static displayName = 'LinkedEntity';
+
+	static propTypes = {
+		className: PropTypes.string,
+		onSelect: PropTypes.func.isRequired,
+		option: PropTypes.object.isRequired
+	};
+
+	static defaultProps = {
+		className: ''
+	};
+
 	constructor(props) {
 		super(props);
 
@@ -92,17 +102,5 @@ class LinkedEntity extends React.Component {
 		);
 	}
 }
-
-LinkedEntity.displayName = 'LinkedEntity';
-
-LinkedEntity.propTypes = {
-	className: PropTypes.string,
-	onSelect: PropTypes.func.isRequired,
-	option: PropTypes.object.isRequired
-};
-
-LinkedEntity.defaultProps = {
-	className: ''
-};
 
 export default LinkedEntity;

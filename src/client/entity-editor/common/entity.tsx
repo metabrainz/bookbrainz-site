@@ -17,15 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
-import React from 'react';
+import * as React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
 type EntityProps = {
-	disambiguation?: ?string,
-	language: string,
+	disambiguation?: string | null | undefined,
+	language?: string,
 	link?: string | false,
 	text: string,
 	type: string,

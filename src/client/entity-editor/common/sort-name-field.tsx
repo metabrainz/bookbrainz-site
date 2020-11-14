@@ -16,11 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
+import * as React from 'react';
 import {Button} from 'react-bootstrap';
 import CustomInput from '../../input';
-import React from 'react';
 import ValidationLabel from '../common/validation-label';
 
 
@@ -99,7 +97,7 @@ type onChangeParamType = {
 type Props = {
 	empty?: boolean,
 	error?: boolean,
-	onChange?: (onChangeParamType) => mixed,
+	onChange?: (onChangeParamType) => unknown,
 	storedNameValue: string
 };
 

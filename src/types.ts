@@ -1,3 +1,6 @@
+import {Iterable} from 'immutable';
+
+
 export type _Author = {
 
 };
@@ -19,3 +22,7 @@ export type _IdentifierType = {
 export type _Language = {
 
 };
+
+export function isIterable<K, V>(testVal: any): testVal is Iterable<K, V> {
+	return Iterable.isIterable(testVal);
+}

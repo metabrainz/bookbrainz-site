@@ -17,20 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import * as React from 'react';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
+import {isIterable} from '../../../types';
 
 
-function makeImmutable(WrappedComponent: React.ComponentType<Object>) {
+function makeImmutable<T extends Record<string, unknown>>(WrappedComponent: React.ComponentType<T>): React.FC<T> {
 	function immutableComponent(
-		propsIm: {}
-	): React.Node {
+		propsIm: T
+	): React.ReactElement {
 		const propsJS = _.mapValues(
 			propsIm,
-			(value) => (Iterable.isIterable(value) ? value.toJS() : value)
+			(value) => (isIterable(value) ? value.toJS() : value)
 		);
 
 		return <WrappedComponent {...propsJS}/>;

@@ -16,22 +16,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
+import * as React from 'react';
 import {get as _get, has} from 'lodash';
 import CustomInput from '../../input';
-import React from 'react';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
 
 
 type Props = {
 	error?: boolean,
-	options: array,
+	options: any[],
 	label: string,
 	currentValue: any,
 	onChange: any,
-	valueProperty?: string
+	valueProperty?: string,
+	[propName: string]: any
 };
 
 /**

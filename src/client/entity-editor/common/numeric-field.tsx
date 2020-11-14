@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2017  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,56 +16,60 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
+import * as React from 'react';
 import CustomInput from '../../input';
-import React from 'react';
 import ValidationLabel from '../common/validation-label';
+import classNames from 'classnames';
 
 
 type Props = {
+	show?: boolean,
+	label: string,
 	empty?: boolean,
 	error?: boolean,
-	tooltipText?: string,
-	warn?: boolean
+	[propName: string]: any
 };
 
 /**
- * Presentational component. This component renders a plain text input and a
- * ValidationLabel for a field labelled 'Name'.
+ * Presentational component. This component renders a plain text input which
+ * can be hidden, and an associated ValidationLabel.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {boolean} props.error - Passed to the ValidationLabel within the
  *        component to indicate a validation error.
- * @param {boolean} props.warn - Passed to the ValidationLabel within the
- * 		  component to indicate a validation warning.
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
- * @returns {Object} a React component containing the rendered input
+ * @param {boolean} props.show - Determines the visibility of the field - if
+ *        falsey, bootstrap's 'hidden' class is applied.
+ * @param {string} props.label - The text to be used for the input label.
+ * @returns {Object} A React component containing the rendered input.
  */
-function NameField({
+function NumericField({
+	show,
+	label,
 	empty,
 	error,
-	tooltipText,
-	warn,
 	...rest
 }: Props) {
-	const label = (
-		<ValidationLabel empty={empty} error={error} warn={warn}>
-			Name
-		</ValidationLabel>
-	);
+	const labelElement =
+		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
+	const groupClassName = classNames({hidden: !show});
 	return (
-		<CustomInput label={label} tooltipText={tooltipText} type="text" {...rest}/>
+		<CustomInput
+			groupClassName={groupClassName}
+			label={labelElement}
+			type="number"
+			{...rest}
+		/>
 	);
 }
-NameField.displayName = 'NameField';
-NameField.defaultProps = {
+NumericField.displayName = 'NumericField';
+NumericField.defaultProps = {
 	empty: false,
 	error: false,
-	tooltipText: null,
-	warn: false
+	show: true
 };
 
-export default NameField;
+export default NumericField;

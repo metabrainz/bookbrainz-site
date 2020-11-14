@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import * as React from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 
-function icon(empty: ?boolean, error: ?boolean, warn: ?boolean): string | null {
+type OptionalBool = boolean | null | undefined;
+type Icon = 'times' | 'exclamation-triangle' | 'check';
+function icon(empty: OptionalBool, error: OptionalBool, warn: OptionalBool): Icon | null {
 	if (empty) {
 		return null;
 	}
@@ -38,11 +39,12 @@ function icon(empty: ?boolean, error: ?boolean, warn: ?boolean): string | null {
 	return 'check';
 }
 
+type ContextualColor = 'text-danger' | 'text-warning' | 'text-success';
 function contextualColor(
-	empty: ?boolean,
-	error: ?boolean,
-	warn: ?boolean
-): string | null {
+	empty: OptionalBool,
+	error: OptionalBool,
+	warn: OptionalBool
+): ContextualColor | null {
 	if (empty) {
 		return null;
 	}
@@ -59,7 +61,7 @@ function contextualColor(
 }
 
 type Props = {
-	children?: React.Node,
+	children?: React.ReactNode,
 	empty?: boolean,
 	error?: boolean,
 	errorMessage?: '',
