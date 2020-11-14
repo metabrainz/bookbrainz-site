@@ -173,7 +173,7 @@ export function checkIfNameExists(
 export function searchName(
 	name: string,
 	entityBBID: string,
-	type: string,
+	type: string
 ): ((Action) => mixed) => mixed {
 	/**
 	 * @function dispatch

@@ -22,7 +22,9 @@ import orm from '../../../bookbrainz-data';
 
 
 const {expect} = chai;
+/* eslint-disable import/no-commonjs */
 chai.use(require('chai-sorted'));
+/* eslint-enable import/no-commonjs */
 
 
 const {

@@ -29,8 +29,10 @@ import orm from '../../../bookbrainz-data';
 
 
 const {expect} = chai;
+/* eslint-disable import/no-commonjs */
 chai.use(require('chai-sorted'));
 chai.use(require('chai-arrays'));
+/* eslint-enable import/no-commonjs */
 
 
 const {UserCollection, UserCollectionCollaborator} = orm;

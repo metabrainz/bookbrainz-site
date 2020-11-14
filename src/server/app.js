@@ -42,7 +42,7 @@ import session from 'express-session';
 
 
 // Initialize log-to-stdout  writer
-require('log-node')();
+require('log-node')(); // eslint-disable-line import/no-commonjs
 
 
 // Initialize application
