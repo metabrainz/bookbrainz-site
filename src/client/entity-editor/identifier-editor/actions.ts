@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 export const ADD_IDENTIFIER_ROW = 'ADD_IDENTIFIER_ROW';
 export const REMOVE_IDENTIFIER_ROW = 'REMOVE_IDENTIFIER_ROW';
 export const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
@@ -27,8 +25,8 @@ export const REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	payload?: unknown,
+	meta?: {
 		debounce?: string
 	}
 };

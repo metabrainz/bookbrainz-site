@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import type {Map} from 'immutable';
 import _ from 'lodash';
@@ -29,10 +28,13 @@ export const SET_SUBMITTED = 'SET_SUBMITTED';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	payload?: unknown,
+	meta?: {
 		debounce?: string
-	}
+	},
+	error?: string,
+	submitted?: boolean,
+	value?: string
 };
 
 /**
@@ -87,7 +89,7 @@ type Response = {
 	}
 };
 
-function postSubmission(url: string, data: Map<string, mixed>): Promise<void> {
+function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 	/*
 	 * TODO: Not the best way to do this, but once we unify the
 	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
@@ -95,7 +97,7 @@ function postSubmission(url: string, data: Map<string, mixed>): Promise<void> {
 	 */
 
 	const [, submissionEntity] = url.split('/');
-	return request.post(url).send(Object.fromEntries(data))
+	return request.post(url).send(Object.fromEntries(data as unknown as Iterable<any[]>))
 		.then((response: Response) => {
 			if (!response.body) {
 				window.location.replace('/login');
@@ -112,9 +114,10 @@ function postSubmission(url: string, data: Map<string, mixed>): Promise<void> {
 		});
 }
 
+type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
 	submissionUrl: string
-): ((Action) => mixed, () => Map<string, mixed>) => mixed {
+): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));

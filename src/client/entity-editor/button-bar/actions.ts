@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Ben Ockmore
+ * Copyright (C) 2016  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,29 +16,40 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
-export const UPDATE_TYPE = 'UPDATE_TYPE';
+export const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
+export const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	payload?: unknown,
+	meta?: {
 		debounce?: string
 	}
 };
 
+/**
+ * Produces an action indicating that the alias editor should be made visible.
+ *
+ * @see hideAliasEditor
+ *
+ * @returns {Action} The resulting SHOW_ALIAS_EDITOR action.
+ */
+export function showAliasEditor(): Action {
+	return {
+		type: SHOW_ALIAS_EDITOR
+	};
+}
 
 /**
- * Produces an action indicating that the publisher type for the publisher
- * being edited should be updated with the provided value.
+ * Produces an action indicating that the identifier editor should be made
+ * visible.
  *
- * @param {number} newType - The new value to be used for the publisher type.
- * @returns {Action} The resulting UPDATE_TYPE action.
+ * @see hideIdentifierEditor
+ *
+ * @returns {Action} The resulting SHOW_IDENTIFIER_EDITOR action.
  */
-export function updateType(newType: ?number): Action {
+export function showIdentifierEditor(): Action {
 	return {
-		payload: newType,
-		type: UPDATE_TYPE
+		type: SHOW_IDENTIFIER_EDITOR
 	};
 }

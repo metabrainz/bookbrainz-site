@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 export const UPDATE_AREA = 'UPDATE_AREA';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
@@ -26,14 +25,14 @@ export const UPDATE_ENDED = 'UPDATE_ENDED';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	payload?: unknown,
+	meta?: {
 		debounce?: string
 	}
 };
 
 type Area = {
-	disambiguation: ?string,
+	disambiguation: string | null | undefined,
 	id: string | number,
 	text: string,
 	type: string
@@ -47,7 +46,7 @@ type Area = {
  *                 ID.
  * @returns {Action} The resulting UPDATE_AREA action.
  */
-export function updateArea(newArea: ?Area): Action {
+export function updateArea(newArea: Area | null | undefined): Action {
 	return {
 		payload: newArea,
 		type: UPDATE_AREA
@@ -62,7 +61,7 @@ export function updateArea(newArea: ?Area): Action {
  *                 ID.
  * @returns {Action} The resulting UPDATE_TYPE action.
  */
-export function updateType(newTypeId: ?number): Action {
+export function updateType(newTypeId: number | null | undefined): Action {
 	return {
 		payload: newTypeId,
 		type: UPDATE_TYPE

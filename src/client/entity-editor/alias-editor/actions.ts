@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 export const UPDATE_ALIAS_NAME = 'UPDATE_ALIAS_NAME';
 export const UPDATE_ALIAS_SORT_NAME = 'UPDATE_ALIAS_SORT_NAME';
 export const ADD_ALIAS_ROW = 'ADD_ALIAS_ROW';
@@ -29,8 +27,8 @@ export const REMOVE_EMPTY_ALIASES = 'REMOVE_EMPTY_ALIASES';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	payload?: unknown,
+	meta?: {
 		debounce?: string
 	}
 };
@@ -87,7 +85,7 @@ export function debouncedUpdateAliasSortName(
  * @param {number} value - The new value to be used for the alias language ID.
  * @returns {Action} The resulting UPDATE_ALIAS_LANGUAGE action.
  */
-export function updateAliasLanguage(rowId: number, value: ?number): Action {
+export function updateAliasLanguage(rowId: number, value: number | null | undefined): Action {
 	return {
 		payload: {
 			rowId,

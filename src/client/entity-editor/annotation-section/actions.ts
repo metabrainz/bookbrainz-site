@@ -16,14 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 export const UPDATE_ANNOTATION = 'UPDATE_ANNOTATION';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	value?: unknown,
+	meta?: {
 		debounce?: string
 	}
 };

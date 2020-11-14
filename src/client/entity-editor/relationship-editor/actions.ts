@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import type {Relationship} from './types';
 
 
@@ -30,10 +28,7 @@ export const UNDO_LAST_SAVE = 'UNDO_LAST_SAVE';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
-		debounce?: string
-	}
+	payload?: unknown
 };
 
 export function showRelationshipEditor(): Action {

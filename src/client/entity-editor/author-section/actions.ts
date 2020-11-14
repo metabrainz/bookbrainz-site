@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 export const UPDATE_GENDER = 'UPDATE_GENDER';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
 export const UPDATE_BEGIN_AREA = 'UPDATE_BEGIN_AREA';
@@ -28,14 +26,14 @@ export const UPDATE_ENDED = 'UPDATE_ENDED';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	payload?: unknown,
+	meta?: {
 		debounce?: string
 	}
 };
 
 type Area = {
-	disambiguation: ?string,
+	disambiguation: string | null | undefined,
 	id: string | number,
 	text: string,
 	type: string
@@ -48,7 +46,7 @@ type Area = {
  * @param {number} newGenderId - The new value to be used for the gender ID.
  * @returns {Action} The resulting UPDATE_GENDER action.
  */
-export function updateGender(newGenderId: ?number): Action {
+export function updateGender(newGenderId: number | null | undefined): Action {
 	return {
 		payload: newGenderId,
 		type: UPDATE_GENDER
@@ -62,7 +60,7 @@ export function updateGender(newGenderId: ?number): Action {
  * @param {number} newTypeId - The new value to be used for the author type ID.
  * @returns {Action} The resulting UPDATE_TYPE action.
  */
-export function updateType(newTypeId: ?number): Action {
+export function updateType(newTypeId: number | null | undefined): Action {
 	return {
 		payload: newTypeId,
 		type: UPDATE_TYPE
@@ -92,7 +90,7 @@ export function debouncedUpdateBeginDate(newBeginDate: string): Action {
  * @param {Area} newBeginArea - The new value to be used for the begin area.
  * @returns {Action} The resulting UPDATE_BEGIN_AREA action.
  */
-export function updateBeginArea(newBeginArea: ?Area): Action {
+export function updateBeginArea(newBeginArea: Area | null | undefined): Action {
 	return {
 		payload: newBeginArea,
 		type: UPDATE_BEGIN_AREA
@@ -122,7 +120,7 @@ export function debouncedUpdateEndDate(newEndDate: string): Action {
  * @param {Area} newEndArea - The new value to be used for the end area.
  * @returns {Action} The resulting UPDATE_END_AREA action.
  */
-export function updateEndArea(newEndArea: ?Area): Action {
+export function updateEndArea(newEndArea: Area | null | undefined): Action {
 	return {
 		payload: newEndArea,
 		type: UPDATE_END_AREA

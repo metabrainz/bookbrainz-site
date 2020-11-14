@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import {snakeCase as _snakeCase, isString, remove, uniqBy} from 'lodash';
 import request from 'superagent';
 
@@ -31,8 +29,8 @@ export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS';
 
 export type Action = {
 	type: string,
-	payload?: mixed,
-	metadata?: {
+	payload?: unknown,
+	meta?: {
 		debounce?: string
 	}
 };
@@ -76,7 +74,7 @@ export function debouncedUpdateSortNameField(newSortName: string): Action {
  * @param {string} newLanguageId - The new value to be used for the language ID.
  * @returns {Action} The resulting UPDATE_LANGUAGE_FIELD action.
  */
-export function updateLanguageField(newLanguageId: ?number): Action {
+export function updateLanguageField(newLanguageId: number | null | undefined): Action {
 	return {
 		payload: newLanguageId,
 		type: UPDATE_LANGUAGE_FIELD
@@ -117,8 +115,8 @@ export function checkIfNameExists(
 	name: string,
 	entityBBID: string,
 	entityType: string,
-	action: ?string
-): ((Action) => mixed) => mixed {
+	action: string | null | undefined
+): (arg: (arg: Action) => unknown) => unknown {
 	/**
 	 * @function dispatch
 	 * @param  {function} dispatch - The redux dispatch function.
@@ -174,7 +172,7 @@ export function searchName(
 	name: string,
 	entityBBID: string,
 	type: string
-): ((Action) => mixed) => mixed {
+): (arg: (arg: Action) => unknown) => unknown {
 	/**
 	 * @function dispatch
 	 * @param  {function} dispatch - The redux dispatch function.

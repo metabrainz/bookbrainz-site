@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 
 type LanguageOption = {
 	name: string,
@@ -35,9 +33,9 @@ type EditionGroup = {
 };
 
 export type Action = {
-	payload?: mixed,
+	payload?: unknown,
 	type: string,
-	metadata?: {}
+	meta?: Record<string, unknown>
 };
 
 
@@ -64,7 +62,7 @@ export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP
  *                 status ID.
  * @returns {Action} The resulting UPDATE_STATUS action.
  */
-export function updateStatus(newStatusId: ?number): Action {
+export function updateStatus(newStatusId: number | null | undefined): Action {
 	return {
 		payload: newStatusId,
 		type: UPDATE_STATUS
@@ -79,7 +77,7 @@ export function updateStatus(newStatusId: ?number): Action {
  *                 format ID.
  * @returns {Action} The resulting UPDATE_FORMAT action.
  */
-export function updateFormat(newFormatId: ?number): Action {
+export function updateFormat(newFormatId: number | null | undefined): Action {
 	return {
 		payload: newFormatId,
 		type: UPDATE_FORMAT
@@ -95,7 +93,7 @@ export function updateFormat(newFormatId: ?number): Action {
  *                 date.
  * @returns {Action} The resulting UPDATE_RELEASE_DATE action.
  */
-export function debouncedUpdateReleaseDate(newReleaseDate: ?object): Action {
+export function debouncedUpdateReleaseDate(newReleaseDate: number | null | undefined): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newReleaseDate,
@@ -183,7 +181,7 @@ export function updateEditionGroup(newEditionGroup: EditionGroup | null): Action
  * @param {number} value - The new value to be used for the edition weight.
  * @returns {Action} The resulting UPDATE_WEIGHT action.
  */
-export function debouncedUpdateWeight(value: ?number): Action {
+export function debouncedUpdateWeight(value: number | null | undefined): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: value,
@@ -199,7 +197,7 @@ export function debouncedUpdateWeight(value: ?number): Action {
  * @param {number} value - The new value to be used for the number of pages.
  * @returns {Action} The resulting UPDATE_PAGES action.
  */
-export function debouncedUpdatePages(value: ?number): Action {
+export function debouncedUpdatePages(value: number | null | undefined): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: value,
@@ -215,7 +213,7 @@ export function debouncedUpdatePages(value: ?number): Action {
  * @param {number} value - The new value to be used for the width.
  * @returns {Action} The resulting UPDATE_WIDTH action.
  */
-export function debouncedUpdateWidth(value: ?number): Action {
+export function debouncedUpdateWidth(value: number | null | undefined): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: value,
@@ -231,7 +229,7 @@ export function debouncedUpdateWidth(value: ?number): Action {
  * @param {number} value - The new value to be used for the height.
  * @returns {Action} The resulting UPDATE_HEIGHT action.
  */
-export function debouncedUpdateHeight(value: ?number): Action {
+export function debouncedUpdateHeight(value: number | null | undefined): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: value,
@@ -247,7 +245,7 @@ export function debouncedUpdateHeight(value: ?number): Action {
  * @param {number} value - The new value to be used for the depth.
  * @returns {Action} The resulting UPDATE_DEPTH action.
  */
-export function debouncedUpdateDepth(value: ?number): Action {
+export function debouncedUpdateDepth(value: number | null | undefined): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: value,

@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 export const UPDATE_LANGUAGES = 'UPDATE_LANGUAGES';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
@@ -27,9 +26,9 @@ type LanguageOption = {
 };
 
 export type Action = {
-	payload: mixed,
+	payload: unknown,
 	type: string,
-	metadata?: {}
+	metadata?: Record<string, unknown>
 };
 
 /**
@@ -39,7 +38,7 @@ export type Action = {
  * @param {number} newTypeId - The new value to be used for the work type ID.
  * @returns {Action} The resulting UPDATE_TYPE action.
  */
-export function updateType(newTypeId: ?number): Action {
+export function updateType(newTypeId: number | null | undefined): Action {
 	return {
 		payload: newTypeId,
 		type: UPDATE_TYPE
