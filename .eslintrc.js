@@ -40,8 +40,6 @@ const TRANSITION_IGNORE = 0; // ignores that should be reviewed soon
 
 // These should not be removed at all.
 const possibleErrorsRules = {
-	'for-direction': ERROR,
-	'getter-return': ERROR,
 	'no-await-in-loop': ERROR,
 	'no-console': ERROR,
 	'no-extra-parens': [
@@ -312,10 +310,7 @@ const stylisticIssuesRules = {
 	'no-trailing-spaces': ERROR,
 	'no-unneeded-ternary': ERROR,
 	'no-whitespace-before-property': ERROR,
-	'object-curly-newline': [
-		ERROR,
-		{consistent: true}
-	],
+	'object-curly-newline': ERROR,
 	'one-var': [
 		ERROR,
 		'never'
