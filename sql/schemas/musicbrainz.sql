@@ -58,7 +58,7 @@ CREATE TABLE musicbrainz.area ( -- replicate (verbose)
     comment             VARCHAR(255) NOT NULL DEFAULT ''
 );
 
-CREATE TABLE l_area_area ( -- replicate
+CREATE TABLE musicbrainz.l_area_area ( -- replicate
     id                  SERIAL,
     link                INTEGER NOT NULL, -- references link.id
     entity0             INTEGER NOT NULL, -- references area.id
