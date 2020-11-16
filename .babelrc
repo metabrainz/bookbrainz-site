@@ -15,6 +15,7 @@
   ],
   "presets": [
     "@babel/preset-flow",
+    "@babel/preset-typescript",
     "@babel/preset-react",
     ["@babel/preset-env", {
       "corejs": 3,

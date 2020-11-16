@@ -19,7 +19,6 @@
 // @flow
 
 import {snakeCase as _snakeCase, isString, remove, uniqBy} from 'lodash';
-import log from 'log';
 import request from 'superagent';
 
 
@@ -156,7 +155,8 @@ export function checkIfNameExists(
 			});
 		}
 		catch (error) {
-			log.error(error);
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 	};
 }
