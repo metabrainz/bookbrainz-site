@@ -33,59 +33,64 @@ const _maxJitter = 75;
 
 let _client = null;
 
-function _fetchEntityModelsForESResults(orm, results) {
+async function _fetchEntityModelsForESResults(orm, results) {
 	const {Area, Editor, UserCollection} = orm;
 
 	if (!results.hits) {
 		return null;
 	}
 
-	return Promise.all(results.hits.map((hit) => {
+	const processedResults = await Promise.all(results.hits.map(async (hit) => {
 		const entityStub = hit._source;
 
+		// Special cases first
 		if (entityStub.type === 'Area') {
-			return Area.forge({gid: entityStub.bbid})
-				.fetch()
-				.then((area) => {
-					const areaJSON = area.toJSON();
-					areaJSON.defaultAlias = {
-						name: areaJSON.name
-					};
-					areaJSON.type = 'Area';
-					return areaJSON;
-				});
+			const area = await Area.forge({gid: entityStub.bbid})
+				.fetch({withRelated: ['areaType']});
+
+			const areaJSON = area.toJSON();
+			const areaParents = await area.parents();
+			areaJSON.defaultAlias = {
+				name: areaJSON.name
+			};
+			areaJSON.type = 'Area';
+			areaJSON.disambiguation = {
+				comment: `${areaJSON.areaType?.name}${areaParents?.length ? ' - ' : ''}${areaParents?.map(parent => parent.name).join(', ')}`
+			};
+			return areaJSON;
 		}
 		if (entityStub.type === 'Editor') {
-			return Editor.forge({id: entityStub.bbid})
-				.fetch()
-				.then((editor) => {
-					const editorJSON = editor.toJSON();
-					editorJSON.defaultAlias = {
-						name: editorJSON.name
-					};
-					editorJSON.type = 'Editor';
-					editorJSON.bbid = entityStub.bbid;
-					return editorJSON;
-				});
+			const editor = await Editor.forge({id: entityStub.bbid})
+				.fetch();
+
+			const editorJSON = editor.toJSON();
+			editorJSON.defaultAlias = {
+				name: editorJSON.name
+			};
+			editorJSON.type = 'Editor';
+			editorJSON.bbid = entityStub.bbid;
+			return editorJSON;
 		}
 		if (entityStub.type === 'Collection') {
-			return UserCollection.forge({id: entityStub.bbid})
-				.fetch()
-				.then((collection) => {
-					const collectionJSON = collection.toJSON();
-					collectionJSON.defaultAlias = {
-						name: collectionJSON.name
-					};
-					collectionJSON.type = 'Collection';
-					collectionJSON.bbid = entityStub.bbid;
-					return collectionJSON;
-				});
+			const collection = await UserCollection.forge({id: entityStub.bbid})
+				.fetch();
+
+			const collectionJSON = collection.toJSON();
+			collectionJSON.defaultAlias = {
+				name: collectionJSON.name
+			};
+			collectionJSON.type = 'Collection';
+			collectionJSON.bbid = entityStub.bbid;
+			return collectionJSON;
 		}
+		// Regular entity
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
-		return model.forge({bbid: entityStub.bbid})
-			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases']})
-			.then((entity) => entity && entity.toJSON());
-	}));
+		const entity = await model.forge({bbid: entityStub.bbid})
+			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases']});
+
+		return entity?.toJSON();
+	})).catch(err => log.error(err));
+	return processedResults;
 }
 
 // Returns the results of a search translated to entity objects
