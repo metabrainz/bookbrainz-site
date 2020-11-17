@@ -24,8 +24,7 @@
     "jsdoc": "node_modules/.bin/jsdoc -r src",
     "dupreport": "jsinspect src/ || true",
     "precommit": "lint-staged",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "snyk-protect": "snyk protect"
   },
   "lint-staged": {
     "*.js": [
@@ -37,6 +36,7 @@
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
+    "@babel/runtime": "^7.10.1",
     "@elastic/elasticsearch": "^5.6.22",
     "@fortawesome/fontawesome-free": "^5.14.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
@@ -51,6 +51,8 @@
     "classnames": "^2.2.5",
     "compression": "^1.7.1",
     "connect-redis": "^3.4.2",
+    "core-js": "^3.6.5",
+    "cross-env": "^5.1.1",
     "date-fns": "^2.15.0",
     "debug": "^3.1.0",
     "express": "^4.17.1",
@@ -74,6 +76,7 @@
     "react-chartjs-2": "^2.9.0",
     "react-datepicker": "^2.16.0",
     "react-dom": "^16.13.1",
+    "react-hot-loader": "^4.13.0",
     "react-redux": "^5.1.2",
     "react-select": "^1.1.0",
     "react-sticky": "^6.0.1",
@@ -86,6 +89,8 @@
     "serve-static": "^1.14.1",
     "snyk": "^1.385.0",
     "superagent": "^5.3.1",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4",
     "validator": "^9.1.2"
   },
   "devDependencies": {
