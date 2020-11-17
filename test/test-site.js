@@ -17,42 +17,62 @@
  */
 
 import app from '../src/server/app';
-import request from 'supertest';
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 import status from 'http-status';
 
 
+chai.use(chaiHttp);
+const {expect} = chai;
+
 describe('GET /', () => {
 	it('should return 200', (done) => {
-		request(app)
+		chai.request(app)
 			.get('/')
-			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(status.OK, done);
+			.end((err, res) => {
+				expect(err).to.be.null;
+				expect(res.status).to.equal(status.OK);
+				expect(res).to.have.header('content-type', 'text/html; charset=utf-8');
+				done();
+			});
 	});
 });
 
 describe('GET /about', () => {
 	it('should return 200', (done) => {
-		request(app)
+		chai.request(app)
 			.get('/about')
-			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(status.OK, done);
+			.end((err, res) => {
+				expect(err).to.be.null;
+				expect(res.status).to.equal(status.OK);
+				expect(res).to.have.header('content-type', 'text/html; charset=utf-8');
+				done();
+			});
 	});
 });
 
 describe('GET /contribute', () => {
 	it('should return 200', (done) => {
-		request(app)
+		chai.request(app)
 			.get('/contribute')
-			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(status.OK, done);
+			.end((err, res) => {
+				expect(err).to.be.null;
+				expect(res.status).to.equal(status.OK);
+				expect(res).to.have.header('content-type', 'text/html; charset=utf-8');
+				done();
+			});
 	});
 });
 
 describe('GET /develop', () => {
 	it('should return 200', (done) => {
-		request(app)
+		chai.request(app)
 			.get('/develop')
-			.expect('Content-Type', 'text/html; charset=utf-8')
-			.expect(status.OK, done);
+			.end((err, res) => {
+				expect(err).to.be.null;
+				expect(res.status).to.equal(status.OK);
+				expect(res).to.have.header('content-type', 'text/html; charset=utf-8');
+				done();
+			});
 	});
 });
