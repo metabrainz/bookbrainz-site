@@ -54,9 +54,19 @@ class EditorProfileTab extends React.Component {
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {
 			musicbrainzAccount = (
-				<a href={`http://musicbrainz.org/user/${cachedMetabrainzName}`}>
-					{cachedMetabrainzName}
-				</a>
+				<span>
+					<a href={`http://musicbrainz.org/user/${cachedMetabrainzName}`}>
+						{cachedMetabrainzName}
+					</a>
+					&nbsp;(
+					<a
+						href={`http://musicbrainz.org/user/${cachedMetabrainzName}/contact`}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+					send email <FontAwesomeIcon icon="external-link-alt"/>
+					</a>)
+				</span>
 			);
 		}
 		else if (metabrainzUserId) {

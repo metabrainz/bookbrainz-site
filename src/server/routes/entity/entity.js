@@ -421,6 +421,10 @@ export function handleDelete(
 	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+		if (!body.note || !body.note.length) {
+			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
+		}
+
 		const otherEntities = await deleteRelationships(orm, transacting, entity);
 
 		const newRevision = await new Revision({
@@ -599,11 +603,13 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		try {
 			const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(entitiesModel => entitiesModel.editions()));
 			// eslint-disable-next-line consistent-return
-			const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
+			let editionsToSet = _.flatMap(editionsToSetCollections, edition => {
 				if (edition.models && edition.models.length) {
 					return edition.models;
 				}
 			});
+			// Remove 'undefined' entries (no editions in those publishers)
+			editionsToSet = _.reject(editionsToSet, _.isNil);
 			await Promise.all(editionsToSet.map(async (edition) => {
 				// Fetch current PublisherSet
 				const oldPublisherSet = await edition.publisherSet();
@@ -617,6 +623,7 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		}
 		catch (err) {
 			log.error(err);
+			throw err;
 		}
 	}
 
