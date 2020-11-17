@@ -21,6 +21,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+
 /**
  * Presentational component. The IdentifierButton component renders a button
  * component in the style of a link. The link text indicates the number of
@@ -28,6 +29,8 @@ import React from 'react';
  * add new or edit existing identifiers.
  *
  * @param {Object} props - The properties passed to the component.
+ * @param {boolean} props.identifiersInvalid - Whether the inputs are valid
+ *        identifiers.
  * @param {number} props.numIdentifiers - The number of identifiers present in
  *        the IdentifierEditor - used to determine the correct button label.
  * @returns {ReactElement} React element containing the rendered

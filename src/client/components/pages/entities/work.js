@@ -72,7 +72,7 @@ WorkAttributes.propTypes = {
 };
 
 
-function WorkDisplayPage({entity, identifierTypes}) {
+function WorkDisplayPage({entity, identifierTypes, user}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const editionsContainWork = getRelationshipSourceByTypeId(entity, relationshipTypeId);
@@ -109,8 +109,10 @@ function WorkDisplayPage({entity, identifierTypes}) {
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
+				entityType={entity.type}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
+				user={user}
 			/>
 		</div>
 	);
@@ -118,7 +120,8 @@ function WorkDisplayPage({entity, identifierTypes}) {
 WorkDisplayPage.displayName = 'WorkDisplayPage';
 WorkDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object.isRequired
 };
 WorkDisplayPage.defaultProps = {
 	identifierTypes: []

@@ -4,7 +4,6 @@ import {deleteRelationships, getDefaultAliasIndex, processMergeOperation} from '
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from '../../../../bookbrainz-data';
-import {random} from 'faker';
 
 
 chai.use(chaiAsPromised);
@@ -75,6 +74,7 @@ describe('getDefaultAliasIndex', () => {
 		};
 		expect(getDefaultAliasIndex(aliasSet)).to.equal(2);
 	});
+
 	it("should return the index of the alias matching the set's defaultAliasId", () => {
 		const aliasSet = {
 			aliases: [...randomAliases, defaultAlias],
@@ -82,6 +82,7 @@ describe('getDefaultAliasIndex', () => {
 		};
 		expect(getDefaultAliasIndex(aliasSet)).to.equal(2);
 	});
+
 	it("should return the index of the alias matching the set's defaultAliasId if it is a string", () => {
 		const aliasSet = {
 			aliases: [...randomAliases, defaultAlias],
@@ -102,32 +103,35 @@ describe('deleteRelationships', () => {
 		// Create RelationshipType Data
 		relationshipTypeData = {
 			description: 'test descryption',
-			id: 1,
 			label: 'test label',
 			linkPhrase: 'test phrase',
 			reverseLinkPhrase: 'test reverse link phrase',
 			sourceEntityType: 'Author',
 			targetEntityType: 'Work'
 		};
-		await new RelationshipType(relationshipTypeData)
+		const relationshipType = await new RelationshipType(relationshipTypeData)
 			.save(null, {method: 'insert'});
+		relationshipTypeData.id = relationshipType.id;
 	});
+
 	beforeEach(async () => {
 		author = await createAuthor();
 	});
+
 	after(truncateEntities);
+
 	it('it should return an empty array if there are no relationships to delete', async () => {
 		author = await new Author({bbid: author.get('bbid')}).fetch({withRelated: 'relationshipSet.relationships'});
 		const affectedEntities = await deleteRelationships(orm, null, author.toJSON());
 		expect(affectedEntities).to.have.length(0);
 	});
+
 	it('it should return an empty array if the other entity is a deleted entity (no dataId)', async () => {
 		// Create Entities
 		const work = await createWork();
 
 		// Create Relation and its data between two entites
 		const relationshipData = {
-			id: random.number(),
 			sourceBbid: author.get('bbid'),
 			targetBbid: work.get('bbid'),
 			typeId: 1
@@ -137,8 +141,7 @@ describe('deleteRelationships', () => {
 			.save(null, {method: 'insert'});
 
 		// Create Relationship Set for Author Entity
-		const authorRelationshipSetId = random.number();
-		const authorRelationshipSet = await new RelationshipSet({id: authorRelationshipSetId})
+		const authorRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
@@ -146,8 +149,7 @@ describe('deleteRelationships', () => {
 			);
 
 		// Create Relationship Set for Work Entity
-		const workRelationshipSetId = random.number();
-		const workRelationshipSet = await new RelationshipSet({id: workRelationshipSetId})
+		const workRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
@@ -155,50 +157,48 @@ describe('deleteRelationships', () => {
 			);
 
 		// Create a Revision for Entities
-		let revisionId = random.number();
-		await new Revision({authorId: editor.get('id'), id: revisionId})
+		const revision = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
 		// Set the Entity Attributes as Required
-		author.set('revisionId', revisionId);
-		author.set('relationshipSetId', authorRelationshipSet.get('id'));
-		work.set('revisionId', revisionId);
-		work.set('relationshipSetId', workRelationshipSet.get('id'));
+		author.set('revisionId', revision.id);
+		author.set('relationshipSetId', authorRelationshipSet.id);
+		work.set('revisionId', revision.id);
+		work.set('relationshipSetId', workRelationshipSet.id);
 
 		// Save the Entities and Update the database
 		await author.save(null, {method: 'update'});
 		await work.save(null, {method: 'update'});
 
 		// Create New Revision to delete Entity
-		revisionId = random.number();
-		await new Revision({authorId: editor.get('id'), id: revisionId})
+		const revision2 = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
 		// Delete Work Entity
 		await new WorkRevision({
 			bbid: work.get('bbid'),
 			dataId: null,
-			id: revisionId
+			id: revision2.id
 		}).save(null, {
 			method: 'insert'
 		});
 
 		await new WorkHeader({
 			bbid: work.get('bbid'),
-			masterRevisionId: revisionId
+			masterRevisionId: revision2.id
 		}).save(null);
 
 		const affectedEntities = await deleteRelationships(orm, null, author.toJSON());
 
 		expect(affectedEntities).to.have.length(0);
 	});
+
 	it('it should return an array containing the other entity to modify (this should also check that the returned entity model has a changed relationshipSetId)', async () => {
 		// Create Entities
 		const work = await createWork();
 
 		// Create Relation and its data between two entites
 		const relationshipData = {
-			id: random.number(),
 			sourceBbid: author.get('bbid'),
 			targetBbid: work.get('bbid'),
 			typeId: 1
@@ -208,8 +208,7 @@ describe('deleteRelationships', () => {
 			.save(null, {method: 'insert'});
 
 		// Create Relationship Set for Author Entity
-		const authorRelationshipSetId = random.number();
-		const authorRelationshipSet = await new RelationshipSet({id: authorRelationshipSetId})
+		const authorRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
@@ -217,8 +216,7 @@ describe('deleteRelationships', () => {
 			);
 
 		// Create Relationship Set for Work Entity
-		const workRelationshipSetId = random.number();
-		const workRelationshipSet = await new RelationshipSet({id: workRelationshipSetId})
+		const workRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
@@ -226,15 +224,14 @@ describe('deleteRelationships', () => {
 			);
 
 		// Create a Revision for Entities
-		const revisionId = random.number();
-		await new Revision({authorId: editor.get('id'), id: revisionId})
+		const revision = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
 		// Set the Entity Attributes as Required
-		author.set('revisionId', revisionId);
-		author.set('relationshipSetId', authorRelationshipSet.get('id'));
-		work.set('revisionId', revisionId);
-		work.set('relationshipSetId', workRelationshipSet.get('id'));
+		author.set('revisionId', revision.id);
+		author.set('relationshipSetId', authorRelationshipSet.id);
+		work.set('revisionId', revision.id);
+		work.set('relationshipSetId', workRelationshipSet.id);
 
 		// Save the Entities and Update the database
 		await author.save(null, {method: 'update'});
@@ -246,9 +243,10 @@ describe('deleteRelationships', () => {
 		// Get Updated Work
 		const affectedEntities = await deleteRelationships(orm, null, author.toJSON());
 
-		expect(workRelationshipSet.get('id')).to.not.equal(affectedEntities[0].get('relationshipSetId'));
+		expect(workRelationshipSet.id).to.not.equal(affectedEntities[0].get('relationshipSetId'));
 		expect(affectedEntities).to.have.length(1);
 	});
+
 	it('it should delete only the relationships to the entity being deleted (meaning if entity A has rels to B and C and I deleted B, A should still have a rel to C)', async () => {
 		// Create Entities
 		const workABBID = getRandomUUID();
@@ -257,30 +255,20 @@ describe('deleteRelationships', () => {
 		const workB = await createWork(workBBBID);
 
 		// Create Revision
-		const revisionId = random.number();
-		await new Revision({authorId: editor.get('id'), id: revisionId})
+		const revision = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
 		// Create Relations between entity
 		const relationshipDataA = {
-			id: 1,
 			sourceBbid: author.get('bbid'),
 			targetBbid: workA.get('bbid'),
-			typeId: 1
+			typeId: relationshipTypeData.id
 		};
 		const relationshipDataB = {
-			id: 1,
 			sourceBbid: author.get('bbid'),
 			targetBbid: workB.get('bbid'),
-			typeId: 1
+			typeId: relationshipTypeData.id
 		};
-
-		// Relate Relationship Data with Relationship Type
-		relationshipDataA.typeId = relationshipTypeData.id;
-		relationshipDataA.id = random.number();
-
-		relationshipDataB.typeId = relationshipTypeData.id;
-		relationshipDataB.id = random.number();
 
 		// Create Relationships for Entities
 		const relationshipA = await new Relationship(relationshipDataA)
@@ -289,40 +277,26 @@ describe('deleteRelationships', () => {
 		const relationshipB = await new Relationship(relationshipDataB)
 			.save(null, {method: 'insert'});
 
-		// Create Relationship set ids for entities
-		const authorRelationshipSetId = random.number();
-		const workARelationshipSetId = random.number();
-		const workBRelationshipSetId = random.number();
-
 		// Create Relationship sets
-		const authorRelationshipSet = await new RelationshipSet({id: authorRelationshipSetId})
-			.save(null, {method: 'insert'})
-			.then(
-				(model) =>
-					model.relationships().attach([relationshipA, relationshipB]).then(() => model)
-			);
+		const authorRelationshipSet = await new RelationshipSet()
+			.save(null, {method: 'insert'});
+		await authorRelationshipSet.relationships().attach([relationshipA, relationshipB]);
 
-		const workARelationshipSet = await new RelationshipSet({id: workARelationshipSetId})
-			.save(null, {method: 'insert'})
-			.then(
-				(model) =>
-					model.relationships().attach([relationshipA]).then(() => model)
-			);
+		const workARelationshipSet = await new RelationshipSet()
+			.save(null, {method: 'insert'});
+		await workARelationshipSet.relationships().attach([relationshipA]);
 
-		const workBRelationshipSet = await new RelationshipSet({id: workBRelationshipSetId})
-			.save(null, {method: 'insert'})
-			.then(
-				(model) =>
-					model.relationships().attach([relationshipB]).then(() => model)
-			);
+		const workBRelationshipSet = await new RelationshipSet()
+			.save(null, {method: 'insert'});
+		await workBRelationshipSet.relationships().attach([relationshipB]);
 
 		// Set the Entity Attributes as Required
-		author.set('revisionId', revisionId);
-		author.set('relationshipSetId', authorRelationshipSet.get('id'));
-		workA.set('revisionId', revisionId);
-		workA.set('relationshipSetId', workARelationshipSet.get('id'));
-		workB.set('revisionId', revisionId);
-		workB.set('relationshipSetId', workBRelationshipSet.get('id'));
+		author.set('revisionId', revision.id);
+		author.set('relationshipSetId', authorRelationshipSet.id);
+		workA.set('revisionId', revision.id);
+		workA.set('relationshipSetId', workARelationshipSet.id);
+		workB.set('revisionId', revision.id);
+		workB.set('relationshipSetId', workBRelationshipSet.id);
 
 		// Save the Entities and Update the database
 		await author.save(null, {method: 'update'});
@@ -340,10 +314,11 @@ describe('deleteRelationships', () => {
 		}).fetch({withRelated: 'relationships'});
 
 		expect(affectedEntities[0].get('bbid')).to.equal(author.get('bbid'));
-		expect(affectedEntityRelationshipSet.get('id')).to.not.equal(authorRelationshipSetId);
+		expect(affectedEntityRelationshipSet.id).to.not.equal(authorRelationshipSet.id);
 		expect(affectedEntityRelationshipSet.related('relationships').toJSON()[0].targetBbid).to.be.equal(workB.get('bbid'));
 		expect(affectedEntities).to.have.length(1);
 	});
+
 	it('it should return an array with multiple other entities to modify if there are relationships to multiple entities', async () => {
 		// Create Entites
 		const workABBID = getRandomUUID();
@@ -354,39 +329,25 @@ describe('deleteRelationships', () => {
 		const workC = await createWork(workCBBID);
 
 		// Create Revision
-		const revisionId = random.number();
-		await new Revision({authorId: editor.get('id'), id: revisionId})
+		const revision = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
 		// Create Relations between entity
 		const relationshipDataA = {
-			id: 1,
 			sourceBbid: author.get('bbid'),
 			targetBbid: workA.get('bbid'),
-			typeId: 1
+			typeId: relationshipTypeData.id
 		};
 		const relationshipDataB = {
-			id: 1,
 			sourceBbid: author.get('bbid'),
 			targetBbid: workB.get('bbid'),
-			typeId: 1
+			typeId: relationshipTypeData.id
 		};
 		const relationshipDataC = {
-			id: 1,
 			sourceBbid: author.get('bbid'),
 			targetBbid: workC.get('bbid'),
-			typeId: 1
+			typeId: relationshipTypeData.id
 		};
-
-		// Relate Relationship Data with Relationship Type
-		relationshipDataA.typeId = relationshipTypeData.id;
-		relationshipDataA.id = random.number();
-
-		relationshipDataB.typeId = relationshipTypeData.id;
-		relationshipDataB.id = random.number();
-
-		relationshipDataC.typeId = relationshipTypeData.id;
-		relationshipDataC.id = random.number();
 
 		// Create Relationships for Entities
 		const relationshipA = await new Relationship(relationshipDataA)
@@ -398,35 +359,29 @@ describe('deleteRelationships', () => {
 		const relationshipC = await new Relationship(relationshipDataC)
 			.save(null, {method: 'insert'});
 
-		// Create Relationship set ids for entities
-		const authorRelationshipSetId = random.number();
-		const workARelationshipSetId = random.number();
-		const workBRelationshipSetId = random.number();
-		const workCRelationshipSetId = random.number();
-
 		// Create Relationship sets
-		const authorRelationshipSet = await new RelationshipSet({id: authorRelationshipSetId})
+		const authorRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
 					model.relationships().attach([relationshipA, relationshipB, relationshipC]).then(() => model)
 			);
 
-		const workARelationshipSet = await new RelationshipSet({id: workARelationshipSetId})
+		const workARelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
 					model.relationships().attach([relationshipA]).then(() => model)
 			);
 
-		const workBRelationshipSet = await new RelationshipSet({id: workBRelationshipSetId})
+		const workBRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
 					model.relationships().attach([relationshipB]).then(() => model)
 			);
 
-		const workCRelationshipSet = await new RelationshipSet({id: workCRelationshipSetId})
+		const workCRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then(
 				(model) =>
@@ -434,14 +389,14 @@ describe('deleteRelationships', () => {
 			);
 
 		// Set the Entity Attributes as Required
-		author.set('revisionId', revisionId);
-		author.set('relationshipSetId', authorRelationshipSet.get('id'));
-		workA.set('revisionId', revisionId);
-		workA.set('relationshipSetId', workARelationshipSet.get('id'));
-		workB.set('revisionId', revisionId);
-		workB.set('relationshipSetId', workBRelationshipSet.get('id'));
-		workC.set('revisionId', revisionId);
-		workC.set('relationshipSetId', workCRelationshipSet.get('id'));
+		author.set('revisionId', revision.id);
+		author.set('relationshipSetId', authorRelationshipSet.id);
+		workA.set('revisionId', revision.id);
+		workA.set('relationshipSetId', workARelationshipSet.id);
+		workB.set('revisionId', revision.id);
+		workB.set('relationshipSetId', workBRelationshipSet.id);
+		workC.set('revisionId', revision.id);
+		workC.set('relationshipSetId', workCRelationshipSet.id);
 
 		// Save the Entities and Update the database
 		await author.save(null, {method: 'update'});
@@ -458,6 +413,7 @@ describe('deleteRelationships', () => {
 		expect(affectedEntities).to.have.length(3);
 	});
 });
+
 describe('processMergeOperation', () => {
 	let author1BBID;
 	let author2BBID;
@@ -481,6 +437,7 @@ describe('processMergeOperation', () => {
 			processMergeOperation(orm, null, {mergeQueue}, author1, [author1], {})
 		).to.be.rejectedWith('Merge handler called with no merge queue, aborting');
 	});
+
 	it('should throw an error if trying to merge into an entity not in the mergeQueue', () => {
 		const anotherBBIB = getRandomUUID();
 		const mergeQueue = {
@@ -493,6 +450,7 @@ describe('processMergeOperation', () => {
 			processMergeOperation(orm, null, {mergeQueue}, author1, [author1], {})
 		).to.be.rejectedWith('Entity being merged into does not appear in merge queue, aborting');
 	});
+
 	it('should add the entity to be merged to the returned entities', async () => {
 		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
 		const mergeQueue = {
@@ -508,6 +466,7 @@ describe('processMergeOperation', () => {
 		const returnedEntitiesBBIDs = returnedEntities.map(entity => entity.get('bbid'));
 		expect(returnedEntitiesBBIDs).to.include.members([author1BBID, author2BBID]);
 	});
+
 	it('should add the bbid of the merged entity to the entity_redirect table', async () => {
 		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
 		const mergeQueue = {
@@ -518,11 +477,12 @@ describe('processMergeOperation', () => {
 			}
 		};
 		const trx = await bookshelf.knex.transaction();
-		const returnedEntities = await processMergeOperation(orm, trx, {mergeQueue}, author1Fetched, [author1Fetched], {});
+		await processMergeOperation(orm, trx, {mergeQueue}, author1Fetched, [author1Fetched], {});
 		await trx.commit();
 		const redirects = await bookshelf.knex('bookbrainz.entity_redirect').select('source_bbid');
 		expect(redirects[0].source_bbid).to.equal(author2BBID);
 	});
+
 	it('should modify the relationshipSet of any entity related to an entity being merged', async () => {
 		const author1Fetched = await Author.forge({bbid: author1BBID}).fetch();
 		const mergeQueue = {

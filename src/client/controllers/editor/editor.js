@@ -23,6 +23,7 @@ import {
 	extractLayoutProps
 } from '../../helpers/props';
 import {AppContainer} from 'react-hot-loader';
+import CollectionsPage from '../../components/pages/collections';
 import EditorContainer from '../../containers/editor';
 import EditorRevisionPage from '../../components/pages/editor-revision';
 import Layout from '../../containers/layout';
@@ -37,11 +38,16 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const pageTarget = document.getElementById('page');
 const page = pageTarget ? pageTarget.innerHTML : '';
 
-let tab = null;
-
+let tab;
 if (page === 'revisions') {
 	tab = (
 		<EditorRevisionPage
+			{...extractChildProps(props)}
+		/>);
+}
+else if (page === 'collections') {
+	tab = (
+		<CollectionsPage
 			{...extractChildProps(props)}
 		/>);
 }

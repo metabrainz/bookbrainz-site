@@ -17,12 +17,12 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
 import CustomInput from '../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ValidationLabel from '../../entity-editor/common/validation-label';
 import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent';
 
@@ -35,22 +35,36 @@ class EntityDeletionForm extends React.Component {
 
 		this.state = {
 			error: null,
+			note: null,
 			waiting: false
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleNoteChange = this.handleNoteChange.bind(this);
+	}
+
+	handleNoteChange(event) {
+		this.setState({note: event.target.value});
 	}
 
 	handleSubmit(event) {
+		const {note} = this.state;
 		event.preventDefault();
 
+		if (!note || !note.length) {
+			this.setState({
+				error: `We require users to leave a note explaining the reasons why they are deleting an entity.
+				Please provide an explanation in the text area above.`,
+				waiting: false
+			});
+			return;
+		}
 		this.setState({
 			error: null,
 			waiting: true
 		});
-
 		request.post(this.deleteUrl)
-			.send()
+			.send({note})
 			.then(() => {
 				window.location.href = this.entityUrl;
 			})
@@ -66,6 +80,7 @@ class EntityDeletionForm extends React.Component {
 
 	render() {
 		const {entity} = this.props;
+		const {note} = this.state;
 
 		this.entityUrl = `/${_kebabCase(entity.type)}/${entity.bbid}`;
 		this.deleteUrl = `${this.entityUrl}/delete/handler`;
@@ -78,11 +93,13 @@ class EntityDeletionForm extends React.Component {
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
 
+		const hasNote = note && note.length;
 		const footerComponent = (
 			<span className="clearfix">
 				<Button
 					bsStyle="danger"
 					className="pull-right"
+					disabled={!hasNote}
 					type="submit"
 				>
 					<FontAwesomeIcon icon="trash-alt"/> Delete
@@ -98,6 +115,12 @@ class EntityDeletionForm extends React.Component {
 
 		const entityName =
 			entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
+
+		const noteLabel = (
+			<ValidationLabel error={!hasNote}>
+				Note
+			</ValidationLabel>
+		);
 
 		return (
 			<div id="deletion-form">
@@ -131,16 +154,37 @@ class EntityDeletionForm extends React.Component {
 									</p>
 									<p>If you are certain it should be deleted, please enter a
 									revision note below to explain why and confirm the deletion.
+									If you are not sure, you can get feedback from the community&nbsp;
+									<a
+										href="//community.metabrainz.org/c/bookbrainz"
+										rel="noopener noreferrer"
+										target="_blank"
+									>
+										on our forums
+									</a>
+									&nbsp;or on our&nbsp;
+									<a
+										href="//webchat.freenode.net/?channels=#metabrainz"
+										rel="noopener noreferrer"
+										target="_blank"
+									>
+										IRC channel
+									</a>.
 									</p>
 									<p className="text-muted">
-									If this {entity.type} is a duplicate, click <a href={`/merge/add/${entity.bbid}`}>this link</a> to select it to be merged instead.
+									If this {entity.type} is a duplicate, click <a href={`/merge/add/${entity.bbid}`}>this link</a>
+									&nbsp;to select it to be merged instead.
 									</p>
-
+									<hr/>
 									<CustomInput
-										ref={(ref) => this.note = ref}
+										help="* A note is required"
+										label={noteLabel}
 										rows="5"
+										tooltipText="Please explain why you are deleting this entity. This is required."
 										type="textarea"
+										value={note}
 										wrapperClassName="margin-top-1"
+										onChange={this.handleNoteChange}
 									/>
 									{errorComponent}
 								</Panel.Body>

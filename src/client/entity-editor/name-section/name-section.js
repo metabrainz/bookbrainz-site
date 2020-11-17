@@ -46,6 +46,7 @@ import {connect} from 'react-redux';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
 
+
 /**
  * Container component. The NameSection component contains input fields for
  * setting the name of an entity. It also allows setting of the entity's
@@ -77,6 +78,7 @@ class NameSection extends React.Component {
 		super(props);
 		this.updateNameFieldInputRef = this.updateNameFieldInputRef.bind(this);
 		this.handleNameChange = this.handleNameChange.bind(this);
+		this.searchForMatchindEditionGroups = this.searchForMatchindEditionGroups.bind(this);
 	}
 
 	/*
@@ -92,15 +94,32 @@ class NameSection extends React.Component {
 		}
 	}
 
+	componentDidUpdate(prevProps) {
+		const {nameValue, searchForExistingEditionGroup} = this.props;
+		if (prevProps.searchForExistingEditionGroup === searchForExistingEditionGroup ||
+			searchForExistingEditionGroup === false) {
+			return;
+		}
+		this.searchForMatchindEditionGroups(nameValue);
+	}
+
 	handleNameChange(event) {
 		this.props.onNameChange(event.target.value);
 		this.props.onNameChangeCheckIfExists(event.target.value);
 		this.props.onNameChangeSearchName(event.target.value);
-		if (
-			_.toLower(this.props.entityType) === 'edition' &&
-			this.props.searchForExistingEditionGroup
-		) {
-			this.props.onNameChangeCheckIfEditionGroupExists(event.target.value);
+		this.searchForMatchindEditionGroups(event.target.value);
+	}
+
+	searchForMatchindEditionGroups(nameValue) {
+		const {
+			entityType,
+			onNameChangeCheckIfEditionGroupExists,
+			searchForExistingEditionGroup
+		} = this.props;
+		// Search for Edition Groups that match the name, if the entity is an Edition
+		// Will react to name changes and searchForExistingEditionGroup (which reacts to editionGroupBBID field)
+		if (_.toLower(entityType) === 'edition' && searchForExistingEditionGroup && !_.isNil(nameValue)) {
+			onNameChangeCheckIfEditionGroupExists(nameValue);
 		}
 	}
 
@@ -129,6 +148,7 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
+
 
 		return (
 			<div>
@@ -291,7 +311,8 @@ function mapStateToProps(rootState) {
 	};
 }
 
-function mapDispatchToProps(dispatch, {entityType}) {
+function mapDispatchToProps(dispatch, {entity, entityType}) {
+	const entityBBID = entity && entity.bbid;
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
@@ -300,13 +321,13 @@ function mapDispatchToProps(dispatch, {entityType}) {
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
-			dispatch(checkIfNameExists(value, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
+			dispatch(checkIfNameExists(value, entityBBID, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
 		}, 1500),
 		onNameChangeCheckIfExists: _.debounce((value) => {
-			dispatch(checkIfNameExists(value, entityType));
+			dispatch(checkIfNameExists(value, entityBBID, entityType));
 		}, 500),
 		onNameChangeSearchName: _.debounce((value) => {
-			dispatch(searchName(value, entityType));
+			dispatch(searchName(value, entityBBID, entityType));
 		}, 500),
 		onSortNameChange: (event) =>
 			dispatch(debouncedUpdateSortNameField(event.target.value))

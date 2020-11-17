@@ -106,7 +106,7 @@ export function validateEditionSection(data: any): boolean {
 		validateEditionSectionPages(get(data, 'pages', null)) &&
 		validateEditionSectionEditionGroup(
 			get(data, 'editionGroup', null),
-			get(data, 'editionGroupRequired', null) || get(data, 'matchingNameEditionGroups', []).length
+			get(data, 'editionGroupRequired', null)
 		) &&
 		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
 		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)).isValid &&

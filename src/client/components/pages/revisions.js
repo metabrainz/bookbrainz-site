@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Prabal Singh
+ * Copyright (C) 2020 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ class RevisionsPage extends React.Component {
 
 		// React does not autobind non-React class methods
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './revisions/revisions?q=';
+		this.paginationUrl = './revisions/revisions';
 	}
 
 	searchResultsCallback(newResults) {

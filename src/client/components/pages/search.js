@@ -18,13 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 
+// @flow
 
 class SearchPage extends React.Component {
 	/**
@@ -38,41 +38,55 @@ class SearchPage extends React.Component {
 		super(props);
 
 		this.state = {
-			query: this.props.query,
-			results: this.props.initialResults
+			query: props.query,
+			results: props.initialResults,
+			type: props.type
 		};
 
-		// React does not autobind non-React class methods
-		this.handleSearch = this.handleSearch.bind(this);
-		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './search/search?q=';
+		this.paginationUrl = './search/search';
 	}
 
 	/**
-	 * Gets user text query from the SearchField component and retrieves
-	 * autocomplete search results.
+	 * Gets user text query from the browser's URL search parameters and
+	 * sets it in the state to be passed down to SearchField and Pager components
 	 *
 	 * @param {string} query - Query string entered by user.
 	 * @param {string} type - Entity type selected from dropdown
-	 * @param {boolean} reset - Reset the search 'from' to 0 for a new search
 	 */
-	handleSearch(query, type) {
-		if (typeof query !== 'string' || typeof type !== 'string') {
-			return;
-		}
+	handleSearch = (query: string, type: string) => {
+		this.setState({query, type});
+	};
 
-		const typeString = type ? `&type=${type}` : '';
-		const fullQuery = `${query}${typeString}`;
-
-		if (this.state.query === fullQuery) {
-			return;
-		}
-		this.setState({from: 0, query: fullQuery});
-	}
-
-	searchResultsCallback(newResults) {
+	/**
+	 * The Pager component deals with fetching the query from the server.
+	 * We use this callback to set the results on this component's state.
+	 *
+	 * @param {array} newResults - The array of results from the  query
+	 */
+	searchResultsCallback = (newResults: any[]) => {
 		this.setState({results: newResults});
-	}
+	};
+
+	/**
+	 * The Pager component is set up to react to browser history navigation (prev/next buttons),
+	 * and we use this callback to set the query and type on this component's state.
+	 *
+	 * @param {URLSearchParams} searchParams - The URL search parameters passed up from the pager component
+	 */
+	searchParamsChangeCallback = (searchParams: URLSearchParams) => {
+		let query;
+		let type;
+		if (searchParams.has('q')) {
+			query = searchParams.get('q');
+		}
+		if (searchParams.has('type')) {
+			type = searchParams.get('type');
+		}
+		if (query === this.state.query && type === this.state.type) {
+			return;
+		}
+		this.handleSearch(query, type);
+	};
 
 	/**
 	 * Renders the component: Search bar with results table located vertically
@@ -81,20 +95,27 @@ class SearchPage extends React.Component {
 	 * @returns {object} - JSX to render.
 	 */
 	render() {
+		const {type, query, results} = this.state;
+		const querySearchParams = `q=${query}${type ? `&type=${type}` : ''}`;
 		return (
 			<div id="pageWithPagination">
 				<SearchField
 					entityTypes={this.props.entityTypes}
-					query={this.props.query}
+					query={query}
+					type={type}
 					onSearch={this.handleSearch}
 				/>
-				<SearchResults results={this.state.results}/>
+				<SearchResults
+					results={this.state.results}
+					user={this.props.user}
+				/>
 				<PagerElement
 					from={this.props.from}
 					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
-					query={this.state.query}
-					results={this.state.results}
+					querySearchParams={querySearchParams}
+					results={results}
+					searchParamsChangeCallback={this.searchParamsChangeCallback}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.resultsPerPage}
 				/>
@@ -110,13 +131,16 @@ SearchPage.propTypes = {
 	initialResults: PropTypes.array,
 	nextEnabled: PropTypes.bool.isRequired,
 	query: PropTypes.string,
-	resultsPerPage: PropTypes.number
+	resultsPerPage: PropTypes.number,
+	type: PropTypes.string,
+	user: PropTypes.object.isRequired
 };
 SearchPage.defaultProps = {
 	from: 0,
 	initialResults: [],
 	query: '',
-	resultsPerPage: 20
+	resultsPerPage: 20,
+	type: null
 };
 
 export default SearchPage;

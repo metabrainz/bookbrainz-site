@@ -420,6 +420,10 @@ export function handleDelete(
 	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+		if (!body.note || !body.note.length) {
+			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
+		}
+
 		const otherEntities = await deleteRelationships(orm, transacting, entity);
 
 		const newRevision = await new Revision({
@@ -440,7 +444,7 @@ export function handleDelete(
 			transacting
 		});
 
-		const entityHeader = await new HeaderModel({
+		await new HeaderModel({
 			bbid: entity.bbid,
 			masterRevisionId: entityRevision.get('id')
 		}).save(null, {transacting});
@@ -598,11 +602,13 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		try {
 			const editionsToSetCollections = await Promise.all(entitiesModelsToMerge.map(entitiesModel => entitiesModel.editions()));
 			// eslint-disable-next-line consistent-return
-			const editionsToSet = _.flatMap(editionsToSetCollections, edition => {
+			let editionsToSet = _.flatMap(editionsToSetCollections, edition => {
 				if (edition.models && edition.models.length) {
 					return edition.models;
 				}
 			});
+			// Remove 'undefined' entries (no editions in those publishers)
+			editionsToSet = _.reject(editionsToSet, _.isNil);
 			await Promise.all(editionsToSet.map(async (edition) => {
 				// Fetch current PublisherSet
 				const oldPublisherSet = await edition.publisherSet();
@@ -616,6 +622,7 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 		}
 		catch (err) {
 			log.error(err);
+			throw err;
 		}
 	}
 
@@ -852,11 +859,9 @@ async function getNextRelationshipSets(
 		})
 	);
 
-	const updatedRelationships = orm.func.relationship.updateRelationshipSets(
+	return orm.func.relationship.updateRelationshipSets(
 		orm, transacting, oldRelationshipSet, body.relationships || []
 	);
-
-	return updatedRelationships;
 }
 
 async function getNextAnnotation(
@@ -957,6 +962,30 @@ function fetchEntitiesForRelationships(
 	));
 }
 
+/**
+ * @param  {any} orm -  The BookBrainz ORM
+ * @param  {any} newEdition - The ORM model of the newly created Edition
+ * @param  {any} transacting - The ORM transaction object
+ * @description Edition Groups will be created automatically by the ORM if no EditionGroup BBID is set on a new Edition.
+ * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
+ */
+async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
+	const {EditionGroup} = orm;
+	const bbid = newEdition.get('editionGroupBbid');
+	try {
+		const editionGroup = await new EditionGroup({bbid})
+			.fetch({
+				require: true,
+				transacting,
+				withRelated: 'aliasSet.aliases'
+			});
+		await search.indexEntity(editionGroup.toJSON());
+	}
+	catch (err) {
+		log.error('Could not reindex edition group after edition creation:', err);
+	}
+}
+
 export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
@@ -1046,10 +1075,11 @@ export function handleCreateOrEditEntity(
 
 			_.forEach(allEntities, (entityModel) => {
 				const bbid: string = entityModel.get('bbid');
-				if (_.has(relationshipSets, bbid) && !_.isNil(relationshipSets[bbid])) {
+				if (_.has(relationshipSets, bbid)) {
 					entityModel.set(
 						'relationshipSetId',
-						relationshipSets[bbid].get('id')
+						// Set to relationshipSet id or null if empty set
+						relationshipSets[bbid] && relationshipSets[bbid].get('id')
 					);
 				}
 			});
@@ -1065,7 +1095,13 @@ export function handleCreateOrEditEntity(
 			/* New entities will lack some attributes like 'type' required for search indexing */
 			if (isNew) {
 				await savedMainEntity.refresh({transacting});
+
+				/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
+				if (savedMainEntity.get('type') === 'Edition') {
+					await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
+				}
 			}
+
 
 			return savedMainEntity.toJSON();
 		}

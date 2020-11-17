@@ -31,7 +31,6 @@ import {browseEditionGroupBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-import {random} from 'faker';
 
 
 const {Revision} = orm;
@@ -179,10 +178,10 @@ describe('Browse EditionGroup', () => {
 		await createEditionGroup(editionGroupBbid, editionGroupAttribs);
 		// create a revision which adds these two edition in the editionGroup
 		const editor = await createEditor();
-		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+		const revision = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
-		edition.set('revisionId', revision.get('id'));
+		edition.set('revisionId', revision.id);
 		edition.set('editionGroupBbid', editionGroupBbid);
 		await edition.save(null, {method: 'update'});
 	});

@@ -119,7 +119,7 @@ function transformNewForm(data) {
 }
 
 function getInitialNameSection(entity) {
-	const initialNameSection = {
+	return {
 		disambiguation: entity.disambiguation,
 		language: entity.defaultAlias.languageId,
 		languageId: entity.defaultAlias.languageId,
@@ -127,7 +127,6 @@ function getInitialNameSection(entity) {
 		primary: entity.defaultAlias.primary,
 		sortName: entity.defaultAlias.sortName
 	};
-	return initialNameSection;
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
@@ -362,7 +361,8 @@ function editionToFormState(edition) {
 	const editionSection = {
 		depth: edition.depth,
 		editionGroup,
-		editionGroupRequired: true,
+		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions
+		editionGroupRequired: false,
 		editionGroupVisible: true,
 		format: edition.editionFormat && edition.editionFormat.id,
 		height: edition.height,

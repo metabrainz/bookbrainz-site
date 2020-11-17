@@ -21,9 +21,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/* eslint import/no-commonjs: "warn" */
-/* eslint global-require: "warn" */
-
 // eslint-disable-next-line import/no-unassigned-import
 import '../helpers/setupIconLibrary';
 import * as bootstrap from 'react-bootstrap';
@@ -187,6 +184,12 @@ class Layout extends React.Component {
 					<NavItem href="/statistics">
 						<FontAwesomeIcon icon="chart-line"/>
 						{' Statistics '}
+					</NavItem>
+				</Nav>
+				<Nav pullRight>
+					<NavItem href="/collections">
+						<FontAwesomeIcon icon="grip-vertical"/>
+						{' Collections '}
 					</NavItem>
 				</Nav>
 				<Nav pullRight>

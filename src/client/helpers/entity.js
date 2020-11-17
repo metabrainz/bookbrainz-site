@@ -16,11 +16,8 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable react/display-name */
 
 // @flow
-
-import * as bootstrap from 'react-bootstrap';
 
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
@@ -28,8 +25,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import {dateObjectToISOString} from './utils';
 
-
-const {Button, Table} = bootstrap;
 
 export function extractAttribute(attr, path) {
 	if (attr) {
@@ -52,21 +47,6 @@ export function getLanguageAttribute(entity) {
 export function getTypeAttribute(entityType) {
 	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
 }
-
-export function getDateAttributes(entity) {
-	const attributes = [{
-		data: extractAttribute(entity.beginDate),
-		title: 'Begin Date'
-	}];
-	if (entity.ended) {
-		attributes.push({
-			data: extractAttribute(entity.endDate),
-			title: 'End Date'
-		});
-	}
-	return attributes;
-}
-
 
 /**
  * Transforms an extended ISO 8601-2004 string to a more human-firendly result
@@ -133,11 +113,7 @@ function isArea(entity) {
 		return true;
 	}
 
-	if (entity.gid) {
-		return true;
-	}
-
-	return false;
+	return Boolean(entity.gid);
 }
 
 /**
@@ -184,62 +160,6 @@ export function entityToOption(entity) {
 	};
 }
 
-export function showEntityEditions(entity) {
-	return (
-		<div>
-			<h2>
-				Editions
-				<Button
-					bsStyle="success"
-					className="pull-right"
-					href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-				>
-					<FontAwesomeIcon icon="plus"/>
-					{'  Add Edition'}
-				</Button>
-			</h2>
-			<Table striped>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Release Date</th>
-					</tr>
-				</thead>
-				<tbody>
-					{entity.editions.map((edition) => {
-						const editionName = edition.defaultAlias ?
-							edition.defaultAlias.name : '(unnamed)';
-						const editionComment = edition.disambiguation &&
-							edition.disambiguation.comment ?
-							` (${edition.disambiguation.comment})` : '';
-						const releaseEventDate = (edition.releaseEventSet &&
-							edition.releaseEventSet.releaseEvents &&
-							edition.releaseEventSet.releaseEvents[0]) &&
-							edition.releaseEventSet.releaseEvents[0].date;
-						return (
-							<tr
-								key={`${edition.bbid}`}
-							>
-								<td>
-									<a href={`/edition/${edition.bbid}`}>
-										{editionName}
-									</a>
-									<span className="text-muted">
-										{editionComment}
-									</span>
-								</td>
-								<td>
-									{releaseEventDate}
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</Table>
-		</div>
-	);
-}
-
 export function getEntityLabel(entity, returnHTML = true) {
 	if (entity.defaultAlias) {
 		return `${entity.defaultAlias.name} `;
@@ -282,7 +202,7 @@ export function getEditionPublishers(edition) {
 		return edition.publisherSet.publishers.map(
 			(publisher) => (
 				<a href={`/publisher/${publisher.bbid}`} key={publisher.bbid}>
-					{publisher.defaultAlias.name}
+					{_get(publisher, 'defaultAlias.name', publisher.bbid)}
 				</a>
 			)
 		);
@@ -321,6 +241,7 @@ export function getEntityUrl(entity) {
 export const ENTITY_TYPE_ICONS = {
 	Area: 'globe',
 	Author: 'user',
+	Collection: 'grip-vertical',
 	Edition: 'book',
 	EditionGroup: 'window-restore',
 	Editor: 'user-circle',

@@ -12,6 +12,9 @@ const production = process.env.NODE_ENV === 'production';
 const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
+		collection: ['./controllers/collection/collection'],
+		'collection/create': ['./controllers/collection/userCollectionForm'],
+		collections: ['./controllers/collections'],
 		deletion: ['./controllers/deletion.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
@@ -56,7 +59,7 @@ const clientConfig = {
 			{
 				// babel configuration in .babelrc file
 				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
+				test: /\.(js|jsx|ts|tsx)$/,
 				use: ['babel-loader']
 			},
 			{
@@ -137,6 +140,9 @@ const clientConfig = {
 			force: true
 		})
 	],
+	resolve: {
+		extensions: ['.js', '.jsx', '.ts', '.tsx']
+	},
 	target: 'web'
 }
 
@@ -154,7 +160,7 @@ if (!production) {
 	if (process.env.BUNDLE_ANALYZER) {
 		clientConfig.plugins.push(new BundleAnalyzerPlugin());
 	}
-	
+
 	/* Add webpack HMR middleware to all entry files except for styles */
 	for (const entry in clientConfig.entry) {
 		if (Object.prototype.hasOwnProperty.call(clientConfig.entry, entry)) {

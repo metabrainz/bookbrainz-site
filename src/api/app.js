@@ -25,7 +25,6 @@ import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
-import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
@@ -46,10 +45,8 @@ if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
 }
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-	extended: false
-}));
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 app.use(compression());
 
 

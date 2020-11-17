@@ -101,7 +101,7 @@ EditionAttributes.propTypes = {
 };
 
 
-function EditionDisplayPage({entity, identifierTypes}) {
+function EditionDisplayPage({entity, identifierTypes, user}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -175,8 +175,10 @@ function EditionDisplayPage({entity, identifierTypes}) {
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
+				entityType={entity.type}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
+				user={user}
 			/>
 		</div>
 	);
@@ -184,7 +186,8 @@ function EditionDisplayPage({entity, identifierTypes}) {
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object.isRequired
 };
 EditionDisplayPage.defaultProps = {
 	identifierTypes: []

@@ -63,8 +63,7 @@ export function generateEntityProps(
 	req: $Request, res: $Response,
 	additionalProps: any,
 	initialStateCallback: (entity: ?any) => any =
-	// eslint-disable-next-line no-unused-vars
-	(entity) => new Object()
+	() => new Object()
 ): any {
 	const entityName = _.upperFirst(entityType);
 	const {entity} = res.locals;
@@ -87,7 +86,7 @@ export function generateEntityProps(
 		action,
 		entityType,
 		heading: isEdit ?
-			`Edit ${entity.defaultAlias.name} (${entityName})` :
+			`Edit ${entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)'} (${entityName})` :
 			`Add ${entityName}`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(entity),
@@ -121,7 +120,7 @@ export function generateEntityMergeProps(
 	req: $Request, res: $Response,
 	additionalProps: any,
 	initialStateCallback: (entity: ?any) => any =
-	(entity) => new Object()
+	() => new Object()
 ): Object {
 	const {entityType, mergingEntities} = additionalProps;
 	const entityName = _.startCase(entityType);
@@ -152,7 +151,6 @@ export function generateEntityMergeProps(
  * Return markup for the entity editor.
  * This also modifies the props value with a new initialState!
  * @param {object} props - react props
- * @param {function} rootReducer - redux root reducer
  * @returns {object} - Updated props and HTML string with markup
  */
 export function entityEditorMarkup(
@@ -188,7 +186,6 @@ export function entityEditorMarkup(
  * Return markup for the entity merging tool.
  * This also modifies the props value with a new initialState!
  * @param {object} props - react props
- * @param {function} rootReducer - redux root reducer
  * @returns {object} - Updated props and HTML string with markup
  */
 export function entityMergeMarkup(

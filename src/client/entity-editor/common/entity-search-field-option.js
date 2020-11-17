@@ -53,11 +53,7 @@ class EntitySearchFieldOption extends React.Component {
 			return true;
 		}
 
-		if (entity.gid) {
-			return true;
-		}
-
-		return false;
+		return Boolean(entity.gid);
 	}
 
 	/**
@@ -65,8 +61,6 @@ class EntitySearchFieldOption extends React.Component {
 	 *
 	 * @param {Object} entity the entity to convert
 	 * @returns {Object} the formatted data
-	 * @param {Array<LanguageOption>} languageOptions - The list of possible languages for an
-	 * entity.
 	 */
 	entityToOption(entity) {
 		if (_.isNil(entity)) {
@@ -110,7 +104,7 @@ class EntitySearchFieldOption extends React.Component {
 	render() {
 		const labelElement = <ValidationLabel empty={this.props.empty} error={this.props.error}>{this.props.label}</ValidationLabel>;
 		return (
-			<CustomInput label={labelElement} tooltipText={this.props.tooltipText}>
+			<CustomInput label={labelElement} tooltipText={this.props.tooltipText} {...this.props}>
 				<ImmutableAsyncSelect
 					filterOptions={false}
 					labelKey="text"

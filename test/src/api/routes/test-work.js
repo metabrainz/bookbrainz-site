@@ -28,7 +28,6 @@ import {browseWorkBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-import {random} from 'faker';
 
 
 const {Language, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
@@ -185,14 +184,13 @@ describe('Browse Works', () => {
 			isoCode3: 'eng',
 			name: 'English'
 		};
-		const englishId = random.number();
-		await new Language({...englishAttrib, id: englishId})
+		const englishLanguage = await new Language(englishAttrib)
 			.save(null, {method: 'insert'});
 		const englishLanguageSet = await orm.func.language.updateLanguageSet(
 			orm,
 			null,
 			null,
-			[{id: englishId}]
+			[{id: englishLanguage.id}]
 		);
 		const frenchAttrib = {
 			frequency: 2,
@@ -202,14 +200,13 @@ describe('Browse Works', () => {
 			isoCode3: 'fra',
 			name: 'French'
 		};
-		const frenchId = random.number();
-		await new Language({...frenchAttrib, id: frenchId})
+		const frenchLanguage = await new Language(frenchAttrib)
 			.save(null, {method: 'insert'});
 		const frenchLanguageSet = await orm.func.language.updateLanguageSet(
 			orm,
 			null,
 			null,
-			[{id: frenchId}]
+			[{id: frenchLanguage.id}]
 		);
 
 		// create 4 works
@@ -221,12 +218,12 @@ describe('Browse Works', () => {
 			const workBBID = getRandomUUID();
 			workAttrib.bbid = workBBID;
 			workAttrib.typeId = workTypeId;
-			workAttrib.languageSetId = englishLanguageSet.get('id');
+			workAttrib.languageSetId = englishLanguageSet.id;
 			await createWork(workBBID, workAttrib);
 
 			const workBBID2 = getRandomUUID();
 			workAttrib.bbid = workBBID2;
-			workAttrib.languageSetId = frenchLanguageSet.get('id');
+			workAttrib.languageSetId = frenchLanguageSet.id;
 			await createWork(workBBID2, workAttrib);
 
 			workBBIDs.push(workBBID, workBBID2);
@@ -236,7 +233,7 @@ describe('Browse Works', () => {
 
 		// Now create a revision which forms the relationship b/w author and works
 		const editor = await createEditor();
-		const revision = await new Revision({authorId: editor.get('id'), id: random.number()})
+		const revision = await new Revision({authorId: editor.id})
 			.save(null, {method: 'insert'});
 
 		const relationshipTypeData = {
@@ -254,7 +251,6 @@ describe('Browse Works', () => {
 		const relationshipsPromise = [];
 		for (const workBBID of workBBIDs) {
 			const relationshipData = {
-				id: random.number(),
 				sourceBbid: author.get('bbid'),
 				targetBbid: workBBID,
 				typeId: relationshipTypeData.id
@@ -266,12 +262,12 @@ describe('Browse Works', () => {
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
-		const authorRelationshipSet = await new RelationshipSet({id: random.number()})
+		const authorRelationshipSet = await new RelationshipSet()
 			.save(null, {method: 'insert'})
 			.then((model) => model.relationships().attach(relationships).then(() => model));
 
-		author.set('relationshipSetId', authorRelationshipSet.get('id'));
-		author.set('revisionId', revision.get('id'));
+		author.set('relationshipSetId', authorRelationshipSet.id);
+		author.set('revisionId', revision.id);
 		await author.save(null, {method: 'update'});
 	});
 	after(truncateEntities);

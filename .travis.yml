@@ -34,7 +34,7 @@ addons:
 env:
   global:
     - CXX=g++-4.8
-    
+
 before_install:
   - sudo service postgresql stop
   - printf "local all all trust\nhost all all 127.0.0.1 trust" > pg_hba.conf

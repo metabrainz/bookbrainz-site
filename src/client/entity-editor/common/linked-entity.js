@@ -19,7 +19,7 @@
 
 // @flow
 
-import {kebabCase as _kebabCase, has} from 'lodash';
+import {kebabCase as _kebabCase, has, isFunction} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -36,7 +36,9 @@ class LinkedEntity extends React.Component {
 
 	handleParentEvent(event) {
 		const option = this.getSafeOptionValue(this.props.option);
-		this.props.onSelect(option, event);
+		if (isFunction(this.props.onSelect)) {
+			this.props.onSelect(option, event);
+		}
 	}
 
 	handleChildEvent(event) {

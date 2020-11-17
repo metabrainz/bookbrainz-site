@@ -7,22 +7,33 @@ import swaggerUi from 'swagger-ui-express';
 
 
 const router = Router();
-const isDev = process.env.NODE_ENV === 'development';
 const API_VERSION = process.env.API_VERSION || '1';
 
 const swaggerOptions = {
 	apis: ['src/api/routes/*.js', 'src/api/*.js'],
 	swaggerDefinition: {
-		basePath: `/${API_VERSION}`,
+		basePath: '/{version}',
 		info: {
 			contact: {
-				email: 'akhileshithcse@gmail.com'
+				email: 'bookbrainz@metabrainz.org',
+				name: 'BookBrainz',
+				url: 'https://bookbrainz.org/'
 			},
-			description: 'Swagger 2.0 documentation for the BookBrainz REST API.',
+			description: `OpenAPI 3 documentation for the BookBrainz REST API.<br/>
+			Breaking changes to the API will be announced <a href="https://blog.metabrainz.org/category/bookbrainz/" target="_blank">on our blog</a>.`,
 			title: 'BookBrainz API Documentation',
-			version: '0.1.0'
+			version: '0.2.0'
 		},
-		schemes: [isDev ? 'http' : 'https']
+		openapi: '3.0.3',
+		servers: [{
+			url: '/{version}',
+			variables: {
+				version: {
+					default: API_VERSION,
+					enum: ['1', API_VERSION]
+				}
+			}
+		}]
 	}
 };
 

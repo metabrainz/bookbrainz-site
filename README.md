@@ -31,6 +31,15 @@ directories will exist:
 * `static/js` - minified JavaScript files which are referred to by the site
   pages.
   
+## Contact and updates
+
+Any questions? You can get in contact with the community on [our IRC channel](https://webchat.freenode.net/?channels=#bookbrainz) or [our forums](https://community.metabrainz.org/c/bookbrainz), or send us [an email](mailto:bookbrainz@metabrainz.org)
+
+Breaking changes to the database schema or our API will be announced on
+[our blog](https://blog.metabrainz.org/category/bookbrainz/), along with our other major updates,
+so consider following that.
+
+
 ## Contributing
 We welcome any and all contributions ! Whether you want to add or improve entries on [bookbrainz.org](https://bookbrainz.org), fix an issue on the website or provide new functionnality, we'll be happy to have your help and count you part of our ranks !
 If you are new to open source contribution workflows, have a look at [this beginner's guide](https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/) and our [contribution guidelines](CONTRIBUTING.md).
@@ -39,9 +48,9 @@ Still not sure what to start with? Have a look at [tickets tagged **good-first-b
 
 ## Documentation
 
-Auto-generated developer documentation can be found at our corresponding
-[doclets site](https://doclets.io/bookbrainz/bookbrainz-site/master). Our
-contributing guide can be found [here](CONTRIBUTING.md).
+The auto-generated developer documentation is served alongisde this repository on Github Pages: https://bookbrainz.github.io/bookbrainz-site
+
+Our contributing guidelines can be found [here](CONTRIBUTING.md).
 <br/>
 ## Beta and test subdomains
 

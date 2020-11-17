@@ -75,6 +75,8 @@ At this point, you should check your internet connection. If it persists, make s
 
     4. To check if port is already is in use or not run
     `netstat -anp tcp | grep <port-number>`
+    
+    5. If you get error messages from ElasticSearch queries timing out, you can adjust the `requestTimeout` option in your config/config.json file under "elasticsearch"
 
 * Redis
 

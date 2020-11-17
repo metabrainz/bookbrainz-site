@@ -19,13 +19,14 @@
 import {config, library} from '@fortawesome/fontawesome-svg-core';
 import {
 	faAngleDoubleLeft, faAngleDoubleUp, faBook, faCalendarAlt, faChartLine, faCheck, faCircle,
-	faCircleNotch, faCodeBranch, faComment, faEnvelope, faExclamationTriangle,
-	faExternalLinkAlt, faGlobe, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
-	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
+	faCircleNotch, faClone, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
+	faExternalLinkAlt, faGlobe, faGripVertical, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
+	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {fab} from '@fortawesome/free-brands-svg-icons';
+
 
 // Disable FontAwesome's CSS (to prevent FOUC)
 // For this, th build system needs to be able to import the css file below. Currently the build errors.
@@ -37,9 +38,9 @@ config.autoAddCss = true;
 // Add Icons to FontAwesome library
 library.add(
 	fab, faAngleDoubleLeft, faAngleDoubleUp, faBook, faCalendarAlt, faChartLine, faCheck, faCircle,
-	faCircleNotch, faCodeBranch, faComment, faEnvelope, faExclamationTriangle,
-	faExternalLinkAlt, faGlobe, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
-	faPlus, faQuestionCircle, faRemoveFormat, faSearch, faSignInAlt,
+	faCircleNotch, faClone, faCodeBranch, faComment, faCommentDots, faComments, faEnvelope, faExclamationTriangle,
+	faExternalLinkAlt, faGlobe, faGripVertical, faHistory, faInfo, faListUl, faPenNib, faPencilAlt, faPencilRuler,
+	faPlus, faQuestionCircle, faRemoveFormat, faSave, faSearch, faSignInAlt,
 	faSignOutAlt, faSlash, faTasks, faTimes, faTimesCircle, faTrashAlt, faUndo,
 	faUniversity, faUser, faUserCircle, faWindowRestore
 );
