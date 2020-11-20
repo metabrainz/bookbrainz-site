@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {ISODateStringToObject, isNullDate} from '../../helpers/utils';
+import {DateObject, ISODateStringToObject, isNullDate} from '../../helpers/utils';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {dateValidator} from './date';
@@ -60,7 +60,7 @@ export function validateRequiredString(value: any): boolean {
 }
 
 export function validatePositiveInteger(
-	value: any, required: boolean = false
+	value: any, required = false
 ): boolean {
 	if (absentAndRequired(value, required)) {
 		return false;
@@ -73,7 +73,7 @@ export function validatePositiveInteger(
 	return _.isNil(value) || (_.isInteger(value) && value > 0);
 }
 
-export function validateDate(value: string) {
+export function validateDate(value: string | DateObject) {
 	let dateObject;
 	// We expect a string but accept both ISO date strings and {year,month,date} objects
 	if (_.isString(value)) {
@@ -129,7 +129,7 @@ export function dateIsBefore(beginValue: unknown, endValue: unknown): boolean {
 }
 
 export function validateUUID(
-	value: unknown, required: boolean = false
+	value: unknown, required = false
 ): boolean {
 	if (absentAndRequired(value, required)) {
 		return false;

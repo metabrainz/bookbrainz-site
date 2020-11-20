@@ -16,11 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
-import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {format} from 'date-fns';
+import {isIterable} from '../../types';
+
+
+export interface DateObject {
+	day: string;
+	month: string;
+	year: string;
+}
 
 
 /**
@@ -29,7 +35,7 @@ import {format} from 'date-fns';
  * @param {object} instance - Entity object.
  * @returns {object} - New object with injected properties.
  */
-export function injectDefaultAliasName(instance) {
+export function injectDefaultAliasName(instance: Record<string, any>) {
 	if (instance && instance.name) {
 		return Object.assign({}, instance, {
 			defaultAlias: {
@@ -62,7 +68,7 @@ export function labelsForAuthor(isGroup) {
 }
 
 export function convertMapToObject(value) {
-	return Iterable.isIterable(value) ? value.toJS() : value;
+	return isIterable(value) ? value.toJS() : value;
 }
 
 /**
@@ -71,7 +77,7 @@ export function convertMapToObject(value) {
  * @function getTodayDate
  * @returns {object} today's date as a {day, month, year} object
  */
-export function getTodayDate() {
+export function getTodayDate(): DateObject {
 	const date = new Date();
 	const year = date.getFullYear().toString();
 	const month = (date.getMonth() + 1).toString();
@@ -86,7 +92,7 @@ export function getTodayDate() {
  * @param {string} value - relationshipId number for initaial relationship
  * @returns {object} a {day, month, year} object
  */
-export function ISODateStringToObject(value) {
+export function ISODateStringToObject(value: any): DateObject {
 	if (!_.isString(value)) {
 		if (_.isPlainObject(value) && _.has(value, 'year')) {
 			return value;
@@ -99,7 +105,7 @@ export function ISODateStringToObject(value) {
 	// and requires us to add the negative sign back for the year
 	if (date.length && date[0] === '') {
 		date.shift();
-		date[0] = -date[0];
+		date[0] = (-parseInt(date[0], 10)).toString();
 	}
 	return {
 		day: date.length > 2 ? date[2] : '',
@@ -115,7 +121,7 @@ export function ISODateStringToObject(value) {
  * @param {object|string} date - a {day, month, year} object or ISO 8601-2004 string (±YYYYYY-MM-DD)
  * @returns {boolean} true if the date is empty/null
  */
-export function isNullDate(date: Object | string) {
+export function isNullDate(date: any): boolean {
 	const dateObject = ISODateStringToObject(date);
 	const isNullYear = _.isNil(dateObject.year) || dateObject.year === '';
 	const isNullMonth = _.isNil(dateObject.month) || dateObject.month === '';
@@ -130,7 +136,7 @@ export function isNullDate(date: Object | string) {
  * @param {string} value - a {day, month, year} object
  * @returns {string} ISO 8601-2004 string (±YYYYYY-MM-DD)
  */
-export function dateObjectToISOString(value) {
+export function dateObjectToISOString(value: DateObject) {
 	if (_.isNil(value) || isNullDate(value)) {
 		return null;
 	}
@@ -139,9 +145,11 @@ export function dateObjectToISOString(value) {
 		return '+XXXXXX';
 	}
 
-	const isCommonEraDate = Math.sign(value.year) > -1;
+	const numericYear = parseInt(value.year, 10);
+
+	const isCommonEraDate = Math.sign(numericYear) > -1;
 	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
-	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(value.year).toString(), 6, '0')}`;
+	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(numericYear).toString(), 6, '0')}`;
 	if (value.month) {
 		date += `-${value.month}`;
 		if (value.day) {

@@ -1,6 +1,4 @@
 
-// @flow
-
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
  *
@@ -27,7 +25,7 @@ export function isValidBBID(bbid: string): boolean {
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @returns {object} - Object mapping model name to the entity model
  */
-export function getEntityModels(orm: Object): Object {
+export function getEntityModels(orm: any) {
 	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
 	return {
 		Author,
@@ -48,7 +46,7 @@ export function getEntityModels(orm: Object): Object {
  * @returns {object} - Bookshelf model object with the type specified in the
  * single param
  */
-export function getEntityModelByType(orm: Object, type: string): Object {
+export function getEntityModelByType(orm: any, type: string): any {
 	const entityModels = getEntityModels(orm);
 
 	if (!entityModels[type]) {
@@ -64,15 +62,18 @@ export function getEntityModelByType(orm: Object, type: string): Object {
  * @param {object} obj - an object with Promises as values
  * @returns {Promise<object>} - A Promise resolving to the object with resolved values
  */
-export function makePromiseFromObject(obj: Object): Promise<Object> {
+type Unresolved<T> = {
+	[P in keyof T]: Promise<T[P]>;
+};
+export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
 	const keys = Object.keys(obj);
 	const values = Object.values(obj);
 	return Promise.all(values)
 	  .then(resolved => {
 			const res = {};
 			for (let i = 0; i < keys.length; i += 1) {
-		  res[keys[i]] = resolved[i];
+				res[keys[i]] = resolved[i];
 			}
-			return res;
+			return res as T;
 	  });
 }

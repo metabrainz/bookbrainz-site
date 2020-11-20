@@ -24,9 +24,45 @@ import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 
-// @flow
+type Props = {
+	entityTypes: any[],
+	from?: number,
+	initialResults?: any[],
+	nextEnabled: boolean,
+	query?: string,
+	resultsPerPage?: number,
+	type?: string,
+	user: Record<string, unknown>
+};
 
-class SearchPage extends React.Component {
+type State = {
+	query: string | null | undefined;
+	results: any[];
+	type: string | null | undefined;
+};
+
+class SearchPage extends React.Component<Props, State> {
+	static displayName = 'SearchPage';
+
+	static propTypes = {
+		entityTypes: PropTypes.array.isRequired,
+		from: PropTypes.number,
+		initialResults: PropTypes.array,
+		nextEnabled: PropTypes.bool.isRequired,
+		query: PropTypes.string,
+		resultsPerPage: PropTypes.number,
+		type: PropTypes.string,
+		user: PropTypes.object.isRequired
+	};
+
+	static defaultProps = {
+		from: 0,
+		initialResults: [],
+		query: '',
+		resultsPerPage: 20,
+		type: null
+	};
+
 	/**
 	 * Initializes component state to default values and binds class
 	 * methods to proper context so that they can be directly invoked
@@ -45,6 +81,8 @@ class SearchPage extends React.Component {
 
 		this.paginationUrl = './search/search';
 	}
+
+	paginationUrl: string;
 
 	/**
 	 * Gets user text query from the browser's URL search parameters and
@@ -123,24 +161,5 @@ class SearchPage extends React.Component {
 		);
 	}
 }
-
-SearchPage.displayName = 'SearchPage';
-SearchPage.propTypes = {
-	entityTypes: PropTypes.array.isRequired,
-	from: PropTypes.number,
-	initialResults: PropTypes.array,
-	nextEnabled: PropTypes.bool.isRequired,
-	query: PropTypes.string,
-	resultsPerPage: PropTypes.number,
-	type: PropTypes.string,
-	user: PropTypes.object.isRequired
-};
-SearchPage.defaultProps = {
-	from: 0,
-	initialResults: [],
-	query: '',
-	resultsPerPage: 20,
-	type: null
-};
 
 export default SearchPage;

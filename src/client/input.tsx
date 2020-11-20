@@ -1,6 +1,5 @@
-// @flow
-
-import {ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+// eslint-disable-next-line import/named
+import {ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, OverlayTrigger, Sizes, Tooltip} from 'react-bootstrap';
 import React, {Component} from 'react';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -8,7 +7,43 @@ import PropTypes from 'prop-types';
 import cx from 'classnames';
 
 
-export default class Input extends Component {
+type Props = {
+	addonAfter?: any,
+	addonBefore?: any,
+	bsSize?: Sizes,
+	buttonAfter?: any,
+	buttonBefore?: any,
+	children?: React.ReactElement,
+	groupClassName?: string,
+	hasFeedback?: boolean,
+	help?: React.ReactNode,
+	id?: string,
+	label?: React.ReactNode,
+	labelClassName?: string,
+	name?: string,
+	standalone?: boolean,
+	tooltipText?: string,
+	type?: string,
+	validationState?: 'success' | 'warning' | 'error' | null,
+	wrapperClassName?: string,
+	value?: string,
+	[propName: string]: any
+};
+
+type IGProps = {
+	wrapperClassName?: string,
+	addonBefore?: any,
+	addonAfter?: any,
+	buttonBefore?: any,
+	buttonAfter?: any,
+	help?: React.ReactNode,
+	hasFeedback?: boolean,
+	children?: React.ReactElement,
+	value?: string,
+	[propName: string]: any
+};
+
+export default class Input extends Component<Props> {
 	static propTypes = {
 		addonAfter: PropTypes.any,
 		addonBefore: PropTypes.any,
@@ -56,6 +91,8 @@ export default class Input extends Component {
 
 		this.refFormControl = null;
 	}
+
+	refFormControl: HTMLInputElement;
 
 	// eslint-disable-next-line accessor-pairs
 	set value(newValue) {
@@ -109,7 +146,7 @@ export default class Input extends Component {
 		help, hasFeedback,
 		children, value,
 		...props
-	}) {
+	}: IGProps) {
 		if (props.type === 'select' || props.type === 'textarea') {
 			props.componentClass = props.type;
 			delete props.type;
@@ -119,12 +156,12 @@ export default class Input extends Component {
 			(children && React.cloneElement(children, props)) ||
 			<FormControl
 				/* eslint-disable-next-line react/jsx-no-bind */
-				inputRef={(ref) => { this.refFormControl = ref; }}
+				inputRef={(ref: HTMLInputElement) => { this.refFormControl = ref; }}
 				value={value}
 				{...props}
 			/>;
 
-		function getFormControlWrapped(className) {
+		function getFormControlWrapped(className?: string | null | undefined) {
 			return className || hasFeedback || help ?
 				(
 					<div className={className}>

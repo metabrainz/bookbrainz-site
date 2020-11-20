@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 
 import _ from 'lodash';
 
@@ -37,7 +35,7 @@ import _ from 'lodash';
 		}
  */
 
-function getDefaultAlias(entity: object) {
+function getDefaultAlias(entity: Record<string, unknown> | null | undefined) {
 	return {
 		language: _.get(entity, 'defaultAlias.language.isoCode3', null),
 		name: _.get(entity, 'defaultAlias.name', null),
@@ -58,7 +56,7 @@ function getDefaultAlias(entity: object) {
  *		/* => ['hin', 'eng', 'spa']
  */
 
-function getLanguages(entity: object) {
+function getLanguages(entity: any) {
 	return _.get(entity, 'languageSet.languages', []).map(({isoCode3}) => isoCode3);
 }
 
@@ -89,7 +87,7 @@ function getLanguages(entity: object) {
 		}
  */
 
-export function getWorkBasicInfo(work: object) {
+export function getWorkBasicInfo(work: Record<string, unknown> | null | undefined) {
 	return _.isNil(work) ? null :
 		{
 			bbid: _.get(work, 'bbid', null),
@@ -136,7 +134,7 @@ export function getWorkBasicInfo(work: object) {
 		}
  */
 
-export function getEditionBasicInfo(edition: object) {
+export function getEditionBasicInfo(edition: any) {
 	return _.isNil(edition) ? null :
 		{
 			bbid: _.get(edition, 'bbid', null),
@@ -177,7 +175,7 @@ export function getEditionBasicInfo(edition: object) {
 		}
  */
 
-export function getEditionGroupBasicInfo(editionGroup: object) {
+export function getEditionGroupBasicInfo(editionGroup: Record<string, unknown> | null | undefined) {
 	return _.isNil(editionGroup) ? null :
 		{
 			bbid: _.get(editionGroup, 'bbid', null),
@@ -216,7 +214,7 @@ export function getEditionGroupBasicInfo(editionGroup: object) {
 		}
  */
 
-export function getAuthorBasicInfo(author: object) {
+export function getAuthorBasicInfo(author: Record<string, unknown> | null | undefined) {
 	return _.isNil(author) ? null :
 		{
 			authorType: _.get(author, 'authorType.label', null),
@@ -259,7 +257,7 @@ export function getAuthorBasicInfo(author: object) {
 		}
  */
 
-export function getPublisherBasicInfo(publisher: object) {
+export function getPublisherBasicInfo(publisher: Record<string, unknown> | null | undefined) {
 	return _.isNil(publisher) ? null :
 		{
 			area: _.get(publisher, 'area.name', null),
@@ -296,7 +294,7 @@ export function getPublisherBasicInfo(publisher: object) {
 		}
  */
 
-export function getEntityAliases(entity: object) {
+export function getEntityAliases(entity: any) {
 	return _.isNil(entity) ? null :
 		{
 			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => ({
@@ -331,7 +329,7 @@ export function getEntityAliases(entity: object) {
 		}
  */
 
-export function getEntityIdentifiers(entity: object) {
+export function getEntityIdentifiers(entity: any) {
 	return _.isNil(entity) ? null :
 		{
 			bbid: _.get(entity, 'bbid', null),
@@ -369,7 +367,7 @@ export function getEntityIdentifiers(entity: object) {
 		}
  */
 
-export function getEntityRelationships(entity: object) {
+export function getEntityRelationships(entity: any) {
 	return _.isNil(entity) ? null :
 		{
 			bbid: _.get(entity, 'bbid', null),
@@ -394,7 +392,7 @@ export function getEntityRelationships(entity: object) {
 		};
 }
 
-export function formatSearchResponse(searchResult: array) {
+export function formatSearchResponse(searchResult: Record<string, unknown>[] | null | undefined) {
 	return _.isNil(searchResult) ? null :
 		{
 			resultCount: searchResult.length,

@@ -17,14 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
+import * as React from 'react';
 import * as bootstrap from 'react-bootstrap';
 
 import CustomInput from '../../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React from 'react';
 import _ from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
@@ -49,12 +47,26 @@ type SearchFieldState = {
 };
 type SearchFieldProps = {
 	entityTypes: any[],
-	onSearch: Function,
+	onSearch: (query: string, type: string) => void,
 	query?: string,
 	type?: string
 };
 
 class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
+	static displayName = 'SearchField';
+
+	static propTypes = {
+		entityTypes: PropTypes.array.isRequired,
+		onSearch: PropTypes.func.isRequired,
+		query: PropTypes.string,
+		type: PropTypes.string
+	};
+
+	static defaultProps = {
+		query: '',
+		type: ''
+	};
+
 	constructor(props: SearchFieldProps) {
 		super(props);
 
@@ -78,7 +90,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 		}
 	}
 
-	debouncedTriggerOnSearch: Function;
+	debouncedTriggerOnSearch: () => void;
 
 	triggerOnSearch() {
 		const {query, type} = this.state;
@@ -165,18 +177,5 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 		);
 	}
 }
-
-SearchField.displayName = 'SearchField';
-SearchField.propTypes = {
-	entityTypes: PropTypes.array.isRequired,
-	onSearch: PropTypes.func.isRequired,
-	query: PropTypes.string,
-	type: PropTypes.string
-};
-
-SearchField.defaultProps = {
-	query: '',
-	type: ''
-};
 
 export default SearchField;

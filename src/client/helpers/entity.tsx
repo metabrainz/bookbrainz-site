@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
+import * as React from 'react';
+// eslint-disable-next-line import/named
+import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import React from 'react';
 import {dateObjectToISOString} from './utils';
 
 
@@ -122,7 +122,7 @@ function isArea(entity) {
  * @returns {object} option - A react-select option
  */
 export function areaToOption(
-	area: {comment: string, id: number, name: string}
+	area: {comment: string, id: number, name: string} | null
 ) {
 	if (!area) {
 		return null;
@@ -249,7 +249,8 @@ export const ENTITY_TYPE_ICONS = {
 	Work: 'pen-nib'
 };
 
-export function genEntityIconHTMLElement(entityType, size = '1x', margin = true) {
+type FASize = FAProps['size'];
+export function genEntityIconHTMLElement(entityType: string, size: FASize = '1x', margin = true) {
 	const correctCaseEntityType = upperFirst(entityType);
 	if (!ENTITY_TYPE_ICONS[correctCaseEntityType]) { return null; }
 	return (
@@ -288,7 +289,7 @@ export function getEditionFormat(entity) {
  * @param {number} relationshipTypeId - typeId of spacific relationshipType
  * @returns {array} retrun the all relationships after removing the relatioships for given relationshipTypeId
  */
-export function filterOutRelationshipTypeById(entity, relationshipTypeId) {
+export function filterOutRelationshipTypeById(entity, relationshipTypeId: number) {
 	return (Array.isArray(entity.relationships) &&
 				entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId)) || [];
 }
@@ -301,7 +302,7 @@ export function filterOutRelationshipTypeById(entity, relationshipTypeId) {
  * @param {number} relationshipTypeId - typeId of spacific relationshipType
  * @returns {array} Return array of all the targets belongs to entity relationships for given relationshipTypeId
  */
-export function getRelationshipTargetByTypeId(entity, relationshipTypeId) {
+export function getRelationshipTargetByTypeId(entity, relationshipTypeId: number) {
 	let targets = [];
 	if (Array.isArray(entity.relationships)) {
 		targets = entity.relationships
@@ -323,7 +324,7 @@ export function getRelationshipTargetByTypeId(entity, relationshipTypeId) {
  * @param {number} relationshipTypeId - typeId of spacific relationshipType
  * @returns {array} Return array of all the sources belongs to entity relationships for given relationshipTypeId
  */
-export function getRelationshipSourceByTypeId(entity, relationshipTypeId) {
+export function getRelationshipSourceByTypeId(entity, relationshipTypeId: number) {
 	let sources = [];
 	if (Array.isArray(entity.relationships)) {
 		sources = entity.relationships
