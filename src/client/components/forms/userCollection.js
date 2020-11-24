@@ -262,30 +262,39 @@ class UserCollectionForm extends React.Component {
 							<div className={errorAlertClass}>
 								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
-							<div className="text-center">
-								<Button
-									bsStyle="primary"
-									type="button"
-									onClick={this.handleAddCollaborator}
-								>
-									<FontAwesomeIcon icon="plus"/>
-									&nbsp;Add another collaborator
-								</Button>
-								<Button
-									bsStyle="success"
-									type="submit"
-								>
-									<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
-								</Button>
+							<div className="row margin-bottom-2">
+								<div className="col-sm-6 margin-top-d5">
+									<Button
+										block
+										bsStyle="primary"
+										type="button"
+										onClick={this.handleAddCollaborator}
+									>
+										<FontAwesomeIcon icon="plus"/>
+										&nbsp;Add another collaborator
+									</Button>
+								</div>
+								<div className="col-sm-6 margin-top-d5">
+									<Button
+										block
+										bsStyle="success"
+										type="submit"
+									>
+										<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
+									</Button>
+								</div>
 								{
 									this.props.collection.id ?
-										<Button
-											bsStyle="danger"
-											type="button"
-											onClick={this.handleShowModal}
-										>
-											<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
-										</Button> : null
+										<div className="col-sm-6 margin-top-d5">
+											<Button
+												block
+												bsStyle="danger"
+												type="button"
+												onClick={this.handleShowModal}
+											>
+												<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
+											</Button>
+										</div> : null
 								}
 							</div>
 						</form>
