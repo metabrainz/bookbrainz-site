@@ -10,18 +10,12 @@ const options = {
 	extends: [
 		'eslint:recommended',
 		'plugin:flowtype/recommended',
+		'plugin:node/recommended',
 		'plugin:react/recommended',
 		'plugin:import/recommended'
 	],
 	parser: 'babel-eslint',
 	parserOptions: {
-		ecmaFeatures: {
-			experimentalObjectRestSpread: true,
-			generators: true,
-			jsx: true,
-			modules: false
-		},
-		ecmaVersion: 8,
 		sourceType: 'module'
 	},
 	plugins: [
@@ -44,11 +38,10 @@ const ERROR = 2;
 const TRANSITION_WARNING = 1; // warnings that should be reviewed soon
 const WARNING = 1; // warnings that should stay warnings
 const TRANSITION_IGNORE = 0; // ignores that should be reviewed soon
+const IGNORE = 0;
 
 // These should not be removed at all.
 const possibleErrorsRules = {
-	'for-direction': ERROR,
-	'getter-return': ERROR,
 	'no-await-in-loop': ERROR,
 	'no-console': ERROR,
 	'no-extra-parens': [
@@ -61,7 +54,6 @@ const possibleErrorsRules = {
 			returnAssign: false
 		}
 	],
-	'no-prototype-builtins': ERROR,
 	'no-template-curly-in-string': ERROR,
 	'valid-jsdoc': [
 		ERROR,
@@ -148,7 +140,6 @@ const bestPracticesRules = {
 	'no-useless-return': ERROR,
 	'no-void': ERROR,
 	'no-warning-comments': WARNING,
-	'no-with': ERROR,
 	'prefer-promise-reject-errors': ERROR,
 	radix: ERROR,
 	'require-await': ERROR,
@@ -172,7 +163,6 @@ const variablesRules = {
 	'no-catch-shadow': ERROR,
 	'no-label-var': ERROR,
 	'no-shadow': ERROR,
-	'no-shadow-restricted-names': ERROR,
 	'no-undef-init': ERROR,
 	'no-undefined': ERROR,
 	'no-unused-vars': WARNING,
@@ -180,7 +170,7 @@ const variablesRules = {
 };
 
 const nodeAndCommonJSRules = {
-	'callback-return': [
+	'node/callback-return': [
 		ERROR,
 		[
 			'callback',
@@ -189,14 +179,21 @@ const nodeAndCommonJSRules = {
 			'done'
 		]
 	],
-	'global-require': ERROR,
-	'handle-callback-err': ERROR,
-	'no-mixed-requires': ERROR,
-	'no-new-require': ERROR,
-	'no-path-concat': ERROR,
-	'no-process-env': TRANSITION_WARNING,
-	'no-process-exit': ERROR,
-	'no-sync': ERROR
+	'node/global-require': ERROR,
+	'node/handle-callback-err': ERROR,
+	'node/no-missing-import': [
+		ERROR,
+		{tryExtensions: ['.js', '.jsx', '.ts', '.tsx']}
+	],
+	'node/no-mixed-requires': ERROR,
+	'node/no-new-require': ERROR,
+	'node/no-path-concat': ERROR,
+	'node/no-process-env': TRANSITION_WARNING,
+	'node/no-process-exit': ERROR,
+	'node/no-sync': ERROR,
+	'node/no-unpublished-import': IGNORE,
+	'node/no-unsupported-features/es-builtins': IGNORE,
+	'node/no-unsupported-features/es-syntax': IGNORE
 };
 
 // Agreement of all project leads needed before changing these.
@@ -319,10 +316,7 @@ const stylisticIssuesRules = {
 	'no-trailing-spaces': ERROR,
 	'no-unneeded-ternary': ERROR,
 	'no-whitespace-before-property': ERROR,
-	'object-curly-newline': [
-		ERROR,
-		{consistent: true}
-	],
+	'object-curly-newline': ERROR,
 	'one-var': [
 		ERROR,
 		'never'
@@ -380,12 +374,7 @@ const ecmaScript6Rules = {
 			before: false
 		}
 	],
-	'no-confusing-arrow': [
-		ERROR,
-		{
-			allowParens: true
-		}
-	],
+	'no-confusing-arrow': ERROR,
 	'no-duplicate-imports': ERROR,
 	'no-useless-computed-key': ERROR,
 	'no-useless-constructor': ERROR,

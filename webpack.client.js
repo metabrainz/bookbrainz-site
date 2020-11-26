@@ -5,6 +5,7 @@ const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -44,18 +45,6 @@ const clientConfig = {
 	mode: production ? 'production' : 'development',
 	module: {
 		rules: [
-			{
-				enforce: 'pre',
-				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
-				use: [{
-					loader: 'eslint-loader',
-					options: {
-						cache: !production,
-						fix: !production
-					}
-				}]
-			},
 			{
 				// babel configuration in .babelrc file
 				exclude: /node_modules/,
@@ -138,6 +127,10 @@ const clientConfig = {
 		new WriteAssetsWebpackPlugin({
 			extension: ['js', 'css'],
 			force: true
+		}),
+		new ESLintPlugin({
+			extensions: ['.js', '.jsx', '.ts', '.tsx'],
+			fix: !production
 		})
 	],
 	resolve: {

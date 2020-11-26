@@ -33,6 +33,7 @@ import express from 'express';
 import favicon from 'serve-favicon';
 import git from 'git-rev';
 import initInflux from './influx';
+import logNode from 'log-node';
 import logger from 'morgan';
 import path from 'path';
 import redis from 'connect-redis';
@@ -42,7 +43,7 @@ import session from 'express-session';
 
 
 // Initialize log-to-stdout  writer
-require('log-node')();
+logNode();
 
 
 // Initialize application
@@ -67,12 +68,14 @@ app.use(compression());
 
 // Set up serving of static assets
 if (process.env.NODE_ENV === 'development') {
+	/* eslint-disable node/global-require, node/no-unpublished-require */
 	const webpack = require('webpack');
 	const webpackDevMiddleware = require('webpack-dev-middleware');
 	const webpackHotMiddleware = require('webpack-hot-middleware');
 
 	// eslint-disable-next-line import/no-dynamic-require
 	const webpackConfig = require(path.resolve(rootDir, './webpack.client'));
+	/* eslint-enable node/global-require, node/no-unpublished-require */
 	const compiler = webpack(webpackConfig);
 
 	app.use(webpackDevMiddleware(compiler, {

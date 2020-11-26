@@ -34,7 +34,7 @@
     ]
   },
   "engines": {
-    "node": ">=8.0"
+    "node": ">= 10.13.0"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
@@ -116,12 +116,13 @@
     "core-js": "^3.6.5",
     "cross-env": "^5.1.1",
     "css-loader": "^1.0.0",
-    "eslint": "^4.19.1",
-    "eslint-loader": "^2.1.0",
+    "eslint": "^7.13.0",
     "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-flowtype": "^2.39.1",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-webpack-plugin": "^2.3.0",
     "faker": "^4.1.0",
     "file-loader": "^2.0.0",
     "flow-bin": "^0.123.0",

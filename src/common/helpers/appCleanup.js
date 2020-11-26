@@ -16,9 +16,11 @@ function cleanupOnExit(cleanupPromise) {
 	process.on('asyncExit', () => {
 		cleanupPromise().then(() => {
 			console.log('Cleanup process finished');
+			// eslint-disable-next-line node/no-process-exit
 			process.exit(0);
 		}).catch((error) => {
 			console.log(error);
+			// eslint-disable-next-line node/no-process-exit
 			process.exit(1);
 		});
 	});
@@ -67,6 +69,7 @@ function cleanupOnExit(cleanupPromise) {
 	process.on('uncaughtException', (error) => {
 		console.error('Uncaught Exception:');
 		console.error(error.stack);
+		// eslint-disable-next-line node/no-process-exit
 		process.exit(1);
 	});
 }

@@ -349,6 +349,7 @@ CollectionPage.propTypes = {
 	isCollaborator: PropTypes.bool,
 	isOwner: PropTypes.bool,
 	nextEnabled: PropTypes.bool.isRequired,
+	showCheckboxes: PropTypes.bool,
 	size: PropTypes.number,
 	userId: PropTypes.number
 };

@@ -9,27 +9,6 @@ import cx from 'classnames';
 
 
 export default class Input extends Component {
-	static defaultProps = {
-		addonAfter: null,
-		addonBefore: null,
-		bsSize: null,
-		buttonAfter: null,
-		buttonBefore: null,
-		children: null,
-		groupClassName: null,
-		hasFeedback: null,
-		help: null,
-		id: null,
-		label: null,
-		labelClassName: null,
-		name: null,
-		standalone: false,
-		tooltipText: null,
-		type: null,
-		validationState: null,
-		wrapperClassName: null
-	};
-
 	static propTypes = {
 		addonAfter: PropTypes.any,
 		addonBefore: PropTypes.any,
@@ -51,12 +30,34 @@ export default class Input extends Component {
 		wrapperClassName: PropTypes.string
 	};
 
+	static defaultProps = {
+		addonAfter: null,
+		addonBefore: null,
+		bsSize: null,
+		buttonAfter: null,
+		buttonBefore: null,
+		children: null,
+		groupClassName: null,
+		hasFeedback: null,
+		help: null,
+		id: null,
+		label: null,
+		labelClassName: null,
+		name: null,
+		standalone: false,
+		tooltipText: null,
+		type: null,
+		validationState: null,
+		wrapperClassName: null
+	};
+
 	constructor(props, context) {
 		super(props, context);
 
 		this.refFormControl = null;
 	}
 
+	// eslint-disable-next-line accessor-pairs
 	set value(newValue) {
 		this.refFormControl.value = newValue;
 	}
