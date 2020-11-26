@@ -23,9 +23,9 @@ import {isIterable} from '../../types';
 
 
 export interface DateObject {
-	day: string;
-	month: string;
-	year: string;
+	day: string | null;
+	month: string | null;
+	year: string | null;
 }
 
 
@@ -92,7 +92,7 @@ export function getTodayDate(): DateObject {
  * @param {string} value - relationshipId number for initaial relationship
  * @returns {object} a {day, month, year} object
  */
-export function ISODateStringToObject(value: any): DateObject {
+export function ISODateStringToObject(value: string | DateObject): DateObject {
 	if (!_.isString(value)) {
 		if (_.isPlainObject(value) && _.has(value, 'year')) {
 			return value;
@@ -121,7 +121,7 @@ export function ISODateStringToObject(value: any): DateObject {
  * @param {object|string} date - a {day, month, year} object or ISO 8601-2004 string (±YYYYYY-MM-DD)
  * @returns {boolean} true if the date is empty/null
  */
-export function isNullDate(date: any): boolean {
+export function isNullDate(date: string | DateObject): boolean {
 	const dateObject = ISODateStringToObject(date);
 	const isNullYear = _.isNil(dateObject.year) || dateObject.year === '';
 	const isNullMonth = _.isNil(dateObject.month) || dateObject.month === '';

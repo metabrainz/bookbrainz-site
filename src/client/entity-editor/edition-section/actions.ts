@@ -93,7 +93,7 @@ export function updateFormat(newFormatId: number | null | undefined): Action {
  *                 date.
  * @returns {Action} The resulting UPDATE_RELEASE_DATE action.
  */
-export function debouncedUpdateReleaseDate(newReleaseDate: number | null | undefined): Action {
+export function debouncedUpdateReleaseDate(newReleaseDate: string | null | undefined): Action {
 	return {
 		meta: {debounce: 'keystroke'},
 		payload: newReleaseDate,

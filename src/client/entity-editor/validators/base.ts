@@ -90,7 +90,7 @@ export function validateDate(value: string | DateObject) {
 }
 
 
-export function dateIsBefore(beginValue: unknown, endValue: unknown): boolean {
+export function dateIsBefore(beginValue: string | DateObject, endValue: string | DateObject): boolean {
 	const beginDateObject = ISODateStringToObject(beginValue);
 	const endDateObject = ISODateStringToObject(endValue);
 	if (isNullDate(beginDateObject) || isNullDate(endDateObject) || !validateDate(beginDateObject).isValid ||
