@@ -123,7 +123,7 @@ const EntityMerge = (props: Props) => {
 					</Row>
 					<Row>
 						<Col md={8}>
-							<RelationshipSection {...(props as any)}/>
+							<RelationshipSection {...props}/>
 						</Col>
 						<Col md={4}>
 							<EntityIdentifiers

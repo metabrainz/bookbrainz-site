@@ -72,7 +72,7 @@ const EntityEditor = (props: Props) => {
 				<AliasEditor show={aliasEditorVisible} {...props}/>
 				<NameSection {...props}/>
 				<ButtonBar {...props}/>
-				<RelationshipSection {...props as any}/>
+				<RelationshipSection {...props}/>
 				{
 					React.cloneElement(
 						React.Children.only(children),
