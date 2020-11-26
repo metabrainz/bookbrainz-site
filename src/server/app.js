@@ -33,6 +33,7 @@ import express from 'express';
 import favicon from 'serve-favicon';
 import git from 'git-rev';
 import initInflux from './influx';
+import logNode from 'log-node';
 import logger from 'morgan';
 import path from 'path';
 import redis from 'connect-redis';
@@ -42,7 +43,7 @@ import session from 'express-session';
 
 
 // Initialize log-to-stdout  writer
-require('log-node')(); // eslint-disable-line import/no-commonjs
+logNode();
 
 
 // Initialize application

@@ -18,14 +18,12 @@ import {
 
 import chai from 'chai';
 import {date} from 'faker';
+import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
 
 const {expect} = chai;
-/* eslint-disable import/no-commonjs */
-chai.use(require('chai-sorted'));
-/* eslint-enable import/no-commonjs */
-
+chai.use(isSorted);
 
 const {
 	AuthorData, AuthorRevision, Revision, AliasSet,
