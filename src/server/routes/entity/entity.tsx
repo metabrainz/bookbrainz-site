@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as React from 'react';
 import * as achievement from '../../helpers/achievement';
 import * as commonUtils from '../../../common/helpers/utils';
 import * as error from '../../../common/helpers/error';
@@ -42,7 +43,6 @@ import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
-import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';

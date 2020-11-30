@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as React from 'react';
 
 import {
 	Action,
@@ -26,7 +27,6 @@ import type {List, Map} from 'immutable';
 import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import MergeField from '../common/merge-field';
-import React from 'react';
 import Select from 'react-select';
 import {find as _find} from 'lodash';
 import {connect} from 'react-redux';

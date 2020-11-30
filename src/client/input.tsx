@@ -1,6 +1,7 @@
+import * as React from 'react';
+
 // eslint-disable-next-line import/named
 import {ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, OverlayTrigger, Sizes, Tooltip} from 'react-bootstrap';
-import React, {Component} from 'react';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -43,7 +44,7 @@ type IGProps = {
 	[propName: string]: any
 };
 
-export default class Input extends Component<Props> {
+export default class Input extends React.Component<Props> {
 	static propTypes = {
 		addonAfter: PropTypes.any,
 		addonBefore: PropTypes.any,

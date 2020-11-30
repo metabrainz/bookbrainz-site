@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as React from 'react';
 
 import {
 	Action,
@@ -36,7 +37,6 @@ import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
-import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 import {isNullDate} from '../../helpers/utils';

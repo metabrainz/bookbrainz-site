@@ -17,6 +17,8 @@
  */
 
 
+import * as React from 'react';
+
 import {
 	Action,
 	debouncedUpdateBeginDate,
@@ -40,7 +42,6 @@ import type {Dispatch} from 'redux';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
-import React from 'react';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 

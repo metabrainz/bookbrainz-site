@@ -18,9 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as React from 'react';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
-import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 

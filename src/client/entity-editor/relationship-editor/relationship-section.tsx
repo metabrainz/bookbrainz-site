@@ -18,6 +18,7 @@
 
 
 import * as Immutable from 'immutable';
+import * as React from 'react';
 
 import {
 	Action,
@@ -40,7 +41,6 @@ import type {
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React from 'react';
 import Relationship from './relationship';
 import RelationshipEditor from './relationship-editor';
 import _ from 'lodash';

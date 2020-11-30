@@ -17,7 +17,9 @@
  */
 
 
+import * as React from 'react';
 import * as data from '../../helpers/data';
+
 import {
 	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
@@ -30,7 +32,6 @@ import {
 import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import React from 'react';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {connect} from 'react-redux';

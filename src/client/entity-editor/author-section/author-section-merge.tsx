@@ -19,6 +19,7 @@
 
 
 import * as _ from 'lodash';
+import * as React from 'react';
 
 import {
 	Action,
@@ -38,7 +39,6 @@ import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
-import React from 'react';
 import {connect} from 'react-redux';
 
 

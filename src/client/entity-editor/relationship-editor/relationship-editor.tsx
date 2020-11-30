@@ -17,6 +17,8 @@
  */
 
 
+import * as React from 'react';
+
 import {
 	Button,
 	Col,
@@ -38,7 +40,6 @@ import type {
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import React from 'react';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';

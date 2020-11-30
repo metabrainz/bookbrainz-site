@@ -16,11 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as React from 'react';
 
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import type {RelationshipType, Entity as _Entity} from './types';
 import Entity from '../common/entity';
-import React from 'react';
 import _ from 'lodash';
 import {getEntityLink} from '../../../server/helpers/utils';
 

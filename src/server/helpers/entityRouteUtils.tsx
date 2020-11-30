@@ -18,6 +18,7 @@
 
 
 import * as Immutable from 'immutable';
+import * as React from 'react';
 import * as entityEditorHelpers from '../../client/entity-editor/helpers';
 import * as entityRoutes from '../routes/entity/entity';
 import * as error from '../../common/helpers/error';
@@ -29,7 +30,6 @@ import EntityEditor from '../../client/entity-editor/entity-editor';
 import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
-import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
