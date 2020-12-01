@@ -23,7 +23,7 @@ to BookBrainz:
  * Variable names should be camelCase
  * Use ES6/ES7 features - they make life easier and result in cleaner code
  * Use [JSDoc](http://usejsdoc.org/) for commenting code
- * Use [Flow](https://flow.org/) annotations everywhere - static type checking is useful
+ * Use [TypeScript](https://www.typescriptlang.org/) everywhere - static type checking is useful
 
 ## Commits
 
