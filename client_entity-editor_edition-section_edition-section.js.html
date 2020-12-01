@@ -41,6 +41,8 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 require("core-js/modules/es.array.map");
@@ -54,9 +56,13 @@ exports.default = void 0;
 
 var _isNil2 = _interopRequireDefault(require("lodash/isNil"));
 
+var React = _interopRequireWildcard(require("react"));
+
 var _actions = require("./actions");
 
 var _reactBootstrap = require("react-bootstrap");
+
+var _utils = require("../../helpers/utils");
 
 var _edition = require("../validators/edition");
 
@@ -74,15 +80,11 @@ var _linkedEntity = _interopRequireDefault(require("../common/linked-entity"));
 
 var _numericField = _interopRequireDefault(require("../common/numeric-field"));
 
-var _react = _interopRequireDefault(require("react"));
-
 var _reactSelect = _interopRequireDefault(require("react-select"));
 
 var _reactRedux = require("react-redux");
 
-var _utils = require("../../../server/helpers/utils");
-
-var _utils2 = require("../../helpers/utils");
+var _utils2 = require("../../../server/helpers/utils");
 
 var _makeImmutable = _interopRequireDefault(require("../common/make-immutable"));
 
@@ -187,11 +189,11 @@ function EditionSection(_ref) {
   var showMatchingEditionGroups = hasmatchingNameEditionGroups &amp;&amp; !editionGroupValue;
 
   var getEditionGroupSearchSelect = function getEditionGroupSearchSelect() {
-    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
       className: "margin-bottom-2",
       md: 6,
       mdOffset: showMatchingEditionGroups ? 0 : 3
-    }, /*#__PURE__*/_react.default.createElement(_entitySearchFieldOption.default, {
+    }, /*#__PURE__*/React.createElement(_entitySearchFieldOption.default, {
       clearable: false,
       error: !(0, _edition.validateEditionSectionEditionGroup)(editionGroupValue, true),
       help: "Group with other Editions of the same book",
@@ -201,77 +203,77 @@ function EditionSection(_ref) {
       type: "edition-group",
       value: editionGroupValue,
       onChange: onEditionGroupChange
-    }), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+    }), /*#__PURE__*/React.createElement(_reactBootstrap.Button, {
       block: true,
       bsStyle: "primary",
       className: "wrap" // eslint-disable-next-line react/jsx-no-bind
       ,
       onClick: onToggleShowEditionGroupSection.bind(_this, false)
-    }, /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+    }, /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
       icon: "clone"
     }), "\xA0Automatically create an Edition Group")));
   };
 
-  return /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("h2", null, "What else do you know about the Edition?"), /*#__PURE__*/_react.default.createElement("p", {
+  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("h2", null, "What else do you know about the Edition?"), /*#__PURE__*/React.createElement("p", {
     className: "text-muted"
-  }, "Edition Group is required \u2014 this cannot be blank. You can search for and choose an existing Edition Group, or choose to automatically create one instead."), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, {
+  }, "Edition Group is required \u2014 this cannot be blank. You can search for and choose an existing Edition Group, or choose to automatically create one instead."), /*#__PURE__*/React.createElement(_reactBootstrap.Row, {
     className: "margin-bottom-3"
-  }, showAutoCreateEditionGroupMessage ? /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }, showAutoCreateEditionGroupMessage ? /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: showMatchingEditionGroups ? 0 : 3
-  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Alert, {
+  }, /*#__PURE__*/React.createElement(_reactBootstrap.Alert, {
     bsStyle: "success"
-  }, /*#__PURE__*/_react.default.createElement("p", null, "A new Edition Group with the same name will be created automatically."), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+  }, /*#__PURE__*/React.createElement("p", null, "A new Edition Group with the same name will be created automatically."), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement(_reactBootstrap.Button, {
     block: true,
     bsStyle: "success",
     className: "wrap" // eslint-disable-next-line react/jsx-no-bind
     ,
     onClick: onToggleShowEditionGroupSection.bind(this, true)
-  }, /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+  }, /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
     icon: "search"
-  }), "\xA0Search for an existing Edition Group"))) : getEditionGroupSearchSelect(), showMatchingEditionGroups &amp;&amp; /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }), "\xA0Search for an existing Edition Group"))) : getEditionGroupSearchSelect(), showMatchingEditionGroups &amp;&amp; /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6
-  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Alert, {
+  }, /*#__PURE__*/React.createElement(_reactBootstrap.Alert, {
     bsStyle: "warning"
-  }, matchingNameEditionGroups.length > 1 ? 'Edition Groups with the same name as this Edition already exist' : 'An existing Edition Group with the same name as this Edition already exists', /*#__PURE__*/_react.default.createElement("br", null), "Please review the Edition Groups below and select the one that corresponds to your Edition.", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("small", null, "If no Edition Group is selected, a new one will be created automatically.", /*#__PURE__*/_react.default.createElement("br", null), "Click on the ", /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+  }, matchingNameEditionGroups.length > 1 ? 'Edition Groups with the same name as this Edition already exist' : 'An existing Edition Group with the same name as this Edition already exists', /*#__PURE__*/React.createElement("br", null), "Please review the Edition Groups below and select the one that corresponds to your Edition.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("small", null, "If no Edition Group is selected, a new one will be created automatically.", /*#__PURE__*/React.createElement("br", null), "Click on the ", /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
     icon: "external-link-alt"
-  }), " icon open in a new tab, and click an item to select."), /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup, {
+  }), " icon open in a new tab, and click an item to select."), /*#__PURE__*/React.createElement(_reactBootstrap.ListGroup, {
     className: "margin-top-1"
   }, matchingNameEditionGroups.map(function (eg) {
-    return /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroupItem, {
+    return /*#__PURE__*/React.createElement(_reactBootstrap.ListGroupItem, {
       key: eg.bbid
-    }, /*#__PURE__*/_react.default.createElement(_linkedEntity.default, {
-      option: (0, _utils.entityToOption)(eg),
+    }, /*#__PURE__*/React.createElement(_linkedEntity.default, {
+      option: (0, _utils2.entityToOption)(eg),
       onSelect: onEditionGroupChange
     }));
-  }))))), /*#__PURE__*/_react.default.createElement("p", {
+  }))))), /*#__PURE__*/React.createElement("p", {
     className: "text-muted"
-  }, "Below fields are optional \u2014 leave something blank if you don\u2019t know it"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }, "Below fields are optional \u2014 leave something blank if you don\u2019t know it"), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_entitySearchFieldOption.default, {
+  }, /*#__PURE__*/React.createElement(_entitySearchFieldOption.default, {
     instanceId: "publisher",
     label: "Publisher",
     type: "publisher",
     value: publisherValue,
     onChange: onPublisherChange
-  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_newDateField.default, {
+  }, /*#__PURE__*/React.createElement(_newDateField.default, {
     show: true,
     defaultValue: releaseDateValue,
-    empty: (0, _utils2.isNullDate)(releaseDateValue),
+    empty: (0, _utils.isNullDate)(releaseDateValue),
     error: !isValidReleaseDate,
     errorMessage: dateErrorMessage,
     label: "Release Date",
     placeholder: "YYYY-MM-DD",
     tooltipText: "The date this specific edition was published (not the first publication date of the work). If unsure, leave empty.",
     onChangeDate: onReleaseDateChange
-  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(ImmutableLanguageField, {
+  }, /*#__PURE__*/React.createElement(ImmutableLanguageField, {
     empty: true,
     multi: true,
     instanceId: "language",
@@ -279,72 +281,72 @@ function EditionSection(_ref) {
     tooltipText: "Main language used for the content of the edition",
     value: languageValues,
     onChange: onLanguagesChange
-  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 3,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_input.default, {
+  }, /*#__PURE__*/React.createElement(_input.default, {
     label: "Format",
     tooltipText: "The type of printing and binding of the edition, or digital equivalent"
-  }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
+  }, /*#__PURE__*/React.createElement(_reactSelect.default, {
     instanceId: "editionFormat",
     options: editionFormatsForDisplay,
     value: formatValue,
     onChange: onFormatChange
-  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }))), /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 3
-  }, /*#__PURE__*/_react.default.createElement(_input.default, {
+  }, /*#__PURE__*/React.createElement(_input.default, {
     label: "Status",
     tooltipText: "Has the work been published, or is it in a draft stage?"
-  }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
+  }, /*#__PURE__*/React.createElement(_reactSelect.default, {
     instanceId: "editionStatus",
     options: editionStatusesForDisplay,
     value: statusValue,
     onChange: onStatusChange
-  })))), physicalVisible &amp;&amp; /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  })))), physicalVisible &amp;&amp; /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 3,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_numericField.default, {
+  }, /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "mm",
     defaultValue: widthValue,
     empty: (0, _isNil2.default)(widthValue),
     error: !(0, _edition.validateEditionSectionWidth)(widthValue),
     label: "Width",
     onChange: onWidthChange
-  }), /*#__PURE__*/_react.default.createElement(_numericField.default, {
+  }), /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "mm",
     defaultValue: heightValue,
     empty: (0, _isNil2.default)(heightValue),
     error: !(0, _edition.validateEditionSectionHeight)(heightValue),
     label: "Height",
     onChange: onHeightChange
-  }), /*#__PURE__*/_react.default.createElement(_numericField.default, {
+  }), /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "mm",
     defaultValue: depthValue,
     empty: (0, _isNil2.default)(depthValue),
     error: !(0, _edition.validateEditionSectionDepth)(depthValue),
     label: "Depth",
     onChange: onDepthChange
-  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  })), /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 3
-  }, /*#__PURE__*/_react.default.createElement(_numericField.default, {
+  }, /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "g",
     defaultValue: weightValue,
     empty: (0, _isNil2.default)(weightValue),
     error: !(0, _edition.validateEditionSectionWeight)(weightValue),
     label: "Weight",
     onChange: onWeightChange
-  }), /*#__PURE__*/_react.default.createElement(_numericField.default, {
+  }), /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "pages",
     defaultValue: pagesValue,
     empty: (0, _isNil2.default)(pagesValue),
     error: !(0, _edition.validateEditionSectionPages)(pagesValue),
     label: "Page Count",
     onChange: onPagesChange
-  }))), !physicalVisible &amp;&amp; /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }))), !physicalVisible &amp;&amp; /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     className: "text-center",
     md: 4,
     mdOffset: 4
-  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+  }, /*#__PURE__*/React.createElement(_reactBootstrap.Button, {
     bsStyle: "link",
     onClick: onPhysicalButtonClick
   }, "Add physical data\u2026"))));
@@ -436,7 +438,7 @@ exports.default = _default;</code></pre>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Nov 26 2020 10:19:39 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Dec 01 2020 14:49:46 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

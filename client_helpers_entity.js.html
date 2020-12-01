@@ -41,6 +41,8 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 require("core-js/modules/es.array.concat");
@@ -94,14 +96,33 @@ var _isNil3 = _interopRequireDefault(require("lodash/isNil"));
 
 var _get3 = _interopRequireDefault(require("lodash/get"));
 
-var _dateFns = require("date-fns");
+var React = _interopRequireWildcard(require("react"));
 
 var _reactFontawesome = require("@fortawesome/react-fontawesome");
 
-var _react = _interopRequireDefault(require("react"));
+var _dateFns = require("date-fns");
 
 var _utils = require("./utils");
 
+/*
+ * Copyright (C) 2016  Daniel Hsing
+ * 				 2019  Akhilesh Kumar (@akhilesh26)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+// eslint-disable-next-line import/named
 function extractAttribute(attr, path) {
   if (attr) {
     if (path) {
@@ -271,7 +292,7 @@ function getEntityLabel(entity) {
     }
 
     if (returnHTML) {
-      return /*#__PURE__*/_react.default.createElement("span", {
+      return /*#__PURE__*/React.createElement("span", {
         className: "text-muted deleted",
         title: "Deleted ".concat(entity.type)
       }, deletedEntityName);
@@ -281,7 +302,7 @@ function getEntityLabel(entity) {
   }
 
   if (returnHTML) {
-    return /*#__PURE__*/_react.default.createElement("span", {
+    return /*#__PURE__*/React.createElement("span", {
       title: "Unnamed ".concat(entity.type, " ").concat(entity.bbid)
     }, "(unnamed)");
   }
@@ -304,7 +325,7 @@ function getEditionPublishers(edition) {
 
   if (hasPublishers) {
     return edition.publisherSet.publishers.map(function (publisher) {
-      return /*#__PURE__*/_react.default.createElement("a", {
+      return /*#__PURE__*/React.createElement("a", {
         href: "/publisher/".concat(publisher.bbid),
         key: publisher.bbid
       }, (0, _get3.default)(publisher, 'defaultAlias.name', publisher.bbid));
@@ -316,7 +337,7 @@ function getEditionPublishers(edition) {
 
 function getEntityDisambiguation(entity) {
   if (entity.disambiguation) {
-    return /*#__PURE__*/_react.default.createElement("small", null, " (".concat(entity.disambiguation.comment, ")"));
+    return /*#__PURE__*/React.createElement("small", null, " (".concat(entity.disambiguation.comment, ")"));
   }
 
   return null;
@@ -329,7 +350,7 @@ function getEntitySecondaryAliases(entity) {
     }).map(function (item) {
       return item.name;
     }).join(', ');
-    return /*#__PURE__*/_react.default.createElement("h4", null, aliases);
+    return /*#__PURE__*/React.createElement("h4", null, aliases);
   }
 
   return null;
@@ -362,7 +383,7 @@ function genEntityIconHTMLElement(entityType) {
     return null;
   }
 
-  return /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+  return /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
     className: margin ? 'margin-right-0-3' : '',
     icon: ENTITY_TYPE_ICONS[correctCaseEntityType],
     size: size,
@@ -449,8 +470,7 @@ function getRelationshipSourceByTypeId(entity, relationshipTypeId) {
   return sources;
 }
 
-var deletedEntityMessage = /*#__PURE__*/_react.default.createElement("p", null, "This entity has been deleted by an editor. This is most likely because it was added accidentally or incorrectly.", /*#__PURE__*/_react.default.createElement("br", null), "The edit history has been preserved, and you can see the revisions by clicking the history button below.", /*#__PURE__*/_react.default.createElement("br", null), "If you\u2019re sure this entity should still exist, you will be able to restore it to a previous revision in a future version of BookBrainz, but that\u2019s not quite ready yet.");
-
+var deletedEntityMessage = /*#__PURE__*/React.createElement("p", null, "This entity has been deleted by an editor. This is most likely because it was added accidentally or incorrectly.", /*#__PURE__*/React.createElement("br", null), "The edit history has been preserved, and you can see the revisions by clicking the history button below.", /*#__PURE__*/React.createElement("br", null), "If you\u2019re sure this entity should still exist, you will be able to restore it to a previous revision in a future version of BookBrainz, but that\u2019s not quite ready yet.");
 exports.deletedEntityMessage = deletedEntityMessage;</code></pre>
         </article>
     </section>
@@ -463,7 +483,7 @@ exports.deletedEntityMessage = deletedEntityMessage;</code></pre>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Nov 26 2020 10:19:39 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Dec 01 2020 14:49:46 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

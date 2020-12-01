@@ -43,6 +43,8 @@
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 require("core-js/modules/es.array.find");
 
 require("core-js/modules/es.array.map");
@@ -53,6 +55,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+var React = _interopRequireWildcard(require("react"));
 
 var _actions = require("./actions");
 
@@ -67,8 +71,6 @@ var _input = _interopRequireDefault(require("../../input"));
 var _newDateField = _interopRequireDefault(require("../common/new-date-field"));
 
 var _entitySearchFieldOption = _interopRequireDefault(require("../common/entity-search-field-option"));
-
-var _react = _interopRequireDefault(require("react"));
 
 var _reactSelect = _interopRequireDefault(require("react-select"));
 
@@ -179,33 +181,33 @@ function AuthorSection(_ref) {
       isValidDod = _validateAuthorSectio2.isValid,
       dodError = _validateAuthorSectio2.errorMessage;
 
-  return /*#__PURE__*/_react.default.createElement("form", null, /*#__PURE__*/_react.default.createElement("h2", null, "What else do you know about the Author?"), /*#__PURE__*/_react.default.createElement("p", {
+  return /*#__PURE__*/React.createElement("form", null, /*#__PURE__*/React.createElement("h2", null, "What else do you know about the Author?"), /*#__PURE__*/React.createElement("p", {
     className: "text-muted"
-  }, "All fields optional \u2014 leave something blank if you don\u2019t know it"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }, "All fields optional \u2014 leave something blank if you don\u2019t know it"), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_input.default, {
+  }, /*#__PURE__*/React.createElement(_input.default, {
     label: "Type"
-  }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
+  }, /*#__PURE__*/React.createElement(_reactSelect.default, {
     instanceId: "authorType",
     options: authorTypesForDisplay,
     value: typeValue,
     onChange: onTypeChange
-  })))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  })))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_input.default, {
-    groupClassName: genderShow || 'hidden',
+  }, /*#__PURE__*/React.createElement(_input.default, {
+    groupClassName: genderShow ? null : 'hidden',
     label: "Gender"
-  }, /*#__PURE__*/_react.default.createElement(_reactSelect.default, {
+  }, /*#__PURE__*/React.createElement(_reactSelect.default, {
     instanceId: "gender",
     options: genderOptionsForDisplay,
     value: genderValue,
     onChange: onGenderChange
-  })))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  })))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_newDateField.default, {
+  }, /*#__PURE__*/React.createElement(_newDateField.default, {
     show: true,
     defaultValue: beginDateValue,
     empty: (0, _utils.isNullDate)(beginDateValue),
@@ -213,24 +215,24 @@ function AuthorSection(_ref) {
     errorMessage: dobError,
     label: beginDateLabel,
     onChangeDate: onBeginDateChange
-  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_entitySearchFieldOption.default, {
+  }, /*#__PURE__*/React.createElement(_entitySearchFieldOption.default, {
     instanceId: "beginArea",
     label: beginAreaLabel,
     type: "area",
     value: beginAreaValue,
     onChange: onBeginAreaChange
-  }))), /*#__PURE__*/_react.default.createElement("div", {
+  }))), /*#__PURE__*/React.createElement("div", {
     className: "text-center"
-  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Checkbox, {
+  }, /*#__PURE__*/React.createElement(_reactBootstrap.Checkbox, {
     defaultChecked: endedChecked,
     onChange: onEndedChange
-  }, endedLabel)), endedChecked &amp;&amp; /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }, endedLabel)), endedChecked &amp;&amp; /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_newDateField.default, {
+  }, /*#__PURE__*/React.createElement(_newDateField.default, {
     show: true,
     defaultValue: endDateValue,
     empty: (0, _utils.isNullDate)(endDateValue),
@@ -238,10 +240,10 @@ function AuthorSection(_ref) {
     errorMessage: dodError,
     label: endDateLabel,
     onChangeDate: onEndDateChange
-  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+  }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
     md: 6,
     mdOffset: 3
-  }, /*#__PURE__*/_react.default.createElement(_entitySearchFieldOption.default, {
+  }, /*#__PURE__*/React.createElement(_entitySearchFieldOption.default, {
     instanceId: "endArea",
     label: endAreaLabel,
     type: "area",
@@ -337,7 +339,7 @@ exports.default = _default;</code></pre>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Nov 26 2020 10:19:39 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Tue Dec 01 2020 14:49:46 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
