@@ -25,6 +25,11 @@ const options = {
 		'babel'
 	],
 	settings: {
+		'import/resolver': {
+			node: {
+				extensions: ['.js', '.jsx', '.ts', '.tsx']
+			}
+		},
 		react: {
 			flowVersion: '0.69',
 			version: 'detect'
