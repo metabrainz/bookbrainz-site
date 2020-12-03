@@ -27,10 +27,9 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
 import SelectWrapper from '../input/select-wrapper';
-import request from 'superagent';
 
 
-const {Button, Col, Grid, Row} = bootstrap;
+const {Alert, Button, Col, Panel, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -41,6 +40,7 @@ class ProfileForm extends React.Component {
 			area: props.editor.area ?
 				props.editor.area : null,
 			bio: props.editor.bio,
+			error: null,
 			gender: props.editor.gender ?
 				props.editor.gender : null,
 			genders: props.genders,
@@ -48,13 +48,9 @@ class ProfileForm extends React.Component {
 			titles: props.titles,
 			waiting: false
 		};
-
-		// React does not autobind non-React class methods
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.valid = this.valid.bind(this);
 	}
 
-	handleSubmit(evt) {
+	handleSubmit = async (evt) => {
 		evt.preventDefault();
 		if (!this.valid()) {
 			return;
@@ -73,17 +69,33 @@ class ProfileForm extends React.Component {
 			name,
 			title
 		};
-
-		request.post('/editor/edit/handler')
-			.send(data)
-			.then(() => {
-				window.location.href = `/editor/${this.props.editor.id}`;
+		this.setState({
+			waiting: true
+		});
+		try {
+			const response = await fetch('/editor/edit/handler', {
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8'
+				},
+				method: 'POST'
 			});
-	}
+			if (!response.ok) {
+				throw new Error(response.statusText);
+			}
 
-	valid() {
-		return this.name.getValue();
-	}
+			window.location.href = `/editor/${this.props.editor.id}`;
+		}
+		catch (err) {
+			this.setState({
+				error: err,
+				waiting: false
+			});
+		}
+	};
+
+	valid = () => this.name.getValue();
+
 
 	render() {
 		const loadingElement =
@@ -103,80 +115,83 @@ class ProfileForm extends React.Component {
 		const initialBio = this.state.bio;
 		const initialArea = injectDefaultAliasName(this.state.area);
 
+		let errorComponent = null;
+		if (this.state.error) {
+			errorComponent =
+				<Alert bsStyle="danger">{this.state.error.message}</Alert>;
+		}
+
 		return (
-			<Grid>
-				<h1>Edit Profile</h1>
-				<Row>
-					<Col md={12}>
-						<p className="lead">Edit your public profile.</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col
-						id="profileForm"
-						md={6}
-						mdOffset={3}
-					>
-						<form
-							className="form-horizontal"
-							onSubmit={this.handleSubmit}
-						>
-							{loadingElement}
-							<CustomInput
-								defaultValue={initialDisplayName}
-								label="Display Name"
-								ref={(ref) => this.name = ref}
-								type="text"
-							/>
-							<CustomInput
-								defaultValue={initialBio}
-								label="Bio"
-								ref={(ref) => this.bio = ref}
-								type="textarea"
-							/>
-							{titleOptions.length > 0 &&
-								<SelectWrapper
-									base={ReactSelect}
-									idAttribute="unlockId"
-									instanceId="title"
-									label="Title"
-									labelAttribute="title"
-									options={titleOptions}
-									placeholder="Select title"
-									ref={(ref) => this.title = ref}
-								/>
-							}
-							<SearchSelect
-								defaultValue={initialArea}
-								label="Area"
-								placeholder="Select area..."
-								ref={(ref) => this.area = ref}
-								type="area"
-							/>
-							<SelectWrapper
-								base={ReactSelect}
-								defaultValue={initialGender}
-								idAttribute="id"
-								instanceId="gender"
-								label="Gender"
-								labelAttribute="name"
-								options={genderOptions}
-								placeholder="Select Gender"
-								ref={(ref) => this.gender = ref}
-							/>
-							<div className="form-group text-center">
-								<Button
-									bsSize="large"
-									bsStyle="primary"
-									type="submit"
-								>
-									Update!
-								</Button>
-							</div>
+			<div>
+				<Row className="margin-top-2">
+					<h1>Edit Profile</h1>
+					{loadingElement}
+					<Col md={8} mdOffset={2}>
+						<form onSubmit={this.handleSubmit}>
+							<Panel>
+								<Panel.Heading>
+									<Panel.Title>
+										Edit your public profile
+									</Panel.Title>
+								</Panel.Heading>
+								<Panel.Body>
+									<CustomInput
+										defaultValue={initialDisplayName}
+										label="Display Name"
+										ref={(ref) => this.name = ref}
+										type="text"
+									/>
+									<CustomInput
+										defaultValue={initialBio}
+										label="Bio"
+										ref={(ref) => this.bio = ref}
+										type="textarea"
+									/>
+									{titleOptions.length > 0 &&
+										<SelectWrapper
+											base={ReactSelect}
+											idAttribute="unlockId"
+											instanceId="title"
+											label="Title"
+											labelAttribute="title"
+											options={titleOptions}
+											placeholder="Select title"
+											ref={(ref) => this.title = ref}
+										/>
+									}
+									<SearchSelect
+										defaultValue={initialArea}
+										label="Area"
+										placeholder="Select area..."
+										ref={(ref) => this.area = ref}
+										type="area"
+									/>
+									<SelectWrapper
+										base={ReactSelect}
+										defaultValue={initialGender}
+										idAttribute="id"
+										instanceId="gender"
+										label="Gender"
+										labelAttribute="name"
+										options={genderOptions}
+										placeholder="Select Gender"
+										ref={(ref) => this.gender = ref}
+									/>
+									{errorComponent}
+								</Panel.Body>
+								<Panel.Footer>
+									<Button
+										bsStyle="primary"
+										type="submit"
+									>
+										Save changes
+									</Button>
+								</Panel.Footer>
+							</Panel>
 						</form>
 					</Col>
 				</Row>
-			</Grid>
+			</div>
 		);
 	}
 }
