@@ -117,7 +117,7 @@ function isCurrentUser(reqUserID, sessionUser) {
 	return reqUserID === sessionUser.id;
 }
 
-router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
+router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res, next) => {
 	async function runAsync() {
 		const {Editor} = req.app.locals.orm;
 
@@ -143,7 +143,13 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			.set('genderId', req.body.genderId)
 			.set('name', req.body.name)
 			.set('titleUnlockId', titleID)
-			.save();
+			.save()
+			.catch(err => {
+				if (err.constraint === 'editor_name_key') {
+					throw new error.ConflictError('Name already in use');
+				}
+				throw new error.FormSubmissionError();
+			});
 
 		const editorJSON = modifiedEditor.toJSON();
 		return {
@@ -157,7 +163,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		};
 	}
 
-	handler.sendPromiseResult(res, runAsync(), search.indexEntity);
+	handler.sendPromiseResult(res, runAsync().catch(next), search.indexEntity);
 });
 
 async function getEditorTitleJSON(editorJSON, TitleUnlock) {
