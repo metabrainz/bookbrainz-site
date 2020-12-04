@@ -39,12 +39,15 @@ class ProfileForm extends React.Component {
 		this.state = {
 			area: props.editor.area ?
 				props.editor.area : null,
+			areaId: props.editor.area ?
+				props.editor.area.id : null,
 			bio: props.editor.bio,
 			error: null,
-			gender: props.editor.gender ?
-				props.editor.gender : null,
+			genderId: props.editor.gender ?
+				props.editor.gender.id : null,
 			genders: props.genders,
 			name: props.editor.name,
+			titleId: props.editor.titleUnlockId,
 			titles: props.titles,
 			waiting: false
 		};
@@ -55,19 +58,18 @@ class ProfileForm extends React.Component {
 		if (!this.valid()) {
 			return;
 		}
-		const area = this.area.getValue();
-		const gender = this.gender.getValue();
-		const title = this.title && this.title.getValue();
-		const name = this.name.getValue().trim();
-		const bio = this.bio.getValue().trim();
+		if (!this.hasChanged()) {
+			return;
+		}
+		const {name, bio, areaId, titleId, genderId} = this.state;
 
 		const data = {
-			areaId: area ? parseInt(area, 10) : null,
-			bio,
-			genderId: gender ? parseInt(gender, 10) : null,
+			areaId,
+			bio: bio.trim(),
+			genderId,
 			id: this.props.editor.id,
-			name,
-			title
+			name: name.trim(),
+			title: titleId
 		};
 		this.setState({
 			waiting: true
@@ -94,8 +96,28 @@ class ProfileForm extends React.Component {
 		}
 	};
 
-	valid = () => this.name.getValue();
+	valid = () => {
+		const {name} = this.state;
+		return name?.length;
+	};
 
+	hasChanged = () => {
+		const {name, bio, areaId, titleId, genderId} = this.state;
+
+		return this.props.editor?.area.id !== areaId ||
+			this.props.editor?.bio !== bio ||
+			this.props.editor?.gender?.id !== genderId ||
+			this.props.editor?.name !== name ||
+			this.props.editor?.titleUnlockId !== titleId;
+	};
+
+	handleValueChange =(event) => {
+		this.setState({[event.target.name]: event.target.value});
+	};
+
+	handleSelectChange = (value, idAttribute) => {
+		this.setState({[idAttribute]: value});
+	};
 
 	render() {
 		const loadingElement =
@@ -109,11 +131,9 @@ class ProfileForm extends React.Component {
 			title.unlockId = unlock.id;
 			return title;
 		});
+		const {area, genderId, titleId, name, bio} = this.state;
 
-		const initialDisplayName = this.state.name;
-		const initialGender = this.state.gender ? this.state.gender.id : null;
-		const initialBio = this.state.bio;
-		const initialArea = injectDefaultAliasName(this.state.area);
+		const transformedArea = injectDefaultAliasName(area);
 
 		let errorComponent = null;
 		if (this.state.error) {
@@ -121,67 +141,74 @@ class ProfileForm extends React.Component {
 				<Alert bsStyle="danger">{this.state.error.message}</Alert>;
 		}
 
+		const hasChanged = this.hasChanged();
+
 		return (
 			<div>
 				<Row className="margin-top-2">
-					<h1>Edit Profile</h1>
 					{loadingElement}
 					<Col md={8} mdOffset={2}>
 						<form onSubmit={this.handleSubmit}>
 							<Panel>
 								<Panel.Heading>
 									<Panel.Title>
-										Edit your public profile
+										<span className="h3">Edit your public profile</span>
 									</Panel.Title>
 								</Panel.Heading>
 								<Panel.Body>
 									<CustomInput
-										defaultValue={initialDisplayName}
-										label="Display Name"
-										ref={(ref) => this.name = ref}
+										defaultValue={name}
+										label="Display Name *"
+										name="name"
 										type="text"
+										onChange={this.handleValueChange}
 									/>
 									<CustomInput
-										defaultValue={initialBio}
+										defaultValue={bio}
 										label="Bio"
-										ref={(ref) => this.bio = ref}
+										name="bio"
 										type="textarea"
+										onChange={this.handleValueChange}
 									/>
 									{titleOptions.length > 0 &&
 										<SelectWrapper
 											base={ReactSelect}
+											defaultValue={titleId}
 											idAttribute="unlockId"
 											instanceId="title"
 											label="Title"
 											labelAttribute="title"
+											name="titleId"
 											options={titleOptions}
 											placeholder="Select title"
-											ref={(ref) => this.title = ref}
+											onChange={this.handleSelectChange}
 										/>
 									}
 									<SearchSelect
-										defaultValue={initialArea}
+										defaultValue={transformedArea}
 										label="Area"
+										name="areaId"
 										placeholder="Select area..."
-										ref={(ref) => this.area = ref}
 										type="area"
+										onChange={this.handleSelectChange}
 									/>
 									<SelectWrapper
 										base={ReactSelect}
-										defaultValue={initialGender}
+										defaultValue={genderId}
 										idAttribute="id"
-										instanceId="gender"
 										label="Gender"
 										labelAttribute="name"
+										name="genderId"
 										options={genderOptions}
 										placeholder="Select Gender"
-										ref={(ref) => this.gender = ref}
+										onChange={this.handleSelectChange}
 									/>
 									{errorComponent}
 								</Panel.Body>
 								<Panel.Footer>
 									<Button
-										bsStyle="primary"
+										bsStyle="success"
+										disabled={!hasChanged}
 										type="submit"
 									>
 										Save changes

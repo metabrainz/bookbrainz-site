@@ -220,6 +220,9 @@ export function autocomplete(orm, query, type) {
 }
 
 export function indexEntity(entity) {
+	if (!entity) {
+		return new Promise(resolve => resolve(null));
+	}
 	return _client.index({
 		body: entity,
 		id: entity.bbid,

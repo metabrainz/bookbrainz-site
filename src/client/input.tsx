@@ -39,6 +39,7 @@ type IGProps = {
 	buttonAfter?: any,
 	help?: React.ReactNode,
 	hasFeedback?: boolean,
+	name?: string,
 	children?: React.ReactElement,
 	value?: string,
 	[propName: string]: any
@@ -221,6 +222,7 @@ export default class Input extends React.Component<Props> {
 				bsClass={cx({'form-group': !standalone}, groupClassName)}
 				bsSize={bsSize}
 				controlId={id}
+				name={props.name}
 				validationState={validationState}
 			>
 				{label && (
