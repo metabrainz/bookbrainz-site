@@ -219,16 +219,16 @@ export function autocomplete(orm, query, type) {
 	return _searchForEntities(orm, dslQuery);
 }
 
+// eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
-	if (!entity) {
-		return new Promise(resolve => resolve(null));
+	if (entity) {
+		return _client.index({
+			body: entity,
+			id: entity.bbid,
+			index: _index,
+			type: snakeCase(entity.type)
+		});
 	}
-	return _client.index({
-		body: entity,
-		id: entity.bbid,
-		index: _index,
-		type: snakeCase(entity.type)
-	});
 }
 
 export function deleteEntity(entity) {

@@ -98,7 +98,7 @@ class ProfileForm extends React.Component {
 
 	valid = () => {
 		const {name} = this.state;
-		return name?.length;
+		return Boolean(name?.length);
 	};
 
 	hasChanged = () => {
@@ -158,9 +158,11 @@ class ProfileForm extends React.Component {
 								<Panel.Body>
 									<CustomInput
 										defaultValue={name}
-										label="Display Name *"
+										help="required"
+										label="Display Name"
 										name="name"
 										type="text"
+										validationState={this.valid() ? 'success' : 'error'}
 										onChange={this.handleValueChange}
 									/>
 									<CustomInput
