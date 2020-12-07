@@ -83,7 +83,8 @@ class ProfileForm extends React.Component {
 				method: 'POST'
 			});
 			if (!response.ok) {
-				throw new Error(response.statusText);
+				const {error} = await response.json();
+				throw new Error(error ?? response.statusText);
 			}
 
 			window.location.href = `/editor/${this.props.editor.id}`;

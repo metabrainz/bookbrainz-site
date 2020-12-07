@@ -117,7 +117,7 @@ function isCurrentUser(reqUserID, sessionUser) {
 	return reqUserID === sessionUser.id;
 }
 
-router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res, next) => {
+router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	async function runAsync() {
 		const {Editor} = req.app.locals.orm;
 
@@ -169,7 +169,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res, next) =>
 		};
 	}
 
-	handler.sendPromiseResult(res, runAsync().catch(next), search.indexEntity);
+	handler.sendPromiseResult(res, runAsync(), search.indexEntity);
 });
 
 async function getEditorTitleJSON(editorJSON, TitleUnlock) {

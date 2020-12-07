@@ -22,9 +22,8 @@ import log from 'log';
 
 
 export async function sendPromiseResult(response, promise, processingCallback) {
-	const result = await promise;
-
 	try {
+		const result = await promise;
 		response.send(result);
 
 		if (typeof processingCallback === 'function') {
