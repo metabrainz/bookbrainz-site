@@ -68,7 +68,7 @@
     "passport-musicbrainz-oauth2": "github:LordSputnik/passport-musicbrainz-oauth2",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-addons-shallow-compare": "^15.6.2",
+    "react-addons-shallow-compare": "^15.6.3",
     "react-bootstrap": "^0.33.1",
     "react-chartjs-2": "^2.9.0",
     "react-datepicker": "^2.16.0",
