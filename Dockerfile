@@ -5,12 +5,12 @@ ARG GIT_COMMIT_SHA
 
 ARG BUILD_DEPS=" \
     build-essential \
-    git \
     python-dev \
     libpq-dev"
 
 ARG RUN_DEPS=" \
     bzip2 \
+    git \
     rsync"
 
 
@@ -27,6 +27,10 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
     && rm -rf /var/lib/apt/lists/*
 
+# Clean up files that aren't needed for production
+RUN apt-get remove -y $BUILD_DEPS && \
+    apt-get autoremove -y
+    
 RUN useradd --create-home --shell /bin/bash bookbrainz
 
 ARG BB_ROOT=/home/bookbrainz/bookbrainz-site
@@ -45,10 +49,6 @@ COPY package.json ./
 COPY package-lock.json ./
 
 RUN npm install --no-audit
-
-# Clean up files that aren't needed for production
-RUN apt-get remove -y $BUILD_DEPS && \
-    apt-get autoremove -y
 
 COPY static/ static/
 COPY config/ config/
