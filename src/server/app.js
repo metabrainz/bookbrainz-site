@@ -23,6 +23,7 @@ import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
+import {existsSync, readFileSync} from 'fs';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import {get as _get} from 'lodash';
@@ -31,7 +32,6 @@ import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
-import git from 'git-rev';
 import initInflux from './influx';
 import logNode from 'log-node';
 import logger from 'morgan';
@@ -44,7 +44,7 @@ import session from 'express-session';
 
 // Initialize log-to-stdout  writer
 logNode();
-
+const debug = Debug('bbsite');
 
 // Initialize application
 const app = express();
@@ -119,9 +119,16 @@ search.init(app.locals.orm, Object.assign({}, config.search));
 
 // Set up constants that will remain valid for the life of the app
 let siteRevision = 'unknown';
-git.short((revision) => {
-	siteRevision = revision;
-});
+const gitRevisionFilePath = '.git-version';
+if (existsSync(gitRevisionFilePath)) {
+	try {
+		siteRevision = readFileSync(gitRevisionFilePath).toString();
+	}
+	catch (err) {
+		debug(err);
+	}
+}
+debug(`Git revision: ${siteRevision}`);
 
 const repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
 
@@ -160,7 +167,6 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 	serverErrorHelper.renderError(req, res, err);
 });
 
-const debug = Debug('bbsite');
 
 const DEFAULT_PORT = 9099;
 app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-process-env,max-len

@@ -1,6 +1,7 @@
 FROM metabrainz/node:10 as bookbrainz-base
 
 ARG DEPLOY_ENV
+ARG GIT_COMMIT_SHA
 
 ARG BUILD_DEPS=" \
     build-essential \
@@ -31,6 +32,8 @@ RUN useradd --create-home --shell /bin/bash bookbrainz
 ARG BB_ROOT=/home/bookbrainz/bookbrainz-site
 WORKDIR $BB_ROOT
 RUN chown bookbrainz:bookbrainz $BB_ROOT
+
+RUN echo $GIT_COMMIT_SHA > .git-version
 
 # Files necessary to complete the JavaScript build
 COPY scripts/ scripts/
