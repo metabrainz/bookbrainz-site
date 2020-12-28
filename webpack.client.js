@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
@@ -8,6 +8,17 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
+
+const cleanWebpackPluginOpts = {
+	cleanOnceBeforeBuildPatterns: [
+		'js/**/*',
+		'stylesheets',
+		// Clean up hot-update files that are created by react-hot-loader and written to disk by WriteAssetsWebpackPlugin
+		// Working on a way for WriteAssetsWebpackPlugin to ignore .hot-update.js files but no luck so far.
+		'hot',
+		'!**/.keep'
+	]
+};
 
 
 const clientConfig = {
@@ -112,16 +123,7 @@ const clientConfig = {
 			// chunkFilename: 'stylesheets/[id].css',
 			filename: 'stylesheets/style.css'
 		}),
-		new CleanWebpackPlugin(
-			[
-				'static/js',
-				'static/stylesheets',
-				// Clean up hot-update files that are created by react-hot-loader and written to disk by WriteAssetsWebpackPlugin
-				// Working on a way for WriteAssetsWebpackPlugin to ignore .hot-update.js files but no luck so far.
-				'static/hot'
-			],
-			{exclude:[".keep"]}
-		),
+		new CleanWebpackPlugin(cleanWebpackPluginOpts),
 		// Because of server-side rendering and the absence of a static html file we could modify with HtmlWebpackPlugin,
 		// we need the js files to exist on disk
 		new WriteAssetsWebpackPlugin({
