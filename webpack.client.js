@@ -48,16 +48,21 @@ const clientConfig = {
 		// filename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
 		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'static'),
-		publicPath: '/',
-		hotUpdateChunkFilename: 'hot/[id].[hash].hot-update.js',
-    	hotUpdateMainFilename: 'hot/[hash].hot-update.json'
+		publicPath: '/'
 	},
 	mode: production ? 'production' : 'development',
 	module: {
 		rules: [
 			{
+				include: /node_modules/,
+				test: /\.(js|mjs)$/,
+				resolve: {
+					fullySpecified: false
+				}
+			},
+			{
 				// babel configuration in .babelrc file
-				exclude: /node_modules/,
+				include: path.resolve(__dirname, 'src'),
 				test: /\.(js|jsx|ts|tsx)$/,
 				use: ['babel-loader']
 			},
@@ -90,31 +95,22 @@ const clientConfig = {
 			},
 			{
 				test: /\.(jpg|jpeg|png|gif|svg)$/,
-				use: [{
-					loader: 'file-loader',
-					options: {
-						name: '[name].[ext]',
-						outputPath: 'images/',
-					}
-				}]
+				type: 'asset/resource',
+				generator: {
+					filename: 'images/[name][ext][query]'
+				}
 			}
 		]
 	},
 	optimization: {
 		splitChunks: {
-			cacheGroups: {
-				commons: {
-					chunks: 'all',
-					name: 'bundle',
-					test: /[\\/]node_modules[\\/]/
-				}
-			}
+			chunks: 'all',
+			name: 'bundle'
 		}
 	},
-	plugins:[
+	plugins: [
 		new MiniCssExtractPlugin({
-			// chunkFilename: 'stylesheets/[id].css',
-			filename: 'stylesheets/style.css'
+			filename: 'stylesheets/[name].css'
 		}),
 		new CleanWebpackPlugin(cleanWebpackPluginOpts),
 		new ESLintPlugin({
@@ -133,11 +129,6 @@ if (production) {
 	clientConfig.plugins.push(new CompressionPlugin());
 }
 if (!production) {
-	clientConfig.optimization = {
-		...clientConfig.optimization,
-		moduleIds: 'named'
-	}
-
 	clientConfig.plugins = [
 		...clientConfig.plugins,
 		new webpack.HotModuleReplacementPlugin()
