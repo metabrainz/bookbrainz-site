@@ -79,10 +79,6 @@ if (process.env.NODE_ENV === 'development') {
 	const compiler = webpack(webpackConfig);
 
 	app.use(webpackDevMiddleware(compiler, {
-		// lazy: false,
-		logTime: true,
-		noInfo: false,
-		publicPath: webpackConfig.output.publicPath,
 		writeToDisk: true
 		// serverSideRender: false
 	}));
