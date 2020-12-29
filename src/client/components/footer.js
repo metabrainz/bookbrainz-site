@@ -19,7 +19,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -31,49 +31,91 @@ function Footer(props) {
 
 	return (
 		<footer className="footer">
-			<Grid fluid>
-				<Row>
-					<Col xs={4}>
-						<small>{'Tested with '}
-							<a
-								href="https://www.browserstack.com/"
-								rel="noopener noreferrer"
-								target="_blank"
-							>
-								<img
-									alt="BrowserStack Logo"
-									height="25"
-									src="/images/BrowserStack.png"
-								/>
-							</a>
-						</small>
+			<Grid fluid className="padding-top-1 padding-bottom-1">
+				<Row >
+					<Col xs={6} xsOffset={3}>
+						<Row>
+							<Col xs={2} >
+								<a className="contact-text" href="//webchat.freenode.net/?channels=#metabrainz">
+									<FontAwesomeIcon
+										className="contact-text"
+										icon="comment-dots"
+										size="2x"
+									/>
+													IRC
+								</a>
+							</Col>
+							<Col xs={2}>
+								<a className="contact-text" href="//community.metabrainz.org/c/bookbrainz">
+									<FontAwesomeIcon
+										className="contact-text"
+										icon="comments"
+										size="2x"
+									/>
+													Forums
+								</a>
+							</Col>
+							<Col xs={2}>
+								<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
+									<FontAwesomeIcon
+										className="contact-text"
+										icon={['fab', 'twitter']}
+										size="2x"
+									/>
+												Twitter
+								</a>
+							</Col>
+							<Col xs={2}>
+								<a className="contact-text" href="mailto:bookbrainz@metabrainz.org">
+									<FontAwesomeIcon
+										className="contact-text"
+										icon="envelope"
+										size="2x"
+									/>
+								Email
+								</a>
+							</Col>
+						</Row>
 					</Col>
-					<Col className="text-center" xs={4}>
-						<small>Cover image by{' '}
-							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
-								Stewart Butterfield
-							</a> (
-							<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
-								CC-BY-2.0
-							</a>)
-						</small>
-					</Col>
-					<Col className="text-right" xs={4}>
-						<a href="/privacy">
-							<small>Privacy & Terms</small>
-						</a>
-					</Col>
+
 				</Row>
-				<Row className="text-center">
-					<small>
-						Alpha Software —{' '}
-						<a href={`${repositoryUrl}commit/${siteRevision}`}>
-							{siteRevision}
-						</a> —&nbsp;
-						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
-							Report a Bug
-						</a>
-					</small>
+				<Row className="bg-theme padding-top-1">
+					<Col xs={6} >
+						<Row>
+							<Col xsOffset={1}>
+								<div className="margin-top-1">
+									<small>Cover image by{' '}
+										<span>
+											<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
+											Stewart Butterfield
+											</a>
+										</span>
+										<span>
+											<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
+												CC-BY-2.0
+											</a>
+										</span>
+									</small>
+								</div>
+								<div className="margin-top-1">
+									<a href="/privacy">
+										<small>Privacy & Terms</small>
+									</a>
+								</div>
+							</Col>
+						</Row>
+					</Col>
+					<Col xs={6}>
+						<div className="margin-top-1 float-right">
+							Alpha Software —{' '}
+							<a href={`${repositoryUrl}commit/${siteRevision}`}>
+								{siteRevision}
+							</a> —&nbsp;
+							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
+								Report a Bug
+							</a>
+						</div>
+					</Col>
 				</Row>
 			</Grid>
 		</footer>
