@@ -133,9 +133,13 @@ if (production) {
 	clientConfig.plugins.push(new CompressionPlugin());
 }
 if (!production) {
+	clientConfig.optimization = {
+		...clientConfig.optimization,
+		moduleIds: 'named'
+	}
+
 	clientConfig.plugins = [
 		...clientConfig.plugins,
-		new webpack.NamedModulesPlugin(),
 		new webpack.HotModuleReplacementPlugin()
 	]
 
