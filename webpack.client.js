@@ -70,6 +70,7 @@ const clientConfig = {
 						loader: 'less-loader',
 						options: {
 							lessOptions: {
+								math: 'always',
 								paths: [path.resolve(__dirname, 'node_modules', 'bootstrap', 'less')]
 							}
 						}
