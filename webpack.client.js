@@ -49,7 +49,7 @@ const clientConfig = {
 		// filename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
 		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'static'),
-		publicPath: '/static/',
+		publicPath: '/',
 		hotUpdateChunkFilename: 'hot/[id].[hash].hot-update.js',
     	hotUpdateMainFilename: 'hot/[hash].hot-update.json'
 	},
