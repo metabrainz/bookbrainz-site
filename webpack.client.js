@@ -66,19 +66,13 @@ const clientConfig = {
 				test: /\.(le|c)ss$/,
 				use: [
 					MiniCssExtractPlugin.loader,
-					{
-						loader: 'css-loader',
-						options: {
-							importLoaders: 2,
-							sourceMap: !production
-						}
-					},
-					'resolve-url-loader',
+					'css-loader',
 					{
 						loader: 'less-loader',
 						options: {
-							paths: [path.resolve(__dirname, 'node_modules', 'bootstrap', 'less')],
-							sourceMap: !production
+							lessOptions: {
+								paths: [path.resolve(__dirname, 'node_modules', 'bootstrap', 'less')]
+							}
 						}
 					}
 				]
@@ -99,7 +93,6 @@ const clientConfig = {
 				use: [{
 					loader: 'file-loader',
 					options: {
-						emitFile: false,
 						name: '[name].[ext]',
 						outputPath: 'images/',
 					}

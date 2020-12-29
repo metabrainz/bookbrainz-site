@@ -20,10 +20,10 @@
 
 @import "./lobes/less/theme.less";
 
-@import "react-select/less/select.less";
-@import (less) "react-virtualized/styles.css";
-@import (less) "react-virtualized-select/styles.css";
-@import (less) "react-datepicker/dist/react-datepicker.css";
+@import "~react-select/less/select.less";
+@import "~react-virtualized/styles.css";
+@import "~react-virtualized-select/styles.css";
+@import "~react-datepicker/dist/react-datepicker.css";
 
 /* With Webpack and less-loader, we are able to import directly from node_modules directory
    Once we are using Webpack for dev AND prod builds, consider moving to taht style of imports */
@@ -266,7 +266,7 @@ a.contact-text:visited {
 /* index.jade */
 /* ========== */
 #background-image {
-	background:url(/images/Bookshelf.jpg);
+	background:url(./Bookshelf.jpg);
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
