@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -117,12 +116,6 @@ const clientConfig = {
 			filename: 'stylesheets/style.css'
 		}),
 		new CleanWebpackPlugin(cleanWebpackPluginOpts),
-		// Because of server-side rendering and the absence of a static html file we could modify with HtmlWebpackPlugin,
-		// we need the js files to exist on disk
-		new WriteAssetsWebpackPlugin({
-			extension: ['js', 'css'],
-			force: true
-		}),
 		new ESLintPlugin({
 			extensions: ['.js', '.jsx', '.ts', '.tsx'],
 			fix: !production
