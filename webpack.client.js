@@ -115,7 +115,8 @@ const clientConfig = {
 		new CleanWebpackPlugin(cleanWebpackPluginOpts),
 		new ESLintPlugin({
 			extensions: ['.js', '.jsx', '.ts', '.tsx'],
-			fix: !production
+			files: path.resolve(__dirname, 'src'),
+			fix: !production,
 		})
 	],
 	resolve: {
