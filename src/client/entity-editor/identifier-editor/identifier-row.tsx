@@ -35,6 +35,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {connect} from 'react-redux';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 type OwnProps = {
@@ -120,7 +121,7 @@ function IdentifierRow({
 						className="margin-top-d15"
 						onClick={onRemoveButtonClick}
 					>
-						<FontAwesomeIcon icon="times"/>
+						<FontAwesomeIcon icon={faTimes}/>
 						<span>&nbsp;Remove</span>
 					</Button>
 				</Col>

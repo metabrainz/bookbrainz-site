@@ -22,6 +22,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
@@ -78,7 +79,7 @@ class CollectionsTable extends React.Component {
 				href="/collection/create"
 				type="button"
 			>
-				<FontAwesomeIcon icon="plus"/>
+				<FontAwesomeIcon icon={faPlus}/>
 				&nbsp;Create Collection
 			</Button>
 		);

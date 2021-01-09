@@ -38,6 +38,7 @@ import type {
 	RelationshipType,
 	Relationship as _Relationship
 } from './types';
+import {faPencilAlt, faPlus, faTimes, faUndo} from '@fortawesome/free-solid-svg-icons';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -87,7 +88,7 @@ export function RelationshipList(
 									role="button"
 									onClick={onEdit.bind(this, rowID)}
 								>
-									<FontAwesomeIcon icon="pencil-alt"/>
+									<FontAwesomeIcon icon={faPencilAlt}/>
 									<span>&nbsp;Edit</span>
 								</Button>
 							}
@@ -98,7 +99,7 @@ export function RelationshipList(
 									role="button"
 									onClick={onRemove.bind(this, rowID)}
 								>
-									<FontAwesomeIcon icon="times"/>
+									<FontAwesomeIcon icon={faTimes}/>
 									<span>&nbsp;Remove</span>
 								</Button>
 							}
@@ -200,7 +201,7 @@ function RelationshipSection({
 							bsStyle="success"
 							onClick={onAddRelationship}
 						>
-							<FontAwesomeIcon icon="plus"/>
+							<FontAwesomeIcon icon={faPlus}/>
 							<span>&nbsp;Add relationship</span>
 						</Button>
 					</Col>
@@ -216,7 +217,7 @@ function RelationshipSection({
 						<Button
 							onClick={onUndo}
 						>
-							<FontAwesomeIcon icon="undo"/>
+							<FontAwesomeIcon icon={faUndo}/>
 							<span>&nbsp;Undo last action</span>
 						</Button>
 					</Col>

@@ -21,6 +21,7 @@ import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {kebabCase as _kebabCase, has, isFunction} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
@@ -95,7 +96,7 @@ class LinkedEntity extends React.Component<any, any> {
 				}
 				{' '}
 				<a onClick={this.handleChildEvent}>
-					<FontAwesomeIcon icon="external-link-alt"/>
+					<FontAwesomeIcon icon={faExternalLinkAlt}/>
 				</a>
 				<span className="text-muted small" style={{float: 'right'}}>{language}</span>
 			</div>

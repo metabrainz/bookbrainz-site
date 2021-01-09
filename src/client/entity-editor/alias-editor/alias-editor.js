@@ -18,6 +18,7 @@
 
 import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {addAliasRow, hideAliasEditor, removeEmptyAliases} from './actions';
+import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import AliasRow from './alias-row';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -69,7 +70,7 @@ const AliasEditor = ({
 		>
 			<FontAwesomeIcon
 				className="fa-sm"
-				icon="question-circle"
+				icon={faQuestionCircle}
 			/>
 		</OverlayTrigger>
 	);
@@ -101,7 +102,7 @@ const AliasEditor = ({
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
 						<Button bsStyle="success" onClick={onAddAlias}>
-							<FontAwesomeIcon icon="plus"/>
+							<FontAwesomeIcon icon={faPlus}/>
 							<span>&nbsp;Add alias</span>
 						</Button>
 					</Col>

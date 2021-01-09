@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {lowerCase, uniqBy} from 'lodash';
 import EntitySearchFieldOption from '../../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -150,7 +151,7 @@ class AddEntityToCollectionModal extends React.Component {
 										type="button"
 										onClick={() => this.handleRemoveEntity(index)}
 									>
-										<FontAwesomeIcon icon="times"/>&nbsp;Remove
+										<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
 									</Button>
 								);
 								return (
@@ -195,7 +196,7 @@ class AddEntityToCollectionModal extends React.Component {
 							type="button"
 							onClick={this.handleAddEntity}
 						>
-							<FontAwesomeIcon icon="plus"/>
+							<FontAwesomeIcon icon={faPlus}/>
 							&nbsp;Add another {lowerCase(this.props.collectionType)}
 						</Button>
 						<Button
@@ -203,7 +204,7 @@ class AddEntityToCollectionModal extends React.Component {
 							disabled={!cleanedEntities.length}
 							onClick={this.handleSubmit}
 						>
-							<FontAwesomeIcon icon="plus"/>
+							<FontAwesomeIcon icon={faPlus}/>
 							&nbsp;Add <Badge>{cleanedEntities.length}</Badge>&nbsp;
 							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} to the collection
 						</Button>

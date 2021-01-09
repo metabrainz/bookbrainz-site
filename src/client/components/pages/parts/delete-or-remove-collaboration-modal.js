@@ -1,4 +1,5 @@
 import * as bootstrap from 'react-bootstrap';
+import {faExclamationTriangle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -40,7 +41,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			modalBody = (
 				<Alert bsStyle="danger">
 					<h4>
-						<FontAwesomeIcon icon="exclamation-triangle"/>&nbsp;
+						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 						You’re about to delete the Collection: {collection.name}.
 					</h4>
 					<p>
@@ -51,7 +52,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			);
 			submitButton = (
 				<Button bsStyle="danger" onClick={this.handleSubmit}>
-					<FontAwesomeIcon icon="trash-alt"/> Delete
+					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 			);
 		}
@@ -63,7 +64,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			modalBody = (
 				<Alert bsStyle="warning">
 					<h4>
-						<FontAwesomeIcon icon="exclamation-triangle"/>&nbsp;
+						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 						You’re about to remove yourself as a collaborator of Collection: {collection.name}.
 					</h4>
 					<p>
@@ -74,7 +75,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			);
 			submitButton = (
 				<Button bsStyle="warning" onClick={this.handleSubmit}>
-					<FontAwesomeIcon icon="times-circle"/> Stop collaboration
+					<FontAwesomeIcon icon={faTimesCircle}/> Stop collaboration
 				</Button>
 			);
 		}

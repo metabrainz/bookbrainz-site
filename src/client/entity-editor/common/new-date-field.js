@@ -10,6 +10,7 @@ import React from 'react';
 import ValidationLabel from './validation-label';
 import classNames from 'classnames';
 import {dateIsBefore} from '../validators/base';
+import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
@@ -175,7 +176,7 @@ class DateField extends React.Component {
 								showYearDropdown
 								customInput={
 									<Button bsStyle="info" style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker">
-										<FontAwesomeIcon icon="calendar-alt"/>
+										<FontAwesomeIcon icon={faCalendarAlt}/>
 									</Button>
 								}
 								dateFormat="uuuuuu-MM-dd"

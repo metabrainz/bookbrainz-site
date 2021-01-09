@@ -22,6 +22,9 @@ import * as React from 'react';
 // eslint-disable-next-line import/named
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
+import {
+	faBook, faGlobe, faGripVertical, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
+} from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
 import {dateObjectToISOString} from './utils';
 
@@ -239,14 +242,14 @@ export function getEntityUrl(entity) {
 }
 
 export const ENTITY_TYPE_ICONS = {
-	Area: 'globe',
-	Author: 'user',
-	Collection: 'grip-vertical',
-	Edition: 'book',
-	EditionGroup: 'window-restore',
-	Editor: 'user-circle',
-	Publisher: 'university',
-	Work: 'pen-nib'
+	Area: faGlobe,
+	Author: faUser,
+	Collection: faGripVertical,
+	Edition: faBook,
+	EditionGroup: faWindowRestore,
+	Editor: faUserCircle,
+	Publisher: faUniversity,
+	Work: faPenNib
 };
 
 type FASize = FAProps['size'];

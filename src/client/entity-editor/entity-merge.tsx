@@ -31,6 +31,7 @@ import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {faAngleDoubleLeft} from '@fortawesome/free-solid-svg-icons';
 import {getEntityLink} from '../../server/helpers/utils';
 
 
@@ -84,7 +85,7 @@ const EntityMerge = (props: Props) => {
 							return (
 								<span key={entity.bbid}>
 									<Entity {...entityForDisplay}/>
-									{isNotLast && <FontAwesomeIcon className="margin-sides-d5" icon="angle-double-left"/>}
+									{isNotLast && <FontAwesomeIcon className="margin-sides-d5" icon={faAngleDoubleLeft}/>}
 								</span>
 							);
 						})}
