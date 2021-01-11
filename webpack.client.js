@@ -42,6 +42,9 @@ const clientConfig = {
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
 		style: './stylesheets/style.less'
 	},
+	externals: {
+		moment: 'moment'
+	},
 	output: {
 		/** Figure out how to use manifest to load the right chunkNamed file in src/server/templates/target.js */
 		// chunkFilename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
