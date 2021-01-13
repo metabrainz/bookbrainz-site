@@ -62,7 +62,7 @@ EditionGroupAttributes.propTypes = {
 };
 
 
-function EditionGroupDisplayPage({entity, identifierTypes}) {
+function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -93,8 +93,10 @@ function EditionGroupDisplayPage({entity, identifierTypes}) {
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
+				entityType={entity.type}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
+				user={user}
 			/>
 		</div>
 	);
@@ -102,7 +104,8 @@ function EditionGroupDisplayPage({entity, identifierTypes}) {
 EditionGroupDisplayPage.displayName = 'EditionGroupDisplayPage';
 EditionGroupDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object.isRequired
 };
 EditionGroupDisplayPage.defaultProps = {
 	identifierTypes: []

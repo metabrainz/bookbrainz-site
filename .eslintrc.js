@@ -9,30 +9,25 @@ const options = {
 	},
 	extends: [
 		'eslint:recommended',
-		'plugin:flowtype/recommended',
+		'plugin:node/recommended',
 		'plugin:react/recommended',
-		'plugin:import/recommended'
+		'plugin:import/recommended',
+		'plugin:@typescript-eslint/recommended'
 	],
-	parser: 'babel-eslint',
-	parserOptions: {
-		ecmaFeatures: {
-			experimentalObjectRestSpread: true,
-			generators: true,
-			jsx: true,
-			modules: false
-		},
-		ecmaVersion: 8,
-		sourceType: 'module'
-	},
+	parser: '@typescript-eslint/parser',
 	plugins: [
 		'react',
 		'import',
-		'flowtype',
-		'babel'
+		'@typescript-eslint'
 	],
+	root: true,
 	settings: {
+		'import/resolver': {
+			node: {
+				extensions: ['.js', '.jsx', '.ts', '.tsx']
+			}
+		},
 		react: {
-			flowVersion: '0.69',
 			version: 'detect'
 		}
 	}
@@ -44,24 +39,12 @@ const ERROR = 2;
 const TRANSITION_WARNING = 1; // warnings that should be reviewed soon
 const WARNING = 1; // warnings that should stay warnings
 const TRANSITION_IGNORE = 0; // ignores that should be reviewed soon
+const IGNORE = 0;
 
 // These should not be removed at all.
 const possibleErrorsRules = {
-	'for-direction': ERROR,
-	'getter-return': ERROR,
 	'no-await-in-loop': ERROR,
 	'no-console': ERROR,
-	'no-extra-parens': [
-		ERROR,
-		'all',
-		{
-			enforceForArrowConditionals: false,
-			ignoreJSX: 'multi-line',
-			nestedBinaryExpressions: false,
-			returnAssign: false
-		}
-	],
-	'no-prototype-builtins': ERROR,
 	'no-template-curly-in-string': ERROR,
 	'valid-jsdoc': [
 		ERROR,
@@ -148,7 +131,6 @@ const bestPracticesRules = {
 	'no-useless-return': ERROR,
 	'no-void': ERROR,
 	'no-warning-comments': WARNING,
-	'no-with': ERROR,
 	'prefer-promise-reject-errors': ERROR,
 	radix: ERROR,
 	'require-await': ERROR,
@@ -171,16 +153,12 @@ const variablesRules = {
 	'init-declarations': TRANSITION_IGNORE,
 	'no-catch-shadow': ERROR,
 	'no-label-var': ERROR,
-	'no-shadow': ERROR,
-	'no-shadow-restricted-names': ERROR,
 	'no-undef-init': ERROR,
-	'no-undefined': ERROR,
-	'no-unused-vars': WARNING,
-	'no-use-before-define': ERROR
+	'no-undefined': ERROR
 };
 
 const nodeAndCommonJSRules = {
-	'callback-return': [
+	'node/callback-return': [
 		ERROR,
 		[
 			'callback',
@@ -189,14 +167,21 @@ const nodeAndCommonJSRules = {
 			'done'
 		]
 	],
-	'global-require': ERROR,
-	'handle-callback-err': ERROR,
-	'no-mixed-requires': ERROR,
-	'no-new-require': ERROR,
-	'no-path-concat': ERROR,
-	'no-process-env': TRANSITION_WARNING,
-	'no-process-exit': ERROR,
-	'no-sync': ERROR
+	'node/global-require': ERROR,
+	'node/handle-callback-err': ERROR,
+	'node/no-missing-import': [
+		ERROR,
+		{tryExtensions: ['.js', '.jsx', '.ts', '.tsx']}
+	],
+	'node/no-mixed-requires': ERROR,
+	'node/no-new-require': ERROR,
+	'node/no-path-concat': ERROR,
+	'node/no-process-env': TRANSITION_WARNING,
+	'node/no-process-exit': ERROR,
+	'node/no-sync': ERROR,
+	'node/no-unpublished-import': IGNORE,
+	'node/no-unsupported-features/es-builtins': IGNORE,
+	'node/no-unsupported-features/es-syntax': IGNORE
 };
 
 // Agreement of all project leads needed before changing these.
@@ -303,6 +288,12 @@ const stylisticIssuesRules = {
 		TRANSITION_IGNORE,
 		15
 	],
+	'new-cap': [
+		ERROR,
+		{
+			capIsNew: false
+		}
+	],
 	'new-parens': ERROR,
 	'no-array-constructor': ERROR,
 	'no-bitwise': ERROR,
@@ -319,10 +310,8 @@ const stylisticIssuesRules = {
 	'no-trailing-spaces': ERROR,
 	'no-unneeded-ternary': ERROR,
 	'no-whitespace-before-property': ERROR,
-	'object-curly-newline': [
-		ERROR,
-		{consistent: true}
-	],
+	'object-curly-newline': ERROR,
+	'object-curly-spacing': ERROR,
 	'one-var': [
 		ERROR,
 		'never'
@@ -380,12 +369,7 @@ const ecmaScript6Rules = {
 			before: false
 		}
 	],
-	'no-confusing-arrow': [
-		ERROR,
-		{
-			allowParens: true
-		}
-	],
+	'no-confusing-arrow': ERROR,
 	'no-duplicate-imports': ERROR,
 	'no-useless-computed-key': ERROR,
 	'no-useless-constructor': ERROR,
@@ -409,20 +393,25 @@ const ecmaScript6Rules = {
 	'yield-star-spacing': ERROR
 };
 
-const babelRules = {
-	'babel/new-cap': [
+const typescriptRules = {
+	'@typescript-eslint/ban-types': TRANSITION_WARNING,
+	'@typescript-eslint/explicit-module-boundary-types': TRANSITION_IGNORE,
+	'@typescript-eslint/no-explicit-any': TRANSITION_IGNORE,
+	'@typescript-eslint/no-extra-parens': [
 		ERROR,
+		'all',
 		{
-			capIsNew: false
+			enforceForArrowConditionals: false,
+			ignoreJSX: 'multi-line',
+			nestedBinaryExpressions: false,
+			returnAssign: false
 		}
 	],
-	'babel/no-invalid-this': ERROR,
-	'babel/object-curly-spacing': ERROR,
-	'babel/semi': ERROR
-};
-
-const flowTypeRules = {
-	'flowtype/semi': ERROR
+	'@typescript-eslint/no-invalid-this': ERROR,
+	'@typescript-eslint/no-shadow': ERROR,
+	'@typescript-eslint/no-unused-vars': WARNING,
+	'@typescript-eslint/no-use-before-define': ERROR,
+	'@typescript-eslint/semi': ERROR
 };
 
 const reactRules = {
@@ -562,8 +551,7 @@ options.rules = Object.assign(
 	nodeAndCommonJSRules,
 	stylisticIssuesRules,
 	ecmaScript6Rules,
-	babelRules,
-	flowTypeRules,
+	typescriptRules,
 	reactRules,
 	es6ImportRules
 );

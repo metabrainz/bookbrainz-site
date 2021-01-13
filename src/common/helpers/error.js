@@ -140,7 +140,7 @@ export function getErrorToSend(err) {
 	 * instead and return a new generic SiteError
 	 */
 	_logError(err);
-	return new SiteError();
+	return new SiteError(err.message);
 }
 
 export function sendErrorAsJSON(res, err) {

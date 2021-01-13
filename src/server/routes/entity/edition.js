@@ -327,7 +327,8 @@ function editionToFormState(edition) {
 	const editionSection = {
 		depth: edition.depth,
 		editionGroup,
-		editionGroupRequired: true,
+		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions
+		editionGroupRequired: false,
 		editionGroupVisible: true,
 		format: edition.editionFormat && edition.editionFormat.id,
 		height: edition.height,

@@ -27,13 +27,13 @@ import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
-import bodyParser from 'body-parser';
 import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
 import git from 'git-rev';
 import initInflux from './influx';
+import logNode from 'log-node';
 import logger from 'morgan';
 import path from 'path';
 import redis from 'connect-redis';
@@ -43,7 +43,7 @@ import session from 'express-session';
 
 
 // Initialize log-to-stdout  writer
-require('log-node')();
+logNode();
 
 
 // Initialize application
@@ -60,20 +60,22 @@ if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
 }
 
-app.use(bodyParser.json({limit: '10mb'}));
-app.use(bodyParser.urlencoded({
+app.use(express.json({limit: '10mb'}));
+app.use(express.urlencoded({
 	extended: false
 }));
 app.use(compression());
 
 // Set up serving of static assets
 if (process.env.NODE_ENV === 'development') {
+	/* eslint-disable node/global-require, node/no-unpublished-require, @typescript-eslint/no-var-requires */
 	const webpack = require('webpack');
 	const webpackDevMiddleware = require('webpack-dev-middleware');
 	const webpackHotMiddleware = require('webpack-hot-middleware');
 
 	// eslint-disable-next-line import/no-dynamic-require
 	const webpackConfig = require(path.resolve(rootDir, './webpack.client'));
+	/* eslint-enable node/global-require, node/no-unpublished-require, @typescript-eslint/no-var-requires */
 	const compiler = webpack(webpackConfig);
 
 	app.use(webpackDevMiddleware(compiler, {

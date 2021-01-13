@@ -5,6 +5,7 @@ const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -12,6 +13,9 @@ const production = process.env.NODE_ENV === 'production';
 const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
+		collection: ['./controllers/collection/collection'],
+		'collection/create': ['./controllers/collection/userCollectionForm'],
+		collections: ['./controllers/collections'],
 		deletion: ['./controllers/deletion.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
@@ -25,7 +29,7 @@ const clientConfig = {
 		'editor/editor': ['./controllers/editor/editor.js'],
 		'entity/entity': ['./controllers/entity/entity.js'],
 		'entity-editor': ['./entity-editor/controller.js'],
-		'entity-merge': ['./entity-editor/entity-merge.js'],
+		'entity-merge': ['./entity-editor/entity-merge.tsx'],
 		style: './stylesheets/style.less'
 	},
 	output: {
@@ -42,21 +46,9 @@ const clientConfig = {
 	module: {
 		rules: [
 			{
-				enforce: 'pre',
-				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
-				use: [{
-					loader: 'eslint-loader',
-					options: {
-						cache: !production,
-						fix: !production
-					}
-				}]
-			},
-			{
 				// babel configuration in .babelrc file
 				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
+				test: /\.(js|jsx|ts|tsx)$/,
 				use: ['babel-loader']
 			},
 			{
@@ -135,8 +127,15 @@ const clientConfig = {
 		new WriteAssetsWebpackPlugin({
 			extension: ['js', 'css'],
 			force: true
+		}),
+		new ESLintPlugin({
+			extensions: ['.js', '.jsx', '.ts', '.tsx'],
+			fix: !production
 		})
 	],
+	resolve: {
+		extensions: ['.js', '.jsx', '.ts', '.tsx']
+	},
 	target: 'web'
 }
 
@@ -154,7 +153,7 @@ if (!production) {
 	if (process.env.BUNDLE_ANALYZER) {
 		clientConfig.plugins.push(new BundleAnalyzerPlugin());
 	}
-	
+
 	/* Add webpack HMR middleware to all entry files except for styles */
 	for (const entry in clientConfig.entry) {
 		if (Object.prototype.hasOwnProperty.call(clientConfig.entry, entry)) {
