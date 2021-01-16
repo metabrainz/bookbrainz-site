@@ -19,7 +19,8 @@
 
 import * as React from 'react';
 import {faCheck, faExclamationTriangle, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {IconDefinition, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import type {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 
 
 type OptionalBool = boolean | null | undefined;
