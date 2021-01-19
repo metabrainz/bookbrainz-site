@@ -27,6 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
+import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
 
 const {
@@ -110,7 +111,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 		editionGroupSection = (
 			<div className="margin-bottom-d15">
 				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
-					<FontAwesomeIcon icon="external-link-alt"/>
+					<FontAwesomeIcon icon={faExternalLinkAlt}/>
 					<span>&nbsp;See all similar editions</span>
 				</a>
 			</div>

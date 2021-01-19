@@ -18,6 +18,7 @@
 
 
 import * as bootstrap from 'react-bootstrap';
+import {faPlus, faSave, faTimes, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {trim, uniqBy} from 'lodash';
 import CustomInput from '../../input';
 import DeleteOrRemoveCollaborationModal from '../pages/parts/delete-or-remove-collaboration-modal';
@@ -240,7 +241,7 @@ class UserCollectionForm extends React.Component {
 											type="button"
 											onClick={() => this.handleRemoveCollaborator(index)}
 										>
-											<FontAwesomeIcon icon="times"/>&nbsp;Remove
+											<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
 										</Button>
 									);
 									return (
@@ -270,7 +271,7 @@ class UserCollectionForm extends React.Component {
 										type="button"
 										onClick={this.handleAddCollaborator}
 									>
-										<FontAwesomeIcon icon="plus"/>
+										<FontAwesomeIcon icon={faPlus}/>
 										&nbsp;Add another collaborator
 									</Button>
 								</div>
@@ -280,7 +281,7 @@ class UserCollectionForm extends React.Component {
 										bsStyle="success"
 										type="submit"
 									>
-										<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
+										<FontAwesomeIcon icon={faSave}/>&nbsp;{submitLabel}
 									</Button>
 								</div>
 								{
@@ -292,7 +293,7 @@ class UserCollectionForm extends React.Component {
 												type="button"
 												onClick={this.handleShowModal}
 											>
-												<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
+												<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
 											</Button>
 										</div> : null
 								}

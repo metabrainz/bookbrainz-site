@@ -78,14 +78,7 @@ if (process.env.NODE_ENV === 'development') {
 	/* eslint-enable node/global-require, node/no-unpublished-require, @typescript-eslint/no-var-requires */
 	const compiler = webpack(webpackConfig);
 
-	app.use(webpackDevMiddleware(compiler, {
-		// lazy: false,
-		logTime: true,
-		noInfo: false,
-		publicPath: webpackConfig.output.publicPath
-		// serverSideRender: false
-	}));
-
+	app.use(webpackDevMiddleware(compiler));
 	app.use(webpackHotMiddleware(compiler));
 }
 else {

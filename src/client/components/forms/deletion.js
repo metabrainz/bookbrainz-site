@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {faExclamationTriangle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import CustomInput from '../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
@@ -102,13 +103,13 @@ class EntityDeletionForm extends React.Component {
 					disabled={!hasNote}
 					type="submit"
 				>
-					<FontAwesomeIcon icon="trash-alt"/> Delete
+					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 				<Button
 					className="pull-right"
 					href={this.entityUrl}
 				>
-					<FontAwesomeIcon icon="times-circle"/> Cancel
+					<FontAwesomeIcon icon={faTimesCircle}/> Cancel
 				</Button>
 			</span>
 		);
@@ -141,7 +142,7 @@ class EntityDeletionForm extends React.Component {
 
 									<Alert bsStyle="warning">
 										<h4>
-											<FontAwesomeIcon icon="exclamation-triangle"/>&nbsp;
+											<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 											You’re about to delete the {entity.type} {entityName}.
 										</h4>
 										<p style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</p>

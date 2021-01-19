@@ -1,4 +1,5 @@
 import * as bootstrap from 'react-bootstrap';
+import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import CustomInput from '../../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -289,21 +290,21 @@ class AddToCollectionModal extends React.Component {
 								bsStyle="warning"
 								onClick={this.handleShowCollectionForm}
 							>
-								<FontAwesomeIcon icon="plus"/>
+								<FontAwesomeIcon icon={faPlus}/>
 								&nbsp;New collection
 							</Button>
 					}
 					{
 						this.state.showCollectionForm ?
 							<Button bsStyle="success" onClick={this.handleAddToNewCollection}>
-								<FontAwesomeIcon icon="plus"/> Add to new collection
+								<FontAwesomeIcon icon={faPlus}/> Add to new collection
 							</Button> :
 							<Button bsStyle="success" disabled={!this.state.collectionsAvailable.length} onClick={this.handleAddToCollection}>
-								<FontAwesomeIcon icon="plus"/>Add to selected collection{this.state.selectedCollections.length > 1 ? 's' : null}
+								<FontAwesomeIcon icon={faPlus}/>Add to selected collection{this.state.selectedCollections.length > 1 ? 's' : null}
 							</Button>
 					}
 					<Button bsStyle="danger" onClick={this.props.handleCloseModal}>
-						<FontAwesomeIcon icon="times"/> Close
+						<FontAwesomeIcon icon={faTimes}/> Close
 					</Button>
 				</Modal.Footer>
 			</Modal>

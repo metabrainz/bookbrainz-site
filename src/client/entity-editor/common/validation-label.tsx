@@ -18,25 +18,26 @@
 
 
 import * as React from 'react';
+import {faCheck, faExclamationTriangle, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import type {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 
 
 type OptionalBool = boolean | null | undefined;
-type Icon = 'times' | 'exclamation-triangle' | 'check';
-function icon(empty: OptionalBool, error: OptionalBool, warn: OptionalBool): Icon | null {
+function icon(empty: OptionalBool, error: OptionalBool, warn: OptionalBool): IconDefinition | null {
 	if (empty) {
 		return null;
 	}
 
 	if (error) {
-		return 'times';
+		return faTimes;
 	}
 
 	if (warn) {
-		return 'exclamation-triangle';
+		return faExclamationTriangle;
 	}
 
-	return 'check';
+	return faCheck;
 }
 
 type ContextualColor = 'text-danger' | 'text-warning' | 'text-success';

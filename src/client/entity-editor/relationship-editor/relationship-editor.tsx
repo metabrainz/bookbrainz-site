@@ -37,6 +37,7 @@ import type {
 	RelationshipWithLabel,
 	Relationship as _Relationship
 } from './types';
+import {faExternalLinkAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -300,7 +301,7 @@ class RelationshipModal
 				target="_blank"
 				title="Open in a new tab"
 			>
-				<FontAwesomeIcon icon="external-link-alt"/>
+				<FontAwesomeIcon icon={faExternalLinkAlt}/>
 			</Button>
 		);
 
@@ -423,7 +424,7 @@ class RelationshipModal
 						</Col>
 					</Row>
 					<Button bsStyle="danger" onClick={onCancel}>
-						<FontAwesomeIcon icon="times"/>
+						<FontAwesomeIcon icon={faTimes}/>
 						<span>&nbsp;Cancel</span>
 					</Button>
 					<Button
@@ -431,7 +432,7 @@ class RelationshipModal
 						disabled={submitDisabled}
 						onClick={this.handleAdd}
 					>
-						<FontAwesomeIcon icon="plus"/>
+						<FontAwesomeIcon icon={faPlus}/>
 						<span>&nbsp;Add</span>
 					</Button>
 				</Modal.Footer>

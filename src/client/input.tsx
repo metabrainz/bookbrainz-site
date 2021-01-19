@@ -6,6 +6,7 @@ import {ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, OverlayTrig
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 type Props = {
@@ -212,7 +213,7 @@ export default class Input extends React.Component<Props> {
 			>
 				<FontAwesomeIcon
 					className="margin-left-0-5"
-					icon="question-circle"
+					icon={faQuestionCircle}
 				/>
 			</OverlayTrigger>
 		);

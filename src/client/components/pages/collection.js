@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {faPencilAlt, faPlus, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
 import AuthorTable from './entities/author-table';
 import DeleteOrRemoveCollaborationModal from './parts/delete-or-remove-collaboration-modal';
@@ -272,7 +273,7 @@ class CollectionPage extends React.Component {
 								title={`Add ${this.props.collection.entityType}`}
 								onClick={this.handleShowAddEntityModal}
 							>
-								<FontAwesomeIcon icon="plus"/>
+								<FontAwesomeIcon icon={faPlus}/>
 								&nbsp;Add {_.lowerCase(this.props.collection.entityType)}
 							</Button> : null
 					}
@@ -285,7 +286,7 @@ class CollectionPage extends React.Component {
 								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
 								onClick={this.handleRemoveEntities}
 							>
-								<FontAwesomeIcon icon="times-circle"/>
+								<FontAwesomeIcon icon={faTimesCircle}/>
 								&nbsp;Remove <Badge>{this.state.selectedEntities.length}</Badge> selected&nbsp;
 								{_.kebabCase(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
 							</Button> : null
@@ -298,7 +299,7 @@ class CollectionPage extends React.Component {
 								href={`/collection/${this.props.collection.id}/edit`}
 								title="Edit Collection"
 							>
-								<FontAwesomeIcon icon="pencil-alt"/>&nbsp;Edit collection
+								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collection
 							</Button> : null
 					}
 					{
@@ -309,7 +310,7 @@ class CollectionPage extends React.Component {
 								title="Delete Collection"
 								onClick={this.handleShowDeleteModal}
 							>
-								<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
+								<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
 							</Button> : null
 					}
 					{
@@ -320,7 +321,7 @@ class CollectionPage extends React.Component {
 								title="Remove yourself as a collaborator"
 								onClick={this.handleShowDeleteModal}
 							>
-								<FontAwesomeIcon icon="times-circle"/>&nbsp;Stop collaboration
+								<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;Stop collaboration
 							</Button> : null
 					}
 				</div>

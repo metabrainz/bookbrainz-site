@@ -31,6 +31,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {isAliasEmpty} from '../helpers';
 
 
@@ -127,7 +128,7 @@ const AliasRow = ({
 					className="margin-top-d5"
 					onClick={onRemoveButtonClick}
 				>
-					<FontAwesomeIcon icon="times"/>
+					<FontAwesomeIcon icon={faTimes}/>
 					<span>&nbsp;Remove</span>
 				</Button>
 			</Col>

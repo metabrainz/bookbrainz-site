@@ -24,6 +24,7 @@ import CustomInput from '../../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
@@ -35,7 +36,7 @@ const SearchButton = (
 		bsStyle="success"
 		type="submit"
 	>
-		<FontAwesomeIcon icon="search"/>&nbsp;Search
+		<FontAwesomeIcon icon={faSearch}/>&nbsp;Search
 	</Button>
 );
 

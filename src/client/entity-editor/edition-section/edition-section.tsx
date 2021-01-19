@@ -38,6 +38,7 @@ import {
 import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
 import {DateObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
+import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
 	validateEditionSectionDepth,
 	validateEditionSectionEditionGroup,
@@ -234,7 +235,7 @@ function EditionSection({
 					// eslint-disable-next-line react/jsx-no-bind
 					onClick={onToggleShowEditionGroupSection.bind(this, false)}
 				>
-					<FontAwesomeIcon icon="clone"/>&nbsp;Automatically create an Edition Group
+					<FontAwesomeIcon icon={faClone}/>&nbsp;Automatically create an Edition Group
 				</Button>
 			</Col>
 		</React.Fragment>
@@ -263,7 +264,7 @@ function EditionSection({
 									// eslint-disable-next-line react/jsx-no-bind
 									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>
-									<FontAwesomeIcon icon="search"/>&nbsp;Search for an existing Edition Group
+									<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
 								</Button>
 							</Alert>
 						</Col> :
@@ -282,7 +283,7 @@ function EditionSection({
 							<small>
 								If no Edition Group is selected, a new one will be created automatically.
 								<br/>
-								Click on the <FontAwesomeIcon icon="external-link-alt"/> icon open in a new tab, and click an item to select.
+								Click on the <FontAwesomeIcon icon={faExternalLinkAlt}/> icon open in a new tab, and click an item to select.
 							</small>
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
