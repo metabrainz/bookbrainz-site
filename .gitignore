@@ -84,3 +84,6 @@ typings/
 
 # Visual Studio Code config files
 .vscode
+
+# Git revision file used in the website
+.git-revision

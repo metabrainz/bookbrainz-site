@@ -6,8 +6,7 @@ import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-// eslint-disable-next-line import/no-internal-modules
-import uuidv4 from 'uuid/v4';
+import {v4 as uuidv4} from 'uuid';
 
 
 chai.use(chaiHttp);
