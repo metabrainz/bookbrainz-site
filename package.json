@@ -22,12 +22,7 @@
     "test-cov": "npx nyc --reporter=text npm run test",
     "test-ci": "npx nyc --reporter=lcovonly --reporter=text-summary npm run test",
     "jsdoc": "npx jsdoc -r src",
-    "dupreport": "npx jsinspect src/ || true",
-    "precommit": "lint-staged",
-    "snyk-protect": "snyk protect"
-  },
-  "lint-staged": {
-    "*.js": "eslint --fix"
+    "dupreport": "npx jsinspect src/ || true"
   },
   "engines": {
     "node": ">= 10.13.0"
@@ -124,7 +119,6 @@
     "file-loader": "^6.2.0",
     "less": "^4.0.0",
     "less-loader": "^7.2.1",
-    "lint-staged": "^6.0.0",
     "mini-css-extract-plugin": "^1.3.3",
     "mocha": "^7.2.0",
     "nodemon": "^2.0.2",
