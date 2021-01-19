@@ -78,11 +78,7 @@ if (process.env.NODE_ENV === 'development') {
 	/* eslint-enable node/global-require, node/no-unpublished-require, @typescript-eslint/no-var-requires */
 	const compiler = webpack(webpackConfig);
 
-	app.use(webpackDevMiddleware(compiler, {
-		writeToDisk: true
-		// serverSideRender: false
-	}));
-
+	app.use(webpackDevMiddleware(compiler));
 	app.use(webpackHotMiddleware(compiler));
 }
 else {

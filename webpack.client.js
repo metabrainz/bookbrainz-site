@@ -12,9 +12,6 @@ const cleanWebpackPluginOpts = {
 	cleanOnceBeforeBuildPatterns: [
 		'js/**/*',
 		'stylesheets',
-		// Clean up hot-update files that are created by react-hot-loader and written to disk by WriteAssetsWebpackPlugin
-		// Working on a way for WriteAssetsWebpackPlugin to ignore .hot-update.js files but no luck so far.
-		'hot',
 		'!**/.keep'
 	]
 };
