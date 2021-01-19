@@ -173,10 +173,21 @@ function getInitState(
 	const targetEntity = _.get(initRelationship, ['targetEntity']);
 
 	const baseEntityBBID = _.get(baseEntity, ['bbid']);
-
 	const sourceEntityBBID = _.get(sourceEntity, ['bbid']);
-	const otherEntity = baseEntityBBID === sourceEntityBBID ?
-		targetEntity : sourceEntity;
+
+	const [otherEntity, thisEntity] = baseEntityBBID === sourceEntityBBID ?
+		[targetEntity, sourceEntity] : [sourceEntity, targetEntity];
+
+	/* If one of the entities is being created,
+	update that new entity's name to replace "New Entity" */
+	if (typeof baseEntityBBID === 'undefined') {
+		const defaultAliasPath = ['defaultAlias', 'name'];
+		const thisEntityName = _.get(thisEntity, defaultAliasPath);
+		const baseEntityName = _.get(baseEntity, defaultAliasPath);
+		if (thisEntityName !== baseEntityName) {
+			_.set(thisEntity, defaultAliasPath, baseEntityName);
+		}
+	}
 
 	const searchFormatOtherEntity = otherEntity && {
 		id: _.get(otherEntity, ['bbid']),
