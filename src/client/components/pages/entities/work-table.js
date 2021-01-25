@@ -54,7 +54,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 							onClick={() => onToggleRow(work.bbid)}
 						/> : null
 				}
-				<a href={`/Work/${work.bbid}`}>{name}</a>
+				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
 			<td>{languages}</td>
