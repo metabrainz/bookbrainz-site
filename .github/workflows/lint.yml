@@ -4,12 +4,12 @@ name: Lint
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push events for the master branch
   push:
-  # Disabling linting on pull requests until this issue is resolved:
-  # https://github.com/wearerequired/lint-action/issues/13
-  # pull_request:
-  #  branches: [ master ]
+    branches: [ master ]
+  # Triggers the workflow on pull request events in the context of the fork
+  # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
+  pull_request_target:
 
 jobs:
   run-linters:
