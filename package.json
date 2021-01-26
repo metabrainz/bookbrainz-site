@@ -29,7 +29,7 @@
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
-    "@babel/runtime": "^7.10.1",
+    "@babel/runtime": "^7.12.5",
     "@elastic/elasticsearch": "^5.6.22",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-brands-svg-icons": "^5.14.0",
