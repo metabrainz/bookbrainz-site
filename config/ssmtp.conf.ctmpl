@@ -1,0 +1,31 @@
+# /etc/ssmtp/ssmtp.conf
+
+# The user that gets all the mails (UID < 1000, usually the admin)
+root={{template "KEY" "mail/mail_to"}}
+
+# The mail server (where the mail is sent to)
+{{- with service (or (env "BB_SMTP_SERVICE") "default.exim-relay")}}
+{{- with index . 0}}
+mailhub={ '{{.Address}}:{{.Port}}' }
+{{- end}}
+{{- end}}
+
+
+# The address where the mail appears to come from for user authentication.
+rewriteDomain={{template "KEY" "mail/rewrite_domain"}}
+
+# The full hostname.  Must be correctly formed, fully qualified domain name or GMail will reject connection.
+hostname={{template "KEY" "mail/mail_from_domain"}}
+
+# Use SSL/TLS before starting negotiation
+# TLS_CA_FILE=/etc/ssl/certs/ca-certificates.crt
+# UseTLS=Yes
+# UseSTARTTLS=Yes
+
+# Username/Password
+# AuthUser=username
+# AuthPass=password
+# AuthMethod=LOGIN
+
+# Email 'From header's can override the default domain?
+FromLineOverride=yes

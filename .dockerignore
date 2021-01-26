@@ -2,6 +2,7 @@
 .github/
 config/*
 !config/config.json.ctmpl
+!config/ssmtp.conf.ctmpl
 data/
 flow-typed/
 lib/
