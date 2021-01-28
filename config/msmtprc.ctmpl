@@ -1,0 +1,20 @@
+# MSMTP main config file
+# put me in /etc/msmtprc
+
+defaults
+aliases /etc/aliases
+# Syslog logging with facility LOG_MAIL instead of the default LOG_USER
+syslog LOG_MAIL
+
+account admin
+{{- with service (or (env "BB_SMTP_SERVICE") "default.exim-relay")}}
+{{- with index . 0}}
+host {{.Address}}
+port {{.Port}}
+{{- end}}
+{{- end}}
+domain {{template "KEY" "mail/mail_from_domain"}}
+from {{template "KEY" "mail/mail_from_domain"}}
+
+# Set a default account
+account default : admin

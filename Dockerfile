@@ -10,7 +10,9 @@ ARG BUILD_DEPS=" \
 
 ARG RUN_DEPS=" \
     bzip2 \
-    rsync"
+    rsync \
+    msmtp \
+    msmtp-mta"
 
 
 RUN apt-get update && \

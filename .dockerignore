@@ -2,7 +2,8 @@
 .github/
 config/*
 !config/config.json.ctmpl
-!config/ssmtp.conf.ctmpl
+!config/msmtprc.ctmpl
+!config/aliases.ctmpl
 data/
 flow-typed/
 lib/
