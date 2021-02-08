@@ -55,7 +55,7 @@
     "lodash": "^4.17.20",
     "log": "^6.0.0",
     "log-node": "^7.0.0",
-    "morgan": "^1.9.1",
+    "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-musicbrainz-oauth2": "github:LordSputnik/passport-musicbrainz-oauth2",
     "prop-types": "^15.7.2",
