@@ -230,12 +230,12 @@ class UserCollectionForm extends React.Component {
 							/>
 							<h3><b>Collaborators</b></h3>
 							<div className="row margin-bottom-2">
-							<div className="col-sm-6 margin-top-d5">
-							<p className="help-block">
+								<div className="col-sm-6 margin-top-d5">
+									<p className="help-block">
 								Collaborators can add/remove entities from your collection
-							</p>
-							</div>
-							<div className="col-sm-6 margin-top-d5">
+									</p>
+								</div>
+								<div className="col-sm-6 margin-top-d5">
 									<Button
 										block
 										bsStyle="primary"
