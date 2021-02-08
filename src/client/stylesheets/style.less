@@ -20,10 +20,10 @@
 
 @import "./lobes/less/theme.less";
 
-@import "react-select/less/select.less";
-@import (less) "react-virtualized/styles.css";
-@import (less) "react-virtualized-select/styles.css";
-@import (less) "react-datepicker/dist/react-datepicker.css";
+@import "~react-select/less/select.less";
+@import "~react-virtualized/styles.css";
+@import "~react-virtualized-select/styles.css";
+@import "~react-datepicker/dist/react-datepicker.css";
 
 /* With Webpack and less-loader, we are able to import directly from node_modules directory
    Once we are using Webpack for dev AND prod builds, consider moving to taht style of imports */
@@ -71,6 +71,20 @@ body {
     body {
         margin-bottom: 128px;
     }
+}
+
+
+// We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
+.btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
+	.badge{
+		padding: 2px 6px;
+	}
+}
+
+// Buttons in Lobes overlap for some reason, which if opacity is reduced (disabled) will look quite bad
+.btn {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 
@@ -252,7 +266,7 @@ a.contact-text:visited {
 /* index.jade */
 /* ========== */
 #background-image {
-	background:url(/images/Bookshelf.jpg);
+	background:url(./Bookshelf.jpg);
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -441,10 +455,12 @@ hr.wide {
 .annotation-content {
 	white-space: pre-wrap;
 	position: relative;
-	min-height: 7em;
+	min-height: 3em;
+	margin: 0;
 	&.collapse{
+		max-height: max-content;
 		&:not(.in){ //, &.collapsing {
-			height: 7em !important;
+			max-height: 3em;
 			overflow: hidden;
 			display: block;
 			&:after {
@@ -519,3 +535,20 @@ hr.wide {
 .badge.new {
 	background-color: @green;
 }
+
+.label-checkbox {
+	padding: 0 .5em;
+	vertical-align: text-top;
+}
+
+.addToCollectionModal-body {
+	margin-right: 1em;
+	margin-left: 1em;
+}
+
+.checkboxes {
+	margin-right: 0.5em !important;;
+	vertical-align: text-top;
+}
+
+

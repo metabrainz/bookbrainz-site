@@ -20,7 +20,7 @@ TAG=${2:-beta}
 echo "Building BookBrainz image with env $ENV tag $TAG and docker build target bookbrainz-prod"
 docker build -t metabrainz/bookbrainz:$TAG \
         --target bookbrainz-prod \
-        --build-arg GIT_COMMIT_SHA=$(git rev-parse HEAD) \
+        --build-arg GIT_COMMIT_SHA=$(git rev-parse --short HEAD) \
         --build-arg DEPLOY_ENV=$ENV .
 RESULT=$?
 if [ $RESULT -eq 0 ]; then

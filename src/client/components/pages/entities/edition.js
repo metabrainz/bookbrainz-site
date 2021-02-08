@@ -27,6 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
+import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
 
 const {
@@ -100,7 +101,7 @@ EditionAttributes.propTypes = {
 };
 
 
-function EditionDisplayPage({entity, identifierTypes}) {
+function EditionDisplayPage({entity, identifierTypes, user}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -110,7 +111,7 @@ function EditionDisplayPage({entity, identifierTypes}) {
 		editionGroupSection = (
 			<div className="margin-bottom-d15">
 				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
-					<FontAwesomeIcon icon="external-link-alt"/>
+					<FontAwesomeIcon icon={faExternalLinkAlt}/>
 					<span>&nbsp;See all similar editions</span>
 				</a>
 			</div>
@@ -156,8 +157,10 @@ function EditionDisplayPage({entity, identifierTypes}) {
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
+				entityType={entity.type}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
+				user={user}
 			/>
 		</div>
 	);
@@ -165,7 +168,8 @@ function EditionDisplayPage({entity, identifierTypes}) {
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object.isRequired
 };
 EditionDisplayPage.defaultProps = {
 	identifierTypes: []

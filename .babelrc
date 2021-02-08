@@ -1,7 +1,6 @@
 {
   "plugins": [
     "lodash",
-    "@babel/plugin-transform-modules-commonjs",
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-transform-classes",
@@ -14,7 +13,7 @@
     ]
   ],
   "presets": [
-    "@babel/preset-flow",
+    "@babel/preset-typescript",
     "@babel/preset-react",
     ["@babel/preset-env", {
       "corejs": 3,

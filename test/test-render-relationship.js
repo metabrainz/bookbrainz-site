@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {expect} from 'chai';
-import renderRelationship from '../src/server/helpers/render.js';
+import renderRelationship from '../src/server/helpers/render';
 
 
 const relationshipTests = {

@@ -44,21 +44,23 @@
 	{{if eq (env "DEPLOY_ENV") "test"}}
 		{{if service "bookbrainz-elasticsearch-test"}}
 		{{with index (service "bookbrainz-elasticsearch-test") 0}}
-		"host": "{{.Address}}:{{.Port}}",
-		"httpAuth": "elastic:changeme",
-		"apiVersion": "5.5",
-		"maxRetries": -1,
-		"deadTimeout": 2000
+		"node": "http://{{.Address}}:{{.Port}}",
+		"auth": {
+			"username": "elastic",
+			"password": "changeme"
+		},
+		"requestTimeout": 30000
 		{{end}}
 		{{end}}
 	{{ else }}
 		{{if service "bookbrainz-elasticsearch"}}
 		{{with index (service "bookbrainz-elasticsearch") 0}}
-		"host": "{{.Address}}:{{.Port}}",
-		"httpAuth": "elastic:changeme",
-		"apiVersion": "5.5",
-		"maxRetries": -1,
-		"deadTimeout": 2000
+		"node": "http://{{.Address}}:{{.Port}}",
+		"auth": {
+			"username": "elastic",
+			"password": "changeme"
+		},
+		"requestTimeout": 30000
 		{{end}}
 		{{end}}
 	{{ end }}

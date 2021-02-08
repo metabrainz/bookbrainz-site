@@ -1,4 +1,4 @@
 exit: true
 recursive: true
-require: '@babel/register'
+require: '.babel-ts-register.js'
 timeout: 50000

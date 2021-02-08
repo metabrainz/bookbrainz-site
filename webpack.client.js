@@ -1,17 +1,28 @@
 const path = require('path');
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WriteAssetsWebpackPlugin = require('write-assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
+
+const cleanWebpackPluginOpts = {
+	cleanOnceBeforeBuildPatterns: [
+		'js/**/*',
+		'stylesheets',
+		'!**/.keep'
+	]
+};
 
 
 const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
+		collection: ['./controllers/collection/collection'],
+		'collection/create': ['./controllers/collection/userCollectionForm'],
+		collections: ['./controllers/collections'],
 		deletion: ['./controllers/deletion.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
@@ -25,8 +36,11 @@ const clientConfig = {
 		'editor/editor': ['./controllers/editor/editor.js'],
 		'entity/entity': ['./controllers/entity/entity.js'],
 		'entity-editor': ['./entity-editor/controller.js'],
-		'entity-merge': ['./entity-editor/entity-merge.js'],
+		'entity-merge': ['./entity-editor/entity-merge.tsx'],
 		style: './stylesheets/style.less'
+	},
+	externals: {
+		moment: 'moment'
 	},
 	output: {
 		/** Figure out how to use manifest to load the right chunkNamed file in src/server/templates/target.js */
@@ -34,48 +48,36 @@ const clientConfig = {
 		// filename: production ? 'js/[name].[chunkhash].js' : 'js/[name].js',
 		filename: 'js/[name].js',
 		path: path.resolve(__dirname, 'static'),
-		publicPath: '/static/',
-		hotUpdateChunkFilename: 'hot/[id].[hash].hot-update.js',
-    	hotUpdateMainFilename: 'hot/[hash].hot-update.json'
+		publicPath: '/'
 	},
 	mode: production ? 'production' : 'development',
 	module: {
 		rules: [
 			{
-				enforce: 'pre',
-				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
-				use: [{
-					loader: 'eslint-loader',
-					options: {
-						cache: !production,
-						fix: !production
-					}
-				}]
+				include: /node_modules/,
+				test: /\.(js|mjs)$/,
+				resolve: {
+					fullySpecified: false
+				}
 			},
 			{
 				// babel configuration in .babelrc file
-				exclude: /node_modules/,
-				test: /\.(js|jsx)$/,
+				include: path.resolve(__dirname, 'src'),
+				test: /\.(js|jsx|ts|tsx)$/,
 				use: ['babel-loader']
 			},
 			{
 				test: /\.(le|c)ss$/,
 				use: [
 					MiniCssExtractPlugin.loader,
-					{
-						loader: 'css-loader',
-						options: {
-							importLoaders: 2,
-							sourceMap: !production
-						}
-					},
-					'resolve-url-loader',
+					'css-loader',
 					{
 						loader: 'less-loader',
 						options: {
-							paths: [path.resolve(__dirname, 'node_modules', 'bootstrap', 'less')],
-							sourceMap: !production
+							lessOptions: {
+								math: 'always',
+								paths: [path.resolve(__dirname, 'node_modules', 'bootstrap', 'less')]
+							}
 						}
 					}
 				]
@@ -93,50 +95,33 @@ const clientConfig = {
 			},
 			{
 				test: /\.(jpg|jpeg|png|gif|svg)$/,
-				use: [{
-					loader: 'file-loader',
-					options: {
-						emitFile: false,
-						name: '[name].[ext]',
-						outputPath: 'images/',
-					}
-				}]
+				type: 'asset/resource',
+				generator: {
+					filename: 'images/[name][ext][query]'
+				}
 			}
 		]
 	},
 	optimization: {
 		splitChunks: {
-			cacheGroups: {
-				commons: {
-					chunks: 'all',
-					name: 'bundle',
-					test: /[\\/]node_modules[\\/]/
-				}
-			}
+			chunks: 'all',
+			name: 'bundle'
 		}
 	},
-	plugins:[
+	plugins: [
 		new MiniCssExtractPlugin({
-			// chunkFilename: 'stylesheets/[id].css',
-			filename: 'stylesheets/style.css'
+			filename: 'stylesheets/[name].css'
 		}),
-		new CleanWebpackPlugin(
-			[
-				'static/js',
-				'static/stylesheets',
-				// Clean up hot-update files that are created by react-hot-loader and written to disk by WriteAssetsWebpackPlugin
-				// Working on a way for WriteAssetsWebpackPlugin to ignore .hot-update.js files but no luck so far.
-				'static/hot'
-			],
-			{exclude:[".keep"]}
-		),
-		// Because of server-side rendering and the absence of a static html file we could modify with HtmlWebpackPlugin,
-		// we need the js files to exist on disk
-		new WriteAssetsWebpackPlugin({
-			extension: ['js', 'css'],
-			force: true
+		new CleanWebpackPlugin(cleanWebpackPluginOpts),
+		new ESLintPlugin({
+			extensions: ['.js', '.jsx', '.ts', '.tsx'],
+			files: path.resolve(__dirname, 'src'),
+			fix: !production,
 		})
 	],
+	resolve: {
+		extensions: ['.js', '.jsx', '.ts', '.tsx']
+	},
 	target: 'web'
 }
 
@@ -147,14 +132,13 @@ if (production) {
 if (!production) {
 	clientConfig.plugins = [
 		...clientConfig.plugins,
-		new webpack.NamedModulesPlugin(),
 		new webpack.HotModuleReplacementPlugin()
 	]
 
 	if (process.env.BUNDLE_ANALYZER) {
 		clientConfig.plugins.push(new BundleAnalyzerPlugin());
 	}
-	
+
 	/* Add webpack HMR middleware to all entry files except for styles */
 	for (const entry in clientConfig.entry) {
 		if (Object.prototype.hasOwnProperty.call(clientConfig.entry, entry)) {

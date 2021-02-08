@@ -21,6 +21,7 @@ import * as bootstrap from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faSlash} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Image} = bootstrap;
@@ -45,7 +46,7 @@ function EntityImage({backupIcon, deleted, imageUrl}) {
 					stack="1x"
 				/>,
 				<FontAwesomeIcon
-					icon="slash"
+					icon={faSlash}
 					key="deletedIcon"
 					size="5x"
 					stack="1x"
@@ -65,7 +66,7 @@ function EntityImage({backupIcon, deleted, imageUrl}) {
 
 EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
-	backupIcon: PropTypes.string.isRequired,
+	backupIcon: PropTypes.object.isRequired,
 	deleted: PropTypes.bool,
 	imageUrl: PropTypes.string
 };

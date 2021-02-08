@@ -108,7 +108,7 @@ describe('Lookup endpoints', () => {
 		expect(res.body.identifiers[0]).to.be.an('object');
 		expect(res.body.identifiers[0]).to.have.all.keys(
 			'type',
-			'value',
+			'value'
 		);
 		expect(res.body.identifiers[0].type).to.be.a('string');
 		expect(res.body.identifiers[0].value).to.be.a('string');

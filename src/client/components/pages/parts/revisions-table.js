@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Prabal Singh
+ * Copyright (C) 2020 Prabal Singh
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../h
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Table} = bootstrap;
@@ -80,7 +81,7 @@ function RevisionsTable(props) {
 														style={{marginLeft: '0.5em'}}
 													>
 														<FontAwesomeIcon
-															flip="vertical" icon="code-branch"
+															flip="vertical" icon={faCodeBranch}
 															transform="shrink-4"
 														/>
 													</span>

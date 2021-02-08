@@ -1,24 +1,29 @@
 import * as error from '../../../../src/common/helpers/error';
+
 import {
-	createAuthor, createEdition,
+	createAuthor,
+	createEdition,
 	createEditionGroup,
-	createEditor, createPublisher, createWork,
+	createEditor,
+	createPublisher,
+	createWork,
 	truncateEntities
 } from '../../../test-helpers/create-entities';
-import {date, random} from 'faker';
 import {
 	getAssociatedEntityRevisions,
 	getOrderedRevisionForEditorPage,
 	getOrderedRevisions,
 	getOrderedRevisionsForEntityPage
 } from '../../../../src/server/helpers/revisions';
+
 import chai from 'chai';
+import {date} from 'faker';
+import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
 
 const {expect} = chai;
-chai.use(require('chai-sorted'));
-
+chai.use(isSorted);
 
 const {
 	AuthorData, AuthorRevision, Revision, AliasSet,
@@ -36,7 +41,6 @@ describe('getOrderedRevisions', () => {
 		};
 		const promiseArray = [];
 		for (let id = 1; id <= 50; id++) {
-			revisionAttribs.id = random.number();
 			revisionAttribs.createdAt = date.recent();
 			promiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
@@ -110,19 +114,17 @@ describe('getAssociatedEntityRevisions', () => {
 
 	it('should return formatted revisions array after adding entity (1 revision with 1 entity revised)', async () => {
 		// here author is revised
-		const revisionId = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId})
+		const revision = await new Revision({authorId: editorJSON.id})
 			.save(null, {method: 'insert'});
-		const dataId = random.number();
 		// we can ignore other fields expect aliasSetId. We are interested in fetching alias only
-		await new AuthorData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new AuthorRevision({bbid: authorJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const authorData = await new AuthorData({aliasSetId}).save(null, {method: 'insert'});
+		await new AuthorRevision({bbid: authorJSON.bbid, dataId: authorData.id, id: revision.id}).save(null, {method: 'insert'});
 
 		const formattedRevision = [
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId
+				revisionId: revision.id
 			}
 		];
 		const revisionsWithEntities = await getAssociatedEntityRevisions(formattedRevision, orm);
@@ -134,31 +136,26 @@ describe('getAssociatedEntityRevisions', () => {
 
 	it('should return formatted revisions array after adding entities (1 revision with multiple (different type) entities revised)', async () => {
 		// here author, work, edition, editionGroup, publisher is revised
-		const revisionId = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId})
+		const revision = await new Revision({authorId: editorJSON.id})
 			.save(null, {method: 'insert'});
+		const revisionId = revision.id;
 
 		// We are interested in fetching alias only, we can ignore other fields.
 		// setting each entity's alias to author's alias
-		let dataId = random.number();
-		await new AuthorData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new AuthorRevision({bbid: authorJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const authorData = await new AuthorData({aliasSetId}).save(null, {method: 'insert'});
+		await new AuthorRevision({bbid: authorJSON.bbid, dataId: authorData.id, id: revisionId}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		await new EditionData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new EditionRevision({bbid: editionJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const editionData = await new EditionData({aliasSetId}).save(null, {method: 'insert'});
+		await new EditionRevision({bbid: editionJSON.bbid, dataId: editionData.id, id: revisionId}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		await new EditionGroupData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const editionGroupData = await new EditionGroupData({aliasSetId}).save(null, {method: 'insert'});
+		await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId: editionGroupData.id, id: revisionId}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		await new PublisherData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new PublisherRevision({bbid: publisherJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const publisherData = await new PublisherData({aliasSetId}).save(null, {method: 'insert'});
+		await new PublisherRevision({bbid: publisherJSON.bbid, dataId: publisherData.id, id: revisionId}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		await new WorkData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const workData = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
+		await new WorkRevision({bbid: workJSON.bbid, dataId: workData.id, id: revisionId}).save(null, {method: 'insert'});
 
 		const formattedRevision = [
 			{
@@ -182,19 +179,17 @@ describe('getAssociatedEntityRevisions', () => {
 		const work2 = await createWork();
 		const workJSON2 = work2.toJSON();
 
-		const revisionId = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId})
+		const revision = await new Revision({authorId: editorJSON.id})
 			.save(null, {method: 'insert'});
+		const revisionId = revision.id;
 
 		// We are interested in fetching alias only, we can ignore other fields.
 		// setting each entity's alias to author's alias
-		let dataId = random.number();
-		await new WorkData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const workData = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
+		await new WorkRevision({bbid: workJSON.bbid, dataId: workData.id, id: revisionId}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		await new WorkData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON2.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		const workData2 = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
+		await new WorkRevision({bbid: workJSON2.bbid, dataId: workData2.id, id: revisionId}).save(null, {method: 'insert'});
 
 		const formattedRevision = [
 			{
@@ -217,66 +212,57 @@ describe('getAssociatedEntityRevisions', () => {
 
 		// We are interested in fetching alias only, we can ignore other fields.
 		// setting each entity's alias to author's alias
-		let dataId = random.number();
-		const revisionId = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId})
+		const revision1 = await new Revision({authorId: editorJSON.id})
 			.save(null, {method: 'insert'});
-		await new AuthorData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new AuthorRevision({bbid: authorJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+		let data = await new AuthorData({aliasSetId}).save(null, {method: 'insert'});
+		await new AuthorRevision({bbid: authorJSON.bbid, dataId: data.id, id: revision1.id}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		const revisionId2 = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId2})
+		const revision2 = await new Revision({authorId: editorJSON.id})
 			.save(null, {method: 'insert'});
-		await new EditionData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new EditionRevision({bbid: editionJSON.bbid, dataId, id: revisionId2}).save(null, {method: 'insert'});
+		data = await new EditionData({aliasSetId}).save(null, {method: 'insert'});
+		await new EditionRevision({bbid: editionJSON.bbid, dataId: data.id, id: revision2.id}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		const revisionId3 = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId3})
-			.save(null, {method: 'insert'});
-		await new EditionGroupData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId, id: revisionId3}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		const revisionId4 = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId4})
+		const revision3 = await new Revision({authorId: editorJSON.id})
 			.save(null, {method: 'insert'});
-		await new PublisherData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new PublisherRevision({bbid: publisherJSON.bbid, dataId, id: revisionId4}).save(null, {method: 'insert'});
+		data = await new EditionGroupData({aliasSetId}).save(null, {method: 'insert'});
+		await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId: data.id, id: revision3.id}).save(null, {method: 'insert'});
 
-		dataId = random.number();
-		const revisionId5 = random.number();
-		await new Revision({authorId: editorJSON.id, id: revisionId5})
+		const revision4 = await new Revision({authorId: editorJSON.id})
 			.save(null, {method: 'insert'});
-		await new WorkData({aliasSetId, id: dataId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON.bbid, dataId, id: revisionId5}).save(null, {method: 'insert'});
+		data = await new PublisherData({aliasSetId}).save(null, {method: 'insert'});
+		await new PublisherRevision({bbid: publisherJSON.bbid, dataId: data.id, id: revision4.id}).save(null, {method: 'insert'});
+
+		const revision5 = await new Revision({authorId: editorJSON.id})
+			.save(null, {method: 'insert'});
+		data = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
+		await new WorkRevision({bbid: workJSON.bbid, dataId: data.id, id: revision5.id}).save(null, {method: 'insert'});
 
 		const formattedRevision = [
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId
+				revisionId: revision1.id
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revisionId2
+				revisionId: revision2.id
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revisionId3
+				revisionId: revision3.id
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revisionId4
+				revisionId: revision4.id
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revisionId5
+				revisionId: revision5.id
 			}
 		];
 		const revisionsWithEntities = await getAssociatedEntityRevisions(formattedRevision, orm);
@@ -302,7 +288,6 @@ describe('getOrderedRevisionForEditorPage', () => {
 		};
 		const promiseArray = [];
 		for (let i = 1; i <= 50; i++) {
-			revisionAttribs.id = random.number();
 			revisionAttribs.createdAt = date.recent();
 			promiseArray.push(
 				new Revision(revisionAttribs).save(null, {method: 'insert'})
@@ -358,7 +343,7 @@ describe('getOrderedRevisionForEditorPage', () => {
 	});
 
 	it('should throw an error for an invalid editor', async () => {
-		req.params.id = random.number();
+		req.params.id = '98765';
 		try {
 			await getOrderedRevisionForEditorPage(0, 10, req);
 		}
@@ -369,25 +354,22 @@ describe('getOrderedRevisionForEditorPage', () => {
 	});
 
 	it('should return sorted revisions with notes sorted according to "postedAt"', async () => {
-		const revisionID = random.number();
 		const editor = await createEditor();
 		const editorJSON2 = editor.toJSON();
-		await new Revision({
+		const revision = await new Revision({
 			authorId: editorJSON2.id,
-			createdAt: date.recent(),
-			id: revisionID
+			createdAt: date.recent()
 		}).save(null, {method: 'insert'});
 
 		const noteAttrib = {
 			authorId: editorJSON2.id,
 			content: 'note content',
-			revisionID
+			revisionId: revision.id
 		};
 
 		// Creating 10 notes for this new revision
 		const promiseArray = [];
 		for (let i = 1; i <= 10; i++) {
-			noteAttrib.id = random.number();
 			noteAttrib.postedAt = date.recent();
 			promiseArray.push(
 				new Note(noteAttrib).save(null, {method: 'insert'})
@@ -429,11 +411,9 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the author
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revisionId = random.number();
-			const dataId = random.number();
-			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
-			await new AuthorData({aliasSetId: authorJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
-			await new AuthorRevision({bbid: authorJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
+			const authorData = await new AuthorData({aliasSetId: authorJSON.aliasSetId}).save(null, {method: 'insert'});
+			await new AuthorRevision({bbid: authorJSON.bbid, dataId: authorData.id, id: revision.id}).save(null, {method: 'insert'});
 		}
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, AuthorRevision, authorJSON.bbid);
 
@@ -457,11 +437,9 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revisionId = random.number();
-			const dataId = random.number();
-			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
-			await new WorkData({aliasSetId: workJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
-			await new WorkRevision({bbid: workJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
+			const data = await new WorkData({aliasSetId: workJSON.aliasSetId}).save(null, {method: 'insert'});
+			await new WorkRevision({bbid: workJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
 		}
 
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, WorkRevision, workJSON.bbid);
@@ -486,11 +464,9 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revisionId = random.number();
-			const dataId = random.number();
-			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
-			await new EditionData({aliasSetId: editionJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
-			await new EditionRevision({bbid: editionJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
+			const data = await new EditionData({aliasSetId: editionJSON.aliasSetId}).save(null, {method: 'insert'});
+			await new EditionRevision({bbid: editionJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
 		}
 
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, EditionRevision, editionJSON.bbid);
@@ -515,11 +491,9 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the publisher
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revisionId = random.number();
-			const dataId = random.number();
-			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
-			await new PublisherData({aliasSetId: publisherJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
-			await new PublisherRevision({bbid: publisherJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
+			const data = await new PublisherData({aliasSetId: publisherJSON.aliasSetId}).save(null, {method: 'insert'});
+			await new PublisherRevision({bbid: publisherJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
 		}
 
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, PublisherRevision, publisherJSON.bbid);
@@ -544,11 +518,9 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the editionGroup
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revisionId = random.number();
-			const dataId = random.number();
-			await new Revision({authorId: editorJSON.id, createdAt: date.recent(), id: revisionId}).save(null, {method: 'insert'});
-			await new EditionGroupData({aliasSetId: editionGroupJSON.aliasSetId, id: dataId}).save(null, {method: 'insert'});
-			await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId, id: revisionId}).save(null, {method: 'insert'});
+			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
+			const data = await new EditionGroupData({aliasSetId: editionGroupJSON.aliasSetId}).save(null, {method: 'insert'});
+			await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
 		}
 
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, EditionGroupRevision, editionGroupJSON.bbid);
@@ -581,7 +553,6 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		// create 10 notes for the revision
 		const promiseArray = [];
 		for (let i = 1; i <= 10; i++) {
-			noteAttrib.id = random.number();
 			noteAttrib.postedAt = date.recent();
 			promiseArray.push(
 				new Note(noteAttrib).save(null, {method: 'insert'})

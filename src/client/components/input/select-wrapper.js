@@ -58,7 +58,7 @@ class SelectWrapper extends React.Component {
 		this.currentValue = newValue;
 
 		if (this.props.onChange) {
-			this.props.onChange(wangleID(newValue, this.props.idAttribute));
+			this.props.onChange(wangleID(newValue, this.props.idAttribute), this.props.name);
 		}
 	}
 
@@ -121,6 +121,7 @@ SelectWrapper.propTypes = {
 	labelAttribute: PropTypes.string.isRequired,
 	labelClassName: PropTypes.string,
 	multiple: PropTypes.bool,
+	name: PropTypes.string,
 	onChange: PropTypes.func,
 	value: PropTypes.oneOfType([
 		PropTypes.string,
@@ -134,6 +135,7 @@ SelectWrapper.defaultProps = {
 	label: null,
 	labelClassName: null,
 	multiple: false,
+	name: null,
 	onChange: null,
 	value: null,
 	wrapperClassName: null

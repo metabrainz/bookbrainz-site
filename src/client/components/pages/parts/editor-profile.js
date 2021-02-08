@@ -21,11 +21,14 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+import {faExternalLinkAlt, faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import {keys, values} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Line} from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 import React from 'react';
+/* eslint-disable-next-line import/no-unassigned-import,sort-imports -- import this after react-chartjs-2 */
+import 'chartjs-adapter-date-fns';
 
 
 const {Button, Col, Image, Row} = bootstrap;
@@ -54,9 +57,19 @@ class EditorProfileTab extends React.Component {
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {
 			musicbrainzAccount = (
-				<a href={`http://musicbrainz.org/user/${cachedMetabrainzName}`}>
-					{cachedMetabrainzName}
-				</a>
+				<span>
+					<a href={`http://musicbrainz.org/user/${cachedMetabrainzName}`}>
+						{cachedMetabrainzName}
+					</a>
+					&nbsp;(
+					<a
+						href={`http://musicbrainz.org/user/${cachedMetabrainzName}/contact`}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+					send email <FontAwesomeIcon icon={faExternalLinkAlt}/>
+					</a>)
+				</span>
 			);
 		}
 		else if (metabrainzUserId) {
@@ -79,7 +92,7 @@ class EditorProfileTab extends React.Component {
 								href="/editor/edit"
 								title="Edit basic editor info"
 							>
-								<FontAwesomeIcon icon="pencil-alt"/>{' '}Edit Profile
+								<FontAwesomeIcon icon={faPencilAlt}/>{' '}Edit Profile
 							</Button>
 						</small>
 					}

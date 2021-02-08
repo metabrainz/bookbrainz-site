@@ -17,9 +17,11 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {faCircle, faCommentDots, faComments, faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
+import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
 const {PageHeader} = bootstrap;
@@ -86,55 +88,55 @@ function AboutPage() {
 			>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
-					icon="circle"
+					icon={faCircle}
 				/>
 				<a className="contact-text" href="//webchat.freenode.net/?channels=#metabrainz">
 					<FontAwesomeIcon
 						className="contact-text"
-						icon="comment-dots"
+						icon={faCommentDots}
 						size="2x"
 					/>
 					IRC
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
-					icon="circle"
+					icon={faCircle}
 				/>
 				<a className="contact-text" href="//community.metabrainz.org/c/bookbrainz">
 					<FontAwesomeIcon
 						className="contact-text"
-						icon="comments"
+						icon={faComments}
 						size="2x"
 					/>
 					Forums
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
-					icon="circle"
+					icon={faCircle}
 				/>
 				<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
 					<FontAwesomeIcon
 						className="contact-text"
-						icon={['fab', 'twitter']}
+						icon={faTwitter}
 						size="2x"
 					/>
 					Twitter
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
-					icon="circle"
+					icon={faCircle}
 				/>
 				<a className="contact-text" href="mailto:bookbrainz@metabrainz.org">
 					<FontAwesomeIcon
 						className="contact-text"
-						icon="envelope"
+						icon={faEnvelope}
 						size="2x"
 					/>
 					Email
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
-					icon="circle"
+					icon={faCircle}
 				/>
 			</div>
 

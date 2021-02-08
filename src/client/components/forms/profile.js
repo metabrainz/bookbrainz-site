@@ -27,10 +27,9 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
 import SelectWrapper from '../input/select-wrapper';
-import request from 'superagent';
 
 
-const {Button, Col, Grid, Row} = bootstrap;
+const {Alert, Button, Col, Panel, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -40,50 +39,86 @@ class ProfileForm extends React.Component {
 		this.state = {
 			area: props.editor.area ?
 				props.editor.area : null,
+			areaId: props.editor.area ?
+				props.editor.area.id : null,
 			bio: props.editor.bio,
-			gender: props.editor.gender ?
-				props.editor.gender : null,
+			error: null,
+			genderId: props.editor.gender ?
+				props.editor.gender.id : null,
 			genders: props.genders,
 			name: props.editor.name,
+			titleId: props.editor.titleUnlockId,
 			titles: props.titles,
 			waiting: false
 		};
-
-		// React does not autobind non-React class methods
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.valid = this.valid.bind(this);
 	}
 
-	handleSubmit(evt) {
+	handleSubmit = async (evt) => {
 		evt.preventDefault();
 		if (!this.valid()) {
 			return;
 		}
-		const area = this.area.getValue();
-		const gender = this.gender.getValue();
-		const title = this.title && this.title.getValue();
-		const name = this.name.getValue().trim();
-		const bio = this.bio.getValue().trim();
+		if (!this.hasChanged()) {
+			return;
+		}
+		const {name, bio, areaId, titleId, genderId} = this.state;
 
 		const data = {
-			areaId: area ? parseInt(area, 10) : null,
-			bio,
-			genderId: gender ? parseInt(gender, 10) : null,
+			areaId,
+			bio: bio.trim(),
+			genderId,
 			id: this.props.editor.id,
-			name,
-			title
+			name: name.trim(),
+			title: titleId
 		};
-
-		request.post('/editor/edit/handler')
-			.send(data)
-			.then(() => {
-				window.location.href = `/editor/${this.props.editor.id}`;
+		this.setState({
+			waiting: true
+		});
+		try {
+			const response = await fetch('/editor/edit/handler', {
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8'
+				},
+				method: 'POST'
 			});
-	}
+			if (!response.ok) {
+				const {error} = await response.json();
+				throw new Error(error ?? response.statusText);
+			}
 
-	valid() {
-		return this.name.getValue();
-	}
+			window.location.href = `/editor/${this.props.editor.id}`;
+		}
+		catch (err) {
+			this.setState({
+				error: err,
+				waiting: false
+			});
+		}
+	};
+
+	valid = () => {
+		const {name} = this.state;
+		return Boolean(name?.length);
+	};
+
+	hasChanged = () => {
+		const {name, bio, areaId, titleId, genderId} = this.state;
+
+		return this.props.editor?.area.id !== areaId ||
+			this.props.editor?.bio !== bio ||
+			this.props.editor?.gender?.id !== genderId ||
+			this.props.editor?.name !== name ||
+			this.props.editor?.titleUnlockId !== titleId;
+	};
+
+	handleValueChange =(event) => {
+		this.setState({[event.target.name]: event.target.value});
+	};
+
+	handleSelectChange = (value, idAttribute) => {
+		this.setState({[idAttribute]: value});
+	};
 
 	render() {
 		const loadingElement =
@@ -97,86 +132,96 @@ class ProfileForm extends React.Component {
 			title.unlockId = unlock.id;
 			return title;
 		});
+		const {area, genderId, titleId, name, bio} = this.state;
 
-		const initialDisplayName = this.state.name;
-		const initialGender = this.state.gender ? this.state.gender.id : null;
-		const initialBio = this.state.bio;
-		const initialArea = injectDefaultAliasName(this.state.area);
+		const transformedArea = injectDefaultAliasName(area);
+
+		let errorComponent = null;
+		if (this.state.error) {
+			errorComponent =
+				<Alert bsStyle="danger">{this.state.error.message}</Alert>;
+		}
+
+		const hasChanged = this.hasChanged();
 
 		return (
-			<Grid>
-				<h1>Edit Profile</h1>
-				<Row>
-					<Col md={12}>
-						<p className="lead">Edit your public profile.</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col
-						id="profileForm"
-						md={6}
-						mdOffset={3}
-					>
-						<form
-							className="form-horizontal"
-							onSubmit={this.handleSubmit}
-						>
-							{loadingElement}
-							<CustomInput
-								defaultValue={initialDisplayName}
-								label="Display Name"
-								ref={(ref) => this.name = ref}
-								type="text"
-							/>
-							<CustomInput
-								defaultValue={initialBio}
-								label="Bio"
-								ref={(ref) => this.bio = ref}
-								type="textarea"
-							/>
-							{titleOptions.length > 0 &&
-								<SelectWrapper
-									base={ReactSelect}
-									idAttribute="unlockId"
-									instanceId="title"
-									label="Title"
-									labelAttribute="title"
-									options={titleOptions}
-									placeholder="Select title"
-									ref={(ref) => this.title = ref}
-								/>
-							}
-							<SearchSelect
-								defaultValue={initialArea}
-								label="Area"
-								placeholder="Select area..."
-								ref={(ref) => this.area = ref}
-								type="area"
-							/>
-							<SelectWrapper
-								base={ReactSelect}
-								defaultValue={initialGender}
-								idAttribute="id"
-								instanceId="gender"
-								label="Gender"
-								labelAttribute="name"
-								options={genderOptions}
-								placeholder="Select Gender"
-								ref={(ref) => this.gender = ref}
-							/>
-							<div className="form-group text-center">
-								<Button
-									bsSize="large"
-									bsStyle="primary"
-									type="submit"
-								>
-									Update!
-								</Button>
-							</div>
+			<div>
+				<Row className="margin-top-2">
+					{loadingElement}
+					<Col md={8} mdOffset={2}>
+						<form onSubmit={this.handleSubmit}>
+							<Panel>
+								<Panel.Heading>
+									<Panel.Title>
+										<span className="h3">Edit your public profile</span>
+									</Panel.Title>
+								</Panel.Heading>
+								<Panel.Body>
+									<CustomInput
+										defaultValue={name}
+										help="required"
+										label="Display Name"
+										name="name"
+										type="text"
+										validationState={this.valid() ? 'success' : 'error'}
+										onChange={this.handleValueChange}
+									/>
+									<CustomInput
+										defaultValue={bio}
+										label="Bio"
+										name="bio"
+										type="textarea"
+										onChange={this.handleValueChange}
+									/>
+									{titleOptions.length > 0 &&
+										<SelectWrapper
+											base={ReactSelect}
+											defaultValue={titleId}
+											idAttribute="unlockId"
+											instanceId="title"
+											label="Title"
+											labelAttribute="title"
+											name="titleId"
+											options={titleOptions}
+											placeholder="Select title"
+											onChange={this.handleSelectChange}
+										/>
+									}
+									<SearchSelect
+										defaultValue={transformedArea}
+										label="Area"
+										name="areaId"
+										placeholder="Select area..."
+										type="area"
+										onChange={this.handleSelectChange}
+									/>
+									<SelectWrapper
+										base={ReactSelect}
+										defaultValue={genderId}
+										idAttribute="id"
+										label="Gender"
+										labelAttribute="name"
+										name="genderId"
+										options={genderOptions}
+										placeholder="Select Gender"
+										onChange={this.handleSelectChange}
+									/>
+									{errorComponent}
+								</Panel.Body>
+								<Panel.Footer>
+									<Button
+										bsStyle="success"
+										disabled={!hasChanged}
+										type="submit"
+									>
+										Save changes
+									</Button>
+								</Panel.Footer>
+							</Panel>
 						</form>
 					</Col>
 				</Row>
-			</Grid>
+			</div>
 		);
 	}
 }

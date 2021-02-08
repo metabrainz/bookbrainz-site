@@ -21,11 +21,13 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {faCircle, faCommentDots, faComments, faEnvelope, faListUl, faSearch, faUser} from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
+import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
 const {Alert, Button, Col, Grid, Row} = bootstrap;
@@ -76,7 +78,7 @@ class IndexPage extends React.Component {
 													bsStyle="success"
 													type="submit"
 												>
-													<FontAwesomeIcon icon="search"/>
+													<FontAwesomeIcon icon={faSearch}/>
 												</Button>
 											</span>
 										</div>
@@ -122,55 +124,55 @@ class IndexPage extends React.Component {
 										>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
-												icon="circle"
+												icon={faCircle}
 											/>
 											<a className="contact-text" href="//webchat.freenode.net/?channels=#metabrainz">
 												<FontAwesomeIcon
 													className="contact-text"
-													icon="comment-dots"
+													icon={faCommentDots}
 													size="2x"
 												/>
 												IRC
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
-												icon="circle"
+												icon={faCircle}
 											/>
 											<a className="contact-text" href="//community.metabrainz.org/c/bookbrainz">
 												<FontAwesomeIcon
 													className="contact-text"
-													icon="comments"
+													icon={faComments}
 													size="2x"
 												/>
 												Forums
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
-												icon="circle"
+												icon={faCircle}
 											/>
 											<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
 												<FontAwesomeIcon
 													className="contact-text"
-													icon={['fab', 'twitter']}
+													icon={faTwitter}
 													size="2x"
 												/>
 												Twitter
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
-												icon="circle"
+												icon={faCircle}
 											/>
 											<a className="contact-text" href="mailto:bookbrainz@metabrainz.org">
 												<FontAwesomeIcon
 													className="contact-text"
-													icon="envelope"
+													icon={faEnvelope}
 													size="2x"
 												/>
 												Email
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
-												icon="circle"
+												icon={faCircle}
 											/>
 										</div>
 									</div>
@@ -214,7 +216,7 @@ class IndexPage extends React.Component {
 							bsStyle="primary"
 							href="/revisions"
 						>
-							<FontAwesomeIcon className="margin-right-0-5" icon="list-ul"/>
+							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
 							See all revisions
 						</Button>
 					</div>
@@ -229,7 +231,7 @@ class IndexPage extends React.Component {
 			<React.Fragment>
 				<Row>
 					<Col className="text-center margin-top-4" md={2}>
-						<FontAwesomeIcon icon="user" size="5x"/>
+						<FontAwesomeIcon icon={faUser} size="5x"/>
 					</Col>
 					<Col md={10}>
 						<h2>Join Us!</h2>

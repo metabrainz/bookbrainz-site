@@ -27,6 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
+import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 import request from 'superagent';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
@@ -230,7 +231,7 @@ class RevisionPage extends React.Component {
 									title="Merge revision"
 								>
 									<FontAwesomeIcon
-										flip="vertical" icon="code-branch"
+										flip="vertical" icon={faCodeBranch}
 										transform="shrink-4"
 									/>
 								</span>
@@ -263,6 +264,7 @@ class RevisionPage extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<CustomInput
+								autocomplete="off"
 								label="Add Note"
 								ref={(ref) => this.noteInput = ref}
 								rows="6"

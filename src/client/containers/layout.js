@@ -21,9 +21,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// eslint-disable-next-line import/no-unassigned-import
-import '../helpers/setupIconLibrary';
 import * as bootstrap from 'react-bootstrap';
+import {
+	faChartLine, faGripVertical, faInfo, faListUl, faPlus, faQuestionCircle, faSearch, faSignInAlt, faSignOutAlt, faUserCircle
+} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
@@ -99,14 +100,14 @@ class Layout extends React.Component {
 		 */
 		const createDropdownTitle = (
 			<span>
-				<FontAwesomeIcon icon="plus"/>
+				<FontAwesomeIcon icon={faPlus}/>
 				{'  Add'}
 			</span>
 		);
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesomeIcon icon="user-circle"/>
+				<FontAwesomeIcon icon={faUserCircle}/>
 				{`  ${user.name}`}
 			</span>
 		);
@@ -157,11 +158,11 @@ class Layout extends React.Component {
 							onMouseDown={this.handleMouseDown}
 						>
 							<MenuItem href={`/editor/${user.id}`}>
-								<FontAwesomeIcon fixedWidth icon="info"/>
+								<FontAwesomeIcon fixedWidth icon={faInfo}/>
 								{' Profile'}
 							</MenuItem>
 							<MenuItem {...disableSignUp} href="/logout">
-								<FontAwesomeIcon fixedWidth icon="sign-out-alt"/>
+								<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
 								{' Sign Out'}
 							</MenuItem>
 						</NavDropdown>
@@ -169,26 +170,32 @@ class Layout extends React.Component {
 				) : (
 					<Nav pullRight>
 						<NavItem {...disableSignUp} href="/auth">
-							<FontAwesomeIcon icon="sign-in-alt"/>
+							<FontAwesomeIcon icon={faSignInAlt}/>
 							{' Sign In / Register'}
 						</NavItem>
 					</Nav>
 				)}
 				<Nav pullRight>
 					<NavItem href="/help">
-						<FontAwesomeIcon icon="question-circle"/>
+						<FontAwesomeIcon icon={faQuestionCircle}/>
 						{' Help '}
 					</NavItem>
 				</Nav>
 				<Nav pullRight>
 					<NavItem href="/statistics">
-						<FontAwesomeIcon icon="chart-line"/>
+						<FontAwesomeIcon icon={faChartLine}/>
 						{' Statistics '}
 					</NavItem>
 				</Nav>
 				<Nav pullRight>
+					<NavItem href="/collections">
+						<FontAwesomeIcon icon={faGripVertical}/>
+						{' Collections '}
+					</NavItem>
+				</Nav>
+				<Nav pullRight>
 					<NavItem href="/revisions">
-						<FontAwesomeIcon icon="list-ul"/>
+						<FontAwesomeIcon icon={faListUl}/>
 						{' Revisions '}
 					</NavItem>
 				</Nav>
@@ -211,7 +218,7 @@ class Layout extends React.Component {
 										className="btn btn-success"
 										type="submit"
 									>
-										<FontAwesomeIcon icon="search"/>
+										<FontAwesomeIcon icon={faSearch}/>
 									</button>
 								</span>
 							</div>
