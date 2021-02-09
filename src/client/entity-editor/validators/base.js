@@ -36,6 +36,17 @@ export function get(
 	return _.get(object, path, defaultValue);
 }
 
+export function getIn(
+	object: any,
+	path: string,
+	defaultValue: ?mixed = null
+): mixed {
+	if (Iterable.isIterable(object)) {
+		return object.getIn(path, defaultValue);
+	}
+	return _.get(object, path, defaultValue);
+}
+
 export function absentAndRequired(value: any, required: ?boolean): boolean {
 	return Boolean(required && _.isNil(value));
 }
