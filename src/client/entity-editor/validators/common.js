@@ -20,6 +20,7 @@
 
 import {
 	get,
+	getIn,
 	validateOptionalString,
 	validatePositiveInteger,
 	validateRequiredString,
@@ -179,7 +180,7 @@ export function validateSubmissionSection(
 }
 
 export function validateAuthorCreditRow(row: any): boolean {
-	return validateUUID(get(row, 'author.id', null), true) &&
+	return validateUUID(getIn(row, ['author', 'id'], null), true) &&
 	validateRequiredString(get(row, 'name', null)) &&
 	validateOptionalString(get(row, 'joinPhrase', null));
 }
