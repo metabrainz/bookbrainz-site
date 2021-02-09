@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+import {faCodeBranch, faGripVertical, faHistory, faPencilAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
 import AddToCollectionModal from '../parts/add-to-collection-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -105,14 +106,14 @@ class EntityFooter extends React.Component {
 								href={`${this.props.entityUrl}/edit`}
 								title="Edit Entity"
 							>
-								<FontAwesomeIcon icon="pencil-alt"/>&nbsp;Edit
+								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit
 							</Button>
 							<Button
 								bsStyle="primary"
 								href={`${this.props.entityUrl}/revisions`}
 								title="Revision History"
 							>
-								<FontAwesomeIcon icon="history"/>&nbsp;History
+								<FontAwesomeIcon icon={faHistory}/>&nbsp;History
 							</Button>
 							<Button
 								bsStyle="danger"
@@ -120,14 +121,14 @@ class EntityFooter extends React.Component {
 								href={`${this.props.entityUrl}/delete`}
 								title="Delete Entity"
 							>
-								<FontAwesomeIcon icon="times"/>&nbsp;Delete
+								<FontAwesomeIcon icon={faTimes}/>&nbsp;Delete
 							</Button>
 							<Button
 								bsStyle="default"
 								href={`/merge/add/${this.props.bbid}`}
 								title="Select entity for merging"
 							>
-								<FontAwesomeIcon flip="vertical" icon="code-branch"/>
+								<FontAwesomeIcon flip="vertical" icon={faCodeBranch}/>
 								&nbsp;Merge
 							</Button>
 							<Button
@@ -136,7 +137,7 @@ class EntityFooter extends React.Component {
 								title="Add To Collection"
 								onClick={this.handleShowModal}
 							>
-								<FontAwesomeIcon icon="grip-vertical"/>
+								<FontAwesomeIcon icon={faGripVertical}/>
 								&nbsp;Add to collection
 							</Button>
 						</ButtonGroup>

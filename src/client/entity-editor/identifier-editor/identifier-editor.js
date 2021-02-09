@@ -18,6 +18,7 @@
 
 import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierRow from './identifier-row';
@@ -66,7 +67,7 @@ const IdentifierEditor = ({
 		>
 			<FontAwesomeIcon
 				className="fa-sm"
-				icon="question-circle"
+				icon={faQuestionCircle}
 			/>
 		</OverlayTrigger>
 	);
@@ -98,7 +99,7 @@ const IdentifierEditor = ({
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
 						<Button bsStyle="success" onClick={onAddIdentifier}>
-							<FontAwesomeIcon icon="plus"/>
+							<FontAwesomeIcon icon={faPlus}/>
 							<span>&nbsp;Add identifier</span>
 						</Button>
 					</Col>

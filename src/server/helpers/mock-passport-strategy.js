@@ -23,14 +23,13 @@ StrategyMock.prototype.authenticate = function authenticate(req) {
 			id: this.userId
 		};
 
-		const self = this;
 		req.user = user;
 		this.verify(user, (err, resident) => {
 			if (err) {
-				self.fail(err);
+				this.fail(err);
 			}
 			else {
-				self.success(resident);
+				this.success(resident);
 			}
 		});
 	}

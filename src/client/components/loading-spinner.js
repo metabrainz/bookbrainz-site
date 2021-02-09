@@ -19,6 +19,7 @@
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
+import {faCircleNotch} from '@fortawesome/free-solid-svg-icons';
 
 
 function LoadingSpinner() {
@@ -27,7 +28,7 @@ function LoadingSpinner() {
 			<FontAwesomeIcon
 				spin
 				className="loading-spinner"
-				icon="circle-notch"
+				icon={faCircleNotch}
 				size="2x"
 			/>
 		</div>

@@ -134,16 +134,28 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			.catch(Editor.NotFoundError, () => {
 				throw new error.NotFoundError('Editor not found', req);
 			});
-
+		if (editor.get('areaId') === req.body.areaId &&
+			editor.get('bio') === req.body.bio &&
+			editor.get('name') === req.body.name &&
+			editor.get('titleUnlockId') === req.body.title
+		) {
+			throw new error.FormSubmissionError('No change to the profile');
+		}
 		// Modify the user to match the updates from the form
-		const titleID = _.get(req.body, 'title', null);
 		const modifiedEditor = await editor
-			.set('bio', req.body.bio)
-			.set('areaId', req.body.areaId)
-			.set('genderId', req.body.genderId)
-			.set('name', req.body.name)
-			.set('titleUnlockId', titleID)
-			.save();
+			.save({
+				areaId: req.body.areaId,
+				bio: req.body.bio,
+				genderId: req.body.genderId,
+				name: req.body.name,
+				titleUnlockId: req.body.title
+			})
+			.catch(err => {
+				if (err.constraint === 'editor_name_key') {
+					throw new error.ConflictError('Name already in use');
+				}
+				throw new error.FormSubmissionError();
+			});
 
 		const editorJSON = modifiedEditor.toJSON();
 		return {

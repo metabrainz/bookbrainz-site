@@ -22,6 +22,7 @@ import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../h
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Table} = bootstrap;
@@ -80,7 +81,7 @@ function RevisionsTable(props) {
 														style={{marginLeft: '0.5em'}}
 													>
 														<FontAwesomeIcon
-															flip="vertical" icon="code-branch"
+															flip="vertical" icon={faCodeBranch}
 															transform="shrink-4"
 														/>
 													</span>

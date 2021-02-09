@@ -1,15 +1,16 @@
 FROM metabrainz/node:10 as bookbrainz-base
 
 ARG DEPLOY_ENV
+ARG GIT_COMMIT_SHA
 
 ARG BUILD_DEPS=" \
     build-essential \
-    git \
     python-dev \
     libpq-dev"
 
 ARG RUN_DEPS=" \
     bzip2 \
+    git \
     rsync"
 
 
@@ -26,11 +27,17 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
     && rm -rf /var/lib/apt/lists/*
 
+# Clean up files that aren't needed for production
+RUN apt-get remove -y $BUILD_DEPS && \
+    apt-get autoremove -y
+    
 RUN useradd --create-home --shell /bin/bash bookbrainz
 
 ARG BB_ROOT=/home/bookbrainz/bookbrainz-site
 WORKDIR $BB_ROOT
 RUN chown bookbrainz:bookbrainz $BB_ROOT
+
+RUN echo $GIT_COMMIT_SHA > .git-version
 
 # Files necessary to complete the JavaScript build
 COPY scripts/ scripts/
@@ -42,10 +49,6 @@ COPY package.json ./
 COPY package-lock.json ./
 
 RUN npm install --no-audit
-
-# Clean up files that aren't needed for production
-RUN apt-get remove -y $BUILD_DEPS && \
-    apt-get autoremove -y
 
 COPY static/ static/
 COPY config/ config/
@@ -85,6 +88,7 @@ RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookb
 
 # Build JS project and assets
 RUN ["npm", "run", "build"]
+RUN ["npm", "prune", "--production"]
 
 # API target
 FROM bookbrainz-base as bookbrainz-webservice
@@ -101,3 +105,4 @@ RUN chmod 755 /etc/service/webserver/run
 RUN touch /etc/service/webserver/down
 # Build API JS
 RUN ["npm", "run", "build-api-js"]
+RUN ["npm", "prune", "--production"]

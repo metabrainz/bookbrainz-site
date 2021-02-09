@@ -11,7 +11,10 @@
 
 # react-hot-loader files
 /static/hot
-/static/**/*.hot-update.js
+*.hot-update.js
+*.hot-update.json
+/static/**/*.jpg
+/static/**/*.svg
 
 ### Node ###
 # Logs
@@ -81,3 +84,6 @@ typings/
 
 # Visual Studio Code config files
 .vscode
+
+# Git revision file used in the website
+.git-revision

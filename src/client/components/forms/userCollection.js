@@ -18,6 +18,7 @@
 
 
 import * as bootstrap from 'react-bootstrap';
+import {faPlus, faSave, faTimes, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {trim, uniqBy} from 'lodash';
 import CustomInput from '../../input';
 import DeleteOrRemoveCollaborationModal from '../pages/parts/delete-or-remove-collaboration-modal';
@@ -240,7 +241,7 @@ class UserCollectionForm extends React.Component {
 											type="button"
 											onClick={() => this.handleRemoveCollaborator(index)}
 										>
-											<FontAwesomeIcon icon="times"/>&nbsp;Remove
+											<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
 										</Button>
 									);
 									return (
@@ -262,30 +263,39 @@ class UserCollectionForm extends React.Component {
 							<div className={errorAlertClass}>
 								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
-							<div className="text-center">
-								<Button
-									bsStyle="primary"
-									type="button"
-									onClick={this.handleAddCollaborator}
-								>
-									<FontAwesomeIcon icon="plus"/>
-									&nbsp;Add another collaborator
-								</Button>
-								<Button
-									bsStyle="success"
-									type="submit"
-								>
-									<FontAwesomeIcon icon="save"/>&nbsp;{submitLabel}
-								</Button>
+							<div className="row margin-bottom-2">
+								<div className="col-sm-6 margin-top-d5">
+									<Button
+										block
+										bsStyle="primary"
+										type="button"
+										onClick={this.handleAddCollaborator}
+									>
+										<FontAwesomeIcon icon={faPlus}/>
+										&nbsp;Add another collaborator
+									</Button>
+								</div>
+								<div className="col-sm-6 margin-top-d5">
+									<Button
+										block
+										bsStyle="success"
+										type="submit"
+									>
+										<FontAwesomeIcon icon={faSave}/>&nbsp;{submitLabel}
+									</Button>
+								</div>
 								{
 									this.props.collection.id ?
-										<Button
-											bsStyle="danger"
-											type="button"
-											onClick={this.handleShowModal}
-										>
-											<FontAwesomeIcon icon="trash-alt"/>&nbsp;Delete collection
-										</Button> : null
+										<div className="col-sm-6 margin-top-d5">
+											<Button
+												block
+												bsStyle="danger"
+												type="button"
+												onClick={this.handleShowModal}
+											>
+												<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
+											</Button>
+										</div> : null
 								}
 							</div>
 						</form>

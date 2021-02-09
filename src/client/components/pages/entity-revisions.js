@@ -104,7 +104,8 @@ EntityRevisions.displayName = 'EntityRevisions';
 EntityRevisions.propTypes = {
 	entity: PropTypes.shape({
 		defaultAlias: PropTypes.object,
-		disambiguation: PropTypes.object
+		disambiguation: PropTypes.object,
+		type: PropTypes.string
 	}).isRequired,
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,

@@ -20,6 +20,8 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import {faBook, faPlus} from '@fortawesome/free-solid-svg-icons';
+
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -129,7 +131,7 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 						className="margin-top-d15"
 						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 					>
-						<FontAwesomeIcon icon="plus"/>
+						<FontAwesomeIcon icon={faPlus}/>
 						{'  Add Edition'}
 					</Button>
 				}
@@ -144,7 +146,7 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 						bsStyle="success"
 						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 					>
-						<FontAwesomeIcon icon="book" size="2x"/>
+						<FontAwesomeIcon icon={faBook} size="2x"/>
 						<br/>
 						Add Edition
 					</Button>
