@@ -17,8 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
@@ -47,14 +45,24 @@ const additionalEditionProps = [
 	'formatId', 'statusId'
 ];
 
+type AuthorT = {
+	value: string,
+	id: number
+};
+
 type AuthorCreditEditorT = {
-	author: object,
+	author: AuthorT,
 	joinPhrase: string,
 	name: string
 };
 
+type PassportRequest = express.Request & {
+	user: any,
+	session: any
+};
+
 function constructAuthorCredit(
-	authorCreditEditor: {[string]: AuthorCreditEditorT}
+	authorCreditEditor: Record<string,AuthorCreditEditorT>
 ) {
 	return _.map(
 		authorCreditEditor,
@@ -148,7 +156,7 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	(req, res, next) => {
+	(req:PassportRequest, res, next) => {
 		const {EditionGroup, Publisher, Work} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
 			'edition', req, res, {}
@@ -253,36 +261,37 @@ function _setEditionTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
 		'Edition',
+		// @ts-ignore
 		utils.template`Edition “${'name'}”`
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, (req:PassportRequest, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/revisions', (req, res, next) => {
+router.get('/:bbid/revisions', (req:PassportRequest, res, next) => {
 	const {EditionRevision} = req.app.locals.orm;
 	_setEditionTitle(res);
 	entityRoutes.displayRevisions(req, res, next, EditionRevision);
 });
 
-router.get('/:bbid/revisions/revisions', (req, res, next) => {
+router.get('/:bbid/revisions/revisions', (req:PassportRequest, res, next) => {
 	const {EditionRevision} = req.app.locals.orm;
 	_setEditionTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, EditionRevision);
 });
 
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req:PassportRequest, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
+	(req:PassportRequest, res) => {
 		const {orm} = req.app.locals;
 		const {EditionHeader, EditionRevision} = orm;
 		return entityRoutes.handleDelete(
@@ -395,7 +404,7 @@ function editionToFormState(edition) {
 		}
 	));
 
-	const optionalSections = {};
+	const optionalSections:any = {};
 	if (edition.annotation) {
 		optionalSections.annotationSection = edition.annotation;
 	}
@@ -417,7 +426,7 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
-	(req, res) => {
+	(req:PassportRequest, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'edition', req, res, {}, editionToFormState
 		));

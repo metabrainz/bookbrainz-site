@@ -17,7 +17,6 @@
  */
 /* eslint-disable no-console */
 
-// @flow
 
 export const ADD_AUTHOR_CREDIT_ROW = 'ADD_AUTHOR_CREDIT_ROW';
 export const REMOVE_AUTHOR_CREDIT_ROW = 'REMOVE_AUTHOR_CREDIT_ROW';
@@ -30,7 +29,7 @@ export const REMOVE_EMPTY_CREDIT_ROWS = 'REMOVE_EMPTY_CREDIT_ROWS';
 
 export type Action = {
 	type: string,
-	payload?: mixed
+	payload?: unknown
 };
 
 export type Author = {

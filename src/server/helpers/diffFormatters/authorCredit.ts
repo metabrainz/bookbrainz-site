@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import * as base from './base';
 import * as set from './set';
 
@@ -26,7 +24,7 @@ type AuthorCreditNameT = {
 	author_bbid: string,
 	joinPhrase: string,
 	name: string,
-	position: Number,
+	position: number,
 };
 
 

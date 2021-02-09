@@ -16,18 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
 
 import {
-	type Action,
-	type Author,
 	removeAuthorCreditRow,
 	updateCreditAuthorValue,
 	updateCreditDisplayValue,
 	updateCreditJoinPhraseValue
 } from './actions';
+import type {Action, Author} from './actions';
+import type {Dispatch} from 'redux';
 import {Button, Col, Row} from 'react-bootstrap';
-
 import CustomInput from '../../input';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -46,10 +44,10 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onAuthorChange: (Author) => mixed,
-	onJoinPhraseChange: (string) => mixed,
-	onNameChange: (string) => mixed,
-	onRemoveButtonClick: () => mixed
+	onAuthorChange: (Author) => unknown,
+	onJoinPhraseChange: (string) => unknown,
+	onNameChange: (string) => unknown,
+	onRemoveButtonClick: () => unknown
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -151,8 +149,8 @@ function mapDispatchToProps(
 ): DispatchProps {
 	return {
 		onAuthorChange: (value) => dispatch(updateCreditAuthorValue(index, value)),
-		onJoinPhraseChange: (event: SyntheticInputEvent<>) => dispatch(updateCreditJoinPhraseValue(index, event.target.value)),
-		onNameChange: (event: SyntheticInputEvent<>) => dispatch(updateCreditDisplayValue(index, event.target.value)),
+		onJoinPhraseChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(updateCreditJoinPhraseValue(index, event.target.value)),
+		onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(updateCreditDisplayValue(index, event.target.value)),
 		onRemoveButtonClick: () => dispatch(removeAuthorCreditRow(index))
 	};
 }

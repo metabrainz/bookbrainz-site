@@ -16,14 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-// @flow
-
 import {
-	type Action,
 	hideAuthorCreditEditor,
 	removeEmptyCreditRows,
 	showAuthorCreditEditor
 } from './actions';
+import type {Action, Author} from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
 import {keys as _keys, map as _map} from 'lodash';
 
@@ -38,18 +36,23 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {validateAuthorCreditSection} from '../validators/common';
 
+type AuthorCredit = {
+	name: string,
+	joinPhrase: string,
+	author: Author
+}
 
 type OwnProps = {
 };
 
 type StateProps = {
-	authorCredit: Object,
+	authorCredit: Record<string,AuthorCredit>,
 	showEditor: boolean,
 };
 
 type DispatchProps = {
-	onEditAuthorCredit: () => mixed,
-	onEditorClose: () => mixed,
+	onEditAuthorCredit: () => unknown,
+	onEditorClose: () => unknown,
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -68,7 +71,7 @@ function AuthorCreditSection({
 	}
 	const authorCreditPreview = _map(authorCredit, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const noAuthorCredit = _keys(authorCredit).length <= 0;
-	const isValid = validateAuthorCreditSection(authorCredit);
+	const isValid = validateAuthorCreditSection([authorCredit]);
 
 	const editButton = (
 		<Button bsStyle="success" onClick={onEditAuthorCredit}>
@@ -85,7 +88,7 @@ function AuthorCreditSection({
 	return (
 		<Row className="margin-bottom-2">
 			{editor}
-			<Col md={6} mdOffset={3}>
+			<Col mdOffset={3}>
 				<CustomInput
 					readOnly
 					buttonAfter={editButton}

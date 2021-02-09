@@ -101,6 +101,8 @@ type OwnProps = {
 type OptionalNumber = number | null | undefined;
 type OptionalBool = boolean| null | undefined;
 type StateProps = {
+	authorCreditValue: Map<string, any>,
+	authorValue: Map<string, any>,
 	depthValue: OptionalNumber,
 	formatValue: OptionalNumber,
 	heightValue: OptionalNumber,
