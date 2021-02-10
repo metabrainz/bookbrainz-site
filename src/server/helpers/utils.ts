@@ -85,10 +85,7 @@ export function filterIdentifierTypesByEntity(
  * from the newly passed in object.
  */
 type templateFuncType = (values: {[propName: string]: string}) => string;
-export function template(strings: Array<string>): templateFuncType {
-	// eslint-disable-next-line prefer-reflect, prefer-rest-params
-	const keys = Array.prototype.slice.call(arguments, 1);
-
+export function template(strings: TemplateStringsArray, ...keys: Array<string>): templateFuncType {
 	return (values): string => {
 		const result = [strings[0]];
 

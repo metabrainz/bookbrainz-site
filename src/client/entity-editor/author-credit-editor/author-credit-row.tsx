@@ -16,17 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import {
+	Action,
+	Author,
 	removeAuthorCreditRow,
 	updateCreditAuthorValue,
 	updateCreditDisplayValue,
 	updateCreditJoinPhraseValue
 } from './actions';
-import type {Action, Author} from './actions';
-import type {Dispatch} from 'redux';
 import {Button, Col, Row} from 'react-bootstrap';
+
 import CustomInput from '../../input';
+import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';

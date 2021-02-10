@@ -62,7 +62,7 @@ type PassportRequest = express.Request & {
 };
 
 function constructAuthorCredit(
-	authorCreditEditor: Record<string,AuthorCreditEditorT>
+	authorCreditEditor: Record<string, AuthorCreditEditorT>
 ) {
 	return _.map(
 		authorCreditEditor,
@@ -261,7 +261,6 @@ function _setEditionTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
 		'Edition',
-		// @ts-ignore
 		utils.template`Edition “${'name'}”`
 	);
 }

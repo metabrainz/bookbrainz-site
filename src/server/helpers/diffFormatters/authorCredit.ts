@@ -21,7 +21,7 @@ import * as set from './set';
 
 
 type AuthorCreditNameT = {
-	author_bbid: string,
+	authorBbid: string,
 	joinPhrase: string,
 	name: string,
 	position: number,

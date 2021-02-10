@@ -17,11 +17,12 @@
  */
 
 import {
+	Action,
+	Author,
 	hideAuthorCreditEditor,
 	removeEmptyCreditRows,
 	showAuthorCreditEditor
 } from './actions';
-import type {Action, Author} from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
 import {keys as _keys, map as _map} from 'lodash';
 
@@ -36,17 +37,18 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {validateAuthorCreditSection} from '../validators/common';
 
+
 type AuthorCredit = {
 	name: string,
 	joinPhrase: string,
 	author: Author
-}
+};
 
 type OwnProps = {
 };
 
 type StateProps = {
-	authorCredit: Record<string,AuthorCredit>,
+	authorCredit: Record<string, AuthorCredit>,
 	showEditor: boolean,
 };
 
