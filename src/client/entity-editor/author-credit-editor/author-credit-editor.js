@@ -28,6 +28,7 @@ import {keys as _keys} from 'lodash';
 import {addAuthorCreditRow} from './actions';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Container component. The AuthorCreditEditor component contains a number of
@@ -84,7 +85,7 @@ const AuthorCreditEditor = ({
 		</Modal.Body>
 		<Modal.Footer>
 			<Button bsStyle="success" onClick={onAddAuthorCreditRow}>
-				<FontAwesomeIcon icon="plus"/>
+				<FontAwesomeIcon icon={faPlus}/>
 				&nbsp;Add another author
 			</Button>
 			<Button bsStyle="warning" onClick={onClose}>Close</Button>

@@ -35,6 +35,7 @@ import React from 'react';
 import ValidationLabel from '../common/validation-label';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import {validateAuthorCreditSection} from '../validators/common';
 
 
@@ -77,7 +78,7 @@ function AuthorCreditSection({
 
 	const editButton = (
 		<Button bsStyle="success" onClick={onEditAuthorCredit}>
-			<FontAwesomeIcon icon="pencil-alt"/>
+			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);
 

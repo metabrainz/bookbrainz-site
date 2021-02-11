@@ -32,6 +32,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import {connect} from 'react-redux';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 type OwnProps = {
@@ -124,7 +125,7 @@ function AuthorCreditRow({
 						className="margin-top-d18"
 						onClick={onRemoveButtonClick}
 					>
-						<FontAwesomeIcon icon="times"/>
+						<FontAwesomeIcon icon={faTimes}/>
 						&nbsp;Remove
 					</Button>
 				</Col>
