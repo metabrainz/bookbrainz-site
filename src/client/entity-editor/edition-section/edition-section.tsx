@@ -101,8 +101,6 @@ type OwnProps = {
 type OptionalNumber = number | null | undefined;
 type OptionalBool = boolean| null | undefined;
 type StateProps = {
-	authorCreditValue: Map<string, any>,
-	authorValue: Map<string, any>,
 	depthValue: OptionalNumber,
 	formatValue: OptionalNumber,
 	heightValue: OptionalNumber,
@@ -439,8 +437,6 @@ function mapStateToProps(rootState: RootState): StateProps {
 	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
 
 	return {
-		authorCreditValue: state.get('authorCredit'),
-		authorValue: state.get('author'),
 		depthValue: state.get('depth'),
 		editionGroupRequired: state.get('editionGroupRequired'),
 		editionGroupValue: state.get('editionGroup'),

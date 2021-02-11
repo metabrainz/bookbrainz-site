@@ -24,7 +24,7 @@ import {
 	showAuthorCreditEditor
 } from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
-import {keys as _keys, map as _map} from 'lodash';
+import {keys as _keys, map as _map, values as _values} from 'lodash';
 
 import AuthorCreditEditor from './author-credit-editor';
 import CustomInput from '../../input';
@@ -42,14 +42,17 @@ import {validateAuthorCreditSection} from '../validators/common';
 type AuthorCredit = {
 	name: string,
 	joinPhrase: string,
-	author: Author
+	author: Author,
+	authorBBID: string,
+	position: number,
+	authorCreditID?: number
 };
 
 type OwnProps = {
 };
 
 type StateProps = {
-	authorCredit: Record<string, AuthorCredit>,
+	authorCreditEditor: Record<string, AuthorCredit>,
 	showEditor: boolean,
 };
 
@@ -61,7 +64,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
-	authorCredit, onEditAuthorCredit, onEditorClose, showEditor
+	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor
 }: Props) {
 	let editor;
 	if (showEditor) {
@@ -72,9 +75,11 @@ function AuthorCreditSection({
 			/>
 		);
 	}
-	const authorCreditPreview = _map(authorCredit, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
-	const noAuthorCredit = _keys(authorCredit).length <= 0;
-	const isValid = validateAuthorCreditSection([authorCredit]);
+	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
+	const authorCreditRows = _values(authorCreditEditor);
+	const noAuthorCredit = authorCreditRows.length <= 0;
+	
+	const isValid = !noAuthorCredit && validateAuthorCreditSection(authorCreditRows);
 
 	const editButton = (
 		<Button bsStyle="success" onClick={onEditAuthorCredit}>
@@ -98,7 +103,7 @@ function AuthorCreditSection({
 					label={label}
 					placeholder="No Author Credit yet, click edit to add one"
 					tooltipText="Names of the Authors as they appear on the book cover"
-					validationState={noAuthorCredit || !isValid ? 'error' : null}
+					validationState={!isValid ? 'error' : 'success'}
 					value={authorCreditPreview}
 				/>
 			</Col>
@@ -106,15 +111,14 @@ function AuthorCreditSection({
 	);
 }
 
-AuthorCreditSection.displayName = 'AuthorCreditSection';
 AuthorCreditSection.propTypes = {
-	authorCredit: PropTypes.object.isRequired,
+	authorCreditEditor: PropTypes.object.isRequired,
 	showEditor: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(rootState): StateProps {
 	return {
-		authorCredit: convertMapToObject(rootState.get('authorCreditEditor')),
+		authorCreditEditor: convertMapToObject(rootState.get('authorCreditEditor')),
 		showEditor: rootState.getIn(['editionSection', 'authorCreditEditorVisible'])
 	};
 }

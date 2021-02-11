@@ -186,5 +186,5 @@ export function validateAuthorCreditRow(row: any): boolean {
 
 export const validateAuthorCreditSection = _.partial(
 	validateMultiple, _.partial.placeholder,
-	validateAuthorCreditRow, _.partial.placeholder
+	validateAuthorCreditRow
 );
