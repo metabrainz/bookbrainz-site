@@ -140,9 +140,19 @@ function entitiesToFormState(entities: any[]) {
 	}, '');
 	const annotationSection = {content: annotations};
 
+
+	const authorCredits = entities.reduce((returnValue, entity) => {
+		if (entity.authorCredit) {
+			return returnValue.concat(entity.authorCredit);
+		}
+		return returnValue;
+	}, []);
+	const authorCredit = authorCredits.length ? authorCredits[0] : null;
+
 	const props = {
 		aliasEditor,
 		annotationSection,
+		authorCredit,
 		identifierEditor,
 		nameSection,
 		relationshipSection

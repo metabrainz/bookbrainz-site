@@ -30,6 +30,7 @@ import WorkSectionMerge from './work-section/work-section-merge';
 import aliasEditorReducer from './alias-editor/reducer';
 import annotationSectionReducer from './annotation-section/reducer';
 import authorCreditEditorReducer from './author-credit-editor/reducer';
+import authorCreditMergeReducer from './author-credit-editor/merge-reducer';
 import authorSectionReducer from './author-section/reducer';
 import buttonBarReducer from './button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
@@ -118,7 +119,7 @@ function entityHasAuthorCredits(entityType: string): boolean {
 	return entityType === 'edition' || entityType === 'editionGroup';
 }
 
-export function createRootReducer(entityType: string) {
+export function createRootReducer(entityType: string, isMerge = false) {
 	const entityReducerKey = getEntitySectionReducerName(entityType);
 	const entityReducer = getEntitySectionReducer(entityType);
 
@@ -135,6 +136,9 @@ export function createRootReducer(entityType: string) {
 
 	if (entityHasAuthorCredits(entityType)) {
 		reducers.authorCreditEditor = authorCreditEditorReducer;
+	}
+	if (isMerge) {
+		reducers.authorCredit = authorCreditMergeReducer;
 	}
 
 	return combineReducers(reducers);

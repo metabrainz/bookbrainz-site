@@ -50,8 +50,8 @@ const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const {initialState, ...rest} = props;
 
-
-const rootReducer = createRootReducer(props.entityType);
+const isMerge = Boolean(props.mergingEntities);
+const rootReducer = createRootReducer(props.entityType, isMerge);
 const debouncer = createDebounce({keystroke: KEYSTROKE_DEBOUNCE_TIME});
 const composeEnhancers = shouldDevToolsBeInjected() ?
 	window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
@@ -59,7 +59,7 @@ const composeEnhancers = shouldDevToolsBeInjected() ?
 const getEntityEditor = () => {
 	let Editor;
 	let EntitySection;
-	if (props.mergingEntities) {
+	if (isMerge) {
 		EntitySection = getEntitySectionMerge(props.entityType);
 		Editor = EntityMerge;
 	}

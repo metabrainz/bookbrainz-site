@@ -26,13 +26,12 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
-	updateAuthorCredit,
 	updateEditionGroup,
 	updateFormat,
 	updatePublisher,
 	updateStatus
 } from './actions';
-import {AuthorCredit} from '../author-credit-editor/actions';
+import {AuthorCredit, updateAuthorCredit} from '../author-credit-editor/actions';
 import type {List, Map} from 'immutable';
 import {authorCreditToSelectOption, entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
@@ -46,6 +45,7 @@ import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+
 
 type LanguageOption = {
 	name: string,
@@ -178,7 +178,7 @@ function EditionSectionMerge({
 		if (editionGroupOption && !_.find(editionGroupOptions, ['value.id', editionGroupOption.value.id])) {
 			editionGroupOptions.push(editionGroupOption);
 		}
-		
+
 		const authorCredit = authorCreditToSelectOption(entity.authorCredit);
 		if (authorCredit && !_.find(authorCreditOptions, ['value', authorCredit.value])) {
 			authorCreditOptions.push(authorCredit);
@@ -309,9 +309,10 @@ EditionSectionMerge.displayName = 'EditionSectionMerge';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
+	const authorCredit: Map<string, any> = rootState.get('authorCredit');
 
 	return {
-		authorCreditValue: convertMapToObject(state.get('authorCredit')),
+		authorCreditValue: convertMapToObject(authorCredit),
 		depthValue: state.get('depth'),
 		editionGroupValue: convertMapToObject(state.get('editionGroup')),
 		formatValue: state.get('format'),
@@ -328,8 +329,8 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onAuthorCreditChange : (value:AuthorCredit)=> {
-			dispatch(updateAuthorCredit(value))
+		onAuthorCreditChange: (selectedAuthorCredit:AuthorCredit) => {
+			dispatch(updateAuthorCredit(selectedAuthorCredit));
 		},
 		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
 			event.target.value ? parseInt(event.target.value, 10) : null

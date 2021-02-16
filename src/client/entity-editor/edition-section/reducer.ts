@@ -24,7 +24,6 @@ import {
 	Action,
 	SHOW_PHYSICAL,
 	TOGGLE_SHOW_EDITION_GROUP,
-	UPDATE_AUTHOR_CREDIT,
 	UPDATE_DEPTH,
 	UPDATE_EDITION_GROUP,
 	UPDATE_FORMAT,
@@ -92,12 +91,6 @@ function reducer(
 				return state.set('matchingNameEditionGroups', []);
 			}
 			return state.set('matchingNameEditionGroups', payload);
-		// This action is used for the merging page,
-		// where users select an existing author credit
-		// rather than go through the authorCreditEditor
-		case UPDATE_AUTHOR_CREDIT:
-			return state.set('authorCredit', payload);
-		// no default
 	}
 	return state;
 }

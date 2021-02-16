@@ -26,6 +26,7 @@ export const UPDATE_CREDIT_JOIN_PHRASE_VALUE = 'UPDATE_CREDIT_JOIN_PHRASE_VALUE'
 export const SHOW_AUTHOR_CREDIT_EDITOR = 'SHOW_AUTHOR_CREDIT_EDITOR';
 export const HIDE_AUTHOR_CREDIT_EDITOR = 'HIDE_AUTHOR_CREDIT_EDITOR';
 export const REMOVE_EMPTY_CREDIT_ROWS = 'REMOVE_EMPTY_CREDIT_ROWS';
+export const UPDATE_AUTHOR_CREDIT = 'UPDATE_AUTHOR_CREDIT';
 
 
 export type Action = {
@@ -49,7 +50,7 @@ type AuthorCreditRow = {
 export type AuthorCredit = {
 	authorCount: number,
 	beginPhrase: string,
-	names: Array<Map<string,AuthorCreditRow>>,
+	names: Array<Map<string, AuthorCreditRow>>,
 	id: number,
 };
 
@@ -176,5 +177,19 @@ export function hideAuthorCreditEditor(): Action {
 export function removeEmptyCreditRows(): Action {
 	return {
 		type: REMOVE_EMPTY_CREDIT_ROWS
+	};
+}
+
+/**
+ * Produces an action indicating an existing Author Credit has been selected.
+ * Used only on the Edition merge page
+ *
+ * @param {number} authorCredit - The selected existing Author Credit
+ * @returns {Action} The resulting UPDATE_AUTHOR_CREDIT action.
+ */
+export function updateAuthorCredit(authorCredit: AuthorCredit): Action {
+	return {
+		payload: authorCredit,
+		type: UPDATE_AUTHOR_CREDIT
 	};
 }
