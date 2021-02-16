@@ -31,10 +31,11 @@ import {
 	updatePublisher,
 	updateStatus
 } from './actions';
-
+import {AuthorCredit} from '../author-credit-editor/actions';
 import type {List, Map} from 'immutable';
-import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
+import {authorCreditToSelectOption, entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
+import AuthorCreditDisplay from '../../components/author-credit-display';
 import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
@@ -45,21 +46,18 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 
-
 type LanguageOption = {
 	name: string,
 	id: number
 };
 
-type Publisher = {
+type Option = {
 	value: string,
 	id: number
 };
 
-type EditionGroup = {
-	value: string,
-	id: number
-};
+type Publisher = Option;
+type EditionGroup = Option;
 
 type OwnProps = {
 	mergingEntities: any[]
@@ -67,6 +65,7 @@ type OwnProps = {
 
 type OptionalNumber = number | null | undefined;
 type StateProps = {
+	authorCreditValue: Record<string, unknown>
 	depthValue: OptionalNumber,
 	formatValue: OptionalNumber,
 	heightValue: OptionalNumber,
@@ -130,6 +129,7 @@ type Props = OwnProps & StateProps & DispatchProps;
  * @returns {ReactElement} React element containing the rendered EditionSectionMerge.
  */
 function EditionSectionMerge({
+	authorCreditValue,
 	depthValue,
 	formatValue,
 	heightValue,
@@ -154,6 +154,7 @@ function EditionSectionMerge({
 	widthValue
 }: Props) {
 	const editionGroupOptions = [];
+	const authorCreditOptions = [];
 	const releaseDateOptions = [];
 	const depthOptions = [];
 	const formatOptions = [];
@@ -174,6 +175,12 @@ function EditionSectionMerge({
 		if (editionGroupOption && !_.find(editionGroupOptions, ['value.id', editionGroupOption.value.id])) {
 			editionGroupOptions.push(editionGroupOption);
 		}
+		
+		const authorCredit = authorCreditToSelectOption(entity.authorCredit);
+		if (authorCredit && !_.find(authorCreditOptions, ['value', authorCredit.value])) {
+			authorCreditOptions.push(authorCredit);
+		}
+
 		const format = entity.editionFormat && {label: entity.editionFormat.label, value: entity.editionFormat.id};
 		if (format && !_.find(formatOptions, ['value', format.value])) {
 			formatOptions.push(format);
@@ -209,8 +216,14 @@ function EditionSectionMerge({
 			widthOptions.push(width);
 		}
 	});
+
 	return (
 		<form>
+			<MergeField
+				currentValue={authorCreditToSelectOption(authorCreditValue)}
+				label="Author Credit"
+				options={authorCreditOptions}
+			/>
 			<MergeField
 				currentValue={editionGroupValue}
 				label="Edition Group"
@@ -294,6 +307,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
 
 	return {
+		authorCreditValue: convertMapToObject(state.get('authorCredit')),
 		depthValue: state.get('depth'),
 		editionGroupValue: convertMapToObject(state.get('editionGroup')),
 		formatValue: state.get('format'),

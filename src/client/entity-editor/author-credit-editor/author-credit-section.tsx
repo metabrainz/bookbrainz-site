@@ -18,7 +18,7 @@
 
 import {
 	Action,
-	Author,
+	AuthorCredit,
 	hideAuthorCreditEditor,
 	removeEmptyCreditRows,
 	showAuthorCreditEditor
@@ -37,16 +37,6 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import {validateAuthorCreditSection} from '../validators/common';
-
-
-type AuthorCredit = {
-	name: string,
-	joinPhrase: string,
-	author: Author,
-	authorBBID: string,
-	position: number,
-	authorCreditID?: number
-};
 
 type OwnProps = {
 };

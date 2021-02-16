@@ -27,6 +27,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
 import {dateObjectToISOString} from './utils';
+import AuthorCreditDisplay from '../components/author-credit-display';
 
 
 export function extractAttribute(attr, path) {
@@ -212,6 +213,15 @@ export function getEditionPublishers(edition) {
 	}
 
 	return '?';
+}
+
+export function authorCreditToSelectOption(authorCredit) {
+	if (authorCredit) {
+		const {names, id} = authorCredit;
+		return {label: <AuthorCreditDisplay names={names}/>, value: authorCredit}
+	}
+
+	return null;
 }
 
 export function getEntityDisambiguation(entity) {

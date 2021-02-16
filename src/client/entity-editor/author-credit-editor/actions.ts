@@ -27,6 +27,7 @@ export const SHOW_AUTHOR_CREDIT_EDITOR = 'SHOW_AUTHOR_CREDIT_EDITOR';
 export const HIDE_AUTHOR_CREDIT_EDITOR = 'HIDE_AUTHOR_CREDIT_EDITOR';
 export const REMOVE_EMPTY_CREDIT_ROWS = 'REMOVE_EMPTY_CREDIT_ROWS';
 
+
 export type Action = {
 	type: string,
 	payload?: unknown
@@ -35,6 +36,21 @@ export type Action = {
 export type Author = {
 	value: string,
 	id: number
+};
+
+type AuthorCreditRow = {
+	name: string,
+	joinPhrase: string,
+	author: Author,
+	authorBBID: string,
+	position: number,
+	authohrCreditID: number
+};
+export type AuthorCredit = {
+	authorCount: number,
+	beginPhrase: string,
+	names: Array<Map<string,AuthorCreditRow>>,
+	id: number,
 };
 
 let nextAuthorCreditRowId = 0;

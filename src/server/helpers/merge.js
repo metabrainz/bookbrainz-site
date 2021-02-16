@@ -19,6 +19,7 @@ export function getEntityFetchPropertiesByType(entityType) {
 			return ['authorType', 'beginArea', 'endArea', 'gender'];
 		case 'Edition':
 			return [
+				'authorCredit.names.author.defaultAlias',
 				'editionGroup.defaultAlias',
 				'languageSet.languages',
 				'editionFormat',
@@ -106,6 +107,7 @@ function getAuthorEntityMergeSection(entities) {
 function getEditionEntityMergeSection(entities) {
 	const editionSection = {};
 	entities.forEach(entity => {
+		assignIfNotSet(editionSection, 'authorCredit', entity);
 		assignIfNotSet(editionSection, 'depth', entity);
 		assignIfNotSet(editionSection, 'editionGroup', entity);
 		assignIfNotSet(editionSection, 'format', entity, 'editionFormat.id');
