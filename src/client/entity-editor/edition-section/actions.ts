@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+import type {AuthorCredit} from '../author-credit-editor/actions';
 
 type LanguageOption = {
 	name: string,
@@ -38,7 +38,7 @@ export type Action = {
 	meta?: Record<string, unknown>
 };
 
-
+export const UPDATE_AUTHOR_CREDIT = 'UPDATE_AUTHOR_CREDIT';
 export const UPDATE_EDITION_GROUP = 'UPDATE_EDITION_GROUP';
 export const UPDATE_PUBLISHER = 'UPDATE_PUBLISHER';
 export const UPDATE_RELEASE_DATE = 'UPDATE_RELEASE_DATE';
@@ -250,5 +250,20 @@ export function debouncedUpdateDepth(value: number | null | undefined): Action {
 		meta: {debounce: 'keystroke'},
 		payload: value,
 		type: UPDATE_DEPTH
+	};
+}
+
+
+/**
+ * Produces an action indicating an existing Author Credit has been selected.
+ * Used only on the Edition merge page
+ *
+ * @param {number} authorCredit - The selected existing Author Credit
+ * @returns {Action} The resulting UPDATE_AUTHOR_CREDIT action.
+ */
+export function updateAuthorCredit(authorCredit: AuthorCredit): Action {
+	return {
+		payload: authorCredit,
+		type: UPDATE_AUTHOR_CREDIT
 	};
 }

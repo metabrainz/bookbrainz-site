@@ -26,6 +26,7 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
+	updateAuthorCredit,
 	updateEditionGroup,
 	updateFormat,
 	updatePublisher,
@@ -80,6 +81,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
+	onAuthorCreditChange: (arg: AuthorCredit) => unknown,
 	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onFormatChange: (arg: number | null | undefined) => unknown,
 	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
@@ -135,6 +137,7 @@ function EditionSectionMerge({
 	heightValue,
 	languageValues,
 	mergingEntities,
+	onAuthorCreditChange,
 	onDepthChange,
 	onFormatChange,
 	onHeightChange,
@@ -223,6 +226,7 @@ function EditionSectionMerge({
 				currentValue={authorCreditToSelectOption(authorCreditValue)}
 				label="Author Credit"
 				options={authorCreditOptions}
+				onChange={onAuthorCreditChange}
 			/>
 			<MergeField
 				currentValue={editionGroupValue}
@@ -324,6 +328,9 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
+		onAuthorCreditChange : (value:AuthorCredit)=> {
+			dispatch(updateAuthorCredit(value))
+		},
 		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),

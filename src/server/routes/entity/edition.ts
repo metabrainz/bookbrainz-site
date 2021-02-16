@@ -92,8 +92,15 @@ function transformNewForm(data) {
 	const languages = _.map(
 		data.editionSection.languages, (language) => language.value
 	);
-
-	const authorCredit = constructAuthorCredit(data.authorCreditEditor);
+	let authorCredit = {};
+	// When merging entities, we set an existing authorCredit in the editionSection
+	// Search for the UPDATE_AUTHOR_CREDIT action for more info
+	if (!_.isNil(data.editionSection.authorCredit)){
+		authorCredit = data.editionSection.authorCredit.names;
+	}
+	else if(!_.isNil(data.authorCreditEditor)){
+		authorCredit = constructAuthorCredit(data.authorCreditEditor);
+	}
 
 	return {
 		aliases,
