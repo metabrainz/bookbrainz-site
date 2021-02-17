@@ -38,6 +38,7 @@ import {convertMapToObject} from '../../helpers/utils';
 import {faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import {validateAuthorCreditSection} from '../validators/common';
 
+
 type OwnProps = {
 };
 
@@ -68,7 +69,7 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 	const noAuthorCredit = authorCreditRows.length <= 0;
-	
+
 	const isValid = !noAuthorCredit && validateAuthorCreditSection(authorCreditRows);
 
 	const editButton = (

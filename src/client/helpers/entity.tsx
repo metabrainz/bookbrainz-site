@@ -17,17 +17,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
+
 // eslint-disable-next-line import/named
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {
-	faBook, faGlobe, faGripVertical, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
+	faBook,
+	faGlobe,
+	faGripVertical,
+	faPenNib,
+	faUniversity,
+	faUser,
+	faUserCircle,
+	faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
-import {dateObjectToISOString} from './utils';
+
 import AuthorCreditDisplay from '../components/author-credit-display';
+import {dateObjectToISOString} from './utils';
 
 
 export function extractAttribute(attr, path) {
@@ -218,7 +226,7 @@ export function getEditionPublishers(edition) {
 export function authorCreditToSelectOption(authorCredit) {
 	if (authorCredit) {
 		const {names, id} = authorCredit;
-		return {label: <AuthorCreditDisplay names={names}/>, value: authorCredit}
+		return {label: <AuthorCreditDisplay names={names}/>, value: authorCredit};
 	}
 
 	return null;
