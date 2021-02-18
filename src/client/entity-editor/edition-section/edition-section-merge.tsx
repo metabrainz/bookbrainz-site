@@ -33,9 +33,8 @@ import {
 } from './actions';
 import {AuthorCredit, updateAuthorCredit} from '../author-credit-editor/actions';
 import type {List, Map} from 'immutable';
-import {authorCreditToSelectOption, entityToOption, transformISODateForSelect} from '../../helpers/entity';
+import {authorCreditToString, entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
-import AuthorCreditDisplay from '../../components/author-credit-display';
 import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
@@ -179,8 +178,8 @@ function EditionSectionMerge({
 			editionGroupOptions.push(editionGroupOption);
 		}
 
-		const authorCredit = authorCreditToSelectOption(entity.authorCredit);
-		if (authorCredit && !_.find(authorCreditOptions, ['value', authorCredit.value])) {
+		const authorCredit = !_.isNil(entity.authorCredit) && {label: authorCreditToString(entity.authorCredit), value: entity.authorCredit};
+		if (authorCredit && !_.find(authorCreditOptions, ['value.id', authorCredit.value.id])) {
 			authorCreditOptions.push(authorCredit);
 		}
 
@@ -223,9 +222,10 @@ function EditionSectionMerge({
 	return (
 		<form>
 			<MergeField
-				currentValue={authorCreditToSelectOption(authorCreditValue)}
+				currentValue={authorCreditValue}
 				label="Author Credit"
 				options={authorCreditOptions}
+				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
 			/>
 			<MergeField

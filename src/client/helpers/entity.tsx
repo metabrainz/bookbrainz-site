@@ -223,10 +223,10 @@ export function getEditionPublishers(edition) {
 	return '?';
 }
 
-export function authorCreditToSelectOption(authorCredit) {
+export function authorCreditToString(authorCredit) {
 	if (authorCredit) {
-		const {names, id} = authorCredit;
-		return {label: <AuthorCreditDisplay names={names}/>, value: authorCredit};
+		const {names} = authorCredit;
+		return names.map(acName => `${acName.name}${acName.joinPhrase}`);
 	}
 
 	return null;
