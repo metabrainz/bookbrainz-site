@@ -39,7 +39,7 @@ export type Author = {
 	id: number
 };
 
-type AuthorCreditRow = {
+export type AuthorCreditRow = {
 	name: string,
 	joinPhrase: string,
 	author: Author,

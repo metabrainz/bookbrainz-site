@@ -76,6 +76,19 @@ function deleteAuthorCreditRow(state, payload) {
 
 	return returnState;
 }
+function deleteEmptyRows(state) {
+	let returnState = state.filterNot(row =>
+		row.get('author') === null && row.get('joinPhrase') === '' && row.get('name') === '');
+
+	// If names remain in the author credit, empty the join phrase for the last
+	// name.
+	const lastKey = returnState.keySeq().last();
+	if (lastKey) {
+		returnState = returnState.setIn([lastKey, 'joinPhrase'], '');
+	}
+
+	return returnState;
+}
 
 function reducer(
 	state = Immutable.OrderedMap(),
@@ -94,8 +107,7 @@ function reducer(
 		case REMOVE_AUTHOR_CREDIT_ROW:
 			return deleteAuthorCreditRow(state, payload);
 		case REMOVE_EMPTY_CREDIT_ROWS:
-			return state.filterNot(row =>
-				row.get('author') === null && row.get('joinPhrase') === '' && row.get('name') === '');
+			return deleteEmptyRows(state);
 		// no default
 	}
 	return state;

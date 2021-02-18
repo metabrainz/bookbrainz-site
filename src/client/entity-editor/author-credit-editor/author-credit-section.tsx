@@ -18,13 +18,14 @@
 
 import {
 	Action,
-	AuthorCredit,
+	AuthorCreditRow,
+	addAuthorCreditRow,
 	hideAuthorCreditEditor,
 	removeEmptyCreditRows,
 	showAuthorCreditEditor
 } from './actions';
 import {Button, Col, Row} from 'react-bootstrap';
-import {keys as _keys, map as _map, values as _values} from 'lodash';
+import {map as _map, values as _values} from 'lodash';
 
 import AuthorCreditEditor from './author-credit-editor';
 import CustomInput from '../../input';
@@ -43,12 +44,12 @@ type OwnProps = {
 };
 
 type StateProps = {
-	authorCreditEditor: Record<string, AuthorCredit>,
+	authorCreditEditor: Record<string, AuthorCreditRow>,
 	showEditor: boolean,
 };
 
 type DispatchProps = {
-	onEditAuthorCredit: () => unknown,
+	onEditAuthorCredit: (rowCount: number) => unknown,
 	onEditorClose: () => unknown,
 };
 
@@ -73,7 +74,8 @@ function AuthorCreditSection({
 	const isValid = !noAuthorCredit && validateAuthorCreditSection(authorCreditRows);
 
 	const editButton = (
-		<Button bsStyle="success" onClick={onEditAuthorCredit}>
+		// eslint-disable-next-line react/jsx-no-bind
+		<Button bsStyle="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);
@@ -116,7 +118,13 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onEditAuthorCredit: () => dispatch(showAuthorCreditEditor()),
+		onEditAuthorCredit: (rowCount:number) => {
+			dispatch(showAuthorCreditEditor());
+			// Automatically add an empty row if editor is empty
+			if (rowCount === 0) {
+				dispatch(addAuthorCreditRow());
+			}
+		},
 		onEditorClose: () => {
 			dispatch(removeEmptyCreditRows());
 			dispatch(hideAuthorCreditEditor());
