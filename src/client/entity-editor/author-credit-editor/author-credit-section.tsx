@@ -89,13 +89,12 @@ function AuthorCreditSection({
 	return (
 		<Row className="margin-bottom-2">
 			{editor}
-			<Col mdOffset={3}>
+			<Col md={6} mdOffset={3}>
 				<CustomInput
-					readOnly
 					buttonAfter={editButton}
 					label={label}
 					placeholder="No Author Credit yet, click edit to add one"
-					tooltipText="Names of the Authors as they appear on the book cover"
+					tooltipText="Name(s) of the Author(s) as they appear on the book cover"
 					validationState={!isValid ? 'error' : 'success'}
 					value={authorCreditPreview}
 				/>
