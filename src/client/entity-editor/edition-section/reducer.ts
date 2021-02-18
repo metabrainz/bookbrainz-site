@@ -19,7 +19,6 @@
 
 
 import * as Immutable from 'immutable';
-import * as _ from 'lodash';
 
 import {
 	Action,
@@ -45,7 +44,6 @@ type State = Immutable.Map<string, any>;
 
 function reducer(
 	state: State = Immutable.Map({
-		authorCredit: null, // For merging page
 		authorCreditEditorVisible: false,
 		format: null,
 		languages: Immutable.List([]),

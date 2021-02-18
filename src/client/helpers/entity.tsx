@@ -33,8 +33,6 @@ import {
 	faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
-
-import AuthorCreditDisplay from '../components/author-credit-display';
 import {dateObjectToISOString} from './utils';
 
 
