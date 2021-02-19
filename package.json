@@ -7,7 +7,7 @@
     "prepublishOnly": "npm run clean",
     "postinstall": "npm run prepublishOnly",
     "build-server-js": "babel src --out-dir lib --ignore src/api --extensions .js,.jsx,.ts,.tsx",
-    "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client'",
+    "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client' --extensions .js,.jsx,.ts,.tsx",
     "build-less": "./scripts/build-less.sh",
     "build": "npm run build-client && npm run build-server-js",
     "build-client": "cross-env NODE_ENV=production webpack --progress --config webpack.client.js",
