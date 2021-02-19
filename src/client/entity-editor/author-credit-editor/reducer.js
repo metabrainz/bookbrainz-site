@@ -77,15 +77,8 @@ function deleteAuthorCreditRow(state, payload) {
 	return returnState;
 }
 function deleteEmptyRows(state) {
-	let returnState = state.filterNot(row =>
+	const returnState = state.filterNot(row =>
 		row.get('author') === null && row.get('joinPhrase') === '' && row.get('name') === '');
-
-	// If names remain in the author credit, empty the join phrase for the last
-	// name.
-	const lastKey = returnState.keySeq().last();
-	if (lastKey) {
-		returnState = returnState.setIn([lastKey, 'joinPhrase'], '');
-	}
 
 	return returnState;
 }
