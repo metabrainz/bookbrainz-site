@@ -119,7 +119,9 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 	else if (!entity.deleted) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
-				Author Credit unset; please edit this Edition and add its author if you see this!
+				Author Credit unset; please
+				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>
+				and add its Author(s) if you see this!
 			</div>);
 	}
 
