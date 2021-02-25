@@ -181,10 +181,10 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_edition_group() RETURNS TRIGGER
 		IF (TG_OP <> 'DELETE') THEN
 			INSERT INTO bookbrainz.edition_group_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
-				disambiguation_id, type_id
+				disambiguation_id, type_id, author_credit_id
 			) VALUES (
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
-				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id
+				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id, NEW.author_credit_id
 			) RETURNING bookbrainz.edition_group_data.id INTO edition_group_data_id;
 
 			INSERT INTO bookbrainz.edition_group_revision VALUES(NEW.revision_id, NEW.bbid, edition_group_data_id);
