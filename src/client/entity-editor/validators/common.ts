@@ -28,11 +28,16 @@ import {
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 
+
 export function validateMultiple(
 	values: any[],
 	validationFunction: (value: any, ...rest: any[]) => boolean,
-	additionalArgs?: any
+	additionalArgs?: any,
+	requiresOneOrMore?: boolean
 ): boolean {
+	if (requiresOneOrMore && _.isEmpty(values)) {
+		return false;
+	}
 	let every = (object, predicate) => _.every(object, predicate);
 	if (Iterable.isIterable(values)) {
 		every = (object, predicate) => object.every(predicate);
@@ -186,5 +191,6 @@ export function validateAuthorCreditRow(row: any): boolean {
 
 export const validateAuthorCreditSection = _.partial(
 	validateMultiple, _.partial.placeholder,
-	validateAuthorCreditRow
+	// Requires at least one Author Credit row
+	validateAuthorCreditRow, null, true
 );

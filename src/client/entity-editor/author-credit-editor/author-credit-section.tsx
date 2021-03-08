@@ -69,9 +69,8 @@ function AuthorCreditSection({
 	}
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
-	const noAuthorCredit = authorCreditRows.length <= 0;
 
-	const isValid = !noAuthorCredit && validateAuthorCreditSection(authorCreditRows);
+	const isValid = validateAuthorCreditSection(authorCreditRows);
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
