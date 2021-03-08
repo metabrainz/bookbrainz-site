@@ -171,7 +171,7 @@ function HelpPage() {
 							</ul>
 						</ListGroupItem>
 
-						<ListGroupItem><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">Author Credits</a></b> – As appearing on the publication cover. For example, if the author is using a pseudonym, the credits should reflect that.</ListGroupItem>
+						<ListGroupItem><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">Author Credits</a></b> – As appearing on the Edition/Edition Group cover. For example, if the author is using a pseudonym, the credits should reflect that.</ListGroupItem>
 
 						<ListGroupItem><b><a href="https://musicbrainz.org/doc/Disambiguation_Comment">Disambiguation</a></b> – Short comment added to differentiate between similarly-named entities.
 							<br/>
