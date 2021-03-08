@@ -22,9 +22,11 @@ import {
 	EMPTY_SUBMISSION_SECTION,
 	IDENTIFIER_TYPES,
 	INVALID_ALIASES,
+	INVALID_AUTHOR_CREDIT_EDITOR,
 	INVALID_IDENTIFIERS,
 	INVALID_NAME_SECTION,
 	VALID_ALIASES,
+	VALID_AUTHOR_CREDIT_EDITOR,
 	VALID_IDENTIFIERS,
 	VALID_NAME_SECTION,
 	VALID_SUBMISSION_SECTION
@@ -406,6 +408,7 @@ function describeValidateEditionSection() {
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
+		authorCreditEditor: VALID_AUTHOR_CREDIT_EDITOR,
 		editionSection: VALID_EDITION_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
@@ -430,6 +433,28 @@ function describeValidateForm() {
 			{
 				...validForm,
 				aliasEditor: INVALID_ALIASES
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with an invalid author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: INVALID_AUTHOR_CREDIT_EDITOR
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with an empty author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: {}
 			},
 			IDENTIFIER_TYPES
 		);

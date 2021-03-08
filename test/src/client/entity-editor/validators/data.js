@@ -57,6 +57,28 @@ export const INVALID_IDENTIFIERS = {
 	n0: INVALID_IDENTIFIER
 };
 
+export const VALID_AUTHOR_CREDIT_ROW = {
+	author: {
+		id: 'cfbfe888-f5b5-4098-96cd-b0b98db2c4ba',
+		text: 'Isaac Asimov',
+		type: 'Author'
+	},
+	joinPhrase: '',
+	name: 'Isaac Asimov'
+};
+
+export const VALID_AUTHOR_CREDIT_EDITOR = {
+	1: VALID_AUTHOR_CREDIT_ROW,
+	n0: VALID_AUTHOR_CREDIT_ROW
+};
+
+export const INVALID_AUTHOR_CREDIT_ROW = {...VALID_AUTHOR_CREDIT_ROW, author: null};
+
+export const INVALID_AUTHOR_CREDIT_EDITOR = {
+	1: VALID_AUTHOR_CREDIT_ROW,
+	n0: INVALID_AUTHOR_CREDIT_ROW
+};
+
 export const VALID_NAME_SECTION = {
 	disambiguation: '',
 	language: 1,

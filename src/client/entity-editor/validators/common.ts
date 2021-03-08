@@ -189,8 +189,8 @@ export function validateAuthorCreditRow(row: any): boolean {
 	validateOptionalString(get(row, 'joinPhrase', null));
 }
 
-export const validateAuthorCreditSection = _.partial(
-	validateMultiple, _.partial.placeholder,
+export const validateAuthorCreditSection = _.partialRight(
 	// Requires at least one Author Credit row
+	validateMultiple, _.partialRight.placeholder,
 	validateAuthorCreditRow, null, true
 );
