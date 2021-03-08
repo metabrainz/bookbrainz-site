@@ -53,6 +53,7 @@ export default ({
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>
+			<link rel='stylesheet' href='/stylesheets/bundle.css' />
 			<link rel='stylesheet' href='/stylesheets/style.css' />
 			<meta name='viewport'
 				content='width=device-width, initial-scale=1' />

@@ -21,6 +21,8 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import {faPenNib, faPlus} from '@fortawesome/free-solid-svg-icons';
+
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -52,7 +54,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 							onClick={() => onToggleRow(work.bbid)}
 						/> : null
 				}
-				<a href={`/Work/${work.bbid}`}>{name}</a>
+				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
 			<td>{languages}</td>
@@ -112,7 +114,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						className="margin-top-d15"
 						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 					>
-						<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
+						<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
 					</Button>
 				}
 			</React.Fragment>
@@ -126,7 +128,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						bsStyle="success"
 						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 					>
-						<FontAwesomeIcon icon="pen-nib" size="2x"/>
+						<FontAwesomeIcon icon={faPenNib} size="2x"/>
 						<br/>
 						Add Work
 					</Button>

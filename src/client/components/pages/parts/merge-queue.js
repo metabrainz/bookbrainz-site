@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {faTasks, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {isNil, isString, size, values} from 'lodash';
 import EntityLink from '../../entity-link';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -101,7 +102,7 @@ class MergeQueue extends React.Component {
 						href={`/merge/submit/${this.state.selectedOption}`}
 						title="Merge entities"
 					>
-						<FontAwesomeIcon icon="tasks"/>
+						<FontAwesomeIcon icon={faTasks}/>
 						&nbsp;Merge into selected entity
 					</Button>
 					<Button
@@ -110,7 +111,7 @@ class MergeQueue extends React.Component {
 						href={`/merge/remove/${this.state.selectedOption}`}
 						title="Remove from merge"
 					>
-						<FontAwesomeIcon icon="trash-alt"/>
+						<FontAwesomeIcon icon={faTrashAlt}/>
 						&nbsp;Remove selected entity
 					</Button>
 					<Button
@@ -118,7 +119,7 @@ class MergeQueue extends React.Component {
 						href="/merge/cancel"
 						title="Cancel merge"
 					>
-						<FontAwesomeIcon icon="trash-alt"/>
+						<FontAwesomeIcon icon={faTrashAlt}/>
 						&nbsp;Cancel merge
 					</Button>
 				</ButtonGroup>

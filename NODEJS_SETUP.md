@@ -49,10 +49,6 @@ Here is [a good introduction](https://www.youtube.com/watch?v=yFtU6_UaOtA) to de
 There are VSCode configuration files (in the `.vscode` folder) for running both the server and the tests, useful in both cases to debug into the code and see what is happening as the code executes.
 Make sure the dependencies (postgres, redis, elasticsearch) are running, and you can just open the debugger tray in VSCode, select 'Launch Program' and click the button!
 
-BookBrainz uses [Flow](https://flow.org) as a javascript typechecking library. VSCode is partial to Typescript, and needs to be configured to avoid confusion.
-We recommend you install the flow-for-vscode extension and [follow this setup step](https://github.com/flowtype/flow-for-vscode#setup):
-`Set [VSCode configuration] javascript.validate.enable option to false or completely disable the built-in TypeScript extension for your project`
-
 <br/>
 
 # Watch files and live reload with Webpack
@@ -62,11 +58,11 @@ keeping the application state intact, for the price of increased compilation tim
 
 If you are running the server manually, you can simply run `npm run debug` in the command line.
 
-If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file to:
-1. change the `command` to:
+If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file and change a few things on the `bookbrainz-site` service defined there:
+1. change the bookbrainz-site `command` to:
     - `npm run debug` if you only want to change client files (in `src/client`)
     - `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
-2. mount the `src` folder
+2. mount the `src` folder to the bookbrainz-site service
 
 For example:
 ```

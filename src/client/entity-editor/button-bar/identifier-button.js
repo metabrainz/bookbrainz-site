@@ -20,6 +20,7 @@ import {Button} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 /**
@@ -50,7 +51,7 @@ function IdentifierButton({
 	}
 
 	const iconElement = identifiersInvalid &&
-		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon="times"/>;
+		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
 
 	return (
 		<Button bsStyle="link" {...props}>

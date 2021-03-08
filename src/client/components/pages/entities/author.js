@@ -28,6 +28,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
 
 
@@ -135,7 +136,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					className="margin-top-d15"
 					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 				>
-					<FontAwesomeIcon className="margin-right-0-5" icon="plus"/>Add Work
+					<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
 				</Button>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>

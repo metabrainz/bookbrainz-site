@@ -23,15 +23,16 @@ import {
 	getOrderedCollectionsForEditorPage,
 	getOrderedPublicCollections
 } from '../../../../src/server/helpers/collections';
+import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import {date} from 'faker';
+import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
 
 const {expect} = chai;
-chai.use(require('chai-sorted'));
-chai.use(require('chai-arrays'));
-
+chai.use(isSorted);
+chai.use(assertArrays);
 
 const {UserCollection, UserCollectionCollaborator} = orm;
 
