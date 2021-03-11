@@ -143,6 +143,12 @@ class PagerElement extends React.Component {
 								>
 									&larr; Previous Page
 								</Pager.Item>
+								<Pager.Item
+									next disabled={!this.state.nextEnabled}
+									href="#" onClick={this.handleClickNext}
+								>
+									Next Page &rarr;
+								</Pager.Item>
 								<ButtonGroup>
 									<Button disabled>Results {this.state.from + 1} —
 										{this.state.results.length < this.state.size ?
@@ -162,12 +168,6 @@ class PagerElement extends React.Component {
 										<MenuItem eventKey="100">100 per page</MenuItem>
 									</DropdownButton>
 								</ButtonGroup>
-								<Pager.Item
-									next disabled={!this.state.nextEnabled}
-									href="#" onClick={this.handleClickNext}
-								>
-									Next Page &rarr;
-								</Pager.Item>
 							</Pager>
 
 						</div> :
